@@ -1,14 +1,316 @@
 <?xml version="1.0" encoding="utf-8"?>
-<wsdl:definitions name="BAPI_PO_CHANGE" targetNamespace="urn:sap-com:document:sap:rfc:functions" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+<wsdl:definitions xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:rfc="urn:sap-com:document:sap:rfc:functions" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:p1="urn:OPERACIONES" name="SI_MMRFC_MODIFICAR_OC" targetNamespace="urn:OPERACIONES" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:documentation />
+  <wsp:UsingPolicy wsdl:required="true" />
+  <wsp:Policy wsu:Id="OP_SI_MMRFC_MODIFICAR_OC" />
   <wsdl:types>
     <xsd:schema xmlns="urn:sap-com:document:sap:rfc:functions" targetNamespace="urn:sap-com:document:sap:rfc:functions" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-      <xsd:element name="BAPI_PO_CHANGE">
+      <xsd:element name="Z_MMRFC_MODIFICAR_OC.Response">
+        <xsd:complexType>
+          <xsd:all>
+            <xsd:element minOccurs="0" name="EXPHEADER" type="rfc:BAPIMEPOHEADER" />
+            <xsd:element minOccurs="0" name="EXPPOEXPIMPHEADER" type="rfc:BAPIEIKP" />
+            <xsd:element minOccurs="0" name="ALLVERSIONS">
+              <xsd:complexType>
+                <xsd:sequence>
+                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="rfc:BAPIMEDCM_ALLVERSIONS" />
+                </xsd:sequence>
+              </xsd:complexType>
+            </xsd:element>
+            <xsd:element minOccurs="0" name="EXTENSIONIN">
+              <xsd:complexType>
+                <xsd:sequence>
+                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="rfc:BAPIPAREX" />
+                </xsd:sequence>
+              </xsd:complexType>
+            </xsd:element>
+            <xsd:element minOccurs="0" name="EXTENSIONOUT">
+              <xsd:complexType>
+                <xsd:sequence>
+                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="rfc:BAPIPAREX" />
+                </xsd:sequence>
+              </xsd:complexType>
+            </xsd:element>
+            <xsd:element minOccurs="0" name="INVPLANHEADER">
+              <xsd:complexType>
+                <xsd:sequence>
+                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="rfc:BAPI_INVOICE_PLAN_HEADER" />
+                </xsd:sequence>
+              </xsd:complexType>
+            </xsd:element>
+            <xsd:element minOccurs="0" name="INVPLANHEADERX">
+              <xsd:complexType>
+                <xsd:sequence>
+                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="rfc:BAPI_INVOICE_PLAN_HEADERX" />
+                </xsd:sequence>
+              </xsd:complexType>
+            </xsd:element>
+            <xsd:element minOccurs="0" name="INVPLANITEM">
+              <xsd:complexType>
+                <xsd:sequence>
+                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="rfc:BAPI_INVOICE_PLAN_ITEM" />
+                </xsd:sequence>
+              </xsd:complexType>
+            </xsd:element>
+            <xsd:element minOccurs="0" name="INVPLANITEMX">
+              <xsd:complexType>
+                <xsd:sequence>
+                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="rfc:BAPI_INVOICE_PLAN_ITEMX" />
+                </xsd:sequence>
+              </xsd:complexType>
+            </xsd:element>
+            <xsd:element minOccurs="0" name="NFMETALLITMS">
+              <xsd:complexType>
+                <xsd:sequence>
+                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="rfc:_-NFM_-BAPIDOCITM" />
+                </xsd:sequence>
+              </xsd:complexType>
+            </xsd:element>
+            <xsd:element minOccurs="0" name="POACCOUNT">
+              <xsd:complexType>
+                <xsd:sequence>
+                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="rfc:BAPIMEPOACCOUNT" />
+                </xsd:sequence>
+              </xsd:complexType>
+            </xsd:element>
+            <xsd:element minOccurs="0" name="POACCOUNTPROFITSEGMENT">
+              <xsd:complexType>
+                <xsd:sequence>
+                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="rfc:BAPIMEPOACCOUNTPROFITSEGMENT" />
+                </xsd:sequence>
+              </xsd:complexType>
+            </xsd:element>
+            <xsd:element minOccurs="0" name="POACCOUNTX">
+              <xsd:complexType>
+                <xsd:sequence>
+                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="rfc:BAPIMEPOACCOUNTX" />
+                </xsd:sequence>
+              </xsd:complexType>
+            </xsd:element>
+            <xsd:element minOccurs="0" name="POADDRDELIVERY">
+              <xsd:complexType>
+                <xsd:sequence>
+                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="rfc:BAPIMEPOADDRDELIVERY" />
+                </xsd:sequence>
+              </xsd:complexType>
+            </xsd:element>
+            <xsd:element minOccurs="0" name="POCOMPONENTS">
+              <xsd:complexType>
+                <xsd:sequence>
+                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="rfc:BAPIMEPOCOMPONENT" />
+                </xsd:sequence>
+              </xsd:complexType>
+            </xsd:element>
+            <xsd:element minOccurs="0" name="POCOMPONENTSX">
+              <xsd:complexType>
+                <xsd:sequence>
+                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="rfc:BAPIMEPOCOMPONENTX" />
+                </xsd:sequence>
+              </xsd:complexType>
+            </xsd:element>
+            <xsd:element minOccurs="0" name="POCOND">
+              <xsd:complexType>
+                <xsd:sequence>
+                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="rfc:BAPIMEPOCOND" />
+                </xsd:sequence>
+              </xsd:complexType>
+            </xsd:element>
+            <xsd:element minOccurs="0" name="POCONDHEADER">
+              <xsd:complexType>
+                <xsd:sequence>
+                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="rfc:BAPIMEPOCONDHEADER" />
+                </xsd:sequence>
+              </xsd:complexType>
+            </xsd:element>
+            <xsd:element minOccurs="0" name="POCONDHEADERX">
+              <xsd:complexType>
+                <xsd:sequence>
+                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="rfc:BAPIMEPOCONDHEADERX" />
+                </xsd:sequence>
+              </xsd:complexType>
+            </xsd:element>
+            <xsd:element minOccurs="0" name="POCONDX">
+              <xsd:complexType>
+                <xsd:sequence>
+                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="rfc:BAPIMEPOCONDX" />
+                </xsd:sequence>
+              </xsd:complexType>
+            </xsd:element>
+            <xsd:element minOccurs="0" name="POCONFIRMATION">
+              <xsd:complexType>
+                <xsd:sequence>
+                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="rfc:BAPIEKES" />
+                </xsd:sequence>
+              </xsd:complexType>
+            </xsd:element>
+            <xsd:element minOccurs="0" name="POCONTRACTLIMITS">
+              <xsd:complexType>
+                <xsd:sequence>
+                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="rfc:BAPIESUCC" />
+                </xsd:sequence>
+              </xsd:complexType>
+            </xsd:element>
+            <xsd:element minOccurs="0" name="POEXPIMPITEM">
+              <xsd:complexType>
+                <xsd:sequence>
+                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="rfc:BAPIEIPO" />
+                </xsd:sequence>
+              </xsd:complexType>
+            </xsd:element>
+            <xsd:element minOccurs="0" name="POEXPIMPITEMX">
+              <xsd:complexType>
+                <xsd:sequence>
+                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="rfc:BAPIEIPOX" />
+                </xsd:sequence>
+              </xsd:complexType>
+            </xsd:element>
+            <xsd:element minOccurs="0" name="POHISTORY">
+              <xsd:complexType>
+                <xsd:sequence>
+                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="rfc:BAPIEKBE" />
+                </xsd:sequence>
+              </xsd:complexType>
+            </xsd:element>
+            <xsd:element minOccurs="0" name="POHISTORY_MA">
+              <xsd:complexType>
+                <xsd:sequence>
+                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="rfc:BAPIEKBE_MA" />
+                </xsd:sequence>
+              </xsd:complexType>
+            </xsd:element>
+            <xsd:element minOccurs="0" name="POHISTORY_TOTALS">
+              <xsd:complexType>
+                <xsd:sequence>
+                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="rfc:BAPIEKBES" />
+                </xsd:sequence>
+              </xsd:complexType>
+            </xsd:element>
+            <xsd:element minOccurs="0" name="POITEM">
+              <xsd:complexType>
+                <xsd:sequence>
+                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="rfc:BAPIMEPOITEM" />
+                </xsd:sequence>
+              </xsd:complexType>
+            </xsd:element>
+            <xsd:element minOccurs="0" name="POITEMX">
+              <xsd:complexType>
+                <xsd:sequence>
+                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="rfc:BAPIMEPOITEMX" />
+                </xsd:sequence>
+              </xsd:complexType>
+            </xsd:element>
+            <xsd:element minOccurs="0" name="POLIMITS">
+              <xsd:complexType>
+                <xsd:sequence>
+                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="rfc:BAPIESUHC" />
+                </xsd:sequence>
+              </xsd:complexType>
+            </xsd:element>
+            <xsd:element minOccurs="0" name="POPARTNER">
+              <xsd:complexType>
+                <xsd:sequence>
+                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="rfc:BAPIEKKOP" />
+                </xsd:sequence>
+              </xsd:complexType>
+            </xsd:element>
+            <xsd:element minOccurs="0" name="POSCHEDULE">
+              <xsd:complexType>
+                <xsd:sequence>
+                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="rfc:BAPIMEPOSCHEDULE" />
+                </xsd:sequence>
+              </xsd:complexType>
+            </xsd:element>
+            <xsd:element minOccurs="0" name="POSCHEDULEX">
+              <xsd:complexType>
+                <xsd:sequence>
+                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="rfc:BAPIMEPOSCHEDULX" />
+                </xsd:sequence>
+              </xsd:complexType>
+            </xsd:element>
+            <xsd:element minOccurs="0" name="POSERVICES">
+              <xsd:complexType>
+                <xsd:sequence>
+                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="rfc:BAPIESLLC" />
+                </xsd:sequence>
+              </xsd:complexType>
+            </xsd:element>
+            <xsd:element minOccurs="0" name="POSERVICESTEXT">
+              <xsd:complexType>
+                <xsd:sequence>
+                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="rfc:BAPIESLLTX" />
+                </xsd:sequence>
+              </xsd:complexType>
+            </xsd:element>
+            <xsd:element minOccurs="0" name="POSHIPPING">
+              <xsd:complexType>
+                <xsd:sequence>
+                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="rfc:BAPIITEMSHIP" />
+                </xsd:sequence>
+              </xsd:complexType>
+            </xsd:element>
+            <xsd:element minOccurs="0" name="POSHIPPINGEXP">
+              <xsd:complexType>
+                <xsd:sequence>
+                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="rfc:BAPIMEPOSHIPPEXP" />
+                </xsd:sequence>
+              </xsd:complexType>
+            </xsd:element>
+            <xsd:element minOccurs="0" name="POSHIPPINGX">
+              <xsd:complexType>
+                <xsd:sequence>
+                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="rfc:BAPIITEMSHIPX" />
+                </xsd:sequence>
+              </xsd:complexType>
+            </xsd:element>
+            <xsd:element minOccurs="0" name="POSRVACCESSVALUES">
+              <xsd:complexType>
+                <xsd:sequence>
+                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="rfc:BAPIESKLC" />
+                </xsd:sequence>
+              </xsd:complexType>
+            </xsd:element>
+            <xsd:element minOccurs="0" name="POTEXTHEADER">
+              <xsd:complexType>
+                <xsd:sequence>
+                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="rfc:BAPIMEPOTEXTHEADER" />
+                </xsd:sequence>
+              </xsd:complexType>
+            </xsd:element>
+            <xsd:element minOccurs="0" name="POTEXTITEM">
+              <xsd:complexType>
+                <xsd:sequence>
+                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="rfc:BAPIMEPOTEXT" />
+                </xsd:sequence>
+              </xsd:complexType>
+            </xsd:element>
+            <xsd:element minOccurs="0" name="RETURN">
+              <xsd:complexType>
+                <xsd:sequence>
+                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="rfc:BAPIRET2" />
+                </xsd:sequence>
+              </xsd:complexType>
+            </xsd:element>
+            <xsd:element minOccurs="0" name="SERIALNUMBER">
+              <xsd:complexType>
+                <xsd:sequence>
+                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="rfc:BAPIMEPOSERIALNO" />
+                </xsd:sequence>
+              </xsd:complexType>
+            </xsd:element>
+            <xsd:element minOccurs="0" name="SERIALNUMBERX">
+              <xsd:complexType>
+                <xsd:sequence>
+                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="rfc:BAPIMEPOSERIALNOX" />
+                </xsd:sequence>
+              </xsd:complexType>
+            </xsd:element>
+          </xsd:all>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="Z_MMRFC_MODIFICAR_OC">
         <xsd:complexType>
           <xsd:all>
             <xsd:element minOccurs="0" name="MEMORY_COMPLETE">
-              <xsd:annotation>
-                <xsd:documentation>Hold Purchase Order if NOT Faulty</xsd:documentation>
-              </xsd:annotation>
               <xsd:simpleType>
                 <xsd:restriction base="xsd:string">
                   <xsd:maxLength value="1" />
@@ -16,9 +318,6 @@
               </xsd:simpleType>
             </xsd:element>
             <xsd:element minOccurs="0" name="MEMORY_UNCOMPLETE">
-              <xsd:annotation>
-                <xsd:documentation>Hold Purchase Order if Faulty</xsd:documentation>
-              </xsd:annotation>
               <xsd:simpleType>
                 <xsd:restriction base="xsd:string">
                   <xsd:maxLength value="1" />
@@ -26,9 +325,6 @@
               </xsd:simpleType>
             </xsd:element>
             <xsd:element minOccurs="0" name="NO_AUTHORITY">
-              <xsd:annotation>
-                <xsd:documentation>No Authorization Check</xsd:documentation>
-              </xsd:annotation>
               <xsd:simpleType>
                 <xsd:restriction base="xsd:string">
                   <xsd:maxLength value="1" />
@@ -36,9 +332,6 @@
               </xsd:simpleType>
             </xsd:element>
             <xsd:element minOccurs="0" name="NO_MESSAGE_REQ">
-              <xsd:annotation>
-                <xsd:documentation>No messages necessary</xsd:documentation>
-              </xsd:annotation>
               <xsd:simpleType>
                 <xsd:restriction base="xsd:string">
                   <xsd:maxLength value="1" />
@@ -46,9 +339,6 @@
               </xsd:simpleType>
             </xsd:element>
             <xsd:element minOccurs="0" name="NO_MESSAGING">
-              <xsd:annotation>
-                <xsd:documentation>No message determination</xsd:documentation>
-              </xsd:annotation>
               <xsd:simpleType>
                 <xsd:restriction base="xsd:string">
                   <xsd:maxLength value="1" />
@@ -56,9 +346,6 @@
               </xsd:simpleType>
             </xsd:element>
             <xsd:element minOccurs="0" name="NO_PRICE_FROM_PO">
-              <xsd:annotation>
-                <xsd:documentation>No Adoption of Price from Last Document</xsd:documentation>
-              </xsd:annotation>
               <xsd:simpleType>
                 <xsd:restriction base="xsd:string">
                   <xsd:maxLength value="1" />
@@ -66,9 +353,6 @@
               </xsd:simpleType>
             </xsd:element>
             <xsd:element minOccurs="0" name="PARK_COMPLETE">
-              <xsd:annotation>
-                <xsd:documentation>Park Document if NOT Faulty</xsd:documentation>
-              </xsd:annotation>
               <xsd:simpleType>
                 <xsd:restriction base="xsd:string">
                   <xsd:maxLength value="1" />
@@ -76,44 +360,18 @@
               </xsd:simpleType>
             </xsd:element>
             <xsd:element minOccurs="0" name="PARK_UNCOMPLETE">
-              <xsd:annotation>
-                <xsd:documentation>Park Document if Faulty</xsd:documentation>
-              </xsd:annotation>
               <xsd:simpleType>
                 <xsd:restriction base="xsd:string">
                   <xsd:maxLength value="1" />
                 </xsd:restriction>
               </xsd:simpleType>
             </xsd:element>
-            <xsd:element minOccurs="0" name="POADDRVENDOR" type="BAPIMEPOADDRVENDOR">
-              <xsd:annotation>
-                <xsd:documentation>Address of Vendor</xsd:documentation>
-              </xsd:annotation>
-            </xsd:element>
-            <xsd:element minOccurs="0" name="POEXPIMPHEADER" type="BAPIEIKP">
-              <xsd:annotation>
-                <xsd:documentation>Export Trade: Header Data</xsd:documentation>
-              </xsd:annotation>
-            </xsd:element>
-            <xsd:element minOccurs="0" name="POEXPIMPHEADERX" type="BAPIEIKPX">
-              <xsd:annotation>
-                <xsd:documentation>Foreign Trade: Change Bar: Header Data</xsd:documentation>
-              </xsd:annotation>
-            </xsd:element>
-            <xsd:element minOccurs="0" name="POHEADER" type="BAPIMEPOHEADER">
-              <xsd:annotation>
-                <xsd:documentation>Header Data</xsd:documentation>
-              </xsd:annotation>
-            </xsd:element>
-            <xsd:element minOccurs="0" name="POHEADERX" type="BAPIMEPOHEADERX">
-              <xsd:annotation>
-                <xsd:documentation>Header Data (Change Parameter)</xsd:documentation>
-              </xsd:annotation>
-            </xsd:element>
+            <xsd:element minOccurs="0" name="POADDRVENDOR" type="rfc:BAPIMEPOADDRVENDOR" />
+            <xsd:element minOccurs="0" name="POEXPIMPHEADER" type="rfc:BAPIEIKP" />
+            <xsd:element minOccurs="0" name="POEXPIMPHEADERX" type="rfc:BAPIEIKPX" />
+            <xsd:element minOccurs="0" name="POHEADER" type="rfc:BAPIMEPOHEADER" />
+            <xsd:element minOccurs="0" name="POHEADERX" type="rfc:BAPIMEPOHEADERX" />
             <xsd:element name="PURCHASEORDER">
-              <xsd:annotation>
-                <xsd:documentation>Purchasing Document Number</xsd:documentation>
-              </xsd:annotation>
               <xsd:simpleType>
                 <xsd:restriction base="xsd:string">
                   <xsd:maxLength value="10" />
@@ -121,853 +379,304 @@
               </xsd:simpleType>
             </xsd:element>
             <xsd:element minOccurs="0" name="TESTRUN">
-              <xsd:annotation>
-                <xsd:documentation>Test Indicator</xsd:documentation>
-              </xsd:annotation>
               <xsd:simpleType>
                 <xsd:restriction base="xsd:string">
                   <xsd:maxLength value="1" />
                 </xsd:restriction>
               </xsd:simpleType>
             </xsd:element>
-            <xsd:element minOccurs="0" name="VERSIONS" type="BAPIMEDCM">
-              <xsd:annotation>
-                <xsd:documentation>Version Management</xsd:documentation>
-              </xsd:annotation>
-            </xsd:element>
+            <xsd:element minOccurs="0" name="VERSIONS" type="rfc:BAPIMEDCM" />
             <xsd:element minOccurs="0" name="ALLVERSIONS">
-              <xsd:annotation>
-                <xsd:documentation>All Versions (Export Parameter)</xsd:documentation>
-              </xsd:annotation>
               <xsd:complexType>
                 <xsd:sequence>
-                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="BAPIMEDCM_ALLVERSIONS" />
+                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="rfc:BAPIMEDCM_ALLVERSIONS" />
                 </xsd:sequence>
               </xsd:complexType>
             </xsd:element>
             <xsd:element minOccurs="0" name="EXTENSIONIN">
-              <xsd:annotation>
-                <xsd:documentation>Customer's Own Fields (Import Parameters)</xsd:documentation>
-              </xsd:annotation>
               <xsd:complexType>
                 <xsd:sequence>
-                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="BAPIPAREX" />
+                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="rfc:BAPIPAREX" />
                 </xsd:sequence>
               </xsd:complexType>
             </xsd:element>
             <xsd:element minOccurs="0" name="EXTENSIONOUT">
-              <xsd:annotation>
-                <xsd:documentation>Customer's Own Fields (Export Parameters)</xsd:documentation>
-              </xsd:annotation>
               <xsd:complexType>
                 <xsd:sequence>
-                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="BAPIPAREX" />
+                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="rfc:BAPIPAREX" />
                 </xsd:sequence>
               </xsd:complexType>
             </xsd:element>
             <xsd:element minOccurs="0" name="INVPLANHEADER">
-              <xsd:annotation>
-                <xsd:documentation>Invoicing Plan Header Data</xsd:documentation>
-              </xsd:annotation>
               <xsd:complexType>
                 <xsd:sequence>
-                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="BAPI_INVOICE_PLAN_HEADER" />
+                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="rfc:BAPI_INVOICE_PLAN_HEADER" />
                 </xsd:sequence>
               </xsd:complexType>
             </xsd:element>
             <xsd:element minOccurs="0" name="INVPLANHEADERX">
-              <xsd:annotation>
-                <xsd:documentation>Invoicing Plan Header Data (Change Parameter)</xsd:documentation>
-              </xsd:annotation>
               <xsd:complexType>
                 <xsd:sequence>
-                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="BAPI_INVOICE_PLAN_HEADERX" />
+                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="rfc:BAPI_INVOICE_PLAN_HEADERX" />
                 </xsd:sequence>
               </xsd:complexType>
             </xsd:element>
             <xsd:element minOccurs="0" name="INVPLANITEM">
-              <xsd:annotation>
-                <xsd:documentation>Invoicing Plan Item Data</xsd:documentation>
-              </xsd:annotation>
               <xsd:complexType>
                 <xsd:sequence>
-                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="BAPI_INVOICE_PLAN_ITEM" />
+                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="rfc:BAPI_INVOICE_PLAN_ITEM" />
                 </xsd:sequence>
               </xsd:complexType>
             </xsd:element>
             <xsd:element minOccurs="0" name="INVPLANITEMX">
-              <xsd:annotation>
-                <xsd:documentation>Invoicing Plan Item Data (Change Parameter)</xsd:documentation>
-              </xsd:annotation>
               <xsd:complexType>
                 <xsd:sequence>
-                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="BAPI_INVOICE_PLAN_ITEMX" />
+                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="rfc:BAPI_INVOICE_PLAN_ITEMX" />
+                </xsd:sequence>
+              </xsd:complexType>
+            </xsd:element>
+            <xsd:element minOccurs="0" name="NFMETALLITMS">
+              <xsd:complexType>
+                <xsd:sequence>
+                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="rfc:_-NFM_-BAPIDOCITM" />
                 </xsd:sequence>
               </xsd:complexType>
             </xsd:element>
             <xsd:element minOccurs="0" name="POACCOUNT">
-              <xsd:annotation>
-                <xsd:documentation>Account Assignment Fields</xsd:documentation>
-              </xsd:annotation>
               <xsd:complexType>
                 <xsd:sequence>
-                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="BAPIMEPOACCOUNT" />
+                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="rfc:BAPIMEPOACCOUNT" />
                 </xsd:sequence>
               </xsd:complexType>
             </xsd:element>
             <xsd:element minOccurs="0" name="POACCOUNTPROFITSEGMENT">
-              <xsd:annotation>
-                <xsd:documentation>Reservation Profitability Segment: BAPI_PROFITABILITY_SEGMENT</xsd:documentation>
-              </xsd:annotation>
               <xsd:complexType>
                 <xsd:sequence>
-                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="BAPIMEPOACCOUNTPROFITSEGMENT" />
+                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="rfc:BAPIMEPOACCOUNTPROFITSEGMENT" />
                 </xsd:sequence>
               </xsd:complexType>
             </xsd:element>
             <xsd:element minOccurs="0" name="POACCOUNTX">
-              <xsd:annotation>
-                <xsd:documentation>Account Assignment Fields (Change Parameter)</xsd:documentation>
-              </xsd:annotation>
               <xsd:complexType>
                 <xsd:sequence>
-                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="BAPIMEPOACCOUNTX" />
+                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="rfc:BAPIMEPOACCOUNTX" />
                 </xsd:sequence>
               </xsd:complexType>
             </xsd:element>
             <xsd:element minOccurs="0" name="POADDRDELIVERY">
-              <xsd:annotation>
-                <xsd:documentation>Addresses for Inward Delivery (Item)</xsd:documentation>
-              </xsd:annotation>
               <xsd:complexType>
                 <xsd:sequence>
-                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="BAPIMEPOADDRDELIVERY" />
+                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="rfc:BAPIMEPOADDRDELIVERY" />
                 </xsd:sequence>
               </xsd:complexType>
             </xsd:element>
             <xsd:element minOccurs="0" name="POCOMPONENTS">
-              <xsd:annotation>
-                <xsd:documentation>BAPI Structure for Components</xsd:documentation>
-              </xsd:annotation>
               <xsd:complexType>
                 <xsd:sequence>
-                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="BAPIMEPOCOMPONENT" />
+                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="rfc:BAPIMEPOCOMPONENT" />
                 </xsd:sequence>
               </xsd:complexType>
             </xsd:element>
             <xsd:element minOccurs="0" name="POCOMPONENTSX">
-              <xsd:annotation>
-                <xsd:documentation>Update Information for Components in BUS2012 API</xsd:documentation>
-              </xsd:annotation>
               <xsd:complexType>
                 <xsd:sequence>
-                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="BAPIMEPOCOMPONENTX" />
+                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="rfc:BAPIMEPOCOMPONENTX" />
                 </xsd:sequence>
               </xsd:complexType>
             </xsd:element>
             <xsd:element minOccurs="0" name="POCOND">
-              <xsd:annotation>
-                <xsd:documentation>Conditions (Items)</xsd:documentation>
-              </xsd:annotation>
               <xsd:complexType>
                 <xsd:sequence>
-                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="BAPIMEPOCOND" />
+                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="rfc:BAPIMEPOCOND" />
                 </xsd:sequence>
               </xsd:complexType>
             </xsd:element>
             <xsd:element minOccurs="0" name="POCONDHEADER">
-              <xsd:annotation>
-                <xsd:documentation>Conditions (Header)</xsd:documentation>
-              </xsd:annotation>
               <xsd:complexType>
                 <xsd:sequence>
-                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="BAPIMEPOCONDHEADER" />
+                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="rfc:BAPIMEPOCONDHEADER" />
                 </xsd:sequence>
               </xsd:complexType>
             </xsd:element>
             <xsd:element minOccurs="0" name="POCONDHEADERX">
-              <xsd:annotation>
-                <xsd:documentation>Conditions (Header, Change Parameter)</xsd:documentation>
-              </xsd:annotation>
               <xsd:complexType>
                 <xsd:sequence>
-                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="BAPIMEPOCONDHEADERX" />
+                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="rfc:BAPIMEPOCONDHEADERX" />
                 </xsd:sequence>
               </xsd:complexType>
             </xsd:element>
             <xsd:element minOccurs="0" name="POCONDX">
-              <xsd:annotation>
-                <xsd:documentation>Conditions (Items, Change Parameter)</xsd:documentation>
-              </xsd:annotation>
               <xsd:complexType>
                 <xsd:sequence>
-                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="BAPIMEPOCONDX" />
+                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="rfc:BAPIMEPOCONDX" />
                 </xsd:sequence>
               </xsd:complexType>
             </xsd:element>
             <xsd:element minOccurs="0" name="POCONFIRMATION">
-              <xsd:annotation>
-                <xsd:documentation>Transfer Structure: Display/List - Vendor Confirmation</xsd:documentation>
-              </xsd:annotation>
               <xsd:complexType>
                 <xsd:sequence>
-                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="BAPIEKES" />
+                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="rfc:BAPIEKES" />
                 </xsd:sequence>
               </xsd:complexType>
             </xsd:element>
             <xsd:element minOccurs="0" name="POCONTRACTLIMITS">
-              <xsd:annotation>
-                <xsd:documentation>External Services: Contract Limits</xsd:documentation>
-              </xsd:annotation>
               <xsd:complexType>
                 <xsd:sequence>
-                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="BAPIESUCC" />
+                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="rfc:BAPIESUCC" />
                 </xsd:sequence>
               </xsd:complexType>
             </xsd:element>
             <xsd:element minOccurs="0" name="POEXPIMPITEM">
-              <xsd:annotation>
-                <xsd:documentation>Foreign Trade: Item Data</xsd:documentation>
-              </xsd:annotation>
               <xsd:complexType>
                 <xsd:sequence>
-                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="BAPIEIPO" />
+                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="rfc:BAPIEIPO" />
                 </xsd:sequence>
               </xsd:complexType>
             </xsd:element>
             <xsd:element minOccurs="0" name="POEXPIMPITEMX">
-              <xsd:annotation>
-                <xsd:documentation>Foreign Trade: Change Parameter: Item Data</xsd:documentation>
-              </xsd:annotation>
               <xsd:complexType>
                 <xsd:sequence>
-                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="BAPIEIPOX" />
+                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="rfc:BAPIEIPOX" />
                 </xsd:sequence>
               </xsd:complexType>
             </xsd:element>
             <xsd:element minOccurs="0" name="POHISTORY">
-              <xsd:annotation>
-                <xsd:documentation>Transfer Structure for PO History</xsd:documentation>
-              </xsd:annotation>
               <xsd:complexType>
                 <xsd:sequence>
-                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="BAPIEKBE" />
+                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="rfc:BAPIEKBE" />
                 </xsd:sequence>
               </xsd:complexType>
             </xsd:element>
             <xsd:element minOccurs="0" name="POHISTORY_MA">
-              <xsd:annotation>
-                <xsd:documentation>Transfer Structure for Purchase Order History Account Assignment Level</xsd:documentation>
-              </xsd:annotation>
               <xsd:complexType>
                 <xsd:sequence>
-                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="BAPIEKBE_MA" />
+                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="rfc:BAPIEKBE_MA" />
                 </xsd:sequence>
               </xsd:complexType>
             </xsd:element>
             <xsd:element minOccurs="0" name="POHISTORY_TOTALS">
-              <xsd:annotation>
-                <xsd:documentation>Transfer Structure for PO History: Totals</xsd:documentation>
-              </xsd:annotation>
               <xsd:complexType>
                 <xsd:sequence>
-                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="BAPIEKBES" />
+                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="rfc:BAPIEKBES" />
                 </xsd:sequence>
               </xsd:complexType>
             </xsd:element>
             <xsd:element minOccurs="0" name="POITEM">
-              <xsd:annotation>
-                <xsd:documentation>Item Data</xsd:documentation>
-              </xsd:annotation>
               <xsd:complexType>
                 <xsd:sequence>
-                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="BAPIMEPOITEM" />
+                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="rfc:BAPIMEPOITEM" />
                 </xsd:sequence>
               </xsd:complexType>
             </xsd:element>
             <xsd:element minOccurs="0" name="POITEMX">
-              <xsd:annotation>
-                <xsd:documentation>Item Data (Change Parameter)</xsd:documentation>
-              </xsd:annotation>
               <xsd:complexType>
                 <xsd:sequence>
-                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="BAPIMEPOITEMX" />
+                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="rfc:BAPIMEPOITEMX" />
                 </xsd:sequence>
               </xsd:complexType>
             </xsd:element>
             <xsd:element minOccurs="0" name="POLIMITS">
-              <xsd:annotation>
-                <xsd:documentation>External Services: Limits</xsd:documentation>
-              </xsd:annotation>
               <xsd:complexType>
                 <xsd:sequence>
-                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="BAPIESUHC" />
+                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="rfc:BAPIESUHC" />
                 </xsd:sequence>
               </xsd:complexType>
             </xsd:element>
             <xsd:element minOccurs="0" name="POPARTNER">
-              <xsd:annotation>
-                <xsd:documentation>Partner</xsd:documentation>
-              </xsd:annotation>
               <xsd:complexType>
                 <xsd:sequence>
-                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="BAPIEKKOP" />
+                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="rfc:BAPIEKKOP" />
                 </xsd:sequence>
               </xsd:complexType>
             </xsd:element>
             <xsd:element minOccurs="0" name="POSCHEDULE">
-              <xsd:annotation>
-                <xsd:documentation>Delivery Schedule</xsd:documentation>
-              </xsd:annotation>
               <xsd:complexType>
                 <xsd:sequence>
-                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="BAPIMEPOSCHEDULE" />
+                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="rfc:BAPIMEPOSCHEDULE" />
                 </xsd:sequence>
               </xsd:complexType>
             </xsd:element>
             <xsd:element minOccurs="0" name="POSCHEDULEX">
-              <xsd:annotation>
-                <xsd:documentation>Delivery Schedule (Change Parameter)</xsd:documentation>
-              </xsd:annotation>
               <xsd:complexType>
                 <xsd:sequence>
-                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="BAPIMEPOSCHEDULX" />
+                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="rfc:BAPIMEPOSCHEDULX" />
                 </xsd:sequence>
               </xsd:complexType>
             </xsd:element>
             <xsd:element minOccurs="0" name="POSERVICES">
-              <xsd:annotation>
-                <xsd:documentation>External Services: Service Lines</xsd:documentation>
-              </xsd:annotation>
               <xsd:complexType>
                 <xsd:sequence>
-                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="BAPIESLLC" />
+                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="rfc:BAPIESLLC" />
                 </xsd:sequence>
               </xsd:complexType>
             </xsd:element>
             <xsd:element minOccurs="0" name="POSERVICESTEXT">
-              <xsd:annotation>
-                <xsd:documentation>External Services: Service Long Text</xsd:documentation>
-              </xsd:annotation>
               <xsd:complexType>
                 <xsd:sequence>
-                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="BAPIESLLTX" />
+                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="rfc:BAPIESLLTX" />
                 </xsd:sequence>
               </xsd:complexType>
             </xsd:element>
             <xsd:element minOccurs="0" name="POSHIPPING">
-              <xsd:annotation>
-                <xsd:documentation>BAPI Shipping Data for Stock Transport Orders</xsd:documentation>
-              </xsd:annotation>
               <xsd:complexType>
                 <xsd:sequence>
-                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="BAPIITEMSHIP" />
+                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="rfc:BAPIITEMSHIP" />
                 </xsd:sequence>
               </xsd:complexType>
             </xsd:element>
             <xsd:element minOccurs="0" name="POSHIPPINGEXP">
-              <xsd:annotation>
-                <xsd:documentation>Export Structure for Shipping Data</xsd:documentation>
-              </xsd:annotation>
               <xsd:complexType>
                 <xsd:sequence>
-                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="BAPIMEPOSHIPPEXP" />
+                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="rfc:BAPIMEPOSHIPPEXP" />
                 </xsd:sequence>
               </xsd:complexType>
             </xsd:element>
             <xsd:element minOccurs="0" name="POSHIPPINGX">
-              <xsd:annotation>
-                <xsd:documentation>BAPI Shipping Data Change Parameter</xsd:documentation>
-              </xsd:annotation>
               <xsd:complexType>
                 <xsd:sequence>
-                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="BAPIITEMSHIPX" />
+                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="rfc:BAPIITEMSHIPX" />
                 </xsd:sequence>
               </xsd:complexType>
             </xsd:element>
             <xsd:element minOccurs="0" name="POSRVACCESSVALUES">
-              <xsd:annotation>
-                <xsd:documentation>External Services: Account Assignment Distribution for Service Lines</xsd:documentation>
-              </xsd:annotation>
               <xsd:complexType>
                 <xsd:sequence>
-                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="BAPIESKLC" />
+                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="rfc:BAPIESKLC" />
                 </xsd:sequence>
               </xsd:complexType>
             </xsd:element>
             <xsd:element minOccurs="0" name="POTEXTHEADER">
-              <xsd:annotation>
-                <xsd:documentation>Header Texts</xsd:documentation>
-              </xsd:annotation>
               <xsd:complexType>
                 <xsd:sequence>
-                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="BAPIMEPOTEXTHEADER" />
+                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="rfc:BAPIMEPOTEXTHEADER" />
                 </xsd:sequence>
               </xsd:complexType>
             </xsd:element>
             <xsd:element minOccurs="0" name="POTEXTITEM">
-              <xsd:annotation>
-                <xsd:documentation>Item Texts</xsd:documentation>
-              </xsd:annotation>
               <xsd:complexType>
                 <xsd:sequence>
-                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="BAPIMEPOTEXT" />
+                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="rfc:BAPIMEPOTEXT" />
                 </xsd:sequence>
               </xsd:complexType>
             </xsd:element>
             <xsd:element minOccurs="0" name="RETURN">
-              <xsd:annotation>
-                <xsd:documentation>Return Parameter</xsd:documentation>
-              </xsd:annotation>
               <xsd:complexType>
                 <xsd:sequence>
-                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="BAPIRET2" />
+                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="rfc:BAPIRET2" />
                 </xsd:sequence>
               </xsd:complexType>
             </xsd:element>
             <xsd:element minOccurs="0" name="SERIALNUMBER">
-              <xsd:annotation>
-                <xsd:documentation>Serial Numbers in Purchase Order BAPIs</xsd:documentation>
-              </xsd:annotation>
               <xsd:complexType>
                 <xsd:sequence>
-                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="BAPIMEPOSERIALNO" />
+                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="rfc:BAPIMEPOSERIALNO" />
                 </xsd:sequence>
               </xsd:complexType>
             </xsd:element>
             <xsd:element minOccurs="0" name="SERIALNUMBERX">
-              <xsd:annotation>
-                <xsd:documentation>Change Parameter: Serial Number in Purchase Order BAPIs</xsd:documentation>
-              </xsd:annotation>
               <xsd:complexType>
                 <xsd:sequence>
-                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="BAPIMEPOSERIALNOX" />
-                </xsd:sequence>
-              </xsd:complexType>
-            </xsd:element>
-          </xsd:all>
-        </xsd:complexType>
-      </xsd:element>
-      <xsd:element name="BAPI_PO_CHANGE.Response">
-        <xsd:complexType>
-          <xsd:all>
-            <xsd:element minOccurs="0" name="EXPHEADER" type="BAPIMEPOHEADER">
-              <xsd:annotation>
-                <xsd:documentation>Header Data</xsd:documentation>
-              </xsd:annotation>
-            </xsd:element>
-            <xsd:element minOccurs="0" name="EXPPOEXPIMPHEADER" type="BAPIEIKP">
-              <xsd:annotation>
-                <xsd:documentation>Export Trade: Header Data</xsd:documentation>
-              </xsd:annotation>
-            </xsd:element>
-            <xsd:element minOccurs="0" name="ALLVERSIONS">
-              <xsd:annotation>
-                <xsd:documentation>All Versions (Export Parameter)</xsd:documentation>
-              </xsd:annotation>
-              <xsd:complexType>
-                <xsd:sequence>
-                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="BAPIMEDCM_ALLVERSIONS" />
-                </xsd:sequence>
-              </xsd:complexType>
-            </xsd:element>
-            <xsd:element minOccurs="0" name="EXTENSIONIN">
-              <xsd:annotation>
-                <xsd:documentation>Customer's Own Fields (Import Parameters)</xsd:documentation>
-              </xsd:annotation>
-              <xsd:complexType>
-                <xsd:sequence>
-                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="BAPIPAREX" />
-                </xsd:sequence>
-              </xsd:complexType>
-            </xsd:element>
-            <xsd:element minOccurs="0" name="EXTENSIONOUT">
-              <xsd:annotation>
-                <xsd:documentation>Customer's Own Fields (Export Parameters)</xsd:documentation>
-              </xsd:annotation>
-              <xsd:complexType>
-                <xsd:sequence>
-                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="BAPIPAREX" />
-                </xsd:sequence>
-              </xsd:complexType>
-            </xsd:element>
-            <xsd:element minOccurs="0" name="INVPLANHEADER">
-              <xsd:annotation>
-                <xsd:documentation>Invoicing Plan Header Data</xsd:documentation>
-              </xsd:annotation>
-              <xsd:complexType>
-                <xsd:sequence>
-                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="BAPI_INVOICE_PLAN_HEADER" />
-                </xsd:sequence>
-              </xsd:complexType>
-            </xsd:element>
-            <xsd:element minOccurs="0" name="INVPLANHEADERX">
-              <xsd:annotation>
-                <xsd:documentation>Invoicing Plan Header Data (Change Parameter)</xsd:documentation>
-              </xsd:annotation>
-              <xsd:complexType>
-                <xsd:sequence>
-                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="BAPI_INVOICE_PLAN_HEADERX" />
-                </xsd:sequence>
-              </xsd:complexType>
-            </xsd:element>
-            <xsd:element minOccurs="0" name="INVPLANITEM">
-              <xsd:annotation>
-                <xsd:documentation>Invoicing Plan Item Data</xsd:documentation>
-              </xsd:annotation>
-              <xsd:complexType>
-                <xsd:sequence>
-                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="BAPI_INVOICE_PLAN_ITEM" />
-                </xsd:sequence>
-              </xsd:complexType>
-            </xsd:element>
-            <xsd:element minOccurs="0" name="INVPLANITEMX">
-              <xsd:annotation>
-                <xsd:documentation>Invoicing Plan Item Data (Change Parameter)</xsd:documentation>
-              </xsd:annotation>
-              <xsd:complexType>
-                <xsd:sequence>
-                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="BAPI_INVOICE_PLAN_ITEMX" />
-                </xsd:sequence>
-              </xsd:complexType>
-            </xsd:element>
-            <xsd:element minOccurs="0" name="POACCOUNT">
-              <xsd:annotation>
-                <xsd:documentation>Account Assignment Fields</xsd:documentation>
-              </xsd:annotation>
-              <xsd:complexType>
-                <xsd:sequence>
-                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="BAPIMEPOACCOUNT" />
-                </xsd:sequence>
-              </xsd:complexType>
-            </xsd:element>
-            <xsd:element minOccurs="0" name="POACCOUNTPROFITSEGMENT">
-              <xsd:annotation>
-                <xsd:documentation>Reservation Profitability Segment: BAPI_PROFITABILITY_SEGMENT</xsd:documentation>
-              </xsd:annotation>
-              <xsd:complexType>
-                <xsd:sequence>
-                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="BAPIMEPOACCOUNTPROFITSEGMENT" />
-                </xsd:sequence>
-              </xsd:complexType>
-            </xsd:element>
-            <xsd:element minOccurs="0" name="POACCOUNTX">
-              <xsd:annotation>
-                <xsd:documentation>Account Assignment Fields (Change Parameter)</xsd:documentation>
-              </xsd:annotation>
-              <xsd:complexType>
-                <xsd:sequence>
-                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="BAPIMEPOACCOUNTX" />
-                </xsd:sequence>
-              </xsd:complexType>
-            </xsd:element>
-            <xsd:element minOccurs="0" name="POADDRDELIVERY">
-              <xsd:annotation>
-                <xsd:documentation>Addresses for Inward Delivery (Item)</xsd:documentation>
-              </xsd:annotation>
-              <xsd:complexType>
-                <xsd:sequence>
-                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="BAPIMEPOADDRDELIVERY" />
-                </xsd:sequence>
-              </xsd:complexType>
-            </xsd:element>
-            <xsd:element minOccurs="0" name="POCOMPONENTS">
-              <xsd:annotation>
-                <xsd:documentation>BAPI Structure for Components</xsd:documentation>
-              </xsd:annotation>
-              <xsd:complexType>
-                <xsd:sequence>
-                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="BAPIMEPOCOMPONENT" />
-                </xsd:sequence>
-              </xsd:complexType>
-            </xsd:element>
-            <xsd:element minOccurs="0" name="POCOMPONENTSX">
-              <xsd:annotation>
-                <xsd:documentation>Update Information for Components in BUS2012 API</xsd:documentation>
-              </xsd:annotation>
-              <xsd:complexType>
-                <xsd:sequence>
-                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="BAPIMEPOCOMPONENTX" />
-                </xsd:sequence>
-              </xsd:complexType>
-            </xsd:element>
-            <xsd:element minOccurs="0" name="POCOND">
-              <xsd:annotation>
-                <xsd:documentation>Conditions (Items)</xsd:documentation>
-              </xsd:annotation>
-              <xsd:complexType>
-                <xsd:sequence>
-                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="BAPIMEPOCOND" />
-                </xsd:sequence>
-              </xsd:complexType>
-            </xsd:element>
-            <xsd:element minOccurs="0" name="POCONDHEADER">
-              <xsd:annotation>
-                <xsd:documentation>Conditions (Header)</xsd:documentation>
-              </xsd:annotation>
-              <xsd:complexType>
-                <xsd:sequence>
-                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="BAPIMEPOCONDHEADER" />
-                </xsd:sequence>
-              </xsd:complexType>
-            </xsd:element>
-            <xsd:element minOccurs="0" name="POCONDHEADERX">
-              <xsd:annotation>
-                <xsd:documentation>Conditions (Header, Change Parameter)</xsd:documentation>
-              </xsd:annotation>
-              <xsd:complexType>
-                <xsd:sequence>
-                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="BAPIMEPOCONDHEADERX" />
-                </xsd:sequence>
-              </xsd:complexType>
-            </xsd:element>
-            <xsd:element minOccurs="0" name="POCONDX">
-              <xsd:annotation>
-                <xsd:documentation>Conditions (Items, Change Parameter)</xsd:documentation>
-              </xsd:annotation>
-              <xsd:complexType>
-                <xsd:sequence>
-                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="BAPIMEPOCONDX" />
-                </xsd:sequence>
-              </xsd:complexType>
-            </xsd:element>
-            <xsd:element minOccurs="0" name="POCONFIRMATION">
-              <xsd:annotation>
-                <xsd:documentation>Transfer Structure: Display/List - Vendor Confirmation</xsd:documentation>
-              </xsd:annotation>
-              <xsd:complexType>
-                <xsd:sequence>
-                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="BAPIEKES" />
-                </xsd:sequence>
-              </xsd:complexType>
-            </xsd:element>
-            <xsd:element minOccurs="0" name="POCONTRACTLIMITS">
-              <xsd:annotation>
-                <xsd:documentation>External Services: Contract Limits</xsd:documentation>
-              </xsd:annotation>
-              <xsd:complexType>
-                <xsd:sequence>
-                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="BAPIESUCC" />
-                </xsd:sequence>
-              </xsd:complexType>
-            </xsd:element>
-            <xsd:element minOccurs="0" name="POEXPIMPITEM">
-              <xsd:annotation>
-                <xsd:documentation>Foreign Trade: Item Data</xsd:documentation>
-              </xsd:annotation>
-              <xsd:complexType>
-                <xsd:sequence>
-                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="BAPIEIPO" />
-                </xsd:sequence>
-              </xsd:complexType>
-            </xsd:element>
-            <xsd:element minOccurs="0" name="POEXPIMPITEMX">
-              <xsd:annotation>
-                <xsd:documentation>Foreign Trade: Change Parameter: Item Data</xsd:documentation>
-              </xsd:annotation>
-              <xsd:complexType>
-                <xsd:sequence>
-                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="BAPIEIPOX" />
-                </xsd:sequence>
-              </xsd:complexType>
-            </xsd:element>
-            <xsd:element minOccurs="0" name="POHISTORY">
-              <xsd:annotation>
-                <xsd:documentation>Transfer Structure for PO History</xsd:documentation>
-              </xsd:annotation>
-              <xsd:complexType>
-                <xsd:sequence>
-                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="BAPIEKBE" />
-                </xsd:sequence>
-              </xsd:complexType>
-            </xsd:element>
-            <xsd:element minOccurs="0" name="POHISTORY_MA">
-              <xsd:annotation>
-                <xsd:documentation>Transfer Structure for Purchase Order History Account Assignment Level</xsd:documentation>
-              </xsd:annotation>
-              <xsd:complexType>
-                <xsd:sequence>
-                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="BAPIEKBE_MA" />
-                </xsd:sequence>
-              </xsd:complexType>
-            </xsd:element>
-            <xsd:element minOccurs="0" name="POHISTORY_TOTALS">
-              <xsd:annotation>
-                <xsd:documentation>Transfer Structure for PO History: Totals</xsd:documentation>
-              </xsd:annotation>
-              <xsd:complexType>
-                <xsd:sequence>
-                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="BAPIEKBES" />
-                </xsd:sequence>
-              </xsd:complexType>
-            </xsd:element>
-            <xsd:element minOccurs="0" name="POITEM">
-              <xsd:annotation>
-                <xsd:documentation>Item Data</xsd:documentation>
-              </xsd:annotation>
-              <xsd:complexType>
-                <xsd:sequence>
-                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="BAPIMEPOITEM" />
-                </xsd:sequence>
-              </xsd:complexType>
-            </xsd:element>
-            <xsd:element minOccurs="0" name="POITEMX">
-              <xsd:annotation>
-                <xsd:documentation>Item Data (Change Parameter)</xsd:documentation>
-              </xsd:annotation>
-              <xsd:complexType>
-                <xsd:sequence>
-                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="BAPIMEPOITEMX" />
-                </xsd:sequence>
-              </xsd:complexType>
-            </xsd:element>
-            <xsd:element minOccurs="0" name="POLIMITS">
-              <xsd:annotation>
-                <xsd:documentation>External Services: Limits</xsd:documentation>
-              </xsd:annotation>
-              <xsd:complexType>
-                <xsd:sequence>
-                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="BAPIESUHC" />
-                </xsd:sequence>
-              </xsd:complexType>
-            </xsd:element>
-            <xsd:element minOccurs="0" name="POPARTNER">
-              <xsd:annotation>
-                <xsd:documentation>Partner</xsd:documentation>
-              </xsd:annotation>
-              <xsd:complexType>
-                <xsd:sequence>
-                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="BAPIEKKOP" />
-                </xsd:sequence>
-              </xsd:complexType>
-            </xsd:element>
-            <xsd:element minOccurs="0" name="POSCHEDULE">
-              <xsd:annotation>
-                <xsd:documentation>Delivery Schedule</xsd:documentation>
-              </xsd:annotation>
-              <xsd:complexType>
-                <xsd:sequence>
-                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="BAPIMEPOSCHEDULE" />
-                </xsd:sequence>
-              </xsd:complexType>
-            </xsd:element>
-            <xsd:element minOccurs="0" name="POSCHEDULEX">
-              <xsd:annotation>
-                <xsd:documentation>Delivery Schedule (Change Parameter)</xsd:documentation>
-              </xsd:annotation>
-              <xsd:complexType>
-                <xsd:sequence>
-                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="BAPIMEPOSCHEDULX" />
-                </xsd:sequence>
-              </xsd:complexType>
-            </xsd:element>
-            <xsd:element minOccurs="0" name="POSERVICES">
-              <xsd:annotation>
-                <xsd:documentation>External Services: Service Lines</xsd:documentation>
-              </xsd:annotation>
-              <xsd:complexType>
-                <xsd:sequence>
-                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="BAPIESLLC" />
-                </xsd:sequence>
-              </xsd:complexType>
-            </xsd:element>
-            <xsd:element minOccurs="0" name="POSERVICESTEXT">
-              <xsd:annotation>
-                <xsd:documentation>External Services: Service Long Text</xsd:documentation>
-              </xsd:annotation>
-              <xsd:complexType>
-                <xsd:sequence>
-                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="BAPIESLLTX" />
-                </xsd:sequence>
-              </xsd:complexType>
-            </xsd:element>
-            <xsd:element minOccurs="0" name="POSHIPPING">
-              <xsd:annotation>
-                <xsd:documentation>BAPI Shipping Data for Stock Transport Orders</xsd:documentation>
-              </xsd:annotation>
-              <xsd:complexType>
-                <xsd:sequence>
-                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="BAPIITEMSHIP" />
-                </xsd:sequence>
-              </xsd:complexType>
-            </xsd:element>
-            <xsd:element minOccurs="0" name="POSHIPPINGEXP">
-              <xsd:annotation>
-                <xsd:documentation>Export Structure for Shipping Data</xsd:documentation>
-              </xsd:annotation>
-              <xsd:complexType>
-                <xsd:sequence>
-                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="BAPIMEPOSHIPPEXP" />
-                </xsd:sequence>
-              </xsd:complexType>
-            </xsd:element>
-            <xsd:element minOccurs="0" name="POSHIPPINGX">
-              <xsd:annotation>
-                <xsd:documentation>BAPI Shipping Data Change Parameter</xsd:documentation>
-              </xsd:annotation>
-              <xsd:complexType>
-                <xsd:sequence>
-                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="BAPIITEMSHIPX" />
-                </xsd:sequence>
-              </xsd:complexType>
-            </xsd:element>
-            <xsd:element minOccurs="0" name="POSRVACCESSVALUES">
-              <xsd:annotation>
-                <xsd:documentation>External Services: Account Assignment Distribution for Service Lines</xsd:documentation>
-              </xsd:annotation>
-              <xsd:complexType>
-                <xsd:sequence>
-                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="BAPIESKLC" />
-                </xsd:sequence>
-              </xsd:complexType>
-            </xsd:element>
-            <xsd:element minOccurs="0" name="POTEXTHEADER">
-              <xsd:annotation>
-                <xsd:documentation>Header Texts</xsd:documentation>
-              </xsd:annotation>
-              <xsd:complexType>
-                <xsd:sequence>
-                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="BAPIMEPOTEXTHEADER" />
-                </xsd:sequence>
-              </xsd:complexType>
-            </xsd:element>
-            <xsd:element minOccurs="0" name="POTEXTITEM">
-              <xsd:annotation>
-                <xsd:documentation>Item Texts</xsd:documentation>
-              </xsd:annotation>
-              <xsd:complexType>
-                <xsd:sequence>
-                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="BAPIMEPOTEXT" />
-                </xsd:sequence>
-              </xsd:complexType>
-            </xsd:element>
-            <xsd:element minOccurs="0" name="RETURN">
-              <xsd:annotation>
-                <xsd:documentation>Return Parameter</xsd:documentation>
-              </xsd:annotation>
-              <xsd:complexType>
-                <xsd:sequence>
-                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="BAPIRET2" />
-                </xsd:sequence>
-              </xsd:complexType>
-            </xsd:element>
-            <xsd:element minOccurs="0" name="SERIALNUMBER">
-              <xsd:annotation>
-                <xsd:documentation>Serial Numbers in Purchase Order BAPIs</xsd:documentation>
-              </xsd:annotation>
-              <xsd:complexType>
-                <xsd:sequence>
-                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="BAPIMEPOSERIALNO" />
-                </xsd:sequence>
-              </xsd:complexType>
-            </xsd:element>
-            <xsd:element minOccurs="0" name="SERIALNUMBERX">
-              <xsd:annotation>
-                <xsd:documentation>Change Parameter: Serial Number in Purchase Order BAPIs</xsd:documentation>
-              </xsd:annotation>
-              <xsd:complexType>
-                <xsd:sequence>
-                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="BAPIMEPOSERIALNOX" />
+                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="rfc:BAPIMEPOSERIALNOX" />
                 </xsd:sequence>
               </xsd:complexType>
             </xsd:element>
@@ -980,7 +689,7 @@
         </xsd:restriction>
       </xsd:simpleType>
       <xsd:simpleType name="time">
-        <xsd:union memberTypes="xsd:time genericTime" />
+        <xsd:union xmlns="urn:sap-com:document:sap:rfc:functions" memberTypes="xsd:time rfc:genericTime" />
       </xsd:simpleType>
       <xsd:simpleType name="genericTime">
         <xsd:restriction base="xsd:string">
@@ -988,8 +697,268 @@
         </xsd:restriction>
       </xsd:simpleType>
       <xsd:simpleType name="date">
-        <xsd:union memberTypes="xsd:date genericDate" />
+        <xsd:union xmlns="urn:sap-com:document:sap:rfc:functions" memberTypes="xsd:date rfc:genericDate" />
       </xsd:simpleType>
+      <xsd:complexType name="_-NFM_-BAPIDOCITM">
+        <xsd:annotation>
+          <xsd:documentation>/NFM/: BAPI Communication Structure NF Document Item Data</xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+          <xsd:element minOccurs="0" name="DATA_INDEX" type="xsd:integer">
+            <xsd:annotation>
+              <xsd:documentation>Pointer to the table entry for another structure</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="DOC_NUMBER">
+            <xsd:annotation>
+              <xsd:documentation>Document Number</xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:maxLength value="10" />
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="ITM_NUMBER">
+            <xsd:annotation>
+              <xsd:documentation>Document Item Number</xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:maxLength value="6" />
+                <xsd:pattern value="\d+" />
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="COMPCODE">
+            <xsd:annotation>
+              <xsd:documentation>Company Code</xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:maxLength value="4" />
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="FISCYEAR">
+            <xsd:annotation>
+              <xsd:documentation>Fiscal Year</xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:maxLength value="4" />
+                <xsd:pattern value="\d+" />
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="NFMKEY">
+            <xsd:annotation>
+              <xsd:documentation>NF Key</xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:maxLength value="3" />
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="RATEDETKEY">
+            <xsd:annotation>
+              <xsd:documentation>Rate Determination Key</xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:maxLength value="2" />
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="BASEKEY">
+            <xsd:annotation>
+              <xsd:documentation>Base Key</xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:maxLength value="2" />
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="EXCHANGEKEY">
+            <xsd:annotation>
+              <xsd:documentation>Exchange Key for NF Processing</xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:maxLength value="3" />
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="RATEDETDAT" type="rfc:date">
+            <xsd:annotation>
+              <xsd:documentation>Key Date for NF Rate Determination</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="RATEMONTH">
+            <xsd:annotation>
+              <xsd:documentation>Rate Month for NF Metal</xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:maxLength value="6" />
+                <xsd:pattern value="\d+" />
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="ACTRATEDAT" type="rfc:date">
+            <xsd:annotation>
+              <xsd:documentation>Actual Rate Date of NF Metal</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="RATE">
+            <xsd:annotation>
+              <xsd:documentation>Rate in Rate Currency (J_1NNCU)</xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:decimal">
+                <xsd:totalDigits value="13" />
+                <xsd:fractionDigits value="2" />
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="RATECURKY">
+            <xsd:annotation>
+              <xsd:documentation>Rate Currency Key</xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:maxLength value="5" />
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="RATECURKYISO">
+            <xsd:annotation>
+              <xsd:documentation>ISO currency code</xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:maxLength value="3" />
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="RATEDOCCUR">
+            <xsd:annotation>
+              <xsd:documentation>Rate in Document Currency</xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:decimal">
+                <xsd:totalDigits value="15" />
+                <xsd:fractionDigits value="2" />
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="INVOICEBL">
+            <xsd:annotation>
+              <xsd:documentation>NF Billing / Invoice Block</xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:maxLength value="2" />
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="BVALDOCCUR">
+            <xsd:annotation>
+              <xsd:documentation>Base Value in Document Currency</xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:decimal">
+                <xsd:totalDigits value="15" />
+                <xsd:fractionDigits value="2" />
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="BVALCURKYD">
+            <xsd:annotation>
+              <xsd:documentation>Base Value Currency Key (Document Currency)</xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:maxLength value="5" />
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="BVALCURKYDISO">
+            <xsd:annotation>
+              <xsd:documentation>ISO currency code</xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:maxLength value="3" />
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="NETRATE">
+            <xsd:annotation>
+              <xsd:documentation>Net Rate</xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:decimal">
+                <xsd:totalDigits value="13" />
+                <xsd:fractionDigits value="2" />
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="PROVIDER">
+            <xsd:annotation>
+              <xsd:documentation>NF Metal Provider</xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:maxLength value="10" />
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="VENDORCOV">
+            <xsd:annotation>
+              <xsd:documentation>NF Metal Vendor for Coverage</xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:maxLength value="10" />
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="COVERAGEKY">
+            <xsd:annotation>
+              <xsd:documentation>Coverage Key for NF Metal</xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:maxLength value="10" />
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="POSTINGDAYS">
+            <xsd:annotation>
+              <xsd:documentation>Number of Posting Days</xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:maxLength value="3" />
+                <xsd:pattern value="\d+" />
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="UPDTYPE">
+            <xsd:annotation>
+              <xsd:documentation>Type of Change</xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:maxLength value="1" />
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+        </xsd:sequence>
+      </xsd:complexType>
       <xsd:complexType name="BAPI_INVOICE_PLAN_ITEM">
         <xsd:annotation>
           <xsd:documentation>Purchasing: Invoice Plan Item</xsd:documentation>
@@ -1057,7 +1026,7 @@
               </xsd:restriction>
             </xsd:simpleType>
           </xsd:element>
-          <xsd:element minOccurs="0" name="SETT_DATE_FROM" type="date">
+          <xsd:element minOccurs="0" name="SETT_DATE_FROM" type="rfc:date">
             <xsd:annotation>
               <xsd:documentation>Settlement date for deadline</xsd:documentation>
             </xsd:annotation>
@@ -1145,7 +1114,7 @@
               </xsd:restriction>
             </xsd:simpleType>
           </xsd:element>
-          <xsd:element minOccurs="0" name="SETT_DATE_TO" type="date">
+          <xsd:element minOccurs="0" name="SETT_DATE_TO" type="rfc:date">
             <xsd:annotation>
               <xsd:documentation>Settlement date for deadline</xsd:documentation>
             </xsd:annotation>
@@ -1160,7 +1129,7 @@
               </xsd:restriction>
             </xsd:simpleType>
           </xsd:element>
-          <xsd:element minOccurs="0" name="BILL_DATE" type="date">
+          <xsd:element minOccurs="0" name="BILL_DATE" type="rfc:date">
             <xsd:annotation>
               <xsd:documentation>Billing Date for Billing Index and Printout</xsd:documentation>
             </xsd:annotation>
@@ -1360,7 +1329,7 @@
               </xsd:restriction>
             </xsd:simpleType>
           </xsd:element>
-          <xsd:element minOccurs="0" name="CONPRICDAT" type="date">
+          <xsd:element minOccurs="0" name="CONPRICDAT" type="rfc:date">
             <xsd:annotation>
               <xsd:documentation>Condition pricing date</xsd:documentation>
             </xsd:annotation>
@@ -2764,7 +2733,7 @@
               </xsd:restriction>
             </xsd:simpleType>
           </xsd:element>
-          <xsd:element minOccurs="0" name="PRICE_DATE" type="date">
+          <xsd:element minOccurs="0" name="PRICE_DATE" type="rfc:date">
             <xsd:annotation>
               <xsd:documentation>Date of Price Determination</xsd:documentation>
             </xsd:annotation>
@@ -2862,7 +2831,7 @@
               </xsd:restriction>
             </xsd:simpleType>
           </xsd:element>
-          <xsd:element minOccurs="0" name="GR_TO_DATE" type="date">
+          <xsd:element minOccurs="0" name="GR_TO_DATE" type="rfc:date">
             <xsd:annotation>
               <xsd:documentation>Latest Possible Goods Receipt</xsd:documentation>
             </xsd:annotation>
@@ -3172,7 +3141,7 @@
               </xsd:restriction>
             </xsd:simpleType>
           </xsd:element>
-          <xsd:element minOccurs="0" name="UNTIL_DATE" type="date">
+          <xsd:element minOccurs="0" name="UNTIL_DATE" type="rfc:date">
             <xsd:annotation>
               <xsd:documentation>Inflation Index Date</xsd:documentation>
             </xsd:annotation>
@@ -3578,7 +3547,7 @@
               </xsd:restriction>
             </xsd:simpleType>
           </xsd:element>
-          <xsd:element minOccurs="0" name="DOWNPAY_DUEDATE" type="date">
+          <xsd:element minOccurs="0" name="DOWNPAY_DUEDATE" type="rfc:date">
             <xsd:annotation>
               <xsd:documentation>Due Date for Down Payment</xsd:documentation>
             </xsd:annotation>
@@ -4506,7 +4475,7 @@
               </xsd:restriction>
             </xsd:simpleType>
           </xsd:element>
-          <xsd:element minOccurs="0" name="CONPRICDAT" type="date">
+          <xsd:element minOccurs="0" name="CONPRICDAT" type="rfc:date">
             <xsd:annotation>
               <xsd:documentation>Condition pricing date</xsd:documentation>
             </xsd:annotation>
@@ -5171,7 +5140,7 @@
               </xsd:restriction>
             </xsd:simpleType>
           </xsd:element>
-          <xsd:element minOccurs="0" name="CREAT_DATE" type="date">
+          <xsd:element minOccurs="0" name="CREAT_DATE" type="rfc:date">
             <xsd:annotation>
               <xsd:documentation>Date on Which Record Was Created</xsd:documentation>
             </xsd:annotation>
@@ -5441,7 +5410,7 @@
               </xsd:restriction>
             </xsd:simpleType>
           </xsd:element>
-          <xsd:element minOccurs="0" name="REF_DATE" type="date">
+          <xsd:element minOccurs="0" name="REF_DATE" type="rfc:date">
             <xsd:annotation>
               <xsd:documentation>Reference date for settlement</xsd:documentation>
             </xsd:annotation>
@@ -5962,12 +5931,12 @@
               </xsd:restriction>
             </xsd:simpleType>
           </xsd:element>
-          <xsd:element minOccurs="0" name="CR_ON" type="date">
+          <xsd:element minOccurs="0" name="CR_ON" type="rfc:date">
             <xsd:annotation>
               <xsd:documentation>Date on Which Record Was Created</xsd:documentation>
             </xsd:annotation>
           </xsd:element>
-          <xsd:element minOccurs="0" name="REC_TIME" type="time">
+          <xsd:element minOccurs="0" name="REC_TIME" type="rfc:time">
             <xsd:annotation>
               <xsd:documentation>Entry time</xsd:documentation>
             </xsd:annotation>
@@ -5982,12 +5951,12 @@
               </xsd:restriction>
             </xsd:simpleType>
           </xsd:element>
-          <xsd:element minOccurs="0" name="RELEASE_DATE" type="date">
+          <xsd:element minOccurs="0" name="RELEASE_DATE" type="rfc:date">
             <xsd:annotation>
               <xsd:documentation>Date of release</xsd:documentation>
             </xsd:annotation>
           </xsd:element>
-          <xsd:element minOccurs="0" name="RELEASE_TIME" type="time">
+          <xsd:element minOccurs="0" name="RELEASE_TIME" type="rfc:time">
             <xsd:annotation>
               <xsd:documentation>Time of release</xsd:documentation>
             </xsd:annotation>
@@ -6002,12 +5971,12 @@
               </xsd:restriction>
             </xsd:simpleType>
           </xsd:element>
-          <xsd:element minOccurs="0" name="RELEASEDATE_PUR" type="date">
+          <xsd:element minOccurs="0" name="RELEASEDATE_PUR" type="rfc:date">
             <xsd:annotation>
               <xsd:documentation>Date of buyer approval</xsd:documentation>
             </xsd:annotation>
           </xsd:element>
-          <xsd:element minOccurs="0" name="RELEASETIME_PUR" type="time">
+          <xsd:element minOccurs="0" name="RELEASETIME_PUR" type="rfc:time">
             <xsd:annotation>
               <xsd:documentation>Time of buyer approval</xsd:documentation>
             </xsd:annotation>
@@ -6094,7 +6063,7 @@
               </xsd:restriction>
             </xsd:simpleType>
           </xsd:element>
-          <xsd:element minOccurs="0" name="POST_DATE" type="date">
+          <xsd:element minOccurs="0" name="POST_DATE" type="rfc:date">
             <xsd:annotation>
               <xsd:documentation>Posting date of version</xsd:documentation>
             </xsd:annotation>
@@ -6230,7 +6199,7 @@
               </xsd:restriction>
             </xsd:simpleType>
           </xsd:element>
-          <xsd:element minOccurs="0" name="PSTNG_DATE" type="date">
+          <xsd:element minOccurs="0" name="PSTNG_DATE" type="rfc:date">
             <xsd:annotation>
               <xsd:documentation>Posting Date in the Document</xsd:documentation>
             </xsd:annotation>
@@ -6394,12 +6363,12 @@
               </xsd:restriction>
             </xsd:simpleType>
           </xsd:element>
-          <xsd:element minOccurs="0" name="ENTRY_DATE" type="date">
+          <xsd:element minOccurs="0" name="ENTRY_DATE" type="rfc:date">
             <xsd:annotation>
               <xsd:documentation>Day On Which Accounting Document Was Entered</xsd:documentation>
             </xsd:annotation>
           </xsd:element>
-          <xsd:element minOccurs="0" name="ENTRY_TIME" type="time">
+          <xsd:element minOccurs="0" name="ENTRY_TIME" type="rfc:time">
             <xsd:annotation>
               <xsd:documentation>Time of Entry</xsd:documentation>
             </xsd:annotation>
@@ -6528,7 +6497,7 @@
               </xsd:restriction>
             </xsd:simpleType>
           </xsd:element>
-          <xsd:element minOccurs="0" name="DOC_DATE" type="date">
+          <xsd:element minOccurs="0" name="DOC_DATE" type="rfc:date">
             <xsd:annotation>
               <xsd:documentation>Document Date in Document</xsd:documentation>
             </xsd:annotation>
@@ -8438,17 +8407,17 @@
               </xsd:restriction>
             </xsd:simpleType>
           </xsd:element>
-          <xsd:element minOccurs="0" name="DATE" type="date">
+          <xsd:element minOccurs="0" name="DATE" type="rfc:date">
             <xsd:annotation>
               <xsd:documentation>Date</xsd:documentation>
             </xsd:annotation>
           </xsd:element>
-          <xsd:element minOccurs="0" name="BEGINTIME" type="time">
+          <xsd:element minOccurs="0" name="BEGINTIME" type="rfc:time">
             <xsd:annotation>
               <xsd:documentation>Start Time</xsd:documentation>
             </xsd:annotation>
           </xsd:element>
-          <xsd:element minOccurs="0" name="ENDTIME" type="time">
+          <xsd:element minOccurs="0" name="ENDTIME" type="rfc:time">
             <xsd:annotation>
               <xsd:documentation>End Time</xsd:documentation>
             </xsd:annotation>
@@ -8601,12 +8570,12 @@
               </xsd:restriction>
             </xsd:simpleType>
           </xsd:element>
-          <xsd:element minOccurs="0" name="PER_SDATE" type="date">
+          <xsd:element minOccurs="0" name="PER_SDATE" type="rfc:date">
             <xsd:annotation>
               <xsd:documentation>Period of Performance Start Date</xsd:documentation>
             </xsd:annotation>
           </xsd:element>
-          <xsd:element minOccurs="0" name="PER_EDATE" type="date">
+          <xsd:element minOccurs="0" name="PER_EDATE" type="rfc:date">
             <xsd:annotation>
               <xsd:documentation>Period of Performance End Date</xsd:documentation>
             </xsd:annotation>
@@ -9485,12 +9454,12 @@
               </xsd:restriction>
             </xsd:simpleType>
           </xsd:element>
-          <xsd:element minOccurs="0" name="DELIV_DATE" type="date">
+          <xsd:element minOccurs="0" name="DELIV_DATE" type="rfc:date">
             <xsd:annotation>
               <xsd:documentation>Delivery Date of Vendor Confirmation</xsd:documentation>
             </xsd:annotation>
           </xsd:element>
-          <xsd:element minOccurs="0" name="DELIV_TIME" type="time">
+          <xsd:element minOccurs="0" name="DELIV_TIME" type="rfc:time">
             <xsd:annotation>
               <xsd:documentation>Delivery Date Time-Spot in Vendor Confirmation</xsd:documentation>
             </xsd:annotation>
@@ -9577,12 +9546,12 @@
               </xsd:restriction>
             </xsd:simpleType>
           </xsd:element>
-          <xsd:element minOccurs="0" name="HANDOVERDATE" type="date">
+          <xsd:element minOccurs="0" name="HANDOVERDATE" type="rfc:date">
             <xsd:annotation>
               <xsd:documentation>Handover Date at the Handover Location</xsd:documentation>
             </xsd:annotation>
           </xsd:element>
-          <xsd:element minOccurs="0" name="HANDOVERTIME" type="time">
+          <xsd:element minOccurs="0" name="HANDOVERTIME" type="rfc:time">
             <xsd:annotation>
               <xsd:documentation>Handover time at the handover location</xsd:documentation>
             </xsd:annotation>
@@ -9866,12 +9835,12 @@
               </xsd:restriction>
             </xsd:simpleType>
           </xsd:element>
-          <xsd:element minOccurs="0" name="START_DATE" type="date">
+          <xsd:element minOccurs="0" name="START_DATE" type="rfc:date">
             <xsd:annotation>
               <xsd:documentation>Start date for billing plan/invoice plan</xsd:documentation>
             </xsd:annotation>
           </xsd:element>
-          <xsd:element minOccurs="0" name="END_DATE" type="date">
+          <xsd:element minOccurs="0" name="END_DATE" type="rfc:date">
             <xsd:annotation>
               <xsd:documentation>End date billing plan/invoice plan</xsd:documentation>
             </xsd:annotation>
@@ -9937,7 +9906,7 @@
               </xsd:restriction>
             </xsd:simpleType>
           </xsd:element>
-          <xsd:element minOccurs="0" name="DATES_FROM" type="date">
+          <xsd:element minOccurs="0" name="DATES_FROM" type="rfc:date">
             <xsd:annotation>
               <xsd:documentation>Dates from</xsd:documentation>
             </xsd:annotation>
@@ -9982,7 +9951,7 @@
               </xsd:restriction>
             </xsd:simpleType>
           </xsd:element>
-          <xsd:element minOccurs="0" name="DATES_TO" type="date">
+          <xsd:element minOccurs="0" name="DATES_TO" type="rfc:date">
             <xsd:annotation>
               <xsd:documentation>Dates to</xsd:documentation>
             </xsd:annotation>
@@ -10088,12 +10057,12 @@
               </xsd:restriction>
             </xsd:simpleType>
           </xsd:element>
-          <xsd:element minOccurs="0" name="DELIV_TIME" type="time">
+          <xsd:element minOccurs="0" name="DELIV_TIME" type="rfc:time">
             <xsd:annotation>
               <xsd:documentation>Delivery Date Time-Spot</xsd:documentation>
             </xsd:annotation>
           </xsd:element>
-          <xsd:element minOccurs="0" name="STAT_DATE" type="date">
+          <xsd:element minOccurs="0" name="STAT_DATE" type="rfc:date">
             <xsd:annotation>
               <xsd:documentation>Statistics-Relevant Delivery Date</xsd:documentation>
             </xsd:annotation>
@@ -10119,7 +10088,7 @@
               </xsd:restriction>
             </xsd:simpleType>
           </xsd:element>
-          <xsd:element minOccurs="0" name="PO_DATE" type="date">
+          <xsd:element minOccurs="0" name="PO_DATE" type="rfc:date">
             <xsd:annotation>
               <xsd:documentation>Order date of schedule line</xsd:documentation>
             </xsd:annotation>
@@ -10134,42 +10103,42 @@
               </xsd:restriction>
             </xsd:simpleType>
           </xsd:element>
-          <xsd:element minOccurs="0" name="MS_DATE" type="date">
+          <xsd:element minOccurs="0" name="MS_DATE" type="rfc:date">
             <xsd:annotation>
               <xsd:documentation>Material Availability Date</xsd:documentation>
             </xsd:annotation>
           </xsd:element>
-          <xsd:element minOccurs="0" name="MS_TIME" type="time">
+          <xsd:element minOccurs="0" name="MS_TIME" type="rfc:time">
             <xsd:annotation>
               <xsd:documentation>Material Staging Time (Local, Relating to a Plant)</xsd:documentation>
             </xsd:annotation>
           </xsd:element>
-          <xsd:element minOccurs="0" name="LOAD_DATE" type="date">
+          <xsd:element minOccurs="0" name="LOAD_DATE" type="rfc:date">
             <xsd:annotation>
               <xsd:documentation>Loading Date</xsd:documentation>
             </xsd:annotation>
           </xsd:element>
-          <xsd:element minOccurs="0" name="LOAD_TIME" type="time">
+          <xsd:element minOccurs="0" name="LOAD_TIME" type="rfc:time">
             <xsd:annotation>
               <xsd:documentation>Loading Time (Local Time Relating to a Shipping Point)</xsd:documentation>
             </xsd:annotation>
           </xsd:element>
-          <xsd:element minOccurs="0" name="TP_DATE" type="date">
+          <xsd:element minOccurs="0" name="TP_DATE" type="rfc:date">
             <xsd:annotation>
               <xsd:documentation>Transportation Planning Date</xsd:documentation>
             </xsd:annotation>
           </xsd:element>
-          <xsd:element minOccurs="0" name="TP_TIME" type="time">
+          <xsd:element minOccurs="0" name="TP_TIME" type="rfc:time">
             <xsd:annotation>
               <xsd:documentation>Transp. Planning Time (Local, Relating to a Shipping Point)</xsd:documentation>
             </xsd:annotation>
           </xsd:element>
-          <xsd:element minOccurs="0" name="GI_DATE" type="date">
+          <xsd:element minOccurs="0" name="GI_DATE" type="rfc:date">
             <xsd:annotation>
               <xsd:documentation>Goods Issue Date</xsd:documentation>
             </xsd:annotation>
           </xsd:element>
-          <xsd:element minOccurs="0" name="GI_TIME" type="time">
+          <xsd:element minOccurs="0" name="GI_TIME" type="rfc:time">
             <xsd:annotation>
               <xsd:documentation>Time of Goods Issue (Local, Relating to a Plant)</xsd:documentation>
             </xsd:annotation>
@@ -10194,12 +10163,12 @@
               </xsd:restriction>
             </xsd:simpleType>
           </xsd:element>
-          <xsd:element minOccurs="0" name="GR_END_DATE" type="date">
+          <xsd:element minOccurs="0" name="GR_END_DATE" type="rfc:date">
             <xsd:annotation>
               <xsd:documentation>Goods Receipt End Date</xsd:documentation>
             </xsd:annotation>
           </xsd:element>
-          <xsd:element minOccurs="0" name="GR_END_TIME" type="time">
+          <xsd:element minOccurs="0" name="GR_END_TIME" type="rfc:time">
             <xsd:annotation>
               <xsd:documentation>Goods Receipt End Time (Local, Relating to a Plant)</xsd:documentation>
             </xsd:annotation>
@@ -10215,7 +10184,7 @@
               </xsd:restriction>
             </xsd:simpleType>
           </xsd:element>
-          <xsd:element minOccurs="0" name="COM_DATE" type="date">
+          <xsd:element minOccurs="0" name="COM_DATE" type="rfc:date">
             <xsd:annotation>
               <xsd:documentation>Committed date</xsd:documentation>
             </xsd:annotation>
@@ -10230,12 +10199,12 @@
               </xsd:restriction>
             </xsd:simpleType>
           </xsd:element>
-          <xsd:element minOccurs="0" name="HANDOVERDATE" type="date">
+          <xsd:element minOccurs="0" name="HANDOVERDATE" type="rfc:date">
             <xsd:annotation>
               <xsd:documentation>Handover Date at the Handover Location</xsd:documentation>
             </xsd:annotation>
           </xsd:element>
-          <xsd:element minOccurs="0" name="HANDOVERTIME" type="time">
+          <xsd:element minOccurs="0" name="HANDOVERTIME" type="rfc:time">
             <xsd:annotation>
               <xsd:documentation>Handover time at the handover location</xsd:documentation>
             </xsd:annotation>
@@ -10341,7 +10310,7 @@
               </xsd:restriction>
             </xsd:simpleType>
           </xsd:element>
-          <xsd:element minOccurs="0" name="REQ_DATE" type="date">
+          <xsd:element minOccurs="0" name="REQ_DATE" type="rfc:date">
             <xsd:annotation>
               <xsd:documentation>Requirements date for the component</xsd:documentation>
             </xsd:annotation>
@@ -13165,7 +13134,7 @@
           <xsd:documentation>Version Management</xsd:documentation>
         </xsd:annotation>
         <xsd:sequence>
-          <xsd:element minOccurs="0" name="POST_DATE" type="date">
+          <xsd:element minOccurs="0" name="POST_DATE" type="rfc:date">
             <xsd:annotation>
               <xsd:documentation>Posting date of version</xsd:documentation>
             </xsd:annotation>
@@ -13542,7 +13511,7 @@
               </xsd:restriction>
             </xsd:simpleType>
           </xsd:element>
-          <xsd:element minOccurs="0" name="DEL_CREATE_DATE" type="date">
+          <xsd:element minOccurs="0" name="DEL_CREATE_DATE" type="rfc:date">
             <xsd:annotation>
               <xsd:documentation>Delivery Creation Date</xsd:documentation>
             </xsd:annotation>
@@ -14392,7 +14361,7 @@
               </xsd:restriction>
             </xsd:simpleType>
           </xsd:element>
-          <xsd:element minOccurs="0" name="CREAT_DATE" type="date">
+          <xsd:element minOccurs="0" name="CREAT_DATE" type="rfc:date">
             <xsd:annotation>
               <xsd:documentation>Date on Which Record Was Created</xsd:documentation>
             </xsd:annotation>
@@ -14574,22 +14543,22 @@
               </xsd:restriction>
             </xsd:simpleType>
           </xsd:element>
-          <xsd:element minOccurs="0" name="DOC_DATE" type="date">
+          <xsd:element minOccurs="0" name="DOC_DATE" type="rfc:date">
             <xsd:annotation>
               <xsd:documentation>Purchasing Document Date</xsd:documentation>
             </xsd:annotation>
           </xsd:element>
-          <xsd:element minOccurs="0" name="VPER_START" type="date">
+          <xsd:element minOccurs="0" name="VPER_START" type="rfc:date">
             <xsd:annotation>
               <xsd:documentation>Start of Validity Period</xsd:documentation>
             </xsd:annotation>
           </xsd:element>
-          <xsd:element minOccurs="0" name="VPER_END" type="date">
+          <xsd:element minOccurs="0" name="VPER_END" type="rfc:date">
             <xsd:annotation>
               <xsd:documentation>End of Validity Period</xsd:documentation>
             </xsd:annotation>
           </xsd:element>
-          <xsd:element minOccurs="0" name="WARRANTY" type="date">
+          <xsd:element minOccurs="0" name="WARRANTY" type="rfc:date">
             <xsd:annotation>
               <xsd:documentation>Warranty Date</xsd:documentation>
             </xsd:annotation>
@@ -14604,7 +14573,7 @@
               </xsd:restriction>
             </xsd:simpleType>
           </xsd:element>
-          <xsd:element minOccurs="0" name="QUOT_DATE" type="date">
+          <xsd:element minOccurs="0" name="QUOT_DATE" type="rfc:date">
             <xsd:annotation>
               <xsd:documentation>Quotation Submission Date</xsd:documentation>
             </xsd:annotation>
@@ -14874,7 +14843,7 @@
               </xsd:restriction>
             </xsd:simpleType>
           </xsd:element>
-          <xsd:element minOccurs="0" name="DOWNPAY_DUEDATE" type="date">
+          <xsd:element minOccurs="0" name="DOWNPAY_DUEDATE" type="rfc:date">
             <xsd:annotation>
               <xsd:documentation>Due Date for Down Payment</xsd:documentation>
             </xsd:annotation>
@@ -15749,21 +15718,28 @@
       </xsd:complexType>
     </xsd:schema>
   </wsdl:types>
-  <wsdl:message name="BAPI_PO_CHANGE.Output">
-    <wsdl:part xmlns:rfc="urn:sap-com:document:sap:rfc:functions" name="parameters" element="rfc:BAPI_PO_CHANGE.Response" />
+  <wsdl:message name="rfc.Z_MMRFC_MODIFICAR_OC.Input">
+    <wsdl:documentation />
+    <wsdl:part name="parameters" element="rfc:Z_MMRFC_MODIFICAR_OC" />
   </wsdl:message>
-  <wsdl:message name="BAPI_PO_CHANGE.Input">
-    <wsdl:part xmlns:rfc="urn:sap-com:document:sap:rfc:functions" name="parameters" element="rfc:BAPI_PO_CHANGE" />
+  <wsdl:message name="rfc.Z_MMRFC_MODIFICAR_OC.Output">
+    <wsdl:documentation />
+    <wsdl:part name="parameters" element="rfc:Z_MMRFC_MODIFICAR_OC.Response" />
   </wsdl:message>
-  <wsdl:portType name="BAPI_PO_CHANGE.PortType">
-    <wsdl:operation name="BAPI_PO_CHANGE">
-      <wsdl:input xmlns:rfc="urn:sap-com:document:sap:rfc:functions" message="rfc:BAPI_PO_CHANGE.Input" />
-      <wsdl:output xmlns:rfc="urn:sap-com:document:sap:rfc:functions" message="rfc:BAPI_PO_CHANGE.Output" />
+  <wsdl:portType name="SI_MMRFC_MODIFICAR_OC">
+    <wsdl:documentation />
+    <wsdl:operation name="SI_MMRFC_MODIFICAR_OC">
+      <wsdl:documentation />
+      <wsp:Policy>
+        <wsp:PolicyReference URI="#OP_SI_MMRFC_MODIFICAR_OC" />
+      </wsp:Policy>
+      <wsdl:input message="p1:rfc.Z_MMRFC_MODIFICAR_OC.Input" />
+      <wsdl:output message="p1:rfc.Z_MMRFC_MODIFICAR_OC.Output" />
     </wsdl:operation>
   </wsdl:portType>
-  <wsdl:binding xmlns:rfc="urn:sap-com:document:sap:rfc:functions" name="BAPI_PO_CHANGE.PortTypeBinding" type="rfc:BAPI_PO_CHANGE.PortType">
+  <wsdl:binding name="SI_MMRFC_MODIFICAR_OCBinding" type="p1:SI_MMRFC_MODIFICAR_OC">
     <binding transport="http://schemas.xmlsoap.org/soap/http" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
-    <wsdl:operation name="BAPI_PO_CHANGE">
+    <wsdl:operation name="SI_MMRFC_MODIFICAR_OC">
       <operation soapAction="http://sap.com/xi/WebService/soap1.1" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
       <wsdl:input>
         <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
@@ -15773,12 +15749,12 @@
       </wsdl:output>
     </wsdl:operation>
   </wsdl:binding>
-  <wsdl:service name="BAPI_PO_CHANGEService">
-    <wsdl:port xmlns:rfc="urn:sap-com:document:sap:rfc:functions" name="HTTP_Port" binding="rfc:BAPI_PO_CHANGE.PortTypeBinding">
-      <address location="http://gslopidevqa00.molinosagro.ad:50300/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=BAPI_PO_CHANGE&amp;interfaceNamespace=urn%3Asap-com%3Adocument%3Asap%3Arfc%3Afunctions" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+  <wsdl:service name="SI_MMRFC_MODIFICAR_OCService">
+    <wsdl:port name="HTTP_Port" binding="p1:SI_MMRFC_MODIFICAR_OCBinding">
+      <address location="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MMRFC_MODIFICAR_OC&amp;interfaceNamespace=urn%3AOPERACIONES" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
     </wsdl:port>
-    <wsdl:port xmlns:rfc="urn:sap-com:document:sap:rfc:functions" name="HTTPS_Port" binding="rfc:BAPI_PO_CHANGE.PortTypeBinding">
-      <address location="https://gslopidevqa00.molinosagro.ad:50301/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=BAPI_PO_CHANGE&amp;interfaceNamespace=urn%3Asap-com%3Adocument%3Asap%3Arfc%3Afunctions" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+    <wsdl:port name="HTTPS_Port" binding="p1:SI_MMRFC_MODIFICAR_OCBinding">
+      <address location="https://gslopidevqa00.molinosagro.ad:50001/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MMRFC_MODIFICAR_OC&amp;interfaceNamespace=urn%3AOPERACIONES" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
     </wsdl:port>
   </wsdl:service>
 </wsdl:definitions>

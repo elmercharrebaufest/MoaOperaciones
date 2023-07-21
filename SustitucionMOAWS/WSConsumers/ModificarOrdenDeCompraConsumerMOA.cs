@@ -9,18 +9,18 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using SustitucionMOARepositorio.Extensiones;
-using SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA;
+using SustitucionMOAWS.ModificarOCWebServiceMOA;
 
 namespace SustitucionMOAWS.WSConsumers
 {
     public class ModificarOrdenDeCompraConsumerMOA : IModificarOrdenDeCompraConsumerMOA
     {
-        private readonly BAPI_PO_CHANGEPortTypeClient service;
+        private readonly SI_MMRFC_MODIFICAR_OCClient service;
         private readonly string rutaArchivosXmls = ConfigurationManager.AppSettings["RutaArchivosCompras"];
 
         public ModificarOrdenDeCompraConsumerMOA()
         {
-            service = new BAPI_PO_CHANGEPortTypeClient();
+            service = new SI_MMRFC_MODIFICAR_OCClient();
             service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
             service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
         }

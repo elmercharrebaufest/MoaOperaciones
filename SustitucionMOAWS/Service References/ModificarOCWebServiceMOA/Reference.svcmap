@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ReferenceGroup xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ID="fcf04b4d-c6b8-43eb-a698-4b27539787ba" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+<ReferenceGroup xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ID="747eb175-0de3-481d-9611-377c7892cdd4" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
   <ClientOptions>
     <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
     <GenerateTaskBasedAsynchronousMethod>true</GenerateTaskBasedAsynchronousMethod>
@@ -19,10 +19,10 @@
     <ServiceContractMappings />
   </ClientOptions>
   <MetadataSources>
-    <MetadataSource Address="http://gslopidevqa00.molinosagro.ad:50300/dir/wsdl?p=ic/c871f40c0dc9392fb85021353d14b38a" Protocol="http" SourceId="1" />
+    <MetadataSource Address="http://gslopidevqa00.molinosagro.ad:50000/dir/wsdl?p=ic/e7f91273c41f3658aef8c28d1df1b715 " Protocol="http" SourceId="1" />
   </MetadataSources>
   <Metadata>
-    <MetadataFile FileName="BAPI_PO_CHANGE.wsdl" MetadataType="Wsdl" ID="62d47cf3-b641-4908-8aef-5fcb7c5612b1" SourceId="1" SourceUrl="http://gslopidevqa00.molinosagro.ad:50300/dir/wsdl?p=ic/c871f40c0dc9392fb85021353d14b38a" />
+    <MetadataFile FileName="SI_MMRFC_MODIFICAR_OC.wsdl" MetadataType="Wsdl" ID="ec16eb6c-76d1-4139-ba28-ceeed32fe220" SourceId="1" SourceUrl="http://gslopidevqa00.molinosagro.ad:50000/dir/wsdl?p=ic/e7f91273c41f3658aef8c28d1df1b715" />
   </Metadata>
   <Extensions>
     <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />

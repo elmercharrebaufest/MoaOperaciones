@@ -8,20 +8,20 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA {
+namespace SustitucionMOAWS.ModificarOCWebServiceMOA {
     
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
-    [System.ServiceModel.ServiceContractAttribute(Name="BAPI_PO_CHANGE.PortType", Namespace="urn:sap-com:document:sap:rfc:functions", ConfigurationName="ModificarOrdenDeCompraWebServiceMOA.BAPI_PO_CHANGEPortType")]
-    public interface BAPI_PO_CHANGEPortType {
+    [System.ServiceModel.ServiceContractAttribute(Namespace="urn:OPERACIONES", ConfigurationName="ModificarOCWebServiceMOA.SI_MMRFC_MODIFICAR_OC")]
+    public interface SI_MMRFC_MODIFICAR_OC {
         
         [System.ServiceModel.OperationContractAttribute(Action="http://sap.com/xi/WebService/soap1.1", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
-        SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPI_PO_CHANGEResponse BAPI_PO_CHANGE(SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPI_PO_CHANGERequest request);
+        SustitucionMOAWS.ModificarOCWebServiceMOA.SI_MMRFC_MODIFICAR_OCResponse SI_MMRFC_MODIFICAR_OC(SustitucionMOAWS.ModificarOCWebServiceMOA.SI_MMRFC_MODIFICAR_OCRequest request);
         
         // CODEGEN: Generating message contract since the operation has multiple return values.
         [System.ServiceModel.OperationContractAttribute(Action="http://sap.com/xi/WebService/soap1.1", ReplyAction="*")]
-        System.Threading.Tasks.Task<SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPI_PO_CHANGEResponse> BAPI_PO_CHANGEAsync(SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPI_PO_CHANGERequest request);
+        System.Threading.Tasks.Task<SustitucionMOAWS.ModificarOCWebServiceMOA.SI_MMRFC_MODIFICAR_OCResponse> SI_MMRFC_MODIFICAR_OCAsync(SustitucionMOAWS.ModificarOCWebServiceMOA.SI_MMRFC_MODIFICAR_OCRequest request);
     }
     
     /// <remarks/>
@@ -18789,6 +18789,444 @@ namespace SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA {
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(TypeName="_-NFM_-BAPIDOCITM", Namespace="urn:sap-com:document:sap:rfc:functions")]
+    public partial class _NFM_BAPIDOCITM : object, System.ComponentModel.INotifyPropertyChanged {
+        
+        private string dATA_INDEXField;
+        
+        private string dOC_NUMBERField;
+        
+        private string iTM_NUMBERField;
+        
+        private string cOMPCODEField;
+        
+        private string fISCYEARField;
+        
+        private string nFMKEYField;
+        
+        private string rATEDETKEYField;
+        
+        private string bASEKEYField;
+        
+        private string eXCHANGEKEYField;
+        
+        private string rATEDETDATField;
+        
+        private string rATEMONTHField;
+        
+        private string aCTRATEDATField;
+        
+        private decimal rATEField;
+        
+        private bool rATEFieldSpecified;
+        
+        private string rATECURKYField;
+        
+        private string rATECURKYISOField;
+        
+        private decimal rATEDOCCURField;
+        
+        private bool rATEDOCCURFieldSpecified;
+        
+        private string iNVOICEBLField;
+        
+        private decimal bVALDOCCURField;
+        
+        private bool bVALDOCCURFieldSpecified;
+        
+        private string bVALCURKYDField;
+        
+        private string bVALCURKYDISOField;
+        
+        private decimal nETRATEField;
+        
+        private bool nETRATEFieldSpecified;
+        
+        private string pROVIDERField;
+        
+        private string vENDORCOVField;
+        
+        private string cOVERAGEKYField;
+        
+        private string pOSTINGDAYSField;
+        
+        private string uPDTYPEField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, DataType="integer", Order=0)]
+        public string DATA_INDEX {
+            get {
+                return this.dATA_INDEXField;
+            }
+            set {
+                this.dATA_INDEXField = value;
+                this.RaisePropertyChanged("DATA_INDEX");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=1)]
+        public string DOC_NUMBER {
+            get {
+                return this.dOC_NUMBERField;
+            }
+            set {
+                this.dOC_NUMBERField = value;
+                this.RaisePropertyChanged("DOC_NUMBER");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=2)]
+        public string ITM_NUMBER {
+            get {
+                return this.iTM_NUMBERField;
+            }
+            set {
+                this.iTM_NUMBERField = value;
+                this.RaisePropertyChanged("ITM_NUMBER");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=3)]
+        public string COMPCODE {
+            get {
+                return this.cOMPCODEField;
+            }
+            set {
+                this.cOMPCODEField = value;
+                this.RaisePropertyChanged("COMPCODE");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=4)]
+        public string FISCYEAR {
+            get {
+                return this.fISCYEARField;
+            }
+            set {
+                this.fISCYEARField = value;
+                this.RaisePropertyChanged("FISCYEAR");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=5)]
+        public string NFMKEY {
+            get {
+                return this.nFMKEYField;
+            }
+            set {
+                this.nFMKEYField = value;
+                this.RaisePropertyChanged("NFMKEY");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=6)]
+        public string RATEDETKEY {
+            get {
+                return this.rATEDETKEYField;
+            }
+            set {
+                this.rATEDETKEYField = value;
+                this.RaisePropertyChanged("RATEDETKEY");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=7)]
+        public string BASEKEY {
+            get {
+                return this.bASEKEYField;
+            }
+            set {
+                this.bASEKEYField = value;
+                this.RaisePropertyChanged("BASEKEY");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=8)]
+        public string EXCHANGEKEY {
+            get {
+                return this.eXCHANGEKEYField;
+            }
+            set {
+                this.eXCHANGEKEYField = value;
+                this.RaisePropertyChanged("EXCHANGEKEY");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=9)]
+        public string RATEDETDAT {
+            get {
+                return this.rATEDETDATField;
+            }
+            set {
+                this.rATEDETDATField = value;
+                this.RaisePropertyChanged("RATEDETDAT");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=10)]
+        public string RATEMONTH {
+            get {
+                return this.rATEMONTHField;
+            }
+            set {
+                this.rATEMONTHField = value;
+                this.RaisePropertyChanged("RATEMONTH");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=11)]
+        public string ACTRATEDAT {
+            get {
+                return this.aCTRATEDATField;
+            }
+            set {
+                this.aCTRATEDATField = value;
+                this.RaisePropertyChanged("ACTRATEDAT");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=12)]
+        public decimal RATE {
+            get {
+                return this.rATEField;
+            }
+            set {
+                this.rATEField = value;
+                this.RaisePropertyChanged("RATE");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool RATESpecified {
+            get {
+                return this.rATEFieldSpecified;
+            }
+            set {
+                this.rATEFieldSpecified = value;
+                this.RaisePropertyChanged("RATESpecified");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=13)]
+        public string RATECURKY {
+            get {
+                return this.rATECURKYField;
+            }
+            set {
+                this.rATECURKYField = value;
+                this.RaisePropertyChanged("RATECURKY");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=14)]
+        public string RATECURKYISO {
+            get {
+                return this.rATECURKYISOField;
+            }
+            set {
+                this.rATECURKYISOField = value;
+                this.RaisePropertyChanged("RATECURKYISO");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=15)]
+        public decimal RATEDOCCUR {
+            get {
+                return this.rATEDOCCURField;
+            }
+            set {
+                this.rATEDOCCURField = value;
+                this.RaisePropertyChanged("RATEDOCCUR");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool RATEDOCCURSpecified {
+            get {
+                return this.rATEDOCCURFieldSpecified;
+            }
+            set {
+                this.rATEDOCCURFieldSpecified = value;
+                this.RaisePropertyChanged("RATEDOCCURSpecified");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=16)]
+        public string INVOICEBL {
+            get {
+                return this.iNVOICEBLField;
+            }
+            set {
+                this.iNVOICEBLField = value;
+                this.RaisePropertyChanged("INVOICEBL");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=17)]
+        public decimal BVALDOCCUR {
+            get {
+                return this.bVALDOCCURField;
+            }
+            set {
+                this.bVALDOCCURField = value;
+                this.RaisePropertyChanged("BVALDOCCUR");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool BVALDOCCURSpecified {
+            get {
+                return this.bVALDOCCURFieldSpecified;
+            }
+            set {
+                this.bVALDOCCURFieldSpecified = value;
+                this.RaisePropertyChanged("BVALDOCCURSpecified");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=18)]
+        public string BVALCURKYD {
+            get {
+                return this.bVALCURKYDField;
+            }
+            set {
+                this.bVALCURKYDField = value;
+                this.RaisePropertyChanged("BVALCURKYD");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=19)]
+        public string BVALCURKYDISO {
+            get {
+                return this.bVALCURKYDISOField;
+            }
+            set {
+                this.bVALCURKYDISOField = value;
+                this.RaisePropertyChanged("BVALCURKYDISO");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=20)]
+        public decimal NETRATE {
+            get {
+                return this.nETRATEField;
+            }
+            set {
+                this.nETRATEField = value;
+                this.RaisePropertyChanged("NETRATE");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool NETRATESpecified {
+            get {
+                return this.nETRATEFieldSpecified;
+            }
+            set {
+                this.nETRATEFieldSpecified = value;
+                this.RaisePropertyChanged("NETRATESpecified");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=21)]
+        public string PROVIDER {
+            get {
+                return this.pROVIDERField;
+            }
+            set {
+                this.pROVIDERField = value;
+                this.RaisePropertyChanged("PROVIDER");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=22)]
+        public string VENDORCOV {
+            get {
+                return this.vENDORCOVField;
+            }
+            set {
+                this.vENDORCOVField = value;
+                this.RaisePropertyChanged("VENDORCOV");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=23)]
+        public string COVERAGEKY {
+            get {
+                return this.cOVERAGEKYField;
+            }
+            set {
+                this.cOVERAGEKYField = value;
+                this.RaisePropertyChanged("COVERAGEKY");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=24)]
+        public string POSTINGDAYS {
+            get {
+                return this.pOSTINGDAYSField;
+            }
+            set {
+                this.pOSTINGDAYSField = value;
+                this.RaisePropertyChanged("POSTINGDAYS");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=25)]
+        public string UPDTYPE {
+            get {
+                return this.uPDTYPEField;
+            }
+            set {
+                this.uPDTYPEField = value;
+                this.RaisePropertyChanged("UPDTYPE");
+            }
+        }
+        
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        
+        protected void RaisePropertyChanged(string propertyName) {
+            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
+            if ((propertyChanged != null)) {
+                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9037.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:sap-com:document:sap:rfc:functions")]
     public partial class BAPI_INVOICE_PLAN_ITEMX : object, System.ComponentModel.INotifyPropertyChanged {
         
@@ -22904,8 +23342,8 @@ namespace SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA {
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
-    [System.ServiceModel.MessageContractAttribute(WrapperName="BAPI_PO_CHANGE", WrapperNamespace="urn:sap-com:document:sap:rfc:functions", IsWrapped=true)]
-    public partial class BAPI_PO_CHANGERequest {
+    [System.ServiceModel.MessageContractAttribute(WrapperName="Z_MMRFC_MODIFICAR_OC", WrapperNamespace="urn:sap-com:document:sap:rfc:functions", IsWrapped=true)]
+    public partial class SI_MMRFC_MODIFICAR_OCRequest {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=0)]
         [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
@@ -22941,23 +23379,23 @@ namespace SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=8)]
         [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
-        public SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIMEPOADDRVENDOR POADDRVENDOR;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOADDRVENDOR POADDRVENDOR;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=9)]
         [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
-        public SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIEIKP POEXPIMPHEADER;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIEIKP POEXPIMPHEADER;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=10)]
         [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
-        public SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIEIKPX POEXPIMPHEADERX;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIEIKPX POEXPIMPHEADERX;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=11)]
         [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
-        public SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIMEPOHEADER POHEADER;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOHEADER POHEADER;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=12)]
         [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
-        public SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIMEPOHEADERX POHEADERX;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOHEADERX POHEADERX;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=13)]
         [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
@@ -22969,217 +23407,222 @@ namespace SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=15)]
         [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
-        public SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIMEDCM VERSIONS;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEDCM VERSIONS;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=16)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIMEDCM_ALLVERSIONS[] ALLVERSIONS;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEDCM_ALLVERSIONS[] ALLVERSIONS;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=17)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIPAREX[] EXTENSIONIN;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIPAREX[] EXTENSIONIN;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=18)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIPAREX[] EXTENSIONOUT;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIPAREX[] EXTENSIONOUT;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=19)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPI_INVOICE_PLAN_HEADER[] INVPLANHEADER;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPI_INVOICE_PLAN_HEADER[] INVPLANHEADER;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=20)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPI_INVOICE_PLAN_HEADERX[] INVPLANHEADERX;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPI_INVOICE_PLAN_HEADERX[] INVPLANHEADERX;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=21)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPI_INVOICE_PLAN_ITEM[] INVPLANITEM;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPI_INVOICE_PLAN_ITEM[] INVPLANITEM;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=22)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPI_INVOICE_PLAN_ITEMX[] INVPLANITEMX;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPI_INVOICE_PLAN_ITEMX[] INVPLANITEMX;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=23)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIMEPOACCOUNT[] POACCOUNT;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA._NFM_BAPIDOCITM[] NFMETALLITMS;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=24)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIMEPOACCOUNTPROFITSEGMENT[] POACCOUNTPROFITSEGMENT;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOACCOUNT[] POACCOUNT;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=25)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIMEPOACCOUNTX[] POACCOUNTX;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOACCOUNTPROFITSEGMENT[] POACCOUNTPROFITSEGMENT;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=26)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIMEPOADDRDELIVERY[] POADDRDELIVERY;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOACCOUNTX[] POACCOUNTX;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=27)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIMEPOCOMPONENT[] POCOMPONENTS;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOADDRDELIVERY[] POADDRDELIVERY;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=28)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIMEPOCOMPONENTX[] POCOMPONENTSX;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOCOMPONENT[] POCOMPONENTS;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=29)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIMEPOCOND[] POCOND;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOCOMPONENTX[] POCOMPONENTSX;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=30)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIMEPOCONDHEADER[] POCONDHEADER;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOCOND[] POCOND;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=31)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIMEPOCONDHEADERX[] POCONDHEADERX;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOCONDHEADER[] POCONDHEADER;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=32)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIMEPOCONDX[] POCONDX;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOCONDHEADERX[] POCONDHEADERX;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=33)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIEKES[] POCONFIRMATION;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOCONDX[] POCONDX;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=34)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIESUCC[] POCONTRACTLIMITS;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIEKES[] POCONFIRMATION;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=35)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIEIPO[] POEXPIMPITEM;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIESUCC[] POCONTRACTLIMITS;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=36)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIEIPOX[] POEXPIMPITEMX;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIEIPO[] POEXPIMPITEM;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=37)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIEKBE[] POHISTORY;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIEIPOX[] POEXPIMPITEMX;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=38)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIEKBE_MA[] POHISTORY_MA;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIEKBE[] POHISTORY;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=39)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIEKBES[] POHISTORY_TOTALS;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIEKBE_MA[] POHISTORY_MA;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=40)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIMEPOITEM[] POITEM;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIEKBES[] POHISTORY_TOTALS;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=41)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIMEPOITEMX[] POITEMX;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOITEM[] POITEM;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=42)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIESUHC[] POLIMITS;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOITEMX[] POITEMX;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=43)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIEKKOP[] POPARTNER;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIESUHC[] POLIMITS;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=44)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIMEPOSCHEDULE[] POSCHEDULE;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIEKKOP[] POPARTNER;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=45)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIMEPOSCHEDULX[] POSCHEDULEX;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOSCHEDULE[] POSCHEDULE;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=46)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIESLLC[] POSERVICES;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOSCHEDULX[] POSCHEDULEX;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=47)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIESLLTX[] POSERVICESTEXT;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIESLLC[] POSERVICES;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=48)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIITEMSHIP[] POSHIPPING;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIESLLTX[] POSERVICESTEXT;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=49)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIMEPOSHIPPEXP[] POSHIPPINGEXP;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIITEMSHIP[] POSHIPPING;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=50)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIITEMSHIPX[] POSHIPPINGX;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOSHIPPEXP[] POSHIPPINGEXP;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=51)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIESKLC[] POSRVACCESSVALUES;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIITEMSHIPX[] POSHIPPINGX;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=52)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIMEPOTEXTHEADER[] POTEXTHEADER;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIESKLC[] POSRVACCESSVALUES;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=53)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIMEPOTEXT[] POTEXTITEM;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOTEXTHEADER[] POTEXTHEADER;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=54)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIRET2[] RETURN;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOTEXT[] POTEXTITEM;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=55)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIMEPOSERIALNO[] SERIALNUMBER;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIRET2[] RETURN;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=56)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIMEPOSERIALNOX[] SERIALNUMBERX;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOSERIALNO[] SERIALNUMBER;
         
-        public BAPI_PO_CHANGERequest() {
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=57)]
+        [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
+        [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOSERIALNOX[] SERIALNUMBERX;
+        
+        public SI_MMRFC_MODIFICAR_OCRequest() {
         }
         
-        public BAPI_PO_CHANGERequest(
+        public SI_MMRFC_MODIFICAR_OCRequest(
                     string MEMORY_COMPLETE, 
                     string MEMORY_UNCOMPLETE, 
                     string NO_AUTHORITY, 
@@ -23188,55 +23631,56 @@ namespace SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA {
                     string NO_PRICE_FROM_PO, 
                     string PARK_COMPLETE, 
                     string PARK_UNCOMPLETE, 
-                    SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIMEPOADDRVENDOR POADDRVENDOR, 
-                    SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIEIKP POEXPIMPHEADER, 
-                    SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIEIKPX POEXPIMPHEADERX, 
-                    SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIMEPOHEADER POHEADER, 
-                    SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIMEPOHEADERX POHEADERX, 
+                    SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOADDRVENDOR POADDRVENDOR, 
+                    SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIEIKP POEXPIMPHEADER, 
+                    SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIEIKPX POEXPIMPHEADERX, 
+                    SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOHEADER POHEADER, 
+                    SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOHEADERX POHEADERX, 
                     string PURCHASEORDER, 
                     string TESTRUN, 
-                    SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIMEDCM VERSIONS, 
-                    SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIMEDCM_ALLVERSIONS[] ALLVERSIONS, 
-                    SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIPAREX[] EXTENSIONIN, 
-                    SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIPAREX[] EXTENSIONOUT, 
-                    SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPI_INVOICE_PLAN_HEADER[] INVPLANHEADER, 
-                    SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPI_INVOICE_PLAN_HEADERX[] INVPLANHEADERX, 
-                    SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPI_INVOICE_PLAN_ITEM[] INVPLANITEM, 
-                    SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPI_INVOICE_PLAN_ITEMX[] INVPLANITEMX, 
-                    SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIMEPOACCOUNT[] POACCOUNT, 
-                    SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIMEPOACCOUNTPROFITSEGMENT[] POACCOUNTPROFITSEGMENT, 
-                    SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIMEPOACCOUNTX[] POACCOUNTX, 
-                    SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIMEPOADDRDELIVERY[] POADDRDELIVERY, 
-                    SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIMEPOCOMPONENT[] POCOMPONENTS, 
-                    SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIMEPOCOMPONENTX[] POCOMPONENTSX, 
-                    SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIMEPOCOND[] POCOND, 
-                    SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIMEPOCONDHEADER[] POCONDHEADER, 
-                    SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIMEPOCONDHEADERX[] POCONDHEADERX, 
-                    SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIMEPOCONDX[] POCONDX, 
-                    SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIEKES[] POCONFIRMATION, 
-                    SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIESUCC[] POCONTRACTLIMITS, 
-                    SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIEIPO[] POEXPIMPITEM, 
-                    SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIEIPOX[] POEXPIMPITEMX, 
-                    SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIEKBE[] POHISTORY, 
-                    SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIEKBE_MA[] POHISTORY_MA, 
-                    SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIEKBES[] POHISTORY_TOTALS, 
-                    SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIMEPOITEM[] POITEM, 
-                    SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIMEPOITEMX[] POITEMX, 
-                    SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIESUHC[] POLIMITS, 
-                    SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIEKKOP[] POPARTNER, 
-                    SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIMEPOSCHEDULE[] POSCHEDULE, 
-                    SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIMEPOSCHEDULX[] POSCHEDULEX, 
-                    SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIESLLC[] POSERVICES, 
-                    SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIESLLTX[] POSERVICESTEXT, 
-                    SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIITEMSHIP[] POSHIPPING, 
-                    SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIMEPOSHIPPEXP[] POSHIPPINGEXP, 
-                    SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIITEMSHIPX[] POSHIPPINGX, 
-                    SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIESKLC[] POSRVACCESSVALUES, 
-                    SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIMEPOTEXTHEADER[] POTEXTHEADER, 
-                    SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIMEPOTEXT[] POTEXTITEM, 
-                    SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIRET2[] RETURN, 
-                    SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIMEPOSERIALNO[] SERIALNUMBER, 
-                    SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIMEPOSERIALNOX[] SERIALNUMBERX) {
+                    SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEDCM VERSIONS, 
+                    SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEDCM_ALLVERSIONS[] ALLVERSIONS, 
+                    SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIPAREX[] EXTENSIONIN, 
+                    SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIPAREX[] EXTENSIONOUT, 
+                    SustitucionMOAWS.ModificarOCWebServiceMOA.BAPI_INVOICE_PLAN_HEADER[] INVPLANHEADER, 
+                    SustitucionMOAWS.ModificarOCWebServiceMOA.BAPI_INVOICE_PLAN_HEADERX[] INVPLANHEADERX, 
+                    SustitucionMOAWS.ModificarOCWebServiceMOA.BAPI_INVOICE_PLAN_ITEM[] INVPLANITEM, 
+                    SustitucionMOAWS.ModificarOCWebServiceMOA.BAPI_INVOICE_PLAN_ITEMX[] INVPLANITEMX, 
+                    SustitucionMOAWS.ModificarOCWebServiceMOA._NFM_BAPIDOCITM[] NFMETALLITMS, 
+                    SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOACCOUNT[] POACCOUNT, 
+                    SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOACCOUNTPROFITSEGMENT[] POACCOUNTPROFITSEGMENT, 
+                    SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOACCOUNTX[] POACCOUNTX, 
+                    SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOADDRDELIVERY[] POADDRDELIVERY, 
+                    SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOCOMPONENT[] POCOMPONENTS, 
+                    SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOCOMPONENTX[] POCOMPONENTSX, 
+                    SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOCOND[] POCOND, 
+                    SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOCONDHEADER[] POCONDHEADER, 
+                    SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOCONDHEADERX[] POCONDHEADERX, 
+                    SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOCONDX[] POCONDX, 
+                    SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIEKES[] POCONFIRMATION, 
+                    SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIESUCC[] POCONTRACTLIMITS, 
+                    SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIEIPO[] POEXPIMPITEM, 
+                    SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIEIPOX[] POEXPIMPITEMX, 
+                    SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIEKBE[] POHISTORY, 
+                    SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIEKBE_MA[] POHISTORY_MA, 
+                    SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIEKBES[] POHISTORY_TOTALS, 
+                    SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOITEM[] POITEM, 
+                    SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOITEMX[] POITEMX, 
+                    SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIESUHC[] POLIMITS, 
+                    SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIEKKOP[] POPARTNER, 
+                    SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOSCHEDULE[] POSCHEDULE, 
+                    SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOSCHEDULX[] POSCHEDULEX, 
+                    SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIESLLC[] POSERVICES, 
+                    SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIESLLTX[] POSERVICESTEXT, 
+                    SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIITEMSHIP[] POSHIPPING, 
+                    SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOSHIPPEXP[] POSHIPPINGEXP, 
+                    SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIITEMSHIPX[] POSHIPPINGX, 
+                    SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIESKLC[] POSRVACCESSVALUES, 
+                    SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOTEXTHEADER[] POTEXTHEADER, 
+                    SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOTEXT[] POTEXTITEM, 
+                    SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIRET2[] RETURN, 
+                    SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOSERIALNO[] SERIALNUMBER, 
+                    SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOSERIALNOX[] SERIALNUMBERX) {
             this.MEMORY_COMPLETE = MEMORY_COMPLETE;
             this.MEMORY_UNCOMPLETE = MEMORY_UNCOMPLETE;
             this.NO_AUTHORITY = NO_AUTHORITY;
@@ -23260,6 +23704,7 @@ namespace SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA {
             this.INVPLANHEADERX = INVPLANHEADERX;
             this.INVPLANITEM = INVPLANITEM;
             this.INVPLANITEMX = INVPLANITEMX;
+            this.NFMETALLITMS = NFMETALLITMS;
             this.POACCOUNT = POACCOUNT;
             this.POACCOUNTPROFITSEGMENT = POACCOUNTPROFITSEGMENT;
             this.POACCOUNTX = POACCOUNTX;
@@ -23299,269 +23744,275 @@ namespace SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA {
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
-    [System.ServiceModel.MessageContractAttribute(WrapperName="BAPI_PO_CHANGE.Response", WrapperNamespace="urn:sap-com:document:sap:rfc:functions", IsWrapped=true)]
-    public partial class BAPI_PO_CHANGEResponse {
+    [System.ServiceModel.MessageContractAttribute(WrapperName="Z_MMRFC_MODIFICAR_OC.Response", WrapperNamespace="urn:sap-com:document:sap:rfc:functions", IsWrapped=true)]
+    public partial class SI_MMRFC_MODIFICAR_OCResponse {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=0)]
         [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
-        public SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIMEPOHEADER EXPHEADER;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOHEADER EXPHEADER;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=1)]
         [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
-        public SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIEIKP EXPPOEXPIMPHEADER;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIEIKP EXPPOEXPIMPHEADER;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=2)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIMEDCM_ALLVERSIONS[] ALLVERSIONS;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEDCM_ALLVERSIONS[] ALLVERSIONS;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=3)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIPAREX[] EXTENSIONIN;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIPAREX[] EXTENSIONIN;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=4)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIPAREX[] EXTENSIONOUT;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIPAREX[] EXTENSIONOUT;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=5)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPI_INVOICE_PLAN_HEADER[] INVPLANHEADER;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPI_INVOICE_PLAN_HEADER[] INVPLANHEADER;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=6)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPI_INVOICE_PLAN_HEADERX[] INVPLANHEADERX;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPI_INVOICE_PLAN_HEADERX[] INVPLANHEADERX;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=7)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPI_INVOICE_PLAN_ITEM[] INVPLANITEM;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPI_INVOICE_PLAN_ITEM[] INVPLANITEM;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=8)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPI_INVOICE_PLAN_ITEMX[] INVPLANITEMX;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPI_INVOICE_PLAN_ITEMX[] INVPLANITEMX;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=9)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIMEPOACCOUNT[] POACCOUNT;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA._NFM_BAPIDOCITM[] NFMETALLITMS;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=10)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIMEPOACCOUNTPROFITSEGMENT[] POACCOUNTPROFITSEGMENT;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOACCOUNT[] POACCOUNT;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=11)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIMEPOACCOUNTX[] POACCOUNTX;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOACCOUNTPROFITSEGMENT[] POACCOUNTPROFITSEGMENT;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=12)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIMEPOADDRDELIVERY[] POADDRDELIVERY;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOACCOUNTX[] POACCOUNTX;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=13)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIMEPOCOMPONENT[] POCOMPONENTS;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOADDRDELIVERY[] POADDRDELIVERY;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=14)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIMEPOCOMPONENTX[] POCOMPONENTSX;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOCOMPONENT[] POCOMPONENTS;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=15)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIMEPOCOND[] POCOND;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOCOMPONENTX[] POCOMPONENTSX;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=16)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIMEPOCONDHEADER[] POCONDHEADER;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOCOND[] POCOND;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=17)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIMEPOCONDHEADERX[] POCONDHEADERX;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOCONDHEADER[] POCONDHEADER;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=18)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIMEPOCONDX[] POCONDX;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOCONDHEADERX[] POCONDHEADERX;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=19)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIEKES[] POCONFIRMATION;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOCONDX[] POCONDX;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=20)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIESUCC[] POCONTRACTLIMITS;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIEKES[] POCONFIRMATION;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=21)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIEIPO[] POEXPIMPITEM;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIESUCC[] POCONTRACTLIMITS;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=22)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIEIPOX[] POEXPIMPITEMX;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIEIPO[] POEXPIMPITEM;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=23)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIEKBE[] POHISTORY;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIEIPOX[] POEXPIMPITEMX;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=24)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIEKBE_MA[] POHISTORY_MA;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIEKBE[] POHISTORY;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=25)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIEKBES[] POHISTORY_TOTALS;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIEKBE_MA[] POHISTORY_MA;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=26)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIMEPOITEM[] POITEM;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIEKBES[] POHISTORY_TOTALS;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=27)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIMEPOITEMX[] POITEMX;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOITEM[] POITEM;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=28)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIESUHC[] POLIMITS;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOITEMX[] POITEMX;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=29)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIEKKOP[] POPARTNER;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIESUHC[] POLIMITS;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=30)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIMEPOSCHEDULE[] POSCHEDULE;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIEKKOP[] POPARTNER;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=31)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIMEPOSCHEDULX[] POSCHEDULEX;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOSCHEDULE[] POSCHEDULE;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=32)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIESLLC[] POSERVICES;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOSCHEDULX[] POSCHEDULEX;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=33)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIESLLTX[] POSERVICESTEXT;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIESLLC[] POSERVICES;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=34)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIITEMSHIP[] POSHIPPING;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIESLLTX[] POSERVICESTEXT;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=35)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIMEPOSHIPPEXP[] POSHIPPINGEXP;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIITEMSHIP[] POSHIPPING;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=36)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIITEMSHIPX[] POSHIPPINGX;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOSHIPPEXP[] POSHIPPINGEXP;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=37)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIESKLC[] POSRVACCESSVALUES;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIITEMSHIPX[] POSHIPPINGX;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=38)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIMEPOTEXTHEADER[] POTEXTHEADER;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIESKLC[] POSRVACCESSVALUES;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=39)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIMEPOTEXT[] POTEXTITEM;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOTEXTHEADER[] POTEXTHEADER;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=40)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIRET2[] RETURN;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOTEXT[] POTEXTITEM;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=41)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIMEPOSERIALNO[] SERIALNUMBER;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIRET2[] RETURN;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=42)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIMEPOSERIALNOX[] SERIALNUMBERX;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOSERIALNO[] SERIALNUMBER;
         
-        public BAPI_PO_CHANGEResponse() {
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=43)]
+        [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
+        [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOSERIALNOX[] SERIALNUMBERX;
+        
+        public SI_MMRFC_MODIFICAR_OCResponse() {
         }
         
-        public BAPI_PO_CHANGEResponse(
-                    SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIMEPOHEADER EXPHEADER, 
-                    SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIEIKP EXPPOEXPIMPHEADER, 
-                    SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIMEDCM_ALLVERSIONS[] ALLVERSIONS, 
-                    SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIPAREX[] EXTENSIONIN, 
-                    SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIPAREX[] EXTENSIONOUT, 
-                    SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPI_INVOICE_PLAN_HEADER[] INVPLANHEADER, 
-                    SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPI_INVOICE_PLAN_HEADERX[] INVPLANHEADERX, 
-                    SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPI_INVOICE_PLAN_ITEM[] INVPLANITEM, 
-                    SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPI_INVOICE_PLAN_ITEMX[] INVPLANITEMX, 
-                    SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIMEPOACCOUNT[] POACCOUNT, 
-                    SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIMEPOACCOUNTPROFITSEGMENT[] POACCOUNTPROFITSEGMENT, 
-                    SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIMEPOACCOUNTX[] POACCOUNTX, 
-                    SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIMEPOADDRDELIVERY[] POADDRDELIVERY, 
-                    SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIMEPOCOMPONENT[] POCOMPONENTS, 
-                    SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIMEPOCOMPONENTX[] POCOMPONENTSX, 
-                    SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIMEPOCOND[] POCOND, 
-                    SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIMEPOCONDHEADER[] POCONDHEADER, 
-                    SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIMEPOCONDHEADERX[] POCONDHEADERX, 
-                    SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIMEPOCONDX[] POCONDX, 
-                    SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIEKES[] POCONFIRMATION, 
-                    SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIESUCC[] POCONTRACTLIMITS, 
-                    SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIEIPO[] POEXPIMPITEM, 
-                    SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIEIPOX[] POEXPIMPITEMX, 
-                    SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIEKBE[] POHISTORY, 
-                    SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIEKBE_MA[] POHISTORY_MA, 
-                    SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIEKBES[] POHISTORY_TOTALS, 
-                    SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIMEPOITEM[] POITEM, 
-                    SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIMEPOITEMX[] POITEMX, 
-                    SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIESUHC[] POLIMITS, 
-                    SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIEKKOP[] POPARTNER, 
-                    SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIMEPOSCHEDULE[] POSCHEDULE, 
-                    SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIMEPOSCHEDULX[] POSCHEDULEX, 
-                    SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIESLLC[] POSERVICES, 
-                    SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIESLLTX[] POSERVICESTEXT, 
-                    SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIITEMSHIP[] POSHIPPING, 
-                    SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIMEPOSHIPPEXP[] POSHIPPINGEXP, 
-                    SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIITEMSHIPX[] POSHIPPINGX, 
-                    SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIESKLC[] POSRVACCESSVALUES, 
-                    SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIMEPOTEXTHEADER[] POTEXTHEADER, 
-                    SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIMEPOTEXT[] POTEXTITEM, 
-                    SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIRET2[] RETURN, 
-                    SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIMEPOSERIALNO[] SERIALNUMBER, 
-                    SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIMEPOSERIALNOX[] SERIALNUMBERX) {
+        public SI_MMRFC_MODIFICAR_OCResponse(
+                    SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOHEADER EXPHEADER, 
+                    SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIEIKP EXPPOEXPIMPHEADER, 
+                    SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEDCM_ALLVERSIONS[] ALLVERSIONS, 
+                    SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIPAREX[] EXTENSIONIN, 
+                    SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIPAREX[] EXTENSIONOUT, 
+                    SustitucionMOAWS.ModificarOCWebServiceMOA.BAPI_INVOICE_PLAN_HEADER[] INVPLANHEADER, 
+                    SustitucionMOAWS.ModificarOCWebServiceMOA.BAPI_INVOICE_PLAN_HEADERX[] INVPLANHEADERX, 
+                    SustitucionMOAWS.ModificarOCWebServiceMOA.BAPI_INVOICE_PLAN_ITEM[] INVPLANITEM, 
+                    SustitucionMOAWS.ModificarOCWebServiceMOA.BAPI_INVOICE_PLAN_ITEMX[] INVPLANITEMX, 
+                    SustitucionMOAWS.ModificarOCWebServiceMOA._NFM_BAPIDOCITM[] NFMETALLITMS, 
+                    SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOACCOUNT[] POACCOUNT, 
+                    SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOACCOUNTPROFITSEGMENT[] POACCOUNTPROFITSEGMENT, 
+                    SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOACCOUNTX[] POACCOUNTX, 
+                    SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOADDRDELIVERY[] POADDRDELIVERY, 
+                    SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOCOMPONENT[] POCOMPONENTS, 
+                    SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOCOMPONENTX[] POCOMPONENTSX, 
+                    SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOCOND[] POCOND, 
+                    SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOCONDHEADER[] POCONDHEADER, 
+                    SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOCONDHEADERX[] POCONDHEADERX, 
+                    SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOCONDX[] POCONDX, 
+                    SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIEKES[] POCONFIRMATION, 
+                    SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIESUCC[] POCONTRACTLIMITS, 
+                    SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIEIPO[] POEXPIMPITEM, 
+                    SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIEIPOX[] POEXPIMPITEMX, 
+                    SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIEKBE[] POHISTORY, 
+                    SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIEKBE_MA[] POHISTORY_MA, 
+                    SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIEKBES[] POHISTORY_TOTALS, 
+                    SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOITEM[] POITEM, 
+                    SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOITEMX[] POITEMX, 
+                    SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIESUHC[] POLIMITS, 
+                    SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIEKKOP[] POPARTNER, 
+                    SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOSCHEDULE[] POSCHEDULE, 
+                    SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOSCHEDULX[] POSCHEDULEX, 
+                    SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIESLLC[] POSERVICES, 
+                    SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIESLLTX[] POSERVICESTEXT, 
+                    SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIITEMSHIP[] POSHIPPING, 
+                    SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOSHIPPEXP[] POSHIPPINGEXP, 
+                    SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIITEMSHIPX[] POSHIPPINGX, 
+                    SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIESKLC[] POSRVACCESSVALUES, 
+                    SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOTEXTHEADER[] POTEXTHEADER, 
+                    SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOTEXT[] POTEXTITEM, 
+                    SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIRET2[] RETURN, 
+                    SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOSERIALNO[] SERIALNUMBER, 
+                    SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOSERIALNOX[] SERIALNUMBERX) {
             this.EXPHEADER = EXPHEADER;
             this.EXPPOEXPIMPHEADER = EXPPOEXPIMPHEADER;
             this.ALLVERSIONS = ALLVERSIONS;
@@ -23571,6 +24022,7 @@ namespace SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA {
             this.INVPLANHEADERX = INVPLANHEADERX;
             this.INVPLANITEM = INVPLANITEM;
             this.INVPLANITEMX = INVPLANITEMX;
+            this.NFMETALLITMS = NFMETALLITMS;
             this.POACCOUNT = POACCOUNT;
             this.POACCOUNTPROFITSEGMENT = POACCOUNTPROFITSEGMENT;
             this.POACCOUNTX = POACCOUNTX;
@@ -23609,38 +24061,38 @@ namespace SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA {
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
-    public interface BAPI_PO_CHANGEPortTypeChannel : SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPI_PO_CHANGEPortType, System.ServiceModel.IClientChannel {
+    public interface SI_MMRFC_MODIFICAR_OCChannel : SustitucionMOAWS.ModificarOCWebServiceMOA.SI_MMRFC_MODIFICAR_OC, System.ServiceModel.IClientChannel {
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
-    public partial class BAPI_PO_CHANGEPortTypeClient : System.ServiceModel.ClientBase<SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPI_PO_CHANGEPortType>, SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPI_PO_CHANGEPortType {
+    public partial class SI_MMRFC_MODIFICAR_OCClient : System.ServiceModel.ClientBase<SustitucionMOAWS.ModificarOCWebServiceMOA.SI_MMRFC_MODIFICAR_OC>, SustitucionMOAWS.ModificarOCWebServiceMOA.SI_MMRFC_MODIFICAR_OC {
         
-        public BAPI_PO_CHANGEPortTypeClient() {
+        public SI_MMRFC_MODIFICAR_OCClient() {
         }
         
-        public BAPI_PO_CHANGEPortTypeClient(string endpointConfigurationName) : 
+        public SI_MMRFC_MODIFICAR_OCClient(string endpointConfigurationName) : 
                 base(endpointConfigurationName) {
         }
         
-        public BAPI_PO_CHANGEPortTypeClient(string endpointConfigurationName, string remoteAddress) : 
+        public SI_MMRFC_MODIFICAR_OCClient(string endpointConfigurationName, string remoteAddress) : 
                 base(endpointConfigurationName, remoteAddress) {
         }
         
-        public BAPI_PO_CHANGEPortTypeClient(string endpointConfigurationName, System.ServiceModel.EndpointAddress remoteAddress) : 
+        public SI_MMRFC_MODIFICAR_OCClient(string endpointConfigurationName, System.ServiceModel.EndpointAddress remoteAddress) : 
                 base(endpointConfigurationName, remoteAddress) {
         }
         
-        public BAPI_PO_CHANGEPortTypeClient(System.ServiceModel.Channels.Binding binding, System.ServiceModel.EndpointAddress remoteAddress) : 
+        public SI_MMRFC_MODIFICAR_OCClient(System.ServiceModel.Channels.Binding binding, System.ServiceModel.EndpointAddress remoteAddress) : 
                 base(binding, remoteAddress) {
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPI_PO_CHANGEResponse SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPI_PO_CHANGEPortType.BAPI_PO_CHANGE(SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPI_PO_CHANGERequest request) {
-            return base.Channel.BAPI_PO_CHANGE(request);
+        SustitucionMOAWS.ModificarOCWebServiceMOA.SI_MMRFC_MODIFICAR_OCResponse SustitucionMOAWS.ModificarOCWebServiceMOA.SI_MMRFC_MODIFICAR_OC.SI_MMRFC_MODIFICAR_OC(SustitucionMOAWS.ModificarOCWebServiceMOA.SI_MMRFC_MODIFICAR_OCRequest request) {
+            return base.Channel.SI_MMRFC_MODIFICAR_OC(request);
         }
         
-        public SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIMEPOHEADER BAPI_PO_CHANGE(
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOHEADER SI_MMRFC_MODIFICAR_OC(
                     string MEMORY_COMPLETE, 
                     string MEMORY_UNCOMPLETE, 
                     string NO_AUTHORITY, 
@@ -23649,57 +24101,58 @@ namespace SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA {
                     string NO_PRICE_FROM_PO, 
                     string PARK_COMPLETE, 
                     string PARK_UNCOMPLETE, 
-                    SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIMEPOADDRVENDOR POADDRVENDOR, 
-                    SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIEIKP POEXPIMPHEADER, 
-                    SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIEIKPX POEXPIMPHEADERX, 
-                    SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIMEPOHEADER POHEADER, 
-                    SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIMEPOHEADERX POHEADERX, 
+                    SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOADDRVENDOR POADDRVENDOR, 
+                    SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIEIKP POEXPIMPHEADER, 
+                    SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIEIKPX POEXPIMPHEADERX, 
+                    SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOHEADER POHEADER, 
+                    SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOHEADERX POHEADERX, 
                     string PURCHASEORDER, 
                     string TESTRUN, 
-                    SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIMEDCM VERSIONS, 
-                    ref SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIMEDCM_ALLVERSIONS[] ALLVERSIONS, 
-                    ref SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIPAREX[] EXTENSIONIN, 
-                    ref SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIPAREX[] EXTENSIONOUT, 
-                    ref SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPI_INVOICE_PLAN_HEADER[] INVPLANHEADER, 
-                    ref SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPI_INVOICE_PLAN_HEADERX[] INVPLANHEADERX, 
-                    ref SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPI_INVOICE_PLAN_ITEM[] INVPLANITEM, 
-                    ref SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPI_INVOICE_PLAN_ITEMX[] INVPLANITEMX, 
-                    ref SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIMEPOACCOUNT[] POACCOUNT, 
-                    ref SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIMEPOACCOUNTPROFITSEGMENT[] POACCOUNTPROFITSEGMENT, 
-                    ref SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIMEPOACCOUNTX[] POACCOUNTX, 
-                    ref SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIMEPOADDRDELIVERY[] POADDRDELIVERY, 
-                    ref SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIMEPOCOMPONENT[] POCOMPONENTS, 
-                    ref SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIMEPOCOMPONENTX[] POCOMPONENTSX, 
-                    ref SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIMEPOCOND[] POCOND, 
-                    ref SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIMEPOCONDHEADER[] POCONDHEADER, 
-                    ref SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIMEPOCONDHEADERX[] POCONDHEADERX, 
-                    ref SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIMEPOCONDX[] POCONDX, 
-                    ref SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIEKES[] POCONFIRMATION, 
-                    ref SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIESUCC[] POCONTRACTLIMITS, 
-                    ref SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIEIPO[] POEXPIMPITEM, 
-                    ref SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIEIPOX[] POEXPIMPITEMX, 
-                    ref SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIEKBE[] POHISTORY, 
-                    ref SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIEKBE_MA[] POHISTORY_MA, 
-                    ref SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIEKBES[] POHISTORY_TOTALS, 
-                    ref SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIMEPOITEM[] POITEM, 
-                    ref SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIMEPOITEMX[] POITEMX, 
-                    ref SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIESUHC[] POLIMITS, 
-                    ref SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIEKKOP[] POPARTNER, 
-                    ref SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIMEPOSCHEDULE[] POSCHEDULE, 
-                    ref SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIMEPOSCHEDULX[] POSCHEDULEX, 
-                    ref SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIESLLC[] POSERVICES, 
-                    ref SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIESLLTX[] POSERVICESTEXT, 
-                    ref SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIITEMSHIP[] POSHIPPING, 
-                    ref SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIMEPOSHIPPEXP[] POSHIPPINGEXP, 
-                    ref SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIITEMSHIPX[] POSHIPPINGX, 
-                    ref SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIESKLC[] POSRVACCESSVALUES, 
-                    ref SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIMEPOTEXTHEADER[] POTEXTHEADER, 
-                    ref SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIMEPOTEXT[] POTEXTITEM, 
-                    ref SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIRET2[] RETURN, 
-                    ref SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIMEPOSERIALNO[] SERIALNUMBER, 
-                    ref SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIMEPOSERIALNOX[] SERIALNUMBERX, 
-                    out SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPIEIKP EXPPOEXPIMPHEADER) {
-            SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPI_PO_CHANGERequest inValue = new SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPI_PO_CHANGERequest();
+                    SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEDCM VERSIONS, 
+                    ref SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEDCM_ALLVERSIONS[] ALLVERSIONS, 
+                    ref SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIPAREX[] EXTENSIONIN, 
+                    ref SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIPAREX[] EXTENSIONOUT, 
+                    ref SustitucionMOAWS.ModificarOCWebServiceMOA.BAPI_INVOICE_PLAN_HEADER[] INVPLANHEADER, 
+                    ref SustitucionMOAWS.ModificarOCWebServiceMOA.BAPI_INVOICE_PLAN_HEADERX[] INVPLANHEADERX, 
+                    ref SustitucionMOAWS.ModificarOCWebServiceMOA.BAPI_INVOICE_PLAN_ITEM[] INVPLANITEM, 
+                    ref SustitucionMOAWS.ModificarOCWebServiceMOA.BAPI_INVOICE_PLAN_ITEMX[] INVPLANITEMX, 
+                    ref SustitucionMOAWS.ModificarOCWebServiceMOA._NFM_BAPIDOCITM[] NFMETALLITMS, 
+                    ref SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOACCOUNT[] POACCOUNT, 
+                    ref SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOACCOUNTPROFITSEGMENT[] POACCOUNTPROFITSEGMENT, 
+                    ref SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOACCOUNTX[] POACCOUNTX, 
+                    ref SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOADDRDELIVERY[] POADDRDELIVERY, 
+                    ref SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOCOMPONENT[] POCOMPONENTS, 
+                    ref SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOCOMPONENTX[] POCOMPONENTSX, 
+                    ref SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOCOND[] POCOND, 
+                    ref SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOCONDHEADER[] POCONDHEADER, 
+                    ref SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOCONDHEADERX[] POCONDHEADERX, 
+                    ref SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOCONDX[] POCONDX, 
+                    ref SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIEKES[] POCONFIRMATION, 
+                    ref SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIESUCC[] POCONTRACTLIMITS, 
+                    ref SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIEIPO[] POEXPIMPITEM, 
+                    ref SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIEIPOX[] POEXPIMPITEMX, 
+                    ref SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIEKBE[] POHISTORY, 
+                    ref SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIEKBE_MA[] POHISTORY_MA, 
+                    ref SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIEKBES[] POHISTORY_TOTALS, 
+                    ref SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOITEM[] POITEM, 
+                    ref SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOITEMX[] POITEMX, 
+                    ref SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIESUHC[] POLIMITS, 
+                    ref SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIEKKOP[] POPARTNER, 
+                    ref SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOSCHEDULE[] POSCHEDULE, 
+                    ref SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOSCHEDULX[] POSCHEDULEX, 
+                    ref SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIESLLC[] POSERVICES, 
+                    ref SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIESLLTX[] POSERVICESTEXT, 
+                    ref SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIITEMSHIP[] POSHIPPING, 
+                    ref SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOSHIPPEXP[] POSHIPPINGEXP, 
+                    ref SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIITEMSHIPX[] POSHIPPINGX, 
+                    ref SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIESKLC[] POSRVACCESSVALUES, 
+                    ref SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOTEXTHEADER[] POTEXTHEADER, 
+                    ref SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOTEXT[] POTEXTITEM, 
+                    ref SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIRET2[] RETURN, 
+                    ref SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOSERIALNO[] SERIALNUMBER, 
+                    ref SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOSERIALNOX[] SERIALNUMBERX, 
+                    out SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIEIKP EXPPOEXPIMPHEADER) {
+            SustitucionMOAWS.ModificarOCWebServiceMOA.SI_MMRFC_MODIFICAR_OCRequest inValue = new SustitucionMOAWS.ModificarOCWebServiceMOA.SI_MMRFC_MODIFICAR_OCRequest();
             inValue.MEMORY_COMPLETE = MEMORY_COMPLETE;
             inValue.MEMORY_UNCOMPLETE = MEMORY_UNCOMPLETE;
             inValue.NO_AUTHORITY = NO_AUTHORITY;
@@ -23723,6 +24176,7 @@ namespace SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA {
             inValue.INVPLANHEADERX = INVPLANHEADERX;
             inValue.INVPLANITEM = INVPLANITEM;
             inValue.INVPLANITEMX = INVPLANITEMX;
+            inValue.NFMETALLITMS = NFMETALLITMS;
             inValue.POACCOUNT = POACCOUNT;
             inValue.POACCOUNTPROFITSEGMENT = POACCOUNTPROFITSEGMENT;
             inValue.POACCOUNTX = POACCOUNTX;
@@ -23757,7 +24211,7 @@ namespace SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA {
             inValue.RETURN = RETURN;
             inValue.SERIALNUMBER = SERIALNUMBER;
             inValue.SERIALNUMBERX = SERIALNUMBERX;
-            SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPI_PO_CHANGEResponse retVal = ((SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPI_PO_CHANGEPortType)(this)).BAPI_PO_CHANGE(inValue);
+            SustitucionMOAWS.ModificarOCWebServiceMOA.SI_MMRFC_MODIFICAR_OCResponse retVal = ((SustitucionMOAWS.ModificarOCWebServiceMOA.SI_MMRFC_MODIFICAR_OC)(this)).SI_MMRFC_MODIFICAR_OC(inValue);
             EXPPOEXPIMPHEADER = retVal.EXPPOEXPIMPHEADER;
             ALLVERSIONS = retVal.ALLVERSIONS;
             EXTENSIONIN = retVal.EXTENSIONIN;
@@ -23766,6 +24220,7 @@ namespace SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA {
             INVPLANHEADERX = retVal.INVPLANHEADERX;
             INVPLANITEM = retVal.INVPLANITEM;
             INVPLANITEMX = retVal.INVPLANITEMX;
+            NFMETALLITMS = retVal.NFMETALLITMS;
             POACCOUNT = retVal.POACCOUNT;
             POACCOUNTPROFITSEGMENT = retVal.POACCOUNTPROFITSEGMENT;
             POACCOUNTX = retVal.POACCOUNTX;
@@ -23803,8 +24258,8 @@ namespace SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA {
             return retVal.EXPHEADER;
         }
         
-        public System.Threading.Tasks.Task<SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPI_PO_CHANGEResponse> BAPI_PO_CHANGEAsync(SustitucionMOAWS.ModificarOrdenDeCompraWebServiceMOA.BAPI_PO_CHANGERequest request) {
-            return base.Channel.BAPI_PO_CHANGEAsync(request);
+        public System.Threading.Tasks.Task<SustitucionMOAWS.ModificarOCWebServiceMOA.SI_MMRFC_MODIFICAR_OCResponse> SI_MMRFC_MODIFICAR_OCAsync(SustitucionMOAWS.ModificarOCWebServiceMOA.SI_MMRFC_MODIFICAR_OCRequest request) {
+            return base.Channel.SI_MMRFC_MODIFICAR_OCAsync(request);
         }
     }
 }
