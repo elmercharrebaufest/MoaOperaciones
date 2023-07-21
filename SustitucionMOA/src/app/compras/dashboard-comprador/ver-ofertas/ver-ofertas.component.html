@@ -49,7 +49,7 @@
                     <td class="columna" style="width: 100px !important;"><div class="columnadiv">{{peticionPosicion.Posicion.CodigoMaterialSap.Codigo}}</div></td>
                     <td class="columna" style="width: 150px !important;"><div class="columnadiv">{{peticionPosicion.Posicion.CodigoMaterialSap.Descripcion == null ? peticionPosicion.Posicion.Tarea : peticionPosicion.Posicion.CodigoMaterialSap.Descripcion}}</div></td>
                     <td class="columna" style="width: 90px !important; "><div class="columnadiv">{{peticionPosicion.Posicion.TextoSuministro}}</div></td>
-                    <td class="columna" style="width: 80px !important; ">{{peticionPosicion.Posicion.CantidadPendiente | number:'1.2-2'}</td>
+                    <td class="columna" style="width: 80px !important; ">{{peticionPosicion.Posicion.CantidadPendiente | number:'1.2-2'}}</td>
 
                     <td pEditableColumn class="columna" style="width: 60px !important; ">
                         <p-cellEditor>
@@ -117,7 +117,7 @@
                             <ng-container *ngFor="let cotizacionPosicion of proveedor.Cotizacion.CotizacionPosiciones">
                                 <ng-container *ngIf="peticionPosicion.Id == cotizacionPosicion.PeticionDeOfertaSolpPosicion_Id">
                                     <ng-container *ngIf="cotizacionPosicion.NoDisponible != true">
-                                        <td class="columna border2-left" style="width: 80px !important; ">{{cotizacionPosicion.Cantidad  | number:'1.2-2'}}</td>
+                                        <td class="columna border2-left" style="width: 80px !important; ">{{cotizacionPosicion.Cantidad | number:'1.2-2'}}</td>
                                         <td class="columna" style="width: 100px !important;">{{cotizacionPosicion.UnidadMedida.Descripcion}}</td>
                                         <td class="columna" style="width: 100px !important;">{{cotizacionPosicion.MonedaDescripcion}} {{cotizacionPosicion.Precio | number:'1.2-2'}}</td>
                                         <td class="columna" style="width: 100px !important;">{{cotizacionPosicion.MonedaDescripcion}} {{cotizacionPosicion.PrecioTotal | number:'1.2-2'}}</td>
