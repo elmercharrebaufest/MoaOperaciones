@@ -66,8 +66,8 @@
             <!--AÑANDIR COMENTARIO-->
             <div class="col-xs-12 col-sm-12 col-md-12 shadow contenedorNuevoComentario" id="contenedorNuevoComentario">
                 <hr>
-                <quill-editor #quillEditor [placeholder]="'Añadir comentario'" [styles]="commentStyles" [content]="commentContent" [modules]="editorModules" 
-                class="col-xs-12 col-sm-12 col-md-9" [(ngModel)]="detalle"></quill-editor>
+                <angular-editor #angularEditor class="col-xs-12 col-sm-12 col-md-9" [placeholder]="'Añadir Comentario'"
+                [(ngModel)]="detalle" [config]="config"></angular-editor>
                 <div class="col-xs-12 col-sm-12 col-md-2">
                     <input [disabled]="disable()" class="adjuntarArchivo" #fileInput type="image"
                         src="Content/images/buttons/Adjuntar.svg">
