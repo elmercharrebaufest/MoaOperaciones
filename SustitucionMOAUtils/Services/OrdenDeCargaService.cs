@@ -677,7 +677,7 @@ namespace SustitucionMOAUtils.Services
             }
 
             // Solo en el caso que el response dé ok para crear la orden tiene que verificar el vencimiento
-            if (!esJob && puedeCrearPedido )
+            if (!esJob && puedeCrearPedido)
             {
                 if (!ValidarVencimientoContrato(ordenDeCarga.ContratoIngresado, cliente))
                 {
@@ -2344,7 +2344,7 @@ namespace SustitucionMOAUtils.Services
                 var rangoFechas = string.IsNullOrEmpty(req.FechaDesde) || string.IsNullOrEmpty(req.FechaHasta) ? null :
                     CommonService.toDateList(req.FechaDesde, req.FechaHasta);
                 var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
-                
+
                 var material =
                     usuario.TieneRol(RolEnum.Administracion) || usuario.TieneRol(RolEnum.ClienteConCpedg)
                         ? string.Empty
@@ -2358,7 +2358,7 @@ namespace SustitucionMOAUtils.Services
                     Fechas = rangoFechas,
                     Material = material,
                     Pendiente = true, // Contratos ABIERTOS
-                    TipoContrato = TipoContratoFAS.Normal
+                    TipoContrato = TipoContratoFAS.Todos
                 };
 
                 var ordenCargaConsumer = new OrdenCargaConsumerMOA();
