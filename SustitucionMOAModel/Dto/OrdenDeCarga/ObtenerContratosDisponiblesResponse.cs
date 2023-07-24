@@ -29,14 +29,6 @@ namespace SustitucionMOAModel.Dto.OrdenDeCarga
 
         public MaterialDto Producto { get; set; }
         public decimal? KgDisponibles { get; set; }
-        //public string Label
-        //{
-        //    get
-        //    {
-        //        var kg = KgDisponiblesTn == null ? "" : $" {KgDisponiblesTn} kg Disp.";
-        //        return $"{NumeroContrato} - {DescripcionProducto}{kg}";
-        //    }
-        //}
         public string DescripcionProducto
         {
             get
@@ -86,17 +78,6 @@ namespace SustitucionMOAModel.Dto.OrdenDeCarga
                 Descripcion = producto?.Nombre,
                 Abreviacion = producto?.Abreviacion
             };
-            KgDisponibles = ObtenerKgDisponiblesTn(contratoSAP);
-        }
-        public decimal ObtenerKgDisponiblesTn(Result contratoSAP)
-        {
-            var kgEntregadosYPendientesEntrega = contratoSAP.Detalles.Select(det =>
-                det.KilosEntrega== 0 ? ObtenerKgEstandar(contratoSAP) : det.KilosEntrega).Sum();
-            
-            return Math.Round(contratoSAP.KilosTotales - kgEntregadosYPendientesEntrega, 2);
-        }
-        private decimal ObtenerKgEstandar(Result contratoSAP) {
-            return contratoSAP.Producto.TrimStart('0') == "99709" ? 20000 : 30000;
         }
     }
 }
