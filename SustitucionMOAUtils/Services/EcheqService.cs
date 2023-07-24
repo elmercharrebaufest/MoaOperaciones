@@ -497,7 +497,9 @@ namespace SustitucionMOAUtils.Services
 
         public string AgregarApertura(EcheqRequestModel request)
         {
-            bool esAperturaConError = false;
+            string mensajeErrorBloqueo = "Bloqueado por";
+            string mensajeErrorBloqueoReemplazo = "El Contrato esta siendo tratado, espere un momentos.";
+            string mensaje = string.Empty;
             EcheqLiquidacion liquidacion = repositorio.Obtener<EcheqLiquidacion>(x =>
             x.Documento == request.Documento &&
             x.EcheqNegocio.Contrato == request.Contrato &&
@@ -520,13 +522,15 @@ namespace SustitucionMOAUtils.Services
                 {
                     var resultadoAnularAperturaCheque = echeqAnularAperturaChequeConsumerMOA.Request(apertura.OrdenCheque.ToString(), liquidacion.Documento, liquidacion.Ejercicio, DateTime.Now.ToString("yyyy-MM-dd"), DateTime.Now.ToString("HH:mm:ss"), "MOA", "");
                     if (resultadoAnularAperturaCheque.HayError)
-                        throw new ValidationCustomException(string.Join(", ", resultadoAnularAperturaCheque.Errores.Select(x => x.Message).ToList()));
-
+                    {
+                        mensaje = string.Join(", ", resultadoAnularAperturaCheque.Errores.Select(x => x.Message.Contains(mensajeErrorBloqueo)? mensajeErrorBloqueoReemplazo : x.Message).ToList());
+                        throw new ValidationCustomException(mensaje);
+                        //throw new ValidationCustomException(string.Join(", ", resultadoAnularAperturaCheque.Errores.Select(x => x.Message).ToList()));
+                    }
                 }
             }
 
             //Agregar Aperturas Nuevas
-            string erroresApertura = string.Empty;
             foreach (var apertura in request.Apertura)
             {
                 //string cuit = liquidacion.EcheqNegocio.Proveedor != null ? liquidacion.EcheqNegocio.Proveedor.CUIT : 
@@ -538,9 +542,12 @@ namespace SustitucionMOAUtils.Services
                                                                                 liquidacion.Documento, liquidacion.Ejercicio, DateTime.Now.ToString("yyyy-MM-dd"), DateTime.Now.ToString("HH:mm:ss"),
                                                                                 apertura.ImporteCheque, "ARP  ", liquidacion.EcheqNegocio.Pedido, request.CodigoProveedor, liquidacion.NumeroCOE, "MOA", "");
                     if (resultadoCargaAperturaCheque.HayError)
-                        throw new ValidationCustomException(string.Join(", ", resultadoCargaAperturaCheque.Errores.Select(x => x.Message).ToList()));
+                    {
+                        mensaje = string.Join(", ", resultadoCargaAperturaCheque.Errores.Select(x => x.Message.Contains(mensajeErrorBloqueo) ? mensajeErrorBloqueoReemplazo : x.Message).ToList());
+                        throw new ValidationCustomException(mensaje);
+                        //throw new ValidationCustomException(string.Join(", ", resultadoCargaAperturaCheque.Errores.Select(x => x.Message).ToList()));
+                    }
                 }
-
 
                 liquidacion.Aperturas.Add(new EcheqApertura
                 {
@@ -553,9 +560,9 @@ namespace SustitucionMOAUtils.Services
             }
 
             repositorio.GuardarCambios();
-            return "La apertura se grabó correctamente.";
+            mensaje = "La apertura se grabó correctamente.";
+            return mensaje;
         }
-
 
         private EcheqLiquidacion CrearLiquidacion(EcheqRequestModel request)
         {
@@ -648,7 +655,7 @@ namespace SustitucionMOAUtils.Services
                 List<EcheqReporteDto> result = repositorio.Listar<EcheqLiquidacion, EcheqReporteDto>(x => new EcheqReporteDto
                 {
                     RazonSocial = x.EcheqNegocio.Proveedor.RazonSocial,
-                    Mail = x.EcheqNegocio.Proveedor.Mail,
+                    Mail = x.UsuarioModificacionId!=null? x.UsuarioModificacion.Mail : x.UsuarioCreacion.Mail,
                     CodigoProveedor = x.EcheqNegocio.Proveedor.CodigoProveedor,
                     Contrato = x.EcheqNegocio.Contrato,
                     LiquidacionMarcada = x.MarcaCheque,
