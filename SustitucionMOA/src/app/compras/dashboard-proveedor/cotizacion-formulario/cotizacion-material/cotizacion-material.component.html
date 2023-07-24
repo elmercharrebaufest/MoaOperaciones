@@ -67,7 +67,7 @@
                             <ng-template pTemplate="input">
                                 <input pInputText type="number" [disabled]="posicionesCompra.Posiciones.CotizacionPosicion.NoDisponible == true"
                                     [(ngModel)]="posicionesCompra.Posiciones.CotizacionPosicion.Cantidad"
-                                    pKeyFilter="int"
+                                    pKeyFilter="num"
                                     (ngModelChange)="calcularValorNeto(posicionesCompra?.Posiciones?.CotizacionPosicion, posicionesCompra.Id); mostrarMensajeNoRespetaCondiciones()" />
                             </ng-template>
                             <ng-template pTemplate="output">
