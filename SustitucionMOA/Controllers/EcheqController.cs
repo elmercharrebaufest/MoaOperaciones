@@ -192,7 +192,6 @@ namespace SustitucionMOA.Controllers
                     Contrato = contrato,
                     Apertura = aperturas
                 };
-
                 return JsonCustom(service.AgregarApertura(request));
 
             }

@@ -1,5 +1,5 @@
 import { trigger, state, style, transition, animate } from '@angular/animations';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit} from '@angular/core';
 import { EcheqContrato, EcheqDocumento } from '../echeq-contrato.model';
 import { registerLocaleData } from '@angular/common';
 import es from '@angular/common/locales/es';
@@ -30,7 +30,7 @@ export class GrillaComponent extends EcheqGestionComponent implements OnInit {
     clasificacionesDeshabilitadas = [""];
     @Input() echeqContratos: Array<EcheqContrato>;
     @BlockUI() blockUI: NgBlockUI;
-
+    esNuevoEcheq: boolean = false;
 
     documentoSelect: EcheqDocumento;
     public itemsPerPage: string;
@@ -41,7 +41,6 @@ export class GrillaComponent extends EcheqGestionComponent implements OnInit {
 
     aforoConf: number;
     cantidadEcheq: number;
-
     ngOnInit() {
         registerLocaleData(es);
         this.itemsPerPage = sessionStorage.getItem("itemsPerPage") ? sessionStorage.getItem("itemsPerPage") : "10";
@@ -265,11 +264,12 @@ export class GrillaComponent extends EcheqGestionComponent implements OnInit {
         }
     }
 
-    showAperturarEcheqDialog(echeqDocumento: EcheqDocumento) {
+    showAperturarEcheqDialog(echeqDocumento: EcheqDocumento, esNuevo: boolean) {
         this.documentoSelect = echeqDocumento;
         if (echeqDocumento.listaChequesApertura == null) {
             echeqDocumento.listaChequesApertura = new Array<EcheqApertura>();
         }
+        this.esNuevoEcheq = esNuevo;
         this.popupVisible.next(true)
     }
 
@@ -303,8 +303,7 @@ export class GrillaComponent extends EcheqGestionComponent implements OnInit {
                 },
                 error => {
                     this.floatMsgService.setErrorMsg(error.message);
-                }
-            );
+                });
         } catch (e) {
             this.floatMsgService.setErrorMsg(e);
         }
@@ -312,6 +311,9 @@ export class GrillaComponent extends EcheqGestionComponent implements OnInit {
 
     agregarApertura() {
         this.blockUI.start('Grabando...')
+        let contratoSeleccionado: string = this.documentoSelect.contrato;
+        let numeroCOESeleccionado: string = this.documentoSelect.numeroCOE;
+
         try {
             this.subscription = this.service.AgregarApertura(this.documentoSelect.documento, this.documentoSelect.pedido, this.documentoSelect.contrato, this.documentoSelect.listaChequesApertura).subscribe(
                 (result: any) => {
@@ -320,8 +322,10 @@ export class GrillaComponent extends EcheqGestionComponent implements OnInit {
                         this.sessionDataService.logout();
                     } else if (result.error != undefined && result.error != "") {
                         this.floatMsgService.setErrorMsg(result.error);
+                        this.errorAperturaDocumento(contratoSeleccionado, numeroCOESeleccionado);
                     } else if (result.info != undefined) {
                         this.floatMsgService.setInfoMsg(result.info);
+                        this.errorAperturaDocumento(contratoSeleccionado, numeroCOESeleccionado);
                     } else {
                         this.floatMsgService.setSuccessMsg(result);
                         this.spinnerComponent.hideIt();
@@ -330,17 +334,29 @@ export class GrillaComponent extends EcheqGestionComponent implements OnInit {
                 error => {
                     this.blockUI.stop();
                     this.floatMsgService.setErrorMsg(error.message);
+                    this.errorAperturaDocumento(contratoSeleccionado, numeroCOESeleccionado);
                 }
             );
         } catch (e) {
             this.floatMsgService.setErrorMsg(e);
+            this.errorAperturaDocumento(contratoSeleccionado, numeroCOESeleccionado);
         }
     }
 
     mask(valor) {
         return valor.replace(/(0)*/, '')
     }
-
+    private errorAperturaDocumento(contratoSeleccionado: string ,numeroCOESeleccionado: string ){
+        if (this.esNuevoEcheq){
+            let contratos = this.echeqContratos.filter(x=> x.contrato == contratoSeleccionado);
+            if (contratos!=null && contratos.length > 0) {
+                let documentosContrato = contratos[0].documentos;
+                let documentos = documentosContrato.filter(x=> x.numeroCOE == numeroCOESeleccionado);
+                if (documentos!=null && documentos.length > 0)
+                    documentos[0].listaChequesApertura = [];
+            }
+        }
+    }
     expandirRow(pagoPendiente) {
         if (pagoPendiente.expanded) pagoPendiente.expanded = false;
         else {
