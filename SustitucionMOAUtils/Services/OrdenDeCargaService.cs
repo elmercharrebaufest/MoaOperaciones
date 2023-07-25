@@ -30,6 +30,7 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading;
 using SustitucionMOAWS.ResponseHandler.OrdenCarga;
+using Org.BouncyCastle.Ocsp;
 
 namespace SustitucionMOAUtils.Services
 {
@@ -69,6 +70,10 @@ namespace SustitucionMOAUtils.Services
             EstadoOrdenDeCarga.SinEnviarASAP,
             EstadoOrdenDeCarga.EntregaAnuladaPedidoPendienteAnulacion,
             EstadoOrdenDeCarga.PendienteCompensacion,
+        };
+        private readonly List<EstadoOrdenDeCarga> estadosNoTieneOrdenPendienteEnvio = new List<EstadoOrdenDeCarga> {
+            EstadoOrdenDeCarga.AnuladaPorVencimiento,
+            EstadoOrdenDeCarga.Anulada
         };
 
         public OrdenDeCargaService(
@@ -382,9 +387,8 @@ namespace SustitucionMOAUtils.Services
                 }
                 else
                 {
-                    var enviaDirectamenteASAP = ValidarKgDisponiblesEnviaDirectamenteASAP(ordenDeCarga, usuario);
                     var crearPedido = !string.IsNullOrWhiteSpace(ordenEditar.ContratoSAP) || verificarOrden;
-                    if (crearPedido && (enviaDirectamenteASAP || puedeEnviarASAP))
+                    if (crearPedido && puedeEnviarASAP)
                     {
                         if (string.IsNullOrWhiteSpace(ordenEditar.ContratoSAP))
                         {
@@ -2362,13 +2366,11 @@ namespace SustitucionMOAUtils.Services
                         productosCodigosSap.Contains(m.CodigoSap));
 
                 var contratosEnOrdenesPendientes = repositorio
-                    .ListarProyeccion<OrdenDeCarga, string>(
-                        x => x.ContratoIngresado,
+                    .Listar<OrdenDeCarga>(
                         x =>
                             x.Cliente.CodigoProveedor == req.ClienteCodigo &&
                             string.IsNullOrEmpty(x.NumeroPedido) &&
-                            x.Estado != EstadoOrdenDeCarga.Anulada &&
-                            x.Estado != EstadoOrdenDeCarga.AnuladaPorVencimiento);
+                            !estadosNoTieneOrdenPendienteEnvio.Contains(x.Estado));
 
                 var contratosDisponiblesResp = new ObtenerContratosDisponiblesResponse
                 {
@@ -2377,7 +2379,7 @@ namespace SustitucionMOAUtils.Services
                             new ContratoOrdenFas(contratoSap, productosBD)
                             {
                                 KgDisponibles = _kgDisponiblesFasService.ObtenerKgDisponiblesContrato(contratoSap,
-                                    contratosEnOrdenesPendientes.Where(x => x == contratoSap.Contrato).Count())
+                                    contratosEnOrdenesPendientes)
                             })
                         .OrderBy(contrato => contrato.DescripcionProducto)
                         .ToList()
@@ -2821,8 +2823,15 @@ namespace SustitucionMOAUtils.Services
 
                 if (contratoSAP == null)
                     throw new InfoCustomException("No se encontró el contrato en SAP");
+                var ordenesPendientes = repositorio
+                    .Listar<OrdenDeCarga>(
+                        x =>
+                            ((!string.IsNullOrEmpty(x.ContratoSAP) && x.ContratoSAP == numeroContrato) ||
+                            (string.IsNullOrEmpty(x.ContratoSAP) && x.ContratoIngresado == numeroContrato)) &&
+                            string.IsNullOrEmpty(x.NumeroPedido) &&
+                            !estadosNoTieneOrdenPendienteEnvio.Contains(x.Estado));
 
-                var kilosDisponibles = _kgDisponiblesFasService.ObtenerKgDisponiblesContrato(contratoSAP);
+                var kilosDisponibles = _kgDisponiblesFasService.ObtenerKgDisponiblesContrato(contratoSAP, ordenesPendientes);
                 if (kilosDisponibles <= Constante.FAS_KILOS_LIMITE_INFERIOR)
                     throw new InfoCustomException("El contrato seleccionado no tiene kg disponibles");
                 if (kilosDisponibles < Constante.FAS_KILOS_LIMITE_SUPERIOR)
