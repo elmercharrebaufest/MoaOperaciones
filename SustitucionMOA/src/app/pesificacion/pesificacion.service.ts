@@ -4,7 +4,7 @@ import { Injectable } from '@angular/core';
 import { BaseService } from './../common/services/BaseService';
 import { timeoutWith, map } from 'rxjs/operators';
 import { ApiResponse } from '../common/models/response';
-import { DolarGirasol } from '../common/models/dolarMaterial';
+import { DolarGirasol, DolarMaiz } from '../common/models/dolarMaterial';
 
 @Injectable()
 export class PesificacionService extends BaseService {
@@ -39,6 +39,11 @@ export class PesificacionService extends BaseService {
     public getDolarGirasol(): Observable<ApiResponse<DolarGirasol>> {
         return this.http
             .get<ApiResponse<DolarGirasol>>('/api/pesificacion/getDolarGirasol')
+            .pipe(timeoutWith(360000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde "))));
+    }
+    public getDolarMaiz(): Observable<ApiResponse<DolarMaiz>> {
+        return this.http
+            .get<ApiResponse<DolarGirasol>>('/api/pesificacion/getDolarMaiz')
             .pipe(timeoutWith(360000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde "))));
     }
     protected setComprobantePesificacion(contrato: string, fijacion: string, cantidad: number) {

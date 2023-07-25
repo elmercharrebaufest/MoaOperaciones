@@ -11,7 +11,7 @@ import { MensajeComponent } from './../common/view-child/mensaje/mensaje.compone
 import { SpinnerComponent } from './../common/view-child/spinner/spinner.component';
 import { SpinnerSmallComponent } from './../common/view-child/spinner-small/spinner-small.component';
 import { PesificacionBaseComponent } from './pesificacion-base.component';
-import { DolarGirasol } from '../common/models/dolarMaterial';
+import { DolarGirasol, DolarMaiz } from '../common/models/dolarMaterial';
 declare var $: any;
 
 
@@ -52,6 +52,7 @@ export class PesificacionComponent extends PesificacionBaseComponent implements 
     visibleSoja200: boolean = false;
     soja200: any = null;
     dolarGirasol?: DolarGirasol;
+    dolarMaiz?: DolarMaiz;
     ngOnInit() {
         super.ngOnInit();
         this.setTabs();
@@ -190,7 +191,27 @@ export class PesificacionComponent extends PesificacionBaseComponent implements 
                 } else if (result.info != undefined) {
                     this.mensajeComponent.setInfoMsg(result.info);
                 } else {
-                       this.dolarGirasol = result.data;
+                    this.dolarGirasol = result.data;
+                }
+            },
+            error => {
+                this.spinnerComponent.hideIt();
+                this.mensajeComponent.setErrorMsg(error.message);
+                return false;
+            },
+
+        );
+        this.service.getDolarMaiz().subscribe(
+            (result) => {
+                this.spinnerComponent.hideIt();
+                if (result.logout == true) {
+                    this.sessionDataService.logout();
+                } else if (result.error != undefined && result.error != "") {
+                    this.mensajeComponent.setErrorMsg(result.error);
+                } else if (result.info != undefined) {
+                    this.mensajeComponent.setInfoMsg(result.info);
+                } else {
+                    this.dolarMaiz = result.data;
                 }
             },
             error => {

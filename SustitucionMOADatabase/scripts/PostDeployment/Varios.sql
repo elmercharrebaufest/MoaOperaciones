@@ -49,3 +49,20 @@ IF NOT EXISTS (SELECT TOP 1 1 FROM Configuracion WHERE Code = 'DolarGirasolCotiz
 BEGIN
 	insert into Configuracion values ('DolarGirasolCotizacion','300')
 END
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM Configuracion WHERE Code = 'DolarMaizDesde') 
+BEGIN
+	insert into Configuracion values ('DolarMaizDesde','2023-07-25')
+END
+IF NOT EXISTS (SELECT TOP 1 1 FROM Configuracion WHERE Code = 'DolarMaizHasta') 
+BEGIN
+	insert into Configuracion values ('DolarMaizHasta','2023-08-31')
+END
+IF NOT EXISTS (SELECT TOP 1 1 FROM Configuracion WHERE Code = 'DolarMaizFechaCotizacion') 
+BEGIN
+	insert into Configuracion values ('DolarMaizFechaCotizacion','2015-07-25')
+END
+IF NOT EXISTS (SELECT TOP 1 1 FROM Configuracion WHERE Code = 'DolarMaizCotizacion') 
+BEGIN
+	insert into Configuracion values ('DolarMaizCotizacion','340')
+END
