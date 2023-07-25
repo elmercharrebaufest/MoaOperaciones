@@ -27,7 +27,7 @@ export class ContratoOrdenFas {
         kgDisponibles?: number) {
 
         this.NumeroContrato = numeroContrato || this.NumeroContrato;
-        this.KgDisponibles = kgDisponibles === null || kgDisponibles === undefined ? undefined : kgDisponibles;
+        this.KgDisponibles = kgDisponibles === null || kgDisponibles === undefined ? this.KgDisponibles : kgDisponibles;
         this.Producto = producto || this.Producto;
         const prod = this.Producto.Abreviacion || this.Producto.Descripcion;
         const kgs = this.KgDisponibles <= 0 ? "sin kg. Disp." :
