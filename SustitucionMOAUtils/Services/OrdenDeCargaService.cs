@@ -30,7 +30,6 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading;
 using SustitucionMOAWS.ResponseHandler.OrdenCarga;
-using Org.BouncyCastle.Ocsp;
 
 namespace SustitucionMOAUtils.Services
 {
@@ -2369,8 +2368,8 @@ namespace SustitucionMOAUtils.Services
                     .Listar<OrdenDeCarga>(
                         x =>
                             x.Cliente.CodigoProveedor == req.ClienteCodigo &&
-                            ( 
-                                (string.IsNullOrEmpty(x.NumeroPedido) && x.TipoContrato== TipoContratoFAS.Normal) ||
+                            (
+                                (string.IsNullOrEmpty(x.NumeroPedido) && x.TipoContrato == TipoContratoFAS.Normal) ||
                                 (string.IsNullOrEmpty(x.NumeroEntrega) && x.TipoContrato == TipoContratoFAS.Anticipado)
                             ) &&
                             !estadosNoTieneOrdenPendienteEnvio.Contains(x.Estado));

@@ -614,7 +614,6 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
             this.ordenDeCarga.TipoContrato = this.ordenDeCarga.ContratoSeleccionado.TipoContrato;
             let materialSeleccionado = this.listaMateriales.find(mat => mat.MaterialId === this.ordenDeCarga.Producto_Id);
             this.cambioProducto();
-            debugger
             this.validaCPEDG = (materialSeleccionado != undefined && materialSeleccionado.ValidaSisaRuca);
             this.validarKilosDisponibles()
             if (this.ordenDeCarga.ContratoSeleccionado.TipoContrato === TipoContrato.FacturaAnticipada)
@@ -1256,8 +1255,6 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                 const { KgDisponibles } = this.facturaSeleccionada;
                 if (KgDisponibles >= KILOS_DISPONIBLES_APROBADO)
                     return;
-                console.log(KILOS_DISPONIBLES_APROBADO)
-                debugger
                 const mensaje = "Factura sin Kilos disponibles.";
 
                 if (KgDisponibles <= SIN_KILOS_DISPONIBLES)
