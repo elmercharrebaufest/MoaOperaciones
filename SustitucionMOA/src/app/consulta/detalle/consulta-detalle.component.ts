@@ -796,6 +796,7 @@ export class DetalleConsultaComponent extends BaseComponent {
 
         $("#insertImage-").hide();
         $("#insertVideo-").hide();
+        $("#unlink-").hide();
         $("#insertHorizontalRule-").hide();
         $("#backgroundColorPicker-").hide();
         $("#subscript-").hide();
