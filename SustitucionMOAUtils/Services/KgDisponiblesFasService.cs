@@ -11,7 +11,7 @@ namespace SustitucionMOAUtils.Services
     public class KgDisponiblesFasService : IKgDisponiblesFasService
     {
 
-        public decimal ObtenerKgDisponiblesContrato(Result contratoSAP)
+        public decimal ObtenerKgDisponiblesContrato(Result contratoSAP, int cantidadPedidosPendientesDeCrear = 0)
         {
             decimal kilosDisponibles = 0;
             switch (contratoSAP.TipoContrato)
@@ -20,20 +20,24 @@ namespace SustitucionMOAUtils.Services
                     kilosDisponibles = KgDisponiblesContratoAnticipado(contratoSAP);
                     break;
                 default:
-                    kilosDisponibles = KgDisponiblesContratoNormal(contratoSAP);
+                    kilosDisponibles = KgDisponiblesContratoNormal(contratoSAP, cantidadPedidosPendientesDeCrear);
                     break;
             }
             return Math.Round(kilosDisponibles, 2);
         }
 
-        public decimal KgDisponiblesContratoNormal(Result contratoSAP)
+        private decimal KgDisponiblesContratoNormal(Result contratoSAP, int cantidadPedidosPendientesDeCrear = 0)
         {
-            var kgEntregadosYPendientesEntrega = contratoSAP.Detalles.Select(det =>
-                det.KilosEntrega == 0 ? ObtenerKgEstandar(contratoSAP) : det.KilosEntrega).Sum();
+            var kilosEntregaEstandar = ObtenerKgEstandar(contratoSAP);
 
-            return contratoSAP.KilosTotales - kgEntregadosYPendientesEntrega;
+            var kgEntregadosYPendientesEntrega = contratoSAP.Detalles.Select(det =>
+                det.KilosEntrega == 0 ? kilosEntregaEstandar : det.KilosEntrega).Sum();
+
+            var kilosPedidosPendientesCreacion = cantidadPedidosPendientesDeCrear * kilosEntregaEstandar;
+
+            return contratoSAP.KilosTotales - kgEntregadosYPendientesEntrega - kilosPedidosPendientesCreacion;
         }
-        public decimal KgDisponiblesContratoAnticipado(Result contratoSAP)
+        private decimal KgDisponiblesContratoAnticipado(Result contratoSAP)
         {
             var kilosConsumidosPorTodosLosPedidos = contratoSAP.Detalles
                 .GroupBy(det => det.Pedido)
@@ -42,7 +46,7 @@ namespace SustitucionMOAUtils.Services
 
             return contratoSAP.KilosTotales - kilosConsumidosPorTodosLosPedidos;
         }
-        public decimal ObtenerKgEntregadosPorGrupoPedidos(List<Detail> grupoPedidos)
+        private decimal ObtenerKgEntregadosPorGrupoPedidos(List<Detail> grupoPedidos)
         {
             var pedidoPrincipal = AuxObtenerDetallePedidoPrincipal(grupoPedidos);
             if (pedidoPrincipal is null)
@@ -51,11 +55,11 @@ namespace SustitucionMOAUtils.Services
             var kilosConsumidosPorPedido = ObtenerKgEntregadosPorPedido(grupoPedidos);
             return kilosConsumidosPorPedido;
         }
-        public decimal ObtenerKgEntregadosPorPedido(List<Detail> grupoPedidos)
+        private decimal ObtenerKgEntregadosPorPedido(List<Detail> grupoPedidos)
         {
             return grupoPedidos.Sum(det => det.KilosEntrega);
         }
-        public decimal ObtenerKgEstandar(Result contratoSAP)
+        private decimal ObtenerKgEstandar(Result contratoSAP)
         {
             return contratoSAP.Producto.TrimStart('0') == Constante.CODIGO_PELLET_GIRASOL ?
                 Constante.KG_STANDARD_PELLET_GIRASOL : Constante.KG_STANDARD;

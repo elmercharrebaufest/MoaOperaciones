@@ -1004,33 +1004,14 @@ namespace SustitucionMOAUtils.Services
         public string NotificarVencimientoOrdenCarga(int ordenId, string mailUsuario)
         {
             var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
-            var puedeEnviarASAP = usuario.TienePermiso("ENVIAR A SAP");
-            var emailSenderData = new EmailSenderData();
-            var mailsComerciales = ConfigurationManager.AppSettings["EmailToComerciales"];
-            var mailsMesaVentaFas = ConfigurationManager.AppSettings["EmailToMesaVentaFas"];
+            var puedeEnviarASAP = usuario.TienePermiso(PermisoEnum.EnviarASap);
             var orden = repositorio.Obtener<OrdenDeCarga>(x => x.Id == ordenId);
-            var mail = orden.Cliente.Mail;
-            var titulo = $"Se informa que el día {DateTime.Now.ToString()} se ha vencido la siguiente orden de carga:";
-            var cabecera = "Orden :";
-            var ordenVencidas = new StringBuilder();
 
             if (puedeEnviarASAP)
                 AnularOrdenSap(orden);
 
-            ordenVencidas.Append($"<tr><td>{orden.Id}</td><td>{orden.ContratoIngresado}</td><td>{orden.Cliente.RazonSocial}</td><td>{orden.CodigoCorredor}</td><td>{orden.NombreChofer}</td><td>{orden.ChasisAcoplado}</td><td>{orden.PatenteAcoplado}</td><td>{(string.IsNullOrEmpty(orden.PedidoSAP) ? orden.NumeroPedido : orden.PedidoSAP)}</td><td>{orden.NumeroEntrega}</td><td>{orden.FechaCarga}</td><td>{orden.FechaVencimiento}</td></tr>");
-            var cuerpoTemplate = File.ReadAllText(EMAIL_TEMPLATE_ORDENES);
-            emailSenderData.Asunto = $"Molinos Agro - Notificación de orden vencida- {orden.Cliente.RazonSocial}";
-            emailSenderData.Cuerpo = string.Format(cuerpoTemplate, DateTime.Now.ToString(), orden.Id, ordenVencidas, titulo, cabecera);
+            emailFasService.EnviarMailOrdenDeCargaVencida(orden);
 
-            emailSenderData.Mails = CargarYObtenerMailsDestino(emailSenderData.Mails, new List<string>() { mail, mailsComerciales, mailsMesaVentaFas });
-
-            if (emailSenderData != null)
-            {
-                //if (!HttpContext.Current.IsDebuggingEnabled)
-                //{
-                EmailSender.EnviarMail(emailSenderData);
-                //}
-            }
             orden.Estado = EstadoOrdenDeCarga.AnuladaPorVencimiento;
             repositorio.GuardarCambios();
 
@@ -2380,14 +2361,26 @@ namespace SustitucionMOAUtils.Services
                         m.TablaSeccionMaterial == TablaSeccionMaterial.OrdenDeCarga &&
                         productosCodigosSap.Contains(m.CodigoSap));
 
+                var contratosEnOrdenesPendientes = repositorio
+                    .ListarProyeccion<OrdenDeCarga, string>(
+                        x => x.ContratoIngresado,
+                        x =>
+                            x.Cliente.CodigoProveedor == req.ClienteCodigo &&
+                            string.IsNullOrEmpty(x.NumeroPedido) &&
+                            x.Estado != EstadoOrdenDeCarga.Anulada &&
+                            x.Estado != EstadoOrdenDeCarga.AnuladaPorVencimiento);
+
                 var contratosDisponiblesResp = new ObtenerContratosDisponiblesResponse
                 {
-                    Contratos = consumerRes.Resultados.Select(x =>
-                    {
-                        var contrato = new ContratoOrdenFas(x, productosBD);
-                        contrato.KgDisponibles = _kgDisponiblesFasService.ObtenerKgDisponiblesContrato(x);
-                        return contrato;
-                    }).OrderBy(contrato => contrato.DescripcionProducto).ToList()
+                    Contratos = consumerRes.Resultados
+                        .Select(contratoSap =>
+                            new ContratoOrdenFas(contratoSap, productosBD)
+                            {
+                                KgDisponibles = _kgDisponiblesFasService.ObtenerKgDisponiblesContrato(contratoSap,
+                                    contratosEnOrdenesPendientes.Where(x => x == contratoSap.Contrato).Count())
+                            })
+                        .OrderBy(contrato => contrato.DescripcionProducto)
+                        .ToList()
                 };
 
                 return contratosDisponiblesResp;
@@ -2495,23 +2488,17 @@ namespace SustitucionMOAUtils.Services
 
             return result;
         }
+
         public bool EmailGestionarAlta(string cuit, string razonSocial, bool esIntermediarioFlete)
         {
-            var emailSenderData = new EmailSenderData();
-            string mailsGestion = ConfigurationManager.AppSettings["EmailToGestionAltaCuit"];
-            string mailsCopiaGestion = ConfigurationManager.AppSettings["CopiaEmailToGestionAltaCuit"];
-
-            emailSenderData.Mails = CargarYObtenerMailsDestino(new List<string> { }, new List<string> { mailsGestion });
-            emailSenderData.Copias = CargarYObtenerMailsDestino(new List<string> { }, new List<string> { mailsCopiaGestion });
-
-            emailSenderData.Asunto = esIntermediarioFlete ? "ALTA CUIT INTERMEDIARIO FLETE" : "ALTA TEMPRANA CUIT";
-            emailSenderData.Cuerpo = esIntermediarioFlete ?
-                string.Format("Razón social: {0}, CUIT: {1}", razonSocial, cuit) :
-                string.Format("Se solicita el alta temprana del CUIT: {0} , Razón Social: {1}", cuit, razonSocial);
-
-            Log.Info("Gestión alta mail: " + emailSenderData.ToJson());
-            EmailSender.EnviarMail(emailSenderData);
-
+            if (esIntermediarioFlete)
+            {
+                emailFasService.EnviarMailAltaIntermediarioFlete(cuit, razonSocial);
+            }
+            else
+            {
+                emailFasService.EnviarMailAltaTempranaCuit(cuit, razonSocial);
+            }
             return true;
         }
 

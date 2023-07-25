@@ -19,8 +19,32 @@ namespace SustitucionMOAUtils.Services.Email
         private static readonly string DireccionMailAuditoriaOrdenesVencidas = ConfigurationManager.AppSettings["EmailToAuditoriaOrdenesVencidas"];
         private static readonly string DireccionMailCobranzas = ConfigurationManager.AppSettings["EmailToCobranzas"];
         private static readonly string DireccionMailComerciales = ConfigurationManager.AppSettings["EmailToComerciales"];
+        private static readonly string DireccionMailGestionAltaCuit = ConfigurationManager.AppSettings["EmailToGestionAltaCuit"];
+        private static readonly string DireccionMailGestionAltaCuitCopia = ConfigurationManager.AppSettings["CopiaEmailToGestionAltaCuit"];
         private static readonly string DireccionMailMesaEntrSanLorenzo = ConfigurationManager.AppSettings["EmailToMesaENTSL"];
         private static readonly string DireccionMailMesaVentaFas = ConfigurationManager.AppSettings["EmailToMesaVentaFas"];
+
+        public void EnviarMailAltaIntermediarioFlete(string cuit, string razonSocial)
+        {
+            var emailSenderData = new EmailSenderData
+            {
+                Mails = ObtenerListaDestinatarios(new string[] { DireccionMailGestionAltaCuit, DireccionMailGestionAltaCuitCopia }),
+                Asunto = GenerarAsunto("ALTA CUIT INTERMEDIARIO FLETE"),
+                Cuerpo = $"Razón social: {razonSocial}, CUIT: {cuit}"
+            };
+            EmailSender.EnviarMail(emailSenderData);
+        }
+
+        public void EnviarMailAltaTempranaCuit(string cuit, string razonSocial)
+        {
+            var emailSenderData = new EmailSenderData
+            {
+                Mails = ObtenerListaDestinatarios(new string[] { DireccionMailGestionAltaCuit, DireccionMailGestionAltaCuitCopia }),
+                Asunto = GenerarAsunto("ALTA TEMPRANA CUIT"),
+                Cuerpo = $"Se solicita el alta temprana del CUIT: {cuit}, Razón social: {razonSocial}"
+            };
+            EmailSender.EnviarMail(emailSenderData);
+        }
 
         public void EnviarMailContratoSinKm(OrdenDeCarga ordenDeCarga)
         {
@@ -53,6 +77,24 @@ namespace SustitucionMOAUtils.Services.Email
             {
                 Mails = ObtenerListaDestinatarios(new string[] { DireccionMailComerciales, DireccionMailMesaVentaFas }),
                 Asunto = GenerarAsunto($"Contrato Vencido - {ordenDeCarga.Cliente.RazonSocial}"),
+                Cuerpo = cuerpo
+            };
+            EnviarMail(emailSenderData);
+        }
+
+        public void EnviarMailOrdenDeCargaVencida(OrdenDeCarga ordenDeCarga)
+        {
+            var cuerpoTemplate = File.ReadAllText(TEMPLATE_NOTIFICACION_ORDENES);
+
+            var titulo = $"Se informa que el día {DateTime.Now} se ha vencido la siguiente orden de carga:";
+            var cabecera = "Orden: ";
+            var tablaOrden = GenerarTablaOrdenesANotificar(new OrdenDeCarga[] { ordenDeCarga });
+            var cuerpo = string.Format(cuerpoTemplate, DateTime.Now, ordenDeCarga.Id, tablaOrden, titulo, cabecera);
+
+            var emailSenderData = new EmailSenderData
+            {
+                Mails = ObtenerListaDestinatarios(new string[] { ordenDeCarga.Cliente.Mail, DireccionMailComerciales, DireccionMailMesaVentaFas }),
+                Asunto = GenerarAsunto($"Molinos Agro - Notificación de orden vencida - {ordenDeCarga.Cliente.RazonSocial}"),
                 Cuerpo = cuerpo
             };
             EnviarMail(emailSenderData);

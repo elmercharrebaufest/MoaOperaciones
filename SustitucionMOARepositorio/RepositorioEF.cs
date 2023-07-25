@@ -265,6 +265,14 @@ namespace SustitucionMOARepositorio
         {
             return consulta.Ejecutar(context);
         }
+
+        public List<TProyeccion> ListarProyeccion<TEntidad, TProyeccion>(Expression<Func<TEntidad, TProyeccion>> proyeccion, Expression<Func<TEntidad, bool>> filtro = null) where TEntidad : class
+        {
+            var queryEntidad = filtro != null ? Set<TEntidad>().Where(filtro) : Set<TEntidad>();
+
+            return queryEntidad.Select(proyeccion).ToList();
+        }
+
         private IQueryable<TEntidad> ListarQueryable<TEntidad>(IQueryable<TEntidad> resultado, Expression<Func<TEntidad, bool>> filtro, string orden, DirOrden direccionOrden, int maxResultados, IEnumerable<Expression<Func<TEntidad, object>>> includes = null) where TEntidad : class
         {
             if (filtro != null)
