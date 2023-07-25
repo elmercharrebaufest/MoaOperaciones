@@ -94,7 +94,7 @@ namespace SustitucionMOAUtils.Services
                         x =>
                             ((!string.IsNullOrEmpty(x.ContratoSAP) && x.ContratoSAP == numeroContrato) ||
                             (string.IsNullOrEmpty(x.ContratoSAP) && x.ContratoIngresado == numeroContrato)) &&
-                            string.IsNullOrEmpty(x.NumeroPedido) &&
+                            (string.IsNullOrEmpty(x.NumeroEntrega) && x.TipoContrato == TipoContratoFAS.Anticipado) &&
                             !estadosNoTieneOrdenPendienteEnvio.Contains(x.Estado));
             var listaFacturas = contrato.Detalles
                .GroupBy(det => det.Pedido)

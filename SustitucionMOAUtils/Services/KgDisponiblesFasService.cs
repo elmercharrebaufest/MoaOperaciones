@@ -87,10 +87,11 @@ namespace SustitucionMOAUtils.Services
         private decimal ObtenerKgPorEntregarParaPedido(Detail pedidoPrincipal, List<OrdenDeCarga> ordenesPendientesDeCrear, decimal kilosEntregaEstandar)
         {
             var numeroFactura = pedidoPrincipal.FacturaLegal;
-            return ordenesPendientesDeCrear.Count(orden =>
-                orden.TipoContrato == TipoContratoFAS.Anticipado && (
+            var ordenesSinEnviar = ordenesPendientesDeCrear.Count(orden =>
+                orden.TipoContrato == TipoContratoFAS.Anticipado && string.IsNullOrEmpty(orden.NumeroEntrega) && (
                 (orden.SinSeleccionarFactura && orden.NumeroFactura == numeroFactura) ||
-                (!orden.SinSeleccionarFactura && orden.NumeroFacturaSeleccionada == numeroFactura))) * kilosEntregaEstandar;
+                (!orden.SinSeleccionarFactura && orden.NumeroFacturaSeleccionada == numeroFactura)));
+            return ordenesSinEnviar * kilosEntregaEstandar;
         }
         public decimal ObtenerKgEstandar(Result contratoSAP)
         {

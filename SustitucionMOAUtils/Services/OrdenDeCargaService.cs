@@ -2369,7 +2369,10 @@ namespace SustitucionMOAUtils.Services
                     .Listar<OrdenDeCarga>(
                         x =>
                             x.Cliente.CodigoProveedor == req.ClienteCodigo &&
-                            string.IsNullOrEmpty(x.NumeroPedido) &&
+                            ( 
+                                (string.IsNullOrEmpty(x.NumeroPedido) && x.TipoContrato== TipoContratoFAS.Normal) ||
+                                (string.IsNullOrEmpty(x.NumeroEntrega) && x.TipoContrato == TipoContratoFAS.Anticipado)
+                            ) &&
                             !estadosNoTieneOrdenPendienteEnvio.Contains(x.Estado));
 
                 var contratosDisponiblesResp = new ObtenerContratosDisponiblesResponse
@@ -2828,7 +2831,10 @@ namespace SustitucionMOAUtils.Services
                         x =>
                             ((!string.IsNullOrEmpty(x.ContratoSAP) && x.ContratoSAP == numeroContrato) ||
                             (string.IsNullOrEmpty(x.ContratoSAP) && x.ContratoIngresado == numeroContrato)) &&
-                            string.IsNullOrEmpty(x.NumeroPedido) &&
+                            (
+                                (string.IsNullOrEmpty(x.NumeroPedido) && x.TipoContrato == TipoContratoFAS.Normal) ||
+                                (string.IsNullOrEmpty(x.NumeroEntrega) && x.TipoContrato == TipoContratoFAS.Anticipado)
+                            ) &&
                             !estadosNoTieneOrdenPendienteEnvio.Contains(x.Estado));
 
                 var kilosDisponibles = _kgDisponiblesFasService.ObtenerKgDisponiblesContrato(contratoSAP, ordenesPendientes);
