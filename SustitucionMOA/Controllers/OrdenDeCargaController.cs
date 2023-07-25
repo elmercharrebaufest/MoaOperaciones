@@ -677,7 +677,6 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-
                 var mailUsuario = SessionPersister.getUsername();
                 return JsonCustom(new { data = ordenDeCargaService.NotificarVencimientoOrdenCarga(ordenId, mailUsuario) });
             }
