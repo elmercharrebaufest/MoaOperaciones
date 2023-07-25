@@ -61,9 +61,16 @@
                                 el {{soja200.DesdeString}} al {{soja200.HastaString}}
                             </div>
                             <div class="col-xs-12" *ngIf="dolarGirasol" style="color:red;">
-                                Si el contrato es de Girasol el TC de pesificación será de {{dolarGirasol.Cotizacion}} ARS desde
+                                Si el contrato es de Girasol el TC de pesificación será de {{dolarGirasol.Cotizacion}}
+                                ARS desde
                                 el {{dolarGirasol.DesdeString}} al {{dolarGirasol.HastaString}}
                             </div>
+                            <div class="col-xs-12" *ngIf="dolarMaiz" style="color:red;">
+                                Si el contrato es de Maiz el TC de pesificación será de {{dolarMaiz.Cotizacion}}
+                                ARS desde
+                                el {{dolarMaiz.DesdeString}} al {{dolarMaiz.HastaString}}
+                            </div>
+
                             <hr>
                             <div class="row myRow cargaDeDatosBtn">
                                 <div class="col-xs-12 col-sm-6 col-sm-offset-6">
