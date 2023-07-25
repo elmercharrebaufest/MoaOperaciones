@@ -162,12 +162,12 @@ namespace SustitucionMOAModel.Entities
         public bool EsNuevoUsuario()
         {
             return
-                Roles.Where(r => r.Codigo.Equals("NUEG")).Any() ||
-                Roles.Where(r => r.Codigo.Equals("DDAG")).Any() ||
-                Roles.Where(r => r.Codigo.Equals("NOIMP")).Any() ||
-                Roles.Where(r => r.Codigo.Equals("NUECORR")).Any() ||
-                Roles.Where(r => r.Codigo.Equals("NUENOGRAN")).Any() ||
-                Roles.Where(r => r.Codigo.Equals("NUECLI")).Any() ||
+                TieneRol(RolEnum.NuevoUsuarioGranos) ||
+                TieneRol(RolEnum.DeshabilitadoEnDataagro) ||
+                TieneRol(RolEnum.UsuarioNoImplementado) ||
+                TieneRol(RolEnum.NuevoCorredor) ||
+                TieneRol(RolEnum.NuevoUsuarioNoGranos) ||
+                TieneRol(RolEnum.NuevoCliente) ||
                 !Habilitado;
         }
 
@@ -202,8 +202,7 @@ namespace SustitucionMOAModel.Entities
 
         public bool EsAdmin()
         {
-            return Roles.Where(r => r.Codigo == "ADM").Any()
-                    || Roles.Where(r => r.Codigo == "TODOS").Any();
+            return TieneRol(RolEnum.Administracion) || TieneRol(RolEnum.Todos);
         }
 
 

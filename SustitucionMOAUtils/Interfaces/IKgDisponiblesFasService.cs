@@ -6,12 +6,12 @@ namespace SustitucionMOAUtils.Interfaces
 {
     public interface IKgDisponiblesFasService
     {
-        decimal KgDisponiblesContratoAnticipado(Result contratoSAP);
-        decimal KgDisponiblesContratoNormal(Result contratoSAP);
-        decimal ObtenerKgDisponiblesContrato(Result contratoSAP);
-        decimal ObtenerKgEntregadosPorGrupoPedidos(List<Detail> grupoPedidos);
-        decimal ObtenerKgEntregadosPorPedido(List<Detail> grupoPedidos);
-        decimal ObtenerKgEstandar(Result contratoSAP);
+        //decimal KgDisponiblesContratoAnticipado(Result contratoSAP);
+        //decimal KgDisponiblesContratoNormal(Result contratoSAP);
+        decimal ObtenerKgDisponiblesContrato(Result contratoSAP, int cantidadPedidosPendientesDeCrear = 0);
+        //decimal ObtenerKgEntregadosPorGrupoPedidos(List<Detail> grupoPedidos);
+        //decimal ObtenerKgEntregadosPorPedido(List<Detail> grupoPedidos);
+        //decimal ObtenerKgEstandar(Result contratoSAP);
         bool PedidoEstaCargado(Detail pedido);
         decimal ObtenerKgDisponiblesPedido(List<Detail> grupoPedidos, Detail pedidoPrincipal);
         /// <summary>

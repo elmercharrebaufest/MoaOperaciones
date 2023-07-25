@@ -51,6 +51,8 @@ namespace SustitucionMOARepositorio
         ListaPaginada<TEntidad> Listar<TEntidad>(Expression<Func<TEntidad, Boolean>> condicion, Paginacion paginacion) where TEntidad : class;
         ListaPaginada<TEntidad> ListarConsultaPaginada<TEntidad>(IConsultaPaginada<TEntidad> consulta) where TEntidad : class;
 
+        List<TProyeccion> ListarProyeccion<TEntidad, TProyeccion>(Expression<Func<TEntidad, TProyeccion>> proyeccion, Expression<Func<TEntidad, bool>> filtro = null) where TEntidad : class;
+
         /// <summary>
         /// Devuelve la cantidad de entidades en el repositorio
         /// </summary>
