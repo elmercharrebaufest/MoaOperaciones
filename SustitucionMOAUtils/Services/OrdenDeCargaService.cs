@@ -382,9 +382,8 @@ namespace SustitucionMOAUtils.Services
                 }
                 else
                 {
-                    var enviaDirectamenteASAP = ValidarKgDisponiblesEnviaDirectamenteASAP(ordenDeCarga, usuario);
                     var crearPedido = !string.IsNullOrWhiteSpace(ordenEditar.ContratoSAP) || verificarOrden;
-                    if (crearPedido && (enviaDirectamenteASAP || puedeEnviarASAP))
+                    if (crearPedido && puedeEnviarASAP)
                     {
                         if (string.IsNullOrWhiteSpace(ordenEditar.ContratoSAP))
                         {
@@ -677,7 +676,7 @@ namespace SustitucionMOAUtils.Services
             }
 
             // Solo en el caso que el response dé ok para crear la orden tiene que verificar el vencimiento
-            if (!esJob && puedeCrearPedido )
+            if (!esJob && puedeCrearPedido)
             {
                 if (!ValidarVencimientoContrato(ordenDeCarga.ContratoIngresado, cliente))
                 {
@@ -2325,7 +2324,7 @@ namespace SustitucionMOAUtils.Services
                 var rangoFechas = string.IsNullOrEmpty(req.FechaDesde) || string.IsNullOrEmpty(req.FechaHasta) ? null :
                     CommonService.toDateList(req.FechaDesde, req.FechaHasta);
                 var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
-                
+
                 var material =
                     usuario.TieneRol(RolEnum.Administracion) || usuario.TieneRol(RolEnum.ClienteConCpedg)
                         ? string.Empty
