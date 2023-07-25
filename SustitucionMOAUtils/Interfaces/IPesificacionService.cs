@@ -14,5 +14,6 @@ namespace SustitucionMOAUtils.Services
         string SetContratos(string proveedor, HttpPostedFileBase file);
         DolarMaterialDto GetSoja200();
         DolarMaterialDto GetDolarGirasol();
+        DolarMaterialDto GetDolarMaiz();
     }
 }
