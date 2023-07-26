@@ -2376,7 +2376,7 @@ namespace SustitucionMOAUtils.Services
                             new ContratoOrdenFas(contratoSap, productosBD)
                             {
                                 KgDisponibles = _kgDisponiblesFasService.ObtenerKgDisponiblesContrato(contratoSap,
-                                    contratosEnOrdenesPendientes.Where(x => x == contratoSap.Contrato).Count())
+                                    contratosEnOrdenesPendientes.Count(x => x == contratoSap.Contrato))
                             })
                         .OrderBy(contrato => contrato.DescripcionProducto)
                         .ToList()
@@ -2821,7 +2821,17 @@ namespace SustitucionMOAUtils.Services
                 if (contratoSAP == null)
                     throw new InfoCustomException("No se encontró el contrato en SAP");
 
-                var kilosDisponibles = _kgDisponiblesFasService.ObtenerKgDisponiblesContrato(contratoSAP);
+                var contratosEnOrdenesPendientes = repositorio
+                    .ListarProyeccion<OrdenDeCarga, string>(
+                        x => x.ContratoIngresado,
+                        x =>
+                            x.ContratoIngresado == contratoSAP.Contrato &&
+                            string.IsNullOrEmpty(x.NumeroPedido) &&
+                            x.Estado != EstadoOrdenDeCarga.Anulada &&
+                            x.Estado != EstadoOrdenDeCarga.AnuladaPorVencimiento).Count;
+
+                var kilosDisponibles = _kgDisponiblesFasService.ObtenerKgDisponiblesContrato(contratoSAP, contratosEnOrdenesPendientes);
+                Log.Info($"Validar kg disponibles: {kilosDisponibles}");
                 if (kilosDisponibles <= Constante.FAS_KILOS_LIMITE_INFERIOR)
                     throw new InfoCustomException("El contrato seleccionado no tiene kg disponibles");
                 if (kilosDisponibles < Constante.FAS_KILOS_LIMITE_SUPERIOR)
