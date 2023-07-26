@@ -788,13 +788,17 @@ export class DetalleConsultaComponent extends BaseComponent {
             divToolBar.removeChild(toolBar5);
             divToolBar.removeChild(toolBar6); 
             divToolBar.removeChild(toolBar7);
-            divToolBar.removeChild(toolBar8);
-            divToolBar.removeChild(toolBar9);
+            //divToolBar.removeChild(toolBar8);
+            //divToolBar.removeChild(toolBar9);
             divToolBar.removeChild(toolBar10);
-            divToolBar.removeChild(toolBar11);
             divToolBar.removeChild(toolBar13);
         }
 
+        $("#insertImage-").hide();
+        $("#insertVideo-").hide();
+        $("#unlink-").hide();
+        $("#insertHorizontalRule-").hide();
+        $("#backgroundColorPicker-").hide();
         $("#subscript-").hide();
         $("#superscript-").hide();
 

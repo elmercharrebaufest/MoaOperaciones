@@ -9,3 +9,4 @@ export interface DolarMaterial {
 }
 
 export interface DolarGirasol extends DolarMaterial{}
+export interface DolarMaiz extends DolarMaterial{}

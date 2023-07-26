@@ -2837,6 +2837,7 @@ namespace SustitucionMOAUtils.Services
                             !estadosNoTieneOrdenPendienteEnvio.Contains(x.Estado));
 
                 var kilosDisponibles = _kgDisponiblesFasService.ObtenerKgDisponiblesContrato(contratoSAP, ordenesPendientes);
+                Log.Info($"Validar kg disponibles: {kilosDisponibles}");
                 if (kilosDisponibles <= Constante.FAS_KILOS_LIMITE_INFERIOR)
                     throw new InfoCustomException("El contrato seleccionado no tiene kg disponibles");
                 if (kilosDisponibles < Constante.FAS_KILOS_LIMITE_SUPERIOR)

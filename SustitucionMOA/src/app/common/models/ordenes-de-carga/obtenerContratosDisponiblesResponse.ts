@@ -1,3 +1,4 @@
+import { Formatter } from "../../formatter/Formatter";
 import { Material } from "../material";
 
 export interface ObtenerContratosDisponiblesResponse {
@@ -26,10 +27,12 @@ export class ContratoOrdenFas {
         producto?: Material,
         kgDisponibles?: number) {
         this.NumeroContrato = numeroContrato || this.NumeroContrato;
-        this.KgDisponibles = kgDisponibles || this.KgDisponibles;
+        this.KgDisponibles = kgDisponibles === null || kgDisponibles === undefined ? this.KgDisponibles : kgDisponibles;
         this.Producto = producto || this.Producto;
         const prod = this.Producto.Abreviacion || this.Producto.Descripcion;
-        const kgs = this.KgDisponibles ? " " + Math.trunc(this.KgDisponibles) + " kg. Disp." : "";
+        const kgs = this.KgDisponibles <= 0 ? "sin kg. Disp." :
+            !this.KgDisponibles ? '' :
+                `${Formatter.formatNumberWithPoint(this.KgDisponibles.toString())} kg. Disp.`;
         this.TipoContrato = tipoContrato;
         this.Label = this.NumeroContrato + " - " + prod + " " + kgs;
     }
