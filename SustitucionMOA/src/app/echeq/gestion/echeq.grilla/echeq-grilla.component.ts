@@ -221,7 +221,7 @@ export class GrillaComponent extends EcheqGestionComponent implements OnInit {
         let numeroCOE = echeqDocumento.numeroCOE;
         try {
             this.blockUI.start('Grabando...');
-            this.echeqService.MarcarDocumento(echeqDocumento.documento, echeqDocumento.pedido, echeqDocumento.contrato).subscribe(response => {
+            this.echeqService.MarcarDocumento(echeqDocumento.documento, echeqDocumento.pedido, echeqDocumento.contrato, echeqDocumento.ejercicio).subscribe(response => {
                 this.blockUI.stop();
                 if (response.logout == true) {
                     this.sessionDataService.logout();
