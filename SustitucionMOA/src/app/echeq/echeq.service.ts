@@ -34,17 +34,19 @@ export class EcheqService extends BaseService {
             .pipe(timeoutWith(90000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde "))));
     }
 
-    public MarcarDocumento(documento: string, pedido: string, contrato: string): Observable<any> {
+    public MarcarDocumento(documento: string, pedido: string, contrato: string, ejercicio: string): Observable<any> {
         let payload = new FormData();
         payload.append("documento", documento);
         payload.append("pedido", pedido);
         payload.append("contrato", contrato);
+        payload.append("ejercicio", ejercicio);
 
 
         return this.http
             .post('/api/echeq/MarcarDocumento', payload)
             .pipe(timeoutWith(90000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde "))));
     }
+
 
     public DesmarcarContrato(contrato: string, pedido: string): Observable<any> {
         let payload = new FormData();
