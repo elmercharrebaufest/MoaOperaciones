@@ -110,7 +110,7 @@ namespace SustitucionMOA.Controllers
         }
 
         [HttpPost]
-        public ActionResult MarcarDocumento(string documento, string pedido, string contrato)
+        public ActionResult MarcarDocumento(string documento, string pedido, string contrato, string ejercicio)
         {
             try
             {
@@ -121,7 +121,8 @@ namespace SustitucionMOA.Controllers
                     Contrato = contrato,
                     ProveedorId = SessionPersister.ProveedorId,
                     UsuarioCreacionId = ObtenerUsuarioActual().Id,
-                    CodigoProveedor = SessionPersister.Proveedor
+                    CodigoProveedor = SessionPersister.Proveedor,
+                    Ejercicio = ejercicio
                 };
 
                 return JsonCustom(service.MarcarDocumento(request));

@@ -205,7 +205,7 @@ namespace SustitucionMOAUtils.Services
 
                     foreach (var liquidacion in echeqNegocio.Documentos)
                     {
-                        modificarNegocio = echeqModificacionDocumentoChequeConsumerMOA.Request(request.Contrato, liquidacion.Documento, liquidacion.Ejercicio, DateTime.Now.ToString("yyyy-MM-dd"), DateTime.Now.ToString("HH:mm:ss"), request.Pedido, request.CodigoProveedor, liquidacion.NumeroCOE, "MOA", "", "=");
+                        modificarNegocio = echeqModificacionDocumentoChequeConsumerMOA.Request(request.Contrato, liquidacion.Documento, liquidacion.Ejercicio, DateTime.Now.ToString("yyyy-MM-dd"), DateTime.Now.ToString("HH:mm:ss"), request.Pedido, request.CodigoProveedor, liquidacion.NumeroCOE, "MOA", "", "");
 
                         if (modificarNegocio.HayError)
                         {
@@ -244,7 +244,7 @@ namespace SustitucionMOAUtils.Services
 
                 var numeroCOE = echeqNegocioSAP.Documentos.Where(x => x.Documento == request.Documento).FirstOrDefault().NumeroCOE;
 
-                ResultadoGenerico result = echeqModificacionDocumentoChequeConsumerMOA.Request(request.Contrato, request.Documento, "2022", DateTime.Now.ToString("yyyy-MM-dd"), DateTime.Now.ToString("HH:mm:ss"), request.Pedido, request.CodigoProveedor, numeroCOE, "MOA", "", "=");
+                ResultadoGenerico result = echeqModificacionDocumentoChequeConsumerMOA.Request(request.Contrato, request.Documento, request.Ejercicio, DateTime.Now.ToString("yyyy-MM-dd"), DateTime.Now.ToString("HH:mm:ss"), request.Pedido, request.CodigoProveedor, numeroCOE, "MOA", "", "=");
 
                 if (result.HayError)
                 {
@@ -342,7 +342,7 @@ namespace SustitucionMOAUtils.Services
 
 
 
-                ResultadoGenerico result = echeqModificacionDocumentoChequeConsumerMOA.Request(request.Contrato, request.Documento, liquidacionExistente.Ejercicio, DateTime.Now.ToString("yyyy-MM-dd"), DateTime.Now.ToString("HH:mm:ss"), request.Pedido, request.CodigoProveedor, liquidacionExistente.NumeroCOE, "MOA", "", "=");
+                ResultadoGenerico result = echeqModificacionDocumentoChequeConsumerMOA.Request(request.Contrato, request.Documento, liquidacionExistente.Ejercicio, DateTime.Now.ToString("yyyy-MM-dd"), DateTime.Now.ToString("HH:mm:ss"), request.Pedido, request.CodigoProveedor, liquidacionExistente.NumeroCOE, "MOA", "", "");
 
                 if (result.HayError)
                 {
