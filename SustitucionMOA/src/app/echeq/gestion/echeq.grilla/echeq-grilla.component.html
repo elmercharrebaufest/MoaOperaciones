@@ -51,8 +51,7 @@
                         </td>
                         <td style="width: 30px;">
                             <p-checkbox 
-                                *ngIf="!(clasificacionesDeshabilitadas.indexOf(pagoPendiente.clasificacion.toUpperCase())>-1)"
-                                [disabled]="pagoPendiente.documentos.length>0? false: true"
+                                *ngIf="!(clasificacionesDeshabilitadas.indexOf(pagoPendiente.clasificacion.toUpperCase())>-1) && pagoPendiente.documentos.length > 0"
                                 name="selectedContrato" binary="false" [(ngModel)]="pagoPendiente.selected"
                                 (onChange)="onClickSelectContrato(pagoPendiente)"></p-checkbox>
                         </td>
