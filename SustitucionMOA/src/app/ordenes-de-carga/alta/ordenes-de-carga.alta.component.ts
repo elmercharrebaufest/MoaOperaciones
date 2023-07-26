@@ -1255,8 +1255,6 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                 const { KgDisponibles } = this.facturaSeleccionada;
                 if (KgDisponibles >= KILOS_DISPONIBLES_APROBADO)
                     return;
-                console.log(KILOS_DISPONIBLES_APROBADO)
-                debugger
                 const mensaje = "Factura sin Kilos disponibles.";
 
                 if (KgDisponibles <= SIN_KILOS_DISPONIBLES)
