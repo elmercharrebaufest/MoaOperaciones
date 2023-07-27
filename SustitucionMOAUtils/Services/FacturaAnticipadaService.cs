@@ -19,6 +19,10 @@ namespace SustitucionMOAUtils.Services
         private readonly IOrdenDeCargaEstadoService _ordenDeCargaEstadoService;
         protected readonly IRepositorio _repositorio;
         protected readonly IKgDisponiblesFasService _kgDisponiblesFasService;
+        private readonly List<EstadoOrdenDeCarga> estadosNoTieneOrdenPendienteEnvio = new List<EstadoOrdenDeCarga> {
+            EstadoOrdenDeCarga.AnuladaPorVencimiento,
+            EstadoOrdenDeCarga.Anulada
+        };
         public FacturaAnticipadaService(
             IOrdenCargaConsumerMOA ordenDeCargaService,
             IRepositorio repositorio,
@@ -83,6 +87,15 @@ namespace SustitucionMOAUtils.Services
                 Log.Info($"Obtener facturas de contrato: {contrato.ToJson()}");
             if (contrato == null)
                 throw new InfoCustomException("No se encontró el contrato");
+            var kilosEntregaEstandar = _kgDisponiblesFasService.ObtenerKgEstandar(contrato);
+            var numeroContrato = contrato.Contrato;
+            var ordenesPendientes = _repositorio
+                    .Listar<OrdenDeCarga>(
+                        x =>
+                            ((!string.IsNullOrEmpty(x.ContratoSAP) && x.ContratoSAP == numeroContrato) ||
+                            (string.IsNullOrEmpty(x.ContratoSAP) && x.ContratoIngresado == numeroContrato)) &&
+                            (string.IsNullOrEmpty(x.NumeroEntrega) && x.TipoContrato == TipoContratoFAS.Anticipado) &&
+                            !estadosNoTieneOrdenPendienteEnvio.Contains(x.Estado));
             var listaFacturas = contrato.Detalles
                .GroupBy(det => det.Pedido)
                .Select(grupoPedidos =>
@@ -92,10 +105,11 @@ namespace SustitucionMOAUtils.Services
                    if (pedidoPrincipal == null)
                        return null;
 
-                   var kilosDisponiblesPedido = _kgDisponiblesFasService.ObtenerKgDisponiblesPedido(listPedidos, pedidoPrincipal);
+                   var kilosDisponiblesPedido = _kgDisponiblesFasService
+                        .ObtenerKgDisponiblesPedido(listPedidos, ordenesPendientes, pedidoPrincipal, kilosEntregaEstandar);
                    return new FacturaOrdenCarga(pedidoPrincipal, kilosDisponiblesPedido);
                })
-               .Where(factura=>factura!=null)
+               .Where(factura => factura != null)
                .ToList();
             if (logger)
                 Log.Info($"Obtener facturas de contrato result: {listaFacturas.ToJson()}");
