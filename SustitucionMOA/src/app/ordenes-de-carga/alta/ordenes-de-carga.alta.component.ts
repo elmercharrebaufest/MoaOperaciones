@@ -605,7 +605,6 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
         this.facturasDisponibles = [];
         this.ordenDeCarga.NumeroFactura = null;
         this.facturaSeleccionada = null;
-
         if (this.ordenDeCarga.ContratoSeleccionado) {
             this.Contrato = this.ordenDeCarga.ContratoSeleccionado.NumeroContrato;
             this.ordenDeCarga.ContratoIngresado = this.ordenDeCarga.ContratoSeleccionado.NumeroContrato;
@@ -804,7 +803,9 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
     }
 
     cargarContratosDisponibles(pClienteCodigo: string) {
-        if (this.ordenDeCarga && this.ordenDeCarga.Id) {
+        if (this.ordenDeCarga && this.ordenDeCarga.ContratoSeleccionado && this.ordenDeCarga.Id) {
+            const { NumeroContrato, Producto } = this.ordenDeCarga.ContratoSeleccionado;
+            this.ordenDeCarga.ContratoSeleccionado = new ContratoOrdenFas(NumeroContrato, Producto)
             this.contratosDisponibles = [this.ordenDeCarga.ContratoSeleccionado];
             this.onContratoSeleccionadoChanged();
             return;
