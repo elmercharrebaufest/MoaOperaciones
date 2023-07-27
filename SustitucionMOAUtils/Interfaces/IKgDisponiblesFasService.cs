@@ -8,7 +8,7 @@ namespace SustitucionMOAUtils.Interfaces
     {
         //decimal KgDisponiblesContratoAnticipado(Result contratoSAP);
         //decimal KgDisponiblesContratoNormal(Result contratoSAP);
-        decimal ObtenerKgDisponiblesContrato(Result contratoSAP, List<OrdenDeCarga> contratosPedidosPendientesDeCrear);
+        decimal ObtenerKgDisponiblesContrato(Result contratoSAP, List<OrdenDeCarga> ordenesPendientesDeCrear);
         //decimal ObtenerKgEntregadosPorGrupoPedidos(List<Detail> grupoPedidos);
         //decimal ObtenerKgEntregadosPorPedido(List<Detail> grupoPedidos);
         decimal ObtenerKgEstandar(Result contratoSAP);

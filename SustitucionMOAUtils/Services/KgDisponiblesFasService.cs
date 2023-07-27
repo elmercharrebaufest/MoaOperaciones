@@ -121,7 +121,7 @@ namespace SustitucionMOAUtils.Services
             decimal kilosEntregaEstandar)
         {
             var kilosConsumidos = ObtenerKgConsumidosPorPedido(grupoPedidos, ordenesPendientesDeCrear, kilosEntregaEstandar, pedidoPrincipal);
-            return Math.Round(pedidoPrincipal.CantidadFactura - kilosConsumidos);
+            return Math.Round(pedidoPrincipal.CantidadFactura - kilosConsumidos, 2);
         }
         public Detail AuxObtenerDetallePedidoPrincipal(List<Detail> grupoPedidos)
         {

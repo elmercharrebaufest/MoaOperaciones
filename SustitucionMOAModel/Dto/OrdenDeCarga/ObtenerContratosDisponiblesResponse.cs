@@ -58,18 +58,6 @@ namespace SustitucionMOAModel.Dto.OrdenDeCarga
         public ContratoOrdenFas(Entities.OrdenDeCarga orden)
         {
             NumeroContrato = orden.ContratoIngresado;
-            var producto = orden.Producto != null ? orden.Producto : null;
-
-            Producto = new Models.DataAgro.MaterialDto
-            {
-                MaterialId = orden.Producto_Id,
-                Descripcion = producto?.Nombre,
-                Abreviacion = producto?.Abreviacion
-            };
-        }
-        public ContratoOrdenFas(Entities.OrdenDeCarga orden, Result contratoSAP)
-        {
-            NumeroContrato = orden.ContratoIngresado;
             var producto = orden.Producto;
 
             Producto = new Models.DataAgro.MaterialDto

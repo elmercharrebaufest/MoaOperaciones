@@ -931,14 +931,22 @@ namespace SustitucionMOAUtils.Services
             var ordenDeCargaCambiosHistorial = ObtenerCambiosHistorial(orden);
 
             var contratoSAP = consumer.ObtenerContratoSAP(orden.ContratoIngresado, TipoContratoFAS.Todos);
+            var contratosEnOrdenesPendientes = repositorio
+                    .ListarProyeccion<OrdenDeCarga, string>(
+                        x => x.ContratoIngresado,
+                        x =>
+                            x.Cliente.CodigoProveedor == orden.Cliente.CodigoProveedor &&
+                            string.IsNullOrEmpty(x.NumeroPedido) &&
+                            x.Estado != EstadoOrdenDeCarga.Anulada &&
+                            x.Estado != EstadoOrdenDeCarga.AnuladaPorVencimiento);
 
-            var contratosEnOrdenesPendientes = ObtenerOrdenesPendientesDeCliente(orden.Cliente.CodigoProveedor);
+            var ordenesPendientes = ObtenerOrdenesPendientesDeCliente(orden.Cliente.CodigoProveedor);
 
             var ordenDto = new OrdenDeCargaDetalleDto(orden, ordenDeCargaCambiosHistorial, cliente)
             {
                 ContratoSeleccionado = new ContratoOrdenFas(orden)
                 {
-                    KgDisponibles = _kgDisponiblesFasService.ObtenerKgDisponiblesContrato(contratoSAP, contratosEnOrdenesPendientes)
+                    KgDisponibles = _kgDisponiblesFasService.ObtenerKgDisponiblesContrato(contratoSAP, ordenesPendientes)
                 }
             };
 
@@ -2374,7 +2382,7 @@ namespace SustitucionMOAUtils.Services
                         m.TablaSeccionMaterial == TablaSeccionMaterial.OrdenDeCarga &&
                         productosCodigosSap.Contains(m.CodigoSap));
 
-                var contratosEnOrdenesPendientes = ObtenerOrdenesPendientesDeCliente(req.ClienteCodigo);
+                var ordenesPendientes = ObtenerOrdenesPendientesDeCliente(req.ClienteCodigo);
 
                 var contratosDisponiblesResp = new ObtenerContratosDisponiblesResponse
                 {
@@ -2383,7 +2391,7 @@ namespace SustitucionMOAUtils.Services
                             new ContratoOrdenFas(contratoSap, productosBD)
                             {
                                 KgDisponibles = _kgDisponiblesFasService.ObtenerKgDisponiblesContrato(contratoSap,
-                                    contratosEnOrdenesPendientes)
+                                    ordenesPendientes)
                             })
                         .OrderBy(contrato => contrato.DescripcionProducto)
                         .ToList()
