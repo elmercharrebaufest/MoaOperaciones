@@ -922,10 +922,22 @@ namespace SustitucionMOAUtils.Services
             var ordenDeCargaCambiosHistorial = ObtenerCambiosHistorial(orden);
 
             var contratoSAP = consumer.ObtenerContratoSAP(orden.ContratoIngresado, TipoContratoFAS.Todos);
+            var contratosEnOrdenesPendientes = repositorio
+                    .ListarProyeccion<OrdenDeCarga, string>(
+                        x => x.ContratoIngresado,
+                        x =>
+                            x.Cliente.CodigoProveedor == orden.Cliente.CodigoProveedor &&
+                            string.IsNullOrEmpty(x.NumeroPedido) &&
+                            x.Estado != EstadoOrdenDeCarga.Anulada &&
+                            x.Estado != EstadoOrdenDeCarga.AnuladaPorVencimiento);
 
             var ordenDto = new OrdenDeCargaDetalleDto(orden, ordenDeCargaCambiosHistorial, cliente)
             {
-                ContratoSeleccionado = new ContratoOrdenFas(orden, contratoSAP)
+                ContratoSeleccionado = new ContratoOrdenFas(orden)
+                {
+                    KgDisponibles = _kgDisponiblesFasService.ObtenerKgDisponiblesContrato(contratoSAP,
+                                    contratosEnOrdenesPendientes.Count(x => x == contratoSAP.Contrato))
+                }
             };
 
             return ordenDto;
