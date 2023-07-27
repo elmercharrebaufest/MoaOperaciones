@@ -9,6 +9,7 @@ using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Models;
+using SustitucionMOAModel.Models.WSMapMOA.CartaPorte.Formulario;
 using SustitucionMOAModel.Models.WSMapMOA.Echeq;
 using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Interfaces;
@@ -334,14 +335,11 @@ namespace SustitucionMOAUtils.Services
 
         public string DesmarcarDocumento(EcheqRequestModel request)
         {
+            string mensajeErrorBloqueo = "bloqueado por";
+            string mensajeErrorBloqueoReemplazo = "El Contrato esta siendo tratado, espere un momentos.";
             try
             {
-
-
                 EcheqLiquidacion liquidacionExistente = ObtenerLiquidacionPorDocumento(request);
-
-
-
                 ResultadoGenerico result = echeqModificacionDocumentoChequeConsumerMOA.Request(request.Contrato, request.Documento, liquidacionExistente.Ejercicio, DateTime.Now.ToString("yyyy-MM-dd"), DateTime.Now.ToString("HH:mm:ss"), request.Pedido, request.CodigoProveedor, liquidacionExistente.NumeroCOE, "MOA", "", "");
 
                 if (result.HayError)
@@ -349,15 +347,36 @@ namespace SustitucionMOAUtils.Services
                     throw new ValidationCustomException(result.Errores[0].Message);
                 }
 
-                foreach (var apertura in liquidacionExistente.Aperturas.Where(a => a.Estado))
+                EcheqLiquidacion liquidacion = repositorio.Obtener<EcheqLiquidacion>(x => x.Documento == request.Documento && x.EcheqNegocio.Contrato == request.Contrato && x.EcheqNegocio.Pedido == request.Pedido && x.MarcaCheque);
+
+                if (liquidacion != null)
+                {
+                    //ANULAR APERTURAS ANTERIORES
+                    foreach (var apertura in liquidacion.Aperturas.Where(ap => ap.Estado && ap.OrdenCheque > 0))
+                    {
+                        apertura.Estado = false;
+                        apertura.UsuarioModificacionId = request.UsuarioCreacionId;
+                        apertura.FechaModificacion = DateTime.Now;
+
+                        var resultadoAnularAperturaCheque = echeqAnularAperturaChequeConsumerMOA.Request(apertura.OrdenCheque.ToString(), liquidacion.Documento, liquidacion.Ejercicio, DateTime.Now.ToString("yyyy-MM-dd"), DateTime.Now.ToString("HH:mm:ss"), "MOA", "");
+                        if (resultadoAnularAperturaCheque.HayError)
+                        {
+                            string mensaje = string.Join(", ", resultadoAnularAperturaCheque.Errores.Select(x => x.Message.Contains(mensajeErrorBloqueo) ? mensajeErrorBloqueoReemplazo : x.Message).ToList());
+                            throw new ValidationCustomException(mensaje);
+                        }
+                    }
+                }
+
+                liquidacionExistente = ObtenerLiquidacionPorDocumento(request);
+
+                foreach (var apertura in liquidacionExistente.Aperturas.Where(ap => ap.Estado && ap.OrdenCheque == 0))
                 {
                     result = echeqAnularAperturaChequeConsumerMOA.Request(apertura.OrdenCheque.ToString(), liquidacionExistente.Documento, liquidacionExistente.Ejercicio, DateTime.Now.ToString("yyyy-MM-dd"), DateTime.Now.ToString("HH:mm:ss"), "MOA", "");
-
                     if (result.HayError)
                     {
-                        throw new ValidationCustomException(result.Errores[0].Message);
+                        string mensaje = string.Join(", ", result.Errores.Select(x => x.Message.Contains(mensajeErrorBloqueo) ? mensajeErrorBloqueoReemplazo : x.Message).ToList());
+                        throw new ValidationCustomException(mensaje);
                     }
-
                     apertura.Estado = false;
                     apertura.UsuarioModificacionId = request.UsuarioCreacionId;
                     apertura.FechaModificacion = DateTime.Now;
