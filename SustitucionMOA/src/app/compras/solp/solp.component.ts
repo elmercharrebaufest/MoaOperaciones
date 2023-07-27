@@ -33,6 +33,7 @@ import { SolpPosicion } from './solp-posicion';
 import { EmailComposeModel } from '../../common/email-compose/email-compose.model';
 import { EmailComposeService } from '../../common/email-compose/email-compose.service';
 import { CotizacionComponent } from './steps/cotizacion/cotizacion.component';
+import { OrdenDeCompraSap } from '../../modelos/ordenDeCompraSap';
 
 @Component({
     selector: 'app-solp',
@@ -76,6 +77,8 @@ export class SolpComponent extends BaseComponent implements OnInit {
 
     @ViewChild(DashboardComponent)
     protected dashboard: DashboardComponent;
+
+    @Input() ordenDeCompraSap: OrdenDeCompraSap;
 
     cambiosGuardados: boolean = false;
     mostrarPreview: boolean = false;
