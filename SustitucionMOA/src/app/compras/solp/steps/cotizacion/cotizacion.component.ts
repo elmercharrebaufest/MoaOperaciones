@@ -44,7 +44,7 @@ export class CotizacionComponent extends ListBaseComponent {
     proveedores: any[] = new Array();
 
     estaFinalizada: boolean;
-    ordenDeCompraSap: OrdenDeCompraSap;
+    @Output() ordenDeCompraSap: OrdenDeCompraSap;
 
     @Output() onEstCompleto = new EventEmitter<any>();
     mostrar: boolean;
@@ -320,6 +320,16 @@ export class CotizacionComponent extends ListBaseComponent {
         }
     }
 
+    limpiarCheckAdicional(){
+        if(!this.estaFinalizada && this.model.ordenDeCompra == ""){
+            this.model.ordenDeCompra = "";
+            this.ordenDeCompraSap.Cabecera.RazonSocialProveedor = "";
+            this.ordenDeCompraSap.Cabecera.CodigoProveedor = "";
+            this.ordenDeCompraSap.Cabecera.OrdenDeCompra = "";
+        }
+    }
+
+
     obtenerOrdenDeCompra() {
         try {
             if(this.model.ordenDeCompra.length >= 10){
@@ -336,14 +346,17 @@ export class CotizacionComponent extends ListBaseComponent {
                             this.model.proveedorAsignado_Id = this.ordenDeCompraSap.Cabecera.Usuario_Id;
                             this.model.ordenDeCompra = this.ordenDeCompraSap.Cabecera.OrdenDeCompra;
                             this.model.proveedorAsignado = this.ordenDeCompraSap.Cabecera.RazonSocialProveedor;
+                            if(this.ordenDeCompraSap.Error){
+                                this.floatMsgService.setErrorMsg(this.ordenDeCompraSap.Error.Mensaje);      
+                                this.limpiarCheckAdicional();                      
+                            }
                         }
                     },
                     error => {
                         this.floatMsgService.setErrorMsg(error.message);
                     });
             }
-            this.limpiarCheck();
-           
+            this.limpiarCheck();           
         } catch (e) {
             this.floatMsgService.setErrorMsg(e);
             return false; //<-- Prevent Refresh
