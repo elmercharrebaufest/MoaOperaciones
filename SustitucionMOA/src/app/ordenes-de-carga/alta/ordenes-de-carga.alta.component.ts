@@ -23,7 +23,7 @@ import { finalize } from 'rxjs/operators';
 import { ApiResponse } from '../../common/models/response';
 import { forkJoin } from 'rxjs';
 import { Permiso } from '../../common/enums/Permisos';
-import { Factura, newFactura } from '../../common/models/ordenes-de-carga/Factura';
+import { Factura } from '../../common/models/ordenes-de-carga/Factura';
 
 declare var $: any;
 
@@ -804,8 +804,8 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
 
     cargarContratosDisponibles(pClienteCodigo: string) {
         if (this.ordenDeCarga && this.ordenDeCarga.ContratoSeleccionado && this.ordenDeCarga.Id) {
-            const { NumeroContrato, Producto } = this.ordenDeCarga.ContratoSeleccionado;
-            this.ordenDeCarga.ContratoSeleccionado = new ContratoOrdenFas(NumeroContrato, Producto)
+            const { NumeroContrato, Producto, TipoContrato } = this.ordenDeCarga.ContratoSeleccionado;
+            this.ordenDeCarga.ContratoSeleccionado = new ContratoOrdenFas(NumeroContrato, TipoContrato, Producto)
             this.contratosDisponibles = [this.ordenDeCarga.ContratoSeleccionado];
             this.onContratoSeleccionadoChanged();
             return;
@@ -1212,7 +1212,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                     this.ordenDeCarga.Producto_Id = this.selectUndefinedOptionValue;
                     this.validaCPEDG = false;
                 }
-                this.facturasDisponibles = data.map(newFactura)
+                this.facturasDisponibles = data
                 if (this.ordenDeCargaId) {
                     const numeroFacturaOrden = this.ordenDeCarga.NumeroFacturaSeleccionada || this.ordenDeCarga.NumeroFactura;
                     this.facturaSeleccionada = this.facturasDisponibles.find(factura => factura.NumeroFactura == numeroFacturaOrden)

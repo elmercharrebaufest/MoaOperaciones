@@ -105,6 +105,16 @@ namespace SustitucionMOAUtils.Services
                 !string.IsNullOrEmpty(pedido.NombreDestinatario);
         }
         public decimal ObtenerKgDisponiblesPedido(
+            Result contratoSAP,
+            List<OrdenDeCarga> ordenesPendientesDeCrear,
+            string numeroPedido)
+        {
+            var grupoPedidos = contratoSAP.Detalles.Where(det => det.Pedido == numeroPedido).ToList();
+            var pedidoPrincipal = AuxObtenerDetallePedidoPrincipal(grupoPedidos);
+            var kilosEntregaEstandar = ObtenerKgEstandar(contratoSAP);
+            return ObtenerKgDisponiblesPedido(grupoPedidos, ordenesPendientesDeCrear, pedidoPrincipal, kilosEntregaEstandar);
+        }
+        public decimal ObtenerKgDisponiblesPedido(
             List<Detail> grupoPedidos,
             List<OrdenDeCarga> ordenesPendientesDeCrear,
             Detail pedidoPrincipal,

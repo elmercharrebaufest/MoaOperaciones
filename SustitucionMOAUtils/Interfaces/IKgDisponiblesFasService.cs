@@ -14,6 +14,7 @@ namespace SustitucionMOAUtils.Interfaces
         decimal ObtenerKgEstandar(Result contratoSAP);
         bool PedidoEstaCargado(Detail pedido);
         decimal ObtenerKgDisponiblesPedido(List<Detail> grupoPedidos, List<OrdenDeCarga> ordenesPendientesDeCrear, Detail pedidoPrincipal, decimal kilosEntregaEstandar);
+        decimal ObtenerKgDisponiblesPedido(Result contratoSAP, List<OrdenDeCarga> ordenesPendientesDeCrear, string numeroPedido);
         /// <summary>
         /// Método auxiliar, correspondería en otrro lado.
         /// </summary>
