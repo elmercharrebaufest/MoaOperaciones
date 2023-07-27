@@ -139,6 +139,10 @@ export class PeticionDeOfertaFormularioComponent extends ListBaseComponent imple
         return false; //<-- Prevent Refresh
     }
 
+    // public get esTipo(tipo: string): boolean {
+    //     return this.solpCompraDto.TipoPosicionCodigo === tipo
+    // }
+
     public get esTipoMaterial(): boolean {
         return this.solpCompraDto.TipoPosicionCodigo == "MATERIALES";
     }
@@ -146,6 +150,14 @@ export class PeticionDeOfertaFormularioComponent extends ListBaseComponent imple
     public get esTipoServicio(): boolean {
         return this.solpCompraDto.TipoPosicionCodigo == "SERVICIO";
     }
+
+    public get esMaterialCatalogado(): boolean {
+        if(this.esTipoMaterial){
+            return this.solpCompraDto.PosicionCompras.some(c => c.MaterialComprasCodigo != undefined);
+        }
+    }
+    
+    
 
     //elimno el archivo, llamar al servicio de eliminacion
     eliminarAdjuntoNuevo(archivo): void {
