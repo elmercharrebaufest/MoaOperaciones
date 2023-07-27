@@ -1,3 +1,5 @@
+import { Formatter } from "../../formatter/Formatter";
+
 export interface Factura {
     NumeroFactura: string;
     NumeroPedido: string;
@@ -5,5 +7,9 @@ export interface Factura {
     Label: string;
 }
 export function newFactura(factura: Factura): Factura {
-    return { ...factura, Label: `${factura.NumeroFactura} - ${factura.KgDisponibles}` };
+    const { KgDisponibles, NumeroFactura } = factura;
+    const kgLabel = KgDisponibles <= 0 ? 'sin kg Disp.' : !KgDisponibles ? '' :
+        `${Formatter.formatNumberWithPoint(KgDisponibles.toString())} kg Disp.`;
+    const Label = `${NumeroFactura}  ${kgLabel}`;
+    return { ...factura, Label };
 }
