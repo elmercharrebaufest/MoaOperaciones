@@ -932,9 +932,14 @@ namespace SustitucionMOAUtils.Services
 
             var contratoSAP = consumer.ObtenerContratoSAP(orden.ContratoIngresado, TipoContratoFAS.Todos);
 
+            var contratosEnOrdenesPendientes = ObtenerOrdenesPendientesDeCliente(orden.Cliente.CodigoProveedor);
+
             var ordenDto = new OrdenDeCargaDetalleDto(orden, ordenDeCargaCambiosHistorial, cliente)
             {
-                ContratoSeleccionado = new ContratoOrdenFas(orden, contratoSAP)
+                ContratoSeleccionado = new ContratoOrdenFas(orden)
+                {
+                    KgDisponibles = _kgDisponiblesFasService.ObtenerKgDisponiblesContrato(contratoSAP, contratosEnOrdenesPendientes)
+                }
             };
 
             return ordenDto;
@@ -2369,15 +2374,7 @@ namespace SustitucionMOAUtils.Services
                         m.TablaSeccionMaterial == TablaSeccionMaterial.OrdenDeCarga &&
                         productosCodigosSap.Contains(m.CodigoSap));
 
-                var contratosEnOrdenesPendientes = repositorio
-                    .Listar<OrdenDeCarga>(
-                        x =>
-                            x.Cliente.CodigoProveedor == req.ClienteCodigo &&
-                            (
-                                (string.IsNullOrEmpty(x.NumeroPedido) && x.TipoContrato == TipoContratoFAS.Normal) ||
-                                (string.IsNullOrEmpty(x.NumeroEntrega) && x.TipoContrato == TipoContratoFAS.Anticipado)
-                            ) &&
-                            !estadosNoTieneOrdenPendienteEnvio.Contains(x.Estado));
+                var contratosEnOrdenesPendientes = ObtenerOrdenesPendientesDeCliente(req.ClienteCodigo);
 
                 var contratosDisponiblesResp = new ObtenerContratosDisponiblesResponse
                 {
@@ -2899,7 +2896,6 @@ namespace SustitucionMOAUtils.Services
                 return null;
             }
         }
-
         private List<OrdenDeCarga> ObtenerOrdenesPendientes(string numeroContrato)
         {
             return repositorio
@@ -2907,6 +2903,18 @@ namespace SustitucionMOAUtils.Services
                         x =>
                             ((!string.IsNullOrEmpty(x.ContratoSAP) && x.ContratoSAP == numeroContrato) ||
                             (string.IsNullOrEmpty(x.ContratoSAP) && x.ContratoIngresado == numeroContrato)) &&
+                            (
+                                (string.IsNullOrEmpty(x.NumeroPedido) && x.TipoContrato == TipoContratoFAS.Normal) ||
+                                (string.IsNullOrEmpty(x.NumeroEntrega) && x.TipoContrato == TipoContratoFAS.Anticipado)
+                            ) &&
+                            !estadosNoTieneOrdenPendienteEnvio.Contains(x.Estado));
+        }
+        private List<OrdenDeCarga> ObtenerOrdenesPendientesDeCliente(string codigoCliente)
+        {
+            return repositorio
+                    .Listar<OrdenDeCarga>(
+                        x =>
+                            x.Cliente.CodigoProveedor == codigoCliente &&
                             (
                                 (string.IsNullOrEmpty(x.NumeroPedido) && x.TipoContrato == TipoContratoFAS.Normal) ||
                                 (string.IsNullOrEmpty(x.NumeroEntrega) && x.TipoContrato == TipoContratoFAS.Anticipado)
