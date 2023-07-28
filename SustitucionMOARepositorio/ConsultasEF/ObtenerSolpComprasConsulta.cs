@@ -26,6 +26,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                      Id = solp.Id,
                                      NroSolp = solp.NroSolp,
                                      TipoPosicionCodigo = solp.Posiciones.Select(x => x.TipoPosicion.Codigo).FirstOrDefault(),
+                                     Adicional = solp.Adicional,
                                      PosicionCompras = (from posicion in contexto.Set<SolpPosicion>()
                                                         where posicion.Solp_Id == solp.Id && posicion.EsConcluido == true && posicion.Estado == true
                                                         orderby posicion.Indice
