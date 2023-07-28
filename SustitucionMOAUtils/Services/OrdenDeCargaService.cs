@@ -1756,7 +1756,7 @@ namespace SustitucionMOAUtils.Services
             if (orden.TransporteExiste)
             {
                 Log.Info("VerificarTransporte ActualizarEstado " + orden.ToDto().ToJson());
-                if (!string.IsNullOrEmpty(orden.ContratoSAP) && crearPedido)
+                if (!string.IsNullOrEmpty(orden.ContratoSAP) && string.IsNullOrEmpty(orden.NumeroPedido) && crearPedido)
                     CrearPedidoEnSAP(orden, orden.Cliente, true, false, mailUsuario);
                 var aprobadoCredito = orden.AprobadoCredito || ObtenerSituacionCrediticia(orden);
                 if (aprobadoCredito && string.IsNullOrEmpty(orden.NumeroEntrega))
