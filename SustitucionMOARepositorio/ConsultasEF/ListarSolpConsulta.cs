@@ -43,6 +43,9 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                     FechaCreacion = x.FechaCreacion,
                                     TipoSolp = new TablaGeneralDto { Descripcion = x.TipoSolp != null ? x.TipoSolp.Descripcion : "" },
                                     TipoSolpSap = x.TipoSolpSap,
+                                    Adicional = x.Adicional,
+                                    NroOrdenDeCompraAdicional = x.NroOrdenDeCompraAdicional,
+                                    TrabajoYaHecho = x.TrabajoYaHecho,
                                     PosicionCompras = (from posicion in contexto.Set<SolpPosicion>()
                                                        where posicion.Solp_Id == x.Id
                                                        select new SolpPosicionDto()

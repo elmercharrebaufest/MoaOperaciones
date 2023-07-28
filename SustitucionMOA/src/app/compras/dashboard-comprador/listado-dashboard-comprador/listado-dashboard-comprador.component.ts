@@ -113,7 +113,6 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
                         this.length = result.data.length > 0 ? result.data[0].ItemsTotales : result.data.length;
                         this.pageSize = result.data.length > 0 ? result.data[0].ItemPorPagina : 10;
                         this.pageIndex = result.data.length > 0 ? result.data[0].Pagina : 1;
-                        console.log(result.data, "Compras solp")
                     }
                     this.spinnerComponent.hideIt()
                 },

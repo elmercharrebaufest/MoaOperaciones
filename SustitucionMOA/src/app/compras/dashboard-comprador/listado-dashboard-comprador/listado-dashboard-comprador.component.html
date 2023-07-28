@@ -176,7 +176,9 @@
                                         <ng-template pTemplate="body" let-licitacion>
                                             <tr>
                                                <td id="agregarProveedor">
-                                                <img class="pointer" src="./Content/images/icons/editar.svg" alt="Editar" (click)="obtenerPeticionDeOfertaParaProveedor(licitacion.Id)" />
+                                                <div *ngIf="(rowData.Adicional == null || rowData.TrabajoYaHecho == null) && (rowData.Adicional == null && rowData.TrabajoYaHecho == null)">
+                                                    <img class="pointer" src="./Content/images/icons/editar.svg" alt="Editar" (click)="obtenerPeticionDeOfertaParaProveedor(licitacion.Id)" />
+                                                </div>
                                                </td>                                     
                                                 <td class="columna">{{licitacion.Id}}</td>
                                                 <td class="columna">                                                    
