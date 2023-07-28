@@ -56,7 +56,7 @@
                                         <ng-template let-option>
                                             <p style="margin: 0px!important; font-size: small; font-weight: 400!important;"
                                                 [ngClass]="{
-                                                'text-info':seRetiraEnPatagonia(option)
+                                                'text-info':seRetiraEnPatagonia(option) && ordenDeCargaFason.Producto_Id != option
                                             }">
                                                 {{option.Descripcion}}</p>
                                         </ng-template>

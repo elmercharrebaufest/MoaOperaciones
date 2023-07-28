@@ -1,4 +1,4 @@
-import { Component, ContentChild, EventEmitter, Input, OnDestroy, OnInit, Output, TemplateRef } from '@angular/core';
+import { Component, ContentChild, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, TemplateRef, ViewChild } from '@angular/core';
 import { fadeInAnimation } from '../../animations/fade-in.animation';
 import { BehaviorSubject, Subscription } from 'rxjs';
 
@@ -14,11 +14,12 @@ export class DropdownInputComponent<T> implements OnInit, OnDestroy {
   @Input() valueKey?: keyof T;
   @Input() placeholder: string = "Seleccione ..";
   filteredOptions: Array<T> = this.options;
-  private _selectedOption?: T;
-  
+  _selectedOption?: T;
+
   showDropdown = new BehaviorSubject(false);
   subscriptions = new Subscription();
   @ContentChild(TemplateRef) optionTemplate?: TemplateRef<any>;
+  @ViewChild('filter') filterInput: ElementRef<HTMLInputElement>;
   @Output() valueChange: EventEmitter<T> = new EventEmitter();
 
   /** Propiedad para evitar el click outside que cierra al abrir. Requiere mejora*/
@@ -30,6 +31,7 @@ export class DropdownInputComponent<T> implements OnInit, OnDestroy {
         if (showDropdown) {
           this.counter = -1;
           this.filteredOptions = this.options;
+          setTimeout(() => this.filterInput.nativeElement.focus(), 0);
         } else
           this.counter++;
       })

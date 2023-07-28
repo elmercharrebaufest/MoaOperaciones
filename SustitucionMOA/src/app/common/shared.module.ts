@@ -106,8 +106,6 @@ const declaredAndExported = [
     declarations: [
         HighlightDirective,
         ...declaredAndExported
-,
-        DropdownComponent
     ],
     providers: [
         EmailComposeService

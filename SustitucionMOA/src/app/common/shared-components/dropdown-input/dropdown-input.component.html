@@ -11,11 +11,15 @@
     <ng-container>
       <div *ngIf="(showDropdown | async) ||  counter <1 " [@fadeIn] clickOutside class="dropdown-input-container"
         (clickOutside)="closeDropdown()">
-        <div>
-          <input type="text" class="filter-input" (input)="onInputChange($event.target.value)"
+        <div class="dropdown-input-container-filter-input-container">
+          <input #filter type="text" class="filter-input" (input)="onInputChange($event.target.value)"
             (click)="toggleDropdown()" />
+          <i class="filter-input-icon pi pi-search" style="margin-top: 0.65rem;"></i>
         </div>
-        <div *ngFor="let option of filteredOptions" class="option" (click)="onSelectOption(option)">
+        <hr class="break">
+        <div *ngFor="let option of filteredOptions" class="option" [ngClass]="{
+          'selected-option': _selectedOption == option
+        }" (click)="onSelectOption(option)">
           <ng-container
             *ngTemplateOutlet="optionTemplate || defaultOptionTemplate; context:{$implicit: option}"></ng-container>
         </div>
