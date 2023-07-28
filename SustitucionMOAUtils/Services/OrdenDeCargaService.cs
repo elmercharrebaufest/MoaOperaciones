@@ -13,7 +13,6 @@ using ScatoRepo = SustitucionMOAModel.Models.WebApiMap.ScatoRepositorio;
 using SustitucionMOAModel.Models.WSMapMOA.OrdenCarga;
 using SustitucionMOAModel.Util;
 using SustitucionMOARepositorio;
-using SustitucionMOAUtils.Email;
 using SustitucionMOAUtils.Helpers;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
@@ -24,10 +23,8 @@ using SustitucionMOAWS.WSRequests.OrdenCarga;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
-using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 using System.Threading;
 using SustitucionMOAWS.ResponseHandler.OrdenCarga;
 
@@ -1746,7 +1743,7 @@ namespace SustitucionMOAUtils.Services
                 Corredor = orden.Corredor != null ? orden.Corredor.CodigoProveedor : string.Empty,
                 Material = orden.Producto.CodigoSap,
                 Pendiente = true,
-                TipoContrato = TipoContratoFAS.Normal
+                TipoContrato = Constante.FAS_FILTRO_TIPO_CONTRATO
             };
 
             var consumerRes = new OrdenCargaConsumerMOA().OrdenCargaVisualizarClienteExecute(consumerReq);
@@ -1778,7 +1775,7 @@ namespace SustitucionMOAUtils.Services
             if (orden.TransporteExiste)
             {
                 Log.Info("VerificarTransporte ActualizarEstado " + orden.ToDto().ToJson());
-                if (!string.IsNullOrEmpty(orden.ContratoSAP) && crearPedido)
+                if (!string.IsNullOrEmpty(orden.ContratoSAP) && crearPedido && !orden.EsFacturaAnticipada)
                     CrearPedidoEnSAP(orden, orden.Cliente, true, false, mailUsuario);
                 var aprobadoCredito = orden.AprobadoCredito || ObtenerSituacionCrediticia(orden);
                 if (aprobadoCredito && string.IsNullOrEmpty(orden.NumeroEntrega))
@@ -2180,7 +2177,7 @@ namespace SustitucionMOAUtils.Services
                     Fechas = rangoFechas,
                     Material = material,
                     Pendiente = true, // Contratos ABIERTOS
-                    TipoContrato = TipoContratoFAS.Todos
+                    TipoContrato = Constante.FAS_FILTRO_TIPO_CONTRATO
                 };
 
                 var ordenCargaConsumer = new OrdenCargaConsumerMOA();
