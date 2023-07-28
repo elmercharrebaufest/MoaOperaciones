@@ -6,7 +6,8 @@
 		Pendiente, 
 		Vencida, 
 		Entregada,
-		SinEstado
+        SinEstado,
+		PendienteCompensacion
 	}
 
 	public static class EstadoOrdenDeCargaFasonExtensions

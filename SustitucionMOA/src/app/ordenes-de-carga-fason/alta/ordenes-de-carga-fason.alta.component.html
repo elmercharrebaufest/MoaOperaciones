@@ -24,14 +24,11 @@
                                     Corredor:
                                 </div>
                                 <div class="styled-select" style="overflow: initial;">
-                                    <p-dropdown name="cmbCorredores"
-                                                [(ngModel)]="corredorSeleccionado"
-                                                [options]="listaCorredores"
-                                                placeholder="Seleccione un Corredor"
-                                                [disabled]="noEditarCliente"
-                                                optionLabel="RazonSocial"
-                                                (ngModelChange)="onCorredorSeleccionado()"
-                                                [filter]="true" filterBy="value.RazonSocial">
+                                    <p-dropdown name="cmbCorredores" [(ngModel)]="corredorSeleccionado"
+                                        [options]="listaCorredores" placeholder="Seleccione un Corredor"
+                                        [disabled]="noEditarCliente" optionLabel="RazonSocial"
+                                        (ngModelChange)="onCorredorSeleccionado()" [filter]="true"
+                                        filterBy="value.RazonSocial">
                                     </p-dropdown>
                                 </div>
                             </div>
@@ -41,13 +38,9 @@
                                     Cliente:
                                 </div>
                                 <div class="styled-select" style="overflow: initial;">
-                                    <p-dropdown name="clientesFason"
-                                                [(ngModel)]="clienteSeleccionado"
-                                                (ngModelChange)="onClienteSeleccionado()"
-                                                [options]="listaClientes"
-                                                optionLabel="RazonSocial"
-                                                placeholder="Seleccione un Cliente"
-                                                [filter]="true">
+                                    <p-dropdown name="clientesFason" [(ngModel)]="clienteSeleccionado"
+                                        (ngModelChange)="onClienteSeleccionado()" [options]="listaClientes"
+                                        optionLabel="RazonSocial" placeholder="Seleccione un Cliente" [filter]="true">
                                     </p-dropdown>
                                 </div>
                             </div>
@@ -57,13 +50,17 @@
                                     Producto:
                                 </div>
                                 <div class="styled-select" style="overflow: initial;">
-                                    <p-dropdown name="product"
-                                                [(ngModel)]="ordenDeCargaFason.Producto_Id"
-                                                [options]="listaProductos"
-                                                optionLabel="Descripcion"
-                                                placeholder="Seleccione un Producto"
-                                                [filter]="true">
-                                    </p-dropdown>
+                                    <app-dropdown-input [options]="listaProductos" [filterKey]="'Descripcion'"
+                                        [valueKey]="'MaterialId'" (valueChange)="ordenDeCargaFason.Producto_Id= $event"
+                                        [placeholder]="'Seleccione un producto'">
+                                        <ng-template let-option>
+                                            <p style="margin: 0px!important; font-size: small; font-weight: 400!important;"
+                                                [ngClass]="{
+                                                'text-info':seRetiraEnPatagonia(option) && ordenDeCargaFason.Producto_Id != option
+                                            }">
+                                                {{option.Descripcion}}</p>
+                                        </ng-template>
+                                    </app-dropdown-input>
                                 </div>
                             </div>
 
@@ -84,14 +81,9 @@
                                 </div>
 
                                 <div class="styled-select">
-                                    <p-calendar name="FechaRetiro"
-                                                [(ngModel)]="ordenDeCargaFason.FechaRetiro"
-                                                [showIcon]="true"
-                                                dateFormat="dd-mm-yy"
-                                                appendTo="body"
-                                                [minDate]="hoy"
-                                                [style]="{'width': '95%'}"
-                                                [maxDate]="maxDateValue">
+                                    <p-calendar name="FechaRetiro" [(ngModel)]="ordenDeCargaFason.FechaRetiro"
+                                        [showIcon]="true" dateFormat="dd-mm-yy" appendTo="body" [minDate]="hoy"
+                                        [style]="{'width': '95%'}" [maxDate]="maxDateValue">
                                     </p-calendar>
                                 </div>
                             </div>
@@ -101,12 +93,9 @@
                                     Destinos:
                                 </div>
                                 <div class="styled-select" style="overflow: initial;">
-                                    <p-dropdown name="destinos"
-                                                [(ngModel)]="ordenDeCargaFason.Destino"
-                                                [options]="listaDestinos"
-                                                optionLabel="LocalidadDescripcion"
-                                                placeholder="Seleccione un Destino"
-                                                [filter]="true">
+                                    <p-dropdown name="destinos" [(ngModel)]="ordenDeCargaFason.Destino"
+                                        [options]="listaDestinos" optionLabel="LocalidadDescripcion"
+                                        placeholder="Seleccione un Destino" [filter]="true">
                                     </p-dropdown>
                                 </div>
                             </div>
@@ -121,7 +110,9 @@
                                 </div>
                                 <div class="styled-select autocomplete">
                                     <!--<input (ngModelChange)="ordenDeCargaFason.PatenteChasis = $event.toUpperCase();" [(ngModel)]="ordenDeCargaFason.PatenteChasis" maxlength="7" mask="AAAAAAA" />-->
-                                    <input [(ngModel)]="ordenDeCargaFason.PatenteChasis" (ngModelChange)="ordenDeCargaFason.PatenteChasis = $event.toUpperCase()" maxlength="7" mask="AAAAAAA" />
+                                    <input [(ngModel)]="ordenDeCargaFason.PatenteChasis"
+                                        (ngModelChange)="ordenDeCargaFason.PatenteChasis = $event.toUpperCase()"
+                                        maxlength="7" mask="AAAAAAA" />
 
                                 </div>
                             </div>
@@ -131,7 +122,9 @@
                                     Patente acoplado:
                                 </div>
                                 <div class="styled-select autocomplete">
-                                    <input [(ngModel)]="ordenDeCargaFason.PatenteAcoplado" (ngModelChange)="ordenDeCargaFason.PatenteAcoplado = $event.toUpperCase()" maxlength="7" mask="AAAAAAA" />
+                                    <input [(ngModel)]="ordenDeCargaFason.PatenteAcoplado"
+                                        (ngModelChange)="ordenDeCargaFason.PatenteAcoplado = $event.toUpperCase()"
+                                        maxlength="7" mask="AAAAAAA" />
                                 </div>
                             </div>
 
@@ -140,7 +133,9 @@
                                     Nombre y apellido del chofer:
                                 </div>
                                 <div class="styled-select">
-                                    <input [(ngModel)]="ordenDeCargaFason.NombreChofer" (ngModelChange)="ordenDeCargaFason.NombreChofer = $event.toUpperCase()" type="text" maxlength="25">
+                                    <input [(ngModel)]="ordenDeCargaFason.NombreChofer"
+                                        (ngModelChange)="ordenDeCargaFason.NombreChofer = $event.toUpperCase()"
+                                        type="text" maxlength="25">
                                 </div>
                             </div>
 
@@ -158,7 +153,9 @@
                                     Raz&oacute;n social transporte:
                                 </div>
                                 <div class="styled-select">
-                                    <input [(ngModel)]="ordenDeCargaFason.RazonSocialTransporte" (ngModelChange)="ordenDeCargaFason.RazonSocialTransporte = $event.toUpperCase()" type="text" maxlength="50">
+                                    <input [(ngModel)]="ordenDeCargaFason.RazonSocialTransporte"
+                                        (ngModelChange)="ordenDeCargaFason.RazonSocialTransporte = $event.toUpperCase()"
+                                        type="text" maxlength="50">
                                 </div>
                             </div>
 
@@ -167,7 +164,8 @@
                                     CUIT transporte:
                                 </div>
                                 <div class="styled-select">
-                                    <input type="text" [(ngModel)]="ordenDeCargaFason.CUITTransporte" mask="00-00000000-0">
+                                    <input type="text" [(ngModel)]="ordenDeCargaFason.CUITTransporte"
+                                        mask="00-00000000-0">
                                 </div>
                             </div>
 
@@ -187,7 +185,8 @@
                             </div>
 
                             <div class="styled-select">
-                                <textarea id="Observacion" [(ngModel)]="ordenDeCargaFason.Observacion" rows="5"></textarea>
+                                <textarea id="Observacion" [(ngModel)]="ordenDeCargaFason.Observacion"
+                                    rows="5"></textarea>
                             </div>
                         </div>
 
@@ -198,17 +197,19 @@
                             </div>
 
                             <div class="col-xs-5 col-md-2">
-                                <input type="button" (click)="redirigirAListado()" class="btn-custom btn-add btn-mediano"
-                                       value="Volver">
+                                <input type="button" (click)="redirigirAListado()"
+                                    class="btn-custom btn-add btn-mediano" value="Volver">
                             </div>
 
                             <div class="col-xs-2 col-md-1"></div>
 
                             <div class="col-xs-5 col-md-3">
                                 <div class="step-actions enviar">
-                                    <button type="button" id="openModalNotificacion" data-toggle="modal" style="display:none"
-                                            data-target="#modalNotificación" class="btn-custom btn-azul"></button>
-                                    <input type="submit" (click)="guardarOrdenDeCargaFason()" class="btn-custom btn-guardar btn-mediano" value="Enviar">
+                                    <button type="button" id="openModalNotificacion" data-toggle="modal"
+                                        style="display:none" data-target="#modalNotificación"
+                                        class="btn-custom btn-azul"></button>
+                                    <input type="submit" (click)="guardarOrdenDeCargaFason()"
+                                        class="btn-custom btn-guardar btn-mediano" value="Enviar">
                                 </div>
                             </div>
 
@@ -227,14 +228,14 @@
 
 <!-- modal notificacion -->
 <button type="button" style="display:none" id="openModalNotificacion" data-toggle="modal"
-        data-target="#modalNotificación"></button>
+    data-target="#modalNotificación"></button>
 <div class="modal fade fade-complete" id="modalNotificación" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-     data-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
+    data-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close btn-close" style="display:none" data-dismiss="modal" aria-label="Close"
-                        id="botonCerrarModal">
+                <button type="button" class="close btn-close" style="display:none" data-dismiss="modal"
+                    aria-label="Close" id="botonCerrarModal">
                     <span aria-hidden="true">&times;</span>
                 </button>
                 <h4 class="modal-title" id="myModalLabel">Orden de carga guardada correctamente </h4>

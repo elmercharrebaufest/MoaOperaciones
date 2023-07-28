@@ -14,8 +14,6 @@ using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
-using System.Linq.Expressions;
-using System.Web.Security;
 
 namespace SustitucionMOAUtils.Services
 {
@@ -24,6 +22,7 @@ namespace SustitucionMOAUtils.Services
         private readonly IRepositorio _repositorio;
         protected readonly IOrdenCargaConsumerMOA _consumer;
         private readonly IScatoConsumer _scatoConsumer;
+        private readonly IEnumerable<string> _codigosRetiroEnPatagonia = new string[] { "98855", "99098" };
 
         public OrdenDeCargaFasonService(IRepositorio repositorio, IOrdenCargaConsumerMOA consumer, IScatoConsumer _scatoConsumer)
         {
@@ -86,7 +85,7 @@ namespace SustitucionMOAUtils.Services
                 var listadoDB = _repositorio.Listar<OrdenDeCargaFason>(x =>
                 (esInterno ? true : clientes.Contains(x.Cliente.CodigoProveedor))
                 && x.FechaCreacion >= fechaIncioDateTime && x.FechaCreacion <= fechaFinDateTime
-                && (esInterno ? true : tipoUsuarioId == 5 ? x.CorredorId == null: x.CorredorId != null)
+                && (esInterno ? true : tipoUsuarioId == 5 ? x.CorredorId == null : x.CorredorId != null)
                 );
 
                 if (listadoDB == null || listadoDB.Count == 0)
@@ -94,7 +93,7 @@ namespace SustitucionMOAUtils.Services
                     throw new InfoCustomException(string.Format(InfoMsg.SinRegistros, "órdenes de carga fason"));
                 }
 
-                var listado = listadoDB.OrderByDescending(x=>x.FechaCreacion).Select(x => new OrdenDeCargaFasonDto
+                var listado = listadoDB.OrderByDescending(x => x.FechaCreacion).Select(x => new OrdenDeCargaFasonDto
                 {
                     Id = x.Id,
                     Cliente = x.Cliente.CodigoProveedor,
@@ -223,14 +222,14 @@ namespace SustitucionMOAUtils.Services
 
             var fechaLimite = DateTime.Now.Date;
 
-			if (_repositorio.Obtener<HabilitacionJob>(a => a.Nombre == "VencimientoOrdenesDeCargaFasonJob").Habilitado == false)
-				return null;
+            if (_repositorio.Obtener<HabilitacionJob>(a => a.Nombre == "VencimientoOrdenesDeCargaFasonJob").Habilitado == false)
+                return null;
 
-			var ordenes = _repositorio.Listar<OrdenDeCargaFason>((orden) => DbFunctions.AddDays(orden.FechaRetiro, 5) < fechaLimite && (orden.Estado == EstadoOrdenDeCargaFason.Generada || orden.Estado == EstadoOrdenDeCargaFason.Pendiente));
+            var ordenes = _repositorio.Listar<OrdenDeCargaFason>((orden) => DbFunctions.AddDays(orden.FechaRetiro, 5) < fechaLimite && (orden.Estado == EstadoOrdenDeCargaFason.Generada || orden.Estado == EstadoOrdenDeCargaFason.Pendiente));
 
             foreach (var orden in ordenes)
             {
-				orden.Estado = EstadoOrdenDeCargaFason.Vencida;
+                orden.Estado = EstadoOrdenDeCargaFason.Vencida;
             }
             _repositorio.GuardarCambios();
 
@@ -296,36 +295,13 @@ namespace SustitucionMOAUtils.Services
             try
             {
                 var existeTransporte = TransporteExiste(request.CUITTransporte);
-                var estadoOrden = existeTransporte ? EstadoOrdenDeCargaFason.Generada : EstadoOrdenDeCargaFason.Pendiente;
 
                 for (int i = 0; i < request.CantidadDeViajes; i++)
                 {
-                    var ordenEntity = new OrdenDeCargaFason
-                    {
-                        Cantidad = request.Cantidad,
-                        //Cliente =
-                        Cliente_Id = request.Cliente,
-                        CorredorId = request.CorredorId,
-                        CUILChofer = request.CUILChofer,
-                        CUITTransporte = request.CUITTransporte,
-                        LocalidadId = request.Destino.LocalidadId,
-                        LocalidadDescripcion = request.Destino.LocalidadDescripcion,
-                        Estado = estadoOrden,
-                        FechaCreacion = DateTime.Now,
-                        FechaRetiro = request.FechaRetiro,
-                        //Id =
-                        NombreChofer = request.NombreChofer,
-                        Observacion = request.Observacion,
-                        PatenteAcoplado = request.PatenteAcoplado,
-                        PatenteChasis = request.PatenteChasis,
-                        //Producto =
-                        Producto_Id = request.Producto_Id.MaterialId,
-
-                        RazonSocialTransporte = request.RazonSocialTransporte,
-                        TransporteExiste = existeTransporte,
-                        KmARecorrer = request.Destino.KmARecorrer,
-                    };
-                    _repositorio.Agregar(ordenEntity); //TODO: ver metodo agregartodos
+                    var ordenEntity = new OrdenDeCargaFason(request);
+                    ActualizarOrdenDeCarga(ordenEntity, existeTransporte);
+                    _repositorio.Agregar(ordenEntity);
+                    
                     _repositorio.GuardarCambios();
                 }
 
@@ -387,6 +363,23 @@ namespace SustitucionMOAUtils.Services
                 throw new ValidationCustomException("El cuit no tiene el formato correcto.");
             }
             return _scatoConsumer.BuscarDestinos(proveedor.CUIT);
+        }
+        private void ActualizarOrdenDeCarga(OrdenDeCargaFason orden, bool existeTransporte=false)
+        {
+            orden.TransporteExiste = existeTransporte;
+            orden.Estado = ObtenerEstadoOrden(orden);
+        }
+        private EstadoOrdenDeCargaFason ObtenerEstadoOrden(OrdenDeCargaFason orden)
+        {
+            if (orden.TransporteExiste)
+            {
+                var producto = orden.Producto ?? _repositorio.Obtener<Material>(orden.Producto_Id);
+                if (_codigosRetiroEnPatagonia.Contains(producto.CodigoSap))
+                    return EstadoOrdenDeCargaFason.PendienteCompensacion;
+                else
+                    return EstadoOrdenDeCargaFason.Generada;
+            }
+            return EstadoOrdenDeCargaFason.Pendiente;
         }
     }
 }
