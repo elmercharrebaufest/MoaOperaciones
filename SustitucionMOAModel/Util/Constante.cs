@@ -1,4 +1,6 @@
 
+using SustitucionMOAModel.Enums;
+
 namespace SustitucionMOAModel.Util
 {
     public struct Constante
@@ -11,5 +13,6 @@ namespace SustitucionMOAModel.Util
         public const string CODIGO_PELLET_GIRASOL = "99709";
         public const int KG_STANDARD = 30000;
         public const int KG_STANDARD_PELLET_GIRASOL = 20000;
+        public const TipoContratoFAS FAS_FILTRO_TIPO_CONTRATO = TipoContratoFAS.Todos;
     }
 }
