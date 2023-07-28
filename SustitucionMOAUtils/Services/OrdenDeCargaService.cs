@@ -917,14 +917,6 @@ namespace SustitucionMOAUtils.Services
             var ordenDeCargaCambiosHistorial = ObtenerCambiosHistorial(orden);
 
             var contratoSAP = consumer.ObtenerContratoSAP(orden.ContratoIngresado, TipoContratoFAS.Todos);
-            var contratosEnOrdenesPendientes = repositorio
-                    .ListarProyeccion<OrdenDeCarga, string>(
-                        x => x.ContratoIngresado,
-                        x =>
-                            x.Cliente.CodigoProveedor == orden.Cliente.CodigoProveedor &&
-                            string.IsNullOrEmpty(x.NumeroPedido) &&
-                            x.Estado != EstadoOrdenDeCarga.Anulada &&
-                            x.Estado != EstadoOrdenDeCarga.AnuladaPorVencimiento);
 
             var ordenesPendientes = ObtenerOrdenesPendientesDeCliente(orden.Cliente.CodigoProveedor);
 
@@ -1775,7 +1767,7 @@ namespace SustitucionMOAUtils.Services
             if (orden.TransporteExiste)
             {
                 Log.Info("VerificarTransporte ActualizarEstado " + orden.ToDto().ToJson());
-                if (!string.IsNullOrEmpty(orden.ContratoSAP) && crearPedido && !orden.EsFacturaAnticipada)
+                if (!string.IsNullOrEmpty(orden.ContratoSAP) && string.IsNullOrEmpty(orden.NumeroPedido) && crearPedido && !orden.EsFacturaAnticipada)
                     CrearPedidoEnSAP(orden, orden.Cliente, true, false, mailUsuario);
                 var aprobadoCredito = orden.AprobadoCredito || ObtenerSituacionCrediticia(orden);
                 if (aprobadoCredito && string.IsNullOrEmpty(orden.NumeroEntrega))
