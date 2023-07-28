@@ -153,23 +153,6 @@ namespace SustitucionMOATest.Controllers
             Assert.AreEqual(expectedJson, resultJson);
         }
 
-        [Test()]
-        public void ObtenerPedidos()
-        {
-            var listaPedidos = "0012059285, 0012059686, 0012060616, 0012061378, 0012061439, 0012061868";
-            var lista = listaPedidos.Split(',').ToList();
-            var pedidos = new
-            {
-                data = lista
-            };
-
-            ordenDeCargaServiceMock.Setup(s => s.ObtenerPedidos(It.Is<int>(i => i == ordenId))).Returns(pedidos.data);
-            var result = (JsonResult)target.ObtenerPedidos(ordenId);
-            expectedJson = JsonConvert.SerializeObject(pedidos);
-            resultJson = JsonConvert.SerializeObject(result.Data);
-            Assert.AreEqual(expectedJson, resultJson);
-            //ordenDeCargaServiceMock.Verify(s => s.ObtenerPedidos(ordenId));
-        }
 
         [Test()]
         public void NotificarTransporteTest()

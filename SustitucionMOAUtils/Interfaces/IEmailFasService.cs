@@ -29,5 +29,9 @@ namespace SustitucionMOAUtils.Interfaces
 
         void EnviarMailVencieronOrdenesDeCarga(List<OrdenDeCarga> ordenesDeCarga);
 
+        void EnviarMailSolicitudEdicion(OrdenDeCarga ordenDeCarga, List<OrdenDeCargaCambiosHistorial> historialCambios);
+
+        void EnviarMailSolicitudAnulacion(OrdenDeCarga ordenDeCarga);
+
     }
 }
