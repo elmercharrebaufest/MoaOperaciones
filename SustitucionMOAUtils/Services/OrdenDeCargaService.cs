@@ -313,7 +313,7 @@ namespace SustitucionMOAUtils.Services
                 }
                 if (historialCambios.Count > 0 && !esAdmin)
                 {
-                    emailFasService.EnviarMailSolicitudEdicion(ordenDeCarga, historialCambios);
+                    emailFasService.EnviarMailSolicitudEdicion(ordenEditar, historialCambios);
                 }
 
                 repositorio.GuardarCambios();
