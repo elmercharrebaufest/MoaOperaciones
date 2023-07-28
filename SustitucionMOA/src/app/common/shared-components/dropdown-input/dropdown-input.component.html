@@ -1,0 +1,27 @@
+<div class="filter-select-container">
+  <div class="select-wrapper">
+    <div class="dropdown-input-label-container" (click)="toggleDropdown()">
+      <label class="dropdown-input-label">{{
+        _selectedOption ? filterKey ? _selectedOption[filterKey]: _selectedOption : placeholder}}
+      </label>
+      <div class="dropdown-input-label-icon">
+        <i class="text-muted pi pi-chevron-down" style="margin-top: 0.65rem;"></i>
+      </div>
+    </div>
+    <ng-container>
+      <div *ngIf="(showDropdown | async) ||  counter <1 " [@fadeIn] clickOutside class="dropdown-input-container"
+        (clickOutside)="closeDropdown()">
+        <div>
+          <input type="text" class="filter-input" (input)="onInputChange($event.target.value)"
+            (click)="toggleDropdown()" />
+        </div>
+        <div *ngFor="let option of filteredOptions" class="option" (click)="onSelectOption(option)">
+          <ng-container
+            *ngTemplateOutlet="optionTemplate || defaultOptionTemplate; context:{$implicit: option}"></ng-container>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+</div>
+
+<ng-template #defaultOptionTemplate let-option>{{option | json}}</ng-template>

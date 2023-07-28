@@ -3,7 +3,7 @@ import { ActivatedRoute, Params } from '@angular/router';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { ConfirmationService } from 'primeng/api';
 import { BaseComponent } from '../../common/base-components/base-component';
-import { Material } from '../../common/models/material';
+import { Material, RETIRO_EN_PATAGONIA } from '../../common/models/material';
 import { OrdenDeCargaFasonDto } from '../../common/models/ordenes-de-carga-fason/ordenDeCargaFasonDto';
 import { FloatMsgService } from '../../common/services/FloatMsgService';
 import { ModalService } from '../../common/services/ModalService';
@@ -163,7 +163,9 @@ export class OrdenesDeCargaFasonAltaComponent extends BaseComponent implements O
         //    this.mensajeComponent.setInfoMsg("Seleccione un corredor.");
         //    return false;
         //}
+        debugger
         if (!this.ordenDeCargaFason.Producto_Id) {
+
             // Mostrar un mensaje de error al usuario o hacer algo para indicar que es necesario seleccionar un corredor
             this.mensajeComponent.setInfoMsg("Seleccione un producto.");
             return false;
@@ -491,5 +493,9 @@ export class OrdenesDeCargaFasonAltaComponent extends BaseComponent implements O
             this.mensajeComponent.setErrorMsg(err);
             this.blockUI.stop();
         }
+    }
+
+    seRetiraEnPatagonia(material: Material): boolean {
+        return RETIRO_EN_PATAGONIA.includes(material.CodigoSap);
     }
 }

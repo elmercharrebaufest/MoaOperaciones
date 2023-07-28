@@ -1,4 +1,5 @@
-﻿using SustitucionMOAModel.Enums;
+﻿using SustitucionMOAModel.Dto.OrdenDeCargaFason;
+using SustitucionMOAModel.Enums;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -45,19 +46,26 @@ namespace SustitucionMOAModel.Entities
         public string NroRemito { get; set; }
         public string UniMedCant { get; set; }
         public string KmARecorrer { get; set; }
-
-        public void ActualizarEstado()
+        public OrdenDeCargaFason() { }
+        public OrdenDeCargaFason(CrearOrdenDeCargaFasonRequest request)
         {
-            if (Estado != EstadoOrdenDeCargaFason.Entregada)
-            {
-                if (!TransporteExiste)
-                {
-                    Estado = EstadoOrdenDeCargaFason.Pendiente;
-                }
-            }
+            Cantidad = request.Cantidad;
+            Cliente_Id = request.Cliente;
+            CorredorId = request.CorredorId;
+            CUILChofer = request.CUILChofer;
+            CUITTransporte = request.CUITTransporte;
+            LocalidadId = request.Destino.LocalidadId;
+            LocalidadDescripcion = request.Destino.LocalidadDescripcion;
+            FechaCreacion = DateTime.Now;
+            FechaRetiro = request.FechaRetiro;
+            NombreChofer = request.NombreChofer;
+            Observacion = request.Observacion;
+            PatenteAcoplado = request.PatenteAcoplado;
+            PatenteChasis = request.PatenteChasis;
+            Producto_Id = request.Producto_Id.MaterialId;
+            RazonSocialTransporte = request.RazonSocialTransporte;
+            KmARecorrer = request.Destino.KmARecorrer;
         }
-
-
         public override bool Equals(object obj)
         {
             return obj is OrdenDeCargaFason carga &&
