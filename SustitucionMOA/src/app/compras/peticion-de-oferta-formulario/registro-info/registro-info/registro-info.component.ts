@@ -154,52 +154,19 @@ export class RegistroInfoComponent extends ListBaseComponent implements OnInit, 
         this.displayConfirmacion = false;
     }
     cerrarModalConfirmacionAdjudicacion() {
+        this.onCancelarRegistroInfo() 
         this.displayAdjudicacionCreada = false;
+        this.displayConfirmacion = false;
+    }
+
+    cerrarModalHomeAdjudicacion(){
+        this.navService.navegarSeccion('/compras/dashboardComprador');
     }
 
     guardarAdjudicacion() {
         this.blockUI.start("Grabando...");
         try {
-            this.resultadoAdjudicacion = new Array();
-            var result = {
-                data: [
-                    {
-                        "Errores": [],
-                        "Mensaje": "OK",
-                        "IdEntidad": 0,
-                        "NumeroPedido": "4123001779",
-                        "NumeroSolp": "0212302931",
-                        "Proveedor": "VAZQUEZ HNOS S.R.L."
-                    },
-                    {
-                        "Errores": [],
-                        "Mensaje": "OK",
-                        "IdEntidad": 0,
-                        "NumeroPedido": "4123001780",
-                        "NumeroSolp": "0212302931",
-                        "Proveedor": "LARRAYA BULONES S.R.L."
-                    },
-                    {
-                        "Errores": [],
-                        "Mensaje": "OK",
-                        "IdEntidad": 0,
-                        "NumeroPedido": "4123001781",
-                        "NumeroSolp": "0212302931",
-                        "Proveedor": "MR. FIERRO SA"
-                    }
-                ]
-            };
-            
-            this.displayAdjudicacionCreada = true;
-
-            this.resultadoAdjudicacion = result.data;
-            console.log(this.resultadoAdjudicacion);
-            this.blockUI.stop();
-
-            return;
-
-
-
+            this.resultadoAdjudicacion = new Array();       
             this.subscription = this.service.guardarAdjudicacionAutomatica(this.solpCompraDto.RegistrosInfo.filter(x => x.Confirmado == true)).subscribe(
                 (result: any) => {
                     if (result.logout == true) {
