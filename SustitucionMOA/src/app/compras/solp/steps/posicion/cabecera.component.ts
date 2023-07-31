@@ -1076,6 +1076,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
                 }
 
                 this.model.agregarNuevaPosicionDesdeContratoMarco(newPos);
+                this.agregarPosicion();
               
             });
             this.model.calcularValorTotalPorMoneda();           
