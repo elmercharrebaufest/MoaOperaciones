@@ -10,6 +10,7 @@ namespace SustitucionMOAUtils.Interfaces
         ListarOrdenDeCargaFasonResponse Listar(ListarOrdenDeCargaFasonRequest request);
         DetalleOrdenDeCargaFasonResponse ObtenerDetalle(int IdOrdenCargaFason, DetalleOrdenDeCargaFasonRequest mailUsuario);
         string VerificarTransporte(int ordenId);
+        void VerificarTransporteJob();
         List<OrdenDeCargaFason> VerificarVencimientoOrdenDeCargaFason();
         object ObtenerDestinos(int clienteId);
         Resultado Crear(CrearOrdenDeCargaFasonRequest request, string mailUsuario);

@@ -94,7 +94,7 @@ namespace SustitucionMOAUtils.Services
                 }
 
                 var listado = listadoDB.OrderByDescending(x => x.FechaCreacion)
-                    .Select(x => new OrdenDeCargaFasonDto(x,esInterno))
+                    .Select(x => new OrdenDeCargaFasonDto(x, esInterno))
                     .ToList();
 
                 var response = new ListarOrdenDeCargaFasonResponse();
@@ -126,7 +126,7 @@ namespace SustitucionMOAUtils.Services
 
                 var orden = _repositorio.Obtener<OrdenDeCargaFason>(IdOrdenDeCargaFason);
 
-                var response = new OrdenDeCargaFasonDto(orden,esInterno);
+                var response = new OrdenDeCargaFasonDto(orden, esInterno);
 
                 return new DetalleOrdenDeCargaFasonResponse { Response = response };
             }
@@ -267,7 +267,6 @@ namespace SustitucionMOAUtils.Services
             {
                 ValidarRequest(request, mailUsuario);
                 var orden = _repositorio.Obtener<OrdenDeCargaFason>(request.Id);
-                var existeTransporte = TransporteExiste(request.CUITTransporte);
 
                 orden.Cantidad = request.Cantidad;
                 orden.Cliente_Id = request.Cliente;
@@ -284,11 +283,10 @@ namespace SustitucionMOAUtils.Services
                 orden.PatenteChasis = request.PatenteChasis;
                 orden.Producto_Id = request.Producto_Id.MaterialId;
                 orden.RazonSocialTransporte = request.RazonSocialTransporte;
-                orden.TransporteExiste = existeTransporte;
                 orden.KmARecorrer = request.Destino.KmARecorrer;
                 orden.FleteMOA = request.FleteMOA;
 
-                ActualizarOrdenDeCarga(orden, existeTransporte);
+                ActualizarOrdenDeCarga(orden);
 
                 _repositorio.GuardarCambios();
 
@@ -310,7 +308,24 @@ namespace SustitucionMOAUtils.Services
             }
             return _scatoConsumer.BuscarDestinos(proveedor.CUIT);
         }
-        private void ActualizarOrdenDeCarga(OrdenDeCargaFason orden, bool existeTransporte = false)
+        public void VerificarTransporteJob()
+        {
+            if (_repositorio.Obtener<HabilitacionJob>(hj => hj.Nombre == "VerificarTransporteOrdenesDeCargaFasonJob" && hj.Habilitado) == null)
+                return;
+
+            var ordenes = _repositorio.Listar<OrdenDeCargaFason>(orden => !orden.TransporteExiste && orden.Estado == EstadoOrdenDeCargaFason.Pendiente );
+            foreach (var orden in ordenes)
+            {
+                ActualizarOrdenDeCarga(orden);
+            }
+            _repositorio.GuardarCambios();
+        }
+        private void ActualizarOrdenDeCarga(OrdenDeCargaFason orden)
+        {
+            var existeTransporte = TransporteExiste(orden.CUITTransporte);
+            ActualizarOrdenDeCarga(orden, existeTransporte);
+        }
+        private void ActualizarOrdenDeCarga(OrdenDeCargaFason orden, bool existeTransporte)
         {
             orden.TransporteExiste = existeTransporte;
             orden.Estado = ObtenerEstadoOrden(orden);
