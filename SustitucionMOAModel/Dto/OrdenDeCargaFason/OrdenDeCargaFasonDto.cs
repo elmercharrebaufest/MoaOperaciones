@@ -1,5 +1,5 @@
 ﻿using Newtonsoft.Json;
-using SustitucionMOAModel.Entities;
+using Ent = SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 
 namespace SustitucionMOAModel.Dto.OrdenDeCargaFason
@@ -41,8 +41,44 @@ namespace SustitucionMOAModel.Dto.OrdenDeCargaFason
 
 		public bool TransporteExiste { get; set; }
 		public string Observacion { get; set; }
-		public int LocalidadId { get; set; }
+        public bool FleteMOA { get; set; }
+        public int LocalidadId { get; set; }
 		public string LocalidadDescripcion { get; set; }
         public Models.DataAgro.MaterialDto Producto_Id { get; set; }
+
+		public OrdenDeCargaFasonDto(Ent.OrdenDeCargaFason orden, bool esInterno)
+		{
+			Cantidad = orden.Cantidad;
+			Cliente = orden.Cliente.CodigoProveedor;
+			ColorSemaforo = orden.Estado.ObtenerSemaforo();
+			Corredor = orden.Corredor?.CodigoProveedor;
+			CUILChofer = orden.CUILChofer;
+			CUITCliente = "";
+			CUITTransporte = orden.CUITTransporte;
+			DescripcionEstado = esInterno ? orden.Estado.ToFriendlyString() : orden.Estado.ToUserFriendlyString();
+			DescripcionEstadoListado = "";
+			Estado = orden.Estado;
+			FechaCreacion = orden.FechaCreacion.ToString("dd/MM/yyyy HH:mm");
+			FechaRetiro = orden.FechaRetiro.ToString("dd/MM/yyyy");
+			Id = orden.Id;
+			LocalidadDescripcion = orden.LocalidadDescripcion;
+			LocalidadId = orden.LocalidadId;
+			Material = orden.Producto.Nombre;
+			NombreChofer = orden.NombreChofer;
+			Producto_Id = new SustitucionMOAModel.Models.DataAgro.MaterialDto
+			{
+				MaterialId = orden.Producto.Id,
+				Descripcion = orden.Producto.Nombre,
+				CodigoSap = orden.Producto.CodigoSap,
+			};
+			PatenteAcoplado = orden.PatenteAcoplado;
+			PatenteChasis = orden.PatenteChasis;
+			RazonSocialCliente = orden.Cliente.RazonSocial;
+			RazonSocialCorredor = orden.Corredor?.RazonSocial;
+			RazonSocialTransporte = orden.RazonSocialTransporte;
+			TransporteExiste = orden.TransporteExiste;
+			Observacion = orden.Observacion;
+			FleteMOA = orden.FleteMOA ?? false;
+        }
     }
 }

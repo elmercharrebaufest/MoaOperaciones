@@ -1,8 +1,20 @@
-::ng-deep .ui-calendar .ui-button{
-    background-color: #FFFFFF !important;
-    border-color: #DDDDDD !important;
-  } 
+::ng-deep .ui-calendar .ui-button {
+  background-color: #FFFFFF !important;
+  border-color: #DDDDDD !important;
+}
 
-  ::ng-deep .ui-button {
-    color: #666666 !important;
-  } 
+::ng-deep .ui-button {
+  color: #666666 !important;
+}
+
+.mt-2 {
+  margin-top: 0.5rem;
+}
+
+.ml-2 {
+  margin-left: 0.5rem;
+}
+
+.bold {
+  font-weight: bold !important;
+}

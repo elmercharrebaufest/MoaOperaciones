@@ -5,16 +5,16 @@ using System.Collections.Generic;
 
 namespace SustitucionMOAUtils.Interfaces
 {
-	public interface IOrdenDeCargaFasonService
-	{
-		ListarOrdenDeCargaFasonResponse Listar(ListarOrdenDeCargaFasonRequest request);
-		DetalleOrdenDeCargaFasonResponse ObtenerDetalle(int IdOrdenCargaFason, DetalleOrdenDeCargaFasonRequest mailUsuario);
-		string VerificarTransporte(int ordenId);
+    public interface IOrdenDeCargaFasonService
+    {
+        ListarOrdenDeCargaFasonResponse Listar(ListarOrdenDeCargaFasonRequest request);
+        DetalleOrdenDeCargaFasonResponse ObtenerDetalle(int IdOrdenCargaFason, DetalleOrdenDeCargaFasonRequest mailUsuario);
+        string VerificarTransporte(int ordenId);
         List<OrdenDeCargaFason> VerificarVencimientoOrdenDeCargaFason();
         object ObtenerDestinos(int clienteId);
-		Resultado Crear(CrearOrdenDeCargaFasonRequest request);
-		Resultado Editar(EditarOrdenDeCargaFasonRequest request);
-		List<ProveedorDto> GetCorredores();
-		List<ProveedorDto> GetClientesDeCorredor(string codigoCorredor);
-	}
+        Resultado Crear(CrearOrdenDeCargaFasonRequest request, string mailUsuario);
+        Resultado Editar(EditarOrdenDeCargaFasonRequest request, string mailUsuario);
+        List<ProveedorDto> GetCorredores();
+        List<ProveedorDto> GetClientesDeCorredor(string codigoCorredor);
+    }
 }

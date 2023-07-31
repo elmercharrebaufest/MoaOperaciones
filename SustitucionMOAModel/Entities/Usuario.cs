@@ -75,12 +75,13 @@ namespace SustitucionMOAModel.Entities
         {
             try
             {
-                return Proveedores.Where(p => 
-                    p.CUIT == this.CUITRegistro && 
+                return Proveedores.Where(p =>
+                    p.CUIT == this.CUITRegistro &&
                     this.TipoUsuario.Id == p.TipoProveedor.Id
                     ).FirstOrDefault();
             }
-            catch {
+            catch
+            {
                 return null;
             }
         }
@@ -437,6 +438,7 @@ namespace SustitucionMOAModel.Entities
                 case "SOLP": return RolEnum.Solp;
                 case "TODOS": return RolEnum.Todos;
                 case "NOIMP": return RolEnum.UsuarioNoImplementado;
+                case "FLETE MOA": return RolEnum.FleteMOA;
 
                 default: throw new Exception("Rol no mapeado: " + codigoRol);
             }
