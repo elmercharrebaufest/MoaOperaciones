@@ -109,6 +109,21 @@ export class RegistroInfoComponent extends ListBaseComponent implements OnInit, 
             return;
         }
 
+       var totalAdjudicada = this.registros.reduce((sum, registro) => Number(sum + Number(registro.CantidadAdjudicacion)), 0);
+        console.log(totalAdjudicada, "total adjudicado");
+        if (this.registros.some(item => item.Cantidad < totalAdjudicada)) {
+            this.confirmationService.confirm({
+                header: "Cantidad Incorrecta",
+                key: "avisoV",
+                message: 'La cantidad a adjudicar no debe superar la cantidad pendiente.',
+                accept: () => {
+                    return;
+                },
+            });
+            return;
+        }
+
+
 
         this.registros.forEach(x => {
             if (!this.descripcion.hasOwnProperty(x.Codigo)) {
