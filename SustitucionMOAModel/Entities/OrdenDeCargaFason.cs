@@ -46,6 +46,7 @@ namespace SustitucionMOAModel.Entities
         public string NroRemito { get; set; }
         public string UniMedCant { get; set; }
         public string KmARecorrer { get; set; }
+        public bool? FleteMOA { get; set; }
         public OrdenDeCargaFason() { }
         public OrdenDeCargaFason(CrearOrdenDeCargaFasonRequest request)
         {
@@ -65,6 +66,7 @@ namespace SustitucionMOAModel.Entities
             Producto_Id = request.Producto_Id.MaterialId;
             RazonSocialTransporte = request.RazonSocialTransporte;
             KmARecorrer = request.Destino.KmARecorrer;
+            FleteMOA = request.FleteMOA;
         }
         public override bool Equals(object obj)
         {
@@ -87,7 +89,8 @@ namespace SustitucionMOAModel.Entities
                 Producto_Id == carga.Producto_Id &&
                 TransporteExiste == carga.TransporteExiste &&
                 CorredorId == carga.CorredorId &&
-                KmARecorrer == carga.KmARecorrer;
+                KmARecorrer == carga.KmARecorrer &&
+                FleteMOA == carga.FleteMOA;
         }
 
         public override int GetHashCode()

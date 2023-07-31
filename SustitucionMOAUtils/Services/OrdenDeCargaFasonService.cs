@@ -75,7 +75,7 @@ namespace SustitucionMOAUtils.Services
 
 
                 var usuario = _repositorio.Obtener<Usuario>(u => u.Mail == request.MailUsuario);
-                var esInterno = usuario.TienePermiso("VER ORDENES DE CARGA FASON ADMIN");
+                var esInterno = usuario.TienePermiso(PermisoEnum.VerOrdenesDeCargaFasonAdmin);
                 fechaFinDateTime = fechaFinDateTime.AddDays(1);
                 //var descripcion = EstadoOrdenDeCargaFason.Generada;
 
@@ -93,32 +93,9 @@ namespace SustitucionMOAUtils.Services
                     throw new InfoCustomException(string.Format(InfoMsg.SinRegistros, "órdenes de carga fason"));
                 }
 
-                var listado = listadoDB.OrderByDescending(x => x.FechaCreacion).Select(x => new OrdenDeCargaFasonDto
-                {
-                    Id = x.Id,
-                    Cliente = x.Cliente.CodigoProveedor,
-                    RazonSocialCliente = x.Cliente.RazonSocial,
-                    Estado = x.Estado,
-                    FechaCreacion = x.FechaCreacion.ToString("dd/MM/yyyy HH:mm"),
-                    FechaRetiro = x.FechaRetiro.ToString("dd/MM/yyyy"),
-                    Cantidad = x.Cantidad,
-                    Material = x.Producto.Nombre,
-                    PatenteAcoplado = x.PatenteAcoplado,
-                    PatenteChasis = x.PatenteChasis,
-                    ColorSemaforo = x.Estado.ObtenerSemaforo(),
-                    DescripcionEstado = esInterno ? x.Estado.ToFriendlyString() : x.Estado.ToUserFriendlyString(),
-                    TransporteExiste = x.TransporteExiste,
-                    NombreChofer = x.NombreChofer,
-                    CUILChofer = x.CUILChofer,
-                    RazonSocialTransporte = x.RazonSocialTransporte,
-                    CUITTransporte = x.CUITTransporte,
-                    Observacion = x.Observacion,
-                    LocalidadId = x.LocalidadId,
-                    LocalidadDescripcion = x.LocalidadDescripcion,
-                    Corredor = x.Corredor?.CodigoProveedor,
-                    RazonSocialCorredor = x.Corredor?.RazonSocial
-
-                }).ToList();
+                var listado = listadoDB.OrderByDescending(x => x.FechaCreacion)
+                    .Select(x => new OrdenDeCargaFasonDto(x,esInterno))
+                    .ToList();
 
                 var response = new ListarOrdenDeCargaFasonResponse();
 
@@ -145,43 +122,11 @@ namespace SustitucionMOAUtils.Services
             {
 
                 var usuario = _repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario.MailUsuario);
-                var esInterno = usuario.TienePermiso("VER ORDENES DE CARGA FASON ADMIN");
+                var esInterno = usuario.TienePermiso(PermisoEnum.VerOrdenesDeCargaFasonAdmin);
 
-                var x = _repositorio.Obtener<OrdenDeCargaFason>(IdOrdenDeCargaFason);
+                var orden = _repositorio.Obtener<OrdenDeCargaFason>(IdOrdenDeCargaFason);
 
-                var response = new OrdenDeCargaFasonDto
-                {
-                    Cantidad = x.Cantidad,
-                    Cliente = x.Cliente.CodigoProveedor,
-                    ColorSemaforo = x.Estado.ObtenerSemaforo(),
-                    Corredor = x.Corredor?.CodigoProveedor,
-                    CUILChofer = x.CUILChofer,
-                    CUITCliente = "",
-                    CUITTransporte = x.CUITTransporte,
-                    DescripcionEstado = esInterno ? x.Estado.ToFriendlyString() : x.Estado.ToUserFriendlyString(),
-                    DescripcionEstadoListado = "",
-                    Estado = x.Estado,
-                    FechaCreacion = x.FechaCreacion.ToString("dd/MM/yyyy HH:mm"),
-                    FechaRetiro = x.FechaRetiro.ToString("dd/MM/yyyy"),
-                    Id = x.Id,
-                    LocalidadDescripcion = x.LocalidadDescripcion,
-                    LocalidadId = x.LocalidadId,
-                    Material = x.Producto.Nombre,
-                    NombreChofer = x.NombreChofer,
-                    Producto_Id = new SustitucionMOAModel.Models.DataAgro.MaterialDto
-                    {
-                        MaterialId = x.Producto.Id,
-                        Descripcion = x.Producto.Nombre,
-                        CodigoSap = x.Producto.CodigoSap
-                    },
-                    PatenteAcoplado = x.PatenteAcoplado,
-                    PatenteChasis = x.PatenteChasis,
-                    RazonSocialCliente = x.Cliente.RazonSocial,
-                    RazonSocialCorredor = x.Corredor?.RazonSocial,
-                    RazonSocialTransporte = x.RazonSocialTransporte,
-                    TransporteExiste = x.TransporteExiste,
-                    Observacion = x.Observacion
-                };
+                var response = new OrdenDeCargaFasonDto(orden,esInterno);
 
                 return new DetalleOrdenDeCargaFasonResponse { Response = response };
             }
@@ -290,10 +235,11 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        public Resultado Crear(CrearOrdenDeCargaFasonRequest request)
+        public Resultado Crear(CrearOrdenDeCargaFasonRequest request, string mailUsuario)
         {
             try
             {
+                ValidarRequest(request, mailUsuario);
                 var existeTransporte = TransporteExiste(request.CUITTransporte);
 
                 for (int i = 0; i < request.CantidadDeViajes; i++)
@@ -301,7 +247,7 @@ namespace SustitucionMOAUtils.Services
                     var ordenEntity = new OrdenDeCargaFason(request);
                     ActualizarOrdenDeCarga(ordenEntity, existeTransporte);
                     _repositorio.Agregar(ordenEntity);
-                    
+
                     _repositorio.GuardarCambios();
                 }
 
@@ -315,10 +261,11 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        public Resultado Editar(EditarOrdenDeCargaFasonRequest request)
+        public Resultado Editar(EditarOrdenDeCargaFasonRequest request, string mailUsuario)
         {
             try
             {
+                ValidarRequest(request, mailUsuario);
                 var orden = _repositorio.Obtener<OrdenDeCargaFason>(request.Id);
                 var existeTransporte = TransporteExiste(request.CUITTransporte);
 
@@ -329,20 +276,19 @@ namespace SustitucionMOAUtils.Services
                 orden.CUITTransporte = request.CUITTransporte;
                 orden.LocalidadId = request.Destino.LocalidadId;
                 orden.LocalidadDescripcion = request.Destino.LocalidadDescripcion;
-                //orden.Estado = estadoOrden;
                 orden.FechaCreacion = DateTime.Now;
                 orden.FechaRetiro = request.FechaRetiro;
-                //Id =
                 orden.NombreChofer = request.NombreChofer;
                 orden.Observacion = request.Observacion;
                 orden.PatenteAcoplado = request.PatenteAcoplado;
                 orden.PatenteChasis = request.PatenteChasis;
-                //Producto =
                 orden.Producto_Id = request.Producto_Id.MaterialId;
                 orden.RazonSocialTransporte = request.RazonSocialTransporte;
                 orden.TransporteExiste = existeTransporte;
                 orden.KmARecorrer = request.Destino.KmARecorrer;
-                orden.Estado = existeTransporte ? EstadoOrdenDeCargaFason.Generada : EstadoOrdenDeCargaFason.Pendiente;
+                orden.FleteMOA = request.FleteMOA;
+
+                ActualizarOrdenDeCarga(orden, existeTransporte);
 
                 _repositorio.GuardarCambios();
 
@@ -364,7 +310,7 @@ namespace SustitucionMOAUtils.Services
             }
             return _scatoConsumer.BuscarDestinos(proveedor.CUIT);
         }
-        private void ActualizarOrdenDeCarga(OrdenDeCargaFason orden, bool existeTransporte=false)
+        private void ActualizarOrdenDeCarga(OrdenDeCargaFason orden, bool existeTransporte = false)
         {
             orden.TransporteExiste = existeTransporte;
             orden.Estado = ObtenerEstadoOrden(orden);
@@ -380,6 +326,21 @@ namespace SustitucionMOAUtils.Services
                     return EstadoOrdenDeCargaFason.Generada;
             }
             return EstadoOrdenDeCargaFason.Pendiente;
+        }
+        /// <summary>
+        /// Modifica los datos de la request según validaciones respecto al usuario que realizala petición
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="mailUsuario"></param>
+        private void ValidarRequest(OrdenDeCargaFasonRequest request, string mailUsuario)
+        {
+            var usuario = _repositorio.Obtener<Usuario>(us => us.Mail == mailUsuario);
+            ValidarRequest(request, usuario);
+        }
+        private void ValidarRequest(OrdenDeCargaFasonRequest request, Usuario usuario)
+        {
+            var fleteMOA = usuario.TieneRol(RolEnum.FleteMOA);
+            request.FleteMOA = fleteMOA && request.FleteMOA;
         }
     }
 }

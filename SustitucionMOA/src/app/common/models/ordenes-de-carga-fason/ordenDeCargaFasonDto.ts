@@ -32,6 +32,7 @@ export class OrdenDeCargaFasonDto {
     public TransporteExiste: boolean;
     public Observacion: string;
     public LocalidadDescripcion: string;
+    public FleteMOA: boolean;
     
     constructor() {
         this.FechaRetiro = new Date();

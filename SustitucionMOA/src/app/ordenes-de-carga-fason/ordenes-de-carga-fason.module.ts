@@ -15,27 +15,28 @@ import { OrdenesDeCargaFasonListadoComponent } from './listado/ordenes-de-carga-
 import { OrdenesDeCargaFasonDetalleComponent } from './detalle/ordenes-de-carga-fason.detalle.component';
 import { OrdenesDeCargaFasonService } from './ordenes-de-carga-fason.service';
 import { CalendarModule } from 'primeng/calendar';
+import { CheckboxModule } from 'primeng/checkbox';
 
 @NgModule({
   imports: [
-    CommonModule, 
-    OrdenesDeCargaFasonRoutingModule, 
-    CommonModule, 
-    SharedModule, 
-    NgxPaginationModule, 
-    ButtonModule, 
-    DropdownModule, 
-    AutoCompleteModule, 
-    NgxSpinnerModule, 
-    NgxMaskModule, 
-    MultiSelectModule, 
+    CommonModule,
+    OrdenesDeCargaFasonRoutingModule,
+    CommonModule,
+    SharedModule,
+    NgxPaginationModule,
+    ButtonModule,
+    DropdownModule,
+    AutoCompleteModule,
+    NgxSpinnerModule,
+    NgxMaskModule,
+    MultiSelectModule,
     ConfirmDialogModule,
-    CalendarModule
-    
+    CalendarModule,
+    CheckboxModule
   ],
   declarations: [
-    OrdenesDeCargaFasonAltaComponent, 
-    OrdenesDeCargaFasonListadoComponent, 
+    OrdenesDeCargaFasonAltaComponent,
+    OrdenesDeCargaFasonListadoComponent,
     OrdenesDeCargaFasonDetalleComponent
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],

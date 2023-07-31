@@ -233,4 +233,7 @@
   <ItemGroup>
     <None Include="scripts\PostDeployment\OrigenMovimientoIngresosBrutosCoeficienteUnificado.sql" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="scripts\PostDeployment\UsuariosConRolFleteMOA.sql" />
+  </ItemGroup>
 </Project>

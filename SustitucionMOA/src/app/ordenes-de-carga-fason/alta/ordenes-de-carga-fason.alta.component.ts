@@ -68,6 +68,7 @@ export class OrdenesDeCargaFasonAltaComponent extends BaseComponent implements O
     //esCorredor: boolean = sessionStorage.getItem("tipoUsuario") === "CORR";
 
     esAdmin: boolean = this.isAuthorized('VER ORDENES DE CARGA FASON ADMIN');
+    modificaFleteMOA: boolean = this.isAuthorized('FASON - MODIFICA FLETE MOA');
 
     ordenDeCargaFason: OrdenDeCargaFasonDto = new OrdenDeCargaFasonDto();
     ordenDeCargaFasonId: number = 0;
@@ -94,7 +95,7 @@ export class OrdenesDeCargaFasonAltaComponent extends BaseComponent implements O
         if (this.isAuthorized('VER ORDENES DE CARGA FASON ADMIN')) {
             this.ordenDeCargaFason.CUITCliente = 0;
         }
-
+        this.ordenDeCargaFason.FleteMOA = this.modificaFleteMOA;
         this.es = setupDaysAndMonths();
 
         if (!this.esAdmin) {
@@ -163,7 +164,6 @@ export class OrdenesDeCargaFasonAltaComponent extends BaseComponent implements O
         //    this.mensajeComponent.setInfoMsg("Seleccione un corredor.");
         //    return false;
         //}
-        debugger
         if (!this.ordenDeCargaFason.Producto_Id) {
 
             // Mostrar un mensaje de error al usuario o hacer algo para indicar que es necesario seleccionar un corredor
@@ -346,6 +346,7 @@ export class OrdenesDeCargaFasonAltaComponent extends BaseComponent implements O
                     } else {
 
                         this.ordenDeCargaFason = result.data.Response;
+                        // this.ordenDeCargaFason.Producto_Id = this.listaProductos.find(producto => producto.Id == this.ordenDeCargaFason.MaterialId)
                         this.clienteCodigo = result.data.Response.Cliente;
                         this.CodigoCorredor = result.data.Response.Corredor;
                         if (this.ordenDeCargaFason.CorredorId) {

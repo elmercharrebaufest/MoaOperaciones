@@ -69,6 +69,7 @@
         SoloClientes,
         Solp,
         Todos,
-        UsuarioNoImplementado
+        UsuarioNoImplementado,
+        FleteMOA,
     }
 }

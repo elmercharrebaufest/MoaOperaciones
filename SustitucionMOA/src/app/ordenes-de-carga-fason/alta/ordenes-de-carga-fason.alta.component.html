@@ -74,6 +74,16 @@
                                     <input type="text" [(ngModel)]="ordenDeCargaFason.Cantidad" readonly disabled>
                                 </div>
                             </div>
+                            <div class=" col-xs-12 col-md-12 mt-2" *ngIf="modificaFleteMOA">
+                                <div class="formulario-label" style="margin-bottom: 8px;">
+                                    <p-checkbox name="flete-moa" [binary]="true"
+                                        [(ngModel)]="ordenDeCargaFason.FleteMOA"></p-checkbox>
+                                    <label class="ml-2 pointer mySearch bold"
+                                        (click)="ordenDeCargaFason.FleteMOA = !ordenDeCargaFason.FleteMOA">
+                                        Flete MOA
+                                    </label>
+                                </div>
+                            </div>
 
                             <div class="col-xs-12 col-md-12">
                                 <div class="formulario-label">
