@@ -43,7 +43,6 @@ namespace SustitucionMOAUtils.Services
             this.echeqAnularAperturaChequeConsumerMOA = echeqAnularAperturaChequeConsumerMOA;
             this.echeqCargaAperturaChequeConsumerMOA = echeqCargaAperturaChequeConsumerMOA;
             this.repositorio = repositorio;
-
         }
 
         public List<EcheqNegocioDto> ObtenerPendientePago(string proveedor, string fechaInicio, string fechaFin, string contrato)
