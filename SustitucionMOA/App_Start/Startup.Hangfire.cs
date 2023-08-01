@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using Hangfire;
 using Owin;
 
@@ -63,16 +60,8 @@ namespace SustitucionMOA
                j => j.Execute(),
                "30 8 * * *", tz);
 
-            //RecurringJob.AddOrUpdate<Jobs.IActualizarEstadoSolpSapJob>(
-            //    "ActualizarEstadoSolpSapJob",
-            //    j => j.Execute(),
-            //    "0 * * * *", tz);
             RecurringJob.RemoveIfExists("ActualizarEstadoSolpSapJob");
 
-            //RecurringJob.AddOrUpdate<Jobs.IObtenerSolpsDesdeSAPJob>(
-            //    "ObtenerSolpsDesdeSAPJob",
-            //    j => j.Execute(),
-            //    "0 0 * 12 *", tz);
             RecurringJob.RemoveIfExists("ObtenerSolpsDesdeSAPJob");
 
             RecurringJob.AddOrUpdate<Jobs.IActualizarLocalidades>("ActualizarLocalidades", j => j.Execute(),
@@ -89,6 +78,10 @@ namespace SustitucionMOA
                 "VerificarSituacionCrediticiaJob",
                 j => j.Execute(),
                 "*/15 * * * *", tz);
+            RecurringJob.AddOrUpdate<Jobs.IVerificarTransporteOrdenesDeCargaFasonJob>(
+                "VerificarTransporteOrdenesDeCargaFasonJob",
+                j => j.Execute(),
+                "0 * * * *", tz);
         }
     }
 }
