@@ -1,4 +1,5 @@
 import { DestinoFason } from "../../../ordenes-de-carga-fason/orden-carga-fason-utils";
+import { Material } from "../material";
 import { EstadoOrdenDeCargaFason } from "./estadoOrdenDeCargaFason";
 
 export class OrdenDeCargaFasonDto {
@@ -7,6 +8,7 @@ export class OrdenDeCargaFasonDto {
     public CUITTercero: number;
     public Estado: EstadoOrdenDeCargaFason;
     public Producto_Id: number;
+    public ProductoSeleccionado: Material;
     public Material: string;
 
     public CUITCliente: number;

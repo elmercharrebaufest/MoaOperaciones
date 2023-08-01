@@ -51,12 +51,13 @@
                                 </div>
                                 <div class="styled-select" style="overflow: initial;">
                                     <app-dropdown-input [options]="listaProductos" [filterKey]="'Descripcion'"
-                                        [valueKey]="'MaterialId'" (valueChange)="ordenDeCargaFason.Producto_Id= $event"
-                                        [placeholder]="'Seleccione un producto'">
+                                        [valueKey]="'MaterialId'" (valueChange)="selectProducto($event)"
+                                        [placeholder]="'Seleccione un producto'"
+                                        [_selectedOption]="ordenDeCargaFason.ProductoSeleccionado">
                                         <ng-template let-option>
                                             <p style="margin: 0px!important; font-size: small; font-weight: 400!important;"
                                                 [ngClass]="{
-                                                'text-info':seRetiraEnPatagonia(option) && ordenDeCargaFason.Producto_Id != option
+                                                'text-info':seRetiraEnPatagonia(option) && ordenDeCargaFason.Producto_Id != option.MaterialId
                                             }">
                                                 {{option.Descripcion}}</p>
                                         </ng-template>

@@ -350,7 +350,6 @@ export class OrdenesDeCargaFasonAltaComponent extends OrdenesBaseComponent imple
                     } else {
 
                         this.ordenDeCargaFason = result.data.Response;
-                        // this.ordenDeCargaFason.Producto_Id = this.listaProductos.find(producto => producto.Id == this.ordenDeCargaFason.MaterialId)
                         this.clienteCodigo = result.data.Response.Cliente;
                         this.CodigoCorredor = result.data.Response.Corredor;
                         if (this.ordenDeCargaFason.CorredorId) {
@@ -364,6 +363,9 @@ export class OrdenesDeCargaFasonAltaComponent extends OrdenesBaseComponent imple
                         var parts = this.ordenDeCargaFason.FechaRetiro.toString().split('/');
                         var year = parts[2].split(" ");
                         this.ordenDeCargaFason.FechaRetiro = new Date(Number(year[0]), Number(parts[1]) - 1, Number(parts[0]));
+
+                        const producto = this.listaProductos.find(producto => producto.MaterialId == this.ordenDeCargaFason.Producto_Id)
+                        this.selectProducto(producto);
                     }
                 },
                 error => {
@@ -576,4 +578,9 @@ export class OrdenesDeCargaFasonAltaComponent extends OrdenesBaseComponent imple
         this.displayModal = null;
     }
 
+    selectProducto(value: Material) {
+        this.ordenDeCargaFason.ProductoSeleccionado = value;
+        this.ordenDeCargaFason.Producto_Id = value.MaterialId;
+        this.validaCPEDG = this.ordenDeCargaFason.ProductoSeleccionado.ValidaSisaRuca;
+    }
 }

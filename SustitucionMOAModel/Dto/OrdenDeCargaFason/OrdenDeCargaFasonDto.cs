@@ -46,7 +46,8 @@ namespace SustitucionMOAModel.Dto.OrdenDeCargaFason
         public bool FleteMOA { get; set; }
         public int LocalidadId { get; set; }
         public string LocalidadDescripcion { get; set; }
-        public Models.DataAgro.MaterialDto Producto_Id { get; set; }
+        public Models.DataAgro.MaterialDto ProductoSeleccionado { get; set; }
+        public int Producto_Id { get; set; }
 
         public OrdenDeCargaFasonDto(Ent.OrdenDeCargaFason orden, bool esInterno)
         {
@@ -67,7 +68,8 @@ namespace SustitucionMOAModel.Dto.OrdenDeCargaFason
             LocalidadId = orden.LocalidadId;
             Material = orden.Producto.Nombre;
             NombreChofer = orden.NombreChofer;
-            Producto_Id = new SustitucionMOAModel.Models.DataAgro.MaterialDto
+            Producto_Id = orden.Producto.Id;
+            ProductoSeleccionado = new SustitucionMOAModel.Models.DataAgro.MaterialDto
             {
                 MaterialId = orden.Producto.Id,
                 Descripcion = orden.Producto.Nombre,

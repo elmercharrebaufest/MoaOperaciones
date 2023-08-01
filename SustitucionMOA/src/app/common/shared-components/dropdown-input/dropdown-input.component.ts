@@ -14,7 +14,7 @@ export class DropdownInputComponent<T> implements OnInit, OnDestroy {
   @Input() valueKey?: keyof T;
   @Input() placeholder: string = "Seleccione ..";
   filteredOptions: Array<T> = this.options;
-  _selectedOption?: T;
+  @Input() _selectedOption?: T;
 
   showDropdown = new BehaviorSubject(false);
   subscriptions = new Subscription();
