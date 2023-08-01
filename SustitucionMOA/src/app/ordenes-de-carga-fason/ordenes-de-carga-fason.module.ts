@@ -16,6 +16,8 @@ import { OrdenesDeCargaFasonDetalleComponent } from './detalle/ordenes-de-carga-
 import { OrdenesDeCargaFasonService } from './ordenes-de-carga-fason.service';
 import { CalendarModule } from 'primeng/calendar';
 import { CheckboxModule } from 'primeng/checkbox';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { DialogModule } from 'primeng/dialog';
 
 @NgModule({
   imports: [
@@ -32,7 +34,9 @@ import { CheckboxModule } from 'primeng/checkbox';
     MultiSelectModule,
     ConfirmDialogModule,
     CalendarModule,
-    CheckboxModule
+    CheckboxModule,
+    ProgressSpinnerModule,
+    DialogModule
   ],
   declarations: [
     OrdenesDeCargaFasonAltaComponent,

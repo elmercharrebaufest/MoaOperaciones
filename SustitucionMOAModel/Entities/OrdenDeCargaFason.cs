@@ -47,6 +47,8 @@ namespace SustitucionMOAModel.Entities
         public string UniMedCant { get; set; }
         public string KmARecorrer { get; set; }
         public bool? FleteMOA { get; set; }
+        public string CUITIntermediarioFlete { get; set; }
+        public string RazonSocialIntermediarioFlete { get; set; }
         public OrdenDeCargaFason() { }
         public OrdenDeCargaFason(CrearOrdenDeCargaFasonRequest request)
         {
@@ -67,6 +69,8 @@ namespace SustitucionMOAModel.Entities
             RazonSocialTransporte = request.RazonSocialTransporte;
             KmARecorrer = request.Destino.KmARecorrer;
             FleteMOA = request.FleteMOA;
+            CUITIntermediarioFlete = request.CUITIntermediarioFlete;
+            RazonSocialIntermediarioFlete = request.RazonSocialIntermediarioFlete;
         }
         public override bool Equals(object obj)
         {

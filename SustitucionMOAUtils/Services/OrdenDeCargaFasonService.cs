@@ -77,15 +77,14 @@ namespace SustitucionMOAUtils.Services
                 var usuario = _repositorio.Obtener<Usuario>(u => u.Mail == request.MailUsuario);
                 var esInterno = usuario.TienePermiso(PermisoEnum.VerOrdenesDeCargaFasonAdmin);
                 fechaFinDateTime = fechaFinDateTime.AddDays(1);
-                //var descripcion = EstadoOrdenDeCargaFason.Generada;
 
 
                 var clientes = usuario.Proveedores.Select(c => c.CodigoProveedor);
                 var tipoUsuarioId = usuario.TipoUsuario.Id;
                 var listadoDB = _repositorio.Listar<OrdenDeCargaFason>(x =>
-                (esInterno ? true : clientes.Contains(x.Cliente.CodigoProveedor))
+                (esInterno || clientes.Contains(x.Cliente.CodigoProveedor))
                 && x.FechaCreacion >= fechaIncioDateTime && x.FechaCreacion <= fechaFinDateTime
-                && (esInterno ? true : tipoUsuarioId == 5 ? x.CorredorId == null : x.CorredorId != null)
+                && (esInterno || (tipoUsuarioId == 5 ? x.CorredorId == null : x.CorredorId != null))
                 );
 
                 if (listadoDB == null || listadoDB.Count == 0)
@@ -116,7 +115,7 @@ namespace SustitucionMOAUtils.Services
 
         }
 
-        public DetalleOrdenDeCargaFasonResponse ObtenerDetalle(int IdOrdenDeCargaFason, DetalleOrdenDeCargaFasonRequest mailUsuario)
+        public DetalleOrdenDeCargaFasonResponse ObtenerDetalle(int IdOrdenCargaFason, DetalleOrdenDeCargaFasonRequest mailUsuario)
         {
             try
             {
@@ -124,7 +123,7 @@ namespace SustitucionMOAUtils.Services
                 var usuario = _repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario.MailUsuario);
                 var esInterno = usuario.TienePermiso(PermisoEnum.VerOrdenesDeCargaFasonAdmin);
 
-                var orden = _repositorio.Obtener<OrdenDeCargaFason>(IdOrdenDeCargaFason);
+                var orden = _repositorio.Obtener<OrdenDeCargaFason>(IdOrdenCargaFason);
 
                 var response = new OrdenDeCargaFasonDto(orden, esInterno);
 
@@ -139,7 +138,7 @@ namespace SustitucionMOAUtils.Services
         }
         private bool TransporteExiste(string CUITTransporte)
         {
-            Log.Info("TransporteExiste OrdenCargaControlEstadoRequest " + $"orden.CUITTransporte {CUITTransporte ?? ""}");
+            Log.Info("TransporteExiste OrdenCargaControlEstadoRequest " + $"Cuit {CUITTransporte ?? ""}");
             var estadoTransportista = _consumer.GetOrdenCargaControlEstadoTransportista(CUITTransporte);
             Log.Info("TransporteExiste OrdenCargaControlEstadoRequest Result " + estadoTransportista);
 
@@ -167,8 +166,8 @@ namespace SustitucionMOAUtils.Services
 
             var fechaLimite = DateTime.Now.Date;
 
-            if (_repositorio.Obtener<HabilitacionJob>(a => a.Nombre == "VencimientoOrdenesDeCargaFasonJob").Habilitado == false)
-                return null;
+            if (_repositorio.Obtener<HabilitacionJob>(a => a.Nombre == "VencimientoOrdenesDeCargaFasonJob" && a.Habilitado) == null)
+                return new List<OrdenDeCargaFason>();
 
             var ordenes = _repositorio.Listar<OrdenDeCargaFason>((orden) => DbFunctions.AddDays(orden.FechaRetiro, 5) < fechaLimite && (orden.Estado == EstadoOrdenDeCargaFason.Generada || orden.Estado == EstadoOrdenDeCargaFason.Pendiente));
 
@@ -187,7 +186,7 @@ namespace SustitucionMOAUtils.Services
                             u.TipoUsuario.Id == (int)TipoUsuarioEnum.Corredor &&
                             u.Habilitado &&
                             u.Roles.Any(r =>
-                                r.Codigo == "FASON"));  //TODO: Constantes
+                                r.Codigo == "FASON"));
 
             var corredores = corredoresBD.Select(c => new ProveedorDto(c.ObtenerProveedor()));
 
@@ -285,6 +284,8 @@ namespace SustitucionMOAUtils.Services
                 orden.RazonSocialTransporte = request.RazonSocialTransporte;
                 orden.KmARecorrer = request.Destino.KmARecorrer;
                 orden.FleteMOA = request.FleteMOA;
+                orden.CUITIntermediarioFlete = request.CUITIntermediarioFlete;
+                orden.RazonSocialIntermediarioFlete = request.RazonSocialIntermediarioFlete;
 
                 ActualizarOrdenDeCarga(orden);
 
@@ -313,7 +314,7 @@ namespace SustitucionMOAUtils.Services
             if (_repositorio.Obtener<HabilitacionJob>(hj => hj.Nombre == "VerificarTransporteOrdenesDeCargaFasonJob" && hj.Habilitado) == null)
                 return;
 
-            var ordenes = _repositorio.Listar<OrdenDeCargaFason>(orden => !orden.TransporteExiste && orden.Estado == EstadoOrdenDeCargaFason.Pendiente );
+            var ordenes = _repositorio.Listar<OrdenDeCargaFason>(orden => !orden.TransporteExiste && orden.Estado == EstadoOrdenDeCargaFason.Pendiente);
             foreach (var orden in ordenes)
             {
                 ActualizarOrdenDeCarga(orden);
@@ -323,7 +324,10 @@ namespace SustitucionMOAUtils.Services
         private void ActualizarOrdenDeCarga(OrdenDeCargaFason orden)
         {
             var existeTransporte = TransporteExiste(orden.CUITTransporte);
-            ActualizarOrdenDeCarga(orden, existeTransporte);
+            //Si no tiene Cuit intermediario flete lo tomamos como que existe
+            var existeCuitIntermediarioFlete = string.IsNullOrEmpty(orden.CUITIntermediarioFlete) || TransporteExiste(orden.CUITIntermediarioFlete);
+
+            ActualizarOrdenDeCarga(orden, existeTransporte && existeCuitIntermediarioFlete);
         }
         private void ActualizarOrdenDeCarga(OrdenDeCargaFason orden, bool existeTransporte)
         {

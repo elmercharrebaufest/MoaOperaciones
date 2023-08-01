@@ -5,10 +5,10 @@ import { BaseService } from '../common/services/BaseService';
 import { throwError as observableThrowError, Observable } from 'rxjs';
 import { OrdenDeCargaFasonDto } from '../common/models/ordenes-de-carga-fason/ordenDeCargaFasonDto';
 import { ListarOrdenDeCargaFasonResponse } from '../common/models/ordenes-de-carga-fason/listarOrdenDeCargaFasonResponse';
-import { NumberFormat } from 'xlsx/types';
 import { ApiResponse } from '../common/models/response';
 import { DestinoFason } from './orden-carga-fason-utils';
 import { Material } from '../common/models/material';
+import { ValidarIntermediarioFleteResponse } from '../common/models/ordenes-de-carga/ValidarIntermediarioFleteResponse';
 
 @Injectable({
   providedIn: 'root'
@@ -91,5 +91,26 @@ export class OrdenesDeCargaFasonService extends BaseService {
       .get('/api/OrdenDeCargaFason/ObtenerCorredores')
       .pipe(timeoutWith(360000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor intentelo mas tarde"))));
   }
+  public enviarMailGestionarAltaCuit(cuit: string, razonSocial: string, esIntermediarioFlete: boolean): Observable<ApiResponse<boolean>> {
+    let params: HttpParams = new HttpParams()
+      .append("cuit", cuit)
+      .append("razonSocial", razonSocial)
+      .append("esIntermediarioFlete", esIntermediarioFlete.toString());
 
+    return this.http
+      .get<ApiResponse<boolean>>(
+        '/api/OrdenDeCargaFason/GestionarAltaCuit',
+        { params: params, headers: this.headers })
+      .pipe(timeoutWith(360000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor intentelo mas tarde"))));
+  }
+  public validarIntermediarioFlete(cuit: string): Observable<ApiResponse<ValidarIntermediarioFleteResponse>> {
+    let params: HttpParams = new HttpParams()
+      .append("cuit", cuit);
+
+    return this.http
+      .get<ApiResponse<ValidarIntermediarioFleteResponse>>(
+        '/api/OrdenDeCargaFason/ValidarIntermediarioFlete',
+        { params: params, headers: this.headers })
+      .pipe(timeoutWith(360000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
+  }
 }

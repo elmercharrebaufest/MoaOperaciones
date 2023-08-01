@@ -39,6 +39,8 @@ namespace SustitucionMOAModel.Dto.OrdenDeCargaFason
         public int? CorredorId { get; set; }
 
         public bool FleteMOA { get; set; }
+        public string CUITIntermediarioFlete { get; set; }
+        public string RazonSocialIntermediarioFlete { get; set; }
     }
 
     public class CrearOrdenDeCargaFasonRequestProducto

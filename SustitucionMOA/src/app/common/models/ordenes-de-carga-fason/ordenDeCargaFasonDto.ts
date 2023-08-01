@@ -33,7 +33,8 @@ export class OrdenDeCargaFasonDto {
     public Observacion: string;
     public LocalidadDescripcion: string;
     public FleteMOA: boolean;
-    
+    public CUITIntermediarioFlete: string;
+    public RazonSocialIntermediarioFlete: string;
     constructor() {
         this.FechaRetiro = new Date();
         this.Cantidad = 30000;

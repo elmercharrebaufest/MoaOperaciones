@@ -1,8 +1,7 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Params } from '@angular/router';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { ConfirmationService } from 'primeng/api';
-import { BaseComponent } from '../../common/base-components/base-component';
 import { Material, RETIRO_EN_PATAGONIA } from '../../common/models/material';
 import { OrdenDeCargaFasonDto } from '../../common/models/ordenes-de-carga-fason/ordenDeCargaFasonDto';
 import { FloatMsgService } from '../../common/services/FloatMsgService';
@@ -15,6 +14,8 @@ import { MensajeComponent } from '../../common/view-child/mensaje/mensaje.compon
 import { SpinnerComponent } from '../../common/view-child/spinner/spinner.component';
 import { DestinoFason, setupDaysAndMonths, sumarDias } from '../orden-carga-fason-utils';
 import { OrdenesDeCargaFasonService } from '../ordenes-de-carga-fason.service';
+import { ApiResponse } from '../../common/models/response';
+import { OrdenesBaseComponent } from '../../common/base-components/ordenes-base-component';
 
 @Component({
     selector: 'app-alta',
@@ -22,7 +23,7 @@ import { OrdenesDeCargaFasonService } from '../ordenes-de-carga-fason.service';
     styleUrls: ['./ordenes-de-carga-fason.alta.component.css'],
     providers: [SeleccionarProveedorService],
 })
-export class OrdenesDeCargaFasonAltaComponent extends BaseComponent implements OnInit {
+export class OrdenesDeCargaFasonAltaComponent extends OrdenesBaseComponent implements OnInit {
     @BlockUI() blockUI: NgBlockUI;
 
     @ViewChild(MensajeComponent)
@@ -30,7 +31,8 @@ export class OrdenesDeCargaFasonAltaComponent extends BaseComponent implements O
 
     @ViewChild(SpinnerComponent)
     protected spinnerComponent: SpinnerComponent;
-
+    @ViewChild('messages')
+    private messagesContainer?: ElementRef<HTMLDivElement>;
     constructor(protected service: OrdenesDeCargaFasonService, protected navService: NavService,
         protected sessionDataService: SessionDataService, protected securityService: SecurityService,
         protected floatMsgService: FloatMsgService, protected modalService: ModalService,
@@ -64,9 +66,6 @@ export class OrdenesDeCargaFasonAltaComponent extends BaseComponent implements O
 
     es: any;
 
-    //esCliente: boolean = sessionStorage.getItem("tipoUsuario") === "CLI";
-    //esCorredor: boolean = sessionStorage.getItem("tipoUsuario") === "CORR";
-
     esAdmin: boolean = this.isAuthorized('VER ORDENES DE CARGA FASON ADMIN');
     modificaFleteMOA: boolean = this.isAuthorized('FASON - MODIFICA FLETE MOA');
 
@@ -81,6 +80,7 @@ export class OrdenesDeCargaFasonAltaComponent extends BaseComponent implements O
     private selectUndefinedOptionValue: any;
 
     public nombreChofer: string;
+    validaCPEDG = false;
 
     ngOnInit() {
         this.userEmail = sessionStorage.getItem("username");
@@ -160,12 +160,8 @@ export class OrdenesDeCargaFasonAltaComponent extends BaseComponent implements O
             this.mensajeComponent.setInfoMsg("Seleccione un cliente.");
             return false;
         }
-        //if (this.esAdmin && !this.corredorSeleccionado) {
-        //    this.mensajeComponent.setInfoMsg("Seleccione un corredor.");
-        //    return false;
-        //}
-        if (!this.ordenDeCargaFason.Producto_Id) {
 
+        if (!this.ordenDeCargaFason.Producto_Id) {
             // Mostrar un mensaje de error al usuario o hacer algo para indicar que es necesario seleccionar un corredor
             this.mensajeComponent.setInfoMsg("Seleccione un producto.");
             return false;
@@ -173,6 +169,14 @@ export class OrdenesDeCargaFasonAltaComponent extends BaseComponent implements O
         if (!this.ordenDeCargaFason.Destino) {
             // Mostrar un mensaje de error al usuario o hacer algo para indicar que es necesario seleccionar un corredor
             this.mensajeComponent.setInfoMsg("Seleccione un destino.");
+            return false;
+        }
+        if (!this.ordenDeCargaFason.CantidadDeViajes && !this.ordenDeCargaFasonId) {
+            this.mensajeComponent.setInfoMsg("Ingrese una cantidad de viajes.");
+            return false;
+        }
+        if (this.ordenDeCargaFason.CUITIntermediarioFlete && this.mensajesOrdenDeCargaFason.CUITIntermediarioFlete) {
+            this.mensajeComponent.setInfoMsg(this.mensajesOrdenDeCargaFason.CUITIntermediarioFlete);
             return false;
         }
 
@@ -499,4 +503,77 @@ export class OrdenesDeCargaFasonAltaComponent extends BaseComponent implements O
     seRetiraEnPatagonia(material: Material): boolean {
         return RETIRO_EN_PATAGONIA.includes(material.CodigoSap);
     }
+    validarIntermediarioFlete() {
+        this.validando.CUITIntermediarioFlete = true;
+        this.mensajesOrdenDeCargaFason.CUITIntermediarioFlete = null;
+        this.ordenDeCargaFason.RazonSocialIntermediarioFlete = null;
+
+        let cuitIF = this.ordenDeCargaFason.CUITIntermediarioFlete;
+        if (!cuitIF || !this.revisarCUITFormatoValido(cuitIF)) {
+            this.validando.CUITIntermediarioFlete = false;
+            return;
+        }
+        this.service.validarIntermediarioFlete(cuitIF).subscribe(resp => {
+            let data = this.manejarErroresApiResponse(resp);
+            if (data) {
+                if (data.EsCuitValido) {
+                    if (data.ExisteIntermediario) {
+                        this.ordenDeCargaFason.RazonSocialIntermediarioFlete = data.RazonSocial;
+                    } else {
+                        this.displayModal = 'CUITIntermediarioFlete';
+                    }
+                } else {
+                    this.mensajesOrdenDeCargaFason.CUITIntermediarioFlete = "CUIT Invalido";
+                }
+            }
+            this.validando.CUITIntermediarioFlete = false;
+        });
+    }
+    gestionarAltaCUIT() {
+        const campo = this.displayModal;
+        const cuit = this.ordenDeCargaFason[campo];
+        const razonSocial = this.razonSocialParaGestion;
+        this.displayModal = null;
+        this.razonSocialParaGestion = "";
+        this.ordenDeCargaFason[campo.replace("CUIT", "RazonSocial")] = razonSocial;
+        let esIntermediarioFlete = campo === 'CUITIntermediarioFlete';
+        this.service.enviarMailGestionarAltaCuit(cuit, razonSocial, esIntermediarioFlete).subscribe(result => {
+            if (result.logout) {
+                this.sessionDataService.logout();
+            } else if (result.error != undefined && result.error != "") {
+                this.mensajeComponent.setErrorMsg(`${result.error}. Al intentar gestionar alta CUIT ${campo.replace("CUIT", "")}`);
+            } else if (result.info != undefined) {
+                this.mensajeComponent.setInfoMsg(`${result.info}. Al intentar gestionar alta CUIT ${campo.replace("CUIT", "")}`);
+            } else {
+                this.mensajesGestionCuit[campo] = `Se solicitó la gestión del alta para la cuit: ${cuit}`;
+            }
+
+        })
+    }
+    manejarErroresApiResponse<T>(response: ApiResponse<T>): T | null {
+        if (response.logout) {
+            this.sessionDataService.logout();
+            return null;
+        }
+        if (response.error) {
+            this.mensajeComponent.setErrorMsg(response.error);
+            this.scrollAMensaje()
+            return null;
+        }
+        if (response.info) {
+            this.mensajeComponent.setInfoMsg(response.info)
+        }
+        return response.data;
+    }
+
+    scrollAMensaje() {
+        this.messagesContainer.nativeElement.scrollIntoView({ behavior: 'smooth' })
+    }
+    cancelarGestionAltaCUIT() {
+        if (this.displayModal === 'CUITIntermediarioFlete') {
+            this.ordenDeCargaFason.CUITIntermediarioFlete = undefined;
+        }
+        this.displayModal = null;
+    }
+
 }
