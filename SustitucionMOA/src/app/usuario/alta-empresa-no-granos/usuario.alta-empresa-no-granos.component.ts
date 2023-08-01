@@ -59,6 +59,7 @@ export class UsuarioAltaEmpresaNoGranosComponent extends BaseComponent implement
     altaInterna: boolean = false;
     tipoCambiario: number = 1;
     nosisObligatorio: boolean = false;
+    siperDisabled: boolean = false;
     readonlyRazonSocial: boolean = false;
     siperObligatorio: boolean = false;
     observacionInterna: string = "";
@@ -249,16 +250,19 @@ export class UsuarioAltaEmpresaNoGranosComponent extends BaseComponent implement
 
     calcularFacturacion() {
 
+        if(this.IdRubro == 5)
+        return;
+
         if (this.tipoCambiario <= 0)
             this.tipoCambiario = 1;
-        let facturacionDolares = this.facturacionAnual / this.tipoCambiario
+        let facturacionDolares = this.facturacionAnual / this.tipoCambiario;
 
-
+        
         if (facturacionDolares > 15000) {
             this.nosisObligatorio = true;
             this.RealizarAnalisisNOSIS = true;
         }
-        else {
+        else{
             this.nosisObligatorio = false;
         }
     }
@@ -307,4 +311,19 @@ export class UsuarioAltaEmpresaNoGranosComponent extends BaseComponent implement
         }
     }
 
+    esObligatorioFlete() {
+        if(this.IdRubro == 5){
+            this.RealizarAnalisisNOSIS = true;
+            this.nosisObligatorio = true;
+            this.siperObligatorio = true;
+            this.siperDisabled = true;
+        }
+        else{
+            this.RealizarAnalisisNOSIS = false;
+            this.nosisObligatorio = false;
+            this.siperObligatorio = false;
+            this.siperDisabled = false;
+        }
+        this.calcularFacturacion();
+    }
 }
