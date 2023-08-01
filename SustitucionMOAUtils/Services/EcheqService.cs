@@ -339,14 +339,6 @@ namespace SustitucionMOAUtils.Services
             string mensajeErrorBloqueoReemplazo = "El Contrato esta siendo tratado, espere un momentos.";
             try
             {
-                EcheqLiquidacion liquidacionExistente = ObtenerLiquidacionPorDocumento(request);
-                ResultadoGenerico result = echeqModificacionDocumentoChequeConsumerMOA.Request(request.Contrato, request.Documento, liquidacionExistente.Ejercicio, DateTime.Now.ToString("yyyy-MM-dd"), DateTime.Now.ToString("HH:mm:ss"), request.Pedido, request.CodigoProveedor, liquidacionExistente.NumeroCOE, "MOA", "", "");
-
-                if (result.HayError)
-                {
-                    throw new ValidationCustomException(result.Errores[0].Message);
-                }
-
                 EcheqLiquidacion liquidacion = repositorio.Obtener<EcheqLiquidacion>(x => x.Documento == request.Documento && x.EcheqNegocio.Contrato == request.Contrato && x.EcheqNegocio.Pedido == request.Pedido && x.MarcaCheque);
 
                 if (liquidacion != null)
@@ -367,20 +359,14 @@ namespace SustitucionMOAUtils.Services
                     }
                 }
 
-                liquidacionExistente = ObtenerLiquidacionPorDocumento(request);
+                EcheqLiquidacion liquidacionExistente = ObtenerLiquidacionPorDocumento(request);
+                ResultadoGenerico result = echeqModificacionDocumentoChequeConsumerMOA.Request(request.Contrato, request.Documento, liquidacionExistente.Ejercicio, DateTime.Now.ToString("yyyy-MM-dd"), DateTime.Now.ToString("HH:mm:ss"), request.Pedido, request.CodigoProveedor, liquidacionExistente.NumeroCOE, "MOA", "", "");
 
-                foreach (var apertura in liquidacionExistente.Aperturas.Where(ap => ap.Estado && ap.OrdenCheque == 0))
+                if (result.HayError)
                 {
-                    result = echeqAnularAperturaChequeConsumerMOA.Request(apertura.OrdenCheque.ToString(), liquidacionExistente.Documento, liquidacionExistente.Ejercicio, DateTime.Now.ToString("yyyy-MM-dd"), DateTime.Now.ToString("HH:mm:ss"), "MOA", "");
-                    if (result.HayError)
-                    {
-                        string mensaje = string.Join(", ", result.Errores.Select(x => x.Message.Contains(mensajeErrorBloqueo) ? mensajeErrorBloqueoReemplazo : x.Message).ToList());
-                        throw new ValidationCustomException(mensaje);
-                    }
-                    apertura.Estado = false;
-                    apertura.UsuarioModificacionId = request.UsuarioCreacionId;
-                    apertura.FechaModificacion = DateTime.Now;
+                    throw new ValidationCustomException(result.Errores[0].Message);
                 }
+                liquidacionExistente = ObtenerLiquidacionPorDocumento(request);
                 UpdateLiquidacion(request, false, liquidacionExistente);
 
                 EcheqNegocioDto echeqNegocio = ObtieneNegocio(request);
@@ -466,6 +452,7 @@ namespace SustitucionMOAUtils.Services
 
         private int UpdateEcheq(EcheqRequestModel request, bool marcaCheck, EcheqNegocioDto echeqNegocio)
         {
+
             EcheqNegocio echeqExistente = repositorio.Obtener<EcheqNegocio>(x => x.Contrato == request.Contrato && x.ProveedorId == request.ProveedorId && x.Pedido == request.Pedido);
 
             if (echeqExistente == null)
@@ -484,7 +471,7 @@ namespace SustitucionMOAUtils.Services
                 liquidacion.UsuarioModificacionId = request.UsuarioCreacionId;
                 if (marcaCheck == false)
                 {
-                    foreach (var apertura in liquidacion.Aperturas.Where(a => a.Estado))
+                    foreach (var apertura in liquidacion.Aperturas.Where(a => a.Estado && a.OrdenCheque > 0))
                     {
                         var result = echeqAnularAperturaChequeConsumerMOA.Request(apertura.OrdenCheque.ToString(), liquidacion.Documento, liquidacion.Ejercicio, DateTime.Now.ToString("yyyy-MM-dd"), DateTime.Now.ToString("HH:mm:ss"), "MOA", "");
                         throw new ValidationCustomException(string.Join(", ", result.Errores.Select(x => x.Message).ToList()));
