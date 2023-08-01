@@ -280,7 +280,7 @@
                                             Orden de compra
                                         </div>
                                     </ng-template>
-                                    <p-table [value]="ordenesDeCompra">
+                                    <p-table [value]="filtrarOrdenesDeCompra(rowData.Id)">
                                         <ng-template pTemplate="header">
                                             <tr>
                                                 <th class="columna">Numero</th>

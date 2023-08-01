@@ -206,7 +206,7 @@
                                             Orden de compra
                                         </div>
                                     </ng-template>
-                                    <p-table [value]="ordenesDeCompra">
+                                    <p-table [value]="filtrarOrdenesDeCompra(rowData.Id)">
                                         <ng-template pTemplate="header">
                                             <tr>
                                                 <th class="columna">Numero</th>
@@ -222,8 +222,8 @@
                                                 <td style="text-align: center;" colspan="6">Sin datos</td>
                                             </tr>
                                         </ng-template>
-                                        <ng-template pTemplate="body" let-orden>
-                                            <tr>
+                                        <ng-template pTemplate="body" let-orden>                                           
+                                            <tr>                                              
                                                <td class="columna">{{orden.NumeroOrdenDeCompra}}</td>                                     
                                                 <td class="columna">{{orden.FechaCreacion | customDateFormat | date :'d/M/yyyy' }}</td>
                                                 <td class="columna">{{orden.Proveedor}}</td>
