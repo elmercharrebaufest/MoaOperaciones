@@ -9,9 +9,6 @@ import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { EcheqApertura } from '../echeq.popup/echeqApertura-model';
 import { BehaviorSubject } from 'rxjs';
 
-
-
-
 @Component({
     selector: 'app-echeq-grilla',
     templateUrl: './echeq-grilla.component.html',
