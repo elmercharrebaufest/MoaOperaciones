@@ -5030,6 +5030,7 @@ namespace SustitucionMOAUtils.Services
             return repositorio.Listar<Adjudicacion, AdjudicacionDto>(adjudicacion => new AdjudicacionDto()
             {
                 Id = adjudicacion.Id,
+                Solp_Id = adjudicacion.Solp_Id,
                 TipoPosicionCodigo = adjudicacion.Solp.Posiciones.Select(y => y.TipoPosicion.Codigo).FirstOrDefault(),
                 NumeroOrdenDeCompra = adjudicacion.NumeroOrdenDeCompra,
                 FechaCreacion = adjudicacion.FechaCreacion,
