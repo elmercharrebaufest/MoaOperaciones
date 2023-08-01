@@ -55,7 +55,7 @@ namespace SustitucionMOAModel.Dto.OrdenDeCargaFason
 			CUILChofer = orden.CUILChofer;
 			CUITCliente = "";
 			CUITTransporte = orden.CUITTransporte;
-			DescripcionEstado = esInterno ? orden.Estado.ToFriendlyString() : orden.Estado.ToUserFriendlyString();
+			DescripcionEstado = esInterno ? orden.Estado.ToFriendlyStringInterno() : orden.Estado.ToFriendlyStringExterno();
 			DescripcionEstadoListado = "";
 			Estado = orden.Estado;
 			FechaCreacion = orden.FechaCreacion.ToString("dd/MM/yyyy HH:mm");
