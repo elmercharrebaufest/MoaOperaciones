@@ -91,14 +91,9 @@ export class AltasComponent extends BaseComponent implements OnInit {
     contieneDocumentacionFisica: number = 0;
     puedeAltaInterna: boolean = this.isAuthorized('ALTA INTERNA GRANOS');
     puedeAltaInternaNoGranos: boolean = this.isAuthorized('ALTA INTERNA NO GRANOS');
-    estadosDefault: BehaviorSubject<Array<string>> = new BehaviorSubject<Array<string>>([
-        "Alta solicitada",
-        "Analisis de Nosis",
-        "Etapa Final"
-    ]);
 
     ngOnInit(): void {
-        this.estadosSelected = this.estadosDefault.value;
+        this.setEstadosDefault();
         this.getEstados();
         this.navService.setSeccionList([]);
         $('[data-toggle="tooltip"]').tooltip();
@@ -107,6 +102,15 @@ export class AltasComponent extends BaseComponent implements OnInit {
     verDetalle() {
         this.navService.navegarSeccion('/proveedor-detalle');
         return false;
+    }
+
+    setEstadosDefault() {
+        const estadosDefault: BehaviorSubject<Array<string>> = new BehaviorSubject<Array<string>>([
+            "Alta solicitada",
+            "Analisis de Nosis",
+            "Etapa Final"
+        ]);
+        this.estadosSelected = estadosDefault.value;
     }
 
     getEmpresa() {
@@ -694,7 +698,7 @@ export class AltasComponent extends BaseComponent implements OnInit {
                 }
             );
     }
-    
+
     copiar(str, id) {
         console.log(str, id);
         const el = document.createElement('textarea');
