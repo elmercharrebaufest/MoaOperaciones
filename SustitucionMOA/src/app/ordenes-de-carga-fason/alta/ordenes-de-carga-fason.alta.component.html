@@ -51,8 +51,9 @@
                                 </div>
                                 <div class="styled-select" style="overflow: initial;">
                                     <app-dropdown-input [options]="listaProductos" [filterKey]="'Descripcion'"
-                                        [valueKey]="'MaterialId'" (valueChange)="ordenDeCargaFason.Producto_Id= $event"
-                                        [placeholder]="'Seleccione un producto'">
+                                        [valueKey]="'MaterialId'" (valueChange)="selectProducto($event)"
+                                        [placeholder]="'Seleccione un producto'"
+                                        [_selectedOption]="ordenDeCargaFason.ProductoSeleccionado">
                                         <ng-template let-option>
                                             <p style="margin: 0px!important; font-size: small; font-weight: 400!important;"
                                                 [ngClass]="{
@@ -63,7 +64,18 @@
                                     </app-dropdown-input>
                                 </div>
                             </div>
-
+                            <ng-container *ngIf="validaCPEDG">
+                                <div class=" col-xs-12 col-md-12 mt-2" *ngIf="modificaReventa">
+                                    <div class="formulario-label" style="margin-bottom: 8px;">
+                                        <p-checkbox name="reventa" [binary]="true"
+                                            [(ngModel)]="ordenDeCargaFason.Reventa"></p-checkbox>
+                                        <label class="ml-2 pointer mySearch bold"
+                                            (click)="ordenDeCarga.Reventa = !ordenDeCargaFason.Reventa">
+                                            Reventa
+                                        </label>
+                                    </div>
+                                </div>
+                            </ng-container>
                             <div class="clearfix"></div>
 
                             <div class="col-xs-12 col-md-12">

@@ -72,7 +72,7 @@ namespace SustitucionMOAModel.Dto
             CUITCorredor = ordenFason.CorredorId != null ? ordenFason.Corredor.CUIT : null;
             CodigoProducto = ordenFason.Producto.CodigoSap;
             KmARecorrer = ordenFason.KmARecorrer;
-            TipoOrden = (ordenFason.FleteMOA ?? false) ? "0" : "10";
+            TipoOrden = ordenFason.FleteMOA ? "0" : "10";
         }
 
         private string ParseNombreProducto(string nombreMaterial)
