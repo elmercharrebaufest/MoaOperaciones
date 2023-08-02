@@ -15,8 +15,12 @@ import { SpinnerComponent } from '../../common/view-child/spinner/spinner.compon
 import { DestinoFason, setupDaysAndMonths, sumarDias } from '../orden-carga-fason-utils';
 import { OrdenesDeCargaFasonService } from '../ordenes-de-carga-fason.service';
 import { ApiResponse } from '../../common/models/response';
-import { OrdenesBaseComponent } from '../../common/base-components/ordenes-base-component';
+import { IOrdenesBaseComponent, OrdenesBaseComponent } from '../../common/base-components/ordenes-base-component';
 import { Permiso } from '../../common/enums/Permisos';
+import { finalize } from 'rxjs/operators';
+import { forkJoin } from 'rxjs';
+import { Domicilio } from '../../common/models/ordenes-de-carga/domicilio';
+import { Planta } from '../../common/models/ordenes-de-carga/planta';
 
 @Component({
     selector: 'app-alta',
@@ -24,7 +28,9 @@ import { Permiso } from '../../common/enums/Permisos';
     styleUrls: ['./ordenes-de-carga-fason.alta.component.css'],
     providers: [SeleccionarProveedorService],
 })
-export class OrdenesDeCargaFasonAltaComponent extends OrdenesBaseComponent implements OnInit {
+export class OrdenesDeCargaFasonAltaComponent
+    extends OrdenesBaseComponent
+    implements OnInit, IOrdenesBaseComponent {
     @BlockUI() blockUI: NgBlockUI;
 
     @ViewChild(MensajeComponent)
@@ -39,7 +45,7 @@ export class OrdenesDeCargaFasonAltaComponent extends OrdenesBaseComponent imple
         protected floatMsgService: FloatMsgService, protected modalService: ModalService,
         private confirmationService: ConfirmationService, private route: ActivatedRoute,
         protected seleccionarProveedorService: SeleccionarProveedorService) {
-        super(navService, securityService, floatMsgService, modalService);
+        super(service, navService, securityService, floatMsgService, modalService);
     }
 
     listaProductos: Material[];
@@ -586,12 +592,101 @@ export class OrdenesDeCargaFasonAltaComponent extends OrdenesBaseComponent imple
         if (!this.ordenDeCargaFasonId) {
             this.ordenDeCargaFason.Reventa = this.modificaReventa && this.validaCPEDG && !this.ordenDeCargaFason.Reventa
         }
+
         if (!this.validaCPEDG)
-            this.limpiarCamposCPEDG()
+            this.setearDefaultEnCPEDG()
     }
-    limpiarCamposCPEDG() {
+    setearDefaultEnCPEDG() {
+        this.ordenDeCargaFason.Reventa = false;
         this.ordenDeCargaFason.CUITIntermediarioFlete = null;
         this.ordenDeCargaFason.RazonSocialIntermediarioFlete = null;
-        this.ordenDeCargaFason.Reventa = false;
+        this.validarIntermediarioFlete();
+        this.resetearPlantasDomicilios();
+    }
+    onPlantaSeleccionadaChanged() {
+        if (this.plantaSeleccionada) {
+            this.ordenDeCargaFason.PlantaCodigo = this.plantaSeleccionada.Codigo.toString();
+        }
+        else {
+            this.ordenDeCargaFason.PlantaCodigo = "";
+        }
+    }
+
+    onDomicilioSeleccionadoChanged() {
+        if (this.domicilioSeleccionado) {
+            this.ordenDeCargaFason.DomicilioTipo = this.domicilioSeleccionado.Tipo.toString();
+            this.ordenDeCargaFason.DomicilioOrden = this.domicilioSeleccionado.Orden
+            this.ordenDeCargaFason.DomicilioDescr = this.domicilioSeleccionado.Descripcion;
+        }
+        else {
+            this.ordenDeCargaFason.DomicilioTipo = "";
+            this.ordenDeCargaFason.DomicilioOrden = 0;
+            this.ordenDeCargaFason.DomicilioDescr = "";
+        }
+    }
+
+    definirValorPlanta() {
+        if (this.ordenDeCargaFasonId && this.listaPlantas)
+            this.plantaSeleccionada = this.listaPlantas.find(planta => planta.Codigo.toString() == this.ordenDeCargaFason.PlantaCodigo);
+    }
+    definirValorDomicilio() {
+        if (this.ordenDeCargaFasonId && this.listaDomicilios)
+            this.domicilioSeleccionado = this.listaDomicilios.find(domicilio =>
+                domicilio.Descripcion == this.ordenDeCargaFason.DomicilioDescr
+                && domicilio.Orden == this.ordenDeCargaFason.DomicilioOrden
+                && domicilio.Tipo.toString() == this.ordenDeCargaFason.DomicilioTipo
+            );
+    }
+    onDestinoIngresado(cuitDestino: string) {
+        if (cuitDestino) {
+            this.validando.CUITDestino = true;
+            forkJoin([
+                this.service
+                    .obtenerPlantasDestino(cuitDestino),
+                this.service
+                    .obtenerDomiciliosDestino(cuitDestino)
+            ]).pipe(finalize(() => this.validando.CUITDestino = false)).subscribe(([respPlantas, respDomicilios]) => {
+                this.manejarRespuestaDomicilio(respDomicilios, cuitDestino)
+                this.manejarRespuestaPlanta(respPlantas, cuitDestino)
+            })
+        }
+        else {
+            this.listaPlantas = [];
+            this.listaDomicilios = [];
+            this.plantaSeleccionada = undefined;
+            this.domicilioSeleccionado = undefined;
+        }
+    }
+    manejarRespuestaDomicilio(resp: ApiResponse<Domicilio[]>, cuitDestino: string) {
+        let domicilios: Domicilio[] | null;
+        if (domicilios = this.manejarErroresApiResponse(resp)) {
+            if (domicilios.length > 0) {
+                this.listaDomicilios = domicilios;
+                this.definirValorDomicilio();
+                return;
+            }
+            this.mensajeComponent.setErrorMsg(cuitDestino + " no está habilitado en RUCA, no podrá cargar la orden hasta regularizar la situación")
+            this.scrollAMensaje()
+        }
+    }
+    manejarRespuestaPlanta(resp: ApiResponse<Planta[]>, cuitDestino: string) {
+        let plantas: Planta[] | null;
+        if (plantas = this.manejarErroresApiResponse(resp)) {
+            if (plantas.length > 0) {
+                this.listaPlantas = plantas;
+                this.definirValorPlanta();
+                return;
+            }
+            this.mensajeComponent.setErrorMsg(cuitDestino + " no está habilitado en RUCA, no podrá cargar la orden hasta regularizar la situación")
+            this.scrollAMensaje()
+        }
+    }
+    resetearPlantasDomicilios() {
+        this.plantaSeleccionada = undefined;
+        this.domicilioSeleccionado = undefined;
+        this.listaPlantas = [];
+        this.listaDomicilios = [];
+        this.onDomicilioSeleccionadoChanged()
+        this.onPlantaSeleccionadaChanged();
     }
 }

@@ -20,5 +20,7 @@ namespace SustitucionMOAUtils.Interfaces
         List<ProveedorDto> GetClientesDeCorredor(string codigoCorredor);
         ValidarIntermediarioFleteResponse ValidarIntermediarioFlete(string cuit);
         bool EmailGestionarAlta(string cuit, string razonSocial, bool esIntermediarioFlete);
+        List<PlantaDto> ObtenerPlantasDestino(string destinoCuit);
+        List<DomicilioDto> ObtenerDomiciliosDestino(string destinoCuit);
     }
 }

@@ -50,6 +50,10 @@ namespace SustitucionMOAModel.Entities
         public string RazonSocialIntermediarioFlete { get; set; }
         public bool FleteMOA { get; set; }
         public bool Reventa { get; set; }
+        public string PlantaCodigo { get; set; }
+        public string DomicilioTipo { get; set; }
+        public short? DomicilioOrden { get; set; }
+        public string DomicilioDescr { get; set; }
         public OrdenDeCargaFason() { }
         public OrdenDeCargaFason(CrearOrdenDeCargaFasonRequest request)
         {
@@ -73,6 +77,10 @@ namespace SustitucionMOAModel.Entities
             CUITIntermediarioFlete = request.CUITIntermediarioFlete;
             RazonSocialIntermediarioFlete = request.RazonSocialIntermediarioFlete;
             Reventa = request.Reventa;
+            PlantaCodigo = request.PlantaCodigo;
+            DomicilioTipo = request.DomicilioTipo;
+            DomicilioOrden = request.DomicilioOrden;
+            DomicilioDescr = request.DomicilioDescr;
         }
         public override bool Equals(object obj)
         {
@@ -97,9 +105,13 @@ namespace SustitucionMOAModel.Entities
                 CorredorId == carga.CorredorId &&
                 KmARecorrer == carga.KmARecorrer &&
                 FleteMOA == carga.FleteMOA &&
-                Reventa == carga.Reventa && 
+                Reventa == carga.Reventa &&
                 CUITIntermediarioFlete == carga.CUITIntermediarioFlete &&
-                RazonSocialIntermediarioFlete == carga.RazonSocialIntermediarioFlete;
+                RazonSocialIntermediarioFlete == carga.RazonSocialIntermediarioFlete &&
+                PlantaCodigo == carga.PlantaCodigo &&
+                DomicilioTipo == carga.DomicilioTipo &&
+                DomicilioOrden == carga.DomicilioOrden &&
+                DomicilioDescr == carga.DomicilioDescr;
         }
 
         public override int GetHashCode()

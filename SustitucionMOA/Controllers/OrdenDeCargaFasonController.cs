@@ -9,8 +9,8 @@ using SustitucionMOAUtils.Logger;
 using Newtonsoft.Json;
 using SustitucionMOAModel.Enums;
 using SustitucionMOAModel.Dto;
-using SustitucionMOAUtils.Services;
 using SustitucionMOAModel.Dto.OrdenDeCarga;
+using System.Collections.Generic;
 
 namespace SustitucionMOA.Controllers
 {
@@ -244,6 +244,53 @@ namespace SustitucionMOA.Controllers
             try
             {
                 response.Data = _ordenDeCargaFasonService.ValidarIntermediarioFlete(cuit);
+            }
+            catch (InfoCustomException ice)
+            {
+                response.Info = ice.Message;
+            }
+            catch (ValidationCustomException vce)
+            {
+                response.Error = vce.Message;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                response.Error = ErrorMsg.Error;
+            }
+            return ContentCustom(response);
+        }
+        [HttpGet]
+        public ActionResult ObtenerPlantasDestino(string destinoCuit)
+        {
+            var response = new SustitucionMOAApiResponse<List<PlantaDto>>();
+            try
+            {
+                response.Data = _ordenDeCargaFasonService.ObtenerPlantasDestino(destinoCuit);
+            }
+            catch (InfoCustomException ice)
+            {
+                response.Info = ice.Message;
+            }
+            catch (ValidationCustomException vce)
+            {
+                response.Error = vce.Message;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                response.Error = ErrorMsg.Error;
+            }
+            return ContentCustom(response);
+        }
+
+        [HttpGet]
+        public ActionResult ObtenerDomiciliosDestino(string destinoCuit)
+        {
+            var response = new SustitucionMOAApiResponse<List<DomicilioDto>>();
+            try
+            {
+                response.Data = _ordenDeCargaFasonService.ObtenerDomiciliosDestino(destinoCuit);
             }
             catch (InfoCustomException ice)
             {

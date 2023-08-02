@@ -16,6 +16,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using SustitucionMOAWS.WebApi;
 
 namespace SustitucionMOAUtils.Services
 {
@@ -298,7 +299,10 @@ namespace SustitucionMOAUtils.Services
                 orden.CUITIntermediarioFlete = request.CUITIntermediarioFlete;
                 orden.RazonSocialIntermediarioFlete = request.RazonSocialIntermediarioFlete;
                 orden.Reventa = request.Reventa;
-
+                orden.PlantaCodigo = request.PlantaCodigo;
+                orden.DomicilioTipo = request.DomicilioTipo;
+                orden.DomicilioOrden = request.DomicilioOrden;
+                orden.DomicilioDescr = request.DomicilioDescr;
                 ActualizarOrdenDeCarga(orden);
 
                 _repositorio.GuardarCambios();
@@ -380,6 +384,10 @@ namespace SustitucionMOAUtils.Services
             {
                 request.CUITIntermediarioFlete = null;
                 request.RazonSocialIntermediarioFlete = null;
+                request.DomicilioDescr = null;
+                request.DomicilioOrden = null;
+                request.DomicilioTipo = null;
+                request.PlantaCodigo = null;
             }
         }
         public bool EmailGestionarAlta(string cuit, string razonSocial, bool esIntermediarioFlete)
@@ -425,6 +433,56 @@ namespace SustitucionMOAUtils.Services
                 }
             }
             return response;
+        }
+        public List<PlantaDto> ObtenerPlantasDestino(string destinoCuit)
+        {
+            var plantasRes = _scatoRepositorioClient.ObtenerPlantas(destinoCuit);
+            if (!plantasRes.IsValid)
+            {
+                Log.Info("Error al obtener Plantas Scato con CUIT " + destinoCuit);
+                foreach (var err in plantasRes.Messages)
+                {
+                    Log.Info(string.Format("Error Scato código {0}, descripción: {1}", err.MessageType, err.Message));
+                }
+                throw new ValidationCustomException("Error al obtener Plantas");
+            }
+            else
+            {
+                return plantasRes.Data
+                    .Select(x =>
+                        new PlantaDto
+                        {
+                            Actividad = x.Actividad,
+                            Codigo = x.NroPlanta
+                        })
+                    .ToList();
+            }
+        }
+
+        public List<DomicilioDto> ObtenerDomiciliosDestino(string destinoCuit)
+        {
+            var domiciliosRes = _scatoRepositorioClient.ObtenerDomicilios(destinoCuit);
+            if (!domiciliosRes.IsValid)
+            {
+                Log.Info("Error al obtener Plantas Domicilios con CUIT " + destinoCuit);
+                foreach (var err in domiciliosRes.Messages)
+                {
+                    Log.Info(string.Format("Error Scato código {0}, descripción: {1}", err.MessageType, err.Message));
+                }
+                throw new ValidationCustomException("Error al obtener Domicilios");
+            }
+            else
+            {
+                return domiciliosRes.Data
+                    .Select(x =>
+                        new DomicilioDto
+                        {
+                            Descripcion = x.Descripcion,
+                            Orden = x.Orden,
+                            Tipo = x.Tipo
+                        })
+                    .ToList();
+            }
         }
     }
 }

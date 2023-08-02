@@ -24,6 +24,7 @@ import { ApiResponse } from '../../common/models/response';
 import { forkJoin } from 'rxjs';
 import { Permiso } from '../../common/enums/Permisos';
 import { Factura } from '../../common/models/ordenes-de-carga/Factura';
+import { IOrdenesBaseComponent } from '../../common/base-components/ordenes-base-component';
 
 declare var $: any;
 
@@ -33,7 +34,7 @@ declare var $: any;
     styleUrls: ['./ordenes-de-carga.alta.component.css'],
     providers: [SeleccionarProveedorService],
 })
-export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
+export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdenesBaseComponent {
     @BlockUI() blockUI: NgBlockUI;
 
     @ViewChild(MensajeComponent)
@@ -77,8 +78,8 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
     tipoContrato = TipoContrato;
     listaMateriales: Material[];
     esCorredor: boolean = sessionStorage.getItem("tipoUsuario") === "CORR";
-    esComercial: boolean = this.isAuthorized('VER ORDENES DE CARGA PARA COMERCIALES');
-    esAdmin: boolean = this.isAuthorized('VER TODAS ORDENES DE CARGA');
+    esComercial: boolean = this.isAuthorized(Permiso.FasVerOrdenesComerciales);
+    esAdmin: boolean = this.isAuthorized(Permiso.FasVerTodasOrdenes);
     modificaReventa = this.isAuthorized(Permiso.FasModificarCampoReventa);
     listaClientes: any[];
     noEditarCliente: boolean = false;
