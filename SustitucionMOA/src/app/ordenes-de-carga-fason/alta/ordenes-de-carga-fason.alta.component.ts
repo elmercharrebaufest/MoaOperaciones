@@ -75,7 +75,7 @@ export class OrdenesDeCargaFasonAltaComponent
 
     esAdmin: boolean = this.isAuthorized(Permiso.FasonVerOrdenesDeCargaAdmin);
     modificaFleteMOA: boolean = this.isAuthorized(Permiso.FleteMOA);
-    modificaReventa = this.isAuthorized(Permiso.FasModificarCampoReventa);
+    modificaReventa = this.isAuthorized(Permiso.FasonModificarCampoReventa);
 
     ordenDeCargaFason: OrdenDeCargaFasonDto = new OrdenDeCargaFasonDto();
     ordenDeCargaFasonId: number = 0;

@@ -71,5 +71,6 @@
         Todos,
         UsuarioNoImplementado,
         FleteMOA,
+        RevendedorFason,
     }
 }
