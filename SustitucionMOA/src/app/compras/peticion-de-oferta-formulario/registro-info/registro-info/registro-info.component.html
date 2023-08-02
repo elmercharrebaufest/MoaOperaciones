@@ -46,7 +46,7 @@
                 <ng-template pTemplate="body" let-registro let-rowIndex="rowIndex">
                     <tr>
                         <td class="columna" style="width: 40px !important; ">
-                            <p-checkbox name="posiciones" [(ngModel)]="registro.Confirmado"
+                            <p-checkbox name="posiciones" [disabled]="registro.Deshabilitado" [(ngModel)]="registro.Confirmado"
                                         binary="false"></p-checkbox>
                         </td>
                         <td class="columna">
