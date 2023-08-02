@@ -55,6 +55,7 @@ namespace SustitucionMOAModel.Dto.OrdenDeCargaFason
         public int CampaniaTableroId { get; set; }
         public string Codigo { get; set; }
         public int CodigoSap { get; set; }
+        public bool ValidaSisaRuca { get; set; }
     }
 
     public class CrearOrdenDeCargaFasonRequestDestino

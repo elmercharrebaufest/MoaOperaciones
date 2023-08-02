@@ -219,8 +219,7 @@ namespace SustitucionMOA.Controllers
             var response = new SustitucionMOAApiResponse<bool>();
             try
             {
-                //TODO
-                //response.Data = ordenDeCargaService.EmailGestionarAlta(cuit, razonSocial, esIntermediarioFlete);
+                response.Data = _ordenDeCargaFasonService.EmailGestionarAlta(cuit, razonSocial, esIntermediarioFlete);
                 response.Data = false;
             }
             catch (InfoCustomException ice)
@@ -242,24 +241,23 @@ namespace SustitucionMOA.Controllers
         public ContentResult ValidarIntermediarioFlete(string cuit)
         {
             var response = new SustitucionMOAApiResponse<ValidarIntermediarioFleteResponse>();
-            //TODO
-            //try
-            //{
-            //    response.Data = ordenDeCargaService.ValidarIntermediarioFlete(cuit);
-            //}
-            //catch (InfoCustomException ice)
-            //{
-            //    response.Info = ice.Message;
-            //}
-            //catch (ValidationCustomException vce)
-            //{
-            //    response.Error = vce.Message;
-            //}
-            //catch (Exception ex)
-            //{
-            //    Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-            //    response.Error = ErrorMsg.Error;
-            //}
+            try
+            {
+                response.Data = _ordenDeCargaFasonService.ValidarIntermediarioFlete(cuit);
+            }
+            catch (InfoCustomException ice)
+            {
+                response.Info = ice.Message;
+            }
+            catch (ValidationCustomException vce)
+            {
+                response.Error = vce.Message;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                response.Error = ErrorMsg.Error;
+            }
             return ContentCustom(response);
         }
     }

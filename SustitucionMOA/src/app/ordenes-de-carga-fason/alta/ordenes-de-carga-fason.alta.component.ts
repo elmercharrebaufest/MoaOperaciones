@@ -586,5 +586,12 @@ export class OrdenesDeCargaFasonAltaComponent extends OrdenesBaseComponent imple
         if (!this.ordenDeCargaFasonId) {
             this.ordenDeCargaFason.Reventa = this.modificaReventa && this.validaCPEDG && !this.ordenDeCargaFason.Reventa
         }
+        if (!this.validaCPEDG)
+            this.limpiarCamposCPEDG()
+    }
+    limpiarCamposCPEDG() {
+        this.ordenDeCargaFason.CUITIntermediarioFlete = null;
+        this.ordenDeCargaFason.RazonSocialIntermediarioFlete = null;
+        this.ordenDeCargaFason.Reventa = false;
     }
 }

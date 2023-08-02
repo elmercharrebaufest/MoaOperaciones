@@ -1,6 +1,7 @@
 ﻿using SustitucionMOAAssets;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
+using SustitucionMOAModel.Dto.OrdenDeCarga;
 using SustitucionMOAModel.Dto.OrdenDeCargaFason;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
@@ -9,6 +10,7 @@ using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Helpers;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
+using ScatoRepo = SustitucionMOAModel.Models.WebApiMap.ScatoRepositorio;
 using SustitucionMOAWS.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -22,13 +24,22 @@ namespace SustitucionMOAUtils.Services
         private readonly IRepositorio _repositorio;
         protected readonly IOrdenCargaConsumerMOA _consumer;
         private readonly IScatoConsumer _scatoConsumer;
+        private readonly IEmailFasService _emailFasService;
+        protected readonly IScatoRepositorioClient _scatoRepositorioClient;
         private readonly IEnumerable<string> _codigosRetiroEnPatagonia = new string[] { "98855", "99098" };
 
-        public OrdenDeCargaFasonService(IRepositorio repositorio, IOrdenCargaConsumerMOA consumer, IScatoConsumer _scatoConsumer)
+        public OrdenDeCargaFasonService(IRepositorio repositorio,
+            IOrdenCargaConsumerMOA consumer,
+            IScatoConsumer _scatoConsumer,
+            IEmailFasService emailFasService,
+            IScatoRepositorioClient scatoRepositorioClient
+            )
         {
             _repositorio = repositorio;
             _consumer = consumer;
             this._scatoConsumer = _scatoConsumer;
+            _emailFasService = emailFasService;
+            _scatoRepositorioClient = scatoRepositorioClient;
         }
 
         public ListarOrdenDeCargaFasonResponse Listar(ListarOrdenDeCargaFasonRequest request)
@@ -359,10 +370,61 @@ namespace SustitucionMOAUtils.Services
         }
         private void ValidarRequest(OrdenDeCargaFasonRequest request, Usuario usuario)
         {
+            Log.Info($"FASON - Validar Request {request.ToJson()}  usuario: {usuario.Mail}");
             var fleteMOA = usuario.TieneRol(RolEnum.FleteMOA);
             var reventa = usuario.TieneRol(RolEnum.Revendedor);
+            Log.Info($"FASON - Validar Request: RolFleteMOA={fleteMOA};  RolReventa={reventa}");
             request.FleteMOA = fleteMOA && request.FleteMOA;
             request.Reventa = reventa && request.Reventa;
+            if (!request.ProductoSeleccionado.ValidaSisaRuca)
+            {
+                request.CUITIntermediarioFlete = null;
+                request.RazonSocialIntermediarioFlete = null;
+            }
+        }
+        public bool EmailGestionarAlta(string cuit, string razonSocial, bool esIntermediarioFlete)
+        {
+            if (esIntermediarioFlete)
+            {
+                _emailFasService.EnviarMailAltaIntermediarioFlete(cuit, razonSocial);
+            }
+            else
+            {
+                _emailFasService.EnviarMailAltaTempranaCuit(cuit, razonSocial);
+            }
+            return true;
+        }
+        public ValidarIntermediarioFleteResponse ValidarIntermediarioFlete(string cuit)
+        {
+            var scatoRes = _scatoRepositorioClient.ObtenerProveedorPorCuil(cuit);
+            if (scatoRes.IsValid)
+            {
+                return new ValidarIntermediarioFleteResponse
+                {
+                    EsCuitValido = true,
+                    ExisteIntermediario = true,
+                    RazonSocial = scatoRes.Data.RazonSocial
+                };
+            }
+
+            var response = new ValidarIntermediarioFleteResponse();
+            if (scatoRes.TieneError(ScatoRepo.ObtenerProveedorPorCuilError.DigitoVerificadorNoValido))
+            {
+                response.EsCuitValido = false;
+            }
+            else
+            {
+                if (scatoRes.TieneError(ScatoRepo.ObtenerProveedorPorCuilError.ProveedorNoEncontrado))
+                {
+                    response.EsCuitValido = true;
+                    response.ExisteIntermediario = false;
+                }
+                else
+                {
+                    throw new Exception("Error en ValidarIntermediarioFlete. Validación inesperada con cuit " + cuit);
+                }
+            }
+            return response;
         }
     }
 }
