@@ -1,7 +1,6 @@
 import { HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { timeoutWith } from 'rxjs/operators';
-import { BaseService } from '../common/services/BaseService';
 import { throwError as observableThrowError, Observable } from 'rxjs';
 import { OrdenDeCargaFasonDto } from '../common/models/ordenes-de-carga-fason/ordenDeCargaFasonDto';
 import { ListarOrdenDeCargaFasonResponse } from '../common/models/ordenes-de-carga-fason/listarOrdenDeCargaFasonResponse';
@@ -9,12 +8,15 @@ import { ApiResponse } from '../common/models/response';
 import { DestinoFason } from './orden-carga-fason-utils';
 import { Material } from '../common/models/material';
 import { ValidarIntermediarioFleteResponse } from '../common/models/ordenes-de-carga/ValidarIntermediarioFleteResponse';
+import { OrdenesBaseService } from '../common/base-components/ordenes-base-component';
+import { Planta } from '../common/models/ordenes-de-carga/planta';
+import { Domicilio } from '../common/models/ordenes-de-carga/domicilio';
 
 @Injectable({
   providedIn: 'root'
 })
 
-export class OrdenesDeCargaFasonService extends BaseService {
+export class OrdenesDeCargaFasonService extends OrdenesBaseService {
 
   public listado(fechaInicio: string, fechaFin: string): Observable<any> {
     let params: HttpParams = new HttpParams()
@@ -110,6 +112,28 @@ export class OrdenesDeCargaFasonService extends BaseService {
     return this.http
       .get<ApiResponse<ValidarIntermediarioFleteResponse>>(
         '/api/OrdenDeCargaFason/ValidarIntermediarioFlete',
+        { params: params, headers: this.headers })
+      .pipe(timeoutWith(360000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
+  }
+
+  public obtenerPlantasDestino(destinoCuit: string): Observable<ApiResponse<Planta[]>> {
+    let params: HttpParams = new HttpParams()
+      .append("destinoCuit", destinoCuit);
+
+    return this.http
+      .get<ApiResponse<Planta[]>>(
+        '/api/OrdenDeCargaFason/ObtenerPlantasDestino',
+        { params: params, headers: this.headers })
+      .pipe(timeoutWith(360000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
+  }
+
+  public obtenerDomiciliosDestino(destinoCuit: string): Observable<ApiResponse<Domicilio[]>> {
+    let params: HttpParams = new HttpParams()
+      .append("destinoCuit", destinoCuit);
+
+    return this.http
+      .get<ApiResponse<Domicilio[]>>(
+        '/api/OrdenDeCargaFason/ObtenerDomiciliosDestino',
         { params: params, headers: this.headers })
       .pipe(timeoutWith(360000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
   }

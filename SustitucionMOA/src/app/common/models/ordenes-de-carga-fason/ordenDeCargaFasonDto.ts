@@ -1,8 +1,9 @@
 import { DestinoFason } from "../../../ordenes-de-carga-fason/orden-carga-fason-utils";
+import { OrdenesBase } from "../../base-components/ordenes-base-component";
 import { Material } from "../material";
 import { EstadoOrdenDeCargaFason } from "./estadoOrdenDeCargaFason";
 
-export class OrdenDeCargaFasonDto {
+export class OrdenDeCargaFasonDto extends OrdenesBase {
 
     public Id: number;
     public CUITTercero: number;
@@ -35,11 +36,9 @@ export class OrdenDeCargaFasonDto {
     public Observacion: string;
     public LocalidadDescripcion: string;
     public FleteMOA: boolean;
-    public CUITIntermediarioFlete: string;
-    public RazonSocialIntermediarioFlete: string;
-    public Reventa: boolean;
 
     constructor() {
+        super();
         this.FechaRetiro = new Date();
         this.Cantidad = 30000;
     }

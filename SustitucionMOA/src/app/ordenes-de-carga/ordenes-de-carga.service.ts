@@ -2,7 +2,6 @@
 import { throwError as observableThrowError, Observable, BehaviorSubject } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { HttpParams } from '@angular/common/http';
-import { BaseService } from './../common/services/BaseService';
 import { timeoutWith } from 'rxjs/operators';
 import { OrdenDeCarga } from '../common/models/ordenes-de-carga/ordenDeCarga';
 import { ObtenerContratosDisponiblesResponse } from '../common/models/ordenes-de-carga/obtenerContratosDisponiblesResponse';
@@ -13,11 +12,12 @@ import { Planta } from '../common/models/ordenes-de-carga/planta';
 import { Domicilio } from '../common/models/ordenes-de-carga/domicilio';
 import { ValidarIntermediarioFleteResponse } from '../common/models/ordenes-de-carga/ValidarIntermediarioFleteResponse';
 import { Factura } from '../common/models/ordenes-de-carga/Factura';
+import { OrdenesBaseService } from '../common/base-components/ordenes-base-component';
 
 @Injectable({
     providedIn: 'root'
 })
-export class OrdenesDeCargaService extends BaseService {
+export class OrdenesDeCargaService extends OrdenesBaseService {
     private _ordenDeCargaSeleccionado = new BehaviorSubject<number>(0);
     private estadosFiltro = new BehaviorSubject<Array<string>>([
         "Pendiente",
