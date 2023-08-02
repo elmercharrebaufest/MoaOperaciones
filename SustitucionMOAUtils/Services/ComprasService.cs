@@ -3003,7 +3003,8 @@ namespace SustitucionMOAUtils.Services
 
                 var registrosInfo = new List<RegistroInfoDto>();
                 var solp = repositorio.ObtenerConsultaEscalar(new ObtenerSolpCompras(id));
-
+                var hoy = DateTime.Now.Date;
+              
                 DateTime fechaDesde = Convert.ToDateTime(ConfigurationManager.AppSettings["FechaInicioConsultaSolp"].ToString());
                 DateTime fechaHasta = Convert.ToDateTime(ConfigurationManager.AppSettings["FechaFinConsultaSolp"].ToString());
                 var filtros = new ObtenerSolpRequest
@@ -3056,6 +3057,7 @@ namespace SustitucionMOAUtils.Services
                                         Unidad = registroInfo.Unidad,
                                         ProveedorId = usuario.Id,
                                         Cuit = proveedor?.CUIT,
+                                        Deshabilitado = registroInfo.FechaFormateada < hoy,
                                         CantidadAdjudicacion = 0
                                     });
                                 }

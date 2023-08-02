@@ -50,6 +50,7 @@ namespace SustitucionMOAWS.WSConsumers
         protected List<RegistroInfoDto> Map(BAPIEINA[] INFORECORD_GENERAL, BAPIEINE[] INFORECORD_PURCHORG, BAPIRETURN[] bAPIRETURNs)
         {
             var registros = new List<RegistroInfoDto>();
+            var hoy = DateTime.Now.Date;
             foreach (var info in INFORECORD_GENERAL)
             {
                 foreach (var purch in INFORECORD_PURCHORG.Where(a => a.INFO_REC == info.INFO_REC))
@@ -62,8 +63,9 @@ namespace SustitucionMOAWS.WSConsumers
                         Moneda = purch.CURRENCY,
                         Vendedor = info.VENDOR,
                         Fecha = purch.PRICE_DATE,
-                        Id = info.INFO_REC
-                    };
+                        Id = info.INFO_REC,
+                        FechaFormateada = SAPFormatter.GetDateTime(purch.PRICE_DATE)
+                };
 
                     registros.Add(registroInfo);
                 }
@@ -72,6 +74,12 @@ namespace SustitucionMOAWS.WSConsumers
 
             return registros;
         }
+
+        public static string PrepararFecha(DateTime fecha)
+        {
+            return fecha.ToString("yyyy-MM-dd");
+        }
+
 
     }
 }
