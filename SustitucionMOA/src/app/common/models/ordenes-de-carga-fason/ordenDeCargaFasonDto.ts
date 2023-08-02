@@ -35,6 +35,8 @@ export class OrdenDeCargaFasonDto {
     public Observacion: string;
     public LocalidadDescripcion: string;
     public FleteMOA: boolean;
+    public CUITIntermediarioFlete: string;
+    public RazonSocialIntermediarioFlete: string;
     public Reventa: boolean;
 
     constructor() {

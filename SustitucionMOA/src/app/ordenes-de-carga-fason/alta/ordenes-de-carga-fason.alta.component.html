@@ -57,7 +57,7 @@
                                         <ng-template let-option>
                                             <p style="margin: 0px!important; font-size: small; font-weight: 400!important;"
                                                 [ngClass]="{
-                                                'text-info':seRetiraEnPatagonia(option) && ordenDeCargaFason.Producto_Id != option
+                                                'text-info':seRetiraEnPatagonia(option) && ordenDeCargaFason.Producto_Id != option.MaterialId
                                             }">
                                                 {{option.Descripcion}}</p>
                                         </ng-template>
@@ -199,6 +199,32 @@
                                     <input type="text" [(ngModel)]="ordenDeCargaFason.CantidadDeViajes">
                                 </div>
                             </div>
+                            <div class="col-xs-12 col-md-12" *ngIf="validaCPEDG">
+                                <div class="formulario-label">
+                                    CUIT Intermediario Flete:
+                                </div>
+                                <div class="styled-select">
+                                    <div class="ui-inputgroup">
+                                        <input type="text" [(ngModel)]="ordenDeCargaFason.CUITIntermediarioFlete"
+                                            mask="00-00000000-0" [placeholder]="descripcionIntermediarioFlete"
+                                            (change)="validarIntermediarioFlete()">
+                                        <span class="ui-inputgroup-addon" *ngIf="validando.CUITIntermediarioFlete">
+                                            <p-progressSpinner
+                                                [style]="{width: '100%', height: '100%'}"></p-progressSpinner>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div *ngIf="mensajesOrdenDeCargaFason.CUITIntermediarioFlete">
+                                    {{mensajesOrdenDeCargaFason.CUITIntermediarioFlete}}
+                                </div>
+                                <div class="styled-select" *ngIf="ordenDeCargaFason.RazonSocialIntermediarioFlete">
+                                    <input [disabled]="true" type="text"
+                                        [(ngModel)]="ordenDeCargaFason.RazonSocialIntermediarioFlete">
+                                </div>
+                                <p *ngIf="mensajesGestionCuit.CUITIntermediarioFlete">
+                                    {{ mensajesGestionCuit.CUITIntermediarioFlete }}
+                                </p>
+                            </div>
                         </div>
 
                         <div class="col-xs-12 col-md-11" style="margin-left: 3em; margin-bottom: 2em;">
@@ -271,4 +297,29 @@
         </div>
     </div>
 </div>
+
+<p-dialog [header]="displayModal ? displayModal.replace('CUIT','') : ''" [(visible)]="displayModal" [modal]="true"
+    [responsive]="true" [style]="{width: '350px', minWidth: '200px', maxWidth:'350px'}" [minY]="70" [draggable]="false"
+    appendTo="body" (onHide)="focusRazonSocialParaGestion=true; razonSocialParaGestion=''">
+    <p>No se encontró la CUIT {{ordenDeCargaFason[displayModal]}}</p><br>
+    <p>¿Desea que se notifique?</p>
+    <div class="col-xs-12 col-md-12">
+        <div class="formulario-label">
+            Razón social con la que gestionar el alta:
+        </div>
+        <div class="styled-select mb-2">
+            <input (blur)="focusRazonSocialParaGestion= false" [(ngModel)]="razonSocialParaGestion" type="text">
+        </div>
+        <p-message *ngIf="!focusRazonSocialParaGestion && razonSocialParaGestion.length < 1" severity="warn" text="Debe ingresar una razón social de
+            al menos un (1) caracter para gestionar su alta">
+        </p-message>
+    </div>
+    <p-footer>
+        <button [disabled]="razonSocialParaGestion.length < 1" type="button" pButton icon="pi pi-check"
+            (click)="gestionarAltaCUIT()" label="Gestionar"></button>
+        <button type="button" pButton icon="pi pi-close" (click)="cancelarGestionAltaCUIT()" label="Cancelar"
+            class="ui-button-secondary"></button>
+    </p-footer>
+</p-dialog>
+
 <!-- end modal notificacion -->

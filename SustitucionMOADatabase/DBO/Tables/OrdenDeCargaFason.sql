@@ -24,6 +24,8 @@
     [NroRemito] VARCHAR(50) ,
 	[DistanciaEnKm] INT NOT NULL DEFAULT 0,
 	[KmARecorrer] VARCHAR(50) ,
+    [CUITIntermediarioFlete] VARCHAR(15) NULL,
+    [RazonSocialIntermediarioFlete] VARCHAR(100) NULL, 
     [FleteMOA] BIT NOT NULL DEFAULT 0, 
     [Reventa] BIT NOT NULL DEFAULT 0, 
     CONSTRAINT [FK_OrdenDeCargaFason_Material] FOREIGN KEY (Producto_Id) REFERENCES Material(Id),

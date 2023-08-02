@@ -8,6 +8,9 @@ using SustitucionMOAAssets;
 using SustitucionMOAUtils.Logger;
 using Newtonsoft.Json;
 using SustitucionMOAModel.Enums;
+using SustitucionMOAModel.Dto;
+using SustitucionMOAUtils.Services;
+using SustitucionMOAModel.Dto.OrdenDeCarga;
 
 namespace SustitucionMOA.Controllers
 {
@@ -209,6 +212,53 @@ namespace SustitucionMOA.Controllers
                 Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
+        }
+        [HttpGet]
+        public ActionResult GestionarAltaCuit(string cuit, string razonSocial, bool esIntermediarioFlete)
+        {
+            var response = new SustitucionMOAApiResponse<bool>();
+            try
+            {
+                response.Data = _ordenDeCargaFasonService.EmailGestionarAlta(cuit, razonSocial, esIntermediarioFlete);
+                response.Data = false;
+            }
+            catch (InfoCustomException ice)
+            {
+                response.Info = ice.Message;
+            }
+            catch (ValidationCustomException vce)
+            {
+                response.Error = vce.Message;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                response.Error = ErrorMsg.Error;
+            }
+            return ContentCustom(response);
+        }
+        [HttpGet]
+        public ContentResult ValidarIntermediarioFlete(string cuit)
+        {
+            var response = new SustitucionMOAApiResponse<ValidarIntermediarioFleteResponse>();
+            try
+            {
+                response.Data = _ordenDeCargaFasonService.ValidarIntermediarioFlete(cuit);
+            }
+            catch (InfoCustomException ice)
+            {
+                response.Info = ice.Message;
+            }
+            catch (ValidationCustomException vce)
+            {
+                response.Error = vce.Message;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                response.Error = ErrorMsg.Error;
+            }
+            return ContentCustom(response);
         }
     }
 }

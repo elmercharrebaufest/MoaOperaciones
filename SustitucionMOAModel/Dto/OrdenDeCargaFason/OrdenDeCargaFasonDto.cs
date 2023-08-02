@@ -35,6 +35,8 @@ namespace SustitucionMOAModel.Dto.OrdenDeCargaFason
         public string CUILChofer { get; set; }
         public string RazonSocialTransporte { get; set; }
         public string CUITTransporte { get; set; }
+        public string CUITIntermediarioFlete { get; set; }
+        public string RazonSocialIntermediarioFlete { get; set; }
 
         [JsonProperty("patenteChasis")]
         public string PatenteChasis { get; set; }
@@ -81,6 +83,8 @@ namespace SustitucionMOAModel.Dto.OrdenDeCargaFason
             RazonSocialTransporte = orden.RazonSocialTransporte;
             TransporteExiste = orden.TransporteExiste;
             Observacion = orden.Observacion;
+            CUITIntermediarioFlete = orden.CUITIntermediarioFlete;
+            RazonSocialIntermediarioFlete = orden.RazonSocialIntermediarioFlete;
             FleteMOA = orden.FleteMOA;
             Reventa = orden.Reventa;
         }
