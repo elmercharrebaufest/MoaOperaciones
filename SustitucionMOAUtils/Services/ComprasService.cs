@@ -3023,7 +3023,8 @@ namespace SustitucionMOAUtils.Services
                 var registrosInfo = new List<RegistroInfoDto>();
                 var solp = repositorio.ObtenerConsultaEscalar(new ObtenerSolpCompras(id));
                 var hoy = DateTime.Now.Date;
-
+                var tablaSap = repositorio.Listar<TablaSap>(x => x.Tabla == TablasSap.Moneda || x.Tabla == TablasSap.Unidad);
+              
                 DateTime fechaDesde = Convert.ToDateTime(ConfigurationManager.AppSettings["FechaInicioConsultaSolp"].ToString());
                 DateTime fechaHasta = Convert.ToDateTime(ConfigurationManager.AppSettings["FechaFinConsultaSolp"].ToString());
                 var filtros = new ObtenerSolpRequest
@@ -3077,7 +3078,9 @@ namespace SustitucionMOAUtils.Services
                                         ProveedorId = usuario.Id,
                                         Cuit = proveedor?.CUIT,
                                         Deshabilitado = registroInfo.FechaFormateada < hoy,
-                                        CantidadAdjudicacion = 0
+                                        CantidadAdjudicacion = 0,
+                                        MonedaId = tablaSap.Where(x => x.CodigoSap == registroInfo.Moneda).FirstOrDefault().Id,
+                                        UnidadId = tablaSap.Where(x => x.CodigoSap == registroInfo.Unidad).FirstOrDefault().Id,
                                     });
                                 }
                                 else
@@ -5150,7 +5153,7 @@ namespace SustitucionMOAUtils.Services
                 usuariosIds.Add(proveedorId);
                 PeticionDeOferta peticionEntidad = CrearPeticionAutomatica(solp, usuariosIds, posiciones, true);
                 //CrearCotizacion
-                CrearCotizacionAutomatica(solp, enviarMail, peticionEntidad, out respuestaCotizacion, out cotizacionNueva, posiciones);
+                CrearCotizacionAutomatica(solp, enviarMail, peticionEntidad, out respuestaCotizacion, out cotizacionNueva, posiciones, registroInfo);
                 //Crear Adjudicacion
                 if (crearAdjudicacion)
                 {
@@ -5188,7 +5191,7 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        private void CrearCotizacionAutomatica(Solp solp, bool enviarMail, PeticionDeOferta peticionEntidad, out RespuestaGuardarSOLP respuestaCotizacion, out Cotizacion cotizacionNueva, List<SolpPosicion> solpPosiciones = null)
+        private void CrearCotizacionAutomatica(Solp solp, bool enviarMail, PeticionDeOferta peticionEntidad, out RespuestaGuardarSOLP respuestaCotizacion, out Cotizacion cotizacionNueva, List<SolpPosicion> solpPosiciones = null, List<RegistroInfoDto> registroInfo = null)
         {
             var posiciones = solpPosiciones != null ? solpPosiciones : solp.Posiciones;
             var cotizacion = new GuardarCotizacion
@@ -5200,11 +5203,19 @@ namespace SustitucionMOAUtils.Services
                 CotizacionPosiciones = posiciones.Select(x => new GuardarCotizacionPosicionDto
                 {
                     PeticionDeOfertaSolpPosicionId = peticionEntidad.Posiciones.Where(posicion => posicion.SolpPosicion_Id == x.Id).FirstOrDefault().Id,
-                    Cantidad = x.Cantidad ?? 1,
-                    MonedaId = x.Moneda_Id,
-                    UnidadDeMedidaId = x.Unidad_Id,
+                    Cantidad = peticionEntidad.RegistroInfo != null ? registroInfo.FirstOrDefault(a => a.PosicionId == 
+                               peticionEntidad.Posiciones.Where(posicion => posicion.SolpPosicion_Id == x.Id).FirstOrDefault().SolpPosicion_Id)?.CantidadAdjudicacion 
+                              : x.Cantidad ?? 1,
+                    MonedaId = peticionEntidad.RegistroInfo != null ? registroInfo.FirstOrDefault(a => a.PosicionId ==
+                               peticionEntidad.Posiciones.Where(posicion => posicion.SolpPosicion_Id == x.Id).FirstOrDefault().SolpPosicion_Id)?.MonedaId 
+                               : x.Moneda_Id,
+                    UnidadDeMedidaId = peticionEntidad.RegistroInfo != null ? registroInfo.FirstOrDefault(a => a.PosicionId ==
+                               peticionEntidad.Posiciones.Where(posicion => posicion.SolpPosicion_Id == x.Id).FirstOrDefault().SolpPosicion_Id)?.UnidadId
+                               : x.Unidad_Id,
                     FechaDeEntrega = DateTime.Today.AddDays(-1),
-                    Precio = x.PrecioBruto != null ? (decimal)x.PrecioBruto : 0,
+                    Precio = peticionEntidad.RegistroInfo != null ? registroInfo.FirstOrDefault(a => a.PosicionId ==
+                               peticionEntidad.Posiciones.Where(posicion => posicion.SolpPosicion_Id == x.Id).FirstOrDefault().SolpPosicion_Id).Precio
+                               : x.PrecioBruto != null ? (decimal)x.PrecioBruto : 0,
                 }).ToList(),
 
             };
