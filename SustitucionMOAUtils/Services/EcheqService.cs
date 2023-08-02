@@ -204,6 +204,8 @@ namespace SustitucionMOAUtils.Services
                 {
                     ResultadoGenerico modificarNegocio = new ResultadoGenerico();
 
+                    this.UpdateEcheq(request, false, echeqNegocio);
+
                     foreach (var liquidacion in echeqNegocio.Documentos)
                     {
                         modificarNegocio = echeqModificacionDocumentoChequeConsumerMOA.Request(request.Contrato, liquidacion.Documento, liquidacion.Ejercicio, DateTime.Now.ToString("yyyy-MM-dd"), DateTime.Now.ToString("HH:mm:ss"), request.Pedido, request.CodigoProveedor, liquidacion.NumeroCOE, "MOA", "", "");
@@ -213,8 +215,6 @@ namespace SustitucionMOAUtils.Services
                             throw new ValidationCustomException(string.Join(", ", modificarNegocio.Errores.Select(x => x.Message).ToList()));
                         }
                     }
-
-                    this.UpdateEcheq(request, false, echeqNegocio);
                 }
                 else
                 {
@@ -344,18 +344,22 @@ namespace SustitucionMOAUtils.Services
                 if (liquidacion != null)
                 {
                     //ANULAR APERTURAS ANTERIORES
-                    foreach (var apertura in liquidacion.Aperturas.Where(ap => ap.Estado && ap.OrdenCheque > 0))
+                    foreach (var apertura in liquidacion.Aperturas.Where(ap => ap.Estado))
                     {
                         apertura.Estado = false;
                         apertura.UsuarioModificacionId = request.UsuarioCreacionId;
                         apertura.FechaModificacion = DateTime.Now;
 
-                        var resultadoAnularAperturaCheque = echeqAnularAperturaChequeConsumerMOA.Request(apertura.OrdenCheque.ToString(), liquidacion.Documento, liquidacion.Ejercicio, DateTime.Now.ToString("yyyy-MM-dd"), DateTime.Now.ToString("HH:mm:ss"), "MOA", "");
-                        if (resultadoAnularAperturaCheque.HayError)
+                        if(apertura.OrdenCheque > 0)
                         {
-                            string mensaje = string.Join(", ", resultadoAnularAperturaCheque.Errores.Select(x => x.Message.Contains(mensajeErrorBloqueo) ? mensajeErrorBloqueoReemplazo : x.Message).ToList());
-                            throw new ValidationCustomException(mensaje);
+                            var resultadoAnularAperturaCheque = echeqAnularAperturaChequeConsumerMOA.Request(apertura.OrdenCheque.ToString(), liquidacion.Documento, liquidacion.Ejercicio, DateTime.Now.ToString("yyyy-MM-dd"), DateTime.Now.ToString("HH:mm:ss"), "MOA", "");
+                            if (resultadoAnularAperturaCheque.HayError)
+                            {
+                                string mensaje = string.Join(", ", resultadoAnularAperturaCheque.Errores.Select(x => x.Message.Contains(mensajeErrorBloqueo) ? mensajeErrorBloqueoReemplazo : x.Message).ToList());
+                                throw new ValidationCustomException(mensaje);
+                            }
                         }
+
                     }
                 }
 
@@ -471,11 +475,14 @@ namespace SustitucionMOAUtils.Services
                 liquidacion.UsuarioModificacionId = request.UsuarioCreacionId;
                 if (marcaCheck == false)
                 {
-                    foreach (var apertura in liquidacion.Aperturas.Where(a => a.Estado && a.OrdenCheque > 0))
+                    foreach (var apertura in liquidacion.Aperturas.Where(a => a.Estado))
                     {
-                        var result = echeqAnularAperturaChequeConsumerMOA.Request(apertura.OrdenCheque.ToString(), liquidacion.Documento, liquidacion.Ejercicio, DateTime.Now.ToString("yyyy-MM-dd"), DateTime.Now.ToString("HH:mm:ss"), "MOA", "");
-                        throw new ValidationCustomException(string.Join(", ", result.Errores.Select(x => x.Message).ToList()));
-
+                        if (apertura.OrdenCheque > 0)
+                        {
+                            var result = echeqAnularAperturaChequeConsumerMOA.Request(apertura.OrdenCheque.ToString(), liquidacion.Documento, liquidacion.Ejercicio, DateTime.Now.ToString("yyyy-MM-dd"), DateTime.Now.ToString("HH:mm:ss"), "MOA", "");
+                            if (result.HayError)
+                                throw new ValidationCustomException(string.Join(", ", result.Errores.Select(x => x.Message).ToList()));
+                        }
                         apertura.Estado = marcaCheck;
                         apertura.UsuarioModificacionId = request.UsuarioCreacionId;
                         apertura.FechaModificacion = DateTime.Now;
