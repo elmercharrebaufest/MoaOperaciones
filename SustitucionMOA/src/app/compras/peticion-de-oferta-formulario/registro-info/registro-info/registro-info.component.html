@@ -69,7 +69,7 @@
                         <td pEditableColumn class="columna">
                             <p-cellEditor>
                                 <ng-template pTemplate="input">
-                                    <input type="text" pKeyFilter="int" [(ngModel)]="registro.CantidadAdjudicacion">
+                                    <input type="text" pKeyFilter="num" [(ngModel)]="registro.CantidadAdjudicacion">
                                 </ng-template>
                                 <ng-template pTemplate="output">
                                     {{registro.CantidadAdjudicacion | number: '1.2-2'}}
