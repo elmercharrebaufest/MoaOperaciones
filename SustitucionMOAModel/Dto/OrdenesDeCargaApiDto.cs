@@ -29,6 +29,7 @@ namespace SustitucionMOAModel.Dto
         public string LocalidadDescripcion { get; set; }
         public string CodigoProducto { get; set; }
         public string KmARecorrer { get; set; }
+        public bool FleteMOA { get; set; }
 
         public OrdenesDeCargaApiDto(Entities.OrdenDeCarga ordenFas)
         {
@@ -72,7 +73,8 @@ namespace SustitucionMOAModel.Dto
             CUITCorredor = ordenFason.CorredorId != null ? ordenFason.Corredor.CUIT : null;
             CodigoProducto = ordenFason.Producto.CodigoSap;
             KmARecorrer = ordenFason.KmARecorrer;
-            TipoOrden = ordenFason.FleteMOA ? "0" : "10";
+            TipoOrden = "FASON";
+            FleteMOA = ordenFason.FleteMOA;
         }
 
         private string ParseNombreProducto(string nombreMaterial)
