@@ -99,9 +99,9 @@ export class RegistroInfoComponent extends ListBaseComponent implements OnInit, 
 
         if (this.registros.some(item => item.CantidadAdjudicacion <= 0)) {
             this.confirmationService.confirm({
-                header: "Falta seleccionar la cantidad",
+                header: "Error",
                 key: "avisoV",
-                message: 'No ingreso la cantidad en todos los registros info seleccinados.',
+                message: 'Debe ingresar una cantidad para los registros seleccionados',
                 accept: () => {
                     return;
                 },
