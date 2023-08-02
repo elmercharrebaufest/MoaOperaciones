@@ -15,6 +15,7 @@ import { MensajeComponent } from '../../common/view-child/mensaje/mensaje.compon
 import { SpinnerComponent } from '../../common/view-child/spinner/spinner.component';
 import { DestinoFason, setupDaysAndMonths, sumarDias } from '../orden-carga-fason-utils';
 import { OrdenesDeCargaFasonService } from '../ordenes-de-carga-fason.service';
+import { Permiso } from '../../common/enums/Permisos';
 
 @Component({
     selector: 'app-alta',
@@ -64,11 +65,9 @@ export class OrdenesDeCargaFasonAltaComponent extends BaseComponent implements O
 
     es: any;
 
-    //esCliente: boolean = sessionStorage.getItem("tipoUsuario") === "CLI";
-    //esCorredor: boolean = sessionStorage.getItem("tipoUsuario") === "CORR";
-
-    esAdmin: boolean = this.isAuthorized('VER ORDENES DE CARGA FASON ADMIN');
-    modificaFleteMOA: boolean = this.isAuthorized('FASON - MODIFICA FLETE MOA');
+    esAdmin: boolean = this.isAuthorized(Permiso.FasonVerOrdenesDeCargaAdmin);
+    modificaFleteMOA: boolean = this.isAuthorized(Permiso.FleteMOA);
+    modificaReventa = this.isAuthorized(Permiso.FasModificarCampoReventa);
 
     ordenDeCargaFason: OrdenDeCargaFasonDto = new OrdenDeCargaFasonDto();
     ordenDeCargaFasonId: number = 0;
@@ -81,6 +80,7 @@ export class OrdenesDeCargaFasonAltaComponent extends BaseComponent implements O
     private selectUndefinedOptionValue: any;
 
     public nombreChofer: string;
+    validaCPEDG = false;
 
     ngOnInit() {
         this.userEmail = sessionStorage.getItem("username");
@@ -160,12 +160,7 @@ export class OrdenesDeCargaFasonAltaComponent extends BaseComponent implements O
             this.mensajeComponent.setInfoMsg("Seleccione un cliente.");
             return false;
         }
-        //if (this.esAdmin && !this.corredorSeleccionado) {
-        //    this.mensajeComponent.setInfoMsg("Seleccione un corredor.");
-        //    return false;
-        //}
         if (!this.ordenDeCargaFason.Producto_Id) {
-
             // Mostrar un mensaje de error al usuario o hacer algo para indicar que es necesario seleccionar un corredor
             this.mensajeComponent.setInfoMsg("Seleccione un producto.");
             return false;
@@ -173,6 +168,10 @@ export class OrdenesDeCargaFasonAltaComponent extends BaseComponent implements O
         if (!this.ordenDeCargaFason.Destino) {
             // Mostrar un mensaje de error al usuario o hacer algo para indicar que es necesario seleccionar un corredor
             this.mensajeComponent.setInfoMsg("Seleccione un destino.");
+            return false;
+        }
+        if (!this.ordenDeCargaFason.CantidadDeViajes && !this.ordenDeCargaFasonId) {
+            this.mensajeComponent.setInfoMsg("Ingrese una cantidad de viajes.");
             return false;
         }
 
@@ -346,7 +345,6 @@ export class OrdenesDeCargaFasonAltaComponent extends BaseComponent implements O
                     } else {
 
                         this.ordenDeCargaFason = result.data.Response;
-                        // this.ordenDeCargaFason.Producto_Id = this.listaProductos.find(producto => producto.Id == this.ordenDeCargaFason.MaterialId)
                         this.clienteCodigo = result.data.Response.Cliente;
                         this.CodigoCorredor = result.data.Response.Corredor;
                         if (this.ordenDeCargaFason.CorredorId) {
@@ -360,6 +358,9 @@ export class OrdenesDeCargaFasonAltaComponent extends BaseComponent implements O
                         var parts = this.ordenDeCargaFason.FechaRetiro.toString().split('/');
                         var year = parts[2].split(" ");
                         this.ordenDeCargaFason.FechaRetiro = new Date(Number(year[0]), Number(parts[1]) - 1, Number(parts[0]));
+
+                        const producto = this.listaProductos.find(producto => producto.MaterialId == this.ordenDeCargaFason.Producto_Id)
+                        this.selectProducto(producto);
                     }
                 },
                 error => {
@@ -498,5 +499,13 @@ export class OrdenesDeCargaFasonAltaComponent extends BaseComponent implements O
 
     seRetiraEnPatagonia(material: Material): boolean {
         return RETIRO_EN_PATAGONIA.includes(material.CodigoSap);
+    }
+    selectProducto(value: Material) {
+        this.ordenDeCargaFason.ProductoSeleccionado = value;
+        this.ordenDeCargaFason.Producto_Id = value.MaterialId;
+        this.validaCPEDG = this.ordenDeCargaFason.ProductoSeleccionado.ValidaSisaRuca;
+        if (!this.ordenDeCargaFasonId) {
+            this.ordenDeCargaFason.Reventa = this.modificaReventa && this.validaCPEDG && !this.ordenDeCargaFason.Reventa
+        }
     }
 }

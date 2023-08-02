@@ -32,13 +32,17 @@ namespace SustitucionMOAModel.Dto.OrdenDeCargaFason
 
         public string PatenteChasis { get; set; }
 
-        public CrearOrdenDeCargaFasonRequestProducto Producto_Id { get; set; }
+        public int Producto_Id { get; set; }
+        public CrearOrdenDeCargaFasonRequestProducto ProductoSeleccionado { get; set; }
 
         public string RazonSocialTransporte { get; set; }
 
         public int? CorredorId { get; set; }
 
         public bool FleteMOA { get; set; }
+        public string CUITIntermediarioFlete { get; set; }
+        public string RazonSocialIntermediarioFlete { get; set; }
+        public bool Reventa { get; set; }
     }
 
     public class CrearOrdenDeCargaFasonRequestProducto
