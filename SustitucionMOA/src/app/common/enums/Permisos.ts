@@ -5,4 +5,5 @@ export enum Permiso {
     EnviarSAP = "ENVIAR A SAP",
     FasonVerOrdenesDeCargaAdmin = "VER ORDENES DE CARGA FASON ADMIN",
     FleteMOA = "FASON - MODIFICA FLETE MOA",
+    FasonModificarCampoReventa = "FASON - MODIFICAR CAMPO REVENTA",
 }

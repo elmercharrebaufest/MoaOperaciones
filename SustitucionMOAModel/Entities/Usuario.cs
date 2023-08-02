@@ -362,6 +362,7 @@ namespace SustitucionMOAModel.Entities
                 case "VER SOLPS PROVEEDOR": return PermisoEnum.VerSolpsProveedor;
                 case "FAS - MODIFICAR CAMPO REVENTA": return PermisoEnum.Fas_ModificarCampoReventa;
                 case "NOTIFICAR ALTA INTERNA GRANOS": return PermisoEnum.NotificarAltaInternaGranos;
+                case "FASON - MODIFICAR CAMPO REVENTA": return PermisoEnum.Fason_ModificarCampoReventa;
 
                 default: throw new Exception("Permiso no mapeado: " + permisoStr);
             }
@@ -439,6 +440,7 @@ namespace SustitucionMOAModel.Entities
                 case "TODOS": return RolEnum.Todos;
                 case "NOIMP": return RolEnum.UsuarioNoImplementado;
                 case "FLETE MOA": return RolEnum.FleteMOA;
+                case "REVENDEDOR FASON": return RolEnum.RevendedorFason;
 
                 default: throw new Exception("Rol no mapeado: " + codigoRol);
             }

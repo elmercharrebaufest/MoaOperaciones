@@ -103,6 +103,7 @@
         ComercialCamposSustentables,
         VerSolpsProveedor,
         Fas_ModificarCampoReventa,
-        NotificarAltaInternaGranos
+        NotificarAltaInternaGranos,
+        Fason_ModificarCampoReventa,
     }
 }

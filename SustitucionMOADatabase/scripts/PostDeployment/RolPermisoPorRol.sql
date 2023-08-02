@@ -522,6 +522,8 @@ IF NOT EXISTS(SELECT 1 FROM RolPermisoPorRol inner join PermisoPorRol on Permiso
 
 IF NOT EXISTS(SELECT 1 FROM RolPermisoPorRol inner join PermisoPorRol on PermisoPorRol.Id = RolPermisoPorRol.PermisoPorRol_Id inner join Rol on Rol.Id = RolPermisoPorRol.Rol_Id WHERE Rol.Nombre = 'FLETE MOA' and PermisoPorRol.Permiso = 'FASON - MODIFICA FLETE MOA') BEGIN insert into RolPermisoPorRol values ((select id from rol where rol.Nombre = 'FLETE MOA'),(select id from PermisoPorRol where PermisoPorRol.Permiso = 'FASON - MODIFICA FLETE MOA')) END
 
+IF NOT EXISTS(SELECT 1 FROM RolPermisoPorRol inner join PermisoPorRol on PermisoPorRol.Id = RolPermisoPorRol.PermisoPorRol_Id inner join Rol on Rol.Id = RolPermisoPorRol.Rol_Id WHERE Rol.Nombre = 'REVENDEDOR FASON' and PermisoPorRol.Permiso = 'FASON - MODIFICAR CAMPO REVENTA') BEGIN insert into RolPermisoPorRol values ((select id from rol where rol.Nombre = 'REVENDEDOR FASON'),(select id from PermisoPorRol where PermisoPorRol.Permiso = 'FASON - MODIFICAR CAMPO REVENTA')) END
+
 DECLARE @PermisoPorRol_Id INT
 DECLARE @Rol_Id           INT
  SELECT @PermisoPorRol_Id = Id FROM PermisoPorRol WHERE Permiso = 'ANULAR ORDEN DE CARGA'
