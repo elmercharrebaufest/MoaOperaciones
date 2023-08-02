@@ -48,6 +48,7 @@ namespace SustitucionMOAModel.Dto.OrdenDeCargaFason
         public string LocalidadDescripcion { get; set; }
         public Models.DataAgro.MaterialDto ProductoSeleccionado { get; set; }
         public int Producto_Id { get; set; }
+        public bool Reventa { get; set; }
 
         public OrdenDeCargaFasonDto(Ent.OrdenDeCargaFason orden, bool esInterno)
         {
@@ -82,9 +83,10 @@ namespace SustitucionMOAModel.Dto.OrdenDeCargaFason
             RazonSocialTransporte = orden.RazonSocialTransporte;
             TransporteExiste = orden.TransporteExiste;
             Observacion = orden.Observacion;
-            FleteMOA = orden.FleteMOA ?? false;
             CUITIntermediarioFlete = orden.CUITIntermediarioFlete;
             RazonSocialIntermediarioFlete = orden.RazonSocialIntermediarioFlete;
+            FleteMOA = orden.FleteMOA;
+            Reventa = orden.Reventa;
         }
     }
 }

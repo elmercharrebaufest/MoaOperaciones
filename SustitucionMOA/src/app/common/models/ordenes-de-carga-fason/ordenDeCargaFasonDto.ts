@@ -37,6 +37,8 @@ export class OrdenDeCargaFasonDto {
     public FleteMOA: boolean;
     public CUITIntermediarioFlete: string;
     public RazonSocialIntermediarioFlete: string;
+    public Reventa: boolean;
+
     constructor() {
         this.FechaRetiro = new Date();
         this.Cantidad = 30000;

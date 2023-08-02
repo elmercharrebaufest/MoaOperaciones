@@ -280,12 +280,13 @@ namespace SustitucionMOAUtils.Services
                 orden.Observacion = request.Observacion;
                 orden.PatenteAcoplado = request.PatenteAcoplado;
                 orden.PatenteChasis = request.PatenteChasis;
-                orden.Producto_Id = request.Producto_Id.MaterialId;
+                orden.Producto_Id = request.Producto_Id;
                 orden.RazonSocialTransporte = request.RazonSocialTransporte;
                 orden.KmARecorrer = request.Destino.KmARecorrer;
                 orden.FleteMOA = request.FleteMOA;
                 orden.CUITIntermediarioFlete = request.CUITIntermediarioFlete;
                 orden.RazonSocialIntermediarioFlete = request.RazonSocialIntermediarioFlete;
+                orden.Reventa = request.Reventa;
 
                 ActualizarOrdenDeCarga(orden);
 
@@ -359,7 +360,9 @@ namespace SustitucionMOAUtils.Services
         private void ValidarRequest(OrdenDeCargaFasonRequest request, Usuario usuario)
         {
             var fleteMOA = usuario.TieneRol(RolEnum.FleteMOA);
+            var reventa = usuario.TieneRol(RolEnum.Revendedor);
             request.FleteMOA = fleteMOA && request.FleteMOA;
+            request.Reventa = reventa && request.Reventa;
         }
     }
 }

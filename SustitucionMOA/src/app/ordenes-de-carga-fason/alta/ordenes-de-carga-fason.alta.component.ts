@@ -16,6 +16,7 @@ import { DestinoFason, setupDaysAndMonths, sumarDias } from '../orden-carga-faso
 import { OrdenesDeCargaFasonService } from '../ordenes-de-carga-fason.service';
 import { ApiResponse } from '../../common/models/response';
 import { OrdenesBaseComponent } from '../../common/base-components/ordenes-base-component';
+import { Permiso } from '../../common/enums/Permisos';
 
 @Component({
     selector: 'app-alta',
@@ -66,8 +67,9 @@ export class OrdenesDeCargaFasonAltaComponent extends OrdenesBaseComponent imple
 
     es: any;
 
-    esAdmin: boolean = this.isAuthorized('VER ORDENES DE CARGA FASON ADMIN');
-    modificaFleteMOA: boolean = this.isAuthorized('FASON - MODIFICA FLETE MOA');
+    esAdmin: boolean = this.isAuthorized(Permiso.FasonVerOrdenesDeCargaAdmin);
+    modificaFleteMOA: boolean = this.isAuthorized(Permiso.FleteMOA);
+    modificaReventa = this.isAuthorized(Permiso.FasModificarCampoReventa);
 
     ordenDeCargaFason: OrdenDeCargaFasonDto = new OrdenDeCargaFasonDto();
     ordenDeCargaFasonId: number = 0;
@@ -160,7 +162,6 @@ export class OrdenesDeCargaFasonAltaComponent extends OrdenesBaseComponent imple
             this.mensajeComponent.setInfoMsg("Seleccione un cliente.");
             return false;
         }
-
         if (!this.ordenDeCargaFason.Producto_Id) {
             // Mostrar un mensaje de error al usuario o hacer algo para indicar que es necesario seleccionar un corredor
             this.mensajeComponent.setInfoMsg("Seleccione un producto.");
@@ -582,5 +583,8 @@ export class OrdenesDeCargaFasonAltaComponent extends OrdenesBaseComponent imple
         this.ordenDeCargaFason.ProductoSeleccionado = value;
         this.ordenDeCargaFason.Producto_Id = value.MaterialId;
         this.validaCPEDG = this.ordenDeCargaFason.ProductoSeleccionado.ValidaSisaRuca;
+        if (!this.ordenDeCargaFasonId) {
+            this.ordenDeCargaFason.Reventa = this.modificaReventa && this.validaCPEDG && !this.ordenDeCargaFason.Reventa
+        }
     }
 }

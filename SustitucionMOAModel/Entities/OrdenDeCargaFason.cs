@@ -46,9 +46,10 @@ namespace SustitucionMOAModel.Entities
         public string NroRemito { get; set; }
         public string UniMedCant { get; set; }
         public string KmARecorrer { get; set; }
-        public bool? FleteMOA { get; set; }
         public string CUITIntermediarioFlete { get; set; }
         public string RazonSocialIntermediarioFlete { get; set; }
+        public bool FleteMOA { get; set; }
+        public bool Reventa { get; set; }
         public OrdenDeCargaFason() { }
         public OrdenDeCargaFason(CrearOrdenDeCargaFasonRequest request)
         {
@@ -65,12 +66,13 @@ namespace SustitucionMOAModel.Entities
             Observacion = request.Observacion;
             PatenteAcoplado = request.PatenteAcoplado;
             PatenteChasis = request.PatenteChasis;
-            Producto_Id = request.Producto_Id.MaterialId;
+            Producto_Id = request.Producto_Id;
             RazonSocialTransporte = request.RazonSocialTransporte;
             KmARecorrer = request.Destino.KmARecorrer;
             FleteMOA = request.FleteMOA;
             CUITIntermediarioFlete = request.CUITIntermediarioFlete;
             RazonSocialIntermediarioFlete = request.RazonSocialIntermediarioFlete;
+            Reventa = request.Reventa;
         }
         public override bool Equals(object obj)
         {
@@ -94,7 +96,10 @@ namespace SustitucionMOAModel.Entities
                 TransporteExiste == carga.TransporteExiste &&
                 CorredorId == carga.CorredorId &&
                 KmARecorrer == carga.KmARecorrer &&
-                FleteMOA == carga.FleteMOA;
+                FleteMOA == carga.FleteMOA &&
+                Reventa == carga.Reventa && 
+                CUITIntermediarioFlete == carga.CUITIntermediarioFlete &&
+                RazonSocialIntermediarioFlete == carga.RazonSocialIntermediarioFlete;
         }
 
         public override int GetHashCode()
