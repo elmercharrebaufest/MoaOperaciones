@@ -3,13 +3,13 @@ using SustitucionMOAModel.Dto.OrdenDeCarga;
 using SustitucionMOAModel.Enums.MoaWS.OrdenCargaWS;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
+using SustitucionMOAUtils.Services.Email;
 using SustitucionMOAWS.Interfaces;
 using SustitucionMOAWS.WSRequests.OrdenCarga;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using ScatoRepo = SustitucionMOAModel.Models.WebApiMap.ScatoRepositorio;
 
 namespace SustitucionMOAUtils.Services
 {
@@ -18,15 +18,19 @@ namespace SustitucionMOAUtils.Services
         protected readonly IOrdenCargaConsumerMOA ordenCargaConsumer;
         protected readonly IScatoConsumer scatoConsumer;
         protected readonly IScatoRepositorioClient scatoRepositorioClient;
+        private readonly IEmailFasService _emailFasService;
+
 
         public OrdenDeCargaServiceBase(
             IOrdenCargaConsumerMOA ordenCargaConsumer,
             IScatoConsumer scatoConsumer,
-            IScatoRepositorioClient scatoRepositorioClient)
+            IScatoRepositorioClient scatoRepositorioClient,
+            IEmailFasService emailFasService)
         {
             this.scatoConsumer = scatoConsumer;
             this.ordenCargaConsumer = ordenCargaConsumer;
             this.scatoRepositorioClient = scatoRepositorioClient;
+            _emailFasService = emailFasService;
         }
 
         public ValidarCuitExisteScatoResponse ValidarCuitExisteScato(string cuit)
@@ -126,6 +130,50 @@ namespace SustitucionMOAUtils.Services
             {
                 return false;
             }
+        }
+        public bool EmailGestionarAlta(string cuit, string razonSocial, bool esIntermediarioFlete)
+        {
+            if (esIntermediarioFlete)
+            {
+                _emailFasService.EnviarMailAltaIntermediarioFlete(cuit, razonSocial);
+            }
+            else
+            {
+                _emailFasService.EnviarMailAltaTempranaCuit(cuit, razonSocial);
+            }
+            return true;
+        }
+        public ValidarIntermediarioFleteResponse ValidarIntermediarioFlete(string cuit)
+        {
+            var scatoRes = scatoRepositorioClient.ObtenerProveedorPorCuil(cuit);
+            if (scatoRes.IsValid)
+            {
+                return new ValidarIntermediarioFleteResponse
+                {
+                    EsCuitValido = true,
+                    ExisteIntermediario = true,
+                    RazonSocial = scatoRes.Data.RazonSocial
+                };
+            }
+
+            var response = new ValidarIntermediarioFleteResponse();
+            if (scatoRes.TieneError(ScatoRepo.ObtenerProveedorPorCuilError.DigitoVerificadorNoValido))
+            {
+                response.EsCuitValido = false;
+            }
+            else
+            {
+                if (scatoRes.TieneError(ScatoRepo.ObtenerProveedorPorCuilError.ProveedorNoEncontrado))
+                {
+                    response.EsCuitValido = true;
+                    response.ExisteIntermediario = false;
+                }
+                else
+                {
+                    throw new Exception("Error en ValidarIntermediarioFlete. Validación inesperada con cuit " + cuit);
+                }
+            }
+            return response;
         }
     }
 }

@@ -18,5 +18,7 @@ namespace SustitucionMOAUtils.Interfaces
         List<DomicilioDto> ObtenerDomiciliosDestino(string destinoCuit);
 
         bool ValidarCuitRuca(string cuit);
+        bool EmailGestionarAlta(string cuit, string razonSocial, bool esIntermediarioFlete);
+        ValidarIntermediarioFleteResponse ValidarIntermediarioFlete(string cuit);
     }
 }

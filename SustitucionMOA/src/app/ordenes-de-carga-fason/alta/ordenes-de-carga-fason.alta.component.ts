@@ -21,7 +21,6 @@ import { finalize } from 'rxjs/operators';
 import { forkJoin } from 'rxjs';
 import { Domicilio } from '../../common/models/ordenes-de-carga/domicilio';
 import { Planta } from '../../common/models/ordenes-de-carga/planta';
-// import { error } from 'console';
 
 @Component({
     selector: 'app-alta',
@@ -801,6 +800,8 @@ export class OrdenesDeCargaFasonAltaComponent
                 const esValidoRuca = this.manejarErroresApiResponse(result);
                 if (!esValidoRuca) {
                     this.mensajeCuitDestino = "El CUIT destino no posee planta/domicilio en RUCA, no podrá cargar la orden hasta regularizar la situación";
+                } else {
+                    this.onDestinoIngresado(cuitDestino)
                 }
             }
         );
