@@ -7,7 +7,7 @@ import { OrdenDeCarga } from '../common/models/ordenes-de-carga/ordenDeCarga';
 import { ObtenerContratosDisponiblesResponse } from '../common/models/ordenes-de-carga/obtenerContratosDisponiblesResponse';
 import { ApiResponse } from '../common/models/response';
 import { ValidarSisaCorredorClienteResponse } from '../common/models/ordenes-de-carga/validarSisaCorredorClienteResponse';
-import { ValidarCuitExisteScatoResponse } from '../common/models/ordenes-de-carga/validarSisaCorredorClienteResponse copy';
+import { ValidarCuitExisteScatoResponse } from '../common/models/ordenes-de-carga-common/ValidarCuitExisteScatoResponse';
 import { Planta } from '../common/models/ordenes-de-carga/planta';
 import { Domicilio } from '../common/models/ordenes-de-carga/domicilio';
 import { ValidarIntermediarioFleteResponse } from '../common/models/ordenes-de-carga/ValidarIntermediarioFleteResponse';

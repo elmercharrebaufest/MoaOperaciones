@@ -11,6 +11,7 @@ import { ValidarIntermediarioFleteResponse } from '../common/models/ordenes-de-c
 import { OrdenesBaseService } from '../common/base-components/ordenes-base-component';
 import { Planta } from '../common/models/ordenes-de-carga/planta';
 import { Domicilio } from '../common/models/ordenes-de-carga/domicilio';
+import { ValidarCuitExisteScatoResponse } from '../common/models/ordenes-de-carga-common/ValidarCuitExisteScatoResponse';
 
 @Injectable({
   providedIn: 'root'
@@ -136,5 +137,40 @@ export class OrdenesDeCargaFasonService extends OrdenesBaseService {
         '/api/OrdenDeCargaFason/ObtenerDomiciliosDestino',
         { params: params, headers: this.headers })
       .pipe(timeoutWith(360000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
+  }
+
+  public validarExisteCuitScato(cuit: string): Observable<ApiResponse<ValidarCuitExisteScatoResponse>> {
+    let params: HttpParams = new HttpParams();
+    params = params.append("cuit", cuit);
+
+    return this.http
+        .get
+        <ApiResponse<ValidarCuitExisteScatoResponse>>
+        ('/api/OrdenDeCargaFason/ValidarCuitExisteScato', { params: params, headers: this.headers })
+        .pipe(timeoutWith(360000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
+  }
+
+  public validarSisaCuit(cuitDestinatario: string, cuitDestino: string, codigoMaterial: string): Observable<ApiResponse<boolean>> {
+    let params: HttpParams = new HttpParams()
+        .append("cuitDestinatario", cuitDestinatario)
+        .append("cuitDestino", cuitDestino)
+        .append("codigoMaterial", codigoMaterial)
+
+    return this.http
+        .get<ApiResponse<boolean>>(
+            '/api/OrdenDeCargaFason/ValidarSisaCuit',
+            { params: params, headers: this.headers })
+        .pipe(timeoutWith(360000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
+  }
+
+  public validarCuitRuca(cuit: string): Observable<ApiResponse<boolean>> {
+    let params: HttpParams = new HttpParams()
+        .append("cuit", cuit);
+
+    return this.http
+        .get<ApiResponse<boolean>>(
+            '/api/OrdenDeCargaFason/ValidarCuitRuca',
+            { params: params, headers: this.headers })
+        .pipe(timeoutWith(360000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
   }
 }

@@ -21,6 +21,7 @@ import { finalize } from 'rxjs/operators';
 import { forkJoin } from 'rxjs';
 import { Domicilio } from '../../common/models/ordenes-de-carga/domicilio';
 import { Planta } from '../../common/models/ordenes-de-carga/planta';
+// import { error } from 'console';
 
 @Component({
     selector: 'app-alta',
@@ -90,6 +91,11 @@ export class OrdenesDeCargaFasonAltaComponent
     public nombreChofer: string;
     validaCPEDG = false;
 
+    validandoCuitDestinatario: boolean = false;
+    validandoCuitDestino: boolean = false;
+    mensajeCuitDestinatario: string = "";
+    mensajeCuitDestino: string = "";
+
     ngOnInit() {
         this.userEmail = sessionStorage.getItem("username");
         this.ordenDeCargaFason.Cantidad = 30000;
@@ -100,7 +106,7 @@ export class OrdenesDeCargaFasonAltaComponent
         this.navService.setSeccionList([]);
         this.obtenerProductos();
 
-        if (this.isAuthorized('VER ORDENES DE CARGA FASON ADMIN')) {
+        if (this.isAuthorized(Permiso.FasonVerOrdenesDeCargaAdmin)) {
             this.ordenDeCargaFason.CUITCliente = 0;
         }
         this.ordenDeCargaFason.FleteMOA = this.modificaFleteMOA;
@@ -688,5 +694,115 @@ export class OrdenesDeCargaFasonAltaComponent
         this.listaDomicilios = [];
         this.onDomicilioSeleccionadoChanged()
         this.onPlantaSeleccionadaChanged();
+    }
+
+    cuitDestinatarioChanged() {
+        const cuit = this.ordenDeCargaFason.CUITDestinatario;
+        if (!cuit || !this.revisarCUITFormatoValido(cuit)) {
+            this.ordenDeCargaFason.RazonSocialDestinatario = undefined;
+            return;
+        }
+        this.validandoCuitDestinatario = true;
+        this.ordenDeCargaFason.RazonSocialDestinatario = undefined;
+        this.mensajeCuitDestinatario = "";
+
+        this.service.validarExisteCuitScato(cuit).subscribe(
+            result => {
+                this.validandoCuitDestinatario = false;
+                const data = this.manejarErroresApiResponse(result);
+                if (!data)
+                    return;
+                if (!data.Existe) {
+                    //this.displayModal = campo;
+                }
+                else {
+                    this.ordenDeCargaFason.RazonSocialDestinatario = data.RazonSocial;
+                }
+                this.validarSisaDestinatario(cuit)
+            })
+    }
+
+    cuitDestinoChanged() {
+        const cuit = this.ordenDeCargaFason.CUITDestino;
+        if (!cuit || !this.revisarCUITFormatoValido(cuit)) {
+            this.ordenDeCargaFason.RazonSocialDestino = undefined;
+            return;
+        }
+        this.validandoCuitDestino = true;
+        this.ordenDeCargaFason.RazonSocialDestino = undefined;
+        this.mensajeCuitDestino = "";
+
+        this.service.validarExisteCuitScato(cuit).subscribe(
+            result => {
+                this.validandoCuitDestino = false;
+                const data = this.manejarErroresApiResponse(result);
+                if (!data)
+                    return;
+                if (!data.Existe) {
+                    //this.displayModal = campo;
+                }
+                else {
+                    this.ordenDeCargaFason.RazonSocialDestino = data.RazonSocial;
+                }
+                this.validarSisaDestino(cuit)
+            })
+    }
+
+    validarSisaDestinatario(cuitDestinatario: string) {
+        this.validandoCuitDestinatario = true;
+        this.service.validarSisaCuit(cuitDestinatario, "", this.ordenDeCargaFason.ProductoSeleccionado.CodigoSap).subscribe(
+            result => {
+                this.validandoCuitDestinatario = false;
+                const esValidoSisa = this.manejarErroresApiResponse(result);
+                if (!esValidoSisa) {
+                    this.mensajeCuitDestinatario = "El CUIT destinatario no está habilitado en SISA, no podrá cargar la orden hasta regularizar la situación";
+                }
+                else {
+                    this.validarRucaDestinatario(cuitDestinatario);
+                }
+            }
+        )
+    }
+
+    validarSisaDestino(cuitDestino: string) {
+        this.validandoCuitDestino = true;
+        this.service.validarSisaCuit("", cuitDestino, this.ordenDeCargaFason.ProductoSeleccionado.CodigoSap).subscribe(
+            result => {
+                this.validandoCuitDestino = false;
+                const esValidoSisa = this.manejarErroresApiResponse(result);
+                if (!esValidoSisa) {
+                    this.mensajeCuitDestino = "El CUIT destino no está habilitado en SISA, no podrá cargar la orden hasta regularizar la situación";
+                }
+                else {
+                    this.validarRucaDestino(cuitDestino);
+                }
+            }
+        )
+    }
+
+    validarRucaDestinatario(cuitDestinatario: string) {
+        this.validandoCuitDestinatario = true;
+        this.service.validarCuitRuca(cuitDestinatario).subscribe(
+            result => {
+                this.validandoCuitDestinatario = false;
+                const esValidoRuca = this.manejarErroresApiResponse(result);
+                if (!esValidoRuca) {
+                    this.mensajeCuitDestinatario = "El CUIT destinatario no posee planta/domicilio en RUCA, no podrá cargar la orden hasta regularizar la situación";
+                }
+            }
+        );
+    }
+
+    validarRucaDestino(cuitDestino: string) {
+        this.validandoCuitDestino = true;
+        this.service.validarCuitRuca(cuitDestino).subscribe(
+            result => {
+                this.validandoCuitDestino = false;
+                const esValidoRuca = this.manejarErroresApiResponse(result);
+                if (!esValidoRuca) {
+                    this.mensajeCuitDestino = "El CUIT destino no posee planta/domicilio en RUCA, no podrá cargar la orden hasta regularizar la situación";
+                }
+            }
+        );
     }
 }
