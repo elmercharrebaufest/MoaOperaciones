@@ -35,9 +35,6 @@ export class OrdenDeCargaFasonDto extends OrdenesBase {
     public TransporteExiste: boolean;
     public Observacion: string;
     public LocalidadDescripcion: string;
-    public FleteMOA: boolean;
-    public RazonSocialDestinatario?: string;
-    public RazonSocialDestino?: string;
 
     constructor() {
         super();

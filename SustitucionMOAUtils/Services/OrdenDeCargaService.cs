@@ -39,7 +39,7 @@ namespace SustitucionMOAUtils.Services
         readonly FeriadoService _feriadoService = new FeriadoService();
         protected readonly IFeriadoService feriadoService;
         protected readonly IEmailFasService emailFasService;
-        
+
         protected readonly IFacturaAnticipadaService _facturaAnticipadaService;
         protected readonly IKgDisponiblesFasService _kgDisponiblesFasService;
 
@@ -76,7 +76,7 @@ namespace SustitucionMOAUtils.Services
             IEmailFasService emailFasService,
             IFacturaAnticipadaService facturaAnticipadaService,
             IKgDisponiblesFasService kgDisponiblesFasService
-            ) : base(ordenCargaConsumer, scatoConsumer, scatoRepositorioClient)
+            ) : base(ordenCargaConsumer, scatoConsumer, scatoRepositorioClient, emailFasService)
         {
             this.repositorio = repositorio;
             this.feriadoService = feriadoService;

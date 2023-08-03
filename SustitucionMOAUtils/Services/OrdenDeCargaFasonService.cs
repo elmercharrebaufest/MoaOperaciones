@@ -1,7 +1,6 @@
 ﻿using SustitucionMOAAssets;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
-using SustitucionMOAModel.Dto.OrdenDeCarga;
 using SustitucionMOAModel.Dto.OrdenDeCargaFason;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
@@ -10,20 +9,17 @@ using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Helpers;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
-using ScatoRepo = SustitucionMOAModel.Models.WebApiMap.ScatoRepositorio;
 using SustitucionMOAWS.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
-using SustitucionMOAWS.WebApi;
 
 namespace SustitucionMOAUtils.Services
 {
     public class OrdenDeCargaFasonService : OrdenDeCargaServiceBase, IOrdenDeCargaFasonService
     {
         private readonly IRepositorio _repositorio;
-        private readonly IEmailFasService _emailFasService;
         private readonly IEnumerable<string> _codigosRetiroEnPatagonia = new string[] { "98855", "99098" };
 
         public OrdenDeCargaFasonService(IRepositorio repositorio,
@@ -31,10 +27,9 @@ namespace SustitucionMOAUtils.Services
             IScatoConsumer scatoConsumer,
             IEmailFasService emailFasService,
             IScatoRepositorioClient scatoRepositorioClient
-            ) : base(ordenCargaConsumer, scatoConsumer, scatoRepositorioClient)
+            ) : base(ordenCargaConsumer, scatoConsumer, scatoRepositorioClient, emailFasService)
         {
             _repositorio = repositorio;
-            _emailFasService = emailFasService;
         }
 
         public ListarOrdenDeCargaFasonResponse Listar(ListarOrdenDeCargaFasonRequest request)
@@ -384,49 +379,6 @@ namespace SustitucionMOAUtils.Services
                 request.PlantaCodigo = null;
             }
         }
-        public bool EmailGestionarAlta(string cuit, string razonSocial, bool esIntermediarioFlete)
-        {
-            if (esIntermediarioFlete)
-            {
-                _emailFasService.EnviarMailAltaIntermediarioFlete(cuit, razonSocial);
-            }
-            else
-            {
-                _emailFasService.EnviarMailAltaTempranaCuit(cuit, razonSocial);
-            }
-            return true;
-        }
-        public ValidarIntermediarioFleteResponse ValidarIntermediarioFlete(string cuit)
-        {
-            var scatoRes = scatoRepositorioClient.ObtenerProveedorPorCuil(cuit);
-            if (scatoRes.IsValid)
-            {
-                return new ValidarIntermediarioFleteResponse
-                {
-                    EsCuitValido = true,
-                    ExisteIntermediario = true,
-                    RazonSocial = scatoRes.Data.RazonSocial
-                };
-            }
-
-            var response = new ValidarIntermediarioFleteResponse();
-            if (scatoRes.TieneError(ScatoRepo.ObtenerProveedorPorCuilError.DigitoVerificadorNoValido))
-            {
-                response.EsCuitValido = false;
-            }
-            else
-            {
-                if (scatoRes.TieneError(ScatoRepo.ObtenerProveedorPorCuilError.ProveedorNoEncontrado))
-                {
-                    response.EsCuitValido = true;
-                    response.ExisteIntermediario = false;
-                }
-                else
-                {
-                    throw new Exception("Error en ValidarIntermediarioFlete. Validación inesperada con cuit " + cuit);
-                }
-            }
-            return response;
-        }
+        
     }
 }

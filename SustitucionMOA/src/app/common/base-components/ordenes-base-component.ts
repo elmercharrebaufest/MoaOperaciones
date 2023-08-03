@@ -12,6 +12,7 @@ import { Observable } from "rxjs";
 import { ApiResponse } from "../models/response";
 import { Domicilio } from "../models/ordenes-de-carga/domicilio";
 import { ValidarIntermediarioFleteResponse } from "../models/ordenes-de-carga/ValidarIntermediarioFleteResponse";
+import { ValidarCuitExisteScatoResponse } from "../models/ordenes-de-carga-common/ValidarCuitExisteScatoResponse";
 
 export type Ordenes = OrdenDeCarga | OrdenDeCargaFasonDto
 
@@ -20,6 +21,9 @@ export abstract class OrdenesBaseService extends BaseService {
     abstract obtenerPlantasDestino(destinoCuit: string): Observable<ApiResponse<Planta[]>>
     abstract obtenerDomiciliosDestino(destinoCuit: string): Observable<ApiResponse<Domicilio[]>>
     abstract validarIntermediarioFlete(cuit: string): Observable<ApiResponse<ValidarIntermediarioFleteResponse>>
+    abstract validarExisteCuitScato(cuit: string): Observable<ApiResponse<ValidarCuitExisteScatoResponse>>
+    abstract validarSisaCuit(cuitDestinatario: string, cuitDestino: string, codigoMaterial: string): Observable<ApiResponse<boolean>>
+    abstract validarCuitRuca(cuit: string): Observable<ApiResponse<boolean>>
 }
 export abstract class OrdenesBase {
     Reventa: boolean;
@@ -29,7 +33,9 @@ export abstract class OrdenesBase {
     DomicilioTipo: string;
     DomicilioOrden: number;
     DomicilioDescr: string;
-
+    FleteMOA: boolean;
+    RazonSocialDestinatario?: string;
+    RazonSocialDestino?: string;
     CUITDestino: string;
     CUITDestinatario: string;
 }
