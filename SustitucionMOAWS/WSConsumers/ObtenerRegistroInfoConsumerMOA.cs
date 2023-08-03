@@ -64,8 +64,8 @@ namespace SustitucionMOAWS.WSConsumers
                         Vendedor = info.VENDOR,
                         Fecha = purch.PRICE_DATE,
                         Id = info.INFO_REC,
-                        FechaFormateada = SAPFormatter.GetDateTime(purch.PRICE_DATE)
-                };
+                        FechaFormateada = !string.IsNullOrEmpty(purch.PRICE_DATE) ? SAPFormatter.GetDateTime(purch.PRICE_DATE) : (DateTime?)null
+                    };
 
                     registros.Add(registroInfo);
                 }
