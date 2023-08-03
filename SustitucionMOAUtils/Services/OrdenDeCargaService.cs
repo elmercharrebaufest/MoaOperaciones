@@ -33,15 +33,13 @@ using SustitucionMOAWS.ResponseHandler.OrdenCarga;
 
 namespace SustitucionMOAUtils.Services
 {
-    public class OrdenDeCargaService : IOrdenDeCargaService
+    public class OrdenDeCargaService : OrdenDeCargaServiceBase, IOrdenDeCargaService
     {
         protected readonly IRepositorio repositorio;
-        protected readonly IOrdenCargaConsumerMOA consumer;
-        protected readonly IScatoConsumer scatoConsumer;
         readonly FeriadoService _feriadoService = new FeriadoService();
         protected readonly IFeriadoService feriadoService;
         protected readonly IEmailFasService emailFasService;
-        protected readonly IScatoRepositorioClient scatoRepositorioClient;
+        
         protected readonly IFacturaAnticipadaService _facturaAnticipadaService;
         protected readonly IKgDisponiblesFasService _kgDisponiblesFasService;
 
@@ -71,21 +69,18 @@ namespace SustitucionMOAUtils.Services
 
         public OrdenDeCargaService(
             IRepositorio repositorio,
-            IOrdenCargaConsumerMOA consumer,
+            IOrdenCargaConsumerMOA ordenCargaConsumer,
             IFeriadoService feriadoService,
             IScatoRepositorioClient scatoRepositorioClient,
             IScatoConsumer scatoConsumer,
             IEmailFasService emailFasService,
             IFacturaAnticipadaService facturaAnticipadaService,
             IKgDisponiblesFasService kgDisponiblesFasService
-            )
+            ) : base(ordenCargaConsumer, scatoConsumer, scatoRepositorioClient)
         {
             this.repositorio = repositorio;
-            this.consumer = consumer;
             this.feriadoService = feriadoService;
             _usuarioAutomaticoSAP = ConfigurationManager.AppSettings["UsuarioAutomaticoSAP"];
-            this.scatoRepositorioClient = scatoRepositorioClient;
-            this.scatoConsumer = scatoConsumer;
             this.emailFasService = emailFasService;
             _facturaAnticipadaService = facturaAnticipadaService;
             _kgDisponiblesFasService = kgDisponiblesFasService;
@@ -307,7 +302,7 @@ namespace SustitucionMOAUtils.Services
                 if (puedeEnviarASAP && ordenEditar.NumeroEntrega != null)
                 {
 
-                    var resultadoSAP = consumer.ModificarEntregaOrdenCarga(new ModificarEntregaOrdenCargaSAP(ordenEditar));
+                    var resultadoSAP = ordenCargaConsumer.ModificarEntregaOrdenCarga(new ModificarEntregaOrdenCargaSAP(ordenEditar));
                     if (resultadoSAP.HayError)
                         throw new InfoCustomException(resultadoSAP.Errores[0].Message);
                 }
@@ -442,7 +437,7 @@ namespace SustitucionMOAUtils.Services
                     Reventa = ordenDeCarga.Reventa
                 };
 
-                var result = consumer.CrearOrden(crearOrdenReq, out string numeroPedido, out string rawResult);
+                var result = ordenCargaConsumer.CrearOrden(crearOrdenReq, out string numeroPedido, out string rawResult);
                 ordenDeCarga.CodigoVerificacionSap = OrdenCargaCrearOrdenClass.GetCodigo(result);
 
                 if (result == CrearOrdenResEnum.PedidoCreado || result == CrearOrdenResEnum.PedidoCreadoVerificarCredito)
@@ -530,7 +525,7 @@ namespace SustitucionMOAUtils.Services
                 DomicilioTipo = ordenDeCarga.DomicilioTipo
             };
 
-            var result = consumer.CrearOrden(crearOrdenReq, out string numeroPedido, out string rawResult);
+            var result = ordenCargaConsumer.CrearOrden(crearOrdenReq, out string numeroPedido, out string rawResult);
 
             var resultadoCrearOrden = false;
             ordenDeCarga.ContratoSinCantidadPendiente = false;
@@ -910,7 +905,7 @@ namespace SustitucionMOAUtils.Services
 
             var ordenDeCargaCambiosHistorial = ObtenerCambiosHistorial(orden);
 
-            var contratoSAP = consumer.ObtenerContratoSAP(orden.ContratoIngresado, TipoContratoFAS.Todos);
+            var contratoSAP = ordenCargaConsumer.ObtenerContratoSAP(orden.ContratoIngresado, TipoContratoFAS.Todos);
 
             var ordenDto = new OrdenDeCargaDetalleDto(orden, ordenDeCargaCambiosHistorial, cliente)
             {
@@ -1159,7 +1154,7 @@ namespace SustitucionMOAUtils.Services
 
                 if (puedeEnviarASAP && orden.NumeroEntrega != null)
                 {
-                    var resultado = consumer.ModificarEntregaOrdenCarga(new ModificarEntregaOrdenCargaSAP(orden));
+                    var resultado = ordenCargaConsumer.ModificarEntregaOrdenCarga(new ModificarEntregaOrdenCargaSAP(orden));
                     if (resultado.HayError)
                         throw new InfoCustomException(resultado.Errores[0].Message);
                 }
@@ -1776,7 +1771,7 @@ namespace SustitucionMOAUtils.Services
         public string VerificarEstadoEntrega(OrdenDeCarga orden)
         {
             Log.Info("VerificarEstadoEntrega");
-            var result = consumer.OrdenCargaControlEstadoRequest(orden.NumeroEntrega, "", "");
+            var result = ordenCargaConsumer.OrdenCargaControlEstadoRequest(orden.NumeroEntrega, "", "");
 
             if (result == "CE-06")
             {
@@ -1792,7 +1787,7 @@ namespace SustitucionMOAUtils.Services
 
         private bool TransporteExiste(OrdenDeCarga orden)
         {
-            var result = consumer.OrdenCargaControlEstadoRequest("", "", orden.CUITTransporte);
+            var result = ordenCargaConsumer.OrdenCargaControlEstadoRequest("", "", orden.CUITTransporte);
             return ResponseConverter.GetOrdenCargaControlEstadoResponse(result) == ControlEstadoResEnum.TransportistaOK;
         }
 
@@ -1916,7 +1911,7 @@ namespace SustitucionMOAUtils.Services
             var numeroPedido = orden.NumeroPedido;
 
             Log.Info("ObtenerSituacionCrediticia");
-            var result = consumer.OrdenCargaControlEstadoRequest("", numeroPedido, "");
+            var result = ordenCargaConsumer.OrdenCargaControlEstadoRequest("", numeroPedido, "");
 
             return result == "CE-00";
         }
@@ -1958,7 +1953,7 @@ namespace SustitucionMOAUtils.Services
                 DomicilioDescr = orden.DomicilioDescr
             };
 
-            var respHandler = consumer.CrearEntrega(req, !string.IsNullOrEmpty(numeroFactura));
+            var respHandler = ordenCargaConsumer.CrearEntrega(req, !string.IsNullOrEmpty(numeroFactura));
 
             switch (respHandler.GetResultado())
             {
@@ -2023,7 +2018,7 @@ namespace SustitucionMOAUtils.Services
                 TipoContrato = TipoContratoFAS.Todos
             };
             Log.Info($"ValidarVencimientoContrato request: {request.ToJson()}");
-            var result = consumer.OrdenCargaVisualizarClienteExecute(request);
+            var result = ordenCargaConsumer.OrdenCargaVisualizarClienteExecute(request);
             Log.Info($"ValidarVencimientoContrato result count: {result.Resultados.Count}");
 
             var fechaContrato = result.Resultados.Select(d => d.FechaHasta).Distinct().FirstOrDefault();
@@ -2257,7 +2252,7 @@ namespace SustitucionMOAUtils.Services
                 SoloSisa = true
             };
 
-            var responseHandler = consumer.ControlarCarga(controlarCargaReq);
+            var responseHandler = ordenCargaConsumer.ControlarCarga(controlarCargaReq);
 
             var res = new ValidarSisaCorredorClienteResponse
             {
@@ -2270,32 +2265,31 @@ namespace SustitucionMOAUtils.Services
         public bool ValidarSisaCuit(string cuit, string campo)
         {
             var validaSISA = new ValidaSisaCuit(campo);
-            var validaDestinatario = validaSISA.Destinatario;
-            var validaDestino = validaSISA.Destino;
+            //var validaDestinatario = validaSISA.Destinatario;
+            //var validaDestino = validaSISA.Destino;
 
-            var controlarCargaReq = new ControlCargaRequest { SoloSisa = true, Material = ObtenerMaterialValidaSisa() };
+            var cuitDestinatario = validaSISA.Destinatario ? cuit : null;
+            var cuitDestino = validaSISA.Destino ? cuit : null;
+            var codigoMaterial = ObtenerMaterialValidaSisa();
 
-            if (validaDestinatario)
-                controlarCargaReq.CuitDestinatario = cuit;
-            if (validaDestino)
-                controlarCargaReq.CuitDestino = cuit;
+            return ValidarSisa(cuitDestinatario, cuitDestino, codigoMaterial);
 
-            var responseHandler = consumer.ControlarCarga(controlarCargaReq);
-            var result = false;
+            //var controlarCargaReq = new ControlCargaRequest { SoloSisa = true, Material = ObtenerMaterialValidaSisa() };
 
-            if (validaDestinatario)
-                result = !responseHandler.TieneRespuesta(ControlCargaResEnum.DestinatarioInhabilitadoEnSisa);
-            else if (validaDestino)
-                result = !responseHandler.TieneRespuesta(ControlCargaResEnum.DestinoInhabilitadoEnSisa);
+            //if (validaDestinatario)
+            //    controlarCargaReq.CuitDestinatario = cuit;
+            //if (validaDestino)
+            //    controlarCargaReq.CuitDestino = cuit;
 
-            return result;
-        }
-        public ValidarCuitExisteScatoResponse ValidarCuitExisteScato(string cuit)
-        {
+            //var responseHandler = ordenCargaConsumer.ControlarCarga(controlarCargaReq);
+            //var result = false;
 
-            var result = scatoConsumer.ExisteCuitDestinoDestinatario(cuit);
+            //if (validaDestinatario)
+            //    result = !responseHandler.TieneRespuesta(ControlCargaResEnum.DestinatarioInhabilitadoEnSisa);
+            //else if (validaDestino)
+            //    result = !responseHandler.TieneRespuesta(ControlCargaResEnum.DestinoInhabilitadoEnSisa);
 
-            return result;
+            //return result;
         }
 
         public bool EmailGestionarAlta(string cuit, string razonSocial, bool esIntermediarioFlete)
@@ -2309,63 +2303,6 @@ namespace SustitucionMOAUtils.Services
                 emailFasService.EnviarMailAltaTempranaCuit(cuit, razonSocial);
             }
             return true;
-        }
-
-        public List<PlantaDto> ObtenerPlantasDestino(string destinoCuit)
-        {
-            var plantasRes = scatoRepositorioClient.ObtenerPlantas(destinoCuit);
-            if (!plantasRes.IsValid)
-            {
-                Log.Info("Error al obtener Plantas Scato con CUIT " + destinoCuit);
-                foreach (var err in plantasRes.Messages)
-                {
-                    Log.Info(string.Format("Error Scato código {0}, descripción: {1}", err.MessageType, err.Message));
-                }
-                throw new ValidationCustomException("Error al obtener Plantas");
-            }
-            else
-            {
-                return plantasRes.Data
-                    .Select(x =>
-                        new PlantaDto
-                        {
-                            Actividad = x.Actividad,
-                            Codigo = x.NroPlanta
-                        })
-                    .ToList();
-            }
-        }
-
-        public List<DomicilioDto> ObtenerDomiciliosDestino(string destinoCuit)
-        {
-            var domiciliosRes = scatoRepositorioClient.ObtenerDomicilios(destinoCuit);
-            if (!domiciliosRes.IsValid)
-            {
-                Log.Info("Error al obtener Plantas Domicilios con CUIT " + destinoCuit);
-                foreach (var err in domiciliosRes.Messages)
-                {
-                    Log.Info(string.Format("Error Scato código {0}, descripción: {1}", err.MessageType, err.Message));
-                }
-                throw new ValidationCustomException("Error al obtener Domicilios");
-            }
-            else
-            {
-                return domiciliosRes.Data
-                    .Select(x =>
-                        new DomicilioDto
-                        {
-                            Descripcion = x.Descripcion,
-                            Orden = x.Orden,
-                            Tipo = x.Tipo
-                        })
-                    .ToList();
-            }
-        }
-        public bool ValidarCuitRuca(string cuit)
-        {
-            var tienePlantas = ObtenerPlantasDestino(cuit).Any();
-            var tieneDomicilios = ObtenerDomiciliosDestino(cuit).Any();
-            return tienePlantas && tieneDomicilios;
         }
 
         public ValidarIntermediarioFleteResponse ValidarIntermediarioFlete(string cuit)
@@ -2413,7 +2350,7 @@ namespace SustitucionMOAUtils.Services
         }
         private void AnularEntregaEnSap(OrdenDeCarga orden)
         {
-            var respHandler = consumer.AnularEntregaOrdenCarga(orden.NumeroEntrega);
+            var respHandler = ordenCargaConsumer.AnularEntregaOrdenCarga(orden.NumeroEntrega);
             if (respHandler.EntregaTomadaEnSap)
             {
                 //Pendiente revisión de los mensajes acorde a las verdaderas razones de error
@@ -2437,7 +2374,7 @@ namespace SustitucionMOAUtils.Services
             var tieneNumeroPedido = !string.IsNullOrEmpty(orden.NumeroPedidoIngresado) || !string.IsNullOrEmpty(orden.NumeroPedido);
             if (!tieneNumeroPedido)
                 return;
-            var respHandler = consumer.AnularOrdenCarga(orden);
+            var respHandler = ordenCargaConsumer.AnularOrdenCarga(orden);
             if (respHandler.PedidoTomadoEnSap)
                 throw new InfoCustomException("El pedido está tomado en SAP");
             else if (!(respHandler.ActualizadoOK || respHandler.PedidoAnulado))
@@ -2445,29 +2382,6 @@ namespace SustitucionMOAUtils.Services
                 throw new Exception("No se reconoce respuesta SAP (Anular Orden Carga)");
             }
         }
-        //private List<string> ObtenerContratosAbiertos(List<string> contratos)
-        //{
-        //    return contratos.Where(contrato => consumer.VerificarContratoAbierto(contrato)).ToList();
-        //}
-
-        //private void SetTieneVariosContratosAbiertos(OrdenDeCarga ordenDeCarga, List<string> contratosAbiertos)
-        //{
-        //    var result = string.Join(",", contratosAbiertos);
-        //    if (string.IsNullOrEmpty(ordenDeCarga.NumeroPedido))
-        //    {
-        //        if (string.IsNullOrEmpty(ordenDeCarga.ContratoSAP))
-        //        {
-        //            ordenDeCarga.ContratosRespuesta = result;
-        //            ordenDeCarga.ContratoSAP = "";
-        //            ordenDeCarga.DescripcionErrorInterno = "Se encontraron varios contratos pendientes para el mismo cliente. Seleccione el contrato para generar entregas desde el botón \"Contratos\".";
-        //        }
-        //    }
-        //    else
-        //    {
-        //        ordenDeCarga.PedidosRespuesta = result;
-        //        ordenDeCarga.NumeroPedido = "";
-        //        ordenDeCarga.DescripcionErrorInterno = "Se encontraron varios pedidos pendientes para el mismo cliente. Seleccione el pedido para generar entregas desde el botón \"Pedidos\".";
-        //    }
         //}
 
         public (bool, ScatoRepo.Chofer) ValidarCuilChofer(string cuilChofer)
@@ -2625,7 +2539,7 @@ namespace SustitucionMOAUtils.Services
             {
                 var numeroContrato = string.IsNullOrEmpty(orden.ContratoSAP) ? orden.ContratoIngresado : orden.ContratoSAP;
                 Log.Info($"Validar kg orden: {orden.ToJson()}");
-                var contratoSAP = consumer.ObtenerContratoSAP(numeroContrato, null);
+                var contratoSAP = ordenCargaConsumer.ObtenerContratoSAP(numeroContrato, null);
                 Log.Info($"Validar kg contrato: {contratoSAP.ToJson()}");
 
                 if (contratoSAP == null)
@@ -2664,7 +2578,7 @@ namespace SustitucionMOAUtils.Services
                 Pedido = ordenDeCarga.NumeroPedido,
                 SoloSisa = soloSisa
             };
-            return consumer.ControlarCarga(controlarCargaReq);
+            return ordenCargaConsumer.ControlarCarga(controlarCargaReq);
         }
 
         private string ObtenerContratoDeOrden(OrdenDeCarga ordenDeCarga)

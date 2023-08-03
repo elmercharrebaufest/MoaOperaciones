@@ -20,27 +20,21 @@ using SustitucionMOAWS.WebApi;
 
 namespace SustitucionMOAUtils.Services
 {
-    public class OrdenDeCargaFasonService : IOrdenDeCargaFasonService
+    public class OrdenDeCargaFasonService : OrdenDeCargaServiceBase, IOrdenDeCargaFasonService
     {
         private readonly IRepositorio _repositorio;
-        protected readonly IOrdenCargaConsumerMOA _consumer;
-        private readonly IScatoConsumer _scatoConsumer;
         private readonly IEmailFasService _emailFasService;
-        protected readonly IScatoRepositorioClient _scatoRepositorioClient;
         private readonly IEnumerable<string> _codigosRetiroEnPatagonia = new string[] { "98855", "99098" };
 
         public OrdenDeCargaFasonService(IRepositorio repositorio,
-            IOrdenCargaConsumerMOA consumer,
-            IScatoConsumer _scatoConsumer,
+            IOrdenCargaConsumerMOA ordenCargaConsumer,
+            IScatoConsumer scatoConsumer,
             IEmailFasService emailFasService,
             IScatoRepositorioClient scatoRepositorioClient
-            )
+            ) : base(ordenCargaConsumer, scatoConsumer, scatoRepositorioClient)
         {
             _repositorio = repositorio;
-            _consumer = consumer;
-            this._scatoConsumer = _scatoConsumer;
             _emailFasService = emailFasService;
-            _scatoRepositorioClient = scatoRepositorioClient;
         }
 
         public ListarOrdenDeCargaFasonResponse Listar(ListarOrdenDeCargaFasonRequest request)
@@ -151,7 +145,7 @@ namespace SustitucionMOAUtils.Services
         private bool TransporteExiste(string CUITTransporte)
         {
             Log.Info("TransporteExiste OrdenCargaControlEstadoRequest " + $"Cuit {CUITTransporte ?? ""}");
-            var estadoTransportista = _consumer.GetOrdenCargaControlEstadoTransportista(CUITTransporte);
+            var estadoTransportista = ordenCargaConsumer.GetOrdenCargaControlEstadoTransportista(CUITTransporte);
             Log.Info("TransporteExiste OrdenCargaControlEstadoRequest Result " + estadoTransportista);
 
             return estadoTransportista == ControlEstadoResEnum.TransportistaOK;
@@ -323,7 +317,7 @@ namespace SustitucionMOAUtils.Services
             {
                 throw new ValidationCustomException("El cuit no tiene el formato correcto.");
             }
-            return _scatoConsumer.BuscarDestinos(proveedor.CUIT);
+            return scatoConsumer.BuscarDestinos(proveedor.CUIT);
         }
         public void VerificarTransporteJob()
         {
@@ -404,7 +398,7 @@ namespace SustitucionMOAUtils.Services
         }
         public ValidarIntermediarioFleteResponse ValidarIntermediarioFlete(string cuit)
         {
-            var scatoRes = _scatoRepositorioClient.ObtenerProveedorPorCuil(cuit);
+            var scatoRes = scatoRepositorioClient.ObtenerProveedorPorCuil(cuit);
             if (scatoRes.IsValid)
             {
                 return new ValidarIntermediarioFleteResponse
@@ -433,56 +427,6 @@ namespace SustitucionMOAUtils.Services
                 }
             }
             return response;
-        }
-        public List<PlantaDto> ObtenerPlantasDestino(string destinoCuit)
-        {
-            var plantasRes = _scatoRepositorioClient.ObtenerPlantas(destinoCuit);
-            if (!plantasRes.IsValid)
-            {
-                Log.Info("Error al obtener Plantas Scato con CUIT " + destinoCuit);
-                foreach (var err in plantasRes.Messages)
-                {
-                    Log.Info(string.Format("Error Scato código {0}, descripción: {1}", err.MessageType, err.Message));
-                }
-                throw new ValidationCustomException("Error al obtener Plantas");
-            }
-            else
-            {
-                return plantasRes.Data
-                    .Select(x =>
-                        new PlantaDto
-                        {
-                            Actividad = x.Actividad,
-                            Codigo = x.NroPlanta
-                        })
-                    .ToList();
-            }
-        }
-
-        public List<DomicilioDto> ObtenerDomiciliosDestino(string destinoCuit)
-        {
-            var domiciliosRes = _scatoRepositorioClient.ObtenerDomicilios(destinoCuit);
-            if (!domiciliosRes.IsValid)
-            {
-                Log.Info("Error al obtener Plantas Domicilios con CUIT " + destinoCuit);
-                foreach (var err in domiciliosRes.Messages)
-                {
-                    Log.Info(string.Format("Error Scato código {0}, descripción: {1}", err.MessageType, err.Message));
-                }
-                throw new ValidationCustomException("Error al obtener Domicilios");
-            }
-            else
-            {
-                return domiciliosRes.Data
-                    .Select(x =>
-                        new DomicilioDto
-                        {
-                            Descripcion = x.Descripcion,
-                            Orden = x.Orden,
-                            Tipo = x.Tipo
-                        })
-                    .ToList();
-            }
         }
     }
 }

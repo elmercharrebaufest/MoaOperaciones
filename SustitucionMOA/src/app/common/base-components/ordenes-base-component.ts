@@ -58,7 +58,7 @@ export class OrdenesBaseComponent extends BaseComponent {
     displayModal: keyof Pick<Ordenes, 'CUITDestinatario' | 'CUITDestino' | 'CUITIntermediarioFlete'> | null;
 
     revisarCUITFormatoValido(cuit: string): boolean {
-        return cuit && cuit.length == 11 && !Number.isNaN(cuit as unknown as number)
+        return !!(cuit && cuit.length == 11 && !Number.isNaN(cuit as unknown as number))
     }
 
     focusRazonSocialParaGestion = true;

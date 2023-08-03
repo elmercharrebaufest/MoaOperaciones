@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace SustitucionMOAUtils.Interfaces
 {
-    public interface IOrdenDeCargaService
+    public interface IOrdenDeCargaService : IOrdenDeCargaServiceBase
     {
         Resultado Agregar(OrdenDeCarga ordenDeCarga, string mailUsuario);
         Resultado Editar(OrdenDeCarga ordenDeCarga, string mailUsuario);
@@ -44,10 +44,7 @@ namespace SustitucionMOAUtils.Interfaces
         ValidarSisaCorredorClienteResponse ValidarSisaCorredorCliente(string corredorCodigo, string clienteCodigo);
         bool ValidarSisaCuit(string cuit, string campo);
         bool EmailGestionarAlta(string cuit, string razonSocial, bool esIntermediarioFlete);
-        bool ValidarCuitRuca(string cuit);
-        ValidarCuitExisteScatoResponse ValidarCuitExisteScato(string cuit);
-        List<PlantaDto> ObtenerPlantasDestino(string destinoCuit);
-        List<DomicilioDto> ObtenerDomiciliosDestino(string destinoCuit);
+        
         ValidarIntermediarioFleteResponse ValidarIntermediarioFlete(string cuit);
         (bool, Chofer) ValidarCuilChofer(string cuilChofer);
         bool ValidarCuilChoferDigito(string cuilChofer);

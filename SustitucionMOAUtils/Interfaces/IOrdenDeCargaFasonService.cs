@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace SustitucionMOAUtils.Interfaces
 {
-    public interface IOrdenDeCargaFasonService
+    public interface IOrdenDeCargaFasonService : IOrdenDeCargaServiceBase
     {
         ListarOrdenDeCargaFasonResponse Listar(ListarOrdenDeCargaFasonRequest request);
         DetalleOrdenDeCargaFasonResponse ObtenerDetalle(int IdOrdenCargaFason, DetalleOrdenDeCargaFasonRequest mailUsuario);

@@ -307,5 +307,77 @@ namespace SustitucionMOA.Controllers
             }
             return ContentCustom(response);
         }
+
+        [HttpGet]
+        public ActionResult ValidarCuitExisteScato(string cuit)
+        {
+            var response = new SustitucionMOAApiResponse<ValidarCuitExisteScatoResponse>();
+            try
+            {
+                response.Data = _ordenDeCargaFasonService.ValidarCuitExisteScato(cuit);
+            }
+            catch (InfoCustomException ice)
+            {
+                response.Info = ice.Message;
+            }
+            catch (ValidationCustomException vce)
+            {
+                response.Error = vce.Message;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                response.Error = ErrorMsg.Error;
+            }
+            return ContentCustom(response);
+        }
+
+        [HttpGet]
+        public ActionResult ValidarSisaCuit(string cuitDestinatario, string cuitDestino, string codigoMaterial)
+        {
+            var response = new SustitucionMOAApiResponse<bool>();
+            try
+            {
+                response.Data = _ordenDeCargaFasonService.ValidarSisa(cuitDestinatario, cuitDestino, codigoMaterial);
+            }
+            catch (InfoCustomException ice)
+            {
+                response.Info = ice.Message;
+            }
+            catch (ValidationCustomException vce)
+            {
+                response.Error = vce.Message;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                response.Error = ErrorMsg.Error;
+            }
+            return ContentCustom(response);
+        }
+
+        [HttpGet]
+        public ActionResult ValidarCuitRuca(string cuit)
+        {
+            var response = new SustitucionMOAApiResponse<bool>();
+            try
+            {
+                response.Data = _ordenDeCargaFasonService.ValidarCuitRuca(cuit);
+            }
+            catch (InfoCustomException ice)
+            {
+                response.Info = ice.Message;
+            }
+            catch (ValidationCustomException vce)
+            {
+                response.Error = vce.Message;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                response.Error = ErrorMsg.Error;
+            }
+            return ContentCustom(response);
+        }
     }
 }

@@ -119,7 +119,7 @@ namespace SustitucionMOAUtils.Services.Email
         {
             var cuerpoTemplate = File.ReadAllText(TEMPLATE_NOTIFICACION_ORDENES);
 
-            var titulo = $"Se informa que la siguiente ordenDeCarga de carga no pasó las validaciones crediticias.";
+            var titulo = $"Se informa que la siguiente orden de carga no pasó las validaciones crediticias.";
             var cabecera = "Orden: ";
             var ordenes = GenerarTablaOrdenesANotificar(new OrdenDeCarga[] { ordenDeCarga });
             var cuerpo = string.Format(cuerpoTemplate, "", "", ordenes, titulo, cabecera);

@@ -77,6 +77,71 @@
                                 </div>
                                 <div class="col-xs-12 col-md-12">
                                     <div class="formulario-label">
+                                        CUIT Destinatario:
+                                    </div>
+                                    <div class="styled-select">
+                                        <div class="ui-inputgroup">
+                                            <input type="text" pInputText
+                                                [(ngModel)]="ordenDeCargaFason.CUITDestinatario"
+                                                mask="00-00000000-0"
+                                                (change)="cuitDestinatarioChanged()">
+                                            <span class="ui-inputgroup-addon" *ngIf="validandoCuitDestinatario">
+                                                <p-progressSpinner [style]="{width: '100%', height: '100%'}"></p-progressSpinner>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-xs-12 col-md-12">
+                                    <ng-container *ngIf="ordenDeCargaFason.RazonSocialDestinatario">
+                                        <div class="formulario-label">
+                                            Razón social destinatario:
+                                        </div>
+                                        <div class="styled-select">
+                                            <input [disabled]="true" type="text"
+                                                [(ngModel)]="ordenDeCargaFason.RazonSocialDestinatario">
+                                        </div>
+                                    </ng-container>
+                                    <ng-container *ngIf="mensajeCuitDestinatario">
+                                        <p>
+                                            {{mensajeCuitDestinatario}}
+                                        </p>
+                                    </ng-container>
+                                </div>
+                                <div class="col-xs-12 col-md-12">
+                                    <div class="formulario-label">
+                                        CUIT Destino:
+                                    </div>
+                                    <div class="styled-select">
+                                        <div class="ui-inputgroup">
+                                            <input type="text" pInputText
+                                                [(ngModel)]="ordenDeCargaFason.CUITDestino"
+                                                mask="00-00000000-0"
+                                                (change)="cuitDestinoChanged()">
+                                            <span class="ui-inputgroup-addon" *ngIf="validandoCuitDestino">
+                                                <p-progressSpinner [style]="{width: '100%', height: '100%'}"></p-progressSpinner>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-xs-12 col-md-12">
+                                    <ng-container *ngIf="ordenDeCargaFason.RazonSocialDestino">
+                                        <div class="formulario-label">
+                                            Razón social destino:
+                                        </div>
+                                        <div class="styled-select">
+                                            <input [disabled]="true" type="text"
+                                                [(ngModel)]="ordenDeCargaFason.RazonSocialDestino">
+                                        </div>
+                                    </ng-container>
+                                    <ng-container *ngIf="mensajeCuitDestino">
+                                        <p>
+                                            {{mensajeCuitDestino}}
+                                        </p>
+                                    </ng-container>
+                                </div>
+
+                                <div class="col-xs-12 col-md-12">
+                                    <div class="formulario-label">
                                         Planta:
                                     </div>
                                     <div class="styled-select" style="overflow: initial;">
