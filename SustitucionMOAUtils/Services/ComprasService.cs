@@ -3058,7 +3058,7 @@ namespace SustitucionMOAUtils.Services
                                         Unidad = registroInfo.Unidad,
                                         ProveedorId = usuario.Id,
                                         Cuit = proveedor?.CUIT,
-                                        Deshabilitado = registroInfo.FechaFormateada < hoy,
+                                        Deshabilitado = registroInfo.FechaFormateada != null ? registroInfo.FechaFormateada < hoy : false,
                                         CantidadAdjudicacion = 0,
                                         MonedaId = tablaSap.Where(x => x.CodigoSap == registroInfo.Moneda).FirstOrDefault().Id,
                                         UnidadId = tablaSap.Where(x => x.CodigoSap == registroInfo.Unidad).FirstOrDefault().Id,
