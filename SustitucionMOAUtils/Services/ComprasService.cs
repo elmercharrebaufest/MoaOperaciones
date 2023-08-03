@@ -1,5 +1,4 @@
 ﻿using HandlebarsDotNet;
-using HandlebarsDotNet.Helpers;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
 using iTextSharp.tool.xml;
@@ -8,7 +7,6 @@ using iTextSharp.tool.xml.parser;
 using iTextSharp.tool.xml.pipeline.css;
 using iTextSharp.tool.xml.pipeline.end;
 using iTextSharp.tool.xml.pipeline.html;
-using Microsoft.Win32;
 using SustitucionMOAFotmatter;
 using SustitucionMOAModel.Consultas;
 using SustitucionMOAModel.CustomExceptions;
@@ -24,7 +22,6 @@ using SustitucionMOAUtils.Email;
 using SustitucionMOAUtils.Helpers;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
-using SustitucionMOAWS.CrearPedidoWebServiceMOA;
 using SustitucionMOAWS.CrearSolpWebServiceMOA;
 using SustitucionMOAWS.Interfaces;
 using SustitucionMOAWS.WSConsumers;
@@ -1580,8 +1577,18 @@ namespace SustitucionMOAUtils.Services
 
         public List<ServicioSolpDto> AutocompleteServicioSolp(string valor)
         {
+            string[] palabras = valor.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
             List<ServicioSolpDto> lista = repositorio.Listar<ServicioSolp>()
-                .FindAll(e => e.Descripcion.ToLower().Contains(valor.ToLower()) || e.CodigoSap.ToString().ToLower().Contains(valor.ToLower()))
+            .FindAll(e => palabras.All(p => e.Descripcion.ToLower().Contains(p)))
+            .Select(s => new ServicioSolpDto(s)).ToList();
+
+            return lista;
+        }
+
+        public List<ServicioSolpDto> AutocompleteCodigoServicioSolp(string valor)
+        {
+            List<ServicioSolpDto> lista = repositorio.Listar<ServicioSolp>()
+                .FindAll(e => e.CodigoSap.ToString().ToLower().Contains(valor.ToLower()))
                 .Select(s => new ServicioSolpDto(s)).ToList();
 
             return lista;
@@ -2239,8 +2246,20 @@ namespace SustitucionMOAUtils.Services
 
         public List<MaterialSolpDto> AutocompleteMaterialSolp(string valor, int centroId)
         {
+            string[] palabras = valor.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+
             List<MaterialSolpDto> lista = repositorio.Listar<MaterialSolp>(e =>
-            (e.Descripcion.Contains(valor) || e.CodigoSap.ToString().Contains(valor)) && e.Centro_Id == centroId, 0, null, SustitucionMOAModel.Consultas.DirOrden.Asc).Select(s => new MaterialSolpDto(s)).ToList();
+                palabras.All(p => e.Descripcion.Contains(p)) && e.Centro_Id == centroId, 0, null, DirOrden.Asc)
+                .Select(s => new MaterialSolpDto(s)).ToList();
+
+            return lista;
+        }
+
+        public List<MaterialSolpDto> AutocompleteCodigoMaterialSolp(string valor, int centroId)
+        {
+            List<MaterialSolpDto> lista = repositorio.Listar<MaterialSolp>(e =>
+                (e.Descripcion.Contains(valor) || e.CodigoSap.ToString().Contains(valor)) && e.Centro_Id == centroId, 0, null, SustitucionMOAModel.Consultas.DirOrden.Asc)
+                .Select(s => new MaterialSolpDto(s)).ToList();
 
             return lista;
         }
@@ -3004,7 +3023,7 @@ namespace SustitucionMOAUtils.Services
                 var registrosInfo = new List<RegistroInfoDto>();
                 var solp = repositorio.ObtenerConsultaEscalar(new ObtenerSolpCompras(id));
                 var hoy = DateTime.Now.Date;
-              
+
                 DateTime fechaDesde = Convert.ToDateTime(ConfigurationManager.AppSettings["FechaInicioConsultaSolp"].ToString());
                 DateTime fechaHasta = Convert.ToDateTime(ConfigurationManager.AppSettings["FechaFinConsultaSolp"].ToString());
                 var filtros = new ObtenerSolpRequest
