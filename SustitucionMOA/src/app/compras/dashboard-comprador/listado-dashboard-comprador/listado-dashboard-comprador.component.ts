@@ -451,14 +451,14 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
         this.displayOrdenDeCompra = false;
     }
 
-    verDetalleOrdenDeCompra(id: any) {
-        this.obtenerAdjudicacion(id);
+    verDetalleOrdenDeCompra(nroOC: any) {
+        this.obtenerAdjudicacion(nroOC);
         this.displayOrdenDeCompra = true;
     }
 
-    obtenerAdjudicacion(adjudicacionId){
+    obtenerAdjudicacion(nroOC){
         this.blockUI.start('Cargando...')
-        this.service.obtenerAdjudicacion(adjudicacionId)
+        this.service.obtenerAdjudicacion(nroOC)
             .subscribe(
                 (result) => {
                     if (result.logout == true) {

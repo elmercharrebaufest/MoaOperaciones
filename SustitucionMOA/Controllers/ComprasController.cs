@@ -1184,11 +1184,11 @@ namespace SustitucionMOA.Controllers
         }
 
         [HttpGet]
-        public ActionResult ObtenerAdjudicacion(int adjudicacionId)
+        public ActionResult ObtenerAdjudicacion(string nroOC)
         {
             try
             {
-                var result = service.ObtenerAdjudicacion(adjudicacionId);
+                var result = service.ObtenerAdjudicacion(nroOC);
                 return JsonCustom(new { data = result });
             }
             catch (WSCustomException e)

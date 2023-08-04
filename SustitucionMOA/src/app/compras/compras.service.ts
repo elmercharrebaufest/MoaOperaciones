@@ -764,9 +764,9 @@ export class ComprasService extends BaseService {
             });
     }
 
-    public obtenerAdjudicacion(id: number): Observable<any> {
+    public obtenerAdjudicacion(nroOC: number): Observable<any> {
         let params: HttpParams = new HttpParams();
-        params = params.set("adjudicacionId", id.toString());       
+        params = params.set("nroOC", nroOC.toString());       
         return this.http
             .get("/api/compras/ObtenerAdjudicacion", {
                 params: params,
