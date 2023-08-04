@@ -75,7 +75,7 @@ namespace SustitucionMOAWS.WSConsumers
 
             serxml = new System.Xml.Serialization.XmlSerializer(respuesta.GetType());
             ms = new MemoryStream();
-            serxml.Serialize(ms, respuesta);
+            serxml.Serialize(ms, result);
             xml = Encoding.UTF8.GetString(ms.ToArray());
             using (StreamWriter writer = File.AppendText(rutaArchivoLlamada))
             {
