@@ -73,7 +73,7 @@ namespace SustitucionMOAWS.WSConsumers
             }
 
 
-            serxml = new System.Xml.Serialization.XmlSerializer(respuesta.GetType());
+            serxml = new System.Xml.Serialization.XmlSerializer(result.GetType());
             ms = new MemoryStream();
             serxml.Serialize(ms, result);
             xml = Encoding.UTF8.GetString(ms.ToArray());
