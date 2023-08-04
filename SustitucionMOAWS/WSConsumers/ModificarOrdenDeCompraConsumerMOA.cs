@@ -11,7 +11,7 @@ using System.Text;
 using SustitucionMOARepositorio.Extensiones;
 using SustitucionMOAWS.ModificarOCWebServiceMOA;
 using SustitucionMOAWS.Interfaces;
-
+using SustitucionMOARepositorio;
 
 namespace SustitucionMOAWS.WSConsumers
 {
@@ -20,13 +20,15 @@ namespace SustitucionMOAWS.WSConsumers
         private readonly SI_MMRFC_MODIFICAR_OCClient service;
         private readonly string rutaArchivosXmls = ConfigurationManager.AppSettings["RutaArchivosCompras"];
         private readonly ObtenerOrdenDeCompraConsumerMOA obtenerOrdenDeCompraconsumerMOA;
+        private readonly IRepositorio repositorio;
 
-        public ModificarOrdenDeCompraConsumerMOA()
+        public ModificarOrdenDeCompraConsumerMOA(IRepositorio repositorio)
         {
             service = new SI_MMRFC_MODIFICAR_OCClient();
             service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
             service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
-            obtenerOrdenDeCompraconsumerMOA = new ObtenerOrdenDeCompraConsumerMOA();
+            obtenerOrdenDeCompraconsumerMOA = new ObtenerOrdenDeCompraConsumerMOA(repositorio);
+            this.repositorio = repositorio; 
         }
 
         public CrearPedidoConsumerMOAResponse Request(Adjudicacion adjudicacion)
