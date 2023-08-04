@@ -26,9 +26,6 @@ namespace SustitucionMOAUtils.Services.Email
         public static readonly string DireccionMailMesaVentaFas = ConfigurationManager.AppSettings["EmailToMesaVentaFas"];
 
 
-        //<setParameter name = "EmailToMesaVentaFas Config" value="mesafassanlorenzo@molinosagro.com.ar" />
-        //<setParameter name = "EmailToComerciales Config" value="comerciolocal@molinosagro.com.ar" />
-        //<setParameter name = "EmailToMesaENTSL Config" value="Mesaentsl@molinosagro.com.ar" />
         public void EnviarMailAltaIntermediarioFlete(string cuit, string razonSocial)
         {
             var emailSenderData = new EmailSenderData
