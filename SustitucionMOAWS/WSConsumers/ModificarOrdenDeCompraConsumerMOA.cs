@@ -501,7 +501,7 @@ namespace SustitucionMOAWS.WSConsumers
                             PCKG_NO = $"{PCKG_NO:0000000000}",
                             LINE_NO = $"{LINE_NO++:0000000000}",
                             PERCENTAGE = 100,
-                            SERNO_LINE = $"{numeroPosicion:00}",
+                            SERNO_LINE = $"{poItem:00}",
                             SERIAL_NO = numeroDeImputacion,
                         };
 
