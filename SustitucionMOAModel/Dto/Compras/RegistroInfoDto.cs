@@ -34,5 +34,7 @@ namespace SustitucionMOAModel.Dto
         public DateTime? FechaFormateada { get; set; }
         public int MonedaId { get; set; }
         public int UnidadId { get; set; }
+        public string FechaUltimaCompra { get; set; }
+        public string FechaVigencia { get; set; }
     }
 }

@@ -62,7 +62,8 @@ namespace SustitucionMOAWS.WSConsumers
                         Unidad = info.PO_UNIT,
                         Moneda = purch.CURRENCY,
                         Vendedor = info.VENDOR,
-                        Fecha = purch.PRICE_DATE,
+                        FechaVigencia = purch.PRICE_DATE,
+                        FechaUltimaCompra = purch.LAST_PO,
                         Id = info.INFO_REC,
                         FechaFormateada = !string.IsNullOrEmpty(purch.PRICE_DATE) ? SAPFormatter.GetDateTime(purch.PRICE_DATE) : (DateTime?)null
                     };
