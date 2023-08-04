@@ -3005,7 +3005,7 @@ namespace SustitucionMOAUtils.Services
                 var solp = repositorio.ObtenerConsultaEscalar(new ObtenerSolpCompras(id));
                 var hoy = DateTime.Now.Date;
                 var tablaSap = repositorio.Listar<TablaSap>(x => x.Tabla == TablasSap.Moneda || x.Tabla == TablasSap.Unidad);
-              
+
                 DateTime fechaDesde = Convert.ToDateTime(ConfigurationManager.AppSettings["FechaInicioConsultaSolp"].ToString());
                 DateTime fechaHasta = Convert.ToDateTime(ConfigurationManager.AppSettings["FechaFinConsultaSolp"].ToString());
                 var filtros = new ObtenerSolpRequest
@@ -5092,11 +5092,13 @@ namespace SustitucionMOAUtils.Services
                 }).ToList()
 
             });
-
             return adjudicar;
-
         }
-
+        public AdjudicacionDto ObtenerAdjudicacion(string nroOC)
+        {
+            var adjudicar = obtenerOrdenDeCompraConsumerMOA.ObtenerOrdenDeCompraAdjudicacion(nroOC);
+            return adjudicar;
+        }
         public void CrearCotizacionConTrabajoYaHecho(Solp solp, bool enviarMail = true)
         {
             try
@@ -5184,11 +5186,11 @@ namespace SustitucionMOAUtils.Services
                 CotizacionPosiciones = posiciones.Select(x => new GuardarCotizacionPosicionDto
                 {
                     PeticionDeOfertaSolpPosicionId = peticionEntidad.Posiciones.Where(posicion => posicion.SolpPosicion_Id == x.Id).FirstOrDefault().Id,
-                    Cantidad = peticionEntidad.RegistroInfo != null ? registroInfo.FirstOrDefault(a => a.PosicionId == 
-                               peticionEntidad.Posiciones.Where(posicion => posicion.SolpPosicion_Id == x.Id).FirstOrDefault().SolpPosicion_Id)?.CantidadAdjudicacion 
+                    Cantidad = peticionEntidad.RegistroInfo != null ? registroInfo.FirstOrDefault(a => a.PosicionId ==
+                               peticionEntidad.Posiciones.Where(posicion => posicion.SolpPosicion_Id == x.Id).FirstOrDefault().SolpPosicion_Id)?.CantidadAdjudicacion
                               : x.Cantidad ?? 1,
                     MonedaId = peticionEntidad.RegistroInfo != null ? registroInfo.FirstOrDefault(a => a.PosicionId ==
-                               peticionEntidad.Posiciones.Where(posicion => posicion.SolpPosicion_Id == x.Id).FirstOrDefault().SolpPosicion_Id)?.MonedaId 
+                               peticionEntidad.Posiciones.Where(posicion => posicion.SolpPosicion_Id == x.Id).FirstOrDefault().SolpPosicion_Id)?.MonedaId
                                : x.Moneda_Id,
                     UnidadDeMedidaId = peticionEntidad.RegistroInfo != null ? registroInfo.FirstOrDefault(a => a.PosicionId ==
                                peticionEntidad.Posiciones.Where(posicion => posicion.SolpPosicion_Id == x.Id).FirstOrDefault().SolpPosicion_Id)?.UnidadId
