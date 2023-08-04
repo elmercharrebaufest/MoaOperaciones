@@ -3059,30 +3059,37 @@ namespace SustitucionMOAUtils.Services
                                     {
                                         pendienteAdjudicar = solpSAPPosicion.Cantidad - solpSAPPosicion.Ordered;
                                     }
-
-                                    registrosInfo.Add(new RegistroInfoDto
+                                    try
                                     {
-                                        Id = registroInfo.Id,
-                                        Numero = i + 1,
-                                        PosicionId = posicion.Id,
-                                        Indice = posicion.Indice,
-                                        DescripcionPosicion = posicion.Tarea,
-                                        Cantidad = pendienteAdjudicar,
-                                        Centro = posicion.Centro.Descripcion,
-                                        FechaVigencia = registroInfo.FechaVigencia,
-                                        FechaUltimaCompra = registroInfo.FechaUltimaCompra,
-                                        Moneda = registroInfo.Moneda,
-                                        NombreProveedor = proveedor?.RazonSocial,
-                                        Codigo = registroInfo.Vendedor,
-                                        Precio = registroInfo.Precio,
-                                        Unidad = registroInfo.Unidad,
-                                        ProveedorId = usuario.Id,
-                                        Cuit = proveedor?.CUIT,
-                                        Deshabilitado = registroInfo.FechaFormateada != null ? registroInfo.FechaFormateada < hoy : false,
-                                        CantidadAdjudicacion = 0,
-                                        MonedaId = tablaSap.Where(x => x.CodigoSap == registroInfo.Moneda).FirstOrDefault().Id,
-                                        UnidadId = tablaSap.Where(x => x.CodigoSap == registroInfo.Unidad).FirstOrDefault().Id,
-                                    });
+                                        registrosInfo.Add(new RegistroInfoDto
+                                        {
+                                            Id = registroInfo.Id,
+                                            Numero = i + 1,
+                                            PosicionId = posicion.Id,
+                                            Indice = posicion.Indice,
+                                            DescripcionPosicion = posicion.Tarea,
+                                            Cantidad = pendienteAdjudicar,
+                                            Centro = posicion.Centro.Descripcion,
+                                            FechaVigencia = registroInfo.FechaVigencia,
+                                            FechaUltimaCompra = registroInfo.FechaUltimaCompra,
+                                            Moneda = registroInfo.Moneda,
+                                            NombreProveedor = proveedor?.RazonSocial,
+                                            Codigo = registroInfo.Vendedor,
+                                            Precio = registroInfo.Precio,
+                                            Unidad = registroInfo.Unidad,
+                                            ProveedorId = usuario.Id,
+                                            Cuit = proveedor?.CUIT,
+                                            Deshabilitado = registroInfo.FechaFormateada != null ? registroInfo.FechaFormateada < hoy : false,
+                                            CantidadAdjudicacion = 0,
+                                            MonedaId = tablaSap.Where(x => x.CodigoSap == registroInfo.Moneda).FirstOrDefault().Id,
+                                            UnidadId = tablaSap.Where(x => x.CodigoSap == registroInfo.Unidad).FirstOrDefault().Id,
+                                        });
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        Log.Error(e);
+                                    }
                                 }
                                 else
                                 {
