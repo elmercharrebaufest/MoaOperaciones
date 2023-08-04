@@ -28,6 +28,7 @@
                             Razon Social
                         </th>
                         <th data-toggle="tooltip" class="columna" title="unidad de Medida">Fecha última orden de compra</th>
+                        <th data-toggle="tooltip" class="columna" title="unidad de Medida">Fecha de Vigencia</th>
                         <th data-toggle="tooltip" class="columna" title="unidad">Um</th>
                         <th data-toggle="tooltip" class="columna" title="cantidad">Ctd Pendiente</th>
                         <th data-toggle="tooltip" class="columna" title="cantidadAdjudicar">Ctd a Adjudicar</th>
@@ -58,7 +59,10 @@
 
                         </td>
                         <td class="columna">
-                            {{registro.Fecha}}
+                            {{registro.FechaUltimaCompra}}
+                        </td>
+                        <td class="columna">
+                            {{registro.FechaVigencia}}
                         </td>
                         <td class="columna">
                             {{registro.Unidad}}
