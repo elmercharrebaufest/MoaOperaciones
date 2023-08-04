@@ -200,7 +200,6 @@ export class OrdenesDeCargaFasonAltaComponent
         this.CodigoCorredor = this.corredorSeleccionado.CodigoProveedor;
         this.ordenDeCargaFason.CUITCorredor = this.corredorSeleccionado.CUIT;
         this.ordenDeCargaFason.CorredorId = this.corredorSeleccionado.Id;
-        console.log("adasdasd2 " + this.corredorSeleccionado.Id, this.corredorSeleccionado)
         this.ordenDeCargaFason.Corredor = this.corredorSeleccionado.CodigoProveedor;
         this.cargarClientes(this.CodigoCorredor);
     }
@@ -480,6 +479,7 @@ export class OrdenesDeCargaFasonAltaComponent
                         this.mensajeComponent.setErrorMsg(result.error);
                         this.blockUI.stop();
                     } else if (result.info != undefined) {
+                        this.listaClientes = [];
                         this.mensajeComponent.setInfoMsg(result.info);
                         this.blockUI.stop();
                     } else {
@@ -738,7 +738,7 @@ export class OrdenesDeCargaFasonAltaComponent
                 if (!data)
                     return;
                 if (!data.Existe) {
-                    //this.displayModal = campo;
+                    this.displayModal = 'CUITDestino';
                 }
                 else {
                     this.ordenDeCargaFason.RazonSocialDestino = data.RazonSocial;
