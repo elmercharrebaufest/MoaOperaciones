@@ -21,6 +21,7 @@ namespace SustitucionMOAWS.WSConsumers
         {
             try
             {
+                IM_USUARIO = string.IsNullOrEmpty(IM_USUARIO) ? "moaoperaciones" : IM_USUARIO;
                 Log.Info($"SI_MPRFC_ANULAR_APERTURA_CHEQUE Request: {new { IM_CHEQUE, IM_DOCUMENTO, IM_EJERCICIO, IM_FECHA_ANULACION, IM_HORA_ANULACION, IM_SOCIEDAD, IM_USUARIO }}");
                 string response = service.SI_MPRFC_ANULAR_APERTURA_CHEQUE(IM_CHEQUE, IM_DOCUMENTO, IM_EJERCICIO, IM_FECHA_ANULACION, IM_HORA_ANULACION, IM_SOCIEDAD, IM_USUARIO);
                 Log.Info($"SI_MPRFC_ANULAR_APERTURA_CHEQUE Response: {response}");
