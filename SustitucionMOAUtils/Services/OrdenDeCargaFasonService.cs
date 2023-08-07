@@ -292,6 +292,7 @@ namespace SustitucionMOAUtils.Services
                 orden.DomicilioTipo = request.DomicilioTipo;
                 orden.DomicilioOrden = request.DomicilioOrden;
                 orden.DomicilioDescr = request.DomicilioDescr;
+                orden.RazonSocialDestino = request.RazonSocialDestino;
                 ActualizarOrdenDeCarga(orden);
 
                 _repositorio.GuardarCambios();

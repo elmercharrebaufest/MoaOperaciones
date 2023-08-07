@@ -1,10 +1,9 @@
-﻿
-using SustitucionMOAUtils.Email;
+﻿using SustitucionMOAUtils.Email;
 using SustitucionMOAUtils.Interfaces;
 
 namespace SustitucionMOAUtils.Services.Email
 {
-    public class EmailFasonService : EmailFasService, IEmailFasonService
+    public class EmailFasonService : EmailOrdenesCargaServiceBase, IEmailFasonService
     {
         public new void EnviarMailAltaTempranaCuit(string cuit, string razonSocial)
         {

@@ -17,19 +17,19 @@ namespace SustitucionMOAUtils.Services
         protected readonly IOrdenCargaConsumerMOA ordenCargaConsumer;
         protected readonly IScatoConsumer scatoConsumer;
         protected readonly IScatoRepositorioClient scatoRepositorioClient;
-        private readonly IEmailFasService _emailFasService;
+        private readonly IEmailOrdenesCargaServiceBase emailService;
 
 
-        public OrdenDeCargaServiceBase(
+        protected OrdenDeCargaServiceBase(
             IOrdenCargaConsumerMOA ordenCargaConsumer,
             IScatoConsumer scatoConsumer,
             IScatoRepositorioClient scatoRepositorioClient,
-            IEmailFasService emailFasService)
+            IEmailOrdenesCargaServiceBase emailService)
         {
             this.scatoConsumer = scatoConsumer;
             this.ordenCargaConsumer = ordenCargaConsumer;
             this.scatoRepositorioClient = scatoRepositorioClient;
-            _emailFasService = emailFasService;
+            this.emailService = emailService;
         }
 
         public ValidarCuitExisteScatoResponse ValidarCuitExisteScato(string cuit)
@@ -134,11 +134,11 @@ namespace SustitucionMOAUtils.Services
         {
             if (esIntermediarioFlete)
             {
-                _emailFasService.EnviarMailAltaIntermediarioFlete(cuit, razonSocial);
+                emailService.EnviarMailAltaIntermediarioFlete(cuit, razonSocial);
             }
             else
             {
-                _emailFasService.EnviarMailAltaTempranaCuit(cuit, razonSocial);
+                emailService.EnviarMailAltaTempranaCuit(cuit, razonSocial);
             }
             return true;
         }
