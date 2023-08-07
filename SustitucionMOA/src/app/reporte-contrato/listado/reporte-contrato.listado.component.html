@@ -18,11 +18,21 @@
         </div>
         <!--End Title-->
         <!--Search-->
+        <!--
+        <div class="row">
+            <div class="col-md-4">
+            -->
         <div class="row myRow firstSection mySearch">
             <div class="col-xs-12 col-md-12 rounded shadow animate">
                 <div class="col-xs-12 col-md-12 search-header">
                     <spinner-small></spinner-small>
                     <title-caps>Refinar resultados</title-caps>
+                </div>
+                <div id="searchVer" class="col-xs-12 col-sm-12 col-md-12">
+                    <app-filtro-fecha-reporte leyenda="Rango máximo de 8 meses" 
+                                              (ClickEvent)="getListadoFechas()"
+                                              (FiltroPendientes)="filtroPendientes($event)"
+                                              ></app-filtro-fecha-reporte>
                 </div>
                 <div id="searchProducto" class="col-xs-12 col-sm-6 col-md-15">
                     <p>Producto:</p>
@@ -48,6 +58,7 @@
                             [disabled]="disabled">
                     </div>
                 </div>
+                
                 <div id="searchProducto" class="col-xs-12 col-sm-6 col-md-15">
                     <p>Tipo Contrato:</p>
                     <div class="styled-select">
@@ -55,20 +66,14 @@
                             (select)="setFiltroTipoContrato($event)"></dropdown>
                     </div>
                 </div>
-                <div id="searchVer" class="col-xs-12 col-sm-6 col-md-15">
-                    <p>Fecha operacion</p>
-                    <filtro-fecha leyenda="Rango máximo de 6 meses" (ClickEvent)="getListadoFechas()"></filtro-fecha>
-                </div>
                 <div class="col-xs-12 col-sm-12 col-md-12 margenInput mt-4">
-                    <p-checkbox [ngModelOptions]="{standalone:true}" label="Mostrar solo contrato con entrega pendiente"
-                        [(ngModel)]="mostrarPendientes" (onChange)="filtroPendientes()" binary="false">
-                    </p-checkbox>
                     <div style="float: right">
                         <button type="button" pButton icon="fa fa-refresh" (click)="getListado()"
                             style="background-color: #075088; float: right; left: -10px; top: 50%;"></button> &nbsp;
                     </div>
 
                 </div>
+            
             </div>
         </div>
         <!-- End Search-->
@@ -85,10 +90,6 @@
                         <tr role="row">
                             <th tabindex="0" rowspan="1" colspan="1">
                                 Nro de Contrato
-
-                            </th>
-                            <th tabindex="0" rowspan="1" colspan="1" *ngIf="verTipoContrato">
-                                Tipo de Contrato
 
                             </th>
                             <th tabindex="0" rowspan="1" colspan="1" *ngIf="verNroPedidoCliente">
@@ -123,9 +124,6 @@
                                 Precio
                             </th>
                             <th tabindex="0" rowspan="1" colspan="1">
-                                Moneda
-                            </th>
-                            <th tabindex="0" rowspan="1" colspan="1">
                                 Observaciones
                             </th>
                         </tr>
@@ -133,12 +131,14 @@
                     <tbody>
                         <tr *ngFor="let cabeceraContrato of cabecera | customFilter : 'Contrato' : filtroContrato  | orderedColumn : {property: (orderedByColumn), direction: orderDirection} ; let odd = odd"
                             role="row" [class.odd]="!odd">
-                            <td><a class="animate" style="cursor:pointer;"
-                                    (click)="guardarFiltros();goToSimpleNavigation('/reporte-contrato/detalle', cabeceraContrato.Contrato, {})">{{cabeceraContrato.Contrato}}</a>
+                            <td><a class="animate" 
+                                   style="cursor:pointer;" 
+                                   data-toggle="modal"
+                                   data-target="#modalDetalleContrato" 
+                                   (click)="guardarFiltros();verDetalleContrato(cabeceraContrato.Contrato)">{{cabeceraContrato.Contrato}}</a>
                             </td>
-                            <td *ngIf="verTipoContrato">{{cabeceraContrato.TipoContrato}}</td>
                             <td *ngIf="verNroPedidoCliente">{{cabeceraContrato.PedidoCliente}}</td>
-                            <td>{{cabeceraContrato.FechaDesde}}</td>
+                            <td>{{cabeceraContrato.FechaDesde| date: 'dd/MM/yyyy'}}</td>
                             <td *ngIf="verCliente">{{cabeceraContrato.NombreCliente}}</td>
                             <td *ngIf="verCorredor"
                                 [ngStyle]="{'font-weight':cabeceraContrato.Corredor == 'TOTAL' ? '900': ''}">
@@ -157,7 +157,6 @@
                             <td [ngStyle]="{'font-weight':cabeceraContrato.NombreCliente == '' ? '700': ''}">
                                 {{cabeceraContrato.KilosPendienteEntrega | number}}</td>
                             <td>{{cabeceraContrato.Precio}}</td>
-                            <td>{{cabeceraContrato.DetalleMotivo}}</td>
                             <td>{{cabeceraContrato.CondicionEntrega}}</td>
                         </tr>
                     </tbody>
@@ -186,3 +185,22 @@
     </section>
     <!--End CONTENT-->
 </div>
+<div class="modal fade" id="modalDetalleContrato" tabindex="-1" role="dialog"
+     aria-labelledby="cartaDePresentacionLabel" data-backdrop="false"
+     style="background-color: rgba(0, 0, 0, 0.5);">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content" style="width: max-content;">
+            <div class="modal-header">
+                <button id="cerrarModalUsuario" type="button" class="close btn-close" data-dismiss="modal"
+                    aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="cartaDePresentacionLabel">Contrato {{contratoSeleccionadoId}}</h4>
+            </div>
+            <div class="modal-body">
+                <app-detalle></app-detalle>
+            </div>
+        </div>
+    </div>
+</div>
+

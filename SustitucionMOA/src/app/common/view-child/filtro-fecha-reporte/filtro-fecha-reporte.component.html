@@ -1,0 +1,65 @@
+<div class="row">
+    <div class="col-md-4">
+        <div class="col-xs-12 col-sm-6 col-md-12 entrefechas_1 entrefechas_2 searchVerSelect ">
+            Fecha operacion
+            <dropdown [tipoDropdown]="'periodos'" (select)="setPeriodo($event)" class="styled-select"></dropdown>
+        </div>
+    </div>
+    <div class="col-md-4" *ngIf="periodo == '4'">
+        <div class="col-xs-12 col-sm-6 col-md-12 entrefechas_1 searchVerSelect ">
+            Desde:
+            <form action="" class="form-horizontal styled-select form_datetime_form1" role="form">
+                <fieldset>
+                    <div>
+                        <div class="input-group date form_datetime1" data-date="" data-date-format="yyyy-MM-dd"
+                            data-link-field="dtp_input1">
+                            <input type="text" value="{{fecha_inicio}}" id="noCursor" readonly>
+                            <span class="input-group-addon"><span class="fa fa-calendar "></span></span>
+                        </div>
+                        <input type="hidden" #dtp_input1 id="dtp_input1" class="dtp_input1" value="{{fecha_inicio}}" />
+                        <br />
+                    </div>
+                </fieldset>
+            </form>
+        </div>
+    </div>
+    <div class="col-md-4" *ngIf="periodo == '4'">
+        <div class="col-xs-12 col-sm-6 col-md-12 entrefechas_1 entrefechas_2 searchVerSelect ">
+            Hasta:
+            <form action="" class="form-horizontal styled-select form_datetime_form2" role="form">
+                <fieldset>
+                    <div>
+                        <div class="input-group date form_datetime2" data-date="" data-date-format="yyyy-MM-dd"
+                            data-link-field="dtp_input2">
+                            <input type="text" value="{{fecha_fin}}" id="noCursor" readonly />
+                            <span class="input-group-addon"><span class="fa fa-calendar "></span></span>
+                        </div>
+                        <input type="hidden" #dtp_input2 id="dtp_input2" class="dtp_input2" value="{{fecha_fin}}" />
+                        <br />
+                    </div>
+                </fieldset>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="row" *ngIf="periodo == '4'">
+    <div class="col-md-10" style="display: flex;align-items: center;">
+        <div class="col-xs-12 col-sm-4 col-md-4 cargaDeDatos clearfix" style="padding-left:0; width: auto;">
+            <p-checkbox [ngModelOptions]="{standalone:true}" label="Mostrar solo contrato con entrega pendiente"
+                        [(ngModel)]="mostrarPendientes" (onChange)="enviarFiltroPendientes()" binary="false">
+            </p-checkbox>
+        </div>
+        <div class="col-xs-12 col-sm-4 col-md-4 cargaDeDatos clearfix" 
+             style="padding-left:0; width: auto;">
+            <a (click)="filterByDate()" style="text-decoration:none!important">
+                <div class="btnSection animate">Aplicar <span class="fa  fa-play "></span></div>
+            </a>
+        </div>
+        <div class="col-xs-12 col-sm-6 col-md-6 text-danger" 
+             *ngIf="leyenda" 
+             style="text-align: left; margin-left: 0px;width: auto;">
+            * {{leyenda}}
+        </div>
+    </div>
+</div>
+<br/>

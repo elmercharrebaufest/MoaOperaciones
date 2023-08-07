@@ -266,7 +266,7 @@
                                                     <button *ngIf="licitacion.Estado == 'Abierto'" class="publicar btn" style="margin-right: 10px;" (click)="obtenerPeticionDeOferta(licitacion.Id)">
                                                         Revisión Técnica
                                                     </button>
-                                                    <button class="publicar btn " style="margin-right: 10px;"  (click)="obtenerPeticionDeOfertaCircular(licitacion.Id)">
+                                                    <button class="publicar btn " *ngIf="rowData.VerCircular == true" style="margin-right: 10px;"  (click)="obtenerPeticionDeOfertaCircular(licitacion.Id)">
                                                         Circular
                                                     </button>
                                                 </td> 
@@ -274,8 +274,13 @@
                                         </ng-template>
                                     </p-table>
                                 </p-tabPanel> 
-                                <p-tabPanel header="Orden de Compra">
-                                    <p-table [value]="rowData.OrdenesDeCompraSolicitante">
+                                <p-tabPanel>
+                                    <ng-template pTemplate="header" >
+                                        <div class="padding" (click)="listarAdjudicaciones(rowData.Id)">
+                                            Orden de compra
+                                        </div>
+                                    </ng-template>
+                                    <p-table [value]="filtrarOrdenesDeCompra(rowData.Id)">
                                         <ng-template pTemplate="header">
                                             <tr>
                                                 <th class="columna">Numero</th>
@@ -291,22 +296,22 @@
                                                 <td style="text-align: center;" colspan="6">Sin datos</td>
                                             </tr>
                                         </ng-template>
-                                        <ng-template pTemplate="body" let-ordenCompra>
+                                        <ng-template pTemplate="body" let-orden>
                                             <tr>
-                                               <td class="columna">{{ordenCompra.NumeroOrdenDeCompra}}</td>                                     
-                                                <td class="columna">{{ordenCompra.FechaCreacion | customDateFormat | date :'d/M/yyyy' }}</td>
-                                                <td class="columna">{{ordenCompra.Proveedor}}</td>
-                                                <td class="columna">{{ordenCompra.PrecioFinal |number:'1.2-2'}}</td>
-                                                <td class="columna">{{ordenCompra.MonedaDescripcion}}</td>
+                                               <td class="columna">{{orden.NumeroOrdenDeCompra}}</td>                                     
+                                                <td class="columna">{{orden.FechaCreacion | customDateFormat | date :'d/M/yyyy' }}</td>
+                                                <td class="columna">{{orden.Proveedor}}</td>
+                                                <td class="columna">{{orden.PrecioFinal | number:'1.2-2'}}</td>
+                                                <td class="columna">{{orden.MonedaDescripcion}}</td>
                                                 <td class="columna">
-                                                    <button class="publicar btn btn-success">
+                                                    <button class="publicar btn btn-success" (click)="verDetalleOrdenDeCompra(orden.NumeroOrdenDeCompra)">
                                                         Ver detalle
                                                     </button>
                                                 </td>
                                             </tr>
                                         </ng-template>
                                     </p-table>
-                                </p-tabPanel>                               
+                                </p-tabPanel>                             
                             </p-tabView>
                         </div>
                     </td>
@@ -330,7 +335,8 @@
     [(locale)]="es"
     [(displayCircular)]="displayCircular"
     (cerrarCircularEmitter)="cerrarCircular()"
-    [(peticion)]="peticion">
+    [(peticion)]="peticion"
+    [(solicitante)]="solicitante">
 </app-circular>   
 
 
@@ -345,3 +351,9 @@
     </p-footer>
 </p-confirmDialog>
 <!--fin modal eliminacion de SOLP-->
+
+<app-orden-de-compra-detalle
+[(displayOrdenDeCompra)]="displayOrdenDeCompra"
+(cerrarOrdenDeCompraEmitter)="cerrarOrdenDeCompra()"
+[(ordenDeCompra)]="ordenDeCompra">
+</app-orden-de-compra-detalle> 

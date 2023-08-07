@@ -138,6 +138,12 @@
 							match="/configuration/appSettings/add[@key='CopiaEmailToGestionAltaCuit']
                            /@value" />
 	</parameter>
+
+	<parameter name="EmailAsuntoPrefijo Config">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+							match="/configuration/appSettings/add[@key='EmailAsuntoPrefijo']
+                           /@value" />
+	</parameter>
 	
 	<parameter name="EmailToMesaVentaFas Config">
 		<parameterEntry kind="XmlFile" scope="Web.config"
@@ -160,6 +166,12 @@
 	<parameter name="EmailToComerciales Config">
 		<parameterEntry kind="XmlFile" scope="Web.config"
 							match="/configuration/appSettings/add[@key='EmailToComerciales']
+                           /@value" />
+	</parameter>
+
+	<parameter name="EmailToComercialesAlimAnimal Config">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+							match="/configuration/appSettings/add[@key='EmailToComercialesAlimAnimal']
                            /@value" />
 	</parameter>
 
@@ -755,6 +767,33 @@
                     /endpoint[@name='SI_MMRFC_OBTENER_TIPO_CAMBIO']
                     /@address" />
 	</parameter>
-	
+  <parameter name="BAPI_PO_CHANGEPortType Service Endpoint Address">
+    <parameterEntry kind="XmlFile" scope="Web.config"
+							match="/configuration/system.serviceModel/client
+                    /endpoint[@name='BAPI_PO_CHANGEPortType']
+                    /@address" />
+  </parameter>
+  
+  <parameter name="BAPI_INFORECORD_GETLISTPortType Service Endpoint Address">
+    <parameterEntry kind="XmlFile" scope="Web.config"
+							match="/configuration/system.serviceModel/client
+                    /endpoint[@name='BAPI_INFORECORD_GETLISTPortType']
+                    /@address" />
+  </parameter>
+
+  <parameter name="BAPI_PO_GETDETAIL1PortType Service Endpoint Address">
+    <parameterEntry kind="XmlFile" scope="Web.config"
+								match="/configuration/system.serviceModel/client
+					/endpoint[@name='BAPI_PO_GETDETAIL1PortType']
+					/@address" />
+  </parameter>
+
+  <parameter name="Z_MMRFC_OC_PARA_SOLPPortType Service Endpoint Address">
+    <parameterEntry kind="XmlFile" scope="Web.config"
+								match="/configuration/system.serviceModel/client
+                    /endpoint[@name='Z_MMRFC_OC_PARA_SOLPPortType']
+                    /@address" />
+  </parameter>
+  
 </parameters>
 

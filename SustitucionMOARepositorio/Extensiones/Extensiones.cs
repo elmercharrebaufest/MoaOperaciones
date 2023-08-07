@@ -23,7 +23,7 @@ namespace SustitucionMOARepositorio.Extensiones
 
             return d;
         }
-        public static ListaPaginada<TEntidad> OrdenarPaginarLista<TEntidad>(this IQueryable<TEntidad> resultado, Paginacion paginacion) 
+        public static ListaPaginada<TEntidad> OrdenarPaginarLista<TEntidad>(this IQueryable<TEntidad> resultado, Paginacion paginacion)
         {
             int itemsTotales = resultado.Count();
 
@@ -51,5 +51,56 @@ namespace SustitucionMOARepositorio.Extensiones
 
             return resultadoFinal;
         }
+
+        //public static string[] SplitParagraph(this string paragraph, int maxCharacters)
+        //{
+        //    string[] words = paragraph.Split(' ');
+        //    string[] lines = new string[words.Length];
+        //    int lineCount = 0; int currentLineLength = 0;
+        //    foreach (string word in words)
+        //    {
+        //        if (currentLineLength + word.Length <= maxCharacters)
+        //        {
+        //            lines[lineCount] += word + " ";
+        //            currentLineLength += word.Length + 1;
+        //        }
+        //        else
+        //        {
+        //            lineCount++; lines[lineCount] = word + " ";
+        //            currentLineLength = word.Length + 1;
+        //        }
+        //    }
+        //    return lines;
+        //}
+        public static string[] SplitParagraph(this string paragraph, int maxCharacters)
+        {      
+            string[] words = paragraph.Split(new[] { ' ', '\n' });
+            string[] lines = new string[words.Length];
+            int lineCount = 0;
+            int currentLineLength = 0;
+            foreach (string word in words)
+            {
+                if (word == "")
+                {
+                    lineCount++;
+                    lines[lineCount] = "";
+                    currentLineLength = 0;
+                }
+                else if (currentLineLength + word.Length <= maxCharacters)
+                {
+                    lines[lineCount] += word + " ";
+                    currentLineLength += word.Length + 1;
+                }
+                else
+                {
+                    lineCount++;
+                    lines[lineCount] = word + " ";
+                    currentLineLength = word.Length + 1;
+                }
+            }
+
+            return lines;
+        }
+
     }
 }

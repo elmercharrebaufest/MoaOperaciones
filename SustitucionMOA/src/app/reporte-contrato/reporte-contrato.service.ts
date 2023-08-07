@@ -15,6 +15,14 @@ import { ApiResponse } from '../common/models/response';
 })
 export class ReporteContratoService extends BaseService {
     private filters = new BehaviorSubject<FiltrosReporteContrato>({} as FiltrosReporteContrato);
+    private _contratoSeleccionado = new BehaviorSubject<string>('0');
+    
+    setContratoSeleccionado(value: string) {
+        this._contratoSeleccionado.next(value);
+    }
+    getContratoSeleccionado() {
+        return this._contratoSeleccionado.asObservable()
+    }
 
     get fechaInicio() {
         return this.filters.value.fechaInicio
@@ -40,7 +48,7 @@ export class ReporteContratoService extends BaseService {
 
         return this.http
             .get('/api/ReporteContrato/GetContratos', { params: params }).pipe(
-                timeoutWith(30000, observableThrowError(new Error("Por favor, restrinja el rango de fechas"))));
+                timeoutWith(300000, observableThrowError(new Error("Por favor, restrinja el rango de fechas"))));
 
     }
 
@@ -54,7 +62,7 @@ export class ReporteContratoService extends BaseService {
 
         return this.http
             .get('/api/ReporteContrato/getTotalFormatter', { params: params })
-            .pipe(timeoutWith(90000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor intentelo mas tarde"))));
+            .pipe(timeoutWith(300000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor intentelo mas tarde"))));
     }
 
     public obtenerContratosFiltro(fechaInicio, fechaFin, mostrarPendientes, data: ReporteContrato[]) {
@@ -93,8 +101,6 @@ export class ReporteContratoService extends BaseService {
     public getOrdenDeCarga(det: DetalleReporteContrato): Observable<ApiResponse<OrdenDeCarga>> {
         let params: HttpParams = new HttpParams()
             .append('nroEntrega', det.Entrega);
-
-
         return this.http
             .get<ApiResponse<OrdenDeCarga>>('/api/ReporteContrato/ObtenerOrdenDeCarga', { params: params });
     }

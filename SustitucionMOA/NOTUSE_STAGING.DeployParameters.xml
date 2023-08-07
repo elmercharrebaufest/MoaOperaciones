@@ -30,7 +30,7 @@
 	<setParameter name="ida:EditProfilePolicyId Config" value="B2C_1_EditProfile" />
 	<setParameter name="ida:ResetPasswordPolicyId Config" value="B2C_1_ResetPassword" />
 
-	<setParameter name="EmailToReporteCamposSustentables Config" value="moaoperaciones@baufest.com,glenda.lien@molinosagro.com.ar,david.erbojo@molinosagro.com.ar,juan.carlos.cappello@molinosagro.com.ar,contact@tsagroupinternational.com" />
+	<setParameter name="EmailToReporteCamposSustentables Config" value="moaoperaciones@baufest.com,margarita.ranzatto@molinosagro.com.ar,david.erbojo@molinosagro.com.ar,juan.carlos.cappello@molinosagro.com.ar,contact@tsagroupinternational.com" />
 
 	<setParameter name="EmailToAuditoria Config" value="alejandra.duarte@molinosagro.com.ar,santiago.barbarotta@molinosagro.com.ar,auditoria.interna@molinosagro.com.ar" />
 
@@ -110,6 +110,7 @@
 	<setParameter name="EmailToMesaVentaFas Config" value="mesafassanlorenzo@molinosagro.com.ar" />
 	<setParameter name="EmailToCobranzas Config" value="cobranzasfas@molinosagro.com.ar" />
 	<setParameter name="EmailToComerciales Config" value="comerciolocal@molinosagro.com.ar" />
+	<setParameter name="EmailToComercialesAlimAnimal Config" value="alimentacion.animal@molinosagro.com.ar" />
 	<setParameter name="EmailToAuditoriaOrdenesVencidas Config" value="noelia.caceres@molinosagro.com.ar;luciano.calaon@molinosagro.com.ar;martin.manoni@molinosagro.com.ar"/>
 
 	<setParameter name="SI_MPMF_MOAOP_ORDEN_CARGA_ENTRE Service Endpoint Address" value="http://gslopiprd00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_ORDEN_CARGA_ENTRE&amp;interfaceNamespace=urn%3AOPERACIONES" />

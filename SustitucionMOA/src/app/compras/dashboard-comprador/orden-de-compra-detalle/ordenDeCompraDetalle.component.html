@@ -9,7 +9,9 @@
         <b>Orden de compra N° {{ordenDeCompra?.NumeroOrdenDeCompra}} </b> 
     </p-header>
     <div class="container-fluid" style="height: 273.75px;">
-        <section class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+        <p-tabView>
+            <p-tabPanel  header="Posiciones" [selected]="true">
+        
             <div *ngIf="ordenDeCompra?.TipoPosicionCodigo == 'MATERIALES'" class="row myRow" style="padding-top: 2px;">                
                 <p-table class="table-responsive" styleClass="font-size: 10px" #tabla
                     [value]="ordenDeCompra?.AdjudicacionPosiciones" dataKey="Id">
@@ -148,7 +150,51 @@
                     <button class="publicar btn valorTotal p-1 textCenter" style="cursor: default; background-color: #5a35aa; border-color: #5a35aa;color:white">Valor Total: $ {{ordenDeCompra?.PrecioFinal | number:'1.2-2'}} ARP </button>  
                 </div>  
             </div>
-        </section>
+ 
+    </p-tabPanel>
+    <p-tabPanel header="Racional De Compras" >
+        
+            <p-accordion >
+                <p-accordionTab  header="Texto de Cabecera" 
+                 style="box-sizing: inherit !important;"   [(selected)]="activeTabs[0]">
+                   <div *ngIf="ordenDeCompra?.TextoDeCabecera; else sinTexto" >
+                          {{ordenDeCompra?.TextoDeCabecera}}
+                   </div>
+                   <ng-template #sinTexto>
+                    Sin datos
+                  </ng-template>
+                </p-accordionTab>
+                <p-accordionTab header="Condiciones de Entrega"
+                 style="box-sizing: inherit !important;"  [(selected)]="activeTabs[1]">
+                 <div *ngIf="ordenDeCompra?.CondicionesDeEntrega; else sinTextoCondicionesEntrega" >
+                        {{ordenDeCompra?.CondicionesDeEntrega}}
+                    </div>
+                        <ng-template #sinTextoCondicionesEntrega>
+                            Sin datos
+                          </ng-template>
+                </p-accordionTab>
+                <p-accordionTab  header="Condiciones de Pago" 
+                style="box-sizing: inherit !important;"  [(selected)]="activeTabs[2]">
+               <div *ngIf="ordenDeCompra?.CondicionesDePago; else sinTextoCondicionesPago" >
+                        {{ordenDeCompra?.CondicionesDePago}}
+                    </div>
+                        <ng-template #sinTextoCondicionesPago>
+                            Sin datos
+                          </ng-template>
+                </p-accordionTab>
+                <p-accordionTab header="Garantía" 
+                style="box-sizing: inherit !important;"  [(selected)]="activeTabs[3]">
+                <div *ngIf="ordenDeCompra?.Garantias; else sinTextoGarantia" >
+                        {{ordenDeCompra?.Garantias}}
+                    </div> 
+                        <ng-template #sinTextoGarantia>
+                            Sin datos
+                          </ng-template>
+                </p-accordionTab>
+            </p-accordion>    
+      
+    </p-tabPanel>
+</p-tabView>
     </div>
 </p-dialog>
 

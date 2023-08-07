@@ -1,5 +1,6 @@
 ﻿using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Enums;
+using SustitucionMOAModel.Enums.MoaWS.OrdenCargaWS;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -102,18 +103,61 @@ namespace SustitucionMOAModel.Entities
         public string DomicilioTipo { get; set; }
         public short? DomicilioOrden { get; set; }
         public string DomicilioDescr { get; set; }
+        public string NumeroFactura { get; set; }
+        public string NumeroFacturaSeleccionada { get; set; }
+        public TipoContratoFAS TipoContrato { get; set; }
+        public bool Escalable { get; set; }
 
-        public void ActualizarEstado()
+
+        public bool TieneMultiplesContratos
         {
+            get { return !string.IsNullOrEmpty(ContratosRespuesta); }
+        }
+
+        public bool TieneCodigoSap(ControlCargaResEnum controlCargaRes)
+        {
+            return CodigoVerificacionSap == ResponseConverter.GetCodigoControlCarga(controlCargaRes);
+        }
+        public bool EsFacturaAnticipada
+        {
+            get
+            {
+                return TipoContrato == TipoContratoFAS.Anticipado;
+            }
+        }
+        public bool SinSeleccionarFactura
+        {
+            get
+            {
+                return !string.IsNullOrEmpty(NumeroFactura) && string.IsNullOrEmpty(NumeroFacturaSeleccionada);
+            }
+        }
+
+        /// <summary>
+        /// Actualiza la Orden según su estado interno
+        /// </summary>
+        /// <returns>Log del cambio de estado</returns>
+        public string ActualizarEstado()
+        {
+            var logCambioEstado = $"Actualizar estado Orden de carga {Id}. Estado inicial:{EstadoOrdenDeCargaExtensions.ToFriendlyString(Estado)}. " +
+                $"CodigoVerificacionSap:{CodigoVerificacionSap}, ContratoSAP:{ContratoSAP}, ContratoSinCantidadPendiente:{ContratoSinCantidadPendiente}, " +
+                $"NumeroPedido:{NumeroPedido}, InformadaSAP:{InformadaSAP}, TransporteExiste:{TransporteExiste}, AprobadoCredito:{AprobadoCredito}, FechaEntregaGenerada:{FechaEntregaGenerada}.";
+
             if (Estado != EstadoOrdenDeCarga.Entregada)
             {
-                if (CodigoVerificacionSap == "CC-01" || CodigoVerificacionSap == "CC-06")
+                if (this.TieneCodigoSap(ControlCargaResEnum.MasDeUnContratoVigente) ||
+                    this.TieneCodigoSap(ControlCargaResEnum.CC06IdemCC01))
                 {
                     Estado = EstadoOrdenDeCarga.ErrorDeCarga;
                 }
                 else
                 {
-                    if (((string.IsNullOrEmpty(ContratoSAP) || ContratoSinCantidadPendiente || string.IsNullOrEmpty(NumeroPedido)) && Estado != EstadoOrdenDeCarga.SinEnviarASAP) || CodigoVerificacionSap == "CC-07")
+                    if (
+                        ((string.IsNullOrEmpty(ContratoSAP) ||
+                        ContratoSinCantidadPendiente ||
+                        string.IsNullOrEmpty(NumeroPedido)) && Estado != EstadoOrdenDeCarga.SinEnviarASAP) ||
+                        CodigoVerificacionSap == "CC-07"
+                        )
                     {
                         Estado = EstadoOrdenDeCarga.Pendiente;
                     }
@@ -124,7 +168,7 @@ namespace SustitucionMOAModel.Entities
                             Estado = EstadoOrdenDeCarga.Confirmado;
                         }
 
-                        if (!TransporteExiste)
+                        if (!TransporteExiste || (EsFacturaAnticipada && SinSeleccionarFactura) )
                         {
                             Estado = EstadoOrdenDeCarga.Pendiente;
                         }
@@ -147,6 +191,8 @@ namespace SustitucionMOAModel.Entities
                     }
                 }
             }
+            logCambioEstado += $" Estado final:{EstadoOrdenDeCargaExtensions.ToFriendlyString(Estado)}";
+            return logCambioEstado;
         }
 
         public override bool Equals(object obj)
@@ -238,5 +284,9 @@ namespace SustitucionMOAModel.Entities
         {
             return new OrdenDeCargaEditarDto(this);
         }
+        //public TipoContratoFAS TipoContratoFAS()
+        //{
+        //    return TipoContratoFASParser.Parse(TipoContrato);
+        //}
     }
 }

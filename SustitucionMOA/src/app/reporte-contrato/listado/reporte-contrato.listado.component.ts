@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ListBaseComponent } from '../../common/base-components/list-base-component';
 import { FloatMsgService } from '../../common/services/FloatMsgService';
 import { ModalService } from '../../common/services/ModalService';
@@ -10,6 +10,8 @@ import { ReporteContratoService } from '../reporte-contrato.service';
 import * as XLSX from 'xlsx';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { ReporteContrato } from '../ReporteContrato.model';
+import { Formatter } from '../../common/formatter/Formatter';
+import { FiltroFechaReporteComponent } from '../../common/view-child/filtro-fecha-reporte/filtro-fecha-reporte.component';
 
 
 @Component({
@@ -19,11 +21,16 @@ import { ReporteContrato } from '../ReporteContrato.model';
 })
 export class ReporteContratoListado extends ListBaseComponent implements OnInit {
     @BlockUI() blockUI: NgBlockUI;
+    @ViewChild(FiltroFechaReporteComponent)
+    protected filtroFechaReporteComponent: FiltroFechaReporteComponent;
+    
 
     constructor(protected service: ReporteContratoService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService, private confirmationService: ConfirmationService) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
-    }
+        this.filtroFechaReporteComponent = new FiltroFechaReporteComponent();
 
+    }
+    contratoSeleccionadoId: string = '';
     detalle: any[];
     cabecera: ReporteContrato[];
     filtroCliente: any = null;
@@ -42,7 +49,7 @@ export class ReporteContratoListado extends ListBaseComponent implements OnInit 
     TipoContrato: string = "";
     show: boolean = false;
     disabled: boolean = false;
-    mostrarPendientes: boolean = false;
+    mostrarPendientes: boolean = true;
     columnaCliente: string = "NombreClienteCUIT";
     columnaProducto: string = "DescripcionMaterial";
     ColumnaTipoContrato: string = "TipoContrato";
@@ -56,6 +63,11 @@ export class ReporteContratoListado extends ListBaseComponent implements OnInit 
 
     ngOnInit() {
         this.navService.setSeccionList([]);
+        this.filtroFechaReporteComponent.setPeriodo('4');
+        this.filtroFechaReporteComponent.setFechaIncio(Formatter.DateToSting(new Date(new Date().setDate(new Date().getDate() - 180))));
+        this.filtroFechaReporteComponent.setFechaFin(Formatter.DateToSting(new Date()));
+        this.mostrarPendientes = true;
+        this.getListado();
     }
 
  
@@ -68,8 +80,10 @@ export class ReporteContratoListado extends ListBaseComponent implements OnInit 
         this.disabled = true;
         this.cabecera = null;
         this.data = null;
-        this.subscription = this.service.getListado(this.filtroFechaComponent.fecha_inicio,
-            this.filtroFechaComponent.fecha_fin, /*this.mostrarPendientes*/false).subscribe(
+        this.subscription = this.service.getListado(
+            this.filtroFechaReporteComponent.fecha_inicio,
+            this.filtroFechaReporteComponent.fecha_fin, 
+            this.mostrarPendientes).subscribe(
                 (result: any) => {
                     this.mensajeComponent.setMsgsEmpty();
                     this.blockUI.stop();
@@ -88,7 +102,13 @@ export class ReporteContratoListado extends ListBaseComponent implements OnInit 
                         this.ejecutarFiltro();
                         this.show = true;
                         this.disabled = false;
-                    
+                        
+                        // VALIDA EL CASO CUANDO UN USUARIO ES DIRECTO
+                        const listaUsuariosDirectos = this.cabecera.filter(x=> x.Corredor == '0050005000');
+                        if (listaUsuariosDirectos!=null && listaUsuariosDirectos.length >0){
+                            this.esCliente = true;
+                            this.esCorredor = true;
+                        }
                     }
 
                 },
@@ -115,10 +135,15 @@ export class ReporteContratoListado extends ListBaseComponent implements OnInit 
     }
 
     guardarFiltros(){
-        const {fecha_inicio, fecha_fin} = this.filtroFechaComponent
+        const {fecha_inicio, fecha_fin} = this.filtroFechaReporteComponent
        this.service.setFechas(fecha_inicio,fecha_fin ); 
     }
 
+    verDetalleContrato(numeroContrato: string){
+        this.contratoSeleccionadoId = numeroContrato;
+        this.service.setContratoSeleccionado(numeroContrato);
+    }
+    
     cargarFiltrosContratos(result: any) {
         if (result.filtroCliente != undefined) this.filtroCliente = result.filtroCliente.options;
         if (result.filtroProducto != undefined) this.filtroProducto = result.filtroProducto.options;
@@ -141,7 +166,8 @@ export class ReporteContratoListado extends ListBaseComponent implements OnInit 
         this.ejecutarFiltro();
     }
 
-    filtroPendientes() {
+    filtroPendientes(event) {
+        this.mostrarPendientes = event;
         this.ejecutarFiltro();
     }
 
@@ -219,8 +245,8 @@ export class ReporteContratoListado extends ListBaseComponent implements OnInit 
 
     ObtenerContratosFiltro() {
         if (this.filtroContrato == "") this.blockUI.start(''); 
-        this.subscription = this.service.obtenerContratosFiltro(this.filtroFechaComponent.fecha_inicio,
-            this.filtroFechaComponent.fecha_fin, this.mostrarPendientes, this.cabecera).subscribe(
+        this.subscription = this.service.obtenerContratosFiltro(this.filtroFechaReporteComponent.fecha_inicio,
+            this.filtroFechaReporteComponent.fecha_fin, this.mostrarPendientes, this.cabecera).subscribe(
                 (result: any) => {
                     this.mensajeComponent.setMsgsEmpty();
                     this.blockUI.stop();

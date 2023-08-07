@@ -112,6 +112,10 @@ namespace SustitucionMOAWS.OrdenCargaVisualizarCliente {
         
         private string cPEField;
         
+        private decimal kILOS_ENTREGAField;
+        
+        private bool kILOS_ENTREGAFieldSpecified;
+        
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=0)]
         public string PEDIDO {
@@ -313,6 +317,30 @@ namespace SustitucionMOAWS.OrdenCargaVisualizarCliente {
             set {
                 this.cPEField = value;
                 this.RaisePropertyChanged("CPE");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=15)]
+        public decimal KILOS_ENTREGA {
+            get {
+                return this.kILOS_ENTREGAField;
+            }
+            set {
+                this.kILOS_ENTREGAField = value;
+                this.RaisePropertyChanged("KILOS_ENTREGA");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool KILOS_ENTREGASpecified {
+            get {
+                return this.kILOS_ENTREGAFieldSpecified;
+            }
+            set {
+                this.kILOS_ENTREGAFieldSpecified = value;
+                this.RaisePropertyChanged("KILOS_ENTREGASpecified");
             }
         }
         

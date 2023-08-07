@@ -9,6 +9,8 @@ import { AltaNuevoProveedor, EnvioSolpCompra, SolpCompraDto } from './solp-compr
 import { CircularDto } from '../modelos/circular-model';
 import { PeticionDeOfertaDto, PeticionDeOfertaUsarioDto } from '../modelos/peticion-de-oferta-model';
 import { AdjudicacionDto } from '../modelos/adjudicacion';
+import { OrdenDeCompraSap } from '../modelos/ordenDeCompraSap';
+import { RegistroInfoDto } from '../modelos/registro-info';
 
 @Injectable({
     providedIn: 'root'
@@ -148,6 +150,10 @@ export class ComprasService extends BaseService {
             JornadaLaboralDesde: solp.comienzoJornadaLaboral,
             JornadaLaboralHasta: solp.terminoJornadaLaboral,
             ObservacionesCotizacion: solp.observacionesCotizacion,
+            ProveedorAsignadoId: solp.proveedorAsignado_Id,
+            TrabajoYaHecho: solp.trabajoHecho,
+            Adicional: solp.adicional,
+            NroOrdenDeCompraAdicional: solp.ordenDeCompra,
             RevisadoPor: solp.revisadoPor,
             ClaseDocumento: this.getObjetoCodigo(solp.selectClaseDocumento && solp.selectClaseDocumento.Codigo),
             Finalizar: solp.Finalizar,
@@ -344,6 +350,14 @@ export class ComprasService extends BaseService {
             .get<any[]>("/api/compras/AutocompleteServicioSolp", { params: params })
     }
 
+    autocompleteCodigoServicioSolp(valor: string) {
+        let params: HttpParams = new HttpParams()
+            .append('valor', valor)
+
+        return this.http
+            .get<any[]>("/api/compras/AutocompleteCodigoServicioSolp", { params: params })
+    }
+
     autocompleteMaterialSolp(valor: string, centroId: number) {
         let params: HttpParams = new HttpParams()
             .append('valor', valor)
@@ -351,6 +365,15 @@ export class ComprasService extends BaseService {
 
         return this.http
             .get<any[]>("/api/compras/AutocompleteMaterialSolp", { params: params })
+    }
+
+    autocompleteCodigoMaterialSolp(valor: string, centroId: number) {
+        let params: HttpParams = new HttpParams()
+            .append('valor', valor)
+            .append('centroId', centroId.toString());
+
+        return this.http
+            .get<any[]>("/api/compras/AutocompleteCodigoMaterialSolp", { params: params })
     }
 
     obtenerDatosPorCodigosSap(codigos: any[]) {
@@ -716,7 +739,12 @@ export class ComprasService extends BaseService {
         let json = JSON.stringify({
             Cotizacion_Id: adjudicacion.Cotizacion_Id,
             AdjudicacionPosiciones: adjudicacion.AdjudicacionPosiciones,
-            Solp_Id: adjudicacion.Solp_Id
+            Solp_Id: adjudicacion.Solp_Id,
+            TextoDeCabecera: adjudicacion.TextoDeCabecera,
+            CondicionesDeEntrega: adjudicacion.CondicionesDeEntrega,
+            CondicionesDePago: adjudicacion.CondicionesDePago,
+            Garantias: adjudicacion.Garantias
+
         });
 
         var payload = new FormData();
@@ -726,6 +754,51 @@ export class ComprasService extends BaseService {
             .post<any>('/api/compras/CrearOrdenDeCompra', payload, { headers: this.headers });
     }
 
+    public listarAdjudicaciones(id: number): Observable<any> {
+        let params: HttpParams = new HttpParams();
+        params = params.set("solpId", id.toString());       
+        return this.http
+            .get("/api/compras/ListarAdjudicaciones", {
+                params: params,
+                headers: this.headers,
+            });
+    }
+
+    public obtenerAdjudicacion(nroOC: number): Observable<any> {
+        let params: HttpParams = new HttpParams();
+        params = params.set("nroOC", nroOC.toString());       
+        return this.http
+            .get("/api/compras/ObtenerAdjudicacion", {
+                params: params,
+                headers: this.headers,
+            });
+    }
+
+    public obtenerOrdenDeCompra(nroOC: string): Observable<any> {
+        let params: HttpParams = new HttpParams();
+        params = params.set("nroOC", nroOC.toString());       
+        return this.http
+            .get("/api/compras/ObtenerOrdenDeCompra", {
+                params: params,
+                headers: this.headers,
+            });
+    }
+
+    // public obtenerOrdenDeCompra(filtro: string) {
+    //     let params: HttpParams = new HttpParams()
+    //     params = params.set('filtro', filtro);
+    //     return this.http
+    //         .get<OrdenDeCompraSap>('/api/compras/ObtenerOrdenDeCompra', { params: params, headers: this.headers })
+    // }
+
+    public guardarAdjudicacionAutomatica(registrosInfo: RegistroInfoDto[]) {
+        let json = JSON.stringify(registrosInfo);
+        var payload = new FormData();
+        payload.append('json', json);
+
+        return this.http
+            .post<any>('/api/compras/GuardarAdjudicacionAutomatica', payload, { headers: this.headers });
+    } 
 
 
 }

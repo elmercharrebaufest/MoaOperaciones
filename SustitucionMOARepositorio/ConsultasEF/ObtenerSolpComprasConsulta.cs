@@ -26,6 +26,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                      Id = solp.Id,
                                      NroSolp = solp.NroSolp,
                                      TipoPosicionCodigo = solp.Posiciones.Select(x => x.TipoPosicion.Codigo).FirstOrDefault(),
+                                     Adicional = solp.Adicional,
                                      PosicionCompras = (from posicion in contexto.Set<SolpPosicion>()
                                                         where posicion.Solp_Id == solp.Id && posicion.EsConcluido == true && posicion.Estado == true
                                                         orderby posicion.Indice
@@ -37,10 +38,21 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                             Indice = posicion.Indice,
                                                             Tarea = posicion.Tarea,
                                                             CentroComprasDescripcion = posicion.Centro.Descripcion,
+                                                            Centro = new TablaSapDto
+                                                            {
+                                                                CodigoSap = posicion.Centro.CodigoSap,
+                                                                Descripcion = posicion.Centro.Descripcion,
+                                                            },
                                                             AlmacenComprasDescripcion = posicion.Almacen.Descripcion,
                                                             TextoSuministro = posicion.TextoSuministro,
                                                             Modelo = posicion.Modelo,
                                                             GrupoComprasDescripcion = posicion.GrupoCompras.Codigo + " " + posicion.GrupoCompras.Descripcion,
+                                                            GrupoCompras = new TablaSapDto
+                                                            {
+                                                                CodigoSap = posicion.GrupoCompras.CodigoSap,
+                                                                Descripcion = posicion.GrupoCompras.Descripcion,
+                                                            },
+                                                            MaterialComprasCodigo = posicion.MaterialSolp.CodigoSap,
                                                             Cantidad = posicion.Cantidad,
                                                             UnidadComprasDescripcion = posicion.Unidad.Descripcion,
                                                             MonedaComprasDescripcion = posicion.Moneda.Descripcion,

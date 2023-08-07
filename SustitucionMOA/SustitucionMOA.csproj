@@ -302,6 +302,7 @@
     <Content Include="dist\glyphicons-halflings-regular.*.svg" />
     <Content Include="dist\*.js" />
     <Content Include="dist\styles.*.css" />
+    <Content Include="Libs\Kendo.DynamicLinq.dll" />
     <Content Include="NOTUSE_UPDATE.DeployParameters.Debug.xml" />
     <Content Include="PRE.DeployParameters.Debug.xml">
       <DependentUpon>PRE.DeployParameters.xml</DependentUpon>
@@ -349,6 +350,8 @@
     <Content Include="src\app\compras\dashboard\revision-tecnica\revision-tecnica.component.html" />
     <Content Include="src\app\compras\peticion-de-oferta-formulario\peticion-de-oferta-formulario.component.css" />
     <Content Include="src\app\compras\peticion-de-oferta-formulario\peticion-de-oferta-formulario.component.html" />
+    <Content Include="src\app\compras\peticion-de-oferta-formulario\registro-info\registro-info\registro-info.component.css" />
+    <Content Include="src\app\compras\peticion-de-oferta-formulario\registro-info\registro-info\registro-info.component.html" />
     <Content Include="src\app\compras\solp\finalizar\finalizar-solp.component.html" />
     <Content Include="src\app\compras\solp\solp.component.html" />
     <Content Include="src\app\compras\solp\stepper-actions\stepper-actions.component.html" />
@@ -955,6 +958,7 @@
     <Content Include="Documentacion\GMP MOA.pdf" />
     <Content Include="Documentacion\INSTRUCTIVO CARGA DE CONTRATO - CORREDOR.pdf" />
     <Content Include="Documentacion\INSTRUCTIVO CARGA DE CONTRATO - DIRECTO.pdf" />
+    <Content Include="libman.json" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\PublishFiles.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
@@ -1112,7 +1116,6 @@
     <TypeScriptCompile Include="src\app\common\models\cartaPresentacion.ts" />
     <TypeScriptCompile Include="src\app\common\models\ordenes-de-carga-fason\listarOrdenDeCargaFasonRequest.ts" />
     <TypeScriptCompile Include="src\app\common\models\ordenes-de-carga-fason\listarOrdenDeCargaFasonResponse.ts" />
-    <TypeScriptCompile Include="src\app\common\models\ordenes-de-carga-fason\ordenDeCargaFason.ts" />
     <TypeScriptCompile Include="src\app\common\models\ordenes-de-carga-fason\ordenDeCargaFasonDto.ts" />
     <TypeScriptCompile Include="src\app\common\models\precioMoaCompraNet.ts" />
     <TypeScriptCompile Include="src\app\common\models\habilitacionPizarra.ts" />
@@ -1161,6 +1164,7 @@
     <TypeScriptCompile Include="src\app\compras\enum-tipo-solp-sap.ts" />
     <TypeScriptCompile Include="src\app\compras\peticion-de-oferta-formulario\peticion-de-oferta-formulario.component.spec.ts" />
     <TypeScriptCompile Include="src\app\compras\peticion-de-oferta-formulario\peticion-de-oferta-formulario.component.ts" />
+    <TypeScriptCompile Include="src\app\compras\peticion-de-oferta-formulario\registro-info\registro-info\registro-info.component.ts" />
     <TypeScriptCompile Include="src\app\compras\preview\pliego.preview.component.ts" />
     <TypeScriptCompile Include="src\app\compras\solp\finalizar\finalizar-solp.component.spec.ts" />
     <TypeScriptCompile Include="src\app\compras\solp\finalizar\finalizar-solp.component.ts" />
@@ -1170,9 +1174,7 @@
     <TypeScriptCompile Include="src\app\compras\solp\solp.utils.ts" />
     <TypeScriptCompile Include="src\app\compras\solp\stepper-actions\stepper-actions.component.spec.ts" />
     <TypeScriptCompile Include="src\app\compras\solp\stepper-actions\stepper-actions.component.ts" />
-    <TypeScriptCompile Include="src\app\compras\solp\steps\adjuntos-cotizaciones.ts" />
     <TypeScriptCompile Include="src\app\compras\solp\steps\cotizacion\cotizacion.component.ts" />
-    <TypeScriptCompile Include="src\app\compras\solp\steps\especificaciones\adjuntos-especificaciones.ts" />
     <TypeScriptCompile Include="src\app\compras\solp\steps\especificaciones\especificaciones.component.ts" />
     <TypeScriptCompile Include="src\app\compras\solp\steps\especificaciones\especificacionesViewModel.ts" />
     <TypeScriptCompile Include="src\app\compras\solp\steps\generacion1\generacion1.component.ts" />

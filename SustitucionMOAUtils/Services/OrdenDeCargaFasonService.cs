@@ -4,11 +4,11 @@ using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Dto.OrdenDeCargaFason;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
+using SustitucionMOAModel.Enums.MoaWS.OrdenCargaWS;
 using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Helpers;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
-using SustitucionMOAWS.Enum.OrdenCargaConsumer;
 using SustitucionMOAWS.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -199,7 +199,7 @@ namespace SustitucionMOAUtils.Services
             var estadoTransportista = _consumer.GetOrdenCargaControlEstadoTransportista(CUITTransporte);
             Log.Info("TransporteExiste OrdenCargaControlEstadoRequest Result " + estadoTransportista);
 
-            return estadoTransportista == OrdenCargaControlEstado.TransportistaOK;
+            return estadoTransportista == ControlEstadoResEnum.TransportistaOK;
         }
 
         public string VerificarTransporte(int ordenId)
@@ -320,8 +320,10 @@ namespace SustitucionMOAUtils.Services
                         PatenteChasis = request.PatenteChasis,
                         //Producto =
                         Producto_Id = request.Producto_Id.MaterialId,
+
                         RazonSocialTransporte = request.RazonSocialTransporte,
-                        TransporteExiste = existeTransporte
+                        TransporteExiste = existeTransporte,
+                        KmARecorrer = request.Destino.KmARecorrer,
                     };
                     _repositorio.Agregar(ordenEntity); //TODO: ver metodo agregartodos
                     _repositorio.GuardarCambios();
@@ -363,6 +365,7 @@ namespace SustitucionMOAUtils.Services
                 orden.Producto_Id = request.Producto_Id.MaterialId;
                 orden.RazonSocialTransporte = request.RazonSocialTransporte;
                 orden.TransporteExiste = existeTransporte;
+                orden.KmARecorrer = request.Destino.KmARecorrer;
                 orden.Estado = existeTransporte ? EstadoOrdenDeCargaFason.Generada : EstadoOrdenDeCargaFason.Pendiente;
 
                 _repositorio.GuardarCambios();

@@ -1,4 +1,4 @@
-﻿using SustitucionMOAWS.Enum.OrdenCargaConsumer;
+﻿using SustitucionMOAModel.Enums.MoaWS.OrdenCargaWS;
 using SustitucionMOAWS.OrdenCargaControlSAP;
 using System;
 using System.Collections.Generic;
@@ -10,11 +10,11 @@ namespace SustitucionMOAWS.ResponseHandler.OrdenCarga
 {
     public class ControlCargaResponseHandler
     {
-        private string logResponse = string.Empty;
-        private List<OrdenCargaControlCarga> respuestasSap = new List<OrdenCargaControlCarga>();
-        private List<string> contratosSap = new List<string>();
+        private readonly string logResponse = string.Empty;
+        private readonly List<ControlCargaResEnum> respuestasSap = new List<ControlCargaResEnum>();
+        private readonly List<string> contratosSap = new List<string>();
 
-        public bool TieneMultiplesContratos { get; private set; } = false;
+        //public bool TieneMultiplesContratos { get; private set; } = false;
 
         public ControlCargaResponseHandler(ZMPES7060[] mensajesSap)
         {
@@ -24,7 +24,7 @@ namespace SustitucionMOAWS.ResponseHandler.OrdenCarga
                 logResponse += resp + ". ";
                 if (resp.Contains("|"))
                 {
-                    TieneMultiplesContratos = true;
+                    //TieneMultiplesContratos = true;
                     contratosSap.Add(resp);
                 }
                 else
@@ -38,20 +38,20 @@ namespace SustitucionMOAWS.ResponseHandler.OrdenCarga
         /// Si el cliente tiene varios contratos, devuelve los números. Sino, dispara excepción
         /// </summary>
         /// <returns>Lista de números de contratos</returns>
-        public List<string> ObtenerNumerosContratos()
-        {
-            if (contratosSap.Count <= 1)
-            {
-                throw new Exception("La respuesta de OrdenCarga no tiene múltiples contratos - " + logResponse);
-            }
-            return contratosSap.Select(c => c.Split('|')[0]).ToList();
-        }
+        //public List<string> ObtenerNumerosContratos()
+        //{
+        //    if (contratosSap.Count <= 1)
+        //    {
+        //        throw new Exception("La respuesta de OrdenCarga no tiene múltiples contratos - " + logResponse);
+        //    }
+        //    return contratosSap.Select(c => c.Split('|')[0]).ToList();
+        //}
 
         /// <summary>
         /// Obtener la respuesta recibida de SAP, si existe exactamente una. Caso contrario, devuelve excepción.
         /// Usar cuando no se contempla recibir más de una respuesta. Sino, usar método TieneRespuesta
         /// </summary>
-        public OrdenCargaControlCarga ObtenerRespuestaUnica()
+        public ControlCargaResEnum ObtenerRespuestaUnica()
         {
             if (respuestasSap.Count == 0)
             {
@@ -64,12 +64,12 @@ namespace SustitucionMOAWS.ResponseHandler.OrdenCarga
             return respuestasSap.First();
         }
 
-        public bool TieneRespuesta(OrdenCargaControlCarga respuestaSap)
+        public bool TieneRespuesta(ControlCargaResEnum respuestaSap)
         {
             return respuestasSap.Contains(respuestaSap);
         }
 
-        public string GetCodigoDeRespuesta(OrdenCargaControlCarga valor)
+        public string GetCodigoDeRespuesta(ControlCargaResEnum valor)
         {
             return ResponseConverter.GetCodigoControlCarga(valor);
         }

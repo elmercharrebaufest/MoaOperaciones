@@ -27,6 +27,9 @@ export class CircularComponent implements OnInit, OnChanges {
 
     @Input()
     public peticion: PeticionDeOfertaDto;
+
+    @Input() solicitante: boolean;
+
     fechaDeEntrega: Date
     plazoDeOferta: Date
     public circular: CircularDto;
@@ -45,14 +48,32 @@ export class CircularComponent implements OnInit, OnChanges {
     error: string = "";
     visualizarAlert = false;
     hoy: Date = new Date();
+
     constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService,
         protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService,
         protected route: ActivatedRoute, protected router: Router, private confirmationService: ConfirmationService, private formBuilder: FormBuilder) {
     }
+
     ngOnChanges(changes: SimpleChanges): void {
-        if(this.peticion != null){
-        this.selectedProv = this.peticion.Usuarios.map(x => x.UsuarioId);
+        if(!this.solicitante){
+            if(this.peticion != null){
+                this.selectedProv = this.peticion.Usuarios.map(x => x.UsuarioId);
+            } 
+        }    
+        else {
+            if(this.peticion != null){
+                if(this.peticion.PlazoDeOfertaEstado == "Abierto"){
+                    this.selectedProv = this.peticion.Usuarios
+                    .map(x => x.UsuarioId);
+                } else {
+                    this.selectedProv = this.peticion.Usuarios
+                    .filter(x => x.ValidacionCircularSolicitante) // Filtra solo los proveedores habilitados
+                    .map(x => x.UsuarioId);
+                }
+                    
+            }
         }
+        
     }
     
     ngOnInit() {

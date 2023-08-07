@@ -37,9 +37,9 @@ namespace SustitucionMOAUtils.Services
             {
                 throw new ValidationCustomException("El Cliente/Corredor no puede estar vacío");
             }
-            if ((Convert.ToDateTime(fechaInicio) - Convert.ToDateTime(fechaFin)).TotalDays > 180)
+            if ((Convert.ToDateTime(fechaFin) - Convert.ToDateTime(fechaInicio)).TotalDays > 240)
             {
-                throw new ValidationCustomException("El rango de fecha no puede ser mayor a 180 días.");
+                throw new ValidationCustomException("El rango de fecha no puede ser mayor a 240 días.");
             }
 
             List<FechaWS> fechas = new List<FechaWS>();
@@ -66,12 +66,10 @@ namespace SustitucionMOAUtils.Services
             else
             {
                 view.data = dataFiltro;
-
             }
-
             validarRespuesta(dataFiltro == null ? view.data : dataFiltro);
             var obtenerAgrupado = obtenerAgrupadoProducto(view);
-            view.data.Resultados = obtenerAgrupado.data.Resultados.OrderByDescending(x => x.FechaDesde).OrderByDescending(y => y.DescripcionMaterial).ToList();
+            view.data.Resultados = obtenerAgrupado.data.Resultados.OrderBy(o => o.DescripcionMaterial).ThenBy(o => o.FechaDesde).ToList();
             return view;
         }
 

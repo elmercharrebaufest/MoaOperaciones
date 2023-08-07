@@ -20,11 +20,11 @@ namespace SustitucionMOAExternalAPI.Controllers
         }
 
         [Authorize(Roles = "APIKEY")]
-        public IHttpActionResult Get(string patenteChasis = null)
+        public IHttpActionResult Get(string patenteChasis = null, bool fason = true, bool fas = false)
         {
             try
             {
-                var ordenes = _ordenesCargaApi.ObtenerOrdenes(patenteChasis);
+                var ordenes = _ordenesCargaApi.ObtenerOrdenes(patenteChasis, fason, fas);
                 return Json(ordenes);
             }
             catch (Exception ex)

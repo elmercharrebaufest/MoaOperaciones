@@ -12,7 +12,7 @@
                             d&iacute;as corridos *
 
                             <div *ngIf="mostrarError('ejecucion')">
-                                <p class="text-danger">campo obligatorio</p>
+                                <p class="text-danger">Campo obligatorio</p>
                             </div>
                         </div>
 
@@ -23,13 +23,13 @@
                         <p-fileUpload [styles]="{'margin-left':'-13px'}" name="fileUploadCotizaciones" auto="true" multiple="multiple" chooseLabel="Elegir archivo"
                                         [showUploadButton]=false [showCancelButton]=false [customUpload]="true" (uploadHandler)="uploadHandler($event)">
                             <ng-template *ngIf="model.archivosCotizacionesNuevos.length == 0" pTemplate="toolbar">
-                                <div *ngIf="model.archivosCotizacionesNuevos.length == 0"
+                                <div *ngIf="model.archivosCotizacionesNuevos.length == 0" 
                                         style="display: inline !important; font-family: Roboto Regular !important; color: #666666;">
                                     Ningun archivo elegido
                                 </div>
                             </ng-template>
                             <ng-template let-file pTemplate="file">
-                            </ng-template>
+                            </ng-template>                     
                         </p-fileUpload>
                     </div>
                     <div class="col-md-12 row" style="margin-left: -1px; margin-bottom: 3px">
@@ -53,11 +53,17 @@
                                 </div>
                             </div>
                         </p-panel>
+                        <div *ngIf="this.model.validarTrabajoHecho == false && ((this.model.archivosCotizaciones == null || this.model.archivosCotizaciones.length == 0) && (this.model.archivosCotizacionesNuevos == null || this.model.archivosCotizacionesNuevos.length == 0));">
+                            <p class="text-danger">Campo obligatorio</p>
+                        </div>
                     </div>
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 margenInput">
                         Observaciones
-                        <textarea [ngModelOptions]="{standalone:true}" [(ngModel)]="model.observacionesCotizacion"
-                                    name="observaciones" id="observaciones" cols="30" rows="5"></textarea>
+                        <textarea [ngModelOptions]="{standalone:true}" [(ngModel)]="model.observacionesCotizacion" (ngModelChange)="validacionTrabajoHecho()"
+                                    name="observaciones" id="observaciones" cols="30" rows="5" placeholder="Indicar la cantidad de días con que se cuenta a partir de tener el equipo disponible, en una parada programada o que el trabajo depende de otros"></textarea>
+                        <div *ngIf="this.model.validarTrabajoHecho == false && (this.model.observacionesCotizacion == ''  || this.model.observacionesCotizacion == undefined || this.model.observacionesCotizacion == null)">
+                            <p class="text-danger">Campo obligatorio</p>
+                        </div>
                     </div>
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 margenInput">
                         <div class="inline-flex">
@@ -67,7 +73,7 @@
                                                 [(model)]="model.jornadaLaboralDias"></weekday-select>
 
                                 <div *ngIf="mostrarValidacion('dias')">
-                                    <p class="text-danger">campo obligatorio</p>
+                                    <p class="text-danger">Campo obligatorio</p>
                                 </div>
                             </div>
                             <div class="col-flex">
@@ -79,7 +85,7 @@
                                                 icon="fa fa-clock-o" [timeOnly]="true"></p-calendar>
 
                                     <div *ngIf="mostrarError('comienzoJornadaLaboral')">
-                                        <p class="text-danger">campo obligatorio</p>
+                                        <p class="text-danger">Campo obligatorio</p>
                                     </div>
                                 </div>
                                 <div>
@@ -90,11 +96,71 @@
                                                 icon="fa fa-clock-o" [timeOnly]="true"></p-calendar>
 
                                     <div *ngIf="mostrarError('terminoJornadaLaboral')">
-                                        <p class="text-danger">campo obligatorio</p>
+                                        <p class="text-danger">Campo obligatorio</p>
                                     </div>
                                 </div>
                             </div>
                         </div>
+                        <div class="col-xs-12 col-sm-12 col-md-12 margenInput" style="margin-top: 2em;">
+                            <label class="labelCompras" for="checkbox"> Condiciones especiales</label>
+                            <div>
+                                <p-checkbox [ngModelOptions]="{standalone:true}" name="trabajoHecho" [(ngModel)]="model.trabajoHecho" label="Trabajo ya hecho" formControlName="trabajoHecho"
+                                binary="true" (click)="validacionTrabajoHecho(); limpiarCheck();" [disabled]="validarCondiciones('trabajoHecho')"></p-checkbox>
+                            </div> 
+                        </div>
+                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" *ngIf="model.trabajoHecho">
+                            <div class="col-xs-12 col-sm-10" style="font-size: 14px;">
+                                <strong>Selección de proveedores</strong>
+                            </div>
+                            <div class="col-xs-12 col-sm-10 col-md-4" style="font-size: 24px; margin-bottom: 20px;">
+                                <p-autoComplete [(ngModel)]="proveedorSeleccionado"
+                                                [suggestions]="proveedores"
+                                                (completeMethod)="searchProveedor($event)"
+                                                (onSelect)="selectProveedor($event)"
+                                                placeholder="Seleccione un proveedor"
+                                                field="RazonSocial"
+                                                formControlName="proveedorSeleccionado"
+                                                [minLength]="3"
+                                                [forceSelection]="true"
+                                                [disabled]="estaFinalizada"
+                                                (ngModelChange)="validacionTrabajoHecho()">
+                                    <ng-template let-proveedor pTemplate="item">
+                                        <div class="ui-helper-clearfix">
+                                            <div style="font-size:12px;margin:10px 10px 0 0">{{proveedor.Mail}}</div>
+                                            <div style="font-size:10px;color:darkgrey;margin:10px 10px 0 0">{{proveedor.CUIT}} - {{proveedor.RazonSocial}}</div>
+                                        </div>
+                                    </ng-template>
+                                </p-autoComplete>
+                                <div *ngIf="this.model.validarTrabajoHecho == false && (!this.proveedorSeleccionado || this.proveedorSeleccionado == '' || this.proveedorSeleccionado === undefined);">
+                                    <p class="text-danger" style="font-size: 16px; margin-top: 1em;">Campo obligatorio</p>
+                                </div>
+                            </div>
+                        </div>  
+                        <div class="col-xs-12 col-sm-12 col-md-12 margenInput" style="margin-top: 1em;">
+                            <p-checkbox [ngModelOptions]="{standalone:true}" name="adicional" [(ngModel)]="model.adicional" label="Adicional / Mano de obra administrada / Ajuste" formControlName="adicional"
+                            binary="true" (click)="validacionTrabajoHecho();" [disabled]="validarCondiciones('adicional')"></p-checkbox>
+                        </div>
+                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" *ngIf="model.adicional">
+                            <div class="col-xs-12 col-sm-10" style="font-size: 14px;">
+                                <strong>Ingrese Nro. de orden de compra</strong>
+                            </div>
+                            <div class="col-xs-12 col-sm-10 col-md-4" style="font-size: 24px; margin-bottom: 20px;">
+                                <input type="text"  
+                                    class="styled-select inputAltura"
+                                    pInputText
+                                    [(ngModel)]="model.ordenDeCompra" 
+                                    [disabled]="true"
+                                    (keyup)="obtenerOrdenDeCompra()" 
+                                    placeholder="Nro de orden de compra"
+                                    formControlName="ordenDeCompra"
+                                    maxlength="10" 
+                                    (ngModelChange)="limpiarCheckAdicional();">
+                            </div>
+                            <div class="col-xs-12 col-sm-10 col-md-4" *ngIf="ordenDeCompraSap != null && ordenDeCompraSap.Error == null && model.ordenDeCompra != ''">
+                                <label for="ordenDeCompra"><strong>Razon social: {{ordenDeCompraSap?.Cabecera?.RazonSocialProveedor}}</strong></label>
+
+                            </div>
+                        </div>  
                     </div>
                 </div>
                 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 alinearTitulo">

@@ -6,6 +6,8 @@ import { throwError as observableThrowError, Observable } from 'rxjs';
 import { OrdenDeCargaFasonDto } from '../common/models/ordenes-de-carga-fason/ordenDeCargaFasonDto';
 import { ListarOrdenDeCargaFasonResponse } from '../common/models/ordenes-de-carga-fason/listarOrdenDeCargaFasonResponse';
 import { NumberFormat } from 'xlsx/types';
+import { ApiResponse } from '../common/models/response';
+import { DestinoFason } from './orden-carga-fason-utils';
 
 @Injectable({
   providedIn: 'root'
@@ -15,8 +17,8 @@ export class OrdenesDeCargaFasonService extends BaseService {
 
   public listado(fechaInicio: string, fechaFin: string): Observable<any> {
     let params: HttpParams = new HttpParams()
-        .append("fechaInicio", fechaInicio)
-        .append("fechaFin", fechaFin);
+      .append("fechaInicio", fechaInicio)
+      .append("fechaFin", fechaFin);
     return this.http.get<ListarOrdenDeCargaFasonResponse>('/api/OrdenDeCargaFason/Listar', { params: params })
       .pipe(timeoutWith(30000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor intentelo mas tarde"))));
   }
@@ -24,29 +26,29 @@ export class OrdenesDeCargaFasonService extends BaseService {
   public agregar(ordenDeCargaFason: OrdenDeCargaFasonDto): Observable<any> {
     let payload = new FormData();
     payload.append(
-        "ordenDeCargaFasonJson",
-        JSON.stringify(ordenDeCargaFason)
+      "ordenDeCargaFasonJson",
+      JSON.stringify(ordenDeCargaFason)
     );
     console.log("payload:", payload)
 
     return this.http
-        .post('/api/OrdenDeCargaFason/Agregar', payload)
-        .pipe(timeoutWith(90000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor intentelo mas tarde"))));
+      .post('/api/OrdenDeCargaFason/Agregar', payload)
+      .pipe(timeoutWith(90000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor intentelo mas tarde"))));
   }
 
   public editar(ordenDeCargaFason: OrdenDeCargaFasonDto): Observable<any> {
     let payload = new FormData();
     console.log(ordenDeCargaFason)
     payload.append(
-        "ordenDeCargaJson",
-        JSON.stringify(ordenDeCargaFason)
+      "ordenDeCargaJson",
+      JSON.stringify(ordenDeCargaFason)
     );
     console.log("payload:", payload)
 
     return this.http
-        .post('/api/OrdenDeCargaFason/Editar', payload)
-        //.post('/api/OrdenDeCargaFason/Editar', payload)
-        .pipe(timeoutWith(90000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor intentelo mas tarde"))));
+      .post('/api/OrdenDeCargaFason/Editar', payload)
+      //.post('/api/OrdenDeCargaFason/Editar', payload)
+      .pipe(timeoutWith(90000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor intentelo mas tarde"))));
   }
 
   public getMateriales(): Observable<any> {
@@ -62,20 +64,20 @@ export class OrdenesDeCargaFasonService extends BaseService {
       .pipe(timeoutWith(30000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor intentelo mas tarde"))));
   }
 
-  public getDestino(clienteId: string): Observable<any> {
+  public getDestino(clienteId: string): Observable<ApiResponse<Array<DestinoFason>>> {
     let params: HttpParams = new HttpParams()
-       .append("clienteId", clienteId.toString())
-   return this.http.get('/api/OrdenDeCargaFason/ObtenerDestinos', { params: params, headers: this.headers })
-     .pipe(timeoutWith(30000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor intentelo mas tarde"))));
+      .append("clienteId", clienteId.toString())
+    return this.http.get<ApiResponse<Array<DestinoFason>>>('/api/OrdenDeCargaFason/ObtenerDestinos', { params: params, headers: this.headers })
+      .pipe(timeoutWith(30000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor intentelo mas tarde"))));
   }
 
- public getClientes(codigoCorredor: string): Observable<any> {
-  let params: HttpParams = new HttpParams();
+  public getClientes(codigoCorredor: string): Observable<any> {
+    let params: HttpParams = new HttpParams();
     params = params.append("codigoCorredor", codigoCorredor);
 
     return this.http
-        .get('/api/OrdenDeCargaFason/ObtenerClientes', { params: params, headers: this.headers })
-        .pipe(timeoutWith(90000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor intentelo mas tarde"))));
+      .get('/api/OrdenDeCargaFason/ObtenerClientes', { params: params, headers: this.headers })
+      .pipe(timeoutWith(90000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor intentelo mas tarde"))));
   }
 
   public verificarTransporte(IdOrdenCargaFason: Number): Observable<any> {
@@ -88,8 +90,8 @@ export class OrdenesDeCargaFasonService extends BaseService {
 
   public obtenerCorredores(): Observable<any> {
     return this.http
-        .get('/api/OrdenDeCargaFason/ObtenerCorredores')
-        .pipe(timeoutWith(90000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor intentelo mas tarde"))));
+      .get('/api/OrdenDeCargaFason/ObtenerCorredores')
+      .pipe(timeoutWith(90000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor intentelo mas tarde"))));
   }
 
 }

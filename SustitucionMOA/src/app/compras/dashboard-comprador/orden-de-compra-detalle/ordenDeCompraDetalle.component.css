@@ -33,3 +33,16 @@
   font-size: 11px !important;
 
 }
+
+::ng-deep .ui-accordion-content-wrapper-overflown{
+  height: 0 !important;
+  overflow: hidden !important;
+}
+
+::ng-deep .ui-accordion .ui-accordion-header:hover a{
+text-decoration: none ;
+}
+
+::ng-deep .ui-accordion .ui-accordion-header:focus a{
+text-decoration: none ;
+}

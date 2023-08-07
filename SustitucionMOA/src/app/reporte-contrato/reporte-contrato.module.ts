@@ -13,6 +13,7 @@ import { NgxMaskModule } from 'ngx-mask';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { CheckboxModule } from 'primeng/checkbox';
 import { DetalleComponent } from './detalle/reporte-contrato.detalle.component';
+import { OrdenesDeCargaModule } from '../ordenes-de-carga/ordenes-de-carga.module';
 
 
 
@@ -26,8 +27,8 @@ import { DetalleComponent } from './detalle/reporte-contrato.detalle.component';
         ButtonModule, DropdownModule, AutoCompleteModule,
         NgxMaskModule,
         MultiSelectModule,
-        CheckboxModule
-        
+        CheckboxModule,
+        OrdenesDeCargaModule,
   ],
     declarations: [
         ReporteContratoListado,

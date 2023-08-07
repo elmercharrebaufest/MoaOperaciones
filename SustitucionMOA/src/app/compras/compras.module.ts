@@ -72,8 +72,10 @@ import { CotizacionMaterialComponent } from './dashboard-proveedor/cotizacion-fo
 import { CotizacionServicioComponent } from './dashboard-proveedor/cotizacion-formulario/cotizacion-servicio/cotizacion-servicio.component';
 import { PanelHorasComponent } from './panel-horas/panel-horas.component';
 import { OrdenDeCompraDetalleComponent } from './dashboard-comprador/orden-de-compra-detalle/ordenDeCompraDetalle.component';
+import { TextosAdjudicarComponent } from './dashboard-comprador/ver-ofertas/textos-adjudicar/textos-adjudicar.component';
 
-
+import {AccordionModule} from 'primeng/accordion';
+import { RegistroInfoComponent } from './peticion-de-oferta-formulario/registro-info/registro-info/registro-info.component';
 
 @NgModule({
     imports: [
@@ -109,7 +111,8 @@ import { OrdenDeCompraDetalleComponent } from './dashboard-comprador/orden-de-co
         TooltipModule,
         TabViewModule,
         NgbAlertModule,
-        NgxMaskModule
+        NgxMaskModule,
+        AccordionModule
     ],
     declarations: [
         SolpComponent,
@@ -147,7 +150,9 @@ import { OrdenDeCompraDetalleComponent } from './dashboard-comprador/orden-de-co
         CotizacionMaterialComponent,
         CotizacionServicioComponent,
         PanelHorasComponent,
-        OrdenDeCompraDetalleComponent
+        OrdenDeCompraDetalleComponent,
+        TextosAdjudicarComponent,
+        RegistroInfoComponent
     ],
     providers: [
         ComprasService,

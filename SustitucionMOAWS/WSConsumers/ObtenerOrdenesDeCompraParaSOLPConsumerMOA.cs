@@ -1,0 +1,77 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using SustitucionMOAFotmatter;
+using SustitucionMOAModel.CustomExceptions;
+using SustitucionMOAModel.Dto;
+using SustitucionMOAModel.Models.WSMapMOA.Vendedor.Detalle;
+using SustitucionMOAWS.CredentialService;
+using SustitucionMOAWS.OrdenesDeCompraParaSolpWebServiceMOA;
+
+
+namespace SustitucionMOAWS.WSConsumers
+{
+    public class ObtenerOrdenesDeCompraParaSOLPConsumerMOA : IObtenerOrdenesDeCompraParaSOLPConsumerMOA
+    {
+        Z_MMRFC_OC_PARA_SOLPPortTypeClient service;
+
+        public ObtenerOrdenesDeCompraParaSOLPConsumerMOA()
+        {
+
+        }
+
+        public List<OrdenDeCompraSAPDto> Request(string SOLPED, string POSICION)
+        {
+            string exito = "";
+            string resultado = "";
+
+            service = new Z_MMRFC_OC_PARA_SOLPPortTypeClient();
+            service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
+            service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
+            ZMMES0027[] lista = service.Z_MMRFC_OC_PARA_SOLP(POSICION, SOLPED, out exito, out resultado);
+            return Map(lista, exito, resultado);
+        }
+
+        private List<OrdenDeCompraSAPDto> Map(ZMMES0027[] items, string exito, string resultado)
+        {
+            if (exito != "200")
+            {
+                throw new ValidationCustomException(resultado);
+            }
+            List<OrdenDeCompraSAPDto> result = new List<OrdenDeCompraSAPDto>();
+
+            var agrupado = items.GroupBy(a => a.EBELN).ToList();
+            foreach (var item in agrupado)
+            {
+                result.Add(new OrdenDeCompraSAPDto
+                {
+                    Cabecera = new OrdenDeCompraSAPCabecera
+                    {
+                        OrdenDeCompra = item.Key,
+                        CodigoProveedor = item.First().LIFNR,
+                        RazonSocialProveedor = item.First().NAME1,
+                        CUITProveedor = item.First().STCD1,
+                        Moneda = item.First().WAERS,
+                        MontoTotal = item.Sum(a => a.NETWR),
+                        CreadoPor = item.First().ERNAM,
+                        ClaseDocumento = item.First().BSART,
+                        FechaCreacion = SAPFormatter.GetDateTime(item.First().AEDAT),
+                        Tipo = item.First().PSTYP == "0" ? "Materiales" : "Servicios",
+                        TipoDocCompras = item.First().BSTYP,
+
+                    }
+                });
+            }
+
+
+            return result;
+        }
+    }
+
+    public interface IObtenerOrdenesDeCompraParaSOLPConsumerMOA
+    {
+        List<OrdenDeCompraSAPDto> Request(string SOLPED, string POSICION);
+    }
+}

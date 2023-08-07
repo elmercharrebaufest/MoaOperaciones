@@ -17,12 +17,14 @@ namespace SustitucionMOA.Controllers
     public class OrdenDeCargaController : BaseController
     {
         readonly IOrdenDeCargaService ordenDeCargaService;
+        private readonly IFacturaAnticipadaService _facturaAnticipadaService;
         private readonly IConsultaService consultaService;
 
-        public OrdenDeCargaController(IConsultaService consultaService, IOrdenDeCargaService ordenDeCargaService)
+        public OrdenDeCargaController(IConsultaService consultaService, IOrdenDeCargaService ordenDeCargaService, IFacturaAnticipadaService facturaAnticipadaService)
         {
             this.consultaService = consultaService;
             this.ordenDeCargaService = ordenDeCargaService;
+            _facturaAnticipadaService = facturaAnticipadaService;
         }
 
         [HttpPost]
@@ -312,53 +314,6 @@ namespace SustitucionMOA.Controllers
         }
 
         [HttpGet]
-        public ActionResult ObtenerPedidos(int ordenId)
-        {
-            try
-            {
-                return JsonCustom(new { data = ordenDeCargaService.ObtenerPedidos(ordenId) });
-            }
-            catch (InfoCustomException e)
-            {
-                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
-        }
-
-        [HttpPost]
-        public ActionResult SeleccionarPedido(int ordenId, string pedido)
-        {
-            try
-            {
-                var mailUsuario = SessionPersister.getUsername();
-
-                return JsonCustom(new { data = ordenDeCargaService.SeleccionarPedido(ordenId, pedido, mailUsuario) });
-            }
-            catch (InfoCustomException e)
-            {
-                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
-        }
-
-
-        [HttpGet]
         public ActionResult VerificarSituacionCrediticia(int ordenId)
         {
             try
@@ -389,7 +344,7 @@ namespace SustitucionMOA.Controllers
             {
                 var mailUsuario = SessionPersister.getUsername();
 
-                return JsonCustom(new { data = ordenDeCargaService.VerificarTransporte(ordenId) });
+                return JsonCustom(new { data = ordenDeCargaService.VerificarTransporte(ordenId, mailUsuario) });
             }
             catch (InfoCustomException e)
             {
@@ -574,7 +529,7 @@ namespace SustitucionMOA.Controllers
         }
 
         [HttpGet]
-        public ActionResult VisualizarCliente(string corredor, string fechaInicio, string fechaFin, string pendiente)
+        public ActionResult VisualizarCliente(string corredor, string fechaInicio, string fechaFin)
         {
             try
             {
@@ -584,7 +539,7 @@ namespace SustitucionMOA.Controllers
                     Corredor = corredor,
                     FechaInicio = fechaInicio,
                     FechaFin = fechaFin,
-                    Pendiente = pendiente
+                    Pendiente = true
                 };
                 var response = ordenDeCargaService.VisualizarCliente(request);
                 return JsonCustom(response);
@@ -605,7 +560,7 @@ namespace SustitucionMOA.Controllers
         }
 
         [HttpGet]
-        public ActionResult VisualizarProducto(string contrato, string fechaInicio, string fechaFin, string pendiente)
+        public ActionResult VisualizarProducto(string contrato, string fechaInicio, string fechaFin)
         {
             try
             {
@@ -615,7 +570,7 @@ namespace SustitucionMOA.Controllers
                     Contrato = contrato,
                     FechaInicio = fechaInicio,
                     FechaFin = fechaFin,
-                    Pendiente = pendiente
+                    Pendiente = true
                 };
                 var response = ordenDeCargaService.VisualizarProducto(request);
                 return JsonCustom(response);
@@ -636,7 +591,7 @@ namespace SustitucionMOA.Controllers
         }
 
         [HttpGet]
-        public ActionResult ValidarCorredorClienteContratoProducto(string clienteCuit, string clienteCodigo, string contrato, string corredor, string usuarioEmail, string fechaInicio, string fechaFin, string productoId, string pendiente)
+        public ActionResult ValidarCorredorClienteContratoProducto(string clienteCuit, string clienteCodigo, string contrato, string corredor, string usuarioEmail, string fechaInicio, string fechaFin, string productoId)
         {
             try
             {
@@ -650,7 +605,7 @@ namespace SustitucionMOA.Controllers
                     FechaInicio = fechaInicio,
                     FechaFin = fechaFin,
                     ProductoId = productoId,
-                    Pendiente = pendiente
+                    Pendiente = true
                 };
                 var response = ordenDeCargaService.ValidarCorredorClienteContratoProducto(request);
                 return JsonCustom(response);
@@ -675,7 +630,6 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-
                 var mailUsuario = SessionPersister.getUsername();
                 return JsonCustom(new { data = ordenDeCargaService.NotificarVencimientoOrdenCarga(ordenId, mailUsuario) });
             }
@@ -938,6 +892,7 @@ namespace SustitucionMOA.Controllers
             }
             return ContentCustom(response);
         }
+        [HttpGet]
         public ActionResult ValidarCuilChofer(string cuilChofer)
         {
             var response = new SustitucionMOAApiResponse<bool>();
@@ -960,12 +915,85 @@ namespace SustitucionMOA.Controllers
             }
             return ContentCustom(response);
         }
+        [HttpGet]
         public ActionResult ValidarCuitTransporte(string cuitTransporte)
         {
             var response = new SustitucionMOAApiResponse<bool>();
             try
             {
                 response.Data = ordenDeCargaService.ValidarCuitTransporteDigito(cuitTransporte);
+            }
+            catch (InfoCustomException ice)
+            {
+                response.Info = ice.Message;
+            }
+            catch (ValidationCustomException vce)
+            {
+                response.Error = vce.Message;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                response.Error = ErrorMsg.Error;
+            }
+            return ContentCustom(response);
+        }
+        [HttpGet]
+        public ActionResult FacturasDisponibles(string numeroContrato)
+        {
+            var response = new SustitucionMOAApiResponse<List<FacturaOrdenCarga>>();
+            try
+            {
+                response.Data = _facturaAnticipadaService.ObtenerFacturasDeContrato(numeroContrato);
+            }
+            catch (InfoCustomException ice)
+            {
+                response.Info = ice.Message;
+            }
+            catch (ValidationCustomException vce)
+            {
+                response.Error = vce.Message;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                response.Error = ErrorMsg.Error;
+            }
+            return ContentCustom(response);
+        }
+        [HttpPost]
+        public ActionResult SeleccionarFactura(int ordenId, string facturaSeleccionada)
+        {
+            var response = new SustitucionMOAApiResponse<bool>();
+            try
+            {
+                var mailUsuario = SessionPersister.getUsername();
+                ordenDeCargaService.SeleccionarFactura(ordenId, facturaSeleccionada, mailUsuario);
+                response.Data = true;
+            }
+            catch (InfoCustomException ice)
+            {
+                response.Info = ice.Message;
+            }
+            catch (ValidationCustomException vce)
+            {
+                response.Error = vce.Message;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                response.Error = ErrorMsg.Error;
+            }
+            return ContentCustom(response);
+        }
+        [HttpGet]
+        public ActionResult VerificarCompensacion(int ordenId)
+        {
+            var response = new SustitucionMOAApiResponse<bool>();
+            try
+            {
+                ordenDeCargaService.VerificarCompensacion(ordenId);
+                response.Data = true;
             }
             catch (InfoCustomException ice)
             {

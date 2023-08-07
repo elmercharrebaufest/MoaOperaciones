@@ -4,6 +4,16 @@ export interface AdjudicacionDto{
     AdjudicacionPosiciones?: AdjudicacionPosicionDto[]
     Solp_Id?: number
     Moneda_Id?: number
+    TextoDeCabecera?: string
+    CondicionesDeEntrega?: string
+    CondicionesDePago?: string
+    Garantias?: string      
+    TipoPosicionCodigo ?: string
+    NumeroOrdenDeCompra ?: string
+    FechaCreacion ?: string
+    Proveedor ?: string
+    MonedaDescripcion?: string
+    PrecioFinal ?: number 
 }
 
 export interface AdjudicacionPosicionDto{

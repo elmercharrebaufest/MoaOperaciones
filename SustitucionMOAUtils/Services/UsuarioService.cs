@@ -412,7 +412,7 @@ namespace SustitucionMOAUtils.Services
             return proveedores.ToList();
         }
 
-        public ResultadoGenerico GrabarProveedor(ProveedorDto proveedorDto)
+        public ResultadoGenerico GrabarProveedor(ProveedorDto proveedorDto, EstadoAprobacion estadoAprobacion = EstadoAprobacion.DocumentacionPendiente)
         {
             UsuarioNoGranos usuarioNoGranos = new UsuarioNoGranos { Mail = proveedorDto.Mail, CUITRegistro = proveedorDto.CUIT, SeccionesVisitadas = "" };
 
@@ -445,7 +445,7 @@ namespace SustitucionMOAUtils.Services
                 Proveedor proveedor = new Proveedor
                 {
                     CUIT = usuario.CUITRegistro,
-                    EstadoAprobacion = EstadoAprobacion.DocumentacionPendiente,
+                    EstadoAprobacion = estadoAprobacion,
                     Observaciones = "Proveedor agregado por compras",
                     Mail = usuario.Mail,
                     TipoProveedor = tipoUsuario,
@@ -459,7 +459,7 @@ namespace SustitucionMOAUtils.Services
                 new ProveedorHistorialAprobacion()
                 {
                     Fecha = DateTime.Now,
-                    EstadoAprobacion = EstadoAprobacion.DocumentacionPendiente,
+                    EstadoAprobacion = estadoAprobacion,
                     Observacion = "Registro de usuario",
                     Usuario_Id = usuario.Id
                 }
@@ -673,6 +673,27 @@ namespace SustitucionMOAUtils.Services
 
             }
             return resultado;
+        }
+
+        public ProveedorDto TraerProveedorEnSAP(string codigoProveedor, string codigoCorredor)
+        {
+            //tengo que preguntar si es corredor o proveedor?
+            var proveedorSAP = new VendedorDetalleConsumerMOA().request(codigoProveedor, codigoCorredor);
+            var tipoProveedorGranos = repositorio.Obtener<TipoUsuario>(t => t.NombreCorto == "G");
+
+            ProveedorDto proveedor = new ProveedorDto
+            {
+                //IdProveedorCorredor = corredor.Id,
+                Mail = "",
+                Observaciones = "Proveedor agregado automaticamente por MOA Operaciones",
+                CodigoProveedor = codigoProveedor,
+                CUIT = proveedorSAP.cabeceras.FirstOrDefault().cuit,
+                RazonSocial = proveedorSAP.cabeceras.FirstOrDefault().descripcion,
+                EstadoAprobacion = EstadoAprobacion.Aprobado,
+                IdTipoUsuario = tipoProveedorGranos.Id
+            };
+
+            return proveedor;
         }
 
 

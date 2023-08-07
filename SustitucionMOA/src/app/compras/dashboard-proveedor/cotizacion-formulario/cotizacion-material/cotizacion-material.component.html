@@ -59,7 +59,7 @@
                     <td class="columna">{{posicionesCompra?.Posiciones?.Tarea}}</td>
                     <td class="columna">{{posicionesCompra?.Posiciones?.TextoSuministro}}</td>
                     <td class="columna">{{posicionesCompra?.Posiciones?.Modelo}}</td>
-                    <td class="columna">{{posicionesCompra?.Posiciones?.Cantidad | number: '1.0-0'}}</td>
+                    <td class="columna">{{posicionesCompra?.Posiciones?.Cantidad | number:'1.2-2'}}</td>
                     <td class="columna">{{posicionesCompra?.Posiciones?.UnidadComprasDescripcion}}</td>
 
                     <td pEditableColumn class="columna">
@@ -67,13 +67,13 @@
                             <ng-template pTemplate="input">
                                 <input pInputText type="number" [disabled]="posicionesCompra.Posiciones.CotizacionPosicion.NoDisponible == true"
                                     [(ngModel)]="posicionesCompra.Posiciones.CotizacionPosicion.Cantidad"
-                                    pKeyFilter="int"
+                                    pKeyFilter="num"
                                     (ngModelChange)="calcularValorNeto(posicionesCompra?.Posiciones?.CotizacionPosicion, posicionesCompra.Id); mostrarMensajeNoRespetaCondiciones()" />
                             </ng-template>
                             <ng-template pTemplate="output">
                                 <div [ngClass]="{'invalido': (esFinalizado && posicionesCompra.Posiciones.CotizacionPosicion.Cantidad != undefined) && 
                               (posicionesCompra.Posiciones.CotizacionPosicion.Cantidad <= 0)} ">
-                                    {{ posicionesCompra?.Posiciones?.CotizacionPosicion?.Cantidad | number }} </div>
+                                    {{ posicionesCompra?.Posiciones?.CotizacionPosicion?.Cantidad | number:'1.2-2'}} </div>
                             </ng-template>
                         </p-cellEditor>
                     </td>

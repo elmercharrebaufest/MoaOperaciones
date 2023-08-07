@@ -22,6 +22,12 @@ namespace SustitucionMOAModel.Entities
         public int Moneda_Id { get; set; }
         public decimal MontoTotal { get; set; }
 
+        public string TextoDeCabecera { get; set; }
+        public string CondicionesDeEntrega { get; set; }
+        public string CondicionesDePago { get; set; }
+        public string Garantias { get; set; }
+
+
         [ForeignKey("UsuarioCreador_Id")]
         public virtual Usuario Usuario { get; set; }
 

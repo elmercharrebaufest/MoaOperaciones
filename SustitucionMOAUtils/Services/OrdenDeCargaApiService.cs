@@ -4,20 +4,26 @@ using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Interfaces;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SustitucionMOAUtils.Services
 {
     public class OrdenDeCargaApiService : IOrdenDeCargaApiService
     {
+        private readonly List<EstadoOrdenDeCargaFason> _estadosNoPermitidosFason;
+        private readonly List<EstadoOrdenDeCarga> _estadosNoPermitidosFas;
         private readonly IRepositorio _repositorio;
         public OrdenDeCargaApiService(IRepositorio repositorio)
         {
             _repositorio = repositorio;
+            _estadosNoPermitidosFas = new List<EstadoOrdenDeCarga> {
+                EstadoOrdenDeCarga.SinEnviarASAP ,
+                EstadoOrdenDeCarga.Anulada ,
+                EstadoOrdenDeCarga.AnuladaPorVencimiento ,
+                EstadoOrdenDeCarga.Entregada ,
+            };
+            _estadosNoPermitidosFason = new List<EstadoOrdenDeCargaFason> { EstadoOrdenDeCargaFason.Entregada, EstadoOrdenDeCargaFason.SinEstado };
         }
 
         public ResultadoGenerico InformarViajeOrdenesDeCargaFas(IngresosEgresosFas ingresosEgresosFas)
@@ -52,65 +58,33 @@ namespace SustitucionMOAUtils.Services
             return new ResultadoGenerico();
         }
 
-        public List<OrdendesDeCargaApiDto> ObtenerOrdenes(string patenteChasis)
+        public List<OrdenesDeCargaApiDto> ObtenerOrdenes(string patenteChasis, bool fason, bool fas)
         {
-            var ordenesFas = _repositorio.Listar<OrdenDeCarga>(x =>
-            x.Estado != EstadoOrdenDeCarga.SinEnviarASAP &&
-            x.Estado != EstadoOrdenDeCarga.Anulada &&
-            x.Estado != EstadoOrdenDeCarga.AnuladaPorVencimiento &&
-            x.Estado != EstadoOrdenDeCarga.Entregada && 
-            (x.ChasisAcoplado == patenteChasis || patenteChasis == "" || patenteChasis == null)
-            ).ToList();
-            var ordenesFason = _repositorio.Listar<OrdenDeCargaFason>(x =>
-            x.Estado != EstadoOrdenDeCargaFason.Entregada &&
-            x.Estado != EstadoOrdenDeCargaFason.SinEstado &&
-            (x.PatenteChasis == patenteChasis || patenteChasis == "" || patenteChasis == null)
-            ).ToList();
-            List<OrdendesDeCargaApiDto> listaOrdenes = new List<OrdendesDeCargaApiDto>();
-
-            foreach (var ordenFas in ordenesFas)
+            List<OrdenesDeCargaApiDto> listaOrdenes = new List<OrdenesDeCargaApiDto>();
+            if (fas)
             {
-                var ordenFasDto = new OrdendesDeCargaApiDto();
-                ordenFasDto.Id = ordenFas.Id;
-                ordenFasDto.NombreChofer = ordenFas.NombreChofer;
-                ordenFasDto.FechaCreacion = ordenFas.FechaCarga.ToString();
-                ordenFasDto.CUITCliente = ordenFas.CUITCliente;
-                ordenFasDto.CUILChofer = ordenFas.CUITChofer;
-                ordenFasDto.CUITTransporte = ordenFas.CUITTransporte;
-                ordenFasDto.RazonSocialTransporte = ordenFas.RazonSocialTransporte;
-                ordenFasDto.Cantidad = ordenFas.Cantidad;
-                ordenFasDto.Contrato = ordenFas.ContratoIngresado;
-                ordenFasDto.Observacion = ordenFas.Observacion;
-                ordenFasDto.PatenteAcoplado = ordenFas.PatenteAcoplado;
-                ordenFasDto.PatenteChasis = ordenFas.ChasisAcoplado;
-                ordenFasDto.Pedido = ordenFas.NumeroPedido;
-                ordenFasDto.DescripcionProducto = ordenFas.Producto.Nombre;
-                ordenFasDto.TipoOrden = "OrdenCargaFas";
-                listaOrdenes.Add(ordenFasDto);
 
+                var ordenesFas = _repositorio.Listar<OrdenDeCarga>(
+                    x => !_estadosNoPermitidosFas.Contains(x.Estado) &&
+                    (x.ChasisAcoplado == patenteChasis || patenteChasis == "" || patenteChasis == null)).ToList();
+
+                foreach (var ordenFas in ordenesFas)
+                {
+                    var ordenFasDto = new OrdenesDeCargaApiDto(ordenFas);
+                    listaOrdenes.Add(ordenFasDto);
+                }
             }
-
-            foreach (var ordenFason in ordenesFason)
+            if (fason)
             {
-                var ordenFasonDto = new OrdendesDeCargaApiDto();
-                ordenFasonDto.Id = ordenFason.Id;
-                ordenFasonDto.FechaCreacion = ordenFason.FechaCreacion.ToString();
-                ordenFasonDto.FechaRetiro = ordenFason.FechaRetiro.ToString();
-                ordenFasonDto.Cantidad = ordenFason.Cantidad;
-                ordenFasonDto.PatenteAcoplado = ordenFason.PatenteAcoplado;
-                ordenFasonDto.PatenteChasis = ordenFason.PatenteChasis;
-                ordenFasonDto.NombreChofer = ordenFason.NombreChofer;
-                ordenFasonDto.CUILChofer = ordenFason.CUILChofer;
-                ordenFasonDto.RazonSocialTransporte = ordenFason.RazonSocialTransporte;
-                ordenFasonDto.CUITTransporte = ordenFason.CUITTransporte;
-                ordenFasonDto.LocalidadId = ordenFason.LocalidadId;
-                ordenFasonDto.LocalidadDescripcion = ordenFason.LocalidadDescripcion;
-                ordenFasonDto.Observacion = ordenFason.Observacion;
-                ordenFasonDto.Cliente = ordenFason.Cliente.RazonSocial;
-                ordenFasonDto.DescripcionProducto = ordenFason.Producto.Nombre;
-                ordenFasonDto.TipoOrden = "OrdenCargaFason";
-                listaOrdenes.Add(ordenFasonDto);
+                var ordenesFason = _repositorio.Listar<OrdenDeCargaFason>(
+                    x => !_estadosNoPermitidosFason.Contains(x.Estado) &&
+                    (x.PatenteChasis == patenteChasis || patenteChasis == "" || patenteChasis == null)).ToList();
+                foreach (var ordenFason in ordenesFason)
+                {
+                    var ordenFasonDto = new OrdenesDeCargaApiDto(ordenFason);
 
+                    listaOrdenes.Add(ordenFasonDto);
+                }
             }
 
             return listaOrdenes;

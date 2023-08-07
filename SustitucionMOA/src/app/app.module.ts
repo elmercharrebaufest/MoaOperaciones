@@ -123,7 +123,7 @@ import { UsuarioAuditoriaListComponent } from './usuario/usuario-auditoria-list/
     ApikeyComponent,
     PesificacionesGuardadasComponent,
     PesificacionBaseComponent,
-    ModificarDatosComponent,
+    ModificarDatosComponent,
     UsuarioAuditoriaListComponent
     ],
   providers: [

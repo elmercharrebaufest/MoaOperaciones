@@ -16,6 +16,7 @@ import { EnumTipoSolpSap } from '../enum-tipo-solp-sap';
 import { Paginator } from 'primeng/paginator';
 import { PeticionDeOfertaDto } from '../../modelos/peticion-de-oferta-model';
 import { forEach } from '@angular/router/src/utils/collection';
+import { AdjudicacionDto, AdjudicacionPosicionDto } from '../../modelos/adjudicacion';
 
 declare var $: any;
 
@@ -56,12 +57,15 @@ export class DashboardComponent extends ListBaseComponent {
     @ViewChild('paginator') paginator: Paginator
     public peticion: PeticionDeOfertaDto;
     public ordenCompra: any;
-
+    public solicitante: boolean = true;
     displayRevisionTecnica: boolean;
 
     displayCircular: boolean = false;
     combos: any;
     usuariosResult: any;
+    ordenesDeCompra: AdjudicacionDto[] = [];
+    ordenDeCompra: any;
+    displayOrdenDeCompra: boolean;
     
     constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService, protected route: ActivatedRoute, protected router: Router, private confirmationService: ConfirmationService) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
@@ -641,5 +645,98 @@ export class DashboardComponent extends ListBaseComponent {
         this.pageIndex = 1;
         this.getListarSolp();
     }
+
+    cerrarOrdenDeCompra() {
+        this.displayOrdenDeCompra = false;
+    }
+
+    verDetalleOrdenDeCompra(nroOC: any) {
+        this.obtenerAdjudicacion(nroOC);
+        this.displayOrdenDeCompra = true;
+    }
+
+    obtenerAdjudicacion(nroOC){       
+        this.blockUI.start('Cargando...')
+        this.service.obtenerAdjudicacion(nroOC)
+            .subscribe(
+                (result) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    }
+                    else {
+                        this.ordenDeCompra = result.data;                      
+                        this.blockUI.stop();
+                    }
+                },
+                (error) => {
+                    this.blockUI.stop();
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+            )
+    }
+
+    listarAdjudicaciones(solpId){      
+        this.blockUI.start('Cargando...')
+        this.service.listarAdjudicaciones(solpId)
+            .subscribe(
+                (result) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    }
+                    else {
+                        if(this.ordenesDeCompra.length > 0){
+                            for (let i = this.ordenesDeCompra.length - 1; i >= 0; i--) {
+                                if (this.ordenesDeCompra[i].Solp_Id === solpId) {
+                                  this.ordenesDeCompra.splice(i, 1);
+                                }
+                              }
+                        }                    
+                        this.mapData(result.data);        
+                        this.blockUI.stop();
+                    }
+                },
+                (error) => {
+                    this.blockUI.stop();
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+            )
+    }
+
+    filtrarOrdenesDeCompra(solpId): AdjudicacionDto[] {       
+        return this.ordenesDeCompra.filter(orden => orden.Solp_Id == solpId);
+      }
+
+      mapData(data: any[]): void {
+        data.forEach((item: any) => {
+          const adjudicacion: AdjudicacionDto = {
+            Id: item.Id,
+            Cotizacion_Id: item.Cotizacion_Id,
+            AdjudicacionPosiciones: item.AdjudicacionPosiciones.map((posicion: any) => {
+              const adjudicacionPosicion: AdjudicacionPosicionDto = {
+                Id: posicion.Id,
+                Adjudicacion_Id: posicion.Adjudicacion_Id,
+                CotizacionPosicion_Id: posicion.CotizacionPosicion_Id,
+                Cantidad: posicion.Cantidad,
+                SolpPosicion_Id: posicion.SolpPosicion_Id,
+              };
+              return adjudicacionPosicion;
+            }),
+            Solp_Id: item.Solp_Id,
+            Moneda_Id: item.Moneda_Id,
+            TextoDeCabecera: item.TextoDeCabecera,
+            CondicionesDeEntrega: item.CondicionesDeEntrega,
+            CondicionesDePago: item.CondicionesDePago,
+            Garantias: item.Garantias,
+            TipoPosicionCodigo: item.TipoPosicionCodigo || '',
+            NumeroOrdenDeCompra: item.NumeroOrdenDeCompra || '',
+            FechaCreacion: item.FechaCreacion || '',
+            Proveedor: item.Proveedor || '',
+            MonedaDescripcion: item.MonedaDescripcion || '',
+            PrecioFinal: item.PrecioFinal || 0,
+          };
+          this.ordenesDeCompra.push(adjudicacion); 
+        });
+      }
+
 }
 

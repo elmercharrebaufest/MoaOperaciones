@@ -61,6 +61,21 @@ export class Solp extends CommonResponse {
     public comienzoJornadaLaboral: Date;
     public terminoJornadaLaboral: Date;
     public observacionesCotizacion: string;
+    public trabajoHecho: boolean;
+    public adicional: boolean;
+
+    public proveedorAsignado_Id: number;
+    public proveedorAsignado: string;
+
+    public ordenDeCompra: string;
+    public codigoProveedorSap: string;
+    public RazonSocialSap: string;
+
+
+    public validarTrabajoHecho: boolean;
+    public validarAdicional: boolean;
+
+    public mensajeCotizacion: string;
 
     public archivosCotizacionesNuevos: Array<File>;
     public archivosCotizaciones: Array<ArchivoModel>
@@ -73,6 +88,7 @@ export class Solp extends CommonResponse {
     public pasoCompletado: number;
     public estadoPasos: string;
     public tableHide: boolean;
+
 
     public get ultimaPosicion(): SolpPosicion {
         //comentar linea de abajo si se quiere que no se ordene por Fecha (Mas actual primero)
@@ -134,7 +150,7 @@ export class Solp extends CommonResponse {
         this.comienzoJornadaLaboral = new Date(1, 1, 1, 7, 0, 0, 0);
         this.terminoJornadaLaboral = new Date(1, 1, 1, 16, 0, 0, 0);
         this.ejecucion = "30";
-        this.observacionesCotizacion = "Indicar la cantidad de días con que se cuenta a partir de tener el equipo disponible, en una parada programada o que el trabajo depende de otros";
+        // this.observacionesCotizacion = "Indicar la cantidad de días con que se cuenta a partir de tener el equipo disponible, en una parada programada o que el trabajo depende de otros";
 
         this.archivosCotizacionesNuevos = new Array<File>();
         this.archivosCotizaciones = new Array<ArchivoModel>();
@@ -215,6 +231,13 @@ export class Solp extends CommonResponse {
             this.terminoJornadaLaboral = new Date(this.getDateFromAspNetFormat(solp.JornadaLaboralHasta));
             this.ejecucion = solp.DiasEjecucion || '';
             this.observacionesCotizacion = solp.ObservacionesCotizacion;
+            this.proveedorAsignado_Id = solp.ProveedorAsignadoId;
+            this.proveedorAsignado = solp.ProveedorAsignado;
+            this.trabajoHecho = solp.TrabajoYaHecho;
+            this.adicional = solp.Adicional;
+            this.ordenDeCompra = solp.NroOrdenDeCompraAdicional;
+
+            
 
             //pop up finalizar
             this.revisadoPor = solp.RevisadoPor || '';

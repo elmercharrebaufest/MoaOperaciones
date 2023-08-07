@@ -180,7 +180,7 @@
                                         (onFocus)=" $event.target.select();" 
                                         (onClear)="posicion.selectAlmacenEntrega = undefined"
                                         (completeMethod)="buscarCombo($event, 'CENTRO')"
-                                        (onChange)="centroSeleccionado(); listarContratosAsociados(); eliminarContratoAsociar(posicion)"    
+                                        (onChange)="centroSeleccionado(posicion); listarContratosAsociados(); eliminarContratoAsociar(posicion)"    
                                         [disabled] = "posicion.concluido"
                                         emptyMessage="Ningún centro encontrado" 
                                         [minLength]="1" 
@@ -200,7 +200,7 @@
                                     <p-dropdown 
                                         filter="true"
                                         [(ngModel)]="posicion.selectAlmacenEntrega"                                
-                                        [options]="almacenEntrega"
+                                        [options]="posicion.selectComboAlmacenes"
                                         optionLabel="CodigoDescripcion" 
                                         dataKey="Id"
                                         appendTo="body"                                     
@@ -232,7 +232,7 @@
                                                 [width]="400" 
                                                 [minLength]="4" 
                                                 [forceSelection]="false"
-                                                (completeMethod)="autocompleteMaterialSolp($event)"
+                                                (completeMethod)="autocompleteCodigoMaterialSolp($event)"
                                                 (onFocus)="$event.target.select(); posicion.setTabPosicion();"
                                                 (paste)="onPaste($event,enumColumnaSubPosicion.CodigoServicio, rowIndex, dt)"
                                                 (onSelect)="onSelectServicio(posicion, dt); posicion.setTabPosicion();"
@@ -289,7 +289,7 @@
                                                 (ngModelChange)="calcularValorNeto(posicion)">
                                         </ng-template>
                                         <ng-template pTemplate="output">
-                                            {{posicion.cuentaTd}}
+                                            {{posicion.cuentaTd  | number:'1.2-2'}}
                                         </ng-template>
                                     </p-cellEditor>
                                 </td>

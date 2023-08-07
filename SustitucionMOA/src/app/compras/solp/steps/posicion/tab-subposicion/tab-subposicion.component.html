@@ -51,11 +51,12 @@
                                     emptyMessage="" 
                                     [width]="400" 
                                     [minLength]="2" 
-                                    [forceSelection]="true"
-                                    (completeMethod)="autocompleteServicioSolp($event)" 
+                                    (completeMethod)="autocompleteCodigoServicioSolp($event)" 
                                     (onFocus)="$event.target.select()" 
                                     (paste)="onPaste($event,enumColumnaSubPosicion.CodigoServicio,rowIndex,dt)" 
-                                    (onSelect)="onSelectServicio(posicion, dt)">
+                                    (onSelect)="onSelectServicio(posicion, dt)"
+                                    (onBlur)="checkCode(posicion)"
+                                    (ngModelChange)="clearCode2(posicion)">
                                 </p-autoComplete>
                             </ng-template>
                             <ng-template pTemplate="output">
@@ -80,7 +81,8 @@
                                     (onFocus)="$event.target.select()" 
                                     (paste)="onPaste($event,enumColumnaSubPosicion.TareaSubcontratar,rowIndex,dt)" 
                                     (onSelect)="onSelectTarea(posicion, dt)" 
-                                    (onBlur)="onBlurTarea($event, posicion)">
+                                    (onBlur)="onBlurTarea($event, posicion)"
+                                    (ngModelChange)="clearCode(posicion)">
                                 </p-autoComplete>
                             </ng-template>
                             <ng-template pTemplate="output" style="text-align: left;">
@@ -100,7 +102,7 @@
                                 (ngModelChange)="calcularValorNeto(posicion)">
                             </ng-template>
                             <ng-template pTemplate="output">
-                                {{posicion.cuentaTd}}
+                                {{posicion.cuentaTd | number:'1.2-2'}}
                                 <span class="text-danger" *ngIf="validarConNoNulo(posicion, posicion.cuentaTd, 'cuentaTd')" style="display: inline-block;">
                                     *
                                 </span>

@@ -48,6 +48,8 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                     FechaCreacionFormateadaSolp = SqlFunctions.DateName("day", po.Solp.FechaCreacion) + "/" + SqlFunctions.DatePart("month", po.Solp.FechaCreacion) + "/" + SqlFunctions.DateName("year", po.Solp.FechaCreacion),
                                     TipoPosicionCodigo = po.Solp.Posiciones.Select(x => x.TipoPosicion.Codigo).FirstOrDefault(),
                                     NroSolp = po.Solp.NroSolp,
+                                    Adicional = po.Solp.Adicional,
+                                    EstaLiberado = po.Solp.EstadoSolpSap.CodigoSap == "05",
                                     PeticionDeOfertaPosicion = (from pop in contexto.Set<PeticionDeOfertaSolpPosicion>()
                                                                 where po.Id == pop.PeticionDeOferta_Id && pop.SolpPosicion.EsConcluido == true && pop.SolpPosicion.Estado == true
                                                                 select new PeticionDeOfertaSolpPosicionDto()
@@ -99,7 +101,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                     Usuarios = (from u in contexto.Set<PeticionDeOfertaUsuario>()
                                                 join cotizacion in contexto.Set<Cotizacion>() on u.Id equals cotizacion.PeticionDeOfertaUsuario_Id into peticionCotizacion
                                                 from cotizacion in peticionCotizacion.DefaultIfEmpty()
-                                                where po.Id == u.PeticionDeOferta_Id
+                                                where po.Id == u.PeticionDeOferta_Id 
                                                 select new PeticionDeOfertaUsarioDto()
                                                 {
                                                     Id = u.Id,
@@ -121,7 +123,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                     u.Circulares.Where(circu => circu.Circular.RequiereCambioDeFechas == true && circu.Circular.PlazoDeOferta.HasValue)
                                                                     .OrderByDescending(circu => circu.Circular.PlazoDeOferta).FirstOrDefault().Circular.PlazoDeOferta.Value :
                                                                      po.PlazoDeOferta,   
-                                                    CotizacionEstado = cotizacion.CotizacionEstado.Descripcion,                                                    
+                                                    CotizacionEstado = cotizacion.CotizacionEstado.Descripcion,                                                          
                                                     Cotizacion = cotizacion != null ? new CotizacionDto()
                                                     {
                                                         Id = cotizacion.Id,
@@ -151,7 +153,8 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                             Id = ch.Id
                                                         }).ToList(),
 
-                                                        CotizacionPosiciones = cotizacion.CotizacionPosiciones.Select(p => new CotizacionPosicionDto
+                                                        CotizacionPosiciones = cotizacion.CotizacionPosiciones.Where(posic => posic.PeticionDeOfertaSolpPosicion.SolpPosicion.EsConcluido == true && posic.PeticionDeOfertaSolpPosicion.SolpPosicion.Estado == true)
+                                                        .Select(p => new CotizacionPosicionDto
                                                         {
                                                             Id = p.Id,
                                                             Cotizacion_Id = p.Cotizacion_Id,
@@ -170,7 +173,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                             TotalARPCotizacionPosicion = 0,
                                                             TotalPosicionCotizacion = 0,
                                                             TotalPesos = 0,
-                                                            NoDisponible = cotizacion != null ? cotizacion.CotizacionPosiciones.Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == p.PeticionDeOfertaSolpPosicion.Id).FirstOrDefault().NoDisponible : null,
+                                                            NoDisponible = cotizacion != null ? cotizacion.CotizacionPosiciones.Where(cp =>  cp.PeticionDeOfertaSolpPosicion_Id == p.PeticionDeOfertaSolpPosicion.Id).FirstOrDefault().NoDisponible : null,
                                                             CotizacionSubPosiciones = (from subpos in contexto.Set<CotizacionSubPosicion>()
                                                                                        where p.Id == subpos.CotizacionPosicion_Id
                                                                                        select new CotizacionSubPosicionDto()

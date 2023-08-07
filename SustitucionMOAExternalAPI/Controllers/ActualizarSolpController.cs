@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Threading;
 using System.Web.Http;
 
 namespace SustitucionMOAExternalAPI.Controllers
@@ -24,6 +25,7 @@ namespace SustitucionMOAExternalAPI.Controllers
         {
             try
             {
+                Thread.Sleep(5000);// se agrega un delay de 5seg para asegurarse que sap termino de guardar. :(
                 Log.ExternalAPIInfo(string.Format("Se informaron cambios para la SOLP: {0}", nrosolp));
                 comprasService.ObtenerSolpesDesdeSAPJob(new SustitucionMOAWS.WSConsumers.ObtenerSolpRequest
                 {

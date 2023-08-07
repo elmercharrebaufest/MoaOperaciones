@@ -42,7 +42,9 @@ import { HighlightDirective } from './directive/clickOutside.directive';
 import { BuscadorSmallComponent } from './shared-components/buscador/buscador-small/buscadorSmall.component';
 import { EmailComposeComponent } from './email-compose/email-compose.component'
 import { EmailComposeService } from './email-compose/email-compose.service';
-import { CustomDateFormat } from './pipes/jsonDate.pipe';
+import { CustomDateFormat } from './pipes/jsonDate.pipe';;
+import { FiltroFechaReporteComponent } from './view-child/filtro-fecha-reporte/filtro-fecha-reporte.component';
+import { CheckboxModule } from 'primeng/checkbox';
 
 const declaredAndExported = [
     FiltroFechaComponent,
@@ -71,7 +73,8 @@ const declaredAndExported = [
     CustomFilterBoolean, 
     BuscadorComponent,
     EmailComposeComponent,
-    CustomDateFormat
+    CustomDateFormat,
+    FiltroFechaReporteComponent,
 ];
 @NgModule({
     imports: [CommonModule, 
@@ -89,6 +92,7 @@ const declaredAndExported = [
         ChipsModule,
         InputTextModule,
         InputTextareaModule,
+        CheckboxModule
     ],
     exports: [
         CommonModule, 
