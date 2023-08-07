@@ -2,7 +2,7 @@ import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Params } from '@angular/router';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { ConfirmationService } from 'primeng/api';
-import { Material, RETIRO_EN_PATAGONIA } from '../../common/models/material';
+import { CANTIDAD_DEFAULT, CANTIDAD_PELLET_GIRASOL, CODIGO_PELLET_GIRASOL_INTEGRAL, Material, RETIRO_EN_PATAGONIA } from '../../common/models/material';
 import { OrdenDeCargaFasonDto } from '../../common/models/ordenes-de-carga-fason/ordenDeCargaFasonDto';
 import { FloatMsgService } from '../../common/services/FloatMsgService';
 import { ModalService } from '../../common/services/ModalService';
@@ -599,7 +599,12 @@ export class OrdenesDeCargaFasonAltaComponent
         }
 
         if (!this.validaCPEDG)
-            this.setearDefaultEnCPEDG()
+            this.setearDefaultEnCPEDG();
+        this.setCantidadCambioProducto();
+    }
+    setCantidadCambioProducto() {
+        this.ordenDeCargaFason.Cantidad =
+            this.ordenDeCargaFason.ProductoSeleccionado.CodigoSap == CODIGO_PELLET_GIRASOL_INTEGRAL ? CANTIDAD_PELLET_GIRASOL : CANTIDAD_DEFAULT;
     }
     setearDefaultEnCPEDG() {
         this.ordenDeCargaFason.Reventa = false;
