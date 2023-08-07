@@ -3,7 +3,6 @@ using SustitucionMOAModel.Dto.OrdenDeCarga;
 using SustitucionMOAModel.Enums.MoaWS.OrdenCargaWS;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
-using SustitucionMOAUtils.Services.Email;
 using SustitucionMOAWS.Interfaces;
 using SustitucionMOAWS.WSRequests.OrdenCarga;
 using System;

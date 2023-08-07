@@ -43,9 +43,6 @@ namespace SustitucionMOAUtils.Interfaces
         string EnviarOrdenesASAP(List<int> ordenesIds, string mailUsuario);
         ValidarSisaCorredorClienteResponse ValidarSisaCorredorCliente(string corredorCodigo, string clienteCodigo);
         bool ValidarSisaCuit(string cuit, string campo);
-        bool EmailGestionarAlta(string cuit, string razonSocial, bool esIntermediarioFlete);
-        
-        ValidarIntermediarioFleteResponse ValidarIntermediarioFlete(string cuit);
         (bool, Chofer) ValidarCuilChofer(string cuilChofer);
         bool ValidarCuilChoferDigito(string cuilChofer);
         bool ValidarCuitTransporteDigito(string cuitTransporte);

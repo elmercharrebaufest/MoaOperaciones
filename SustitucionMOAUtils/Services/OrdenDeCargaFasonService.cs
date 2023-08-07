@@ -25,9 +25,9 @@ namespace SustitucionMOAUtils.Services
         public OrdenDeCargaFasonService(IRepositorio repositorio,
             IOrdenCargaConsumerMOA ordenCargaConsumer,
             IScatoConsumer scatoConsumer,
-            IEmailFasService emailFasService,
+            IEmailFasonService emailFasonService,
             IScatoRepositorioClient scatoRepositorioClient
-            ) : base(ordenCargaConsumer, scatoConsumer, scatoRepositorioClient, emailFasService)
+            ) : base(ordenCargaConsumer, scatoConsumer, scatoRepositorioClient, emailFasonService)
         {
             _repositorio = repositorio;
         }
@@ -379,6 +379,6 @@ namespace SustitucionMOAUtils.Services
                 request.PlantaCodigo = null;
             }
         }
-        
+
     }
 }

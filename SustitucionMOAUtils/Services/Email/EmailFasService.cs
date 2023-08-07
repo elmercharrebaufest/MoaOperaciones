@@ -8,7 +8,6 @@ using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace SustitucionMOAUtils.Services.Email
 {
@@ -20,11 +19,12 @@ namespace SustitucionMOAUtils.Services.Email
         private static readonly string DireccionMailAlimentacionAnimal = ConfigurationManager.AppSettings["EmailToComercialesAlimAnimal"];
         private static readonly string DireccionMailAuditoriaOrdenesVencidas = ConfigurationManager.AppSettings["EmailToAuditoriaOrdenesVencidas"];
         private static readonly string DireccionMailCobranzas = ConfigurationManager.AppSettings["EmailToCobranzas"];
-        private static readonly string DireccionMailComerciales = ConfigurationManager.AppSettings["EmailToComerciales"];
+        public static readonly string DireccionMailComerciales = ConfigurationManager.AppSettings["EmailToComerciales"];
         private static readonly string DireccionMailGestionAltaCuit = ConfigurationManager.AppSettings["EmailToGestionAltaCuit"];
         private static readonly string DireccionMailGestionAltaCuitCopia = ConfigurationManager.AppSettings["CopiaEmailToGestionAltaCuit"];
-        private static readonly string DireccionMailMesaEntrSanLorenzo = ConfigurationManager.AppSettings["EmailToMesaENTSL"];
-        private static readonly string DireccionMailMesaVentaFas = ConfigurationManager.AppSettings["EmailToMesaVentaFas"];
+        public static readonly string DireccionMailMesaEntrSanLorenzo = ConfigurationManager.AppSettings["EmailToMesaENTSL"];
+        public static readonly string DireccionMailMesaVentaFas = ConfigurationManager.AppSettings["EmailToMesaVentaFas"];
+
 
         public void EnviarMailAltaIntermediarioFlete(string cuit, string razonSocial)
         {
