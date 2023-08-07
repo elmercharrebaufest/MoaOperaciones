@@ -350,6 +350,14 @@ export class ComprasService extends BaseService {
             .get<any[]>("/api/compras/AutocompleteServicioSolp", { params: params })
     }
 
+    autocompleteCodigoServicioSolp(valor: string) {
+        let params: HttpParams = new HttpParams()
+            .append('valor', valor)
+
+        return this.http
+            .get<any[]>("/api/compras/AutocompleteCodigoServicioSolp", { params: params })
+    }
+
     autocompleteMaterialSolp(valor: string, centroId: number) {
         let params: HttpParams = new HttpParams()
             .append('valor', valor)
@@ -357,6 +365,15 @@ export class ComprasService extends BaseService {
 
         return this.http
             .get<any[]>("/api/compras/AutocompleteMaterialSolp", { params: params })
+    }
+
+    autocompleteCodigoMaterialSolp(valor: string, centroId: number) {
+        let params: HttpParams = new HttpParams()
+            .append('valor', valor)
+            .append('centroId', centroId.toString());
+
+        return this.http
+            .get<any[]>("/api/compras/AutocompleteCodigoMaterialSolp", { params: params })
     }
 
     obtenerDatosPorCodigosSap(codigos: any[]) {
@@ -747,9 +764,9 @@ export class ComprasService extends BaseService {
             });
     }
 
-    public obtenerAdjudicacion(id: number): Observable<any> {
+    public obtenerAdjudicacion(nroOC: number): Observable<any> {
         let params: HttpParams = new HttpParams();
-        params = params.set("adjudicacionId", id.toString());       
+        params = params.set("nroOC", nroOC.toString());       
         return this.http
             .get("/api/compras/ObtenerAdjudicacion", {
                 params: params,

@@ -28,6 +28,7 @@
                             Razon Social
                         </th>
                         <th data-toggle="tooltip" class="columna" title="unidad de Medida">Fecha última orden de compra</th>
+                        <th data-toggle="tooltip" class="columna" title="unidad de Medida">Fecha de Vigencia</th>
                         <th data-toggle="tooltip" class="columna" title="unidad">Um</th>
                         <th data-toggle="tooltip" class="columna" title="cantidad">Ctd Pendiente</th>
                         <th data-toggle="tooltip" class="columna" title="cantidadAdjudicar">Ctd a Adjudicar</th>
@@ -46,7 +47,7 @@
                 <ng-template pTemplate="body" let-registro let-rowIndex="rowIndex">
                     <tr>
                         <td class="columna" style="width: 40px !important; ">
-                            <p-checkbox name="posiciones" [(ngModel)]="registro.Confirmado"
+                            <p-checkbox name="posiciones" [disabled]="registro.Deshabilitado" [(ngModel)]="registro.Confirmado"
                                         binary="false"></p-checkbox>
                         </td>
                         <td class="columna">
@@ -58,7 +59,10 @@
 
                         </td>
                         <td class="columna">
-                            {{registro.Fecha}}
+                            {{registro.FechaUltimaCompra}}
+                        </td>
+                        <td class="columna">
+                            {{registro.FechaVigencia}}
                         </td>
                         <td class="columna">
                             {{registro.Unidad}}
@@ -69,7 +73,7 @@
                         <td pEditableColumn class="columna">
                             <p-cellEditor>
                                 <ng-template pTemplate="input">
-                                    <input type="text" pKeyFilter="int" [(ngModel)]="registro.CantidadAdjudicacion">
+                                    <input type="text" pKeyFilter="num" [(ngModel)]="registro.CantidadAdjudicacion">
                                 </ng-template>
                                 <ng-template pTemplate="output">
                                     {{registro.CantidadAdjudicacion | number: '1.2-2'}}
@@ -188,10 +192,11 @@
                     <div class="col-md-4"></div>
                     <div class="col-md-8">
                         <button type="button" class="btn btn-danger botonesComprasColor"
-                                (click)="cerrarModalConfirmacionAdjudicacion()">
+                                (click)="cerrarModalHomeAdjudicacion()">
                             Volver a la home
                         </button>
-                        <button type="button" class="btn btn-primary botonesComprasColor">
+                        <button type="button" class="btn btn-primary botonesComprasColor"
+                        (click)="cerrarModalConfirmacionAdjudicacion()">
                             Confirmar
                         </button>
                     </div>

@@ -232,7 +232,7 @@
                                                 [width]="400" 
                                                 [minLength]="4" 
                                                 [forceSelection]="false"
-                                                (completeMethod)="autocompleteMaterialSolp($event)"
+                                                (completeMethod)="autocompleteCodigoMaterialSolp($event)"
                                                 (onFocus)="$event.target.select(); posicion.setTabPosicion();"
                                                 (paste)="onPaste($event,enumColumnaSubPosicion.CodigoServicio, rowIndex, dt)"
                                                 (onSelect)="onSelectServicio(posicion, dt); posicion.setTabPosicion();"

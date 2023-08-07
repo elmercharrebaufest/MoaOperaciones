@@ -11,7 +11,7 @@ using System.Text;
 using SustitucionMOARepositorio.Extensiones;
 using SustitucionMOAWS.ModificarOCWebServiceMOA;
 using SustitucionMOAWS.Interfaces;
-
+using SustitucionMOARepositorio;
 
 namespace SustitucionMOAWS.WSConsumers
 {
@@ -20,13 +20,15 @@ namespace SustitucionMOAWS.WSConsumers
         private readonly SI_MMRFC_MODIFICAR_OCClient service;
         private readonly string rutaArchivosXmls = ConfigurationManager.AppSettings["RutaArchivosCompras"];
         private readonly ObtenerOrdenDeCompraConsumerMOA obtenerOrdenDeCompraconsumerMOA;
+        private readonly IRepositorio repositorio;
 
-        public ModificarOrdenDeCompraConsumerMOA()
+        public ModificarOrdenDeCompraConsumerMOA(IRepositorio repositorio)
         {
             service = new SI_MMRFC_MODIFICAR_OCClient();
             service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
             service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
-            obtenerOrdenDeCompraconsumerMOA = new ObtenerOrdenDeCompraConsumerMOA();
+            obtenerOrdenDeCompraconsumerMOA = new ObtenerOrdenDeCompraConsumerMOA(repositorio);
+            this.repositorio = repositorio; 
         }
 
         public CrearPedidoConsumerMOAResponse Request(Adjudicacion adjudicacion)
@@ -71,14 +73,14 @@ namespace SustitucionMOAWS.WSConsumers
             }
 
 
-            //serxml = new System.Xml.Serialization.XmlSerializer(respuesta.GetType());
-            //ms = new MemoryStream();
-            //serxml.Serialize(ms, respuesta);
-            //xml = Encoding.UTF8.GetString(ms.ToArray());
-            //using (StreamWriter writer = File.AppendText(rutaArchivoLlamada))
-            //{
-            //    writer.WriteLine(xml);
-            //}
+            serxml = new System.Xml.Serialization.XmlSerializer(result.GetType());
+            ms = new MemoryStream();
+            serxml.Serialize(ms, result);
+            xml = Encoding.UTF8.GetString(ms.ToArray());
+            using (StreamWriter writer = File.AppendText(rutaArchivoLlamada))
+            {
+                writer.WriteLine(xml);
+            }
 
 
             return respuesta;
@@ -501,7 +503,7 @@ namespace SustitucionMOAWS.WSConsumers
                             PCKG_NO = $"{PCKG_NO:0000000000}",
                             LINE_NO = $"{LINE_NO++:0000000000}",
                             PERCENTAGE = 100,
-                            SERNO_LINE = $"{numeroPosicion:00}",
+                            SERNO_LINE = $"{poItem:00}",
                             SERIAL_NO = numeroDeImputacion,
                         };
 

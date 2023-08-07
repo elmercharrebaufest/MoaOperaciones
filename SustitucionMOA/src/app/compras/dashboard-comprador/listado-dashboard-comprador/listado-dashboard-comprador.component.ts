@@ -16,6 +16,7 @@ import { ModalService } from '../../../common/services/ModalService';
 import { Subscription } from 'rxjs';
 import { PeticionDeOfertaDto } from '../../../modelos/peticion-de-oferta-model';
 import { CircularDto } from '../../../modelos/circular-model';
+import { AdjudicacionDto, AdjudicacionPosicionDto } from '../../../modelos/adjudicacion';
 
 declare var $: any;
 
@@ -65,7 +66,7 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
     ordenDeCompra: any;
     displayOrdenDeCompra: boolean;
     ordenDeCompraId: any;
-    ordenesDeCompra: any;
+    ordenesDeCompra: AdjudicacionDto[] = [];
 
     constructor(protected service: ComprasService, protected navService: NavService,
         protected sessionDataService: SessionDataService, protected securityService: SecurityService,
@@ -113,7 +114,6 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
                         this.length = result.data.length > 0 ? result.data[0].ItemsTotales : result.data.length;
                         this.pageSize = result.data.length > 0 ? result.data[0].ItemPorPagina : 10;
                         this.pageIndex = result.data.length > 0 ? result.data[0].Pagina : 1;
-                        console.log(result.data, "Compras solp")
                     }
                     this.spinnerComponent.hideIt()
                 },
@@ -451,15 +451,14 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
         this.displayOrdenDeCompra = false;
     }
 
-    verDetalleOrdenDeCompra(id: any) {
-        this.obtenerAdjudicacion(id);
+    verDetalleOrdenDeCompra(nroOC: any) {
+        this.obtenerAdjudicacion(nroOC);
         this.displayOrdenDeCompra = true;
     }
 
-    obtenerAdjudicacion(adjudicacionId){
-        console.log("obtenerAdjudicacion" ,adjudicacionId)
+    obtenerAdjudicacion(nroOC){
         this.blockUI.start('Cargando...')
-        this.service.obtenerAdjudicacion(adjudicacionId)
+        this.service.obtenerAdjudicacion(nroOC)
             .subscribe(
                 (result) => {
                     if (result.logout == true) {
@@ -467,7 +466,6 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
                     }
                     else {
                         this.ordenDeCompra = result.data;
-                        console.log("obtenerAdjudicacion" ,result.data)
                         this.blockUI.stop();
                     }
                 },
@@ -487,7 +485,14 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
                         this.sessionDataService.logout();
                     }
                     else {
-                        this.ordenesDeCompra = result.data;
+                        if(this.ordenesDeCompra.length > 0){
+                            for (let i = this.ordenesDeCompra.length - 1; i >= 0; i--) {
+                                if (this.ordenesDeCompra[i].Solp_Id === solpId) {
+                                  this.ordenesDeCompra.splice(i, 1);
+                                }
+                              }
+                        }                    
+                        this.mapData(result.data);                       
                         this.blockUI.stop();
                     }
                 },
@@ -498,5 +503,41 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
             )
     }
 
+    filtrarOrdenesDeCompra(solpId): AdjudicacionDto[] {   
+        return this.ordenesDeCompra.filter(orden => orden.Solp_Id == solpId);
+      }
+
+      mapData(data: any[]): void {
+        data.forEach((item: any) => {
+          const adjudicacion: AdjudicacionDto = {
+            Id: item.Id,
+            Cotizacion_Id: item.Cotizacion_Id,
+            AdjudicacionPosiciones: item.AdjudicacionPosiciones.map((posicion: any) => {
+              const adjudicacionPosicion: AdjudicacionPosicionDto = {
+                Id: posicion.Id,
+                Adjudicacion_Id: posicion.Adjudicacion_Id,
+                CotizacionPosicion_Id: posicion.CotizacionPosicion_Id,
+                Cantidad: posicion.Cantidad,
+                SolpPosicion_Id: posicion.SolpPosicion_Id,
+              };
+              return adjudicacionPosicion;
+            }),
+            Solp_Id: item.Solp_Id,
+            Moneda_Id: item.Moneda_Id,
+            TextoDeCabecera: item.TextoDeCabecera,
+            CondicionesDeEntrega: item.CondicionesDeEntrega,
+            CondicionesDePago: item.CondicionesDePago,
+            Garantias: item.Garantias,
+            TipoPosicionCodigo: item.TipoPosicionCodigo || '',
+            NumeroOrdenDeCompra: item.NumeroOrdenDeCompra || '',
+            FechaCreacion: item.FechaCreacion || '',
+            Proveedor: item.Proveedor || '',
+            MonedaDescripcion: item.MonedaDescripcion || '',
+            PrecioFinal: item.PrecioFinal || 0,
+          };
+          this.ordenesDeCompra.push(adjudicacion); 
+        });
+      }
+      
 }
 

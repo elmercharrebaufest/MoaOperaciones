@@ -828,6 +828,32 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         return false; //<-- Prevent Refresh
     }
 
+    autocompleteCodigoServicioSolp(event) {
+        try {
+            this.subscription = this.service.autocompleteCodigoServicioSolp(event.query.toLowerCase()).subscribe(
+                (result: any) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.floatMsgService.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.floatMsgService.setInfoMsg(result.info);
+                    } else {
+                        this.autocompleteServiciosSolp = result;
+                    }
+                },
+                error => {
+                    this.floatMsgService.setErrorMsg(error.message);
+                    this.spinnerComponent.hideIt();
+                });
+        } catch (e) {
+            this.floatMsgService.setErrorMsg(e);
+            return false; //<-- Prevent Refresh
+        }
+
+        return false; //<-- Prevent Refresh
+    }
+
     autocompleteMaterialSolp(event) {
         const idCentro = this.model.posicionActual.selectCentroEntrega.Id;
         if (idCentro == null) {
@@ -835,6 +861,36 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         }
         try {
             this.subscription = this.service.autocompleteMaterialSolp(event.query.toLowerCase(), idCentro).subscribe(
+                (result: any) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.floatMsgService.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.floatMsgService.setInfoMsg(result.info);
+                    } else {
+                        this.autocompleteServiciosSolp = result;
+                    }
+                },
+                error => {
+                    this.floatMsgService.setErrorMsg(error.message);
+                    this.spinnerComponent.hideIt();
+                });
+        } catch (e) {
+            this.floatMsgService.setErrorMsg(e);
+            return false; //<-- Prevent Refresh
+        }
+
+        return false; //<-- Prevent Refresh
+    }
+
+    autocompleteCodigoMaterialSolp(event) {
+        const idCentro = this.model.posicionActual.selectCentroEntrega.Id;
+        if (idCentro == null) {
+            return;
+        }
+        try {
+            this.subscription = this.service.autocompleteCodigoMaterialSolp(event.query.toLowerCase(), idCentro).subscribe(
                 (result: any) => {
                     if (result.logout == true) {
                         this.sessionDataService.logout();
@@ -1076,6 +1132,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
                 }
 
                 this.model.agregarNuevaPosicionDesdeContratoMarco(newPos);
+                this.agregarPosicion();
               
             });
             this.model.calcularValorTotalPorMoneda();           

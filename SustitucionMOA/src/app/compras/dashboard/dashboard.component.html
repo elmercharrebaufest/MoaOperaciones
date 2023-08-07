@@ -280,7 +280,7 @@
                                             Orden de compra
                                         </div>
                                     </ng-template>
-                                    <p-table [value]="ordenesDeCompra">
+                                    <p-table [value]="filtrarOrdenesDeCompra(rowData.Id)">
                                         <ng-template pTemplate="header">
                                             <tr>
                                                 <th class="columna">Numero</th>
@@ -304,7 +304,7 @@
                                                 <td class="columna">{{orden.PrecioFinal | number:'1.2-2'}}</td>
                                                 <td class="columna">{{orden.MonedaDescripcion}}</td>
                                                 <td class="columna">
-                                                    <button class="publicar btn btn-success" (click)="verDetalleOrdenDeCompra(orden.Id)">
+                                                    <button class="publicar btn btn-success" (click)="verDetalleOrdenDeCompra(orden.NumeroOrdenDeCompra)">
                                                         Ver detalle
                                                     </button>
                                                 </td>

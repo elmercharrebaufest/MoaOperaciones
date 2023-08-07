@@ -99,15 +99,30 @@ export class RegistroInfoComponent extends ListBaseComponent implements OnInit, 
 
         if (this.registros.some(item => item.CantidadAdjudicacion <= 0)) {
             this.confirmationService.confirm({
-                header: "Falta seleccionar la cantidad",
+                header: "Error",
                 key: "avisoV",
-                message: 'No ingreso la cantidad en todos los registros info seleccinados.',
+                message: 'Debe ingresar una cantidad para los registros seleccionados',
                 accept: () => {
                     return;
                 },
             });
             return;
         }
+
+       var totalAdjudicada = this.registros.reduce((sum, registro) => Number(sum + Number(registro.CantidadAdjudicacion)), 0);
+        console.log(totalAdjudicada, "total adjudicado");
+        if (this.registros.some(item => item.Cantidad < totalAdjudicada)) {
+            this.confirmationService.confirm({
+                header: "Cantidad Incorrecta",
+                key: "avisoV",
+                message: 'La cantidad a adjudicar no debe superar la cantidad pendiente.',
+                accept: () => {
+                    return;
+                },
+            });
+            return;
+        }
+
 
 
         this.registros.forEach(x => {
@@ -139,52 +154,19 @@ export class RegistroInfoComponent extends ListBaseComponent implements OnInit, 
         this.displayConfirmacion = false;
     }
     cerrarModalConfirmacionAdjudicacion() {
+        this.onCancelarRegistroInfo() 
         this.displayAdjudicacionCreada = false;
+        this.displayConfirmacion = false;
+    }
+
+    cerrarModalHomeAdjudicacion(){
+        this.navService.navegarSeccion('/compras/dashboardComprador');
     }
 
     guardarAdjudicacion() {
         this.blockUI.start("Grabando...");
         try {
-            this.resultadoAdjudicacion = new Array();
-            var result = {
-                data: [
-                    {
-                        "Errores": [],
-                        "Mensaje": "OK",
-                        "IdEntidad": 0,
-                        "NumeroPedido": "4123001779",
-                        "NumeroSolp": "0212302931",
-                        "Proveedor": "VAZQUEZ HNOS S.R.L."
-                    },
-                    {
-                        "Errores": [],
-                        "Mensaje": "OK",
-                        "IdEntidad": 0,
-                        "NumeroPedido": "4123001780",
-                        "NumeroSolp": "0212302931",
-                        "Proveedor": "LARRAYA BULONES S.R.L."
-                    },
-                    {
-                        "Errores": [],
-                        "Mensaje": "OK",
-                        "IdEntidad": 0,
-                        "NumeroPedido": "4123001781",
-                        "NumeroSolp": "0212302931",
-                        "Proveedor": "MR. FIERRO SA"
-                    }
-                ]
-            };
-            
-            this.displayAdjudicacionCreada = true;
-
-            this.resultadoAdjudicacion = result.data;
-            console.log(this.resultadoAdjudicacion);
-            this.blockUI.stop();
-
-            return;
-
-
-
+            this.resultadoAdjudicacion = new Array();       
             this.subscription = this.service.guardarAdjudicacionAutomatica(this.solpCompraDto.RegistrosInfo.filter(x => x.Confirmado == true)).subscribe(
                 (result: any) => {
                     if (result.logout == true) {
