@@ -33,6 +33,7 @@
     [DomicilioOrden] SMALLINT NULL, 
     [DomicilioDescr] VARCHAR(250) NULL,
 	[RazonSocialDestino] VARCHAR(100) NULL,
+	[Escalable] BIT NOT NULL DEFAULT 0,
     CONSTRAINT [FK_OrdenDeCargaFason_Material] FOREIGN KEY (Producto_Id) REFERENCES Material(Id),
     CONSTRAINT [FK_OrdenDeCargaFason_Cliente] FOREIGN KEY (Cliente_Id) REFERENCES Proveedor(Id), 
     CONSTRAINT [FK_OrdenDeCargaFason_Corredor] FOREIGN KEY (CorredorId) REFERENCES Proveedor(Id), 

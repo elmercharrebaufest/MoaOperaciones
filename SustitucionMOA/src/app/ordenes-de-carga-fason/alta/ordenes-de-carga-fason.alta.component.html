@@ -70,7 +70,7 @@
                                         <p-checkbox name="reventa" [binary]="true"
                                             [(ngModel)]="ordenDeCargaFason.Reventa"></p-checkbox>
                                         <label class="ml-2 pointer mySearch bold"
-                                            (click)="ordenDeCarga.Reventa = !ordenDeCargaFason.Reventa">
+                                            (click)="ordenDeCargaFason.Reventa = !ordenDeCargaFason.Reventa">
                                             Reventa
                                         </label>
                                     </div>
@@ -82,11 +82,11 @@
                                     <div class="styled-select">
                                         <div class="ui-inputgroup">
                                             <input type="text" pInputText
-                                                [(ngModel)]="ordenDeCargaFason.CUITDestinatario"
-                                                mask="00-00000000-0"
+                                                [(ngModel)]="ordenDeCargaFason.CUITDestinatario" mask="00-00000000-0"
                                                 (change)="cuitDestinatarioChanged()">
                                             <span class="ui-inputgroup-addon" *ngIf="validandoCuitDestinatario">
-                                                <p-progressSpinner [style]="{width: '100%', height: '100%'}"></p-progressSpinner>
+                                                <p-progressSpinner
+                                                    [style]="{width: '100%', height: '100%'}"></p-progressSpinner>
                                             </span>
                                         </div>
                                     </div>
@@ -113,12 +113,11 @@
                                     </div>
                                     <div class="styled-select">
                                         <div class="ui-inputgroup">
-                                            <input type="text" pInputText
-                                                [(ngModel)]="ordenDeCargaFason.CUITDestino"
-                                                mask="00-00000000-0"
-                                                (change)="cuitDestinoChanged()">
+                                            <input type="text" pInputText [(ngModel)]="ordenDeCargaFason.CUITDestino"
+                                                mask="00-00000000-0" (change)="cuitDestinoChanged()">
                                             <span class="ui-inputgroup-addon" *ngIf="validandoCuitDestino">
-                                                <p-progressSpinner [style]="{width: '100%', height: '100%'}"></p-progressSpinner>
+                                                <p-progressSpinner
+                                                    [style]="{width: '100%', height: '100%'}"></p-progressSpinner>
                                             </span>
                                         </div>
                                     </div>
@@ -179,6 +178,17 @@
                                     <input type="text" [(ngModel)]="ordenDeCargaFason.Cantidad" readonly disabled>
                                 </div>
                             </div>
+                            <div class=" col-xs-12 col-md-12 mt-2">
+                                <div class="formulario-label" style="margin-bottom: 8px;">
+                                    <p-checkbox name="escalable" [binary]="true"
+                                        [(ngModel)]="ordenDeCargaFason.Escalable"></p-checkbox>
+                                    <label class="ml-2 pointer mySearch bold"
+                                        (click)="ordenDeCargaFason.Escalable = !ordenDeCargaFason.Escalable">
+                                        Escalable
+                                    </label>
+                                </div>
+                            </div>
+
                             <div class=" col-xs-12 col-md-12 mt-2" *ngIf="modificaFleteMOA">
                                 <div class="formulario-label" style="margin-bottom: 8px;">
                                     <p-checkbox name="flete-moa" [binary]="true"
