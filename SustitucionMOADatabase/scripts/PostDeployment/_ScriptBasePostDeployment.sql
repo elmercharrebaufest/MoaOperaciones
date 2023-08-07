@@ -29,5 +29,6 @@ Post-Deployment Script Template
 :r .\SolpFixDataToNewColumnEmailLinkToken.sql
 :r .\Material.sql
 :r .\Estados.sql
+:r .\UnidadMedidaSap.sql
 
 
