@@ -38,6 +38,7 @@ export abstract class OrdenesBase {
     RazonSocialDestino?: string;
     CUITDestino?: string;
     CUITDestinatario?: string;
+    Escalable: boolean;
 }
 
 export interface IOrdenesBaseComponent {

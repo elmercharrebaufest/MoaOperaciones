@@ -55,6 +55,7 @@ namespace SustitucionMOAModel.Entities
         public short? DomicilioOrden { get; set; }
         public string DomicilioDescr { get; set; }
         public string RazonSocialDestino { get; set; }
+        public bool Escalable { get; set; }
         public OrdenDeCargaFason() { }
         public OrdenDeCargaFason(CrearOrdenDeCargaFasonRequest request)
         {

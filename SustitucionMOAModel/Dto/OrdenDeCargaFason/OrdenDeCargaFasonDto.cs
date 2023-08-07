@@ -49,6 +49,7 @@ namespace SustitucionMOAModel.Dto.OrdenDeCargaFason
         public Models.DataAgro.MaterialDto ProductoSeleccionado { get; set; }
         public int Producto_Id { get; set; }
         public bool Reventa { get; set; }
+        public bool Escalable { get; set; }
 
         public OrdenDeCargaFasonDto(Ent.OrdenDeCargaFason orden, bool esInterno)
         {
@@ -87,6 +88,7 @@ namespace SustitucionMOAModel.Dto.OrdenDeCargaFason
             RazonSocialIntermediarioFlete = orden.RazonSocialIntermediarioFlete;
             FleteMOA = orden.FleteMOA;
             Reventa = orden.Reventa;
+            Escalable = orden.Escalable;
         }
     }
 }
