@@ -1,7 +1,7 @@
 ﻿
 namespace SustitucionMOAUtils.Interfaces
 {
-    public interface IEmailFasonService : IEmailFasService
+    public interface IEmailFasonService : IEmailOrdenesCargaServiceBase
     {
     }
 }

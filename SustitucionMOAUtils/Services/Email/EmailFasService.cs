@@ -11,7 +11,7 @@ using System.Text;
 
 namespace SustitucionMOAUtils.Services.Email
 {
-    public class EmailFasService : EmailService, IEmailFasService
+    public class EmailFasService : EmailOrdenesCargaServiceBase, IEmailFasService
     {
         private static readonly string TEMPLATE_NOTIFICACION_ORDENES = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "NotificacionOrdenesDeCarga.html");
         private static readonly string TEMPLATE_NOTIFICACION_SOLICITUD_EDICION_ORDEN = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "AvisoEdicionOrdenDeCarga.html");
@@ -19,34 +19,6 @@ namespace SustitucionMOAUtils.Services.Email
         private static readonly string DireccionMailAlimentacionAnimal = ConfigurationManager.AppSettings["EmailToComercialesAlimAnimal"];
         private static readonly string DireccionMailAuditoriaOrdenesVencidas = ConfigurationManager.AppSettings["EmailToAuditoriaOrdenesVencidas"];
         private static readonly string DireccionMailCobranzas = ConfigurationManager.AppSettings["EmailToCobranzas"];
-        public static readonly string DireccionMailComerciales = ConfigurationManager.AppSettings["EmailToComerciales"];
-        private static readonly string DireccionMailGestionAltaCuit = ConfigurationManager.AppSettings["EmailToGestionAltaCuit"];
-        private static readonly string DireccionMailGestionAltaCuitCopia = ConfigurationManager.AppSettings["CopiaEmailToGestionAltaCuit"];
-        public static readonly string DireccionMailMesaEntrSanLorenzo = ConfigurationManager.AppSettings["EmailToMesaENTSL"];
-        public static readonly string DireccionMailMesaVentaFas = ConfigurationManager.AppSettings["EmailToMesaVentaFas"];
-
-
-        public void EnviarMailAltaIntermediarioFlete(string cuit, string razonSocial)
-        {
-            var emailSenderData = new EmailSenderData
-            {
-                Mails = ObtenerListaDestinatarios(new string[] { DireccionMailGestionAltaCuit, DireccionMailGestionAltaCuitCopia }),
-                Asunto = GenerarAsunto("ALTA CUIT INTERMEDIARIO FLETE"),
-                Cuerpo = $"Razón social: {razonSocial}, CUIT: {cuit}"
-            };
-            EmailSender.EnviarMail(emailSenderData);
-        }
-
-        public void EnviarMailAltaTempranaCuit(string cuit, string razonSocial)
-        {
-            var emailSenderData = new EmailSenderData
-            {
-                Mails = ObtenerListaDestinatarios(new string[] { DireccionMailGestionAltaCuit, DireccionMailGestionAltaCuitCopia }),
-                Asunto = GenerarAsunto("ALTA TEMPRANA CUIT"),
-                Cuerpo = $"Se solicita el alta temprana del CUIT: {cuit}, Razón social: {razonSocial}"
-            };
-            EmailSender.EnviarMail(emailSenderData);
-        }
 
         public void EnviarMailContratoSinKm(OrdenDeCarga ordenDeCarga)
         {

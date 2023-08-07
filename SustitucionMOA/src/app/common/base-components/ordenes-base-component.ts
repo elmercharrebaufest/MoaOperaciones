@@ -36,8 +36,8 @@ export abstract class OrdenesBase {
     FleteMOA: boolean;
     RazonSocialDestinatario?: string;
     RazonSocialDestino?: string;
-    CUITDestino: string;
-    CUITDestinatario: string;
+    CUITDestino?: string;
+    CUITDestinatario?: string;
 }
 
 export interface IOrdenesBaseComponent {
