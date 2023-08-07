@@ -3605,7 +3605,7 @@ namespace SustitucionMOAUtils.Services
                     $"<td style='font-size: 8px;'>{item.Unidad.Descripcion}</td>" +
                     $"<td style='font-size: 8px;'>{peticion.PlazoDeOferta.ToString("dd.MM.yyyy")}</td>" +
                     $"<td style='font-size: 8px;'>{listaPosiciones.Select(x => x.SolpPosicion).OrderByDescending(x => x.FechaEntregaServicio).Select(x => x.FechaEntregaServicio).FirstOrDefault().Value.ToString("dd.MM.yyyy")}</td> </tr>";
-                    posiciones += $"<tr><td colspan='7' style='font-size: 8px; text-align: justify'>{(item.MaterialSolp != null ? item.MaterialSolp.Descripcion : "")}</td></tr>";
+                    posiciones += $"<tr><td colspan='7' style='font-size: 8px; text-align: justify'>{(item.MaterialSolp != null ? item.MaterialSolp.TextoAmpliado : "")}</td></tr>";
 
                 }
 
@@ -3844,7 +3844,7 @@ namespace SustitucionMOAUtils.Services
                         $"<td style='font-size: 8px;'>{adjudicacion.Cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Posiciones.Select(x => x.SolpPosicion).OrderByDescending(x => x.FechaEntregaServicio).Select(x => x.FechaEntregaServicio).FirstOrDefault().Value.ToString("dd.MM.yyyy")}</td>" +
                         $"<td style='font-size: 8px;'>{cotizacionPosicion.Precio.Value.ToString("N2")} {cotizacionPosicion.Moneda.Codigo} / {cotizacionPosicion.UnidadDeMedida.Descripcion}</td>" +
                         $"<td style='font-size: 8px;'>{(peti.Cantidad * cotizacionPosicion.Precio).Value.ToString("N2")} {cotizacionPosicion.Moneda.Codigo}</td></tr>";
-                        posiciones += $"<tr><td colspan='7' style='font-size: 8px; text-align: justify'>{(item.MaterialSolp != null ? item.MaterialSolp.Descripcion : "")}</td></tr>";
+                        posiciones += $"<tr><td colspan='7' style='font-size: 8px; text-align: justify'>{(item.MaterialSolp != null ? item.MaterialSolp.TextoAmpliado : "")}</td></tr>";
                     }
                 }
                 else
