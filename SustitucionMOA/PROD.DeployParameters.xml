@@ -137,7 +137,7 @@
 	<setParameter name="EmailToMesaVentaFas Config" value="mesafassanlorenzo@molinosagro.com.ar" />
 	<setParameter name="EmailToGestionAltaCuit Config" value="Mesaentsl@molinosagro.com.ar" />
 	<setParameter name="CopiaEmailToGestionAltaCuit Config" value="mesafassanlorenzo@molinosagro.com.ar" />
-	<setParameter name="EmailAsuntoPrefijo Config" value="" />
+	<setParameter name="EmailAsuntoPrefijo Config" value=" " />
 	<setParameter name="EmailToCobranzas Config" value="cobranzasfas@molinosagro.com.ar" />
 	<setParameter name="EmailToComerciales Config" value="comerciolocal@molinosagro.com.ar" />
 	<setParameter name="EmailToComercialesAlimAnimal Config" value="alimentacion.animal@molinosagro.com.ar" />
