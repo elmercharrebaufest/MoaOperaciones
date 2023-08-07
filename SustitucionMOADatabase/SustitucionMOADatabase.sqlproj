@@ -198,6 +198,8 @@
     <Build Include="DBO\Tables\Adjudicacion.sql" />
     <Build Include="DBO\Tables\AdjudicacionPosicion.sql" />
     <Build Include="DBO\Tables\ProveedorAuditoria.sql" />
+    <Build Include="DBO\Tables\UnidadMedidaSap.sql" />
+    <None Include="scripts\PostDeployment\UnidadMedidaSap.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DatabasePublishQA.xml" />
