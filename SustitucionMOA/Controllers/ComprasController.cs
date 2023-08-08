@@ -730,9 +730,10 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
+                var usuario = ObtenerUsuarioActual();
                 return JsonCustom(new
                 {
-                    data = service.ListarOfertasComprador(peticionOferta_Id)
+                    data = service.ListarOfertasComprador(peticionOferta_Id, usuario)
                 });
             }
             catch (InfoCustomException e)
@@ -1278,8 +1279,5 @@ namespace SustitucionMOA.Controllers
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
         }
-
-
-
     }
 }
