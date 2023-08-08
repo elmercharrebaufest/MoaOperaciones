@@ -1,4 +1,5 @@
 ﻿using SustitucionMOAAssets;
+using SustitucionMOAFotmatter;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Dto.OrdenDeCargaFason;
@@ -19,8 +20,9 @@ namespace SustitucionMOAUtils.Services
 {
     public class OrdenDeCargaFasonService : OrdenDeCargaServiceBase, IOrdenDeCargaFasonService
     {
-        private readonly IRepositorio _repositorio;
-        private readonly IEnumerable<string> _codigosRetiroEnPatagonia = new string[] { "98855", "99098" };
+        private readonly IRepositorio repositorio;
+
+        private readonly IEnumerable<string> codigosRetiroEnPatagonia = new string[] { "98855", "99098" };
 
         public OrdenDeCargaFasonService(IRepositorio repositorio,
             IOrdenCargaConsumerMOA ordenCargaConsumer,
@@ -29,7 +31,7 @@ namespace SustitucionMOAUtils.Services
             IScatoRepositorioClient scatoRepositorioClient
             ) : base(ordenCargaConsumer, scatoConsumer, scatoRepositorioClient, emailFasonService)
         {
-            _repositorio = repositorio;
+            this.repositorio = repositorio;
         }
 
         public ListarOrdenDeCargaFasonResponse Listar(ListarOrdenDeCargaFasonRequest request)
@@ -38,51 +40,17 @@ namespace SustitucionMOAUtils.Services
 
             try
             {
-                DateTime fechaIncioDateTime, fechaFinDateTime;
-                try
-                {
-                    fechaIncioDateTime = DateTime.Parse(request.FechaDesde);
-                }
-                catch
-                {
-                    try
-                    {
-                        request.FechaDesde = new string(request.FechaDesde.Where(c => c != '\u200E').ToArray());
-                        fechaIncioDateTime = DateTime.Parse(request.FechaDesde);
-                    }
-                    catch (Exception e)
-                    {
-                        throw new ValidationCustomException(String.Format(ErrorMsg.ErrorFechaInvalida, "inicio"), e);
-                    }
-                }
+                var fechaIncioDateTime = DataFormatter.StringToDateTime(request.FechaDesde,"");
+                var fechaFinDateTime = DataFormatter.StringToDateTime(request.FechaHasta,"");
 
-                try
-                {
-                    fechaFinDateTime = DateTime.Parse(request.FechaHasta);
-                }
-                catch
-                {
-                    try
-                    {
-                        request.FechaHasta = new string(request.FechaHasta.Where(c => c != '\u200E').ToArray());
-                        fechaFinDateTime = DateTime.Parse(request.FechaHasta);
-                    }
-                    catch (Exception e)
-                    {
-                        throw new ValidationCustomException(String.Format(ErrorMsg.ErrorFechaInvalida, "fin"), e);
-                    }
-
-                }
-
-
-                var usuario = _repositorio.Obtener<Usuario>(u => u.Mail == request.MailUsuario);
+                var usuario = repositorio.Obtener<Usuario>(u => u.Mail == request.MailUsuario);
                 var esInterno = usuario.TienePermiso(PermisoEnum.VerOrdenesDeCargaFasonAdmin);
                 fechaFinDateTime = fechaFinDateTime.AddDays(1);
 
 
                 var clientes = usuario.Proveedores.Select(c => c.CodigoProveedor);
                 var tipoUsuarioId = usuario.TipoUsuario.Id;
-                var listadoDB = _repositorio.Listar<OrdenDeCargaFason>(x =>
+                var listadoDB = repositorio.Listar<OrdenDeCargaFason>(x =>
                 (esInterno || clientes.Contains(x.Cliente.CodigoProveedor))
                 && x.FechaCreacion >= fechaIncioDateTime && x.FechaCreacion <= fechaFinDateTime
                 && (esInterno || (tipoUsuarioId == 5 ? x.CorredorId == null : x.CorredorId != null))
@@ -121,10 +89,10 @@ namespace SustitucionMOAUtils.Services
             try
             {
 
-                var usuario = _repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario.MailUsuario);
+                var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario.MailUsuario);
                 var esInterno = usuario.TienePermiso(PermisoEnum.VerOrdenesDeCargaFasonAdmin);
 
-                var orden = _repositorio.Obtener<OrdenDeCargaFason>(IdOrdenCargaFason);
+                var orden = repositorio.Obtener<OrdenDeCargaFason>(IdOrdenCargaFason);
 
                 var response = new OrdenDeCargaFasonDto(orden, esInterno);
 
@@ -148,7 +116,7 @@ namespace SustitucionMOAUtils.Services
 
         public string VerificarTransporte(int ordenId)
         {
-            var orden = _repositorio.Obtener<OrdenDeCargaFason>(ordenId);
+            var orden = repositorio.Obtener<OrdenDeCargaFason>(ordenId);
             orden.TransporteExiste = TransporteExiste(orden.CUITTransporte);
             if (orden.TransporteExiste)
             {
@@ -157,7 +125,7 @@ namespace SustitucionMOAUtils.Services
             else
             {
                 orden.Estado = EstadoOrdenDeCargaFason.Pendiente;
-                _repositorio.GuardarCambios();
+                repositorio.GuardarCambios();
                 return "El transporte no existe";
             }
         }
@@ -167,22 +135,22 @@ namespace SustitucionMOAUtils.Services
 
             var fechaLimite = DateTime.Now.Date;
 
-            if (_repositorio.Obtener<HabilitacionJob>(a => a.Nombre == "VencimientoOrdenesDeCargaFasonJob" && a.Habilitado) == null)
+            if (repositorio.Obtener<HabilitacionJob>(a => a.Nombre == "VencimientoOrdenesDeCargaFasonJob" && a.Habilitado) == null)
                 return new List<OrdenDeCargaFason>();
 
-            var ordenes = _repositorio.Listar<OrdenDeCargaFason>((orden) => DbFunctions.AddDays(orden.FechaRetiro, 5) < fechaLimite && (orden.Estado == EstadoOrdenDeCargaFason.Generada || orden.Estado == EstadoOrdenDeCargaFason.Pendiente));
+            var ordenes = repositorio.Listar<OrdenDeCargaFason>((orden) => DbFunctions.AddDays(orden.FechaRetiro, 5) < fechaLimite && (orden.Estado == EstadoOrdenDeCargaFason.Generada || orden.Estado == EstadoOrdenDeCargaFason.Pendiente));
 
             foreach (var orden in ordenes)
             {
                 orden.Estado = EstadoOrdenDeCargaFason.Vencida;
             }
-            _repositorio.GuardarCambios();
+            repositorio.GuardarCambios();
 
             return ordenes;
         }
         public List<ProveedorDto> GetCorredores()
         {
-            var corredoresBD = _repositorio
+            var corredoresBD = repositorio
                         .Listar<Usuario>(u =>
                             u.TipoUsuario.Id == (int)TipoUsuarioEnum.Corredor &&
                             u.Habilitado &&
@@ -198,9 +166,9 @@ namespace SustitucionMOAUtils.Services
         {
             if (!string.IsNullOrEmpty(codigoCorredor))
             {
-                var corredor = _repositorio.Obtener<Proveedor>(p => p.CodigoProveedor == codigoCorredor);
+                var corredor = repositorio.Obtener<Proveedor>(p => p.CodigoProveedor == codigoCorredor);
 
-                var corredores = _repositorio
+                var corredores = repositorio
                             .Listar<Usuario>(u =>
                                 u.TipoUsuario.Id == (int)TipoUsuarioEnum.Corredor &&
                                 u.CUITRegistro == corredor.CUIT &&
@@ -218,7 +186,7 @@ namespace SustitucionMOAUtils.Services
             else
             {
                 // igual pero tipo cliente
-                var corredores = _repositorio
+                var corredores = repositorio
                             .Listar<Usuario>(u =>
                                 u.TipoUsuario.Id == (int)TipoUsuarioEnum.Cliente &&
                                 u.Habilitado &&
@@ -246,9 +214,9 @@ namespace SustitucionMOAUtils.Services
                 {
                     var ordenEntity = new OrdenDeCargaFason(request);
                     ActualizarOrdenDeCarga(ordenEntity, existeTransporte);
-                    _repositorio.Agregar(ordenEntity);
+                    repositorio.Agregar(ordenEntity);
 
-                    _repositorio.GuardarCambios();
+                    repositorio.GuardarCambios();
                 }
 
                 var resultado = new Resultado { Mensaje = SuccessMsg.OrdenDeCargaAgregada };
@@ -265,8 +233,9 @@ namespace SustitucionMOAUtils.Services
         {
             try
             {
-                ValidarRequest(request, mailUsuario);
-                var orden = _repositorio.Obtener<OrdenDeCargaFason>(request.Id);
+                var usuario = repositorio.Obtener<Usuario>(us => us.Mail == mailUsuario);
+                ValidarRequest(request, usuario);
+                var orden = repositorio.Obtener<OrdenDeCargaFason>(request.Id);
 
                 orden.Cantidad = request.Cantidad;
                 orden.Cliente_Id = request.Cliente;
@@ -296,7 +265,10 @@ namespace SustitucionMOAUtils.Services
                 orden.Escalable = request.Escalable;
                 ActualizarOrdenDeCarga(orden);
 
-                _repositorio.GuardarCambios();
+                if (!usuario.TieneRol(RolEnum.FasonAdmin))
+                    orden.Estado = EstadoOrdenDeCargaFason.EdicionSolicitada;
+
+                repositorio.GuardarCambios();
 
                 return new Resultado { IdEntidad = request.Id, Mensaje = SuccessMsg.OrdenDeCargaActualizada };
             }
@@ -309,7 +281,7 @@ namespace SustitucionMOAUtils.Services
 
         public object ObtenerDestinos(int clienteId)
         {
-            Proveedor proveedor = _repositorio.Obtener<Proveedor>(a => a.Id == clienteId);
+            Proveedor proveedor = repositorio.Obtener<Proveedor>(a => a.Id == clienteId);
             if (proveedor.CUIT.Length != 11)
             {
                 throw new ValidationCustomException("El cuit no tiene el formato correcto.");
@@ -318,15 +290,73 @@ namespace SustitucionMOAUtils.Services
         }
         public void VerificarTransporteJob()
         {
-            if (_repositorio.Obtener<HabilitacionJob>(hj => hj.Nombre == "VerificarTransporteOrdenesDeCargaFasonJob" && hj.Habilitado) == null)
+            if (repositorio.Obtener<HabilitacionJob>(hj => hj.Nombre == "VerificarTransporteOrdenesDeCargaFasonJob" && hj.Habilitado) == null)
                 return;
 
-            var ordenes = _repositorio.Listar<OrdenDeCargaFason>(orden => !orden.TransporteExiste && orden.Estado == EstadoOrdenDeCargaFason.Pendiente);
+            var ordenes = repositorio.Listar<OrdenDeCargaFason>(orden => !orden.TransporteExiste && orden.Estado == EstadoOrdenDeCargaFason.Pendiente);
             foreach (var orden in ordenes)
             {
                 ActualizarOrdenDeCarga(orden);
             }
-            _repositorio.GuardarCambios();
+            repositorio.GuardarCambios();
+        }
+        public OrdenDeCargaFasonDto ActualizarSolicitudEdicion(EstadoSolicitudEdicionFason estadoSolicitud)
+        {
+            var orden = repositorio.Obtener<OrdenDeCargaFason>(estadoSolicitud.OrdenId);
+            if (orden == null)
+                throw new InfoCustomException("Orden no encontrada");
+            if (orden.Estado != EstadoOrdenDeCargaFason.EdicionSolicitada)
+                throw new InfoCustomException("Esta orden no está en estado de edición solicitada.");
+
+            var usuario = repositorio.Obtener<Usuario>(us => us.Mail == estadoSolicitud.MailUsuario);
+            if (!usuario.TieneRol(RolEnum.FasonAdmin))
+                throw new InfoCustomException("Usuario sin permisos para realizar esta acción.");
+
+            if (estadoSolicitud.Aprobado)
+                ActualizarOrdenDeCarga(orden);
+            else
+                orden.Estado = EstadoOrdenDeCargaFason.EdicionRechazada;
+
+            repositorio.GuardarCambios();
+
+            return OrdenDeCargaFasonDto(orden, usuario);
+        }
+        public OrdenDeCargaFasonDto SolicitarAnulacion(int ordenId, string mailUsuario)
+        {
+            var orden = repositorio.Obtener<OrdenDeCargaFason>(ordenId);
+            if (orden == null)
+                throw new InfoCustomException("Orden no encontrada");
+            if (orden.Estado == EstadoOrdenDeCargaFason.AnulacionSolicitada)
+                throw new InfoCustomException("La anulación de esta orden ya fue solicitada.");
+            var usuario = repositorio.Obtener<Usuario>(us => us.Mail == mailUsuario);
+            if (usuario.TieneRol(RolEnum.FasonAdmin))
+                throw new InfoCustomException("Usuario sin permisos para realizar esta acción.");
+
+            orden.Estado = EstadoOrdenDeCargaFason.AnulacionSolicitada;
+
+            repositorio.GuardarCambios();
+
+            return OrdenDeCargaFasonDto(orden, usuario);
+        }
+        public OrdenDeCargaFasonDto ActualizarSolicitudAnulacion(EstadoSolicitudAnulacionFason estadoSolicitud)
+        {
+            var orden = repositorio.Obtener<OrdenDeCargaFason>(estadoSolicitud.OrdenId);
+            if (orden == null)
+                throw new InfoCustomException("Orden no encontrada");
+            if (orden.Estado != EstadoOrdenDeCargaFason.AnulacionSolicitada)
+                throw new InfoCustomException("Esta orden no está en estado de anulación solicitada.");
+            var usuario = repositorio.Obtener<Usuario>(us => us.Mail == estadoSolicitud.MailUsuario);
+            if (!usuario.TieneRol(RolEnum.FasonAdmin))
+                throw new InfoCustomException("Usuario sin permisos para realizar esta acción.");
+
+
+            if (estadoSolicitud.Aprobado)
+                orden.Estado = EstadoOrdenDeCargaFason.Anulada;
+            else
+                ActualizarOrdenDeCarga(orden);
+
+            repositorio.GuardarCambios();
+            return OrdenDeCargaFasonDto(orden, usuario);
         }
         private void ActualizarOrdenDeCarga(OrdenDeCargaFason orden)
         {
@@ -345,8 +375,8 @@ namespace SustitucionMOAUtils.Services
         {
             if (orden.TransporteExiste)
             {
-                var producto = orden.Producto ?? _repositorio.Obtener<Material>(orden.Producto_Id);
-                if (_codigosRetiroEnPatagonia.Contains(producto.CodigoSap))
+                var producto = orden.Producto ?? repositorio.Obtener<Material>(orden.Producto_Id);
+                if (codigosRetiroEnPatagonia.Contains(producto.CodigoSap))
                     return EstadoOrdenDeCargaFason.PendienteCompensacion;
                 else
                     return EstadoOrdenDeCargaFason.Generada;
@@ -360,7 +390,7 @@ namespace SustitucionMOAUtils.Services
         /// <param name="mailUsuario"></param>
         private void ValidarRequest(OrdenDeCargaFasonRequest request, string mailUsuario)
         {
-            var usuario = _repositorio.Obtener<Usuario>(us => us.Mail == mailUsuario);
+            var usuario = repositorio.Obtener<Usuario>(us => us.Mail == mailUsuario);
             ValidarRequest(request, usuario);
         }
         private void ValidarRequest(OrdenDeCargaFasonRequest request, Usuario usuario)
@@ -381,6 +411,10 @@ namespace SustitucionMOAUtils.Services
                 request.PlantaCodigo = null;
             }
         }
-
+        private OrdenDeCargaFasonDto OrdenDeCargaFasonDto(OrdenDeCargaFason orden, Usuario usuario)
+        {
+            var esInterno = usuario.TienePermiso(PermisoEnum.VerOrdenesDeCargaFasonAdmin);
+            return new OrdenDeCargaFasonDto(orden, esInterno);
+        }
     }
 }

@@ -191,6 +191,18 @@ export class OrdenesDeCargaFasonAltaComponent
             this.mensajeComponent.setInfoMsg(this.mensajesOrdenDeCargaFason.CUITIntermediarioFlete);
             return false;
         }
+        if (this.validaCPEDG) {
+
+            if (!this.ordenDeCargaFason.CUITDestinatario || this.mensajeCuitDestinatario) {
+                this.mensajeComponent.setInfoMsg(this.mensajeCuitDestinatario || "Debe ingresar un CUIT de destinatario para este producto.")
+                return false;
+            }
+            if (!this.ordenDeCargaFason.CUITDestino || this.mensajeCuitDestino) {
+                this.mensajeComponent.setInfoMsg(this.mensajeCuitDestino || "Debe ingresar un CUIT de destino para este producto.")
+                return false;
+            }
+
+        }
 
         return true;
     }

@@ -18,9 +18,8 @@ namespace SustitucionMOAUtils.Interfaces
         Resultado Editar(EditarOrdenDeCargaFasonRequest request, string mailUsuario);
         List<ProveedorDto> GetCorredores();
         List<ProveedorDto> GetClientesDeCorredor(string codigoCorredor);
-        ValidarIntermediarioFleteResponse ValidarIntermediarioFlete(string cuit);
-        bool EmailGestionarAlta(string cuit, string razonSocial, bool esIntermediarioFlete);
-        List<PlantaDto> ObtenerPlantasDestino(string destinoCuit);
-        List<DomicilioDto> ObtenerDomiciliosDestino(string destinoCuit);
+        OrdenDeCargaFasonDto ActualizarSolicitudAnulacion(EstadoSolicitudAnulacionFason estadoSolicitud);
+        OrdenDeCargaFasonDto SolicitarAnulacion(int ordenId, string mailUsuario);
+        OrdenDeCargaFasonDto ActualizarSolicitudEdicion(EstadoSolicitudEdicionFason estadoSolicitud);
     }
 }
