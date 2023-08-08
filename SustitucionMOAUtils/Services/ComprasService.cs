@@ -2413,7 +2413,7 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        public PeticionDeOfertaDto ListarOfertasComprador(int PeticionOferta_Id)
+        public PeticionDeOfertaDto ListarOfertasComprador(int PeticionOferta_Id, UsuarioDto usuario)
         {
             try
             {
@@ -2475,6 +2475,7 @@ namespace SustitucionMOAUtils.Services
                     }
                     //  item.VerAdjudicar = item.Cotizacion == null ? false : item.Cotizacion != null && item.PlazoDeOferta.Date <= hoy && item.Cotizacion.CotizacionEstadoDescripcion == "Cotizado" ? false : item.EstaHabilitado ? false : todasLasOfertas.EstaLiberado ? false: true;
 
+                    var esAdmin = usuario.Permisos.Any(p => p == "ADJUDICAR DENTRO DEL PLAZO DE OFERTAS");
                     var mensaje = "Adjudicar";
                     var verAdjudicar = true;
                     if (item.Cotizacion == null)
@@ -2482,15 +2483,23 @@ namespace SustitucionMOAUtils.Services
                         mensaje = "Sin Cotizar";
                         verAdjudicar = false;
                     }
-                    if (item.Cotizacion != null && (item.PlazoDeOferta.Date >= hoy.Date || item.Cotizacion.CotizacionEstado_Id == (int)CotizacionEstadoEnum.Incompleta))
+                    if (item.Cotizacion != null && item.Cotizacion.CotizacionEstado_Id == (int)CotizacionEstadoEnum.Incompleta)
                     {
-                        mensaje = "Cotización sin finalizar";
+                        mensaje = "Oferta sin finalizar";
                         verAdjudicar = false;
                     }
                     if (!todasLasOfertas.EstaLiberado)
                     {
                         mensaje = "SOLP Sin liberar";
                         verAdjudicar = false;
+                    }
+                    if (!esAdmin)
+                    {
+                        if (item.Cotizacion != null && item.PlazoDeOferta.Date >= hoy.Date)
+                        {
+                            mensaje = "Plazo de oferta sin finalizar";
+                            verAdjudicar = false;
+                        }
                     }
                     if (!item.EstaHabilitado)
                     {
