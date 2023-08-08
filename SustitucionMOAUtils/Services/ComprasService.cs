@@ -3051,7 +3051,7 @@ namespace SustitucionMOAUtils.Services
                 var solp = repositorio.ObtenerConsultaEscalar(new ObtenerSolpCompras(id));
                 var hoy = DateTime.Now.Date;
                 var tablaSap = repositorio.Listar<TablaSap>(x => x.Tabla == TablasSap.Moneda || x.Tabla == TablasSap.Unidad);
-                var unidadMedidaSap = repositorio.Listar<UnidadMedidaSap>();
+
                 DateTime fechaDesde = Convert.ToDateTime(ConfigurationManager.AppSettings["FechaInicioConsultaSolp"].ToString());
                 DateTime fechaHasta = Convert.ToDateTime(ConfigurationManager.AppSettings["FechaFinConsultaSolp"].ToString());
                 var filtros = new ObtenerSolpRequest
@@ -3088,13 +3088,6 @@ namespace SustitucionMOAUtils.Services
                                     }
                                     try
                                     {
-                                        var codigoUnidad = unidadMedidaSap.Where(a =>
-                                        a.Tecnica == registroInfo.Unidad ||
-                                        a.UM == registroInfo.Unidad ||
-                                        a.Comercial == registroInfo.Unidad ||
-                                        a.TextoUM == registroInfo.Unidad ||
-                                        a.TextoUM2 == registroInfo.Unidad).Single().Comercial;
-
                                         registrosInfo.Add(new RegistroInfoDto
                                         {
                                             Id = registroInfo.Id,
@@ -3116,13 +3109,12 @@ namespace SustitucionMOAUtils.Services
                                             Deshabilitado = registroInfo.FechaFormateada != null ? registroInfo.FechaFormateada < hoy : false,
                                             CantidadAdjudicacion = 0,
                                             MonedaId = tablaSap.Where(x => x.CodigoSap == registroInfo.Moneda).FirstOrDefault().Id,
-                                            UnidadId = tablaSap.Where(x => x.CodigoSap == codigoUnidad).FirstOrDefault().Id,
+                                            UnidadId = tablaSap.Where(x => x.CodigoSap == registroInfo.Unidad).FirstOrDefault().Id,
                                         });
 
                                     }
                                     catch (Exception e)
                                     {
-                                        Log.Info("Posible error al obtener el codigo de material" + registroInfo.Unidad);
                                         Log.Error(e);
                                     }
                                 }
@@ -3640,7 +3632,7 @@ namespace SustitucionMOAUtils.Services
                     $"<td style='font-size: 8px;'>{item.Unidad.Descripcion}</td>" +
                     $"<td style='font-size: 8px;'>{peticion.PlazoDeOferta.ToString("dd.MM.yyyy")}</td>" +
                     $"<td style='font-size: 8px;'>{listaPosiciones.Select(x => x.SolpPosicion).OrderByDescending(x => x.FechaEntregaServicio).Select(x => x.FechaEntregaServicio).FirstOrDefault().Value.ToString("dd.MM.yyyy")}</td> </tr>";
-                    posiciones += $"<tr><td colspan='7' style='font-size: 8px; text-align: justify'>{(item.MaterialSolp != null ? item.MaterialSolp.TextoAmpliado : "")}</td></tr>";
+                    posiciones += $"<tr><td colspan='7' style='font-size: 8px; text-align: justify'>{(item.MaterialSolp != null ? item.MaterialSolp.Descripcion : "")}</td></tr>";
 
                 }
 
@@ -3763,7 +3755,8 @@ namespace SustitucionMOAUtils.Services
                         var templateString = System.IO.File.ReadAllText(templateFilePath);
 
                         var xHtml = templateString;
-                        xHtml = CompletarHtmlOC(xHtml, adjudicacion, codigoProveedor);
+                        var adjudicacionDto = ConvertirAdjudicacionEntidadADto(adjudicacion);
+                        xHtml = CompletarHtmlOC(xHtml, adjudicacionDto, codigoProveedor, adjudicacion);
 
                         var PdfWriter = iTextSharp.text.pdf.PdfWriter.GetInstance(document, stream);
                         document.Open();
@@ -3810,7 +3803,7 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        private string CompletarHtmlOC(string xHtml, Adjudicacion adjudicacion, string codigoProveedor)
+        private string CompletarHtmlOC(string xHtml, AdjudicacionDto adjudicacion, string codigoProveedor, Adjudicacion adjudicacionEntidad)
         {
 
             var stylesHtml = @"<style>h1{color:#000;font-family:'Times New Roman',serif;font-style:italic;font-weight:700;text-decoration:none;font-size:12px}
@@ -3857,67 +3850,83 @@ namespace SustitucionMOAUtils.Services
                 Logger.Log.Error(e);
             }
 
+            var head = "";
             var posiciones = "";
             try
             {
-                var tipoPosicion = adjudicacion.Solp.Posiciones.Select(x => x.TipoPosicion.Codigo).FirstOrDefault();
+                var tipoPosicion = adjudicacion.TipoPosicionCodigo;
+               
+                head = "<tr style='text-align: center'>   " +
+                   "<th class='s4'>POS</th>" +
+                   "<th class='s4'>MATERIAL</th>" +
+                   "<th class='s4'>DENOMINACIÓN</th> " +
+                   "<th class='s4'>CANTIDAD<br /> PEDIDO</th> " +
+                   "<th class='s4'>UNIDAD</th>" +
+                   "<th class='s4'>FECHA ENTREGA</th>" +
+                   "<th class='s4'>PRECIO POR UNIDAD</th>" +
+                   "<th class='s4'>VALOR NETO</th></tr>";
 
                 if (tipoPosicion == "MATERIALES")
                 {
-                    foreach (var peti in adjudicacion.Posiciones)
+                    foreach (var peti in adjudicacion.AdjudicacionPosiciones)
                     {
-                        var item = peti.Posicion;
-                        var cotizacionPosicion = adjudicacion.Cotizacion.CotizacionPosiciones.Where(p => p.PeticionDeOfertaSolpPosicion.SolpPosicion_Id == peti.SolpPosicion_Id).First();
-
+                        //var item = peti.Posicion;
+                        //var cotizacionPosicion = adjudicacion.Cotizacion.CotizacionPosiciones.Where(p => p.PeticionDeOfertaSolpPosicion.SolpPosicion_Id == peti.SolpPosicion_Id).First();
 
                         posiciones +=
-                        $"<tr class='border'> <td style='font-size: 8px;'>{item.Indice} </td> " +
-                        $"<td style='font-size: 8px;'> {(item.MaterialSolp != null ? item.MaterialSolp.Codigo : "")} </td>" +
-                        $"<td style='font-size: 8px;'> {(item.MaterialSolp != null ? item.MaterialSolp.Descripcion : "")} </td>" +
+                        $"<tr class='border'> <td style='font-size: 8px;'>{peti.Indice} </td> " +
+                        $"<td style='font-size: 8px;'> { (!string.IsNullOrEmpty(peti.MaterialComprasCodigo) ? peti.MaterialComprasCodigo : "") } </td>" +
+                        $"<td style='font-size: 8px;'> { (!string.IsNullOrEmpty(peti.MaterialComprasDescripcion) ? peti.MaterialComprasDescripcion : "") } </td>" +
                         $"<td style='font-size: 8px;'>{peti.Cantidad}</td>" +
-                        $"<td style='font-size: 8px;'>{cotizacionPosicion.UnidadDeMedida.Descripcion}</td>" +
-                        $"<td style='font-size: 8px;'>{adjudicacion.Cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Posiciones.Select(x => x.SolpPosicion).OrderByDescending(x => x.FechaEntregaServicio).Select(x => x.FechaEntregaServicio).FirstOrDefault().Value.ToString("dd.MM.yyyy")}</td>" +
-                        $"<td style='font-size: 8px;'>{cotizacionPosicion.Precio.Value.ToString("N2")} {cotizacionPosicion.Moneda.Codigo} / {cotizacionPosicion.UnidadDeMedida.Descripcion}</td>" +
-                        $"<td style='font-size: 8px;'>{(peti.Cantidad * cotizacionPosicion.Precio).Value.ToString("N2")} {cotizacionPosicion.Moneda.Codigo}</td></tr>";
-                        posiciones += $"<tr><td colspan='7' style='font-size: 8px; text-align: justify'>{(item.MaterialSolp != null ? item.MaterialSolp.TextoAmpliado : "")}</td></tr>";
+                        $"<td style='font-size: 8px;'>{peti.UnidadDescripcion}</td>" +
+                        //$"<td style='font-size: 8px;'>{adjudicacion.Cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Posiciones.Select(x => x.SolpPosicion).OrderByDescending(x => x.FechaEntregaServicio).Select(x => x.FechaEntregaServicio).FirstOrDefault().Value.ToString("dd.MM.yyyy")}</td>" +
+                        $"<td style='font-size: 8px;'>{peti.FechaEntregaServicio}</td>" +
+                        $"<td style='font-size: 8px;'>{peti.PrecioUnidad.Value.ToString("N2")} {peti.MonedaCodigo} / {peti.UnidadDescripcion}</td>" +
+                        $"<td style='font-size: 8px;'>{(peti.Cantidad * peti.PrecioUnidad.Value).ToString("N2")} {peti.MonedaCodigo}</td></tr>";
+                        posiciones += $"<tr><td colspan='7' style='font-size: 8px; text-align: justify'>{ (!string.IsNullOrEmpty(peti.MaterialComprasDescripcion) ? peti.MaterialComprasDescripcion : "")}</td></tr>";
                     }
                 }
                 else
                 {
-                    foreach (var item in adjudicacion.Posiciones)
+                    head = "<tr style='text-align: center'>   " +
+                    "<th class='s4'>POS</th>" +
+                    "<th class='s4'>DENOMINACIÓN</th> " +
+                    "<th class='s4'>CANTIDAD<br /> PEDIDO</th> " +
+                    "<th class='s4'>UNIDAD</th>" +
+                    "<th class='s4'>FECHA ENTREGA</th>" +
+                    "<th class='s4'>PRECIO POR UNIDAD</th>" +
+                    "<th class='s4'>VALOR NETO</th></tr>";
+
+                    foreach (var solpPosicion in adjudicacion.AdjudicacionPosiciones)
                     {
-                        var solpPosicion = adjudicacion.Solp.Posiciones.Where(c => c.Id == item.SolpPosicion_Id).First();
-                        var cotizacionPosicion = adjudicacion.Cotizacion.CotizacionPosiciones.Where(p => p.PeticionDeOfertaSolpPosicion.SolpPosicion_Id == solpPosicion.Id).First();
-                        var montoTotalPosicion = cotizacionPosicion.CotizacionSubPosiciones.Sum(s => s.Precio * s.Cantidad);
+                        //var solpPosicion = adjudicacion.Solp.Posiciones.Where(c => c.Id == item.SolpPosicion_Id).First();
+                        //var cotizacionPosicion = adjudicacion.Cotizacion.CotizacionPosiciones.Where(p => p.PeticionDeOfertaSolpPosicion.SolpPosicion_Id == solpPosicion.Id).First();
+                        //var montoTotalPosicion = cotizacionPosicion.CotizacionSubPosiciones.Sum(s => s.Precio * s.Cantidad);
 
                         posiciones +=
                         $"<tr class='border'> <td style='font-size: 8px;'>{solpPosicion.Indice} </td> " +
-                        $"<td style='font-size: 8px;'> {(solpPosicion.ServicioSolp != null ? solpPosicion.ServicioSolp.Codigo : "")} </td>" +
                         $"<td style='font-size: 8px;'> {(solpPosicion.Tarea != null ? solpPosicion.Tarea : "")} </td>" +
                         $"<td style='font-size: 8px;'> 1 </td>" +
                         $"<td style='font-size: 8px;'> </td>" +
-                        $"<td style='font-size: 8px;'>{adjudicacion.Cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Posiciones.Select(x => x.SolpPosicion).OrderByDescending(x => x.FechaEntregaServicio).Select(x => x.FechaEntregaServicio).FirstOrDefault().Value.ToString("dd.MM.yyyy")}</td>" +
-                        $"<td style='font-size: 8px;'>{montoTotalPosicion.Value.ToString("N2")} {cotizacionPosicion.Moneda.Codigo} / 001</td>" +
-                        $"<td style='font-size: 8px;'>{montoTotalPosicion.Value.ToString("N2")} {cotizacionPosicion.Moneda.Codigo}</td></tr>" +
+                        $"<td style='font-size: 8px;'>{solpPosicion.FechaEntregaServicio}</td>" +
+                        $"<td style='font-size: 8px;'>{solpPosicion.PrecioTotal.Value.ToString("N2")} {solpPosicion.MonedaCodigo} / 001</td>" +
+                        $"<td style='font-size: 8px;'>{solpPosicion.PrecioTotal.Value.ToString("N2")} {solpPosicion.MonedaCodigo}</td></tr>" +
                         $"<tr><td colspan='4' style='font-size: 10px; text-align: end'><strong>La posición contiene los siguientes servicios:</strong></td></tr>";
 
-
-                        var pos = adjudicacion.Cotizacion.CotizacionPosiciones.Where(sp => sp.PeticionDeOfertaSolpPosicion.SolpPosicion_Id == solpPosicion.Id).First();
-
-                        foreach (var subPos in pos.CotizacionSubPosiciones)
+                        foreach (var subPos in solpPosicion.SubposicionesCompras)
                         {
                             posiciones +=
                             $"<tr class='border'>" +
-                            $"<td style='font-size: 8px;'>{subPos.SolpSubPosicion.Numero * 10} </td>" +
+                            $"<td style='font-size: 8px;'>{subPos.Numero * 10} </td>" +
                             $"<td style='font-size: 8px;'>&nbsp;</td>" +
                             $"<td style='font-size: 8px;'>&nbsp;</td>" +
-                            $"<td colspan='4' style='font-size: 8px;'>{subPos.SolpSubPosicion.Tarea}</td>" +
+                            $"<td colspan='4' style='font-size: 8px;'>{subPos.Tarea}</td>" +
                             $"</tr>" +
                             $"<tr>" +
                             $"<td style='font-size: 8px;'>&nbsp;</td>" +
-                            $"<td style='font-size: 8px;'>{subPos.Cantidad} {subPos.UnidadDeMedida.Codigo}</td>" +
-                            $"<td style='font-size: 8px;'>{subPos.Precio.Value.ToString("N2")}</td>" +
-                            $"<td style='font-size: 8px;'>{(subPos.Precio * subPos.Cantidad).Value.ToString("N2")}</td>" +
+                            $"<td style='font-size: 8px;'>{subPos.Cantidad} {subPos.UnidadComprasDescripcion}</td>" +
+                            $"<td style='font-size: 8px;'>{subPos.PrecioBruto?.ToString("N2")}</td>" +
+                            $"<td style='font-size: 8px;'>{(subPos.PrecioBruto * subPos.Cantidad).Value.ToString("N2")}</td>" +
                             $"</tr>";
                         }
 
@@ -3964,13 +3973,11 @@ namespace SustitucionMOAUtils.Services
 
 
 
-                var posicion = adjudicacion.Cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Posiciones.Select(x => x.SolpPosicion).OrderByDescending(x => x.Id).FirstOrDefault();
-                var localidad = repositorio.Obtener<Localidad>(x => x.ProvinciaId == posicion.ProvinciaId);
-                var centro = repositorio.Obtener<CentroDireccion>(x => x.CodigoSap == posicion.Centro.CodigoSap);
-                var centroPlanta = repositorio.Obtener<TablaSap>(x => x.CodigoSap == posicion.Centro.CodigoSap);
+                var posicion = adjudicacion.AdjudicacionPosiciones.OrderByDescending(x => x.Id).FirstOrDefault();
+                var posicionEntidad = adjudicacionEntidad.Solp.Posiciones.OrderByDescending(x => x.Id).FirstOrDefault();
 
-
-                var lugarEntrega = $"{posicion.NombreEntrega}, {posicion.CalleEntrega} - ({posicion.CpEntrega}) {localidad?.Nombre ?? ""} - {posicion.Provincia?.Nombre ?? ""}";
+                //Antes de la provincia deberia ir la localidad pero no la tenemos
+                var lugarEntrega = $"{adjudicacion.Centro}, {adjudicacion.CalleEntrega} - ({adjudicacion.CodigoPostal}) - {posicionEntidad.Provincia?.Nombre ?? ""}";
 
                 xHtml = string.Format(xHtml, stylesHtml,
                     adjudicacion.NumeroOrdenDeCompra,
@@ -3980,18 +3987,19 @@ namespace SustitucionMOAUtils.Services
                     $"({datosProveedor.cabeceras?.FirstOrDefault().cpFiscal}) {datosProveedor.cabeceras?.FirstOrDefault().locaFiscal}",
                     datosProveedor.cabeceras?.FirstOrDefault().provFiscal,
                     "Argentina",
-                    adjudicacion.Cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.PlazoDeOferta.ToString("dd.MM.yyyy"),
-                    adjudicacion.Cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Posiciones.Select(x => x.SolpPosicion).OrderByDescending(x => x.FechaEntregaServicio).Select(x => x.FechaEntregaServicio).FirstOrDefault().Value.ToString("dd.MM.yyyy"),
+                    posicion.PlazoDeOferta?.ToString("dd.MM.yyyy"),
+                    posicion.FechaEntregaServicio?.ToString("dd.MM.yyyy"),
                     lugarEntrega,
                     adjudicacion.FechaCreacion.ToString("dd.MM.yyyy"),
                     "San Lorenzo",
-                    centro.CodigoSap,
-                    adjudicacion.Usuario.UsuarioSap,
+                    posicion.CentroComprasCodigo,
+                    adjudicacionEntidad.Usuario.UsuarioSap,                  
                     posiciones,
-                    adjudicacion.Moneda.Codigo,
-                    adjudicacion.Moneda.Descripcion,
+                    posicion.MonedaCodigo,
+                    posicion.MonedaDescripcion,
                     adjudicacion.MontoTotal.ToString("N2"),
-                    textos
+                    textos,
+                    head
                     );
 
                 return xHtml;
@@ -4025,7 +4033,6 @@ namespace SustitucionMOAUtils.Services
 
                 var enviarA = new List<string> { adjudicacion.Cotizacion.PeticionDeOfertaUsuario.Usuario.Mail };
                 asunto += $"Nueva OC creada - {adjudicacion.NumeroOrdenDeCompra} - {adjudicacion.Usuario.ObtenerRazonSocial()}";
-
                 var pdf = GenerarPDFOrdenCompra(adjudicacion, adjudicacion.Usuario.ObtenerCodigoProveedor());
 
                 EmailSender.EnviarMail(enviarA, asunto, "", copia, CuerpoMailOrdenCompra(adjudicacion), pdf, "Orden de Compra.pdf");
@@ -5012,6 +5019,12 @@ namespace SustitucionMOAUtils.Services
 
                 throw;
             }
+        }
+
+        private AdjudicacionDto ConvertirAdjudicacionEntidadADto(Adjudicacion adjudicacion)
+        {
+            var adjudicacionDto = ObtenerAdjudicacion(adjudicacion.NumeroOrdenDeCompra);
+            return adjudicacionDto;
         }
 
         public decimal CalcularMontoTotal(AdjudicacionDto adjudicacionDto, Cotizacion cotizacion, List<TablaSap> info)
