@@ -144,33 +144,56 @@ export class OrdenesDeCargaFasonService extends OrdenesBaseService {
     params = params.append("cuit", cuit);
 
     return this.http
-        .get
-        <ApiResponse<ValidarCuitExisteScatoResponse>>
-        ('/api/OrdenDeCargaFason/ValidarCuitExisteScato', { params: params, headers: this.headers })
-        .pipe(timeoutWith(360000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
+      .get
+      <ApiResponse<ValidarCuitExisteScatoResponse>>
+      ('/api/OrdenDeCargaFason/ValidarCuitExisteScato', { params: params, headers: this.headers })
+      .pipe(timeoutWith(360000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
   }
 
   public validarSisaCuit(cuitDestinatario: string, cuitDestino: string, codigoMaterial: string): Observable<ApiResponse<boolean>> {
     let params: HttpParams = new HttpParams()
-        .append("cuitDestinatario", cuitDestinatario)
-        .append("cuitDestino", cuitDestino)
-        .append("codigoMaterial", codigoMaterial)
+      .append("cuitDestinatario", cuitDestinatario)
+      .append("cuitDestino", cuitDestino)
+      .append("codigoMaterial", codigoMaterial)
 
     return this.http
-        .get<ApiResponse<boolean>>(
-            '/api/OrdenDeCargaFason/ValidarSisaCuit',
-            { params: params, headers: this.headers })
-        .pipe(timeoutWith(360000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
+      .get<ApiResponse<boolean>>(
+        '/api/OrdenDeCargaFason/ValidarSisaCuit',
+        { params: params, headers: this.headers })
+      .pipe(timeoutWith(360000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
   }
 
   public validarCuitRuca(cuit: string): Observable<ApiResponse<boolean>> {
     let params: HttpParams = new HttpParams()
-        .append("cuit", cuit);
+      .append("cuit", cuit);
 
     return this.http
-        .get<ApiResponse<boolean>>(
-            '/api/OrdenDeCargaFason/ValidarCuitRuca',
-            { params: params, headers: this.headers })
-        .pipe(timeoutWith(360000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
+      .get<ApiResponse<boolean>>(
+        '/api/OrdenDeCargaFason/ValidarCuitRuca',
+        { params: params, headers: this.headers })
+      .pipe(timeoutWith(360000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
+  }
+
+  public solicitarAnulacion(ordenId: number) {
+    return this.http
+      .post<ApiResponse<OrdenDeCargaFasonDto>>(
+        '/api/OrdenDeCargaFason/SolicitarAnulacion', { ordenId }
+      )
+      .pipe(timeoutWith(360000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
+  }
+
+  public actualizarSolicitudAnulacion(ordenId: number, aprobado: boolean) {
+    return this.http
+      .post<ApiResponse<OrdenDeCargaFasonDto>>(
+        '/api/OrdenDeCargaFason/ActualizarSolicitudAnulacion', { ordenId, aprobado }
+      )
+      .pipe(timeoutWith(360000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
+  }
+  public actualizarSolicitudEdicion(ordenId: number, aprobado: boolean) {
+    return this.http
+      .post<ApiResponse<OrdenDeCargaFasonDto>>(
+        '/api/OrdenDeCargaFason/ActualizarSolicitudEdicion', { ordenId, aprobado }
+      )
+      .pipe(timeoutWith(360000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
   }
 }

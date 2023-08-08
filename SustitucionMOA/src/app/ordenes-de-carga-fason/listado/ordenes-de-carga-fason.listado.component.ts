@@ -10,11 +10,12 @@ import { FloatMsgService } from '../../common/services/FloatMsgService';
 import { ModalService } from '../../common/services/ModalService';
 import { Material } from '../../common/models/material';
 import { ConfirmationService } from 'primeng/api';
+import { Permiso } from '../../common/enums/Permisos';
 
 @Component({
   selector: 'app-listado',
-    templateUrl: './ordenes-de-carga-fason.listado.component.html',
-    styleUrls: ['./ordenes-de-carga-fason.listado.component.css']
+  templateUrl: './ordenes-de-carga-fason.listado.component.html',
+  styleUrls: ['./ordenes-de-carga-fason.listado.component.css']
 })
 export class OrdenesDeCargaFasonListadoComponent extends ListBaseComponent implements OnInit {
   @BlockUI() blockUI: NgBlockUI;
@@ -26,9 +27,13 @@ export class OrdenesDeCargaFasonListadoComponent extends ListBaseComponent imple
   estadosSelected: string[] = [
     "Orden generada",
     "Pendiente",
-    //"Orden vencida",
-    //"Orden entregada",
-    "Sin estado"
+    "Orden vencida",
+    "Orden entregada",
+    "Sin estado",
+    "Edición solicitada",
+    "Edición rechazada",
+    "Anulación solicitada",
+    "Anulada"
   ];
   descripcionEstadoOrdenCarga: any[];
   listaProductos: Material[];
@@ -42,8 +47,8 @@ export class OrdenesDeCargaFasonListadoComponent extends ListBaseComponent imple
 
 
 
-  esTercero: boolean = this.isAuthorized('VER ORDENES DE CARGA FASON');
-  esAdmin: boolean = this.isAuthorized('VER ORDENES DE CARGA FASON ADMIN');
+  esTercero: boolean = this.isAuthorized(Permiso.FasonVerOrdenesDeCarga);
+  esAdmin: boolean = this.isAuthorized(Permiso.FasonVerOrdenesDeCargaAdmin);
 
   constructor(protected service: OrdenesDeCargaFasonService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService, private confirmationService: ConfirmationService) {
     super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
@@ -55,10 +60,14 @@ export class OrdenesDeCargaFasonListadoComponent extends ListBaseComponent imple
       { label: "Pendiente", value: "Pendiente" },
       { label: "Orden vencida", value: "Orden vencida" },
       { label: "Orden entregada", value: "Orden entregada" },
-      { label: "Sin estado", value: "Sin estado" }
+      { label: "Sin estado", value: "Sin estado" },
+      { label: "Edición solicitada", value: "Edición solicitada" },
+      { label: "Edición rechazada", value: "Edición rechazada" },
+      { label: "Anulación solicitada", value: "Anulación solicitada" },
+      { label: "Anulada", value: "Anulada" }
     ];
 
-    if(!this.esAdmin){
+    if (!this.esAdmin) {
       this.descripcionEstadoOrdenCarga = [
         { label: "OK", value: "OK" },
         { label: "Orden vencida", value: "Orden vencida" },
@@ -78,29 +87,28 @@ export class OrdenesDeCargaFasonListadoComponent extends ListBaseComponent imple
   getListado = (resultMessage?: string) => {
     this.spinnerComponent.showIt();
     if (resultMessage != undefined) {
-        this.mensajeComponent.setSuccessMsg(resultMessage);
+      this.mensajeComponent.setSuccessMsg(resultMessage);
     } else {
-        this.mensajeComponent.setMsgsEmpty();
+      this.mensajeComponent.setMsgsEmpty();
     }
     this.data = null;
     try {
       this.unsubscribe();
       this.subscription = this.service.listado(this.filtroFechaComponent.fecha_inicio, this.filtroFechaComponent.fecha_fin)
         .subscribe(result => {
-            this.spinnerComponent.hideIt();
-            if (result.logout == true) {
-                this.sessionDataService.logout();
-            } else if (result.error != undefined && result.error != "") {
-                this.mensajeComponent.setErrorMsg(result.error);
-            } else if (result.info != undefined) {
-                this.mensajeComponent.setInfoMsg(result.info);
-            } else {
-                this.data = result.Response;
-                this.datosAux = result.Response;
-                // console.log("datos aux", this.datosAux);
-                this.filtrarListado();
-            }
-          },
+          this.spinnerComponent.hideIt();
+          if (result.logout == true) {
+            this.sessionDataService.logout();
+          } else if (result.error != undefined && result.error != "") {
+            this.mensajeComponent.setErrorMsg(result.error);
+          } else if (result.info != undefined) {
+            this.mensajeComponent.setInfoMsg(result.info);
+          } else {
+            this.data = result.Response;
+            this.datosAux = result.Response;
+            this.filtrarListado();
+          }
+        },
           error => {
             this.spinnerComponent.hideIt();
             this.mensajeComponent.setErrorMsg(error.message);
@@ -115,15 +123,15 @@ export class OrdenesDeCargaFasonListadoComponent extends ListBaseComponent imple
     return false; //<-- Prevent Refresh
   }
 
-  filtrarListado () {
-      // console.log("datosAux: ", this.datosAux)
-      if (this.estadosSelected.length < 1 || this.estadosSelected == null) {
-        this.data = this.datosAux;
-      } else {
-        if (this.estadosSelected) {
-            this.data = this.datosAux.filter(x => this.estadosSelected.some(y => y == x.DescripcionEstado));
-        }
+  filtrarListado() {
+    // console.log("datosAux: ", this.datosAux)
+    if (this.estadosSelected.length < 1 || this.estadosSelected == null) {
+      this.data = this.datosAux;
+    } else {
+      if (this.estadosSelected) {
+        this.data = this.datosAux.filter(x => this.estadosSelected.some(y => y == x.DescripcionEstado));
       }
+    }
   }
 
   setFiltroProducto = (producto: string) => {
@@ -132,12 +140,12 @@ export class OrdenesDeCargaFasonListadoComponent extends ListBaseComponent imple
 
   getProductos = () => {
     this.subscription = this.service.getMateriales().subscribe(
-        (result) => {
-            this.listaProductos = result.data;
-        },
-        (error) => {
-            this.mensajeComponent.setErrorMsg(error.message);
-        }
+      (result) => {
+        this.listaProductos = result.data;
+      },
+      (error) => {
+        this.mensajeComponent.setErrorMsg(error.message);
+      }
     );
   }
 }
