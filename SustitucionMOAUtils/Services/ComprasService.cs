@@ -816,6 +816,13 @@ namespace SustitucionMOAUtils.Services
 
                         foreach (var subpos in subposEliminadas.ToList())
                         {
+                            if (subpos.Cotizaciones.Any()) 
+                            {
+                                foreach (var cotizacion in subpos.Cotizaciones.ToList())
+                                {
+                                    repositorio.Remover(cotizacion);
+                                }
+                            }
                             repositorio.Remover(subpos);
                         }
                     }
@@ -2160,7 +2167,18 @@ namespace SustitucionMOAUtils.Services
                 if (subPosicionesBorradas.Count() > 0)
                 {
                     var subposborradas = repositorio.Listar<SolpSubposicion>(x => subPosicionesBorradas.Contains(x.Id));
-                    repositorio.RemoverTodos<SolpSubposicion>(subposborradas);
+
+                    foreach (var subpos in subposborradas.ToList())
+                    {
+                        if (subpos.Cotizaciones.Any())
+                        {
+                            foreach (var cotizacion in subpos.Cotizaciones.ToList())
+                            {
+                                repositorio.Remover(cotizacion);
+                            }
+                        }
+                        repositorio.Remover(subpos);
+                    }
                 }
                 repositorio.GuardarCambios();
                 Logger.Log.Info($"ObtenerSolpesDesdeSAPJob fin");
