@@ -1,5 +1,5 @@
 import { trigger, state, style, transition, animate } from '@angular/animations';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit} from '@angular/core';
 import { EcheqContrato, EcheqDocumento } from '../echeq-contrato.model';
 import { registerLocaleData } from '@angular/common';
 import es from '@angular/common/locales/es';
@@ -30,7 +30,7 @@ export class GrillaComponent extends EcheqGestionComponent implements OnInit {
     clasificacionesDeshabilitadas = [""];
     @Input() echeqContratos: Array<EcheqContrato>;
     @BlockUI() blockUI: NgBlockUI;
-
+    esNuevoEcheq: boolean = false;
 
     documentoSelect: EcheqDocumento;
     public itemsPerPage: string;
@@ -41,7 +41,6 @@ export class GrillaComponent extends EcheqGestionComponent implements OnInit {
 
     aforoConf: number;
     cantidadEcheq: number;
-
     ngOnInit() {
         registerLocaleData(es);
         this.itemsPerPage = sessionStorage.getItem("itemsPerPage") ? sessionStorage.getItem("itemsPerPage") : "10";
@@ -145,6 +144,7 @@ export class GrillaComponent extends EcheqGestionComponent implements OnInit {
     }
 
     marcarContrato(echeqContrato: EcheqContrato) {
+        let contratoSeleccionado = echeqContrato.contrato;
         try {
             this.blockUI.start('Grabando...');
             this.echeqService.MarcarContrato(echeqContrato.contrato, echeqContrato.pedido).subscribe(response => {
@@ -153,8 +153,10 @@ export class GrillaComponent extends EcheqGestionComponent implements OnInit {
                 if (response.logout == true) {
                     this.sessionDataService.logout();
                 } else if (response.error != undefined && response.error != "") {
+                    this.errorMarcarDesmarcarContrato(contratoSeleccionado, true);
                     this.floatMsgService.setErrorMsg(response.error);
                 } else if (response.info != undefined) {
+                    this.errorMarcarDesmarcarContrato(contratoSeleccionado, true);
                     this.floatMsgService.setInfoMsg(response.info);
                 } else {
                     echeqContrato.selected = true;
@@ -165,17 +167,20 @@ export class GrillaComponent extends EcheqGestionComponent implements OnInit {
                 }
             },
                 error => {
+                    this.errorMarcarDesmarcarContrato(contratoSeleccionado, true);
                     this.blockUI.stop();
                     this.floatMsgService.setErrorMsg(error.message);
                 });
 
         }
         catch (e) {
+            this.errorMarcarDesmarcarContrato(contratoSeleccionado, true);
             this.floatMsgService.setErrorMsg(e);
         }
     }
 
     desmarcarContrato(echeqContrato: EcheqContrato) {
+        let contratoSeleccionado = echeqContrato.contrato;
         try {
             this.blockUI.start('Grabando...');
             this.echeqService.DesmarcarContrato(echeqContrato.contrato, echeqContrato.pedido).subscribe(response => {
@@ -183,8 +188,10 @@ export class GrillaComponent extends EcheqGestionComponent implements OnInit {
                 if (response.logout == true) {
                     this.sessionDataService.logout();
                 } else if (response.error != undefined && response.error != "") {
+                    this.errorMarcarDesmarcarContrato(contratoSeleccionado, false);
                     this.floatMsgService.setErrorMsg(response.error);
                 } else if (response.info != undefined) {
+                    this.errorMarcarDesmarcarContrato(contratoSeleccionado, false);
                     this.floatMsgService.setInfoMsg(response.info);
                 } else {
                     echeqContrato.selected = false;
@@ -197,26 +204,32 @@ export class GrillaComponent extends EcheqGestionComponent implements OnInit {
                 }
             },
                 error => {
+                    this.errorMarcarDesmarcarContrato(contratoSeleccionado, false);
                     this.floatMsgService.setErrorMsg(error.message);
                     this.blockUI.stop();
                 });
 
         }
         catch (e) {
+            this.errorMarcarDesmarcarContrato(contratoSeleccionado, false);
             this.floatMsgService.setErrorMsg(e);
         }
     }
 
     marcarDocumento(echeqDocumento: EcheqDocumento) {
+        let parentId = echeqDocumento.parentId;
+        let numeroCOE = echeqDocumento.numeroCOE;
         try {
             this.blockUI.start('Grabando...');
-            this.echeqService.MarcarDocumento(echeqDocumento.documento, echeqDocumento.pedido, echeqDocumento.contrato).subscribe(response => {
+            this.echeqService.MarcarDocumento(echeqDocumento.documento, echeqDocumento.pedido, echeqDocumento.contrato, echeqDocumento.ejercicio).subscribe(response => {
                 this.blockUI.stop();
                 if (response.logout == true) {
                     this.sessionDataService.logout();
                 } else if (response.error != undefined && response.error != "") {
+                    this.errorMarcaDesmarcaDocumento(parentId, numeroCOE, true);
                     this.floatMsgService.setErrorMsg(response.error);
                 } else if (response.info != undefined) {
+                    this.errorMarcaDesmarcaDocumento(parentId, numeroCOE, true);
                     this.floatMsgService.setInfoMsg(response.info);
                 } else {
                     echeqDocumento.selected = true;
@@ -228,15 +241,19 @@ export class GrillaComponent extends EcheqGestionComponent implements OnInit {
                 error => {
                     this.blockUI.stop();
                     this.floatMsgService.setErrorMsg(error.message);
+                    this.errorMarcaDesmarcaDocumento(parentId, numeroCOE, true);
                 });
         }
         catch (e) {
+            this.errorMarcaDesmarcaDocumento(parentId, numeroCOE, true);
             this.blockUI.stop();
             this.floatMsgService.setErrorMsg(e);
         }
     }
 
     desmarcarDocumento(echeqDocumento: EcheqDocumento) {
+        let parentId = echeqDocumento.parentId;
+        let numeroCOE = echeqDocumento.numeroCOE;
         try {
             this.blockUI.start('Grabando...');
             this.echeqService.DesmarcarDocumento(echeqDocumento.documento, echeqDocumento.pedido, echeqDocumento.contrato).subscribe(response => {
@@ -245,8 +262,10 @@ export class GrillaComponent extends EcheqGestionComponent implements OnInit {
                     this.sessionDataService.logout();
                 } else if (response.error != undefined && response.error != "") {
                     this.floatMsgService.setErrorMsg(response.error);
+                    this.errorMarcaDesmarcaDocumento(parentId, numeroCOE, false);
                 } else if (response.info != undefined) {
                     this.floatMsgService.setInfoMsg(response.info);
+                    this.errorMarcaDesmarcaDocumento(parentId, numeroCOE, false);
                 } else {
                     echeqDocumento.selected = false;
                     echeqDocumento.listaChequesApertura = [];
@@ -256,20 +275,23 @@ export class GrillaComponent extends EcheqGestionComponent implements OnInit {
             },
                 error => {
                     this.floatMsgService.setErrorMsg(error.message);
+                    this.errorMarcaDesmarcaDocumento(parentId, numeroCOE, false);
                 });
             this.blockUI.stop();
 
         }
         catch (e) {
+            this.errorMarcaDesmarcaDocumento(parentId, numeroCOE, false);
             this.floatMsgService.setErrorMsg(e);
         }
     }
 
-    showAperturarEcheqDialog(echeqDocumento: EcheqDocumento) {
+    showAperturarEcheqDialog(echeqDocumento: EcheqDocumento, esNuevo: boolean) {
         this.documentoSelect = echeqDocumento;
         if (echeqDocumento.listaChequesApertura == null) {
             echeqDocumento.listaChequesApertura = new Array<EcheqApertura>();
         }
+        this.esNuevoEcheq = esNuevo;
         this.popupVisible.next(true)
     }
 
@@ -303,8 +325,7 @@ export class GrillaComponent extends EcheqGestionComponent implements OnInit {
                 },
                 error => {
                     this.floatMsgService.setErrorMsg(error.message);
-                }
-            );
+                });
         } catch (e) {
             this.floatMsgService.setErrorMsg(e);
         }
@@ -312,6 +333,9 @@ export class GrillaComponent extends EcheqGestionComponent implements OnInit {
 
     agregarApertura() {
         this.blockUI.start('Grabando...')
+        let contratoSeleccionado: string = this.documentoSelect.contrato;
+        let numeroCOESeleccionado: string = this.documentoSelect.numeroCOE;
+
         try {
             this.subscription = this.service.AgregarApertura(this.documentoSelect.documento, this.documentoSelect.pedido, this.documentoSelect.contrato, this.documentoSelect.listaChequesApertura).subscribe(
                 (result: any) => {
@@ -320,8 +344,10 @@ export class GrillaComponent extends EcheqGestionComponent implements OnInit {
                         this.sessionDataService.logout();
                     } else if (result.error != undefined && result.error != "") {
                         this.floatMsgService.setErrorMsg(result.error);
+                        this.errorAperturaDocumento(contratoSeleccionado, numeroCOESeleccionado);
                     } else if (result.info != undefined) {
                         this.floatMsgService.setInfoMsg(result.info);
+                        this.errorAperturaDocumento(contratoSeleccionado, numeroCOESeleccionado);
                     } else {
                         this.floatMsgService.setSuccessMsg(result);
                         this.spinnerComponent.hideIt();
@@ -330,17 +356,48 @@ export class GrillaComponent extends EcheqGestionComponent implements OnInit {
                 error => {
                     this.blockUI.stop();
                     this.floatMsgService.setErrorMsg(error.message);
+                    this.errorAperturaDocumento(contratoSeleccionado, numeroCOESeleccionado);
                 }
             );
         } catch (e) {
             this.floatMsgService.setErrorMsg(e);
+            this.errorAperturaDocumento(contratoSeleccionado, numeroCOESeleccionado);
         }
     }
 
     mask(valor) {
         return valor.replace(/(0)*/, '')
     }
-
+    private errorMarcarDesmarcarContrato(contrato: string, esMarcar: boolean) {
+        let contratoSeleccionado = this.echeqContratos.find(x => x.contrato == contrato);
+        if (contratoSeleccionado!=null){
+            contratoSeleccionado.selected = esMarcar? false : true;
+            if(contratoSeleccionado.documentos !=null && contratoSeleccionado.documentos.length){
+                contratoSeleccionado.documentos.forEach(item=>{
+                    this.errorMarcaDesmarcaDocumento(item.parentId, item.numeroCOE, esMarcar);
+                });
+            }
+        }
+    }
+    private errorMarcaDesmarcaDocumento(parentId: string ,numeroCOE: string , esMarcar:boolean){
+        let contrato = this.echeqContratos.find(contrato => contrato.id == parentId);
+        contrato.selected = esMarcar? false: true;
+        if (contrato.documentos.length > 0){
+            let documentos = contrato.documentos.find(documento => documento.numeroCOE == numeroCOE);
+            documentos.selected = esMarcar? false: true;
+        }
+    }
+    private errorAperturaDocumento(contratoSeleccionado: string ,numeroCOESeleccionado: string ){
+        if (this.esNuevoEcheq){
+            let contratos = this.echeqContratos.filter(x=> x.contrato == contratoSeleccionado);
+            if (contratos!=null && contratos.length > 0) {
+                let documentosContrato = contratos[0].documentos;
+                let documentos = documentosContrato.filter(x=> x.numeroCOE == numeroCOESeleccionado);
+                if (documentos!=null && documentos.length > 0)
+                    documentos[0].listaChequesApertura = [];
+            }
+        }
+    }
     expandirRow(pagoPendiente) {
         if (pagoPendiente.expanded) pagoPendiente.expanded = false;
         else {

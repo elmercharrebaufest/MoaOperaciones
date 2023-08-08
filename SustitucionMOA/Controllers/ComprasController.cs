@@ -86,7 +86,7 @@ namespace SustitucionMOA.Controllers
             }
         }
 
-       public ActionResult Combos()
+        public ActionResult Combos()
         {
             try
             {
@@ -894,7 +894,7 @@ namespace SustitucionMOA.Controllers
             }
         }
 
-        public ActionResult DescargarLegajo(int idPeticion,int? idPeticionDeOfertaUsuario)
+        public ActionResult DescargarLegajo(int idPeticion, int? idPeticionDeOfertaUsuario)
         {
             try
             {
@@ -1159,7 +1159,7 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                var cotizacion = JsonConvert.DeserializeObject<GuardarCotizacion>(json);               
+                var cotizacion = JsonConvert.DeserializeObject<GuardarCotizacion>(json);
                 var result = service.ObtenerPrecioTotalPosicionProveedor(cotizacion);
                 return JsonCustom(new { data = result });
             }
@@ -1223,23 +1223,28 @@ namespace SustitucionMOA.Controllers
             }
         }
 
+        static readonly object _lockObtenerOrdenDeCompra = new object();
+
         [HttpGet]
         public ActionResult ObtenerOrdenDeCompra(string nroOC)
         {
-            try
+            lock (_lockObtenerOrdenDeCompra)
             {
-                var result = service.ObtenerOrdenDeCompra(nroOC);
-                return JsonCustom(new { data = result });
-            }
-            catch (WSCustomException e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+                try
+                {
+                    var result = service.ObtenerOrdenDeCompra(nroOC);
+                    return JsonCustom(new { data = result });
+                }
+                catch (WSCustomException e)
+                {
+                    Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                    return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
+                }
+                catch (Exception e)
+                {
+                    Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                    return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+                }
             }
         }
 

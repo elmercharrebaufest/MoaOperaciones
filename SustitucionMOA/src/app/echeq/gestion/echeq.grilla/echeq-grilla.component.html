@@ -51,9 +51,9 @@
                         </td>
                         <td style="width: 30px;">
                             <p-checkbox 
-                                *ngIf="!(clasificacionesDeshabilitadas.indexOf(pagoPendiente.clasificacion.toUpperCase())>-1)"
+                                *ngIf="!(clasificacionesDeshabilitadas.indexOf(pagoPendiente.clasificacion.toUpperCase())>-1) && pagoPendiente.documentos.length > 0"
                                 name="selectedContrato" binary="false" [(ngModel)]="pagoPendiente.selected"
-                                (click)="onClickSelectContrato(pagoPendiente)"></p-checkbox>
+                                (onChange)="onClickSelectContrato(pagoPendiente)"></p-checkbox>
                         </td>
                         <td (click)="expandirRow(pagoPendiente)">{{pagoPendiente.pedido == "" ?
                             mask(pagoPendiente.contrato) : mask(pagoPendiente.pedido | customPipeEcheq)}}</td>
@@ -90,12 +90,12 @@
                                                 <button type="button" class="btn"
                                                     style="background-color: #009688; color: white;"
                                                     *ngIf="documento.selected && (documento.listaChequesApertura == null || documento.listaChequesApertura.length == 0)"
-                                                    (click)="showAperturarEcheqDialog(documento)">GENERAR
+                                                    (click)="showAperturarEcheqDialog(documento, true)">GENERAR
                                                     ECHEQS</button>
                                                 <button type="button" class="btn"
                                                     style="background-color: #009688; color: white;"
                                                     *ngIf="documento.selected && documento.listaChequesApertura != null  && documento.listaChequesApertura.length != 0"
-                                                    (click)="showAperturarEcheqDialog(documento)">EDITAR ECHEQS</button>
+                                                    (click)="showAperturarEcheqDialog(documento, false)">EDITAR ECHEQS</button>
                                                 <span
                                                     *ngIf="documento.selected && documento.listaChequesApertura != null  && documento.listaChequesApertura.length != 0"
                                                     class="glyphicon glyphicon-info-sign"
