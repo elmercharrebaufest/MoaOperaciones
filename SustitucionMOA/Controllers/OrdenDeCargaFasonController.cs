@@ -11,7 +11,6 @@ using SustitucionMOAModel.Enums;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Dto.OrdenDeCarga;
 using System.Collections.Generic;
-using SustitucionMOAModel.Models.WSMapMOA.Compras;
 
 namespace SustitucionMOA.Controllers
 {
