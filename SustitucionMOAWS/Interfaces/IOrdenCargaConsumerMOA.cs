@@ -1,19 +1,26 @@
-﻿using SustitucionMOAModel.Models;
+﻿using SustitucionMOAModel.Dto;
+using SustitucionMOAModel.Entities;
+using SustitucionMOAModel.Enums;
+using SustitucionMOAModel.Enums.MoaWS.OrdenCargaWS;
 using SustitucionMOAModel.Models.WSMapMOA.OrdenCarga;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using SustitucionMOAWS.ResponseHandler.OrdenCarga;
+using SustitucionMOAWS.WSRequests.OrdenCarga;
 
 namespace SustitucionMOAWS.Interfaces
 {
     public interface IOrdenCargaConsumerMOA
     {
-        string ControlCargaRequest(string cliente, string contrato, string corredor, string cuit, string material, string pedido);
-        string CrearOrdenRequest(string cliente, string contrato, string corredor, decimal kilos, string material, string pedidoInput, string forzarCreacion, out string pedidoOutput);
+        ControlCargaResponseHandler ControlarCarga(ControlCargaRequest datosCarga);
+        CrearOrdenResEnum CrearOrden(CrearOrdenRequest datosOrden, out string pedidoOutput, out string resultOutput);
         string OrdenCargaControlEstadoRequest(string entrega, string pedido, string transportista);
-        string OrdenCargaEntregadaRequest(string documento, decimal kilos, string nombreConductor, string patenteAcoplado, string patenteChasis, string pedido, string tipoDocumento, string transportista, out string mensaje);
+        OrdenCargaEntreResponseHandler CrearEntrega(CrearEntregaRequest entregaReq, bool pedidoAnticipado = false);
         OrdenCargaVisualizarClienteWSMOAResponse OrdenCargaVisualizarClienteExecute(OrdenCargaVisualizarClienteWSMOARequest request);
+        ControlEstadoResEnum GetOrdenCargaControlEstadoTransportista(string cuitTransportista);
+        ModOrdenCargaResponseHandler AnularOrdenCarga(OrdenDeCarga orden);
+        ModEntregaResponseHandler AnularEntregaOrdenCarga(string nroEntrega);
+        ResultadoGenerico ModificarEntregaOrdenCarga(ModificarEntregaOrdenCargaSAP datosEntrega);
+        bool VerificarContratoAbierto(string contrato);
+        Result ObtenerContratoSAP(string numeroContrato, TipoContratoFAS? tipoContrato);
+        Result ObtenerContratoSAP(OrdenDeCarga orden, TipoContratoFAS? tipoContrato);
     }
 }

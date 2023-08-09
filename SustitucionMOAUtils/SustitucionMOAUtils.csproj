@@ -23,6 +23,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -36,6 +37,9 @@
     <Reference Include="BouncyCastle.Crypto, Version=1.8.6.0, Culture=neutral, PublicKeyToken=0e99375e54769942">
       <HintPath>..\packages\BouncyCastle.1.8.6.1\lib\BouncyCastle.Crypto.dll</HintPath>
     </Reference>
+    <Reference Include="DocumentFormat.OpenXml, Version=2.18.0.0, Culture=neutral, PublicKeyToken=8fb06cb64d019a17, processorArchitecture=MSIL">
+      <HintPath>..\packages\DocumentFormat.OpenXml.2.18.0\lib\net40\DocumentFormat.OpenXml.dll</HintPath>
+    </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.4.4\lib\net45\EntityFramework.dll</HintPath>
     </Reference>
@@ -44,6 +48,12 @@
     </Reference>
     <Reference Include="Excel, Version=2.1.2.3, Culture=neutral, PublicKeyToken=93517dbe6a4012fa, processorArchitecture=MSIL">
       <HintPath>..\packages\ExcelDataReader.2.1.2.3\lib\net45\Excel.dll</HintPath>
+    </Reference>
+    <Reference Include="FluentValidation, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7de548da2fbae0f0, processorArchitecture=MSIL">
+      <HintPath>..\packages\FluentValidation.8.6.3\lib\net45\FluentValidation.dll</HintPath>
+    </Reference>
+    <Reference Include="Handlebars, Version=2.1.2.0, Culture=neutral, PublicKeyToken=22225d0bf33cd661, processorArchitecture=MSIL">
+      <HintPath>..\packages\Handlebars.Net.2.1.2\lib\net452\Handlebars.dll</HintPath>
     </Reference>
     <Reference Include="ICSharpCode.SharpZipLib, Version=1.2.0.246, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
       <HintPath>..\packages\SharpZipLib.1.2.0\lib\net45\ICSharpCode.SharpZipLib.dll</HintPath>
@@ -56,7 +66,8 @@
       <HintPath>..\packages\itextsharp.xmlworker.5.5.13\lib\itextsharp.xmlworker.dll</HintPath>
     </Reference>
     <Reference Include="Kendo.DynamicLinq, Version=1.1.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Kendo.DynamicLinq.1.1.2.0\lib\net40\Kendo.DynamicLinq.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\SustitucionMOA\Libs\Kendo.DynamicLinq.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Azure.CognitiveServices.Vision.ComputerVision, Version=6.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Azure.CognitiveServices.Vision.ComputerVision.6.0.0\lib\net452\Microsoft.Azure.CognitiveServices.Vision.ComputerVision.dll</HintPath>
@@ -105,6 +116,9 @@
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.Transactions" />
+    <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ValueTuple.4.5.0\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
+    </Reference>
     <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -112,6 +126,7 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Credentials\CamCredential.cs" />
@@ -123,6 +138,7 @@
     <Compile Include="Export\ExcelImport.cs" />
     <Compile Include="Export\ExcelValidator.cs" />
     <Compile Include="Export\PDFExport.cs" />
+    <Compile Include="Extensions\ObjectExtensions.cs" />
     <Compile Include="Helpers\CustomImageTagProcessor.cs" />
     <Compile Include="Helpers\ExtensionesSerializacion.cs" />
     <Compile Include="Helpers\GenericCopier.cs" />
@@ -136,6 +152,14 @@
     <Compile Include="Interfaces\ICampoSustentableService.cs" />
     <Compile Include="Interfaces\ICrearContratoService.cs" />
     <Compile Include="Interfaces\ICuentaCorrienteService.cs" />
+    <Compile Include="Interfaces\IAplicacionCartaPorteService.cs" />
+    <Compile Include="Interfaces\IEmailFasService.cs" />
+    <Compile Include="Interfaces\IHttpContextService.cs" />
+    <Compile Include="Interfaces\IFacturaAnticipadaService.cs" />
+    <Compile Include="Interfaces\IKgDisponiblesFasService.cs" />
+    <Compile Include="Interfaces\IOrdenDeCargaEstadoService.cs" />
+    <Compile Include="Interfaces\IOrdenesCargaApi.cs" />
+    <Compile Include="Interfaces\IEcheqService.cs" />
     <Compile Include="Interfaces\IFeriadoService.cs" />
     <Compile Include="Interfaces\IAltaEmpresaService.cs" />
     <Compile Include="Interfaces\IAltaEmpresaGranosService.cs" />
@@ -147,6 +171,7 @@
     <Compile Include="Interfaces\ILiquidacionService.cs" />
     <Compile Include="Interfaces\ILocalidadService.cs" />
     <Compile Include="Interfaces\INotificacionService.cs" />
+    <Compile Include="Interfaces\IOrdenDeCargaFasonService.cs" />
     <Compile Include="Interfaces\IOrdenDeCargaService.cs" />
     <Compile Include="Interfaces\IReporteContratoService.cs" />
     <Compile Include="Interfaces\IReportesService.cs" />
@@ -163,11 +188,18 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\AduanaService.cs" />
     <Compile Include="Services\AltaEmpresaNoGranosService.cs" />
+    <Compile Include="Services\AplicacionCartaPorteService.cs" />
+    <Compile Include="Services\KgDisponiblesFasService.cs" />
+    <Compile Include="Services\OrdenDeCargaEstadoService.cs" />
+    <Compile Include="Services\FacturaAnticipadaService.cs" />
     <Compile Include="Services\ComprasService.cs" />
     <Compile Include="Services\ConsultaService.cs" />
     <Compile Include="Services\AzureService.cs" />
     <Compile Include="Services\CampoSustentableService.cs" />
     <Compile Include="Services\CrearContratoService.cs" />
+    <Compile Include="Services\EcheqService.cs" />
+    <Compile Include="Services\EmailService.cs" />
+    <Compile Include="Services\Email\EmailFasService.cs" />
     <Compile Include="Services\FeriadoService.cs" />
     <Compile Include="Services\AltaEmpresaService.cs" />
     <Compile Include="Services\AltaEmpresaGranosService.cs" />
@@ -184,10 +216,13 @@
     <Compile Include="Services\HomeService.cs" />
     <Compile Include="Interfaces\ICartaPorteService.cs" />
     <Compile Include="Interfaces\IPesificacionService.cs" />
+    <Compile Include="Services\HttpContextService.cs" />
     <Compile Include="Services\LiquidacionService.cs" />
     <Compile Include="Services\LocalidadService.cs" />
     <Compile Include="Services\LoginService.cs" />
     <Compile Include="Services\NotificacionService.cs" />
+    <Compile Include="Services\OrdenDeCargaApiService.cs" />
+    <Compile Include="Services\OrdenDeCargaFasonService.cs" />
     <Compile Include="Services\OrdenDeCargaService.cs" />
     <Compile Include="Services\PagoService.cs" />
     <Compile Include="Services\PDFService.cs" />
@@ -201,6 +236,10 @@
     <Compile Include="Services\ExternalApiService.cs" />
     <Compile Include="Services\UsuarioService.cs" />
     <Compile Include="Services\VendedorService.cs" />
+    <Compile Include="Validadores\OrdenDeCarga\CrearOrdenEnSAPRequestValidator.cs" />
+    <Compile Include="Validadores\OrdenDeCarga\ValidarCorredorClienteContratoProductoRequestValidator.cs" />
+    <Compile Include="Validadores\OrdenDeCarga\VisualizarClienteRequestValidator.cs" />
+    <Compile Include="Validadores\OrdenDeCarga\VisualizarProductoRequestValidator.cs" />
     <Compile Include="Validadores\ResultadoValidacionPesificacion.cs" />
     <Compile Include="Validadores\ValidadorPesificacion.cs" />
     <Compile Include="Wrappers\FileWrapper.cs" />
@@ -224,7 +263,7 @@
       <Name>SustitucionMOAFotmatter</Name>
     </ProjectReference>
     <ProjectReference Include="..\SustitucionMOAModel\SustitucionMOAModel.csproj">
-      <Project>{DA0A7852-EA57-4359-BA7C-B8BABDEDBD42}</Project>
+      <Project>{da0a7852-ea57-4359-ba7c-b8babdedbd42}</Project>
       <Name>SustitucionMOAModel</Name>
     </ProjectReference>
     <ProjectReference Include="..\SustitucionMOARepositorio\SustitucionMOARepositorio.csproj">
@@ -236,7 +275,7 @@
       <Name>SustitucionMOAValidator</Name>
     </ProjectReference>
     <ProjectReference Include="..\SustitucionMOAWS\SustitucionMOAWS.csproj">
-      <Project>{CB32F9E6-ED7B-4623-B624-0EA3717D06C2}</Project>
+      <Project>{cb32f9e6-ed7b-4623-b624-0ea3717d06c2}</Project>
       <Name>SustitucionMOAWS</Name>
     </ProjectReference>
   </ItemGroup>
@@ -256,7 +295,13 @@
     <Content Include="Templates\NewPliegoSolpSinCondicionesTemplate.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Templates\OrdenCompraTemplate.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Templates\PliegoSolpSinCondicionesTemplate.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\PeticionDeOfertaTemplate.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Templates\PliegoSolpTemplate.html">
@@ -266,7 +311,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

@@ -169,6 +169,10 @@ namespace SustitucionMOA.Controllers
                 string tipoUsuario = ClaimsPrincipal.Current.FindFirst(Globals.ClaimsTipoUsuarioType).Value;
                 string esNuevoUsuarioStr = ClaimsPrincipal.Current.FindFirst(Globals.ClaimsEsNuevoUsuarioType).Value;
                 string seccionesVisitadas = ClaimsPrincipal.Current.FindFirst(Globals.ClaimsSeccionesVisitadas).Value;
+                string cuit = ClaimsPrincipal.Current.FindFirst(Globals.ClaimsCuit).Value;
+                string proveedorId = ClaimsPrincipal.Current.FindFirst(Globals.ClaimsProveedorId).Value;
+
+
 
                 bool esNuevoUsuario = bool.Parse(esNuevoUsuarioStr);
                 bool aceptoTyC = false;
@@ -296,7 +300,9 @@ namespace SustitucionMOA.Controllers
                     redirectURL,
                     seccionesVisitadas,
                     aceptoTyC,
-                    apikey
+                    apikey,
+                    cuit,
+                    proveedorId
                 }, JsonRequestBehavior.AllowGet);
 
             }

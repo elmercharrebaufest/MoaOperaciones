@@ -5,7 +5,7 @@ export class CampoObligatorioViewModel
     public tieneValorPorDefecto : boolean;
     public valorPorDefecto : any;
 
-    constructor(nombreCampo:string,tieneValorPorDefecto:boolean = false,valorPorDefecto:any = null)
+    constructor(nombreCampo:string, tieneValorPorDefecto:boolean = false, valorPorDefecto:any = null)
     {
         this.nombreCampo = nombreCampo;
         this.tieneValorPorDefecto = tieneValorPorDefecto;

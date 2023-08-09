@@ -1,4 +1,4 @@
-﻿import { Component, Output, EventEmitter, ViewChild, OnInit } from '@angular/core';
+﻿import { Component, Output, EventEmitter, ViewChild, OnInit, Input } from '@angular/core';
 import { Formatter } from './../../formatter/Formatter';
 import { DropdownComponent, DropdownOption } from './../dropdown/dropdown.component';
 declare var $: any;
@@ -11,6 +11,7 @@ declare var $: any;
 export class FiltroFechaComponent implements OnInit {
 
     @Output() ClickEvent = new EventEmitter();
+    @Input()leyenda?:string;
 
     @ViewChild(DropdownComponent)
     private dropdownComponent: DropdownComponent;

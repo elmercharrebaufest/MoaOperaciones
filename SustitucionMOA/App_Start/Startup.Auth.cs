@@ -46,7 +46,7 @@ namespace SustitucionMOA
             {
                 // ASP.NET web host compatible cookie manager
                 CookieManager = new SystemWebChunkingCookieManager(),
-                ExpireTimeSpan = TimeSpan.FromDays(1)
+                //ExpireTimeSpan = TimeSpan.FromDays(1)
             });
 
 
@@ -85,7 +85,7 @@ namespace SustitucionMOA
 					// Specify the scope by appending all of the scopes requested into one string (separated by a blank space)
 					Scope = $"openid profile offline_access",
 
-                    UseTokenLifetime = false,
+                    //UseTokenLifetime = false,
 				}
 			);
 		}
@@ -95,6 +95,7 @@ namespace SustitucionMOA
 		//Agrego esta función del callback. Ya que esta es llamada desde el registro y desde el login. 
 		private Task OnSecurityTokenValidated(SecurityTokenValidatedNotification<OpenIdConnectMessage, OpenIdConnectAuthenticationOptions> notification)
 		{
+		
 			ValidarLogin(notification.AuthenticationTicket.Identity);
 
 			return Task.FromResult(0);
@@ -192,6 +193,8 @@ namespace SustitucionMOA
 				notification.AddClaim(new Claim(Globals.ClaimsProveedorType, usuario.ObtenerCodigoProveedor()));
 				notification.AddClaim(new Claim(Globals.ClaimsProveedorId, usuario.ObtenerProveedor().Id.ToString()));
 				notification.AddClaim(new Claim(Globals.ClaimsSeccionesVisitadas, usuario.SeccionesVisitadas ?? ""));
+				notification.AddClaim(new Claim(Globals.ClaimsCuit, usuario.ObtenerProveedor().CUIT.ToString()));
+
 
 				string tipoGranos = usuario.TipoUsuario.NombreCorto == "CORR" ? "G" : usuario.TipoUsuario.NombreCorto;
 

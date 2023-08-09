@@ -1,4 +1,5 @@
-﻿using SustitucionMOAModel.Consultas;
+﻿using Molinos.Scato.Repositorio;
+using SustitucionMOAModel.Consultas;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -48,6 +49,9 @@ namespace SustitucionMOARepositorio
         ListaPaginada<TProyeccion> Listar<TEntidad, TProyeccion>(Expression<Func<TEntidad, TProyeccion>> proyeccion, Paginacion paginacions, Expression<Func<TEntidad, bool>> filtro = null) where TEntidad : class;
 
         ListaPaginada<TEntidad> Listar<TEntidad>(Expression<Func<TEntidad, Boolean>> condicion, Paginacion paginacion) where TEntidad : class;
+        ListaPaginada<TEntidad> ListarConsultaPaginada<TEntidad>(IConsultaPaginada<TEntidad> consulta) where TEntidad : class;
+
+        List<TProyeccion> ListarProyeccion<TEntidad, TProyeccion>(Expression<Func<TEntidad, TProyeccion>> proyeccion, Expression<Func<TEntidad, bool>> filtro = null) where TEntidad : class;
 
         /// <summary>
         /// Devuelve la cantidad de entidades en el repositorio
@@ -108,5 +112,6 @@ namespace SustitucionMOARepositorio
         /// </summary>
         /// <returns>Lista de entidades</returns>
         TEntidad ObtenerConsultaEscalar<TEntidad>(IConsultaEscalar<TEntidad> consulta);
+        ListaPaginada<TEntidad> ListarConOrdenYPaginado<TEntidad>(IQueryable<TEntidad> lista, Paginacion paginacion) where TEntidad : class;
     }
 }

@@ -1,10 +1,14 @@
 ﻿using SustitucionMOAModel.Entities;
+using Newtonsoft.Json.Serialization;
+using Newtonsoft.Json;
 using SustitucionMOAModel.Enums;
+using SustitucionMOAModel.Dto.OrdenDeCarga;
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.IO;
+using System.Runtime.Serialization.Json;
 using System.Text;
-using System.Threading.Tasks;
+using Ent = SustitucionMOAModel.Entities;
 
 namespace SustitucionMOAModel.Dto
 {
@@ -13,6 +17,7 @@ namespace SustitucionMOAModel.Dto
         public int Id { get; set; }
         public string CUITCliente { get; set; }
         public string DescripcionEstado { get; set; }
+        public string DescripcionEstadoListado { get; set; }
         public string ColorSemaforo { get; set; }
         public string Material { get; set; }
         public string Cliente { get; set; }
@@ -25,7 +30,22 @@ namespace SustitucionMOAModel.Dto
         public bool EsFacturaAnticipada { get; set; }
         public string Fecha { get; set; }
         public string PatenteChasis { get; set; }
+        public bool NoEstaEnSAP { get; set; }
+        public bool EstaSeleccionado { get; set; }
         public List<AutoCompleteDropdownElement> ordenes { get; set; }
+        public bool EdicionRechazada { get; set; }
+        public string CUITDestino { get; set; }
+        public string CUITDestinatario { get; set; }
+        public string RazonSocialDestino { get; set; }
+        public string RazonSocialDestinatario { get; set; }
+        public string CUITIntermediarioFlete { get; set; }
+        public string PlantaCodigo { get; set; }
+        public string DomicilioTipo { get; set; }
+        public short DomicilioOrden { get; set; }
+        public string DomicilioDescr { get; set; }
+        public bool Reventa { get; set; }
+        public bool Escalable { get; set; }
+
         public OrdenDeCargaDto()
         {
             this.ordenes = new List<AutoCompleteDropdownElement> { };
@@ -34,7 +54,7 @@ namespace SustitucionMOAModel.Dto
 
     public class OrdenDeCargaEditarDto
     {
-        public OrdenDeCargaEditarDto(OrdenDeCarga orden)
+        public OrdenDeCargaEditarDto(Ent.OrdenDeCarga orden)
         {
             Id = orden.Id;
             CUITCliente = orden.CUITCliente;
@@ -47,6 +67,7 @@ namespace SustitucionMOAModel.Dto
             Producto_Id = orden.Producto_Id;
             Observacion = orden.Observacion;
             ContratoIngresado = orden.ContratoIngresado;
+            ContratoSeleccionado = new ContratoOrdenFas(orden);
             Cantidad = orden.Cantidad;
             NumeroEntrega = orden.NumeroEntrega;
             NumeroPedidoIngresado = string.IsNullOrEmpty(orden.NumeroPedidoIngresado) ? orden.NumeroPedido : orden.NumeroPedidoIngresado;
@@ -54,9 +75,20 @@ namespace SustitucionMOAModel.Dto
             Cliente_Id = orden.Cliente_Id;
             Corredor_Id = orden.Corredor_Id;
             CUITCorredor = orden.CUITCorredor;
-            CodigoCliente = orden.Cliente.CodigoProveedor;
+            CodigoCliente = orden.Cliente != null ? orden.Cliente.CodigoProveedor : "";
             CodigoCorredor = orden.Corredor != null ? orden.Corredor.CodigoProveedor : "";
             Estado = (int)orden.Estado;
+            CUITDestinatario = orden.CUITDestinatario;
+            RazonSocialDestinatario = orden.RazonSocialDestinatario;
+            CUITDestino = orden.CUITDestino;
+            RazonSocialDestino = orden.RazonSocialDestino;
+            PlantaCodigo = orden.PlantaCodigo;
+            DomicilioTipo = orden.DomicilioTipo;
+            DomicilioOrden = orden.DomicilioOrden;
+            DomicilioDescr = orden.DomicilioDescr;
+            CUITIntermediarioFlete = orden.CUITIntermediarioFlete;
+            Reventa = orden.Reventa;
+            Escalable = orden.Escalable;
         }
 
         public int Id { get; set; }
@@ -70,6 +102,7 @@ namespace SustitucionMOAModel.Dto
         public int Producto_Id { get; set; }
         public string Observacion { get; set; }
         public string ContratoIngresado { get; set; }
+        public ContratoOrdenFas ContratoSeleccionado { get; set; }
         public int Cantidad { get; set; }
         public string NumeroEntrega { get; set; }
         public string NumeroPedidoIngresado { get; set; }
@@ -80,13 +113,24 @@ namespace SustitucionMOAModel.Dto
         public string CodigoCliente { get; set; }
         public string CodigoCorredor { get; set; }
         public int Estado { get; set; }
+        public string CUITDestino { get; set; }
+        public string CUITDestinatario { get; set; }
+        public string RazonSocialDestino { get; set; }
+        public string RazonSocialDestinatario { get; set; }
+        public string CUITIntermediarioFlete { get; set; }
+        public string PlantaCodigo { get; set; }
+        public string DomicilioTipo { get; set; }
+        public short? DomicilioOrden { get; set; }
+        public string DomicilioDescr { get; set; }
+        public bool Reventa { get; set; }
+        public bool Escalable { get; set; }
     }
 
     public class OrdenDeCargaHistorialDto
     {
-        public OrdenDeCargaHistorialDto(OrdenDeCargaCambiosHistorial orden)
+        public OrdenDeCargaHistorialDto(Ent.OrdenDeCargaCambiosHistorial orden)
         {
-            if(orden != null)
+            if (orden != null)
             {
                 Id = orden.Id;
                 OrdenDeCarga_Id = orden.OrdenDeCarga_Id;
@@ -95,7 +139,7 @@ namespace SustitucionMOAModel.Dto
                 FechaCambio = orden.FechaCambio;
                 Usuario_Id = orden.Usuario_Id;
                 NombreColumnaCambio = orden.NombreColumnaCambio;
-            }           
+            }
         }
         public int Id { get; set; }
         public int OrdenDeCarga_Id { get; set; }
@@ -120,6 +164,7 @@ namespace SustitucionMOAModel.Dto
         public int Cantidad { get; set; }
         public string Observacion { get; set; }
         public string ContratoSAP { get; set; }
+        public ContratoOrdenFas ContratoSeleccionado { get; set; }
         public string PedidoSAP { get; set; }
         public bool CorredorSeleccionado { get; set; }
         public string Corredor { get; set; }
@@ -144,7 +189,79 @@ namespace SustitucionMOAModel.Dto
         public string NumeroPedidoIngresado { get; set; }
         public bool EsOrdenVencida { get; set; }
 
+        public bool ValidaSisaRuca { get; set; }
+        public string CUITDestino { get; set; }
+        public string CUITDestinatario { get; set; }
+        public string RazonSocialDestino { get; set; }
+        public string RazonSocialDestinatario { get; set; }
+        public string CUITIntermediarioFlete { get; set; }
+        public string PlantaCodigo { get; set; }
+        public string NumeroFactura { get; set; }
+        public string NumeroFacturaSeleccionada { get; set; }
+        public TipoContratoFAS TipoContrato { get; set; }
+        //public string DomicilioTipo { get; set; }
+        //public short DomicilioOrden { get; set; }
+        public string DomicilioDescr { get; set; }
+        public bool Reventa { get; set; }
+
         public IEnumerable<OrdenDeCargaCambiosHistorialDto> OrdenDeCargaCambiosHistorial { get; set; }
+        public bool FechaVencimientoAmpliada { get; set; }
+        public bool EdicionRechazada { get; set; }
+        public bool Escalable { get; set; }
+
+        public OrdenDeCargaDetalleDto() { }
+        
+        public OrdenDeCargaDetalleDto(Ent.OrdenDeCarga orden, List<OrdenDeCargaCambiosHistorialDto> ordenDeCargaCambiosHistorial, Proveedor cliente)
+        {
+            Id = orden.Id;
+            CUITCliente = orden.CUITCliente;
+            DescripcionEstado = orden.EdicionRechazada ? orden.Estado.ToFriendlyString() + "(Edición Rechazada)" : orden.Estado.ToFriendlyString();
+            DescripcionEstadoUsuarioFinal = orden.EdicionRechazada ? orden.Estado.ToUserFriendlyString() + "(Edición Rechazada)" : orden.Estado.ToUserFriendlyString();
+            ColorSemaforo = orden.Estado.ObtenerSemaforo();
+            ContratoIngresado = orden.ContratoIngresado;
+            NumeroPedidoIngresado = orden.NumeroPedidoIngresado;
+            Cliente = orden.Cliente.CodigoProveedor;
+            AprobadoCredito = orden.AprobadoCredito;
+            Cantidad = orden.Cantidad;
+            ChasisAcoplado = orden.ChasisAcoplado;
+            Chofer = $"{orden.NombreChofer} ({orden.CUITChofer})";
+            ContratoSAP = string.IsNullOrEmpty(orden.ContratoSAP) ? "-" : orden.ContratoSAP;
+            PedidoSAP = string.IsNullOrEmpty(orden.PedidoSAP) ? "-" : orden.PedidoSAP;
+            Corredor = orden.CodigoCorredor;
+            RazonSocialCorredor = string.IsNullOrWhiteSpace(orden.Corredor?.RazonSocial) ? "-" : orden.Corredor?.RazonSocial;
+            CorredorSeleccionado = orden.CorredorSeleccionado;
+            Estado = (int)orden.Estado;
+            FechaCarga = orden.FechaCarga.ToString("dd/MM/yyyy hh:mm");
+            FechaEntregaGenerada = orden.FechaEntregaGenerada?.ToString("dd/MM/yyyy hh:mm");
+            InformadaSAP = orden.InformadaSAP;
+            Observacion = orden.Observacion;
+            PatenteAcoplado = orden.PatenteAcoplado;
+            RazonSocialCliente = cliente.RazonSocial;
+            Transporte = $"{orden.RazonSocialTransporte} ({orden.CUITTransporte})";
+            TransporteExiste = orden.TransporteExiste;
+            Producto = orden.Producto.Nombre;
+            PedidosRespuesta = string.IsNullOrEmpty(orden.PedidosRespuesta) ? "-" : orden.PedidosRespuesta;
+            ContratosRespuesta = string.IsNullOrEmpty(orden.ContratosRespuesta) ? "-" : orden.ContratosRespuesta;
+            NumeroEntrega = string.IsNullOrEmpty(orden.NumeroEntrega) ? "-" : orden.NumeroEntrega;
+            NumeroPedido = string.IsNullOrEmpty(orden.NumeroPedido) ? "-" : orden.NumeroPedido;
+            MensajeValidacionSAP = string.IsNullOrEmpty(orden.DescripcionCodigoVerificacionSap) ? "" : orden.DescripcionCodigoVerificacionSap;
+            ContratoSinCantidadPendiente = orden.ContratoSinCantidadPendiente;
+            DescripcionErrorInterno = string.IsNullOrEmpty(orden.DescripcionErrorInterno) ? "" : orden.DescripcionErrorInterno;
+            OrdenDeCargaCambiosHistorial = ordenDeCargaCambiosHistorial;
+            EsOrdenVencida = orden.FechaVencimiento < DateTime.Now.Date;
+            FechaVencimientoAmpliada = orden.FechaVencimientoAmpliada;
+            EdicionRechazada = orden.EdicionRechazada;
+            ValidaSisaRuca = orden.Producto.ValidaSisaRuca;
+            Reventa = orden.Reventa;
+            CUITDestino = orden.CUITDestino;
+            CUITDestinatario = orden.CUITDestinatario;
+            RazonSocialDestino = orden.RazonSocialDestino;
+            RazonSocialDestinatario = orden.RazonSocialDestinatario;
+            CUITIntermediarioFlete = orden.CUITIntermediarioFlete;
+            PlantaCodigo = orden.PlantaCodigo;
+            DomicilioDescr = orden.DomicilioDescr;
+            Escalable = orden.Escalable;
+        }
 
         public override bool Equals(object obj)
         {
@@ -210,7 +327,6 @@ namespace SustitucionMOAModel.Dto
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(MensajeValidacionSAP);
             return hashCode;
         }
-       
     }
 
     public class OrdenDeCargaCambiosHistorialDto
@@ -222,5 +338,43 @@ namespace SustitucionMOAModel.Dto
         public string Usuario { get; set; }
         public string Antes { get; set; }
         public string Despues { get; set; }
+    }
+    public class ModificarEntregaOrdenCargaSAP
+    {
+        public string Chasis { get; set; }
+        public string NumeroEntrega { get; set; }
+        public string Acoplado { get; set; }
+        public string Chofer { get; set; }
+        public string TipoDoc { get; set; }
+        public string Documento { get; set; }
+
+        public ModificarEntregaOrdenCargaSAP(Ent.OrdenDeCarga orden)
+        {
+            Chasis = orden.ChasisAcoplado;
+            Acoplado = orden.PatenteAcoplado;
+            Chofer = orden.NombreChofer;
+            NumeroEntrega = orden.NumeroEntrega;
+            TipoDoc = string.Empty;
+            Documento = string.Empty;
+        }
+        public ModificarEntregaOrdenCargaSAP() { }
+        public string ToJson()
+        {
+            try
+            {
+                var serializer = new DataContractJsonSerializer(typeof(ModificarEntregaOrdenCargaSAP));
+
+                using (var ms = new MemoryStream())
+                {
+                    serializer.WriteObject(ms, this);
+                    return Encoding.UTF8.GetString(ms.ToArray());
+                }
+            }
+            catch (Exception)
+            {
+                return "error al serializar el objeto.";
+            }
+
+        }
     }
 }

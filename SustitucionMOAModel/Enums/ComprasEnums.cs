@@ -20,6 +20,13 @@ namespace SustitucionMOAModel.Enums
         Sap = 3
     }
 
+    public enum SolpDescargaZipPorLink
+    {
+        SolpIdNoExiste = 1,
+        EmailTokenInvalido = 2,
+        PuedeDescargar = 3
+    }
+
     public static class ComprasEnumsExtensions
     {
         public static string Code(this EstadoDocumentoSolp me)

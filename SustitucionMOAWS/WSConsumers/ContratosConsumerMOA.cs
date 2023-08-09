@@ -75,13 +75,22 @@ namespace SustitucionMOAWS.WSConsumers
                     lugarDescarga = contratoInfo.LUGAR_DESCARGA,
                     cosecha = contratoInfo.COSECHA,
                     material = contratoInfo.MATERIAL,
-                    tipoContrato = TipoContrato.GetTipoContrato(contratoInfo.CLASE_DOC),
+                    tipoContrato = TipoContrato.GetTipoContrato(contratoInfo.CLASE_DOC, contratoInfo.PAGO_DIFERIDO, contratoInfo.DOL_EXPRESS, contratoInfo.DOL_CORREDOR, contratoInfo.PAGO_DIF_ARP, contratoInfo.CANJE, contratoInfo.CESION, contratoInfo.COMPENSACION, ""),
                     estadoBoleto = contratoInfo.ESTADO_BOLETO,
                     aplicacionesString = SAPFormatter.FormatearCantidad(contratoInfo.APLICACIONES, contratoInfo.UNIME_ENTREGADO),
                     aplicaciones = contratoInfo.APLICACIONES,
                     liquidado = contratoInfo.LIQUIDADO,
                     liquidadoString = SAPFormatter.FormatearCantidad(contratoInfo.LIQUIDADO, contratoInfo.UNIME_LIQUIDADO),
-                    estado = contratoInfo.ESTADO
+                    estado = contratoInfo.ESTADO,
+                    pagoDiferido = contratoInfo.PAGO_DIFERIDO,
+                    dolarExpress = contratoInfo.DOL_EXPRESS,
+                    dolarCorredor = contratoInfo.DOL_CORREDOR,
+                    fechaLimite = contratoInfo.FECHA_LIMITE,
+                    pagoDiferidoArp = contratoInfo.PAGO_DIF_ARP,
+                    diasDiferim = contratoInfo.DIAS_DIFERIM,
+                    canje = contratoInfo.CANJE,
+                    cesion = contratoInfo.CESION,
+                    compensacion = contratoInfo.COMPENSACION
                 });
             }
 

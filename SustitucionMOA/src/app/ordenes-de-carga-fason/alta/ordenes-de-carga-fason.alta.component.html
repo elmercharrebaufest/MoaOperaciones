@@ -1,0 +1,251 @@
+<div class="content-wraper">
+    <!-- CONTENT-->
+    <section class="container-fluid clearfix">
+        <!--Title-->
+        <div class="row titleSection">
+            <div class="col-xs-12 col-sm-10 ">
+                <strong *ngIf="ordenDeCargaFasonId == 0"> Nueva orden de carga</strong>
+                <strong *ngIf="ordenDeCargaFasonId > 0"> Editar orden de carga #{{ordenDeCargaFasonId}}</strong>
+            </div>
+        </div>
+        <!--End Title-->
+        <!--Search-->
+        <div class="mySearch">
+            <div class="col-xs-12 col-md-12 rounded shadow animate no-padding-left-right">
+                <div class="formulario-campo">
+                    <div class="col-xs-12 col-md-12 search-header">
+                        <title-caps>Información de la orden de carga</title-caps>
+                    </div>
+
+                    <div class="formulario">
+                        <div class="col-xs-12 col-md-5 no-padding-left-right" style="margin-left: 3em;">
+                            <div class=" col-xs-12 col-md-12" [hidden]="!esAdmin">
+                                <div class="formulario-label" style="margin-bottom: 8px;">
+                                    Corredor:
+                                </div>
+                                <div class="styled-select" style="overflow: initial;">
+                                    <p-dropdown name="cmbCorredores"
+                                                [(ngModel)]="corredorSeleccionado"
+                                                [options]="listaCorredores"
+                                                placeholder="Seleccione un Corredor"
+                                                [disabled]="noEditarCliente"
+                                                optionLabel="RazonSocial"
+                                                (ngModelChange)="onCorredorSeleccionado()"
+                                                [filter]="true" filterBy="value.RazonSocial">
+                                    </p-dropdown>
+                                </div>
+                            </div>
+
+                            <div class="col-xs-12 col-md-12" [hidden]="!esAdmin && !isCorredor()">
+                                <div class="formulario-label" style="margin-bottom: 8px;">
+                                    Cliente:
+                                </div>
+                                <div class="styled-select" style="overflow: initial;">
+                                    <p-dropdown name="clientesFason"
+                                                [(ngModel)]="clienteSeleccionado"
+                                                (ngModelChange)="onClienteSeleccionado()"
+                                                [options]="listaClientes"
+                                                optionLabel="RazonSocial"
+                                                placeholder="Seleccione un Cliente"
+                                                [filter]="true">
+                                    </p-dropdown>
+                                </div>
+                            </div>
+
+                            <div class="col-xs-12 col-md-12">
+                                <div class="formulario-label">
+                                    Producto:
+                                </div>
+                                <div class="styled-select" style="overflow: initial;">
+                                    <p-dropdown name="product"
+                                                [(ngModel)]="ordenDeCargaFason.Producto_Id"
+                                                [options]="listaProductos"
+                                                optionLabel="Descripcion"
+                                                placeholder="Seleccione un Producto"
+                                                [filter]="true">
+                                    </p-dropdown>
+                                </div>
+                            </div>
+
+                            <div class="clearfix"></div>
+
+                            <div class="col-xs-12 col-md-12">
+                                <div class="formulario-label">
+                                    Cantidad (Kgs):
+                                </div>
+                                <div class="styled-select">
+                                    <input type="text" [(ngModel)]="ordenDeCargaFason.Cantidad" readonly disabled>
+                                </div>
+                            </div>
+
+                            <div class="col-xs-12 col-md-12">
+                                <div class="formulario-label">
+                                    Fecha de retiro:
+                                </div>
+
+                                <div class="styled-select">
+                                    <p-calendar name="FechaRetiro"
+                                                [(ngModel)]="ordenDeCargaFason.FechaRetiro"
+                                                [showIcon]="true"
+                                                dateFormat="dd-mm-yy"
+                                                appendTo="body"
+                                                [minDate]="hoy"
+                                                [style]="{'width': '95%'}"
+                                                [maxDate]="maxDateValue">
+                                    </p-calendar>
+                                </div>
+                            </div>
+
+                            <div class="col-xs-12 col-md-12">
+                                <div class="formulario-label">
+                                    Destinos:
+                                </div>
+                                <div class="styled-select" style="overflow: initial;">
+                                    <p-dropdown name="destinos"
+                                                [(ngModel)]="ordenDeCargaFason.Destino"
+                                                [options]="listaDestinos"
+                                                optionLabel="LocalidadDescripcion"
+                                                placeholder="Seleccione un Destino"
+                                                [filter]="true">
+                                    </p-dropdown>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-1 col-md-1 vertical"></div>
+
+                        <div class="col-xs-12 col-md-5 no-padding-left-right">
+                            <div class="col-xs-12 col-md-12">
+                                <div class="formulario-label">
+                                    Patente chasis:
+                                </div>
+                                <div class="styled-select autocomplete">
+                                    <!--<input (ngModelChange)="ordenDeCargaFason.PatenteChasis = $event.toUpperCase();" [(ngModel)]="ordenDeCargaFason.PatenteChasis" maxlength="7" mask="AAAAAAA" />-->
+                                    <input [(ngModel)]="ordenDeCargaFason.PatenteChasis" (ngModelChange)="ordenDeCargaFason.PatenteChasis = $event.toUpperCase()" maxlength="7" mask="AAAAAAA" />
+
+                                </div>
+                            </div>
+
+                            <div class="col-xs-12 col-md-12">
+                                <div class="formulario-label">
+                                    Patente acoplado:
+                                </div>
+                                <div class="styled-select autocomplete">
+                                    <input [(ngModel)]="ordenDeCargaFason.PatenteAcoplado" (ngModelChange)="ordenDeCargaFason.PatenteAcoplado = $event.toUpperCase()" maxlength="7" mask="AAAAAAA" />
+                                </div>
+                            </div>
+
+                            <div class="col-xs-12 col-md-12">
+                                <div class="formulario-label">
+                                    Nombre y apellido del chofer:
+                                </div>
+                                <div class="styled-select">
+                                    <input [(ngModel)]="ordenDeCargaFason.NombreChofer" (ngModelChange)="ordenDeCargaFason.NombreChofer = $event.toUpperCase()" type="text" maxlength="25">
+                                </div>
+                            </div>
+
+                            <div class="col-xs-12 col-md-12">
+                                <div class="formulario-label">
+                                    CUIL chofer:
+                                </div>
+                                <div class="styled-select">
+                                    <input type="text" [(ngModel)]="ordenDeCargaFason.CUILChofer" mask="00-00000000-0">
+                                </div>
+                            </div>
+
+                            <div class="col-xs-12 col-md-12">
+                                <div class="formulario-label">
+                                    Raz&oacute;n social transporte:
+                                </div>
+                                <div class="styled-select">
+                                    <input [(ngModel)]="ordenDeCargaFason.RazonSocialTransporte" (ngModelChange)="ordenDeCargaFason.RazonSocialTransporte = $event.toUpperCase()" type="text" maxlength="50">
+                                </div>
+                            </div>
+
+                            <div class="col-xs-12 col-md-12">
+                                <div class="formulario-label">
+                                    CUIT transporte:
+                                </div>
+                                <div class="styled-select">
+                                    <input type="text" [(ngModel)]="ordenDeCargaFason.CUITTransporte" mask="00-00000000-0">
+                                </div>
+                            </div>
+
+                            <div class="col-xs-12 col-md-12" *ngIf="ordenDeCargaFasonId == 0">
+                                <div class="formulario-label">
+                                    Cantidad de viajes:
+                                </div>
+                                <div class="styled-select">
+                                    <input type="text" [(ngModel)]="ordenDeCargaFason.CantidadDeViajes">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12 col-md-11" style="margin-left: 3em; margin-bottom: 2em;">
+                            <div class="formulario-label">
+                                Observaci&oacute;n:
+                            </div>
+
+                            <div class="styled-select">
+                                <textarea id="Observacion" [(ngModel)]="ordenDeCargaFason.Observacion" rows="5"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="containerBotones">
+                            <div class="col-xs-12 col-md-12">
+                                <mensaje></mensaje>
+                                <spinner></spinner>
+                            </div>
+
+                            <div class="col-xs-5 col-md-2">
+                                <input type="button" (click)="redirigirAListado()" class="btn-custom btn-add btn-mediano"
+                                       value="Volver">
+                            </div>
+
+                            <div class="col-xs-2 col-md-1"></div>
+
+                            <div class="col-xs-5 col-md-3">
+                                <div class="step-actions enviar">
+                                    <button type="button" id="openModalNotificacion" data-toggle="modal" style="display:none"
+                                            data-target="#modalNotificación" class="btn-custom btn-azul"></button>
+                                    <input type="submit" (click)="guardarOrdenDeCargaFason()" class="btn-custom btn-guardar btn-mediano" value="Enviar">
+                                </div>
+                            </div>
+
+                            <div class="col-xs-0 col-md-2"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End Search-->
+        <!-- Tables-->
+        <!-- END tables-->
+    </section>
+    <!--End CONTENT-->
+</div>
+
+<!-- modal notificacion -->
+<button type="button" style="display:none" id="openModalNotificacion" data-toggle="modal"
+        data-target="#modalNotificación"></button>
+<div class="modal fade fade-complete" id="modalNotificación" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     data-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close btn-close" style="display:none" data-dismiss="modal" aria-label="Close"
+                        id="botonCerrarModal">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel">Orden de carga guardada correctamente </h4>
+            </div>
+            <div class="modal-body modal-notificacion">
+                <label>{{mensajeSuccess}}</label><br />
+            </div>
+            <div class="modal-footer" style="justify-content: center;align-content: center;display: flex;">
+                <button (click)="aceptar()" class="btn-custom btn-guardar btn-grande">Aceptar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end modal notificacion -->

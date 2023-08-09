@@ -120,7 +120,18 @@ namespace SustitucionMOAUtils.Services
 
                                 Rol rolUsuario = ObtenerRolPorCodigo(respuesta.ProveedorOperando ? "GRAN" : "NUEG");
 
-                                proveedor.EstadoAprobacion = respuesta.ProveedorOperando ? EstadoAprobacion.Aprobado : EstadoAprobacion.DocumentacionPendiente;
+                                //proveedor.EstadoAprobacion = respuesta.ProveedorOperando ? EstadoAprobacion.Aprobado : EstadoAprobacion.DocumentacionPendiente;
+                                proveedor.EstadoAprobacion = EstadoAprobacion.DocumentacionPendiente;
+                                var observacionEstado = respuesta.ProveedorOperando ? EstadoAprobacion.AprobacionPendiente.ToFriendlyString() : EstadoAprobacion.DocumentacionPendiente.ToFriendlyString();
+                                var hist = new ProveedorHistorialAprobacion
+                                {
+                                    Fecha = DateTime.Now,
+                                    Proveedor_Id = proveedor.Id,
+                                    Usuario_Id = usuario.Id,
+                                    EstadoAprobacion = proveedor.EstadoAprobacion,
+                                    Observacion = observacionEstado
+                                };
+                                repositorio.Agregar(hist);
 
                                 usuario.Roles.Add(rolUsuario);
                             }
@@ -329,7 +340,7 @@ namespace SustitucionMOAUtils.Services
 
                 repositorio.RemoverTodos(historiales);
             }
-            else 
+            else
             {
                 proveedor.HistorialAprobaciones.Add(hist);
                 resultado = "El proveedor ha sido habilitado para cargar la documentación.";
@@ -338,7 +349,7 @@ namespace SustitucionMOAUtils.Services
 
             repositorio.GuardarCambios();
 
-            resultado = "El proveedor (CUIT: "+ proveedor.CUIT + ") ha sido habilitado para cargar la documentación.";
+            resultado = "El proveedor (CUIT: " + proveedor.CUIT + ") ha sido habilitado para cargar la documentación.";
 
             return resultado;
         }
@@ -394,15 +405,15 @@ namespace SustitucionMOAUtils.Services
         {
             try
             {
-                var respuesta = new DataAgroConsumer().AltaCampoSustentable(campo,kmz);
+                var respuesta = new DataAgroConsumer().AltaCampoSustentable(campo, kmz);
 
                 return respuesta;
             }
             catch (Exception ex)
             {
                 Log.Error(ex);
-                var resultado =new SustitucionMOAWS.DataAgroServices.ResultadoAltaCampoSustentable();
-                var error = new SustitucionMOAWS.DataAgroServices.ErrorMessage {Message=ex.Message };
+                var resultado = new SustitucionMOAWS.DataAgroServices.ResultadoAltaCampoSustentable();
+                var error = new SustitucionMOAWS.DataAgroServices.ErrorMessage { Message = ex.Message };
                 var errores = new List<SustitucionMOAWS.DataAgroServices.ErrorMessage>();
                 errores.Add(error);
                 resultado.Errores = errores.ToArray();

@@ -103,6 +103,7 @@ namespace SustitucionMOAUtils.Services
                             IngresoBruto = ((IngresosBrutos)(proveedor.IdIngresoBruto ?? 0)).ToFriendlyString(),
                             SiperObligatorio = proveedor.SiperObligatorio,
                             ContieneDocumentacionFisica = proveedor.ContieneDocumentacionFisica,
+                            SISAEstadoCuit = proveedor.EstadoSISA
                         })
                         .ToList();
 
@@ -112,28 +113,28 @@ namespace SustitucionMOAUtils.Services
                 }
 
                 //TODO: Deprecar esto y obtener la razon social a través de la FK del proveedor al proveedor que lo dio de alta
-                foreach (var proveedorDto in proveedorDtos)
-                {
-                    //var corredorAsociado = repositorio.Listar<Proveedor>(p => p.CodigoProveedor.Contains("C") && p.Mail == proveedorDto.Mail).FirstOrDefault();
-                    //if (corredorAsociado != null) proveedorDto.RazonSocialCorredor = corredorAsociado.RazonSocial;
+                //foreach (var proveedorDto in proveedorDtos)
+                //{
+                //    //var corredorAsociado = repositorio.Listar<Proveedor>(p => p.CodigoProveedor.Contains("C") && p.Mail == proveedorDto.Mail).FirstOrDefault();
+                //    //if (corredorAsociado != null) proveedorDto.RazonSocialCorredor = corredorAsociado.RazonSocial;
 
-                    if ((proveedorDto.EstadoAprobacion == EstadoAprobacion.AprobacionPendiente
-                        || proveedorDto.EstadoAprobacion == EstadoAprobacion.AnalisisDeNosis
-                        || proveedorDto.EstadoAprobacion == EstadoAprobacion.EtapaFinal
-                        || proveedorDto.EstadoAprobacion == EstadoAprobacion.EdicionRequerida
-                        || proveedorDto.EstadoAprobacion == EstadoAprobacion.Aprobado)
-                        &&
-                        (proveedorDto.IdTipoUsuario == 2 || proveedorDto.IdTipoUsuario == 4)
-                        )
-                    {
-                        SustitucionMOAWS.DataAgroServices.ResultadoValidarProveedorComercial result = dataAgroService.ObtenerValidarCUITProveedorGranos(proveedorDto.CUIT);
-                        if (result != null)
-                        {
-                            proveedorDto.SISAEstadoCuit = result.ProveedorSISAEstadoCuit;
-                        }
-                    }
+                //    if ((proveedorDto.EstadoAprobacion == EstadoAprobacion.AprobacionPendiente
+                //        || proveedorDto.EstadoAprobacion == EstadoAprobacion.AnalisisDeNosis
+                //        || proveedorDto.EstadoAprobacion == EstadoAprobacion.EtapaFinal
+                //        || proveedorDto.EstadoAprobacion == EstadoAprobacion.EdicionRequerida
+                //        || proveedorDto.EstadoAprobacion == EstadoAprobacion.Aprobado)
+                //        &&
+                //        (proveedorDto.IdTipoUsuario == 2 || proveedorDto.IdTipoUsuario == 4)
+                //        )
+                //    {
+                //        SustitucionMOAWS.DataAgroServices.ResultadoValidarProveedorComercial result = dataAgroService.ObtenerValidarCUITProveedorGranos(proveedorDto.CUIT);
+                //        if (result != null)
+                //        {
+                //            proveedorDto.SISAEstadoCuit = result.ProveedorSISAEstadoCuit;
+                //        }
+                //    }
 
-                }
+                //}
 
                 return proveedorDtos;
             }
@@ -238,6 +239,22 @@ namespace SustitucionMOAUtils.Services
                 {
 
                     var usuario = repositorio.Obtener<Usuario>(u => u.Mail == proveedor.Mail);
+                    if (usuario == null)
+                    {
+                        if (proveedor.TipoProveedor.NombreCorto == "G")
+                        {
+                            usuario = new UsuarioGranos { Mail = proveedor.Mail, CUITRegistro = proveedor.CUIT, Habilitado = true, TipoUsuario = proveedor.TipoProveedor, Roles = new List<Rol>(), SeccionesVisitadas = "", AceptoTyC = false };
+                        }
+                        else if (proveedor.TipoProveedor.NombreCorto == "NG")
+                        {
+                            usuario = new UsuarioNoGranos { Mail = proveedor.Mail, CUITRegistro = proveedor.CUIT, Habilitado = true, TipoUsuario = proveedor.TipoProveedor, Roles = new List<Rol>(), SeccionesVisitadas = "", AceptoTyC = false };
+                        }
+                        else
+                        {
+                            usuario = new Usuario { Mail = proveedor.Mail, CUITRegistro = proveedor.CUIT, Habilitado = true, TipoUsuario = proveedor.TipoProveedor, Roles = new List<Rol>(), SeccionesVisitadas = "", AceptoTyC = false };
+                        }
+                        repositorio.Agregar(usuario);
+                    }
                     var rolUsuarioGranos = ObtenerRolPorCodigo("GRAN");
 
                     switch (proveedor.TipoProveedor.Nombre)
@@ -400,7 +417,7 @@ namespace SustitucionMOAUtils.Services
                 return mensajeResultado;
 
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 throw;
             }
@@ -537,7 +554,7 @@ namespace SustitucionMOAUtils.Services
 
             if (proveedor.AltaInterna ?? false)
             {
-                if(proveedor.TipoProveedor.NombreCorto == "G")
+                if (proveedor.TipoProveedor.NombreCorto == "G")
                 {
                     var usuario = repositorio.Obtener<Usuario>(U => U.Id == proveedor.IdSolicitanteInternoAltaGranos);
                     copia.Add(usuario.Mail);

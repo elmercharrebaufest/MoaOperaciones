@@ -25,6 +25,7 @@ namespace SustitucionMOAModel.Entities
         public bool? Estado { get; set; }
         public int? CodigoServicioSap_Id { get; set; }
 
+
         [ForeignKey("SolpPosicion_Id")]
         public virtual SolpPosicion SolpPosicion { get; set; }
         [ForeignKey("ServicioSolp_Id")]
@@ -38,6 +39,9 @@ namespace SustitucionMOAModel.Entities
         public virtual TablaSap CuentaMayorSap { get; set; }
         [ForeignKey("CodigoServicioSap_Id")]
         public virtual TablaSap CodigoServicioSap { get; set; }
+
+        [InverseProperty("SolpSubPosicion")]
+        public virtual List<CotizacionSubPosicion> Cotizaciones { get; set; }
 
         public object Clone()
         {

@@ -31,14 +31,18 @@
                         <p class="crearConsultaTitulos">Categor&iacute;a</p>
                         <p-dropdown [options]="categorias" optionLabel="Nombre" dataKey="Id" [(ngModel)]="categoria"
                                     [maxSelectedLabels]="1" autoWidth="false" placeholder="Elegir Categoria"
-                                    (onChange)="setSubcategorias($event.value)">
+                                    (onChange)="setSubcategorias($event.value)"
+                                    [filter]="true" filterBy="value.Nombre"
+                                    >
                         </p-dropdown>
                     </div>
                     <div class="col-xs-12 col-sm-3 col-md-3" [hidden]="!tieneSubcategorias">
                         <p class="crearConsultaTitulos">SubCategor&iacute;a</p>
                         <p-dropdown [options]="subcategoriasList" optionLabel="Nombre" dataKey="Id"
                                     [(ngModel)]="subcategoria" [maxSelectedLabels]="1" autoWidth="false"
-                                    placeholder="Elegir SubCategoria" (onChange)="setCodeSubcategoria($event.value)">
+                                    placeholder="Elegir SubCategoria" (onChange)="setCodeSubcategoria($event.value)"
+                                    [filter]="true" filterBy="value.Nombre"
+                                    >
                         </p-dropdown>
                     </div>
                     <div class="col-xs-12 col-sm-12 col-md-12">
@@ -223,7 +227,7 @@
                     </div>
 
                     <div class="col-xs-12 col-sm-12 col-md-12"
-                         *ngIf="((this.categoriaCode == 'BOL' && this.subcategoriaCode == 'CON') || (this.categoriaCode == 'BOL' && this.subcategoriaCode == 'REG'))">
+                         *ngIf="((this.categoriaCode == 'BOL' && this.subcategoriaCode == 'CON') || (this.categoriaCode == 'BOL' && this.subcategoriaCode == 'REG') || (this.categoriaCode == 'BOL' && this.subcategoriaCode == 'GMB'))">
                         <div class="col-xs-12 col-sm-12 col-md-6">
                             <p class="crearConsultaTitulos">
                                 N° de contrato MOA<span class="requerido">*</span>

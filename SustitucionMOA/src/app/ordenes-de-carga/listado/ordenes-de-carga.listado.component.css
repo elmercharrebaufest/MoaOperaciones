@@ -26,10 +26,20 @@
     border: 1px solid greenyellow;
 }
 
+.bluesap {
+    background-color: #075088;
+    border: 1px solid #03253f;
+}
+
 ::ng-deep .ui-multiselect {
     font-size: 1.5rem !important;
     font-weight: 400 !important;
     color: #3f4845 !important;
     overflow: hidden !important;
     min-width: 100%;
+}
+
+.icon-truck {
+    width: 23px; 
+    padding-top: 5px;
 }

@@ -1,18 +1,31 @@
 ﻿using SustitucionMOAFotmatter;
+using SustitucionMOAModel.Dto;
+using SustitucionMOAModel.Entities;
+using SustitucionMOAModel.Enums;
+using SustitucionMOAModel.Enums.MoaWS.OrdenCargaWS;
+using SustitucionMOAModel.Models;
 using SustitucionMOAModel.Models.WSMapMOA.OrdenCarga;
+using SustitucionMOAModel.Util;
 using SustitucionMOAWS.CredentialService;
 using SustitucionMOAWS.Interfaces;
+using SustitucionMOAWS.Logger;
+using SustitucionMOAWS.ModificarEntregaOrdenFasWebServiceMOA;
+using SustitucionMOAWS.ModificarOrdenCargaFasWebServiceMOA;
 using SustitucionMOAWS.OrdenCargaControlEstadoSAP;
 using SustitucionMOAWS.OrdenCargaControlSAP;
 using SustitucionMOAWS.OrdenCargaCrearSAP;
 using SustitucionMOAWS.OrdenCargaEstadoEntregadaSAP;
 using SustitucionMOAWS.OrdenCargaVisualizarCliente;
+using SustitucionMOAWS.ResponseHandler.OrdenCarga;
+using SustitucionMOAWS.Util;
+using SustitucionMOAWS.WSRequests.OrdenCarga;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SustitucionMOAWS.WSConsumers
 {
-	public class OrdenCargaConsumerMOA : IOrdenCargaConsumerMOA
+    public class OrdenCargaConsumerMOA : IOrdenCargaConsumerMOA
     {
 
         /*
@@ -45,17 +58,31 @@ namespace SustitucionMOAWS.WSConsumers
 
         */
 
+        private const string TipoContratoFas_Normal = "NORMAL";
+        private const string TipoContratoFas_Anticipado = "ANTICIPADO";
+        private const string TipoContratoFas_Todos = "";
 
-        public string ControlCargaRequest(string cliente, string contrato, string corredor, string cuit, string material, string pedido)
+        public ControlCargaResponseHandler ControlarCarga(ControlCargaRequest datosCarga)
         {
             var service = new SI_MPMF_MOAOP_CONTROL_CARGAClient();
 
             service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
             service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
+            Log.Info($"SI_MPMF_MOAOP_CONTROL_CARGA Request: {datosCarga.ToJson()}");
 
-            //contrato = "33009430";
+            var result = service.SI_MPMF_MOAOP_CONTROL_CARGA(
+                IM_CLIENTE: datosCarga.Cliente,
+                IM_CONTRATO: datosCarga.Contrato,
+                IM_CORREDOR: datosCarga.Corredor,
+                IM_CUIT: datosCarga.Cuit,
+                IM_CUITDESTF: datosCarga.CuitDestino,
+                IM_CUITDESTINAT: datosCarga.CuitDestinatario,
+                IM_MATERIAL: datosCarga.Material,
+                IM_PEDIDO: datosCarga.Pedido,
+                IM_SOLO_SISA: datosCarga.SoloSisa ? "X" : "");
 
-            return service.SI_MPMF_MOAOP_CONTROL_CARGA(cliente, contrato, corredor, cuit, material, pedido).Trim();
+            Log.Info($"SI_MPMF_MOAOP_CONTROL_CARGA Result: {result.ToJson()}");
+            return new ControlCargaResponseHandler(result);
         }
         /*
         * RFC Z_MPMF_MOAOP_CREAR_ORDEN_CARGA con:
@@ -83,14 +110,44 @@ namespace SustitucionMOAWS.WSConsumers
 
         */
 
-        public string CrearOrdenRequest(string cliente, string contrato, string corredor, decimal kilos, string material, string pedidoInput, string forzarCreacion, out string pedidoOutput)
+        public CrearOrdenResEnum CrearOrden(CrearOrdenRequest req, out string pedidoOutput, out string resultOutput)
         {
             var service = new SI_MPMF_MOAOP_CREAR_ORDEN_CARGAClient();
-
+            var indrvta = req.Reventa ? "X" : "";
             service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
             service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
+            Log.Info($"SI_MPMF_MOAOP_CREAR_ORDEN_CARGA Request: {req.ToJson()}");
 
-            return service.SI_MPMF_MOAOP_CREAR_ORDEN_CARGA(cliente, contrato, corredor, kilos, material, pedidoInput, forzarCreacion, out pedidoOutput).Trim();
+            if (req.CuitDestino == req.CuitDestinatario)
+            {
+                req.CuitDestinatario = string.Empty;
+                req.RazonSocialDestinatario = string.Empty;
+            }
+
+            var result = service.SI_MPMF_MOAOP_CREAR_ORDEN_CARGA(
+                IM_CLIENTE: req.Cliente,
+                IM_CODPLANTA: req.PlantaCodigo,
+                IM_CONTRATO: req.Contrato,
+                IM_CORREDOR: req.Corredor,
+                IM_CUITDESTF: req.CuitDestino,
+                IM_CUITDESTINAT: req.CuitDestinatario,
+                IM_DOMORDEN: req.DomicilioDescr,
+                IM_INDRVTA: indrvta,//IM_INDRVTA
+                IM_KILOS: req.Kilos,
+                IM_MATERIAL: req.Material,
+                IM_NAMEDESTF: req.RazonSocialDestino,
+                IM_NAMEDESTINAT: req.RazonSocialDestinatario,
+                IM_ORDENDOM: req.DomicilioOrden.ToString(),
+                IM_PEDIDO: req.PedidoInput,
+                IM_TIPODOM: req.DomicilioTipo,
+                IM_USUARIO: req.UsuarioSAP,
+                IM_VALIDA_KG: req.ValidaKg ? "X" : "",
+                EX_PEDIDO: out pedidoOutput).Trim();
+
+            Log.Info($"SI_MPMF_MOAOP_CREAR_ORDEN_CARGA Response: {new { result, pedidoOutput }}");
+            resultOutput = result;
+
+            return ResponseConverter.GetOrdenCargaCrearOrden(result);
         }
 
 
@@ -119,19 +176,47 @@ namespace SustitucionMOAWS.WSConsumers
         Z_MPMF_MOAOP_ORDEN_CARGA_ENTRE 	OE-02	'Entrega Creada - Error al insertar'
 
         */
-
-        public string OrdenCargaEntregadaRequest(string documento, decimal kilos, string nombreConductor,
-                                                 string patenteAcoplado, string patenteChasis, string pedido,
-                                                 string tipoDocumento, string transportista, out string mensaje)
+        public OrdenCargaEntreResponseHandler CrearEntrega(CrearEntregaRequest entregaReq, bool pedidoAnticipado = false)
         {
             var service = new SI_MPMF_MOAOP_ORDEN_CARGA_ENTREClient();
-
+            var cuit_tr = !string.IsNullOrEmpty(entregaReq.TransportistaReal) ? entregaReq.TransportistaReal : entregaReq.Transportista;
+            var cuit_int_flete = !string.IsNullOrEmpty(entregaReq.TransportistaReal) ? entregaReq.Transportista : entregaReq.TransportistaReal;
             service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
             service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
+            if (!pedidoAnticipado)
+                entregaReq = LimpiarRequestSinPedidoAnticipado(entregaReq);
 
-            var entrega = service.SI_MPMF_MOAOP_ORDEN_CARGA_ENTRE(documento, kilos, nombreConductor, patenteAcoplado, patenteChasis, pedido, tipoDocumento, transportista, out mensaje).Trim();
+            Log.Info($"SI_MPMF_MOAOP_ORDEN_CARGA_ENTRE " +
+                $"Request: {entregaReq.ToJson()}, " +
+                $"pedidoAnticipado: {pedidoAnticipado}, " +
+                $"cuit_tr: {cuit_tr}, " +
+                $"cuit_int_flete: {cuit_int_flete}.");
 
-            return entrega;
+            var entrega = service.SI_MPMF_MOAOP_ORDEN_CARGA_ENTRE(
+                IM_CUITDESTF: entregaReq.CuitDestino,
+                IM_CUITDESTINAT: entregaReq.CuitDestinatario,
+                IM_DOCUMENTO: entregaReq.Documento,
+                IM_DOMORDEN: entregaReq.DomicilioDescr,
+                IM_INDRVTA: entregaReq.Reventa ? "X" : "",
+                IM_KILOS: entregaReq.Kilos,
+                IM_NAMEDESTF: entregaReq.RazonSocialDestino,
+                IM_NAMEDESTINAT: entregaReq.RazonSocialDestinatario,
+                IM_NOMBRECONDUCTOR: entregaReq.NombreConductor,
+                IM_ORDENDOM: entregaReq.DomicilioOrden == null ? "" : entregaReq.DomicilioOrden.ToString(),
+                IM_PATENTEACOPLADO: entregaReq.PatenteAcoplado,
+                IM_PATENTECHASIS: entregaReq.PatenteChasis,
+                IM_PEDIDO: entregaReq.Pedido,
+                IM_TIPODOCUMENTO: entregaReq.TipoDocumento,
+                IM_TIPODOM: entregaReq.DomicilioTipo,
+                IM_TRANSPORTISTA: cuit_tr,
+                IM_TRANSPORTISTA_REAL: cuit_int_flete,
+                IM_USUARIO: "CACERESN",
+                IM_ZZCODPLANTA: entregaReq.PlantaCodigo,
+                EX_MENSAJE: out string mensaje).Trim();
+
+            Log.Info($"SI_MPMF_MOAOP_ORDEN_CARGA_ENTRE Response: {new { entrega, mensaje }}");
+
+            return new OrdenCargaEntreResponseHandler(mensaje, entrega);
         }
 
         /* 
@@ -172,13 +257,17 @@ namespace SustitucionMOAWS.WSConsumers
             service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
             service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
 
-            return service.SI_MPMF_MOAOP_CONTROL_ESTADO(entrega, pedido, transportista).Trim();
+            Log.Info($"SI_MPMF_MOAOP_CONTROL_ESTADO Request: {new { entrega, pedido, transportista }}");
+            var result = service.SI_MPMF_MOAOP_CONTROL_ESTADO(entrega, pedido, transportista).Trim();
+            Log.Info($"SI_MPMF_MOAOP_CONTROL_ESTADO Result: {new { result, entrega, pedido, }}");
+
+            return result;
         }
 
         public OrdenCargaVisualizarClienteWSMOAResponse OrdenCargaVisualizarClienteExecute(OrdenCargaVisualizarClienteWSMOARequest request)
-		{
+        {
             try
-			{
+            {
                 var service = new SI_MPMF_MOAOP_VISUALIZAR_ZFASClient();
 
                 service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
@@ -186,7 +275,7 @@ namespace SustitucionMOAWS.WSConsumers
 
                 List<ZMPES4100> fechasSAP = new List<ZMPES4100>() { };
                 if (request.Fechas != null)
-				{
+                {
                     foreach (var fecha in request.Fechas)
                     {
                         fechasSAP.Add(new ZMPES4100()
@@ -196,23 +285,32 @@ namespace SustitucionMOAWS.WSConsumers
                         });
                     }
                 }
+                string tipoContrato = ConvertirATipoContratoFasSAP(request.TipoContrato);
                 ZMPES4100[] fechasSAPArray = fechasSAP.ToArray();
-                var result = service.SI_MPMF_MOAOP_VISUALIZAR_ZFAS(request.Cliente, request.Contrato, request.Corredor, fechasSAPArray, request.Material, request.Pendiente, request.TipoContrato);
+                var result = service.SI_MPMF_MOAOP_VISUALIZAR_ZFAS(
+                    request.Cliente,
+                    request.Contrato,
+                    request.Corredor,
+                    fechasSAPArray,
+                    request.Material,
+                    request.Pendiente ? "X" : "",
+                    tipoContrato);
                 var response = MapOrdenCargaVisualizarCliente(result);
                 return response;
             }
             catch (Exception ex)
-			{
+            {
+                Log.Error(ex);
                 return null;
-			}
-		}
+            }
+        }
 
         protected virtual OrdenCargaVisualizarClienteWSMOAResponse MapOrdenCargaVisualizarCliente(ZMPES6750[] result)
-		{
+        {
             var response = new OrdenCargaVisualizarClienteWSMOAResponse();
             var resultados = new List<Result>();
             foreach (var item in result)
-			{
+            {
                 var resultado = new Result()
                 {
                     Contrato = item.CONTRATO,
@@ -239,11 +337,11 @@ namespace SustitucionMOAWS.WSConsumers
                     CondicionEntrega = item.CONDICION_ENTREGA,
                     Producto = item.PRODUCTO,
                     PuntoExpedicion = item.PTO_EXPEDICION,
-                    TipoContrato = item.TIPO_CONTRATO
+                    TipoContrato = ConvertirDeTipoContratoFasSAP(item.TIPO_CONTRATO)
                 };
                 var detalles = new List<Detail>();
                 foreach (var detalle in item.DETALLE)
-				{
+                {
                     detalles.Add(new Detail()
                     {
                         Pedido = detalle.PEDIDO,
@@ -259,28 +357,187 @@ namespace SustitucionMOAWS.WSConsumers
                         Acoplado = detalle.ACOPLADO,
                         Chofer = detalle.CHOFER,
                         Destinatario = detalle.DESTINATARIO,
-                        NombreDestinatario = detalle.NOMBRE_DESTINATARIO
+                        NombreDestinatario = detalle.NOMBRE_DESTINATARIO,
+                        KilosEntrega = detalle.KILOS_ENTREGA,
                     });
                 }
                 if (detalles != null)
-				{
+                {
                     if (detalles.Count > 0)
-					{
+                    {
                         resultado.Detalles = detalles;
                     }
-				}
+                }
                 resultados.Add(resultado);
             }
 
             if (resultados != null)
-			{
+            {
                 if (resultados.Count > 0)
-				{
+                {
 
                     response.Resultados = resultados;
-				}
-			}
+                }
+            }
             return response;
-		}
+        }
+
+        public ControlEstadoResEnum GetOrdenCargaControlEstadoTransportista(string cuitTransportista)
+        {
+            var resp = OrdenCargaControlEstadoRequest("", "", cuitTransportista);
+            return ResponseConverter.GetOrdenCargaControlEstadoResponse(resp);
+        }
+        public ModOrdenCargaResponseHandler AnularOrdenCarga(OrdenDeCarga orden)
+        {
+            var service = new SI_MPMF_MOAOP_MOD_ORDEN_CARGAClient();
+
+            service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
+            service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
+            var identificador = !string.IsNullOrEmpty(orden.NumeroPedidoIngresado) ? orden.NumeroPedidoIngresado : orden.NumeroPedido;
+
+            Log.Info($"SI_MPMF_MOAOP_MOD_ORDEN_CARGA Request: {new { identificador }}");
+
+            var result = service.SI_MPMF_MOAOP_MOD_ORDEN_CARGA("X", identificador);
+
+            Log.Info($"SI_MPMF_MOAOP_MOD_ORDEN_CARGA Result: {new { result, identificador }}");
+
+            return new ModOrdenCargaResponseHandler(result);
+        }
+
+        public ModEntregaResponseHandler AnularEntregaOrdenCarga(string nroEntrega)
+        {
+            var service = new SI_MPMF_MOAOP_MOD_ENTREGAClient();
+            service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
+            service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
+            Log.Info($"SI_MPMF_MOAOP_MOD_ENTREGA Request: {nroEntrega}");
+
+            var result = service.SI_MPMF_MOAOP_MOD_ENTREGA("", "X", "", "", "", nroEntrega, "");
+
+            Log.Info($"SI_MPMF_MOAOP_MOD_ENTREGA Result: {new { result, nroEntrega }}");
+
+            return new ModEntregaResponseHandler(result);
+        }
+        public ResultadoGenerico ModificarEntregaOrdenCarga(ModificarEntregaOrdenCargaSAP datosEntrega)
+        {
+            var service = new SI_MPMF_MOAOP_MOD_ENTREGAClient();
+
+            service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
+            service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
+            Log.Info($"SI_MPMF_MOAOP_MOD_ENTREGA Request: {datosEntrega.NumeroEntrega} {datosEntrega.ToJson()}");
+
+            var result = service.SI_MPMF_MOAOP_MOD_ENTREGA(
+                            datosEntrega.Acoplado,
+                            "",
+                            datosEntrega.Chasis,
+                            datosEntrega.Chofer,
+                            datosEntrega.Documento,
+                            datosEntrega.NumeroEntrega,
+                            datosEntrega.TipoDoc);
+            Log.Info($"SI_MPMF_MOAOP_MOD_ENTREGA Result: {new { result, nroEntrega = datosEntrega.NumeroEntrega }}");
+
+            var resultado = new ResultadoGenerico();
+            if (result != "Se actualizaron los datos correctamente")
+                resultado.Error("error", result);
+
+            return resultado;
+        }
+        public bool VerificarContratoAbierto(string contrato)
+        {
+            var service = new SI_MPMF_MOAOP_VISUALIZAR_ZFASClient();
+
+            service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
+            service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
+
+            var fechas = ObtenerRangoFechas();
+
+            var result = service.SI_MPMF_MOAOP_VISUALIZAR_ZFAS(
+                IM_CLIENTE: "",
+                IM_CONTRATO: contrato,
+                IM_CORREDOR: "",
+                IM_FECHA: fechas,
+                IM_MATERIAL: "",
+                IM_PENDIENTE: "X",
+                IM_TIPO_CONTRATO: TipoContratoFas_Todos);
+
+            return result.Length > 0;
+        }
+
+        public Result ObtenerContratoSAP(OrdenDeCarga orden, TipoContratoFAS? tipoContrato)
+        {
+            return ObtenerContratoSAP(string.IsNullOrEmpty(orden.ContratoSAP) ? orden.ContratoIngresado : orden.ContratoSAP, tipoContrato);
+        }
+        public Result ObtenerContratoSAP(string numeroContrato, TipoContratoFAS? tipoContrato)
+        {
+            var request = new OrdenCargaVisualizarClienteWSMOARequest
+            {
+                Contrato = numeroContrato,
+                TipoContrato = tipoContrato ?? TipoContratoFAS.Todos,
+                Fechas = ObtenerFechas()
+            };
+
+            var contratoSAP = OrdenCargaVisualizarClienteExecute(request).Resultados.FirstOrDefault();
+            return contratoSAP;
+        }
+        private List<FechaWS> ObtenerFechas()
+        {
+            return new List<FechaWS>
+                {
+                    new FechaWS
+                    {
+                        fechaFin = DateTime.Now,
+                        fechaInicio = DateTime.Parse(Constante.FECHA_BASICA)
+                    }
+                };
+        }
+        private ZMPES4100[] ObtenerRangoFechas()
+        {
+            var hasta = DateTime.Now;
+            var desde = hasta.AddMonths(-Constante.MESES_ATRAS_FAS);
+            return new List<ZMPES4100>{ new ZMPES4100()
+            {
+                FECHA_OP = SAPFormatter.PrepararFecha(desde),
+                FECHA_OP_HASTA = SAPFormatter.PrepararFecha(hasta)
+            }}.ToArray();
+        }
+        private CrearEntregaRequest LimpiarRequestSinPedidoAnticipado(CrearEntregaRequest entregaReq)
+        {
+            entregaReq.Reventa = false;
+            entregaReq.CuitDestino = "";
+            entregaReq.CuitDestinatario = "";
+            entregaReq.RazonSocialDestinatario = "";
+            entregaReq.RazonSocialDestino = "";
+            entregaReq.DomicilioDescr = "";
+            entregaReq.DomicilioOrden = null;
+            entregaReq.DomicilioTipo = "";
+            entregaReq.PlantaCodigo = "";
+
+            return entregaReq;
+        }
+
+        private string ConvertirATipoContratoFasSAP(TipoContratoFAS? tipoContrato)
+        {
+            if (!tipoContrato.HasValue)
+            {
+                return "";
+            }
+            switch (tipoContrato)
+            {
+                case TipoContratoFAS.Normal: return TipoContratoFas_Normal;
+                case TipoContratoFAS.Anticipado: return TipoContratoFas_Anticipado;
+                case TipoContratoFAS.Todos: return TipoContratoFas_Todos;
+                default: throw new Exception("Tipo de contrato no mapeado");
+            }
+        }
+
+        private TipoContratoFAS ConvertirDeTipoContratoFasSAP(string tipoContrato)
+        {
+            switch (tipoContrato)
+            {
+                case TipoContratoFas_Normal: return TipoContratoFAS.Normal;
+                case TipoContratoFas_Anticipado: return TipoContratoFAS.Anticipado;
+                case TipoContratoFas_Todos: return TipoContratoFAS.Todos;
+                default: throw new Exception("No se reconoce tipo de contrato " + tipoContrato);
+            }
+        }
     }
 }

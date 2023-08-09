@@ -1,0 +1,8 @@
+::ng-deep .ui-calendar .ui-button{
+    background-color: #FFFFFF !important;
+    border-color: #DDDDDD !important;
+  } 
+
+  ::ng-deep .ui-button {
+    color: #666666 !important;
+  } 

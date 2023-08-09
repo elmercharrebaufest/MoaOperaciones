@@ -1,4 +1,6 @@
-﻿using SustitucionMOAModel.Enums;
+﻿using SustitucionMOAModel.Dto;
+using SustitucionMOAModel.Enums;
+using SustitucionMOAModel.Enums.MoaWS.OrdenCargaWS;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -76,6 +78,7 @@ namespace SustitucionMOAModel.Entities
         public string PedidoSAP { get; set; }
         public string CodigoVerificacionSap { get; set; }
         public string DescripcionCodigoVerificacionSap { get; set; }
+        public bool Reventa { get; set; }
 
         public int? UsuarioCreacion_Id { get; set; }
         [ForeignKey("UsuarioCreacion_Id")]
@@ -86,20 +89,77 @@ namespace SustitucionMOAModel.Entities
         public bool ContratoSinCantidadPendiente { get; set; }
         public string DescripcionErrorInterno { get; set; }
         public string CUITCorredor { get; set; }
-        public DateTime ? FechaVencimiento { get; set; }
-        public void ActualizarEstado()
+        public DateTime? FechaVencimiento { get; set; }
+        public bool FechaVencimientoAmpliada { get; set; }
+
+        public bool EdicionRechazada { get; set; }
+        public string CUITDestino { get; set; }
+        public string CUITDestinatario { get; set; }
+        public string RazonSocialDestino { get; set; }
+        public string RazonSocialDestinatario { get; set; }
+        public string CUITIntermediarioFlete { get; set; }
+        public string RazonSocialIntermediarioFlete { get; set; }
+        public string PlantaCodigo { get; set; }
+        public string DomicilioTipo { get; set; }
+        public short? DomicilioOrden { get; set; }
+        public string DomicilioDescr { get; set; }
+        public string NumeroFactura { get; set; }
+        public string NumeroFacturaSeleccionada { get; set; }
+        public TipoContratoFAS TipoContrato { get; set; }
+        public bool Escalable { get; set; }
+
+
+        public bool TieneMultiplesContratos
         {
+            get { return !string.IsNullOrEmpty(ContratosRespuesta); }
+        }
+
+        public bool TieneCodigoSap(ControlCargaResEnum controlCargaRes)
+        {
+            return CodigoVerificacionSap == ResponseConverter.GetCodigoControlCarga(controlCargaRes);
+        }
+        public bool EsFacturaAnticipada
+        {
+            get
+            {
+                return TipoContrato == TipoContratoFAS.Anticipado;
+            }
+        }
+        public bool SinSeleccionarFactura
+        {
+            get
+            {
+                return !string.IsNullOrEmpty(NumeroFactura) && string.IsNullOrEmpty(NumeroFacturaSeleccionada);
+            }
+        }
+
+        /// <summary>
+        /// Actualiza la Orden según su estado interno
+        /// </summary>
+        /// <returns>Log del cambio de estado</returns>
+        public string ActualizarEstado()
+        {
+            var logCambioEstado = $"Actualizar estado Orden de carga {Id}. Estado inicial:{EstadoOrdenDeCargaExtensions.ToFriendlyString(Estado)}. " +
+                $"CodigoVerificacionSap:{CodigoVerificacionSap}, ContratoSAP:{ContratoSAP}, ContratoSinCantidadPendiente:{ContratoSinCantidadPendiente}, " +
+                $"NumeroPedido:{NumeroPedido}, InformadaSAP:{InformadaSAP}, TransporteExiste:{TransporteExiste}, AprobadoCredito:{AprobadoCredito}, FechaEntregaGenerada:{FechaEntregaGenerada}.";
+
             if (Estado != EstadoOrdenDeCarga.Entregada)
             {
-                if (CodigoVerificacionSap == "CC-01")
+                if (this.TieneCodigoSap(ControlCargaResEnum.MasDeUnContratoVigente) ||
+                    this.TieneCodigoSap(ControlCargaResEnum.CC06IdemCC01))
                 {
                     Estado = EstadoOrdenDeCarga.ErrorDeCarga;
                 }
                 else
                 {
-                    if (string.IsNullOrEmpty(ContratoSAP) || ContratoSinCantidadPendiente || string.IsNullOrEmpty(NumeroPedido))
-                    {                                             
-                            Estado = EstadoOrdenDeCarga.Pendiente;                
+                    if (
+                        ((string.IsNullOrEmpty(ContratoSAP) ||
+                        ContratoSinCantidadPendiente ||
+                        string.IsNullOrEmpty(NumeroPedido)) && Estado != EstadoOrdenDeCarga.SinEnviarASAP) ||
+                        CodigoVerificacionSap == "CC-07"
+                        )
+                    {
+                        Estado = EstadoOrdenDeCarga.Pendiente;
                     }
                     else
                     {
@@ -108,7 +168,7 @@ namespace SustitucionMOAModel.Entities
                             Estado = EstadoOrdenDeCarga.Confirmado;
                         }
 
-                        if (!TransporteExiste)
+                        if (!TransporteExiste || (EsFacturaAnticipada && SinSeleccionarFactura) )
                         {
                             Estado = EstadoOrdenDeCarga.Pendiente;
                         }
@@ -131,6 +191,8 @@ namespace SustitucionMOAModel.Entities
                     }
                 }
             }
+            logCambioEstado += $" Estado final:{EstadoOrdenDeCargaExtensions.ToFriendlyString(Estado)}";
+            return logCambioEstado;
         }
 
         public override bool Equals(object obj)
@@ -217,5 +279,14 @@ namespace SustitucionMOAModel.Entities
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(DescripcionErrorInterno);
             return hashCode;
         }
+
+        public OrdenDeCargaEditarDto ToDto()
+        {
+            return new OrdenDeCargaEditarDto(this);
+        }
+        //public TipoContratoFAS TipoContratoFAS()
+        //{
+        //    return TipoContratoFASParser.Parse(TipoContrato);
+        //}
     }
 }

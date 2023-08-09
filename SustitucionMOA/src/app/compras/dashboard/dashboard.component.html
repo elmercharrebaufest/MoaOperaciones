@@ -1,4 +1,5 @@
 <div class="content-wraper alinearAlturaMenuDashboard">
+
     <section class="container-fluid clearfix">
         <!--Title-->
         <div class="row titleSection">
@@ -9,9 +10,27 @@
             <div class="row">
                 <!--Cards-->
                 <div class="col-md-4" *ngFor="let card of cards" (click)="goToSeccionParam(card.path, card.tipoSolp)">
-                    <div class="card cardCompra">
-                        <h3 class="cardText">{{card.nombre}}</h3>
+
+                    <div *ngIf="card.nombre == 'Con pliego'; else sinpliego" class="card cardCompra">
+                        <h3 class="cardText">
+                            {{card.nombre}}
+                            <h6>
+                                {{subtitulos[0].nombre}}
+                            </h6>
+                        </h3>
                     </div>
+
+                    <ng-template #sinpliego>
+                        <div class="card cardCompra">
+                            <h3 class="cardText">
+                                {{card.nombre}}
+                                <h6>
+                                    {{subtitulos[1].nombre}}
+                                </h6>
+                            </h3>
+                        </div>
+                    </ng-template>
+
                 </div>
                 <!--End Cards-->
             </div>
@@ -23,99 +42,122 @@
             </div>
 
             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                <div class="row myRow col-xs-12 col-sm-12 col-md-12 col-lg-12" style="margin-top: 1em; margin-bottom: 15px;">
+                <div class="row myRow" style="margin-top: 1em; margin-bottom: 15px;">
 
-                    <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8" style="margin-left: -46px;">
-                        <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
-                            <input class="col-xs-12 col-sm-12 col-md-12 col-lg-12 inputAltura" pInputText type="text" (input)="tabla.filterGlobal($event.target.value, 'contains')" placeholder="Buscar por numero de solp">
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="margin-left: -46px;">
+                        <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
+                            <input class="col-xs-12 col-sm-12 col-md-12 col-lg-12 inputAltura" pInputText type="text"
+                                [(ngModel)]="nroSolp" placeholder="Buscar por numero de solp">
                         </div>
-
-                        <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
-                            <p-multiSelect [options]="estadoSolpItem" [(ngModel)]="selectEstadoSolp" defaultLabel="Estado SOLP" (onChange)="tabla.filter($event.value, 'EstadoSolpSap.Id', 'in')"></p-multiSelect>
+                        <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
+                            <p-multiSelect [options]="estadoSolpItem" [(ngModel)]="selectEstadoSolp"
+                                defaultLabel="Estado SOLP"></p-multiSelect>
                         </div>
+                       
+                        <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3" style="margin-top: 10px;">
+                            <span
+                                style="border-left: 1px solid black;margin-top: 1px;padding-left: 9px;padding-right: 1px;margin-left: 8px;">
+                                <p-checkbox class="checkboxFechas" binary="true" label="SAP" [(ngModel)]="sap">
+                                </p-checkbox>
+                            </span>
+                            <span class="padding1" style="margin-right: 5px; margin-left: 5px;">
+                                <p-checkbox class="checkboxFechas" binary="true" label="OT" pTooltip="Mantenimiento"
+                                    [(ngModel)]="mantenimiento"></p-checkbox>
+                            </span>
+                            <span class="padding1" style="margin-right: 5px;">
+                                <p-checkbox class="checkboxFechas" binary="true" label="Web" [(ngModel)]="web"></p-checkbox>
+                            </span>
+                        </div>
+                        <div class="col-md-1 col-lg-1  buttonBuscar">
+                            <button class="btn buscar" (click)="onBuscar()">Buscar</button>
+                        </div>
+                    </div>
 
-                        <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4 estiloCalendarDashboard">
-                            <p-calendar 
-                                showButtonBar="true" 
-                                [showIcon]="true"
-                                #myCalendar 
-                                placeholder="Filtro fechas"
-                                dateFormat="dd/mm/yy" 
-                                (onSelect)="onSelect($event)" 
-                                appendTo="body" 
-                                [(ngModel)]="rangeDates" 
-                                selectionMode="range"
-                                [readonlyInput]="true" 
-                                [locale]="locale" 
-                                (onClearClick)="returnToTodaysDate()"
-                                class="styled-select">
+                    
+                    <div class="row myRow" style="margin-left: -31px;">
+                        <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4 inputAltura" style="width: 24%;">                      
+                            <p-dropdown [options]="usuarioFiltro" [(ngModel)]="selectUsuario" name="selectUsuario" placeholder="Buscar usuario" filter="true" showClear="true"></p-dropdown>                  
+                        </div> 
+                        <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
+                            <p-calendar [inputStyle]="{ 'width': '220px'}" showButtonBar="true" [showIcon]="true"  placeholder="Filtro fechas"
+                                dateFormat="dd/mm/yy" (onSelect)="onSelect($event)" appendTo="body"
+                                [(ngModel)]="rangeDates" selectionMode="range" [readonlyInput]="true" [locale]="locale"
+                                (onClearClick)="returnToTodaysDate()" >
                             </p-calendar>
-                        </div>                    
-                    </div>
-
-                    <!-- <div class="col-xs-12 col-sm-12 col-md-7 col-lg-7 inputAltura" style="margin-top: 10px;"> -->
-                    <!-- <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6"> -->
-                    <!-- <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6" style="color: rgb(209, 199, 199)">
-                                <p-radioButton name="dashboard" value="Materiales" label="Materiales" inputId="materialesDashboard" disabled></p-radioButton>
-                            </div> -->
-                    <!-- <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-                                <p-radioButton name="dashboard" value="Servicios" label="Servicios" [(ngModel)]="serviciosDashboard" inputId="serviciosDashboard"></p-radioButton>
-                            </div>
-                        </div> -->
-
-                    <!-- <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6" style="border-left: 1px solid black;"> -->
-                    <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4" style="border-left: 1px solid black; margin-top: 8px;">
-                        <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
-                            <p-checkbox class="checkboxFechas" binary="true" label="SAP" (onChange)="filtrarPorSap()">
-                            </p-checkbox>
                         </div>
-                        <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
-                            <p-checkbox class="checkboxFechas" binary="true" label="Mantenimiento" (onChange)="filtrarPorMantenimiento()"></p-checkbox>
-                        </div>
+
                     </div>
-                    <!-- </div>     -->
                 </div>
 
             </div>
         </div>
     </section>
 
-    <div class="col-sm-12 col-md-12 col-lg-12" style="margin-left: -15px;">
-        <p-table #tabla [value]="tablaSolp" [globalFilterFields]="['NroSolp']" [paginator]="true" [first]="first" [rows]="10" sortMode="multiple">
+
+
+    <div class="col-sm-12 col-md-12 col-lg-12" style="margin-left: -15px;">      
+        <p-table #tabla [value]="tablaSolp" dataKey="Id">
             <ng-template pTemplate="header" let-columns>
                 <tr>
-                    <th [pSortableColumn]="'TipoSolpSap'" data-toggle="tooltip" title="Numero SOLP" style="display: none">
+                    <th style="width: 40px"></th>
+                    <th [pSortableColumn]="'TipoSolpSap'" data-toggle="tooltip" title="Numero SOLP"
+                        style="display: none">
                         Tipo Solp
                     </th>
                     <th data-toggle="tooltip" title="Acciones SOLP"></th>
-                    <th [pSortableColumn]="'NroSolp'" data-toggle="tooltip" title="Numero SOLP">
+                    <th style="cursor:pointer" title="Numero SOLP" (click)="onOrder('NroSolp')">
                         Numero SOLP
-                        <p-sortIcon [field]="'NroSolp'" ariaLabel="Activate to sort" ariaLabelDesc="Activate to sort in descending order" ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
+                        <span><i
+                                [ngClass]="{'fa': true, 'fa-solid fa-sort-up': true, 'arrow': true, 'unselected': columnaOrden === 'NroSolp' && orden == 'DESC'  }"></i>
+                            <i
+                                [ngClass]="{'fa': true, 'fa-solid fa-sort-down': true, 'arrow': true, 'unselected': columnaOrden === 'NroSolp' && orden == 'ASC' }"></i>
+                        </span>
                     </th>
 
-                    <th [pSortableColumn]="'NombreDeObra'" data-toggle="tooltip" title="Nombre de pedido">
+                    <th title="Nombre de pedido" style="cursor:pointer" (click)="onOrder('NombreDeObra')">
                         Nombre de pedido
-                        <p-sortIcon [field]="'NombreDeObra'" ariaLabel="Activate to sort" ariaLabelDesc="Activate to sort in descending order" ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
+                        <span><i
+                                [ngClass]="{'fa': true, 'fa-solid fa-sort-up': true, 'arrow': true, 'unselected': columnaOrden === 'NombreDeObra' && orden == 'DESC'  }"></i>
+                            <i
+                                [ngClass]="{'fa': true, 'fa-solid fa-sort-down': true, 'arrow': true, 'unselected': columnaOrden === 'NombreDeObra' && orden == 'ASC' }"></i>
+                        </span>
                     </th>
 
-                    <th [pSortableColumn]="'FechaCreacion'" data-toggle="tooltip" title="Fecha de creacion de SOLP">
+                    <th title="Fecha de creacion de SOLP" style="cursor:pointer" (click)="onOrder('FechaCreacion')">
                         Fecha creacion
-                        <p-sortIcon [field]="'FechaCreacion'" ariaLabel="Activate to sort" ariaLabelDesc="Activate to sort in descending order" ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
+                        <span><i
+                                [ngClass]="{'fa': true, 'fa-solid fa-sort-up': true, 'arrow': true, 'unselected': columnaOrden === 'FechaCreacion' && orden == 'DESC'  }"></i>
+                            <i
+                                [ngClass]="{'fa': true, 'fa-solid fa-sort-down': true, 'arrow': true, 'unselected': columnaOrden === 'FechaCreacion' && orden == 'ASC' }"></i>
+                        </span>
                     </th>
 
-                    <th [pSortableColumn]="'EstadoDocumento'" data-toggle="tooltip" title="Estado de documento">
+                    <th title="Estado de documento" style="cursor:pointer"
+                        (click)="onOrder('EstadoDocumento.Descripcion')">
                         Estado Doc
-                        <p-sortIcon [field]="'EstadoDocumento.Descripcion'" ariaLabel="Activate to sort" ariaLabelDesc="Activate to sort in descending order" ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
+                        <span><i
+                                [ngClass]="{'fa': true, 'fa-solid fa-sort-up': true, 'arrow': true, 'unselected': columnaOrden === 'EstadoDocumento.Descripcion' && orden == 'DESC'  }"></i>
+                            <i
+                                [ngClass]="{'fa': true, 'fa-solid fa-sort-down': true, 'arrow': true, 'unselected': columnaOrden === 'EstadoDocumento.Descripcion' && orden == 'ASC' }"></i>
+                        </span>
                     </th>
 
-                    <th [pSortableColumn]="'EstadoSolpSap'" data-toggle="tooltip" title="Estado SOLP">
+                    <th title="Estado SOLP" style="cursor:pointer" (click)="onOrder('EstadoSolpDescripcion')">
                         Estado Solp
-                        <p-sortIcon [field]="'EstadoSolpSap.Descripcion'" ariaLabel="Activate to sort" ariaLabelDesc="Activate to sort in descending order" ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
+                        <span><i
+                                [ngClass]="{'fa': true, 'fa-solid fa-sort-up': true, 'arrow': true, 'unselected': columnaOrden === 'EstadoSolpDescripcion' && orden == 'DESC'  }"></i>
+                            <i
+                                [ngClass]="{'fa': true, 'fa-solid fa-sort-down': true, 'arrow': true, 'unselected': columnaOrden === 'EstadoSolpDescripcion' && orden == 'ASC' }"></i>
+                        </span>
                     </th>
 
-                    <th [pSortableColumn]="'TipoSolp'" data-toggle="tooltip" title="Tipo de  SOLP">
+                    <th title="Tipo de  SOLP" style="cursor:pointer" (click)="onOrder('TipoSolp.Descripcion')">
                         Tipo
-                        <p-sortIcon [field]="'TipoSolp.Descripcion'" ariaLabel="Activate to sort" ariaLabelDesc="Activate to sort in descending order" ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
+                        <span><i
+                                [ngClass]="{'fa': true, 'fa-solid fa-sort-up': true, 'arrow': true, 'unselected': columnaOrden === 'TipoSolp.Descripcion' && orden == 'DESC'  }"></i>
+                            <i
+                                [ngClass]="{'fa': true, 'fa-solid fa-sort-down': true, 'arrow': true, 'unselected': columnaOrden === 'TipoSolp.Descripcion' && orden == 'ASC' }"></i>
+                        </span>
                     </th>
                     <th data-toggle="tooltip" title="Vincular a pliego">
                         Vincular Pliego
@@ -123,16 +165,22 @@
                 </tr>
             </ng-template>
 
-            <ng-template pTemplate="body" let-rowData let-columns="columns">
-                <tr>
+            <ng-template pTemplate="body" let-rowData let-columns="columns" let-expanded="expanded">
+                <tr [pSelectableRow]="rowData">
+                    <td (dblclick)="onRowDblClick($event, rowData)"> 
+                        <div *ngIf="rowData.TienePeticionDeOferta">
+                        <a href="#" [pRowToggler]="rowData">
+                            <i [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
+                        </a>
+                    </div>
+                    </td>
                     <td style="display:none;">
                         {{rowData.TipoSolpSap}}
                     </td>
                     <td class="col-lg-12 col-md-12 col-sm-12" style="padding-left: 0px; padding-right: 0px;">
 
                         <div *ngIf="rowData.TipoSolpSap == 2" class="col-md-2">
-                            <span><img class="pointer" src="./Content/images/icons/worker.svg" 
-                                alt="Mantenimiento"
+                            <span><img class="pointer" src="./Content/images/icons/worker.svg" alt="Mantenimiento"
                                     style="height:25px; cursor:default" /></span>
                         </div>
                         <div *ngIf="rowData.TipoSolpSap == 3" class="col-md-2">
@@ -141,21 +189,19 @@
                                     style="width: 30px; height: 30px; cursor:default" />
                             </span>
                         </div>
-                        <div class="col-md-2" *ngIf="(rowData.NroSolp == '' || rowData.NroSolp == null) && rowData.UsuarioActual.Mail == usuario">
-                            <span><img  class="pointer"
-                                 src="./Content/images/icons/trash.svg" 
-                                alt="trash"
+                        <div class="col-md-2"
+                            *ngIf="(rowData.NroSolp == '' || rowData.NroSolp == null) && rowData.UsuarioActual.Mail == usuario">
+                            <span><img class="pointer" src="./Content/images/icons/trash.svg" alt="trash"
                                     (click)="eliminarPosicionDashboard(rowData.Id)" /></span>
                         </div>
-                        <div class="col-md-2" *ngIf="rowData.EstadoSolpSap.Descripcion != 'Liberada' && (rowData.UsuarioActual.Mail == usuario || verTodas)">
+                        <div class="col-md-2"
+                            *ngIf="rowData.EstadoSolpSap.Descripcion != 'Liberada' && (rowData.UsuarioActual.Mail == usuario || verTodas)">
                             <span>
-                                <img class="pointer"
-                                    src="./Content/images/icons/editar.svg" alt="editar"
+                                <img class="pointer" src="./Content/images/icons/editar.svg" alt="editar"
                                     (click)="goToSeccionEdit('/compras/solp', rowData.Id, rowData.NroSolp)" /></span>
                         </div>
                         <div class="col-md-2">
-                            <span><img class="pointer" src="./Content/images/icons/descargar.svg" 
-                                 alt="descargar"
+                            <span><img class="pointer" src="./Content/images/icons/descargar.svg" alt="descargar"
                                     (click)="generarZipPliego(rowData.Id)" /></span>
                         </div>
                     </td>
@@ -173,29 +219,141 @@
                     </td>
                     <td>
                         <span [style.color]="getColorDocumentoSolp(rowData)">
-                            {{getStatusDocumentoSolp(rowData)}}
+                            {{rowData.EstadoSolpDescripcion}}
                         </span>
                     </td>
                     <td>
                         {{ rowData.TipoSolp.Descripcion || "" }}
                     </td>
                     <td class="col-sm-12 col-md-12 col-lg-12">
-                        <button style="white-space: normal; text-align: center; vertical-align: middle;" class="btn btn-success botonesComprasColor" *ngIf="rowData.VincularPliego" (click)="vincularAPliego(rowData.Id)" [disabled]="rowData.PliegoVinculado"
-                        [ngStyle]="{'background-color':(rowData.PliegoVinculado && rowData.VincularPliego) ? 'grey':'green', 'border-color':(rowData.PliegoVinculado && rowData.VincularPliego) ? 'grey':'green' } ">
+                        <button style="white-space: normal; text-align: center; vertical-align: middle;"
+                            class="btn btn-success botonesComprasColor" *ngIf="rowData.VincularPliego"
+                            (click)="vincularAPliego(rowData.Id)" [disabled]="rowData.PliegoVinculado"
+                            [ngStyle]="{'background-color':(rowData.PliegoVinculado && rowData.VincularPliego) ? 'grey':'green', 'border-color':(rowData.PliegoVinculado && rowData.VincularPliego) ? 'grey':'green' } ">
                             {{(rowData.PliegoVinculado) ? "Pliego vinculado" : "Vincular a Pliego" }}
                         </button>
                     </td>
                 </tr>
             </ng-template>
-        </p-table>
-    </div>
+            <ng-template pTemplate="rowexpansion" let-rowData let-columns="columns">
+                <tr>
+                    <td [attr.colspan]="9">
+                        <div class="col-sm-12 col-md-12 col-lg-12" style="font-size:16px;padding:20px">
+                            <p-tabView>
+                                <p-tabPanel header="Licitaciones" [selected]="true">
+                                    <p-table [value]="rowData.PeticionesDeOferta">
+                                        <ng-template pTemplate="header">
+                                            <tr style="font-size: 15px;">                                               
+                                                <th class="columna" style="text-transform: none !important;">Pedido de Cotización</th>
+                                                <th class="columna" style="text-transform: none !important;">Plazo de Oferta</th>
+                                                <th class="columna" style="text-transform: none !important;">Estado Lic.</th>
+                                                <th class="columna" style="width: 300px !important; text-transform: none !important;"></th>
+                                            </tr>
+                                        </ng-template>
+                                        <ng-template pTemplate="emptymessage">
+                                            <tr>
+                                                <td style="text-align: center;" colspan="4">Sin datos</td>
+                                            </tr>
+                                        </ng-template>
+                                        <ng-template pTemplate="body" let-licitacion>
+                                            <tr>                                    
+                                                <td class="columna">{{licitacion.Id}}</td>
+                                                <td class="columna">                                                    
+                                                    {{licitacion.PlazoDeOferta | customDateFormat | date :'d/M/yyyy'}}
+                                                </td>
+                                                <td class="columna" [style.color]="licitacion.EstadoColor">{{licitacion.Estado}}</td>
+                                                <td class="columna">                                                   
+                                                    <button *ngIf="licitacion.Estado == 'Abierto'" class="publicar btn" style="margin-right: 10px;" (click)="obtenerPeticionDeOferta(licitacion.Id)">
+                                                        Revisión Técnica
+                                                    </button>
+                                                    <button class="publicar btn " *ngIf="rowData.VerCircular == true" style="margin-right: 10px;"  (click)="obtenerPeticionDeOfertaCircular(licitacion.Id)">
+                                                        Circular
+                                                    </button>
+                                                </td> 
+                                            </tr>
+                                        </ng-template>
+                                    </p-table>
+                                </p-tabPanel> 
+                                <p-tabPanel>
+                                    <ng-template pTemplate="header" >
+                                        <div class="padding" (click)="listarAdjudicaciones(rowData.Id)">
+                                            Orden de compra
+                                        </div>
+                                    </ng-template>
+                                    <p-table [value]="filtrarOrdenesDeCompra(rowData.Id)">
+                                        <ng-template pTemplate="header">
+                                            <tr>
+                                                <th class="columna">Numero</th>
+                                                <th class="columna">Fecha de creación</th>
+                                                <th class="columna">Proveedor</th>
+                                                <th class="columna">Monto total</th>
+                                                <th class="columna">Moneda</th>
+                                                <th class="columna"></th>
+                                            </tr>
+                                        </ng-template>
+                                        <ng-template pTemplate="emptymessage">
+                                            <tr>
+                                                <td style="text-align: center;" colspan="6">Sin datos</td>
+                                            </tr>
+                                        </ng-template>
+                                        <ng-template pTemplate="body" let-orden>
+                                            <tr>
+                                               <td class="columna">{{orden.NumeroOrdenDeCompra}}</td>                                     
+                                                <td class="columna">{{orden.FechaCreacion | customDateFormat | date :'d/M/yyyy' }}</td>
+                                                <td class="columna">{{orden.Proveedor}}</td>
+                                                <td class="columna">{{orden.PrecioFinal | number:'1.2-2'}}</td>
+                                                <td class="columna">{{orden.MonedaDescripcion}}</td>
+                                                <td class="columna">
+                                                    <button class="publicar btn btn-success" (click)="verDetalleOrdenDeCompra(orden.NumeroOrdenDeCompra)">
+                                                        Ver detalle
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        </ng-template>
+                                    </p-table>
+                                </p-tabPanel>                             
+                            </p-tabView>
+                        </div>
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>      
+    <p-paginator #paginator [rows]="10" [totalRecords]="length" (onPageChange)="handlePageEvent($event)"></p-paginator>
+</div>
 </div>
 
+<app-revision-tecnica           
+                [(displayRevisionTecnica)]="displayRevisionTecnica"
+                (cerrardisplayRevisionTecnicaEmitter)="cerrarModalRevisionTecnica()"
+                (descargarArchivoEmitter)="descargarArchivo($event)"
+                (descargarAdjuntosCotizacionEmitter)="descargarAdjuntosCotizacion($event)"
+                (grabarRevisionTecnicaEmitter)="grabarRevisionTecnica()"
+                [(peticion)]="peticion">
+</app-revision-tecnica> 
+
+<app-circular
+    [(locale)]="es"
+    [(displayCircular)]="displayCircular"
+    (cerrarCircularEmitter)="cerrarCircular()"
+    [(peticion)]="peticion"
+    [(solicitante)]="solicitante">
+</app-circular>   
+
+
 <!-- Modal eliminacion de SOLP-->
-<p-confirmDialog #dialogo header="Eliminar SOLP" icon="pi pi-exclamation-triangle" [width]="400" [responsive]="true" appendTo="body">
+<p-confirmDialog #dialogo header="Eliminar SOLP" icon="pi pi-exclamation-triangle" [width]="400" [responsive]="true"
+    appendTo="body">
     <p-footer>
-        <button type="button" pButton label="Cancelar" class="ui-button-info botonModal" (click)="dialogo.reject()"></button>
-        <button type="button" pButton label="Aceptar" class="ui-button-success botonModal" (click)="dialogo.accept()"></button>
+        <button type="button" pButton label="Cancelar" class="ui-button-info botonModal"
+            (click)="dialogo.reject()"></button>
+        <button type="button" pButton label="Aceptar" class="ui-button-success botonModal"
+            (click)="dialogo.accept()"></button>
     </p-footer>
 </p-confirmDialog>
 <!--fin modal eliminacion de SOLP-->
+
+<app-orden-de-compra-detalle
+[(displayOrdenDeCompra)]="displayOrdenDeCompra"
+(cerrarOrdenDeCompraEmitter)="cerrarOrdenDeCompra()"
+[(ordenDeCompra)]="ordenDeCompra">
+</app-orden-de-compra-detalle> 

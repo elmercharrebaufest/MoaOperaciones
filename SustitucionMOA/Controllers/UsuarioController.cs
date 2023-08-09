@@ -1,9 +1,12 @@
-﻿using SustitucionMOA.Utils;
+﻿using Newtonsoft.Json;
+using SustitucionMOA.Utils;
 using SustitucionMOAAssets;
 using SustitucionMOAModel.CustomExceptions;
+using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using SustitucionMOAModel.Models.WSMapMOA.Noticia;
+using SustitucionMOAModel.Models.WSMapMOA.Usuario.Perfil;
 using SustitucionMOARepositorio;
 using SustitucionMOASecurity;
 using SustitucionMOAUtils.Interfaces;
@@ -683,5 +686,172 @@ namespace SustitucionMOA.Controllers
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
         }
+
+        [System.Web.Http.HttpPost]
+        public ActionResult GrabarProveedor(string json)
+        {
+            try
+            {
+                var proveedor = JsonConvert.DeserializeObject<ProveedorDto>(json);           
+                var result = _usuarioService.GrabarProveedor(proveedor);
+                return JsonCustom(new { data = result });
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e }, JsonRequestBehavior.AllowGet);
+            }
+            catch (WSCustomException e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        #region Metodos de modificacion de alta usuario
+
+
+        [HttpGet]
+        [CustomPermisoAuthorizeAttribute(Roles = Permiso.ABM_USUARIOS)]
+        public ActionResult GetTipoUsuario()
+        {
+            try
+            {
+                return JsonCustom(new { data = new { tipoUsuario = _usuarioService.GetTipoUsuario() } });
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+        [HttpGet]
+        [CustomPermisoAuthorizeAttribute(Roles = Permiso.ABM_USUARIOS)]
+        public ActionResult GetUsuarioPorId(int id)
+        {
+            try
+            {
+                return JsonCustom(new { data = new { usuario = _usuarioService.GetUsuarioPorId(id) } });
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+        [HttpGet]
+        [CustomPermisoAuthorizeAttribute(Roles = Permiso.ABM_USUARIOS)]
+        public ActionResult GetProveedorAuditoriaPorUsuario(int id)
+        {
+            try
+            {
+                return JsonCustom(new { data = new { usuario = _usuarioService.GetProveedorAuditoriaPorUsuario(id) } });
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+        [HttpGet]
+        [CustomPermisoAuthorizeAttribute(Roles = Permiso.ABM_USUARIOS)]
+        public ActionResult GetProvedoresEmail(int tipoProveedorId, string email, string cuitUsuario)
+        {
+            try
+            {
+                return JsonCustom(new { data = new { proveedores = _usuarioService.GetProvedoresEmail(tipoProveedorId,email, cuitUsuario) } });
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [CustomPermisoAuthorizeAttribute(Roles = Permiso.ABM_USUARIOS)]
+        public ActionResult ValidarMailUsuario(UsuarioModificacionDto usuarioModificacionDto)
+        {
+            try
+            {
+                return JsonCustom(new { data = new { validaciones = _usuarioService.ValidarMailUsuario(usuarioModificacionDto) } });
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+        [CustomPermisoAuthorizeAttribute(Roles = Permiso.ABM_USUARIOS)]
+        public ActionResult ModificarUsuario(UsuarioModificacionDto usuarioModificacionDto)
+        {
+            try
+            {
+                return JsonCustom(new { data = new { resultado = _usuarioService.ModificarUsuario(usuarioModificacionDto) } });
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        #endregion
+
     }
 }

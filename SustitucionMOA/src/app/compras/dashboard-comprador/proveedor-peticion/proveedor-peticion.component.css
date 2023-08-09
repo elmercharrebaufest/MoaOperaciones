@@ -1,0 +1,35 @@
+.headerModal {
+    top: 106px;
+    left: 381px;
+    width: 119px;
+    height: 26px;
+    text-align: left;
+    font: normal normal bold 20px/26px Roboto Regular;
+    letter-spacing: 0px;
+    color: #5CB85C;
+    opacity: 1;
+  }
+
+  .my-dialog .ui-dialog-content { max-height: 70px; }
+
+  .columna {
+    word-break: break-all; 
+    word-wrap:break-word; 
+    font-size: 11px !important;
+
+}
+.sinDatos{
+  text-align: center;
+  font-size: 16px;
+  color: gray;
+}
+
+#lista1 ul { 
+  list-style:none; 
+  padding: 0px;
+  color: #717070;
+  font-size: 12px;
+}
+
+
+

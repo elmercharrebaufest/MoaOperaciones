@@ -25,7 +25,7 @@ export class ContratoDetalleComponent extends BaseComponent implements OnInit, A
 
     @ViewChild(SpinnerComponent)
     protected spinnerComponent: SpinnerComponent;
-     
+
     @ViewChild("spinnerSmallExport")
     protected spinnerSmallExportComponent: SpinnerSmallComponent;
 
@@ -77,11 +77,11 @@ export class ContratoDetalleComponent extends BaseComponent implements OnInit, A
             this.numeroContratoId = params['id'];
             this.unsubscribe();
             this.subscription = this.service.getDetalle(this.numeroContratoId).subscribe(
-                (result:any) => {
+                (result: any) => {
                     this.spinnerComponent.hideIt();
                     if (result.logout == true) {
                         this.sessionDataService.logout();
-                    }else if (result.error != undefined && result.error != "") {
+                    } else if (result.error != undefined && result.error != "") {
                         this.mensajeComponent.setErrorMsg(result.error);
                     } else if (result.info != undefined) {
                         this.mensajeComponent.setInfoMsg(result.info);
@@ -104,11 +104,11 @@ export class ContratoDetalleComponent extends BaseComponent implements OnInit, A
         this.spinnerSmallPDFComponent.showIt();
         this.unsubscribe();
         this.subscription = this.service.downloadBoletoFisico(this.numeroContratoId).subscribe(
-            (result:any) => {
+            (result: any) => {
                 this.spinnerSmallPDFComponent.hideIt();
                 if (result.logout == true) {
                     this.sessionDataService.logout();
-                }else if (result.error != undefined && result.error != "") {
+                } else if (result.error != undefined && result.error != "") {
                     this.mensajeComponent.setErrorMsg(result.error);
                 } else if (result.info != undefined) {
                     this.mensajeComponent.setInfoMsg(result.info);
@@ -143,11 +143,11 @@ export class ContratoDetalleComponent extends BaseComponent implements OnInit, A
         this.spinnerSmallExportComponent.showIt();
         this.unsubscribe();
         this.subscription = this.service.exportExcelDetalle(this.numeroContratoId).subscribe(
-            (result:any) => {
+            (result: any) => {
                 this.spinnerSmallExportComponent.hideIt();
                 if (result.logout == true) {
                     this.sessionDataService.logout();
-                }else if (result.error != undefined && result.error != "") {
+                } else if (result.error != undefined && result.error != "") {
                     this.mensajeComponent.setErrorMsg(result.error);
                 } else if (result.info != undefined) {
                     this.mensajeComponent.setInfoMsg(result.info);
@@ -181,7 +181,7 @@ export class ContratoDetalleComponent extends BaseComponent implements OnInit, A
         this.floatMsgService.setMsgsEmpty();
         this.unsubscribe();
         this.subscription = this.service.exportPDFCalidad(this.numeroContratoId).subscribe(
-            (result:any) => {
+            (result: any) => {
                 if (result.logout == true) {
                     this.sessionDataService.logout();
                 } else if (result.error != undefined && result.error != "") {
@@ -258,7 +258,7 @@ export class ContratoDetalleComponent extends BaseComponent implements OnInit, A
             { etiqueta: "Fecha", valor: Liquidacion.fecha },
             { etiqueta: "Tipo", valor: Liquidacion.tipo },
             { etiqueta: "Comprobante", valor: Liquidacion.comprobante },
-            { etiqueta: "Nº Fijación", valor: Liquidacion.pedido},
+            { etiqueta: "Nº Fijación", valor: Liquidacion.pedido },
             { etiqueta: "KG", valor: Liquidacion.cantidadString },
             { etiqueta: "Precio/tn", valor: Liquidacion.precioString },
             { etiqueta: "Total", valor: Liquidacion.totalString }
@@ -310,5 +310,8 @@ export class ContratoDetalleComponent extends BaseComponent implements OnInit, A
 
     isData() {
         return this.data != null;
+    }
+    tieneCamara(calidad: any): boolean {
+        return calidad.certificado != '';
     }
 }

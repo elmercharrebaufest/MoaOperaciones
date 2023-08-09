@@ -166,13 +166,22 @@ namespace SustitucionMOAUtils.Email
                     + "Importe: $" + importe;
         }
 
-        public static void EnviarMail(List<string> enviarA, string asunto, string cuerpo, List<string> copia = null, AlternateView vistaAlternativa = null, byte[] archivo = null, string nombreArchivo = null)
+        public static void EnviarMail(List<string> enviarA, 
+            string asunto, 
+            string cuerpo, 
+            List<string> copia = null, 
+            AlternateView vistaAlternativa = null, 
+            byte[] archivo = null, 
+            string nombreArchivo = null,
+            string enviarDesde = null,
+            List<string> copiaOculta = null,
+            Dictionary<string, byte[]> archivos = null)
         {
             try
             {
                 MailMessage oMensaje = new MailMessage
                 {
-                    From = new MailAddress(EmailConfig.getEmailAddFrom()),
+                    From = new MailAddress(string.IsNullOrEmpty(enviarDesde) ? EmailConfig.getEmailAddFrom() : enviarDesde),
                     Body = cuerpo,
                     Subject = asunto,
                     IsBodyHtml = true,
@@ -196,6 +205,13 @@ namespace SustitucionMOAUtils.Email
                         oMensaje.CC.Add(mail);
                     }
                 }
+                if (copiaOculta != null)
+                {
+                    foreach (string mail in copiaOculta)
+                    {
+                        oMensaje.Bcc.Add(mail);
+                    }
+                }
                 if (vistaAlternativa != null)
                 {
                     oMensaje.AlternateViews.Add(vistaAlternativa);
@@ -205,12 +221,28 @@ namespace SustitucionMOAUtils.Email
                 oMensaje.Headers.Add("Content-class", "urn:content-classes:calendarmessage");
                 if (archivo != null)
                 {
-                    using (var stream = new MemoryStream(archivo))
+                    Attachment data = new Attachment(new MemoryStream(archivo), nombreArchivo);
+                    oMensaje.Attachments.Add(data);
+                }
+
+                if (archivos != null)
+                {
+                    foreach (var archi in archivos)
                     {
-                        Attachment data = new Attachment(stream, nombreArchivo);
+                        Attachment data = new Attachment(new MemoryStream(archi.Value), archi.Key);
                         oMensaje.Attachments.Add(data);
                     }
+                   
                 }
+
+                //if (archivo != null)
+                //{
+                //    using (var stream = new MemoryStream(archivo))
+                //    {
+                //        Attachment data = new Attachment(stream, nombreArchivo);
+                //        oMensaje.Attachments.Add(data);
+                //    }
+                //}
                 SmtpClient oCliente = GetSmtpClient();
                 oCliente.Send(oMensaje);
             }

@@ -300,6 +300,26 @@
               </xsd:restriction>
             </xsd:simpleType>
           </xsd:element>
+          <xsd:element minOccurs="0" name="CUIT_CLIENTE">
+            <xsd:annotation>
+              <xsd:documentation>Tax Number 1</xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:maxLength value="16" />
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="CUIT_CORREDOR">
+            <xsd:annotation>
+              <xsd:documentation>Tax Number 1</xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:maxLength value="16" />
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
           <xsd:element minOccurs="0" name="DETALLE" type="rfc:ZMPTT9580" />
         </xsd:sequence>
       </xsd:complexType>
@@ -453,6 +473,27 @@
             <xsd:simpleType>
               <xsd:restriction base="xsd:string">
                 <xsd:maxLength value="30" />
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="CPE">
+            <xsd:annotation>
+              <xsd:documentation>Character field 13 digits</xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:maxLength value="13" />
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="KILOS_ENTREGA">
+            <xsd:annotation>
+              <xsd:documentation>Referenced quantity in base unit of measure</xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:decimal">
+                <xsd:totalDigits value="15" />
+                <xsd:fractionDigits value="3" />
               </xsd:restriction>
             </xsd:simpleType>
           </xsd:element>

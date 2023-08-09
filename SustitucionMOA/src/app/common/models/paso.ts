@@ -6,6 +6,7 @@ export class Paso {
     public Iniciado: boolean;
     public Numero: number;
     public Preview: boolean;
+    public Deshabilitado: boolean;
 
     constructor() {}
 }

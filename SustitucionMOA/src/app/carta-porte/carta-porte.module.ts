@@ -23,16 +23,16 @@ import { CartaPorteFormularioComponent } from "./formulario/carta-porte.formular
     Ng2AutoCompleteModule,
     AutocompleteLibModule
   ],
-    declarations: [
-      CartaPorteAplicacionComponent,
-      CartaPorteBaseComponent,
-      CartaPorteDescargaComponent,
-      CartaPorteDetalleComponent,
-      CartaPorteFormularioComponent
-    ],
-    providers: [
-        CartaPorteService
-    ],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA],
+  declarations: [
+    CartaPorteAplicacionComponent,
+    CartaPorteBaseComponent,
+    CartaPorteDescargaComponent,
+    CartaPorteDetalleComponent,
+    CartaPorteFormularioComponent
+  ],
+  providers: [
+    CartaPorteService
+  ],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class CartaPorteModule { }

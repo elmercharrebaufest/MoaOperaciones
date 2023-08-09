@@ -1,11 +1,11 @@
-﻿using SustitucionMOAModel.Dto;
-using SustitucionMOAModel.Entities;
+﻿using SustitucionMOAModel.Consultas;
+using SustitucionMOAModel.Dto;
+using SustitucionMOAModel.Enums;
+using SustitucionMOAModel.Models.WSMapMOA;
+using SustitucionMOAModel.Models.WSMapMOA.Compras;
 using SustitucionMOAWS.WSConsumers;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Web;
 
 namespace SustitucionMOAUtils.Interfaces
@@ -18,11 +18,12 @@ namespace SustitucionMOAUtils.Interfaces
         List<TablaSapDto> ObtenerTablaSap(string tabla);
         List<TablaGeneralDto> ObtenerTablaGeneral(string tabla);
         List<CentroDireccionDto> ObtenerCentrosDireccion();
-        List<SolpDto> ListarSolp(UsuarioDto usuarioActual);
+        ListaPaginada<SolpDto> ListarSolp(UsuarioDto usuarioActual, Paginacion paginacion, string nroSolp, DateTime? desde, DateTime? hasta, bool? sap, bool? mantenimiento, bool? web, int? usuarioId, List<int> estados = null);
         string BorrarSolp(int idSolp);
         SolpDto TraerSolpId(int idSolp);
         List<TablaEstadoDto> ObtenerTablaEstado(string tabla);
         byte[] GenerarSolpPdf(int idSolp);
+        Pdf GenerarPeticionDeOfertaUsuarioPdf(int idPeticionDeOfertaUsuario);
         string GenerarZipPliego(int idSolp, string pathBase);
         List<TablaSapDto> ObtenerServiciosSap();
         List<TablaSapDto> AutocompleteTablaSap(string tabla, string valor);
@@ -30,13 +31,55 @@ namespace SustitucionMOAUtils.Interfaces
         List<TablaSapDto> ObtenerCuentasSap();
         List<TablaSapDto> ObtenerOrdenesSap(string idOrder = "");
         List<TablaSapDto> ObtenerDatosPorCodigosSap(List<TablaSapDto> codigos);
+        void ActualizarMaterialesSolp();
         void ActualizarFechaLiberacion(string nrosolp, DateTime fechaLiberacion);
         void ActualizarServiciosSolp();
         List<ServicioSolpDto> ObtenerDatosPorCodigosSapServicioSolp(List<string> codigos);
         List<ServicioSolpDto> AutocompleteServicioSolp(string valor);
+        List<ServicioSolpDto> AutocompleteCodigoServicioSolp(string valor);
         void ActualizarEstadoSolpBulk();
         void ActualizarEstadoSolp(string nroSolp, int idEstado);
         List<UsuarioComprasRelacionConUsuariosDto> ListarUsuarioCompras(UsuarioDto usuarioActual);
         void ObtenerSolpesDesdeSAPJob(ObtenerSolpRequest obtenerSolpRequest);
+        List<MaterialSolpDto> AutocompleteMaterialSolp(string valor, int centroId);
+        List<MaterialSolpDto> AutocompleteCodigoMaterialSolp(string valor, int centroId);
+        List<ProvinciaDTO> ListarProvincia();
+        void EnviarEmailSolp(EmailComposeDto emailCompose);
+        SolpDescargaZipPorLink PuedeDescargarPliegoDesdeLink(int solpId, Guid? token);
+        List<FuenteAprovisionamientoDto> ListarFuenteAprovisionamiento(string fechaEntregaPosicion, string numeroMaterial, string centro);
+        List<ContratoSolp> ObtenerContratoMarco(string numeroContrato, string centro);
+        ListaPaginada<SolpDto> ListarSolpComprador(Paginacion paginacion, string nroSolp = null);
+
+        List<AsociarContratoDto> DevolverContratosAsociados(List<SolpPosicionDto> posiciones);
+        SolpCompraDto ObtenerSolpCompras(int id);
+
+        RespuestaGuardarSOLP GrabarPeticionDeOferta(GuardarPeticionDeOfertaDto peticionDeOferta, HttpFileCollectionBase adjuntos, bool enviarMail);
+        List<LegajoDto> ObtenerLegajo(int peticionDeOfertaId, int? idPeticionDeOfertaUsuario);
+        Resultado GuardarAdjuntosPeticionDeOferta(int idPeticion, HttpFileCollectionBase files, UsuarioDto usuarioDto);
+        string DescargarLegajo(int idPeticion, string path,int? idPeticionDeOfertaUsuario);
+        RespuestaGuardarSOLP GrabarCircular(CircularDto circularDto, HttpFileCollectionBase adjuntos);
+        PeticionDeOfertaDto ObtenerPeticionDeOfertaParaCircular(int peticionId);
+        RespuestaGuardarSOLP GrabarProveedoresEnPeticionDeOferta(List<int> usuariosId, int peticionId);
+        ListaPaginada<PeticionDeOfertaDto> ListarPOProveedor(Paginacion paginacion, string nroSolp, string username);
+        PeticionDeOfertaDto ListarOfertasComprador(int PeticionOferta_Id, UsuarioDto usuario);
+
+        string DescargarAdjuntosCotizacion(int idCotizacion, string pathBase);
+        RespuestaGuardarSOLP GrabarRevisionTecnica(List<PeticionDeOfertaUsarioDto> revision, int usuarioId);
+        PeticionDeOfertaDto TraerCotizacion(int peticionId);
+
+        RespuestaGuardarSOLP GrabarCotizacion(GuardarCotizacion cotizacionDto, HttpFileCollectionBase adjuntos, bool esFinalizado, int usuarioActualId, bool enviarMail);
+
+        GuardarCotizacion ObtenerPrecioTotalPosicionProveedor(GuardarCotizacion cotizacionDto);
+
+        RespuestaCrearOrdenDeCompra GrabarAdjudicacion(AdjudicacionDto adjudicacionDto, int usuarioActualId);
+
+        List<AdjudicacionDto> ListarAdjudicaciones(int solpId);
+        AdjudicacionDto ObtenerAdjudicacion(int adjudicacionId);
+        AdjudicacionDto ObtenerAdjudicacion(string nroOC);
+        OrdenDeCompraSAPDto ObtenerOrdenDeCompra(string nroOC);
+
+        List<RespuestaCrearOrdenDeCompra> CrearOrdenDeCompraConRegistroInfo(List<RegistroInfoDto> registros, int usuarioActualId);
+
+
     }
 }

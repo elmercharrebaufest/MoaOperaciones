@@ -43,9 +43,9 @@ export class FaqComponent extends ListBaseComponent {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
         this.isGranosSelected = sessionStorage.getItem("granosSelected");
         sessionDataService.granosSelected$.subscribe(
-        granosSelected => {
-            this.isGranosSelected = granosSelected;
-        });
+            granosSelected => {
+                this.isGranosSelected = granosSelected;
+            });
         this.categoriaDropdownComponent = new DropdownComponent();
         this.spinnerSmallComponent = new SpinnerSmallComponent();
     }
@@ -87,7 +87,7 @@ export class FaqComponent extends ListBaseComponent {
     isGranos() {
         this.isGranosSelected = sessionStorage.getItem("granosSelected");
         this.granosFlag = sessionStorage.getItem("granosFlag");
-        if (this.granosFlag == "A" || this.isGranosSelected == "G" )
+        if (this.granosFlag == "A" || this.isGranosSelected == "G")
             return true;
     }
 
@@ -113,7 +113,7 @@ export class FaqComponent extends ListBaseComponent {
             var $panel = $(this).closest('.panel');
             $('html,body').animate({
                 scrollTop: $panel.offset().top - 200
-            }, 700); 
-        }); 
+            }, 700);
+        });
     }
 }

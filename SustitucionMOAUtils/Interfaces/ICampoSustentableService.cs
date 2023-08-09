@@ -20,7 +20,7 @@ namespace SustitucionMOAUtils.Interfaces
         byte[] ImprimirDeclaracion(int proveedorId, int cosechaId, string CUIT);
         List<CampoProveedorListadoDto> Listar(string mailUsuario);
         CampoProveedorDto ObtenerCampo(string mailUsuario, int proveedorId, int campoCosechaId);
-        List<Cosecha> ObtenerCosechas();
+        List<Cosecha> ObtenerCosechas(bool incluirInactivas);
         EstadoDeclaracionSustentableDto VerificarDeclaracion(int proveedorId, int cosechaId, string CUITDeclaracion);
         string ObtenerRutaArchivoKMZ(int campoCosechaId, int proveedorId);    
     }

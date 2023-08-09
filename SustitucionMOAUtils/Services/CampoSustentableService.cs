@@ -62,6 +62,8 @@ namespace SustitucionMOAUtils.Services
             }
             campoProveedor.CampoCosecha.ToneladasAprobadas = -1;
 
+            campoProveedor.CampoCosecha.Campo.IdScato = ObtenerIdScato(campoProveedor);
+
             repositorio.Agregar(campoProveedor);
 
             repositorio.GuardarCambios();
@@ -69,9 +71,9 @@ namespace SustitucionMOAUtils.Services
             if (UsarArchivoId == false)
             {
                 GuardarArchivoKMZ(campoProveedor, archivoKmz);
-                repositorio.GuardarCambios();                
+                repositorio.GuardarCambios();
 
-            }     
+            }
             var archivo = archivoKmz == null ? Convert.ToBase64String(System.IO.File.ReadAllBytes(ruta)) : ConvertirArchivo64(archivoKmz);
             InformarCampoSustentable(campoProveedor, archivo);
             return new Resultado { IdEntidad = campoProveedor.CampoCosecha_Id, Mensaje = SuccessMsg.CampoSustentableAgregado };
@@ -80,7 +82,9 @@ namespace SustitucionMOAUtils.Services
         private void ValidarUsuario(Usuario usuario, int proveedorId)
         {
             var proveedor = repositorio.Obtener<Proveedor>(proveedorId);
-            if (!usuario.ObtenerPermisos().Contains("VER TODOS CAMPOS SUSTENTABLE"))
+            var esComercial = usuario.TienePermiso(PermisoEnum.ComercialCamposSustentables);
+            var esAdmin = usuario.TienePermiso(PermisoEnum.VerTodosCamposSustentable);
+            if (!(esAdmin || esComercial))
             {
                 if (!usuario.Proveedores.Any(p => p.CUIT == proveedor.CUIT))
                 {
@@ -92,6 +96,10 @@ namespace SustitucionMOAUtils.Services
         public Resultado Editar(string mailUsuario, CampoProveedor campoProveedorObj, HttpPostedFileBase archivoKmz)
         {
             var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
+            var editarAdmin = usuario.TienePermiso("EDICION CAMPOS CREADOS");
+            var editarComercial = usuario.TienePermiso("COMERCIAL CAMPOS SUSTENTABLES");
+            if (!(editarAdmin || editarComercial))
+                throw new ValidationCustomException(ErrorMsg.ErrorSinPermiso);
 
             ValidarUsuario(usuario, campoProveedorObj.Proveedor_Id);
 
@@ -120,7 +128,7 @@ namespace SustitucionMOAUtils.Services
             //GuardarArchivoKMZ(campoProveedor, archivoKmz);
 
             //repositorio.GuardarCambios();
-           
+
             InformarCampoSustentable(campoProveedor, "");
 
             return new Resultado { IdEntidad = campoProveedorObj.CampoCosecha_Id, Mensaje = SuccessMsg.CampoSustentableActualizado };
@@ -489,9 +497,9 @@ namespace SustitucionMOAUtils.Services
             return archivoResult;
         }
 
-        public List<Cosecha> ObtenerCosechas()
+        public List<Cosecha> ObtenerCosechas(bool incluirInactivas)
         {
-            return repositorio.Listar<Cosecha>();
+            return repositorio.Listar<Cosecha>(c => incluirInactivas || c.PermitirAltas);
         }
 
         public List<CampoProveedorListadoDto> Listar(string mailUsuario)
@@ -602,15 +610,21 @@ namespace SustitucionMOAUtils.Services
 
         private List<TProyeccion> ListarCampos<TProyeccion>(Usuario usuario, Expression<Func<CampoProveedor, TProyeccion>> proyeccion) where TProyeccion : class
         {
-            if (usuario.TienePermiso("VER TODOS CAMPOS SUSTENTABLE"))
+            var esAdmin = usuario.TienePermiso("VER TODOS CAMPOS SUSTENTABLE");
+            var esComercial = usuario.TienePermiso("COMERCIAL CAMPOS SUSTENTABLES");
+            if (esAdmin || esComercial)
             {
                 return repositorio.Listar(proyeccion, p => !p.Borrado, 0, "FechaCreacion", SustitucionMOAModel.Consultas.DirOrden.Desc);
             }
             else
             {
                 var proveedoresIds = usuario.Proveedores.Select(pr => pr.Id);
+                var proveedoresCuits = usuario.Proveedores.Select(pr => pr.CUIT);
 
-                return repositorio.Listar(proyeccion, p => proveedoresIds.Contains(p.Proveedor_Id) && !p.Borrado, 0, "FechaCreacion", SustitucionMOAModel.Consultas.DirOrden.Desc);
+                return repositorio.Listar(proyeccion, p =>
+                    (proveedoresIds.Contains(p.Proveedor_Id) || proveedoresCuits.Contains(p.CUIT)) &&
+                    !p.Borrado, 0, "FechaCreacion", SustitucionMOAModel.Consultas.DirOrden.Desc
+                );
             }
         }
 
@@ -624,6 +638,24 @@ namespace SustitucionMOAUtils.Services
         internal void InformarCampoSustentable(CampoProveedor campoProveedor, string archivoKmz)
         {
             dataAgroService.AltaCampoSustentable(campoProveedor, archivoKmz);
+        }
+
+        private int ObtenerIdScato(CampoProveedor campoProveedor)
+        {
+            var campoNombre = campoProveedor.CampoCosecha.Campo.Nombre;
+            var localidadId = campoProveedor.CampoCosecha.Campo.Localidad_Id;
+            var cuitProveedor = campoProveedor.CUIT;
+
+            var idsScato = repositorio.Listar<CampoProveedor, int>(
+                cp => cp.CampoCosecha.Campo.IdScato,
+                cp =>
+                    cp.CUIT == cuitProveedor &&
+                    cp.CampoCosecha.Campo.Localidad_Id == localidadId &&
+                    cp.CampoCosecha.Campo.Nombre == campoNombre &&
+                    cp.CampoCosecha.Campo.IdScato > 0
+                );
+
+            return idsScato != null && idsScato.Count > 0 ? idsScato.Max() : 0;
         }
 
         /// <summary>

@@ -14,7 +14,28 @@ import { DeclaracionConformidadComponent } from '../declaracion-conformidad/decl
 import { CommonResponse } from '../../common/models/common-response';
 import { AutocompleteLocalidadComponent } from "./../../common/shared-components/autocomplete-localidad/autocomplete-localidad.component";
 import { isUndefined } from 'util';
-
+export interface DatosCopiar {
+    NombreCampo: string;
+    NombreCosecha: string;
+    HectareasTotales: number;
+    HectareasSoja: number;
+    ToneladasAprobadas: number;
+    Latitud: string;
+    Longitud: string;
+    CampoCosechaId: number;
+    ProveedorNombre: string;
+    LocalidadNombre: string;
+    Localidad_Id: number;
+    CampoSustentableId: number;
+    CosechaId: number;
+    CUIT: string;
+    Archivo_Id: number;
+    Proveedor_Id: number;
+    CodigoProveedor: string;
+    error?: string;
+    info?: string;
+    logout?: boolean;
+}
 @Component({
     selector: 'app-alta',
     templateUrl: './alta.component.html',
@@ -112,7 +133,7 @@ export class AltaComponent extends BaseComponent implements OnInit {
         try {
             this.unsubscribe();
             this.subscription = this.service.getCampoProveedor(this.proveedorId, this.campoCosechaId).subscribe(
-                (result: any) => {
+                (result: DatosCopiar) => {
                     this.spinnerComponent.hideIt();
                     if (result.logout == true) {
                         this.sessionDataService.logout();
@@ -126,7 +147,6 @@ export class AltaComponent extends BaseComponent implements OnInit {
                         this.hectareasTotales = result.HectareasTotales;
                         this.hectareasSoja = result.HectareasSoja;
                         this.localidadId = result.Localidad_Id;
-                        console.log(this.localidadId);
 
                         this.latitud = result.Latitud;
                         this.longitud = result.Longitud;
@@ -134,7 +154,7 @@ export class AltaComponent extends BaseComponent implements OnInit {
                         this.Archivo_Id = result.Archivo_Id;
                         this.UsarArchivo_Id = true;
                         this.Proveedor_Id = result.Proveedor_Id;
-                        
+                        this.declaracionComformidad.cargarDatosCopiar(result)
 
                         if (this.esCorredor) {
                             if (this.Proveedor_Id != this.proveedorId) {
@@ -148,7 +168,6 @@ export class AltaComponent extends BaseComponent implements OnInit {
                             this.proveedorId = result.Proveedor_Id;
 
                         }
-                        //this.onselect = result.HectareasSoja;//set autocomplete proveedor
 
                         this.mensajeComponent.setInfoMsg("Si el contorno del lote presentado este año es diferente al del año anterior adjuntar nuevo KMZ");
                     }
@@ -296,9 +315,9 @@ export class AltaComponent extends BaseComponent implements OnInit {
         campoProveedor = {
             HectareasTotales: this.hectareasTotales, HectareasSoja: this.hectareasSoja,
             CUIT: this.CUIT,
-            Latitud: this.latitud, 
-            Longitud: this.longitud, 
-            Proveedor_Id: this.proveedorId, 
+            Latitud: this.latitud,
+            Longitud: this.longitud,
+            Proveedor_Id: this.proveedorId,
             CampoCosecha: campoCosecha,
             Archivo_Id: this.UsarArchivo_Id ? this.Archivo_Id : 0
         }
@@ -356,7 +375,7 @@ export class AltaComponent extends BaseComponent implements OnInit {
         this.mensajeComponent.setMsgsEmpty();
         this.spinnerComponent.showIt();
         try {
-            this.subscription = this.service.getCosechas().subscribe(
+            this.subscription = this.service.getCosechasCampo().subscribe(
                 (result: any) => {
                     this.spinnerComponent.hideIt();
                     if (result.logout == true) {

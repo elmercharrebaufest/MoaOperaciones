@@ -28,19 +28,19 @@
           </div>
         </div>
 
-
-        <div *ngIf="!esCliente" id="searchCliente" class="col-xs-12 col-sm-6 col-md-15">
+        <div *ngIf=" esInterno || esComercial || esMesaFas || !esCliente()" id="searchCliente" class="col-xs-12 col-sm-6 col-md-15">
           <p>Por Cliente:</p>
           <div class="styled-select">
-            <input type="search" class="" placeholder="Ingrese numero de cliente" [value]="" aria-controls="tableModal"
-              [(ngModel)]="filtroCliente">
+            <input type="search" class="" placeholder="Ingrese razon social de cliente" [value]=""
+              aria-controls="tableModal" [(ngModel)]="filtroCliente">
           </div>
         </div>
 
         <div *ngIf="!esTercero" id="searchEstado" class="col-xs-12 col-sm-6 col-md-15">
           <p>Por Estado:</p>
           <div>
-            <p-multiSelect [options]="descripcionEstadoOrdenCarga" defaultLabel="Estados" [(ngModel)]="estadosSelected" selectedItemsLabel="{0} Items seleccionados" (onChange)="filtrarListado()" appendTo="body">
+            <p-multiSelect [options]="descripcionEstadoOrdenCarga" defaultLabel="Estados" [(ngModel)]="estadosSelected"
+              selectedItemsLabel="{0} Items seleccionados" (onChange)="filtrarListado();setEstadosFiltroFAS()" appendTo="body">
             </p-multiSelect>
           </div>
         </div>
@@ -89,95 +89,69 @@
       <div class="clearfix myTables" style="overflow-x:auto;">
         <mensaje></mensaje>
         <spinner></spinner>
-        <!-- <p-confirmDialog #dialogoSA key="confirmarSA" header="Confirmación de solicitud de anulación" [responsive]="true" appendTo="body">
-          <p-footer>
-            <button type="button" pButton label="No" class="ui-button-info botonModal" (click)="dialogoSA.reject()"></button>
-            <button type="button" pButton label="Si" class="ui-button-success botonModal" (click)="dialogoSA.accept()"></button>
-          </p-footer>
-        </p-confirmDialog>
-		<p-confirmDialog #dialogoSE key="confirmarSE" header="Confirmación de solicitud de edición" [responsive]="true" appendTo="body">
-          <p-footer>
-            <button type="button" pButton label="No" class="ui-button-info botonModal" (click)="dialogoSE.reject()"></button>
-            <button type="button" pButton label="Si" class="ui-button-success botonModal" (click)="dialogoSE.accept()"></button>
-        </p-footer>
-        </p-confirmDialog> -->
         <table #tabla *ngIf="data && data.length != 0;" id="tableModal"
           class="display nowrap dataTable no-footer dtr-inline rounded shadow animate ccpp-table" cellspacing="0"
           role="grid" aria-describedby="tableModal_info"
           style="width: 100%; padding:10px 0; background: white !important;">
-
           <thead>
             <tr role="row">
-              <!--<th *ngIf="esComercial">Boton</th>-->
+              <th *ngIf="puedeEnviarASAP"><input type="checkbox" [(ngModel)]="seleccionaTodos"
+                  (click)="seleccionarTodos()" /></th>
               <th>Id</th>
-              <!-- <th *ngIf="esMesaFas || esComercial">Estado entrega</th> -->
               <th *ngIf="esMesaFas || esInterno">Entrega</th>
-              <th *ngIf="esInterno || esComercial || esPuerto || esMesaFas">Cliente</th>
+              <th *ngIf="esInterno || esComercial || esPuerto || esMesaFas ">Cliente</th>
               <th *ngIf="esMesaFas">Cuit cliente</th>
               <th *ngIf="esInterno">Corredor</th>
               <th>Estado</th>
-              <!-- <th *ngIf="esTercero || esPuerto">Orden</th> -->
               <th>Fecha</th>
               <th>Contrato</th>
               <th *ngIf="esInterno || esMesaFas">Pedido</th>
-              <!-- <th *ngIf="esComercial || esPuerto || esMesaFas">Estado Pedido</th> -->
               <th>Producto</th>
               <th>Patente chasis</th>
-              <!-- <th *ngIf="esComercial || esPuerto || esMesaFas">Cantidad</th>
-              <th *ngIf="esTercero || esComercial || esPuerto || esMesaFas">Destino</th> -->
               <th *ngIf="esInterno || esComercial || esPuerto || esMesaFas"></th>
               <th>Detalle</th>
             </tr>
           </thead>
-
           <tbody>
-            <tr *ngFor="let ordenDeCarga of data
-                                    | customFilter : 'Contrato' : filtroAlta |
-                                    customFilter : 'Material' : (productoSelected  == 'Todos' ? '' : productoSelected)  |
-                                    customFilter : 'Cliente' : filtroCliente |
-                                    customFilterBoolean : 'EsFacturaAnticipada' : (pedidoAnticipado == 0 ? null:  (pedidoAnticipado != 2)) : true
-                                    | orderedColumn : {property: orderedByColumn, direction: orderDirection}  
-                                    | paginate: { itemsPerPage:itemsPerPage, currentPage: p } 
-                                    ; let odd = odd" role="row" [class.odd]="!odd">
-              <!--<td *ngIf="esComercial">{{ordenDeCarga.Boton}}</td>-->
+            <tr
+              *ngFor="let ordenDeCarga of data | customFilter : 'Contrato' : filtroAlta | customFilter : 'Material' : (productoSelected  == 'Todos' ? '' : productoSelected) | customFilter : 'RazonSocialCliente' : filtroCliente | customFilterBoolean : 'EsFacturaAnticipada' : (pedidoAnticipado == 0 ? null:  (pedidoAnticipado != 2)) : true | orderedColumn : {property: orderedByColumn, direction: orderDirection} | paginate: { itemsPerPage:itemsPerPage, currentPage: p }; let odd = odd"
+              role="row" [class.odd]="!odd">
+              <td *ngIf="puedeEnviarASAP"><input type="checkbox" [checked]="estaListadoParaSAP(ordenDeCarga)"
+                  [disabled]="!ordenDeCarga.NoEstaEnSAP" (click)="seleccionarItem(ordenDeCarga)" /></td>
               <td>{{ordenDeCarga.Id}}</td>
-              <!-- <td *ngIf="esMesaFas || esComercial">{{ordenDeCarga.EstadoEntrega}}</td> -->
               <td *ngIf="esMesaFas || esInterno">{{ordenDeCarga.Entrega}}</td>
               <td *ngIf="esInterno || esComercial || esPuerto || esMesaFas">{{ordenDeCarga.RazonSocialCliente}}</td>
               <td *ngIf="esMesaFas">{{ordenDeCarga.CUITCliente}}</td>
               <td *ngIf="esInterno">{{ordenDeCarga.RazonSocialCorredor}}</td>
-              <td>{{ordenDeCarga.DescripcionEstado}}</td>
+              <td>{{ordenDeCarga.DescripcionEstadoListado}}</td>
               <!-- <td *ngIf="esTercero || esPuerto">{{ordenDeCarga.Orden}}</td> -->
               <td>{{ordenDeCarga.Fecha}}</td>
               <td>{{ordenDeCarga.Contrato}}</td>
               <td *ngIf="esInterno || esMesaFas">{{ordenDeCarga.Pedido}}</td>
-              <!-- <td *ngIf="esComercial || esPuerto || esMesaFas">{{ordenDeCarga.EstadoPedido}}</td> -->
               <td>{{ordenDeCarga.Material}}</td>
-              <td>{{ordenDeCarga.PatenteChasis}}</td>
-              <!-- <td *ngIf="esComercial || esPuerto || esMesaFas">{{ordenDeCarga.Cantidad}}</td>
-              <td *ngIf="esTercero || esComercial || esPuerto || esMesaFas">{{ordenDeCarga.Destino}}</td> -->
+              <td style="text-align: center;">{{ordenDeCarga.PatenteChasis}}
+                <span *ngIf="ordenDeCarga.Escalable" class="fa fa-truck" aria-hidden="true"></span>               
+              </td>
               <td *ngIf="esInterno || esComercial || esPuerto || esMesaFas">
                 <div class="semaforo {{ordenDeCarga.ColorSemaforo}}">
                 </div>
               </td>
               <td>
-                <a class="cursor" style="cursor: pointer;" (click)="goToSeccionParam('/ordenes-de-carga/detalle/', ordenDeCarga.Id)">
+                <a class="cursor" style="cursor: pointer;"
+                  (click)="goToSeccionParam('/ordenes-de-carga/detalle/', ordenDeCarga.Id)">
                   Ver
                 </a>
-                <!-- <span *ngIf="!(ordenDeCarga.DescripcionEstado == 'Anulada' || 
-                               ordenDeCarga.DescripcionEstado == 'Anulada por vencimiento' ||
-                               ordenDeCarga.DescripcionEstado == 'Anulación solicitada' ||
-                               ordenDeCarga.DescripcionEstado == 'Entregada')" >&nbsp;|&nbsp;</span>
-                               
-                <a *ngIf="!(ordenDeCarga.DescripcionEstado == 'Anulada' || 
-                               ordenDeCarga.DescripcionEstado == 'Anulada por vencimiento' ||
-                               ordenDeCarga.DescripcionEstado == 'Anulación solicitada')" 
-                        class="cursor" style="cursor: pointer;" (click)="confirmarSA(ordenDeCarga.Id)">Solicitar Anulación</a> -->
               </td>
             </tr>
           </tbody>
         </table>
 
+        <div>
+          <div style="float: right; height: 70px;padding-top:5px;">
+            <button [disabled]="!listaEnviarASAP.length" type="button" class="btn btn-custom btn-success btn-mediano"
+              *ngIf="puedeEnviarASAP" (click)="enviarASAP()">Enviar a SAP</button>
+          </div>
+        </div>
 
         <pagination-template #pT="paginationApi" (pageChange)="p = $event" *ngIf="data && data.length != 0">
           <div class="dataTables_paginate paging_simple_numbers">

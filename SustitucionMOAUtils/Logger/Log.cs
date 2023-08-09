@@ -1,16 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using SustitucionMOAAssets;
+﻿using SustitucionMOAAssets;
+using System;
 
 namespace SustitucionMOAUtils.Logger
 {
     public class Log
     {
-
         private static readonly NLog.Logger DefaultLogger = NLog.LogManager.GetLogger("defaultLogger");
         private static readonly NLog.Logger AzureLogger = NLog.LogManager.GetLogger("azureLogger");
         private static readonly NLog.Logger ExternalAPILogger = NLog.LogManager.GetLogger("externalApiLogger");
@@ -27,7 +21,6 @@ namespace SustitucionMOAUtils.Logger
                 Console.WriteLine("ERROR heredado:" + error);
             }
         }
-
         public static void Error(string ip, string usuario, string controller, string method, Exception exception)
         {
             try
@@ -40,8 +33,6 @@ namespace SustitucionMOAUtils.Logger
                 Console.WriteLine("ERROR heredado:" + exception.ToString());
             }
         }
-
-
         public static void Error(Exception exception)
         {
             try
@@ -54,8 +45,6 @@ namespace SustitucionMOAUtils.Logger
                 Console.WriteLine("ERROR heredado:" + exception.ToString());
             }
         }
-
-
         public static void Debug(string controller, string method, string valores)
         {
             try
@@ -67,7 +56,6 @@ namespace SustitucionMOAUtils.Logger
                 Console.WriteLine("ERROR en LogService:" + e.Message);
             }
         }
-
         public static void Info(string mensaje)
         {
             try
@@ -79,7 +67,6 @@ namespace SustitucionMOAUtils.Logger
                 Console.WriteLine("ERROR en LogService:" + e.Message);
             }
         }
-
         public static void AzureError (Exception exception)
         {
             try
@@ -91,7 +78,6 @@ namespace SustitucionMOAUtils.Logger
                 Console.WriteLine("ERROR en LogService:" + e.Message);
             }
         }
-
         public static void ExternalAPIError(Exception exception)
         {
             try
@@ -103,7 +89,6 @@ namespace SustitucionMOAUtils.Logger
                 Console.WriteLine("ERROR en API:" + e.Message);
             }
         }
-
         public static void ExternalAPIInfo(string message)
         {
             try
@@ -115,18 +100,5 @@ namespace SustitucionMOAUtils.Logger
                 Console.WriteLine("ERROR en API:" + e.Message);
             }
         }
-
-        //private static void WriteLog(string log) {
-        //    DefaultLogger.Error(log);
-        //    //string directoryPath = AppDomain.CurrentDomain.BaseDirectory + @"Logs\";
-        //    //checkOrCreateDirectory(directoryPath);
-        //    //var dataFile = directoryPath + "ErrorLog" + DateTime.Now.ToString("yyyy-MM-dd") + ".txt";
-        //    //File.AppendAllText(@dataFile, log + "\n");
-        //}
-
-        //private static void checkOrCreateDirectory(string directory)
-        //{
-        //    System.IO.Directory.CreateDirectory(directory);
-        //}
     }
 }

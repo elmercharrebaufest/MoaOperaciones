@@ -93,39 +93,44 @@ END
 IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.TablaGeneral WHERE Tabla = 'TipoPosicionSolp' and Codigo = 'SERVICIO')
 BEGIN
 	INSERT INTO TablaGeneral(Tabla, Codigo, Descripcion, Padre_id)
-	VALUES('TipoPosicionSolp','SERVICIO','',null)
+	VALUES('TipoPosicionSolp','SERVICIO','Serv.',null)
 END
 
 IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.TablaGeneral WHERE Tabla = 'TipoPosicionSolp' and Codigo = 'MATERIALES')
 BEGIN
 	INSERT INTO TablaGeneral(Tabla, Codigo, Descripcion, Padre_id)
-	VALUES('TipoPosicionSolp','MATERIALES','',null)
+	VALUES('TipoPosicionSolp','MATERIALES','Mat.',null)
 END
 
+-- IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.TablaGeneral WHERE Tabla = 'TipoPosicionSolp' and Codigo = 'MATERIAL SIN CATALOGAR')
+-- BEGIN
+-- 	INSERT INTO TablaGeneral(Tabla, Codigo, Descripcion, Padre_id)
+-- 	VALUES('TipoPosicionSolp','MATERIAL SIN CATALOGAR','',null)
+-- END
 -- Tabla TipoImputacionSolp
 
 IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.TablaGeneral WHERE Tabla = 'TipoImputacionSolp' and Codigo = 'centroDeCosto')
 BEGIN
 	INSERT INTO TablaGeneral(Tabla, Codigo, Descripcion, Padre_id)
-	VALUES('TipoImputacionSolp','centroDeCosto','',(SELECT Id FROM TablaGeneral WHERE Tabla = 'TipoPosicionSolp' and Codigo = 'SERVICIO'))
+	VALUES('TipoImputacionSolp','centroDeCosto','K',(SELECT Id FROM TablaGeneral WHERE Tabla = 'TipoPosicionSolp' and Codigo = 'SERVICIO'))
 END
 
 IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.TablaGeneral WHERE Tabla = 'TipoImputacionSolp' and Codigo = 'ordenDeOt')
 BEGIN
 	INSERT INTO TablaGeneral(Tabla, Codigo, Descripcion, Padre_id)
-	VALUES('TipoImputacionSolp','ordenDeOt','',(SELECT Id FROM TablaGeneral WHERE Tabla = 'TipoPosicionSolp' and Codigo = 'SERVICIO'))
+	VALUES('TipoImputacionSolp','ordenDeOt','F',(SELECT Id FROM TablaGeneral WHERE Tabla = 'TipoPosicionSolp' and Codigo = 'SERVICIO'))
 END
 
 IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.TablaGeneral WHERE Tabla = 'TipoImputacionSolp' and Codigo = 'ordenDeInversion')
 BEGIN
 	INSERT INTO TablaGeneral(Tabla, Codigo, Descripcion, Padre_id)
-	VALUES('TipoImputacionSolp','ordenDeInversion','',(SELECT Id FROM TablaGeneral WHERE Tabla = 'TipoPosicionSolp' and Codigo = 'SERVICIO'))
+	VALUES('TipoImputacionSolp','ordenDeInversion','F',(SELECT Id FROM TablaGeneral WHERE Tabla = 'TipoPosicionSolp' and Codigo = 'SERVICIO'))
 END
 
 IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.TablaGeneral WHERE Tabla = 'TipoImputacionSolp' and Codigo = 'siniestroBeneficio')
 BEGIN
 	INSERT INTO TablaGeneral(Tabla, Codigo, Descripcion, Padre_id)
-	VALUES('TipoImputacionSolp','siniestroBeneficio','',(SELECT Id FROM TablaGeneral WHERE Tabla = 'TipoPosicionSolp' and Codigo = 'SERVICIO'))
+	VALUES('TipoImputacionSolp','siniestroBeneficio','Y',(SELECT Id FROM TablaGeneral WHERE Tabla = 'TipoPosicionSolp' and Codigo = 'SERVICIO'))
 END
 
 -- Unidades

@@ -15,6 +15,7 @@ using System.Linq;
 using System.Net.Mail;
 using System.Data.Entity;
 using SustitucionMOAModel.Dto;
+using System.Text;
 
 namespace SustitucionMOAUtils.Services
 {
@@ -61,10 +62,12 @@ namespace SustitucionMOAUtils.Services
                     HectareasSoja = cp.HectareasSoja,
                     NombreCosecha = cp.CampoCosecha.Cosecha.Nombre,
                     RutaKmz = cp.Archivo.Ruta
-                }
-                , cp => cp.FechaCreacion.HasValue
-                    && DbFunctions.TruncateTime(cp.FechaCreacion.Value) >= DbFunctions.TruncateTime(dateToCompare)
-                    && DbFunctions.TruncateTime(cp.FechaCreacion.Value) < DbFunctions.TruncateTime(DateTime.Today)
+                },
+                cp =>
+                    cp.FechaCreacion.HasValue &&
+                    DbFunctions.TruncateTime(cp.FechaCreacion.Value) >= DbFunctions.TruncateTime(dateToCompare) &&
+                    DbFunctions.TruncateTime(cp.FechaCreacion.Value) < DbFunctions.TruncateTime(DateTime.Today) &&
+                    cp.CampoCosecha.Cosecha.EnviarATSA
             );
 
             if (!camposAReportarPorCosecha.Any() || camposAReportarPorCosecha.All(list => !list.Any()))
@@ -171,6 +174,55 @@ namespace SustitucionMOAUtils.Services
             else
             {
                 throw new InfoCustomException("No se encontraron liquidaciones a reportar");
+            }
+        }
+
+        public void EnviarReporteLogin()
+        {
+            if (repositorio.Obtener<HabilitacionJob>(a => a.Nombre == "ReporteLoginsJob").Habilitado == false)
+                return;
+
+            var logins = repositorio.Listar<Usuario>().SelectMany(u =>
+            {
+                if (!u.Proveedores.Any())
+                    return new List<ReporteLoginData>()
+                        {
+                            new ReporteLoginData(
+                                u.Mail,
+                                u.CUITRegistro,
+                                u.UltimoLogin,
+                                u.TipoUsuario.Nombre)
+                     };
+
+                return u.Proveedores.Select(p =>
+                    new ReporteLoginData(
+                        u.Mail,
+                        u.CUITRegistro,
+                        u.UltimoLogin,
+                        u.TipoUsuario.Nombre,
+                        p.CUIT,
+                        p.RazonSocial
+                    )).ToList();
+            }).ToList();
+
+            if (logins.Any())
+            {
+
+                MemoryStream streamExcel = ExcelExport.CreateExcelFileMs(logins, new string[] { "Mail", "CUIT Registro", "Ultimo Login", "Nombre", "CUIT Proveedor", "Razón Social" });
+                Attachment archivoExcel;
+                archivoExcel = new Attachment(streamExcel, "Usuarios MOA.xlsx");
+
+                EmailSender.SendReporte(new ReporteLogin()
+                {
+                    Asunto = "Reporte de logins mensuales",
+                    Destinatario = ConfigurationManager.AppSettings["EmailToReporteLogins"],
+                    Adjuntos = new List<Attachment> { archivoExcel },
+                    Template = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "ReporteLogin.html")
+                });
+            }
+            else
+            {
+                throw new InfoCustomException("No se encontraron logins a reportar");
             }
         }
 

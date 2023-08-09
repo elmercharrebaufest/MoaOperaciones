@@ -6,18 +6,23 @@
         <!--Title-->
         <div class="row titleSection titleSectionTable">
             <div class="col-xs-12 col-sm-10 fixtwobuttons titleSectionTablePart animate" style="vertical-align:bottom;">
-                <div> Contrato Molinos <strong><span>Nº {{data.contrato}} </span></strong> <span *ngIf="data.caracteristicas[0].corredor">/ Corredor <strong><span>{{data.caracteristicas[0].corredor}}</span></strong> </span></div>
+                <div> Contrato Molinos <strong><span>Nº {{data.contrato}} </span></strong> <span
+                        *ngIf="data.caracteristicas[0].corredor">/ Corredor
+                        <strong><span>{{data.caracteristicas[0].corredor}}</span></strong> </span></div>
             </div>
             <div class="col-xs-12 col-sm-2 titleIconsPart">
                 <spinner-small #spinnerSmallExport></spinner-small>
-                <a (click)="exportarExcel()" href="#" style="text-decoration:none!important" *ngIf="!this.spinnerSmallExportComponent.visible">
-                    <div class="btnSection animate export">Exportar <img src="Content/images/buttons/EXPORT.svg"/></div>
-                </a> 
+                <a (click)="exportarExcel()" href="#" style="text-decoration:none!important"
+                    *ngIf="!this.spinnerSmallExportComponent.visible">
+                    <div class="btnSection animate export">Exportar <img src="Content/images/buttons/EXPORT.svg" />
+                    </div>
+                </a>
                 <!--<a href="#" style="text-decoration:none!important">
                     <div class="btnSection animate print">Imprimir <span class="fa  fa-print"></span></div>
-                </a>--> 
+                </a>-->
                 <spinner-small #spinnerSmallPDF></spinner-small>
-                <a (click)="downloadBoletoFisico(data.contrato)" href="#" style="text-decoration:none!important" *ngIf="data.caracteristicas[0].confirma != 'X' && !this.spinnerSmallPDFComponent.visible">
+                <a (click)="downloadBoletoFisico(data.contrato)" href="#" style="text-decoration:none!important"
+                    *ngIf="data.caracteristicas[0].confirma != 'X' && !this.spinnerSmallPDFComponent.visible">
                     <div class="btnSection animate ticket">Boleto Físico <span class="fa  fa-file-pdf-o "></span></div>
                 </a>
             </div>
@@ -25,10 +30,14 @@
         <!--End Title-->
         <!--Search-->
         <div class="row myRow firstSection roundedInfo">
-            <div class="col-xs-12 col-sm-4 col-md-3 rowInfoGrey rounded shadow animate rowInfoRoundedWhite" *ngIf="data.resumen">
+            <div class="col-xs-12 col-sm-4 col-md-3 rowInfoGrey rounded shadow animate rowInfoRoundedWhite"
+                *ngIf="data.resumen">
                 <div class="col-xs-6 col-sm-12 titleExtraData blue">
-                    <span *ngIf="data.caracteristicas[0].corredor"><strong>Corredor: </strong>{{data.caracteristicas[0].nomCorredor}}<br></span>
-                    <strong>Vendedor: </strong> <a class="blue" (click)="goToSeccionParamDos('/dato-fiscal/situacion-fiscal', data.caracteristicas[0].vendedor, data.caracteristicas[0].nomVendedor)" href="#">{{data.caracteristicas[0].nomVendedor}}</a>
+                    <span *ngIf="data.caracteristicas[0].corredor"><strong>Corredor:
+                        </strong>{{data.caracteristicas[0].nomCorredor}}<br></span>
+                    <strong>Vendedor: </strong> <a class="blue"
+                        (click)="goToSeccionParamDos('/dato-fiscal/situacion-fiscal', data.caracteristicas[0].vendedor, data.caracteristicas[0].nomVendedor)"
+                        href="#">{{data.caracteristicas[0].nomVendedor}}</a>
                 </div>
                 <hr>
                 <title-caps class="blue"><strong>Resumen</strong></title-caps>
@@ -67,13 +76,17 @@
             </div>
             <div class="col-xs-12 col-sm-8 col-md-9 squareInfo animate">
                 <div class="row myRow">
-                    <div id="showCaracteristicas" class="showBtn height-auto btn-grande height-auto btn-grande btnSection btnInfo animate" onClick="showCaracteristicas()">
+                    <div id="showCaracteristicas"
+                        class="showBtn height-auto btn-grande height-auto btn-grande btnSection btnInfo animate"
+                        onClick="showCaracteristicas()">
                         <div>
                             <li class="fa fa-angle-double-right" aria-hidden="true"></li>
                         </div>
                         <div>Características del contrato</div>
                     </div>
-                    <div id="hideCaracteristicas" class="hideBtn height-auto btn-grande height-auto btn-grande btnSection btnInfo animate btnInfoClose" onClick="closeCaracteristicas()">
+                    <div id="hideCaracteristicas"
+                        class="hideBtn height-auto btn-grande height-auto btn-grande btnSection btnInfo animate btnInfoClose"
+                        onClick="closeCaracteristicas()">
                         <div>
                             <li class="fa fa-times" aria-hidden="true"></li>
                         </div>
@@ -97,7 +110,8 @@
                             </div>
                             <div class="col-xs-12 col-sm-3 ">
                                 <p>Tolerancia:</p>
-                                <span class="grey">{{data.caracteristicas[0].toleMin}}% a {{data.caracteristicas[0].toleMax}}%</span>
+                                <span class="grey">{{data.caracteristicas[0].toleMin}}% a
+                                    {{data.caracteristicas[0].toleMax}}%</span>
                             </div>
                         </div>
                         <div class="row myRow">
@@ -115,7 +129,8 @@
                             </div>
                             <div class="col-xs-12 col-sm-3 ">
                                 <p>Período de entrega:</p>
-                                <span class="grey">{{data.caracteristicas[0].entregaMin}} a {{data.caracteristicas[0].entregaMax}}</span>
+                                <span class="grey">{{data.caracteristicas[0].entregaMin}} a
+                                    {{data.caracteristicas[0].entregaMax}}</span>
                             </div>
                         </div>
                         <div class="row myRow">
@@ -137,13 +152,16 @@
                 <!--segunda línea de datos-->
                 <div class="row myRow">
                     <div class="col-xs-12 col-sm-6 rowInfoGreyLeft">
-                        <div id="showCondiciones" class="showBtn height-auto btn-grande btnSection btnInfo animate" onClick="showCondiciones()">
+                        <div id="showCondiciones" class="showBtn height-auto btn-grande btnSection btnInfo animate"
+                            onClick="showCondiciones()">
                             <div>
                                 <li class="fa fa-angle-double-right" aria-hidden="true"></li>
                             </div>
                             <div>Condiciones comerciales</div>
                         </div>
-                        <div id="hideCondiciones" class="hideBtn height-auto btn-grande btnSection btnInfo animate btnInfoClose" onClick="closeCondiciones()">
+                        <div id="hideCondiciones"
+                            class="hideBtn height-auto btn-grande btnSection btnInfo animate btnInfoClose"
+                            onClick="closeCondiciones()">
                             <div>
                                 <li class="fa fa-times" aria-hidden="true"></li>
                             </div>
@@ -159,7 +177,8 @@
                                 </div>
                                 <div class="col-xs-12 col-sm-6 ">
                                     <p>Fijación diaria:</p>
-                                    <span class="grey">{{data.caracteristicas[0].fijaDiariaMin}}kg a {{data.caracteristicas[0].fijaDiariaMax}}kg</span>
+                                    <span class="grey">{{data.caracteristicas[0].fijaDiariaMin}}kg a
+                                        {{data.caracteristicas[0].fijaDiariaMax}}kg</span>
                                 </div>
                             </div>
                             <div class="row myRow">
@@ -180,7 +199,8 @@
                                 <div class="col-xs-12 col-sm-6 ">
                                     <p>Condiciones especiales de pago:</p>
                                     <ul style="padding-left: 0px;">
-                                        <li style="list-style-type: none;" *ngFor="let condicion of data.condicionesPago">
+                                        <li style="list-style-type: none;"
+                                            *ngFor="let condicion of data.condicionesPago">
                                             <span class="grey">{{condicion}}</span>
                                         </li>
                                     </ul>
@@ -195,13 +215,16 @@
                         </div>
                     </div>
                     <div class="col-xs-12 col-sm-6 rowInfoGreyRight">
-                        <div id="showBonificaciones" class="showBtn height-auto btn-grande btnSection btnInfo animate" onClick="showBonificaciones()">
+                        <div id="showBonificaciones" class="showBtn height-auto btn-grande btnSection btnInfo animate"
+                            onClick="showBonificaciones()">
                             <div>
                                 <li class="fa fa-angle-double-right" aria-hidden="true"></li>
                             </div>
                             <div>Bonificaciones</div>
                         </div>
-                        <div id="hideBonificaciones" class="hideBtn height-auto btn-grande btnSection btnInfo animate btnInfoClose" onClick="closeBonificaciones()">
+                        <div id="hideBonificaciones"
+                            class="hideBtn height-auto btn-grande btnSection btnInfo animate btnInfoClose"
+                            onClick="closeBonificaciones()">
                             <div>
                                 <li class="fa fa-times" aria-hidden="true"></li>
                             </div>
@@ -209,7 +232,8 @@
                         </div>
                         <title-caps class="hideMobile blue">Bonificaciones</title-caps>
                         <hr class="hideMobile">
-                        <div id="bonificaciones" class="rowInfoGrey rowInfoGreyTable clearfix hideMobile " *ngIf="data.caracteristicas[0]">
+                        <div id="bonificaciones" class="rowInfoGrey rowInfoGreyTable clearfix hideMobile "
+                            *ngIf="data.caracteristicas[0]">
                             <table width="100%" border="0" cellspacing="0" cellpadding="0" style="padding:24px;">
                                 <tr></tr>
                                 <tr>
@@ -254,11 +278,14 @@
             <div class="row titleSection titleSectionNoBorder">
                 <div class="col-xs-12 col-sm-12"><strong>Boletos</strong></div>
                 <div class="clearfix myTables">
-                    <table id="tableModal" class="display nowrap dataTable no-footer dtr-inline rounded shadow animate boletosTable contrato-det-boletos-table" cellspacing="0" role="grid" aria-describedby="tableModal_info" style="width: 100%; padding:24px 0;">
+                    <table id="tableModal"
+                        class="display nowrap dataTable no-footer dtr-inline rounded shadow animate boletosTable contrato-det-boletos-table"
+                        role="grid" aria-describedby="tableModal_info" style="width: 100%; padding:24px 0;">
                         <thead>
                             <tr role="row">
                                 <th tabindex="0" rowspan="1" colspan="1" style=" background:none">Estado</th>
-                                <th tabindex="0" rowspan="1" colspan="1" style=" background:none">Fecha de recepción</th>
+                                <th tabindex="0" rowspan="1" colspan="1" style=" background:none">Fecha de recepción
+                                </th>
                                 <th tabindex="0" rowspan="1" colspan="1" style=" background:none">Tipo Boleto</th>
                                 <th tabindex="0" rowspan="1" colspan="1" style=" background:none">Bolsa</th>
                                 <th tabindex="0" rowspan="1" colspan="1" style=" background:none">Devolución</th>
@@ -266,11 +293,11 @@
                         </thead>
                         <tbody>
                             <tr role="row" class="odd" *ngIf="data.boleto">
-                                <td style="">{{data.boleto.estado}}</td>
-                                <td style="">{{data.boleto.fechaRecepcion}}</td>
-                                <td style="">{{data.boleto.tipoBoleto}}</td>
-                                <td style="">{{data.boleto.bolsa}}</td>
-                                <td style="">{{data.boleto.devAcop}}</td>
+                                <td>{{data.boleto.estado}}</td>
+                                <td>{{data.boleto.fechaRecepcion}}</td>
+                                <td>{{data.boleto.tipoBoleto}}</td>
+                                <td>{{data.boleto.bolsa}}</td>
+                                <td>{{data.boleto.devAcop}}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -279,7 +306,9 @@
             <!--Boleto tabla-->
             <div class="row myRow">
                 <div class="clearfix myTables">
-                    <table id="tableModal" class="display nowrap dataTable no-footer dtr-inline rounded shadow animate boletosTable contrato-det-boletos-table" cellspacing="0" role="grid" aria-describedby="tableModal_info" style="width: 100%; padding:24px;">
+                    <table id="tableModal"
+                        class="display nowrap dataTable no-footer dtr-inline rounded shadow animate boletosTable contrato-det-boletos-table"
+                        role="grid" aria-describedby="tableModal_info" style="width: 100%; padding:24px;">
                         <thead>
                             <tr role="row">
                                 <th tabindex="0" rowspan="1" colspan="1" style=" background:none">Envío bolsa</th>
@@ -288,22 +317,25 @@
                                 <th tabindex="0" rowspan="1" colspan="1" style=" background:none">Envío Afip</th>
                                 <th tabindex="0" rowspan="1" colspan="1" style=" background:none">Vuelta Afip</th>
                                 <th tabindex="0" rowspan="1" colspan="1" style=" background:none">REG. Afip</th>
-                                <th tabindex="0" rowspan="1" colspan="1" style=" background:none">Oblea Prov. Plan Canje</th>
+                                <th tabindex="0" rowspan="1" colspan="1" style=" background:none">Oblea Prov. Plan Canje
+                                </th>
                                 <th tabindex="0" rowspan="1" colspan="1" style=" background:none">Envío Sellado</th>
                                 <th tabindex="0" rowspan="1" colspan="1" style=" background:none">Vuelta Sellado</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr role="row" class="odd" *ngIf="data.boleto.envioBolsa">
-                                <td tabindex="0" style=""><a (click)="showModalTableBoletosResponsive(data.boleto)" href="#" class="btnShowModal"><i class="fa fa-plus fa-lg" aria-hidden="true"></i></a>{{data.boleto.envioBolsa}}</td>
+                                <td tabindex="0"><a (click)="showModalTableBoletosResponsive(data.boleto)" href="#"
+                                        class="btnShowModal"><i class="fa fa-plus fa-lg"
+                                            aria-hidden="true"></i></a>{{data.boleto.envioBolsa}}</td>
                                 <td>{{data.boleto.vueltaBolsa}}</td>
-                                <td style="">{{data.boleto.obleaBolsa}}</td>
-                                <td style="">{{data.boleto.envioAfip}}</td>
-                                <td style="">{{data.boleto.vueltaAfip}}</td>
-                                <td style="">{{data.boleto.obleaAfip}}</td>
-                                <td style="">{{data.boleto.provPlanCanje}}</td>
-                                <td style="">{{data.boleto.envioSellado}}</td>
-                                <td style="">{{data.boleto.vueltaSellado}}</td>
+                                <td>{{data.boleto.obleaBolsa}}</td>
+                                <td>{{data.boleto.envioAfip}}</td>
+                                <td>{{data.boleto.vueltaAfip}}</td>
+                                <td>{{data.boleto.obleaAfip}}</td>
+                                <td>{{data.boleto.provPlanCanje}}</td>
+                                <td>{{data.boleto.envioSellado}}</td>
+                                <td>{{data.boleto.vueltaSellado}}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -316,13 +348,15 @@
 
             <div id="Pagos" class="col-sm-12 col-md-12 col-lg-12">
 
-                <div id="showPagos" class="showBtn height-auto btn-grande btnSection btnInfo animate" onClick="showPagos()">
+                <div id="showPagos" class="showBtn height-auto btn-grande btnSection btnInfo animate"
+                    onClick="showPagos()">
                     <div>
                         <li class="fa fa-angle-double-right" aria-hidden="true"></li>
                     </div>
                     <div>Pagos</div>
                 </div>
-                <div id="hidePagos" class="hideBtn height-auto btn-grande btnSection btnInfo animate btnInfoClose" onClick="closePagos()">
+                <div id="hidePagos" class="hideBtn height-auto btn-grande btnSection btnInfo animate btnInfoClose"
+                    onClick="closePagos()">
                     <div>
                         <li class="fa fa-times" aria-hidden="true"></li>
                     </div>
@@ -335,7 +369,9 @@
                 <!--pagos y liquidaciones tabla-->
                 <div id="myPagos" class="row myRow hideMobile">
                     <div class="clearfix myTables">
-                        <table id="tableModal" class="display nowrap dataTable no-footer dtr-inline rounded shadow animate boletosTable contrato-det-pagos-table" cellspacing="0" role="grid" aria-describedby="tableModal_info" style="width: 100%; padding:24px;">
+                        <table id="tableModal"
+                            class="display nowrap dataTable no-footer dtr-inline rounded shadow animate boletosTable contrato-det-pagos-table"
+                            role="grid" aria-describedby="tableModal_info" style="width: 100%; padding:24px;">
                             <thead>
                                 <tr role="row">
                                     <th tabindex="0" rowspan="1" colspan="1">Fecha</th>
@@ -348,12 +384,17 @@
                             </thead>
                             <tbody>
                                 <tr *ngFor="let pago of data.pagos" role="row" class="odd">
-                                    <td tabindex="0"><a (click)="showModalTablePagosResponsive(pago)" href="#" class="btnShowModal"><i class="fa fa-plus fa-lg" aria-hidden="true"></i></a>{{pago.fecha}}</td>
-                                    <td><a class="animate" (click)="goToSeccionParam('/pago/detalle', pago.idPago)" href="#">{{pago.idPago}}</a></td>
-                                    <td style="">{{pago.brutoString}}</td>
-                                    <td style="">{{pago.ivaString}}</td>
-                                    <td style=""><a (click)="goToSeccionParam('/cuenta-corriente/simple', pago.idPago)" href="#"><span class="fa  fa-file-pdf-o "></span>{{pago.retencionesString}}</a></td>
-                                    <td style="">{{pago.netoString}}</td>
+                                    <td tabindex="0"><a (click)="showModalTablePagosResponsive(pago)" href="#"
+                                            class="btnShowModal"><i class="fa fa-plus fa-lg"
+                                                aria-hidden="true"></i></a>{{pago.fecha}}</td>
+                                    <td><a class="animate" (click)="goToSeccionParam('/pago/detalle', pago.idPago)"
+                                            href="#">{{pago.idPago}}</a></td>
+                                    <td>{{pago.brutoString}}</td>
+                                    <td>{{pago.ivaString}}</td>
+                                    <td><a (click)="goToSeccionParam('/cuenta-corriente/simple', pago.idPago)"
+                                            href="#"><span
+                                                class="fa  fa-file-pdf-o "></span>{{pago.retencionesString}}</a></td>
+                                    <td>{{pago.netoString}}</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -361,13 +402,16 @@
                 </div>
             </div>
             <div id="Liquidaciones" class="col-sm-12 col-md-12 col-lg-12">
-                <div id="showLiquidaciones" class="showBtn height-auto btn-grande btnSection btnInfo animate" onClick="showLiquidaciones()">
+                <div id="showLiquidaciones" class="showBtn height-auto btn-grande btnSection btnInfo animate"
+                    onClick="showLiquidaciones()">
                     <div>
                         <li class="fa fa-angle-double-right" aria-hidden="true"></li>
                     </div>
                     <div>Liquidaciones</div>
                 </div>
-                <div id="hideLiquidaciones" class="hideBtn height-auto btn-grande btnSection btnInfo animate btnInfoClose" onClick="closeLiquidaciones()">
+                <div id="hideLiquidaciones"
+                    class="hideBtn height-auto btn-grande btnSection btnInfo animate btnInfoClose"
+                    onClick="closeLiquidaciones()">
                     <div>
                         <li class="fa fa-times" aria-hidden="true"></li>
                     </div>
@@ -379,7 +423,9 @@
                 <!--pagos y liquidaciones tabla-->
                 <div id="myLiquidaciones" class="row myRow hideMobile">
                     <div class="clearfix myTables">
-                        <table id="tableModal" class="display nowrap dataTable no-footer dtr-inline rounded shadow animate boletosTable contrato-det-liquidaciones-table" cellspacing="0" role="grid" aria-describedby="tableModal_info" style="width: 100%; padding:24px;">
+                        <table id="tableModal"
+                            class="display nowrap dataTable no-footer dtr-inline rounded shadow animate boletosTable contrato-det-liquidaciones-table"
+                            role="grid" aria-describedby="tableModal_info" style="width: 100%; padding:24px;">
                             <thead>
                                 <tr role="row">
                                     <th tabindex="0" rowspan="1" colspan="1">Fecha</th>
@@ -394,25 +440,37 @@
                             <tbody>
                                 <tr *ngFor="let liquidacion of data.liquidaciones" role="row" class="odd">
                                     <ng-container *ngIf="liquidacion.pedido == ''">
-                                        <td tabindex="0"><a (click)="showModalTableLiquidacionesResponsive(liquidacion)" href="#" class="btnShowModal"><i class="fa fa-plus fa-lg" aria-hidden="true"></i></a>{{liquidacion.fecha}}</td>
+                                        <td tabindex="0"><a (click)="showModalTableLiquidacionesResponsive(liquidacion)"
+                                                href="#" class="btnShowModal"><i class="fa fa-plus fa-lg"
+                                                    aria-hidden="true"></i></a>{{liquidacion.fecha}}</td>
                                         <td>{{liquidacion.tipo}}</td>
                                         <td>{{liquidacion.comprobante}}</td>
-                                        <td><a class="animate" (click)="goToSeccionParamDos('/contrato/detalle-fijacion/', data.contrato, liquidacion.pedido)" href="#">{{liquidacion.pedido}}</a></td>
+                                        <td><a class="animate"
+                                                (click)="goToSeccionParamDos('/contrato/detalle-fijacion/', data.contrato, liquidacion.pedido)"
+                                                href="#">{{liquidacion.pedido}}</a></td>
                                         <td>{{liquidacion.cantidadString}}</td>
                                         <td>{{liquidacion.precioString}}</td>
                                         <td>{{liquidacion.totalString}}</td>
                                     </ng-container>
                                     <ng-container *ngIf="liquidacion.pedido != ''">
-                                        <td tabindex="0"><a (click)="showModalTableLiquidacionesResponsive(liquidacion)" href="#" class="btnShowModal"><i class="fa fa-plus fa-lg" aria-hidden="true"></i></a>{{liquidacion.fecha}}</td>
+                                        <td tabindex="0"><a (click)="showModalTableLiquidacionesResponsive(liquidacion)"
+                                                href="#" class="btnShowModal"><i class="fa fa-plus fa-lg"
+                                                    aria-hidden="true"></i></a>{{liquidacion.fecha}}</td>
                                         <td>{{liquidacion.tipo}}</td>
                                         <td>{{liquidacion.comprobante}}</td>
-                                        <td><a class="animate" (click)="goToSeccionParamDos('/contrato/detalle-fijacion/', data.contrato, liquidacion.pedido)" href="#">{{liquidacion.totalString != '0,00' ? liquidacion.pedido : ''}}</a></td>
-                                        <td *ngIf="liquidacion.cantidadString != '0'">{{liquidacion.cantidadString}}</td>
+                                        <td><a class="animate"
+                                                (click)="goToSeccionParamDos('/contrato/detalle-fijacion/', data.contrato, liquidacion.pedido)"
+                                                href="#">{{liquidacion.totalString != '0,00' ? liquidacion.pedido :
+                                                ''}}</a></td>
+                                        <td *ngIf="liquidacion.cantidadString != '0'">{{liquidacion.cantidadString}}
+                                        </td>
                                         <td *ngIf="liquidacion.cantidadString == '0'"></td>
                                         <td *ngIf="liquidacion.precioString != '0,00'">{{liquidacion.precioString}}</td>
                                         <td *ngIf="liquidacion.precioString == '0,00'"></td>
                                         <td *ngIf="liquidacion.totalString != '0,00'">{{liquidacion.totalString}}</td>
-                                        <td *ngIf="liquidacion.totalString == '0,00'"><a (click)="goToSeccionParam('liquidacion/proforma', liquidacion.pedido)" href="#">Ver Proforma</a></td>
+                                        <td *ngIf="liquidacion.totalString == '0,00'"><a
+                                                (click)="goToSeccionParam('liquidacion/proforma', liquidacion.pedido)"
+                                                href="#">Ver Proforma</a></td>
                                     </ng-container>
                                 </tr>
                             </tbody>
@@ -427,13 +485,15 @@
         <!--fijaciones y ampliaciones-->
         <div class="row myRow">
             <div id="Fijaciones" class="col-md-12 col-lg-6">
-                <div id="showFijaciones" class="showBtn height-auto btn-grande btnSection btnInfo animate" onClick="showFijaciones()">
+                <div id="showFijaciones" class="showBtn height-auto btn-grande btnSection btnInfo animate"
+                    onClick="showFijaciones()">
                     <div>
                         <li class="fa fa-angle-double-right" aria-hidden="true"></li>
                     </div>
                     <div>Fijaciones</div>
                 </div>
-                <div id="hideFijaciones" class="hideBtn height-auto btn-grande btnSection btnInfo animate btnInfoClose" onClick="closeFijaciones()">
+                <div id="hideFijaciones" class="hideBtn height-auto btn-grande btnSection btnInfo animate btnInfoClose"
+                    onClick="closeFijaciones()">
                     <div>
                         <li class="fa fa-times" aria-hidden="true"></li>
                     </div>
@@ -445,7 +505,9 @@
                 <!--pagos y liquidaciones tabla-->
                 <div id="myFijaciones" class="row myRow hideMobile">
                     <div class="clearfix myTables">
-                        <table id="tableModal" class="display nowrap dataTable no-footer dtr-inline rounded shadow animate boletosTable contrato-det-fijaciones-table" cellspacing="0" role="grid" aria-describedby="tableModal_info" style="width: 100%; padding:24px;">
+                        <table id="tableModal"
+                            class="display nowrap dataTable no-footer dtr-inline rounded shadow animate boletosTable contrato-det-fijaciones-table"
+                            role="grid" aria-describedby="tableModal_info" style="width: 100%; padding:24px;">
                             <thead>
                                 <tr role="row">
                                     <th tabindex="0" rowspan="1" colspan="1">Fecha</th>
@@ -456,10 +518,14 @@
                             </thead>
                             <tbody>
                                 <tr *ngFor="let fijacion of data.fijaciones" role="row" class="odd">
-                                    <td tabindex="0"><a (click)="showModalTableLFijacionesResponsive(fijacion)" href="#" class="btnShowModal"><i class="fa fa-plus fa-lg" aria-hidden="true"></i></a>{{fijacion.fecha}}</td>
-                                    <td><a class="animate" (click)="goToSeccionParamDos('/contrato/detalle-fijacion', data.contrato, fijacion.nroFija)" href="#">{{fijacion.nroFija}}</a></td>
-                                    <td style="">{{fijacion.kilosFijaString}}</td>
-                                    <td style="">{{fijacion.precioString}}</td>
+                                    <td tabindex="0"><a (click)="showModalTableLFijacionesResponsive(fijacion)" href="#"
+                                            class="btnShowModal"><i class="fa fa-plus fa-lg"
+                                                aria-hidden="true"></i></a>{{fijacion.fecha}}</td>
+                                    <td><a class="animate"
+                                            (click)="goToSeccionParamDos('/contrato/detalle-fijacion', data.contrato, fijacion.nroFija)"
+                                            href="#">{{fijacion.nroFija}}</a></td>
+                                    <td>{{fijacion.kilosFijaString}}</td>
+                                    <td>{{fijacion.precioString}}</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -467,13 +533,16 @@
                 </div>
             </div>
             <div id="Ampliaciones" class="col-sm-12 col-md-12 col-lg-6 ">
-                <div id="showAmpliaciones" class="showBtn height-auto btn-grande btnSection btnInfo animate" onClick="showAmpliaciones()">
+                <div id="showAmpliaciones" class="showBtn height-auto btn-grande btnSection btnInfo animate"
+                    onClick="showAmpliaciones()">
                     <div>
                         <li class="fa fa-angle-double-right" aria-hidden="true"></li>
                     </div>
                     <div>Ampliaciones / Anulaciones</div>
                 </div>
-                <div id="hideAmpliaciones" class="hideBtn height-auto btn-grande btnSection btnInfo animate btnInfoClose" onClick="closeAmpliaciones()">
+                <div id="hideAmpliaciones"
+                    class="hideBtn height-auto btn-grande btnSection btnInfo animate btnInfoClose"
+                    onClick="closeAmpliaciones()">
                     <div>
                         <li class="fa fa-times" aria-hidden="true"></li>
                     </div>
@@ -486,7 +555,9 @@
                 <!--pagos y liquidaciones tabla-->
                 <div id="myAmpliaciones" class="row myRow hideMobile">
                     <div class="clearfix myTables">
-                        <table id="tableModal" class="display nowrap dataTable no-footer dtr-inline rounded shadow animate boletosTable contrato-det-ampliaciones-anulaciones-table" cellspacing="0" role="grid" aria-describedby="tableModal_info" style="width: 100%; padding:24px;">
+                        <table id="tableModal"
+                            class="display nowrap dataTable no-footer dtr-inline rounded shadow animate boletosTable contrato-det-ampliaciones-anulaciones-table"
+                            role="grid" aria-describedby="tableModal_info" style="width: 100%; padding:24px;">
                             <thead>
                                 <tr role="row">
                                     <th tabindex="0" rowspan="1" colspan="1">Tipo</th>
@@ -496,11 +567,15 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr *ngFor="let ampliacionAnulacion of data.ampliacionesAnulaciones" role="row" class="odd">
-                                    <td tabindex="0" style=""><a (click)="showModalTableAmpliacionesAnulacionesResponsive(ampliacionAnulacion)" href="#" class="btnShowModal"><i class="fa fa-plus fa-lg" aria-hidden="true"></i></a>{{ampliacionAnulacion.tipo}}</td>
+                                <tr *ngFor="let ampliacionAnulacion of data.ampliacionesAnulaciones" role="row"
+                                    class="odd">
+                                    <td tabindex="0"><a
+                                            (click)="showModalTableAmpliacionesAnulacionesResponsive(ampliacionAnulacion)"
+                                            href="#" class="btnShowModal"><i class="fa fa-plus fa-lg"
+                                                aria-hidden="true"></i></a>{{ampliacionAnulacion.tipo}}</td>
                                     <td>{{ampliacionAnulacion.fecha}}</td>
-                                    <td style="">{{ampliacionAnulacion.cantidadString}}</td>
-                                    <td style="">{{ampliacionAnulacion.importeString}}</td>
+                                    <td>{{ampliacionAnulacion.cantidadString}}</td>
+                                    <td>{{ampliacionAnulacion.importeString}}</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -513,13 +588,16 @@
         <div class="row myRow">
             <div id="Aplicaciones" class="col-sm-12">
 
-                <div id="showAplicaciones" class="showBtn height-auto btn-grande btnSection btnInfo animate" onClick="showAplicaciones()">
+                <div id="showAplicaciones" class="showBtn height-auto btn-grande btnSection btnInfo animate"
+                    onClick="showAplicaciones()">
                     <div>
                         <li class="fa fa-angle-double-right" aria-hidden="true"></li>
                     </div>
                     <div>Aplicaciones</div>
                 </div>
-                <div id="hideAplicaciones" class="hideBtn height-auto btn-grande btnSection btnInfo animate btnInfoClose" onClick="closeAplicaciones()">
+                <div id="hideAplicaciones"
+                    class="hideBtn height-auto btn-grande btnSection btnInfo animate btnInfoClose"
+                    onClick="closeAplicaciones()">
                     <div>
                         <li class="fa fa-times" aria-hidden="true"></li>
                     </div>
@@ -531,7 +609,9 @@
 
                 <div id="myAplicaciones" class="row myRow hideMobile">
                     <div class="clearfix myTables">
-                        <table id="tableModal" class="display nowrap dataTable no-footer dtr-inline rounded shadow animate boletosTable contrato-det-aplicacciones-table" cellspacing="0" role="grid" aria-describedby="tableModal_info" style="width: 100%; padding:24px;">
+                        <table id="tableModal"
+                            class="display nowrap dataTable no-footer dtr-inline rounded shadow animate boletosTable contrato-det-aplicacciones-table"
+                            role="grid" aria-describedby="tableModal_info" style="width: 100%; padding:24px;">
                             <thead>
                                 <tr role="row">
                                     <th tabindex="0" rowspan="1" colspan="1">Fecha</th>
@@ -543,20 +623,24 @@
                             </thead>
                             <tbody>
                                 <tr *ngFor="let aplicacion of data.aplicaciones" role="row" class="odd">
-                                    <td tabindex="0"><a (click)="showModalTableAplicacionesResponsive(aplicacion)" href="#" class="btnShowModal"><i class="fa fa-plus fa-lg" aria-hidden="true"></i></a>{{aplicacion.fecha}}</td>
-                                    <td><a class="animate" (click)="goToSeccionParam('/carta-porte/detalle', aplicacion.ccpp)" href="#">{{aplicacion.ccpp}}</a></td>
+                                    <td tabindex="0"><a (click)="showModalTableAplicacionesResponsive(aplicacion)"
+                                            href="#" class="btnShowModal"><i class="fa fa-plus fa-lg"
+                                                aria-hidden="true"></i></a>{{aplicacion.fecha}}</td>
+                                    <td><a class="animate"
+                                            (click)="goToSeccionParam('/carta-porte/detalle', aplicacion.ccpp)"
+                                            href="#">{{aplicacion.ccpp}}</a></td>
                                     <td>{{aplicacion.descarga}}</td>
-                                    <td style="">{{aplicacion.kgBrutosString}}</td>
-                                    <td style="">{{aplicacion.kgNetosString}}</td>
+                                    <td>{{aplicacion.kgBrutosString}}</td>
+                                    <td>{{aplicacion.kgNetosString}}</td>
                                 </tr>
                             </tbody>
                             <tbody>
                                 <tr role="row" class="totalTable">
                                     <td tabindex="0">TOTAL</td>
                                     <td></td>
-                                    <td style=""></td>
-                                    <td style="">{{data.aplicacionesTotalBrutosString}}</td>
-                                    <td style="">{{data.aplicacionesTotalAplicadosString}}</td>
+                                    <td></td>
+                                    <td>{{data.aplicacionesTotalBrutosString}}</td>
+                                    <td>{{data.aplicacionesTotalAplicadosString}}</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -568,13 +652,15 @@
         <div class="row myRow">
             <div id="Hijos" class="col-sm-12">
 
-                <div id="showHijos" class="showBtn height-auto btn-grande btnSection btnInfo animate" onClick="showHijos()">
+                <div id="showHijos" class="showBtn height-auto btn-grande btnSection btnInfo animate"
+                    onClick="showHijos()">
                     <div>
                         <li class="fa fa-angle-double-right" aria-hidden="true"></li>
                     </div>
                     <div>Contratos hijos</div>
                 </div>
-                <div id="hideHijos" class="hideBtn height-auto btn-grande btnSection btnInfo animate btnInfoClose" onClick="closeHijos()">
+                <div id="hideHijos" class="hideBtn height-auto btn-grande btnSection btnInfo animate btnInfoClose"
+                    onClick="closeHijos()">
                     <div>
                         <li class="fa fa-times" aria-hidden="true"></li>
                     </div>
@@ -586,7 +672,9 @@
 
                 <div id="myHijos" class="row myRow  hideMobile">
                     <div class="clearfix myTables">
-                        <table id="tableModal" class="display nowrap dataTable no-footer dtr-inline rounded shadow animate boletosTable contrato-det-hijos-table" cellspacing="0" role="grid" aria-describedby="tableModal_info" style="width: 100%; padding:24px;">
+                        <table id="tableModal"
+                            class="display nowrap dataTable no-footer dtr-inline rounded shadow animate boletosTable contrato-det-hijos-table"
+                            role="grid" aria-describedby="tableModal_info" style="width: 100%; padding:24px;">
                             <thead>
                                 <tr role="row">
                                     <th tabindex="0" rowspan="1" colspan="1">Fecha de Concertación</th>
@@ -598,11 +686,15 @@
                             </thead>
                             <tbody>
                                 <tr *ngFor="let hijo of data.hijos" role="row" class="odd">
-                                    <td tabindex="0"><a (click)="showModalTableHijosResponsive(hijo)" href="#" class="btnShowModal"><i class="fa fa-plus fa-lg" aria-hidden="true"></i></a>{{hijo.fecha}}</td>
-                                    <td><a class="animate" (click)="goToSeccionParam('/contrato/detalle', hijo.contrMolinos)" href="#">{{hijo.contrMolinos}}</a></td>
-                                    <td style="">{{hijo.contrProve}}</td>
+                                    <td tabindex="0"><a (click)="showModalTableHijosResponsive(hijo)" href="#"
+                                            class="btnShowModal"><i class="fa fa-plus fa-lg"
+                                                aria-hidden="true"></i></a>{{hijo.fecha}}</td>
+                                    <td><a class="animate"
+                                            (click)="goToSeccionParam('/contrato/detalle', hijo.contrMolinos)"
+                                            href="#">{{hijo.contrMolinos}}</a></td>
+                                    <td>{{hijo.contrProve}}</td>
                                     <td>{{hijo.cantidadString}}</td>
-                                    <td style="">{{hijo.precioString}}</td>
+                                    <td>{{hijo.precioString}}</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -625,7 +717,8 @@
                         <div id="searchTexto" class="col-xs-6 col-sm-4 col-md-15 ">
                             Por N&ordm; CCPP:
                             <div class="styled-select ">
-                                <input type="search" class="" placeholder="" [value]="filtroCCPP" (input)="filtroCCPP = $event.target.value" aria-controls="tableModal">
+                                <input type="search" class="" placeholder="" [value]="filtroCCPP"
+                                    (input)="filtroCCPP = $event.target.value" aria-controls="tableModal">
                             </div>
                         </div>
                     </div>
@@ -634,56 +727,79 @@
         </div>
 
         <div class="row myRow">
-            <div class="row calidad" *ngFor="let calidad of data.calidad | customFilter : 'ccpp' : filtroCCPP">
+            <div class="row calidad"
+                *ngFor="let calidad of data.calidad | customFilter : 'ccpp' : filtroCCPP; let i= index">
                 <div class="col-xs-12 col-sm-3 col-md-2 calidadTitle">
                     <p class="grey"><strong>CCPP</strong></p>
-                    <a class="animate grey" (click)="goToSeccionParam('/carta-porte/detalle', calidad.ccpp)" href="#">{{calidad.ccpp}}</a>
+                    <a class="animate grey" (click)="goToSeccionParam('/carta-porte/detalle', calidad.ccpp)"
+                        href="#">{{calidad.ccpp}}</a>
                 </div>
                 <div class="col-xs-12 col-sm-8 col-md-9 clearfix myTables">
-                    <table id="tableModal" class="display nowrap dataTable no-footer dtr-inline rounded shadow animate boletosTable contrato-det-hijos-table" cellspacing="0" role="grid" aria-describedby="tableModal_info" style="width: 100%; padding:24px;">
+                    <table id="tableModal"
+                        class="display nowrap dataTable no-footer dtr-inline rounded shadow animate boletosTable contrato-det-hijos-table"
+                        role="grid" aria-describedby="tableModal_info" style="width: 100%; padding:24px;">
                         <thead>
                             <tr role="row">
-                                <th tabindex="0" rowspan="1" colspan="3" style="text-align: center;">Calado</th>
-                                <th tabindex="0" rowspan="1" colspan="2" style="text-align: start;">C&aacute;mara (Cert.: <span *ngIf="calidad.certificado != ''">{{calidad.certificado}}</span><span *ngIf="calidad.certificado == ''">- </span>)</th>
+                                <th [id]="'calidadesHeader_'+i" tabindex="0" rowspan="1" colspan="5"
+                                    style="text-align: center;">
+                                    <p *ngIf="calidad.camaraPendiente; else headerNormal">
+                                        C&aacute;mara <span class="text-danger">
+                                            (pendiente de resultado)
+                                        </span>
+                                    </p>
+                                    <ng-template #headerNormal>
+                                        {{
+                                        tieneCamara(calidad)?'Cámara (Cert: '+calidad.certificado+')'
+                                        :'Calado'
+                                        }}
+                                    </ng-template>
+                                </th>
                             </tr>
                             <tr role="row">
-                                <th width="40%">Características</th>
-                                <th width="15%">Resultado</th>
-                                <th width="15%">Kg DTO.</th>
-                                <th width="15%">Resultado</th>
-                                <th width="15%">DTO (%)</th>
+                                <th [id]="'caracteristicaCalidadCol_'+i">Características</th>
+                                <th [id]="'fill_'+i"></th>
+                                <th [id]="'resultadoCalidadCol_'+i">Resultado</th>
+                                <th [id]="'kgDtoCalidadCol_'+i">Kg DTO.</th>
+                                <th [id]="'dtoCalidadCol_'+i">DTO (%)</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr *ngFor="let registro of calidad.registros" role="row" class="odd">
-                                <td>{{registro.caract}}</td>
-                                <td>{{registro.calaResul}}%</td>
-                                <td>{{registro.kgDto}}</td>
-                                <td>{{registro.camaResul}}%</td>
-                                <td>{{registro.dto}}%</td>
-                            </tr>
+                            <ng-container *ngFor="let registro of calidad.registros">
+                                <tr *ngIf="
+                                        (calidad.camaraPendiente && (registro.caract.toUpperCase().includes('HUMEDAD') || registro.kgDtoValor >0) )
+                                        || !calidad.camaraPendiente" role="row" class="odd">
+                                    <td>{{registro.caract}}</td>
+                                    <td></td>
+                                    <td *ngIf="!tieneCamara(calidad); else resultadoCamara">{{registro.calaResul}}%</td>
+                                    <ng-template #resultadoCamara>
+                                        <td>{{registro.camaResul}}%</td>
+                                    </ng-template>
+                                    <td>{{registro.kgDto}}</td>
+                                    <td>{{registro.dto}}%</td>
+                                </tr>
+
+                            </ng-container>
                         </tbody>
                         <tfoot>
                             <tr role="row">
-                                <td width="40%">Resultado Final</td>
-                                <td width="15%">
+                                <td>Resultado Final</td>
+                                <td></td>
+                                <td>
                                     <p><strong>Kg Dto.</strong> {{calidad.kgDtoTotal}}</p>
                                 </td>
-                                <td width="15%">
-                                    <p><strong>Total Dto (%)</strong> {{calidad.dtoPorcTotal}}</p>
-                                </td>
-                                <td width="15%">
+                                <td>
                                     <p><strong>Kg netos</strong> {{calidad.kgNetosTotal}}</p>
                                 </td>
-                                <td width="15%">
+                                <td>
                                     <p><strong>Kg Aplicados</strong> {{calidad.kgAplicadosTotal}}</p>
                                 </td>
+
                             </tr>
                         </tfoot>
                     </table>
                 </div>
             </div>
-            
+
             <!-- <div id="Calidad" class="col-sm-12  hideMobile">
                 <div class="row myRow">
                     <div class="clearfix totalTable">
@@ -752,7 +868,7 @@
                                                         <table width="100%" border="0" cellspacing="0" cellpadding="0">
                                                             <tr>
                                                                 <td width="100%">
-                                                                    <table width="100%" border="0" cellspacing="0" cellpadding="0" class="totalTable CalidadDataExtra" style="">
+                                                                    <table width="100%" border="0" cellspacing="0" cellpadding="0" class="totalTable CalidadDataExtra">
                                                                         <tr>
                                                                             <td width="20%">resultado final </td>
                                                                             <td width="20%">
@@ -802,5 +918,3 @@
     </section>
     <!--End CONTENT-->
 </div>
-
-

@@ -7,6 +7,8 @@
 	[Id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY], 
     [CodigoSap] NVARCHAR(20) NULL, 
-    [TablaSeccionMaterial] INT NULL
+    [TablaSeccionMaterial] INT NULL, 
+    [ValidaSisaRuca] BIT NOT NULL DEFAULT 0, 
+    [Abreviacion] VARCHAR(50) NULL
 ) ON [PRIMARY]
 GO

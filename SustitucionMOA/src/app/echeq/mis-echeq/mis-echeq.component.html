@@ -1,0 +1,17 @@
+<div class="content-wraper">
+  <!-- CONTENT-->
+  <section class="container-fluid clearfix">
+      <!--Title-->
+      <div class="row titleSection">
+          <div class="col-xs-12 col-sm-10 "><strong>Reporte Echeq</strong></div>           
+      </div>
+
+          <!-- Le paso la info al componente padre mediante el evento -->
+          <app-mis-echeq-filtros (applyFilterEmitter)="applyFilter($event)" (searchDataEmitter)="searchData($event)"></app-mis-echeq-filtros>
+
+          <!-- Aca le paso la lista al componente como una propiedad -->
+          <app-mis-echeq-grilla [(datosReporte)]="datosReporte"></app-mis-echeq-grilla>
+        
+  </section>
+  <!--End CONTENT-->
+</div>        

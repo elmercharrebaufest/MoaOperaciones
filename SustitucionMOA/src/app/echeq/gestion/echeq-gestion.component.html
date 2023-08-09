@@ -1,0 +1,20 @@
+﻿<div class="content-wraper">
+    <!-- CONTENT-->
+    <section class="container-fluid clearfix">
+        <!--Title-->
+        <div class="row titleSection">
+            <div class="col-xs-12 col-sm-10 "><strong>Echeq: Contratos</strong></div>           
+        </div>
+
+        <div class="alert alert-light" role="alert">
+            Seleccione los contratos y/o liquidaciones que desee cobrar mediante e-cheq. Una vez liquidado, recuerde aperturar el importe haciendo click en “Generar echeqs”
+        </div>
+            <!-- Le paso la info al componente padre mediante el evento -->
+            <app-echeq-filtros (applyFilterEmitter)="applyFilter($event)" (searchDataEmitter)="searchData($event)"></app-echeq-filtros>
+
+            <!-- Aca le paso la lista al componente como una propiedad -->
+            <app-echeq-grilla [(echeqContratos)]="contratosFiltrados"></app-echeq-grilla>
+
+    </section>
+    <!--End CONTENT-->
+</div>        

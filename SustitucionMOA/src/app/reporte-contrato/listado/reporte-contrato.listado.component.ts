@@ -1,38 +1,42 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ListBaseComponent } from '../../common/base-components/list-base-component';
 import { FloatMsgService } from '../../common/services/FloatMsgService';
 import { ModalService } from '../../common/services/ModalService';
 import { NavService } from '../../common/services/NavService';
 import { SecurityService } from '../../common/services/SecurityService';
 import { SessionDataService } from '../../common/services/SessionDataService';
-import { SelectItem, ConfirmationService } from 'primeng/api';
+import { ConfirmationService } from 'primeng/api';
 import { ReporteContratoService } from '../reporte-contrato.service';
-import { formatDate } from '@angular/common';
 import * as XLSX from 'xlsx';
-
-
-
+import { BlockUI, NgBlockUI } from 'ng-block-ui';
+import { ReporteContrato } from '../ReporteContrato.model';
+import { Formatter } from '../../common/formatter/Formatter';
+import { FiltroFechaReporteComponent } from '../../common/view-child/filtro-fecha-reporte/filtro-fecha-reporte.component';
 
 
 @Component({
     selector: 'app-reporte-contrato.listado',
     templateUrl: './reporte-contrato.listado.component.html',
     styleUrls: ['./reporte-contrato.listado.component.css'],
-   
-
 })
-export class ReporteContratoListado extends ListBaseComponent implements OnInit, OnDestroy {
+export class ReporteContratoListado extends ListBaseComponent implements OnInit {
+    @BlockUI() blockUI: NgBlockUI;
+    @ViewChild(FiltroFechaReporteComponent)
+    protected filtroFechaReporteComponent: FiltroFechaReporteComponent;
+    
 
     constructor(protected service: ReporteContratoService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService, private confirmationService: ConfirmationService) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
-    }
+        this.filtroFechaReporteComponent = new FiltroFechaReporteComponent();
 
+    }
+    contratoSeleccionadoId: string = '';
     detalle: any[];
-    cabecera: any[];
+    cabecera: ReporteContrato[];
     filtroCliente: any = null;
     filtroProducto: any = null;
     filtroTipoContrato: any = null;
-    filtroContrato = "";
+    filtroContrato :string = "";
     clienteSelected: string = "";
     productoSelected: string = "";
     tipoContratoSelected: string = "";
@@ -44,46 +48,72 @@ export class ReporteContratoListado extends ListBaseComponent implements OnInit,
     codigoProducto: string = "";
     TipoContrato: string = "";
     show: boolean = false;
-    mostrarPendientes: boolean = false;
-    columnaCliente: string = "NombreCliente";
+    disabled: boolean = false;
+    mostrarPendientes: boolean = true;
+    columnaCliente: string = "NombreClienteCUIT";
     columnaProducto: string = "DescripcionMaterial";
     ColumnaTipoContrato: string = "TipoContrato";
-
-
+    columnaContrato: string = "Contrato";
+    esComercial: boolean = this.isAuthorized('VER ORDENES DE CARGA PARA COMERCIALES');
+    esMesaFas: boolean = this.isAuthorized('VER ORDENES DE CARGA PARA MESA FAS');
+    esAdmin: boolean = this.isAuthorized('VER TODAS ORDENES DE CARGA');
+    esCorredor: boolean = sessionStorage.getItem("tipoUsuario") === "CORR";
+    esCliente: any = sessionStorage.getItem("tipoUsuario") === "CLI";
+    esInterno: boolean = (this.esComercial || this.esMesaFas || this.esAdmin);
 
     ngOnInit() {
+        this.navService.setSeccionList([]);
+        this.filtroFechaReporteComponent.setPeriodo('4');
+        this.filtroFechaReporteComponent.setFechaIncio(Formatter.DateToSting(new Date(new Date().setDate(new Date().getDate() - 180))));
+        this.filtroFechaReporteComponent.setFechaFin(Formatter.DateToSting(new Date()));
+        this.mostrarPendientes = true;
         this.getListado();
     }
 
+ 
     getListado() {
         this.detalle = null;
         this.varciarFiltrosReporte();
         this.mensajeComponent.setMsgsEmpty();
-        this.spinnerComponent.showIt();
+        this.blockUI.start('');
         this.unsubscribe();
-        this.subscription = this.service.getListado(this.filtroFechaComponent.fecha_inicio,
-            this.filtroFechaComponent.fecha_fin, this.mostrarPendientes).subscribe(
+        this.disabled = true;
+        this.cabecera = null;
+        this.data = null;
+        this.subscription = this.service.getListado(
+            this.filtroFechaReporteComponent.fecha_inicio,
+            this.filtroFechaReporteComponent.fecha_fin, 
+            this.mostrarPendientes).subscribe(
                 (result: any) => {
                     this.mensajeComponent.setMsgsEmpty();
-                    this.spinnerComponent.hideIt();
-                    if (result.logout == true) {
+                    this.blockUI.stop();
+                    if (result.logout) {
                         this.sessionDataService.logout();
                     } else if (result.error != undefined && result.error != "") {
                         this.mensajeComponent.setErrorMsg(result.error);
                     } else if (result.info != undefined) {
                         this.mensajeComponent.setInfoMsg(result.info);
+                        this.varciarFiltrosReporte();
                     } else {
                         this.cabecera = result.data.Resultados;
                         this.cargarFiltrosContratos(result);
                         this.getTotalKilogramos();
                         this.data = result.data.Resultados;
+                        this.ejecutarFiltro();
                         this.show = true;
-
+                        this.disabled = false;
+                        
+                        // VALIDA EL CASO CUANDO UN USUARIO ES DIRECTO
+                        const listaUsuariosDirectos = this.cabecera.filter(x=> x.Corredor == '0050005000');
+                        if (listaUsuariosDirectos!=null && listaUsuariosDirectos.length >0){
+                            this.esCliente = true;
+                            this.esCorredor = true;
+                        }
                     }
 
                 },
                 error => {
-                    this.spinnerComponent.hideIt();
+                    this.blockUI.stop();
                     this.mensajeComponent.setErrorMsg(error.message);
                 }
 
@@ -95,15 +125,25 @@ export class ReporteContratoListado extends ListBaseComponent implements OnInit,
         this.getListado();
     }
 
-    getColorProducto(contrato) {
-        var fila = this.cabecera.find(x => x.Contrato == contrato);
+    getColorProducto(contrato): string {
+        const fila = this.cabecera.find(x => x.Contrato == contrato);
         return fila.ColorProducto;
     }
 
     isVisible() {
-        return this.show;
+        return this.show && this.cabecera.length;
     }
 
+    guardarFiltros(){
+        const {fecha_inicio, fecha_fin} = this.filtroFechaReporteComponent
+       this.service.setFechas(fecha_inicio,fecha_fin ); 
+    }
+
+    verDetalleContrato(numeroContrato: string){
+        this.contratoSeleccionadoId = numeroContrato;
+        this.service.setContratoSeleccionado(numeroContrato);
+    }
+    
     cargarFiltrosContratos(result: any) {
         if (result.filtroCliente != undefined) this.filtroCliente = result.filtroCliente.options;
         if (result.filtroProducto != undefined) this.filtroProducto = result.filtroProducto.options;
@@ -126,15 +166,23 @@ export class ReporteContratoListado extends ListBaseComponent implements OnInit,
         this.ejecutarFiltro();
     }
 
-    filtroPendientes() {
-        this.getListado();
+    filtroPendientes(event) {
+        this.mostrarPendientes = event;
+        this.ejecutarFiltro();
+    }
+
+
+    setFiltroContrato(contrato: string) {
+        this.filtroContrato = contrato.split(' ').join('');
+        this.ejecutarFiltro();
     }
 
     ejecutarFiltro() {
         this.cabecera = this.data;
         var listaFiltro = [{ "campo": this.clienteSelected, "columna": this.columnaCliente },
         { "campo": this.productoSelected, "columna": this.columnaProducto },
-        { "campo": this.tipoContratoSelected, "columna": this.ColumnaTipoContrato }];
+        { "campo": this.tipoContratoSelected, "columna": this.ColumnaTipoContrato },
+        { "campo": this.filtroContrato, "columna": this.columnaContrato }];
 
         for (const a of listaFiltro) {
             if (a.campo == "") {
@@ -142,31 +190,20 @@ export class ReporteContratoListado extends ListBaseComponent implements OnInit,
             }
             else {
                 this.cabecera = this.cabecera.filter(x => x[a.columna].toUpperCase().indexOf(a.campo.toUpperCase()) >= 0);
-
-
             }
 
         }
         this.cabecera = this.cabecera.filter(x => x.Corredor != "TOTAL");
-        this.ObtenerContratosFiltro();
+        if (this.mostrarPendientes) {
+            this.cabecera = this.cabecera.filter(x => x.KilosPendienteEntrega > 0);
+        }
+        this.getTotalKilogramos();
     }
 
     getTotalKilogramos() {
-        this.KilosEntregados = this.cabecera.map(t => t.KilosEntregados).reduce((acc, value) => acc + value, 0);
-        this.KilosPendienteEntrega = this.cabecera.map(t => t.KilosPendienteEntrega).reduce((acc, value) => acc + value, 0);
-        this.KilosTotales = this.cabecera.map(t => t.KilosTotales).reduce((acc, value) => acc + value, 0);
-
-        this.subscription = this.service.getTotalFormatter(this.KilosEntregados, this.KilosTotales, this.KilosPendienteEntrega).subscribe(
-            (result) => {
-                this.KilosEntregados = result.KilosEntregadosView;
-                this.KilosPendienteEntrega = result.KilosPendienteEntregaView;
-                this.KilosTotales = result.KilosTotalesView;
-            },
-            (error) => {
-                this.mensajeComponent.setErrorMsg(error.message);
-            }
-        );
-
+        this.KilosEntregados = this.cabecera.filter(x => x.Corredor !="TOTAL").map(t => t.KilosEntregados).reduce((acc, value) => acc + value, 0).toString();
+        this.KilosPendienteEntrega = this.cabecera.filter(x => x.Corredor != "TOTAL").map(t => t.KilosPendienteEntrega).reduce((acc, value) => acc + value, 0).toString();
+        this.KilosTotales = this.cabecera.filter(x => x.Corredor != "TOTAL").map(t => t.KilosTotales).reduce((acc, value) => acc + value, 0).toString();
     }
 
     exportExcelReporteContrato() {
@@ -185,8 +222,6 @@ export class ReporteContratoListado extends ListBaseComponent implements OnInit,
                 "Kgs Totales": info.KilosTotalesStr,
                 "Kgs Entregados": info.KilosEntregadosStr,
                 "Kgs Pendiente de entrega": info.KilosPendienteEntregaStr
-
-
             }
         });
 
@@ -209,40 +244,55 @@ export class ReporteContratoListado extends ListBaseComponent implements OnInit,
     }
 
     ObtenerContratosFiltro() {
-        this.subscription = this.service.obtenerContratosFiltro(this.filtroFechaComponent.fecha_inicio,
-            this.filtroFechaComponent.fecha_fin, this.mostrarPendientes, this.cabecera).subscribe(
+        if (this.filtroContrato == "") this.blockUI.start(''); 
+        this.subscription = this.service.obtenerContratosFiltro(this.filtroFechaReporteComponent.fecha_inicio,
+            this.filtroFechaReporteComponent.fecha_fin, this.mostrarPendientes, this.cabecera).subscribe(
                 (result: any) => {
                     this.mensajeComponent.setMsgsEmpty();
-                    this.spinnerComponent.hideIt();
-                    if (result.logout == true) {
+                    this.blockUI.stop();
+                    this.cargarFiltrosContratos(result);
+                    if (result.logout) {
                         this.sessionDataService.logout();
                     } else if (result.error != undefined && result.error != "") {
                         this.mensajeComponent.setErrorMsg(result.error);
                     } else if (result.info != undefined) {
                         this.mensajeComponent.setInfoMsg(result.info);
+                        this.varciarFiltrosReporte();
+                        this.show = false;
                     } else {
                         this.cabecera = result.data.Resultados;
-                        this.cargarFiltrosContratos(result);
                         this.getTotalKilogramos();
                         this.show = true;
-
                     }
 
                 },
                 (error) => {
+                    this.blockUI.stop();
                     this.mensajeComponent.setErrorMsg(error.message);
+
                 }
             );
     }
 
     varciarFiltrosReporte() {
-        this.filtroCliente == null;
-        this.filtroContrato == null;
-        this.filtroProducto == null;
-        this.filtroTipoContrato == null;
-        this.clienteSelected == "";
+        this.filtroCliente = null;
+        this.filtroProducto =null;
+        this.filtroTipoContrato = null;
+        this.clienteSelected = "";
         this.productoSelected = "";
         this.tipoContratoSelected = "";
     }
   
+    get verTipoContrato(): boolean{
+        return !this.esCorredor;
+    }
+    get verNroPedidoCliente():boolean{
+        return !this.esCorredor;
+    }
+    get verCorredor():boolean{
+        return !this.esCorredor;
+    }
+    get verCliente():boolean{
+        return !this.esCliente
+    }
 }

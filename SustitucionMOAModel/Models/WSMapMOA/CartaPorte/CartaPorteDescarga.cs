@@ -11,8 +11,15 @@ namespace SustitucionMOAModel.Models.WSMapMOA.CartaPorte
         public string cartaPorte { get; set; }
         public string fechaDescarga { get; set; }
         public string producto { get; set; }
+        public decimal pesoBrutoOrigen { get; set; }
+        public decimal taraOrigen { get; set; }
+        public decimal netoOrigen { get; set; }
+        public decimal brutoDestino { get; set; }
+        public decimal taraDestino { get; set; }
+        public decimal netoDestino { get; set; }
         public decimal netoDescontado { get; set; }
         public string unidadNetoDescontado { get; set; }
+        public decimal mermas { get; set; }
         public string vendedorId { get; set; }
         public string vendedor { get; set; }
         public string sust { get; set; }

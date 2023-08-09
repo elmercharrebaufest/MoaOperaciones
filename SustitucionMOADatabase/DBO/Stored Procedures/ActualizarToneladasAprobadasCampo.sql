@@ -1,9 +1,9 @@
-﻿CREATE PROCEDURE [dbo].[ActualizarToneladasAprobadasCampo] @IdCampo INT, @IdTSA INT, @Cuit NVARCHAR(15), @ToneladasAprobadas FLOAT, @MotivoRechazo NVARCHAR(500)  
+﻿CREATE PROCEDURE [dbo].[ActualizarToneladasAprobadasCampo] @IdCampo INT, @IdTSA INT, @Cuit NVARCHAR(15), @ToneladasAprobadas FLOAT, @MotivoRechazo NVARCHAR(500), @CosechaNombre nvarchar(40)
 AS   
 BEGIN  
  DECLARE @LogId BIGINT  
  DECLARE @Log varchar(MAX)=''  
- INSERT INTO LogActualizarToneladasAprobadasCampo values (GETDATE(),@IdCampo,@IdTSA,@Cuit,@ToneladasAprobadas,@MotivoRechazo,'')  
+ INSERT INTO LogActualizarToneladasAprobadasCampo values (GETDATE(),@IdCampo,@IdTSA,@Cuit,@ToneladasAprobadas,@MotivoRechazo,'',@CosechaNombre)  
  set @LogId = @@IDENTITY  
   
 SET NOCOUNT ON  
@@ -15,7 +15,12 @@ BEGIN TRY
   UPDATE dbo.CampoSustentable SET IdScato = @IdTSA WHERE Id = @IdCampo  
   
  SELECT @CampoSustentableId = Id FROM dbo.CampoSustentable WHERE Id = @IdCampo  
- SELECT @CampoCosechaId = Id FROM dbo.CampoCosecha WHERE CampoSustentable_Id = @CampoSustentableId  
+
+ SELECT @CampoCosechaId = CC.Id
+ FROM CampoCosecha CC inner join
+    Cosecha C on CC.Cosecha_Id = C.Id
+ WHERE CC.CampoSustentable_Id = @CampoSustentableId and C.Nombre = @CosechaNombre
+ 
  IF @@ROWCOUNT <> 1  
     BEGIN  
   print('error  SELECT @CampoCosechaId = Id FROM dbo.CampoCosecha WHERE CampoSustentable_Id = @CampoSustentableId')  

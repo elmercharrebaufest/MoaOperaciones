@@ -158,7 +158,7 @@ namespace SustitucionMOAUtils.Services
                 List<string> cartaPorte = new List<string>();
                 CartaPorteDescargaExcelWSMOAResponse data = (CartaPorteDescargaExcelWSMOAResponse)new RecepcionesExcelConsumerMOA().request(proveedor, fechas, cartaPorte);
                 ValidarRespuesta(data);
-                return ExcelExport.ToExcel(data.cartasPorte, new string[] { "Carta Porte", "Fecha Descarga", "Producto", "Descargado", "Unidad Descargado", "ID Vendedor", "Vendedor", "Sust", "Titular", "Desc. Titular", "Contrato Molinos", "CG" }, "Reporte Descargas");
+                return ExcelExport.ToExcel(data.cartasPorte, new string[] { "Carta Porte", "Fecha Descarga", "Producto","Bruto Origen","Tara Origen","Neto Origen","Bruto Destino","Tara Destino", "Neto Destino", "Descargado", "Unidad Descargado", "Mermas", "ID Vendedor", "Vendedor", "Sust", "Titular", "Desc. Titular", "Contrato Molinos", "CG" }, "Reporte Descargas");
             }
             catch (InfoCustomException)
             {

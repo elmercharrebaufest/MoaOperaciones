@@ -23,6 +23,7 @@ namespace SustitucionMOATest.Controllers
     {
         private OrdenDeCargaController target;
         private Mock<IOrdenDeCargaService> ordenDeCargaServiceMock;
+        private Mock<IFacturaAnticipadaService> facturaAnticipadaServiceMock;
         private Mock<IConsultaService> consultaServiceMock;
         private OrdenDeCarga ordenDeCarga;
         private string expectedJson;
@@ -35,7 +36,8 @@ namespace SustitucionMOATest.Controllers
         {
             ordenDeCargaServiceMock = new Mock<IOrdenDeCargaService>();
             consultaServiceMock = new Mock<IConsultaService>();
-            target = new OrdenDeCargaController(consultaServiceMock.Object, ordenDeCargaServiceMock.Object);
+            facturaAnticipadaServiceMock = new Mock<IFacturaAnticipadaService>();
+            target = new OrdenDeCargaController(consultaServiceMock.Object, ordenDeCargaServiceMock.Object, facturaAnticipadaServiceMock.Object);
 
 
             var fakeIdentity = new GenericIdentity("User");
@@ -84,11 +86,11 @@ namespace SustitucionMOATest.Controllers
                 {
                     new OrdenDeCargaDto { Id = 1, Cliente ="", PatenteChasis = "", CUITCliente ="" }
                 }
-            
+
             };
-           
+
             ordenDeCargaServiceMock.Setup(x => x.Listar(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).Returns(orden.data);
-            var result = (JsonResult)target.GetListado(DateTime.Now.ToString(),DateTime.Now.ToString());
+            var result = (JsonResult)target.GetListado(DateTime.Now.ToString(), DateTime.Now.ToString());
             expectedJson = JsonConvert.SerializeObject(orden);
             resultJson = JsonConvert.SerializeObject(result.Data);
             Assert.NotNull(result);
@@ -101,14 +103,14 @@ namespace SustitucionMOATest.Controllers
         {
             var orden = new
             {
-               data = new OrdenDeCargaDetalleDto
+                data = new OrdenDeCargaDetalleDto
 
-                    { 
-                        Id = 1, 
-                        Cliente = "", 
-                        PatenteAcoplado = "", 
-                        CUITCliente = "" 
-                    }
+                {
+                    Id = 1,
+                    Cliente = "",
+                    PatenteAcoplado = "",
+                    CUITCliente = ""
+                }
             };
 
             ordenDeCargaServiceMock.Setup(x => x.Obtener(It.IsAny<string>(), It.IsAny<int>())).Returns(orden.data);
@@ -123,7 +125,7 @@ namespace SustitucionMOATest.Controllers
         public void AnularOrdenTest()
         {
             var expected = new { data = SuccessMsg.OrdenDeCargaAnulada };
-            ordenDeCargaServiceMock.Setup(s => s.AnularOrden(It.Is<int>(i => i == ordenId))).Returns(expected.data);
+            ordenDeCargaServiceMock.Setup(s => s.AnularOrden(It.Is<int>(i => i == ordenId), It.IsAny<string>())).Returns(expected.data);
             var result = (JsonResult)target.AnularOrden(ordenId);
             expectedJson = JsonConvert.SerializeObject(expected);
             resultJson = JsonConvert.SerializeObject(result.Data);
@@ -151,23 +153,6 @@ namespace SustitucionMOATest.Controllers
             Assert.AreEqual(expectedJson, resultJson);
         }
 
-        [Test()]
-        public void ObtenerPedidos()
-        {
-            var listaPedidos = "0012059285, 0012059686, 0012060616, 0012061378, 0012061439, 0012061868";
-            var lista = listaPedidos.Split(',').ToList();
-            var pedidos = new 
-            {
-                data = lista
-            };
-
-            ordenDeCargaServiceMock.Setup(s => s.ObtenerPedidos(It.Is<int>(i => i == ordenId))).Returns(pedidos.data);
-            var result = (JsonResult)target.ObtenerPedidos(ordenId);
-            expectedJson = JsonConvert.SerializeObject(pedidos);
-            resultJson = JsonConvert.SerializeObject(result.Data);
-            Assert.AreEqual(expectedJson, resultJson);
-            //ordenDeCargaServiceMock.Verify(s => s.ObtenerPedidos(ordenId));
-        }
 
         [Test()]
         public void NotificarTransporteTest()
@@ -196,6 +181,6 @@ namespace SustitucionMOATest.Controllers
             Assert.AreEqual(expectedJson, resultJson);
 
         }
-        
+
     }
 }

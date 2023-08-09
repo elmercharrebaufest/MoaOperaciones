@@ -1,5 +1,11 @@
 ﻿IF NOT EXISTS (SELECT TOP 1 1 FROM HabilitacionJob WHERE Nombre = 'ReporteLiquidacionesInformadasJob') BEGIN    INSERT into HabilitacionJob VALUES ('ReporteLiquidacionesInformadasJob',1)END
 IF NOT EXISTS (SELECT TOP 1 1 FROM HabilitacionJob WHERE Nombre = 'VerificarTransporteOrdenesDeCargaJob') BEGIN    INSERT into HabilitacionJob VALUES ('VerificarTransporteOrdenesDeCargaJob',1)END
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM HabilitacionJob WHERE Nombre = 'EnviarASAPOrdenDeCargaJob') 
+BEGIN 
+	INSERT INTO HabilitacionJob VALUES ('EnviarASAPOrdenDeCargaJob', 1) 
+END
+
 IF NOT EXISTS (SELECT TOP 1 1 FROM HabilitacionJob WHERE Nombre = 'ReporteCamposSustentablesTSAJob') BEGIN    INSERT into HabilitacionJob VALUES ('ReporteCamposSustentablesTSAJob',1)END
 IF NOT EXISTS (SELECT TOP 1 1 FROM HabilitacionJob WHERE Nombre = 'ReporteConflictosCamposSustentablesJob') BEGIN    INSERT into HabilitacionJob VALUES ('ReporteConflictosCamposSustentablesJob',1)END
 IF NOT EXISTS (SELECT TOP 1 1 FROM HabilitacionJob WHERE Nombre = 'ActualizarBaseDeDatosSolpSapJob') BEGIN    INSERT into HabilitacionJob VALUES ('ActualizarBaseDeDatosSolpSapJob',1)END
@@ -7,4 +13,7 @@ IF NOT EXISTS (SELECT TOP 1 1 FROM HabilitacionJob WHERE Nombre = 'VencimientoOr
 IF NOT EXISTS (SELECT TOP 1 1 FROM HabilitacionJob WHERE Nombre = 'ActualizarEstadoSolpSapJob') BEGIN    INSERT into HabilitacionJob VALUES ('ActualizarEstadoSolpSapJob',1)END
 IF NOT EXISTS (SELECT TOP 1 1 FROM HabilitacionJob WHERE Nombre = 'ObtenerSolpsDesdeSAPJob') BEGIN    INSERT into HabilitacionJob VALUES ('ObtenerSolpsDesdeSAPJob',1)END
 IF NOT EXISTS (SELECT TOP 1 1 FROM HabilitacionJob WHERE Nombre = 'ActualizarLocalidades') BEGIN    INSERT into HabilitacionJob VALUES ('ActualizarLocalidades',1)END
-
+IF NOT EXISTS (SELECT TOP 1 1 FROM HabilitacionJob WHERE Nombre = 'ActualizarSISAJob') BEGIN    INSERT into HabilitacionJob VALUES ('ActualizarSISAJob',1)END
+IF NOT EXISTS (SELECT TOP 1 1 FROM HabilitacionJob WHERE Nombre = 'VencimientoOrdenesDeCargaFasonJob') BEGIN    INSERT into HabilitacionJob VALUES ('VencimientoOrdenesDeCargaFasonJob',1)END
+IF NOT EXISTS (SELECT TOP 1 1 FROM HabilitacionJob WHERE Nombre = 'ReporteLoginsJob') BEGIN    INSERT into HabilitacionJob VALUES ('ReporteLoginsJob',1)END
+IF NOT EXISTS (SELECT TOP 1 1 FROM HabilitacionJob WHERE Nombre = 'VerificarSituacionCrediticiaJob') BEGIN    INSERT into HabilitacionJob VALUES ('VerificarSituacionCrediticiaJob',1)END

@@ -1,0 +1,187 @@
+﻿input:disabled,
+::ng-deep .ui-autocomplete-input:disabled,
+::ng-deep .ui-inputtext:disabled {
+    opacity: 0.9 !important;
+    background-color: #bebebe !important;
+    color: #333232 !important;
+}
+
+::ng-deep .ui-autocomplete-input {    
+    top: 0px;
+}
+
+.textCenter {
+    text-align: center;
+}
+
+/* ::ng-deep .tabla-posiciones .ui-table .ui-table-thead > tr > th {
+    background-color: #4D60A8 !important;
+} */
+
+::ng-deep .tabla-posiciones .ui-table .ui-table-tbody .posicion-eliminada {
+    background-color: #FFD6D6 !important;
+} 
+
+::ng-deep .tabla-posiciones .ui-table .ui-table-tbody tr {
+    background-color: white !important;
+}
+
+::ng-deep .tabla-posiciones .ui-table table {
+    border-collapse: separate !important;
+    border: solid #DDD;
+    border-width: 1px 1px 0px 0px;
+}
+
+::ng-deep .tabla-posiciones .ui-table table {
+    border: solid #DDD;
+    border-width: 0px 1px 1px 0px;
+}
+
+::ng-deep .tabla-posiciones .ui-menuitem-link .ui-menuitem-text {
+    color: #999999 !important;
+}
+
+::ng-deep .tabla-posiciones .ui-tabmenu .ui-tabmenu-nav .ui-tabmenuitem {
+    background-color: white;
+    border: none;
+}
+
+::ng-deep .tabla-posiciones .ui-tabmenu .ui-tabmenu-nav .ui-tabmenuitem.ui-state-active {
+    background-color: white;
+    border-bottom: 3px solid #4D60A8 !important;
+    border: none;
+}
+
+::ng-deep .tabla-posiciones .ui-tabmenuitem.ui-state-active .ui-menuitem-link .ui-menuitem-text {
+    color: #4D60A8 !important;
+}
+
+/* Formato de cabeceras y celdas */
+.tabla-servicio th, .tabla-grid-servicio td, .tabla-material th, .tabla-grid-material td{
+    padding: 0 5px;
+    text-transform: none;
+    font-size: 12px;
+    height: 40px;
+    border: solid #DDD;
+    border-width: 1px 0px 0px 1px;
+}
+
+/* Tamaños dependiento si la tabla es servicio o material, algunas columnas comparten el mismo tamaño*/
+.tabla-servicio th:nth-of-type(1), .tabla-grid-servicio td:nth-of-type(1), .tabla-material th:nth-of-type(1), .tabla-grid-material td:nth-of-type(1) {
+    width: 30px;
+}
+
+.tabla-servicio th:nth-of-type(2), .tabla-grid-servicio td:nth-of-type(2), .tabla-material th:nth-of-type(2), .tabla-grid-material td:nth-of-type(2) {
+    width: 30px;
+}
+
+.tabla-servicio th:nth-of-type(3), .tabla-grid-servicio td:nth-of-type(3), .tabla-material th:nth-of-type(3), .tabla-grid-material td:nth-of-type(3) {
+    width: 40px;
+}
+
+/* Posicion 4 hidden */
+
+.tabla-servicio th:nth-of-type(5), .tabla-grid-servicio td:nth-of-type(5) {
+    width: 100px;
+}
+
+/* Posicion 5 materiales tipo imp */
+.tabla-material th:nth-of-type(5), .tabla-grid-material td:nth-of-type(5) {
+    width: 45px;
+    padding: 0;
+}
+
+.tabla-servicio th:nth-of-type(6), .tabla-grid-servicio td:nth-of-type(6) {
+    width: 100px;
+}
+
+/* Posicion 6 materiales centro */
+.tabla-material th:nth-of-type(6), .tabla-grid-material td:nth-of-type(6) {
+    width: 65px;
+    padding: 0;
+}
+
+.tabla-servicio th:nth-of-type(7), .tabla-grid-servicio td:nth-of-type(7) {
+    width: 100px;
+}
+
+/* Posicion 7 materiales almacén */
+.tabla-material th:nth-of-type(7), .tabla-grid-material td:nth-of-type(7) {
+    width: 70px;
+    padding: 0;
+}
+
+.tabla-servicio th:nth-of-type(8), .tabla-grid-servicio td:nth-of-type(8) {
+    width: 280px;
+}
+
+/* Posicion 8 materiales código */
+.tabla-material th:nth-of-type(8), .tabla-grid-material td:nth-of-type(8) {
+    width: 75px;
+}
+
+.tabla-servicio th:nth-of-type(9), .tabla-grid-servicio td:nth-of-type(9) {
+    width: 120px;
+}
+
+/* Posición 9 materiales descripción */
+.tabla-material th:nth-of-type(9), .tabla-grid-material td:nth-of-type(9) {
+    width: 80px;
+}
+
+.tabla-servicio th:nth-of-type(10), .tabla-grid-servicio td:nth-of-type(10) {
+    width: 80px;
+}
+
+/* Posicion 10 materiales ctd */
+.tabla-material th:nth-of-type(10), .tabla-grid-material td:nth-of-type(10) {
+    width: 60px;
+}
+
+/* Celdas exclusivas materiales */
+.tabla-material th:nth-of-type(11), .tabla-grid-material td:nth-of-type(11), .tabla-material th:nth-of-type(12), .tabla-grid-material td:nth-of-type(12) {
+    width: 65px;
+    padding: 0;
+}
+
+.tabla-material th:nth-of-type(13), .tabla-grid-material td:nth-of-type(13), .tabla-material th:nth-of-type(14), .tabla-grid-material td:nth-of-type(14) {
+    width: 60px;
+}
+
+.tabla-material th:nth-of-type(13), .tabla-grid-material td:nth-of-type(13), .tabla-material th:nth-of-type(14), .tabla-grid-material td:nth-of-type(14) {
+    width: 60px;
+}
+
+.tabla-material th:nth-of-type(15), .tabla-grid-material td:nth-of-type(15) {
+    width: 50px;
+}
+
+.tabla-material th:nth-of-type(16), .tabla-grid-material td:nth-of-type(16) {
+    width: 60px;
+}
+
+.tabla-material th:nth-of-type(17), .tabla-grid-material td:nth-of-type(17) {
+    width: 45px;
+}
+
+.tabla-servicio th:nth-of-type(11), .tabla-grid-servicio td:nth-of-type(11) {
+    width: 60px;
+}
+
+.tabla-servicio th:nth-of-type(12), .tabla-grid-servicio td:nth-of-type(12) {
+    width: 70px;
+}
+
+.tabla-servicio th:nth-of-type(13), .tabla-grid-servicio td:nth-of-type(13) {
+    width: 55px;
+}
+
+.sub-tabla {
+    width: 880px;
+}
+
+@media only screen and (min-width: 1240px) { 
+    .sub-tabla {
+        width: calc(100vw - 377px);
+    }
+}

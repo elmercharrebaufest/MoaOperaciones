@@ -1,5 +1,5 @@
 ﻿declare let ga: Function;
-import { Component, Injector, OnDestroy, ViewChild } from '@angular/core';
+import { Component, HostListener, Injector, OnDestroy, ViewChild } from '@angular/core';
 import { Router, NavigationEnd } from "@angular/router";
 import { ServiceLocator } from './common/services/ServiceLocator';
 import { SessionDataService } from './common/services/SessionDataService';
@@ -10,6 +10,8 @@ import { Location } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { UsuarioLogueado } from './common/models/usuario-logueado';
 import { Subscription } from 'rxjs';
+import { ConfirmationService } from 'primeng/components/common/api';
+
 
 
 @Component({
@@ -27,7 +29,7 @@ export class AppComponent implements OnDestroy {
     private validarLoginSub: Subscription;
     private aceptarTyCSub: Subscription;
 
-    constructor(protected sessionDataService: SessionDataService, protected navService: NavService, private injector: Injector, public router: Router, private http: HttpClient, private location: Location) {
+    constructor(protected sessionDataService: SessionDataService, protected navService: NavService, private injector: Injector, public router: Router, private http: HttpClient, private location: Location, private confirmationService: ConfirmationService) {
         ServiceLocator.injector = this.injector;
         this.router.events.subscribe(event => {
             if (event instanceof NavigationEnd) {
@@ -40,6 +42,24 @@ export class AppComponent implements OnDestroy {
     }
 
     disabledAgreement: boolean = true;
+
+    aboutScreen: boolean;
+
+    salir() {
+        this.navService.navegarSeccion('/compras');
+    }
+
+    @HostListener('window:keydown', ['$event'])
+    keyEvent(event: KeyboardEvent) {
+        if(event.altKey == true && event.ctrlKey == true && event.key == "b" ){          
+            document.getElementById("aboutScreenBTN").click();
+        };                  
+    }
+
+    closeAboutScreen() {
+        document.getElementById("aboutScreenBTN").click();
+    }
+    
 
     ngOnInit() {
 
@@ -97,6 +117,9 @@ export class AppComponent implements OnDestroy {
         sessionStorage.setItem("permisos", JSON.stringify(result.permisos));
         sessionStorage.setItem("seccionesVisitadas", result.seccionesVisitadas);
         sessionStorage.setItem("apikey", result.apikey);
+        sessionStorage.setItem("cuit", result.cuit)
+        sessionStorage.setItem("proveedorId", result.proveedorId)
+
         this.sessionDataService.setNombre(result.nombre);
         this.sessionDataService.setUsername(result.username);
         this.sessionDataService.setProveedor(result.proveedor);
@@ -106,6 +129,11 @@ export class AppComponent implements OnDestroy {
         this.sessionDataService.setGranosFlag(result.granosFlag);
         this.sessionDataService.setSeccionesVisitadas(result.seccionesVisitadas);
         this.sessionDataService.setApikey(result.apikey);
+        this.sessionDataService.setCuit(result.cuit);
+        this.sessionDataService.setProveedorId(result.proveedorId);
+
+
+
 
         sessionStorage.setItem("granosSelected", result.granosFlag == 'A' ? 'G' : result.granosFlag);
 

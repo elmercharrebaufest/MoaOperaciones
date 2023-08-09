@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Linq;
 
 namespace SustitucionMOAModel.Models.DataAgro
 {
@@ -16,7 +12,27 @@ namespace SustitucionMOAModel.Models.DataAgro
         public int CampaniaTableroId { get; set; }
         public string Codigo { get; set; }
         public string CodigoSap { get; set; }
+        public bool ValidaSisaRuca { get; set; }
+        public string Abreviacion { get; set; }
 
-        public MaterialDto () { }
+        public MaterialDto() { }
+
+        public string NombreProducto
+        {
+            get
+            {
+                try
+                {
+                    if (string.IsNullOrEmpty(Descripcion))
+                        return "";
+                    var splited = Descripcion.Split('-');
+                    return splited.LastOrDefault();
+                }
+                catch
+                {
+                    return "";
+                }
+            }
+        }
     }
 }

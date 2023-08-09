@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output} from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ConfirmationService } from 'primeng/api';
 import { ListBaseComponent } from '../../common/base-components/list-base-component';
@@ -7,9 +7,10 @@ import { ModalService } from '../../common/services/ModalService';
 import { NavService } from '../../common/services/NavService';
 import { SecurityService } from '../../common/services/SecurityService';
 import { SessionDataService } from '../../common/services/SessionDataService';
-import { ReporteContratoListado } from '../listado/reporte-contrato.listado.component';
 import { ReporteContratoService } from '../reporte-contrato.service';
 import * as XLSX from 'xlsx';
+import { DetalleReporteContrato } from '../ReporteContrato.model';
+import { OrdenesDeCargaService } from '../../ordenes-de-carga/ordenes-de-carga.service';
 
 
 @Component({
@@ -18,30 +19,39 @@ import * as XLSX from 'xlsx';
     styleUrls: ['./reporte-contrato.detalle.component.css']
 })
 export class DetalleComponent extends ListBaseComponent implements OnInit {
+    contratoId: string;
+    ordenDeCargaId: string=null;
+    detalles: DetalleReporteContrato[] = null;
+    KilosFacturados = 0;
+    KilosEntregados = 0;
 
-    constructor(private route: ActivatedRoute, protected service: ReporteContratoService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService, private confirmationService: ConfirmationService) {
+    constructor(private route: ActivatedRoute, 
+                protected service: ReporteContratoService, 
+                protected ordenesDeCargaService: OrdenesDeCargaService, 
+                protected navService: NavService, 
+                protected sessionDataService: SessionDataService, 
+                protected securityService: SecurityService, 
+                protected floatMsgService: FloatMsgService, 
+                protected modalService: ModalService, 
+                private confirmationService: ConfirmationService) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
-      
+        this.service.getContratoSeleccionado().subscribe(data => {
+            if (data != null && data >'0'){
+                this.getDetalleContrato(data);
+                this.contratoId = data;
+            }
+        });
     }
-  
-    contratoId: string = "";
-    detalle: any[] = null;
-
-
     ngOnInit() {
-
-        this.getDetalleContrato();
-
+        
     }
 
-    getDetalleContrato() {
+    getDetalleContrato(contratoId:string) {
         this.data = null;
         this.mensajeComponent.setMsgsEmpty();
-        this.spinnerComponent.showIt();
-        this.route.params.subscribe(params => {
-            this.contratoId = params['id'];
+        this.spinnerComponent.showIt();        
             this.unsubscribe();
-            this.subscription = this.service.getDetalleContrato2(this.contratoId).subscribe(
+            this.subscription = this.service.getDetalleContrato2(contratoId).subscribe(
                 (result: any) => {
                     this.spinnerComponent.hideIt();
                     if (result.logout == true) {
@@ -51,9 +61,8 @@ export class DetalleComponent extends ListBaseComponent implements OnInit {
                     } else if (result.info != undefined) {
                         this.mensajeComponent.setInfoMsg(result.info);
                     } else {
-                        this.detalle = result.data;
-                        console.log(this.detalle);
-
+                        this.detalles = result.data;
+                        this.obtenerKilos();
                     }
                 },
                 error => {
@@ -62,15 +71,14 @@ export class DetalleComponent extends ListBaseComponent implements OnInit {
                 }
             );
 
-        });
+        
     }
-
 
     exportExcelReporteContratoDetalle() {
         this.mensajeComponent.setMsgsEmpty();
         let informacionExportar: any;
 
-        informacionExportar = this.detalle.map(info => {
+        informacionExportar = this.detalles.map(info => {
             return {
                 "Fecha Pedido": info.FechaPedido || "-",
                 "Fecha Carga": info.FechaCarga || "-",
@@ -80,9 +88,6 @@ export class DetalleComponent extends ListBaseComponent implements OnInit {
                 "Chasis": info.Chasis || "-",
                 "Acoplado": info.Acoplado || "-",
                 "Chofer": info.Chofer
-              
-
-
             }
         });
 
@@ -102,6 +107,26 @@ export class DetalleComponent extends ListBaseComponent implements OnInit {
         XLSX.utils.book_append_sheet(workbook, worksheet, 'Reporte de contratos detalle');
         //escribe el file para ser descargado
         const excelBuffer: any = XLSX.writeFile(workbook, FileTitle + '.xlsx');
+    }
+
+    obtenerKilos() {
+        this.KilosEntregados = this.detalles.reduce((prev,curr)=> prev + curr.CantidadEntregada,0)
+        this.KilosFacturados = this.detalles.reduce((prev,curr)=> prev + curr.CantidadFactura,0)
+    }
+    navegarDetalleOrdenCarga(det: DetalleReporteContrato){
+        this.service.getOrdenDeCarga(det).subscribe({
+            next:(res)=>{
+                if(res.error){
+                    this.floatMsgService.setErrorMsg(res.error)
+                }
+                else if(res.info){
+                    this.floatMsgService.setInfoMsg(res.info)
+                }else{
+                    this.goToSeccionParam('/ordenes-de-carga/detalle', res.data.Id.toString());
+                }
+            }
+            ,
+        })
     }
 
 }

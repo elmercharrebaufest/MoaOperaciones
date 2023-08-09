@@ -12,7 +12,9 @@ namespace SustitucionMOAModel.Models.WSMapMOA.Contrato.Detalle
         public decimal calaResul { get; set; }
         public decimal camaResul { get; set; }
         public string kgDto { get; set; }
+        public decimal kgDtoValor { get; set; }
         public decimal dto { get; set; }
+        public string certificado { get; set; }
     }
 
 }

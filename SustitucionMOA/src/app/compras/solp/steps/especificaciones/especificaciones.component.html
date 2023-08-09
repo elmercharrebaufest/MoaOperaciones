@@ -1,0 +1,144 @@
+<form [formGroup]="formularioEspecificaciones">
+    <div class="container-fluid">
+        <!-- CONTENT-->
+        <!-- Contiene todo -->
+        <section class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+            <mensaje></mensaje>
+            <div class="inputCompras">
+                <div class="row myRow" style="padding-top: 2px;">
+                    <div class="row myRow">
+                        <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                            <label class="labelCompras" for="editorTexto"> Adjuntar anexos y/o archivo de consideraciones generales. </label>
+                            <p-fileUpload [styles]="{'margin-left':'-13px'}" name="fileUploadEspecificicaciones" auto="true" multiple="multiple" chooseLabel="Elegir archivo"
+                                          [showUploadButton]=false [showCancelButton]=false [customUpload]="true"
+                                          (uploadHandler)="uploadHandler($event)">
+                                <ng-template *ngIf="viewModel.archivosEspecificacionesNuevos.length == 0" pTemplate="toolbar">
+                                    <div *ngIf="viewModel.archivosEspecificacionesNuevos.length == 0"
+                                         style="display: inline !important; font-family: Roboto Regular !important; color: #666666;">
+                                        Ningún archivo elegido
+                                    </div>
+                                </ng-template>
+                                <ng-template let-file pTemplate="file">
+
+                                </ng-template>
+                            </p-fileUpload>
+                        </div>
+                        <div *ngIf="this.mostrarRadioUsarTemplateCondicionesGenerales" class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                            <label class="labelCompras" for="editorTexto"> Usar template de condiciones generales</label>
+                            <div class="ui-g" style="width:500px;margin-bottom:1em">
+                                <div class="ui-g-12"><input type="radio" [ngModelOptions]="{standalone: true}" name="model.tieneCondicionesGenerales" [(ngModel)]="model.tieneCondicionesGenerales" [value]="true"><label>&nbsp;Si</label></div>
+                                <div class="ui-g-2"><input type="radio" [ngModelOptions]="{standalone: true}" name="model.tieneCondicionesGenerales" [(ngModel)]="model.tieneCondicionesGenerales" [value]="false"><label>&nbsp;No</label></div>
+                                <div class="ui-g-9" style="font-size: 10px; font-weight: lighter; margin-top: 1em;">(En caso de seleccionar esta opcion puede cargarlo como archivo adjunto)</div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="col-md-12 row" style="margin-left: -1px; margin-bottom: 3px">
+                        <p-panel *ngIf="viewModel.archivosEspecificacionesNuevos.length > 0 || viewModel.archivosEspecificaciones.length > 0" header="Anexos agregados" [toggleable]="true" [collapsed]="false">
+                            <div class="row myRow">
+                                <!-- <div>
+                                    <label class="labelCompras" for="editorTexto"> Anexos agregados</label>
+                                </div>  -->
+                                <!-- Archivos que ya fueron guardados-->
+                                <div class="col-xs-12 col-md-9"
+                                     *ngFor="let archivo of viewModel.archivosEspecificaciones">
+                                    <img class="pointer" src="./Content/images/icons/trashRed.svg" alt="imageAlt"
+                                         (click)="eliminarArchivo(false,archivo)" style="width: 26px;" />
+                                    <a class="link-archivo pointer" (click)="descargarArchivo(archivo)">
+                                        {{archivo.nombreArchivo}}
+                                    </a>
+                                </div>
+                                <!--Fin Archivos que ya fueron guardados-->
+                                <!--Archivos nuevos-->
+                                <div class="col-xs-12 col-md-9"
+                                     *ngFor="let archivo of this.viewModel.archivosEspecificacionesNuevos">
+                                    <img class="pointer" src="./Content/images/icons/trashRed.svg" alt="imageAlt"
+                                         (click)="eliminarArchivo(true,archivo)" style="width: 26px;" />
+                                    <a class="link-archivo pointer" (click)="descargarArchivo(archivo)" style="font-weight: lighter;">
+                                        {{archivo.name}}
+                                    </a>
+                                </div>
+                                <!--Fin Archivos nuevos -->
+                            </div>
+                        </p-panel>
+                    </div>
+
+                    <!--border: 1px solid #a80000;-->
+                    <div class="row myRow">
+                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                            <label class="labelCompras" for="editorTexto">Descripción del servicio </label>&nbsp;&nbsp;<label style="color: gray; font-size: 14px"> (Especificación técnica de la obra, generalidades, detalles, puntos de control, planos, diagramas, etc.)</label>
+                            <quill-editor formControlName="observacion" appDragAndDrop id="observaciones" [(ngModel)]="viewModel.observaciones"
+                                          [styles]="{'min-height':'500px','max-height':'auto'}"
+                                          (onFileDropped)="fileChange($event)" (onSelectionChanged)="selectionChange($event)"
+                                          placeholder="" [modules]="modulesEditor" [required]="true">
+
+                                <div quill-editor-toolbar>
+                                    <span class="ql-formats">
+                                        <select class="ql-size">
+                                            <option value="small"></option>
+                                            <option selected></option>
+                                            <option value="large"></option>
+                                            <option value="huge"></option>
+                                        </select>
+                                    </span>
+
+                                    <span class="ql-formats">
+                                        <button class="ql-bold" aria-label="bold"></button>
+                                        <button class="ql-italic" aria-label="italic"></button>
+                                        <button class="ql-underline" aria-label="underline"></button>
+                                        <button class="ql-strike" aria-label="strike"></button>
+                                    </span>
+
+                                    <span class="ql-formats">
+                                        <button class="ql-list" value="ordered"></button>
+                                        <button class="ql-list" value="bullet"></button>
+                                        <button class="ql-indent" value="-1"></button>
+                                        <button class="ql-indent" value="+1"></button>
+                                    </span>
+
+
+                                    <span class="ql-formats">
+                                        <select class="ql-align">
+                                            <option selected></option>
+                                            <option value="center"></option>
+                                            <option value="right"></option>
+                                            <option value="justify"></option>
+                                        </select>
+                                    </span>
+                                    <span class="ql-formats">
+                                        <button aria-label="Borra estilos" class="ql-clean" type="button"></button>
+                                        <button aria-label="Adjuntar imagen" class="ql-image" type="button"></button>
+                                    </span>
+                                </div>
+
+                            </quill-editor>
+
+
+                            <!-- <div *ngIf="mostrarError('observacion')">
+                                <p class="text-danger">campo obligatorio</p>
+                            </div> -->
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <!-- END form-->
+        </section>
+        <!--End CONTENT-->
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+            <div class="margenInput obligatorio">
+                * Campos obligatorios
+            </div>
+        </div>
+    </div>
+</form>
+
+<!-- Modal eliminacion de posicion-->
+<p-confirmDialog #dialogo header="Confirmación" icon="pi pi-exclamation-triangle" [width]="400" [responsive]="true" appendTo="body">
+    <p-footer>
+        <button type="button" pButton label="Cancelar" class="ui-button-info botonModal" (click)="dialogo.reject()"></button>
+        <button type="button" pButton label="Aceptar" class="ui-button-success botonModal" (click)="dialogo.accept()"></button>
+    </p-footer>
+</p-confirmDialog>
+<!--fin modal eliminacion de posicion-->

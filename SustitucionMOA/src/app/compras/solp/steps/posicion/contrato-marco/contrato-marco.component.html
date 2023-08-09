@@ -1,0 +1,113 @@
+<p-dialog [(visible)]="displayAsociar" modal="modal" [width]="950" [draggable]="false" [closable]="true"
+	(onHide)="onHideAsociarDialog(dd)" appendTo="body" positionTop="30"
+	[contentStyle]="{ 'max-height':'1500px', 'min-height':'400px'}">
+	<p-header class="headerModal">
+		Asociar Contrato Marco SOLP <div *ngIf="nroSolp" style="display: inline-block;">#{{nroSolp}}</div>
+	</p-header>
+	<div class="row myRow">
+
+		<div class="col-md-12">
+			<strong>Posici&oacute;n</strong>
+			<div>
+				<p-dropdown #dd [options]="posicionesCombo" [(ngModel)]="posicionSelect"
+					(onChange)="getContratoMarco();" placeholder="Elegir tipo posición" optionLabel="label"
+					optionValue="value">
+				</p-dropdown>
+			</div>
+		</div>
+
+		<!-- <div class="col-md-5">
+			<strong>Posici&oacute;n</strong>
+			<div class="as-input" *ngIf="posicionSeleccionada">{{posicionSeleccionada.numeroPosicion}} - {{posicionSeleccionada.tareaSubcontratar}}</div>
+		</div> -->
+	</div>
+	<div class="row myRow">
+		<div class="col-md-12">
+			<strong>Contrato Marco</strong>
+			<p-table #dt class="tabla-contrato-marco" [value]="contratos" [rows]="20" [scrollable]="true"
+				scrollHeight="400px">
+				<!-- (onEditInit)="nuevaPosicion($event)"> -->
+				<ng-template pTemplate="header">
+					<tr>
+						<th></th>
+						<th data-toggle="tooltip" title="no de proveedor">N<sup>o</sup> de proveedor</th>
+						<th data-toggle="tooltip" title="nombre de proveedor">
+							Nombre proveedor
+						</th>
+						<th data-toggle="tooltip" title="contrato">Contrato</th>
+						<th data-toggle="tooltip" title="unidad de Medida">UM</th>
+						<th data-toggle="tooltip" title="cantidad" hidden>Ctd.</th>
+						<th data-toggle="tooltip" title="precio total">Precio</th>
+						<th data-toggle="tooltip" title="moneda">Moneda</th>
+						<th data-toggle="tooltip" title="fecha de validez">
+							Fecha de validez
+						</th>
+						<th data-toggle="tooltip" title="org de compras">
+							Org. de compras
+						</th>
+						<th data-toggle="tooltip" title="centro">
+							Centro
+						</th>
+					</tr>
+				</ng-template>
+				<ng-template pTemplate="body" let-contrato let-rowIndex="rowIndex">
+					<tr>
+						<td>
+							<input type="radio" id="posicionesCM" [(ngModel)]="contratoSeleccionado" name="posicionesCM"
+								[value]="contrato" style="display: block; margin: 0 auto" />
+						</td>
+						<td>
+							{{contrato.ProveedorFijo}}
+
+						</td>
+						<td>
+							{{contrato.NombreProveedor}}
+						</td>
+						<td>
+							{{contrato.NumeroContratoSuperior}}
+						</td>
+						<td>
+							{{contrato.UnidadMedida}}
+						</td>
+						<td hidden>
+							{{contrato.cantidad}}
+						</td>
+						<td>
+							{{contrato.PrecioBruto}}
+						</td>
+						<td>
+							{{contrato.ClaveMoneda}}
+						</td>
+						<td>
+							{{contrato.PeriodoValidez}}
+						</td>
+						<td>
+							{{contrato.OrganizacionCompras}}
+						</td>
+						<td>
+							{{contrato.CentroAprovisionamiento}}
+						</td>
+					</tr>
+				</ng-template>
+			</p-table>
+		</div>
+	</div>
+
+	<!-- Numeroregistroinfo o numerocontrato -->
+
+	<p-footer>
+		<div class="row">
+			<div class="col-md-9" style="text-align: initial;">
+				<label>Si cambia de posición sin oprimir el botón ASOCIAR el contrato seleccionado no se guardará</label>
+			</div>
+			<div class="col-md-3">
+				<button type="button" class="btn btn-danger botonesComprasColor"
+					(click)="onCancelarAsociar(dd)">CANCELAR</button>
+
+				<button type="button" class="btn btn-primary botonesComprasColor" (click)="onAsociar(dd)"
+					*ngIf="contratoSeleccionado">ASOCIAR</button>
+			</div>
+		</div>
+	</p-footer>
+
+</p-dialog>

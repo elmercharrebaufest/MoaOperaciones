@@ -60,7 +60,8 @@ namespace SustitucionMOAWS.WSConsumers
                     estado = vendedor.ESTADO,
                     estadoMoa = "Habilitado",
                     fecha = vendedor.FECHA,
-                    idVendedor = vendedor.ID_VENDEDOR
+                    idVendedor = vendedor.ID_VENDEDOR,
+                    cuit = vendedor.CUIT_VEND
                 });
             }
             return result;

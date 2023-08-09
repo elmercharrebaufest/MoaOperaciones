@@ -4,15 +4,13 @@ import {
   NgModule,
   NO_ERRORS_SCHEMA
 } from "@angular/core";
-import { FormsModule } from "@angular/forms";
+import { ReactiveFormsModule, FormsModule } from "@angular/forms";
 import { HttpClientModule } from "@angular/common/http";
 import { BrowserModule } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
-import { AutocompleteLibModule } from "angular-ng-autocomplete";
 
 import { ReCaptchaModule } from "angular2-recaptcha";
 import { BlockUIModule } from 'ng-block-ui';
-import { Ng2AutoCompleteModule } from "ng2-auto-complete";
 import { SelectModule } from "ng2-select";
 import { NgxMaskModule } from "ngx-mask";
 import { ModalModule } from "ngx-modal";
@@ -70,7 +68,12 @@ import { ApikeyService } from "./apikey/apikey.service";
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ConfirmationService } from 'primeng/api';
 import { PesificacionesGuardadasComponent } from './pesificacion/pesificaciones-guardadas/pesificaciones-guardadas.component'
-import { PesificacionBaseComponent } from "./pesificacion/pesificacion-base.component";
+import { PesificacionBaseComponent } from "./pesificacion/pesificacion-base.component";;
+import { ModificarDatosComponent } from './usuario/modificar-datos/modificar-datos.component'
+import { ToastModule } from "primeng/toast";;
+import { UsuarioAuditoriaListComponent } from './usuario/usuario-auditoria-list/usuario-auditoria-list.component'
+
+
 
 @NgModule({
   imports: [
@@ -79,6 +82,7 @@ import { PesificacionBaseComponent } from "./pesificacion/pesificacion-base.comp
     HttpClientModule,
     AppRoutingModule,
     FormsModule,
+    ReactiveFormsModule,
     NgxPaginationModule,
     SelectModule,
     ModalModule,
@@ -89,7 +93,8 @@ import { PesificacionBaseComponent } from "./pesificacion/pesificacion-base.comp
     BlockUIModule.forRoot(),
     ComprasModule,
     ConfirmDialogModule,
-    MultiSelectModule
+    MultiSelectModule,
+    ToastModule
   ],
   declarations: [
     AppComponent,
@@ -117,8 +122,10 @@ import { PesificacionBaseComponent } from "./pesificacion/pesificacion-base.comp
     VentaSustentableBaseComponent,
     ApikeyComponent,
     PesificacionesGuardadasComponent,
-    PesificacionBaseComponent
-  ],
+    PesificacionBaseComponent,
+    ModificarDatosComponent,
+    UsuarioAuditoriaListComponent
+    ],
   providers: [
     DatePipe,
     SessionDataService,

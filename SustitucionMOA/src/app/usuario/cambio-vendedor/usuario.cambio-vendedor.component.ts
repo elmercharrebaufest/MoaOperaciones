@@ -8,8 +8,7 @@ import { FloatMsgService } from './../../common/services/FloatMsgService';
 import { SecurityService } from './../../common/services/SecurityService';
 import { SessionDataService } from './../../common/services/SessionDataService';
 import { ModalService } from './../../common/services/ModalService';
-
-
+import { BuscadorService } from '../../common/shared-components/buscador/buscador.service';
 
 @Component({
     selector: 'app-usuario-cambio-vendedor',
@@ -24,7 +23,7 @@ export class UsuarioCambioVendedorComponent extends BaseComponent implements OnI
     @ViewChild(SpinnerComponent)
     protected spinnerComponent: SpinnerComponent;
 
-    constructor(protected service: UsuarioService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService) {
+    constructor(protected service: UsuarioService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService, protected readonly buscadorService: BuscadorService) {
         super(navService, securityService, floatMsgService, modalService);
         this.mensajeComponent = new MensajeComponent();
         this.spinnerComponent = new SpinnerComponent();
@@ -96,6 +95,7 @@ export class UsuarioCambioVendedorComponent extends BaseComponent implements OnI
     seleccionarVendedor(vendedor: string, descripcion: string) {
         this.spinnerComponent.showIt();
         this.mensajeComponent.setMsgsEmpty();
+        this.buscadorService.limpiarBuscador();
         try {
             this.unsubscribe();
             this.subscription = this.service.seleccionarVendedor(vendedor, descripcion).subscribe(

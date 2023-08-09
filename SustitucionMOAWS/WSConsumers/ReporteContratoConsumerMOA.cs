@@ -2,6 +2,7 @@
 using SustitucionMOAModel.Models.WSMapMOA.ReporteContrato;
 using SustitucionMOAWS.CredentialService;
 using SustitucionMOAWS.Interfaces;
+using SustitucionMOAWS.Logger;
 using SustitucionMOAWS.OrdenCargaVisualizarCliente;
 using System;
 using System.Collections.Generic;
@@ -11,8 +12,8 @@ using System.Threading.Tasks;
 
 namespace SustitucionMOAWS.WSConsumers
 {
-    public  class ReporteContratoConsumerMOA : IReporteContratoConsumerMOA
-    { 
+    public class ReporteContratoConsumerMOA : IReporteContratoConsumerMOA
+    {
 
         public ReporteContratoWSMOAResponse ReporteContratoExecute(ReporteContratoWSMOARequest request)
         {
@@ -36,7 +37,10 @@ namespace SustitucionMOAWS.WSConsumers
                     }
                 }
                 ZMPES4100[] fechasSAPArray = fechasSAP.ToArray();
+
+                Log.Info($"SI_MPMF_MOAOP_VISUALIZAR_ZFAS Reporte contrato Request: {new { request.Cliente, request.Contrato, request.Corredor, Fechas = string.Concat(request.Fechas.Select(x => x.fechaInicio.ToShortDateString() + x.fechaFin.ToShortDateString())), request.Material, request.Pendiente, request.TipoContrato }}");
                 var result = service.SI_MPMF_MOAOP_VISUALIZAR_ZFAS(request.Cliente, request.Contrato, request.Corredor, fechasSAPArray, request.Material, request.Pendiente, request.TipoContrato);
+                
                 var response = MapReporteContrato(result);
                 return response;
             }
@@ -50,6 +54,7 @@ namespace SustitucionMOAWS.WSConsumers
         {
             var response = new ReporteContratoWSMOAResponse();
             var resultados = new List<Result>();
+      
             foreach (var item in result)
             {
                 var resultado = new Result()
@@ -59,6 +64,7 @@ namespace SustitucionMOAWS.WSConsumers
                     PosNr = item.POSNR,
                     Cliente = item.CLIENTE,
                     NombreCliente = item.NOMBRE_CLIENTE,
+                    NombreClienteCUIT = $"{item.NOMBRE_CLIENTE} {item.CUIT_CLIENTE}",
                     Corredor = item.CORREDOR,
                     DescripcionMaterial = item.DESC_MATERIAL,
                     KilosTotales = item.KILOS_TOTALES,
@@ -69,7 +75,7 @@ namespace SustitucionMOAWS.WSConsumers
                     KilosTotalesStr = SAPFormatter.FormatearCantidad(item.KILOS_TOTALES, "KG"),
                     KilosEntregadosStr = SAPFormatter.FormatearCantidad(item.KILOS_ENTREGADOS, "KG"),
                     KilosPendienteEntregaStr = SAPFormatter.FormatearCantidad(item.KILOS_PEND_ENTREGA, "KG"),
-                    FechaDesde = SAPFormatter.FormatearFecha(item.FECHA_DESDE),
+                    FechaDesde = item.FECHA_DESDE,
                     FechaHasta = item.FECHA_HASTA,
                     Precio = item.PRECIO,
                     Moneda = item.MONEDA,
@@ -80,37 +86,37 @@ namespace SustitucionMOAWS.WSConsumers
                     PuntoExpedicion = item.PTO_EXPEDICION,
                     TipoContrato = item.TIPO_CONTRATO,
                     ColorProducto = SetearColorProducto(item.PRODUCTO.TrimStart('0')),
-                    CodigoProducto = item.PRODUCTO.TrimStart('0')
-                    
+                    CodigoProducto = item.PRODUCTO.TrimStart('0'),
                 };
                 var detalles = new List<Detail>();
-                foreach (var detalle in item.DETALLE)
+                if (item.DETALLE != null)
                 {
-                    detalles.Add(new Detail()
+                    foreach (var detalle in item.DETALLE)
                     {
-                        Pedido = detalle.PEDIDO,
-                        Entrega = detalle.ENTREGA,
-                        FechaPedido = SAPFormatter.FormatearFecha(detalle.FECHA_PEDIDO),
-                        FechaCarga = SAPFormatter.FormatearFecha(detalle.FECHA_CARGA),
-                        CantidadEntregada = detalle.CANTIDAD_ENTREGADA,
-                        CantidadEntregadaStr = SAPFormatter.FormatearCantidad(detalle.CANTIDAD_ENTREGADA, "KG"),
-                        Remito = detalle.REMITO,
-                        Factura = detalle.FACTURA,
-                        CantidadFactura = detalle.CANTIDAD_FACTURA,
-                        FacturaLegal = detalle.FACTURA_LEGAL,
-                        Chasis = detalle.CHASIS,
-                        Acoplado = detalle.ACOPLADO,
-                        Chofer = detalle.CHOFER,
-                        Destinatario = detalle.DESTINATARIO,
-                        NombreDestinatario = detalle.NOMBRE_DESTINATARIO
-                    });
-                }
-                if (detalles != null)
-                {
-                    if (detalles.Count > 0)
-                    {
-                        resultado.Detalles = detalles;
+                        detalles.Add(new Detail()
+                        {
+                            Pedido = detalle.PEDIDO,
+                            Entrega = detalle.ENTREGA,
+                            FechaPedido = detalle.FECHA_PEDIDO,
+                            FechaCarga = detalle.FECHA_CARGA,
+                            CantidadEntregada = detalle.CANTIDAD_ENTREGADA,
+                            CantidadEntregadaStr = SAPFormatter.FormatearCantidad(detalle.CANTIDAD_ENTREGADA, "KG"),
+                            Remito = detalle.REMITO,
+                            Factura = detalle.FACTURA,
+                            CantidadFactura = detalle.CANTIDAD_FACTURA,
+                            FacturaLegal = detalle.FACTURA_LEGAL,
+                            Chasis = detalle.CHASIS,
+                            Acoplado = detalle.ACOPLADO,
+                            Chofer = detalle.CHOFER,
+                            Destinatario = detalle.DESTINATARIO,
+                            NombreDestinatario = detalle.NOMBRE_DESTINATARIO,
+                            CPE = detalle.CPE
+                        });
                     }
+                }
+                if (detalles.Count > 0)
+                {
+                    resultado.Detalles = detalles;
                 }
                 resultados.Add(resultado);
             }

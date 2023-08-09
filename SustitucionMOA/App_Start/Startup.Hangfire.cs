@@ -32,6 +32,11 @@ namespace SustitucionMOA
                 j => j.Execute(),
                 "0 * * * *", tz);
 
+            RecurringJob.AddOrUpdate<Jobs.IEnviarASAPOrdenDeCargaJob>(
+                "EnviarASAPOrdenDeCargaJob",
+                j => j.Execute(),
+                "*/15 * * * *", tz);
+
             RecurringJob.AddOrUpdate<Jobs.IReporteCamposSustentablesTSAJob>(
                 "ReporteCamposSustentablesTSAJob",
                 j => j.Execute(),
@@ -52,7 +57,12 @@ namespace SustitucionMOA
                 "VencimientoOrdenesDeCargaSapJob",
                 j => j.Execute(),
                 "30 8 * * *", tz);
-         
+
+            RecurringJob.AddOrUpdate<Jobs.IVencimientoOrdenesDeCargaFasonJob>(
+               "VencimientoOrdenesDeCargaFasonJob",
+               j => j.Execute(),
+               "30 8 * * *", tz);
+
             //RecurringJob.AddOrUpdate<Jobs.IActualizarEstadoSolpSapJob>(
             //    "ActualizarEstadoSolpSapJob",
             //    j => j.Execute(),
@@ -64,9 +74,21 @@ namespace SustitucionMOA
             //    j => j.Execute(),
             //    "0 0 * 12 *", tz);
             RecurringJob.RemoveIfExists("ObtenerSolpsDesdeSAPJob");
-            
+
             RecurringJob.AddOrUpdate<Jobs.IActualizarLocalidades>("ActualizarLocalidades", j => j.Execute(),
                  "0 0 * * *", tz);
+
+            RecurringJob.AddOrUpdate<Jobs.IActualizarSISAJob>("ActualizarSISAJob", j => j.Execute(),
+                 "0 12 * * *", tz);
+
+            RecurringJob.AddOrUpdate<Jobs.IReporteLoginsJob>(
+                "ReporteLoginsJob",
+                j => j.Execute(),
+                "0 6 1 * *", tz);
+            RecurringJob.AddOrUpdate<Jobs.IVerificarSituacionCrediticiaJob>(
+                "VerificarSituacionCrediticiaJob",
+                j => j.Execute(),
+                "*/15 * * * *", tz);
         }
     }
 }

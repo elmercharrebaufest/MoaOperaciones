@@ -38,7 +38,7 @@ export class ListadoCamposComponent extends BaseComponent implements OnInit {
 
     data: any;
     esInterno: boolean = this.isAuthorized('VER TODOS CAMPOS SUSTENTABLE');
-    editarCampos: boolean = this.isAuthorized('EDICION CAMPOS CREADOS')
+    editarCampos: boolean = this.isAuthorized('EDICION CAMPOS CREADOS') || this.isAuthorized('COMERCIAL CAMPOS SUSTENTABLES')
     borrarCampos: boolean = this.isAuthorized('BORRAR CAMPOS CREADOS')
     esCorredor: boolean = sessionStorage.getItem("tipoUsuario") === "CORR";
     opcionesProveedores: any;
@@ -263,7 +263,7 @@ export class ListadoCamposComponent extends BaseComponent implements OnInit {
         this.mensajeComponent.setMsgsEmpty();
         this.spinnerComponent.showIt();
         try {
-            this.subscription = this.service.getCosechas().subscribe(
+            this.subscription = this.service.getCosechasFiltro().subscribe(
                 (result: any) => {
                     this.spinnerComponent.hideIt();
                     if (result.logout == true) {

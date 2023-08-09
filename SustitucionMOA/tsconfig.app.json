@@ -21,6 +21,7 @@
     "src/app/factura/factura.module.ts",
     "src/app/flete/flete.module.ts",
     "src/app/liquidacion/liquidacion.module.ts",
+    "src/app/echeq/echeq.module.ts",
     "src/app/liquidacion/no-granos/liquidacion-no-granos.module.ts",
     "src/app/pago/pago.module.ts",
     "src/app/pago/no-granos/pago-no-granos.module.ts",
@@ -30,7 +31,9 @@
     "src/app/compras/compras.module.ts",
     "src/app/gestionCM05/gestionCM05.module.ts",
     "src/app/ordenes-de-carga/ordenes-de-carga.module.ts",
-    "src/app/reporte-contrato/reporte-contrato.module.ts"
+    "src/app/reporte-contrato/reporte-contrato.module.ts",
+    "src/app/ordenes-de-carga-fason/ordenes-de-carga-fason.module.ts",
+    "src/app/aplicacion-ccpp/aplicacion-ccpp.module.ts"
   ],
   "include": [
     "src/**/*.d.ts"

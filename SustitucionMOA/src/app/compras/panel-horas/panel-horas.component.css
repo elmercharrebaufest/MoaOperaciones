@@ -1,0 +1,25 @@
+::ng-deep .ui-table .ui-table-thead > .tr > .th {
+    background-color: #4760ac !important;
+    text-transform: none !important;
+  }
+  
+.columna {
+    word-break: break-all; 
+    word-wrap:break-word; 
+    font-size: 11px !important;
+    text-transform: none !important;
+}
+
+    
+::ng-deep .ui-table .ui-table-thead > .tr > .th {
+    /* border: none !important; */
+    font-weight: 16px !important;
+    color: #ffffff !important;
+    background-color: #4760ac !important;
+    margin-bottom: 10px;
+  } 
+
+  titleSection {
+    border-bottom: 1px solid #dbd7d7 !important;
+
+  }

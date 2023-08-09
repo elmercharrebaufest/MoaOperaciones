@@ -83,9 +83,6 @@
     <Reference Include="Kendo.DynamicLinq, Version=1.1.2.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Kendo.DynamicLinq.1.1.2.0\lib\net40\Kendo.DynamicLinq.dll</HintPath>
     </Reference>
-    <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
-      <HintPath>..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.Azure.KeyVault.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Azure.KeyVault.Core.1.0.0\lib\net40\Microsoft.Azure.KeyVault.Core.dll</HintPath>
     </Reference>
@@ -139,8 +136,8 @@
     <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="Ninject, Version=3.3.3.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
-      <HintPath>..\packages\Ninject.3.3.3\lib\net45\Ninject.dll</HintPath>
+    <Reference Include="Ninject, Version=3.3.4.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
+      <HintPath>..\packages\Ninject.3.3.4\lib\net45\Ninject.dll</HintPath>
     </Reference>
     <Reference Include="Ninject.Web.Common, Version=3.3.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
       <HintPath>..\packages\Ninject.Web.Common.3.3.0\lib\net45\Ninject.Web.Common.dll</HintPath>
@@ -162,18 +159,20 @@
     <Reference Include="System.IdentityModel.Tokens.Jwt, Version=6.7.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\System.IdentityModel.Tokens.Jwt.6.7.1\lib\net45\System.IdentityModel.Tokens.Jwt.dll</HintPath>
     </Reference>
+    <Reference Include="System.IO.Compression" />
     <Reference Include="System.Linq.Dynamic, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Linq.Dynamic.1.0.0\lib\net40\System.Linq.Dynamic.dll</HintPath>
     </Reference>
     <Reference Include="System.Net.Http" />
-    <Reference Include="System.Net.Http.Formatting, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.3\lib\net45\System.Net.Http.Formatting.dll</HintPath>
+    <Reference Include="System.Net.Http.Formatting, Version=5.2.9.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.9\lib\net45\System.Net.Http.Formatting.dll</HintPath>
     </Reference>
     <Reference Include="System.Net.Http.WebRequest" />
     <Reference Include="System.Runtime.Caching" />
     <Reference Include="System.Runtime.Remoting" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Transactions" />
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
@@ -250,6 +249,7 @@
     <Content Include="Content\images\header\key-solid.svg" />
     <Content Include="Content\images\header\logo.png" />
     <Content Include="Content\images\header\logo_.png" />
+    <Content Include="Content\images\icons\carpeta.svg" />
     <Content Include="Content\images\icons\contract.svg" />
     <Content Include="Content\images\icons\descargar.svg" />
     <Content Include="Content\images\icons\doc-file.svg" />
@@ -262,6 +262,7 @@
     <Content Include="Content\images\icons\trashRed.svg" />
     <Content Include="Content\images\icons\trashWhite.svg" />
     <Content Include="Content\images\icons\worker.svg" />
+    <Content Include="Content\images\LogoBaufest.png" />
     <Content Include="dist\Content\css\blockui.css" />
     <Content Include="dist\Content\css\bootstrap.min.css" />
     <Content Include="dist\Content\css\font-awesome.css" />
@@ -301,6 +302,8 @@
     <Content Include="dist\glyphicons-halflings-regular.*.svg" />
     <Content Include="dist\*.js" />
     <Content Include="dist\styles.*.css" />
+    <Content Include="Libs\Kendo.DynamicLinq.dll" />
+    <Content Include="NOTUSE_UPDATE.DeployParameters.Debug.xml" />
     <Content Include="PRE.DeployParameters.Debug.xml">
       <DependentUpon>PRE.DeployParameters.xml</DependentUpon>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -319,24 +322,72 @@
     <Content Include="src\app\common\shared-components\buscador\buscador.component.html" />
     <Content Include="src\app\common\shared-components\seleccionar-proveedor\seleccionar-proveedor.component.css" />
     <Content Include="src\app\common\shared-components\seleccionar-proveedor\seleccionar-proveedor.component.html" />
+    <Content Include="src\app\compras\dashboard-comprador\alta-proveedor\alta-proveedor.component.css" />
+    <Content Include="src\app\compras\dashboard-comprador\alta-proveedor\alta-proveedor.component.html" />
+    <Content Include="src\app\compras\dashboard-comprador\circular\circular.component.css" />
+    <Content Include="src\app\compras\dashboard-comprador\circular\circular.component.html" />
+    <Content Include="src\app\compras\dashboard-comprador\filtro-dashboard-comprador\filtro-dashboard-comprador.component.css" />
+    <Content Include="src\app\compras\dashboard-comprador\filtro-dashboard-comprador\filtro-dashboard-comprador.component.html" />
+    <Content Include="src\app\compras\dashboard-comprador\legajo\legajo.component.css" />
+    <Content Include="src\app\compras\dashboard-comprador\legajo\legajo.component.html" />
+    <Content Include="src\app\compras\dashboard-comprador\listado-dashboard-comprador\listado-dashboard-comprador.component.css" />
+    <Content Include="src\app\compras\dashboard-comprador\listado-dashboard-comprador\listado-dashboard-comprador.component.html" />
+    <Content Include="src\app\compras\dashboard-comprador\proveedor-peticion\proveedor-peticion.component.css" />
+    <Content Include="src\app\compras\dashboard-comprador\proveedor-peticion\proveedor-peticion.component.html" />
+    <Content Include="src\app\compras\dashboard-comprador\ver-ofertas\ver-ofertas.component.css" />
+    <Content Include="src\app\compras\dashboard-comprador\ver-ofertas\ver-ofertas.component.html" />
+    <Content Include="src\app\compras\dashboard-proveedor\cotizacion-formulario\cotizacion-formulario.component.css" />
+    <Content Include="src\app\compras\dashboard-proveedor\cotizacion-formulario\cotizacion-formulario.component.html" />
+    <Content Include="src\app\compras\dashboard-proveedor\cotizacion-formulario\cotizacion-material\cotizacion-material.component.css" />
+    <Content Include="src\app\compras\dashboard-proveedor\cotizacion-formulario\cotizacion-material\cotizacion-material.component.html" />
+    <Content Include="src\app\compras\dashboard-proveedor\cotizacion-formulario\cotizacion-servicio\cotizacion-servicio.component.css" />
+    <Content Include="src\app\compras\dashboard-proveedor\cotizacion-formulario\cotizacion-servicio\cotizacion-servicio.component.html" />
+    <Content Include="src\app\compras\dashboard-proveedor\filtro-dashboard-proveedor\filtro-dashboard-proveedor.component.css" />
+    <Content Include="src\app\compras\dashboard-proveedor\filtro-dashboard-proveedor\filtro-dashboard-proveedor.component.html" />
+    <Content Include="src\app\compras\dashboard-proveedor\listado-dashboard-proveedor\listado-dashboard-proveedor.component.css" />
+    <Content Include="src\app\compras\dashboard-proveedor\listado-dashboard-proveedor\listado-dashboard-proveedor.component.html" />
+    <Content Include="src\app\compras\dashboard\revision-tecnica\revision-tecnica.component.css" />
+    <Content Include="src\app\compras\dashboard\revision-tecnica\revision-tecnica.component.html" />
+    <Content Include="src\app\compras\peticion-de-oferta-formulario\peticion-de-oferta-formulario.component.css" />
+    <Content Include="src\app\compras\peticion-de-oferta-formulario\peticion-de-oferta-formulario.component.html" />
+    <Content Include="src\app\compras\peticion-de-oferta-formulario\registro-info\registro-info\registro-info.component.css" />
+    <Content Include="src\app\compras\peticion-de-oferta-formulario\registro-info\registro-info\registro-info.component.html" />
+    <Content Include="src\app\compras\solp\finalizar\finalizar-solp.component.html" />
+    <Content Include="src\app\compras\solp\solp.component.html" />
+    <Content Include="src\app\compras\solp\stepper-actions\stepper-actions.component.html" />
+    <Content Include="src\app\compras\solp\steps\cotizacion\cotizacion.component.html" />
+    <Content Include="src\app\compras\solp\steps\especificaciones\especificaciones.component.html" />
+    <Content Include="src\app\compras\solp\steps\generacion1\generacion1.component.html" />
+    <Content Include="src\app\compras\solp\steps\generacion2\generacion2.component.html" />
+    <Content Include="src\app\compras\solp\steps\posicion\cabecera.component.css" />
+    <Content Include="src\app\compras\solp\steps\posicion\cabecera.component.html" />
+    <Content Include="src\app\compras\solp\steps\posicion\tab-datos-posicion\tab-datos-posicion.component.html" />
+    <Content Include="src\app\compras\solp\steps\posicion\tab-direccion-entrega\tab-direccion-entrega.component.html" />
+    <Content Include="src\app\compras\solp\steps\posicion\tab-fechas\tab-fechas.component.html" />
+    <Content Include="src\app\compras\solp\steps\posicion\tab-imputaciones\tab-imputaciones.component.html" />
+    <Content Include="src\app\compras\solp\steps\posicion\tab-proveedores\tab-proveedores.component.css" />
+    <Content Include="src\app\compras\solp\steps\posicion\tab-proveedores\tab-proveedores.component.html" />
+    <Content Include="src\app\compras\solp\steps\posicion\tab-subposicion\tab-subposicion.component.html" />
     <Content Include="src\app\liquidacion\no-granos\pendiente-registro\liquidacion.no-granos.pendiente-registro.component.html" />
     <Content Include="src\app\liquidacion\no-granos\registrada\liquidacion.no-granos.registrado.component.html" />
+    <Content Include="src\app\ordenes-de-carga-fason\alta\ordenes-de-carga-fason.alta.component.css" />
+    <Content Include="src\app\ordenes-de-carga-fason\alta\ordenes-de-carga-fason.alta.component.html" />
+    <Content Include="src\app\ordenes-de-carga-fason\detalle\ordenes-de-carga-fason.detalle.component.css" />
+    <Content Include="src\app\ordenes-de-carga-fason\detalle\ordenes-de-carga-fason.detalle.component.html" />
+    <Content Include="src\app\ordenes-de-carga-fason\listado\ordenes-de-carga-fason.listado.component.css" />
+    <Content Include="src\app\ordenes-de-carga-fason\listado\ordenes-de-carga-fason.listado.component.html" />
     <Content Include="src\app\ordenes-de-carga\detalle\ordenes-de-carga.detalle.component.css" />
     <Content Include="src\app\ordenes-de-carga\detalle\ordenes-de-carga.detalle.component.html" />
     <Content Include="src\app\reporte-contrato\detalle\reporte-contrato.detalle.component.css" />
     <Content Include="src\app\reporte-contrato\detalle\reporte-contrato.detalle.component.html" />
     <Content Include="src\app\reporte-contrato\listado\reporte-contrato.listado.component.css" />
     <Content Include="src\app\reporte-contrato\listado\reporte-contrato.listado.component.html" />
-    <Content Include="Template\NotificacionVencimientoOrdenesDeCarga.html" />
-    <Content Include="UPDATE.DeployParameters.Debug.xml">
-      <DependentUpon>UPDATE.DeployParameters.xml</DependentUpon>
+    <Content Include="Template\NotificacionOrdenesDeCarga.html" />
+    <Content Include="NOTUSE_UPDATE.DeployParameters.Release.xml">
+      <DependentUpon>NOTUSE_UPDATE.DeployParameters.xml</DependentUpon>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="UPDATE.DeployParameters.Release.xml">
-      <DependentUpon>UPDATE.DeployParameters.xml</DependentUpon>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="UPDATE.DeployParameters.xml">
+    <Content Include="NOTUSE_UPDATE.DeployParameters.xml">
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -382,15 +433,7 @@
     <Content Include="src\app\common\view-child\spinner\spinner.component.html" />
     <Content Include="src\app\compras\compras.component.css" />
     <Content Include="src\app\compras\dashboard\dashboard.component.html" />
-    <Content Include="src\app\compras\PliegoPasos\cotizacion.component.html" />
-    <Content Include="src\app\compras\PliegoPasos\generacion1.component.html" />
-    <Content Include="src\app\compras\PliegoPasos\generacion2.component.html" />
-    <Content Include="src\app\compras\PliegoPasos\solapaSubposiciones\subPosicion.component.html" />
-    <Content Include="src\app\compras\PliegoPasos\solapaTres\especificaciones.component.html" />
     <Content Include="src\app\compras\preview\pliego.preview.component.html" />
-    <Content Include="src\app\compras\solp.component.html" />
-    <Content Include="src\app\compras\SolpPasos\cabecera.component.css" />
-    <Content Include="src\app\compras\SolpPasos\cabecera.component.html" />
     <Content Include="src\app\consulta\crear-consulta\crear-consulta.component.css" />
     <Content Include="src\app\consulta\crear-consulta\crear-consulta.component.html" />
     <Content Include="src\app\consulta\detalle\consulta-detalle.component.html" />
@@ -721,7 +764,7 @@
     <Content Include="officetohtml\pdfViewer.png" />
     <Content Include="packages.config" />
     <Content Include="parameters.xml" />
-    <Content Include="STAGING.DeployParameters.xml">
+    <Content Include="NOTUSE_STAGING.DeployParameters.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="PROD.DeployParameters.xml">
@@ -915,6 +958,7 @@
     <Content Include="Documentacion\GMP MOA.pdf" />
     <Content Include="Documentacion\INSTRUCTIVO CARGA DE CONTRATO - CORREDOR.pdf" />
     <Content Include="Documentacion\INSTRUCTIVO CARGA DE CONTRATO - DIRECTO.pdf" />
+    <Content Include="libman.json" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\PublishFiles.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
@@ -939,6 +983,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Template\EstadoAlta.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Template\ReporteLogin.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Template\RespuestaConsulta.html" />
@@ -970,6 +1017,7 @@
     <Content Include="tslint.json" />
     <Content Include="src\proxy.conf.json" />
     <Content Include="src\web.config" />
+    <Content Include="Template\solp-email\solp-email.hbs" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -991,6 +1039,8 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="App_Start\Startup.Hangfire.cs" />
+    <Compile Include="Controllers\AplicacionCartaPorteController.cs" />
+    <Compile Include="Controllers\EcheqController.cs" />
     <Compile Include="Controllers\AduanaController.cs" />
     <Compile Include="Controllers\AltaEmpresaController.cs" />
     <Compile Include="Controllers\AltaEmpresaNoGranosController.cs" />
@@ -1017,6 +1067,7 @@
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\NotificacionController.cs" />
     <Compile Include="Controllers\OrdenDeCargaController.cs" />
+    <Compile Include="Controllers\OrdenDeCargaFasonController.cs" />
     <Compile Include="Controllers\PagoController.cs" />
     <Compile Include="Controllers\PDFController.cs" />
     <Compile Include="Controllers\PesificacionController.cs" />
@@ -1033,12 +1084,17 @@
     </Compile>
     <Compile Include="Jobs\ActualizarBaseDeDatosSolpSapJob.cs" />
     <Compile Include="Jobs\ActualizarEstadoSolpSapJob.cs" />
+    <Compile Include="Jobs\ActualizarSISAJob.cs" />
     <Compile Include="Jobs\ActualizarLocalidadesJob.cs" />
+    <Compile Include="Jobs\ReporteLogins.cs" />
+    <Compile Include="Jobs\EnviarASAPOrdenDeCargaJob.cs" />
     <Compile Include="Jobs\ObtenerSolpsDesdeSAPJob.cs" />
     <Compile Include="Jobs\ReporteCamposSustentablesTSAJob.cs" />
     <Compile Include="Jobs\ReporteConflictosCamposSustentablesJob.cs" />
     <Compile Include="Jobs\ReporteLiquidacionesInformadasJob.cs" />
+    <Compile Include="Jobs\VencimientoOrdenesDeCargaFasonJob.cs" />
     <Compile Include="Jobs\VencimientoOrdenesDeCargaSapJob.cs" />
+    <Compile Include="Jobs\VerificarSituacionCrediticiaJob.cs" />
     <Compile Include="Jobs\VerificarTransporteOrdenesDeCargaJob.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Security\CustomPermisoAuthorizeAttribute.cs" />
@@ -1058,6 +1114,9 @@
     <TypeScriptCompile Include="src\app\carta-porte\carta-porte.module.ts" />
     <TypeScriptCompile Include="src\app\common\directive\numeric.directive.ts" />
     <TypeScriptCompile Include="src\app\common\models\cartaPresentacion.ts" />
+    <TypeScriptCompile Include="src\app\common\models\ordenes-de-carga-fason\listarOrdenDeCargaFasonRequest.ts" />
+    <TypeScriptCompile Include="src\app\common\models\ordenes-de-carga-fason\listarOrdenDeCargaFasonResponse.ts" />
+    <TypeScriptCompile Include="src\app\common\models\ordenes-de-carga-fason\ordenDeCargaFasonDto.ts" />
     <TypeScriptCompile Include="src\app\common\models\precioMoaCompraNet.ts" />
     <TypeScriptCompile Include="src\app\common\models\habilitacionPizarra.ts" />
     <TypeScriptCompile Include="src\app\common\models\contratoFijacion.ts" />
@@ -1079,24 +1138,57 @@
     <TypeScriptCompile Include="src\app\compras\campo-obligatorio-viewModel.ts" />
     <TypeScriptCompile Include="src\app\compras\compras-routing.module.ts" />
     <TypeScriptCompile Include="src\app\compras\compras.module.ts" />
+    <TypeScriptCompile Include="src\app\compras\compras.service.ts" />
+    <TypeScriptCompile Include="src\app\compras\dashboard-comprador\alta-proveedor\alta-proveedor.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\compras\dashboard-comprador\alta-proveedor\alta-proveedor.component.ts" />
+    <TypeScriptCompile Include="src\app\compras\dashboard-comprador\circular\circular.component.ts" />
+    <TypeScriptCompile Include="src\app\compras\dashboard-comprador\filtro-dashboard-comprador\filtro-dashboard-comprador.component.ts" />
+    <TypeScriptCompile Include="src\app\compras\dashboard-comprador\legajo\legajo.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\compras\dashboard-comprador\legajo\legajo.component.ts" />
+    <TypeScriptCompile Include="src\app\compras\dashboard-comprador\listado-dashboard-comprador\listado-dashboard-comprador.component.ts" />
+    <TypeScriptCompile Include="src\app\compras\dashboard-comprador\proveedor-peticion\proveedor-peticion.component.ts" />
+    <TypeScriptCompile Include="src\app\compras\dashboard-comprador\ver-ofertas\ver-ofertas.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\compras\dashboard-comprador\ver-ofertas\ver-ofertas.component.ts" />
+    <TypeScriptCompile Include="src\app\compras\dashboard-proveedor\cotizacion-formulario\cotizacion-formulario.component.ts" />
+    <TypeScriptCompile Include="src\app\compras\dashboard-proveedor\cotizacion-formulario\cotizacion-material\cotizacion-material.component.ts" />
+    <TypeScriptCompile Include="src\app\compras\dashboard-proveedor\cotizacion-formulario\cotizacion-servicio\cotizacion-servicio.component.ts" />
+    <TypeScriptCompile Include="src\app\compras\dashboard-proveedor\filtro-dashboard-proveedor\filtro-dashboard-proveedor.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\compras\dashboard-proveedor\filtro-dashboard-proveedor\filtro-dashboard-proveedor.component.ts" />
+    <TypeScriptCompile Include="src\app\compras\dashboard-proveedor\listado-dashboard-proveedor\listado-dashboard-proveedor.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\compras\dashboard-proveedor\listado-dashboard-proveedor\listado-dashboard-proveedor.component.ts" />
     <TypeScriptCompile Include="src\app\compras\dashboard\dashboard.component.ts" />
+    <TypeScriptCompile Include="src\app\compras\dashboard\revision-tecnica\revision-tecnica.component.ts" />
     <TypeScriptCompile Include="src\app\compras\enum-columna-subPosiciones.ts" />
     <TypeScriptCompile Include="src\app\compras\enum-paso-solp.ts" />
     <TypeScriptCompile Include="src\app\compras\enum-tipo-imputacion.ts" />
     <TypeScriptCompile Include="src\app\compras\enum-tipo-solp-sap.ts" />
-    <TypeScriptCompile Include="src\app\compras\PliegoPasos\adjuntos-Cotizaciones.ts" />
-    <TypeScriptCompile Include="src\app\compras\PliegoPasos\cotizacion.component.ts" />
-    <TypeScriptCompile Include="src\app\compras\PliegoPasos\generacion1.component.ts" />
-    <TypeScriptCompile Include="src\app\compras\PliegoPasos\generacion2.component.ts" />
-    <TypeScriptCompile Include="src\app\compras\PliegoPasos\solapaSubposiciones\subPosicion.component.ts" />
-    <TypeScriptCompile Include="src\app\compras\PliegoPasos\solapaSubposiciones\subPosicionViewModel.ts" />
-    <TypeScriptCompile Include="src\app\compras\PliegoPasos\solapaTres\adjuntos-Especificaciones.ts" />
-    <TypeScriptCompile Include="src\app\compras\PliegoPasos\solapaTres\especificaciones.component.ts" />
-    <TypeScriptCompile Include="src\app\compras\PliegoPasos\solapaTres\especificacionesViewModel.ts" />
+    <TypeScriptCompile Include="src\app\compras\peticion-de-oferta-formulario\peticion-de-oferta-formulario.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\compras\peticion-de-oferta-formulario\peticion-de-oferta-formulario.component.ts" />
+    <TypeScriptCompile Include="src\app\compras\peticion-de-oferta-formulario\registro-info\registro-info\registro-info.component.ts" />
     <TypeScriptCompile Include="src\app\compras\preview\pliego.preview.component.ts" />
-    <TypeScriptCompile Include="src\app\compras\solp.component.ts" />
-    <TypeScriptCompile Include="src\app\compras\Solp.ts" />
-    <TypeScriptCompile Include="src\app\compras\SolpPasos\cabecera.component.ts" />
+    <TypeScriptCompile Include="src\app\compras\solp\finalizar\finalizar-solp.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\compras\solp\finalizar\finalizar-solp.component.ts" />
+    <TypeScriptCompile Include="src\app\compras\solp\solp-posicion.ts" />
+    <TypeScriptCompile Include="src\app\compras\solp\solp.component.ts" />
+    <TypeScriptCompile Include="src\app\compras\solp\solp.ts" />
+    <TypeScriptCompile Include="src\app\compras\solp\solp.utils.ts" />
+    <TypeScriptCompile Include="src\app\compras\solp\stepper-actions\stepper-actions.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\compras\solp\stepper-actions\stepper-actions.component.ts" />
+    <TypeScriptCompile Include="src\app\compras\solp\steps\cotizacion\cotizacion.component.ts" />
+    <TypeScriptCompile Include="src\app\compras\solp\steps\especificaciones\especificaciones.component.ts" />
+    <TypeScriptCompile Include="src\app\compras\solp\steps\especificaciones\especificacionesViewModel.ts" />
+    <TypeScriptCompile Include="src\app\compras\solp\steps\generacion1\generacion1.component.ts" />
+    <TypeScriptCompile Include="src\app\compras\solp\steps\generacion2\generacion2.component.ts" />
+    <TypeScriptCompile Include="src\app\compras\solp\steps\posicion\cabecera.component.ts" />
+    <TypeScriptCompile Include="src\app\compras\solp\steps\posicion\tab-datos-posicion\tab-datos-posicion.component.ts" />
+    <TypeScriptCompile Include="src\app\compras\solp\steps\posicion\tab-direccion-entrega\tab-direccion-entrega.component.ts" />
+    <TypeScriptCompile Include="src\app\compras\solp\steps\posicion\tab-fechas\tab-fechas.component.ts" />
+    <TypeScriptCompile Include="src\app\compras\solp\steps\posicion\tab-imputaciones\tab-imputaciones.component.ts" />
+    <TypeScriptCompile Include="src\app\compras\solp\steps\posicion\tab-proveedores\tab-proveedores.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\compras\solp\steps\posicion\tab-proveedores\tab-proveedores.component.ts" />
+    <TypeScriptCompile Include="src\app\compras\solp\steps\posicion\tab-subposicion\sub-posicion-view-model.ts" />
+    <TypeScriptCompile Include="src\app\compras\solp\steps\posicion\tab-subposicion\tab-subposicion.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\compras\solp\steps\posicion\tab-subposicion\tab-subposicion.component.ts" />
     <TypeScriptCompile Include="src\app\compras\validadorPasoSolpService.ts" />
     <TypeScriptCompile Include="src\app\consulta\consulta-routing.module.ts" />
     <TypeScriptCompile Include="src\app\consulta\consulta.component.ts" />
@@ -1123,6 +1215,10 @@
     <TypeScriptCompile Include="src\app\gestionCM05\gestionCM05.ts" />
     <TypeScriptCompile Include="src\app\gestionCM05\gestionCM05.component.ts" />
     <TypeScriptCompile Include="src\app\gestionCM05\gestionCM05.service.ts" />
+    <TypeScriptCompile Include="src\app\echeq\echeq-routing.module.ts" />
+    <TypeScriptCompile Include="src\app\echeq\echeq.component.ts" />
+    <TypeScriptCompile Include="src\app\echeq\echeq.module.ts" />
+    <TypeScriptCompile Include="src\app\echeq\echeq.service.ts" />
     <TypeScriptCompile Include="src\app\liquidacion\no-granos\liquidacion-no-granos-routing.module.ts" />
     <TypeScriptCompile Include="src\app\liquidacion\no-granos\liquidacion-no-granos.module.ts" />
     <TypeScriptCompile Include="src\app\liquidacion\no-granos\pendiente-registro\liquidacion.no-granos.pendiente-registro.component.ts" />
@@ -1134,6 +1230,17 @@
     <TypeScriptCompile Include="src\app\notificaciones\listado-notificaciones\listado-notificaciones.component.spec.ts" />
     <TypeScriptCompile Include="src\app\notificaciones\listado-notificaciones\listado-notificaciones.component.ts" />
     <TypeScriptCompile Include="src\app\notificaciones\notificaciones.service.ts" />
+    <TypeScriptCompile Include="src\app\ordenes-de-carga-fason\alta\ordenes-de-carga-fason.alta.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\ordenes-de-carga-fason\alta\ordenes-de-carga-fason.alta.component.ts" />
+    <TypeScriptCompile Include="src\app\ordenes-de-carga-fason\detalle\ordenes-de-carga-fason.detalle.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\ordenes-de-carga-fason\detalle\ordenes-de-carga-fason.detalle.component.ts" />
+    <TypeScriptCompile Include="src\app\ordenes-de-carga-fason\listado\ordenes-de-carga-fason.listado.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\ordenes-de-carga-fason\listado\ordenes-de-carga-fason.listado.component.ts" />
+    <TypeScriptCompile Include="src\app\ordenes-de-carga-fason\ordenes-de-carga-fason-routing.module.ts" />
+    <TypeScriptCompile Include="src\app\ordenes-de-carga-fason\ordenes-de-carga-fason.module.spec.ts" />
+    <TypeScriptCompile Include="src\app\ordenes-de-carga-fason\ordenes-de-carga-fason.module.ts" />
+    <TypeScriptCompile Include="src\app\ordenes-de-carga-fason\ordenes-de-carga-fason.service.spec.ts" />
+    <TypeScriptCompile Include="src\app\ordenes-de-carga-fason\ordenes-de-carga-fason.service.ts" />
     <TypeScriptCompile Include="src\app\ordenes-de-carga\detalle\ordenes-de-carga.detalle.component.spec.ts" />
     <TypeScriptCompile Include="src\app\ordenes-de-carga\detalle\ordenes-de-carga.detalle.component.ts" />
     <TypeScriptCompile Include="src\app\pesificacion\pesificacion-base.component.ts" />
@@ -1357,6 +1464,7 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="dist\assets\css\" />
+    <Folder Include="src\app\echeq\gestion\" />
     <Folder Include="Views\Default\" />
     <Folder Include="Views\Documentos\" />
     <Folder Include="Views\Facturado\" />
@@ -1368,7 +1476,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SustitucionMOAAssets\SustitucionMOAAsset.csproj">
-      <Project>{CDE9AB52-949B-428E-A737-5910D05116D8}</Project>
+      <Project>{cde9ab52-949b-428e-a737-5910d05116d8}</Project>
       <Name>SustitucionMOAAsset</Name>
     </ProjectReference>
     <ProjectReference Include="..\SustitucionMOACrypting\SustitucionMOACrypting.csproj">
@@ -1384,7 +1492,7 @@
       <Name>SustitucionMOAFotmatter</Name>
     </ProjectReference>
     <ProjectReference Include="..\SustitucionMOAModel\SustitucionMOAModel.csproj">
-      <Project>{DA0A7852-EA57-4359-BA7C-B8BABDEDBD42}</Project>
+      <Project>{da0a7852-ea57-4359-ba7c-b8babdedbd42}</Project>
       <Name>SustitucionMOAModel</Name>
     </ProjectReference>
     <ProjectReference Include="..\SustitucionMOARepositorio\SustitucionMOARepositorio.csproj">

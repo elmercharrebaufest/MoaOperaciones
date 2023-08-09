@@ -73,7 +73,7 @@ export class LiquidacionBaseComponent extends ListBaseComponent {
     }
 
     isVisible(): boolean {
-        if((this.data && this.data.liquidaciones && this.data.liquidaciones.length != 0) || (this.data && this.data.comprobantes && this.data.comprobantes.length != 0))
+        if ((this.data && this.data.liquidaciones && this.data.liquidaciones.length != 0) || (this.data && this.data.comprobantes && this.data.comprobantes.length != 0))
             return true;
         else
             return false;
@@ -83,7 +83,7 @@ export class LiquidacionBaseComponent extends ListBaseComponent {
         this.floatMsgService.setMsgsEmpty();
         this.unsubscribe();
         this.subscription = this.service.getVinculacion(contrato, secuencia).subscribe(
-            (result:any) => {
+            (result: any) => {
                 if (result.logout == true) {
                     this.sessionDataService.logout();
                 } else if (result.error != undefined && result.error != "") {
@@ -108,7 +108,7 @@ export class LiquidacionBaseComponent extends ListBaseComponent {
         this.floatMsgService.setMsgsEmpty();
         this.unsubscribe();
         this.subscription = this.service.descargarDocumentoPDF(documento, ejercicio).subscribe(
-            (result:any) => {
+            (result: any) => {
                 this.spinnerComponent.hideIt();
                 if (result.logout == true) {
                     this.sessionDataService.logout();
@@ -146,11 +146,11 @@ export class LiquidacionBaseComponent extends ListBaseComponent {
         this.floatMsgService.setMsgsEmpty();
         this.unsubscribe();
         this.subscription = this.service.descargarComprobanteNGPDF(CodigoProveedorSAP, FechaDocumento, NumeroLegalDocumento).subscribe(
-            (result:any) => {
+            (result: any) => {
                 this.spinnerComponent.hideIt();
                 if (result.logout == true) {
                     this.sessionDataService.logout();
-                    
+
                 } else if (result.error != undefined && result.error != "") {
                     this.floatMsgService.setErrorMsg(result.error);
                 } else if (result.info != undefined) {

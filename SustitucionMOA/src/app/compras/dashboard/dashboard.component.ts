@@ -1,5 +1,5 @@
 import { Component, Input, ViewChild } from '@angular/core';
-import { Router, ActivatedRoute, RouteReuseStrategy } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { ListBaseComponent } from './../../common/base-components/list-base-component'
 import { SessionDataService } from './../../common/services/SessionDataService';
 import { SecurityService } from './../../common/services/SecurityService';
@@ -8,27 +8,24 @@ import { FloatMsgService } from './../../common/services/FloatMsgService';
 import { ModalService } from './../../common/services/ModalService';
 import { ComprasService } from '../compras.service';
 import { ConfirmationService, SelectItem } from 'primeng/api';
-import { Solp } from '../Solp';
-import { OverlayPanelModule } from 'primeng/overlaypanel';
-import { CrearContratoModule } from '../../crear-contrato/crear-contrato.module';
-import { formatDate } from '@angular/common';
-import { SortEvent } from 'primeng/api';
+import { Solp } from '../solp/solp';
 import { Table } from 'primeng/table';
 import { SpinnerComponent } from '../../common/view-child/spinner/spinner.component';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { EnumTipoSolpSap } from '../enum-tipo-solp-sap';
-import { NullAstVisitor } from '@angular/compiler';
-import { zip } from 'rxjs';
-
-
+import { Paginator } from 'primeng/paginator';
+import { PeticionDeOfertaDto } from '../../modelos/peticion-de-oferta-model';
+import { forEach } from '@angular/router/src/utils/collection';
+import { AdjudicacionDto, AdjudicacionPosicionDto } from '../../modelos/adjudicacion';
 
 declare var $: any;
+
 
 @Component({
     selector: 'dashboard',
     templateUrl: `dashboard.component.html`,
-    styleUrls: ['../compras.component.css', './dashboard.component.css'],
-    providers: [ComprasService]
+    styleUrls: ['../compras.component.css',
+        './dashboard.component.css']
 
 })
 export class DashboardComponent extends ListBaseComponent {
@@ -46,9 +43,30 @@ export class DashboardComponent extends ListBaseComponent {
     @ViewChild(SpinnerComponent)
     protected spinnerComponent: SpinnerComponent;
 
-    @ViewChild('myCalendar', undefined) private calendar: any;
-   
+    @ViewChild('myCalendar', undefined)
+    private calendar: any;
+    nroSolp: string = "";
+    sap: boolean = false;
+    mantenimiento: boolean = false;
+    web: boolean = false;
+    orden: string;
+    columnaOrden: string;
+    length = 0;
+    pageSize: number = 10;
+    pageIndex: number = 1;
+    @ViewChild('paginator') paginator: Paginator
+    public peticion: PeticionDeOfertaDto;
+    public ordenCompra: any;
+    public solicitante: boolean = true;
+    displayRevisionTecnica: boolean;
 
+    displayCircular: boolean = false;
+    combos: any;
+    usuariosResult: any;
+    ordenesDeCompra: AdjudicacionDto[] = [];
+    ordenDeCompra: any;
+    displayOrdenDeCompra: boolean;
+    
     constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService, protected route: ActivatedRoute, protected router: Router, private confirmationService: ConfirmationService) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
 
@@ -68,8 +86,8 @@ export class DashboardComponent extends ListBaseComponent {
 
     filteredfechas: any;
     solpFecha: any = new Array();
-    fechaInicio: any;
-    fechaFin: any;
+    fechaInicio: any = null;
+    fechaFin: any = null;
     rangeDates: Date[];
     tipoFiltroFecha = 1;
 
@@ -85,6 +103,10 @@ export class DashboardComponent extends ListBaseComponent {
     display: boolean = false;
     tablaSolp: any[];
     tablaSolpCopy: any[];
+
+    usuarioFiltro: SelectItem[];
+    selectUsuario: number | null;
+
     cols: any[];
     serviciosDashboard: any = "Servicios"
     solp: Solp = new Solp();
@@ -92,6 +114,7 @@ export class DashboardComponent extends ListBaseComponent {
 
     checkedFilterSap = false;
     checkedFilterMantenimiento = false;
+    checkedFilterWeb = false;
 
     verTodas: boolean = this.isAuthorized('VER TODAS SOLPS');
 
@@ -101,12 +124,17 @@ export class DashboardComponent extends ListBaseComponent {
 
     cards = [
         { nombre: "Con documento de pliego", path: "/compras/solp/0", tipoSolp: "CON_PLIEGO" },
+        { nombre: "Sin pliego", path: "/compras/solp/0", tipoSolp: "SIN_PLIEGO" },
         // { nombre: "Con documentos requerimientos", path: ""},
         // { nombre: "Sin documento", path: ""},
         // { nombre: "Emergencia", path: ""},
         // { nombre: "Adicional", path: ""}
     ]
 
+    subtitulos = [
+        { nombre: "Servicio y/o Material catalogado y sin catalogar" },
+        { nombre: "Servicio y/o Material catalogado" },
+    ]
 
     goToSeccion(path: string) {
         $("#mySidenav").css({ 'right': '-270px' });
@@ -132,32 +160,30 @@ export class DashboardComponent extends ListBaseComponent {
         $("#myMenuOpen").css({ 'display': 'block' });
         $("#coverAll").fadeOut();
         let nrosol = ""
-        if(NroSolp != null) nrosol = NroSolp.toString();
+        if (NroSolp != null) nrosol = NroSolp.toString();
         let obj = Id.toString() + "," + nrosol;
 
         this.navService.navegarSeccionParam(path, obj);
         return false;
     }
 
-
     ngOnInit() {
         this.navService.setSeccionList([]);
         this.getListarSolp();
+
         this.desdeDashboard = new Date();
-        this.hastaDashboard = new Date();        
+        this.hastaDashboard = new Date();
     }
 
-
     returnToTodaysDate() {
-        this.fechaInicio = null;
-        this.fechaFin = null;
-        this.filtrarTablaPorTipoSolp();
+        this.fechaInicio = "";
+        this.fechaFin = "";
         if (this.tablaSolp.length > 0) {
             this.mensajeComponent.setMsgsEmpty();
         }
     }
 
-    onSelect(event: any) {     
+    onSelect(event: any) {
         if (this.rangeDates[0] && this.rangeDates[1] == null) {
             let d = new Date(Date.parse(event));
             this.fechaInicio = `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
@@ -167,7 +193,6 @@ export class DashboardComponent extends ListBaseComponent {
             if (this.rangeDates[1]) { // If second date is selected
                 this.calendar.overlayVisible = false;
             }
-            this.filtrarTablaPorTipoSolp();
         }
     }
 
@@ -181,27 +206,49 @@ export class DashboardComponent extends ListBaseComponent {
         this.filtrarTablaPorTipoSolp();
     }
 
+    filtrarPorWeb() {
+        this.checkedFilterWeb = !this.checkedFilterWeb;
+        this.filtrarTablaPorTipoSolp();
+    }
+
     filtrarTablaPorTipoSolp() {
+
         var fechaDesde = this.fechaInicio;
         var fechaHasta = this.fechaFin + " 23:59:59";
 
         let tablaPrincipal = this.tablaSolpCopy;
-        if (this.checkedFilterSap && this.checkedFilterMantenimiento) {
+        if (this.checkedFilterMantenimiento && this.checkedFilterWeb && this.checkedFilterSap) {
+            tablaPrincipal = tablaPrincipal;
+            this.tabla.first = 0;
+        } else if (this.checkedFilterSap && this.checkedFilterMantenimiento) {
             tablaPrincipal = tablaPrincipal.filter(x => x.TipoSolpSap === EnumTipoSolpSap.SAP || x.TipoSolpSap === EnumTipoSolpSap.Mantenimiento);
+            this.tabla.first = 0;
+        } else if (this.checkedFilterSap && this.checkedFilterWeb) {
+            tablaPrincipal = tablaPrincipal.filter(x => x.TipoSolpSap === EnumTipoSolpSap.SAP || x.TipoSolpSap === EnumTipoSolpSap.Web);
+            this.tabla.first = 0;
+        } else if (this.checkedFilterMantenimiento && this.checkedFilterWeb) {
+            tablaPrincipal = tablaPrincipal.filter(x => x.TipoSolpSap === EnumTipoSolpSap.Mantenimiento || x.TipoSolpSap === EnumTipoSolpSap.Web);
+            this.tabla.first = 0;
         } else if (this.checkedFilterMantenimiento) {
             tablaPrincipal = tablaPrincipal.filter(x => x.TipoSolpSap === EnumTipoSolpSap.Mantenimiento);
+            this.tabla.first = 0;
         } else if (this.checkedFilterSap) {
             tablaPrincipal = tablaPrincipal.filter(x => x.TipoSolpSap === EnumTipoSolpSap.SAP);
-        } 
+            this.tabla.first = 0;
+        } else if (this.checkedFilterWeb) {
+            tablaPrincipal = tablaPrincipal.filter(x => x.TipoSolpSap === EnumTipoSolpSap.Web);
+            this.tabla.first = 0;
+        } this.tabla.first = 0;
 
-        if(fechaDesde != null && fechaHasta != null) {
+
+        if (fechaDesde != null && fechaHasta != null) {
             tablaPrincipal = tablaPrincipal.filter(x =>
                 new Date(Date.parse(x.FechaCreacion)) >= new Date(fechaDesde) &&
                 new Date(Date.parse(x.FechaCreacion)) <= new Date(fechaHasta)
             )
             this.tabla.first = 0;
-        }       
-        this.tablaSolp = tablaPrincipal;  
+        }
+        this.tablaSolp = tablaPrincipal;
 
         if (this.tablaSolp.length == 0) {
             this.mensajeComponent.setInfoMsg("No se encontraron Solps")
@@ -211,40 +258,27 @@ export class DashboardComponent extends ListBaseComponent {
         }
     }
 
-
     ngAfterViewInit(): void {
-
         this.getCombos();
-
-        // this.tabla.filterConstraints['dateRangeFilter'] = (value, filter): boolean => {
-
-        //     if (filter[0] != null && filter[1] != null)
-        //         return value >= filter[0] &&
-        //             value <= filter[1];
-        //     else if (filter[0] != null && filter[1] == null)
-        //         return value >= filter[0]
-        //     else if (filter[0] == null && filter[1] != null)
-        //         return value <= filter[1].
-        //             else
-        //     return true;
-        // }
-
     }
 
     getStatusDocumentoSolp(data: any): String {
-        return data.PosicionesEstado && data.NroSolp != null ? 'Borrardo en sap' : data.EstadoSolpSap.Descripcion;
+        return data.PosicionesEstado && data.NroSolp != null ? 'Borrado en sap' : data.EstadoSolpSap.Descripcion;
     }
 
     public getColorDocumentoSolp(data: any): String {
         return data.PosicionesEstado && data.NroSolp != null ? '#DD441E' : '#333333';
     }
 
-    getListarSolp(){
+    getListarSolp() {
         try {
             this.spinnerComponent.showIt();
-
-            this.subscription = this.service.getListarSolp().subscribe(
+            let multiSelectValues = this.selectEstadoSolp.join(",")
+            this.subscription = this.service.getListarSolp(this.pageIndex, this.pageSize, this.orden, this.columnaOrden, this.nroSolp,
+                this.fechaInicio, this.fechaFin, this.sap, this.mantenimiento, this.web, multiSelectValues, this.selectUsuario
+            ).subscribe(
                 (result: any) => {
+
                     if (result.logout == true) {
                         this.sessionDataService.logout();
                     } else if (result.error != undefined && result.error != "") {
@@ -258,11 +292,13 @@ export class DashboardComponent extends ListBaseComponent {
                             x.VincularPliego = x.TipoSolpSap == EnumTipoSolpSap.Mantenimiento || x.TipoSolpSap == EnumTipoSolpSap.SAP;
                             x.PliegoVinculado = (x.TipoSolpSap == EnumTipoSolpSap.Mantenimiento || x.TipoSolpSap == EnumTipoSolpSap.SAP) &&
                                 x.EstadoDocumento.Codigo == "CREADO";
-
                         });
                         this.tablaSolpCopy = this.tablaSolp;
                         this.tabla.first = 0;
                         this.spinnerComponent.hideIt();
+                        this.length = result.data.length > 0 ? result.data[0].ItemsTotales : 0;
+                        this.pageSize = result.data.length > 0 ? result.data[0].ItemPorPagina : 10;
+                        this.pageIndex = result.data.length > 0 ? result.data[0].Pagina : 1;
                     }
                 },
                 error => {
@@ -277,7 +313,6 @@ export class DashboardComponent extends ListBaseComponent {
         }
 
         return false; //<-- Prevent Refresh
-
     }
 
     borrarSolp(idSolp) {
@@ -308,8 +343,6 @@ export class DashboardComponent extends ListBaseComponent {
 
     }
 
-
-
     getCombos() {
         try {
             this.subscription = this.service.getCombos().subscribe(
@@ -321,11 +354,15 @@ export class DashboardComponent extends ListBaseComponent {
                     } else if (result.info != undefined) {
                         this.floatMsgService.setInfoMsg(result.info);
                     } else {
+                        this.usuariosResult = result.Usuarios;
                         this.estadoSolpItem = [];
+                        this.usuarioFiltro = [];
                         result.EstadosSolpSap.forEach(cd => this.estadoSolpItem.push({
                             label: cd.Descripcion, value: cd.Id
                         }));
-
+                        result.Usuarios.forEach(x => x.forEach(d => this.usuarioFiltro.push({
+                            label: d.Mail, value: d.Id
+                        })))
                     }
                 },
                 error => {
@@ -446,4 +483,260 @@ export class DashboardComponent extends ListBaseComponent {
         }
     }
 
+    onOrder(columna: string) {
+        if (this.columnaOrden != columna) {
+            this.orden = "DESC"
+        } else {
+            this.orden = this.orden == "DESC" ? "ASC" : "DESC";
+        }
+        this.columnaOrden = columna;
+        this.getListarSolp();
+    }
+
+    handlePageEvent(e: any) {
+        this.pageSize = e.rows;
+        this.pageIndex = e.page + 1;
+        this.getListarSolp()
+
+    }
+
+    obtenerPeticionDeOferta(Id) {
+        this.blockUI.start('Cargando...')
+        this.service.obtenerPeticionDeOferta(Id)
+            .subscribe(
+                (result) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    }
+                    else {
+                        this.peticion = result.data;
+                        this.displayRevisionTecnica = true;
+                        this.blockUI.stop();
+                    }
+                },
+                (error) => {
+                    this.blockUI.stop();
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+            )
+    }
+
+    obtenerPeticionDeOfertaCircular(Id) {
+        this.blockUI.start('Cargando...')
+        this.service.obtenerPeticionDeOferta(Id)
+            .subscribe(
+                (result) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    }
+                    else {
+                        this.peticion = result.data;
+                        this.displayCircular = true;
+                        this.blockUI.stop();
+                    }
+                },
+                (error) => {
+                    this.blockUI.stop();
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+            )
+    }
+
+    cerrarModalRevisionTecnica() {
+        this.displayRevisionTecnica = false;
+    }
+
+    descargarArchivo({ archivoId }) {
+        this.blockUI.start("Descargando...");
+        this.service.DescargarArchivo(archivoId)
+            .subscribe(
+                (result) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    }
+                    else {
+                        var byteArray = new Uint8Array(result.FileContents);
+                        var blob = new Blob([byteArray], {
+                            type: "application/octet-stream",
+                        });
+                        this.downloadArchivoLocal(blob, result.FileDownloadName);
+                        this.blockUI.stop();
+                    }
+                },
+                (error) => {
+                    this.mensajeComponent.setErrorMsg(error.message);
+                    this.blockUI.stop();
+                }
+            )
+    }
+
+    descargarAdjuntosCotizacion({ cotizacionId }) {
+        this.blockUI.start("Descargando...");
+        this.service.DescargarAdjuntosCotizacion(cotizacionId)
+            .subscribe(
+                (result) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    }
+                    else {
+                        var byteArray = new Uint8Array(result.FileContents);
+                        var blob = new Blob([byteArray], {
+                            type: "application/octet-stream",
+                        });
+
+                        if (window.navigator.msSaveOrOpenBlob) {
+                            // IE11
+                            window.navigator.msSaveOrOpenBlob(
+                                blob,
+                                result.FileDownloadName
+                            );
+                        } else {
+                            var url = window.URL.createObjectURL(blob);
+                            var link = document.createElement("a");
+                            document.body.appendChild(link);
+                            link.href = url;
+                            link.download = result.FileDownloadName;
+                            link.click();
+                            setTimeout(function () {
+                                window.URL.revokeObjectURL(url);
+                            }, 0);
+                            this.blockUI.stop();
+                            return false;
+                        }
+                        this.blockUI.stop();
+                    }
+                },
+                (error) => {
+                    this.mensajeComponent.setErrorMsg(error.message);
+                    this.blockUI.stop();
+                }
+            )
+    }
+
+    grabarRevisionTecnica() {
+        this.blockUI.start('Grabando...');
+        this.service.grabarRevisionTecnica(this.peticion.Usuarios)
+            .subscribe(
+                (result) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    }
+                    else {
+                        if (result) {
+
+                        }
+                        this.displayRevisionTecnica = false;
+                        this.blockUI.stop();
+                    }
+                },
+                (error) => {
+                    this.blockUI.stop();
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+            )
+    }
+
+    cerrarCircular() {
+        this.displayCircular = false;
+    }
+
+    onBuscar() {
+        this.paginator.changePage(0);
+        this.pageIndex = 1;
+        this.getListarSolp();
+    }
+
+    cerrarOrdenDeCompra() {
+        this.displayOrdenDeCompra = false;
+    }
+
+    verDetalleOrdenDeCompra(nroOC: any) {
+        this.obtenerAdjudicacion(nroOC);
+        this.displayOrdenDeCompra = true;
+    }
+
+    obtenerAdjudicacion(nroOC){       
+        this.blockUI.start('Cargando...')
+        this.service.obtenerAdjudicacion(nroOC)
+            .subscribe(
+                (result) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    }
+                    else {
+                        this.ordenDeCompra = result.data;                      
+                        this.blockUI.stop();
+                    }
+                },
+                (error) => {
+                    this.blockUI.stop();
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+            )
+    }
+
+    listarAdjudicaciones(solpId){      
+        this.blockUI.start('Cargando...')
+        this.service.listarAdjudicaciones(solpId)
+            .subscribe(
+                (result) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    }
+                    else {
+                        if(this.ordenesDeCompra.length > 0){
+                            for (let i = this.ordenesDeCompra.length - 1; i >= 0; i--) {
+                                if (this.ordenesDeCompra[i].Solp_Id === solpId) {
+                                  this.ordenesDeCompra.splice(i, 1);
+                                }
+                              }
+                        }                    
+                        this.mapData(result.data);        
+                        this.blockUI.stop();
+                    }
+                },
+                (error) => {
+                    this.blockUI.stop();
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+            )
+    }
+
+    filtrarOrdenesDeCompra(solpId): AdjudicacionDto[] {       
+        return this.ordenesDeCompra.filter(orden => orden.Solp_Id == solpId);
+      }
+
+      mapData(data: any[]): void {
+        data.forEach((item: any) => {
+          const adjudicacion: AdjudicacionDto = {
+            Id: item.Id,
+            Cotizacion_Id: item.Cotizacion_Id,
+            AdjudicacionPosiciones: item.AdjudicacionPosiciones.map((posicion: any) => {
+              const adjudicacionPosicion: AdjudicacionPosicionDto = {
+                Id: posicion.Id,
+                Adjudicacion_Id: posicion.Adjudicacion_Id,
+                CotizacionPosicion_Id: posicion.CotizacionPosicion_Id,
+                Cantidad: posicion.Cantidad,
+                SolpPosicion_Id: posicion.SolpPosicion_Id,
+              };
+              return adjudicacionPosicion;
+            }),
+            Solp_Id: item.Solp_Id,
+            Moneda_Id: item.Moneda_Id,
+            TextoDeCabecera: item.TextoDeCabecera,
+            CondicionesDeEntrega: item.CondicionesDeEntrega,
+            CondicionesDePago: item.CondicionesDePago,
+            Garantias: item.Garantias,
+            TipoPosicionCodigo: item.TipoPosicionCodigo || '',
+            NumeroOrdenDeCompra: item.NumeroOrdenDeCompra || '',
+            FechaCreacion: item.FechaCreacion || '',
+            Proveedor: item.Proveedor || '',
+            MonedaDescripcion: item.MonedaDescripcion || '',
+            PrecioFinal: item.PrecioFinal || 0,
+          };
+          this.ordenesDeCompra.push(adjudicacion); 
+        });
+      }
+
 }
+

@@ -35,38 +35,105 @@ namespace SustitucionMOAWS.OrdenCargaCrearSAP {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=1)]
         [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
-        public string IM_CONTRATO;
+        public string IM_CODPLANTA;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=2)]
         [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
-        public string IM_CORREDOR;
+        public string IM_CONTRATO;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=3)]
         [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
-        public decimal IM_KILOS;
+        public string IM_CORREDOR;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=4)]
         [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
-        public string IM_MATERIAL;
+        public string IM_CUITDESTF;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=5)]
         [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
-        public string IM_PEDIDO;
+        public string IM_CUITDESTINAT;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=6)]
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
+        public string IM_DOMORDEN;
+        
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=7)]
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
+        public string IM_INDRVTA;
+        
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=8)]
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
+        public decimal IM_KILOS;
+        
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=9)]
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
+        public string IM_MATERIAL;
+        
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=10)]
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
+        public string IM_NAMEDESTF;
+        
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=11)]
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
+        public string IM_NAMEDESTINAT;
+        
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=12)]
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
+        public string IM_ORDENDOM;
+        
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=13)]
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
+        public string IM_PEDIDO;
+        
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=14)]
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
+        public string IM_TIPODOM;
+        
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=15)]
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
+        public string IM_USUARIO;
+        
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=16)]
         [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         public string IM_VALIDA_KG;
         
         public SI_MPMF_MOAOP_CREAR_ORDEN_CARGARequest() {
         }
         
-        public SI_MPMF_MOAOP_CREAR_ORDEN_CARGARequest(string IM_CLIENTE, string IM_CONTRATO, string IM_CORREDOR, decimal IM_KILOS, string IM_MATERIAL, string IM_PEDIDO, string IM_VALIDA_KG) {
+        public SI_MPMF_MOAOP_CREAR_ORDEN_CARGARequest(
+                    string IM_CLIENTE, 
+                    string IM_CODPLANTA, 
+                    string IM_CONTRATO, 
+                    string IM_CORREDOR, 
+                    string IM_CUITDESTF, 
+                    string IM_CUITDESTINAT, 
+                    string IM_DOMORDEN, 
+                    string IM_INDRVTA, 
+                    decimal IM_KILOS, 
+                    string IM_MATERIAL, 
+                    string IM_NAMEDESTF, 
+                    string IM_NAMEDESTINAT, 
+                    string IM_ORDENDOM, 
+                    string IM_PEDIDO, 
+                    string IM_TIPODOM, 
+                    string IM_USUARIO, 
+                    string IM_VALIDA_KG) {
             this.IM_CLIENTE = IM_CLIENTE;
+            this.IM_CODPLANTA = IM_CODPLANTA;
             this.IM_CONTRATO = IM_CONTRATO;
             this.IM_CORREDOR = IM_CORREDOR;
+            this.IM_CUITDESTF = IM_CUITDESTF;
+            this.IM_CUITDESTINAT = IM_CUITDESTINAT;
+            this.IM_DOMORDEN = IM_DOMORDEN;
+            this.IM_INDRVTA = IM_INDRVTA;
             this.IM_KILOS = IM_KILOS;
             this.IM_MATERIAL = IM_MATERIAL;
+            this.IM_NAMEDESTF = IM_NAMEDESTF;
+            this.IM_NAMEDESTINAT = IM_NAMEDESTINAT;
+            this.IM_ORDENDOM = IM_ORDENDOM;
             this.IM_PEDIDO = IM_PEDIDO;
+            this.IM_TIPODOM = IM_TIPODOM;
+            this.IM_USUARIO = IM_USUARIO;
             this.IM_VALIDA_KG = IM_VALIDA_KG;
         }
     }
@@ -125,14 +192,42 @@ namespace SustitucionMOAWS.OrdenCargaCrearSAP {
             return base.Channel.SI_MPMF_MOAOP_CREAR_ORDEN_CARGA(request);
         }
         
-        public string SI_MPMF_MOAOP_CREAR_ORDEN_CARGA(string IM_CLIENTE, string IM_CONTRATO, string IM_CORREDOR, decimal IM_KILOS, string IM_MATERIAL, string IM_PEDIDO, string IM_VALIDA_KG, out string EX_PEDIDO) {
+        public string SI_MPMF_MOAOP_CREAR_ORDEN_CARGA(
+                    string IM_CLIENTE, 
+                    string IM_CODPLANTA, 
+                    string IM_CONTRATO, 
+                    string IM_CORREDOR, 
+                    string IM_CUITDESTF, 
+                    string IM_CUITDESTINAT, 
+                    string IM_DOMORDEN, 
+                    string IM_INDRVTA, 
+                    decimal IM_KILOS, 
+                    string IM_MATERIAL, 
+                    string IM_NAMEDESTF, 
+                    string IM_NAMEDESTINAT, 
+                    string IM_ORDENDOM, 
+                    string IM_PEDIDO, 
+                    string IM_TIPODOM, 
+                    string IM_USUARIO, 
+                    string IM_VALIDA_KG, 
+                    out string EX_PEDIDO) {
             SustitucionMOAWS.OrdenCargaCrearSAP.SI_MPMF_MOAOP_CREAR_ORDEN_CARGARequest inValue = new SustitucionMOAWS.OrdenCargaCrearSAP.SI_MPMF_MOAOP_CREAR_ORDEN_CARGARequest();
             inValue.IM_CLIENTE = IM_CLIENTE;
+            inValue.IM_CODPLANTA = IM_CODPLANTA;
             inValue.IM_CONTRATO = IM_CONTRATO;
             inValue.IM_CORREDOR = IM_CORREDOR;
+            inValue.IM_CUITDESTF = IM_CUITDESTF;
+            inValue.IM_CUITDESTINAT = IM_CUITDESTINAT;
+            inValue.IM_DOMORDEN = IM_DOMORDEN;
+            inValue.IM_INDRVTA = IM_INDRVTA;
             inValue.IM_KILOS = IM_KILOS;
             inValue.IM_MATERIAL = IM_MATERIAL;
+            inValue.IM_NAMEDESTF = IM_NAMEDESTF;
+            inValue.IM_NAMEDESTINAT = IM_NAMEDESTINAT;
+            inValue.IM_ORDENDOM = IM_ORDENDOM;
             inValue.IM_PEDIDO = IM_PEDIDO;
+            inValue.IM_TIPODOM = IM_TIPODOM;
+            inValue.IM_USUARIO = IM_USUARIO;
             inValue.IM_VALIDA_KG = IM_VALIDA_KG;
             SustitucionMOAWS.OrdenCargaCrearSAP.SI_MPMF_MOAOP_CREAR_ORDEN_CARGAResponse retVal = ((SustitucionMOAWS.OrdenCargaCrearSAP.SI_MPMF_MOAOP_CREAR_ORDEN_CARGA)(this)).SI_MPMF_MOAOP_CREAR_ORDEN_CARGA(inValue);
             EX_PEDIDO = retVal.EX_PEDIDO;

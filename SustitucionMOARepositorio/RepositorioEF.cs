@@ -1,4 +1,5 @@
-﻿using SustitucionMOAModel.Consultas;
+﻿using Molinos.Scato.Repositorio;
+using SustitucionMOAModel.Consultas;
 using SustitucionMOARepositorio.Extensiones;
 using System;
 using System.Collections.Generic;
@@ -227,6 +228,17 @@ namespace SustitucionMOARepositorio
             return new ListaPaginada<TProyeccion>(resultadoFinal.ToList(), paginacion.Pagina, paginacion.ItemsPorPagina, itemsTotales);
         }
 
+        public ListaPaginada<TEntidad> ListarConOrdenYPaginado<TEntidad>(IQueryable<TEntidad> resultadoFinal, Paginacion paginacion) where TEntidad : class
+        {
+            int itemsTotales = resultadoFinal.Count();
+
+            resultadoFinal = ListarProyeccionQueryable(resultadoFinal, paginacion.OrdenarPor, paginacion.DireccionOrden, 0);
+
+            resultadoFinal = resultadoFinal.Skip((paginacion.Pagina - 1) * paginacion.ItemsPorPagina).Take(paginacion.ItemsPorPagina);
+
+            return new ListaPaginada<TEntidad>(resultadoFinal.ToList(), paginacion.Pagina, paginacion.ItemsPorPagina, itemsTotales);
+        }
+
         public ListaPaginada<TEntidad> Listar<TEntidad>(Expression<Func<TEntidad, bool>> condicion, Paginacion paginacion) where TEntidad : class
         {
             IQueryable<TEntidad> resultados = Set<TEntidad>();
@@ -249,6 +261,18 @@ namespace SustitucionMOARepositorio
 
             return new ListaPaginada<TEntidad>(resultados.ToList(), paginacion.Pagina, paginacion.ItemsPorPagina, itemsTotales);
         }
+        public ListaPaginada<TEntidad> ListarConsultaPaginada<TEntidad>(IConsultaPaginada<TEntidad> consulta) where TEntidad : class
+        {
+            return consulta.Ejecutar(context);
+        }
+
+        public List<TProyeccion> ListarProyeccion<TEntidad, TProyeccion>(Expression<Func<TEntidad, TProyeccion>> proyeccion, Expression<Func<TEntidad, bool>> filtro = null) where TEntidad : class
+        {
+            var queryEntidad = filtro != null ? Set<TEntidad>().Where(filtro) : Set<TEntidad>();
+
+            return queryEntidad.Select(proyeccion).ToList();
+        }
+
         private IQueryable<TEntidad> ListarQueryable<TEntidad>(IQueryable<TEntidad> resultado, Expression<Func<TEntidad, bool>> filtro, string orden, DirOrden direccionOrden, int maxResultados, IEnumerable<Expression<Func<TEntidad, object>>> includes = null) where TEntidad : class
         {
             if (filtro != null)

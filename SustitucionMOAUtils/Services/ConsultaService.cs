@@ -322,6 +322,12 @@ namespace SustitucionMOAUtils.Services
                 }).ToList() : new List<ComentarioRecordadoDto>()
             }).ToList();
 
+            var i = 0;
+            foreach (var item in ret.Comentarios)
+            {
+                i++;
+                item.Detalle = item.Detalle.Replace("<img src=", "<img class=\"galeryimg col-md-12 cursor-pointer\" src=");
+            }
             return ret;
         }
 
@@ -753,7 +759,8 @@ namespace SustitucionMOAUtils.Services
                 {
                     MaterialId = x.Id,
                     Descripcion = x.Nombre,
-                    CodigoSap = x.CodigoSap
+                    CodigoSap = x.CodigoSap,
+                    ValidaSisaRuca = x.ValidaSisaRuca
 
                 }).ToList();
             }

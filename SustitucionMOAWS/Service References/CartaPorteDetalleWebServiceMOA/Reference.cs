@@ -258,6 +258,10 @@ namespace SustitucionMOAWS.CartaPorteDetalleWebServiceMOA {
         
         private string cUIT_SOLICITANTEField;
         
+        private decimal nETOField;
+        
+        private bool nETOFieldSpecified;
+        
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=0)]
         public string VENDEDOR {
@@ -471,6 +475,30 @@ namespace SustitucionMOAWS.CartaPorteDetalleWebServiceMOA {
             set {
                 this.cUIT_SOLICITANTEField = value;
                 this.RaisePropertyChanged("CUIT_SOLICITANTE");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=16)]
+        public decimal NETO {
+            get {
+                return this.nETOField;
+            }
+            set {
+                this.nETOField = value;
+                this.RaisePropertyChanged("NETO");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool NETOSpecified {
+            get {
+                return this.nETOFieldSpecified;
+            }
+            set {
+                this.nETOFieldSpecified = value;
+                this.RaisePropertyChanged("NETOSpecified");
             }
         }
         

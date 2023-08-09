@@ -204,7 +204,8 @@
         <div class="logo">
             <img src="/Content/images/header/logo.png" class="img-responsive" (click)="clickLogo()">
         </div>
-        <div *ngIf="!menuSmall && isAuthorized('MOSTRAR BUSCADOR INTELIGENTE')" class="col-md-6" style="margin: auto; padding: unset;">
+        <div *ngIf="!menuSmall && isAuthorized('MOSTRAR BUSCADOR INTELIGENTE')" class="col-md-6"
+            style="margin: auto; padding: unset;">
             <app-buscador-inteligente></app-buscador-inteligente>
         </div>
         <div class="User-wrapper">
@@ -387,18 +388,18 @@
                         <div class="panel-body">
                             <div *ngIf="isAuthorized('CONSULTAR CUENTA CORRIENTE') && isGranosSelected()">
                                 <a (click)="goToSeccion('/cuenta-corriente/simple')" href="#">
-                                    <!--data-toggle="tab">-->Cuenta Corriente
+                                    Cuenta Corriente
                                 </a>
                             </div>
                             <div *ngIf="isAuthorized('CONSULTAR PAGOS') && isGranosSelected()">
                                 <a (click)="goToSeccion('/pago/emitido')" href="#">
-                                    <!--data-toggle="tab">-->Pagos
+                                    Pagos
                                 </a>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="panel panel-default" *ngIf="isAuthorized('MENU') && isGranosSelected()">
+                <div class="panel panel-default" *ngIf="isAuthorized('MENU')">
                     <div class="panel-heading seccion" role="tab" id="operar">
                         <a class="link-header collapsed" data-toggle="collapse" data-parent="#accordionMenu"
                             href="#collapseO" aria-expanded="false" aria-controls="collapseO">
@@ -407,54 +408,52 @@
                     </div>
                     <div id="collapseO" class="collapse" aria-labelledby="operar" role="tabpanel">
                         <div class="panel-body">
-                            <div *ngIf="isAuthorized('ABM CAMPOS SUSTENTABLE')">
-                                <a (click)="goToSeccion('/sustentable/listado-campos')" href="#"> Campo Sustentable</a>
-                            </div>
-                            <div *ngIf="isAuthorized('CONSULTAR VENDEDOR STATUS')">
-                                <a (click)="goToSeccion('/vendedor/status')" href="#">
-                                    <!--data-toggle="tab">-->Consulta de Vendedor
-                                </a>
-                            </div>
-                            <div
-                                *ngIf="(isAuthorized('PESIFICACION') || isAuthorized('VER PESIFICACIONES')) && isGranosSelected()">
-                                <a (click)="goToSeccion('/pesificacion')" href="#"> Pesificaci&oacute;n</a>
-                            </div>
-                            <div *ngIf="isAuthorized('CREAR CONTRATOS') && isGranosSelected()">
-                                <a (click)="goToSeccion('/crear-contrato/cargarnegocio')" href="#"> Carga de
-                                    negocios</a>
-                            </div>
-                            <div *ngIf="isAuthorized('CREAR CONTRATOS') && isGranosSelected()">
-                                <a (click)="goToSeccion('/reporte/contrato')" href="#">Reporte de mis cargas</a>
-                            </div>
+                            <ng-container *ngIf="isGranosSelected()">
+                                <div *ngIf="isAuthorized('ABM APLICACIONES CCPP')">
+                                    <a (click)="goToSeccion('/aplicaciones-ccpp/listado')" href="#"> {{"Aplicación de
+                                        CCPP"|uppercase}}</a>
+                                </div>
+                                <div *ngIf="isAuthorized('ABM CAMPOS SUSTENTABLE')">
+                                    <a (click)="goToSeccion('/sustentable/listado-campos')" href="#"> Campo
+                                        Sustentable</a>
+                                </div>
+                                <div *ngIf="isAuthorized('CONSULTAR VENDEDOR STATUS')">
+                                    <a (click)="goToSeccion('/vendedor/status')" href="#">
+                                        Consulta de Vendedor
+                                    </a>
+                                </div>
+                                <div
+                                    *ngIf="(isAuthorized('PESIFICACION') || isAuthorized('VER PESIFICACIONES')) && isGranosSelected()">
+                                    <a (click)="goToSeccion('/pesificacion')" href="#"> Pesificaci&oacute;n</a>
+                                </div>
+                                <div *ngIf="isAuthorized('CREAR CONTRATOS') && isGranosSelected()">
+                                    <a (click)="goToSeccion('/crear-contrato/cargarnegocio')" href="#"> Carga de
+                                        negocios</a>
+                                </div>
+                                <div *ngIf="isAuthorized('CREAR CONTRATOS') && isGranosSelected()">
+                                    <a (click)="goToSeccion('/reporte/contrato')" href="#">Reporte de mis cargas</a>
+                                </div>
+                                <div *ngIf="isAuthorized('VER ECHEQ') && isGranosSelected()">
+                                    <a (click)="goToSeccion('/echeq/gestion')" href="#">Gestión Echeq</a>
+                                </div>
+                            </ng-container>
+                            <ng-container
+                                *ngIf="isNoGranosSelected() || (!isAmbos() && (isCliente() || isAuthorized('CONSULTAR HOME NG')))">
+                                <div>
+                                    <a (click)="goToSeccion('/ordenes-de-carga/')" href="#">Ordenes de carga</a>
+                                </div>
+                                <div>
+                                    <a (click)="goToSeccion('/ordenes-de-carga-fason/')" href="#">Ordenes de carga
+                                        fason</a>
+                                </div>
+                                <div>
+                                    <a (click)="goToSeccion('/reporte-contrato/')" href="#">Reporte de contratos</a>
+                                </div>
+                            </ng-container>
                         </div>
                     </div>
                 </div>
 
-                <div class="panel panel-default" *ngIf="isAuthorized('MENU') && (!isAmbos() ||isNoGranosSelected())">
-                    <div class="panel-heading seccion" role="tab" id="operar">
-                        <a class="link-header collapsed" data-toggle="collapse" data-parent="#accordionMenu"
-                           href="#collapseO" aria-expanded="false" aria-controls="collapseO">
-                            Operar <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
-                        </a>
-                    </div>
-                    <div id="collapseO" class="collapse" aria-labelledby="operar" role="tabpanel">
-                        <div class="panel-body">
-                            <div>
-                                <a (click)="goToSeccion('/ordenes-de-carga/')" href="#">Ordenes de carga</a>
-                            </div>
-                            <!--<div>
-                                <a (click)="goToSeccion('/reporte-contrato/')" href="#">Reporte de contratos</a>
-                            </div>-->
-                        </div>
-                    </div>
-                    <div id="collapseO" class="collapse" aria-labelledby="operar" role="tabpanel">
-                        <div class="panel-body">
-                            <div>
-                                <a (click)="goToSeccion('/reporte-contrato/')" href="#">Reporte contratos</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
                 <div class="panel panel-default">
                     <div class="panel-heading seccion" role="tab" id="documentacion">
                         <a class="link-header collapsed" data-toggle="collapse" data-parent="#accordionMenu"
@@ -613,22 +612,35 @@
                 </div>
 
                 <div class="panel panel-default" *ngIf="!isAmbos() || isNoGranosSelected()">
-                    <div class="panel-heading seccion" role="tab" id="compras" *ngIf="isAuthorized('ABM SOLP')">
+                    <div class="panel-heading seccion" role="tab" id="compras"
+                        *ngIf="isAuthorized('VER SOLAPA COMPRA')">
                         <a class="link-header collapsed" data-toggle="collapse" data-parent="#accordionMenu"
                             href="#collapseCompras" aria-expanded="false" aria-controls="collapseCompras">
                             Compras <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
                         </a>
                     </div>
-                    <div id="collapseCompras" class="collapse" aria-labelledby="compras" role="tabpanel"
-                        *ngIf="isAuthorized('ABM SOLP')">
+                    <div id="collapseCompras" class="collapse" aria-labelledby="compras" role="tabpanel">
                         <div class="panel-body">
-                            <div>
+                            <div *ngIf="isAuthorized('ABM SOLP')">
                                 <a (click)="goToSeccion('/compras/dashboard')" href="#">
-                                    DASHBOARD
+                                    DASHBOARD SOLICITANTE
+                                </a>
+                            </div>
+
+                            <div *ngIf="isAuthorized('VER SOLPS COMPRADOR')">
+                                <a (click)="goToSeccion('/compras/dashboardComprador')" href="#">
+                                    DASHBOARD COMPRADOR
+                                </a>
+                            </div>
+
+                            <div *ngIf="isAuthorized('VER SOLPS PROVEEDOR')">
+                                <a (click)="goToSeccion('/compras/dashboardProveedor')" href="#">
+                                    DASHBOARD PROVEEDOR
                                 </a>
                             </div>
                         </div>
                     </div>
+
                 </div>
 
                 <div class="panel panel-default" *ngIf="!isAmbos() || isNoGranosSelected()">
@@ -687,14 +699,12 @@
         </div>
     </barra-nav>
     <div class="alert alert-danger alert-dismissible flotante fade in" *ngIf="mensajeError != ''" role="alert"><button
-            type="button" class="close" (click)="mensajeError = ''"><span
-                aria-hiden="true">&times;</span></button><i class="fa fa-exclamation-triangle"
-            aria-hidden="true"></i>{{mensajeError}}</div>
+            type="button" class="close" (click)="mensajeError = ''"><span aria-hiden="true">&times;</span></button><i
+            class="fa fa-exclamation-triangle" aria-hidden="true"></i>{{mensajeError}}</div>
     <div class="alert alert-warning alert-dismissible flotante fade in" *ngIf="mensajeInfo != ''" role="alert">
-        <button
-            type="button" class="close" (click)="mensajeInfo = ''"><span
-                aria-hiden="true">&times;</span></button><i class="fa fa-thumbs-o-down"
-            aria-hidden="true"></i>{{mensajeInfo}}</div>
+        <button type="button" class="close" (click)="mensajeInfo = ''"><span aria-hiden="true">&times;</span></button><i
+            class="fa fa-thumbs-o-down" aria-hidden="true"></i>{{mensajeInfo}}
+    </div>
     <div class="alert alert-success alert-dismissible flotante fade in" *ngIf="mensajeSuccess != ''" role="alert">
         <button type="button" class="close" (click)="mensajeSuccess = ''"><span
                 aria-hiden="true">&times;</span></button><i class="fa fa-thumbs-o-up"
@@ -755,7 +765,8 @@
     <usuario-small id="usuarioSmall" class="clearfix">
         <div class="headerbar">
             <div class="col-md-12 col-sm-12 userData" *ngIf="isAuthorized('CONSULTAR DOCUMENTACION')">
-                <a (click)="goToSeccion('/dato-fiscal/documentacion')" href="#" class="animate">
+                <a (click)="goToSeccion('/dato-fiscal/documentacion')" onClick="userCloseSmall()" href="#"
+                    class="animate">
                     Documentación<span class="fa fa-file-text" aria-hidden="true"></span>
                 </a>
             </div>
@@ -765,12 +776,13 @@
                 </a>
             </div> -->
             <div class="col-md-12 col-sm-12 userData" *ngIf="isAuthorized('SELECCIONAR VENDEDOR')">
-                <a (click)="goToSeccion('/usuario/cambio-vendedor')" href="#" class="animate">
+                <a (click)="goToSeccion('/usuario/cambio-vendedor')" href="#" class="animate"
+                    onClick="userCloseSmall()">
                     Cambio de vendedor<span class="fa fa-id-card" aria-hidden="true"></span>
                 </a>
             </div>
             <div class="col-md-12 col-sm-12 userData no-border">
-                <a (click)="cerrarSesion()" href="#" class="animate">
+                <a (click)="cerrarSesion()" href="#" class="animate" onClick="userCloseSmall()">
                     Cerrar sesión<span class="fa fa-sign-out" aria-hidden="true"></span>
                 </a>
             </div>

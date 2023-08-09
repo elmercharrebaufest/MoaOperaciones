@@ -53,7 +53,32 @@ namespace SustitucionMOA.Controllers
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
         }
-
+        public JsonResult GetDolarGirasol()
+        {
+            try
+            {
+                var data = pesificacionService.GetDolarGirasol();
+                return JsonCustom(new { data });
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+        public JsonResult GetDolarMaiz()
+        {
+            try
+            {
+                var data = pesificacionService.GetDolarMaiz();
+                return JsonCustom(new { data });
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.PESIFICACION)]
         public ActionResult SetComprobante(string contrato)
         {

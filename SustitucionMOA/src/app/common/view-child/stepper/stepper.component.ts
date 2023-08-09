@@ -1,4 +1,5 @@
-﻿import { Component, EventEmitter, Input, Output } from '@angular/core';
+﻿
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { MenuItem } from 'primeng/api';
 import { Paso } from '../../models/paso';
 
@@ -9,7 +10,7 @@ import { Paso } from '../../models/paso';
 
 export class StepperComponent {
 
-    @Input() pasos:Paso[];
+    @Input() pasos: Paso[];
     @Output() change = new EventEmitter<Paso>();
     @Output() save = new EventEmitter();
 
@@ -22,27 +23,27 @@ export class StepperComponent {
         this.items = new Array;
     }
 
-    @Input() 
+    @Input()
     set paso(value: Paso) {
         this.activeStep = value;
         this.activeIndex = value.Numero - 1;
         this.change.emit(value)
-     }
-     
-     get paso(): Paso {
-         return this.activeStep;
-     }
+    }
 
-    ngOnInit(){
+    get paso(): Paso {
+        return this.activeStep;
+    }
+
+    ngOnInit() {
     }
 
     ngAfterViewInit(): void {
-        if(this.pasos){
-            this.pasos.forEach((p,i) => {
+        if (this.pasos) {
+            this.pasos.forEach((p, i) => {
                 var item = {
                     label: p.Nombre
                 }
-    
+
                 this.items.push(item);
 
                 this.activeIndex = p.Activo ? i : this.activeIndex;
@@ -50,32 +51,39 @@ export class StepperComponent {
         }
     }
 
-    getItemClass(index){
+    getItemClass(index) {
         var step = this.pasos[index];
 
-        if(this.activeIndex == index){
+        if (step.Deshabilitado) {
+            return "disabled";
+        }
+
+        if (this.activeIndex == index) {
             var ret = "active";
 
-            if(index + 1 < this.pasos.length && this.pasos[index+1].Iniciado){
-                ret += " " + (step.Completo ? "active-complete": "active-incomplete");
+            if (index + 1 < this.pasos.length && this.pasos[index + 1].Iniciado) {
+                ret += " " + (step.Completo ? "active-complete" : "active-incomplete");
             }
 
             return ret;
         }
-        if(step.Iniciado && step.Completo)
+
+        if (step.Iniciado && step.Completo)
             return "complete";
-        if(step.Iniciado && !step.Completo)
+        if (step.Iniciado && !step.Completo)
             return "incomplete";
 
         return "";
     }
 
-    itemClick(event, item, index){
+    itemClick(event, item, index) {
         var step = this.pasos[index];
-        this.saveStep(step)
-        this.activeIndex = index;
-        this.paso = step;
-        this.change.emit(step)
+        if (!step.Deshabilitado) {
+            this.saveStep(step)
+            this.activeIndex = index;
+            this.paso = step;
+            this.change.emit(step)
+        }
     }
 
     saveStep(step: Paso) {

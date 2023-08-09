@@ -123,7 +123,11 @@ namespace SustitucionMOAUtils.Services
                 EstadoAprobacion = EstadoAprobacion.DocumentacionPendiente,
                 FechaSolicitud = DateTime.Now
             };
-
+            var result = dataAgroService.ObtenerValidarCUITProveedorGranos(proveedor.CUIT);
+            if (result != null)
+            {
+                proveedor.EstadoSISA = result.ProveedorSISAEstadoCuit;
+            }
             return ValidarCUITProveedor(ref usuario, proveedor);
         }
 
@@ -196,7 +200,6 @@ namespace SustitucionMOAUtils.Services
                 FechaSolicitud = DateTime.Now
 
             };
-
             usuario.Roles = new List<Rol>();
             usuario.Proveedores = new List<Proveedor>();
             usuario.TipoUsuario = ObtenerTipoPorNombreCorto("CORR");
@@ -210,6 +213,7 @@ namespace SustitucionMOAUtils.Services
                     if (infoProveedor.ProveedorMails.Contains(usuario.Mail, StringComparer.OrdinalIgnoreCase) || bool.Parse(ConfigurationManager.AppSettings["EsLocal"]))
                     {
                         proveedor.IdComercialDataAgro = infoProveedor.ComercialId;
+                        proveedor.EstadoSISA = infoProveedor.ProveedorSISAEstadoCuit;
                         proveedor.IdDataAgro = infoProveedor.ProveedorId;
                         proveedor.RazonSocial = infoProveedor.ProveedorRazonSocial;
                         proveedor.CodigoProveedor = FormatearCodigoCorredor(proveedor.CUIT);

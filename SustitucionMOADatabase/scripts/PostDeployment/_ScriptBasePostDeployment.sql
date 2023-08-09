@@ -18,10 +18,17 @@ Post-Deployment Script Template
 :r .\PermisosNotificaciones.sql
 :r .\PermisoPorRolBuscadorInteligente.sql
 :r .\CategoriaYSubcategoriasConsulta.sql
-:r .\RolesConsulta.sql
-:r .\RolPermisoPorRolConsulta.sql
-:r .\PermisoPorRolConsulta.sql
+:r .\Rol.sql
+:r .\PermisoPorRol.sql
+:r .\RolPermisoPorRol.sql
 :r .\CategoriaRolConsulta.sql
+:r .\PaisesSAP.sql
 :r .\HabilitacionJob.sql
 :r .\PermisoRol.sql
 :r .\Varios.sql
+:r .\SolpFixDataToNewColumnEmailLinkToken.sql
+:r .\Material.sql
+:r .\Estados.sql
+:r .\UnidadMedidaSap.sql
+
+

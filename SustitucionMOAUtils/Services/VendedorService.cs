@@ -18,7 +18,7 @@ using Models = SustitucionMOAModel.Models;
 namespace SustitucionMOAUtils.Services
 {
 
-	public class VendedorService : IVendedorService
+    public class VendedorService : IVendedorService
     {
         protected readonly IRepositorio repositorio;
         protected readonly IDataAgroService dataAgroService;
@@ -51,13 +51,13 @@ namespace SustitucionMOAUtils.Services
 
                 return response;
             }
-            catch (InfoCustomException)
+            catch (InfoCustomException e)
             {
-                throw;
+                throw e;
             }
-            catch (ValidationCustomException)
+            catch (ValidationCustomException e)
             {
-                throw;
+                throw e;
             }
             catch (Exception e)
             {
@@ -110,24 +110,24 @@ namespace SustitucionMOAUtils.Services
                 });
             response.vendedores.AddRange(vendedoresAprobados);
 
-            response.vendedores = response.vendedores.GroupBy(i => new 
-                {
-                    i.idVendedor,
-                    i.descVendedor
-                })
+            response.vendedores = response.vendedores.GroupBy(i => new
+            {
+                i.idVendedor,
+                i.descVendedor
+            })
                 .Select(vendedor => vendedor.Skip(1)
                 .Aggregate(
-                    vendedor.First(), (a, o) => 
+                    vendedor.First(), (a, o) =>
                     {
-                        if(!a.estado.Contains("Pendiente de envío documentación original") 
+                        if (!a.estado.Contains("Pendiente de envío documentación original")
                         && (a.estadoMoa.Contains("Pendiente de envío documentación original") || o.estadoMoa.Contains("Pendiente de envío documentación original"))
                         && a.estado != ""
                         && !a.estado.Contains("Habilitado"))
                         {
                             a.estado = a.estado + " - Pendiente de envío documentación original";
                         }
-                        
-                        return a; 
+
+                        return a;
                     }))
                 .ToList();
             return response;
@@ -149,7 +149,7 @@ namespace SustitucionMOAUtils.Services
                     IdDataAgro = prov.IdDataAgro,
                     Mail = prov.Mail ?? "",
                     Observaciones = prov.Observaciones,
-                    RazonSocial = prov.RazonSocial ?? "",
+                    RazonSocial = !String.IsNullOrEmpty(prov.RazonSocial) ? prov.RazonSocial : prov.CUIT,
                     FechaSolicitud = prov.FechaSolicitud,
                     Comercial = prov.Comercial,
                     EstadoSIPER = prov.EstadoSIPER,
@@ -175,7 +175,7 @@ namespace SustitucionMOAUtils.Services
         {
             VendedoresWSMOAResponse response = new VendedoresWSMOAResponse();
 
-            if (tipoProveedorId != 5)
+            if (tipoProveedorId != 4 && tipoProveedorId != 5 )
             {
                 if (fechaInicio == "")
                 {
@@ -216,7 +216,8 @@ namespace SustitucionMOAUtils.Services
                 {
                     descVendedor = v.RazonSocial,
                     estado = "",
-                    idVendedor = v.CodigoProveedor
+                    idVendedor = v.CodigoProveedor,
+                    cuit = v.CUIT
                 });
             response.vendedores.AddRange(vendedoresAprobados);
 
@@ -428,9 +429,13 @@ namespace SustitucionMOAUtils.Services
             }
 
 
-            foreach (var item in listadoProveedores.Where(a => a.CUIT == null))
+            foreach (var item in listadoProveedores.Where(a => a.CUIT == null || a.CUIT == ""))
             {
                 item.CUIT = "-";
+            }
+            foreach (var item in listadoProveedores.Where(a => a.RazonSocial == null || a.RazonSocial == ""))
+            {
+                item.RazonSocial = "-";
             }
             return listadoProveedores.Distinct().ToList();
         }

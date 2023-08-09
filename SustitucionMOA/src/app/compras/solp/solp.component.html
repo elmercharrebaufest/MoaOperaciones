@@ -1,0 +1,161 @@
+<div class="content-wraper alinearAlturaMenu">
+    <!-- CONTENT-->
+    <section class="container-fluid clearfix">
+        <!--Title-->
+        <div class="row titleSection">
+            <div class="col-xs-12 col-sm-10 ">
+                <strong *ngIf="!titulo">¿Qu&eacute; tipo de SOLP quiere iniciar?</strong>
+                <p><strong *ngIf="titulo">{{titulo}}</strong> {{tituloNroSolp}}</p>
+            </div>
+        </div>
+        <!--End Title-->
+        <!-- Form-->
+        <div class="row myRow firstSection">
+            <div class="rounded shadow">
+                <stepper [(pasos)]="pasos" (change)="cambioPaso($event)" [(paso)]="pasoActual"></stepper>
+            </div>
+        </div>
+        <spinner></spinner>
+        <p-toast [style]="{marginTop: '105px'}"></p-toast>
+        <div class="row myRow mySearch" style="margin-bottom: 4em;">
+            <div class="col-xs-12 col-md-12 rounded shadow animate">
+                <div class="col-xs-12 col-md-12 headerCompras" #headerCompras>
+                    <strong>Paso {{pasoActual.Numero}}:</strong> {{pasoActual.Nombre}}
+                </div>
+                <hr class="prototipo">
+                <!-- contenido -->
+                <div class="col-xs-12 col-md-12" [ngSwitch]="pasoActual.Codigo">
+                    <div *ngSwitchCase="enumSolp.PliegoGeneracion1" [@fadeInOut]>
+                        <generacion1 #paso1 [(model)]="solpActual" [(locale)]="es"></generacion1>
+                    </div>
+                    <div *ngSwitchCase="enumSolp.PliegoGeneracion2" [@fadeInOut]>
+                        <generacion2 #paso2 [(model)]="solpActual" [(locale)]="es"></generacion2>
+                    </div>
+                    <div *ngSwitchCase="enumSolp.PliegoEspecificacion" [@fadeInOut]>
+                        <especificaciones #paso3 [(model)]="solpActual" [(locale)]="es"></especificaciones>
+                    </div>
+                    <div *ngSwitchCase="enumSolp.PliegoCotizacion" [@fadeInOut]>
+                        <cotizacion [(model)]="solpActual" [(locale)]="es"></cotizacion>
+                    </div>
+                    <div *ngSwitchCase="enumSolp.SolpCabecera" [@fadeInOut]>
+                        <cabecera #cabecera [(model)]="solpActual" [(locale)]="es" [(combos)]="combos" [(esCreacionSolp)]="esCreacionSolp"></cabecera>
+                    </div>
+                    <div *ngSwitchDefault [@fadeInOut]>
+                        Paso en construccion
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <stepper-actions
+            [(disabledSave)]="disabledSave"
+            [(pasos)]="pasos"
+            [(pasoActual)]="pasoActual"
+            [(tipoSolp)]="solpActual.tipoSolp"
+            (cancelarSolpEmitter)="cancelarSolp()"
+            (navegarEmitter)="navegar($event)"
+            (guardarCambiosEmitter)="guardarCambios($event)"
+            (showFinalizarDialogEmitter)="showFinalizarDialog()"
+            (previewEmitter)="preview()">
+        </stepper-actions>
+        
+        <!-- END form-->
+    </section>
+    <!--End CONTENT-->
+</div>
+<p-dialog header="Previsualización" [(visible)]="mostrarPreview" [width]="1000" blockScroll="true" modal="modal" appendTo="body" positionTop="30" [contentStyle]="{'overflow':'visible', 'max-height':'1000px', 'min-height':'500px'}">
+    <pliego-preview [src]="pdfPreview"></pliego-preview>
+</p-dialog>
+
+<!-- Modal cancelar SOLP-->
+<p-confirmDialog #dialogo key="cancelarSolp" header="Advertencia" icon="pi pi-exclamation-triangle" [width]="400" [responsive]="true" appendTo="body">
+    <p-footer>
+        <button type="button" class="btn btn-primary botonModal" (click)="dialogo.reject()">No</button>
+        <button type="button" class="btn btn-success botonModal" (click)="dialogo.accept()">Si</button>
+    </p-footer>
+</p-confirmDialog>
+<!--fin modal cancelar SOLP-->
+<!-- Modal Volver a home SOLP-->
+<p-confirmDialog #dialo key="solpFinalizadaVolverHome" header="Confirmacion" icon="pi pi-exclamation-triangle" [width]="400" [responsive]="true" appendTo="body">
+    <p-footer>
+        <button type="button" class="btn btn-primary botonModal" (click)="dialo.reject()">No</button>
+        <button type="button" class="btn btn-success botonModal" (click)="dialo.accept()">Si</button>
+    </p-footer>
+</p-confirmDialog>
+<!--fin modal Volver a home SOLP-->
+
+<finalizar-solp
+    [(locale)]="es"
+    [(displayFinalizar)]="displayFinalizar"
+    [(solpActual)]="solpActual"
+    [(selectUsuarioCompras)]="selectUsuarioCompras"
+    [(usuarioComprasList)]="usuarioComprasList"
+    (cancelarFinalizarEmitter)="cancelarFinalizar()"
+    (finalizarEmitter)="finalizar($event)">
+</finalizar-solp>
+
+<p-dialog [(visible)]="displaySAP" [width]="460" modal="modal" appendTo="body" [draggable]="false" [contentStyle]="{'overflow':'visible', 'max-height':'100px', 'min-height':'100px'}" [closable]="false">
+    <p-header class="headerModal">
+        ¡Felicitaciones!
+    </p-header>
+    <br> Ha cargado con éxito la solicitud de pedido {{solpActual.NroSolp || ''}} en SAP y se ha enviado para su liberación
+    <br>
+    <br>
+    <p-footer>
+        <button class="btn btn-success botonesComprasColor" (click)="showEmailPopup(displaySAP, false)">Enviar Email</button>
+        <button class="btn btn-secondary botonesCompras" (click)="generarZipPliego(solpActual.id)">Descargar SOLP</button>
+        <button class="btn btn-primary botonesComprasColor botonModal" (click)="solpFinalizadaVolverHome()">Volver a la home</button>
+    </p-footer>
+</p-dialog>
+
+<p-dialog [(visible)]="displaySAPEditar" [width]="460" modal="modal" appendTo="body" [draggable]="false" [contentStyle]="{'overflow':'visible', 'max-height':'100px', 'min-height':'100px'}" [closable]="false">
+    <p-header class="headerModal">
+        ¡Felicitaciones!
+    </p-header>
+    <br> Ha editado con éxito la solicitud de pedido {{solpActual.NroSolp}} en SAP
+    <br>
+    <br>
+    <p-footer>
+        <button class="btn btn-success botonesComprasColor" (click)="showEmailPopup(false, displaySAPEditar)">Enviar Email</button>
+        <button class="btn btn-secondary botonesCompras" (click)="generarZipPliego(solpActual.id)">Descargar SOLP</button>
+        <button class="btn btn-primary botonesComprasColor botonModal" (click)="salir()">Volver a la home</button>
+    </p-footer>
+</p-dialog>
+
+<p-dialog [(visible)]="displaySAPVincularPliego" [width]="400" modal="modal" appendTo="body" [draggable]="false" [contentStyle]="{'overflow':'visible', 'max-height':'100px', 'min-height':'100px'}" [closable]="false">
+    <p-header class="headerModal">
+        ¡Felicitaciones!
+    </p-header>
+    <br> La vinculación del Pliego se realizó correctamente.
+    <br> Puede descargar la SOLP y enviarla por mail.
+    <br>
+    <p-footer>
+        <button type="button" class="btn btn-secondary botonesCompras" (click)="generarZipPliego(solpActual.id)">Descargar SOLP</button>
+        <button type="button" class="btn btn-primary botonesComprasColor botonModal" (click)="salir()">Volver a la home</button>
+    </p-footer>
+</p-dialog>
+
+<p-dialog [(visible)]="displayErrorSAP" [width]="400" [height]="400" modal="modal" appendTo="body" [draggable]="false" [contentStyle]="{'overflow':'visible', 'max-height':'100px', 'min-height':'400px'}">
+    <p-header class="headerModalError">
+        ¡Ocurrió un error!
+    </p-header>
+    <div class="col-md-12 alinearTitulo">
+        <h4>No se pudo procesar la SOLP</h4>
+        <br>
+        <p>Por favor revisar los siguientes errores:</p>
+        <br>
+        <div *ngFor="let error of listadoErrores; let indice = index" class="col-md-12 alinearTitulo ui-helper-clearfix">
+            <ul>
+                <li>{{error}}</li>
+            </ul>
+        </div>
+        <br>
+    </div>
+    <p-footer>
+        <button type="button" class="btn btn-secondary botonesComprasColor" (click)="cancelarFinalizar()">VOLVER</button>
+    </p-footer>
+</p-dialog>
+
+<email-compose
+    (sendEmailWrapperEmitter)="sendEmail($event)">
+</email-compose>

@@ -1,38 +1,58 @@
 ﻿using SustitucionMOAModel.Dto;
+using SustitucionMOAModel.Dto.OrdenDeCarga;
 using SustitucionMOAModel.Entities;
+using SustitucionMOAModel.Models.WebApiMap.ScatoRepositorio;
 using System.Collections.Generic;
 
 namespace SustitucionMOAUtils.Interfaces
 {
-	public interface IOrdenDeCargaService
+    public interface IOrdenDeCargaService
     {
         Resultado Agregar(OrdenDeCarga ordenDeCarga, string mailUsuario);
+        Resultado Editar(OrdenDeCarga ordenDeCarga, string mailUsuario);
+        CrearOrdenEnSAPResponse CrearOrdenEnSAP(CrearOrdenEnSAPRequest request, bool puedeEnviarASAP = false);
         List<OrdenDeCargaDto> Listar(string mailUsuario, string fechaInicio, string fechaFin);
         OrdenDeCargaDetalleDto Obtener(string mailUsuario, int ordenId);
         OrdenDeCargaEditarDto ObtenerEditar(string mailUsuario, int ordenId);
-        List<OrdenDeCargaHistorialDto> ObtenerEditarHistorial(string mailUsuario, int ordenId);        
-        string AnularOrden(int ordenId);
+        List<OrdenDeCargaHistorialDto> ObtenerEditarHistorial(string mailUsuario, int ordenId);
+        string AnularOrden(int ordenId, string mailUsuario);
         string SolicitarAnulacionOrden(int ordenId, string mailUsuario);
         string RechazarSolicitudAnulacion(int ordenId, string mailUsuario);
-        string EdicionFinalizada(int ordenId);
+        string EdicionFinalizada(int ordenId, string mailUsuario);
         string SolicitarEdicionOrden(int ordenId, string mailUsuario);
         string RechazarSolicitudEdicion(int ordenId, string mailUsuario);
         string NotificarTransporte(int ordenId);
         List<string> ObtenerContratos(int ordenId);
-        Resultado SeleccionarContrato(int ordenId, string contratoSAP);
-        List<string> ObtenerPedidos(int ordenId);
-        string SeleccionarPedido(int ordenId, string pedido);
+        Resultado SeleccionarContrato(int ordenId, string contratoSAP, string mailUsuario);
         Resultado VerificarSituacionCrediticia(int ordenId);
-        string VerificarTransporte(int ordenId);
+        string VerificarTransporte(int ordenId, string mailUsuario);
         void VerificarTransporteBulk();
-        Resultado Editar(OrdenDeCarga ordenDeCarga, string mailUsuario);
+        void CrearOrdenEnSAPBulk();
         List<OrdenDeCarga> VerificarVencimientoOrdenDeCarga();
-        string ForzarCreacionOrden(int ordenId);
+        string ForzarCreacionOrden(int ordenId, string mailUsuario);
         OrdenDeCargaDto ObtenerPatentes(OrdenDeCarga orden, string mailUsuario);
-        List<ProveedorDto> VisualizarCliente(string corredor, string fechaInicio, string fechaFin, string pendiente);
-        bool ValidarCorredorClienteContratoProducto(string clienteCuit, string clienteCodigo, string contrato, string corredor, string fechaInicio, string fechaFin, string productoId, string pendiente);
-        string NotificarVariosPedidos(int ordenDeCargaId);
-        string NotificarVariosContratos(int ordenDeCargaId);
-        string NotificarVencimientoOrdenCarga(int ordenId);
+        VisualizarClienteResponse VisualizarCliente(VisualizarClienteRequest request);
+        VisualizarProductoResponse VisualizarProducto(VisualizarProductoRequest request);
+        ValidarCorredorClienteContratoProductoResponse ValidarCorredorClienteContratoProducto(ValidarCorredorClienteContratoProductoRequest request);
+        string NotificarVencimientoOrdenCarga(int ordenId, string mailUsuario);
+        string ActivarOC(int ordenId, string mailUsuario);
+        OrdenDeCargaDetalleDto ObtenerPorNroEntrega(string mailUsuario, string nroEntrega);
+        List<OrdenDeCargaCambiosHistorialDto> ObtenerCambiosHistorial(OrdenDeCarga orden);
+        void VerificarSituacionCrediticiaJob();
+        ObtenerContratosDisponiblesResponse ObtenerContratosDisponibles(ObtenerContratosDisponiblesRequest req, string mailUsuario);
+        string EnviarOrdenesASAP(List<int> ordenesIds, string mailUsuario);
+        ValidarSisaCorredorClienteResponse ValidarSisaCorredorCliente(string corredorCodigo, string clienteCodigo);
+        bool ValidarSisaCuit(string cuit, string campo);
+        bool EmailGestionarAlta(string cuit, string razonSocial, bool esIntermediarioFlete);
+        bool ValidarCuitRuca(string cuit);
+        ValidarCuitExisteScatoResponse ValidarCuitExisteScato(string cuit);
+        List<PlantaDto> ObtenerPlantasDestino(string destinoCuit);
+        List<DomicilioDto> ObtenerDomiciliosDestino(string destinoCuit);
+        ValidarIntermediarioFleteResponse ValidarIntermediarioFlete(string cuit);
+        (bool, Chofer) ValidarCuilChofer(string cuilChofer);
+        bool ValidarCuilChoferDigito(string cuilChofer);
+        bool ValidarCuitTransporteDigito(string cuitTransporte);
+        Resultado SeleccionarFactura(int ordenId, string numeroFacturaSeleccionada, string mailUsuario);
+        void VerificarCompensacion(int ordenId);
     }
 }

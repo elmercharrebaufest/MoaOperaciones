@@ -11,6 +11,7 @@ import { MensajeComponent } from './../common/view-child/mensaje/mensaje.compone
 import { SpinnerComponent } from './../common/view-child/spinner/spinner.component';
 import { SpinnerSmallComponent } from './../common/view-child/spinner-small/spinner-small.component';
 import { PesificacionBaseComponent } from './pesificacion-base.component';
+import { DolarGirasol, DolarMaiz } from '../common/models/dolarMaterial';
 declare var $: any;
 
 
@@ -50,6 +51,8 @@ export class PesificacionComponent extends PesificacionBaseComponent implements 
     permitirCarga: boolean = false;
     visibleSoja200: boolean = false;
     soja200: any = null;
+    dolarGirasol?: DolarGirasol;
+    dolarMaiz?: DolarMaiz;
     ngOnInit() {
         super.ngOnInit();
         this.setTabs();
@@ -77,7 +80,7 @@ export class PesificacionComponent extends PesificacionBaseComponent implements 
         try {
             this.unsubscribe();
             this.subscription = this.service.getContratos().subscribe(
-                (result:any) => {
+                (result: any) => {
                     //this.spinnerComponent.hideIt();
                     if (result.logout == true) {
                         this.sessionDataService.logout();
@@ -125,7 +128,7 @@ export class PesificacionComponent extends PesificacionBaseComponent implements 
         this.unsubscribe();
 
         this.subscription = this.service.getData().subscribe(
-            (result:any) => {
+            (result: any) => {
                 this.fecha = null;
                 this.spinnerComponent.hideIt();
                 if (result.logout == true) {
@@ -169,6 +172,46 @@ export class PesificacionComponent extends PesificacionBaseComponent implements 
                     if (new Date(parseInt(result.Desde.substr(6))) <= hoy && new Date(parseInt(result.Hasta.substr(6))) >= hoy) {
                         this.visibleSoja200 = true;
                     }
+                }
+            },
+            error => {
+                this.spinnerComponent.hideIt();
+                this.mensajeComponent.setErrorMsg(error.message);
+                return false;
+            },
+
+        );
+        this.service.getDolarGirasol().subscribe(
+            (result) => {
+                this.spinnerComponent.hideIt();
+                if (result.logout == true) {
+                    this.sessionDataService.logout();
+                } else if (result.error != undefined && result.error != "") {
+                    this.mensajeComponent.setErrorMsg(result.error);
+                } else if (result.info != undefined) {
+                    this.mensajeComponent.setInfoMsg(result.info);
+                } else {
+                    this.dolarGirasol = result.data;
+                }
+            },
+            error => {
+                this.spinnerComponent.hideIt();
+                this.mensajeComponent.setErrorMsg(error.message);
+                return false;
+            },
+
+        );
+        this.service.getDolarMaiz().subscribe(
+            (result) => {
+                this.spinnerComponent.hideIt();
+                if (result.logout == true) {
+                    this.sessionDataService.logout();
+                } else if (result.error != undefined && result.error != "") {
+                    this.mensajeComponent.setErrorMsg(result.error);
+                } else if (result.info != undefined) {
+                    this.mensajeComponent.setInfoMsg(result.info);
+                } else {
+                    this.dolarMaiz = result.data;
                 }
             },
             error => {
@@ -227,7 +270,7 @@ export class PesificacionComponent extends PesificacionBaseComponent implements 
 
         this.unsubscribe();
         this.subscription = this.service.setData(this.contrato, this.fijacion, this.cantidad).subscribe(
-            (result:any) => {
+            (result: any) => {
                 if (result.logout == true) {
                     this.sessionDataService.logout();
                 } else if (result.error != undefined && result.error != "") {
@@ -275,7 +318,7 @@ export class PesificacionComponent extends PesificacionBaseComponent implements 
 
         this.unsubscribe();
         this.subscription = this.service.setMassiveData(this.file).subscribe(
-            (result:any) => {
+            (result: any) => {
                 this.spinnerSmallComponent.hideIt();
                 this.visibleEnviar = true;
                 if (result.logout == true) {

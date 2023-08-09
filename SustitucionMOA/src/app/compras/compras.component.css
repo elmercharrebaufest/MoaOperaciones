@@ -21,6 +21,10 @@
     margin-bottom: 15px;
   }
 
+  .padding1{
+    padding: 1px !important;
+  }
+
   .cardCompra:hover {
     background-color: #fff; 
     border: 1px solid #5B5B5B;
@@ -71,7 +75,6 @@
     opacity: 1;
     font-size: 24px;
     font-family: Roboto Regular;
-    padding-left: 30px;
     padding-top: 20px;
     margin-bottom: 20px;
     font-weight: 100;
@@ -153,6 +156,8 @@
 
   .widthInputDias {
     width: 15%;
+    height: 39px !important;
+
   }
 
   ::ng-deep .ui-sidebar-bottom {
@@ -227,14 +232,16 @@
   }
 
   .valorTotal {
-    background-color: #4D60A8;
+    /* background-color: #4D60A8; */
+    background-color: #666666;
     color: #FFFFFF;
-    text-align: left;
+    text-align: right;
     padding: 5px 5px;
     border-radius: 2px;
     font-size: 1.5rem;
     font-weight: 400;
     overflow: hidden;
+    width: 200px;
   }
 
   /* fin Estilo paso 5 Cabecera */
@@ -514,6 +521,11 @@
   flex-direction: row;
 }
 
+.inline-flex-end {
+  display: flex !important;
+  justify-content: flex-end !important;
+}
+
 .col-flex {
   display: flex;
   margin-left: 1em;
@@ -533,4 +545,22 @@
 
 .errorInput {
   border: red solid !important;
+}
+
+:host::ng-deep .ui-label-disabled {
+    color: grey !important;
+}
+
+.disabled {
+    color: grey !important;
+}
+
+.inputGrilla {
+  height: 36px !important;
+  font-weight: 400;
+}
+
+.inputGrillaSub {
+  height: 32px !important;
+  font-weight: 400;
 }
