@@ -41,9 +41,10 @@ namespace SustitucionMOAWS.WSConsumers
                 BAPIMEPOTEXT[] POTEXTITEM;
                 BAPIESLLC[] POSERVICES;
                 BAPIMEPOSCHEDULE[] POSCHEDULE;
-                ObtenerOcSap(nroOC, out POITEM, out RETURN, out POHEADER, out result, out POTEXTHEADER, out POTEXTITEM, out POSERVICES, out POSCHEDULE);
+                BAPIMEPOADDRDELIVERY[] POADDRDELIVERY;
+                ObtenerOcSap(nroOC, out POITEM, out RETURN, out POHEADER, out result, out POTEXTHEADER, out POTEXTITEM, out POSERVICES, out POSCHEDULE, out POADDRDELIVERY);
 
-                return mapOrdenDeCompraSAPDto(result, POHEADER, RETURN, POITEM, POTEXTHEADER, POTEXTITEM, POSERVICES, POSCHEDULE);
+                return mapOrdenDeCompraSAPDto(result, POHEADER, RETURN, POITEM, POTEXTHEADER, POTEXTITEM, POSERVICES, POSCHEDULE, POADDRDELIVERY);
 
             }
             catch (Exception e)
@@ -64,9 +65,10 @@ namespace SustitucionMOAWS.WSConsumers
                 BAPIMEPOTEXT[] POTEXTITEM;
                 BAPIESLLC[] POSERVICES;
                 BAPIMEPOSCHEDULE[] POSCHEDULE;
-                ObtenerOcSap(nroOC, out POITEM, out RETURN, out POHEADER, out result, out POTEXTHEADER, out POTEXTITEM, out POSERVICES, out POSCHEDULE);
+                BAPIMEPOADDRDELIVERY[] POADDRDELIVERY;
+                ObtenerOcSap(nroOC, out POITEM, out RETURN, out POHEADER, out result, out POTEXTHEADER, out POTEXTITEM, out POSERVICES, out POSCHEDULE, out POADDRDELIVERY);
 
-                return mapAdjudicacionDto(result, POHEADER, RETURN, POITEM, POTEXTHEADER, POTEXTITEM, POSERVICES, POSCHEDULE);
+                return mapAdjudicacionDto(result, POHEADER, RETURN, POITEM, POTEXTHEADER, POTEXTITEM, POSERVICES, POSCHEDULE, POADDRDELIVERY);
 
             }
             catch (Exception e)
@@ -77,7 +79,8 @@ namespace SustitucionMOAWS.WSConsumers
 
         private void ObtenerOcSap(
             string nroOC, out BAPIMEPOITEM[] POITEM, out BAPIRET2[] RETURN, out BAPIMEPOHEADER POHEADER, out BAPIEIKP result,
-           out BAPIMEPOTEXTHEADER[] POTEXTHEADER, out BAPIMEPOTEXT[] POTEXTITEM, out BAPIESLLC[] POSERVICES, out BAPIMEPOSCHEDULE[] POSCHEDULE
+           out BAPIMEPOTEXTHEADER[] POTEXTHEADER, out BAPIMEPOTEXT[] POTEXTITEM, out BAPIESLLC[] POSERVICES, out BAPIMEPOSCHEDULE[] POSCHEDULE,
+           out BAPIMEPOADDRDELIVERY[] POADDRDELIVERY
             )
         {
             string ACCOUNT_ASSIGNMENT = "X";
@@ -91,7 +94,7 @@ namespace SustitucionMOAWS.WSConsumers
             string VERSION = "X";
 
             BAPIMEPOACCOUNT[] POACCOUNT = new BAPIMEPOACCOUNT[] { };
-            BAPIMEPOADDRDELIVERY[] POADDRDELIVERY = new BAPIMEPOADDRDELIVERY[] { };
+            POADDRDELIVERY = new BAPIMEPOADDRDELIVERY[] { };
             BAPIMEPOCOND[] POCOND = new BAPIMEPOCOND[] { };
             POITEM = new BAPIMEPOITEM[] { };
             POTEXTHEADER = new BAPIMEPOTEXTHEADER[] { };
@@ -158,7 +161,7 @@ namespace SustitucionMOAWS.WSConsumers
 
 
         private OrdenDeCompraSAPDto mapOrdenDeCompraSAPDto(BAPIEIKP result, BAPIMEPOHEADER POHEADER, BAPIRET2[] RETURN, BAPIMEPOITEM[] POITEM, BAPIMEPOTEXTHEADER[] POTEXTHEADER,
-        BAPIMEPOTEXT[] POTEXTITEM, BAPIESLLC[] POSERVICES, BAPIMEPOSCHEDULE[] POSCHEDULE)
+        BAPIMEPOTEXT[] POTEXTITEM, BAPIESLLC[] POSERVICES, BAPIMEPOSCHEDULE[] POSCHEDULE, BAPIMEPOADDRDELIVERY[] POADDRDELIVERY)
         {
             OrdenDeCompraSAPDto resultado = new OrdenDeCompraSAPDto();
 
@@ -193,9 +196,10 @@ namespace SustitucionMOAWS.WSConsumers
 
 
         private AdjudicacionDto mapAdjudicacionDto(BAPIEIKP result, BAPIMEPOHEADER POHEADER, BAPIRET2[] RETURN, BAPIMEPOITEM[] POITEM, BAPIMEPOTEXTHEADER[] POTEXTHEADER,
-        BAPIMEPOTEXT[] POTEXTITEM, BAPIESLLC[] POSERVICES, BAPIMEPOSCHEDULE[] POSCHEDULE)
+        BAPIMEPOTEXT[] POTEXTITEM, BAPIESLLC[] POSERVICES, BAPIMEPOSCHEDULE[] POSCHEDULE, BAPIMEPOADDRDELIVERY[] POADDRDELIVERY)
         {
             AdjudicacionDto adjudicacion = new AdjudicacionDto();
+            var materiales = repositorio.Listar<MaterialSolp>();
 
             if (RETURN == null)
             {
@@ -211,12 +215,17 @@ namespace SustitucionMOAWS.WSConsumers
             adjudicacion.Id = 0;
             adjudicacion.TipoPosicionCodigo = POITEM.First().ITEM_CAT == "9" ? "SERVICIOS" : "MATERIALES";
             adjudicacion.NumeroOrdenDeCompra = POHEADER.PO_NUMBER;
+            adjudicacion.Proveedor = POHEADER.VENDOR;
+            adjudicacion.Centro = POADDRDELIVERY.FirstOrDefault()?.NAME;
+            adjudicacion.CalleEntrega = POADDRDELIVERY.FirstOrDefault()?.STREET;
+            adjudicacion.CodigoPostal = POADDRDELIVERY.FirstOrDefault()?.POSTL_COD1;
             adjudicacion.PrecioFinal = POITEM.Sum(a => a.QUANTITY * a.NET_PRICE);
-
             adjudicacion.TextoDeCabecera = string.Join(" ", POTEXTHEADER.Where(a => a.TEXT_ID == "F01").Select(a => a.TEXT_LINE));
             adjudicacion.CondicionesDeEntrega = string.Join(" ", POTEXTHEADER.Where(a => a.TEXT_ID == "F05").Select(a => a.TEXT_LINE));
             adjudicacion.CondicionesDePago = string.Join(" ", POTEXTHEADER.Where(a => a.TEXT_ID == "F07").Select(a => a.TEXT_LINE));
             adjudicacion.Garantias = string.Join(" ", POTEXTHEADER.Where(a => a.TEXT_ID == "F08").Select(a => a.TEXT_LINE));
+
+          
 
             adjudicacion.AdjudicacionPosiciones = new List<AdjudicacionPosicionDto>();
 
@@ -227,6 +236,8 @@ namespace SustitucionMOAWS.WSConsumers
                 pos.SolpPosicion_Id = 0;
                 pos.Id = 0;
                 pos.MaterialComprasCodigo = posicion.MATERIAL?.TrimStart('0');
+                pos.MaterialComprasDescripcion = !string.IsNullOrEmpty(posicion.MATERIAL) ? materiales.Where(x => x.CodigoSap == posicion.MATERIAL).FirstOrDefault().Descripcion : "";
+                pos.MaterialTextoAmpliado = !string.IsNullOrEmpty(posicion.MATERIAL) ? materiales.Where(x => x.CodigoSap == posicion.MATERIAL).FirstOrDefault().TextoAmpliado : "";
                 pos.Indice = int.Parse(posicion.PO_ITEM);
                 pos.Tarea = posicion.SHORT_TEXT;
                 pos.TextoSuministro = string.Join(" ", POTEXTITEM.Where(a => a.PO_ITEM == posicion.PO_ITEM && a.TEXT_ID == "F02").Select(a => a.TEXT_LINE));
@@ -235,8 +246,11 @@ namespace SustitucionMOAWS.WSConsumers
                 pos.PrecioUnidad = posicion.NET_PRICE;
                 pos.MonedaId = monedas.FirstOrDefault(a => a.Codigo == POHEADER.CURRENCY)?.Id;
                 pos.UnidadDescripcion = unidades.FirstOrDefault(a => a.Codigo == posicion.PO_UNIT)?.Descripcion ?? "";
-                pos.MonedaDescripcion = POHEADER.CURRENCY;
+                pos.MonedaDescripcion = monedas.FirstOrDefault(a => a.Codigo == POHEADER.CURRENCY)?.Descripcion;         
+                pos.MonedaCodigo = monedas.FirstOrDefault(a => a.Codigo == POHEADER.CURRENCY)?.CodigoSap;
                 pos.PrecioTotal = posicion.QUANTITY * posicion.NET_PRICE;
+                pos.CentroComprasCodigo = posicion.PLANT;
+
                 try
                 {
                     var fecha = POSCHEDULE.First(a => a.PO_ITEM == posicion.PO_ITEM).DELIVERY_DATE;
@@ -262,6 +276,7 @@ namespace SustitucionMOAWS.WSConsumers
                         sub.PrecioBruto = subpos.NET_VALUE / subpos.QUANTITY;
                         sub.UnidadComprasDescripcion = unidades.FirstOrDefault(a => a.Codigo == subpos.BASE_UOM)?.Descripcion ?? "";
                         sub.MonedaCotizacionDescripcion = POHEADER.CURRENCY;
+                        sub.MonedaCotizacionCodigo = monedas.FirstOrDefault(a => a.Codigo == POHEADER.CURRENCY)?.CodigoSap;
                         sub.PrecioTotalSubPosicion = subpos.NET_VALUE;
                         pos.SubposicionesCompras.Add(sub);
                     }
