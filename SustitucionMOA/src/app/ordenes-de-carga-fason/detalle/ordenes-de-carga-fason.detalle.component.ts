@@ -22,6 +22,7 @@ export interface BotonesDetalleFason {
     aprobarRechazarEdicion: boolean;
     aprobarRechazarAnulacion: boolean;
     solicitarAnulacion: boolean;
+    anular: boolean;
 }
 
 
@@ -55,16 +56,12 @@ export class OrdenesDeCargaFasonDetalleComponent extends ListBaseComponent imple
         EstadoOrdenDeCargaFason.PendienteContabilizacion,
         EstadoOrdenDeCargaFason.Pendiente,
         EstadoOrdenDeCargaFason.PendienteCompensacion,
-        EstadoOrdenDeCarga.Vencida
+        EstadoOrdenDeCargaFason.Vencida,
     ];
     estadosPermitenSolicitarAnulacion = [
         EstadoOrdenDeCargaFason.Generada,
-        EstadoOrdenDeCargaFason.PendienteContabilizacion,
         EstadoOrdenDeCargaFason.Pendiente,
-        EstadoOrdenDeCarga.Vencida,
-        EstadoOrdenDeCarga.PendienteCompensacion,
-        EstadoOrdenDeCarga.EdicionSolicitada,
-        EstadoOrdenDeCarga.EdicionRechazada
+        EstadoOrdenDeCargaFason.Vencida,
     ];
 
     constructor(private route: ActivatedRoute, protected service: OrdenesDeCargaFasonService, protected navService: NavService,
@@ -98,6 +95,8 @@ export class OrdenesDeCargaFasonDetalleComponent extends ListBaseComponent imple
         this.botones.aprobarRechazarEdicion = this.esAdmin && this.ordenDeCargaFason.Estado == EstadoOrdenDeCargaFason.EdicionSolicitada;
 
         this.botones.solicitarAnulacion = this.esClienteFason && this.estadosPermitenSolicitarAnulacion.includes(this.ordenDeCargaFason.Estado)
+
+        this.botones.anular = this.esAdmin && this.ordenDeCargaFason.Estado != EstadoOrdenDeCargaFason.Entregada;
     }
 
 
@@ -173,6 +172,17 @@ export class OrdenesDeCargaFasonDetalleComponent extends ListBaseComponent imple
             }
         });
     }
+    confirmarAnulacion() {
+        this.confirmationService.confirm({
+            key: 'confirmarAnular',
+            message: '¿Desea anular la orden?',
+            accept: () => {
+                this.anularOrden()
+            },
+            reject: () => {
+            }
+        });
+    }
     confirmarRechazarSolicitudAnulacion(aprobado: boolean) {
         this.confirmationService.confirm({
             key: 'confirmarRSA',
@@ -186,7 +196,7 @@ export class OrdenesDeCargaFasonDetalleComponent extends ListBaseComponent imple
     }
     confirmarRechazarSolicitudEdicion(aprobado: boolean) {
         this.confirmationService.confirm({
-            key: 'confirmarRSA',
+            key: 'confirmarSolicitudEdicion',
             message: `¿Desea ${aprobado ? 'aprobar' : 'rechazar'} la solicitud de anulación?`,
             accept: () => {
                 this.solicitudAnulacion(aprobado)
@@ -291,6 +301,37 @@ export class OrdenesDeCargaFasonDetalleComponent extends ListBaseComponent imple
         } catch (e) {
             this.mensajeComponent.setErrorMsg(e);
         }
-
+    }
+    anularOrden() {
+        this.mensajeComponent.setMsgsEmpty();
+        this.spinnerComponent.showIt();
+        this.unsubscribe();
+        this.blockUI.start('Procesando...');
+        try {
+            this.service.anularOrden(this.ordenDeCargaFason.Id).subscribe(
+                result => {
+                    this.blockUI.stop();
+                    this.spinnerComponent.hideIt();
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.mensajeComponent.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.mensajeComponent.setInfoMsg(result.info);
+                    } else if (result.data) {
+                        this.ordenDeCargaFason = result.data;
+                    } else {
+                        this.obtenerOrdenDeCargaFason();
+                    }
+                    this.verificarBotones();
+                },
+                error => {
+                    this.blockUI.stop();
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+            );
+        } catch (e) {
+            this.mensajeComponent.setErrorMsg(e);
+        }
     }
 }

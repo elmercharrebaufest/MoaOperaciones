@@ -23,8 +23,8 @@
             <div class="clearfix myTables">
                 <mensaje></mensaje>
                 <spinner></spinner>
-                <p-confirmDialog #dialogoSA key="confirmarSA" header="Confirmación de solicitud de anulación"
-                    [responsive]="true" appendTo="body">
+                <p-confirmDialog #dialogoSA key="confirmarSA" header="Confirmación de anulación" [responsive]="true"
+                    appendTo="body">
                     <p-footer>
                         <button type="button" pButton label="No" class="ui-button-info botonModal"
                             (click)="dialogoSA.reject()"></button>
@@ -32,13 +32,31 @@
                             (click)="dialogoSA.accept()"></button>
                     </p-footer>
                 </p-confirmDialog>
-                <p-confirmDialog #dialogoRSA key="confirmarRSA"
-                    header="Confirmación de rechazo de solicitud de anulación" [responsive]="true" appendTo="body">
+                <p-confirmDialog #dialogoRSA key="confirmarRSA" header="Confirmación de solicitud de anulación"
+                    [responsive]="true" appendTo="body">
                     <p-footer>
                         <button type="button" pButton label="No" class="ui-button-info botonModal"
                             (click)="dialogoRSA.reject()"></button>
                         <button type="button" pButton label="Si" class="ui-button-success botonModal"
                             (click)="dialogoRSA.accept()"></button>
+                    </p-footer>
+                </p-confirmDialog>
+                <p-confirmDialog #dialogoConfirmarAnular key="confirmarAnular" header="Confirmación de anulación"
+                    [responsive]="true" appendTo="body">
+                    <p-footer>
+                        <button type="button" pButton label="No" class="ui-button-info botonModal"
+                            (click)="dialogoConfirmarAnular.reject()"></button>
+                        <button type="button" pButton label="Si" class="ui-button-success botonModal"
+                            (click)="dialogoConfirmarAnular.accept()"></button>
+                    </p-footer>
+                </p-confirmDialog>
+                <p-confirmDialog #dialogoConfirmarEdicion key="confirmarSolicitudEdicion"
+                    header="Confirmación de edición" [responsive]="true" appendTo="body">
+                    <p-footer>
+                        <button type="button" pButton label="No" class="ui-button-info botonModal"
+                            (click)="dialogoConfirmarEdicion.reject()"></button>
+                        <button type="button" pButton label="Si" class="ui-button-success botonModal"
+                            (click)="dialogoConfirmarEdicion.accept()"></button>
                     </p-footer>
                 </p-confirmDialog>
             </div>
@@ -205,6 +223,10 @@
                             <div class="col-xs-5 col-md-3" *ngIf="botones.solicitarAnulacion">
                                 <input type="button" (click)="confirmarSolicitudAnulacion()"
                                     class="btn-custom btn-remove btn-grande" value="Solicitar Anulación">
+                            </div>
+                            <div class="col-xs-5 col-md-3" *ngIf="botones.anular">
+                                <input type="button" (click)="confirmarAnulacion()"
+                                    class="btn-custom btn-remove btn-grande" value="Anular">
                             </div>
 
                         </div>
