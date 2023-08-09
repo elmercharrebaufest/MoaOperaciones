@@ -3881,15 +3881,15 @@ namespace SustitucionMOAUtils.Services
 
                         posiciones +=
                         $"<tr class='border'> <td style='font-size: 8px;'>{posi.Indice} </td> " +
-                        $"<td style='font-size: 8px;'> { (!string.IsNullOrEmpty(posi.MaterialComprasCodigo) ? posi.MaterialComprasCodigo : "") } </td>" +
-                        $"<td style='font-size: 8px;'> { (!string.IsNullOrEmpty(posi.MaterialComprasDescripcion) ? posi.MaterialComprasDescripcion : "") } </td>" +
+                        $"<td style='font-size: 8px;'> {(!string.IsNullOrEmpty(posi.MaterialComprasCodigo) ? posi.MaterialComprasCodigo : "")} </td>" +
+                        $"<td style='font-size: 8px;'> {(!string.IsNullOrEmpty(posi.MaterialComprasDescripcion) ? posi.MaterialComprasDescripcion : "")} </td>" +
                         $"<td style='font-size: 8px;'>{posi.Cantidad}</td>" +
                         $"<td style='font-size: 8px;'>{posi.UnidadDescripcion}</td>" +
                         //$"<td style='font-size: 8px;'>{adjudicacion.Cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Posiciones.Select(x => x.SolpPosicion).OrderByDescending(x => x.FechaEntregaServicio).Select(x => x.FechaEntregaServicio).FirstOrDefault().Value.ToString("dd.MM.yyyy")}</td>" +
                         $"<td style='font-size: 8px;'>{posi.FechaEntregaServicio}</td>" +
                         $"<td style='font-size: 8px;'>{posi.PrecioUnidad.Value.ToString("N2")} {posi.MonedaCodigo} / {posi.UnidadDescripcion}</td>" +
                         $"<td style='font-size: 8px;'>{(posi.Cantidad * posi.PrecioUnidad.Value).ToString("N2")} {posi.MonedaCodigo}</td></tr>";
-                        posiciones += $"<tr><td colspan='7' style='font-size: 8px; text-align: justify'>{ (!string.IsNullOrEmpty(posi.MaterialTextoAmpliado) ? posi.MaterialTextoAmpliado : "")}</td></tr>";
+                        posiciones += $"<tr><td colspan='7' style='font-size: 8px; text-align: justify'>{(!string.IsNullOrEmpty(posi.MaterialTextoAmpliado) ? posi.MaterialTextoAmpliado : "")}</td></tr>";
                     }
                 }
                 else
@@ -5172,6 +5172,14 @@ namespace SustitucionMOAUtils.Services
         public AdjudicacionDto ObtenerAdjudicacion(string nroOC)
         {
             var adjudicar = obtenerOrdenDeCompraConsumerMOA.ObtenerOrdenDeCompraAdjudicacion(nroOC);
+            var monedaPesos = repositorio.Obtener<TablaSap>(a => a.Tabla == "Moneda" && a.CodigoSap == "ARP");
+            if (adjudicar.Moneda_Id != monedaPesos.Id)
+            {
+                var monedaAdjudicacion = repositorio.Obtener<TablaSap>(a => a.Tabla == "Moneda" && a.Id == adjudicar.Moneda_Id);
+                var tipoCambio = ObtenerTipoCambio(monedaAdjudicacion.Id, monedaPesos.Id, adjudicar.FechaCreacion);
+                adjudicar.PrecioFinal = adjudicar.PrecioFinal * tipoCambio.TipoCambio;
+                
+            }
             return adjudicar;
         }
         public void CrearCotizacionConTrabajoYaHecho(Solp solp, bool enviarMail = true)
