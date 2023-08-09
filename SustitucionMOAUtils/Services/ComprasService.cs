@@ -3755,7 +3755,7 @@ namespace SustitucionMOAUtils.Services
                         var templateString = System.IO.File.ReadAllText(templateFilePath);
 
                         var xHtml = templateString;
-                        var adjudicacionDto = ConvertirAdjudicacionEntidadADto(adjudicacion);
+                        var adjudicacionDto = ObtenerAdjudicacion(adjudicacion.NumeroOrdenDeCompra);
                         xHtml = CompletarHtmlOC(xHtml, adjudicacionDto, codigoProveedor, adjudicacion);
 
                         var PdfWriter = iTextSharp.text.pdf.PdfWriter.GetInstance(document, stream);
@@ -5019,12 +5019,6 @@ namespace SustitucionMOAUtils.Services
 
                 throw;
             }
-        }
-
-        private AdjudicacionDto ConvertirAdjudicacionEntidadADto(Adjudicacion adjudicacion)
-        {
-            var adjudicacionDto = ObtenerAdjudicacion(adjudicacion.NumeroOrdenDeCompra);
-            return adjudicacionDto;
         }
 
         public decimal CalcularMontoTotal(AdjudicacionDto adjudicacionDto, Cotizacion cotizacion, List<TablaSap> info)
