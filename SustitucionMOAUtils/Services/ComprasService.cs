@@ -816,7 +816,7 @@ namespace SustitucionMOAUtils.Services
 
                         foreach (var subpos in subposEliminadas.ToList())
                         {
-                            if (subpos.Cotizaciones.Any()) 
+                            if (subpos.Cotizaciones.Any())
                             {
                                 foreach (var cotizacion in subpos.Cotizaciones.ToList())
                                 {
@@ -3725,13 +3725,15 @@ namespace SustitucionMOAUtils.Services
             LinkedResource res = new LinkedResource(filePath);
             res.ContentId = Guid.NewGuid().ToString();
             string htmlBody = "";
-            htmlBody += $"En el presente mail, se informa la nueva PO {peticion.Id} generada con Molinos Agro S.A <br />";
+            htmlBody += $"En el presente mail se informa la nueva PO {peticion.Id} generada con Molinos Agro S.A <br />";
             if (!string.IsNullOrEmpty(peticion.Observaciones))
             {
-                htmlBody += $"Observaciones: {peticion.Observaciones} <br />";
+                string observacionesFormatted = peticion.Observaciones.Replace("\n", "<br />");
+
+                htmlBody += $"<br />Observaciones: {observacionesFormatted} <br /><br /><br />";
             }
 
-            htmlBody += "En caso de tener alguna consulta ingresar www.moaoperaciones.com.ar " +
+            htmlBody += "En caso de tener alguna consulta, ingresar a www.moaoperaciones.com.ar " +
                 "<br/><br/>Saludos Cordiales<br/>" +
                 "Molinos Agro S.A. <br/><br/> " +
                  @"<img width:'5%' src='cid:" + res.ContentId + @"'/>";
