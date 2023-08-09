@@ -4131,6 +4131,7 @@ namespace SustitucionMOAUtils.Services
                     RealizoVisita = u.RealizoVisita,
                     EstaHabilitado = u.Usuario.Habilitado,
                     ValidacionCircularSolicitante = ValidacionCircularSolicitante(u, cotizacion),
+                    ObservacionNoCumple = u.ObservacionNoCumple
                 };
                 usuarios.Add(usuario);
             }
@@ -4448,6 +4449,11 @@ namespace SustitucionMOAUtils.Services
                     peticion.PropuestaTecnicaAprobada = data.PropuestaTecnicaAprobada;
                     peticion.PropuestaTecnicaFecha = DateTime.Now;
                     peticion.PropuestaTecnicaUsuario_Id = usuarioId;
+                    peticion.ObservacionNoCumple = data.ObservacionNoCumple;
+                }
+                if (peticion.PropuestaTecnicaAprobada == false)
+                {
+                    peticion.ObservacionNoCumple = data.ObservacionNoCumple;
                 }
             }
             repositorio.GuardarCambios();

@@ -23,6 +23,7 @@ namespace SustitucionMOAModel.Entities
 
         public DateTime? PropuestaTecnicaFecha { get; set; }
         public int? PropuestaTecnicaUsuario_Id { get; set; }
+        public string ObservacionNoCumple { get; set; }
 
 
         [ForeignKey("PeticionDeOferta_Id")]

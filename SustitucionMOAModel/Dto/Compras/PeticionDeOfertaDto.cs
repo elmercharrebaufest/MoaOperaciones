@@ -115,6 +115,7 @@ namespace SustitucionMOAModel.Dto
         public bool EstaHabilitado { get; set; }
         public string MensajeAdjudicar { get; set; }
         public bool ValidacionCircularSolicitante { get; set; }
+        public string ObservacionNoCumple { get; set; }
     }
 
 }
