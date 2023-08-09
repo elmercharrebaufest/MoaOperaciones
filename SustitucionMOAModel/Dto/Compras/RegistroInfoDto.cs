@@ -36,5 +36,6 @@ namespace SustitucionMOAModel.Dto
         public int UnidadId { get; set; }
         public string FechaUltimaCompra { get; set; }
         public string FechaVigencia { get; set; }
+        public string MaterialCodigo { get; set; }
     }
 }

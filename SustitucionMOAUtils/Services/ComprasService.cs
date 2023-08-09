@@ -3117,6 +3117,7 @@ namespace SustitucionMOAUtils.Services
                                             CantidadAdjudicacion = 0,
                                             MonedaId = tablaSap.Where(x => x.CodigoSap == registroInfo.Moneda).FirstOrDefault().Id,
                                             UnidadId = tablaSap.Where(x => x.CodigoSap == codigoUnidad).FirstOrDefault().Id,
+                                            MaterialCodigo = registroInfo.MaterialCodigo
                                         });
 
                                     }
