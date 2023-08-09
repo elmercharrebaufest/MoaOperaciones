@@ -1,5 +1,4 @@
 ﻿using SustitucionMOAModel.Dto;
-using SustitucionMOAModel.Dto.OrdenDeCarga;
 using SustitucionMOAModel.Dto.OrdenDeCargaFason;
 using SustitucionMOAModel.Entities;
 using System.Collections.Generic;
@@ -21,5 +20,6 @@ namespace SustitucionMOAUtils.Interfaces
         OrdenDeCargaFasonDto ActualizarSolicitudAnulacion(EstadoSolicitudAnulacionFason estadoSolicitud);
         OrdenDeCargaFasonDto SolicitarAnulacion(int ordenId, string mailUsuario);
         OrdenDeCargaFasonDto ActualizarSolicitudEdicion(EstadoSolicitudEdicionFason estadoSolicitud);
+        OrdenDeCargaFasonDto AnularOrden(int ordenId, string mailUsuario);
     }
 }

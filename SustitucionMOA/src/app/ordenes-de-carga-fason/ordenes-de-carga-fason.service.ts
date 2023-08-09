@@ -196,4 +196,11 @@ export class OrdenesDeCargaFasonService extends OrdenesBaseService {
       )
       .pipe(timeoutWith(360000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
   }
+  public anularOrden(ordenId: number) {
+    return this.http
+      .post<ApiResponse<OrdenDeCargaFasonDto>>(
+        '/api/OrdenDeCargaFason/AnularOrden', { ordenId }
+      )
+      .pipe(timeoutWith(360000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
+  }
 }

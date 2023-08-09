@@ -40,8 +40,8 @@ namespace SustitucionMOAUtils.Services
 
             try
             {
-                var fechaIncioDateTime = DataFormatter.StringToDateTime(request.FechaDesde,"");
-                var fechaFinDateTime = DataFormatter.StringToDateTime(request.FechaHasta,"");
+                var fechaIncioDateTime = DataFormatter.StringToDateTime(request.FechaDesde, "");
+                var fechaFinDateTime = DataFormatter.StringToDateTime(request.FechaHasta, "");
 
                 var usuario = repositorio.Obtener<Usuario>(u => u.Mail == request.MailUsuario);
                 var esInterno = usuario.TienePermiso(PermisoEnum.VerOrdenesDeCargaFasonAdmin);
@@ -354,6 +354,22 @@ namespace SustitucionMOAUtils.Services
                 orden.Estado = EstadoOrdenDeCargaFason.Anulada;
             else
                 ActualizarOrdenDeCarga(orden);
+
+            repositorio.GuardarCambios();
+            return OrdenDeCargaFasonDto(orden, usuario);
+        }
+        public OrdenDeCargaFasonDto AnularOrden(int ordenId, string mailUsuario)
+        {
+            var orden = repositorio.Obtener<OrdenDeCargaFason>(ordenId);
+            if (orden == null)
+                throw new InfoCustomException("Orden no encontrada");
+            if (orden.Estado == EstadoOrdenDeCargaFason.Entregada)
+                throw new InfoCustomException("Esta orden no puede ser anulada, ya fue entregada.");
+            var usuario = repositorio.Obtener<Usuario>(us => us.Mail == mailUsuario);
+            if (!usuario.TieneRol(RolEnum.FasonAdmin))
+                throw new InfoCustomException("Usuario sin permisos para realizar esta acción.");
+
+            orden.Estado = EstadoOrdenDeCargaFason.Anulada;
 
             repositorio.GuardarCambios();
             return OrdenDeCargaFasonDto(orden, usuario);
