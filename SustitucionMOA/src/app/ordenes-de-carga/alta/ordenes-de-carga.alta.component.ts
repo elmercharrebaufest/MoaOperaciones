@@ -239,9 +239,15 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
             return false;
         }
 
-        if (this.ordenDeCarga.ContratoSeleccionado.TipoContrato === TipoContrato.FacturaAnticipada && !this.ordenDeCarga.NumeroFactura) {
-            this.mensajeComponent.setInfoMsg("Debe seleccionar un número de factura para este tipo de contrato.");
-            return false;
+        if (this.ordenDeCarga.ContratoSeleccionado.TipoContrato === TipoContrato.FacturaAnticipada) {
+            if (!this.ordenDeCarga.NumeroFactura) {
+                this.mensajeComponent.setInfoMsg("Debe seleccionar un número de factura para este tipo de contrato.");
+                return false;
+            }
+            if (this.mensajesOrdenDeCarga.NumeroFacturaSeleccionada) {
+                this.mensajeComponent.setInfoMsg(this.mensajesOrdenDeCarga.NumeroFacturaSeleccionada);
+                return false;
+            }
         }
 
         if (this.mensajesOrdenDeCarga.ContratoSeleccionado) {
