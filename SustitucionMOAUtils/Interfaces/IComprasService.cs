@@ -1,15 +1,11 @@
 ﻿using SustitucionMOAModel.Consultas;
 using SustitucionMOAModel.Dto;
-using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using SustitucionMOAModel.Models.WSMapMOA;
 using SustitucionMOAModel.Models.WSMapMOA.Compras;
 using SustitucionMOAWS.WSConsumers;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Web;
 
 namespace SustitucionMOAUtils.Interfaces
@@ -40,11 +36,13 @@ namespace SustitucionMOAUtils.Interfaces
         void ActualizarServiciosSolp();
         List<ServicioSolpDto> ObtenerDatosPorCodigosSapServicioSolp(List<string> codigos);
         List<ServicioSolpDto> AutocompleteServicioSolp(string valor);
+        List<ServicioSolpDto> AutocompleteCodigoServicioSolp(string valor);
         void ActualizarEstadoSolpBulk();
         void ActualizarEstadoSolp(string nroSolp, int idEstado);
         List<UsuarioComprasRelacionConUsuariosDto> ListarUsuarioCompras(UsuarioDto usuarioActual);
         void ObtenerSolpesDesdeSAPJob(ObtenerSolpRequest obtenerSolpRequest);
         List<MaterialSolpDto> AutocompleteMaterialSolp(string valor, int centroId);
+        List<MaterialSolpDto> AutocompleteCodigoMaterialSolp(string valor, int centroId);
         List<ProvinciaDTO> ListarProvincia();
         void EnviarEmailSolp(EmailComposeDto emailCompose);
         SolpDescargaZipPorLink PuedeDescargarPliegoDesdeLink(int solpId, Guid? token);
@@ -63,7 +61,7 @@ namespace SustitucionMOAUtils.Interfaces
         PeticionDeOfertaDto ObtenerPeticionDeOfertaParaCircular(int peticionId);
         RespuestaGuardarSOLP GrabarProveedoresEnPeticionDeOferta(List<int> usuariosId, int peticionId);
         ListaPaginada<PeticionDeOfertaDto> ListarPOProveedor(Paginacion paginacion, string nroSolp, string username);
-        PeticionDeOfertaDto ListarOfertasComprador(int PeticionOferta_Id);
+        PeticionDeOfertaDto ListarOfertasComprador(int PeticionOferta_Id, UsuarioDto usuario);
 
         string DescargarAdjuntosCotizacion(int idCotizacion, string pathBase);
         RespuestaGuardarSOLP GrabarRevisionTecnica(List<PeticionDeOfertaUsarioDto> revision, int usuarioId);
@@ -77,6 +75,7 @@ namespace SustitucionMOAUtils.Interfaces
 
         List<AdjudicacionDto> ListarAdjudicaciones(int solpId);
         AdjudicacionDto ObtenerAdjudicacion(int adjudicacionId);
+        AdjudicacionDto ObtenerAdjudicacion(string nroOC);
         OrdenDeCompraSAPDto ObtenerOrdenDeCompra(string nroOC);
 
         List<RespuestaCrearOrdenDeCompra> CrearOrdenDeCompraConRegistroInfo(List<RegistroInfoDto> registros, int usuarioActualId);

@@ -7,7 +7,13 @@ export interface AdjudicacionDto{
     TextoDeCabecera?: string
     CondicionesDeEntrega?: string
     CondicionesDePago?: string
-    Garantias?: string        
+    Garantias?: string      
+    TipoPosicionCodigo ?: string
+    NumeroOrdenDeCompra ?: string
+    FechaCreacion ?: string
+    Proveedor ?: string
+    MonedaDescripcion?: string
+    PrecioFinal ?: number 
 }
 
 export interface AdjudicacionPosicionDto{

@@ -15,6 +15,7 @@ namespace SustitucionMOAModel.Models
         public string Contrato { get; set; }
         public string Pedido { get; set; }
         public string Documento { get; set; }
+        public string Ejercicio { get; set; }
         public List<EcheqAperturaDto> Apertura { get; set; }
 
         public EcheqRequestModel(string pedido, string contrato) {

@@ -99,9 +99,9 @@ namespace SustitucionMOATest.Controllers
         {
             var expected = new AdjudicacionDto();
 
-            comprasServiceMock.Setup(s => s.ObtenerAdjudicacion(It.IsAny<int>())).Returns(expected);
+            comprasServiceMock.Setup(s => s.ObtenerAdjudicacion(It.IsAny<string>())).Returns(expected);
 
-            var result = target.ObtenerAdjudicacion(1);
+            var result = target.ObtenerAdjudicacion("");
 
             Assert.NotNull(result);
             var data = (dynamic)((JsonResult)result).Data;

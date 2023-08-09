@@ -140,7 +140,7 @@
                         {{ rowData.EstadoSolpSap.Descripcion || "" }}
                     </td>
                     <td colspan="2" class="columna" style="text-align: center;">
-                        <button *ngIf="rowData.EstadoSolpSap.CodigoSap == '05' && rowData.VerPublicar == true && !rowData.adicional" class="publicar btn btn-success" style="font-size: 12px;"
+                        <button *ngIf="rowData.EstadoSolpSap.CodigoSap == '05' && rowData.VerPublicar == true && !rowData.Adicional" class="publicar btn btn-success" style="font-size: 12px;"
                         (click)="publicarCotizacion(rowData.Id)">                          
                             Publicar
                         </button>
@@ -176,7 +176,9 @@
                                         <ng-template pTemplate="body" let-licitacion>
                                             <tr>
                                                <td id="agregarProveedor">
-                                                <img class="pointer" src="./Content/images/icons/editar.svg" alt="Editar" (click)="obtenerPeticionDeOfertaParaProveedor(licitacion.Id)" />
+                                                <div *ngIf="(rowData.Adicional == null || rowData.TrabajoYaHecho == null) && (rowData.Adicional == null && rowData.TrabajoYaHecho == null)">
+                                                    <img class="pointer" src="./Content/images/icons/editar.svg" alt="Editar" (click)="obtenerPeticionDeOfertaParaProveedor(licitacion.Id)" />
+                                                </div>
                                                </td>                                     
                                                 <td class="columna">{{licitacion.Id}}</td>
                                                 <td class="columna">                                                    
@@ -204,7 +206,7 @@
                                             Orden de compra
                                         </div>
                                     </ng-template>
-                                    <p-table [value]="ordenesDeCompra">
+                                    <p-table [value]="filtrarOrdenesDeCompra(rowData.Id)">
                                         <ng-template pTemplate="header">
                                             <tr>
                                                 <th class="columna">Numero</th>
@@ -220,15 +222,15 @@
                                                 <td style="text-align: center;" colspan="6">Sin datos</td>
                                             </tr>
                                         </ng-template>
-                                        <ng-template pTemplate="body" let-orden>
-                                            <tr>
+                                        <ng-template pTemplate="body" let-orden>                                           
+                                            <tr>                                              
                                                <td class="columna">{{orden.NumeroOrdenDeCompra}}</td>                                     
                                                 <td class="columna">{{orden.FechaCreacion | customDateFormat | date :'d/M/yyyy' }}</td>
                                                 <td class="columna">{{orden.Proveedor}}</td>
                                                 <td class="columna">{{orden.PrecioFinal | number:'1.2-2'}}</td>
                                                 <td class="columna">{{orden.MonedaDescripcion}}</td>
                                                 <td class="columna">
-                                                    <button class="publicar btn btn-success" (click)="verDetalleOrdenDeCompra(orden.Id)">
+                                                    <button class="publicar btn btn-success" (click)="verDetalleOrdenDeCompra(orden.NumeroOrdenDeCompra)">
                                                         Ver detalle
                                                     </button>
                                                 </td>

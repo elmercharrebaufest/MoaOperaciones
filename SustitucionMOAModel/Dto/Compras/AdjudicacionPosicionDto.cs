@@ -30,5 +30,9 @@ namespace SustitucionMOAModel.Dto
         public decimal? PrecioTotal { get; set; }
         public DateTime? FechaEntregaServicio { get; set; }
         public int? PlazoDeOferta { get; set; }
+        public string MaterialComprasDescripcion { get; set; }
+        public string MonedaCodigo { get; set; }
+        public string CentroComprasCodigo { get; set; }
+        public string MaterialTextoAmpliado { get; set; }
     }
 }

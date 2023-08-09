@@ -30,5 +30,11 @@ namespace SustitucionMOAModel.Dto
         public int? Indice { get; set; }
         public int ProveedorId { get; set; }
         public int Numero { get; set; }
+        public bool Deshabilitado { get; set; }
+        public DateTime? FechaFormateada { get; set; }
+        public int MonedaId { get; set; }
+        public int UnidadId { get; set; }
+        public string FechaUltimaCompra { get; set; }
+        public string FechaVigencia { get; set; }
     }
 }
