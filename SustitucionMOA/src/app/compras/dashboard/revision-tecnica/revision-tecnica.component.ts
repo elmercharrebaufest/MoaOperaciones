@@ -10,7 +10,7 @@ import { NavService } from '../../../common/services/NavService';
 import { SecurityService } from '../../../common/services/SecurityService';
 import { SessionDataService } from '../../../common/services/SessionDataService';
 import { CircularDto } from '../../../modelos/circular-model';
-import { PeticionDeOfertaDto } from '../../../modelos/peticion-de-oferta-model';
+import { PeticionDeOfertaDto, PeticionDeOfertaUsarioDto } from '../../../modelos/peticion-de-oferta-model';
 import { ComprasService } from '../../compras.service';
 import { PanelHorasComponent } from '../../panel-horas/panel-horas.component';
 
@@ -33,7 +33,7 @@ export class RevisionTecnicaComponent implements OnInit, OnChanges {
     @Output() cerrardisplayRevisionTecnicaEmitter = new EventEmitter();
     val1: string = "No";
     val2: string;
-    Observacion: any;
+    ObservacionNoCumple: any;
     visualizarFechas: boolean;
     plazoDias: string;
     selectedProv: number[] = []
@@ -106,10 +106,13 @@ export class RevisionTecnicaComponent implements OnInit, OnChanges {
     }
 
     validarPeticion() {
-        // if(this.Observacion == "" || this.Observacion == undefined){
-        //     this.error = "El campo Observacion es obligatorio";
-        //    return this.visualizarAlert = true;
-        // }       
+        var noCumple = this.peticion.Usuarios.find(x => x.PropuestaTecnicaAprobada == false)
+        if(noCumple){
+            if(this.peticion.Usuarios.find(x => x.ObservacionNoCumple == "" || x.ObservacionNoCumple == undefined)) {
+                this.error = "El campo Observacion es obligatorio";
+               return this.visualizarAlert = true;
+            }       
+        }
     }
 
     descargarArchivo(archivoId: number) {
@@ -121,7 +124,9 @@ export class RevisionTecnicaComponent implements OnInit, OnChanges {
     }
 
     enviar() {
-        this.grabarRevisionTecnicaEmitter.next();
+        if(!this.validarPeticion()){
+            this.grabarRevisionTecnicaEmitter.next();
+        }
     }
 
     mostrarPanelHs(p){
