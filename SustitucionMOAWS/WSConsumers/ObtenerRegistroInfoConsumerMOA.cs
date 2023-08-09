@@ -65,7 +65,8 @@ namespace SustitucionMOAWS.WSConsumers
                         FechaVigencia = purch.PRICE_DATE,
                         FechaUltimaCompra = purch.LAST_PO,
                         Id = info.INFO_REC,
-                        FechaFormateada = !string.IsNullOrEmpty(purch.PRICE_DATE) ? SAPFormatter.GetDateTime(purch.PRICE_DATE) : (DateTime?)null
+                        FechaFormateada = !string.IsNullOrEmpty(purch.PRICE_DATE) ? SAPFormatter.GetDateTime(purch.PRICE_DATE) : (DateTime?)null,
+                        MaterialCodigo = info.MATERIAL
                     };
 
                     registros.Add(registroInfo);
