@@ -33,5 +33,6 @@ namespace SustitucionMOAModel.Dto
         public string MaterialComprasDescripcion { get; set; }
         public string MonedaCodigo { get; set; }
         public string CentroComprasCodigo { get; set; }
+        public string MaterialTextoAmpliado { get; set; }
     }
 }

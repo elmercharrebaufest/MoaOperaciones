@@ -237,6 +237,7 @@ namespace SustitucionMOAWS.WSConsumers
                 pos.Id = 0;
                 pos.MaterialComprasCodigo = posicion.MATERIAL?.TrimStart('0');
                 pos.MaterialComprasDescripcion = !string.IsNullOrEmpty(posicion.MATERIAL) ? materiales.Where(x => x.CodigoSap == posicion.MATERIAL).FirstOrDefault().Descripcion : "";
+                pos.MaterialTextoAmpliado = !string.IsNullOrEmpty(posicion.MATERIAL) ? materiales.Where(x => x.CodigoSap == posicion.MATERIAL).FirstOrDefault().TextoAmpliado : "";
                 pos.Indice = int.Parse(posicion.PO_ITEM);
                 pos.Tarea = posicion.SHORT_TEXT;
                 pos.TextoSuministro = string.Join(" ", POTEXTITEM.Where(a => a.PO_ITEM == posicion.PO_ITEM && a.TEXT_ID == "F02").Select(a => a.TEXT_LINE));
@@ -245,7 +246,7 @@ namespace SustitucionMOAWS.WSConsumers
                 pos.PrecioUnidad = posicion.NET_PRICE;
                 pos.MonedaId = monedas.FirstOrDefault(a => a.Codigo == POHEADER.CURRENCY)?.Id;
                 pos.UnidadDescripcion = unidades.FirstOrDefault(a => a.Codigo == posicion.PO_UNIT)?.Descripcion ?? "";
-                pos.MonedaDescripcion = monedas.FirstOrDefault(a => a.Codigo == POHEADER.CURRENCY)?.Descripcion;
+                pos.MonedaDescripcion = monedas.FirstOrDefault(a => a.Codigo == POHEADER.CURRENCY)?.Descripcion;         
                 pos.MonedaCodigo = monedas.FirstOrDefault(a => a.Codigo == POHEADER.CURRENCY)?.CodigoSap;
                 pos.PrecioTotal = posicion.QUANTITY * posicion.NET_PRICE;
                 pos.CentroComprasCodigo = posicion.PLANT;
