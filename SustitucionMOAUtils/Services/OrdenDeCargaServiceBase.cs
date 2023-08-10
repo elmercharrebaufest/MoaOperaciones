@@ -130,7 +130,8 @@ namespace SustitucionMOAUtils.Services
                 return false;
             }
         }
-        public bool EmailGestionarAlta(string cuit, string razonSocial, bool esIntermediarioFlete)
+
+        public void EmailGestionarAlta(string cuit, string razonSocial, bool esIntermediarioFlete)
         {
             if (esIntermediarioFlete)
             {
@@ -140,8 +141,8 @@ namespace SustitucionMOAUtils.Services
             {
                 emailService.EnviarMailAltaTempranaCuit(cuit, razonSocial);
             }
-            return true;
         }
+
         public ValidarIntermediarioFleteResponse ValidarIntermediarioFlete(string cuit)
         {
             var scatoRes = scatoRepositorioClient.ObtenerProveedorPorCuil(cuit);

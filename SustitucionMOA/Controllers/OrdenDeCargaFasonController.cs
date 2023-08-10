@@ -216,11 +216,10 @@ namespace SustitucionMOA.Controllers
         [HttpGet]
         public ActionResult GestionarAltaCuit(string cuit, string razonSocial, bool esIntermediarioFlete)
         {
-            var response = new SustitucionMOAApiResponse<bool>();
+            var response = new SustitucionMOAApiResponse();
             try
             {
-                response.Data = ordenDeCargaFasonService.EmailGestionarAlta(cuit, razonSocial, esIntermediarioFlete);
-                response.Data = false;
+                ordenDeCargaFasonService.EmailGestionarAlta(cuit, razonSocial, esIntermediarioFlete);
             }
             catch (InfoCustomException ice)
             {

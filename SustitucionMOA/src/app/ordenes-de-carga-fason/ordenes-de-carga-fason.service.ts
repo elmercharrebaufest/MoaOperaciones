@@ -86,13 +86,13 @@ export class OrdenesDeCargaFasonService extends OrdenesBaseService {
       .append('IdOrdenCargaFason', IdOrdenCargaFason.toString());
 
     return this.http.get('/api/OrdenDeCargaFason/VerificarTransporte', { params: params, headers: this.headers })
-      .pipe(timeoutWith(360000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor intentelo mas tarde"))));
+      .pipe(timeoutWith(360000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
   }
 
   public obtenerCorredores(): Observable<any> {
     return this.http
       .get('/api/OrdenDeCargaFason/ObtenerCorredores')
-      .pipe(timeoutWith(360000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor intentelo mas tarde"))));
+      .pipe(timeoutWith(360000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
   }
   public enviarMailGestionarAltaCuit(cuit: string, razonSocial: string, esIntermediarioFlete: boolean): Observable<ApiResponse<boolean>> {
     let params: HttpParams = new HttpParams()
@@ -104,7 +104,7 @@ export class OrdenesDeCargaFasonService extends OrdenesBaseService {
       .get<ApiResponse<boolean>>(
         '/api/OrdenDeCargaFason/GestionarAltaCuit',
         { params: params, headers: this.headers })
-      .pipe(timeoutWith(360000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor intentelo mas tarde"))));
+      .pipe(timeoutWith(360000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
   }
   public validarIntermediarioFlete(cuit: string): Observable<ApiResponse<ValidarIntermediarioFleteResponse>> {
     let params: HttpParams = new HttpParams()
