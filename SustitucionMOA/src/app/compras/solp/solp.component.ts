@@ -613,7 +613,13 @@ export class SolpComponent extends BaseComponent implements OnInit {
                                 !pos.tabsPosicionValidos.tabDatosPosicion ||
                                 !pos.tabsPosicionValidos.tabFechas ||
                                 (pos.esTipoPosicionServicio && !pos.tabsPosicionValidos.tabSubposiciones) ||
-                                !pos.tabsPosicionValidos.tabPosiciones || this.validarContratoMarco() || this.validarAdicional() || this.validarCondicionesEspeciales()) {                                     
+                                !pos.tabsPosicionValidos.tabPosiciones || 
+                                this.validarContratoMarco() || 
+                                this.validarAdicional() || 
+                                this.validarCondicionesEspeciales() || 
+                                this.validarFechaLimiteConsulta() || 
+                                this.validarFechaLimiteYObra() || 
+                                this.validarFechaVisitaDeObra()) {                                     
                                     return paso.Completo = false;
                             } else {
                                 return pos.mensaje = "";
@@ -625,6 +631,33 @@ export class SolpComponent extends BaseComponent implements OnInit {
         }
     }
 
+    validarFechaVisitaDeObra(){
+        var validarFechaVisitaDeObra = false;
+        
+        // Encuentra la visita con la fecha más larga
+        const visitaMasLarga = this.solpActual.listaVisitas.reduce((visitaAnterior, visitaActual) => {
+            if (visitaActual.visitaDeObraFecha > visitaAnterior.visitaDeObraFecha) {
+                return visitaActual;
+            } else {
+                return visitaAnterior;
+            }
+        });
+
+        if(visitaMasLarga.visitaDeObraFecha > this.solpActual.fechaEntrega){
+            return validarFechaVisitaDeObra = true;
+        }
+        return validarFechaVisitaDeObra;
+    }
+
+    validarFechaLimiteConsulta(){
+        var validarFechaLimiteConsulta = false;
+    
+        if(this.solpActual.fechaLimiteFecha > this.solpActual.fechaEntrega){
+            return validarFechaLimiteConsulta = true;
+        }
+        return validarFechaLimiteConsulta;
+    }
+
     validarContratoMarco(){
         var validacionContratoTrabajo = false;
 
@@ -632,6 +665,24 @@ export class SolpComponent extends BaseComponent implements OnInit {
             return validacionContratoTrabajo = true;
         }
         return validacionContratoTrabajo;
+    }
+
+    validarFechaLimiteYObra(){
+        var validarFechaLimiteYObra = false;
+        
+        // Encuentra la visita con la fecha más larga
+        const visitaMasLarga = this.solpActual.listaVisitas.reduce((visitaAnterior, visitaActual) => {
+            if (visitaActual.visitaDeObraFecha > visitaAnterior.visitaDeObraFecha) {
+                return visitaActual;
+            } else {
+                return visitaAnterior;
+            }
+        });
+
+        if(this.solpActual.fechaLimiteFecha > visitaMasLarga.visitaDeObraFecha){
+            return validarFechaLimiteYObra = true;
+        }
+        return validarFechaLimiteYObra;
     }
 
     validarAdicional(){
@@ -669,6 +720,21 @@ export class SolpComponent extends BaseComponent implements OnInit {
 
         if(this.validarCondicionesEspeciales()){
             this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: "Las solp no pueden tener el tilde en el check de adicional y el check de trabajo hecho en el paso #4" });
+        }
+
+        if(this.validarFechaVisitaDeObra()){
+            this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: "La fecha de visita de obra no puede ser mayor a la fecha tentativa de ofertas" });
+
+        }
+        
+        if(this.validarFechaLimiteConsulta()){
+            this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: "La fecha de limite de consulta no puede ser mayor a la fecha tentativa de ofertas" });
+
+        }
+
+        if(this.validarFechaLimiteYObra()){
+            this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: "La fecha de limite de consulta no puede ser mayor a la fecha de visita de obra" });
+
         }
     }
 
