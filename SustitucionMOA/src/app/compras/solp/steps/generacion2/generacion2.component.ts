@@ -222,9 +222,7 @@ export class Generacion2Component extends ListBaseComponent {
         this.onEstCompleto.emit({ codigo: EnumPasoSolp.PliegoGeneracion2, esPasoInvalido: this.validadorPasoSolpService.esPasoInvalido() });
     }
 
-
     onBlur(control: string) {
         this.validadorPasoSolpService.onBlurDirty(control);
     }
-
 }

@@ -177,7 +177,7 @@
                 <tr *ngIf="esUltimaPosicion(peticionPosicion)">
                     <ng-container *ngFor="let proveedor of tablaOfertas.Usuarios">
                         <ng-container *ngIf="proveedor.Cotizacion != null">
-                            <td colspan="9" style="width: 540px !important;" class="columna border2-left" [style.color]="proveedor.EstadoPropuestaTecnicaColor">
+                            <td colspan="6" style="width: 540px !important;" class="columna border2-left" [style.color]="proveedor.EstadoPropuestaTecnicaColor">
                                 {{proveedor.EstadoPropuestaTecnica}}
                                 <span
                                     *ngIf="proveedor.PropuestaTecnicaAprobada == false"
