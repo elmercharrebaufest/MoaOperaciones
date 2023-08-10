@@ -187,6 +187,42 @@
                            /@value" />
 	</parameter>
 
+	<parameter name="EmailAltaTempranaCuitFasonTo Config">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+							match="/configuration/appSettings/add[@key='EmailAltaTempranaCuitFasonTo']
+                           /@value" />
+	</parameter>
+
+	<parameter name="EmailAltaTempranaCuitFasonCC Config">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+							match="/configuration/appSettings/add[@key='EmailAltaTempranaCuitFasonCC']
+                           /@value" />
+	</parameter>
+
+	<parameter name="EmailAltaTempranaCuitFasTo Config">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+							match="/configuration/appSettings/add[@key='EmailAltaTempranaCuitFasTo']
+                           /@value" />
+	</parameter>
+
+	<parameter name="EmailAltaTempranaCuitFasCC Config">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+							match="/configuration/appSettings/add[@key='EmailAltaTempranaCuitFasCC']
+                           /@value" />
+	</parameter>
+
+	<parameter name="EmailAltaIntermediarioFleteTo Config">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+							match="/configuration/appSettings/add[@key='EmailAltaIntermediarioFleteTo']
+                           /@value" />
+	</parameter>
+
+	<parameter name="EmailAltaIntermediarioFleteCC Config">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+							match="/configuration/appSettings/add[@key='EmailAltaIntermediarioFleteCC']
+                           /@value" />
+	</parameter>
+
 
 	<parameter name="PasswordSapEnc Config">
 		<parameterEntry kind="XmlFile" scope="Web.config"

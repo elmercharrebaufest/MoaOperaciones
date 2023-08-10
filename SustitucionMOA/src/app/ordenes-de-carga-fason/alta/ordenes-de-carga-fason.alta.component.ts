@@ -729,7 +729,7 @@ export class OrdenesDeCargaFasonAltaComponent
                 if (!data)
                     return;
                 if (!data.Existe) {
-                    //this.displayModal = campo;
+                    this.displayModal = 'CUITDestinatario';
                 }
                 else {
                     this.ordenDeCargaFason.RazonSocialDestinatario = data.RazonSocial;

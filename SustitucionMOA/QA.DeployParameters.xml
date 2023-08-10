@@ -39,7 +39,15 @@
 	<setParameter name="EmailToAuditoria Config" value="alejandra.duarte@molinosagro.com.ar,santiago.barbarotta@molinosagro.com.ar" />
 	<setParameter name="EmailToReporteLogins Config" value="moaoperaciones@baufest.com" />
 	<setParameter name="EmailToGestionAltaCuit Config" value="sebastian.serighetti@molinosagro.com.ar;marian.rabellato@molinosagro.com.ar" />
+	<setParameter name="EmailAltaTempranaCuitFasonTo Config" value="moaoperaciones@baufest.com" />
+	<setParameter name="EmailAltaTempranaCuitFasonCC Config" value="sebastian.serighetti@molinosagro.com.ar;marian.rabellato@molinosagro.com.ar;dhidalgo@baufest.com" />
+	<setParameter name="EmailAltaTempranaCuitFasTo Config" value="moaoperaciones@baufest.com" />
+	<setParameter name="EmailAltaTempranaCuitFasCC Config" value="sebastian.serighetti@molinosagro.com.ar;marian.rabellato@molinosagro.com.ar;dhidalgo@baufest.com" />
 	<setParameter name="CopiaEmailToGestionAltaCuit Config" value="moaoperaciones@baufest.com" />
+	<setParameter name="EmailAltaIntermediarioFleteTo Config" value="sebastian.serighetti@molinosagro.com.ar;marian.rabellato@molinosagro.com.ar" />
+	<setParameter name="EmailAltaIntermediarioFleteCC Config" value="moaoperaciones@baufest.com" />
+	
+	
 	<setParameter name="EmailAsuntoPrefijo Config" value="[QA] " />
 	
 	<setParameter name="ComputerVisionApiKey Config" value="4ebc562f2be5457a96329ae69d84f192" />

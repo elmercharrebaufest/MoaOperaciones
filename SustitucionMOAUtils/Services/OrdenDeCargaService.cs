@@ -13,7 +13,6 @@ using ScatoRepo = SustitucionMOAModel.Models.WebApiMap.ScatoRepositorio;
 using SustitucionMOAModel.Models.WSMapMOA.OrdenCarga;
 using SustitucionMOAModel.Util;
 using SustitucionMOARepositorio;
-using SustitucionMOAUtils.Email;
 using SustitucionMOAUtils.Helpers;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
@@ -2265,44 +2264,12 @@ namespace SustitucionMOAUtils.Services
         public bool ValidarSisaCuit(string cuit, string campo)
         {
             var validaSISA = new ValidaSisaCuit(campo);
-            //var validaDestinatario = validaSISA.Destinatario;
-            //var validaDestino = validaSISA.Destino;
 
             var cuitDestinatario = validaSISA.Destinatario ? cuit : null;
             var cuitDestino = validaSISA.Destino ? cuit : null;
             var codigoMaterial = ObtenerMaterialValidaSisa();
 
             return ValidarSisa(cuitDestinatario, cuitDestino, codigoMaterial);
-
-            //var controlarCargaReq = new ControlCargaRequest { SoloSisa = true, Material = ObtenerMaterialValidaSisa() };
-
-            //if (validaDestinatario)
-            //    controlarCargaReq.CuitDestinatario = cuit;
-            //if (validaDestino)
-            //    controlarCargaReq.CuitDestino = cuit;
-
-            //var responseHandler = ordenCargaConsumer.ControlarCarga(controlarCargaReq);
-            //var result = false;
-
-            //if (validaDestinatario)
-            //    result = !responseHandler.TieneRespuesta(ControlCargaResEnum.DestinatarioInhabilitadoEnSisa);
-            //else if (validaDestino)
-            //    result = !responseHandler.TieneRespuesta(ControlCargaResEnum.DestinoInhabilitadoEnSisa);
-
-            //return result;
-        }
-
-        public bool EmailGestionarAlta(string cuit, string razonSocial, bool esIntermediarioFlete)
-        {
-            if (esIntermediarioFlete)
-            {
-                emailFasService.EnviarMailAltaIntermediarioFlete(cuit, razonSocial);
-            }
-            else
-            {
-                emailFasService.EnviarMailAltaTempranaCuit(cuit, razonSocial);
-            }
-            return true;
         }
 
         public ValidarIntermediarioFleteResponse ValidarIntermediarioFlete(string cuit)

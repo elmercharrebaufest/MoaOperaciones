@@ -778,10 +778,10 @@ namespace SustitucionMOA.Controllers
         [HttpGet]
         public ActionResult GestionarAltaCuit(string cuit, string razonSocial, bool esIntermediarioFlete)
         {
-            var response = new SustitucionMOAApiResponse<bool>();
+            var response = new SustitucionMOAApiResponse();
             try
             {
-                response.Data = ordenDeCargaService.EmailGestionarAlta(cuit, razonSocial, esIntermediarioFlete);
+                ordenDeCargaService.EmailGestionarAlta(cuit, razonSocial, esIntermediarioFlete);
             }
             catch (InfoCustomException ice)
             {
