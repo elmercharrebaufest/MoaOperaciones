@@ -28,6 +28,7 @@ namespace SustitucionMOA.Controllers
         [HttpGet]
         public ActionResult Listar(string fechaInicio, string fechaFin)
         {
+            var response = new SustitucionMOAApiResponse<ListarOrdenDeCargaFasonResponse>();
             try
             {
                 var mailUsuario = SessionPersister.getUsername();
@@ -37,21 +38,22 @@ namespace SustitucionMOA.Controllers
                     FechaDesde = fechaInicio,
                     FechaHasta = fechaFin
                 };
-                var result = ordenDeCargaFasonService.Listar(request);
-                return JsonCustom(result);
+                response.Data = ordenDeCargaFasonService.Listar(request);
             }
-            catch (InfoCustomException ex)
+            catch (InfoCustomException ice)
             {
-                return Json(new { info = ex.Message }, JsonRequestBehavior.AllowGet);
+                response.Info = ice.Message;
             }
-            catch (ValidationCustomException ex)
+            catch (ValidationCustomException vce)
             {
-                return Json(new { error = ex.Message }, JsonRequestBehavior.AllowGet);
+                response.Error = vce.Message;
             }
             catch (Exception ex)
             {
-                return Json(ex.Message);
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                response.Error = ErrorMsg.Error;
             }
+            return ContentCustom(response);
         }
 
         [HttpGet]

@@ -11,6 +11,7 @@ export class OrdenDeCargaFasonDto extends OrdenesBase {
     public Producto_Id: number;
     public ProductoSeleccionado: Material;
     public Material: string;
+    public ValidaSisaRuca: boolean;
 
     public CUITCliente: number;
     public Cliente: string;

@@ -51,6 +51,8 @@ export class OrdenesDeCargaFasonDetalleComponent extends ListBaseComponent imple
 
     estadoOrdenDeCargaFason = EstadoOrdenDeCargaFason;
 
+    validaCPEDG = false;
+
     estadosPermitenEdicion = [
         EstadoOrdenDeCargaFason.Generada,
         EstadoOrdenDeCargaFason.PendienteContabilizacion,
@@ -111,6 +113,7 @@ export class OrdenesDeCargaFasonDetalleComponent extends ListBaseComponent imple
                     } else if (result.info != undefined) {
                     } else {
                         this.ordenDeCargaFason = result.data.Response;
+                        this.validaCPEDG = this.ordenDeCargaFason.ValidaSisaRuca;
                         this.verificarBotones();
                     }
                 },

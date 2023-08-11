@@ -54,8 +54,17 @@ namespace SustitucionMOAModel.Entities
         public string DomicilioTipo { get; set; }
         public short? DomicilioOrden { get; set; }
         public string DomicilioDescr { get; set; }
-        public string RazonSocialDestino { get; set; }
         public bool Escalable { get; set; }
+
+        public string CUITDestinatario { get; set; }
+
+        public string RazonSocialDestinatario { get; set; }
+
+        public string CUITDestino { get; set; }
+
+        public string RazonSocialDestino { get; set; }
+
+
         public OrdenDeCargaFason() { }
         public OrdenDeCargaFason(CrearOrdenDeCargaFasonRequest request)
         {
@@ -83,6 +92,9 @@ namespace SustitucionMOAModel.Entities
             DomicilioTipo = request.DomicilioTipo;
             DomicilioOrden = request.DomicilioOrden;
             DomicilioDescr = request.DomicilioDescr;
+            CUITDestinatario = request.CUITDestinatario;
+            RazonSocialDestinatario = request.RazonSocialDestinatario;
+            CUITDestino = request.CUITDestino;
             RazonSocialDestino = request.RazonSocialDestino;
         }
         public override bool Equals(object obj)

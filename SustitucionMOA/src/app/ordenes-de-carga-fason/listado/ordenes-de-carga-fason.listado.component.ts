@@ -95,20 +95,28 @@ export class OrdenesDeCargaFasonListadoComponent extends ListBaseComponent imple
     try {
       this.unsubscribe();
       this.subscription = this.service.listado(this.filtroFechaComponent.fecha_inicio, this.filtroFechaComponent.fecha_fin)
-        .subscribe(result => {
-          this.spinnerComponent.hideIt();
-          if (result.logout == true) {
-            this.sessionDataService.logout();
-          } else if (result.error != undefined && result.error != "") {
-            this.mensajeComponent.setErrorMsg(result.error);
-          } else if (result.info != undefined) {
-            this.mensajeComponent.setInfoMsg(result.info);
-          } else {
-            this.data = result.Response;
-            this.datosAux = result.Response;
-            this.filtrarListado();
-          }
-        },
+        .subscribe(
+          result => {
+            this.spinnerComponent.hideIt();
+            if (result.logout == true) {
+              this.sessionDataService.logout();
+            }
+            else {
+              if (result.error != undefined && result.error != "") {
+                this.mensajeComponent.setErrorMsg(result.error);
+              }
+              else {
+                if (result.info != undefined) {
+                  this.mensajeComponent.setInfoMsg(result.info);
+                }
+                else {
+                  this.data = result.data.Response;
+                  this.datosAux = result.data.Response;
+                  this.filtrarListado();
+                }
+              }
+            }
+          },
           error => {
             this.spinnerComponent.hideIt();
             this.mensajeComponent.setErrorMsg(error.message);

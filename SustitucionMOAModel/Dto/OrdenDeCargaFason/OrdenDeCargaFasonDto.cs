@@ -6,7 +6,7 @@ namespace SustitucionMOAModel.Dto.OrdenDeCargaFason
 {
     public class OrdenDeCargaFasonDto
     {
-        [JsonProperty("id")]
+        //[JsonProperty("id")]
         public long Id { get; set; }
 
         [JsonProperty("cliente")]
@@ -51,6 +51,15 @@ namespace SustitucionMOAModel.Dto.OrdenDeCargaFason
         public bool Reventa { get; set; }
         public bool Escalable { get; set; }
 
+        public bool ValidaSisaRuca { get; set; }
+        public string CUITDestino { get; set; }
+        public string CUITDestinatario { get; set; }
+        public string RazonSocialDestino { get; set; }
+        public string RazonSocialDestinatario { get; set; }
+        public string PlantaCodigo { get; set; }
+        public string DomicilioDescr { get; set; }
+
+
         public OrdenDeCargaFasonDto(Ent.OrdenDeCargaFason orden, bool esInterno)
         {
             Cantidad = orden.Cantidad;
@@ -89,6 +98,13 @@ namespace SustitucionMOAModel.Dto.OrdenDeCargaFason
             FleteMOA = orden.FleteMOA;
             Reventa = orden.Reventa;
             Escalable = orden.Escalable;
+            ValidaSisaRuca = orden.Producto.ValidaSisaRuca;
+            CUITDestino = orden.CUITDestino;
+            CUITDestinatario = orden.CUITDestinatario;
+            RazonSocialDestino = orden.RazonSocialDestino;
+            RazonSocialDestinatario = orden.RazonSocialDestinatario;
+            PlantaCodigo = orden.PlantaCodigo;
+            DomicilioDescr = orden.DomicilioDescr;
         }
     }
 }

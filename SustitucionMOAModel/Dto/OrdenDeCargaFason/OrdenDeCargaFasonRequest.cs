@@ -47,8 +47,15 @@ namespace SustitucionMOAModel.Dto.OrdenDeCargaFason
         public string DomicilioTipo { get; set; }
         public short? DomicilioOrden { get; set; }
         public string DomicilioDescr { get; set; }
-        public string RazonSocialDestino { get; set; }
         public bool Escalable { get; set; }
+
+        public string CUITDestinatario { get; set; }
+
+        public string RazonSocialDestinatario { get; set; }
+
+        public string CUITDestino { get; set; }
+
+        public string RazonSocialDestino { get; set; }
     }
 
     public class CrearOrdenDeCargaFasonRequestProducto
