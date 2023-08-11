@@ -20,7 +20,7 @@
         Boletos,
         Calidades,
         CesionYRectificacionDeCpe,
-        ClienteConCpedg,
+        //ClienteConCpedg,
         ClienteFason,
         Comercial,
         Comisiones,

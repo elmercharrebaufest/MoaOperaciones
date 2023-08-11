@@ -387,7 +387,7 @@ namespace SustitucionMOAModel.Entities
                 case "BOL": return RolEnum.Boletos;
                 case "CAL": return RolEnum.Calidades;
                 case "CRDECPE": return RolEnum.CesionYRectificacionDeCpe;
-                case "APLCLICPEDG": return RolEnum.ClienteConCpedg;
+                //case "APLCLICPEDG": return RolEnum.ClienteConCpedg;
                 case "CLIENTE FASON": return RolEnum.ClienteFason;
                 case "COMERCIAL": return RolEnum.Comercial;
                 case "COM": return RolEnum.Comisiones;

@@ -520,12 +520,13 @@ IF NOT EXISTS(SELECT 1 FROM RolPermisoPorRol inner join PermisoPorRol on Permiso
 
 IF NOT EXISTS(SELECT 1 FROM RolPermisoPorRol inner join PermisoPorRol on PermisoPorRol.Id = RolPermisoPorRol.PermisoPorRol_Id inner join Rol on Rol.Id = RolPermisoPorRol.Rol_Id WHERE Rol.Nombre = 'REVENDEDOR' and PermisoPorRol.Permiso = 'FAS - MODIFICAR CAMPO REVENTA') BEGIN insert into RolPermisoPorRol values ((select id from rol where rol.Nombre = 'REVENDEDOR'),(select id from PermisoPorRol where PermisoPorRol.Permiso = 'FAS - MODIFICAR CAMPO REVENTA')) END
 
-DECLARE @PermisoPorRol_Id INT
-DECLARE @Rol_Id           INT
- SELECT @PermisoPorRol_Id = Id FROM PermisoPorRol WHERE Permiso = 'ANULAR ORDEN DE CARGA'
- SELECT @Rol_Id           = Id FROM Rol           WHERE Codigo  = 'APLCLICPEDG'
- IF NOT EXISTS(SELECT 1 FROM RolPermisoPorRol WHERE Rol_Id = @Rol_Id AND PermisoPorRol_Id = @PermisoPorRol_Id)
-    BEGIN
-    INSERT INTO dbo.RolPermisoPorRol(Rol_Id , PermisoPorRol_Id )
-                              VALUES(@Rol_Id, @PermisoPorRol_Id)
-    END
+-- El rol 'CLIENTE CON CPEDG' (APLCLICPEDG) deja de estar vigente
+--DECLARE @PermisoPorRol_Id INT
+--DECLARE @Rol_Id           INT
+-- SELECT @PermisoPorRol_Id = Id FROM PermisoPorRol WHERE Permiso = 'ANULAR ORDEN DE CARGA'
+-- SELECT @Rol_Id           = Id FROM Rol           WHERE Codigo  = 'APLCLICPEDG'
+-- IF NOT EXISTS(SELECT 1 FROM RolPermisoPorRol WHERE Rol_Id = @Rol_Id AND PermisoPorRol_Id = @PermisoPorRol_Id)
+--    BEGIN
+--    INSERT INTO dbo.RolPermisoPorRol(Rol_Id , PermisoPorRol_Id )
+--                              VALUES(@Rol_Id, @PermisoPorRol_Id)
+--    END
