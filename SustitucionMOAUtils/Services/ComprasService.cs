@@ -2379,7 +2379,7 @@ namespace SustitucionMOAUtils.Services
                 item.CentroFormateado = item.PosicionCompras != null ? string.Join(", ", item.PosicionCompras.OrderBy(x => x.CentroId).GroupBy(x => x.CentroId).Select(x => x.Key)) : "";
                 item.GrupoCompraFormateado = item.PosicionCompras != null ? string.Join(", ", item.PosicionCompras.OrderBy(x => x.GrupoComprasId).GroupBy(x => x.GrupoComprasId).Select(x => x.Key)) : "";
             }
-
+           
 
             return todasLasSolp;
         }
@@ -3062,7 +3062,8 @@ namespace SustitucionMOAUtils.Services
                 };
                 var solpSAPResponse = obtenerSolpConsumerMOA.RequestSolpWithNroAndDates(filtros);
                 var posiciones = solp.PosicionCompras.ToList();
-                var consultaRegistro = posiciones.Where(a => !string.IsNullOrEmpty(a.MaterialComprasCodigo)).GroupBy(x => new { Centro = x.Centro.CodigoSap, Material = x.MaterialComprasCodigo, GrupoDeCompras = x.GrupoCompras.CodigoSap });
+                var consultaRegistro = posiciones.Where(a => !string.IsNullOrEmpty(a.MaterialComprasCodigo))
+                    .GroupBy(x => new { Centro = x.Centro.CodigoSap, Material = x.MaterialComprasCodigo, GrupoDeCompras = x.GrupoCompras.CodigoSap });
 
                 foreach (var posicionAgrupada in consultaRegistro)
                 {
@@ -4471,36 +4472,47 @@ namespace SustitucionMOAUtils.Services
                     new CotizacionHorasDto
                      {
                        Gremio = "UOCRA",
-                       Categoria = "Oficial especializado"
+                       Categoria = "Oficial especializado",
+                       Fila = true,
+                       ConfigurarHora = false
                     },
                     new CotizacionHorasDto
                      {
                        Gremio = "UOCRA",
-                       Categoria = "Oficial"
+                       Categoria = "Oficial",
+                       Fila = true,
+                       ConfigurarHora = false
 
                     },
                      new CotizacionHorasDto
                      {
                        Gremio = "UOCRA",
-                       Categoria = "Medio oficial"
-
+                       Categoria = "Medio oficial",
+                       Fila = true,
+                       ConfigurarHora = false
                     },
                       new CotizacionHorasDto
                      {
                        Gremio = "UOCRA",
-                       Categoria = "Ayudante"
+                       Categoria = "Ayudante",
+                       Fila = true,
+                       ConfigurarHora = false
 
                     },
                        new CotizacionHorasDto
                      {
                        Gremio = "UOCRA",
-                       Categoria = "Horas taller (referenciales)"
+                       Categoria = "Horas taller (referenciales)",
+                       Fila = true,
+                       ConfigurarHora = false
 
                     },
                           new CotizacionHorasDto
                      {
                        Gremio = "UOCRA",
-                       Categoria = "SHyMA"
+                       Categoria = "SHyMA",
+                       Fila = true,
+                       ConfigurarHora = false
 
                     },
                 };
@@ -4525,6 +4537,7 @@ namespace SustitucionMOAUtils.Services
                             cot.HorasNocturnas = hora.HorasNocturnas;
                             cot.HorasNormales = hora.HorasNormales;
                             cot.CantidadPersonas = hora.CantidadPersonas;
+                            cot.ConfigurarHora = hora.ConfigurarHora ?? false;
                         }
                     }
                     listaHoras.AddRange(cotizacion.CotizacionesHoras.Where(x => x.Gremio != "UOCRA").Select(x => new CotizacionHorasDto
@@ -4537,7 +4550,8 @@ namespace SustitucionMOAUtils.Services
                         HorasExtras = x.HorasExtras,
                         HorasNocturnas = x.HorasNocturnas,
                         HorasNormales = x.HorasNormales,
-                    }));
+                        ConfigurarHora = x.ConfigurarHora
+                    })); ;
 
                 }
                 peticionCotizacion.Cotizacion.CotizacionesHoras = listaHoras;
@@ -4830,6 +4844,7 @@ namespace SustitucionMOAUtils.Services
                         cot.HorasNormales = cotiHora.HorasNormales;
                         cot.HorasNocturnas = cotiHora.HorasNocturnas;
                         cot.CantidadPersonas = cotiHora.CantidadPersonas;
+                        cot.ConfigurarHora = cotiHora.ConfigurarHora;
                     }
                     else
                     {
@@ -4841,7 +4856,8 @@ namespace SustitucionMOAUtils.Services
                             HorasExtras = cotiHora.HorasExtras,
                             HorasNocturnas = cotiHora.HorasNocturnas,
                             HorasNormales = cotiHora.HorasNormales,
-                            CantidadPersonas = cotiHora.CantidadPersonas
+                            CantidadPersonas = cotiHora.CantidadPersonas,
+                            ConfigurarHora = cotiHora.ConfigurarHora
                         };
                         cotizacionesHoraNuevo.Add(cotiH);
                     }

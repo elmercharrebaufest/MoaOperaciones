@@ -22,7 +22,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
         }
         public PeticionDeOfertaDto Ejecutar(DbContext contexto)
         {
-            var cotizacionesHoras = new List<CotizacionHorasDto>();
+            
             try
             {
                 ((IObjectContextAdapter)contexto).ObjectContext.CommandTimeout = 180;
@@ -45,7 +45,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                     RespetaMateriales = cotizacion != null ? cotizacion.RespetaMateriales : null,
                                     RespetaServicios = cotizacion != null ? cotizacion.RespetaServicios : null,
                                     TipoPosicionCodigo = po.PeticionDeOferta.Solp.Posiciones.Select(x => x.TipoPosicion.Codigo).FirstOrDefault(),
-                                    CotizacionId = cotizacion != null ? cotizacion.Id : 0,
+                                    CotizacionId = cotizacion != null ? cotizacion.Id : 0,                                    
                                     PeticionDeOfertaPosicion = po.PeticionDeOferta.Posiciones.Where(posi => posi.SolpPosicion.EsConcluido == true && posi.SolpPosicion.Estado == true).Select(pop =>
                                     new PeticionDeOfertaSolpPosicionDto()
                                     {
@@ -244,7 +244,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
             }
             catch (Exception ex)
             {
-                throw;
+               throw;
             }
         }
 

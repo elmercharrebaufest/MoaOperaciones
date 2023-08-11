@@ -77,6 +77,8 @@ export interface CotizacionHoraDto{
     HorasNormales?: number
     HorasNocturnas?: number
     HorasExtras?: number
-    Gremio?:string
+    Gremio?:string,
+    Fila?:boolean
+    ConfigurarHora?:boolean
 }
 
