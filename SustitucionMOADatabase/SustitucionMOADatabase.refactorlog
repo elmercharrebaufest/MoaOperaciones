@@ -525,4 +525,11 @@
     <Property Name="ParentElementType" Value="SqlTable" />
     <Property Name="NewName" Value="ProveedorAsignado_Id" />
   </Operation>
+  <Operation Name="Rename Refactor" Key="26dbc324-1a35-49d5-be32-36c8d0ba9a13" ChangeDateTime="08/09/2023 19:42:47">
+    <Property Name="ElementName" Value="[dbo].[CotizacionHora].[CotizacionHora]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[CotizacionHora]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="ConfigurarHora" />
+  </Operation>
 </Operations>

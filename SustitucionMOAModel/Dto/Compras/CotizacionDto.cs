@@ -121,6 +121,7 @@ namespace SustitucionMOAModel.Dto
         public int? Cantidad { get; set; }
         public DateTime? FechaDeEntrega { get; set; }
         public List<CotizacionSubposicionesDto> CotizacionSubposiciones { get; set; } = new List<CotizacionSubposicionesDto>();
+        public bool ConfigurarHora { get; set; }
     }
 
 
@@ -146,6 +147,8 @@ namespace SustitucionMOAModel.Dto
         public int HorasNocturnas { get; set; }
         public int HorasExtras { get; set; }
         public string Gremio { get; set; }
+        public bool Fila { get; set; }
+        public bool? ConfigurarHora { get; set; }
     }
 
 }
