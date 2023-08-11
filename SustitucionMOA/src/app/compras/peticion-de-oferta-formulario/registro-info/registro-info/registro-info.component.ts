@@ -223,11 +223,11 @@ export class RegistroInfoComponent extends ListBaseComponent implements OnInit, 
                     MaterialCodigo,
                     Indice,
                     Cantidad: Cantidad, // Tomamos el primer valor de cantidad
-                    CantidadAdjudicacionTotal: CantidadAdjudicacion || 0,
+                    CantidadAdjudicacionTotal: Number(CantidadAdjudicacion) || 0,
                 });
             } else {
                 const group = materialIndiceMap.get(clave)!;
-                group.CantidadAdjudicacionTotal += CantidadAdjudicacion || 0;
+                group.CantidadAdjudicacionTotal += Number(CantidadAdjudicacion) || 0;
             }
         });
     
