@@ -1178,9 +1178,9 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         return this.model.selectTipoPosicion.Codigo == "MATERIALES" && this.model.posicionActual.codigoServicio != null;
     }
 
-    clearCode() {
-        if (this.model.posicionActual.tareaSubcontratar != null) {
-            this.model.posicionActual.codigoServicio = null;
+    clearCode(posicion) {
+        if (posicion.tareaSubcontratar != null) {
+            posicion.codigoServicio = null;
         }
     }
 
