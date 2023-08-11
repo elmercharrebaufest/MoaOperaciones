@@ -308,6 +308,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
                 tipoPosicion = posicion[0].TipoPosicion.Codigo;
             }
         }
+        console.log("tipoPosicion", tipoPosicion)
         return tipoPosicion;
     }
 
@@ -616,10 +617,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
                                 !pos.tabsPosicionValidos.tabPosiciones || 
                                 this.validarContratoMarco() || 
                                 this.validarAdicional() || 
-                                this.validarCondicionesEspeciales() || 
-                                this.validarFechaLimiteConsulta() || 
-                                this.validarFechaLimiteYObra() || 
-                                this.validarFechaVisitaDeObra()) {                                     
+                                this.validarCondicionesEspeciales() ) {                                     
                                     return paso.Completo = false;
                             } else {
                                 return pos.mensaje = "";
@@ -632,19 +630,26 @@ export class SolpComponent extends BaseComponent implements OnInit {
     }
 
     validarFechaVisitaDeObra(){
+        var esTipoPosicionServicio = this.solpActual.posicionActual.tipoPosicion != "undefined" && this.solpActual.posicionActual.tipoPosicion && this.solpActual.posicionActual.tipoPosicion.Codigo == "SERVICIO";
+        var sinPliego = this.solpActual.tipoSolp === "SIN_PLIEGO";
         var validarFechaVisitaDeObra = false;
-        
-        // Encuentra la visita con la fecha más larga
-        const visitaMasLarga = this.solpActual.listaVisitas.reduce((visitaAnterior, visitaActual) => {
-            if (visitaActual.visitaDeObraFecha > visitaAnterior.visitaDeObraFecha) {
-                return visitaActual;
-            } else {
-                return visitaAnterior;
-            }
-        });
 
-        if(visitaMasLarga.visitaDeObraFecha > this.solpActual.fechaEntrega){
-            return validarFechaVisitaDeObra = true;
+        console.log("esTipoPosicionServicio", esTipoPosicionServicio)
+        console.log("noTienePliego", sinPliego)
+
+        if(esTipoPosicionServicio && !sinPliego){
+            // Encuentra la visita con la fecha más larga
+            const visitaMasLarga = this.solpActual.listaVisitas.reduce((visitaAnterior, visitaActual) => {
+                if (visitaActual.visitaDeObraFecha > visitaAnterior.visitaDeObraFecha) {
+                    return visitaActual;
+                } else {
+                    return visitaAnterior;
+                }
+            });
+    
+            if(visitaMasLarga.visitaDeObraFecha > this.solpActual.fechaEntrega){
+                return validarFechaVisitaDeObra = true;
+            }
         }
         return validarFechaVisitaDeObra;
     }
@@ -658,6 +663,34 @@ export class SolpComponent extends BaseComponent implements OnInit {
         return validarFechaLimiteConsulta;
     }
 
+    validarFechaLimiteYObra(){
+        var esTipoPosicionServicio = this.solpActual.posicionActual.tipoPosicion != "undefined" && this.solpActual.posicionActual.tipoPosicion && this.solpActual.posicionActual.tipoPosicion.Codigo == "SERVICIO";
+        var sinPliego = this.solpActual.tipoSolp === "SIN_PLIEGO";
+        
+        console.log("esTipoPosicionServicio", esTipoPosicionServicio)
+        console.log("noTienePliego", sinPliego)
+
+
+        var validarFechaLimiteYObra = false;
+        
+        if(esTipoPosicionServicio && !sinPliego){
+            // Encuentra la visita con la fecha más larga
+            const visitaMasLarga = this.solpActual.listaVisitas.reduce((visitaAnterior, visitaActual) => {
+                if (visitaActual.visitaDeObraFecha > visitaAnterior.visitaDeObraFecha) {
+                    return visitaActual;
+                } else {
+                    return visitaAnterior;
+                }
+            });
+    
+            if(visitaMasLarga.visitaDeObraFecha > this.solpActual.fechaLimiteFecha  ){
+                return validarFechaLimiteYObra = true;
+            }
+
+        }
+        return validarFechaLimiteYObra;
+    }
+
     validarContratoMarco(){
         var validacionContratoTrabajo = false;
 
@@ -665,24 +698,6 @@ export class SolpComponent extends BaseComponent implements OnInit {
             return validacionContratoTrabajo = true;
         }
         return validacionContratoTrabajo;
-    }
-
-    validarFechaLimiteYObra(){
-        var validarFechaLimiteYObra = false;
-        
-        // Encuentra la visita con la fecha más larga
-        const visitaMasLarga = this.solpActual.listaVisitas.reduce((visitaAnterior, visitaActual) => {
-            if (visitaActual.visitaDeObraFecha > visitaAnterior.visitaDeObraFecha) {
-                return visitaActual;
-            } else {
-                return visitaAnterior;
-            }
-        });
-
-        if(this.solpActual.fechaLimiteFecha > visitaMasLarga.visitaDeObraFecha){
-            return validarFechaLimiteYObra = true;
-        }
-        return validarFechaLimiteYObra;
     }
 
     validarAdicional(){
