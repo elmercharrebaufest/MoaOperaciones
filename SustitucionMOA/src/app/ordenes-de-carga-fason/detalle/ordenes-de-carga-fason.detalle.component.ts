@@ -1,7 +1,6 @@
 import { DatePipe } from '@angular/common';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Params } from '@angular/router';
-import { EstadoOrdenDeCarga } from '../../common/models/ordenes-de-carga/estadoOrdenDeCarga';
 import { OrdenDeCargaFasonDto } from '../../common/models/ordenes-de-carga-fason/ordenDeCargaFasonDto';
 import { FloatMsgService } from '../../common/services/FloatMsgService';
 import { ModalService } from '../../common/services/ModalService';
@@ -146,14 +145,13 @@ export class OrdenesDeCargaFasonDetalleComponent extends ListBaseComponent imple
                         this.mensajeComponent.setErrorMsg(result.error);
                     } else if (result.info != undefined) {
                         this.mensajeComponent.setInfoMsg(result.info);
+                    } else if (result.data) {
+                        this.ordenDeCargaFason = result.data;
                     } else {
-                        if (result.data != "Orden de carga actualizada correctamente") {
-                            this.mensajeComponent.setInfoMsg(result.data);
-                        } else {
-                            this.mensajeComponent.setSuccessMsg(result.data);
-                        }
                         this.obtenerOrdenDeCargaFason();
                     }
+                    this.verificarBotones();
+
                 },
                 error => {
                     this.blockUI.stop();

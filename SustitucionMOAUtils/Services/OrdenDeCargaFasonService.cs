@@ -106,13 +106,14 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        public string VerificarTransporte(int ordenId)
+        public OrdenDeCargaFasonDto VerificarTransporte(int ordenId, string mailUsuario)
         {
             var orden = repositorio.Obtener<OrdenDeCargaFason>(ordenId);
+            var usuario = repositorio.Obtener<Usuario>(us => us.Mail == mailUsuario);
             ActualizarOrdenDeCarga(orden);
 
             repositorio.GuardarCambios();
-            return "Orden actualizada";
+            return OrdenDeCargaFasonDto(orden,usuario);
         }
 
         public List<OrdenDeCargaFason> VerificarVencimientoOrdenDeCargaFason()

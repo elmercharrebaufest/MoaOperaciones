@@ -81,11 +81,12 @@ export class OrdenesDeCargaFasonService extends OrdenesBaseService {
       .pipe(timeoutWith(360000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor intentelo mas tarde"))));
   }
 
-  public verificarTransporte(IdOrdenCargaFason: Number): Observable<any> {
+  public verificarTransporte(IdOrdenCargaFason: Number): Observable<ApiResponse<OrdenDeCargaFasonDto>> {
     let params: HttpParams = new HttpParams()
       .append('IdOrdenCargaFason', IdOrdenCargaFason.toString());
 
-    return this.http.get('/api/OrdenDeCargaFason/VerificarTransporte', { params: params, headers: this.headers })
+    return this.http
+      .get<ApiResponse<OrdenDeCargaFasonDto>>('/api/OrdenDeCargaFason/VerificarTransporte', { params: params, headers: this.headers })
       .pipe(timeoutWith(360000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
   }
 
