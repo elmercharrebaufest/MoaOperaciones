@@ -944,6 +944,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
             posicion.unidadMedida = unidadSeleccionadaAux.Descripcion;
         }
 
+        posicion.cuentaMayor = "";
         var grupoArticuloAux = this.combos.GrupoArticulo.find(x => x.Descripcion == posicion.codigoServicio.GrupoArticulo.Descripcion);
         if (grupoArticuloAux) {
             posicion.selectArticuloCompras = grupoArticuloAux;
