@@ -263,15 +263,6 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
             return;
         }
 
-        if (!(this.ordenDeCarga.Estado == EstadoOrdenDeCarga.AnulacionSolicitada || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.EdicionSolicitada)) {
-            if (this.esTercero)
-                this.mostrarBotonSolicitarAnulacion = true;
-
-            if (this.ordenDeCarga.EdicionRechazada != true)
-                this.mostrarBotonEditar = true;
-
-        }
-
         if (this.esInterno || this.esComercial || this.esMesaFas) {
             this.mostrarBotonVerHistorial = true;
             this.mostrarBotonEditar = true;
@@ -290,8 +281,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
             if (this.ordenDeCarga.ContratoSeleccionado) {
                 // if (this.ordenDeCarga.ContratoSeleccionado.KgDisponiblesTn < KILOS_DISPONIBLES_APROBADO &&
                 if (this.ordenDeCarga.ContratoSeleccionado.KgDisponibles < 15000 &&
-                    this.ordenDeCarga.ContratoSAP === "-")
-                {
+                    this.ordenDeCarga.ContratoSAP === "-") {
                     this.mostrarBotonContratos = true;
                 }
             }
@@ -330,9 +320,15 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                 this.mostrarBotonVerificarCompensacion = true;
             }
         }
-
         if (this.esAnulador) {
             this.mostrarBotonAnular = true;
+        }
+        if (!(this.ordenDeCarga.Estado == EstadoOrdenDeCarga.AnulacionSolicitada || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.EdicionSolicitada)) {
+            if (this.esTercero || ((this.esCliente || this.esCorredor) && !this.mostrarBotonAnular))
+                this.mostrarBotonSolicitarAnulacion = true;
+
+            if (this.ordenDeCarga.EdicionRechazada != true)
+                this.mostrarBotonEditar = true;
         }
     }
 
