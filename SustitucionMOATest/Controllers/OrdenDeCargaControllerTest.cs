@@ -9,12 +9,9 @@ using SustitucionMOAModel.Entities;
 using SustitucionMOAUtils.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Security.Claims;
 using System.Security.Principal;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Web.Mvc;
 
 namespace SustitucionMOATest.Controllers
@@ -91,7 +88,7 @@ namespace SustitucionMOATest.Controllers
 
             ordenDeCargaServiceMock.Setup(x => x.Listar(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).Returns(orden.data);
             var result = (JsonResult)target.GetListado(DateTime.Now.ToString(), DateTime.Now.ToString());
-            expectedJson = JsonConvert.SerializeObject(orden);
+            expectedJson = JsonConvert.SerializeObject(orden.data);
             resultJson = JsonConvert.SerializeObject(result.Data);
             Assert.NotNull(result);
             Assert.AreEqual(expectedJson, resultJson);
@@ -104,7 +101,6 @@ namespace SustitucionMOATest.Controllers
             var orden = new
             {
                 data = new OrdenDeCargaDetalleDto
-
                 {
                     Id = 1,
                     Cliente = "",

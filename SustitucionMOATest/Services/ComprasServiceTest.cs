@@ -618,7 +618,7 @@ namespace SustitucionMOATest.Services
             repositorioMock.Setup(y => y.Agregar(It.IsAny<PeticionDeOferta>())).Returns(new PeticionDeOferta { Id = 1 });
 
 
-            var result = target.GrabarPeticionDeOferta(peticionDeOferta, null, false);
+            var result = target.GrabarPeticionDeOferta(peticionDeOferta, null, false, null);
 
             repositorioMock.Verify(y => y.Listar(It.IsAny<Expression<Func<Usuario, bool>>>(),
              It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null), Times.Once);
