@@ -105,29 +105,14 @@ namespace SustitucionMOAUtils.Services
                 throw new WSCustomException(ErrorMsg.ErrorWS, error);
             }
         }
-        private bool TransporteExiste(string CUITTransporte)
-        {
-            Log.Info("TransporteExiste OrdenCargaControlEstadoRequest " + $"Cuit {CUITTransporte ?? ""}");
-            var estadoTransportista = ordenCargaConsumer.GetOrdenCargaControlEstadoTransportista(CUITTransporte);
-            Log.Info("TransporteExiste OrdenCargaControlEstadoRequest Result " + estadoTransportista);
-
-            return estadoTransportista == ControlEstadoResEnum.TransportistaOK;
-        }
 
         public string VerificarTransporte(int ordenId)
         {
             var orden = repositorio.Obtener<OrdenDeCargaFason>(ordenId);
-            orden.TransporteExiste = TransporteExiste(orden.CUITTransporte);
-            if (orden.TransporteExiste)
-            {
-                return SuccessMsg.OrdenDeCargaActualizada;
-            }
-            else
-            {
-                orden.Estado = EstadoOrdenDeCargaFason.Pendiente;
-                repositorio.GuardarCambios();
-                return "El transporte no existe";
-            }
+            ActualizarOrdenDeCarga(orden);
+
+            repositorio.GuardarCambios();
+            return "Orden actualizada";
         }
 
         public List<OrdenDeCargaFason> VerificarVencimientoOrdenDeCargaFason()
@@ -208,12 +193,12 @@ namespace SustitucionMOAUtils.Services
             try
             {
                 ValidarRequest(request, mailUsuario);
-                var existeTransporte = TransporteExiste(request.CUITTransporte);
+                var existeTransporteEIntermediario = TransporteExiste(request.CUITTransporte, request.CUITIntermediarioFlete);
 
                 for (int i = 0; i < request.CantidadDeViajes; i++)
                 {
                     var ordenEntity = new OrdenDeCargaFason(request);
-                    ActualizarOrdenDeCarga(ordenEntity, existeTransporte);
+                    ActualizarOrdenDeCarga(ordenEntity, existeTransporteEIntermediario);
                     repositorio.Agregar(ordenEntity);
 
                     repositorio.GuardarCambios();
@@ -376,15 +361,12 @@ namespace SustitucionMOAUtils.Services
         }
         private void ActualizarOrdenDeCarga(OrdenDeCargaFason orden)
         {
-            var existeTransporte = TransporteExiste(orden.CUITTransporte);
-            //Si no tiene Cuit intermediario flete lo tomamos como que existe
-            var existeCuitIntermediarioFlete = string.IsNullOrEmpty(orden.CUITIntermediarioFlete) || TransporteExiste(orden.CUITIntermediarioFlete);
-
-            ActualizarOrdenDeCarga(orden, existeTransporte && existeCuitIntermediarioFlete);
+            var existeTransporteEIntermediario = TransporteExiste(orden);
+            ActualizarOrdenDeCarga(orden, existeTransporteEIntermediario);
         }
-        private void ActualizarOrdenDeCarga(OrdenDeCargaFason orden, bool existeTransporte)
+        private void ActualizarOrdenDeCarga(OrdenDeCargaFason orden, bool existeTransporteEIntermediario)
         {
-            orden.TransporteExiste = existeTransporte;
+            orden.TransporteExiste = existeTransporteEIntermediario;
             orden.Estado = ObtenerEstadoOrden(orden);
         }
         private EstadoOrdenDeCargaFason ObtenerEstadoOrden(OrdenDeCargaFason orden)
@@ -431,6 +413,26 @@ namespace SustitucionMOAUtils.Services
         {
             var esInterno = usuario.TienePermiso(PermisoEnum.VerOrdenesDeCargaFasonAdmin);
             return new OrdenDeCargaFasonDto(orden, esInterno);
+        }
+        private bool TransporteExiste(OrdenDeCargaFason orden)
+        {
+            return TransporteExiste(orden.CUITTransporte, orden.CUITIntermediarioFlete);
+        }
+        private bool TransporteExiste(string transporte, string intermediarioFlete)
+        {
+            var existeTransporte = TransporteExiste(transporte);
+            //Si no tiene Cuit intermediario flete lo tomamos como que existe
+            var existeIntermediarioFlete = string.IsNullOrEmpty(intermediarioFlete) || TransporteExiste(intermediarioFlete);
+
+            return existeTransporte && existeIntermediarioFlete;
+        }
+        private bool TransporteExiste(string CUITTransporte)
+        {
+            Log.Info("TransporteExiste OrdenCargaControlEstadoRequest " + $"Cuit {CUITTransporte ?? ""}");
+            var estadoTransportista = ordenCargaConsumer.GetOrdenCargaControlEstadoTransportista(CUITTransporte);
+            Log.Info("TransporteExiste OrdenCargaControlEstadoRequest Result " + estadoTransportista);
+
+            return estadoTransportista == ControlEstadoResEnum.TransportistaOK;
         }
     }
 }
