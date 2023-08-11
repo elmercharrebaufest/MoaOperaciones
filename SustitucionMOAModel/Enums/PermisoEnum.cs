@@ -104,6 +104,7 @@
         VerSolpsProveedor,
         Fas_ModificarCampoReventa,
         NotificarAltaInternaGranos,
-        Fason_ModificarCampoReventa,
+        AdjudicarDentroDelPlazoDeOfertas,
+        Fason_ModificarCampoReventa
     }
 }

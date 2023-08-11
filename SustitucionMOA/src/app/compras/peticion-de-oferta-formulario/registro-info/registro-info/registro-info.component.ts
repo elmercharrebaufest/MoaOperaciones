@@ -11,7 +11,7 @@ import { FloatMsgService } from '../../../../common/services/FloatMsgService';
 import { SecurityService } from '../../../../common/services/SecurityService';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ListBaseComponent } from '../../../../common/base-components/list-base-component';
-import { RegistroInfoDto } from '../../../../modelos/registro-info';
+import { MaterialAgrupado, RegistroInfoDto } from '../../../../modelos/registro-info';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 
 @Component({
@@ -109,9 +109,8 @@ export class RegistroInfoComponent extends ListBaseComponent implements OnInit, 
             return;
         }
 
-       var totalAdjudicada = this.registros.reduce((sum, registro) => Number(sum + Number(registro.CantidadAdjudicacion)), 0);
-        console.log(totalAdjudicada, "total adjudicado");
-        if (this.registros.some(item => item.Cantidad < totalAdjudicada)) {
+        var materialTotalAdjudicado = this.agruparPorMaterial(this.registros);      
+        if (materialTotalAdjudicado.some(item => item.Cantidad < item.CantidadAdjudicacionTotal)) {
             this.confirmationService.confirm({
                 header: "Cantidad Incorrecta",
                 key: "avisoV",
@@ -209,5 +208,29 @@ export class RegistroInfoComponent extends ListBaseComponent implements OnInit, 
         return false; //<-- Prevent Refresh
 
 
+    }
+
+    
+    agruparPorMaterial(registros: RegistroInfoDto[]): MaterialAgrupado[] {
+        const materialIndiceMap = new Map<string, MaterialAgrupado>();
+
+        registros.forEach((registro) => {
+            const { MaterialCodigo, Indice, Cantidad, CantidadAdjudicacion } = registro;
+    
+            const clave = `${MaterialCodigo}_${Indice}`;
+            if (!materialIndiceMap.has(clave)) {
+                materialIndiceMap.set(clave, {
+                    MaterialCodigo,
+                    Indice,
+                    Cantidad: Cantidad, // Tomamos el primer valor de cantidad
+                    CantidadAdjudicacionTotal: CantidadAdjudicacion || 0,
+                });
+            } else {
+                const group = materialIndiceMap.get(clave)!;
+                group.CantidadAdjudicacionTotal += CantidadAdjudicacion || 0;
+            }
+        });
+    
+        return Array.from(materialIndiceMap.values());
     }
 }

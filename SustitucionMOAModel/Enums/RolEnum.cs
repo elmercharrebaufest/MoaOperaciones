@@ -70,7 +70,8 @@
         Solp,
         Todos,
         UsuarioNoImplementado,
+        ComprasAdmin,
         FleteMOA,
-        RevendedorFason,
+        RevendedorFason
     }
 }

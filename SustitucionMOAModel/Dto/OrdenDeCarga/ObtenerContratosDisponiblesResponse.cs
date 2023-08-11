@@ -29,14 +29,6 @@ namespace SustitucionMOAModel.Dto.OrdenDeCarga
 
         public MaterialDto Producto { get; set; }
         public decimal? KgDisponibles { get; set; }
-        //public string Label
-        //{
-        //    get
-        //    {
-        //        var kg = KgDisponiblesTn == null ? "" : $" {KgDisponiblesTn} kg Disp.";
-        //        return $"{NumeroContrato} - {DescripcionProducto}{kg}";
-        //    }
-        //}
         public string DescripcionProducto
         {
             get
@@ -66,18 +58,6 @@ namespace SustitucionMOAModel.Dto.OrdenDeCarga
         public ContratoOrdenFas(Entities.OrdenDeCarga orden)
         {
             NumeroContrato = orden.ContratoIngresado;
-            var producto = orden.Producto != null ? orden.Producto : null;
-
-            Producto = new Models.DataAgro.MaterialDto
-            {
-                MaterialId = orden.Producto_Id,
-                Descripcion = producto?.Nombre,
-                Abreviacion = producto?.Abreviacion
-            };
-        }
-        public ContratoOrdenFas(Entities.OrdenDeCarga orden, Result contratoSAP)
-        {
-            NumeroContrato = orden.ContratoIngresado;
             var producto = orden.Producto;
 
             Producto = new Models.DataAgro.MaterialDto
@@ -86,17 +66,6 @@ namespace SustitucionMOAModel.Dto.OrdenDeCarga
                 Descripcion = producto?.Nombre,
                 Abreviacion = producto?.Abreviacion
             };
-            KgDisponibles = ObtenerKgDisponiblesTn(contratoSAP);
-        }
-        public decimal ObtenerKgDisponiblesTn(Result contratoSAP)
-        {
-            var kgEntregadosYPendientesEntrega = contratoSAP.Detalles.Select(det =>
-                det.KilosEntrega== 0 ? ObtenerKgEstandar(contratoSAP) : det.KilosEntrega).Sum();
-            
-            return Math.Round(contratoSAP.KilosTotales - kgEntregadosYPendientesEntrega, 2);
-        }
-        private decimal ObtenerKgEstandar(Result contratoSAP) {
-            return contratoSAP.Producto.TrimStart('0') == "99709" ? 20000 : 30000;
         }
     }
 }

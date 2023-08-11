@@ -8,6 +8,7 @@
 	[PropuestaTecnicaAprobada] bit  NULL, 
 	[PropuestaTecnicaFecha]  DATETIME2 (7)  NULL,
 	[PropuestaTecnicaUsuario_Id] [int] NULL,   
+    [ObservacionNoCumple] NVARCHAR(MAX) NULL, 
     CONSTRAINT [FK.PeticionDeOfertaUsuario_Usuario_UsuarioCreadorId] FOREIGN KEY ([Usuario_Id]) REFERENCES [Usuario]([Id]),
 	CONSTRAINT [FK.PeticionDeOfertaUsuario_Usuario_RealizoVisitaUsuario_Id] FOREIGN KEY ([RealizoVisitaUsuario_Id]) REFERENCES [Usuario]([Id]),
     CONSTRAINT [FK.PeticionDeOfertaUsuario_Usuario_PropuestaTecnicaUsuario_Id] FOREIGN KEY ([PropuestaTecnicaUsuario_Id]) REFERENCES [Usuario]([Id]),

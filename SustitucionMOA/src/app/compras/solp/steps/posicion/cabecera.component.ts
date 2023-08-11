@@ -915,36 +915,46 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
     }
 
     //Funciones de la tabla
-    onSelectServicio(posicion: SubPosicionViewModel, dt) {
+    onSelectServicio(posicion: SolpPosicion, dt) {
         posicion.tareaSubcontratar = posicion.codigoServicio.Descripcion;
         posicion.tareaSubcontratarObj = { ...posicion.codigoServicio };
-
-        var unidadSeleccionadaAux = this.combos.Unidades.find(x => x.Descripcion == posicion.codigoServicio.UnidadMedidaBase);
-
-        if (unidadSeleccionadaAux) {
-            posicion.unidadSeleccionada = unidadSeleccionadaAux;
-            posicion.unidadMedida = unidadSeleccionadaAux.Descripcion;
-        }
+        this.autocompletarCamposMaterial(posicion);
 
         this.endEditCell(dt);
 
 
     }
 
-    onSelectTarea(posicion: SubPosicionViewModel, dt) {
+    onSelectTarea(posicion: SolpPosicion, dt) {
         posicion.tareaSubcontratar = posicion.tareaSubcontratarObj.Descripcion;
         posicion.codigoServicio = { ...posicion.tareaSubcontratarObj };
-
-        var unidadSeleccionadaAux = this.combos.Unidades.find(x => x.Descripcion == posicion.codigoServicio.UnidadMedidaBase);
         
-        if (unidadSeleccionadaAux) {
-        posicion.unidadSeleccionada = unidadSeleccionadaAux;
-        posicion.unidadMedida = unidadSeleccionadaAux.Descripcion;
-        }
-        
+        this.autocompletarCamposMaterial(posicion);
         this.endEditCell(dt);
 
         this.listarContratosAsociados()
+
+    }
+
+    autocompletarCamposMaterial(posicion: SolpPosicion){
+        var unidadSeleccionadaAux = this.combos.Unidades.find(x => x.Descripcion == posicion.codigoServicio.UnidadMedidaBase.Descripcion);
+        
+        if (unidadSeleccionadaAux) {
+            posicion.unidadSeleccionada = unidadSeleccionadaAux;
+            posicion.unidadMedida = unidadSeleccionadaAux.Descripcion;
+        }
+
+        var grupoArticuloAux = this.combos.GrupoArticulo.find(x => x.Descripcion == posicion.codigoServicio.GrupoArticulo.Descripcion);
+        if (grupoArticuloAux) {
+            posicion.selectArticuloCompras = grupoArticuloAux;
+        }
+
+        //var cuentaMayorAux = this.combos.CuentaMayor.find(x => x.Descripcion == posicion.codigoServicio.CuentaMayor.Descripcion);
+        if (posicion.codigoServicio.CuentaMayor && posicion.codigoServicio.CuentaMayor.Id > 0) {
+            posicion.cuentaMayor = posicion.codigoServicio.CuentaMayor;
+        }
+        console.log("posicion.codigoServicio.CuentaMayor", posicion.codigoServicio.CuentaMayor)
+
 
     }
 

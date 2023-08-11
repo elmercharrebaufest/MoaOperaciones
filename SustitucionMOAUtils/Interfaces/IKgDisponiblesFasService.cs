@@ -1,6 +1,6 @@
 ﻿using SustitucionMOAModel.Models.WSMapMOA.OrdenCarga;
 using System.Collections.Generic;
-using System.Linq;
+using SustitucionMOAModel.Entities;
 
 namespace SustitucionMOAUtils.Interfaces
 {
@@ -8,12 +8,13 @@ namespace SustitucionMOAUtils.Interfaces
     {
         //decimal KgDisponiblesContratoAnticipado(Result contratoSAP);
         //decimal KgDisponiblesContratoNormal(Result contratoSAP);
-        decimal ObtenerKgDisponiblesContrato(Result contratoSAP, int cantidadPedidosPendientesDeCrear = 0);
+        decimal ObtenerKgDisponiblesContrato(Result contratoSAP, List<OrdenDeCarga> ordenesPendientesDeCrear);
         //decimal ObtenerKgEntregadosPorGrupoPedidos(List<Detail> grupoPedidos);
         //decimal ObtenerKgEntregadosPorPedido(List<Detail> grupoPedidos);
-        //decimal ObtenerKgEstandar(Result contratoSAP);
+        decimal ObtenerKgEstandar(Result contratoSAP);
         bool PedidoEstaCargado(Detail pedido);
-        decimal ObtenerKgDisponiblesPedido(List<Detail> grupoPedidos, Detail pedidoPrincipal);
+        decimal ObtenerKgDisponiblesPedido(List<Detail> grupoPedidos, List<OrdenDeCarga> ordenesPendientesDeCrear, Detail pedidoPrincipal, decimal kilosEntregaEstandar);
+        decimal ObtenerKgDisponiblesPedido(Result contratoSAP, List<OrdenDeCarga> ordenesPendientesDeCrear, string numeroPedido);
         /// <summary>
         /// Método auxiliar, correspondería en otrro lado.
         /// </summary>

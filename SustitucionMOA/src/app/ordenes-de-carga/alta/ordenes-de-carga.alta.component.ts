@@ -23,7 +23,7 @@ import { finalize } from 'rxjs/operators';
 import { ApiResponse } from '../../common/models/response';
 import { forkJoin } from 'rxjs';
 import { Permiso } from '../../common/enums/Permisos';
-import { Factura } from '../../common/models/ordenes-de-carga/Factura';
+import { Factura, newFactura } from '../../common/models/ordenes-de-carga/Factura';
 import { IOrdenesBaseComponent } from '../../common/base-components/ordenes-base-component';
 
 declare var $: any;
@@ -240,9 +240,15 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
             return false;
         }
 
-        if (this.ordenDeCarga.ContratoSeleccionado.TipoContrato === TipoContrato.FacturaAnticipada && !this.ordenDeCarga.NumeroFactura) {
-            this.mensajeComponent.setInfoMsg("Debe seleccionar un número de factura para este tipo de contrato.");
-            return false;
+        if (this.ordenDeCarga.ContratoSeleccionado.TipoContrato === TipoContrato.FacturaAnticipada) {
+            if (!this.ordenDeCarga.NumeroFactura) {
+                this.mensajeComponent.setInfoMsg("Debe seleccionar un número de factura para este tipo de contrato.");
+                return false;
+            }
+            if (this.mensajesOrdenDeCarga.NumeroFacturaSeleccionada) {
+                this.mensajeComponent.setInfoMsg(this.mensajesOrdenDeCarga.NumeroFacturaSeleccionada);
+                return false;
+            }
         }
 
         if (this.mensajesOrdenDeCarga.ContratoSeleccionado) {
@@ -805,8 +811,8 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
 
     cargarContratosDisponibles(pClienteCodigo: string) {
         if (this.ordenDeCarga && this.ordenDeCarga.ContratoSeleccionado && this.ordenDeCarga.Id) {
-            const { NumeroContrato, Producto } = this.ordenDeCarga.ContratoSeleccionado;
-            this.ordenDeCarga.ContratoSeleccionado = new ContratoOrdenFas(NumeroContrato, Producto)
+            const { NumeroContrato, Producto, TipoContrato } = this.ordenDeCarga.ContratoSeleccionado;
+            this.ordenDeCarga.ContratoSeleccionado = new ContratoOrdenFas(NumeroContrato, TipoContrato, Producto)
             this.contratosDisponibles = [this.ordenDeCarga.ContratoSeleccionado];
             this.onContratoSeleccionadoChanged();
             return;
@@ -834,7 +840,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
                                     this.mensajeComponent.setInfoMsg(resp.Info);
                                 } else {
                                     this.contratosDisponibles = resp.Contratos.map(c => {
-                                        return new ContratoOrdenFas(c.NumeroContrato, c.Producto, c.KgDisponibles);
+                                        return new ContratoOrdenFas(c.NumeroContrato, c.TipoContrato, c.Producto, c.KgDisponibles);
                                     });
                                     this.ordenDeCarga.ContratoSeleccionado =
                                         this.ordenDeCarga.ContratoIngresado ?
@@ -1213,7 +1219,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
                     this.ordenDeCarga.Producto_Id = this.selectUndefinedOptionValue;
                     this.validaCPEDG = false;
                 }
-                this.facturasDisponibles = data
+                this.facturasDisponibles = data.map(newFactura)
                 if (this.ordenDeCargaId) {
                     const numeroFacturaOrden = this.ordenDeCarga.NumeroFacturaSeleccionada || this.ordenDeCarga.NumeroFactura;
                     this.facturaSeleccionada = this.facturasDisponibles.find(factura => factura.NumeroFactura == numeroFacturaOrden)

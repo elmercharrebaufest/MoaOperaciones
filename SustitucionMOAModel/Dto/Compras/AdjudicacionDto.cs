@@ -31,5 +31,8 @@ namespace SustitucionMOAModel.Dto
         public string CondicionesDeEntrega { get; set; }
         public string CondicionesDePago { get; set; }
         public string Garantias { get; set; }
+        public string Centro { get; set; }
+        public string CalleEntrega { get; set; }
+        public string CodigoPostal { get; set; }
     }
 }

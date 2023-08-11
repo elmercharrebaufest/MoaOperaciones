@@ -512,6 +512,7 @@ export class DashboardComponent extends ListBaseComponent {
                         this.peticion = result.data;
                         this.displayRevisionTecnica = true;
                         this.blockUI.stop();
+                        console.log("peticion", this.peticion)
                     }
                 },
                 (error) => {

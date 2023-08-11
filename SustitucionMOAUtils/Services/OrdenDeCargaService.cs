@@ -23,10 +23,8 @@ using SustitucionMOAWS.WSRequests.OrdenCarga;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
-using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 using System.Threading;
 using SustitucionMOAWS.ResponseHandler.OrdenCarga;
 
@@ -64,6 +62,10 @@ namespace SustitucionMOAUtils.Services
             EstadoOrdenDeCarga.SinEnviarASAP,
             EstadoOrdenDeCarga.EntregaAnuladaPedidoPendienteAnulacion,
             EstadoOrdenDeCarga.PendienteCompensacion,
+        };
+        private readonly List<EstadoOrdenDeCarga> estadosNoTieneOrdenPendienteEnvio = new List<EstadoOrdenDeCarga> {
+            EstadoOrdenDeCarga.AnuladaPorVencimiento,
+            EstadoOrdenDeCarga.Anulada
         };
 
         public OrdenDeCargaService(
@@ -114,6 +116,11 @@ namespace SustitucionMOAUtils.Services
                     ordenDeCarga.ContratoSAP = ordenDeCarga.ContratoIngresado;
                     if (ordenDeCarga.EsFacturaAnticipada)
                     {
+                        if (ValidarKgDisponiblesEnviaPedidoDirectamenteASAP(ordenDeCarga, usuario))
+                        {
+                            ordenDeCarga.NumeroFacturaSeleccionada = ordenDeCarga.NumeroFactura;
+                            ordenDeCarga.NumeroPedido = ordenDeCarga.NumeroPedidoIngresado;
+                        }
                         if (!ordenDeCarga.SinSeleccionarFactura)
                             GenerarEntregaSAP(ordenDeCarga);
                     }
@@ -906,9 +913,14 @@ namespace SustitucionMOAUtils.Services
 
             var contratoSAP = ordenCargaConsumer.ObtenerContratoSAP(orden.ContratoIngresado, TipoContratoFAS.Todos);
 
+            var ordenesPendientes = ObtenerOrdenesPendientesDeCliente(orden.Cliente.CodigoProveedor);
+
             var ordenDto = new OrdenDeCargaDetalleDto(orden, ordenDeCargaCambiosHistorial, cliente)
             {
-                ContratoSeleccionado = new ContratoOrdenFas(orden, contratoSAP)
+                ContratoSeleccionado = new ContratoOrdenFas(orden)
+                {
+                    KgDisponibles = _kgDisponiblesFasService.ObtenerKgDisponiblesContrato(contratoSAP, ordenesPendientes)
+                }
             };
 
             return ordenDto;
@@ -1718,7 +1730,7 @@ namespace SustitucionMOAUtils.Services
                 Corredor = orden.Corredor != null ? orden.Corredor.CodigoProveedor : string.Empty,
                 Material = orden.Producto.CodigoSap,
                 Pendiente = true,
-                TipoContrato = TipoContratoFAS.Normal
+                TipoContrato = Constante.FAS_FILTRO_TIPO_CONTRATO
             };
 
             var consumerRes = new OrdenCargaConsumerMOA().OrdenCargaVisualizarClienteExecute(consumerReq);
@@ -1750,7 +1762,7 @@ namespace SustitucionMOAUtils.Services
             if (orden.TransporteExiste)
             {
                 Log.Info("VerificarTransporte ActualizarEstado " + orden.ToDto().ToJson());
-                if (!string.IsNullOrEmpty(orden.ContratoSAP) && string.IsNullOrEmpty(orden.NumeroPedido) && crearPedido)
+                if (!string.IsNullOrEmpty(orden.ContratoSAP) && string.IsNullOrEmpty(orden.NumeroPedido) && crearPedido && !orden.EsFacturaAnticipada)
                     CrearPedidoEnSAP(orden, orden.Cliente, true, false, mailUsuario);
                 var aprobadoCredito = orden.AprobadoCredito || ObtenerSituacionCrediticia(orden);
                 if (aprobadoCredito && string.IsNullOrEmpty(orden.NumeroEntrega))
@@ -2001,7 +2013,7 @@ namespace SustitucionMOAUtils.Services
 
         private void NotificarVariasFacturas(OrdenDeCarga ordenDeCarga)
         {
-            if (ordenDeCarga.EsFacturaAnticipada && _facturaAnticipadaService.OrdenConMultiplesFacturas(ordenDeCarga))
+            if (ordenDeCarga.EsFacturaAnticipada && ordenDeCarga.SinSeleccionarFactura && _facturaAnticipadaService.OrdenConMultiplesFacturas(ordenDeCarga))
             {
                 emailFasService.EnviarMailVariasFacturasPendientes(ordenDeCarga);
             }
@@ -2152,7 +2164,7 @@ namespace SustitucionMOAUtils.Services
                     Fechas = rangoFechas,
                     Material = material,
                     Pendiente = true, // Contratos ABIERTOS
-                    TipoContrato = TipoContratoFAS.Normal
+                    TipoContrato = Constante.FAS_FILTRO_TIPO_CONTRATO
                 };
 
                 var ordenCargaConsumer = new OrdenCargaConsumerMOA();
@@ -2174,14 +2186,7 @@ namespace SustitucionMOAUtils.Services
                         m.TablaSeccionMaterial == TablaSeccionMaterial.OrdenDeCarga &&
                         productosCodigosSap.Contains(m.CodigoSap));
 
-                var contratosEnOrdenesPendientes = repositorio
-                    .ListarProyeccion<OrdenDeCarga, string>(
-                        x => x.ContratoIngresado,
-                        x =>
-                            x.Cliente.CodigoProveedor == req.ClienteCodigo &&
-                            string.IsNullOrEmpty(x.NumeroPedido) &&
-                            x.Estado != EstadoOrdenDeCarga.Anulada &&
-                            x.Estado != EstadoOrdenDeCarga.AnuladaPorVencimiento);
+                var ordenesPendientes = ObtenerOrdenesPendientesDeCliente(req.ClienteCodigo);
 
                 var contratosDisponiblesResp = new ObtenerContratosDisponiblesResponse
                 {
@@ -2190,7 +2195,7 @@ namespace SustitucionMOAUtils.Services
                             new ContratoOrdenFas(contratoSap, productosBD)
                             {
                                 KgDisponibles = _kgDisponiblesFasService.ObtenerKgDisponiblesContrato(contratoSap,
-                                    contratosEnOrdenesPendientes.Count(x => x == contratoSap.Contrato))
+                                    ordenesPendientes)
                             })
                         .OrderBy(contrato => contrato.DescripcionProducto)
                         .ToList()
@@ -2511,20 +2516,40 @@ namespace SustitucionMOAUtils.Services
 
                 if (contratoSAP == null)
                     throw new InfoCustomException("No se encontró el contrato en SAP");
-
-                var contratosEnOrdenesPendientes = repositorio
-                    .ListarProyeccion<OrdenDeCarga, string>(
-                        x => x.ContratoIngresado,
-                        x =>
-                            x.ContratoIngresado == contratoSAP.Contrato &&
-                            string.IsNullOrEmpty(x.NumeroPedido) &&
-                            x.Estado != EstadoOrdenDeCarga.Anulada &&
-                            x.Estado != EstadoOrdenDeCarga.AnuladaPorVencimiento).Count;
-
-                var kilosDisponibles = _kgDisponiblesFasService.ObtenerKgDisponiblesContrato(contratoSAP, contratosEnOrdenesPendientes);
+                var ordenesPendientes = ObtenerOrdenesPendientes(numeroContrato);
+                var kilosDisponibles = _kgDisponiblesFasService.ObtenerKgDisponiblesContrato(contratoSAP, ordenesPendientes);
                 Log.Info($"Validar kg disponibles: {kilosDisponibles}");
                 if (kilosDisponibles <= Constante.FAS_KILOS_LIMITE_INFERIOR)
-                    throw new InfoCustomException("El contrato seleccionado no tiene kg disponibles");
+                    throw new InfoCustomException($"El contrato seleccionado no tiene kg disponibles");
+                if (kilosDisponibles < Constante.FAS_KILOS_LIMITE_SUPERIOR)
+                    return false;
+            }
+            return true;
+        }
+        private bool ValidarKgDisponiblesEnviaPedidoDirectamenteASAP(OrdenDeCarga orden, Usuario usuario)
+        {
+            var esAdmin = usuario.TienePermiso(PermisoEnum.VerTodasOrdenesDeCarga);
+            var esComercial = usuario.TienePermiso(PermisoEnum.VerOrdenesDeCargaParaComerciales);
+            var esMesaFas = usuario.TienePermiso(PermisoEnum.VerOrdenesDeCargaParaMesaFas);
+            var esPuerto = usuario.TienePermiso(PermisoEnum.VerOrdenesDeCargaParaPuerto);
+
+            var esInterno = (esAdmin || esComercial || esMesaFas || esPuerto);
+            if (!esInterno)
+            {
+                var numeroContrato = string.IsNullOrEmpty(orden.ContratoSAP) ? orden.ContratoIngresado : orden.ContratoSAP;
+                Log.Info($"Validar kg pedido orden: {orden.ToJson()}");
+                var contratoSAP = consumer.ObtenerContratoSAP(numeroContrato, null);
+                Log.Info($"Validar kg pedido contrato: {contratoSAP.ToJson()}");
+
+                if (contratoSAP == null)
+                    throw new InfoCustomException("No se encontró el contrato en SAP");
+                var ordenesPendientes = ObtenerOrdenesPendientes(numeroContrato);
+                var kilosDisponibles = _kgDisponiblesFasService.ObtenerKgDisponiblesPedido(contratoSAP, ordenesPendientes, orden.NumeroPedidoIngresado);
+                Log.Info($"Validar kg pedido disponibles: {kilosDisponibles}");
+                if (kilosDisponibles <= Constante.FAS_KILOS_LIMITE_INFERIOR)
+                {
+                    throw new InfoCustomException($"El pedido seleccionado no tiene kg disponibles");
+                }
                 if (kilosDisponibles < Constante.FAS_KILOS_LIMITE_SUPERIOR)
                     return false;
             }
@@ -2560,6 +2585,30 @@ namespace SustitucionMOAUtils.Services
                 return null;
             }
         }
-
+        private List<OrdenDeCarga> ObtenerOrdenesPendientes(string numeroContrato)
+        {
+            return repositorio
+                    .Listar<OrdenDeCarga>(
+                        x =>
+                            ((!string.IsNullOrEmpty(x.ContratoSAP) && x.ContratoSAP == numeroContrato) ||
+                            (string.IsNullOrEmpty(x.ContratoSAP) && x.ContratoIngresado == numeroContrato)) &&
+                            (
+                                (string.IsNullOrEmpty(x.NumeroPedido) && x.TipoContrato == TipoContratoFAS.Normal) ||
+                                (string.IsNullOrEmpty(x.NumeroEntrega) && x.TipoContrato == TipoContratoFAS.Anticipado)
+                            ) &&
+                            !estadosNoTieneOrdenPendienteEnvio.Contains(x.Estado));
+        }
+        private List<OrdenDeCarga> ObtenerOrdenesPendientesDeCliente(string codigoCliente)
+        {
+            return repositorio
+                    .Listar<OrdenDeCarga>(
+                        x =>
+                            x.Cliente.CodigoProveedor == codigoCliente &&
+                            (
+                                (string.IsNullOrEmpty(x.NumeroPedido) && x.TipoContrato == TipoContratoFAS.Normal) ||
+                                (string.IsNullOrEmpty(x.NumeroEntrega) && x.TipoContrato == TipoContratoFAS.Anticipado)
+                            ) &&
+                            !estadosNoTieneOrdenPendienteEnvio.Contains(x.Estado));
+        }
     }
 }
