@@ -226,7 +226,7 @@ export class RegistroInfoComponent extends ListBaseComponent implements OnInit, 
                     CantidadAdjudicacionTotal: Number(CantidadAdjudicacion) || 0,
                 });
             } else {
-                const group = materialIndiceMap.get(clave)!;1
+                const group = materialIndiceMap.get(clave)!;
                 group.CantidadAdjudicacionTotal += Number(CantidadAdjudicacion) || 0;
             }
         });
