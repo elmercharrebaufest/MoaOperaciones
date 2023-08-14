@@ -52,7 +52,7 @@ namespace SustitucionMOAWS.WSConsumers
                     var registroInfo = new RegistroInfoDto
                     {
                         Cantidad = purch.NRM_PO_QTY,
-                        Precio = purch.EFF_PRICE,
+                        Precio = purch.NET_PRICE,
                         Unidad = info.PO_UNIT,
                         Moneda = purch.CURRENCY,
                         Vendedor = info.VENDOR,

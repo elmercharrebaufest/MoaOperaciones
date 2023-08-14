@@ -37,7 +37,7 @@ export class RegistroInfoComponent extends ListBaseComponent implements OnInit, 
     registros: RegistroInfoDto[];
     displayAdjudicacionCreada: boolean;
     resultadoAdjudicacion: any = new Array();
-
+    optionSelected: any;
 
     constructor(protected service: ComprasService, protected usuarioService: UsuarioService, protected navService: NavService, protected sessionDataService: SessionDataService,
         protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService,
@@ -70,7 +70,11 @@ export class RegistroInfoComponent extends ListBaseComponent implements OnInit, 
                     return exists;
                 });
             }
-            this.registrosInfo = this.solpCompraDto.RegistrosInfo.filter(x => x.Indice == this.registrosInfo[0].Indice);
+            if (this.optionSelected) {
+                this.registrosInfo = this.solpCompraDto.RegistrosInfo.filter(x => x.PosicionId == this.optionSelected.value);
+            } else {
+                this.registrosInfo = this.solpCompraDto.RegistrosInfo.filter(x => x.Indice == this.registrosInfo[0].Indice);
+            }
         }
       
     }

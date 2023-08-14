@@ -9,7 +9,7 @@
         <div class="col-md-12">
             <strong>Posici&oacute;n</strong>
             <div>
-                <p-dropdown #dd [options]="options" optionLabel="label"
+                <p-dropdown #dd [options]="options" optionLabel="label" [(ngModel)]="optionSelected"
                             optionValue="value" (onChange)="filtrarPorPosicion(dd)">
                 </p-dropdown>
             </div>
