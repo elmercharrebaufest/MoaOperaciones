@@ -666,18 +666,16 @@ export class SolpComponent extends BaseComponent implements OnInit {
         return validarFechaLimiteConsulta;
     }
 
-    validarFechaLimiteYObra(){
+    validarFechaLimiteYObra() {
+        if (this.solpActual.listaVisitas.length === 0) { //se evita listaVisitas.reduce() cuando listaVisitas está vacía
+            return false;
+        }
         var esTipoPosicionServicio = this.solpActual.posicionActual.tipoPosicion != "undefined" && this.solpActual.posicionActual.tipoPosicion && this.solpActual.posicionActual.tipoPosicion.Codigo == "SERVICIO";
         var sinPliego = this.solpActual.tipoSolp === "SIN_PLIEGO";
         
         console.log("esTipoPosicionServicio", esTipoPosicionServicio)
         console.log("noTienePliego", sinPliego)
-
-
-    validarFechaLimiteYObra() {
-        if (this.solpActual.listaVisitas.length === 0) { //se evita listaVisitas.reduce() cuando listaVisitas está vacía
-            return false;
-        }
+        
         var validarFechaLimiteYObra = false;
         
         if(esTipoPosicionServicio && !sinPliego){
