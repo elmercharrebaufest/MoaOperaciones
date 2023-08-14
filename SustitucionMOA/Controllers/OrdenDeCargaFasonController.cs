@@ -87,24 +87,26 @@ namespace SustitucionMOA.Controllers
         [HttpGet]
         public ActionResult VerificarTransporte(int IdOrdenCargaFason)
         {
+            var response = new SustitucionMOAApiResponse<OrdenDeCargaFasonDto>();
             try
             {
                 var mailUsuario = SessionPersister.getUsername();
-                return JsonCustom(new { data = ordenDeCargaFasonService.VerificarTransporte(IdOrdenCargaFason) });
+                response.Data = ordenDeCargaFasonService.VerificarTransporte(IdOrdenCargaFason, mailUsuario);
             }
-            catch (InfoCustomException e)
+            catch (InfoCustomException ice)
             {
-                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
+                response.Info = ice.Message;
             }
-            catch (ValidationCustomException e)
+            catch (ValidationCustomException vce)
             {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+                response.Error = vce.Message;
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                response.Error = ErrorMsg.Error;
             }
+            return ContentCustom(response);
         }
 
         [HttpGet]
@@ -112,7 +114,6 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                var mailUsuario = SessionPersister.getUsername();
                 return JsonCustom(new { data = ordenDeCargaFasonService.ObtenerDestinos(clienteId) });
             }
             catch (InfoCustomException e)
