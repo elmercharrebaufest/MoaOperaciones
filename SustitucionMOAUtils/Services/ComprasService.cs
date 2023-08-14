@@ -4069,7 +4069,7 @@ namespace SustitucionMOAUtils.Services
             res.ContentId = Guid.NewGuid().ToString();
             string htmlBody = "";
             htmlBody += $"En el presente mail se informa la nueva OC {adjudicacion.NumeroOrdenDeCompra} generada con Molinos Agro S.A. <br />";
-            htmlBody += mensaje;
+            htmlBody += mensaje + "<br/>";
 
             htmlBody += "En caso de tener alguna consulta, ingresar a www.moaoperaciones.com.ar " +
                 "<br/><br/>Saludos Cordiales<br/>" +

@@ -464,6 +464,9 @@ export class SolpComponent extends BaseComponent implements OnInit {
             this.solpActual.Finalizar = enviarSap;
             this.solpActual.usuarioComprasId = this.selectUsuarioCompras != null ? this.selectUsuarioCompras.Id : null;
 
+            if (this.solpActual.especificacionesViewModel.observaciones == null)
+                this.solpActual.especificacionesViewModel.observaciones = "";
+
             this.subscription = this.service.GuardarSolp(this.solpActual).subscribe(
                 (result: any) => {
                     if (result.logout == true) {
