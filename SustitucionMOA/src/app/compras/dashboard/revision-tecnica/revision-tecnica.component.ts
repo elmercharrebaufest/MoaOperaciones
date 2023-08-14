@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { NgbAlert } from '@ng-bootstrap/ng-bootstrap';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { ConfirmationService } from 'primeng/api';
+import { isNullOrUndefined } from 'util';
 import { FloatMsgService } from '../../../common/services/FloatMsgService';
 import { ModalService } from '../../../common/services/ModalService';
 import { NavService } from '../../../common/services/NavService';
@@ -106,12 +107,12 @@ export class RevisionTecnicaComponent implements OnInit, OnChanges {
     }
 
     validarPeticion() {
-        var noCumple = this.peticion.Usuarios.find(x => x.PropuestaTecnicaAprobada == false)
-        if(noCumple){
-            if(this.peticion.Usuarios.find(x => x.ObservacionNoCumple == "" || x.ObservacionNoCumple == undefined)) {
-                this.error = "El campo Observacion es obligatorio";
-               return this.visualizarAlert = true;
-            }       
+        if (this.peticion.Usuarios.find(x =>
+            (x.ObservacionNoCumple == "" || isNullOrUndefined(x.ObservacionNoCumple))
+            && x.PropuestaTecnicaAprobada == false)) {
+            this.error = "El campo Observacion es obligatorio";
+            this.visualizarAlert = true;
+            return true;
         }
     }
 
@@ -124,17 +125,17 @@ export class RevisionTecnicaComponent implements OnInit, OnChanges {
     }
 
     enviar() {
-        if(!this.validarPeticion()){
+        if (!this.validarPeticion()) {
             this.grabarRevisionTecnicaEmitter.next();
         }
     }
 
-    mostrarPanelHs(p){
-        if(!p.MostrarPanel){
-          p.MostrarPanel = true;
+    mostrarPanelHs(p) {
+        if (!p.MostrarPanel) {
+            p.MostrarPanel = true;
         } else {
-          p.MostrarPanel = false;
-    
-        } 
-      }
+            p.MostrarPanel = false;
+
+        }
+    }
 }
