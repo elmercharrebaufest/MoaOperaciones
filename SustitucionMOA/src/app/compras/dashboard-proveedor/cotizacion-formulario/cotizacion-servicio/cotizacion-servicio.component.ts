@@ -80,7 +80,7 @@ export class CotizacionServicioComponent extends ListBaseComponent implements On
         var tieneDatos = this.peticion.Cotizacion.CotizacionesHoras.some(x => x.Gremio != 'UOCRA' && x.ConfigurarHora == false);
         this.index = tieneDatos ? 1 : 0;
         if (!tieneDatos) {
-            this.agregarRow(false);
+            this.agregarRow(false, true);
         }
         this.obtenerPrecioTotalPosicionProveedor();
         this.mostrarMensajeNoRespetaCondiciones();
@@ -407,23 +407,25 @@ export class CotizacionServicioComponent extends ListBaseComponent implements On
         return this.archivosEconomico;
     }
 
-    agregarRow(uocra) {
+    agregarRow(uocra, primeraVez) {
         var hora = this.peticion.Cotizacion.CotizacionesHoras
-        .find(x => x.CantidadPersonas == 0 && x.HorasNocturnas == 0 && x.Gremio == ""        
-            && x.HorasExtras == 0 && x.Categoria == "" && x.HorasNormales == 0);
+        .find(x => x.CantidadPersonas == 0 && x.HorasNocturnas == 0        
+            && x.HorasExtras == 0 && x.HorasNormales == 0 && x.Gremio != "UOCRA");
 
         if(uocra){
             hora = this.peticion.Cotizacion.CotizacionesHoras
-            .find(x => x.CantidadPersonas == 0 && x.HorasNocturnas == 0 && x.Gremio == "" &&
-             (x.Fila == false || x.ConfigurarHora == true)
-                && x.HorasExtras == 0 && x.Categoria == "" && x.HorasNormales == 0);
+            .find(x => x.CantidadPersonas == 0 && x.HorasNocturnas == 0 &&
+             (x.Fila == false || x.ConfigurarHora == true) 
+                && x.HorasExtras == 0  && x.HorasNormales == 0);
         }
        
         if (hora == undefined || hora == null) {
             this.cotizacionHora = { Cotizacion_Id: 0, CantidadPersonas: 0, Categoria: "", Gremio: "", HorasExtras: 0, HorasNocturnas: 0, HorasNormales: 0, ConfigurarHora: uocra };
             this.peticion.Cotizacion.CotizacionesHoras.push(this.cotizacionHora)
         } else {
-            this.floatMsgService.setErrorMsg("Debe completar el registro anterior para agregar uno nuevo")
+            if(!primeraVez){
+                this.floatMsgService.setErrorMsg("Debe completar el registro anterior para agregar uno nuevo")
+            }
         }
 
     }
@@ -464,7 +466,7 @@ export class CotizacionServicioComponent extends ListBaseComponent implements On
                 element.HorasNormales = 0
         });
         this.peticion.Cotizacion.CotizacionesHoras = this.peticion.Cotizacion.CotizacionesHoras.filter(x => x.Gremio == "UOCRA");
-        this.agregarRow(false);
+        this.agregarRow(false, false);
     }
 
     autoCompletarHoras() {
