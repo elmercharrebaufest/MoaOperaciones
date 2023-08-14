@@ -147,7 +147,7 @@
                             <div class="col-md-11"></div>
                             <div class="col-md-1" style="margin-left: -20px;">
                                 <button type="button" class="btn btn-success botonesComprasColor botonModal"
-                                        (click)="agregarRow(true)">
+                                        (click)="agregarRow(true, false)">
                                     Agregar
                                 </button>
                             </div>
@@ -206,7 +206,7 @@
                                                 <td *ngIf="!rowData.ConfigurarHora">
                                                     {{rowData.Categoria}}
                                                 </td>
-                                                <td pEditableColumn *ngIf="rowData.ConfigurarHora">
+                                                <td pEditableColumn>
                                                     <p-cellEditor>
                                                         <ng-template pTemplate="input">
                                                             <input type="text" pKeyFilter="int" min="0" 
@@ -216,11 +216,8 @@
                                                             {{rowData.CantidadPersonas}}
                                                         </ng-template>
                                                     </p-cellEditor>
-                                                </td>
-                                                <td *ngIf="!rowData.ConfigurarHora">
-                                                    {{rowData.CantidadPersonas}}
-                                                </td>
-                                                <td pEditableColumn *ngIf="rowData.ConfigurarHora">
+                                                </td>                                             
+                                                <td pEditableColumn>
                                                     <p-cellEditor>
                                                         <ng-template pTemplate="input">
                                                             <input type="text" pKeyFilter="int" min="0" 
@@ -231,10 +228,7 @@
                                                         </ng-template>
                                                     </p-cellEditor>
                                                 </td>
-                                                <td *ngIf="!rowData.ConfigurarHora">
-                                                    {{rowData.HorasNormales}}
-                                                </td>
-                                                <td pEditableColumn *ngIf="rowData.ConfigurarHora">
+                                                <td pEditableColumn>
                                                     <p-cellEditor>
                                                         <ng-template pTemplate="input">
                                                             <input type="text" pKeyFilter="int" min="0" 
@@ -244,9 +238,6 @@
                                                             {{rowData.HorasNocturnas}}
                                                         </ng-template>
                                                     </p-cellEditor>
-                                                </td>
-                                                <td *ngIf="!rowData.ConfigurarHora">
-                                                    {{rowData.HorasNocturnas}}
                                                 </td>
                                             <td style="text-align:center" >
                                                 <img *ngIf="rowData.ConfigurarHora" style="cursor:pointer" src="./Content/images/icons/trashRed.svg"
@@ -269,7 +260,7 @@
                             <div class="col-md-11"></div>
                             <div class="col-md-1" style="margin-left: -20px;">
                                 <button type="button" class="btn btn-success botonesComprasColor botonModal"
-                                        (click)="agregarRow(false)">
+                                        (click)="agregarRow(false, false)">
                                     Agregar
                                 </button>
                             </div>
