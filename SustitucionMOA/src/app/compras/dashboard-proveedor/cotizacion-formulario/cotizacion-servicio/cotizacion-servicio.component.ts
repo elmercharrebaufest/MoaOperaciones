@@ -413,7 +413,7 @@ export class CotizacionServicioComponent extends ListBaseComponent implements On
             && x.HorasExtras == 0 && x.Categoria == "" && x.HorasNormales == 0);
 
         if(uocra){
-            var hora = this.peticion.Cotizacion.CotizacionesHoras
+            hora = this.peticion.Cotizacion.CotizacionesHoras
             .find(x => x.CantidadPersonas == 0 && x.HorasNocturnas == 0 && x.Gremio == "" &&
              (x.Fila == false || x.ConfigurarHora == true)
                 && x.HorasExtras == 0 && x.Categoria == "" && x.HorasNormales == 0);
@@ -485,8 +485,7 @@ export class CotizacionServicioComponent extends ListBaseComponent implements On
     validarDatosCotizacionHoras(e: MouseEvent, index) {
         var mostrarMensaje = this.peticion.Cotizacion.CotizacionesHoras
             .some(x => (
-                (x.Gremio == "UOCRA" || x.ConfigurarHora == true) && (x.CantidadPersonas > 0 ||
-                    x.HorasNocturnas > 0 || x.HorasExtras > 0 || x.HorasNormales > 0)) ||
+                (x.Gremio == "UOCRA" || x.ConfigurarHora == true)) ||
                 (x.Gremio != "UOCRA" && (x.CantidadPersonas > 0 ||
                     x.HorasNocturnas > 0 || x.HorasExtras > 0 || x.HorasNormales > 0)));
 
