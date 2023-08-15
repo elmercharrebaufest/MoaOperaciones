@@ -4014,7 +4014,7 @@ namespace SustitucionMOAUtils.Services
                     posiciones,
                     posicion.MonedaCodigo,
                     posicion.MonedaDescripcion,
-                    adjudicacion.MontoTotal.ToString("N2"),
+                    adjudicacion.PrecioFinal.ToString("N2"),
                     textos,
                     head
                     );
