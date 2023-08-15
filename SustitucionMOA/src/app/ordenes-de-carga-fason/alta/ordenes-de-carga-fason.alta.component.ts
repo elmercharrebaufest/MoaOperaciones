@@ -149,7 +149,10 @@ export class OrdenesDeCargaFasonAltaComponent
             return false;
         }
         /*VER ESTA VALIDACION, ACA VALIDA COMO SI FUERA UN CUIT PERO EN EL FRONT DICE QUE PONGA EL DNI/CUIL*/
-        if (this.ordenDeCargaFason.CUILChofer == undefined || this.ordenDeCargaFason.CUILChofer.toString().trim().length != 11) {
+        if (
+            this.ordenDeCargaFason.CUILChofer == undefined || this.ordenDeCargaFason.CUILChofer.toString().trim().length != 11
+            || this.mensajesOrdenDeCargaFason.CUILChofer
+        ) {
             this.mensajeComponent.setInfoMsg("Ingrese un CUIL de chofer válido.");
             return false;
         }
@@ -165,7 +168,9 @@ export class OrdenesDeCargaFasonAltaComponent
             this.mensajeComponent.setInfoMsg("Ingrese la razón social del transporte.");
             return false;
         }
-        if (this.ordenDeCargaFason.CUITTransporte == undefined || this.ordenDeCargaFason.CUITTransporte.toString().trim().length != 11) {
+        if (this.ordenDeCargaFason.CUITTransporte == undefined || this.ordenDeCargaFason.CUITTransporte.toString().trim().length != 11
+            || this.mensajesOrdenDeCargaFason.CUITTransporte
+        ) {
             this.mensajeComponent.setInfoMsg("Ingrese un CUIT de transporte válido.");
             return false;
         }
@@ -201,7 +206,14 @@ export class OrdenesDeCargaFasonAltaComponent
                 this.mensajeComponent.setInfoMsg(this.mensajeCuitDestino || "Debe ingresar un CUIT de destino para este producto.")
                 return false;
             }
-
+            if (!this.ordenDeCargaFason.PlantaCodigo) {
+                this.mensajeComponent.setInfoMsg(this.mensajeCuitDestino || "Debe seleccionar una plante para este tipo de material.")
+                return false;
+            }
+            if (!this.ordenDeCargaFason.DomicilioTipo || !this.ordenDeCargaFason.DomicilioDescr || !this.ordenDeCargaFason.DomicilioOrden) {
+                this.mensajeComponent.setInfoMsg(this.mensajeCuitDestino || "Debe seleccionar un domicilio para este tipo de material.")
+                return false;
+            }
         }
 
         return true;
@@ -822,5 +834,41 @@ export class OrdenesDeCargaFasonAltaComponent
                 }
             }
         );
+    }
+    validarCuitTransporte() {
+        const campo = "CUITTransporte";
+        const cuit = this.ordenDeCargaFason.CUITTransporte ? this.ordenDeCargaFason.CUITTransporte.toString() : "";
+        if (!this.revisarCUITFormatoValido(cuit))
+            return;
+        if (this.mensajesOrdenDeCargaFason[campo])
+            this.floatMsgService.setMsgsEmpty();
+        this.validando[campo] = true;
+        this.mensajesOrdenDeCargaFason[campo] = null;
+        this.service.validarCuitTransporte(cuit).subscribe(result => {
+            this.validando[campo] = false;
+            let data = this.manejarErroresApiResponse(result);
+            if (!data && data != null) {
+                this.mensajesOrdenDeCargaFason[campo] = "CUIT transporte inválido - Revisar valor ingresado";
+                this.floatMsgService.setInfoMsg("CUIT transporte inválido - Revisar valor ingresado");
+            }
+        });
+    }
+    validarCuilChofer() {
+        const campo = "CUILChofer";
+        const cuit = this.ordenDeCargaFason.CUILChofer ? this.ordenDeCargaFason.CUILChofer.toString() : "";
+        if (!this.revisarCUITFormatoValido(cuit))
+            return;
+        if (this.mensajesOrdenDeCargaFason[campo])
+            this.floatMsgService.setMsgsEmpty();
+        this.validando[campo] = true;
+        this.mensajesOrdenDeCargaFason[campo] = null;
+        this.service.validarCuilChofer(cuit).subscribe(result => {
+            this.validando[campo] = false;
+            let data = this.manejarErroresApiResponse(result);
+            if (!data && data != null) {
+                this.mensajesOrdenDeCargaFason[campo] = "CUIL Chofer inválido - Revisar valor ingresado";
+                this.floatMsgService.setInfoMsg("CUIL Chofer inválido - Revisar valor ingresado");
+            }
+        });
     }
 }

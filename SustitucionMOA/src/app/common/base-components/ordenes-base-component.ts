@@ -14,7 +14,6 @@ import { Domicilio } from "../models/ordenes-de-carga/domicilio";
 import { ValidarIntermediarioFleteResponse } from "../models/ordenes-de-carga/ValidarIntermediarioFleteResponse";
 import { ValidarCuitExisteScatoResponse } from "../models/ordenes-de-carga-common/ValidarCuitExisteScatoResponse";
 
-export type Ordenes = OrdenDeCarga | OrdenDeCargaFasonDto
 
 export abstract class OrdenesBaseService extends BaseService {
     abstract enviarMailGestionarAltaCuit(cuit: string, razonSocial: string, esIntermediarioFlete: boolean): Observable<ApiResponse<boolean>>
@@ -24,6 +23,8 @@ export abstract class OrdenesBaseService extends BaseService {
     abstract validarExisteCuitScato(cuit: string): Observable<ApiResponse<ValidarCuitExisteScatoResponse>>
     abstract validarSisaCuit(cuitDestinatario: string, cuitDestino: string, codigoMaterial: string): Observable<ApiResponse<boolean>>
     abstract validarCuitRuca(cuit: string): Observable<ApiResponse<boolean>>
+    abstract validarCuilChofer(cuil: string): Observable<ApiResponse<boolean>>;
+    abstract validarCuitTransporte(cuil: string): Observable<ApiResponse<boolean>>
 }
 export abstract class OrdenesBase {
     Reventa: boolean;
@@ -39,6 +40,9 @@ export abstract class OrdenesBase {
     CUITDestino?: string;
     CUITDestinatario?: string;
     Escalable: boolean;
+    CUITChofer: string;
+    CUILChofer: string;
+    CUITTransporte: string;
 }
 
 export interface IOrdenesBaseComponent {
@@ -59,10 +63,14 @@ export interface IOrdenesBaseComponent {
     template: ''
 })
 export class OrdenesBaseComponent extends BaseComponent {
-    mensajesOrdenDeCargaFason: Partial<Record<keyof Ordenes, string>> = {};
-    mensajesGestionCuit: Partial<Record<keyof Pick<Ordenes, 'CUITDestinatario' | 'CUITDestino' | 'CUITIntermediarioFlete'>, string>> = {};
-    validando: Partial<Record<keyof Ordenes, boolean>> = {};
-    displayModal: keyof Pick<Ordenes, 'CUITDestinatario' | 'CUITDestino' | 'CUITIntermediarioFlete'> | null;
+    mensajesOrdenDeCargaFason: Partial<Record<keyof OrdenesBase, string>> = {};
+    mensajesGestionCuit: Partial<Record<keyof Pick<OrdenesBase, 'CUITDestinatario' | 'CUITDestino' | 'CUITIntermediarioFlete'>, string>> = {};
+    validando: Partial<Record<keyof OrdenesBase, boolean>> = {};
+    displayModal: keyof Pick<OrdenesBase, 'CUITDestinatario' | 'CUITDestino' | 'CUITIntermediarioFlete'> | null;
+
+    descripcionIntermediarioFlete = "Llenar en caso que el transporte lo haga un tercero"
+    descripcionTransporte = "CUIT transportista MOA"
+    ttCopiarCuit = "Copiar CUIT del Cliente"
 
     revisarCUITFormatoValido(cuit: string): boolean {
         return !!(cuit && cuit.length == 11 && !Number.isNaN(cuit as unknown as number))
@@ -70,7 +78,6 @@ export class OrdenesBaseComponent extends BaseComponent {
 
     focusRazonSocialParaGestion = true;
     razonSocialParaGestion = "";
-    descripcionIntermediarioFlete = "Llenar en caso que el transporte lo haga un tercero"
 
     constructor(
         protected service: OrdenesBaseService,
