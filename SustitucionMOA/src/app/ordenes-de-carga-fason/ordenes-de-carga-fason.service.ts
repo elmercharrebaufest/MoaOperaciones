@@ -204,4 +204,24 @@ export class OrdenesDeCargaFasonService extends OrdenesBaseService {
       )
       .pipe(timeoutWith(360000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
   }
+  public validarCuilChofer(cuil: string): Observable<ApiResponse<boolean>> {
+    let params: HttpParams = new HttpParams()
+      .append("cuilChofer", cuil);
+
+    return this.http
+      .get<ApiResponse<boolean>>(
+        '/api/OrdenDeCargaFason/ValidarCuilChofer',
+        { params: params, headers: this.headers })
+      .pipe(timeoutWith(360000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
+  }
+  public validarCuitTransporte(cuil: string): Observable<ApiResponse<boolean>> {
+    let params: HttpParams = new HttpParams()
+      .append("cuitTransporte", cuil);
+
+    return this.http
+      .get<ApiResponse<boolean>>(
+        '/api/OrdenDeCargaFason/ValidarCuitTransporte',
+        { params: params, headers: this.headers })
+      .pipe(timeoutWith(360000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
+  }
 }

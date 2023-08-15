@@ -1,4 +1,5 @@
-﻿using SustitucionMOAModel.CustomExceptions;
+﻿using SustitucionMOAFotmatter;
+using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto.OrdenDeCarga;
 using SustitucionMOAModel.Enums.MoaWS.OrdenCargaWS;
 using SustitucionMOAUtils.Interfaces;
@@ -174,6 +175,46 @@ namespace SustitucionMOAUtils.Services
                 }
             }
             return response;
+        }
+        public (bool, ScatoRepo.Chofer) ValidarCuilChofer(string cuilChofer)
+        {
+            var choferRes = scatoRepositorioClient.ObtenerChoferPorCuil(DataFormatter.CuitConGuion(cuilChofer));
+            var chofer = choferRes.Data;
+            if (!choferRes.IsValid)
+            {
+                Log.Info("Error al obtener chofer de Scato " + cuilChofer);
+                foreach (var err in choferRes.Messages)
+                {
+                    Log.Info(string.Format("Error Scato código {0}, descripción: {1}", err.MessageCode, err.Message));
+                }
+
+                return (choferRes.Messages.All(msg => msg.MessageCode != ScatoRepo.CodigoMensajeObtenerChoferPorCuil.DigitoVerificadorNoValido), chofer);
+            }
+            return (true, chofer);
+        }
+        public (bool, ScatoRepo.Chofer) ValidarCuitTransporte(string cuitTransporte)
+        {
+            var transporteRes = scatoRepositorioClient.ObtenerTransportePorCuit(DataFormatter.CuitConGuion(cuitTransporte));
+            var transporte = transporteRes.Data;
+            if (!transporteRes.IsValid)
+            {
+                Log.Info("Error al obtener transporte de Scato " + cuitTransporte);
+                foreach (var err in transporteRes.Messages)
+                {
+                    Log.Info(string.Format("Error Scato código {0}, descripción: {1}", err.MessageCode, err.Message));
+                }
+
+                return (transporteRes.Messages.All(msg => msg.MessageCode != ScatoRepo.CodigoMensajeObtenerChoferPorCuil.DigitoVerificadorNoValido), transporte);
+            }
+            return (true, transporte);
+        }
+        public bool ValidarCuilChoferDigito(string cuilChofer)
+        {
+            return ValidarCuilChofer(cuilChofer).Item1;
+        }
+        public bool ValidarCuitTransporteDigito(string cuitTransporte)
+        {
+            return ValidarCuitTransporte(cuitTransporte).Item1;
         }
     }
 }

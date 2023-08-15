@@ -44,8 +44,6 @@ namespace SustitucionMOAUtils.Interfaces
         ValidarSisaCorredorClienteResponse ValidarSisaCorredorCliente(string corredorCodigo, string clienteCodigo);
         bool ValidarSisaCuit(string cuit, string campo);
         (bool, Chofer) ValidarCuilChofer(string cuilChofer);
-        bool ValidarCuilChoferDigito(string cuilChofer);
-        bool ValidarCuitTransporteDigito(string cuitTransporte);
         Resultado SeleccionarFactura(int ordenId, string numeroFacturaSeleccionada, string mailUsuario);
         void VerificarCompensacion(int ordenId);
     }

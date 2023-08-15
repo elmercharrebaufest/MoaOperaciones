@@ -30,7 +30,6 @@ export class OrdenDeCargaFasonDto extends OrdenesBase {
     public NombreChofer: string;
     public CUILChofer: string;
     public RazonSocialTransporte: string;
-    public CUITTransporte: string;
     public CantidadDeViajes: number;
     public Destino: DestinoFason;
     public TransporteExiste: boolean;
