@@ -2538,7 +2538,7 @@ namespace SustitucionMOAUtils.Services
             {
                 var numeroContrato = string.IsNullOrEmpty(orden.ContratoSAP) ? orden.ContratoIngresado : orden.ContratoSAP;
                 Log.Info($"Validar kg pedido orden: {orden.ToJson()}");
-                var contratoSAP = consumer.ObtenerContratoSAP(numeroContrato, null);
+                var contratoSAP = ordenCargaConsumer.ObtenerContratoSAP(numeroContrato, null);
                 Log.Info($"Validar kg pedido contrato: {contratoSAP.ToJson()}");
 
                 if (contratoSAP == null)
