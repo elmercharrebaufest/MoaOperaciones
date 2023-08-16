@@ -294,7 +294,7 @@ namespace SustitucionMOAWS.WSConsumers
                 });
                 solpPedidoSAP.IM_POCONDXList.Add(new ZMPES6880
                 {
-                    ITM_NUMBER = "X",
+                    ITM_NUMBER = preqItem,
                     COND_TYPE = "X",
                     COND_VALUE = "X",
                     CURRENCY = "X",
