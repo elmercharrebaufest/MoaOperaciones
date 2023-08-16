@@ -5252,7 +5252,7 @@ namespace SustitucionMOAUtils.Services
                         //    Cantidad = registroInfo.Where(registro => registro.PosicionId == x.Id).FirstOrDefault().CantidadAdjudicacion,
                         //    CotizacionPosicion_Id = cotizacionNueva.CotizacionPosiciones.Where(cotPos => cotPos.Id == x.Id).Select(pos => pos.Id).FirstOrDefault()
                         //}).ToList(),
-                        TextoDeCabecera = "Oden de compra generarda a partir de los registros info: " + string.Join(", ", registroInfo.Select(a => a.Id)),
+                        TextoDeCabecera = "Orden de compra generada a partir de los registros info: " + string.Join(", ", registroInfo.Select(a => a.Id)),
                         CondicionesDePago = "",
                         CondicionesDeEntrega = "",
                         Garantias = "",
