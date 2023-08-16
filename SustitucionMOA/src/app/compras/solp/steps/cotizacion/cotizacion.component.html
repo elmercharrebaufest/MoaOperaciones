@@ -138,7 +138,7 @@
                         </div>  
                         <div class="col-xs-12 col-sm-12 col-md-12 margenInput" style="margin-top: 1em;">
                             <p-checkbox [ngModelOptions]="{standalone:true}" name="adicional" [(ngModel)]="model.adicional" label="Adicional / Mano de obra administrada / Ajuste" formControlName="adicional"
-                            binary="true" (click)="validacionTrabajoHecho();" [disabled]="validarCondiciones('adicional')"></p-checkbox>
+                            binary="true" (click)="validacionTrabajoHecho(); limpiarCheckAdicional()" [disabled]="validarCondiciones('adicional')"></p-checkbox>
                         </div>
                         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" *ngIf="model.adicional">
                             <div class="col-xs-12 col-sm-10" style="font-size: 14px;">
@@ -154,7 +154,7 @@
                                     placeholder="Nro de orden de compra"
                                     formControlName="ordenDeCompra"
                                     maxlength="10" 
-                                    (ngModelChange)="limpiarCheckAdicional();">
+                                    (ngModelChange)="validacionTrabajoHecho();">
                             </div>
                             <div class="col-xs-12 col-sm-10 col-md-4" *ngIf="ordenDeCompraSap != null && ordenDeCompraSap.Error == null && model.ordenDeCompra != ''">
                                 <label for="ordenDeCompra"><strong>Razon social: {{ordenDeCompraSap?.Cabecera?.RazonSocialProveedor}}</strong></label>
