@@ -405,7 +405,7 @@ namespace SustitucionMOAWS.WSConsumers
                 });
                 modificarPedidoSAP.POCONDX.Add(new BAPIMEPOCONDX
                 {
-                    ITM_NUMBER = "X",
+                    ITM_NUMBER = poItem,
                     COND_TYPE = "X",
                     COND_VALUE = "X",
                     CURRENCY = "X",
