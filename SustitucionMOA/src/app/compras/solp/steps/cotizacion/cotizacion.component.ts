@@ -128,6 +128,8 @@ export class CotizacionComponent extends ListBaseComponent {
 
         if(this.model.ordenDeCompra){
             this.obtenerOrdenDeCompra();
+        } else {
+            this.model.ordenDeCompra = "";
         }
 
         if(this.model.nroSolp ){
@@ -321,11 +323,12 @@ export class CotizacionComponent extends ListBaseComponent {
     }
 
     limpiarCheckAdicional(){
-        if(!this.estaFinalizada && this.model.ordenDeCompra == ""){
+        if(!this.estaFinalizada && this.model.ordenDeCompra != ""){
             this.model.ordenDeCompra = "";
             this.ordenDeCompraSap.Cabecera.RazonSocialProveedor = "";
             this.ordenDeCompraSap.Cabecera.CodigoProveedor = "";
             this.ordenDeCompraSap.Cabecera.OrdenDeCompra = "";
+            this.model.proveedorAsignado = "";
         }
     }
 
