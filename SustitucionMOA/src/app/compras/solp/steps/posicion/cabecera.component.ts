@@ -917,6 +917,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
     //Funciones de la tabla
     onSelectServicio(posicion: SolpPosicion, dt) {
         posicion.tareaSubcontratar = posicion.codigoServicio.Descripcion;
+        posicion.textoSuministro = posicion.codigoServicio.Descripcion;
         posicion.tareaSubcontratarObj = { ...posicion.codigoServicio };
         this.autocompletarCamposMaterial(posicion);
 
@@ -927,6 +928,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
 
     onSelectTarea(posicion: SolpPosicion, dt) {
         posicion.tareaSubcontratar = posicion.tareaSubcontratarObj.Descripcion;
+        posicion.textoSuministro = posicion.tareaSubcontratarObj.Descripcion;
         posicion.codigoServicio = { ...posicion.tareaSubcontratarObj };
         
         this.autocompletarCamposMaterial(posicion);
