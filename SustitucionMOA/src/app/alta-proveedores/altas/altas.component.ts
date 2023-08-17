@@ -16,10 +16,9 @@ import { RelacionConEmpleados } from '../../common/models//RelacionConEmpleados'
 import { RelacionConFuncionarios } from '../../common/models/relacionConFuncionarios';
 import { formatDate } from '@angular/common';
 import * as XLSX from 'xlsx';
-import { forEach } from '@angular/router/src/utils/collection';
-import { Key } from 'selenium-webdriver';
-import { element } from '@angular/core/src/render3';
+import { FiltroFechaComponent } from '../../common/view-child/filtro-fecha/filtro-fecha.component';
 import { SelectItem } from 'primeng/api';
+import { BehaviorSubject } from 'rxjs';
 declare var $: any;
 
 
@@ -46,10 +45,14 @@ export class AltasComponent extends BaseComponent implements OnInit {
     @ViewChild("spinnerModal")
     protected spinnerModal: SpinnerSmallComponent;
 
+    @ViewChild(FiltroFechaComponent)
+    protected filtroFechaComponent: FiltroFechaComponent;
+
     constructor(protected altaEmpresaService: AltaEmpresaService, protected service: EmpresaGranosService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securytiService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService) {
         super(navService, securytiService, floatMsgService, modalService);
         this.mensajeComponent = new MensajeComponent();
         this.spinnerComponent = new SpinnerComponent();
+        this.filtroFechaComponent = new FiltroFechaComponent();
     }
 
     data: any;
@@ -88,7 +91,9 @@ export class AltasComponent extends BaseComponent implements OnInit {
     contieneDocumentacionFisica: number = 0;
     puedeAltaInterna: boolean = this.isAuthorized('ALTA INTERNA GRANOS');
     puedeAltaInternaNoGranos: boolean = this.isAuthorized('ALTA INTERNA NO GRANOS');
+
     ngOnInit(): void {
+        this.setEstadosDefault();
         this.getEstados();
         this.navService.setSeccionList([]);
         $('[data-toggle="tooltip"]').tooltip();
@@ -98,37 +103,48 @@ export class AltasComponent extends BaseComponent implements OnInit {
         this.navService.navegarSeccion('/proveedor-detalle');
         return false;
     }
+
+    setEstadosDefault() {
+        const estadosDefault: BehaviorSubject<Array<string>> = new BehaviorSubject<Array<string>>([
+            "Alta solicitada",
+            "Analisis de Nosis",
+            "Etapa Final"
+        ]);
+        this.estadosSelected = estadosDefault.value;
+    }
+
     getEmpresa() {
         this.mensajeComponent.setMsgsEmpty();
         this.spinnerComponent.showIt();
         this.data = null;
         try {
             this.unsubscribe();
-            this.subscription = this.altaEmpresaService.getEmpresas(this.idTipoProveedor).subscribe(
-                (result:any) => {
-                    this.spinnerComponent.hideIt();
-                    if (result.logout == true) {
-                        this.sessionDataService.logout();
-                    } else if (result.error != undefined && result.error != "") {
-                        this.mensajeComponent.setErrorMsg(result.error);
-                    } else if (result.info != undefined) {
-                        this.mensajeComponent.setInfoMsg(result.info);
-                    } else {
-                        this.data = result.data;
-                        this.datosAux = this.data;
-                        this.filtrarListadoAlta();
-                        setTimeout(function () {
-                            $('[data-toggle="popover"]').popover({ trigger: 'focus', delay: { "hide": 3000 } });
+            this.subscription = this.altaEmpresaService.getEmpresas(this.idTipoProveedor,
+                this.filtroFechaComponent.fecha_inicio, this.filtroFechaComponent.fecha_fin).subscribe(
+                    (result: any) => {
+                        this.spinnerComponent.hideIt();
+                        if (result.logout == true) {
+                            this.sessionDataService.logout();
+                        } else if (result.error != undefined && result.error != "") {
+                            this.mensajeComponent.setErrorMsg(result.error);
+                        } else if (result.info != undefined) {
+                            this.mensajeComponent.setInfoMsg(result.info);
+                        } else {
+                            this.data = result.data;
+                            this.datosAux = this.data;
+                            this.filtrarListadoAlta();
 
-                        }, 100);
+                            setTimeout(function () {
+                                $('[data-toggle="popover"]').popover({ trigger: 'focus', delay: { "hide": 3000 } });
+
+                            }, 100);
+                        }
+                    },
+                    error => {
+                        this.spinnerComponent.hideIt();
+                        this.mensajeComponent.setErrorMsg(error.message);
                     }
-                },
-                error => {
-                    this.spinnerComponent.hideIt();
-                    this.mensajeComponent.setErrorMsg(error.message);
-                }
-
-            );
+                );
         } catch (e) {
             this.spinnerComponent.hideIt();
             this.mensajeComponent.setErrorMsg(e);
@@ -140,7 +156,7 @@ export class AltasComponent extends BaseComponent implements OnInit {
     getTipoCambiario() {
         try {
             this.subscriptionDropDowns = this.service.getTipoCambiario().subscribe(
-                (result:any) => {
+                (result: any) => {
                     if (result.logout == true) {
                         this.sessionDataService.logout();
                     } else if (result.error != undefined && result.error != "") {
@@ -167,34 +183,35 @@ export class AltasComponent extends BaseComponent implements OnInit {
         this.data = null;
         try {
             this.unsubscribe();
-            this.subscription = this.altaEmpresaService.getEstados().subscribe(
-                (result:any) => {
-                    this.spinnerComponent.hideIt();
-                    if (result.logout == true) {
-                        this.sessionDataService.logout();
-                    } else if (result.error != undefined && result.error != "") {
-                        this.mensajeComponent.setErrorMsg(result.error);
-                    } else if (result.info != undefined) {
-                        this.mensajeComponent.setInfoMsg(result.info);
-                    } else {
-                        let estadosIntermedios = result.intermedios;
-                        let estadosFinales = result.finales;
-                        let estadosAgrupados = [{ Key: estadosIntermedios.map(x => x.Key).join("|"), Value: 'Altas en gestión' }, { Key: estadosFinales.map(x => x.Key).join("|"), Value: 'Altas finalizadas' }]
-                        this.estados = estadosIntermedios.concat(estadosFinales).concat(estadosAgrupados);
-                        this.descripcionEstadoAlta = [];
-                        this.estados.forEach(x => this.descripcionEstadoAlta.push({
-                            label: x.Value, value: x.Key
-                        }));
-                     
-                        this.getEmpresa();
+            this.subscription =
+                this.altaEmpresaService.getEstados().subscribe(
+                    (result: any) => {
+                        this.spinnerComponent.hideIt();
+                        if (result.logout == true) {
+                            this.sessionDataService.logout();
+                        } else if (result.error != undefined && result.error != "") {
+                            this.mensajeComponent.setErrorMsg(result.error);
+                        } else if (result.info != undefined) {
+                            this.mensajeComponent.setInfoMsg(result.info);
+                        } else {
+                            let estadosIntermedios = result.intermedios;
+                            let estadosFinales = result.finales;
+                            let estadosAgrupados = [{ Key: estadosIntermedios.map(x => x.Key).join("|"), Value: 'Altas en gestión' }, { Key: estadosFinales.map(x => x.Key).join("|"), Value: 'Altas finalizadas' }]
+                            this.estados = estadosIntermedios.concat(estadosFinales).concat(estadosAgrupados);
+                            this.descripcionEstadoAlta = [];
+                            this.estados.forEach(x =>
+                                this.descripcionEstadoAlta.push({
+                                    label: x.Value, value: x.Key
+                                }));
+                           this.getEmpresa();
+                        }
+                    },
+                    error => {
+                        this.spinnerComponent.hideIt();
+                        this.mensajeComponent.setErrorMsg(error.message);
                     }
-                },
-                error => {
-                    this.spinnerComponent.hideIt();
-                    this.mensajeComponent.setErrorMsg(error.message);
-                }
 
-            );
+                );
         } catch (e) {
             this.spinnerComponent.hideIt();
             this.mensajeComponent.setErrorMsg(e);
@@ -220,16 +237,16 @@ export class AltasComponent extends BaseComponent implements OnInit {
     }
     filtrarListadoAlta() {
         this.data = this.datosAux;
-
         if (this.estadosSelected.length < 1 || this.estadosSelected == null) {
         } else {
             this.data = this.datosAux.filter(x => this.estadosSelected.indexOf(x.EstadoAprobacionDescripcion) >= 0);
         }
     }
+
     guardarSIPER() {
         this.spinnerModal.showIt();
         this.subscription = this.altaEmpresaService.GuardarSIPER(this.empresaSeleccionada.Id, this.empresaSeleccionada.EstadoSIPER).subscribe(
-            (result:any) => {
+            (result: any) => {
                 this.spinnerModal.hideIt();
                 if (result.logout == true) {
                     this.sessionDataService.logout();
@@ -287,8 +304,7 @@ export class AltasComponent extends BaseComponent implements OnInit {
         }
 
 
-        if (this.empresaSeleccionada.IdTipoUsuario == 5)
-        {
+        if (this.empresaSeleccionada.IdTipoUsuario == 5) {
             if (this.razonSocial == "") {
                 this.mensajeError = "Debe ingresar la razón social del cliente.";
                 return false;
@@ -308,7 +324,7 @@ export class AltasComponent extends BaseComponent implements OnInit {
         this.mensajeComponent.setMsgsEmpty();
         try {
             this.altaEmpresaService.setEstadoAprobacion(this.empresaSeleccionada.Id, estadoId, this.observaciones, this.observacionesProveedor, this.empresaSeleccionada.EstadoSIPER, this.razonSocial, this.codigoCliente).subscribe(
-                (result:any) => {
+                (result: any) => {
                     this.getEmpresa();
                     this.spinnerModal.hideIt();
                     if (result.logout == true) {
@@ -345,7 +361,7 @@ export class AltasComponent extends BaseComponent implements OnInit {
         this.mensajeComponent.setMsgsEmpty();
         try {
             this.altaEmpresaService.agregarObservacion(this.empresaSeleccionada.Id, this.observaciones).subscribe(
-                (result:any) => {
+                (result: any) => {
                     this.getEmpresa();
                     this.spinnerModal.hideIt();
                     if (result.logout == true) {
@@ -377,11 +393,10 @@ export class AltasComponent extends BaseComponent implements OnInit {
         return false; //<-- Prevent Refresh
     }
 
-
     solicitarInformacion() {
         try {
             this.altaEmpresaService.solicitarInformacion(this.empresaSeleccionada.Id).subscribe(
-                (result:any) => {
+                (result: any) => {
                     this.getEmpresa();
                     this.spinnerModal.hideIt();
                     if (result.logout == true) {
@@ -414,7 +429,7 @@ export class AltasComponent extends BaseComponent implements OnInit {
         this.mensajeComponent.setMsgsEmpty();
         try {
             this.altaEmpresaService.VerificarEstadoDataAgro(empresa.Id).subscribe(
-                (result:any) => {
+                (result: any) => {
                     this.getEmpresa();
                     this.spinnerComponent.hideIt();
                     if (result.logout == true) {
@@ -441,7 +456,6 @@ export class AltasComponent extends BaseComponent implements OnInit {
 
         return false; //<-- Prevent Refresh
     }
-
 
     abrirEditar(proveedorId: number) {
         this.pantallaEditarAlta = true;
@@ -506,7 +520,7 @@ export class AltasComponent extends BaseComponent implements OnInit {
         if (this.validarNoGranosOperando()) return
         this.subscription = this.altaEmpresaService
             .proveedorNoGranosOperando(this.empresaSeleccionada.Id, this.empresaSeleccionada.RazonSocial).subscribe(
-                (result:any) => {
+                (result: any) => {
                     if (result.logout == true) {
                         this.sessionDataService.logout();
                     } else if (result.error != undefined && result.error != "") {
@@ -541,7 +555,7 @@ export class AltasComponent extends BaseComponent implements OnInit {
 
     obtenerArchivosSubidos(mail: string, proveedorId: number) {
         this.subscription = this.service.obtenerArchivosSubidos(mail, proveedorId).subscribe(
-            (result:any) => {
+            (result: any) => {
                 this.listaArchivos = new Array();
 
                 result.forEach(element => {
@@ -616,23 +630,13 @@ export class AltasComponent extends BaseComponent implements OnInit {
             )
     }
 
-    onOptionsSelected() {
-        // Esto ahora lo filtramos con un pipe
-        // if (this.selectedEstado != "") {
-        //     this.dataFiltered = this.data.filter(t => t.EstadoAprobacionDescripcion == this.selectedEstado);
-        // } else {
-        //     this.dataFiltered = this.data;
-        // }
-
-    }
-
-    trackListadoAlta(index: number, empresa: any){
+    trackListadoAlta(index: number, empresa: any) {
         return empresa
     }
 
     cargarSolicitudUsuario(mail: string, proveedorId: number) {
         this.subscription = this.service.cargarSolicitudUsuario(mail, proveedorId).subscribe(
-            (result:any) => {
+            (result: any) => {
                 if (result.VinculoConEmpleadosDeMolinos != null) {
                     if (result.VinculoConEmpleadosDeMolinos) {
                         this.relacionConEmpleados = "Si";
@@ -656,9 +660,11 @@ export class AltasComponent extends BaseComponent implements OnInit {
             }
         );
     }
+
     isVisibleTablaFuncionarios(): boolean {
         return this.relacionConFuncionarios == "Si";
     }
+
     isVisibleTablaEmpleados(): boolean {
         return this.relacionConEmpleados == "Si";
     }
@@ -692,6 +698,7 @@ export class AltasComponent extends BaseComponent implements OnInit {
                 }
             );
     }
+
     copiar(str, id) {
         console.log(str, id);
         const el = document.createElement('textarea');
@@ -721,7 +728,7 @@ export class AltasComponent extends BaseComponent implements OnInit {
     getRubrosOptions() {
         try {
             this.subscriptionDropDowns = this.service.getRubros().subscribe(
-                (result:any) => {
+                (result: any) => {
                     if (result.logout == true) {
                         this.sessionDataService.logout();
                     } else if (result.error != undefined && result.error != "") {
@@ -773,7 +780,7 @@ export class AltasComponent extends BaseComponent implements OnInit {
                 this.empresaSeleccionada.AltaInterna ? this.empresaSeleccionada.AltaInterna : false,
                 this.empresaSeleccionada.SiperObligatorio ? this.empresaSeleccionada.SiperObligatorio : false
             ).subscribe(
-                (result:any) => {
+                (result: any) => {
                     this.spinnerComponent.hideIt();
                     if (result.logout == true) {
                         this.sessionDataService.logout();
@@ -860,35 +867,33 @@ export class AltasComponent extends BaseComponent implements OnInit {
             );
     }
 
-    grabarAltaInternaGranos(){
+    grabarAltaInternaGranos() {
         this.mensajeModalComponent.setMsgsEmpty();
-            this.subscription = this.altaEmpresaService.grabarAltaInternaGranos(this.cuit, this.mailVendedor).subscribe(
-                (result:any) => {
-                    if (result.logout == true) {
-                        this.sessionDataService.logout();
-                    } else if (result.error != undefined && result.error != "") {
-                        this.mensajeModalComponent.setErrorMsg(result.error);
-                    } else if (result.info != undefined) {
-                        this.mensajeModalComponent.setInfoMsg(result.info);
-                    }
-                    else {
-                        this.mensajeModalComponent.setSuccessMsg(result.info);
-                        this.getEmpresa();
-                        document.getElementById("hidemyModalAltaInterna").click();
-                    }
-                },
-                error => {
+        this.subscription = this.altaEmpresaService.grabarAltaInternaGranos(this.cuit, this.mailVendedor).subscribe(
+            (result: any) => {
+                if (result.logout == true) {
+                    this.sessionDataService.logout();
+                } else if (result.error != undefined && result.error != "") {
+                    this.mensajeModalComponent.setErrorMsg(result.error);
+                } else if (result.info != undefined) {
+                    this.mensajeModalComponent.setInfoMsg(result.info);
                 }
-            );
-      }
-
+                else {
+                    this.mensajeModalComponent.setSuccessMsg(result.info);
+                    this.getEmpresa();
+                    document.getElementById("hidemyModalAltaInterna").click();
+                }
+            },
+            error => {
+            }
+        );
+    }
 
     cambiarFiltroTipoProveedor(tipoProveedor: number) {
         this.idTipoProveedor = tipoProveedor;
 
         this.getEstados();
     }
-
 
     //exportacion a Excel
     exportExcel() {
@@ -907,7 +912,7 @@ export class AltasComponent extends BaseComponent implements OnInit {
                 "Estado Siper": info.EstadoSIPER,
                 "Ultima Edición": info.UltimaEdicion != undefined ? formatDate(info.UltimaEdicion.slice(6, -2), "dd/MM/yyyy", "en-EN") : "",
                 "Fecha Solicitud": info.FechaSolicitud != undefined ? formatDate(info.FechaSolicitud.slice(6, -2), "dd/MM/yyyy", "en-EN") : "",
-                "Fecha alta aceptada": info.FechaAltaAceptada != undefined ?  formatDate(info.FechaAltaAceptada.slice(6, -2), "dd/MM/yyyy", "en-EN") : "",
+                "Fecha alta aceptada": info.FechaAltaAceptada != undefined ? formatDate(info.FechaAltaAceptada.slice(6, -2), "dd/MM/yyyy", "en-EN") : "",
                 "Estado": info.EstadoAprobacionDescripcion,
                 "Presento documentación física": (info.ContieneDocumentacionFisica || false) ? "Si" : "No"
             }
@@ -947,7 +952,7 @@ export class AltasComponent extends BaseComponent implements OnInit {
             this.service.registrarDocumentacionFisica(this.empresaSeleccionada.Id,
                 this.empresaSeleccionada.ContieneDocumentacionFisica
             ).subscribe(
-                (result:any) => {
+                (result: any) => {
                     this.spinnerComponent.hideIt();
                     if (result.logout == true) {
                         this.sessionDataService.logout();
@@ -971,7 +976,5 @@ export class AltasComponent extends BaseComponent implements OnInit {
             this.mensajeComponent.setErrorMsg(e);
 
         }
-
     }
-
 }
