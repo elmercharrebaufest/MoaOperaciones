@@ -4993,7 +4993,7 @@ namespace SustitucionMOAUtils.Services
                 {
                     adjudicacion.NumeroOrdenDeCompra = respuestaGuardarSOLP.NumeroPedido;
                     repositorio.GuardarCambios();
-                    EnviarMailOrdenCompra(adjudicacion, mensaje);
+                    //EnviarMailOrdenCompra(adjudicacion, mensaje);
                 }
 
                 return respuestaGuardarSOLP;
