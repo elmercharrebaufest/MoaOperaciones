@@ -49,7 +49,7 @@
 
                             <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
                                 <div class="form-group styled-select">
-                                    <p-calendar [ngModelOptions]="{standalone:true}" name="campo4" [(ngModel)]="model.fechaEntrega" [locale]="locale" [style]="{'width': '75%'}" [showIcon]="true" dateFormat="dd-M-yy" appendTo="body" [readonlyInput]="true" [minDate]="hoy"></p-calendar>
+                                    <p-calendar [ngModelOptions]="{standalone:true}" name="campo4" [(ngModel)]="model.fechaEntrega" [locale]="locale" [style]="{'width': '75%'}" [showIcon]="true" dateFormat="dd-M-yy" appendTo="body" [readonlyInput]="true" [minDate]="hoy" [monthNavigator]="true" [yearNavigator]="true" yearRange="2000:2030"></p-calendar>
                                 </div>
                             </div>
 
