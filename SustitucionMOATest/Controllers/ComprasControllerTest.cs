@@ -4,6 +4,7 @@ using NUnit.Framework;
 using SustitucionMOA.Controllers;
 using SustitucionMOA.Utils;
 using SustitucionMOAModel.Dto;
+using SustitucionMOAModel.Enums;
 using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Interfaces;
 using System;
@@ -24,8 +25,6 @@ namespace SustitucionMOATest.Controllers
         private Mock<IComprasService> comprasServiceMock;
         private Mock<IUsuarioService> usuarioServiceMock;
         private Mock<IRepositorio> repositorioMock;
-        private string expectedJson;
-        private string resultJson;
         private string mailUsuario = "mail@mail.com";
         private JavaScriptSerializer serializer;
 
@@ -62,7 +61,7 @@ namespace SustitucionMOATest.Controllers
         //    comprasServiceMock.Setup(s => s.GrabarCotizacion(expected, null, true, 1)).Returns(new RespuestaGuardarSOLP());
         //    Mock<ControllerContext> cc = new Mock<ControllerContext>();
         //    System.Text.UTF8Encoding enc = new System.Text.UTF8Encoding();
- 
+
         //   // string filePath = Path.GetFileName("/20362736251/15560/constanciaCUIT/AFIP - Administración Federal de Ingresos Públicos.pdf");
         //    FileStream fileStream = new FileStream(filePath, FileMode.Open);
         //    Mock<HttpPostedFileBase> file1 = new Mock<HttpPostedFileBase>();
@@ -79,6 +78,56 @@ namespace SustitucionMOATest.Controllers
         //    Assert.AreEqual(1, 1);
         //    Assert.IsNotNull(result);
         //    Assert.AreEqual(JsonRequestBehavior.AllowGet, result.JsonRequestBehavior);
+        //}
+
+        [Test]
+        public void ObtenerServiciosSapTest()
+        {
+            var tablaSapDtoList = new List<TablaSapDto>
+            {
+                new TablaSapDto { Id = 1, Tabla = "Tabla1", Codigo = "3213213123", CodigoSap = "3213213123", Descripcion = "Tornillo 3/4", IdPadre = 2 },
+                new TablaSapDto { Id = 2, Tabla = "Tabla2", Codigo = "3213213", CodigoSap = "3213213", Descripcion = "Balde", IdPadre = 2},
+            };
+
+            comprasServiceMock.Setup(servicio => servicio.ObtenerServiciosSap()).Returns(tablaSapDtoList);
+
+            // Act
+            var result = target.ObtenerServiciosSap();
+
+            // Assert
+            Assert.NotNull(result);
+            var data = (dynamic)((JsonResult)result).Data;
+            var propiedad = data.GetType().GetProperties()[0];
+            var valor = (List<TablaSapDto>)propiedad.GetValue(data);
+            Assert.AreEqual(valor.Count, 2);
+            Assert.AreEqual(tablaSapDtoList.Count, valor.Count);
+        }
+
+        //[Test]
+        //public void AutocompleteTablaSapTest()
+        //{
+        //    var tabla = "Tabla1";
+        //    var valor = "valorBuscado";
+
+        //    var tablaSapDtoList = new List<TablaSapDto>
+        //    {
+        //        new TablaSapDto { Id = 1, Tabla = "Tabla1", Codigo = "3213213123", CodigoSap = "3213213123", Descripcion = "Tornillo 3/4", IdPadre = 2 },
+        //        new TablaSapDto { Id = 2, Tabla = "Tabla2", Codigo = "3213213", CodigoSap = "3213213", Descripcion = "Balde", IdPadre = 2},
+        //    };
+
+        //    comprasServiceMock.Setup(servicio => servicio.AutocompleteTablaSap(tabla, valor)).Returns(tablaSapDtoList);
+
+        //    // Act
+        //    var result = target.AutocompleteTablaSap(tabla, valor) as JsonResult;
+
+
+        //    // Assert
+        //    Assert.NotNull(result);
+        //    var data = (dynamic)((JsonResult)result).Data;
+        //    var propiedad = data.GetType().GetProperties()[0];
+        //    var valor1 = (List<TablaSapDto>)propiedad.GetValue(data);
+        //    Assert.AreEqual(valor1.Count, 2);
+        //    Assert.AreEqual(tablaSapDtoList.Count, valor1.Count);
         //}
 
         [Test()]
@@ -127,6 +176,142 @@ namespace SustitucionMOATest.Controllers
             var propiedad = data.GetType().GetProperties()[0];
             var valor = (List<AdjudicacionDto>)propiedad.GetValue(data);
             Assert.AreEqual(valor.Count, 1);
+        }
+
+        [Test]
+        public void ObtenerOrdenDeCompraTest()
+        {
+            // Arrange
+            var expected = new OrdenDeCompraSAPDto
+            {
+                Cabecera = new OrdenDeCompraSAPCabecera
+                {
+                    OrdenDeCompra = "OC123",
+                    CodigoProveedor = "PROV456",
+                    RazonSocialProveedor = "Proveedor Example",
+                    CUITProveedor = "123456789",
+                    Moneda = "USD",
+                    MontoTotal = 1000.0m,
+                    CreadoPor = "Usuario",
+                    ClaseDocumento = "ClaseDoc",
+                    Tipo = "TipoExample",
+                    FechaCreacion = DateTime.Now,
+                    TipoDocCompras = "TipoDocCompras",
+                    Usuario_Id = 1
+                },
+                // Posiciones = () 
+                // Error = ()
+            };
+
+            string nroOC = "yourTestNroOC";
+            comprasServiceMock.Setup(s => s.ObtenerOrdenDeCompra(It.IsAny<string>())).Returns(expected);
+
+            // Act
+            var result = target.ObtenerOrdenDeCompra(nroOC);
+
+            // Assert
+            Assert.IsTrue(result is JsonResult);
+            var data = (dynamic)((JsonResult)result).Data;
+            var propiedad = data.GetType().GetProperties()[0];
+            var valor = (OrdenDeCompraSAPDto)propiedad.GetValue(data);
+            OrdenDeCompraSAPDto actual = valor;
+
+            Assert.AreEqual(expected.Cabecera.OrdenDeCompra, actual.Cabecera.OrdenDeCompra);
+            Assert.AreEqual(expected.Cabecera.CodigoProveedor, actual.Cabecera.CodigoProveedor);
+            Assert.AreEqual(expected.Cabecera.RazonSocialProveedor, actual.Cabecera.RazonSocialProveedor);
+            Assert.AreEqual(expected.Cabecera.CUITProveedor, actual.Cabecera.CUITProveedor);
+            Assert.AreEqual(expected.Cabecera.Moneda, actual.Cabecera.Moneda);
+            Assert.AreEqual(expected.Cabecera.MontoTotal, actual.Cabecera.MontoTotal);
+            Assert.AreEqual(expected.Cabecera.CreadoPor, actual.Cabecera.CreadoPor);
+            Assert.AreEqual(expected.Cabecera.ClaseDocumento, actual.Cabecera.ClaseDocumento);
+            Assert.AreEqual(expected.Cabecera.Tipo, actual.Cabecera.Tipo);
+            Assert.AreEqual(expected.Cabecera.FechaCreacion, actual.Cabecera.FechaCreacion);
+            Assert.AreEqual(expected.Cabecera.TipoDocCompras, actual.Cabecera.TipoDocCompras);
+            Assert.AreEqual(expected.Cabecera.Usuario_Id, actual.Cabecera.Usuario_Id);
+            Assert.AreEqual(null, actual.Error);
+
+            comprasServiceMock.Verify(s => s.ObtenerOrdenDeCompra(nroOC), Times.Once);
+        }
+
+        [Test]
+        public void ListarProveedoresTest()
+        {
+            var filtro = "filtroBuscado";
+
+            var proveedorDtoList = new List<ProveedorDto>
+            {
+                new ProveedorDto
+                {
+                    Id = 1,
+                    CUIT = "11111111",
+                    RazonSocial = "Proveedor 1",
+                    CodigoProveedor = "COD1",
+                    Mail = "proveedor1@example.com",
+                    EstadoAprobacion = EstadoAprobacion.Aprobado,
+                    Observaciones = "Observación proveedor 1",
+                    IdDataAgro = 101,
+                    IdComercialDataAgro = 201,
+                    EstadoAprobacionDescripcion = "Aprobado",
+                    HistorialAprobaciones = new List<ProveedorHistorialAprobacionDto>
+                    {
+                        new ProveedorHistorialAprobacionDto { Fecha = DateTime.Now.AddMonths(-1) },
+                        new ProveedorHistorialAprobacionDto { Fecha = DateTime.Now.AddMonths(-2) }
+                    },
+                    Comercial = "Comercial 1",
+                    SISAEstadoCuit = "Activo",
+                    EstadoSIPER = "Activo en SIPER",
+                    UltimaEdicion = DateTime.Now.AddDays(-10),
+                    FechaSolicitud = DateTime.Now.AddMonths(-3),
+                    RazonSocialCorredor = "Razón social corredor 1",
+                    IdTipoUsuario = 101,
+                    IdTipoProveedor = 201,
+                    IngresoAPlanta = true,
+                    AltaInterna = false,
+                    ContieneDocumentacionFisica = true
+                },
+                new ProveedorDto
+                {
+                    Id = 2,
+                    CUIT = "22222222",
+                    RazonSocial = "Proveedor 2",
+                    CodigoProveedor = "COD2",
+                    Mail = "proveedor2@example.com",
+                    EstadoAprobacion = EstadoAprobacion.Aprobado,
+                    Observaciones = "Observación proveedor 2",
+                    IdDataAgro = 102,
+                    IdComercialDataAgro = 202,
+                    EstadoAprobacionDescripcion = "Pendiente",
+                    HistorialAprobaciones = new List<ProveedorHistorialAprobacionDto>
+                    {
+                        new ProveedorHistorialAprobacionDto { Fecha = DateTime.Now.AddMonths(-2) }
+                    },
+                    Comercial = "Comercial 2",
+                    SISAEstadoCuit = "Activo",
+                    EstadoSIPER = "Activo en SIPER",
+                    UltimaEdicion = DateTime.Now.AddDays(-20),
+                    FechaSolicitud = DateTime.Now.AddMonths(-4),
+                    RazonSocialCorredor = "Razón social corredor 2",
+                    IdTipoUsuario = 102,
+                    IdTipoProveedor = 202,
+                    IngresoAPlanta = false,
+                    AltaInterna = true,
+                    ContieneDocumentacionFisica = false
+                }
+            };
+
+
+            usuarioServiceMock.Setup(servicio => servicio.ListarProveedores(filtro)).Returns(proveedorDtoList);
+
+            // Act
+            var result = target.ListarProveedores(filtro) as JsonResult;
+
+            // Assert
+            Assert.NotNull(result);
+            var data = (dynamic)((JsonResult)result).Data;
+            var propiedad = data.GetType().GetProperties()[0];
+            var valor = (List<ProveedorDto>)propiedad.GetValue(data);
+            Assert.AreEqual(valor.Count, 2);
+            // Realiza más aserciones según sea necesario.
         }
 
     }
