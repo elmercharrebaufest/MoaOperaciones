@@ -355,7 +355,7 @@ namespace SustitucionMOAModel.Dto
             Chofer = orden.NombreChofer;
             NumeroEntrega = orden.NumeroEntrega;
             TipoDoc = string.Empty;
-            Documento = string.Empty;
+            Documento = orden.CUITChofer;
         }
         public ModificarEntregaOrdenCargaSAP() { }
         public string ToJson()
