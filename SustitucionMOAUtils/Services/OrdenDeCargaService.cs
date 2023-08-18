@@ -840,8 +840,8 @@ namespace SustitucionMOAUtils.Services
             }
             else
             {
-                var clientes = usuario.Proveedores.Select(c => c.Id);
-                var listadoSinFiltro = repositorio.Listar<OrdenDeCarga>(n => clientes.Contains(n.Cliente_Id) && n.FechaCarga <= fechaFinDateTime
+                var usuariosConMismoCuit = repositorio.Listar<Usuario, int>(x => x.Id, x => x.CUITRegistro == usuario.CUITRegistro);
+                var listadoSinFiltro = repositorio.Listar<OrdenDeCarga>(n => usuariosConMismoCuit.Contains(n.UsuarioCreacion_Id) && n.FechaCarga <= fechaFinDateTime
                     && n.FechaCarga >= fechaIncioDateTime
                     && (_estadosListarNoInternos.Contains(n.Estado))
                     );
