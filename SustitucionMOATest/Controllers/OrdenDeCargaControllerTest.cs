@@ -106,15 +106,20 @@ namespace SustitucionMOATest.Controllers
                     Cliente = "",
                     PatenteAcoplado = "",
                     CUITCliente = ""
-                }
+                },
+                historial = new List<OrdenDeCargaHistorialDto>()
             };
 
             ordenDeCargaServiceMock.Setup(x => x.Obtener(It.IsAny<string>(), It.IsAny<int>())).Returns(orden.data);
+            
             var result = (JsonResult)target.Get(ordenId);
             expectedJson = JsonConvert.SerializeObject(orden);
             resultJson = JsonConvert.SerializeObject(result.Data);
+            dynamic expectedObject = JsonConvert.DeserializeObject(expectedJson);
+            dynamic resultObject = JsonConvert.DeserializeObject(resultJson);
             Assert.NotNull(result);
-            Assert.AreEqual(expectedJson, resultJson);
+            Assert.AreEqual(expectedObject.data, resultObject.data);
+            Assert.AreEqual(expectedObject.historial, resultObject.historial);
         }
 
         [Test()]
