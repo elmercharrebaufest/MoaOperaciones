@@ -129,5 +129,61 @@ namespace SustitucionMOATest.Controllers
             Assert.AreEqual(valor.Count, 1);
         }
 
+
+        [Test]
+        public void ObtenerOrdenDeCompraTest()
+        {
+            // Arrange
+            var expected = new OrdenDeCompraSAPDto
+            {
+                Cabecera = new OrdenDeCompraSAPCabecera
+                {
+                    OrdenDeCompra = "OC123",
+                    CodigoProveedor = "PROV456",
+                    RazonSocialProveedor = "Proveedor Example",
+                    CUITProveedor = "123456789",
+                    Moneda = "USD",
+                    MontoTotal = 1000.0m,
+                    CreadoPor = "Usuario",
+                    ClaseDocumento = "ClaseDoc",
+                    Tipo = "TipoExample",
+                    FechaCreacion = DateTime.Now,
+                    TipoDocCompras = "TipoDocCompras",
+                    Usuario_Id = 1
+                },
+                // Posiciones = () 
+                // Error = ()
+            };
+
+            string nroOC = "yourTestNroOC";
+            comprasServiceMock.Setup(s => s.ObtenerOrdenDeCompra(It.IsAny<string>())).Returns(expected);
+
+            // Act
+            var result = target.ObtenerOrdenDeCompra(nroOC);
+
+            // Assert
+            Assert.IsTrue(result is JsonResult);
+            var jsonResult = (JsonResult)result;
+            dynamic data = jsonResult.Data;
+            OrdenDeCompraSAPDto actual = data.data;
+
+            Assert.AreEqual(expected.Cabecera.OrdenDeCompra, actual.Cabecera.OrdenDeCompra);
+            Assert.AreEqual(expected.Cabecera.CodigoProveedor, actual.Cabecera.CodigoProveedor);
+            Assert.AreEqual(expected.Cabecera.RazonSocialProveedor, actual.Cabecera.RazonSocialProveedor);
+            Assert.AreEqual(expected.Cabecera.CUITProveedor, actual.Cabecera.CUITProveedor);
+            Assert.AreEqual(expected.Cabecera.Moneda, actual.Cabecera.Moneda);
+            Assert.AreEqual(expected.Cabecera.MontoTotal, actual.Cabecera.MontoTotal);
+            Assert.AreEqual(expected.Cabecera.CreadoPor, actual.Cabecera.CreadoPor);
+            Assert.AreEqual(expected.Cabecera.ClaseDocumento, actual.Cabecera.ClaseDocumento);
+            Assert.AreEqual(expected.Cabecera.Tipo, actual.Cabecera.Tipo);
+            Assert.AreEqual(expected.Cabecera.FechaCreacion, actual.Cabecera.FechaCreacion);
+            Assert.AreEqual(expected.Cabecera.TipoDocCompras, actual.Cabecera.TipoDocCompras);
+            Assert.AreEqual(expected.Cabecera.Usuario_Id, actual.Cabecera.Usuario_Id);
+
+            comprasServiceMock.Verify(s => s.ObtenerOrdenDeCompra(nroOC), Times.Once);
+        }
+
+
+
     }
 }
