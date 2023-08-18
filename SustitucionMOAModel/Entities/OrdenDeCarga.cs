@@ -80,7 +80,7 @@ namespace SustitucionMOAModel.Entities
         public string DescripcionCodigoVerificacionSap { get; set; }
         public bool Reventa { get; set; }
 
-        public int? UsuarioCreacion_Id { get; set; }
+        public int UsuarioCreacion_Id { get; set; }
         [ForeignKey("UsuarioCreacion_Id")]
         public virtual Usuario UsuarioCreacion { get; set; }
 
