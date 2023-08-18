@@ -23,12 +23,15 @@ namespace SustitucionMOAUtils.Services
         protected readonly IRepositorio repositorio;
         protected readonly IDataAgroService dataAgroService;
         protected readonly IVendedorHabilitadoConsumerMOA vendedorHabilitadoConsumer;
+        private readonly IVendedoresConsumerMOA vendedoresConsumerMOA;
 
-        public VendedorService(IRepositorio repositorio, IDataAgroService dataAgroService, IVendedorHabilitadoConsumerMOA vendedorHabilitadoConsumer)
+        public VendedorService(IRepositorio repositorio, IDataAgroService dataAgroService,
+            IVendedorHabilitadoConsumerMOA vendedorHabilitadoConsumer, IVendedoresConsumerMOA vendedoresConsumerMOA)
         {
             this.repositorio = repositorio;
             this.dataAgroService = dataAgroService;
             this.vendedorHabilitadoConsumer = vendedorHabilitadoConsumer;
+            this.vendedoresConsumerMOA = vendedoresConsumerMOA;
         }
 
         public VendedorDetalleWSMOAResponse GetDatosFiscales(string vendedor, string proveedor)
@@ -79,7 +82,7 @@ namespace SustitucionMOAUtils.Services
             VendedoresWSMOAResponse response = new VendedoresWSMOAResponse();
             try
             {
-                response = new VendedoresConsumerMOA().request(codigoProveedor, fechas);
+                response = vendedoresConsumerMOA.Request(codigoProveedor, fechas);
             }
             catch
             {
@@ -189,7 +192,7 @@ namespace SustitucionMOAUtils.Services
                 List<Models.FechaWS> fechas = CommonService.toDateList(fechaInicio, fechaFin);
                 try
                 {
-                    response = new VendedoresConsumerMOA().request(codigoProveedor, fechas);
+                    response = vendedoresConsumerMOA.Request(codigoProveedor, fechas);
                 }
                 catch
                 {

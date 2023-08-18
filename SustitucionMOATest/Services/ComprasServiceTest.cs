@@ -6,6 +6,7 @@ using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using SustitucionMOAModel.Models.WSMapMOA.Compras;
 using SustitucionMOARepositorio;
+using SustitucionMOARepositorio.ConsultasEF;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Services;
 using SustitucionMOAWS.Interfaces;
@@ -45,6 +46,7 @@ namespace SustitucionMOATest.Services
         private Mock<IObtenerProveedorConsumerMOA> obtenerProveedorConsumerMOA;
         private Mock<IModificarOrdenDeCompraConsumerMOA> modificarOrdenDeCompraConsumerMOAMock;
         private string filePath = "";
+        private Mock<IVendedoresConsumerMOA> vendedoresConsumerMOAMock;
 
         [SetUp]
         public void SetUp()
@@ -74,6 +76,7 @@ namespace SustitucionMOATest.Services
             obtenerOrdenesDeCompraParaSOLPConsumerMOAMock = new Mock<IObtenerOrdenesDeCompraParaSOLPConsumerMOA>();
             usuarioServiceMock = new Mock<IUsuarioService>();
             obtenerProveedorConsumerMOA = new Mock<IObtenerProveedorConsumerMOA>();
+            vendedoresConsumerMOAMock = new Mock<IVendedoresConsumerMOA>();
 
             target = new ComprasService(
                 repositorioMock.Object,
@@ -96,7 +99,8 @@ namespace SustitucionMOATest.Services
                 obtenerOrdenesDeCompraParaSOLPConsumerMOAMock.Object,
                 usuarioServiceMock.Object,
                 obtenerProveedorConsumerMOA.Object,
-                modificarOrdenDeCompraConsumerMOAMock.Object
+                modificarOrdenDeCompraConsumerMOAMock.Object,
+                vendedoresConsumerMOAMock.Object
                 );
         }
 
@@ -1504,5 +1508,77 @@ namespace SustitucionMOATest.Services
             Assert.That(result.First().Errores.Count == 0);
             Assert.AreEqual(expected.Count, result.Count);
         }
+
+        [Test]
+        public void GrabarRevisionTecnicaOk()
+        {
+            var peticiones = new List<PeticionDeOfertaUsarioDto>
+            { 
+                new PeticionDeOfertaUsarioDto
+                 {
+                   Id = 1
+                 }
+            };
+
+            repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<PeticionDeOfertaUsuario, bool>>>(),
+                It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null)).Returns(new List<PeticionDeOfertaUsuario>() { new PeticionDeOfertaUsuario { Id = 1, RealizoVisita = true } });
+            target.GrabarRevisionTecnica(peticiones, 1);
+            repositorioMock.Verify(y => y.Listar(It.IsAny<Expression<Func<PeticionDeOfertaUsuario, bool>>>(),
+                It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null), Times.Once);
+            repositorioMock.Verify(x => x.GuardarCambios(), Times.Exactly(1));
+        }
+        [Test]
+        public void TraerCotizacionOk()
+        {
+            repositorioMock.Setup(y => y.ObtenerConsultaEscalar(It.IsAny<TraerCotizacionConsulta>())).Returns(new PeticionDeOfertaDto { CotizacionId = 1, Cotizacion = new CotizacionDto { ArchivosCotizacion = null } });
+            repositorioMock.Setup(y => y.Obtener<Cotizacion>(It.IsAny<int>()))
+           .Returns(new Cotizacion { Id = 1, Archivos = new List<Archivo> { new Archivo { Id = 1, FileKey = "", Ruta = "ruta"} }, CotizacionesHoras = new List<CotizacionHora> { new CotizacionHora { Categoria = "Categoria", CantidadPersonas = 1, ConfigurarHora = false, Gremio = "Otros", HorasExtras = 1, HorasNormales = 1, Id = 1 },
+            new CotizacionHora { Categoria = "Categoria", CantidadPersonas = 1, ConfigurarHora = false, Gremio = "UOCRA", HorasExtras = 1, HorasNormales = 1, Id = 1 }} });
+            target.TraerCotizacion(It.IsAny<int>());
+            repositorioMock.Verify(y => y.ObtenerConsultaEscalar(It.IsAny<TraerCotizacionConsulta>()), Times.Once);
+        }
+
+        [Test]
+        public void ObtenerOrdenDeCompraConUsuarioOk()
+        {
+            obtenerOrdenDeCompraConsumerMOAMock.Setup(x => x.ObtenerOrdenDeCompra((It.IsAny<string>()))).Returns(new OrdenDeCompraSAPDto { 
+                Cabecera =  new OrdenDeCompraSAPCabecera { RazonSocialProveedor = "PARISI", CUITProveedor = "2737237394", 
+                    CodigoProveedor = "003723739", Usuario_Id = 1 }, });
+
+            obtenerProveedorConsumerMOA.Setup(x => x.ObtenerProveedor(It.IsAny<string>())).Returns(new ObtenerProveedorWSMOAResponse { MAIL = "bmelgarejo@test.com", NAME = "PARISI" });
+            vendedoresConsumerMOAMock.Setup(x => x.Request(It.IsAny<string>(), (It.IsAny<List<SustitucionMOAModel.Models.FechaWS>>()))).Returns(new SustitucionMOAModel.Models.WSMapMOA.Vendedor.VendedoresWSMOAResponse
+            { vendedores = new List<SustitucionMOAModel.Models.WSMapMOA.Vendedor.Vendedor> { new SustitucionMOAModel.Models.WSMapMOA.Vendedor.Vendedor { cuit = "232323"} } });
+
+            repositorioMock.Setup(y => y.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>())).Returns(new Usuario { CUITRegistro = "232323", 
+                TipoUsuario = new TipoUsuario { Id = 3 }, Id = 1 });
+            target.ObtenerOrdenDeCompra(It.IsAny<string>());
+            repositorioMock.Verify(y => y.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>()), Times.Once);
+
+        }
+
+        [Test]
+        public void ObtenerOrdenDeCompraSinUsuarioOk()
+        {
+            obtenerOrdenDeCompraConsumerMOAMock.Setup(x => x.ObtenerOrdenDeCompra((It.IsAny<string>()))).Returns(new OrdenDeCompraSAPDto
+            {
+                Cabecera = new OrdenDeCompraSAPCabecera
+                {
+                    RazonSocialProveedor = "PARISI",
+                    CUITProveedor = "2737237394",
+                    CodigoProveedor = "003723739",
+                    Usuario_Id = 1
+                },
+            });
+
+            obtenerProveedorConsumerMOA.Setup(x => x.ObtenerProveedor(It.IsAny<string>())).Returns(new ObtenerProveedorWSMOAResponse { MAIL = "bmelgarejo@test.com", NAME = "PARISI" });
+            vendedoresConsumerMOAMock.Setup(x => x.Request(It.IsAny<string>(), (It.IsAny<List<SustitucionMOAModel.Models.FechaWS>>()))).Returns(new SustitucionMOAModel.Models.WSMapMOA.Vendedor.VendedoresWSMOAResponse
+            { vendedores = new List<SustitucionMOAModel.Models.WSMapMOA.Vendedor.Vendedor> { new SustitucionMOAModel.Models.WSMapMOA.Vendedor.Vendedor { cuit = "232323" } } });
+
+            target.ObtenerOrdenDeCompra(It.IsAny<string>());
+            repositorioMock.Verify(y => y.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>()), Times.Once);
+
+        }
+
+
     }
 }
