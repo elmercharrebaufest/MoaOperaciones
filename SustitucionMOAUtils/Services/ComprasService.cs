@@ -1,5 +1,4 @@
-﻿using DocumentFormat.OpenXml.EMMA;
-using HandlebarsDotNet;
+﻿using HandlebarsDotNet;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
 using iTextSharp.tool.xml;
@@ -16,7 +15,6 @@ using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using SustitucionMOAModel.Models.WSMapMOA;
 using SustitucionMOAModel.Models.WSMapMOA.Compras;
-using SustitucionMOAModel.Models.WSMapMOA.ReporteContrato;
 using SustitucionMOAModel.Models.WSMapMOA.Vendedor.Detalle;
 using SustitucionMOARepositorio;
 using SustitucionMOARepositorio.ConsultasEF;
@@ -40,7 +38,6 @@ using System.Net.Mail;
 using System.Text;
 using System.Web;
 using Image = iTextSharp.text.Image;
-
 
 
 namespace SustitucionMOAUtils.Services
@@ -113,7 +110,6 @@ namespace SustitucionMOAUtils.Services
             this.obtenerProveedorConsumerMOA = obtenerProveedorConsumerMOA;
             this.modificarOrdenDeCompraConsumerMOA = modificarOrdenDeCompraConsumerMOA;
         }
-
 
         public RespuestaGuardarSOLP GuardarSolp(SolpDto solp, HttpFileCollectionBase adjuntos)
         {
@@ -632,46 +628,6 @@ namespace SustitucionMOAUtils.Services
             return solp;
         }
 
-        private bool crearPedido(Solp solpEntity)
-        {
-            return solpEntity.Posiciones.Any(p => !string.IsNullOrEmpty(p.NumeroContratoSuperior) && !p.EsConcluido.Value);
-        }
-
-        private bool crearSolp(Solp solpEntity)
-        {
-            return string.IsNullOrEmpty(solpEntity.NroSolp) && solpEntity.Posiciones.Any(p => string.IsNullOrEmpty(p.NumeroContratoSuperior));
-        }
-
-        private bool modificarSolp(Solp solpEntity)
-        {
-            return !string.IsNullOrEmpty(solpEntity.NroSolp) && solpEntity.Posiciones.Any(p => string.IsNullOrEmpty(p.NumeroContratoSuperior));
-        }
-
-        //metodos para obtener las solp que tienen numero de contrato y las agrupamos por el mismo proveedor
-        private Dictionary<string, List<SolpPosicion>> getPosicionesByProveedor(Solp solpEntity)
-        {
-            Func<SolpPosicion, bool> hasProveedorAndContrato = (p) => !string.IsNullOrEmpty(p.ProveedorFijo) &&
-                                 !string.IsNullOrEmpty(p.NumeroContratoSuperior);
-
-            var proveedorPosiciones = new Dictionary<string, List<SolpPosicion>>();
-
-            var proveedores = solpEntity.Posiciones.Where(p => hasProveedorAndContrato(p)
-                                 //&& string.IsNullOrEmpty(p.NumeroPedido)
-                                 )
-                                 .Select(p => p.ProveedorFijo)
-                                 .Distinct()
-                                 .ToList();
-            if (proveedores.Any())
-            {
-                proveedores.ForEach(proveedorFijo =>
-                {
-                    proveedorPosiciones.Add(proveedorFijo, solpEntity.Posiciones.Where(p => hasProveedorAndContrato(p) && p.ProveedorFijo.Equals(proveedorFijo)).ToList());
-                });
-            }
-            return proveedorPosiciones;
-        }
-
-
         private RespuestaGuardarSOLP FinalizarSolp(SolpDto solp, Solp solpEntity, SolpPosicion postEntitySubPosicionesEliminadas, RespuestaGuardarSOLP respuestaGuardarSOLP)
         {
             //variables para ver a que request accedemos
@@ -783,6 +739,7 @@ namespace SustitucionMOAUtils.Services
             //	}		
 
         }
+        
         private void GuardarUsuarioComprasRelacionado(SolpDto solp)
         {
             var usuarioComprasRelacionado = repositorio.Obtener<UsuarioComprasRelacionConUsuarios>(x => x.Usuario_Id == solp.UsuarioActual.Id && x.UsuarioCompras_Id == solp.UsuarioCompras.Id);
@@ -845,7 +802,7 @@ namespace SustitucionMOAUtils.Services
             var tablaSolp = repositorio.Listar<TablaSap>(x => x.Tabla == tabla).Select(x => new TablaSapDto(x)).ToList();
             if (tabla == TablasSap.EstadoSolpSap)
             {
-                tablaSolp.Add(new TablaSapDto { Id = -1, Descripcion = "Borrado en sap" });
+                tablaSolp.Add(new TablaSapDto { Id = -1, Descripcion = "Borrado en SAP" });
             }
             return tablaSolp;
         }
@@ -942,7 +899,7 @@ namespace SustitucionMOAUtils.Services
                     EstadoDocumento = new TablaEstadoDto { Descripcion = x.EstadoDocumento == null ? "" : x.EstadoDocumento.Descripcion, Color = x.EstadoDocumento == null ? "" : x.EstadoDocumento.Color, Codigo = x.EstadoDocumento == null ? "" : x.EstadoDocumento.Codigo },
                     EstadoSolpSapId = x.NroSolp != null && x.Posiciones.All(p => p.Estado == false) ? -1 : (x.EstadoSolpSap != null ? x.EstadoSolpSap_Id : 0),
                     EstadoSolpSap = new TablaSapDto { Descripcion = x.EstadoSolpSap != null ? x.EstadoSolpSap.Descripcion : "", Id = x.EstadoSolpSap != null ? x.EstadoSolpSap.Id : 0 },
-                    EstadoSolpDescripcion = x.NroSolp != null && x.Posiciones.All(p => p.Estado == false) ? "Borrado en sap" : (x.EstadoSolpSap != null ? x.EstadoSolpSap.Descripcion : ""),
+                    EstadoSolpDescripcion = x.NroSolp != null && x.Posiciones.All(p => p.Estado == false) ? "Borrado en SAP" : (x.EstadoSolpSap != null ? x.EstadoSolpSap.Descripcion : ""),
                     TipoSolp = new TablaGeneralDto { Descripcion = x.TipoSolp != null ? x.TipoSolp.Descripcion : "" },
                     VincularPliego = !x.Pliego_Id.HasValue,
                     TieneCondicionesGenerales = x.Pliego == null ? (bool?)null : x.Pliego.TieneCondicionesGenerales,
@@ -1001,10 +958,9 @@ namespace SustitucionMOAUtils.Services
 
             var x = repositorio.Obtener<Solp>(includes, s => s.Id == idSolp);
 
-
             if (x == null)
             {
-                throw new InfoCustomException("No se encontro la solp");
+                throw new InfoCustomException("No se encontró la SOLP.");
             }
 
             //if (!String.IsNullOrEmpty(x.NroSolp))
@@ -1126,14 +1082,13 @@ namespace SustitucionMOAUtils.Services
 
             if (solpABorrar == null)
             {
-                throw new InfoCustomException("No se encontro la Solp");
+                throw new InfoCustomException("No se encontró la SOLP.");
             }
 
             solpABorrar.FechaBorrado = DateTime.Now;
             repositorio.GuardarCambios();
 
-            return "Se Borro Correctamente";
-
+            return "Se borró correctamente.";
         }
 
         public List<TablaEstadoDto> ObtenerTablaEstado(string tabla)
@@ -1603,24 +1558,24 @@ namespace SustitucionMOAUtils.Services
             return lista;
         }
 
-        private void EnviarMailSolp(Solp solp, Usuario usuario)
-        {
-            try
-            {
-                var cuerpoTemplate = File.ReadAllText(EMAIL_TEMPLATE_SOLP);
-                string asunto = "MOA COMPRAS - Solp Liberada";
+        //private void EnviarMailSolpLiberada(Solp solp, Usuario usuario) //-- No borrar por las dudas
+        //{
+        //    try
+        //    {
+        //        var cuerpoTemplate = File.ReadAllText(EMAIL_TEMPLATE_SOLP);
+        //        string asunto = "MOA COMPRAS - Solp Liberada";
 
-                var cuerpo = string.Format(cuerpoTemplate, solp.NroSolp, usuario.Mail);
-                var Destinatario = usuario.Mail;
+        //        var cuerpo = string.Format(cuerpoTemplate, solp.NroSolp, usuario.Mail);
+        //        var Destinatario = usuario.Mail;
 
 
 
-                EmailSender.EnviarMail(new List<string> { Destinatario }, asunto, cuerpo, null, null, null, null);
-            }
-            catch (Exception e)
-            {
-            }
-        }
+        //        EmailSender.EnviarMail(new List<string> { Destinatario }, asunto, cuerpo, null, null, null, null);
+        //    }
+        //    catch (Exception e)
+        //    {
+        //    }
+        //}
 
         public ObtenerSolpSAPResponse ObtenerSolpsSAP(DateTime fechaDesde, DateTime fechaHasta, string numeroSolp,
                                     string centroLogistico, string filtroTipoPosicion, string indicadorDeLiberacion, string origenCreacion, List<string> creadoPorUsuarios,
@@ -2157,7 +2112,7 @@ namespace SustitucionMOAUtils.Services
                     }
                     catch (Exception e)
                     {
-                        Logger.Log.Info($"Error al agregar la solp {posicion.NumeroSolicitud}  NumeroPosicion {posicion.NumeroPosicion}");
+                        Logger.Log.Info($"Error al agregar la SOLP {posicion.NumeroSolicitud}  NumeroPosicion {posicion.NumeroPosicion}");
                         Logger.Log.Error(e);
                         continue;
                     }
@@ -2240,7 +2195,7 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        public void ActualizarEstadoSolp(string nroSolp, int idEstado)
+        private void ActualizarEstadoSolp(string nroSolp, int idEstado)
         {
             var solp = repositorio.Obtener<Solp>(x => x.NroSolp == nroSolp);
 
@@ -2973,6 +2928,7 @@ namespace SustitucionMOAUtils.Services
 
 
         }
+        
         private string getCodigoTablaSap(TablaSap imputacion)
         {
             var result = "";
@@ -3018,6 +2974,7 @@ namespace SustitucionMOAUtils.Services
             }
             return result;
         }
+        
         public List<AsociarContratoDto> DevolverContratosAsociados(List<SolpPosicionDto> posiciones)
         {
             var contratosParaAsociar = new List<AsociarContratoDto>();
@@ -3154,7 +3111,7 @@ namespace SustitucionMOAUtils.Services
 
         }
 
-        public void CrearProveedor(List<string> codigos)
+        private void CrearProveedor(List<string> codigos)
         {
             foreach (var codigo in codigos)
             {
@@ -3170,7 +3127,6 @@ namespace SustitucionMOAUtils.Services
                 }
             }
         }
-
 
         public RespuestaGuardarSOLP GrabarPeticionDeOferta(GuardarPeticionDeOfertaDto peticionDeOferta, HttpFileCollectionBase adjuntos, bool enviarMail, List<RegistroInfoDto> registroInfo = null)
         {
@@ -3562,7 +3518,7 @@ namespace SustitucionMOAUtils.Services
 
         }
 
-        public byte[] GenerarPDFPeticionDeOferta(PeticionDeOferta peticion, string codigoProveedor)
+        private byte[] GenerarPDFPeticionDeOferta(PeticionDeOferta peticion, string codigoProveedor)
         {
             try
             {
@@ -3621,6 +3577,7 @@ namespace SustitucionMOAUtils.Services
                 throw ex;
             }
         }
+        
         private string CompletarHtml(string xHtml, PeticionDeOferta peticion, string codigoProveedor)
         {
 
@@ -3690,7 +3647,7 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        public void EnviarMailPeticionDeOferta(PeticionDeOferta peticion, List<PeticionDeOfertaUsuario> usuarios)
+        private void EnviarMailPeticionDeOferta(PeticionDeOferta peticion, List<PeticionDeOfertaUsuario> usuarios)
         {
             var archs = ObtenerArchivosPeticionDeOferta(peticion);
             var copia = new List<string> { peticion.Usuario.Mail };
@@ -3761,9 +3718,7 @@ namespace SustitucionMOAUtils.Services
             return new Pdf { data = pdf, name = "PO" + po.Usuario.ObtenerProveedor().CUIT + ".pdf" };
         }
 
-
-        //Generar pdf OC
-        public byte[] GenerarPDFOrdenCompra(Adjudicacion adjudicacion, string codigoProveedor)
+        private byte[] GenerarPDFOrdenCompra(Adjudicacion adjudicacion, string codigoProveedor)
         {
             try
             {
@@ -4029,8 +3984,7 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        //Envio de mail ordenCompra
-        public void EnviarMailOrdenCompra(Adjudicacion adjudicacion, string mensaje = "")
+        private void EnviarMailOrdenCompra(Adjudicacion adjudicacion, string mensaje = "")
         {
             try
             {
@@ -4079,13 +4033,6 @@ namespace SustitucionMOAUtils.Services
             AlternateView alternateView = AlternateView.CreateAlternateViewFromString(htmlBody, null, "text/html");
             alternateView.LinkedResources.Add(res);
             return alternateView;
-        }
-
-        public Pdf GenerarOrdenCompraPdf(Adjudicacion adjudicacion)
-        {
-            var oc = adjudicacion.Cotizacion.PeticionDeOfertaUsuario;
-            var pdf = GenerarPDFOrdenCompra(adjudicacion, oc.Usuario.ObtenerProveedor().CodigoProveedor);
-            return new Pdf { data = pdf, name = "OC" + oc.Usuario.ObtenerProveedor().CUIT + ".pdf" };
         }
 
         public PeticionDeOfertaDto ObtenerPeticionDeOfertaParaCircular(int peticionId)
@@ -4254,7 +4201,6 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-
         private void GuardarArchivosCircular(Circular circular, HttpFileCollectionBase files)
         {
             var ruta = ObtenerRutaArchivos(circular.Id, FileKeys.Circular);
@@ -4288,7 +4234,7 @@ namespace SustitucionMOAUtils.Services
 
         }
 
-        public void EnviarMailCircular(Circular circular)
+        private void EnviarMailCircular(Circular circular)
         {
             var archs = ObtenerArchivosCircular(circular);
             var asunto = "";
@@ -4313,7 +4259,6 @@ namespace SustitucionMOAUtils.Services
                 EmailSender.EnviarMail(enviarA, asunto, "", copia, CuerpoMailCircular(prov), null, null, null, null, archs);
             }
         }
-
 
         private Dictionary<string, byte[]> ObtenerArchivosCircular(Circular circular)
         {
@@ -4381,7 +4326,7 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        public RespuestaCrearOrdenDeCompra CrearOrdenDeCompra(Adjudicacion AdjudicacionEntity)
+        private RespuestaCrearOrdenDeCompra CrearOrdenDeCompra(Adjudicacion AdjudicacionEntity)
         {
             var respuesta = new RespuestaCrearOrdenDeCompra();
             CrearPedidoConsumerMOAResponse resultadoCrearPedido = new CrearPedidoConsumerMOAResponse();
@@ -4769,6 +4714,7 @@ namespace SustitucionMOAUtils.Services
             }
 
         }
+        
         private void GuardarArchivosCotizacion(Cotizacion cotizacion, HttpFileCollectionBase files)
         {
             var ruta = ObtenerRutaArchivos(cotizacion.Id, FileKeys.AdjuntoCotizacionRevisionEconomica);
@@ -5059,7 +5005,7 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        public decimal CalcularMontoTotal(AdjudicacionDto adjudicacionDto, Cotizacion cotizacion, List<TablaSap> info)
+        private decimal CalcularMontoTotal(AdjudicacionDto adjudicacionDto, Cotizacion cotizacion, List<TablaSap> info)
         {
             Dictionary<int, decimal> tipodecambio = new Dictionary<int, decimal>();
             decimal cambio = 1;
@@ -5134,7 +5080,7 @@ namespace SustitucionMOAUtils.Services
             }, x => x.Solp_Id == solpId).OrderBy(fc => fc.FechaCreacion).ToList();
         }
 
-        public AdjudicacionDto ObtenerAdjudicacion(int adjudicacionId)
+        public AdjudicacionDto ObtenerAdjudicacion(int adjudicacionId) // No se está usando pero no borrar
         {
             var adjudicar = repositorio.Obtener<Adjudicacion, AdjudicacionDto>(adjudicacion => adjudicacion.Id == adjudicacionId, adjudicacion => new AdjudicacionDto
             {
@@ -5182,6 +5128,7 @@ namespace SustitucionMOAUtils.Services
             });
             return adjudicar;
         }
+        
         public AdjudicacionDto ObtenerAdjudicacion(string nroOC)
         {
             var adjudicar = obtenerOrdenDeCompraConsumerMOA.ObtenerOrdenDeCompraAdjudicacion(nroOC);
@@ -5195,6 +5142,7 @@ namespace SustitucionMOAUtils.Services
             }
             return adjudicar;
         }
+        
         public void CrearCotizacionConTrabajoYaHecho(Solp solp, bool enviarMail = true)
         {
             try
@@ -5216,7 +5164,7 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        public RespuestaCrearOrdenDeCompra CrearOrdenDeCompraAutomatica(Solp solp, bool enviarMail, List<RegistroInfoDto> registroInfo, bool crearAdjudicacion, int usuarioActual)
+        private RespuestaCrearOrdenDeCompra CrearOrdenDeCompraAutomatica(Solp solp, bool enviarMail, List<RegistroInfoDto> registroInfo, bool crearAdjudicacion, int usuarioActual)
         {
             try
             {
@@ -5378,6 +5326,7 @@ namespace SustitucionMOAUtils.Services
 
             return result;
         }
+        
         private ProveedorComprasDto ObtenerProveedorCompras(string codigoProveedor)
         {
             var proveedorMoa = obtenerProveedorConsumerMOA.ObtenerProveedor(codigoProveedor);
@@ -5458,12 +5407,10 @@ namespace SustitucionMOAUtils.Services
             }
             catch (Exception e)
             {
-
                 throw;
             }
         }
     }
-
 
     public static class SolpTemplateKeys
     {
@@ -5496,8 +5443,3 @@ namespace SustitucionMOAUtils.Services
         public const string PAGINAS = "PAGINAS";
     }
 }
-
-
-
-
-
