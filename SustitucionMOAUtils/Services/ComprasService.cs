@@ -65,6 +65,7 @@ namespace SustitucionMOAUtils.Services
         private readonly IUsuarioService usuarioService;
         private readonly IObtenerProveedorConsumerMOA obtenerProveedorConsumerMOA;
         private readonly IModificarOrdenDeCompraConsumerMOA modificarOrdenDeCompraConsumerMOA;
+        private readonly IVendedoresConsumerMOA vendedoresConsumerMOA;
         private readonly string rutaArchivosCompras = ConfigurationManager.AppSettings["RutaArchivosCompras"];
         private static readonly string EMAIL_TEMPLATE_SOLP = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "Solp.html");
 
@@ -85,7 +86,8 @@ namespace SustitucionMOAUtils.Services
             IObtenerOrdenDeCompraConsumerMOA obtenerOrdenDeCompraConsumerMOA,
             IObtenerOrdenesDeCompraParaSOLPConsumerMOA obtenerOrdenesDeCompraParaSOLPConsumerMOA,
             IUsuarioService usuarioService, IObtenerProveedorConsumerMOA obtenerProveedorConsumerMOA,
-            IModificarOrdenDeCompraConsumerMOA modificarOrdenDeCompraConsumerMOA
+            IModificarOrdenDeCompraConsumerMOA modificarOrdenDeCompraConsumerMOA,
+            IVendedoresConsumerMOA vendedoresConsumerMOA
             )
         {
             this.repositorio = repositorio;
@@ -109,6 +111,7 @@ namespace SustitucionMOAUtils.Services
             this.usuarioService = usuarioService;
             this.obtenerProveedorConsumerMOA = obtenerProveedorConsumerMOA;
             this.modificarOrdenDeCompraConsumerMOA = modificarOrdenDeCompraConsumerMOA;
+            this.vendedoresConsumerMOA = vendedoresConsumerMOA;
         }
 
         public RespuestaGuardarSOLP GuardarSolp(SolpDto solp, HttpFileCollectionBase adjuntos)
@@ -4473,7 +4476,7 @@ namespace SustitucionMOAUtils.Services
                 };
                 if (peticionCotizacion.CotizacionId != 0)
                 {
-                    var cotizacion = repositorio.Obtener<Cotizacion>(x => x.Id == peticionCotizacion.CotizacionId);
+                    var cotizacion = repositorio.Obtener<Cotizacion>(peticionCotizacion.CotizacionId);
                     peticionCotizacion.Cotizacion.ArchivosCotizacion = cotizacion.Archivos != null ? cotizacion.Archivos.Select(archivo => new ArchivoDto
                     {
                         Id = archivo.Id,
@@ -4506,7 +4509,7 @@ namespace SustitucionMOAUtils.Services
                         HorasNocturnas = x.HorasNocturnas,
                         HorasNormales = x.HorasNormales,
                         ConfigurarHora = x.ConfigurarHora
-                    })); ;
+                    })); 
 
                 }
                 peticionCotizacion.Cotizacion.CotizacionesHoras = listaHoras;
@@ -5317,13 +5320,8 @@ namespace SustitucionMOAUtils.Services
                     result.Cabecera.OrdenDeCompra = "";
                     result.Cabecera.CodigoProveedor = "";
 
-
                 }
-
-
             }
-
-
             return result;
         }
         
@@ -5334,9 +5332,8 @@ namespace SustitucionMOAUtils.Services
             {
                 throw new WSCustomException("No existe un proveedor con ese codigo");
             }
-            VendedoresConsumerMOA vendedoresConsumerMOA = new VendedoresConsumerMOA();
             List<SustitucionMOAModel.Models.FechaWS> fechas = CommonService.toDateList(DateTime.Now.AddYears(-5).ToShortDateString(), DateTime.Now.ToShortDateString());
-            var vendedoresMoa = vendedoresConsumerMOA.request(codigoProveedor, fechas);
+            var vendedoresMoa = vendedoresConsumerMOA.Request(codigoProveedor, fechas);
             if (vendedoresMoa == null || vendedoresMoa.vendedores == null || vendedoresMoa.vendedores.Count == 0)
                 throw new WSCustomException("No existe un proveedor con ese codigo.");
             var cuit = vendedoresMoa.vendedores.First().cuit;

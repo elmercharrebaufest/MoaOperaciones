@@ -25,14 +25,17 @@ namespace SustitucionMOATest.Services
         private Mock<IRepositorio> repositorioMock;
         private Mock<IDataAgroService> dataAgroServiceMock;
         private Mock<IVendedorHabilitadoConsumerMOA> vendedorHabilitadoConsumerMock;
+        private Mock<IVendedoresConsumerMOA> vendedoresConsumerMOAMock;
 
         [SetUp]
         public void SetUp()
         {
             repositorioMock = new Mock<IRepositorio>();
             dataAgroServiceMock = new Mock<IDataAgroService>();
+            vendedoresConsumerMOAMock = new Mock<IVendedoresConsumerMOA>();
             vendedorHabilitadoConsumerMock = new Mock<IVendedorHabilitadoConsumerMOA>();
-            target = new VendedorService(repositorioMock.Object, dataAgroServiceMock.Object, vendedorHabilitadoConsumerMock.Object);
+            target = new VendedorService(repositorioMock.Object, dataAgroServiceMock.Object,
+                vendedorHabilitadoConsumerMock.Object, vendedoresConsumerMOAMock.Object);
         }
 
         public void GetVendedoresPendientesTest()
