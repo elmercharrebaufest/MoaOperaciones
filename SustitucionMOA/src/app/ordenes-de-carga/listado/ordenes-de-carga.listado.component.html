@@ -99,7 +99,7 @@
                   (click)="seleccionarTodos()" /></th>
               <th>Id</th>
               <th *ngIf="esMesaFas || esInterno">Entrega</th>
-              <th *ngIf="esInterno || esComercial || esPuerto || esMesaFas ">Cliente</th>
+              <th *ngIf="esInterno || esComercial || esPuerto || esMesaFas || esCorredor">Cliente</th>
               <th *ngIf="esMesaFas">Cuit cliente</th>
               <th *ngIf="esInterno">Corredor</th>
               <th>Estado</th>
@@ -120,7 +120,7 @@
                   [disabled]="!ordenDeCarga.NoEstaEnSAP" (click)="seleccionarItem(ordenDeCarga)" /></td>
               <td>{{ordenDeCarga.Id}}</td>
               <td *ngIf="esMesaFas || esInterno">{{ordenDeCarga.Entrega}}</td>
-              <td *ngIf="esInterno || esComercial || esPuerto || esMesaFas">{{ordenDeCarga.RazonSocialCliente}}</td>
+              <td *ngIf="esInterno || esComercial || esPuerto || esMesaFas || esCorredor">{{ordenDeCarga.RazonSocialCliente}}</td>
               <td *ngIf="esMesaFas">{{ordenDeCarga.CUITCliente}}</td>
               <td *ngIf="esInterno">{{ordenDeCarga.RazonSocialCorredor}}</td>
               <td>{{ordenDeCarga.DescripcionEstadoListado}}</td>
