@@ -4241,10 +4241,6 @@ namespace SustitucionMOAUtils.Services
         {
             var archs = ObtenerArchivosCircular(circular);
             var asunto = "";
-            if (ConfigurationManager.AppSettings["AmbientePruebas"] != "1")
-            {
-                asunto = "Prueba - ";
-            }
             var copia = new List<string> { circular.Usuario.Mail };
             if (!string.IsNullOrEmpty(circular.PeticionDeOfertaUsuarios?.First().PeticionDeOfertaUsuario?.PeticionDeOferta?.Solp?.UsuarioCreacion?.Mail))
             {
@@ -4256,6 +4252,11 @@ namespace SustitucionMOAUtils.Services
             }
             foreach (var prov in circular.PeticionDeOfertaUsuarios)
             {
+                asunto = "";
+                if (ConfigurationManager.AppSettings["AmbientePruebas"] != "1")
+                {
+                    asunto = "Prueba - ";
+                }
                 var enviarA = new List<string> { prov.PeticionDeOfertaUsuario.Usuario.Mail };
                 asunto += $"Nueva circular con PO {prov.PeticionDeOfertaUsuario.PeticionDeOferta_Id} - {prov.PeticionDeOfertaUsuario.Usuario.ObtenerRazonSocial()}";
 
