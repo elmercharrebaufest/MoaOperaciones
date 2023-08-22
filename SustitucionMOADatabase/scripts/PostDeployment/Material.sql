@@ -76,16 +76,6 @@ BEGIN
 	INSERT INTO Material(Nombre, CodigoSap, TablaSeccionMaterial) VALUES('99709 - PELLET DE GIRASOL INTEGRAL','99709','2')
 END
 
-IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.Material WHERE CodigoSap = '98855' and Nombre = '98855 - ACEITE DE SOJA NEUTRALIZADO' and TablaSeccionMaterial = '2') 
-BEGIN 
-	INSERT INTO Material(Nombre, CodigoSap, TablaSeccionMaterial) VALUES('98855 - ACEITE DE SOJA NEUTRALIZADO','98855','2')
-END
-
-IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.Material WHERE CodigoSap = '99098' and Nombre = '99098 - ACEITE METILADO DE SOJA' and TablaSeccionMaterial = '2') 
-BEGIN 
-	INSERT INTO Material(Nombre, CodigoSap, TablaSeccionMaterial) VALUES('99098 - ACEITE METILADO DE SOJA','99098','2')
-END
-
 -- Updates
 
 UPDATE Material SET Nombre = '99709 - PELLET DE GIRASOL INTEGRAL' WHERE CodigoSap = '99709'
