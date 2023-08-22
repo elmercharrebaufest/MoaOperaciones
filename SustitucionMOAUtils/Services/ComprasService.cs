@@ -3993,12 +3993,16 @@ namespace SustitucionMOAUtils.Services
             {
                 Logger.Log.Info($"EnviarMailOrdenCompra numero{adjudicacion.Id}");
                 Logger.Log.Info($"copia mail comprador {adjudicacion.Usuario.Mail}");
-                Logger.Log.Info($"copia mail solicitante {adjudicacion.Solp.UsuarioCreacion.Mail}");
                 Logger.Log.Info($"mail al proveedor adjudicado {adjudicacion.Cotizacion.PeticionDeOfertaUsuario.Usuario.Mail}");
                 Logger.Log.Info($"Nueva OC creada - {adjudicacion.NumeroOrdenDeCompra}");
                 Logger.Log.Info($"fecha {DateTime.Now}");
 
-                var copia = new List<string> { adjudicacion.Usuario.Mail, adjudicacion.Solp.UsuarioCreacion.Mail };
+                var copia = new List<string> { adjudicacion.Usuario.Mail };
+                if (!string.IsNullOrEmpty(adjudicacion.Solp?.UsuarioCreacion?.Mail))
+                {
+                    copia.Add(adjudicacion.Solp.UsuarioCreacion.Mail);
+                    Log.Info($"copia mail solicitante {adjudicacion.Solp.UsuarioCreacion.Mail}");
+                }
                 var asunto = "";
                 if (ConfigurationManager.AppSettings["AmbientePruebas"] != "1")
                 {
@@ -4839,17 +4843,18 @@ namespace SustitucionMOAUtils.Services
         public void EnviarMailCotizacion(Cotizacion cotizacion)
         {
             var peticion = cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta;
-
-
-            var enviarA = new List<string> { peticion.Usuario.Mail, peticion.Solp.UsuarioCreacion.Mail };
             var asunto = "";
+            var enviarA = new List<string> { peticion.Usuario.Mail };
+            if (!string.IsNullOrEmpty(peticion.Solp?.UsuarioCreacion?.Mail))
+            {
+                enviarA.Add(peticion.Solp.UsuarioCreacion.Mail);
+            }
             if (ConfigurationManager.AppSettings["AmbientePruebas"] != "1")
             {
                 asunto = "Prueba:  ";
             }
-            asunto += "NUEVA Cotizacion creada - SOLP " + peticion.Solp.NroSolp;
+            asunto += "NUEVA cotización creada - SOLP " + peticion.Solp.NroSolp;
             EmailSender.EnviarMail(enviarA, asunto, "", null, CuerpoMailCotizacion(cotizacion), null, null, null, null);
-
         }
 
         private AlternateView CuerpoMailCotizacion(Cotizacion cotizacion)
