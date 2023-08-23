@@ -134,6 +134,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
         }
         if (this.esCliente()) {
             const esInterno = this.esComercial || this.esCorredor;
+            debugger
             if (!esInterno) {
                 this.clienteSeleccionado = {
                     id: sessionStorage.getItem("proveedorId"),
