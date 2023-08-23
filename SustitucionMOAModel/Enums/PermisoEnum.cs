@@ -104,6 +104,7 @@
         VerSolpsProveedor,
         Fas_ModificarCampoReventa,
         NotificarAltaInternaGranos,
-        AdjudicarDentroDelPlazoDeOfertas
+        AdjudicarDentroDelPlazoDeOfertas,
+        HangfireDashboard,
     }
 }
