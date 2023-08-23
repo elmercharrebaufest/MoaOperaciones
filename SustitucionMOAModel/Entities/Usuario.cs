@@ -75,12 +75,13 @@ namespace SustitucionMOAModel.Entities
         {
             try
             {
-                return Proveedores.Where(p => 
-                    p.CUIT == this.CUITRegistro && 
+                return Proveedores.Where(p =>
+                    p.CUIT == this.CUITRegistro &&
                     this.TipoUsuario.Id == p.TipoProveedor.Id
                     ).FirstOrDefault();
             }
-            catch {
+            catch
+            {
                 return null;
             }
         }
@@ -362,6 +363,7 @@ namespace SustitucionMOAModel.Entities
                 case "FAS - MODIFICAR CAMPO REVENTA": return PermisoEnum.Fas_ModificarCampoReventa;
                 case "NOTIFICAR ALTA INTERNA GRANOS": return PermisoEnum.NotificarAltaInternaGranos;
                 case "ADJUDICAR DENTRO DEL PLAZO DE OFERTAS": return PermisoEnum.AdjudicarDentroDelPlazoDeOfertas;
+                case "HANGFIREDASHBOARD": return PermisoEnum.HangfireDashboard;
 
                 default: throw new Exception("Permiso no mapeado: " + permisoStr);
             }

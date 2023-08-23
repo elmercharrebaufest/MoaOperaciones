@@ -134,6 +134,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
         }
         if (this.esCliente()) {
             const esInterno = this.esComercial || this.esCorredor;
+            debugger
             if (!esInterno) {
                 this.clienteSeleccionado = {
                     id: sessionStorage.getItem("proveedorId"),
@@ -1253,7 +1254,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
         }
     }
     validarKilosDisponiblesPedido() {
-        this.mensajesOrdenDeCarga.ContratoSeleccionado = null;
+        this.mensajesOrdenDeCarga.NumeroFacturaSeleccionada = null;
         const esInterno = (this.esComercial || this.esCorredor || this.esAdmin);
 
         if (this.ordenDeCargaId == 0 && !esInterno) {

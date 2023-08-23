@@ -1,7 +1,6 @@
 ﻿using Moq;
 using NUnit.Framework;
 using SustitucionMOAModel.CustomExceptions;
-using SustitucionMOAModel.Dto.OrdenDeCarga;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using SustitucionMOAModel.Models.WSMapMOA.OrdenCarga;
@@ -174,15 +173,14 @@ namespace SustitucionMOATest.Services
         public void SeleccionarFactura_NumeroFacturaNull_ThrowInvalidCustomException()
         {
             Assert.That(
-                () => _facturaAnticipadaService.SeleccionarFactura(It.IsAny<int>(), null),
+                () => _facturaAnticipadaService.SeleccionarFactura(It.IsAny<OrdenDeCarga>(), null),
                 Throws.TypeOf<InfoCustomException>());
         }
         [Test]
         public void SeleccionarFactura_OrdenNoExiste_ThrowInvalidCustomException()
         {
-            _repositorio.Setup(r => r.Obtener<OrdenDeCarga>(It.IsAny<int>())).Returns(null as OrdenDeCarga);
             Assert.That(
-                () => _facturaAnticipadaService.SeleccionarFactura(It.IsAny<int>(), It.IsAny<string>()),
+                () => _facturaAnticipadaService.SeleccionarFactura(null, It.IsAny<string>()),
                 Throws.TypeOf<InfoCustomException>());
         }
         [Test]
@@ -192,7 +190,6 @@ namespace SustitucionMOATest.Services
         {
             var contratoSAP = "123";
             var orden = new OrdenDeCarga { ContratoSAP = contratoSAP };
-            _repositorio.Setup(r => r.Obtener<OrdenDeCarga>(It.IsAny<int>())).Returns(orden);
             var detail = new Detail { FacturaLegal = numeroFacturaSeleccionada, Pedido = pedido };
             var list = new List<Detail> { detail };
             SetupRespuestaResult(list, contratoSAP);
@@ -200,7 +197,7 @@ namespace SustitucionMOATest.Services
                 list
             )).Returns(detail);
 
-            _facturaAnticipadaService.SeleccionarFactura(0, numeroFacturaSeleccionada);
+            _facturaAnticipadaService.SeleccionarFactura(orden, numeroFacturaSeleccionada);
             Assert.That(
                 orden.NumeroFacturaSeleccionada,
                 Is.EqualTo(numeroFacturaSeleccionada));
@@ -216,7 +213,6 @@ namespace SustitucionMOATest.Services
         {
             var contratoSAP = "123";
             var orden = new OrdenDeCarga { ContratoSAP = contratoSAP };
-            _repositorio.Setup(r => r.Obtener<OrdenDeCarga>(It.IsAny<int>())).Returns(orden);
             var detail = new Detail { FacturaLegal = "diferente", Pedido = "1234123" };
             var listReal = new List<Detail> { detail };
             SetupRespuestaResult(listReal, contratoSAP);
@@ -224,7 +220,7 @@ namespace SustitucionMOATest.Services
                 listReal
             )).Returns(detail);
 
-            Assert.That(() => _facturaAnticipadaService.SeleccionarFactura(0, numeroFacturaSeleccionada),
+            Assert.That(() => _facturaAnticipadaService.SeleccionarFactura(orden, numeroFacturaSeleccionada),
                 Throws.TypeOf<InfoCustomException>());
         }
         private void SetupRespuestaResult(List<Detail> detalles, string numeroContrato = null)
