@@ -534,3 +534,5 @@ DECLARE @Rol_Id           INT
     INSERT INTO dbo.RolPermisoPorRol(Rol_Id , PermisoPorRol_Id )
                               VALUES(@Rol_Id, @PermisoPorRol_Id)
     END
+
+IF NOT EXISTS(SELECT 1 FROM RolPermisoPorRol inner join PermisoPorRol on PermisoPorRol.Id = RolPermisoPorRol.PermisoPorRol_Id inner join Rol on Rol.Id = RolPermisoPorRol.Rol_Id WHERE Rol.Nombre = 'ADMINISTRACION' and PermisoPorRol.Permiso = 'HANGFIREDASHBOARD') BEGIN insert into RolPermisoPorRol values ((select id from rol where rol.Nombre = 'ADMINISTRACION'),(select id from PermisoPorRol where PermisoPorRol.Permiso = 'HANGFIREDASHBOARD')) END
