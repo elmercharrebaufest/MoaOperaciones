@@ -959,9 +959,9 @@ namespace SustitucionMOAUtils.Services
             includes.Add(u => u.UsuarioCreacion);
             includes.Add(u => u.UsuarioModificacion);
 
-            var x = repositorio.Obtener<Solp>(includes, s => s.Id == idSolp);
+            var solp = repositorio.Obtener<Solp>(includes, s => s.Id == idSolp);
 
-            if (x == null)
+            if (solp == null)
             {
                 throw new InfoCustomException("No se encontró la SOLP.");
             }
@@ -984,76 +984,76 @@ namespace SustitucionMOAUtils.Services
             var solpDevuelta = new SolpDto()
             {
 
-                UsuarioActual = x.UsuarioCreacion != null ? new UsuarioDto(x.UsuarioCreacion) : new UsuarioDto(),
-                Id = x.Id,
-                NroSolp = x.NroSolp,
-                FechaCreacion = x.FechaCreacion,
-                EstadoDocumento = new TablaEstadoDto(x.EstadoDocumento),
-                EstadoSolpSap = x.EstadoSolpSap != null ? new TablaSapDto(x.EstadoSolpSap) : new TablaSapDto(),
-                TipoSolp = x.TipoSolp != null ? new TablaGeneralDto(x.TipoSolp) : new TablaGeneralDto(),
-                VincularPliego = !x.Pliego_Id.HasValue,
-                UsuarioCompras = x.UsuarioCompras != null ? new UsuarioComprasDto(x.UsuarioCompras) : new UsuarioComprasDto(),
-                TipoSolpSap = x.TipoSolpSap,
-                NombreDeObra = x.Pliego.NombreObra,
-                FiscalContrato = x.Pliego.FiscalContrato,
-                Telefono = x.Pliego.Telefono,
-                Email = x.Pliego.Email,
-                FechaHoraEntrega = x.Pliego.FechaHoraEntrega,
-                SupervisorSector = x.Pliego.SupervisorSector.Split(',').ToList(),
-                SupervisorTrabajo = x.Pliego.SupervisorTrabajo.Split(',').ToList(),
-                VisitasObraMasiva = x.Pliego.VisitasMasivas.Select(a => new VisitaObraDto(a)).ToList(),
-                TieneVisitaObra = x.Pliego.TieneVisitaObra ?? false,
-                TieneVisitaObraMasiva = x.Pliego.TieneVisitaObraMasiva ?? false,
-                TieneObradores = x.Pliego.TieneObradores ?? false,
-                TieneMedioElevacion = x.Pliego.TieneMedioElevacion ?? false,
-                TieneAndamio = x.Pliego.TieneAndamio ?? false,
-                TieneTecnicoSeguridad = x.Pliego.TieneTecnicoSeguridad ?? false,
-                TieneGrillaPersonal = x.Pliego.TieneGrillaPersonal ?? false,
-                TieneFabricacionTallerExterno = x.Pliego.TieneFabricacionTallerExterno ?? false,
-                TieneDescripcionTecnica = x.Pliego.TieneDescripcionTecnica ?? false,
-                TieneDocumentacionTecnica = x.Pliego.TieneDocumentacionTecnica ?? false,
-                FechaHoraLimiteConsulta = x.Pliego.FechaHoraLimiteConsulta,
-                ObservacionesGeneracion = x.Pliego.ObservacionesGeneracion,
+                UsuarioActual = solp.UsuarioCreacion != null ? new UsuarioDto(solp.UsuarioCreacion) : new UsuarioDto(),
+                Id = solp.Id,
+                NroSolp = solp.NroSolp,
+                FechaCreacion = solp.FechaCreacion,
+                EstadoDocumento = new TablaEstadoDto(solp.EstadoDocumento),
+                EstadoSolpSap = solp.EstadoSolpSap != null ? new TablaSapDto(solp.EstadoSolpSap) : new TablaSapDto(),
+                TipoSolp = solp.TipoSolp != null ? new TablaGeneralDto(solp.TipoSolp) : new TablaGeneralDto(),
+                VincularPliego = !solp.Pliego_Id.HasValue,
+                UsuarioCompras = solp.UsuarioCompras != null ? new UsuarioComprasDto(solp.UsuarioCompras) : new UsuarioComprasDto(),
+                TipoSolpSap = solp.TipoSolpSap,
+                NombreDeObra = solp.Pliego.NombreObra,
+                FiscalContrato = solp.Pliego.FiscalContrato,
+                Telefono = solp.Pliego.Telefono,
+                Email = solp.Pliego.Email,
+                FechaHoraEntrega = solp.Pliego.FechaHoraEntrega,
+                SupervisorSector = solp.Pliego.SupervisorSector.Split(',').ToList(),
+                SupervisorTrabajo = solp.Pliego.SupervisorTrabajo.Split(',').ToList(),
+                VisitasObraMasiva = solp.Pliego.VisitasMasivas.Select(a => new VisitaObraDto(a)).ToList(),
+                TieneVisitaObra = solp.Pliego.TieneVisitaObra ?? false,
+                TieneVisitaObraMasiva = solp.Pliego.TieneVisitaObraMasiva ?? false,
+                TieneObradores = solp.Pliego.TieneObradores ?? false,
+                TieneMedioElevacion = solp.Pliego.TieneMedioElevacion ?? false,
+                TieneAndamio = solp.Pliego.TieneAndamio ?? false,
+                TieneTecnicoSeguridad = solp.Pliego.TieneTecnicoSeguridad ?? false,
+                TieneGrillaPersonal = solp.Pliego.TieneGrillaPersonal ?? false,
+                TieneFabricacionTallerExterno = solp.Pliego.TieneFabricacionTallerExterno ?? false,
+                TieneDescripcionTecnica = solp.Pliego.TieneDescripcionTecnica ?? false,
+                TieneDocumentacionTecnica = solp.Pliego.TieneDocumentacionTecnica ?? false,
+                FechaHoraLimiteConsulta = solp.Pliego.FechaHoraLimiteConsulta,
+                ObservacionesGeneracion = solp.Pliego.ObservacionesGeneracion,
                 //EspecificacionesTecnicas = x.EspecificacionesTecnicas,
-                DiasEjecucion = x.Pliego.DiasEjecucion,
-                ObservacionesCotizacion = x.Pliego.ObservacionesCotizacion,
-                JornadaLaboral = string.IsNullOrEmpty(x.Pliego.JornadaLaboralDias) ? new List<DayOfWeek>() :
-                                x.Pliego.JornadaLaboralDias.Split(",".ToCharArray()).Select(a => (DayOfWeek)Enum.Parse(typeof(DayOfWeek), a)).ToList(),
-                JornadaLaboralDesde = x.Pliego.JornadaLaboralHorasDesde,
-                JornadaLaboralHasta = x.Pliego.JornadaLaboralHorasHasta,
-                ClaseDocumento = x.ClaseDocumento != null ? new TablaSapDto(x.ClaseDocumento) : new TablaSapDto(),
+                DiasEjecucion = solp.Pliego.DiasEjecucion,
+                ObservacionesCotizacion = solp.Pliego.ObservacionesCotizacion,
+                JornadaLaboral = string.IsNullOrEmpty(solp.Pliego.JornadaLaboralDias) ? new List<DayOfWeek>() :
+                                solp.Pliego.JornadaLaboralDias.Split(",".ToCharArray()).Select(a => (DayOfWeek)Enum.Parse(typeof(DayOfWeek), a)).ToList(),
+                JornadaLaboralDesde = solp.Pliego.JornadaLaboralHorasDesde,
+                JornadaLaboralHasta = solp.Pliego.JornadaLaboralHorasHasta,
+                ClaseDocumento = solp.ClaseDocumento != null ? new TablaSapDto(solp.ClaseDocumento) : new TablaSapDto(),
 
-                ProveedorAsignadoId = x.ProveedorAsignado_Id,
+                ProveedorAsignadoId = solp.ProveedorAsignado_Id,
 
-                TrabajoYaHecho = x.TrabajoYaHecho,
-                Adicional = x.Adicional,
-                NroOrdenDeCompraAdicional = x.NroOrdenDeCompraAdicional,
+                TrabajoYaHecho = solp.TrabajoYaHecho,
+                Adicional = solp.Adicional,
+                NroOrdenDeCompraAdicional = solp.NroOrdenDeCompraAdicional,
+                DeshabilitarAdicional = repositorio.Listar<Adjudicacion>(x => x.Solp_Id == solp.Id).Any(),
 
-
-                Adjuntos = x.Pliego.Archivos.Where(a => a.FileKey == FileKeys.AdjuntoSolp || a.FileKey == FileKeys.AdjuntoCotizacionesSolp).Select(s => new ArchivoDto
+                Adjuntos = solp.Pliego.Archivos.Where(a => a.FileKey == FileKeys.AdjuntoSolp || a.FileKey == FileKeys.AdjuntoCotizacionesSolp).Select(s => new ArchivoDto
                 {
                     Id = s.Id,
                     Nombre = s.ObtenerNombre(s.Ruta),
                     FileKey = s.FileKey,
                 }).ToList(),
 
-                EspecificacionesTecnicas = x.Pliego.Archivos.FirstOrDefault(a => a.FileKey == FileKeys.EspecificacionesTecnicasPliego)?.Ruta,
+                EspecificacionesTecnicas = solp.Pliego.Archivos.FirstOrDefault(a => a.FileKey == FileKeys.EspecificacionesTecnicasPliego)?.Ruta,
 
-                TieneCondicionesGenerales = x.Pliego.TieneCondicionesGenerales ?? true,
+                TieneCondicionesGenerales = solp.Pliego.TieneCondicionesGenerales ?? true,
 
-                RevisadoPor = x.Pliego.RevisadoPor,
+                RevisadoPor = solp.Pliego.RevisadoPor,
 
-                EstadoSolpSapId = x.EstadoSolpSap_Id,
-                EstadoDocumentoId = x.EstadoDocumento_Id,
+                EstadoSolpSapId = solp.EstadoSolpSap_Id,
+                EstadoDocumentoId = solp.EstadoDocumento_Id,
 
                 //Posiciones = (x.TipoSolpSap == (int)TipoSolpSap.Sap || x.TipoSolpSap == (int)TipoSolpSap.Mantenimiento) ? 
                 //                x.Posiciones.Select(p => new SolpPosicionDto(p)).ToList() : 
                 //                x.Posiciones.Where(p => !p.FechaBaja.HasValue).Select(p => new SolpPosicionDto(p)).ToList(),
 
-                Posiciones = x.Posiciones.Select(p => new SolpPosicionDto(p)).ToList(),
-                PasoCompletado = x.PasoCompletado,
-                EstadoPasos = x.EstadoPasos,
-                EmailLinkToken = x.EmailLinkToken
+                Posiciones = solp.Posiciones.Select(p => new SolpPosicionDto(p)).ToList(),
+                PasoCompletado = solp.PasoCompletado,
+                EstadoPasos = solp.EstadoPasos,
+                EmailLinkToken = solp.EmailLinkToken
             };
             if (solpDevuelta.TipoSolpSap == (int)TipoSolpSap.Mantenimiento || solpDevuelta.TipoSolpSap == (int)TipoSolpSap.Sap)
             {
@@ -1065,6 +1065,13 @@ namespace SustitucionMOAUtils.Services
 
                 if (solpDevuelta.JornadaLaboralHasta == null)
                     solpDevuelta.JornadaLaboralHasta = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 16, 0, 0).ToLocalTime();
+            }
+            if(solpDevuelta.Adicional == true)
+            {
+              var proveedor = ObtenerOrdenDeCompra(solpDevuelta.NroOrdenDeCompraAdicional);
+              solpDevuelta.ProveedorIdAdicional = proveedor.Cabecera.Usuario_Id;
+              solpDevuelta.ProveedorRazonSocialAdicional = proveedor.Cabecera.RazonSocialProveedor;
+             
             }
 
             if (solpDevuelta.ProveedorAsignadoId != null)

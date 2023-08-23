@@ -345,13 +345,18 @@ export class CotizacionComponent extends ListBaseComponent {
                         } else if (result.info != undefined) {
                             this.floatMsgService.setInfoMsg(result.info);
                         } else {
-                            this.ordenDeCompraSap = result.data;
-                            this.model.proveedorAsignado_Id = this.ordenDeCompraSap.Cabecera.Usuario_Id;
-                            this.model.ordenDeCompra = this.ordenDeCompraSap.Cabecera.OrdenDeCompra;
-                            this.model.proveedorAsignado = this.ordenDeCompraSap.Cabecera.RazonSocialProveedor;
-                            if(this.ordenDeCompraSap.Error){
-                                this.floatMsgService.setErrorMsg(this.ordenDeCompraSap.Error.Mensaje);      
-                                this.limpiarCheckAdicional();                      
+                               if(this.estaFinalizada == true && this.model.proveedorIdAdicional && this.model.proveedorIdAdicional != result.data.Cabecera.Usuario_Id){
+                                    this.floatMsgService.setErrorMsg("La OC ingresada debe ser para el proveedor " + this.model.proveedorRazonSocialAdicional);   
+                                    this.model.ordenDeCompra = "";      
+                                }else{                                
+                                this.ordenDeCompraSap = result.data;
+                                this.model.proveedorAsignado_Id = this.ordenDeCompraSap.Cabecera.Usuario_Id;
+                                this.model.ordenDeCompra = this.ordenDeCompraSap.Cabecera.OrdenDeCompra;
+                                this.model.proveedorAsignado = this.ordenDeCompraSap.Cabecera.RazonSocialProveedor;
+                                if(this.ordenDeCompraSap.Error){
+                                    this.floatMsgService.setErrorMsg(this.ordenDeCompraSap.Error.Mensaje);      
+                                    this.limpiarCheckAdicional();                      
+                                }
                             }
                         }
                     },
@@ -372,6 +377,9 @@ export class CotizacionComponent extends ListBaseComponent {
         if(this.estaFinalizada == true){
             return true;
         }
+        if(this.model.deshabilitarAdicional == true){
+            return true;
+        }
         if(this.model.adicional == true && campoCheck == 'trabajoHecho'){
             return true; 
         } 
@@ -379,6 +387,7 @@ export class CotizacionComponent extends ListBaseComponent {
         if(this.model.trabajoHecho == true && campoCheck == 'adicional'){
             return true;
         }
+       
         return false
     }
 }
