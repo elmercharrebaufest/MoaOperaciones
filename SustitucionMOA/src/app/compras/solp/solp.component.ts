@@ -1004,6 +1004,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
         const emailModel = new EmailComposeModel();
         emailModel.from = this.fromEmail;
         emailModel.to = this.emailTo;
+        emailModel.cc = this.getCCEmails();  // Agregar esta línea para obtener las direcciones CC
         emailModel.subject = this.getEmailSubject(esPrimeraFinalizacion, esPosteriorFinalizacion);
         emailModel.body = this.emailBody;
         emailModel.downloadLinkUrl = this.downloadLinkUrl;
@@ -1028,6 +1029,20 @@ export class SolpComponent extends BaseComponent implements OnInit {
             this.floatMsgService.setErrorMsg(error.message);
             this.blockUI.stop();
         });
+    }
+
+    private getCCEmails(): string[] {
+        const ccEmails: string[] = [];
+    
+        if (this.solpActual.mail != undefined && this.solpActual.mail != null) {
+            ccEmails.push(this.solpActual.mail);
+        } else {
+            const username = sessionStorage.getItem("username");
+            if (username) {
+                ccEmails.push(username);
+            }
+        }
+        return ccEmails;
     }
 
     private get fromEmail(): string {
