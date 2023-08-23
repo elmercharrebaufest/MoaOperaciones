@@ -261,6 +261,9 @@ namespace SustitucionMOAModel.Dto
             PlantaCodigo = orden.PlantaCodigo;
             DomicilioDescr = orden.DomicilioDescr;
             Escalable = orden.Escalable;
+            NumeroFactura = orden.NumeroFactura;
+            NumeroFacturaSeleccionada = orden.NumeroFacturaSeleccionada;
+            TipoContrato = orden.TipoContrato;
         }
 
         public override bool Equals(object obj)
@@ -292,7 +295,9 @@ namespace SustitucionMOAModel.Dto
                    ContratoIngresado == dto.ContratoIngresado &&
                    Cliente == dto.Cliente &&
                    DescripcionEstadoUsuarioFinal == dto.DescripcionEstadoUsuarioFinal &&
-                   MensajeValidacionSAP == dto.MensajeValidacionSAP;
+                   MensajeValidacionSAP == dto.MensajeValidacionSAP &&
+                   NumeroFacturaSeleccionada == dto.NumeroFacturaSeleccionada &&
+                   NumeroFactura == dto.NumeroFactura;
         }
 
         public override int GetHashCode()
