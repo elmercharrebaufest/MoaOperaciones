@@ -4099,7 +4099,7 @@ namespace SustitucionMOAUtils.Services
                     CUIT = u.Usuario.ObtenerProveedor().CUIT,
                     Mail = u.Usuario.Mail,
                     Cotizacion = cotizacion,
-                    PropuestaTecnicaAprobada = u.PropuestaTecnicaAprobada != null ? u.PropuestaTecnicaAprobada : (cotizacion.RespetaMateriales = true && cotizacion.RespetaServicios == true),
+                    PropuestaTecnicaAprobada = u.PropuestaTecnicaAprobada,
                     RealizoVisita = u.RealizoVisita,
                     EstaHabilitado = u.Usuario.Habilitado,
                     ValidacionCircularSolicitante = ValidacionCircularSolicitante(u, cotizacion),
