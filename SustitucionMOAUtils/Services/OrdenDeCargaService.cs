@@ -1760,7 +1760,7 @@ namespace SustitucionMOAUtils.Services
                 throw new ValidationCustomException("No se encontraron contratos abiertos para la orden");
             }
 
-            return consumerRes.Resultados.Select(x => x.Contrato).Distinct().ToList();
+            return consumerRes.Resultados.Select(x => x.Contrato).ToList();
 
         }
 
