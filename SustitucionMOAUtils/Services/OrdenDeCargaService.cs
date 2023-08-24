@@ -313,7 +313,7 @@ namespace SustitucionMOAUtils.Services
                 if (puedeEnviarASAP && ordenEditar.NumeroEntrega != null)
                 {
 
-                    var resultadoSAP = consumer.ModificarEntregaOrdenCarga(new ModificarEntregaOrdenCargaSAP(ordenEditar));
+                    var resultadoSAP = consumer.ModificarEntregaOrdenCarga(new ModificarEntregaRequest(ordenEditar));
                     if (resultadoSAP.HayError)
                         throw new InfoCustomException(resultadoSAP.Errores[0].Message);
                 }
@@ -1170,7 +1170,7 @@ namespace SustitucionMOAUtils.Services
 
                 if (puedeEnviarASAP && orden.NumeroEntrega != null)
                 {
-                    var resultado = consumer.ModificarEntregaOrdenCarga(new ModificarEntregaOrdenCargaSAP(orden));
+                    var resultado = consumer.ModificarEntregaOrdenCarga(new ModificarEntregaRequest(orden));
                     if (resultado.HayError)
                         throw new InfoCustomException(resultado.Errores[0].Message);
                 }
