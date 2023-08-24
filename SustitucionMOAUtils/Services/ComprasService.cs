@@ -4092,7 +4092,7 @@ namespace SustitucionMOAUtils.Services
                     CUIT = u.Usuario.ObtenerProveedor().CUIT,
                     Mail = u.Usuario.Mail,
                     Cotizacion = cotizacion,
-                    PropuestaTecnicaAprobada = u.PropuestaTecnicaAprobada,
+                    PropuestaTecnicaAprobada = u.PropuestaTecnicaAprobada != null ? u.PropuestaTecnicaAprobada : (cotizacion.RespetaMateriales = true && cotizacion.RespetaServicios == true),
                     RealizoVisita = u.RealizoVisita,
                     EstaHabilitado = u.Usuario.Habilitado,
                     ValidacionCircularSolicitante = ValidacionCircularSolicitante(u, cotizacion),
@@ -4582,6 +4582,11 @@ namespace SustitucionMOAUtils.Services
                             UsuarioCreador = usuario,
                             FechaCreacion = DateTime.Now
                         };
+
+                        if (cotizacionDto.RespetaServicios == true && cotizacionDto.RespetaMateriales == true) 
+                        { 
+                            cotizacion.PeticionDeOfertaUsuario.PropuestaTecnicaAprobada = true;
+                        }
                     }
 
                     repositorio.Agregar(cotizacion);
