@@ -343,6 +343,11 @@ namespace SustitucionMOAUtils.Services
                 {
                     GenerarEntregaSAP(ordenEditar);
                 }
+                else if (ordenEditar.Estado == EstadoOrdenDeCarga.SinEnviarASAP && ordenEditar.EsFacturaAnticipada && ordenEditar.SinSeleccionarFactura) {
+                    ordenEditar.Estado = EstadoOrdenDeCarga.Pendiente;
+                    ordenEditar.DescripcionErrorInterno = "Se debe seleccionar una factura.";
+                    repositorio.GuardarCambios();
+                }
 
                 var resultado = new Resultado { IdEntidad = ordenDeCarga.Id, Mensaje = SuccessMsg.OrdenDeCargaActualizada };
                 Log.Info($"Result: {resultado.ToJson()}");
@@ -389,7 +394,7 @@ namespace SustitucionMOAUtils.Services
                 else
                 {
                     var crearPedido = !string.IsNullOrWhiteSpace(ordenEditar.ContratoSAP) || verificarOrden;
-                    if (crearPedido && puedeEnviarASAP)
+                    if (crearPedido && puedeEnviarASAP && !ordenEditar.EsFacturaAnticipada)
                     {
                         if (string.IsNullOrWhiteSpace(ordenEditar.ContratoSAP))
                         {
