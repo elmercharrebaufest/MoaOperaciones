@@ -1028,7 +1028,7 @@ namespace SustitucionMOAUtils.Services
                 TrabajoYaHecho = solp.TrabajoYaHecho,
                 Adicional = solp.Adicional,
                 NroOrdenDeCompraAdicional = solp.NroOrdenDeCompraAdicional,
-                DeshabilitarAdicional = repositorio.Listar<Adjudicacion>(x => x.Solp_Id == solp.Id).Any(),
+                DeshabilitarAdicional = solp.Adjudicacions.Any(),
 
                 Adjuntos = solp.Pliego.Archivos.Where(a => a.FileKey == FileKeys.AdjuntoSolp || a.FileKey == FileKeys.AdjuntoCotizacionesSolp).Select(s => new ArchivoDto
                 {

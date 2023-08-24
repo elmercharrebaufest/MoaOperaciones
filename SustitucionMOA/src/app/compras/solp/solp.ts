@@ -88,10 +88,10 @@ export class Solp extends CommonResponse {
     public pasoCompletado: number;
     public estadoPasos: string;
     public tableHide: boolean;
-    proveedorIdAdicional: any;
-    proveedorRazonSocialAdicional: any;
-    deshabilitarAdicional: any;
-    ordenDeCompraOriginal: any;
+    proveedorIdAdicional: number;
+    proveedorRazonSocialAdicional: string;
+    deshabilitarAdicional: boolean;
+    ordenDeCompraOriginal: string;
 
 
     public get ultimaPosicion(): SolpPosicion {

@@ -109,7 +109,7 @@ export class CotizacionComponent extends ListBaseComponent {
             trabajoHecho: new FormControl('', Validators.required),
             proveedorSeleccionado: new FormControl('', Validators.required),    
             adicional: new FormControl('', Validators.required),
-            ordenDeCompra: new FormControl({value: '', disabled: this.estaFinalizada}, Validators.required)
+            ordenDeCompra: new FormControl({value: '', disabled: this.model.deshabilitarAdicional}, Validators.required)
         });
 
         this.validadorPasoSolpService.formulario = this.formularioCotizacion;
@@ -345,6 +345,7 @@ export class CotizacionComponent extends ListBaseComponent {
                         } else if (result.info != undefined) {
                             this.floatMsgService.setInfoMsg(result.info);
                         } else {
+                            console.log(this.model, "SOLP")
                                if(this.estaFinalizada == true && this.model.proveedorIdAdicional && this.model.proveedorIdAdicional != result.data.Cabecera.Usuario_Id){
                                     this.floatMsgService.setErrorMsg("La OC ingresada debe ser para el proveedor " + this.model.proveedorRazonSocialAdicional);   
                                     this.model.ordenDeCompra = "";      
