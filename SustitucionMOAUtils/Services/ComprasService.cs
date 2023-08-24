@@ -4582,6 +4582,11 @@ namespace SustitucionMOAUtils.Services
                             UsuarioCreador = usuario,
                             FechaCreacion = DateTime.Now
                         };
+
+                        if (cotizacionDto.RespetaServicios == true && cotizacionDto.RespetaMateriales == true) 
+                        { 
+                            cotizacion.PeticionDeOfertaUsuario.PropuestaTecnicaAprobada = true;
+                        }
                     }
 
                     repositorio.Agregar(cotizacion);
