@@ -58,10 +58,18 @@ namespace SustitucionMOAWS.ModificarEntregaOrdenFasWebServiceMOA {
         [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         public string IM_TIPODOC;
         
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=7)]
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
+        public string IM_TRANSPORTE;
+        
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=8)]
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
+        public string IM_TRANSPORTISTA_REAL;
+        
         public SI_MPMF_MOAOP_MOD_ENTREGARequest() {
         }
         
-        public SI_MPMF_MOAOP_MOD_ENTREGARequest(string IM_ACOPLADO, string IM_BORRAR, string IM_CHASIS, string IM_CHOFER, string IM_DOCUMENTO, string IM_ENTREGA, string IM_TIPODOC) {
+        public SI_MPMF_MOAOP_MOD_ENTREGARequest(string IM_ACOPLADO, string IM_BORRAR, string IM_CHASIS, string IM_CHOFER, string IM_DOCUMENTO, string IM_ENTREGA, string IM_TIPODOC, string IM_TRANSPORTE, string IM_TRANSPORTISTA_REAL) {
             this.IM_ACOPLADO = IM_ACOPLADO;
             this.IM_BORRAR = IM_BORRAR;
             this.IM_CHASIS = IM_CHASIS;
@@ -69,6 +77,8 @@ namespace SustitucionMOAWS.ModificarEntregaOrdenFasWebServiceMOA {
             this.IM_DOCUMENTO = IM_DOCUMENTO;
             this.IM_ENTREGA = IM_ENTREGA;
             this.IM_TIPODOC = IM_TIPODOC;
+            this.IM_TRANSPORTE = IM_TRANSPORTE;
+            this.IM_TRANSPORTISTA_REAL = IM_TRANSPORTISTA_REAL;
         }
     }
     
@@ -122,7 +132,7 @@ namespace SustitucionMOAWS.ModificarEntregaOrdenFasWebServiceMOA {
             return base.Channel.SI_MPMF_MOAOP_MOD_ENTREGA(request);
         }
         
-        public string SI_MPMF_MOAOP_MOD_ENTREGA(string IM_ACOPLADO, string IM_BORRAR, string IM_CHASIS, string IM_CHOFER, string IM_DOCUMENTO, string IM_ENTREGA, string IM_TIPODOC) {
+        public string SI_MPMF_MOAOP_MOD_ENTREGA(string IM_ACOPLADO, string IM_BORRAR, string IM_CHASIS, string IM_CHOFER, string IM_DOCUMENTO, string IM_ENTREGA, string IM_TIPODOC, string IM_TRANSPORTE, string IM_TRANSPORTISTA_REAL) {
             SustitucionMOAWS.ModificarEntregaOrdenFasWebServiceMOA.SI_MPMF_MOAOP_MOD_ENTREGARequest inValue = new SustitucionMOAWS.ModificarEntregaOrdenFasWebServiceMOA.SI_MPMF_MOAOP_MOD_ENTREGARequest();
             inValue.IM_ACOPLADO = IM_ACOPLADO;
             inValue.IM_BORRAR = IM_BORRAR;
@@ -131,6 +141,8 @@ namespace SustitucionMOAWS.ModificarEntregaOrdenFasWebServiceMOA {
             inValue.IM_DOCUMENTO = IM_DOCUMENTO;
             inValue.IM_ENTREGA = IM_ENTREGA;
             inValue.IM_TIPODOC = IM_TIPODOC;
+            inValue.IM_TRANSPORTE = IM_TRANSPORTE;
+            inValue.IM_TRANSPORTISTA_REAL = IM_TRANSPORTISTA_REAL;
             SustitucionMOAWS.ModificarEntregaOrdenFasWebServiceMOA.SI_MPMF_MOAOP_MOD_ENTREGAResponse retVal = ((SustitucionMOAWS.ModificarEntregaOrdenFasWebServiceMOA.SI_MPMF_MOAOP_MOD_ENTREGA)(this)).SI_MPMF_MOAOP_MOD_ENTREGA(inValue);
             return retVal.EX_MENSAJE;
         }
@@ -140,7 +152,7 @@ namespace SustitucionMOAWS.ModificarEntregaOrdenFasWebServiceMOA {
             return base.Channel.SI_MPMF_MOAOP_MOD_ENTREGAAsync(request);
         }
         
-        public System.Threading.Tasks.Task<SustitucionMOAWS.ModificarEntregaOrdenFasWebServiceMOA.SI_MPMF_MOAOP_MOD_ENTREGAResponse> SI_MPMF_MOAOP_MOD_ENTREGAAsync(string IM_ACOPLADO, string IM_BORRAR, string IM_CHASIS, string IM_CHOFER, string IM_DOCUMENTO, string IM_ENTREGA, string IM_TIPODOC) {
+        public System.Threading.Tasks.Task<SustitucionMOAWS.ModificarEntregaOrdenFasWebServiceMOA.SI_MPMF_MOAOP_MOD_ENTREGAResponse> SI_MPMF_MOAOP_MOD_ENTREGAAsync(string IM_ACOPLADO, string IM_BORRAR, string IM_CHASIS, string IM_CHOFER, string IM_DOCUMENTO, string IM_ENTREGA, string IM_TIPODOC, string IM_TRANSPORTE, string IM_TRANSPORTISTA_REAL) {
             SustitucionMOAWS.ModificarEntregaOrdenFasWebServiceMOA.SI_MPMF_MOAOP_MOD_ENTREGARequest inValue = new SustitucionMOAWS.ModificarEntregaOrdenFasWebServiceMOA.SI_MPMF_MOAOP_MOD_ENTREGARequest();
             inValue.IM_ACOPLADO = IM_ACOPLADO;
             inValue.IM_BORRAR = IM_BORRAR;
@@ -149,6 +161,8 @@ namespace SustitucionMOAWS.ModificarEntregaOrdenFasWebServiceMOA {
             inValue.IM_DOCUMENTO = IM_DOCUMENTO;
             inValue.IM_ENTREGA = IM_ENTREGA;
             inValue.IM_TIPODOC = IM_TIPODOC;
+            inValue.IM_TRANSPORTE = IM_TRANSPORTE;
+            inValue.IM_TRANSPORTISTA_REAL = IM_TRANSPORTISTA_REAL;
             return ((SustitucionMOAWS.ModificarEntregaOrdenFasWebServiceMOA.SI_MPMF_MOAOP_MOD_ENTREGA)(this)).SI_MPMF_MOAOP_MOD_ENTREGAAsync(inValue);
         }
     }
