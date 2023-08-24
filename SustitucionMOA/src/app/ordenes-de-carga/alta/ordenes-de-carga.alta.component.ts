@@ -1253,7 +1253,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
         }
     }
     validarKilosDisponiblesPedido() {
-        this.mensajesOrdenDeCarga.ContratoSeleccionado = null;
+        this.mensajesOrdenDeCarga.NumeroFacturaSeleccionada = null;
         const esInterno = (this.esComercial || this.esCorredor || this.esAdmin);
 
         if (this.ordenDeCargaId == 0 && !esInterno) {
