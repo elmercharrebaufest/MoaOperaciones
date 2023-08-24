@@ -2637,7 +2637,8 @@ namespace SustitucionMOAUtils.Services
             if (!esInterno)
             {
                 var numeroContrato = string.IsNullOrEmpty(orden.ContratoSAP) ? orden.ContratoIngresado : orden.ContratoSAP;
-                Log.Info($"Validar kg orden: {orden.ToJson()}");
+                Log.Info($"Validar kg orden: patente={orden.PatenteAcoplado}, chasis={orden.ChasisAcoplado}, " +
+                    $"código cliente={orden.Cliente.CodigoProveedor}, número contrato={numeroContrato}");
                 var contratoSAP = consumer.ObtenerContratoSAP(numeroContrato, null);
                 Log.Info($"Validar kg contrato: {contratoSAP.ToJson()}");
 
@@ -2665,13 +2666,15 @@ namespace SustitucionMOAUtils.Services
             if (!esInterno)
             {
                 var numeroContrato = string.IsNullOrEmpty(orden.ContratoSAP) ? orden.ContratoIngresado : orden.ContratoSAP;
-                Log.Info($"Validar kg pedido orden: {orden.ToJson()}");
+                Log.Info($"Validar kg pedido: patente={orden.PatenteAcoplado}, chasis={orden.ChasisAcoplado}, " +
+                    $"código cliente={orden.Cliente.CodigoProveedor}, número contrato={numeroContrato}" +
+                    $", numeroPedidoIngresado ={orden.NumeroPedidoIngresado}, numeroFacturaIngresada={orden.NumeroFactura}");
                 var contratoSAP = consumer.ObtenerContratoSAP(numeroContrato, null);
                 Log.Info($"Validar kg pedido contrato: {contratoSAP.ToJson()}");
 
                 if (contratoSAP == null)
                     throw new InfoCustomException("No se encontró el contrato en SAP");
-                var ordenesPendientes = ObtenerOrdenesPendientesDeCliente(orden.Cliente.CodigoProveedor);
+                var ordenesPendientes = ObtenerOrdenesPendientesDeCliente(orden.Cliente.CodigoProveedor).Where(ordenPendiente => ordenPendiente.Id != orden.Id).ToList();
                 var kilosDisponibles = _kgDisponiblesFasService.ObtenerKgDisponiblesPedido(contratoSAP, ordenesPendientes, orden.NumeroPedidoIngresado);
                 Log.Info($"Validar kg pedido disponibles: {kilosDisponibles}");
                 if (kilosDisponibles <= Constante.FAS_KILOS_LIMITE_INFERIOR)
