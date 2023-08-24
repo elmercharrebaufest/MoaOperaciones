@@ -128,10 +128,10 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
             return;
         }
         this.confirmationService.confirm({
-            header: "¡Ultimo Paso!",
+            header: "¡Último Paso!",
             acceptLabel: "SI, CONFIRMAR",
             rejectLabel: "VOLVER",
-            message: 'Está a punto de enviar la cotización, no podrá editarla luego de esta acción. <b>¿Desea continuar?</b>',
+            message: 'Está a punto de enviar la cotización. <br>Podrá volver a editarla mientras el plazo de oferta esté vigente y no se le haya adjudicado una orden de compra. <b>¿Desea continuar?</b>',
             accept: () => {
                 this.finalizarCotizacion(true);
             },
@@ -160,14 +160,14 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
         }
     }
 
-    public ObtenerCotizacionSubposicion(){
+    public ObtenerCotizacionSubposicion() {
         if (this.peticion.TipoPosicionCodigo != "MATERIALES") {
-            this.cotizacionSubposiciones =  this.cotizacionServicio.crearCotizacionSubPosicion();
+            this.cotizacionSubposiciones = this.cotizacionServicio.crearCotizacionSubPosicion();
         }
     }
 
     public guardarCotizacion(esFinalizado) {
-        if(esFinalizado == undefined) this.esFinalizado = false; 
+        if (esFinalizado == undefined) this.esFinalizado = false;
         this.obtenerArchivosNuevos();
         this.ObtenerCotizacion();
         this.blockUI.start("Grabando...");
@@ -208,7 +208,6 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
             this.archivosEconomico = this.cotizacionServicio.ObtenerArchivosEconomicos()
             this.archivosTecnico = this.cotizacionServicio.ObtenerArchivosTecnicos();
         }
-
     }
 
     public ValidarCotizacionFinalizada() {
@@ -216,7 +215,7 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
         var breakFor = false;
         if (this.peticion.TipoPosicionCodigo == "MATERIALES") {
             var self = this;
-            if(this.peticion.RespetaMateriales == null || this.peticion.RespetaMateriales == undefined){
+            if (this.peticion.RespetaMateriales == null || this.peticion.RespetaMateriales == undefined) {
                 mensaje = "El campo respeta materiales es obligatorio";
                 return mensaje;
             }
@@ -250,13 +249,13 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
                         mensaje = "Pos. " + cotizacion.Posicion + " - La Fecha de entrega cotizada es obligatoria";
                         breakFor = true;
                         return mensaje;
-                    }                    
+                    }
 
-                    if(self.peticion.RespetaMateriales == false){
-                        if(self.peticion.ObservacionEconomica == "" && ((self.cotizacion.ArchivosNuevos == null
+                    if (self.peticion.RespetaMateriales == false) {
+                        if (self.peticion.ObservacionEconomica == "" && ((self.cotizacion.ArchivosNuevos == null
                             || self.cotizacion.ArchivosNuevos.length == 0 &&
-                        (self.cotizacion.ArchivosTipo == null || self.cotizacion.ArchivosTipo.filter(x => x.FileKey == "CotizacionRevisionEconomica") == null
-                                || self.cotizacion.ArchivosTipo.filter(x => x.FileKey == "CotizacionRevisionEconomica").length == 0)))){
+                            (self.cotizacion.ArchivosTipo == null || self.cotizacion.ArchivosTipo.filter(x => x.FileKey == "CotizacionRevisionEconomica") == null
+                                || self.cotizacion.ArchivosTipo.filter(x => x.FileKey == "CotizacionRevisionEconomica").length == 0)))) {
                             mensaje = "Debe adjuntar un archivo o agregar una observación";
                             breakFor = true;
                             return mensaje;
@@ -270,129 +269,128 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
                                 || self.cotizacion.ArchivosNuevos.length == 0 &&
                                 (self.cotizacion.ArchivosTipo == null || self.cotizacion.ArchivosTipo.filter(x => x.FileKey == "CotizacionRevisionEconomica") == null
                                     || self.cotizacion.ArchivosTipo.filter(x => x.FileKey == "CotizacionRevisionEconomica").length == 0)))) {
-                            mensaje = "Pos. " + cotizacion.Posicion + ": Por favor explique en las observaciones por qué modifico la cantidad y/o unidad de medida, para estos casos debe adjuntar un archivo";
+                            mensaje = "Pos. " + cotizacion.Posicion + ": Por favor, explique en las observaciones por qué modificó la cantidad y/o unidad de medida. Para estos casos debe adjuntar un archivo.";
                             breakFor = true;
                             return mensaje;
                         }
                     }
                 }
             });
-        }else{
-            if(this.peticion.RespetaMateriales == null || this.peticion.RespetaMateriales == undefined){
+        } else {
+            if (this.peticion.RespetaMateriales == null || this.peticion.RespetaMateriales == undefined) {
                 mensaje = "El campo respeta materiales es obligatorio";
                 return mensaje;
             }
-            if(this.peticion.RespetaServicios == null || this.peticion.RespetaServicios == undefined){
+            if (this.peticion.RespetaServicios == null || this.peticion.RespetaServicios == undefined) {
                 mensaje = "El campo respeta servicios es obligatorio";
                 return mensaje;
             }
 
             this.cotizacion.CotizacionesHoras.forEach(function (cotizacionHora, i) {
                 if (!breakFor) {
-                    if(cotizacionHora.CantidadPersonas > 0 || cotizacionHora.HorasNormales > 0 || cotizacionHora.HorasNocturnas > 0){
-                    if(cotizacionHora.Gremio == "" && cotizacionHora.Categoria == ""){
-                        mensaje = "El Gremio y la Categoria son campos obligatorios";
-                        breakFor = true;
-                        return mensaje;
-                    }
+                    if (cotizacionHora.CantidadPersonas > 0 || cotizacionHora.HorasNormales > 0 || cotizacionHora.HorasNocturnas > 0) {
+                        if (cotizacionHora.Gremio == "" && cotizacionHora.Categoria == "") {
+                            mensaje = "El Gremio y la Categoría son campos obligatorios";
+                            breakFor = true;
+                            return mensaje;
+                        }
 
-                    if(cotizacionHora.Gremio != "" && cotizacionHora.Categoria == ""){
-                        mensaje = "Para el Gremio " + cotizacionHora.Gremio + ", el campo Categoria es obligatorio";
-                        breakFor = true;
-                        return mensaje;
-                    }
+                        if (cotizacionHora.Gremio != "" && cotizacionHora.Categoria == "") {
+                            mensaje = "Para el Gremio " + cotizacionHora.Gremio + ", el campo Categoría es obligatorio";
+                            breakFor = true;
+                            return mensaje;
+                        }
 
-                    if(cotizacionHora.Categoria != "" && cotizacionHora.Gremio == ""){
-                        mensaje = "Para la Categoria " + cotizacionHora.Categoria + ", el campo Gremio es obligatorio";
-                        breakFor = true;
-                        return mensaje;
-                    }
+                        if (cotizacionHora.Categoria != "" && cotizacionHora.Gremio == "") {
+                            mensaje = "Para la Categoría " + cotizacionHora.Categoria + ", el campo Gremio es obligatorio";
+                            breakFor = true;
+                            return mensaje;
+                        }
 
-                    if(cotizacionHora.CantidadPersonas <= 0 && cotizacionHora.HorasNormales <= 0 && cotizacionHora.HorasNocturnas <= 0){
-                        mensaje = "Para la Categoria " + cotizacionHora.Categoria + ", debe ingresar cantidad de personas y horas";
-                        breakFor = true;
-                        return mensaje;
-                    }
+                        if (cotizacionHora.CantidadPersonas <= 0 && cotizacionHora.HorasNormales <= 0 && cotizacionHora.HorasNocturnas <= 0) {
+                            mensaje = "Para la Categoría " + cotizacionHora.Categoria + ", debe ingresar cantidad de personas y horas";
+                            breakFor = true;
+                            return mensaje;
+                        }
 
-                    if(cotizacionHora.CantidadPersonas > 0 && cotizacionHora.HorasNormales <= 0 && cotizacionHora.HorasNocturnas <= 0){
-                        mensaje = "Para la Categoria " + cotizacionHora.Categoria + ", debe ingresar horas";
-                        breakFor = true;
-                        return mensaje;
-                    }
+                        if (cotizacionHora.CantidadPersonas > 0 && cotizacionHora.HorasNormales <= 0 && cotizacionHora.HorasNocturnas <= 0) {
+                            mensaje = "Para la Categoría " + cotizacionHora.Categoria + ", debe ingresar horas";
+                            breakFor = true;
+                            return mensaje;
+                        }
 
-                    if((cotizacionHora.HorasNormales > 0 || cotizacionHora.HorasNocturnas > 0) && cotizacionHora.CantidadPersonas <= 0){
-                        mensaje = "Para la Categoria " + cotizacionHora.Categoria +", el campo cantidad de personas es obligatorio";
-                        breakFor = true;
-                        return mensaje;
+                        if ((cotizacionHora.HorasNormales > 0 || cotizacionHora.HorasNocturnas > 0) && cotizacionHora.CantidadPersonas <= 0) {
+                            mensaje = "Para la Categoría " + cotizacionHora.Categoria + ", el campo cantidad de personas es obligatorio";
+                            breakFor = true;
+                            return mensaje;
+                        }
                     }
-                }
                 }
             });
 
-            if(this.peticion.PersonalHoras == true){
+            if (this.peticion.PersonalHoras == true) {
                 var categorias = ['SHyMA', 'Horas taller (referenciales)'];
 
                 var mostrarMensaje = this.peticion.Cotizacion.CotizacionesHoras
-                                    .filter(x => !categorias.includes(x.Categoria))
-                                    .every(x => (Number(x.CantidadPersonas) <= 0));
-       
-                if(mostrarMensaje){
-                    mensaje = "En el panel de horas debe completar las categorías que aplican a esta propuesta.";                    
+                    .filter(x => !categorias.includes(x.Categoria))
+                    .every(x => (Number(x.CantidadPersonas) <= 0));
+
+                if (mostrarMensaje) {
+                    mensaje = "En el panel de horas debe completar las categorías que aplican a esta propuesta.";
                     return mensaje
                 }
             }
-          
+
             var self = this;
-            this.cotizacionSubposiciones.forEach(function (subposicion, i) {                
+            this.cotizacionSubposiciones.forEach(function (subposicion, i) {
                 if (!breakFor) {
                     if (subposicion.Cantidad <= 0 || subposicion.Cantidad == undefined) {
-                        mensaje = "Propuesta Economica - " + "Pos. " + subposicion.Posicion +  ": La Ctd. cotizada es obligatoria";
+                        mensaje = "Propuesta Economica - " + "Pos. " + subposicion.Posicion + ": La Ctd. cotizada es obligatoria";
                         breakFor = true;
                         return mensaje;
                     }
                     if (subposicion.UnidadDeMedidaId == 0) {
-                        mensaje = "Propuesta Economica - " + "Pos. " + subposicion.Posicion +  ": La Um. cotizada es obligatoria";
+                        mensaje = "Propuesta Economica - " + "Pos. " + subposicion.Posicion + ": La Um. cotizada es obligatoria";
                         breakFor = true;
                         return mensaje;
                     }
                     if (subposicion.MonedaId == 0) {
-                        mensaje = "Propuesta Economica - " + "Pos. " + subposicion.Posicion +  ": La Moneda es obligatoria";
+                        mensaje = "Propuesta Economica - " + "Pos. " + subposicion.Posicion + ": La Moneda es obligatoria";
                         breakFor = true;
                         return mensaje;
                     }
                     if (subposicion.Precio <= 0) {
-                        mensaje = "Propuesta Economica - " + "Pos. " + subposicion.Posicion +  ": El Precio cotizado es obligatorio";
+                        mensaje = "Propuesta Economica - " + "Pos. " + subposicion.Posicion + ": El Precio cotizado es obligatorio";
                         breakFor = true;
                         return mensaje;
                     }
 
-                    if(self.peticion.RespetaServicios == false || self.peticion.RespetaMateriales == false){
-                        if(self.peticion.ObservacionTecnica == "" && ((self.archivosTecnico == null
+                    if (self.peticion.RespetaServicios == false || self.peticion.RespetaMateriales == false) {
+                        if (self.peticion.ObservacionTecnica == "" && ((self.archivosTecnico == null
                             || self.archivosTecnico.length == 0 &&
-                        (self.cotizacion.ArchivosTipo == null || self.cotizacion.ArchivosTipo.filter(x => x.FileKey == "CotizacionRevisionTecnica") == null
-                                || self.cotizacion.ArchivosTipo.filter(x => x.FileKey == "CotizacionRevisionTecnica").length == 0)))){
+                            (self.cotizacion.ArchivosTipo == null || self.cotizacion.ArchivosTipo.filter(x => x.FileKey == "CotizacionRevisionTecnica") == null
+                                || self.cotizacion.ArchivosTipo.filter(x => x.FileKey == "CotizacionRevisionTecnica").length == 0)))) {
                             mensaje = "Propuesta Técnica - Debe adjuntar un archivo o agregar una observación";
                             breakFor = true;
                             return mensaje;
                         }
                     }
-                    
+
                     if ((subposicion.CantidadSubpos != subposicion.Cantidad ||
                         subposicion.UnidadDeMedidaSubpos != subposicion.UnidadDeMedidaId) &&
                         (self.cotizacion.ObservacionEconomica == "" && (self.archivosEconomico == null
                             || self.archivosEconomico.length == 0 &&
-                        (self.cotizacion.ArchivosTipo == null || 
-                            self.cotizacion.ArchivosTipo.filter(x => x.FileKey == "CotizacionRevisionEconomica") == null
+                            (self.cotizacion.ArchivosTipo == null ||
+                                self.cotizacion.ArchivosTipo.filter(x => x.FileKey == "CotizacionRevisionEconomica") == null
                                 || self.cotizacion.ArchivosTipo.filter(x => x.FileKey == "CotizacionRevisionEconomica").length == 0)))) {
-                        mensaje = "Propuesta Economica - " + "Pos. " + subposicion.Posicion + ": Por favor explique en las observaciones por qué modifico la cantidad y/o unidad de medida, para estos casos debe adjuntar un archivo";
+                        mensaje = "Propuesta Económica - " + "Pos. " + subposicion.Posicion + ": Por favor, explique en las observaciones por qué modificó la cantidad y/o unidad de medida. Para estos casos debe adjuntar un archivo.";
                         breakFor = true;
                         return mensaje;
                     }
                 }
-        });
+            });
         }
 
-      
         return mensaje;
     }
 }
