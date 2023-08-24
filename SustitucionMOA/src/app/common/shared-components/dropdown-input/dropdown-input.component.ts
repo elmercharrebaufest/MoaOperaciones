@@ -13,8 +13,9 @@ export class DropdownInputComponent<T> implements OnInit, OnDestroy {
   @Input() filterKey: keyof T = "filter" as keyof T;
   @Input() valueKey?: keyof T;
   @Input() placeholder: string = "Seleccione ..";
+  @Input() disabled = false;
   filteredOptions: Array<T> = this.options;
-  @Input() _selectedOption?: T;
+  @Input() selectedOption?: T;
 
   showDropdown = new BehaviorSubject(false);
   subscriptions = new Subscription();
@@ -52,14 +53,17 @@ export class DropdownInputComponent<T> implements OnInit, OnDestroy {
   }
 
   onSelectOption(option: T) {
-    this._selectedOption = option;
+    if (this.disabled)
+      return;
+    this.selectedOption = option;
     this.filteredOptions = [];
     this.showDropdown.next(false);
-    this.valueChange.emit(this._selectedOption)
+    this.valueChange.emit(this.selectedOption)
   }
 
   toggleDropdown() {
-    this.showDropdown.next(!this.showDropdown.value)
+    if (!this.disabled)
+      this.showDropdown.next(!this.showDropdown.value)
   }
 
   closeDropdown() {
