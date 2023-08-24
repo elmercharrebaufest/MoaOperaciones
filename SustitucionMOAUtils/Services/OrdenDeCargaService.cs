@@ -128,6 +128,11 @@ namespace SustitucionMOAUtils.Services
                         }
                         if (!ordenDeCarga.SinSeleccionarFactura)
                             GenerarEntregaSAP(ordenDeCarga);
+                        else
+                        {
+                            ordenDeCarga.DescripcionErrorInterno = "Se debe seleccionar una factura.";
+                            ordenDeCarga.Estado = EstadoOrdenDeCarga.Pendiente;
+                        }
                     }
                     else
                     {
@@ -137,6 +142,7 @@ namespace SustitucionMOAUtils.Services
                             VerificarSituacionCrediticia(ordenDeCarga, true);
                         }
                     }
+                    repositorio.GuardarCambios();
 
                 }
                 if (!ordenPuedeEnviarseDirectoSap)
@@ -168,7 +174,8 @@ namespace SustitucionMOAUtils.Services
             ordenDeCarga.UsuarioCreacion_Id = usuario.Id;
             ordenDeCarga.FechaCarga = DateTime.Now;
             ordenDeCarga.ContratoSinCantidadPendiente = false;
-            ordenDeCarga.NumeroPedido = string.IsNullOrEmpty(ordenDeCarga.NumeroPedidoIngresado) ? "" : ordenDeCarga.NumeroPedidoIngresado;
+
+
             ordenDeCarga.PedidoSAP = ordenDeCarga.NumeroPedidoIngresado;
 
             var producto = repositorio.Obtener<Material>(ordenDeCarga.Producto_Id);
@@ -183,6 +190,11 @@ namespace SustitucionMOAUtils.Services
                     ordenDeCarga.NumeroPedido = ordenDeCarga.NumeroPedidoIngresado;
                 }
             }
+            else if (ordenDeCarga.TipoContrato == TipoContratoFAS.Normal)
+            {
+                ordenDeCarga.NumeroPedido = string.IsNullOrEmpty(ordenDeCarga.NumeroPedidoIngresado) ? "" : ordenDeCarga.NumeroPedidoIngresado;
+            }
+
             var validaCPEDG = producto.ValidaSisaRuca;
             if (!validaCPEDG)
             {
@@ -1698,7 +1710,7 @@ namespace SustitucionMOAUtils.Services
                     emailFasService.EnviarMailTransporteNoExiste(orden);
                 }
             }
-            var puedeCrear = VerificarOrden(orden, orden.Cliente, false);
+            VerificarOrden(orden, orden.Cliente, false);
 
             if (!orden.TieneCodigoSap(ControlCargaResEnum.FaltaCargarKmsEnContrato))
                 return GenerarEntregaSAP(orden);
