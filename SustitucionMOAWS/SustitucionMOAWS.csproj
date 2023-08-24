@@ -596,6 +596,7 @@
     <Compile Include="WSRequests\OrdenCarga\ControlCargaRequest.cs" />
     <Compile Include="WSRequests\OrdenCarga\CrearEntregaRequest.cs" />
     <Compile Include="WSRequests\OrdenCarga\CrearOrdenRequest.cs" />
+    <Compile Include="WSRequests\OrdenCarga\ModificarEntregaRequest.cs" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />

@@ -339,42 +339,4 @@ namespace SustitucionMOAModel.Dto
         public string Antes { get; set; }
         public string Despues { get; set; }
     }
-    public class ModificarEntregaOrdenCargaSAP
-    {
-        public string Chasis { get; set; }
-        public string NumeroEntrega { get; set; }
-        public string Acoplado { get; set; }
-        public string Chofer { get; set; }
-        public string TipoDoc { get; set; }
-        public string Documento { get; set; }
-
-        public ModificarEntregaOrdenCargaSAP(Ent.OrdenDeCarga orden)
-        {
-            Chasis = orden.ChasisAcoplado;
-            Acoplado = orden.PatenteAcoplado;
-            Chofer = orden.NombreChofer;
-            NumeroEntrega = orden.NumeroEntrega;
-            TipoDoc = string.Empty;
-            Documento = string.Empty;
-        }
-        public ModificarEntregaOrdenCargaSAP() { }
-        public string ToJson()
-        {
-            try
-            {
-                var serializer = new DataContractJsonSerializer(typeof(ModificarEntregaOrdenCargaSAP));
-
-                using (var ms = new MemoryStream())
-                {
-                    serializer.WriteObject(ms, this);
-                    return Encoding.UTF8.GetString(ms.ToArray());
-                }
-            }
-            catch (Exception)
-            {
-                return "error al serializar el objeto.";
-            }
-
-        }
-    }
 }
