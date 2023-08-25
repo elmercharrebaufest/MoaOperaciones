@@ -1,9 +1,12 @@
 <section class="container-fluid clearfix">
-    <div class="row titleSection">
-        <div class="col-xs-12 col-sm-10 "> <strong>Ver ofertas {{tablaOfertas.TipoPosicionCodigo}} | SOLP #{{tablaOfertas.NroSolp}} 
+    <div class="row titleSection1">
+        <div class="col-xs-12 col-sm-10 letraTitulo"> <strong>Ver ofertas {{tablaOfertas.TipoPosicionCodigo}} | SOLP #{{tablaOfertas.NroSolp}} 
                                                <b *ngIf="tablaOfertas.Id">
-                                                   | PO # {{tablaOfertas.Id}}
-                                               </b>         
+                                                   | PO #{{tablaOfertas.Id}}
+                                               </b>   
+                                               <b *ngIf="tablaOfertas.Adicional">
+                                                | OC #{{tablaOfertas.NroOrdenDeCompraAdicional}}
+                                            </b>         
                 </strong>
        </div>
       
