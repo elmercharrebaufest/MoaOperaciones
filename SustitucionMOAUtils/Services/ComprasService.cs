@@ -4355,14 +4355,14 @@ namespace SustitucionMOAUtils.Services
                        ConfigurarHora = false
 
                     },
-                       new CotizacionHorasDto
-                     {
-                       Gremio = "UOCRA",
-                       Categoria = "Horas taller (referenciales)",
-                       Fila = true,
-                       ConfigurarHora = false
+                    //    new CotizacionHorasDto
+                    //  {
+                    //    Gremio = "UOCRA",
+                    //    Categoria = "Horas taller (referenciales)",
+                    //    Fila = true,
+                    //    ConfigurarHora = false
 
-                    },
+                    // },
                           new CotizacionHorasDto
                      {
                        Gremio = "UOCRA",
