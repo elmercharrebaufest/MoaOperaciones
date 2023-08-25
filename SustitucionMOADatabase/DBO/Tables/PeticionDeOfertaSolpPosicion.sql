@@ -2,7 +2,7 @@
     [Id] INT NOT NULL IDENTITY, 
     [PeticionDeOferta_Id] [int] NOT NULL,
     [SolpPosicion_Id] [int] NOT NULL,
-    [RegistroInfo_Num] NVARCHAR(25) NULL, 
+    [NumeroRegistroInfo] NVARCHAR(25) NULL, 
     CONSTRAINT [PK_PeticionDeOfertaSolpPosicion] PRIMARY KEY ([Id]),
 ) ON [PRIMARY]
 GO
