@@ -19,6 +19,7 @@ import * as XLSX from 'xlsx';
 import { FiltroFechaComponent } from '../../common/view-child/filtro-fecha/filtro-fecha.component';
 import { SelectItem } from 'primeng/api';
 import { BehaviorSubject } from 'rxjs';
+import { DropdownOption } from '../../common/view-child/dropdown/dropdown.component';
 declare var $: any;
 
 
@@ -92,16 +93,27 @@ export class AltasComponent extends BaseComponent implements OnInit {
     puedeAltaInterna: boolean = this.isAuthorized('ALTA INTERNA GRANOS');
     puedeAltaInternaNoGranos: boolean = this.isAuthorized('ALTA INTERNA NO GRANOS');
 
-    ngOnInit(): void {
-        this.setEstadosDefault();
-        this.getEstados();
+    ngOnInit(): void { 
         this.navService.setSeccionList([]);
         $('[data-toggle="tooltip"]').tooltip();
+        this.customFiltroFecha();
+        this.setEstadosDefault();
+        this.getEstados();
     }
 
     verDetalle() {
         this.navService.navegarSeccion('/proveedor-detalle');
         return false;
+    }
+
+    customFiltroFecha(){
+        this.filtroFechaComponent.setDropdownOptions([
+            new DropdownOption("3", "Último mes"),
+            new DropdownOption("6", "Último año"),
+            new DropdownOption("4", "Entre Fechas"),
+            new DropdownOption("7", "Sin rango de fecha")
+        ]);
+        this.filtroFechaComponent.setPeriodoInitial("3");
     }
 
     setEstadosDefault() {
