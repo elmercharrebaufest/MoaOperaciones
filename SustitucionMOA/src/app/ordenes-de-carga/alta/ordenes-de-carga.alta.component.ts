@@ -607,10 +607,9 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
         this.setearDefaultEnCPEDG();
     }
 
-    onContratoSeleccionadoChanged = (contrato: ContratoOrdenFas) => {
+    onContratoSeleccionadoChanged = () => {
         this.facturasDisponibles = [];
         this.ordenDeCarga.NumeroFactura = null;
-        this.ordenDeCarga.ContratoSeleccionado = contrato;
         this.facturaSeleccionada = null;
         if (this.ordenDeCarga.ContratoSeleccionado) {
             this.Contrato = this.ordenDeCarga.ContratoSeleccionado.NumeroContrato;
@@ -814,7 +813,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
             const { NumeroContrato, Producto, TipoContrato } = this.ordenDeCarga.ContratoSeleccionado;
             this.ordenDeCarga.ContratoSeleccionado = new ContratoOrdenFas(NumeroContrato, TipoContrato, Producto)
             this.contratosDisponibles = [this.ordenDeCarga.ContratoSeleccionado];
-            this.onContratoSeleccionadoChanged(this.ordenDeCarga.ContratoSeleccionado);
+            this.onContratoSeleccionadoChanged();
             return;
         }
         this.contratosDisponibles = [];
@@ -848,7 +847,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                                         this.ordenDeCarga.ContratoIngresado ?
                                             this.contratosDisponibles.find(c => c.NumeroContrato == this.ordenDeCarga.ContratoIngresado)
                                             : undefined;
-                                    this.onContratoSeleccionadoChanged(this.ordenDeCarga.ContratoSeleccionado);
+                                    this.onContratoSeleccionadoChanged();
                                 }
                         this.blockUI.stop();
                     })
