@@ -329,7 +329,7 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
             });
 
             if (this.peticion.PersonalHoras == true) {
-                var categorias = ['SHyMA', 'Horas taller (referenciales)'];
+                var categorias = ['SHyMA'];
 
                 var mostrarMensaje = this.peticion.Cotizacion.CotizacionesHoras
                     .filter(x => !categorias.includes(x.Categoria))
