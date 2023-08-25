@@ -31,8 +31,11 @@
                 <div class="col-xs-12 col-md-12 search-header">
                     <title-caps>Refinar resultados</title-caps>
                 </div>
-
-                <div id="searchTexto" class="col-xs-12 col-sm-6 col-md-15">
+                <div id="searchVer" class="col-xs-12 col-sm-6 col-md-4">
+                    Fecha:
+                    <filtro-fecha (ClickEvent)="getEmpresa()"></filtro-fecha>
+                </div>
+                <div id="searchTexto" class="col-xs-12 col-sm-6 col-md-4">
                     Por Razon Social/CUIT:
                     <div class="styled-select ">
                         <input type="search" class="" placeholder="" [value]="" aria-controls="tableModal"
@@ -40,7 +43,7 @@
                     </div>
                 </div>
 
-                <div class="col-xs-12 col-sm-6 col-md-15">
+                <div class="col-xs-12 col-sm-6 col-md-4">
                     Por Estado:
                     <div class="styled-select ">
                         <p-multiSelect #multiSelect [options]="descripcionEstadoAlta" defaultLabel="Estados"
@@ -51,7 +54,7 @@
                     </div>
                 </div>
 
-                <div class="col-xs-12 col-sm-6 col-md-15"
+                <div class="col-xs-12 col-sm-6 col-md-4"
                     *ngIf="isAuthorized('VER ALTAS GRANOS') && isAuthorized('VER ALTAS NO GRANOS')">
                     Tipo proveedor:
                     <div class="styled-select ">
@@ -65,7 +68,7 @@
                     </div>
                 </div>
 
-                <div class="col-xs-12 col-sm-6 col-md-15">
+                <div class="col-xs-12 col-sm-6 col-md-4">
                     Alta física:
                     <div class="styled-select ">
                         <select [(ngModel)]="contieneDocumentacionFisica">
@@ -76,10 +79,7 @@
                     </div>
                 </div>
 
-                <div id="searchVer" class="col-xs-12 col-sm-6 col-md-15">
-                    <p>Ver:</p>
-                    <filtro-fecha (ClickEvent)="getEmpresa()"></filtro-fecha>
-                </div>
+           
 
             </div>
 
