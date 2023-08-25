@@ -9,7 +9,7 @@ namespace SustitucionMOAModel.Entities
         public int Id { get; set; }
         public int PeticionDeOferta_Id { get; set; }
         public int SolpPosicion_Id { get; set; }    
-        public string RegistroInfo_Num { get; set; }    
+        public string NumeroRegistroInfo { get; set; }    
 
         [ForeignKey("PeticionDeOferta_Id")]
         public virtual PeticionDeOferta PeticionDeOferta { get; set; }
