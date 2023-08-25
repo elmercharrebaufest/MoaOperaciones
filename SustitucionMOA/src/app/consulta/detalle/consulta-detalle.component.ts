@@ -175,8 +175,8 @@ export class DetalleConsultaComponent extends BaseComponent {
         this.setTabs();
         this.checkPermisos();
         this.jqueryOnInit();
-        this.getDetalleConsulta();
         this.getCombos();
+        this.getDetalleConsulta();
     }
 
     ngAfterViewInit(): void {
@@ -688,7 +688,7 @@ export class DetalleConsultaComponent extends BaseComponent {
                             return x;
                         });
                         this.consulta = result;
-                        this.subcategoriasInicial();
+                       
                         this.setDatosExtra();
                         if (this.consulta.EstadoConsulta.Code == "INI" && this.esInterno) {
                             this.cambiarEstadoPorCode("GES");
@@ -710,6 +710,8 @@ export class DetalleConsultaComponent extends BaseComponent {
                         this.estadoId = result.EstadoConsultaId;
                         this.categoriaId = result.CategoriaId;
                         this.subcategoriaId = result.SubCategoriaId;
+                        this.subcategoriasInicial();
+
                         try {
                             setTimeout(() => {
                                 this.scrollBottom();

@@ -2172,10 +2172,10 @@ namespace SustitucionMOAUtils.Services
                     CommonService.toDateList(req.FechaDesde, req.FechaHasta);
                 var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
 
-                var material =
-                    usuario.TieneRol(RolEnum.Administracion) || usuario.TieneRol(RolEnum.ClienteConCpedg)
-                        ? string.Empty
-                        : Constante.CODIGO_SOJA_HIPRO;
+                //var dsdmaterial =
+                //    usuario.TieneRol(RolEnum.Administracion) || usuario.TieneRol(RolEnum.ClienteConCpedg)
+                //        ? string.Empty
+                //        : Constante.CODIGO_SOJA_HIPRO;
 
                 var consumerReq = new OrdenCargaVisualizarClienteWSMOARequest
                 {
@@ -2183,7 +2183,7 @@ namespace SustitucionMOAUtils.Services
                     Contrato = string.Empty,
                     Corredor = req.CorredorCodigo,
                     Fechas = rangoFechas,
-                    Material = material,
+                    Material = string.Empty,
                     Pendiente = true, // Contratos ABIERTOS
                     TipoContrato = Constante.FAS_FILTRO_TIPO_CONTRATO
                 };
