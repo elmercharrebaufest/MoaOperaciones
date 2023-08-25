@@ -5252,17 +5252,17 @@ namespace SustitucionMOAUtils.Services
                 CotizacionPosiciones = posiciones.Select(x => new GuardarCotizacionPosicionDto
                 {
                     PeticionDeOfertaSolpPosicionId = peticionEntidad.Posiciones.Where(posicion => posicion.SolpPosicion_Id == x.Id).FirstOrDefault().Id,
-                    Cantidad = peticionEntidad.RegistroInfo != null ? registroInfo.FirstOrDefault(a => a.PosicionId ==
+                    Cantidad = peticionEntidad.RegistroInfo == true ? registroInfo.FirstOrDefault(a => a.PosicionId ==
                                peticionEntidad.Posiciones.Where(posicion => posicion.SolpPosicion_Id == x.Id).FirstOrDefault().SolpPosicion_Id)?.CantidadAdjudicacion
                               : x.Cantidad ?? 1,
-                    MonedaId = peticionEntidad.RegistroInfo != null ? registroInfo.FirstOrDefault(a => a.PosicionId ==
+                    MonedaId = peticionEntidad.RegistroInfo == true ? registroInfo.FirstOrDefault(a => a.PosicionId ==
                                peticionEntidad.Posiciones.Where(posicion => posicion.SolpPosicion_Id == x.Id).FirstOrDefault().SolpPosicion_Id)?.MonedaId
                                : x.Moneda_Id,
-                    UnidadDeMedidaId = peticionEntidad.RegistroInfo != null ? registroInfo.FirstOrDefault(a => a.PosicionId ==
+                    UnidadDeMedidaId = peticionEntidad.RegistroInfo == true ? registroInfo.FirstOrDefault(a => a.PosicionId ==
                                peticionEntidad.Posiciones.Where(posicion => posicion.SolpPosicion_Id == x.Id).FirstOrDefault().SolpPosicion_Id)?.UnidadId
                                : x.Unidad_Id,
                     FechaDeEntrega = DateTime.Today.AddDays(-1),
-                    Precio = peticionEntidad.RegistroInfo != null ? registroInfo.FirstOrDefault(a => a.PosicionId ==
+                    Precio = peticionEntidad.RegistroInfo == true ? registroInfo.FirstOrDefault(a => a.PosicionId ==
                                peticionEntidad.Posiciones.Where(posicion => posicion.SolpPosicion_Id == x.Id).FirstOrDefault().SolpPosicion_Id).Precio
                                : x.PrecioBruto != null ? (decimal)x.PrecioBruto : 0,
                 }).ToList(),
