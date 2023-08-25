@@ -7,7 +7,7 @@
         <br>
         <div class="col-md-12 row myRow alinearTitulo margenInput">
             <div class="col-md-12 titulosModal">
-                <label>La propuesta técnica de <strong>materiales</strong> respeta las condiciones de pliego*</label>
+                <label>La propuesta técnica de <strong>materiales</strong> respeta las condiciones de pliego *</label>
             </div>
         </div>
         <div class="col-md-12">
@@ -28,7 +28,7 @@
         </div>
         <div class="col-md-12 row myRow alinearTitulo margenInput">
             <div class="col-md-12 titulosModal">
-                <label>La propuesta técnica de <strong>servicios</strong> respeta las condiciones de pliego*</label>
+                <label>La propuesta técnica de <strong>servicios</strong> respeta las condiciones de pliego *</label>
             </div>
         </div>
         <div class="col-md-12">
@@ -51,7 +51,7 @@
         <br>
         <div class="col-md-12 row myRow alinearTitulo margenInput">
             <div class="col-md-12 titulosModal">
-                <strong>En caso que una de las opciones sea "No" debe adjuntar un archivo o agregar una observacion</strong>
+                <strong>Si alguna de las opciones es "No", debe adjuntar un archivo o agregar una observación.</strong>
             </div>
         </div>
         <div class="inputCompras">
@@ -131,7 +131,7 @@
         </div>
         <div class="col-md-12 row myRow alinearTitulo margenInput">
             <div class="col-md-12">
-                <strong>Indicar hs según agremiación de sus colaboradores</strong>
+                <strong>Indicar horas según agremiación de sus colaboradores</strong>
             </div>
         </div>
         <div class="row">
@@ -160,7 +160,7 @@
                                         <th style="background-color: #4760ac !important;
                                         text-transform: none !important;">Gremio</th>
                                         <th style="background-color: #4760ac !important;
-                                    text-transform: none !important;">Categoria</th>
+                                    text-transform: none !important;">Categoría</th>
                                         <th style="background-color: #4760ac !important;
                                     text-transform: none !important;">Cantidad de personas</th>
                                         <th style="background-color: #4760ac !important;
@@ -179,7 +179,7 @@
                                 </ng-template>
                                 <ng-template pTemplate="body" let-rowData let-columns="columns" let-index="rowIndex">
                                     <ng-container *ngIf="rowData.Fila == true || rowData.ConfigurarHora == true">
-                                        <tr>                                                                               
+                                        <tr>
                                             <td pEditableColumn *ngIf="rowData.ConfigurarHora">
                                                 <p-cellEditor>
                                                     <ng-template pTemplate="input">
@@ -190,56 +190,56 @@
                                                     </ng-template>
                                                 </p-cellEditor>
                                             </td>
-                                                <td *ngIf="!rowData.ConfigurarHora">
-                                                    {{rowData.Gremio}}
-                                                </td>
-                                                <td pEditableColumn *ngIf="rowData.ConfigurarHora">
-                                                    <p-cellEditor>
-                                                        <ng-template pTemplate="input">
-                                                            <input type="text" [(ngModel)]="rowData.Categoria">
-                                                        </ng-template>
-                                                        <ng-template pTemplate="output">
-                                                            {{rowData.Categoria}}
-                                                        </ng-template>
-                                                    </p-cellEditor>
-                                                </td>
-                                                <td *ngIf="!rowData.ConfigurarHora">
-                                                    {{rowData.Categoria}}
-                                                </td>
-                                                <td pEditableColumn>
-                                                    <p-cellEditor>
-                                                        <ng-template pTemplate="input">
-                                                            <input type="text" pKeyFilter="int" min="0" 
-                                                                   [(ngModel)]="rowData.CantidadPersonas">
-                                                        </ng-template>
-                                                        <ng-template pTemplate="output">
-                                                            {{rowData.CantidadPersonas}}
-                                                        </ng-template>
-                                                    </p-cellEditor>
-                                                </td>                                             
-                                                <td pEditableColumn>
-                                                    <p-cellEditor>
-                                                        <ng-template pTemplate="input">
-                                                            <input type="text" pKeyFilter="int" min="0" 
-                                                                   [(ngModel)]="rowData.HorasNormales">
-                                                        </ng-template>
-                                                        <ng-template pTemplate="output">
-                                                            {{rowData.HorasNormales}}
-                                                        </ng-template>
-                                                    </p-cellEditor>
-                                                </td>
-                                                <td pEditableColumn>
-                                                    <p-cellEditor>
-                                                        <ng-template pTemplate="input">
-                                                            <input type="text" pKeyFilter="int" min="0" 
-                                                                   [(ngModel)]="rowData.HorasNocturnas">
-                                                        </ng-template>
-                                                        <ng-template pTemplate="output">
-                                                            {{rowData.HorasNocturnas}}
-                                                        </ng-template>
-                                                    </p-cellEditor>
-                                                </td>
-                                            <td style="text-align:center" >
+                                            <td *ngIf="!rowData.ConfigurarHora">
+                                                {{rowData.Gremio}}
+                                            </td>
+                                            <td pEditableColumn *ngIf="rowData.ConfigurarHora">
+                                                <p-cellEditor>
+                                                    <ng-template pTemplate="input">
+                                                        <input type="text" [(ngModel)]="rowData.Categoria">
+                                                    </ng-template>
+                                                    <ng-template pTemplate="output">
+                                                        {{rowData.Categoria}}
+                                                    </ng-template>
+                                                </p-cellEditor>
+                                            </td>
+                                            <td *ngIf="!rowData.ConfigurarHora">
+                                                {{rowData.Categoria}}
+                                            </td>
+                                            <td pEditableColumn>
+                                                <p-cellEditor>
+                                                    <ng-template pTemplate="input">
+                                                        <input type="text" pKeyFilter="int" min="0"
+                                                               [(ngModel)]="rowData.CantidadPersonas">
+                                                    </ng-template>
+                                                    <ng-template pTemplate="output">
+                                                        {{rowData.CantidadPersonas}}
+                                                    </ng-template>
+                                                </p-cellEditor>
+                                            </td>
+                                            <td pEditableColumn>
+                                                <p-cellEditor>
+                                                    <ng-template pTemplate="input">
+                                                        <input type="text" pKeyFilter="int" min="0"
+                                                               [(ngModel)]="rowData.HorasNormales">
+                                                    </ng-template>
+                                                    <ng-template pTemplate="output">
+                                                        {{rowData.HorasNormales}}
+                                                    </ng-template>
+                                                </p-cellEditor>
+                                            </td>
+                                            <td pEditableColumn>
+                                                <p-cellEditor>
+                                                    <ng-template pTemplate="input">
+                                                        <input type="text" pKeyFilter="int" min="0"
+                                                               [(ngModel)]="rowData.HorasNocturnas">
+                                                    </ng-template>
+                                                    <ng-template pTemplate="output">
+                                                        {{rowData.HorasNocturnas}}
+                                                    </ng-template>
+                                                </p-cellEditor>
+                                            </td>
+                                            <td style="text-align:center">
                                                 <img *ngIf="rowData.ConfigurarHora" style="cursor:pointer" src="./Content/images/icons/trashRed.svg"
                                                      alt="imageAlt" (click)="eliminarRow(index)" style="width: 26px;" />
 
@@ -273,7 +273,7 @@
                                         <th style="background-color: #4760ac !important;
                                     text-transform: none !important;">Gremio</th>
                                         <th style="background-color: #4760ac !important;
-                                    text-transform: none !important;">Categoria</th>
+                                    text-transform: none !important;">Categoría</th>
                                         <th style="background-color: #4760ac !important;
                                     text-transform: none !important;">Cantidad de personas</th>
                                         <th style="background-color: #4760ac !important;
@@ -289,7 +289,7 @@
                                         <th style="background-color: #4760ac !important;
                                     text-transform: none !important; width: 60px;"></th>
                                     </tr>
-                                    
+
                                 </ng-template>
 
                                 <ng-template pTemplate="body" let-rowData let-columns="columns" let-index="rowIndex">
@@ -318,7 +318,7 @@
                                             <td pEditableColumn>
                                                 <p-cellEditor>
                                                     <ng-template pTemplate="input">
-                                                        <input type="text" pKeyFilter="int" min="0" 
+                                                        <input type="text" pKeyFilter="int" min="0"
                                                                [(ngModel)]="rowData.CantidadPersonas">
                                                     </ng-template>
                                                     <ng-template pTemplate="output">
@@ -329,7 +329,7 @@
                                             <td pEditableColumn>
                                                 <p-cellEditor>
                                                     <ng-template pTemplate="input">
-                                                        <input type="text" pKeyFilter="int" min="0" 
+                                                        <input type="text" pKeyFilter="int" min="0"
                                                                [(ngModel)]="rowData.HorasNormales">
                                                     </ng-template>
                                                     <ng-template pTemplate="output">
@@ -340,7 +340,7 @@
                                             <td pEditableColumn>
                                                 <p-cellEditor>
                                                     <ng-template pTemplate="input">
-                                                        <input type="text" pKeyFilter="int" min="0" 
+                                                        <input type="text" pKeyFilter="int" min="0"
                                                                [(ngModel)]="rowData.HorasNocturnas">
                                                     </ng-template>
                                                     <ng-template pTemplate="output">
@@ -360,12 +360,6 @@
                         </p>
                     </p-tabPanel>
                 </p-tabView>
-            </div>
-        </div>
-
-        <div class="col-md-12 row myRow alinearTitulo margenInput">
-            <div class="col-md-12">
-                <strong>Solo se reconocerán el pago de horas dentro de predio industrial</strong>
             </div>
         </div>
     </section>
@@ -460,7 +454,7 @@
                                                 <td pEditableColumn style="font-size: 11px !important;">
                                                     <p-cellEditor>
                                                         <ng-template pTemplate="input">
-                                                            <input type="text" pKeyFilter="num" 
+                                                            <input type="text" pKeyFilter="num"
                                                                    [(ngModel)]="subposicionesCompras.CantidadCotizacion"
                                                                    (ngModelChange)="calcularValorNeto(subposicionesCompras, posicionCompra.Id);mostrarMensajeNoRespetaCondiciones(); obtenerPrecioTotalPosicionProveedor()">
                                                         </ng-template>
@@ -507,7 +501,6 @@
                                                         <ng-template pTemplate="input">
                                                             <input pInputText type="number"
                                                                    [(ngModel)]="subposicionesCompras.PrecioSubPosicion" pKeyFilter="num"
-                                                                   
                                                                    (ngModelChange)="calcularValorNeto(subposicionesCompras, posicionCompra.Id);obtenerPrecioTotalPosicionProveedor()" />
                                                         </ng-template>
 
@@ -541,7 +534,7 @@
                 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                     <label class="labelCompras" for="editorTexto">
                         <strong style="font-size: 14px;">
-                            Adjuntar documentación condiciones comerciales (opcional)
+                            Adjuntar documentación de condiciones comerciales (opcional)
                         </strong>
                     </label>
                     <p-fileUpload [styles]="{'margin-left':'-13px; cursor: pointer;'}" name="fileUploadPeticionDeOferta"
