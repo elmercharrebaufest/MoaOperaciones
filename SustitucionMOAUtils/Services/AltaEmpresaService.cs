@@ -90,9 +90,10 @@ namespace SustitucionMOAUtils.Services
                                     || x.EstadoAprobacion == EstadoAprobacion.SinAlta
                                     || x.EstadoAprobacion == EstadoAprobacion.DocumentacionPendiente)
                                 && x.HistorialAprobaciones.Count > 0
-                                && IdTiposProveedor.Contains(x.TipoProveedor.Id)
-                                && x.FechaSolicitud >= fechaIncioDateTime && x.FechaSolicitud
-                                <= fechaFinDateTime, includes: includes)
+                                 && IdTiposProveedor.Contains(x.TipoProveedor.Id)
+                                && x.HistorialAprobaciones.OrderByDescending(h => h.Fecha).FirstOrDefault().Fecha >= fechaIncioDateTime 
+                                && x.HistorialAprobaciones.OrderByDescending(h => h.Fecha).FirstOrDefault().Fecha <= fechaFinDateTime, includes: includes)
+
                         .Select(proveedor => new ProveedorAltaDto
                         {
                             CodigoProveedor = proveedor.CodigoProveedor ?? "",
