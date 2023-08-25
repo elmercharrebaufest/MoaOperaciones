@@ -58,12 +58,12 @@
                                 <div class="styled-select" style="overflow: initial;">
                                     <app-dropdown-input [options]="contratosDisponibles" [filterKey]="'Label'"
                                         [disabled]="(ordenDeCargaId > 0 && !puedeEditarContrato) || noEditarCliente"
-                                        (valueChange)="onContratoSeleccionadoChanged($event)"
+                                        (selectedChange)="onContratoSeleccionadoChanged()"
                                         [placeholder]="'Seleccione un Contrato - Producto - Kg Disponibles'"
-                                        [selectedOption]="ordenDeCarga.ContratoSeleccionado">
+                                        [(selected)]="ordenDeCarga.ContratoSeleccionado">
                                         <ng-template let-option>
                                             <p class="option-label" [ngClass]="{
-                                                'text-info':option.TipoContrato == tipoContrato.FacturaAnticipada && 
+                                                'text-primary':option.TipoContrato == tipoContrato.FacturaAnticipada && 
                                                 ordenDeCarga.ContratoIngresado != option.NumeroContrato
                                             }">
                                                 {{option.Label}}
@@ -352,6 +352,7 @@
                             </div>
                         </div>
 
+                        <button (click)="test()">adsf asdf asdf asfd adsf</button>
                         <div class="col-xs-12 col-md-11" style="margin-left: 3em;">
                             <div class="formulario-label">
                                 Observaci&oacute;n:
