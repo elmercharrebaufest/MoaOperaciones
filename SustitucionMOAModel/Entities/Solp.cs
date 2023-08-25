@@ -54,5 +54,11 @@ namespace SustitucionMOAModel.Entities
 
         [ForeignKey("UsuarioCompras_Id")]
         public virtual UsuarioCompras UsuarioCompras { get; set; }
+
+        [InverseProperty("Solp")]
+
+        public virtual ICollection<Adjudicacion> Adjudicacions { get; set; } = new List<Adjudicacion>();
+
+
     }
 }
