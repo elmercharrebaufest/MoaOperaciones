@@ -3581,6 +3581,7 @@ namespace SustitucionMOAUtils.Services
             }
             foreach (var prov in usuarios)
             {
+                asunto = "";
                 var enviarA = new List<string> { prov.Usuario.Mail };
                 asunto += $"PO {peticion.Id} - {prov.Usuario.ObtenerRazonSocial()}";
                 if (peticion.Posiciones.Select(x => x.SolpPosicion).Where(x => x.TipoPosicion_Id != null).FirstOrDefault().TipoPosicion.Codigo == "MATERIALES")
