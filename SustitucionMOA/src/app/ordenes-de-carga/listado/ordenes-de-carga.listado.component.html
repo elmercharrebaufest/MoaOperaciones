@@ -28,7 +28,8 @@
           </div>
         </div>
 
-        <div *ngIf=" esInterno || esComercial || esMesaFas || !esCliente()" id="searchCliente" class="col-xs-12 col-sm-6 col-md-15">
+        <div *ngIf=" esInterno || esComercial || esMesaFas || !esCliente()" id="searchCliente"
+          class="col-xs-12 col-sm-6 col-md-15">
           <p>Por Cliente:</p>
           <div class="styled-select">
             <input type="search" class="" placeholder="Ingrese razon social de cliente" [value]=""
@@ -40,7 +41,8 @@
           <p>Por Estado:</p>
           <div>
             <p-multiSelect [options]="descripcionEstadoOrdenCarga" defaultLabel="Estados" [(ngModel)]="estadosSelected"
-              selectedItemsLabel="{0} Items seleccionados" (onChange)="filtrarListado();setEstadosFiltroFAS()" appendTo="body">
+              selectedItemsLabel="{0} Items seleccionados" (onChange)="filtrarListado();setEstadosFiltroFAS()"
+              appendTo="body">
             </p-multiSelect>
           </div>
         </div>
@@ -73,6 +75,23 @@
               <option value="1" selected>Con pedido anticipado</option>
               <option value="2" selected>Sin pedido anticipado</option>
             </select>
+          </div>
+        </div>
+
+        <div *ngIf=" esInterno || esComercial || esMesaFas || !esCliente()" id="searchCliente"
+          class="col-xs-12 col-sm-6 col-md-15">
+          <p>Por Patente Chasis:</p>
+          <div class="styled-select">
+            <input type="search" class="" placeholder="Ingrese patente de chasis" [value]="" aria-controls="tableModal"
+              [(ngModel)]="filtroPatenteChasis">
+          </div>
+        </div>
+        <div *ngIf=" esInterno || esComercial || esMesaFas || !esCliente()" id="searchCliente"
+          class="col-xs-12 col-sm-6 col-md-15">
+          <p>Por Corredor:</p>
+          <div class="styled-select">
+            <input type="search" class="" placeholder="Ingrese razon social de corredor" [value]=""
+              aria-controls="tableModal" [(ngModel)]="filtroCorredor">
           </div>
         </div>
 
@@ -114,13 +133,14 @@
           </thead>
           <tbody>
             <tr
-              *ngFor="let ordenDeCarga of data | customFilter : 'Contrato' : filtroAlta | customFilter : 'Material' : (productoSelected  == 'Todos' ? '' : productoSelected) | customFilter : 'RazonSocialCliente' : filtroCliente | customFilterBoolean : 'EsFacturaAnticipada' : (pedidoAnticipado == 0 ? null:  (pedidoAnticipado != 2)) : true | orderedColumn : {property: orderedByColumn, direction: orderDirection} | paginate: { itemsPerPage:itemsPerPage, currentPage: p }; let odd = odd"
+              *ngFor="let ordenDeCarga of data | customFilter : 'Contrato' : filtroAlta | customFilter : 'Material' : (productoSelected  == 'Todos' ? '' : productoSelected) | customFilter : 'RazonSocialCliente' : filtroCliente |customFilter:'RazonSocialCorredor': filtroCorredor |customFilter:'PatenteChasis': filtroPatenteChasis| customFilterBoolean : 'EsFacturaAnticipada' : (pedidoAnticipado == 0 ? null:  (pedidoAnticipado != 2)) : true | orderedColumn : {property: orderedByColumn, direction: orderDirection} | paginate: { itemsPerPage:itemsPerPage, currentPage: p }; let odd = odd"
               role="row" [class.odd]="!odd">
               <td *ngIf="puedeEnviarASAP"><input type="checkbox" [checked]="estaListadoParaSAP(ordenDeCarga)"
                   [disabled]="!ordenDeCarga.NoEstaEnSAP" (click)="seleccionarItem(ordenDeCarga)" /></td>
               <td>{{ordenDeCarga.Id}}</td>
               <td *ngIf="esMesaFas || esInterno">{{ordenDeCarga.Entrega}}</td>
-              <td *ngIf="esInterno || esComercial || esPuerto || esMesaFas || esCorredor">{{ordenDeCarga.RazonSocialCliente}}</td>
+              <td *ngIf="esInterno || esComercial || esPuerto || esMesaFas || esCorredor">
+                {{ordenDeCarga.RazonSocialCliente}}</td>
               <td *ngIf="esMesaFas">{{ordenDeCarga.CUITCliente}}</td>
               <td *ngIf="esInterno">{{ordenDeCarga.RazonSocialCorredor}}</td>
               <td>{{ordenDeCarga.DescripcionEstadoListado}}</td>
@@ -130,7 +150,7 @@
               <td *ngIf="esInterno || esMesaFas">{{ordenDeCarga.Pedido}}</td>
               <td>{{ordenDeCarga.Material}}</td>
               <td style="text-align: center;">{{ordenDeCarga.PatenteChasis}}
-                <span *ngIf="ordenDeCarga.Escalable" class="fa fa-truck" aria-hidden="true"></span>               
+                <span *ngIf="ordenDeCarga.Escalable" class="fa fa-truck" aria-hidden="true"></span>
               </td>
               <td *ngIf="esInterno || esComercial || esPuerto || esMesaFas">
                 <div class="semaforo {{ordenDeCarga.ColorSemaforo}}">
