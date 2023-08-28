@@ -312,7 +312,8 @@ export class UsuarioAltaEmpresaNoGranosComponent extends BaseComponent implement
     }
 
     esObligatorioFlete() {
-        if(this.IdRubro == 5){
+        const rubro = this.rubros.find(x => x.Id == this.IdRubro);
+        if(rubro.Nombre === 'FLETES'){
             this.RealizarAnalisisNOSIS = true;
             this.nosisObligatorio = true;
             this.siperObligatorio = true;
