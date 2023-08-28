@@ -20,6 +20,10 @@
         <div class="col-xs-12 col-md-12 search-header">
           <title-caps>Refinar resultados</title-caps>
         </div>
+
+        <div id="searchVer" class="col-xs-12 col-sm-12 col-md-12">
+          <app-filtro-fecha-fas (ClickEvent)="getListado()"></app-filtro-fecha-fas>
+        </div>
         <div id="searchTexto" class="col-xs-12 col-sm-6 col-md-15">
           <p>Contrato:</p>
           <div class="styled-select">
@@ -28,25 +32,16 @@
           </div>
         </div>
 
-        <div *ngIf=" esInterno || esComercial || esMesaFas || !esCliente()" id="searchCliente" class="col-xs-12 col-sm-6 col-md-15">
-          <p>Por Cliente:</p>
+        <div *ngIf=" esInterno || esComercial || esMesaFas || !esCliente()" id="searchCliente"
+          class="col-xs-12 col-sm-6 col-md-15">
+          <p>Cliente:</p>
           <div class="styled-select">
             <input type="search" class="" placeholder="Ingrese razon social de cliente" [value]=""
               aria-controls="tableModal" [(ngModel)]="filtroCliente">
           </div>
         </div>
-
-        <div *ngIf="!esTercero" id="searchEstado" class="col-xs-12 col-sm-6 col-md-15">
-          <p>Por Estado:</p>
-          <div>
-            <p-multiSelect [options]="descripcionEstadoOrdenCarga" defaultLabel="Estados" [(ngModel)]="estadosSelected"
-              selectedItemsLabel="{0} Items seleccionados" (onChange)="filtrarListado();setEstadosFiltroFAS()" appendTo="body">
-            </p-multiSelect>
-          </div>
-        </div>
-
         <div id="searchProducto" class="col-xs-12 col-sm-6 col-md-15">
-          <p>Por Producto:</p>
+          <p>Producto:</p>
           <div class="styled-select">
             <select name="product" [(ngModel)]="productoSelected">
               <option value="Todos">
@@ -59,11 +54,15 @@
           </div>
         </div>
 
-        <div id="searchVer" class="col-xs-12 col-sm-6 col-md-15">
-          <p>Ver:</p>
-          <filtro-fecha (ClickEvent)="getListado()"></filtro-fecha>
+        <div *ngIf="!esTercero" id="searchEstado" class="col-xs-12 col-sm-6 col-md-15">
+          <p>Estado:</p>
+          <div>
+            <p-multiSelect [options]="descripcionEstadoOrdenCarga" defaultLabel="Estados" [(ngModel)]="estadosSelected"
+              selectedItemsLabel="{0} Items seleccionados" (onChange)="filtrarListado();setEstadosFiltroFAS()"
+              appendTo="body">
+            </p-multiSelect>
+          </div>
         </div>
-
 
         <div id="searchPedido" class="col-xs-12 col-sm-6 col-md-15" style="margin-top: 8px;">
           Factura anticipada:
@@ -120,7 +119,8 @@
                   [disabled]="!ordenDeCarga.NoEstaEnSAP" (click)="seleccionarItem(ordenDeCarga)" /></td>
               <td>{{ordenDeCarga.Id}}</td>
               <td *ngIf="esMesaFas || esInterno">{{ordenDeCarga.Entrega}}</td>
-              <td *ngIf="esInterno || esComercial || esPuerto || esMesaFas || esCorredor">{{ordenDeCarga.RazonSocialCliente}}</td>
+              <td *ngIf="esInterno || esComercial || esPuerto || esMesaFas || esCorredor">
+                {{ordenDeCarga.RazonSocialCliente}}</td>
               <td *ngIf="esMesaFas">{{ordenDeCarga.CUITCliente}}</td>
               <td *ngIf="esInterno">{{ordenDeCarga.RazonSocialCorredor}}</td>
               <td>{{ordenDeCarga.DescripcionEstadoListado}}</td>
@@ -130,7 +130,7 @@
               <td *ngIf="esInterno || esMesaFas">{{ordenDeCarga.Pedido}}</td>
               <td>{{ordenDeCarga.Material}}</td>
               <td style="text-align: center;">{{ordenDeCarga.PatenteChasis}}
-                <span *ngIf="ordenDeCarga.Escalable" class="fa fa-truck" aria-hidden="true"></span>               
+                <span *ngIf="ordenDeCarga.Escalable" class="fa fa-truck" aria-hidden="true"></span>
               </td>
               <td *ngIf="esInterno || esComercial || esPuerto || esMesaFas">
                 <div class="semaforo {{ordenDeCarga.ColorSemaforo}}">
