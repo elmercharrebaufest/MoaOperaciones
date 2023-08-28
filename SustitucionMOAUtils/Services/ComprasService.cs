@@ -4050,6 +4050,11 @@ namespace SustitucionMOAUtils.Services
                 };
                 foreach (var proveedor in peticion.Usuarios.Where(x => circularDto.UsuarioIds.Contains(x.Usuario_Id)))
                 {
+                    proveedor.PropuestaTecnicaAprobada = null;
+                    proveedor.PropuestaTecnicaFecha = null;
+                    proveedor.PropuestaTecnicaUsuario_Id = null;
+                    proveedor.ObservacionNoCumple = "";
+
                     if (proveedor.Cotizaciones != null && proveedor.Cotizaciones.Count > 0 && proveedor.Cotizaciones.First().CotizacionEstado_Id == 1)
                     {
                         proveedor.Cotizaciones.First().CotizacionEstado_Id = 2;
