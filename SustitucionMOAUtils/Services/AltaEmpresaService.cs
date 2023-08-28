@@ -33,7 +33,7 @@ namespace SustitucionMOAUtils.Services
 
         public List<ProveedorAltaDto> GetEmpresas(List<int> IdTiposProveedor, string fechaInicio, string fechaFin)
         {
-            DateTime fechaIncioDateTime, fechaFinDateTime;
+            DateTime fechaIncioDateTime, fechaFinDateTime, currentTime = DateTime.Now;
             try
             {
                 fechaIncioDateTime = DateTime.Parse(fechaInicio);
@@ -53,14 +53,14 @@ namespace SustitucionMOAUtils.Services
 
             try
             {
-                fechaFinDateTime = DateTime.Parse(fechaFin);
+                fechaFinDateTime = DateTime.Parse(fechaFin + " " + currentTime.TimeOfDay.ToString());
             }
             catch
             {
                 try
                 {
                     fechaFin = new string(fechaFin.Where(c => c != '\u200E').ToArray());
-                    fechaFinDateTime = DateTime.Parse(fechaFin);
+                    fechaFinDateTime = DateTime.Parse(fechaFin + " " + currentTime.TimeOfDay.ToString());
                 }
                 catch (Exception e)
                 {
