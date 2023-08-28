@@ -27,7 +27,7 @@ namespace SustitucionMOAWS.WSRequests.OrdenCarga
             Chofer = orden.NombreChofer;
             NumeroEntrega = orden.NumeroEntrega;
             TipoDoc = string.Empty;
-            Documento = string.Empty;
+            Documento = orden.CUITChofer;
             CUITTransporte = orden.CUITTransporte;
             CUITIntermediarioFlete = orden.CUITIntermediarioFlete;
         }
