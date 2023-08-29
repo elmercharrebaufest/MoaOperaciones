@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using SustitucionMOAFotmatter;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
-using SustitucionMOAModel.Models.WSMapMOA.Vendedor.Detalle;
 using SustitucionMOAWS.CredentialService;
 using SustitucionMOAWS.OrdenesDeCompraParaSolpWebServiceMOA;
 
@@ -24,23 +20,24 @@ namespace SustitucionMOAWS.WSConsumers
 
         public List<OrdenDeCompraSAPDto> Request(string SOLPED, string POSICION)
         {
-            string exito = "";
-            string resultado = "";
-
             service = new Z_MMRFC_OC_PARA_SOLPPortTypeClient();
             service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
             service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
-            ZMMES0027[] lista = service.Z_MMRFC_OC_PARA_SOLP(POSICION, SOLPED, out exito, out resultado);
+            ZMMES0027[] lista = service.Z_MMRFC_OC_PARA_SOLP(POSICION, SOLPED, out string exito, out string resultado);
             return Map(lista, exito, resultado);
         }
 
         private List<OrdenDeCompraSAPDto> Map(ZMMES0027[] items, string exito, string resultado)
         {
+            List<OrdenDeCompraSAPDto> result = new List<OrdenDeCompraSAPDto>();
             if (exito != "200")
             {
-                throw new ValidationCustomException(resultado);
+                if (resultado == "No hay Órdenes de Compra para la Solicitud de Pedido")
+                {
+                    return result;
+                } 
+                else throw new ValidationCustomException(resultado);
             }
-            List<OrdenDeCompraSAPDto> result = new List<OrdenDeCompraSAPDto>();
 
             var agrupado = items.GroupBy(a => a.EBELN).ToList();
             foreach (var item in agrupado)
@@ -59,13 +56,10 @@ namespace SustitucionMOAWS.WSConsumers
                         ClaseDocumento = item.First().BSART,
                         FechaCreacion = SAPFormatter.GetDateTime(item.First().AEDAT),
                         Tipo = item.First().PSTYP == "0" ? "Materiales" : "Servicios",
-                        TipoDocCompras = item.First().BSTYP,
-
+                        TipoDocCompras = item.First().BSTYP
                     }
                 });
             }
-
-
             return result;
         }
     }
