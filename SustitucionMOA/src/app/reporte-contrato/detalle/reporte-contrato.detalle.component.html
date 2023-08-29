@@ -1,88 +1,87 @@
-
 <div class="content-wraper">
     <mensaje></mensaje>
     <spinner></spinner>
     <!-- CONTENT-->
     <section class="container-fluid clearfix">
         <!--Title-->
-        <div class="row titleSection">
-            <div class="col-xs-12 col-sm-10 ">Resumen de contrato Nro <strong>{{this.contratoId}}</strong> </div>
+        <ng-container *ngIf="detalles">
+            <div class="row titleSection">
+                <div class="col-xs-12 col-sm-10 ">Resumen de contrato Nro <strong>{{this.contratoId}}</strong> </div>
 
-            <div class="row align-right">
-                <div class="col-xs-12 col-sm-8 col-md-8" style="display: flex; justify-content: flex-end;">
-                    <a (click)="exportExcelReporteContratoDetalle()" style="text-decoration:none!important">
-                        <div class="btnSection animate align-right">
-                            Exportar <img src="Content/images/buttons/EXPORT.svg" alt="exportar"/>
-                        </div>
-                    </a>
+                <div class="row align-right">
+                    <div class="col-xs-12 col-sm-8 col-md-8" style="display: flex; justify-content: flex-end;">
+                        <a (click)="exportExcelReporteContratoDetalle()" style="text-decoration:none!important">
+                            <div class="btnSection animate align-right">
+                                Exportar <img src="Content/images/buttons/EXPORT.svg" alt="exportar" />
+                            </div>
+                        </a>
+                    </div>
+
                 </div>
-
             </div>
-        </div>
 
 
 
-        <div class="row myRow">
+            <div class="row myRow">
 
-            <div class="clearfix myTables">
-                <table id="tableModal" class="display nowrap dataTable no-footer dtr-inline rounded shadow animate" role="grid" aria-describedby="tableModal_info" style="width: 97%; padding:20px;">
-                    <thead>
-                        <tr role="row">
-                            <th tabindex="0" rowspan="1" colspan="1" style=" background:none">ID</th>
-                            <th tabindex="0" rowspan="1" colspan="1" style=" background:none">Fecha de carga</th>
-                            <th tabindex="0" rowspan="1" colspan="1" style=" background:none">Cant. Entrega</th>
-                            <th tabindex="0" rowspan="1" colspan="1" style=" background:none">CTG/Remito</th>
-                            <th tabindex="0" rowspan="1" colspan="1" style=" background:none">CPE</th>
-                            <th tabindex="0" rowspan="1" colspan="1" style=" background:none">Cant. Facturada</th>
-                            <th tabindex="0" rowspan="1" colspan="1" style=" background:none">Factura</th>
-                            <th tabindex="0" rowspan="1" colspan="1" style=" background:none">Chasis</th>
-                            <th tabindex="0" rowspan="1" colspan="1" style=" background:none">Acoplado</th>
-                            <th tabindex="0" rowspan="1" colspan="1" style=" background:none">Chofer</th>
-                      
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr *ngFor="let det of detalles">
-                            <td>
-                                <a *ngIf="det.Entrega" 
-                                    class="animate" 
-                                    style="cursor:pointer;" 
-                                    data-toggle="modal"
-                                    data-target="#modalOrdenesCompra" 
-                                    (click)="navegarDetalleOrdenCarga(det)">
-                                    {{det.OrdenCargaId}}
-                                </a>
-                            </td>
-                            <td>{{det.FechaCarga == '0000-00-00' ?  '' : det.FechaCarga | date: 'dd/MM/yyyy'}}</td>
-                            <td>{{det.CantidadEntregadaStr}}</td>
-                            <td>{{det.Remito}}</td>
-                            <td>{{det.CPE}}</td>
-                            <td >{{det.CantidadFactura}} KG</td>
-                            <td>{{det.FacturaLegal}}</td>
-                            <td>{{det.Chasis}}</td>
-                            <td>{{det.Acoplado}}</td>
-                            <td>{{det.Chofer}}</td>
+                <div class="clearfix myTables">
+                    <table id="tableModal" class="display nowrap dataTable no-footer dtr-inline rounded shadow animate"
+                        role="grid" aria-describedby="tableModal_info" style="width: 97%; padding:20px;">
+                        <thead>
+                            <tr role="row">
+                                <th tabindex="0" rowspan="1" colspan="1" style=" background:none">ID</th>
+                                <th tabindex="0" rowspan="1" colspan="1" style=" background:none">Fecha de carga</th>
+                                <th tabindex="0" rowspan="1" colspan="1" style=" background:none">Cant. Entrega</th>
+                                <th tabindex="0" rowspan="1" colspan="1" style=" background:none">CTG/Remito</th>
+                                <th tabindex="0" rowspan="1" colspan="1" style=" background:none">CPE</th>
+                                <th tabindex="0" rowspan="1" colspan="1" style=" background:none">Cant. Facturada</th>
+                                <th tabindex="0" rowspan="1" colspan="1" style=" background:none">Factura</th>
+                                <th tabindex="0" rowspan="1" colspan="1" style=" background:none">Chasis</th>
+                                <th tabindex="0" rowspan="1" colspan="1" style=" background:none">Acoplado</th>
+                                <th tabindex="0" rowspan="1" colspan="1" style=" background:none">Chofer</th>
 
-                        </tr>
-                    </tbody>
-                    <tbody>
-                        <tr role="row" class="totalTable">
-                            <td ></td>
-                            <td style="text-align :center" tabindex="0">TOTAL</td>
-                            <td [ngStyle]="{'font-weight':'bold'}">{{KilosEntregados | number}}</td>
-                            <td ></td>
-                            <td ></td>
-                            <td [ngStyle]="{'font-weight':'bold'}">{{KilosFacturados | number}}</td>
-                            <td ></td>
-                            <td ></td>
-                            <td ></td>
-                            <td ></td>
-                        </tr>
-                    </tbody>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let det of detalles">
+                                <td>
+                                    <a *ngIf="det.Entrega" class="animate" style="cursor:pointer;" data-toggle="modal"
+                                        data-target="#modalOrdenesCompra" (click)="navegarDetalleOrdenCarga(det)">
+                                        {{det.OrdenCargaId}}
+                                    </a>
+                                </td>
+                                <td>{{det.FechaCarga == '0000-00-00' ? '' : det.FechaCarga | date: 'dd/MM/yyyy'}}</td>
+                                <td>{{det.CantidadEntregadaStr}}</td>
+                                <td>{{det.Remito}}</td>
+                                <td>{{det.CPE}}</td>
+                                <td>{{det.CantidadFactura}} KG</td>
+                                <td>{{det.FacturaLegal}}</td>
+                                <td>{{det.Chasis}}</td>
+                                <td>{{det.Acoplado}}</td>
+                                <td>{{det.Chofer}}</td>
 
-                </table>
+                            </tr>
+                        </tbody>
+                        <tbody>
+                            <tr role="row" class="totalTable">
+                                <td></td>
+                                <td style="text-align :center" tabindex="0">TOTAL</td>
+                                <td [ngStyle]="{'font-weight':'bold'}">{{KilosEntregados | number}}</td>
+                                <td></td>
+                                <td></td>
+                                <td [ngStyle]="{'font-weight':'bold'}">{{KilosFacturados | number}}</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+
+                    </table>
+                </div>
             </div>
-        </div>
+
+        </ng-container>
         <!--Fin botones mobile-->
     </section>
     <!--End CONTENT-->
