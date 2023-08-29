@@ -3583,7 +3583,7 @@ namespace SustitucionMOAUtils.Services
             {
                 asunto = "";
                 var enviarA = new List<string> { prov.Usuario.Mail };
-                asunto += $"PO {peticion.Id} - {prov.Usuario.ObtenerRazonSocial()}";
+                asunto += $"MOA - Pedido de Oferta {peticion.Id}: {peticion.Solp.Pliego.NombreObra}";
                 if (peticion.Posiciones.Select(x => x.SolpPosicion).Where(x => x.TipoPosicion_Id != null).FirstOrDefault().TipoPosicion.Codigo == "MATERIALES")
                 {
                     var pdf = GenerarPDFPeticionDeOferta(peticion, prov.Usuario.ObtenerCodigoProveedor());
