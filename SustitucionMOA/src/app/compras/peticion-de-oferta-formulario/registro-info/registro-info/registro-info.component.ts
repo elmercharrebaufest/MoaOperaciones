@@ -11,7 +11,7 @@ import { FloatMsgService } from '../../../../common/services/FloatMsgService';
 import { SecurityService } from '../../../../common/services/SecurityService';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ListBaseComponent } from '../../../../common/base-components/list-base-component';
-import { RegistroInfoDto } from '../../../../modelos/registro-info';
+import { MaterialAgrupado, RegistroInfoDto } from '../../../../modelos/registro-info';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 
 @Component({
@@ -37,7 +37,7 @@ export class RegistroInfoComponent extends ListBaseComponent implements OnInit, 
     registros: RegistroInfoDto[];
     displayAdjudicacionCreada: boolean;
     resultadoAdjudicacion: any = new Array();
-
+    optionSelected: any;
 
     constructor(protected service: ComprasService, protected usuarioService: UsuarioService, protected navService: NavService, protected sessionDataService: SessionDataService,
         protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService,
@@ -56,13 +56,25 @@ export class RegistroInfoComponent extends ListBaseComponent implements OnInit, 
     inicializarDatos() {
         if(this.solpCompraDto.RegistrosInfo && this.solpCompraDto.RegistrosInfo != undefined){
             this.registrosInfo = this.solpCompraDto.RegistrosInfo;
-            if (this.solpCompraDto != undefined && this.solpCompraDto.PosicionCompras != null) {
-                this.options = this.solpCompraDto.PosicionCompras.map(x => ({
-                    label: x.Indice + " - " + x.Tarea,
-                    value: x.Id
+            if (this.solpCompraDto != undefined && this.solpCompraDto.PosicionCompras != null) {                
+
+                this.options = this.solpCompraDto.RegistrosInfo.map(x => ({
+                    label: x.Indice + " - " + x.DescripcionPosicion,
+                    value: x.PosicionId
                 }));
+
+                let hash = {};
+                this.options = this.options.filter(function (current) {
+                    let exists = !hash[current.value];
+                    hash[current.value] = true;
+                    return exists;
+                });
             }
-            this.registrosInfo = this.solpCompraDto.RegistrosInfo.filter(x => x.Indice == this.registrosInfo[0].Indice);
+            if (this.optionSelected) {
+                this.registrosInfo = this.solpCompraDto.RegistrosInfo.filter(x => x.PosicionId == this.optionSelected.value);
+            } else {
+                this.registrosInfo = this.solpCompraDto.RegistrosInfo.filter(x => x.Indice == this.registrosInfo[0].Indice);
+            }
         }
       
     }
@@ -109,9 +121,8 @@ export class RegistroInfoComponent extends ListBaseComponent implements OnInit, 
             return;
         }
 
-       var totalAdjudicada = this.registros.reduce((sum, registro) => Number(sum + Number(registro.CantidadAdjudicacion)), 0);
-        console.log(totalAdjudicada, "total adjudicado");
-        if (this.registros.some(item => item.Cantidad < totalAdjudicada)) {
+        var materialTotalAdjudicado = this.agruparPorMaterial(this.registros);      
+        if (materialTotalAdjudicado.some(item => item.Cantidad < item.CantidadAdjudicacionTotal)) {
             this.confirmationService.confirm({
                 header: "Cantidad Incorrecta",
                 key: "avisoV",
@@ -209,5 +220,29 @@ export class RegistroInfoComponent extends ListBaseComponent implements OnInit, 
         return false; //<-- Prevent Refresh
 
 
+    }
+
+    
+    agruparPorMaterial(registros: RegistroInfoDto[]): MaterialAgrupado[] {
+        const materialIndiceMap = new Map<string, MaterialAgrupado>();
+
+        registros.forEach((registro) => {
+            const { MaterialCodigo, Indice, Cantidad, CantidadAdjudicacion } = registro;
+    
+            const clave = `${MaterialCodigo}_${Indice}`;
+            if (!materialIndiceMap.has(clave)) {
+                materialIndiceMap.set(clave, {
+                    MaterialCodigo,
+                    Indice,
+                    Cantidad: Cantidad, // Tomamos el primer valor de cantidad
+                    CantidadAdjudicacionTotal: Number(CantidadAdjudicacion) || 0,
+                });
+            } else {
+                const group = materialIndiceMap.get(clave)!;
+                group.CantidadAdjudicacionTotal += Number(CantidadAdjudicacion) || 0;
+            }
+        });
+    
+        return Array.from(materialIndiceMap.values());
     }
 }

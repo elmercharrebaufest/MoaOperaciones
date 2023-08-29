@@ -1,12 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.IO;
-using System.Linq;
-using System.Runtime.Remoting.Metadata.W3cXsd2001;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SustitucionMOAModel.Dto
 {
@@ -19,7 +11,6 @@ namespace SustitucionMOAModel.Dto
         public string NombreProveedor { get; set; }
         public string Unidad { get; set; }
         public string Moneda { get; set; }
-
         public string Centro { get; set; }
         public string Fecha { get; set; }
         public string Codigo { get; set; }
@@ -36,5 +27,7 @@ namespace SustitucionMOAModel.Dto
         public int UnidadId { get; set; }
         public string FechaUltimaCompra { get; set; }
         public string FechaVigencia { get; set; }
+        public string MaterialCodigo { get; set; }
+        public string NumeroOrdenDeCompra { get; set; }
     }
 }

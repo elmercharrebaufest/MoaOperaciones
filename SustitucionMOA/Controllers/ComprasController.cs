@@ -730,9 +730,10 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
+                var usuario = ObtenerUsuarioActual();
                 return JsonCustom(new
                 {
-                    data = service.ListarOfertasComprador(peticionOferta_Id)
+                    data = service.ListarOfertasComprador(peticionOferta_Id, usuario)
                 });
             }
             catch (InfoCustomException e)
@@ -802,7 +803,7 @@ namespace SustitucionMOA.Controllers
             {
                 var peticion = JsonConvert.DeserializeObject<GuardarPeticionDeOfertaDto>(json);
                 peticion.UsuarioActual = ObtenerUsuarioActual();
-                var result = service.GrabarPeticionDeOferta(peticion, Request.Files, true);
+                var result = service.GrabarPeticionDeOferta(peticion, Request.Files, true, null);
                 return JsonCustom(new { data = result });
             }
             catch (InfoCustomException e)
@@ -1027,7 +1028,7 @@ namespace SustitucionMOA.Controllers
             try
             {
                 var adjudicacion = JsonConvert.DeserializeObject<AdjudicacionDto>(json);
-                var result = service.GrabarAdjudicacion(adjudicacion, ObtenerUsuarioActual().Id);
+                var result = service.GrabarAdjudicacion(adjudicacion, ObtenerUsuarioActual().Id, "");
                 return JsonCustom(result);
             }
             catch (InfoCustomException e)
@@ -1278,8 +1279,5 @@ namespace SustitucionMOA.Controllers
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
         }
-
-
-
     }
 }

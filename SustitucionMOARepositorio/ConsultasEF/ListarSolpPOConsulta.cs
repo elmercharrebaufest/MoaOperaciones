@@ -7,7 +7,6 @@ using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
-using System.Data.Entity.SqlServer;
 using System.Linq;
 
 namespace SustitucionMOARepositorio.ConsultasEF
@@ -20,10 +19,8 @@ namespace SustitucionMOARepositorio.ConsultasEF
         public ListarSolpPOConsulta(Paginacion paginacion, string nroSolp, int usuario_id)
         {
             this.paginacion = paginacion;
-            this.NroSolp = nroSolp;
+            NroSolp = nroSolp;
             this.usuario_id = usuario_id;
-
-
         }
         public ListaPaginada<PeticionDeOfertaDto> Ejecutar(DbContext contexto)
         {
@@ -49,7 +46,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                     UsuarioCreador = x.PeticionDeOferta.Usuario.Mail,
                                     CotizacionId = cotizacion != null ? cotizacion.Id : 0,
 
-                                    PlazoDeOferta = peticionDeOferta.Usuarios.Where(u=>u.Usuario_Id == usuario_id).GroupBy(x => x).SelectMany(x => x.Key.Circulares)
+                                    PlazoDeOferta = peticionDeOferta.Usuarios.Where(u => u.Usuario_Id == usuario_id).GroupBy(x => x).SelectMany(x => x.Key.Circulares)
                                     .Any(x => x.Circular.RequiereCambioDeFechas == true && x.Circular.PlazoDeOferta.HasValue) ?
                                     peticionDeOferta.Usuarios.Where(u => u.Usuario_Id == usuario_id).GroupBy(x => x).SelectMany(x => x.Key.Circulares)
                                     .Where(x => x.Circular.RequiereCambioDeFechas == true && x.Circular.PlazoDeOferta.HasValue)
@@ -91,19 +88,17 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                     CotizacionEstado_Id = cotizacion == null ? 0 : cotizacion.CotizacionEstado.Id,
                                     ItemPorPagina = paginacion.ItemsPorPagina,
                                     Pagina = paginacion.Pagina,
-
+                                    TieneAdjudicacion = cotizacion != null && cotizacion.Adjudicaciones.Any()
                                 };
+
                 var itemsTotales = resultado.Count();
 
                 return resultado.OrdenarPaginarLista(paginacion);
-
             }
             catch (Exception ex)
             {
                 throw;
             }
         }
-
-
     }
 }

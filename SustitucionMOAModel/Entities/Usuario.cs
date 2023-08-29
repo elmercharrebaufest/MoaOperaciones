@@ -75,12 +75,13 @@ namespace SustitucionMOAModel.Entities
         {
             try
             {
-                return Proveedores.Where(p => 
-                    p.CUIT == this.CUITRegistro && 
+                return Proveedores.Where(p =>
+                    p.CUIT == this.CUITRegistro &&
                     this.TipoUsuario.Id == p.TipoProveedor.Id
                     ).FirstOrDefault();
             }
-            catch {
+            catch
+            {
                 return null;
             }
         }
@@ -361,6 +362,8 @@ namespace SustitucionMOAModel.Entities
                 case "VER SOLPS PROVEEDOR": return PermisoEnum.VerSolpsProveedor;
                 case "FAS - MODIFICAR CAMPO REVENTA": return PermisoEnum.Fas_ModificarCampoReventa;
                 case "NOTIFICAR ALTA INTERNA GRANOS": return PermisoEnum.NotificarAltaInternaGranos;
+                case "ADJUDICAR DENTRO DEL PLAZO DE OFERTAS": return PermisoEnum.AdjudicarDentroDelPlazoDeOfertas;
+                case "HANGFIREDASHBOARD": return PermisoEnum.HangfireDashboard;
 
                 //default: throw new Exception("Permiso no mapeado: " + permisoStr);
                 default: return null;
@@ -438,6 +441,7 @@ namespace SustitucionMOAModel.Entities
                 case "SOLP": return RolEnum.Solp;
                 case "TODOS": return RolEnum.Todos;
                 case "NOIMP": return RolEnum.UsuarioNoImplementado;
+                case "COMPRASADMIN": return RolEnum.ComprasAdmin;
 
                 //default: throw new Exception("Rol no mapeado: " + codigoRol);
                 default: return null;

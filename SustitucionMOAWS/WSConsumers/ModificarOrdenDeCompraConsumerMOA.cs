@@ -405,7 +405,7 @@ namespace SustitucionMOAWS.WSConsumers
                 });
                 modificarPedidoSAP.POCONDX.Add(new BAPIMEPOCONDX
                 {
-                    ITM_NUMBER = "X",
+                    ITM_NUMBER = poItem,
                     COND_TYPE = "X",
                     COND_VALUE = "X",
                     CURRENCY = "X",
@@ -503,7 +503,7 @@ namespace SustitucionMOAWS.WSConsumers
                             PCKG_NO = $"{PCKG_NO:0000000000}",
                             LINE_NO = $"{LINE_NO++:0000000000}",
                             PERCENTAGE = 100,
-                            SERNO_LINE = $"{poItem:00}",
+                            SERNO_LINE = $"{numeroPosicion:00}",
                             SERIAL_NO = numeroDeImputacion,
                         };
 

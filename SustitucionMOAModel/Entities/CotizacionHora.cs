@@ -20,6 +20,10 @@ namespace SustitucionMOAModel.Entities
         public int HorasExtras { get; set; }
         public string Gremio { get; set; }
 
+        public bool? ConfigurarHora { get; set; }
+
+        
+
         [ForeignKey("Cotizacion_Id")]
         public virtual Cotizacion Cotizacion { get; set; }
       

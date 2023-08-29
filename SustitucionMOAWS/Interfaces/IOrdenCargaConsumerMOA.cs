@@ -18,7 +18,7 @@ namespace SustitucionMOAWS.Interfaces
         ControlEstadoResEnum GetOrdenCargaControlEstadoTransportista(string cuitTransportista);
         ModOrdenCargaResponseHandler AnularOrdenCarga(OrdenDeCarga orden);
         ModEntregaResponseHandler AnularEntregaOrdenCarga(string nroEntrega);
-        ResultadoGenerico ModificarEntregaOrdenCarga(ModificarEntregaOrdenCargaSAP datosEntrega);
+        ResultadoGenerico ModificarEntregaOrdenCarga(ModificarEntregaRequest datosEntrega);
         bool VerificarContratoAbierto(string contrato);
         Result ObtenerContratoSAP(string numeroContrato, TipoContratoFAS? tipoContrato);
         Result ObtenerContratoSAP(OrdenDeCarga orden, TipoContratoFAS? tipoContrato);

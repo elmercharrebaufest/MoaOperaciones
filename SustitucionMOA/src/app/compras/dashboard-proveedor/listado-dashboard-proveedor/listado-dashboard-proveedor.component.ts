@@ -247,6 +247,7 @@ export class ListadoDashboardProveedorComponent extends ListBaseComponent {
                 }
             )
     }
+
     descargarArchivo({ archivoId }) {
         if (archivoId == 0) {
             let SolpId = this.legajo[0].SolpId;
@@ -341,7 +342,5 @@ export class ListadoDashboardProveedorComponent extends ListBaseComponent {
             return;
         }
     }
-
-
 
 }

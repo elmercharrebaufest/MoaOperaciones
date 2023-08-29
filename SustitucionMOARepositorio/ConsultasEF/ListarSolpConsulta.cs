@@ -79,7 +79,9 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                                 po.PlazoDeOferta,
 
                                                               Observaciones = po.Observaciones,
-                                                          })                                
+                                                          })       
+                                                          
+
                                 };
 
                 var itemsTotales = resultado.Count();
@@ -92,6 +94,8 @@ namespace SustitucionMOARepositorio.ConsultasEF
                 throw;
             }
         }
+
+   
 
 
     }
