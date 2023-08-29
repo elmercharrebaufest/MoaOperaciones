@@ -12,7 +12,6 @@ import * as XLSX from 'xlsx';
 import { DetalleReporteContrato } from '../ReporteContrato.model';
 import { OrdenesDeCargaService } from '../../ordenes-de-carga/ordenes-de-carga.service';
 
-
 @Component({
     selector: 'app-detalle',
     templateUrl: './reporte-contrato.detalle.component.html',
@@ -80,14 +79,16 @@ export class DetalleComponent extends ListBaseComponent implements OnInit {
 
         informacionExportar = this.detalles.map(info => {
             return {
-                "Fecha Pedido": info.FechaPedido || "-",
-                "Fecha Carga": info.FechaCarga || "-",
-                "Cantidad Entregada": info.CantidadEntregadaStr || "-",
-                "Remito": info.Remito,
-                "Factura": info.Factura || "-",
+                "ID": info.OrdenCargaId || "",
+                "Fecha de carga": info.FechaCarga || "-",
+                "Cant. Entregada": info.CantidadEntregadaStr || "-",
+                "CTG/Remito": info.Remito || "-",
+                "CPE": info.CPE || "-",
+                "Cant. Facturada": info.CantidadFacturaStr || "-",
+                "Factura": info.FacturaLegal || "-",
                 "Chasis": info.Chasis || "-",
                 "Acoplado": info.Acoplado || "-",
-                "Chofer": info.Chofer
+                "Chofer": info.Chofer || "-",
             }
         });
 
@@ -95,12 +96,27 @@ export class DetalleComponent extends ListBaseComponent implements OnInit {
             this.mensajeComponent.setInfoMsg("No existen datos para exportar.");
             return
         }
+        
+        //Se agrega fila de totales.
+        let totales = {
+            "ID": "TOTAL",
+            "Fecha de carga": "",
+            "Cant. Entregada": this.KilosEntregados.toLocaleString('es-ES') + " KG",
+            "CTG/Remito": "",
+            "CPE": "",
+            "Cant. Facturada": this.KilosFacturados.toLocaleString('es-ES') + " KG",
+            "Factura": "",
+            "Chasis": "",
+            "Acoplado": "",
+            "Chofer": ""
+        }
+
+        informacionExportar.push(totales);
 
         this.DownloadJsonData(informacionExportar, "ReporteContratoDetalle");
     }
 
     DownloadJsonData(JSONData: any, FileTitle: string) {
-
         //crea la estructura inicial del archivo
         let worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(JSONData);
         let workbook: XLSX.WorkBook = XLSX.utils.book_new();
@@ -113,6 +129,7 @@ export class DetalleComponent extends ListBaseComponent implements OnInit {
         this.KilosEntregados = this.detalles.reduce((prev,curr)=> prev + curr.CantidadEntregada,0)
         this.KilosFacturados = this.detalles.reduce((prev,curr)=> prev + curr.CantidadFactura,0)
     }
+
     navegarDetalleOrdenCarga(det: DetalleReporteContrato){
         this.service.getOrdenDeCarga(det).subscribe({
             next:(res)=>{
