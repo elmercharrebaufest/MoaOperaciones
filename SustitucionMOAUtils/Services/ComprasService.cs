@@ -4962,18 +4962,21 @@ namespace SustitucionMOAUtils.Services
 
         public List<AdjudicacionDto> ListarAdjudicaciones(int solpId)
         {
-            return repositorio.Listar<Adjudicacion, AdjudicacionDto>(adjudicacion => new AdjudicacionDto()
+            var nroSolp = repositorio.Obtener<Solp, string>(a => a.Id == solpId, a => a.NroSolp);
+            var respuestaSAP = obtenerOrdenesDeCompraParaSOLPConsumerMOA.Request(nroSolp, "");
+            var listaResultado = respuestaSAP.Select(adjudicacion => new AdjudicacionDto()
             {
-                Id = adjudicacion.Id,
-                Solp_Id = adjudicacion.Solp_Id,
-                TipoPosicionCodigo = adjudicacion.Solp.Posiciones.Select(y => y.TipoPosicion.Codigo).FirstOrDefault(),
-                NumeroOrdenDeCompra = adjudicacion.NumeroOrdenDeCompra,
-                FechaCreacion = adjudicacion.FechaCreacion,
-                Proveedor = adjudicacion.Cotizacion.PeticionDeOfertaUsuario.Usuario.Proveedores.Count > 0 ?
-                                    adjudicacion.Cotizacion.PeticionDeOfertaUsuario.Usuario.Proveedores.FirstOrDefault().RazonSocial : "",
-                MonedaDescripcion = adjudicacion.Moneda.CodigoSap,
-                PrecioFinal = adjudicacion.MontoTotal
-            }, x => x.Solp_Id == solpId).OrderBy(fc => fc.FechaCreacion).ToList();
+                Id = 0,
+                Solp_Id = solpId,
+                TipoPosicionCodigo = adjudicacion.Cabecera.Tipo,
+                NumeroOrdenDeCompra = adjudicacion.Cabecera.OrdenDeCompra,
+                FechaCreacion = adjudicacion.Cabecera.FechaCreacion,
+                Proveedor = adjudicacion.Cabecera.RazonSocialProveedor,
+                MonedaDescripcion = adjudicacion.Cabecera.Moneda,
+                PrecioFinal = adjudicacion.Cabecera.MontoTotal
+            }).OrderBy(fc => fc.FechaCreacion).ToList();
+
+            return listaResultado;
         }
 
         public AdjudicacionDto ObtenerAdjudicacion(int adjudicacionId) // No se está usando pero no borrar
