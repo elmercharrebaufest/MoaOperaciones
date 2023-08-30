@@ -27,7 +27,9 @@ export interface PeticionDeOfertaDto{
     SolpDto?: any,
     Selected?: boolean,
     Cantidad?: number,
-    PlazoDeOfertaEstado?: string
+    PlazoDeOfertaEstado?: string,
+    Adicional?: boolean,
+    NroOrdenDeCompraAdicional?: string,
 }
 
 export interface PeticionDeOfertaUsarioDto {

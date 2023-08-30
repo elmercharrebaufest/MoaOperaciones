@@ -78,6 +78,7 @@ namespace SustitucionMOAModel.Dto
         public bool? RegistroInfo { get; set; }
         public bool? Adicional { get; set; }
         public bool? TieneAdjudicacion { get; set; }
+        public string NroOrdenDeCompraAdicional { get; set; }
     }
 
     public class PeticionDeOfertaSolpPosicionDto
