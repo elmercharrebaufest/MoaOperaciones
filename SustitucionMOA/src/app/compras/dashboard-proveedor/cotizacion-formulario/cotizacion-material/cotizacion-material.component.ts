@@ -419,4 +419,15 @@ export class CotizacionMaterialComponent extends ListBaseComponent implements On
         cotizacion.PrecioTotal = null;
     }
 
+    onEditarCelda(cotizacion: any, campo: string, valorInicial: any) {
+        if (cotizacion[campo] === valorInicial) {
+            cotizacion[campo] = ''; // Limpia el valor si es igual al valorInicial
+        }
+    }
+
+    onReestablecerValor(cotizacion: any, campo: string) {
+        if (cotizacion[campo] === '' || cotizacion[campo] === null) {
+            cotizacion[campo] = 0; // Restablece a cero si está en blanco
+        }
+    }
 }

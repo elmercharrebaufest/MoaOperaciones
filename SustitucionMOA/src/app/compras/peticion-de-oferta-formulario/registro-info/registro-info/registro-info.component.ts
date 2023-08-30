@@ -245,4 +245,16 @@ export class RegistroInfoComponent extends ListBaseComponent implements OnInit, 
     
         return Array.from(materialIndiceMap.values());
     }
+
+     onEditarCelda(registro: any, campo: string, valorInicial: any) {
+        if (registro[campo] === valorInicial) {
+          registro[campo] = ''; // Limpia el valor si es igual al valorInicial
+        }
+      }
+
+    onReestablecerValor(registro: any, campo: string) {
+        if (registro[campo] === '') {
+          registro[campo] = 0; // Restablece a cero si está en blanco
+        }
+      }
 }
