@@ -33,7 +33,7 @@ namespace SustitucionMOAUtils.Services
 
         public List<ProveedorAltaDto> GetEmpresas(List<int> IdTiposProveedor, string fechaInicio, string fechaFin)
         {
-            DateTime fechaIncioDateTime, fechaFinDateTime;
+            DateTime fechaIncioDateTime, fechaFinDateTime, currentTime = DateTime.Now;
             try
             {
                 fechaIncioDateTime = DateTime.Parse(fechaInicio);
@@ -53,14 +53,14 @@ namespace SustitucionMOAUtils.Services
 
             try
             {
-                fechaFinDateTime = DateTime.Parse(fechaFin);
+                fechaFinDateTime = DateTime.Parse(fechaFin + " " + currentTime.TimeOfDay.ToString());
             }
             catch
             {
                 try
                 {
                     fechaFin = new string(fechaFin.Where(c => c != '\u200E').ToArray());
-                    fechaFinDateTime = DateTime.Parse(fechaFin);
+                    fechaFinDateTime = DateTime.Parse(fechaFin + " " + currentTime.TimeOfDay.ToString());
                 }
                 catch (Exception e)
                 {
@@ -90,9 +90,10 @@ namespace SustitucionMOAUtils.Services
                                     || x.EstadoAprobacion == EstadoAprobacion.SinAlta
                                     || x.EstadoAprobacion == EstadoAprobacion.DocumentacionPendiente)
                                 && x.HistorialAprobaciones.Count > 0
-                                && IdTiposProveedor.Contains(x.TipoProveedor.Id)
-                                && x.FechaSolicitud >= fechaIncioDateTime && x.FechaSolicitud
-                                <= fechaFinDateTime, includes: includes)
+                                 && IdTiposProveedor.Contains(x.TipoProveedor.Id)
+                                && x.HistorialAprobaciones.OrderByDescending(h => h.Fecha).FirstOrDefault().Fecha >= fechaIncioDateTime 
+                                && x.HistorialAprobaciones.OrderByDescending(h => h.Fecha).FirstOrDefault().Fecha <= fechaFinDateTime, includes: includes)
+
                         .Select(proveedor => new ProveedorAltaDto
                         {
                             CodigoProveedor = proveedor.CodigoProveedor ?? "",

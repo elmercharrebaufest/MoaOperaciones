@@ -66,9 +66,12 @@
                         <p-cellEditor>
                             <ng-template pTemplate="input">
                                 <input pInputText type="number" [disabled]="posicionesCompra.Posiciones.CotizacionPosicion.NoDisponible == true"
-                                    [(ngModel)]="posicionesCompra.Posiciones.CotizacionPosicion.Cantidad"
-                                    pKeyFilter="num"
-                                    (ngModelChange)="calcularValorNeto(posicionesCompra?.Posiciones?.CotizacionPosicion, posicionesCompra.Id); mostrarMensajeNoRespetaCondiciones()" />
+                                       [(ngModel)]="posicionesCompra.Posiciones.CotizacionPosicion.Cantidad"
+                                       pKeyFilter="num"
+                                       (focus)="onEditarCelda(posicionesCompra.Posiciones.CotizacionPosicion, 'Cantidad', 0)"
+                                       (input)="onReestablecerValor(posicionesCompra.Posiciones.CotizacionPosicion, 'Cantidad')"
+                                       (blur)="onReestablecerValor(posicionesCompra.Posiciones.CotizacionPosicion, 'Cantidad')"
+                                       (ngModelChange)="calcularValorNeto(posicionesCompra?.Posiciones?.CotizacionPosicion, posicionesCompra.Id); mostrarMensajeNoRespetaCondiciones()" />
                             </ng-template>
                             <ng-template pTemplate="output">
                                 <div [ngClass]="{'invalido': (esFinalizado && posicionesCompra.Posiciones.CotizacionPosicion.Cantidad != undefined) && 
@@ -129,10 +132,13 @@
                         <p-cellEditor>
                             <ng-template pTemplate="input">
                                 <input pInputText type="number"
-                                    [disabled]="posicionesCompra.Posiciones.CotizacionPosicion.NoDisponible == true"
-                                    [(ngModel)]="posicionesCompra.Posiciones.CotizacionPosicion.Precio"
-                                    pKeyFilter="num"
-                                    (ngModelChange)="calcularValorNeto(posicionesCompra?.Posiciones?.CotizacionPosicion, posicionesCompra.Id);mostrarMensajeNoRespetaCondiciones()" />
+                                       [disabled]="posicionesCompra.Posiciones.CotizacionPosicion.NoDisponible == true"
+                                       [(ngModel)]="posicionesCompra.Posiciones.CotizacionPosicion.Precio"
+                                       pKeyFilter="num"
+                                       (focus)="onEditarCelda(posicionesCompra.Posiciones.CotizacionPosicion, 'Precio', 0)"
+                                       (input)="onReestablecerValor(posicionesCompra.Posiciones.CotizacionPosicion, 'Precio')"
+                                       (blur)="onReestablecerValor(posicionesCompra.Posiciones.CotizacionPosicion, 'Precio')"
+                                       (ngModelChange)="calcularValorNeto(posicionesCompra?.Posiciones?.CotizacionPosicion, posicionesCompra.Id); mostrarMensajeNoRespetaCondiciones()" />
                             </ng-template>
 
                             <ng-template pTemplate="output">

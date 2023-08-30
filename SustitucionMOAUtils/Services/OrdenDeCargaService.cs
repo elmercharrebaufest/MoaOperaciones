@@ -343,7 +343,8 @@ namespace SustitucionMOAUtils.Services
                 {
                     GenerarEntregaSAP(ordenEditar);
                 }
-                else if (ordenEditar.Estado == EstadoOrdenDeCarga.SinEnviarASAP && ordenEditar.EsFacturaAnticipada && ordenEditar.SinSeleccionarFactura) {
+                else if (ordenEditar.Estado == EstadoOrdenDeCarga.SinEnviarASAP && ordenEditar.EsFacturaAnticipada && ordenEditar.SinSeleccionarFactura)
+                {
                     ordenEditar.Estado = EstadoOrdenDeCarga.Pendiente;
                     ordenEditar.DescripcionErrorInterno = "Se debe seleccionar una factura.";
                     repositorio.GuardarCambios();
@@ -2172,10 +2173,10 @@ namespace SustitucionMOAUtils.Services
                     CommonService.toDateList(req.FechaDesde, req.FechaHasta);
                 var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
 
-                var material =
-                    usuario.TieneRol(RolEnum.Administracion) || usuario.TieneRol(RolEnum.ClienteConCpedg)
-                        ? string.Empty
-                        : Constante.CODIGO_SOJA_HIPRO;
+                //var dsdmaterial =
+                //    usuario.TieneRol(RolEnum.Administracion) || usuario.TieneRol(RolEnum.ClienteConCpedg)
+                //        ? string.Empty
+                //        : Constante.CODIGO_SOJA_HIPRO;
 
                 var consumerReq = new OrdenCargaVisualizarClienteWSMOARequest
                 {
@@ -2183,7 +2184,7 @@ namespace SustitucionMOAUtils.Services
                     Contrato = string.Empty,
                     Corredor = req.CorredorCodigo,
                     Fechas = rangoFechas,
-                    Material = material,
+                    Material = string.Empty,
                     Pendiente = true, // Contratos ABIERTOS
                     TipoContrato = Constante.FAS_FILTRO_TIPO_CONTRATO
                 };
@@ -2715,7 +2716,7 @@ namespace SustitucionMOAUtils.Services
                 CuitDestino = ordenDeCarga.CUITDestino,
                 CuitDestinatario = ordenDeCarga.CUITDestinatario,
                 Material = ordenDeCarga.Producto.CodigoSap,
-                Pedido = ordenDeCarga.NumeroPedido,
+                Pedido = ObtenerPedidoDeOrden(ordenDeCarga),
                 SoloSisa = soloSisa
             };
             return consumer.ControlarCarga(controlarCargaReq);
@@ -2732,6 +2733,15 @@ namespace SustitucionMOAUtils.Services
             {
                 return null;
             }
+        }
+        private string ObtenerPedidoDeOrden(OrdenDeCarga ordenDeCarga)
+        {
+            if (ordenDeCarga.EsFacturaAnticipada)
+            {
+                return !string.IsNullOrEmpty(ordenDeCarga.NumeroPedido) ? ordenDeCarga.NumeroPedido : ordenDeCarga.NumeroPedidoIngresado;
+            }
+            else
+                return ordenDeCarga.NumeroPedido;
         }
         private List<OrdenDeCarga> ObtenerOrdenesPendientesDeCliente(string codigoCliente)
         {
