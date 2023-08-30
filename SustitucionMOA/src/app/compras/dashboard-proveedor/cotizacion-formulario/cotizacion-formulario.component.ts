@@ -110,6 +110,13 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
                 var date = new Date(milliseconds);
                 this.posicionesCompra[index].Posiciones.FechaEntregaServicio = date
             }
+
+            if (this.posicionesCompra[index].Posiciones.CotizacionPosicion.FechaDeVigencia != null) {
+                var milliseconds = parseInt(this.posicionesCompra[index].Posiciones.CotizacionPosicion.FechaDeVigencia.substring(6));
+                var date = new Date(milliseconds);
+                this.posicionesCompra[index].Posiciones.CotizacionPosicion.FechaDeVigencia = date
+            }
+            
         }
 
     }
@@ -221,7 +228,7 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
             }
             this.cotizaciones.forEach(function (cotizacion, i) {
                 if (!breakFor && (cotizacion.NoDisponible == false || cotizacion.NoDisponible == undefined)) {
-                    if ((cotizacion.Cantidad <= 0 || cotizacion.Cantidad == undefined) && cotizacion.UnidadDeMedidaId == 0 && cotizacion.MonedaId == 0 && cotizacion.Precio <= 0 && cotizacion.FechaDeEntrega == null) {
+                    if ((cotizacion.Cantidad <= 0 || cotizacion.Cantidad == undefined) && cotizacion.UnidadDeMedidaId == 0 && cotizacion.MonedaId == 0 && cotizacion.Precio <= 0 && cotizacion.FechaDeEntrega == null && cotizacion.FechaDeVigencia == null) {
                         mensaje = "Pos. " + cotizacion.Posicion + " Por favor tildar NO DISPONIBLE en el caso de no contar con el material";
                         return mensaje;
                     }
@@ -247,6 +254,12 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
                     }
                     if (cotizacion.FechaDeEntrega == null) {
                         mensaje = "Pos. " + cotizacion.Posicion + " - La Fecha de entrega cotizada es obligatoria";
+                        breakFor = true;
+                        return mensaje;
+                    }
+
+                    if (cotizacion.FechaDeVigencia == null) {
+                        mensaje = "Pos. " + cotizacion.Posicion + " - La Fecha de vigencia es obligatoria";
                         breakFor = true;
                         return mensaje;
                     }

@@ -332,7 +332,9 @@ export class CotizacionMaterialComponent extends ListBaseComponent implements On
                 monedaCompras: cotizacion.Posiciones.CotizacionPosicion.MonedaCodigo,
                 CantidadSubpos: cotizacion.Posiciones.Cantidad,
                 UnidadDeMedidaSubpos: cotizacion.Posiciones.UnidadId,
-                NoDisponible: cotizacion.Posiciones.CotizacionPosicion.NoDisponible
+                NoDisponible: cotizacion.Posiciones.CotizacionPosicion.NoDisponible,
+                FechaDeVigencia: cotizacion.Posiciones.CotizacionPosicion.FechaDeVigencia != undefined ?
+                cotizacion.Posiciones.CotizacionPosicion.FechaDeVigencia : null,
             };
         });
     }
@@ -407,6 +409,7 @@ export class CotizacionMaterialComponent extends ListBaseComponent implements On
         cotizacion.UnidadMedida = null;
         cotizacion.PlazoDeEntrega = null;
         cotizacion.PrecioTotal = null;
+        cotizacion.FechaDeVigencia = null;
     }
 
     onEditarCelda(cotizacion: any, campo: string, valorInicial: any) {
