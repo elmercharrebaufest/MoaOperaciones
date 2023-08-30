@@ -2745,5 +2745,16 @@ namespace SustitucionMOAUtils.Services
                             ) &&
                             !estadosNoTieneOrdenPendienteEnvio.Contains(x.Estado));
         }
+
+        public bool ValidarOrdenActivaScato(string cuit)
+        {
+            //Ver que cuit en particular se manda desde moa op y que valor del array se toma para validar esto???
+            var result = this.scatoConsumer.ObtenerRecorridoNoRechazadoPorNumeroDocumento(cuit);          
+            if(!result[0].Rechazado && !result[0].Terminado)
+            {
+                throw new InfoCustomException("La orden se encuentra activa en Scato.");
+            }
+            return true;
+        }
     }
 }

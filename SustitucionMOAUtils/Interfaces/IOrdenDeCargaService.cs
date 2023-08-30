@@ -54,5 +54,6 @@ namespace SustitucionMOAUtils.Interfaces
         bool ValidarCuitTransporteDigito(string cuitTransporte);
         Resultado SeleccionarFactura(int ordenId, string numeroFacturaSeleccionada, string mailUsuario);
         void VerificarCompensacion(int ordenId);
+        bool ValidarOrdenActivaScato(string cuit);
     }
 }

@@ -84,6 +84,8 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
     mostrarBotonEdicionFinalizada: boolean = false;
     mostrarBotonVerificarCompensacion: boolean = false;
 
+    ordenActivaScato: boolean = false;
+
     // esInterno: boolean = false;
     esInterno: boolean = this.isAuthorized('VER TODAS ORDENES DE CARGA');
     esTercero: boolean = this.isAuthorized('VER ORDENES DE CARGA DE TERCEROS');
@@ -112,7 +114,6 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
         });
 
         this.navService.setSeccionList([]);
-
         if (this.ordenDeCargaId > 0) {
             this.obtenerOrdenDeCarga();
         }
@@ -661,6 +662,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
     }
 
     abrirModalAnular() {
+        this.verificarOrdenActivaScato(this.ordenDeCarga.CUITChofer.toString());
         document.getElementById("openAnularOrden").click();
     }
     abrirModalAnularVencimiento() {
@@ -919,5 +921,34 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
             this.blockUI.stop();
             this.mensajeComponent.setErrorMsg(e);
         }
+    }
+
+    verificarOrdenActivaScato(cuit :string){
+        this.spinnerComponent.showIt();
+        this.unsubscribe();
+        try {
+            this.service.validarOrdenActivaScato(cuit).pipe(
+                finalize(() => { this.blockUI.stop(); this.spinnerComponent.hideIt() })
+            ).subscribe(
+                result => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                        return;
+                    } else if (result.error != undefined && result.error != "") {
+                        this.mensajeComponent.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.mensajeComponent.setInfoMsg(result.info);
+                    }
+                    this.ordenActivaScato = result.data;
+                },
+                error => {
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+            );
+        } catch (e) {
+            this.spinnerComponent.hideIt();
+            this.blockUI.stop();
+            this.mensajeComponent.setErrorMsg(e);
+        }    
     }
 }
