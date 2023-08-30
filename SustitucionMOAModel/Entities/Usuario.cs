@@ -9,8 +9,8 @@ namespace SustitucionMOAModel.Entities
 {
     public class Usuario
     {
-        private List<PermisoEnum> permisosDelUsuario = null;
-        private List<RolEnum> rolesDelUsuario = null;
+        private List<PermisoEnum?> permisosDelUsuario = null;
+        private List<RolEnum?> rolesDelUsuario = null;
 
         [Key]
         public int Id { get; set; }
@@ -241,7 +241,7 @@ namespace SustitucionMOAModel.Entities
 
         private void CargarPermisosUsuario()
         {
-            permisosDelUsuario = new List<PermisoEnum>();
+            permisosDelUsuario = new List<PermisoEnum?>();
             foreach (var rol in Roles)
             {
                 rol.ObtenerPermisos().ForEach(r => permisosDelUsuario.Add(ObtenerPermisoEnum(r)));
@@ -250,14 +250,14 @@ namespace SustitucionMOAModel.Entities
 
         private void CargarRolesUsuario()
         {
-            rolesDelUsuario = new List<RolEnum>();
+            rolesDelUsuario = new List<RolEnum?>();
             foreach (var codigoRol in Roles.Select(r => r.Codigo))
             {
                 rolesDelUsuario.Add(ObtenerRolEnum(codigoRol));
             }
         }
 
-        private static PermisoEnum ObtenerPermisoEnum(string permisoStr)
+        private static PermisoEnum? ObtenerPermisoEnum(string permisoStr)
         {
             switch (permisoStr)
             {
@@ -365,11 +365,12 @@ namespace SustitucionMOAModel.Entities
                 case "ADJUDICAR DENTRO DEL PLAZO DE OFERTAS": return PermisoEnum.AdjudicarDentroDelPlazoDeOfertas;
                 case "HANGFIREDASHBOARD": return PermisoEnum.HangfireDashboard;
 
-                default: throw new Exception("Permiso no mapeado: " + permisoStr);
+                //default: throw new Exception("Permiso no mapeado: " + permisoStr);
+                default: return null;
             }
         }
 
-        private static RolEnum ObtenerRolEnum(string codigoRol)
+        private static RolEnum? ObtenerRolEnum(string codigoRol)
         {
             switch (codigoRol)
             {
@@ -390,7 +391,7 @@ namespace SustitucionMOAModel.Entities
                 case "BOL": return RolEnum.Boletos;
                 case "CAL": return RolEnum.Calidades;
                 case "CRDECPE": return RolEnum.CesionYRectificacionDeCpe;
-                case "APLCLICPEDG": return RolEnum.ClienteConCpedg;
+                //case "APLCLICPEDG": return RolEnum.ClienteConCpedg;
                 case "CLIENTE FASON": return RolEnum.ClienteFason;
                 case "COMERCIAL": return RolEnum.Comercial;
                 case "COM": return RolEnum.Comisiones;
@@ -442,7 +443,8 @@ namespace SustitucionMOAModel.Entities
                 case "NOIMP": return RolEnum.UsuarioNoImplementado;
                 case "COMPRASADMIN": return RolEnum.ComprasAdmin;
 
-                default: throw new Exception("Rol no mapeado: " + codigoRol);
+                //default: throw new Exception("Rol no mapeado: " + codigoRol);
+                default: return null;
             }
         }
     }

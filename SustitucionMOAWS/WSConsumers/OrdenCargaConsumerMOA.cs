@@ -429,6 +429,8 @@ namespace SustitucionMOAWS.WSConsumers
                     req.CUITIntermediarioFlete :
                     req.CUITTransporte;
 
+            var codigoSapTransporte = DataFormatter.CuitACodigoSap(cuitTransporte);
+
             var cuitTransportistaReal =
                 !string.IsNullOrEmpty(req.CUITIntermediarioFlete) ?
                     req.CUITTransporte :
@@ -436,7 +438,7 @@ namespace SustitucionMOAWS.WSConsumers
 
             Log.Info($"SI_MPMF_MOAOP_MOD_ENTREGA " +
                 $"Request: {req.ToJson()}, " +
-                $"cuitTransporte: {cuitTransporte}, " +
+                $"codigoSapTransporte: {codigoSapTransporte}, " +
                 $"cuitTransportistaReal: {cuitTransportistaReal}.");
 
             var result = service.SI_MPMF_MOAOP_MOD_ENTREGA(
@@ -447,7 +449,7 @@ namespace SustitucionMOAWS.WSConsumers
                             IM_DOCUMENTO: req.Documento,
                             IM_ENTREGA: req.NumeroEntrega,
                             IM_TIPODOC: req.TipoDoc,
-                            IM_TRANSPORTE: cuitTransporte,
+                            IM_TRANSPORTE: codigoSapTransporte,
                             IM_TRANSPORTISTA_REAL: cuitTransportistaReal);
             Log.Info($"SI_MPMF_MOAOP_MOD_ENTREGA Result: {new { result, nroEntrega = req.NumeroEntrega }}");
 
