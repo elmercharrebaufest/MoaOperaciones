@@ -1,4 +1,4 @@
-import { Component,Input,OnInit, Output, ViewChild } from '@angular/core';
+import { Component, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { ActivatedRoute, Params } from '@angular/router';
 import { animate, style, transition, trigger } from '@angular/animations';
 
@@ -124,19 +124,19 @@ export class SolpComponent extends BaseComponent implements OnInit {
     titulo: string = "";
     tituloNroSolp: string = "";
     camposObligatorios: any[] = [
-        { campo: 'revisadoPor', esObligatorio: true}
+        { campo: 'revisadoPor', esObligatorio: true }
     ];
 
     public solpMode: ComponentMode;
 
-    constructor(protected service: ComprasService, 
-        protected navService: NavService, 
-        protected sessionDataService: SessionDataService, 
-        protected securytiService: SecurityService, 
-        protected floatMsgService: FloatMsgService, 
+    constructor(protected service: ComprasService,
+        protected navService: NavService,
+        protected sessionDataService: SessionDataService,
+        protected securytiService: SecurityService,
+        protected floatMsgService: FloatMsgService,
         protected modalService: ModalService,
-        private messageService: MessageService, 
-        private route: ActivatedRoute, 
+        private messageService: MessageService,
+        private route: ActivatedRoute,
         private confirmationService: ConfirmationService,
         private emailComposeService: EmailComposeService) {
         super(navService, securytiService, floatMsgService, modalService);
@@ -147,7 +147,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
     ngOnInit() {
         if (this.pasos && this.pasos.length > 0) {
             this.getCombos();
-            this.es = setupDaysAndMonths();            
+            this.es = setupDaysAndMonths();
 
             this.pasos[0].Activo = true;
             this.pasos[0].Iniciado = true;
@@ -185,15 +185,15 @@ export class SolpComponent extends BaseComponent implements OnInit {
     }
 
     public getComponentMode(): ComponentMode {
-      return this.solpMode;
+        return this.solpMode;
     }
 
     public get esCreacionSolp(): boolean {
-      return this.getComponentMode() === ComponentMode.Creation;
+        return this.getComponentMode() === ComponentMode.Creation;
     }
 
     public get esEdicionSolp(): boolean {
-      return this.getComponentMode() === ComponentMode.Edition;
+        return this.getComponentMode() === ComponentMode.Edition;
     }
 
     private setupCentroPorDefecto(): void {
@@ -206,12 +206,12 @@ export class SolpComponent extends BaseComponent implements OnInit {
     private setupDireccionCentroPorDefecto(): void {
         if (this.solpActual.centroPorDefecto) {
             let direccionCentro = this.combos.CentrosDireccion.find(x => x.CodigoSap == this.solpActual.centroPorDefecto.CodigoSap);
-            if (direccionCentro != null){
+            if (direccionCentro != null) {
                 this.solpActual.direccionCentroPorDefecto = direccionCentro;
             }
         }
     }
-    
+
     private setupMonedaPorDefecto(): void {
         let monedaPorDefecto = this.combos.Moneda.find(x => x.Codigo == "ARP");
         if (monedaPorDefecto) {
@@ -272,7 +272,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
                     } else {
                         this.solpActual = new Solp(result.data)
                         let estadosPasos = this.solpActual.estadoPasos.split(',');
-                        
+
                         let count = 0;
                         estadosPasos.forEach(item => {
                             if (this.pasos[count]) {
@@ -381,20 +381,20 @@ export class SolpComponent extends BaseComponent implements OnInit {
         }
     }
 
-    mostrarValidacion(campoAValidar, vacio){
+    mostrarValidacion(campoAValidar, vacio) {
         let camposVacios = this.camposObligatorios.find(x => x.campo == campoAValidar && x.esObligatorio);
         return (camposVacios != null && vacio == 0);
     }
 
-    guardarCambios({mostrarPreview = false, enviarSap = false, guardarPorPaso = false}) {
+    guardarCambios({ mostrarPreview = false, enviarSap = false, guardarPorPaso = false }) {
         this.messageService.clear();
         try {
-            if(!this.solpActual.posiciones){
+            if (!this.solpActual.posiciones) {
                 this.solpActual.posiciones = [];
             }
-            
+
             this.actualizarPasoCompleto(this.pasoActual);
-            
+
 
             this.disabledSave = true;
             if (guardarPorPaso == false) {
@@ -434,7 +434,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
                     return;
                 }
 
-                if(this.validarFechaVisitaDeObra()){
+                if (this.validarFechaVisitaDeObra()) {
                     this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: "La fecha de visita de obra no puede ser mayor a la fecha tentativa de ofertas" });
                     if (guardarPorPaso == false) {
                         this.blockUI.stop();
@@ -442,18 +442,18 @@ export class SolpComponent extends BaseComponent implements OnInit {
                     this.disabledSave = false;
                     return;
                 }
-                
-                if(this.validarFechaLimiteConsulta()){
-                    this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: "La fecha de limite de consulta no puede ser mayor a la fecha tentativa de ofertas" });
+
+                if (this.validarFechaLimiteConsulta()) {
+                    this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: "La fecha de límite de consulta no puede ser mayor a la fecha tentativa de ofertas" });
                     if (guardarPorPaso == false) {
                         this.blockUI.stop();
                     }
                     this.disabledSave = false;
                     return;
                 }
-        
-                if(this.validarFechaLimiteYObra()){
-                    this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: "La fecha de limite de consulta no puede ser mayor a la fecha de visita de obra" });
+
+                if (this.validarFechaLimiteYObra()) {
+                    this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: "La fecha de límite de consulta no puede ser mayor a la fecha de visita de obra" });
                     if (guardarPorPaso == false) {
                         this.blockUI.stop();
                     }
@@ -475,12 +475,12 @@ export class SolpComponent extends BaseComponent implements OnInit {
                             this.blockUI.stop();
                         }
                     } else if (result.error != undefined && result.error != "") {
-                        this.messageService.add({ severity: 'error', summary: 'No se pudo guardar la solp', detail: result.error });
+                        this.messageService.add({ severity: 'error', summary: 'No se pudo guardar la SOLP', detail: result.error });
                         if (guardarPorPaso == false) {
                             this.blockUI.stop();
                         }
                     } else if (result.info != undefined) {
-                        this.messageService.add({ severity: 'info', summary: 'No se pudo guardar la solp', detail: result.info });
+                        this.messageService.add({ severity: 'info', summary: 'No se pudo guardar la SOLP', detail: result.info });
                         if (guardarPorPaso == false) {
                             this.blockUI.stop();
                         }
@@ -520,7 +520,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
                                 this.pdfPreview = "data:application/pdf;base64," + result.Solp.Pdf;
                                 this.mostrarPreview = true;
                             } else {
-                                this.messageService.add({ severity: 'error', detail: 'Hubo un error al generar el preview. Por favor contacte con el administrador de sistemas.' });
+                                this.messageService.add({ severity: 'error', detail: 'Hubo un error al generar el preview. Por favor, contacte al administrador de sistemas.' });
                             }
                         }
 
@@ -557,16 +557,16 @@ export class SolpComponent extends BaseComponent implements OnInit {
                     this.disabledSave = false;
                 },
                 error => {
-                    this.messageService.add({ severity: 'error', summary: 'Error al intentar guardar la solp.', detail: error.message });
+                    this.messageService.add({ severity: 'error', summary: 'Error al intentar guardar la SOLP.', detail: error.message });
                     if (guardarPorPaso == false) {
                         this.blockUI.stop();
                     }
                     this.disabledSave = false;
                 }
             );
-        } catch (e) {  
+        } catch (e) {
             this.disabledSave = false;
-            this.messageService.add({ severity: 'error', summary: 'Error al intentar guardar la solp', detail: e });
+            this.messageService.add({ severity: 'error', summary: 'Error al intentar guardar la SOLP.', detail: e });
             if (guardarPorPaso == false) {
                 this.blockUI.stop();
             }
@@ -609,8 +609,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
                     if (!paso.Deshabilitado) {
                         if (!this.listaStringCompleta([
                             this.solpActual.especificacionesViewModel.observaciones
-                        ])) 
-                        {
+                        ])) {
                             return paso.Completo = false;
                         }
                     }
@@ -621,19 +620,19 @@ export class SolpComponent extends BaseComponent implements OnInit {
                         //this.solpActual.ejecucion,
                         this.solpActual.jornadaLaboralDias,
                         this.solpActual.comienzoJornadaLaboral,
-                        this.solpActual.terminoJornadaLaboral, 
+                        this.solpActual.terminoJornadaLaboral,
                         this.solpActual.validarTrabajoHecho
                     ])) {
                         return paso.Completo = false;
                     } else {
                         return this.solpActual.mensajeCotizacion = "";
                     }
-                    
+
                     break;
                 case EnumPasoSolp.SolpCabecera:
                     paso.Completo = true;
                     if (!paso.Deshabilitado) {
-                        if(!this.solpActual.posiciones){
+                        if (!this.solpActual.posiciones) {
                             this.solpActual.posiciones = [];
                         }
                         this.solpActual.posiciones.forEach(pos => {
@@ -644,11 +643,11 @@ export class SolpComponent extends BaseComponent implements OnInit {
                                 !pos.tabsPosicionValidos.tabDatosPosicion ||
                                 !pos.tabsPosicionValidos.tabFechas ||
                                 (pos.esTipoPosicionServicio && !pos.tabsPosicionValidos.tabSubposiciones) ||
-                                !pos.tabsPosicionValidos.tabPosiciones || 
-                                this.validarContratoMarco() || 
-                                this.validarAdicional() || 
-                                this.validarCondicionesEspeciales()) {                                     
-                                    return paso.Completo = false;
+                                !pos.tabsPosicionValidos.tabPosiciones ||
+                                this.validarContratoMarco() ||
+                                this.validarAdicional() ||
+                                this.validarCondicionesEspeciales()) {
+                                return paso.Completo = false;
                             } else {
                                 return pos.mensaje = "";
                             }
@@ -659,7 +658,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
         }
     }
 
-    validarFechaVisitaDeObra(){
+    validarFechaVisitaDeObra() {
         if (this.solpActual.listaVisitas.length === 0) { //se evita listaVisitas.reduce() cuando listaVisitas está vacía
             return false;
         }
@@ -667,7 +666,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
         var sinPliego = this.solpActual.tipoSolp === "SIN_PLIEGO";
         var validarFechaVisitaDeObra = false;
 
-        if(esTipoPosicionServicio && !sinPliego){
+        if (esTipoPosicionServicio && !sinPliego) {
             // Encuentra la visita con la fecha más larga
             const visitaMasLarga = this.solpActual.listaVisitas.reduce((visitaAnterior, visitaActual) => {
                 if (visitaActual.visitaDeObraFecha > visitaAnterior.visitaDeObraFecha) {
@@ -676,18 +675,18 @@ export class SolpComponent extends BaseComponent implements OnInit {
                     return visitaAnterior;
                 }
             });
-    
-            if(visitaMasLarga.visitaDeObraFecha > this.solpActual.fechaEntrega){
+
+            if (visitaMasLarga.visitaDeObraFecha > this.solpActual.fechaEntrega) {
                 return validarFechaVisitaDeObra = true;
             }
         }
         return validarFechaVisitaDeObra;
     }
 
-    validarFechaLimiteConsulta(){
+    validarFechaLimiteConsulta() {
         var validarFechaLimiteConsulta = false;
-    
-        if(this.solpActual.fechaLimiteFecha > this.solpActual.fechaEntrega){
+
+        if (this.solpActual.fechaLimiteFecha > this.solpActual.fechaEntrega) {
             return validarFechaLimiteConsulta = true;
         }
         return validarFechaLimiteConsulta;
@@ -699,10 +698,10 @@ export class SolpComponent extends BaseComponent implements OnInit {
         }
         var esTipoPosicionServicio = this.solpActual.posicionActual.tipoPosicion != "undefined" && this.solpActual.posicionActual.tipoPosicion && this.solpActual.posicionActual.tipoPosicion.Codigo == "SERVICIO";
         var sinPliego = this.solpActual.tipoSolp === "SIN_PLIEGO";
-        
+
         var validarFechaLimiteYObra = false;
-        
-        if(esTipoPosicionServicio && !sinPliego){
+
+        if (esTipoPosicionServicio && !sinPliego) {
             // Encuentra la visita con la fecha más larga
             const visitaMasLarga = this.solpActual.listaVisitas.reduce((visitaAnterior, visitaActual) => {
                 if (visitaActual.visitaDeObraFecha > visitaAnterior.visitaDeObraFecha) {
@@ -711,8 +710,8 @@ export class SolpComponent extends BaseComponent implements OnInit {
                     return visitaAnterior;
                 }
             });
-    
-            if(visitaMasLarga.visitaDeObraFecha > this.solpActual.fechaLimiteFecha  ){
+
+            if (visitaMasLarga.visitaDeObraFecha > this.solpActual.fechaLimiteFecha) {
                 return validarFechaLimiteYObra = true;
             }
 
@@ -720,58 +719,57 @@ export class SolpComponent extends BaseComponent implements OnInit {
         return validarFechaLimiteYObra;
     }
 
-    validarContratoMarco(){
+    validarContratoMarco() {
         var validacionContratoTrabajo = false;
 
-        if(this.solpActual.trabajoHecho == true && this.solpActual.posiciones.some(x => x.numeroContratoSuperior)){
+        if (this.solpActual.trabajoHecho == true && this.solpActual.posiciones.some(x => x.numeroContratoSuperior)) {
             return validacionContratoTrabajo = true;
         }
         return validacionContratoTrabajo;
     }
 
-    validarAdicional(){
+    validarAdicional() {
         var validacionAdicional = false;
 
-        if(this.solpActual.adicional == true && this.solpActual.posiciones.some(x => x.numeroContratoSuperior)){
+        if (this.solpActual.adicional == true && this.solpActual.posiciones.some(x => x.numeroContratoSuperior)) {
             return validacionAdicional = true;
         }
         return validacionAdicional;
     }
-    
-    validarCondicionesEspeciales(){
+
+    validarCondicionesEspeciales() {
         var validacionCheck = false;
 
-        if(this.solpActual.trabajoHecho == true && this.solpActual.adicional == true){
+        if (this.solpActual.trabajoHecho == true && this.solpActual.adicional == true) {
             return validacionCheck = true;
         }
         return validacionCheck;
     }
 
-    mostrarMensajeCampos(){
+    mostrarMensajeCampos() {
         this.solpActual.posiciones.forEach(pos => {
             if (pos.mensaje != "") {
                 this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: `${pos.mensaje}` });
             }
         })
 
-        if(this.validarContratoMarco()){
-            this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: "Las solp con contrato marco cargado no pueden tener el tilde en el check de trabajo hecho en el paso #4" });
+        if (this.validarContratoMarco()) {
+            this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: "Las SOLP con contrato marco cargado no pueden tener el tilde en el check de trabajo hecho en el paso #4" });
         }
 
-        if(this.validarAdicional()){
-            this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: "Las solp con contrato marco cargado no pueden tener el tilde en el check de adicional en el paso #4" });
+        if (this.validarAdicional()) {
+            this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: "Las SOLP con contrato marco cargado no pueden tener el tilde en el check de adicional en el paso #4" });
         }
 
-        if(this.validarCondicionesEspeciales()){
-            this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: "Las solp no pueden tener el tilde en el check de adicional y el check de trabajo hecho en el paso #4" });
+        if (this.validarCondicionesEspeciales()) {
+            this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: "Las SOLP no pueden tener el tilde en el check de adicional y el check de trabajo hecho en el paso #4" });
         }
     }
 
-    mostrarMensajeCotizacion(){
-            if (this.solpActual.mensajeCotizacion != "" && this.solpActual.mensajeCotizacion != undefined) {
-                this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: `${this.solpActual.mensajeCotizacion}` });
-            } 
-
+    mostrarMensajeCotizacion() {
+        if (this.solpActual.mensajeCotizacion != "" && this.solpActual.mensajeCotizacion != undefined) {
+            this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: `${this.solpActual.mensajeCotizacion}` });
+        }
     }
 
     diasJornadaLaboral(lista: any[]) {
@@ -884,7 +882,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
     }
 
     preview() {
-        this.guardarCambios({mostrarPreview: true});
+        this.guardarCambios({ mostrarPreview: true });
     }
 
     salir() {
@@ -930,17 +928,16 @@ export class SolpComponent extends BaseComponent implements OnInit {
                 (error) => {
                     // this.spinnerSmallComponent.hideIt();
                     this.mensajeComponent.setErrorMsg(error.message);
-                }
-            )
+                })
     }
 
     // Todos los Modal
-    finalizar({selectUsuarioCompras, solpActual}) {
+    finalizar({ selectUsuarioCompras, solpActual }) {
         this.selectUsuarioCompras = selectUsuarioCompras;
         this.solpActual = solpActual;
 
         this.cabecera.validarTabCompleto();
-        this.guardarCambios({mostrarPreview: false, enviarSap: true, guardarPorPaso: false});
+        this.guardarCambios({ mostrarPreview: false, enviarSap: true, guardarPorPaso: false });
         this.displayFinalizar = false;
         this.mostrarMensajeCampos();
         this.mostrarMensajeCotizacion();
@@ -959,7 +956,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
     cancelarSolp() {
         this.confirmationService.confirm({
             key: 'cancelarSolp',
-            message: '¿Está seguro que desea volver a la pantalla principal? No se conservaran los cambios no guardados.',
+            message: '¿Está seguro de que desea volver a la pantalla principal? Se perderán los cambios no guardados.',
             accept: () => {
                 this.salir();
             },
@@ -1021,19 +1018,19 @@ export class SolpComponent extends BaseComponent implements OnInit {
             } else if (result.error != undefined && result.error != "") {
                 this.floatMsgService.setErrorMsg(result.error);
             } else {
-                this.floatMsgService.setSuccessMsg("Email se envio correctamente.");
+                this.floatMsgService.setSuccessMsg("Email se envió correctamente.");
             }
         },
-        error => {
-            this.emailComposeService.close();
-            this.floatMsgService.setErrorMsg(error.message);
-            this.blockUI.stop();
-        });
+            error => {
+                this.emailComposeService.close();
+                this.floatMsgService.setErrorMsg(error.message);
+                this.blockUI.stop();
+            });
     }
 
     private getCCEmails(): string[] {
         const ccEmails: string[] = [];
-    
+
         if (this.solpActual.mail != undefined && this.solpActual.mail != null) {
             ccEmails.push(this.solpActual.mail);
         } else {
@@ -1055,7 +1052,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
 
     private getEmailSubject(esPrimeraFinalizacion: boolean, esPosteriorFinalizacion: boolean): string {
         let subject = "";
-        
+
         if (esPrimeraFinalizacion) {
             //SOLP N°” + *nnnnn* + “PLIEGO:” + *detalle del pliego*
             // subject = `SOLP N° ${this.solpActual.NroSolp || ""} PLIEGO: ${this.nombreDePedido}`;

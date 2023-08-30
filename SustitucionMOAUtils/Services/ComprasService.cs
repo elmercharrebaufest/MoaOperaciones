@@ -3583,7 +3583,7 @@ namespace SustitucionMOAUtils.Services
             {
                 asunto = "";
                 var enviarA = new List<string> { prov.Usuario.Mail };
-                asunto += $"PO {peticion.Id} - {prov.Usuario.ObtenerRazonSocial()}";
+                asunto += $"MOA - Pedido de Oferta {peticion.Id}: {peticion.Solp.Pliego.NombreObra}";
                 if (peticion.Posiciones.Select(x => x.SolpPosicion).Where(x => x.TipoPosicion_Id != null).FirstOrDefault().TipoPosicion.Codigo == "MATERIALES")
                 {
                     var pdf = GenerarPDFPeticionDeOferta(peticion, prov.Usuario.ObtenerCodigoProveedor());
@@ -3619,6 +3619,19 @@ namespace SustitucionMOAUtils.Services
                 string observacionesFormatted = peticion.Observaciones.Replace("\n", "<br />");
 
                 htmlBody += $"<br />Observaciones: {observacionesFormatted} <br /><br /><br />";
+            }
+
+            if(peticion.Solp.Posiciones.Select(x => x.TipoPosicion.Codigo).FirstOrDefault() == "SERVICIO" && peticion.Solp.TipoSolp.Codigo != "SIN_PLIEGO")
+            {
+                var downloadLinkUrl = ConfigurationManager.AppSettings["ida:RedirectUri"] + "/api/compras/DescargarPliegoDesdeLink?solpId=" + peticion.Solp.Id + "&token=" + peticion.Solp.EmailLinkToken;
+
+                htmlBody += "<p" +
+                           "style = 'line-height: 24px; font-size: 16px; margin: 0;'"+
+                           "align = 'center' >" +
+                           " Para descargar el legajo haga clic en el siguiente enlace: " +
+                           $"<a href = '{ downloadLinkUrl }' download rel='noopener noreferrer'>" +
+                           "Descargar Legajo" +
+                           "</a></p> <br /><br />";
             }
 
             htmlBody += "En caso de tener alguna consulta, ingresar a www.moaoperaciones.com.ar " +
@@ -4949,18 +4962,21 @@ namespace SustitucionMOAUtils.Services
 
         public List<AdjudicacionDto> ListarAdjudicaciones(int solpId)
         {
-            return repositorio.Listar<Adjudicacion, AdjudicacionDto>(adjudicacion => new AdjudicacionDto()
+            var nroSolp = repositorio.Obtener<Solp, string>(a => a.Id == solpId, a => a.NroSolp);
+            var respuestaSAP = obtenerOrdenesDeCompraParaSOLPConsumerMOA.Request(nroSolp, "");
+            var listaResultado = respuestaSAP.Select(adjudicacion => new AdjudicacionDto()
             {
-                Id = adjudicacion.Id,
-                Solp_Id = adjudicacion.Solp_Id,
-                TipoPosicionCodigo = adjudicacion.Solp.Posiciones.Select(y => y.TipoPosicion.Codigo).FirstOrDefault(),
-                NumeroOrdenDeCompra = adjudicacion.NumeroOrdenDeCompra,
-                FechaCreacion = adjudicacion.FechaCreacion,
-                Proveedor = adjudicacion.Cotizacion.PeticionDeOfertaUsuario.Usuario.Proveedores.Count > 0 ?
-                                    adjudicacion.Cotizacion.PeticionDeOfertaUsuario.Usuario.Proveedores.FirstOrDefault().RazonSocial : "",
-                MonedaDescripcion = adjudicacion.Moneda.CodigoSap,
-                PrecioFinal = adjudicacion.MontoTotal
-            }, x => x.Solp_Id == solpId).OrderBy(fc => fc.FechaCreacion).ToList();
+                Id = 0,
+                Solp_Id = solpId,
+                TipoPosicionCodigo = adjudicacion.Cabecera.Tipo,
+                NumeroOrdenDeCompra = adjudicacion.Cabecera.OrdenDeCompra,
+                FechaCreacion = adjudicacion.Cabecera.FechaCreacion,
+                Proveedor = adjudicacion.Cabecera.RazonSocialProveedor,
+                MonedaDescripcion = adjudicacion.Cabecera.Moneda,
+                PrecioFinal = adjudicacion.Cabecera.MontoTotal
+            }).OrderBy(fc => fc.FechaCreacion).ToList();
+
+            return listaResultado;
         }
 
         public AdjudicacionDto ObtenerAdjudicacion(int adjudicacionId) // No se está usando pero no borrar
