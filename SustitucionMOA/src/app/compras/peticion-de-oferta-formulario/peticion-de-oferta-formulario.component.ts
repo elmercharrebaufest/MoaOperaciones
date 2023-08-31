@@ -29,28 +29,22 @@ export class PeticionDeOfertaFormularioComponent extends ListBaseComponent imple
     @ViewChild("tabla")
     protected tabla: Table;
 
-
     solpCompraDto: SolpCompraDto;
     posicionCompra: PosicionCompra[];
     solpSubposicionDto: SolpSubposicionDto[];
     solpProveedorDto: SolpProveedorDto[];
     envioSolpCompra: EnvioSolpCompra[];
     altaNuevoProveedor: AltaNuevoProveedor;
-
     cuitProveedor: string = "";
     mailProveedor: string;
     razonSocialProveedor: string;
-
-
     proveedoresValidos: string;
     proveedoresInvalidos: string;
     proveedoresNoSugeridos: string;
-
     archivos = new Array<File>()
     posicionDeInicioInsert: number = 0;
     nroPeticion: any;
     displayPeticionCreada: boolean = false;
-
     display: boolean = false;
     displayFinalizar: boolean = false;
     proveedores: any[] = new Array();
@@ -60,16 +54,14 @@ export class PeticionDeOfertaFormularioComponent extends ListBaseComponent imple
     displayAltaProveedor: boolean = false;
     displayProvCreado: boolean = false;
     datoProveedor: string;
-
     displayRegistroInfo: boolean = false;
-
 
     constructor(protected service: ComprasService, protected usuarioService: UsuarioService, protected navService: NavService, protected sessionDataService: SessionDataService,
         protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService,
         protected route: ActivatedRoute, protected router: Router, private confirmationService: ConfirmationService, private formBuilder: FormBuilder) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
 
-        
+
 
     }
 
@@ -152,12 +144,10 @@ export class PeticionDeOfertaFormularioComponent extends ListBaseComponent imple
     }
 
     public get esMaterialCatalogado(): boolean {
-        if(this.esTipoMaterial){
+        if (this.esTipoMaterial) {
             return this.solpCompraDto.PosicionCompras.some(c => c.MaterialComprasCodigo != undefined);
         }
     }
-    
-    
 
     //elimno el archivo, llamar al servicio de eliminacion
     eliminarAdjuntoNuevo(archivo): void {
@@ -166,21 +156,20 @@ export class PeticionDeOfertaFormularioComponent extends ListBaseComponent imple
         this.archivos.splice(indice, 1)
     }
 
-
     uploadHandler(filesUpload: any): void {
-        var archivoWeb = filesUpload["files"].reduce((sum, file) => sum + file.size, 0);      
+        var archivoWeb = filesUpload["files"].reduce((sum, file) => sum + file.size, 0);
         this.archivos = filesUpload["files"];
-        if(archivoWeb > 10000000){
-            if(this.archivos.length > 0){
-            this.eliminarAdjuntoNuevo(this.archivos[this.archivos.length - 1]) 
+        if (archivoWeb > 10000000) {
+            if (this.archivos.length > 0) {
+                this.eliminarAdjuntoNuevo(this.archivos[this.archivos.length - 1])
             }
-            this.floatMsgService.setErrorMsg("El archivo adjuntado no debe superar los 10Mb");   
+            this.floatMsgService.setErrorMsg("El archivo adjuntado no debe superar los 10Mb");
         }
     }
 
     eliminarArchivo(archivo: any) {
         this.confirmationService.confirm({
-            message: '¿Está seguro que desea eliminar el archivo?',
+            message: '¿Está seguro de que desea eliminar el archivo?',
             accept: () => {
                 this.eliminarAdjuntoNuevo(archivo)
             },
@@ -197,7 +186,6 @@ export class PeticionDeOfertaFormularioComponent extends ListBaseComponent imple
     mostrarProveedores(proveedores: SolpProveedorDto[]): string {
         return proveedores.map((proveedor) => proveedor.RazonSocial).join(', ');
     }
-
 
     searchProveedor(event) {
         try {
@@ -326,23 +314,23 @@ export class PeticionDeOfertaFormularioComponent extends ListBaseComponent imple
         }
     }
 
-    abrirPopupProveedor(){
+    abrirPopupProveedor() {
         this.displayAltaProveedor = true;
     }
 
-    salirPopupProveedor(){
+    salirPopupProveedor() {
         this.displayAltaProveedor = false;
     }
 
-    agregarProveedor(event){
+    agregarProveedor(event) {
         this.selectProveedor(event.proveedorDto);
     }
 
-    mostrarRegistroInfo(){
+    mostrarRegistroInfo() {
         this.displayRegistroInfo = true;
     }
 
-    salirPopupRegistroInfo(){
+    salirPopupRegistroInfo() {
         this.displayRegistroInfo = false;
     }
 

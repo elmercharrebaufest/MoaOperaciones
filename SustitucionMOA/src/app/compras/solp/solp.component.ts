@@ -645,8 +645,8 @@ export class SolpComponent extends BaseComponent implements OnInit {
                                 (pos.esTipoPosicionServicio && !pos.tabsPosicionValidos.tabSubposiciones) ||
                                 !pos.tabsPosicionValidos.tabPosiciones ||
                                 this.validarContratoMarco() ||
-                                this.validarAdicional() ||
-                                this.validarCondicionesEspeciales()) {
+                                this.validarAdicional())
+                                /*this.validarCondicionesEspeciales()*/ {
                                 return paso.Completo = false;
                             } else {
                                 return pos.mensaje = "";
@@ -761,9 +761,9 @@ export class SolpComponent extends BaseComponent implements OnInit {
             this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: "Las SOLP con contrato marco cargado no pueden tener el tilde en el check de adicional en el paso #4" });
         }
 
-        if (this.validarCondicionesEspeciales()) {
-            this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: "Las SOLP no pueden tener el tilde en el check de adicional y el check de trabajo hecho en el paso #4" });
-        }
+        //if (this.validarCondicionesEspeciales()) {
+        //    this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: "Las SOLP no pueden tener el tilde en el check de adicional y el check de trabajo hecho en el paso #4" });
+        //}
     }
 
     mostrarMensajeCotizacion() {

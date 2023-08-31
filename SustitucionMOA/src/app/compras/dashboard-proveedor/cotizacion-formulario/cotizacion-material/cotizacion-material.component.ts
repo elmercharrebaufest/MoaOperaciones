@@ -74,15 +74,14 @@ export class CotizacionMaterialComponent extends ListBaseComponent implements On
         this.mostrarMensajeNoRespetaCondiciones()
     }
 
-    public mostrarMensajeNoRespetaCondiciones(){
-        for(var i = 0; i < this.posicionesCompra.length; i++){
-            this.visualizarMensajeDeModificacion = 
-            this.validarCambios(this.posicionesCompra[i].Posiciones.CotizacionPosicion, this.posicionesCompra[i].Id);
-            if(this.visualizarMensajeDeModificacion) {
+    public mostrarMensajeNoRespetaCondiciones() {
+        for (var i = 0; i < this.posicionesCompra.length; i++) {
+            this.visualizarMensajeDeModificacion =
+                this.validarCambios(this.posicionesCompra[i].Posiciones.CotizacionPosicion, this.posicionesCompra[i].Id);
+            if (this.visualizarMensajeDeModificacion) {
                 break;
-            } 
+            }
         }
-        
     }
 
     public get esTipoMaterial(): boolean {
@@ -95,7 +94,7 @@ export class CotizacionMaterialComponent extends ListBaseComponent implements On
 
     eliminarArchivo(esAdjuntoNuevo: boolean, archivo: any) {
         this.confirmationService.confirm({
-            message: '¿Está seguro que desea eliminar el archivo?',
+            message: '¿Está seguro de que desea eliminar el archivo?',
             accept: () => {
                 esAdjuntoNuevo ? this.eliminarAdjuntoNuevo(archivo) : this.eliminarAdjuntoGuardado(archivo)
             },
@@ -103,7 +102,6 @@ export class CotizacionMaterialComponent extends ListBaseComponent implements On
 
             }
         });
-
     }
 
     //elimno el archivo, llamar al servicio de eliminacion
@@ -119,7 +117,6 @@ export class CotizacionMaterialComponent extends ListBaseComponent implements On
 
     descargarArchivo(archivo): void {
         if (archivo.id != undefined) {
-
             this.service.DescargarArchivo(archivo.id)
                 .subscribe(
                     (result) => {
@@ -143,7 +140,6 @@ export class CotizacionMaterialComponent extends ListBaseComponent implements On
         }
         else {
             this.downloadArchivoLocal(archivo, archivo.name);
-
         }
     }
 
@@ -167,6 +163,7 @@ export class CotizacionMaterialComponent extends ListBaseComponent implements On
         //this.posicionesCompra.filter(x => x.Id == peticionId)[0].Posiciones.CotizacionPosicion.UnidadDeMedida_Id = unidad.Id;
         this.mostrarMensajeNoRespetaCondiciones();
     }
+
     private downloadArchivoLocal(blob: Blob, nombreArchivo: string): void {
         if (window.navigator.msSaveOrOpenBlob) {
             // IE11
@@ -188,7 +185,6 @@ export class CotizacionMaterialComponent extends ListBaseComponent implements On
         }
     }
 
-
     public onValueChangeObservaciones(event: Event): void {
         const value = (event.target as any).value;
         this.observaciones = value;
@@ -202,8 +198,8 @@ export class CotizacionMaterialComponent extends ListBaseComponent implements On
         var archivoWeb = filesUpload["files"].reduce((sum, file) => sum + file.size, 0);
         this.archivos = filesUpload["files"];
         if (archivoWeb > 10000000) {
-            if(this.archivos.length > 0){
-            this.eliminarAdjuntoNuevo(this.archivos[this.archivos.length - 1])
+            if (this.archivos.length > 0) {
+                this.eliminarAdjuntoNuevo(this.archivos[this.archivos.length - 1])
             }
             this.floatMsgService.setErrorMsg("El archivo adjuntado no debe superar los 10Mb")
         }
@@ -234,13 +230,12 @@ export class CotizacionMaterialComponent extends ListBaseComponent implements On
                         this.floatMsgService.setInfoMsg(result.info);
                     } else {
                         this.combos = result;
-                        this.setCombos();                      
+                        this.setCombos();
                     }
                 },
                 error => {
                     this.floatMsgService.setErrorMsg(error.message);
                 }
-
             );
         } catch (e) {
             this.floatMsgService.setErrorMsg(e);
@@ -262,49 +257,44 @@ export class CotizacionMaterialComponent extends ListBaseComponent implements On
         if (cotizacion.Precio != 0 && cotizacion.Cantidad != 0) {
             cotizacion.PrecioTotal = cotizacion.Precio * cotizacion.Cantidad;
             this.posicionesCompra.filter(x => x.Id == peticionId)[0].Posiciones.CotizacionPosicion.PrecioTotal = cotizacion.PrecioTotal;
-
         }
     }
-
 
     public validarCambios(cotizacion: any, peticionId: number) {
         this.visualizarMensajeDeModificacion = false;
         var respuesta = false;
         if (cotizacion.Cantidad >= 0) {
             respuesta = this.posicionesCompra.filter(x => x.Id == peticionId)[0].Posiciones.Cantidad != cotizacion.Cantidad;
-            
+
         }
         if (!respuesta && cotizacion.UnidadMedida != undefined) {
-             respuesta = this.posicionesCompra.filter(x => x.Id == peticionId)[0].Posiciones.UnidadId != cotizacion.UnidadMedida.Id            
+            respuesta = this.posicionesCompra.filter(x => x.Id == peticionId)[0].Posiciones.UnidadId != cotizacion.UnidadMedida.Id
         }
         return respuesta;
     }
 
     calcularFechaEntrega(cotizacion: CotizacionPosicionDto, peticionId: number) {
-        let fechaNueva = new Date();   
+        let fechaNueva = new Date();
         if (cotizacion.PlazoDeEntrega > 0) {
             fechaNueva.setDate(fechaNueva.getDate() + cotizacion.PlazoDeEntrega);
             this.posicionesCompra.filter(x => x.Id == peticionId)[0].Posiciones.CotizacionPosicion.FechaDeEntrega = fechaNueva;
         }
     }
 
-
-
     calcularPlazo(cotizacion: CotizacionPosicionDto, peticionId: number) {
         let fechaNueva = new Date();
         let fechaOriginal = new Date();
-        if (cotizacion.FechaDeEntrega != null) 
-         { 
+        if (cotizacion.FechaDeEntrega != null) {
             fechaNueva = cotizacion.FechaDeEntrega;
-         }else{
+        } else {
             cotizacion.FechaDeEntrega = fechaOriginal;
-         }        
+        }
         // if (cotizacion.PlazoDeEntrega) {
-            var dias = fechaNueva > fechaOriginal ? fechaNueva.getDay() - fechaOriginal.getDay() : fechaOriginal.getDay() - fechaNueva.getDay();
-            if(dias < 0){
-                dias = 0;
-            }
-            this.posicionesCompra.filter(x => x.Id == peticionId)[0].Posiciones.CotizacionPosicion.PlazoDeEntrega = dias;
+        var dias = fechaNueva > fechaOriginal ? fechaNueva.getDay() - fechaOriginal.getDay() : fechaOriginal.getDay() - fechaNueva.getDay();
+        if (dias < 0) {
+            dias = 0;
+        }
+        this.posicionesCompra.filter(x => x.Id == peticionId)[0].Posiciones.CotizacionPosicion.PlazoDeEntrega = dias;
         // }
     }
 
@@ -406,7 +396,7 @@ export class CotizacionMaterialComponent extends ListBaseComponent implements On
             )
     }
 
-    noDisponible(cotizacion: CotizacionPosicionDto){
+    noDisponible(cotizacion: CotizacionPosicionDto) {
         cotizacion.Cantidad = null;
         cotizacion.Moneda = null;
         cotizacion.MonedaCodigo = null;
