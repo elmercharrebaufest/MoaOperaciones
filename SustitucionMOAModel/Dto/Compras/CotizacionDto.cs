@@ -1,10 +1,5 @@
-﻿using SustitucionMOAModel.Dto;
-using SustitucionMOAModel.Entities;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
 
 namespace SustitucionMOAModel.Dto
 {
@@ -115,16 +110,16 @@ namespace SustitucionMOAModel.Dto
         public List<ArchivoDto> ArchivosGuardados { get; set; } = new List<ArchivoDto>();
         public int CotizacionId { get; set; }
         public bool EsFinalizado { get; set; }
-
         public bool? RespetaMateriales { get; set; }
         public bool? RespetaServicios { get; set; }
         public List<CotizacionHorasDto> CotizacionesHoras { get; set; } = new List<CotizacionHorasDto>();
-         public int? MonedaId { get; set; }
+        public int? MonedaId { get; set; }
         public int? UnidadDeMedidaId { get; set; }
         public int? Cantidad { get; set; }
         public DateTime? FechaDeEntrega { get; set; }
         public List<CotizacionSubposicionesDto> CotizacionSubposiciones { get; set; } = new List<CotizacionSubposicionesDto>();
         public bool ConfigurarHora { get; set; }
+        public DateTime? FechaDeVigencia { get; set; }
     }
 
 
