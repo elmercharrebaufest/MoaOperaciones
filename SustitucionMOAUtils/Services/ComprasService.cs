@@ -1617,10 +1617,12 @@ namespace SustitucionMOAUtils.Services
         public void ActualizarFechaLiberacion(string nrosolp, DateTime fechaLiberacion)
         {
             var solp = repositorio.Obtener<Solp>(x => x.NroSolp == nrosolp);
+            var estadoSolpSapLiberada = repositorio.Obtener<TablaSap>(x => x.Tabla == "EstadoSolpSap" && x.CodigoSap == "05").Id;
 
             if (solp != null)
             {
                 solp.FechaLiberacionSap = fechaLiberacion;
+                solp.EstadoSolpSap_Id = estadoSolpSapLiberada;
                 repositorio.GuardarCambios();
             }
         }
