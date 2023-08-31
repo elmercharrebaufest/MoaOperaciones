@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ConfirmationService } from 'primeng/api';
 import { ListBaseComponent } from '../../common/base-components/list-base-component';
@@ -19,6 +19,7 @@ import { OrdenesDeCargaService } from '../../ordenes-de-carga/ordenes-de-carga.s
     styleUrls: ['./reporte-contrato.detalle.component.css']
 })
 export class DetalleComponent extends ListBaseComponent implements OnInit {
+    @Output() navegarDetalle: EventEmitter<void> = new EventEmitter();
     contratoId: string;
     ordenDeCargaId: string = null;
     detalles: DetalleReporteContrato[] = null;
@@ -123,6 +124,7 @@ export class DetalleComponent extends ListBaseComponent implements OnInit {
                 else if (res.info) {
                     this.floatMsgService.setInfoMsg(res.info)
                 } else {
+                    this.navegarDetalle.emit();
                     this.goToSeccionParam('/ordenes-de-carga/detalle', res.data.Id.toString());
                 }
             }
