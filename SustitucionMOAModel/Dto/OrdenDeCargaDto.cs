@@ -45,6 +45,7 @@ namespace SustitucionMOAModel.Dto
         public string DomicilioDescr { get; set; }
         public bool Reventa { get; set; }
         public bool Escalable { get; set; }
+        public TipoContratoFAS TipoContrato { get; set; }
 
         public OrdenDeCargaDto()
         {
@@ -210,7 +211,7 @@ namespace SustitucionMOAModel.Dto
         public bool Escalable { get; set; }
 
         public OrdenDeCargaDetalleDto() { }
-        
+
         public OrdenDeCargaDetalleDto(Ent.OrdenDeCarga orden, List<OrdenDeCargaCambiosHistorialDto> ordenDeCargaCambiosHistorial, Proveedor cliente)
         {
             Id = orden.Id;

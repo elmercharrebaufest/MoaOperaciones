@@ -11,6 +11,7 @@ import { OrdenDeCarga } from '../../common/models/ordenes-de-carga/ordenDeCarga'
 import { ConfirmationService } from 'primeng/api';
 import { MensajeComponent } from '../../common/view-child/mensaje/mensaje.component';
 import { NgBlockUI, BlockUI } from 'ng-block-ui';
+import { TipoContrato } from '../../common/models/ordenes-de-carga/obtenerContratosDisponiblesResponse';
 
 @Component({
     selector: 'app-ordenes-de-carga.listado',
@@ -22,7 +23,7 @@ export class OrdenesDeCargaListado extends ListBaseComponent implements OnInit {
 
     @ViewChild(MensajeComponent)
     protected mensajeComponent: MensajeComponent;
-
+    tipoContrato = TipoContrato;
     listaMateriales: Material[];
     ordenDeCarga: OrdenDeCarga = new OrdenDeCarga();
     corredorCodigo: string = "";
@@ -39,11 +40,11 @@ export class OrdenesDeCargaListado extends ListBaseComponent implements OnInit {
     datosAux: any[];
     primerListado: any[];
     listaEnviarASAP: number[] = [];
-
+    
     productoSelected: string = "Todos";
     listaProductos: any = null;
     private selectUndefinedOptionValue: any;
-    pedidoAnticipado: number = 0;
+    filtroTipoContrato?: TipoContrato = null;
     seleccionaTodos: boolean = false;
 
     esInterno: boolean = this.isAuthorized('VER TODAS ORDENES DE CARGA');
