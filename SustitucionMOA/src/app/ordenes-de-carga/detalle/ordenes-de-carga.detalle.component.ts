@@ -39,6 +39,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
     mensajeError: string = "";
     mensajeSeleccionarContrato?: string;
     mensajeSeleccionarFactura?: string;
+    mensajeErrorOrdenActivaScato: string = "";
 
     ordenDeCargaHistorial: any = {};
     estadosVerHistorial: EstadoOrdenDeCarga[] = [
@@ -85,6 +86,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
     mostrarBotonVerificarCompensacion: boolean = false;
 
     ordenActivaScato: boolean = false;
+    errorValidarOrdenScato: boolean = false;
 
     // esInterno: boolean = false;
     esInterno: boolean = this.isAuthorized('VER TODAS ORDENES DE CARGA');
@@ -93,7 +95,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
     esMesaFas: boolean = this.isAuthorized('VER ORDENES DE CARGA PARA MESA FAS');
     esPuerto: boolean = this.isAuthorized('VER ORDENES DE CARGA PARA PUERTO');
     esCorredor: boolean = sessionStorage.getItem("tipoUsuario") === "CORR";
-    esAnulador: boolean = this.isAuthorized('ANULAR ORDEN DE CARGA');
+    esAnulador: boolean = true;//this.isAuthorized('ANULAR ORDEN DE CARGA');
 
 
     constructor(protected service: OrdenesDeCargaService,
@@ -935,9 +937,11 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                         this.sessionDataService.logout();
                         return;
                     } else if (result.error != undefined && result.error != "") {
-                        this.mensajeComponent.setErrorMsg(result.error);
+                        //this.mensajeComponent.setErrorMsg(result.error);
+                        this.mensajeErrorOrdenActivaScato = result.error;
                     } else if (result.info != undefined) {
-                        this.mensajeComponent.setInfoMsg(result.info);
+                       //this.mensajeComponent.setInfoMsg(result.info);
+                       this.mensajeErrorOrdenActivaScato = result.info;
                     }
                     this.ordenActivaScato = result.data;
                 },
