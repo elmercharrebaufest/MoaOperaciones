@@ -855,7 +855,8 @@ namespace SustitucionMOAUtils.Services
                         NoEstaEnSAP = (x.Estado.ToFriendlyString() == "Sin Enviar a SAP"),
                         EstaSeleccionado = false,
                         EdicionRechazada = x.EdicionRechazada,
-                        Escalable = x.Escalable
+                        Escalable = x.Escalable,
+                        TipoContrato = x.TipoContrato
                     }).OrderByDescending(y => y.Id).ToList();
             }
             else
@@ -884,7 +885,8 @@ namespace SustitucionMOAUtils.Services
                         PatenteChasis = x.ChasisAcoplado,
                         NoEstaEnSAP = (x.Estado.ToFriendlyString() == "Sin Enviar a SAP"),
                         EstaSeleccionado = false,
-                        EdicionRechazada = x.EdicionRechazada
+                        EdicionRechazada = x.EdicionRechazada,
+                        TipoContrato = x.TipoContrato
                     }).OrderByDescending(y => y.Id).ToList();
             }
             if (listado == null || listado.Count == 0)

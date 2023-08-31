@@ -67,10 +67,10 @@
         <div id="searchPedido" class="col-xs-12 col-sm-6 col-md-15" style="margin-top: 8px;">
           Factura anticipada:
           <div class="styled-select ">
-            <select [(ngModel)]="pedidoAnticipado">
-              <option value="0" selected>Todos</option>
-              <option value="1" selected>Con pedido anticipado</option>
-              <option value="2" selected>Sin pedido anticipado</option>
+            <select [(ngModel)]="filtroTipoContrato">
+              <option [value]="null" selected>Todos</option>
+              <option [value]="tipoContrato.FacturaAnticipada" selected>Con pedido anticipado</option>
+              <option [value]="tipoContrato.Normal" selected>Sin pedido anticipado</option>
             </select>
           </div>
         </div>
@@ -129,9 +129,15 @@
             </tr>
           </thead>
           <tbody>
-            <tr
-              *ngFor="let ordenDeCarga of data | customFilter : 'Contrato' : filtroAlta | customFilter : 'Material' : (productoSelected  == 'Todos' ? '' : productoSelected) | customFilter : 'RazonSocialCliente' : filtroCliente |customFilter:'RazonSocialCorredor': filtroCorredor |customFilter:'PatenteChasis': filtroPatenteChasis| customFilterBoolean : 'EsFacturaAnticipada' : (pedidoAnticipado == 0 ? null:  (pedidoAnticipado != 2)) : true | orderedColumn : {property: orderedByColumn, direction: orderDirection} | paginate: { itemsPerPage:itemsPerPage, currentPage: p }; let odd = odd"
-              role="row" [class.odd]="!odd">
+            <tr *ngFor="let ordenDeCarga of data | 
+                customFilter : 'Contrato' : filtroAlta | 
+                customFilter : 'Material' : (productoSelected  == 'Todos' ? '' : productoSelected) | 
+                customFilter : 'RazonSocialCliente' : filtroCliente | 
+                customNumericFilter : 'TipoContrato' : filtroTipoContrato | 
+                customFilter:'RazonSocialCorredor': filtroCorredor |
+                customFilter:'PatenteChasis': filtroPatenteChasis| 
+                orderedColumn : {property: orderedByColumn, direction: orderDirection} | 
+                paginate: { itemsPerPage:itemsPerPage, currentPage: p }; let odd = odd" role="row" [class.odd]="!odd">
               <td *ngIf="puedeEnviarASAP"><input type="checkbox" [checked]="estaListadoParaSAP(ordenDeCarga)"
                   [disabled]="!ordenDeCarga.NoEstaEnSAP" (click)="seleccionarItem(ordenDeCarga)" /></td>
               <td>{{ordenDeCarga.Id}}</td>
