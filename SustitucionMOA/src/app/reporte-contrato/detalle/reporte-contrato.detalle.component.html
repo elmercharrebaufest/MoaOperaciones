@@ -20,8 +20,6 @@
                 </div>
             </div>
 
-
-
             <div class="row myRow">
 
                 <div class="clearfix myTables">
@@ -54,7 +52,7 @@
                                 <td>{{det.CantidadEntregadaStr}}</td>
                                 <td>{{det.Remito}}</td>
                                 <td>{{det.CPE}}</td>
-                                <td>{{det.CantidadFactura}} KG</td>
+                                <td>{{det.CantidadFacturaStr}}</td>
                                 <td>{{det.FacturaLegal}}</td>
                                 <td>{{det.Chasis}}</td>
                                 <td>{{det.Acoplado}}</td>
@@ -66,17 +64,16 @@
                             <tr role="row" class="totalTable">
                                 <td></td>
                                 <td style="text-align :center" tabindex="0">TOTAL</td>
-                                <td [ngStyle]="{'font-weight':'bold'}">{{KilosEntregados | number}}</td>
+                                <td [ngStyle]="{'font-weight':'bold'}">{{KilosEntregados | number}} KG</td>
                                 <td></td>
                                 <td></td>
-                                <td [ngStyle]="{'font-weight':'bold'}">{{KilosFacturados | number}}</td>
+                                <td [ngStyle]="{'font-weight':'bold'}">{{KilosFacturados | number}} KG</td>
                                 <td></td>
                                 <td></td>
                                 <td></td>
                                 <td></td>
                             </tr>
                         </tbody>
-
                     </table>
                 </div>
             </div>
