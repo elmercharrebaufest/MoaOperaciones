@@ -834,9 +834,11 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                             if (resp.Error) {
                                 this.mensajeComponent.setErrorMsg(resp.Error);
                                 this.messagesContainer.nativeElement.scrollIntoView({ behavior: 'smooth' })
+                                this.reiniciarProducto();
                             } else
                                 if (resp.Info) {
                                     this.mensajeComponent.setInfoMsg(resp.Info);
+                                    this.reiniciarProducto();
                                 } else {
                                     this.contratosDisponibles = resp.Contratos.map(c => {
                                         return new ContratoOrdenFas(c.NumeroContrato, c.TipoContrato, c.Producto, c.KgDisponibles);
