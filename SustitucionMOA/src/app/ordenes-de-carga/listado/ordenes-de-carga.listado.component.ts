@@ -12,6 +12,7 @@ import { ConfirmationService } from 'primeng/api';
 import { MensajeComponent } from '../../common/view-child/mensaje/mensaje.component';
 import { NgBlockUI, BlockUI } from 'ng-block-ui';
 import { FiltroFechaFasComponent } from '../../common/view-child/filtro-fecha-fas/filtro-fecha-fas.component';
+import { TipoContrato } from '../../common/models/ordenes-de-carga/obtenerContratosDisponiblesResponse';
 
 @Component({
     selector: 'app-ordenes-de-carga.listado',
@@ -27,6 +28,7 @@ export class OrdenesDeCargaListado extends ListBaseComponent implements OnInit {
     protected filtroFechaFasComponent: FiltroFechaFasComponent;
 
 
+    tipoContrato = TipoContrato;
     listaMateriales: Material[];
     ordenDeCarga: OrdenDeCarga = new OrdenDeCarga();
     corredorCodigo: string = "";
@@ -45,11 +47,11 @@ export class OrdenesDeCargaListado extends ListBaseComponent implements OnInit {
     datosAux: any[];
     primerListado: any[];
     listaEnviarASAP: number[] = [];
-
+    
     productoSelected: string = "Todos";
     listaProductos: any = null;
     private selectUndefinedOptionValue: any;
-    pedidoAnticipado: number = 0;
+    filtroTipoContrato?: TipoContrato = null;
     seleccionaTodos: boolean = false;
 
     esInterno: boolean = this.isAuthorized('VER TODAS ORDENES DE CARGA');
