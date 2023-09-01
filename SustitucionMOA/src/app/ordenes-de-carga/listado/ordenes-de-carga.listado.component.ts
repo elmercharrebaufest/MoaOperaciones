@@ -32,6 +32,8 @@ export class OrdenesDeCargaListado extends ListBaseComponent implements OnInit {
     filtroProducto: any = null
     filtroAlta: any = null;
     filtroCliente: any = null;
+    filtroCorredor: any = null;
+    filtroPatenteChasis: any = null;
 
     estadoSelected: string = "Todos";
     estadosSelected: string[] = [];
