@@ -648,7 +648,8 @@ namespace SustitucionMOATest.Services
                         Precio = 1000,
                         PrecioTotal = 1000,
                         TotalPesos = 1000,
-                        UnidadDeMedidaId = 1
+                        UnidadDeMedidaId = 1,
+                        FechaDeVigencia= DateTime.Now,
                     },
                     new GuardarCotizacionPosicionDto
                     {
@@ -668,6 +669,7 @@ namespace SustitucionMOATest.Services
                 ObservacionEconomica = "",
                 ObservacionTecnica = "",
                 FechaDeEntrega = DateTime.Now,
+                FechaDeVigencia = DateTime.Now,
                 CotizacionSubposiciones = new List<CotizacionSubposicionesDto>
                 {
                     new CotizacionSubposicionesDto
