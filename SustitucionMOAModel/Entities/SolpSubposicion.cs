@@ -40,6 +40,9 @@ namespace SustitucionMOAModel.Entities
         [ForeignKey("CodigoServicioSap_Id")]
         public virtual TablaSap CodigoServicioSap { get; set; }
 
+        [InverseProperty("SolpSubPosicion")]
+        public virtual List<CotizacionSubPosicion> Cotizaciones { get; set; }
+
         public object Clone()
         {
             return this.MemberwiseClone();

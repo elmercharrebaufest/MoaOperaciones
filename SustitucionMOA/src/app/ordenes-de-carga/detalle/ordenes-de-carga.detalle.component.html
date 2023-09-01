@@ -6,7 +6,8 @@
             <div class="col-xs-10 col-sm-10 ">
                 <strong *ngIf="esInterno || esMesaFas || esPuerto">
                     Orden de carga #{{ordenDeCarga.Id}} - {{ordenDeCarga.DescripcionEstado}}
-                    <strong *ngIf="ordenDeCarga.DescripcionEstado=='Error de datos'">- Valide los datos ingresados al cargar la orden</strong>
+                    <strong *ngIf="ordenDeCarga.DescripcionEstado=='Error de datos'">- Valide los datos ingresados al
+                        cargar la orden</strong>
                     <div class="semaforo {{ordenDeCarga.ColorSemaforo}}">
                     </div>
                 </strong>
@@ -19,11 +20,12 @@
             <div class="col-xs-12 col-sm-2" style="display: flex; justify-content: flex-end;">
                 <div style="float: right;">
                     <button type="button" pButton icon="fa fa-refresh" (click)="obtenerOrdenDeCarga()"
-                            style="background-color: #075088; float: right; top: 5%;"></button> &nbsp;
+                        style="background-color: #075088; float: right; top: 5%;"></button> &nbsp;
                 </div>
                 <!-- Button trigger modal -->
-                <button *ngIf="mostrarBotonEditar" type="button" class="btn btn-custom col-xs-12 col-sm-11 btn-add btn-grande" (click)="editarOrden()"
-                        id="modalToggleButton">
+                <button *ngIf="mostrarBotonEditar" type="button"
+                    class="btn btn-custom col-xs-12 col-sm-11 btn-add btn-grande" (click)="editarOrden()"
+                    id="modalToggleButton">
                     Editar
                 </button>
             </div>
@@ -31,19 +33,25 @@
         <!--End Title-->
         <!-- Tables-->
         <div class="row myRow">
-            <div class="clearfix myTables">
+            <div class="clearfix myTables" #mainStart>
                 <mensaje></mensaje>
                 <spinner></spinner>
-                <p-confirmDialog #dialogoSA key="confirmarSA" header="Confirmación de solicitud de anulación" [responsive]="true" appendTo="body">
+                <p-confirmDialog #dialogoSA key="confirmarSA" header="Confirmación de solicitud de anulación"
+                    [responsive]="true" appendTo="body">
                     <p-footer>
-                        <button type="button" pButton label="No" class="ui-button-info botonModal" (click)="dialogoSA.reject()"></button>
-                        <button type="button" pButton label="Si" class="ui-button-success botonModal" (click)="dialogoSA.accept()"></button>
+                        <button type="button" pButton label="No" class="ui-button-info botonModal"
+                            (click)="dialogoSA.reject()"></button>
+                        <button type="button" pButton label="Si" class="ui-button-success botonModal"
+                            (click)="dialogoSA.accept()"></button>
                     </p-footer>
                 </p-confirmDialog>
-                <p-confirmDialog #dialogoRSA key="confirmarRSA" header="Confirmación de rechazo de solicitud de anulación" [responsive]="true" appendTo="body">
+                <p-confirmDialog #dialogoRSA key="confirmarRSA"
+                    header="Confirmación de rechazo de solicitud de anulación" [responsive]="true" appendTo="body">
                     <p-footer>
-                        <button type="button" pButton label="No" class="ui-button-info botonModal" (click)="dialogoRSA.reject()"></button>
-                        <button type="button" pButton label="Si" class="ui-button-success botonModal" (click)="dialogoRSA.accept()"></button>
+                        <button type="button" pButton label="No" class="ui-button-info botonModal"
+                            (click)="dialogoRSA.reject()"></button>
+                        <button type="button" pButton label="Si" class="ui-button-success botonModal"
+                            (click)="dialogoRSA.accept()"></button>
                     </p-footer>
                 </p-confirmDialog>
             </div>
@@ -56,9 +64,10 @@
                     <i aria-hidden="true" class="fa fa-exclamation-triangle"></i>{{mensajeError}}
                 </div>
             </div>
-            <div *ngIf="esInterno && ordenDeCarga.DescripcionErrorInterno.length > 0" class="formulario-input;">
+            <div *ngIf="esInterno && ordenDeCarga.DescripcionErrorInterno?.length" class="formulario-input;">
                 <div class="alert alert-warning">
-                    <i aria-hidden="true" class="fa fa-exclamation-triangle"></i>{{ordenDeCarga.DescripcionErrorInterno}}
+                    <i aria-hidden="true"
+                        class="fa fa-exclamation-triangle"></i>{{ordenDeCarga.DescripcionErrorInterno}}
                 </div>
             </div>
             <div class="col-xs-12 col-md-12 rounded shadow animate no-padding-left-right">
@@ -74,6 +83,12 @@
 
                                 <!-- cliente -->
                                 <div class="col-xs-12 col-md-6">
+                                    <div class="col-xs-12 col-md-12" *ngIf="validaCPEDG">
+                                        <p class="blue"><strong>Reventa</strong></p>
+                                        <p-checkbox name="reventa" [binary]="true" [(ngModel)]="ordenDeCarga.Reventa"
+                                            [disabled]="true"></p-checkbox>
+                                    </div>
+
                                     <div class="col-xs-12 col-md-12" *ngIf="esInterno || esCorredor">
                                         <p class="blue"><strong>Raz&oacute;n social cliente</strong></p>
                                         <p style="width:100%">{{ordenDeCarga.RazonSocialCliente}}</p>
@@ -104,14 +119,46 @@
                                         <p style="width:100%">{{ordenDeCarga.ContratoSAP}}</p>
                                     </div>
 
-                                    <div class="col-xs-12 col-md-12" *ngIf="ordenDeCarga.NumeroPedidoIngresado != ''">
+                                    <div class="col-xs-12 col-md-12" *ngIf="validaCPEDG">
+                                        <p class="blue"><strong>Destinatario</strong></p>
+                                        <p style="width:100%">{{ordenDeCarga.RazonSocialDestinatario}}
+                                            ({{ordenDeCarga.CUITDestinatario}})</p>
+                                    </div>
+
+                                    <div class="col-xs-12 col-md-12" *ngIf="validaCPEDG">
+                                        <p class="blue"><strong>Destino</strong></p>
+                                        <p style="width:100%">{{ordenDeCarga.RazonSocialDestino}}
+                                            ({{ordenDeCarga.CUITDestino}})</p>
+                                    </div>
+
+                                    <div class="col-xs-12 col-md-12" *ngIf="validaCPEDG">
+                                        <p class="blue"><strong>Planta</strong></p>
+                                        <p style="width:100%">{{ordenDeCarga.PlantaCodigo}}</p>
+                                    </div>
+
+                                    <div class="col-xs-12 col-md-12" *ngIf="validaCPEDG">
+                                        <p class="blue"><strong>Domicilio</strong></p>
+                                        <p style="width:100%">{{ordenDeCarga.DomicilioDescr}}</p>
+                                    </div>
+
+                                    <div class="col-xs-12 col-md-12" *ngIf="ordenDeCarga.NumeroFactura">
+                                        <p class="blue"><strong>Número de Factura</strong></p>
+                                        <p style="width:100%">{{ordenDeCarga.NumeroFactura}}</p>
+                                    </div>
+
+                                    <div class="col-xs-12 col-md-12" *ngIf="ordenDeCarga.NumeroFacturaSeleccionada">
+                                        <p class="blue"><strong>Número de Factura seleccionado</strong></p>
+                                        <p style="width:100%">{{ordenDeCarga.NumeroFacturaSeleccionada}}</p>
+                                    </div>
+
+                                    <div class="col-xs-12 col-md-12" *ngIf="ordenDeCarga.NumeroPedidoIngresado">
                                         <p class="blue"><strong>Pedido</strong></p>
                                         <p style="width:100%">{{ordenDeCarga.NumeroPedidoIngresado}}</p>
                                     </div>
 
                                     <div class="col-xs-12 col-md-12">
                                         <p class="blue"><strong>Pedido Seleccionado</strong></p>
-                                        <p style="width:100%">{{ordenDeCarga.NumeroPedido}}</p>
+                                        <p style="width:100%">{{ordenDeCarga.NumeroPedido || '-'}}</p>
                                     </div>
 
                                     <div class="col-xs-12 col-md-12">
@@ -147,6 +194,11 @@
                                         <p style="width:100%">{{ordenDeCarga.Transporte}}</p>
                                     </div>
 
+                                    <div class="col-xs-12 col-md-12" *ngIf="validaCPEDG">
+                                        <p class="blue"><strong>CUIT intermediario flete</strong></p>
+                                        <p style="width:100%">{{ordenDeCarga.CUITIntermediarioFlete || '-'}}</p>
+                                    </div>
+
                                     <div class="col-xs-12 col-md-12">
                                         <p class="blue"><strong>Producto</strong></p>
                                         <p style="width:100%">{{ordenDeCarga.Producto}}</p>
@@ -155,6 +207,12 @@
                                     <div class="col-xs-12 col-md-12">
                                         <p class="blue"><strong>Cantidad</strong></p>
                                         <p style="width:100%">{{ordenDeCarga.Cantidad}}</p>
+                                    </div>
+
+                                    <div class="col-xs-12 col-md-12">
+                                        <p class="blue"><strong>Camión escalable</strong></p>
+                                        <p-checkbox name="escalable" [binary]="true"
+                                            [(ngModel)]="ordenDeCarga.Escalable" [disabled]="true"></p-checkbox>
                                     </div>
 
                                     <div class="col-xs-12 col-md-12">
@@ -399,66 +457,69 @@
                     <div class="formulario">
                         <div class="containerBotones">
                             <div class="col-xs-5 col-md-3" *ngIf="mostrarBotonContratos">
-                                <input type="button" (click)="abrirModalContratos()" class="btn-custom btn-add btn-mediano"
-                                       value="Contratos">
+                                <input type="button" (click)="abrirModalContratos()"
+                                    class="btn-custom btn-add btn-mediano" value="Contratos">
                             </div>
 
-                            <div class="col-xs-5 col-md-3" *ngIf="mostrarBotonPedidos">
-                                <input type="button" (click)="abrirModalPedidos()" class="btn-custom btn-add btn-mediano"
-                                       value="Pedidos">
+                            <div class="col-xs-5 col-md-3" *ngIf="mostrarBotonSeleccionarFactura">
+                                <input type="button" (click)="abrirModalSeleccionarFactura()"
+                                    class="btn-custom btn-add btn-mediano" value="Facturas">
                             </div>
 
                             <div class="col-xs-5 col-md-3" *ngIf="mostrarBotonNotificarTransporte">
-                                <input type="button" (click)="notificarTransporte()" class="btn-custom btn-add btn-grande"
-                                       value="Notificar Transporte">
+                                <input type="button" (click)="notificarTransporte()"
+                                    class="btn-custom btn-add btn-grande" value="Notificar Transporte">
                             </div>
-
                             <div class="col-xs-5 col-md-3" *ngIf="mostrarBotonVerificarTransporte">
-                                <input type="button" (click)="verificarTransporte()" class="btn-custom btn-add btn-grande"
-                                       value="Verificar Transporte">
+                                <input type="button" (click)="verificarTransporte()"
+                                    class="btn-custom btn-add btn-grande" value="Verificar Transporte">
                             </div>
                             <div class="col-xs-5 col-md-3" *ngIf="mostrarBotonVerificarSituacionCrediticia">
-                                <input type="button" (click)="verificarSituacionCrediticia()" class="btn-custom btn-add btn-grande"
-                                       value="Verificar credito">
+                                <input type="button" (click)="verificarSituacionCrediticia()"
+                                    class="btn-custom btn-add btn-grande" value="Verificar credito">
                             </div>
-
+                            <div class="col-xs-5 col-md-3" *ngIf="mostrarBotonVerificarCompensacion">
+                                <input type="button" (click)="verificarCompensacion()"
+                                    class="btn-custom btn-add btn-grande" value="Verificar compensación">
+                            </div>
                             <div class="col-xs-5 col-md-3" *ngIf="mostrarBotonVerHistorial">
-                                <input type="button" (click)="abrirModalDetalleHistorialCompras()" class="btn-custom btn-add btn-grande"
-                                       value="Ver Historial">
+                                <input type="button" (click)="abrirModalDetalleHistorialCompras()"
+                                    class="btn-custom btn-add btn-grande" value="Ver Historial">
                             </div>
 
                             <div class="col-xs-5 col-md-3" *ngIf="mostrarBotonForzarCreacionPedido">
-                                <input type="button" (click)="abrirModalForzarCreacion()" class="btn-custom btn-add btn-grande"
-                                       value="Crear Pedido">
+                                <input type="button" (click)="abrirModalForzarCreacion()"
+                                    class="btn-custom btn-add btn-grande" value="Crear Pedido">
                             </div>
 
                             <div class="col-xs-5 col-md-3" *ngIf="mostrarBotonAnular">
-                                <input type="button" (click)="abrirModalAnular()" class="btn-custom btn-remove btn-mediano"
-                                       value="Anular">
+                                <input type="button" (click)="abrirModalAnular()"
+                                    class="btn-custom btn-remove btn-mediano" value="Anular">
                             </div>
                             <div class="col-xs-5 col-md-3" *ngIf="mostrarBotonAnularPorVencimiento">
-                                <input type="button" (click)="abrirModalAnularVencimiento()" class="btn-custom btn-remove btn-lg"
-                                       value="Anular por vencimiento">
+                                <input type="button" (click)="abrirModalAnularVencimiento()"
+                                    class="btn-custom btn-remove btn-lg" value="Anular por vencimiento">
                             </div>
+
                             <div class="col-xs-5 col-md-3" *ngIf="mostrarBotonActivarOC">
-                                <input type="button" (click)="abrirModalActivarOC()" class="btn-custom btn-add btn-grande"
-                                       value="Activar OC">
+                                <input type="button" (click)="abrirModalActivarOC()"
+                                    class="btn-custom btn-add btn-grande" value="Activar OC">
                             </div>
                             <div class="col-xs-5 col-md-3" *ngIf="mostrarBotonAprobarRechazarAnulacion">
-                                <input type="button" (click)="abrirModalAnular()" class="btn-custom btn-remove btn-grande"
-                                       value="Aprobar Anulacion">
+                                <input type="button" (click)="abrirModalAnular()"
+                                    class="btn-custom btn-remove btn-grande" value="Aprobar Anulacion">
                             </div>
                             <div class="col-xs-5 col-md-3" *ngIf="mostrarBotonAprobarRechazarAnulacion">
-                                <input type="button" (click)="confirmarRSA(ordenDeCarga.Id)" class="btn-custom btn-remove btn-grande"
-                                       value="Rechazar Anulacion">
+                                <input type="button" (click)="confirmarRSA(ordenDeCarga.Id)"
+                                    class="btn-custom btn-remove btn-grande" value="Rechazar Anulacion">
                             </div>
                             <div class="col-xs-5 col-md-3" *ngIf="mostrarBotonSolicitarAnulacion">
-                                <input type="button" (click)="confirmarSA(ordenDeCarga.Id)" class="btn-custom btn-remove btn-grande"
-                                       value="Solicitar Anulación">
+                                <input type="button" (click)="confirmarSA(ordenDeCarga.Id)"
+                                    class="btn-custom btn-remove btn-grande" value="Solicitar Anulación">
                             </div>
                             <div class="col-xs-5 col-md-3" *ngIf="mostrarBotonEdicionFinalizada">
-                                <input type="button" (click)="abrirModalEdicionFinalizada()" class="btn-custom btn-remove btn-grande"
-                                       value="Edición finalizada">
+                                <input type="button" (click)="abrirModalEdicionFinalizada()"
+                                    class="btn-custom btn-remove btn-grande" value="Edición finalizada">
                             </div>
                         </div>
                     </div>
@@ -473,10 +534,10 @@
 
 
     <button type="button" style="display:none" id="openSeleccionarContrato" data-toggle="modal"
-            data-target="#modalSeleccionarContrato"></button>
+        data-target="#modalSeleccionarContrato"></button>
     <!-- Modal -->
     <div class="modal fade" id="modalSeleccionarContrato" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-         data-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
+        data-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -488,8 +549,8 @@
                 <div class="modal-body">
                     <div class="row" *ngIf="contratos.length > 0">
                         <span *ngFor="let corredorContrato of contratos" class="col-xs-12 col-sm-12 col-md-12">
-                            <input type="radio" name="corredorContrato" id="corredor_{{corredorContrato}}" [value]="corredorContrato"
-                                   [(ngModel)]="contratoSeleccionado">
+                            <input type="radio" name="corredorContrato" id="corredor_{{corredorContrato}}"
+                                [value]="corredorContrato" [(ngModel)]="contratoSeleccionado">
                             &nbsp;
                             <label for="corredor_{{corredorContrato}}">
                                 {{corredorContrato}}
@@ -499,14 +560,17 @@
                     <div class="row" class="col-xs-12 col-sm-12 col-md-12" *ngIf="contratos.length == 0">
                         No se encontraron contratos
                     </div>
+                    <p-message *ngIf="mensajeSeleccionarContrato" severity="warn"
+                        [text]="mensajeSeleccionarContrato"></p-message>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn-custom btn-cerrar btn-chico" data-dismiss="modal"
-                            id="closemodalSeleccionarContrato" style="display: inline-flex;">
+                        id="closemodalSeleccionarContrato" (click)="mensajeSeleccionarContrato=null"
+                        style="display: inline-flex;">
                         Cancelar
                     </button>
                     <button type="button" class="btn-custom btn-add btn-chico" (click)="seleccionarContrato()"
-                            style="display: inline-flex;">
+                        style="display: inline-flex;">
                         Confirmar
                     </button>
 
@@ -515,11 +579,59 @@
         </div>
     </div>
 
+    <button type="button" style="display:none" id="openSeleccionarFactura" data-toggle="modal"
+        data-target="#modalSeleccionarFactura"></button>
+    <!-- Modal -->
+    <div class="modal fade" id="modalSeleccionarFactura" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+        data-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title" id="modalSeleccionarFacturaLabel">Seleccionar Factura Legal</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row" *ngIf="facturas.length > 0">
+                        <span *ngFor="let factura of facturas" class="col-xs-12 col-sm-12 col-md-12">
+                            <input type="radio" name="corredorContrato" id="factura_legal_{{factura.NumeroFactura}}"
+                                [value]="factura" [(ngModel)]="facturaSeleccionada">
+                            &nbsp;
+                            <label for="factura_legal_{{factura.NumeroFactura}}">
+                                {{factura.NumeroFactura}} - ({{factura.NumeroPedido}})
+                            </label>
+                        </span>
+                    </div>
+                    <div class="row" class="col-xs-12 col-sm-12 col-md-12" *ngIf="facturas.length == 0">
+                        No se encontraron facturas
+                    </div>
+                    <p-message *ngIf="mensajeSeleccionarFactura" severity="warn"
+                        [text]="mensajeSeleccionarFactura"></p-message>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-custom btn-cerrar btn-chico" data-dismiss="modal"
+                        id="closemodalSeleccionarFactura" style="display: inline-flex;"
+                        (click)="mensajeSeleccionarFactura=null">
+                        Cancelar
+                    </button>
+                    <button type="button" class="btn-custom btn-add btn-chico" (click)="seleccionarFactura()"
+                        style="display: inline-flex;">
+                        Confirmar
+                    </button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
     <button type="button" style="display:none" id="openModalDetalleHistorial" data-toggle="modal"
-            data-target="#ModalDetalleHistorial"></button>
+        data-target="#ModalDetalleHistorial"></button>
     <!-- Modal -->
     <div class="modal fade" id="ModalDetalleHistorial" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-         data-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
+        data-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
         <div class="modal-dialog" role="document">
             <div class="modal-content" style="width: 150%;">
                 <div class="modal-header">
@@ -530,8 +642,8 @@
                 </div>
 
                 <table class="display nowrap dataTable no-footer dtr-inline rounded shadow animate ccpp-table"
-                       role="grid" aria-describedby="tableModal_info"
-                       style="width: 100%; padding:10px 0; background: white !important;">
+                    role="grid" aria-describedby="tableModal_info"
+                    style="width: 100%; padding:10px 0; background: white !important;">
 
                     <thead>
                         <tr role="row">
@@ -542,26 +654,28 @@
                             <th>Despues</th>
                         </tr>
                     </thead>
-
-                    <tbody *ngFor="let OrdenDeCargaCambiosHistorial of ordenDeCarga.OrdenDeCargaCambiosHistorial">
-                        <tr *ngIf="OrdenDeCargaCambiosHistorial.Antes && OrdenDeCargaCambiosHistorial.Despues">
-                            <td>{{OrdenDeCargaCambiosHistorial.NombreColumnaCambio == "Chasis Acoplado" ? "Patente Chasis" : OrdenDeCargaCambiosHistorial.NombreColumnaCambio}}</td>
-                            <td>{{OrdenDeCargaCambiosHistorial.FechaCambio }}</td>
-                            <td>{{OrdenDeCargaCambiosHistorial.Usuario}}</td>
-                            <td>{{OrdenDeCargaCambiosHistorial.Antes}}</td>
-                            <td>{{OrdenDeCargaCambiosHistorial.Despues}}</td>
-                        </tr>
-                    </tbody>
+                    <ng-container *ngIf="ordenDeCarga.OrdenDeCargaCambiosHistorial">
+                        <tbody *ngFor="let OrdenDeCargaCambiosHistorial of ordenDeCarga.OrdenDeCargaCambiosHistorial">
+                            <tr *ngIf="OrdenDeCargaCambiosHistorial.Antes && OrdenDeCargaCambiosHistorial.Despues">
+                                <td>{{OrdenDeCargaCambiosHistorial.NombreColumnaCambio == "Chasis Acoplado" ? "Patente
+                                    Chasis" : OrdenDeCargaCambiosHistorial.NombreColumnaCambio}}</td>
+                                <td>{{OrdenDeCargaCambiosHistorial.FechaCambio }}</td>
+                                <td>{{OrdenDeCargaCambiosHistorial.Usuario}}</td>
+                                <td>{{OrdenDeCargaCambiosHistorial.Antes}}</td>
+                                <td>{{OrdenDeCargaCambiosHistorial.Despues}}</td>
+                            </tr>
+                        </tbody>
+                    </ng-container>
                 </table>
 
                 <div class="row" class="col-xs-12 col-sm-12 col-md-12"
-                     *ngIf="ordenDeCarga.OrdenDeCargaCambiosHistorial.length == 0">
+                    *ngIf="!ordenDeCarga.OrdenDeCargaCambiosHistorial?.length">
                     No se encontraron movimientos
                 </div>
 
                 <div class="modal-footer">
                     <button type="button" class="btn-custom btn-cerrar btn-chico" data-dismiss="modal"
-                            id="closemodalSeleccionarHistorial" style="display: inline-flex;">
+                        id="closemodalSeleccionarHistorial" style="display: inline-flex;">
                         Cerrar
                     </button>
                 </div>
@@ -569,81 +683,11 @@
         </div>
     </div>
 
-    <button type="button" style="display:none" id="openSeleccionarPedido" data-toggle="modal"
-            data-target="#modalSeleccionarPedido"></button>
-    <!-- Modal -->
-    <div class="modal fade" id="modalSeleccionarPedido" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-         data-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
-
-        <div class="modal-dialog" role="document">
-
-            <div class="modal-content">
-
-                <div class="modal-header">
-
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-
-                        <span aria-hidden="true">&times;</span>
-
-                    </button>
-
-                    <h4 class="modal-title" id="modalSeleccionarPedidoLabel">Seleccionar pedido</h4>
-
-                </div>
-
-                <div class="modal-body">
-
-                    <div class="row" *ngIf="pedidos.length > 0">
-
-                        <span *ngFor="let corredorPedido of pedidos" class="col-xs-12 col-sm-12 col-md-12">
-
-                            <input type="radio" name="corredorPedido" id="corredor_{{corredorPedido}}" [value]="corredorPedido"
-                                   [(ngModel)]="pedidoSeleccionado">
-
-                            &nbsp;
-
-                            <label for="corredor_{{corredorPedido}}">
-
-                                {{corredorPedido}}
-
-                            </label>
-
-                        </span>
-
-                    </div>
-
-                    <div class="row" class="col-xs-12 col-sm-12 col-md-12" *ngIf="pedidos.length == 0">
-
-                        No se encontraron contratos
-
-                    </div>
-
-                </div>
-
-                <div class="modal-footer">
-
-                    <button type="button" class="btn-custom btn-cerrar btn-chico" data-dismiss="modal"
-                            id="closemodalSeleccionarPedido" style="display: inline-flex;">
-                        Cancelar
-                    </button>
-
-                    <button type="button" class="btn-custom btn-add btn-chico" (click)="seleccionarPedido()"
-                            style="display: inline-flex;">
-
-                        Confirmar
-
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-
     <button type="button" style="display:none" id="openAnularOrden" data-toggle="modal"
-            data-target="#modalAnularOrden"></button>
+        data-target="#modalAnularOrden"></button>
     <!-- Modal -->
     <div class="modal fade" id="modalAnularOrden" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-         data-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
+        data-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -658,12 +702,12 @@
                     </div>
                 </div>
                 <div class="modal-footer" style="border-top:none;">
-                    <button type="button" class="btn-custom btn-cerrar btn-chico" data-dismiss="modal" id="closemodalAnularOrden"
-                            style="display: inline-flex;">
+                    <button type="button" class="btn-custom btn-cerrar btn-chico" data-dismiss="modal"
+                        id="closemodalAnularOrden" style="display: inline-flex;">
                         Cancelar
                     </button>
                     <button type="button" class="btn-custom btn-remove btn-mediano" (click)="anularOrden()"
-                            style="display: inline-flex;">
+                        style="display: inline-flex;">
                         Anular orden
                     </button>
 
@@ -674,10 +718,10 @@
 
 
     <button type="button" style="display:none" id="openAnularOrdenVencimiento" data-toggle="modal"
-            data-target="#modalAnularOrdenVencimiento"></button>
+        data-target="#modalAnularOrdenVencimiento"></button>
     <!-- Modal -->
     <div class="modal fade" id="modalAnularOrdenVencimiento" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-         data-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
+        data-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -692,12 +736,12 @@
                     </div>
                 </div>
                 <div class="modal-footer" style="border-top:none;">
-                    <button type="button" class="btn-custom btn-cerrar btn-chico" data-dismiss="modal" id="closemodalAnularOrdenVencimiento"
-                            style="display: inline-flex;">
+                    <button type="button" class="btn-custom btn-cerrar btn-chico" data-dismiss="modal"
+                        id="closemodalAnularOrdenVencimiento" style="display: inline-flex;">
                         Cancelar
                     </button>
-                    <button type="button" class="btn-custom btn-remove btn-mediano" (click)="anularOrdenPorVencimiento()"
-                            style="display: inline-flex;">
+                    <button type="button" class="btn-custom btn-remove btn-mediano"
+                        (click)="anularOrdenPorVencimiento()" style="display: inline-flex;">
                         Anular orden
                     </button>
                 </div>
@@ -707,10 +751,10 @@
 
     <!--Modal edición finalizada-->
     <button type="button" style="display:none" id="openEdicionFinalizada" data-toggle="modal"
-            data-target="#modalEdicionFinalizada"></button>
+        data-target="#modalEdicionFinalizada"></button>
     <!-- Modal -->
     <div class="modal fade" id="modalEdicionFinalizada" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-         data-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
+        data-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -725,16 +769,16 @@
                     </div>
                 </div>
                 <div class="modal-footer" style="border-top:none;">
-                    <button type="button" class="btn-custom btn-cerrar btn-chico" data-dismiss="modal" id="closemodalEdicionFinalizada"
-                            style="display: inline-flex;">
+                    <button type="button" class="btn-custom btn-cerrar btn-chico" data-dismiss="modal"
+                        id="closemodalEdicionFinalizada" style="display: inline-flex;">
                         Cancelar
                     </button>
                     <button type="button" class="btn-custom btn-success btn-mediano" (click)="edicionFinalizada('A')"
-                            style="display: inline-flex;">
+                        style="display: inline-flex;">
                         Aprobar
                     </button>
                     <button type="button" class="btn-custom btn-remove btn-mediano" (click)="edicionFinalizada('R')"
-                            style="display: inline-flex;">
+                        style="display: inline-flex;">
                         Rechazar
                     </button>
 
@@ -745,10 +789,10 @@
 
 
     <button type="button" style="display:none" id="openForzarCreacion" data-toggle="modal"
-            data-target="#modalForzarCreacion"></button>
+        data-target="#modalForzarCreacion"></button>
     <!-- Modal -->
     <div class="modal fade" id="modalForzarCreacion" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-         data-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
+        data-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -764,11 +808,11 @@
                 </div>
                 <div class="modal-footer" style="border-top:none;">
                     <button type="button" class="btn-custom btn-cerrar btn-chico" data-dismiss="modal"
-                            id="closemodalForzarCreacion" style="display: inline-flex;">
+                        id="closemodalForzarCreacion" style="display: inline-flex;">
                         Cancelar
                     </button>
                     <button type="button" class="btn-custom btn-add btn-mediano" (click)="forzarCreacionPedido()"
-                            style="display: inline-flex;">
+                        style="display: inline-flex;">
                         Crear pedido
                     </button>
 
@@ -779,10 +823,10 @@
 
 
     <button type="button" style="display:none" id="openModalActivarOC" data-toggle="modal"
-            data-target="#modalActivarOC"></button>
+        data-target="#modalActivarOC"></button>
     <!-- Modal -->
     <div class="modal fade" id="modalActivarOC" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-         data-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
+        data-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -797,12 +841,12 @@
                     </div>
                 </div>
                 <div class="modal-footer" style="border-top:none;">
-                    <button type="button" class="btn-custom btn-cerrar btn-chico" data-dismiss="modal" id="closemodalActivarOC"
-                            style="display: inline-flex;">
+                    <button type="button" class="btn-custom btn-cerrar btn-chico" data-dismiss="modal"
+                        id="closemodalActivarOC" style="display: inline-flex;">
                         Cancelar
                     </button>
                     <button type="button" class="btn-custom btn-add btn-mediano" (click)="activarOC()"
-                            style="display: inline-flex;">
+                        style="display: inline-flex;">
                         Activar orden
                     </button>
                 </div>

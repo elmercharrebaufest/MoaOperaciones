@@ -1,15 +1,39 @@
+import { Formatter } from "../../formatter/Formatter";
 import { Material } from "../material";
 
 export interface ObtenerContratosDisponiblesResponse {
-    
     Contratos: ContratoOrdenFas[];
-    
     Info: string;
     Error: string;
     Logout: boolean;
 }
 
-export interface ContratoOrdenFas {
+export enum TipoContrato {
+    Normal = 0,
+    FacturaAnticipada = 1,
+}
+
+export class ContratoOrdenFas {
     NumeroContrato: string;
-    Producto: Material
+    Producto: Material;
+    TipoContrato: TipoContrato;
+    KgDisponibles: number;
+    NombreProducto: string;
+    Label: string;
+
+    constructor(
+        numeroContrato?: string,
+        tipoContrato?: TipoContrato,
+        producto?: Material,
+        kgDisponibles?: number) {
+        this.NumeroContrato = numeroContrato || this.NumeroContrato;
+        this.KgDisponibles = kgDisponibles === null || kgDisponibles === undefined ? this.KgDisponibles : kgDisponibles;
+        this.Producto = producto || this.Producto;
+        this.TipoContrato = tipoContrato;
+        const prod = this.Producto.Abreviacion || this.Producto.Descripcion;
+        const kgs = this.KgDisponibles <= 0 ? "sin kg. Disp." :
+            !this.KgDisponibles ? '' :
+                `${Formatter.formatNumberWithPoint(this.KgDisponibles.toString())} kg. Disp. ${this.TipoContrato == TipoContrato.FacturaAnticipada ? '(A)' : ''}`;
+        this.Label = this.NumeroContrato + " - " + prod + " " + kgs;
+    }
 }

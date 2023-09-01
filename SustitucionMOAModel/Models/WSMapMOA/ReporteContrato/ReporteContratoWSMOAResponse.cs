@@ -95,6 +95,8 @@ namespace SustitucionMOAModel.Models.WSMapMOA.ReporteContrato
 
     public class Detail
     {
+        public string OrdenCargaId { get; set; }
+
         public string Pedido { get; set; }
 
         public string Entrega { get; set; }
@@ -128,6 +130,8 @@ namespace SustitucionMOAModel.Models.WSMapMOA.ReporteContrato
         public string Destinatario { get; set; }
 
         public string NombreDestinatario { get; set; }
+
+        public string CPE { get; set; }
     }
 
     public class Totales

@@ -47,6 +47,7 @@ export class PesificacionesGuardadasComponent extends PesificacionBaseComponent 
   }
 
   getPesificaciones() {
+    this.spinnerComponent.showIt();
     this.mensajeComponent.setMsgsEmpty();
     this.unsubscribe();
     this.subscription = this.service.getPesificacionesSap().subscribe(
@@ -67,10 +68,12 @@ export class PesificacionesGuardadasComponent extends PesificacionBaseComponent 
           else{
             this.actualizarFiltroFecha();
           }
+          this.spinnerComponent.hideIt();
         }
       },
       error => {
         this.mensajeComponent.setErrorMsg(error.message);
+        this.spinnerComponent.hideIt();
       }
     );
 
@@ -78,6 +81,7 @@ export class PesificacionesGuardadasComponent extends PesificacionBaseComponent 
   }
 
   actualizarFiltroFecha() {
+    this.spinnerComponent.showIt();
     var fechaDesde = this.filtroFechaComponent.fecha_inicio;
     var fechaHasta = this.filtroFechaComponent.fecha_fin + " 23:59:59";
 
@@ -87,7 +91,7 @@ export class PesificacionesGuardadasComponent extends PesificacionBaseComponent 
           new Date(Date.parse(this.tipoFiltroFecha == 1 ? x.FechaCargaDate : x.FechaPesificacionDate)) >= new Date(fechaDesde) &&
           new Date(Date.parse(this.tipoFiltroFecha == 1 ? x.FechaCargaDate : x.FechaPesificacionDate)) <= new Date(fechaHasta)
         )
-
+    this.spinnerComponent.hideIt();
     if (this.filteredPesificaciones.length == 0) {
       this.mensajeComponent.setInfoMsg("No se encontraron pesificaciones")
     }

@@ -8,7 +8,7 @@
 	[ServicioSolp_Id] [int] NULL,
 	[Tarea] [nvarchar](max) NULL,
 	[CuentaMayor_Id] INT NULL,
-	[Cantidad] [decimal] NULL,
+	[Cantidad] [decimal](18, 2) NULL,
 	[Unidad_Id] [int] NULL,
 	[PrecioBruto] [decimal](18, 6) NULL,
 

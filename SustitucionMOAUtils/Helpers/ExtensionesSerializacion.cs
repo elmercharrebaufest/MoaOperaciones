@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using SustitucionMOAModel.Entities;
+using SustitucionMOAUtils.Logger;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -37,8 +38,9 @@ namespace SustitucionMOAUtils.Helpers
                     });
                     return jsonObjecto;
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
+                    Log.Error(ex);
                     return "error al serializar el objeto.";
                 }
             }

@@ -92,7 +92,7 @@ namespace SustitucionMOAUtils.Services
                     new ProveedorHistorialAprobacion
                     {
                         Fecha = DateTime.Now,
-                        EstadoAprobacion = EstadoAprobacion.DocumentacionPendiente,
+                        EstadoAprobacion = proveedor.EstadoAprobacion,
                         Observacion = observacionInterna,
                         Usuario_Id = usuarioId
                     }

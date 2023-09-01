@@ -4,7 +4,7 @@ import {
   NgModule,
   NO_ERRORS_SCHEMA
 } from "@angular/core";
-import { FormsModule } from "@angular/forms";
+import { ReactiveFormsModule, FormsModule } from "@angular/forms";
 import { HttpClientModule } from "@angular/common/http";
 import { BrowserModule } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
@@ -68,7 +68,10 @@ import { ApikeyService } from "./apikey/apikey.service";
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ConfirmationService } from 'primeng/api';
 import { PesificacionesGuardadasComponent } from './pesificacion/pesificaciones-guardadas/pesificaciones-guardadas.component'
-import { PesificacionBaseComponent } from "./pesificacion/pesificacion-base.component";
+import { PesificacionBaseComponent } from "./pesificacion/pesificacion-base.component";;
+import { ModificarDatosComponent } from './usuario/modificar-datos/modificar-datos.component'
+import { ToastModule } from "primeng/toast";;
+import { UsuarioAuditoriaListComponent } from './usuario/usuario-auditoria-list/usuario-auditoria-list.component'
 
 
 
@@ -79,6 +82,7 @@ import { PesificacionBaseComponent } from "./pesificacion/pesificacion-base.comp
     HttpClientModule,
     AppRoutingModule,
     FormsModule,
+    ReactiveFormsModule,
     NgxPaginationModule,
     SelectModule,
     ModalModule,
@@ -90,6 +94,7 @@ import { PesificacionBaseComponent } from "./pesificacion/pesificacion-base.comp
     ComprasModule,
     ConfirmDialogModule,
     MultiSelectModule,
+    ToastModule
   ],
   declarations: [
     AppComponent,
@@ -118,6 +123,8 @@ import { PesificacionBaseComponent } from "./pesificacion/pesificacion-base.comp
     ApikeyComponent,
     PesificacionesGuardadasComponent,
     PesificacionBaseComponent,
+    ModificarDatosComponent,
+    UsuarioAuditoriaListComponent
     ],
   providers: [
     DatePipe,

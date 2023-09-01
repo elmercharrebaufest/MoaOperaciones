@@ -66,7 +66,8 @@
       <HintPath>..\packages\itextsharp.xmlworker.5.5.13\lib\itextsharp.xmlworker.dll</HintPath>
     </Reference>
     <Reference Include="Kendo.DynamicLinq, Version=1.1.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\Libs\Kendo.DynamicLinq.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\SustitucionMOA\Libs\Kendo.DynamicLinq.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Azure.CognitiveServices.Vision.ComputerVision, Version=6.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Azure.CognitiveServices.Vision.ComputerVision.6.0.0\lib\net452\Microsoft.Azure.CognitiveServices.Vision.ComputerVision.dll</HintPath>
@@ -152,6 +153,11 @@
     <Compile Include="Interfaces\ICrearContratoService.cs" />
     <Compile Include="Interfaces\ICuentaCorrienteService.cs" />
     <Compile Include="Interfaces\IAplicacionCartaPorteService.cs" />
+    <Compile Include="Interfaces\IEmailFasService.cs" />
+    <Compile Include="Interfaces\IHttpContextService.cs" />
+    <Compile Include="Interfaces\IFacturaAnticipadaService.cs" />
+    <Compile Include="Interfaces\IKgDisponiblesFasService.cs" />
+    <Compile Include="Interfaces\IOrdenDeCargaEstadoService.cs" />
     <Compile Include="Interfaces\IOrdenesCargaApi.cs" />
     <Compile Include="Interfaces\IEcheqService.cs" />
     <Compile Include="Interfaces\IFeriadoService.cs" />
@@ -183,12 +189,17 @@
     <Compile Include="Services\AduanaService.cs" />
     <Compile Include="Services\AltaEmpresaNoGranosService.cs" />
     <Compile Include="Services\AplicacionCartaPorteService.cs" />
+    <Compile Include="Services\KgDisponiblesFasService.cs" />
+    <Compile Include="Services\OrdenDeCargaEstadoService.cs" />
+    <Compile Include="Services\FacturaAnticipadaService.cs" />
     <Compile Include="Services\ComprasService.cs" />
     <Compile Include="Services\ConsultaService.cs" />
     <Compile Include="Services\AzureService.cs" />
     <Compile Include="Services\CampoSustentableService.cs" />
     <Compile Include="Services\CrearContratoService.cs" />
     <Compile Include="Services\EcheqService.cs" />
+    <Compile Include="Services\EmailService.cs" />
+    <Compile Include="Services\Email\EmailFasService.cs" />
     <Compile Include="Services\FeriadoService.cs" />
     <Compile Include="Services\AltaEmpresaService.cs" />
     <Compile Include="Services\AltaEmpresaGranosService.cs" />
@@ -205,6 +216,7 @@
     <Compile Include="Services\HomeService.cs" />
     <Compile Include="Interfaces\ICartaPorteService.cs" />
     <Compile Include="Interfaces\IPesificacionService.cs" />
+    <Compile Include="Services\HttpContextService.cs" />
     <Compile Include="Services\LiquidacionService.cs" />
     <Compile Include="Services\LocalidadService.cs" />
     <Compile Include="Services\LoginService.cs" />
@@ -263,7 +275,7 @@
       <Name>SustitucionMOAValidator</Name>
     </ProjectReference>
     <ProjectReference Include="..\SustitucionMOAWS\SustitucionMOAWS.csproj">
-      <Project>{CB32F9E6-ED7B-4623-B624-0EA3717D06C2}</Project>
+      <Project>{cb32f9e6-ed7b-4623-b624-0ea3717d06c2}</Project>
       <Name>SustitucionMOAWS</Name>
     </ProjectReference>
   </ItemGroup>
@@ -281,6 +293,9 @@
     <Content Include="Templates\images\logo.png" />
     <Content Include="Templates\images\logoEndosado.png" />
     <Content Include="Templates\NewPliegoSolpSinCondicionesTemplate.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\OrdenCompraTemplate.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Templates\PliegoSolpSinCondicionesTemplate.html">

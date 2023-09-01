@@ -1,0 +1,70 @@
+
+<div class="row titleSection">
+     <div class="col-xs-12 col-sm-10 "> <strong>Cotización {{peticion.TipoPosicionCodigo}} | SOLP #{{peticion.NroSolp}} 
+                                            <b *ngIf="peticion.PeticionDeOfertaPosicion != null">
+                                                | PO # {{peticion.PeticionDeOfertaPosicion[0].PeticionDeOferta_Id}}
+                                            </b>         
+             </strong>
+    </div>
+   
+
+</div>
+
+<div class="content-wraper alinearAlturaMenuDashboard row1 myRow firstSection material" *ngIf="peticion.TipoPosicionCodigo == 'MATERIALES'">
+    <div class="rounded shadow">
+       <app-cotizacion-material #cotizacionMaterial [esFinalizado]="esFinalizado" [peticion]="peticion" [posicionesCompra]="posicionesCompra" ></app-cotizacion-material>
+    </div>
+</div>
+
+
+<div class="content-wraper alinearAlturaMenuDashboard row1 myRow firstSection servicio" *ngIf="peticion.TipoPosicionCodigo == 'SERVICIO'">
+    <div class="rounded shadow"  >
+       <app-cotizacion-servicio #cotizacionServicio [esFinalizado]="esFinalizado" [peticion]="peticion" [posicionesCompra]="posicionesCompra" ></app-cotizacion-servicio>
+       
+    </div>
+</div>
+
+
+<p-sidebar visible="true" position="bottom" [modal]="false" [showCloseIcon]="false" dismissible="false" appendTo="body">
+    <div class="row">
+        <div class="col-xs-1 col-md-1">
+        </div>
+        <div class="col-xs-3 col-md-3" style="text-align: center;">
+            <!-- <button class="btn btn-danger" (click)="cancelarSolp()"><i class="fa fa-reply"></i>&nbsp; CANCELAR</button> -->
+            <button class="btn btn-secondary botonesCompras" (click)="goToSeccion('/compras/dashboardProveedor');">
+                <i class="fa fa-arrow-left"></i>&nbsp; VOLVER
+            </button>&nbsp;
+        </div>
+        <div class="col-xs-8 col-md-8">    
+            <div class="col-md-4" ></div>       
+                <div class="col-md-2" >
+                    <button class="btn btn-primary botonesComprasColor" (click)="guardarCotizacion()">GUARDAR</button>
+                </div>  
+                <div class="col-md-4">       
+                <button class="btn btn-success botonesComprasColor" (click)="onShowFinalizarDialog()">
+                    FINALIZAR
+                </button>           
+               </div>   
+            
+        </div>
+    </div>
+</p-sidebar>
+
+
+<p-dialog [(visible)]="displayCotizacionCreada" [width]="400" modal="modal" appendTo="body" [draggable]="false" [contentStyle]="{'overflow':'visible', 'max-height':'100px', 'min-height':'100px'}" [closable]="false">
+    <p-header class="headerModal">
+        ¡Cotización creada!
+    </p-header>
+     <br> La cotización se {{esFinalizado ? "finalizó " : "creó "}} correctamente. 
+    <br>
+    <p-footer>
+        <button type="button" class="btn btn-primary botonesComprasColor botonModal" (click)="salir()">Aceptar</button>
+    </p-footer>
+</p-dialog>
+
+<p-confirmDialog #dialogo header="Confirmación" icon="pi pi-exclamation-triangle" [width]="400" [responsive]="true" appendTo="body" >
+    <p-footer>
+        <button type="button" pButton  label="Cancelar" class="ui-button-info botonModal" (click)="dialogo.reject()"></button>
+        <button type="button" pButton  label="Aceptar" class="ui-button-success botonModal" (click)="dialogo.accept()"></button>
+    </p-footer>
+</p-confirmDialog>

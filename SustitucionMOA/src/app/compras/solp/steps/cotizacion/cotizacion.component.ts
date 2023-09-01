@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, FormControl, Validators, AbstractControl } from '@angular/forms';
-import { ConfirmationService } from 'primeng/api';
+import { ConfirmationService, MessageService } from 'primeng/api';
 
 import { ListBaseComponent } from '../../../../common/base-components/list-base-component'
 import { SessionDataService } from '../../../../common/services/SessionDataService';
@@ -13,6 +13,8 @@ import { ComprasService } from '../../../compras.service'
 import { Solp } from '../../solp';
 import { ValidadorPasoSolpService } from '../../../validadorPasoSolpService';
 import { EnumPasoSolp } from '../../../enum-paso-solp';
+import { AltaNuevoProveedor } from '../../../solp-compra';
+import { OrdenDeCompraSap } from '../../../../modelos/ordenDeCompraSap';
 
 declare var $: any;
 
@@ -20,6 +22,7 @@ declare var $: any;
     selector: 'cotizacion',
     templateUrl: `cotizacion.component.html`,
     styleUrls: ['../../../compras.component.css'],
+    providers: [ComprasService, MessageService]
 })
 export class CotizacionComponent extends ListBaseComponent {
 
@@ -36,13 +39,21 @@ export class CotizacionComponent extends ListBaseComponent {
         { campo: 'dias', esObligatorio: true}
     ];
 
+    proveedorSeleccionado: any;
+
+    proveedores: any[] = new Array();
+
+    estaFinalizada: boolean;
+    @Output() ordenDeCompraSap: OrdenDeCompraSap;
+
     @Output() onEstCompleto = new EventEmitter<any>();
+    mostrar: boolean;
 
     constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService,
         protected securityService: SecurityService, protected floatMsgService: FloatMsgService,
         protected modalService: ModalService, protected route: ActivatedRoute, protected router: Router
         , private formBuilder: FormBuilder, private confirmationService: ConfirmationService,
-        private validadorPasoSolpService : ValidadorPasoSolpService) {
+        private validadorPasoSolpService : ValidadorPasoSolpService, private messageService: MessageService) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
     }
 
@@ -88,12 +99,17 @@ export class CotizacionComponent extends ListBaseComponent {
     ngOnInit() {
         this.setTabs();
 
+      
         //declaro las validaciones para los campos
         this.formularioCotizacion = this.formBuilder.group({
             //ejecucion: new FormControl('', [Validators.required]),
             comienzoJornadaLaboral: new FormControl('', Validators.required),
             terminoJornadaLaboral: new FormControl('', Validators.required),
-            dias: new FormControl(this.model.jornadaLaboralDias, [Validators.required, this.validatorDias])
+            dias: new FormControl(this.model.jornadaLaboralDias, [Validators.required, this.validatorDias]),
+            trabajoHecho: new FormControl('', Validators.required),
+            proveedorSeleccionado: new FormControl('', Validators.required),    
+            adicional: new FormControl('', Validators.required),
+            ordenDeCompra: new FormControl({value: '', disabled: this.model.deshabilitarAdicional}, Validators.required)
         });
 
         this.validadorPasoSolpService.formulario = this.formularioCotizacion;
@@ -102,10 +118,29 @@ export class CotizacionComponent extends ListBaseComponent {
         }
 
         this.model.cargoPasoCuatro = true;
+        
+        if(this.model.proveedorAsignado_Id){
+            this.proveedorSeleccionado = {
+                Id: this.model.proveedorAsignado_Id,
+                RazonSocial: this.model.proveedorAsignado
+            }
+        }
 
+        if(this.model.ordenDeCompra){
+            this.obtenerOrdenDeCompra();
+        } else {
+            this.model.ordenDeCompra = "";
+        }
+
+        if(this.model.nroSolp ){
+            this.estaFinalizada = true
+        } else {
+            this.estaFinalizada = false
+        }
+
+        this.validacionTrabajoHecho();
     }
 
-    
     ngOnDestroy()
     {
         super.ngOnDestroy();
@@ -114,6 +149,14 @@ export class CotizacionComponent extends ListBaseComponent {
 
     uploadHandler(filesUpload: any): void {
         this.model.archivosCotizacionesNuevos = filesUpload["files"];
+        var archivoWeb = this.model.archivosCotizacionesNuevos.reduce((sum, file) => sum + file.size, 0);      
+        if(archivoWeb > 10000000){     
+            if (this.model.archivosCotizacionesNuevos.length > 0){       
+            this.eliminarAdjuntoNuevo(this.model.archivosCotizacionesNuevos[this.model.archivosCotizacionesNuevos.length - 1])
+            }
+            this.floatMsgService.setErrorMsg("El archivo adjuntado no debe superar los 10Mb");          
+        }
+        this.validacionTrabajoHecho();
     }
 
     private downloadArchivoLocal(blob: Blob, nombreArchivo: string): void {
@@ -170,11 +213,13 @@ export class CotizacionComponent extends ListBaseComponent {
     eliminarAdjuntoNuevo(archivo): void {
         var indice = this.model.archivosCotizacionesNuevos.indexOf(archivo)
         this.model.archivosCotizacionesNuevos.splice(indice, 1)
+        this.validacionTrabajoHecho();
     }
 
     eliminarAdjuntoGuardado(archivo): void {
         var indice = this.model.archivosCotizaciones.indexOf(archivo)
         this.model.archivosCotizaciones.splice(indice, 1)
+        this.validacionTrabajoHecho();
     }
 
     eliminarArchivo(esAdjuntoNuevo: boolean, archivo: any) {
@@ -187,6 +232,163 @@ export class CotizacionComponent extends ListBaseComponent {
 
             }
         });
+        this.validacionTrabajoHecho();
 
+    }
+
+    searchProveedor(event) {
+        try {
+            this.subscription = this.service.listarProveedores(event.query).subscribe(
+                (result: any) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.floatMsgService.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.floatMsgService.setInfoMsg(result.info);
+                    } else {
+                        this.proveedores = result.data;
+                    }
+                },
+                error => {
+                    this.floatMsgService.setErrorMsg(error.message);
+                });
+        } catch (e) {
+            this.floatMsgService.setErrorMsg(e);
+            return false; //<-- Prevent Refresh
+        }
+        return false; //<-- Prevent Refresh
+    }
+    
+    selectProveedor(event) {
+        try {
+            this.model.proveedorAsignado_Id = event.Id;
+            this.model.proveedorAsignado = event.RazonSocial;
+        } catch (e) {
+            this.floatMsgService.setErrorMsg(e);
+        }
+    }
+
+    validacionTrabajoHecho(){
+        this.model.validarTrabajoHecho = true;
+
+        if(this.model.trabajoHecho == true || this.model.adicional == true){
+
+            if(this.model.observacionesCotizacion == ""  || this.model.observacionesCotizacion == undefined || this.model.observacionesCotizacion == null){
+                this.model.mensajeCotizacion = "Debe agregar una observación en el paso #4";
+                this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: `${this.model.mensajeCotizacion}` });
+                this.model.validarTrabajoHecho = false;
+                
+            } 
+                
+            if((this.model.archivosCotizaciones == null || this.model.archivosCotizaciones.length == 0) && (this.model.archivosCotizacionesNuevos == null || this.model.archivosCotizacionesNuevos.length == 0)){
+                this.model.mensajeCotizacion = "Debe adjuntar un archivo en el paso #4";
+                this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: `${this.model.mensajeCotizacion}` });
+                this.model.validarTrabajoHecho = false;
+                
+            }
+
+            if(this.model.trabajoHecho == true){
+                if (!this.proveedorSeleccionado || this.proveedorSeleccionado == "" || typeof this.proveedorSeleccionado === "undefined")
+                {
+                    this.model.mensajeCotizacion = "Debe agregar un proveedor en el paso #4";
+                    this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: `${this.model.mensajeCotizacion}` });
+                    this.model.validarTrabajoHecho = false;
+                    
+                }
+            }
+
+            if(this.model.adicional == true){
+                if (!this.model.ordenDeCompra || this.model.ordenDeCompra == "" || typeof this.model.ordenDeCompra === "undefined")
+                {
+                    this.model.mensajeCotizacion = "Debe agregar un numero de OC en el paso #4";
+                    this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: `${this.model.mensajeCotizacion}` });
+                    this.model.validarTrabajoHecho = false;
+                    
+                }
+            }
+            
+        }  
+        return this.model.validarTrabajoHecho;
+    }
+
+    limpiarCheck(){
+        if(this.model.trabajoHecho == undefined || this.model.trabajoHecho == false){
+            if(!this.estaFinalizada){
+                this.model.proveedorAsignado = "";
+                this.model.proveedorAsignado_Id = null;
+                this.proveedorSeleccionado = null;
+            }
+        }
+    }
+
+    limpiarCheckAdicional(){
+        if(!this.estaFinalizada && this.model.ordenDeCompra != ""){
+            this.model.ordenDeCompra = "";
+            this.ordenDeCompraSap.Cabecera.RazonSocialProveedor = "";
+            this.ordenDeCompraSap.Cabecera.CodigoProveedor = "";
+            this.ordenDeCompraSap.Cabecera.OrdenDeCompra = "";
+            this.model.proveedorAsignado = "";
+        }
+    }
+
+
+    obtenerOrdenDeCompra() {
+        try {
+            if(this.model.ordenDeCompra.length >= 10){
+                this.subscription = this.service.obtenerOrdenDeCompra(this.model.ordenDeCompra).subscribe(
+                    (result: any) => {
+                        if (result.logout == true) {
+                            this.sessionDataService.logout();
+                        } else if (result.error != undefined && result.error != "") {
+                            this.floatMsgService.setErrorMsg(result.error);
+                        } else if (result.info != undefined) {
+                            this.floatMsgService.setInfoMsg(result.info);
+                        } else {
+                            console.log(this.model, "SOLP")
+                               if(this.estaFinalizada == true && this.model.proveedorIdAdicional && this.model.proveedorIdAdicional != result.data.Cabecera.Usuario_Id){
+                                    this.floatMsgService.setErrorMsg("La OC ingresada debe ser para el proveedor " + this.model.proveedorRazonSocialAdicional);   
+                                    this.model.ordenDeCompra = "";      
+                                }else{                                
+                                this.ordenDeCompraSap = result.data;
+                                this.model.proveedorAsignado_Id = this.ordenDeCompraSap.Cabecera.Usuario_Id;
+                                this.model.ordenDeCompra = this.ordenDeCompraSap.Cabecera.OrdenDeCompra;
+                                this.model.proveedorAsignado = this.ordenDeCompraSap.Cabecera.RazonSocialProveedor;
+                                if(this.ordenDeCompraSap.Error){
+                                    this.floatMsgService.setErrorMsg(this.ordenDeCompraSap.Error.Mensaje);      
+                                    this.limpiarCheckAdicional();                      
+                                }
+                            }
+                        }
+                    },
+                    error => {
+                        this.floatMsgService.setErrorMsg(error.message);
+                    });
+            }
+            this.limpiarCheck();           
+        } catch (e) {
+            this.floatMsgService.setErrorMsg(e);
+            return false; //<-- Prevent Refresh
+        }
+        return false; //<-- Prevent Refresh
+    }
+
+
+    validarCondiciones(campoCheck){
+        if(this.estaFinalizada == true){
+            return true;
+        }
+        if(this.model.deshabilitarAdicional == true){
+            return true;
+        }
+        if(this.model.adicional == true && campoCheck == 'trabajoHecho'){
+            return true; 
+        } 
+
+        if(this.model.trabajoHecho == true && campoCheck == 'adicional'){
+            return true;
+        }
+       
+        return false
     }
 }

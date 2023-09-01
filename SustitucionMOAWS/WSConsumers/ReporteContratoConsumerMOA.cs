@@ -75,7 +75,7 @@ namespace SustitucionMOAWS.WSConsumers
                     KilosTotalesStr = SAPFormatter.FormatearCantidad(item.KILOS_TOTALES, "KG"),
                     KilosEntregadosStr = SAPFormatter.FormatearCantidad(item.KILOS_ENTREGADOS, "KG"),
                     KilosPendienteEntregaStr = SAPFormatter.FormatearCantidad(item.KILOS_PEND_ENTREGA, "KG"),
-                    FechaDesde = SAPFormatter.FormatearFecha(item.FECHA_DESDE),
+                    FechaDesde = item.FECHA_DESDE,
                     FechaHasta = item.FECHA_HASTA,
                     Precio = item.PRECIO,
                     Moneda = item.MONEDA,
@@ -97,8 +97,8 @@ namespace SustitucionMOAWS.WSConsumers
                         {
                             Pedido = detalle.PEDIDO,
                             Entrega = detalle.ENTREGA,
-                            FechaPedido = SAPFormatter.FormatearFecha(detalle.FECHA_PEDIDO),
-                            FechaCarga = SAPFormatter.FormatearFecha(detalle.FECHA_CARGA),
+                            FechaPedido = detalle.FECHA_PEDIDO,
+                            FechaCarga = detalle.FECHA_CARGA,
                             CantidadEntregada = detalle.CANTIDAD_ENTREGADA,
                             CantidadEntregadaStr = SAPFormatter.FormatearCantidad(detalle.CANTIDAD_ENTREGADA, "KG"),
                             Remito = detalle.REMITO,
@@ -109,7 +109,8 @@ namespace SustitucionMOAWS.WSConsumers
                             Acoplado = detalle.ACOPLADO,
                             Chofer = detalle.CHOFER,
                             Destinatario = detalle.DESTINATARIO,
-                            NombreDestinatario = detalle.NOMBRE_DESTINATARIO
+                            NombreDestinatario = detalle.NOMBRE_DESTINATARIO,
+                            CPE = detalle.CPE
                         });
                     }
                 }

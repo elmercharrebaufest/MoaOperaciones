@@ -551,7 +551,7 @@ namespace SustitucionMOAWS.WSConsumers
     {
         public string NumeroSolp { get; set; }
         public List<CrearSolpConsumerMOAError> Errores { get; set; }
-        public string Resultado { get; internal set; }
+        public string Resultado { get; set; }
     }
 
     public class CrearSolpConsumerMOAError

@@ -61,7 +61,7 @@ export class ProveedorPeticionComponent implements OnInit {
 
     grabarProveedor() {
 
-        this.validarProveedor();
+        this.validarProveedor(null);
         if (!this.visualizarAlert) {
             this.blockUI.start("Grabando...");
             try {
@@ -71,9 +71,14 @@ export class ProveedorPeticionComponent implements OnInit {
                         if (result.logout == true) {
                             this.sessionDataService.logout();
                         } else if (result.error != undefined && result.error != "") {
-                            this.floatMsgService.setErrorMsg(result.error);
+                            //   this.floatMsgService.setErrorMsg(result.error);
+                            this.error = result.error;
+                            this.visualizarAlert = true;
+
                         } else if (result.info != undefined) {
-                            this.floatMsgService.setInfoMsg(result.info);
+                            // this.floatMsgService.setInfoMsg(result.info);
+                            this.error = result.error;
+                            this.visualizarAlert = true;
                         } else {
                             this.nroPeticion = result.data.IdEntidad;
                             this.displayOkProveedor = true;
@@ -81,12 +86,16 @@ export class ProveedorPeticionComponent implements OnInit {
                         this.blockUI.stop();
                     },
                     error => {
-                        this.floatMsgService.setErrorMsg(error.message);
+                        // this.floatMsgService.setErrorMsg(error.message);
+                        this.error = error.message;
+                        this.visualizarAlert = true;
                         this.blockUI.stop();
 
                     });
             } catch (e) {
-                this.floatMsgService.setErrorMsg(e);
+                //  this.floatMsgService.setErrorMsg(e);
+                this.error = e;
+                this.visualizarAlert = true;
                 this.blockUI.stop();
                 return false; //<-- Prevent Refresh
             }
@@ -100,12 +109,23 @@ export class ProveedorPeticionComponent implements OnInit {
         this.displayOkProveedor = false;
     }
 
-    validarProveedor() {
-        if (this.proveedoresSeleccionados == null || this.proveedoresSeleccionados.length == 0) {
-            this.error = "Debe seleccionar un proveedor";
-            return this.visualizarAlert = true;
+    validarProveedor(event) {
+        this.visualizarAlert = false;
+        // if (this.proveedoresSeleccionados == null || this.proveedoresSeleccionados.length == 0) {
+        //     this.error = "Debe seleccionar un proveedor que no este asociado.";
+        //     return this.visualizarAlert = true;
+        // }
+        if(event != null && this.proveedoresSeleccionados.some(e => e.Id === event.Id)){
+            this.error = "Debe seleccionar un proveedor que no este asociado.";
+            this.visualizarAlert = true;
         }
-        if (this.proveedoresSeleccionados != null || this.proveedoresSeleccionados.length > 0 && this.peticion != null) {
+
+        if(!this.visualizarAlert && event != null && this.peticion != null && this.peticion.Usuarios.some(e => e.UsuarioId === event.Id)){
+            this.error = "Debe seleccionar un proveedor que no este asociado.";
+            this.visualizarAlert = true;
+        }
+
+        if (!this.visualizarAlert && (this.proveedoresSeleccionados != null || this.proveedoresSeleccionados.length > 0) && this.peticion != null) {
             let proveedoresSelec = this.proveedoresSeleccionados;
             for (let index = 0; index < this.proveedoresSeleccionados.length; index++) {
                 this.proveedor = this.peticion.Usuarios.filter(x => x.Id == proveedoresSelec[index].Id)[0];
@@ -115,7 +135,7 @@ export class ProveedorPeticionComponent implements OnInit {
                 }
             }
         }
-        return this.visualizarAlert = false;
+        return this.visualizarAlert;
     }
     searchProveedor(event) {
         try {
@@ -128,7 +148,7 @@ export class ProveedorPeticionComponent implements OnInit {
                     } else if (result.info != undefined) {
                         this.floatMsgService.setInfoMsg(result.info);
                     } else {
-                        this.proveedores = result.data;                       
+                        this.proveedores = result.data;
                     }
                 },
                 error => {
@@ -142,10 +162,12 @@ export class ProveedorPeticionComponent implements OnInit {
     }
 
     selectProveedor(event) {
-        try {
-            if (!this.proveedoresSeleccionados.some(e => e.Id === event.Id)) {
-                this.proveedoresSeleccionados.push(event);
-            }
+        try {          
+                this.validarProveedor(event);
+                if (!this.visualizarAlert) {
+                    this.proveedoresSeleccionados.push(event);
+                }
+          
             this.proveedorSeleccionado = null;
         } catch (e) {
             this.floatMsgService.setErrorMsg(e);
@@ -154,7 +176,7 @@ export class ProveedorPeticionComponent implements OnInit {
 
     eliminarProveedor(event, proveedor) {
         this.proveedoresSeleccionados = this.proveedoresSeleccionados.filter(x => x.Id !== proveedor.Id);
-        this.validarProveedor();
+        this.validarProveedor(null);
     }
 
 }

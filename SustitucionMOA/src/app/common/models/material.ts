@@ -5,6 +5,8 @@
     public CampaniaIdActual: number;
     public CodigoSap: string;
     public MaterialId: number;
+    public ValidaSisaRuca: boolean;
+    public Abreviacion: string;
 
     constructor() { }
 }

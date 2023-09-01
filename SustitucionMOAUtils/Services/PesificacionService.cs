@@ -135,6 +135,14 @@ namespace SustitucionMOAUtils.Services
                         FechaPesificacion = dolarGirasol.FechaCotizacion.ToString("yyyy-MM-dd");
                     }
                 }
+                else if (int.Parse(contratoEncontrado.NroContrato) >= 2700000 && int.Parse(contratoEncontrado.NroContrato) <= 2899999)
+                {
+                    var dolarMaiz = GetDolarMaiz();
+                    if (dolarMaiz != null)
+                    {
+                        FechaPesificacion = dolarMaiz.FechaCotizacion.ToString("yyyy-MM-dd");
+                    }
+                }
                 List<ZMPES5480> comprobantes = new List<ZMPES5480>
                 {
                     new ZMPES5480()
@@ -327,6 +335,31 @@ namespace SustitucionMOAUtils.Services
                 };
 
                 return dolarGirasol;
+            }
+            catch (Exception e)
+            {
+                throw new WSCustomException(ErrorMsg.ErrorWS, e);
+            }
+        }
+        public DolarMaterialDto GetDolarMaiz()
+        {
+            try
+            {
+                var now = DateTime.Now.Date;
+                var desde = DateTime.ParseExact(repositorio.Obtener<Configuracion>(a => a.Code == "DolarMaizDesde").Value, "yyyy-MM-dd", null);
+                var hasta = DateTime.ParseExact(repositorio.Obtener<Configuracion>(a => a.Code == "DolarMaizHasta").Value, "yyyy-MM-dd", null);
+                if (!(desde <= now && hasta >= now))
+                    return null;
+
+                DolarMaterialDto dolarMaiz = new DolarMaterialDto()
+                {
+                    Desde = desde,
+                    Hasta = hasta,
+                    FechaCotizacion = DateTime.ParseExact(repositorio.Obtener<Configuracion>(a => a.Code == "DolarMaizFechaCotizacion").Value, "yyyy-MM-dd", null),
+                    Cotizacion = double.Parse(repositorio.Obtener<Configuracion>(a => a.Code == "DolarMaizCotizacion").Value),
+                };
+
+                return dolarMaiz;
             }
             catch (Exception e)
             {

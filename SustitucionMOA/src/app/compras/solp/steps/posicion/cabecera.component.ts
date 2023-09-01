@@ -174,23 +174,34 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
     }
 
-    ngOnInit(): void {
+    ngOnInit(): void {       
         if (this.model.posiciones.length == 0) {
-            this.model.agregarNuevaPosicion(null as SolpPosicion);
+            this.agregarPosicion();
         }
         this.listarContratosAsociados();
+        if(this.model.posicionActual != undefined){
+        this.model.posicionActual.setTabPosicion();
+        }
+
+        this.setCombos();
 
     }
 
     public setCombos(): void {
         //Obtengo todas las opciones de los autocomplete
+        if(this.combos != undefined){
         this.claseDocumento = this.combos.ClaseDocumento;
         this.centroEntrega = this.combos.Centro;
         this.monedaCompras = this.combos.Moneda;
         this.tipoPosicion = this.combos.TipoPosicion;
         this.tipoImputacion = this.combos.TipoImputacion;
         this.unidades = this.combos.Unidades;
-        this.almacenEntrega = this.combos.Almacen;
+        if(this.model.posiciones.length > 0) {
+            this.model.posiciones.forEach(posicion => {
+                posicion.selectComboAlmacenes = this.combos.Almacen.filter(x => x.IdPadre == posicion.selectCentroEntrega.Id);
+            });
+        }       
+        }
     }
 
     ngOnChanges() {
@@ -199,10 +210,12 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         this.setCombos();
 
         //Hace que clase documento no use la primer opcion como predeterminada
-        let claseDocumento = this.model.selectClaseDocumento !== undefined && this.model.selectClaseDocumento.Id > 0 ? this.model.selectClaseDocumento : this.claseDocumento[0];
+        var clase = this.claseDocumento != undefined ? this.claseDocumento[0] : null;
+        let claseDocumento = this.model.selectClaseDocumento !== undefined && this.model.selectClaseDocumento.Id > 0 ? this.model.selectClaseDocumento : clase;
         this.model.selectClaseDocumento = this.model.selectClaseDocumento !== undefined && this.model.selectClaseDocumento.Id > 0 ? this.model.selectClaseDocumento : 0;
         this.actualizarCamposObligatorios(this.model.selectClaseDocumento);
         this.setControlesObligatorios(claseDocumento);
+
         this.validadorPasoSolpService.formulario = this.formularioActual;
 
         if (this.model.cargoPasoCinco) {
@@ -234,6 +247,10 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         this.validarTipoPosicion();
         this.validarTabCompleto();
         this.validarNuevaPosicion();
+        if(this.model.posicionActual != undefined){
+            this.model.posicionActual.setTabPosicion();
+        }
+     
     }
 
     setTabs() {
@@ -250,7 +267,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
     }
 
     setupAlmacenEntregaByCentro() {
-        this.almacenEntrega = this.combos.Almacen.filter(x => x.IdPadre == this.model.posicionActual.selectCentroEntrega.Id);
+        this.model.posicionActual.selectComboAlmacenes = this.combos.Almacen.filter(x => x.IdPadre == this.model.posicionActual.selectCentroEntrega.Id);
     }
 
     seleccionarTodo() {
@@ -273,16 +290,22 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
             var _this = this;
             posicionChequeadas.forEach(function (item1: any) {
                 _this.model.agregarNuevaPosicion(item1 as SolpPosicion);
+                _this.setupAlmacenEntregaByCentro();
             });
             //  el.scrollIntoView();
             this.validarNuevaPosicion();
+
         }
     }
 
     validarTabCompleto() {
-        this.model.posiciones.forEach(posicion => {
-            posicion.doValidatePosicion(this.model.tipoSolpSap);
-        });
+        if(this.model.posiciones.length < 0 && this.model.posiciones != undefined || this.model.posiciones != null){
+            this.model.posiciones.forEach(posicion => {
+                posicion.doValidatePosicion(this.model.tipoSolpSap);
+            });
+        } else {
+            this.agregarPosicion();
+        }
     }
 
     validarFinal() {
@@ -323,24 +346,28 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
 
     eliminarPosicion() {
         var posicionChequeadas = this.model.posiciones.filter(x => x.posicionCheck === true);
-        if (posicionChequeadas.length > 0) {
+        if (posicionChequeadas.length > 0) {            
             this.confirmationService.confirm({
                 message: '¿Está seguro que desea eliminar la posición?',
                 accept: () => {
                     posicionChequeadas.forEach(pos =>
                         this.model.eliminarPosicion(pos as SolpPosicion)
                     );
-                    this.listarContratosAsociados();
+                    this.listarContratosAsociados(); 
+                    if(this.model.posiciones.length == 1 && this.model.posiciones[0].selectAlmacenEntrega == undefined){
+                        this.setupAlmacenEntregaByCentro();
+                    }                  
                 },
                 reject: () => {
                 }
             });
-
+           
         }
     }
 
     eliminarPosicionUnicaSubPosicion(posicion: SolpPosicion) {
-        this.model.eliminarPosicion(posicion)
+        this.model.eliminarPosicion(posicion);
+       
     }
 
     recuperarPosicion() {
@@ -540,7 +567,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
     }
 
     //Funciones de los tabs
-    centroSeleccionado() {
+    centroSeleccionado(posicion) {
         let direccionCentro: any;
 
         if (!this.model.posicionActual.selectCentroEntrega && this.model.centroPorDefecto) {
@@ -554,7 +581,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         this.model.posicionActual.nombreEntrega = this.model.posicionActual.nombreEntrega
             || (this.model.posicionActual.selectCentroEntrega == undefined ? "" : this.model.posicionActual.selectCentroEntrega.Descripcion);
 
-        this.almacenEntrega = this.combos.Almacen.filter(x => x.IdPadre == this.model.posicionActual.selectCentroEntrega.Id);
+            posicion.selectComboAlmacenes = this.combos.Almacen.filter(x => x.IdPadre == posicion.selectCentroEntrega.Id);
 
         this.fillValoresDireccion(direccionCentro);
     }
@@ -801,6 +828,32 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         return false; //<-- Prevent Refresh
     }
 
+    autocompleteCodigoServicioSolp(event) {
+        try {
+            this.subscription = this.service.autocompleteCodigoServicioSolp(event.query.toLowerCase()).subscribe(
+                (result: any) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.floatMsgService.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.floatMsgService.setInfoMsg(result.info);
+                    } else {
+                        this.autocompleteServiciosSolp = result;
+                    }
+                },
+                error => {
+                    this.floatMsgService.setErrorMsg(error.message);
+                    this.spinnerComponent.hideIt();
+                });
+        } catch (e) {
+            this.floatMsgService.setErrorMsg(e);
+            return false; //<-- Prevent Refresh
+        }
+
+        return false; //<-- Prevent Refresh
+    }
+
     autocompleteMaterialSolp(event) {
         const idCentro = this.model.posicionActual.selectCentroEntrega.Id;
         if (idCentro == null) {
@@ -831,37 +884,80 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         return false; //<-- Prevent Refresh
     }
 
-    //Funciones de la tabla
-    onSelectServicio(posicion: SubPosicionViewModel, dt) {
-        posicion.tareaSubcontratar = posicion.codigoServicio.Descripcion;
-        posicion.tareaSubcontratarObj = { ...posicion.codigoServicio };
-
-        var unidadSeleccionadaAux = this.combos.Unidades.find(x => x.Descripcion == posicion.codigoServicio.UnidadMedidaBase);
-
-        if (unidadSeleccionadaAux) {
-            posicion.unidadSeleccionada = unidadSeleccionadaAux;
-            posicion.unidadMedida = unidadSeleccionadaAux.Descripcion;
+    autocompleteCodigoMaterialSolp(event) {
+        const idCentro = this.model.posicionActual.selectCentroEntrega.Id;
+        if (idCentro == null) {
+            return;
         }
+        try {
+            this.subscription = this.service.autocompleteCodigoMaterialSolp(event.query.toLowerCase(), idCentro).subscribe(
+                (result: any) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.floatMsgService.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.floatMsgService.setInfoMsg(result.info);
+                    } else {
+                        this.autocompleteServiciosSolp = result;
+                    }
+                },
+                error => {
+                    this.floatMsgService.setErrorMsg(error.message);
+                    this.spinnerComponent.hideIt();
+                });
+        } catch (e) {
+            this.floatMsgService.setErrorMsg(e);
+            return false; //<-- Prevent Refresh
+        }
+
+        return false; //<-- Prevent Refresh
+    }
+
+    //Funciones de la tabla
+    onSelectServicio(posicion: SolpPosicion, dt) {
+        posicion.tareaSubcontratar = posicion.codigoServicio.Descripcion;
+        posicion.textoSuministro = posicion.codigoServicio.Descripcion;
+        posicion.tareaSubcontratarObj = { ...posicion.codigoServicio };
+        this.autocompletarCamposMaterial(posicion);
 
         this.endEditCell(dt);
 
 
     }
 
-    onSelectTarea(posicion: SubPosicionViewModel, dt) {
+    onSelectTarea(posicion: SolpPosicion, dt) {
         posicion.tareaSubcontratar = posicion.tareaSubcontratarObj.Descripcion;
+        posicion.textoSuministro = posicion.tareaSubcontratarObj.Descripcion;
         posicion.codigoServicio = { ...posicion.tareaSubcontratarObj };
-
-        var unidadSeleccionadaAux = this.combos.Unidades.find(x => x.Descripcion == posicion.codigoServicio.UnidadMedidaBase);
         
-        if (unidadSeleccionadaAux) {
-        posicion.unidadSeleccionada = unidadSeleccionadaAux;
-        posicion.unidadMedida = unidadSeleccionadaAux.Descripcion;
-        }
-        
+        this.autocompletarCamposMaterial(posicion);
         this.endEditCell(dt);
 
         this.listarContratosAsociados()
+
+    }
+
+    autocompletarCamposMaterial(posicion: SolpPosicion){
+        var unidadSeleccionadaAux = this.combos.Unidades.find(x => x.Descripcion == posicion.codigoServicio.UnidadMedidaBase.Descripcion);
+        
+        if (unidadSeleccionadaAux) {
+            posicion.unidadSeleccionada = unidadSeleccionadaAux;
+            posicion.unidadMedida = unidadSeleccionadaAux.Descripcion;
+        }
+
+        posicion.cuentaMayor = "";
+        var grupoArticuloAux = this.combos.GrupoArticulo.find(x => x.Descripcion == posicion.codigoServicio.GrupoArticulo.Descripcion);
+        if (grupoArticuloAux) {
+            posicion.selectArticuloCompras = grupoArticuloAux;
+        }
+
+        //var cuentaMayorAux = this.combos.CuentaMayor.find(x => x.Descripcion == posicion.codigoServicio.CuentaMayor.Descripcion);
+        if (posicion.codigoServicio.CuentaMayor && posicion.codigoServicio.CuentaMayor.Id > 0) {
+            posicion.cuentaMayor = posicion.codigoServicio.CuentaMayor;
+        }
+        console.log("posicion.codigoServicio.CuentaMayor", posicion.codigoServicio.CuentaMayor)
+
 
     }
 
@@ -899,6 +995,9 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
                 // posicion.calcularValorTotal();
                 // posicion.doValidatePosicion(this.model.tipoSolpSap);
             });
+            if(this.model.posiciones.length == 1){
+                this.setupAlmacenEntregaByCentro();
+            }
             this.model.calcularValorTotalPorMoneda();
             this.listarContratosAsociados();
         }
@@ -1046,6 +1145,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
                 }
 
                 this.model.agregarNuevaPosicionDesdeContratoMarco(newPos);
+                this.agregarPosicion();
               
             });
             this.model.calcularValorTotalPorMoneda();           
@@ -1080,9 +1180,9 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         return this.model.selectTipoPosicion.Codigo == "MATERIALES" && this.model.posicionActual.codigoServicio != null;
     }
 
-    clearCode() {
-        if (this.model.posicionActual.tareaSubcontratar != null) {
-            this.model.posicionActual.codigoServicio = null;
+    clearCode(posicion) {
+        if (posicion.tareaSubcontratar != null) {
+            posicion.codigoServicio = null;
         }
     }
 

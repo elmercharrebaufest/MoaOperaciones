@@ -32,7 +32,7 @@ namespace SustitucionMOA.Controllers
                 {
                     return JsonCustom(new { logout = true });
                 }
-                
+
                 var contratos = reporteContratoService.GetContratosReporte(proveedor, fechaInicio, fechaFin, mostrarPendientes, null);
                 return JsonCustom(contratos);
             }
@@ -54,7 +54,7 @@ namespace SustitucionMOA.Controllers
                 Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
-        }   
+        }
 
         public ActionResult ObtenerContratosFiltro(string fechaInicio, string fechaFin, string cliente, string producto, string tipoContrato, bool mostrarPendientes, string dataContrato)
         {
@@ -93,17 +93,35 @@ namespace SustitucionMOA.Controllers
             }
         }
 
-        public ActionResult ObtenerDetalleContrato(string contrato)
+        public ActionResult ObtenerDetalleContrato(string contrato, string fechaInicio, string fechaFin)
         {
             try
             {
                 var mailUsuario = SessionPersister.getUsername();
-                var detalleContrato = reporteContratoService.GetContratosDetalle(contrato, SessionPersister.Proveedor);
+                var detalleContrato = reporteContratoService.GetContratosDetalle(contrato, SessionPersister.Proveedor, fechaInicio, fechaFin);
+                
                 Result result = new Result();
                 foreach (var det in detalleContrato.data.Resultados)
                 {
                     result.Detalles = det.Detalles;
+
+                    foreach(var item in result.Detalles)
+                    {
+                        if (!item.Entrega.Equals(string.Empty))
+                        {
+                            try
+                            {
+                                var orden = ordenDeCargaService.ObtenerPorNroEntrega(mailUsuario, item.Entrega);
+                                item.OrdenCargaId = orden.Id.ToString();
+                            }
+                            catch(Exception ex)
+                            {
+                                item.OrdenCargaId= string.Empty;
+                            }
+                        }
+                    }
                 }
+   
                 return JsonCustom(new { data = result.Detalles });
             }
             catch (InfoCustomException e)
@@ -130,8 +148,8 @@ namespace SustitucionMOA.Controllers
             try
             {
                 var mailUsuario = SessionPersister.getUsername();
-                
-                return JsonCustom(new { data = ordenDeCargaService.ObtenerPorNroEntrega(mailUsuario,nroEntrega) });
+
+                return JsonCustom(new { data = ordenDeCargaService.ObtenerPorNroEntrega(mailUsuario, nroEntrega) });
             }
             catch (InfoCustomException e)
             {

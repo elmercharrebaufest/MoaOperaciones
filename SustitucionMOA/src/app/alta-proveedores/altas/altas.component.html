@@ -27,50 +27,35 @@
         <!--End Title-->
         <!--Search-->
         <div class="myRow firstSection mySearch">
-
-            <!-- <button class="btn btn-custom btn-mediano btn-radius" *ngIf="isAuthorized('VER ALTAS GRANOS')"
-                [ngClass]="{'btn-verde': idTipoProveedor === 2, 'btn-gris' : idTipoProveedor !== 2 }"
-                (click)="cambiarFiltroTipoProveedor(2)">
-                Directo Granos
-            </button>
-            <button class="btn btn-custom btn-mediano btn-radius" *ngIf="isAuthorized('VER ALTAS NO GRANOS')"
-                [ngClass]="{'btn-verde': idTipoProveedor === 3, 'btn-gris' : idTipoProveedor !== 3 }"
-                (click)="cambiarFiltroTipoProveedor(3)">
-                No Granos
-            </button> -->
-
-
             <div class="col-xs-12 col-md-12 rounded shadow animate no-padding-left-right">
                 <div class="col-xs-12 col-md-12 search-header">
                     <title-caps>Refinar resultados</title-caps>
                 </div>
-                <div id="searchTexto" class="col-xs-6 col-sm-4 col-md-5 ">
+                <div id="searchVer" class="col-xs-12 col-sm-6 col-md-4">
+                    Fecha:
+                    <filtro-fecha (ClickEvent)="getEmpresa()"></filtro-fecha>
+                </div>
+                <div id="searchTexto" class="col-xs-12 col-sm-6 col-md-4">
                     Por Razon Social/CUIT:
                     <div class="styled-select ">
                         <input type="search" class="" placeholder="" [value]="" aria-controls="tableModal"
-                               [(ngModel)]="filtroAlta">
+                            [(ngModel)]="filtroAlta">
                     </div>
                 </div>
-                <!--<div class="col-xs-6  col-sm-4 col-md-5">
-        Por Estado:
-        <div class="styled-select ">
-            <select [(ngModel)]="selectedEstado" (ngModelChange)="onOptionsSelected()">
-                <option value="" selected>Todos</option>
-                <option *ngFor="let x of estados" value="{{x.Key}}">{{x.Value}}</option>
-            </select>
 
-        </div>
-    </div>-->
-                <div class="col-xs-6  col-sm-4 col-md-5">
+                <div class="col-xs-12 col-sm-6 col-md-4">
                     Por Estado:
                     <div class="styled-select ">
-                        <p-multiSelect [options]="descripcionEstadoAlta" defaultLabel="Estados" [(ngModel)]="estadosSelected" selectedItemsLabel="{0} Items seleccionados" (onChange)="filtrarListadoAlta()" appendTo="body" [style]="{'width':'100%', 'height': '40px'}">
+                        <p-multiSelect #multiSelect [options]="descripcionEstadoAlta" defaultLabel="Estados"
+                            [(ngModel)]="estadosSelected" selectedItemsLabel="{0} Items seleccionados"
+                            (onChange)="filtrarListadoAlta()" appendTo="body"
+                            [style]="{'width':'100%', 'height': '40px'}">
                         </p-multiSelect>
                     </div>
                 </div>
 
-                <div class="col-xs-6  col-sm-4 col-md-5"
-                     *ngIf="isAuthorized('VER ALTAS GRANOS') && isAuthorized('VER ALTAS NO GRANOS')">
+                <div class="col-xs-12 col-sm-6 col-md-4"
+                    *ngIf="isAuthorized('VER ALTAS GRANOS') && isAuthorized('VER ALTAS NO GRANOS')">
                     Tipo proveedor:
                     <div class="styled-select ">
                         <select [(ngModel)]="idTipoProveedor" (ngModelChange)="onChangeProveedor()">
@@ -83,7 +68,7 @@
                     </div>
                 </div>
 
-                <div class="col-xs-6  col-sm-4 col-md-5">
+                <div class="col-xs-12 col-sm-6 col-md-4">
                     Alta física:
                     <div class="styled-select ">
                         <select [(ngModel)]="contieneDocumentacionFisica">
@@ -94,12 +79,8 @@
                     </div>
                 </div>
 
-                <!---
-    <a (click)="getEmpresa()" href="#" style="text-decoration:none!important">
-        <div class="btn btn-custom btn-add" style="margin-top:23px!important">Buscar
-            <span class="fa fa-search" style="margin-left: 5px;margin-bottom: 2px;"></span>
-        </div>
-    </a>-->
+           
+
             </div>
 
         </div>
@@ -906,7 +887,7 @@
                                         [(ngModel)]="empresaSeleccionada.EstadoSIPER" />
                                 </div>
                                 <div class="guardarSIPER" style="text-align: center;"
-                                *ngIf="empresaSeleccionada.EstadoAprobacion == 2 && isAuthorized('ABM EMPRESAS OPERADOR')">
+                                    *ngIf="empresaSeleccionada.EstadoAprobacion == 2 && isAuthorized('ABM EMPRESAS OPERADOR')">
                                     <span class="adjuntar col-xs-12 col-sm-5" (click)="guardarSIPER()">
                                         Guardar SIPER
                                     </span>
@@ -916,7 +897,7 @@
                                     Estado en SIPER: <label>{{empresaSeleccionada.EstadoSIPER}}</label>
                                 </div>
                                 <div class="guardarSIPER" style="text-align: center;"
-                                *ngIf="empresaSeleccionada.EstadoAprobacion == 2 && isAuthorized('ABM EMPRESAS OPERADOR')">
+                                    *ngIf="empresaSeleccionada.EstadoAprobacion == 2 && isAuthorized('ABM EMPRESAS OPERADOR')">
                                     <span class="adjuntar col-xs-12 col-sm-5" (click)="guardarSIPER()">
                                         Guardar SIPER
                                     </span>

@@ -6,6 +6,6 @@
 		public string Contrato { get; set; }
 		public string FechaInicio { get; set; }
 		public string FechaFin { get; set; }
-		public string Pendiente { get; set; }
+		public bool Pendiente { get; set; }
 	}
 }

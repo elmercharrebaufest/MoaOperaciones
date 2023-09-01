@@ -1,7 +1,7 @@
 ﻿using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Dto.OrdenDeCarga;
 using SustitucionMOAModel.Entities;
-using SustitucionMOAUtils.Email;
+using SustitucionMOAModel.Models.WebApiMap.ScatoRepositorio;
 using System.Collections.Generic;
 
 namespace SustitucionMOAUtils.Interfaces
@@ -24,10 +24,8 @@ namespace SustitucionMOAUtils.Interfaces
         string NotificarTransporte(int ordenId);
         List<string> ObtenerContratos(int ordenId);
         Resultado SeleccionarContrato(int ordenId, string contratoSAP, string mailUsuario);
-        List<string> ObtenerPedidos(int ordenId);
-        string SeleccionarPedido(int ordenId, string pedido, string mailUsuario);
         Resultado VerificarSituacionCrediticia(int ordenId);
-        string VerificarTransporte(int ordenId);
+        string VerificarTransporte(int ordenId, string mailUsuario);
         void VerificarTransporteBulk();
         void CrearOrdenEnSAPBulk();
         List<OrdenDeCarga> VerificarVencimientoOrdenDeCarga();
@@ -36,14 +34,25 @@ namespace SustitucionMOAUtils.Interfaces
         VisualizarClienteResponse VisualizarCliente(VisualizarClienteRequest request);
         VisualizarProductoResponse VisualizarProducto(VisualizarProductoRequest request);
         ValidarCorredorClienteContratoProductoResponse ValidarCorredorClienteContratoProducto(ValidarCorredorClienteContratoProductoRequest request);
-        string NotificarVariosPedidos(int ordenDeCargaId);
-        string NotificarVariosContratos(EmailSenderData emailSenderData);
         string NotificarVencimientoOrdenCarga(int ordenId, string mailUsuario);
         string ActivarOC(int ordenId, string mailUsuario);
         OrdenDeCargaDetalleDto ObtenerPorNroEntrega(string mailUsuario, string nroEntrega);
         List<OrdenDeCargaCambiosHistorialDto> ObtenerCambiosHistorial(OrdenDeCarga orden);
         void VerificarSituacionCrediticiaJob();
-        ObtenerContratosDisponiblesResponse ObtenerContratosDisponibles(ObtenerContratosDisponiblesRequest req);
+        ObtenerContratosDisponiblesResponse ObtenerContratosDisponibles(ObtenerContratosDisponiblesRequest req, string mailUsuario);
         string EnviarOrdenesASAP(List<int> ordenesIds, string mailUsuario);
+        ValidarSisaCorredorClienteResponse ValidarSisaCorredorCliente(string corredorCodigo, string clienteCodigo);
+        bool ValidarSisaCuit(string cuit, string campo);
+        bool EmailGestionarAlta(string cuit, string razonSocial, bool esIntermediarioFlete);
+        bool ValidarCuitRuca(string cuit);
+        ValidarCuitExisteScatoResponse ValidarCuitExisteScato(string cuit);
+        List<PlantaDto> ObtenerPlantasDestino(string destinoCuit);
+        List<DomicilioDto> ObtenerDomiciliosDestino(string destinoCuit);
+        ValidarIntermediarioFleteResponse ValidarIntermediarioFlete(string cuit);
+        (bool, Chofer) ValidarCuilChofer(string cuilChofer);
+        bool ValidarCuilChoferDigito(string cuilChofer);
+        bool ValidarCuitTransporteDigito(string cuitTransporte);
+        Resultado SeleccionarFactura(int ordenId, string numeroFacturaSeleccionada, string mailUsuario);
+        void VerificarCompensacion(int ordenId);
     }
 }

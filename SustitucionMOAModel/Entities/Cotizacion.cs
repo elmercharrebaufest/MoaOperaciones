@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -28,9 +25,12 @@ namespace SustitucionMOAModel.Entities
         public virtual CotizacionEstado CotizacionEstado { get; set; }
         [ForeignKey("PeticionDeOfertaUsuario_Id")]
         public virtual PeticionDeOfertaUsuario PeticionDeOfertaUsuario { get; set; }
-
         [InverseProperty("Cotizaciones")]
         public virtual ICollection<Archivo> Archivos { get; set; } = new List<Archivo>();
-
+        [InverseProperty("Cotizacion")]
+        public virtual ICollection<CotizacionPosicion> CotizacionPosiciones { get; set; } = new List<CotizacionPosicion>();
+        [InverseProperty("Cotizacion")]
+        public virtual ICollection<Adjudicacion> Adjudicaciones { get; set; } = new List<Adjudicacion>();
+        public virtual ICollection<CotizacionHora> CotizacionesHoras { get; set; } = new List<CotizacionHora>();
     }
 }

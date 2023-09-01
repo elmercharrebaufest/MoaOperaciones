@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -14,6 +15,12 @@ namespace SustitucionMOA.Controllers
             JsonResult json = Json(data, JsonRequestBehavior.AllowGet);
             json.MaxJsonLength = int.MaxValue;
             return json;
+        }
+
+        protected ContentResult ContentCustom(object data)
+        {
+            // Se serializa así para que tome bien los atributos JsonProperty
+            return Content(JsonConvert.SerializeObject(data), "application/json");
         }
     }
 }

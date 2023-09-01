@@ -504,4 +504,32 @@
     <Property Name="ParentElementType" Value="SqlTable" />
     <Property Name="NewName" Value="SolpPosicion_Id" />
   </Operation>
+  <Operation Name="Rename Refactor" Key="3f18738d-933f-4ace-973c-6da801fa2009" ChangeDateTime="04/13/2023 17:58:29">
+    <Property Name="ElementName" Value="[dbo].[AdjudicacionPosicion].[CotizacionPosicion_Id]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[AdjudicacionPosicion]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="SolpPosicion_Id" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="d5f4d21f-6a17-45e4-b7de-fbf4a61a8b72" ChangeDateTime="06/08/2023 13:23:45">
+    <Property Name="ElementName" Value="[dbo].[AdjudicacionPosicion].[Garantias]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[AdjudicacionPosicion]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="Texto" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="45b49412-9b1e-4b32-b77c-1d29102334b1" ChangeDateTime="06/16/2023 19:36:10">
+    <Property Name="ElementName" Value="[dbo].[Solp].[ProveedorAsignadoId]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Solp]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="ProveedorAsignado_Id" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="26dbc324-1a35-49d5-be32-36c8d0ba9a13" ChangeDateTime="08/09/2023 19:42:47">
+    <Property Name="ElementName" Value="[dbo].[CotizacionHora].[CotizacionHora]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[CotizacionHora]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="ConfigurarHora" />
+  </Operation>
 </Operations>

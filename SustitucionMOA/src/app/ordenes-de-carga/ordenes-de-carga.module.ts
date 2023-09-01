@@ -12,8 +12,13 @@ import { OrdenesDeCargaDetalleComponent } from './detalle/ordenes-de-carga.detal
 import { ButtonModule } from 'primeng/button';
 import { DropdownModule } from 'primeng/dropdown';
 import { AutoCompleteModule } from 'primeng/autocomplete';
-import {MultiSelectModule} from 'primeng/multiselect';
-import {ConfirmDialogModule} from 'primeng/confirmdialog';
+import { MultiSelectModule } from 'primeng/multiselect';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { DialogModule } from 'primeng/dialog';
+import { CheckboxModule } from 'primeng/checkbox';
+import { TooltipModule } from 'primeng/tooltip';
+import { MessageModule } from 'primeng/message';
 
 @NgModule({
     imports: [
@@ -27,7 +32,12 @@ import {ConfirmDialogModule} from 'primeng/confirmdialog';
         NgxMaskModule,
         OrdenesDeCargaRoutingModule,
         MultiSelectModule,
-        ConfirmDialogModule
+        ConfirmDialogModule,
+        ProgressSpinnerModule,
+        DialogModule,
+        CheckboxModule,
+        TooltipModule,
+        MessageModule,
     ],
     declarations: [
         OrdenesDeCargaAlta,
@@ -36,6 +46,11 @@ import {ConfirmDialogModule} from 'primeng/confirmdialog';
     ],
     providers: [
         OrdenesDeCargaService
+    ],
+    exports:[
+        OrdenesDeCargaAlta,
+        OrdenesDeCargaListado,
+        OrdenesDeCargaDetalleComponent
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using Hangfire;
 using Owin;
+using Hangfire.Dashboard;
 
 namespace SustitucionMOA
 {
@@ -14,7 +15,11 @@ namespace SustitucionMOA
             GlobalConfiguration.Configuration.UseSqlServerStorage("HfContexto");
             GlobalConfiguration.Configuration.UseNLogLogProvider();
             app.UseHangfireServer();
-            app.UseHangfireDashboard();
+            //app.UseHangfireDashboard("/hangfire");
+            app.UseHangfireDashboard("/hangfire", new DashboardOptions
+            {
+                Authorization = new[] { new HangFireAuthorizationFilter() }
+            });
             Register();
         }
 
@@ -89,6 +94,41 @@ namespace SustitucionMOA
                 "VerificarSituacionCrediticiaJob",
                 j => j.Execute(),
                 "*/15 * * * *", tz);
+        }
+    }
+
+    public class HangFireAuthorizationFilter : IDashboardAuthorizationFilter
+    {
+        public bool Authorize(DashboardContext context)
+        {
+            bool boolAuthorizeCurrentUserToAccessHangFireDashboard = false;
+
+            if (HttpContext.Current.User.Identity.IsAuthenticated)
+            {
+
+
+                // Obtén el ClaimsPrincipal actual del contexto HTTP
+                System.Security.Claims.ClaimsPrincipal userClaimsPrincipal = HttpContext.Current.User as System.Security.Claims.ClaimsPrincipal;
+
+                if (userClaimsPrincipal != null)
+                {
+                    // Accede a la identidad del usuario actual
+                    System.Security.Claims.ClaimsIdentity userIdentity = userClaimsPrincipal.Identity as System.Security.Claims.ClaimsIdentity;
+
+                    if (userIdentity != null)
+                    {
+                        // Busca la reclamación "permisos" con el valor "APIKEY"
+                        IEnumerable<System.Security.Claims.Claim> permisosClaim = userIdentity.FindAll("permisos");
+
+                        if (permisosClaim != null && permisosClaim.Any(a=>a.Value == "HANGFIREDASHBOARD"))
+                        {
+                            boolAuthorizeCurrentUserToAccessHangFireDashboard = true;
+                        }
+                    }
+                }                
+            }
+            return boolAuthorizeCurrentUserToAccessHangFireDashboard;
+
         }
     }
 }

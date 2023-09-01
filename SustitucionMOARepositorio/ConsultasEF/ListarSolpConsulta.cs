@@ -43,6 +43,9 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                     FechaCreacion = x.FechaCreacion,
                                     TipoSolp = new TablaGeneralDto { Descripcion = x.TipoSolp != null ? x.TipoSolp.Descripcion : "" },
                                     TipoSolpSap = x.TipoSolpSap,
+                                    Adicional = x.Adicional,
+                                    NroOrdenDeCompraAdicional = x.NroOrdenDeCompraAdicional,
+                                    TrabajoYaHecho = x.TrabajoYaHecho,
                                     PosicionCompras = (from posicion in contexto.Set<SolpPosicion>()
                                                        where posicion.Solp_Id == x.Id
                                                        select new SolpPosicionDto()
@@ -55,19 +58,30 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                     ItemPorPagina = paginacion.ItemsPorPagina,
                                     Pagina = paginacion.Pagina,
                                     EstadoSolpSap = x.EstadoSolpSap_Id != null ? new TablaSapDto { Id = x.EstadoSolpSap_Id ?? 0, CodigoSap = x.EstadoSolpSap.CodigoSap, Descripcion = x.EstadoSolpSap.Descripcion } : new TablaSapDto { Id = 0, CodigoSap = "", Descripcion = "" },
+                                    VerPublicar = x.TrabajoYaHecho == null || x.TrabajoYaHecho == false,
+                                    VerCircular = x.TrabajoYaHecho == null || x.TrabajoYaHecho == false,
                                     FechaLiberacionSapFormateada = x.FechaLiberacionSap == null ? "" : SqlFunctions.DateName("day", x.FechaLiberacionSap) + "/" + SqlFunctions.DatePart("month", x.FechaLiberacionSap) + "/" + SqlFunctions.DateName("year", x.FechaLiberacionSap),
                                     FechaLiberacionSap = x.FechaLiberacionSap,
                                     PeticionesDeOferta = (from po in contexto.Set<PeticionDeOferta>()
-                                                           where po.Solp_Id == x.Id
-                                                           select new PeticionDeOfertaDto()
-                                                           {
-                                                               Id = po.Id,
-                                                               Solp_Id = po.Solp_Id,
-                                                               FechaCreacion = po.FechaCreacion,
-                                                               UsuarioCreador_Id = po.UsuarioCreador_Id,
-                                                               PlazoDeOferta = po.PlazoDeOferta,
-                                                               Observaciones = po.Observaciones,
-                                                           }),
+                                                          where po.Solp_Id == x.Id && po.RegistroInfo != true
+                                                          select new PeticionDeOfertaDto()
+                                                          {
+                                                              Id = po.Id,
+                                                              Solp_Id = po.Solp_Id,
+                                                              FechaCreacion = po.FechaCreacion,
+                                                              UsuarioCreador_Id = po.UsuarioCreador_Id,
+                                                              PlazoDeOferta =
+                                                              po.Usuarios.GroupBy(p => p).SelectMany(p => p.Key.Circulares)
+                                                               .Any(p => p.Circular.RequiereCambioDeFechas == true && p.Circular.PlazoDeOferta.HasValue) ?
+                                                               po.Usuarios.GroupBy(p => p).SelectMany(p => p.Key.Circulares)
+                                                               .Where(p => p.Circular.RequiereCambioDeFechas == true && p.Circular.PlazoDeOferta.HasValue)
+                                                               .OrderByDescending(p => p.Circular.PlazoDeOferta).FirstOrDefault().Circular.PlazoDeOferta.Value :
+                                                                po.PlazoDeOferta,
+
+                                                              Observaciones = po.Observaciones,
+                                                          })       
+                                                          
+
                                 };
 
                 var itemsTotales = resultado.Count();
@@ -80,6 +94,8 @@ namespace SustitucionMOARepositorio.ConsultasEF
                 throw;
             }
         }
+
+   
 
 
     }

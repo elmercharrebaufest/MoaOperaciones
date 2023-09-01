@@ -14,11 +14,11 @@ namespace SustitucionMOAModel.Entities
         public int Id { get; set; }
         public int Cotizacion_Id { get; set; }
         public int PeticionDeOfertaSolpPosicion_Id { get; set; }
-        public int Cantidad { get; set; }
-        public int UnidadDeMedida_Id { get; set; }
-        public int Moneda_Id { get; set; }    
-        public decimal Precio { get; set; }       
-        public DateTime FechaDeEntrega { get; set; }
+        public decimal? Cantidad { get; set; }
+        public int? UnidadDeMedida_Id { get; set; }
+        public int? Moneda_Id { get; set; }
+        public decimal? Precio { get; set; }
+        public DateTime? FechaDeEntrega { get; set; }
 
 
         [ForeignKey("Cotizacion_Id")]
@@ -30,6 +30,8 @@ namespace SustitucionMOAModel.Entities
         [ForeignKey("Moneda_Id")]
         public virtual TablaSap Moneda { get; set; }
 
-
+        [InverseProperty("CotizacionPosicion")]
+        public virtual ICollection<CotizacionSubPosicion> CotizacionSubPosiciones { get; set; } = new List<CotizacionSubPosicion>();
+        public bool? NoDisponible { get; set; }
     }
 }

@@ -27,6 +27,9 @@ export class CircularComponent implements OnInit, OnChanges {
 
     @Input()
     public peticion: PeticionDeOfertaDto;
+
+    @Input() solicitante: boolean;
+
     fechaDeEntrega: Date
     plazoDeOferta: Date
     public circular: CircularDto;
@@ -45,12 +48,32 @@ export class CircularComponent implements OnInit, OnChanges {
     error: string = "";
     visualizarAlert = false;
     hoy: Date = new Date();
+
     constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService,
         protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService,
         protected route: ActivatedRoute, protected router: Router, private confirmationService: ConfirmationService, private formBuilder: FormBuilder) {
     }
+
     ngOnChanges(changes: SimpleChanges): void {
-        this.selectedProv = this.peticion.Usuarios.map(x => x.UsuarioId);
+        if(!this.solicitante){
+            if(this.peticion != null){
+                this.selectedProv = this.peticion.Usuarios.map(x => x.UsuarioId);
+            } 
+        }    
+        else {
+            if(this.peticion != null){
+                if(this.peticion.PlazoDeOfertaEstado == "Abierto"){
+                    this.selectedProv = this.peticion.Usuarios
+                    .map(x => x.UsuarioId);
+                } else {
+                    this.selectedProv = this.peticion.Usuarios
+                    .filter(x => x.ValidacionCircularSolicitante) // Filtra solo los proveedores habilitados
+                    .map(x => x.UsuarioId);
+                }
+                    
+            }
+        }
+        
     }
     
     ngOnInit() {
@@ -104,12 +127,16 @@ export class CircularComponent implements OnInit, OnChanges {
                         this.blockUI.stop();
                     },
                     error => {
-                        this.floatMsgService.setErrorMsg(error.message);
+                        //this.floatMsgService.setErrorMsg(error.message);
+                        this.error = error.message;
+                        this.visualizarAlert = true;
                         this.blockUI.stop();
     
                     });
             } catch (e) {
-                this.floatMsgService.setErrorMsg(e);
+                //this.floatMsgService.setErrorMsg(e);
+                this.error = e;
+                this.visualizarAlert = true;
                 this.blockUI.stop();
                 return false; //<-- Prevent Refresh
             }
@@ -117,8 +144,19 @@ export class CircularComponent implements OnInit, OnChanges {
         }
     }
 
-    uploadHandler(filesUpload: any): void {
+   
+
+    uploadHandler(filesUpload: any): boolean {
+        this.visualizarAlert = false; 
+        var archivoWeb = filesUpload["files"].reduce((sum, file) => sum + file.size, 0);      
         this.archivos = filesUpload["files"];
+        if(archivoWeb > 10000000){
+            this.error = "El archivo adjuntado no debe superar los 10Mb";
+            if(this.archivos.length > 0){
+            this.eliminarAdjuntoNuevo(this.archivos[this.archivos.length - 1])
+            }
+            return  this.visualizarAlert = true;             
+        }
     }
 
     eliminarArchivo(archivo: any) {
@@ -126,6 +164,7 @@ export class CircularComponent implements OnInit, OnChanges {
             message: '¿Está seguro que desea eliminar el archivo?',
             accept: () => {
                 this.eliminarAdjuntoNuevo(archivo);
+                this.visualizarAlert = false;
             },
             reject: () => {
                
@@ -183,7 +222,8 @@ export class CircularComponent implements OnInit, OnChanges {
             PlazoDeOferta: this.plazoDeOferta,
             Observacion: this.Observacion,
             RequiereCambioDeFecha: this.visualizarFechas,
-            UsuarioIds: this.selectedProv
+            UsuarioIds: this.selectedProv,
+            PeticionDeOferta_Id: this.peticion.Id
         };
         this.circular = c;
     }
@@ -239,6 +279,11 @@ export class CircularComponent implements OnInit, OnChanges {
         if(this.selectedProv == null || this.selectedProv.length == 0){
             this.error = "Debe seleccionar al menos un proveedor";
             return  this.visualizarAlert = true;
+        }
+        var archivoWeb = this.archivos.reduce((sum, file) => sum + file.size, 0);      
+        if(archivoWeb > 10000000){
+           this.error = "El archivo adjuntado no debe superar los 10Mb";
+            return  this.visualizarAlert = true;             
         }
         return this.visualizarAlert = false;
     }

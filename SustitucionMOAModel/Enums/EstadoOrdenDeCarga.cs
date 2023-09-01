@@ -18,7 +18,8 @@
         EdicionRechazada,
         SinEnviarASAP,
         SinEstado,
-        EntregaAnuladaPedidoPendienteAnulacion
+        EntregaAnuladaPedidoPendienteAnulacion,
+        PendienteCompensacion
     }
 
     public static class EstadoOrdenDeCargaExtensions
@@ -35,6 +36,7 @@
                 case EstadoOrdenDeCarga.Pendiente:
                 case EstadoOrdenDeCarga.ContratoVencido:
                 case EstadoOrdenDeCarga.PendienteAprobacionCredito:
+                case EstadoOrdenDeCarga.PendienteCompensacion:
                     return "orange";
                 case EstadoOrdenDeCarga.Confirmado:
                 case EstadoOrdenDeCarga.Vencida:
@@ -90,6 +92,8 @@
                     return "Sin Enviar a SAP";
                 case EstadoOrdenDeCarga.EntregaAnuladaPedidoPendienteAnulacion:
                     return "Entrega anulada, pedido pendiente de anulación";
+                case EstadoOrdenDeCarga.PendienteCompensacion:
+                    return "Pendiente de compensación";
                 default:
                     return "Sin estado";
             }
@@ -108,6 +112,7 @@
                 case EstadoOrdenDeCarga.EntregaPendiente:
                 case EstadoOrdenDeCarga.ContratoVencido:
                 case EstadoOrdenDeCarga.SinEnviarASAP:
+                case EstadoOrdenDeCarga.PendienteCompensacion:
                     return "En proceso";
                 case EstadoOrdenDeCarga.Vencida:
                 case EstadoOrdenDeCarga.EntregaGenerada:
@@ -167,6 +172,8 @@
                 case "Anulación en proceso":
                 case "Entrega anulada, pedido pendiente de anulación":
                     return EstadoOrdenDeCarga.EntregaAnuladaPedidoPendienteAnulacion;
+                case "Pendiente de compensación":
+                    return EstadoOrdenDeCarga.PendienteCompensacion;
                 default:
                     return EstadoOrdenDeCarga.SinEstado;
             }

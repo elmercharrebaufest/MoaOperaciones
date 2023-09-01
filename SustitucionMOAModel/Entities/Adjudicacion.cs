@@ -19,6 +19,14 @@ namespace SustitucionMOAModel.Entities
         public string NumeroOrdenDeCompra { get; set; }
         public DateTime FechaCreacion { get; set; }
         public int UsuarioCreador_Id { get; set; }
+        public int Moneda_Id { get; set; }
+        public decimal MontoTotal { get; set; }
+
+        public string TextoDeCabecera { get; set; }
+        public string CondicionesDeEntrega { get; set; }
+        public string CondicionesDePago { get; set; }
+        public string Garantias { get; set; }
+
 
         [ForeignKey("UsuarioCreador_Id")]
         public virtual Usuario Usuario { get; set; }
@@ -31,6 +39,9 @@ namespace SustitucionMOAModel.Entities
 
         [InverseProperty("Adjudicacion")]
         public virtual ICollection<AdjudicacionPosicion> Posiciones { get; set; } = new List<AdjudicacionPosicion>();
+
+        [ForeignKey("Moneda_Id")]
+        public virtual TablaSap Moneda { get; set; }
 
     }
 }

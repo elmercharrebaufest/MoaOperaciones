@@ -1,118 +1,145 @@
 <section class="container-fluid clearfix">
-  <div class="row titleSection">
-      <div class="col-xs-12 col-sm-10 "> <strong>Estado de licitaciones</strong></div>
-  </div>
-  <br>
+    <div class="row titleSection">
+        <div class="col-xs-12 col-sm-10 "> <strong>Estado de licitaciones</strong></div>
+    </div>
+    <br>
 </section>
 <div class="content-wraper" style="padding-top: 0px !important;">
-  <spinner></spinner>
-  <app-filtro-dashboard-proveedor></app-filtro-dashboard-proveedor>
-  <div class="col-sm-12 col-md-12 col-lg-12" style="margin-left: -15px;">
+    <spinner></spinner>
+    <app-filtro-dashboard-proveedor></app-filtro-dashboard-proveedor>
+    <div class="col-sm-12 col-md-12 col-lg-12" style="margin-left: -15px;">
 
-      <p-table #tabla [value]="tablaPO" responsiveLayout="scroll | stack" dataKey="Id">
-          <ng-template pTemplate="header" let-columns class="lista-header">
-              <tr>
-                  <th data-toggle="tooltip" title="Acciones a realizar" style="width: 40px"></th>
-                  <th class="headerth" title="Numero SOLP" (click)="onOrder('NroSolp')" style="width: 80px">
-                      Nro SOLP
-                      <span>
-                          <i [ngClass]="{'fa': true, 'fa-solid fa-sort-up': true, 'arrow': true, 'unselected': columnaOrden === 'NroSolp' && orden == 'DESC'  }"></i>
-                          <i [ngClass]="{'fa': true, 'fa-solid fa-sort-down': true, 'arrow': true, 'unselected': columnaOrden === 'NroSolp' && orden == 'ASC' }"></i>
-                      </span>
-                  </th>
+        <p-table #tabla [value]="tablaPO" responsiveLayout="scroll | stack" dataKey="Id">
+            <ng-template pTemplate="header" let-columns class="lista-header">
+                <tr>
+                    <th data-toggle="tooltip" title="Acciones a realizar" style="width: 40px"></th>
+                    <th class="headerth" title="Numero SOLP" (click)="onOrder('NroSolp')" style="width: 80px">
+                        Nro SOLP
+                        <span>
+                            <i [ngClass]="{'fa': true, 'fa-solid fa-sort-up': true, 'arrow': true, 'unselected': columnaOrden === 'NroSolp' && orden == 'DESC'  }"></i>
+                            <i [ngClass]="{'fa': true, 'fa-solid fa-sort-down': true, 'arrow': true, 'unselected': columnaOrden === 'NroSolp' && orden == 'ASC' }"></i>
+                        </span>
+                    </th>
+                    <th class="headerth" title="Numero PO" (click)="onOrder('Id')" style="width: 80px">
+                        Nro PO
+                        <span>
+                            <i [ngClass]="{'fa': true, 'fa-solid fa-sort-up': true, 'arrow': true, 'unselected': columnaOrden === 'Id' && orden == 'DESC'  }"></i>
+                            <i [ngClass]="{'fa': true, 'fa-solid fa-sort-down': true, 'arrow': true, 'unselected': columnaOrden === 'Id' && orden == 'ASC' }"></i>
+                        </span>
+                    </th>
 
-                  <th title="Nombre de pedido" class="headerth" (click)="onOrder('NombreDeObra')" style="width: 80px">
-                      Nombre Pedido
-                      <span>
-                          <i [ngClass]="{'fa': true, 'fa-solid fa-sort-up': true, 'arrow': true, 'unselected': columnaOrden === 'NombreDeObra' && orden == 'DESC'  }"></i>
-                          <i [ngClass]="{'fa': true, 'fa-solid fa-sort-down': true, 'arrow': true, 'unselected': columnaOrden === 'NombreDeObra' && orden == 'ASC' }"></i>
-                      </span>
-                  </th>
+                    <th title="Nombre de pedido" class="headerth" (click)="onOrder('NombreDeObra')" style="width: 80px">
+                        Nombre Pedido
+                        <span>
+                            <i [ngClass]="{'fa': true, 'fa-solid fa-sort-up': true, 'arrow': true, 'unselected': columnaOrden === 'NombreDeObra' && orden == 'DESC'  }"></i>
+                            <i [ngClass]="{'fa': true, 'fa-solid fa-sort-down': true, 'arrow': true, 'unselected': columnaOrden === 'NombreDeObra' && orden == 'ASC' }"></i>
+                        </span>
+                    </th>
 
-                  <th title="Comprador" class="headerth" (click)="onOrder('UsuarioCreador')" style="width: 105px;">
-                      Comprador
-                      <span>
-                          <i [ngClass]="{'fa': true, 'fa-solid fa-sort-up': true, 'arrow': true, 'unselected': columnaOrden === 'UsuarioCreador' && orden == 'DESC'  }"></i>
-                          <i [ngClass]="{'fa': true, 'fa-solid fa-sort-down': true, 'arrow': true, 'unselected': columnaOrden === 'UsuarioCreador' && orden == 'ASC' }"></i>
-                      </span>
-                  </th>
-                  <th title="Fecha de creacion de SOLP" class="headerth" (click)="onOrder('PlazoDeOfertaCircular')" style="width: 90px;">
-                      Fecha <br /> Cierre
-                      <span>
-                          <i [ngClass]="{'fa': true, 'fa-solid fa-sort-up': true, 'arrow': true, 'unselected': columnaOrden === 'PlazoDeOfertaCircular' && orden == 'DESC'  }"></i>
-                          <i [ngClass]="{'fa': true, 'fa-solid fa-sort-down': true, 'arrow': true, 'unselected': columnaOrden === 'PlazoDeOfertaCircular' && orden == 'ASC' }"></i>
-                      </span>
-                  </th>
+                    <th title="Comprador" class="headerth" (click)="onOrder('UsuarioCreador')" style="width: 105px;">
+                        Comprador
+                        <span>
+                            <i [ngClass]="{'fa': true, 'fa-solid fa-sort-up': true, 'arrow': true, 'unselected': columnaOrden === 'UsuarioCreador' && orden == 'DESC'  }"></i>
+                            <i [ngClass]="{'fa': true, 'fa-solid fa-sort-down': true, 'arrow': true, 'unselected': columnaOrden === 'UsuarioCreador' && orden == 'ASC' }"></i>
+                        </span>
+                    </th>
+                    <th title="Fecha de creacion de SOLP" class="headerth" (click)="onOrder('PlazoDeOferta')" style="width: 90px;">
+                        Fecha <br /> Cierre
+                        <span>
+                            <i [ngClass]="{'fa': true, 'fa-solid fa-sort-up': true, 'arrow': true, 'unselected': columnaOrden === 'PlazoDeOferta' && orden == 'DESC'  }"></i>
+                            <i [ngClass]="{'fa': true, 'fa-solid fa-sort-down': true, 'arrow': true, 'unselected': columnaOrden === 'PlazoDeOferta' && orden == 'ASC' }"></i>
+                        </span>
+                    </th>
 
-                  <th title="Estado de licitacíon" class="headerth columna" (click)="onOrder('Circular.Estado_Id')" style="width:80px ;">
-                      Estado <br /> Lic.
-                      <span>
-                          <i [ngClass]="{'fa': true, 'fa-solid fa-sort-up': true, 'arrow': true, 'unselected': columnaOrden === 'Circular.Estado_Id' && orden == 'DESC'  }"></i>
-                          <i [ngClass]="{'fa': true, 'fa-solid fa-sort-down': true, 'arrow': true, 'unselected': columnaOrden === 'Circular.Estado_Id' && orden == 'ASC' }"></i>
-                      </span>
-                  </th>
+                    <th title="Estado de licitacíon" class="headerth columna" (click)="onOrder('Estado_Id')" style="width:80px ;">
+                        Estado <br /> Lic.
+                        <span>
+                            <i [ngClass]="{'fa': true, 'fa-solid fa-sort-up': true, 'arrow': true, 'unselected': columnaOrden === 'Estado_Id' && orden == 'DESC'  }"></i>
+                            <i [ngClass]="{'fa': true, 'fa-solid fa-sort-down': true, 'arrow': true, 'unselected': columnaOrden === 'Estado_Id' && orden == 'ASC' }"></i>
+                        </span>
+                    </th>
 
-                  <th title="Visita técnica obligatoria" class="headerth" (click)="onOrder('TieneVisitaObra')" style="width: 120px;">
-                      Visita técnica obligatoria
-                      <span>
-                        <i [ngClass]="{'fa': true, 'fa-solid fa-sort-up': true, 'arrow': true, 'unselected': columnaOrden === 'TieneVisitaObra' && orden == 'DESC'  }"></i>
-                        <i [ngClass]="{'fa': true, 'fa-solid fa-sort-down': true, 'arrow': true, 'unselected': columnaOrden === 'TieneVisitaObra' && orden == 'ASC' }"></i>
-                      </span>
-                  </th>
-                  <th title="Nombre de pedido" class="headerth" (click)="onOrder('CotizacionEstado_Id')" style="width: 90px;">
-                      Estado cotización
-                      <span>
-                        <i [ngClass]="{'fa': true, 'fa-solid fa-sort-up': true, 'arrow': true, 'unselected': columnaOrden === 'CotizacionEstado_Id' && orden == 'DESC'  }"></i>
-                        <i [ngClass]="{'fa': true, 'fa-solid fa-sort-down': true, 'arrow': true, 'unselected': columnaOrden === 'CotizacionEstado_Id' && orden == 'ASC' }"></i>
-                      </span>
-                  </th>
-                  <th data-toggle="tooltip" colspan="2" style="width: 85px;">
+                    <th title="Visita técnica obligatoria" class="headerth" style="width: 120px;">
+                        Visita técnica obligatoria
 
-                  </th>
-              </tr>
-          </ng-template>
+                    </th>
+                    <th title="Nombre de pedido" class="headerth" (click)="onOrder('CotizacionEstado_Id')" style="width: 90px;">
+                        Estado cotización
+                        <span>
+                            <i [ngClass]="{'fa': true, 'fa-solid fa-sort-up': true, 'arrow': true, 'unselected': columnaOrden === 'CotizacionEstado_Id' && orden == 'DESC'  }"></i>
+                            <i [ngClass]="{'fa': true, 'fa-solid fa-sort-down': true, 'arrow': true, 'unselected': columnaOrden === 'CotizacionEstado_Id' && orden == 'ASC' }"></i>
+                        </span>
+                    </th>
+                    <th data-toggle="tooltip" colspan="2" style="width: 85px;">
 
-          <ng-template pTemplate="body" let-rowData let-columns="columns">
-              <tr>
-                  <td style="padding-left: 0px; padding-right: 0px;">               
-                      <div class="col-md-2">
-                          <span>
-                              <img class="pointer" src="./Content/images/icons/descargar.svg" alt="descargar"
-                                   (click)="generarZipPliego(rowData.Id)" />
-                          </span>
-                      </div>
-                  </td>
-                  <td class="columna">
-                      {{rowData.NroSolp}}
-                  </td>
-                  <td class="columna">
-                      {{rowData.NombreDeObra || ""}}
-                  </td>
-                  <td class="columna">
-                      {{rowData.UsuarioCreador}}
-                  </td>
-                  <td class="columna">
-                      {{rowData.Circular.PlazoDeOferta | customDateFormat | date :'d/M/yyyy' }}
-                  </td>
-                  <td class="columna" [style.color]="rowData.Circular.EstadoColor">
-                      {{rowData.Circular.Estado}}
-                  </td>
-                  <td class="columna">
-                      {{ rowData.TieneVisitaObra}}
-                  </td>
-                  <td class="columna">
-                      {{ rowData.CotizacionEstadoDescripcion}}
-                  </td>      
-                  <td colspan="2" class="columna" style="text-align: center;">
-                      <button class="publicar btn btn-success" style="font-size: 12px;">                          
-                          Cotizar
-                      </button>
-                  </td>
-              </tr>
-          </ng-template>
-      </p-table>
+                    </th>
+                </tr>
+            </ng-template>
 
-      <p-paginator #paginator [rows]="10" [totalRecords]="length" (onPageChange)="handlePageEvent($event)"></p-paginator>
+            <ng-template pTemplate="body" let-rowData let-columns="columns">
+                <tr>
+                    <td style="padding-left: 0px; padding-right: 0px;">
+                        <div class="col-md-2">
+                            <div class="contenedor-imagen">
+                                <img class="pointer" src="./Content/images/icons/carpeta.svg" alt="descargar"
+                                     (click)="verLegajo(rowData)" width="25" />
+                                <div class="punto-rojo" *ngIf="rowData.Usuarios[0].CircularSinLeer == true"></div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="columna">
+                        {{rowData.NroSolp}}
+                    </td>
+                    <td class="columna">
+                        {{rowData.Id}}
+                    </td>
+                    <td class="columna">
+                        {{rowData.NombreDeObra || ""}}
+                    </td>
+                    <td class="columna">
+                        {{rowData.UsuarioCreador}}
+                    </td>
+                    <td class="columna">
+                        {{rowData.PlazoDeOferta | customDateFormat | date :'d/M/yyyy' }}
+                    </td>
+                    <td class="columna" [style.color]="rowData.EstadoColor">
+                        {{rowData.Estado}}
+                    </td>
+                    <td class="columna">
+                        <div *ngIf="rowData.VisitasMasivas.length == 0">
+                            {{ rowData.TieneVisitaObra}}
+                        </div>
+                        <div *ngIf="rowData.VisitasMasivas.length > 0">
+                            <div *ngFor="let visita of rowData.VisitasMasivas">
+                                {{ visita | customDateFormat | date :'d/M/yyyy hh:mm' }}
+                            </div>
+                        </div>
+                    </td>
+                    <td class="columna">
+                        {{ rowData.CotizacionEstadoDescripcion}}
+                    </td>
+                    <td colspan="2" class="columna" style="text-align: center;">
+                        <button *ngIf="rowData.Estado == 'Abierto' && rowData.CotizacionEstadoDescripcion != 'Cotizado'" class="publicar btn btn-success" style="font-size: 12px;" (click)="publicarCotizacion(rowData.Usuarios[0].Id)">
+                            Cotizar
+                        </button>
+                        <button *ngIf="rowData.Estado == 'Abierto' && rowData.CotizacionEstadoDescripcion == 'Cotizado' && rowData.TieneAdjudicacion != true" class="publicar btn btn-success" style="font-size: 12px;" (click)="publicarCotizacion(rowData.Usuarios[0].Id)">
+                            Recotizar
+                        </button>
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
 
-  </div>
+        <p-paginator #paginator [rows]="10" [totalRecords]="length" (onPageChange)="handlePageEvent($event)"></p-paginator>
+
+    </div>
 </div>
+
+<app-legajo [(displayLegajo)]="displayLegajo"
+            [(usuarioProveedor)]="usuarioProveedor"
+            (cerrarLegajoEmitter)="cerrarLegajo()"
+            (descargarArchivoEmitter)="descargarArchivo($event)"
+            (descargarLegajoEmitter)="descargarLegajo()"
+            (adjuntarArchivoLegajoEmitter)="adjuntarArchivoLegajo($event)"
+            [(legajo)]="legajo">
+</app-legajo>

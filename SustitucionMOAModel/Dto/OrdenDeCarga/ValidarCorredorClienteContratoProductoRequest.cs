@@ -10,6 +10,6 @@
 		public string FechaInicio { get; set; }
 		public string FechaFin { get; set; }
 		public string ProductoId { get; set; }
-		public string Pendiente { get; set; }
+		public bool Pendiente { get; set; }
 	}
 }

@@ -15,6 +15,13 @@
                 </xsd:restriction>
               </xsd:simpleType>
             </xsd:element>
+            <xsd:element name="IM_CUITDESTINAT">
+              <xsd:simpleType>
+                <xsd:restriction base="xsd:string">
+                  <xsd:maxLength value="16" />
+                </xsd:restriction>
+              </xsd:simpleType>
+            </xsd:element>
             <xsd:element name="IM_DOCUMENTO">
               <xsd:simpleType>
                 <xsd:restriction base="xsd:string">
@@ -51,6 +58,13 @@
                 </xsd:restriction>
               </xsd:simpleType>
             </xsd:element>
+            <xsd:element name="IM_NAMEDESTINAT">
+              <xsd:simpleType>
+                <xsd:restriction base="xsd:string">
+                  <xsd:maxLength value="35" />
+                </xsd:restriction>
+              </xsd:simpleType>
+            </xsd:element>
             <xsd:element name="IM_NOMBRECONDUCTOR">
               <xsd:simpleType>
                 <xsd:restriction base="xsd:string">
@@ -61,7 +75,7 @@
             <xsd:element name="IM_ORDENDOM">
               <xsd:simpleType>
                 <xsd:restriction base="xsd:string">
-                  <xsd:maxLength value="2" />
+                  <xsd:maxLength value="3" />
                 </xsd:restriction>
               </xsd:simpleType>
             </xsd:element>
@@ -101,6 +115,13 @@
               </xsd:simpleType>
             </xsd:element>
             <xsd:element name="IM_TRANSPORTISTA">
+              <xsd:simpleType>
+                <xsd:restriction base="xsd:string">
+                  <xsd:maxLength value="16" />
+                </xsd:restriction>
+              </xsd:simpleType>
+            </xsd:element>
+            <xsd:element name="IM_TRANSPORTISTA_REAL">
               <xsd:simpleType>
                 <xsd:restriction base="xsd:string">
                   <xsd:maxLength value="16" />

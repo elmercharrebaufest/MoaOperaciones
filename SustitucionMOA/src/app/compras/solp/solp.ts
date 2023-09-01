@@ -41,6 +41,9 @@ export class Solp extends CommonResponse {
     public andamio: boolean;
     public entregaDocumentacion: boolean;
     public tecnicoSeguridad: boolean;
+    public grillaPersonal: boolean;
+    public fabricacionTallerExterno: boolean;
+
     public fechaLimiteFecha: Date;
     public fechaLimiteHora: Date;
     public visitaDeObraMasiva: boolean;
@@ -58,6 +61,21 @@ export class Solp extends CommonResponse {
     public comienzoJornadaLaboral: Date;
     public terminoJornadaLaboral: Date;
     public observacionesCotizacion: string;
+    public trabajoHecho: boolean;
+    public adicional: boolean;
+
+    public proveedorAsignado_Id: number;
+    public proveedorAsignado: string;
+
+    public ordenDeCompra: string;
+    public codigoProveedorSap: string;
+    public RazonSocialSap: string;
+
+
+    public validarTrabajoHecho: boolean;
+    public validarAdicional: boolean;
+
+    public mensajeCotizacion: string;
 
     public archivosCotizacionesNuevos: Array<File>;
     public archivosCotizaciones: Array<ArchivoModel>
@@ -70,6 +88,11 @@ export class Solp extends CommonResponse {
     public pasoCompletado: number;
     public estadoPasos: string;
     public tableHide: boolean;
+    proveedorIdAdicional: number;
+    proveedorRazonSocialAdicional: string;
+    deshabilitarAdicional: boolean;
+    ordenDeCompraOriginal: string;
+
 
     public get ultimaPosicion(): SolpPosicion {
         //comentar linea de abajo si se quiere que no se ordene por Fecha (Mas actual primero)
@@ -131,7 +154,7 @@ export class Solp extends CommonResponse {
         this.comienzoJornadaLaboral = new Date(1, 1, 1, 7, 0, 0, 0);
         this.terminoJornadaLaboral = new Date(1, 1, 1, 16, 0, 0, 0);
         this.ejecucion = "30";
-        this.observacionesCotizacion = "Indicar la cantidad de días con que se cuenta a partir de tener el equipo disponible, en una parada programada o que el trabajo depende de otros";
+        // this.observacionesCotizacion = "Indicar la cantidad de días con que se cuenta a partir de tener el equipo disponible, en una parada programada o que el trabajo depende de otros";
 
         this.archivosCotizacionesNuevos = new Array<File>();
         this.archivosCotizaciones = new Array<ArchivoModel>();
@@ -151,7 +174,9 @@ export class Solp extends CommonResponse {
             this.mail = solp.Email || sessionStorage.getItem("username");
             this.fechaEntrega = new Date(this.getDateFromAspNetFormat(solp.FechaHoraEntrega));
             this.emailLinkToken = solp.EmailLinkToken;
-            this.selectTipoPosicion = this.getSelectedTipoPosicion(solp.Posiciones);
+            this.selectTipoPosicion =  solp.TipoPosicion && solp.TipoPosicion.Codigo || ''
+            ;
+
 
             // Paso 2
             this.supervisorSector = solp.SupervisorSector || '';
@@ -169,6 +194,8 @@ export class Solp extends CommonResponse {
             this.modoElevacion = solp.TieneMedioElevacion;
             this.andamio = solp.TieneAndamio;
             this.tecnicoSeguridad = solp.TieneTecnicoSeguridad;
+            this.grillaPersonal = solp.TieneGrillaPersonal;
+            this.fabricacionTallerExterno = solp.TieneFabricacionTallerExterno;
             this.usuarioComprasId = solp.UsuarioCompras.Id || 0;
             this.descripcionTecnica = solp.TieneDescripcionTecnica;
             this.entregaDocumentacion = solp.TieneDocumentacionTecnica;
@@ -208,6 +235,16 @@ export class Solp extends CommonResponse {
             this.terminoJornadaLaboral = new Date(this.getDateFromAspNetFormat(solp.JornadaLaboralHasta));
             this.ejecucion = solp.DiasEjecucion || '';
             this.observacionesCotizacion = solp.ObservacionesCotizacion;
+            this.proveedorAsignado_Id = solp.ProveedorAsignadoId;
+            this.proveedorAsignado = solp.ProveedorAsignado;
+            this.trabajoHecho = solp.TrabajoYaHecho;
+            this.adicional = solp.Adicional;
+            this.ordenDeCompra = solp.NroOrdenDeCompraAdicional;
+			this.ordenDeCompraOriginal = solp.NroOrdenDeCompraAdicional;
+            this.proveedorIdAdicional = solp.ProveedorIdAdicional;
+            this.proveedorRazonSocialAdicional = solp.ProveedorRazonSocialAdicional
+            this.deshabilitarAdicional = solp.DeshabilitarAdicional;
+            
 
             //pop up finalizar
             this.revisadoPor = solp.RevisadoPor || '';

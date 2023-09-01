@@ -58,6 +58,9 @@
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Net.Http.Formatting, Version=5.2.7.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.7\lib\net45\System.Net.Http.Formatting.dll</HintPath>
+    </Reference>
     <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.5.0\lib\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
     </Reference>
@@ -68,6 +71,9 @@
     <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.Helpers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Http, Version=5.2.7.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Core.5.2.7\lib\net45\System.Web.Http.dll</HintPath>
     </Reference>
     <Reference Include="System.Web.Mvc, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.Mvc.5.2.3\lib\net45\System.Web.Mvc.dll</HintPath>
@@ -92,6 +98,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controllers\ActualizarSolpControllerTest.cs" />
+    <Compile Include="Controllers\ComprasControllerTest.cs" />
     <Compile Include="Controllers\AltaEmpresaControllerTest.cs" />
     <Compile Include="Controllers\AltaEmpresaGranosControllerTest.cs" />
     <Compile Include="Controllers\CampoSustentableControllerTest.cs" />
@@ -118,6 +126,7 @@
     <Compile Include="Services\PesificacionServiceTests.cs" />
     <Compile Include="Services\OrdenDeCargaServiceTest.cs" />
     <Compile Include="Services\TicketPesadaServiceTest.cs" />
+    <Compile Include="Services\FacturaAnticipadaServiceTest.cs" />
     <Compile Include="Services\UsuarioServiceTest.cs" />
     <Compile Include="Services\VendedorServiceTest.cs" />
   </ItemGroup>
@@ -136,6 +145,10 @@
     <ProjectReference Include="..\SustitucionMOACustomException\SustitucionMOACustomException.csproj">
       <Project>{F8D4A064-E19C-4B58-B17E-F516118A6EAF}</Project>
       <Name>SustitucionMOACustomException</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SustitucionMOAExternalAPI\SustitucionMOAExternalAPI.csproj">
+      <Project>{2DB8712D-EC58-4C1F-9329-E376FE5D8A50}</Project>
+      <Name>SustitucionMOAExternalAPI</Name>
     </ProjectReference>
     <ProjectReference Include="..\SustitucionMOAModel\SustitucionMOAModel.csproj">
       <Project>{DA0A7852-EA57-4359-BA7C-B8BABDEDBD42}</Project>
@@ -161,9 +174,13 @@
   <ItemGroup>
     <Content Include="bin\Debug\Template\AvisoEdicionOrdenDeCarga.html" />
     <Content Include="bin\Debug\Template\NotificacionOrdenesDeCarga.html" />
+    <Content Include="Util\LogoBaufest.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="bin\Debug\Templates\" />
+    <Folder Include="Mock\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

@@ -82,8 +82,8 @@ namespace SustitucionMOAUtils.Services
         private void ValidarUsuario(Usuario usuario, int proveedorId)
         {
             var proveedor = repositorio.Obtener<Proveedor>(proveedorId);
-            var esComercial = usuario.ObtenerPermisos().Contains("COMERCIAL CAMPOS SUSTENTABLES");
-            var esAdmin = usuario.ObtenerPermisos().Contains("VER TODOS CAMPOS SUSTENTABLE");
+            var esComercial = usuario.TienePermiso(PermisoEnum.ComercialCamposSustentables);
+            var esAdmin = usuario.TienePermiso(PermisoEnum.VerTodosCamposSustentable);
             if (!(esAdmin || esComercial))
             {
                 if (!usuario.Proveedores.Any(p => p.CUIT == proveedor.CUIT))

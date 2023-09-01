@@ -26,20 +26,33 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                      Id = solp.Id,
                                      NroSolp = solp.NroSolp,
                                      TipoPosicionCodigo = solp.Posiciones.Select(x => x.TipoPosicion.Codigo).FirstOrDefault(),
+                                     Adicional = solp.Adicional,
                                      PosicionCompras = (from posicion in contexto.Set<SolpPosicion>()
                                                         where posicion.Solp_Id == solp.Id && posicion.EsConcluido == true && posicion.Estado == true
+                                                        orderby posicion.Indice
                                                         select new SolpPosicionDto()
                                                         {
                                                             Id = posicion.Id,
-                                                            MaterialComprasCodigo = posicion.MaterialSolp.Codigo,
                                                             TieneCotizacion = posicion.Peticiones.Any(),
+                                                            Codigo = posicion.MaterialSolp.Codigo,
                                                             Indice = posicion.Indice,
                                                             Tarea = posicion.Tarea,
                                                             CentroComprasDescripcion = posicion.Centro.Descripcion,
+                                                            Centro = new TablaSapDto
+                                                            {
+                                                                CodigoSap = posicion.Centro.CodigoSap,
+                                                                Descripcion = posicion.Centro.Descripcion,
+                                                            },
                                                             AlmacenComprasDescripcion = posicion.Almacen.Descripcion,
                                                             TextoSuministro = posicion.TextoSuministro,
                                                             Modelo = posicion.Modelo,
                                                             GrupoComprasDescripcion = posicion.GrupoCompras.Codigo + " " + posicion.GrupoCompras.Descripcion,
+                                                            GrupoCompras = new TablaSapDto
+                                                            {
+                                                                CodigoSap = posicion.GrupoCompras.CodigoSap,
+                                                                Descripcion = posicion.GrupoCompras.Descripcion,
+                                                            },
+                                                            MaterialComprasCodigo = posicion.MaterialSolp.CodigoSap,
                                                             Cantidad = posicion.Cantidad,
                                                             UnidadComprasDescripcion = posicion.Unidad.Descripcion,
                                                             MonedaComprasDescripcion = posicion.Moneda.Descripcion,
@@ -56,11 +69,12 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                                                   }),
                                                             SubposicionesCompras = (from subPosicion in contexto.Set<SolpSubposicion>()
                                                                                     where subPosicion.SolpPosicion_Id == posicion.Id
+                                                                                    orderby subPosicion.Numero
                                                                                     select new SolpSubposicionDto()
                                                                                     {
                                                                                         Numero = subPosicion.Numero,
                                                                                         Tarea = subPosicion.Tarea,
-                                                                                        Codigo = subPosicion.Codigo,
+                                                                                        Codigo = subPosicion.ServicioSolp.Codigo,
                                                                                         Cantidad = subPosicion.Cantidad,
                                                                                         UnidadComprasDescripcion = subPosicion.Unidad.Descripcion
                                                                                     }),

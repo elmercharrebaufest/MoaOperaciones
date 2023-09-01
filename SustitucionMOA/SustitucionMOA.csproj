@@ -65,6 +65,9 @@
     <Reference Include="Hangfire.Core, Version=1.7.19.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Hangfire.Core.1.7.19\lib\net45\Hangfire.Core.dll</HintPath>
     </Reference>
+    <Reference Include="Hangfire.Dashboard.Authorization, Version=3.0.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Hangfire.Dashboard.Authorization.3.0.1\lib\net45\Hangfire.Dashboard.Authorization.dll</HintPath>
+    </Reference>
     <Reference Include="Hangfire.Ninject, Version=1.2.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Hangfire.Ninject.1.2.0\lib\net45\Hangfire.Ninject.dll</HintPath>
     </Reference>
@@ -81,7 +84,7 @@
       <HintPath>..\packages\itextsharp.xmlworker.5.5.13\lib\itextsharp.xmlworker.dll</HintPath>
     </Reference>
     <Reference Include="Kendo.DynamicLinq, Version=1.1.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\Libs\Kendo.DynamicLinq.dll</HintPath>
+      <HintPath>..\packages\Kendo.DynamicLinq.1.1.2.0\lib\net40\Kendo.DynamicLinq.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Azure.KeyVault.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Azure.KeyVault.Core.1.0.0\lib\net40\Microsoft.Azure.KeyVault.Core.dll</HintPath>
@@ -164,8 +167,8 @@
       <HintPath>..\packages\System.Linq.Dynamic.1.0.0\lib\net40\System.Linq.Dynamic.dll</HintPath>
     </Reference>
     <Reference Include="System.Net.Http" />
-    <Reference Include="System.Net.Http.Formatting, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.3\lib\net45\System.Net.Http.Formatting.dll</HintPath>
+    <Reference Include="System.Net.Http.Formatting, Version=5.2.9.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.9\lib\net45\System.Net.Http.Formatting.dll</HintPath>
     </Reference>
     <Reference Include="System.Net.Http.WebRequest" />
     <Reference Include="System.Runtime.Caching" />
@@ -249,6 +252,7 @@
     <Content Include="Content\images\header\key-solid.svg" />
     <Content Include="Content\images\header\logo.png" />
     <Content Include="Content\images\header\logo_.png" />
+    <Content Include="Content\images\icons\carpeta.svg" />
     <Content Include="Content\images\icons\contract.svg" />
     <Content Include="Content\images\icons\descargar.svg" />
     <Content Include="Content\images\icons\doc-file.svg" />
@@ -261,6 +265,7 @@
     <Content Include="Content\images\icons\trashRed.svg" />
     <Content Include="Content\images\icons\trashWhite.svg" />
     <Content Include="Content\images\icons\worker.svg" />
+    <Content Include="Content\images\LogoBaufest.png" />
     <Content Include="dist\Content\css\blockui.css" />
     <Content Include="dist\Content\css\bootstrap.min.css" />
     <Content Include="dist\Content\css\font-awesome.css" />
@@ -300,6 +305,7 @@
     <Content Include="dist\glyphicons-halflings-regular.*.svg" />
     <Content Include="dist\*.js" />
     <Content Include="dist\styles.*.css" />
+    <Content Include="Libs\Kendo.DynamicLinq.dll" />
     <Content Include="NOTUSE_UPDATE.DeployParameters.Debug.xml" />
     <Content Include="PRE.DeployParameters.Debug.xml">
       <DependentUpon>PRE.DeployParameters.xml</DependentUpon>
@@ -319,14 +325,36 @@
     <Content Include="src\app\common\shared-components\buscador\buscador.component.html" />
     <Content Include="src\app\common\shared-components\seleccionar-proveedor\seleccionar-proveedor.component.css" />
     <Content Include="src\app\common\shared-components\seleccionar-proveedor\seleccionar-proveedor.component.html" />
-    <Content Include="src\app\compras\cotizacion\cotizacion-formulario\cotizacion-formulario.component.css" />
-    <Content Include="src\app\compras\cotizacion\cotizacion-formulario\cotizacion-formulario.component.html" />
+    <Content Include="src\app\compras\dashboard-comprador\alta-proveedor\alta-proveedor.component.css" />
+    <Content Include="src\app\compras\dashboard-comprador\alta-proveedor\alta-proveedor.component.html" />
+    <Content Include="src\app\compras\dashboard-comprador\circular\circular.component.css" />
+    <Content Include="src\app\compras\dashboard-comprador\circular\circular.component.html" />
     <Content Include="src\app\compras\dashboard-comprador\filtro-dashboard-comprador\filtro-dashboard-comprador.component.css" />
     <Content Include="src\app\compras\dashboard-comprador\filtro-dashboard-comprador\filtro-dashboard-comprador.component.html" />
     <Content Include="src\app\compras\dashboard-comprador\legajo\legajo.component.css" />
     <Content Include="src\app\compras\dashboard-comprador\legajo\legajo.component.html" />
     <Content Include="src\app\compras\dashboard-comprador\listado-dashboard-comprador\listado-dashboard-comprador.component.css" />
     <Content Include="src\app\compras\dashboard-comprador\listado-dashboard-comprador\listado-dashboard-comprador.component.html" />
+    <Content Include="src\app\compras\dashboard-comprador\proveedor-peticion\proveedor-peticion.component.css" />
+    <Content Include="src\app\compras\dashboard-comprador\proveedor-peticion\proveedor-peticion.component.html" />
+    <Content Include="src\app\compras\dashboard-comprador\ver-ofertas\ver-ofertas.component.css" />
+    <Content Include="src\app\compras\dashboard-comprador\ver-ofertas\ver-ofertas.component.html" />
+    <Content Include="src\app\compras\dashboard-proveedor\cotizacion-formulario\cotizacion-formulario.component.css" />
+    <Content Include="src\app\compras\dashboard-proveedor\cotizacion-formulario\cotizacion-formulario.component.html" />
+    <Content Include="src\app\compras\dashboard-proveedor\cotizacion-formulario\cotizacion-material\cotizacion-material.component.css" />
+    <Content Include="src\app\compras\dashboard-proveedor\cotizacion-formulario\cotizacion-material\cotizacion-material.component.html" />
+    <Content Include="src\app\compras\dashboard-proveedor\cotizacion-formulario\cotizacion-servicio\cotizacion-servicio.component.css" />
+    <Content Include="src\app\compras\dashboard-proveedor\cotizacion-formulario\cotizacion-servicio\cotizacion-servicio.component.html" />
+    <Content Include="src\app\compras\dashboard-proveedor\filtro-dashboard-proveedor\filtro-dashboard-proveedor.component.css" />
+    <Content Include="src\app\compras\dashboard-proveedor\filtro-dashboard-proveedor\filtro-dashboard-proveedor.component.html" />
+    <Content Include="src\app\compras\dashboard-proveedor\listado-dashboard-proveedor\listado-dashboard-proveedor.component.css" />
+    <Content Include="src\app\compras\dashboard-proveedor\listado-dashboard-proveedor\listado-dashboard-proveedor.component.html" />
+    <Content Include="src\app\compras\dashboard\revision-tecnica\revision-tecnica.component.css" />
+    <Content Include="src\app\compras\dashboard\revision-tecnica\revision-tecnica.component.html" />
+    <Content Include="src\app\compras\peticion-de-oferta-formulario\peticion-de-oferta-formulario.component.css" />
+    <Content Include="src\app\compras\peticion-de-oferta-formulario\peticion-de-oferta-formulario.component.html" />
+    <Content Include="src\app\compras\peticion-de-oferta-formulario\registro-info\registro-info\registro-info.component.css" />
+    <Content Include="src\app\compras\peticion-de-oferta-formulario\registro-info\registro-info\registro-info.component.html" />
     <Content Include="src\app\compras\solp\finalizar\finalizar-solp.component.html" />
     <Content Include="src\app\compras\solp\solp.component.html" />
     <Content Include="src\app\compras\solp\stepper-actions\stepper-actions.component.html" />
@@ -933,6 +961,7 @@
     <Content Include="Documentacion\GMP MOA.pdf" />
     <Content Include="Documentacion\INSTRUCTIVO CARGA DE CONTRATO - CORREDOR.pdf" />
     <Content Include="Documentacion\INSTRUCTIVO CARGA DE CONTRATO - DIRECTO.pdf" />
+    <Content Include="libman.json" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\PublishFiles.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
@@ -1090,7 +1119,6 @@
     <TypeScriptCompile Include="src\app\common\models\cartaPresentacion.ts" />
     <TypeScriptCompile Include="src\app\common\models\ordenes-de-carga-fason\listarOrdenDeCargaFasonRequest.ts" />
     <TypeScriptCompile Include="src\app\common\models\ordenes-de-carga-fason\listarOrdenDeCargaFasonResponse.ts" />
-    <TypeScriptCompile Include="src\app\common\models\ordenes-de-carga-fason\ordenDeCargaFason.ts" />
     <TypeScriptCompile Include="src\app\common\models\ordenes-de-carga-fason\ordenDeCargaFasonDto.ts" />
     <TypeScriptCompile Include="src\app\common\models\precioMoaCompraNet.ts" />
     <TypeScriptCompile Include="src\app\common\models\habilitacionPizarra.ts" />
@@ -1114,17 +1142,32 @@
     <TypeScriptCompile Include="src\app\compras\compras-routing.module.ts" />
     <TypeScriptCompile Include="src\app\compras\compras.module.ts" />
     <TypeScriptCompile Include="src\app\compras\compras.service.ts" />
-    <TypeScriptCompile Include="src\app\compras\cotizacion\cotizacion-formulario\cotizacion-formulario.component.spec.ts" />
-    <TypeScriptCompile Include="src\app\compras\cotizacion\cotizacion-formulario\cotizacion-formulario.component.ts" />
+    <TypeScriptCompile Include="src\app\compras\dashboard-comprador\alta-proveedor\alta-proveedor.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\compras\dashboard-comprador\alta-proveedor\alta-proveedor.component.ts" />
+    <TypeScriptCompile Include="src\app\compras\dashboard-comprador\circular\circular.component.ts" />
     <TypeScriptCompile Include="src\app\compras\dashboard-comprador\filtro-dashboard-comprador\filtro-dashboard-comprador.component.ts" />
     <TypeScriptCompile Include="src\app\compras\dashboard-comprador\legajo\legajo.component.spec.ts" />
     <TypeScriptCompile Include="src\app\compras\dashboard-comprador\legajo\legajo.component.ts" />
     <TypeScriptCompile Include="src\app\compras\dashboard-comprador\listado-dashboard-comprador\listado-dashboard-comprador.component.ts" />
+    <TypeScriptCompile Include="src\app\compras\dashboard-comprador\proveedor-peticion\proveedor-peticion.component.ts" />
+    <TypeScriptCompile Include="src\app\compras\dashboard-comprador\ver-ofertas\ver-ofertas.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\compras\dashboard-comprador\ver-ofertas\ver-ofertas.component.ts" />
+    <TypeScriptCompile Include="src\app\compras\dashboard-proveedor\cotizacion-formulario\cotizacion-formulario.component.ts" />
+    <TypeScriptCompile Include="src\app\compras\dashboard-proveedor\cotizacion-formulario\cotizacion-material\cotizacion-material.component.ts" />
+    <TypeScriptCompile Include="src\app\compras\dashboard-proveedor\cotizacion-formulario\cotizacion-servicio\cotizacion-servicio.component.ts" />
+    <TypeScriptCompile Include="src\app\compras\dashboard-proveedor\filtro-dashboard-proveedor\filtro-dashboard-proveedor.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\compras\dashboard-proveedor\filtro-dashboard-proveedor\filtro-dashboard-proveedor.component.ts" />
+    <TypeScriptCompile Include="src\app\compras\dashboard-proveedor\listado-dashboard-proveedor\listado-dashboard-proveedor.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\compras\dashboard-proveedor\listado-dashboard-proveedor\listado-dashboard-proveedor.component.ts" />
     <TypeScriptCompile Include="src\app\compras\dashboard\dashboard.component.ts" />
+    <TypeScriptCompile Include="src\app\compras\dashboard\revision-tecnica\revision-tecnica.component.ts" />
     <TypeScriptCompile Include="src\app\compras\enum-columna-subPosiciones.ts" />
     <TypeScriptCompile Include="src\app\compras\enum-paso-solp.ts" />
     <TypeScriptCompile Include="src\app\compras\enum-tipo-imputacion.ts" />
     <TypeScriptCompile Include="src\app\compras\enum-tipo-solp-sap.ts" />
+    <TypeScriptCompile Include="src\app\compras\peticion-de-oferta-formulario\peticion-de-oferta-formulario.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\compras\peticion-de-oferta-formulario\peticion-de-oferta-formulario.component.ts" />
+    <TypeScriptCompile Include="src\app\compras\peticion-de-oferta-formulario\registro-info\registro-info\registro-info.component.ts" />
     <TypeScriptCompile Include="src\app\compras\preview\pliego.preview.component.ts" />
     <TypeScriptCompile Include="src\app\compras\solp\finalizar\finalizar-solp.component.spec.ts" />
     <TypeScriptCompile Include="src\app\compras\solp\finalizar\finalizar-solp.component.ts" />
@@ -1134,9 +1177,7 @@
     <TypeScriptCompile Include="src\app\compras\solp\solp.utils.ts" />
     <TypeScriptCompile Include="src\app\compras\solp\stepper-actions\stepper-actions.component.spec.ts" />
     <TypeScriptCompile Include="src\app\compras\solp\stepper-actions\stepper-actions.component.ts" />
-    <TypeScriptCompile Include="src\app\compras\solp\steps\adjuntos-cotizaciones.ts" />
     <TypeScriptCompile Include="src\app\compras\solp\steps\cotizacion\cotizacion.component.ts" />
-    <TypeScriptCompile Include="src\app\compras\solp\steps\especificaciones\adjuntos-especificaciones.ts" />
     <TypeScriptCompile Include="src\app\compras\solp\steps\especificaciones\especificaciones.component.ts" />
     <TypeScriptCompile Include="src\app\compras\solp\steps\especificaciones\especificacionesViewModel.ts" />
     <TypeScriptCompile Include="src\app\compras\solp\steps\generacion1\generacion1.component.ts" />

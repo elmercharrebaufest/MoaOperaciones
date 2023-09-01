@@ -36,5 +36,6 @@ namespace SustitucionMOAModel.Entities
         public virtual TablaSap GrupoCompras { get; set; }
         [ForeignKey("CuentaMayor_Id")]
         public virtual TablaSap CuentaMayor { get; set; }
+        public string TextoAmpliado { get; set; }
     }
 }

@@ -81,10 +81,14 @@ export class AltaProveedorComponent extends ListBaseComponent implements OnInit 
           },
           error => {
             this.floatMsgService.setErrorMsg(error.message);
+            this.mensajeError = error.message;              
+            this.visualizarAlert = true; 
             this.blockUI.stop();
           });
       } catch (e) {
         this.floatMsgService.setErrorMsg(e);
+        this.mensajeError = e;              
+        this.visualizarAlert = true; 
         return false; //<-- Prevent Refresh
       }
     }
