@@ -53,7 +53,22 @@
             </select>
           </div>
         </div>
-
+        <div *ngIf=" esInterno || esComercial || esMesaFas || !esCliente()" id="searchCliente"
+          class="col-xs-12 col-sm-6 col-md-15">
+          <p>Corredor:</p>
+          <div class="styled-select">
+            <input type="search" class="" placeholder="Ingrese razon social de corredor" [value]=""
+              aria-controls="tableModal" [(ngModel)]="filtroCorredor">
+          </div>
+        </div>
+        <div *ngIf=" esInterno || esComercial || esMesaFas || !esCliente()" id="searchCliente"
+          class="col-xs-12 col-sm-6 col-md-15">
+          <p>Patente Chasis:</p>
+          <div class="styled-select">
+            <input type="search" class="" placeholder="Ingrese patente de chasis" [value]="" aria-controls="tableModal"
+              [(ngModel)]="filtroPatenteChasis">
+          </div>
+        </div>
         <div *ngIf="!esTercero" id="searchEstado" class="col-xs-12 col-sm-6 col-md-15">
           <p>Estado:</p>
           <div>
@@ -72,23 +87,6 @@
               <option [value]="tipoContrato.FacturaAnticipada" selected>Con pedido anticipado</option>
               <option [value]="tipoContrato.Normal" selected>Sin pedido anticipado</option>
             </select>
-          </div>
-        </div>
-
-        <div *ngIf=" esInterno || esComercial || esMesaFas || !esCliente()" id="searchCliente"
-          class="col-xs-12 col-sm-6 col-md-15">
-          <p>Patente Chasis:</p>
-          <div class="styled-select">
-            <input type="search" class="" placeholder="Ingrese patente de chasis" [value]="" aria-controls="tableModal"
-              [(ngModel)]="filtroPatenteChasis">
-          </div>
-        </div>
-        <div *ngIf=" esInterno || esComercial || esMesaFas || !esCliente()" id="searchCliente"
-          class="col-xs-12 col-sm-6 col-md-15">
-          <p>Corredor:</p>
-          <div class="styled-select">
-            <input type="search" class="" placeholder="Ingrese razon social de corredor" [value]=""
-              aria-controls="tableModal" [(ngModel)]="filtroCorredor">
           </div>
         </div>
 
