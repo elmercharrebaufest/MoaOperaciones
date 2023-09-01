@@ -181,19 +181,23 @@
     </section>
     <!--End CONTENT-->
 </div>
+
+<button type="button" #modalDetalleReporteContrato style="display:none" id="openModalDetalleReporteContrato"
+    data-toggle="modal" data-target="#modalDetalleContrato"></button>
+
 <div class="modal fade" id="modalDetalleContrato" tabindex="-1" role="dialog" aria-labelledby="cartaDePresentacionLabel"
     data-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content" style="width: max-content;">
             <div class="modal-header">
-                <button id="cerrarModalUsuario" type="button" class="close btn-close" data-dismiss="modal"
-                    aria-label="Close">
+                <button #cerrarModalDetalle id="cerrarModalUsuario" type="button" class="close btn-close"
+                    data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
                 <h4 class="modal-title" id="cartaDePresentacionLabel">Contrato {{contratoSeleccionadoId}}</h4>
             </div>
             <div class="modal-body">
-                <app-detalle></app-detalle>
+                <app-detalle (navegarDetalle)="cerrarModalDetalle.click()"></app-detalle>
             </div>
         </div>
     </div>
