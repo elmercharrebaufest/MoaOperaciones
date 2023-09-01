@@ -55,27 +55,25 @@ export class CircularComponent implements OnInit, OnChanges {
     }
 
     ngOnChanges(changes: SimpleChanges): void {
-        if(!this.solicitante){
-            if(this.peticion != null){
+        if (!this.solicitante) {
+            if (this.peticion != null) {
                 this.selectedProv = this.peticion.Usuarios.map(x => x.UsuarioId);
-            } 
-        }    
-        else {
-            if(this.peticion != null){
-                if(this.peticion.PlazoDeOfertaEstado == "Abierto"){
-                    this.selectedProv = this.peticion.Usuarios
-                    .map(x => x.UsuarioId);
-                } else {
-                    this.selectedProv = this.peticion.Usuarios
-                    .filter(x => x.ValidacionCircularSolicitante) // Filtra solo los proveedores habilitados
-                    .map(x => x.UsuarioId);
-                }
-                    
             }
         }
-        
+        else {
+            if (this.peticion != null) {
+                if (this.peticion.PlazoDeOfertaEstado == "Abierto") {
+                    this.selectedProv = this.peticion.Usuarios
+                        .map(x => x.UsuarioId);
+                } else {
+                    this.selectedProv = this.peticion.Usuarios
+                        .filter(x => x.ValidacionCircularSolicitante) // Filtra solo los proveedores habilitados
+                        .map(x => x.UsuarioId);
+                }
+            }
+        }
     }
-    
+
     ngOnInit() {
         this.es = {
             firstDayOfWeek: 1,
@@ -89,7 +87,7 @@ export class CircularComponent implements OnInit, OnChanges {
         }
     }
 
-    autocompletarFechaDeEntrega(){
+    autocompletarFechaDeEntrega() {
         if (this.peticion != null && this.peticion.FechaEntregaFormateado != "") {
             const date = new Date(this.peticion.FechaEntregaFormateado);
             this.fechaDeEntrega = date;
@@ -105,21 +103,21 @@ export class CircularComponent implements OnInit, OnChanges {
     grabarCircular() {
         this.armarCircular();
         this.validarCircular();
-        if(!this.visualizarAlert){
-        this.blockUI.start("Grabando...");
-        try {           
-            this.subscription = this.service.GrabarCircular(this.circular).subscribe(
+        if (!this.visualizarAlert) {
+            this.blockUI.start("Grabando...");
+            try {
+                this.subscription = this.service.GrabarCircular(this.circular).subscribe(
                     (result: any) => {
                         if (result.logout == true) {
                             this.sessionDataService.logout();
                         } else if (result.error != undefined && result.error != "") {
                             this.error = result.error;
                             this.visualizarAlert = true;
-                           // this.floatMsgService.setErrorMsg(result.error);
+                            // this.floatMsgService.setErrorMsg(result.error);
                         } else if (result.info != undefined) {
                             this.error = result.info;
-                           this.visualizarAlert = true;
-                          //  this.floatMsgService.setInfoMsg(result.info);
+                            this.visualizarAlert = true;
+                            //  this.floatMsgService.setInfoMsg(result.info);
                         } else {
                             this.nroCircular = result.data.IdEntidad;
                             this.displayOkCircular = true;
@@ -131,7 +129,7 @@ export class CircularComponent implements OnInit, OnChanges {
                         this.error = error.message;
                         this.visualizarAlert = true;
                         this.blockUI.stop();
-    
+
                     });
             } catch (e) {
                 //this.floatMsgService.setErrorMsg(e);
@@ -144,30 +142,28 @@ export class CircularComponent implements OnInit, OnChanges {
         }
     }
 
-   
-
     uploadHandler(filesUpload: any): boolean {
-        this.visualizarAlert = false; 
-        var archivoWeb = filesUpload["files"].reduce((sum, file) => sum + file.size, 0);      
+        this.visualizarAlert = false;
+        var archivoWeb = filesUpload["files"].reduce((sum, file) => sum + file.size, 0);
         this.archivos = filesUpload["files"];
-        if(archivoWeb > 10000000){
+        if (archivoWeb > 10000000) {
             this.error = "El archivo adjuntado no debe superar los 10Mb";
-            if(this.archivos.length > 0){
-            this.eliminarAdjuntoNuevo(this.archivos[this.archivos.length - 1])
+            if (this.archivos.length > 0) {
+                this.eliminarAdjuntoNuevo(this.archivos[this.archivos.length - 1])
             }
-            return  this.visualizarAlert = true;             
+            return this.visualizarAlert = true;
         }
     }
 
     eliminarArchivo(archivo: any) {
         this.confirmationService.confirm({
-            message: '¿Está seguro que desea eliminar el archivo?',
+            message: '¿Está seguro de que desea eliminar el archivo?',
             accept: () => {
                 this.eliminarAdjuntoNuevo(archivo);
                 this.visualizarAlert = false;
             },
             reject: () => {
-               
+
             }
         });
     }
@@ -177,7 +173,7 @@ export class CircularComponent implements OnInit, OnChanges {
         this.archivos.splice(indice, 1)
     }
 
-    eliminarTodosLosArchivos(){
+    eliminarTodosLosArchivos() {
         this.archivos.splice(0, this.archivos.length)
     }
 
@@ -187,9 +183,9 @@ export class CircularComponent implements OnInit, OnChanges {
 
     estaSeleccionado(seleccion) {
         this.visualizarFechas = seleccion == "No" ? false : true;
-        if(!this.visualizarFechas){
+        if (!this.visualizarFechas) {
             this.borrarFechas();
-        }else{
+        } else {
             this.autocompletarFechaDeEntrega();
         }
     }
@@ -231,17 +227,17 @@ export class CircularComponent implements OnInit, OnChanges {
     calcularFechaEntrega() {
         let fechaNueva = new Date(this.fechaDeEntrega);
 
-        if(this.plazoDias != null && this.plazoDias != undefined && this.plazoDias != ""){
+        if (this.plazoDias != null && this.plazoDias != undefined && this.plazoDias != "") {
             fechaNueva.setDate(fechaNueva.getDate() + parseInt(this.plazoDias));
             this.fechaDeEntrega = fechaNueva;
         }
 
-        if(this.plazoDias == ""){
+        if (this.plazoDias == "") {
             this.autocompletarFechaDeEntrega();
         }
-    } 
+    }
 
-    borrarFechas(){
+    borrarFechas() {
         this.plazoDeOferta = null;
         this.fechaDeEntrega = null;
         this.plazoDias = null;
@@ -249,7 +245,7 @@ export class CircularComponent implements OnInit, OnChanges {
 
     iniciarModalCircular() {
         this.Observacion = "";
-        this.visualizarFechas = false;        
+        this.visualizarFechas = false;
         this.selectedProv = [];
         this.val1 = 'No';
         this.val2 = '';
@@ -258,32 +254,32 @@ export class CircularComponent implements OnInit, OnChanges {
         this.eliminarTodosLosArchivos();
     }
 
-    salir(){
-        this.onCerrarCircular(); 
+    salir() {
+        this.onCerrarCircular();
         this.displayOkCircular = false;
     }
 
-    validarCircular(){
-        if(this.Observacion == "" || this.Observacion == undefined){
+    validarCircular() {
+        if (this.Observacion == "" || this.Observacion == undefined) {
             this.error = "El campo Observacion es obligatorio";
-           return this.visualizarAlert = true;
+            return this.visualizarAlert = true;
         }
-        if((this.fechaDeEntrega == null || this.fechaDeEntrega == undefined) && this.visualizarFechas){
+        if ((this.fechaDeEntrega == null || this.fechaDeEntrega == undefined) && this.visualizarFechas) {
             this.error = "Debe completar la Fecha de entrega";
             return this.visualizarAlert = true;
         }
-        if((this.plazoDeOferta == null || this.plazoDeOferta == undefined) && this.visualizarFechas){
+        if ((this.plazoDeOferta == null || this.plazoDeOferta == undefined) && this.visualizarFechas) {
             this.error = "Debe completar el Plazo de oferta";
             return this.visualizarAlert = true;
         }
-        if(this.selectedProv == null || this.selectedProv.length == 0){
+        if (this.selectedProv == null || this.selectedProv.length == 0) {
             this.error = "Debe seleccionar al menos un proveedor";
-            return  this.visualizarAlert = true;
+            return this.visualizarAlert = true;
         }
-        var archivoWeb = this.archivos.reduce((sum, file) => sum + file.size, 0);      
-        if(archivoWeb > 10000000){
-           this.error = "El archivo adjuntado no debe superar los 10Mb";
-            return  this.visualizarAlert = true;             
+        var archivoWeb = this.archivos.reduce((sum, file) => sum + file.size, 0);
+        if (archivoWeb > 10000000) {
+            this.error = "El archivo adjuntado no debe superar los 10Mb";
+            return this.visualizarAlert = true;
         }
         return this.visualizarAlert = false;
     }

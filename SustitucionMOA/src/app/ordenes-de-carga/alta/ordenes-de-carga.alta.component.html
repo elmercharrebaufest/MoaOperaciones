@@ -56,13 +56,20 @@
                                     Contrato:
                                 </div>
                                 <div class="styled-select" style="overflow: initial;">
-                                    <p-dropdown name="cmbContratos"
+                                    <app-dropdown-input [options]="contratosDisponibles" [filterKey]="'Label'"
                                         [disabled]="(ordenDeCargaId > 0 && !puedeEditarContrato) || noEditarCliente"
-                                        [(ngModel)]="ordenDeCarga.ContratoSeleccionado" [options]="contratosDisponibles"
-                                        optionLabel="Label"
-                                        placeholder="Seleccione un Contrato - Producto - Kg Disponibles"
-                                        (ngModelChange)="onContratoSeleccionadoChanged()" [filter]="true">
-                                    </p-dropdown>
+                                        (selectedChange)="onContratoSeleccionadoChanged()"
+                                        [placeholder]="'Seleccione un Contrato - Producto - Kg Disponibles'"
+                                        [(selected)]="ordenDeCarga.ContratoSeleccionado">
+                                        <ng-template let-option>
+                                            <p class="option-label" [ngClass]="{
+                                                'text-primary':option.TipoContrato == tipoContrato.FacturaAnticipada && 
+                                                ordenDeCarga.ContratoIngresado != option.NumeroContrato
+                                            }">
+                                                {{option.Label}}
+                                            </p>
+                                        </ng-template>
+                                    </app-dropdown-input>
                                 </div>
                             </div>
                             <ng-container *ngIf="validaCPEDG">
