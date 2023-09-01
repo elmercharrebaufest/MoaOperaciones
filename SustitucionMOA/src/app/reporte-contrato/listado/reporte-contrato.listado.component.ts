@@ -146,7 +146,6 @@ export class ReporteContratoListado extends ListBaseComponent implements OnInit 
     }
 
     verDetalleContrato(numeroContrato: string) {
-        console.log(numeroContrato)
         this.contratoSeleccionadoId = numeroContrato;
         this.service.setContratoSeleccionado(numeroContrato);
     }
