@@ -348,7 +348,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         var posicionChequeadas = this.model.posiciones.filter(x => x.posicionCheck === true);
         if (posicionChequeadas.length > 0) {            
             this.confirmationService.confirm({
-                message: '¿Está seguro que desea eliminar la posición?',
+                message: '¿Está seguro de que desea eliminar la posición?',
                 accept: () => {
                     posicionChequeadas.forEach(pos =>
                         this.model.eliminarPosicion(pos as SolpPosicion)
@@ -361,13 +361,11 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
                 reject: () => {
                 }
             });
-           
         }
     }
 
     eliminarPosicionUnicaSubPosicion(posicion: SolpPosicion) {
         this.model.eliminarPosicion(posicion);
-       
     }
 
     recuperarPosicion() {

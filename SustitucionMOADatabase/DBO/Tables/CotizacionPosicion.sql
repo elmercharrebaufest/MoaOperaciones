@@ -8,6 +8,7 @@
     [Precio] DECIMAL(18, 6) NULL DEFAULT 0, 
     [FechaDeEntrega]          DATETIME2 (7)  NULL,
     [NoDisponible] BIT NULL, 
+    [FechaDeVigencia] DATETIME2 NULL, 
     CONSTRAINT [PK_CotizacionPosicion] PRIMARY KEY CLUSTERED ([Id] ASC),
     CONSTRAINT [FK.CotizacionPosicion_Cotizacion_Cotizacion_Id] FOREIGN KEY ([Cotizacion_Id]) REFERENCES [Cotizacion]([Id]),
     CONSTRAINT [FK.CotizacionPosicion_PeticionDeOfertaSolpPosicion_PeticionDeOfertaSolpPosicion_Id] FOREIGN KEY ([PeticionDeOfertaSolpPosicion_Id]) REFERENCES [PeticionDeOfertaSolpPosicion]([Id]),
