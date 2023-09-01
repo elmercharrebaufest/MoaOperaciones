@@ -11,6 +11,8 @@ import { ReporteContratoService } from '../reporte-contrato.service';
 import * as XLSX from 'xlsx';
 import { DetalleReporteContrato } from '../ReporteContrato.model';
 import { OrdenesDeCargaService } from '../../ordenes-de-carga/ordenes-de-carga.service';
+import { Subscription } from 'rxjs';
+import { VOLVER_A_DETALLE_REPORTE } from '../../common/models/ordenes-de-carga/ordenDeCarga';
 
 
 @Component({
@@ -25,6 +27,7 @@ export class DetalleComponent extends ListBaseComponent implements OnInit {
     detalles: DetalleReporteContrato[] = null;
     KilosFacturados = 0;
     KilosEntregados = 0;
+    subscriptions = new Subscription();
 
     constructor(private route: ActivatedRoute,
         protected service: ReporteContratoService,
@@ -36,15 +39,17 @@ export class DetalleComponent extends ListBaseComponent implements OnInit {
         protected modalService: ModalService,
         private confirmationService: ConfirmationService) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
-        this.service.getContratoSeleccionado().subscribe(data => {
-            if (data != null && data > '0') {
-                this.getDetalleContrato(data);
-                this.contratoId = data;
-            }
-        });
+        this.subscriptions.add(
+            this.service.getContratoSeleccionado().subscribe(data => {
+                if (data != null && data > '0') {
+                    this.getDetalleContrato(data);
+                    this.contratoId = data;
+                }
+            })
+        )
+
     }
     ngOnInit() {
-
     }
 
     getDetalleContrato(contratoId: string) {
@@ -64,6 +69,8 @@ export class DetalleComponent extends ListBaseComponent implements OnInit {
                 } else {
                     this.detalles = result.data;
                     this.obtenerKilos();
+                    if (!!sessionStorage.getItem(VOLVER_A_DETALLE_REPORTE))
+                        sessionStorage.removeItem(VOLVER_A_DETALLE_REPORTE)
                 }
             },
             error => {
@@ -124,11 +131,14 @@ export class DetalleComponent extends ListBaseComponent implements OnInit {
                     this.floatMsgService.setInfoMsg(res.info)
                 } else {
                     this.navegarDetalle.emit();
-                    this.goToSeccionParam('/ordenes-de-carga/detalle', res.data.Id.toString());
+                    sessionStorage.setItem(VOLVER_A_DETALLE_REPORTE, 'true')
+                    this.goToSeccionParam('/ordenes-de-carga/detalle', '2433');
                 }
             }
             ,
         })
     }
-
+    public extraOnDestroy(): void {
+        this.subscriptions.unsubscribe()
+    }
 }

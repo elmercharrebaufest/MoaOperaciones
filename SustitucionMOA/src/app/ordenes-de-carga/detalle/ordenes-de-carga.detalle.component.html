@@ -521,6 +521,10 @@
                                 <input type="button" (click)="abrirModalEdicionFinalizada()"
                                     class="btn-custom btn-remove btn-grande" value="Edición finalizada">
                             </div>
+                            <div class="col-xs-5 col-md-3" *ngIf="mostrarBotonVolverADetalle">
+                                <input type="button" (click)="navegarADetalle()" class="btn-custom btn-add btn-grande"
+                                    value="Volver a Detalle">
+                            </div>
                         </div>
                     </div>
                 </div>
