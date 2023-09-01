@@ -697,8 +697,8 @@
                     <h4 class="modal-title" id="modalAnularOrden">Anular orden</h4>
                 </div>
                 <div class="modal-body">
-                    <div class="row" class="col-xs-12 col-sm-12 col-md-12 alertScato">
-                        La orden se encuentra activa en Scato.
+                    <div *ngIf = "mensajeValidacionScato" class="row" class="col-xs-12 col-sm-12 col-md-12 alertScato">
+                        {{mensajeValidacionScato}}
                     </div>
                     <div class="row" class="col-xs-12 col-sm-12 col-md-12">
                         ¿Está seguro de que desea anular la orden de carga?

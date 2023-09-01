@@ -39,8 +39,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
     mensajeError: string = "";
     mensajeSeleccionarContrato?: string;
     mensajeSeleccionarFactura?: string;
-    mensajeErrorOrdenActivaScato: string = "";
-
+    mensajeValidacionScato: string = "";
     ordenDeCargaHistorial: any = {};
     estadosVerHistorial: EstadoOrdenDeCarga[] = [
         EstadoOrdenDeCarga.Anulada,
@@ -86,7 +85,6 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
     mostrarBotonVerificarCompensacion: boolean = false;
 
     ordenActivaScato: boolean = false;
-    errorValidarOrdenScato: boolean = false;
 
     // esInterno: boolean = false;
     esInterno: boolean = this.isAuthorized('VER TODAS ORDENES DE CARGA');
@@ -95,7 +93,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
     esMesaFas: boolean = this.isAuthorized('VER ORDENES DE CARGA PARA MESA FAS');
     esPuerto: boolean = this.isAuthorized('VER ORDENES DE CARGA PARA PUERTO');
     esCorredor: boolean = sessionStorage.getItem("tipoUsuario") === "CORR";
-    esAnulador: boolean = true;//this.isAuthorized('ANULAR ORDEN DE CARGA');
+    esAnulador: boolean = this.isAuthorized('ANULAR ORDEN DE CARGA');
 
 
     constructor(protected service: OrdenesDeCargaService,
@@ -106,7 +104,6 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
         public datepipe: DatePipe,
         private confirmationService: ConfirmationService) {
         super(navService, securytiService, floatMsgService, modalService);
-
         // this.esInterno = this.isAuthorized('VER TODAS ORDENES DE CARGA');
     }
 
@@ -937,13 +934,17 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                         this.sessionDataService.logout();
                         return;
                     } else if (result.error != undefined && result.error != "") {
-                        //this.mensajeComponent.setErrorMsg(result.error);
-                        this.mensajeErrorOrdenActivaScato = result.error;
+                        this.mensajeValidacionScato = "No se pudo obtener el estado de la orden en Scato."
                     } else if (result.info != undefined) {
-                       //this.mensajeComponent.setInfoMsg(result.info);
-                       this.mensajeErrorOrdenActivaScato = result.info;
+                        this.mensajeValidacionScato = "No se pudo obtener el estado de la orden en Scato."
+                    }else{
+                        this.ordenActivaScato = result.data;
+                        if(this.ordenActivaScato){
+                            this.mensajeValidacionScato = "Actualmente la orden se encuentra activa en Scato."
+                        }else{
+                            this.mensajeValidacionScato = null;
+                        }
                     }
-                    this.ordenActivaScato = result.data;
                 },
                 error => {
                     this.mensajeComponent.setErrorMsg(error.message);
@@ -952,7 +953,8 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
         } catch (e) {
             this.spinnerComponent.hideIt();
             this.blockUI.stop();
-            this.mensajeComponent.setErrorMsg(e);
+            this.ordenActivaScato = null;
+            this.mensajeValidacionScato = "No se pudo obtener el estado de la orden en Scato."
         }    
     }
 }
