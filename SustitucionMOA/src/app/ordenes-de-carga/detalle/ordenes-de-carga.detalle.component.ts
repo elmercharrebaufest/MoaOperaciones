@@ -4,7 +4,7 @@ import { ActivatedRoute, Params } from '@angular/router';
 import { BaseComponent } from '../../common/base-components/base-component';
 import { CorredorContrato } from '../../common/models/ordenes-de-carga/corredorContrato';
 import { EstadoOrdenDeCarga } from '../../common/models/ordenes-de-carga/estadoOrdenDeCarga';
-import { KILOS_DISPONIBLES_APROBADO, OrdenDeCarga } from '../../common/models/ordenes-de-carga/ordenDeCarga';
+import { KILOS_DISPONIBLES_APROBADO, OrdenDeCarga, VOLVER_A_DETALLE_REPORTE } from '../../common/models/ordenes-de-carga/ordenDeCarga';
 import { FloatMsgService } from '../../common/services/FloatMsgService';
 import { ModalService } from '../../common/services/ModalService';
 import { NavService } from '../../common/services/NavService';
@@ -72,6 +72,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
     mostrarBotonForzarCreacionPedido: boolean = false;
     mostrarBotonEditar: boolean = false;
     mostrarBotonSeleccionarFactura: boolean = false;
+    mostrarBotonVolverADetalle: boolean = false;
 
     mostrarListadoInterno: boolean = false;
     mostrarListadoTercero: boolean = false;
@@ -93,6 +94,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
     esCorredor: boolean = sessionStorage.getItem("tipoUsuario") === "CORR";
     esAnulador: boolean = this.isAuthorized('ANULAR ORDEN DE CARGA');
 
+    navegandoADetalle = false;
 
     constructor(protected service: OrdenesDeCargaService,
         protected usuarioService: UsuarioService, protected navService: NavService,
@@ -102,8 +104,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
         public datepipe: DatePipe,
         private confirmationService: ConfirmationService) {
         super(navService, securytiService, floatMsgService, modalService);
-
-        // this.esInterno = this.isAuthorized('VER TODAS ORDENES DE CARGA');
+        this.mostrarBotonVolverADetalle = !!sessionStorage.getItem(VOLVER_A_DETALLE_REPORTE);
     }
 
     ngOnInit() {
@@ -919,5 +920,14 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
             this.blockUI.stop();
             this.mensajeComponent.setErrorMsg(e);
         }
+    }
+    navegarADetalle() {
+        this.navegandoADetalle = true;
+        this.goToSeccion('/reporte-contrato/');
+    }
+
+    public extraOnDestroy(): void {
+        if (!this.navegandoADetalle)
+            sessionStorage.removeItem(VOLVER_A_DETALLE_REPORTE)
     }
 }
