@@ -45,6 +45,7 @@ import { EmailComposeService } from './email-compose/email-compose.service';
 import { CustomDateFormat } from './pipes/jsonDate.pipe';;
 import { FiltroFechaReporteComponent } from './view-child/filtro-fecha-reporte/filtro-fecha-reporte.component';
 import { CheckboxModule } from 'primeng/checkbox';
+import { FiltroFechaFasComponent } from './view-child/filtro-fecha-fas/filtro-fecha-fas.component';
 import { DropdownInputComponent } from './shared-components/dropdown-input/dropdown-input.component';
 
 const declaredAndExported = [
@@ -76,6 +77,7 @@ const declaredAndExported = [
     EmailComposeComponent,
     CustomDateFormat,
     FiltroFechaReporteComponent,
+    FiltroFechaFasComponent,
     DropdownInputComponent,
 ];
 @NgModule({
