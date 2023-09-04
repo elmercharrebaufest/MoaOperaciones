@@ -559,11 +559,14 @@ namespace SustitucionMOATest.Services
         public void ListarAdjudicaciones()
         {
             var adjudicacionId = 1;
-            repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<Adjudicacion, AdjudicacionDto>>>(), It.IsAny<Expression<Func<Adjudicacion, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc))
-            .Returns(new List<AdjudicacionDto>() { new AdjudicacionDto { } });
+            var nroSolp = "0212303121";
+            repositorioMock.Setup(y => y.Obtener(It.IsAny<Expression<Func<Solp, bool>>>(), It.IsAny<Expression<Func<Solp, string>>>()))
+            .Returns(nroSolp);
+            obtenerOrdenesDeCompraParaSOLPConsumerMOAMock.Setup(y => y.Request(It.IsAny<string>(), It.IsAny<string>())).Returns(new List<OrdenDeCompraSAPDto> {
+                new OrdenDeCompraSAPDto { Cabecera = new OrdenDeCompraSAPCabecera { Tipo = "", OrdenDeCompra = "", FechaCreacion = new DateTime(), RazonSocialProveedor = "Proveedor", Moneda = "ARP", MontoTotal = 1500 } }
+            });
             var result = target.ListarAdjudicaciones(adjudicacionId);
-            repositorioMock.Verify(y => y.Listar(It.IsAny<Expression<Func<Adjudicacion, AdjudicacionDto>>>(),
-                It.IsAny<Expression<Func<Adjudicacion, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc), Times.Once);
+            repositorioMock.Verify(y => y.Obtener(It.IsAny<Expression<Func<Solp, bool>>>(), It.IsAny<Expression<Func<Solp, string>>>()), Times.Once);
         }
 
         [Test]
@@ -1472,25 +1475,36 @@ namespace SustitucionMOATest.Services
             });
             repositorioMock.Setup(x => x.Obtener<Cotizacion>(It.IsAny<int>())).Returns(new Cotizacion
             {
-                PeticionDeOfertaUsuario = new PeticionDeOfertaUsuario { PeticionDeOferta = new PeticionDeOferta { Solp_Id = 1, Solp = new Solp { 
+                PeticionDeOfertaUsuario = new PeticionDeOfertaUsuario
+                {
+                    PeticionDeOferta = new PeticionDeOferta
+                    {
+                        Solp_Id = 1,
+                        Solp = new Solp
+                        {
+                            Id = 1,
+                            UsuarioCreacion = new Usuario { Id = 1, Mail = "drodriguez@prueba.com" },
+                            Posiciones = new List<SolpPosicion> { new SolpPosicion { Id = 1, TipoPosicion = new TablaGeneral { Codigo = "MATERIALES" } } }
+                        }
+                    },
+                    Usuario = new Usuario { Id = 1, Mail = "drodriguez@prueba.com" }
+                },
+                CotizacionPosiciones = new List<CotizacionPosicion> { new CotizacionPosicion {
                     Id = 1,
-                    UsuarioCreacion = new Usuario { Id = 1, Mail = "drodriguez@prueba.com"},
-                    Posiciones = new List<SolpPosicion> { new SolpPosicion { Id = 1, TipoPosicion = new TablaGeneral { Codigo = "MATERIALES" } } } 
-                } }, Usuario = new Usuario { Id = 1, Mail = "drodriguez@prueba.com" } },
-                CotizacionPosiciones = new List<CotizacionPosicion> { new CotizacionPosicion { 
-                    Id = 1, 
-                    PeticionDeOfertaSolpPosicion = new PeticionDeOfertaSolpPosicion { SolpPosicion_Id = 1 }, 
-                    Moneda_Id = 1, Cantidad = 5, Precio = 5 } 
+                    PeticionDeOfertaSolpPosicion = new PeticionDeOfertaSolpPosicion { SolpPosicion_Id = 1 },
+                    Moneda_Id = 1, Cantidad = 5, Precio = 5 }
                 }
             });
             repositorioMock.Setup(x => x.Agregar(It.IsAny<PeticionDeOferta>())).Returns(new PeticionDeOferta { Id = 1 });
             repositorioMock.Setup(x => x.Obtener<PeticionDeOfertaUsuario>(It.IsAny<int>())).Returns(new PeticionDeOfertaUsuario());
-            repositorioMock.Setup(x => x.Obtener<Usuario>(It.IsAny<int>())).Returns(new Usuario { 
-                Id = 1, 
-                Proveedores = new List<Proveedor> { new Proveedor { Id = 1, RazonSocial = "Proveedor", CUIT = "000050", TipoProveedor = new TipoUsuario { Id = 1 } } } });
+            repositorioMock.Setup(x => x.Obtener<Usuario>(It.IsAny<int>())).Returns(new Usuario
+            {
+                Id = 1,
+                Proveedores = new List<Proveedor> { new Proveedor { Id = 1, RazonSocial = "Proveedor", CUIT = "000050", TipoProveedor = new TipoUsuario { Id = 1 } } }
+            });
             repositorioMock.Setup(y => y.Obtener<TablaSap>(It.IsAny<int>())).Returns(new TablaSap { CodigoSap = "ARP", Id = 1 });
             obtenerTipoCambioConsumerMOAMock.Setup(y => y.Request(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
-                .Returns(new ObtenerTipoCambioConsumerMOAResponse{ MonedaDestino = "ARP", MonedaOrigen = "USD", TipoCambio = 450 });
+                .Returns(new ObtenerTipoCambioConsumerMOAResponse { MonedaDestino = "ARP", MonedaOrigen = "USD", TipoCambio = 450 });
             crearPedidoConsumerMOAMock.Setup(y => y.Request(It.IsAny<Adjudicacion>())).Returns(new CrearPedidoConsumerMOAResponse
             {
                 NumeroPedido = "383383932",
@@ -1499,8 +1513,8 @@ namespace SustitucionMOATest.Services
             });
 
             var result = target.CrearOrdenDeCompraConRegistroInfo(registroInfo, 1);
-            var expected = new List<RespuestaCrearOrdenDeCompra> { new RespuestaCrearOrdenDeCompra { 
-                Errores = new List<string>(), IdEntidad = 0, Mensaje = "OK", NumeroPedido = "383383932"  
+            var expected = new List<RespuestaCrearOrdenDeCompra> { new RespuestaCrearOrdenDeCompra {
+                Errores = new List<string>(), IdEntidad = 0, Mensaje = "OK", NumeroPedido = "383383932"
             } };
 
             repositorioMock.Verify(x => x.Agregar(It.IsAny<PeticionDeOferta>()), Times.Once);
@@ -1515,7 +1529,7 @@ namespace SustitucionMOATest.Services
         public void GrabarRevisionTecnicaOk()
         {
             var peticiones = new List<PeticionDeOfertaUsarioDto>
-            { 
+            {
                 new PeticionDeOfertaUsarioDto
                  {
                    Id = 1
@@ -1534,8 +1548,13 @@ namespace SustitucionMOATest.Services
         {
             repositorioMock.Setup(y => y.ObtenerConsultaEscalar(It.IsAny<TraerCotizacionConsulta>())).Returns(new PeticionDeOfertaDto { CotizacionId = 1, Cotizacion = new CotizacionDto { ArchivosCotizacion = null } });
             repositorioMock.Setup(y => y.Obtener<Cotizacion>(It.IsAny<int>()))
-           .Returns(new Cotizacion { Id = 1, Archivos = new List<Archivo> { new Archivo { Id = 1, FileKey = "", Ruta = "ruta"} }, CotizacionesHoras = new List<CotizacionHora> { new CotizacionHora { Categoria = "Categoria", CantidadPersonas = 1, ConfigurarHora = false, Gremio = "Otros", HorasExtras = 1, HorasNormales = 1, Id = 1 },
-            new CotizacionHora { Categoria = "Categoria", CantidadPersonas = 1, ConfigurarHora = false, Gremio = "UOCRA", HorasExtras = 1, HorasNormales = 1, Id = 1 }} });
+           .Returns(new Cotizacion
+           {
+               Id = 1,
+               Archivos = new List<Archivo> { new Archivo { Id = 1, FileKey = "", Ruta = "ruta" } },
+               CotizacionesHoras = new List<CotizacionHora> { new CotizacionHora { Categoria = "Categoria", CantidadPersonas = 1, ConfigurarHora = false, Gremio = "Otros", HorasExtras = 1, HorasNormales = 1, Id = 1 },
+            new CotizacionHora { Categoria = "Categoria", CantidadPersonas = 1, ConfigurarHora = false, Gremio = "UOCRA", HorasExtras = 1, HorasNormales = 1, Id = 1 }}
+           });
             target.TraerCotizacion(It.IsAny<int>());
             repositorioMock.Verify(y => y.ObtenerConsultaEscalar(It.IsAny<TraerCotizacionConsulta>()), Times.Once);
         }
@@ -1543,16 +1562,27 @@ namespace SustitucionMOATest.Services
         [Test]
         public void ObtenerOrdenDeCompraConUsuarioOk()
         {
-            obtenerOrdenDeCompraConsumerMOAMock.Setup(x => x.ObtenerOrdenDeCompra((It.IsAny<string>()))).Returns(new OrdenDeCompraSAPDto { 
-                Cabecera =  new OrdenDeCompraSAPCabecera { RazonSocialProveedor = "PARISI", CUITProveedor = "2737237394", 
-                    CodigoProveedor = "003723739", Usuario_Id = 1 }, });
+            obtenerOrdenDeCompraConsumerMOAMock.Setup(x => x.ObtenerOrdenDeCompra((It.IsAny<string>()))).Returns(new OrdenDeCompraSAPDto
+            {
+                Cabecera = new OrdenDeCompraSAPCabecera
+                {
+                    RazonSocialProveedor = "PARISI",
+                    CUITProveedor = "2737237394",
+                    CodigoProveedor = "003723739",
+                    Usuario_Id = 1
+                },
+            });
 
             obtenerProveedorConsumerMOA.Setup(x => x.ObtenerProveedor(It.IsAny<string>())).Returns(new ObtenerProveedorWSMOAResponse { MAIL = "bmelgarejo@test.com", NAME = "PARISI" });
             vendedoresConsumerMOAMock.Setup(x => x.Request(It.IsAny<string>(), (It.IsAny<List<SustitucionMOAModel.Models.FechaWS>>()))).Returns(new SustitucionMOAModel.Models.WSMapMOA.Vendedor.VendedoresWSMOAResponse
-            { vendedores = new List<SustitucionMOAModel.Models.WSMapMOA.Vendedor.Vendedor> { new SustitucionMOAModel.Models.WSMapMOA.Vendedor.Vendedor { cuit = "232323"} } });
+            { vendedores = new List<SustitucionMOAModel.Models.WSMapMOA.Vendedor.Vendedor> { new SustitucionMOAModel.Models.WSMapMOA.Vendedor.Vendedor { cuit = "232323" } } });
 
-            repositorioMock.Setup(y => y.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>())).Returns(new Usuario { CUITRegistro = "232323", 
-                TipoUsuario = new TipoUsuario { Id = 3 }, Id = 1 });
+            repositorioMock.Setup(y => y.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>())).Returns(new Usuario
+            {
+                CUITRegistro = "232323",
+                TipoUsuario = new TipoUsuario { Id = 3 },
+                Id = 1
+            });
             target.ObtenerOrdenDeCompra(It.IsAny<string>());
             repositorioMock.Verify(y => y.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>()), Times.Once);
 
