@@ -55,7 +55,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                             MaterialComprasCodigo = posicion.MaterialSolp.CodigoSap,
                                                             Cantidad = posicion.Cantidad,
                                                             UnidadComprasDescripcion = posicion.Unidad.Descripcion,
-                                                            MonedaComprasDescripcion = posicion.Moneda.Descripcion,
+                                                            MonedaSolpDescripcion = posicion.Moneda.Descripcion,
                                                             FechaEntregaServicio = posicion.FechaEntregaServicio,
                                                             FechaOferta = posicion.Solp.Pliego_Id != null ? posicion.Solp.Pliego.FechaHoraEntrega : (DateTime?)null,
                                                             PlazoEntrega = posicion.PlazoEntrega,

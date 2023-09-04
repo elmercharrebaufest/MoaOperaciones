@@ -9,6 +9,9 @@ export interface OrdenDeCompraSAPCabecera {
     CodigoProveedor: string,  //codigo de proveedor, con otra rfc buscar el vendedor
     RazonSocialProveedor: string,
     Usuario_Id: number,
+    Moneda: string,
+    FechaCreacion: string,
+    MontoTotal: number
 }
 
 // export interface OrdenDeCompraSAPPosicion{

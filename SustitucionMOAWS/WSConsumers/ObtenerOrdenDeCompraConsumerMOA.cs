@@ -1,7 +1,5 @@
-﻿using SustitucionMOAFotmatter;
-using SustitucionMOAModel.Dto;
+﻿using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
-using SustitucionMOAModel.Models.WSMapMOA.Compras;
 using SustitucionMOARepositorio;
 using SustitucionMOAWS.CredentialService;
 using SustitucionMOAWS.Interfaces;
@@ -9,9 +7,6 @@ using SustitucionMOAWS.ObtenerOrdenDeCompraWebServiceMOA;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SustitucionMOAWS.WSConsumers
 {
@@ -45,7 +40,6 @@ namespace SustitucionMOAWS.WSConsumers
                 ObtenerOcSap(nroOC, out POITEM, out RETURN, out POHEADER, out result, out POTEXTHEADER, out POTEXTITEM, out POSERVICES, out POSCHEDULE, out POADDRDELIVERY);
 
                 return mapOrdenDeCompraSAPDto(result, POHEADER, RETURN, POITEM, POTEXTHEADER, POTEXTITEM, POSERVICES, POSCHEDULE, POADDRDELIVERY);
-
             }
             catch (Exception e)
             {
@@ -69,7 +63,6 @@ namespace SustitucionMOAWS.WSConsumers
                 ObtenerOcSap(nroOC, out POITEM, out RETURN, out POHEADER, out result, out POTEXTHEADER, out POTEXTITEM, out POSERVICES, out POSCHEDULE, out POADDRDELIVERY);
 
                 return mapAdjudicacionDto(result, POHEADER, RETURN, POITEM, POTEXTHEADER, POTEXTITEM, POSERVICES, POSCHEDULE, POADDRDELIVERY);
-
             }
             catch (Exception e)
             {
@@ -180,12 +173,15 @@ namespace SustitucionMOAWS.WSConsumers
             resultado.Cabecera = new OrdenDeCompraSAPCabecera
             {
                 OrdenDeCompra = POHEADER.PO_NUMBER,
-                CodigoProveedor = POHEADER.VENDOR
-
+                CodigoProveedor = POHEADER.VENDOR,
+                Moneda = POHEADER.CURRENCY,
+                FechaCreacion = DateTime.ParseExact(POHEADER.CREAT_DATE, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture),
+                FechaCreacionString = DateTime.ParseExact(POHEADER.CREAT_DATE, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture).ToShortDateString()
             };
 
             foreach (var pos in POITEM.ToList())
             {
+                resultado.Cabecera.MontoTotal += pos.NET_PRICE * pos.QUANTITY;
                 resultado.Posiciones.Add(new OrdenDeCompraSAPPosicion
                 {
                     Indice = pos.PO_ITEM
@@ -300,13 +296,11 @@ namespace SustitucionMOAWS.WSConsumers
                     }
                 }
 
-
                 adjudicacion.AdjudicacionPosiciones.Add(pos);
             }
 
             return adjudicacion;
         }
     }
-
 
 }

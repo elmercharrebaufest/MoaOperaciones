@@ -156,8 +156,11 @@
                                        (ngModelChange)="validacionTrabajoHecho();">
                             </div>
                             <div class="col-xs-12 col-sm-10 col-md-4" *ngIf="ordenDeCompraSap != null && ordenDeCompraSap.Error == null && model.ordenDeCompra != ''">
-                                <label for="ordenDeCompra"><strong>Razon social: {{ordenDeCompraSap?.Cabecera?.RazonSocialProveedor}}</strong></label>
-
+                                <label for="ordenDeCompra">
+                                    Razón social: <strong>{{ordenDeCompraSap?.Cabecera?.RazonSocialProveedor}}</strong><br />
+                                    Fecha de Creación: {{ordenDeCompraSap?.Cabecera?.FechaCreacionString}}<br /> 
+                                    Monto Total: {{ordenDeCompraSap?.Cabecera?.MontoTotal | number: '1.2-2'}} <strong>{{ordenDeCompraSap?.Cabecera?.Moneda}}</strong>
+                                </label>
                             </div>
                         </div>
                     </div>

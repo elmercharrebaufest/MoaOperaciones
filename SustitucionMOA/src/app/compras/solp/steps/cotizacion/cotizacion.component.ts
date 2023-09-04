@@ -343,6 +343,7 @@ export class CotizacionComponent extends ListBaseComponent {
                                 this.model.proveedorAsignado_Id = this.ordenDeCompraSap.Cabecera.Usuario_Id;
                                 this.model.ordenDeCompra = this.ordenDeCompraSap.Cabecera.OrdenDeCompra;
                                 this.model.proveedorAsignado = this.ordenDeCompraSap.Cabecera.RazonSocialProveedor;
+                                this.model.monedaOC = this.ordenDeCompraSap.Cabecera.Moneda;
                                 if (this.ordenDeCompraSap.Error) {
                                     this.floatMsgService.setErrorMsg(this.ordenDeCompraSap.Error.Mensaje);
                                     this.limpiarCheckAdicional();

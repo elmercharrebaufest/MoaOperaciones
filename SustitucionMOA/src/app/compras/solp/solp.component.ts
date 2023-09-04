@@ -97,15 +97,11 @@ export class SolpComponent extends BaseComponent implements OnInit {
     displayErrorSAP: boolean;
     displaySAPVincularPliego: boolean;
     disabledSave = false;
-
     disabled: boolean = false;
-
     listadoErrores: string[] = new Array<string>();
     displaySAPEditar: boolean;
     flagSolpFinalizada: boolean = false;
-
     tieneContratoMarco: boolean = false;
-
 
     set pasoActual(value: Paso) {
         this.actualizarPasoCompleto(this._pasoActual);
@@ -405,7 +401,9 @@ export class SolpComponent extends BaseComponent implements OnInit {
 
             if (enviarSap) {
                 if (!validatePasos.completo) {
-                    this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: `Falta completar campos en el paso #${validatePasos.primerPasoIncompleto}` });
+                    if (validatePasos.primerPasoIncompleto != 4 && validatePasos.primerPasoIncompleto != 5) {
+                        this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: `Falta completar campos en el paso #${validatePasos.primerPasoIncompleto}` });
+                    }
 
                     if (guardarPorPaso == false) {
                         this.blockUI.stop();
@@ -645,7 +643,8 @@ export class SolpComponent extends BaseComponent implements OnInit {
                                 (pos.esTipoPosicionServicio && !pos.tabsPosicionValidos.tabSubposiciones) ||
                                 !pos.tabsPosicionValidos.tabPosiciones ||
                                 this.validarContratoMarco() ||
-                                this.validarAdicional())
+                                this.validarAdicional() ||
+                                this.validarMonedaOCesDistinta())
                                 /*this.validarCondicionesEspeciales()*/ {
                                 return paso.Completo = false;
                             } else {
@@ -734,6 +733,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
         if (this.solpActual.adicional == true && this.solpActual.posiciones.some(x => x.numeroContratoSuperior)) {
             return validacionAdicional = true;
         }
+
         return validacionAdicional;
     }
 
@@ -744,6 +744,12 @@ export class SolpComponent extends BaseComponent implements OnInit {
             return validacionCheck = true;
         }
         return validacionCheck;
+    }
+
+    validarMonedaOCesDistinta() {
+        if (this.solpActual.adicional == true && this.solpActual.monedaOC != this.solpActual.posicionActual.monedaSeleccionada.Codigo) {
+            return true;
+        } else return false;
     }
 
     mostrarMensajeCampos() {
@@ -759,6 +765,10 @@ export class SolpComponent extends BaseComponent implements OnInit {
 
         if (this.validarAdicional()) {
             this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: "Las SOLP con contrato marco cargado no pueden tener el tilde en el check de adicional en el paso #4" });
+        }
+
+        if (this.validarMonedaOCesDistinta()) {
+            this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: "La moneda elegida debe ser la misma que la de la OC agregada en el paso #4" });
         }
 
         //if (this.validarCondicionesEspeciales()) {
@@ -1001,7 +1011,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
         const emailModel = new EmailComposeModel();
         emailModel.from = this.fromEmail;
         emailModel.to = this.emailTo;
-        emailModel.cc = this.getCCEmails();  // Agregar esta línea para obtener las direcciones CC
+        emailModel.cc = this.getCCEmails();
         emailModel.subject = this.getEmailSubject(esPrimeraFinalizacion, esPosteriorFinalizacion);
         emailModel.body = this.emailBody;
         emailModel.downloadLinkUrl = this.downloadLinkUrl;
@@ -1018,7 +1028,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
             } else if (result.error != undefined && result.error != "") {
                 this.floatMsgService.setErrorMsg(result.error);
             } else {
-                this.floatMsgService.setSuccessMsg("Email se envió correctamente.");
+                this.floatMsgService.setSuccessMsg("El email se envió correctamente.");
             }
         },
             error => {

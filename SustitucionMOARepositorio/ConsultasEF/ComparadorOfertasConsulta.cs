@@ -1,11 +1,6 @@
-﻿using Molinos.Scato.Repositorio;
-using SustitucionMOAModel.Consultas;
-using SustitucionMOAModel.Dto;
+﻿using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
-using SustitucionMOAModel.Enums;
-using SustitucionMOARepositorio.Extensiones;
 using System;
-using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Data.Entity.SqlServer;
@@ -19,8 +14,6 @@ namespace SustitucionMOARepositorio.ConsultasEF
         public ComparadorOfertasConsulta(int PeticionOferta_Id)
         {
             this.PeticionOferta_Id = PeticionOferta_Id;
-
-
         }
         public PeticionDeOfertaDto Ejecutar(DbContext contexto)
         {
@@ -30,10 +23,10 @@ namespace SustitucionMOARepositorio.ConsultasEF
             {
                 ((IObjectContextAdapter)contexto).ObjectContext.CommandTimeout = 180;
                 var resultado = from po in contexto.Set<PeticionDeOferta>()
-                                //join adjudicacion in contexto.Set<Adjudicacion>() on po.Solp.Id equals adjudicacion.Solp_Id into adjudicacionCotizacion
-                                //from adjudicacion in adjudicacionCotizacion.DefaultIfEmpty()
-                                //join adjudicacionPosicion in contexto.Set<AdjudicacionPosicion>() on adjudicacion.Id equals adjudicacionPosicion.Adjudicacion_Id into adjudicacionCotizacionPosicion
-                                //from adjudicacionPosicion in adjudicacionCotizacionPosicion.DefaultIfEmpty()
+                                    //join adjudicacion in contexto.Set<Adjudicacion>() on po.Solp.Id equals adjudicacion.Solp_Id into adjudicacionCotizacion
+                                    //from adjudicacion in adjudicacionCotizacion.DefaultIfEmpty()
+                                    //join adjudicacionPosicion in contexto.Set<AdjudicacionPosicion>() on adjudicacion.Id equals adjudicacionPosicion.Adjudicacion_Id into adjudicacionCotizacionPosicion
+                                    //from adjudicacionPosicion in adjudicacionCotizacionPosicion.DefaultIfEmpty()
                                 where po.Id == PeticionOferta_Id
                                 select new PeticionDeOfertaDto
                                 {
@@ -66,7 +59,6 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                                         {
                                                                             Descripcion = pop.SolpPosicion.MaterialSolp.Descripcion,
                                                                             Codigo = pop.SolpPosicion.MaterialSolp.Codigo,
-
                                                                         },
                                                                         Codigo = pop.SolpPosicion.Codigo,
                                                                         Tarea = pop.SolpPosicion.Tarea,
@@ -75,13 +67,13 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                                         Solp_Id = pop.SolpPosicion.Solp_Id,
                                                                         //CantidadPendiente = pop.SolpPosicion.Cantidad - (adjudicacion != null ? adjudicacion.Posiciones.Where(posicion => posicion.SolpPosicion_Id == pop.SolpPosicion_Id).FirstOrDefault().Cantidad : 0),
                                                                         //CantidadAdjudicacion = pop.SolpPosicion.Cantidad - (adjudicacion != null ? adjudicacion.Posiciones.Where(posicion => posicion.SolpPosicion_Id == pop.SolpPosicion_Id).FirstOrDefault().Cantidad : 0),
-                                                                        SolpTipo = po.Solp.Posiciones.Select(x => x.TipoPosicion.Codigo).FirstOrDefault(),                                                                      
-                                                                        
+                                                                        SolpTipo = po.Solp.Posiciones.Select(x => x.TipoPosicion.Codigo).FirstOrDefault(),
+                                                                        MonedaSolpDescripcion = pop.SolpPosicion.Moneda.Codigo,
+                                                                        MonedaId = pop.SolpPosicion.Moneda_Id,
                                                                         Unidad = new TablaSapDto
                                                                         {
                                                                             Descripcion = pop.SolpPosicion.Unidad.Descripcion
                                                                         },
-
 
                                                                         Subposiciones = pop.SolpPosicion.Subposiciones.Select(s => new SolpSubposicionDto
                                                                         {
@@ -102,7 +94,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                     Usuarios = (from u in contexto.Set<PeticionDeOfertaUsuario>()
                                                 join cotizacion in contexto.Set<Cotizacion>() on u.Id equals cotizacion.PeticionDeOfertaUsuario_Id into peticionCotizacion
                                                 from cotizacion in peticionCotizacion.DefaultIfEmpty()
-                                                where po.Id == u.PeticionDeOferta_Id 
+                                                where po.Id == u.PeticionDeOferta_Id
                                                 select new PeticionDeOfertaUsarioDto()
                                                 {
                                                     Id = u.Id,
@@ -124,8 +116,8 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                     PlazoDeOferta = u.Circulares.Any(circu => circu.Circular.RequiereCambioDeFechas == true && circu.Circular.PlazoDeOferta.HasValue) ?
                                                     u.Circulares.Where(circu => circu.Circular.RequiereCambioDeFechas == true && circu.Circular.PlazoDeOferta.HasValue)
                                                                     .OrderByDescending(circu => circu.Circular.PlazoDeOferta).FirstOrDefault().Circular.PlazoDeOferta.Value :
-                                                                     po.PlazoDeOferta,   
-                                                    CotizacionEstado = cotizacion.CotizacionEstado.Descripcion,                                                          
+                                                                     po.PlazoDeOferta,
+                                                    CotizacionEstado = cotizacion.CotizacionEstado.Descripcion,
                                                     Cotizacion = cotizacion != null ? new CotizacionDto()
                                                     {
                                                         Id = cotizacion.Id,
@@ -143,7 +135,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                         TotalPesos = 0,
                                                         TotalGlobalSubPos = 0,
                                                         RespetaMaterialesColor = u.Cotizaciones.FirstOrDefault().RespetaMateriales == true ? "Green" : "Red",
-                                                        CotizacionesHoras = cotizacion.CotizacionesHoras.Select(ch => new CotizacionHorasDto 
+                                                        CotizacionesHoras = cotizacion.CotizacionesHoras.Select(ch => new CotizacionHorasDto
                                                         {
                                                             CantidadPersonas = ch.CantidadPersonas,
                                                             Categoria = ch.Categoria,
@@ -175,7 +167,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                             TotalARPCotizacionPosicion = 0,
                                                             TotalPosicionCotizacion = 0,
                                                             TotalPesos = 0,
-                                                            NoDisponible = cotizacion != null ? cotizacion.CotizacionPosiciones.Where(cp =>  cp.PeticionDeOfertaSolpPosicion_Id == p.PeticionDeOfertaSolpPosicion.Id).FirstOrDefault().NoDisponible : null,
+                                                            NoDisponible = cotizacion != null ? cotizacion.CotizacionPosiciones.Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == p.PeticionDeOfertaSolpPosicion.Id).FirstOrDefault().NoDisponible : null,
                                                             CotizacionSubPosiciones = (from subpos in contexto.Set<CotizacionSubPosicion>()
                                                                                        where p.Id == subpos.CotizacionPosicion_Id
                                                                                        select new CotizacionSubPosicionDto()
@@ -212,7 +204,5 @@ namespace SustitucionMOARepositorio.ConsultasEF
                 throw;
             }
         }
-
-
     }
 }

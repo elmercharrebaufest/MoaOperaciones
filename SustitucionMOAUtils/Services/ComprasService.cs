@@ -1012,9 +1012,7 @@ namespace SustitucionMOAUtils.Services
                 JornadaLaboralDesde = solp.Pliego.JornadaLaboralHorasDesde,
                 JornadaLaboralHasta = solp.Pliego.JornadaLaboralHorasHasta,
                 ClaseDocumento = solp.ClaseDocumento != null ? new TablaSapDto(solp.ClaseDocumento) : new TablaSapDto(),
-
                 ProveedorAsignadoId = solp.ProveedorAsignado_Id,
-
                 TrabajoYaHecho = solp.TrabajoYaHecho,
                 Adicional = solp.Adicional,
                 NroOrdenDeCompraAdicional = solp.NroOrdenDeCompraAdicional,
@@ -1058,10 +1056,12 @@ namespace SustitucionMOAUtils.Services
             }
             if (solpDevuelta.Adicional == true)
             {
-                var proveedor = ObtenerOrdenDeCompra(solpDevuelta.NroOrdenDeCompraAdicional);
-                solpDevuelta.ProveedorIdAdicional = proveedor.Cabecera.Usuario_Id;
-                solpDevuelta.ProveedorRazonSocialAdicional = proveedor.Cabecera.RazonSocialProveedor;
-
+                var ordenDeCompraSAPDto = ObtenerOrdenDeCompra(solpDevuelta.NroOrdenDeCompraAdicional);
+                solpDevuelta.ProveedorIdAdicional = ordenDeCompraSAPDto.Cabecera.Usuario_Id;
+                solpDevuelta.ProveedorRazonSocialAdicional = ordenDeCompraSAPDto.Cabecera.RazonSocialProveedor;
+                solpDevuelta.MonedaOC = ordenDeCompraSAPDto.Cabecera.Moneda;
+                solpDevuelta.MontoTotalOC = ordenDeCompraSAPDto.Cabecera.MontoTotal;
+                solpDevuelta.FechaCreacionOC = ordenDeCompraSAPDto.Cabecera.FechaCreacionString;
             }
 
             if (solpDevuelta.ProveedorAsignadoId != null)
@@ -2435,7 +2435,6 @@ namespace SustitucionMOAUtils.Services
                         (posicion.Posicion.Cantidad - posicion.Posicion.CantidadAdjudicada) : posicion.Posicion.Cantidad; //Cantidad Pendiente
 
                     posicion.Posicion.CantidadAdjudicacion = posicion.Posicion.CantidadPendiente; //Cantidad A Adjudicar 
-
 
                     if (todasLasOfertas.TipoPosicionCodigo == "MATERIALES")
                     {
@@ -5212,12 +5211,14 @@ namespace SustitucionMOAUtils.Services
                 }
                 catch (Exception e)
                 {
-                    result.Error = new ErrorOC();
-                    result.Error.Mensaje = e.Message;
-                    result.Error.Tipo = "E";
-                    result.Cabecera = new OrdenDeCompraSAPCabecera();
-                    result.Cabecera.OrdenDeCompra = "";
-                    result.Cabecera.CodigoProveedor = "";
+                    result.Error = new ErrorOC
+                    {
+                        Mensaje = e.Message, Tipo = "E"
+                    };
+                    result.Cabecera = new OrdenDeCompraSAPCabecera
+                    {
+                        OrdenDeCompra = "", CodigoProveedor = ""
+                    };
                 }
             }
             return result;

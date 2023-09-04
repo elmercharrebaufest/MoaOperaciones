@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using SustitucionMOAModel.Entities;
 
 namespace SustitucionMOAModel.Dto
@@ -61,7 +59,6 @@ namespace SustitucionMOAModel.Dto
         public UsuarioComprasDto UsuarioCompras { get; set; }
         public int? TipoSolpSap { get; set; }
         public bool PosicionesEstado { get; set; }
-
         public Guid? EmailLinkToken { get; set; }
         public int ItemPorPagina { get; set; }
         public int Pagina { get; set; }
@@ -92,6 +89,9 @@ namespace SustitucionMOAModel.Dto
         public bool DeshabilitarAdicional { get; set; }
         public int? ProveedorIdAdicional { get; set; }
         public string ProveedorRazonSocialAdicional { get; set; }
+        public string MonedaOC { get; set; }
+        public decimal MontoTotalOC { get; set; }
+        public string FechaCreacionOC { get; set; }
 
         public SolpDto() { }
         public SolpDto(Solp entity)
@@ -124,7 +124,7 @@ namespace SustitucionMOAModel.Dto
             this.ClaseDocumento = new TablaSapDto(entity.ClaseDocumento);
             this.ClaseDocumentoId = entity.ClaseDocumento.Id;
             this.Adjuntos = new List<ArchivoDto>();
-            this.NroSolp = entity.NroSolp;          
+            this.NroSolp = entity.NroSolp;
             this.EstadoSolpSapId = entity.EstadoSolpSap_Id;
             this.EstadoDocumentoId = entity.EstadoDocumento_Id;
             this.FechaCreacion = entity.FechaCreacion;
@@ -148,9 +148,7 @@ namespace SustitucionMOAModel.Dto
     {
         public string Codigo { get; set; }
         public DateTime FechaHora { get; set; }
-
         public VisitaObraDto() { }
-
         public VisitaObraDto(PliegoVisita entity)
         {
             this.Codigo = entity.Codigo;
@@ -164,11 +162,8 @@ namespace SustitucionMOAModel.Dto
     {
         public SolpDto Solp { get; set; }
         //public enum TipoSolp { get; set; } (Para diferenciar tipo de solp a la hora de mandar a sap)
-
         public List<string> Errores { get; set; }
-
         public string Mensaje { get; set; }
-
         public int IdEntidad { get; set; }
     }
 
@@ -239,7 +234,7 @@ namespace SustitucionMOAModel.Dto
         public bool TieneCotizacion { get; set; }
         public string AlmacenComprasDescripcion { get; set; }
         public string UnidadComprasDescripcion { get; set; }
-        public string MonedaComprasDescripcion { get; set; }
+        public string MonedaSolpDescripcion { get; set; }
         public IEnumerable<SolpProveedorDto> ProveedoresCompras { get; set; }
         public IEnumerable<SolpSubposicionDto> SubposicionesCompras { get; set; }
         public string MaterialComprasCodigo { get; set; }
@@ -317,8 +312,6 @@ namespace SustitucionMOAModel.Dto
                 this.NumeroPosicionContratoSuperior = entity.NumeroPosicionContratoSuperior;
                 this.NumeroPedido = entity.NumeroPedido;
 
-
-
                 if (entity.Subposiciones != null)
                 {
                     foreach (var subpos in entity.Subposiciones)
@@ -336,7 +329,6 @@ namespace SustitucionMOAModel.Dto
                 }
             }
         }
-
     }
 
     public class SolpSubposicionDto
@@ -423,9 +415,7 @@ namespace SustitucionMOAModel.Dto
     public class RespuestaCrearOrdenDeCompra
     {
         public List<string> Errores { get; set; }
-
         public string Mensaje { get; set; }
-
         public int IdEntidad { get; set; }
         public string NumeroPedido { get; set; }
         public string NumeroSolp { get; set; }
