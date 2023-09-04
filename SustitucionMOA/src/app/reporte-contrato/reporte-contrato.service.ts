@@ -16,12 +16,15 @@ import { ApiResponse } from '../common/models/response';
 export class ReporteContratoService extends BaseService {
     private filters = new BehaviorSubject<FiltrosReporteContrato>({} as FiltrosReporteContrato);
     private _contratoSeleccionado = new BehaviorSubject<string>('0');
-    
+
     setContratoSeleccionado(value: string) {
         this._contratoSeleccionado.next(value);
     }
     getContratoSeleccionado() {
         return this._contratoSeleccionado.asObservable()
+    }
+    getContratoSeleccionadoValue() {
+        return this._contratoSeleccionado.value
     }
 
     get fechaInicio() {
@@ -31,7 +34,7 @@ export class ReporteContratoService extends BaseService {
         return this.filters.value.fechaFin
     }
 
-    setFechas(fechaInicio: string, fechaFin: string){
+    setFechas(fechaInicio: string, fechaFin: string) {
         this.filters.next({
             ...this.filters.value,
             fechaFin,

@@ -21,6 +21,7 @@ export class BaseComponent implements OnDestroy {
         this.modalService.close();
         this.floatMsgService.setMsgsEmpty();
         this.unsubscribe();
+        this.extraOnDestroy();
     }
 
     public goToSeccion(path: string) {
@@ -79,6 +80,7 @@ export class BaseComponent implements OnDestroy {
         var mySQLTime = [hours, minutes, seconds].join(":");
         return [mySQLDate, mySQLTime].join(" ");
     }
+    public extraOnDestroy():void{}
 
     setTabs() { }
 

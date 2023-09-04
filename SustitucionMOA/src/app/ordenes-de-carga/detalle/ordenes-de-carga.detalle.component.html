@@ -116,7 +116,7 @@
 
                                     <div class="col-xs-12 col-md-12">
                                         <p class="blue"><strong>Contrato seleccionado</strong></p>
-                                        <p style="width:100%">{{ordenDeCarga.ContratoSAP}}</p>
+                                        <p style="width:100%">{{ordenDeCarga.ContratoSAP || '-'}}</p>
                                     </div>
 
                                     <div class="col-xs-12 col-md-12" *ngIf="validaCPEDG">
@@ -520,6 +520,10 @@
                             <div class="col-xs-5 col-md-3" *ngIf="mostrarBotonEdicionFinalizada">
                                 <input type="button" (click)="abrirModalEdicionFinalizada()"
                                     class="btn-custom btn-remove btn-grande" value="Edición finalizada">
+                            </div>
+                            <div class="col-xs-5 col-md-3" *ngIf="mostrarBotonVolverADetalle">
+                                <input type="button" (click)="navegarADetalle()" class="btn-custom btn-add btn-grande"
+                                    value="Volver a Detalle">
                             </div>
                         </div>
                     </div>

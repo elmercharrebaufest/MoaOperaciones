@@ -343,7 +343,8 @@ namespace SustitucionMOAUtils.Services
                 {
                     GenerarEntregaSAP(ordenEditar);
                 }
-                else if (ordenEditar.Estado == EstadoOrdenDeCarga.SinEnviarASAP && ordenEditar.EsFacturaAnticipada && ordenEditar.SinSeleccionarFactura) {
+                else if (ordenEditar.Estado == EstadoOrdenDeCarga.SinEnviarASAP && ordenEditar.EsFacturaAnticipada && ordenEditar.SinSeleccionarFactura)
+                {
                     ordenEditar.Estado = EstadoOrdenDeCarga.Pendiente;
                     ordenEditar.DescripcionErrorInterno = "Se debe seleccionar una factura.";
                     repositorio.GuardarCambios();
@@ -854,7 +855,8 @@ namespace SustitucionMOAUtils.Services
                         NoEstaEnSAP = (x.Estado.ToFriendlyString() == "Sin Enviar a SAP"),
                         EstaSeleccionado = false,
                         EdicionRechazada = x.EdicionRechazada,
-                        Escalable = x.Escalable
+                        Escalable = x.Escalable,
+                        TipoContrato = x.TipoContrato
                     }).OrderByDescending(y => y.Id).ToList();
             }
             else
@@ -883,7 +885,8 @@ namespace SustitucionMOAUtils.Services
                         PatenteChasis = x.ChasisAcoplado,
                         NoEstaEnSAP = (x.Estado.ToFriendlyString() == "Sin Enviar a SAP"),
                         EstaSeleccionado = false,
-                        EdicionRechazada = x.EdicionRechazada
+                        EdicionRechazada = x.EdicionRechazada,
+                        TipoContrato = x.TipoContrato
                     }).OrderByDescending(y => y.Id).ToList();
             }
             if (listado == null || listado.Count == 0)
@@ -2172,10 +2175,10 @@ namespace SustitucionMOAUtils.Services
                     CommonService.toDateList(req.FechaDesde, req.FechaHasta);
                 var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
 
-                //var dsdmaterial =
-                //    usuario.TieneRol(RolEnum.Administracion) || usuario.TieneRol(RolEnum.ClienteConCpedg)
-                //        ? string.Empty
-                //        : Constante.CODIGO_SOJA_HIPRO;
+                var tipoContrato =
+                    usuario.TieneRol(RolEnum.Administracion)
+                        ? Constante.FAS_FILTRO_TIPO_CONTRATO
+                        : TipoContratoFAS.Normal;
 
                 var consumerReq = new OrdenCargaVisualizarClienteWSMOARequest
                 {
@@ -2185,7 +2188,7 @@ namespace SustitucionMOAUtils.Services
                     Fechas = rangoFechas,
                     Material = string.Empty,
                     Pendiente = true, // Contratos ABIERTOS
-                    TipoContrato = Constante.FAS_FILTRO_TIPO_CONTRATO
+                    TipoContrato = tipoContrato
                 };
 
                 var ordenCargaConsumer = new OrdenCargaConsumerMOA();
@@ -2715,7 +2718,7 @@ namespace SustitucionMOAUtils.Services
                 CuitDestino = ordenDeCarga.CUITDestino,
                 CuitDestinatario = ordenDeCarga.CUITDestinatario,
                 Material = ordenDeCarga.Producto.CodigoSap,
-                Pedido = ordenDeCarga.NumeroPedido,
+                Pedido = ObtenerPedidoDeOrden(ordenDeCarga),
                 SoloSisa = soloSisa
             };
             return consumer.ControlarCarga(controlarCargaReq);
@@ -2733,6 +2736,15 @@ namespace SustitucionMOAUtils.Services
                 return null;
             }
         }
+        private string ObtenerPedidoDeOrden(OrdenDeCarga ordenDeCarga)
+        {
+            if (ordenDeCarga.EsFacturaAnticipada)
+            {
+                return !string.IsNullOrEmpty(ordenDeCarga.NumeroPedido) ? ordenDeCarga.NumeroPedido : ordenDeCarga.NumeroPedidoIngresado;
+            }
+            else
+                return ordenDeCarga.NumeroPedido;
+        }
         private List<OrdenDeCarga> ObtenerOrdenesPendientesDeCliente(string codigoCliente)
         {
             return repositorio
@@ -2745,6 +2757,57 @@ namespace SustitucionMOAUtils.Services
                             ) &&
                             !estadosNoTieneOrdenPendienteEnvio.Contains(x.Estado));
         }
+
+        public List<AutoCompleteDropdownElement> ObtenerCuilsChofer(OrdenDeCarga ordenDeCarga, string mailUsuario)
+        {
+            List<AutoCompleteDropdownElement> cuils = new List<AutoCompleteDropdownElement>();
+            Proveedor cliente;
+            if (ordenDeCarga.Cliente == null && ordenDeCarga.PatenteAcoplado == null)
+            {
+                cuils.Add(new AutoCompleteDropdownElement() { label = " ", value = " " });
+                return cuils;
+            }
+            cliente = repositorio.Obtener<Proveedor>(
+            x => x.CUIT == ordenDeCarga.CUITCliente &&
+            x.EstadoAprobacion == EstadoAprobacion.Aprobado && x.TipoProveedor.Id == (int)TipoUsuarioEnum.Cliente);
+            if (cliente == null)
+            {
+                return cuils;
+            }
+            cuils = repositorio.Listar<OrdenDeCarga, AutoCompleteDropdownElement>(x => new AutoCompleteDropdownElement
+            {
+                label = x.CUITChofer.Substring(0, 2) + "-" + x.CUITChofer.Substring(2, 8) + "-" + x.CUITChofer.Substring(10, 1),
+                value = x.CUITChofer
+            }, x => x.Cliente_Id == cliente.Id && x.PatenteAcoplado == ordenDeCarga.PatenteAcoplado);
+
+            return cuils.Distinct().ToList();
+        }
+
+        public List<AutoCompleteDropdownElement> ObtenerCuitsTransporte(OrdenDeCarga ordenDeCarga, string mailUsuario)
+        {
+            List<AutoCompleteDropdownElement> cuits = new List<AutoCompleteDropdownElement>();
+            Proveedor cliente;
+            if (ordenDeCarga.CUITCliente == null && ordenDeCarga.PatenteAcoplado == null)
+            {
+                cuits.Add(new AutoCompleteDropdownElement() { label = " ", value = " " });
+                return cuits;
+            }
+            cliente = repositorio.Obtener<Proveedor>(
+            x => x.CUIT == ordenDeCarga.CUITCliente &&
+            x.EstadoAprobacion == EstadoAprobacion.Aprobado && x.TipoProveedor.Id == (int)TipoUsuarioEnum.Cliente);
+            if (cliente == null)
+            {
+                return cuits;
+            }
+            cuits = repositorio.Listar<OrdenDeCarga, AutoCompleteDropdownElement>(x => new AutoCompleteDropdownElement
+            {
+                label = x.CUITTransporte,
+                value = x.CUITTransporte
+            }, x => x.Cliente_Id == cliente.Id && x.PatenteAcoplado == ordenDeCarga.PatenteAcoplado);
+
+            return cuits.Distinct().ToList();
+        }
+
 
         public bool ValidarOrdenActivaScato(string cuit)
         {

@@ -21,6 +21,14 @@
 .mb-2 {
     margin-bottom: 0.5rem;
 }
+
 .mt-2 {
     margin-top: 0.5rem;
+}
+
+.option-label {
+    font-family: 'Roboto Regular';
+    margin: 0px !important;
+    font-size: 15px;
+    font-weight: 400 !important;
 }

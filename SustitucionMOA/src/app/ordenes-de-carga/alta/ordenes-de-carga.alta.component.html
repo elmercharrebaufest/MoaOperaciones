@@ -56,13 +56,20 @@
                                     Contrato:
                                 </div>
                                 <div class="styled-select" style="overflow: initial;">
-                                    <p-dropdown name="cmbContratos"
+                                    <app-dropdown-input [options]="contratosDisponibles" [filterKey]="'Label'"
                                         [disabled]="(ordenDeCargaId > 0 && !puedeEditarContrato) || noEditarCliente"
-                                        [(ngModel)]="ordenDeCarga.ContratoSeleccionado" [options]="contratosDisponibles"
-                                        optionLabel="Label"
-                                        placeholder="Seleccione un Contrato - Producto - Kg Disponibles"
-                                        (ngModelChange)="onContratoSeleccionadoChanged()" [filter]="true">
-                                    </p-dropdown>
+                                        (selectedChange)="onContratoSeleccionadoChanged()"
+                                        [placeholder]="'Seleccione un Contrato - Producto - Kg Disponibles'"
+                                        [(selected)]="ordenDeCarga.ContratoSeleccionado">
+                                        <ng-template let-option>
+                                            <p class="option-label" [ngClass]="{
+                                                'text-primary':option.TipoContrato == tipoContrato.FacturaAnticipada && 
+                                                ordenDeCarga.ContratoIngresado != option.NumeroContrato
+                                            }">
+                                                {{option.Label}}
+                                            </p>
+                                        </ng-template>
+                                    </app-dropdown-input>
                                 </div>
                             </div>
                             <ng-container *ngIf="validaCPEDG">
@@ -255,7 +262,7 @@
                                     <input auto-complete [(ngModel)]="ordenDeCarga.PatenteAcoplado"
                                         (ngModelChange)="ordenDeCarga.PatenteAcoplado= $event.toUpperCase()"
                                         maxlength="7" [source]="patentesAcoplados"
-                                        (valueChanged)="PatenteAcopladoSelected($event)" [min-chars]="2"
+                                        (valueChanged)="PatenteAcopladoSelected($event);onPatenteSeleccionada()" [min-chars]="2"
                                         [no-match-found-text]="'No se encontraron resultados'"
                                         [value-formatter]="generalFormatterAcoplado"
                                         [list-formatter]="generalFormatterAcoplado" mask="AAAAAAA" />
@@ -277,14 +284,13 @@
                                 <div class="formulario-label">
                                     CUIL chofer:
                                 </div>
-                                <div class="styled-select">
-                                    <div class="ui-inputgroup">
-                                        <input type="text" [(ngModel)]="ordenDeCarga.CUITChofer" mask="00-00000000-0"
-                                            (change)="validarCuilChofer()">
-                                        <span class="ui-inputgroup-addon" *ngIf="validando.CUITChofer">
-                                            <p-progressSpinner
-                                                [style]="{width: '100%', height: '100%'}"></p-progressSpinner>
-                                        </span>
+                                <div class="styled-select autocomplete">
+                                    <input auto-complete [(ngModel)]="ordenDeCarga.CUITChofer" (ngModelChange)="validarCuilChofer()"
+                                        [source]="cuilsChofer" (valueChanged)="cuitChoferSelected($event)" [min-chars]="2"
+                                        [no-match-found-text]="'No se encontraron resultados'" mask="00-00000000-0"
+                                        [value-formatter]="generalFormatter" [list-formatter]="generalFormatter" />
+                                    <div *ngIf="validando.CUITChofer">
+                                        <p-progressSpinner [style]="{width: '10%', height: '10%'}"></p-progressSpinner>
                                     </div>
                                 </div>
                             </div>
@@ -304,18 +310,17 @@
                                 <div class="formulario-label">
                                     CUIT transporte:
                                 </div>
-                                <div class="styled-select">
-                                    <div class="ui-inputgroup">
-                                        <input type="text" [(ngModel)]="ordenDeCarga.CUITTransporte"
-                                            mask="00-00000000-0" [placeholder]="descripcionTransporte"
-                                            (change)="validarCuitTransporte()">
-                                        <span class="ui-inputgroup-addon" *ngIf="validando.CUITTransporte">
-                                            <p-progressSpinner
-                                                [style]="{width: '100%', height: '100%'}"></p-progressSpinner>
-                                        </span>
-                                    </div>
-
+                                <div class="styled-select autocomplete">
+                                        <input auto-complete [(ngModel)]="ordenDeCarga.CUITTransporte" (ngModelChange)="validarCuitTransporte()"
+                                        [source]="cuitsTransporte" (valueChanged)="cuitTransporteSelected($event)" [min-chars]="2"
+                                        [no-match-found-text]="'No se encontraron resultados'" mask="00-00000000-0"
+                                        [value-formatter]="generalFormatter" [list-formatter]="generalFormatter"
+                                        [placeholder]="descripcionTransporte">
+                                        <div *ngIf="validando.CUITTransporte">
+                                            <p-progressSpinner [style]="{width: '10%', height: '10%'}"></p-progressSpinner>
+                                        </div>
                                 </div>
+                            
                             </div>
                             <div class="col-xs-12 col-md-12" *ngIf="validaCPEDG">
                                 <div class="formulario-label">

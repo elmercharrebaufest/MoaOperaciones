@@ -1617,10 +1617,12 @@ namespace SustitucionMOAUtils.Services
         public void ActualizarFechaLiberacion(string nrosolp, DateTime fechaLiberacion)
         {
             var solp = repositorio.Obtener<Solp>(x => x.NroSolp == nrosolp);
+            var estadoSolpSapLiberada = repositorio.Obtener<TablaSap>(x => x.Tabla == "EstadoSolpSap" && x.CodigoSap == "05").Id;
 
             if (solp != null)
             {
                 solp.FechaLiberacionSap = fechaLiberacion;
+                solp.EstadoSolpSap_Id = estadoSolpSapLiberada;
                 repositorio.GuardarCambios();
             }
         }
@@ -3583,7 +3585,7 @@ namespace SustitucionMOAUtils.Services
             {
                 asunto = "";
                 var enviarA = new List<string> { prov.Usuario.Mail };
-                asunto += $"PO {peticion.Id} - {prov.Usuario.ObtenerRazonSocial()}";
+                asunto += $"MOA - Pedido de Oferta {peticion.Id}: {peticion.Solp.Pliego.NombreObra}";
                 if (peticion.Posiciones.Select(x => x.SolpPosicion).Where(x => x.TipoPosicion_Id != null).FirstOrDefault().TipoPosicion.Codigo == "MATERIALES")
                 {
                     var pdf = GenerarPDFPeticionDeOferta(peticion, prov.Usuario.ObtenerCodigoProveedor());
@@ -3621,7 +3623,7 @@ namespace SustitucionMOAUtils.Services
                 htmlBody += $"<br />Observaciones: {observacionesFormatted} <br /><br /><br />";
             }
 
-            if(peticion.Solp.Posiciones.Select(x => x.TipoPosicion.Codigo).FirstOrDefault() == "SERVICIO")
+            if(peticion.Solp.Posiciones.Select(x => x.TipoPosicion.Codigo).FirstOrDefault() == "SERVICIO" && peticion.Solp.TipoSolp.Codigo != "SIN_PLIEGO")
             {
                 var downloadLinkUrl = ConfigurationManager.AppSettings["ida:RedirectUri"] + "/api/compras/DescargarPliegoDesdeLink?solpId=" + peticion.Solp.Id + "&token=" + peticion.Solp.EmailLinkToken;
 
@@ -4063,6 +4065,11 @@ namespace SustitucionMOAUtils.Services
                 };
                 foreach (var proveedor in peticion.Usuarios.Where(x => circularDto.UsuarioIds.Contains(x.Usuario_Id)))
                 {
+                    proveedor.PropuestaTecnicaAprobada = null;
+                    proveedor.PropuestaTecnicaFecha = null;
+                    proveedor.PropuestaTecnicaUsuario_Id = null;
+                    proveedor.ObservacionNoCumple = "";
+
                     if (proveedor.Cotizaciones != null && proveedor.Cotizaciones.Count > 0 && proveedor.Cotizaciones.First().CotizacionEstado_Id == 1)
                     {
                         proveedor.Cotizaciones.First().CotizacionEstado_Id = 2;
@@ -4469,7 +4476,7 @@ namespace SustitucionMOAUtils.Services
                                 UnidadDeMedida = x.UnidadDeMedidaId > 0 ? info.Where(unidad => unidad.Id == x.UnidadDeMedidaId).FirstOrDefault() : null,
                                 PeticionDeOfertaSolpPosicion_Id = x.PeticionDeOfertaSolpPosicionId,
                                 NoDisponible = x.NoDisponible,
-
+                                FechaDeVigencia = x.FechaDeVigencia != null ? x.FechaDeVigencia.Value : (DateTime?)null,
                                 CotizacionSubPosiciones = cotizacionDto.CotizacionSubposiciones.Count > 0 ? cotizacionDto.CotizacionSubposiciones
                                 .Where(y => y.CotizacionPosicionId == x.PeticionDeOfertaSolpPosicionId).Select(sub => new CotizacionSubPosicion
                                 {
@@ -4561,6 +4568,7 @@ namespace SustitucionMOAUtils.Services
                     cotizacionPosicion.Moneda = cotizacionPos.MonedaId > 0 && cotizacionPos.MonedaId != null ? info.Where(moneda => moneda.Id == cotizacionPos.MonedaId).FirstOrDefault() : null;
                     cotizacionPosicion.UnidadDeMedida = cotizacionPos.UnidadDeMedidaId > 0 && cotizacionPos.UnidadDeMedidaId != null ? info.Where(unidad => unidad.Id == cotizacionPos.UnidadDeMedidaId).FirstOrDefault() : null;
                     cotizacionPosicion.NoDisponible = cotizacionPos.NoDisponible;
+                    cotizacionPosicion.FechaDeVigencia = (DateTime?)cotizacionPos.FechaDeVigencia;
 
                     if (cotizacionPosicion.CotizacionSubPosiciones != null && cotizacionPosicion.CotizacionSubPosiciones.Count > 0)
                     {
@@ -4962,18 +4970,21 @@ namespace SustitucionMOAUtils.Services
 
         public List<AdjudicacionDto> ListarAdjudicaciones(int solpId)
         {
-            return repositorio.Listar<Adjudicacion, AdjudicacionDto>(adjudicacion => new AdjudicacionDto()
+            var nroSolp = repositorio.Obtener<Solp, string>(a => a.Id == solpId, a => a.NroSolp);
+            var respuestaSAP = obtenerOrdenesDeCompraParaSOLPConsumerMOA.Request(nroSolp, "");
+            var listaResultado = respuestaSAP.Select(adjudicacion => new AdjudicacionDto()
             {
-                Id = adjudicacion.Id,
-                Solp_Id = adjudicacion.Solp_Id,
-                TipoPosicionCodigo = adjudicacion.Solp.Posiciones.Select(y => y.TipoPosicion.Codigo).FirstOrDefault(),
-                NumeroOrdenDeCompra = adjudicacion.NumeroOrdenDeCompra,
-                FechaCreacion = adjudicacion.FechaCreacion,
-                Proveedor = adjudicacion.Cotizacion.PeticionDeOfertaUsuario.Usuario.Proveedores.Count > 0 ?
-                                    adjudicacion.Cotizacion.PeticionDeOfertaUsuario.Usuario.Proveedores.FirstOrDefault().RazonSocial : "",
-                MonedaDescripcion = adjudicacion.Moneda.CodigoSap,
-                PrecioFinal = adjudicacion.MontoTotal
-            }, x => x.Solp_Id == solpId).OrderBy(fc => fc.FechaCreacion).ToList();
+                Id = 0,
+                Solp_Id = solpId,
+                TipoPosicionCodigo = adjudicacion.Cabecera.Tipo,
+                NumeroOrdenDeCompra = adjudicacion.Cabecera.OrdenDeCompra,
+                FechaCreacion = adjudicacion.Cabecera.FechaCreacion,
+                Proveedor = adjudicacion.Cabecera.RazonSocialProveedor,
+                MonedaDescripcion = adjudicacion.Cabecera.Moneda,
+                PrecioFinal = adjudicacion.Cabecera.MontoTotal
+            }).OrderBy(fc => fc.FechaCreacion).ToList();
+
+            return listaResultado;
         }
 
         public AdjudicacionDto ObtenerAdjudicacion(int adjudicacionId) // No se está usando pero no borrar

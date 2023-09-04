@@ -34,7 +34,6 @@ export class CotizacionServicioComponent extends ListBaseComponent implements On
     protected tabla: Table;
     archivosTecnico = new Array<File>()
     archivosEconomico = new Array<File>()
-
     @Input() peticion: PeticionDeOfertaDto;
     @Input() posicionesCompra: PeticionDeOfertaSolpPosicionDto[];
     observaciones: string;
@@ -42,7 +41,6 @@ export class CotizacionServicioComponent extends ListBaseComponent implements On
     monedaCompras: SelectItem[];
     unidades: any[];
     @Input() esFinalizado: boolean;
-
     @Input('locale') es: any;
     cotizaciones: GuardarCotizacion[];
     valorTotalPorMoneda: ValorTotalPorMoneda[];
@@ -64,7 +62,7 @@ export class CotizacionServicioComponent extends ListBaseComponent implements On
         this.mostrarMensajeNoRespetaCondiciones();
     }
 
-    ngOnInit() {       
+    ngOnInit() {
         this.getCombos();
         this.setCombos();
         this.es = {
@@ -84,7 +82,6 @@ export class CotizacionServicioComponent extends ListBaseComponent implements On
         }
         this.obtenerPrecioTotalPosicionProveedor();
         this.mostrarMensajeNoRespetaCondiciones();
-
     }
 
     public mostrarMensajeNoRespetaCondiciones() {
@@ -110,7 +107,7 @@ export class CotizacionServicioComponent extends ListBaseComponent implements On
 
     eliminarArchivo(esAdjuntoNuevo: boolean, archivo: any, esTecnico) {
         this.confirmationService.confirm({
-            message: '¿Está seguro que desea eliminar el archivo?',
+            message: '¿Está seguro de que desea eliminar el archivo?',
             accept: () => {
                 esAdjuntoNuevo ? this.eliminarAdjuntoNuevo(archivo, esTecnico) : this.eliminarAdjuntoGuardado(archivo)
             },
@@ -118,7 +115,6 @@ export class CotizacionServicioComponent extends ListBaseComponent implements On
 
             }
         });
-
     }
 
     //elimno el archivo, llamar al servicio de eliminacion
@@ -163,7 +159,6 @@ export class CotizacionServicioComponent extends ListBaseComponent implements On
         }
         else {
             this.downloadArchivoLocal(archivo, archivo.name);
-
         }
     }
 
@@ -239,7 +234,6 @@ export class CotizacionServicioComponent extends ListBaseComponent implements On
                 this.floatMsgService.setErrorMsg("El archivo adjuntado no debe superar los 10Mb")
             }
         }
-
     }
 
     buscarCombo(event, type) {
@@ -295,7 +289,6 @@ export class CotizacionServicioComponent extends ListBaseComponent implements On
         if (subposicionCompra.PrecioSubPosicion != 0 && subposicionCompra.CantidadCotizacion != 0) {
             subposicionCompra.PrecioTotalSubPosicion = subposicionCompra.PrecioSubPosicion * subposicionCompra.CantidadCotizacion;
             this.posicionesCompra.filter(x => x.Id == peticionId)[0].Posiciones.SubposicionesCompras.filter(x => x.Id == subposicionCompra.Id)[0].PrecioTotalSubPosicion == subposicionCompra.PrecioTotalSubPosicion;
-
         }
     }
 
@@ -310,7 +303,6 @@ export class CotizacionServicioComponent extends ListBaseComponent implements On
             if (subposicionCompra.UnidadMedidaCotizacion.Id != undefined) {
                 respuesta = this.posicionesCompra.filter(x => x.Id == peticionId)[0].Posiciones.SubposicionesCompras.filter(x => x.Id == subposicionCompra.Id)[0].UnidadId != subposicionCompra.UnidadMedidaCotizacion.Id
             }
-
         }
         return respuesta;
     }
@@ -336,7 +328,6 @@ export class CotizacionServicioComponent extends ListBaseComponent implements On
             CotizacionSubposiciones: this.subposiciones
         }
         return coti;
-
     }
 
     public crearCotizacionPosicion() {
@@ -409,25 +400,24 @@ export class CotizacionServicioComponent extends ListBaseComponent implements On
 
     agregarRow(uocra, primeraVez) {
         var hora = this.peticion.Cotizacion.CotizacionesHoras
-        .find(x => x.CantidadPersonas == 0 && x.HorasNocturnas == 0        
-            && x.HorasExtras == 0 && x.HorasNormales == 0 && x.Gremio != "UOCRA");
+            .find(x => x.CantidadPersonas == 0 && x.HorasNocturnas == 0
+                && x.HorasExtras == 0 && x.HorasNormales == 0 && x.Gremio != "UOCRA");
 
-        if(uocra){
+        if (uocra) {
             hora = this.peticion.Cotizacion.CotizacionesHoras
-            .find(x => x.CantidadPersonas == 0 && x.HorasNocturnas == 0 &&
-             (x.Fila == false || x.ConfigurarHora == true) 
-                && x.HorasExtras == 0  && x.HorasNormales == 0);
+                .find(x => x.CantidadPersonas == 0 && x.HorasNocturnas == 0 &&
+                    (x.Fila == false || x.ConfigurarHora == true)
+                    && x.HorasExtras == 0 && x.HorasNormales == 0);
         }
-       
+
         if (hora == undefined || hora == null) {
             this.cotizacionHora = { Cotizacion_Id: 0, CantidadPersonas: 0, Categoria: "", Gremio: "", HorasExtras: 0, HorasNocturnas: 0, HorasNormales: 0, ConfigurarHora: uocra };
             this.peticion.Cotizacion.CotizacionesHoras.push(this.cotizacionHora)
         } else {
-            if(!primeraVez){
+            if (!primeraVez) {
                 this.floatMsgService.setErrorMsg("Debe completar el registro anterior para agregar uno nuevo")
             }
         }
-
     }
 
     eliminarRow(index: number) {
@@ -455,7 +445,6 @@ export class CotizacionServicioComponent extends ListBaseComponent implements On
 
             }
         });
-
     }
 
     eliminarDatosCotizacionHoras(index) {
@@ -480,7 +469,6 @@ export class CotizacionServicioComponent extends ListBaseComponent implements On
             if (!element.HorasNormales) {
                 element.HorasNormales = 0
             }
-          
         });
     }
 
@@ -513,7 +501,6 @@ export class CotizacionServicioComponent extends ListBaseComponent implements On
                         result.data.CotizacionPosiciones.forEach(element => {
                             this.posicionesCompra.filter(x => x.Id == element.PeticionDeOfertaSolpPosicionId)[0].Posiciones.PrecioTotal = element.PrecioTotal;
                         });
-
                     }
                     this.blockUI.stop();
                 },
@@ -528,7 +515,17 @@ export class CotizacionServicioComponent extends ListBaseComponent implements On
             return false; //<-- Prevent Refresh
         }
         return false; //<-- Prevent Refresh
-
     }
 
+    onEditarCelda(cotizacion: any, campo: string, valorInicial: any) {
+        if (cotizacion[campo] === valorInicial) {
+            cotizacion[campo] = ''; // Limpia el valor si es igual al valorInicial
+        }
+    }
+
+    onReestablecerValor(cotizacion: any, campo: string) {
+        if (cotizacion[campo] === '' || cotizacion[campo] === null) {
+            cotizacion[campo] = 0; // Restablece a cero si está en blanco
+        }
+    }
 }

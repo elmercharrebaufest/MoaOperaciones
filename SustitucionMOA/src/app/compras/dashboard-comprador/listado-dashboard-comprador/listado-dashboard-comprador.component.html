@@ -14,15 +14,21 @@
                 <tr>
                     <th style="width: 40px"></th>
                     <th data-toggle="tooltip" title="Acciones SOLP" style="width: 50px"></th>
-                    <th class="headerth" title="Numero SOLP" (click)="onOrder('NroSolp')" style="width: 100px">
+                    <th class="headerth" title="Numero SOLP" (click)="onOrder('NroSolp')" style="width: 85px">
                         Nro SOLP
                         <span>
                             <i [ngClass]="{'fa': true, 'fa-solid fa-sort-up': true, 'arrow': true, 'unselected': columnaOrden === 'NroSolp' && orden == 'DESC'  }"></i>
                             <i [ngClass]="{'fa': true, 'fa-solid fa-sort-down': true, 'arrow': true, 'unselected': columnaOrden === 'NroSolp' && orden == 'ASC' }"></i>
                         </span>
                     </th>
-
-                    <th title="Nombre de pedido" class="headerth" (click)="onOrder('NombreDeObra')" style="width: 105px">
+                    <th class="headerth" title="Numero de OC" (click)="onOrder('NroOrdenDeCompraAdicional')" style="width: 85px">
+                        Adicional
+                        <span>
+                            <i [ngClass]="{'fa': true, 'fa-solid fa-sort-up': true, 'arrow': true, 'unselected': columnaOrden === 'NroOrdenDeCompraAdicional' && orden == 'DESC'  }"></i>
+                            <i [ngClass]="{'fa': true, 'fa-solid fa-sort-down': true, 'arrow': true, 'unselected': columnaOrden === 'NroOrdenDeCompraAdicional' && orden == 'ASC' }"></i>
+                        </span>
+                    </th>
+                    <th title="Nombre de pedido" class="headerth" (click)="onOrder('NombreDeObra')" style="width: 90px">
                         Nombre Solp
                         <span>
                             <i [ngClass]="{'fa': true, 'fa-solid fa-sort-up': true, 'arrow': true, 'unselected': columnaOrden === 'NombreDeObra' && orden == 'DESC'  }"></i>
@@ -37,7 +43,7 @@
                             <i [ngClass]="{'fa': true, 'fa-solid fa-sort-down': true, 'arrow': true, 'unselected': columnaOrden === 'FechaCreacion' && orden == 'ASC' }"></i>
                         </span>
                     </th>
-                    <th title="Fecha de creacion de SOLP" class="headerth" (click)="onOrder('FechaLiberacionSap')" style="width: 90px;">
+                    <th title="Fecha de Liberacion de SOLP" class="headerth" (click)="onOrder('FechaLiberacionSap')" style="width: 90px;">
                         Fecha <br/> Liberacion
                         <span>
                             <i [ngClass]="{'fa': true, 'fa-solid fa-sort-up': true, 'arrow': true, 'unselected': columnaOrden === 'FechaLiberacionSap' && orden == 'DESC'  }"></i>
@@ -45,7 +51,7 @@
                         </span>
                     </th>
 
-                    <th title="Fecha de creacion de SOLP" class="headerth columna" (click)="onOrder('UsuarioActual.Mail')" style="width:180px ;">
+                    <th title="Mail del solicitante" class="headerth columna" (click)="onOrder('UsuarioActual.Mail')" style="width:150px ;">
                         Solicitante
                         <span>
                             <i [ngClass]="{'fa': true, 'fa-solid fa-sort-up': true, 'arrow': true, 'unselected': columnaOrden === 'UsuarioActual.Mail' && orden == 'DESC'  }"></i>
@@ -57,12 +63,12 @@
                         Grupo de compras
 
                     </th>
-                    <th title="Nombre de pedido" class="headerth" style="width: 70px;">
+                    <th title="Nombre de pedido" class="headerth" style="width: 60px;">
                         Centro
                     </th>
 
 
-                    <th title="Tipo de  SOLP" class="headerth" (click)="onOrder('TipoSolp.Descripcion')" style="width: 70px;">
+                    <th title="Tipo de  SOLP" class="headerth" (click)="onOrder('TipoSolp.Descripcion')" style="width: 65px;">
                         Tipo
                         <span>
                             <i [ngClass]="{'fa': true, 'fa-solid fa-sort-up': true, 'arrow': true, 'unselected': columnaOrden === 'TipoSolp.Descripcion' && orden == 'DESC'  }"></i>
@@ -76,7 +82,7 @@
                             <i [ngClass]="{'fa': true, 'fa-solid fa-sort-down': true, 'arrow': true, 'unselected': columnaOrden === 'EstadoSolpSap.Descripcion' && orden == 'ASC' }"></i>
                         </span>
                     </th>
-                    <th data-toggle="tooltip" colspan="2" style="width: 85px;">
+                    <th data-toggle="tooltip" colspan="2" style="width: 90px;">
 
                     </th>
                 </tr>
@@ -114,6 +120,9 @@
                     </td>
                     <td class="columna">
                         {{rowData.NroSolp}}
+                    </td>
+                    <td class="columna">
+                        {{rowData.NroOrdenDeCompraAdicional}}
                     </td>
                     <td class="columna">
                         {{rowData.NombreDeObra || "" }}
