@@ -263,15 +263,6 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
             return;
         }
 
-        if (!(this.ordenDeCarga.Estado == EstadoOrdenDeCarga.AnulacionSolicitada || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.EdicionSolicitada)) {
-            if (this.esTercero)
-                this.mostrarBotonSolicitarAnulacion = true;
-
-            if (this.ordenDeCarga.EdicionRechazada != true)
-                this.mostrarBotonEditar = true;
-
-        }
-
         if (this.esInterno || this.esComercial || this.esMesaFas) {
             this.mostrarBotonVerHistorial = true;
             this.mostrarBotonEditar = true;
@@ -290,8 +281,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
             if (this.ordenDeCarga.ContratoSeleccionado) {
                 // if (this.ordenDeCarga.ContratoSeleccionado.KgDisponiblesTn < KILOS_DISPONIBLES_APROBADO &&
                 if (this.ordenDeCarga.ContratoSeleccionado.KgDisponibles < 15000 &&
-                    this.ordenDeCarga.ContratoSAP === "-")
-                {
+                    this.ordenDeCarga.ContratoSAP === "-") {
                     this.mostrarBotonContratos = true;
                 }
             }
@@ -322,7 +312,6 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
             if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.AnulacionSolicitada) {
                 this.mostrarBotonAprobarRechazarAnulacion = true;
             }
-
             if (this.ordenDeCarga.TipoContrato === TipoContrato.FacturaAnticipada && !this.ordenDeCarga.NumeroFacturaSeleccionada) {
                 this.mostrarBotonSeleccionarFactura = true;
             }
@@ -330,9 +319,15 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                 this.mostrarBotonVerificarCompensacion = true;
             }
         }
-
         if (this.esAnulador) {
             this.mostrarBotonAnular = true;
+        }
+        if (!(this.ordenDeCarga.Estado == EstadoOrdenDeCarga.AnulacionSolicitada || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.EdicionSolicitada)) {
+            if (this.esTercero || ((this.esCliente || this.esCorredor) && !this.mostrarBotonAnular))
+                this.mostrarBotonSolicitarAnulacion = true;
+
+            if (this.ordenDeCarga.EdicionRechazada != true)
+                this.mostrarBotonEditar = true;
         }
     }
 
@@ -602,14 +597,14 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
     }
 
     abrirModalContratos() {
+        this.mainDiv.nativeElement.scrollIntoView({ behavior: "smooth", block: "center" });
         this.mensajeComponent.setMsgsEmpty();
-        this.spinnerComponent.showIt();
+        this.blockUI.start('');
         this.unsubscribe();
-
         try {
             this.subscriptionDropDowns = this.service.obtenerContratos(this.ordenDeCargaId).subscribe(
                 result => {
-                    this.spinnerComponent.hideIt();
+                    this.blockUI.stop();
                     if (result.logout == true) {
                         this.sessionDataService.logout();
                     } else if (result.error != undefined && result.error != "") {
@@ -623,23 +618,25 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                     }
                 },
                 error => {
+                    this.blockUI.stop();
                     this.mensajeComponent.setErrorMsg(error.message);
                 }
             );
         } catch (e) {
+            this.blockUI.stop();
             this.mensajeComponent.setErrorMsg(e);
         }
     }
     abrirModalSeleccionarFactura() {
-        this.mensajeComponent.setMsgsEmpty();
-        this.spinnerComponent.showIt();
-        this.unsubscribe();
         this.mainDiv.nativeElement.scrollIntoView({ behavior: "smooth", block: "center" });
+        this.mensajeComponent.setMsgsEmpty();
+        this.blockUI.start('');
+        this.unsubscribe();
         const contrato = this.ordenDeCarga.ContratoSAP || this.ordenDeCarga.ContratoIngresado;
         try {
             this.subscriptionDropDowns = this.service.obtenerFacturasDeContrato(contrato).subscribe(
                 result => {
-                    this.spinnerComponent.hideIt();
+                    this.blockUI.stop();
                     if (result.logout == true) {
                         this.sessionDataService.logout();
                     } else if (result.error != undefined && result.error != "") {
@@ -653,10 +650,12 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                     }
                 },
                 error => {
+                    this.blockUI.stop();
                     this.mensajeComponent.setErrorMsg(error.message);
                 }
             );
         } catch (e) {
+            this.blockUI.stop();
             this.mensajeComponent.setErrorMsg(e);
         }
     }

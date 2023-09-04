@@ -179,6 +179,13 @@
                         <ng-container *ngIf="proveedor.Cotizacion != null">
                             <td colspan="6" style="width: 540px !important;" class="columna border2-left" [style.color]="proveedor.EstadoPropuestaTecnicaColor">
                                 {{proveedor.EstadoPropuestaTecnica}}
+                                <span
+                                    *ngIf="proveedor.PropuestaTecnicaAprobada == false"
+                                    class="glyphicon glyphicon-info-sign"
+                                    style="font-size:20px;top:5px;"
+                                    pTooltip="{{proveedor.ObservacionNoCumple}}" tooltipPosition="right"
+                                    [escape]="false">
+                                </span>
                             </td>
                         </ng-container>
                         <ng-container *ngIf="proveedor.Cotizacion == null">
@@ -431,6 +438,13 @@
                         <ng-container *ngIf="proveedor.Cotizacion != null">
                             <td colspan="9" style="width: 540px !important;" class="columna border2-left" [style.color]="proveedor.EstadoPropuestaTecnicaColor">
                                 {{proveedor.EstadoPropuestaTecnica}}
+                                <span
+                                    *ngIf="proveedor.PropuestaTecnicaAprobada == false"
+                                    class="glyphicon glyphicon-info-sign"
+                                    style="font-size:20px;top:5px;"
+                                    pTooltip="{{proveedor.ObservacionNoCumple}}" tooltipPosition="right"
+                                    [escape]="false">
+                                </span>
                             </td>
                         </ng-container>
                         <ng-container *ngIf="proveedor.Cotizacion == null">

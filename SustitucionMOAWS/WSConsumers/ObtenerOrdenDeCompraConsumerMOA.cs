@@ -224,8 +224,10 @@ namespace SustitucionMOAWS.WSConsumers
             adjudicacion.CondicionesDeEntrega = string.Join(" ", POTEXTHEADER.Where(a => a.TEXT_ID == "F05").Select(a => a.TEXT_LINE));
             adjudicacion.CondicionesDePago = string.Join(" ", POTEXTHEADER.Where(a => a.TEXT_ID == "F07").Select(a => a.TEXT_LINE));
             adjudicacion.Garantias = string.Join(" ", POTEXTHEADER.Where(a => a.TEXT_ID == "F08").Select(a => a.TEXT_LINE));
+            adjudicacion.Moneda_Id = monedas.First(a => a.Codigo == POHEADER.CURRENCY).Id;
+            adjudicacion.MonedaDescripcion = monedas.First(a => a.Codigo == POHEADER.CURRENCY).Descripcion;
+            adjudicacion.FechaCreacion = DateTime.ParseExact(POHEADER.CREAT_DATE, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
 
-          
 
             adjudicacion.AdjudicacionPosiciones = new List<AdjudicacionPosicionDto>();
 
@@ -246,7 +248,7 @@ namespace SustitucionMOAWS.WSConsumers
                 pos.PrecioUnidad = posicion.NET_PRICE;
                 pos.MonedaId = monedas.FirstOrDefault(a => a.Codigo == POHEADER.CURRENCY)?.Id;
                 pos.UnidadDescripcion = unidades.FirstOrDefault(a => a.Codigo == posicion.PO_UNIT)?.Descripcion ?? "";
-                pos.MonedaDescripcion = monedas.FirstOrDefault(a => a.Codigo == POHEADER.CURRENCY)?.Descripcion;         
+                pos.MonedaDescripcion = monedas.FirstOrDefault(a => a.Codigo == POHEADER.CURRENCY)?.Descripcion;
                 pos.MonedaCodigo = monedas.FirstOrDefault(a => a.Codigo == POHEADER.CURRENCY)?.CodigoSap;
                 pos.PrecioTotal = posicion.QUANTITY * posicion.NET_PRICE;
                 pos.CentroComprasCodigo = posicion.PLANT;

@@ -917,6 +917,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
     //Funciones de la tabla
     onSelectServicio(posicion: SolpPosicion, dt) {
         posicion.tareaSubcontratar = posicion.codigoServicio.Descripcion;
+        posicion.textoSuministro = posicion.codigoServicio.Descripcion;
         posicion.tareaSubcontratarObj = { ...posicion.codigoServicio };
         this.autocompletarCamposMaterial(posicion);
 
@@ -927,6 +928,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
 
     onSelectTarea(posicion: SolpPosicion, dt) {
         posicion.tareaSubcontratar = posicion.tareaSubcontratarObj.Descripcion;
+        posicion.textoSuministro = posicion.tareaSubcontratarObj.Descripcion;
         posicion.codigoServicio = { ...posicion.tareaSubcontratarObj };
         
         this.autocompletarCamposMaterial(posicion);
@@ -944,6 +946,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
             posicion.unidadMedida = unidadSeleccionadaAux.Descripcion;
         }
 
+        posicion.cuentaMayor = "";
         var grupoArticuloAux = this.combos.GrupoArticulo.find(x => x.Descripcion == posicion.codigoServicio.GrupoArticulo.Descripcion);
         if (grupoArticuloAux) {
             posicion.selectArticuloCompras = grupoArticuloAux;
@@ -1177,9 +1180,9 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         return this.model.selectTipoPosicion.Codigo == "MATERIALES" && this.model.posicionActual.codigoServicio != null;
     }
 
-    clearCode() {
-        if (this.model.posicionActual.tareaSubcontratar != null) {
-            this.model.posicionActual.codigoServicio = null;
+    clearCode(posicion) {
+        if (posicion.tareaSubcontratar != null) {
+            posicion.codigoServicio = null;
         }
     }
 

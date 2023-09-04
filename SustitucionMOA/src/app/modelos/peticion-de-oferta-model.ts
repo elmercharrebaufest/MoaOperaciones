@@ -40,7 +40,8 @@ export interface PeticionDeOfertaUsarioDto {
     PropuestaTecnicaAprobada?: boolean,
     RealizoVisita?: boolean,
     EstaHabilitado: boolean,
-    ValidacionCircularSolicitante?: boolean
+    ValidacionCircularSolicitante?: boolean,
+    ObservacionNoCumple?: string
 }
     
 export interface PeticionDeOfertaSolpPosicionDto{

@@ -34,7 +34,7 @@
     [Corredor_Id] INT NULL, 
     [PedidoSAP] NVARCHAR(15) NULL, 
     UsuarioCreacion_Id INT
-    CONSTRAINT [FK_OrdenDeCarga_Proveedor] FOREIGN KEY (Cliente_Id) REFERENCES Proveedor(Id), 
+    CONSTRAINT [FK_OrdenDeCarga_Proveedor] FOREIGN KEY (Cliente_Id) REFERENCES Proveedor(Id) NOT NULL, 
     [CUITCorredor] VARCHAR(15) NULL, 
     [FechaVencimiento] DATETIME NULL, 
     [FechaVencimientoAmpliada] BIT NOT NULL DEFAULT 0, 

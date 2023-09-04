@@ -1,11 +1,10 @@
 <p-dialog [(visible)]="displayRevisionTecnica" modal="modal"
           [width]="950" [draggable]="false" [closable]="true"
           (onHide)="onCerrarPeticion()" appendTo="body" positionTop="30"
-          [height]="550"
+          [height]="450"
           [max] [contentStyle]="{
-        'max-height':'550px',
+        'max-height':'450px',
         'min-height':'400px'}">
-
     <p-header class="headerModal" style="color: #067935;">
         <b>Revisión Técnica - </b> <span *ngIf="peticion != null">Petici&oacute;n de oferta #{{peticion.Id}}</span>
     </p-header>
@@ -87,6 +86,10 @@
                                             No cumple
                                         </label>
                                     </div>
+                                </div>
+                                <div class="col-xs-12 col-sm-7 col-md-7 col-lg-7" *ngIf="p.PropuestaTecnicaAprobada == false">
+                                    <label class="labelCompras" ><strong style="color: #666666;">Observaciones*</strong></label>
+                                    <textarea name="Observacion" ngDefaultControl [(ngModel)]="p.ObservacionNoCumple" placeholder="Agregue los comentarios que crea necesario..." cols="30" rows="1"></textarea>
                                 </div>
                                 <div class="col-md-1" *ngIf="peticion.TipoPosicionCodigo != 'MATERIALES'">
                                     <span style="cursor:pointer;" (click)="mostrarPanelHs(p)">

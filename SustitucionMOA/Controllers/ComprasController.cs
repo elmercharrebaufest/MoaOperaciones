@@ -803,7 +803,7 @@ namespace SustitucionMOA.Controllers
             {
                 var peticion = JsonConvert.DeserializeObject<GuardarPeticionDeOfertaDto>(json);
                 peticion.UsuarioActual = ObtenerUsuarioActual();
-                var result = service.GrabarPeticionDeOferta(peticion, Request.Files, true);
+                var result = service.GrabarPeticionDeOferta(peticion, Request.Files, true, null);
                 return JsonCustom(new { data = result });
             }
             catch (InfoCustomException e)
@@ -1028,7 +1028,7 @@ namespace SustitucionMOA.Controllers
             try
             {
                 var adjudicacion = JsonConvert.DeserializeObject<AdjudicacionDto>(json);
-                var result = service.GrabarAdjudicacion(adjudicacion, ObtenerUsuarioActual().Id);
+                var result = service.GrabarAdjudicacion(adjudicacion, ObtenerUsuarioActual().Id, "");
                 return JsonCustom(result);
             }
             catch (InfoCustomException e)

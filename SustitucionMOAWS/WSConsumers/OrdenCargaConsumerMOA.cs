@@ -411,29 +411,47 @@ namespace SustitucionMOAWS.WSConsumers
             service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
             Log.Info($"SI_MPMF_MOAOP_MOD_ENTREGA Request: {nroEntrega}");
 
-            var result = service.SI_MPMF_MOAOP_MOD_ENTREGA("", "X", "", "", "", nroEntrega, "");
+            var result = service.SI_MPMF_MOAOP_MOD_ENTREGA("", "X", "", "", "", nroEntrega, "", "", "");
 
             Log.Info($"SI_MPMF_MOAOP_MOD_ENTREGA Result: {new { result, nroEntrega }}");
 
             return new ModEntregaResponseHandler(result);
         }
-        public ResultadoGenerico ModificarEntregaOrdenCarga(ModificarEntregaOrdenCargaSAP datosEntrega)
+
+        public ResultadoGenerico ModificarEntregaOrdenCarga(ModificarEntregaRequest req)
         {
             var service = new SI_MPMF_MOAOP_MOD_ENTREGAClient();
-
             service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
             service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
-            Log.Info($"SI_MPMF_MOAOP_MOD_ENTREGA Request: {datosEntrega.NumeroEntrega} {datosEntrega.ToJson()}");
+
+            var cuitTransporte =
+                !string.IsNullOrEmpty(req.CUITIntermediarioFlete) ?
+                    req.CUITIntermediarioFlete :
+                    req.CUITTransporte;
+
+            var codigoSapTransporte = DataFormatter.CuitACodigoSap(cuitTransporte);
+
+            var cuitTransportistaReal =
+                !string.IsNullOrEmpty(req.CUITIntermediarioFlete) ?
+                    req.CUITTransporte :
+                    req.CUITIntermediarioFlete;
+
+            Log.Info($"SI_MPMF_MOAOP_MOD_ENTREGA " +
+                $"Request: {req.ToJson()}, " +
+                $"codigoSapTransporte: {codigoSapTransporte}, " +
+                $"cuitTransportistaReal: {cuitTransportistaReal}.");
 
             var result = service.SI_MPMF_MOAOP_MOD_ENTREGA(
-                            datosEntrega.Acoplado,
-                            "",
-                            datosEntrega.Chasis,
-                            datosEntrega.Chofer,
-                            datosEntrega.Documento,
-                            datosEntrega.NumeroEntrega,
-                            datosEntrega.TipoDoc);
-            Log.Info($"SI_MPMF_MOAOP_MOD_ENTREGA Result: {new { result, nroEntrega = datosEntrega.NumeroEntrega }}");
+                            IM_ACOPLADO: req.Acoplado,
+                            IM_BORRAR: "",
+                            IM_CHASIS: req.Chasis,
+                            IM_CHOFER: req.Chofer,
+                            IM_DOCUMENTO: req.Documento,
+                            IM_ENTREGA: req.NumeroEntrega,
+                            IM_TIPODOC: req.TipoDoc,
+                            IM_TRANSPORTE: codigoSapTransporte,
+                            IM_TRANSPORTISTA_REAL: cuitTransportistaReal);
+            Log.Info($"SI_MPMF_MOAOP_MOD_ENTREGA Result: {new { result, nroEntrega = req.NumeroEntrega }}");
 
             var resultado = new ResultadoGenerico();
             if (result != "Se actualizaron los datos correctamente")

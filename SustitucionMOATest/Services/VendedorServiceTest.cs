@@ -25,14 +25,17 @@ namespace SustitucionMOATest.Services
         private Mock<IRepositorio> repositorioMock;
         private Mock<IDataAgroService> dataAgroServiceMock;
         private Mock<IVendedorHabilitadoConsumerMOA> vendedorHabilitadoConsumerMock;
+        private Mock<IVendedoresConsumerMOA> vendedoresConsumerMOAMock;
 
         [SetUp]
         public void SetUp()
         {
             repositorioMock = new Mock<IRepositorio>();
             dataAgroServiceMock = new Mock<IDataAgroService>();
+            vendedoresConsumerMOAMock = new Mock<IVendedoresConsumerMOA>();
             vendedorHabilitadoConsumerMock = new Mock<IVendedorHabilitadoConsumerMOA>();
-            target = new VendedorService(repositorioMock.Object, dataAgroServiceMock.Object, vendedorHabilitadoConsumerMock.Object);
+            target = new VendedorService(repositorioMock.Object, dataAgroServiceMock.Object,
+                vendedorHabilitadoConsumerMock.Object, vendedoresConsumerMOAMock.Object);
         }
 
         public void GetVendedoresPendientesTest()
@@ -338,11 +341,19 @@ namespace SustitucionMOATest.Services
             var mailUsuario = "existente@mail.com";
             var proveedores = new List<Proveedor>() {
                 new Proveedor {
+                    Id = 1,
                     CUIT = "23-102394598-7",
                     CodigoProveedor = "C12331234",
                     Mail = mailUsuario,
                     RazonSocial = "Test SA",
-                    UsuariosAsociados = new List<Usuario>()
+                    UsuariosAsociados = new List<Usuario>(),
+                    TipoProveedor = new TipoUsuario { Id = 1 },
+                    FechaSolicitud = new DateTime(),
+                    EstadoSIPER = "EstadoSIPER",
+                    Comercial = "Comercial",
+                    IdDataAgro = 1,
+                    IdComercialDataAgro = 1,
+                    ContieneDocumentacionFisica = true
                 }
             };
             var usuario = new Usuario()
@@ -373,12 +384,20 @@ namespace SustitucionMOATest.Services
             var mailUsuario = "existente@mail.com";
             var proveedores = new List<Proveedor>() {
                 new Proveedor {
+                    Id = 1,
                     CUIT = "23-102394598-7",
                     CodigoProveedor = "C12331234",
                     Mail = mailUsuario,
                     RazonSocial = "Test SA",
                     EstadoAprobacion = EstadoAprobacion.AprobacionPendiente,
-                    UsuariosAsociados = new List<Usuario>()
+                    UsuariosAsociados = new List<Usuario>(),
+                    TipoProveedor = new TipoUsuario { Id = 1 },
+                    FechaSolicitud = new DateTime(),
+                    EstadoSIPER = "EstadoSIPER",
+                    Comercial = "Comercial",
+                    IdDataAgro = 1,
+                    IdComercialDataAgro = 1,
+                    ContieneDocumentacionFisica = true
                 }
             };
             var usuario = new Usuario()

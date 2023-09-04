@@ -62,7 +62,7 @@ export class TabImputacionesComponent extends ListBaseComponent {
 
   mostrarValidacion(campoAValidar, vacio){
     let camposVacios = this.camposObligatorios.find(x => x.campo == campoAValidar && x.esObligatorio);
-    return (camposVacios != null && vacio == undefined);
+    return (camposVacios != null && (vacio == undefined || vacio == ""));
   }
 
   actualizarTipoDeImputacion(): void {

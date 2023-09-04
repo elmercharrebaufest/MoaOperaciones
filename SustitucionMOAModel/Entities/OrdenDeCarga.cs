@@ -80,7 +80,7 @@ namespace SustitucionMOAModel.Entities
         public string DescripcionCodigoVerificacionSap { get; set; }
         public bool Reventa { get; set; }
 
-        public int? UsuarioCreacion_Id { get; set; }
+        public int UsuarioCreacion_Id { get; set; }
         [ForeignKey("UsuarioCreacion_Id")]
         public virtual Usuario UsuarioCreacion { get; set; }
 
@@ -129,7 +129,7 @@ namespace SustitucionMOAModel.Entities
         {
             get
             {
-                return !string.IsNullOrEmpty(NumeroFactura) && string.IsNullOrEmpty(NumeroFacturaSeleccionada);
+                return string.IsNullOrEmpty(NumeroFactura) || string.IsNullOrEmpty(NumeroFacturaSeleccionada);
             }
         }
 
@@ -141,9 +141,10 @@ namespace SustitucionMOAModel.Entities
         {
             var logCambioEstado = $"Actualizar estado Orden de carga {Id}. Estado inicial:{EstadoOrdenDeCargaExtensions.ToFriendlyString(Estado)}. " +
                 $"CodigoVerificacionSap:{CodigoVerificacionSap}, ContratoSAP:{ContratoSAP}, ContratoSinCantidadPendiente:{ContratoSinCantidadPendiente}, " +
-                $"NumeroPedido:{NumeroPedido}, InformadaSAP:{InformadaSAP}, TransporteExiste:{TransporteExiste}, AprobadoCredito:{AprobadoCredito}, FechaEntregaGenerada:{FechaEntregaGenerada}.";
+                $"NumeroPedido:{NumeroPedido}, InformadaSAP:{InformadaSAP}, TransporteExiste:{TransporteExiste}, AprobadoCredito:{AprobadoCredito}, FechaEntregaGenerada:{FechaEntregaGenerada}." + 
+                $"EsFacturaAnticipada:{EsFacturaAnticipada}, SinSeleccionarFactura:{SinSeleccionarFactura}";
 
-            if (Estado != EstadoOrdenDeCarga.Entregada)
+            if (Estado != EstadoOrdenDeCarga.Entregada && Estado != EstadoOrdenDeCarga.ContratoVencido)
             {
                 if (this.TieneCodigoSap(ControlCargaResEnum.MasDeUnContratoVigente) ||
                     this.TieneCodigoSap(ControlCargaResEnum.CC06IdemCC01))

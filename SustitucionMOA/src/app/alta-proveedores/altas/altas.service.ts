@@ -1,21 +1,23 @@
 
-import { map } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-
 import { BaseService } from './../../common/services/BaseService';
 import { HttpParams } from '@angular/common/http';
 import { CommonResponse } from '../../common/models/common-response';
-
+import { throwError as observableThrowError } from 'rxjs';
+import { timeoutWith } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 @Injectable()
 export class AltaEmpresaService extends BaseService {
 
-    public getEmpresas(idTipoProveedor): Observable<any> {
-        let params: HttpParams = new HttpParams();
-        params = params.append('idTipoProveedor', idTipoProveedor.toString());
+    public getEmpresas(idTipoProveedor, fechaInicio: string, fechaFin: string): Observable<any> {
+        let params: HttpParams = new HttpParams()
+        .append('idTipoProveedor', idTipoProveedor.toString())
+        .append('fechaInicio', fechaInicio)
+        .append('fechaFin', fechaFin)
 
         return this.http
-            .get('/api/AltaEmpresa/getEmpresas', { params: params, headers: this.headers });
+            .get('/api/AltaEmpresa/getEmpresas', { params: params, headers: this.headers })
+            .pipe(timeoutWith(360000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor intentelo mas tarde"))));
     }
 
     public setEstadoAprobacion(empresaId: number, estadoId: number, observacion: string, observacionesProveedor: string, estadoSIPER: string, razonSocial: string, codigoCliente: string): Observable<any> {

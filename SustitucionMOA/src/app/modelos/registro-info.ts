@@ -14,7 +14,17 @@ export interface RegistroInfoDto{
     CantidadAdjudicacion?: number,
     Cuit?: string
     Indice?: string
+    MaterialCodigo?: string
+    NumeroOrdenDeCompra?: string
 }
+
+export interface MaterialAgrupado {
+    MaterialCodigo: string;
+    Cantidad?: number;
+    CantidadAdjudicacionTotal: number;
+    Indice?: string
+}
+
 
 
 

@@ -118,6 +118,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                     EstadoVisita = u.RealizoVisita == true ? "Realizada" : "Sin realizar",
                                                     EstadoVisitaColor = u.RealizoVisita == true ? "Green" : "Red",
                                                     EstadoPropuestaTecnica = u.PropuestaTecnicaAprobada == null ? "Sin analizar" : (u.PropuestaTecnicaAprobada == true ? "Aprobada" : "Rechazada"),
+                                                    ObservacionNoCumple = u.ObservacionNoCumple,
                                                     EstadoPropuestaTecnicaColor = u.PropuestaTecnicaAprobada == null ? "Orange" : (u.PropuestaTecnicaAprobada == true ? "Green" : "Red"),
                                                     PlazoDeOferta = u.Circulares.Any(circu => circu.Circular.RequiereCambioDeFechas == true && circu.Circular.PlazoDeOferta.HasValue) ?
                                                     u.Circulares.Where(circu => circu.Circular.RequiereCambioDeFechas == true && circu.Circular.PlazoDeOferta.HasValue)

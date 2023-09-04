@@ -104,6 +104,8 @@
         VerSolpsProveedor,
         Fas_ModificarCampoReventa,
         NotificarAltaInternaGranos,
-        AdjudicarDentroDelPlazoDeOfertas
+        AdjudicarDentroDelPlazoDeOfertas,
+        HangfireDashboard,
+        // Al agregar un elemento acá, se debe agregar el mapeo en: clase Usuario, método ObtenerPermisoEnum
     }
 }
