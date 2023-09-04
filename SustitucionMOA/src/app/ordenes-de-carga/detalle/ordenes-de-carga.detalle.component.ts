@@ -95,7 +95,6 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
     esCorredor: boolean = sessionStorage.getItem("tipoUsuario") === "CORR";
     esAnulador: boolean = this.isAuthorized('ANULAR ORDEN DE CARGA');
 
-
     constructor(protected service: OrdenesDeCargaService,
         protected usuarioService: UsuarioService, protected navService: NavService,
         private route: ActivatedRoute,
@@ -115,7 +114,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
         this.navService.setSeccionList([]);
         if (this.ordenDeCargaId > 0) {
             this.obtenerOrdenDeCarga();
-        }
+        }  
     }
 
     confirmarSA(Id) {
@@ -344,6 +343,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                     } else if (result.info != undefined) {
                     } else {
                         this.ordenDeCarga = result.data;
+                        this.verificarOrdenActivaScato(this.ordenDeCarga.CUITChofer.toString());
                         this.validaCPEDG = this.ordenDeCarga.ValidaSisaRuca;
                         this.separarCadenas();
                         this.verificarBotones()
@@ -661,7 +661,6 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
     }
 
     abrirModalAnular() {
-        this.verificarOrdenActivaScato(this.ordenDeCarga.CUITChofer.toString());
         document.getElementById("openAnularOrden").click();
     }
     abrirModalAnularVencimiento() {
@@ -922,7 +921,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
         }
     }
 
-    verificarOrdenActivaScato(cuit :string){
+    verificarOrdenActivaScato(cuit){
         this.spinnerComponent.showIt();
         this.unsubscribe();
         try {
@@ -933,16 +932,12 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                     if (result.logout == true) {
                         this.sessionDataService.logout();
                         return;
-                    } else if (result.error != undefined && result.error != "") {
-                        this.mensajeValidacionScato = "No se pudo obtener el estado de la orden en Scato."
-                    } else if (result.info != undefined) {
-                        this.mensajeValidacionScato = "No se pudo obtener el estado de la orden en Scato."
+                    } else if ((result.error != undefined && result.error != "") || result.info != undefined) {
+                        this.mensajeValidacionScato = "No se pudo validar si la orden esta activa en Scato."
                     }else{
                         this.ordenActivaScato = result.data;
                         if(this.ordenActivaScato){
                             this.mensajeValidacionScato = "Actualmente la orden se encuentra activa en Scato."
-                        }else{
-                            this.mensajeValidacionScato = null;
                         }
                     }
                 },
@@ -953,8 +948,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
         } catch (e) {
             this.spinnerComponent.hideIt();
             this.blockUI.stop();
-            this.ordenActivaScato = null;
-            this.mensajeValidacionScato = "No se pudo obtener el estado de la orden en Scato."
+            this.mensajeValidacionScato = "No se pudo validar si la orden esta activa en Scato."
         }    
     }
 }

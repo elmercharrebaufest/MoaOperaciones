@@ -2750,15 +2750,8 @@ namespace SustitucionMOAUtils.Services
         {
             //Ver que cuit en particular se manda desde moa op y que valor del array se toma para validar esto???
             Log.Info("Obteniendo estado de la orden en Scato con cuitChofer: " + cuit);
-            var result = this.scatoConsumer.ObtenerRecorridoNoRechazadoPorNumeroDocumento(cuit);          
-            if(!result[0].Rechazado && !result[0].Terminado)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            var result = this.scatoConsumer.ObtenerRecorridoNoRechazadoPorNumeroDocumento(cuit);
+            return result.ToList().Any();
         }
     }
 }
