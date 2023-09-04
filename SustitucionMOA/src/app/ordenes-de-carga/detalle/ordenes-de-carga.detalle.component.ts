@@ -39,7 +39,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
     mensajeError: string = "";
     mensajeSeleccionarContrato?: string;
     mensajeSeleccionarFactura?: string;
-
+    mensajeValidacionScato: string = "";
     ordenDeCargaHistorial: any = {};
     estadosVerHistorial: EstadoOrdenDeCarga[] = [
         EstadoOrdenDeCarga.Anulada,
@@ -85,6 +85,8 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
     mostrarBotonEdicionFinalizada: boolean = false;
     mostrarBotonVerificarCompensacion: boolean = false;
 
+    ordenActivaScato: boolean = false;
+
     // esInterno: boolean = false;
     esInterno: boolean = this.isAuthorized('VER TODAS ORDENES DE CARGA');
     esTercero: boolean = this.isAuthorized('VER ORDENES DE CARGA DE TERCEROS');
@@ -113,10 +115,9 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
         });
 
         this.navService.setSeccionList([]);
-
         if (this.ordenDeCargaId > 0) {
             this.obtenerOrdenDeCarga();
-        }
+        }  
     }
 
     confirmarSA(Id) {
@@ -343,6 +344,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                     } else if (result.info != undefined) {
                     } else {
                         this.ordenDeCarga = result.data;
+                        this.verificarOrdenActivaScato(this.ordenDeCarga.CUITChofer.toString());
                         this.validaCPEDG = this.ordenDeCarga.ValidaSisaRuca;
                         this.separarCadenas();
                         this.verificarBotones()
@@ -927,5 +929,36 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
     public extraOnDestroy(): void {
         if (!this.navegandoADetalle)
             sessionStorage.removeItem(VOLVER_A_DETALLE_REPORTE)
+    }
+
+    verificarOrdenActivaScato(cuit){
+        this.spinnerComponent.showIt();
+        this.unsubscribe();
+        try {
+            this.service.validarOrdenActivaScato(cuit).pipe(
+                finalize(() => { this.blockUI.stop(); this.spinnerComponent.hideIt() })
+            ).subscribe(
+                result => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                        return;
+                    } else if ((result.error != undefined && result.error != "") || result.info != undefined) {
+                        this.mensajeValidacionScato = "No se pudo validar si la orden esta activa en Scato."
+                    }else{
+                        this.ordenActivaScato = result.data;
+                        if(this.ordenActivaScato){
+                            this.mensajeValidacionScato = "Actualmente la orden se encuentra activa en Scato."
+                        }
+                    }
+                },
+                error => {
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+            );
+        } catch (e) {
+            this.spinnerComponent.hideIt();
+            this.blockUI.stop();
+            this.mensajeValidacionScato = "No se pudo validar si la orden esta activa en Scato."
+        }    
     }
 }

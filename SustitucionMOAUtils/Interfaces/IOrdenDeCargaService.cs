@@ -57,5 +57,6 @@ namespace SustitucionMOAUtils.Interfaces
         List<AutoCompleteDropdownElement> ObtenerCuilsChofer(OrdenDeCarga ordenDeCarga, string mailUsuario);
         List<AutoCompleteDropdownElement> ObtenerCuitsTransporte(OrdenDeCarga ordenDeCarga, string mailUsuario);
 
+        bool ValidarOrdenActivaScato(string cuit);
     }
 }

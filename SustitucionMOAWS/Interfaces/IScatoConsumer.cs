@@ -15,5 +15,6 @@ namespace SustitucionMOAWS.Interfaces
         bool CuilChoferExiste(string cuil, bool logger = true);
         ValidarCuitExisteScatoResponse ExisteCuitDestinoDestinatario(string cuit, bool logger = true);
         ProveedorDto ObtenerProveedorPorCuit(string cuit);
+        RecorridoDto[] ObtenerRecorridoNoRechazadoPorNumeroDocumento(string cuit);
     }
 }

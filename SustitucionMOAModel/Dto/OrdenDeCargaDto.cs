@@ -160,6 +160,7 @@ namespace SustitucionMOAModel.Dto
         public string DescripcionEstado { get; set; }
         public string ColorSemaforo { get; set; }
         public string Chofer { get; set; }
+        public string CUITChofer { get; set; }
         public string FechaCarga { get; set; }
         public string Transporte { get; set; }
         public int Cantidad { get; set; }
@@ -265,6 +266,7 @@ namespace SustitucionMOAModel.Dto
             NumeroFactura = orden.NumeroFactura;
             NumeroFacturaSeleccionada = orden.NumeroFacturaSeleccionada;
             TipoContrato = orden.TipoContrato;
+            CUITChofer = orden.CUITChofer;
         }
 
         public override bool Equals(object obj)

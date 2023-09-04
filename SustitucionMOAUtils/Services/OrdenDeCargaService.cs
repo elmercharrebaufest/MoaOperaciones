@@ -2808,5 +2808,13 @@ namespace SustitucionMOAUtils.Services
             return cuits.Distinct().ToList();
         }
 
+
+        public bool ValidarOrdenActivaScato(string cuit)
+        {
+            //Ver que cuit en particular se manda desde moa op y que valor del array se toma para validar esto???
+            Log.Info("Obteniendo estado de la orden en Scato con cuitChofer: " + cuit);
+            var result = this.scatoConsumer.ObtenerRecorridoNoRechazadoPorNumeroDocumento(cuit);
+            return result.ToList().Any();
+        }
     }
 }
