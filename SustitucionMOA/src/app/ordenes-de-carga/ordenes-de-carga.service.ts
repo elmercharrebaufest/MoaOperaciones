@@ -481,4 +481,24 @@ export class OrdenesDeCargaService extends BaseService {
                 { params: params, headers: this.headers })
             .pipe(timeoutWith(360000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
     }
+
+    public getCuilsChofer(ordenDeCarga: OrdenDeCarga): Observable<any> {
+        let payload = new FormData();
+        payload.append(
+            "ordenDeCargaJson",
+            JSON.stringify(ordenDeCarga)
+        );
+        return this.http
+            .post('/api/OrdenDeCarga/ObtenerCuilsChofer', payload);
+    }
+
+    public getCuitsTransporte(ordenDeCarga: OrdenDeCarga): Observable<any> {
+        let payload = new FormData();
+        payload.append(
+            "ordenDeCargaJson",
+            JSON.stringify(ordenDeCarga)
+        );
+        return this.http
+            .post('/api/OrdenDeCarga/ObtenerCuitsTransporte', payload);
+    }
 }

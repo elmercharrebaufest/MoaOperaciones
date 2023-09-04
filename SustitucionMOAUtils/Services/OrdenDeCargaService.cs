@@ -2757,5 +2757,56 @@ namespace SustitucionMOAUtils.Services
                             ) &&
                             !estadosNoTieneOrdenPendienteEnvio.Contains(x.Estado));
         }
+
+        public List<AutoCompleteDropdownElement> ObtenerCuilsChofer(OrdenDeCarga ordenDeCarga, string mailUsuario)
+        {
+            List<AutoCompleteDropdownElement> cuils = new List<AutoCompleteDropdownElement>();
+            Proveedor cliente;
+            if (ordenDeCarga.Cliente == null && ordenDeCarga.PatenteAcoplado == null)
+            {
+                cuils.Add(new AutoCompleteDropdownElement() { label = " ", value = " " });
+                return cuils;
+            }
+            cliente = repositorio.Obtener<Proveedor>(
+            x => x.CUIT == ordenDeCarga.CUITCliente &&
+            x.EstadoAprobacion == EstadoAprobacion.Aprobado && x.TipoProveedor.Id == (int)TipoUsuarioEnum.Cliente);
+            if (cliente == null)
+            {
+                return cuils;
+            }
+            cuils = repositorio.Listar<OrdenDeCarga, AutoCompleteDropdownElement>(x => new AutoCompleteDropdownElement
+            {
+                label = x.CUITChofer.Substring(0, 2) + "-" + x.CUITChofer.Substring(2, 8) + "-" + x.CUITChofer.Substring(10, 1),
+                value = x.CUITChofer
+            }, x => x.Cliente_Id == cliente.Id && x.PatenteAcoplado == ordenDeCarga.PatenteAcoplado);
+
+            return cuils.Distinct().ToList();
+        }
+
+        public List<AutoCompleteDropdownElement> ObtenerCuitsTransporte(OrdenDeCarga ordenDeCarga, string mailUsuario)
+        {
+            List<AutoCompleteDropdownElement> cuits = new List<AutoCompleteDropdownElement>();
+            Proveedor cliente;
+            if (ordenDeCarga.CUITCliente == null && ordenDeCarga.PatenteAcoplado == null)
+            {
+                cuits.Add(new AutoCompleteDropdownElement() { label = " ", value = " " });
+                return cuits;
+            }
+            cliente = repositorio.Obtener<Proveedor>(
+            x => x.CUIT == ordenDeCarga.CUITCliente &&
+            x.EstadoAprobacion == EstadoAprobacion.Aprobado && x.TipoProveedor.Id == (int)TipoUsuarioEnum.Cliente);
+            if (cliente == null)
+            {
+                return cuits;
+            }
+            cuits = repositorio.Listar<OrdenDeCarga, AutoCompleteDropdownElement>(x => new AutoCompleteDropdownElement
+            {
+                label = x.CUITTransporte,
+                value = x.CUITTransporte
+            }, x => x.Cliente_Id == cliente.Id && x.PatenteAcoplado == ordenDeCarga.PatenteAcoplado);
+
+            return cuits.Distinct().ToList();
+        }
+
     }
 }
