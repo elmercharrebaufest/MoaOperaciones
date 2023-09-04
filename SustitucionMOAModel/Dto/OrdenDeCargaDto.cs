@@ -226,7 +226,7 @@ namespace SustitucionMOAModel.Dto
             Cantidad = orden.Cantidad;
             ChasisAcoplado = orden.ChasisAcoplado;
             Chofer = $"{orden.NombreChofer} ({orden.CUITChofer})";
-            ContratoSAP = string.IsNullOrEmpty(orden.ContratoSAP) ? "-" : orden.ContratoSAP;
+            ContratoSAP = orden.ContratoSAP;
             PedidoSAP = string.IsNullOrEmpty(orden.PedidoSAP) ? "-" : orden.PedidoSAP;
             Corredor = orden.CodigoCorredor;
             RazonSocialCorredor = string.IsNullOrWhiteSpace(orden.Corredor?.RazonSocial) ? "-" : orden.Corredor?.RazonSocial;

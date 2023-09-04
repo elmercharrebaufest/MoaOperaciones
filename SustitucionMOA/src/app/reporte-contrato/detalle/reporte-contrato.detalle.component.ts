@@ -89,14 +89,16 @@ export class DetalleComponent extends ListBaseComponent implements OnInit {
 
         informacionExportar = this.detalles.map(info => {
             return {
-                "Fecha Pedido": info.FechaPedido || "-",
-                "Fecha Carga": info.FechaCarga || "-",
-                "Cantidad Entregada": info.CantidadEntregadaStr || "-",
-                "Remito": info.Remito,
+                "ID": info.OrdenCargaId || "",
+                "Fecha de Carga": info.FechaCarga || "-",
+                "Cant. Entregada": info.CantidadEntregadaStr || "-",                
+                "CTG/Remito": info.Remito || "-",   
+                "CPE": info.CPE || "-",
+                "Cant. Facturada": info.CantidadFacturaStr || "-",             
                 "Factura": info.Factura || "-",
                 "Chasis": info.Chasis || "-",
                 "Acoplado": info.Acoplado || "-",
-                "Chofer": info.Chofer
+                "Chofer": info.Chofer || "-"
             }
         });
 
@@ -104,6 +106,22 @@ export class DetalleComponent extends ListBaseComponent implements OnInit {
             this.mensajeComponent.setInfoMsg("No existen datos para exportar.");
             return
         }
+
+        //Se agrega fila de totales.
+        let totales = {
+            "ID": "TOTAL",
+            "Fecha de Carga": "",
+            "Cant. Entregada": this.KilosEntregados.toLocaleString('es-ES') + " KG",
+            "CTG/Remito": "",
+            "CPE": "",
+            "Cant. Facturada": this.KilosFacturados.toLocaleString('es-ES') + " KG",
+            "Factura": "",
+            "Chasis": "",
+            "Acoplado": "",
+            "Chofer": ""
+        }
+
+        informacionExportar.push(totales);
 
         this.DownloadJsonData(informacionExportar, "ReporteContratoDetalle");
     }
