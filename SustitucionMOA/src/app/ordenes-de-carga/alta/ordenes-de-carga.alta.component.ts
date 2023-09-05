@@ -179,7 +179,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
             this.mensajeComponent.setErrorMsg(e);
         }
     }
-    
+
 
     validar() {
         if (!this.ordenDeCarga.NombreChofer || this.ordenDeCarga.NombreChofer.trim().length < 2) {
@@ -698,6 +698,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
             this.cambioProducto();
             this.validaCPEDG = (materialSeleccionado != undefined && materialSeleccionado.ValidaSisaRuca);
             this.validarKilosDisponibles()
+            this.validarSisaCorredorCliente()
             if (this.ordenDeCarga.ContratoSeleccionado.TipoContrato === TipoContrato.FacturaAnticipada)
                 this.obtenerFacturas()
         }
@@ -708,10 +709,9 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
             this.validaCPEDG = false;
         }
         this.ordenDeCarga.Reventa = this.validaCPEDG && this.modificaReventa && !this.ordenDeCarga.Reventa;
-        this.validarSisaCorredorCliente()
     }
 
-    onPatenteSeleccionada(){
+    onPatenteSeleccionada() {
         this.getCuilsChofer();
         //this.getCuitsTransporte();
     }
