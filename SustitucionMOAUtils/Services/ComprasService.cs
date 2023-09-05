@@ -66,6 +66,7 @@ namespace SustitucionMOAUtils.Services
         private readonly IObtenerProveedorConsumerMOA obtenerProveedorConsumerMOA;
         private readonly IModificarOrdenDeCompraConsumerMOA modificarOrdenDeCompraConsumerMOA;
         private readonly IVendedoresConsumerMOA vendedoresConsumerMOA;
+        private readonly IAgregarRegistroInfoConsumerMOA agregarRegistroInfoConsumerMOA;
         private readonly string rutaArchivosCompras = ConfigurationManager.AppSettings["RutaArchivosCompras"];
         private static readonly string EMAIL_TEMPLATE_SOLP = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "Solp.html");
 
@@ -87,7 +88,8 @@ namespace SustitucionMOAUtils.Services
             IObtenerOrdenesDeCompraParaSOLPConsumerMOA obtenerOrdenesDeCompraParaSOLPConsumerMOA,
             IUsuarioService usuarioService, IObtenerProveedorConsumerMOA obtenerProveedorConsumerMOA,
             IModificarOrdenDeCompraConsumerMOA modificarOrdenDeCompraConsumerMOA,
-            IVendedoresConsumerMOA vendedoresConsumerMOA
+            IVendedoresConsumerMOA vendedoresConsumerMOA,
+            IAgregarRegistroInfoConsumerMOA agregarRegistroInfoConsumerMOA
             )
         {
             this.repositorio = repositorio;
@@ -112,6 +114,7 @@ namespace SustitucionMOAUtils.Services
             this.obtenerProveedorConsumerMOA = obtenerProveedorConsumerMOA;
             this.modificarOrdenDeCompraConsumerMOA = modificarOrdenDeCompraConsumerMOA;
             this.vendedoresConsumerMOA = vendedoresConsumerMOA;
+            this.agregarRegistroInfoConsumerMOA = agregarRegistroInfoConsumerMOA;
         }
 
         public RespuestaGuardarSOLP GuardarSolp(SolpDto solp, HttpFileCollectionBase adjuntos)
@@ -4456,7 +4459,7 @@ namespace SustitucionMOAUtils.Services
                 var cotizacion = cotizacionDto.CotizacionId == 0 ? null :
                     repositorio.Obtener<Cotizacion>(cotizacionDto.CotizacionId);
                 var info = repositorio.Listar<TablaSap>(x => x.Tabla == TablasSap.Moneda || x.Tabla == TablasSap.Unidad);
-
+                var esModificar = false;
                 if (cotizacion == null)
                 {
                     if (peticionUsuario != null)
@@ -4505,11 +4508,10 @@ namespace SustitucionMOAUtils.Services
                             cotizacion.PeticionDeOfertaUsuario.PropuestaTecnicaAprobada = true;
                         }
                     }
-
                     repositorio.Agregar(cotizacion);
                 }
                 else
-                {
+                {                    
                     cotizacion.ObservacionEconomica = cotizacionDto.ObservacionEconomica;
                     cotizacion.CotizacionEstado_Id = (int)(esFinalizado ? CotizacionEstadoEnum.Cotizado : CotizacionEstadoEnum.Incompleta);
                     cotizacion.Revision = cotizacion.Revision + 1;
@@ -4534,6 +4536,7 @@ namespace SustitucionMOAUtils.Services
                     {
                         cotizacion.Archivos = new List<Archivo>();
                     }
+                    esModificar = cotizacion.CotizacionEstado_Id == (int)CotizacionEstadoEnum.Cotizado;
                 }
 
                 repositorio.GuardarCambios();
@@ -4543,9 +4546,39 @@ namespace SustitucionMOAUtils.Services
                     GuardarArchivosCotizacion(cotizacion, adjuntos);
                 }
 
-                if (cotizacion.CotizacionEstado_Id == (int)CotizacionEstadoEnum.Cotizado && enviarMail)
+                try
                 {
-                    EnviarMailCotizacion(cotizacion);
+
+                    if (cotizacion.CotizacionEstado_Id == (int)CotizacionEstadoEnum.Cotizado && enviarMail)
+                    {
+                        EnviarMailCotizacion(cotizacion);
+                    }
+                }
+                catch (Exception e)
+                {
+                    Logger.Log.Error(new Exception($"Error al enviar mail GrabarCotizacion en cotizacion: " + cotizacion.Id));
+                    Logger.Log.Error(e);
+                }
+
+                if (cotizacion.CotizacionEstado_Id == (int)CotizacionEstadoEnum.Cotizado
+                    && cotizacion.CotizacionPosiciones.FirstOrDefault()
+                    .PeticionDeOfertaSolpPosicion.SolpPosicion.TipoPosicion.Codigo == "MATERIALES")
+                {
+                    var registros = CrearRegistroInfoDto(cotizacion);
+                    var respuesta = agregarRegistroInfoConsumerMOA.AgregarRegistroInfo(registros, esModificar);
+                    if (respuesta.Errores != null && respuesta.Errores.Where(x => x.Tipo == "E").Any())
+                    {
+                        try
+                        {
+                            EnviarMailAvisoDeErrorRegistroInfo(cotizacion);
+                        }
+                        catch (Exception e)
+                        {
+
+                            Logger.Log.Error(new Exception($"Error al enviar mail AgregarRegistroInfo en cotizacion: " + cotizacion.Id));
+                            Logger.Log.Error(e);
+                        }
+                    }
                 }
                 respuestaGuardarSOLP.IdEntidad = cotizacion.Id;
                 repositorio.GuardarCambios();
@@ -4793,6 +4826,21 @@ namespace SustitucionMOAUtils.Services
             }
             asunto += "NUEVA cotización creada - SOLP " + peticion.Solp.NroSolp;
             EmailSender.EnviarMail(enviarA, asunto, "", null, CuerpoMailCotizacion(cotizacion), null, null, null, null);
+        }
+
+
+        public void EnviarMailAvisoDeErrorRegistroInfo(Cotizacion cotizacion)
+        {           
+            var asunto = "";
+            var enviarA = new List<string> { ConfigurationManager.AppSettings["EmailToReporteLogins"] };          
+            if (ConfigurationManager.AppSettings["AmbientePruebas"] != "1")
+            {
+                asunto = "Prueba:  ";
+            }
+            asunto += "Error al agregar registro info en cotizacion: " + cotizacion.Id;
+          
+            AlternateView alternateView = AlternateView.CreateAlternateViewFromString("Se informa que al momento de finalizar una cotizacion, el registro info no se pudo generar, revisar los logs", null, "text/html");           
+            EmailSender.EnviarMail(enviarA, asunto, "", null, alternateView, null, null, null, null);
         }
 
         private AlternateView CuerpoMailCotizacion(Cotizacion cotizacion)
@@ -5339,6 +5387,31 @@ namespace SustitucionMOAUtils.Services
             {
                 throw;
             }
+        }
+
+        private List<RegistroInfoDto> CrearRegistroInfoDto(Cotizacion cotizacion)
+        {
+            var registros = new List<RegistroInfoDto>();
+            foreach (var cotizacionPosicion in cotizacion.CotizacionPosiciones)
+            {
+                var registro = new RegistroInfoDto
+                {
+                    Cantidad = cotizacionPosicion.Cantidad.Value,
+                    MaterialCodigo = cotizacionPosicion.PeticionDeOfertaSolpPosicion.SolpPosicion.MaterialSolp.Codigo,
+                    Cuit = cotizacion.PeticionDeOfertaUsuario.Usuario.CUITRegistro,
+                    Unidad = cotizacionPosicion.UnidadDeMedida.Codigo,
+                    OrganizacionDeCompra = cotizacion.PeticionDeOfertaUsuario.Usuario.ObtenerProveedor().OrganizacionDeCompra,
+                    Centro = cotizacionPosicion.PeticionDeOfertaSolpPosicion.SolpPosicion.Centro.Codigo,
+                    Moneda = cotizacionPosicion.Moneda.Codigo,
+                    Precio = cotizacionPosicion.Precio.Value,
+                    FechaVigencia = cotizacionPosicion.FechaDeVigencia.Value.ToString("yyyy-MM-dd"),
+                    FechaVigenciaFormateada = cotizacionPosicion.FechaDeVigencia.Value,
+                    GrupoDeCompras = cotizacionPosicion.PeticionDeOfertaSolpPosicion.SolpPosicion.GrupoCompras.Codigo
+                };
+                registros.Add(registro);
+            }
+
+            return registros;
         }
     }
 

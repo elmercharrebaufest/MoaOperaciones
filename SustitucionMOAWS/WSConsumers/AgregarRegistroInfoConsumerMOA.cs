@@ -1,0 +1,223 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Configuration;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Newtonsoft.Json;
+using SustitucionMOAFotmatter;
+using SustitucionMOAModel.Dto;
+using SustitucionMOAModel.Entities;
+using SustitucionMOARepositorio;
+using SustitucionMOAWS.AgregarRegistroInfoServiceWebMOA;
+using SustitucionMOAWS.CredentialService;
+
+namespace SustitucionMOAWS.WSConsumers
+{
+    public class AgregarRegistroInfoConsumerMOA : IAgregarRegistroInfoConsumerMOA
+    {
+        private readonly IRepositorio repositorio;
+        private readonly SI_MMRFC_MANTENER_REGINFOClient service;
+        private readonly string rutaArchivosXmls = ConfigurationManager.AppSettings["RutaArchivosCompras"];
+
+        public AgregarRegistroInfoConsumerMOA(IRepositorio repositorio)
+        {
+            service = new SI_MMRFC_MANTENER_REGINFOClient();
+            service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
+            service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
+            this.repositorio = repositorio;
+        }
+
+        public CrearSolpConsumerMOAResponse AgregarRegistroInfo(List<RegistroInfoDto> registrosInfo, bool esModificar)
+        {
+            var fecha = DateTime.Now.ToString("yyyy-MM-dd");
+            var nombreArchivoLlamada = string.Concat(fecha, " - llamada agregarRegistro.xml");
+            var rutaArchivoLlamada = Path.Combine(rutaArchivosXmls, "Registros Info XML", nombreArchivoLlamada);
+
+            BAPIRETURN[] BAPIRETURNE = new BAPIRETURN[] { };
+            MEWIPIRTEXT[] MEWIPIRTEXTE = new MEWIPIRTEXT[] { };
+            MEWISCALEQUAN[] MEWISCALEQUANE = new MEWISCALEQUAN[] { };
+            MEWISCALEVAL[] MEWISCALEVALE = new MEWISCALEVAL[] { };
+            MEWIEINE MEWIEINEE = new MEWIEINE();
+
+            var registrosSap = DevolverDatosSapRegistro(registrosInfo, esModificar);
+
+            var serxml = new System.Xml.Serialization.XmlSerializer(registrosSap.GetType());
+            var ms = new MemoryStream();
+            serxml.Serialize(ms, registrosSap);
+            string xml = Encoding.UTF8.GetString(ms.ToArray());
+
+            foreach (var item in registrosSap)
+            {
+                MEWICONDITION[] CONDITIONE = item.CONDITION != null ? item.CONDITION.ToArray() : new MEWICONDITION[] { };
+                MEWIVALIDITY[] MEWIVALIDITYE = item.MEWIVALIDITY != null ? item.MEWIVALIDITY.ToArray() : new MEWIVALIDITY[] { };
+
+                var result = service.SI_MMRFC_MANTENER_REGINFO(item.MEWIEINA, item.MEWIEINAX, item.MEWIEINE, item.EINEX, "", ref CONDITIONE,
+                    ref MEWISCALEQUANE, ref MEWISCALEVALE, ref MEWIVALIDITYE, ref BAPIRETURNE, ref MEWIPIRTEXTE, out MEWIEINEE);
+            }
+
+            var respuesta = new CrearSolpConsumerMOAResponse();
+            respuesta.Errores = new List<CrearSolpConsumerMOAError>();
+
+            foreach (var errorSAP in BAPIRETURNE)
+            {
+                var error = new CrearSolpConsumerMOAError
+                {
+                    Codigo = errorSAP.CODE,
+                    Mensaje = errorSAP.MESSAGE,
+                    Tipo = errorSAP.TYPE
+                };
+
+                respuesta.Errores.Add(error);
+            }
+
+            var jsonRespuesta = JsonConvert.SerializeObject(respuesta);
+
+            if (!File.Exists(rutaArchivoLlamada))
+            {
+                FileInfo fileCrear = new FileInfo(rutaArchivoLlamada);
+                fileCrear.Directory.Create();
+                File.WriteAllText(fileCrear.FullName, xml);
+                File.AppendAllText(rutaArchivoLlamada, jsonRespuesta);
+            }
+            else
+            {
+                File.AppendAllText(rutaArchivoLlamada, xml);
+                File.AppendAllText(rutaArchivoLlamada, jsonRespuesta);
+            }
+            return respuesta;
+        }
+
+        private List<RegistroInfoSAP> DevolverDatosSapRegistro(List<RegistroInfoDto> registros, bool esModificar)
+        {
+            var hoy = DateTime.Now.Date;
+            var registrosSap = new List<RegistroInfoSAP>();
+            foreach (var registro in registros)
+            {
+                var registroInfoSAP = new RegistroInfoSAP
+                {
+                    MEWIEINA = new MEWIEINA
+                    {
+                        MATERIAL = registro.MaterialCodigo,
+                        VENDOR = registro.Cuit,
+                        PO_UNIT = registro.Unidad
+                    },
+                    MEWIEINAX = new MEWIEINAX
+                    {
+                        MATERIAL = "X",
+                        VENDOR = "X",
+                        PO_UNIT = "X"
+                    },
+                    MEWIEINE = new MEWIEINE
+                    {
+                        PURCH_ORG = registro.OrganizacionDeCompra,
+                        INFO_TYPE = "0",
+                        PUR_GROUP = registro.GrupoDeCompras,
+                        PLANT = registro.Centro,
+                        CURRENCY = registro.Moneda,
+                        MIN_PO_QTY = 0,
+                        NRM_PO_QTY = 1,
+                        PLND_DELRY = CalcularFecha(registro.FechaVigenciaFormateada, hoy), //es la fecha de vigencia
+                        QUOTATION = "LICITACION",
+                        QUOT_DATE = registro.FechaVigencia,
+                        NET_PRICE = registro.Precio,
+                        EFF_PRICE = registro.Precio,
+                        PRICE_UNIT = 1,
+                        ORDERPR_UN = registro.Unidad,
+                        PRICE_DATE = registro.FechaVigencia,
+                        PERIOD_IND_EXPIRATION_DATE = "D",
+                        PRICE_UNITSpecified = true,
+                        NRM_PO_QTYSpecified = true,
+                        MIN_PO_QTYSpecified = true,
+                        PLND_DELRYSpecified = true,
+                        NET_PRICESpecified = true,  
+                        EFF_PRICESpecified = true
+                    },
+                    EINEX = new MEWIEINEX
+                    {
+                        PURCH_ORG = "X",
+                        INFO_TYPE = "X",
+                        PLANT = "X",
+                        PUR_GROUP = "X",
+                        CURRENCY = "X",
+                        MIN_PO_QTY = "X",
+                        NRM_PO_QTY = "X",
+                        PLND_DELRY = "X",
+                        QUOTATION = "X",
+                        QUOT_DATE = "X",
+                        NET_PRICE = "X",
+                        PRICE_UNIT = "X",
+                        ORDERPR_UN = "X",
+                        PRICE_DATE = "X",       
+                        
+                    },
+                };
+
+                if (esModificar)
+                {
+                    registroInfoSAP.CONDITION = new List<MEWICONDITION>()
+                    {
+                       new MEWICONDITION
+                       {
+                        SERIAL_ID = "1",
+                        COND_COUNT = "01",
+                        COND_TYPE = "ZP00",
+                        COND_VALUE = registro.Precio,
+                        CURRENCY = registro.Moneda,
+                        NUMERATOR = 0,
+                        DENOMINATOR = 0,
+                        BASE_UOM = registro.Unidad,
+                        LOWERLIMIT = 0,
+                        UPPERLIMIT = 0,
+                        DENOMINATORSpecified = true,
+                        LOWERLIMITSpecified = true,
+                        UPPERLIMITSpecified = true,
+                        NUMERATORSpecified = true,
+                        COND_VALUESpecified = true,
+                        }
+                    };
+
+                    registroInfoSAP.MEWIVALIDITY = new List<MEWIVALIDITY>()
+                    {
+                        new MEWIVALIDITY
+                        {
+                        SERIAL_ID = "1",
+                        PLANT = registro.Centro,
+                        VALID_FROM = hoy.ToString("yyyy-MM-dd"),
+                        VALID_TO = registro.FechaVigencia
+                        }
+                    };
+                }
+
+                registrosSap.Add(registroInfoSAP);
+            }
+
+            return registrosSap;
+        }
+
+        private int CalcularFecha(DateTime fechaVigencia, DateTime hoy)
+        {
+            TimeSpan diferencia = fechaVigencia - hoy;
+            return diferencia.Days;
+        }
+    }
+
+
+    public interface IAgregarRegistroInfoConsumerMOA
+    {
+        CrearSolpConsumerMOAResponse AgregarRegistroInfo(List<RegistroInfoDto> registrosInfo, bool esModificar);
+
+    }
+
+    public class RegistroInfoSAP
+    {
+        public MEWIEINA MEWIEINA { get; set; }
+        public MEWIEINAX MEWIEINAX { get; set; }
+        public MEWIEINE MEWIEINE { get; set; }
+        public MEWIEINEX EINEX { get; set; }
+
+        public List<MEWIVALIDITY> MEWIVALIDITY { get; set; }
+        public List<MEWICONDITION> CONDITION { get; set; }
+    }
+}
