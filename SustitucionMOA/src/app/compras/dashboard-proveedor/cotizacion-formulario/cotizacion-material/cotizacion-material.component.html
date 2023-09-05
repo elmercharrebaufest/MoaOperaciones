@@ -72,7 +72,6 @@
                                        [(ngModel)]="posicionesCompra.Posiciones.CotizacionPosicion.Cantidad"
                                        pKeyFilter="num"
                                        (focus)="onEditarCelda(posicionesCompra.Posiciones.CotizacionPosicion, 'Cantidad', 0)"
-                                       (input)="onReestablecerValor(posicionesCompra.Posiciones.CotizacionPosicion, 'Cantidad')"
                                        (blur)="onReestablecerValor(posicionesCompra.Posiciones.CotizacionPosicion, 'Cantidad')"
                                        (ngModelChange)="calcularValorNeto(posicionesCompra?.Posiciones?.CotizacionPosicion, posicionesCompra.Id); mostrarMensajeNoRespetaCondiciones()" />
                             </ng-template>
@@ -138,8 +137,7 @@
                                        [disabled]="posicionesCompra.Posiciones.CotizacionPosicion.NoDisponible == true"
                                        [(ngModel)]="posicionesCompra.Posiciones.CotizacionPosicion.Precio"
                                        pKeyFilter="num"
-                                       (focus)="onEditarCelda(posicionesCompra.Posiciones.CotizacionPosicion, 'Precio', 0)"
-                                       (input)="onReestablecerValor(posicionesCompra.Posiciones.CotizacionPosicion, 'Precio')"
+                                       (focus)="onEditarCelda(posicionesCompra.Posiciones.CotizacionPosicion, 'Precio', 0)"                                     
                                        (blur)="onReestablecerValor(posicionesCompra.Posiciones.CotizacionPosicion, 'Precio')"
                                        (ngModelChange)="calcularValorNeto(posicionesCompra?.Posiciones?.CotizacionPosicion, posicionesCompra.Id); mostrarMensajeNoRespetaCondiciones()" />
                             </ng-template>
