@@ -47,6 +47,7 @@ namespace SustitucionMOATest.Services
         private Mock<IModificarOrdenDeCompraConsumerMOA> modificarOrdenDeCompraConsumerMOAMock;
         private string filePath = "";
         private Mock<IVendedoresConsumerMOA> vendedoresConsumerMOAMock;
+        private Mock<IAgregarRegistroInfoConsumerMOA> agregarRegistroInfoConsumerMOAMock;
 
         [SetUp]
         public void SetUp()
@@ -68,6 +69,8 @@ namespace SustitucionMOATest.Services
             httpContextServiceMock = new Mock<IHttpContextService>();
             obtenerRegistroInfoConsumerMOAMock = new Mock<IObtenerRegistroInfoConsumerMOA>();
             modificarOrdenDeCompraConsumerMOAMock = new Mock<IModificarOrdenDeCompraConsumerMOA>();
+            agregarRegistroInfoConsumerMOAMock = new Mock<IAgregarRegistroInfoConsumerMOA>();
+            
 
             // httpContextServiceMock.Setup(x => x.ObtenerPathLogoMail()).Returns(TestContext.CurrentContext.TestDirectory + "\\Util\\LogoBaufest.png");
 
@@ -100,7 +103,8 @@ namespace SustitucionMOATest.Services
                 usuarioServiceMock.Object,
                 obtenerProveedorConsumerMOA.Object,
                 modificarOrdenDeCompraConsumerMOAMock.Object,
-                vendedoresConsumerMOAMock.Object
+                vendedoresConsumerMOAMock.Object,
+                agregarRegistroInfoConsumerMOAMock.Object
                 );
         }
 
