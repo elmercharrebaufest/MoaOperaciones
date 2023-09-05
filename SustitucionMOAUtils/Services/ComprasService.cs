@@ -301,7 +301,7 @@ namespace SustitucionMOAUtils.Services
                         CrearCotizacionConTrabajoYaHecho(solpEntity);
                     }
 
-                    if (respuestaGuardarSOLP.Mensaje == "OK" && finalizoPrimeraVez && solp.Adicional == true)
+                    if (respuestaGuardarSOLP.Mensaje == "OK" && finalizoPrimeraVez && solp.TrabajoYaHecho != true && solp.Adicional == true)
                     {
                         CrearPeticionAutomatica(solpEntity, new List<int> { solp.ProveedorAsignadoId.Value }, null, false);
                     }
@@ -5271,7 +5271,7 @@ namespace SustitucionMOAUtils.Services
                 Adjuntos = null,
                 RegistroInfo = esRegistroInfo
             };
-            var resultado = GrabarPeticionDeOferta(peticion, null, solp.Adicional == true, registroInfoLista);
+            var resultado = GrabarPeticionDeOferta(peticion, null, solp.TrabajoYaHecho != true && solp.Adicional == true, registroInfoLista);
             var peticionEntidad = repositorio.Obtener<PeticionDeOferta>(resultado.IdEntidad);
 
             return peticionEntidad;
