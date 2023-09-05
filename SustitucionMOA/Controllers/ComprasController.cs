@@ -1154,7 +1154,6 @@ namespace SustitucionMOA.Controllers
             }
         }
 
-
         [HttpPost]
         public ActionResult ObtenerPrecioTotalPosicionProveedor(string json)
         {
@@ -1267,6 +1266,34 @@ namespace SustitucionMOA.Controllers
             catch (ValidationCustomException e)
             {
                 return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (WSCustomException e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpPost]
+        public ActionResult CerrarCotizacion(int peticionId, string observaciones)
+        {
+            try
+            {
+                var result = service.CerrarCotizacion(peticionId, ObtenerUsuarioActual().Id, observaciones);
+                return JsonCustom(new { data = result });
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e }, JsonRequestBehavior.AllowGet);
             }
             catch (WSCustomException e)
             {

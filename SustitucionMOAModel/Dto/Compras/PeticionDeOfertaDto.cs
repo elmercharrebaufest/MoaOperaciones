@@ -10,38 +10,47 @@ namespace SustitucionMOAModel.Dto
         public int Solp_Id { get; set; }
         public int UsuarioCreador_Id { get; set; }
         public DateTime FechaCreacion { get; set; }
-        public DateTime PlazoDeOferta { get; set; }
+
+        private DateTime pPlazoDeOferta;
+        public DateTime PlazoDeOferta
+        {
+            get
+            {
+                return (PlazoDeOfertaCierre == null && FechaCircular == null) ? PlazoDeOfertaOriginal :
+                  PlazoDeOfertaCierre == null ? PlazoDeOfertaCircular.Value :
+                  FechaCircular == null ? PlazoDeOfertaCierre.Value :
+                  PlazoDeOfertaCierre.Value > FechaCircular.Value ? PlazoDeOfertaCierre.Value : PlazoDeOfertaCircular.Value;
+            }
+            set { pPlazoDeOferta = value; }
+        }
         public string Observaciones { get; set; }
-        public string PlazoDeOfertaFormateado { get { return PlazoDeOferta.ToString("dd/MM/yyyy"); } }
-        
-        //public string Estado { get { return PlazoDeOferta >= DateTime.Now.Date ? "Abierto" : "Cerrado"; } }
+        public string PlazoDeOfertaFormateado { get { return PlazoDeOferta.ToString("dd/MM/yyyy hh:mm"); } }
+
         private string pEstado;
 
         public string Estado
         {
-            get { return PlazoDeOferta >= DateTime.Now.Date ? "Abierto" : "Cerrado"; }
+            get { return PlazoDeOferta >= DateTime.Now ? "Abierto" : "Cerrado"; }
             set { pEstado = value; }
         }
 
-        //public int Estado_Id { get { return PlazoDeOferta >= DateTime.Now.Date ? 1 : 2; } }
         private int pEstado_Id;
 
         public int Estado_Id
         {
-            get { return PlazoDeOferta >= DateTime.Now.Date ? 1 : 2; }
+            get { return PlazoDeOferta >= DateTime.Now ? 1 : 2; }
             set { pEstado_Id = value; }
         }
 
-        //public string EstadoColor { get { return PlazoDeOferta >= DateTime.Now.Date ? "Green" : "Red"; } }
         private string pEstadoColor;
 
         public string EstadoColor
         {
-            get { return PlazoDeOferta >= DateTime.Now.Date ? "Green" : "Red"; }
+            get { return PlazoDeOferta >= DateTime.Now ? "Green" : "Red"; }
             set { pEstadoColor = value; }
         }
 
-        public List<PeticionDeOfertaUsarioDto> Usuarios {get; set;}
+        public List<PeticionDeOfertaUsarioDto> Usuarios { get; set; }
         public DateTime? FechaEntrega { get; set; }
         public string FechaEntregaFormateado { get; set; }
         public IQueryable<CircularDto> CircularDto { get; set; }
@@ -79,6 +88,9 @@ namespace SustitucionMOAModel.Dto
         public bool? Adicional { get; set; }
         public bool? TieneAdjudicacion { get; set; }
         public string NroOrdenDeCompraAdicional { get; set; }
+        public DateTime PlazoDeOfertaOriginal { get; set; }
+        public DateTime? PlazoDeOfertaCierre { get; set; }
+        public DateTime? FechaCircular { get; set; }
     }
 
     public class PeticionDeOfertaSolpPosicionDto
@@ -91,7 +103,7 @@ namespace SustitucionMOAModel.Dto
         public int SolpId { get; set; }
         public SolpPosicionDto PosicionPeticion { get; set; }
     }
-    
+
     public class PeticionDeOfertaUsarioDto
     {
         public int UsuarioId { get; set; }
@@ -117,4 +129,12 @@ namespace SustitucionMOAModel.Dto
         public string ObservacionNoCumple { get; set; }
     }
 
+    public class PeticionDeOfertaCierreDto
+    {
+        public int Id { get; set; }
+        public int PeticionDeOferta_Id { get; set; }
+        public int Usuario_Id { get; set; }
+        public DateTime Fecha { get; set; }
+        public string Observacion { get; set; }
+    }
 }

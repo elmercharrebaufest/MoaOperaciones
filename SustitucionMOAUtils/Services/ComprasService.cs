@@ -821,6 +821,7 @@ namespace SustitucionMOAUtils.Services
                 var hoy = DateTime.Now.Date;
                 var usuariosCompras = repositorio.Listar<UsuarioCompras>();
                 var usuariosComprasRelacion = repositorio.Listar<UsuarioComprasRelacionConUsuarios>(x => x.Usuario_Id == usuarioActual.Id);
+                //var peticionCierre = repositorio.Listar<PeticionDeOfertaCierre, PeticionDeOfertaCierreDto>(pc => new PeticionDeOfertaCierreDto());
                 var peticionesDeOferta = repositorio.Listar<PeticionDeOferta, PeticionDeOfertaDto>(po => new PeticionDeOfertaDto
                 {
                     Id = po.Id,
@@ -829,26 +830,53 @@ namespace SustitucionMOAUtils.Services
                     FechaCreacion = po.FechaCreacion,
                     UsuarioCreador_Id = po.UsuarioCreador_Id,
                     Observaciones = po.Observaciones,
-                    PlazoDeOferta = po.Usuarios.GroupBy(x => x).SelectMany(x => x.Key.Circulares)
-                                    .Any(x => x.Circular.RequiereCambioDeFechas == true && x.Circular.PlazoDeOferta.HasValue) ?
-                                    po.Usuarios.GroupBy(x => x).SelectMany(x => x.Key.Circulares)
+                    PlazoDeOfertaOriginal = po.PlazoDeOferta,
+                    PlazoDeOfertaCircular = po.Usuarios.GroupBy(x => x).SelectMany(x => x.Key.Circulares)
                                     .Where(x => x.Circular.RequiereCambioDeFechas == true && x.Circular.PlazoDeOferta.HasValue)
-                                    .OrderByDescending(x => x.Circular.PlazoDeOferta).FirstOrDefault().Circular.PlazoDeOferta.Value :
-                                     po.PlazoDeOferta,
+                                    .OrderByDescending(x => x.Circular.Id).FirstOrDefault().Circular.PlazoDeOferta,
+                    FechaCircular = po.Usuarios.GroupBy(x => x).SelectMany(x => x.Key.Circulares)
+                                    .Where(x => x.Circular.RequiereCambioDeFechas == true && x.Circular.PlazoDeOferta.HasValue)
+                                    .OrderByDescending(x => x.Circular.Id).FirstOrDefault().Circular.FechaCreacion,
+                    PlazoDeOfertaCierre = po.Cierres.Any() ? po.Cierres.OrderByDescending(x => x.Fecha).FirstOrDefault().Fecha : (DateTime?)null,
+                    
+                    //PlazoDeOferta = po.Usuarios.GroupBy(x => x).SelectMany(x => x.Key.Circulares)
+                    //                .Any(x => x.Circular.RequiereCambioDeFechas == true && x.Circular.PlazoDeOferta.HasValue) ?
+                    //                po.Usuarios.GroupBy(x => x).SelectMany(x => x.Key.Circulares)
+                    //                .Where(x => x.Circular.RequiereCambioDeFechas == true && x.Circular.PlazoDeOferta.HasValue)
+                    //                .OrderByDescending(x => x.Circular.PlazoDeOferta).FirstOrDefault().Circular.FechaCreacion >
+                    //                po.Cierres.OrderByDescending(x => x.Fecha).FirstOrDefault().Fecha ?
+                    //                po.Usuarios.GroupBy(x => x).SelectMany(x => x.Key.Circulares)
+                    //                .Where(x => x.Circular.RequiereCambioDeFechas == true && x.Circular.PlazoDeOferta.HasValue)
+                    //                .OrderByDescending(x => x.Circular.PlazoDeOferta).FirstOrDefault().Circular.PlazoDeOferta.Value :
+                    //                po.Cierres.OrderByDescending(x => x.Fecha).FirstOrDefault().Fecha :
+                    //                po.Cierres.Any() ? po.Cierres.OrderByDescending(x => x.Fecha).FirstOrDefault().Fecha :
+                    //PlazoDeOferta = po.PlazoDeOferta,
 
-                    Estado = (po.Usuarios.GroupBy(x => x).SelectMany(x => x.Key.Circulares)
-                                    .Any(x => x.Circular.RequiereCambioDeFechas == true && x.Circular.PlazoDeOferta.HasValue) ?
-                                    po.Usuarios.GroupBy(x => x).SelectMany(x => x.Key.Circulares)
-                                    .Where(x => x.Circular.RequiereCambioDeFechas == true && x.Circular.PlazoDeOferta.HasValue)
-                                    .OrderByDescending(x => x.Circular.PlazoDeOferta).FirstOrDefault().Circular.PlazoDeOferta.Value :
-                                     po.PlazoDeOferta) >= hoy ? "Abierto" : "Cerrado",
+                    //Estado = po.Usuarios.GroupBy(x => x).SelectMany(x => x.Key.Circulares)
+                    //                    .Any(x => x.Circular.RequiereCambioDeFechas == true && x.Circular.PlazoDeOferta.HasValue) ?
+                    //                    po.Usuarios.GroupBy(x => x).SelectMany(x => x.Key.Circulares)
+                    //                    .Where(x => x.Circular.RequiereCambioDeFechas == true && x.Circular.PlazoDeOferta.HasValue)
+                    //                    .OrderByDescending(x => x.Circular.PlazoDeOferta).FirstOrDefault().Circular.FechaCreacion >
+                    //                    po.Cierres.OrderByDescending(p => p.Fecha).FirstOrDefault().Fecha ?
+                    //                    po.Usuarios.GroupBy(x => x).SelectMany(x => x.Key.Circulares)
+                    //                    .Where(x => x.Circular.RequiereCambioDeFechas == true && x.Circular.PlazoDeOferta.HasValue)
+                    //                    .OrderByDescending(x => x.Circular.PlazoDeOferta).FirstOrDefault().Circular.PlazoDeOferta.Value >= hoy ? "Abierto" : "Cerrado" :
+                    //                    po.Cierres.OrderByDescending(x => x.Fecha).FirstOrDefault().Fecha >= hoy ? "Abierto" : "Cerrado" :
+                    //                    po.Cierres.OrderByDescending(x => x.Fecha).FirstOrDefault().Fecha != null ? po.Cierres.OrderByDescending(x => x.Fecha)
+                    //                    .FirstOrDefault().Fecha >= hoy ? "Abierto" : "Cerrado" : po.PlazoDeOferta >= hoy ? "Abierto" : "Cerrado",
 
-                    EstadoColor = (po.Usuarios.GroupBy(x => x).SelectMany(x => x.Key.Circulares)
-                                    .Any(x => x.Circular.RequiereCambioDeFechas == true && x.Circular.PlazoDeOferta.HasValue) ?
-                                    po.Usuarios.GroupBy(x => x).SelectMany(x => x.Key.Circulares)
-                                    .Where(x => x.Circular.RequiereCambioDeFechas == true && x.Circular.PlazoDeOferta.HasValue)
-                                    .OrderByDescending(x => x.Circular.PlazoDeOferta).FirstOrDefault().Circular.PlazoDeOferta.Value :
-                                     po.PlazoDeOferta) >= hoy ? "Green" : "Red",
+                    //EstadoColor = po.Usuarios.GroupBy(x => x).SelectMany(x => x.Key.Circulares)
+                    //                    .Any(x => x.Circular.RequiereCambioDeFechas == true && x.Circular.PlazoDeOferta.HasValue) ?
+                    //                    po.Usuarios.GroupBy(x => x).SelectMany(x => x.Key.Circulares)
+                    //                    .Where(x => x.Circular.RequiereCambioDeFechas == true && x.Circular.PlazoDeOferta.HasValue)
+                    //                    .OrderByDescending(x => x.Circular.PlazoDeOferta).FirstOrDefault().Circular.FechaCreacion >
+                    //                    po.Cierres.OrderByDescending(p => p.Fecha).FirstOrDefault().Fecha ?
+                    //                    po.Usuarios.GroupBy(x => x).SelectMany(x => x.Key.Circulares)
+                    //                    .Where(x => x.Circular.RequiereCambioDeFechas == true && x.Circular.PlazoDeOferta.HasValue)
+                    //                    .OrderByDescending(x => x.Circular.PlazoDeOferta).FirstOrDefault().Circular.PlazoDeOferta.Value >= hoy ? "Green" : "Red" :
+                    //                    po.Cierres.OrderByDescending(x => x.Fecha).FirstOrDefault().Fecha >= hoy ? "Green" : "Red" :
+                    //                    po.Cierres.OrderByDescending(x => x.Fecha).FirstOrDefault().Fecha != null ? po.Cierres.OrderByDescending(x => x.Fecha)
+                    //                    .FirstOrDefault().Fecha >= hoy ? "Green" : "Red" : po.PlazoDeOferta >= hoy ? "Green" : "Red",
                 });
 
                 var ordenCompra = repositorio.Listar<Adjudicacion, AdjudicacionDto>(adjudicacion => new AdjudicacionDto
@@ -3331,6 +3359,22 @@ namespace SustitucionMOAUtils.Services
                 }
             }
 
+
+            //Cierres plazo de oferta
+            var cierres = repositorio.Listar<PeticionDeOfertaCierre>(a => a.PeticionDeOferta_Id == peticionDeOfertaId);
+            foreach (var cierre in circulares)
+            {
+                legajo.Add(new LegajoDto
+                {
+                    ArchivoId = null,
+                    Observacion = "Cierre Cotizacion: "+ cierre.Observaciones,
+                    PeticionDeOfertaId = peticionDeOfertaId,
+                    SolpId = peticion.Solp_Id,
+                    Fecha = cierre.FechaCreacion,
+                    FechaFormateado = cierre.FechaCreacion.ToString("dd/MM/yyyy")
+                });
+            }
+
             return legajo.OrderByDescending(x => x.Fecha).ToList();
         }
 
@@ -3622,12 +3666,12 @@ namespace SustitucionMOAUtils.Services
                 htmlBody += $"<br />Observaciones: {observacionesFormatted} <br /><br /><br />";
             }
 
-            if(peticion.Solp.Posiciones.Select(x => x.TipoPosicion.Codigo).FirstOrDefault() == "SERVICIO" && peticion.Solp.TipoSolp.Codigo != "SIN_PLIEGO")
+            if (peticion.Solp.Posiciones.Select(x => x.TipoPosicion.Codigo).FirstOrDefault() == "SERVICIO" && peticion.Solp.TipoSolp.Codigo != "SIN_PLIEGO")
             {
                 var downloadLinkUrl = ConfigurationManager.AppSettings["ida:RedirectUri"] + "/api/compras/DescargarPliegoDesdeLink?solpId=" + peticion.Solp.Id + "&token=" + peticion.Solp.EmailLinkToken;
 
                 htmlBody += "<p" +
-                           "style = 'line-height: 24px; font-size: 16px; margin: 0;'"+
+                           "style = 'line-height: 24px; font-size: 16px; margin: 0;'" +
                            "align = 'center' >" +
                            " Para descargar el legajo haga clic en el siguiente enlace: " +
                            $"<a href = '{ downloadLinkUrl }' download rel='noopener noreferrer'>" +
@@ -3978,6 +4022,7 @@ namespace SustitucionMOAUtils.Services
                     Id = c.Id,
                     CotizacionEstado_Id = c.CotizacionEstado_Id,
                     RespetaMateriales = c.RespetaMateriales,
+                    CotizacionEstadoDescripcion = c.CotizacionEstado.Descripcion,
                     Archivos = c.Archivos/*.Where(x => x.FileKey == FileKeys.AdjuntoCotizacionRevisionTecnica)*/.Select(archivo => new LegajoDto
                     {
 
@@ -4549,6 +4594,34 @@ namespace SustitucionMOAUtils.Services
             catch (Exception e)
             {
                 throw;
+            }
+        }
+
+        public RespuestaGuardarSOLP CerrarCotizacion(int peticionId, int usuarioActualId, string observaciones)
+        {
+            try
+            {
+                var respuestaGuardarSOLP = new RespuestaGuardarSOLP() { Errores = new List<string>() };
+
+
+                var po = new PeticionDeOfertaCierre()
+                {
+                    PeticionDeOferta_Id = peticionId,
+                    Usuario_Id = usuarioActualId,
+                    Fecha = DateTime.Now,
+                    Observacion = observaciones,
+                };
+
+                repositorio.Agregar(po);
+                repositorio.GuardarCambios();
+                respuestaGuardarSOLP.IdEntidad = peticionId;
+                return respuestaGuardarSOLP;
+
+
+            }
+            catch (Exception e)
+            {
+                return new RespuestaGuardarSOLP { Errores = new List<string> { e.Message }, Mensaje = e.Message };
             }
         }
 

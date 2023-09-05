@@ -67,6 +67,7 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
     displayOrdenDeCompra: boolean;
     ordenDeCompraId: any;
     ordenesDeCompra: AdjudicacionDto[] = [];
+    visualizarAlertCotizacion: boolean;
 
     constructor(protected service: ComprasService, protected navService: NavService,
         protected sessionDataService: SessionDataService, protected securityService: SecurityService,
@@ -87,6 +88,8 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
     checkedFilterMantenimiento = false;
     checkedFilterWeb = false;
     verTodas: boolean = this.isAuthorized('VER TODAS SOLPS');
+
+    displayCerrarCotizacion: boolean;
     //#endregion
 
     ngOnInit() {
@@ -543,5 +546,48 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
             this.ordenesDeCompra.push(adjudicacion);
         });
     }
+      
+    obtenerPeticionDeOfertaParaCerrar(Id) {
+        this.blockUI.start('Cargando...')
+        this.service.obtenerPeticionDeOferta(Id)
+            .subscribe(
+                (result) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    }
+                    else {
+                        this.peticion = result.data;
+                        this.displayCerrarCotizacion = true;
+                        this.visualizarAlertCotizacion = false;
+                        if(this.peticion.Usuarios.every(usuario => usuario.Cotizacion == null)){
+                            this.visualizarAlertCotizacion = true;
+                        }
+                        else 
+                        {
+                            if(this.peticion.Usuarios.some(usuario => usuario.Cotizacion != null && usuario.Cotizacion.CotizacionEstadoDescripcion == "Cotizado"))                            
+                            {
+                                this.visualizarAlertCotizacion = false;
+                            }else{
+                                this.visualizarAlertCotizacion = true;
+                            }
+                        }
+
+                        
+                        console.log("this.visualizarAlertCotizacion", this.visualizarAlertCotizacion)
+                        this.blockUI.stop();
+                    }
+                },
+                (error) => {
+                    this.blockUI.stop();
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+            )
+    }
+
+    cerrarModalCotizacion() {
+        this.displayCerrarCotizacion = false;
+    }
+
 
 }
+
