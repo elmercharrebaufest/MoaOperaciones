@@ -62,4 +62,11 @@ export interface PeticionDeOfertaSolpPosicionDto{
     NoDisponible: boolean,
 }
 
+export interface PeticionDeOfertaCierreDto{
+    Id: number
+    PeticionDeOferta_Id?: number
+    Usuario_Id?: number
+    Fecha?: Date,
+    Observaciones: string
+}
 

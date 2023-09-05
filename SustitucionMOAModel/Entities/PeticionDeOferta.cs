@@ -34,5 +34,7 @@ namespace SustitucionMOAModel.Entities
         [InverseProperty("PeticionDeOferta")]
         public virtual ICollection<PeticionDeOfertaArchivo> Archivos { get; set; } = new List<PeticionDeOfertaArchivo>();
 
+        [InverseProperty("PeticionDeOferta")]
+        public virtual ICollection<PeticionDeOfertaCierre> Cierres { get; set; } = new List<PeticionDeOfertaCierre>();
     }
 }

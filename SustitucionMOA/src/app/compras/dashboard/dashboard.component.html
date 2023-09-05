@@ -259,7 +259,7 @@
                                             <tr>                                    
                                                 <td class="columna">{{licitacion.Id}}</td>
                                                 <td class="columna">                                                    
-                                                    {{licitacion.PlazoDeOferta | customDateFormat | date :'d/M/yyyy'}}
+                                                    {{licitacion.PlazoDeOferta | customDateFormat | date :'d/M/yyyy hh:mm'}}
                                                 </td>
                                                 <td class="columna" [style.color]="licitacion.EstadoColor">{{licitacion.Estado}}</td>
                                                 <td class="columna">                                                   
