@@ -5398,9 +5398,9 @@ namespace SustitucionMOAUtils.Services
                 {
                     Cantidad = cotizacionPosicion.Cantidad.Value,
                     MaterialCodigo = cotizacionPosicion.PeticionDeOfertaSolpPosicion.SolpPosicion.MaterialSolp.Codigo,
-                    Cuit = cotizacion.PeticionDeOfertaUsuario.Usuario.CUITRegistro,
+                    Cuit = cotizacion.PeticionDeOfertaUsuario.Usuario.ObtenerCodigoProveedor(),
                     Unidad = cotizacionPosicion.UnidadDeMedida.Codigo,
-                    OrganizacionDeCompra = cotizacion.PeticionDeOfertaUsuario.Usuario.ObtenerProveedor().OrganizacionDeCompra,
+                    OrganizacionDeCompra = "2029",
                     Centro = cotizacionPosicion.PeticionDeOfertaSolpPosicion.SolpPosicion.Centro.Codigo,
                     Moneda = cotizacionPosicion.Moneda.Codigo,
                     Precio = cotizacionPosicion.Precio.Value,
