@@ -15,6 +15,7 @@ export interface RegistroInfoDto{
     Cuit?: string
     Indice?: string
     MaterialCodigo?: string
+    NumeroOrdenDeCompra?: string
 }
 
 export interface MaterialAgrupado {

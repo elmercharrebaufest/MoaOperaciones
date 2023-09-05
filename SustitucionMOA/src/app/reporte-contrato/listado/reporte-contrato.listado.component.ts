@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { ListBaseComponent } from '../../common/base-components/list-base-component';
 import { FloatMsgService } from '../../common/services/FloatMsgService';
 import { ModalService } from '../../common/services/ModalService';
@@ -12,6 +12,7 @@ import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { ReporteContrato } from '../ReporteContrato.model';
 import { Formatter } from '../../common/formatter/Formatter';
 import { FiltroFechaReporteComponent } from '../../common/view-child/filtro-fecha-reporte/filtro-fecha-reporte.component';
+import { VOLVER_A_DETALLE_REPORTE } from '../../common/models/ordenes-de-carga/ordenDeCarga';
 
 
 @Component({
@@ -23,12 +24,13 @@ export class ReporteContratoListado extends ListBaseComponent implements OnInit 
     @BlockUI() blockUI: NgBlockUI;
     @ViewChild(FiltroFechaReporteComponent)
     protected filtroFechaReporteComponent: FiltroFechaReporteComponent;
-    
+    @ViewChild('modalDetalleReporteContrato')
+    protected modalDetalleContrato: ElementRef<HTMLDivElement>;
+
 
     constructor(protected service: ReporteContratoService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService, private confirmationService: ConfirmationService) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
         this.filtroFechaReporteComponent = new FiltroFechaReporteComponent();
-
     }
     contratoSeleccionadoId: string = '';
     detalle: any[];
@@ -36,7 +38,7 @@ export class ReporteContratoListado extends ListBaseComponent implements OnInit 
     filtroCliente: any = null;
     filtroProducto: any = null;
     filtroTipoContrato: any = null;
-    filtroContrato :string = "";
+    filtroContrato: string = "";
     clienteSelected: string = "";
     productoSelected: string = "";
     tipoContratoSelected: string = "";
@@ -70,7 +72,7 @@ export class ReporteContratoListado extends ListBaseComponent implements OnInit 
         this.getListado();
     }
 
- 
+
     getListado() {
         this.detalle = null;
         this.varciarFiltrosReporte();
@@ -82,7 +84,7 @@ export class ReporteContratoListado extends ListBaseComponent implements OnInit 
         this.data = null;
         this.subscription = this.service.getListado(
             this.filtroFechaReporteComponent.fecha_inicio,
-            this.filtroFechaReporteComponent.fecha_fin, 
+            this.filtroFechaReporteComponent.fecha_fin,
             this.mostrarPendientes).subscribe(
                 (result: any) => {
                     this.mensajeComponent.setMsgsEmpty();
@@ -102,12 +104,16 @@ export class ReporteContratoListado extends ListBaseComponent implements OnInit 
                         this.ejecutarFiltro();
                         this.show = true;
                         this.disabled = false;
-                        
+
                         // VALIDA EL CASO CUANDO UN USUARIO ES DIRECTO
-                        const listaUsuariosDirectos = this.cabecera.filter(x=> x.Corredor == '0050005000');
-                        if (listaUsuariosDirectos!=null && listaUsuariosDirectos.length >0){
+                        const listaUsuariosDirectos = this.cabecera.filter(x => x.Corredor == '0050005000');
+                        if (listaUsuariosDirectos != null && listaUsuariosDirectos.length > 0) {
                             this.esCliente = true;
                             this.esCorredor = true;
+                        }
+                        if (!!sessionStorage.getItem(VOLVER_A_DETALLE_REPORTE)) {
+                            this.modalDetalleContrato.nativeElement.click();
+                            this.verDetalleContrato(this.service.getContratoSeleccionadoValue())
                         }
                     }
 
@@ -134,16 +140,16 @@ export class ReporteContratoListado extends ListBaseComponent implements OnInit 
         return this.show && this.cabecera.length;
     }
 
-    guardarFiltros(){
-        const {fecha_inicio, fecha_fin} = this.filtroFechaReporteComponent
-       this.service.setFechas(fecha_inicio,fecha_fin ); 
+    guardarFiltros() {
+        const { fecha_inicio, fecha_fin } = this.filtroFechaReporteComponent
+        this.service.setFechas(fecha_inicio, fecha_fin);
     }
 
-    verDetalleContrato(numeroContrato: string){
+    verDetalleContrato(numeroContrato: string) {
         this.contratoSeleccionadoId = numeroContrato;
         this.service.setContratoSeleccionado(numeroContrato);
     }
-    
+
     cargarFiltrosContratos(result: any) {
         if (result.filtroCliente != undefined) this.filtroCliente = result.filtroCliente.options;
         if (result.filtroProducto != undefined) this.filtroProducto = result.filtroProducto.options;
@@ -201,7 +207,7 @@ export class ReporteContratoListado extends ListBaseComponent implements OnInit 
     }
 
     getTotalKilogramos() {
-        this.KilosEntregados = this.cabecera.filter(x => x.Corredor !="TOTAL").map(t => t.KilosEntregados).reduce((acc, value) => acc + value, 0).toString();
+        this.KilosEntregados = this.cabecera.filter(x => x.Corredor != "TOTAL").map(t => t.KilosEntregados).reduce((acc, value) => acc + value, 0).toString();
         this.KilosPendienteEntrega = this.cabecera.filter(x => x.Corredor != "TOTAL").map(t => t.KilosPendienteEntrega).reduce((acc, value) => acc + value, 0).toString();
         this.KilosTotales = this.cabecera.filter(x => x.Corredor != "TOTAL").map(t => t.KilosTotales).reduce((acc, value) => acc + value, 0).toString();
     }
@@ -244,7 +250,7 @@ export class ReporteContratoListado extends ListBaseComponent implements OnInit 
     }
 
     ObtenerContratosFiltro() {
-        if (this.filtroContrato == "") this.blockUI.start(''); 
+        if (this.filtroContrato == "") this.blockUI.start('');
         this.subscription = this.service.obtenerContratosFiltro(this.filtroFechaReporteComponent.fecha_inicio,
             this.filtroFechaReporteComponent.fecha_fin, this.mostrarPendientes, this.cabecera).subscribe(
                 (result: any) => {
@@ -276,23 +282,23 @@ export class ReporteContratoListado extends ListBaseComponent implements OnInit 
 
     varciarFiltrosReporte() {
         this.filtroCliente = null;
-        this.filtroProducto =null;
+        this.filtroProducto = null;
         this.filtroTipoContrato = null;
         this.clienteSelected = "";
         this.productoSelected = "";
         this.tipoContratoSelected = "";
     }
-  
-    get verTipoContrato(): boolean{
+
+    get verTipoContrato(): boolean {
         return !this.esCorredor;
     }
-    get verNroPedidoCliente():boolean{
+    get verNroPedidoCliente(): boolean {
         return !this.esCorredor;
     }
-    get verCorredor():boolean{
+    get verCorredor(): boolean {
         return !this.esCorredor;
     }
-    get verCliente():boolean{
+    get verCliente(): boolean {
         return !this.esCliente
     }
 }

@@ -218,26 +218,27 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
         var lista = []
         if (this.tablaOfertas.PeticionDeOfertaPosicion.filter(x => x.Selected).length > 0) {
             this.tablaOfertas.PeticionDeOfertaPosicion.forEach((peticion) => {
-                if (peticion.Selected && !peticion.Posicion.AdjudicacionCompleta) { 
+                if (peticion.Selected && !peticion.Posicion.AdjudicacionCompleta) {
                     usuario.Cotizacion.CotizacionPosiciones.forEach((cotizacionPos) => {
                         if (peticion.Id == cotizacionPos.PeticionDeOfertaSolpPosicion_Id)
                             lista.push({
                                 Posicion: peticion.Posicion.Indice,
                                 CotizacionPosicion_Id: cotizacionPos.Id,
                                 Cantidad: this.tablaOfertas.TipoPosicionCodigo == 'MATERIALES' ?
-                                 peticion.Posicion.CantidadAdjudicacion : 1,
+                                    peticion.Posicion.CantidadAdjudicacion : 1,
                                 SolpPosicion_Id: peticion.Posicion.Id,
                                 CantidadCotizada: cotizacionPos.Cantidad,
                                 CantidadSolp: peticion.Posicion.CantidadPendiente,
                                 CantidadAdjudicada: this.tablaOfertas.TipoPosicionCodigo == 'MATERIALES' ?
-                                 peticion.Posicion.CantidadAdjudicada : 1,
-                                NoDisponible: cotizacionPos.NoDisponible
+                                    peticion.Posicion.CantidadAdjudicada : 1,
+                                NoDisponible: cotizacionPos.NoDisponible,
+                                MonedaCotizacion: cotizacionPos.Moneda_Id,
+                                MonedaPO: peticion.Posicion.MonedaId
                             })
                     })
                 } else {
                     peticion.Selected = false;
                 }
-
             });
 
             if (lista.length > 0) {
@@ -247,7 +248,7 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
                     return;
                 }
             } else {
-                this.floatMsgService.setInfoMsg("Debe seleccionar alguna posicion valida para adjudicar");
+                this.floatMsgService.setInfoMsg("Debe seleccionar alguna posición válida para adjudicar");
                 return;
             }
             this.adjudicacion.AdjudicacionPosiciones = lista;
@@ -255,7 +256,7 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
             this.adjudicacion.Solp_Id = this.tablaOfertas.Solp_Id;
             this.confirmacionAdjudicar();
         } else {
-            this.floatMsgService.setInfoMsg("Debe seleccionar alguna posicion para adjudicar");
+            this.floatMsgService.setInfoMsg("Debe seleccionar alguna posición para adjudicar");
         }
     }
 
@@ -281,13 +282,20 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
                     }
                 }
 
-                if(element.NoDisponible == true){
-                    self.error = "Pos " + element.Posicion + " - No se puede adjudicar una posicion no disponible";
+                if (element.NoDisponible == true) {
+                    self.error = "Pos " + element.Posicion + " - No se puede adjudicar una posición no disponible";
+                    breakFor = true;
+                    return self.error;
+                }
+
+                if (this.tablaOfertas.TipoPosicionCodigo == 'MATERIALES') {
+                    if (element.MonedaCotizacion != element.MonedaPO) {
+                        self.error = "Pos " + element.Posicion + " - La moneda de la cotización y de la OC debe ser la misma";
                         breakFor = true;
                         return self.error;
+                    }
                 }
             }
-
         });
         return this.error;
     }
@@ -329,7 +337,7 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
                         this.adjudicacion.CondicionesDeEntrega = "";
                         this.adjudicacion.CondicionesDePago = "";
                         this.adjudicacion.Garantias = "";
-                        this.adjudicacion.TextoDeCabecera = "";  
+                        this.adjudicacion.TextoDeCabecera = "";
                     }
                     this.blockUI.stop();
                 },
@@ -344,8 +352,6 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
             return false; //<-- Prevent Refresh
         }
         return false; //<-- Prevent Refresh
-
-
     }
 
     salir() {
@@ -357,24 +363,24 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
         this.displayVisualizarErrores = false;
     }
 
-    abrilModalTextos(){
+    abrilModalTextos() {
         this.displayTextos = true;
     }
 
-    cerrarModalTextos(){
+    cerrarModalTextos() {
         this.displayTextos = false;
     }
 
-    aceptarModalTextos(){
+    aceptarModalTextos() {
         this.displayTextos = false;
     }
 
 
-    guardarAdjudicacionTextos(){
-     this.adjudicacion.CondicionesDeEntrega = this.modalTexto.adjudicacion.CondicionesDeEntrega;
-     this.adjudicacion.CondicionesDePago = this.modalTexto.adjudicacion.CondicionesDePago;
-     this.adjudicacion.Garantias = this.modalTexto.adjudicacion.Garantias;
-     this.adjudicacion.TextoDeCabecera = this.modalTexto.adjudicacion.TextoDeCabecera;
+    guardarAdjudicacionTextos() {
+        this.adjudicacion.CondicionesDeEntrega = this.modalTexto.adjudicacion.CondicionesDeEntrega;
+        this.adjudicacion.CondicionesDePago = this.modalTexto.adjudicacion.CondicionesDePago;
+        this.adjudicacion.Garantias = this.modalTexto.adjudicacion.Garantias;
+        this.adjudicacion.TextoDeCabecera = this.modalTexto.adjudicacion.TextoDeCabecera;
     }
 
 }

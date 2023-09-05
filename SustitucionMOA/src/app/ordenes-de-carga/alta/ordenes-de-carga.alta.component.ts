@@ -97,6 +97,9 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
     listaDomicilios?: Domicilio[];
     domicilioSeleccionado?: Domicilio;
 
+    cuilsChofer: any;
+    cuitsTransporte: any;
+
     intermediarioFleteCuitFormatoValido: boolean = true;
 
     constructor(protected service: OrdenesDeCargaService, protected usuarioService: UsuarioService, protected navService: NavService, protected seleccionarProveedorService: SeleccionarProveedorService, private route: ActivatedRoute, protected sessionDataService: SessionDataService, protected securytiService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService, protected empresaGranosService: EmpresaGranosService, public datepipe: DatePipe) {
@@ -177,6 +180,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
             this.mensajeComponent.setErrorMsg(e);
         }
     }
+
 
     validar() {
         if (!this.ordenDeCarga.NombreChofer || this.ordenDeCarga.NombreChofer.trim().length < 2) {
@@ -466,11 +470,84 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
         }
     }
 
+    getCuilsChofer() {
+        this.floatMsgService.setMsgsEmpty();
+        this.unsubscribe();
+        try {
+            this.subscription = this.service.getCuilsChofer(this.ordenDeCarga).subscribe(
+                (result: any) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        console.error(' getCuilsChofer: ', result.error);
+                        this.floatMsgService.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        console.info(' getCuilsChofer: ', result.info);
+                        this.floatMsgService.setInfoMsg(result.info);
+                    } else {
+                        this.cuilsChofer = result.cuils.map((cuil) => {
+                            return { label: cuil.label, value: cuil.value };
+                        })
+                        this.getCuitsTransporte();
+                    }
+                },
+                error => {
+                    console.error(' getCuilsChofer: ', error.message);
+                    this.floatMsgService.setErrorMsg(error.message);
+                }
+
+            );
+        } catch (err) {
+            console.error(' getCuilsChofer: ', err);
+            this.floatMsgService.setErrorMsg(err);
+            return false; //<-- Prevent Refresh
+        }
+    }
+
+    getCuitsTransporte() {
+        this.floatMsgService.setMsgsEmpty();
+        this.unsubscribe();
+        try {
+            this.subscription = this.service.getCuitsTransporte(this.ordenDeCarga).subscribe(
+                (result: any) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        console.error(' getCuitsTransporte: ', result.error);
+                        this.floatMsgService.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        console.info(' getCuitsTransporte: ', result.info);
+                        this.floatMsgService.setInfoMsg(result.info);
+                    } else {
+                        this.cuitsTransporte = result.cuits.map((cuit) => {
+                            return { label: cuit.label, value: cuit.value };
+                        })
+                    }
+                },
+                error => {
+                    console.error(' getCuitsTransporte: ', error.message);
+                    this.floatMsgService.setErrorMsg(error.message);
+                }
+
+            );
+        } catch (err) {
+            console.error(' getCuitsTransporte: ', err);
+            this.floatMsgService.setErrorMsg(err);
+            return false; //<-- Prevent Refresh
+        }
+    }
+
     PatenteChasisSelected(value: any) {
         this.ordenDeCarga.ChasisAcoplado = value.label;
     }
     PatenteAcopladoSelected(value: any) {
         this.ordenDeCarga.PatenteAcoplado = value.value;
+    }
+    cuitChoferSelected(value: any) {
+        this.ordenDeCarga.CUITChofer = value.value;
+    }
+    cuitTransporteSelected(value: any) {
+        this.ordenDeCarga.CUITTransporte = value.value;
     }
 
     generalFormatter(data: any): string {
@@ -622,6 +699,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
             this.cambioProducto();
             this.validaCPEDG = (materialSeleccionado != undefined && materialSeleccionado.ValidaSisaRuca);
             this.validarKilosDisponibles()
+            this.validarSisaCorredorCliente()
             if (this.ordenDeCarga.ContratoSeleccionado.TipoContrato === TipoContrato.FacturaAnticipada)
                 this.obtenerFacturas()
         }
@@ -632,8 +710,13 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
             this.validaCPEDG = false;
         }
         this.ordenDeCarga.Reventa = this.validaCPEDG && this.modificaReventa && !this.ordenDeCarga.Reventa;
-        this.validarSisaCorredorCliente()
     }
+
+    onPatenteSeleccionada() {
+        this.getCuilsChofer();
+        //this.getCuitsTransporte();
+    }
+
     validarCorredorClienteContratoProducto = (
         clienteCuit: string,
         clienteCodigo: string,
@@ -835,9 +918,11 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
                             if (resp.Error) {
                                 this.mensajeComponent.setErrorMsg(resp.Error);
                                 this.messagesContainer.nativeElement.scrollIntoView({ behavior: 'smooth' })
+                                this.reiniciarProducto();
                             } else
                                 if (resp.Info) {
                                     this.mensajeComponent.setInfoMsg(resp.Info);
+                                    this.reiniciarProducto();
                                 } else {
                                     this.contratosDisponibles = resp.Contratos.map(c => {
                                         return new ContratoOrdenFas(c.NumeroContrato, c.TipoContrato, c.Producto, c.KgDisponibles);
@@ -1254,7 +1339,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
         }
     }
     validarKilosDisponiblesPedido() {
-        this.mensajesOrdenDeCarga.ContratoSeleccionado = null;
+        this.mensajesOrdenDeCarga.NumeroFacturaSeleccionada = null;
         const esInterno = (this.esComercial || this.esCorredor || this.esAdmin);
 
         if (this.ordenDeCargaId == 0 && !esInterno) {

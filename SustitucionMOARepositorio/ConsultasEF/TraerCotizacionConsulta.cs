@@ -22,7 +22,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
         }
         public PeticionDeOfertaDto Ejecutar(DbContext contexto)
         {
-            var cotizacionesHoras = new List<CotizacionHorasDto>();
+            
             try
             {
                 ((IObjectContextAdapter)contexto).ObjectContext.CommandTimeout = 180;
@@ -45,7 +45,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                     RespetaMateriales = cotizacion != null ? cotizacion.RespetaMateriales : null,
                                     RespetaServicios = cotizacion != null ? cotizacion.RespetaServicios : null,
                                     TipoPosicionCodigo = po.PeticionDeOferta.Solp.Posiciones.Select(x => x.TipoPosicion.Codigo).FirstOrDefault(),
-                                    CotizacionId = cotizacion != null ? cotizacion.Id : 0,
+                                    CotizacionId = cotizacion != null ? cotizacion.Id : 0,                                    
                                     PeticionDeOfertaPosicion = po.PeticionDeOferta.Posiciones.Where(posi => posi.SolpPosicion.EsConcluido == true && posi.SolpPosicion.Estado == true).Select(pop =>
                                     new PeticionDeOfertaSolpPosicionDto()
                                     {
@@ -80,6 +80,8 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                 FechaDeEntrega = cotizacion != null && cotizacion.CotizacionPosiciones.Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id).FirstOrDefault().FechaDeEntrega != null ? cotizacion.CotizacionPosiciones.Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id).FirstOrDefault().FechaDeEntrega : (DateTime?)null,
                                                 FechaDeEntregaFormateado = cotizacion != null && cotizacion.CotizacionPosiciones.Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id).FirstOrDefault().FechaDeEntrega != null ? SqlFunctions.DateName("day", cotizacion.CotizacionPosiciones.Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id).FirstOrDefault().FechaDeEntrega) + "/" + SqlFunctions.DatePart("month", cotizacion.CotizacionPosiciones.Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id).FirstOrDefault().FechaDeEntrega) + "/" + SqlFunctions.DateName("year", cotizacion.CotizacionPosiciones.Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id).FirstOrDefault().FechaDeEntrega) : "",
                                                 PlazoDeEntrega = 0,
+                                                FechaDeVigencia = cotizacion != null && cotizacion.CotizacionPosiciones.Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id).FirstOrDefault().FechaDeVigencia != null ? cotizacion.CotizacionPosiciones.Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id).FirstOrDefault().FechaDeVigencia : (DateTime?)null,
+                                                FechaDeVigenciaFormateado = cotizacion != null && cotizacion.CotizacionPosiciones.Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id).FirstOrDefault().FechaDeVigencia != null ? SqlFunctions.DateName("day", cotizacion.CotizacionPosiciones.Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id).FirstOrDefault().FechaDeVigencia) + "/" + SqlFunctions.DatePart("month", cotizacion.CotizacionPosiciones.Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id).FirstOrDefault().FechaDeVigencia) + "/" + SqlFunctions.DateName("year", cotizacion.CotizacionPosiciones.Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id).FirstOrDefault().FechaDeVigencia) : "",
                                                 PrecioTotal = cotizacion != null && cotizacion.CotizacionPosiciones.Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id).FirstOrDefault().Cantidad != null && cotizacion.CotizacionPosiciones.Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id).FirstOrDefault().Precio != null ? cotizacion.CotizacionPosiciones.Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id).FirstOrDefault().Cantidad.Value * cotizacion.CotizacionPosiciones.Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id).FirstOrDefault().Precio.Value : 0,
                                                 Moneda = new TablaSapDto
                                                 {
@@ -244,7 +246,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
             }
             catch (Exception ex)
             {
-                throw;
+               throw;
             }
         }
 

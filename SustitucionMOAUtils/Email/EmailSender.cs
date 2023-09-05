@@ -307,7 +307,7 @@ namespace SustitucionMOAUtils.Email
     }
 
     public class EmailSenderData
-	{
+    {
         public List<string> Mails { get; set; } = new List<string>();
         public string Asunto { get; set; }
         public string Cuerpo { get; set; }

@@ -86,6 +86,7 @@
   color: #333333;
   background: #ffffff;
   cursor: pointer;
+  font-family: 'Roboto Regular';
 }
 
 .option {
@@ -158,4 +159,12 @@
 
 .selected-option:hover {
   background-color: #0867af;
+}
+
+.dropdown-input-disabled {
+  cursor: default !important;
+  color: #9f9f9f !important;
+}
+.dropdown-input-disabled-icon{
+color: #bfbfbf !important
 }

@@ -3,6 +3,7 @@ export interface DetalleReporteContrato {
     CantidadEntregada: number;
     CantidadEntregadaStr: string;
     CantidadFactura: number;
+    CantidadFacturaStr: string;
     Chasis: string;
     Chofer: string;
     Destinatario: string;
@@ -14,6 +15,8 @@ export interface DetalleReporteContrato {
     NombreDestinatario: string;
     Pedido: string;
     Remito: string;
+    CPE: string;
+    OrdenCargaId: number;
 }
 export interface ReporteContrato {
     Contrato: string;

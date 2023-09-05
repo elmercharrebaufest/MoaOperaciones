@@ -8,6 +8,7 @@
     [HorasExtras] INT            NOT NULL,
     [Gremio]              NVARCHAR(MAX)            NOT NULL
     CONSTRAINT [PK_CotizacionHora] PRIMARY KEY CLUSTERED ([Id] ASC),
+    [ConfigurarHora] BIT NULL DEFAULT 0, 
     CONSTRAINT [FK.CotizacionHora_Cotizacion_Cotizacion_Id] FOREIGN KEY ([Cotizacion_Id]) REFERENCES [Cotizacion]([Id]),
 
 );

@@ -13,27 +13,35 @@ export class DropdownInputComponent<T> implements OnInit, OnDestroy {
   @Input() filterKey: keyof T = "filter" as keyof T;
   @Input() valueKey?: keyof T;
   @Input() placeholder: string = "Seleccione ..";
+  @Input() disabled = false;
   filteredOptions: Array<T> = this.options;
-  @Input() _selectedOption?: T;
 
   showDropdown = new BehaviorSubject(false);
   subscriptions = new Subscription();
   @ContentChild(TemplateRef) optionTemplate?: TemplateRef<any>;
   @ViewChild('filter') filterInput: ElementRef<HTMLInputElement>;
-  @Output() valueChange: EventEmitter<T> = new EventEmitter();
 
-  /** Propiedad para evitar el click outside que cierra al abrir. Requiere mejora*/
-  counter = -1;
+  selectedValue?: T;
+
+  @Input()
+  get selected() {
+    return this.selectedValue;
+  }
+  @Output() selectedChange = new EventEmitter();
+
+  set selected(val) {
+    this.selectedValue = val;
+    this.selectedChange.emit(this.selectedValue);
+    this.closeDropdown();
+  }
 
   ngOnInit(): void {
     this.subscriptions.add(
       this.showDropdown.subscribe(showDropdown => {
         if (showDropdown) {
-          this.counter = -1;
           this.filteredOptions = this.options;
           setTimeout(() => this.filterInput.nativeElement.focus(), 0);
-        } else
-          this.counter++;
+        }
       })
     )
   }
@@ -51,19 +59,14 @@ export class DropdownInputComponent<T> implements OnInit, OnDestroy {
     );
   }
 
-  onSelectOption(option: T) {
-    this._selectedOption = option;
-    this.filteredOptions = [];
-    this.showDropdown.next(false);
-    this.valueChange.emit(this._selectedOption)
-  }
-
   toggleDropdown() {
-    this.showDropdown.next(!this.showDropdown.value)
+    if (!this.disabled)
+      this.showDropdown.next(!this.showDropdown.value)
   }
 
   closeDropdown() {
-    this.showDropdown.next(false);
+    if (this.showDropdown.value)
+      this.showDropdown.next(false);
   }
 
   ngOnDestroy(): void {

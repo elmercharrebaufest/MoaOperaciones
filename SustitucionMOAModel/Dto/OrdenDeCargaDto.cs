@@ -45,6 +45,7 @@ namespace SustitucionMOAModel.Dto
         public string DomicilioDescr { get; set; }
         public bool Reventa { get; set; }
         public bool Escalable { get; set; }
+        public TipoContratoFAS TipoContrato { get; set; }
 
         public OrdenDeCargaDto()
         {
@@ -159,6 +160,7 @@ namespace SustitucionMOAModel.Dto
         public string DescripcionEstado { get; set; }
         public string ColorSemaforo { get; set; }
         public string Chofer { get; set; }
+        public string CUITChofer { get; set; }
         public string FechaCarga { get; set; }
         public string Transporte { get; set; }
         public int Cantidad { get; set; }
@@ -210,7 +212,7 @@ namespace SustitucionMOAModel.Dto
         public bool Escalable { get; set; }
 
         public OrdenDeCargaDetalleDto() { }
-        
+
         public OrdenDeCargaDetalleDto(Ent.OrdenDeCarga orden, List<OrdenDeCargaCambiosHistorialDto> ordenDeCargaCambiosHistorial, Proveedor cliente)
         {
             Id = orden.Id;
@@ -225,7 +227,7 @@ namespace SustitucionMOAModel.Dto
             Cantidad = orden.Cantidad;
             ChasisAcoplado = orden.ChasisAcoplado;
             Chofer = $"{orden.NombreChofer} ({orden.CUITChofer})";
-            ContratoSAP = string.IsNullOrEmpty(orden.ContratoSAP) ? "-" : orden.ContratoSAP;
+            ContratoSAP = orden.ContratoSAP;
             PedidoSAP = string.IsNullOrEmpty(orden.PedidoSAP) ? "-" : orden.PedidoSAP;
             Corredor = orden.CodigoCorredor;
             RazonSocialCorredor = string.IsNullOrWhiteSpace(orden.Corredor?.RazonSocial) ? "-" : orden.Corredor?.RazonSocial;
@@ -261,6 +263,10 @@ namespace SustitucionMOAModel.Dto
             PlantaCodigo = orden.PlantaCodigo;
             DomicilioDescr = orden.DomicilioDescr;
             Escalable = orden.Escalable;
+            NumeroFactura = orden.NumeroFactura;
+            NumeroFacturaSeleccionada = orden.NumeroFacturaSeleccionada;
+            TipoContrato = orden.TipoContrato;
+            CUITChofer = orden.CUITChofer;
         }
 
         public override bool Equals(object obj)
@@ -292,7 +298,9 @@ namespace SustitucionMOAModel.Dto
                    ContratoIngresado == dto.ContratoIngresado &&
                    Cliente == dto.Cliente &&
                    DescripcionEstadoUsuarioFinal == dto.DescripcionEstadoUsuarioFinal &&
-                   MensajeValidacionSAP == dto.MensajeValidacionSAP;
+                   MensajeValidacionSAP == dto.MensajeValidacionSAP &&
+                   NumeroFacturaSeleccionada == dto.NumeroFacturaSeleccionada &&
+                   NumeroFactura == dto.NumeroFactura;
         }
 
         public override int GetHashCode()
@@ -338,43 +346,5 @@ namespace SustitucionMOAModel.Dto
         public string Usuario { get; set; }
         public string Antes { get; set; }
         public string Despues { get; set; }
-    }
-    public class ModificarEntregaOrdenCargaSAP
-    {
-        public string Chasis { get; set; }
-        public string NumeroEntrega { get; set; }
-        public string Acoplado { get; set; }
-        public string Chofer { get; set; }
-        public string TipoDoc { get; set; }
-        public string Documento { get; set; }
-
-        public ModificarEntregaOrdenCargaSAP(Ent.OrdenDeCarga orden)
-        {
-            Chasis = orden.ChasisAcoplado;
-            Acoplado = orden.PatenteAcoplado;
-            Chofer = orden.NombreChofer;
-            NumeroEntrega = orden.NumeroEntrega;
-            TipoDoc = string.Empty;
-            Documento = string.Empty;
-        }
-        public ModificarEntregaOrdenCargaSAP() { }
-        public string ToJson()
-        {
-            try
-            {
-                var serializer = new DataContractJsonSerializer(typeof(ModificarEntregaOrdenCargaSAP));
-
-                using (var ms = new MemoryStream())
-                {
-                    serializer.WriteObject(ms, this);
-                    return Encoding.UTF8.GetString(ms.ToArray());
-                }
-            }
-            catch (Exception)
-            {
-                return "error al serializar el objeto.";
-            }
-
-        }
     }
 }

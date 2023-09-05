@@ -14,6 +14,7 @@
     <div class="row myRow" style="padding-top: 2px;">
         <div *ngIf="posicionesCompra != undefined">
         </div>
+        <div class="row-fluid">
         <p-table class="table-responsive" styleClass="font-size: 10px" #tabla
             [value]="peticion.PeticionDeOfertaPosicion" dataKey="Id">
             <ng-template pTemplate="header" let-columns>
@@ -44,6 +45,8 @@
                                     text-transform: none !important;">Precio<br /> Unidad</th>
                     <th class="columna" style="width: 80px; background-color: #4760ac !important;
                                     text-transform: none !important;">Precio<br /> Total</th>
+                     <th class="columna" style="width: 80px; background-color: #4a1884 !important;
+                      text-transform: none !important;">Fecha de <br />vigencia</th>
                     <th class="columna" style="width: 80px; background-color: #4a1884 !important;
                     text-transform: none !important;">Fecha de <br />entrega</th>
                     <th class="columna" style="width: 66px; background-color:#4a1884 !important;
@@ -66,9 +69,12 @@
                         <p-cellEditor>
                             <ng-template pTemplate="input">
                                 <input pInputText type="number" [disabled]="posicionesCompra.Posiciones.CotizacionPosicion.NoDisponible == true"
-                                    [(ngModel)]="posicionesCompra.Posiciones.CotizacionPosicion.Cantidad"
-                                    pKeyFilter="num"
-                                    (ngModelChange)="calcularValorNeto(posicionesCompra?.Posiciones?.CotizacionPosicion, posicionesCompra.Id); mostrarMensajeNoRespetaCondiciones()" />
+                                       [(ngModel)]="posicionesCompra.Posiciones.CotizacionPosicion.Cantidad"
+                                       pKeyFilter="num"
+                                       (focus)="onEditarCelda(posicionesCompra.Posiciones.CotizacionPosicion, 'Cantidad', 0)"
+                                       (input)="onReestablecerValor(posicionesCompra.Posiciones.CotizacionPosicion, 'Cantidad')"
+                                       (blur)="onReestablecerValor(posicionesCompra.Posiciones.CotizacionPosicion, 'Cantidad')"
+                                       (ngModelChange)="calcularValorNeto(posicionesCompra?.Posiciones?.CotizacionPosicion, posicionesCompra.Id); mostrarMensajeNoRespetaCondiciones()" />
                             </ng-template>
                             <ng-template pTemplate="output">
                                 <div [ngClass]="{'invalido': (esFinalizado && posicionesCompra.Posiciones.CotizacionPosicion.Cantidad != undefined) && 
@@ -129,10 +135,13 @@
                         <p-cellEditor>
                             <ng-template pTemplate="input">
                                 <input pInputText type="number"
-                                    [disabled]="posicionesCompra.Posiciones.CotizacionPosicion.NoDisponible == true"
-                                    [(ngModel)]="posicionesCompra.Posiciones.CotizacionPosicion.Precio"
-                                    pKeyFilter="num"
-                                    (ngModelChange)="calcularValorNeto(posicionesCompra?.Posiciones?.CotizacionPosicion, posicionesCompra.Id);mostrarMensajeNoRespetaCondiciones()" />
+                                       [disabled]="posicionesCompra.Posiciones.CotizacionPosicion.NoDisponible == true"
+                                       [(ngModel)]="posicionesCompra.Posiciones.CotizacionPosicion.Precio"
+                                       pKeyFilter="num"
+                                       (focus)="onEditarCelda(posicionesCompra.Posiciones.CotizacionPosicion, 'Precio', 0)"
+                                       (input)="onReestablecerValor(posicionesCompra.Posiciones.CotizacionPosicion, 'Precio')"
+                                       (blur)="onReestablecerValor(posicionesCompra.Posiciones.CotizacionPosicion, 'Precio')"
+                                       (ngModelChange)="calcularValorNeto(posicionesCompra?.Posiciones?.CotizacionPosicion, posicionesCompra.Id); mostrarMensajeNoRespetaCondiciones()" />
                             </ng-template>
 
                             <ng-template pTemplate="output">
@@ -147,6 +156,24 @@
                     
                     <td class="columna">{{posicionesCompra?.Posiciones?.CotizacionPosicion?.PrecioTotal |
                         number:'1.2-2'}}</td>
+                        <td pEditableColumn class="columna" style="cursor:pointer">
+                            <p-cellEditor>
+                                <ng-template pTemplate="input" style="width: 100% !important">
+                                    <p-calendar [minDate]="hoy" class="calendar" appendTo="body" [locale]="es"
+                                        dateFormat="dd-M-yy" [disabled]="posicionesCompra.Posiciones.CotizacionPosicion.NoDisponible == true"
+                                        [(ngModel)]="posicionesCompra.Posiciones.CotizacionPosicion.FechaDeVigencia"                              
+                                        >
+                                    </p-calendar>
+                                </ng-template>
+                                <ng-template pTemplate="output">
+                                    <div style="height: 20px;" [ngClass]="{'invalido': esFinalizado && 
+                                         (posicionesCompra.Posiciones.CotizacionPosicion.FechaDeVigencia == null)}">
+                                        {{ posicionesCompra?.Posiciones?.CotizacionPosicion?.FechaDeVigencia |
+                                        date:'dd/MM/yy' }}
+                                    </div>
+                                </ng-template>
+                            </p-cellEditor>
+                        </td>
                     <td pEditableColumn class="columna" style="cursor:pointer">
                         <p-cellEditor>
                             <ng-template pTemplate="input" style="width: 100% !important">
@@ -186,8 +213,9 @@
             </ng-template>
         </p-table>
     </div>
+    </div>
     <div *ngIf="visualizarMensajeDeModificacion" class="col-md-12">
-        <strong>Por favor explique en las observaciones por qué modifico la cantidad y/o unidad de medida</strong>
+        <strong>Por favor, explique en las observaciones por qué modificó la cantidad y/o unidad de medida.</strong>
     </div>
     <br>
     <div class="col-md-12 row myRow alinearTitulo margenInput">
@@ -218,8 +246,8 @@
         </p>
         <div class="row myRow" style="padding-top: 2px;">
             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                <label class="labelCompras" for="editorTexto"> <strong style="font-size: 14px;">Adjuntar documentación
-                        (opcional)
+                <label class="labelCompras" for="editorTexto"> <strong style="font-size: 14px;">
+                    Adjuntar documentación (opcional)
                     </strong> </label>
                 <p-fileUpload [styles]="{'margin-left':'-13px; cursor: pointer;'}" name="fileUploadPeticionDeOferta"
                     auto="true" multiple="multiple" chooseLabel="Elegir archivo" [showUploadButton]=false
@@ -261,7 +289,7 @@
                     <label class="labelCompras"><strong style="font-size: 14px;">Observaciones
                             (opcional)</strong></label>
                     <textarea name="Observacion" ngDefaultControl [(ngModel)]="this.peticion.ObservacionEconomica"
-                        placeholder="Agregue los comentarios que crea necesario para los proveedores..." cols="30"
+                        placeholder="Agregue los comentarios que crea necesario..." cols="30"
                         rows="1"></textarea>
                 </div>
             </div>

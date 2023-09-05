@@ -19,6 +19,7 @@ namespace SustitucionMOAModel.Entities
         public int? Moneda_Id { get; set; }
         public decimal? Precio { get; set; }
         public DateTime? FechaDeEntrega { get; set; }
+        public DateTime? FechaDeVigencia { get; set; }
 
 
         [ForeignKey("Cotizacion_Id")]

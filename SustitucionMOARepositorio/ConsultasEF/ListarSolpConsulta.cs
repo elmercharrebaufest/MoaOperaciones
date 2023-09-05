@@ -70,16 +70,21 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                               Solp_Id = po.Solp_Id,
                                                               FechaCreacion = po.FechaCreacion,
                                                               UsuarioCreador_Id = po.UsuarioCreador_Id,
-                                                              PlazoDeOferta =
-                                                              po.Usuarios.GroupBy(p => p).SelectMany(p => p.Key.Circulares)
-                                                               .Any(p => p.Circular.RequiereCambioDeFechas == true && p.Circular.PlazoDeOferta.HasValue) ?
-                                                               po.Usuarios.GroupBy(p => p).SelectMany(p => p.Key.Circulares)
-                                                               .Where(p => p.Circular.RequiereCambioDeFechas == true && p.Circular.PlazoDeOferta.HasValue)
-                                                               .OrderByDescending(p => p.Circular.PlazoDeOferta).FirstOrDefault().Circular.PlazoDeOferta.Value :
-                                                                po.PlazoDeOferta,
+                                                              PlazoDeOfertaOriginal = po.PlazoDeOferta,
+                                                              PlazoDeOfertaCircular = po.Usuarios.GroupBy(p => p).SelectMany(p => p.Key.Circulares)
+                                                                .Where(p => p.Circular.RequiereCambioDeFechas == true && p.Circular.PlazoDeOferta.HasValue)
+                                                                .OrderByDescending(p => p.Circular.Id).FirstOrDefault().Circular.PlazoDeOferta,
+                                                              FechaCircular = po.Usuarios.GroupBy(p => p).SelectMany(p => p.Key.Circulares)
+                                                                .Where(p => p.Circular.RequiereCambioDeFechas == true && p.Circular.PlazoDeOferta.HasValue)
+                                                                .OrderByDescending(p => p.Circular.Id).FirstOrDefault().Circular.FechaCreacion,
+                                                              PlazoDeOfertaCierre = po.Cierres.Any() ? po.Cierres.OrderByDescending(p => p.Fecha).FirstOrDefault().Fecha : (DateTime?)null,
+
 
                                                               Observaciones = po.Observaciones,
-                                                          })                                
+                                                          })      
+                                   
+                                                          
+
                                 };
 
                 var itemsTotales = resultado.Count();
@@ -92,6 +97,8 @@ namespace SustitucionMOARepositorio.ConsultasEF
                 throw;
             }
         }
+
+   
 
 
     }

@@ -104,6 +104,7 @@ namespace SustitucionMOAWS.WSConsumers
                             Remito = detalle.REMITO,
                             Factura = detalle.FACTURA,
                             CantidadFactura = detalle.CANTIDAD_FACTURA,
+                            CantidadFacturaStr = SAPFormatter.FormatearCantidad(detalle.CANTIDAD_FACTURA, "KG"),
                             FacturaLegal = detalle.FACTURA_LEGAL,
                             Chasis = detalle.CHASIS,
                             Acoplado = detalle.ACOPLADO,

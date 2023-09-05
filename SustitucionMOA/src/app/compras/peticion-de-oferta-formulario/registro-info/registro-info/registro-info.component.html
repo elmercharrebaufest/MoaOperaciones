@@ -9,7 +9,7 @@
         <div class="col-md-12">
             <strong>Posici&oacute;n</strong>
             <div>
-                <p-dropdown #dd [options]="options" optionLabel="label"
+                <p-dropdown #dd [options]="options" optionLabel="label" [(ngModel)]="optionSelected"
                             optionValue="value" (onChange)="filtrarPorPosicion(dd)">
                 </p-dropdown>
             </div>
@@ -73,7 +73,12 @@
                         <td pEditableColumn class="columna">
                             <p-cellEditor>
                                 <ng-template pTemplate="input">
-                                    <input type="text" pKeyFilter="num" [(ngModel)]="registro.CantidadAdjudicacion">
+                                    <input type="text" pKeyFilter="num"
+                                           [(ngModel)]="registro.CantidadAdjudicacion"
+                                           (focus)="onEditarCelda(registro, 'CantidadAdjudicacion', 0)"
+                                           (input)="onReestablecerValor(registro, 'CantidadAdjudicacion')"
+                                           (blur)="onReestablecerValor(registro, 'CantidadAdjudicacion')" >
+
                                 </ng-template>
                                 <ng-template pTemplate="output">
                                     {{registro.CantidadAdjudicacion | number: '1.2-2'}}

@@ -46,5 +46,9 @@ namespace SustitucionMOAUtils.Interfaces
         (bool, Chofer) ValidarCuilChofer(string cuilChofer);
         Resultado SeleccionarFactura(int ordenId, string numeroFacturaSeleccionada, string mailUsuario);
         void VerificarCompensacion(int ordenId);
+        List<AutoCompleteDropdownElement> ObtenerCuilsChofer(OrdenDeCarga ordenDeCarga, string mailUsuario);
+        List<AutoCompleteDropdownElement> ObtenerCuitsTransporte(OrdenDeCarga ordenDeCarga, string mailUsuario);
+
+        bool ValidarOrdenActivaScato(string cuit);
     }
 }

@@ -177,6 +177,7 @@
     <Compile Include="Entities\CotizacionHora.cs" />
     <Compile Include="Entities\CotizacionPosicion.cs" />
     <Compile Include="Entities\CotizacionSubPosicion.cs" />
+    <Compile Include="Entities\PeticionDeOfertaCierre.cs" />
     <Compile Include="Entities\PeticionDeOfertaSolpPosicion.cs" />
     <Compile Include="Entities\PeticionDeOfertaUsuario.cs" />
     <Compile Include="Entities\PeticionDeOfertaArchivo.cs" />

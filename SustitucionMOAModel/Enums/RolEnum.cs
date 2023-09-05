@@ -20,7 +20,7 @@
         Boletos,
         Calidades,
         CesionYRectificacionDeCpe,
-        ClienteConCpedg,
+        //ClienteConCpedg,
         ClienteFason,
         Comercial,
         Comisiones,
@@ -73,5 +73,6 @@
         ComprasAdmin,
         FleteMOA,
         RevendedorFason
+        // Al agregar un elemento acá, se debe agregar el mapeo en: clase Usuario, método ObtenerRolEnum
     }
 }

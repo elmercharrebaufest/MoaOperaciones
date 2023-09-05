@@ -56,3 +56,11 @@
     -moz-box-sizing: content-box !important;
     box-sizing: content-box !important;
 }
+
+.titleSection1 {
+    font-size: 24px !important;
+    border-bottom: 1px solid #707070;
+    padding-bottom: 5px;
+    margin-left: 0px;
+    margin-right: 0px;
+}

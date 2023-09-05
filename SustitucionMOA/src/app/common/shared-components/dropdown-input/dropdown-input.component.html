@@ -1,16 +1,15 @@
 <div class="filter-select-container">
-  <div class="select-wrapper">
+  <div class="select-wrapper" clickOutside (clickOutside)="closeDropdown()">
     <div class="dropdown-input-label-container" (click)="toggleDropdown()">
-      <label class="dropdown-input-label">{{
-        _selectedOption ? filterKey ? _selectedOption[filterKey]: _selectedOption : placeholder}}
+      <label class="dropdown-input-label" [ngClass]="{'dropdown-input-disabled':disabled}">{{
+        selected ? filterKey ? selected[filterKey]: selected : placeholder}}
       </label>
-      <div class="dropdown-input-label-icon">
-        <i class="text-muted pi pi-chevron-down" style="margin-top: 0.65rem;"></i>
+      <div class="dropdown-input-label-icon text-muted " [ngClass]="{'dropdown-input-disabled-icon':disabled}">
+        <i class="pi pi-chevron-down" style="margin-top: 0.65rem;"></i>
       </div>
     </div>
     <ng-container>
-      <div *ngIf="(showDropdown | async) ||  counter <1 " [@fadeIn] clickOutside class="dropdown-input-container"
-        (clickOutside)="closeDropdown()">
+      <div *ngIf="(showDropdown | async)" [@fadeIn] class="dropdown-input-container">
         <div class="dropdown-input-container-filter-input-container">
           <input #filter type="text" class="filter-input" (input)="onInputChange($event.target.value)"
             (click)="toggleDropdown()" />
@@ -18,8 +17,8 @@
         </div>
         <hr class="break">
         <div *ngFor="let option of filteredOptions" class="option" [ngClass]="{
-          'selected-option': _selectedOption == option
-        }" (click)="onSelectOption(option)">
+          'selected-option': selected == option
+        }" (click)="selected = option">
           <ng-container
             *ngTemplateOutlet="optionTemplate || defaultOptionTemplate; context:{$implicit: option}"></ng-container>
         </div>

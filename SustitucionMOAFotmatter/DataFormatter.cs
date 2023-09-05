@@ -41,5 +41,18 @@ namespace SustitucionMOAFotmatter
             }
             return formateado;
         }
+
+        public static string CuitACodigoSap(string cuit)
+        {
+            if (string.IsNullOrEmpty(cuit) || cuit.Length < 4)
+            {
+                return cuit;
+            }
+            if (cuit.Contains("-"))
+            {
+                throw new ValidationCustomException("No se puede obtener código SAP de CUIT " + cuit);
+            }
+            return cuit.Substring(2, cuit.Length - 3);
+        }
     }
 }

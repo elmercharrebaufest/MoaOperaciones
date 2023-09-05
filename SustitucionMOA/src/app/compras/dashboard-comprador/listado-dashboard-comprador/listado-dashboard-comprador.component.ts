@@ -67,6 +67,7 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
     displayOrdenDeCompra: boolean;
     ordenDeCompraId: any;
     ordenesDeCompra: AdjudicacionDto[] = [];
+    visualizarAlertCotizacion: boolean;
 
     constructor(protected service: ComprasService, protected navService: NavService,
         protected sessionDataService: SessionDataService, protected securityService: SecurityService,
@@ -87,6 +88,8 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
     checkedFilterMantenimiento = false;
     checkedFilterWeb = false;
     verTodas: boolean = this.isAuthorized('VER TODAS SOLPS');
+
+    displayCerrarCotizacion: boolean;
     //#endregion
 
     ngOnInit() {
@@ -321,7 +324,7 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
     descargarLegajo() {
         let idPeticion = this.legajo[0].PeticionDeOfertaId;
         this.blockUI.start('Generando...')
-        this.service.descargarLegajo(idPeticion,null)
+        this.service.descargarLegajo(idPeticion, null)
             .subscribe(
                 (result) => {
                     if (result.logout == true) {
@@ -382,7 +385,7 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
                     this.blockUI.stop();
                     this.mensajeComponent.setErrorMsg(error.message);
                 }
-            )        
+            )
     }
 
     publicarCotizacion(Id: string) {
@@ -393,10 +396,10 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
 
     }
 
-    verOfertas(Id : string) {
+    verOfertas(Id: string) {
         this.goToSeccionParam('/compras/ver-ofertas', Id);
     }
-    
+
     obtenerPeticionDeOferta(Id) {
         this.blockUI.start('Cargando...')
         this.service.obtenerPeticionDeOferta(Id)
@@ -438,7 +441,7 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
                 }
             )
     }
-    
+
     cerrarCircular() {
         this.displayCircular = false;
     }
@@ -456,7 +459,7 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
         this.displayOrdenDeCompra = true;
     }
 
-    obtenerAdjudicacion(nroOC){
+    obtenerAdjudicacion(nroOC) {
         this.blockUI.start('Cargando...')
         this.service.obtenerAdjudicacion(nroOC)
             .subscribe(
@@ -476,7 +479,7 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
             )
     }
 
-    listarAdjudicaciones(solpId){      
+    listarAdjudicaciones(solpId) {
         this.blockUI.start('Cargando...')
         this.service.listarAdjudicaciones(solpId)
             .subscribe(
@@ -485,14 +488,92 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
                         this.sessionDataService.logout();
                     }
                     else {
-                        if(this.ordenesDeCompra.length > 0){
+                        if (this.ordenesDeCompra.length > 0) {
                             for (let i = this.ordenesDeCompra.length - 1; i >= 0; i--) {
                                 if (this.ordenesDeCompra[i].Solp_Id === solpId) {
-                                  this.ordenesDeCompra.splice(i, 1);
+                                    this.ordenesDeCompra.splice(i, 1);
                                 }
-                              }
-                        }                    
-                        this.mapData(result.data);                       
+                            }
+                        }
+                        if (result.data) {
+                            this.mapData(result.data);
+                            this.blockUI.stop();
+                        } else if (result.error) {
+                            this.blockUI.stop();
+                            this.mensajeComponent.setErrorMsg(result.error);
+                        }
+                    }
+                },
+                (error) => {
+                    this.blockUI.stop();
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+            )
+    }
+
+    filtrarOrdenesDeCompra(solpId): AdjudicacionDto[] {
+        return this.ordenesDeCompra.filter(orden => orden.Solp_Id == solpId);
+    }
+
+    mapData(data: any[]): void {
+        data.forEach((item: any) => {
+            const adjudicacion: AdjudicacionDto = {
+                Id: item.Id,
+                Cotizacion_Id: item.Cotizacion_Id,
+                AdjudicacionPosiciones: item.AdjudicacionPosiciones.map((posicion: any) => {
+                    const adjudicacionPosicion: AdjudicacionPosicionDto = {
+                        Id: posicion.Id,
+                        Adjudicacion_Id: posicion.Adjudicacion_Id,
+                        CotizacionPosicion_Id: posicion.CotizacionPosicion_Id,
+                        Cantidad: posicion.Cantidad,
+                        SolpPosicion_Id: posicion.SolpPosicion_Id,
+                    };
+                    return adjudicacionPosicion;
+                }),
+                Solp_Id: item.Solp_Id,
+                Moneda_Id: item.Moneda_Id,
+                TextoDeCabecera: item.TextoDeCabecera,
+                CondicionesDeEntrega: item.CondicionesDeEntrega,
+                CondicionesDePago: item.CondicionesDePago,
+                Garantias: item.Garantias,
+                TipoPosicionCodigo: item.TipoPosicionCodigo || '',
+                NumeroOrdenDeCompra: item.NumeroOrdenDeCompra || '',
+                FechaCreacion: item.FechaCreacion || '',
+                Proveedor: item.Proveedor || '',
+                MonedaDescripcion: item.MonedaDescripcion || '',
+                PrecioFinal: item.PrecioFinal || 0,
+            };
+            this.ordenesDeCompra.push(adjudicacion);
+        });
+    }
+      
+    obtenerPeticionDeOfertaParaCerrar(Id) {
+        this.blockUI.start('Cargando...')
+        this.service.obtenerPeticionDeOferta(Id)
+            .subscribe(
+                (result) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    }
+                    else {
+                        this.peticion = result.data;
+                        this.displayCerrarCotizacion = true;
+                        this.visualizarAlertCotizacion = false;
+                        if(this.peticion.Usuarios.every(usuario => usuario.Cotizacion == null)){
+                            this.visualizarAlertCotizacion = true;
+                        }
+                        else 
+                        {
+                            if(this.peticion.Usuarios.some(usuario => usuario.Cotizacion != null && usuario.Cotizacion.CotizacionEstadoDescripcion == "Cotizado"))                            
+                            {
+                                this.visualizarAlertCotizacion = false;
+                            }else{
+                                this.visualizarAlertCotizacion = true;
+                            }
+                        }
+
+                        
+                        console.log("this.visualizarAlertCotizacion", this.visualizarAlertCotizacion)
                         this.blockUI.stop();
                     }
                 },
@@ -503,41 +584,10 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
             )
     }
 
-    filtrarOrdenesDeCompra(solpId): AdjudicacionDto[] {   
-        return this.ordenesDeCompra.filter(orden => orden.Solp_Id == solpId);
-      }
+    cerrarModalCotizacion() {
+        this.displayCerrarCotizacion = false;
+    }
 
-      mapData(data: any[]): void {
-        data.forEach((item: any) => {
-          const adjudicacion: AdjudicacionDto = {
-            Id: item.Id,
-            Cotizacion_Id: item.Cotizacion_Id,
-            AdjudicacionPosiciones: item.AdjudicacionPosiciones.map((posicion: any) => {
-              const adjudicacionPosicion: AdjudicacionPosicionDto = {
-                Id: posicion.Id,
-                Adjudicacion_Id: posicion.Adjudicacion_Id,
-                CotizacionPosicion_Id: posicion.CotizacionPosicion_Id,
-                Cantidad: posicion.Cantidad,
-                SolpPosicion_Id: posicion.SolpPosicion_Id,
-              };
-              return adjudicacionPosicion;
-            }),
-            Solp_Id: item.Solp_Id,
-            Moneda_Id: item.Moneda_Id,
-            TextoDeCabecera: item.TextoDeCabecera,
-            CondicionesDeEntrega: item.CondicionesDeEntrega,
-            CondicionesDePago: item.CondicionesDePago,
-            Garantias: item.Garantias,
-            TipoPosicionCodigo: item.TipoPosicionCodigo || '',
-            NumeroOrdenDeCompra: item.NumeroOrdenDeCompra || '',
-            FechaCreacion: item.FechaCreacion || '',
-            Proveedor: item.Proveedor || '',
-            MonedaDescripcion: item.MonedaDescripcion || '',
-            PrecioFinal: item.PrecioFinal || 0,
-          };
-          this.ordenesDeCompra.push(adjudicacion); 
-        });
-      }
-      
+
 }
 

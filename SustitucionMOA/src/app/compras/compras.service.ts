@@ -7,7 +7,7 @@ import { EmailComposeModel } from '../common/email-compose/email-compose.model';
 import { SolpPosicion } from './solp/solp-posicion';
 import { AltaNuevoProveedor, EnvioSolpCompra, SolpCompraDto } from './solp-compra';
 import { CircularDto } from '../modelos/circular-model';
-import { PeticionDeOfertaDto, PeticionDeOfertaUsarioDto } from '../modelos/peticion-de-oferta-model';
+import { PeticionDeOfertaCierreDto, PeticionDeOfertaDto, PeticionDeOfertaUsarioDto } from '../modelos/peticion-de-oferta-model';
 import { AdjudicacionDto } from '../modelos/adjudicacion';
 import { OrdenDeCompraSap } from '../modelos/ordenDeCompraSap';
 import { RegistroInfoDto } from '../modelos/registro-info';
@@ -798,6 +798,15 @@ export class ComprasService extends BaseService {
 
         return this.http
             .post<any>('/api/compras/GuardarAdjudicacionAutomatica', payload, { headers: this.headers });
+    } 
+
+    public cerrarCotizacion(peticionId: number, observaciones: string) {
+        var payload = new FormData();
+        payload.append('peticionId', peticionId.toString());
+        payload.append('observaciones', observaciones);
+
+        return this.http
+            .post<any>('/api/compras/CerrarCotizacion', payload, { headers: this.headers });
     } 
 
 

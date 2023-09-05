@@ -63,20 +63,15 @@ export class Solp extends CommonResponse {
     public observacionesCotizacion: string;
     public trabajoHecho: boolean;
     public adicional: boolean;
-
+    public monedaOC: string;
     public proveedorAsignado_Id: number;
     public proveedorAsignado: string;
-
     public ordenDeCompra: string;
     public codigoProveedorSap: string;
     public RazonSocialSap: string;
-
-
     public validarTrabajoHecho: boolean;
     public validarAdicional: boolean;
-
     public mensajeCotizacion: string;
-
     public archivosCotizacionesNuevos: Array<File>;
     public archivosCotizaciones: Array<ArchivoModel>
 
@@ -88,6 +83,10 @@ export class Solp extends CommonResponse {
     public pasoCompletado: number;
     public estadoPasos: string;
     public tableHide: boolean;
+    proveedorIdAdicional: number;
+    proveedorRazonSocialAdicional: string;
+    deshabilitarAdicional: boolean;
+    ordenDeCompraOriginal: string;
 
 
     public get ultimaPosicion(): SolpPosicion {
@@ -236,9 +235,12 @@ export class Solp extends CommonResponse {
             this.trabajoHecho = solp.TrabajoYaHecho;
             this.adicional = solp.Adicional;
             this.ordenDeCompra = solp.NroOrdenDeCompraAdicional;
-
+            this.ordenDeCompraOriginal = solp.NroOrdenDeCompraAdicional;
+            this.proveedorIdAdicional = solp.ProveedorIdAdicional;
+            this.proveedorRazonSocialAdicional = solp.ProveedorRazonSocialAdicional
+            this.deshabilitarAdicional = solp.DeshabilitarAdicional;
+            this.monedaOC = solp.MonedaOC;
             
-
             //pop up finalizar
             this.revisadoPor = solp.RevisadoPor || '';
 

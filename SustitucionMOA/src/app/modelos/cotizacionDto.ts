@@ -23,6 +23,7 @@ export interface CotizacionDto {
 }
 
 export interface CotizacionPosicionDto {
+    FechaDeVigencia: any
     PlazoDeEntrega: number
     Id: number,
     Cotizacion_Id: number,
@@ -58,6 +59,7 @@ export interface CotizacionSubPosicionDto {
 }
 
 export interface GuardarCotizacion{
+    FechaDeVigencia?: any
     UnidadDeMedidaSubpos?: any
     CantidadSubpos?: number
     Posicion: string,
@@ -77,6 +79,8 @@ export interface CotizacionHoraDto{
     HorasNormales?: number
     HorasNocturnas?: number
     HorasExtras?: number
-    Gremio?:string
+    Gremio?:string,
+    Fila?:boolean
+    ConfigurarHora?:boolean
 }
 

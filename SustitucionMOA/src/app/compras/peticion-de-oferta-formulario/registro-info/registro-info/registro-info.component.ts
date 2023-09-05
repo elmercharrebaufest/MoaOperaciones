@@ -37,7 +37,7 @@ export class RegistroInfoComponent extends ListBaseComponent implements OnInit, 
     registros: RegistroInfoDto[];
     displayAdjudicacionCreada: boolean;
     resultadoAdjudicacion: any = new Array();
-
+    optionSelected: any;
 
     constructor(protected service: ComprasService, protected usuarioService: UsuarioService, protected navService: NavService, protected sessionDataService: SessionDataService,
         protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService,
@@ -56,13 +56,25 @@ export class RegistroInfoComponent extends ListBaseComponent implements OnInit, 
     inicializarDatos() {
         if(this.solpCompraDto.RegistrosInfo && this.solpCompraDto.RegistrosInfo != undefined){
             this.registrosInfo = this.solpCompraDto.RegistrosInfo;
-            if (this.solpCompraDto != undefined && this.solpCompraDto.PosicionCompras != null) {
-                this.options = this.solpCompraDto.PosicionCompras.map(x => ({
-                    label: x.Indice + " - " + x.Tarea,
-                    value: x.Id
+            if (this.solpCompraDto != undefined && this.solpCompraDto.PosicionCompras != null) {                
+
+                this.options = this.solpCompraDto.RegistrosInfo.map(x => ({
+                    label: x.Indice + " - " + x.DescripcionPosicion,
+                    value: x.PosicionId
                 }));
+
+                let hash = {};
+                this.options = this.options.filter(function (current) {
+                    let exists = !hash[current.value];
+                    hash[current.value] = true;
+                    return exists;
+                });
             }
-            this.registrosInfo = this.solpCompraDto.RegistrosInfo.filter(x => x.Indice == this.registrosInfo[0].Indice);
+            if (this.optionSelected) {
+                this.registrosInfo = this.solpCompraDto.RegistrosInfo.filter(x => x.PosicionId == this.optionSelected.value);
+            } else {
+                this.registrosInfo = this.solpCompraDto.RegistrosInfo.filter(x => x.Indice == this.registrosInfo[0].Indice);
+            }
         }
       
     }
@@ -223,14 +235,26 @@ export class RegistroInfoComponent extends ListBaseComponent implements OnInit, 
                     MaterialCodigo,
                     Indice,
                     Cantidad: Cantidad, // Tomamos el primer valor de cantidad
-                    CantidadAdjudicacionTotal: CantidadAdjudicacion || 0,
+                    CantidadAdjudicacionTotal: Number(CantidadAdjudicacion) || 0,
                 });
             } else {
                 const group = materialIndiceMap.get(clave)!;
-                group.CantidadAdjudicacionTotal += CantidadAdjudicacion || 0;
+                group.CantidadAdjudicacionTotal += Number(CantidadAdjudicacion) || 0;
             }
         });
     
         return Array.from(materialIndiceMap.values());
     }
+
+     onEditarCelda(registro: any, campo: string, valorInicial: any) {
+        if (registro[campo] === valorInicial) {
+          registro[campo] = ''; // Limpia el valor si es igual al valorInicial
+        }
+      }
+
+    onReestablecerValor(registro: any, campo: string) {
+        if (registro[campo] === '') {
+          registro[campo] = 0; // Restablece a cero si está en blanco
+        }
+      }
 }

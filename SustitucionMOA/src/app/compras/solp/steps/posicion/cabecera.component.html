@@ -263,7 +263,7 @@
                                                 (paste)="onPaste($event,enumColumnaSubPosicion.TareaSubcontratar,rowIndex,dt)" 
                                                 (onSelect)="onSelectTarea(posicion,dt)" 
                                                 (onBlur)="onBlurTarea($event, posicion)"
-                                                (ngModelChange)="clearCode(); eliminarContratoAsociar(posicion); listarContratosAsociados();"
+                                                (ngModelChange)="clearCode(posicion); eliminarContratoAsociar(posicion); listarContratosAsociados();"
                                                 >
                                             </p-autoComplete>
                                         </ng-template>

@@ -348,7 +348,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         var posicionChequeadas = this.model.posiciones.filter(x => x.posicionCheck === true);
         if (posicionChequeadas.length > 0) {            
             this.confirmationService.confirm({
-                message: '¿Está seguro que desea eliminar la posición?',
+                message: '¿Está seguro de que desea eliminar la posición?',
                 accept: () => {
                     posicionChequeadas.forEach(pos =>
                         this.model.eliminarPosicion(pos as SolpPosicion)
@@ -361,13 +361,11 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
                 reject: () => {
                 }
             });
-           
         }
     }
 
     eliminarPosicionUnicaSubPosicion(posicion: SolpPosicion) {
         this.model.eliminarPosicion(posicion);
-       
     }
 
     recuperarPosicion() {
@@ -917,6 +915,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
     //Funciones de la tabla
     onSelectServicio(posicion: SolpPosicion, dt) {
         posicion.tareaSubcontratar = posicion.codigoServicio.Descripcion;
+        posicion.textoSuministro = posicion.codigoServicio.Descripcion;
         posicion.tareaSubcontratarObj = { ...posicion.codigoServicio };
         this.autocompletarCamposMaterial(posicion);
 
@@ -927,6 +926,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
 
     onSelectTarea(posicion: SolpPosicion, dt) {
         posicion.tareaSubcontratar = posicion.tareaSubcontratarObj.Descripcion;
+        posicion.textoSuministro = posicion.tareaSubcontratarObj.Descripcion;
         posicion.codigoServicio = { ...posicion.tareaSubcontratarObj };
         
         this.autocompletarCamposMaterial(posicion);
@@ -944,6 +944,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
             posicion.unidadMedida = unidadSeleccionadaAux.Descripcion;
         }
 
+        posicion.cuentaMayor = "";
         var grupoArticuloAux = this.combos.GrupoArticulo.find(x => x.Descripcion == posicion.codigoServicio.GrupoArticulo.Descripcion);
         if (grupoArticuloAux) {
             posicion.selectArticuloCompras = grupoArticuloAux;
@@ -1177,9 +1178,9 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         return this.model.selectTipoPosicion.Codigo == "MATERIALES" && this.model.posicionActual.codigoServicio != null;
     }
 
-    clearCode() {
-        if (this.model.posicionActual.tareaSubcontratar != null) {
-            this.model.posicionActual.codigoServicio = null;
+    clearCode(posicion) {
+        if (posicion.tareaSubcontratar != null) {
+            posicion.codigoServicio = null;
         }
     }
 

@@ -11,6 +11,8 @@ import { OrdenDeCarga } from '../../common/models/ordenes-de-carga/ordenDeCarga'
 import { ConfirmationService } from 'primeng/api';
 import { MensajeComponent } from '../../common/view-child/mensaje/mensaje.component';
 import { NgBlockUI, BlockUI } from 'ng-block-ui';
+import { FiltroFechaFasComponent } from '../../common/view-child/filtro-fecha-fas/filtro-fecha-fas.component';
+import { TipoContrato } from '../../common/models/ordenes-de-carga/obtenerContratosDisponiblesResponse';
 
 @Component({
     selector: 'app-ordenes-de-carga.listado',
@@ -22,7 +24,11 @@ export class OrdenesDeCargaListado extends ListBaseComponent implements OnInit {
 
     @ViewChild(MensajeComponent)
     protected mensajeComponent: MensajeComponent;
+    @ViewChild(FiltroFechaFasComponent)
+    protected filtroFechaFasComponent: FiltroFechaFasComponent;
 
+
+    tipoContrato = TipoContrato;
     listaMateriales: Material[];
     ordenDeCarga: OrdenDeCarga = new OrdenDeCarga();
     corredorCodigo: string = "";
@@ -32,6 +38,8 @@ export class OrdenesDeCargaListado extends ListBaseComponent implements OnInit {
     filtroProducto: any = null
     filtroAlta: any = null;
     filtroCliente: any = null;
+    filtroCorredor: any = null;
+    filtroPatenteChasis: any = null;
 
     estadoSelected: string = "Todos";
     estadosSelected: string[] = [];
@@ -39,11 +47,11 @@ export class OrdenesDeCargaListado extends ListBaseComponent implements OnInit {
     datosAux: any[];
     primerListado: any[];
     listaEnviarASAP: number[] = [];
-
+    
     productoSelected: string = "Todos";
     listaProductos: any = null;
     private selectUndefinedOptionValue: any;
-    pedidoAnticipado: number = 0;
+    filtroTipoContrato?: TipoContrato = null;
     seleccionaTodos: boolean = false;
 
     esInterno: boolean = this.isAuthorized('VER TODAS ORDENES DE CARGA');
@@ -145,26 +153,28 @@ export class OrdenesDeCargaListado extends ListBaseComponent implements OnInit {
         this.data = null;
         try {
             this.unsubscribe();
-            this.subscription = this.service.getListado(this.filtroFechaComponent.fecha_inicio, this.filtroFechaComponent.fecha_fin).subscribe(
-                result => {
-                    this.spinnerComponent.hideIt();
-                    if (result.logout == true) {
-                        this.sessionDataService.logout();
-                    } else if (result.error != undefined && result.error != "") {
-                        this.mensajeComponent.setErrorMsg(result.error);
-                    } else if (result.info != undefined) {
-                        this.mensajeComponent.setInfoMsg(result.info);
-                    } else {
-                        this.data = result;
-                        this.datosAux = result;
-                        this.filtrarListado();
+            this.subscription = this.service.getListado(
+                this.filtroFechaFasComponent.fecha_inicio,
+                this.filtroFechaFasComponent.fecha_fin).subscribe(
+                    result => {
+                        this.spinnerComponent.hideIt();
+                        if (result.logout == true) {
+                            this.sessionDataService.logout();
+                        } else if (result.error != undefined && result.error != "") {
+                            this.mensajeComponent.setErrorMsg(result.error);
+                        } else if (result.info != undefined) {
+                            this.mensajeComponent.setInfoMsg(result.info);
+                        } else {
+                            this.data = result;
+                            this.datosAux = result;
+                            this.filtrarListado();
+                        }
+                    },
+                    error => {
+                        this.spinnerComponent.hideIt();
+                        this.mensajeComponent.setErrorMsg(error.message);
                     }
-                },
-                error => {
-                    this.spinnerComponent.hideIt();
-                    this.mensajeComponent.setErrorMsg(error.message);
-                }
-            );
+                );
         } catch (e) {
             this.spinnerComponent.hideIt();
             this.mensajeComponent.setErrorMsg(e);

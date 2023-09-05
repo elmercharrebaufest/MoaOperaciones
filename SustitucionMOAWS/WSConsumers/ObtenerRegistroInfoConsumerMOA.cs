@@ -1,16 +1,11 @@
 ﻿using SustitucionMOAFotmatter;
 using SustitucionMOAModel.Dto;
-using SustitucionMOAModel.Models.WSMapMOA.Compras;
-using SustitucionMOAModel.Models.WSMapMOA.Contrato;
 using SustitucionMOAWS.CredentialService;
 using SustitucionMOAWS.Interfaces;
 using SustitucionMOAWS.ObtenerRegistroInfoConsumerMOA;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SustitucionMOAWS.WSConsumers
 {
@@ -29,7 +24,6 @@ namespace SustitucionMOAWS.WSConsumers
         {
             try
             {
-
                 BAPIMGVMATNR bAPIMGVMATNR = new BAPIMGVMATNR();
                 BAPIEINA[] INFORECORD_GENERAL = new BAPIEINA[] { };
                 BAPISEGM[] bAPIEINEs = new BAPISEGM[] { };
@@ -58,7 +52,7 @@ namespace SustitucionMOAWS.WSConsumers
                     var registroInfo = new RegistroInfoDto
                     {
                         Cantidad = purch.NRM_PO_QTY,
-                        Precio = purch.EFF_PRICE,
+                        Precio = purch.NET_PRICE,
                         Unidad = info.PO_UNIT,
                         Moneda = purch.CURRENCY,
                         Vendedor = info.VENDOR,
@@ -66,13 +60,13 @@ namespace SustitucionMOAWS.WSConsumers
                         FechaUltimaCompra = purch.LAST_PO,
                         Id = info.INFO_REC,
                         FechaFormateada = !string.IsNullOrEmpty(purch.PRICE_DATE) ? SAPFormatter.GetDateTime(purch.PRICE_DATE) : (DateTime?)null,
-                        MaterialCodigo = info.MATERIAL
+                        MaterialCodigo = info.MATERIAL,
+                        NumeroOrdenDeCompra = purch.PO_NUMBER
                     };
 
                     registros.Add(registroInfo);
                 }
             }
-
 
             return registros;
         }
@@ -81,9 +75,5 @@ namespace SustitucionMOAWS.WSConsumers
         {
             return fecha.ToString("yyyy-MM-dd");
         }
-
-
     }
 }
-
-

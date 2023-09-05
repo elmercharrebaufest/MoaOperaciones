@@ -64,3 +64,5 @@ export type CuitValidaRUCA = keyof Pick<OrdenDeCarga, "CUITDestinatario" | "CUIT
 export const KILOS_DISPONIBLES_APROBADO = 15000
 export const SIN_KILOS_DISPONIBLES = 0
 
+export const VOLVER_A_DETALLE_REPORTE = 'volverADetalleReporteContrato'
+

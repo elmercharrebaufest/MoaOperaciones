@@ -148,6 +148,24 @@ namespace SustitucionMOAWS.WSConsumers
                 throw ex;
             }
         }
+
+        public RecorridoDto[] ObtenerRecorridoNoRechazadoPorNumeroDocumento(string cuit)
+        {
+            try
+            {
+                var recorridos = service.ObtenerRecorridoNoRechazadoPorNumeroDocumento(cuit);
+                Log.Info(string.Format("ScatoConsumer.ObtenerRecorridoNoRechazadoPorNumeroDocumento. cuit: {0}",
+                    cuit));
+                return recorridos;
+            }
+            catch (Exception ex)
+            {
+                Log.Error("", "", "ScatoConsumer", "ObtenerRecorridoNoRechazadoPorNumeroDocumento", string.Format("cuit: {0}", cuit));
+                throw ex;
+            }
+        }
+
+
     }
 
 }
