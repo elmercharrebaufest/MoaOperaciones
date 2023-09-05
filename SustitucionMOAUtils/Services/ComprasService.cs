@@ -4537,6 +4537,11 @@ namespace SustitucionMOAUtils.Services
                         cotizacion.Archivos = new List<Archivo>();
                     }
                     esModificar = cotizacion.CotizacionEstado_Id == (int)CotizacionEstadoEnum.Cotizado;
+
+                    if (cotizacionDto.RespetaServicios == true && cotizacionDto.RespetaMateriales == true)
+                    {
+                        cotizacion.PeticionDeOfertaUsuario.PropuestaTecnicaAprobada = true;
+                    }
                 }
 
                 repositorio.GuardarCambios();
