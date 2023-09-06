@@ -4570,7 +4570,7 @@ namespace SustitucionMOAUtils.Services
                     Logger.Log.Error(e);
                 }
 
-                if (cotizacion.CotizacionEstado_Id == (int)CotizacionEstadoEnum.Cotizado
+                if (cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.RegistroInfo != true && cotizacion.CotizacionEstado_Id == (int)CotizacionEstadoEnum.Cotizado
                     && cotizacion.CotizacionPosiciones.FirstOrDefault()
                     .PeticionDeOfertaSolpPosicion.SolpPosicion.TipoPosicion.Codigo == "MATERIALES")
                 {
