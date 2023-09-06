@@ -53,7 +53,9 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                            GrupoComprasDescripcion = posicion.GrupoCompras != null ? posicion.GrupoCompras.Descripcion : "",
                                                            CentroComprasDescripcion = posicion.Centro != null ? posicion.Centro.Descripcion : "",
                                                            GrupoComprasId = posicion.GrupoCompras != null ? posicion.GrupoCompras.Id : (int?)null,
-                                                           CentroId = posicion.Centro != null ? posicion.Centro.Id : (int?)null
+                                                           CentroId = posicion.Centro != null ? posicion.Centro.Id : (int?)null,
+                                                           GrupoComprasCodigo = posicion.GrupoCompras != null ? posicion.GrupoCompras.Codigo : (string)null,
+                                                           CentroCodigo = posicion.Centro != null ? posicion.Centro.Codigo : (string)null,
                                                        }),
                                     ItemPorPagina = paginacion.ItemsPorPagina,
                                     Pagina = paginacion.Pagina,
