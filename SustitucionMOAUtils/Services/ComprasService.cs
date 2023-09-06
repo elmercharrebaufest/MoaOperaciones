@@ -840,7 +840,7 @@ namespace SustitucionMOAUtils.Services
                     FechaCircular = po.Usuarios.GroupBy(x => x).SelectMany(x => x.Key.Circulares)
                                     .Where(x => x.Circular.RequiereCambioDeFechas == true && x.Circular.PlazoDeOferta.HasValue)
                                     .OrderByDescending(x => x.Circular.Id).FirstOrDefault().Circular.FechaCreacion,
-                    PlazoDeOfertaCierre = po.Cierres.Any() ? po.Cierres.OrderByDescending(x => x.Fecha).FirstOrDefault().Fecha : (DateTime?)null,  
+                    PlazoDeOfertaCierre = po.Cierres.Any() ? po.Cierres.OrderByDescending(x => x.Fecha).FirstOrDefault().Fecha : (DateTime?)null,
                 });
 
                 var ordenCompra = repositorio.Listar<Adjudicacion, AdjudicacionDto>(adjudicacion => new AdjudicacionDto
@@ -3331,7 +3331,7 @@ namespace SustitucionMOAUtils.Services
                 legajo.Add(new LegajoDto
                 {
                     ArchivoId = null,
-                    Observacion = "Cierre Cotizacion: "+ cierre.Observaciones,
+                    Observacion = "Cierre Cotizacion: " + cierre.Observaciones,
                     PeticionDeOfertaId = peticionDeOfertaId,
                     SolpId = peticion.Solp_Id,
                     Fecha = cierre.FechaCreacion,
@@ -3638,7 +3638,7 @@ namespace SustitucionMOAUtils.Services
                            "style = 'line-height: 24px; font-size: 16px; margin: 0;'" +
                            "align = 'center' >" +
                            " Para descargar el legajo haga clic en el siguiente enlace: " +
-                           $"<a href = '{ downloadLinkUrl }' download rel='noopener noreferrer'>" +
+                           $"<a href = '{downloadLinkUrl}' download rel='noopener noreferrer'>" +
                            "Descargar Legajo" +
                            "</a></p> <br /><br />";
             }
@@ -4455,8 +4455,8 @@ namespace SustitucionMOAUtils.Services
             {
                 var respuestaGuardarSOLP = new RespuestaGuardarSOLP() { Errores = new List<string>() };
                 var usuario = repositorio.Obtener<Usuario>(usuarioActualId);
-                var peticionUsuario = repositorio.Obtener<PeticionDeOfertaUsuario>(cotizacionDto.PeticionOfertaUsuarioId);   
-                var peticionDeOfertaSolpPosiciones = repositorio.Listar<PeticionDeOfertaSolpPosicion>(); 
+                var peticionUsuario = repositorio.Obtener<PeticionDeOfertaUsuario>(cotizacionDto.PeticionOfertaUsuarioId);
+                var peticionDeOfertaSolpPosiciones = repositorio.Listar<PeticionDeOfertaSolpPosicion>();
                 var cotizacion = cotizacionDto.CotizacionId == 0 ? null :
                     repositorio.Obtener<Cotizacion>(cotizacionDto.CotizacionId);
                 var info = repositorio.Listar<TablaSap>(x => x.Tabla == TablasSap.Moneda || x.Tabla == TablasSap.Unidad);
@@ -4484,7 +4484,7 @@ namespace SustitucionMOAUtils.Services
                                 UnidadDeMedida_Id = x.UnidadDeMedidaId > 0 ? x.UnidadDeMedidaId : (int?)null,
                                 UnidadDeMedida = x.UnidadDeMedidaId > 0 ? info.Where(unidad => unidad.Id == x.UnidadDeMedidaId).FirstOrDefault() : null,
                                 PeticionDeOfertaSolpPosicion_Id = x.PeticionDeOfertaSolpPosicionId,
-                                PeticionDeOfertaSolpPosicion = peticionDeOfertaSolpPosiciones.Where(peticion => peticion.Id == x.PeticionDeOfertaSolpPosicionId).FirstOrDefault(), 
+                                PeticionDeOfertaSolpPosicion = peticionDeOfertaSolpPosiciones.Where(peticion => peticion.Id == x.PeticionDeOfertaSolpPosicionId).FirstOrDefault(),
                                 NoDisponible = x.NoDisponible,
                                 FechaDeVigencia = x.FechaDeVigencia != null ? x.FechaDeVigencia.Value : (DateTime?)null,
                                 CotizacionSubPosiciones = cotizacionDto.CotizacionSubposiciones.Count > 0 ? cotizacionDto.CotizacionSubposiciones
@@ -4513,7 +4513,7 @@ namespace SustitucionMOAUtils.Services
                     repositorio.Agregar(cotizacion);
                 }
                 else
-                {                    
+                {
                     cotizacion.ObservacionEconomica = cotizacionDto.ObservacionEconomica;
                     cotizacion.CotizacionEstado_Id = (int)(esFinalizado ? CotizacionEstadoEnum.Cotizado : CotizacionEstadoEnum.Incompleta);
                     cotizacion.Revision = cotizacion.Revision + 1;
@@ -4837,16 +4837,16 @@ namespace SustitucionMOAUtils.Services
 
 
         public void EnviarMailAvisoDeErrorRegistroInfo(Cotizacion cotizacion)
-        {           
+        {
             var asunto = "";
-            var enviarA = new List<string> { ConfigurationManager.AppSettings["EmailToReporteLogins"] };          
+            var enviarA = new List<string> { ConfigurationManager.AppSettings["EmailToReporteLogins"] };
             if (ConfigurationManager.AppSettings["AmbientePruebas"] != "1")
             {
                 asunto = "Prueba:  ";
             }
             asunto += "Error al agregar registro info en cotizacion: " + cotizacion.Id;
-          
-            AlternateView alternateView = AlternateView.CreateAlternateViewFromString("Se informa que al momento de finalizar una cotizacion, el registro info no se pudo generar, revisar los logs", null, "text/html");           
+
+            AlternateView alternateView = AlternateView.CreateAlternateViewFromString("Se informa que al momento de finalizar una cotizacion, el registro info no se pudo generar, revisar los logs", null, "text/html");
             EmailSender.EnviarMail(enviarA, asunto, "", null, alternateView, null, null, null, null);
         }
 
@@ -5302,11 +5302,13 @@ namespace SustitucionMOAUtils.Services
                 {
                     result.Error = new ErrorOC
                     {
-                        Mensaje = e.Message, Tipo = "E"
+                        Mensaje = e.Message,
+                        Tipo = "E"
                     };
                     result.Cabecera = new OrdenDeCompraSAPCabecera
                     {
-                        OrdenDeCompra = "", CodigoProveedor = ""
+                        OrdenDeCompra = "",
+                        CodigoProveedor = ""
                     };
                 }
             }
@@ -5411,8 +5413,8 @@ namespace SustitucionMOAUtils.Services
                     Centro = cotizacionPosicion.PeticionDeOfertaSolpPosicion.SolpPosicion.Centro.Codigo,
                     Moneda = cotizacionPosicion.Moneda.Codigo,
                     Precio = cotizacionPosicion.Precio.Value,
-                    FechaVigencia = cotizacionPosicion.FechaDeVigencia.Value.ToString("yyyy-MM-dd"),
-                    FechaVigenciaFormateada = cotizacionPosicion.FechaDeVigencia.Value,
+                    FechaVigencia = cotizacionPosicion.FechaDeVigencia.HasValue ? cotizacionPosicion.FechaDeVigencia.Value.ToString("yyyy-MM-dd") : DateTime.Now.AddDays(15).Date.ToString("yyyy-MM-dd"),
+                    FechaVigenciaFormateada = cotizacionPosicion.FechaDeVigencia ?? DateTime.Now.AddDays(15).Date,
                     GrupoDeCompras = cotizacionPosicion.PeticionDeOfertaSolpPosicion.SolpPosicion.GrupoCompras.Codigo
                 };
                 registros.Add(registro);
