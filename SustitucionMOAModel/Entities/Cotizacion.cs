@@ -18,6 +18,8 @@ namespace SustitucionMOAModel.Entities
         public string ObservacionTecnica { get; set; }
         public string ObservacionEconomica { get; set; }
         public int Revision { get; set; }
+        public int? PorcentajeDeHoras { get; set; }
+        
 
         [ForeignKey("UsuarioCreador_Id")]
         public virtual Usuario UsuarioCreador { get; set; }

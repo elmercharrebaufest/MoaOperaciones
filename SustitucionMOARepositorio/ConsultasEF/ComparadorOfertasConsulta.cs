@@ -135,6 +135,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                         TotalPesos = 0,
                                                         TotalGlobalSubPos = 0,
                                                         RespetaMaterialesColor = u.Cotizaciones.FirstOrDefault().RespetaMateriales == true ? "Green" : "Red",
+                                                        PorcentajeDeHoras = cotizacion.PorcentajeDeHoras ?? 0,
                                                         CotizacionesHoras = cotizacion.CotizacionesHoras.Select(ch => new CotizacionHorasDto
                                                         {
                                                             CantidadPersonas = ch.CantidadPersonas,

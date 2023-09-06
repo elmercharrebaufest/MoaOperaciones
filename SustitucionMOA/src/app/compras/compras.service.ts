@@ -684,7 +684,8 @@ export class ComprasService extends BaseService {
             RespetaServicios: cotizacion.RespetaServicios,
             RespetaMateriales: cotizacion.RespetaMateriales,
             CotizacionesHoras: cotizacion.CotizacionesHoras,
-            CotizacionSubposiciones: cotizacion.CotizacionSubposiciones
+            CotizacionSubposiciones: cotizacion.CotizacionSubposiciones,
+            PorcentajeDeHoras: cotizacion.PorcentajeDeHoras
         });
 
         var payload = new FormData();

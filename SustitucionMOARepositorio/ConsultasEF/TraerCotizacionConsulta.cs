@@ -29,7 +29,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                 var resultado = from po in contexto.Set<PeticionDeOfertaUsuario>()
                                 join cotizacion in contexto.Set<Cotizacion>() on po.Id equals cotizacion.PeticionDeOfertaUsuario.Id into peticionCotizacion
                                 from cotizacion in peticionCotizacion.DefaultIfEmpty()
-                                where po.Id == PeticionDeOfertaUsuario_Id 
+                                where po.Id == PeticionDeOfertaUsuario_Id
                                 select new PeticionDeOfertaDto
                                 {
                                     Id = po.Id,
@@ -45,7 +45,8 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                     RespetaMateriales = cotizacion != null ? cotizacion.RespetaMateriales : null,
                                     RespetaServicios = cotizacion != null ? cotizacion.RespetaServicios : null,
                                     TipoPosicionCodigo = po.PeticionDeOferta.Solp.Posiciones.Select(x => x.TipoPosicion.Codigo).FirstOrDefault(),
-                                    CotizacionId = cotizacion != null ? cotizacion.Id : 0,                                    
+                                    CotizacionId = cotizacion != null ? cotizacion.Id : 0,
+                                    PorcentajeDeHoras = cotizacion.PorcentajeDeHoras ?? 0,
                                     PeticionDeOfertaPosicion = po.PeticionDeOferta.Posiciones.Where(posi => posi.SolpPosicion.EsConcluido == true && posi.SolpPosicion.Estado == true).Select(pop =>
                                     new PeticionDeOfertaSolpPosicionDto()
                                     {

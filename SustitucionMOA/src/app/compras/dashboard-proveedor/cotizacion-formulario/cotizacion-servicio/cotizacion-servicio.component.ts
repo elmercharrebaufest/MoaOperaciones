@@ -325,7 +325,8 @@ export class CotizacionServicioComponent extends ListBaseComponent implements On
             ArchivosGuardados: this.peticion.Cotizacion.ArchivosCotizacion != null ? this.peticion.Cotizacion.ArchivosCotizacion.map(x => { return { Id: x.Id } }) : null,
             ArchivosTipo: this.peticion.Cotizacion.ArchivosCotizacion != null ? this.peticion.Cotizacion.ArchivosCotizacion.map(x => { return { FileKey: x.FileKey } }) : null,
             CotizacionesHoras: this.index == 0 ? this.peticion.Cotizacion.CotizacionesHoras.filter(x => x.Gremio == 'UOCRA' || x.ConfigurarHora == true) : this.peticion.Cotizacion.CotizacionesHoras.filter(x => x.Gremio != 'UOCRA'),
-            CotizacionSubposiciones: this.subposiciones
+            CotizacionSubposiciones: this.subposiciones,
+            PorcentajeDeHoras: this.peticion.PorcentajeDeHoras
         }
         return coti;
     }
@@ -528,4 +529,12 @@ export class CotizacionServicioComponent extends ListBaseComponent implements On
             cotizacion[campo] = 0; // Restablece a cero si está en blanco
         }
     }
+
+    validarNumero(event: any) {
+        const inputValue = event.target.value;
+        // Realiza la validación aquí, por ejemplo:
+        if (isNaN(inputValue) || inputValue < 0) {
+          event.target.value = ''; // Borra el valor si no es válido
+        }
+      }
 }

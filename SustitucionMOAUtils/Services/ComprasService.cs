@@ -3987,6 +3987,7 @@ namespace SustitucionMOAUtils.Services
                     CotizacionEstado_Id = c.CotizacionEstado_Id,
                     RespetaMateriales = c.RespetaMateriales,
                     CotizacionEstadoDescripcion = c.CotizacionEstado.Descripcion,
+                    PorcentajeDeHoras = c.PorcentajeDeHoras,
                     Archivos = c.Archivos/*.Where(x => x.FileKey == FileKeys.AdjuntoCotizacionRevisionTecnica)*/.Select(archivo => new LegajoDto
                     {
 
@@ -4474,6 +4475,7 @@ namespace SustitucionMOAUtils.Services
                             RespetaServicios = cotizacionDto.RespetaServicios,
                             CotizacionEstado_Id = (int)(esFinalizado ? CotizacionEstadoEnum.Cotizado : CotizacionEstadoEnum.Incompleta),
                             PeticionDeOfertaUsuario = peticionUsuario,
+                            PorcentajeDeHoras = cotizacionDto.PorcentajeDeHoras,
                             CotizacionPosiciones = cotizacionDto.CotizacionPosiciones.Count > 0 ? cotizacionDto.CotizacionPosiciones.Select(x => new CotizacionPosicion
                             {
                                 Cantidad = x.Cantidad,
@@ -4521,6 +4523,7 @@ namespace SustitucionMOAUtils.Services
                     cotizacion.ObservacionTecnica = cotizacionDto.ObservacionTecnica;
                     cotizacion.RespetaMateriales = cotizacionDto.RespetaMateriales;
                     cotizacion.RespetaServicios = cotizacionDto.RespetaServicios;
+                    cotizacion.PorcentajeDeHoras = cotizacionDto.PorcentajeDeHoras;
 
                     var archivos = cotizacion.Archivos;
                     if (archivos != null && archivos.Count > 0 && cotizacionDto.ArchivosGuardados.Count != archivos.Count)

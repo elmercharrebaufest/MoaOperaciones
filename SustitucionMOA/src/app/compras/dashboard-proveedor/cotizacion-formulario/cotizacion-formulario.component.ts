@@ -81,6 +81,7 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
                         this.peticion = result.data;
                         this.posicionesCompra = this.peticion.PeticionDeOfertaPosicion;
                         this.parsearFecha();
+                        console.log(result.data, "cotizacion");
                     }
                     this.blockUI.stop();
                 },
@@ -352,6 +353,11 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
                     mensaje = "En el panel de horas debe completar las categorías que aplican a esta propuesta.";
                     return mensaje
                 }
+            }
+            if ((!this.peticion.PorcentajeDeHoras || this.peticion.PorcentajeDeHoras == 0) &&
+                this.peticion.Cotizacion.CotizacionesHoras.some(x => Number(x.CantidadPersonas) > 0))
+            {
+                mensaje = "El campo Porcentaje de horas es obligatorio cuando se ingresa la estimación de horas";
             }
 
             var self = this;
