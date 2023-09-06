@@ -69,6 +69,11 @@ namespace SustitucionMOAUtils.Services
             EstadoOrdenDeCarga.AnuladaPorVencimiento,
             EstadoOrdenDeCarga.Anulada
         };
+        private readonly List<EstadoOrdenDeCarga> estadosNoVerificaTransporte = new List<EstadoOrdenDeCarga>
+        {
+            EstadoOrdenDeCarga.AnuladaPorVencimiento,
+            EstadoOrdenDeCarga.Anulada
+        };
 
         public OrdenDeCargaService(
             IRepositorio repositorio,
@@ -1853,10 +1858,11 @@ namespace SustitucionMOAUtils.Services
         }
         public void VerificarTransporteBulk()
         {
-            if (repositorio.Obtener<HabilitacionJob>(a => a.Nombre == "VerificarTransporteOrdenesDeCargaJob").Habilitado == false)
+            var estadoJob = repositorio.Obtener<HabilitacionJob>(a => a.Nombre == "VerificarTransporteOrdenesDeCargaJob");
+            if (!estadoJob.Habilitado)
                 return;
 
-            foreach (var ordenDeCarga in repositorio.Listar<OrdenDeCarga>(o => !o.TransporteExiste))
+            foreach (var ordenDeCarga in repositorio.Listar<OrdenDeCarga>(o => !estadosNoVerificaTransporte.Contains(o.Estado) && !o.TransporteExiste))
             {
                 VerificarTransporte(ordenDeCarga);
             }
