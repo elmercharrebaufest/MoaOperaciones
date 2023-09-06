@@ -31,7 +31,9 @@ export class CircularComponent implements OnInit, OnChanges {
     @Input() solicitante: boolean;
 
     fechaDeEntrega: Date
-    plazoDeOferta: Date
+    plazoDeOfertaFecha: Date
+    plazoDeOfertaHora: Date
+
     public circular: CircularDto;
     @Output() cerrarCircularEmitter = new EventEmitter();
     archivos = new Array<File>()
@@ -85,6 +87,8 @@ export class CircularComponent implements OnInit, OnChanges {
             today: 'Hoy',
             clear: 'Borrar'
         }
+
+        this.plazoDeOfertaHora = new Date(1, 1, 1, 10, 0, 0, 0);
     }
 
     autocompletarFechaDeEntrega() {
@@ -215,7 +219,8 @@ export class CircularComponent implements OnInit, OnChanges {
         let c: CircularDto = {
             Adjuntos: this.archivos,
             FechaEntrega: this.fechaDeEntrega,
-            PlazoDeOferta: this.plazoDeOferta,
+            PlazoDeOfertaFecha: this.plazoDeOfertaFecha,
+            PlazoDeOfertaHora: this.plazoDeOfertaHora,
             Observacion: this.Observacion,
             RequiereCambioDeFecha: this.visualizarFechas,
             UsuarioIds: this.selectedProv,
@@ -238,7 +243,8 @@ export class CircularComponent implements OnInit, OnChanges {
     }
 
     borrarFechas() {
-        this.plazoDeOferta = null;
+        this.plazoDeOfertaFecha = null;
+        this.plazoDeOfertaHora = null;
         this.fechaDeEntrega = null;
         this.plazoDias = null;
     }
@@ -268,7 +274,7 @@ export class CircularComponent implements OnInit, OnChanges {
             this.error = "Debe completar la Fecha de entrega";
             return this.visualizarAlert = true;
         }
-        if ((this.plazoDeOferta == null || this.plazoDeOferta == undefined) && this.visualizarFechas) {
+        if ((this.plazoDeOfertaFecha == null || this.plazoDeOfertaFecha == undefined) && this.visualizarFechas) {
             this.error = "Debe completar el Plazo de oferta";
             return this.visualizarAlert = true;
         }

@@ -10,6 +10,7 @@ export interface PeticionDeOfertaDto{
     Id?: number,
     FechaEntregaFormateado?: string,
     PlazoDeOferta?: Date,
+    PlazoDeOfertaHora?: Date
     CUIT?: string,
     Mail?: string,
     Usuarios?: PeticionDeOfertaUsarioDto[],

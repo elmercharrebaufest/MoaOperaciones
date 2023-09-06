@@ -4062,7 +4062,7 @@ namespace SustitucionMOAUtils.Services
                     Usuario = usuario,
                     FechaCreacion = DateTime.Now,
                     Observaciones = circularDto.Observacion,
-                    PlazoDeOferta = circularDto.PlazoDeOferta,
+                    PlazoDeOferta = circularDto.PlazoDeOferta?.ToLocalTime(),
                     FechaDeEntrega = circularDto.FechaEntrega,
                     RequiereCambioDeFechas = circularDto.RequiereCambioDeFecha,
                     PeticionDeOfertaUsuarios = peticion.Usuarios.Where(x => circularDto.UsuarioIds.Contains(x.Usuario_Id))

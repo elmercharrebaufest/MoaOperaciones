@@ -25,8 +25,8 @@ export class Solp extends CommonResponse {
     public telefono: string;
     public mail: string;
     public fechaDeEntregaDeOfertasFecha: Date;
-    public fechaDeEntregaDeOfertasHora: Time;
-    public horaEntrega: any;
+    public fechaDeEntregaDeOfertasHora: Date;
+    public horaEntrega: Date;
     public fechaEntrega: Date;
    
     //paso 2
@@ -167,7 +167,12 @@ export class Solp extends CommonResponse {
             this.fiscalContrato = solp.FiscalContrato || '';
             this.telefono = solp.Telefono || '';
             this.mail = solp.Email || sessionStorage.getItem("username");
-            this.fechaEntrega = new Date(this.getDateFromAspNetFormat(solp.FechaHoraEntrega));
+
+            if (solp.FechaHoraEntrega != null) {
+                this.fechaEntrega = new Date(this.getDateFromAspNetFormat(solp.FechaHoraEntrega));
+                this.horaEntrega = new Date(this.getDateFromAspNetFormat(solp.FechaHoraEntrega));
+            }
+            //this.fechaEntrega = new Date(this.getDateFromAspNetFormat(solp.FechaHoraEntrega));
             this.emailLinkToken = solp.EmailLinkToken;
             this.selectTipoPosicion =  solp.TipoPosicion && solp.TipoPosicion.Codigo || ''
             ;
@@ -476,11 +481,17 @@ export class Solp extends CommonResponse {
     }
 
     public getDateFromAspNetFormat(date: string): number {
+        console.log("date antes del if", date)
         if (date){
+            console.log("date apenas entra del if", date)
+
             const re = /-?\d+/;
             const m = re.exec(date);
+            console.log("date antes del return if", date)
+
             return parseInt(m[0], 10);
         }
+        console.log("date salio del if", date)
         return null
     }
 
