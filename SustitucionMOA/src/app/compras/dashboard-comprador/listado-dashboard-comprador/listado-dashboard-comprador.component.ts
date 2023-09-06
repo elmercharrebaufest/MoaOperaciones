@@ -24,7 +24,7 @@ declare var $: any;
 @Component({
     selector: 'app-listado-dashboard-comprador',
     templateUrl: `listado-dashboard-comprador.component.html`,
-    styleUrls: ['../../compras.component.css',
+    styleUrls: [
         './listado-dashboard-comprador.component.css']
 
 })

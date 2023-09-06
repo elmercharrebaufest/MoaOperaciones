@@ -10,7 +10,6 @@
             <div class="row">
                 <!--Cards-->
                 <div class="col-md-4" *ngFor="let card of cards" (click)="goToSeccionParam(card.path, card.tipoSolp)">
-
                     <div *ngIf="card.nombre == 'Con pliego'; else sinpliego" class="card cardCompra">
                         <h3 class="cardText">
                             {{card.nombre}}
@@ -96,7 +95,7 @@
 
 
     <div class="col-sm-12 col-md-12 col-lg-12" style="margin-left: -15px;">      
-        <p-table #tabla [value]="tablaSolp" dataKey="Id">
+        <p-table #tabla [value]="tablaSolp" responsiveLayout="scroll | stack" dataKey="Id">
             <ng-template pTemplate="header" let-columns>
                 <tr>
                     <th style="width: 40px"></th>
