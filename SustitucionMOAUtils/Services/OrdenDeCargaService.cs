@@ -2559,7 +2559,7 @@ namespace SustitucionMOAUtils.Services
             if (orden == null)
                 throw new InfoCustomException("No se encontró la orden");
 
-            Log.Info($"Verificar Compensacion: orden: {orden.ToJson()}");
+            Log.Info($"Verificar Compensacion: orden: {orden.ToDto().ToJson()}");
             if (orden.Estado != EstadoOrdenDeCarga.PendienteCompensacion)
                 return;
 
