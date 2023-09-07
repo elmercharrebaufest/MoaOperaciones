@@ -775,12 +775,12 @@ namespace SustitucionMOA.Controllers
             return ContentCustom(response);
         }
         [HttpGet]
-        public ActionResult GestionarAltaCuit(string cuit, string razonSocial, bool esIntermediarioFlete)
+        public ActionResult GestionarAltaCuit(string cuit, string razonSocial, bool esIntermediarioFlete, string ordenId)
         {
             var response = new SustitucionMOAApiResponse<bool>();
             try
             {
-                response.Data = ordenDeCargaService.EmailGestionarAlta(cuit, razonSocial, esIntermediarioFlete);
+                response.Data = ordenDeCargaService.EmailGestionarAlta(cuit, razonSocial, esIntermediarioFlete, ordenId);
             }
             catch (InfoCustomException ice)
             {

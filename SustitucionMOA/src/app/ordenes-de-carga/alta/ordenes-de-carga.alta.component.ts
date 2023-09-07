@@ -1054,7 +1054,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
         this.razonSocialParaGestion = "";
         this.ordenDeCarga[campo.replace("CUIT", "RazonSocial")] = razonSocial;
         let esIntermediarioFlete = campo === 'CUITIntermediarioFlete';
-        this.service.enviarMailGestionarAltaCuit(cuit, razonSocial, esIntermediarioFlete).subscribe(result => {
+        this.service.enviarMailGestionarAltaCuit(cuit, razonSocial, esIntermediarioFlete, this.ordenDeCarga.Id? this.ordenDeCarga.Id.toString() : null).subscribe(result => {
             if (result.logout) {
                 this.sessionDataService.logout();
             } else if (result.error != undefined && result.error != "") {

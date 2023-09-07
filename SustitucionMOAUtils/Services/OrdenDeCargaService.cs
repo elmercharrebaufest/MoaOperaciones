@@ -2331,7 +2331,7 @@ namespace SustitucionMOAUtils.Services
             return result;
         }
 
-        public bool EmailGestionarAlta(string cuit, string razonSocial, bool esIntermediarioFlete)
+        public bool EmailGestionarAlta(string cuit, string razonSocial, bool esIntermediarioFlete, string ordenId)
         {
             if (esIntermediarioFlete)
             {
@@ -2339,7 +2339,7 @@ namespace SustitucionMOAUtils.Services
             }
             else
             {
-                emailFasService.EnviarMailAltaTempranaCuit(cuit, razonSocial);
+                emailFasService.EnviarMailAltaTempranaCuit(cuit, razonSocial, ordenId);
             }
             return true;
         }

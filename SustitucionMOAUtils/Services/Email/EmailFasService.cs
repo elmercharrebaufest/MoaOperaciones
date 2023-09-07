@@ -37,13 +37,14 @@ namespace SustitucionMOAUtils.Services.Email
             EmailSender.EnviarMail(emailSenderData);
         }
 
-        public void EnviarMailAltaTempranaCuit(string cuit, string razonSocial)
+        public void EnviarMailAltaTempranaCuit(string cuit, string razonSocial, string ordenId)
         {
+            var ordenmsj = ordenId != null ? $", para la orden Nro: {ordenId}" : "";
             var emailSenderData = new EmailSenderData
             {
                 Mails = ObtenerListaDestinatarios(new string[] { DireccionMailGestionAltaCuit, DireccionMailGestionAltaCuitCopia }),
-                Asunto = "ALTA TEMPRANA CUIT",
-                Cuerpo = $"Se solicita el alta temprana del CUIT: {cuit}, Razón social: {razonSocial}"
+                Asunto = "ALTA TEMPRANA CLIENTE",
+                Cuerpo = $"Se solicita el alta temprana del CUIT: {cuit}, Razón social: {razonSocial}" + ordenmsj
             };
             EmailSender.EnviarMail(emailSenderData);
         }

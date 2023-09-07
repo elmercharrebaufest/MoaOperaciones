@@ -11,7 +11,7 @@ namespace SustitucionMOAUtils.Interfaces
     {
         void EnviarMailAltaIntermediarioFlete(string cuit, string razonSocial);
 
-        void EnviarMailAltaTempranaCuit(string cuit, string razonSocial);
+        void EnviarMailAltaTempranaCuit(string cuit, string razonSocial, string ordenId);
 
         void EnviarMailContratoSinKm(OrdenDeCarga ordenDeCarga);
         

@@ -387,12 +387,12 @@ export class OrdenesDeCargaService extends BaseService {
                 { params: params, headers: this.headers })
             .pipe(timeoutWith(360000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor intentelo mas tarde"))));
     }
-    public enviarMailGestionarAltaCuit(cuit: string, razonSocial: string, esIntermediarioFlete: boolean): Observable<ApiResponse<boolean>> {
+    public enviarMailGestionarAltaCuit(cuit: string, razonSocial: string, esIntermediarioFlete: boolean, ordenId: string): Observable<ApiResponse<boolean>> {
         let params: HttpParams = new HttpParams()
             .append("cuit", cuit)
             .append("razonSocial", razonSocial)
-            .append("esIntermediarioFlete", esIntermediarioFlete.toString());
-
+            .append("esIntermediarioFlete", esIntermediarioFlete.toString())
+            .append("ordenId", ordenId);
         return this.http
             .get<ApiResponse<boolean>>(
                 '/api/OrdenDeCarga/GestionarAltaCuit',
