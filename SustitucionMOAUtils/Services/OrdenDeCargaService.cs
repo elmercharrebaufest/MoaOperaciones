@@ -151,6 +151,14 @@ namespace SustitucionMOAUtils.Services
                 }
                 NotificarVariasFacturas(ordenDeCarga);
 
+                if (!crearPedido && ordenDeCarga.Estado == EstadoOrdenDeCarga.SinEnviarASAP &&
+                    (!ordenPuedeEnviarseDirectoSap ||
+                    (ordenDeCarga.EsFacturaAnticipada && !ValidarKgDisponiblesEnviaPedidoDirectamenteASAP(ordenDeCarga, usuario))))
+                {
+                    ordenDeCarga.Estado = EstadoOrdenDeCarga.Pendiente;
+                    ordenDeCarga.DescripcionErrorInterno = "Orden con pedido entre 0 a 15Tn";
+                    repositorio.GuardarCambios();
+                }
                 var resultado = new Resultado { IdEntidad = ordenDeCarga.Id, Mensaje = SuccessMsg.OrdenDeCargaAgregada };
                 Log.Info($"Result: {resultado.ToJson()}");
                 return resultado;
