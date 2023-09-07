@@ -2206,7 +2206,7 @@ namespace SustitucionMOAUtils.Services
             var bodyHtml = template(emailCompose);
 
             EmailSender.EnviarMail(
-                new List<string>() { emailCompose.To },
+                emailCompose.To,
                 emailCompose.Subject,
                 bodyHtml,
                 emailCompose.Cc,
