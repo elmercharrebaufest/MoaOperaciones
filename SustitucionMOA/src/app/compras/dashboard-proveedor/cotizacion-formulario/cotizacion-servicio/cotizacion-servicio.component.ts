@@ -286,7 +286,7 @@ export class CotizacionServicioComponent extends ListBaseComponent implements On
     }
 
     public calcularValorNeto(subposicionCompra: SolpSubposicionDto, peticionId: number) {
-        if (subposicionCompra.PrecioSubPosicion != 0 && subposicionCompra.CantidadCotizacion != 0) {
+        if (subposicionCompra.PrecioSubPosicion > 0 && subposicionCompra.CantidadCotizacion > 0) {
             subposicionCompra.PrecioTotalSubPosicion = subposicionCompra.PrecioSubPosicion * subposicionCompra.CantidadCotizacion;
             this.posicionesCompra.filter(x => x.Id == peticionId)[0].Posiciones.SubposicionesCompras.filter(x => x.Id == subposicionCompra.Id)[0].PrecioTotalSubPosicion == subposicionCompra.PrecioTotalSubPosicion;
         }
@@ -532,9 +532,8 @@ export class CotizacionServicioComponent extends ListBaseComponent implements On
 
     validarNumero(event: any) {
         const inputValue = event.target.value;
-        // Realiza la validación aquí, por ejemplo:
         if (isNaN(inputValue) || inputValue < 0) {
-          event.target.value = ''; // Borra el valor si no es válido
+          event.target.value = ''; // Borra el valor si es negativo
         }
       }
 }

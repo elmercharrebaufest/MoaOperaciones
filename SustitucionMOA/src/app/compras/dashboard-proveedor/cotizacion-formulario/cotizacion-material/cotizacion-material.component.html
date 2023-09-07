@@ -73,6 +73,7 @@
                                        pKeyFilter="num"
                                        (focus)="onEditarCelda(posicionesCompra.Posiciones.CotizacionPosicion, 'Cantidad', 0)"
                                        (blur)="onReestablecerValor(posicionesCompra.Posiciones.CotizacionPosicion, 'Cantidad')"
+                                       numeric
                                        (ngModelChange)="calcularValorNeto(posicionesCompra?.Posiciones?.CotizacionPosicion, posicionesCompra.Id); mostrarMensajeNoRespetaCondiciones()" />
                             </ng-template>
                             <ng-template pTemplate="output">
@@ -139,6 +140,7 @@
                                        pKeyFilter="num"
                                        (focus)="onEditarCelda(posicionesCompra.Posiciones.CotizacionPosicion, 'Precio', 0)"                                     
                                        (blur)="onReestablecerValor(posicionesCompra.Posiciones.CotizacionPosicion, 'Precio')"
+                                       numeric
                                        (ngModelChange)="calcularValorNeto(posicionesCompra?.Posiciones?.CotizacionPosicion, posicionesCompra.Id); mostrarMensajeNoRespetaCondiciones()" />
                             </ng-template>
 

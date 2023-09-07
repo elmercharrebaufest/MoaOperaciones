@@ -254,7 +254,7 @@ export class CotizacionMaterialComponent extends ListBaseComponent implements On
     }
 
     public calcularValorNeto(cotizacion: CotizacionPosicionDto, peticionId: number) {
-        if (cotizacion.Precio != 0 && cotizacion.Cantidad != 0) {
+        if (cotizacion.Precio > 0 && cotizacion.Cantidad > 0) {
             cotizacion.PrecioTotal = cotizacion.Precio * cotizacion.Cantidad;
             this.posicionesCompra.filter(x => x.Id == peticionId)[0].Posiciones.CotizacionPosicion.PrecioTotal = cotizacion.PrecioTotal;
         }
@@ -423,4 +423,11 @@ export class CotizacionMaterialComponent extends ListBaseComponent implements On
             cotizacion[campo] = 0; // Restablece a cero si está en blanco
         }
     }
+
+    validarNumero(event: any) {
+        const inputValue = event.target.value;        
+        if (isNaN(inputValue) || inputValue < 0) {
+          event.target.value = 0; // Borra el valor si es negativo
+        }
+      }
 }

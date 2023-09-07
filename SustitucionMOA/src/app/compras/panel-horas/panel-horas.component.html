@@ -51,7 +51,7 @@
         <div class="col-md-4" style="margin-top: 12px;">
             <strong> Porcentaje de horas</strong>
         </div>
-        <div class="col-md-2">
+        <div class="col-md-2" *ngIf="cotizacion != null">
             <input type="text" pKeyFilter="num" [(ngModel)]="cotizacion.PorcentajeDeHoras"
                 placeholder="% horas"
                 pInputText

@@ -81,7 +81,6 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
                         this.peticion = result.data;
                         this.posicionesCompra = this.peticion.PeticionDeOfertaPosicion;
                         this.parsearFecha();
-                        console.log(result.data, "cotizacion");
                     }
                     this.blockUI.stop();
                 },

@@ -212,7 +212,8 @@
                                                         <input type="text" pKeyFilter="int" min="0"
                                                             [(ngModel)]="rowData.CantidadPersonas"
                                                             (focus)="onEditarCelda(rowData, 'CantidadPersonas', 0)"
-                                                            (blur)="onReestablecerValor(rowData, 'CantidadPersonas')">
+                                                            (blur)="onReestablecerValor(rowData, 'CantidadPersonas')"
+                                                            numeric>
                                                     </ng-template>
                                                     <ng-template pTemplate="output">
                                                         {{ rowData.CantidadPersonas }}
@@ -225,7 +226,8 @@
                                                         <input type="text" pKeyFilter="int" min="0"
                                                             [(ngModel)]="rowData.HorasNormales"
                                                             (focus)="onEditarCelda(rowData, 'HorasNormales', 0)"
-                                                            (blur)="onReestablecerValor(rowData, 'HorasNormales')">
+                                                            (blur)="onReestablecerValor(rowData, 'HorasNormales')"
+                                                            numeric>
                                                     </ng-template>
                                                     <ng-template pTemplate="output">
                                                         {{ rowData.HorasNormales }}
@@ -238,7 +240,8 @@
                                                         <input type="text" pKeyFilter="int" min="0"
                                                             [(ngModel)]="rowData.HorasNocturnas"
                                                             (focus)="onEditarCelda(rowData, 'HorasNocturnas', 0)"
-                                                            (blur)="onReestablecerValor(rowData, 'HorasNocturnas')">
+                                                            (blur)="onReestablecerValor(rowData, 'HorasNocturnas')"
+                                                            numeric>
                                                     </ng-template>
                                                     <ng-template pTemplate="output">
                                                         {{ rowData.HorasNocturnas }}
@@ -328,7 +331,8 @@
                                                         <input type="text" pKeyFilter="int" min="0"
                                                             [(ngModel)]="rowData.CantidadPersonas"
                                                             (focus)="onEditarCelda(rowData, 'CantidadPersonas', 0)"
-                                                            (blur)="onReestablecerValor(rowData, 'CantidadPersonas')">
+                                                            (blur)="onReestablecerValor(rowData, 'CantidadPersonas')"
+                                                            numeric>
                                                     </ng-template>
                                                     <ng-template pTemplate="output">
                                                         {{ rowData.CantidadPersonas }}
@@ -341,7 +345,8 @@
                                                         <input type="text" pKeyFilter="int" min="0"
                                                             [(ngModel)]="rowData.HorasNormales"
                                                             (focus)="onEditarCelda(rowData, 'HorasNormales', 0)"
-                                                            (blur)="onReestablecerValor(rowData, 'HorasNormales')">
+                                                            (blur)="onReestablecerValor(rowData, 'HorasNormales')"
+                                                            numeric>
                                                     </ng-template>
                                                     <ng-template pTemplate="output">
                                                         {{ rowData.HorasNormales }}
@@ -354,7 +359,8 @@
                                                         <input type="text" pKeyFilter="int" min="0"
                                                             [(ngModel)]="rowData.HorasNocturnas"
                                                             (focus)="onEditarCelda(rowData, 'HorasNocturnas', 0)"
-                                                            (blur)="onReestablecerValor(rowData, 'HorasNocturnas')">
+                                                            (blur)="onReestablecerValor(rowData, 'HorasNocturnas')"
+                                                            numeric>
                                                     </ng-template>
                                                     <ng-template pTemplate="output">
                                                         {{ rowData.HorasNocturnas }}
@@ -384,7 +390,7 @@
                     placeholder="% horas"
                     pInputText
                     class="styled-select inputAltura"
-                    (input)="validarNumero($event)">
+                    numeric>
             </div>
         </div>
     </section>
@@ -484,6 +490,7 @@
                                             [(ngModel)]="subposicionesCompras.CantidadCotizacion"
                                             (focus)="onEditarCelda(subposicionesCompras, 'CantidadCotizacion', 0)"
                                             (blur)="onReestablecerValor(subposicionesCompras, 'CantidadCotizacion')"
+                                            numeric
                                             (ngModelChange)="calcularValorNeto(subposicionesCompras, posicionCompra.Id);mostrarMensajeNoRespetaCondiciones(); obtenerPrecioTotalPosicionProveedor()">
                                     </ng-template>
                                     <ng-template pTemplate="output">
@@ -531,6 +538,7 @@
                                             [(ngModel)]="subposicionesCompras.PrecioSubPosicion" pKeyFilter="num"
                                             (focus)="onEditarCelda(subposicionesCompras, 'PrecioSubPosicion', 0)"
                                             (blur)="onReestablecerValor(subposicionesCompras, 'PrecioSubPosicion')"
+                                            numeric
                                             (ngModelChange)="calcularValorNeto(subposicionesCompras, posicionCompra.Id);obtenerPrecioTotalPosicionProveedor()" />
                                     </ng-template>
 

@@ -395,4 +395,11 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
         }
     }
 
+    validarNumero(event: any) {
+        const inputValue = event.target.value;
+        if (isNaN(inputValue) || inputValue < 0) {
+          event.target.value = 0; // Borra el valor si es negativo
+        }
+      }
+
 }

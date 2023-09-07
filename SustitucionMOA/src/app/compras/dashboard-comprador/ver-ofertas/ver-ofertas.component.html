@@ -63,6 +63,7 @@
                                  [(ngModel)]="peticionPosicion.Posicion.CantidadAdjudicacion" 
                                  (focus)="onEditarCelda(peticionPosicion.Posicion, 'CantidadAdjudicacion', 0)"
                                  (blur)="onReestablecerValor(peticionPosicion.Posicion, 'CantidadAdjudicacion')"
+                                 numeric
                                  (keyup)="validacionCantidad(peticionPosicion.Posicion.CantidadAdjudicacion, peticionPosicion.Posicion.CantidadPendiente)">
                             </ng-template>
                             <ng-template pTemplate="output">
