@@ -2330,7 +2330,7 @@ namespace SustitucionMOAUtils.Services
         {
             try
             {
-                var hoy = DateTime.Now.Date;
+                var hoy = DateTime.Now;
                 var todasLasOfertas = repositorio.ObtenerConsultaEscalar(new ComparadorOfertasConsulta(PeticionOferta_Id));
                 Dictionary<int, decimal> tipodecambio = new Dictionary<int, decimal>();
                 var destino = repositorio.Obtener<TablaSap>(x => x.Codigo == "ARP" && x.Tabla == TablasSap.Moneda);
@@ -2402,7 +2402,12 @@ namespace SustitucionMOAUtils.Services
                     }
                     if (!esAdmin)
                     {
-                        if (item.Cotizacion != null && item.PlazoDeOferta.Date >= hoy.Date)
+                        var fecha = (item.PlazoDeOfertaCierre == null && item.FechaCircular == null) ? item.PlazoDeOfertaOriginal :
+                  item.PlazoDeOfertaCierre == null ? item.PlazoDeOfertaCircular.Value :
+                  item.FechaCircular == null ? item.PlazoDeOfertaCierre.Value :
+                  item.PlazoDeOfertaCierre.Value > item.FechaCircular.Value ? item.PlazoDeOfertaCierre.Value : item.PlazoDeOfertaCircular.Value;
+
+                        if (item.Cotizacion != null && fecha >= hoy)
                         {
                             mensaje = "Plazo de oferta sin finalizar";
                             verAdjudicar = false;

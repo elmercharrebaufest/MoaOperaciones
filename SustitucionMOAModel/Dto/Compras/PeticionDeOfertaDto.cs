@@ -128,6 +128,11 @@ namespace SustitucionMOAModel.Dto
         public string MensajeAdjudicar { get; set; }
         public bool ValidacionCircularSolicitante { get; set; }
         public string ObservacionNoCumple { get; set; }
+        public DateTime PlazoDeOfertaOriginal { get; set; }
+        public DateTime? PlazoDeOfertaCircular { get; set; }
+        public DateTime? PlazoDeOfertaCierre { get; set; }
+        public DateTime? FechaCircular { get; set; }
+
     }
 
     public class PeticionDeOfertaCierreDto
