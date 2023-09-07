@@ -3584,10 +3584,7 @@ namespace SustitucionMOAUtils.Services
                 copia.Add(peticion.Solp.UsuarioCreacion.Mail);
             }
             var asunto = "";
-            if (ConfigurationManager.AppSettings["AmbientePruebas"] != "1")
-            {
-                asunto = "Prueba: ";
-            }
+            
             foreach (var prov in usuarios)
             {
                 asunto = "";
@@ -3928,10 +3925,7 @@ namespace SustitucionMOAUtils.Services
                     Log.Info($"copia mail solicitante {adjudicacion.Solp.UsuarioCreacion.Mail}");
                 }
                 var asunto = "";
-                if (ConfigurationManager.AppSettings["AmbientePruebas"] != "1")
-                {
-                    asunto = "Prueba: ";
-                }
+               
 
                 var enviarA = new List<string> { adjudicacion.Cotizacion.PeticionDeOfertaUsuario.Usuario.Mail };
                 asunto += $"Nueva OC creada - {adjudicacion.NumeroOrdenDeCompra} - {adjudicacion.Usuario.ObtenerRazonSocial()}";
@@ -4181,13 +4175,8 @@ namespace SustitucionMOAUtils.Services
             }
             foreach (var prov in circular.PeticionDeOfertaUsuarios)
             {
-                asunto = "";
-                if (ConfigurationManager.AppSettings["AmbientePruebas"] != "1")
-                {
-                    asunto = "Prueba - ";
-                }
                 var enviarA = new List<string> { prov.PeticionDeOfertaUsuario.Usuario.Mail };
-                asunto += $"Nueva circular con PO {prov.PeticionDeOfertaUsuario.PeticionDeOferta_Id} - {prov.PeticionDeOfertaUsuario.Usuario.ObtenerRazonSocial()}";
+                asunto = $"Nueva circular con PO {prov.PeticionDeOfertaUsuario.PeticionDeOferta_Id} - {prov.PeticionDeOfertaUsuario.Usuario.ObtenerRazonSocial()}";
 
                 EmailSender.EnviarMail(enviarA, asunto, "", copia, CuerpoMailCircular(prov), null, null, null, null, archs);
             }
@@ -4830,10 +4819,6 @@ namespace SustitucionMOAUtils.Services
             {
                 enviarA.Add(peticion.Solp.UsuarioCreacion.Mail);
             }
-            if (ConfigurationManager.AppSettings["AmbientePruebas"] != "1")
-            {
-                asunto = "Prueba:  ";
-            }
             asunto += "NUEVA cotización creada - SOLP " + peticion.Solp.NroSolp;
             EmailSender.EnviarMail(enviarA, asunto, "", null, CuerpoMailCotizacion(cotizacion), null, null, null, null);
         }
@@ -4843,10 +4828,6 @@ namespace SustitucionMOAUtils.Services
         {
             var asunto = "";
             var enviarA = new List<string> { ConfigurationManager.AppSettings["EmailToReporteLogins"] };
-            if (ConfigurationManager.AppSettings["AmbientePruebas"] != "1")
-            {
-                asunto = "Prueba:  ";
-            }
             asunto += "Error al agregar registro info en cotizacion: " + cotizacion.Id;
 
             AlternateView alternateView = AlternateView.CreateAlternateViewFromString("Se informa que al momento de finalizar una cotizacion, el registro info no se pudo generar, revisar los logs", null, "text/html");
