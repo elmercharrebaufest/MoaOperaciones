@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using System.Linq;
+using System.ServiceModel;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
@@ -23,7 +24,10 @@ namespace SustitucionMOAWS.WSConsumers
 
         public AgregarRegistroInfoConsumerMOA(IRepositorio repositorio)
         {
-            service = new SI_MMRFC_MANTENER_REGINFOClient();
+            var url = "http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MMRFC_MANTENER_REGINFO&amp;interfaceNamespace=urn%3AOPERACIONES";
+          
+            service = new SI_MMRFC_MANTENER_REGINFOClient(SAPCredential.CrearSapBasicBinding(), SAPCredential.DevolverEndpoint(url));
+
             service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
             service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
             this.repositorio = repositorio;
