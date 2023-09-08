@@ -1010,7 +1010,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
         this.displaySAPEditar = false;
         const emailModel = new EmailComposeModel();
         emailModel.from = this.fromEmail;
-        emailModel.to = this.emailTo;
+        emailModel.to = this.getToEmails();
         emailModel.cc = this.getCCEmails();
         emailModel.subject = this.getEmailSubject(esPrimeraFinalizacion, esPosteriorFinalizacion);
         emailModel.body = this.emailBody;
@@ -1050,6 +1050,20 @@ export class SolpComponent extends BaseComponent implements OnInit {
             }
         }
         return ccEmails;
+    }
+
+    private getToEmails(): string[] {
+        const toEmails: string[] = [];
+
+        if (this.solpActual.mail != undefined && this.solpActual.mail != null) {
+            toEmails.push(this.solpActual.mail);
+        } else {
+            const username = sessionStorage.getItem("username");
+            if (username) {
+                toEmails.push(username);
+            }
+        }
+        return toEmails;
     }
 
     private get fromEmail(): string {
