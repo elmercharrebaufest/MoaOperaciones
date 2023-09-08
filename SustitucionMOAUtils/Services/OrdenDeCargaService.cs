@@ -151,7 +151,7 @@ namespace SustitucionMOAUtils.Services
                 }
                 NotificarVariasFacturas(ordenDeCarga);
 
-                if (!crearPedido && ordenDeCarga.Estado == EstadoOrdenDeCarga.SinEnviarASAP &&
+                if (ordenDeCarga.Estado == EstadoOrdenDeCarga.SinEnviarASAP &&
                     (!ordenPuedeEnviarseDirectoSap ||
                     (ordenDeCarga.EsFacturaAnticipada && !ValidarKgDisponiblesEnviaPedidoDirectamenteASAP(ordenDeCarga, usuario))))
                 {
@@ -2196,7 +2196,7 @@ namespace SustitucionMOAUtils.Services
                     Fechas = rangoFechas,
                     Material = string.Empty,
                     Pendiente = true, // Contratos ABIERTOS
-                    TipoContrato = tipoContrato
+                    TipoContrato = TipoContratoFAS.Todos
                 };
 
                 var ordenCargaConsumer = new OrdenCargaConsumerMOA();
