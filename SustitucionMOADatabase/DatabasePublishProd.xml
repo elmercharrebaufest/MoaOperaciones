@@ -4,7 +4,7 @@
     <IncludeCompositeObjects>True</IncludeCompositeObjects>
     <TargetDatabaseName>MOAOperaciones</TargetDatabaseName>
     <DeployScriptFileName>Base de Datos.sql</DeployScriptFileName>
-    <TargetConnectionString>data source=MOAOPAGLSPRD.molinosagro.ad; User Id=MOAOPPRDUSR;Password=17E9438901;initial catalog=Moaoperaciones;Pooling=False" providerName="System.Data.SqlClient"</TargetConnectionString>
+    <TargetConnectionString>data source=MOAOPAGLSPRD.molinosagro.ad; User Id=MOAOPPRDUSR;Password=17E9438901;initial catalog=Moaoperaciones;Pooling=False"</TargetConnectionString>
     <ProfileVersionNumber>1</ProfileVersionNumber>
     <ScriptDatabaseOptions>True</ScriptDatabaseOptions>
     <BlockOnPossibleDataLoss>False</BlockOnPossibleDataLoss>
