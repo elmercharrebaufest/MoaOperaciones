@@ -45,7 +45,7 @@ export class OrdenesDeCargaListado extends ListBaseComponent implements OnInit {
     estadosSelected: string[] = [];
 
     datosAux: any[];
-    primerListado: any[];
+    //primerListado: any[];
     listaEnviarASAP: number[] = [];
     
     productoSelected: string = "Todos";
@@ -72,7 +72,6 @@ export class OrdenesDeCargaListado extends ListBaseComponent implements OnInit {
     }
 
     ngOnInit() {
-        console.debug('OrdenesDeCargaListado - ngOnInit()');
         // console.debug(' puedeEnviarASAP: ', this.puedeEnviarASAP);
         this.corredorCodigo = sessionStorage.getItem("proveedor");
         this.mailUsuarioSAP = sessionStorage.getItem("username");
@@ -94,6 +93,7 @@ export class OrdenesDeCargaListado extends ListBaseComponent implements OnInit {
                 { label: "Sin Enviar a SAP", value: "Sin Enviar a SAP" },
                 { label: "Entrega anulada, pedido pendiente de anulación", value: "Entrega anulada, pedido pendiente de anulación" },
                 { label: "Pendiente de compensación", value: "Pendiente de compensación" },
+                { label: "Entregada", value: "Entregada" },
             ]
         } else {
             this.descripcionEstadoOrdenCarga = [];
@@ -112,8 +112,7 @@ export class OrdenesDeCargaListado extends ListBaseComponent implements OnInit {
         this.service.setEstadosFiltro(this.estadosSelected)
     }
     filtrarListado() {
-        console.debug('filtrarListado()');
-        this.primerListado = this.datosAux.filter(x => x.DescripcionEstado != this.entregada);
+        //this.primerListado = this.datosAux.filter(x => x.DescripcionEstado != this.entregada);
         if (!this.esTercero) {
             if (this.estadosSelected.length < 1 || this.estadosSelected == null) {
                 this.data = this.datosAux;
