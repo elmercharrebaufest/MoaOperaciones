@@ -692,7 +692,7 @@ namespace SustitucionMOAUtils.Services
             }
 
             // Solo en el caso que el response dé ok para crear la orden tiene que verificar el vencimiento
-            if (!esJob && puedeCrearPedido)
+            if (!esJob && puedeCrearPedido && string.IsNullOrEmpty(ordenDeCarga.NumeroEntrega))
             {
                 if (!ValidarVencimientoContrato(ObtenerContratoDeOrden(ordenDeCarga), cliente))
                 {
