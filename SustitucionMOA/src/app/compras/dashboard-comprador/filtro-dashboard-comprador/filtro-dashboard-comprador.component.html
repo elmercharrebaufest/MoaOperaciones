@@ -1,15 +1,15 @@
 <div class="row">
     <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
-        <p-dropdown [options]="usuarioFiltro" [(ngModel)]="selectUsuario" placeholder="Usuario solicitante" filter="true"></p-dropdown>
+        <p-multiSelect [options]="usuarioFiltro" [(ngModel)]="selectUsuario" defaultLabel="Usuario solicitante" [maxSelectedLabels]="1" selectedItemsLabel="{0} usuarios elegidos"></p-multiSelect>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
-        <p-multiSelect [options]="estadoSolpItem" [(ngModel)]="selectEstadoSolp" defaultLabel="Estado SOLP"></p-multiSelect>
+        <p-multiSelect [options]="estadoSolpItem" [(ngModel)]="selectEstadoSolp" defaultLabel="Estado SOLP" selectedItemsLabel="{0} estados elegidos"></p-multiSelect>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
-        <p-multiSelect [options]="grupoComprasFiltro" [(ngModel)]="selectGrupoCompras" defaultLabel="Grupo de Compras"></p-multiSelect>
+        <p-multiSelect [options]="grupoComprasFiltro" [(ngModel)]="selectGrupoCompras" defaultLabel="Grupo de Compras" [maxSelectedLabels]="1" selectedItemsLabel="{0} grupos de compras"></p-multiSelect>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3" style="padding-right: 30px;">
-        <p-multiSelect [options]="centroFiltro" [(ngModel)]="selectCentro" defaultLabel="Centro"></p-multiSelect>
+        <p-multiSelect [options]="centroFiltro" [(ngModel)]="selectCentro" defaultLabel="Centro" [maxSelectedLabels]="2" selectedItemsLabel="{0} centros elegidos"></p-multiSelect>
     </div>
     <div class="row myRow">
         <div class="form-group col-md-3">

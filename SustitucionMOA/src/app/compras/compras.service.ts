@@ -55,7 +55,7 @@ export class ComprasService extends BaseService {
         mantenimiento: boolean = this.filtros.mantenimiento,
         web: boolean = this.filtros.web,
         estados: any = this.filtros.estados,
-        usuarioId: number | null = this.filtros.usuarioId): Observable<any> {
+        usuarioId: any = this.filtros.usuarioId): Observable<any> {
         let params: HttpParams = new HttpParams();
         pagina = pagina != null ? pagina : this.filtros.pagina;
         itemsPorPagina = itemsPorPagina != null ? itemsPorPagina : this.filtros.itemsPorPagina;
@@ -427,7 +427,7 @@ export class ComprasService extends BaseService {
         columna: string = this.filtros.columna,
         nroSolp: string = this.filtros.nroSolp,
         estados: any = this.filtros.estados,
-        usuarioId: number | null = this.filtros.usuarioId,
+        usuarios: any = this.filtros.usuarioId,
         centros: any = this.filtros.centros,
         grupoDeCompras: any = this.filtros.grupoDeCompras) {
         let params: HttpParams = new HttpParams()
@@ -440,7 +440,7 @@ export class ComprasService extends BaseService {
         params = params.set('columna', columna);
         params = params.set('nroSolp', nroSolp);
         params = params.set('estados', estados);
-        params = params.set('usuarioId', (usuarioId != null ? usuarioId.toString() : ""));
+        params = params.set('usuarios', usuarios);
         params = params.set('centros', centros);
         params = params.set('grupoDeCompras', grupoDeCompras);
         return this.http

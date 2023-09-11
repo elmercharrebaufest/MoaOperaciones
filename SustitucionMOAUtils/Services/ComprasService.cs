@@ -2282,9 +2282,9 @@ namespace SustitucionMOAUtils.Services
             return result.ContratosSolp;
         }
 
-        public ListaPaginada<SolpDto> ListarSolpComprador(Paginacion paginacion, string nroSolp, int? usuarioId, List<int> estados = null, List<int> centros = null, List<int> grupoDeCompras = null)
+        public ListaPaginada<SolpDto> ListarSolpComprador(Paginacion paginacion, string nroSolp, List<int> usuarios = null, List<int> estados = null, List<int> centros = null, List<int> grupoDeCompras = null)
         {
-            var todasLasSolp = repositorio.ListarConsultaPaginada(new ListarSolpConsulta(paginacion, nroSolp, usuarioId, estados, centros, grupoDeCompras));
+            var todasLasSolp = repositorio.ListarConsultaPaginada(new ListarSolpConsulta(paginacion, nroSolp, usuarios, estados, centros, grupoDeCompras));
             if (todasLasSolp != null && todasLasSolp.Count() > 0)
             {
                 todasLasSolp.FirstOrDefault().ItemsTotales = todasLasSolp.ItemsTotales;

@@ -16,15 +16,15 @@ namespace SustitucionMOARepositorio.ConsultasEF
     {
         private readonly Paginacion Paginacion;
         private readonly string NroSolp;
-        private readonly int? UsuarioId;
+        private readonly List<int> Usuarios;
         private readonly List<int> Estados;
         private readonly List<int> Centros;
         private readonly List<int> GrupoDeCompras;
-        public ListarSolpConsulta(Paginacion paginacion, string nroSolp, int? usuarioId, List<int> estados, List<int> centros, List<int> grupoDeCompras)
+        public ListarSolpConsulta(Paginacion paginacion, string nroSolp, List<int> usuarios, List<int> estados, List<int> centros, List<int> grupoDeCompras)
         {
             Paginacion = paginacion;
             NroSolp = nroSolp;
-            UsuarioId = usuarioId;
+            Usuarios = usuarios;
             Estados = estados;
             Centros = centros;
             GrupoDeCompras = grupoDeCompras;
@@ -39,7 +39,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                 var resultado = from x in contexto.Set<Solp>()
                                 where (string.IsNullOrEmpty(NroSolp) || x.NroSolp.ToUpper().StartsWith(NroSolp.ToUpper())) &&
                                 x.Posiciones.All(p => p.NumeroContratoSuperior == "" || p.NumeroContratoSuperior == null) &&
-                                (UsuarioId == null || (x.UsuarioCreacion_Id != null && UsuarioId == x.UsuarioCreacion_Id)) &&
+                                (!Usuarios.Any() || (x.UsuarioCreacion_Id != null && Usuarios.Contains((int)x.UsuarioCreacion_Id))) &&
                                 (!Estados.Any() || (x.EstadoSolpSap_Id != null && Estados.Contains((int)x.EstadoSolpSap_Id))) &&
                                 (!Centros.Any() || x.Posiciones.Any(c => Centros.Contains(c.Centro_Id))) &&
                                 (!GrupoDeCompras.Any() || x.Posiciones.Any(gc => GrupoDeCompras.Contains((int)gc.GrupoCompras_Id)))
