@@ -79,7 +79,6 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
     esCorredor: boolean = sessionStorage.getItem("tipoUsuario") === "CORR";
     esComercial: boolean = this.isAuthorized('VER ORDENES DE CARGA PARA COMERCIALES');
     esAdmin: boolean = this.isAuthorized('VER TODAS ORDENES DE CARGA');
-    modificaReventa = this.isAuthorized(Permiso.FasModificarCampoReventa);
     listaClientes: any[];
     noEditarCliente: boolean = false;
 
@@ -595,6 +594,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                 this.mensajeComponent.setErrorMsg("El cliente seleccionado no existe en la web, por favor gestionar su alta");
                 this.clienteCUIT = "";
                 pClienteCodigo = "";
+                this.scrollAMensaje();
             }
             else {
                 this.clienteCUIT = this.clienteSeleccionado.CUIT;
@@ -630,7 +630,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
             this.ordenDeCarga.Producto_Id = this.selectUndefinedOptionValue;
             this.validaCPEDG = false;
         }
-        this.ordenDeCarga.Reventa = this.validaCPEDG && this.modificaReventa && !this.ordenDeCarga.Reventa;
+        this.ordenDeCarga.Reventa = this.validaCPEDG && this.clienteSeleccionado.EsRevendedor && !this.ordenDeCarga.Reventa;
         this.validarSisaCorredorCliente()
     }
     validarCorredorClienteContratoProducto = (
@@ -991,6 +991,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
     }
 
     validarSisaCorredorCliente() {
+        
         if (!this.ordenDeCarga.ContratoSeleccionado || !this.validaCPEDG) {
             this.mensajeComponent.setMsgsEmpty();
             return;

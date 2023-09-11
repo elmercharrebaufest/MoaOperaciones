@@ -47,6 +47,7 @@ export class EcheqService extends BaseService {
             .pipe(timeoutWith(90000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde "))));
     }
 
+
     public DesmarcarContrato(contrato: string, pedido: string): Observable<any> {
         let payload = new FormData();
         payload.append("contrato", contrato);

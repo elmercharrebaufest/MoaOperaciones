@@ -34,9 +34,9 @@
         <div class="div-division" formArrayName="proveedores" *ngIf="existeProveedores">
           <div *ngFor="let proveedor of modificarDatosForm.get('proveedores').value; let i = index; trackBy:trackByFn">
             <div class="row" [formGroupName]="i">
-              <div class="col-md-4">
+              <div class="col-md-2">
                 <div class="formulario-label">
-                  Codigo Proveedor
+                  Código Proveedor
                 </div>
                 <div class="styled-select">
                   <input type="text" formControlName="codigoProveedor" class="form-control" autocomplete="chrome-off"
@@ -45,11 +45,19 @@
               </div>
               <div class="col-md-8">
                 <div class="formulario-label">
-                  Razon Social
+                  Razón Social
                 </div>
                 <div class="styled-select">
                   <input type="text" formControlName="razonSocial" class="form-control" autocomplete="chrome-off"
                     maxlength="200" />
+                </div>
+              </div>
+              <div class="col-md-2">
+                <div class="formulario-label">
+                  Revendedor
+                </div>
+                <div class="styled-select">
+                  <input type="checkbox" formControlName="esRevendedor" class="form-control" />
                 </div>
               </div>
             </div>

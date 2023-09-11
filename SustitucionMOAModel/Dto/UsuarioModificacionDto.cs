@@ -23,5 +23,6 @@ namespace SustitucionMOAModel.Dto
         public string RazonSocial     {get; set;}
         public string CodigoProveedor {get; set;}
         public int IdTipoProveedor {get; set;}
+        public bool EsRevendedor { get; set; }
     }
 }

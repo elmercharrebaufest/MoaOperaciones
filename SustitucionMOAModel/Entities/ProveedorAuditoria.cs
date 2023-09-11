@@ -20,5 +20,6 @@ namespace SustitucionMOAModel.Entities
         public string RazonSocial { get; set; }
         public DateTime FechaActualizacion { get; set; }
         public string UsuarioActualizacion { get; set; }
+        public bool EsRevendedor { get; set; }
     }
 }
