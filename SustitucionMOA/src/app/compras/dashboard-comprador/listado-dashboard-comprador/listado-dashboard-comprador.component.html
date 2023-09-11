@@ -4,13 +4,13 @@
     </div>
     <br>
 </section>
-<div class="content-wraper" style="padding-top: 0px !important;">
+<div style="padding-top: 0px !important;">
     <spinner></spinner>
     <app-filtro-dashboard-comprador></app-filtro-dashboard-comprador>
-    <div class="col-sm-12 col-md-12 col-lg-12" style="margin-left: -15px;">
 
+    <div class="col-sm-12 col-md-12 col-lg-12" style="margin-left: -15px; width: 100% !important;">
         <p-table #tabla [value]="tablaSolp" responsiveLayout="scroll | stack" dataKey="Id">
-            <ng-template pTemplate="header" let-columns class="lista-header">
+            <ng-template pTemplate="header" let-columns>
                 <tr>
                     <th style="width: 40px"></th>
                     <th data-toggle="tooltip" title="Acciones SOLP" style="width: 50px"></th>
@@ -95,10 +95,7 @@
                             <i [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
                         </a>
                     </td>
-                    <td style="display:none;">
-                        {{rowData.TipoSolpSap}}
-                    </td>
-                    <td style="padding-left: 0px; padding-right: 0px;">
+                    <td class="col-lg-12 col-md-12 col-sm-12" style="padding-left: 0px; padding-right: 0px;">
                         <div *ngIf="rowData.TipoSolpSap == 2" class="col-md-2">
                             <span>
                                 <img class="pointer" src="./Content/images/icons/worker.svg" alt="Mantenimiento"
@@ -237,7 +234,7 @@
                                         <ng-template pTemplate="body" let-orden>                                           
                                             <tr>                                              
                                                <td class="columna">{{orden.NumeroOrdenDeCompra}}</td>                                     
-                                                <td class="columna">{{orden.FechaCreacion | customDateFormat | date :'d/M/yyyy' }}</td>
+                                                <td class="columna">{{orden.FechaCreacion | customDateFormat | date :'d/M/yyyy HH:mm' }}</td>
                                                 <td class="columna">{{orden.Proveedor}}</td>
                                                 <td class="columna">{{orden.PrecioFinal | number:'1.2-2'}}</td>
                                                 <td class="columna">{{orden.MonedaDescripcion}}</td>
@@ -256,12 +253,8 @@
                 </tr>
             </ng-template>
         </p-table>
-
         <p-paginator #paginator [rows]="10" [totalRecords]="length" (onPageChange)="handlePageEvent($event)"></p-paginator>
-
     </div>
-
-
 
     <app-legajo [(displayLegajo)]="displayLegajo"
                 [(usuarioProveedor)]="usuarioProveedor"

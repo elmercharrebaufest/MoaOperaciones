@@ -8,12 +8,6 @@ namespace SustitucionMOAUtils.Services
 {
     public abstract class EmailService
     {
-        protected string GenerarAsunto(string asunto)
-        {
-            var prefijoAsunto = ConfigurationManager.AppSettings["EmailAsuntoPrefijo"];
-            return prefijoAsunto + asunto;
-        }
-
         protected List<string> ObtenerListaDestinatarios(IEnumerable<string> gruposDeMails)
         {
             var destinatarios = new List<string>();

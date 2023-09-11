@@ -24,7 +24,7 @@ namespace SustitucionMOAModel.Dto
             set { pPlazoDeOferta = value; }
         }
         public string Observaciones { get; set; }
-        public string PlazoDeOfertaFormateado { get { return PlazoDeOferta.ToString("dd/MM/yyyy hh:mm"); } }
+        public string PlazoDeOfertaFormateado { get { return PlazoDeOferta.ToString("dd/MM/yyyy HH:mm"); } }
 
         private string pEstado;
 
@@ -91,6 +91,7 @@ namespace SustitucionMOAModel.Dto
         public DateTime PlazoDeOfertaOriginal { get; set; }
         public DateTime? PlazoDeOfertaCierre { get; set; }
         public DateTime? FechaCircular { get; set; }
+        public int PorcentajeDeHoras { get; set; }
     }
 
     public class PeticionDeOfertaSolpPosicionDto
@@ -127,6 +128,11 @@ namespace SustitucionMOAModel.Dto
         public string MensajeAdjudicar { get; set; }
         public bool ValidacionCircularSolicitante { get; set; }
         public string ObservacionNoCumple { get; set; }
+        public DateTime PlazoDeOfertaOriginal { get; set; }
+        public DateTime? PlazoDeOfertaCircular { get; set; }
+        public DateTime? PlazoDeOfertaCierre { get; set; }
+        public DateTime? FechaCircular { get; set; }
+
     }
 
     public class PeticionDeOfertaCierreDto

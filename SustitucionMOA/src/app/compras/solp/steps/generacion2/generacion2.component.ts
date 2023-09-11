@@ -40,8 +40,8 @@ export class Generacion2Component extends ListBaseComponent {
     formulario2: FormGroup;
 
     camposObligatorios: any[] = [
-        { campo: 'supervisorSector', esObligatorio: true},
-        { campo: 'supervisorTrabajo', esObligatorio: true}
+        { campo: 'supervisorSector', esObligatorio: true },
+        { campo: 'supervisorTrabajo', esObligatorio: true }
     ];
 
     @Output() onEstCompleto = new EventEmitter<any>();
@@ -113,7 +113,7 @@ export class Generacion2Component extends ListBaseComponent {
 
         //declaro las validaciones para los campos
         if (this.model.tipoSolp == "SIN_PLIEGO") {
-            this.formulario2 = this.formBuilder.group({                
+            this.formulario2 = this.formBuilder.group({
                 supervisorTrabajo: new FormControl('', Validators.required),
                 supervisorSector: new FormControl('', Validators.required),
                 visitaDeObra: [{ value: true, disabled: true }, [Validators.required]],
@@ -157,7 +157,7 @@ export class Generacion2Component extends ListBaseComponent {
         if (this.model.supervisorSector[0] == '') {
             this.model.supervisorSector = [];
         }
-        if(this.model.supervisorTrabajo[0] == '') {
+        if (this.model.supervisorTrabajo[0] == '') {
             this.model.supervisorTrabajo = [];
         }
     }
@@ -211,18 +211,29 @@ export class Generacion2Component extends ListBaseComponent {
         return false;
     }
 
-    mostrarValidacion(campoAValidar, vacio){
+    mostrarValidacion(campoAValidar, vacio) {
         let camposVacios = this.camposObligatorios.find(x => x.campo == campoAValidar && x.esObligatorio);
         return (camposVacios != null && vacio == 0);
     }
-    
-    ngOnDestroy()
-    {
+
+    ngOnDestroy() {
         super.ngOnDestroy();
         this.onEstCompleto.emit({ codigo: EnumPasoSolp.PliegoGeneracion2, esPasoInvalido: this.validadorPasoSolpService.esPasoInvalido() });
     }
 
     onBlur(control: string) {
         this.validadorPasoSolpService.onBlurDirty(control);
+    }
+
+    onRadioButtonChange(visita: string) {
+        if (visita == "visitaDeObra") {
+            this.model.visitaDeObra = true;
+            this.model.visitaDeObraMasiva = false;
+            this.model.listaVisitas = [];
+            this.agregarNuevaVisita();
+        } else if (visita == "visitaDeObraMasiva") {
+            this.model.visitaDeObraMasiva = true
+            this.model.visitaDeObra = false;
+        }
     }
 }

@@ -59,7 +59,12 @@
                     <td pEditableColumn class="columna" style="width: 60px !important; ">
                         <p-cellEditor>
                             <ng-template pTemplate="input">
-                                <input type="text" pKeyFilter="num" [(ngModel)]="peticionPosicion.Posicion.CantidadAdjudicacion" (keyup)="validacionCantidad(peticionPosicion.Posicion.CantidadAdjudicacion, peticionPosicion.Posicion.CantidadPendiente)">
+                                <input type="text" pKeyFilter="num"
+                                 [(ngModel)]="peticionPosicion.Posicion.CantidadAdjudicacion" 
+                                 (focus)="onEditarCelda(peticionPosicion.Posicion, 'CantidadAdjudicacion', 0)"
+                                 (blur)="onReestablecerValor(peticionPosicion.Posicion, 'CantidadAdjudicacion')"
+                                 numeric
+                                 (keyup)="validacionCantidad(peticionPosicion.Posicion.CantidadAdjudicacion, peticionPosicion.Posicion.CantidadPendiente)">
                             </ng-template>
                             <ng-template pTemplate="output">
                                 {{peticionPosicion.Posicion.CantidadAdjudicacion | number:'1.2-2'}}
@@ -473,14 +478,14 @@
 </div>
 
 <p-dialog [(visible)]="displayPanelHs" modal="modal"
-          [width]="950" [draggable]="false" [closable]="true"
+          [width]="1100" [draggable]="false" [closable]="true"
           (onHide)="onCerrarPanel()" appendTo="body" positionTop="30"
           [height]="550"
           [max] [contentStyle]="{
         'max-height':'550px',
         'min-height':'400px'}">
 
-    <p-header class="headerModal" style="color: #067935; font-size: 24px;">
+    <p-header class="headerModal" style="color: #067935; font-size: 20px;">
         <b>Panel de horas cargadas</b>
     </p-header>
     <div class="container-fluid" style="height: 273.75px;">
@@ -489,7 +494,7 @@
                 <div class="row myRow" style="padding-top: 2px;" *ngIf="tablaOfertas != null">
                     <div *ngFor="let p of tablaOfertas.Usuarios">
                         <div class="col-md-12">
-                            <h3 style="font-size:x-large;font-weight:bold;">{{p.RazonSocial}} ({{p.CUIT}}) - {{p.Mail}}</h3>
+                            <h3 style="font-size:16px;font-weight:bold;">{{p.RazonSocial}} ({{p.CUIT}}) - {{p.Mail}}</h3>
                             <app-panel-horas [peticionHs]="p.Cotizacion?.CotizacionesHoras" [cotizacion]="p.Cotizacion"></app-panel-horas>
                             <hr>
                         </div>

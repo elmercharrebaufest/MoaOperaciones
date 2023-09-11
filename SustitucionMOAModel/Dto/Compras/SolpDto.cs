@@ -177,6 +177,7 @@ namespace SustitucionMOAModel.Dto
         public DateTime? FechaLiberacion { get; set; }
         public int? PlazoEntrega { get; set; }
         public int? CentroId { get; set; }
+        public string CentroCodigo { get; set; }
         public int? AlmacenId { get; set; }
         public string NombreEntrega { get; set; }
         public string CalleEntrega { get; set; }
@@ -248,6 +249,7 @@ namespace SustitucionMOAModel.Dto
         public string SolpTipo { get; set; }
         public int Solp_Id { get; set; }
         public decimal? CantidadAdjudicada { get; set; }
+        public string GrupoComprasCodigo { get; set; }
 
         public SolpPosicionDto() { }
 

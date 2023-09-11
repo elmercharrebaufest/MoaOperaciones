@@ -276,11 +276,14 @@ export class ComprasService extends BaseService {
     }
 
     getFechaHora(fecha: Date, hora: Date) {
-        let fechaHora = new Date(fecha);
-        fechaHora.setHours(hora.getHours());
-        fecha.setMinutes(hora.getMinutes());
-        fecha.setSeconds(hora.getSeconds());
+        console.log("fechaHora", fecha, hora)
 
+        let fechaHora = new Date(fecha);
+
+        fechaHora.setHours(hora.getHours());
+        fechaHora.setMinutes(hora.getMinutes());
+        fechaHora.setSeconds(hora.getSeconds());
+        console.log("fechaHora", fechaHora)
         return fechaHora;
     }
 
@@ -591,7 +594,7 @@ export class ComprasService extends BaseService {
             UsuarioIds: circular.UsuarioIds,
             Observacion: circular.Observacion,          
             Adjuntos: circular.Adjuntos,
-            PlazoDeOferta: circular.PlazoDeOferta,
+            PlazoDeOferta: this.getFechaHora(circular.PlazoDeOfertaFecha, circular.PlazoDeOfertaHora),
             FechaEntrega: circular.FechaEntrega,
             RequiereCambioDeFecha: circular.RequiereCambioDeFecha,
             PeticionDeOferta_Id: circular.PeticionDeOferta_Id,            
@@ -681,7 +684,8 @@ export class ComprasService extends BaseService {
             RespetaServicios: cotizacion.RespetaServicios,
             RespetaMateriales: cotizacion.RespetaMateriales,
             CotizacionesHoras: cotizacion.CotizacionesHoras,
-            CotizacionSubposiciones: cotizacion.CotizacionSubposiciones
+            CotizacionSubposiciones: cotizacion.CotizacionSubposiciones,
+            PorcentajeDeHoras: cotizacion.PorcentajeDeHoras
         });
 
         var payload = new FormData();

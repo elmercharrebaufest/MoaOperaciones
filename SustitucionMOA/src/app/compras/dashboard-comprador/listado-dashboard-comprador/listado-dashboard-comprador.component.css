@@ -16,12 +16,12 @@
     margin-left: -121px;
     margin-top: 4px;
 }
-/* body.ui-paginator.ui-dropdown{
+body.ui-paginator.ui-dropdown{
     width: 10% !important;
 }
 .ng-tns-c7-9.ui-dropdown.ui-widget.ui-state-default.ui-corner-all.ui-helper-clearfix{
     width: 10% !important;
-} */
+}
 
 .columna{
     word-break: break-all; word-wrap:break-word; font-size: 10px;;
@@ -34,8 +34,15 @@
 
 .padding{
     padding: 8px;
-  }
-  
-  ::ng-deep .ui-paginator{
-    width: 1031px !important;
 }
+  
+  /* ::ng-deep .ui-paginator{
+    width: 100% !important;
+} */
+
+.col-lg-1 {
+    width: 10%;
+}
+
+
+

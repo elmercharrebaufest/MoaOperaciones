@@ -288,7 +288,7 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
                     return self.error;
                 }
 
-                if (this.tablaOfertas.TipoPosicionCodigo == 'MATERIALES') {
+                if (this.tablaOfertas.TipoPosicionCodigo == 'MATERIALES' && this.tablaOfertas.Adicional) {
                     if (element.MonedaCotizacion != element.MonedaPO) {
                         self.error = "Pos " + element.Posicion + " - La moneda de la cotización y de la OC debe ser la misma";
                         breakFor = true;
@@ -382,5 +382,24 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
         this.adjudicacion.Garantias = this.modalTexto.adjudicacion.Garantias;
         this.adjudicacion.TextoDeCabecera = this.modalTexto.adjudicacion.TextoDeCabecera;
     }
+
+    onEditarCelda(cotizacion: any, campo: string, valorInicial: any) {
+        if (cotizacion[campo] === valorInicial) {
+            cotizacion[campo] = ''; // Limpia el valor si es igual al valorInicial
+        }
+    }
+
+    onReestablecerValor(cotizacion: any, campo: string) {
+        if (cotizacion[campo] === '' || cotizacion[campo] === null) {
+            cotizacion[campo] = 0; // Restablece a cero si está en blanco
+        }
+    }
+
+    validarNumero(event: any) {
+        const inputValue = event.target.value;
+        if (isNaN(inputValue) || inputValue < 0) {
+          event.target.value = 0; // Borra el valor si es negativo
+        }
+      }
 
 }

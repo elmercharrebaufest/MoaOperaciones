@@ -363,6 +363,12 @@ export class CotizacionComponent extends ListBaseComponent {
         return false; //<-- Prevent Refresh
     }
 
+    validarFinalizada() {
+        if (this.estaFinalizada == true) {
+            return true;
+        }
+    }
+
     validarCondiciones(campoCheck) { //se usaba para asignar el valor a disabled en los checkboxes cuando eran excluyentes
         if (this.estaFinalizada == true) {
             return true;
@@ -373,11 +379,9 @@ export class CotizacionComponent extends ListBaseComponent {
         if (this.model.adicional == true && campoCheck == 'trabajoHecho') {
             return true;
         }
-
         if (this.model.trabajoHecho == true && campoCheck == 'adicional') {
             return true;
         }
-
         return false
     }
 }

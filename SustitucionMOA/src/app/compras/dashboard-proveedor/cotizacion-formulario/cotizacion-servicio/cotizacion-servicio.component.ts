@@ -286,7 +286,7 @@ export class CotizacionServicioComponent extends ListBaseComponent implements On
     }
 
     public calcularValorNeto(subposicionCompra: SolpSubposicionDto, peticionId: number) {
-        if (subposicionCompra.PrecioSubPosicion != 0 && subposicionCompra.CantidadCotizacion != 0) {
+        if (subposicionCompra.PrecioSubPosicion > 0 && subposicionCompra.CantidadCotizacion > 0) {
             subposicionCompra.PrecioTotalSubPosicion = subposicionCompra.PrecioSubPosicion * subposicionCompra.CantidadCotizacion;
             this.posicionesCompra.filter(x => x.Id == peticionId)[0].Posiciones.SubposicionesCompras.filter(x => x.Id == subposicionCompra.Id)[0].PrecioTotalSubPosicion == subposicionCompra.PrecioTotalSubPosicion;
         }
@@ -325,7 +325,8 @@ export class CotizacionServicioComponent extends ListBaseComponent implements On
             ArchivosGuardados: this.peticion.Cotizacion.ArchivosCotizacion != null ? this.peticion.Cotizacion.ArchivosCotizacion.map(x => { return { Id: x.Id } }) : null,
             ArchivosTipo: this.peticion.Cotizacion.ArchivosCotizacion != null ? this.peticion.Cotizacion.ArchivosCotizacion.map(x => { return { FileKey: x.FileKey } }) : null,
             CotizacionesHoras: this.index == 0 ? this.peticion.Cotizacion.CotizacionesHoras.filter(x => x.Gremio == 'UOCRA' || x.ConfigurarHora == true) : this.peticion.Cotizacion.CotizacionesHoras.filter(x => x.Gremio != 'UOCRA'),
-            CotizacionSubposiciones: this.subposiciones
+            CotizacionSubposiciones: this.subposiciones,
+            PorcentajeDeHoras: this.peticion.PorcentajeDeHoras
         }
         return coti;
     }
@@ -528,4 +529,11 @@ export class CotizacionServicioComponent extends ListBaseComponent implements On
             cotizacion[campo] = 0; // Restablece a cero si está en blanco
         }
     }
+
+    validarNumero(event: any) {
+        const inputValue = event.target.value;
+        if (isNaN(inputValue) || inputValue < 0) {
+          event.target.value = ''; // Borra el valor si es negativo
+        }
+      }
 }
