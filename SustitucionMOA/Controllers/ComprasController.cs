@@ -660,7 +660,7 @@ namespace SustitucionMOA.Controllers
 
 
         [HttpGet]
-        public ActionResult ListarSolpCompra(int? pagina = null, int? itemsPorPagina = null, string orden = null, string columna = null, string nroSolp = null)
+        public ActionResult ListarSolpComprador(int? pagina = null, int? itemsPorPagina = null, string orden = null, string columna = null, string nroSolp = null, string estados = null, int? usuarioId = null, string centros = null, string grupoDeCompras = null)
         {
             try
             {
@@ -669,7 +669,8 @@ namespace SustitucionMOA.Controllers
 
                 return JsonCustom(new
                 {
-                    data = service.ListarSolpComprador(paginacion, nroSolp)
+                    data = service.ListarSolpComprador(paginacion, nroSolp, usuarioId != null ? usuarioId : null, !string.IsNullOrEmpty(estados) ? estados.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(), 
+                    !string.IsNullOrEmpty(centros) ? centros.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(), !string.IsNullOrEmpty(grupoDeCompras) ? grupoDeCompras.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>())
                 });
             }
             catch (InfoCustomException e)
