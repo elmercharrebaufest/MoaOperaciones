@@ -59,11 +59,8 @@
                     <td pEditableColumn class="columna" style="width: 60px !important; ">
                         <p-cellEditor>
                             <ng-template pTemplate="input">
-                                <input type="text" pKeyFilter="num"
-                                 [(ngModel)]="peticionPosicion.Posicion.CantidadAdjudicacion" 
-                                 (focus)="onEditarCelda(peticionPosicion.Posicion, 'CantidadAdjudicacion', 0)"
-                                 (blur)="onReestablecerValor(peticionPosicion.Posicion, 'CantidadAdjudicacion')"
-                                 numeric
+                                <input type="text" pKeyFilter="num" numeric-format
+                                 [(ngModel)]="peticionPosicion.Posicion.CantidadAdjudicacion"                                                                
                                  (keyup)="validacionCantidad(peticionPosicion.Posicion.CantidadAdjudicacion, peticionPosicion.Posicion.CantidadPendiente)">
                             </ng-template>
                             <ng-template pTemplate="output">
