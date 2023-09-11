@@ -9,47 +9,92 @@ import { SecurityService } from '../../../common/services/SecurityService';
 import { SessionDataService } from '../../../common/services/SessionDataService';
 import { SpinnerComponent } from '../../../common/view-child/spinner/spinner.component';
 import { ComprasService } from '../../compras.service';
+import { SelectItem } from 'primeng/api';
 
 @Component({
-  selector: 'app-filtro-dashboard-comprador',
-  templateUrl: `filtro-dashboard-comprador.component.html`,
-  styleUrls: ['../../compras.component.css',
-      './filtro-dashboard-comprador.component.css']
+    selector: 'app-filtro-dashboard-comprador',
+    templateUrl: `filtro-dashboard-comprador.component.html`,
+    styleUrls: ['../../compras.component.css',
+        './filtro-dashboard-comprador.component.css']
 
 })
 export class FiltroDashboardCompradorComponent extends ListBaseComponent {
 
-  //#region Variables 
-  private filtroForm: FormGroup;   
-  nroSolp: string;
-  @ViewChild(SpinnerComponent)
-  protected spinnerComponent: SpinnerComponent;
-  usuario: string;
-  //#endregion
+    //#region Variables 
+    nroSolp: string;
+    @ViewChild(SpinnerComponent)
+    protected spinnerComponent: SpinnerComponent;
+    usuario: string;
+    usuarioFiltro: SelectItem[];
+    selectUsuario: number | null;
+    estadoSolpItem: SelectItem[];
+    selectEstadoSolp: string[] = [];
+    grupoComprasFiltro: SelectItem[];
+    selectGrupoCompras: string[] = [];
+    centroFiltro: SelectItem[];
+    selectCentro: string[] = [];
+    usuariosResult: any;
+    //#endregion
 
-  // #region Observables
-  constructor(protected service: ComprasService, protected navService: NavService,
-    protected sessionDataService: SessionDataService, protected securityService: SecurityService,
-    protected floatMsgService: FloatMsgService, protected modalService: ModalService,
-    protected route: ActivatedRoute, protected router: Router, private formBuilder: FormBuilder) {
-    super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
-    this.usuario = sessionStorage.getItem("username");
-    this.setFiltroBuquedaForm();
-    this.onBuscar();
-}
+    constructor(protected service: ComprasService, protected navService: NavService,
+        protected sessionDataService: SessionDataService, protected securityService: SecurityService,
+        protected floatMsgService: FloatMsgService, protected modalService: ModalService,
+        protected route: ActivatedRoute, protected router: Router, private formBuilder: FormBuilder) {
+        super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
+        this.usuario = sessionStorage.getItem("username");
+        this.onBuscar();
+    }
 
-  ngOnInit(): void {    
-  }
-  public setFiltroBuquedaForm() {
-    this.filtroForm = this.formBuilder.group({
-      nroSolp: '',
-    });   
+    ngOnInit(): void {
+    }
 
-  }
-  onBuscar() {
-    this.service.getListarSolpCompras(1, 10, "", "", this.filtroForm.controls.nroSolp.value);  
-  }
-  public getFiltroForm() {
-    return this.filtroForm;
-  }
+    ngAfterViewInit(): void {
+        this.getCombos();
+    }
+
+    getCombos() {
+        try {
+            this.subscription = this.service.getCombos().subscribe(
+                (result: any) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.floatMsgService.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.floatMsgService.setInfoMsg(result.info);
+                    } else {
+                        this.usuariosResult = result.Usuarios;
+                        this.estadoSolpItem = [];
+                        this.usuarioFiltro = [];
+                        this.centroFiltro = [];
+                        this.grupoComprasFiltro = [];
+                        result.EstadosSolpSap.forEach(e => this.estadoSolpItem.push({
+                            label: e.Descripcion, value: e.Id
+                        }));
+                        result.Usuarios.forEach(x => x.forEach(d => this.usuarioFiltro.push({
+                            label: d.Mail, value: d.Id
+                        })));
+                        result.Centro.forEach(c => this.centroFiltro.push({
+                            label: c.Codigo + " - " + c.Descripcion, value: c.Id
+                        }));
+                        result.GrupoCompras.forEach(gc => this.grupoComprasFiltro.push({
+                            label: gc.Codigo + " - " + gc.Descripcion, value: gc.Id
+                        }));
+                    }
+                },
+                error => {
+                    this.floatMsgService.setErrorMsg(error.message);
+                }
+            );
+        } catch (e) {
+            this.floatMsgService.setErrorMsg(e);
+            return false; //<-- Prevent Refresh
+        }
+        return false; //<-- Prevent Refresh
+    }
+
+    onBuscar() {
+        this.service.getListarSolpCompras(1, 10, "", "", this.nroSolp, this.selectEstadoSolp.join(","),
+            this.selectUsuario, this.selectCentro.join(","), this.selectGrupoCompras.join(","));
+    }
 }

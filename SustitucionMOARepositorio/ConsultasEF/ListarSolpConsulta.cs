@@ -14,14 +14,20 @@ namespace SustitucionMOARepositorio.ConsultasEF
 {
     public class ListarSolpConsulta : IConsultaPaginada<SolpDto>
     {
-        private readonly Paginacion paginacion;
+        private readonly Paginacion Paginacion;
         private readonly string NroSolp;
-        public ListarSolpConsulta(Paginacion paginacion, string nroSolp)
+        private readonly int? UsuarioId;
+        private readonly List<int> Estados;
+        private readonly List<int> Centros;
+        private readonly List<int> GrupoDeCompras;
+        public ListarSolpConsulta(Paginacion paginacion, string nroSolp, int? usuarioId, List<int> estados, List<int> centros, List<int> grupoDeCompras)
         {
-            this.paginacion = paginacion;
-            this.NroSolp = nroSolp;
-
-
+            Paginacion = paginacion;
+            NroSolp = nroSolp;
+            UsuarioId = usuarioId;
+            Estados = estados;
+            Centros = centros;
+            GrupoDeCompras = grupoDeCompras;
         }
         public ListaPaginada<SolpDto> Ejecutar(DbContext contexto)
         {
@@ -32,7 +38,11 @@ namespace SustitucionMOARepositorio.ConsultasEF
                 ((IObjectContextAdapter)contexto).ObjectContext.CommandTimeout = 180;
                 var resultado = from x in contexto.Set<Solp>()
                                 where (string.IsNullOrEmpty(NroSolp) || x.NroSolp.ToUpper().StartsWith(NroSolp.ToUpper())) &&
-                                x.Posiciones.All(p => p.NumeroContratoSuperior == "" || p.NumeroContratoSuperior == null)
+                                x.Posiciones.All(p => p.NumeroContratoSuperior == "" || p.NumeroContratoSuperior == null) &&
+                                (UsuarioId == null || (x.UsuarioCreacion_Id != null && UsuarioId == x.UsuarioCreacion_Id)) &&
+                                (!Estados.Any() || (x.EstadoSolpSap_Id != null && Estados.Contains((int)x.EstadoSolpSap_Id))) &&
+                                (!Centros.Any() || x.Posiciones.Any(c => Centros.Contains(c.Centro_Id))) &&
+                                (!GrupoDeCompras.Any() || x.Posiciones.Any(gc => GrupoDeCompras.Contains((int)gc.GrupoCompras_Id)))
                                 select new SolpDto
                                 {
                                     UsuarioActual = new UsuarioDto { Mail = x.UsuarioCreacion != null ? x.UsuarioCreacion.Mail : "" },
@@ -57,8 +67,8 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                            GrupoComprasCodigo = posicion.GrupoCompras != null ? posicion.GrupoCompras.Codigo : (string)null,
                                                            CentroCodigo = posicion.Centro != null ? posicion.Centro.Codigo : (string)null,
                                                        }),
-                                    ItemPorPagina = paginacion.ItemsPorPagina,
-                                    Pagina = paginacion.Pagina,
+                                    ItemPorPagina = Paginacion.ItemsPorPagina,
+                                    Pagina = Paginacion.Pagina,
                                     EstadoSolpSap = x.EstadoSolpSap_Id != null ? new TablaSapDto { Id = x.EstadoSolpSap_Id ?? 0, CodigoSap = x.EstadoSolpSap.CodigoSap, Descripcion = x.EstadoSolpSap.Descripcion } : new TablaSapDto { Id = 0, CodigoSap = "", Descripcion = "" },
                                     VerPublicar = x.TrabajoYaHecho == null || x.TrabajoYaHecho == false,
                                     VerCircular = x.TrabajoYaHecho == null || x.TrabajoYaHecho == false,
@@ -83,25 +93,17 @@ namespace SustitucionMOARepositorio.ConsultasEF
 
 
                                                               Observaciones = po.Observaciones,
-                                                          })      
-                                   
-                                                          
-
+                                                          })
                                 };
 
                 var itemsTotales = resultado.Count();
 
-                return resultado.OrdenarPaginarLista(paginacion);
-
+                return resultado.OrdenarPaginarLista(Paginacion);
             }
             catch (Exception ex)
             {
                 throw;
             }
         }
-
-   
-
-
     }
 }

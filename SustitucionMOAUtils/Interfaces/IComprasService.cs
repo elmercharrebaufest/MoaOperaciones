@@ -46,7 +46,7 @@ namespace SustitucionMOAUtils.Interfaces
         SolpDescargaZipPorLink PuedeDescargarPliegoDesdeLink(int solpId, Guid? token);
         List<FuenteAprovisionamientoDto> ListarFuenteAprovisionamiento(string fechaEntregaPosicion, string numeroMaterial, string centro);
         List<ContratoSolp> ObtenerContratoMarco(string numeroContrato, string centro);
-        ListaPaginada<SolpDto> ListarSolpComprador(Paginacion paginacion, string nroSolp = null);
+        ListaPaginada<SolpDto> ListarSolpComprador(Paginacion paginacion, string nroSolp = null, int? usuarioId = null, List<int> estados = null, List<int> centros = null, List<int> grupoDeCompras = null);
         List<AsociarContratoDto> DevolverContratosAsociados(List<SolpPosicionDto> posiciones);
         SolpCompraDto ObtenerSolpCompras(int id);
         RespuestaGuardarSOLP GrabarPeticionDeOferta(GuardarPeticionDeOfertaDto peticionDeOferta, HttpFileCollectionBase adjuntos, bool enviarMail, List<RegistroInfoDto> registroInfo);
