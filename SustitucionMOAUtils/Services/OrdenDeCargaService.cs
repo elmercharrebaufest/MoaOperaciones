@@ -2809,7 +2809,7 @@ namespace SustitucionMOAUtils.Services
             }
             cuits = repositorio.Listar<OrdenDeCarga, AutoCompleteDropdownElement>(x => new AutoCompleteDropdownElement
             {
-                label = x.CUITTransporte,
+                label = x.CUITTransporte.Substring(0, 2) + "-" + x.CUITTransporte.Substring(2, 8) + "-" + x.CUITTransporte.Substring(10, 1),
                 value = x.CUITTransporte
             }, x => x.Cliente_Id == cliente.Id && x.PatenteAcoplado == ordenDeCarga.PatenteAcoplado);
 
