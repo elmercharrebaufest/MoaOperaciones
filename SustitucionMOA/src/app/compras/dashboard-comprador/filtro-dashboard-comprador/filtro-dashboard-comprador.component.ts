@@ -26,7 +26,7 @@ export class FiltroDashboardCompradorComponent extends ListBaseComponent {
     protected spinnerComponent: SpinnerComponent;
     usuario: string;
     usuarioFiltro: SelectItem[];
-    selectUsuario: number | null;
+    selectUsuario: string[] = [];
     estadoSolpItem: SelectItem[];
     selectEstadoSolp: string[] = [];
     grupoComprasFiltro: SelectItem[];
@@ -95,6 +95,6 @@ export class FiltroDashboardCompradorComponent extends ListBaseComponent {
 
     onBuscar() {
         this.service.getListarSolpCompras(1, 10, "", "", this.nroSolp, this.selectEstadoSolp.join(","),
-            this.selectUsuario, this.selectCentro.join(","), this.selectGrupoCompras.join(","));
+            this.selectUsuario.join(","), this.selectCentro.join(","), this.selectGrupoCompras.join(","));
     }
 }

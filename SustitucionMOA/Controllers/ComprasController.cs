@@ -154,7 +154,7 @@ namespace SustitucionMOA.Controllers
                 return JsonCustom(new
                 {
                     data = service.ListarSolp(ObtenerUsuarioActual(), paginacion, nroSolp, fechaDesde,
-                    fechaHasta, sap, mantenimiento, web, usuarioId != null ? usuarioId : null, (!string.IsNullOrEmpty(estados) ? estados.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>()))
+                    fechaHasta, sap, mantenimiento, web, usuarioId, (!string.IsNullOrEmpty(estados) ? estados.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>()))
                 });
             }
             catch (InfoCustomException e)
@@ -660,7 +660,7 @@ namespace SustitucionMOA.Controllers
 
 
         [HttpGet]
-        public ActionResult ListarSolpComprador(int? pagina = null, int? itemsPorPagina = null, string orden = null, string columna = null, string nroSolp = null, string estados = null, int? usuarioId = null, string centros = null, string grupoDeCompras = null)
+        public ActionResult ListarSolpComprador(int? pagina = null, int? itemsPorPagina = null, string orden = null, string columna = null, string nroSolp = null, string estados = null, string usuarios = null, string centros = null, string grupoDeCompras = null)
         {
             try
             {
@@ -669,7 +669,7 @@ namespace SustitucionMOA.Controllers
 
                 return JsonCustom(new
                 {
-                    data = service.ListarSolpComprador(paginacion, nroSolp, usuarioId != null ? usuarioId : null, !string.IsNullOrEmpty(estados) ? estados.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(), 
+                    data = service.ListarSolpComprador(paginacion, nroSolp, !string.IsNullOrEmpty(usuarios) ? usuarios.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(), !string.IsNullOrEmpty(estados) ? estados.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(), 
                     !string.IsNullOrEmpty(centros) ? centros.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(), !string.IsNullOrEmpty(grupoDeCompras) ? grupoDeCompras.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>())
                 });
             }
