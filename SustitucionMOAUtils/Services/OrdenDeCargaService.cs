@@ -2196,7 +2196,7 @@ namespace SustitucionMOAUtils.Services
                     Fechas = rangoFechas,
                     Material = string.Empty,
                     Pendiente = true, // Contratos ABIERTOS
-                    TipoContrato = TipoContratoFAS.Todos
+                    TipoContrato = tipoContrato
                 };
 
                 var ordenCargaConsumer = new OrdenCargaConsumerMOA();
