@@ -44,6 +44,11 @@ export class ComprasService extends BaseService {
             .get('/api/compras/Combos', { headers: this.headers });
     }
 
+    public obtenerUltimaSolp(): Observable<any> {
+        return this.http
+            .get('/api/compras/ObtenerUltimaSolp', { headers: this.headers });
+    }
+
     public getListarSolp(pagina: number,
         itemsPorPagina: number,
         orden: string = this.filtros.orden,
@@ -278,14 +283,11 @@ export class ComprasService extends BaseService {
     }
 
     getFechaHora(fecha: Date, hora: Date) {
-        console.log("fechaHora", fecha, hora)
-
         let fechaHora = new Date(fecha);
 
         fechaHora.setHours(hora.getHours());
         fechaHora.setMinutes(hora.getMinutes());
         fechaHora.setSeconds(hora.getSeconds());
-        console.log("fechaHora", fechaHora)
         return fechaHora;
     }
 

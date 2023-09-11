@@ -481,17 +481,11 @@ export class Solp extends CommonResponse {
     }
 
     public getDateFromAspNetFormat(date: string): number {
-        console.log("date antes del if", date)
         if (date){
-            console.log("date apenas entra del if", date)
-
             const re = /-?\d+/;
             const m = re.exec(date);
-            console.log("date antes del return if", date)
-
             return parseInt(m[0], 10);
         }
-        console.log("date salio del if", date)
         return null
     }
 

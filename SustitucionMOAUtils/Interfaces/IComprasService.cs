@@ -70,6 +70,7 @@ namespace SustitucionMOAUtils.Interfaces
         OrdenDeCompraSAPDto ObtenerOrdenDeCompra(string nroOC);
         List<RespuestaCrearOrdenDeCompra> CrearOrdenDeCompraConRegistroInfo(List<RegistroInfoDto> registros, int usuarioActualId);
         RespuestaGuardarSOLP CerrarCotizacion(int peticionId, int usuarioActualId, string observaciones);
+        DatosUltimaSolpDto ObtenerUltimaSolp(int usuarioId);
 
     }
 }

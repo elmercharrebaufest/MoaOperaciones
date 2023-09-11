@@ -126,8 +126,8 @@ export class SolpPosicion {
         return typeof this.mensaje;
     }
 
-    constructor(numeroPosicion, fiscalContrato, fechaEntrega, posicionADuplicar, 
-        centroPorDefecto, direccionCentroPorDefecto, monedaPorDefecto, selectTipoPosicion) {
+    constructor(numeroPosicion?, fiscalContrato?, fechaEntrega?, posicionADuplicar?, 
+        centroPorDefecto?, direccionCentroPorDefecto?, monedaPorDefecto?, selectTipoPosicion?) {
         this.id = uuid.v4();
         this.numeroPosicion = numeroPosicion;
         this.plazoDeEntrega = 10;
@@ -472,7 +472,6 @@ export class SolpPosicion {
         {
             this.tabsPosicionValidos.tabPosiciones = false;
             this.mensaje = "Paso #5 - Pos. " + this.numeroPosicion + " - El campo descripción es obligatorio";
-            console.log("descaripcion", this.tareaSubcontratarObj)
             return this.mensaje;
         }
 

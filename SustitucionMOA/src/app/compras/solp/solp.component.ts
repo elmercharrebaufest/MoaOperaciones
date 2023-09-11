@@ -102,6 +102,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
     displaySAPEditar: boolean;
     flagSolpFinalizada: boolean = false;
     tieneContratoMarco: boolean = false;
+    datosUltimaSolp: any;
 
     set pasoActual(value: Paso) {
         this.actualizarPasoCompleto(this._pasoActual);
@@ -171,6 +172,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
                 } else {
                     this.setComponentMode(ComponentMode.Creation);
                     this.setearPasos();
+                    this.obtenerUltimaSolp();
                 }
             }
         }
@@ -186,6 +188,10 @@ export class SolpComponent extends BaseComponent implements OnInit {
 
     public get esCreacionSolp(): boolean {
         return this.getComponentMode() === ComponentMode.Creation;
+    }
+
+    public get getDatosUltimaSolp() {
+        return this.datosUltimaSolp;
     }
 
     public get esEdicionSolp(): boolean {
@@ -304,7 +310,6 @@ export class SolpComponent extends BaseComponent implements OnInit {
                 tipoPosicion = posicion[0].TipoPosicion.Codigo;
             }
         }
-        console.log("tipoPosicion", tipoPosicion)
         return tipoPosicion;
     }
 
@@ -841,6 +846,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
                         this.setupCentroPorDefecto();
                         this.setupDireccionCentroPorDefecto();
                         this.setupMonedaPorDefecto();
+                        
                     }
                 },
                 error => {
@@ -855,6 +861,45 @@ export class SolpComponent extends BaseComponent implements OnInit {
 
         return false; //<-- Prevent Refresh
     }
+
+    obtenerUltimaSolp() {
+        this.blockUI.start('Cargando...');
+        try {
+            this.subscription = this.service.obtenerUltimaSolp().subscribe(
+                (result: any) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.floatMsgService.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.floatMsgService.setInfoMsg(result.info);
+                    } else {
+                        this.solpActual.agregarNuevaPosicion(null as SolpPosicion);
+                        this.datosUltimaSolp = result.data;
+                        this.completarDatosUltimaSolp();
+                        this.blockUI.stop();
+                    }
+                },
+                error => {
+                    this.floatMsgService.setErrorMsg(error.message);
+                    this.blockUI.stop();
+                }
+
+            );
+        } catch (e) {
+            this.floatMsgService.setErrorMsg(e);
+            this.blockUI.stop();
+            return false; //<-- Prevent Refresh
+        }
+        return false; //<-- Prevent Refresh
+    }
+
+
+    private completarDatosUltimaSolp() {
+        this.solpActual.fiscalContrato = this.datosUltimaSolp.FiscalContrato;
+        this.solpActual.telefono = this.datosUltimaSolp.Telefono;
+    }
+
 
     obtenerUsuarioCompras() {
         try {

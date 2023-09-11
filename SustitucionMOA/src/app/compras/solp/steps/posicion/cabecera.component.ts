@@ -60,6 +60,9 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
     @Input('esCreacionSolp')
     protected esCreacionSolp: boolean;
 
+    @Input('getDatosUltimaSolp')
+    protected datosUltimaSolp;
+
     @ViewChild(SpinnerComponent)
     protected spinnerComponent: SpinnerComponent;
 
@@ -184,6 +187,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         }
 
         this.setCombos();
+        
 
     }
 
@@ -202,6 +206,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
             });
         }       
         }
+        this.completarDatosUltimaSolp();
     }
 
     ngOnChanges() {
@@ -954,9 +959,6 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         if (posicion.codigoServicio.CuentaMayor && posicion.codigoServicio.CuentaMayor.Id > 0) {
             posicion.cuentaMayor = posicion.codigoServicio.CuentaMayor;
         }
-        console.log("posicion.codigoServicio.CuentaMayor", posicion.codigoServicio.CuentaMayor)
-
-
     }
 
     onBlurTarea(event, posicion: SubPosicionViewModel) {
@@ -1263,5 +1265,27 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         }
 
     }
+
+    private completarDatosUltimaSolp() {
+        this.model.selectClaseDocumento = this.datosUltimaSolp.ClaseDocumento;
+        this.model.selectTipoPosicion = this.datosUltimaSolp.TipoPosicion;
+        this.cambiarTipoSolp();
+
+        this.model.posiciones[0].selectCentroEntrega = this.datosUltimaSolp.Centro;
+        this.model.posiciones[0].selectComboAlmacenes.push(this.datosUltimaSolp.Almacen);
+        this.model.posiciones[0].selectAlmacenEntrega = this.datosUltimaSolp.Almacen;
+
+        this.model.posiciones[0].selectGrupoCompras = this.datosUltimaSolp.GrupoCompras;        
+
+        if(this.model.selectTipoPosicion.Codigo == "SERVICIO"){
+            var newPos = this.model.posiciones[0].crearSubPosicion()
+            this.model.posiciones[0].agregarSubPosicion(newPos);
+            this.model.posiciones[0].listadoSubPosiciones[0].cuentaMayor = this.datosUltimaSolp.CuentaMayorSP;  
+        } else {
+            this.model.posiciones[0].cuentaMayor = this.datosUltimaSolp.CuentaMayor;  
+        }
+
+    }
+
 
 }
