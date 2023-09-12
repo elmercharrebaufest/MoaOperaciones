@@ -541,13 +541,6 @@
                            /@address" />
 	</parameter>
 
-	<parameter name="SI_MMRFC_OBTENER_SERVICIOS Service Endpoint Address">
-		<parameterEntry kind="XmlFile" scope="Web.config"
-						match="/configuration/system.serviceModel/client
-                           /endpoint[@name='SI_MMRFC_OBTENER_SERVICIOS']
-                           /@address" />
-	</parameter>
-
 	<parameter name="SI_MMRFC_OBTENER_CECO Service Endpoint Address">
 		<parameterEntry kind="XmlFile" scope="Web.config"
 						match="/configuration/system.serviceModel/client
