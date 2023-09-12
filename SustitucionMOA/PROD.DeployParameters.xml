@@ -164,7 +164,6 @@
 
 	<setParameter name="SI_MMRFC_OBTENER_TIPO_CAMBIO Service Endpoint Address" value="http://gslopiprd00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MMRFC_OBTENER_TIPO_CAMBIO&amp;interfaceNamespace=urn%3AOPERACIONES" />
 	<setParameter name="BAPI_PO_GETDETAIL1PortType Service Endpoint Address" value="http://gslopiprd00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=BAPI_PO_GETDETAIL1&amp;interfaceNamespace=urn%3Asap-com%3Adocument%3Asap%3Arfc%3Afunctions" />
-	<setParameter name="Z_MMRFC_OC_PARA_SOLPPortType Service Endpoint Address" value="http://gslopiprd00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=Z_MMRFC_OC_PARA_SOLP&amp;interfaceNamespace=urn%3Asap-com%3Adocument%3Asap%3Arfc%3Afunctions" />
 	<setParameter name="ScatoRepositorioBaseAddress Config" value="http://scato.molinosagro.com.ar/Scato.WebApiCore/" />
 	<setParameter name="ScatoRepositorioUsername Config" value="ScatoLogistica" />
 	<setParameter name="ScatoRepositorioPassword Config" value="ServicioExternoPass" />
