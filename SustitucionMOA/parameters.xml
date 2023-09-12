@@ -642,13 +642,6 @@
                         /@address" />
   </parameter>
   
-    <parameter name="SI_MMRFC_CREAR_PEDIDO Service Endpoint Address">
-      <parameterEntry kind="XmlFile" scope="Web.config"
-                  match="/configuration/system.serviceModel/client
-                        /endpoint[@name='SI_MMRFC_CREAR_PEDIDO']
-                        /@address" />
-	</parameter>
-  
 	<parameter name="SI_MPRFC_ANULAR_APERTURA_CHEQUE Service Endpoint Address">
 		<parameterEntry kind="XmlFile" scope="Web.config"
 								match="/configuration/system.serviceModel/client
