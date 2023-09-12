@@ -15,7 +15,8 @@ namespace SustitucionMOAWS.WSConsumers
 
         public ObtenerRegistroInfoConsumerMOA()
         {
-            service = new BAPI_INFORECORD_GETLISTPortTypeClient();
+            var url = "http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=Z_MMRFC_OC_PARA_SOLP&amp;interfaceNamespace=urn%3Asap-com%3Adocument%3Asap%3Arfc%3Afunctions";
+            service = new BAPI_INFORECORD_GETLISTPortTypeClient(SAPCredential.CrearSapBasicBinding(), SAPCredential.DevolverEndpoint(url));
             service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
             service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
         }
