@@ -289,6 +289,7 @@ export class ComprasService extends BaseService {
         fechaHora.setMinutes(hora.getMinutes());
         fechaHora.setSeconds(hora.getSeconds());
         return fechaHora;
+        
     }
 
     // getCodigosProveedores(electrico, consultoria, civil, ingenieria, mecanico) {
@@ -606,7 +607,7 @@ export class ComprasService extends BaseService {
             UsuarioIds: circular.UsuarioIds,
             Observacion: circular.Observacion,
             Adjuntos: circular.Adjuntos,
-            PlazoDeOferta: this.getFechaHora(circular.PlazoDeOfertaFecha, circular.PlazoDeOfertaHora),
+            PlazoDeOferta: circular.PlazoDeOfertaHora == null ? circular.PlazoDeOfertaFecha : this.getFechaHora(circular.PlazoDeOfertaFecha, circular.PlazoDeOfertaHora),
             FechaEntrega: circular.FechaEntrega,
             RequiereCambioDeFecha: circular.RequiereCambioDeFecha,
             PeticionDeOferta_Id: circular.PeticionDeOferta_Id,
