@@ -288,6 +288,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
                         this.cambioPaso(this.pasos[0]);
                         this.setearPasos();
                         this.blockUI.stop();
+                        this.spinnerComponent.hideIt();
                     }
                 },
                 error => {
@@ -297,6 +298,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
                 });
         } catch (e) {
             this.floatMsgService.setErrorMsg(e);
+            this.spinnerComponent.hideIt();
             return false; //<-- Prevent Refresh
         }
         return false; //<-- Prevent Refresh

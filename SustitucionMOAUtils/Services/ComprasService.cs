@@ -229,6 +229,15 @@ namespace SustitucionMOAUtils.Services
                     }
                     var idVisita = -1;
 
+                    var visitasBorrar = pliegoEntity.VisitasMasivas
+                        .Where(x => !solp.VisitasObraMasiva.Select(y => y.Codigo).Contains(x.Codigo))
+                        .ToList();
+
+                    foreach (var visita in visitasBorrar)
+                    {
+                        repositorio.Remover<PliegoVisita>(visita);
+                    }
+
                     foreach (var visita in solp.VisitasObraMasiva)
                     {
                         var visitaExistente = pliegoEntity.VisitasMasivas.FirstOrDefault(x => x.Codigo == visita.Codigo);
@@ -247,6 +256,8 @@ namespace SustitucionMOAUtils.Services
                             });
                         }
                     }
+                    
+
                 }
                 // Identifica los que ya no estan en la base de datos y los borra
                 if (solp.Adjuntos != null && pliegoEntity.Archivos != null)
