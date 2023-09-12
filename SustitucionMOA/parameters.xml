@@ -541,14 +541,7 @@
                            /@address" />
 	</parameter>
 
-	<parameter name="SI_MMRFC_CREAR_SOLPED Service Endpoint Address">
-		<parameterEntry kind="XmlFile" scope="Web.config"
-						match="/configuration/system.serviceModel/client
-                           /endpoint[@name='SI_MMRFC_CREAR_SOLPED']
-                           /@address" />
-	</parameter>
-
-	<parameter name="SI_MMRFC_MODIFICAR_SOLPED Service Endpoint Address">
+  <parameter name="SI_MMRFC_MODIFICAR_SOLPED Service Endpoint Address">
 		<parameterEntry kind="XmlFile" scope="Web.config"
 						match="/configuration/system.serviceModel/client
                            /endpoint[@name='SI_MMRFC_MODIFICAR_SOLPED']
