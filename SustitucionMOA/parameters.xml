@@ -541,14 +541,6 @@
                            /@address" />
 	</parameter>
 
-
-	<parameter name="SI_MMRFC_OBTENER_ORDEN Service Endpoint Address">
-		<parameterEntry kind="XmlFile" scope="Web.config"
-						match="/configuration/system.serviceModel/client
-                           /endpoint[@name='SI_MMRFC_OBTENER_ORDEN']
-                           /@address" />
-	</parameter>
-
 	<parameter name="SI_MMRFC_OBTENER_SOLPED Service Endpoint Address">
 		<parameterEntry kind="XmlFile" scope="Web.config"
 						match="/configuration/system.serviceModel/client
