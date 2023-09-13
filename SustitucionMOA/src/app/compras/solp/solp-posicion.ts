@@ -131,8 +131,10 @@ export class SolpPosicion {
         this.id = uuid.v4();
         this.numeroPosicion = numeroPosicion;
         this.plazoDeEntrega = 10;
-        this.fechaEntregaServicio = new Date(fechaEntrega);
-        this.fechaEntregaServicio.setDate(fechaEntrega.getDate() + parseInt(this.plazoDeEntrega.toString()));
+        if(fechaEntrega != null){
+            this.fechaEntregaServicio =  new Date(fechaEntrega);
+            this.fechaEntregaServicio.setDate(fechaEntrega.getDate() + parseInt(this.plazoDeEntrega.toString()));
+        }
 
         this.fechaDeLiberacion = new Date();
         this.listadoSubPosiciones = new Array<SubPosicionViewModel>();

@@ -8,7 +8,7 @@
             (onEditInit)="nuevaPosicion($event)">
             <ng-template pTemplate="header">
                 <tr>
-                    <th *ngIf="!model.vincularAPliego" style="text-align: center;">
+                    <th [hidden]="model.vincularAPliego" style="text-align: center;">
                         <img (click)="eliminarSubPosicion()" src="../../../../../Content/images/icons/trashWhite.svg" alt="trashWhite" class="pointer" />
                     </th>
                     <th data-toggle="tooltip" title="Servicio">#</th>

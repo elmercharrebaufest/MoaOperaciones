@@ -206,7 +206,9 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
             });
         }       
         }
-        this.completarDatosUltimaSolp();
+        if(this.model.id != null && this.model.id > 0){
+            this.completarDatosUltimaSolp();
+        }
     }
 
     ngOnChanges() {
