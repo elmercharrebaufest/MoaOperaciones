@@ -1,5 +1,5 @@
+/*No se está usando porque se incorporó el código necesario para los filtros en listado-dashboard-comprador.component.ts */
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ListBaseComponent } from '../../../common/base-components/list-base-component';
 import { FloatMsgService } from '../../../common/services/FloatMsgService';
@@ -16,7 +16,6 @@ import { SelectItem } from 'primeng/api';
     templateUrl: `filtro-dashboard-comprador.component.html`,
     styleUrls: ['../../compras.component.css',
         './filtro-dashboard-comprador.component.css']
-
 })
 export class FiltroDashboardCompradorComponent extends ListBaseComponent {
 
@@ -39,7 +38,7 @@ export class FiltroDashboardCompradorComponent extends ListBaseComponent {
     constructor(protected service: ComprasService, protected navService: NavService,
         protected sessionDataService: SessionDataService, protected securityService: SecurityService,
         protected floatMsgService: FloatMsgService, protected modalService: ModalService,
-        protected route: ActivatedRoute, protected router: Router, private formBuilder: FormBuilder) {
+        protected route: ActivatedRoute, protected router: Router) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
         this.usuario = sessionStorage.getItem("username");
         this.onBuscar();
