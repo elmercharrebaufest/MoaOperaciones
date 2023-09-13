@@ -18,7 +18,6 @@ using SustitucionMOAModel.Models.WSMapMOA.Compras;
 using SustitucionMOAModel.Models.WSMapMOA.Vendedor.Detalle;
 using SustitucionMOARepositorio;
 using SustitucionMOARepositorio.ConsultasEF;
-using SustitucionMOAUtils.Email;
 using SustitucionMOAUtils.Helpers;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
@@ -68,8 +67,8 @@ namespace SustitucionMOAUtils.Services
         private readonly IVendedoresConsumerMOA vendedoresConsumerMOA;
         private readonly IAgregarRegistroInfoConsumerMOA agregarRegistroInfoConsumerMOA;
         private readonly string rutaArchivosCompras = ConfigurationManager.AppSettings["RutaArchivosCompras"];
-        private static readonly string EMAIL_TEMPLATE_SOLP = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "Solp.html");
         private readonly IEmailService emailService;
+        //private static readonly string EMAIL_TEMPLATE_SOLP = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "Solp.html");
 
 
         public ComprasService(IRepositorio repositorio,
@@ -309,16 +308,6 @@ namespace SustitucionMOAUtils.Services
                     var finalizoPrimeraVez = string.IsNullOrEmpty(solpEntity.NroSolp);
                     respuestaGuardarSOLP = FinalizarSolp(solp, solpEntity, postEntitySubPosicionesEliminadas, respuestaGuardarSOLP);
                     GuardarUsuarioComprasRelacionado(solp);
-
-                    if (respuestaGuardarSOLP.Mensaje == "OK" && finalizoPrimeraVez && solp.TrabajoYaHecho == true)
-                    {
-                        CrearCotizacionConTrabajoYaHecho(solpEntity);
-                    }
-
-                    if (respuestaGuardarSOLP.Mensaje == "OK" && finalizoPrimeraVez && solp.TrabajoYaHecho != true && solp.Adicional == true)
-                    {
-                        CrearPeticionAutomatica(solpEntity, new List<int> { solp.ProveedorAsignadoId.Value }, null, false);
-                    }
                 }
                 catch (Exception e)
                 {
@@ -1106,11 +1095,11 @@ namespace SustitucionMOAUtils.Services
         {
             var solp = TraerSolpId(idSolp);
             var usuarioCompras = ListarUsuarioCompras(solp.UsuarioActual);
-            var templateFilePath = Path.Combine(AppDomain.CurrentDomain.RelativeSearchPath, "Templates/NewPliegoSolpSinCondicionesTemplate.html");
+            var templateFilePath = httpContextService.GetDirectory("Templates/NewPliegoSolpSinCondicionesTemplate.html");
             var templateString = System.IO.File.ReadAllText(templateFilePath);
             //, "Templates/PliegoSolpSinCondicionesTemplate.html"
 
-            var templateCssFilePath = Path.Combine(AppDomain.CurrentDomain.RelativeSearchPath, "Templates/PliegoSolpTemplate.css");
+            var templateCssFilePath = httpContextService.GetDirectory("Templates/PliegoSolpTemplate.css");
             var templateCssString = System.IO.File.ReadAllText(templateCssFilePath);
             var solpValores = new Dictionary<string, string>();
 
@@ -1630,6 +1619,19 @@ namespace SustitucionMOAUtils.Services
                 solp.FechaLiberacionSap = fechaLiberacion;
                 solp.EstadoSolpSap_Id = estadoSolpSapLiberada;
                 repositorio.GuardarCambios();
+
+                if (!solp.PeticionesDeOferta.Any())
+                {
+                    if (solp.TrabajoYaHecho == true)
+                    {
+                        CrearCotizacionConTrabajoYaHecho(solp);
+                    }
+
+                    if (solp.TrabajoYaHecho != true && solp.Adicional == true)
+                    {
+                        CrearPeticionAutomatica(solp, new List<int> { solp.ProveedorAsignado_Id.Value }, null, false);
+                    }
+                }
             }
         }
 
@@ -3484,7 +3486,7 @@ namespace SustitucionMOAUtils.Services
                 {
                     using (var document = new Document(PageSize.A4, 10f, 10f, 10f, 100f))
                     {
-                        string templateFilePath = Path.Combine(AppDomain.CurrentDomain.RelativeSearchPath, "Templates/PeticionDeOfertaTemplate.html");
+                        string templateFilePath = httpContextService.GetDirectory("Templates/PeticionDeOfertaTemplate.html");
                         var templateString = System.IO.File.ReadAllText(templateFilePath);
                         var xHtml = templateString;
                         xHtml = CompletarHtml(xHtml, peticion, codigoProveedor);
@@ -3616,7 +3618,8 @@ namespace SustitucionMOAUtils.Services
                         archs.Remove("Peticion de Oferta.pdf");
                     archs.Add("Peticion de Oferta.pdf", pdf);
                 }
-                emailService.EnviarMail(enviarA, asunto, "", copia, CuerpoMailPeticionDeOferta(peticion), null, null, null, null, archs);
+                var cuerpo = CuerpoMailPeticionDeOferta(peticion);
+                emailService.EnviarMail(enviarA, asunto, "", copia, cuerpo, null, null, null, null, archs);
             }
         }
 
@@ -3634,7 +3637,7 @@ namespace SustitucionMOAUtils.Services
 
         private AlternateView CuerpoMailPeticionDeOferta(PeticionDeOferta peticion)
         {
-            var filePath = System.Web.HttpContext.Current.Server.MapPath("~/Content/Images/header/logo_.png");
+            var filePath = httpContextService.ObtenerPathLogoMail();
             LinkedResource res = new LinkedResource(filePath);
             res.ContentId = Guid.NewGuid().ToString();
             string htmlBody = "";
@@ -3684,7 +3687,7 @@ namespace SustitucionMOAUtils.Services
                 {
                     using (var document = new Document(PageSize.A4, 10f, 10f, 10f, 100f))
                     {
-                        string templateFilePath = Path.Combine(AppDomain.CurrentDomain.RelativeSearchPath, "Templates/OrdenCompraTemplate.html");
+                        string templateFilePath = httpContextService.GetDirectory("Templates/OrdenCompraTemplate.html");
 
                         var templateString = System.IO.File.ReadAllText(templateFilePath);
 
