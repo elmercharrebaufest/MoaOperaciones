@@ -26,7 +26,6 @@ import { Permiso } from '../../common/enums/Permisos';
 import { Factura, newFactura } from '../../common/models/ordenes-de-carga/Factura';
 
 declare var $: any;
-
 @Component({
     selector: 'app-ordenes-de-carga.alta',
     templateUrl: './ordenes-de-carga.alta.component.html',
@@ -49,6 +48,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
     ordenDeCarga: OrdenDeCarga = new OrdenDeCarga();
     mensajesOrdenDeCarga: Partial<Record<keyof OrdenDeCarga, string>> = {};
     mensajesGestionCuit: Partial<Record<keyof Pick<OrdenDeCarga, 'CUITDestinatario' | 'CUITDestino' | 'CUITIntermediarioFlete'>, string>> = {};
+    gestionaCuit: Partial<Record<keyof Pick<OrdenDeCarga, 'CUITDestinatario' | 'CUITDestino' | 'CUITIntermediarioFlete'>, boolean>> = {};
     validando: Partial<Record<keyof OrdenDeCarga, boolean>> = {};
     displayModal: keyof Pick<OrdenDeCarga, 'CUITDestinatario' | 'CUITDestino' | 'CUITIntermediarioFlete'> | null;
     validaCPEDG = false;
@@ -68,6 +68,9 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
     patentesChasis: any;
     patentesAcoplados: any;
     razonSocialParaGestion = "";
+    //cuitsParaGestion : GestionCuit[] = [{cuit:'', razonSocial:'', campo: 'RazonSocialIntermediarioFlete'},
+    //{cuit:'', razonSocial:'', campo: 'RazonSocialDestinatario'}, {cuit:'', razonSocial:'', campo: 'RazonSocialDestino'}];
+   
     private selectUndefinedOptionValue: any;
 
     contratosDisponibles: ContratoOrdenFas[] = [];
@@ -965,7 +968,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                     this.displayModal = campo;
                 else
                     this.ordenDeCarga[campo.replace("CUIT", "RazonSocial")] = data.RazonSocial;
-
+                    this.gestionaCuit[campo] = false;
                 this.validarSisaCuit(cuit, campo)
             })
     }
@@ -1046,15 +1049,34 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
     revisarCUITFormatoValido(cuit: string): boolean {
         return cuit && cuit.length == 11 && !Number.isNaN(cuit as unknown as number)
     }
-    gestionarAltaCUIT() {
+
+    cargarAltasCUIT(){
         const campo = this.displayModal;
-        const cuit = this.ordenDeCarga[campo];
         const razonSocial = this.razonSocialParaGestion;
         this.displayModal = null;
         this.razonSocialParaGestion = "";
+        this.gestionaCuit[campo] = true;
         this.ordenDeCarga[campo.replace("CUIT", "RazonSocial")] = razonSocial;
-        let esIntermediarioFlete = campo === 'CUITIntermediarioFlete';
-        this.service.enviarMailGestionarAltaCuit(cuit, razonSocial, esIntermediarioFlete, this.ordenDeCarga.Id? this.ordenDeCarga.Id.toString() : null).subscribe(result => {
+    }
+
+    gestionarAltasCUIT() {
+        if(this.gestionaCuit["CUITIntermediarioFlete"]){
+            this.enviarMailGestionarAltaCuit("CUITIntermediarioFlete", this.ordenDeCarga.CUITIntermediarioFlete,
+            this.ordenDeCarga.RazonSocialIntermediarioFlete, true, this.ordenDeCargaId);
+        }
+        /*if(this.gestionaCuit["CUITDestino"]){
+            this.enviarMailGestionarAltaCuit("CUITDestino", this.ordenDeCarga.CUITDestino,
+            this.ordenDeCarga.RazonSocialDestino, false, this.ordenDeCargaId);
+
+        }
+        if(this.gestionaCuit["CUITDestinatario"]){
+            this.enviarMailGestionarAltaCuit("CUITDestinatario", this.ordenDeCarga.CUITDestinatario,
+            this.ordenDeCarga.RazonSocialDestinatario, false, this.ordenDeCargaId);
+        }*/
+    }
+
+    enviarMailGestionarAltaCuit(campo: string, cuit: string, razonSocial: string, esIntermediarioFlete: boolean, ordenDeCargaId: number){
+        this.service.enviarMailGestionarAltaCuit(cuit, razonSocial, esIntermediarioFlete, ordenDeCargaId.toString()).subscribe(result => {
             if (result.logout) {
                 this.sessionDataService.logout();
             } else if (result.error != undefined && result.error != "") {
@@ -1064,8 +1086,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
             } else {
                 this.mensajesGestionCuit[campo] = `Se solicitó la gestión del alta para la cuit: ${cuit}`;
             }
-
-        })
+        });
     }
 
     cancelarGestionAltaCUIT() {
@@ -1164,6 +1185,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                 if (data.EsCuitValido) {
                     if (data.ExisteIntermediario) {
                         this.ordenDeCarga.RazonSocialIntermediarioFlete = data.RazonSocial;
+                        this.gestionaCuit['CUITIntermediarioFlete'] = false;
                     } else {
                         this.displayModal = 'CUITIntermediarioFlete';
                     }
