@@ -691,12 +691,16 @@ export class SolpComponent extends BaseComponent implements OnInit {
 
     validarFechaLimiteConsulta() {
         var validarFechaLimiteConsulta = false;
+        var fechaHoraLimite = this.service.getFechaHora(this.solpActual.fechaLimiteFecha, this.solpActual.fechaLimiteHora);
+        var fechaHoraEntrega = this.service.getFechaHora(this.solpActual.fechaEntrega, this.solpActual.horaEntrega);
 
-        if (this.solpActual.fechaLimiteFecha > this.solpActual.fechaEntrega) {
+        if (fechaHoraLimite > fechaHoraEntrega) {
             return validarFechaLimiteConsulta = true;
         }
         return validarFechaLimiteConsulta;
     }
+
+
 
     validarFechaLimiteYObra() {
         if (this.solpActual.listaVisitas.length === 0) { //se evita listaVisitas.reduce() cuando listaVisitas está vacía
@@ -716,8 +720,11 @@ export class SolpComponent extends BaseComponent implements OnInit {
                     return visitaAnterior;
                 }
             });
+            var fechaHoraLimite = this.service.getFechaHora(this.solpActual.fechaLimiteFecha, this.solpActual.fechaLimiteHora);
+            var fechaHoraVisita = this.service.getFechaHora(visitaMasLarga.visitaDeObraFecha, visitaMasLarga.visitaDeObraHora);
 
-            if (visitaMasLarga.visitaDeObraFecha > this.solpActual.fechaLimiteFecha) {
+
+            if (fechaHoraVisita > fechaHoraLimite) {
                 return validarFechaLimiteYObra = true;
             }
 
