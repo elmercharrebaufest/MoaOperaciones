@@ -171,7 +171,11 @@ export class Solp extends CommonResponse {
             if (solp.FechaHoraEntrega != null) {
                 this.fechaEntrega = new Date(this.getDateFromAspNetFormat(solp.FechaHoraEntrega));
                 this.horaEntrega = new Date(this.getDateFromAspNetFormat(solp.FechaHoraEntrega));
+            } else {
+                this.fechaEntrega = new Date();
+                this.fechaEntrega.setDate(this.fechaEntrega.getDate() + 7);
             }
+
             //this.fechaEntrega = new Date(this.getDateFromAspNetFormat(solp.FechaHoraEntrega));
             this.emailLinkToken = solp.EmailLinkToken;
             this.selectTipoPosicion =  solp.TipoPosicion && solp.TipoPosicion.Codigo || ''
@@ -202,7 +206,7 @@ export class Solp extends CommonResponse {
             if (solp.FechaHoraLimiteConsulta != null) {
                 this.fechaLimiteFecha = new Date(this.getDateFromAspNetFormat(solp.FechaHoraLimiteConsulta));
                 this.fechaLimiteHora = new Date(this.getDateFromAspNetFormat(solp.FechaHoraLimiteConsulta));
-            }
+            } 
             this.observacionesGeneracion = solp.ObservacionesGeneracion;
 
             // Paso 3
