@@ -69,6 +69,8 @@ namespace SustitucionMOAUtils.Services
         private readonly IAgregarRegistroInfoConsumerMOA agregarRegistroInfoConsumerMOA;
         private readonly string rutaArchivosCompras = ConfigurationManager.AppSettings["RutaArchivosCompras"];
         private static readonly string EMAIL_TEMPLATE_SOLP = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "Solp.html");
+        private readonly IEmailService emailService;
+
 
         public ComprasService(IRepositorio repositorio,
             IObtenerCecoSolpConsumerMOA CecoSolpConsumerMOA,
@@ -89,8 +91,8 @@ namespace SustitucionMOAUtils.Services
             IUsuarioService usuarioService, IObtenerProveedorConsumerMOA obtenerProveedorConsumerMOA,
             IModificarOrdenDeCompraConsumerMOA modificarOrdenDeCompraConsumerMOA,
             IVendedoresConsumerMOA vendedoresConsumerMOA,
-            IAgregarRegistroInfoConsumerMOA agregarRegistroInfoConsumerMOA
-            )
+            IAgregarRegistroInfoConsumerMOA agregarRegistroInfoConsumerMOA,
+            IEmailService emailService)
         {
             this.repositorio = repositorio;
             this.CecoSolpConsumerMOA = CecoSolpConsumerMOA;
@@ -115,6 +117,7 @@ namespace SustitucionMOAUtils.Services
             this.modificarOrdenDeCompraConsumerMOA = modificarOrdenDeCompraConsumerMOA;
             this.vendedoresConsumerMOA = vendedoresConsumerMOA;
             this.agregarRegistroInfoConsumerMOA = agregarRegistroInfoConsumerMOA;
+            this.emailService = emailService;
         }
 
         public RespuestaGuardarSOLP GuardarSolp(SolpDto solp, HttpFileCollectionBase adjuntos)
@@ -1549,7 +1552,7 @@ namespace SustitucionMOAUtils.Services
 
 
 
-        //        EmailSender.EnviarMail(new List<string> { Destinatario }, asunto, cuerpo, null, null, null, null);
+        //        emailService.EnviarMail(new List<string> { Destinatario }, asunto, cuerpo, null, null, null, null);
         //    }
         //    catch (Exception e)
         //    {
@@ -2216,7 +2219,7 @@ namespace SustitucionMOAUtils.Services
             var template = Handlebars.Compile(templateContent);
             var bodyHtml = template(emailCompose);
 
-            EmailSender.EnviarMail(
+            emailService.EnviarMail(
                 emailCompose.To,
                 emailCompose.Subject,
                 bodyHtml,
@@ -3613,7 +3616,7 @@ namespace SustitucionMOAUtils.Services
                         archs.Remove("Peticion de Oferta.pdf");
                     archs.Add("Peticion de Oferta.pdf", pdf);
                 }
-                EmailSender.EnviarMail(enviarA, asunto, "", copia, CuerpoMailPeticionDeOferta(peticion), null, null, null, null, archs);
+                emailService.EnviarMail(enviarA, asunto, "", copia, CuerpoMailPeticionDeOferta(peticion), null, null, null, null, archs);
             }
         }
 
@@ -3947,7 +3950,7 @@ namespace SustitucionMOAUtils.Services
                 asunto += $"Nueva OC creada - {adjudicacion.NumeroOrdenDeCompra} - {adjudicacion.Usuario.ObtenerRazonSocial()}";
                 var pdf = GenerarPDFOrdenCompra(adjudicacion, adjudicacion.Usuario.ObtenerCodigoProveedor());
 
-                EmailSender.EnviarMail(enviarA, asunto, "", copia, CuerpoMailOrdenCompra(adjudicacion, mensaje), pdf, "Orden de Compra.pdf");
+                emailService.EnviarMail(enviarA, asunto, "", copia, CuerpoMailOrdenCompra(adjudicacion, mensaje), pdf, "Orden de Compra.pdf");
             }
             catch (Exception e)
             {
@@ -4194,7 +4197,7 @@ namespace SustitucionMOAUtils.Services
                 var enviarA = new List<string> { prov.PeticionDeOfertaUsuario.Usuario.Mail };
                 asunto = $"Nueva circular con PO {prov.PeticionDeOfertaUsuario.PeticionDeOferta_Id} - {prov.PeticionDeOfertaUsuario.Usuario.ObtenerRazonSocial()}";
 
-                EmailSender.EnviarMail(enviarA, asunto, "", copia, CuerpoMailCircular(prov), null, null, null, null, archs);
+                emailService.EnviarMail(enviarA, asunto, "", copia, CuerpoMailCircular(prov), null, null, null, null, archs);
             }
         }
 
@@ -4836,7 +4839,7 @@ namespace SustitucionMOAUtils.Services
                 enviarA.Add(peticion.Solp.UsuarioCreacion.Mail);
             }
             asunto += "NUEVA cotización creada - SOLP " + peticion.Solp.NroSolp;
-            EmailSender.EnviarMail(enviarA, asunto, "", null, CuerpoMailCotizacion(cotizacion), null, null, null, null);
+            emailService.EnviarMail(enviarA, asunto, "", null, CuerpoMailCotizacion(cotizacion), null, null, null, null);
         }
 
 
@@ -4847,7 +4850,7 @@ namespace SustitucionMOAUtils.Services
             asunto += "Error al agregar registro info en cotizacion: " + cotizacion.Id;
 
             AlternateView alternateView = AlternateView.CreateAlternateViewFromString("Se informa que al momento de finalizar una cotizacion, el registro info no se pudo generar, revisar los logs", null, "text/html");
-            EmailSender.EnviarMail(enviarA, asunto, "", null, alternateView, null, null, null, null);
+            emailService.EnviarMail(enviarA, asunto, "", null, alternateView, null, null, null, null);
         }
 
         private AlternateView CuerpoMailCotizacion(Cotizacion cotizacion)
