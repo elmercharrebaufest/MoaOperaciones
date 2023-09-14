@@ -4,7 +4,7 @@ import { ActivatedRoute, Params } from '@angular/router';
 import { EmpresaGranosService } from '../../alta-proveedores/empresa-granos/empresa-granos.service';
 import { BaseComponent } from '../../common/base-components/base-component';
 import { Material } from '../../common/models/material';
-import { CuitValidaExistencia, CuitValidaRUCA, CuitValidaSISA, KILOS_DISPONIBLES_APROBADO, OrdenDeCarga, SIN_KILOS_DISPONIBLES } from '../../common/models/ordenes-de-carga/ordenDeCarga';
+import { CuitValidaExistencia, CuitValidaRUCA, CuitValidaSISA, GestionCuit, KILOS_DISPONIBLES_APROBADO, OrdenDeCarga, SIN_KILOS_DISPONIBLES } from '../../common/models/ordenes-de-carga/ordenDeCarga';
 import { FloatMsgService } from '../../common/services/FloatMsgService';
 import { ModalService } from '../../common/services/ModalService';
 import { SeleccionarProveedorService } from '../../common/shared-components/seleccionar-proveedor/seleccionar-proveedor.service';
@@ -24,6 +24,7 @@ import { ApiResponse } from '../../common/models/response';
 import { forkJoin } from 'rxjs';
 import { Permiso } from '../../common/enums/Permisos';
 import { Factura, newFactura } from '../../common/models/ordenes-de-carga/Factura';
+import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 
 declare var $: any;
 @Component({
@@ -68,8 +69,11 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
     patentesChasis: any;
     patentesAcoplados: any;
     razonSocialParaGestion = "";
-    //cuitsParaGestion : GestionCuit[] = [{cuit:'', razonSocial:'', campo: 'RazonSocialIntermediarioFlete'},
-    //{cuit:'', razonSocial:'', campo: 'RazonSocialDestinatario'}, {cuit:'', razonSocial:'', campo: 'RazonSocialDestino'}];
+    cuitsParaGestion : GestionCuit[] = [
+        {cuit:'', razonSocial:'', campo: 'CUITIntermediarioFlete', ordenId: null, gestiona: false},
+        {cuit:'', razonSocial:'', campo: 'CUITDestinatario', ordenId: null, gestiona: false}, 
+        {cuit:'', razonSocial:'', campo: 'CUITDestino', ordenId: null, gestiona: false}
+    ];
    
     private selectUndefinedOptionValue: any;
 
@@ -350,6 +354,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                                 this.mensajeComponent.setMsgsEmpty();
                                 this.mensajeSuccess = result.data.Mensaje;
                                 this.ordenDeCargaId = result.data.IdEntidad;
+                                this.gestionarAltasCUIT();
                                 document.getElementById("openModalNotificacion")
                                     .click();
                             }
@@ -386,6 +391,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                                 this.mensajeComponent.setMsgsEmpty();
                                 this.mensajeSuccess = result.data.Mensaje;
                                 this.ordenDeCargaId = result.data.IdEntidad;
+                                this.gestionarAltasCUIT()
                                 document.getElementById("openModalNotificacion")
                                     .click();
                             }
@@ -944,6 +950,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
             this.blockUI.stop();
         }
     }
+
     validarExisteCUIT(campo: CuitValidaExistencia) {
         const cuit = this.ordenDeCarga[campo]
         if (!cuit || !this.revisarCUITFormatoValido(cuit)) {
@@ -963,18 +970,29 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                 const data = this.manejarErroresApiResponse(result);
                 if (!data)
                     return;
-
                 if (!data.Existe)
                     this.displayModal = campo;
-                else
+                else{
                     this.ordenDeCarga[campo.replace("CUIT", "RazonSocial")] = data.RazonSocial;
                     this.gestionaCuit[campo] = false;
-                this.validarSisaCuit(cuit, campo)
+                }
+                
             })
     }
+
     validarSisaCuit(cuit: string, campo: CuitValidaSISA) {
-        this.validando[campo] = true;
+        if (!cuit || !this.revisarCUITFormatoValido(cuit)) {
+            this.ordenDeCarga[campo.replace("CUIT", "RazonSocial")] = undefined;
+            return;
+        }
+        this.ordenDeCarga[campo.replace("CUIT", "RazonSocial")] = null;
         this.mensajesOrdenDeCarga[campo] = null;
+        this.validando[campo] = true;
+        this.gestionaCuit[campo] = false;
+
+        if (!this.ordenDeCarga.CUITDestinatario && campo === 'CUITDestino')
+            this.copiarCuitEnDestinatario();
+
         this.service.validarSisaCuit(cuit, campo).subscribe(result => {
             this.validando[campo] = false;
             const validandoDestino = campo == "CUITDestino";
@@ -990,11 +1008,12 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
             } else {
                 if (!result.data) {
                     this.mensajesOrdenDeCarga[campo] = `El ${campo.replace("CUIT", "")} no se encuentra habilitado en SISA, no podrá cargar la orden hasta regularizar la situación.`;
+                   // this.gestionaCuit[campo] = false;
                 } else {
                     if (validandoDestino) {
                         this.onDestinoIngresado(cuit);
                     }
-                    else if (campo !== "CUITCorredor") {
+                    if (campo !== "CUITCorredor") {
                         this.validarRuca(cuit, campo)
                     }
                 }
@@ -1050,29 +1069,31 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
         return cuit && cuit.length == 11 && !Number.isNaN(cuit as unknown as number)
     }
 
-    cargarAltasCUIT(){
+    cargarAltaCuit(){
         const campo = this.displayModal;
         const razonSocial = this.razonSocialParaGestion;
-        this.displayModal = null;
         this.razonSocialParaGestion = "";
         this.gestionaCuit[campo] = true;
         this.ordenDeCarga[campo.replace("CUIT", "RazonSocial")] = razonSocial;
+        this.displayModal = null;
     }
 
     gestionarAltasCUIT() {
-        if(this.gestionaCuit["CUITIntermediarioFlete"]){
-            this.enviarMailGestionarAltaCuit("CUITIntermediarioFlete", this.ordenDeCarga.CUITIntermediarioFlete,
-            this.ordenDeCarga.RazonSocialIntermediarioFlete, true, this.ordenDeCargaId);
+        let cuitsAGestionar = [];
+        this.cuitsParaGestion.forEach((elem) => {
+            if(this.gestionaCuit[elem.campo]){
+                elem.cuit = this.ordenDeCarga[elem.campo];
+                elem.razonSocial = this.ordenDeCarga[elem.campo.replace("CUIT", "RazonSocial")];
+                elem.gestiona = true;
+                elem.ordenId = this.ordenDeCargaId.toString();
+                cuitsAGestionar.push(elem);
+            }
+        });
+        console.log(cuitsAGestionar);
+        if(cuitsAGestionar.length === 0 || !cuitsAGestionar){
+            return;
         }
-        /*if(this.gestionaCuit["CUITDestino"]){
-            this.enviarMailGestionarAltaCuit("CUITDestino", this.ordenDeCarga.CUITDestino,
-            this.ordenDeCarga.RazonSocialDestino, false, this.ordenDeCargaId);
-
-        }
-        if(this.gestionaCuit["CUITDestinatario"]){
-            this.enviarMailGestionarAltaCuit("CUITDestinatario", this.ordenDeCarga.CUITDestinatario,
-            this.ordenDeCarga.RazonSocialDestinatario, false, this.ordenDeCargaId);
-        }*/
+        
     }
 
     enviarMailGestionarAltaCuit(campo: string, cuit: string, razonSocial: string, esIntermediarioFlete: boolean, ordenDeCargaId: number){
@@ -1090,9 +1111,19 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
     }
 
     cancelarGestionAltaCUIT() {
-        if (this.displayModal === 'CUITIntermediarioFlete') {
-            this.ordenDeCarga.CUITIntermediarioFlete = undefined;
+        switch(this.displayModal){
+            case 'CUITIntermediarioFlete':
+                this.ordenDeCarga.CUITIntermediarioFlete = undefined;
+                break;
+            case 'CUITDestino':
+                this.ordenDeCarga.CUITDestino = undefined;
+                break;
+            case 'CUITDestinatario':
+                this.ordenDeCarga.CUITDestinatario = undefined;
+                break;
+            default: break;
         }
+        this.gestionaCuit[this.displayModal] = false;
         this.displayModal = null;
     }
 
@@ -1162,9 +1193,13 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
             let data = this.manejarErroresApiResponse(result);
             if (!data) {
                 this.mensajesOrdenDeCarga[campo] = `${campo.replace("CUIT", "")}  no está habilitado en RUCA, no podrá cargar la orden hasta regularizar la situación`;
+
                 if (campo === "CUITCliente")
                     this.reiniciarProducto();
 
+            }else{
+                if(campo !== "CUITCliente")
+                this.validarExisteCUIT(campo);
             }
         });
     }
@@ -1173,6 +1208,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
         this.validando.CUITIntermediarioFlete = true;
         this.intermediarioFleteCuitFormatoValido = true;
         this.ordenDeCarga.RazonSocialIntermediarioFlete = undefined;
+        this.gestionaCuit['CUITIntermediarioFlete'] = false;
 
         let cuitIF = this.ordenDeCarga.CUITIntermediarioFlete;
         if (!cuitIF || !this.revisarCUITFormatoValido(cuitIF)) {
@@ -1185,7 +1221,6 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                 if (data.EsCuitValido) {
                     if (data.ExisteIntermediario) {
                         this.ordenDeCarga.RazonSocialIntermediarioFlete = data.RazonSocial;
-                        this.gestionaCuit['CUITIntermediarioFlete'] = false;
                     } else {
                         this.displayModal = 'CUITIntermediarioFlete';
                     }
@@ -1207,14 +1242,14 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
     copiarCuitEnDestinatario() {
         if (this.ordenDeCarga.CUITDestinatario != this.clienteSeleccionado.CUIT) {
             this.ordenDeCarga.CUITDestinatario = this.clienteSeleccionado.CUIT;
-            this.validarExisteCUIT('CUITDestinatario')
+            this.validarSisaCuit(this.ordenDeCarga.CUITDestinatario, 'CUITDestinatario');
         }
     }
 
     copiarCuitEnDestino() {
         if (this.ordenDeCarga.CUITDestino != this.clienteSeleccionado.CUIT) {
             this.ordenDeCarga.CUITDestino = this.clienteSeleccionado.CUIT;
-            this.validarExisteCUIT('CUITDestino')
+            this.validarSisaCuit(this.ordenDeCarga.CUITDestino, 'CUITDestino');
         }
     }
 
@@ -1293,9 +1328,9 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
     setearDefaultEnCPEDG() {
         this.ordenDeCarga.Reventa = false;
         this.ordenDeCarga.CUITDestinatario = undefined;
-        this.validarExisteCUIT('CUITDestinatario');
+        this.validarSisaCuit(this.clienteSeleccionado.cuit,'CUITDestinatario');
         this.ordenDeCarga.CUITDestino = undefined;
-        this.validarExisteCUIT('CUITDestino');
+        this.validarSisaCuit(this.clienteSeleccionado.cuit,'CUITDestino');
         this.ordenDeCarga.CUITIntermediarioFlete = undefined;
         this.validarIntermediarioFlete();
         this.resetearPlantasDomicilios();

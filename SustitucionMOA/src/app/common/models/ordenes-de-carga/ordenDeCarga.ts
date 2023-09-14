@@ -66,3 +66,11 @@ export const SIN_KILOS_DISPONIBLES = 0
 
 export const VOLVER_A_DETALLE_REPORTE = 'volverADetalleReporteContrato'
 
+export interface GestionCuit {
+    cuit:string,
+    razonSocial: string,
+    campo: string,
+    ordenId: string,
+    gestiona: boolean
+}
+
