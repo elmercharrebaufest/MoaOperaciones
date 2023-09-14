@@ -54,6 +54,7 @@ export class OrdenDeCarga {
     NumeroFacturaSeleccionada: string;
     TipoContrato: TipoContrato;
     Escalable: boolean;
+    NecesitaVerificarCuitsTerceros: boolean;
     constructor() {
     }
 }

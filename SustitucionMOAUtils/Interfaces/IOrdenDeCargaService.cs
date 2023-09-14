@@ -58,5 +58,6 @@ namespace SustitucionMOAUtils.Interfaces
         List<AutoCompleteDropdownElement> ObtenerCuitsTransporte(OrdenDeCarga ordenDeCarga, string mailUsuario);
 
         bool ValidarOrdenActivaScato(string cuit);
+        Resultado VerificarCuitsTerceros(int ordenId, string usuarioEmail);
     }
 }
