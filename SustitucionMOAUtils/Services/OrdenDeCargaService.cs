@@ -157,8 +157,8 @@ namespace SustitucionMOAUtils.Services
                 NotificarVariasFacturas(ordenDeCarga);
 
                 if (ordenDeCarga.Estado == EstadoOrdenDeCarga.SinEnviarASAP &&
-                    (!ordenPuedeEnviarseDirectoSap ||
-                    (ordenDeCarga.EsFacturaAnticipada && !ValidarKgDisponiblesEnviaPedidoDirectamenteASAP(ordenDeCarga, usuario))))
+                    (!ContratoTieneKgDisponibles(ordenDeCarga) ||
+                    (ordenDeCarga.EsFacturaAnticipada && !PedidoTieneKgDisponibles(ordenDeCarga))))
                 {
                     ordenDeCarga.Estado = EstadoOrdenDeCarga.Pendiente;
                     ordenDeCarga.DescripcionErrorInterno = "Orden con pedido entre 0 a 15Tn";
@@ -2189,11 +2189,6 @@ namespace SustitucionMOAUtils.Services
                     CommonService.toDateList(req.FechaDesde, req.FechaHasta);
                 var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
 
-                var tipoContrato =
-                    usuario.TieneRol(RolEnum.Administracion)
-                        ? Constante.FAS_FILTRO_TIPO_CONTRATO
-                        : TipoContratoFAS.Normal;
-
                 var consumerReq = new OrdenCargaVisualizarClienteWSMOARequest
                 {
                     Cliente = req.ClienteCodigo,
@@ -2202,7 +2197,7 @@ namespace SustitucionMOAUtils.Services
                     Fechas = rangoFechas,
                     Material = string.Empty,
                     Pendiente = true, // Contratos ABIERTOS
-                    TipoContrato = tipoContrato
+                    TipoContrato = TipoContratoFAS.Todos
                 };
 
                 var ordenCargaConsumer = new OrdenCargaConsumerMOA();
@@ -2670,22 +2665,7 @@ namespace SustitucionMOAUtils.Services
             var esInterno = (esAdmin || esComercial || esMesaFas || esPuerto);
             if (!esInterno)
             {
-                var numeroContrato = string.IsNullOrEmpty(orden.ContratoSAP) ? orden.ContratoIngresado : orden.ContratoSAP;
-                Log.Info($"Validar kg orden: patente={orden.PatenteAcoplado}, chasis={orden.ChasisAcoplado}, " +
-                    $"código cliente={orden.Cliente.CodigoProveedor}, número contrato={numeroContrato}");
-                var contratoSAP = consumer.ObtenerContratoSAP(numeroContrato, null);
-                Log.Info($"Validar kg contrato: {contratoSAP.ToJson()}");
-
-                if (contratoSAP == null)
-                    throw new InfoCustomException("No se encontró el contrato en SAP");
-
-                var ordenesPendientes = ObtenerOrdenesPendientesDeCliente(orden.Cliente.CodigoProveedor);
-                var kilosDisponibles = _kgDisponiblesFasService.ObtenerKgDisponiblesContrato(contratoSAP, ordenesPendientes);
-                Log.Info($"Validar kg disponibles: {kilosDisponibles}");
-                if (kilosDisponibles <= Constante.FAS_KILOS_LIMITE_INFERIOR)
-                    throw new InfoCustomException($"El contrato seleccionado no tiene kg disponibles");
-                if (kilosDisponibles < Constante.FAS_KILOS_LIMITE_SUPERIOR)
-                    return false;
+                return ContratoTieneKgDisponibles(orden);
             }
             return true;
         }
@@ -2699,24 +2679,7 @@ namespace SustitucionMOAUtils.Services
             var esInterno = (esAdmin || esComercial || esMesaFas || esPuerto);
             if (!esInterno)
             {
-                var numeroContrato = string.IsNullOrEmpty(orden.ContratoSAP) ? orden.ContratoIngresado : orden.ContratoSAP;
-                Log.Info($"Validar kg pedido: patente={orden.PatenteAcoplado}, chasis={orden.ChasisAcoplado}, " +
-                    $"código cliente={orden.Cliente.CodigoProveedor}, número contrato={numeroContrato}" +
-                    $", numeroPedidoIngresado ={orden.NumeroPedidoIngresado}, numeroFacturaIngresada={orden.NumeroFactura}");
-                var contratoSAP = consumer.ObtenerContratoSAP(numeroContrato, null);
-                Log.Info($"Validar kg pedido contrato: {contratoSAP.ToJson()}");
-
-                if (contratoSAP == null)
-                    throw new InfoCustomException("No se encontró el contrato en SAP");
-                var ordenesPendientes = ObtenerOrdenesPendientesDeCliente(orden.Cliente.CodigoProveedor).Where(ordenPendiente => ordenPendiente.Id != orden.Id).ToList();
-                var kilosDisponibles = _kgDisponiblesFasService.ObtenerKgDisponiblesPedido(contratoSAP, ordenesPendientes, orden.NumeroPedidoIngresado);
-                Log.Info($"Validar kg pedido disponibles: {kilosDisponibles}");
-                if (kilosDisponibles <= Constante.FAS_KILOS_LIMITE_INFERIOR)
-                {
-                    throw new InfoCustomException($"El pedido seleccionado no tiene kg disponibles");
-                }
-                if (kilosDisponibles < Constante.FAS_KILOS_LIMITE_SUPERIOR)
-                    return false;
+                return PedidoTieneKgDisponibles(orden);
             }
             return true;
         }
@@ -2829,6 +2792,54 @@ namespace SustitucionMOAUtils.Services
             Log.Info("Obteniendo estado de la orden en Scato con cuitChofer: " + cuit);
             var result = this.scatoConsumer.ObtenerRecorridoNoRechazadoPorNumeroDocumento(cuit);
             return result.ToList().Any();
+        }
+
+        private bool ContratoTieneKgDisponibles(OrdenDeCarga orden)
+        {
+            var numeroContrato = string.IsNullOrEmpty(orden.ContratoSAP) ? orden.ContratoIngresado : orden.ContratoSAP;
+            Log.Info($"Validar kg orden: patente={orden.PatenteAcoplado}, chasis={orden.ChasisAcoplado}, " +
+                $"código cliente={orden.Cliente.CodigoProveedor}, número contrato={numeroContrato}");
+            var contratoSAP = consumer.ObtenerContratoSAP(numeroContrato, null);
+
+            if (contratoSAP == null)
+                throw new InfoCustomException("No se encontró el contrato en SAP");
+
+            Log.Info($"Validar kg contrato: detalles={contratoSAP.Detalles} ");
+
+            var ordenesPendientes = ObtenerOrdenesPendientesDeCliente(orden.Cliente.CodigoProveedor).Where(ordenPendiente => ordenPendiente.Id != orden.Id).ToList();
+            var kilosDisponibles = _kgDisponiblesFasService.ObtenerKgDisponiblesContrato(contratoSAP, ordenesPendientes);
+            Log.Info($"Validar kg disponibles: {kilosDisponibles}");
+            if (kilosDisponibles <= Constante.FAS_KILOS_LIMITE_INFERIOR)
+                throw new InfoCustomException($"El contrato seleccionado no tiene kg disponibles");
+            if (kilosDisponibles < Constante.FAS_KILOS_LIMITE_SUPERIOR)
+                return false;
+
+            return true;
+        }
+
+        private bool PedidoTieneKgDisponibles(OrdenDeCarga orden)
+        {
+            var numeroContrato = string.IsNullOrEmpty(orden.ContratoSAP) ? orden.ContratoIngresado : orden.ContratoSAP;
+            Log.Info($"Validar kg pedido: patente={orden.PatenteAcoplado}, chasis={orden.ChasisAcoplado}, " +
+                $"código cliente={orden.Cliente.CodigoProveedor}, número contrato={numeroContrato}" +
+                $", numeroPedidoIngresado ={orden.NumeroPedidoIngresado}, numeroFacturaIngresada={orden.NumeroFactura}");
+            var contratoSAP = consumer.ObtenerContratoSAP(numeroContrato, null);
+
+            if (contratoSAP == null)
+                throw new InfoCustomException("No se encontró el contrato en SAP");
+            Log.Info($"Validar kg contrato: detalles={contratoSAP.Detalles} ");
+
+            var ordenesPendientes = ObtenerOrdenesPendientesDeCliente(orden.Cliente.CodigoProveedor).Where(ordenPendiente => ordenPendiente.Id != orden.Id).ToList();
+            var kilosDisponibles = _kgDisponiblesFasService.ObtenerKgDisponiblesPedido(contratoSAP, ordenesPendientes, orden.NumeroPedidoIngresado);
+            Log.Info($"Validar kg pedido disponibles: {kilosDisponibles}");
+            if (kilosDisponibles <= Constante.FAS_KILOS_LIMITE_INFERIOR)
+            {
+                throw new InfoCustomException($"El pedido seleccionado no tiene kg disponibles");
+            }
+            if (kilosDisponibles < Constante.FAS_KILOS_LIMITE_SUPERIOR)
+                return false;
+
+            return true;
         }
     }
 }
