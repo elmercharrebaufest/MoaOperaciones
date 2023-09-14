@@ -5501,7 +5501,7 @@ namespace SustitucionMOAUtils.Services
                                }
                                : null;
 
-            result.CuentaMayorSP = ultimaSolp.Posiciones.FirstOrDefault().Subposiciones.FirstOrDefault()?.CuentaMayorSap != null
+            result.CuentaMayorSP = ultimaSolp.Posiciones.FirstOrDefault()?.Subposiciones.FirstOrDefault()?.CuentaMayorSap != null
                                ? new TablaSapDto
                                {
                                    Id = ultimaSolp.Posiciones.FirstOrDefault().Subposiciones.FirstOrDefault().CuentaMayorSap.Id,
