@@ -13,6 +13,9 @@ import { ReporteContrato } from '../ReporteContrato.model';
 import { Formatter } from '../../common/formatter/Formatter';
 import { FiltroFechaReporteComponent } from '../../common/view-child/filtro-fecha-reporte/filtro-fecha-reporte.component';
 import { VOLVER_A_DETALLE_REPORTE } from '../../common/models/ordenes-de-carga/ordenDeCarga';
+import { registerLocaleData } from '@angular/common';
+import es from '@angular/common/locales/es'
+
 
 
 @Component({
@@ -70,6 +73,7 @@ export class ReporteContratoListado extends ListBaseComponent implements OnInit 
         this.filtroFechaReporteComponent.setFechaFin(Formatter.DateToSting(new Date()));
         this.mostrarPendientes = true;
         this.getListado();
+        registerLocaleData(es)
     }
 
 
