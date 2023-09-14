@@ -28,17 +28,15 @@ declare var $: any;
 
 })
 export class ListadoDashboardCompradorComponent extends ListBaseComponent {
-
-    protected locale: any;
-    protected model: Solp;
-    protected tabla: Table;
-    @ViewChild("tabla")
     @BlockUI() blockUI: NgBlockUI;
+    @ViewChild("tabla")
     @Input('model')
     @ViewChild('paginator') paginator: Paginator
     @ViewChild(SpinnerComponent)
     protected spinnerComponent: SpinnerComponent;
-
+    protected locale: any;
+    protected model: Solp;
+    protected tabla: Table;
     nroSolp: string = "";
     sap: boolean = false;
     mantenimiento: boolean = false;
@@ -164,7 +162,7 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
     }
 
     generarZipPliego(idSolp) {
-        this.blockUI.start('Generando ')
+        this.blockUI.start('Generando...');
         this.service.descargarZipPliego(idSolp)
             .subscribe(
                 (result) => {
@@ -207,7 +205,7 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
     }
 
     verLegajo(Id) {
-        this.blockUI.start('Cargando...')
+        this.blockUI.start('Cargando...');
         this.service.verLegajo(Id, null)
             .subscribe(
                 (result) => {
@@ -328,7 +326,7 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
 
     descargarLegajo() {
         let idPeticion = this.legajo[0].PeticionDeOfertaId;
-        this.blockUI.start('Generando...')
+        this.blockUI.start('Generando...');
         this.service.descargarLegajo(idPeticion, null)
             .subscribe(
                 (result) => {
@@ -374,7 +372,7 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
         let peticionId = this.legajo[0].PeticionDeOfertaId;
         //todo adjuntar los archivos
 
-        this.blockUI.start('Subiendo archivos...')
+        this.blockUI.start('Subiendo archivos...');
         this.service.adjuntarArchivoLegajo(peticionId, files)
             .subscribe(
                 (result) => {
@@ -406,7 +404,7 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
     }
 
     obtenerPeticionDeOferta(Id) {
-        this.blockUI.start('Cargando...')
+        this.blockUI.start('Cargando...');
         this.service.obtenerPeticionDeOferta(Id)
             .subscribe(
                 (result) => {
@@ -427,7 +425,7 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
     }
 
     obtenerPeticionDeOfertaParaProveedor(Id) {
-        this.blockUI.start('Cargando...')
+        this.blockUI.start('Cargando...');
         this.service.obtenerPeticionDeOferta(Id)
             .subscribe(
                 (result) => {
@@ -465,7 +463,7 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
     }
 
     obtenerAdjudicacion(nroOC) {
-        this.blockUI.start('Cargando...')
+        this.blockUI.start('Cargando...');
         this.service.obtenerAdjudicacion(nroOC)
             .subscribe(
                 (result) => {
@@ -485,7 +483,7 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
     }
 
     listarAdjudicaciones(solpId) {
-        this.blockUI.start('Cargando...')
+        this.blockUI.start('Cargando...');
         this.service.listarAdjudicaciones(solpId)
             .subscribe(
                 (result) => {
@@ -553,7 +551,7 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
     }
       
     obtenerPeticionDeOfertaParaCerrar(Id) {
-        this.blockUI.start('Cargando...')
+        this.blockUI.start('Cargando...');
         this.service.obtenerPeticionDeOferta(Id)
             .subscribe(
                 (result) => {
