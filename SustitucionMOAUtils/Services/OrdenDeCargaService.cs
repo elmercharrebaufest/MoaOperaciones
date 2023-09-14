@@ -1977,6 +1977,14 @@ namespace SustitucionMOAUtils.Services
                 repositorio.GuardarCambios();
                 return new Resultado { Mensaje = "No se pudo generar la entrega. No existe el Intermediario de flete." };
             }
+            if (orden.Producto.ValidaSisaRuca && !orden.CuitTerceroExisteScato)
+            {
+                ValidarExistenciaCuitsTerceros(orden);
+                if (!orden.CuitTerceroExisteScato)
+                {
+                    return ResultadoCuitsTercerosNoExisten(orden);
+                }
+            }
             var numeroFactura = string.IsNullOrEmpty(orden.NumeroFacturaSeleccionada) ? orden.NumeroFactura : orden.NumeroFacturaSeleccionada;
             Log.Info($"GenerarEntregaSAP: numeroFactura -> {numeroFactura}");
 
@@ -2840,6 +2848,88 @@ namespace SustitucionMOAUtils.Services
                 return false;
 
             return true;
+        }
+        public Resultado VerificarCuitsTerceros(int ordenId, string usuarioEmail)
+        {
+            string resultado = SuccessMsg.OrdenDeCargaActualizada;
+            var orden = repositorio.Obtener<OrdenDeCarga>(ordenId);
+
+            ValidarExistenciaCuitsTerceros(orden);
+            if (!orden.CuitTerceroExisteScato)
+            {
+                return ResultadoCuitsTercerosNoExisten(orden);
+            }
+            var usuario = repositorio.Obtener<Usuario>(u => u.Mail == usuarioEmail);
+
+            var contrato = ObtenerContratoDeOrden(orden);
+
+            if (string.IsNullOrEmpty(orden.ContratoSAP))
+            {
+                orden.Estado = EstadoOrdenDeCarga.Pendiente;
+                orden.DescripcionErrorInterno = "Falta seleccionar un contrato.";
+                repositorio.GuardarCambios();
+                return new Resultado { error = "Falta seleccionar un contrato." };
+            }
+            if (!ValidarVencimientoContrato(contrato, orden.Cliente))
+            {
+                orden.Estado = EstadoOrdenDeCarga.ContratoVencido;
+                repositorio.GuardarCambios();
+                emailFasService.EnviarMailContratoVencido(orden);
+                return new Resultado { error = "El contrato seleccionado está vencido" };
+            }
+
+            if (!orden.TransporteExiste)
+            {
+                resultado = VerificarTransporte(orden);
+                if (resultado == _transporteNoExiste)
+                {
+                    orden.DescripcionCodigoVerificacionSap = _transporteNoExiste;
+                    emailFasService.EnviarMailTransporteNoExiste(orden);
+                }
+            }
+
+            NotificarVariasFacturas(orden);
+            if (
+                orden.TipoContrato == TipoContratoFAS.Anticipado &&
+                string.IsNullOrEmpty(orden.NumeroFacturaSeleccionada))
+            {
+                orden.Estado = EstadoOrdenDeCarga.Pendiente;
+                orden.DescripcionErrorInterno = "Hay más de una factura para seleccionar.";
+                repositorio.GuardarCambios();
+                return new Resultado { error = "El contrato tiene más de una factura para seleccionar" };
+            }
+
+            VerificarOrden(orden, orden.Cliente, false);
+
+            if (!orden.TieneCodigoSap(ControlCargaResEnum.FaltaCargarKmsEnContrato))
+                return GenerarEntregaSAP(orden);
+
+            repositorio.GuardarCambios();
+
+            return new Resultado { Mensaje = resultado };
+        }
+
+        private void ValidarExistenciaCuitsTerceros(OrdenDeCarga orden)
+        {
+            if (!(orden.DestinatarioExisteScato ?? false))
+            {
+                var validacionDestinatario = ValidarCuitExisteScato(orden.CUITDestinatario);
+                orden.DestinatarioExisteScato = validacionDestinatario.Existe;
+            }
+            if (!(orden.DestinoExisteScato ?? false))
+            {
+                var validacionDestino = ValidarCuitExisteScato(orden.CUITDestino);
+                orden.DestinoExisteScato = validacionDestino.Existe;
+            }
+            repositorio.GuardarCambios();
+        }
+        private Resultado ResultadoCuitsTercerosNoExisten(OrdenDeCarga orden)
+        {
+            var msg = orden.MsgCuitsTerceros;
+            orden.DescripcionCodigoVerificacionSap = msg;
+            orden.Estado = EstadoOrdenDeCarga.Pendiente;
+            repositorio.GuardarCambios();
+            return new Resultado { Mensaje = msg };
         }
     }
 }
