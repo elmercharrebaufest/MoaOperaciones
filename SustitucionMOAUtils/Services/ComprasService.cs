@@ -5442,13 +5442,14 @@ namespace SustitucionMOAUtils.Services
             result.FiscalContrato = ultimaSolp.Pliego?.FiscalContrato;
             result.Telefono = ultimaSolp.Pliego?.Telefono;
 
-            result.ClaseDocumento = new TablaSapDto { Id = ultimaSolp.ClaseDocumento.Id,
-                                                      Tabla = ultimaSolp.ClaseDocumento.Tabla,
-                                                      Codigo = ultimaSolp.ClaseDocumento.Codigo,
-                                                      CodigoSap = ultimaSolp.ClaseDocumento.CodigoSap,
-                                                      Descripcion = ultimaSolp.ClaseDocumento.Descripcion,
-                                                      IdPadre = ultimaSolp.ClaseDocumento.Padre_id
-                                                    };
+            result.ClaseDocumento = ultimaSolp.ClaseDocumento != null ? new TablaSapDto { Id = ultimaSolp.ClaseDocumento.Id,
+                                    Tabla = ultimaSolp.ClaseDocumento.Tabla,
+                                    Codigo = ultimaSolp.ClaseDocumento.Codigo,
+                                    CodigoSap = ultimaSolp.ClaseDocumento.CodigoSap,
+                                    Descripcion = ultimaSolp.ClaseDocumento.Descripcion,
+                                    IdPadre = ultimaSolp.ClaseDocumento.Padre_id
+                                    }
+                                    : null;
 
             result.GrupoCompras = ultimaSolp.Posiciones.FirstOrDefault()?.GrupoCompras != null
                                 ? new TablaSapDto { Id = ultimaSolp.Posiciones.FirstOrDefault().GrupoCompras.Id,

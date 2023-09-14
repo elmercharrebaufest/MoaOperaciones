@@ -1269,25 +1269,42 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
     }
 
     private completarDatosUltimaSolp() {
-        this.model.selectClaseDocumento = this.datosUltimaSolp.ClaseDocumento;
-        this.model.selectTipoPosicion = this.datosUltimaSolp.TipoPosicion;
-        this.cambiarTipoSolp();
+        if(this.datosUltimaSolp.ClaseDocumento != null){
+            this.model.selectClaseDocumento = this.datosUltimaSolp.ClaseDocumento;
+        }
 
-        this.model.posiciones[0].selectCentroEntrega = this.datosUltimaSolp.Centro;
-        this.model.posiciones[0].selectComboAlmacenes.push(this.datosUltimaSolp.Almacen);
-        this.model.posiciones[0].selectAlmacenEntrega = this.datosUltimaSolp.Almacen;
+        if(this.datosUltimaSolp.TipoPosicion != null){
+            this.model.selectTipoPosicion = this.datosUltimaSolp.TipoPosicion;
+            this.cambiarTipoSolp();
+        }
+        
+        if(this.datosUltimaSolp.Centro != null){
+            this.model.posiciones[0].selectCentroEntrega = this.datosUltimaSolp.Centro;
+        }
 
-        this.model.posiciones[0].selectGrupoCompras = this.datosUltimaSolp.GrupoCompras;        
+        if(this.datosUltimaSolp.Almacen != null){
+            this.model.posiciones[0].selectComboAlmacenes.push(this.datosUltimaSolp.Almacen);
+            this.model.posiciones[0].selectAlmacenEntrega = this.datosUltimaSolp.Almacen;
+        }
+
+        if(this.datosUltimaSolp.GrupoCompras != null){
+            this.model.posiciones[0].selectGrupoCompras = this.datosUltimaSolp.GrupoCompras;        
+        }
 
         if(this.model.selectTipoPosicion.Codigo == "SERVICIO"){
-            var newPos = this.model.posiciones[0].crearSubPosicion()
-            this.model.posiciones[0].agregarSubPosicion(newPos);
-            this.model.posiciones[0].listadoSubPosiciones[0].cuentaMayor = this.datosUltimaSolp.CuentaMayorSP;  
+            if(this.datosUltimaSolp.CuentaMayorSP != null){
+                var newPos = this.model.posiciones[0].crearSubPosicion()
+                this.model.posiciones[0].agregarSubPosicion(newPos);
+                this.model.posiciones[0].listadoSubPosiciones[0].cuentaMayor = this.datosUltimaSolp.CuentaMayorSP;  
+            }
         } else {
-            this.model.posiciones[0].cuentaMayor = this.datosUltimaSolp.CuentaMayor;  
+            if(this.datosUltimaSolp.CuentaMayor != null){
+                this.model.posiciones[0].cuentaMayor = this.datosUltimaSolp.CuentaMayor;  
+            }
         }
 
     }
+
 
 
 }
