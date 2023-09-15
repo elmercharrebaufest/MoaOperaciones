@@ -403,6 +403,10 @@ namespace SustitucionMOAUtils.Services
                 ordenEditar.CUITDestino = ordenDeCarga.CUITDestino;
                 ordenEditar.RazonSocialDestinatario = ordenDeCarga.RazonSocialDestinatario;
                 ordenEditar.RazonSocialDestino = ordenDeCarga.RazonSocialDestino;
+                ordenEditar.PlantaCodigo = ordenDeCarga.PlantaCodigo;
+                ordenEditar.DomicilioDescr = ordenDeCarga.DomicilioDescr;
+                ordenEditar.CUITIntermediarioFlete = ordenDeCarga.CUITIntermediarioFlete;
+                ordenEditar.RazonSocialIntermediarioFlete = ordenDeCarga.RazonSocialIntermediarioFlete;
             }
             if (!ordenEditar.InformadaSAP || listaValoresDiferentes.Exists(x => x.PropertyName == "ContratoIngresado"))
             {
