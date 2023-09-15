@@ -189,6 +189,7 @@
     <Compile Include="Services\AduanaService.cs" />
     <Compile Include="Services\AltaEmpresaNoGranosService.cs" />
     <Compile Include="Services\AplicacionCartaPorteService.cs" />
+    <Compile Include="Interfaces\IEmailService.cs" />
     <Compile Include="Services\KgDisponiblesFasService.cs" />
     <Compile Include="Services\OrdenDeCargaEstadoService.cs" />
     <Compile Include="Services\FacturaAnticipadaService.cs" />

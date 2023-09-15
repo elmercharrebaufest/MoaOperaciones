@@ -326,7 +326,7 @@ export class CotizacionServicioComponent extends ListBaseComponent implements On
             ArchivosTipo: this.peticion.Cotizacion.ArchivosCotizacion != null ? this.peticion.Cotizacion.ArchivosCotizacion.map(x => { return { FileKey: x.FileKey } }) : null,
             CotizacionesHoras: this.index == 0 ? this.peticion.Cotizacion.CotizacionesHoras.filter(x => x.Gremio == 'UOCRA' || x.ConfigurarHora == true) : this.peticion.Cotizacion.CotizacionesHoras.filter(x => x.Gremio != 'UOCRA'),
             CotizacionSubposiciones: this.subposiciones,
-            PorcentajeDeHoras: this.peticion.PorcentajeDeHoras
+            PorcentajeDeHoras: this.index == 0 ? this.peticion.PorcentajeDeHoras : 0
         }
         return coti;
     }
@@ -530,10 +530,12 @@ export class CotizacionServicioComponent extends ListBaseComponent implements On
         }
     }
 
-    validarNumero(event: any) {
-        const inputValue = event.target.value;
-        if (isNaN(inputValue) || inputValue < 0) {
-          event.target.value = ''; // Borra el valor si es negativo
+    validarPorcentaje() {
+        const parsedValue = Number(this.peticion.PorcentajeDeHoras);
+        if (isNaN(parsedValue)) {
+           this.peticion.PorcentajeDeHoras = 0;
+        } else if (parsedValue > 100) {
+          this.peticion.PorcentajeDeHoras = 100;
         }
       }
 }

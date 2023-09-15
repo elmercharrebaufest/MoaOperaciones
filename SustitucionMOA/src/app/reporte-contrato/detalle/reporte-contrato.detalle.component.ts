@@ -13,7 +13,8 @@ import { DetalleReporteContrato } from '../ReporteContrato.model';
 import { OrdenesDeCargaService } from '../../ordenes-de-carga/ordenes-de-carga.service';
 import { Subscription } from 'rxjs';
 import { VOLVER_A_DETALLE_REPORTE } from '../../common/models/ordenes-de-carga/ordenDeCarga';
-
+import { registerLocaleData } from '@angular/common';
+import es from '@angular/common/locales/es'
 
 @Component({
     selector: 'app-detalle',
@@ -50,6 +51,7 @@ export class DetalleComponent extends ListBaseComponent implements OnInit {
 
     }
     ngOnInit() {
+        registerLocaleData(es)
     }
 
     getDetalleContrato(contratoId: string) {
@@ -91,10 +93,10 @@ export class DetalleComponent extends ListBaseComponent implements OnInit {
             return {
                 "ID": info.OrdenCargaId || "",
                 "Fecha de Carga": info.FechaCarga || "-",
-                "Cant. Entregada": info.CantidadEntregadaStr || "-",                
-                "CTG/Remito": info.Remito || "-",   
+                "Cant. Entregada": info.CantidadEntregadaStr || "-",
+                "CTG/Remito": info.Remito || "-",
                 "CPE": info.CPE || "-",
-                "Cant. Facturada": info.CantidadFacturaStr || "-",             
+                "Cant. Facturada": info.CantidadFacturaStr || "-",
                 "Factura": info.Factura || "-",
                 "Chasis": info.Chasis || "-",
                 "Acoplado": info.Acoplado || "-",

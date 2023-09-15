@@ -60,6 +60,9 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
     @Input('esCreacionSolp')
     protected esCreacionSolp: boolean;
 
+    @Input('getDatosUltimaSolp')
+    protected datosUltimaSolp;
+
     @ViewChild(SpinnerComponent)
     protected spinnerComponent: SpinnerComponent;
 
@@ -184,6 +187,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         }
 
         this.setCombos();
+        
 
     }
 
@@ -201,6 +205,9 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
                 posicion.selectComboAlmacenes = this.combos.Almacen.filter(x => x.IdPadre == posicion.selectCentroEntrega.Id);
             });
         }       
+        }
+        if(this.model.id != null && this.model.id > 0){
+            this.completarDatosUltimaSolp();
         }
     }
 
@@ -954,9 +961,6 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         if (posicion.codigoServicio.CuentaMayor && posicion.codigoServicio.CuentaMayor.Id > 0) {
             posicion.cuentaMayor = posicion.codigoServicio.CuentaMayor;
         }
-        console.log("posicion.codigoServicio.CuentaMayor", posicion.codigoServicio.CuentaMayor)
-
-
     }
 
     onBlurTarea(event, posicion: SubPosicionViewModel) {
@@ -1263,5 +1267,44 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         }
 
     }
+
+    private completarDatosUltimaSolp() {
+        if(this.datosUltimaSolp.ClaseDocumento != null){
+            this.model.selectClaseDocumento = this.datosUltimaSolp.ClaseDocumento;
+        }
+
+        if(this.datosUltimaSolp.TipoPosicion != null){
+            this.model.selectTipoPosicion = this.datosUltimaSolp.TipoPosicion;
+            this.cambiarTipoSolp();
+        }
+        
+        if(this.datosUltimaSolp.Centro != null){
+            this.model.posiciones[0].selectCentroEntrega = this.datosUltimaSolp.Centro;
+        }
+
+        if(this.datosUltimaSolp.Almacen != null){
+            this.model.posiciones[0].selectComboAlmacenes.push(this.datosUltimaSolp.Almacen);
+            this.model.posiciones[0].selectAlmacenEntrega = this.datosUltimaSolp.Almacen;
+        }
+
+        if(this.datosUltimaSolp.GrupoCompras != null){
+            this.model.posiciones[0].selectGrupoCompras = this.datosUltimaSolp.GrupoCompras;        
+        }
+
+        if(this.model.selectTipoPosicion.Codigo == "SERVICIO"){
+            if(this.datosUltimaSolp.CuentaMayorSP != null){
+                var newPos = this.model.posiciones[0].crearSubPosicion()
+                this.model.posiciones[0].agregarSubPosicion(newPos);
+                this.model.posiciones[0].listadoSubPosiciones[0].cuentaMayor = this.datosUltimaSolp.CuentaMayorSP;  
+            }
+        } else {
+            if(this.datosUltimaSolp.CuentaMayor != null){
+                this.model.posiciones[0].cuentaMayor = this.datosUltimaSolp.CuentaMayor;  
+            }
+        }
+
+    }
+
+
 
 }

@@ -288,7 +288,7 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
                     return self.error;
                 }
 
-                if (this.tablaOfertas.TipoPosicionCodigo == 'MATERIALES') {
+                if (this.tablaOfertas.TipoPosicionCodigo == 'MATERIALES' && this.tablaOfertas.Adicional) {
                     if (element.MonedaCotizacion != element.MonedaPO) {
                         self.error = "Pos " + element.Posicion + " - La moneda de la cotización y de la OC debe ser la misma";
                         breakFor = true;

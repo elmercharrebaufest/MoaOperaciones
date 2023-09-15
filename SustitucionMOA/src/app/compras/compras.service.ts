@@ -30,7 +30,9 @@ export class ComprasService extends BaseService {
         sap: true,
         mantenimiento: true,
         web: true,
-        usuarioId: null
+        usuarioId: null,
+        centros: "",
+        grupoDeCompras: ""
     }
     listaSolp: any;
     observableListaSolp = new Subject<any[]>();
@@ -40,6 +42,11 @@ export class ComprasService extends BaseService {
     public getCombos(): Observable<any> {
         return this.http
             .get('/api/compras/Combos', { headers: this.headers });
+    }
+
+    public obtenerUltimaSolp(): Observable<any> {
+        return this.http
+            .get('/api/compras/ObtenerUltimaSolp', { headers: this.headers });
     }
 
     public getListarSolp(pagina: number,
@@ -53,7 +60,7 @@ export class ComprasService extends BaseService {
         mantenimiento: boolean = this.filtros.mantenimiento,
         web: boolean = this.filtros.web,
         estados: any = this.filtros.estados,
-        usuarioId: number | null = this.filtros.usuarioId): Observable<any> {
+        usuarioId: any = this.filtros.usuarioId): Observable<any> {
         let params: HttpParams = new HttpParams();
         pagina = pagina != null ? pagina : this.filtros.pagina;
         itemsPorPagina = itemsPorPagina != null ? itemsPorPagina : this.filtros.itemsPorPagina;
@@ -276,15 +283,13 @@ export class ComprasService extends BaseService {
     }
 
     getFechaHora(fecha: Date, hora: Date) {
-        console.log("fechaHora", fecha, hora)
-
         let fechaHora = new Date(fecha);
 
         fechaHora.setHours(hora.getHours());
         fechaHora.setMinutes(hora.getMinutes());
         fechaHora.setSeconds(hora.getSeconds());
-        console.log("fechaHora", fechaHora)
         return fechaHora;
+        
     }
 
     // getCodigosProveedores(electrico, consultoria, civil, ingenieria, mecanico) {
@@ -423,7 +428,11 @@ export class ComprasService extends BaseService {
         itemsPorPagina: number,
         orden: string = this.filtros.orden,
         columna: string = this.filtros.columna,
-        nroSolp: string = this.filtros.nroSolp) {
+        nroSolp: string = this.filtros.nroSolp,
+        estados: any = this.filtros.estados,
+        usuarios: any = this.filtros.usuarioId,
+        centros: any = this.filtros.centros,
+        grupoDeCompras: any = this.filtros.grupoDeCompras) {
         let params: HttpParams = new HttpParams()
         pagina = pagina != null ? pagina : this.filtros.pagina;
         itemsPorPagina = itemsPorPagina != null ? itemsPorPagina : this.filtros.itemsPorPagina;
@@ -433,8 +442,12 @@ export class ComprasService extends BaseService {
         params = params.set('orden', orden);
         params = params.set('columna', columna);
         params = params.set('nroSolp', nroSolp);
+        params = params.set('estados', estados);
+        params = params.set('usuarios', usuarios);
+        params = params.set('centros', centros);
+        params = params.set('grupoDeCompras', grupoDeCompras);
         return this.http
-            .get<any[]>('/api/compras/ListarSolpCompra', { params: params, headers: this.headers }).subscribe(
+            .get<any[]>('/api/compras/ListarSolpComprador', { params: params, headers: this.headers }).subscribe(
                 (data: any[]) => {
                     this.observableListaSolp.next(data)
                 }
@@ -504,9 +517,9 @@ export class ComprasService extends BaseService {
             SolpId: solp.SolpId,
             PosIds: solp.PosIds,
             UsuarioIds: solp.UsuarioIds,
-            Observacion: solp.Observacion,          
-            Adjuntos: solp.Adjuntos           
-            
+            Observacion: solp.Observacion,
+            Adjuntos: solp.Adjuntos
+
         });
 
         var payload = new FormData();
@@ -592,12 +605,12 @@ export class ComprasService extends BaseService {
     public GrabarCircular(circular: CircularDto) {
         let json = JSON.stringify({
             UsuarioIds: circular.UsuarioIds,
-            Observacion: circular.Observacion,          
+            Observacion: circular.Observacion,
             Adjuntos: circular.Adjuntos,
-            PlazoDeOferta: this.getFechaHora(circular.PlazoDeOfertaFecha, circular.PlazoDeOfertaHora),
+            PlazoDeOferta: circular.PlazoDeOfertaHora == null ? circular.PlazoDeOfertaFecha : this.getFechaHora(circular.PlazoDeOfertaFecha, circular.PlazoDeOfertaHora),
             FechaEntrega: circular.FechaEntrega,
             RequiereCambioDeFecha: circular.RequiereCambioDeFecha,
-            PeticionDeOferta_Id: circular.PeticionDeOferta_Id,            
+            PeticionDeOferta_Id: circular.PeticionDeOferta_Id,
         });
 
         var payload = new FormData();
@@ -622,7 +635,7 @@ export class ComprasService extends BaseService {
 
     obtenerPeticionDeOferta(idPeticionDeOferta: number): Observable<any> {
         let params: HttpParams = new HttpParams();
-        params = params.set("peticionDeOfertaId", idPeticionDeOferta.toString());       
+        params = params.set("peticionDeOfertaId", idPeticionDeOferta.toString());
         return this.http
             .get("/api/compras/ObtenerPeticionDeOferta", {
                 params: params,
@@ -631,16 +644,16 @@ export class ComprasService extends BaseService {
     }
 
     public GrabarProveedorEnPeticion(usuariosId, peticion) {
-        let json = JSON.stringify({           
+        let json = JSON.stringify({
             UsuarioIds: usuariosId,
-            Id: peticion        
-            
+            Id: peticion
+
         });
         var payload = new FormData();
         payload.append('json', json);
-      
+
         return this.http
-            .post<any>('/api/compras/GrabarProveedorEnPeticion', payload,{   headers: this.headers });
+            .post<any>('/api/compras/GrabarProveedorEnPeticion', payload, { headers: this.headers });
     }
 
     DescargarAdjuntosCotizacion(cotizacionId: number): Observable<any> {
@@ -661,7 +674,7 @@ export class ComprasService extends BaseService {
 
         return this.http
             .post<any>('/api/compras/GrabarRevisionTecnica', payload, { headers: this.headers });
-    } 
+    }
 
     public obtenerCotizacion(id: number) {
         let params: HttpParams = new HttpParams()
@@ -732,7 +745,7 @@ export class ComprasService extends BaseService {
             CotizacionSubposiciones: cotizacion.CotizacionSubposiciones
         });
 
-        var payload = new FormData();       
+        var payload = new FormData();
         payload.append('json', json);
 
         return this.http
@@ -760,7 +773,7 @@ export class ComprasService extends BaseService {
 
     public listarAdjudicaciones(id: number): Observable<any> {
         let params: HttpParams = new HttpParams();
-        params = params.set("solpId", id.toString());       
+        params = params.set("solpId", id.toString());
         return this.http
             .get("/api/compras/ListarAdjudicaciones", {
                 params: params,
@@ -770,7 +783,7 @@ export class ComprasService extends BaseService {
 
     public obtenerAdjudicacion(nroOC: number): Observable<any> {
         let params: HttpParams = new HttpParams();
-        params = params.set("nroOC", nroOC.toString());       
+        params = params.set("nroOC", nroOC.toString());
         return this.http
             .get("/api/compras/ObtenerAdjudicacion", {
                 params: params,
@@ -780,7 +793,7 @@ export class ComprasService extends BaseService {
 
     public obtenerOrdenDeCompra(nroOC: string): Observable<any> {
         let params: HttpParams = new HttpParams();
-        params = params.set("nroOC", nroOC.toString());       
+        params = params.set("nroOC", nroOC.toString());
         return this.http
             .get("/api/compras/ObtenerOrdenDeCompra", {
                 params: params,
@@ -802,7 +815,7 @@ export class ComprasService extends BaseService {
 
         return this.http
             .post<any>('/api/compras/GuardarAdjudicacionAutomatica', payload, { headers: this.headers });
-    } 
+    }
 
     public cerrarCotizacion(peticionId: number, observaciones: string) {
         var payload = new FormData();
@@ -811,7 +824,7 @@ export class ComprasService extends BaseService {
 
         return this.http
             .post<any>('/api/compras/CerrarCotizacion', payload, { headers: this.headers });
-    } 
+    }
 
 
 }

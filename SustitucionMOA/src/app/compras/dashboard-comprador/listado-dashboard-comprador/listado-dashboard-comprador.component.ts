@@ -20,29 +20,23 @@ import { AdjudicacionDto, AdjudicacionPosicionDto } from '../../../modelos/adjud
 
 declare var $: any;
 
-
 @Component({
     selector: 'app-listado-dashboard-comprador',
     templateUrl: `listado-dashboard-comprador.component.html`,
-    styleUrls: [
+    styleUrls: ['../../compras.component.css',
         './listado-dashboard-comprador.component.css']
 
 })
 export class ListadoDashboardCompradorComponent extends ListBaseComponent {
-
-    protected locale: any;
-
-    @ViewChild("tabla")
-    protected tabla: Table;
-
     @BlockUI() blockUI: NgBlockUI;
-
+    @ViewChild("tabla")
     @Input('model')
-    protected model: Solp;
-
+    @ViewChild('paginator') paginator: Paginator
     @ViewChild(SpinnerComponent)
     protected spinnerComponent: SpinnerComponent;
-
+    protected locale: any;
+    protected model: Solp;
+    protected tabla: Table;
     nroSolp: string = "";
     sap: boolean = false;
     mantenimiento: boolean = false;
@@ -52,7 +46,6 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
     length = 0;
     pageSize: number = 10;
     pageIndex: number = 1;
-    @ViewChild('paginator') paginator: Paginator
     subscripcionSolp: Subscription
     displayLegajo: boolean = false;
     legajo: any;
@@ -68,32 +61,42 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
     ordenDeCompraId: any;
     ordenesDeCompra: AdjudicacionDto[] = [];
     visualizarAlertCotizacion: boolean;
+    usuario: string;
+    usuarioFiltro: SelectItem[];
+    selectUsuario: string[] = [];
+    estadoSolpItem: SelectItem[];
+    selectEstadoSolp: string[] = [];
+    grupoComprasFiltro: SelectItem[];
+    selectGrupoCompras: string[] = [];
+    centroFiltro: SelectItem[];
+    selectCentro: string[] = [];
+    usuariosResult: any;
 
     constructor(protected service: ComprasService, protected navService: NavService,
         protected sessionDataService: SessionDataService, protected securityService: SecurityService,
         protected floatMsgService: FloatMsgService, protected modalService: ModalService,
         protected route: ActivatedRoute, protected router: Router) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
-        this.usuario = sessionStorage.getItem("username");
-
+        this.usuario = sessionStorage.getItem("username"); this.onBuscar();
     }
-    //#region Variables 
+    
     tablaSolp: any[];
     tablaSolpCopy: any[];
     cols: any[];
     serviciosDashboard: any = "Servicios"
     solp: Solp = new Solp();
-    usuario: string;// = "Prueba";
     checkedFilterSap = false;
     checkedFilterMantenimiento = false;
     checkedFilterWeb = false;
     verTodas: boolean = this.isAuthorized('VER TODAS SOLPS');
-
     displayCerrarCotizacion: boolean;
-    //#endregion
 
     ngOnInit() {
         this.getListarSolp();
+    }
+
+    ngAfterViewInit(): void {
+        this.getCombos();
     }
 
     ngOnDestroy(): void {
@@ -134,10 +137,10 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
         return false; //<-- Prevent Refresh
     }
 
-
     listarSolp() {
         this.spinnerComponent.showIt();
-        this.service.getListarSolpCompras(this.pageIndex, this.pageSize, this.orden, this.columnaOrden, this.nroSolp);
+        this.service.getListarSolpCompras(this.pageIndex, this.pageSize, this.orden, this.columnaOrden, this.nroSolp, this.selectEstadoSolp.join(","),
+            this.selectUsuario.join(","), this.selectCentro.join(","), this.selectGrupoCompras.join(","));
 
     }
 
@@ -159,7 +162,7 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
     }
 
     generarZipPliego(idSolp) {
-        this.blockUI.start('Generando ')
+        this.blockUI.start('Generando...');
         this.service.descargarZipPliego(idSolp)
             .subscribe(
                 (result) => {
@@ -202,7 +205,7 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
     }
 
     verLegajo(Id) {
-        this.blockUI.start('Cargando...')
+        this.blockUI.start('Cargando...');
         this.service.verLegajo(Id, null)
             .subscribe(
                 (result) => {
@@ -323,7 +326,7 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
 
     descargarLegajo() {
         let idPeticion = this.legajo[0].PeticionDeOfertaId;
-        this.blockUI.start('Generando...')
+        this.blockUI.start('Generando...');
         this.service.descargarLegajo(idPeticion, null)
             .subscribe(
                 (result) => {
@@ -369,7 +372,7 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
         let peticionId = this.legajo[0].PeticionDeOfertaId;
         //todo adjuntar los archivos
 
-        this.blockUI.start('Subiendo archivos...')
+        this.blockUI.start('Subiendo archivos...');
         this.service.adjuntarArchivoLegajo(peticionId, files)
             .subscribe(
                 (result) => {
@@ -401,7 +404,7 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
     }
 
     obtenerPeticionDeOferta(Id) {
-        this.blockUI.start('Cargando...')
+        this.blockUI.start('Cargando...');
         this.service.obtenerPeticionDeOferta(Id)
             .subscribe(
                 (result) => {
@@ -422,7 +425,7 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
     }
 
     obtenerPeticionDeOfertaParaProveedor(Id) {
-        this.blockUI.start('Cargando...')
+        this.blockUI.start('Cargando...');
         this.service.obtenerPeticionDeOferta(Id)
             .subscribe(
                 (result) => {
@@ -460,7 +463,7 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
     }
 
     obtenerAdjudicacion(nroOC) {
-        this.blockUI.start('Cargando...')
+        this.blockUI.start('Cargando...');
         this.service.obtenerAdjudicacion(nroOC)
             .subscribe(
                 (result) => {
@@ -480,7 +483,7 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
     }
 
     listarAdjudicaciones(solpId) {
-        this.blockUI.start('Cargando...')
+        this.blockUI.start('Cargando...');
         this.service.listarAdjudicaciones(solpId)
             .subscribe(
                 (result) => {
@@ -548,7 +551,7 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
     }
       
     obtenerPeticionDeOfertaParaCerrar(Id) {
-        this.blockUI.start('Cargando...')
+        this.blockUI.start('Cargando...');
         this.service.obtenerPeticionDeOferta(Id)
             .subscribe(
                 (result) => {
@@ -588,6 +591,49 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
         this.displayCerrarCotizacion = false;
     }
 
+    getCombos() {
+        try {
+            this.subscription = this.service.getCombos().subscribe(
+                (result: any) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.floatMsgService.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.floatMsgService.setInfoMsg(result.info);
+                    } else {
+                        this.usuariosResult = result.Usuarios;
+                        this.estadoSolpItem = [];
+                        this.usuarioFiltro = [];
+                        this.centroFiltro = [];
+                        this.grupoComprasFiltro = [];
+                        result.EstadosSolpSap.forEach(e => this.estadoSolpItem.push({
+                            label: e.Descripcion, value: e.Id
+                        }));
+                        result.Usuarios.forEach(x => x.forEach(d => this.usuarioFiltro.push({
+                            label: d.Mail, value: d.Id
+                        })));
+                        result.Centro.forEach(c => this.centroFiltro.push({
+                            label: c.Codigo + " - " + c.Descripcion, value: c.Id
+                        }));
+                        result.GrupoCompras.forEach(gc => this.grupoComprasFiltro.push({
+                            label: gc.Codigo + " - " + gc.Descripcion, value: gc.Id
+                        }));
+                    }
+                },
+                error => {
+                    this.floatMsgService.setErrorMsg(error.message);
+                }
+            );
+        } catch (e) {
+            this.floatMsgService.setErrorMsg(e);
+            return false; //<-- Prevent Refresh
+        }
+        return false; //<-- Prevent Refresh
+    }
 
+    onBuscar() {
+        this.service.getListarSolpCompras(1, 10, "", "", this.nroSolp, this.selectEstadoSolp.join(","),
+            this.selectUsuario.join(","), this.selectCentro.join(","), this.selectGrupoCompras.join(","));
+    }
 }
-

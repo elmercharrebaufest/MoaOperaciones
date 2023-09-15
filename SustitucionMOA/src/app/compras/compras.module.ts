@@ -54,7 +54,6 @@ import {TooltipModule} from 'primeng/tooltip';
 import { ListadoDashboardCompradorComponent } from './dashboard-comprador/listado-dashboard-comprador/listado-dashboard-comprador.component';
 import { CircularComponent } from './dashboard-comprador/circular/circular.component';
 import { LegajoComponent } from './dashboard-comprador/legajo/legajo.component';
-import { FiltroDashboardCompradorComponent } from './dashboard-comprador/filtro-dashboard-comprador/filtro-dashboard-comprador.component';
 import { NgxMaskModule } from "ngx-mask";
 import { NgbAlertModule } from '@ng-bootstrap/ng-bootstrap';
 
@@ -136,7 +135,6 @@ import { CerrarCotizacionComponent } from './dashboard-comprador/cerrar-cotizaci
         ContratoMarcoComponent,
         ObtenerContratoMarcoComponent,
         ListadoDashboardCompradorComponent,
-        FiltroDashboardCompradorComponent,
         PeticionDeOfertaFormularioComponent,
         LegajoComponent,
         CircularComponent,

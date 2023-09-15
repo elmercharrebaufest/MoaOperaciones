@@ -1402,7 +1402,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
     }
     validarKilosDisponibles() {
         this.mensajesOrdenDeCarga.ContratoSeleccionado = null;
-        const esInterno = (this.esComercial || this.esCorredor || this.esAdmin);
+        const esInterno = (this.esComercial  || this.esAdmin);
 
         if (this.ordenDeCargaId == 0 && !esInterno) {
             this.floatMsgService.setMsgsEmpty();
@@ -1422,7 +1422,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
     }
     validarKilosDisponiblesPedido() {
         this.mensajesOrdenDeCarga.NumeroFacturaSeleccionada = null;
-        const esInterno = (this.esComercial || this.esCorredor || this.esAdmin);
+        const esInterno = (this.esComercial  || this.esAdmin);
 
         if (this.ordenDeCargaId == 0 && !esInterno) {
             this.floatMsgService.setMsgsEmpty();

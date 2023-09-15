@@ -147,11 +147,11 @@
                                 </div>
                             </td>
                             <td [ngStyle]="{'font-weight':cabeceraContrato.NombreCliente == '' ? '700': ''}">
-                                {{cabeceraContrato.KilosTotales | number}}</td>
+                                {{cabeceraContrato.KilosTotales | number:'':'es'}}</td>
                             <td [ngStyle]="{'font-weight':cabeceraContrato.NombreCliente == '' ? '700': ''}">
-                                {{cabeceraContrato.KilosEntregados | number}}</td>
+                                {{cabeceraContrato.KilosEntregados | number:'':'es'}}</td>
                             <td [ngStyle]="{'font-weight':cabeceraContrato.NombreCliente == '' ? '700': ''}">
-                                {{cabeceraContrato.KilosPendienteEntrega | number}}</td>
+                                {{cabeceraContrato.KilosPendienteEntrega | number:'':'es'}}</td>
                             <td>{{cabeceraContrato.Precio}}</td>
                             <td>{{cabeceraContrato.CondicionEntrega}}</td>
                         </tr>
@@ -166,9 +166,9 @@
                             <td *ngIf="verCliente"></td>
                             <td *ngIf="verCorredor"></td>
                             <td style="text-align :center" tabindex="0">TOTAL</td>
-                            <td [ngStyle]="{'font-weight':'bold'}">{{KilosTotales | number}}</td>
-                            <td [ngStyle]="{'font-weight':'bold'}">{{KilosEntregados | number}}</td>
-                            <td [ngStyle]="{'font-weight':'bold'}">{{KilosPendienteEntrega | number}}</td>
+                            <td [ngStyle]="{'font-weight':'bold'}">{{KilosTotales | number:'':'es'}}</td>
+                            <td [ngStyle]="{'font-weight':'bold'}">{{KilosEntregados | number:'':'es'}}</td>
+                            <td [ngStyle]="{'font-weight':'bold'}">{{KilosPendienteEntrega | number:'':'es'}}</td>
                             <td></td>
                             <td></td>
                             <td></td>

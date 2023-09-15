@@ -18,7 +18,6 @@ using SustitucionMOAModel.Models.WSMapMOA.Compras;
 using SustitucionMOAModel.Models.WSMapMOA.Vendedor.Detalle;
 using SustitucionMOARepositorio;
 using SustitucionMOARepositorio.ConsultasEF;
-using SustitucionMOAUtils.Email;
 using SustitucionMOAUtils.Helpers;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
@@ -68,7 +67,9 @@ namespace SustitucionMOAUtils.Services
         private readonly IVendedoresConsumerMOA vendedoresConsumerMOA;
         private readonly IAgregarRegistroInfoConsumerMOA agregarRegistroInfoConsumerMOA;
         private readonly string rutaArchivosCompras = ConfigurationManager.AppSettings["RutaArchivosCompras"];
-        private static readonly string EMAIL_TEMPLATE_SOLP = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "Solp.html");
+        private readonly IEmailService emailService;
+        //private static readonly string EMAIL_TEMPLATE_SOLP = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "Solp.html");
+
 
         public ComprasService(IRepositorio repositorio,
             IObtenerCecoSolpConsumerMOA CecoSolpConsumerMOA,
@@ -89,8 +90,8 @@ namespace SustitucionMOAUtils.Services
             IUsuarioService usuarioService, IObtenerProveedorConsumerMOA obtenerProveedorConsumerMOA,
             IModificarOrdenDeCompraConsumerMOA modificarOrdenDeCompraConsumerMOA,
             IVendedoresConsumerMOA vendedoresConsumerMOA,
-            IAgregarRegistroInfoConsumerMOA agregarRegistroInfoConsumerMOA
-            )
+            IAgregarRegistroInfoConsumerMOA agregarRegistroInfoConsumerMOA,
+            IEmailService emailService)
         {
             this.repositorio = repositorio;
             this.CecoSolpConsumerMOA = CecoSolpConsumerMOA;
@@ -115,6 +116,7 @@ namespace SustitucionMOAUtils.Services
             this.modificarOrdenDeCompraConsumerMOA = modificarOrdenDeCompraConsumerMOA;
             this.vendedoresConsumerMOA = vendedoresConsumerMOA;
             this.agregarRegistroInfoConsumerMOA = agregarRegistroInfoConsumerMOA;
+            this.emailService = emailService;
         }
 
         public RespuestaGuardarSOLP GuardarSolp(SolpDto solp, HttpFileCollectionBase adjuntos)
@@ -229,6 +231,15 @@ namespace SustitucionMOAUtils.Services
                     }
                     var idVisita = -1;
 
+                    var visitasBorrar = pliegoEntity.VisitasMasivas
+                        .Where(x => !solp.VisitasObraMasiva.Select(y => y.Codigo).Contains(x.Codigo))
+                        .ToList();
+
+                    foreach (var visita in visitasBorrar)
+                    {
+                        repositorio.Remover<PliegoVisita>(visita);
+                    }
+
                     foreach (var visita in solp.VisitasObraMasiva)
                     {
                         var visitaExistente = pliegoEntity.VisitasMasivas.FirstOrDefault(x => x.Codigo == visita.Codigo);
@@ -247,6 +258,8 @@ namespace SustitucionMOAUtils.Services
                             });
                         }
                     }
+                    
+
                 }
                 // Identifica los que ya no estan en la base de datos y los borra
                 if (solp.Adjuntos != null && pliegoEntity.Archivos != null)
@@ -295,16 +308,6 @@ namespace SustitucionMOAUtils.Services
                     var finalizoPrimeraVez = string.IsNullOrEmpty(solpEntity.NroSolp);
                     respuestaGuardarSOLP = FinalizarSolp(solp, solpEntity, postEntitySubPosicionesEliminadas, respuestaGuardarSOLP);
                     GuardarUsuarioComprasRelacionado(solp);
-
-                    if (respuestaGuardarSOLP.Mensaje == "OK" && finalizoPrimeraVez && solp.TrabajoYaHecho == true)
-                    {
-                        CrearCotizacionConTrabajoYaHecho(solpEntity);
-                    }
-
-                    if (respuestaGuardarSOLP.Mensaje == "OK" && finalizoPrimeraVez && solp.TrabajoYaHecho != true && solp.Adicional == true)
-                    {
-                        CrearPeticionAutomatica(solpEntity, new List<int> { solp.ProveedorAsignadoId.Value }, null, false);
-                    }
                 }
                 catch (Exception e)
                 {
@@ -1092,11 +1095,11 @@ namespace SustitucionMOAUtils.Services
         {
             var solp = TraerSolpId(idSolp);
             var usuarioCompras = ListarUsuarioCompras(solp.UsuarioActual);
-            var templateFilePath = Path.Combine(AppDomain.CurrentDomain.RelativeSearchPath, "Templates/NewPliegoSolpSinCondicionesTemplate.html");
+            var templateFilePath = httpContextService.GetDirectory("Templates/NewPliegoSolpSinCondicionesTemplate.html");
             var templateString = System.IO.File.ReadAllText(templateFilePath);
             //, "Templates/PliegoSolpSinCondicionesTemplate.html"
 
-            var templateCssFilePath = Path.Combine(AppDomain.CurrentDomain.RelativeSearchPath, "Templates/PliegoSolpTemplate.css");
+            var templateCssFilePath = httpContextService.GetDirectory("Templates/PliegoSolpTemplate.css");
             var templateCssString = System.IO.File.ReadAllText(templateCssFilePath);
             var solpValores = new Dictionary<string, string>();
 
@@ -1538,7 +1541,7 @@ namespace SustitucionMOAUtils.Services
 
 
 
-        //        EmailSender.EnviarMail(new List<string> { Destinatario }, asunto, cuerpo, null, null, null, null);
+        //        emailService.EnviarMail(new List<string> { Destinatario }, asunto, cuerpo, null, null, null, null);
         //    }
         //    catch (Exception e)
         //    {
@@ -1616,6 +1619,19 @@ namespace SustitucionMOAUtils.Services
                 solp.FechaLiberacionSap = fechaLiberacion;
                 solp.EstadoSolpSap_Id = estadoSolpSapLiberada;
                 repositorio.GuardarCambios();
+
+                if (!solp.PeticionesDeOferta.Any())
+                {
+                    if (solp.TrabajoYaHecho == true)
+                    {
+                        CrearCotizacionConTrabajoYaHecho(solp);
+                    }
+
+                    if (solp.TrabajoYaHecho != true && solp.Adicional == true)
+                    {
+                        CrearPeticionAutomatica(solp, new List<int> { solp.ProveedorAsignado_Id.Value }, null, false);
+                    }
+                }
             }
         }
 
@@ -2205,8 +2221,8 @@ namespace SustitucionMOAUtils.Services
             var template = Handlebars.Compile(templateContent);
             var bodyHtml = template(emailCompose);
 
-            EmailSender.EnviarMail(
-                new List<string>() { emailCompose.To },
+            emailService.EnviarMail(
+                emailCompose.To,
                 emailCompose.Subject,
                 bodyHtml,
                 emailCompose.Cc,
@@ -2282,9 +2298,9 @@ namespace SustitucionMOAUtils.Services
             return result.ContratosSolp;
         }
 
-        public ListaPaginada<SolpDto> ListarSolpComprador(Paginacion paginacion, string nroSolp)
+        public ListaPaginada<SolpDto> ListarSolpComprador(Paginacion paginacion, string nroSolp, List<int> usuarios = null, List<int> estados = null, List<int> centros = null, List<int> grupoDeCompras = null)
         {
-            var todasLasSolp = repositorio.ListarConsultaPaginada(new ListarSolpConsulta(paginacion, nroSolp));
+            var todasLasSolp = repositorio.ListarConsultaPaginada(new ListarSolpConsulta(paginacion, nroSolp, usuarios, estados, centros, grupoDeCompras));
             if (todasLasSolp != null && todasLasSolp.Count() > 0)
             {
                 todasLasSolp.FirstOrDefault().ItemsTotales = todasLasSolp.ItemsTotales;
@@ -2330,7 +2346,7 @@ namespace SustitucionMOAUtils.Services
         {
             try
             {
-                var hoy = DateTime.Now.Date;
+                var hoy = DateTime.Now;
                 var todasLasOfertas = repositorio.ObtenerConsultaEscalar(new ComparadorOfertasConsulta(PeticionOferta_Id));
                 Dictionary<int, decimal> tipodecambio = new Dictionary<int, decimal>();
                 var destino = repositorio.Obtener<TablaSap>(x => x.Codigo == "ARP" && x.Tabla == TablasSap.Moneda);
@@ -2402,7 +2418,12 @@ namespace SustitucionMOAUtils.Services
                     }
                     if (!esAdmin)
                     {
-                        if (item.Cotizacion != null && item.PlazoDeOferta.Date >= hoy.Date)
+                        var fecha = (item.PlazoDeOfertaCierre == null && item.FechaCircular == null) ? item.PlazoDeOfertaOriginal :
+                  item.PlazoDeOfertaCierre == null ? item.PlazoDeOfertaCircular.Value :
+                  item.FechaCircular == null ? item.PlazoDeOfertaCierre.Value :
+                  item.PlazoDeOfertaCierre.Value > item.FechaCircular.Value ? item.PlazoDeOfertaCierre.Value : item.PlazoDeOfertaCircular.Value;
+
+                        if (item.Cotizacion != null && fecha >= hoy)
                         {
                             mensaje = "Plazo de oferta sin finalizar";
                             verAdjudicar = false;
@@ -3465,7 +3486,7 @@ namespace SustitucionMOAUtils.Services
                 {
                     using (var document = new Document(PageSize.A4, 10f, 10f, 10f, 100f))
                     {
-                        string templateFilePath = Path.Combine(AppDomain.CurrentDomain.RelativeSearchPath, "Templates/PeticionDeOfertaTemplate.html");
+                        string templateFilePath = httpContextService.GetDirectory("Templates/PeticionDeOfertaTemplate.html");
                         var templateString = System.IO.File.ReadAllText(templateFilePath);
                         var xHtml = templateString;
                         xHtml = CompletarHtml(xHtml, peticion, codigoProveedor);
@@ -3597,7 +3618,8 @@ namespace SustitucionMOAUtils.Services
                         archs.Remove("Peticion de Oferta.pdf");
                     archs.Add("Peticion de Oferta.pdf", pdf);
                 }
-                EmailSender.EnviarMail(enviarA, asunto, "", copia, CuerpoMailPeticionDeOferta(peticion), null, null, null, null, archs);
+                var cuerpo = CuerpoMailPeticionDeOferta(peticion);
+                emailService.EnviarMail(enviarA, asunto, "", copia, cuerpo, null, null, null, null, archs);
             }
         }
 
@@ -3615,7 +3637,7 @@ namespace SustitucionMOAUtils.Services
 
         private AlternateView CuerpoMailPeticionDeOferta(PeticionDeOferta peticion)
         {
-            var filePath = System.Web.HttpContext.Current.Server.MapPath("~/Content/Images/header/logo_.png");
+            var filePath = httpContextService.ObtenerPathLogoMail();
             LinkedResource res = new LinkedResource(filePath);
             res.ContentId = Guid.NewGuid().ToString();
             string htmlBody = "";
@@ -3665,7 +3687,7 @@ namespace SustitucionMOAUtils.Services
                 {
                     using (var document = new Document(PageSize.A4, 10f, 10f, 10f, 100f))
                     {
-                        string templateFilePath = Path.Combine(AppDomain.CurrentDomain.RelativeSearchPath, "Templates/OrdenCompraTemplate.html");
+                        string templateFilePath = httpContextService.GetDirectory("Templates/OrdenCompraTemplate.html");
 
                         var templateString = System.IO.File.ReadAllText(templateFilePath);
 
@@ -3931,7 +3953,7 @@ namespace SustitucionMOAUtils.Services
                 asunto += $"Nueva OC creada - {adjudicacion.NumeroOrdenDeCompra} - {adjudicacion.Usuario.ObtenerRazonSocial()}";
                 var pdf = GenerarPDFOrdenCompra(adjudicacion, adjudicacion.Usuario.ObtenerCodigoProveedor());
 
-                EmailSender.EnviarMail(enviarA, asunto, "", copia, CuerpoMailOrdenCompra(adjudicacion, mensaje), pdf, "Orden de Compra.pdf");
+                emailService.EnviarMail(enviarA, asunto, "", copia, CuerpoMailOrdenCompra(adjudicacion, mensaje), pdf, "Orden de Compra.pdf");
             }
             catch (Exception e)
             {
@@ -4178,7 +4200,7 @@ namespace SustitucionMOAUtils.Services
                 var enviarA = new List<string> { prov.PeticionDeOfertaUsuario.Usuario.Mail };
                 asunto = $"Nueva circular con PO {prov.PeticionDeOfertaUsuario.PeticionDeOferta_Id} - {prov.PeticionDeOfertaUsuario.Usuario.ObtenerRazonSocial()}";
 
-                EmailSender.EnviarMail(enviarA, asunto, "", copia, CuerpoMailCircular(prov), null, null, null, null, archs);
+                emailService.EnviarMail(enviarA, asunto, "", copia, CuerpoMailCircular(prov), null, null, null, null, archs);
             }
         }
 
@@ -4820,7 +4842,7 @@ namespace SustitucionMOAUtils.Services
                 enviarA.Add(peticion.Solp.UsuarioCreacion.Mail);
             }
             asunto += "NUEVA cotización creada - SOLP " + peticion.Solp.NroSolp;
-            EmailSender.EnviarMail(enviarA, asunto, "", null, CuerpoMailCotizacion(cotizacion), null, null, null, null);
+            emailService.EnviarMail(enviarA, asunto, "", null, CuerpoMailCotizacion(cotizacion), null, null, null, null);
         }
 
 
@@ -4831,7 +4853,7 @@ namespace SustitucionMOAUtils.Services
             asunto += "Error al agregar registro info en cotizacion: " + cotizacion.Id;
 
             AlternateView alternateView = AlternateView.CreateAlternateViewFromString("Se informa que al momento de finalizar una cotizacion, el registro info no se pudo generar, revisar los logs", null, "text/html");
-            EmailSender.EnviarMail(enviarA, asunto, "", null, alternateView, null, null, null, null);
+            emailService.EnviarMail(enviarA, asunto, "", null, alternateView, null, null, null, null);
         }
 
         private AlternateView CuerpoMailCotizacion(Cotizacion cotizacion)
@@ -5405,6 +5427,93 @@ namespace SustitucionMOAUtils.Services
             }
 
             return registros;
+        }
+
+        public DatosUltimaSolpDto ObtenerUltimaSolp(int usuarioId) 
+        {
+            var ultimaSolp = repositorio.Listar<Solp>(a => a.UsuarioCreacion_Id == usuarioId).OrderByDescending(a => a.Id).FirstOrDefault();
+
+
+            if (ultimaSolp == null)
+                return null; 
+
+            DatosUltimaSolpDto result = new DatosUltimaSolpDto();
+
+            result.FiscalContrato = ultimaSolp.Pliego?.FiscalContrato;
+            result.Telefono = ultimaSolp.Pliego?.Telefono;
+
+            result.ClaseDocumento = ultimaSolp.ClaseDocumento != null ? new TablaSapDto { Id = ultimaSolp.ClaseDocumento.Id,
+                                    Tabla = ultimaSolp.ClaseDocumento.Tabla,
+                                    Codigo = ultimaSolp.ClaseDocumento.Codigo,
+                                    CodigoSap = ultimaSolp.ClaseDocumento.CodigoSap,
+                                    Descripcion = ultimaSolp.ClaseDocumento.Descripcion,
+                                    IdPadre = ultimaSolp.ClaseDocumento.Padre_id
+                                    }
+                                    : null;
+
+            result.GrupoCompras = ultimaSolp.Posiciones.FirstOrDefault()?.GrupoCompras != null
+                                ? new TablaSapDto { Id = ultimaSolp.Posiciones.FirstOrDefault().GrupoCompras.Id,
+                                                    Tabla = ultimaSolp.Posiciones.FirstOrDefault().GrupoCompras.Tabla,
+                                                    Codigo = ultimaSolp.Posiciones.FirstOrDefault().GrupoCompras.Codigo,
+                                                    CodigoSap = ultimaSolp.Posiciones.FirstOrDefault().GrupoCompras.CodigoSap,
+                                                    Descripcion = ultimaSolp.Posiciones.FirstOrDefault().GrupoCompras.Descripcion,
+                                                    IdPadre = ultimaSolp.Posiciones.FirstOrDefault().GrupoCompras.Padre_id
+                                }
+                                : null;
+
+            result.CuentaMayor = ultimaSolp.Posiciones.FirstOrDefault()?.CuentaMayorSap != null
+                                ? new TablaSapDto { Id = ultimaSolp.Posiciones.FirstOrDefault().CuentaMayorSap.Id,
+                                                    Tabla = ultimaSolp.Posiciones.FirstOrDefault().CuentaMayorSap.Tabla,
+                                                    Codigo = ultimaSolp.Posiciones.FirstOrDefault().CuentaMayorSap.Codigo,
+                                                    CodigoSap = ultimaSolp.Posiciones.FirstOrDefault().CuentaMayorSap.CodigoSap,
+                                                    Descripcion = ultimaSolp.Posiciones.FirstOrDefault().CuentaMayorSap.Descripcion,
+                                                    IdPadre = ultimaSolp.Posiciones.FirstOrDefault().CuentaMayorSap.Padre_id
+                                }
+                                : null;
+
+            result.Almacen = ultimaSolp.Posiciones.FirstOrDefault()?.Almacen != null
+                            ? new TablaSapDto { Id = ultimaSolp.Posiciones.FirstOrDefault().Almacen.Id,
+                                                Tabla = ultimaSolp.Posiciones.FirstOrDefault().Almacen.Tabla,
+                                                Codigo = ultimaSolp.Posiciones.FirstOrDefault().Almacen.Codigo,
+                                                CodigoSap = ultimaSolp.Posiciones.FirstOrDefault().Almacen.CodigoSap,
+                                                Descripcion = ultimaSolp.Posiciones.FirstOrDefault().Almacen.Descripcion,
+                                                IdPadre = ultimaSolp.Posiciones.FirstOrDefault().Almacen.Padre_id
+                            }
+                            : null;
+
+            result.TipoPosicion = ultimaSolp.Posiciones.FirstOrDefault()?.TipoPosicion != null
+                                ? new TablaGeneralDto { Id = ultimaSolp.Posiciones.FirstOrDefault().TipoPosicion.Id,
+                                                        Tabla = ultimaSolp.Posiciones.FirstOrDefault().TipoPosicion.Tabla,
+                                                        Codigo = ultimaSolp.Posiciones.FirstOrDefault().TipoPosicion.Codigo,
+                                                        Descripcion = ultimaSolp.Posiciones.FirstOrDefault().TipoPosicion.Descripcion,
+                                                        IdPadre = ultimaSolp.Posiciones.FirstOrDefault().TipoPosicion.Padre_Id
+                                }
+                                : null;
+
+            result.Centro = ultimaSolp.Posiciones.FirstOrDefault()?.Centro != null
+                               ? new TablaSapDto
+                               {
+                                   Id = ultimaSolp.Posiciones.FirstOrDefault().Centro.Id,
+                                   Tabla = ultimaSolp.Posiciones.FirstOrDefault().Centro.Tabla,
+                                   Codigo = ultimaSolp.Posiciones.FirstOrDefault().Centro.Codigo,
+                                   Descripcion = ultimaSolp.Posiciones.FirstOrDefault().Centro.Descripcion,
+                                   IdPadre = ultimaSolp.Posiciones.FirstOrDefault().Centro.Padre_id
+                               }
+                               : null;
+
+            result.CuentaMayorSP = ultimaSolp.Posiciones.FirstOrDefault()?.Subposiciones.FirstOrDefault()?.CuentaMayorSap != null
+                               ? new TablaSapDto
+                               {
+                                   Id = ultimaSolp.Posiciones.FirstOrDefault().Subposiciones.FirstOrDefault().CuentaMayorSap.Id,
+                                   Tabla = ultimaSolp.Posiciones.FirstOrDefault().Subposiciones.FirstOrDefault().CuentaMayorSap.Tabla,
+                                   Codigo = ultimaSolp.Posiciones.FirstOrDefault().Subposiciones.FirstOrDefault().CuentaMayorSap.Codigo,
+                                   Descripcion = ultimaSolp.Posiciones.FirstOrDefault().Subposiciones.FirstOrDefault().CuentaMayorSap.CodigoSap + " - " +  ultimaSolp.Posiciones.FirstOrDefault().Subposiciones.FirstOrDefault().CuentaMayorSap.Descripcion,
+                                   IdPadre = ultimaSolp.Posiciones.FirstOrDefault().Subposiciones.FirstOrDefault().CuentaMayorSap.Padre_id
+                               }
+                               : null;
+
+
+            return result; 
         }
     }
 

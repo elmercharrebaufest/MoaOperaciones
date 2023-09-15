@@ -63,6 +63,16 @@ export class EmailComposeComponent implements OnInit {
     }
   }
 
+  validateToEmailAddress(event: any): void {
+    let value = event.value;
+    if (!value) {
+      return;
+    }
+    if (!this.isEmailInvalid(value)) {
+      this.model.to.pop(); 
+    }
+  }
+
   validateBccEmailAddress(event: any): void {
     let value = event.value;
     if (!value) {

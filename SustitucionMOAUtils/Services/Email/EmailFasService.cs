@@ -1,5 +1,6 @@
 ﻿using SustitucionMOAModel.Dto.OrdenDeCarga;
 using SustitucionMOAModel.Entities;
+using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Email;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
@@ -13,8 +14,11 @@ using System.Threading.Tasks;
 
 namespace SustitucionMOAUtils.Services.Email
 {
-    public class EmailFasService : EmailService, IEmailFasService
+    public class EmailFasService : IEmailFasService
     {
+        private readonly IEmailService emailService;
+
+
         private static readonly string TEMPLATE_NOTIFICACION_ORDENES = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "NotificacionOrdenesDeCarga.html");
         private static readonly string TEMPLATE_NOTIFICACION_SOLICITUD_EDICION_ORDEN = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "AvisoEdicionOrdenDeCarga.html");
 
@@ -49,8 +53,8 @@ namespace SustitucionMOAUtils.Services.Email
             var emailSenderData = new EmailSenderData
             {
                 Mails = ObtenerListaDestinatarios(new string[] { DireccionMailGestionAltaCuit, DireccionMailGestionAltaCuitCopia }),
-                Asunto = $"ALTA TEMPRANA CLIENTE - NRO ORDEN: {cuits[0].ordenId}",
-                Cuerpo = $"Se solicita el alta temprana de:\n" + cuerpoDestinatario + cuerpoDestino 
+                Asunto = "ALTA TEMPRANA CUIT",
+                Cuerpo = $"Se solicita el alta temprana del CUIT: {cuit}, Razón social: {razonSocial}"
             };
             EmailSender.EnviarMail(emailSenderData);
         }
@@ -66,11 +70,11 @@ namespace SustitucionMOAUtils.Services.Email
 
             var emailSenderData = new EmailSenderData
             {
-                Mails = ObtenerListaDestinatarios(new string[] { DireccionMailMesaVentaFas, DireccionMailComerciales }),
+                Mails = emailService.ObtenerListaDestinatarios(new string[] { DireccionMailMesaVentaFas, DireccionMailComerciales }),
                 Asunto = $"Faltan cargar los Km en el contrato, Orden de carga N° {ordenDeCarga.Id}",
                 Cuerpo = cuerpo
             };
-            EnviarMail(emailSenderData);
+            emailService.EnviarMail(emailSenderData);
         }
 
         public void EnviarMailContratoVencido(OrdenDeCarga ordenDeCarga)
@@ -84,11 +88,11 @@ namespace SustitucionMOAUtils.Services.Email
 
             var emailSenderData = new EmailSenderData
             {
-                Mails = ObtenerListaDestinatarios(new string[] { DireccionMailComerciales, DireccionMailMesaVentaFas }),
+                Mails = emailService.ObtenerListaDestinatarios(new string[] { DireccionMailComerciales, DireccionMailMesaVentaFas }),
                 Asunto = $"Contrato Vencido - {ordenDeCarga.Cliente.RazonSocial}",
                 Cuerpo = cuerpo
             };
-            EnviarMail(emailSenderData);
+            emailService.EnviarMail(emailSenderData);
         }
 
         public void EnviarMailOrdenDeCargaVencida(OrdenDeCarga ordenDeCarga)
@@ -102,11 +106,11 @@ namespace SustitucionMOAUtils.Services.Email
 
             var emailSenderData = new EmailSenderData
             {
-                Mails = ObtenerListaDestinatarios(new string[] { ordenDeCarga.Cliente.Mail, DireccionMailComerciales, DireccionMailMesaVentaFas }),
+                Mails = emailService.ObtenerListaDestinatarios(new string[] { ordenDeCarga.Cliente.Mail, DireccionMailComerciales, DireccionMailMesaVentaFas }),
                 Asunto = $"Molinos Agro - Notificación de orden vencida - {ordenDeCarga.Cliente.RazonSocial}",
                 Cuerpo = cuerpo
             };
-            EnviarMail(emailSenderData);
+            emailService.EnviarMail(emailSenderData);
         }
 
         public void EnviarMailTransporteNoExiste(OrdenDeCarga ordenDeCarga)
@@ -115,11 +119,11 @@ namespace SustitucionMOAUtils.Services.Email
 
             var emailSenderData = new EmailSenderData
             {
-                Mails = ObtenerListaDestinatarios(new string[] { DireccionMailMesaVentaFas, DireccionMailMesaEntrSanLorenzo }),
+                Mails = emailService.ObtenerListaDestinatarios(new string[] { DireccionMailMesaVentaFas, DireccionMailMesaEntrSanLorenzo }),
                 Asunto = "ALTA TTE",
                 Cuerpo = cuerpo
             };
-            EnviarMail(emailSenderData);
+            emailService.EnviarMail(emailSenderData);
         }
 
         public void EnviarMailValidacionesCrediticias(OrdenDeCarga ordenDeCarga)
@@ -133,11 +137,11 @@ namespace SustitucionMOAUtils.Services.Email
 
             var emailSenderData = new EmailSenderData
             {
-                Mails = ObtenerListaDestinatarios(new string[] { DireccionMailComerciales, DireccionMailMesaVentaFas, DireccionMailCobranzas }),
+                Mails = emailService.ObtenerListaDestinatarios(new string[] { DireccionMailComerciales, DireccionMailMesaVentaFas, DireccionMailCobranzas }),
                 Asunto = $"Orden de carga #{ordenDeCarga.Id}  Pedido Bloqueado {ordenDeCarga.Cliente.RazonSocial}",
                 Cuerpo = cuerpo
             };
-            EnviarMail(emailSenderData);
+            emailService.EnviarMail(emailSenderData);
         }
 
         public void EnviarMailVariasFacturasPendientes(OrdenDeCarga ordenDeCarga)
@@ -151,11 +155,11 @@ namespace SustitucionMOAUtils.Services.Email
 
             var emailSenderData = new EmailSenderData
             {
-                Mails = ObtenerListaDestinatarios(new string[] { DireccionMailAlimentacionAnimal, DireccionMailMesaVentaFas, DireccionMailComerciales }),
+                Mails = emailService.ObtenerListaDestinatarios(new string[] { DireccionMailAlimentacionAnimal, DireccionMailMesaVentaFas, DireccionMailComerciales }),
                 Asunto = $"Varias facturas pendientes - {ordenDeCarga.Cliente.RazonSocial}",
                 Cuerpo = cuerpo
             };
-            EnviarMail(emailSenderData);
+            emailService.EnviarMail(emailSenderData);
         }
 
         public void EnviarMailVariosContratos(OrdenDeCarga ordenDeCarga)
@@ -169,11 +173,11 @@ namespace SustitucionMOAUtils.Services.Email
 
             var emailSenderData = new EmailSenderData
             {
-                Mails = ObtenerListaDestinatarios(new string[] { DireccionMailMesaVentaFas, DireccionMailComerciales }),
+                Mails = emailService.ObtenerListaDestinatarios(new string[] { DireccionMailMesaVentaFas, DireccionMailComerciales }),
                 Asunto = $"Varios ctto pendientes - {ordenDeCarga.Cliente.RazonSocial}",
                 Cuerpo = cuerpo
             };
-            EnviarMail(emailSenderData);
+            emailService.EnviarMail(emailSenderData);
         }
 
         public void EnviarMailVencieronOrdenesDeCarga(List<OrdenDeCarga> ordenesDeCarga)
@@ -197,11 +201,11 @@ namespace SustitucionMOAUtils.Services.Email
 
             var emailSenderData = new EmailSenderData
             {
-                Mails = ObtenerListaDestinatarios(new string[] { DireccionMailComerciales, DireccionMailAuditoriaOrdenesVencidas }),
+                Mails = emailService.ObtenerListaDestinatarios(new string[] { DireccionMailComerciales, DireccionMailAuditoriaOrdenesVencidas }),
                 Asunto = $"Molinos Agro - Notificación de órdenes vencidas",
                 Cuerpo = cuerpo
             };
-            EnviarMail(emailSenderData);
+            emailService.EnviarMail(emailSenderData);
         }
 
 
@@ -234,7 +238,7 @@ namespace SustitucionMOAUtils.Services.Email
                 {
                     return;
                 }
-                var destinatarios = ObtenerListaDestinatarios(new string[] { DireccionMailComerciales, DireccionMailMesaVentaFas });
+                var destinatarios = emailService.ObtenerListaDestinatarios(new string[] { DireccionMailComerciales, DireccionMailMesaVentaFas });
 
                 if (destinatarios.Count == 0)
                 {
@@ -263,7 +267,7 @@ namespace SustitucionMOAUtils.Services.Email
                     Cuerpo = cuerpo
                 };
 
-                EnviarMail(emailSenderData);
+                emailService.EnviarMail(emailSenderData);
             }
             catch (Exception ex)
             {
@@ -285,12 +289,12 @@ namespace SustitucionMOAUtils.Services.Email
 
             var emailSenderData = new EmailSenderData()
             {
-                Mails = ObtenerListaDestinatarios(new string[] { DireccionMailComerciales, DireccionMailMesaVentaFas }),
+                Mails = emailService.ObtenerListaDestinatarios(new string[] { DireccionMailComerciales, DireccionMailMesaVentaFas }),
                 Asunto = $"Solicitud de anulación, Orden de carga N° {orden.Id}",
                 Cuerpo = cuerpo
             };
 
-            EnviarMail(emailSenderData);
+            emailService.EnviarMail(emailSenderData);
         }
     }
 }

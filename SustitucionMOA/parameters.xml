@@ -541,55 +541,6 @@
                            /@address" />
 	</parameter>
 
-	<parameter name="SI_MMRFC_OBTENER_CUENTAS Service Endpoint Address">
-		<parameterEntry kind="XmlFile" scope="Web.config"
-						match="/configuration/system.serviceModel/client
-                           /endpoint[@name='SI_MMRFC_OBTENER_CUENTAS']
-                           /@address" />
-	</parameter>
-
-	<parameter name="SI_MMRFC_OBTENER_SERVICIOS Service Endpoint Address">
-		<parameterEntry kind="XmlFile" scope="Web.config"
-						match="/configuration/system.serviceModel/client
-                           /endpoint[@name='SI_MMRFC_OBTENER_SERVICIOS']
-                           /@address" />
-	</parameter>
-
-	<parameter name="SI_MMRFC_OBTENER_CECO Service Endpoint Address">
-		<parameterEntry kind="XmlFile" scope="Web.config"
-						match="/configuration/system.serviceModel/client
-                           /endpoint[@name='SI_MMRFC_OBTENER_CECO']
-                           /@address" />
-	</parameter>
-
-	<parameter name="SI_MMRFC_OBTENER_ORDEN Service Endpoint Address">
-		<parameterEntry kind="XmlFile" scope="Web.config"
-						match="/configuration/system.serviceModel/client
-                           /endpoint[@name='SI_MMRFC_OBTENER_ORDEN']
-                           /@address" />
-	</parameter>
-
-	<parameter name="SI_MMRFC_OBTENER_SOLPED Service Endpoint Address">
-		<parameterEntry kind="XmlFile" scope="Web.config"
-						match="/configuration/system.serviceModel/client
-                           /endpoint[@name='SI_MMRFC_OBTENER_SOLPED']
-                           /@address" />
-	</parameter>
-
-	<parameter name="SI_MMRFC_CREAR_SOLPED Service Endpoint Address">
-		<parameterEntry kind="XmlFile" scope="Web.config"
-						match="/configuration/system.serviceModel/client
-                           /endpoint[@name='SI_MMRFC_CREAR_SOLPED']
-                           /@address" />
-	</parameter>
-
-	<parameter name="SI_MMRFC_MODIFICAR_SOLPED Service Endpoint Address">
-		<parameterEntry kind="XmlFile" scope="Web.config"
-						match="/configuration/system.serviceModel/client
-                           /endpoint[@name='SI_MMRFC_MODIFICAR_SOLPED']
-                           /@address" />
-	</parameter>
-
 	<parameter name="BasicHttpBinding_IAuthService Service Endpoint Address">
 		<parameterEntry kind="XmlFile" scope="Web.config"
 						match="/configuration/system.serviceModel/client
@@ -691,13 +642,6 @@
                         /@address" />
   </parameter>
   
-    <parameter name="SI_MMRFC_CREAR_PEDIDO Service Endpoint Address">
-      <parameterEntry kind="XmlFile" scope="Web.config"
-                  match="/configuration/system.serviceModel/client
-                        /endpoint[@name='SI_MMRFC_CREAR_PEDIDO']
-                        /@address" />
-	</parameter>
-  
 	<parameter name="SI_MPRFC_ANULAR_APERTURA_CHEQUE Service Endpoint Address">
 		<parameterEntry kind="XmlFile" scope="Web.config"
 								match="/configuration/system.serviceModel/client
@@ -773,27 +717,6 @@
                     /endpoint[@name='BAPI_PO_CHANGEPortType']
                     /@address" />
   </parameter>
-  
-  <parameter name="BAPI_INFORECORD_GETLISTPortType Service Endpoint Address">
-    <parameterEntry kind="XmlFile" scope="Web.config"
-							match="/configuration/system.serviceModel/client
-                    /endpoint[@name='BAPI_INFORECORD_GETLISTPortType']
-                    /@address" />
-  </parameter>
-
-  <parameter name="BAPI_PO_GETDETAIL1PortType Service Endpoint Address">
-    <parameterEntry kind="XmlFile" scope="Web.config"
-								match="/configuration/system.serviceModel/client
-					/endpoint[@name='BAPI_PO_GETDETAIL1PortType']
-					/@address" />
-  </parameter>
-
-  <parameter name="Z_MMRFC_OC_PARA_SOLPPortType Service Endpoint Address">
-    <parameterEntry kind="XmlFile" scope="Web.config"
-								match="/configuration/system.serviceModel/client
-                    /endpoint[@name='Z_MMRFC_OC_PARA_SOLPPortType']
-                    /@address" />
-  </parameter>
-  
+ 
 </parameters>
 

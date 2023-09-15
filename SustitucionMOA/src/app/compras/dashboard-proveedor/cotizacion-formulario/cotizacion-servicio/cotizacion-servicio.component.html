@@ -213,7 +213,7 @@
                                                             [(ngModel)]="rowData.CantidadPersonas"
                                                             (focus)="onEditarCelda(rowData, 'CantidadPersonas', 0)"
                                                             (blur)="onReestablecerValor(rowData, 'CantidadPersonas')"
-                                                            numeric>
+                                                            numeric-format>
                                                     </ng-template>
                                                     <ng-template pTemplate="output">
                                                         {{ rowData.CantidadPersonas }}
@@ -227,7 +227,7 @@
                                                             [(ngModel)]="rowData.HorasNormales"
                                                             (focus)="onEditarCelda(rowData, 'HorasNormales', 0)"
                                                             (blur)="onReestablecerValor(rowData, 'HorasNormales')"
-                                                            numeric>
+                                                            numeric-format>
                                                     </ng-template>
                                                     <ng-template pTemplate="output">
                                                         {{ rowData.HorasNormales }}
@@ -241,7 +241,7 @@
                                                             [(ngModel)]="rowData.HorasNocturnas"
                                                             (focus)="onEditarCelda(rowData, 'HorasNocturnas', 0)"
                                                             (blur)="onReestablecerValor(rowData, 'HorasNocturnas')"
-                                                            numeric>
+                                                            numeric-format>
                                                     </ng-template>
                                                     <ng-template pTemplate="output">
                                                         {{ rowData.HorasNocturnas }}
@@ -259,7 +259,23 @@
                                 </ng-template>
                             </p-table>
                         </p>
+                        <br>
+                    <div class="row">
+                        <div class="col-md-3" style="margin-top: 12px;">
+                            <strong> Porcentaje de horas</strong>
+                        </div>
+                        <div class="col-md-2">
+                                <input type="text" pKeyFilter="num" 
+                                    [(ngModel)]="peticion.PorcentajeDeHoras"
+                                    placeholder="% horas"
+                                    pInputText
+                                    class="styled-select inputAltura"
+                                    numeric-format
+                                    (blur)="validarPorcentaje()">
+                        </div>                      
+                    </div>
                     </p-tabPanel>
+                    
                     <p-tabPanel>
                         <ng-template pTemplate="header">
                             <div class="padding" (click)="validarDatosCotizacionHoras($event, 1)">
@@ -332,7 +348,7 @@
                                                             [(ngModel)]="rowData.CantidadPersonas"
                                                             (focus)="onEditarCelda(rowData, 'CantidadPersonas', 0)"
                                                             (blur)="onReestablecerValor(rowData, 'CantidadPersonas')"
-                                                            numeric>
+                                                            numeric-format>
                                                     </ng-template>
                                                     <ng-template pTemplate="output">
                                                         {{ rowData.CantidadPersonas }}
@@ -346,7 +362,7 @@
                                                             [(ngModel)]="rowData.HorasNormales"
                                                             (focus)="onEditarCelda(rowData, 'HorasNormales', 0)"
                                                             (blur)="onReestablecerValor(rowData, 'HorasNormales')"
-                                                            numeric>
+                                                            numeric-format>
                                                     </ng-template>
                                                     <ng-template pTemplate="output">
                                                         {{ rowData.HorasNormales }}
@@ -360,7 +376,7 @@
                                                             [(ngModel)]="rowData.HorasNocturnas"
                                                             (focus)="onEditarCelda(rowData, 'HorasNocturnas', 0)"
                                                             (blur)="onReestablecerValor(rowData, 'HorasNocturnas')"
-                                                            numeric>
+                                                            numeric-format>
                                                     </ng-template>
                                                     <ng-template pTemplate="output">
                                                         {{ rowData.HorasNocturnas }}
@@ -381,18 +397,7 @@
                 </p-tabView>
             </div>
         </div>
-        <div class="col-md-12 row myRow alinearTitulo margenInput">
-            <div class="col-md-2" style="margin-top: 12px;">
-                <strong> Porcentaje de horas</strong>
-            </div>
-            <div class="col-md-2">
-                <input type="text" pKeyFilter="num" [(ngModel)]="peticion.PorcentajeDeHoras"
-                    placeholder="% horas"
-                    pInputText
-                    class="styled-select inputAltura"
-                    numeric>
-            </div>
-        </div>
+       
     </section>
 </div>
 <br>
@@ -490,7 +495,7 @@
                                             [(ngModel)]="subposicionesCompras.CantidadCotizacion"
                                             (focus)="onEditarCelda(subposicionesCompras, 'CantidadCotizacion', 0)"
                                             (blur)="onReestablecerValor(subposicionesCompras, 'CantidadCotizacion')"
-                                            numeric
+                                            numeric-format
                                             (ngModelChange)="calcularValorNeto(subposicionesCompras, posicionCompra.Id);mostrarMensajeNoRespetaCondiciones(); obtenerPrecioTotalPosicionProveedor()">
                                     </ng-template>
                                     <ng-template pTemplate="output">
@@ -538,7 +543,7 @@
                                             [(ngModel)]="subposicionesCompras.PrecioSubPosicion" pKeyFilter="num"
                                             (focus)="onEditarCelda(subposicionesCompras, 'PrecioSubPosicion', 0)"
                                             (blur)="onReestablecerValor(subposicionesCompras, 'PrecioSubPosicion')"
-                                            numeric
+                                            numeric-format
                                             (ngModelChange)="calcularValorNeto(subposicionesCompras, posicionCompra.Id);obtenerPrecioTotalPosicionProveedor()" />
                                     </ng-template>
 

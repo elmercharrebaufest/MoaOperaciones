@@ -129,7 +129,7 @@ namespace SustitucionMOAModel.Entities
         {
             get
             {
-                return string.IsNullOrEmpty(NumeroFactura) || string.IsNullOrEmpty(NumeroFacturaSeleccionada);
+                return EsFacturaAnticipada && (string.IsNullOrEmpty(NumeroFactura) || string.IsNullOrEmpty(NumeroFacturaSeleccionada));
             }
         }
 
@@ -141,7 +141,7 @@ namespace SustitucionMOAModel.Entities
         {
             var logCambioEstado = $"Actualizar estado Orden de carga {Id}. Estado inicial:{EstadoOrdenDeCargaExtensions.ToFriendlyString(Estado)}. " +
                 $"CodigoVerificacionSap:{CodigoVerificacionSap}, ContratoSAP:{ContratoSAP}, ContratoSinCantidadPendiente:{ContratoSinCantidadPendiente}, " +
-                $"NumeroPedido:{NumeroPedido}, InformadaSAP:{InformadaSAP}, TransporteExiste:{TransporteExiste}, AprobadoCredito:{AprobadoCredito}, FechaEntregaGenerada:{FechaEntregaGenerada}." + 
+                $"NumeroPedido:{NumeroPedido}, InformadaSAP:{InformadaSAP}, TransporteExiste:{TransporteExiste}, AprobadoCredito:{AprobadoCredito}, FechaEntregaGenerada:{FechaEntregaGenerada}." +
                 $"EsFacturaAnticipada:{EsFacturaAnticipada}, SinSeleccionarFactura:{SinSeleccionarFactura}";
 
             if (Estado != EstadoOrdenDeCarga.Entregada && Estado != EstadoOrdenDeCarga.ContratoVencido)
@@ -169,7 +169,7 @@ namespace SustitucionMOAModel.Entities
                             Estado = EstadoOrdenDeCarga.Confirmado;
                         }
 
-                        if (!TransporteExiste || (EsFacturaAnticipada && SinSeleccionarFactura) )
+                        if (!TransporteExiste || (EsFacturaAnticipada && SinSeleccionarFactura))
                         {
                             Estado = EstadoOrdenDeCarga.Pendiente;
                         }

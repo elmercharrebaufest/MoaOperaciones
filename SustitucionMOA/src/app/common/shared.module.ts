@@ -48,6 +48,7 @@ import { CheckboxModule } from 'primeng/checkbox';
 import { FiltroFechaFasComponent } from './view-child/filtro-fecha-fas/filtro-fecha-fas.component';
 import { DropdownInputComponent } from './shared-components/dropdown-input/dropdown-input.component';
 import { CustomNumberPipe } from './pipes/customNumericFilter copy';
+import { FormatNumericDirective } from './directive/format.numeric.directive';
 
 const declaredAndExported = [
     FiltroFechaComponent,
@@ -81,6 +82,7 @@ const declaredAndExported = [
     FiltroFechaFasComponent,
     DropdownInputComponent,
     CustomNumberPipe,
+    FormatNumericDirective
 ];
 @NgModule({
     imports: [CommonModule,

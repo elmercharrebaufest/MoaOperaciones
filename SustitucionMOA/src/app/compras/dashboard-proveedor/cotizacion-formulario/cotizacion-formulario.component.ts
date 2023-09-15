@@ -354,9 +354,9 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
                 }
             }
             if ((!this.peticion.PorcentajeDeHoras || this.peticion.PorcentajeDeHoras == 0) &&
-                this.peticion.Cotizacion.CotizacionesHoras.some(x => Number(x.CantidadPersonas) > 0))
+                this.peticion.Cotizacion.CotizacionesHoras.filter(x => x.Gremio == 'UOCRA' || x.ConfigurarHora == true).some(x => Number(x.CantidadPersonas) > 0))
             {
-                mensaje = "El campo Porcentaje de horas es obligatorio cuando se ingresa la estimación de horas";
+                mensaje = "El campo Porcentaje de horas es obligatorio cuando se ingresa la estimación de horas en UOCRA";
             }
 
             var self = this;
