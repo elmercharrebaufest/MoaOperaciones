@@ -59,6 +59,7 @@ export interface CotizacionSubPosicionDto {
 }
 
 export interface GuardarCotizacion{
+    monedaCompras: string
     FechaDeVigencia?: any
     UnidadDeMedidaSubpos?: any
     CantidadSubpos?: number
