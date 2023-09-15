@@ -24,6 +24,7 @@ import { ApiResponse } from '../../common/models/response';
 import { forkJoin } from 'rxjs';
 import { Permiso } from '../../common/enums/Permisos';
 import { Factura, newFactura } from '../../common/models/ordenes-de-carga/Factura';
+import { EstadoOrdenDeCarga } from '../../common/models/ordenes-de-carga/estadoOrdenDeCarga';
 
 declare var $: any;
 
@@ -103,6 +104,10 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
 
     constructor(protected service: OrdenesDeCargaService, protected usuarioService: UsuarioService, protected navService: NavService, protected seleccionarProveedorService: SeleccionarProveedorService, private route: ActivatedRoute, protected sessionDataService: SessionDataService, protected securytiService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService, protected empresaGranosService: EmpresaGranosService, public datepipe: DatePipe) {
         super(navService, securytiService, floatMsgService, modalService);
+    }
+
+    get noPuedeEditarCuitsTerceros() {
+        return this.ordenDeCarga.Id && this.ordenDeCarga.Estado == EstadoOrdenDeCarga.EntregaGenerada;
     }
 
     ngOnInit() {
@@ -1319,7 +1324,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
     }
     validarKilosDisponibles() {
         this.mensajesOrdenDeCarga.ContratoSeleccionado = null;
-        const esInterno = (this.esComercial  || this.esAdmin);
+        const esInterno = (this.esComercial || this.esAdmin);
 
         if (this.ordenDeCargaId == 0 && !esInterno) {
             this.floatMsgService.setMsgsEmpty();
@@ -1339,7 +1344,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
     }
     validarKilosDisponiblesPedido() {
         this.mensajesOrdenDeCarga.NumeroFacturaSeleccionada = null;
-        const esInterno = (this.esComercial  || this.esAdmin);
+        const esInterno = (this.esComercial || this.esAdmin);
 
         if (this.ordenDeCargaId == 0 && !esInterno) {
             this.floatMsgService.setMsgsEmpty();
