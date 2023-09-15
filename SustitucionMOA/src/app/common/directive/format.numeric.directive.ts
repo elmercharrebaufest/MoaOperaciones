@@ -32,14 +32,13 @@ export class FormatNumericDirective {
     if (
       this.specialKeys.indexOf(event.key) !== -1 ||
       (event.key === '.' &&
-        !currentValue.includes('.') &&
-        /^\d*$/.test(currentValue.slice(0, selectionStart)) && // Permitir el punto solo después de un número
-        selectionStart > 0) // No permitir punto al principio
+        (!currentValue.includes('.') || selectionStart !== 0) &&
+        /^\d*$/.test(currentValue.slice(0, selectionStart))) // Permitir el punto solo después de un número y no al principio
     ) {
-      return; // Permitir teclas especiales y el punto decimal solo una vez después de un número
+      return; // Permitir teclas especiales y el punto decimal solo una vez después de un número y no al principio
     }
   
-    if (nextValue && !this.check(nextValue, this.decimals)) {
+    if (!this.check(nextValue, this.decimals)) {
       event.preventDefault(); // Evitar entrada no válida
     }
   }

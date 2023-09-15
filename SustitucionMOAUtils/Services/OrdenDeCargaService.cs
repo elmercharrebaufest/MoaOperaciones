@@ -397,7 +397,13 @@ namespace SustitucionMOAUtils.Services
             var validaCPEDG = product.ValidaSisaRuca;
             if (validaCPEDG && string.IsNullOrEmpty(ordenDeCarga.CUITDestinatario))
                 UsarCUITClienteParaDestinatario(ordenEditar);
-
+            if (validaCPEDG)
+            {
+                ordenEditar.CUITDestinatario = ordenDeCarga.CUITDestinatario;
+                ordenEditar.CUITDestino = ordenDeCarga.CUITDestino;
+                ordenEditar.RazonSocialDestinatario = ordenDeCarga.RazonSocialDestinatario;
+                ordenEditar.RazonSocialDestino = ordenDeCarga.RazonSocialDestino;
+            }
             if (!ordenEditar.InformadaSAP || listaValoresDiferentes.Exists(x => x.PropertyName == "ContratoIngresado"))
             {
                 var verificarOrden = VerificarOrden(ordenEditar, ordenEditar.Cliente, false);//, puedeEnviarASAP);

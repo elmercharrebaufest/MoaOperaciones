@@ -3036,7 +3036,7 @@ namespace SustitucionMOAUtils.Services
                                             Moneda = registroInfo.Moneda,
                                             NombreProveedor = proveedor?.RazonSocial,
                                             Codigo = registroInfo.Vendedor,
-                                            Precio = registroInfo.Precio,
+                                            Precio = registroInfo.Moneda == "USDM" ? registroInfo.Precio / 10 : registroInfo.Moneda == "CLP" ? registroInfo.Precio * 100 : registroInfo.Precio,
                                             Unidad = registroInfo.Unidad,
                                             ProveedorId = usuario.Id,
                                             Cuit = proveedor?.CUIT,
@@ -4587,7 +4587,7 @@ namespace SustitucionMOAUtils.Services
                 {
                     var registros = CrearRegistroInfoDto(cotizacion);
                     var respuesta = agregarRegistroInfoConsumerMOA.AgregarRegistroInfo(registros, esModificar);
-                    if (respuesta.Errores != null && respuesta.Errores.Where(x => x.Tipo == "E").Any())
+                    if (respuesta.Errores != null && respuesta.Errores.Any(x => x.Tipo == "E"))
                     {
                         try
                         {
