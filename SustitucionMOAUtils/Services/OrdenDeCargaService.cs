@@ -1301,7 +1301,7 @@ namespace SustitucionMOAUtils.Services
                 {
                     Clientes = GetClientesFromVisualizarClienteProducto(ordenCargaVisualizarClienteWSMOAResponse, request)
                 };
-                
+
                 if (!string.IsNullOrEmpty(request.Corredor))
                     SincronizarRelacionesCorredorCliente(request.Corredor, response);
                 return response;
@@ -2157,11 +2157,6 @@ namespace SustitucionMOAUtils.Services
                     CommonService.toDateList(req.FechaDesde, req.FechaHasta);
                 var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
 
-                var tipoContrato =
-                    usuario.TieneRol(RolEnum.Administracion)
-                        ? Constante.FAS_FILTRO_TIPO_CONTRATO
-                        : TipoContratoFAS.Normal;
-
                 var consumerReq = new OrdenCargaVisualizarClienteWSMOARequest
                 {
                     Cliente = req.ClienteCodigo,
@@ -2170,7 +2165,7 @@ namespace SustitucionMOAUtils.Services
                     Fechas = rangoFechas,
                     Material = string.Empty,
                     Pendiente = true, // Contratos ABIERTOS
-                    TipoContrato = tipoContrato
+                    TipoContrato = TipoContratoFAS.Todos
                 };
 
                 var ordenCargaConsumer = new OrdenCargaConsumerMOA();
