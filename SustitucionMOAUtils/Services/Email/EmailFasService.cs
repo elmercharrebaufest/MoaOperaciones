@@ -51,6 +51,7 @@ namespace SustitucionMOAUtils.Services.Email
         {
             var destinatario = cuits.FirstOrDefault(c => c.campo == "CUITDestinatario");
             var destino = cuits.FirstOrDefault(c => c.campo == "CUITDestino");
+            var nroOrden = destinatario != null ? destinatario.ordenId : destino.ordenId;
 
             string cuerpoDestinatario = destinatario != null ? $"CUIT DESTINATARIO: {destinatario.cuit}, Razón social: {destinatario.razonSocial}\n" : "";
             string cuerpoDestino = destino != null ? $"CUIT DESTINO: {destino.cuit}, Razón social: {destino.razonSocial}\n" : "";
@@ -58,7 +59,7 @@ namespace SustitucionMOAUtils.Services.Email
             var emailSenderData = new EmailSenderData
             {
                 Mails = emailService.ObtenerListaDestinatarios(new string[] { DireccionMailGestionAltaCuit, DireccionMailGestionAltaCuitCopia }),
-                Asunto = "ALTA TEMPRANA CUIT",
+                Asunto = $"ALTA TEMPRANA CLIENTE - NRO ORDEN: {nroOrden}",
                 Cuerpo = $"Se solicita el alta temprana de: \n" + cuerpoDestinatario + cuerpoDestino
             };
             emailService.EnviarMail(emailSenderData);
