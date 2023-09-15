@@ -2346,16 +2346,15 @@ namespace SustitucionMOAUtils.Services
             return result;
         }
 
-        public bool EmailGestionarAlta(string cuit, string razonSocial, bool esIntermediarioFlete)
+        public bool EmailGestionarAltaCuitCliente(List<GestionCuitDto> cuits)
         {
-            if (esIntermediarioFlete)
-            {
-                emailFasService.EnviarMailAltaIntermediarioFlete(cuit, razonSocial);
-            }
-            else
-            {
-                emailFasService.EnviarMailAltaTempranaCuit(cuit, razonSocial);
-            }
+            emailFasService.EnviarMailAltaTempranaCuit(cuits);
+            return true;
+        }
+
+        public bool EmailGestionarAltaIntermediarioFlete(GestionCuitDto cuit)
+        {
+            emailFasService.EnviarMailAltaIntermediarioFlete(cuit.cuit, cuit.razonSocial, cuit.ordenId);
             return true;
         }
 

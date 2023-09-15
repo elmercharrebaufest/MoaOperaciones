@@ -1,4 +1,5 @@
-﻿using SustitucionMOAModel.Entities;
+﻿using SustitucionMOAModel.Dto.OrdenDeCarga;
+using SustitucionMOAModel.Entities;
 using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Email;
 using SustitucionMOAUtils.Interfaces;
@@ -35,26 +36,32 @@ namespace SustitucionMOAUtils.Services.Email
             this.emailService = emailService;
         }
 
-        public void EnviarMailAltaIntermediarioFlete(string cuit, string razonSocial)
+        public void EnviarMailAltaIntermediarioFlete(string cuit, string razonSocial, string ordenId)
         {
             var emailSenderData = new EmailSenderData
             {
                 Mails = emailService.ObtenerListaDestinatarios(new string[] { DireccionMailGestionAltaCuit, DireccionMailGestionAltaCuitCopia }),
-                Asunto = "ALTA CUIT INTERMEDIARIO FLETE",
+                Asunto = $"ALTA CUIT INTERMEDIARIO FLETE - NRO ORDEN: {ordenId}",
                 Cuerpo = $"Razón social: {razonSocial}, CUIT: {cuit}"
             };
-            EmailSender.EnviarMail(emailSenderData);
+            emailService.EnviarMail(emailSenderData);
         }
 
-        public void EnviarMailAltaTempranaCuit(string cuit, string razonSocial)
+        public void EnviarMailAltaTempranaCuit(List<GestionCuitDto> cuits)
         {
+            var destinatario = cuits.FirstOrDefault(c => c.campo == "CUITDestinatario");
+            var destino = cuits.FirstOrDefault(c => c.campo == "CUITDestino");
+
+            string cuerpoDestinatario = destinatario != null ? $"CUIT DESTINATARIO: {destinatario.cuit}, Razón social: {destinatario.razonSocial}\n" : "";
+            string cuerpoDestino = destino != null ? $"CUIT DESTINO: {destino.cuit}, Razón social: {destino.razonSocial}\n" : "";
+
             var emailSenderData = new EmailSenderData
             {
                 Mails = emailService.ObtenerListaDestinatarios(new string[] { DireccionMailGestionAltaCuit, DireccionMailGestionAltaCuitCopia }),
                 Asunto = "ALTA TEMPRANA CUIT",
-                Cuerpo = $"Se solicita el alta temprana del CUIT: {cuit}, Razón social: {razonSocial}"
+                Cuerpo = $"Se solicita el alta temprana de: \n" + cuerpoDestinatario + cuerpoDestino
             };
-            EmailSender.EnviarMail(emailSenderData);
+            emailService.EnviarMail(emailSenderData);
         }
 
         public void EnviarMailContratoSinKm(OrdenDeCarga ordenDeCarga)
