@@ -31,15 +31,20 @@ namespace SustitucionMOAUtils.Services.Email
         private static readonly string DireccionMailMesaEntrSanLorenzo = ConfigurationManager.AppSettings["EmailToMesaENTSL"];
         private static readonly string DireccionMailMesaVentaFas = ConfigurationManager.AppSettings["EmailToMesaVentaFas"];
 
+        public EmailFasService(IEmailService emailService)
+        {
+            this.emailService = emailService;
+        }
+
         public void EnviarMailAltaIntermediarioFlete(string cuit, string razonSocial, string ordenId)
         {
             var emailSenderData = new EmailSenderData
             {
-                Mails = ObtenerListaDestinatarios(new string[] { DireccionMailGestionAltaCuit, DireccionMailGestionAltaCuitCopia }),
+                Mails = emailService.ObtenerListaDestinatarios(new string[] { DireccionMailGestionAltaCuit, DireccionMailGestionAltaCuitCopia }),
                 Asunto = $"ALTA CUIT INTERMEDIARIO FLETE - NRO ORDEN: {ordenId}",
                 Cuerpo = $"Razón social: {razonSocial}, CUIT: {cuit}"
             };
-            EmailSender.EnviarMail(emailSenderData);
+            emailService.EnviarMail(emailSenderData);
         }
 
         public void EnviarMailAltaTempranaCuit(List<GestionCuitDto> cuits)
@@ -52,11 +57,11 @@ namespace SustitucionMOAUtils.Services.Email
 
             var emailSenderData = new EmailSenderData
             {
-                Mails = ObtenerListaDestinatarios(new string[] { DireccionMailGestionAltaCuit, DireccionMailGestionAltaCuitCopia }),
+                Mails = emailService.ObtenerListaDestinatarios(new string[] { DireccionMailGestionAltaCuit, DireccionMailGestionAltaCuitCopia }),
                 Asunto = "ALTA TEMPRANA CUIT",
-                Cuerpo = $"Se solicita el alta temprana del CUIT: {cuit}, Razón social: {razonSocial}"
+                Cuerpo = $"Se solicita el alta temprana de: \n" + cuerpoDestinatario + cuerpoDestino
             };
-            EmailSender.EnviarMail(emailSenderData);
+            emailService.EnviarMail(emailSenderData);
         }
 
         public void EnviarMailContratoSinKm(OrdenDeCarga ordenDeCarga)

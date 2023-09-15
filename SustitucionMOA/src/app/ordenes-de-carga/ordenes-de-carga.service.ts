@@ -394,11 +394,12 @@ export class OrdenesDeCargaService extends BaseService {
                 cuits)
     }
 
-    public enviarMailGestionarAltaCuitIntermediarioFlete(cuit: GestionCuit): Observable<ApiResponse<boolean>> {
+    public enviarMailGestionarAltaCuitIntermediarioFlete(cuitDto: GestionCuit): Observable<ApiResponse<boolean>> {
+
         return this.http
             .post<ApiResponse<boolean>>(
                 '/api/OrdenDeCarga/GestionarAltaCuitIntermediarioFlete',
-                cuit)
+                cuitDto)
     }
 
     public obtenerPlantasDestino(destinoCuit: string): Observable<ApiResponse<Planta[]>> {

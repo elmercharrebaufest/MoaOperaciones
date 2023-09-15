@@ -8,6 +8,7 @@ using SustitucionMOAModel.Enums;
 using SustitucionMOASecurity;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
+using SustitucionMOAUtils.Services;
 using System;
 using System.Collections.Generic;
 using System.Web.Mvc;
@@ -792,6 +793,8 @@ namespace SustitucionMOA.Controllers
             }
             catch (Exception ex)
             {
+                var cuit2 = cuits.Count == 2 ? cuits[1].cuit : "";
+                Log.Info($"Hubo un error al intentar enviar mail para gestion de alta de cuits: {cuits[0]}, {cuit2}");
                 Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
                 response.Error = ErrorMsg.Error;
             }
@@ -799,12 +802,12 @@ namespace SustitucionMOA.Controllers
         }
 
         [HttpPost]
-        public ActionResult GestionarAltaCuitIntermediarioFlete(GestionCuitDto cuit)
+        public ActionResult GestionarAltaCuitIntermediarioFlete(GestionCuitDto cuitDto)
         {
             var response = new SustitucionMOAApiResponse<bool>();
             try
             {
-                response.Data = ordenDeCargaService.EmailGestionarAltaIntermediarioFlete(cuit);
+                response.Data = ordenDeCargaService.EmailGestionarAltaIntermediarioFlete(cuitDto);
             }
             catch (InfoCustomException ice)
             {
@@ -816,6 +819,7 @@ namespace SustitucionMOA.Controllers
             }
             catch (Exception ex)
             {
+                Log.Info("Hubo un error al intentar enviar mail para gestion de alta de cuit intermediario flete: " + cuitDto.cuit.ToString());
                 Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
                 response.Error = ErrorMsg.Error;
             }

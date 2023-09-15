@@ -393,7 +393,8 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                                 this.ordenDeCargaId = result.data.IdEntidad;
                                 this.gestionarAltasCUIT()
                                 document.getElementById("openModalNotificacion")
-                                    .click();
+                                   .click();
+                                this.gestionarAltasCUIT()
                             }
                         },
                         (error) => {
@@ -1074,6 +1075,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
         this.gestionaCuit[campo] = true;
         this.ordenDeCarga[campo.replace("CUIT", "RazonSocial")] = razonSocial;
         this.displayModal = null;
+        this.mensajesGestionCuit[campo] = `Se solicitará la gestión del alta para el cuit: ${this.ordenDeCarga[campo]}`;   
     }
 
     gestionarAltasCUIT() {
@@ -1112,17 +1114,11 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
             } else if (result.info != undefined) {
                 this.mensajeComponent.setInfoMsg(`${result.info}. Al intentar gestionar alta de cuits`);
             } else {
-                if(this.gestionaCuit["CUITDestino"]){
-                    this.mensajesGestionCuit["CUITDestino"] = `Se solicitó la gestión del alta para el cuit: ${this.ordenDeCarga.CUITDestino}`;
-                }
-                if(this.gestionaCuit["CUITDestinatario"]){
-                    this.mensajesGestionCuit["CUITDestinatario"] = `Se solicitó la gestión del alta para el cuit: ${this.ordenDeCarga.CUITDestinatario}`;
-                }
             }
         });
     }
 
-    enviarMailAltaCuitIntermediarioFlete(cuit: any){
+    enviarMailAltaCuitIntermediarioFlete(cuit: GestionCuit){
         this.service.enviarMailGestionarAltaCuitIntermediarioFlete(cuit).subscribe(result => {
             if (result.logout) {
                 this.sessionDataService.logout();
@@ -1137,18 +1133,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
     }
 
     cancelarGestionAltaCUIT() {
-        switch(this.displayModal){
-            case 'CUITIntermediarioFlete':
-                this.ordenDeCarga.CUITIntermediarioFlete = undefined;
-                break;
-            case 'CUITDestino':
-                this.ordenDeCarga.CUITDestino = undefined;
-                break;
-            case 'CUITDestinatario':
-                this.ordenDeCarga.CUITDestinatario = undefined;
-                break;
-            default: break;
-        }
+        this.ordenDeCarga[this.displayModal] = undefined
         this.gestionaCuit[this.displayModal] = false;
         this.displayModal = null;
     }
@@ -1247,6 +1232,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                 if (data.EsCuitValido) {
                     if (data.ExisteIntermediario) {
                         this.ordenDeCarga.RazonSocialIntermediarioFlete = data.RazonSocial;
+                        this.mensajesGestionCuit['CUITIntermediarioFlete'] = undefined;
                     } else {
                         this.displayModal = 'CUITIntermediarioFlete';
                     }
@@ -1266,6 +1252,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
     }
 
     copiarCuitEnDestinatario() {
+        this.mensajesGestionCuit['CUITDestinatario'] = undefined;
         if (this.ordenDeCarga.CUITDestinatario != this.clienteSeleccionado.CUIT) {
             this.ordenDeCarga.CUITDestinatario = this.clienteSeleccionado.CUIT;
             this.validarSisaCuit(this.ordenDeCarga.CUITDestinatario, 'CUITDestinatario');
@@ -1273,6 +1260,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
     }
 
     copiarCuitEnDestino() {
+        this.mensajesGestionCuit['CUITDestino'] = undefined;
         if (this.ordenDeCarga.CUITDestino != this.clienteSeleccionado.CUIT) {
             this.ordenDeCarga.CUITDestino = this.clienteSeleccionado.CUIT;
             this.validarSisaCuit(this.ordenDeCarga.CUITDestino, 'CUITDestino');
