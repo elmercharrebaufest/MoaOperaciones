@@ -83,6 +83,11 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
     modificaReventa = this.isAuthorized(Permiso.FasModificarCampoReventa);
     listaClientes: any[];
     noEditarCliente: boolean = false;
+    estadosNoPuedeEditarCuitsTercero = [
+        EstadoOrdenDeCarga.EntregaGenerada,
+        EstadoOrdenDeCarga.Entregada,
+        EstadoOrdenDeCarga.EntregaPendiente,
+    ];
 
     puedeEditarContrato: boolean = false;
     resultadoValidacionCorCliConPro: boolean = false;
@@ -107,7 +112,10 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
     }
 
     get noPuedeEditarCuitsTerceros() {
-        return this.ordenDeCarga.Id && this.ordenDeCarga.Estado == EstadoOrdenDeCarga.EntregaGenerada;
+        return this.ordenDeCarga.Id &&
+            (this.estadosNoPuedeEditarCuitsTercero.includes(this.ordenDeCarga.Estado) ||
+            (this.ordenDeCarga.TipoContrato != TipoContrato.FacturaAnticipada && this.ordenDeCarga.NumeroPedido)
+            );
     }
 
     ngOnInit() {

@@ -260,7 +260,15 @@ namespace SustitucionMOAModel.Entities
                    ContratoSinCantidadPendiente == carga.ContratoSinCantidadPendiente &&
                    DescripcionErrorInterno == carga.DescripcionErrorInterno && 
                    DestinatarioExisteScato == carga.DestinatarioExisteScato &&
-                   DestinoExisteScato == carga.DestinoExisteScato;
+                   DestinoExisteScato == carga.DestinoExisteScato && 
+                   CUITDestinatario == carga.CUITDestinatario &&
+                   CUITDestino == carga.CUITDestino &&
+                   RazonSocialDestinatario == carga.RazonSocialDestinatario &&
+                   RazonSocialDestino == carga.RazonSocialDestino &&
+                   DomicilioTipo == carga.DomicilioTipo &&
+                   DomicilioDescr == carga.DomicilioDescr &&
+                   DomicilioOrden == carga.DomicilioOrden &&
+                   PlantaCodigo == carga.PlantaCodigo;
         }
 
         public override int GetHashCode()

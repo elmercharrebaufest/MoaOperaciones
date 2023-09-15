@@ -90,6 +90,7 @@ namespace SustitucionMOAModel.Dto
             CUITIntermediarioFlete = orden.CUITIntermediarioFlete;
             Reventa = orden.Reventa;
             Escalable = orden.Escalable;
+            NumeroPedido = orden.NumeroPedido;
         }
 
         public int Id { get; set; }
@@ -125,6 +126,7 @@ namespace SustitucionMOAModel.Dto
         public string DomicilioDescr { get; set; }
         public bool Reventa { get; set; }
         public bool Escalable { get; set; }
+        public string NumeroPedido { get; set; }
     }
 
     public class OrdenDeCargaHistorialDto

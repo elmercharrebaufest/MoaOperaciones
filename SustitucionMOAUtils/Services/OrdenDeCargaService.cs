@@ -74,6 +74,12 @@ namespace SustitucionMOAUtils.Services
             EstadoOrdenDeCarga.AnuladaPorVencimiento,
             EstadoOrdenDeCarga.Anulada
         };
+        private readonly List<EstadoOrdenDeCarga> estadosNoPuedeEditarCuitsTerceros = new List<EstadoOrdenDeCarga>
+        {
+            EstadoOrdenDeCarga.EntregaGenerada,
+            EstadoOrdenDeCarga.Entregada,
+            EstadoOrdenDeCarga.EntregaPendiente,
+        };
 
         public OrdenDeCargaService(
             IRepositorio repositorio,
@@ -397,12 +403,17 @@ namespace SustitucionMOAUtils.Services
             var validaCPEDG = product.ValidaSisaRuca;
             if (validaCPEDG && string.IsNullOrEmpty(ordenDeCarga.CUITDestinatario))
                 UsarCUITClienteParaDestinatario(ordenEditar);
-            if (validaCPEDG)
+            if (validaCPEDG && (!estadosNoPuedeEditarCuitsTerceros.Contains(ordenEditar.Estado) 
+                || (ordenEditar.TipoContrato != TipoContratoFAS.Anticipado && !string.IsNullOrEmpty(ordenEditar.NumeroPedido))))
             {
                 ordenEditar.CUITDestinatario = ordenDeCarga.CUITDestinatario;
                 ordenEditar.CUITDestino = ordenDeCarga.CUITDestino;
                 ordenEditar.RazonSocialDestinatario = ordenDeCarga.RazonSocialDestinatario;
                 ordenEditar.RazonSocialDestino = ordenDeCarga.RazonSocialDestino;
+                ordenEditar.DomicilioDescr = ordenDeCarga.DomicilioDescr;
+                ordenEditar.DomicilioOrden = ordenDeCarga.DomicilioOrden;
+                ordenEditar.DomicilioTipo = ordenDeCarga.DomicilioTipo;
+                ordenEditar.PlantaCodigo = ordenDeCarga.PlantaCodigo;
             }
             if (!ordenEditar.InformadaSAP || listaValoresDiferentes.Exists(x => x.PropertyName == "ContratoIngresado"))
             {

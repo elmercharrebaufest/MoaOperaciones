@@ -93,7 +93,7 @@
                                                 [(ngModel)]="ordenDeCarga.CUITDestinatario" mask="00-00000000-0"
                                                 (change)="validarExisteCUIT('CUITDestinatario')">
                                             <span
-                                                *ngIf="ordenDeCarga.CUITDestinatario != ordenDeCarga.CUITCliente.toString()"
+                                                *ngIf="ordenDeCarga.CUITDestinatario != ordenDeCarga.CUITCliente.toString()&& !noPuedeEditarCuitsTerceros"
                                                 class="pt-2 pointer pi pi-copy" (click)="copiarCuitEnDestinatario()"
                                                 [pTooltip]="ttCopiarCuit" style="font-size: 2.5rem"></span>
                                             <span class="ui-inputgroup-addon" *ngIf="validando.CUITDestinatario">
@@ -132,7 +132,7 @@
                                                 [(ngModel)]="ordenDeCarga.CUITDestino" mask="00-00000000-0"
                                                 (change)="validarExisteCUIT('CUITDestino')">
                                             <span
-                                                *ngIf="ordenDeCarga.CUITDestino != ordenDeCarga.CUITCliente.toString()"
+                                                *ngIf="ordenDeCarga.CUITDestino != ordenDeCarga.CUITCliente.toString() && !noPuedeEditarCuitsTerceros"
                                                 class="pt-2 pointer pi pi-copy" (click)="copiarCuitEnDestino()"
                                                 [pTooltip]="ttCopiarCuit" style="font-size: 2.5rem"></span>
                                             <span class="ui-inputgroup-addon" *ngIf="validando.CUITDestino">
