@@ -722,7 +722,6 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
 
     onPatenteSeleccionada() {
         this.getCuilsChofer();
-        //this.getCuitsTransporte();
     }
 
     validarCorredorClienteContratoProducto = (
@@ -1008,7 +1007,6 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
             } else {
                 if (!result.data) {
                     this.mensajesOrdenDeCarga[campo] = `El ${campo.replace("CUIT", "")} no se encuentra habilitado en SISA, no podrá cargar la orden hasta regularizar la situación.`;
-                   // this.gestionaCuit[campo] = false;
                 } else {
                     if (validandoDestino) {
                         this.onDestinoIngresado(cuit);
@@ -1079,33 +1077,61 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
     }
 
     gestionarAltasCUIT() {
-        let cuitsAGestionar = [];
+        let cuitFlete = undefined;
+        let cuitsClientes = [];
         this.cuitsParaGestion.forEach((elem) => {
             if(this.gestionaCuit[elem.campo]){
                 elem.cuit = this.ordenDeCarga[elem.campo];
                 elem.razonSocial = this.ordenDeCarga[elem.campo.replace("CUIT", "RazonSocial")];
                 elem.gestiona = true;
                 elem.ordenId = this.ordenDeCargaId.toString();
-                cuitsAGestionar.push(elem);
+                if(elem.campo === 'CUITIntermediarioFlete'){
+                    cuitFlete = elem;
+                }else{
+                    cuitsClientes.push(elem);
+                }
             }
         });
-        console.log(cuitsAGestionar);
-        if(cuitsAGestionar.length === 0 || !cuitsAGestionar){
+        if(cuitFlete === undefined && cuitsClientes.length === 0){
             return;
         }
-        
+        if(cuitFlete !== undefined){
+            this.enviarMailAltaCuitIntermediarioFlete(cuitFlete);
+        }
+        if(cuitsClientes.length !== 0){
+            this.enviarMailAltaCuitCliente(cuitsClientes);
+        }
     }
 
-    enviarMailGestionarAltaCuit(campo: string, cuit: string, razonSocial: string, esIntermediarioFlete: boolean, ordenDeCargaId: number){
-        this.service.enviarMailGestionarAltaCuit(cuit, razonSocial, esIntermediarioFlete, ordenDeCargaId.toString()).subscribe(result => {
+    enviarMailAltaCuitCliente(cuits: GestionCuit[]){
+        this.service.enviarMailGestionarAltaCuitCliente(cuits).subscribe(result => {
             if (result.logout) {
                 this.sessionDataService.logout();
             } else if (result.error != undefined && result.error != "") {
-                this.mensajeComponent.setErrorMsg(`${result.error}. Al intentar gestionar alta CUIT ${campo.replace("CUIT", "")}`);
+                this.mensajeComponent.setErrorMsg(`${result.error}. Al intentar gestionar el alta de cuits`);
             } else if (result.info != undefined) {
-                this.mensajeComponent.setInfoMsg(`${result.info}. Al intentar gestionar alta CUIT ${campo.replace("CUIT", "")}`);
+                this.mensajeComponent.setInfoMsg(`${result.info}. Al intentar gestionar alta de cuits`);
             } else {
-                this.mensajesGestionCuit[campo] = `Se solicitó la gestión del alta para la cuit: ${cuit}`;
+                if(this.gestionaCuit["CUITDestino"]){
+                    this.mensajesGestionCuit["CUITDestino"] = `Se solicitó la gestión del alta para el cuit: ${this.ordenDeCarga.CUITDestino}`;
+                }
+                if(this.gestionaCuit["CUITDestinatario"]){
+                    this.mensajesGestionCuit["CUITDestinatario"] = `Se solicitó la gestión del alta para el cuit: ${this.ordenDeCarga.CUITDestinatario}`;
+                }
+            }
+        });
+    }
+
+    enviarMailAltaCuitIntermediarioFlete(cuit: any){
+        this.service.enviarMailGestionarAltaCuitIntermediarioFlete(cuit).subscribe(result => {
+            if (result.logout) {
+                this.sessionDataService.logout();
+            } else if (result.error != undefined && result.error != "") {
+                this.mensajeComponent.setErrorMsg(`${result.error}. Al intentar gestionar alta CUIT Intermediario Flete`);
+            } else if (result.info != undefined) {
+                this.mensajeComponent.setInfoMsg(`${result.info}. Al intentar gestionar alta CUIT Intermediario Flet`);
+            } else {
+                this.mensajesGestionCuit["CUITIntermediarioFlete"] = `Se solicitó la gestión del alta para la cuit: ${cuit.cuit}`;
             }
         });
     }

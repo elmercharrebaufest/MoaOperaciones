@@ -1,4 +1,5 @@
-﻿using SustitucionMOAModel.Entities;
+﻿using SustitucionMOAModel.Dto.OrdenDeCarga;
+using SustitucionMOAModel.Entities;
 using SustitucionMOAUtils.Email;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
@@ -26,25 +27,30 @@ namespace SustitucionMOAUtils.Services.Email
         private static readonly string DireccionMailMesaEntrSanLorenzo = ConfigurationManager.AppSettings["EmailToMesaENTSL"];
         private static readonly string DireccionMailMesaVentaFas = ConfigurationManager.AppSettings["EmailToMesaVentaFas"];
 
-        public void EnviarMailAltaIntermediarioFlete(string cuit, string razonSocial)
+        public void EnviarMailAltaIntermediarioFlete(string cuit, string razonSocial, string ordenId)
         {
             var emailSenderData = new EmailSenderData
             {
                 Mails = ObtenerListaDestinatarios(new string[] { DireccionMailGestionAltaCuit, DireccionMailGestionAltaCuitCopia }),
-                Asunto = "ALTA CUIT INTERMEDIARIO FLETE",
+                Asunto = $"ALTA CUIT INTERMEDIARIO FLETE - NRO ORDEN: {ordenId}",
                 Cuerpo = $"Razón social: {razonSocial}, CUIT: {cuit}"
             };
             EmailSender.EnviarMail(emailSenderData);
         }
 
-        public void EnviarMailAltaTempranaCuit(string cuit, string razonSocial, string ordenId)
+        public void EnviarMailAltaTempranaCuit(List<GestionCuitDto> cuits)
         {
-            var ordenmsj = ordenId != null ? $", para la orden Nro: {ordenId}" : "";
+            var destinatario = cuits.FirstOrDefault(c => c.campo == "CUITDestinatario");
+            var destino = cuits.FirstOrDefault(c => c.campo == "CUITDestino");
+
+            string cuerpoDestinatario = destinatario != null ? $"CUIT DESTINATARIO: {destinatario.cuit}, Razón social: {destinatario.razonSocial}\n" : "";
+            string cuerpoDestino = destino != null ? $"CUIT DESTINO: {destino.cuit}, Razón social: {destino.razonSocial}\n" : "";
+
             var emailSenderData = new EmailSenderData
             {
                 Mails = ObtenerListaDestinatarios(new string[] { DireccionMailGestionAltaCuit, DireccionMailGestionAltaCuitCopia }),
-                Asunto = "ALTA TEMPRANA CLIENTE",
-                Cuerpo = $"Se solicita el alta temprana del CUIT: {cuit}, Razón social: {razonSocial}" + ordenmsj
+                Asunto = $"ALTA TEMPRANA CLIENTE - NRO ORDEN: {cuits[0].ordenId}",
+                Cuerpo = $"Se solicita el alta temprana de:\n" + cuerpoDestinatario + cuerpoDestino 
             };
             EmailSender.EnviarMail(emailSenderData);
         }

@@ -2331,16 +2331,15 @@ namespace SustitucionMOAUtils.Services
             return result;
         }
 
-        public bool EmailGestionarAlta(string cuit, string razonSocial, bool esIntermediarioFlete, string ordenId)
+        public bool EmailGestionarAltaCuitCliente(List<GestionCuitDto> cuits)
         {
-            if (esIntermediarioFlete)
-            {
-                emailFasService.EnviarMailAltaIntermediarioFlete(cuit, razonSocial);
-            }
-            else
-            {
-                emailFasService.EnviarMailAltaTempranaCuit(cuit, razonSocial, ordenId);
-            }
+            emailFasService.EnviarMailAltaTempranaCuit(cuits);
+            return true;
+        }
+
+        public bool EmailGestionarAltaIntermediarioFlete(GestionCuitDto cuit)
+        {
+            emailFasService.EnviarMailAltaIntermediarioFlete(cuit.cuit, cuit.razonSocial, cuit.ordenId);
             return true;
         }
 
@@ -2816,5 +2815,6 @@ namespace SustitucionMOAUtils.Services
             var result = this.scatoConsumer.ObtenerRecorridoNoRechazadoPorNumeroDocumento(cuit);
             return result.ToList().Any();
         }
+
     }
 }

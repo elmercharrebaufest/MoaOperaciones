@@ -774,13 +774,13 @@ namespace SustitucionMOA.Controllers
             }
             return ContentCustom(response);
         }
-        [HttpGet]
-        public ActionResult GestionarAltaCuit(string cuit, string razonSocial, bool esIntermediarioFlete, string ordenId)
+        [HttpPost]
+        public ActionResult GestionarAltaCuitCliente(List<GestionCuitDto> cuits)
         {
             var response = new SustitucionMOAApiResponse<bool>();
             try
             {
-                response.Data = ordenDeCargaService.EmailGestionarAlta(cuit, razonSocial, esIntermediarioFlete, ordenId);
+                response.Data = ordenDeCargaService.EmailGestionarAltaCuitCliente(cuits);
             }
             catch (InfoCustomException ice)
             {
@@ -797,6 +797,32 @@ namespace SustitucionMOA.Controllers
             }
             return ContentCustom(response);
         }
+
+        [HttpPost]
+        public ActionResult GestionarAltaCuitIntermediarioFlete(GestionCuitDto cuit)
+        {
+            var response = new SustitucionMOAApiResponse<bool>();
+            try
+            {
+                response.Data = ordenDeCargaService.EmailGestionarAltaIntermediarioFlete(cuit);
+            }
+            catch (InfoCustomException ice)
+            {
+                response.Info = ice.Message;
+            }
+            catch (ValidationCustomException vce)
+            {
+                response.Error = vce.Message;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                response.Error = ErrorMsg.Error;
+            }
+            return ContentCustom(response);
+        }
+
+
         [HttpGet]
         public ActionResult ObtenerPlantasDestino(string destinoCuit)
         {

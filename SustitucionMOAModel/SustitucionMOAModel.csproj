@@ -68,6 +68,7 @@
     <Compile Include="Dto\DolarMaterialDto.cs" />
     <Compile Include="Dto\OrdenDeCarga\FacturaOrdenCarga.cs" />
     <Compile Include="Dto\Compras\CotizacionDto.cs" />
+    <Compile Include="Dto\OrdenDeCarga\GestionCuitDto.cs" />
     <Compile Include="Dto\OrdenDeCarga\ValidarIntermediarioFleteResponse.cs" />
     <Compile Include="Dto\OrdenDeCarga\ValidaSisaCuit.cs" />
     <Compile Include="Dto\OrdenDeCarga\ValidarCuitExisteScatoResponse.cs" />
