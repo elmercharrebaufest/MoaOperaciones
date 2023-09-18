@@ -24,6 +24,7 @@ import { ApiResponse } from '../../common/models/response';
 import { forkJoin } from 'rxjs';
 import { Permiso } from '../../common/enums/Permisos';
 import { Factura, newFactura } from '../../common/models/ordenes-de-carga/Factura';
+import { EstadoOrdenDeCarga } from '../../common/models/ordenes-de-carga/estadoOrdenDeCarga';
 import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 
 declare var $: any;
@@ -89,6 +90,11 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
     modificaReventa = this.isAuthorized(Permiso.FasModificarCampoReventa);
     listaClientes: any[];
     noEditarCliente: boolean = false;
+    estadosNoPuedeEditarCuitsTercero = [
+        EstadoOrdenDeCarga.EntregaGenerada,
+        EstadoOrdenDeCarga.Entregada,
+        EstadoOrdenDeCarga.EntregaPendiente,
+    ];
 
     puedeEditarContrato: boolean = false;
     resultadoValidacionCorCliConPro: boolean = false;
@@ -110,6 +116,13 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
 
     constructor(protected service: OrdenesDeCargaService, protected usuarioService: UsuarioService, protected navService: NavService, protected seleccionarProveedorService: SeleccionarProveedorService, private route: ActivatedRoute, protected sessionDataService: SessionDataService, protected securytiService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService, protected empresaGranosService: EmpresaGranosService, public datepipe: DatePipe) {
         super(navService, securytiService, floatMsgService, modalService);
+    }
+
+    get noPuedeEditarCuitsTerceros() {
+        return this.ordenDeCarga.Id &&
+            (this.estadosNoPuedeEditarCuitsTercero.includes(this.ordenDeCarga.Estado) ||
+            (this.ordenDeCarga.TipoContrato != TipoContrato.FacturaAnticipada && this.ordenDeCarga.NumeroPedido)
+            );
     }
 
     ngOnInit() {
@@ -1390,7 +1403,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
     }
     validarKilosDisponibles() {
         this.mensajesOrdenDeCarga.ContratoSeleccionado = null;
-        const esInterno = (this.esComercial  || this.esAdmin);
+        const esInterno = (this.esComercial || this.esAdmin);
 
         if (this.ordenDeCargaId == 0 && !esInterno) {
             this.floatMsgService.setMsgsEmpty();
@@ -1410,7 +1423,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
     }
     validarKilosDisponiblesPedido() {
         this.mensajesOrdenDeCarga.NumeroFacturaSeleccionada = null;
-        const esInterno = (this.esComercial  || this.esAdmin);
+        const esInterno = (this.esComercial || this.esAdmin);
 
         if (this.ordenDeCargaId == 0 && !esInterno) {
             this.floatMsgService.setMsgsEmpty();

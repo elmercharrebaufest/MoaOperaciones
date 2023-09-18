@@ -474,6 +474,10 @@
                                 <input type="button" (click)="verificarTransporte()"
                                     class="btn-custom btn-add btn-grande" value="Verificar Transporte">
                             </div>
+                            <div class="col-xs-5 col-md-3" *ngIf="mostrarBotonVerificarCuitsTercero">
+                                <input type="button" (click)="verificarCuitsTerceros()"
+                                    class="btn-custom btn-add btn-grande" value="Verificar Cuits Terceros">
+                            </div>
                             <div class="col-xs-5 col-md-3" *ngIf="mostrarBotonVerificarSituacionCrediticia">
                                 <input type="button" (click)="verificarSituacionCrediticia()"
                                     class="btn-custom btn-add btn-grande" value="Verificar credito">

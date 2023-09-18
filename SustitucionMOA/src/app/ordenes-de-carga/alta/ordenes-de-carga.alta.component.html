@@ -89,10 +89,11 @@
                                     </div>
                                     <div class="styled-select">
                                         <div class="ui-inputgroup">
-                                            <input type="text" pInputText [(ngModel)]="ordenDeCarga.CUITDestinatario"
-                                                mask="00-00000000-0" (change)="validarSisaCuit(ordenDeCarga.CUITDestinatario, 'CUITDestinatario')">
+                                            <input [disabled]="noPuedeEditarCuitsTerceros||null" type="text" pInputText
+                                                [(ngModel)]="ordenDeCarga.CUITDestinatario" mask="00-00000000-0"
+                                                (change)="validarSisaCuit(ordenDeCarga.CUITDestinatario, 'CUITDestinatario')">
                                             <span
-                                                *ngIf="ordenDeCarga.CUITDestinatario != ordenDeCarga.CUITCliente.toString()"
+                                                *ngIf="ordenDeCarga.CUITDestinatario != ordenDeCarga.CUITCliente.toString()&& !noPuedeEditarCuitsTerceros"
                                                 class="pt-2 pointer pi pi-copy" (click)="copiarCuitEnDestinatario()"
                                                 [pTooltip]="ttCopiarCuit" style="font-size: 2.5rem"></span>
                                             <span class="ui-inputgroup-addon" *ngIf="validando.CUITDestinatario">
@@ -127,10 +128,11 @@
                                     </div>
                                     <div class="styled-select">
                                         <div class="ui-inputgroup">
-                                            <input type="text" pInputText [(ngModel)]="ordenDeCarga.CUITDestino"
-                                                mask="00-00000000-0" (change)="validarSisaCuit(ordenDeCarga.CUITDestino, 'CUITDestino')">
+                                            <input [disabled]="noPuedeEditarCuitsTerceros||null" type="text" pInputText
+                                                [(ngModel)]="ordenDeCarga.CUITDestino" mask="00-00000000-0"
+                                                (change)="validarSisaCuit(ordenDeCarga.CUITDestino, 'CUITDestino')">
                                             <span
-                                                *ngIf="ordenDeCarga.CUITDestino != ordenDeCarga.CUITCliente.toString()"
+                                                *ngIf="ordenDeCarga.CUITDestino != ordenDeCarga.CUITCliente.toString() && !noPuedeEditarCuitsTerceros"
                                                 class="pt-2 pointer pi pi-copy" (click)="copiarCuitEnDestino()"
                                                 [pTooltip]="ttCopiarCuit" style="font-size: 2.5rem"></span>
                                             <span class="ui-inputgroup-addon" *ngIf="validando.CUITDestino">
@@ -167,7 +169,7 @@
                                             [options]="listaPlantas" optionLabel="Codigo"
                                             placeholder="Seleccione una planta"
                                             (ngModelChange)="onPlantaSeleccionadaChanged()" [filter]="true"
-                                            filterBy="value.Codigo">
+                                            filterBy="value.Codigo" [disabled]="noPuedeEditarCuitsTerceros||null">
                                         </p-dropdown>
                                     </div>
                                 </div>
@@ -180,7 +182,7 @@
                                             [options]="listaDomicilios" optionLabel="Descripcion"
                                             placeholder="Seleccione un domicilio"
                                             (ngModelChange)="onDomicilioSeleccionadoChanged()" [filter]="true"
-                                            filterBy="value.Descripcion">
+                                            filterBy="value.Descripcion" [disabled]="noPuedeEditarCuitsTerceros||null">
                                         </p-dropdown>
                                     </div>
                                 </div>
@@ -262,8 +264,8 @@
                                     <input auto-complete [(ngModel)]="ordenDeCarga.PatenteAcoplado"
                                         (ngModelChange)="ordenDeCarga.PatenteAcoplado= $event.toUpperCase()"
                                         maxlength="7" [source]="patentesAcoplados"
-                                        (valueChanged)="PatenteAcopladoSelected($event);onPatenteSeleccionada()" [min-chars]="2"
-                                        [no-match-found-text]="'No se encontraron resultados'"
+                                        (valueChanged)="PatenteAcopladoSelected($event);onPatenteSeleccionada()"
+                                        [min-chars]="2" [no-match-found-text]="'No se encontraron resultados'"
                                         [value-formatter]="generalFormatterAcoplado"
                                         [list-formatter]="generalFormatterAcoplado" mask="AAAAAAA" />
                                 </div>
@@ -285,8 +287,9 @@
                                     CUIL chofer:
                                 </div>
                                 <div class="styled-select autocomplete">
-                                    <input auto-complete [(ngModel)]="ordenDeCarga.CUITChofer" (ngModelChange)="validarCuilChofer()"
-                                        [source]="cuilsChofer" (valueChanged)="cuitChoferSelected($event)" [min-chars]="2"
+                                    <input auto-complete [(ngModel)]="ordenDeCarga.CUITChofer"
+                                        (ngModelChange)="validarCuilChofer()" [source]="cuilsChofer"
+                                        (valueChanged)="cuitChoferSelected($event)" [min-chars]="2"
                                         [no-match-found-text]="'No se encontraron resultados'" mask="00-00000000-0"
                                         [value-formatter]="generalFormatter" [list-formatter]="generalFormatter" />
                                     <div *ngIf="validando.CUITChofer">
@@ -311,16 +314,17 @@
                                     CUIT transporte:
                                 </div>
                                 <div class="styled-select autocomplete">
-                                        <input auto-complete [(ngModel)]="ordenDeCarga.CUITTransporte" (ngModelChange)="validarCuitTransporte()"
-                                        [source]="cuitsTransporte" (valueChanged)="cuitTransporteSelected($event)" [min-chars]="2"
+                                    <input auto-complete [(ngModel)]="ordenDeCarga.CUITTransporte"
+                                        (ngModelChange)="validarCuitTransporte()" [source]="cuitsTransporte"
+                                        (valueChanged)="cuitTransporteSelected($event)" [min-chars]="2"
                                         [no-match-found-text]="'No se encontraron resultados'" mask="00-00000000-0"
                                         [value-formatter]="generalFormatter" [list-formatter]="generalFormatter"
                                         [placeholder]="descripcionTransporte">
-                                        <div *ngIf="validando.CUITTransporte">
-                                            <p-progressSpinner [style]="{width: '10%', height: '10%'}"></p-progressSpinner>
-                                        </div>
+                                    <div *ngIf="validando.CUITTransporte">
+                                        <p-progressSpinner [style]="{width: '10%', height: '10%'}"></p-progressSpinner>
+                                    </div>
                                 </div>
-                            
+
                             </div>
                             <div class="col-xs-12 col-md-12" *ngIf="validaCPEDG">
                                 <div class="formulario-label">

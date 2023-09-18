@@ -90,6 +90,7 @@ namespace SustitucionMOAModel.Dto
             CUITIntermediarioFlete = orden.CUITIntermediarioFlete;
             Reventa = orden.Reventa;
             Escalable = orden.Escalable;
+            NumeroPedido = orden.NumeroPedido;
         }
 
         public int Id { get; set; }
@@ -125,6 +126,7 @@ namespace SustitucionMOAModel.Dto
         public string DomicilioDescr { get; set; }
         public bool Reventa { get; set; }
         public bool Escalable { get; set; }
+        public string NumeroPedido { get; set; }
     }
 
     public class OrdenDeCargaHistorialDto
@@ -210,6 +212,7 @@ namespace SustitucionMOAModel.Dto
         public bool FechaVencimientoAmpliada { get; set; }
         public bool EdicionRechazada { get; set; }
         public bool Escalable { get; set; }
+        public bool NecesitaVerificarCuitsTerceros { get; set; }
 
         public OrdenDeCargaDetalleDto() { }
 
@@ -267,6 +270,7 @@ namespace SustitucionMOAModel.Dto
             NumeroFacturaSeleccionada = orden.NumeroFacturaSeleccionada;
             TipoContrato = orden.TipoContrato;
             CUITChofer = orden.CUITChofer;
+            NecesitaVerificarCuitsTerceros = orden.Producto.ValidaSisaRuca && !orden.CuitTerceroExisteScato;
         }
 
         public override bool Equals(object obj)
@@ -300,7 +304,8 @@ namespace SustitucionMOAModel.Dto
                    DescripcionEstadoUsuarioFinal == dto.DescripcionEstadoUsuarioFinal &&
                    MensajeValidacionSAP == dto.MensajeValidacionSAP &&
                    NumeroFacturaSeleccionada == dto.NumeroFacturaSeleccionada &&
-                   NumeroFactura == dto.NumeroFactura;
+                   NumeroFactura == dto.NumeroFactura &&
+                   NecesitaVerificarCuitsTerceros == dto.NecesitaVerificarCuitsTerceros;
         }
 
         public override int GetHashCode()
