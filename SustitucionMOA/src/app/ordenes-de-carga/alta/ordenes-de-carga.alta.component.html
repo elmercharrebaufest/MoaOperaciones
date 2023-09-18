@@ -89,7 +89,7 @@
                                     </div>
                                     <div class="styled-select">
                                         <div class="ui-inputgroup">
-                                            <input [disabled]="noPuedeEditarCuitsTerceros" type="text" pInputText
+                                            <input [disabled]="noPuedeEditarCuitsTerceros||null" type="text" pInputText
                                                 [(ngModel)]="ordenDeCarga.CUITDestinatario" mask="00-00000000-0"
                                                 (change)="validarExisteCUIT('CUITDestinatario')">
                                             <span
@@ -128,7 +128,7 @@
                                     </div>
                                     <div class="styled-select">
                                         <div class="ui-inputgroup">
-                                            <input [disabled]="noPuedeEditarCuitsTerceros" type="text" pInputText
+                                            <input [disabled]="noPuedeEditarCuitsTerceros||null" type="text" pInputText
                                                 [(ngModel)]="ordenDeCarga.CUITDestino" mask="00-00000000-0"
                                                 (change)="validarExisteCUIT('CUITDestino')">
                                             <span
@@ -169,7 +169,7 @@
                                             [options]="listaPlantas" optionLabel="Codigo"
                                             placeholder="Seleccione una planta"
                                             (ngModelChange)="onPlantaSeleccionadaChanged()" [filter]="true"
-                                            filterBy="value.Codigo" [disabled]="noPuedeEditarCuitsTerceros">
+                                            filterBy="value.Codigo" [disabled]="noPuedeEditarCuitsTerceros||null">
                                         </p-dropdown>
                                     </div>
                                 </div>
@@ -182,7 +182,7 @@
                                             [options]="listaDomicilios" optionLabel="Descripcion"
                                             placeholder="Seleccione un domicilio"
                                             (ngModelChange)="onDomicilioSeleccionadoChanged()" [filter]="true"
-                                            filterBy="value.Descripcion" [disabled]="noPuedeEditarCuitsTerceros">
+                                            filterBy="value.Descripcion" [disabled]="noPuedeEditarCuitsTerceros||null">
                                         </p-dropdown>
                                     </div>
                                 </div>
