@@ -57,8 +57,7 @@ namespace SustitucionMOAUtils.Interfaces
         void VerificarCompensacion(int ordenId);
         List<AutoCompleteDropdownElement> ObtenerCuilsChofer(OrdenDeCarga ordenDeCarga, string mailUsuario);
         List<AutoCompleteDropdownElement> ObtenerCuitsTransporte(OrdenDeCarga ordenDeCarga, string mailUsuario);
-
-        bool ValidarOrdenActivaScato(string cuit);
+        bool ValidarOrdenActivaScato(string nroEntrega);
         Resultado VerificarCuitsTerceros(int ordenId, string usuarioEmail);
     }
 }
