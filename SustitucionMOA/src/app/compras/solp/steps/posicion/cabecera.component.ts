@@ -177,36 +177,36 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
     }
 
-    ngOnInit(): void {       
+    ngOnInit(): void {
         if (this.model.posiciones.length == 0) {
             this.agregarPosicion();
         }
         this.listarContratosAsociados();
-        if(this.model.posicionActual != undefined){
-        this.model.posicionActual.setTabPosicion();
+        if (this.model.posicionActual != undefined) {
+            this.model.posicionActual.setTabPosicion();
         }
 
         this.setCombos();
-        
+
 
     }
 
     public setCombos(): void {
         //Obtengo todas las opciones de los autocomplete
-        if(this.combos != undefined){
-        this.claseDocumento = this.combos.ClaseDocumento;
-        this.centroEntrega = this.combos.Centro;
-        this.monedaCompras = this.combos.Moneda;
-        this.tipoPosicion = this.combos.TipoPosicion;
-        this.tipoImputacion = this.combos.TipoImputacion;
-        this.unidades = this.combos.Unidades;
-        if(this.model.posiciones.length > 0) {
-            this.model.posiciones.forEach(posicion => {
-                posicion.selectComboAlmacenes = this.combos.Almacen.filter(x => x.IdPadre == posicion.selectCentroEntrega.Id);
-            });
-        }       
+        if (this.combos != undefined) {
+            this.claseDocumento = this.combos.ClaseDocumento;
+            this.centroEntrega = this.combos.Centro;
+            this.monedaCompras = this.combos.Moneda;
+            this.tipoPosicion = this.combos.TipoPosicion;
+            this.tipoImputacion = this.combos.TipoImputacion;
+            this.unidades = this.combos.Unidades;
+            if (this.model.posiciones.length > 0) {
+                this.model.posiciones.forEach(posicion => {
+                    posicion.selectComboAlmacenes = this.combos.Almacen.filter(x => x.IdPadre == posicion.selectCentroEntrega.Id);
+                });
+            }
         }
-        if(this.model.id != null && this.model.id > 0){
+        if (this.model.id == null || this.model.id == undefined) {
             this.completarDatosUltimaSolp();
         }
     }
@@ -254,10 +254,10 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         this.validarTipoPosicion();
         this.validarTabCompleto();
         this.validarNuevaPosicion();
-        if(this.model.posicionActual != undefined){
+        if (this.model.posicionActual != undefined) {
             this.model.posicionActual.setTabPosicion();
         }
-     
+
     }
 
     setTabs() {
@@ -306,7 +306,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
     }
 
     validarTabCompleto() {
-        if(this.model.posiciones.length < 0 && this.model.posiciones != undefined || this.model.posiciones != null){
+        if (this.model.posiciones.length < 0 && this.model.posiciones != undefined || this.model.posiciones != null) {
             this.model.posiciones.forEach(posicion => {
                 posicion.doValidatePosicion(this.model.tipoSolpSap);
             });
@@ -353,17 +353,17 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
 
     eliminarPosicion() {
         var posicionChequeadas = this.model.posiciones.filter(x => x.posicionCheck === true);
-        if (posicionChequeadas.length > 0) {            
+        if (posicionChequeadas.length > 0) {
             this.confirmationService.confirm({
                 message: '¿Está seguro de que desea eliminar la posición?',
                 accept: () => {
                     posicionChequeadas.forEach(pos =>
                         this.model.eliminarPosicion(pos as SolpPosicion)
                     );
-                    this.listarContratosAsociados(); 
-                    if(this.model.posiciones.length == 1 && this.model.posiciones[0].selectAlmacenEntrega == undefined){
+                    this.listarContratosAsociados();
+                    if (this.model.posiciones.length == 1 && this.model.posiciones[0].selectAlmacenEntrega == undefined) {
                         this.setupAlmacenEntregaByCentro();
-                    }                  
+                    }
                 },
                 reject: () => {
                 }
@@ -586,7 +586,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         this.model.posicionActual.nombreEntrega = this.model.posicionActual.nombreEntrega
             || (this.model.posicionActual.selectCentroEntrega == undefined ? "" : this.model.posicionActual.selectCentroEntrega.Descripcion);
 
-            posicion.selectComboAlmacenes = this.combos.Almacen.filter(x => x.IdPadre == posicion.selectCentroEntrega.Id);
+        posicion.selectComboAlmacenes = this.combos.Almacen.filter(x => x.IdPadre == posicion.selectCentroEntrega.Id);
 
         this.fillValoresDireccion(direccionCentro);
     }
@@ -935,7 +935,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         posicion.tareaSubcontratar = posicion.tareaSubcontratarObj.Descripcion;
         posicion.textoSuministro = posicion.tareaSubcontratarObj.Descripcion;
         posicion.codigoServicio = { ...posicion.tareaSubcontratarObj };
-        
+
         this.autocompletarCamposMaterial(posicion);
         this.endEditCell(dt);
 
@@ -943,9 +943,9 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
 
     }
 
-    autocompletarCamposMaterial(posicion: SolpPosicion){
+    autocompletarCamposMaterial(posicion: SolpPosicion) {
         var unidadSeleccionadaAux = this.combos.Unidades.find(x => x.Descripcion == posicion.codigoServicio.UnidadMedidaBase.Descripcion);
-        
+
         if (unidadSeleccionadaAux) {
             posicion.unidadSeleccionada = unidadSeleccionadaAux;
             posicion.unidadMedida = unidadSeleccionadaAux.Descripcion;
@@ -997,7 +997,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
                 // posicion.calcularValorTotal();
                 // posicion.doValidatePosicion(this.model.tipoSolpSap);
             });
-            if(this.model.posiciones.length == 1){
+            if (this.model.posiciones.length == 1) {
                 this.setupAlmacenEntregaByCentro();
             }
             this.model.calcularValorTotalPorMoneda();
@@ -1029,14 +1029,14 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         let unidadSeleccionadaAux = this.combos.Unidades.find(x => x.Descripcion == $event.contrato.UnidadMedida);
         this.model.posiciones[posicionIndex].unidadSeleccionada = unidadSeleccionadaAux;
 
-       // let monedaSeleccionadaAux = this.combos.Moneda.find(x => x.Codigo == $event.contrato.ClaveMoneda);
+        // let monedaSeleccionadaAux = this.combos.Moneda.find(x => x.Codigo == $event.contrato.ClaveMoneda);
         //this.model.posiciones[posicionIndex].monedaSeleccionada = monedaSeleccionadaAux;
 
-      //  let almacenSeleccionadoAux = this.combos.Almacen.find(x => x.Codigo == $event.contrato.Almacen);
-       // this.model.posiciones[posicionIndex].selectAlmacenEntrega = almacenSeleccionadoAux;
+        //  let almacenSeleccionadoAux = this.combos.Almacen.find(x => x.Codigo == $event.contrato.Almacen);
+        // this.model.posiciones[posicionIndex].selectAlmacenEntrega = almacenSeleccionadoAux;
 
-      //  let grupoArticuloSeleccionadoAux = this.combos.GrupoArticulo.find(x => x.Codigo == $event.contrato.GrupoArticulo);
-      //  this.model.posiciones[posicionIndex].selectArticuloCompras = grupoArticuloSeleccionadoAux;
+        //  let grupoArticuloSeleccionadoAux = this.combos.GrupoArticulo.find(x => x.Codigo == $event.contrato.GrupoArticulo);
+        //  this.model.posiciones[posicionIndex].selectArticuloCompras = grupoArticuloSeleccionadoAux;
 
         let grupoComprasSeleccionadoAux = this.combos.GrupoCompras.find(x => x.Codigo == $event.contrato.GrupoCompras);
         this.model.posiciones[posicionIndex].selectGrupoCompras = grupoComprasSeleccionadoAux;
@@ -1148,9 +1148,9 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
 
                 this.model.agregarNuevaPosicionDesdeContratoMarco(newPos);
                 this.agregarPosicion();
-              
+
             });
-            this.model.calcularValorTotalPorMoneda();           
+            this.model.calcularValorTotalPorMoneda();
         }
         this.obtenerContratoMarcoService.close();
         this.listarContratosAsociados();
@@ -1168,7 +1168,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         return this.model.posicionActual.tipoPosicion == "CONTRATO MARCO";
     }
 
-    public get tienePosicionSeleccionada(): boolean {      
+    public get tienePosicionSeleccionada(): boolean {
         return (this.model.selectTipoPosicion != undefined
             && this.model.selectTipoPosicion != null
             && this.model.selectTipoPosicion.Id != ""
@@ -1269,42 +1269,43 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
     }
 
     private completarDatosUltimaSolp() {
-        if(this.datosUltimaSolp.ClaseDocumento != null){
-            this.model.selectClaseDocumento = this.datosUltimaSolp.ClaseDocumento;
-        }
-
-        if(this.datosUltimaSolp.TipoPosicion != null){
-            this.model.selectTipoPosicion = this.datosUltimaSolp.TipoPosicion;
-            this.cambiarTipoSolp();
-        }
-        
-        if(this.datosUltimaSolp.Centro != null){
-            this.model.posiciones[0].selectCentroEntrega = this.datosUltimaSolp.Centro;
-        }
-
-        if(this.datosUltimaSolp.Almacen != null){
-            this.model.posiciones[0].selectComboAlmacenes.push(this.datosUltimaSolp.Almacen);
-            this.model.posiciones[0].selectAlmacenEntrega = this.datosUltimaSolp.Almacen;
-        }
-
-        if(this.datosUltimaSolp.GrupoCompras != null){
-            this.model.posiciones[0].selectGrupoCompras = this.datosUltimaSolp.GrupoCompras;        
-        }
-
-        if(this.model.selectTipoPosicion.Codigo == "SERVICIO"){
-            if(this.datosUltimaSolp.CuentaMayorSP != null){
-                var newPos = this.model.posiciones[0].crearSubPosicion()
-                this.model.posiciones[0].agregarSubPosicion(newPos);
-                this.model.posiciones[0].listadoSubPosiciones[0].cuentaMayor = this.datosUltimaSolp.CuentaMayorSP;  
+        if (this.datosUltimaSolp != undefined) {
+            if (this.datosUltimaSolp.ClaseDocumento != null) {
+                this.model.selectClaseDocumento = this.datosUltimaSolp.ClaseDocumento;
             }
-        } else {
-            if(this.datosUltimaSolp.CuentaMayor != null){
-                this.model.posiciones[0].cuentaMayor = this.datosUltimaSolp.CuentaMayor;  
-            }
-        }
 
+            if (this.datosUltimaSolp.TipoPosicion != null) {
+                this.model.selectTipoPosicion = this.datosUltimaSolp.TipoPosicion;
+                this.cambiarTipoSolp();
+            }
+
+            if (this.model.posiciones[0] != undefined) {
+                if (this.datosUltimaSolp.Centro != null) {
+                    this.model.posiciones[0].selectCentroEntrega = this.datosUltimaSolp.Centro;
+                }
+
+                if (this.datosUltimaSolp.Almacen != null) {
+                    this.model.posiciones[0].selectComboAlmacenes.push(this.datosUltimaSolp.Almacen);
+                    this.model.posiciones[0].selectAlmacenEntrega = this.datosUltimaSolp.Almacen;
+                }
+
+                if (this.datosUltimaSolp.GrupoCompras != null) {
+                    this.model.posiciones[0].selectGrupoCompras = this.datosUltimaSolp.GrupoCompras;
+                }
+
+                if (this.model.selectTipoPosicion != undefined && this.model.selectTipoPosicion.Codigo == "SERVICIO") {
+                    if (this.datosUltimaSolp.CuentaMayorSP != null) {
+                        var newPos = this.model.posiciones[0].crearSubPosicion()
+                        this.model.posiciones[0].agregarSubPosicion(newPos);
+                        this.model.posiciones[0].listadoSubPosiciones[0].cuentaMayor = this.datosUltimaSolp.CuentaMayorSP;
+                    }
+                } else {
+                    if (this.datosUltimaSolp.CuentaMayor != null) {
+                        this.model.posiciones[0].cuentaMayor = this.datosUltimaSolp.CuentaMayor;
+                    }
+                }
+            }
+
+        }
     }
-
-
-
 }
