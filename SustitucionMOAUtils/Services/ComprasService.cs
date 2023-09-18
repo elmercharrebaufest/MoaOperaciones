@@ -4585,19 +4585,22 @@ namespace SustitucionMOAUtils.Services
                     && cotizacion.CotizacionPosiciones.FirstOrDefault()
                     .PeticionDeOfertaSolpPosicion.SolpPosicion.TipoPosicion.Codigo == "MATERIALES")
                 {
-                    var registros = CrearRegistroInfoDto(cotizacion);
-                    var respuesta = agregarRegistroInfoConsumerMOA.AgregarRegistroInfo(registros, esModificar);
-                    if (respuesta.Errores != null && respuesta.Errores.Any(x => x.Tipo == "E"))
+                    if (!cotizacion.CotizacionPosiciones.All(x => x.NoDisponible == true))
                     {
-                        try
+                        var registros = CrearRegistroInfoDto(cotizacion);
+                        var respuesta = agregarRegistroInfoConsumerMOA.AgregarRegistroInfo(registros, esModificar);
+                        if (respuesta.Errores != null && respuesta.Errores.Any(x => x.Tipo == "E"))
                         {
-                            EnviarMailAvisoDeErrorRegistroInfo(cotizacion);
-                        }
-                        catch (Exception e)
-                        {
+                            try
+                            {
+                                EnviarMailAvisoDeErrorRegistroInfo(cotizacion);
+                            }
+                            catch (Exception e)
+                            {
 
-                            Logger.Log.Error(new Exception($"Error al enviar mail AgregarRegistroInfo en cotizacion: " + cotizacion.Id));
-                            Logger.Log.Error(e);
+                                Logger.Log.Error(new Exception($"Error al enviar mail AgregarRegistroInfo en cotizacion: " + cotizacion.Id));
+                                Logger.Log.Error(e);
+                            }
                         }
                     }
                 }
@@ -5407,7 +5410,7 @@ namespace SustitucionMOAUtils.Services
         private List<RegistroInfoDto> CrearRegistroInfoDto(Cotizacion cotizacion)
         {
             var registros = new List<RegistroInfoDto>();
-            foreach (var cotizacionPosicion in cotizacion.CotizacionPosiciones)
+            foreach (var cotizacionPosicion in cotizacion.CotizacionPosiciones.Where(x => x.NoDisponible != true))
             {
                 var registro = new RegistroInfoDto
                 {
