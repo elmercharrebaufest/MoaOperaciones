@@ -403,17 +403,22 @@ namespace SustitucionMOAUtils.Services
             var validaCPEDG = product.ValidaSisaRuca;
             if (validaCPEDG && string.IsNullOrEmpty(ordenDeCarga.CUITDestinatario))
                 UsarCUITClienteParaDestinatario(ordenEditar);
-            if (validaCPEDG && (!estadosNoPuedeEditarCuitsTerceros.Contains(ordenEditar.Estado) 
-                || (ordenEditar.TipoContrato != TipoContratoFAS.Anticipado && !string.IsNullOrEmpty(ordenEditar.NumeroPedido))))
+            if (validaCPEDG)
             {
-                ordenEditar.CUITDestinatario = ordenDeCarga.CUITDestinatario;
-                ordenEditar.CUITDestino = ordenDeCarga.CUITDestino;
-                ordenEditar.RazonSocialDestinatario = ordenDeCarga.RazonSocialDestinatario;
-                ordenEditar.RazonSocialDestino = ordenDeCarga.RazonSocialDestino;
-                ordenEditar.DomicilioDescr = ordenDeCarga.DomicilioDescr;
-                ordenEditar.DomicilioOrden = ordenDeCarga.DomicilioOrden;
-                ordenEditar.DomicilioTipo = ordenDeCarga.DomicilioTipo;
-                ordenEditar.PlantaCodigo = ordenDeCarga.PlantaCodigo;
+                if ((!estadosNoPuedeEditarCuitsTerceros.Contains(ordenEditar.Estado)
+                    || (ordenEditar.TipoContrato != TipoContratoFAS.Anticipado && !string.IsNullOrEmpty(ordenEditar.NumeroPedido))))
+                {
+                    ordenEditar.CUITDestinatario = ordenDeCarga.CUITDestinatario;
+                    ordenEditar.CUITDestino = ordenDeCarga.CUITDestino;
+                    ordenEditar.RazonSocialDestinatario = ordenDeCarga.RazonSocialDestinatario;
+                    ordenEditar.RazonSocialDestino = ordenDeCarga.RazonSocialDestino;
+                    ordenEditar.DomicilioDescr = ordenDeCarga.DomicilioDescr;
+                    ordenEditar.DomicilioOrden = ordenDeCarga.DomicilioOrden;
+                    ordenEditar.DomicilioTipo = ordenDeCarga.DomicilioTipo;
+                    ordenEditar.PlantaCodigo = ordenDeCarga.PlantaCodigo;
+                }
+                ordenEditar.CUITIntermediarioFlete = ordenDeCarga.CUITIntermediarioFlete;
+                ordenEditar.RazonSocialIntermediarioFlete = ordenDeCarga.RazonSocialIntermediarioFlete;
             }
             if (!ordenEditar.InformadaSAP || listaValoresDiferentes.Exists(x => x.PropertyName == "ContratoIngresado"))
             {
@@ -2365,16 +2370,15 @@ namespace SustitucionMOAUtils.Services
             return result;
         }
 
-        public bool EmailGestionarAlta(string cuit, string razonSocial, bool esIntermediarioFlete)
+        public bool EmailGestionarAltaCuitCliente(List<GestionCuitDto> cuits)
         {
-            if (esIntermediarioFlete)
-            {
-                emailFasService.EnviarMailAltaIntermediarioFlete(cuit, razonSocial);
-            }
-            else
-            {
-                emailFasService.EnviarMailAltaTempranaCuit(cuit, razonSocial);
-            }
+            emailFasService.EnviarMailAltaTempranaCuit(cuits);
+            return true;
+        }
+
+        public bool EmailGestionarAltaIntermediarioFlete(GestionCuitDto cuit)
+        {
+            emailFasService.EnviarMailAltaIntermediarioFlete(cuit.cuit, cuit.razonSocial, cuit.ordenId);
             return true;
         }
 

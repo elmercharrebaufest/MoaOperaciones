@@ -30,7 +30,6 @@ namespace SustitucionMOAWS.WSConsumers
                 BAPISEGM[] bAPIEINEs = new BAPISEGM[] { };
                 BAPIEINE[] INFORECORD_PURCHORG = new BAPIEINE[] { };
                 BAPIRETURN[] bAPIRETURNs = new BAPIRETURN[] { };
-
                 service.BAPI_INFORECORD_GETLIST("", "", "", material, bAPIMGVMATNR, "", "", centro, "", "", "",
                                                 ""/*grupoDeCompras*/, "", "", "", "", "", ref INFORECORD_GENERAL, ref INFORECORD_PURCHORG, ref bAPIEINEs, ref bAPIRETURNs);
 

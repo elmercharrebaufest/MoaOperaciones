@@ -91,7 +91,7 @@
                                         <div class="ui-inputgroup">
                                             <input [disabled]="noPuedeEditarCuitsTerceros||null" type="text" pInputText
                                                 [(ngModel)]="ordenDeCarga.CUITDestinatario" mask="00-00000000-0"
-                                                (change)="validarExisteCUIT('CUITDestinatario')">
+                                                (change)="validarSisaCuit(ordenDeCarga.CUITDestinatario, 'CUITDestinatario')">
                                             <span
                                                 *ngIf="ordenDeCarga.CUITDestinatario != ordenDeCarga.CUITCliente.toString()&& !noPuedeEditarCuitsTerceros"
                                                 class="pt-2 pointer pi pi-copy" (click)="copiarCuitEnDestinatario()"
@@ -130,7 +130,7 @@
                                         <div class="ui-inputgroup">
                                             <input [disabled]="noPuedeEditarCuitsTerceros||null" type="text" pInputText
                                                 [(ngModel)]="ordenDeCarga.CUITDestino" mask="00-00000000-0"
-                                                (change)="validarExisteCUIT('CUITDestino')">
+                                                (change)="validarSisaCuit(ordenDeCarga.CUITDestino, 'CUITDestino')">
                                             <span
                                                 *ngIf="ordenDeCarga.CUITDestino != ordenDeCarga.CUITCliente.toString() && !noPuedeEditarCuitsTerceros"
                                                 class="pt-2 pointer pi pi-copy" (click)="copiarCuitEnDestino()"
@@ -440,7 +440,7 @@
     </div>
     <p-footer>
         <button [disabled]="razonSocialParaGestion.length < 1" type="button" pButton icon="pi pi-check"
-            (click)="gestionarAltaCUIT()" label="Gestionar"></button>
+            (click)="cargarAltaCuit()" label="Gestionar"></button>
         <button type="button" pButton icon="pi pi-close" (click)="cancelarGestionAltaCUIT()" label="Cancelar"
             class="ui-button-secondary"></button>
     </p-footer>
