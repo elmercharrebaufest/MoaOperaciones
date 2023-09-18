@@ -2814,13 +2814,15 @@ namespace SustitucionMOAUtils.Services
             return cuits.Distinct().ToList();
         }
 
-
-        public bool ValidarOrdenActivaScato(string cuit)
+        public bool ValidarOrdenActivaScato(string nroEntrega)
         {
-            //Ver que cuit en particular se manda desde moa op y que valor del array se toma para validar esto???
-            Log.Info("Obteniendo estado de la orden en Scato con cuitChofer: " + cuit);
-            var result = this.scatoConsumer.ObtenerRecorridoNoRechazadoPorNumeroDocumento(cuit);
-            return result.ToList().Any();
+            if(nroEntrega == null || nroEntrega.Equals("-"))
+                return false;
+            Log.Info("Obteniendo estado de la orden en Scato con nro Entrega: " + nroEntrega);
+            var result = this.scatoConsumer.ObtenerRecorridoNoRechazadoPorNumeroDocumento(nroEntrega).FirstOrDefault();
+            if (result == null)
+                return false;
+            return result.Terminado != false;
         }
 
         private bool ContratoTieneKgDisponibles(OrdenDeCarga orden)

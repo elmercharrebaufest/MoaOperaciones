@@ -348,7 +348,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                     } else if (result.info != undefined) {
                     } else {
                         this.ordenDeCarga = result.data;
-                        this.verificarOrdenActivaScato(this.ordenDeCarga.CUITChofer.toString());
+                        this.verificarOrdenActivaScato(this.ordenDeCarga.NumeroEntrega);
                         this.validaCPEDG = this.ordenDeCarga.ValidaSisaRuca;
                         this.separarCadenas();
                         this.verificarBotones()
@@ -935,11 +935,11 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
             sessionStorage.removeItem(VOLVER_A_DETALLE_REPORTE)
     }
 
-    verificarOrdenActivaScato(cuit) {
+    verificarOrdenActivaScato(nroEntrega: string){
         this.spinnerComponent.showIt();
         this.unsubscribe();
         try {
-            this.service.validarOrdenActivaScato(cuit).pipe(
+            this.service.validarOrdenActivaScato(nroEntrega).pipe(
                 finalize(() => { this.blockUI.stop(); this.spinnerComponent.hideIt() })
             ).subscribe(
                 result => {
