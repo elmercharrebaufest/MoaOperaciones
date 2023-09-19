@@ -4684,7 +4684,7 @@ namespace SustitucionMOAUtils.Services
         private void GuardarCotizacionHora(GuardarCotizacion cotizacionDto, Cotizacion cotizacion)
         {
             var cotizacionesHorasEntidad = repositorio.Listar<CotizacionHora>(x => x.Cotizacion_Id == cotizacion.Id);
-            var cotizacionesHoraNuevo = new List<CotizacionHora>();
+            //var cotizacionesHoraNuevo = new List<CotizacionHora>();
 
             if (cotizacionesHorasEntidad != null && cotizacionesHorasEntidad.Count > 0)
             {
@@ -4723,10 +4723,11 @@ namespace SustitucionMOAUtils.Services
                             CantidadPersonas = cotiHora.CantidadPersonas,
                             ConfigurarHora = cotiHora.ConfigurarHora
                         };
-                        cotizacionesHoraNuevo.Add(cotiH);
+                        repositorio.Agregar(cotiH);
+                        //cotizacionesHoraNuevo.Add(cotiH);
                     }
                 }
-                repositorio.AgregarTodos(cotizacionesHoraNuevo);
+                //repositorio.AgregarTodos(cotizacionesHoraNuevo);
             }
         }
 
