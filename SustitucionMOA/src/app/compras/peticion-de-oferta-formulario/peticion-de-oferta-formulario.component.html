@@ -24,7 +24,7 @@
                         <p-table class="table-responsive" styleClass="font-size: 10px" #tabla [value]="solpCompraDto.PosicionCompras" dataKey="Id">
                             <ng-template pTemplate="header" let-columns>
                                 <tr>
-                                    <th *ngIf="esTipoMaterial" class="columna"></th>
+                                    <th *ngIf="esTipoMaterial" class="columna"><p-checkbox name="posiciones" [binary]="true" [(ngModel)]="TodasPosicionesSeleccionadas" (click)="seleccionarTodo(solpCompraDto.PosicionCompras)"></p-checkbox></th>
                                     <th *ngIf="esTipoServicio" style="width: 3em"></th>
                                     <th class="columna">Pos.</th>
                                     <th *ngIf="esTipoMaterial" class="columna">Código</th>

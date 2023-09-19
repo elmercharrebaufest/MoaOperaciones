@@ -34,6 +34,8 @@ export interface PosicionCompra{
      //Cotizacion
     CotizacionPosicion?: CotizacionPosicionDto
     NoDisponible: boolean,
+    TodasPosicionesSeleccionadas: boolean
+
 }
 
 export interface SolpSubposicionDto{

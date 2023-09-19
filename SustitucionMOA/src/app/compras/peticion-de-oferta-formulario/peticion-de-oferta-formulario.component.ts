@@ -55,6 +55,7 @@ export class PeticionDeOfertaFormularioComponent extends ListBaseComponent imple
     displayProvCreado: boolean = false;
     datoProveedor: string;
     displayRegistroInfo: boolean = false;
+    TodasPosicionesSeleccionadas: boolean = false;
 
     constructor(protected service: ComprasService, protected usuarioService: UsuarioService, protected navService: NavService, protected sessionDataService: SessionDataService,
         protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService,
@@ -334,4 +335,11 @@ export class PeticionDeOfertaFormularioComponent extends ListBaseComponent imple
         this.displayRegistroInfo = false;
     }
 
+    seleccionarTodo() {
+        if (this.TodasPosicionesSeleccionadas) {
+            this.solpCompraDto.PosicionCompras.map(pos => pos.Selected = true);
+        } else {
+            this.solpCompraDto.PosicionCompras.map(pos => pos.Selected = false);
+        }
+    }
 }
