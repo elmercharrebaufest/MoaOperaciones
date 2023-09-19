@@ -202,7 +202,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
                 });
             }
         }
-        if (this.model.id == null || this.model.id == undefined) {
+        if (!this.model.nroSolp) {
             this.completarDatosUltimaSolp();
         }
     }

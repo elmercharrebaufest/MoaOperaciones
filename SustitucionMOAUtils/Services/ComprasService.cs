@@ -5435,7 +5435,7 @@ namespace SustitucionMOAUtils.Services
 
         public DatosUltimaSolpDto ObtenerUltimaSolp(int usuarioId)
         {
-            var ultimaSolp = repositorio.Listar<Solp>(a => a.UsuarioCreacion_Id == usuarioId).OrderByDescending(a => a.Id).FirstOrDefault();
+            var ultimaSolp = repositorio.Listar<Solp>(a => a.UsuarioCreacion_Id == usuarioId && a.NroSolp != null).OrderByDescending(a => a.Id).FirstOrDefault();
 
 
             if (ultimaSolp == null)
