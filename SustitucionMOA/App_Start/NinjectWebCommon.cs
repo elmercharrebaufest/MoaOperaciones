@@ -128,7 +128,8 @@ namespace SustitucionMOA.App_Start
             kernel.Bind<IHttpContextService>().To(typeof(HttpContextService)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IObtenerRegistroInfoConsumerMOA>().To(typeof(ObtenerRegistroInfoConsumerMOA)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IEmailService>().To(typeof(EmailService)).InScope(ctx => OperationContext.Current);
-            
+            kernel.Bind<IAltaClienteSAP>().To(typeof(AltaClienteSAPJob)).InScope(ctx => OperationContext.Current);
+
             #region InterfacesSAP
             kernel.Bind<IVendedorHabilitadoConsumerMOA>().To(typeof(VendedorHabilitadoConsumerMOA)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IOrdenCargaConsumerMOA>().To(typeof(OrdenCargaConsumerMOA)).InScope(ctx => OperationContext.Current);
