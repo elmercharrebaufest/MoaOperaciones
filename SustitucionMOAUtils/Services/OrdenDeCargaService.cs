@@ -927,7 +927,7 @@ namespace SustitucionMOAUtils.Services
             if (listado == null || listado.Count == 0)
             {
                 var error = new InfoCustomException(string.Format(InfoMsg.SinRegistros, "órdenes de cargas"));
-                Log.Error(error);
+                Log.Info(error.Message);
                 throw error;
             }
             //Log.Debug(this.GetType().Name, "Listar", $" listado: {listado.ToJson()}");

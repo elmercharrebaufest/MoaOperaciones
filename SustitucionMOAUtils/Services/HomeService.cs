@@ -146,7 +146,7 @@ namespace SustitucionMOAUtils.Services
                 }
                 catch (Exception e)
                 {
-                    Log.Error(e);
+                    //Log.Error(e);
                 }
 
 
@@ -276,7 +276,7 @@ namespace SustitucionMOAUtils.Services
                     }
                     catch (Exception e)
                     {
-                        Log.Error(e);
+                        //Log.Error(e);
                     }
 
 
