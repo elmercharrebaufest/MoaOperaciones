@@ -1320,6 +1320,16 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
+        public ProveedorDto ObtenerProveedor(int idProveedor)
+        {
+            var proveedor = repositorio.Obtener<Proveedor>(idProveedor);
+            if (proveedor == null)
+            {
+                throw new Exception("No se encontró el proveedor con ID " + idProveedor);
+            }
+            return new ProveedorDto(proveedor);
+        }
+
         private List<ProveedorDto> GetClientesFromVisualizarClienteProducto(OrdenCargaVisualizarClienteWSMOAResponse ordenCargaVisualizarClienteWSMOAResponse, VisualizarClienteRequest request)
         {
             var clientesDto = new List<ProveedorDto>();

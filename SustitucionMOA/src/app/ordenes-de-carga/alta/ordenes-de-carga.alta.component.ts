@@ -134,17 +134,19 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
         if (this.esCliente()) {
             const esInterno = this.esComercial || this.esCorredor;
             if (!esInterno) {
-                this.clienteSeleccionado = {
-                    id: sessionStorage.getItem("proveedorId"),
-                    CUIT: sessionStorage.getItem("cuit"),
-                    CodigoProveedor: sessionStorage.getItem("proveedor")
-                }
-                this.clienteCodigo = this.clienteSeleccionado.CodigoProveedor;
-                this.ordenDeCarga.CUITCliente = this.clienteSeleccionado.CUIT;
-            }
-
-            if (this.ordenDeCargaId == 0 && !esInterno) {
-                this.cargarContratosDisponibles(this.clienteCodigo);
+                // this.clienteSeleccionado = {
+                //     id: sessionStorage.getItem("proveedorId"),
+                //     CUIT: sessionStorage.getItem("cuit"),
+                //     CodigoProveedor: sessionStorage.getItem("proveedor")
+                // }
+                // this.clienteCodigo = this.clienteSeleccionado.CodigoProveedor;
+                // this.ordenDeCarga.CUITCliente = this.clienteSeleccionado.CUIT;
+                this.cargarClienteDirecto(parseInt(sessionStorage.getItem("proveedorId") || ""))
+                    .then(() => {
+                        if (this.ordenDeCargaId == 0) {
+                            this.cargarContratosDisponibles(this.clienteCodigo);
+                        }
+                    });
             }
         }
     }
@@ -1271,5 +1273,19 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                 this.floatMsgService.setInfoMsg(mensaje)
             }
         }
+    }
+
+    cargarClienteDirecto(idCliente: Number) : Promise<void> {
+        return new Promise((resolve, reject) => {
+            this.service.obtenerProveedor(idCliente).subscribe(resp => {
+                let proveedor = this.manejarErroresApiResponse(resp);
+                if (proveedor) {
+                    this.clienteSeleccionado = proveedor;
+                    this.clienteCodigo = proveedor.CodigoProveedor;
+                    this.ordenDeCarga.CUITCliente = this.clienteSeleccionado.CUIT;
+                    resolve();
+                }
+            });
+        });
     }
 }
