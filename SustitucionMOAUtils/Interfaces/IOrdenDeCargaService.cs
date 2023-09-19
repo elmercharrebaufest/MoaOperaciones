@@ -59,5 +59,7 @@ namespace SustitucionMOAUtils.Interfaces
         List<AutoCompleteDropdownElement> ObtenerCuitsTransporte(OrdenDeCarga ordenDeCarga, string mailUsuario);
         bool ValidarOrdenActivaScato(string nroEntrega);
         Resultado VerificarCuitsTerceros(int ordenId, string usuarioEmail);
+        List<ClienteSAPResponse> GetClientesVigentesSAP(string fechaIni, string fechaFin);
+        List<SustitucionMOAModel.Entities.Proveedor> FiltrarNoExistentesWeb(List<ClienteSAPResponse> clientes);
     }
 }

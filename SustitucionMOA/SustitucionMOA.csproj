@@ -1087,6 +1087,7 @@
     <Compile Include="Jobs\ActualizarEstadoSolpSapJob.cs" />
     <Compile Include="Jobs\ActualizarSISAJob.cs" />
     <Compile Include="Jobs\ActualizarLocalidadesJob.cs" />
+    <Compile Include="Jobs\AltaClienteSAPJob.cs" />
     <Compile Include="Jobs\ReporteLogins.cs" />
     <Compile Include="Jobs\EnviarASAPOrdenDeCargaJob.cs" />
     <Compile Include="Jobs\ObtenerSolpsDesdeSAPJob.cs" />

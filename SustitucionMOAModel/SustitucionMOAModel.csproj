@@ -67,6 +67,7 @@
     <Compile Include="Dto\Compras\CircularDto.cs" />
     <Compile Include="Dto\Compras\ProveedorComprasDto.cs" />
     <Compile Include="Dto\DolarMaterialDto.cs" />
+    <Compile Include="Dto\OrdenDeCarga\ClienteSAPResponse.cs" />
     <Compile Include="Dto\OrdenDeCarga\FacturaOrdenCarga.cs" />
     <Compile Include="Dto\Compras\CotizacionDto.cs" />
     <Compile Include="Dto\OrdenDeCarga\GestionCuitDto.cs" />

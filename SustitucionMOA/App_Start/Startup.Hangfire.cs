@@ -94,6 +94,10 @@ namespace SustitucionMOA
                 "VerificarSituacionCrediticiaJob",
                 j => j.Execute(),
                 "*/15 * * * *", tz);
+            RecurringJob.AddOrUpdate<Jobs.IAltaClienteSAPJob>(
+               "AltaClienteSAPJob",
+               j => j.Execute(),
+               "0 13,23 * * *", tz);
         }
     }
 

@@ -317,6 +317,7 @@ namespace SustitucionMOAWS.WSConsumers
                     PedidoCliente = item.PEDIDO_CLIENTE,
                     PosNr = item.POSNR,
                     Cliente = item.CLIENTE,
+                    CuitCliente = item.CUIT_CLIENTE,
                     NombreCliente = item.NOMBRE_CLIENTE,
                     Corredor = item.CORREDOR,
                     DescripcionMaterial = item.DESC_MATERIAL,
