@@ -39,13 +39,16 @@ namespace SustitucionMOA.Jobs
 
                 if (clientesNuevos == null || clientesNuevos.Count() == 0) { return; }
 
-                foreach (Proveedor cliente in clientesNuevos)
+                var tipoProveedor = repositorio.Obtener<TipoUsuario>(t => t.NombreCorto == "CLI" && t.Id == 5);
+
+                foreach (Proveedor c in clientesNuevos)
                 {
-                    this.repositorio.Agregar(cliente);
+                    //Guardamos la entidad uno por uno para luego actualizar su tipo de proveedor.
+                    var cliNuevo = this.repositorio.Agregar(c);
+                    cliNuevo.TipoProveedor = tipoProveedor;
                 }
 
                 this.repositorio.GuardarCambios();
-
             }
             catch (Exception e)
             {

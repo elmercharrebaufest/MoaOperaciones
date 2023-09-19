@@ -97,7 +97,7 @@ namespace SustitucionMOA
             RecurringJob.AddOrUpdate<Jobs.IAltaClienteSAPJob>(
                "AltaClienteSAPJob",
                j => j.Execute(),
-               "47 11,23 * * *", tz);
+               "0 13,23 * * *", tz);
         }
     }
 

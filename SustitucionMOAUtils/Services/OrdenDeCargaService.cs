@@ -2996,7 +2996,7 @@ namespace SustitucionMOAUtils.Services
         public List<Proveedor> FiltrarNoExistentesWeb(List<ClienteSAPResponse> clientes)
         {
             List<Proveedor> clientesNuevos = new List<Proveedor>();
-            var tipoProveedor = repositorio.Obtener<TipoUsuario>(t => t.NombreCorto == "CLI" && t.Id == 5);
+
             foreach (ClienteSAPResponse c in clientes)
             {
                 var clienteBd = this.repositorio.Obtener<Proveedor>(p => p.CUIT == c.CuitCliente &&
@@ -3011,7 +3011,6 @@ namespace SustitucionMOAUtils.Services
                         Mail = c.CuitCliente + "@altaclientejob.com",
                         EstadoAprobacion = 0,
                         Observaciones = "Carga masiva - " + DateTime.Now.Date,
-                        TipoProveedor = tipoProveedor
                     };
                     clientesNuevos.Add(clienteNuevo);
                 }
