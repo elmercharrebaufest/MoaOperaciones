@@ -384,6 +384,16 @@ export class ComprasService extends BaseService {
             .get<any[]>("/api/compras/AutocompleteCodigoMaterialSolp", { params: params })
     }
 
+    autocompleteMaterialRFC(posicion: SolpPosicion) {
+        let params: HttpParams = new HttpParams()
+            .append('material', posicion.tareaSubcontratarObj.Codigo)
+            .append('centro', posicion.selectCentroEntrega.Codigo)
+            .append('grupoDeCompras', posicion.tareaSubcontratarObj.GrupoCompras.Codigo);
+
+        return this.http
+            .get<any[]>("/api/compras/AutocompleteMaterialRFC", { params: params })
+    }
+
     obtenerDatosPorCodigosSap(codigos: any[]) {
         var payload = new FormData();
         payload.append('codigosSap', JSON.stringify(codigos));

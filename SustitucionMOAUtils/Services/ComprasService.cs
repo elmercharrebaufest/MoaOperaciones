@@ -258,7 +258,7 @@ namespace SustitucionMOAUtils.Services
                             });
                         }
                     }
-                    
+
 
                 }
                 // Identifica los que ya no estan en la base de datos y los borra
@@ -2950,7 +2950,7 @@ namespace SustitucionMOAUtils.Services
             {
                 if (p.FechaEntregaServicio.HasValue && p.CodigoMaterialSap != null && !string.IsNullOrEmpty(p.CodigoMaterialSap.Codigo))
                 {
-                    var datosPosicion = AutocompleteMaterialSolp(p.CodigoMaterialSap.Codigo, p.Centro.Id);
+                    var datosPosicion = AutocompleteCodigoMaterialSolp(p.CodigoMaterialSap.Codigo, p.Centro.Id);
                     var contratos = ListarFuenteAprovisionamiento(p.FechaEntregaServicio.Value.ToString("yyyy-MM-dd"), p.CodigoMaterialSap.Codigo.Remove(0, 10), p.Centro.Codigo);
                     var asociado = new AsociarContratoDto
                     {
@@ -3605,7 +3605,7 @@ namespace SustitucionMOAUtils.Services
                 copia.Add(peticion.Solp.UsuarioCreacion.Mail);
             }
             var asunto = "";
-            
+
             foreach (var prov in usuarios)
             {
                 asunto = "";
@@ -3947,7 +3947,7 @@ namespace SustitucionMOAUtils.Services
                     Log.Info($"copia mail solicitante {adjudicacion.Solp.UsuarioCreacion.Mail}");
                 }
                 var asunto = "";
-               
+
 
                 var enviarA = new List<string> { adjudicacion.Cotizacion.PeticionDeOfertaUsuario.Usuario.Mail };
                 asunto += $"Nueva OC creada - {adjudicacion.NumeroOrdenDeCompra} - {adjudicacion.Usuario.ObtenerRazonSocial()}";
@@ -5432,64 +5432,74 @@ namespace SustitucionMOAUtils.Services
             return registros;
         }
 
-        public DatosUltimaSolpDto ObtenerUltimaSolp(int usuarioId) 
+        public DatosUltimaSolpDto ObtenerUltimaSolp(int usuarioId)
         {
             var ultimaSolp = repositorio.Listar<Solp>(a => a.UsuarioCreacion_Id == usuarioId).OrderByDescending(a => a.Id).FirstOrDefault();
 
 
             if (ultimaSolp == null)
-                return null; 
+                return null;
 
             DatosUltimaSolpDto result = new DatosUltimaSolpDto();
 
             result.FiscalContrato = ultimaSolp.Pliego?.FiscalContrato;
             result.Telefono = ultimaSolp.Pliego?.Telefono;
 
-            result.ClaseDocumento = ultimaSolp.ClaseDocumento != null ? new TablaSapDto { Id = ultimaSolp.ClaseDocumento.Id,
-                                    Tabla = ultimaSolp.ClaseDocumento.Tabla,
-                                    Codigo = ultimaSolp.ClaseDocumento.Codigo,
-                                    CodigoSap = ultimaSolp.ClaseDocumento.CodigoSap,
-                                    Descripcion = ultimaSolp.ClaseDocumento.Descripcion,
-                                    IdPadre = ultimaSolp.ClaseDocumento.Padre_id
-                                    }
+            result.ClaseDocumento = ultimaSolp.ClaseDocumento != null ? new TablaSapDto
+            {
+                Id = ultimaSolp.ClaseDocumento.Id,
+                Tabla = ultimaSolp.ClaseDocumento.Tabla,
+                Codigo = ultimaSolp.ClaseDocumento.Codigo,
+                CodigoSap = ultimaSolp.ClaseDocumento.CodigoSap,
+                Descripcion = ultimaSolp.ClaseDocumento.Descripcion,
+                IdPadre = ultimaSolp.ClaseDocumento.Padre_id
+            }
                                     : null;
 
             result.GrupoCompras = ultimaSolp.Posiciones.FirstOrDefault()?.GrupoCompras != null
-                                ? new TablaSapDto { Id = ultimaSolp.Posiciones.FirstOrDefault().GrupoCompras.Id,
-                                                    Tabla = ultimaSolp.Posiciones.FirstOrDefault().GrupoCompras.Tabla,
-                                                    Codigo = ultimaSolp.Posiciones.FirstOrDefault().GrupoCompras.Codigo,
-                                                    CodigoSap = ultimaSolp.Posiciones.FirstOrDefault().GrupoCompras.CodigoSap,
-                                                    Descripcion = ultimaSolp.Posiciones.FirstOrDefault().GrupoCompras.Descripcion,
-                                                    IdPadre = ultimaSolp.Posiciones.FirstOrDefault().GrupoCompras.Padre_id
+                                ? new TablaSapDto
+                                {
+                                    Id = ultimaSolp.Posiciones.FirstOrDefault().GrupoCompras.Id,
+                                    Tabla = ultimaSolp.Posiciones.FirstOrDefault().GrupoCompras.Tabla,
+                                    Codigo = ultimaSolp.Posiciones.FirstOrDefault().GrupoCompras.Codigo,
+                                    CodigoSap = ultimaSolp.Posiciones.FirstOrDefault().GrupoCompras.CodigoSap,
+                                    Descripcion = ultimaSolp.Posiciones.FirstOrDefault().GrupoCompras.Descripcion,
+                                    IdPadre = ultimaSolp.Posiciones.FirstOrDefault().GrupoCompras.Padre_id
                                 }
                                 : null;
 
             result.CuentaMayor = ultimaSolp.Posiciones.FirstOrDefault()?.CuentaMayorSap != null
-                                ? new TablaSapDto { Id = ultimaSolp.Posiciones.FirstOrDefault().CuentaMayorSap.Id,
-                                                    Tabla = ultimaSolp.Posiciones.FirstOrDefault().CuentaMayorSap.Tabla,
-                                                    Codigo = ultimaSolp.Posiciones.FirstOrDefault().CuentaMayorSap.Codigo,
-                                                    CodigoSap = ultimaSolp.Posiciones.FirstOrDefault().CuentaMayorSap.CodigoSap,
-                                                    Descripcion = ultimaSolp.Posiciones.FirstOrDefault().CuentaMayorSap.Descripcion,
-                                                    IdPadre = ultimaSolp.Posiciones.FirstOrDefault().CuentaMayorSap.Padre_id
+                                ? new TablaSapDto
+                                {
+                                    Id = ultimaSolp.Posiciones.FirstOrDefault().CuentaMayorSap.Id,
+                                    Tabla = ultimaSolp.Posiciones.FirstOrDefault().CuentaMayorSap.Tabla,
+                                    Codigo = ultimaSolp.Posiciones.FirstOrDefault().CuentaMayorSap.Codigo,
+                                    CodigoSap = ultimaSolp.Posiciones.FirstOrDefault().CuentaMayorSap.CodigoSap,
+                                    Descripcion = ultimaSolp.Posiciones.FirstOrDefault().CuentaMayorSap.Descripcion,
+                                    IdPadre = ultimaSolp.Posiciones.FirstOrDefault().CuentaMayorSap.Padre_id
                                 }
                                 : null;
 
             result.Almacen = ultimaSolp.Posiciones.FirstOrDefault()?.Almacen != null
-                            ? new TablaSapDto { Id = ultimaSolp.Posiciones.FirstOrDefault().Almacen.Id,
-                                                Tabla = ultimaSolp.Posiciones.FirstOrDefault().Almacen.Tabla,
-                                                Codigo = ultimaSolp.Posiciones.FirstOrDefault().Almacen.Codigo,
-                                                CodigoSap = ultimaSolp.Posiciones.FirstOrDefault().Almacen.CodigoSap,
-                                                Descripcion = ultimaSolp.Posiciones.FirstOrDefault().Almacen.Descripcion,
-                                                IdPadre = ultimaSolp.Posiciones.FirstOrDefault().Almacen.Padre_id
+                            ? new TablaSapDto
+                            {
+                                Id = ultimaSolp.Posiciones.FirstOrDefault().Almacen.Id,
+                                Tabla = ultimaSolp.Posiciones.FirstOrDefault().Almacen.Tabla,
+                                Codigo = ultimaSolp.Posiciones.FirstOrDefault().Almacen.Codigo,
+                                CodigoSap = ultimaSolp.Posiciones.FirstOrDefault().Almacen.CodigoSap,
+                                Descripcion = ultimaSolp.Posiciones.FirstOrDefault().Almacen.Descripcion,
+                                IdPadre = ultimaSolp.Posiciones.FirstOrDefault().Almacen.Padre_id
                             }
                             : null;
 
             result.TipoPosicion = ultimaSolp.Posiciones.FirstOrDefault()?.TipoPosicion != null
-                                ? new TablaGeneralDto { Id = ultimaSolp.Posiciones.FirstOrDefault().TipoPosicion.Id,
-                                                        Tabla = ultimaSolp.Posiciones.FirstOrDefault().TipoPosicion.Tabla,
-                                                        Codigo = ultimaSolp.Posiciones.FirstOrDefault().TipoPosicion.Codigo,
-                                                        Descripcion = ultimaSolp.Posiciones.FirstOrDefault().TipoPosicion.Descripcion,
-                                                        IdPadre = ultimaSolp.Posiciones.FirstOrDefault().TipoPosicion.Padre_Id
+                                ? new TablaGeneralDto
+                                {
+                                    Id = ultimaSolp.Posiciones.FirstOrDefault().TipoPosicion.Id,
+                                    Tabla = ultimaSolp.Posiciones.FirstOrDefault().TipoPosicion.Tabla,
+                                    Codigo = ultimaSolp.Posiciones.FirstOrDefault().TipoPosicion.Codigo,
+                                    Descripcion = ultimaSolp.Posiciones.FirstOrDefault().TipoPosicion.Descripcion,
+                                    IdPadre = ultimaSolp.Posiciones.FirstOrDefault().TipoPosicion.Padre_Id
                                 }
                                 : null;
 
@@ -5510,13 +5520,31 @@ namespace SustitucionMOAUtils.Services
                                    Id = ultimaSolp.Posiciones.FirstOrDefault().Subposiciones.FirstOrDefault().CuentaMayorSap.Id,
                                    Tabla = ultimaSolp.Posiciones.FirstOrDefault().Subposiciones.FirstOrDefault().CuentaMayorSap.Tabla,
                                    Codigo = ultimaSolp.Posiciones.FirstOrDefault().Subposiciones.FirstOrDefault().CuentaMayorSap.Codigo,
-                                   Descripcion = ultimaSolp.Posiciones.FirstOrDefault().Subposiciones.FirstOrDefault().CuentaMayorSap.CodigoSap + " - " +  ultimaSolp.Posiciones.FirstOrDefault().Subposiciones.FirstOrDefault().CuentaMayorSap.Descripcion,
+                                   Descripcion = ultimaSolp.Posiciones.FirstOrDefault().Subposiciones.FirstOrDefault().CuentaMayorSap.CodigoSap + " - " + ultimaSolp.Posiciones.FirstOrDefault().Subposiciones.FirstOrDefault().CuentaMayorSap.Descripcion,
                                    IdPadre = ultimaSolp.Posiciones.FirstOrDefault().Subposiciones.FirstOrDefault().CuentaMayorSap.Padre_id
                                }
                                : null;
 
 
-            return result; 
+            return result;
+        }
+
+        /// <summary>Busca en la RFC de registros info el último cargado para un determinado material.</summary>
+        /// <param name="material">El código del material</param>
+        /// <param name="centro">El código del centro</param>
+        /// <param name="grupoDeCompras">El código del grupo de compras</param>
+        /// <returns>El último registro info disponible para el material elegido.</returns>
+        public RegistroInfoDto ObtenerUltimoRegistroMaterial(string material, string centro, string grupoDeCompras)
+        {
+            RegistroInfoDto ultimoRegistro = new RegistroInfoDto();
+
+            var registros = obtenerRegistroInfoConsumerMOA.ObtenerRegistroInfoConsumer(material, centro, grupoDeCompras)
+                               .Where(x => x.NumeroOrdenDeCompra != null).OrderByDescending(x => x.FechaUltimaCompra);
+            if (registros.Any())
+            {
+                ultimoRegistro = registros.First();
+            }
+            return ultimoRegistro;
         }
     }
 

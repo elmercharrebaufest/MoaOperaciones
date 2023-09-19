@@ -71,6 +71,6 @@ namespace SustitucionMOAUtils.Interfaces
         List<RespuestaCrearOrdenDeCompra> CrearOrdenDeCompraConRegistroInfo(List<RegistroInfoDto> registros, int usuarioActualId);
         RespuestaGuardarSOLP CerrarCotizacion(int peticionId, int usuarioActualId, string observaciones);
         DatosUltimaSolpDto ObtenerUltimaSolp(int usuarioId);
-
+        RegistroInfoDto ObtenerUltimoRegistroMaterial(string material, string centro, string grupoDeCompras);
     }
 }

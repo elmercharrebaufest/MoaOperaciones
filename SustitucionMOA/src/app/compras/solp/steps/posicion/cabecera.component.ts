@@ -3,7 +3,6 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms';
 import { ConfirmationService, SelectItem } from 'primeng/api';
 import { MenuItem, Message } from 'primeng/components/common/api';
-
 import { ListBaseComponent } from '../../../../common/base-components/list-base-component';
 import { SessionDataService } from '../../../../common/services/SessionDataService';
 import { SecurityService } from '../../../../common/services/SecurityService';
@@ -18,8 +17,8 @@ import { SubPosicionViewModel } from './tab-subposicion/sub-posicion-view-model'
 import { EnumColumnaSubPosicion } from '../../../enum-columna-subPosiciones';
 import { Solp } from '../../solp';
 import { SolpPosicion } from '../../solp-posicion';
-import { mergeMap, map } from 'rxjs/operators';
-import { from } from 'rxjs';
+import { mergeMap, map, switchMap } from 'rxjs/operators';
+import { from, Observable, of } from 'rxjs';
 import { ObtenerContratoMarcoService } from './obtener-contrato-marco/obtener-contrato-marco.service';
 import { ContratoMarco, ContratoMarcoSubposicion, ObtenerContratoMarco } from './obtener-contrato-marco/contrato-marco.model';
 import { element } from '@angular/core/src/render3';
@@ -93,6 +92,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
     autocompleteServiciosSolp: any[];
     autocompletePaste: { Tabla: string, CodigoSap: string }[] = [];
     autocompleteServiciosSolpPaste: string[] = [];
+    autocompletePosicionRFC: any;
 
     //Variables tabs
     proveedoresAutocomplete: any;
@@ -116,7 +116,6 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
     textoAsociarBtn = 'ASOCIAR CONTRATO'
 
     tipoPosicion: SelectItem[];
-
     tipoImputacion: any[];
     imputacionSeleccionada: any;
 
@@ -142,7 +141,6 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         { campo: 'proveedoresInvalidos', esObligatorio: false, esFijo: true },
         { campo: 'proveedoresNoSugeridos', esObligatorio: false, esFijo: true },
         { campo: 'selectMonedaCompras', esObligatorio: true, esFijo: true }
-
     ];
 
     // array de columnas en la grilla
@@ -187,8 +185,6 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         }
 
         this.setCombos();
-
-
     }
 
     public setCombos(): void {
@@ -257,7 +253,6 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         if (this.model.posicionActual != undefined) {
             this.model.posicionActual.setTabPosicion();
         }
-
     }
 
     setTabs() {
@@ -301,7 +296,6 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
             });
             //  el.scrollIntoView();
             this.validarNuevaPosicion();
-
         }
     }
 
@@ -944,23 +938,44 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
     }
 
     autocompletarCamposMaterial(posicion: SolpPosicion) {
-        var unidadSeleccionadaAux = this.combos.Unidades.find(x => x.Descripcion == posicion.codigoServicio.UnidadMedidaBase.Descripcion);
-
-        if (unidadSeleccionadaAux) {
-            posicion.unidadSeleccionada = unidadSeleccionadaAux;
-            posicion.unidadMedida = unidadSeleccionadaAux.Descripcion;
-        }
-
+        this.autocompleteMaterialRFC(posicion).pipe(
+            switchMap((result: any) => { //para asegurarme de que autocompleteMaterialRFC haya terminado antes de seguir con la lógica
+                if (result.logout == true) {
+                    this.sessionDataService.logout();
+                } else if (result.error != undefined && result.error != "") {
+                    this.floatMsgService.setErrorMsg(result.error);
+                } else if (result.info != undefined) {
+                    this.floatMsgService.setInfoMsg(result.info);
+                } else {
+                    this.autocompletePosicionRFC = result;
+                }
+                return of(null); // Por si no se devuelve nada desde el observable
+            })
+        ).subscribe(() => {
+            if (this.autocompletePosicionRFC != undefined) {
+                if (this.combos.Unidades.find(x => x.Codigo == this.autocompletePosicionRFC.Unidad)) {
+                    posicion.unidadSeleccionada = this.combos.Unidades.find(x => x.Codigo == this.autocompletePosicionRFC.Unidad);
+                    posicion.unidadMedida = this.autocompletePosicionRFC.Unidad;
+                }
+                if (this.combos.Moneda.find(x => x.Codigo == this.autocompletePosicionRFC.Moneda)) {
+                    posicion.monedaSeleccionada = this.combos.Moneda.find(x => x.Codigo == this.autocompletePosicionRFC.Moneda);
+                }
+                posicion.precioBruto = this.autocompletePosicionRFC.Precio;
+            }
+        });
         posicion.cuentaMayor = "";
         var grupoArticuloAux = this.combos.GrupoArticulo.find(x => x.Descripcion == posicion.codigoServicio.GrupoArticulo.Descripcion);
         if (grupoArticuloAux) {
             posicion.selectArticuloCompras = grupoArticuloAux;
         }
-
         //var cuentaMayorAux = this.combos.CuentaMayor.find(x => x.Descripcion == posicion.codigoServicio.CuentaMayor.Descripcion);
         if (posicion.codigoServicio.CuentaMayor && posicion.codigoServicio.CuentaMayor.Id > 0) {
             posicion.cuentaMayor = posicion.codigoServicio.CuentaMayor;
         }
+    }
+
+    private autocompleteMaterialRFC(posicion: SolpPosicion): Observable<any> {
+        return this.service.autocompleteMaterialRFC(posicion);
     }
 
     onBlurTarea(event, posicion: SubPosicionViewModel) {
@@ -1042,8 +1057,6 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         this.model.posiciones[posicionIndex].selectGrupoCompras = grupoComprasSeleccionadoAux;
 
         this.listarContratosAsociados();
-
-
     }
 
     public showObtenerContratoMarcoDialog() {

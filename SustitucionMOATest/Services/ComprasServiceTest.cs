@@ -1388,5 +1388,16 @@ namespace SustitucionMOATest.Services
             repositorioMock.Verify(x => x.Agregar(It.IsAny<PeticionDeOferta>()), Times.Once);
             repositorioMock.Verify(x => x.GuardarCambios(), Times.Exactly(3));
         }
+
+        [Test]
+        public void AutocompleteMaterialRFCOk()
+        {
+            RegistroInfoDto registroInfo = new RegistroInfoDto { Cantidad = 5, Moneda = "USDM", Centro = "1029", GrupoDeCompras = "" };
+            obtenerRegistroInfoConsumerMOAMock.Setup(y => y.ObtenerRegistroInfoConsumer(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+                .Returns( new List<RegistroInfoDto> { registroInfo });
+            var result = target.ObtenerUltimoRegistroMaterial("codigoMaterial","codigoCentro","codigoGrupoDeCompras");
+            Assert.That(result, Is.Not.Null);
+            Assert.AreEqual(registroInfo.GetType(), result.GetType());
+        }
     }
 }
