@@ -2954,5 +2954,73 @@ namespace SustitucionMOAUtils.Services
             repositorio.GuardarCambios();
             return new Resultado { Mensaje = msg };
         }
+
+
+        #region ALTA_MASIVA_CLIENTES_SAP_WEB
+        public List<ClienteSAPResponse> GetClientesVigentesSAP(string fechaInicio, string fechaFin)
+        {
+            List<Mod.FechaWS> fechas = null;
+            OrdenCargaConsumerMOA ordenCargaConsumerMOA = new OrdenCargaConsumerMOA();
+
+            if (!string.IsNullOrEmpty(fechaInicio) && !string.IsNullOrEmpty(fechaFin))
+            {
+                fechas = CommonService.toDateList(fechaInicio, fechaFin);
+            }
+
+            var request = new OrdenCargaVisualizarClienteWSMOARequest()
+            {
+                Cliente = string.Empty,
+                Contrato = string.Empty,
+                Corredor = string.Empty,
+                Fechas = fechas,
+                Material = string.Empty,
+                Pendiente = true,
+                TipoContrato = TipoContratoFAS.Todos,
+            };
+
+            Log.Info($"GetClientesVigentesSAP(request: {request.ToJson()})");
+
+            List<ClienteSAPResponse> response = ordenCargaConsumerMOA.OrdenCargaVisualizarClienteExecute(request).Resultados
+                .Select(c => new ClienteSAPResponse
+                {
+                    RazonSocial = c.NombreCliente,
+                    CuitCliente = c.CuitCliente,
+                    CodigoProveedor = c.Cliente
+                }).Distinct(new CustomComparerClienteSap()).ToList();
+
+            Log.Info("GetClientesVigentesSAP result " + response.ToJson());
+
+            return response;
+        }
+
+        public List<Proveedor> FiltrarNoExistentesWeb(List<ClienteSAPResponse> clientes)
+        {
+            List<Proveedor> clientesNuevos = new List<Proveedor>();
+            var tipoProveedor = repositorio.Obtener<TipoUsuario>(t => t.NombreCorto == "CLI" && t.Id == 5);
+            foreach (ClienteSAPResponse c in clientes)
+            {
+                var clienteBd = this.repositorio.Obtener<Proveedor>(p => p.CUIT == c.CuitCliente &&
+                p.CodigoProveedor == c.CodigoProveedor && p.RazonSocial.Trim().ToUpper() == (c.RazonSocial.Trim().ToUpper()));
+                if (clienteBd == null)
+                {
+                    var clienteNuevo = new Proveedor
+                    {
+                        CUIT = c.CuitCliente,
+                        RazonSocial = c.RazonSocial,
+                        CodigoProveedor = c.CodigoProveedor,
+                        Mail = c.CuitCliente + "@altaclientejob.com",
+                        EstadoAprobacion = 0,
+                        Observaciones = "Carga masiva - " + DateTime.Now.Date,
+                        TipoProveedor = tipoProveedor
+                    };
+                    clientesNuevos.Add(clienteNuevo);
+                }
+            }
+            return clientesNuevos;
+        }
+
+        #endregion
+
+
     }
 }
