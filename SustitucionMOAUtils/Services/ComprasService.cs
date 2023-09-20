@@ -2401,6 +2401,7 @@ namespace SustitucionMOAUtils.Services
                     var esAdmin = usuario.Permisos.Any(p => p == "ADJUDICAR DENTRO DEL PLAZO DE OFERTAS");
                     var mensaje = "Adjudicar";
                     var verAdjudicar = true;
+                    item.VerImportes = true;
                     if (item.Cotizacion == null)
                     {
                         mensaje = "Sin Cotizar";
@@ -2427,6 +2428,7 @@ namespace SustitucionMOAUtils.Services
                         {
                             mensaje = "Plazo de oferta sin finalizar";
                             verAdjudicar = false;
+                            item.VerImportes = false;
                         }
                     }
                     if (!item.EstaHabilitado)

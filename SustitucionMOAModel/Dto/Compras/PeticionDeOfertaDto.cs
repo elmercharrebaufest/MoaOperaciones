@@ -121,13 +121,14 @@ namespace SustitucionMOAModel.Dto
         public string EstadoVisitaColor { get; set; }
         public string EstadoPropuestaTecnica { get; set; }
         public string EstadoPropuestaTecnicaColor { get; set; }
-        public DateTime PlazoDeOferta { get; set; }
         public string CotizacionEstado { get; set; }
         public bool VerAdjudicar { get; set; }
+        public bool VerImportes { get; set; }
         public bool EstaHabilitado { get; set; }
         public string MensajeAdjudicar { get; set; }
         public bool ValidacionCircularSolicitante { get; set; }
         public string ObservacionNoCumple { get; set; }
+        public DateTime PlazoDeOferta { get; set; }
         public DateTime PlazoDeOfertaOriginal { get; set; }
         public DateTime? PlazoDeOfertaCircular { get; set; }
         public DateTime? PlazoDeOfertaCierre { get; set; }

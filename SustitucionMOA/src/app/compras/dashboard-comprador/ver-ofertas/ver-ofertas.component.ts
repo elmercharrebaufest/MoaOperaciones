@@ -35,21 +35,17 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
 
     @Input()
     public peticion: PeticionDeOfertaDto;
-
     peticionOferta: PeticionDeOfertaDto;
     SolpDto: Solp;
     tablaOfertas: PeticionDeOfertaDto;
-
     adjudicacion: AdjudicacionDto;
     Cotizacion: CotizacionDto;
-
     displayTextos: boolean;
     TodasPosicionesSeleccionadas: boolean = false;
     displayAdjudicacionCreada: boolean;
     errores: any = [];
     displayVisualizarErrores: boolean;
     numeroOrdenDeCompra: any;
-
     displayPanelHs: boolean = false;
 
     @Input()
@@ -62,9 +58,6 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
         protected route: ActivatedRoute, protected router: Router, private confirmationService: ConfirmationService, private formBuilder: FormBuilder) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
     }
-
-
-
 
     ngOnInit() {
         if (this.route.params) {
@@ -105,7 +98,6 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
                 Id: null,
             };
         }
-
     }
 
     seleccionarTodo() {
@@ -115,8 +107,6 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
             this.tablaOfertas.PeticionDeOfertaPosicion.map(pos => pos.Selected = false);
         }
     }
-
-
 
     verOfertas(peticionOferta_Id) {
         try {
@@ -131,7 +121,6 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
                         this.floatMsgService.setInfoMsg(result.info);
                     } else {
                         this.tablaOfertas = result.data;
-                        console.log('ofertas', result.data)
                     }
                     this.blockUI.stop();
                 },
@@ -212,7 +201,6 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
     onCerrarPanel() {
         this.displayPanelHs = false;
     }
-
 
     crearAdjudicacion(usuario: PeticionDeOfertaUsarioDto) {
         var lista = []
@@ -375,7 +363,6 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
         this.displayTextos = false;
     }
 
-
     guardarAdjudicacionTextos() {
         this.adjudicacion.CondicionesDeEntrega = this.modalTexto.adjudicacion.CondicionesDeEntrega;
         this.adjudicacion.CondicionesDePago = this.modalTexto.adjudicacion.CondicionesDePago;
@@ -398,8 +385,8 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
     validarNumero(event: any) {
         const inputValue = event.target.value;
         if (isNaN(inputValue) || inputValue < 0) {
-          event.target.value = 0; // Borra el valor si es negativo
+            event.target.value = 0; // Borra el valor si es negativo
         }
-      }
+    }
 
 }
