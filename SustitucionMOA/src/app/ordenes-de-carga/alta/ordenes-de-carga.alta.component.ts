@@ -110,9 +110,12 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
             if (params["id"] > 0) this.ordenDeCargaId = params["id"];
         });
         this.navService.setSeccionList([]);
-        this.onCorredorFocusOut('', false);
         this.obtenerMateriales();
-        if (this.esCorredor) {
+
+        if (this.esComercial) {
+            this.onCorredorFocusOut('', false);
+        }
+        else if (this.esCorredor) {
             this.CodigoCorredor = sessionStorage.getItem("proveedor");
             if (this.ordenDeCargaId == 0) {
                 this.cargarClientes(this.CodigoCorredor);
@@ -991,7 +994,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
     }
 
     validarSisaCorredorCliente() {
-        
+
         if (!this.ordenDeCarga.ContratoSeleccionado || !this.validaCPEDG) {
             this.mensajeComponent.setMsgsEmpty();
             return;
