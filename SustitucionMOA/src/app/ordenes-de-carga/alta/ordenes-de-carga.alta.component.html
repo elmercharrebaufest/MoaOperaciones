@@ -65,6 +65,19 @@
                                     </p-dropdown>
                                 </div>
                             </div>
+                            <div class="col-xs-12 col-md-12"
+                                *ngIf="ordenDeCarga.ContratoSeleccionado?.TipoContrato === tipoContrato.FacturaAnticipada ">
+                                <div class="formulario-label">
+                                    Número de Factura Legal:
+                                </div>
+                                <div class="styled-select" style="overflow: initial;">
+                                    <p-dropdown name="cmbFacturas" [disabled]="noEditarCliente"
+                                        [(ngModel)]="facturaSeleccionada" [options]="facturasDisponibles"
+                                        placeholder="Seleccione un número de factura" [optionLabel]="'Label'"
+                                        [filter]="true" (onChange)="setNumeroFactura($event.value)" filterBy="">
+                                    </p-dropdown>
+                                </div>
+                            </div>
                             <ng-container *ngIf="validaCPEDG">
                                 <div class=" col-xs-12 col-md-12 mt-2" *ngIf="clienteSeleccionado.EsRevendedor">
                                     <div class="formulario-label" style="margin-bottom: 8px;">
@@ -180,19 +193,6 @@
 
                             </ng-container>
 
-                            <div class="col-xs-12 col-md-12"
-                                *ngIf="ordenDeCarga.ContratoSeleccionado?.TipoContrato === tipoContrato.FacturaAnticipada ">
-                                <div class="formulario-label">
-                                    Número de Factura Legal:
-                                </div>
-                                <div class="styled-select" style="overflow: initial;">
-                                    <p-dropdown name="cmbFacturas" [disabled]="noEditarCliente"
-                                        [(ngModel)]="facturaSeleccionada" [options]="facturasDisponibles"
-                                        placeholder="Seleccione un número de factura" [optionLabel]="'Label'"
-                                        [filter]="true" (onChange)="setNumeroFactura($event.value)" filterBy="">
-                                    </p-dropdown>
-                                </div>
-                            </div>
 
 
                             <div class="col-xs-12 col-md-12">
