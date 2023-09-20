@@ -63,7 +63,7 @@
                                         [(selected)]="ordenDeCarga.ContratoSeleccionado">
                                         <ng-template let-option>
                                             <p class="option-label" [ngClass]="{
-                                                'text-primary':option.TipoContrato == tipoContrato.FacturaAnticipada && 
+                                                'text-contrato-anticipado':option.TipoContrato == tipoContrato.FacturaAnticipada && 
                                                 ordenDeCarga.ContratoIngresado != option.NumeroContrato
                                             }">
                                                 {{option.Label}}
