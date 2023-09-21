@@ -19,14 +19,10 @@
     <AssemblyName>SustitucionMOA</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <UseIISExpress>true</UseIISExpress>
-    <IISExpressSSLPort>
-    </IISExpressSSLPort>
-    <IISExpressAnonymousAuthentication>
-    </IISExpressAnonymousAuthentication>
-    <IISExpressWindowsAuthentication>
-    </IISExpressWindowsAuthentication>
-    <IISExpressUseClassicPipelineMode>
-    </IISExpressUseClassicPipelineMode>
+    <IISExpressSSLPort>58280</IISExpressSSLPort>
+    <IISExpressAnonymousAuthentication>enabled</IISExpressAnonymousAuthentication>
+    <IISExpressWindowsAuthentication>disabled</IISExpressWindowsAuthentication>
+    <IISExpressUseClassicPipelineMode>false</IISExpressUseClassicPipelineMode>
     <UseGlobalApplicationHostFile />
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
@@ -257,7 +253,9 @@
     <Content Include="Content\images\buttons\upload.png" />
     <Content Include="Content\images\header\key-solid.svg" />
     <Content Include="Content\images\header\logo.png" />
-    <Content Include="Content\images\header\logo_.png" />
+    <Content Include="Content\images\header\logo_.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Content\images\icons\carpeta.svg" />
     <Content Include="Content\images\icons\contract.svg" />
     <Content Include="Content\images\icons\descargar.svg" />
@@ -297,7 +295,6 @@
     <Content Include="dist\Content\images\header\logoLogin.png" />
     <Content Include="dist\Content\images\header\logoOLD.png" />
     <Content Include="dist\Content\images\header\logoSmall.png" />
-    <Content Include="dist\Content\images\header\logo_.png" />
     <Content Include="dist\Content\images\header\sideBack.jpg" />
     <Content Include="dist\Content\js\bootstrap-datetimepicker.es.js" />
     <Content Include="dist\Content\js\bootstrap-datetimepicker.js" />

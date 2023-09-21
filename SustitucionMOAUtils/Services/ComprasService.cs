@@ -1635,6 +1635,28 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
+        public Adjudicacion ActualizarFechaLiberacionOC(string nroOc, DateTime fechaLiberacion)
+        {
+            try
+            {
+                var adjudicacionOC = repositorio.Listar<Adjudicacion>(a => a.NumeroOrdenDeCompra == nroOc).OrderBy(f => f.Id).FirstOrDefault();
+
+                if (adjudicacionOC != null)
+                {
+                    adjudicacionOC.FechaLiberacionSap = fechaLiberacion;
+
+                    repositorio.GuardarCambios();
+                }
+                return adjudicacionOC;
+            }
+            catch (Exception e)
+            {
+
+                throw e;
+            }
+          
+        }
+
         public void ActualizarServiciosSolp()
         {
             ServicioWSMOAResponse resultSap = (ServicioWSMOAResponse)serviciosSolpConsumerMOA.request();
@@ -3936,7 +3958,7 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        private void EnviarMailOrdenCompra(Adjudicacion adjudicacion, string mensaje = "")
+        public void EnviarMailOrdenCompra(Adjudicacion adjudicacion, string mensaje = "")
         {
             try
             {
