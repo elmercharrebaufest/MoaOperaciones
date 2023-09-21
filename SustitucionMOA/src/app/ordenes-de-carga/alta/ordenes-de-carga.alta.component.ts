@@ -110,8 +110,8 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
             if (params["id"] > 0) this.ordenDeCargaId = params["id"];
         });
         this.navService.setSeccionList([]);
-        this.obtenerMateriales();
 
+        this.obtenerMateriales();
         if (this.esComercial) {
             this.onCorredorFocusOut('', false);
         }
@@ -166,7 +166,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
     obtenerMateriales() {
         //Sacamos lo de la lista de campaña, ya que ahora son independientes
         try {
-            this.subscription = this.service.getMateriales().subscribe(
+            this.service.getMateriales().subscribe(
                 (result) => {
                     this.listaMateriales = result.data;
                 },
@@ -529,15 +529,6 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                     },
                     (error) => {
                         console.error(' onCorredorFocusOut: ', error.message);
-                        this.mensajeComponent.setErrorMsg(error.message);
-                    }
-                );
-                this.subscription = this.service.getMateriales().subscribe(
-                    (result) => {
-                        this.listaMateriales = result.data;
-                    },
-                    (error) => {
-                        console.error(error);
                         this.mensajeComponent.setErrorMsg(error.message);
                     }
                 );
@@ -1278,7 +1269,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
         }
     }
 
-    cargarClienteDirecto(idCliente: Number) : Promise<void> {
+    cargarClienteDirecto(idCliente: Number): Promise<void> {
         return new Promise((resolve, reject) => {
             this.service.obtenerProveedor(idCliente).subscribe(resp => {
                 let proveedor = this.manejarErroresApiResponse(resp);
