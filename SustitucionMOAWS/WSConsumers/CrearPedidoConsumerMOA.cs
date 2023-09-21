@@ -187,7 +187,7 @@ namespace SustitucionMOAWS.WSConsumers
                 IM_POITEM.MATL_GROUP = posicion.GrupoArticulo?.CodigoSap?.ToString() ?? "";
                 //IM_POITEM.MATL_GROUP = posicion.GrupoArticulo.CodigoSap.ToString();
                 IM_POITEM.MATERIAL = esPosicionDeMateriales ? posicion.MaterialSolp?.CodigoSap.ToString() : "";
-                IM_POITEM.STGE_LOC = posicion.Almacen.CodigoSap.ToString();
+                IM_POITEM.STGE_LOC = posicion.Almacen != null ? posicion.Almacen.CodigoSap.ToString() : "";
                 IM_POITEM.ITEM_CAT = posicion.TipoPosicion.Codigo.ToLower() == "servicio" ? "9" : "0";//ITEM_CAT PSTYP   Tipo de posición del documento de compras
                 IM_POITEM.TRACKINGNO = posicion.NroNecesidad;
                 IM_POITEM.INFO_REC = "";
