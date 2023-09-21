@@ -1635,19 +1635,22 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        public Adjudicacion ActualizarFechaLiberacionOC(string nroOc, DateTime fechaLiberacion)
+        public void ActualizarFechaLiberacionOC(string nroOc, DateTime fechaLiberacion)
         {
             try
             {
-                var adjudicacionOC = repositorio.Listar<Adjudicacion>(a => a.NumeroOrdenDeCompra == nroOc).OrderBy(f => f.Id).FirstOrDefault();
+                var adjudicaciones = repositorio.Listar<Adjudicacion>(a => a.NumeroOrdenDeCompra == nroOc);
 
-                if (adjudicacionOC != null)
+                foreach (var adjudicacionOC in adjudicaciones)
                 {
                     adjudicacionOC.FechaLiberacionSap = fechaLiberacion;
 
-                    repositorio.GuardarCambios();
                 }
-                return adjudicacionOC;
+
+                if (adjudicaciones.Count > 0) { 
+                    repositorio.GuardarCambios();
+                    EnviarMailOrdenCompra(adjudicaciones.Last(), "");
+                }
             }
             catch (Exception e)
             {
@@ -3958,7 +3961,7 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        public void EnviarMailOrdenCompra(Adjudicacion adjudicacion, string mensaje = "")
+        private void EnviarMailOrdenCompra(Adjudicacion adjudicacion, string mensaje = "")
         {
             try
             {

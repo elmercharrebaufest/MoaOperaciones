@@ -73,7 +73,6 @@ namespace SustitucionMOAUtils.Interfaces
         RespuestaGuardarSOLP CerrarCotizacion(int peticionId, int usuarioActualId, string observaciones);
         DatosUltimaSolpDto ObtenerUltimaSolp(int usuarioId);
         RegistroInfoDto ObtenerUltimoRegistroMaterial(string material, string centro, string grupoDeCompras);
-        void EnviarMailOrdenCompra(Adjudicacion adjudicacion, string mensaje = "");
-        Adjudicacion ActualizarFechaLiberacionOC(string nroOc, DateTime fechaLiberacion);
+        void ActualizarFechaLiberacionOC(string nroOc, DateTime fechaLiberacion);
     }
 }
