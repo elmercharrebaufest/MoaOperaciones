@@ -440,7 +440,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
                 // }
 
                 if (this.validarFechaVisitaDeObra()) {
-                    this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: "La fecha de visita de obra no puede ser mayor a la fecha tentativa de ofertas" });
+                    this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: "La fecha de visita de obra no puede ser mayor a la fecha tentativa de ofertas ni a la fecha de límite de consulta" });
                     if (guardarPorPaso == false) {
                         this.blockUI.stop();
                     }
@@ -672,6 +672,8 @@ export class SolpComponent extends BaseComponent implements OnInit {
         var sinPliego = this.solpActual.tipoSolp === "SIN_PLIEGO";
         var validarFechaVisitaDeObra = false;
 
+      
+
         if (esTipoPosicionServicio && !sinPliego) {
             // Encuentra la visita con la fecha más larga
             const visitaMasLarga = this.solpActual.listaVisitas.reduce((visitaAnterior, visitaActual) => {
@@ -682,7 +684,14 @@ export class SolpComponent extends BaseComponent implements OnInit {
                 }
             });
 
+            var fechaHoraLimite = this.service.getFechaHora(this.solpActual.fechaLimiteFecha, this.solpActual.fechaLimiteHora);
+            var visitaDeObraHoraFecha = this.service.getFechaHora(visitaMasLarga.visitaDeObraFecha, visitaMasLarga.visitaDeObraHora)
+
             if (visitaMasLarga.visitaDeObraFecha > this.solpActual.fechaEntrega) {
+                return validarFechaVisitaDeObra = true;
+            }
+
+            if (visitaDeObraHoraFecha > fechaHoraLimite) {
                 return validarFechaVisitaDeObra = true;
             }
         }
