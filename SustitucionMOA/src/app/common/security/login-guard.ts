@@ -43,6 +43,7 @@ export class LoginGuard implements CanActivate, CanActivateChild {
             .pipe(
                 catchError((error) => {
                     console.error('Error en la solicitud:', error);
+                    this.sessionDataService.logout();
                     window.location.href = window.location.origin + '/SignOut';
                     return throwError(error);
                 })
