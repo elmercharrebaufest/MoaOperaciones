@@ -32,6 +32,9 @@ namespace SustitucionMOAUtils.Interfaces
         string ForzarCreacionOrden(int ordenId, string mailUsuario);
         OrdenDeCargaDto ObtenerPatentes(OrdenDeCarga orden, string mailUsuario);
         VisualizarClienteResponse VisualizarCliente(VisualizarClienteRequest request);
+
+        ProveedorDto ObtenerProveedor(int idProveedor);
+
         VisualizarProductoResponse VisualizarProducto(VisualizarProductoRequest request);
         ValidarCorredorClienteContratoProductoResponse ValidarCorredorClienteContratoProducto(ValidarCorredorClienteContratoProductoRequest request);
         string NotificarVencimientoOrdenCarga(int ordenId, string mailUsuario);

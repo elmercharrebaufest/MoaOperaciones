@@ -141,24 +141,7 @@ namespace SustitucionMOAUtils.Services
             {
                 var clientesBD = repositorio.Listar<Proveedor>(p => p.TipoProveedor.Id == (tipoProveedorId > 0 ? tipoProveedorId : p.TipoProveedor.Id) && p.EstadoAprobacion == EstadoAprobacion.Aprobado)
                    .ToList();
-                var clientesDto = clientesBD.Select(prov => new ProveedorDto
-                {
-                    CodigoProveedor = prov.CodigoProveedor ?? "",
-                    CUIT = prov.CUIT,
-                    EstadoAprobacion = prov.EstadoAprobacion,
-                    EstadoAprobacionDescripcion = prov.EstadoAprobacion.ToFriendlyString(),
-                    Id = prov.Id,
-                    IdComercialDataAgro = prov.IdComercialDataAgro,
-                    IdDataAgro = prov.IdDataAgro,
-                    Mail = prov.Mail ?? "",
-                    Observaciones = prov.Observaciones,
-                    RazonSocial = !String.IsNullOrEmpty(prov.RazonSocial) ? prov.RazonSocial : prov.CUIT,
-                    FechaSolicitud = prov.FechaSolicitud,
-                    Comercial = prov.Comercial,
-                    EstadoSIPER = prov.EstadoSIPER,
-                    ContieneDocumentacionFisica = prov.ContieneDocumentacionFisica,
-                    IdTipoProveedor = prov.TipoProveedor.Id
-                }).ToList();
+                var clientesDto = clientesBD.Select(proveedor => new ProveedorDto(proveedor)).ToList();
                 return clientesDto;
             }
             catch (InfoCustomException)
@@ -373,31 +356,14 @@ namespace SustitucionMOAUtils.Services
 
             var listadoProveedores = new List<ProveedorDto>();
 
-            if (usuario.EsAdmin() || usuario.TienePermiso("ELEGIR TODOS VENDEDORES"))
+            if (usuario.EsAdmin() || usuario.TienePermiso(PermisoEnum.ElegirTodosVendedores))
             {
 
                 listadoProveedores.AddRange(
                     repositorio
                         .Listar<Proveedor>(p => p.EstadoAprobacion == EstadoAprobacion.Aprobado)
                         .Where(filtro)
-                        .Select(proveedor => new ProveedorDto
-                        {
-                            CodigoProveedor = proveedor.CodigoProveedor ?? "",
-                            CUIT = proveedor.CUIT,
-                            EstadoAprobacion = proveedor.EstadoAprobacion,
-                            EstadoAprobacionDescripcion = proveedor.EstadoAprobacion.ToFriendlyString(),
-                            Id = proveedor.Id,
-                            IdComercialDataAgro = proveedor.IdComercialDataAgro,
-                            IdDataAgro = proveedor.IdDataAgro,
-                            Mail = proveedor.Mail ?? "",
-                            Observaciones = proveedor.Observaciones,
-                            RazonSocial = proveedor.RazonSocial ?? "",
-                            FechaSolicitud = proveedor.FechaSolicitud,
-                            Comercial = proveedor.Comercial,
-                            EstadoSIPER = proveedor.EstadoSIPER,
-                            ContieneDocumentacionFisica = proveedor.ContieneDocumentacionFisica,
-                            IdTipoProveedor = proveedor.TipoProveedor.Id
-                        })
+                        .Select(proveedor => new ProveedorDto(proveedor))
                 );
             }
             else
@@ -410,25 +376,7 @@ namespace SustitucionMOAUtils.Services
                     proveedores = proveedores.Where(filtro).ToList();
                 }
 
-                listadoProveedores.AddRange(proveedores.Select(proveedor => new ProveedorDto
-                {
-                    CodigoProveedor = proveedor.CodigoProveedor ?? "",
-                    CUIT = proveedor.CUIT,
-                    EstadoAprobacion = proveedor.EstadoAprobacion,
-                    EstadoAprobacionDescripcion = proveedor.EstadoAprobacion.ToFriendlyString(),
-                    Id = proveedor.Id,
-                    IdComercialDataAgro = proveedor.IdComercialDataAgro,
-                    IdDataAgro = proveedor.IdDataAgro,
-                    Mail = proveedor.Mail ?? "",
-                    Observaciones = proveedor.Observaciones,
-                    RazonSocial = proveedor.RazonSocial ?? "",
-                    FechaSolicitud = proveedor.FechaSolicitud,
-                    Comercial = proveedor.Comercial,
-                    EstadoSIPER = proveedor.EstadoSIPER,
-                    ContieneDocumentacionFisica = proveedor.ContieneDocumentacionFisica,
-                    IdTipoProveedor = proveedor.TipoProveedor.Id
-                }
-                ).ToList());
+                listadoProveedores.AddRange(proveedores.Select(proveedor => new ProveedorDto(proveedor)).ToList());
             }
 
 
