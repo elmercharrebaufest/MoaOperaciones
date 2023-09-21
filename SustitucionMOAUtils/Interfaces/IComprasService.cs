@@ -1,5 +1,6 @@
 ﻿using SustitucionMOAModel.Consultas;
 using SustitucionMOAModel.Dto;
+using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using SustitucionMOAModel.Models.WSMapMOA;
 using SustitucionMOAModel.Models.WSMapMOA.Compras;
@@ -72,5 +73,7 @@ namespace SustitucionMOAUtils.Interfaces
         RespuestaGuardarSOLP CerrarCotizacion(int peticionId, int usuarioActualId, string observaciones);
         DatosUltimaSolpDto ObtenerUltimaSolp(int usuarioId);
         RegistroInfoDto ObtenerUltimoRegistroMaterial(string material, string centro, string grupoDeCompras);
+        void EnviarMailOrdenCompra(Adjudicacion adjudicacion, string mensaje = "");
+        Adjudicacion ActualizarFechaLiberacionOC(string nroOc, DateTime fechaLiberacion);
     }
 }
