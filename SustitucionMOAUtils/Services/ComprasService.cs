@@ -1811,6 +1811,7 @@ namespace SustitucionMOAUtils.Services
             };
 
                 var tablaSap = repositorio.Listar<TablaSap>(x => tablasSapAConsultar.Contains(x.Tabla));
+                var tablaGeneral = repositorio.Listar<TablaGeneral>(x => x.Tabla == "TipoSolp");
 
                 if (result.TipoImputaciones.Count > 0)
                 {
@@ -3623,7 +3624,10 @@ namespace SustitucionMOAUtils.Services
                 htmlBody += $"<br />Observaciones: {observacionesFormatted} <br /><br /><br />";
             }
 
-            if(peticion.Solp.Posiciones.Select(x => x.TipoPosicion.Codigo).FirstOrDefault() == "SERVICIO" && peticion.Solp.TipoSolp.Codigo != "SIN_PLIEGO")
+            var tienePliego = (peticion.Solp.TipoSolpSap == (int?)TipoSolpSap.Mantenimiento || peticion.Solp.TipoSolpSap == (int?)TipoSolpSap.Sap) && peticion.Solp.EstadoDocumento.Codigo == "CREADO";
+            var solpServicioWebConPliego = peticion.Solp.Posiciones.Select(x => x.TipoPosicion.Codigo).FirstOrDefault() == "SERVICIO" && (peticion.Solp.TipoSolpSap == (int?)TipoSolpSap.Web) && peticion.Solp.TipoSolp.Codigo != "SIN_PLIEGO";
+            
+            if (solpServicioWebConPliego || tienePliego)
             {
                 var downloadLinkUrl = ConfigurationManager.AppSettings["ida:RedirectUri"] + "/api/compras/DescargarPliegoDesdeLink?solpId=" + peticion.Solp.Id + "&token=" + peticion.Solp.EmailLinkToken;
 
