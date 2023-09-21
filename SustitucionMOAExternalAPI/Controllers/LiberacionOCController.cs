@@ -26,9 +26,8 @@ namespace SustitucionMOAExternalAPI.Controllers
             try
             {
                 Log.ExternalAPIInfo(string.Format("Se informó la liberacion de la OC: {0} en la fecha {1}", nroOc, fechaLiberacion));
-                var adjudicacionOc = comprasSvc.ActualizarFechaLiberacionOC(nroOc, fechaLiberacion);
-                comprasSvc.EnviarMailOrdenCompra(adjudicacionOc, "");
-
+                comprasSvc.ActualizarFechaLiberacionOC(nroOc, fechaLiberacion);
+       
             }
             catch (Exception ex)
             {
