@@ -411,7 +411,6 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                                 this.gestionarAltasCUIT()
                                 document.getElementById("openModalNotificacion")
                                     .click();
-                                this.gestionarAltasCUIT()
                             }
                         },
                         (error) => {
