@@ -4262,6 +4262,12 @@ namespace SustitucionMOAUtils.Services
                 htmlBody += $"Observaciones: {circular.Circular.Observaciones} <br />";
             }
 
+            if (circular.Circular.RequiereCambioDeFechas == true)
+            {
+                htmlBody += $"Plazo de oferta actualizado: {circular.Circular.PlazoDeOferta} <br />";
+                htmlBody += $"Fecha de entrega actualizada: {circular.Circular.FechaDeEntrega.Value.ToString("dd/MM/yyyy")} <br />";   
+            }
+
             htmlBody += "En caso de tener alguna consulta ingresar www.moaoperaciones.com.ar " +
                 "<br/><br/>Saludos Cordiales<br/>" +
                 "Molinos Agro S.A. <br/><br/> " +
