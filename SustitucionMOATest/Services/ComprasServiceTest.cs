@@ -1399,5 +1399,54 @@ namespace SustitucionMOATest.Services
             Assert.That(result, Is.Not.Null);
             Assert.AreEqual(registroInfo.GetType(), result.GetType());
         }
+
+
+        [Test]
+        public void ActualizarFechaLiberacionOCOk()
+        {
+
+            var nroOc = "1212";
+            var fechaLiberacion = DateTime.Now;
+
+            var adjudicaciones = new List<Adjudicacion> {
+                new Adjudicacion {
+                    Id = 1,
+                    NumeroOrdenDeCompra = nroOc,
+                    FechaLiberacionSap = null,
+                    Usuario = new Usuario { Mail = "comprador@mail.com" },
+                    Cotizacion = new Cotizacion
+                    {
+                        PeticionDeOfertaUsuario = new PeticionDeOfertaUsuario
+                        {                    
+                            Usuario = new Usuario
+                            {
+                                Mail = "bmelgarejo@prueba.com"
+                            },                         
+                        }
+                    },
+                    Solp = new Solp
+                    {
+                        Id = 1,
+                        UsuarioCreacion = new Usuario { Id = 1, Mail = "bmelgarejo@prueba.com", },
+                        NroSolp = "3344534"
+                    }
+                }
+                   
+            };
+
+
+            repositorioMock
+                .Setup(y => y.Listar(It.IsAny<Expression<Func<Adjudicacion, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null))
+                .Returns(adjudicaciones);
+
+            emailServiceMock.Setup(y => y.EnviarMail(It.IsAny<List<string>>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<List<string>>(), It.IsAny<AlternateView>(),
+               It.IsAny<byte[]>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<List<string>>(), It.IsAny<Dictionary<string, byte[]>>()));
+
+            target.ActualizarFechaLiberacionOC(nroOc, fechaLiberacion);
+
+            repositorioMock.Verify(x => x.GuardarCambios(), Times.Once);
+        }
+
+
     }
 }
