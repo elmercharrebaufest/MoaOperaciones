@@ -659,7 +659,7 @@ namespace SustitucionMOAUtils.Services
             var existeTransporte = true;
             var codigoVerificacionSap = string.Empty;
             var descripcionCodigoVerificacionSap = string.Empty;
-
+             
             if (!ValidarExistenciaIntermediarioFlete(ordenDeCarga))
             {
                 existeTransporte = false;
@@ -1983,7 +1983,7 @@ namespace SustitucionMOAUtils.Services
             {
                 orden.TransporteExiste = false;
                 orden.DescripcionCodigoVerificacionSap = "No se pudo generar la entrega. No existe el Intermediario de flete.";
-                orden.Estado = EstadoOrdenDeCarga.Pendiente;
+                orden.Estado = EstadoOrdenDeCarga.EntregaPendiente;
                 repositorio.GuardarCambios();
                 return new Resultado { Mensaje = "No se pudo generar la entrega. No existe el Intermediario de flete." };
             }
@@ -2817,7 +2817,7 @@ namespace SustitucionMOAUtils.Services
             var result = this.scatoConsumer.ObtenerRecorridoNoRechazadoPorNumeroDocumento(nroEntrega).FirstOrDefault();
             if (result == null)
                 return false;
-            return result.Terminado != false;
+            return result.Terminado != true;
         }
 
         private bool ContratoTieneKgDisponibles(OrdenDeCarga orden)
@@ -2945,7 +2945,7 @@ namespace SustitucionMOAUtils.Services
         {
             var msg = orden.MsgCuitsTerceros;
             orden.DescripcionCodigoVerificacionSap = msg;
-            orden.Estado = EstadoOrdenDeCarga.Pendiente;
+            orden.Estado = EstadoOrdenDeCarga.EntregaPendiente;
             repositorio.GuardarCambios();
             return new Resultado { Mensaje = msg };
         }

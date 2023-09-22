@@ -189,7 +189,9 @@
     <Content Include="Content\bootstrap.css.map" />
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\bootstrap.min.css.map" />
-    <Content Include="Content\header\key-solid.svg" />
+    <Content Include="Content\header\key-solid.svg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Content\header\login.jpg" />
     <Content Include="Content\header\loginSmall.jpg" />
     <Content Include="Content\header\logo.png" />
