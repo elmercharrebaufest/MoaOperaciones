@@ -320,6 +320,30 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="PREHotFix.DeployParameters.xml" />
+    <Content Include="QABaufest.DeployParameters.Debug.xml">
+      <DependentUpon>QABaufest.DeployParameters.xml</DependentUpon>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="QABaufest.DeployParameters.Release.xml">
+      <DependentUpon>QABaufest.DeployParameters.xml</DependentUpon>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="QABaufest.DeployParameters.xml">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="QAHuenei.DeployParameters.Debug.xml">
+      <DependentUpon>QAHuenei.DeployParameters.xml</DependentUpon>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="QAHuenei.DeployParameters.Release.xml">
+      <DependentUpon>QAHuenei.DeployParameters.xml</DependentUpon>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="QAHuenei.DeployParameters.xml">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="QAHotFix.DeployParameters.xml" />
     <Content Include="src\app\common\shared-components\buscador\buscador.component.css" />
     <Content Include="src\app\common\shared-components\buscador\buscador.component.html" />

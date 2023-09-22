@@ -2299,8 +2299,8 @@ namespace SustitucionMOAUtils.Services
             }
             foreach (var item in todasLasSolp.Items)
             {
-                item.CentroFormateado = item.PosicionCompras != null ? string.Join(", ", item.PosicionCompras.OrderBy(x => x.CentroId).GroupBy(x => x.CentroId).Select(x => x.Key)) : "";
-                item.GrupoCompraFormateado = item.PosicionCompras != null ? string.Join(", ", item.PosicionCompras.OrderBy(x => x.GrupoComprasId).GroupBy(x => x.GrupoComprasId).Select(x => x.Key)) : "";
+                item.CentroFormateado = item.PosicionCompras != null ? string.Join(", ", item.PosicionCompras.OrderBy(x => x.CentroCodigo).GroupBy(x => x.CentroCodigo).Select(x => x.Key)) : "";
+                item.GrupoCompraFormateado = item.PosicionCompras != null ? string.Join(", ", item.PosicionCompras.OrderBy(x => x.GrupoComprasCodigo).GroupBy(x => x.GrupoComprasCodigo).Select(x => x.Key)) : "";
             }
 
             return todasLasSolp;
