@@ -2817,7 +2817,7 @@ namespace SustitucionMOAUtils.Services
             var result = this.scatoConsumer.ObtenerRecorridoNoRechazadoPorNumeroDocumento(nroEntrega).FirstOrDefault();
             if (result == null)
                 return false;
-            return result.Terminado != false;
+            return result.Terminado != true;
         }
 
         private bool ContratoTieneKgDisponibles(OrdenDeCarga orden)
