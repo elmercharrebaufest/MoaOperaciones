@@ -1427,7 +1427,7 @@ namespace SustitucionMOATest.Services
                     Id = 1,
                     NumeroOrdenDeCompra = nroOc,
                     FechaLiberacionSap = null,
-                    Usuario = new Usuario { Mail = "comprador@mail.com" },
+                    Usuario = new Usuario { Mail = "comprador@mail.com" , Proveedores = new List<Proveedor>()},
                     Cotizacion = new Cotizacion
                     {
                         PeticionDeOfertaUsuario = new PeticionDeOfertaUsuario

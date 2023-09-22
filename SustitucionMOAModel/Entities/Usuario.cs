@@ -116,7 +116,7 @@ namespace SustitucionMOAModel.Entities
 
         public string ObtenerRazonSocial()
         {
-            if (Proveedores != null && Proveedores.Count >= 1)
+            if (Proveedores.Count >= 1)
             {
                 if (!string.IsNullOrEmpty(ObtenerProveedor().RazonSocial))
                     return ObtenerProveedor().RazonSocial;
@@ -131,7 +131,7 @@ namespace SustitucionMOAModel.Entities
 
         public string ObtenerCodigoProveedor()
         {
-            if (Proveedores != null && Proveedores.Count >= 1)
+            if (Proveedores.Count >= 1)
             {
                 if (!string.IsNullOrEmpty(ObtenerProveedor().CodigoProveedor))
                     return ObtenerProveedor().CodigoProveedor;
