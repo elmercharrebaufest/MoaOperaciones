@@ -29,7 +29,7 @@ namespace SustitucionMOAModel.Dto
         public string RespetaMaterialesColor { get; set; }
         public string RespetaMaterialesDescripcion { get; set; }
         public bool TieneObservacionEconomica { get; set; }
-        public int? PorcentajeDeHoras { get; set; }
+        public decimal? PorcentajeDeHoras { get; set; }
     }
 
     public class CotizacionPosicionDto
@@ -121,7 +121,7 @@ namespace SustitucionMOAModel.Dto
         public List<CotizacionSubposicionesDto> CotizacionSubposiciones { get; set; } = new List<CotizacionSubposicionesDto>();
         public bool ConfigurarHora { get; set; }
         public DateTime? FechaDeVigencia { get; set; }
-        public int? PorcentajeDeHoras { get; set; }
+        public decimal? PorcentajeDeHoras { get; set; }
     }
 
 

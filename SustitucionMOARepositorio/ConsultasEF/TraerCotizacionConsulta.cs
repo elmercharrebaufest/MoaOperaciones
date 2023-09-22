@@ -46,7 +46,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                     RespetaServicios = cotizacion != null ? cotizacion.RespetaServicios : null,
                                     TipoPosicionCodigo = po.PeticionDeOferta.Solp.Posiciones.Select(x => x.TipoPosicion.Codigo).FirstOrDefault(),
                                     CotizacionId = cotizacion != null ? cotizacion.Id : 0,
-                                    PorcentajeDeHoras = cotizacion.PorcentajeDeHoras ?? 0,
+                                    PorcentajeDeHoras = cotizacion.PorcentajeDeHoras,
                                     PeticionDeOfertaPosicion = po.PeticionDeOferta.Posiciones.Where(posi => posi.SolpPosicion.EsConcluido == true && posi.SolpPosicion.Estado == true).Select(pop =>
                                     new PeticionDeOfertaSolpPosicionDto()
                                     {
