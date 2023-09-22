@@ -927,7 +927,7 @@ namespace SustitucionMOAUtils.Services
 
                 return todasLasSolp;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 throw;
             }
@@ -2128,7 +2128,7 @@ namespace SustitucionMOAUtils.Services
                 //    }
                 //}
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 throw;
             }
@@ -2319,8 +2319,8 @@ namespace SustitucionMOAUtils.Services
         {
             try
             {
-                var userId = repositorio.Obtener<Usuario>(a => a.Mail == username).Id;
-                var todasLasPO = repositorio.ListarConsultaPaginada(new ListarSolpPOConsulta(paginacion, nroSolp, userId));
+                var cuitUsuario = repositorio.Obtener<Usuario>(a => a.Mail == username).CUITRegistro;
+                var todasLasPO = repositorio.ListarConsultaPaginada(new ListarSolpPOConsulta(paginacion, nroSolp, cuitUsuario));
                 var listId = todasLasPO.ToList().Select(y => y.Id);
                 if (todasLasPO != null && todasLasPO.Count() > 0)
                 {
@@ -2337,7 +2337,7 @@ namespace SustitucionMOAUtils.Services
                 }
                 return todasLasPO;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 throw;
             }
@@ -3070,7 +3070,7 @@ namespace SustitucionMOAUtils.Services
 
                 return solp;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 throw;
             }
@@ -3086,7 +3086,7 @@ namespace SustitucionMOAUtils.Services
                     {
                         var newProveedor = ObtenerProveedorCompras(codigo);
                     }
-                    catch (Exception e)
+                    catch (Exception)
                     {
                     }
                 }
@@ -3159,7 +3159,7 @@ namespace SustitucionMOAUtils.Services
 
                 return respuestaGuardarSOLP;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 throw;
             }
@@ -3593,7 +3593,7 @@ namespace SustitucionMOAUtils.Services
                 return xHtml;
 
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 throw;
             }
@@ -3930,7 +3930,7 @@ namespace SustitucionMOAUtils.Services
                 return xHtml;
 
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 throw;
             }
@@ -4270,7 +4270,7 @@ namespace SustitucionMOAUtils.Services
                 return respuestaGuardarSOLP;
 
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 throw;
             }
@@ -4615,7 +4615,7 @@ namespace SustitucionMOAUtils.Services
                 return respuestaGuardarSOLP;
 
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 throw;
             }
@@ -4951,7 +4951,7 @@ namespace SustitucionMOAUtils.Services
 
                 return cotizacionDto;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 throw;
             }
@@ -5008,7 +5008,7 @@ namespace SustitucionMOAUtils.Services
 
                 return respuestaGuardarSOLP;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 throw;
             }
@@ -5166,7 +5166,7 @@ namespace SustitucionMOAUtils.Services
                 //Crear Cotizacion
                 CrearCotizacionAutomatica(solp, enviarMail, peticionEntidad, out respuestaCotizacion, out cotizacionNueva, null);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 throw;
             }
@@ -5221,7 +5221,7 @@ namespace SustitucionMOAUtils.Services
                 }
                 return respuestaGuardarSOLP;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 throw;
             }
@@ -5408,7 +5408,7 @@ namespace SustitucionMOAUtils.Services
                 //}
                 return resultado;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 throw;
             }

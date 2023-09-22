@@ -316,7 +316,7 @@ namespace SustitucionMOATest.Services
                                     }
                                 }
                             },
-                Pliego = new Pliego { Id = 1, NombreObra = "Obra Pliego" }
+                Pliego = new Pliego { Id = 1, NombreObra = "Obra Pliego", VisitasMasivas = new List<PliegoVisita>() }
             },
             Posiciones = new List<PeticionDeOfertaSolpPosicion>
                 {
@@ -1394,10 +1394,25 @@ namespace SustitucionMOATest.Services
         {
             RegistroInfoDto registroInfo = new RegistroInfoDto { Cantidad = 5, Moneda = "USDM", Centro = "1029", GrupoDeCompras = "" };
             obtenerRegistroInfoConsumerMOAMock.Setup(y => y.ObtenerRegistroInfoConsumer(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
-                .Returns( new List<RegistroInfoDto> { registroInfo });
-            var result = target.ObtenerUltimoRegistroMaterial("codigoMaterial","codigoCentro","codigoGrupoDeCompras");
+                .Returns(new List<RegistroInfoDto> { registroInfo });
+            var result = target.ObtenerUltimoRegistroMaterial("codigoMaterial", "codigoCentro", "codigoGrupoDeCompras");
             Assert.That(result, Is.Not.Null);
             Assert.AreEqual(registroInfo.GetType(), result.GetType());
+        }
+
+        [Test]
+        public void ListarProveedorPOOk()
+        {
+            var listaPO = new ListaPaginada<PeticionDeOfertaDto>(new List<PeticionDeOfertaDto> { new PeticionDeOfertaDto { Id = 1, ItemsTotales = 7 } }, 1, 10, 5);
+
+            repositorioMock.Setup(y => y.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>())).Returns(new Usuario { CUITRegistro = "30709142301" });
+            repositorioMock.Setup(y => y.ListarConsultaPaginada(It.IsAny<ListarSolpPOConsulta>())).Returns(listaPO);
+            repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<PeticionDeOferta, bool>>>(),
+             It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null)).Returns(new List<PeticionDeOferta> { peticionDeOferta });
+
+            var result = target.ListarPOProveedor(new Paginacion(), "nroSolp", "username");
+            Assert.That(result, Is.Not.Null);
+            Assert.AreEqual(listaPO.GetType(), result.GetType());
         }
     }
 }
