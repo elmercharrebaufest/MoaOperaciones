@@ -5338,7 +5338,7 @@ namespace SustitucionMOAUtils.Services
             {
                 throw new WSCustomException("No existe un proveedor con ese codigo");
             }
-            List<SustitucionMOAModel.Models.FechaWS> fechas = CommonService.toDateList(DateTime.Now.AddYears(-5).ToShortDateString(), DateTime.Now.ToShortDateString());
+            List<SustitucionMOAModel.Models.FechaWS> fechas = CommonUtil.toDateList(DateTime.Now.AddYears(-5).ToShortDateString(), DateTime.Now.ToShortDateString());
             var vendedoresMoa = vendedoresConsumerMOA.Request(codigoProveedor, fechas);
             if (vendedoresMoa == null || vendedoresMoa.vendedores == null || vendedoresMoa.vendedores.Count == 0)
                 throw new WSCustomException("No existe un proveedor con ese codigo.");

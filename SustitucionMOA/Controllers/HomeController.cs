@@ -28,23 +28,25 @@ namespace SustitucionMOA.Controllers
     //[System.Web.Mvc.SessionState(System.Web.SessionState.SessionStateBehavior.ReadOnly)]
     public class HomeController : BaseController
     {
-        LoginService _loginService = new LoginService();
-
+  
         readonly IHomeService _homeService;
         protected readonly IRepositorio repositorio;
         protected readonly IAzureB2CService azureB2CService;
         protected readonly IDataAgroService dataAgroService;
+        protected readonly ILoginService loginService;
 
         private static readonly string redirectUrl = ConfigurationManager.AppSettings["SpaUrl"];
 
         // GET: Home
 
-        public HomeController(IRepositorio repositorio, IAzureB2CService azureB2CService, IDataAgroService dataAgroService, IHomeService _homeService)
+        public HomeController(IRepositorio repositorio, IAzureB2CService azureB2CService, IDataAgroService dataAgroService,
+            IHomeService _homeService, ILoginService loginService)
         {
             this.repositorio = repositorio;
             this._homeService = _homeService;
             this.azureB2CService = azureB2CService;
             this.dataAgroService = dataAgroService;
+            this.loginService = loginService;
         }
 
         public ActionResult Index()
@@ -204,7 +206,7 @@ namespace SustitucionMOA.Controllers
                     {
                         if (!esNuevoUsuario)
                         {
-                            noticias = _loginService.getNoticias(proveedor);
+                            noticias = loginService.ObtenerNoticias(proveedor);
                             noticias.cantidad = 0;
                             if (noticias != null && noticias.noticias != null)
                             {

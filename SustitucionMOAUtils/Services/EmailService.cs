@@ -10,6 +10,10 @@ namespace SustitucionMOAUtils.Services
 {
     public class EmailService: IEmailService
     {
+        public EmailService()
+        {
+
+        }
         public List<string> ObtenerListaDestinatarios(IEnumerable<string> gruposDeMails)
         {
             var destinatarios = new List<string>();

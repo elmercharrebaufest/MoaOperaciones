@@ -78,7 +78,7 @@ namespace SustitucionMOAUtils.Services
                 fechaFin = DateTime.Now.ToShortDateString();
             }
 
-            List<Models.FechaWS> fechas = CommonService.toDateList(fechaInicio, fechaFin);
+            List<Models.FechaWS> fechas = CommonUtil.toDateList(fechaInicio, fechaFin);
             VendedoresWSMOAResponse response = new VendedoresWSMOAResponse();
             try
             {
@@ -172,7 +172,7 @@ namespace SustitucionMOAUtils.Services
                     fechaFin = DateTime.Now.ToShortDateString();
                 }
 
-                List<Models.FechaWS> fechas = CommonService.toDateList(fechaInicio, fechaFin);
+                List<Models.FechaWS> fechas = CommonUtil.toDateList(fechaInicio, fechaFin);
                 try
                 {
                     response = vendedoresConsumerMOA.Request(codigoProveedor, fechas);

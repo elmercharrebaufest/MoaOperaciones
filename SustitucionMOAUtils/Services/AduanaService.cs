@@ -12,11 +12,17 @@ using SustitucionMOAAssets;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Models;
 using SustitucionMOAUtils.Credentials;
+using SustitucionMOAUtils.Interfaces;
 
 namespace SustitucionMOAUtils.Services
 {
-    public class AduanaService
+    public class AduanaService :IAduanaService
     {
+        public AduanaService()
+        {
+
+        }
+
         public CamaraImageResponse ObtenerImagen(string url, string nombre)
         {
 
@@ -62,7 +68,7 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        public string obtenerInfoMet()
+        public string ObtenerInfoMet()
         {
 
             string startupPath = System.AppDomain.CurrentDomain.BaseDirectory + @"Template";

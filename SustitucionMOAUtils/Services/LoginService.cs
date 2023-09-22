@@ -3,13 +3,18 @@ using SustitucionMOAAssets;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Models.WSMapMOA.Login;
 using SustitucionMOAModel.Models.WSMapMOA.Noticia;
+using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAWS.WSConsumers;
 
 namespace SustitucionMOAUtils.Services
 {
-    public class LoginService
+    public class LoginService : ILoginService
     {
-        public LoginWSMOAResponse login(string username, string pass)
+        public LoginService()
+        {
+
+        }
+        public LoginWSMOAResponse Login(string username, string pass)
         {
             try
             {
@@ -21,7 +26,7 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        public NoticiasDetallesWSMOAResponse getNoticias(string proveedor) {
+        public NoticiasDetallesWSMOAResponse ObtenerNoticias(string proveedor) {
             try
             {
                 return new NoticiasDetalleConsumerMOA().request(proveedor, DateTime.Now.ToString("yyyy-MM-dd"));

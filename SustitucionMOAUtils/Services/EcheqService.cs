@@ -50,7 +50,7 @@ namespace SustitucionMOAUtils.Services
         {
             try
             {
-                List<FechaWS> fechas = CommonService.toDateList(fechaInicio, fechaFin);
+                List<FechaWS> fechas = CommonUtil.toDateList(fechaInicio, fechaFin);
 
                 List<EcheqNegocioDto> result = echeqVisualizarPendientePagoConsumerMOA.Request(proveedor, fechas, contrato);
 

@@ -46,8 +46,8 @@ namespace SustitucionMOAUtils.Services
         {
             try
             {
-                List<FechaWS> fechas = CommonService.toDateList(fechaInicio, fechaFin);
-                FechaWS fecha = CommonService.toDate(fechaInicio, fechaFin);
+                List<FechaWS> fechas = CommonUtil.toDateList(fechaInicio, fechaFin);
+                FechaWS fecha = CommonUtil.toDate(fechaInicio, fechaFin);
                 HomeViewModel data = new HomeViewModel();
                 HomeWSMOAResponse homeWsRes = new HomeConsumerMOA().request(proveedor, fechas);
                 if (homeWsRes != null)
@@ -82,8 +82,8 @@ namespace SustitucionMOAUtils.Services
         {
             try
             {
-                List<FechaWS> fechas = CommonService.toDateList(fechaInicio, fechaFin);
-                FechaWS fecha = CommonService.toDate(fechaInicio, fechaFin);
+                List<FechaWS> fechas = CommonUtil.toDateList(fechaInicio, fechaFin);
+                FechaWS fecha = CommonUtil.toDate(fechaInicio, fechaFin);
                 HomeViewModel data = new HomeViewModel();
                 HomeWSMOAResponse homeWsRes = new HomeNGConsumerMOA().request(proveedor, fechas);
                 if (homeWsRes != null)
@@ -125,7 +125,7 @@ namespace SustitucionMOAUtils.Services
             bool ccppAplicacion = false;
             bool ccppDescargas = false;
             string fechaFin = DateTime.Now.AddDays(+1).ToString("yyyy - MM - dd");
-            List<FechaWS> fechas = CommonService.toDateList(fechaInicio, fechaFin);
+            List<FechaWS> fechas = CommonUtil.toDateList(fechaInicio, fechaFin);
             palabraABuscar.Trim().Replace("\t", "");
             if (palabraABuscar == null || palabraABuscar == "undefined" || palabraABuscar.Length < 5)
             {
@@ -142,7 +142,7 @@ namespace SustitucionMOAUtils.Services
             {
                 try
                 {
-                    detalleContratoResultado = _contratoService.getDetalleContrato(proveedor, palabra);
+                    detalleContratoResultado = _contratoService.ObtenerDetalleContrato(proveedor, palabra);
                 }
                 catch (Exception e)
                 {

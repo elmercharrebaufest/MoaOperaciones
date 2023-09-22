@@ -1595,7 +1595,7 @@ namespace SustitucionMOAUtils.Services
                 OrdenCargaConsumerMOA ordenCargaConsumerMOA = new OrdenCargaConsumerMOA();
                 if (!string.IsNullOrEmpty(fechaInicio) && !string.IsNullOrEmpty(fechaFin))
                 {
-                    fechas = CommonService.toDateList(fechaInicio, fechaFin);
+                    fechas = CommonUtil.toDateList(fechaInicio, fechaFin);
                 }
                 var request = new OrdenCargaVisualizarClienteWSMOARequest()
                 {
@@ -2204,7 +2204,7 @@ namespace SustitucionMOAUtils.Services
             try
             {
                 var rangoFechas = string.IsNullOrEmpty(req.FechaDesde) || string.IsNullOrEmpty(req.FechaHasta) ? null :
-                    CommonService.toDateList(req.FechaDesde, req.FechaHasta);
+                    CommonUtil.toDateList(req.FechaDesde, req.FechaHasta);
                 var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
 
                 var consumerReq = new OrdenCargaVisualizarClienteWSMOARequest
@@ -2959,7 +2959,7 @@ namespace SustitucionMOAUtils.Services
 
             if (!string.IsNullOrEmpty(fechaInicio) && !string.IsNullOrEmpty(fechaFin))
             {
-                fechas = CommonService.toDateList(fechaInicio, fechaFin);
+                fechas = CommonUtil.toDateList(fechaInicio, fechaFin);
             }
 
             var request = new OrdenCargaVisualizarClienteWSMOARequest()
