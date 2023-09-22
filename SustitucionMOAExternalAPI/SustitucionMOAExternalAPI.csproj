@@ -187,8 +187,35 @@
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
+    <Content Include="NEW.QA.Baufest.DeployParameters.Debug.xml">
+      <DependentUpon>NEW.QA.Baufest.DeployParameters.xml</DependentUpon>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="NEW.QA.Baufest.DeployParameters.Release.xml">
+      <DependentUpon>NEW.QA.Baufest.DeployParameters.xml</DependentUpon>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="NEW.QA.Baufest.DeployParameters.xml">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="parameters.xml" />
+    <Content Include="NEW.PRE.DeployParameters .Debug.xml">
+      <DependentUpon>NEW.PRE.DeployParameters .xml</DependentUpon>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="NEW.PRE.DeployParameters .Release.xml">
+      <DependentUpon>NEW.PRE.DeployParameters .xml</DependentUpon>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="NEW.PRE.DeployParameters .xml">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="PREHotFix.DeployParameters.xml" />
+    <Content Include="NEW.PROD.DeployParameters.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="PROD.DeployParameters.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -201,6 +228,18 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="PRE.DeployParameters.xml">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="NEW.QA.Huenei.DeployParameters.Debug.xml">
+      <DependentUpon>NEW.QA.Huenei.DeployParameters.xml</DependentUpon>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="NEW.QA.Huenei.DeployParameters.Release.xml">
+      <DependentUpon>NEW.QA.Huenei.DeployParameters.xml</DependentUpon>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="NEW.QA.Huenei.DeployParameters.xml">
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
