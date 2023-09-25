@@ -2358,11 +2358,23 @@ namespace SustitucionMOAUtils.Services
             return result;
         }
 
-        public bool EmailGestionarAltaCuitCliente(List<GestionCuitDto> cuits)
+        public bool EnviarMailAltaCuitTerceros(bool gestionaFlete, bool gestionaDestino, bool gestionaDestinatario, string ordenId)
         {
-            emailFasService.EnviarMailAltaTempranaCuit(cuits);
+            var ordenDeCarga = this.repositorio.Obtener<OrdenDeCarga>(o => o.Id.ToString() == ordenId);
+
+            if (gestionaFlete)
+            {
+                emailFasService.EnviarMailAltaIntermediarioFlete(ordenDeCarga.CUITIntermediarioFlete, ordenDeCarga.RazonSocialIntermediarioFlete, ordenDeCarga.Id.ToString());
+            }
+
+            if(gestionaDestino || gestionaDestinatario)
+            {
+                emailFasService.EnviarMailAltaTempranaCuit(ordenDeCarga, ordenId, gestionaDestino, gestionaDestinatario);
+            }    
+
             return true;
         }
+
 
         public bool EmailGestionarAltaIntermediarioFlete(GestionCuitDto cuit)
         {

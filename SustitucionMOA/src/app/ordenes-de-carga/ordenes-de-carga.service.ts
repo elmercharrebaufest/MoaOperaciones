@@ -4,7 +4,7 @@ import { Injectable } from '@angular/core';
 import { HttpParams } from '@angular/common/http';
 import { BaseService } from './../common/services/BaseService';
 import { timeoutWith } from 'rxjs/operators';
-import { GestionCuit, OrdenDeCarga } from '../common/models/ordenes-de-carga/ordenDeCarga';
+import { OrdenDeCarga } from '../common/models/ordenes-de-carga/ordenDeCarga';
 import { ObtenerContratosDisponiblesResponse } from '../common/models/ordenes-de-carga/obtenerContratosDisponiblesResponse';
 import { ApiResponse } from '../common/models/response';
 import { ValidarSisaCorredorClienteResponse } from '../common/models/ordenes-de-carga/validarSisaCorredorClienteResponse';
@@ -397,19 +397,19 @@ export class OrdenesDeCargaService extends BaseService {
                 { params: params, headers: this.headers })
             .pipe(timeoutWith(360000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
     }
-    public enviarMailGestionarAltaCuitCliente(cuits: GestionCuit[]): Observable<ApiResponse<boolean>> {
+
+    public EnviarMailAltaCuitTerceros(gestionaFlete: boolean, gestionaDestino: boolean, gestionaDestinatario: boolean, 
+        ordenId: string): Observable<ApiResponse<boolean>> {
+        const payload = {
+            gestionaFlete,
+            gestionaDestino,
+            gestionaDestinatario,
+            ordenId
+        }
         return this.http
             .post<ApiResponse<boolean>>(
-                '/api/OrdenDeCarga/GestionarAltaCuitCliente',
-                cuits)
-    }
-
-    public enviarMailGestionarAltaCuitIntermediarioFlete(cuitDto: GestionCuit): Observable<ApiResponse<boolean>> {
-
-        return this.http
-            .post<ApiResponse<boolean>>(
-                '/api/OrdenDeCarga/GestionarAltaCuitIntermediarioFlete',
-                cuitDto)
+                '/api/OrdenDeCarga/EnviarMailAltaCuitTerceros',
+                payload)
     }
 
     public obtenerPlantasDestino(destinoCuit: string): Observable<ApiResponse<Planta[]>> {

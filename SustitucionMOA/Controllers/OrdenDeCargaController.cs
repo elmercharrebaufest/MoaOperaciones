@@ -800,12 +800,13 @@ namespace SustitucionMOA.Controllers
             return ContentCustom(response);
         }
         [HttpPost]
-        public ActionResult GestionarAltaCuitCliente(List<GestionCuitDto> cuits)
+        public ActionResult EnviarMailAltaCuitTerceros(bool gestionaFlete, bool gestionaDestino, bool gestionaDestinatario, 
+            string ordenId)
         {
             var response = new SustitucionMOAApiResponse<bool>();
             try
             {
-                response.Data = ordenDeCargaService.EmailGestionarAltaCuitCliente(cuits);
+                response.Data = ordenDeCargaService.EnviarMailAltaCuitTerceros(gestionaFlete, gestionaDestino, gestionaDestinatario, ordenId);
             }
             catch (InfoCustomException ice)
             {
@@ -817,39 +818,11 @@ namespace SustitucionMOA.Controllers
             }
             catch (Exception ex)
             {
-                var cuit2 = cuits.Count == 2 ? cuits[1].cuit : "";
-                Log.Info($"Hubo un error al intentar enviar mail para gestion de alta de cuits: {cuits[0]}, {cuit2}");
                 Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
                 response.Error = ErrorMsg.Error;
             }
             return ContentCustom(response);
         }
-
-        [HttpPost]
-        public ActionResult GestionarAltaCuitIntermediarioFlete(GestionCuitDto cuitDto)
-        {
-            var response = new SustitucionMOAApiResponse<bool>();
-            try
-            {
-                response.Data = ordenDeCargaService.EmailGestionarAltaIntermediarioFlete(cuitDto);
-            }
-            catch (InfoCustomException ice)
-            {
-                response.Info = ice.Message;
-            }
-            catch (ValidationCustomException vce)
-            {
-                response.Error = vce.Message;
-            }
-            catch (Exception ex)
-            {
-                Log.Info("Hubo un error al intentar enviar mail para gestion de alta de cuit intermediario flete: " + cuitDto.cuit.ToString());
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                response.Error = ErrorMsg.Error;
-            }
-            return ContentCustom(response);
-        }
-
 
         [HttpGet]
         public ActionResult ObtenerPlantasDestino(string destinoCuit)
