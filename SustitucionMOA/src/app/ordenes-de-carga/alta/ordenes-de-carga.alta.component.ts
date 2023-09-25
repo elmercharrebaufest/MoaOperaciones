@@ -4,7 +4,7 @@ import { ActivatedRoute, Params } from '@angular/router';
 import { EmpresaGranosService } from '../../alta-proveedores/empresa-granos/empresa-granos.service';
 import { BaseComponent } from '../../common/base-components/base-component';
 import { Material } from '../../common/models/material';
-import { CuitValidaExistencia, CuitValidaRUCA, CuitValidaSISA, GestionCuit, KILOS_DISPONIBLES_APROBADO, OrdenDeCarga, SIN_KILOS_DISPONIBLES } from '../../common/models/ordenes-de-carga/ordenDeCarga';
+import { CuitValidaExistencia, CuitValidaRUCA, CuitValidaSISA, KILOS_DISPONIBLES_APROBADO, OrdenDeCarga, SIN_KILOS_DISPONIBLES } from '../../common/models/ordenes-de-carga/ordenDeCarga';
 import { FloatMsgService } from '../../common/services/FloatMsgService';
 import { ModalService } from '../../common/services/ModalService';
 import { SeleccionarProveedorService } from '../../common/shared-components/seleccionar-proveedor/seleccionar-proveedor.service';
@@ -19,7 +19,7 @@ import { NgBlockUI, BlockUI } from 'ng-block-ui';
 import { ContratoOrdenFas, TipoContrato } from '../../common/models/ordenes-de-carga/obtenerContratosDisponiblesResponse';
 import { Planta } from '../../common/models/ordenes-de-carga/planta';
 import { Domicilio } from '../../common/models/ordenes-de-carga/domicilio';
-import { finalize } from 'rxjs/operators';
+import { finalize, take } from 'rxjs/operators';
 import { ApiResponse } from '../../common/models/response';
 import { forkJoin } from 'rxjs';
 import { Permiso } from '../../common/enums/Permisos';
@@ -50,7 +50,8 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
     ordenDeCarga: OrdenDeCarga = new OrdenDeCarga();
     mensajesOrdenDeCarga: Partial<Record<keyof OrdenDeCarga, string>> = {};
     mensajesGestionCuit: Partial<Record<keyof Pick<OrdenDeCarga, 'CUITDestinatario' | 'CUITDestino' | 'CUITIntermediarioFlete'>, string>> = {};
-    gestionaCuit: Partial<Record<keyof Pick<OrdenDeCarga, 'CUITDestinatario' | 'CUITDestino' | 'CUITIntermediarioFlete'>, boolean>> = {};
+    gestiona: Partial<Record<keyof Pick<OrdenDeCarga, 'CUITDestinatario' | 'CUITDestino' | 'CUITIntermediarioFlete'>, boolean>> = { CUITDestino: false,
+    CUITDestinatario: false, CUITIntermediarioFlete: false};
     validando: Partial<Record<keyof OrdenDeCarga, boolean>> = {};
     displayModal: keyof Pick<OrdenDeCarga, 'CUITDestinatario' | 'CUITDestino' | 'CUITIntermediarioFlete'> | null;
     validaCPEDG = false;
@@ -70,11 +71,6 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
     patentesChasis: any;
     patentesAcoplados: any;
     razonSocialParaGestion = "";
-    cuitsParaGestion: GestionCuit[] = [
-        { cuit: '', razonSocial: '', campo: 'CUITIntermediarioFlete', ordenId: null, gestiona: false },
-        { cuit: '', razonSocial: '', campo: 'CUITDestinatario', ordenId: null, gestiona: false },
-        { cuit: '', razonSocial: '', campo: 'CUITDestino', ordenId: null, gestiona: false }
-    ];
 
     private selectUndefinedOptionValue: any;
 
@@ -129,6 +125,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
         this.desde = this.getFecha(12);
         this.hasta = this.getFecha(0);
         this.ordenDeCarga.Cantidad = 0;
+
         this.route.params.forEach((params: Params) => {
             if (params["id"] > 0) this.ordenDeCargaId = params["id"];
         });
@@ -348,7 +345,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
         try {
             if (this.ordenDeCargaId > 0) {
                 this.subscription = this.service
-                    .editar(this.ordenDeCarga)
+                    .editar(this.ordenDeCarga).pipe(take(1))
                     .subscribe(
                         (result) => {
                             this.spinnerComponent.hideIt();
@@ -371,7 +368,9 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                                 this.mensajeComponent.setMsgsEmpty();
                                 this.mensajeSuccess = result.data.Mensaje;
                                 this.ordenDeCargaId = result.data.IdEntidad;
-                                this.gestionarAltasCUIT();
+                                
+                                this.gestionarAltasCuitTerceros(this.ordenDeCargaId.toString());
+
                                 document.getElementById("openModalNotificacion")
                                     .click();
                             }
@@ -385,7 +384,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                     );
             } else {
                 this.subscription = this.service
-                    .agregar(this.ordenDeCarga)
+                    .agregar(this.ordenDeCarga).pipe(take(1))
                     .subscribe(
                         (result) => {
                             this.spinnerComponent.hideIt();
@@ -408,7 +407,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                                 this.mensajeComponent.setMsgsEmpty();
                                 this.mensajeSuccess = result.data.Mensaje;
                                 this.ordenDeCargaId = result.data.IdEntidad;
-                                this.gestionarAltasCUIT()
+                                this.gestionarAltasCuitTerceros(this.ordenDeCargaId.toString());
                                 document.getElementById("openModalNotificacion")
                                     .click();
                             }
@@ -863,6 +862,20 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
         }
     }
 
+    gestionarAltasCuitTerceros(ordenId: string) {
+        this.subscription = this.service.EnviarMailAltaCuitTerceros(this.gestiona["CUITIntermediarioFlete"],
+            this.gestiona["CUITDestino"], this.gestiona["CUITDestinatario"], ordenId).subscribe(result => {
+                if (result.logout) {
+                    this.sessionDataService.logout();
+                } else if (result.error != undefined && result.error != "") {
+                    this.mensajeComponent.setErrorMsg(`${result.error}. Al intentar gestionar el alta de cuits`);
+                } else if (result.info != undefined) {
+                    this.mensajeComponent.setInfoMsg(`${result.info}. Al intentar gestionar alta de cuits`);
+                } else {
+                }
+            }
+        );
+    }
 
     obtenerCorredores() {
         //this.blockUI.start('');
@@ -982,7 +995,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                     this.displayModal = campo;
                 else {
                     this.ordenDeCarga[campo.replace("CUIT", "RazonSocial")] = data.RazonSocial;
-                    this.gestionaCuit[campo] = false;
+                    this.gestiona[campo] = false;
                 }
 
             })
@@ -996,7 +1009,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
         this.ordenDeCarga[campo.replace("CUIT", "RazonSocial")] = null;
         this.mensajesOrdenDeCarga[campo] = null;
         this.validando[campo] = true;
-        this.gestionaCuit[campo] = false;
+        this.gestiona[campo] = false;
 
         if (!this.ordenDeCarga.CUITDestinatario && campo === 'CUITDestino')
             this.copiarCuitEnDestinatario();
@@ -1080,70 +1093,17 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
         const campo = this.displayModal;
         const razonSocial = this.razonSocialParaGestion;
         this.razonSocialParaGestion = "";
-        this.gestionaCuit[campo] = true;
+        this.gestiona[campo] = true;
         this.ordenDeCarga[campo.replace("CUIT", "RazonSocial")] = razonSocial;
         this.displayModal = null;
         this.mensajesGestionCuit[campo] = `Se solicitará la gestión del alta para el cuit: ${this.ordenDeCarga[campo]}`;
     }
 
-    gestionarAltasCUIT() {
-        let cuitFlete = undefined;
-        let cuitsClientes = [];
-        this.cuitsParaGestion.forEach((elem) => {
-            if (this.gestionaCuit[elem.campo]) {
-                elem.cuit = this.ordenDeCarga[elem.campo];
-                elem.razonSocial = this.ordenDeCarga[elem.campo.replace("CUIT", "RazonSocial")];
-                elem.gestiona = true;
-                elem.ordenId = this.ordenDeCargaId.toString();
-                if (elem.campo === 'CUITIntermediarioFlete') {
-                    cuitFlete = elem;
-                } else {
-                    cuitsClientes.push(elem);
-                }
-            }
-        });
-        if (cuitFlete === undefined && cuitsClientes.length === 0) {
-            return;
-        }
-        if (cuitFlete !== undefined) {
-            this.enviarMailAltaCuitIntermediarioFlete(cuitFlete);
-        }
-        if (cuitsClientes.length !== 0) {
-            this.enviarMailAltaCuitCliente(cuitsClientes);
-        }
-    }
-
-    enviarMailAltaCuitCliente(cuits: GestionCuit[]) {
-        this.service.enviarMailGestionarAltaCuitCliente(cuits).subscribe(result => {
-            if (result.logout) {
-                this.sessionDataService.logout();
-            } else if (result.error != undefined && result.error != "") {
-                this.mensajeComponent.setErrorMsg(`${result.error}. Al intentar gestionar el alta de cuits`);
-            } else if (result.info != undefined) {
-                this.mensajeComponent.setInfoMsg(`${result.info}. Al intentar gestionar alta de cuits`);
-            } else {
-            }
-        });
-    }
-
-    enviarMailAltaCuitIntermediarioFlete(cuit: GestionCuit) {
-        this.service.enviarMailGestionarAltaCuitIntermediarioFlete(cuit).subscribe(result => {
-            if (result.logout) {
-                this.sessionDataService.logout();
-            } else if (result.error != undefined && result.error != "") {
-                this.mensajeComponent.setErrorMsg(`${result.error}. Al intentar gestionar alta CUIT Intermediario Flete`);
-            } else if (result.info != undefined) {
-                this.mensajeComponent.setInfoMsg(`${result.info}. Al intentar gestionar alta CUIT Intermediario Flet`);
-            } else {
-                this.mensajesGestionCuit["CUITIntermediarioFlete"] = `Se solicitó la gestión del alta para la cuit: ${cuit.cuit}`;
-            }
-        });
-    }
-
     cancelarGestionAltaCUIT() {
         this.ordenDeCarga[this.displayModal] = undefined
-        this.gestionaCuit[this.displayModal] = false;
+        this.gestiona[this.displayModal] = false;
         this.displayModal = null;
+        this.mensajesGestionCuit[this.displayModal] = '';
     }
 
     validarSisaCorredorCliente() {
@@ -1228,7 +1188,8 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
         this.validando.CUITIntermediarioFlete = true;
         this.intermediarioFleteCuitFormatoValido = true;
         this.ordenDeCarga.RazonSocialIntermediarioFlete = undefined;
-        this.gestionaCuit['CUITIntermediarioFlete'] = false;
+        this.gestiona['CUITIntermediarioFlete'] = false;
+        this.mensajesGestionCuit['CUITIntermediarioFlete'] = '';
 
         let cuitIF = this.ordenDeCarga.CUITIntermediarioFlete;
         if (!cuitIF || !this.revisarCUITFormatoValido(cuitIF)) {

@@ -47,19 +47,15 @@ namespace SustitucionMOAUtils.Services.Email
             emailService.EnviarMail(emailSenderData);
         }
 
-        public void EnviarMailAltaTempranaCuit(List<GestionCuitDto> cuits)
+        public void EnviarMailAltaTempranaCuit(OrdenDeCarga ordenDeCarga, string ordenId, bool gestionaDestino, bool gestionaDestinatario)
         {
-            var destinatario = cuits.FirstOrDefault(c => c.campo == "CUITDestinatario");
-            var destino = cuits.FirstOrDefault(c => c.campo == "CUITDestino");
-            var nroOrden = destinatario != null ? destinatario.ordenId : destino.ordenId;
-
-            string cuerpoDestinatario = destinatario != null ? $"CUIT DESTINATARIO: {destinatario.cuit}, Razón social: {destinatario.razonSocial}\n" : "";
-            string cuerpoDestino = destino != null ? $"CUIT DESTINO: {destino.cuit}, Razón social: {destino.razonSocial}\n" : "";
+            string cuerpoDestinatario = gestionaDestinatario ? $"CUIT DESTINATARIO: {ordenDeCarga.CUITDestinatario}, Razón social: {ordenDeCarga.RazonSocialDestinatario}\n" : "";
+            string cuerpoDestino = gestionaDestino ? $"CUIT DESTINO: {ordenDeCarga.CUITDestino}, Razón social: {ordenDeCarga.RazonSocialDestino}\n" : "";
 
             var emailSenderData = new EmailSenderData
             {
                 Mails = emailService.ObtenerListaDestinatarios(new string[] { DireccionMailGestionAltaCuit, DireccionMailGestionAltaCuitCopia }),
-                Asunto = $"ALTA TEMPRANA CLIENTE - NRO ORDEN: {nroOrden}",
+                Asunto = $"ALTA TEMPRANA CLIENTE - NRO ORDEN: {ordenId}",
                 Cuerpo = $"Se solicita el alta temprana de: \n" + cuerpoDestinatario + cuerpoDestino
             };
             emailService.EnviarMail(emailSenderData);
