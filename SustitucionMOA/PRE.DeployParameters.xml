@@ -1,12 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <parameters>
-	<setParameter name="IIS Web Application Name" value="PreMoaOperaciones" />
-
-  <setParameter name="CONTEXTO-Web.config Connection String" value="data source=10.12.42.70;User Id=MOAOPQAUSR;Password=Bf575c53dc;initial catalog=MOAOperacionesUAT;Pooling=False" />
-  <setParameter name="HfContexto-Web.config Connection String" value="data source=10.12.42.70;User Id=MOAOPQAUSR;Password=Bf575c53dc;Initial Catalog=MOAOperacionesHangfireUAT;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False"/>
-
-
-  <setParameter name="RutaArchivosProveedores Config" value="C:/ArchivosProveedores" />
+	<setParameter name="IIS Web Application Name" value="MOAOperacionesPRE" />
+	<setParameter name="CONTEXTO-Web.config Connection String" value="data source=APPAGLQA.molinosagro.ad,1450;initial catalog=MOAOperacionesPRE;integrated security=True;MultipleActiveResultSets=True;App=EntityFramework" />
+	<setParameter name="HfContexto-Web.config Connection String" value="data source=APPAGLQA.molinosagro.ad,1450;Initial Catalog=MOAOperacionesHangfirePRE;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False"/>
+	<setParameter name="RutaArchivosProveedores Config" value="C:/ArchivosProveedores" />
 
 	<setParameter name="PasswordSapEnc Config" value="JJB4bZok9i28exDKsPlaTA==" />
 
@@ -14,9 +11,9 @@
 
 	<setParameter name="DataAgroURL Config" value="http://test.dataagro.com.ar" />
 
-	<setParameter name="SpaUrl Config" value="https://prenuevo.moaoperaciones.com.ar/web" />
+	<setParameter name="SpaUrl Config" value="https://PRE.moaoperaciones.com.ar/web" />
 
-	<setParameter name="ida:RedirectUri Config" value="https://prenuevo.moaoperaciones.com.ar/" />
+	<setParameter name="ida:RedirectUri Config" value="https://PRE.moaoperaciones.com.ar/" />
 	<setParameter name="ida:Tenant Config" value="moagroQA.onmicrosoft.com" />
 	<setParameter name="ida:TenantId Config" value="196fe16f-d755-45a8-a27d-47856a18d695" />
 	<setParameter name="ida:ClientId Config" value="331d5323-ba12-498c-956c-e001d44e3088" />

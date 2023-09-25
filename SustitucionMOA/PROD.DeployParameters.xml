@@ -3,8 +3,8 @@
   <setParameter name="IIS Web Application Name" value="MOAOperaciones" />
   <setParameter name="ConnectionMOADB-Web.config Connection String" value="48aeT2pkByRD/Pt9RTmajdbvJN9aCRxXaB1MEvGX056WayW5HIgN3y65/0dIgGfU4BjD+9GBbnVTqueQqHs73k0TqCeqVC/Zx1F/jxikiOgcWf8r0BSfyBvV1oeAPV4tswkLb4Q8uWu7IAQNoXF0zFvvLnNhhATqEv0XGxt2bfZ80AGJmX2ypbDJi5MNQNMpUVcbMnOz+rhBGG/NYAvTrQ==" />
 
-  <setParameter name="CONTEXTO-Web.config Connection String" value="data source=MOAOPAGLSPRD;User Id=MOAOPPRDUSR;Password=17E9438901;initial catalog=Moaoperaciones;Pooling=False" />
-  <setParameter name="HfContexto-Web.config Connection String" value="data source=MOAOPAGLSPRD;User Id=MOAOPPRDUSR;Password=17E9438901;Initial Catalog=MOAOperacionesHangfire;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False"/>
+  <setParameter name="CONTEXTO-Web.config Connection String" value="data source=10.12.12.114;User Id=MOAOPPRDUSR;Password=Bf575c53dc;initial catalog=Moaoperaciones;Pooling=False" />
+  <setParameter name="HfContexto-Web.config Connection String" value="data source=10.12.12.114;User Id=MOAOPPRDUSR;Password=Bf575c53dc;Initial Catalog=MOAOperacionesHangfire;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False"/>
 
   <setParameter name="PasswordSapEnc Config" value="/ZeEum06O947GGBswhXnAw==" />
 
@@ -13,11 +13,11 @@
 
   <setParameter name="EsLocal Config" value="false" />
 
-  <setParameter name="SpaUrl Config" value="https://nuevo.moaoperaciones.com.ar/web" />
+  <setParameter name="SpaUrl Config" value="https://moaoperaciones.com.ar/web" />
 
   <setParameter name="RutaArchivosProveedores Config" value="C:/ArchivosProveedores" />
   <setParameter name="defAmbiente Config" value="" />
-  <setParameter name="ida:RedirectUri Config" value="https://nuevo.moaoperaciones.com.ar" />
+  <setParameter name="ida:RedirectUri Config" value="https://moaoperaciones.com.ar" />
   <setParameter name="ida:Tenant Config" value="moagro.onmicrosoft.com" />
   <setParameter name="ida:TenantId Config" value="64912498-cd87-469f-a9e5-44e257a06b60" />
   <setParameter name="ida:ClientId Config" value="f18c7be4-4ada-4852-a4db-9ffc444c68fa" />
@@ -37,11 +37,11 @@
 
   <setParameter name="EsLocal Config" value="false" />
 
-  <setParameter name="SpaUrl Config" value="https://nuevo.moaoperaciones.com.ar/web" />
+  <setParameter name="SpaUrl Config" value="https://moaoperaciones.com.ar/web" />
 
   <setParameter name="RutaArchivosProveedores Config" value="C:/ArchivosProveedores" />
   <setParameter name="defAmbiente Config" value="" />
-  <setParameter name="ida:RedirectUri Config" value="https://nuevo.moaoperaciones.com.ar" />
+  <setParameter name="ida:RedirectUri Config" value="https://moaoperaciones.com.ar" />
   <setParameter name="ida:Tenant Config" value="moagro.onmicrosoft.com" />
   <setParameter name="ida:TenantId Config" value="64912498-cd87-469f-a9e5-44e257a06b60" />
   <setParameter name="ida:ClientId Config" value="f18c7be4-4ada-4852-a4db-9ffc444c68fa" />
