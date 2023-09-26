@@ -4621,29 +4621,29 @@ namespace SustitucionMOAUtils.Services
                     Logger.Log.Error(e);
                 }
 
-                if (cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.RegistroInfo != true && cotizacion.CotizacionEstado_Id == (int)CotizacionEstadoEnum.Cotizado
-                    && cotizacion.CotizacionPosiciones.FirstOrDefault()
-                    .PeticionDeOfertaSolpPosicion.SolpPosicion.TipoPosicion.Codigo == "MATERIALES")
-                {
-                    if (!cotizacion.CotizacionPosiciones.All(x => x.NoDisponible == true))
-                    {
-                        var registros = CrearRegistroInfoDto(cotizacion);
-                        var respuesta = agregarRegistroInfoConsumerMOA.AgregarRegistroInfo(registros, esModificar);
-                        if (respuesta.Errores != null && respuesta.Errores.Any(x => x.Tipo == "E"))
-                        {
-                            try
-                            {
-                                EnviarMailAvisoDeErrorRegistroInfo(cotizacion);
-                            }
-                            catch (Exception e)
-                            {
+                //if (cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.RegistroInfo != true && cotizacion.CotizacionEstado_Id == (int)CotizacionEstadoEnum.Cotizado
+                //    && cotizacion.CotizacionPosiciones.FirstOrDefault()
+                //    .PeticionDeOfertaSolpPosicion.SolpPosicion.TipoPosicion.Codigo == "MATERIALES")
+                //{
+                //    if (!cotizacion.CotizacionPosiciones.All(x => x.NoDisponible == true))
+                //    {
+                //        var registros = CrearRegistroInfoDto(cotizacion);
+                //        var respuesta = agregarRegistroInfoConsumerMOA.AgregarRegistroInfo(registros, esModificar);
+                //        if (respuesta.Errores != null && respuesta.Errores.Any(x => x.Tipo == "E"))
+                //        {
+                //            try
+                //            {
+                //                EnviarMailAvisoDeErrorRegistroInfo(cotizacion);
+                //            }
+                //            catch (Exception e)
+                //            {
 
-                                Logger.Log.Error(new Exception($"Error al enviar mail AgregarRegistroInfo en cotizacion: " + cotizacion.Id));
-                                Logger.Log.Error(e);
-                            }
-                        }
-                    }
-                }
+                //                Logger.Log.Error(new Exception($"Error al enviar mail AgregarRegistroInfo en cotizacion: " + cotizacion.Id));
+                //                Logger.Log.Error(e);
+                //            }
+                //        }
+                //    }
+                //}
                 respuestaGuardarSOLP.IdEntidad = cotizacion.Id;
                 repositorio.GuardarCambios();
                 return respuestaGuardarSOLP;
