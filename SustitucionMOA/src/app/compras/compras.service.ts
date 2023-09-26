@@ -528,8 +528,8 @@ export class ComprasService extends BaseService {
             PosIds: solp.PosIds,
             UsuarioIds: solp.UsuarioIds,
             Observacion: solp.Observacion,
-            Adjuntos: solp.Adjuntos
-
+            Adjuntos: solp.Adjuntos,
+            AdjuntoPliego: solp.AdjuntoPliego
         });
 
         var payload = new FormData();

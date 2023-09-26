@@ -36,5 +36,6 @@ namespace SustitucionMOAModel.Entities
 
         [InverseProperty("PeticionDeOferta")]
         public virtual ICollection<PeticionDeOfertaCierre> Cierres { get; set; } = new List<PeticionDeOfertaCierre>();
+        public bool AdjuntoPliego { get; set; }
     }
 }

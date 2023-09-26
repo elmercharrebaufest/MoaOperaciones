@@ -3166,7 +3166,8 @@ namespace SustitucionMOAUtils.Services
                     Posiciones = posicionesPeticion,
                     PlazoDeOferta = fechaOferta ?? posiciones.OrderByDescending(x => x.FechaEntregaServicio).Select(x => x.FechaEntregaServicio).FirstOrDefault().Value,
                     Usuarios = usuarios.Where(x => peticionDeOferta.UsuarioIds.Contains(x.Id)).Select(a => new PeticionDeOfertaUsuario { Usuario_Id = a.Id }).ToList(),
-                    RegistroInfo = peticionDeOferta.RegistroInfo
+                    RegistroInfo = peticionDeOferta.RegistroInfo,
+                    AdjuntoPliego = peticionDeOferta.AdjuntoPliego
                 };
 
                 peticion = repositorio.Agregar(peticion);
@@ -3187,9 +3188,9 @@ namespace SustitucionMOAUtils.Services
 
                 return respuestaGuardarSOLP;
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                throw;
+                throw e;
             }
         }
 
@@ -3669,6 +3670,7 @@ namespace SustitucionMOAUtils.Services
         private AlternateView CuerpoMailPeticionDeOferta(PeticionDeOferta peticion)
         {
             var filePath = httpContextService.ObtenerPathLogoMail();
+            var configuracion = repositorio.Obtener<Configuracion>(con => con.Code == "PliegoDeGeneralidades");
             LinkedResource res = new LinkedResource(filePath);
             res.ContentId = Guid.NewGuid().ToString();
             string htmlBody = "";
@@ -3680,6 +3682,8 @@ namespace SustitucionMOAUtils.Services
                 htmlBody += $"<br />Observaciones: {observacionesFormatted} <br /><br /><br />";
             }
 
+          
+
             var tienePliego = (peticion.Solp.TipoSolpSap == (int?)TipoSolpSap.Mantenimiento || peticion.Solp.TipoSolpSap == (int?)TipoSolpSap.Sap) && peticion.Solp.EstadoDocumento.Codigo == "CREADO";
             var solpServicioWebConPliego = peticion.Solp.Posiciones.Select(x => x.TipoPosicion.Codigo).FirstOrDefault() == "SERVICIO" && (peticion.Solp.TipoSolpSap == (int?)TipoSolpSap.Web) && peticion.Solp.TipoSolp.Codigo != "SIN_PLIEGO";
             
@@ -3690,12 +3694,21 @@ namespace SustitucionMOAUtils.Services
                 htmlBody += "<p" +
                            "style = 'line-height: 24px; font-size: 16px; margin: 0;'" +
                            "align = 'center' >" +
-                           " Para descargar el legajo haga clic en el siguiente enlace: " +
+                           " Para descargar el legajo, haga  " +
                            $"<a href = '{downloadLinkUrl}' download rel='noopener noreferrer'>" +
-                           "Descargar Legajo" +
-                           "</a></p> <br /><br />";
+                           "click aquí" +
+                           "</a></p> <br />";
             }
-
+            if (peticion.AdjuntoPliego)
+            {
+                htmlBody += "<p" +
+                           "style = 'line-height: 24px; font-size: 16px; margin: 0;'" +
+                           "align = 'center' >" +
+                           "Para descargar el pliego de generalidades, haga " +
+                           $"<a href = '{configuracion.Value}' download rel='noopener noreferrer'>" +
+                           "click aquí" +
+                           "</a></p> <br />";
+            }
             htmlBody += "En caso de tener alguna consulta, ingresar a www.moaoperaciones.com.ar " +
                 "<br/><br/>Saludos Cordiales<br/>" +
                 "Molinos Agro S.A. <br/><br/> " +
