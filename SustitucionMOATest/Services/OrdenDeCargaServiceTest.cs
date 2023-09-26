@@ -326,8 +326,11 @@ namespace SustitucionMOATest.Services
                 Estado = EstadoOrdenDeCarga.Confirmado,
                 InformadaSAP = true
             };
+            var mUsuario = new Mock<Usuario>();
+            mUsuario.Setup(x => x.TienePermiso(It.Is<PermisoEnum>(p => p == PermisoEnum.EnviarASap))).Returns(true);
 
             repositorioMock.Setup(x => x.Obtener<OrdenDeCarga>(It.IsAny<int>())).Returns(orden);
+            repositorioMock.Setup(x => x.Obtener<Usuario>(It.IsAny<Expression<Func<Usuario, bool>>>())).Returns(mUsuario.Object);
 
             var expected = "La orden no puede anularse debido a que ya fue informada.";
 
@@ -991,17 +994,20 @@ namespace SustitucionMOATest.Services
         {
             ordenDeCarga.Reventa = true;
             SetupAgregarTests();
-            var result = target.Agregar(ordenDeCarga, _mailSesionUsuario);
-            Assert.That(result.error, Is.EqualTo("Usuario sin permiso para modificar campo reventa"));
+            
+            var expected = $"Cliente {_proveedorUsuario.RazonSocial}({_proveedorUsuario.CUIT}) no es revendedor. No puede modificar campo reventa";
+
+            var ex = Assert.Throws<ValidationCustomException>(() => target.Agregar(ordenDeCarga, _mailSesionUsuario));
+
+            Assert.AreEqual(expected, ex.Message);
         }
+
         [Test]
         public void Agregar_UsuarioPuedeModificarReventa_CreaNormalmente()
         {
             ordenDeCarga.Reventa = true;
-            var permisoModificarReventa = new PermisoPorRol { Id = 123, Permiso = Permisos.FasModificarCampoReventa };
-            var rolRevendedor = new Rol { Id = 123, Nombre = "Revendedor", PermisosAsociados = new List<PermisoPorRol> { permisoModificarReventa } };
 
-            _usuario.Roles.Add(rolRevendedor);
+            _proveedorUsuario.EsRevendedor = true;
 
             SetupAgregarTests();
             SetupAgregarSuccess();
