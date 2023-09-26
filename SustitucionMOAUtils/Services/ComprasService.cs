@@ -1726,16 +1726,16 @@ namespace SustitucionMOAUtils.Services
                 var listaBase = repositorio.Listar<MaterialSolp>();
 
                 List<string> tablasSapAConsultar = new List<string>
-            {
-                TablasSap.Centro,
-                TablasSap.GrupoArticulo,
-                TablasSap.Unidad,
-                TablasSap.GrupoCompras,
-                TablasSap.CuentasSolpSap
-            };
+                {
+                    TablasSap.Centro,
+                    TablasSap.GrupoArticulo,
+                    TablasSap.Unidad,
+                    TablasSap.GrupoCompras,
+                    TablasSap.CuentasSolpSap
+                };
 
                 var tablaSap = repositorio.Listar<TablaSap>(x => tablasSapAConsultar.Contains(x.Tabla));
-
+                List<int> idsActualizados = new List<int>();
                 List<TablaSap> centro = tablaSap.Where(x => x.Tabla == TablasSap.Centro).ToList();
                 List<TablaSap> grupoArticulo = tablaSap.Where(x => x.Tabla == TablasSap.GrupoArticulo).ToList();
                 List<TablaSap> unidad = tablaSap.Where(x => x.Tabla == TablasSap.Unidad).ToList();
@@ -1789,6 +1789,7 @@ namespace SustitucionMOAUtils.Services
                             item.CuentaMayor_Id = cuentas.FirstOrDefault(x => x.Codigo == material.CuentaDeMayor)?.Id;
                             item.Estado = true;
                             item.TextoAmpliado = material.TextoAmpliado;
+                            idsActualizados.Add(item.Id);
                         }
 
                         //Al ser alrededor de 150.000 valores guardamos cada 1.000 por si hay una excepcion en el medio.
@@ -1803,6 +1804,8 @@ namespace SustitucionMOAUtils.Services
                         Logger.Log.Error(e);
                     }
                 }
+
+                listaBase.Where(a => !idsActualizados.Contains(a.Id)).ToList().ForEach(a => a.Estado = false);
             }
             repositorio.GuardarCambios();
         }
