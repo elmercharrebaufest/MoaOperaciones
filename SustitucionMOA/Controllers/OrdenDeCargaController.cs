@@ -1132,5 +1132,29 @@ namespace SustitucionMOA.Controllers
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
         }
+
+        [HttpGet]
+        public ContentResult ValidarCamion(string patenteChasis, string patenteAcoplado)
+        {
+            var response = new SustitucionMOAApiResponse<ValidarCamionResponse>();
+            try
+            {
+                response.Data = new ValidarCamionResponse { ExisteCamion = true, EsCamionEscalable = true };
+            }
+            catch (InfoCustomException ice)
+            {
+                response.Info = ice.Message;
+            }
+            catch (ValidationCustomException vce)
+            {
+                response.Error = vce.Message;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                response.Error = ErrorMsg.Error;
+            }
+            return ContentCustom(response);
+        }
     }
 }
