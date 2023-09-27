@@ -3699,7 +3699,7 @@ namespace SustitucionMOAUtils.Services
                            "click aquí" +
                            "</a></p> <br />";
             }
-            if (peticion.AdjuntoPliego)
+            if (peticion.AdjuntoPliego == true)
             {
                 htmlBody += "<p" +
                            "style = 'line-height: 24px; font-size: 16px; margin: 0;'" +
