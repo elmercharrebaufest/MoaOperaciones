@@ -215,7 +215,7 @@ namespace SustitucionMOAModel.Entities
             return permisosUsuario.Contains(permiso);
         }
 
-        public bool TienePermiso(PermisoEnum permiso)
+        public virtual bool TienePermiso(PermisoEnum permiso)
         {
             if (permisosDelUsuario == null)
             {
