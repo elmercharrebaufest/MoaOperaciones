@@ -617,7 +617,8 @@ namespace SustitucionMOAUtils.Services
                 !proveedorActual.CUIT.Equals(proveedorModificado.Cuit) ||
                  proveedorActual.TipoProveedor.Id != proveedorModificado.IdTipoProveedor ||
                 !proveedorActual.RazonSocial.Equals(proveedorModificado.RazonSocial) || !proveedorActual.CodigoProveedor.Equals(proveedorModificado.CodigoProveedor) ||
-                 proveedorActual.CodigoProveedor != proveedorModificado.CodigoProveedor)
+                 proveedorActual.CodigoProveedor != proveedorModificado.CodigoProveedor ||
+                 proveedorActual.EsRevendedor != proveedorModificado.EsRevendedor)
             {
                 ProveedorAuditoria proveedorAuditoria = new ProveedorAuditoria();
                 proveedorAuditoria.Proveedor_Id = proveedorActual.Id;
@@ -629,6 +630,7 @@ namespace SustitucionMOAUtils.Services
                 proveedorAuditoria.RazonSocial = proveedorModificado.RazonSocial;
                 proveedorAuditoria.FechaActualizacion = DateTime.Now;
                 proveedorAuditoria.UsuarioActualizacion = usuarioModificacionDto.UsuarioModificacion;
+                proveedorAuditoria.EsRevendedor = proveedorModificado.EsRevendedor;
                 repositorio.Agregar(proveedorAuditoria);
             }
         }
@@ -656,6 +658,7 @@ namespace SustitucionMOAUtils.Services
                             proveedor.RazonSocial = proveedorModificado.RazonSocial;
                             proveedor.CodigoProveedor = proveedorModificado.CodigoProveedor;
                             proveedor.TipoProveedor = repositorio.Obtener<Entidades.TipoUsuario>(x => x.Id == proveedorModificado.IdTipoProveedor);
+                            proveedor.EsRevendedor = proveedorModificado.EsRevendedor;
                             repositorio.GuardarCambios();
                         }
                     }

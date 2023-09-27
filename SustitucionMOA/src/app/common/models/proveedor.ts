@@ -23,5 +23,5 @@ export class Proveedor {
     IngresoAPlanta: boolean | null;
     AltaInterna: boolean | null;
     ContieneDocumentacionFisica: boolean | null;
-
+    EsRevendedor: boolean;
 }

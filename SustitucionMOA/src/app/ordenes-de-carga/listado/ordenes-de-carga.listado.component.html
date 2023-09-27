@@ -23,7 +23,7 @@
         <div id="searchTexto" class="col-xs-12 col-sm-6 col-md-15">
           <p>Contrato:</p>
           <div class="styled-select">
-            <input type="search" class="" placeholder="Ingrese numero de contrato" [value]="" aria-controls="tableModal"
+            <input type="search" class="" placeholder="Ingrese número de contrato" [value]="" aria-controls="tableModal"
               [(ngModel)]="filtroAlta">
           </div>
         </div>
@@ -31,7 +31,7 @@
         <div *ngIf=" esInterno || esComercial || esMesaFas || !esCliente()" id="searchCliente" class="col-xs-12 col-sm-6 col-md-15">
           <p>Por Cliente:</p>
           <div class="styled-select">
-            <input type="search" class="" placeholder="Ingrese razon social de cliente" [value]=""
+            <input type="search" class="" placeholder="Ingrese razón social de cliente" [value]=""
               aria-controls="tableModal" [(ngModel)]="filtroCliente">
           </div>
         </div>

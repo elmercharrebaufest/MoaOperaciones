@@ -69,6 +69,11 @@ namespace SustitucionMOAUtils.Services
             EstadoOrdenDeCarga.AnuladaPorVencimiento,
             EstadoOrdenDeCarga.Anulada
         };
+        private readonly List<EstadoOrdenDeCarga> estadosNoVerificaTransporte = new List<EstadoOrdenDeCarga>
+        {
+            EstadoOrdenDeCarga.AnuladaPorVencimiento,
+            EstadoOrdenDeCarga.Anulada
+        };
 
         public OrdenDeCargaService(
             IRepositorio repositorio,
@@ -98,7 +103,8 @@ namespace SustitucionMOAUtils.Services
             try
             {
                 var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
-                ValidarOrdenDeCargaAlta(ordenDeCarga, usuario);
+                LlenarOrdenAltaCorredorCliente(ordenDeCarga, usuario);
+                ValidarOrdenDeCargaAlta(ordenDeCarga);
                 LlenarOrdenAlta(ordenDeCarga, usuario);
                 var ordenPuedeEnviarseDirectoSap = ValidarKgDisponiblesEnviaDirectamenteASAP(ordenDeCarga, usuario);
 
@@ -169,7 +175,6 @@ namespace SustitucionMOAUtils.Services
         private void LlenarOrdenAlta(OrdenDeCarga ordenDeCarga, Usuario usuario)
         {
             ordenDeCarga.Estado = EstadoOrdenDeCarga.ErrorDeCarga;
-            LlenarOrdenAltaCorredorCliente(ordenDeCarga, usuario);
 
             ordenDeCarga.UsuarioCreacion_Id = usuario.Id;
             ordenDeCarga.FechaCarga = DateTime.Now;
@@ -684,7 +689,7 @@ namespace SustitucionMOAUtils.Services
             }
 
             // Solo en el caso que el response dé ok para crear la orden tiene que verificar el vencimiento
-            if (!esJob && puedeCrearPedido)
+            if (!esJob && puedeCrearPedido && string.IsNullOrEmpty(ordenDeCarga.NumeroEntrega))
             {
                 if (!ValidarVencimientoContrato(ObtenerContratoDeOrden(ordenDeCarga), cliente))
                 {
@@ -1035,7 +1040,7 @@ namespace SustitucionMOAUtils.Services
             var orden = repositorio.Obtener<OrdenDeCarga>(ordenId);
 
             var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
-            var puedeEnviarASAP = usuario.TienePermiso("ENVIAR A SAP");
+            var puedeEnviarASAP = usuario.TienePermiso(PermisoEnum.EnviarASap);
 
             if (puedeEnviarASAP)
                 AnularOrdenSap(orden);
@@ -1285,25 +1290,20 @@ namespace SustitucionMOAUtils.Services
         public VisualizarClienteResponse VisualizarCliente(VisualizarClienteRequest request)
         {
             Log.Info($"VisualizarCliente(request: {request.ToJson()})");
-            OrdenCargaConsumerMOA ordenCargaConsumerMOA;
-            VisualizarClienteResponse response;
-            List<Mod.FechaWS> fechas = null;
             try
             {
                 var validator = new VisualizarClienteRequestValidator();
                 validator.ValidateAndThrow(request);
-                //var validateVisualizarClienteRequest = ValidateVisualizarClienteRequest(request);
-                //if (!string.IsNullOrEmpty(validateVisualizarClienteRequest))
-                //{
-                //    throw new ValidationCustomException(string.Format(ErrorMsg.ErrorValorNuloVacio, validateVisualizarClienteRequest));
-                //}
+
                 var ordenCargaVisualizarClienteWSMOAResponse = OrdenCargaVisualizarCliente(string.Empty, string.Empty, request.Corredor, request.FechaInicio, request.FechaFin, string.Empty, request.Pendiente, TipoContratoFAS.Todos, 1);
-                //Log.Debug(this.GetType().Name, "VisualizarCliente", $" ordenCargaVisualizarClienteWSMOAResponse: { ordenCargaVisualizarClienteWSMOAResponse.ToJson() }");
-                response = new VisualizarClienteResponse();
-                response.Clientes = GetClientesFromVisualizarClienteProducto(ordenCargaVisualizarClienteWSMOAResponse, request);
+
+                var response = new VisualizarClienteResponse
+                {
+                    Clientes = GetClientesFromVisualizarClienteProducto(ordenCargaVisualizarClienteWSMOAResponse, request)
+                };
+
                 if (!string.IsNullOrEmpty(request.Corredor))
                     SincronizarRelacionesCorredorCliente(request.Corredor, response);
-                //Log.Info($" response: { response.ToJson() }");
                 return response;
             }
             catch (InfoCustomException)
@@ -1318,6 +1318,16 @@ namespace SustitucionMOAUtils.Services
             {
                 throw new WSCustomException(ErrorMsg.ErrorWS, e);
             }
+        }
+
+        public ProveedorDto ObtenerProveedor(int idProveedor)
+        {
+            var proveedor = repositorio.Obtener<Proveedor>(idProveedor);
+            if (proveedor == null)
+            {
+                throw new Exception("No se encontró el proveedor con ID " + idProveedor);
+            }
+            return new ProveedorDto(proveedor);
         }
 
         private List<ProveedorDto> GetClientesFromVisualizarClienteProducto(OrdenCargaVisualizarClienteWSMOAResponse ordenCargaVisualizarClienteWSMOAResponse, VisualizarClienteRequest request)
@@ -1335,24 +1345,7 @@ namespace SustitucionMOAUtils.Services
                     var proveedor = clientesBD.FirstOrDefault(x => x.CodigoProveedor == clienteEnSap.Cliente);
                     if (proveedor != null)
                     {
-                        clientesDto.Add(new ProveedorDto
-                        {
-                            CodigoProveedor = proveedor.CodigoProveedor ?? "",
-                            CUIT = proveedor.CUIT,
-                            EstadoAprobacion = proveedor.EstadoAprobacion,
-                            EstadoAprobacionDescripcion = proveedor.EstadoAprobacion.ToFriendlyString(),
-                            Id = proveedor.Id,
-                            IdComercialDataAgro = proveedor.IdComercialDataAgro,
-                            IdDataAgro = proveedor.IdDataAgro,
-                            Mail = proveedor.Mail ?? "",
-                            Observaciones = proveedor.Observaciones,
-                            RazonSocial = !String.IsNullOrEmpty(proveedor.RazonSocial) ? proveedor.RazonSocial : proveedor.CUIT ?? "",
-                            FechaSolicitud = proveedor.FechaSolicitud,
-                            Comercial = proveedor.Comercial,
-                            EstadoSIPER = proveedor.EstadoSIPER,
-                            ContieneDocumentacionFisica = proveedor.ContieneDocumentacionFisica,
-                            IdTipoProveedor = proveedor.TipoProveedor.Id
-                        });
+                        clientesDto.Add(new ProveedorDto(proveedor));
                     }
                     else
                     {
@@ -1853,10 +1846,11 @@ namespace SustitucionMOAUtils.Services
         }
         public void VerificarTransporteBulk()
         {
-            if (repositorio.Obtener<HabilitacionJob>(a => a.Nombre == "VerificarTransporteOrdenesDeCargaJob").Habilitado == false)
+            var estadoJob = repositorio.Obtener<HabilitacionJob>(a => a.Nombre == "VerificarTransporteOrdenesDeCargaJob");
+            if (!estadoJob.Habilitado)
                 return;
 
-            foreach (var ordenDeCarga in repositorio.Listar<OrdenDeCarga>(o => !o.TransporteExiste))
+            foreach (var ordenDeCarga in repositorio.Listar<OrdenDeCarga>(o => !estadosNoVerificaTransporte.Contains(o.Estado) && !o.TransporteExiste))
             {
                 VerificarTransporte(ordenDeCarga);
             }
@@ -2173,11 +2167,6 @@ namespace SustitucionMOAUtils.Services
                     CommonService.toDateList(req.FechaDesde, req.FechaHasta);
                 var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
 
-                var tipoContrato =
-                    usuario.TieneRol(RolEnum.Administracion)
-                        ? Constante.FAS_FILTRO_TIPO_CONTRATO
-                        : TipoContratoFAS.Normal;
-
                 var consumerReq = new OrdenCargaVisualizarClienteWSMOARequest
                 {
                     Cliente = req.ClienteCodigo,
@@ -2186,7 +2175,7 @@ namespace SustitucionMOAUtils.Services
                     Fechas = rangoFechas,
                     Material = string.Empty,
                     Pendiente = true, // Contratos ABIERTOS
-                    TipoContrato = tipoContrato
+                    TipoContrato = TipoContratoFAS.Todos
                 };
 
                 var ordenCargaConsumer = new OrdenCargaConsumerMOA();
@@ -2549,7 +2538,7 @@ namespace SustitucionMOAUtils.Services
             if (orden == null)
                 throw new InfoCustomException("No se encontró la orden");
 
-            Log.Info($"Verificar Compensacion: orden: {orden.ToJson()}");
+            Log.Info($"Verificar Compensacion: orden: {orden.ToDto().ToJson()}");
             if (orden.Estado != EstadoOrdenDeCarga.PendienteCompensacion)
                 return;
 
@@ -2605,10 +2594,10 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        private void ValidarOrdenDeCargaAlta(OrdenDeCarga orden, Usuario usuario)
+        private void ValidarOrdenDeCargaAlta(OrdenDeCarga orden)
         {
             ValidarCuilChofer(orden);
-            ValidarReventa(orden, usuario);
+            ValidarReventa(orden);
         }
 
         private void ValidarCuilChofer(OrdenDeCarga orden)
@@ -2630,12 +2619,19 @@ namespace SustitucionMOAUtils.Services
             Log.Debug(this.GetType().Name, "Agregar", $" chofer en Scato: {choferRes.Data.ToJson()}");
         }
 
-        private void ValidarReventa(OrdenDeCarga orden, Usuario usuario)
+        private void ValidarReventa(OrdenDeCarga orden)
         {
-            var puedeSeleccionarReventa = usuario.TienePermiso(PermisoEnum.Fas_ModificarCampoReventa);
-            if (!puedeSeleccionarReventa && orden.Reventa)
+            if (orden.Cliente != null)
             {
-                throw new ValidationCustomException("Usuario sin permiso para modificar campo reventa");
+                var puedeSeleccionarReventa = orden.Cliente.EsRevendedor;
+                if (!puedeSeleccionarReventa && orden.Reventa)
+                {
+                    throw new ValidationCustomException($"Cliente {orden.Cliente.RazonSocial}({orden.Cliente.CUIT}) no es revendedor. No puede modificar campo reventa");
+                }
+            }
+            else
+            {
+                throw new Exception("Error en validación de reventa. No está cargado el Cliente para la Orden");
             }
         }
 
