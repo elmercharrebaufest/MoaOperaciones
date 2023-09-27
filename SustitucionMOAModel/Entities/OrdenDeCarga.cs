@@ -109,7 +109,7 @@ namespace SustitucionMOAModel.Entities
         public bool Escalable { get; set; }
         public bool? DestinatarioExisteScato { get; set; }
         public bool? DestinoExisteScato { get; set; }
-
+        public string DestinoMercaderia { get; set; }
 
         public bool TieneMultiplesContratos
         {
@@ -148,10 +148,11 @@ namespace SustitucionMOAModel.Entities
 
         public string MsgCuitsTerceros
         {
-            get {
+            get
+            {
                 var msgDestinatario = DestinatarioExisteScato ?? false ? "" : "Destinatario";
                 var msgDestino = DestinoExisteScato ?? false ? "" : "Destino";
-                var slash = (!(DestinoExisteScato ?? false)  && !(DestinatarioExisteScato ?? false)) ? "/": "";
+                var slash = (!(DestinoExisteScato ?? false) && !(DestinatarioExisteScato ?? false)) ? "/" : "";
                 return $"No se pudo generar la entrega. No existe {msgDestinatario}{slash}{msgDestino}.";
             }
         }
@@ -258,9 +259,9 @@ namespace SustitucionMOAModel.Entities
                    DescripcionCodigoVerificacionSap == carga.DescripcionCodigoVerificacionSap &&
                    EqualityComparer<ICollection<OrdenDeCargaCambiosHistorial>>.Default.Equals(HistorialCambios, carga.HistorialCambios) &&
                    ContratoSinCantidadPendiente == carga.ContratoSinCantidadPendiente &&
-                   DescripcionErrorInterno == carga.DescripcionErrorInterno && 
+                   DescripcionErrorInterno == carga.DescripcionErrorInterno &&
                    DestinatarioExisteScato == carga.DestinatarioExisteScato &&
-                   DestinoExisteScato == carga.DestinoExisteScato && 
+                   DestinoExisteScato == carga.DestinoExisteScato &&
                    CUITDestinatario == carga.CUITDestinatario &&
                    CUITDestino == carga.CUITDestino &&
                    RazonSocialDestinatario == carga.RazonSocialDestinatario &&
