@@ -172,7 +172,14 @@ export class Solp extends CommonResponse {
             this.fiscalContrato = solp.FiscalContrato || '';
             this.telefono = solp.Telefono || '';
             this.mail = solp.Email || sessionStorage.getItem("username");
-            this.fechaEntrega = new Date(this.getDateFromAspNetFormat(solp.FechaHoraEntrega));
+            if (solp.FechaHoraEntrega != null) {
+                this.fechaEntrega = new Date(this.getDateFromAspNetFormat(solp.FechaHoraEntrega));
+                this.horaEntrega = new Date(this.getDateFromAspNetFormat(solp.FechaHoraEntrega));
+            } else {
+                this.fechaEntrega = new Date();
+                this.fechaEntrega.setDate(this.fechaEntrega.getDate() + 7);
+            }
+            //this.fechaEntrega = new Date(this.getDateFromAspNetFormat(solp.FechaHoraEntrega));
             this.emailLinkToken = solp.EmailLinkToken;
             this.selectTipoPosicion =  solp.TipoPosicion && solp.TipoPosicion.Codigo || ''
             ;

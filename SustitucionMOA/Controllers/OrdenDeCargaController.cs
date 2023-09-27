@@ -560,6 +560,30 @@ namespace SustitucionMOA.Controllers
         }
 
         [HttpGet]
+        public ActionResult ObtenerProveedor(int idProveedor)
+        {
+            var response = new SustitucionMOAApiResponse<ProveedorDto>();
+            try
+            {
+                response.Data = ordenDeCargaService.ObtenerProveedor(idProveedor);
+            }
+            catch (InfoCustomException ice)
+            {
+                response.Info = ice.Message;
+            }
+            catch (ValidationCustomException vce)
+            {
+                response.Error = vce.Message;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                response.Error = ErrorMsg.Error;
+            }
+            return ContentCustom(response);
+        }
+
+        [HttpGet]
         public ActionResult VisualizarProducto(string contrato, string fechaInicio, string fechaFin)
         {
             try

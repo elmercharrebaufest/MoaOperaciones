@@ -39,7 +39,11 @@ namespace SustitucionMOAModel.Dto
 
         public bool? ContieneDocumentacionFisica { get; set; }
 
+        public bool EsRevendedor { get; set; }
+
+
         public ProveedorDto() { }
+
         public ProveedorDto(Proveedor proveedor)
         {
             CodigoProveedor = proveedor.CodigoProveedor ?? "";
@@ -51,19 +55,13 @@ namespace SustitucionMOAModel.Dto
             IdDataAgro = proveedor.IdDataAgro;
             Mail = proveedor.Mail ?? "";
             Observaciones = proveedor.Observaciones;
-            RazonSocial = proveedor.RazonSocial ?? "";
+            RazonSocial = !String.IsNullOrEmpty(proveedor.RazonSocial) ? proveedor.RazonSocial : proveedor.CUIT;
             FechaSolicitud = proveedor.FechaSolicitud;
             Comercial = proveedor.Comercial;
-            IdTipoProveedor = proveedor.TipoProveedor.Id;
-            //if (proveedor.UsuariosAsociados.Count() > 0)
-            //{
-            //    if (proveedor.UsuariosAsociados.First() is UsuarioGranos)
-            //    {
-            //        Comercial = (proveedor.UsuariosAsociados.First() as UsuarioGranos).Comercial;
-            //    }
-            //}
-
             EstadoSIPER = proveedor.EstadoSIPER;
+            ContieneDocumentacionFisica = proveedor.ContieneDocumentacionFisica; //Para el tipo proveedor No Granos
+            IdTipoProveedor = proveedor.TipoProveedor.Id;
+            EsRevendedor = proveedor.EsRevendedor;
 
             if (proveedor.HistorialAprobaciones != null && proveedor.HistorialAprobaciones.Count() > 0)
             {
@@ -75,9 +73,6 @@ namespace SustitucionMOAModel.Dto
                 UltimaEdicion = null;
                 HistorialAprobaciones = new List<ProveedorHistorialAprobacionDto>();
             }
-
-            //Para el tipo proveedor No Granos
-            ContieneDocumentacionFisica = proveedor.ContieneDocumentacionFisica;
         }
 
         public ProveedorDto(Models.WSMapMOA.Usuario.Usuario x)
