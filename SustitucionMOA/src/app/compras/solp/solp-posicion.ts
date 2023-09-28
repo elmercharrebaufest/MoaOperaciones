@@ -174,7 +174,7 @@ export class SolpPosicion {
             this.selectSolicitanteCompras = posicionADuplicar.selectSolicitanteCompras;
             this.necesidadCompras = posicionADuplicar.necesidadCompras;
             this.selectArticuloCompras = posicionADuplicar.selectArticuloCompras;
-            this.textoSuministro = posicionADuplicar.textoSuministro;
+            //this.textoSuministro = posicionADuplicar.textoSuministro;
             this.motivo = posicionADuplicar.motivo;
             this.modelo = posicionADuplicar.modelo;
             // this.rubroElectrico = posicionADuplicar.rubroElectrico;

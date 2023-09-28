@@ -1726,16 +1726,16 @@ namespace SustitucionMOAUtils.Services
                 var listaBase = repositorio.Listar<MaterialSolp>();
 
                 List<string> tablasSapAConsultar = new List<string>
-            {
-                TablasSap.Centro,
-                TablasSap.GrupoArticulo,
-                TablasSap.Unidad,
-                TablasSap.GrupoCompras,
-                TablasSap.CuentasSolpSap
-            };
+                {
+                    TablasSap.Centro,
+                    TablasSap.GrupoArticulo,
+                    TablasSap.Unidad,
+                    TablasSap.GrupoCompras,
+                    TablasSap.CuentasSolpSap
+                };
 
                 var tablaSap = repositorio.Listar<TablaSap>(x => tablasSapAConsultar.Contains(x.Tabla));
-
+                List<int> idsActualizados = new List<int>();
                 List<TablaSap> centro = tablaSap.Where(x => x.Tabla == TablasSap.Centro).ToList();
                 List<TablaSap> grupoArticulo = tablaSap.Where(x => x.Tabla == TablasSap.GrupoArticulo).ToList();
                 List<TablaSap> unidad = tablaSap.Where(x => x.Tabla == TablasSap.Unidad).ToList();
@@ -1789,6 +1789,7 @@ namespace SustitucionMOAUtils.Services
                             item.CuentaMayor_Id = cuentas.FirstOrDefault(x => x.Codigo == material.CuentaDeMayor)?.Id;
                             item.Estado = true;
                             item.TextoAmpliado = material.TextoAmpliado;
+                            idsActualizados.Add(item.Id);
                         }
 
                         //Al ser alrededor de 150.000 valores guardamos cada 1.000 por si hay una excepcion en el medio.
@@ -1803,6 +1804,8 @@ namespace SustitucionMOAUtils.Services
                         Logger.Log.Error(e);
                     }
                 }
+
+                listaBase.Where(a => !idsActualizados.Contains(a.Id)).ToList().ForEach(a => a.Estado = false);
             }
             repositorio.GuardarCambios();
         }
@@ -3163,7 +3166,8 @@ namespace SustitucionMOAUtils.Services
                     Posiciones = posicionesPeticion,
                     PlazoDeOferta = fechaOferta ?? posiciones.OrderByDescending(x => x.FechaEntregaServicio).Select(x => x.FechaEntregaServicio).FirstOrDefault().Value,
                     Usuarios = usuarios.Where(x => peticionDeOferta.UsuarioIds.Contains(x.Id)).Select(a => new PeticionDeOfertaUsuario { Usuario_Id = a.Id }).ToList(),
-                    RegistroInfo = peticionDeOferta.RegistroInfo
+                    RegistroInfo = peticionDeOferta.RegistroInfo,
+                    AdjuntoPliego = peticionDeOferta.AdjuntoPliego
                 };
 
                 peticion = repositorio.Agregar(peticion);
@@ -3184,9 +3188,9 @@ namespace SustitucionMOAUtils.Services
 
                 return respuestaGuardarSOLP;
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                throw;
+                throw e;
             }
         }
 
@@ -3666,6 +3670,7 @@ namespace SustitucionMOAUtils.Services
         private AlternateView CuerpoMailPeticionDeOferta(PeticionDeOferta peticion)
         {
             var filePath = httpContextService.ObtenerPathLogoMail();
+            var configuracion = repositorio.Obtener<Configuracion>(con => con.Code == "PliegoDeGeneralidades");
             LinkedResource res = new LinkedResource(filePath);
             res.ContentId = Guid.NewGuid().ToString();
             string htmlBody = "";
@@ -3677,6 +3682,8 @@ namespace SustitucionMOAUtils.Services
                 htmlBody += $"<br />Observaciones: {observacionesFormatted} <br /><br /><br />";
             }
 
+          
+
             var tienePliego = (peticion.Solp.TipoSolpSap == (int?)TipoSolpSap.Mantenimiento || peticion.Solp.TipoSolpSap == (int?)TipoSolpSap.Sap) && peticion.Solp.EstadoDocumento.Codigo == "CREADO";
             var solpServicioWebConPliego = peticion.Solp.Posiciones.Select(x => x.TipoPosicion.Codigo).FirstOrDefault() == "SERVICIO" && (peticion.Solp.TipoSolpSap == (int?)TipoSolpSap.Web) && peticion.Solp.TipoSolp.Codigo != "SIN_PLIEGO";
             
@@ -3687,12 +3694,21 @@ namespace SustitucionMOAUtils.Services
                 htmlBody += "<p" +
                            "style = 'line-height: 24px; font-size: 16px; margin: 0;'" +
                            "align = 'center' >" +
-                           " Para descargar el legajo haga clic en el siguiente enlace: " +
+                           " Para descargar el legajo, haga  " +
                            $"<a href = '{downloadLinkUrl}' download rel='noopener noreferrer'>" +
-                           "Descargar Legajo" +
-                           "</a></p> <br /><br />";
+                           "click aquí" +
+                           "</a></p> <br />";
             }
-
+            if (peticion.AdjuntoPliego == true)
+            {
+                htmlBody += "<p" +
+                           "style = 'line-height: 24px; font-size: 16px; margin: 0;'" +
+                           "align = 'center' >" +
+                           "Para descargar el pliego de generalidades, haga " +
+                           $"<a href = '{configuracion.Value}' download rel='noopener noreferrer'>" +
+                           "click aquí" +
+                           "</a></p> <br />";
+            }
             htmlBody += "En caso de tener alguna consulta, ingresar a www.moaoperaciones.com.ar " +
                 "<br/><br/>Saludos Cordiales<br/>" +
                 "Molinos Agro S.A. <br/><br/> " +
@@ -4618,29 +4634,29 @@ namespace SustitucionMOAUtils.Services
                     Logger.Log.Error(e);
                 }
 
-                if (cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.RegistroInfo != true && cotizacion.CotizacionEstado_Id == (int)CotizacionEstadoEnum.Cotizado
-                    && cotizacion.CotizacionPosiciones.FirstOrDefault()
-                    .PeticionDeOfertaSolpPosicion.SolpPosicion.TipoPosicion.Codigo == "MATERIALES")
-                {
-                    if (!cotizacion.CotizacionPosiciones.All(x => x.NoDisponible == true))
-                    {
-                        var registros = CrearRegistroInfoDto(cotizacion);
-                        var respuesta = agregarRegistroInfoConsumerMOA.AgregarRegistroInfo(registros, esModificar);
-                        if (respuesta.Errores != null && respuesta.Errores.Any(x => x.Tipo == "E"))
-                        {
-                            try
-                            {
-                                EnviarMailAvisoDeErrorRegistroInfo(cotizacion);
-                            }
-                            catch (Exception e)
-                            {
+                //if (cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.RegistroInfo != true && cotizacion.CotizacionEstado_Id == (int)CotizacionEstadoEnum.Cotizado
+                //    && cotizacion.CotizacionPosiciones.FirstOrDefault()
+                //    .PeticionDeOfertaSolpPosicion.SolpPosicion.TipoPosicion.Codigo == "MATERIALES")
+                //{
+                //    if (!cotizacion.CotizacionPosiciones.All(x => x.NoDisponible == true))
+                //    {
+                //        var registros = CrearRegistroInfoDto(cotizacion);
+                //        var respuesta = agregarRegistroInfoConsumerMOA.AgregarRegistroInfo(registros, esModificar);
+                //        if (respuesta.Errores != null && respuesta.Errores.Any(x => x.Tipo == "E"))
+                //        {
+                //            try
+                //            {
+                //                EnviarMailAvisoDeErrorRegistroInfo(cotizacion);
+                //            }
+                //            catch (Exception e)
+                //            {
 
-                                Logger.Log.Error(new Exception($"Error al enviar mail AgregarRegistroInfo en cotizacion: " + cotizacion.Id));
-                                Logger.Log.Error(e);
-                            }
-                        }
-                    }
-                }
+                //                Logger.Log.Error(new Exception($"Error al enviar mail AgregarRegistroInfo en cotizacion: " + cotizacion.Id));
+                //                Logger.Log.Error(e);
+                //            }
+                //        }
+                //    }
+                //}
                 respuestaGuardarSOLP.IdEntidad = cotizacion.Id;
                 repositorio.GuardarCambios();
                 return respuestaGuardarSOLP;

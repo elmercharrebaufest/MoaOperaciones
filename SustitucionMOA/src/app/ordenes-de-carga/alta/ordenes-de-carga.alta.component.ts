@@ -49,8 +49,10 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
     ordenDeCarga: OrdenDeCarga = new OrdenDeCarga();
     mensajesOrdenDeCarga: Partial<Record<keyof OrdenDeCarga, string>> = {};
     mensajesGestionCuit: Partial<Record<keyof Pick<OrdenDeCarga, 'CUITDestinatario' | 'CUITDestino' | 'CUITIntermediarioFlete'>, string>> = {};
-    gestiona: Partial<Record<keyof Pick<OrdenDeCarga, 'CUITDestinatario' | 'CUITDestino' | 'CUITIntermediarioFlete'>, boolean>> = { CUITDestino: false,
-    CUITDestinatario: false, CUITIntermediarioFlete: false};
+    gestiona: Partial<Record<keyof Pick<OrdenDeCarga, 'CUITDestinatario' | 'CUITDestino' | 'CUITIntermediarioFlete'>, boolean>> = {
+        CUITDestino: false,
+        CUITDestinatario: false, CUITIntermediarioFlete: false
+    };
     validando: Partial<Record<keyof OrdenDeCarga, boolean>> = {};
     displayModal: keyof Pick<OrdenDeCarga, 'CUITDestinatario' | 'CUITDestino' | 'CUITIntermediarioFlete'> | null;
     validaCPEDG = false;
@@ -370,7 +372,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                                 this.mensajeComponent.setMsgsEmpty();
                                 this.mensajeSuccess = result.data.Mensaje;
                                 this.ordenDeCargaId = result.data.IdEntidad;
-                                
+
                                 this.gestionarAltasCuitTerceros(this.ordenDeCargaId.toString());
 
                                 document.getElementById("openModalNotificacion")
@@ -726,6 +728,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
             this.validarKilosDisponibles()
             if (this.ordenDeCarga.ContratoSeleccionado.TipoContrato === TipoContrato.FacturaAnticipada)
                 this.obtenerFacturas()
+            this.validarSisaCorredorCliente()
         }
         else {
             this.Contrato = "";
@@ -734,7 +737,6 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
             this.validaCPEDG = false;
         }
         this.ordenDeCarga.Reventa = this.validaCPEDG && this.clienteSeleccionado.EsRevendedor && !this.ordenDeCarga.Reventa;
-        this.validarSisaCorredorCliente()
     }
 
     onPatenteSeleccionada() {
@@ -883,7 +885,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                 } else {
                 }
             }
-        );
+            );
     }
 
     obtenerCorredores() {

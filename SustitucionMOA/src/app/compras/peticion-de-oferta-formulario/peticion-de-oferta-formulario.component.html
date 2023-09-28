@@ -140,6 +140,10 @@
                                     </div>
                                 </div>
 
+                                <div class="col-xs-12 col-sm-12 col-md-12 margenInput">
+                                    <p-checkbox [ngModelOptions]="{standalone:true}" [(ngModel)]="pliegoDeGeneralidades" label="Adjuntar pliego de generalidades" name="pliegoDeGeneralidades"
+                                                binary="true"></p-checkbox>
+                                </div>
 
                                 <div class="col-md-12 row" style="margin-left: -1px; margin-bottom: 3px">
                                     <p-panel *ngIf="archivos.length > 0" header="Adjuntos agregados" [toggleable]="true" [collapsed]="false">

@@ -18,5 +18,7 @@ namespace SustitucionMOAModel.Dto
 
         public int Id { get; set; }
         public bool RegistroInfo { get; set; }
+        public bool AdjuntoPliego { get; set; }
+
     }
 }

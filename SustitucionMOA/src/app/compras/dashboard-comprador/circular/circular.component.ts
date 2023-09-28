@@ -93,10 +93,25 @@ export class CircularComponent implements OnInit, OnChanges {
 
     autocompletarFechaDeEntrega() {
         if (this.peticion != null && this.peticion.FechaEntregaFormateado != "") {
-            const date = new Date(this.peticion.FechaEntregaFormateado);
+          // Separar la fecha en sus componentes (año, mes, día)
+          const parts = this.peticion.FechaEntregaFormateado.split('-');
+          if (parts.length === 3) {
+            const year = parseInt(parts[0], 10);
+            const month = parseInt(parts[1], 10) - 1; // Los meses en JavaScript van de 0 a 11
+            const day = parseInt(parts[2], 10);
+      
+            // Crear una nueva fecha con los componentes
+            const date = new Date(year, month, day);
+      
+            // La variable 'date' ahora contiene la fecha deseada
             this.fechaDeEntrega = date;
+            console.log("this.fechaDeEntrega", this.fechaDeEntrega);
+          } else {
+            console.error('El formato de la fecha no es válido');
+          }
         }
-    }
+      }
+      
 
     onCerrarCircular() {
         this.visualizarAlert = false;

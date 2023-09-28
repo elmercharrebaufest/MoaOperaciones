@@ -126,6 +126,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                     .Where(u => u.Usuario.CUITRegistro == CuitUsuario).GroupBy(x => x).SelectMany(x => x.Key.Circulares)
                                     .Where(x => x.Circular.RequiereCambioDeFechas == true && x.Circular.PlazoDeOferta.HasValue)
                                     .OrderByDescending(x => x.Circular.Id).FirstOrDefault().Circular.PlazoDeOferta.Value) >= hoy ? 1 : 2,
+                                    AdjuntoPliego = x.PeticionDeOferta.AdjuntoPliego,
 
                                     Usuarios = new List<PeticionDeOfertaUsarioDto> { new PeticionDeOfertaUsarioDto {
                                         Id = x.Id,
@@ -141,7 +142,8 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                     CotizacionEstado_Id = cotizacion == null ? 0 : cotizacion.CotizacionEstado.Id,
                                     ItemPorPagina = Paginacion.ItemsPorPagina,
                                     Pagina = Paginacion.Pagina,
-                                    TieneAdjudicacion = cotizacion != null && cotizacion.Adjudicaciones.Any()
+                                    TieneAdjudicacion = cotizacion != null && cotizacion.Adjudicaciones.Any(),
+
                                 };
 
                 var itemsTotales = resultado.Count();
