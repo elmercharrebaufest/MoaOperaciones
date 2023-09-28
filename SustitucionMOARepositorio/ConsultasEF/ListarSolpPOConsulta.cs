@@ -37,7 +37,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                 join cotizacion in contexto.Set<Cotizacion>() on x.Id equals cotizacion.PeticionDeOfertaUsuario_Id into peticionCotizacion
                                 from cotizacion in peticionCotizacion.DefaultIfEmpty()
                                 where (string.IsNullOrEmpty(nroDeSolp) || x.PeticionDeOferta.Solp.NroSolp.ToUpper().StartsWith(nroDeSolp.ToUpper()))
-                                && x.Usuario.CUITRegistro == CuitUsuario
+                                && x.Usuario.CUITRegistro == CuitUsuario && x.PeticionDeOferta.RegistroInfo != true
                                 select new PeticionDeOfertaDto
                                 {
                                     Id = x.PeticionDeOferta.Id,
