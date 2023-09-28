@@ -72,7 +72,6 @@ import { PesificacionBaseComponent } from "./pesificacion/pesificacion-base.comp
 import { ModificarDatosComponent } from './usuario/modificar-datos/modificar-datos.component';
 import { ToastModule } from "primeng/toast";
 import { UsuarioAuditoriaListComponent } from './usuario/usuario-auditoria-list/usuario-auditoria-list.component';
-import { SpinnerLoadingComponent } from './common/view-child/spinner-loading/spinner-loading.component';
 
 
 
@@ -126,7 +125,6 @@ import { SpinnerLoadingComponent } from './common/view-child/spinner-loading/spi
     PesificacionBaseComponent,
     ModificarDatosComponent,
     UsuarioAuditoriaListComponent,
-    SpinnerLoadingComponent
     ],
   providers: [
     DatePipe,

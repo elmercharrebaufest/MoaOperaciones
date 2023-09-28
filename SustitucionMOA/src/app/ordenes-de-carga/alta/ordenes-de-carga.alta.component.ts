@@ -22,10 +22,8 @@ import { Domicilio } from '../../common/models/ordenes-de-carga/domicilio';
 import { finalize, take } from 'rxjs/operators';
 import { ApiResponse } from '../../common/models/response';
 import { forkJoin } from 'rxjs';
-import { Permiso } from '../../common/enums/Permisos';
 import { Factura, newFactura } from '../../common/models/ordenes-de-carga/Factura';
 import { EstadoOrdenDeCarga } from '../../common/models/ordenes-de-carga/estadoOrdenDeCarga';
-import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 
 declare var $: any;
 @Component({
@@ -42,6 +40,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
 
     @ViewChild(SpinnerComponent)
     protected spinnerComponent: SpinnerComponent;
+    
     @ViewChild('messages')
     private messagesContainer?: ElementRef<HTMLDivElement>;
 
@@ -106,6 +105,9 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
 
     cuilsChofer: any;
     cuitsTransporte: any;
+
+    loadingCorredores: boolean = false;
+    loadingClientes: boolean = false;
 
     intermediarioFleteCuitFormatoValido: boolean = true;
 
@@ -608,6 +610,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                 }
                 this.clienteSeleccionado = null;
                 this.mensajeComponent.setMsgsEmpty();
+                this.loadingClientes = true;
                 this.seleccionarProveedorService.getAllClientsByType(5).subscribe(
                     (result) => {
                         if (result.logout == true) {
@@ -624,16 +627,19 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                                 this.clienteSeleccionado = this.listaClientes.find(x => x.CUIT == this.clienteCUIT);
                             }
                         }
+                        this.loadingClientes = false;
                     },
                     (error) => {
                         console.error(' onCorredorFocusOut: ', error.message);
                         this.mensajeComponent.setErrorMsg(error.message);
+                        this.loadingClientes = false;
                     }
                 );
             }
         } catch (err) {
             console.error(' onCorredorFocusOut: ', err);
             this.mensajeComponent.setErrorMsg(err);
+            this.loadingClientes = false;
         }
     }
 
@@ -641,7 +647,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
         this.blockUI.start('');
         this.mensajeComponent.setMsgsEmpty();
         try {
-
+            this.loadingClientes = true;
             this.service.visualizarCliente(codigoCorredor, this.desde, this.hasta).subscribe(
                 result => {
                     if (result.logout == true) {
@@ -665,16 +671,19 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                         }
                         this.blockUI.stop();
                     }
+                    this.loadingClientes = false;
                 },
                 error => {
                     console.error(' cargarClientes: ', error.message);
                     this.mensajeComponent.setErrorMsg(error.message);
+                    this.loadingClientes = false;
                     this.blockUI.stop();
                 }
             );
         } catch (err) {
             console.error(' cargarClientes: ', err);
             this.mensajeComponent.setErrorMsg(err);
+            this.loadingClientes = false;
             this.blockUI.stop();
         }
     }
@@ -880,6 +889,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
     obtenerCorredores() {
         //this.blockUI.start('');
         this.mensajeComponent.setMsgsEmpty();
+        this.loadingCorredores = true;
         try {
 
             this.seleccionarProveedorService.getVendedores("", "", 4).subscribe(
@@ -906,10 +916,12 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                         }
                         //this.blockUI.stop();
                     }
+                    this.loadingCorredores = false;
                 },
                 error => {
                     console.error(' cargarClientes: ', error.message);
                     this.mensajeComponent.setErrorMsg(error.message);
+                    this.loadingCorredores = false;
                     //this.blockUI.stop();
                 }
             );
