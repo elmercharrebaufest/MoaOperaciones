@@ -30,12 +30,13 @@ namespace SustitucionMOARepositorio.ConsultasEF
             try
             {
                 ((IObjectContextAdapter)contexto).ObjectContext.CommandTimeout = 180;
+                var nroDeSolp = NroSolp.Trim();
                 var resultado = from x in contexto.Set<PeticionDeOfertaUsuario>()
                                 join peticionDeOferta in contexto.Set<PeticionDeOferta>() on x.PeticionDeOferta_Id equals peticionDeOferta.Id into peticion
                                 from peticionDeOferta in peticion.DefaultIfEmpty()
                                 join cotizacion in contexto.Set<Cotizacion>() on x.Id equals cotizacion.PeticionDeOfertaUsuario_Id into peticionCotizacion
                                 from cotizacion in peticionCotizacion.DefaultIfEmpty()
-                                where (string.IsNullOrEmpty(NroSolp) || x.PeticionDeOferta.Solp.NroSolp.ToUpper().StartsWith(NroSolp.ToUpper()))
+                                where (string.IsNullOrEmpty(nroDeSolp) || x.PeticionDeOferta.Solp.NroSolp.ToUpper().StartsWith(nroDeSolp.ToUpper()))
                                 && x.Usuario.CUITRegistro == CuitUsuario
                                 select new PeticionDeOfertaDto
                                 {
