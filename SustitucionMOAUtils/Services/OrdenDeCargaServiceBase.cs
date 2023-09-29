@@ -132,18 +132,6 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        public void EmailGestionarAlta(string cuit, string razonSocial, bool esIntermediarioFlete)
-        {
-            if (esIntermediarioFlete)
-            {
-                emailService.EnviarMailAltaIntermediarioFlete(cuit, razonSocial);
-            }
-            else
-            {
-                emailService.EnviarMailAltaTempranaCuit(cuit, razonSocial);
-            }
-        }
-
         public ValidarIntermediarioFleteResponse ValidarIntermediarioFlete(string cuit)
         {
             var scatoRes = scatoRepositorioClient.ObtenerProveedorPorCuil(cuit);

@@ -801,10 +801,10 @@ namespace SustitucionMOA.Controllers
             return ContentCustom(response);
         }
         [HttpPost]
-        public ActionResult EnviarMailAltaCuitTerceros(bool gestionaFlete, bool gestionaDestino, bool gestionaDestinatario, 
+        public ActionResult EnviarMailAltaCuitTerceros(bool gestionaFlete, bool gestionaDestino, bool gestionaDestinatario,
             string ordenId)
         {
-            var response = new SustitucionMOAApiResponse();
+            var response = new SustitucionMOAApiResponse<bool>();
             try
             {
                 response.Data = ordenDeCargaService.EnviarMailAltaCuitTerceros(gestionaFlete, gestionaDestino, gestionaDestinatario, ordenId);

@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
 using Hangfire;
 using Owin;
 using Hangfire.Dashboard;
@@ -117,12 +120,12 @@ namespace SustitucionMOA
                         // Busca la reclamación "permisos" con el valor "APIKEY"
                         IEnumerable<System.Security.Claims.Claim> permisosClaim = userIdentity.FindAll("permisos");
 
-                        if (permisosClaim != null && permisosClaim.Any(a=>a.Value == "HANGFIREDASHBOARD"))
+                        if (permisosClaim != null && permisosClaim.Any(a => a.Value == "HANGFIREDASHBOARD"))
                         {
                             boolAuthorizeCurrentUserToAccessHangFireDashboard = true;
                         }
                     }
-                }                
+                }
             }
             return boolAuthorizeCurrentUserToAccessHangFireDashboard;
 

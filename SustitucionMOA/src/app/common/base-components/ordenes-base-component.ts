@@ -16,7 +16,6 @@ import { ValidarCuitExisteScatoResponse } from "../models/ordenes-de-carga-commo
 
 
 export abstract class OrdenesBaseService extends BaseService {
-    abstract enviarMailGestionarAltaCuit(cuit: string, razonSocial: string, esIntermediarioFlete: boolean): Observable<ApiResponse<boolean>>
     abstract obtenerPlantasDestino(destinoCuit: string): Observable<ApiResponse<Planta[]>>
     abstract obtenerDomiciliosDestino(destinoCuit: string): Observable<ApiResponse<Domicilio[]>>
     abstract validarIntermediarioFlete(cuit: string): Observable<ApiResponse<ValidarIntermediarioFleteResponse>>
@@ -49,7 +48,6 @@ export interface IOrdenesBaseComponent {
     onPlantaSeleccionadaChanged(): void;
     onDomicilioSeleccionadoChanged(): void;
     setearDefaultEnCPEDG(): void;
-    gestionarAltaCUIT(): void;
     validarIntermediarioFlete(): void;
     manejarErroresApiResponse<T>(response: ApiResponse<T>): T | null;
     manejarRespuestaDomicilio(resp: ApiResponse<Domicilio[]>, cuitDestino: string): void;

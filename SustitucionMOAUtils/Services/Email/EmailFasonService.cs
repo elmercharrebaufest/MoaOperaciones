@@ -9,13 +9,13 @@ namespace SustitucionMOAUtils.Services.Email
         private static readonly string DireccionToAltaTempranaCuitFason = ConfigurationManager.AppSettings["EmailAltaTempranaCuitFasonTo"];
         private static readonly string DireccionCCAltaTempranaCuitFason = ConfigurationManager.AppSettings["EmailAltaTempranaCuitFasonCC"];
 
-        public override void EnviarMailAltaTempranaCuit(string cuit, string razonSocial)
+        public void EnviarMailAltaTempranaCuit(string cuit, string razonSocial)
         {
             var emailSenderData = new EmailSenderData
             {
                 Mails = ObtenerListaDestinatarios(new string[] { DireccionToAltaTempranaCuitFason }),
                 Copias = ObtenerListaDestinatarios(new string[] { DireccionCCAltaTempranaCuitFason }),
-                Asunto = GenerarAsunto("ALTA TEMPRANA CUIT"),
+                Asunto = "ALTA TEMPRANA CUIT",
                 Cuerpo = $"Se solicita el alta temprana del CUIT: {cuit}, Razón social: {razonSocial}"
             };
             EnviarMail(emailSenderData);
