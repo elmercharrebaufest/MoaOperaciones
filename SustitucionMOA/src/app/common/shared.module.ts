@@ -20,6 +20,7 @@ import { MensajeComponent } from "./view-child/mensaje/mensaje.component";
 import { MensajeModalComponent } from "./view-child/mensaje-modal/mensaje-modal.component";
 import { SpinnerComponent } from "./view-child/spinner/spinner.component";
 import { SpinnerSmallComponent } from "./view-child/spinner-small/spinner-small.component";
+import { SpinnerLoadingComponent } from './view-child/spinner-loading/spinner-loading.component';
 import { CustomFilter } from "./pipes/customFilter";
 import { CustomFilterOr } from "./pipes/customFilterOr";
 import { CustomFilterContain } from "./pipes/customFilterContain";
@@ -57,6 +58,7 @@ const declaredAndExported = [
     MensajeModalComponent,
     SpinnerComponent,
     SpinnerSmallComponent,
+    SpinnerLoadingComponent,
     CustomFilter,
     CustomFilterOr,
     CustomFilterContain,

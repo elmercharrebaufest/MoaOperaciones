@@ -5,7 +5,7 @@
         <!--Title-->
         <div class="row titleSection">
             <div class="col-xs-12 col-sm-10 ">
-                <strong *ngIf="ordenDeCargaId == 0"> Nueva orden de carga</strong>
+                <strong *ngIf="ordenDeCargaId == 0"> Nueva orden de carga</strong>                                
                 <strong *ngIf="ordenDeCargaId > 0"> Editar orden de carga #{{ordenDeCargaId}}</strong>
                 <!-- <strong *ngIf="notificacion.Id == 0">Nueva notificación</strong>
                 <strong *ngIf="notificacion.Id > 0">Editar notificación</strong> -->
@@ -33,7 +33,9 @@
                                         (ngModelChange)="onCorredorSeleccionado()" [filter]="true"
                                         filterBy="value.descVendedor">
                                     </p-dropdown>
+                                    <spinner-loading [show]="loadingCorredores"></spinner-loading>
                                 </div>
+
                             </div>
 
                             <div class="col-xs-12 col-md-12" *ngIf="esComercial || esCorredor">
@@ -46,6 +48,7 @@
                                         optionLabel="RazonSocial" placeholder="Seleccione un Cliente"
                                         [disabled]="noEditarCliente" [filter]="true" filterBy="value.RazonSocial">
                                     </p-dropdown>
+                                    <spinner-loading [show]="loadingClientes"></spinner-loading>
                                 </div>
                             </div>
 
