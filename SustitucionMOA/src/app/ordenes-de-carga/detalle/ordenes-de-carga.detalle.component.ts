@@ -348,7 +348,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                     } else if (result.info != undefined) {
                     } else {
                         this.ordenDeCarga = result.data;
-                        this.verificarOrdenActivaScato(this.ordenDeCarga.NumeroEntrega);
+                        this.verificarOrdenActivaScato(this.ordenDeCarga.Id.toString());
                         this.validaCPEDG = this.ordenDeCarga.ValidaSisaRuca;
                         this.separarCadenas();
                         this.verificarBotones()
@@ -935,11 +935,11 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
             sessionStorage.removeItem(VOLVER_A_DETALLE_REPORTE)
     }
 
-    verificarOrdenActivaScato(nroEntrega: string){
+    verificarOrdenActivaScato(ordenId: string){
         this.spinnerComponent.showIt();
         this.unsubscribe();
         try {
-            this.service.validarOrdenActivaScato(nroEntrega).pipe(
+            this.service.validarOrdenActivaScato(ordenId).pipe(
                 finalize(() => { this.blockUI.stop(); this.spinnerComponent.hideIt() })
             ).subscribe(
                 result => {
@@ -965,6 +965,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
             this.mensajeValidacionScato = "No se pudo validar si la orden esta activa en Scato."
         }
     }
+    
     verificarCuitsTerceros() {
         this.mensajeComponent.setMsgsEmpty();
         this.spinnerComponent.showIt();

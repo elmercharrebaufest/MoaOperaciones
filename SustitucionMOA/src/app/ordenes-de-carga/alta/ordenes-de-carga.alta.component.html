@@ -1,3 +1,4 @@
+<p-toast [style]="{marginTop: '80px', color:'#FFF!important'}"></p-toast>
 <div class="content-wraper">
     <!-- CONTENT-->
     <section class="container-fluid clearfix">
@@ -21,7 +22,6 @@
                     </div>
                     <div class="formulario">
                         <div class="col-xs-12 col-md-5 no-padding-left-right" style="margin-left: 3em;">
-
                             <div class=" col-xs-12 col-md-12" *ngIf="esComercial">
                                 <div class="formulario-label" style="margin-bottom: 8px;">
                                     Corredor:
@@ -86,6 +86,15 @@
                                         placeholder="Seleccione un número de factura" [optionLabel]="'Label'"
                                         [filter]="true" (onChange)="setNumeroFactura($event.value)" filterBy="">
                                     </p-dropdown>
+                                </div>
+                            </div>
+                            <div *ngIf="ordenDeCarga.ContratoSeleccionado && !validaCPEDG" class="col-xs-12 col-md-11">
+                                <div class="formulario-label">
+                                    Destino mercadería:
+                                </div>
+                                <div class="styled-select">
+                                    <textarea id="DestinoMercaderia" [(ngModel)]="ordenDeCarga.DestinoMercaderia"
+                                        rows="5" [disabled]="editando || null"></textarea>
                                 </div>
                             </div>
                             <ng-container *ngIf="validaCPEDG">
@@ -221,7 +230,7 @@
                                 </div>
                             </div>
 
-                            <div class="col-xs-12 col-md-12">
+                            <div class="col-xs-12 col-md-12" *ngIf="esComercial">
                                 <div class="formulario-label">
                                     Cantidad:
                                 </div>
@@ -233,7 +242,8 @@
                                 <div class="formulario-label">
                                     Camión escalable:
                                 </div>
-                                <p-checkbox name="escalable" [binary]="true" [(ngModel)]="ordenDeCarga.Escalable">
+                                <p-checkbox #escalableCheckbox name="escalable" [binary]="true"
+                                    [(ngModel)]="ordenDeCarga.Escalable" (ngModelChange)="validarEscalable()">
                                 </p-checkbox>
                             </div>
                         </div>
@@ -247,9 +257,8 @@
                                 </div>
                                 <div class="styled-select autocomplete">
                                     <input auto-complete [(ngModel)]="ordenDeCarga.ChasisAcoplado"
-                                        (ngModelChange)="ordenDeCarga.ChasisAcoplado = $event.toUpperCase()"
-                                        maxlength="7" [source]="patentesChasis"
-                                        (valueChanged)="PatenteChasisSelected($event)" [min-chars]="2"
+                                        (ngModelChange)="chasisAcopladoSelected($event);validarCNRT()" maxlength="7"
+                                        [source]="patentesChasis" [min-chars]="2"
                                         [no-match-found-text]="'No se encontraron resultados'"
                                         [value-formatter]="generalFormatter" [list-formatter]="generalFormatter"
                                         mask="AAAAAAA" />
@@ -262,10 +271,9 @@
                                 </div>
                                 <div class="styled-select autocomplete">
                                     <input auto-complete [(ngModel)]="ordenDeCarga.PatenteAcoplado"
-                                        (ngModelChange)="ordenDeCarga.PatenteAcoplado= $event.toUpperCase()"
-                                        maxlength="7" [source]="patentesAcoplados"
-                                        (valueChanged)="PatenteAcopladoSelected($event);onPatenteSeleccionada()"
-                                        [min-chars]="2" [no-match-found-text]="'No se encontraron resultados'"
+                                        (ngModelChange)="patenteAcopladoSelected($event);validarCNRT()" maxlength="7"
+                                        [source]="patentesAcoplados" [min-chars]="2"
+                                        [no-match-found-text]="'No se encontraron resultados'"
                                         [value-formatter]="generalFormatterAcoplado"
                                         [list-formatter]="generalFormatterAcoplado" mask="AAAAAAA" />
                                 </div>
@@ -446,3 +454,52 @@
     </p-footer>
 </p-dialog>
 <!-- end modal notificacion -->
+
+<!-- modal advertencia de edicion perfil interno -->
+<button type="button" style="display:none" id="openEdicionOrdenInterno" data-toggle="modal"
+        data-target="#modalEditarOrdenInterno"></button>
+<div class="modal fade" id="modalEditarOrdenInterno" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+data-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
+<div class="modal-dialog" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            <h4 class="modal-title" id="modalEditarOrden">Editar orden</h4>
+        </div>
+        <div class="modal-body">
+            <div *ngIf = "mensajeValidacionScato" class="row" class="col-xs-12 col-sm-12 col-md-12 alertScato">
+            {{mensajeValidacionScato}}    
+            </div>
+            <div class="row" class="col-xs-12 col-sm-12 col-md-12">
+                ¿Está seguro de que desea editar la orden de carga?
+            </div>
+        </div>
+        <div class="modal-footer" style="border-top:none;">
+            <button type="button" class="btn-custom btn-cerrar btn-chico" data-dismiss="modal"
+                id="closemodalEditarOrden" style="display: inline-flex;">
+                Cancelar
+            </button>
+            <button type="button" class="btn-custom btn-remove btn-mediano" (click)="editarOrden()"
+                style="display: inline-flex;">
+                Editar orden
+            </button>
+
+        </div>
+    </div>
+</div>
+</div>
+<!-- end modal edicion interno -->
+<!-- end modal notificacion -->
+<p-dialog [header]="'Camión escalable'" [(visible)]="displayModalEscalable" [modal]="true" [responsive]="true"
+    [style]="{width: '350px', minWidth: '200px', maxWidth:'350px'}" [minY]="70" [draggable]="false" appendTo="body"
+    [closable]="false">
+    <p>No se marcó la orden como escalable y los datos ingreados son de un camión escalable.</p><br>
+    <p>¿Desea que se marque como escalable?</p>
+    <p-footer>
+        <button type="button" pButton icon="pi pi-check" (click)="marcarComoEscalable()" label="Si"></button>
+        <button type="button" pButton icon="pi pi-close" (click)="dejarSinEscalable()" label="No"
+            class="ui-button-secondary"></button>
+    </p-footer>
+</p-dialog>

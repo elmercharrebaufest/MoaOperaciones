@@ -178,6 +178,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
     ngOnInit(): void {
         if (this.model.posiciones.length == 0) {
             this.agregarPosicion();
+            this.deshabilitarImputaciones();
         }
         this.listarContratosAsociados();
         if (this.model.posicionActual != undefined) {
@@ -282,7 +283,8 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
 
     agregarPosicion() {
         this.model.agregarNuevaPosicion(null as SolpPosicion);
-        this.setupAlmacenEntregaByCentro();
+        this.setupAlmacenEntregaByCentro();      
+        this.model.posicionActual.setTabPosicion();
     }
 
     duplicarPosicion(el: HTMLElement) {
@@ -1320,5 +1322,11 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
             }
 
         }
+    }
+
+    private deshabilitarImputaciones(){
+        this.model.posiciones.forEach(element => {
+            element.setTabPosicion();
+        });
     }
 }

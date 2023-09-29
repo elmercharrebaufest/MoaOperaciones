@@ -36,8 +36,9 @@ namespace SustitucionMOARepositorio.ConsultasEF
             try
             {
                 ((IObjectContextAdapter)contexto).ObjectContext.CommandTimeout = 180;
+                var nroDeSolp = NroSolp.Trim();
                 var resultado = from x in contexto.Set<Solp>()
-                                where (string.IsNullOrEmpty(NroSolp) || x.NroSolp.ToUpper().StartsWith(NroSolp.ToUpper())) &&
+                                where (string.IsNullOrEmpty(nroDeSolp) || x.NroSolp.ToUpper().StartsWith(nroDeSolp.ToUpper())) &&
                                 x.Posiciones.All(p => p.NumeroContratoSuperior == "" || p.NumeroContratoSuperior == null) &&
                                 (!Usuarios.Any() || (x.UsuarioCreacion_Id != null && Usuarios.Contains((int)x.UsuarioCreacion_Id))) &&
                                 (!Estados.Any() || (x.EstadoSolpSap_Id != null && Estados.Contains((int)x.EstadoSolpSap_Id))) &&

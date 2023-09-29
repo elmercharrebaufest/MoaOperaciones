@@ -227,13 +227,29 @@ export class Generacion2Component extends ListBaseComponent {
 
     onRadioButtonChange(visita: string) {
         if (visita == "visitaDeObra") {
-            this.model.visitaDeObra = true;
-            this.model.visitaDeObraMasiva = false;
-            this.model.listaVisitas = [];
-            this.agregarNuevaVisita();
+            if (this.model.visitaDeObra != true) {
+                this.model.visitaDeObra = true;
+                this.model.visitaDeObraMasiva = false;
+                this.model.listaVisitas = [];
+                this.agregarNuevaVisita();
+            }
+            else {
+                this.model.visitaDeObra = false;
+                this.model.listaVisitas = [];
+            }
         } else if (visita == "visitaDeObraMasiva") {
-            this.model.visitaDeObraMasiva = true
-            this.model.visitaDeObra = false;
+            if (this.model.visitaDeObraMasiva != true) {
+                this.model.visitaDeObraMasiva = true;
+                this.model.visitaDeObra = false;
+                if (this.model.listaVisitas.length == 0) {
+                    this.agregarNuevaVisita();
+                }
+            }
+            else {
+                this.model.visitaDeObraMasiva = false;
+                this.model.listaVisitas = [];
+            }
         }
     }
+
 }

@@ -165,7 +165,10 @@
                                         <p class="blue"><strong>Entrega</strong></p>
                                         <p style="width:100%">{{ordenDeCarga.NumeroEntrega}}</p>
                                     </div>
-
+                                    <div class="col-xs-12 col-md-12" *ngIf="!validaCPEDG">
+                                        <p class="blue"><strong>Destino Mercadería</strong></p>
+                                        <p style="width:100%">{{ordenDeCarga.DestinoMercaderia}}</p>
+                                    </div>
                                     <div class="col-xs-12 col-md-12">
                                         <p class="blue"><strong>Estado</strong></p>
                                         <p style="width:100%">{{ordenDeCarga.DescripcionEstadoUsuarioFinal}}</p>
@@ -705,8 +708,8 @@
                     <h4 class="modal-title" id="modalAnularOrden">Anular orden</h4>
                 </div>
                 <div class="modal-body">
-                    <div *ngIf = "mensajeValidacionScato" class="row" class="col-xs-12 col-sm-12 col-md-12 alertScato">
-                    {{mensajeValidacionScato}}    
+                    <div *ngIf="mensajeValidacionScato" class="row" class="col-xs-12 col-sm-12 col-md-12 alertScato">
+                        {{mensajeValidacionScato}}
                     </div>
                     <div class="row" class="col-xs-12 col-sm-12 col-md-12">
                         ¿Está seguro de que desea anular la orden de carga?
