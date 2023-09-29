@@ -20,7 +20,8 @@ namespace SustitucionMOAWS.WSConsumers
 
         public CrearPedidoConsumerMOA()
         {
-            service = new SI_MMRFC_CREAR_PEDIDOClient();
+            var url = "http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MMRFC_CREAR_PEDIDO&amp;interfaceNamespace=urn%3AOPERACIONES";
+            service = new SI_MMRFC_CREAR_PEDIDOClient(SAPCredential.CrearSapBasicBinding(), SAPCredential.DevolverEndpoint(url));
             service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
             service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
         }
@@ -186,7 +187,7 @@ namespace SustitucionMOAWS.WSConsumers
                 IM_POITEM.MATL_GROUP = posicion.GrupoArticulo?.CodigoSap?.ToString() ?? "";
                 //IM_POITEM.MATL_GROUP = posicion.GrupoArticulo.CodigoSap.ToString();
                 IM_POITEM.MATERIAL = esPosicionDeMateriales ? posicion.MaterialSolp?.CodigoSap.ToString() : "";
-                IM_POITEM.STGE_LOC = posicion.Almacen.CodigoSap.ToString();
+                IM_POITEM.STGE_LOC = posicion.Almacen != null ? posicion.Almacen.CodigoSap.ToString() : "";
                 IM_POITEM.ITEM_CAT = posicion.TipoPosicion.Codigo.ToLower() == "servicio" ? "9" : "0";//ITEM_CAT PSTYP   Tipo de posición del documento de compras
                 IM_POITEM.TRACKINGNO = posicion.NroNecesidad;
                 IM_POITEM.INFO_REC = "";

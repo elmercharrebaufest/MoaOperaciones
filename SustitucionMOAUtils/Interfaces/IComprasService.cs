@@ -1,5 +1,6 @@
 ﻿using SustitucionMOAModel.Consultas;
 using SustitucionMOAModel.Dto;
+using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using SustitucionMOAModel.Models.WSMapMOA;
 using SustitucionMOAModel.Models.WSMapMOA.Compras;
@@ -46,7 +47,7 @@ namespace SustitucionMOAUtils.Interfaces
         SolpDescargaZipPorLink PuedeDescargarPliegoDesdeLink(int solpId, Guid? token);
         List<FuenteAprovisionamientoDto> ListarFuenteAprovisionamiento(string fechaEntregaPosicion, string numeroMaterial, string centro);
         List<ContratoSolp> ObtenerContratoMarco(string numeroContrato, string centro);
-        ListaPaginada<SolpDto> ListarSolpComprador(Paginacion paginacion, string nroSolp = null);
+        ListaPaginada<SolpDto> ListarSolpComprador(Paginacion paginacion, string nroSolp = null, List<int> usuarios = null, List<int> estados = null, List<int> centros = null, List<int> grupoDeCompras = null);
         List<AsociarContratoDto> DevolverContratosAsociados(List<SolpPosicionDto> posiciones);
         SolpCompraDto ObtenerSolpCompras(int id);
         RespuestaGuardarSOLP GrabarPeticionDeOferta(GuardarPeticionDeOfertaDto peticionDeOferta, HttpFileCollectionBase adjuntos, bool enviarMail, List<RegistroInfoDto> registroInfo);
@@ -70,6 +71,8 @@ namespace SustitucionMOAUtils.Interfaces
         OrdenDeCompraSAPDto ObtenerOrdenDeCompra(string nroOC);
         List<RespuestaCrearOrdenDeCompra> CrearOrdenDeCompraConRegistroInfo(List<RegistroInfoDto> registros, int usuarioActualId);
         RespuestaGuardarSOLP CerrarCotizacion(int peticionId, int usuarioActualId, string observaciones);
-
+        DatosUltimaSolpDto ObtenerUltimaSolp(int usuarioId);
+        RegistroInfoDto ObtenerUltimoRegistroMaterial(string material, string centro, string grupoDeCompras);
+        void ActualizarFechaLiberacionOC(string nroOc, DateTime fechaLiberacion);
     }
 }

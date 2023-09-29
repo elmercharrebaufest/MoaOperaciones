@@ -289,13 +289,12 @@ export class CotizacionMaterialComponent extends ListBaseComponent implements On
         } else {
             cotizacion.FechaDeEntrega = fechaOriginal;
         }
-        // if (cotizacion.PlazoDeEntrega) {
-        var dias = fechaNueva > fechaOriginal ? fechaNueva.getDay() - fechaOriginal.getDay() : fechaOriginal.getDay() - fechaNueva.getDay();
-        if (dias < 0) {
-            dias = 0;
-        }
+         // Calcula la diferencia en milisegundos entre las dos fechas
+        const diferenciaEnMilisegundos = fechaNueva.getTime() - fechaOriginal.getTime();
+
+        // Convierte la diferencia en días
+        const dias = Math.ceil(diferenciaEnMilisegundos / (1000 * 60 * 60 * 24));
         this.posicionesCompra.filter(x => x.Id == peticionId)[0].Posiciones.CotizacionPosicion.PlazoDeEntrega = dias;
-        // }
     }
 
     public getCotizacion() {

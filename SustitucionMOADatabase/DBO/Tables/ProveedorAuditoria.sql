@@ -9,6 +9,7 @@
     [RazonSocial] VARCHAR(200) NULL, 
     [FechaActualizacion] DATETIME NULL, 
     [UsuarioActualizacion] VARCHAR(200) NULL,
+    [EsRevendedor] BIT NOT NULL DEFAULT 0, 
     CONSTRAINT [PK_dbo.ProveedorAuditoria] PRIMARY KEY CLUSTERED 
    (
 	[Id] ASC

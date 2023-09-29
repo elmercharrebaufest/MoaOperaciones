@@ -9,7 +9,7 @@ using SustitucionMOAValidator;
 
 namespace SustitucionMOAUtils.Services
 {
-    public static class CommonService
+    public static class CommonUtil
     {
         public static List<FechaWS> toDateList(string fechaInicio, string fechaFin) {
             DateTime fechaIncioDateTime = DateTime.Now;

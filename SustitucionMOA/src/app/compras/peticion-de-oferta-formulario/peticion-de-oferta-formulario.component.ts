@@ -55,6 +55,8 @@ export class PeticionDeOfertaFormularioComponent extends ListBaseComponent imple
     displayProvCreado: boolean = false;
     datoProveedor: string;
     displayRegistroInfo: boolean = false;
+    TodasPosicionesSeleccionadas: boolean = false;
+    pliegoDeGeneralidades: boolean = false;
 
     constructor(protected service: ComprasService, protected usuarioService: UsuarioService, protected navService: NavService, protected sessionDataService: SessionDataService,
         protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService,
@@ -258,6 +260,7 @@ export class PeticionDeOfertaFormularioComponent extends ListBaseComponent imple
                 PosIds: this.solpCompraDto.PosicionCompras.filter(x => x.Selected == true).map(a => a.Id),
                 SolpId: this.solpCompraDto.Id,
                 UsuarioIds: this.proveedoresSeleccionados.map(a => a.Id),
+                AdjuntoPliego: this.pliegoDeGeneralidades
             }
             this.subscription = this.service.GrabarPeticion(envio).subscribe(
                 (result: any) => {
@@ -334,4 +337,11 @@ export class PeticionDeOfertaFormularioComponent extends ListBaseComponent imple
         this.displayRegistroInfo = false;
     }
 
+    seleccionarTodo() {
+        if (this.TodasPosicionesSeleccionadas) {
+            this.solpCompraDto.PosicionCompras.map(pos => pos.Selected = true);
+        } else {
+            this.solpCompraDto.PosicionCompras.map(pos => pos.Selected = false);
+        }
+    }
 }

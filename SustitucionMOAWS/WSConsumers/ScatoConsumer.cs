@@ -149,18 +149,18 @@ namespace SustitucionMOAWS.WSConsumers
             }
         }
 
-        public RecorridoDto[] ObtenerRecorridoNoRechazadoPorNumeroDocumento(string cuit)
+        public RecorridoDto[] ObtenerRecorridoNoRechazadoPorNumeroDocumento(string nroEntrega)
         {
             try
             {
-                var recorridos = service.ObtenerRecorridoNoRechazadoPorNumeroDocumento(cuit);
-                Log.Info(string.Format("ScatoConsumer.ObtenerRecorridoNoRechazadoPorNumeroDocumento. cuit: {0}",
-                    cuit));
+                var recorridos = service.ObtenerRecorridoNoRechazadoPorNumeroDocumento(nroEntrega);
+                Log.Info(string.Format("ScatoConsumer.ObtenerRecorridoNoRechazadoPorNumeroDocumento. nroEntrega: {0}",
+                    nroEntrega));
                 return recorridos;
             }
             catch (Exception ex)
             {
-                Log.Error("", "", "ScatoConsumer", "ObtenerRecorridoNoRechazadoPorNumeroDocumento", string.Format("cuit: {0}", cuit));
+                Log.Error("", "", "ScatoConsumer", "ObtenerRecorridoNoRechazadoPorNumeroDocumento", string.Format("nroEntrega: {0}", nroEntrega));
                 throw ex;
             }
         }

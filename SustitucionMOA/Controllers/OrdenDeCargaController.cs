@@ -8,6 +8,7 @@ using SustitucionMOAModel.Enums;
 using SustitucionMOASecurity;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
+using SustitucionMOAUtils.Services;
 using System;
 using System.Collections.Generic;
 using System.Web.Mvc;
@@ -560,6 +561,30 @@ namespace SustitucionMOA.Controllers
         }
 
         [HttpGet]
+        public ActionResult ObtenerProveedor(int idProveedor)
+        {
+            var response = new SustitucionMOAApiResponse<ProveedorDto>();
+            try
+            {
+                response.Data = ordenDeCargaService.ObtenerProveedor(idProveedor);
+            }
+            catch (InfoCustomException ice)
+            {
+                response.Info = ice.Message;
+            }
+            catch (ValidationCustomException vce)
+            {
+                response.Error = vce.Message;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                response.Error = ErrorMsg.Error;
+            }
+            return ContentCustom(response);
+        }
+
+        [HttpGet]
         public ActionResult VisualizarProducto(string contrato, string fechaInicio, string fechaFin)
         {
             try
@@ -775,13 +800,14 @@ namespace SustitucionMOA.Controllers
             }
             return ContentCustom(response);
         }
-        [HttpGet]
-        public ActionResult GestionarAltaCuit(string cuit, string razonSocial, bool esIntermediarioFlete)
+        [HttpPost]
+        public ActionResult EnviarMailAltaCuitTerceros(bool gestionaFlete, bool gestionaDestino, bool gestionaDestinatario, 
+            string ordenId)
         {
             var response = new SustitucionMOAApiResponse();
             try
             {
-                ordenDeCargaService.EmailGestionarAlta(cuit, razonSocial, esIntermediarioFlete);
+                response.Data = ordenDeCargaService.EnviarMailAltaCuitTerceros(gestionaFlete, gestionaDestino, gestionaDestinatario, ordenId);
             }
             catch (InfoCustomException ice)
             {
@@ -798,6 +824,7 @@ namespace SustitucionMOA.Controllers
             }
             return ContentCustom(response);
         }
+
         [HttpGet]
         public ActionResult ObtenerPlantasDestino(string destinoCuit)
         {
@@ -1018,7 +1045,7 @@ namespace SustitucionMOA.Controllers
             {
                 var ordenDeCarga = JsonConvert.DeserializeObject<OrdenDeCarga>(ordenDeCargaJson);
                 var mailUsuario = SessionPersister.getUsername();
-                return Json(new { cuils = ordenDeCargaService.ObtenerCuilsChofer(ordenDeCarga, mailUsuario)}, JsonRequestBehavior.AllowGet);
+                return Json(new { cuils = ordenDeCargaService.ObtenerCuilsChofer(ordenDeCarga, mailUsuario) }, JsonRequestBehavior.AllowGet);
             }
             catch (InfoCustomException e)
             {
@@ -1084,6 +1111,51 @@ namespace SustitucionMOA.Controllers
             }
             return ContentCustom(response);
         }
+        [HttpGet]
+        public ActionResult VerificarCuitsTerceros(int ordenId)
+        {
+            try
+            {
+                var mailUsuario = SessionPersister.getUsername();
+                return JsonCustom(new { data = ordenDeCargaService.VerificarCuitsTerceros(ordenId, mailUsuario) });
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
 
+        [HttpGet]
+        public ContentResult ValidarCamion(string patenteChasis, string patenteAcoplado)
+        {
+            var response = new SustitucionMOAApiResponse<ValidarCamionResponse>();
+            try
+            {
+                response.Data = new ValidarCamionResponse { ExisteCamion = true, EsCamionEscalable = true };
+            }
+            catch (InfoCustomException ice)
+            {
+                response.Info = ice.Message;
+            }
+            catch (ValidationCustomException vce)
+            {
+                response.Error = vce.Message;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                response.Error = ErrorMsg.Error;
+            }
+            return ContentCustom(response);
+        }
     }
 }

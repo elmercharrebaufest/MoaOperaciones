@@ -25,6 +25,8 @@ namespace SustitucionMOAModel.Models.WSMapMOA.OrdenCarga
 
         public string NombreCliente { get; set; }
 
+        public string CuitCliente { get; set; }
+
         public string Corredor { get; set; }
 
         public string DescripcionMaterial { get; set; }

@@ -59,12 +59,9 @@
                     <td pEditableColumn class="columna" style="width: 60px !important; ">
                         <p-cellEditor>
                             <ng-template pTemplate="input">
-                                <input type="text" pKeyFilter="num"
-                                 [(ngModel)]="peticionPosicion.Posicion.CantidadAdjudicacion" 
-                                 (focus)="onEditarCelda(peticionPosicion.Posicion, 'CantidadAdjudicacion', 0)"
-                                 (blur)="onReestablecerValor(peticionPosicion.Posicion, 'CantidadAdjudicacion')"
-                                 numeric
-                                 (keyup)="validacionCantidad(peticionPosicion.Posicion.CantidadAdjudicacion, peticionPosicion.Posicion.CantidadPendiente)">
+                                <input type="text" pKeyFilter="num" numeric-format
+                                       [(ngModel)]="peticionPosicion.Posicion.CantidadAdjudicacion"
+                                       (keyup)="validacionCantidad(peticionPosicion.Posicion.CantidadAdjudicacion, peticionPosicion.Posicion.CantidadPendiente)">
                             </ng-template>
                             <ng-template pTemplate="output">
                                 {{peticionPosicion.Posicion.CantidadAdjudicacion | number:'1.2-2'}}
@@ -129,9 +126,18 @@
                                     <ng-container *ngIf="cotizacionPosicion.NoDisponible != true">
                                         <td class="columna border2-left" style="width: 80px !important; ">{{cotizacionPosicion.Cantidad | number:'1.2-2'}}</td>
                                         <td class="columna" style="width: 100px !important;">{{cotizacionPosicion.UnidadMedida.Descripcion}}</td>
-                                        <td class="columna" style="width: 100px !important;">{{cotizacionPosicion.MonedaDescripcion}} {{cotizacionPosicion.Precio | number:'1.2-2'}}</td>
-                                        <td class="columna" style="width: 100px !important;">{{cotizacionPosicion.MonedaDescripcion}} {{cotizacionPosicion.PrecioTotal | number:'1.2-2'}}</td>
-                                        <td class="columna" style="width: 100px !important;">ARP {{cotizacionPosicion.TotalPesos | number:'1.2-2'}}</td>
+                                        <td class="columna" style="width: 100px !important;">
+                                            {{ proveedor.VerImportes ? (cotizacionPosicion.MonedaDescripcion + ' ' + (cotizacionPosicion.Precio | number:'1.2-2')) : '' }}
+                                            <i *ngIf="!proveedor.VerImportes" class="fa fa-eye-slash noVisible"></i>
+                                        </td>
+                                        <td class="columna" style="width: 100px !important;">
+                                            {{ proveedor.VerImportes ? (cotizacionPosicion.MonedaDescripcion + ' ' + (cotizacionPosicion.PrecioTotal | number:'1.2-2')) : '' }}
+                                            <i *ngIf="!proveedor.VerImportes" class="fa fa-eye-slash noVisible"></i>
+                                        </td>
+                                        <td class="columna" style="width: 100px !important;">
+                                            {{ proveedor.VerImportes ? 'ARP ' + (cotizacionPosicion.TotalPesos | number:'1.2-2') : '' }}
+                                            <i *ngIf="!proveedor.VerImportes" class="fa fa-eye-slash noVisible"></i>
+                                        </td>
                                         <td class="columna" style="width: 90px !important; ">{{cotizacionPosicion.FechaDeEntregaFormateada}}</td>
                                     </ng-container>
                                     <ng-container *ngIf="cotizacionPosicion.NoDisponible == true">
@@ -148,7 +154,10 @@
                 <tr *ngIf="esUltimaPosicion(peticionPosicion)">
                     <ng-container *ngFor="let proveedor of tablaOfertas.Usuarios">
                         <ng-container *ngIf="proveedor.Cotizacion != null">
-                            <td colspan="6" class="columna border2-left" style="width: 570px !important;">ARP {{proveedor.Cotizacion.TotalGlobal | number:'1.2-2'}}</td>
+                            <td colspan="6" class="columna border2-left" style="width: 570px !important;">
+                                {{ proveedor.VerImportes ? 'ARP ' + (proveedor.Cotizacion.TotalGlobal | number:'1.2-2') : '' }}
+                                <i *ngIf="!proveedor.VerImportes" class="fa fa-eye-slash noVisible" style="justify-content:left"></i>
+                            </td>
                         </ng-container>
                         <ng-container *ngIf="proveedor.Cotizacion == null">
                             <td class="columna border2-left" colspan="6" style="width: 570px !important;">Sin cotizar</td>
@@ -347,17 +356,23 @@
 
             <ng-template pTemplate="body" let-peticionPosicion>
                 <tr>
-                    <ng-container *ngFor="let usuario of tablaOfertas.Usuarios">
-                        <ng-container *ngIf="usuario.Cotizacion != null">
-                            <ng-container *ngFor="let cotizacionPosicion of usuario.Cotizacion.CotizacionPosiciones">
+                    <ng-container *ngFor="let proveedor of tablaOfertas.Usuarios">
+                        <ng-container *ngIf="proveedor.Cotizacion != null">
+                            <ng-container *ngFor="let cotizacionPosicion of proveedor.Cotizacion.CotizacionPosiciones">
                                 <ng-container *ngIf="peticionPosicion.Id == cotizacionPosicion.PeticionDeOfertaSolpPosicion_Id">
-                                    <td class="columna border2-left" style="width: 120px !important;" colspan="3">{{cotizacionPosicion.MonedaDescripcion}} {{cotizacionPosicion.TotalPosicionCotizacion | number:'1.2-2'}}</td>
-                                    <td class="columna" style="width: 120px !important;" colspan="3">ARP {{cotizacionPosicion.TotalARPCotizacionPosicion | number:'1.2-2'}}</td>
+                                    <td class="columna border2-left" style="width: 120px !important;" colspan="3">
+                                        {{ proveedor.VerImportes ? (cotizacionPosicion.MonedaDescripcion + ' ' + (cotizacionPosicion.TotalPosicionCotizacion | number:'1.2-2')) : '' }}
+                                        <i *ngIf="!proveedor.VerImportes" class="fa fa-eye-slash noVisible"></i>
+                                    </td>
+                                    <td class="columna" style="width: 120px !important;" colspan="3">
+                                        {{ proveedor.VerImportes ? 'ARP ' + (cotizacionPosicion.TotalARPCotizacionPosicion | number:'1.2-2') : '' }}
+                                        <i *ngIf="!proveedor.VerImportes" class="fa fa-eye-slash noVisible"></i>
+                                    </td>
                                     <td class="columna" style="width: 300px !important;" colspan="3">{{cotizacionPosicion.FechaDeEntregaFormateada}}</td>
                                 </ng-container>
                             </ng-container>
                         </ng-container>
-                        <ng-container *ngIf="usuario.Cotizacion == null">
+                        <ng-container *ngIf="proveedor.Cotizacion == null">
                             <td class="columna border2-left" style="width: 540px !important;" colspan="9">Sin cotizar</td>
                         </ng-container>
                     </ng-container>
@@ -367,35 +382,43 @@
                     <td class="espacio" colspan="9" style="background-color: white; width: 540px !important; ">&nbsp;</td>
                 </tr>
                 <tr *ngIf="peticionPosicion.expanded == true">
-                    <ng-container *ngFor="let usuario of tablaOfertas.Usuarios">
+                    <ng-container *ngFor="let proveedor of tablaOfertas.Usuarios">
                         <td class=" headerth border2-left" style="width: 80px !important;" colspan="2">Ctd <br> Cotizado</td>
                         <td class=" headerth" style="width: 80px !important;" colspan="2">UM Cotizado</td>
                         <td class=" headerth" style="width: 80px !important;" colspan="2">Moneda</td>
-
                         <td class=" headerth border2-left" style="width: 100px !important;">Precio unidad</td>
                         <td class=" headerth" style="width: 100px !important;">Precio total</td>
-                        <td class=" headerth" style="width: 100px !important;">Total ARG</td>
+                        <td class=" headerth" style="width: 100px !important;">Total ARP</td>
                     </ng-container>
                 </tr>
 
                 <ng-container *ngIf="peticionPosicion.expanded == true">
                     <tr *ngFor="let subpos of peticionPosicion.Posicion.Subposiciones">
-                        <ng-container *ngFor="let usuario of tablaOfertas.Usuarios">
-                            <ng-container *ngIf="usuario.Cotizacion != null">
-                                <ng-container *ngFor="let cotizacionPosicion of usuario.Cotizacion.CotizacionPosiciones">
+                        <ng-container *ngFor="let proveedor of tablaOfertas.Usuarios">
+                            <ng-container *ngIf="proveedor.Cotizacion != null">
+                                <ng-container *ngFor="let cotizacionPosicion of proveedor.Cotizacion.CotizacionPosiciones">
                                     <ng-container *ngFor="let cotizacionSubpo of cotizacionPosicion.CotizacionSubPosiciones">
                                         <ng-container *ngIf="subpos.Id == cotizacionSubpo.SolpSubPosicion_Id">
                                             <td class="columna border2-left" colspan="2" style="width: 80px !important;">{{cotizacionSubpo.Cantidad | number:'1.2-2'}}</td>
                                             <td class="columna" colspan="2" style="width: 80px !important;">{{cotizacionSubpo.UnidadMedida.Descripcion}}</td>
                                             <td class="columna" colspan="2" style="width: 80px !important;">{{cotizacionSubpo.MonedaDescripcion}} </td>
-                                            <td class="columna" style="width: 100px !important;">{{cotizacionSubpo.PrecioUnidad | number:'1.2-2'}}</td>
-                                            <td class="columna" style="width: 100px !important;">{{cotizacionSubpo.PrecioTotalSubPosCotizacion | number:'1.2-2'}}</td>
-                                            <td class="columna" style="width: 100px !important;">{{cotizacionSubpo.TotalARPSubPosCotizacion | number: '1.2-2'}}</td>
+                                            <td class="columna" style="width: 100px !important;">
+                                                {{ proveedor.VerImportes ? (cotizacionSubpo.PrecioUnidad | number:'1.2-2') : '' }}
+                                                <i *ngIf="!proveedor.VerImportes" class="fa fa-eye-slash noVisible"></i>
+                                            </td>
+                                            <td class="columna" style="width: 100px !important;">
+                                                {{ proveedor.VerImportes ? (cotizacionSubpo.PrecioTotalSubPosCotizacion | number:'1.2-2') : '' }}
+                                                <i *ngIf="!proveedor.VerImportes" class="fa fa-eye-slash noVisible"></i>
+                                            </td>
+                                            <td class="columna" style="width: 100px !important;">
+                                                {{ proveedor.VerImportes ? (cotizacionSubpo.TotalARPSubPosCotizacion | number: '1.2-2') : '' }}
+                                                <i *ngIf="!proveedor.VerImportes" class="fa fa-eye-slash noVisible"></i>
+                                            </td>
                                         </ng-container>
                                     </ng-container>
                                 </ng-container>
                             </ng-container>
-                            <ng-container *ngIf="usuario.Cotizacion == null">
+                            <ng-container *ngIf="proveedor.Cotizacion == null">
                                 <td class="columna border2-left" colspan="9" style="width: 540px !important;">Sin cotizar</td>
                             </ng-container>
                         </ng-container>
@@ -409,7 +432,10 @@
                 <tr *ngIf="esUltimaPosicion(peticionPosicion)">
                     <ng-container *ngFor="let proveedor of tablaOfertas.Usuarios">
                         <ng-container *ngIf="proveedor.Cotizacion != null">
-                            <td colspan="9" style="width: 540px !important;" class="columna border2-left">ARP {{proveedor.Cotizacion.TotalGlobalSubPos | number: '1.2-2'}}</td>
+                            <td colspan="9" class="columna border2-left" style="width: 540px !important;">
+                                {{ proveedor.VerImportes ? 'ARP ' + (proveedor.Cotizacion.TotalGlobalSubPos | number:'1.2-2') : '' }}
+                                <i *ngIf="!proveedor.VerImportes" class="fa fa-eye-slash noVisible" style="justify-content:left"></i>
+                            </td>
                         </ng-container>
                         <ng-container *ngIf="proveedor.Cotizacion == null">
                             <td class="columna border2-left" colspan="9" style="width: 540px !important;">Sin Total</td>

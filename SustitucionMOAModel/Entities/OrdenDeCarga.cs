@@ -107,7 +107,9 @@ namespace SustitucionMOAModel.Entities
         public string NumeroFacturaSeleccionada { get; set; }
         public TipoContratoFAS TipoContrato { get; set; }
         public bool Escalable { get; set; }
-
+        public bool? DestinatarioExisteScato { get; set; }
+        public bool? DestinoExisteScato { get; set; }
+        public string DestinoMercaderia { get; set; }
 
         public bool TieneMultiplesContratos
         {
@@ -130,6 +132,28 @@ namespace SustitucionMOAModel.Entities
             get
             {
                 return EsFacturaAnticipada && (string.IsNullOrEmpty(NumeroFactura) || string.IsNullOrEmpty(NumeroFacturaSeleccionada));
+            }
+        }
+
+        public bool CuitTerceroExisteScato
+        {
+            get
+            {
+                var existeDestino = DestinoExisteScato ?? false;
+                var existeDestinatario = DestinatarioExisteScato ?? false;
+
+                return existeDestinatario && existeDestino;
+            }
+        }
+
+        public string MsgCuitsTerceros
+        {
+            get
+            {
+                var msgDestinatario = DestinatarioExisteScato ?? false ? "" : "Destinatario";
+                var msgDestino = DestinoExisteScato ?? false ? "" : "Destino";
+                var slash = (!(DestinoExisteScato ?? false) && !(DestinatarioExisteScato ?? false)) ? "/" : "";
+                return $"No se pudo generar la entrega. No existe {msgDestinatario}{slash}{msgDestino}.";
             }
         }
 
@@ -235,7 +259,17 @@ namespace SustitucionMOAModel.Entities
                    DescripcionCodigoVerificacionSap == carga.DescripcionCodigoVerificacionSap &&
                    EqualityComparer<ICollection<OrdenDeCargaCambiosHistorial>>.Default.Equals(HistorialCambios, carga.HistorialCambios) &&
                    ContratoSinCantidadPendiente == carga.ContratoSinCantidadPendiente &&
-                   DescripcionErrorInterno == carga.DescripcionErrorInterno;
+                   DescripcionErrorInterno == carga.DescripcionErrorInterno &&
+                   DestinatarioExisteScato == carga.DestinatarioExisteScato &&
+                   DestinoExisteScato == carga.DestinoExisteScato &&
+                   CUITDestinatario == carga.CUITDestinatario &&
+                   CUITDestino == carga.CUITDestino &&
+                   RazonSocialDestinatario == carga.RazonSocialDestinatario &&
+                   RazonSocialDestino == carga.RazonSocialDestino &&
+                   DomicilioTipo == carga.DomicilioTipo &&
+                   DomicilioDescr == carga.DomicilioDescr &&
+                   DomicilioOrden == carga.DomicilioOrden &&
+                   PlantaCodigo == carga.PlantaCodigo;
         }
 
         public override int GetHashCode()

@@ -32,6 +32,9 @@ namespace SustitucionMOAUtils.Interfaces
         string ForzarCreacionOrden(int ordenId, string mailUsuario);
         OrdenDeCargaDto ObtenerPatentes(OrdenDeCarga orden, string mailUsuario);
         VisualizarClienteResponse VisualizarCliente(VisualizarClienteRequest request);
+
+        ProveedorDto ObtenerProveedor(int idProveedor);
+
         VisualizarProductoResponse VisualizarProducto(VisualizarProductoRequest request);
         ValidarCorredorClienteContratoProductoResponse ValidarCorredorClienteContratoProducto(ValidarCorredorClienteContratoProductoRequest request);
         string NotificarVencimientoOrdenCarga(int ordenId, string mailUsuario);
@@ -43,12 +46,18 @@ namespace SustitucionMOAUtils.Interfaces
         string EnviarOrdenesASAP(List<int> ordenesIds, string mailUsuario);
         ValidarSisaCorredorClienteResponse ValidarSisaCorredorCliente(string corredorCodigo, string clienteCodigo);
         bool ValidarSisaCuit(string cuit, string campo);
+        bool EnviarMailAltaCuitTerceros(bool gestionaFlete, bool gestionaDestino, bool gestionaDestinatario, string ordenId);
+        bool ValidarCuitRuca(string cuit);
+        ValidarCuitExisteScatoResponse ValidarCuitExisteScato(string cuit);
+        ValidarIntermediarioFleteResponse ValidarIntermediarioFlete(string cuit);
         (bool, Chofer) ValidarCuilChofer(string cuilChofer);
         Resultado SeleccionarFactura(int ordenId, string numeroFacturaSeleccionada, string mailUsuario);
         void VerificarCompensacion(int ordenId);
         List<AutoCompleteDropdownElement> ObtenerCuilsChofer(OrdenDeCarga ordenDeCarga, string mailUsuario);
         List<AutoCompleteDropdownElement> ObtenerCuitsTransporte(OrdenDeCarga ordenDeCarga, string mailUsuario);
-
-        bool ValidarOrdenActivaScato(string cuit);
+        bool ValidarOrdenActivaScato(string nroEntrega);
+        Resultado VerificarCuitsTerceros(int ordenId, string usuarioEmail);
+        List<ClienteSAPResponse> GetClientesVigentesSAP(string fechaIni, string fechaFin);
+        List<SustitucionMOAModel.Entities.Proveedor> FiltrarNoExistentesWeb(List<ClienteSAPResponse> clientes);
     }
 }

@@ -126,13 +126,15 @@ export class SolpPosicion {
         return typeof this.mensaje;
     }
 
-    constructor(numeroPosicion, fiscalContrato, fechaEntrega, posicionADuplicar, 
-        centroPorDefecto, direccionCentroPorDefecto, monedaPorDefecto, selectTipoPosicion) {
+    constructor(numeroPosicion?, fiscalContrato?, fechaEntrega?, posicionADuplicar?, 
+        centroPorDefecto?, direccionCentroPorDefecto?, monedaPorDefecto?, selectTipoPosicion?) {
         this.id = uuid.v4();
         this.numeroPosicion = numeroPosicion;
         this.plazoDeEntrega = 10;
-        this.fechaEntregaServicio = new Date(fechaEntrega);
-        this.fechaEntregaServicio.setDate(fechaEntrega.getDate() + parseInt(this.plazoDeEntrega.toString()));
+        if(fechaEntrega != null){
+            this.fechaEntregaServicio =  new Date(fechaEntrega);
+            this.fechaEntregaServicio.setDate(fechaEntrega.getDate() + parseInt(this.plazoDeEntrega.toString()));
+        }
 
         this.fechaDeLiberacion = new Date();
         this.listadoSubPosiciones = new Array<SubPosicionViewModel>();
@@ -172,7 +174,7 @@ export class SolpPosicion {
             this.selectSolicitanteCompras = posicionADuplicar.selectSolicitanteCompras;
             this.necesidadCompras = posicionADuplicar.necesidadCompras;
             this.selectArticuloCompras = posicionADuplicar.selectArticuloCompras;
-            this.textoSuministro = posicionADuplicar.textoSuministro;
+            //this.textoSuministro = posicionADuplicar.textoSuministro;
             this.motivo = posicionADuplicar.motivo;
             this.modelo = posicionADuplicar.modelo;
             // this.rubroElectrico = posicionADuplicar.rubroElectrico;
@@ -234,7 +236,7 @@ export class SolpPosicion {
         let hasTipoImputacion = typeof this.tipoImputacion != "undefined" && this.tipoImputacion;
 
         let isVisibleImputaciones = this.esTipoPosicionMaterial;
-        let isDisabledImputaciones = this.esTipoPosicionServicio || (hasCodigoServicio && (!hasTipoImputacion || (hasTipoImputacion && hasTipoImputacion.Id == 0)));
+        let isDisabledImputaciones = this.esTipoPosicionServicio || ((!hasTipoImputacion || (hasTipoImputacion && hasTipoImputacion.Id == 0)));
 
         this.tabItems = [
             { label: 'Subposiciones', visible: this.esTipoPosicionServicio, disabled: this.esTipoPosicionMaterial },
@@ -472,7 +474,6 @@ export class SolpPosicion {
         {
             this.tabsPosicionValidos.tabPosiciones = false;
             this.mensaje = "Paso #5 - Pos. " + this.numeroPosicion + " - El campo descripción es obligatorio";
-            console.log("descaripcion", this.tareaSubcontratarObj)
             return this.mensaje;
         }
 

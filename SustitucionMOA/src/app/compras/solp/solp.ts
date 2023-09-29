@@ -171,7 +171,11 @@ export class Solp extends CommonResponse {
             if (solp.FechaHoraEntrega != null) {
                 this.fechaEntrega = new Date(this.getDateFromAspNetFormat(solp.FechaHoraEntrega));
                 this.horaEntrega = new Date(this.getDateFromAspNetFormat(solp.FechaHoraEntrega));
+            } else {
+                this.fechaEntrega = new Date();
+                this.fechaEntrega.setDate(this.fechaEntrega.getDate() + 7);
             }
+
             //this.fechaEntrega = new Date(this.getDateFromAspNetFormat(solp.FechaHoraEntrega));
             this.emailLinkToken = solp.EmailLinkToken;
             this.selectTipoPosicion =  solp.TipoPosicion && solp.TipoPosicion.Codigo || ''
@@ -202,7 +206,7 @@ export class Solp extends CommonResponse {
             if (solp.FechaHoraLimiteConsulta != null) {
                 this.fechaLimiteFecha = new Date(this.getDateFromAspNetFormat(solp.FechaHoraLimiteConsulta));
                 this.fechaLimiteHora = new Date(this.getDateFromAspNetFormat(solp.FechaHoraLimiteConsulta));
-            }
+            } 
             this.observacionesGeneracion = solp.ObservacionesGeneracion;
 
             // Paso 3
@@ -481,17 +485,11 @@ export class Solp extends CommonResponse {
     }
 
     public getDateFromAspNetFormat(date: string): number {
-        console.log("date antes del if", date)
         if (date){
-            console.log("date apenas entra del if", date)
-
             const re = /-?\d+/;
             const m = re.exec(date);
-            console.log("date antes del return if", date)
-
             return parseInt(m[0], 10);
         }
-        console.log("date salio del if", date)
         return null
     }
 

@@ -3,6 +3,8 @@ import { Injectable } from "@angular/core";
 import { Router } from "@angular/router";
 import { SessionDataService } from "../services/SessionDataService";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { catchError } from 'rxjs/operators';
+import { throwError } from 'rxjs';
 
 @Injectable()
 export class LoginGuard implements CanActivate, CanActivateChild {
@@ -37,15 +39,22 @@ export class LoginGuard implements CanActivate, CanActivateChild {
         headers.append('Expires', '0');
         headers.append('Pragma', 'no-cache');
 
-        await this.http.get<{ tieneSesion: boolean }>('/api/Home/VerificarEstadoSesion', { headers: headers }).subscribe(
-            (result: any) => {
+        this.http.get<{ tieneSesion: boolean }>('/api/Home/VerificarEstadoSesion', { headers: headers })
+            .pipe(
+                catchError((error) => {
+                    console.error('Error en la solicitud:', error);
+                    this.sessionDataService.logout();
+                    window.location.href = window.location.origin + '/SignOut';
+                    return throwError(error);
+                })
+            )
+            .subscribe((result: any) => {
                 if (!result.tieneSesion) {
                     this.sessionDataService.logout();
                     window.location.href = window.location.origin + '/SignOut';
                     return false;
                 }
-            }
-        )
+            });
     }
     private checkIfNeedLogIn(): boolean {
 

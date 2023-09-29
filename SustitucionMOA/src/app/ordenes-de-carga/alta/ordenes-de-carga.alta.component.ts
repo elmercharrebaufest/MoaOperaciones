@@ -19,15 +19,18 @@ import { NgBlockUI, BlockUI } from 'ng-block-ui';
 import { ContratoOrdenFas, TipoContrato } from '../../common/models/ordenes-de-carga/obtenerContratosDisponiblesResponse';
 import { Planta } from '../../common/models/ordenes-de-carga/planta';
 import { Domicilio } from '../../common/models/ordenes-de-carga/domicilio';
-import { finalize } from 'rxjs/operators';
+import { debounceTime, finalize, take } from 'rxjs/operators';
 import { ApiResponse } from '../../common/models/response';
-import { forkJoin } from 'rxjs';
+import { Subject, Subscription, forkJoin } from 'rxjs';
 import { Permiso } from '../../common/enums/Permisos';
 import { Factura, newFactura } from '../../common/models/ordenes-de-carga/Factura';
 import { IOrdenesBaseComponent } from '../../common/base-components/ordenes-base-component';
+import { EstadoOrdenDeCarga } from '../../common/models/ordenes-de-carga/estadoOrdenDeCarga';
+import { MessageService } from 'primeng/api';
+import { Checkbox } from 'primeng/checkbox';
+import { MSG_ALERTA_NO_ESCALABLE } from '../../common/models/ordenes-de-carga/ValidarCamionResponse';
 
 declare var $: any;
-
 @Component({
     selector: 'app-ordenes-de-carga.alta',
     templateUrl: './ordenes-de-carga.alta.component.html',
@@ -36,7 +39,7 @@ declare var $: any;
 })
 export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdenesBaseComponent {
     @BlockUI() blockUI: NgBlockUI;
-
+    @ViewChild("escalableCheckbox") escalableCheckbox: Checkbox
     @ViewChild(MensajeComponent)
     protected mensajeComponent: MensajeComponent;
 
@@ -47,9 +50,16 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
 
     ordenDeCargaId: number = 0;
 
+    validarCNRTSubject = new Subject();
+    validarCNRTSubscription?: Subscription;
+    subscriptions = new Subscription();
     ordenDeCarga: OrdenDeCarga = new OrdenDeCarga();
     mensajesOrdenDeCarga: Partial<Record<keyof OrdenDeCarga, string>> = {};
     mensajesGestionCuit: Partial<Record<keyof Pick<OrdenDeCarga, 'CUITDestinatario' | 'CUITDestino' | 'CUITIntermediarioFlete'>, string>> = {};
+    gestiona: Partial<Record<keyof Pick<OrdenDeCarga, 'CUITDestinatario' | 'CUITDestino' | 'CUITIntermediarioFlete'>, boolean>> = {
+        CUITDestino: false,
+        CUITDestinatario: false, CUITIntermediarioFlete: false
+    };
     validando: Partial<Record<keyof OrdenDeCarga, boolean>> = {};
     displayModal: keyof Pick<OrdenDeCarga, 'CUITDestinatario' | 'CUITDestino' | 'CUITIntermediarioFlete'> | null;
     validaCPEDG = false;
@@ -69,6 +79,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
     patentesChasis: any;
     patentesAcoplados: any;
     razonSocialParaGestion = "";
+
     private selectUndefinedOptionValue: any;
 
     contratosDisponibles: ContratoOrdenFas[] = [];
@@ -83,6 +94,11 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
     modificaReventa = this.isAuthorized(Permiso.FasModificarCampoReventa);
     listaClientes: any[];
     noEditarCliente: boolean = false;
+    estadosNoPuedeEditarCuitsTercero = [
+        EstadoOrdenDeCarga.EntregaGenerada,
+        EstadoOrdenDeCarga.Entregada,
+        EstadoOrdenDeCarga.EntregaPendiente,
+    ];
 
     puedeEditarContrato: boolean = false;
     resultadoValidacionCorCliConPro: boolean = false;
@@ -101,9 +117,34 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
     cuitsTransporte: any;
 
     intermediarioFleteCuitFormatoValido: boolean = true;
+    escalableCNRT?: boolean;
 
-    constructor(protected service: OrdenesDeCargaService, protected usuarioService: UsuarioService, protected navService: NavService, protected seleccionarProveedorService: SeleccionarProveedorService, private route: ActivatedRoute, protected sessionDataService: SessionDataService, protected securytiService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService, protected empresaGranosService: EmpresaGranosService, public datepipe: DatePipe) {
+    constructor(protected service: OrdenesDeCargaService,
+        protected usuarioService: UsuarioService,
+        protected navService: NavService,
+        protected seleccionarProveedorService: SeleccionarProveedorService,
+        private route: ActivatedRoute,
+        protected sessionDataService: SessionDataService,
+        protected securytiService: SecurityService,
+        protected floatMsgService: FloatMsgService,
+        protected modalService: ModalService,
+        protected empresaGranosService: EmpresaGranosService,
+        public datepipe: DatePipe,
+        protected msgService: MessageService
+    ) {
         super(navService, securytiService, floatMsgService, modalService);
+
+        this.subscriptions.add(
+            this.validarCNRTSubject.pipe(debounceTime(500)).subscribe(_ =>
+                this.validarCNRTRequest()
+            ))
+    }
+
+    get noPuedeEditarCuitsTerceros() {
+        return this.ordenDeCarga.Id &&
+            (this.estadosNoPuedeEditarCuitsTercero.includes(this.ordenDeCarga.Estado) ||
+                (this.ordenDeCarga.TipoContrato != TipoContrato.FacturaAnticipada && this.ordenDeCarga.NumeroPedido)
+            );
     }
 
     ngOnInit() {
@@ -111,13 +152,17 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
         this.desde = this.getFecha(12);
         this.hasta = this.getFecha(0);
         this.ordenDeCarga.Cantidad = 0;
+
         this.route.params.forEach((params: Params) => {
             if (params["id"] > 0) this.ordenDeCargaId = params["id"];
         });
         this.navService.setSeccionList([]);
-        this.onCorredorFocusOut('', false);
+
         this.obtenerMateriales();
-        if (this.esCorredor) {
+        if (this.esComercial) {
+            this.onCorredorFocusOut('', false);
+        }
+        else if (this.esCorredor) {
             this.CodigoCorredor = sessionStorage.getItem("proveedor");
             if (this.ordenDeCargaId == 0) {
                 this.cargarClientes(this.CodigoCorredor);
@@ -139,17 +184,19 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
         if (this.esCliente()) {
             const esInterno = this.esComercial || this.esCorredor;
             if (!esInterno) {
-                this.clienteSeleccionado = {
-                    id: sessionStorage.getItem("proveedorId"),
-                    CUIT: sessionStorage.getItem("cuit"),
-                    CodigoProveedor: sessionStorage.getItem("proveedor")
-                }
-                this.clienteCodigo = this.clienteSeleccionado.CodigoProveedor;
-                this.ordenDeCarga.CUITCliente = this.clienteSeleccionado.CUIT;
-            }
-
-            if (this.ordenDeCargaId == 0 && !esInterno) {
-                this.cargarContratosDisponibles(this.clienteCodigo);
+                // this.clienteSeleccionado = {
+                //     id: sessionStorage.getItem("proveedorId"),
+                //     CUIT: sessionStorage.getItem("cuit"),
+                //     CodigoProveedor: sessionStorage.getItem("proveedor")
+                // }
+                // this.clienteCodigo = this.clienteSeleccionado.CodigoProveedor;
+                // this.ordenDeCarga.CUITCliente = this.clienteSeleccionado.CUIT;
+                this.cargarClienteDirecto(parseInt(sessionStorage.getItem("proveedorId") || ""))
+                    .then(() => {
+                        if (this.ordenDeCargaId == 0) {
+                            this.cargarContratosDisponibles(this.clienteCodigo);
+                        }
+                    });
             }
         }
     }
@@ -166,7 +213,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
     obtenerMateriales() {
         //Sacamos lo de la lista de campaña, ya que ahora son independientes
         try {
-            this.subscription = this.service.getMateriales().subscribe(
+            this.service.getMateriales().subscribe(
                 (result) => {
                     this.listaMateriales = result.data;
                 },
@@ -192,11 +239,11 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
             this.mensajeComponent.setInfoMsg("Ingrese un CUIL de chofer válido.");
             return false;
         }
-        if (!this.ordenDeCarga.PatenteAcoplado || this.ordenDeCarga.PatenteAcoplado.trim().length < 6) {
+        if (!this.patenteAcopladoValida) {
             this.mensajeComponent.setInfoMsg("Ingrese una patente válida.");
             return false;
         }
-        if (!this.ordenDeCarga.ChasisAcoplado || this.ordenDeCarga.ChasisAcoplado.trim().length < 6) {
+        if (!this.chasisAcopladoValido) {
             this.mensajeComponent.setInfoMsg("Ingrese un número de chasis válido.");
             return false;
         }
@@ -235,6 +282,12 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
             const estaValidando = Object.keys(this.validando).some(key => this.validando[key]);
             if (estaValidando) {
                 this.mensajeComponent.setInfoMsg("Hay campos que todavía se están validando");
+                return false;
+            }
+        }
+        else{
+            if(!this.ordenDeCarga.DestinoMercaderia || this.ordenDeCarga.DestinoMercaderia.length < 5){
+                this.mensajeComponent.setInfoMsg("Ingrese un destino de mercadería.");
                 return false;
             }
         }
@@ -325,7 +378,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
         try {
             if (this.ordenDeCargaId > 0) {
                 this.subscription = this.service
-                    .editar(this.ordenDeCarga)
+                    .editar(this.ordenDeCarga).pipe(take(1))
                     .subscribe(
                         (result) => {
                             this.spinnerComponent.hideIt();
@@ -348,6 +401,9 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
                                 this.mensajeComponent.setMsgsEmpty();
                                 this.mensajeSuccess = result.data.Mensaje;
                                 this.ordenDeCargaId = result.data.IdEntidad;
+
+                                this.gestionarAltasCuitTerceros(this.ordenDeCargaId.toString());
+
                                 document.getElementById("openModalNotificacion")
                                     .click();
                             }
@@ -361,7 +417,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
                     );
             } else {
                 this.subscription = this.service
-                    .agregar(this.ordenDeCarga)
+                    .agregar(this.ordenDeCarga).pipe(take(1))
                     .subscribe(
                         (result) => {
                             this.spinnerComponent.hideIt();
@@ -384,6 +440,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
                                 this.mensajeComponent.setMsgsEmpty();
                                 this.mensajeSuccess = result.data.Mensaje;
                                 this.ordenDeCargaId = result.data.IdEntidad;
+                                this.gestionarAltasCuitTerceros(this.ordenDeCargaId.toString());
                                 document.getElementById("openModalNotificacion")
                                     .click();
                             }
@@ -537,11 +594,11 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
         }
     }
 
-    PatenteChasisSelected(value: any) {
-        this.ordenDeCarga.ChasisAcoplado = value.label;
+    chasisAcopladoSelected(event: any) {
+        this.ordenDeCarga.ChasisAcoplado = event.toUpperCase();;
     }
-    PatenteAcopladoSelected(value: any) {
-        this.ordenDeCarga.PatenteAcoplado = value.value;
+    patenteAcopladoSelected(event: any) {
+        this.ordenDeCarga.PatenteAcoplado = event.toUpperCase();;
     }
     cuitChoferSelected(value: any) {
         this.ordenDeCarga.CUITChofer = value.value;
@@ -606,15 +663,6 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
                         this.mensajeComponent.setErrorMsg(error.message);
                     }
                 );
-                this.subscription = this.service.getMateriales().subscribe(
-                    (result) => {
-                        this.listaMateriales = result.data;
-                    },
-                    (error) => {
-                        console.error(error);
-                        this.mensajeComponent.setErrorMsg(error.message);
-                    }
-                );
             }
         } catch (err) {
             console.error(' onCorredorFocusOut: ', err);
@@ -673,6 +721,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
                 this.mensajeComponent.setErrorMsg("El cliente seleccionado no existe en la web, por favor gestionar su alta");
                 this.clienteCUIT = "";
                 pClienteCodigo = "";
+                this.scrollAMensaje();
             }
             else {
                 this.clienteCUIT = this.clienteSeleccionado.CUIT;
@@ -699,9 +748,9 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
             this.cambioProducto();
             this.validaCPEDG = (materialSeleccionado != undefined && materialSeleccionado.ValidaSisaRuca);
             this.validarKilosDisponibles()
-            this.validarSisaCorredorCliente()
             if (this.ordenDeCarga.ContratoSeleccionado.TipoContrato === TipoContrato.FacturaAnticipada)
                 this.obtenerFacturas()
+            this.validarSisaCorredorCliente()
         }
         else {
             this.Contrato = "";
@@ -709,12 +758,11 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
             this.ordenDeCarga.Producto_Id = this.selectUndefinedOptionValue;
             this.validaCPEDG = false;
         }
-        this.ordenDeCarga.Reventa = this.validaCPEDG && this.modificaReventa && !this.ordenDeCarga.Reventa;
+        this.ordenDeCarga.Reventa = this.validaCPEDG && this.clienteSeleccionado.EsRevendedor && !this.ordenDeCarga.Reventa;
     }
 
     onPatenteSeleccionada() {
         this.getCuilsChofer();
-        //this.getCuitsTransporte();
     }
 
     validarCorredorClienteContratoProducto = (
@@ -847,6 +895,20 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
         }
     }
 
+    gestionarAltasCuitTerceros(ordenId: string) {
+        this.subscription = this.service.EnviarMailAltaCuitTerceros(this.gestiona["CUITIntermediarioFlete"],
+            this.gestiona["CUITDestino"], this.gestiona["CUITDestinatario"], ordenId).subscribe(result => {
+                if (result.logout) {
+                    this.sessionDataService.logout();
+                } else if (result.error != undefined && result.error != "") {
+                    this.mensajeComponent.setErrorMsg(`${result.error}. Al intentar gestionar el alta de cuits`);
+                } else if (result.info != undefined) {
+                    this.mensajeComponent.setInfoMsg(`${result.info}. Al intentar gestionar alta de cuits`);
+                } else {
+                }
+            }
+            );
+    }
 
     obtenerCorredores() {
         //this.blockUI.start('');
@@ -942,6 +1004,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
             this.blockUI.stop();
         }
     }
+
     validarExisteCUIT(campo: CuitValidaExistencia) {
         const cuit = this.ordenDeCarga[campo]
         if (!cuit || !this.revisarCUITFormatoValido(cuit)) {
@@ -961,18 +1024,29 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
                 const data = this.manejarErroresApiResponse(result);
                 if (!data)
                     return;
-
                 if (!data.Existe)
                     this.displayModal = campo;
-                else
+                else {
                     this.ordenDeCarga[campo.replace("CUIT", "RazonSocial")] = data.RazonSocial;
+                    this.gestiona[campo] = false;
+                }
 
-                this.validarSisaCuit(cuit, campo)
             })
     }
+
     validarSisaCuit(cuit: string, campo: CuitValidaSISA) {
-        this.validando[campo] = true;
+        if (!cuit || !this.revisarCUITFormatoValido(cuit)) {
+            this.ordenDeCarga[campo.replace("CUIT", "RazonSocial")] = undefined;
+            return;
+        }
+        this.ordenDeCarga[campo.replace("CUIT", "RazonSocial")] = null;
         this.mensajesOrdenDeCarga[campo] = null;
+        this.validando[campo] = true;
+        this.gestiona[campo] = false;
+
+        if (!this.ordenDeCarga.CUITDestinatario && campo === 'CUITDestino')
+            this.copiarCuitEnDestinatario();
+
         this.service.validarSisaCuit(cuit, campo).subscribe(result => {
             this.validando[campo] = false;
             const validandoDestino = campo == "CUITDestino";
@@ -992,7 +1066,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
                     if (validandoDestino) {
                         this.onDestinoIngresado(cuit);
                     }
-                    else if (campo !== "CUITCorredor") {
+                    if (campo !== "CUITCorredor") {
                         this.validarRuca(cuit, campo)
                     }
                 }
@@ -1047,36 +1121,26 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
     revisarCUITFormatoValido(cuit: string): boolean {
         return cuit && cuit.length == 11 && !Number.isNaN(cuit as unknown as number)
     }
-    gestionarAltaCUIT() {
-        const campo = this.displayModal;
-        const cuit = this.ordenDeCarga[campo];
-        const razonSocial = this.razonSocialParaGestion;
-        this.displayModal = null;
-        this.razonSocialParaGestion = "";
-        this.ordenDeCarga[campo.replace("CUIT", "RazonSocial")] = razonSocial;
-        let esIntermediarioFlete = campo === 'CUITIntermediarioFlete';
-        this.service.enviarMailGestionarAltaCuit(cuit, razonSocial, esIntermediarioFlete).subscribe(result => {
-            if (result.logout) {
-                this.sessionDataService.logout();
-            } else if (result.error != undefined && result.error != "") {
-                this.mensajeComponent.setErrorMsg(`${result.error}. Al intentar gestionar alta CUIT ${campo.replace("CUIT", "")}`);
-            } else if (result.info != undefined) {
-                this.mensajeComponent.setInfoMsg(`${result.info}. Al intentar gestionar alta CUIT ${campo.replace("CUIT", "")}`);
-            } else {
-                this.mensajesGestionCuit[campo] = `Se solicitó la gestión del alta para la cuit: ${cuit}`;
-            }
 
-        })
+    cargarAltaCuit() {
+        const campo = this.displayModal;
+        const razonSocial = this.razonSocialParaGestion;
+        this.razonSocialParaGestion = "";
+        this.gestiona[campo] = true;
+        this.ordenDeCarga[campo.replace("CUIT", "RazonSocial")] = razonSocial;
+        this.displayModal = null;
+        this.mensajesGestionCuit[campo] = `Se solicitará la gestión del alta para el cuit: ${this.ordenDeCarga[campo]}`;
     }
 
     cancelarGestionAltaCUIT() {
-        if (this.displayModal === 'CUITIntermediarioFlete') {
-            this.ordenDeCarga.CUITIntermediarioFlete = undefined;
-        }
+        this.ordenDeCarga[this.displayModal] = undefined
+        this.gestiona[this.displayModal] = false;
         this.displayModal = null;
+        this.mensajesGestionCuit[this.displayModal] = '';
     }
 
     validarSisaCorredorCliente() {
+
         if (!this.ordenDeCarga.ContratoSeleccionado || !this.validaCPEDG) {
             this.mensajeComponent.setMsgsEmpty();
             return;
@@ -1142,9 +1206,13 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
             let data = this.manejarErroresApiResponse(result);
             if (!data) {
                 this.mensajesOrdenDeCarga[campo] = `${campo.replace("CUIT", "")}  no está habilitado en RUCA, no podrá cargar la orden hasta regularizar la situación`;
+
                 if (campo === "CUITCliente")
                     this.reiniciarProducto();
 
+            } else {
+                if (campo !== "CUITCliente")
+                    this.validarExisteCUIT(campo);
             }
         });
     }
@@ -1153,6 +1221,8 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
         this.validando.CUITIntermediarioFlete = true;
         this.intermediarioFleteCuitFormatoValido = true;
         this.ordenDeCarga.RazonSocialIntermediarioFlete = undefined;
+        this.gestiona['CUITIntermediarioFlete'] = false;
+        this.mensajesGestionCuit['CUITIntermediarioFlete'] = '';
 
         let cuitIF = this.ordenDeCarga.CUITIntermediarioFlete;
         if (!cuitIF || !this.revisarCUITFormatoValido(cuitIF)) {
@@ -1165,6 +1235,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
                 if (data.EsCuitValido) {
                     if (data.ExisteIntermediario) {
                         this.ordenDeCarga.RazonSocialIntermediarioFlete = data.RazonSocial;
+                        this.mensajesGestionCuit['CUITIntermediarioFlete'] = undefined;
                     } else {
                         this.displayModal = 'CUITIntermediarioFlete';
                     }
@@ -1184,16 +1255,18 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
     }
 
     copiarCuitEnDestinatario() {
+        this.mensajesGestionCuit['CUITDestinatario'] = undefined;
         if (this.ordenDeCarga.CUITDestinatario != this.clienteSeleccionado.CUIT) {
             this.ordenDeCarga.CUITDestinatario = this.clienteSeleccionado.CUIT;
-            this.validarExisteCUIT('CUITDestinatario')
+            this.validarSisaCuit(this.ordenDeCarga.CUITDestinatario, 'CUITDestinatario');
         }
     }
 
     copiarCuitEnDestino() {
+        this.mensajesGestionCuit['CUITDestino'] = undefined;
         if (this.ordenDeCarga.CUITDestino != this.clienteSeleccionado.CUIT) {
             this.ordenDeCarga.CUITDestino = this.clienteSeleccionado.CUIT;
-            this.validarExisteCUIT('CUITDestino')
+            this.validarSisaCuit(this.ordenDeCarga.CUITDestino, 'CUITDestino');
         }
     }
 
@@ -1272,9 +1345,9 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
     setearDefaultEnCPEDG() {
         this.ordenDeCarga.Reventa = false;
         this.ordenDeCarga.CUITDestinatario = undefined;
-        this.validarExisteCUIT('CUITDestinatario');
+        this.validarSisaCuit(this.clienteSeleccionado.cuit, 'CUITDestinatario');
         this.ordenDeCarga.CUITDestino = undefined;
-        this.validarExisteCUIT('CUITDestino');
+        this.validarSisaCuit(this.clienteSeleccionado.cuit, 'CUITDestino');
         this.ordenDeCarga.CUITIntermediarioFlete = undefined;
         this.validarIntermediarioFlete();
         this.resetearPlantasDomicilios();
@@ -1320,7 +1393,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
     }
     validarKilosDisponibles() {
         this.mensajesOrdenDeCarga.ContratoSeleccionado = null;
-        const esInterno = (this.esComercial || this.esCorredor || this.esAdmin);
+        const esInterno = (this.esComercial || this.esAdmin);
 
         if (this.ordenDeCargaId == 0 && !esInterno) {
             this.floatMsgService.setMsgsEmpty();
@@ -1340,7 +1413,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
     }
     validarKilosDisponiblesPedido() {
         this.mensajesOrdenDeCarga.NumeroFacturaSeleccionada = null;
-        const esInterno = (this.esComercial || this.esCorredor || this.esAdmin);
+        const esInterno = (this.esComercial || this.esAdmin);
 
         if (this.ordenDeCargaId == 0 && !esInterno) {
             this.floatMsgService.setMsgsEmpty();
@@ -1356,5 +1429,73 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
                 this.floatMsgService.setInfoMsg(mensaje)
             }
         }
+    }
+
+    cargarClienteDirecto(idCliente: Number): Promise<void> {
+        return new Promise((resolve, reject) => {
+            this.service.obtenerProveedor(idCliente).subscribe(resp => {
+                let proveedor = this.manejarErroresApiResponse(resp);
+                if (proveedor) {
+                    this.clienteSeleccionado = proveedor;
+                    this.clienteCodigo = proveedor.CodigoProveedor;
+                    this.ordenDeCarga.CUITCliente = this.clienteSeleccionado.CUIT;
+                    resolve();
+                }
+            });
+        });
+    }
+    get patenteAcopladoValida() {
+        return this.ordenDeCarga.PatenteAcoplado && this.ordenDeCarga.PatenteAcoplado.trim().length >= 6
+    }
+    get chasisAcopladoValido() {
+        return this.ordenDeCarga.ChasisAcoplado && this.ordenDeCarga.ChasisAcoplado.trim().length >= 6
+    }
+
+    displayModalEscalable = false;
+    decidioEscalable = false;
+
+    validarCNRT() {
+        if (!(this.patenteAcopladoValida && this.chasisAcopladoValido))
+            return;
+        //Posible check de si está marcado el campo escalable
+        this.validarCNRTSubject.next();
+    }
+    validarCNRTRequest() {
+        this.validarCNRTSubscription = this.service
+            .verificarCNRT(this.ordenDeCarga.ChasisAcoplado, this.ordenDeCarga.PatenteAcoplado)
+            .subscribe(res => {
+                const validezCNRTResponse = this.manejarErroresApiResponse(res)
+                this.escalableCNRT = validezCNRTResponse.EsCamionEscalable;
+                if (!this.escalableCNRT && this.ordenDeCarga.Escalable) {
+                    this.msgService.add(MSG_ALERTA_NO_ESCALABLE);
+                    this.setValorEscalable()
+                }
+                this.displayModalEscalable = this.escalableCNRT && !this.ordenDeCarga.Escalable && !this.decidioEscalable;
+            })
+    }
+    validarEscalable() {
+        if (!this.ordenDeCarga.Escalable)
+            return;
+
+        if (!this.escalableCNRT && this.escalableCNRT !== undefined) {
+            this.msgService.add(MSG_ALERTA_NO_ESCALABLE);
+            this.setValorEscalable()
+        }
+        else if (this.escalableCNRT === undefined)
+            this.validarCNRT();
+    }
+    setValorEscalable(value = false) {
+        this.escalableCheckbox.writeValue(value)
+        this.ordenDeCarga.Escalable = value;
+    }
+    marcarComoEscalable() {
+        this.setValorEscalable(true)
+        this.displayModalEscalable = false;
+    }
+    dejarSinEscalable() {
+        this.displayModalEscalable = false;
+    }
+    public extraOnDestroy(): void {
+        this.subscriptions.unsubscribe();
     }
 }

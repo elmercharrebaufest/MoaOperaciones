@@ -103,6 +103,7 @@ export class ModificarDatosComponent implements OnInit {
         id : proveedor.id.value,
         idTipoProveedor : proveedor.idTipoProveedor.value,
         razonSocial : proveedor.razonSocial.value,
+        esRevendedor: proveedor.esRevendedor.value
       });
     }
     let modificarUsuario = {
@@ -191,7 +192,8 @@ export class ModificarDatosComponent implements OnInit {
         cuit: { value: proveedor.CUIT,disabled: true },
         razonSocial: proveedor.RazonSocial,
         codigoProveedor: proveedor.CodigoProveedor,
-        idTipoProveedor: { value: proveedor.IdTipoProveedor,disabled: true }
+        idTipoProveedor: { value: proveedor.IdTipoProveedor,disabled: true },
+        esRevendedor: proveedor.EsRevendedor
       })
     } else {
       return this.formBuilder.group({
@@ -199,7 +201,8 @@ export class ModificarDatosComponent implements OnInit {
         cuit: 0,
         razonSocial: [''],
         codigoProveedor: [0],
-        idTipoProveedor: 0
+        idTipoProveedor: 0,
+        esRevendedor: false
       })
     }
   }

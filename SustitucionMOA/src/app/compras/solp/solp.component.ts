@@ -102,6 +102,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
     displaySAPEditar: boolean;
     flagSolpFinalizada: boolean = false;
     tieneContratoMarco: boolean = false;
+    datosUltimaSolp: any;
 
     set pasoActual(value: Paso) {
         this.actualizarPasoCompleto(this._pasoActual);
@@ -171,6 +172,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
                 } else {
                     this.setComponentMode(ComponentMode.Creation);
                     this.setearPasos();
+                    this.obtenerUltimaSolp();
                 }
             }
         }
@@ -186,6 +188,10 @@ export class SolpComponent extends BaseComponent implements OnInit {
 
     public get esCreacionSolp(): boolean {
         return this.getComponentMode() === ComponentMode.Creation;
+    }
+
+    public get getDatosUltimaSolp() {
+        return this.datosUltimaSolp;
     }
 
     public get esEdicionSolp(): boolean {
@@ -282,6 +288,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
                         this.cambioPaso(this.pasos[0]);
                         this.setearPasos();
                         this.blockUI.stop();
+                        this.spinnerComponent.hideIt();
                     }
                 },
                 error => {
@@ -291,6 +298,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
                 });
         } catch (e) {
             this.floatMsgService.setErrorMsg(e);
+            this.spinnerComponent.hideIt();
             return false; //<-- Prevent Refresh
         }
         return false; //<-- Prevent Refresh
@@ -304,7 +312,6 @@ export class SolpComponent extends BaseComponent implements OnInit {
                 tipoPosicion = posicion[0].TipoPosicion.Codigo;
             }
         }
-        console.log("tipoPosicion", tipoPosicion)
         return tipoPosicion;
     }
 
@@ -433,7 +440,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
                 // }
 
                 if (this.validarFechaVisitaDeObra()) {
-                    this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: "La fecha de visita de obra no puede ser mayor a la fecha tentativa de ofertas" });
+                    this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: "La fecha de visita de obra no puede ser mayor a la fecha tentativa de ofertas ni a la fecha de límite de consulta" });
                     if (guardarPorPaso == false) {
                         this.blockUI.stop();
                     }
@@ -665,6 +672,8 @@ export class SolpComponent extends BaseComponent implements OnInit {
         var sinPliego = this.solpActual.tipoSolp === "SIN_PLIEGO";
         var validarFechaVisitaDeObra = false;
 
+      
+
         if (esTipoPosicionServicio && !sinPliego) {
             // Encuentra la visita con la fecha más larga
             const visitaMasLarga = this.solpActual.listaVisitas.reduce((visitaAnterior, visitaActual) => {
@@ -675,7 +684,14 @@ export class SolpComponent extends BaseComponent implements OnInit {
                 }
             });
 
+            var fechaHoraLimite = this.service.getFechaHora(this.solpActual.fechaLimiteFecha, this.solpActual.fechaLimiteHora);
+            var visitaDeObraHoraFecha = this.service.getFechaHora(visitaMasLarga.visitaDeObraFecha, visitaMasLarga.visitaDeObraHora)
+
             if (visitaMasLarga.visitaDeObraFecha > this.solpActual.fechaEntrega) {
+                return validarFechaVisitaDeObra = true;
+            }
+
+            if (visitaDeObraHoraFecha > fechaHoraLimite) {
                 return validarFechaVisitaDeObra = true;
             }
         }
@@ -684,12 +700,16 @@ export class SolpComponent extends BaseComponent implements OnInit {
 
     validarFechaLimiteConsulta() {
         var validarFechaLimiteConsulta = false;
+        var fechaHoraLimite = this.service.getFechaHora(this.solpActual.fechaLimiteFecha, this.solpActual.fechaLimiteHora);
+        var fechaHoraEntrega = this.service.getFechaHora(this.solpActual.fechaEntrega, this.solpActual.horaEntrega);
 
-        if (this.solpActual.fechaLimiteFecha > this.solpActual.fechaEntrega) {
+        if (fechaHoraLimite > fechaHoraEntrega) {
             return validarFechaLimiteConsulta = true;
         }
         return validarFechaLimiteConsulta;
     }
+
+
 
     validarFechaLimiteYObra() {
         if (this.solpActual.listaVisitas.length === 0) { //se evita listaVisitas.reduce() cuando listaVisitas está vacía
@@ -709,8 +729,11 @@ export class SolpComponent extends BaseComponent implements OnInit {
                     return visitaAnterior;
                 }
             });
+            var fechaHoraLimite = this.service.getFechaHora(this.solpActual.fechaLimiteFecha, this.solpActual.fechaLimiteHora);
+            var fechaHoraVisita = this.service.getFechaHora(visitaMasLarga.visitaDeObraFecha, visitaMasLarga.visitaDeObraHora);
 
-            if (visitaMasLarga.visitaDeObraFecha > this.solpActual.fechaLimiteFecha) {
+
+            if (fechaHoraVisita > fechaHoraLimite) {
                 return validarFechaLimiteYObra = true;
             }
 
@@ -841,6 +864,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
                         this.setupCentroPorDefecto();
                         this.setupDireccionCentroPorDefecto();
                         this.setupMonedaPorDefecto();
+                        
                     }
                 },
                 error => {
@@ -855,6 +879,45 @@ export class SolpComponent extends BaseComponent implements OnInit {
 
         return false; //<-- Prevent Refresh
     }
+
+    obtenerUltimaSolp() {
+        this.blockUI.start('Cargando...');
+        try {
+            this.subscription = this.service.obtenerUltimaSolp().subscribe(
+                (result: any) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.floatMsgService.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.floatMsgService.setInfoMsg(result.info);
+                    } else {
+                        //this.solpActual.agregarNuevaPosicion(null as SolpPosicion);
+                        this.datosUltimaSolp = result.data;
+                        this.completarDatosUltimaSolp();
+                        this.blockUI.stop();
+                    }
+                },
+                error => {
+                    this.floatMsgService.setErrorMsg(error.message);
+                    this.blockUI.stop();
+                }
+
+            );
+        } catch (e) {
+            this.floatMsgService.setErrorMsg(e);
+            this.blockUI.stop();
+            return false; //<-- Prevent Refresh
+        }
+        return false; //<-- Prevent Refresh
+    }
+
+
+    private completarDatosUltimaSolp() {
+        this.solpActual.fiscalContrato = this.datosUltimaSolp.FiscalContrato;
+        this.solpActual.telefono = this.datosUltimaSolp.Telefono;
+    }
+
 
     obtenerUsuarioCompras() {
         try {

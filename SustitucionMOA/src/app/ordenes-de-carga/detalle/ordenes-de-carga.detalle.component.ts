@@ -73,6 +73,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
     mostrarBotonEditar: boolean = false;
     mostrarBotonSeleccionarFactura: boolean = false;
     mostrarBotonVolverADetalle: boolean = false;
+    mostrarBotonVerificarCuitsTercero: boolean = false;
 
     mostrarListadoInterno: boolean = false;
     mostrarListadoTercero: boolean = false;
@@ -117,7 +118,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
         this.navService.setSeccionList([]);
         if (this.ordenDeCargaId > 0) {
             this.obtenerOrdenDeCarga();
-        }  
+        }
     }
 
     confirmarSA(Id) {
@@ -258,7 +259,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
         this.mostrarBotonEdicionFinalizada = false;
         this.mostrarBotonSeleccionarFactura = false;
         this.mostrarBotonVerificarCompensacion = false;
-
+        this.mostrarBotonVerificarCuitsTercero = false;
 
         if (this.estadosVerHistorial.indexOf(this.ordenDeCarga.Estado) >= 0) {
             this.mostrarBotonVerHistorial = true;
@@ -318,6 +319,9 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
             if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.PendienteCompensacion) {
                 this.mostrarBotonVerificarCompensacion = true;
             }
+            if ((this.ordenDeCarga.Estado == EstadoOrdenDeCarga.Pendiente || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.EntregaPendiente) && this.ordenDeCarga.NecesitaVerificarCuitsTerceros) {
+                this.mostrarBotonVerificarCuitsTercero = true;
+            }
         }
         if (this.esAnulador) {
             this.mostrarBotonAnular = true;
@@ -344,7 +348,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                     } else if (result.info != undefined) {
                     } else {
                         this.ordenDeCarga = result.data;
-                        this.verificarOrdenActivaScato(this.ordenDeCarga.CUITChofer.toString());
+                        this.verificarOrdenActivaScato(this.ordenDeCarga.NumeroEntrega);
                         this.validaCPEDG = this.ordenDeCarga.ValidaSisaRuca;
                         this.separarCadenas();
                         this.verificarBotones()
@@ -931,11 +935,11 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
             sessionStorage.removeItem(VOLVER_A_DETALLE_REPORTE)
     }
 
-    verificarOrdenActivaScato(cuit){
+    verificarOrdenActivaScato(nroEntrega: string){
         this.spinnerComponent.showIt();
         this.unsubscribe();
         try {
-            this.service.validarOrdenActivaScato(cuit).pipe(
+            this.service.validarOrdenActivaScato(nroEntrega).pipe(
                 finalize(() => { this.blockUI.stop(); this.spinnerComponent.hideIt() })
             ).subscribe(
                 result => {
@@ -944,9 +948,9 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                         return;
                     } else if ((result.error != undefined && result.error != "") || result.info != undefined) {
                         this.mensajeValidacionScato = "No se pudo validar si la orden esta activa en Scato."
-                    }else{
+                    } else {
                         this.ordenActivaScato = result.data;
-                        if(this.ordenActivaScato){
+                        if (this.ordenActivaScato) {
                             this.mensajeValidacionScato = "Actualmente la orden se encuentra activa en Scato."
                         }
                     }
@@ -959,6 +963,37 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
             this.spinnerComponent.hideIt();
             this.blockUI.stop();
             this.mensajeValidacionScato = "No se pudo validar si la orden esta activa en Scato."
-        }    
+        }
+    }
+    verificarCuitsTerceros() {
+        this.mensajeComponent.setMsgsEmpty();
+        this.spinnerComponent.showIt();
+        this.unsubscribe();
+        this.blockUI.start('Procesando...');
+        try {
+            this.subscriptionDropDowns = this.service.verificarCuitsTerceros(this.ordenDeCargaId).subscribe(
+                result => {
+                    this.blockUI.stop();
+                    this.spinnerComponent.hideIt();
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.mensajeComponent.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.mensajeComponent.setInfoMsg(result.info);
+                    } else {
+                        this.mensajeComponent.setMsgsEmpty();
+                        this.ordenDeCarga.DescripcionErrorInterno = null;
+                        this.obtenerOrdenDeCarga();
+                    }
+                },
+                error => {
+                    this.blockUI.stop();
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+            );
+        } catch (e) {
+            this.mensajeComponent.setErrorMsg(e);
+        }
     }
 }

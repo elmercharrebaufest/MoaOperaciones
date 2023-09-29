@@ -1,10 +1,16 @@
-﻿using SustitucionMOAModel.Entities;
+using SustitucionMOAModel.Dto.OrdenDeCarga;
+using SustitucionMOAModel.Entities;
+using System;
 using System.Collections.Generic;
 
 namespace SustitucionMOAUtils.Interfaces
 {
     public interface IEmailFasService : IEmailOrdenesCargaServiceBase
     {
+        void EnviarMailAltaIntermediarioFlete(string cuit, string razonSocial, string ordenId);
+
+        void EnviarMailAltaTempranaCuit(OrdenDeCarga ordenDeCarga, string ordenId, bool gestionaDestino, bool gestionaDestinatario);
+
         void EnviarMailContratoSinKm(OrdenDeCarga ordenDeCarga);
 
         void EnviarMailContratoVencido(OrdenDeCarga ordenDeCarga);

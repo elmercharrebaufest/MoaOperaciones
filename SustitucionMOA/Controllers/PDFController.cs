@@ -3,6 +3,7 @@ using ICSharpCode.SharpZipLib.Zip;
 using SustitucionMOAAssets;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOASecurity;
+using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
 using SustitucionMOAUtils.Services;
 using System;
@@ -15,7 +16,12 @@ namespace SustitucionMOA.Controllers
     [System.Web.Mvc.SessionState(System.Web.SessionState.SessionStateBehavior.ReadOnly)]
     public class PDFController : BaseController
     {
-        PDFService _pdfService = new PDFService();
+        protected readonly IPDFService pDFService;
+
+        public PDFController(IPDFService pDFService)
+        {   
+            this.pDFService = pDFService;
+        }
 
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.DESCARGAR_DOCUMENTO)]
         public ActionResult downloadDocumentPDF(string documento, string ejercicio)
@@ -24,7 +30,7 @@ namespace SustitucionMOA.Controllers
             {
                 if (documento.Split('|').Length == 1)
                 {
-                    return JsonCustom(_pdfService.downloadDocumentPDF(documento, ejercicio, SessionPersister.Proveedor, SessionPersister.Sociedad));
+                    return JsonCustom(pDFService.DescargarDocumentPDF(documento, ejercicio, SessionPersister.Proveedor, SessionPersister.Sociedad));
                 }
                 else
                 {
@@ -38,7 +44,7 @@ namespace SustitucionMOA.Controllers
 
                         foreach (var doc in documento.Split('|'))
                         {
-                            var pdf = _pdfService.downloadDocumentPDF(doc, ejercicio, SessionPersister.Proveedor, SessionPersister.Sociedad);
+                            var pdf = pDFService.DescargarDocumentPDF(doc, ejercicio, SessionPersister.Proveedor, SessionPersister.Sociedad);
                             if (pdf != null)
                             {
                                 MemoryStream fotoMemoryStream = new MemoryStream(pdf.data);

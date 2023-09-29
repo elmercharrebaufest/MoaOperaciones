@@ -34,6 +34,8 @@ export interface PosicionCompra{
      //Cotizacion
     CotizacionPosicion?: CotizacionPosicionDto
     NoDisponible: boolean,
+    TodasPosicionesSeleccionadas: boolean
+
 }
 
 export interface SolpSubposicionDto{
@@ -70,7 +72,9 @@ export interface EnvioSolpCompra{
     Observacion: string,
     UsuarioIds: number[],
     Adjuntos: Array<File>,
-    Id?: number
+    Id?: number,
+    AdjuntoPliego: boolean
+
 }
 
 export interface AltaNuevoProveedor{

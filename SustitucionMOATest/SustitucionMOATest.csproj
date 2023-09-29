@@ -175,12 +175,14 @@
   <ItemGroup>
     <Content Include="bin\Debug\Template\AvisoEdicionOrdenDeCarga.html" />
     <Content Include="bin\Debug\Template\NotificacionOrdenesDeCarga.html" />
+    <Content Include="bin\Debug\Templates\Example.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Util\LogoBaufest.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="bin\Debug\Templates\" />
     <Folder Include="Mock\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

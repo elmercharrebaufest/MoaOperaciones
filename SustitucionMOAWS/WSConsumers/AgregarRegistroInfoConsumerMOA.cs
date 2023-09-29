@@ -47,18 +47,28 @@ namespace SustitucionMOAWS.WSConsumers
 
             var registrosSap = DevolverDatosSapRegistro(registrosInfo, esModificar);
 
-            var serxml = new System.Xml.Serialization.XmlSerializer(registrosSap.GetType());
-            var ms = new MemoryStream();
-            serxml.Serialize(ms, registrosSap);
-            string xml = Encoding.UTF8.GetString(ms.ToArray());
+            //var serxml = new System.Xml.Serialization.XmlSerializer(registrosSap.GetType());
+            //var ms = new MemoryStream();
+            //serxml.Serialize(ms, registrosSap);
+            string xml = "";
 
             foreach (var item in registrosSap)
             {
+
                 MEWICONDITION[] CONDITIONE = item.CONDITION != null ? item.CONDITION.ToArray() : new MEWICONDITION[] { };
                 MEWIVALIDITY[] MEWIVALIDITYE = item.MEWIVALIDITY != null ? item.MEWIVALIDITY.ToArray() : new MEWIVALIDITY[] { };
 
                 var result = service.SI_MMRFC_MANTENER_REGINFO(item.MEWIEINA, item.MEWIEINAX, item.MEWIEINE, item.EINEX, "", ref CONDITIONE,
                     ref MEWISCALEQUANE, ref MEWISCALEVALE, ref MEWIVALIDITYE, ref BAPIRETURNE, ref MEWIPIRTEXTE, out MEWIEINEE);
+
+                var serxml = new System.Xml.Serialization.XmlSerializer(item.GetType());
+                var ms = new MemoryStream();
+                serxml.Serialize(ms, item);
+                var xmlReturn = new System.Xml.Serialization.XmlSerializer(BAPIRETURNE.GetType());
+                xmlReturn.Serialize(ms, BAPIRETURNE);
+                xml += Encoding.UTF8.GetString(ms.ToArray());
+
+
             }
 
             var respuesta = new CrearSolpConsumerMOAResponse();
@@ -76,19 +86,16 @@ namespace SustitucionMOAWS.WSConsumers
                 respuesta.Errores.Add(error);
             }
 
-            var jsonRespuesta = JsonConvert.SerializeObject(respuesta);
-
+    
             if (!File.Exists(rutaArchivoLlamada))
             {
                 FileInfo fileCrear = new FileInfo(rutaArchivoLlamada);
                 fileCrear.Directory.Create();
                 File.WriteAllText(fileCrear.FullName, xml);
-                File.AppendAllText(rutaArchivoLlamada, jsonRespuesta);
             }
             else
             {
                 File.AppendAllText(rutaArchivoLlamada, xml);
-                File.AppendAllText(rutaArchivoLlamada, jsonRespuesta);
             }
             return respuesta;
         }

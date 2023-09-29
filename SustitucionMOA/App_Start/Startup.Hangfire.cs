@@ -87,6 +87,10 @@ namespace SustitucionMOA
                 "VerificarTransporteOrdenesDeCargaFasonJob",
                 j => j.Execute(),
                 "0 * * * *", tz);
+            RecurringJob.AddOrUpdate<Jobs.IAltaClienteSAPJob>(
+               "AltaClienteSAPJob",
+               j => j.Execute(),
+               "0 13,23 * * *", tz);
         }
     }
 
