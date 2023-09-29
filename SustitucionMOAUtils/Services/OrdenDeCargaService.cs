@@ -2825,7 +2825,10 @@ namespace SustitucionMOAUtils.Services
 
         public bool ValidarOrdenActivaScato(string ordenId)
         {
-            if(nroEntrega == null || nroEntrega.Equals("-"))
+            var orden = this.repositorio.Obtener<OrdenDeCarga>(o => o.Id.ToString() == ordenId);
+            if(orden == null)
+                return false;
+            if (string.IsNullOrEmpty(orden.NumeroEntrega))
                 return false;
             Log.Info($"Obteniendo estado de la orden {orden.Id} en Scato con nro Entrega: " + orden.NumeroEntrega);
             var result = this.scatoConsumer.ObtenerRecorridoNoRechazadoPorNumeroDocumento(orden.NumeroEntrega).FirstOrDefault();
