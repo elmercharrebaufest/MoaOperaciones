@@ -2823,12 +2823,12 @@ namespace SustitucionMOAUtils.Services
             return cuits.Distinct().ToList();
         }
 
-        public bool ValidarOrdenActivaScato(string nroEntrega)
+        public bool ValidarOrdenActivaScato(string ordenId)
         {
-            if (nroEntrega == null || nroEntrega.Equals("-"))
+            if(nroEntrega == null || nroEntrega.Equals("-"))
                 return false;
-            Log.Info("Obteniendo estado de la orden en Scato con nro Entrega: " + nroEntrega);
-            var result = this.scatoConsumer.ObtenerRecorridoNoRechazadoPorNumeroDocumento(nroEntrega).FirstOrDefault();
+            Log.Info($"Obteniendo estado de la orden {orden.Id} en Scato con nro Entrega: " + orden.NumeroEntrega);
+            var result = this.scatoConsumer.ObtenerRecorridoNoRechazadoPorNumeroDocumento(orden.NumeroEntrega).FirstOrDefault();
             if (result == null)
                 return false;
             return result.Terminado != true;

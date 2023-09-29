@@ -1088,12 +1088,12 @@ namespace SustitucionMOA.Controllers
 
 
         [HttpGet]
-        public ActionResult ValidarOrdenActivaScato(string cuitChofer)
+        public ActionResult ValidarOrdenActivaScato(string ordenId)
         {
             var response = new SustitucionMOAApiResponse<bool>();
             try
             {
-                response.Data = ordenDeCargaService.ValidarOrdenActivaScato(cuitChofer);
+                response.Data = ordenDeCargaService.ValidarOrdenActivaScato(ordenId);
             }
             catch (InfoCustomException ice)
             {

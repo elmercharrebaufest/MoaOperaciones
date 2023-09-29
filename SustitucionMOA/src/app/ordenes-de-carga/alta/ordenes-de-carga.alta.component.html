@@ -451,6 +451,44 @@
     </p-footer>
 </p-dialog>
 <!-- end modal notificacion -->
+
+<!-- modal advertencia de edicion perfil interno -->
+<button type="button" style="display:none" id="openEdicionOrdenInterno" data-toggle="modal"
+        data-target="#modalEditarOrdenInterno"></button>
+<div class="modal fade" id="modalEditarOrdenInterno" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+data-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
+<div class="modal-dialog" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            <h4 class="modal-title" id="modalEditarOrden">Editar orden</h4>
+        </div>
+        <div class="modal-body">
+            <div *ngIf = "mensajeValidacionScato" class="row" class="col-xs-12 col-sm-12 col-md-12 alertScato">
+            {{mensajeValidacionScato}}    
+            </div>
+            <div class="row" class="col-xs-12 col-sm-12 col-md-12">
+                ¿Está seguro de que desea editar la orden de carga?
+            </div>
+        </div>
+        <div class="modal-footer" style="border-top:none;">
+            <button type="button" class="btn-custom btn-cerrar btn-chico" data-dismiss="modal"
+                id="closemodalEditarOrden" style="display: inline-flex;">
+                Cancelar
+            </button>
+            <button type="button" class="btn-custom btn-remove btn-mediano" (click)="editarOrden()"
+                style="display: inline-flex;">
+                Editar orden
+            </button>
+
+        </div>
+    </div>
+</div>
+</div>
+<!-- end modal edicion interno -->
+<!-- end modal notificacion -->
 <p-dialog [header]="'Camión escalable'" [(visible)]="displayModalEscalable" [modal]="true" [responsive]="true"
     [style]="{width: '350px', minWidth: '200px', maxWidth:'350px'}" [minY]="70" [draggable]="false" appendTo="body"
     [closable]="false">
