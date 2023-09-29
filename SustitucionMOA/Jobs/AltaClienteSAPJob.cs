@@ -26,6 +26,9 @@ namespace SustitucionMOA.Jobs
         {
             try
             {
+                if (!repositorio.Obtener<HabilitacionJob>(a => a.Nombre == "AltaClienteSAP").Habilitado)
+                    return;
+
                 DateTime fechaFin = DateTime.Today;
                 DateTime fechaInicio = fechaFin.AddDays(-2);
 

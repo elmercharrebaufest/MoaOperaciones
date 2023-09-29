@@ -22,12 +22,9 @@ import { Domicilio } from '../../common/models/ordenes-de-carga/domicilio';
 import { finalize, take } from 'rxjs/operators';
 import { ApiResponse } from '../../common/models/response';
 import { forkJoin } from 'rxjs';
-import { Permiso } from '../../common/enums/Permisos';
 import { Factura, newFactura } from '../../common/models/ordenes-de-carga/Factura';
 import { EstadoOrdenDeCarga } from '../../common/models/ordenes-de-carga/estadoOrdenDeCarga';
-import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 
-declare var $: any;
 @Component({
     selector: 'app-ordenes-de-carga.alta',
     templateUrl: './ordenes-de-carga.alta.component.html',
@@ -84,6 +81,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
     listaMateriales: Material[];
     esCorredor: boolean = sessionStorage.getItem("tipoUsuario") === "CORR";
     esComercial: boolean = this.isAuthorized('VER ORDENES DE CARGA PARA COMERCIALES');
+    esInterno: boolean = this.esComercial || this.esCorredor;
     esAdmin: boolean = this.isAuthorized('VER TODAS ORDENES DE CARGA');
     listaClientes: any[];
     noEditarCliente: boolean = false;
@@ -110,6 +108,9 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
     cuitsTransporte: any;
 
     intermediarioFleteCuitFormatoValido: boolean = true;
+    ordenActivaScato: boolean = false;
+    mensajeValidacionScato: string = "";
+
 
     constructor(protected service: OrdenesDeCargaService, protected usuarioService: UsuarioService, protected navService: NavService, protected seleccionarProveedorService: SeleccionarProveedorService, private route: ActivatedRoute, protected sessionDataService: SessionDataService, protected securytiService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService, protected empresaGranosService: EmpresaGranosService, public datepipe: DatePipe) {
         super(navService, securytiService, floatMsgService, modalService);
@@ -341,12 +342,73 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
             return;
         }
         this.mensajeComponent.setMsgsEmpty();
-        this.spinnerComponent.showIt();
         this.unsubscribe();
-        this.blockUI.start('Grabando...');
+        
         try {
             if (this.ordenDeCargaId > 0) {
-                this.subscription = this.service
+                if(this.esInterno){
+                    this.verificarOrdenActivaScato(this.ordenDeCargaId.toString());
+                    this.abrirModalEdicionInterno();
+                }else{
+                    this.editarOrden();
+                }
+            } else {
+                this.agregarOrden();
+            }
+        } catch (e) {
+            console.error(e);
+            this.mensajeComponent.setErrorMsg(e);
+        }
+    }
+
+    agregarOrden(){
+        this.spinnerComponent.showIt();
+        this.blockUI.start('Grabando...');
+        this.subscription = this.service
+        .agregar(this.ordenDeCarga).pipe(take(1))
+        .subscribe(
+            (result) => {
+                this.spinnerComponent.hideIt();
+                this.blockUI.stop();
+                if (result.logout == true) {
+                    this.sessionDataService.logout();
+                } else if (result.error != undefined && result.error != "") {
+                    console.error(result.error);
+                    this.mensajeComponent.setErrorMsg(result.error);
+                } else if (result.info != undefined) {
+                    console.info(result.info);
+                    this.mensajeComponent.setInfoMsg(result.info);
+                } else if (result.data.error != undefined && result.data.error != "") {
+                    console.error(result.error);
+                    this.mensajeComponent.setErrorMsg(result.data.error);
+                } else if (result.data.info != undefined) {
+                    console.error(result.error);
+                    this.mensajeComponent.setInfoMsg(result.data.info);
+                } else {
+                    this.mensajeComponent.setMsgsEmpty();
+                    this.mensajeSuccess = result.data.Mensaje;
+                    this.ordenDeCargaId = result.data.IdEntidad;
+                    this.gestionarAltasCuitTerceros(this.ordenDeCargaId.toString());
+                    document.getElementById("openModalNotificacion")
+                        .click();
+                }
+            },
+            (error) => {
+                console.error(error);
+                this.spinnerComponent.hideIt();
+                this.mensajeComponent.setErrorMsg(error.message);
+                this.blockUI.stop();
+            }
+        );
+    }
+
+    editarOrden(){
+        
+        document.getElementById("closemodalEditarOrden").click();
+        
+        this.spinnerComponent.showIt();
+        this.blockUI.start('Grabando...');
+        this.subscription = this.service
                     .editar(this.ordenDeCarga).pipe(take(1))
                     .subscribe(
                         (result) => {
@@ -384,48 +446,6 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                             this.blockUI.stop();
                         }
                     );
-            } else {
-                this.subscription = this.service
-                    .agregar(this.ordenDeCarga).pipe(take(1))
-                    .subscribe(
-                        (result) => {
-                            this.spinnerComponent.hideIt();
-                            this.blockUI.stop();
-                            if (result.logout == true) {
-                                this.sessionDataService.logout();
-                            } else if (result.error != undefined && result.error != "") {
-                                console.error(result.error);
-                                this.mensajeComponent.setErrorMsg(result.error);
-                            } else if (result.info != undefined) {
-                                console.info(result.info);
-                                this.mensajeComponent.setInfoMsg(result.info);
-                            } else if (result.data.error != undefined && result.data.error != "") {
-                                console.error(result.error);
-                                this.mensajeComponent.setErrorMsg(result.data.error);
-                            } else if (result.data.info != undefined) {
-                                console.error(result.error);
-                                this.mensajeComponent.setInfoMsg(result.data.info);
-                            } else {
-                                this.mensajeComponent.setMsgsEmpty();
-                                this.mensajeSuccess = result.data.Mensaje;
-                                this.ordenDeCargaId = result.data.IdEntidad;
-                                this.gestionarAltasCuitTerceros(this.ordenDeCargaId.toString());
-                                document.getElementById("openModalNotificacion")
-                                    .click();
-                            }
-                        },
-                        (error) => {
-                            console.error(error);
-                            this.spinnerComponent.hideIt();
-                            this.mensajeComponent.setErrorMsg(error.message);
-                            this.blockUI.stop();
-                        }
-                    );
-            }
-        } catch (e) {
-            console.error(e);
-            this.mensajeComponent.setErrorMsg(e);
-        }
     }
 
     aceptar() {
@@ -1412,5 +1432,38 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                 }
             });
         });
+    }
+
+    verificarOrdenActivaScato(ordenId: string) {
+        try {
+            this.service.validarOrdenActivaScato(ordenId).pipe(
+                finalize(() => { })
+            ).subscribe(
+                result => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                        return;
+                    } else if ((result.error != undefined && result.error != "") || result.info != undefined) {
+                        this.mensajeValidacionScato = "No se pudo validar si la orden esta activa en Scato."
+                    } else {
+                        this.ordenActivaScato = result.data;
+                        if (this.ordenActivaScato) {
+                            this.mensajeValidacionScato = "Actualmente la orden se encuentra activa en Scato."
+                        }else{
+                            this.mensajeValidacionScato = undefined;
+                        }
+                    }
+                },
+                error => {
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+            );
+        } catch (e) {
+            this.mensajeValidacionScato = "No se pudo validar si la orden esta activa en Scato."
+        }
+    }
+
+    abrirModalEdicionInterno() {
+        document.getElementById("openEdicionOrdenInterno").click();
     }
 }

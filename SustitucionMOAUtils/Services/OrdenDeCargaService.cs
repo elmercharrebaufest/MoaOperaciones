@@ -2821,12 +2821,15 @@ namespace SustitucionMOAUtils.Services
             return cuits.Distinct().ToList();
         }
 
-        public bool ValidarOrdenActivaScato(string nroEntrega)
+        public bool ValidarOrdenActivaScato(string ordenId)
         {
-            if(nroEntrega == null || nroEntrega.Equals("-"))
+            var orden = this.repositorio.Obtener<OrdenDeCarga>(o => o.Id.ToString() == ordenId);
+            if (orden == null)
                 return false;
-            Log.Info("Obteniendo estado de la orden en Scato con nro Entrega: " + nroEntrega);
-            var result = this.scatoConsumer.ObtenerRecorridoNoRechazadoPorNumeroDocumento(nroEntrega).FirstOrDefault();
+            if(string.IsNullOrEmpty(orden.NumeroEntrega))
+                return false;
+            Log.Info($"Obteniendo estado de la orden {orden.Id} en Scato con nro Entrega: " + orden.NumeroEntrega);
+            var result = this.scatoConsumer.ObtenerRecorridoNoRechazadoPorNumeroDocumento(orden.NumeroEntrega).FirstOrDefault();
             if (result == null)
                 return false;
             return result.Terminado != true;
