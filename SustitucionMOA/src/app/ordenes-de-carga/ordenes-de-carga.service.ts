@@ -1,5 +1,5 @@
 
-import { throwError as observableThrowError, Observable, BehaviorSubject } from 'rxjs';
+import { throwError as observableThrowError, Observable, BehaviorSubject, of } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { HttpParams } from '@angular/common/http';
 import { BaseService } from './../common/services/BaseService';
@@ -14,6 +14,7 @@ import { Domicilio } from '../common/models/ordenes-de-carga/domicilio';
 import { ValidarIntermediarioFleteResponse } from '../common/models/ordenes-de-carga/ValidarIntermediarioFleteResponse';
 import { Factura } from '../common/models/ordenes-de-carga/Factura';
 import { Proveedor } from '../common/models/proveedor';
+import { ValidarCamionResponse } from '../common/models/ordenes-de-carga/ValidarCamionResponse';
 
 @Injectable({
     providedIn: 'root'
@@ -398,7 +399,7 @@ export class OrdenesDeCargaService extends BaseService {
             .pipe(timeoutWith(360000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
     }
 
-    public EnviarMailAltaCuitTerceros(gestionaFlete: boolean, gestionaDestino: boolean, gestionaDestinatario: boolean, 
+    public EnviarMailAltaCuitTerceros(gestionaFlete: boolean, gestionaDestino: boolean, gestionaDestinatario: boolean,
         ordenId: string): Observable<ApiResponse<boolean>> {
         const payload = {
             gestionaFlete,
@@ -537,4 +538,15 @@ export class OrdenesDeCargaService extends BaseService {
             .pipe(timeoutWith(360000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
     }
 
+    public verificarCNRT(chasis: string, acoplado: string): Observable<ApiResponse<ValidarCamionResponse>> {
+        let params: HttpParams = new HttpParams()
+            .append("patenteChasis", chasis)
+            .append("patenteAcoplado", acoplado);
+
+        return this.http
+            .get<ApiResponse<ValidarCamionResponse>>(
+                '/api/OrdenDeCarga/ValidarCamion',
+                { params: params, headers: this.headers })
+            .pipe(timeoutWith(360000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
+    }
 }

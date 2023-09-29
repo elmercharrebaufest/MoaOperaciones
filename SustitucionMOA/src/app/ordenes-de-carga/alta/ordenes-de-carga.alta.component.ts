@@ -19,11 +19,15 @@ import { NgBlockUI, BlockUI } from 'ng-block-ui';
 import { ContratoOrdenFas, TipoContrato } from '../../common/models/ordenes-de-carga/obtenerContratosDisponiblesResponse';
 import { Planta } from '../../common/models/ordenes-de-carga/planta';
 import { Domicilio } from '../../common/models/ordenes-de-carga/domicilio';
-import { finalize, take } from 'rxjs/operators';
+import { debounceTime, finalize, take } from 'rxjs/operators';
 import { ApiResponse } from '../../common/models/response';
-import { forkJoin } from 'rxjs';
+import { Subject, Subscription, forkJoin } from 'rxjs';
+import { Permiso } from '../../common/enums/Permisos';
 import { Factura, newFactura } from '../../common/models/ordenes-de-carga/Factura';
 import { EstadoOrdenDeCarga } from '../../common/models/ordenes-de-carga/estadoOrdenDeCarga';
+import { MessageService } from 'primeng/api';
+import { Checkbox } from 'primeng/checkbox';
+import { MSG_ALERTA_NO_ESCALABLE } from '../../common/models/ordenes-de-carga/ValidarCamionResponse';
 
 @Component({
     selector: 'app-ordenes-de-carga.alta',
@@ -33,7 +37,7 @@ import { EstadoOrdenDeCarga } from '../../common/models/ordenes-de-carga/estadoO
 })
 export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
     @BlockUI() blockUI: NgBlockUI;
-
+    @ViewChild("escalableCheckbox") escalableCheckbox: Checkbox
     @ViewChild(MensajeComponent)
     protected mensajeComponent: MensajeComponent;
 
@@ -44,6 +48,9 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
 
     ordenDeCargaId: number = 0;
 
+    validarCNRTSubject = new Subject();
+    validarCNRTSubscription?: Subscription;
+    subscriptions = new Subscription();
     ordenDeCarga: OrdenDeCarga = new OrdenDeCarga();
     mensajesOrdenDeCarga: Partial<Record<keyof OrdenDeCarga, string>> = {};
     mensajesGestionCuit: Partial<Record<keyof Pick<OrdenDeCarga, 'CUITDestinatario' | 'CUITDestino' | 'CUITIntermediarioFlete'>, string>> = {};
@@ -108,12 +115,29 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
     cuitsTransporte: any;
 
     intermediarioFleteCuitFormatoValido: boolean = true;
+    escalableCNRT?: boolean;
     ordenActivaScato: boolean = false;
     mensajeValidacionScato: string = "";
 
-
-    constructor(protected service: OrdenesDeCargaService, protected usuarioService: UsuarioService, protected navService: NavService, protected seleccionarProveedorService: SeleccionarProveedorService, private route: ActivatedRoute, protected sessionDataService: SessionDataService, protected securytiService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService, protected empresaGranosService: EmpresaGranosService, public datepipe: DatePipe) {
+    constructor(protected service: OrdenesDeCargaService,
+        protected usuarioService: UsuarioService,
+        protected navService: NavService,
+        protected seleccionarProveedorService: SeleccionarProveedorService,
+        private route: ActivatedRoute,
+        protected sessionDataService: SessionDataService,
+        protected securytiService: SecurityService,
+        protected floatMsgService: FloatMsgService,
+        protected modalService: ModalService,
+        protected empresaGranosService: EmpresaGranosService,
+        public datepipe: DatePipe,
+        protected msgService: MessageService
+    ) {
         super(navService, securytiService, floatMsgService, modalService);
+
+        this.subscriptions.add(
+            this.validarCNRTSubject.pipe(debounceTime(500)).subscribe(_ =>
+                this.validarCNRTRequest()
+            ))
     }
 
     get noPuedeEditarCuitsTerceros() {
@@ -215,11 +239,11 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
             this.mensajeComponent.setInfoMsg("Ingrese un CUIL de chofer válido.");
             return false;
         }
-        if (!this.ordenDeCarga.PatenteAcoplado || this.ordenDeCarga.PatenteAcoplado.trim().length < 6) {
+        if (!this.patenteAcopladoValida) {
             this.mensajeComponent.setInfoMsg("Ingrese una patente válida.");
             return false;
         }
-        if (!this.ordenDeCarga.ChasisAcoplado || this.ordenDeCarga.ChasisAcoplado.trim().length < 6) {
+        if (!this.chasisAcopladoValido) {
             this.mensajeComponent.setInfoMsg("Ingrese un número de chasis válido.");
             return false;
         }
@@ -258,6 +282,12 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
             const estaValidando = Object.keys(this.validando).some(key => this.validando[key]);
             if (estaValidando) {
                 this.mensajeComponent.setInfoMsg("Hay campos que todavía se están validando");
+                return false;
+            }
+        }
+        else{
+            if(!this.ordenDeCarga.DestinoMercaderia || this.ordenDeCarga.DestinoMercaderia.length < 5){
+                this.mensajeComponent.setInfoMsg("Ingrese un destino de mercadería.");
                 return false;
             }
         }
@@ -583,11 +613,11 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
         }
     }
 
-    PatenteChasisSelected(value: any) {
-        this.ordenDeCarga.ChasisAcoplado = value.label;
+    chasisAcopladoSelected(event: any) {
+        this.ordenDeCarga.ChasisAcoplado = event.toUpperCase();;
     }
-    PatenteAcopladoSelected(value: any) {
-        this.ordenDeCarga.PatenteAcoplado = value.value;
+    patenteAcopladoSelected(event: any) {
+        this.ordenDeCarga.PatenteAcoplado = event.toUpperCase();;
     }
     cuitChoferSelected(value: any) {
         this.ordenDeCarga.CUITChofer = value.value;
@@ -1432,6 +1462,60 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                 }
             });
         });
+    }
+    get patenteAcopladoValida() {
+        return this.ordenDeCarga.PatenteAcoplado && this.ordenDeCarga.PatenteAcoplado.trim().length >= 6
+    }
+    get chasisAcopladoValido() {
+        return this.ordenDeCarga.ChasisAcoplado && this.ordenDeCarga.ChasisAcoplado.trim().length >= 6
+    }
+
+    displayModalEscalable = false;
+    decidioEscalable = false;
+
+    validarCNRT() {
+        if (!(this.patenteAcopladoValida && this.chasisAcopladoValido))
+            return;
+        //Posible check de si está marcado el campo escalable
+        this.validarCNRTSubject.next();
+    }
+    validarCNRTRequest() {
+        this.validarCNRTSubscription = this.service
+            .verificarCNRT(this.ordenDeCarga.ChasisAcoplado, this.ordenDeCarga.PatenteAcoplado)
+            .subscribe(res => {
+                const validezCNRTResponse = this.manejarErroresApiResponse(res)
+                this.escalableCNRT = validezCNRTResponse.EsCamionEscalable;
+                if (!this.escalableCNRT && this.ordenDeCarga.Escalable) {
+                    this.msgService.add(MSG_ALERTA_NO_ESCALABLE);
+                    this.setValorEscalable()
+                }
+                this.displayModalEscalable = this.escalableCNRT && !this.ordenDeCarga.Escalable && !this.decidioEscalable;
+            })
+    }
+    validarEscalable() {
+        if (!this.ordenDeCarga.Escalable)
+            return;
+
+        if (!this.escalableCNRT && this.escalableCNRT !== undefined) {
+            this.msgService.add(MSG_ALERTA_NO_ESCALABLE);
+            this.setValorEscalable()
+        }
+        else if (this.escalableCNRT === undefined)
+            this.validarCNRT();
+    }
+    setValorEscalable(value = false) {
+        this.escalableCheckbox.writeValue(value)
+        this.ordenDeCarga.Escalable = value;
+    }
+    marcarComoEscalable() {
+        this.setValorEscalable(true)
+        this.displayModalEscalable = false;
+    }
+    dejarSinEscalable() {
+        this.displayModalEscalable = false;
+    }
+    public extraOnDestroy(): void {
+        this.subscriptions.unsubscribe();
     }
 
     verificarOrdenActivaScato(ordenId: string) {

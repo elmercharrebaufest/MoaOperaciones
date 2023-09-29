@@ -225,6 +225,7 @@ namespace SustitucionMOAUtils.Services
                 {
                     UsarCUITClienteParaDestinatario(ordenDeCarga);
                 }
+                ordenDeCarga.DestinoMercaderia = null;
             }
 
             ordenDeCarga.TransporteExiste = TransporteExiste(ordenDeCarga);
@@ -659,7 +660,7 @@ namespace SustitucionMOAUtils.Services
             var existeTransporte = true;
             var codigoVerificacionSap = string.Empty;
             var descripcionCodigoVerificacionSap = string.Empty;
-             
+
             if (!ValidarExistenciaIntermediarioFlete(ordenDeCarga))
             {
                 existeTransporte = false;
@@ -2017,7 +2018,8 @@ namespace SustitucionMOAUtils.Services
                 PlantaCodigo = orden.PlantaCodigo,
                 DomicilioTipo = orden.DomicilioTipo,
                 DomicilioOrden = orden.DomicilioOrden,
-                DomicilioDescr = orden.DomicilioDescr
+                DomicilioDescr = orden.DomicilioDescr,
+                DestinoMercaderia = orden.DestinoMercaderia
             };
 
             var respHandler = consumer.CrearEntrega(req, !string.IsNullOrEmpty(numeroFactura));
@@ -2367,10 +2369,10 @@ namespace SustitucionMOAUtils.Services
                 emailFasService.EnviarMailAltaIntermediarioFlete(ordenDeCarga.CUITIntermediarioFlete, ordenDeCarga.RazonSocialIntermediarioFlete, ordenDeCarga.Id.ToString());
             }
 
-            if(gestionaDestino || gestionaDestinatario)
+            if (gestionaDestino || gestionaDestinatario)
             {
                 emailFasService.EnviarMailAltaTempranaCuit(ordenDeCarga, ordenId, gestionaDestino, gestionaDestinatario);
-            }    
+            }
 
             return true;
         }
@@ -2823,10 +2825,7 @@ namespace SustitucionMOAUtils.Services
 
         public bool ValidarOrdenActivaScato(string ordenId)
         {
-            var orden = this.repositorio.Obtener<OrdenDeCarga>(o => o.Id.ToString() == ordenId);
-            if (orden == null)
-                return false;
-            if(string.IsNullOrEmpty(orden.NumeroEntrega))
+            if(nroEntrega == null || nroEntrega.Equals("-"))
                 return false;
             Log.Info($"Obteniendo estado de la orden {orden.Id} en Scato con nro Entrega: " + orden.NumeroEntrega);
             var result = this.scatoConsumer.ObtenerRecorridoNoRechazadoPorNumeroDocumento(orden.NumeroEntrega).FirstOrDefault();
