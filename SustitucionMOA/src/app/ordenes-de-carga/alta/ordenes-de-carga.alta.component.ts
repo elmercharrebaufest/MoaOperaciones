@@ -283,6 +283,12 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                 return false;
             }
         }
+        else{
+            if(!this.ordenDeCarga.DestinoMercaderia || this.ordenDeCarga.DestinoMercaderia.length < 5){
+                this.mensajeComponent.setInfoMsg("Ingrese un destino de mercadería.");
+                return false;
+            }
+        }
 
         if (!this.ordenDeCarga.Producto_Id) {
             this.mensajeComponent.setInfoMsg("Seleccione un contrato.");
