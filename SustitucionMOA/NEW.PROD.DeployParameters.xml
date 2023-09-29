@@ -13,7 +13,7 @@
 
   <setParameter name="EsLocal Config" value="false" />
 
-  <setParameter name="SpaUrl Config" value="https://nuevo.moaoperaciones.com.ar/web" />
+  <setParameter name="SpaUrl Config" value="https://moaoperaciones.com.ar/web" />
 
   <setParameter name="RutaArchivosProveedores Config" value="C:/ArchivosProveedores" />
   <setParameter name="defAmbiente Config" value="" />
@@ -37,11 +37,11 @@
 
   <setParameter name="EsLocal Config" value="false" />
 
-  <setParameter name="SpaUrl Config" value="https://nuevo.moaoperaciones.com.ar/web" />
+  <setParameter name="SpaUrl Config" value="https://moaoperaciones.com.ar/web" />
 
   <setParameter name="RutaArchivosProveedores Config" value="C:/ArchivosProveedores" />
   <setParameter name="defAmbiente Config" value="" />
-  <setParameter name="ida:RedirectUri Config" value="https://nuevo.moaoperaciones.com.ar" />
+  <setParameter name="ida:RedirectUri Config" value="https://moaoperaciones.com.ar" />
   <setParameter name="ida:Tenant Config" value="moagro.onmicrosoft.com" />
   <setParameter name="ida:TenantId Config" value="64912498-cd87-469f-a9e5-44e257a06b60" />
   <setParameter name="ida:ClientId Config" value="f18c7be4-4ada-4852-a4db-9ffc444c68fa" />
