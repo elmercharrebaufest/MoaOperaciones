@@ -827,6 +827,7 @@ namespace SustitucionMOAUtils.Services
                 var hoy = DateTime.Now.Date;
                 var usuariosCompras = repositorio.Listar<UsuarioCompras>();
                 var usuariosComprasRelacion = repositorio.Listar<UsuarioComprasRelacionConUsuarios>(x => x.Usuario_Id == usuarioActual.Id);
+                nroSolp = nroSolp.Trim();
                 //var peticionCierre = repositorio.Listar<PeticionDeOfertaCierre, PeticionDeOfertaCierreDto>(pc => new PeticionDeOfertaCierreDto());
                 var peticionesDeOferta = repositorio.Listar<PeticionDeOferta, PeticionDeOfertaDto>(po => new PeticionDeOfertaDto
                 {
