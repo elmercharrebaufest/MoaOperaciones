@@ -19,6 +19,8 @@ import { DialogModule } from 'primeng/dialog';
 import { CheckboxModule } from 'primeng/checkbox';
 import { TooltipModule } from 'primeng/tooltip';
 import { MessageModule } from 'primeng/message';
+import { ToastModule } from 'primeng/toast';
+import { MessageService } from 'primeng/api';
 
 @NgModule({
     imports: [
@@ -38,6 +40,7 @@ import { MessageModule } from 'primeng/message';
         CheckboxModule,
         TooltipModule,
         MessageModule,
+        ToastModule,
     ],
     declarations: [
         OrdenesDeCargaAlta,
@@ -45,9 +48,10 @@ import { MessageModule } from 'primeng/message';
         OrdenesDeCargaDetalleComponent
     ],
     providers: [
-        OrdenesDeCargaService
+        OrdenesDeCargaService,
+        MessageService
     ],
-    exports:[
+    exports: [
         OrdenesDeCargaAlta,
         OrdenesDeCargaListado,
         OrdenesDeCargaDetalleComponent
