@@ -26,7 +26,7 @@ export class HttpStatusCodes {
             case this.ServerError:
                 this.msjError = 'Lo sentimos, ha ocurrido un problema en nuestro servidor.';
                 break;
-            default: this.msjError = 'Error inesperado:' + statusCode;
+            default: this.msjError = 'Lo sentimos, hubo un error inesperado.';
         }
         return this.msjError;
     }
