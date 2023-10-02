@@ -1650,7 +1650,20 @@ namespace SustitucionMOAUtils.Services
 
                 if (adjudicaciones.Count > 0) { 
                     repositorio.GuardarCambios();
-                    EnviarMailOrdenCompra(adjudicaciones.Last(), "");
+
+                    try
+                    {
+
+                       EnviarMailOrdenCompra(adjudicaciones.Last(), "");
+                      
+                    }
+                    catch (Exception e)
+                    {
+                        Logger.Log.Error(new Exception($"Error al enviar mail ActualizarFechaLiberacionOC en adjudicacion: " + adjudicaciones.Last().Id));
+                        Logger.Log.Error(e);
+                    }
+
+                 
                 }
             }
             catch (Exception e)
@@ -3184,7 +3197,18 @@ namespace SustitucionMOAUtils.Services
 
                 if (enviarMail)
                 {
-                    EnviarMailPeticionDeOferta(peticion, peticion.Usuarios.ToList());
+                   
+                    try
+                    {
+
+                        EnviarMailPeticionDeOferta(peticion, peticion.Usuarios.ToList());
+
+                    }
+                    catch (Exception e)
+                    {
+                        Logger.Log.Error(new Exception($"Error al enviar mail GrabarPeticionDeOferta en peticion: " + peticion.Id));
+                        Logger.Log.Error(e);
+                    }
                 }
 
                 return respuestaGuardarSOLP;
@@ -3599,7 +3623,7 @@ namespace SustitucionMOAUtils.Services
                 var posicion = listaPosiciones.Select(x => x.SolpPosicion).OrderByDescending(x => x.Id).FirstOrDefault();
                 var localidad = repositorio.Obtener<Localidad>(x => x.ProvinciaId == posicion.ProvinciaId);
                 var centro = repositorio.Obtener<CentroDireccion>(x => x.CodigoSap == posicion.Centro.CodigoSap);
-                var centroPlanta = repositorio.Obtener<TablaSap>(x => x.CodigoSap == posicion.Centro.CodigoSap);
+                //var centroPlanta = repositorio.Obtener<TablaSap>(x => x.CodigoSap == posicion.Centro.CodigoSap);
                 var lugarEntrega = $"{posicion.NombreEntrega}, {posicion.CalleEntrega} - ({posicion.CpEntrega}) {localidad?.Nombre ?? ""} - {posicion.Provincia?.Nombre ?? ""}";
 
                 xHtml = string.Format(xHtml, stylesHtml,
@@ -4167,7 +4191,18 @@ namespace SustitucionMOAUtils.Services
                     Solp = solp
                 };
                 respuestaGuardarSOLP.IdEntidad = circular.PeticionDeOfertaUsuarios.FirstOrDefault().PeticionDeOfertaUsuario.PeticionDeOferta_Id;
-                EnviarMailCircular(circular);
+                try
+                {
+
+                    EnviarMailCircular(circular);
+
+                }
+                catch (Exception e)
+                {
+                    Logger.Log.Error(new Exception($"Error al enviar mail GrabarCircular en circular: " + circular.Id));
+                    Logger.Log.Error(e);
+                }
+               
                 return respuestaGuardarSOLP;
 
             }
@@ -4309,12 +4344,23 @@ namespace SustitucionMOAUtils.Services
                 };
                 var usuarios = repositorio.Listar<Usuario>();
 
-                var peticion = repositorio.Obtener<PeticionDeOferta>(x => x.Id == peticionId);
+                var peticion = repositorio.Obtener<PeticionDeOferta>(peticionId);
                 var nuevosUsuarios = usuarios.Where(x => usuariosId.Contains(x.Id)).Select(a => new PeticionDeOfertaUsuario { Usuario_Id = a.Id, PeticionDeOferta_Id = peticion.Id, Usuario = usuarios.Where(y => y.Id == a.Id).FirstOrDefault(), PeticionDeOferta = peticion }).ToList();
                 peticion.Usuarios = nuevosUsuarios;
                 repositorio.GuardarCambios();
                 respuestaGuardarSOLP.IdEntidad = peticion.Id;
-                EnviarMailPeticionDeOferta(peticion, nuevosUsuarios);
+                try
+                {
+
+                    EnviarMailPeticionDeOferta(peticion, nuevosUsuarios);
+
+                }
+                catch (Exception e)
+                {
+                    Logger.Log.Error(new Exception($"Error al enviar mail GrabarProveedoresEnPeticionDeOferta en peticion: " + peticion.Id));
+                    Logger.Log.Error(e);
+                }
+               
                 return respuestaGuardarSOLP;
 
             }
@@ -4890,7 +4936,7 @@ namespace SustitucionMOAUtils.Services
             return result;
         }
 
-        public void EnviarMailCotizacion(Cotizacion cotizacion)
+        private void EnviarMailCotizacion(Cotizacion cotizacion)
         {
             var peticion = cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta;
             var asunto = "";
@@ -4904,7 +4950,7 @@ namespace SustitucionMOAUtils.Services
         }
 
 
-        public void EnviarMailAvisoDeErrorRegistroInfo(Cotizacion cotizacion)
+        private void EnviarMailAvisoDeErrorRegistroInfo(Cotizacion cotizacion)
         {
             var asunto = "";
             var enviarA = new List<string> { ConfigurationManager.AppSettings["EmailToReporteLogins"] };
