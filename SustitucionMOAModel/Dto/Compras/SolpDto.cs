@@ -151,8 +151,8 @@ namespace SustitucionMOAModel.Dto
         public VisitaObraDto() { }
         public VisitaObraDto(PliegoVisita entity)
         {
-            this.Codigo = entity.Codigo;
-            this.FechaHora = entity.FechaHora.HasValue ? entity.FechaHora.Value : DateTime.MinValue;
+            Codigo = entity.Codigo;
+            FechaHora = entity.FechaHora ?? DateTime.MinValue;
         }
 
     }
