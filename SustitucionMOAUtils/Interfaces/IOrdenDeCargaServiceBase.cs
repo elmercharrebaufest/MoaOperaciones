@@ -1,4 +1,5 @@
-﻿using SustitucionMOAModel.Dto.OrdenDeCarga;
+﻿using SustitucionMOAModel.Dto;
+using SustitucionMOAModel.Dto.OrdenDeCarga;
 using System.Collections.Generic;
 
 namespace SustitucionMOAUtils.Interfaces
@@ -17,5 +18,6 @@ namespace SustitucionMOAUtils.Interfaces
         ValidarIntermediarioFleteResponse ValidarIntermediarioFlete(string cuit);
         bool ValidarCuilChoferDigito(string cuilChofer);
         bool ValidarCuitTransporteDigito(string cuitTransporte);
+        ProveedorDto ObtenerProveedor(int idProveedor);
     }
 }

@@ -62,7 +62,7 @@
                                 </div>
                             </div>
                             <ng-container *ngIf="validaCPEDG">
-                                <div class=" col-xs-12 col-md-12 mt-2" *ngIf="modificaReventa">
+                                <div class=" col-xs-12 col-md-12 mt-2" *ngIf="clienteSeleccionado.EsRevendedor">
                                     <div class="formulario-label" style="margin-bottom: 8px;">
                                         <p-checkbox name="reventa" [binary]="true"
                                             [(ngModel)]="ordenDeCargaFason.Reventa"></p-checkbox>

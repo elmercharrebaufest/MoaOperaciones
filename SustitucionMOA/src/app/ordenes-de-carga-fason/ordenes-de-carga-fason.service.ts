@@ -12,6 +12,7 @@ import { OrdenesBaseService } from '../common/base-components/ordenes-base-compo
 import { Planta } from '../common/models/ordenes-de-carga/planta';
 import { Domicilio } from '../common/models/ordenes-de-carga/domicilio';
 import { ValidarCuitExisteScatoResponse } from '../common/models/ordenes-de-carga-common/ValidarCuitExisteScatoResponse';
+import { Proveedor } from '../common/models/proveedor';
 
 @Injectable({
   providedIn: 'root'
@@ -222,6 +223,14 @@ export class OrdenesDeCargaFasonService extends OrdenesBaseService {
       .get<ApiResponse<boolean>>(
         '/api/OrdenDeCargaFason/ValidarCuitTransporte',
         { params: params, headers: this.headers })
+      .pipe(timeoutWith(360000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
+  }
+  public obtenerProveedor(idProveedor: Number): Observable<ApiResponse<Proveedor>> {
+    let params: HttpParams = new HttpParams()
+      .append("idProveedor", idProveedor.toString());
+
+    return this.http
+      .get<ApiResponse<Proveedor>>('/api/OrdenDeCargaFason/ObtenerProveedor', { params: params, headers: this.headers })
       .pipe(timeoutWith(360000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
   }
 }

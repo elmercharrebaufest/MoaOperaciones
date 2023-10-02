@@ -20,7 +20,6 @@ namespace SustitucionMOAUtils.Services
 {
     public class OrdenDeCargaFasonService : OrdenDeCargaServiceBase, IOrdenDeCargaFasonService
     {
-        private readonly IRepositorio repositorio;
 
         private readonly IEnumerable<string> codigosRetiroEnPatagonia = new string[] { "98855", "99098" };
 
@@ -29,9 +28,8 @@ namespace SustitucionMOAUtils.Services
             IScatoConsumer scatoConsumer,
             IEmailFasonService emailFasonService,
             IScatoRepositorioClient scatoRepositorioClient
-            ) : base(ordenCargaConsumer, scatoConsumer, scatoRepositorioClient, emailFasonService)
+            ) : base(ordenCargaConsumer, scatoConsumer, scatoRepositorioClient, emailFasonService, repositorio)
         {
-            this.repositorio = repositorio;
         }
 
         public ListarOrdenDeCargaFasonResponse Listar(ListarOrdenDeCargaFasonRequest request)
@@ -113,7 +111,7 @@ namespace SustitucionMOAUtils.Services
             ActualizarOrdenDeCarga(orden);
 
             repositorio.GuardarCambios();
-            return OrdenDeCargaFasonDto(orden,usuario);
+            return OrdenDeCargaFasonDto(orden, usuario);
         }
 
         public List<OrdenDeCargaFason> VerificarVencimientoOrdenDeCargaFason()

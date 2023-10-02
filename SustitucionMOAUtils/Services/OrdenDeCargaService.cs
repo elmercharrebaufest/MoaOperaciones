@@ -33,7 +33,6 @@ namespace SustitucionMOAUtils.Services
 {
     public class OrdenDeCargaService : OrdenDeCargaServiceBase, IOrdenDeCargaService
     {
-        protected readonly IRepositorio repositorio;
         readonly FeriadoService _feriadoService = new FeriadoService();
         protected readonly IFeriadoService feriadoService;
         protected readonly IEmailFasService emailFasService;
@@ -91,9 +90,8 @@ namespace SustitucionMOAUtils.Services
             IFacturaAnticipadaService facturaAnticipadaService,
             IKgDisponiblesFasService kgDisponiblesFasService,
             ICNRTClient cNRTClient
-            ) : base(ordenCargaConsumer, scatoConsumer, scatoRepositorioClient, emailFasService)
+            ) : base(ordenCargaConsumer, scatoConsumer, scatoRepositorioClient, emailFasService, repositorio)
         {
-            this.repositorio = repositorio;
             this.feriadoService = feriadoService;
             _usuarioAutomaticoSAP = ConfigurationManager.AppSettings["UsuarioAutomaticoSAP"];
             this.emailFasService = emailFasService;
@@ -1350,16 +1348,6 @@ namespace SustitucionMOAUtils.Services
             {
                 throw new WSCustomException(ErrorMsg.ErrorWS, e);
             }
-        }
-
-        public ProveedorDto ObtenerProveedor(int idProveedor)
-        {
-            var proveedor = repositorio.Obtener<Proveedor>(idProveedor);
-            if (proveedor == null)
-            {
-                throw new Exception("No se encontró el proveedor con ID " + idProveedor);
-            }
-            return new ProveedorDto(proveedor);
         }
 
         private List<ProveedorDto> GetClientesFromVisualizarClienteProducto(OrdenCargaVisualizarClienteWSMOAResponse ordenCargaVisualizarClienteWSMOAResponse, VisualizarClienteRequest request)
@@ -2649,7 +2637,7 @@ namespace SustitucionMOAUtils.Services
         public bool ValidarOrdenActivaScato(string ordenId)
         {
             var orden = this.repositorio.Obtener<OrdenDeCarga>(o => o.Id.ToString() == ordenId);
-            if(orden == null)
+            if (orden == null)
                 return false;
             if (string.IsNullOrEmpty(orden.NumeroEntrega))
                 return false;

@@ -1,6 +1,8 @@
 ﻿using SustitucionMOAFotmatter;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto.OrdenDeCarga;
+using SustitucionMOAModel.Dto;
+using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums.MoaWS.OrdenCargaWS;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
@@ -10,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using ScatoRepo = SustitucionMOAModel.Models.WebApiMap.ScatoRepositorio;
+using SustitucionMOARepositorio;
 
 namespace SustitucionMOAUtils.Services
 {
@@ -18,6 +21,7 @@ namespace SustitucionMOAUtils.Services
         protected readonly IOrdenCargaConsumerMOA ordenCargaConsumer;
         protected readonly IScatoConsumer scatoConsumer;
         protected readonly IScatoRepositorioClient scatoRepositorioClient;
+        protected readonly IRepositorio repositorio;
         private readonly IEmailOrdenesCargaServiceBase emailService;
 
 
@@ -25,12 +29,14 @@ namespace SustitucionMOAUtils.Services
             IOrdenCargaConsumerMOA ordenCargaConsumer,
             IScatoConsumer scatoConsumer,
             IScatoRepositorioClient scatoRepositorioClient,
-            IEmailOrdenesCargaServiceBase emailService)
+            IEmailOrdenesCargaServiceBase emailService,
+            IRepositorio repositorio)
         {
             this.scatoConsumer = scatoConsumer;
             this.ordenCargaConsumer = ordenCargaConsumer;
             this.scatoRepositorioClient = scatoRepositorioClient;
             this.emailService = emailService;
+            this.repositorio = repositorio;
         }
 
         public ValidarCuitExisteScatoResponse ValidarCuitExisteScato(string cuit)
@@ -203,6 +209,16 @@ namespace SustitucionMOAUtils.Services
         public bool ValidarCuitTransporteDigito(string cuitTransporte)
         {
             return ValidarCuitTransporte(cuitTransporte).Item1;
+        }
+
+        public ProveedorDto ObtenerProveedor(int idProveedor)
+        {
+            var proveedor = repositorio.Obtener<Proveedor>(idProveedor);
+            if (proveedor == null)
+            {
+                throw new Exception("No se encontró el proveedor con ID " + idProveedor);
+            }
+            return new ProveedorDto(proveedor);
         }
     }
 }

@@ -75,7 +75,6 @@ export class OrdenesDeCargaFasonAltaComponent
 
     esAdmin: boolean = this.isAuthorized(Permiso.FasonVerOrdenesDeCargaAdmin);
     modificaFleteMOA: boolean = this.isAuthorized(Permiso.FleteMOA);
-    modificaReventa = this.isAuthorized(Permiso.FasonModificarCampoReventa);
 
     ordenDeCargaFason: OrdenDeCargaFasonDto = new OrdenDeCargaFasonDto();
     ordenDeCargaFasonId: number = 0;
@@ -116,9 +115,8 @@ export class OrdenesDeCargaFasonAltaComponent
                 this.CodigoCorredor = sessionStorage.getItem("proveedor");
                 this.cargarClientes(this.CodigoCorredor);
             } else {
-                if (this.esCliente()) { //sessionStorage.getItem("tipoUsuario") == "CLI") {
-                    this.clienteCodigo = sessionStorage.getItem("proveedor");
-                    this.clienteCUIT = sessionStorage.getItem("cuit");
+                if (this.esCliente()) {
+                    this.cargarClienteDirecto(parseInt(sessionStorage.getItem("proveedorId") || ""))
                 }
             }
         }
@@ -430,7 +428,7 @@ export class OrdenesDeCargaFasonAltaComponent
     }
 
     obtenerProductos = () => {
-        this.subscription = this.service.getMateriales().subscribe(
+        this.service.getMateriales().subscribe(
             (result) => {
                 this.listaProductos = result.data;
             },
@@ -620,9 +618,6 @@ export class OrdenesDeCargaFasonAltaComponent
         this.ordenDeCargaFason.ProductoSeleccionado = value;
         this.ordenDeCargaFason.Producto_Id = value.MaterialId;
         this.validaCPEDG = this.ordenDeCargaFason.ProductoSeleccionado.ValidaSisaRuca;
-        if (!this.ordenDeCargaFasonId) {
-            this.ordenDeCargaFason.Reventa = this.modificaReventa && this.validaCPEDG && !this.ordenDeCargaFason.Reventa
-        }
 
         if (!this.validaCPEDG)
             this.setearDefaultEnCPEDG();
@@ -880,6 +875,16 @@ export class OrdenesDeCargaFasonAltaComponent
             if (!data && data != null) {
                 this.mensajesOrdenDeCargaFason[campo] = "CUIL Chofer inválido - Revisar valor ingresado";
                 this.floatMsgService.setInfoMsg("CUIL Chofer inválido - Revisar valor ingresado");
+            }
+        });
+    }
+    cargarClienteDirecto(idCliente: Number) {
+        this.service.obtenerProveedor(idCliente).subscribe(resp => {
+            let proveedor = this.manejarErroresApiResponse(resp);
+            if (proveedor) {
+                this.clienteSeleccionado = proveedor;
+                this.clienteCodigo = proveedor.CodigoProveedor;
+                this.ordenDeCargaFason.CUITCliente = this.clienteSeleccionado.CUIT;
             }
         });
     }

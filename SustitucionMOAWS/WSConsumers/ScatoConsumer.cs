@@ -118,7 +118,7 @@ namespace SustitucionMOAWS.WSConsumers
             try
             {
                 cuitConGuiones = DataFormatter.CuitConGuion(cuit);
-                Log.Debug("Scato ObtenerClientesPorCuit con CUIT " + cuitConGuiones);
+                Log.Info("Scato ObtenerClientesPorCuit con CUIT " + cuitConGuiones);
                 var clientes = service.ListarClientesPorCuit(cuitConGuiones);
                 return clientes;
             }
@@ -139,7 +139,7 @@ namespace SustitucionMOAWS.WSConsumers
 
                 Log.Info(string.Format("ScatoConsumer.ObtenerProveedorPorCuit. cuit: {0}, cuitGuiones: {1}, proveedor: {2}",
                     cuit, cuitGuiones, proveedor.ToJson()));
-                
+
                 return proveedor;
             }
             catch (Exception ex)

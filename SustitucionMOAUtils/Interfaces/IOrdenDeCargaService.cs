@@ -33,8 +33,6 @@ namespace SustitucionMOAUtils.Interfaces
         OrdenDeCargaDto ObtenerPatentes(OrdenDeCarga orden, string mailUsuario);
         VisualizarClienteResponse VisualizarCliente(VisualizarClienteRequest request);
 
-        ProveedorDto ObtenerProveedor(int idProveedor);
-
         VisualizarProductoResponse VisualizarProducto(VisualizarProductoRequest request);
         ValidarCorredorClienteContratoProductoResponse ValidarCorredorClienteContratoProducto(ValidarCorredorClienteContratoProductoRequest request);
         string NotificarVencimientoOrdenCarga(int ordenId, string mailUsuario);
@@ -57,7 +55,6 @@ namespace SustitucionMOAUtils.Interfaces
         List<AutoCompleteDropdownElement> ObtenerCuitsTransporte(OrdenDeCarga ordenDeCarga, string mailUsuario);
         bool ValidarOrdenActivaScato(string ordenId);
         Resultado VerificarCuitsTerceros(int ordenId, string usuarioEmail);
-
         ValidarCamionResponse ValidarCamion(string patenteChasis, string patenteAcoplado);
 
         List<ClienteSAPResponse> GetClientesVigentesSAP(string fechaIni, string fechaFin);
