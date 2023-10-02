@@ -27,6 +27,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading;
 using SustitucionMOAWS.ResponseHandler.OrdenCarga;
+using CNRTModel = SustitucionMOAModel.Models.WebApiMap.CNRT;
 
 namespace SustitucionMOAUtils.Services
 {
@@ -39,6 +40,7 @@ namespace SustitucionMOAUtils.Services
 
         protected readonly IFacturaAnticipadaService _facturaAnticipadaService;
         protected readonly IKgDisponiblesFasService _kgDisponiblesFasService;
+        protected readonly ICNRTClient cNRTClient;
 
         private readonly string _usuarioAutomaticoSAP;
 
@@ -87,7 +89,8 @@ namespace SustitucionMOAUtils.Services
             IScatoConsumer scatoConsumer,
             IEmailFasService emailFasService,
             IFacturaAnticipadaService facturaAnticipadaService,
-            IKgDisponiblesFasService kgDisponiblesFasService
+            IKgDisponiblesFasService kgDisponiblesFasService,
+            ICNRTClient cNRTClient
             ) : base(ordenCargaConsumer, scatoConsumer, scatoRepositorioClient, emailFasService)
         {
             this.repositorio = repositorio;
@@ -96,6 +99,7 @@ namespace SustitucionMOAUtils.Services
             this.emailFasService = emailFasService;
             _facturaAnticipadaService = facturaAnticipadaService;
             _kgDisponiblesFasService = kgDisponiblesFasService;
+            this.cNRTClient = cNRTClient;
         }
 
         public Resultado Agregar(OrdenDeCarga ordenDeCarga, string mailUsuario)
@@ -2642,12 +2646,15 @@ namespace SustitucionMOAUtils.Services
             return cuits.Distinct().ToList();
         }
 
-        public bool ValidarOrdenActivaScato(string nroEntrega)
+        public bool ValidarOrdenActivaScato(string ordenId)
         {
-            if (nroEntrega == null || nroEntrega.Equals("-"))
+            var orden = this.repositorio.Obtener<OrdenDeCarga>(o => o.Id.ToString() == ordenId);
+            if(orden == null)
                 return false;
-            Log.Info("Obteniendo estado de la orden en Scato con nro Entrega: " + nroEntrega);
-            var result = this.scatoConsumer.ObtenerRecorridoNoRechazadoPorNumeroDocumento(nroEntrega).FirstOrDefault();
+            if (string.IsNullOrEmpty(orden.NumeroEntrega))
+                return false;
+            Log.Info($"Obteniendo estado de la orden {orden.Id} en Scato con nro Entrega: " + orden.NumeroEntrega);
+            var result = this.scatoConsumer.ObtenerRecorridoNoRechazadoPorNumeroDocumento(orden.NumeroEntrega).FirstOrDefault();
             if (result == null)
                 return false;
             return result.Terminado != true;
@@ -2758,6 +2765,47 @@ namespace SustitucionMOAUtils.Services
             repositorio.GuardarCambios();
 
             return new Resultado { Mensaje = resultado };
+        }
+
+        public ValidarCamionResponse ValidarCamion(string patenteChasis, string patenteAcoplado)
+        {
+            try
+            {
+                var cnrtResponse = cNRTClient.ObtenerEquipos(patenteChasis, patenteAcoplado);
+                var dominios = cnrtResponse.Data.Dominios;
+
+                if (dominios == null || !dominios.Any())
+                {
+                    return new ValidarCamionResponse { ExisteCamion = false };
+                }
+
+                var tipoVehiculo = cnrtResponse.TipoVehiculoCNRTSegunCategoriaEscalado;
+
+                if (dominios.Any(d => d.Rto.CantEjes <= 0) && (
+                        tipoVehiculo == null ||
+                        tipoVehiculo == CNRTModel.TipoVehiculoCNRT.CamionBitren))
+                {
+                    return new ValidarCamionResponse { ExisteCamion = false };
+                }
+                else
+                {
+                    return new ValidarCamionResponse
+                    {
+                        ExisteCamion = true,
+                        EsCamionEscalable = (
+                            tipoVehiculo == CNRTModel.TipoVehiculoCNRT.CamionC ||
+                            tipoVehiculo == CNRTModel.TipoVehiculoCNRT.CamionD ||
+                            tipoVehiculo == CNRTModel.TipoVehiculoCNRT.CamionE)
+                    };
+                }
+            }
+            catch (InfoCustomException ice) { throw ice; }
+            catch (ValidationCustomException vce) { throw vce; }
+            catch (Exception ex)
+            {
+                Log.Error($"Error al validar camión con patentes: {patenteChasis} y {patenteAcoplado}.", ex);
+                throw;
+            }
         }
 
         private void ValidarExistenciaCuitsTerceros(OrdenDeCarga orden)

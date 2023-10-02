@@ -202,6 +202,9 @@ namespace SustitucionMOA.App_Start
             kernel.Bind<IScatoRepositorioClient>().To(typeof(ScatoRepositorioClient)).InSingletonScope();
             kernel.Bind<IServicioRepositorio>().To(typeof(ServicioRepositorioClient)).InScope(ctx => OperationContext.Current);
 
+            // CNRT WebApi
+            kernel.Bind<ICNRTClient>().To(typeof(CNRTClient)).InSingletonScope();
+
             kernel.Bind<DbContext>().To<MOAOperacionesDbContext>().InTransientScope();
             kernel.Bind<IRepositorio>().To<RepositorioEF>().InTransientScope();
             kernel.Bind<ICache, Cache>().To<Cache>().InSingletonScope();

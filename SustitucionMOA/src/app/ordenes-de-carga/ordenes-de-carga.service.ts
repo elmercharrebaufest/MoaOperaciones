@@ -516,9 +516,9 @@ export class OrdenesDeCargaService extends OrdenesBaseService {
             .post('/api/OrdenDeCarga/ObtenerCuitsTransporte', payload);
     }
 
-    public validarOrdenActivaScato(cuitChofer: string): Observable<ApiResponse<boolean>> {
+    public validarOrdenActivaScato(ordenId: string): Observable<ApiResponse<boolean>> {
         let params: HttpParams = new HttpParams()
-            .append("cuitChofer", cuitChofer);
+            .append("ordenId", ordenId);
 
         return this.http
             .get<ApiResponse<boolean>>(

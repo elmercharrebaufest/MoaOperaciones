@@ -58,15 +58,16 @@ namespace SustitucionMOAWS.Logger
             }
         }
 
-        public static void Debug(string mensaje)
+        public static void Error(string message)
         {
             try
             {
-                DefaultLogger.Debug(mensaje);
+                DefaultLogger.Error(message);
             }
             catch (Exception e)
             {
                 Console.WriteLine("ERROR en LogService:" + e.Message);
+                Console.WriteLine("ERROR heredado:" + message);
             }
         }
 

@@ -21,16 +21,15 @@ import { Planta } from '../../common/models/ordenes-de-carga/planta';
 import { Domicilio } from '../../common/models/ordenes-de-carga/domicilio';
 import { debounceTime, finalize, take } from 'rxjs/operators';
 import { ApiResponse } from '../../common/models/response';
-import { Subject, Subscription, forkJoin } from 'rxjs';
-import { Permiso } from '../../common/enums/Permisos';
 import { Factura, newFactura } from '../../common/models/ordenes-de-carga/Factura';
 import { IOrdenesBaseComponent } from '../../common/base-components/ordenes-base-component';
 import { EstadoOrdenDeCarga } from '../../common/models/ordenes-de-carga/estadoOrdenDeCarga';
+import { Subject, Subscription, forkJoin } from 'rxjs';
 import { MessageService } from 'primeng/api';
 import { Checkbox } from 'primeng/checkbox';
 import { MSG_ALERTA_NO_ESCALABLE } from '../../common/models/ordenes-de-carga/ValidarCamionResponse';
+import { Permiso } from '../../common/enums/Permisos';
 
-declare var $: any;
 @Component({
     selector: 'app-ordenes-de-carga.alta',
     templateUrl: './ordenes-de-carga.alta.component.html',
@@ -45,6 +44,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
 
     @ViewChild(SpinnerComponent)
     protected spinnerComponent: SpinnerComponent;
+
     @ViewChild('messages')
     private messagesContainer?: ElementRef<HTMLDivElement>;
 
@@ -91,7 +91,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
     esCorredor: boolean = sessionStorage.getItem("tipoUsuario") === "CORR";
     esComercial: boolean = this.isAuthorized(Permiso.FasVerOrdenesComerciales);
     esAdmin: boolean = this.isAuthorized(Permiso.FasVerTodasOrdenes);
-    modificaReventa = this.isAuthorized(Permiso.FasModificarCampoReventa);
+    esInterno: boolean = this.esComercial || this.esCorredor;
     listaClientes: any[];
     noEditarCliente: boolean = false;
     estadosNoPuedeEditarCuitsTercero = [
@@ -116,8 +116,13 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
     cuilsChofer: any;
     cuitsTransporte: any;
 
+    loadingCorredores: boolean = false;
+    loadingClientes: boolean = false;
+
     intermediarioFleteCuitFormatoValido: boolean = true;
     escalableCNRT?: boolean;
+    ordenActivaScato: boolean = false;
+    mensajeValidacionScato: string = "";
 
     constructor(protected service: OrdenesDeCargaService,
         protected usuarioService: UsuarioService,
@@ -285,8 +290,8 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
                 return false;
             }
         }
-        else{
-            if(!this.ordenDeCarga.DestinoMercaderia || this.ordenDeCarga.DestinoMercaderia.length < 5){
+        else {
+            if (!this.ordenDeCarga.DestinoMercaderia || this.ordenDeCarga.DestinoMercaderia.length < 5) {
                 this.mensajeComponent.setInfoMsg("Ingrese un destino de mercadería.");
                 return false;
             }
@@ -372,91 +377,110 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
             return;
         }
         this.mensajeComponent.setMsgsEmpty();
-        this.spinnerComponent.showIt();
         this.unsubscribe();
-        this.blockUI.start('Grabando...');
+
         try {
             if (this.ordenDeCargaId > 0) {
-                this.subscription = this.service
-                    .editar(this.ordenDeCarga).pipe(take(1))
-                    .subscribe(
-                        (result) => {
-                            this.spinnerComponent.hideIt();
-                            this.blockUI.stop();
-                            if (result.logout == true) {
-                                this.sessionDataService.logout();
-                            } else if (result.error != undefined && result.error != "") {
-                                console.error(result.error);
-                                this.mensajeComponent.setErrorMsg(result.error);
-                            } else if (result.info != undefined) {
-                                console.info(result.info);
-                                this.mensajeComponent.setInfoMsg(result.info);
-                            } else if (result.data.error != undefined && result.data.error != "") {
-                                console.error(result.data.error);
-                                this.mensajeComponent.setErrorMsg(result.data.error);
-                            } else if (result.data.info != undefined) {
-                                console.info(result.data.info);
-                                this.mensajeComponent.setInfoMsg(result.data.info);
-                            } else {
-                                this.mensajeComponent.setMsgsEmpty();
-                                this.mensajeSuccess = result.data.Mensaje;
-                                this.ordenDeCargaId = result.data.IdEntidad;
-
-                                this.gestionarAltasCuitTerceros(this.ordenDeCargaId.toString());
-
-                                document.getElementById("openModalNotificacion")
-                                    .click();
-                            }
-                        },
-                        (error) => {
-                            console.error(error);
-                            this.spinnerComponent.hideIt();
-                            this.mensajeComponent.setErrorMsg(error.message);
-                            this.blockUI.stop();
-                        }
-                    );
+                if (this.esInterno) {
+                    this.verificarOrdenActivaScato(this.ordenDeCargaId.toString());
+                    this.abrirModalEdicionInterno();
+                } else {
+                    this.editarOrden();
+                }
             } else {
-                this.subscription = this.service
-                    .agregar(this.ordenDeCarga).pipe(take(1))
-                    .subscribe(
-                        (result) => {
-                            this.spinnerComponent.hideIt();
-                            this.blockUI.stop();
-                            if (result.logout == true) {
-                                this.sessionDataService.logout();
-                            } else if (result.error != undefined && result.error != "") {
-                                console.error(result.error);
-                                this.mensajeComponent.setErrorMsg(result.error);
-                            } else if (result.info != undefined) {
-                                console.info(result.info);
-                                this.mensajeComponent.setInfoMsg(result.info);
-                            } else if (result.data.error != undefined && result.data.error != "") {
-                                console.error(result.error);
-                                this.mensajeComponent.setErrorMsg(result.data.error);
-                            } else if (result.data.info != undefined) {
-                                console.error(result.error);
-                                this.mensajeComponent.setInfoMsg(result.data.info);
-                            } else {
-                                this.mensajeComponent.setMsgsEmpty();
-                                this.mensajeSuccess = result.data.Mensaje;
-                                this.ordenDeCargaId = result.data.IdEntidad;
-                                this.gestionarAltasCuitTerceros(this.ordenDeCargaId.toString());
-                                document.getElementById("openModalNotificacion")
-                                    .click();
-                            }
-                        },
-                        (error) => {
-                            console.error(error);
-                            this.spinnerComponent.hideIt();
-                            this.mensajeComponent.setErrorMsg(error.message);
-                            this.blockUI.stop();
-                        }
-                    );
+                this.agregarOrden();
             }
         } catch (e) {
             console.error(e);
             this.mensajeComponent.setErrorMsg(e);
         }
+    }
+
+    agregarOrden() {
+        this.spinnerComponent.showIt();
+        this.blockUI.start('Grabando...');
+        this.subscription = this.service
+            .agregar(this.ordenDeCarga).pipe(take(1))
+            .subscribe(
+                (result) => {
+                    this.spinnerComponent.hideIt();
+                    this.blockUI.stop();
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        console.error(result.error);
+                        this.mensajeComponent.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        console.info(result.info);
+                        this.mensajeComponent.setInfoMsg(result.info);
+                    } else if (result.data.error != undefined && result.data.error != "") {
+                        console.error(result.error);
+                        this.mensajeComponent.setErrorMsg(result.data.error);
+                    } else if (result.data.info != undefined) {
+                        console.error(result.error);
+                        this.mensajeComponent.setInfoMsg(result.data.info);
+                    } else {
+                        this.mensajeComponent.setMsgsEmpty();
+                        this.mensajeSuccess = result.data.Mensaje;
+                        this.ordenDeCargaId = result.data.IdEntidad;
+                        this.gestionarAltasCuitTerceros(this.ordenDeCargaId.toString());
+                        document.getElementById("openModalNotificacion")
+                            .click();
+                    }
+                },
+                (error) => {
+                    console.error(error);
+                    this.spinnerComponent.hideIt();
+                    this.mensajeComponent.setErrorMsg(error.message);
+                    this.blockUI.stop();
+                }
+            );
+    }
+
+    editarOrden() {
+
+        document.getElementById("closemodalEditarOrden").click();
+
+        this.spinnerComponent.showIt();
+        this.blockUI.start('Grabando...');
+        this.subscription = this.service
+            .editar(this.ordenDeCarga).pipe(take(1))
+            .subscribe(
+                (result) => {
+                    this.spinnerComponent.hideIt();
+                    this.blockUI.stop();
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        console.error(result.error);
+                        this.mensajeComponent.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        console.info(result.info);
+                        this.mensajeComponent.setInfoMsg(result.info);
+                    } else if (result.data.error != undefined && result.data.error != "") {
+                        console.error(result.data.error);
+                        this.mensajeComponent.setErrorMsg(result.data.error);
+                    } else if (result.data.info != undefined) {
+                        console.info(result.data.info);
+                        this.mensajeComponent.setInfoMsg(result.data.info);
+                    } else {
+                        this.mensajeComponent.setMsgsEmpty();
+                        this.mensajeSuccess = result.data.Mensaje;
+                        this.ordenDeCargaId = result.data.IdEntidad;
+
+                        this.gestionarAltasCuitTerceros(this.ordenDeCargaId.toString());
+
+                        document.getElementById("openModalNotificacion")
+                            .click();
+                    }
+                },
+                (error) => {
+                    console.error(error);
+                    this.spinnerComponent.hideIt();
+                    this.mensajeComponent.setErrorMsg(error.message);
+                    this.blockUI.stop();
+                }
+            );
     }
 
     aceptar() {
@@ -641,6 +665,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
                 }
                 this.clienteSeleccionado = null;
                 this.mensajeComponent.setMsgsEmpty();
+                this.loadingClientes = true;
                 this.seleccionarProveedorService.getAllClientsByType(5).subscribe(
                     (result) => {
                         if (result.logout == true) {
@@ -657,16 +682,19 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
                                 this.clienteSeleccionado = this.listaClientes.find(x => x.CUIT == this.clienteCUIT);
                             }
                         }
+                        this.loadingClientes = false;
                     },
                     (error) => {
                         console.error(' onCorredorFocusOut: ', error.message);
                         this.mensajeComponent.setErrorMsg(error.message);
+                        this.loadingClientes = false;
                     }
                 );
             }
         } catch (err) {
             console.error(' onCorredorFocusOut: ', err);
             this.mensajeComponent.setErrorMsg(err);
+            this.loadingClientes = false;
         }
     }
 
@@ -674,7 +702,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
         this.blockUI.start('');
         this.mensajeComponent.setMsgsEmpty();
         try {
-
+            this.loadingClientes = true;
             this.service.visualizarCliente(codigoCorredor, this.desde, this.hasta).subscribe(
                 result => {
                     if (result.logout == true) {
@@ -698,16 +726,19 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
                         }
                         this.blockUI.stop();
                     }
+                    this.loadingClientes = false;
                 },
                 error => {
                     console.error(' cargarClientes: ', error.message);
                     this.mensajeComponent.setErrorMsg(error.message);
+                    this.loadingClientes = false;
                     this.blockUI.stop();
                 }
             );
         } catch (err) {
             console.error(' cargarClientes: ', err);
             this.mensajeComponent.setErrorMsg(err);
+            this.loadingClientes = false;
             this.blockUI.stop();
         }
     }
@@ -913,6 +944,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
     obtenerCorredores() {
         //this.blockUI.start('');
         this.mensajeComponent.setMsgsEmpty();
+        this.loadingCorredores = true;
         try {
 
             this.seleccionarProveedorService.getVendedores("", "", 4).subscribe(
@@ -939,10 +971,12 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
                         }
                         //this.blockUI.stop();
                     }
+                    this.loadingCorredores = false;
                 },
                 error => {
                     console.error(' cargarClientes: ', error.message);
                     this.mensajeComponent.setErrorMsg(error.message);
+                    this.loadingCorredores = false;
                     //this.blockUI.stop();
                 }
             );
@@ -1497,5 +1531,38 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
     }
     public extraOnDestroy(): void {
         this.subscriptions.unsubscribe();
+    }
+
+    verificarOrdenActivaScato(ordenId: string) {
+        try {
+            this.service.validarOrdenActivaScato(ordenId).pipe(
+                finalize(() => { })
+            ).subscribe(
+                result => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                        return;
+                    } else if ((result.error != undefined && result.error != "") || result.info != undefined) {
+                        this.mensajeValidacionScato = "No se pudo validar si la orden esta activa en Scato."
+                    } else {
+                        this.ordenActivaScato = result.data;
+                        if (this.ordenActivaScato) {
+                            this.mensajeValidacionScato = "Actualmente la orden se encuentra activa en Scato."
+                        } else {
+                            this.mensajeValidacionScato = undefined;
+                        }
+                    }
+                },
+                error => {
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+            );
+        } catch (e) {
+            this.mensajeValidacionScato = "No se pudo validar si la orden esta activa en Scato."
+        }
+    }
+
+    abrirModalEdicionInterno() {
+        document.getElementById("openEdicionOrdenInterno").click();
     }
 }

@@ -1089,12 +1089,12 @@ namespace SustitucionMOA.Controllers
 
 
         [HttpGet]
-        public ActionResult ValidarOrdenActivaScato(string cuitChofer)
+        public ActionResult ValidarOrdenActivaScato(string ordenId)
         {
             var response = new SustitucionMOAApiResponse<bool>();
             try
             {
-                response.Data = ordenDeCargaService.ValidarOrdenActivaScato(cuitChofer);
+                response.Data = ordenDeCargaService.ValidarOrdenActivaScato(ordenId);
             }
             catch (InfoCustomException ice)
             {
@@ -1140,7 +1140,7 @@ namespace SustitucionMOA.Controllers
             var response = new SustitucionMOAApiResponse<ValidarCamionResponse>();
             try
             {
-                response.Data = new ValidarCamionResponse { ExisteCamion = true, EsCamionEscalable = true };
+                response.Data = ordenDeCargaService.ValidarCamion(patenteChasis, patenteAcoplado);
             }
             catch (InfoCustomException ice)
             {

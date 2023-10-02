@@ -279,6 +279,11 @@
     <Compile Include="Models\DataAgro\ContratoAPrecio.cs" />
     <Compile Include="Models\DataAgro\RptCartaDePresentacionInfo.cs" />
     <Compile Include="Models\ViewModel\ReclamoImpositivo.cs" />
+    <Compile Include="Models\WebApiMap\CNRT\Dominio.cs" />
+    <Compile Include="Models\WebApiMap\CNRT\Equipo.cs" />
+    <Compile Include="Models\WebApiMap\CNRT\EquiposResponse.cs" />
+    <Compile Include="Models\WebApiMap\CNRT\Rto.cs" />
+    <Compile Include="Models\WebApiMap\CNRT\Ruta.cs" />
     <Compile Include="Models\WebApiMap\ScatoRepositorio\Chofer.cs" />
     <Compile Include="Models\WebApiMap\ScatoRepositorio\CodigoMensajeObtenerChoferPorCuil.cs" />
     <Compile Include="Models\WebApiMap\ScatoRepositorio\Domicilio.cs" />
