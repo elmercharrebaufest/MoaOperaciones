@@ -1139,7 +1139,7 @@ namespace SustitucionMOA.Controllers
             var response = new SustitucionMOAApiResponse<ValidarCamionResponse>();
             try
             {
-                response.Data = new ValidarCamionResponse { ExisteCamion = true, EsCamionEscalable = true };
+                response.Data = ordenDeCargaService.ValidarCamion(patenteChasis, patenteAcoplado);
             }
             catch (InfoCustomException ice)
             {

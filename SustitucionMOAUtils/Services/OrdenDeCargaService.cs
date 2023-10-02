@@ -27,6 +27,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading;
 using SustitucionMOAWS.ResponseHandler.OrdenCarga;
+using CNRTModel = SustitucionMOAModel.Models.WebApiMap.CNRT;
 
 namespace SustitucionMOAUtils.Services
 {
@@ -41,6 +42,7 @@ namespace SustitucionMOAUtils.Services
         protected readonly IScatoRepositorioClient scatoRepositorioClient;
         protected readonly IFacturaAnticipadaService _facturaAnticipadaService;
         protected readonly IKgDisponiblesFasService _kgDisponiblesFasService;
+        protected readonly ICNRTClient cNRTClient;
 
         private readonly string _usuarioAutomaticoSAP;
 
@@ -89,7 +91,8 @@ namespace SustitucionMOAUtils.Services
             IScatoConsumer scatoConsumer,
             IEmailFasService emailFasService,
             IFacturaAnticipadaService facturaAnticipadaService,
-            IKgDisponiblesFasService kgDisponiblesFasService
+            IKgDisponiblesFasService kgDisponiblesFasService,
+            ICNRTClient cNRTClient
             )
         {
             this.repositorio = repositorio;
@@ -101,6 +104,7 @@ namespace SustitucionMOAUtils.Services
             this.emailFasService = emailFasService;
             _facturaAnticipadaService = facturaAnticipadaService;
             _kgDisponiblesFasService = kgDisponiblesFasService;
+            this.cNRTClient = cNRTClient;
         }
 
         public Resultado Agregar(OrdenDeCarga ordenDeCarga, string mailUsuario)
@@ -2942,6 +2946,47 @@ namespace SustitucionMOAUtils.Services
             repositorio.GuardarCambios();
 
             return new Resultado { Mensaje = resultado };
+        }
+
+        public ValidarCamionResponse ValidarCamion(string patenteChasis, string patenteAcoplado)
+        {
+            try
+            {
+                var cnrtResponse = cNRTClient.ObtenerEquipos(patenteChasis, patenteAcoplado);
+                var dominios = cnrtResponse.Data.Dominios;
+
+                if (dominios == null || !dominios.Any())
+                {
+                    return new ValidarCamionResponse { ExisteCamion = false };
+                }
+
+                var tipoVehiculo = cnrtResponse.TipoVehiculoCNRTSegunCategoriaEscalado;
+
+                if (dominios.Any(d => d.Rto.CantEjes <= 0) && (
+                        tipoVehiculo == null ||
+                        tipoVehiculo == CNRTModel.TipoVehiculoCNRT.CamionBitren))
+                {
+                    return new ValidarCamionResponse { ExisteCamion = false };
+                }
+                else
+                {
+                    return new ValidarCamionResponse
+                    {
+                        ExisteCamion = true,
+                        EsCamionEscalable = (
+                            tipoVehiculo == CNRTModel.TipoVehiculoCNRT.CamionC ||
+                            tipoVehiculo == CNRTModel.TipoVehiculoCNRT.CamionD ||
+                            tipoVehiculo == CNRTModel.TipoVehiculoCNRT.CamionE)
+                    };
+                }
+            }
+            catch (InfoCustomException ice) { throw ice; }
+            catch (ValidationCustomException vce) { throw vce; }
+            catch (Exception ex)
+            {
+                Log.Error($"Error al validar camión con patentes: {patenteChasis} y {patenteAcoplado}.", ex);
+                throw;
+            }
         }
 
         private void ValidarExistenciaCuitsTerceros(OrdenDeCarga orden)

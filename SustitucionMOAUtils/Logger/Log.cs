@@ -45,6 +45,20 @@ namespace SustitucionMOAUtils.Logger
                 Console.WriteLine("ERROR heredado:" + exception.ToString());
             }
         }
+
+        public static void Error(string mensaje, Exception excepcion)
+        {
+            try
+            {
+                DefaultLogger.Error(excepcion, mensaje);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("ERROR en LogService:" + e.Message);
+                Console.WriteLine("ERROR heredado:" + excepcion.ToString());
+            }
+        }
+
         public static void Debug(string controller, string method, string valores)
         {
             try
