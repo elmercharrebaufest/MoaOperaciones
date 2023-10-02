@@ -97,8 +97,8 @@
               <td *ngIf="esAdmin">{{ordenDeCargaFason.RazonSocialCorredor}}</td>
               <td *ngIf="esAdmin || isCorredor()">{{ordenDeCargaFason.RazonSocialCliente}}</td>
               <td>{{ordenDeCargaFason.DescripcionEstado}}</td>
-              <td>{{ordenDeCargaFason.FechaCreacion}}</td>
-              <td>{{ordenDeCargaFason.FechaRetiro}}</td>
+              <td>{{ordenDeCargaFason.FechaCreacion || ordenDeCargaFason.fechaCreacion}}</td>
+              <td>{{ordenDeCargaFason.FechaRetiro || ordenDeCargaFason.fechaRetiro}}</td>
               <td>{{ordenDeCargaFason.LocalidadDescripcion}}</td>
               <td>{{ordenDeCargaFason.Material}}</td>
               <td>{{ordenDeCargaFason.PatenteChasis}}

@@ -51,14 +51,11 @@
                                 </div>
                                 <div class="styled-select" style="overflow: initial;">
                                     <app-dropdown-input [options]="listaProductos" [filterKey]="'Descripcion'"
-                                        [valueKey]="'MaterialId'" (valueChange)="selectProducto($event)"
+                                        [valueKey]="'MaterialId'" (selectedChange)="selectProducto($event)"
                                         [placeholder]="'Seleccione un producto'"
-                                        [_selectedOption]="ordenDeCargaFason.ProductoSeleccionado">
+                                        [(selected)]="ordenDeCargaFason.ProductoSeleccionado">
                                         <ng-template let-option>
-                                            <p style="margin: 0px!important; font-size: small; font-weight: 400!important;"
-                                                [ngClass]="{
-                                                'text-info':seRetiraEnPatagonia(option) && ordenDeCargaFason.Producto_Id != option.MaterialId
-                                            }">
+                                            <p class="option-label">
                                                 {{option.Descripcion}}</p>
                                         </ng-template>
                                     </app-dropdown-input>
@@ -84,6 +81,12 @@
                                             <input type="text" pInputText
                                                 [(ngModel)]="ordenDeCargaFason.CUITDestinatario" mask="00-00000000-0"
                                                 (change)="cuitDestinatarioChanged()">
+                                            <span
+                                                *ngIf="ordenDeCargaFason.CUITDestinatario != ordenDeCargaFason.CUITCliente.toString()"
+                                                class="pt-2 pointer pi pi-copy"
+                                                (click)="copiarCuitClienteEn('CUITDestinatario')"
+                                                [pTooltip]="ttCopiarCuit" style="font-size: 2.5rem"></span>
+
                                             <span class="ui-inputgroup-addon" *ngIf="validandoCuitDestinatario">
                                                 <p-progressSpinner
                                                     [style]="{width: '100%', height: '100%'}"></p-progressSpinner>
@@ -115,6 +118,11 @@
                                         <div class="ui-inputgroup">
                                             <input type="text" pInputText [(ngModel)]="ordenDeCargaFason.CUITDestino"
                                                 mask="00-00000000-0" (change)="cuitDestinoChanged()">
+                                            <span
+                                                *ngIf="ordenDeCargaFason.CUITDestino != ordenDeCargaFason.CUITCliente.toString()"
+                                                class="pt-2 pointer pi pi-copy"
+                                                (click)="copiarCuitClienteEn('CUITDestino')" [pTooltip]="ttCopiarCuit"
+                                                style="font-size: 2.5rem"></span>
                                             <span class="ui-inputgroup-addon" *ngIf="validandoCuitDestino">
                                                 <p-progressSpinner
                                                     [style]="{width: '100%', height: '100%'}"></p-progressSpinner>

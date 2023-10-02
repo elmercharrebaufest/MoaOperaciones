@@ -615,6 +615,8 @@ export class OrdenesDeCargaFasonAltaComponent
     }
 
     selectProducto(value: Material) {
+        if (!value)
+            return;
         this.ordenDeCargaFason.ProductoSeleccionado = value;
         this.ordenDeCargaFason.Producto_Id = value.MaterialId;
         this.validaCPEDG = this.ordenDeCargaFason.ProductoSeleccionado.ValidaSisaRuca;
@@ -713,6 +715,16 @@ export class OrdenesDeCargaFasonAltaComponent
             }
             this.mensajeComponent.setErrorMsg(cuitDestino + " no está habilitado en RUCA, no podrá cargar la orden hasta regularizar la situación")
             this.scrollAMensaje()
+        }
+    }
+    copiarCuitClienteEn(campo: "CUITDestinatario" | "CUITDestino") {
+        this.mensajesGestionCuit[campo] = undefined;
+        if (this.ordenDeCargaFason[campo] != this.clienteSeleccionado.CUIT) {
+            this.ordenDeCargaFason[campo] = this.clienteSeleccionado.CUIT;
+            if (campo === "CUITDestinatario")
+                this.cuitDestinatarioChanged();
+            else if (campo === "CUITDestino")
+                this.cuitDestinoChanged();
         }
     }
     resetearPlantasDomicilios() {

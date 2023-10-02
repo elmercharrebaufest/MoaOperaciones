@@ -18,3 +18,18 @@
 .bold {
   font-weight: bold !important;
 }
+
+.pt-2 {
+  padding-top: 0.5rem;
+}
+
+.pointer {
+  cursor: pointer;
+}
+
+.option-label {
+  font-family: 'Roboto Regular';
+  margin: 0px !important;
+  font-size: 15px;
+  font-weight: 400 !important;
+}

@@ -18,6 +18,7 @@ import { CalendarModule } from 'primeng/calendar';
 import { CheckboxModule } from 'primeng/checkbox';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { DialogModule } from 'primeng/dialog';
+import { TooltipModule } from 'primeng/tooltip';
 
 @NgModule({
   imports: [
@@ -36,7 +37,8 @@ import { DialogModule } from 'primeng/dialog';
     CalendarModule,
     CheckboxModule,
     ProgressSpinnerModule,
-    DialogModule
+    DialogModule,
+    TooltipModule
   ],
   declarations: [
     OrdenesDeCargaFasonAltaComponent,
