@@ -26,7 +26,7 @@ namespace SustitucionMOA.Jobs
         {
             try
             {
-                if (!repositorio.Obtener<HabilitacionJob>(a => a.Nombre == "AltaClienteSAP").Habilitado)
+                if (!repositorio.Obtener<HabilitacionJob>(a => a.Nombre == "AltaClienteSAPJob").Habilitado)
                     return;
 
                 DateTime fechaFin = DateTime.Today;
