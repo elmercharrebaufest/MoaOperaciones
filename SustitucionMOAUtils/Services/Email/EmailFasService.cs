@@ -229,7 +229,7 @@ namespace SustitucionMOAUtils.Services.Email
                     cambios.AppendLine($"<tr><td>{(nombreColumna)}</td><td>{cambio.Antes}</td><td>{cambio.Despues}</td><td>{cambio.FechaCambio}</td></tr>");
                 }
 
-                var cuerpo = string.Format(cuerpoTemplate, DateTime.Now, ordenDeCarga.Id, numeroEntregaLabel, numeroPedidoLabel, cambios);
+                var cuerpo = string.Format(cuerpoTemplate, DateTime.Now.ToString(), ordenDeCarga.Id, numeroEntregaLabel, numeroPedidoLabel, cambios);
                 var emailSenderData = new EmailSenderData()
                 {
                     Mails = destinatarios,
