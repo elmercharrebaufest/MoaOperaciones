@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-
-
-namespace SustitucionMOAModel.Dto
+﻿namespace SustitucionMOAModel.Dto
 {
     public class DatosUltimaSolpDto
     {
