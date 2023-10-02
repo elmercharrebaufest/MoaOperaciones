@@ -85,7 +85,7 @@ namespace SustitucionMOAExternalAPI.App_Start
         //{
         //    var currentAssembly = Assembly.GetExecutingAssembly();
 
-        //    // Obtén todas las clases en el ensamblado que terminen con "Service".
+        //    // Obtï¿½n todas las clases en el ensamblado que terminen con "Service".
         //    var implementationTypes = currentAssembly.GetTypes()
         //        .Where(type => type.IsClass && !type.IsAbstract)
         //        .Where(type => type.GetInterfaces().Any())
@@ -145,6 +145,7 @@ namespace SustitucionMOAExternalAPI.App_Start
             //kernel.Bind<IOrdenDeCargaFasonService>().To(typeof(OrdenDeCargaFasonService)).InScope(ctx => OperationContext.Current);
             //kernel.Bind<IEcheqService>().To(typeof(EcheqService)).InScope(ctx => OperationContext.Current);
             //kernel.Bind<IEmailFasService>().To(typeof(EmailFasService)).InScope(ctx => OperationContext.Current);
+            //kernel.Bind<IEmailFasonService>().To(typeof(EmailFasonService)).InScope(ctx => OperationContext.Current);
             //kernel.Bind<IHttpContextService>().To(typeof(HttpContextService)).InScope(ctx => OperationContext.Current);         
             //kernel.Bind<IEmailService>().To(typeof(EmailService)).InScope(ctx => OperationContext.Current);
 

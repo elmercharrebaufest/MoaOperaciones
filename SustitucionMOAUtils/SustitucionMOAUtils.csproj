@@ -167,7 +167,10 @@
     <Compile Include="Interfaces\IHttpContextService.cs" />
     <Compile Include="Interfaces\IFacturaAnticipadaService.cs" />
     <Compile Include="Interfaces\IKgDisponiblesFasService.cs" />
+    <Compile Include="Interfaces\IEmailFasonService.cs" />
+    <Compile Include="Interfaces\IEmailOrdenesCargaServiceBase.cs" />
     <Compile Include="Interfaces\IOrdenDeCargaEstadoService.cs" />
+    <Compile Include="Interfaces\IOrdenDeCargaServiceBase.cs" />
     <Compile Include="Interfaces\IOrdenesCargaApi.cs" />
     <Compile Include="Interfaces\IEcheqService.cs" />
     <Compile Include="Interfaces\IFeriadoService.cs" />
@@ -199,8 +202,11 @@
     <Compile Include="Services\AduanaService.cs" />
     <Compile Include="Services\AltaEmpresaNoGranosService.cs" />
     <Compile Include="Services\AplicacionCartaPorteService.cs" />
+    <Compile Include="Services\Email\EmailOrdenesCargaServiceBase.cs" />
+    <Compile Include="Services\Email\EmailFasonService.cs" />
     <Compile Include="Interfaces\IEmailService.cs" />
     <Compile Include="Services\KgDisponiblesFasService.cs" />
+    <Compile Include="Services\OrdenDeCargaServiceBase.cs" />
     <Compile Include="Services\OrdenDeCargaEstadoService.cs" />
     <Compile Include="Services\FacturaAnticipadaService.cs" />
     <Compile Include="Services\ComprasService.cs" />

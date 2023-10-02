@@ -22,11 +22,13 @@ import { Domicilio } from '../../common/models/ordenes-de-carga/domicilio';
 import { debounceTime, finalize, take } from 'rxjs/operators';
 import { ApiResponse } from '../../common/models/response';
 import { Factura, newFactura } from '../../common/models/ordenes-de-carga/Factura';
+import { IOrdenesBaseComponent } from '../../common/base-components/ordenes-base-component';
 import { EstadoOrdenDeCarga } from '../../common/models/ordenes-de-carga/estadoOrdenDeCarga';
 import { Subject, Subscription, forkJoin } from 'rxjs';
 import { MessageService } from 'primeng/api';
 import { Checkbox } from 'primeng/checkbox';
 import { MSG_ALERTA_NO_ESCALABLE } from '../../common/models/ordenes-de-carga/ValidarCamionResponse';
+import { Permiso } from '../../common/enums/Permisos';
 
 @Component({
     selector: 'app-ordenes-de-carga.alta',
@@ -34,7 +36,7 @@ import { MSG_ALERTA_NO_ESCALABLE } from '../../common/models/ordenes-de-carga/Va
     styleUrls: ['./ordenes-de-carga.alta.component.css'],
     providers: [SeleccionarProveedorService],
 })
-export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
+export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdenesBaseComponent {
     @BlockUI() blockUI: NgBlockUI;
     @ViewChild("escalableCheckbox") escalableCheckbox: Checkbox
     @ViewChild(MensajeComponent)
@@ -42,7 +44,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
 
     @ViewChild(SpinnerComponent)
     protected spinnerComponent: SpinnerComponent;
-    
+
     @ViewChild('messages')
     private messagesContainer?: ElementRef<HTMLDivElement>;
 
@@ -87,9 +89,9 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
     tipoContrato = TipoContrato;
     listaMateriales: Material[];
     esCorredor: boolean = sessionStorage.getItem("tipoUsuario") === "CORR";
-    esComercial: boolean = this.isAuthorized('VER ORDENES DE CARGA PARA COMERCIALES');
+    esComercial: boolean = this.isAuthorized(Permiso.FasVerOrdenesComerciales);
+    esAdmin: boolean = this.isAuthorized(Permiso.FasVerTodasOrdenes);
     esInterno: boolean = this.esComercial || this.esCorredor;
-    esAdmin: boolean = this.isAuthorized('VER TODAS ORDENES DE CARGA');
     listaClientes: any[];
     noEditarCliente: boolean = false;
     estadosNoPuedeEditarCuitsTercero = [
@@ -288,8 +290,8 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                 return false;
             }
         }
-        else{
-            if(!this.ordenDeCarga.DestinoMercaderia || this.ordenDeCarga.DestinoMercaderia.length < 5){
+        else {
+            if (!this.ordenDeCarga.DestinoMercaderia || this.ordenDeCarga.DestinoMercaderia.length < 5) {
                 this.mensajeComponent.setInfoMsg("Ingrese un destino de mercadería.");
                 return false;
             }
@@ -376,13 +378,13 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
         }
         this.mensajeComponent.setMsgsEmpty();
         this.unsubscribe();
-        
+
         try {
             if (this.ordenDeCargaId > 0) {
-                if(this.esInterno){
+                if (this.esInterno) {
                     this.verificarOrdenActivaScato(this.ordenDeCargaId.toString());
                     this.abrirModalEdicionInterno();
-                }else{
+                } else {
                     this.editarOrden();
                 }
             } else {
@@ -394,91 +396,91 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
         }
     }
 
-    agregarOrden(){
+    agregarOrden() {
         this.spinnerComponent.showIt();
         this.blockUI.start('Grabando...');
         this.subscription = this.service
-        .agregar(this.ordenDeCarga).pipe(take(1))
-        .subscribe(
-            (result) => {
-                this.spinnerComponent.hideIt();
-                this.blockUI.stop();
-                if (result.logout == true) {
-                    this.sessionDataService.logout();
-                } else if (result.error != undefined && result.error != "") {
-                    console.error(result.error);
-                    this.mensajeComponent.setErrorMsg(result.error);
-                } else if (result.info != undefined) {
-                    console.info(result.info);
-                    this.mensajeComponent.setInfoMsg(result.info);
-                } else if (result.data.error != undefined && result.data.error != "") {
-                    console.error(result.error);
-                    this.mensajeComponent.setErrorMsg(result.data.error);
-                } else if (result.data.info != undefined) {
-                    console.error(result.error);
-                    this.mensajeComponent.setInfoMsg(result.data.info);
-                } else {
-                    this.mensajeComponent.setMsgsEmpty();
-                    this.mensajeSuccess = result.data.Mensaje;
-                    this.ordenDeCargaId = result.data.IdEntidad;
-                    this.gestionarAltasCuitTerceros(this.ordenDeCargaId.toString());
-                    document.getElementById("openModalNotificacion")
-                        .click();
+            .agregar(this.ordenDeCarga).pipe(take(1))
+            .subscribe(
+                (result) => {
+                    this.spinnerComponent.hideIt();
+                    this.blockUI.stop();
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        console.error(result.error);
+                        this.mensajeComponent.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        console.info(result.info);
+                        this.mensajeComponent.setInfoMsg(result.info);
+                    } else if (result.data.error != undefined && result.data.error != "") {
+                        console.error(result.error);
+                        this.mensajeComponent.setErrorMsg(result.data.error);
+                    } else if (result.data.info != undefined) {
+                        console.error(result.error);
+                        this.mensajeComponent.setInfoMsg(result.data.info);
+                    } else {
+                        this.mensajeComponent.setMsgsEmpty();
+                        this.mensajeSuccess = result.data.Mensaje;
+                        this.ordenDeCargaId = result.data.IdEntidad;
+                        this.gestionarAltasCuitTerceros(this.ordenDeCargaId.toString());
+                        document.getElementById("openModalNotificacion")
+                            .click();
+                    }
+                },
+                (error) => {
+                    console.error(error);
+                    this.spinnerComponent.hideIt();
+                    this.mensajeComponent.setErrorMsg(error.message);
+                    this.blockUI.stop();
                 }
-            },
-            (error) => {
-                console.error(error);
-                this.spinnerComponent.hideIt();
-                this.mensajeComponent.setErrorMsg(error.message);
-                this.blockUI.stop();
-            }
-        );
+            );
     }
 
-    editarOrden(){
-        
+    editarOrden() {
+
         document.getElementById("closemodalEditarOrden").click();
-        
+
         this.spinnerComponent.showIt();
         this.blockUI.start('Grabando...');
         this.subscription = this.service
-                    .editar(this.ordenDeCarga).pipe(take(1))
-                    .subscribe(
-                        (result) => {
-                            this.spinnerComponent.hideIt();
-                            this.blockUI.stop();
-                            if (result.logout == true) {
-                                this.sessionDataService.logout();
-                            } else if (result.error != undefined && result.error != "") {
-                                console.error(result.error);
-                                this.mensajeComponent.setErrorMsg(result.error);
-                            } else if (result.info != undefined) {
-                                console.info(result.info);
-                                this.mensajeComponent.setInfoMsg(result.info);
-                            } else if (result.data.error != undefined && result.data.error != "") {
-                                console.error(result.data.error);
-                                this.mensajeComponent.setErrorMsg(result.data.error);
-                            } else if (result.data.info != undefined) {
-                                console.info(result.data.info);
-                                this.mensajeComponent.setInfoMsg(result.data.info);
-                            } else {
-                                this.mensajeComponent.setMsgsEmpty();
-                                this.mensajeSuccess = result.data.Mensaje;
-                                this.ordenDeCargaId = result.data.IdEntidad;
+            .editar(this.ordenDeCarga).pipe(take(1))
+            .subscribe(
+                (result) => {
+                    this.spinnerComponent.hideIt();
+                    this.blockUI.stop();
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        console.error(result.error);
+                        this.mensajeComponent.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        console.info(result.info);
+                        this.mensajeComponent.setInfoMsg(result.info);
+                    } else if (result.data.error != undefined && result.data.error != "") {
+                        console.error(result.data.error);
+                        this.mensajeComponent.setErrorMsg(result.data.error);
+                    } else if (result.data.info != undefined) {
+                        console.info(result.data.info);
+                        this.mensajeComponent.setInfoMsg(result.data.info);
+                    } else {
+                        this.mensajeComponent.setMsgsEmpty();
+                        this.mensajeSuccess = result.data.Mensaje;
+                        this.ordenDeCargaId = result.data.IdEntidad;
 
-                                this.gestionarAltasCuitTerceros(this.ordenDeCargaId.toString());
+                        this.gestionarAltasCuitTerceros(this.ordenDeCargaId.toString());
 
-                                document.getElementById("openModalNotificacion")
-                                    .click();
-                            }
-                        },
-                        (error) => {
-                            console.error(error);
-                            this.spinnerComponent.hideIt();
-                            this.mensajeComponent.setErrorMsg(error.message);
-                            this.blockUI.stop();
-                        }
-                    );
+                        document.getElementById("openModalNotificacion")
+                            .click();
+                    }
+                },
+                (error) => {
+                    console.error(error);
+                    this.spinnerComponent.hideIt();
+                    this.mensajeComponent.setErrorMsg(error.message);
+                    this.blockUI.stop();
+                }
+            );
     }
 
     aceptar() {
@@ -1546,7 +1548,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                         this.ordenActivaScato = result.data;
                         if (this.ordenActivaScato) {
                             this.mensajeValidacionScato = "Actualmente la orden se encuentra activa en Scato."
-                        }else{
+                        } else {
                             this.mensajeValidacionScato = undefined;
                         }
                     }

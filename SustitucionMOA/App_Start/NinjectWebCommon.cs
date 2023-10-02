@@ -103,6 +103,7 @@ namespace SustitucionMOA.App_Start
             //kernel.Bind<ITicketPesadaService>().To(typeof(TicketPesadaService)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IReporteLiquidacionesInformadasJob>().To(typeof(ReporteLiquidacionesInformadasJob)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IVerificarTransporteOrdenesDeCargaJob>().To(typeof(VerificarTransporteOrdenesDeCargaJob)).InScope(ctx => OperationContext.Current);
+            kernel.Bind<IVerificarTransporteOrdenesDeCargaFasonJob>().To(typeof(VerificarTransporteOrdenesDeCargaFasonJob)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IEnviarASAPOrdenDeCargaJob>().To(typeof(EnviarASAPOrdenDeCargaJob)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IReporteCamposSustentablesTSAJob>().To(typeof(ReporteCamposSustentablesTSAJob)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IReporteConflictosCamposSustentablesJob>().To(typeof(ReporteConflictosCamposSustentablesJob)).InScope(ctx => OperationContext.Current);
@@ -126,6 +127,7 @@ namespace SustitucionMOA.App_Start
             kernel.Bind<IReporteLoginsJob>().To(typeof(ReporteLoginsJob)).InScope(ctx => OperationContext.Current);
             //kernel.Bind<IEcheqService>().To(typeof(EcheqService)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IVerificarSituacionCrediticiaJob>().To(typeof(VerificarSituacionCrediticiaJob)).InScope(ctx => OperationContext.Current);
+            //kernel.Bind<IEmailFasonService>().To(typeof(EmailFasonService)).InScope(ctx => OperationContext.Current);
             //kernel.Bind<IEmailFasService>().To(typeof(EmailFasService)).InScope(ctx => OperationContext.Current);
             //kernel.Bind<IHttpContextService>().To(typeof(HttpContextService)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IObtenerRegistroInfoConsumerMOA>().To(typeof(ObtenerRegistroInfoConsumerMOA)).InScope(ctx => OperationContext.Current);

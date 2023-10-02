@@ -13,7 +13,7 @@ namespace SustitucionMOAWS.Interfaces
         List<ProvinciaDto> ObtenerProvincias();
         List<KmPorProveedorDto> BuscarDestinos(string cuit);
         bool CuilChoferExiste(string cuil, bool logger = true);
-        ValidarCuitExisteScatoResponse ExisteCuitDestinoDestinatario(string cuit, bool logger = true);
+        ClienteDto[] ObtenerClientesPorCuit(string cuit);
         ProveedorDto ObtenerProveedorPorCuit(string cuit);
         RecorridoDto[] ObtenerRecorridoNoRechazadoPorNumeroDocumento(string nroEntrega);
     }

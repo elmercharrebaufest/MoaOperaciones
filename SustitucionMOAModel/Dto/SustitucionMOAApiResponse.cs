@@ -2,11 +2,14 @@
 
 namespace SustitucionMOAModel.Dto
 {
-    public class SustitucionMOAApiResponse<T>
+    public class SustitucionMOAApiResponse<T> : SustitucionMOAApiResponse
     {
         [JsonProperty("data")]
         public T Data { get; set; }
+    }
 
+    public class SustitucionMOAApiResponse
+    {
         [JsonProperty("info")]
         public string Info { get; set; }
 

@@ -442,7 +442,7 @@
                                 <div>
                                     <a (click)="goToSeccion('/ordenes-de-carga/')" href="#">Ordenes de carga</a>
                                 </div>
-                                <div>
+                                <div *ngIf="isAuthorized('VER ORDENES DE CARGA FASON')">
                                     <a (click)="goToSeccion('/ordenes-de-carga-fason/')" href="#">Ordenes de carga
                                         fason</a>
                                 </div>
