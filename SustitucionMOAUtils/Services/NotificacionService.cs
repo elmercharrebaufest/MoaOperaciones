@@ -1,7 +1,10 @@
-﻿using SustitucionMOAAssets;
+﻿using DocumentFormat.OpenXml.Office.CustomUI;
+using SustitucionMOAAssets;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
+using SustitucionMOAModel.Models.ViewModel.Notificacion;
+using SustitucionMOAModel.Models.WSMapMOA.Noticia;
 using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Interfaces;
 using System;
@@ -9,6 +12,8 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.Objects;
 using System.Linq;
+using System.Web;
+using Notificacion = SustitucionMOAModel.Entities.Notificacion;
 
 namespace SustitucionMOAUtils.Services
 {
@@ -22,6 +27,7 @@ namespace SustitucionMOAUtils.Services
             this.repositorio = repositorio;
         }
 
+
         public string GrabarNotificacion(Notificacion notificacion)
         {
             var mensajeError = ValidarNotificacion(notificacion);
@@ -29,7 +35,6 @@ namespace SustitucionMOAUtils.Services
             {
                 throw new ValidationCustomException(mensajeError);
             }
-
 
             string resultado;
             if ((notificacion?.Id ?? 0) > 0)
@@ -44,6 +49,7 @@ namespace SustitucionMOAUtils.Services
             return resultado;
         }
 
+
         private string ValidarNotificacion(Notificacion notificacion)
         {
        
@@ -55,9 +61,11 @@ namespace SustitucionMOAUtils.Services
             return "";
         }
 
+
         private string Agregar(Notificacion notificacion)
-        {
+            {
             notificacion.Borrada = false;
+            notificacion.FechaCreacion = DateTime.Now;
 
             var roles = notificacion.FiltroRoles;
 
@@ -76,10 +84,10 @@ namespace SustitucionMOAUtils.Services
             return SuccessMsg.NotificacionAgregada;
         }
 
+
         private string Editar(Notificacion oNotificacion)
         {
             var idNotificacion = oNotificacion.Id;
-
             var notificacion = repositorio.Obtener<Notificacion>(idNotificacion);
 
             notificacion.Nombre = oNotificacion.Nombre;
@@ -88,19 +96,28 @@ namespace SustitucionMOAUtils.Services
             notificacion.Habilitada = oNotificacion.Habilitada;
             notificacion.LinkAdjunto = oNotificacion.LinkAdjunto;
             notificacion.Mensaje = oNotificacion.Mensaje;
+            notificacion.Prioridad = oNotificacion.Prioridad;
 
             notificacion.FiltroRoles.Clear();
-
             foreach (Rol rol in oNotificacion.FiltroRoles)
             {
                 var nuevoRol = repositorio.Obtener<Rol>(rol.Id);
                 notificacion.FiltroRoles.Add(nuevoRol);
             }
 
+            //eliminos los archivos asociados a la notificacion 
+            repositorio.RemoverTodos(notificacion.ArchivosAdjuntos.ToList());
+
+            notificacion.ArchivosAdjuntos.Clear();
+
+            //guardo los nuevos archivos asociados a la notificacion 
+            notificacion.ArchivosAdjuntos = oNotificacion.ArchivosAdjuntos;
+
             repositorio.GuardarCambios();
 
             return SuccessMsg.NotificacionActualizada;
         }
+
 
         public string Habilitar(int idNotificacion)
         {
@@ -123,6 +140,7 @@ namespace SustitucionMOAUtils.Services
             return SuccessMsg.NotificacionActualizada;
         }
 
+
         public string Eliminar(int idNotificacion)
         {
             var notificacion = repositorio.Obtener<Notificacion>(idNotificacion);
@@ -134,9 +152,10 @@ namespace SustitucionMOAUtils.Services
             return SuccessMsg.NotificacionBorrada;
         }
 
+
         public List<NotificacionDto> Listar()
         {
-            var listado = repositorio.Listar<Notificacion>(n => !n.Borrada).Select(x => new NotificacionDto
+            var listado = repositorio.Listar<Notificacion>().Select(x => new NotificacionDto
             {
                 Id = x.Id,
                 Nombre = x.Nombre,
@@ -146,24 +165,34 @@ namespace SustitucionMOAUtils.Services
                 Borrada = x.Borrada,
                 Habilitada = x.Habilitada,
                 Mensaje = x.Mensaje,
-                LinkAdjunto = x.LinkAdjunto
+                LinkAdjunto = x.LinkAdjunto,
+                Prioridad = x.Prioridad
             }).ToList();
 
             return listado;
         }
 
+
+        /// <summary>
+        /// Devuelve datos para armar las tarjetas del carrousel
+        /// </summary>
+        /// <param name="mailUsuario"></param>
+        /// <returns></returns>
         public List<NotificacionDto> ObtenerNotificacionesUsuario(string mailUsuario)
         {
-            var usuario = repositorio.Obtener<Usuario>(x => x.Mail == mailUsuario);
+            Usuario usuario = repositorio.Obtener<Usuario>(x => x.Mail == mailUsuario);
+            int UsuarioId = usuario.Id;
 
-            var listado = repositorio.Listar<Notificacion>(
-                n => !n.Borrada
-                && n.Habilitada
-                && DateTime.Now >= n.FechaInicio
-                && DateTime.Now <= n.FechaFin)
+            List<NotificacionLeida> NoticiasLeidas = repositorio.Listar<NotificacionLeida>(x => x.Usuario_Id == UsuarioId).ToList();
+
+            var listado = repositorio.Listar<Notificacion>
+                (
+                    n => !n.Borrada
+                    && n.Habilitada
+                )
             .AsEnumerable()
             .Where(n => n.FiltroRoles.Any(x => usuario.Roles.Any(y => y.Id == x.Id))
-                
+                      
             ).Select(x => new NotificacionDto
             {
                 Id = x.Id,
@@ -174,16 +203,29 @@ namespace SustitucionMOAUtils.Services
                 Borrada = x.Borrada,
                 Habilitada = x.Habilitada,
                 Mensaje = x.Mensaje,
-                LinkAdjunto = x.LinkAdjunto
-            }).OrderByDescending(s => s.Id).ToList();
-
-
+                LinkAdjunto = x.LinkAdjunto,
+                Prioridad = x.Prioridad,
+                ArchivosAdjuntos = x.ArchivosAdjuntos.Where(y => y.AdjuntoTipo == "previsualizacion").ToList(),
+                Leida = NoticiasLeidas.Any(nl => nl.Notificacion_Id == x.Id) ? 1 : 0
+            })
+            .OrderBy(s => s.Leida)
+            .ThenBy(s => s.Prioridad)
+            .ThenByDescending((x =>
+            {
+                DateTime dt;
+                DateTime.TryParse(x.FechaInicio, out dt);
+                return dt;
+            })) 
+            .ToList();
             return listado;
         }
+
 
         public NotificacionDto ObtenerNotificacion(int notificacionId)
         {
             var notificacion = repositorio.Obtener<Notificacion>(notificacionId);
+            List<NotificacionAdjunto> oArchivosAdjuntos = notificacion.ArchivosAdjuntos.ToList();
+            List<NotificacionLeida> NoticiasLeidas = repositorio.Listar<NotificacionLeida>(x => x.Notificacion_Id == notificacionId).ToList();
 
             var notificacionDto = new NotificacionDto
             {
@@ -196,12 +238,95 @@ namespace SustitucionMOAUtils.Services
                 Habilitada = notificacion.Habilitada,
                 FiltroRoles = notificacion.FiltroRoles.Select(r => r.Id).ToList(),
                 Mensaje = notificacion.Mensaje,
-                LinkAdjunto = notificacion.LinkAdjunto
+                LinkAdjunto = notificacion.LinkAdjunto,
+                Prioridad = notificacion.Prioridad,
+                ArchivosAdjuntos = oArchivosAdjuntos,
+                Leida = NoticiasLeidas.Any(nl => nl.Notificacion_Id == notificacion.Id) ? 1 : 0
             };
-
             return notificacionDto;
+        }
 
-            //return repositorio.Obtener<Operador, OperadorDto>(x => x.Id == id, x => new OperadorDto { Id = x.Id, Descripcion = x.Descripcion }) ?? new OperadorDto();
+
+        public List<NotificacionPrioridadDto> ObtenerTodosNotificacionPrioridad()
+        {
+            var lst = repositorio.Listar<NotificacionPrioridad>().Select(x => new NotificacionPrioridadDto
+            {
+                Prioridad_Id = x.Prioridad_Id,
+                Prioridad_Descripcion = x.Prioridad_Descripcion,
+            }).ToList();
+
+            return lst;
+        }
+
+
+        public string GrabarNotificacionComoLeida(int NotificacionId, string mailUsuario)
+        {
+            Usuario usuario = repositorio.Obtener<Usuario>(x => x.Mail == mailUsuario);
+            int UsuarioId = usuario.Id;
+
+            List<NotificacionLeida> NoticiaLeida = repositorio.Listar<NotificacionLeida>(x => x.Notificacion_Id == NotificacionId).ToList();
+            if (NoticiaLeida.Count == 0)
+                {
+                var notificacionLeida = new NotificacionLeida
+                {
+                    Notificacion_Id = NotificacionId,
+                    Usuario_Id = UsuarioId,
+                    FechaLeida = DateTime.Now
+                };
+
+                repositorio.Agregar(notificacionLeida);
+                repositorio.GuardarCambios();
+                return SuccessMsg.NotificacionActualizada;
+            }
+            else
+            {
+                return "No se agrega registro. Noticia leída previamente.";
+            }
+        }
+
+
+        public List<NotificacionSinAdjuntosDto> ObtenerListadoCompletoNotificacion(string mailUsuario)
+        {
+            Usuario usuario = repositorio.Obtener<Usuario>(x => x.Mail == mailUsuario);
+            int UsuarioId = usuario.Id;
+
+            List<NotificacionLeida> NoticiasLeidas = repositorio.Listar<NotificacionLeida>(x => x.Usuario_Id == UsuarioId).ToList();
+
+            var listado = repositorio.Listar<Notificacion>
+                (
+                    n => !n.Borrada
+                    && n.Habilitada
+                )
+            .AsEnumerable()
+            .Where(n => n.FiltroRoles.Any(x => usuario.Roles.Any(y => y.Id == x.Id)))
+            .Select(x => new NotificacionSinAdjuntosDto
+            {
+                Id = x.Id,
+                Nombre = x.Nombre,
+                FechaInicio = x.FechaInicio.ToString(),
+                HoraInicio = x.FechaInicio.Hour,
+                FechaFin = x.FechaFin.ToString(),
+                Borrada = x.Borrada,
+                Habilitada = x.Habilitada,
+                FiltroRoles = x.FiltroRoles.Select(r => r.Id).ToList(),
+                Mensaje = x.Mensaje,
+                LinkAdjunto = x.LinkAdjunto,
+                Prioridad = x.Prioridad,
+                Leida = NoticiasLeidas.Any(nl => nl.Notificacion_Id == x.Id) ? 1 : 0,
+                FechaCreacion = x.FechaCreacion.ToString(),
+            })
+            .OrderBy(s => s.Leida)
+            .ThenBy(s => s.Prioridad)
+            .ThenByDescending((x => 
+            {
+                DateTime dt;
+                DateTime.TryParse(x.FechaCreacion, out dt);
+                return dt;
+            })
+            )
+            .ToList();
+
+            return listado;
         }
     }
 }

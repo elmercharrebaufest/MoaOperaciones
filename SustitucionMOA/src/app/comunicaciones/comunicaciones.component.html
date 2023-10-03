@@ -1,0 +1,96 @@
+<div class="container-title">
+  <strong class="title">
+    Notificaciones
+  </strong>
+</div>
+
+<div *ngIf="hasCommunications" class="container-communication scrollable-container">
+  <div>
+    <div>
+      <ng-container *ngFor="let item of communication; let i = index" >
+        <div *ngIf="item.Leida == 0">
+          <div class="container-notificacion position-r" (click)="openCommunication(item.Id)">
+            <div [ngClass]="{'message-body-read': communicationRead[item.Id], 'message-body': !communicationRead[item.Id]}">
+              
+              <div *ngIf="item.ComunicacionTipo == 3" (click)="redirect('', 3)">
+                <div>Su CM05 se encuentra vencido. Por favor actualizar.</div>
+              </div>
+
+              <div *ngIf="item.ComunicacionTipo == 4" (click)="redirect('', 4)">
+                <div>Su cuenta informada en SISA no se encuentra actualizada en nuestros registros. Por favor informar.</div>
+              </div>
+
+              <div *ngIf="item.ComunicacionTipo == 6" (click)="redirect('', 6)">
+                  <div>Posee liquidaciones observadas. Por favor, revisar.</div>
+              </div>
+
+              <div *ngIf="item.ComunicacionTipo != 3  && item.ComunicacionTipo != 4 && item.ComunicacionTipo != 6">
+                <div style="padding-right: 2px;">-Detalle ejemplo para notificación de tipo {{ item.ComunicacionTipo }}. </div>
+                <!-- <div style="padding-right: 2px;">-{{ item.Detalle }}</div> -->
+              </div>
+
+              <div class="container-date">
+                <div class="date">{{ item.FechaCreacion.split(" ")[0]}}</div>
+                <div class="date">{{ dateFormat(item.FechaCreacion)}}</div>
+              </div>
+            </div>
+
+            <div [ngClass]="{'button-unread-hide': !communicationRead[item.Id]}">
+              <button class="button-unread" (click)="unreadCommunication(item.Id)" title="Marcar como no leída"></button>
+            </div>
+
+            <div class="triangle">
+              <div class="text-new">Nuevo</div>
+            </div>
+          </div>
+        </div>
+        <div *ngIf="item.Leida == 1">
+          <div class="container-notificacion" (click)="openCommunication(item.Id)">
+            <div class="message-body-read">
+
+              <div *ngIf="item.ComunicacionTipo == 3" (click)="redirect('', 3)">
+                <div>Su CM05 se encuentra vencido. Por favor actualizar.</div>
+              </div>
+
+              <div *ngIf="item.ComunicacionTipo == 4" (click)="redirect('', 4)">
+                <div>Su cuenta informada en SISA no se encuentra actualizada en nuestros registros. Por favor informar.</div>
+              </div>
+
+              <div *ngIf="item.ComunicacionTipo == 6" (click)="redirect('', 6)">
+                  <div>Posee liquidaciones observadas. Por favor, revisar.</div>
+              </div>
+
+              <div *ngIf="item.ComunicacionTipo != 3 && item.ComunicacionTipo != 4 && item.ComunicacionTipo != 6">
+                <div style="padding-right: 2px;">-Detalle ejemplo para notificación de tipo {{ item.ComunicacionTipo }}. </div>
+              </div>
+
+              <div class="container-date">
+                <div class="date">{{ item.FechaCreacion.split(" ")[0]}}</div>
+                <div class="date">{{ dateFormat(item.FechaCreacion) }}</div>
+              </div>
+              
+            </div>
+
+            <div>
+              <button class="button-unread" (click)="unreadCommunication(item.Id)" title="Marcar como no leída"></button>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="!hasCommunications">
+  <div>
+    <div style="justify-content: center; display: grid;" (click)="openCommunication(item.Id)">
+      <p class="text-no-communications">No posee notificaciones.</p>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="showButtonMoreCommunications" class="container-button">
+  <button class="button-previous-communications">
+    Ver notificaciones anteriores
+  </button>
+</div>

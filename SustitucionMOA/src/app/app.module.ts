@@ -73,7 +73,13 @@ import { ModificarDatosComponent } from './usuario/modificar-datos/modificar-dat
 import { ToastModule } from "primeng/toast";;
 import { UsuarioAuditoriaListComponent } from './usuario/usuario-auditoria-list/usuario-auditoria-list.component'
 
+import { QuillModule } from "ngx-quill";
+import { ModalNotificacionesComponent } from "./notificaciones/modal-notificaciones/modal-notificaciones.component";
 
+
+import { ListadoNovedadesComponent } from './listado-novedades/listado-novedades.component';
+import { AngularEditorModule } from '@kolkov/angular-editor';;
+import { ComunicacionesComponent } from './comunicaciones/comunicaciones.component'
 
 @NgModule({
   imports: [
@@ -94,7 +100,9 @@ import { UsuarioAuditoriaListComponent } from './usuario/usuario-auditoria-list/
     ComprasModule,
     ConfirmDialogModule,
     MultiSelectModule,
-    ToastModule
+    ToastModule,
+    QuillModule,
+    AngularEditorModule
   ],
   declarations: [
     AppComponent,
@@ -124,7 +132,10 @@ import { UsuarioAuditoriaListComponent } from './usuario/usuario-auditoria-list/
     PesificacionesGuardadasComponent,
     PesificacionBaseComponent,
     ModificarDatosComponent,
-    UsuarioAuditoriaListComponent
+    UsuarioAuditoriaListComponent,
+    ListadoNovedadesComponent,
+    ModalNotificacionesComponent,
+    ComunicacionesComponent,
     ],
   providers: [
     DatePipe,

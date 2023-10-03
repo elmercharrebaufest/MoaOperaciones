@@ -22,7 +22,8 @@ import { TicketPesadaComponent } from "./ticket-pesada/ticket-pesada.component";
 import { GestionCM05Component } from "./gestionCM05/gestionCM05.component";
 import { ApikeyComponent } from "./apikey/apikey.component";
 import { PesificacionesGuardadasComponent } from "./pesificacion/pesificaciones-guardadas/pesificaciones-guardadas.component";
-
+import { ListadoNovedadesComponent } from "./listado-novedades/listado-novedades.component"
+import { ComunicacionesComponent } from "./comunicaciones/comunicaciones.component";
 
 const appRoutes: Routes = [
     // { path: "documentacion", component: DocumentacionComponent },
@@ -74,6 +75,7 @@ const appRoutes: Routes = [
                 path: "reporte",
                 loadChildren: "./reporte/reporte.module#ReporteModule",
             },
+
             { path: "contacto", component: ContactoMailComponent },
             {
                 path: "cuenta-corriente",
@@ -149,10 +151,16 @@ const appRoutes: Routes = [
                 loadChildren: "./reporte-contrato/reporte-contrato.module#ReporteContratoModule",
             },
 
-            { path: "notificaciones", component: ListadoNotificacionesComponent },
-            { path: "notificaciones/alta", component: AltaNotificacionesComponent },
-            { path: "notificaciones/alta/:id", component: AltaNotificacionesComponent },
+            { path: "comunicaciones", component: ComunicacionesComponent },
+
+            { path: "novedades", component: ListadoNotificacionesComponent },
+            { path: "novedades/alta", component: AltaNotificacionesComponent },
+            { path: "novedades/alta/:id", component: AltaNotificacionesComponent },
             { path: "gestionCM05", loadChildren: "./gestionCM05/gestionCM05.module#GestionCM05Module" },
+            {
+                path: "notificaciones",
+                loadChildren: "./notificaciones/notificaciones.module#NotificacionesModule",
+            },
             {
                 path: "faq",
                 component: FaqComponent
@@ -172,7 +180,8 @@ const appRoutes: Routes = [
             {
                 path: "aplicaciones-ccpp",
                 loadChildren: "./aplicacion-ccpp/aplicacion-ccpp.module#AplicacionCcppModule"
-            }
+            },
+            { path: "mis-novedades", component: ListadoNovedadesComponent },
 
         ],
     },

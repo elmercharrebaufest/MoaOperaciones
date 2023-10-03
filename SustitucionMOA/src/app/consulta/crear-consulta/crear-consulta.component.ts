@@ -128,6 +128,9 @@ export class CrearConsultaComponent extends ListBaseComponent {
     fechaFactura: string;
     nombreDisabled: boolean = false;
 
+    filter: string;
+    cameFromOtherComponent: boolean = false;
+
     setTabs() {
         this.setMenuSeccionTab("consulta", "crear-consulta");
     }
@@ -217,6 +220,22 @@ export class CrearConsultaComponent extends ListBaseComponent {
                         }
                         this.listaMateriales = result.materiales;
                         //result.materiales.forEach(x => this.listaMateriales.push({ label: x.Descripcion, value: x.MaterialId }));
+                    
+                        this.route.queryParams.subscribe((queryParams) => {
+                            if (queryParams.filter === 'Actualizacion-Impositiva') {
+                                this.categoria = this.categorias.find(c => c.Nombre === 'Actualización');
+                                this.setSubcategorias(this.categoria);
+                                this.subcategoriaCount = 1;
+                                this.subcategoria = this.subcategoriasList.find(c => c.Nombre === 'Impositiva');
+                            }
+                            if (queryParams.filter === 'CM05') {
+                                this.categoria = this.categorias.find(c => c.Nombre === 'Actualización');
+                                this.setSubcategorias(this.categoria);
+                                this.subcategoriaCount = 1;
+                                this.subcategoria = this.subcategoriasList.find(c => c.Nombre === 'CM 05');
+                            }
+                          });
+
                     }
                 },
                 error => {
@@ -727,3 +746,4 @@ export class CrearConsultaComponent extends ListBaseComponent {
         }
     }
 }
+

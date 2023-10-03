@@ -260,6 +260,8 @@
     <Content Include="Content\images\icons\liquidaciones.svg" />
     <Content Include="Content\images\icons\paper.svg" />
     <Content Include="Content\images\icons\pay.svg" />
+    <Content Include="Content\images\icons\pdf-download-icon.png" />
+    <Content Include="Content\images\icons\pdf-icon.png" />
     <Content Include="Content\images\icons\SAP.svg" />
     <Content Include="Content\images\icons\trash.svg" />
     <Content Include="Content\images\icons\trashRed.svg" />
@@ -381,8 +383,17 @@
     <Content Include="src\app\compras\solp\steps\posicion\tab-proveedores\tab-proveedores.component.css" />
     <Content Include="src\app\compras\solp\steps\posicion\tab-proveedores\tab-proveedores.component.html" />
     <Content Include="src\app\compras\solp\steps\posicion\tab-subposicion\tab-subposicion.component.html" />
+    <Content Include="src\app\comunicaciones\comunicaciones.component.css" />
+    <Content Include="src\app\comunicaciones\comunicaciones.component.html" />
     <Content Include="src\app\liquidacion\no-granos\pendiente-registro\liquidacion.no-granos.pendiente-registro.component.html" />
     <Content Include="src\app\liquidacion\no-granos\registrada\liquidacion.no-granos.registrado.component.html" />
+    <Content Include="src\app\listado-novedades\listado-novedades.component.css" />
+    <Content Include="src\app\listado-novedades\listado-novedades.component.html" />
+    <Content Include="src\app\listado-novedades\listado-novedades.component.js" />
+    <Content Include="src\app\listado-novedades\listado-novedades.component.spec.js" />
+    <Content Include="src\app\listado-novedades\listado-novedades.service.js" />
+    <Content Include="src\app\notificaciones\modal-notificaciones\modal-notificaciones.component.css" />
+    <Content Include="src\app\notificaciones\modal-notificaciones\modal-notificaciones.component.html" />
     <Content Include="src\app\ordenes-de-carga-fason\alta\ordenes-de-carga-fason.alta.component.css" />
     <Content Include="src\app\ordenes-de-carga-fason\alta\ordenes-de-carga-fason.alta.component.html" />
     <Content Include="src\app\ordenes-de-carga-fason\detalle\ordenes-de-carga-fason.detalle.component.css" />
@@ -1031,6 +1042,9 @@
     <Content Include="src\proxy.conf.json" />
     <Content Include="src\web.config" />
     <Content Include="Template\solp-email\solp-email.hbs" />
+    <Content Include="src\app\listado-novedades\listado-novedades.component.js.map" />
+    <Content Include="src\app\listado-novedades\listado-novedades.component.spec.js.map" />
+    <Content Include="src\app\listado-novedades\listado-novedades.service.js.map" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -1053,6 +1067,7 @@
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="App_Start\Startup.Hangfire.cs" />
     <Compile Include="Controllers\AplicacionCartaPorteController.cs" />
+    <Compile Include="Controllers\ComunicacionController.cs" />
     <Compile Include="Controllers\EcheqController.cs" />
     <Compile Include="Controllers\AduanaController.cs" />
     <Compile Include="Controllers\AltaEmpresaController.cs" />
@@ -1203,6 +1218,14 @@
     <TypeScriptCompile Include="src\app\compras\solp\steps\posicion\tab-subposicion\tab-subposicion.component.spec.ts" />
     <TypeScriptCompile Include="src\app\compras\solp\steps\posicion\tab-subposicion\tab-subposicion.component.ts" />
     <TypeScriptCompile Include="src\app\compras\validadorPasoSolpService.ts" />
+    <TypeScriptCompile Include="src\app\comunicaciones\comunicaciones-routing.module.spec.ts" />
+    <TypeScriptCompile Include="src\app\comunicaciones\comunicaciones-routing.module.ts" />
+    <TypeScriptCompile Include="src\app\comunicaciones\comunicaciones.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\comunicaciones\comunicaciones.component.ts" />
+    <TypeScriptCompile Include="src\app\comunicaciones\comunicaciones.module.spec.ts" />
+    <TypeScriptCompile Include="src\app\comunicaciones\comunicaciones.module.ts" />
+    <TypeScriptCompile Include="src\app\comunicaciones\comunicaciones.service.spec.ts" />
+    <TypeScriptCompile Include="src\app\comunicaciones\comunicaciones.service.ts" />
     <TypeScriptCompile Include="src\app\consulta\consulta-routing.module.ts" />
     <TypeScriptCompile Include="src\app\consulta\consulta.component.ts" />
     <TypeScriptCompile Include="src\app\consulta\consulta.module.spec.ts" />
@@ -1236,12 +1259,21 @@
     <TypeScriptCompile Include="src\app\liquidacion\no-granos\liquidacion-no-granos.module.ts" />
     <TypeScriptCompile Include="src\app\liquidacion\no-granos\pendiente-registro\liquidacion.no-granos.pendiente-registro.component.ts" />
     <TypeScriptCompile Include="src\app\liquidacion\no-granos\registrada\liquidacion.no-granos.registrado.component.ts" />
+    <TypeScriptCompile Include="src\app\listado-novedades\listado-novedades.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\listado-novedades\listado-novedades.component.ts" />
+    <TypeScriptCompile Include="src\app\listado-novedades\listado-novedades.service.ts" />
     <TypeScriptCompile Include="src\app\notificaciones\alta-notificaciones\alta-notificaciones.component.spec.ts" />
     <TypeScriptCompile Include="src\app\notificaciones\alta-notificaciones\alta-notificaciones.component.ts" />
     <TypeScriptCompile Include="src\app\notificaciones\carousel-notificaciones\carousel-notificaciones.component.spec.ts" />
     <TypeScriptCompile Include="src\app\notificaciones\carousel-notificaciones\carousel-notificaciones.component.ts" />
     <TypeScriptCompile Include="src\app\notificaciones\listado-notificaciones\listado-notificaciones.component.spec.ts" />
     <TypeScriptCompile Include="src\app\notificaciones\listado-notificaciones\listado-notificaciones.component.ts" />
+    <TypeScriptCompile Include="src\app\notificaciones\modal-notificaciones\modal-notificaciones.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\notificaciones\modal-notificaciones\modal-notificaciones.component.ts" />
+    <TypeScriptCompile Include="src\app\notificaciones\notificaciones-routing.module.spec.ts" />
+    <TypeScriptCompile Include="src\app\notificaciones\notificaciones-routing.module.ts" />
+    <TypeScriptCompile Include="src\app\notificaciones\notificaciones.module.spec.ts" />
+    <TypeScriptCompile Include="src\app\notificaciones\notificaciones.module.ts" />
     <TypeScriptCompile Include="src\app\notificaciones\notificaciones.service.ts" />
     <TypeScriptCompile Include="src\app\ordenes-de-carga-fason\alta\ordenes-de-carga-fason.alta.component.spec.ts" />
     <TypeScriptCompile Include="src\app\ordenes-de-carga-fason\alta\ordenes-de-carga-fason.alta.component.ts" />

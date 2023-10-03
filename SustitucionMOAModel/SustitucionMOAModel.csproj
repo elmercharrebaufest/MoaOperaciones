@@ -65,7 +65,11 @@
     <Compile Include="Dto\AsociarContratoDto.cs" />
     <Compile Include="Dto\Compras\CircularDto.cs" />
     <Compile Include="Dto\Compras\ProveedorComprasDto.cs" />
+    <Compile Include="Dto\ComunicacionDto.cs" />
+    <Compile Include="Dto\ComunicacionListaIdDto.cs" />
     <Compile Include="Dto\DolarMaterialDto.cs" />
+    <Compile Include="Dto\NotificacionPrioridadDto.cs" />
+    <Compile Include="Dto\NotificacionSinAdjuntosDto.cs" />
     <Compile Include="Dto\OrdenDeCarga\FacturaOrdenCarga.cs" />
     <Compile Include="Dto\Compras\CotizacionDto.cs" />
     <Compile Include="Dto\OrdenDeCarga\ValidarIntermediarioFleteResponse.cs" />
@@ -169,11 +173,15 @@
     <Compile Include="Entities\AdjudicacionPosicion.cs" />
     <Compile Include="Entities\Circular.cs" />
     <Compile Include="Entities\CircularPeticionDeOfertaUsuario.cs" />
+    <Compile Include="Entities\Comunicacion.cs" />
     <Compile Include="Entities\Cotizacion.cs" />
     <Compile Include="Entities\CotizacionEstado.cs" />
     <Compile Include="Entities\CotizacionHora.cs" />
     <Compile Include="Entities\CotizacionPosicion.cs" />
     <Compile Include="Entities\CotizacionSubPosicion.cs" />
+    <Compile Include="Entities\NotificacionAdjunto.cs" />
+    <Compile Include="Entities\NotificacionLeida.cs" />
+    <Compile Include="Entities\NotificacionPrioridad.cs" />
     <Compile Include="Entities\PeticionDeOfertaSolpPosicion.cs" />
     <Compile Include="Entities\PeticionDeOfertaUsuario.cs" />
     <Compile Include="Entities\PeticionDeOfertaArchivo.cs" />
@@ -270,6 +278,8 @@
     <Compile Include="Models\DataAgro\ContratoFijacion.cs" />
     <Compile Include="Models\DataAgro\ContratoAPrecio.cs" />
     <Compile Include="Models\DataAgro\RptCartaDePresentacionInfo.cs" />
+    <Compile Include="Models\ViewModel\Notificacion\NotificacionAdjuntoViewModel.cs" />
+    <Compile Include="Models\ViewModel\Notificacion\NotificacionViewModel.cs" />
     <Compile Include="Models\ViewModel\ReclamoImpositivo.cs" />
     <Compile Include="Models\WebApiMap\ScatoRepositorio\Chofer.cs" />
     <Compile Include="Models\WebApiMap\ScatoRepositorio\CodigoMensajeObtenerChoferPorCuil.cs" />
