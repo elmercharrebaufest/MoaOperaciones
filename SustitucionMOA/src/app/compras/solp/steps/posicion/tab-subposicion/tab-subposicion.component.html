@@ -240,7 +240,7 @@
                             </span>
                         </td>
                         <td [pEditableColumn]="posicion" style="word-break: break-all;">
-                            {{posicion.monedaSeleccionada?.Codigo}} <br/> {{posicion.precioBruto | number:'1.2-2'}}                            
+                            {{posicion.monedaSeleccionada?.Codigo}} <br/> {{posicion.precioBruto | number:'1.2-2'}}
                             <span class="text-danger" *ngIf="validarPrecioBruto(posicion, posicion.precioBruto, 'precioBruto')" style="display: inline-block;">
                                 *
                             </span>

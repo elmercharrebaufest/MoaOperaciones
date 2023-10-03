@@ -57,6 +57,20 @@ namespace SustitucionMOAWS.Logger
                 Console.WriteLine("ERROR heredado:" + exception.ToString());
             }
         }
+
+        public static void Error(string message)
+        {
+            try
+            {
+                DefaultLogger.Error(message);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("ERROR en LogService:" + e.Message);
+                Console.WriteLine("ERROR heredado:" + message);
+            }
+        }
+
         public static void Debug(string controller, string method, string valores)
         {
             try

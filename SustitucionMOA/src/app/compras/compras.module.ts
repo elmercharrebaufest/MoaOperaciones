@@ -54,7 +54,6 @@ import {TooltipModule} from 'primeng/tooltip';
 import { ListadoDashboardCompradorComponent } from './dashboard-comprador/listado-dashboard-comprador/listado-dashboard-comprador.component';
 import { CircularComponent } from './dashboard-comprador/circular/circular.component';
 import { LegajoComponent } from './dashboard-comprador/legajo/legajo.component';
-import { FiltroDashboardCompradorComponent } from './dashboard-comprador/filtro-dashboard-comprador/filtro-dashboard-comprador.component';
 import { NgxMaskModule } from "ngx-mask";
 import { NgbAlertModule } from '@ng-bootstrap/ng-bootstrap';
 
@@ -76,6 +75,7 @@ import { TextosAdjudicarComponent } from './dashboard-comprador/ver-ofertas/text
 
 import {AccordionModule} from 'primeng/accordion';
 import { RegistroInfoComponent } from './peticion-de-oferta-formulario/registro-info/registro-info/registro-info.component';
+import { CerrarCotizacionComponent } from './dashboard-comprador/cerrar-cotizacion/cerrar-cotizacion.component';
 
 @NgModule({
     imports: [
@@ -135,7 +135,6 @@ import { RegistroInfoComponent } from './peticion-de-oferta-formulario/registro-
         ContratoMarcoComponent,
         ObtenerContratoMarcoComponent,
         ListadoDashboardCompradorComponent,
-        FiltroDashboardCompradorComponent,
         PeticionDeOfertaFormularioComponent,
         LegajoComponent,
         CircularComponent,
@@ -152,7 +151,8 @@ import { RegistroInfoComponent } from './peticion-de-oferta-formulario/registro-
         PanelHorasComponent,
         OrdenDeCompraDetalleComponent,
         TextosAdjudicarComponent,
-        RegistroInfoComponent
+        RegistroInfoComponent,
+        CerrarCotizacionComponent
     ],
     providers: [
         ComprasService,

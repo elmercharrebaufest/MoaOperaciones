@@ -32,11 +32,30 @@ namespace SustitucionMOAModel.Dto.OrdenDeCargaFason
 
         public string PatenteChasis { get; set; }
 
-        public CrearOrdenDeCargaFasonRequestProducto Producto_Id { get; set; }
+        public int Producto_Id { get; set; }
+        public CrearOrdenDeCargaFasonRequestProducto ProductoSeleccionado { get; set; }
 
         public string RazonSocialTransporte { get; set; }
 
         public int? CorredorId { get; set; }
+
+        public bool FleteMOA { get; set; }
+        public string CUITIntermediarioFlete { get; set; }
+        public string RazonSocialIntermediarioFlete { get; set; }
+        public bool Reventa { get; set; }
+        public string PlantaCodigo { get; set; }
+        public string DomicilioTipo { get; set; }
+        public short? DomicilioOrden { get; set; }
+        public string DomicilioDescr { get; set; }
+        public bool Escalable { get; set; }
+
+        public string CUITDestinatario { get; set; }
+
+        public string RazonSocialDestinatario { get; set; }
+
+        public string CUITDestino { get; set; }
+
+        public string RazonSocialDestino { get; set; }
     }
 
     public class CrearOrdenDeCargaFasonRequestProducto
@@ -49,6 +68,7 @@ namespace SustitucionMOAModel.Dto.OrdenDeCargaFason
         public int CampaniaTableroId { get; set; }
         public string Codigo { get; set; }
         public int CodigoSap { get; set; }
+        public bool ValidaSisaRuca { get; set; }
     }
 
     public class CrearOrdenDeCargaFasonRequestDestino

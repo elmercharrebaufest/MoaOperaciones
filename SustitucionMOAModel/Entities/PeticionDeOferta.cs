@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -17,6 +14,8 @@ namespace SustitucionMOAModel.Entities
         public DateTime FechaCreacion { get; set; }
         public DateTime PlazoDeOferta { get; set; }
         public string Observaciones { get; set; }
+        public bool? RegistroInfo { get; set; }
+        public bool? AdjuntoPliego { get; set; }
 
         public bool? RegistroInfo { get; set; }
 
@@ -34,5 +33,8 @@ namespace SustitucionMOAModel.Entities
         [InverseProperty("PeticionDeOferta")]
         public virtual ICollection<PeticionDeOfertaArchivo> Archivos { get; set; } = new List<PeticionDeOfertaArchivo>();
 
+        [InverseProperty("PeticionDeOferta")]
+        public virtual ICollection<PeticionDeOfertaCierre> Cierres { get; set; } = new List<PeticionDeOfertaCierre>();
+        
     }
 }

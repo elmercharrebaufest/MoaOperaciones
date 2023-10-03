@@ -35,21 +35,17 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
 
     @Input()
     public peticion: PeticionDeOfertaDto;
-
     peticionOferta: PeticionDeOfertaDto;
     SolpDto: Solp;
     tablaOfertas: PeticionDeOfertaDto;
-
     adjudicacion: AdjudicacionDto;
     Cotizacion: CotizacionDto;
-
     displayTextos: boolean;
     TodasPosicionesSeleccionadas: boolean = false;
     displayAdjudicacionCreada: boolean;
     errores: any = [];
     displayVisualizarErrores: boolean;
     numeroOrdenDeCompra: any;
-
     displayPanelHs: boolean = false;
 
     @Input()
@@ -62,9 +58,6 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
         protected route: ActivatedRoute, protected router: Router, private confirmationService: ConfirmationService, private formBuilder: FormBuilder) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
     }
-
-
-
 
     ngOnInit() {
         if (this.route.params) {
@@ -105,7 +98,6 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
                 Id: null,
             };
         }
-
     }
 
     seleccionarTodo() {
@@ -115,8 +107,6 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
             this.tablaOfertas.PeticionDeOfertaPosicion.map(pos => pos.Selected = false);
         }
     }
-
-
 
     verOfertas(peticionOferta_Id) {
         try {
@@ -131,7 +121,6 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
                         this.floatMsgService.setInfoMsg(result.info);
                     } else {
                         this.tablaOfertas = result.data;
-                        console.log('ofertas', result.data)
                     }
                     this.blockUI.stop();
                 },
@@ -213,31 +202,31 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
         this.displayPanelHs = false;
     }
 
-
     crearAdjudicacion(usuario: PeticionDeOfertaUsarioDto) {
         var lista = []
         if (this.tablaOfertas.PeticionDeOfertaPosicion.filter(x => x.Selected).length > 0) {
             this.tablaOfertas.PeticionDeOfertaPosicion.forEach((peticion) => {
-                if (peticion.Selected && !peticion.Posicion.AdjudicacionCompleta) { 
+                if (peticion.Selected && !peticion.Posicion.AdjudicacionCompleta) {
                     usuario.Cotizacion.CotizacionPosiciones.forEach((cotizacionPos) => {
                         if (peticion.Id == cotizacionPos.PeticionDeOfertaSolpPosicion_Id)
                             lista.push({
                                 Posicion: peticion.Posicion.Indice,
                                 CotizacionPosicion_Id: cotizacionPos.Id,
                                 Cantidad: this.tablaOfertas.TipoPosicionCodigo == 'MATERIALES' ?
-                                 peticion.Posicion.CantidadAdjudicacion : 1,
+                                    peticion.Posicion.CantidadAdjudicacion : 1,
                                 SolpPosicion_Id: peticion.Posicion.Id,
                                 CantidadCotizada: cotizacionPos.Cantidad,
                                 CantidadSolp: peticion.Posicion.CantidadPendiente,
                                 CantidadAdjudicada: this.tablaOfertas.TipoPosicionCodigo == 'MATERIALES' ?
-                                 peticion.Posicion.CantidadAdjudicada : 1,
-                                NoDisponible: cotizacionPos.NoDisponible
+                                    peticion.Posicion.CantidadAdjudicada : 1,
+                                NoDisponible: cotizacionPos.NoDisponible,
+                                MonedaCotizacion: cotizacionPos.Moneda_Id,
+                                MonedaPO: peticion.Posicion.MonedaId
                             })
                     })
                 } else {
                     peticion.Selected = false;
                 }
-
             });
 
             if (lista.length > 0) {
@@ -247,7 +236,7 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
                     return;
                 }
             } else {
-                this.floatMsgService.setInfoMsg("Debe seleccionar alguna posicion valida para adjudicar");
+                this.floatMsgService.setInfoMsg("Debe seleccionar alguna posición válida para adjudicar");
                 return;
             }
             this.adjudicacion.AdjudicacionPosiciones = lista;
@@ -255,7 +244,7 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
             this.adjudicacion.Solp_Id = this.tablaOfertas.Solp_Id;
             this.confirmacionAdjudicar();
         } else {
-            this.floatMsgService.setInfoMsg("Debe seleccionar alguna posicion para adjudicar");
+            this.floatMsgService.setInfoMsg("Debe seleccionar alguna posición para adjudicar");
         }
     }
 
@@ -281,13 +270,20 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
                     }
                 }
 
-                if(element.NoDisponible == true){
-                    self.error = "Pos " + element.Posicion + " - No se puede adjudicar una posicion no disponible";
+                if (element.NoDisponible == true) {
+                    self.error = "Pos " + element.Posicion + " - No se puede adjudicar una posición no disponible";
+                    breakFor = true;
+                    return self.error;
+                }
+
+                if (this.tablaOfertas.TipoPosicionCodigo == 'MATERIALES' && this.tablaOfertas.Adicional) {
+                    if (element.MonedaCotizacion != element.MonedaPO) {
+                        self.error = "Pos " + element.Posicion + " - La moneda de la cotización y de la OC debe ser la misma";
                         breakFor = true;
                         return self.error;
+                    }
                 }
             }
-
         });
         return this.error;
     }
@@ -329,7 +325,7 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
                         this.adjudicacion.CondicionesDeEntrega = "";
                         this.adjudicacion.CondicionesDePago = "";
                         this.adjudicacion.Garantias = "";
-                        this.adjudicacion.TextoDeCabecera = "";  
+                        this.adjudicacion.TextoDeCabecera = "";
                     }
                     this.blockUI.stop();
                 },
@@ -344,8 +340,6 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
             return false; //<-- Prevent Refresh
         }
         return false; //<-- Prevent Refresh
-
-
     }
 
     salir() {
@@ -357,24 +351,42 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
         this.displayVisualizarErrores = false;
     }
 
-    abrilModalTextos(){
+    abrilModalTextos() {
         this.displayTextos = true;
     }
 
-    cerrarModalTextos(){
+    cerrarModalTextos() {
         this.displayTextos = false;
     }
 
-    aceptarModalTextos(){
+    aceptarModalTextos() {
         this.displayTextos = false;
     }
 
+    guardarAdjudicacionTextos() {
+        this.adjudicacion.CondicionesDeEntrega = this.modalTexto.adjudicacion.CondicionesDeEntrega;
+        this.adjudicacion.CondicionesDePago = this.modalTexto.adjudicacion.CondicionesDePago;
+        this.adjudicacion.Garantias = this.modalTexto.adjudicacion.Garantias;
+        this.adjudicacion.TextoDeCabecera = this.modalTexto.adjudicacion.TextoDeCabecera;
+    }
 
-    guardarAdjudicacionTextos(){
-     this.adjudicacion.CondicionesDeEntrega = this.modalTexto.adjudicacion.CondicionesDeEntrega;
-     this.adjudicacion.CondicionesDePago = this.modalTexto.adjudicacion.CondicionesDePago;
-     this.adjudicacion.Garantias = this.modalTexto.adjudicacion.Garantias;
-     this.adjudicacion.TextoDeCabecera = this.modalTexto.adjudicacion.TextoDeCabecera;
+    onEditarCelda(cotizacion: any, campo: string, valorInicial: any) {
+        if (cotizacion[campo] === valorInicial) {
+            cotizacion[campo] = ''; // Limpia el valor si es igual al valorInicial
+        }
+    }
+
+    onReestablecerValor(cotizacion: any, campo: string) {
+        if (cotizacion[campo] === '' || cotizacion[campo] === null) {
+            cotizacion[campo] = 0; // Restablece a cero si está en blanco
+        }
+    }
+
+    validarNumero(event: any) {
+        const inputValue = event.target.value;
+        if (isNaN(inputValue) || inputValue < 0) {
+            event.target.value = 0; // Borra el valor si es negativo
+        }
     }
 
 }

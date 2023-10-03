@@ -8,12 +8,12 @@ using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace SustitucionMOAUtils.Services.Email
 {
-    public class EmailFasService : EmailService, IEmailFasService
+    public class EmailFasService : EmailOrdenesCargaServiceBase, IEmailFasService
     {
+
         private static readonly string TEMPLATE_NOTIFICACION_ORDENES = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "NotificacionOrdenesDeCarga.html");
         private static readonly string TEMPLATE_NOTIFICACION_SOLICITUD_EDICION_ORDEN = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "AvisoEdicionOrdenDeCarga.html");
 
@@ -21,31 +21,34 @@ namespace SustitucionMOAUtils.Services.Email
         private static readonly string DireccionMailAuditoriaOrdenesVencidas = ConfigurationManager.AppSettings["EmailToAuditoriaOrdenesVencidas"];
         private static readonly string DireccionMailCobranzas = ConfigurationManager.AppSettings["EmailToCobranzas"];
         private static readonly string DireccionMailComerciales = ConfigurationManager.AppSettings["EmailToComerciales"];
-        private static readonly string DireccionMailGestionAltaCuit = ConfigurationManager.AppSettings["EmailToGestionAltaCuit"];
-        private static readonly string DireccionMailGestionAltaCuitCopia = ConfigurationManager.AppSettings["CopiaEmailToGestionAltaCuit"];
         private static readonly string DireccionMailMesaEntrSanLorenzo = ConfigurationManager.AppSettings["EmailToMesaENTSL"];
         private static readonly string DireccionMailMesaVentaFas = ConfigurationManager.AppSettings["EmailToMesaVentaFas"];
+        private static readonly string DireccionToAltaTempranaCuitFas = ConfigurationManager.AppSettings["EmailAltaTempranaCuitFasTo"];
+        private static readonly string DireccionCCAltaTempranaCuitFas = ConfigurationManager.AppSettings["EmailAltaTempranaCuitFasCC"];
 
-        public void EnviarMailAltaIntermediarioFlete(string cuit, string razonSocial)
+        public void EnviarMailAltaIntermediarioFlete(string cuit, string razonSocial, string ordenId)
         {
             var emailSenderData = new EmailSenderData
             {
-                Mails = ObtenerListaDestinatarios(new string[] { DireccionMailGestionAltaCuit, DireccionMailGestionAltaCuitCopia }),
-                Asunto = GenerarAsunto("ALTA CUIT INTERMEDIARIO FLETE"),
+                Mails = ObtenerListaDestinatarios(new string[] { DireccionToAltaTempranaCuitFas, DireccionCCAltaTempranaCuitFas }),
+                Asunto = $"ALTA CUIT INTERMEDIARIO FLETE - NRO ORDEN: {ordenId}",
                 Cuerpo = $"Razón social: {razonSocial}, CUIT: {cuit}"
             };
-            EmailSender.EnviarMail(emailSenderData);
+            EnviarMail(emailSenderData);
         }
 
-        public void EnviarMailAltaTempranaCuit(string cuit, string razonSocial)
+        public void EnviarMailAltaTempranaCuit(OrdenDeCarga ordenDeCarga, string ordenId, bool gestionaDestino, bool gestionaDestinatario)
         {
+            string cuerpoDestinatario = gestionaDestinatario ? $"CUIT DESTINATARIO: {ordenDeCarga.CUITDestinatario}, Razón social: {ordenDeCarga.RazonSocialDestinatario}\n" : "";
+            string cuerpoDestino = gestionaDestino ? $"CUIT DESTINO: {ordenDeCarga.CUITDestino}, Razón social: {ordenDeCarga.RazonSocialDestino}\n" : "";
+
             var emailSenderData = new EmailSenderData
             {
-                Mails = ObtenerListaDestinatarios(new string[] { DireccionMailGestionAltaCuit, DireccionMailGestionAltaCuitCopia }),
-                Asunto = GenerarAsunto("ALTA TEMPRANA CUIT"),
-                Cuerpo = $"Se solicita el alta temprana del CUIT: {cuit}, Razón social: {razonSocial}"
+                Mails = ObtenerListaDestinatarios(new string[] { DireccionToAltaTempranaCuitFas, DireccionCCAltaTempranaCuitFas }),
+                Asunto = $"ALTA TEMPRANA CLIENTE - NRO ORDEN: {ordenId}",
+                Cuerpo = $"Se solicita el alta temprana de: \n" + cuerpoDestinatario + cuerpoDestino
             };
-            EmailSender.EnviarMail(emailSenderData);
+            EnviarMail(emailSenderData);
         }
 
         public void EnviarMailContratoSinKm(OrdenDeCarga ordenDeCarga)
@@ -60,7 +63,7 @@ namespace SustitucionMOAUtils.Services.Email
             var emailSenderData = new EmailSenderData
             {
                 Mails = ObtenerListaDestinatarios(new string[] { DireccionMailMesaVentaFas, DireccionMailComerciales }),
-                Asunto = GenerarAsunto($"Faltan cargar los Km en el contrato, Orden de carga N° {ordenDeCarga.Id}"),
+                Asunto = $"Faltan cargar los Km en el contrato, Orden de carga N° {ordenDeCarga.Id}",
                 Cuerpo = cuerpo
             };
             EnviarMail(emailSenderData);
@@ -78,7 +81,7 @@ namespace SustitucionMOAUtils.Services.Email
             var emailSenderData = new EmailSenderData
             {
                 Mails = ObtenerListaDestinatarios(new string[] { DireccionMailComerciales, DireccionMailMesaVentaFas }),
-                Asunto = GenerarAsunto($"Contrato Vencido - {ordenDeCarga.Cliente.RazonSocial}"),
+                Asunto = $"Contrato Vencido - {ordenDeCarga.Cliente.RazonSocial}",
                 Cuerpo = cuerpo
             };
             EnviarMail(emailSenderData);
@@ -96,7 +99,7 @@ namespace SustitucionMOAUtils.Services.Email
             var emailSenderData = new EmailSenderData
             {
                 Mails = ObtenerListaDestinatarios(new string[] { ordenDeCarga.Cliente.Mail, DireccionMailComerciales, DireccionMailMesaVentaFas }),
-                Asunto = GenerarAsunto($"Molinos Agro - Notificación de orden vencida - {ordenDeCarga.Cliente.RazonSocial}"),
+                Asunto = $"Molinos Agro - Notificación de orden vencida - {ordenDeCarga.Cliente.RazonSocial}",
                 Cuerpo = cuerpo
             };
             EnviarMail(emailSenderData);
@@ -109,7 +112,7 @@ namespace SustitucionMOAUtils.Services.Email
             var emailSenderData = new EmailSenderData
             {
                 Mails = ObtenerListaDestinatarios(new string[] { DireccionMailMesaVentaFas, DireccionMailMesaEntrSanLorenzo }),
-                Asunto = GenerarAsunto("ALTA TTE"),
+                Asunto = "ALTA TTE",
                 Cuerpo = cuerpo
             };
             EnviarMail(emailSenderData);
@@ -119,7 +122,7 @@ namespace SustitucionMOAUtils.Services.Email
         {
             var cuerpoTemplate = File.ReadAllText(TEMPLATE_NOTIFICACION_ORDENES);
 
-            var titulo = $"Se informa que la siguiente ordenDeCarga de carga no pasó las validaciones crediticias.";
+            var titulo = $"Se informa que la siguiente orden de carga no pasó las validaciones crediticias.";
             var cabecera = "Orden: ";
             var ordenes = GenerarTablaOrdenesANotificar(new OrdenDeCarga[] { ordenDeCarga });
             var cuerpo = string.Format(cuerpoTemplate, "", "", ordenes, titulo, cabecera);
@@ -127,7 +130,7 @@ namespace SustitucionMOAUtils.Services.Email
             var emailSenderData = new EmailSenderData
             {
                 Mails = ObtenerListaDestinatarios(new string[] { DireccionMailComerciales, DireccionMailMesaVentaFas, DireccionMailCobranzas }),
-                Asunto = GenerarAsunto($"Orden de carga #{ordenDeCarga.Id}  Pedido Bloqueado {ordenDeCarga.Cliente.RazonSocial}"),
+                Asunto = $"Orden de carga #{ordenDeCarga.Id}  Pedido Bloqueado {ordenDeCarga.Cliente.RazonSocial}",
                 Cuerpo = cuerpo
             };
             EnviarMail(emailSenderData);
@@ -145,7 +148,7 @@ namespace SustitucionMOAUtils.Services.Email
             var emailSenderData = new EmailSenderData
             {
                 Mails = ObtenerListaDestinatarios(new string[] { DireccionMailAlimentacionAnimal, DireccionMailMesaVentaFas, DireccionMailComerciales }),
-                Asunto = GenerarAsunto($"Varias facturas pendientes - {ordenDeCarga.Cliente.RazonSocial}"),
+                Asunto = $"Varias facturas pendientes - {ordenDeCarga.Cliente.RazonSocial}",
                 Cuerpo = cuerpo
             };
             EnviarMail(emailSenderData);
@@ -163,7 +166,7 @@ namespace SustitucionMOAUtils.Services.Email
             var emailSenderData = new EmailSenderData
             {
                 Mails = ObtenerListaDestinatarios(new string[] { DireccionMailMesaVentaFas, DireccionMailComerciales }),
-                Asunto = GenerarAsunto($"Varios ctto pendientes - {ordenDeCarga.Cliente.RazonSocial}"),
+                Asunto = $"Varios ctto pendientes - {ordenDeCarga.Cliente.RazonSocial}",
                 Cuerpo = cuerpo
             };
             EnviarMail(emailSenderData);
@@ -191,34 +194,12 @@ namespace SustitucionMOAUtils.Services.Email
             var emailSenderData = new EmailSenderData
             {
                 Mails = ObtenerListaDestinatarios(new string[] { DireccionMailComerciales, DireccionMailAuditoriaOrdenesVencidas }),
-                Asunto = GenerarAsunto($"Molinos Agro - Notificación de órdenes vencidas"),
+                Asunto = $"Molinos Agro - Notificación de órdenes vencidas",
                 Cuerpo = cuerpo
             };
             EnviarMail(emailSenderData);
         }
 
-
-        private StringBuilder GenerarTablaOrdenesANotificar(IEnumerable<OrdenDeCarga> ordenes)
-        {
-            var ordenesStrBuilder = new StringBuilder();
-            foreach (var orden in ordenes)
-            {
-                ordenesStrBuilder.Append($"<tr>" +
-                    $"<td>{orden.Id}</td>" +
-                    $"<td>{(!string.IsNullOrEmpty(orden.ContratoSAP) ? orden.ContratoSAP.Trim() : orden.ContratoIngresado)}</td>" +
-                    $"<td>{orden.Cliente.RazonSocial}</td>" +
-                    $"<td>{orden.CodigoCorredor}</td>" +
-                    $"<td>{orden.NombreChofer}</td>" +
-                    $"<td>{orden.ChasisAcoplado}</td>" +
-                    $"<td>{orden.PatenteAcoplado}</td>" +
-                    $"<td>{(string.IsNullOrEmpty(orden.PedidoSAP) ? orden.NumeroPedido : orden.PedidoSAP)}</td>" +
-                    $"<td>{orden.NumeroEntrega}</td>" +
-                    $"<td>{orden.FechaCarga}</td>" +
-                    $"<td>{orden.FechaVencimiento}</td>" +
-                    $"</tr>");
-            }
-            return ordenesStrBuilder;
-        }
         public void EnviarMailSolicitudEdicion(OrdenDeCarga ordenDeCarga, List<OrdenDeCargaCambiosHistorial> historialCambios)
         {
             try
@@ -252,7 +233,7 @@ namespace SustitucionMOAUtils.Services.Email
                 var emailSenderData = new EmailSenderData()
                 {
                     Mails = destinatarios,
-                    Asunto = GenerarAsunto($"Molinos Agro - Edición en su orden de carga n°: {ordenDeCarga.Id}, {ordenDeCarga.Cliente.RazonSocial}, {contrato}"),
+                    Asunto = $"Molinos Agro - Edición en su orden de carga n°: {ordenDeCarga.Id}, {ordenDeCarga.Cliente.RazonSocial}, {contrato}",
                     Cuerpo = cuerpo
                 };
 
@@ -263,6 +244,7 @@ namespace SustitucionMOAUtils.Services.Email
                 Log.Error(ex);
             }
         }
+
         public void EnviarMailSolicitudAnulacion(OrdenDeCarga orden)
         {
 
@@ -279,11 +261,34 @@ namespace SustitucionMOAUtils.Services.Email
             var emailSenderData = new EmailSenderData()
             {
                 Mails = ObtenerListaDestinatarios(new string[] { DireccionMailComerciales, DireccionMailMesaVentaFas }),
-                Asunto = GenerarAsunto($"Solicitud de anulación, Orden de carga N° {orden.Id}"),
+                Asunto = $"Solicitud de anulación, Orden de carga N° {orden.Id}",
                 Cuerpo = cuerpo
             };
 
             EnviarMail(emailSenderData);
+        }
+
+
+        private StringBuilder GenerarTablaOrdenesANotificar(IEnumerable<OrdenDeCarga> ordenes)
+        {
+            var ordenesStrBuilder = new StringBuilder();
+            foreach (var orden in ordenes)
+            {
+                ordenesStrBuilder.Append($"<tr>" +
+                    $"<td>{orden.Id}</td>" +
+                    $"<td>{(!string.IsNullOrEmpty(orden.ContratoSAP) ? orden.ContratoSAP.Trim() : orden.ContratoIngresado)}</td>" +
+                    $"<td>{orden.Cliente.RazonSocial}</td>" +
+                    $"<td>{orden.CodigoCorredor}</td>" +
+                    $"<td>{orden.NombreChofer}</td>" +
+                    $"<td>{orden.ChasisAcoplado}</td>" +
+                    $"<td>{orden.PatenteAcoplado}</td>" +
+                    $"<td>{(string.IsNullOrEmpty(orden.PedidoSAP) ? orden.NumeroPedido : orden.PedidoSAP)}</td>" +
+                    $"<td>{orden.NumeroEntrega}</td>" +
+                    $"<td>{orden.FechaCarga}</td>" +
+                    $"<td>{orden.FechaVencimiento}</td>" +
+                    $"</tr>");
+            }
+            return ordenesStrBuilder;
         }
     }
 }

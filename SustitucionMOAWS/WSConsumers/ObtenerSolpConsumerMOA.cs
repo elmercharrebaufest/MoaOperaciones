@@ -14,8 +14,9 @@ namespace SustitucionMOAWS.WSConsumers
         private const string COMP_CODE = "MOA";
 
         public ObtenerSolpConsumerMOA()
-        {
-            service = new SI_MMRFC_OBTENER_SOLPEDClient();
+        {      
+            var url = "http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MMRFC_OBTENER_SOLPED&amp;interfaceNamespace=urn%3AOPERACIONES";
+            service = new SI_MMRFC_OBTENER_SOLPEDClient(SAPCredential.CrearSapLongBinding(), SAPCredential.DevolverEndpoint(url));
             service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
             service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
         }

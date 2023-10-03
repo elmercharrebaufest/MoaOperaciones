@@ -7,14 +7,20 @@ using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Models.DBMap.RYD;
 using SustitucionMOAUtils.DBMethods;
 using SustitucionMOAAssets;
+using SustitucionMOAUtils.Interfaces;
 
 namespace SustitucionMOAUtils.Services
 {
-    public class RYDMantenimientoService
+    public class RYDMantenimientoService : IRYDMantenimientoService
     {
-        DBService _dbService = new DBService();
+        private readonly IDBService dBService;
 
-        private List<DbElement> initDropdown(List<DbElement> data)
+        public RYDMantenimientoService(IDBService dBService)
+        {
+            this.dBService = dBService;
+        }
+
+        private List<DbElement> InicializartDropdown(List<DbElement> data)
         {
             List<DbElement> options = new List<DbElement>();
             options.Add(new DbElement() { value = "", label = "Todos" });
@@ -27,7 +33,7 @@ namespace SustitucionMOAUtils.Services
 
         #region Commodity
 
-        public Commodity getFiltrosCommodities(string commodity)
+        public Commodity ObtenerFiltrosCommodities(string commodity)
         {
             int commodityInt = 0;
             try
@@ -38,42 +44,42 @@ namespace SustitucionMOAUtils.Services
             {
                 throw new ValidationCustomException(String.Format(ErrorMsg.ErrorValorIncorrecto, "Commodity"));
             }
-            return _dbService.SqlSPCBCommodity(commodityInt);
+            return dBService.SqlSPCBCommodity(commodityInt);
         }
 
-        public InputsCargaPesadas getDataInputsCommoditie()
+        public InputsCargaPesadas ObtenerDataInputsCommoditie()
         {
 
             InputsCargaPesadas dataInputs = new InputsCargaPesadas();
 
             dataInputs.commodities = new List<DbElement>() { new DbElement() { label = "", value = "0" } };
 
-            dataInputs.commodities.AddRange(getCommodities());
+            dataInputs.commodities.AddRange(ObtenerCommodities());
 
             return dataInputs;
 
         }
 
-        public List<DbElement> getCommodities()
+        public List<DbElement> ObtenerCommodities()
         {
-            return _dbService.SqlSPCBElement("Sp_cb_Commodities", new List<DbParameter>());
+            return dBService.SqlSPCBElement("Sp_cb_Commodities", new List<DbParameter>());
         }
 
-        public string guardarCommodity(string materialSAP, string almacenOrigen, string descripcion)
+        public string GuardarCommodity(string materialSAP, string almacenOrigen, string descripcion)
         {
-            _dbService.SqlSPInsertCommodity(descripcion, materialSAP, almacenOrigen);
+            dBService.SqlSPInsertCommodity(descripcion, materialSAP, almacenOrigen);
             return String.Format(SuccessMsg.CommodityGuardadoOK, descripcion);
         }
 
-        public string actualizarCommodity(string materialSAP, string almacenOrigen, string descripcion, string commodityId)
+        public string ActualizarCommodity(string materialSAP, string almacenOrigen, string descripcion, string commodityId)
         {
-            _dbService.SqlSPUpdateCommodity(Int32.Parse(commodityId), descripcion, materialSAP, almacenOrigen);
+            dBService.SqlSPUpdateCommodity(Int32.Parse(commodityId), descripcion, materialSAP, almacenOrigen);
             return String.Format(SuccessMsg.CommodityActualizacionOK, descripcion);
         }
 
-        public string borrarCommodity(string commodityId)
+        public string BorrarCommodity(string commodityId)
         {
-            string response = _dbService.SqlSPDeleteCommodity(Int32.Parse(commodityId));
+            string response = dBService.SqlSPDeleteCommodity(Int32.Parse(commodityId));
             if (response == null || response == "")
             {
                 return String.Format(SuccessMsg.CommodityBorradoOK, commodityId);
@@ -87,7 +93,7 @@ namespace SustitucionMOAUtils.Services
 
         #region Exportador
 
-        public Exportador getFiltrosExportador(string exportador)
+        public Exportador ObtenerFiltrosExportador(string exportador)
         {
             int exploradorInt = 0;
             try {
@@ -95,43 +101,43 @@ namespace SustitucionMOAUtils.Services
             } catch {
                 throw new ValidationCustomException(String.Format(ErrorMsg.ErrorValorIncorrecto, "Exportador" ));
             }
-            return _dbService.SqlSPCBExportador(exploradorInt);
+            return dBService.SqlSPCBExportador(exploradorInt);
         }
 
-        public InputsCargaPesadas getDataInputsExportador()
+        public InputsCargaPesadas ObtenerDataInputsExportador()
         {
 
             InputsCargaPesadas dataInputs = new InputsCargaPesadas();
 
             dataInputs.exportadores = new List<DbElement>() { new DbElement() { label = "", value = "0" } };
 
-            dataInputs.exportadores.AddRange(getExportador());
+            dataInputs.exportadores.AddRange(ObtenerExportador());
 
             return dataInputs;
 
         }
 
-        public List<DbElement> getExportador()
+        public List<DbElement> ObtenerExportador()
         {
-            return _dbService.SqlSPCBElement("Sp_cb_Exportadores", new List<DbParameter>());
+            return dBService.SqlSPCBElement("Sp_cb_Exportadores", new List<DbParameter>());
         }
 
-        public string guardarExportador(string almacenSAP, string descripcion)
+        public string GuardarExportador(string almacenSAP, string descripcion)
         {
 
-            _dbService.SqlSPInsertExportador(descripcion, almacenSAP);
+            dBService.SqlSPInsertExportador(descripcion, almacenSAP);
             return String.Format(SuccessMsg.ExportadorGuardadoOK, descripcion);
         }
 
-        public string actualizarExportador(string almacenSAP, string descripcion, string exportadorId)
+        public string ActualizarExportador(string almacenSAP, string descripcion, string exportadorId)
         {
-            _dbService.SqlSPUpdateExportador(Int32.Parse(exportadorId), descripcion, almacenSAP);
+            dBService.SqlSPUpdateExportador(Int32.Parse(exportadorId), descripcion, almacenSAP);
             return String.Format(SuccessMsg.ExportadorActualizacionOK, descripcion);
         }
 
-        public string borrarExportador(string exportadorId)
+        public string BorrarExportador(string exportadorId)
         {
-            string response = _dbService.SqlSPDeleteExportador(Int32.Parse(exportadorId));
+            string response = dBService.SqlSPDeleteExportador(Int32.Parse(exportadorId));
             if (response == null || response == "")
             {
                 return String.Format(SuccessMsg.ExportadorBorradoOK, exportadorId);
@@ -147,68 +153,68 @@ namespace SustitucionMOAUtils.Services
 
         #region BALANZA
 
-        public InputsBalanzas getInputDropDown(int centro)
+        public InputsBalanzas ObtenerInputDropDown(int centro)
         {
 
             InputsBalanzas dataInputs = new InputsBalanzas();
 
-            dataInputs.tipo = getTipos();
-            dataInputs.codigoCabezal = getCodigoCabezal(centro);
-            dataInputs.itc = getItc(centro);
-            dataInputs.tipoAcceso = getTipoAccesos();
+            dataInputs.tipo = ObtenerTipos();
+            dataInputs.codigoCabezal = ObtenerCodigoCabezal(centro);
+            dataInputs.itc = ObtenerItc(centro);
+            dataInputs.tipoAcceso = ObtenerTipoAccesos();
 
             return dataInputs;
 
         }
 
-        public InputsBalanzas getFiltrosNroPuesto(int centro, int itcID)
+        public InputsBalanzas ObtenerFiltrosNroPuesto(int centro, int itcID)
         {
 
             InputsBalanzas dataInputs = new InputsBalanzas();
 
-            dataInputs.nroPuesto = getNroPuestos(centro, itcID);
+            dataInputs.nroPuesto = ObtenerNroPuestos(centro, itcID);
 
             return dataInputs;
 
         }
 
-        private List<DbElement> getTipos()
+        private List<DbElement> ObtenerTipos()
         {
-            return _dbService.SqlSPCBElement("Sp_cb_TipoBalanza", new List<DbParameter>());
+            return dBService.SqlSPCBElement("Sp_cb_TipoBalanza", new List<DbParameter>());
         }
 
-        private List<DbElement> getCodigoCabezal(int centro)
+        private List<DbElement> ObtenerCodigoCabezal(int centro)
         {
             List<DbParameter> parametros = new List<DbParameter>();
             parametros.Add(new DbParameter("CENTRO", centro));
-            return _dbService.SqlSPCBCabezales(centro);
+            return dBService.SqlSPCBCabezales(centro);
         }
 
-        private List<DbElement> getItc(int centro)
+        private List<DbElement> ObtenerItc(int centro)
         {
             List<DbParameter> parametros = new List<DbParameter>();
             parametros.Add(new DbParameter("CENTRO", centro));
-            return _dbService.SqlSPCBITCs(centro);
+            return dBService.SqlSPCBITCs(centro);
         }
 
-        private List<DbElement> getNroPuestos(int centro, int itcID)
+        private List<DbElement> ObtenerNroPuestos(int centro, int itcID)
         {
-            return _dbService.SqlSPCBNroPuestos(centro, itcID);
+            return dBService.SqlSPCBNroPuestos(centro, itcID);
         }
 
-        private List<DbElement> getTipoAccesos()
+        private List<DbElement> ObtenerTipoAccesos()
         {
-            return _dbService.SqlSPCBTipoAccesos();
+            return dBService.SqlSPCBTipoAccesos();
         }
 
-        public List<Balanza> buscarBalanzaAplicar(int centro, string codigo, string descripcion, string tipoId, string codigoCabezalId, string codigoSAP)
+        public List<Balanza> BuscarBalanzaAplicar(int centro, string codigo, string descripcion, string tipoId, string codigoCabezalId, string codigoSAP)
         {
-            return _dbService.SqlSPBalanzaSearchABM(centro, codigo, descripcion, tipoId, codigoCabezalId, codigoSAP);
+            return dBService.SqlSPBalanzaSearchABM(centro, codigo, descripcion, tipoId, codigoCabezalId, codigoSAP);
         }
 
-        public List<Balanza> buscarBalanza(int centro, string codigo, string descripcion, string tipoId, string codigoCabezalId, string codigoSAP)
+        public List<Balanza> BuscarBalanza(int centro, string codigo, string descripcion, string tipoId, string codigoCabezalId, string codigoSAP)
         {
-            List<Balanza> balanzas = _dbService.SqlSPBalanzaSearchABM(centro, codigo, descripcion, tipoId, codigoCabezalId, codigoSAP);
+            List<Balanza> balanzas = dBService.SqlSPBalanzaSearchABM(centro, codigo, descripcion, tipoId, codigoCabezalId, codigoSAP);
             if (balanzas == null || balanzas.Count == 0)
             {
                 throw new InfoCustomException(String.Format(InfoMsg.SinRegistros, "Balanzas"));
@@ -216,13 +222,13 @@ namespace SustitucionMOAUtils.Services
             return balanzas;
         }
 
-        public string guardarBalanza(int centro, string codigo, string descripcion, string automatico, string toleria, string centroEmisor, string tolerX, string tipoId, string pesoMaximo, string codigoSAP, string codigoCabezalId, string itcId, string nroPuestoId, string tipoAccesoId)
+        public string GuardarBalanza(int centro, string codigo, string descripcion, string automatico, string toleria, string centroEmisor, string tolerX, string tipoId, string pesoMaximo, string codigoSAP, string codigoCabezalId, string itcId, string nroPuestoId, string tipoAccesoId)
         {
             bool automaticoBool = false;
             int toleriaInt = 0, nroPuestoIdInt = 0;
             decimal tolerXDecimal = 0, pesoMaximoDecimal = 0;
-            validarDatosBalanza(codigoCabezalId, descripcion, centroEmisor, automatico, toleria, tolerX, tipoId, pesoMaximo, codigoSAP, codigoCabezalId, itcId, nroPuestoId, tipoAccesoId, ref automaticoBool, ref toleriaInt, ref nroPuestoIdInt, ref tolerXDecimal, ref pesoMaximoDecimal);
-            string response = _dbService.SqlSPBalanzaGuardarABM(centro, codigo, descripcion, centroEmisor, automaticoBool, toleriaInt, tolerXDecimal, tipoId, pesoMaximoDecimal, codigoSAP, codigoCabezalId, itcId, nroPuestoIdInt, tipoAccesoId, 0 );
+            ValidarDatosBalanza(codigoCabezalId, descripcion, centroEmisor, automatico, toleria, tolerX, tipoId, pesoMaximo, codigoSAP, codigoCabezalId, itcId, nroPuestoId, tipoAccesoId, ref automaticoBool, ref toleriaInt, ref nroPuestoIdInt, ref tolerXDecimal, ref pesoMaximoDecimal);
+            string response = dBService.SqlSPBalanzaGuardarABM(centro, codigo, descripcion, centroEmisor, automaticoBool, toleriaInt, tolerXDecimal, tipoId, pesoMaximoDecimal, codigoSAP, codigoCabezalId, itcId, nroPuestoIdInt, tipoAccesoId, 0 );
             if (response == null || response == "")
             {
                 return String.Format(SuccessMsg.BalanzaGuardadoOK, codigo);
@@ -234,13 +240,13 @@ namespace SustitucionMOAUtils.Services
 
         }
 
-        public string actualizarBalanza(int centro, string codigo, string descripcion, string automatico, string toleria, string centroEmisor, string tolerX, string tipoId, string pesoMaximo, string codigoSAP, string codigoCabezalId, string itcId, string nroPuestoId, string tipoAccesoId)
+        public string ActualizarBalanza(int centro, string codigo, string descripcion, string automatico, string toleria, string centroEmisor, string tolerX, string tipoId, string pesoMaximo, string codigoSAP, string codigoCabezalId, string itcId, string nroPuestoId, string tipoAccesoId)
         {
             bool automaticoBool = false;
             int toleriaInt = 0, nroPuestoIdInt = 0;
             decimal tolerXDecimal = 0, pesoMaximoDecimal = 0;
-            validarDatosBalanza(codigo, descripcion, centroEmisor, automatico, toleria, tolerX, tipoId, pesoMaximo, codigoSAP, codigoCabezalId, itcId, nroPuestoId, tipoAccesoId, ref automaticoBool, ref toleriaInt, ref nroPuestoIdInt, ref tolerXDecimal, ref pesoMaximoDecimal);
-            string response = _dbService.SqlSPBalanzaActualizarABM(centro, codigo, descripcion, centroEmisor, automaticoBool, toleriaInt, tolerXDecimal, tipoId, pesoMaximoDecimal, codigoSAP, codigoCabezalId, itcId, nroPuestoIdInt, tipoAccesoId, 0, "", 0);
+            ValidarDatosBalanza(codigo, descripcion, centroEmisor, automatico, toleria, tolerX, tipoId, pesoMaximo, codigoSAP, codigoCabezalId, itcId, nroPuestoId, tipoAccesoId, ref automaticoBool, ref toleriaInt, ref nroPuestoIdInt, ref tolerXDecimal, ref pesoMaximoDecimal);
+            string response = dBService.SqlSPBalanzaActualizarABM(centro, codigo, descripcion, centroEmisor, automaticoBool, toleriaInt, tolerXDecimal, tipoId, pesoMaximoDecimal, codigoSAP, codigoCabezalId, itcId, nroPuestoIdInt, tipoAccesoId, 0, "", 0);
             if (response == null || response == "")
             {
                 return String.Format(SuccessMsg.BalanzaActualizacionOK, codigo);
@@ -250,12 +256,12 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        public string borrarBalanza(int centro, string codigo)
+        public string BorrarBalanza(int centro, string codigo)
         {
             if (codigo == null || codigo == "") {
                 throw new ValidationCustomException(String.Format(ErrorMsg.ErrorValorNuloVacio, "Código"));
             }
-            string response = _dbService.SqlSPBalanzaBorrarABM(centro, codigo);
+            string response = dBService.SqlSPBalanzaBorrarABM(centro, codigo);
             if (response == null || response == "")
             {
                 return String.Format(SuccessMsg.BalanzaBorradoOK, codigo);
@@ -266,7 +272,7 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        private void validarDatosBalanza(string codigo, string descripcion, string centroEmisor, string automatico, string toleria, string tolerX, string tipoId, string pesoMaximo, string codigoSAP, string codigoCabezalId, string itcId, string nroPuestoId, string tipoAccesoId, ref bool automaticoBool, ref int toleriaInt, ref int nroPuestoIdInt, ref decimal tolerXDecimal, ref decimal pesoMaximoDecimal) {
+        private void ValidarDatosBalanza(string codigo, string descripcion, string centroEmisor, string automatico, string toleria, string tolerX, string tipoId, string pesoMaximo, string codigoSAP, string codigoCabezalId, string itcId, string nroPuestoId, string tipoAccesoId, ref bool automaticoBool, ref int toleriaInt, ref int nroPuestoIdInt, ref decimal tolerXDecimal, ref decimal pesoMaximoDecimal) {
             if (codigo == null || codigo == "") {
                 throw new ValidationCustomException(String.Format(ErrorMsg.ErrorValorNuloVacio, "Código"));
             }

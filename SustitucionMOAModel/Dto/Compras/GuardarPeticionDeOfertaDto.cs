@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using SustitucionMOAModel.Entities;
+﻿using System.Collections.Generic;
 
 namespace SustitucionMOAModel.Dto
 {
@@ -18,5 +13,7 @@ namespace SustitucionMOAModel.Dto
 
         public int Id { get; set; }
         public bool RegistroInfo { get; set; }
+        public bool AdjuntoPliego { get; set; }
+
     }
 }

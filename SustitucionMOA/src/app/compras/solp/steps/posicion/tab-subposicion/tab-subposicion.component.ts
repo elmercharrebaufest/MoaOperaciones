@@ -66,8 +66,8 @@ export class TabSubposicionComponent extends ListBaseComponent {
     //variable para verificar si la posicion no fue dada de alta con los datos minimos
     posicionInvalida: boolean = false;
 
-    mensajesEncabezado: Message[] = [];    
-  
+    mensajesEncabezado: Message[] = [];
+
     // array de columnas en la grilla
     // se utiliza esta array para luego cargar las posiciones dinamicamente segun la informacion del clipboard
     columnasGrilla: any = [
@@ -258,7 +258,7 @@ export class TabSubposicionComponent extends ListBaseComponent {
 
     eliminarSubPosicionIndividual(indice: number): void {
         this.confirmationService.confirm({
-            message: '¿Está seguro que desea eliminar la subposición?',
+            message: '¿Está seguro de que desea eliminar la subposición?',
             accept: () => {
                 this.eliminarSubposiciones(indice);
             },
@@ -270,7 +270,7 @@ export class TabSubposicionComponent extends ListBaseComponent {
 
     eliminarSubPosicion() {
         this.confirmationService.confirm({
-            message: '¿Está seguro que desea eliminar todas las subposiciones?',
+            message: '¿Está seguro de que desea eliminar todas las subposiciones?',
             accept: () => {
                 this.eliminarSubposiciones();
             },
@@ -610,12 +610,33 @@ export class TabSubposicionComponent extends ListBaseComponent {
     public get monedaPosicion(): string {
 
         let codigoMoneda = '';
-        
+
         if (this.posicion.monedaSeleccionada) {
             codigoMoneda = this.posicion.monedaSeleccionada.Codigo;
         }
-        return  codigoMoneda;
+        return codigoMoneda;
 
+    }
+
+    clearCode(posicion: SubPosicionViewModel) {
+        if (posicion.tareaSubcontratar != null) {
+            posicion.codigoServicio = null;
+        }
+    }
+
+    clearCode2(posicion: SubPosicionViewModel) {
+        if (posicion.codigoServicio != null) {
+            posicion.tareaSubcontratarObj = null;
+            posicion.tareaSubcontratar = null;
+
+        }
+    }
+
+    checkCode(posicion: SubPosicionViewModel) {
+        if (posicion.codigoServicio == '' || posicion.codigoServicio == null) {
+            posicion.tareaSubcontratarObj = null;
+
+        }
     }
 
     clearCode(posicion: SubPosicionViewModel) {

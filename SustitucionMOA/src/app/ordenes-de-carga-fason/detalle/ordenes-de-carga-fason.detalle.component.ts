@@ -1,8 +1,6 @@
 import { DatePipe } from '@angular/common';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Params } from '@angular/router';
-import { CorredorContrato } from '../../common/models/ordenes-de-carga/corredorContrato';
-import { EstadoOrdenDeCarga } from '../../common/models/ordenes-de-carga/estadoOrdenDeCarga';
 import { OrdenDeCargaFasonDto } from '../../common/models/ordenes-de-carga-fason/ordenDeCargaFasonDto';
 import { FloatMsgService } from '../../common/services/FloatMsgService';
 import { ModalService } from '../../common/services/ModalService';
@@ -14,7 +12,17 @@ import { ConfirmationService } from 'primeng/api';
 import { OrdenesDeCargaFasonService } from '../ordenes-de-carga-fason.service';
 import { ListBaseComponent } from '../../common/base-components/list-base-component';
 import { EstadoOrdenDeCargaFason } from '../../common/models/ordenes-de-carga-fason/estadoOrdenDeCargaFason';
+import { Rol } from '../../common/enums/Roles';
+import { Permiso } from '../../common/enums/Permisos';
 
+export interface BotonesDetalleFason {
+    editar: boolean;
+    verificarTransporte: boolean;
+    aprobarRechazarEdicion: boolean;
+    aprobarRechazarAnulacion: boolean;
+    solicitarAnulacion: boolean;
+    anular: boolean;
+}
 
 
 @Component({
@@ -29,18 +37,33 @@ export class OrdenesDeCargaFasonDetalleComponent extends ListBaseComponent imple
     ordenDeCargaFason: OrdenDeCargaFasonDto = new OrdenDeCargaFasonDto();
     ordenDeCargaFasonId: number = 0;
 
-    mostrarBotonEditar: boolean = false;
-    mostrarBotonVerificarTransporte: boolean = false;
+    botones: BotonesDetalleFason = {} as BotonesDetalleFason;
     mensajeError: string = "";
 
     corredores: Map<number, string>;
     corredorSeleccionado: number;
 
-    esTercero: boolean = this.isAuthorized('VER ORDENES DE CARGA FASON');
-    esAdmin: boolean = this.isAuthorized('VER ORDENES DE CARGA FASON ADMIN');
-
+    esTercero: boolean = this.isAuthorized(Permiso.FasonVerOrdenesDeCarga);
+    esAdmin: boolean = this.isAuthorized(Permiso.FasonVerOrdenesDeCargaAdmin);
+    esClienteFason = !this.esAdmin && this.esTercero;
+    esCorredor: boolean = sessionStorage.getItem("tipoUsuario") === Rol.Corredor;
 
     estadoOrdenDeCargaFason = EstadoOrdenDeCargaFason;
+
+    validaCPEDG = false;
+
+    estadosPermitenEdicion = [
+        EstadoOrdenDeCargaFason.Generada,
+        EstadoOrdenDeCargaFason.PendienteContabilizacion,
+        EstadoOrdenDeCargaFason.Pendiente,
+        EstadoOrdenDeCargaFason.PendienteCompensacion,
+        EstadoOrdenDeCargaFason.Vencida,
+    ];
+    estadosPermitenSolicitarAnulacion = [
+        EstadoOrdenDeCargaFason.Generada,
+        EstadoOrdenDeCargaFason.Pendiente,
+        EstadoOrdenDeCargaFason.Vencida,
+    ];
 
     constructor(private route: ActivatedRoute, protected service: OrdenesDeCargaFasonService, protected navService: NavService,
         protected sessionDataService: SessionDataService, protected securytiService: SecurityService,
@@ -61,14 +84,20 @@ export class OrdenesDeCargaFasonDetalleComponent extends ListBaseComponent imple
     }
 
     verificarBotones() {
-        this.mostrarBotonEditar = false;
-        this.mostrarBotonVerificarTransporte = false;
+        this.botones = {} as BotonesDetalleFason;
 
-        if (this.esAdmin && !this.ordenDeCargaFason.TransporteExiste)
-            this.mostrarBotonVerificarTransporte = true;  
-    
-        if (this.ordenDeCargaFason.Estado != EstadoOrdenDeCargaFason.Entregada)
-            this.mostrarBotonEditar = true; 
+        this.botones.verificarTransporte = this.esAdmin && !this.ordenDeCargaFason.TransporteExiste;
+
+        this.botones.editar = this.esAdmin ||
+            (this.esCliente && this.estadosPermitenEdicion.includes(this.ordenDeCargaFason.Estado));
+
+        this.botones.aprobarRechazarAnulacion = this.esAdmin && this.ordenDeCargaFason.Estado == EstadoOrdenDeCargaFason.AnulacionSolicitada;
+
+        this.botones.aprobarRechazarEdicion = this.esAdmin && this.ordenDeCargaFason.Estado == EstadoOrdenDeCargaFason.EdicionSolicitada;
+
+        this.botones.solicitarAnulacion = this.esClienteFason && this.estadosPermitenSolicitarAnulacion.includes(this.ordenDeCargaFason.Estado)
+
+        this.botones.anular = this.esAdmin && this.ordenDeCargaFason.Estado != EstadoOrdenDeCargaFason.Entregada;
     }
 
 
@@ -83,9 +112,8 @@ export class OrdenesDeCargaFasonDetalleComponent extends ListBaseComponent imple
                     } else if (result.info != undefined) {
                     } else {
                         this.ordenDeCargaFason = result.data.Response;
-                        this.ordenDeCargaFason.Cantidad = 30000;
+                        this.validaCPEDG = this.ordenDeCargaFason.ValidaSisaRuca;
                         this.verificarBotones();
-
                     }
                 },
                 error => {
@@ -117,18 +145,13 @@ export class OrdenesDeCargaFasonDetalleComponent extends ListBaseComponent imple
                         this.mensajeComponent.setErrorMsg(result.error);
                     } else if (result.info != undefined) {
                         this.mensajeComponent.setInfoMsg(result.info);
+                    } else if (result.data) {
+                        this.ordenDeCargaFason = result.data;
                     } else {
-                        if (result.data != "Orden de carga actualizada correctamente") {
-                            this.mensajeComponent.setInfoMsg(result.data);
-                        } else {
-                            this.mensajeComponent.setSuccessMsg(result.data);
-                        }
-                        this.mostrarBotonVerificarTransporte = false;
                         this.obtenerOrdenDeCargaFason();
-
- 
-
                     }
+                    this.verificarBotones();
+
                 },
                 error => {
                     this.blockUI.stop();
@@ -139,5 +162,177 @@ export class OrdenesDeCargaFasonDetalleComponent extends ListBaseComponent imple
             this.mensajeComponent.setErrorMsg(e);
         }
     }
+    confirmarSolicitudAnulacion() {
+        this.confirmationService.confirm({
+            key: 'confirmarSA',
+            message: '¿Desea solicitar anulación?',
+            accept: () => {
+                this.solicitarAnulacion()
+            },
+            reject: () => {
+            }
+        });
+    }
+    confirmarAnulacion() {
+        this.confirmationService.confirm({
+            key: 'confirmarAnular',
+            message: '¿Desea anular la orden?',
+            accept: () => {
+                this.anularOrden()
+            },
+            reject: () => {
+            }
+        });
+    }
+    confirmarRechazarSolicitudAnulacion(aprobado: boolean) {
+        this.confirmationService.confirm({
+            key: 'confirmarRSA',
+            message: `¿Desea ${aprobado ? 'aprobar' : 'rechazar'} la solicitud de anulación?`,
+            accept: () => {
+                this.solicitudAnulacion(aprobado)
+            },
+            reject: () => {
+            }
+        });
+    }
+    confirmarRechazarSolicitudEdicion(aprobado: boolean) {
+        this.confirmationService.confirm({
+            key: 'confirmarSolicitudEdicion',
+            message: `¿Desea ${aprobado ? 'aprobar' : 'rechazar'} la solicitud de anulación?`,
+            accept: () => {
+                this.solicitudAnulacion(aprobado)
+            },
+            reject: () => {
+            }
+        });
+    }
 
+    solicitarAnulacion() {
+        this.mensajeComponent.setMsgsEmpty();
+        this.spinnerComponent.showIt();
+        this.unsubscribe();
+        this.blockUI.start('Procesando...');
+        try {
+            this.service.solicitarAnulacion(this.ordenDeCargaFason.Id).subscribe(
+                result => {
+                    this.blockUI.stop();
+                    this.spinnerComponent.hideIt();
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.mensajeComponent.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.mensajeComponent.setInfoMsg(result.info);
+                    } else if (result.data) {
+                        this.ordenDeCargaFason = result.data;
+                    } else {
+                        this.obtenerOrdenDeCargaFason();
+                    }
+                    this.verificarBotones();
+                },
+                error => {
+                    this.blockUI.stop();
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+            );
+        } catch (e) {
+            this.mensajeComponent.setErrorMsg(e);
+        }
+    }
+    solicitudAnulacion(aprobado: boolean) {
+        this.mensajeComponent.setMsgsEmpty();
+        this.spinnerComponent.showIt();
+        this.unsubscribe();
+        this.blockUI.start('Procesando...');
+        try {
+            this.service.actualizarSolicitudAnulacion(this.ordenDeCargaFason.Id, aprobado).subscribe(
+                result => {
+                    this.blockUI.stop();
+                    this.spinnerComponent.hideIt();
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.mensajeComponent.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.mensajeComponent.setInfoMsg(result.info);
+                    } else if (result.data) {
+                        this.ordenDeCargaFason = result.data;
+                    } else {
+                        this.obtenerOrdenDeCargaFason();
+                    }
+                    this.verificarBotones();
+                },
+                error => {
+                    this.blockUI.stop();
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+            );
+        } catch (e) {
+            this.mensajeComponent.setErrorMsg(e);
+        }
+    }
+    solicitudEdicion(aprobado: boolean) {
+        this.mensajeComponent.setMsgsEmpty();
+        this.spinnerComponent.showIt();
+        this.unsubscribe();
+        this.blockUI.start('Procesando...');
+        try {
+            this.service.actualizarSolicitudEdicion(this.ordenDeCargaFason.Id, aprobado).subscribe(
+                result => {
+                    this.blockUI.stop();
+                    this.spinnerComponent.hideIt();
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.mensajeComponent.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.mensajeComponent.setInfoMsg(result.info);
+                    } else if (result.data) {
+                        this.ordenDeCargaFason = result.data;
+                    } else {
+                        this.obtenerOrdenDeCargaFason();
+                    }
+                    this.verificarBotones();
+                },
+                error => {
+                    this.blockUI.stop();
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+            );
+        } catch (e) {
+            this.mensajeComponent.setErrorMsg(e);
+        }
+    }
+    anularOrden() {
+        this.mensajeComponent.setMsgsEmpty();
+        this.spinnerComponent.showIt();
+        this.unsubscribe();
+        this.blockUI.start('Procesando...');
+        try {
+            this.service.anularOrden(this.ordenDeCargaFason.Id).subscribe(
+                result => {
+                    this.blockUI.stop();
+                    this.spinnerComponent.hideIt();
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.mensajeComponent.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.mensajeComponent.setInfoMsg(result.info);
+                    } else if (result.data) {
+                        this.ordenDeCargaFason = result.data;
+                    } else {
+                        this.obtenerOrdenDeCargaFason();
+                    }
+                    this.verificarBotones();
+                },
+                error => {
+                    this.blockUI.stop();
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+            );
+        } catch (e) {
+            this.mensajeComponent.setErrorMsg(e);
+        }
+    }
 }

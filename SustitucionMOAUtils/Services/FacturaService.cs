@@ -1,6 +1,7 @@
 ﻿using SustitucionMOAAssets;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Models.WSMapMOA;
+using SustitucionMOAUtils.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -12,14 +13,17 @@ using System.Web;
 
 namespace SustitucionMOAUtils.Services
 {
-    public class FacturaService
+    public class FacturaService : IFacturaService
     {
-        public string subirPDF(HttpPostedFileBase file, string folderPath)
+        public FacturaService()
+        {
+
+        }
+        public string SubirPDF(HttpPostedFileBase file, string folderPath)
         {
             try
             {
                 file.SaveAs(folderPath + Path.GetFileName(file.FileName));
-
                 return "El archivo se ha subido correctamente";
             }
             catch (ValidationCustomException e)

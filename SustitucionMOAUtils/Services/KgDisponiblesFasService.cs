@@ -11,7 +11,10 @@ namespace SustitucionMOAUtils.Services
 {
     public class KgDisponiblesFasService : IKgDisponiblesFasService
     {
+        public KgDisponiblesFasService()
+        {
 
+        }
         public decimal ObtenerKgDisponiblesContrato(Result contratoSAP, List<OrdenDeCarga> ordenesPorEntregar)
         {
             decimal kilosDisponibles = 0;

@@ -1879,9 +1879,9 @@
     "delayed-stream" "~1.0.0"
 
 "commander@":
-  "integrity" "sha512-y4Mg2tXshplEbSGzx7amzPwKKOCGuoSRP/CjEdwwk0FOGlUbq6lKuoyDZTNZkmxHdJtp54hdfY/JUrdL7Xfdug=="
-  "resolved" "https://registry.npmjs.org/commander/-/commander-10.0.1.tgz"
-  "version" "10.0.1"
+  "integrity" "sha512-9HMlXtt/BNoYr8ooyjjNRdIilOTkVJXB+GhxMTtOKwk0R4j4lS4NpjuqmRxroBfnfTSHQIHQB7wryHhXarNjmQ=="
+  "resolved" "https://registry.npmjs.org/commander/-/commander-11.0.0.tgz"
+  "version" "11.0.0"
 
 "commander@^2.14.1", "commander@^2.2.0", "commander@^2.8.1", "commander@2.17.x":
   "integrity" "sha512-wPMUt6FnH2yzG95SA6mzjQOEKUU3aLaDEmzs1ti+1E9h+CsrZghRlqEM/EJ4KscsQVG8uNN4uVreUeT8+drlgg=="

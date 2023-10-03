@@ -1,7 +1,5 @@
-﻿using SustitucionMOAFotmatter;
-using SustitucionMOAModel.Dto;
+﻿using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
-using SustitucionMOAModel.Models.WSMapMOA.Compras;
 using SustitucionMOARepositorio;
 using SustitucionMOAWS.CredentialService;
 using SustitucionMOAWS.Interfaces;
@@ -9,9 +7,6 @@ using SustitucionMOAWS.ObtenerOrdenDeCompraWebServiceMOA;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SustitucionMOAWS.WSConsumers
 {
@@ -23,7 +18,8 @@ namespace SustitucionMOAWS.WSConsumers
 
         public ObtenerOrdenDeCompraConsumerMOA(IRepositorio repositorio)
         {
-            service = new BAPI_PO_GETDETAIL1PortTypeClient();
+            var url = "http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=BAPI_PO_GETDETAIL1&amp;interfaceNamespace=urn%3Asap-com%3Adocument%3Asap%3Arfc%3Afunctions";
+            service = new BAPI_PO_GETDETAIL1PortTypeClient(SAPCredential.CrearSapLongBinding(), SAPCredential.DevolverEndpoint(url));
             service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
             service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
             this.repositorio = repositorio;
@@ -45,7 +41,6 @@ namespace SustitucionMOAWS.WSConsumers
                 ObtenerOcSap(nroOC, out POITEM, out RETURN, out POHEADER, out result, out POTEXTHEADER, out POTEXTITEM, out POSERVICES, out POSCHEDULE, out POADDRDELIVERY);
 
                 return mapOrdenDeCompraSAPDto(result, POHEADER, RETURN, POITEM, POTEXTHEADER, POTEXTITEM, POSERVICES, POSCHEDULE, POADDRDELIVERY);
-
             }
             catch (Exception e)
             {
@@ -69,7 +64,6 @@ namespace SustitucionMOAWS.WSConsumers
                 ObtenerOcSap(nroOC, out POITEM, out RETURN, out POHEADER, out result, out POTEXTHEADER, out POTEXTITEM, out POSERVICES, out POSCHEDULE, out POADDRDELIVERY);
 
                 return mapAdjudicacionDto(result, POHEADER, RETURN, POITEM, POTEXTHEADER, POTEXTITEM, POSERVICES, POSCHEDULE, POADDRDELIVERY);
-
             }
             catch (Exception e)
             {
@@ -180,12 +174,15 @@ namespace SustitucionMOAWS.WSConsumers
             resultado.Cabecera = new OrdenDeCompraSAPCabecera
             {
                 OrdenDeCompra = POHEADER.PO_NUMBER,
-                CodigoProveedor = POHEADER.VENDOR
-
+                CodigoProveedor = POHEADER.VENDOR,
+                Moneda = POHEADER.CURRENCY,
+                FechaCreacion = DateTime.ParseExact(POHEADER.CREAT_DATE, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture),
+                FechaCreacionString = DateTime.ParseExact(POHEADER.CREAT_DATE, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture).ToShortDateString()
             };
 
             foreach (var pos in POITEM.ToList())
             {
+                resultado.Cabecera.MontoTotal += pos.NET_PRICE * pos.QUANTITY;
                 resultado.Posiciones.Add(new OrdenDeCompraSAPPosicion
                 {
                     Indice = pos.PO_ITEM
@@ -300,13 +297,11 @@ namespace SustitucionMOAWS.WSConsumers
                     }
                 }
 
-
                 adjudicacion.AdjudicacionPosiciones.Add(pos);
             }
 
             return adjudicacion;
         }
     }
-
 
 }
