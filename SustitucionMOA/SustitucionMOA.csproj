@@ -389,9 +389,6 @@
     <Content Include="src\app\liquidacion\no-granos\registrada\liquidacion.no-granos.registrado.component.html" />
     <Content Include="src\app\listado-novedades\listado-novedades.component.css" />
     <Content Include="src\app\listado-novedades\listado-novedades.component.html" />
-    <Content Include="src\app\listado-novedades\listado-novedades.component.js" />
-    <Content Include="src\app\listado-novedades\listado-novedades.component.spec.js" />
-    <Content Include="src\app\listado-novedades\listado-novedades.service.js" />
     <Content Include="src\app\notificaciones\modal-notificaciones\modal-notificaciones.component.css" />
     <Content Include="src\app\notificaciones\modal-notificaciones\modal-notificaciones.component.html" />
     <Content Include="src\app\ordenes-de-carga-fason\alta\ordenes-de-carga-fason.alta.component.css" />
@@ -1042,9 +1039,6 @@
     <Content Include="src\proxy.conf.json" />
     <Content Include="src\web.config" />
     <Content Include="Template\solp-email\solp-email.hbs" />
-    <Content Include="src\app\listado-novedades\listado-novedades.component.js.map" />
-    <Content Include="src\app\listado-novedades\listado-novedades.component.spec.js.map" />
-    <Content Include="src\app\listado-novedades\listado-novedades.service.js.map" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
