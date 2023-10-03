@@ -32,7 +32,7 @@ export class LayoutComponent implements OnDestroy {
     granosSelected: string;
     tipoUsuario: string;
     noticias: any;
-    noticiasCantidad = 0;
+    quantityCommunications:number = 0;
     modalHeader: any;
     showLiquidaciones = false;
     showComprobantes = false;
@@ -682,7 +682,11 @@ export class LayoutComponent implements OnDestroy {
         }
     }
 
+    updateQuantity(quantity: number) {
+        this.quantityCommunications = quantity;
+      }
+
     ngOnInit(){
-        this.validarSreen()
+        this.validarSreen();
     }
 }

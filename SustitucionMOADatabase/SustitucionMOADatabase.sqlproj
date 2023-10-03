@@ -64,6 +64,8 @@
     <Folder Include="DBO\Views" />
     <Folder Include="scripts\PreDeployment" />
     <Folder Include="scripts\PostDeployment" />
+    <Folder Include="scripts\Notificaciones" />
+    <Folder Include="scripts\Comunicacion" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="DBO\Tables\ProveedorHistorialAprobacion.sql" />
@@ -200,6 +202,15 @@
     <Build Include="DBO\Tables\ProveedorAuditoria.sql" />
     <Build Include="DBO\Tables\UnidadMedidaSap.sql" />
     <None Include="scripts\PostDeployment\UnidadMedidaSap.sql" />
+    <None Include="scripts\Notificaciones\Notificacion.sql" />
+    <None Include="scripts\Notificaciones\NotificacionFechaCreacion.sql" />
+    <None Include="scripts\Notificaciones\NotificacionPrioridad.sql" />
+    <None Include="scripts\Comunicacion\ComunicacionTipo.sql" />
+    <Build Include="DBO\Tables\Comunicacion.sql" />
+    <Build Include="DBO\Tables\ComunicacionTipo.sql" />
+    <Build Include="DBO\Tables\NotificacionAdjunto.sql" />
+    <Build Include="DBO\Tables\NotificacionLeida.sql" />
+    <Build Include="DBO\Tables\NotificacionPrioridad.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DatabasePublishQA.xml" />

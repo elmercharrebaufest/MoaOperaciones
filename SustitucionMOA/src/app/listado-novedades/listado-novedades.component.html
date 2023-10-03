@@ -1,0 +1,74 @@
+<div class="content-wraper">
+    <!-- CONTENT-->
+    <section class="container-fluid clearfix">
+        <!--Title-->
+        <div class="row titleSection">
+            <div class="col-xs-12 col-sm-10 "><strong>Novedades</strong> </div>
+        </div>
+        <!--End Title-->
+        <!-- Tables-->
+        <div class="row myRow">
+            <div class="clearfix myTables">
+                <mensaje></mensaje>
+                <spinner></spinner>
+                <table *ngIf="data && data.length != 0;" id="tableModal"
+                       class="nowrap dataTable table-no-collapse table-hover table-striped" cellspacing="0"
+                       role="grid" aria-describedby="tableModal_info"
+                       style="width: 100%; padding:10px 0; background: white !important;">
+                    <thead class="thead-novedad">
+                        <tr role="row">
+                            <!--<th (click)="orderColumnBy('Id')">Id</th>-->
+                            <th class="th-novedad" (click)="orderColumnBy('Nombre')">Nombre</th>
+                            <th class="th-novedad" (click)="orderColumnBy('FechaCreacion')">Fecha de publicaci&oacute;n</th>
+                            <!--<th (click)="orderColumnBy('FechaFin')">Fecha fin</th>-->
+                            <!--<th (click)="orderColumnBy('Habilitada')">Habilitada</th>-->
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let notificacion of data
+                               
+                                
+                                | paginate: { itemsPerPage:itemsPerPage, currentPage: p }
+                                ; let odd = odd" role="row" [class.odd]="!odd">
+
+                            <td>{{notificacion.Nombre || "-"}}</td>
+                      
+                            <td>{{ notificacion.FechaCreacion.split(" ")[0] }}</td>                          
+                          
+
+                            <td>
+
+                                <!--<a (click)="verMas(notificacion.Id)" class="btn btn-primary vermas-button" role='button'>Ver mas</a>-->
+                                <!--<button id="next" ng-click="verMas(notificacion.Id)">Ver mas</button>-->
+                                <button class="btn-custom" (click)="openModalNovedad(notificacion.Id, notificacion, adjunto)">Ver mas</button>
+
+
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <pagination-template #pT="paginationApi" (pageChange)="p = $event" *ngIf="data && data.length != 0">
+                    <div class="dataTables_paginate paging_simple_numbers">
+                        <a id="tableModal_previous" class="paginate_button previous" (click)="pT.previous()"
+                           [class.disabled]="pT.isFirstPage()"> Anterior </a>
+                        <span *ngFor="let page of pT.pages" [class.current]="pT.getCurrent() === page.value">
+                            <a class="paginate_button" (click)="pT.setCurrent(page.value)"
+                               *ngIf="pT.getCurrent() !== page.value">{{ page.label }}</a>
+                            <a class="paginate_button current" *ngIf="pT.getCurrent() === page.value">{{ page.label }}</a>
+                        </span>
+                        <a id="tableModal_next" class="paginate_button next" (click)="pT.next()" [class.disabled]="pT.isLastPage()">
+                            Siguiente
+                        </a>
+                    </div>
+                </pagination-template>
+            </div>
+        </div>
+
+        <div *ngIf="mostarModal">
+            <app-modal-notificaciones #myModal id="openModalHiddenButton" [notificacion]="notificacionModal" [adjunto]="adjuntoModal"></app-modal-notificaciones>
+        </div>
+        <!-- END tables-->
+    </section>
+    <!--End CONTENT-->
+</div>
