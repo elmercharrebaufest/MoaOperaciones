@@ -66,7 +66,7 @@ namespace SustitucionMOATest.Services
             mICNRTClient = new Mock<ICNRTClient>();
             AddProvider(301301301, EstadoAprobacion.Aprobado, "Test", "RS", "dylopez@baufest.com", "233333333333", new TipoUsuario { Id = 5, Nombre = "Cliente", NombreCorto = "CLI" });
             target = new OrdenDeCargaService(repositorioMock.Object, consumerOrdenCargaMOA.Object, feriadoService.Object,
-                mIScatoRepositorioClient.Object, mIScatoConsumer.Object,  mIFacturaAnticipadaService.Object,
+                mIScatoRepositorioClient.Object, mIScatoConsumer.Object, mIEmailFasService.Object, mIFacturaAnticipadaService.Object,
                 mIKgDisponiblesFasService.Object, mICNRTClient.Object);
             ordenDeCarga = new OrdenDeCarga
             {
@@ -997,7 +997,7 @@ namespace SustitucionMOATest.Services
         {
             ordenDeCarga.Reventa = true;
             SetupAgregarTests();
-            
+
             var expected = $"Cliente {_proveedorUsuario.RazonSocial}({_proveedorUsuario.CUIT}) no es revendedor. No puede modificar campo reventa";
 
             var ex = Assert.Throws<ValidationCustomException>(() => target.Agregar(ordenDeCarga, _mailSesionUsuario));
