@@ -16,22 +16,25 @@ namespace SustitucionMOATest.Services
         private Mock<IRepositorio> repositorio;
         private Mock<IOrdenCargaConsumerMOA> ordenCargaConsumer;
         private Mock<IScatoConsumer> scatoConsumer;
-        private Mock<IEmailFasonService> emailService;
         private Mock<IScatoRepositorioClient> scatoRepositorioClient;
+        private Mock<ICNRTClient> cnrtClient;
+        private Mock<IEmailFasonService> emailFasonService;
         [SetUp]
         public void Setup()
         {
             repositorio = new Mock<IRepositorio>();
             ordenCargaConsumer = new Mock<IOrdenCargaConsumerMOA>();
             scatoConsumer = new Mock<IScatoConsumer>();
-            emailService = new Mock<IEmailFasonService>();
             scatoRepositorioClient = new Mock<IScatoRepositorioClient>();
+            cnrtClient = new Mock<ICNRTClient>();
+            emailFasonService = new Mock<IEmailFasonService>();
             service = new OrdenDeCargaFasonService(
                 repositorio.Object,
                 ordenCargaConsumer.Object,
                 scatoConsumer.Object,
-                emailService.Object,
-                scatoRepositorioClient.Object
+                scatoRepositorioClient.Object,
+                cnrtClient.Object,
+                emailFasonService.Object
             );
         }
 

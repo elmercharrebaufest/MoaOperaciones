@@ -64,6 +64,22 @@ namespace SustitucionMOAModel.Entities
 
         public string RazonSocialDestino { get; set; }
 
+        public bool? DestinatarioExisteScato { get; set; }
+        public bool? DestinoExisteScato { get; set; }
+        public string DestinoMercaderia { get; set; }
+
+        public bool CuitsTerceroExisten { 
+            get
+            {
+                if (Producto.ValidaSisaRuca)
+                {
+                    var existeDestino = DestinoExisteScato ?? false;
+                    var existeDestinatario = DestinatarioExisteScato ?? false;
+                    return existeDestino && existeDestinatario;
+                }
+                return true;
+            } 
+        }
 
         public OrdenDeCargaFason() { }
         public OrdenDeCargaFason(CrearOrdenDeCargaFasonRequest request)
@@ -96,6 +112,9 @@ namespace SustitucionMOAModel.Entities
             RazonSocialDestinatario = request.RazonSocialDestinatario;
             CUITDestino = request.CUITDestino;
             RazonSocialDestino = request.RazonSocialDestino;
+            DestinatarioExisteScato = request.DestinatarioExisteScato;
+            DestinoExisteScato = request.DestinoExisteScato;
+            DestinoMercaderia = request.DestinoMercaderia;
         }
         public override bool Equals(object obj)
         {
@@ -126,7 +145,11 @@ namespace SustitucionMOAModel.Entities
                 PlantaCodigo == carga.PlantaCodigo &&
                 DomicilioTipo == carga.DomicilioTipo &&
                 DomicilioOrden == carga.DomicilioOrden &&
-                DomicilioDescr == carga.DomicilioDescr;
+                DomicilioDescr == carga.DomicilioDescr &&
+                DestinoMercaderia == carga.DestinoMercaderia &&
+                DestinatarioExisteScato == carga.DestinatarioExisteScato &&
+                DestinoExisteScato == carga.DestinoExisteScato;
+                ;
         }
 
         public override int GetHashCode()

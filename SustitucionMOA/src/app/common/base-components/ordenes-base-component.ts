@@ -42,6 +42,8 @@ export abstract class OrdenesBase {
     CUITChofer: string;
     CUILChofer: string;
     CUITTransporte: string;
+    NecesitaVerificarCuitsTerceros: boolean;
+    DestinoMercaderia: string;
 }
 
 export interface IOrdenesBaseComponent {

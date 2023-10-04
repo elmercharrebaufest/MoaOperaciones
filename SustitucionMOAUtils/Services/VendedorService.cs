@@ -358,13 +358,10 @@ namespace SustitucionMOAUtils.Services
 
             if (usuario.EsAdmin() || usuario.TienePermiso(PermisoEnum.ElegirTodosVendedores))
             {
-
-                listadoProveedores.AddRange(
-                    repositorio
+                listadoProveedores = repositorio
                         .Listar<Proveedor>(p => p.EstadoAprobacion == EstadoAprobacion.Aprobado)
                         .Where(filtro)
-                        .Select(proveedor => new ProveedorDto(proveedor))
-                );
+                        .Select(proveedor => new ProveedorDto(proveedor,false)).ToList();
             }
             else
             {
@@ -376,7 +373,7 @@ namespace SustitucionMOAUtils.Services
                     proveedores = proveedores.Where(filtro).ToList();
                 }
 
-                listadoProveedores.AddRange(proveedores.Select(proveedor => new ProveedorDto(proveedor)).ToList());
+                listadoProveedores.AddRange(proveedores.Select(proveedor => new ProveedorDto(proveedor,false)).ToList());
             }
 
 

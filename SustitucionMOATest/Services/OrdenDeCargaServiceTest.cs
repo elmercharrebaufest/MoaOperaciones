@@ -998,7 +998,7 @@ namespace SustitucionMOATest.Services
         {
             ordenDeCarga.Reventa = true;
             SetupAgregarTests();
-            
+
             var expected = $"Cliente {_proveedorUsuario.RazonSocial}({_proveedorUsuario.CUIT}) no es revendedor. No puede modificar campo reventa";
 
             var ex = Assert.Throws<ValidationCustomException>(() => target.Agregar(ordenDeCarga, _mailSesionUsuario));

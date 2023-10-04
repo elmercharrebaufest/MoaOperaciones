@@ -58,6 +58,7 @@ namespace SustitucionMOAModel.Dto.OrdenDeCargaFason
         public string RazonSocialDestinatario { get; set; }
         public string PlantaCodigo { get; set; }
         public string DomicilioDescr { get; set; }
+        public bool NecesitaVerificarCuitsTerceros { get; set; }
 
 
         public OrdenDeCargaFasonDto(Ent.OrdenDeCargaFason orden, bool esInterno)
@@ -105,6 +106,7 @@ namespace SustitucionMOAModel.Dto.OrdenDeCargaFason
             RazonSocialDestinatario = orden.RazonSocialDestinatario;
             PlantaCodigo = orden.PlantaCodigo;
             DomicilioDescr = orden.DomicilioDescr;
+            NecesitaVerificarCuitsTerceros = !orden.CuitsTerceroExisten;
         }
     }
 }

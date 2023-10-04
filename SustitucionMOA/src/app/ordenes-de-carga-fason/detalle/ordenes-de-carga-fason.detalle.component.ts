@@ -22,6 +22,7 @@ export interface BotonesDetalleFason {
     aprobarRechazarAnulacion: boolean;
     solicitarAnulacion: boolean;
     anular: boolean;
+    verificarCuitsTercero: boolean;
 }
 
 
@@ -98,6 +99,8 @@ export class OrdenesDeCargaFasonDetalleComponent extends ListBaseComponent imple
         this.botones.solicitarAnulacion = this.esClienteFason && this.estadosPermitenSolicitarAnulacion.includes(this.ordenDeCargaFason.Estado)
 
         this.botones.anular = this.esAdmin && this.ordenDeCargaFason.Estado != EstadoOrdenDeCargaFason.Entregada;
+
+        this.botones.verificarCuitsTercero = this.esAdmin && this.ordenDeCargaFason.NecesitaVerificarCuitsTerceros;
     }
 
 
@@ -325,6 +328,36 @@ export class OrdenesDeCargaFasonDetalleComponent extends ListBaseComponent imple
                         this.obtenerOrdenDeCargaFason();
                     }
                     this.verificarBotones();
+                },
+                error => {
+                    this.blockUI.stop();
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+            );
+        } catch (e) {
+            this.mensajeComponent.setErrorMsg(e);
+        }
+    }
+    verificarCuitsTerceros() {
+        this.mensajeComponent.setMsgsEmpty();
+        this.spinnerComponent.showIt();
+        this.unsubscribe();
+        this.blockUI.start('Procesando...');
+        try {
+            this.subscriptionDropDowns = this.service.verificarCuitsTerceros(this.ordenDeCargaFasonId).subscribe(
+                result => {
+                    this.blockUI.stop();
+                    this.spinnerComponent.hideIt();
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.mensajeComponent.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.mensajeComponent.setInfoMsg(result.info);
+                    } else {
+                        this.mensajeComponent.setMsgsEmpty();
+                        this.obtenerOrdenDeCargaFason();
+                    }
                 },
                 error => {
                     this.blockUI.stop();

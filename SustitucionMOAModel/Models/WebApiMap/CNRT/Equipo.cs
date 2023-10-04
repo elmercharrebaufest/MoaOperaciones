@@ -10,7 +10,7 @@ namespace SustitucionMOAModel.Models.WebApiMap.CNRT
     {
         public string CategoriaEscalado { get; set; }
 
-        public decimal Pbtc { get; set; }
+        public decimal? Pbtc { get; set; }
 
         public List<Dominio> Dominios { get; set; }
     }

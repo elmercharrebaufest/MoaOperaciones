@@ -30,6 +30,18 @@ namespace SustitucionMOAModel.Dto
         public string CodigoProducto { get; set; }
         public string KmARecorrer { get; set; }
         public bool FleteMOA { get; set; }
+        public bool Reventa { get; set; }
+        public string PlantaCodigo { get; set; }
+        public string DomicilioTipo { get; set; }
+        public short? DomicilioOrden { get; set; }
+        public string DomicilioDescr { get; set; }
+        public bool Escalable { get; set; }
+        public string CUITDestinatario { get; set; }
+        public string RazonSocialDestinatario { get; set; }
+        public string CUITDestino { get; set; }
+        public string RazonSocialDestino { get; set; }
+        public string CUITIntermediarioFlete { get; set; }
+        public string RazonSocialIntermediarioFlete { get; set; }
 
         public OrdenesDeCargaApiDto(Entities.OrdenDeCarga ordenFas)
         {
@@ -75,7 +87,19 @@ namespace SustitucionMOAModel.Dto
             KmARecorrer = ordenFason.KmARecorrer;
             TipoOrden = "FASON";
             FleteMOA = ordenFason.FleteMOA;
-        }
+            Reventa = ordenFason.Reventa;
+            PlantaCodigo = ordenFason.PlantaCodigo;
+            DomicilioTipo =ordenFason.DomicilioTipo;
+            DomicilioOrden = ordenFason.DomicilioOrden;
+            DomicilioDescr =ordenFason.DomicilioDescr;
+            Escalable =ordenFason.Escalable;
+            CUITDestinatario =ordenFason.CUITDestinatario;
+            RazonSocialDestinatario =ordenFason.RazonSocialDestinatario;
+            CUITDestino =ordenFason.CUITDestino;
+            RazonSocialDestino =ordenFason.RazonSocialDestino;
+            CUITIntermediarioFlete =ordenFason.CUITIntermediarioFlete;
+            RazonSocialIntermediarioFlete =ordenFason.RazonSocialIntermediarioFlete;
+    }
 
         private string ParseNombreProducto(string nombreMaterial)
         {

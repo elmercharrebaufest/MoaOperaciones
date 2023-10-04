@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace SustitucionMOAUtils.Interfaces
 {
-    public interface IEmailFasService : IEmailOrdenesCargaServiceBase
+    public interface IEmailFasService
     {
         void EnviarMailAltaIntermediarioFlete(string cuit, string razonSocial, string ordenId);
 

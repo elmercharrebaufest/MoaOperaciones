@@ -1,4 +1,5 @@
 ﻿using SustitucionMOAModel.Dto;
+using SustitucionMOAModel.Dto.OrdenDeCarga;
 using SustitucionMOAModel.Dto.OrdenDeCargaFason;
 using SustitucionMOAModel.Entities;
 using System.Collections.Generic;
@@ -21,5 +22,11 @@ namespace SustitucionMOAUtils.Interfaces
         OrdenDeCargaFasonDto SolicitarAnulacion(int ordenId, string mailUsuario);
         OrdenDeCargaFasonDto ActualizarSolicitudEdicion(EstadoSolicitudEdicionFason estadoSolicitud);
         OrdenDeCargaFasonDto AnularOrden(int ordenId, string mailUsuario);
+        List<AutoCompleteDropdownElement> ObtenerCuilsChofer(OrdenDeCargaFasonRequest ordenDeCarga, string mailUsuario);
+        List<AutoCompleteDropdownElement> ObtenerCuitsTransporte(OrdenDeCargaFasonRequest orden, string mailUsuario);
+        OrdenDeCargaDto ObtenerPatentes(OrdenDeCargaFasonRequest orden, string mailUsuario);
+        ValidarCamionResponse ValidarCamion(string patenteChasis, string patenteAcoplado);
+        bool EnviarMailAltaCuitTerceros(bool gestionaFlete, bool gestionaDestino, bool gestionaDestinatario, string ordenId);
+        OrdenDeCargaFasonDto VerificarCuitsTerceros(int ordenId, string mailUsuario);
     }
 }

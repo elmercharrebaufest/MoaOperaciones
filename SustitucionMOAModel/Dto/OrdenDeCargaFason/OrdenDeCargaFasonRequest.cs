@@ -56,6 +56,10 @@ namespace SustitucionMOAModel.Dto.OrdenDeCargaFason
         public string CUITDestino { get; set; }
 
         public string RazonSocialDestino { get; set; }
+
+        public bool? DestinatarioExisteScato { get; set; }
+        public bool? DestinoExisteScato { get; set; }
+        public string DestinoMercaderia { get; set; }
     }
 
     public class CrearOrdenDeCargaFasonRequestProducto

@@ -2,6 +2,7 @@
 using SustitucionMOAFotmatter;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
+using SustitucionMOAModel.Dto.OrdenDeCarga;
 using SustitucionMOAModel.Dto.OrdenDeCargaFason;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
@@ -15,21 +16,26 @@ using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using CNRTModel = SustitucionMOAModel.Models.WebApiMap.CNRT;
 
 namespace SustitucionMOAUtils.Services
 {
     public class OrdenDeCargaFasonService : OrdenDeCargaServiceBase, IOrdenDeCargaFasonService
     {
-
+        protected readonly ICNRTClient cNRTClient;
         private readonly IEnumerable<string> codigosRetiroEnPatagonia = new string[] { "98855", "99098" };
+        private readonly IEmailFasonService emailFasonService;
 
         public OrdenDeCargaFasonService(IRepositorio repositorio,
             IOrdenCargaConsumerMOA ordenCargaConsumer,
             IScatoConsumer scatoConsumer,
-            IEmailFasonService emailFasonService,
-            IScatoRepositorioClient scatoRepositorioClient
-            ) : base(ordenCargaConsumer, scatoConsumer, scatoRepositorioClient, emailFasonService, repositorio)
+            IScatoRepositorioClient scatoRepositorioClient,
+            ICNRTClient cNRTClient,
+            IEmailFasonService emailFasonService
+            ) : base(ordenCargaConsumer, scatoConsumer, scatoRepositorioClient, repositorio)
         {
+            this.cNRTClient = cNRTClient;
+            this.emailFasonService = emailFasonService;
         }
 
         public ListarOrdenDeCargaFasonResponse Listar(ListarOrdenDeCargaFasonRequest request)
@@ -193,6 +199,10 @@ namespace SustitucionMOAUtils.Services
             {
                 ValidarRequest(request, mailUsuario);
                 var existeTransporteEIntermediario = TransporteExiste(request.CUITTransporte, request.CUITIntermediarioFlete);
+
+                request.DestinatarioExisteScato = CuitExisteScato(request.CUITDestinatario);
+                request.DestinoExisteScato = CuitExisteScato(request.CUITDestino);
+
 
                 for (int i = 0; i < request.CantidadDeViajes; i++)
                 {
@@ -358,6 +368,147 @@ namespace SustitucionMOAUtils.Services
             repositorio.GuardarCambios();
             return OrdenDeCargaFasonDto(orden, usuario);
         }
+        public List<AutoCompleteDropdownElement> ObtenerCuilsChofer(OrdenDeCargaFasonRequest orden, string mailUsuario)
+        {
+            List<AutoCompleteDropdownElement> cuils = new List<AutoCompleteDropdownElement>();
+            Proveedor cliente;
+            if (orden.Cliente == null && orden.PatenteAcoplado == null)
+            {
+                cuils.Add(new AutoCompleteDropdownElement() { label = " ", value = " " });
+                return cuils;
+            }
+            cliente = repositorio.Obtener<Proveedor>(
+            x => x.Id == orden.Cliente &&
+            x.EstadoAprobacion == EstadoAprobacion.Aprobado && x.TipoProveedor.Id == (int)TipoUsuarioEnum.Cliente);
+            if (cliente == null)
+            {
+                return cuils;
+            }
+            cuils = repositorio.Listar<OrdenDeCargaFason, AutoCompleteDropdownElement>(x => new AutoCompleteDropdownElement
+            {
+                label = x.CUILChofer.Substring(0, 2) + "-" + x.CUILChofer.Substring(2, 8) + "-" + x.CUILChofer.Substring(10, 1),
+                value = x.CUILChofer
+            }, x => x.Cliente_Id == cliente.Id && x.PatenteAcoplado == orden.PatenteAcoplado);
+
+            return cuils.Distinct().ToList();
+        }
+
+        public List<AutoCompleteDropdownElement> ObtenerCuitsTransporte(OrdenDeCargaFasonRequest orden, string mailUsuario)
+        {
+            List<AutoCompleteDropdownElement> cuits = new List<AutoCompleteDropdownElement>();
+            Proveedor cliente;
+            if (orden.Cliente == null && orden.PatenteAcoplado == null)
+            {
+                cuits.Add(new AutoCompleteDropdownElement() { label = " ", value = " " });
+                return cuits;
+            }
+            cliente = repositorio.Obtener<Proveedor>(
+            x => x.Id == orden.Cliente &&
+            x.EstadoAprobacion == EstadoAprobacion.Aprobado && x.TipoProveedor.Id == (int)TipoUsuarioEnum.Cliente);
+            if (cliente == null)
+            {
+                return cuits;
+            }
+            cuits = repositorio.Listar<OrdenDeCargaFason, AutoCompleteDropdownElement>(x => new AutoCompleteDropdownElement
+            {
+                label = x.CUITTransporte.Substring(0, 2) + "-" + x.CUITTransporte.Substring(2, 8) + "-" + x.CUITTransporte.Substring(10, 1),
+                value = x.CUITTransporte
+            }, x => x.Cliente_Id == cliente.Id && x.PatenteAcoplado == orden.PatenteAcoplado);
+
+            return cuits.Distinct().ToList();
+        }
+        public OrdenDeCargaDto ObtenerPatentes(OrdenDeCargaFasonRequest orden, string mailUsuario)
+        {
+            Proveedor cliente;
+            OrdenDeCargaDto result = new OrdenDeCargaDto();
+            if (orden.Cliente == null)
+            {
+                result.ordenes.Add(new AutoCompleteDropdownElement() { label = " ", value = " " });
+                return result;
+            }
+            cliente = repositorio.Obtener<Proveedor>(
+            x => x.Id == orden.Cliente &&
+            x.EstadoAprobacion == EstadoAprobacion.Aprobado && x.TipoProveedor.Id == (int)TipoUsuarioEnum.Cliente);
+            if (cliente == null)
+            {
+                return new OrdenDeCargaDto();
+            }
+            result.ordenes = repositorio.Listar<OrdenDeCargaFason, AutoCompleteDropdownElement>(x => new AutoCompleteDropdownElement
+            {
+                label = x.PatenteChasis,
+                value = x.PatenteAcoplado
+            }, x => x.Cliente_Id == cliente.Id);
+            result.ordenes = result.ordenes.Distinct().ToList();
+            return result;
+        }
+
+        public ValidarCamionResponse ValidarCamion(string patenteChasis, string patenteAcoplado)
+        {
+            try
+            {
+                var cnrtResponse = cNRTClient.ObtenerEquipos(patenteChasis, patenteAcoplado);
+                var dominios = cnrtResponse.Data.Dominios;
+
+                if (dominios == null || !dominios.Any())
+                {
+                    return new ValidarCamionResponse { ExisteCamion = false };
+                }
+
+                var tipoVehiculo = cnrtResponse.TipoVehiculoCNRTSegunCategoriaEscalado;
+
+                if (dominios.Any(d => d.Rto.CantEjes <= 0) && (
+                        tipoVehiculo == null ||
+                        tipoVehiculo == CNRTModel.TipoVehiculoCNRT.CamionBitren))
+                {
+                    return new ValidarCamionResponse { ExisteCamion = false };
+                }
+                else
+                {
+                    return new ValidarCamionResponse
+                    {
+                        ExisteCamion = true,
+                        EsCamionEscalable = (
+                            tipoVehiculo == CNRTModel.TipoVehiculoCNRT.CamionC ||
+                            tipoVehiculo == CNRTModel.TipoVehiculoCNRT.CamionD ||
+                            tipoVehiculo == CNRTModel.TipoVehiculoCNRT.CamionE)
+                    };
+                }
+            }
+            catch (InfoCustomException ice) { throw ice; }
+            catch (ValidationCustomException vce) { throw vce; }
+            catch (Exception ex)
+            {
+                Log.Error($"Error al validar camión con patentes: {patenteChasis} y {patenteAcoplado}.", ex);
+                throw;
+            }
+        }
+        public bool EnviarMailAltaCuitTerceros(bool gestionaFlete, bool gestionaDestino, bool gestionaDestinatario, string ordenId)
+        {
+            var ordenDeCarga = this.repositorio.Obtener<OrdenDeCargaFason>(o => o.Id.ToString() == ordenId);
+
+            if (gestionaFlete)
+            {
+                emailFasonService.EnviarMailAltaIntermediarioFlete(ordenDeCarga.CUITIntermediarioFlete, ordenDeCarga.RazonSocialIntermediarioFlete, ordenDeCarga.Id.ToString());
+            }
+
+            if (gestionaDestino || gestionaDestinatario)
+            {
+                emailFasonService.EnviarMailAltaTempranaCuit(ordenDeCarga, ordenId, gestionaDestino, gestionaDestinatario);
+            }
+
+            return true;
+        }
+        public OrdenDeCargaFasonDto VerificarCuitsTerceros(int ordenId, string mailUsuario)
+        {
+            var orden = repositorio.Obtener<OrdenDeCargaFason>(ordenId);
+            var usuario = repositorio.Obtener<Usuario>(us => us.Mail == mailUsuario);
+            orden.DestinoExisteScato = CuitExisteScato(orden.CUITDestino);
+            orden.DestinatarioExisteScato = CuitExisteScato(orden.CUITDestinatario);
+            ActualizarOrdenDeCarga(orden);
+
+            repositorio.GuardarCambios();
+            return OrdenDeCargaFasonDto(orden, usuario);
+        }
         private void ActualizarOrdenDeCarga(OrdenDeCargaFason orden)
         {
             var existeTransporteEIntermediario = TransporteExiste(orden);
@@ -370,7 +521,7 @@ namespace SustitucionMOAUtils.Services
         }
         private EstadoOrdenDeCargaFason ObtenerEstadoOrden(OrdenDeCargaFason orden)
         {
-            if (orden.TransporteExiste)
+            if (orden.TransporteExiste && orden.CuitsTerceroExisten)
             {
                 var producto = orden.Producto ?? repositorio.Obtener<Material>(orden.Producto_Id);
                 if (codigosRetiroEnPatagonia.Contains(producto.CodigoSap))
@@ -394,10 +545,8 @@ namespace SustitucionMOAUtils.Services
         {
             Log.Info($"FASON - Validar Request {request.ToJson()}  usuario: {usuario.Mail}");
             var fleteMOA = usuario.TieneRol(RolEnum.FleteMOA);
-            var reventa = usuario.TieneRol(RolEnum.Revendedor);
-            Log.Info($"FASON - Validar Request: RolFleteMOA={fleteMOA};  RolReventa={reventa}");
+            Log.Info($"FASON - Validar Request: RolFleteMOA={fleteMOA}");
             request.FleteMOA = fleteMOA && request.FleteMOA;
-            request.Reventa = reventa && request.Reventa;
             if (!request.ProductoSeleccionado.ValidaSisaRuca)
             {
                 request.CUITIntermediarioFlete = null;
@@ -406,6 +555,12 @@ namespace SustitucionMOAUtils.Services
                 request.DomicilioOrden = null;
                 request.DomicilioTipo = null;
                 request.PlantaCodigo = null;
+                request.DestinatarioExisteScato = null;
+                request.DestinoExisteScato = null;
+            }
+            else
+            {
+                request.DestinoMercaderia = null;
             }
         }
         private OrdenDeCargaFasonDto OrdenDeCargaFasonDto(OrdenDeCargaFason orden, Usuario usuario)
@@ -432,6 +587,13 @@ namespace SustitucionMOAUtils.Services
             Log.Info("TransporteExiste OrdenCargaControlEstadoRequest Result " + estadoTransportista);
 
             return estadoTransportista == ControlEstadoResEnum.TransportistaOK;
+        }
+        private bool? CuitExisteScato(string cuit)
+        {
+            if (cuit is null)
+                return null;
+
+            return ValidarCuitExisteScato(cuit).Existe;
         }
     }
 }

@@ -1,7 +1,7 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Params } from '@angular/router';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
-import { ConfirmationService } from 'primeng/api';
+import { ConfirmationService, MessageService } from 'primeng/api';
 import { CANTIDAD_DEFAULT, CANTIDAD_PELLET_GIRASOL, CODIGO_PELLET_GIRASOL_INTEGRAL, Material, RETIRO_EN_PATAGONIA } from '../../common/models/material';
 import { OrdenDeCargaFasonDto } from '../../common/models/ordenes-de-carga-fason/ordenDeCargaFasonDto';
 import { FloatMsgService } from '../../common/services/FloatMsgService';
@@ -17,10 +17,12 @@ import { OrdenesDeCargaFasonService } from '../ordenes-de-carga-fason.service';
 import { ApiResponse } from '../../common/models/response';
 import { IOrdenesBaseComponent, OrdenesBaseComponent } from '../../common/base-components/ordenes-base-component';
 import { Permiso } from '../../common/enums/Permisos';
-import { finalize } from 'rxjs/operators';
-import { forkJoin } from 'rxjs';
+import { debounceTime, finalize } from 'rxjs/operators';
+import { Subject, Subscription, forkJoin } from 'rxjs';
 import { Domicilio } from '../../common/models/ordenes-de-carga/domicilio';
 import { Planta } from '../../common/models/ordenes-de-carga/planta';
+import { MSG_ALERTA_NO_ESCALABLE } from '../../common/models/ordenes-de-carga/ValidarCamionResponse';
+import { Checkbox } from 'primeng/checkbox';
 
 @Component({
     selector: 'app-alta',
@@ -33,6 +35,7 @@ export class OrdenesDeCargaFasonAltaComponent
     implements OnInit, IOrdenesBaseComponent {
     @BlockUI() blockUI: NgBlockUI;
 
+    @ViewChild("escalableCheckbox") escalableCheckbox: Checkbox
     @ViewChild(MensajeComponent)
     protected mensajeComponent: MensajeComponent;
 
@@ -44,8 +47,16 @@ export class OrdenesDeCargaFasonAltaComponent
         protected sessionDataService: SessionDataService, protected securityService: SecurityService,
         protected floatMsgService: FloatMsgService, protected modalService: ModalService,
         private confirmationService: ConfirmationService, private route: ActivatedRoute,
-        protected seleccionarProveedorService: SeleccionarProveedorService) {
+        protected seleccionarProveedorService: SeleccionarProveedorService,
+        protected msgService: MessageService
+    ) {
         super(service, navService, securityService, floatMsgService, modalService);
+
+        this.subscriptions.add(
+            this.validarCNRTSubject.pipe(debounceTime(500)).subscribe(_ =>
+                this.validarCNRTRequest()
+            ))
+
     }
 
     listaProductos: Material[];
@@ -55,6 +66,10 @@ export class OrdenesDeCargaFasonAltaComponent
 
     clienteSeleccionado: any = "";
     corredorSeleccionado: any;
+    gestiona: Partial<Record<keyof Pick<OrdenDeCargaFasonDto, 'CUITDestinatario' | 'CUITDestino' | 'CUITIntermediarioFlete'>, boolean>> = {
+        CUITDestino: false,
+        CUITDestinatario: false, CUITIntermediarioFlete: false
+    };
 
     patentesChasis: any;
     patentesAcoplados: any;
@@ -93,12 +108,31 @@ export class OrdenesDeCargaFasonAltaComponent
     validandoCuitDestino: boolean = false;
     mensajeCuitDestinatario: string = "";
     mensajeCuitDestino: string = "";
+    editando = false;
 
+    cuitsTransporte: any;
+    cuilsChofer: any;
+
+    validarCNRTSubject = new Subject();
+    validarCNRTSubscription?: Subscription;
+    subscriptions = new Subscription();
+    escalableCNRT?: boolean;
+
+    generalFormatter(data: any): string {
+        return `${data['label']}`;
+    }
+
+    generalFormatterAcoplado(data: any): string {
+        return `${data['value']}`;
+    }
     ngOnInit() {
         this.userEmail = sessionStorage.getItem("username");
         this.ordenDeCargaFason.Cantidad = 30000;
         this.route.params.forEach((params: Params) => {
-            if (params["id"] > 0) this.ordenDeCargaFasonId = params["id"];
+            if (params["id"] > 0) { this.ordenDeCargaFasonId = params["id"]; this.editando = true }
+            else {
+                this.getPatentes();
+            }
         });
 
         this.navService.setSeccionList([]);
@@ -212,6 +246,11 @@ export class OrdenesDeCargaFasonAltaComponent
                 this.mensajeComponent.setInfoMsg(this.mensajeCuitDestino || "Debe seleccionar un domicilio para este tipo de material.")
                 return false;
             }
+        } else {
+            if (!this.ordenDeCargaFason.DestinoMercaderia || this.ordenDeCargaFason.DestinoMercaderia.length < 5) {
+                this.mensajeComponent.setInfoMsg("Ingrese un destino de mercadería.");
+                return false;
+            }
         }
 
         return true;
@@ -233,6 +272,8 @@ export class OrdenesDeCargaFasonAltaComponent
             this.ordenDeCargaFason.Cliente = this.clienteSeleccionado.Id;
         }
         this.obtenerDestinos(this.ordenDeCargaFason.Cliente)
+        this.getCuilsChofer();
+        this.getCuitsTransporte();
     }
 
     //Utils
@@ -352,7 +393,8 @@ export class OrdenesDeCargaFasonAltaComponent
                             } else {
                                 this.mensajeComponent.setMsgsEmpty();
                                 this.mensajeSuccess = result.data.Mensaje;
-
+                                this.ordenDeCargaFasonId = result.data.IdEntidad;
+                                this.gestionarAltasCuitTerceros(this.ordenDeCargaFasonId.toString());
                                 document.getElementById("openModalNotificacion")
                                     .click();
                             }
@@ -411,7 +453,7 @@ export class OrdenesDeCargaFasonAltaComponent
     }
 
     obtenerDestinos = (Cliente: string) => {
-        this.subscription = this.service.getDestino(Cliente).subscribe(
+        this.service.getDestino(Cliente).subscribe(
             (result) => {
                 this.listaDestinos = result.data;
                 if (this.ordenDeCargaFason.LocalidadDescripcion) {
@@ -717,9 +759,9 @@ export class OrdenesDeCargaFasonAltaComponent
         if (this.ordenDeCargaFason[campo] != this.clienteSeleccionado.CUIT) {
             this.ordenDeCargaFason[campo] = this.clienteSeleccionado.CUIT;
             if (campo === "CUITDestinatario")
-                this.cuitDestinatarioChanged();
+                this.validarSisaDestinatario();
             else if (campo === "CUITDestino")
-                this.cuitDestinoChanged();
+                this.validarSisaDestino();
         }
     }
     resetearPlantasDomicilios() {
@@ -731,15 +773,10 @@ export class OrdenesDeCargaFasonAltaComponent
         this.onPlantaSeleccionadaChanged();
     }
 
-    cuitDestinatarioChanged() {
+    validarCuitDestinatarioExiste() {
         const cuit = this.ordenDeCargaFason.CUITDestinatario;
-        if (!cuit || !this.revisarCUITFormatoValido(cuit)) {
-            this.ordenDeCargaFason.RazonSocialDestinatario = undefined;
-            return;
-        }
         this.validandoCuitDestinatario = true;
         this.ordenDeCargaFason.RazonSocialDestinatario = undefined;
-        this.mensajeCuitDestinatario = "";
 
         this.service.validarExisteCuitScato(cuit).subscribe(
             result => {
@@ -753,19 +790,13 @@ export class OrdenesDeCargaFasonAltaComponent
                 else {
                     this.ordenDeCargaFason.RazonSocialDestinatario = data.RazonSocial;
                 }
-                this.validarSisaDestinatario(cuit)
             })
     }
 
-    cuitDestinoChanged() {
+    validarCuitDestinoExiste() {
         const cuit = this.ordenDeCargaFason.CUITDestino;
-        if (!cuit || !this.revisarCUITFormatoValido(cuit)) {
-            this.ordenDeCargaFason.RazonSocialDestino = undefined;
-            return;
-        }
+
         this.validandoCuitDestino = true;
-        this.ordenDeCargaFason.RazonSocialDestino = undefined;
-        this.mensajeCuitDestino = "";
 
         this.service.validarExisteCuitScato(cuit).subscribe(
             result => {
@@ -779,13 +810,20 @@ export class OrdenesDeCargaFasonAltaComponent
                 else {
                     this.ordenDeCargaFason.RazonSocialDestino = data.RazonSocial;
                 }
-                this.validarSisaDestino(cuit)
             })
     }
 
-    validarSisaDestinatario(cuitDestinatario: string) {
+    validarSisaDestinatario() {
+        const cuit = this.ordenDeCargaFason.CUITDestinatario;
+        if (!cuit || !this.revisarCUITFormatoValido(cuit)) {
+            this.ordenDeCargaFason.RazonSocialDestinatario = undefined;
+            return;
+        }
         this.validandoCuitDestinatario = true;
-        this.service.validarSisaCuit(cuitDestinatario, "", this.ordenDeCargaFason.ProductoSeleccionado.CodigoSap).subscribe(
+        this.ordenDeCargaFason.RazonSocialDestinatario = undefined;
+        this.mensajeCuitDestinatario = "";
+
+        this.service.validarSisaCuit(cuit, "", this.ordenDeCargaFason.ProductoSeleccionado.CodigoSap).subscribe(
             result => {
                 this.validandoCuitDestinatario = false;
                 const esValidoSisa = this.manejarErroresApiResponse(result);
@@ -793,15 +831,23 @@ export class OrdenesDeCargaFasonAltaComponent
                     this.mensajeCuitDestinatario = "El CUIT destinatario no está habilitado en SISA, no podrá cargar la orden hasta regularizar la situación";
                 }
                 else {
-                    this.validarRucaDestinatario(cuitDestinatario);
+                    this.validarRucaDestinatario(cuit);
                 }
             }
         )
     }
 
-    validarSisaDestino(cuitDestino: string) {
+    validarSisaDestino() {
+        const cuit = this.ordenDeCargaFason.CUITDestino;
+        if (!cuit || !this.revisarCUITFormatoValido(cuit)) {
+            this.ordenDeCargaFason.RazonSocialDestino = undefined;
+            return;
+        }
         this.validandoCuitDestino = true;
-        this.service.validarSisaCuit("", cuitDestino, this.ordenDeCargaFason.ProductoSeleccionado.CodigoSap).subscribe(
+        this.ordenDeCargaFason.RazonSocialDestino = undefined;
+        this.mensajeCuitDestino = "";
+
+        this.service.validarSisaCuit("", cuit, this.ordenDeCargaFason.ProductoSeleccionado.CodigoSap).subscribe(
             result => {
                 this.validandoCuitDestino = false;
                 const esValidoSisa = this.manejarErroresApiResponse(result);
@@ -809,7 +855,7 @@ export class OrdenesDeCargaFasonAltaComponent
                     this.mensajeCuitDestino = "El CUIT destino no está habilitado en SISA, no podrá cargar la orden hasta regularizar la situación";
                 }
                 else {
-                    this.validarRucaDestino(cuitDestino);
+                    this.validarRucaDestino(cuit);
                 }
             }
         )
@@ -823,6 +869,8 @@ export class OrdenesDeCargaFasonAltaComponent
                 const esValidoRuca = this.manejarErroresApiResponse(result);
                 if (!esValidoRuca) {
                     this.mensajeCuitDestinatario = "El CUIT destinatario no posee planta/domicilio en RUCA, no podrá cargar la orden hasta regularizar la situación";
+                } else {
+                    this.validarCuitDestinatarioExiste()
                 }
             }
         );
@@ -838,6 +886,7 @@ export class OrdenesDeCargaFasonAltaComponent
                     this.mensajeCuitDestino = "El CUIT destino no posee planta/domicilio en RUCA, no podrá cargar la orden hasta regularizar la situación";
                 } else {
                     this.onDestinoIngresado(cuitDestino)
+                    this.validarCuitDestinoExiste();
                 }
             }
         );
@@ -887,5 +936,204 @@ export class OrdenesDeCargaFasonAltaComponent
                 this.ordenDeCargaFason.CUITCliente = this.clienteSeleccionado.CUIT;
             }
         });
+    }
+    patenteAcopladoSelected(event: any) {
+        this.ordenDeCargaFason.PatenteAcoplado = event.toUpperCase();
+    }
+    patenteChasisSelected(event: any) {
+        this.ordenDeCargaFason.PatenteChasis = event.toUpperCase();
+    }
+    get patenteAcopladoValida() {
+        return this.ordenDeCargaFason.PatenteAcoplado && this.ordenDeCargaFason.PatenteAcoplado.trim().length >= 6
+    }
+    get patenteChasisValido() {
+        return this.ordenDeCargaFason.PatenteChasis && this.ordenDeCargaFason.PatenteChasis.trim().length >= 6
+    }
+
+    displayModalEscalable = false;
+    decidioEscalable = false;
+
+    validarCNRT() {
+        if (!(this.patenteAcopladoValida && this.patenteChasisValido))
+            return;
+        //Posible check de si está marcado el campo escalable
+        this.validarCNRTSubject.next();
+    }
+    validarCNRTRequest() {
+        this.validando.Escalable = true;
+        this.validarCNRTSubscription = this.service
+            .verificarCNRT(this.ordenDeCargaFason.PatenteChasis, this.ordenDeCargaFason.PatenteAcoplado)
+            .subscribe(res => {
+                this.validando.Escalable = false;
+                const validezCNRTResponse = this.manejarErroresApiResponse(res)
+                if (!validezCNRTResponse) {
+                    this.setValorEscalable()
+                } else {
+                    this.escalableCNRT = validezCNRTResponse.EsCamionEscalable;
+                    if (!this.escalableCNRT && this.ordenDeCargaFason.Escalable) {
+                        this.msgService.add(MSG_ALERTA_NO_ESCALABLE);
+                        this.setValorEscalable()
+                    }
+                    this.displayModalEscalable = this.escalableCNRT && !this.ordenDeCargaFason.Escalable && !this.decidioEscalable;
+                }
+            })
+    }
+    validarEscalable() {
+        if (!this.ordenDeCargaFason.Escalable)
+            return;
+        if (!this.escalableCNRT && this.escalableCNRT !== undefined) {
+            this.msgService.add(MSG_ALERTA_NO_ESCALABLE);
+            this.setValorEscalable()
+        }
+        else if (this.escalableCNRT === undefined)
+            this.validarCNRT();
+    }
+    setValorEscalable(value = false) {
+        this.escalableCheckbox.writeValue(value)
+        this.ordenDeCargaFason.Escalable = value;
+    }
+    marcarComoEscalable() {
+        this.setValorEscalable(true)
+        this.displayModalEscalable = false;
+    }
+    dejarSinEscalable() {
+        this.displayModalEscalable = false;
+    }
+    public extraOnDestroy(): void {
+        this.subscriptions.unsubscribe();
+    }
+
+    getPatentes() {
+        this.floatMsgService.setMsgsEmpty();
+        this.unsubscribe();
+        try {
+            this.service.getPatentes(this.ordenDeCargaFason).subscribe(
+                (result: any) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        console.error(' getPatentes: ', result.error);
+                        this.floatMsgService.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        console.info(' getPatentes: ', result.info);
+                        this.floatMsgService.setInfoMsg(result.info);
+                    } else {
+                        this.patentesChasis = result.ordenes.map((patente) => {
+                            return { label: patente.label, value: patente.label };
+                        })
+
+                        var flags = [], output = [], l = this.patentesChasis.length, i;
+                        for (i = 0; i < l; i++) {
+                            if (flags[this.patentesChasis[i].value]) continue;
+                            flags[this.patentesChasis[i].value] = true;
+                            output.push(this.patentesChasis[i]);
+                        }
+                        this.patentesChasis = output;
+
+                        this.patentesAcoplados = result.ordenes.map((patente) => {
+                            return { label: patente.value, value: patente.value };
+                        })
+
+                        flags = [], output = [], l = this.patentesAcoplados.length, i;
+                        for (i = 0; i < l; i++) {
+                            if (flags[this.patentesAcoplados[i].value]) continue;
+                            flags[this.patentesAcoplados[i].value] = true;
+                            output.push(this.patentesAcoplados[i]);
+                        }
+                        this.patentesAcoplados = output;
+                    }
+                },
+                error => {
+                    console.error(' getPatentes: ', error.message);
+                    this.floatMsgService.setErrorMsg(error.message);
+                }
+
+            );
+        } catch (err) {
+            console.error(' getPatentes: ', err);
+            this.floatMsgService.setErrorMsg(err);
+            return false; //<-- Prevent Refresh
+        }
+    }
+
+    getCuilsChofer() {
+        this.floatMsgService.setMsgsEmpty();
+        this.unsubscribe();
+        try {
+            this.service.getCuilsChofer(this.ordenDeCargaFason).subscribe(
+                (result: any) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        console.error(' getCuilsChofer: ', result.error);
+                        this.floatMsgService.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        console.info(' getCuilsChofer: ', result.info);
+                        this.floatMsgService.setInfoMsg(result.info);
+                    } else {
+                        this.cuilsChofer = result.cuils.map((cuil) => {
+                            return { label: cuil.label, value: cuil.value };
+                        })
+                        this.getCuitsTransporte();
+                    }
+                },
+                error => {
+                    console.error(' getCuilsChofer: ', error.message);
+                    this.floatMsgService.setErrorMsg(error.message);
+                }
+
+            );
+        } catch (err) {
+            console.error(' getCuilsChofer: ', err);
+            this.floatMsgService.setErrorMsg(err);
+            return false; //<-- Prevent Refresh
+        }
+    }
+
+    getCuitsTransporte() {
+        this.floatMsgService.setMsgsEmpty();
+        this.unsubscribe();
+        try {
+            this.service.getCuitsTransporte(this.ordenDeCargaFason).subscribe(
+                (result: any) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        console.error(' getCuitsTransporte: ', result.error);
+                        this.floatMsgService.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        console.info(' getCuitsTransporte: ', result.info);
+                        this.floatMsgService.setInfoMsg(result.info);
+                    } else {
+                        this.cuitsTransporte = result.cuits.map((cuit) => {
+                            return { label: cuit.label, value: cuit.value };
+                        })
+                    }
+                },
+                error => {
+                    console.error(' getCuitsTransporte: ', error.message);
+                    this.floatMsgService.setErrorMsg(error.message);
+                }
+
+            );
+        } catch (err) {
+            console.error(' getCuitsTransporte: ', err);
+            this.floatMsgService.setErrorMsg(err);
+            return false; //<-- Prevent Refresh
+        }
+    }
+    gestionarAltasCuitTerceros(ordenId: string) {
+        this.service.EnviarMailAltaCuitTerceros(this.gestiona["CUITIntermediarioFlete"],
+            this.gestiona["CUITDestino"], this.gestiona["CUITDestinatario"], ordenId).subscribe(result => {
+                if (result.logout) {
+                    this.sessionDataService.logout();
+                } else if (result.error != undefined && result.error != "") {
+                    this.mensajeComponent.setErrorMsg(`${result.error}. Al intentar gestionar el alta de cuits`);
+                } else if (result.info != undefined) {
+                    this.mensajeComponent.setInfoMsg(`${result.info}. Al intentar gestionar alta de cuits`);
+                } else {
+                }
+            }
+            );
     }
 }
