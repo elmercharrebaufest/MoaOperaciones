@@ -86,15 +86,13 @@ namespace SustitucionMOAUtils.Services
             IFeriadoService feriadoService,
             IScatoRepositorioClient scatoRepositorioClient,
             IScatoConsumer scatoConsumer,
-            IEmailFasService emailFasService,
             IFacturaAnticipadaService facturaAnticipadaService,
             IKgDisponiblesFasService kgDisponiblesFasService,
             ICNRTClient cNRTClient
-            ) : base(ordenCargaConsumer, scatoConsumer, scatoRepositorioClient, emailFasService, repositorio)
+            ) : base(ordenCargaConsumer, scatoConsumer, scatoRepositorioClient, repositorio)
         {
             this.feriadoService = feriadoService;
             _usuarioAutomaticoSAP = ConfigurationManager.AppSettings["UsuarioAutomaticoSAP"];
-            this.emailFasService = emailFasService;
             _facturaAnticipadaService = facturaAnticipadaService;
             _kgDisponiblesFasService = kgDisponiblesFasService;
             this.cNRTClient = cNRTClient;
@@ -1888,21 +1886,49 @@ namespace SustitucionMOAUtils.Services
             foreach (var ordenDeCarga in repositorio
                 .Listar<OrdenDeCarga>(q => q.TipoContrato == TipoContratoFAS.Normal && q.Estado == EstadoOrdenDeCarga.SinEnviarASAP))
             {
-                var crearOrdenEnSAPRequest = new CrearOrdenEnSAPRequest()
-                {
-                    IdOrdenDeCarga = ordenDeCarga.Id,
-                    ClienteCodigo = ordenDeCarga.Cliente?.CodigoProveedor,
-                    ContratoSAP = ordenDeCarga.ContratoSAP,
-                    CorredorCodigo = ordenDeCarga.Corredor?.CodigoProveedor,
-                    Cantidad = ordenDeCarga.Cantidad,
-                    MaterialCodigoSAP = ordenDeCarga.Producto?.CodigoSap,
-                    NumeroPedidoIngresado = ordenDeCarga.NumeroPedidoIngresado,
-                    MailUsuarioSAP = String.Empty
-                };
-                CrearOrdenEnSAP(crearOrdenEnSAPRequest);
+                if (ContratoEntre15a30Tn(ordenDeCarga)){
+                    var crearOrdenEnSAPRequest = new CrearOrdenEnSAPRequest()
+                    {
+                        IdOrdenDeCarga = ordenDeCarga.Id,
+                        ClienteCodigo = ordenDeCarga.Cliente?.CodigoProveedor,
+                        ContratoSAP = ordenDeCarga.ContratoSAP,
+                        CorredorCodigo = ordenDeCarga.Corredor?.CodigoProveedor,
+                        Cantidad = ordenDeCarga.Cantidad,
+                        MaterialCodigoSAP = ordenDeCarga.Producto?.CodigoSap,
+                        NumeroPedidoIngresado = ordenDeCarga.NumeroPedidoIngresado,
+                        MailUsuarioSAP = String.Empty
+                    };
+                    Log.Info($"CrearOrdenEnSAPBulk - CrearOrdenEnSAP -> OrdenId: {ordenDeCarga.Id}");
+                    CrearOrdenEnSAP(crearOrdenEnSAPRequest);
+                }
             }
         }
+
+        private bool ContratoEntre15a30Tn(OrdenDeCarga orden)
+        {
+            var numeroContrato = string.IsNullOrEmpty(orden.ContratoSAP) ? orden.ContratoIngresado : orden.ContratoSAP;
+            Log.Info($"Validar kg orden 0 a 15tn: patente={orden.PatenteAcoplado}, chasis={orden.ChasisAcoplado}, " +
+                $"código cliente={orden.Cliente.CodigoProveedor}, número contrato={numeroContrato}");
+            var contratoSAP = ordenCargaConsumer.ObtenerContratoSAP(numeroContrato, null);
+            if (contratoSAP == null)
+            {
+                Log.Info($"ContratoEntre15a30Tn - No se encontró el contrato {numeroContrato} en SAP, ordenId: {orden.Id}");
+                return false;
+            }
+            Log.Info($"Validar kg contrato 0 a 15tn: detalles={contratoSAP.Detalles} ");
+            var ordenesPendientes = ObtenerOrdenesPendientesDeCliente(orden.Cliente.CodigoProveedor).Where(ordenPendiente => ordenPendiente.Id != orden.Id).ToList();
+            var kilosDisponibles = _kgDisponiblesFasService.ObtenerKgDisponiblesContrato(contratoSAP, ordenesPendientes);
+
+            if (kilosDisponibles <= Constante.FAS_KILOS_LIMITE_INFERIOR)
+                return false;
+            if (kilosDisponibles < Constante.FAS_KILOS_LIMITE_SUPERIOR)
+                return false;
+            return true;
+        }
+
         #endregion
+
+
 
         #region Etapa2
         public Resultado VerificarSituacionCrediticia(int ordenId)

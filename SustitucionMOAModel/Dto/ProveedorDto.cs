@@ -44,7 +44,7 @@ namespace SustitucionMOAModel.Dto
 
         public ProveedorDto() { }
 
-        public ProveedorDto(Proveedor proveedor)
+        public ProveedorDto(Proveedor proveedor, bool conHistorial = true)
         {
             CodigoProveedor = proveedor.CodigoProveedor ?? "";
             CUIT = proveedor.CUIT;
@@ -63,15 +63,18 @@ namespace SustitucionMOAModel.Dto
             IdTipoProveedor = proveedor.TipoProveedor.Id;
             EsRevendedor = proveedor.EsRevendedor;
 
-            if (proveedor.HistorialAprobaciones != null && proveedor.HistorialAprobaciones.Count() > 0)
+            if (conHistorial) 
             {
-                UltimaEdicion = proveedor.HistorialAprobaciones.OrderByDescending(x => x.Fecha).FirstOrDefault().Fecha;
-                HistorialAprobaciones = proveedor.HistorialAprobaciones.Select(a => new ProveedorHistorialAprobacionDto(a)).ToList();
-            }
-            else
-            {
-                UltimaEdicion = null;
-                HistorialAprobaciones = new List<ProveedorHistorialAprobacionDto>();
+                if (proveedor.HistorialAprobaciones != null && proveedor.HistorialAprobaciones.Count() > 0)
+                {
+                    UltimaEdicion = proveedor.HistorialAprobaciones.OrderByDescending(x => x.Fecha).FirstOrDefault().Fecha;
+                    HistorialAprobaciones = proveedor.HistorialAprobaciones.Select(a => new ProveedorHistorialAprobacionDto(a)).ToList();
+                }
+                else
+                {
+                    UltimaEdicion = null;
+                    HistorialAprobaciones = new List<ProveedorHistorialAprobacionDto>();
+                }
             }
         }
 

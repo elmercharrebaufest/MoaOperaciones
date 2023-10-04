@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Linq;
 using ScatoRepo = SustitucionMOAModel.Models.WebApiMap.ScatoRepositorio;
 using SustitucionMOARepositorio;
+using System.Configuration;
 
 namespace SustitucionMOAUtils.Services
 {
@@ -22,22 +23,19 @@ namespace SustitucionMOAUtils.Services
         protected readonly IScatoConsumer scatoConsumer;
         protected readonly IScatoRepositorioClient scatoRepositorioClient;
         protected readonly IRepositorio repositorio;
-        private readonly IEmailOrdenesCargaServiceBase emailService;
-
-
+        
         protected OrdenDeCargaServiceBase(
             IOrdenCargaConsumerMOA ordenCargaConsumer,
             IScatoConsumer scatoConsumer,
             IScatoRepositorioClient scatoRepositorioClient,
-            IEmailOrdenesCargaServiceBase emailService,
             IRepositorio repositorio)
         {
             this.scatoConsumer = scatoConsumer;
             this.ordenCargaConsumer = ordenCargaConsumer;
             this.scatoRepositorioClient = scatoRepositorioClient;
-            this.emailService = emailService;
             this.repositorio = repositorio;
         }
+
 
         public ValidarCuitExisteScatoResponse ValidarCuitExisteScato(string cuit)
         {

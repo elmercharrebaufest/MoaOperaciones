@@ -84,8 +84,8 @@
                                 <div class="col-xs-12 col-md-6">
                                     <div class="col-xs-12 col-md-12" *ngIf="validaCPEDG">
                                         <p class="blue"><strong>Reventa</strong></p>
-                                        <p-checkbox name="reventa" [binary]="true" [(ngModel)]="ordenDeCargaFason.Reventa"
-                                            [disabled]="true"></p-checkbox>
+                                        <p-checkbox name="reventa" [binary]="true"
+                                            [(ngModel)]="ordenDeCargaFason.Reventa" [disabled]="true"></p-checkbox>
                                     </div>
 
                                     <div class="col-xs-12 col-md-12">
@@ -149,7 +149,10 @@
                                         <p class="blue"><strong>Destino</strong></p>
                                         <p style="width:100%">{{ordenDeCargaFason.LocalidadDescripcion}}</p>
                                     </div>
-
+                                    <div class="col-xs-12 col-md-12" *ngIf="!validaCPEDG">
+                                        <p class="blue"><strong>Destino Mercadería</strong></p>
+                                        <p style="width:100%">{{ordenDeCargaFason.DestinoMercaderia}}</p>
+                                    </div>
                                     <div class="col-xs-12 col-md-12">
                                         <p class="blue"><strong>Estado</strong></p>
                                         <p style="width:100%">{{ordenDeCargaFason.DescripcionEstado}}</p>
@@ -195,14 +198,14 @@
 
                                     <div class="col-xs-12 col-md-12">
                                         <p class="blue"><strong>Camión escalable</strong></p>
-                                        <p-checkbox name="escalable" [binary]="true" [(ngModel)]="ordenDeCargaFason.Escalable"
-                                        [disabled]="true"></p-checkbox>
+                                        <p-checkbox name="escalable" [binary]="true"
+                                            [(ngModel)]="ordenDeCargaFason.Escalable" [disabled]="true"></p-checkbox>
                                     </div>
 
                                     <div class="col-xs-12 col-md-12">
                                         <p class="blue"><strong>Flete MOA</strong></p>
-                                        <p-checkbox name="fleteMoa" [binary]="true" [(ngModel)]="ordenDeCargaFason.FleteMOA"
-                                        [disabled]="true"></p-checkbox>
+                                        <p-checkbox name="fleteMoa" [binary]="true"
+                                            [(ngModel)]="ordenDeCargaFason.FleteMOA" [disabled]="true"></p-checkbox>
                                     </div>
 
                                     <div class="col-xs-12 col-md-12">
@@ -252,6 +255,10 @@
                             <div class="col-xs-5 col-md-3" *ngIf="botones.aprobarRechazarAnulacion">
                                 <input type="button" (click)="confirmarRechazarSolicitudAnulacion(true)"
                                     class="btn-custom btn-add btn-grande" value="Aprobar anulación">
+                            </div>
+                            <div class="col-xs-5 col-md-3" *ngIf="botones.verificarCuitsTercero">
+                                <input type="button" (click)="verificarCuitsTerceros()"
+                                    class="btn-custom btn-add btn-grande" value="Verificar Cuits Terceros">
                             </div>
                             <div class="col-xs-5 col-md-3" *ngIf="botones.aprobarRechazarAnulacion">
                                 <input type="button" (click)="confirmarRechazarSolicitudAnulacion(false)"

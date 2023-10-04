@@ -19,6 +19,8 @@ import { CheckboxModule } from 'primeng/checkbox';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { DialogModule } from 'primeng/dialog';
 import { TooltipModule } from 'primeng/tooltip';
+import { MessageService } from 'primeng/api';
+import { ToastModule } from 'primeng/toast';
 
 @NgModule({
   imports: [
@@ -38,7 +40,8 @@ import { TooltipModule } from 'primeng/tooltip';
     CheckboxModule,
     ProgressSpinnerModule,
     DialogModule,
-    TooltipModule
+    TooltipModule,
+    ToastModule
   ],
   declarations: [
     OrdenesDeCargaFasonAltaComponent,
@@ -47,7 +50,8 @@ import { TooltipModule } from 'primeng/tooltip';
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   providers: [
-    OrdenesDeCargaFasonService
+    OrdenesDeCargaFasonService,
+    MessageService
   ],
 })
 
