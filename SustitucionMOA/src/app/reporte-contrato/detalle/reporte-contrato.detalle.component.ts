@@ -97,7 +97,7 @@ export class DetalleComponent extends ListBaseComponent implements OnInit {
                 "CTG/Remito": info.Remito || "-",
                 "CPE": info.CPE || "-",
                 "Cant. Facturada": info.CantidadFacturaStr || "-",
-                "Factura": info.Factura || "-",
+                "Factura": info.FacturaLegal || "-",
                 "Chasis": info.Chasis || "-",
                 "Acoplado": info.Acoplado || "-",
                 "Chofer": info.Chofer || "-"
