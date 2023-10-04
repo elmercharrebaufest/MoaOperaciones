@@ -16,14 +16,9 @@ namespace SustitucionMOAUtils.Services
     public class AplicacionCartaPorteService : IAplicacionCartaPorteService
     {
         protected readonly IRepositorio _repositorio;
-        //protected readonly IAplicacionCartaPorteConsumerMOA _consumer;
-        public AplicacionCartaPorteService(
-            IRepositorio repositorio
-            //IAplicacionCartaPorteConsumerMOA consumer,
-            )
+        public AplicacionCartaPorteService(IRepositorio repositorio)
         {
             this._repositorio = repositorio;
-            //this._consumer = consumer;
         }
         public Resultado Agregar(AplicacionCartaPorte aplicacionCCPP, string mailUsuario)
         {

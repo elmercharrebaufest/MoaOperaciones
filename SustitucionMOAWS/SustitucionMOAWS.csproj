@@ -65,6 +65,7 @@
   <ItemGroup>
     <Compile Include="CredentialService\DataAgroWSCredential.cs" />
     <Compile Include="CredentialService\SAPCredential.cs" />
+    <Compile Include="Interfaces\ICNRTClient.cs" />
     <Compile Include="Interfaces\IOrdenCargaConsumerMOA.cs" />
     <Compile Include="Interfaces\IComprasSolpConsumer.cs" />
     <Compile Include="Interfaces\IListarPesificacionesConsumer.cs" />
@@ -79,6 +80,11 @@
     <Compile Include="ResponseHandler\OrdenCarga\ControlCargaResponseHandler.cs" />
     <Compile Include="ResponseHandler\OrdenCarga\ModEntregaResponseHandler.cs" />
     <Compile Include="ResponseHandler\OrdenCarga\OrdenCargaEntreResponseHandler.cs" />
+    <Compile Include="Service References\AgregarRegistroInfoServiceWebMOA\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
     <Compile Include="Service References\AplicacionesWebServiceMOA\Reference.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -510,6 +516,7 @@
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
     <Compile Include="Util\ExtensionesSerializacion.cs" />
+    <Compile Include="WebApi\CNRTClient.cs" />
     <Compile Include="WebApi\ScatoRepositorioClient.cs" />
     <Compile Include="WSConsumers\AplicacionesConsumerMOA.cs" />
     <Compile Include="WSConsumers\CambioPassConsumerMOA.cs" />
@@ -521,6 +528,7 @@
     <Compile Include="WSConsumers\ContratoDetalleConsumerMOA.cs" />
     <Compile Include="WSConsumers\ComprobantesNGConsumerMOA.cs" />
     <Compile Include="WSConsumers\CrearPedidoConsumerMOA.cs" />
+    <Compile Include="WSConsumers\AgregarRegistroInfoConsumerMOA.cs" />
     <Compile Include="WSConsumers\EcheqAnularAperturaChequeConsumerMOA.cs" />
     <Compile Include="WSConsumers\EcheqCargaAperturaChequeConsumerMOA.cs" />
     <Compile Include="WSConsumers\EcheqModificacionDocumentoChequeConsumerMOA.cs" />
@@ -610,6 +618,7 @@
     </None>
     <None Include="packages.config" />
     <None Include="Properties\DataSources\System.Diagnostics.EventLogEntry.datasource" />
+    <None Include="Service References\AgregarRegistroInfoServiceWebMOA\SI_MMRFC_MANTENER_REGINFO.wsdl" />
     <None Include="Service References\AplicacionesWebServiceMOA\SI_MPMF_MOAOP_APLICACIONES.wsdl" />
     <None Include="Service References\AplicacionesWebServiceMOA\SustitucionMOAWS.AplicacionesWebServiceMOA.SI_MPMF_MOAOP_APLICACIONESResponse.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
@@ -2315,6 +2324,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <WCFMetadataStorage Include="Service References\AgregarRegistroInfoServiceWebMOA\" />
     <WCFMetadataStorage Include="Service References\AplicacionesWebServiceMOA\" />
     <WCFMetadataStorage Include="Service References\CambioPassWebServiceMOA\" />
     <WCFMetadataStorage Include="Service References\CartaPorteDetalleWebServiceMOA\" />
@@ -3459,6 +3469,18 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Service References\ModificarOCWebServiceMOA\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\AgregarRegistroInfoServiceWebMOA\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\AgregarRegistroInfoServiceWebMOA\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\AgregarRegistroInfoServiceWebMOA\Reference.svcmap">
       <Generator>WCF Proxy Generator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>

@@ -9,17 +9,25 @@ namespace SustitucionMOARepositorio.Extensiones
     {
         public static void SqlBulkInsert(this DbContext session, DataTable dataTable, string tableName)
         {
-            var conn = session.Database.Connection.ConnectionString;
-            using (var copy = new SqlBulkCopy(conn))
+            try
             {
-                copy.BulkCopyTimeout = 10000;
-                copy.DestinationTableName = tableName;
-                foreach (DataColumn column in dataTable.Columns)
-                {
-                    copy.ColumnMappings.Add(column.ColumnName, column.ColumnName);
-                }
+                string connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["CONTEXTO"].ConnectionString;
 
-                copy.WriteToServer(dataTable);
+                using (var copy = new SqlBulkCopy(connectionString))
+                {
+                    copy.BulkCopyTimeout = 10000;
+                    copy.DestinationTableName = tableName;
+                    foreach (DataColumn column in dataTable.Columns)
+                    {
+                        copy.ColumnMappings.Add(column.ColumnName, column.ColumnName);
+                    }
+
+                    copy.WriteToServer(dataTable);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
             }
         }
 

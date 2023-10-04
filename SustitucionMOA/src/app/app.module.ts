@@ -68,10 +68,10 @@ import { ApikeyService } from "./apikey/apikey.service";
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ConfirmationService } from 'primeng/api';
 import { PesificacionesGuardadasComponent } from './pesificacion/pesificaciones-guardadas/pesificaciones-guardadas.component'
-import { PesificacionBaseComponent } from "./pesificacion/pesificacion-base.component";;
-import { ModificarDatosComponent } from './usuario/modificar-datos/modificar-datos.component'
-import { ToastModule } from "primeng/toast";;
-import { UsuarioAuditoriaListComponent } from './usuario/usuario-auditoria-list/usuario-auditoria-list.component'
+import { PesificacionBaseComponent } from "./pesificacion/pesificacion-base.component";
+import { ModificarDatosComponent } from './usuario/modificar-datos/modificar-datos.component';
+import { ToastModule } from "primeng/toast";
+import { UsuarioAuditoriaListComponent } from './usuario/usuario-auditoria-list/usuario-auditoria-list.component';
 
 
 
@@ -124,7 +124,7 @@ import { UsuarioAuditoriaListComponent } from './usuario/usuario-auditoria-list/
     PesificacionesGuardadasComponent,
     PesificacionBaseComponent,
     ModificarDatosComponent,
-    UsuarioAuditoriaListComponent
+    UsuarioAuditoriaListComponent,
     ],
   providers: [
     DatePipe,

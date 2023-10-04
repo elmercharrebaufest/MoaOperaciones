@@ -2,11 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.IO;
-using System.Linq;
-using System.Runtime.Remoting.Metadata.W3cXsd2001;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SustitucionMOAModel.Entities
 {
@@ -42,6 +37,6 @@ namespace SustitucionMOAModel.Entities
 
         [ForeignKey("Moneda_Id")]
         public virtual TablaSap Moneda { get; set; }
-
+        public DateTime? FechaLiberacionSap { get; set; }
     }
 }

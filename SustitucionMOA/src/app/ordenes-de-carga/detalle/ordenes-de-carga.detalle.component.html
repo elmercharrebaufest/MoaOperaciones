@@ -116,7 +116,7 @@
 
                                     <div class="col-xs-12 col-md-12">
                                         <p class="blue"><strong>Contrato seleccionado</strong></p>
-                                        <p style="width:100%">{{ordenDeCarga.ContratoSAP}}</p>
+                                        <p style="width:100%">{{ordenDeCarga.ContratoSAP || '-'}}</p>
                                     </div>
 
                                     <div class="col-xs-12 col-md-12" *ngIf="validaCPEDG">
@@ -165,7 +165,10 @@
                                         <p class="blue"><strong>Entrega</strong></p>
                                         <p style="width:100%">{{ordenDeCarga.NumeroEntrega}}</p>
                                     </div>
-
+                                    <div class="col-xs-12 col-md-12" *ngIf="!validaCPEDG">
+                                        <p class="blue"><strong>Destino Mercadería</strong></p>
+                                        <p style="width:100%">{{ordenDeCarga.DestinoMercaderia}}</p>
+                                    </div>
                                     <div class="col-xs-12 col-md-12">
                                         <p class="blue"><strong>Estado</strong></p>
                                         <p style="width:100%">{{ordenDeCarga.DescripcionEstadoUsuarioFinal}}</p>
@@ -474,6 +477,10 @@
                                 <input type="button" (click)="verificarTransporte()"
                                     class="btn-custom btn-add btn-grande" value="Verificar Transporte">
                             </div>
+                            <div class="col-xs-5 col-md-3" *ngIf="mostrarBotonVerificarCuitsTercero">
+                                <input type="button" (click)="verificarCuitsTerceros()"
+                                    class="btn-custom btn-add btn-grande" value="Verificar Cuits Terceros">
+                            </div>
                             <div class="col-xs-5 col-md-3" *ngIf="mostrarBotonVerificarSituacionCrediticia">
                                 <input type="button" (click)="verificarSituacionCrediticia()"
                                     class="btn-custom btn-add btn-grande" value="Verificar credito">
@@ -520,6 +527,10 @@
                             <div class="col-xs-5 col-md-3" *ngIf="mostrarBotonEdicionFinalizada">
                                 <input type="button" (click)="abrirModalEdicionFinalizada()"
                                     class="btn-custom btn-remove btn-grande" value="Edición finalizada">
+                            </div>
+                            <div class="col-xs-5 col-md-3" *ngIf="mostrarBotonVolverADetalle">
+                                <input type="button" (click)="navegarADetalle()" class="btn-custom btn-add btn-grande"
+                                    value="Volver a Detalle">
                             </div>
                         </div>
                     </div>
@@ -697,6 +708,9 @@
                     <h4 class="modal-title" id="modalAnularOrden">Anular orden</h4>
                 </div>
                 <div class="modal-body">
+                    <div *ngIf="mensajeValidacionScato" class="row" class="col-xs-12 col-sm-12 col-md-12 alertScato">
+                        {{mensajeValidacionScato}}
+                    </div>
                     <div class="row" class="col-xs-12 col-sm-12 col-md-12">
                         ¿Está seguro de que desea anular la orden de carga?
                     </div>

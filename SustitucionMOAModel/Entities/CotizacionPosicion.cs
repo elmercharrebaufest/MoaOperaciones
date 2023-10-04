@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -19,6 +16,7 @@ namespace SustitucionMOAModel.Entities
         public int? Moneda_Id { get; set; }
         public decimal? Precio { get; set; }
         public DateTime? FechaDeEntrega { get; set; }
+        public DateTime? FechaDeVigencia { get; set; }
 
 
         [ForeignKey("Cotizacion_Id")]

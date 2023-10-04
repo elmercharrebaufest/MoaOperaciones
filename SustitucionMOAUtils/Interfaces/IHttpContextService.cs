@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SustitucionMOAUtils.Interfaces
+﻿namespace SustitucionMOAUtils.Interfaces
 {
     public interface IHttpContextService
     {
         string ObtenerPathLogoMail();
+        string GetDirectory(string path);
     }
 }
