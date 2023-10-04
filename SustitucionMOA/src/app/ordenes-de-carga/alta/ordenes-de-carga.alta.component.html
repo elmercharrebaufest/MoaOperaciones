@@ -271,7 +271,7 @@
                                 </div>
                                 <div class="styled-select autocomplete">
                                     <input auto-complete [(ngModel)]="ordenDeCarga.PatenteAcoplado"
-                                        (ngModelChange)="patenteAcopladoSelected($event);validarCNRT()" maxlength="7"
+                                        (ngModelChange)="patenteAcopladoSelected($event);onPatenteSeleccionada();validarCNRT()" maxlength="7"
                                         [source]="patentesAcoplados" [min-chars]="2"
                                         [no-match-found-text]="'No se encontraron resultados'"
                                         [value-formatter]="generalFormatterAcoplado"
