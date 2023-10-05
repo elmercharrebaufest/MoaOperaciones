@@ -3730,18 +3730,18 @@ namespace SustitucionMOAUtils.Services
         private void EnviarMailPeticionDeOferta(PeticionDeOferta peticion, List<PeticionDeOfertaUsuario> usuarios)
         {
             var archs = ObtenerArchivosPeticionDeOferta(peticion);
-            var copia = new List<string> { peticion.Usuario.Mail };
+            var solicitanteYComprador = new List<string> { peticion.Usuario.Mail };
             if (!string.IsNullOrEmpty(peticion.Solp?.UsuarioCreacion?.Mail))
             {
-                copia.Add(peticion.Solp.UsuarioCreacion.Mail);
+                solicitanteYComprador.Add(peticion.Solp.UsuarioCreacion.Mail);
             }
-            var asunto = "";
+            var proveedores = new List<string>();
+            var asunto = $"MOA - Pedido de Oferta {peticion.Id}: {peticion.Solp.Pliego.NombreObra}";
 
             foreach (var prov in usuarios)
             {
-                asunto = "";
+                proveedores.Add(prov.Usuario.ObtenerRazonSocial() + " - " + prov.Usuario.Mail);
                 var enviarA = new List<string> { prov.Usuario.Mail };
-                asunto += $"MOA - Pedido de Oferta {peticion.Id}: {peticion.Solp.Pliego.NombreObra}";
                 if (peticion.Posiciones.Select(x => x.SolpPosicion).Where(x => x.TipoPosicion_Id != null).FirstOrDefault().TipoPosicion.Codigo == "MATERIALES")
                 {
                     var pdf = GenerarPDFPeticionDeOferta(peticion, prov.Usuario.ObtenerCodigoProveedor());
@@ -3749,9 +3749,12 @@ namespace SustitucionMOAUtils.Services
                         archs.Remove("Peticion de Oferta.pdf");
                     archs.Add("Peticion de Oferta.pdf", pdf);
                 }
-                var cuerpo = CuerpoMailPeticionDeOferta(peticion);
-                emailService.EnviarMail(enviarA, asunto, "", copia, cuerpo, null, null, null, null, archs);
+                var cuerpoProv = CuerpoMailPeticionDeOferta(peticion, true);
+                emailService.EnviarMail(enviarA, asunto, "", null, cuerpoProv, null, null, null, null, archs);
             }
+
+            var cuerpo = CuerpoMailPeticionDeOferta(peticion, false, proveedores);
+            emailService.EnviarMail(solicitanteYComprador, asunto, "", null, cuerpo, null, null, null, null, null);
         }
 
         private Dictionary<string, byte[]> ObtenerArchivosPeticionDeOferta(PeticionDeOferta peticion)
@@ -3766,49 +3769,59 @@ namespace SustitucionMOAUtils.Services
             return archs;
         }
 
-        private AlternateView CuerpoMailPeticionDeOferta(PeticionDeOferta peticion)
+        private AlternateView CuerpoMailPeticionDeOferta(PeticionDeOferta peticion, bool esProveedor, List<string> proveedores = null)
         {
             var filePath = httpContextService.ObtenerPathLogoMail();
             var configuracion = repositorio.Obtener<Configuracion>(con => con.Code == "PliegoDeGeneralidades");
             LinkedResource res = new LinkedResource(filePath);
             res.ContentId = Guid.NewGuid().ToString();
-            string htmlBody = "";
-            htmlBody += $"En el presente mail se informa la nueva PO {peticion.Id} generada con Molinos Agro S.A <br />";
+            string htmlBody = $"En el presente mail se informa la nueva PO {peticion.Id} generada con Molinos Agro S.A <br />";
+            
+            if (!esProveedor)
+            {
+                htmlBody = $"En el presente mail se informa la nueva PO {peticion.Id} que se envió a los siguientes proveedores: <br />";
+                foreach (var proveedor in proveedores)
+                {
+                    htmlBody += proveedor + "<br />";
+                }
+            }
             if (!string.IsNullOrEmpty(peticion.Observaciones))
             {
                 string observacionesFormatted = peticion.Observaciones.Replace("\n", "<br />");
 
-                htmlBody += $"<br />Observaciones: {observacionesFormatted} <br /><br /><br />";
+                htmlBody += $"<br />Observaciones: {observacionesFormatted} <br /><br />";
             }
-
-
-
-            var tienePliego = (peticion.Solp.TipoSolpSap == (int?)TipoSolpSap.Mantenimiento || peticion.Solp.TipoSolpSap == (int?)TipoSolpSap.Sap) && peticion.Solp.EstadoDocumento.Codigo == "CREADO";
-            var solpServicioWebConPliego = peticion.Solp.Posiciones.Select(x => x.TipoPosicion.Codigo).FirstOrDefault() == "SERVICIO" && (peticion.Solp.TipoSolpSap == (int?)TipoSolpSap.Web) && peticion.Solp.TipoSolp.Codigo != "SIN_PLIEGO";
-
-            if (solpServicioWebConPliego || tienePliego)
+          
+            if (esProveedor)
             {
-                var downloadLinkUrl = ConfigurationManager.AppSettings["ida:RedirectUri"] + "/api/compras/DescargarPliegoDesdeLink?solpId=" + peticion.Solp.Id + "&token=" + peticion.Solp.EmailLinkToken;
+                var tienePliego = (peticion.Solp.TipoSolpSap == (int?)TipoSolpSap.Mantenimiento || peticion.Solp.TipoSolpSap == (int?)TipoSolpSap.Sap) && peticion.Solp.EstadoDocumento.Codigo == "CREADO";
+                var solpServicioWebConPliego = peticion.Solp.Posiciones.Select(x => x.TipoPosicion.Codigo).FirstOrDefault() == "SERVICIO" && (peticion.Solp.TipoSolpSap == (int?)TipoSolpSap.Web) && peticion.Solp.TipoSolp.Codigo != "SIN_PLIEGO";
 
-                htmlBody += "<p" +
-                           "style = 'line-height: 24px; font-size: 16px; margin: 0;'" +
-                           "align = 'center' >" +
-                           " Para descargar el legajo, haga  " +
-                           $"<a href = '{downloadLinkUrl}' download rel='noopener noreferrer'>" +
-                           "click aquí" +
-                           "</a></p> <br />";
+                if (solpServicioWebConPliego || tienePliego)
+                {
+                    var downloadLinkUrl = ConfigurationManager.AppSettings["ida:RedirectUri"] + "/api/compras/DescargarPliegoDesdeLink?solpId=" + peticion.Solp.Id + "&token=" + peticion.Solp.EmailLinkToken;
+
+                    htmlBody += "<p" +
+                               "style = 'line-height: 24px; font-size: 16px; margin: 0;'" +
+                               "align = 'center' >" +
+                               " Para descargar el legajo, haga  " +
+                               $"<a href = '{downloadLinkUrl}' download rel='noopener noreferrer'>" +
+                               "click aquí" +
+                               "</a></p> <br />";
+                }
+                if (peticion.AdjuntoPliego == true)
+                {
+                    htmlBody += "<p" +
+                               "style = 'line-height: 24px; font-size: 16px; margin: 0;'" +
+                               "align = 'center' >" +
+                               "Para descargar el pliego de generalidades, haga " +
+                               $"<a href = '{configuracion.Value}' download rel='noopener noreferrer'>" +
+                               "click aquí" +
+                               "</a></p> <br />";
+                }
             }
-            if (peticion.AdjuntoPliego == true)
-            {
-                htmlBody += "<p" +
-                           "style = 'line-height: 24px; font-size: 16px; margin: 0;'" +
-                           "align = 'center' >" +
-                           "Para descargar el pliego de generalidades, haga " +
-                           $"<a href = '{configuracion.Value}' download rel='noopener noreferrer'>" +
-                           "click aquí" +
-                           "</a></p> <br />";
-            }
-            htmlBody += "En caso de tener alguna consulta, ingresar a www.moaoperaciones.com.ar " +
+            
+            htmlBody += "<br />En caso de tener alguna consulta, ingresar a www.moaoperaciones.com.ar " +
                 "<br/><br/>Saludos Cordiales<br/>" +
                 "Molinos Agro S.A. <br/><br/> " +
                  @"<img width:'5%' src='cid:" + res.ContentId + @"'/>";
