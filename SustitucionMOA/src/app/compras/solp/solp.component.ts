@@ -860,7 +860,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
                     } else {
                         this.combos = result;
                         this.combos.flagSolpFinalizada = this.flagSolpFinalizada;
-                        //this.obtenerUsuarioCompras();
+                        this.obtenerUsuarioCompras();
                         this.setupCentroPorDefecto();
                         this.setupDireccionCentroPorDefecto();
                         this.setupMonedaPorDefecto();
@@ -1005,8 +1005,8 @@ export class SolpComponent extends BaseComponent implements OnInit {
     }
 
     // Todos los Modal
-    finalizar({ solpActual }) {
-        //this.selectUsuarioCompras = selectUsuarioCompras;
+    finalizar({ selectUsuarioCompras, solpActual }) {
+        this.selectUsuarioCompras = selectUsuarioCompras;
         this.solpActual = solpActual;
 
         this.cabecera.validarTabCompleto();
