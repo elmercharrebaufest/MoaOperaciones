@@ -2871,8 +2871,14 @@ namespace SustitucionMOAUtils.Services
             };
 
             Log.Info($"GetClientesVigentesSAP(request: {request.ToJson()})");
+            var ordenCargaVisualizarClienteWSMOAResponse = ordenCargaConsumerMOA.OrdenCargaVisualizarClienteExecute(request);
 
-            List<ClienteSAPResponse> response = ordenCargaConsumerMOA.OrdenCargaVisualizarClienteExecute(request).Resultados
+            if (ordenCargaVisualizarClienteWSMOAResponse == null)
+            {
+                throw new ValidationCustomException(ErrorMsg.Error);
+            }
+
+            List<ClienteSAPResponse> response = ordenCargaVisualizarClienteWSMOAResponse.Resultados
                 .Select(c => new ClienteSAPResponse
                 {
                     RazonSocial = c.NombreCliente,

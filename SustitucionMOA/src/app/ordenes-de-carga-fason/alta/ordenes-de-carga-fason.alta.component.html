@@ -55,7 +55,8 @@
                                     <app-dropdown-input [options]="listaProductos" [filterKey]="'Descripcion'"
                                         [valueKey]="'MaterialId'" (selectedChange)="selectProducto($event)"
                                         [placeholder]="'Seleccione un producto'"
-                                        [(selected)]="ordenDeCargaFason.ProductoSeleccionado">
+                                        [(selected)]="ordenDeCargaFason.ProductoSeleccionado"
+                                        [disabled]="editando||null">
                                         <ng-template let-option>
                                             <p class="option-label">
                                                 {{option.Descripcion}}</p>
@@ -93,7 +94,8 @@
                                         <div class="ui-inputgroup">
                                             <input type="text" pInputText
                                                 [(ngModel)]="ordenDeCargaFason.CUITDestinatario" mask="00-00000000-0"
-                                                (change)="validarSisaDestinatario()">
+                                                (change)="validarSisaDestinatario()"
+                                                [disabled]="noPuedeEditarCuitsTerceros||null">
                                             <span
                                                 *ngIf="ordenDeCargaFason.CUITDestinatario != ordenDeCargaFason.CUITCliente.toString()"
                                                 class="pt-2 pointer pi pi-copy"
@@ -130,7 +132,8 @@
                                     <div class="styled-select">
                                         <div class="ui-inputgroup">
                                             <input type="text" pInputText [(ngModel)]="ordenDeCargaFason.CUITDestino"
-                                                mask="00-00000000-0" (change)="validarSisaDestino()">
+                                                mask="00-00000000-0" (change)="validarSisaDestino()"
+                                                [disabled]="noPuedeEditarCuitsTerceros||null">
                                             <span
                                                 *ngIf="ordenDeCargaFason.CUITDestino != ordenDeCargaFason.CUITCliente.toString()"
                                                 class="pt-2 pointer pi pi-copy"
@@ -169,7 +172,7 @@
                                             [options]="listaPlantas" optionLabel="Codigo"
                                             placeholder="Seleccione una planta"
                                             (ngModelChange)="onPlantaSeleccionadaChanged()" [filter]="true"
-                                            filterBy="value.Codigo">
+                                            filterBy="value.Codigo" [disabled]="noPuedeEditarCuitsTerceros||null">
                                         </p-dropdown>
                                     </div>
                                 </div>
@@ -182,7 +185,7 @@
                                             [options]="listaDomicilios" optionLabel="Descripcion"
                                             placeholder="Seleccione un domicilio"
                                             (ngModelChange)="onDomicilioSeleccionadoChanged()" [filter]="true"
-                                            filterBy="value.Descripcion">
+                                            filterBy="value.Descripcion" [disabled]="noPuedeEditarCuitsTerceros||null">
                                         </p-dropdown>
                                     </div>
                                 </div>
@@ -267,9 +270,11 @@
                                     Patente acoplado:
                                 </div>
                                 <div class="styled-select autocomplete">
-                                    <input [(ngModel)]="ordenDeCargaFason.PatenteAcoplado"
+                                    <input auto-complete [(ngModel)]="ordenDeCargaFason.PatenteAcoplado"
                                         (ngModelChange)="patenteAcopladoSelected($event);validarCNRT()" maxlength="7"
-                                        mask="AAAAAAA" />
+                                        mask="AAAAAAA" [source]="patentesAcoplados" [min-chars]="2"
+                                        [no-match-found-text]="'No se encontraron resultados'"
+                                        [value-formatter]="generalFormatter" [list-formatter]="generalFormatter" />
                                 </div>
                             </div>
 
@@ -288,14 +293,14 @@
                                 <div class="formulario-label">
                                     CUIL chofer:
                                 </div>
-                                <div class="styled-select">
-                                    <div class="ui-inputgroup">
-                                        <input type="text" [(ngModel)]="ordenDeCargaFason.CUILChofer"
-                                            mask="00-00000000-0" (change)="validarCuilChofer()">
-                                        <span class="ui-inputgroup-addon" *ngIf="validando.CUILChofer">
-                                            <p-progressSpinner
-                                                [style]="{width: '100%', height: '100%'}"></p-progressSpinner>
-                                        </span>
+                                <div class="styled-select autocomplete">
+                                    <input auto-complete type="text" [(ngModel)]="ordenDeCargaFason.CUILChofer"
+                                        mask="00-00000000-0" (change)="validarCuilChofer()" [source]="cuilsChofer"
+                                        [min-chars]="2" [no-match-found-text]="'No se encontraron resultados'"
+                                        mask="00-00000000-0" [value-formatter]="generalFormatter"
+                                        [list-formatter]="generalFormatter">
+                                    <div *ngIf="validando.CUILChofer">
+                                        <p-progressSpinner [style]="{width: '10%', height: '10%'}"></p-progressSpinner>
                                     </div>
                                 </div>
                             </div>
@@ -315,15 +320,15 @@
                                 <div class="formulario-label">
                                     CUIT transporte:
                                 </div>
-                                <div class="styled-select">
-                                    <div class="ui-inputgroup">
-                                        <input type="text" [(ngModel)]="ordenDeCargaFason.CUITTransporte"
-                                            mask="00-00000000-0" [placeholder]="descripcionTransporte"
-                                            (change)="validarCuitTransporte()">
-                                        <span class="ui-inputgroup-addon" *ngIf="validando.CUITTransporte">
-                                            <p-progressSpinner
-                                                [style]="{width: '100%', height: '100%'}"></p-progressSpinner>
-                                        </span>
+                                <div class="styled-select autocomplete">
+                                    <input auto-complete type="text" [(ngModel)]="ordenDeCargaFason.CUITTransporte"
+                                        mask="00-00000000-0" [placeholder]="descripcionTransporte"
+                                        (change)="validarCuitTransporte()" [source]="cuitsTransporte" [min-chars]="2"
+                                        [no-match-found-text]="'No se encontraron resultados'" mask="00-00000000-0"
+                                        [value-formatter]="generalFormatter" [list-formatter]="generalFormatter"
+                                        [placeholder]="descripcionTransporte">
+                                    <div *ngIf="validando.CUITTransporte">
+                                        <p-progressSpinner [style]="{width: '10%', height: '10%'}"></p-progressSpinner>
                                     </div>
                                 </div>
                             </div>
@@ -453,7 +458,7 @@
     </div>
     <p-footer>
         <button [disabled]="razonSocialParaGestion.length < 1" type="button" pButton icon="pi pi-check"
-            (click)="gestionarAltaCUIT()" label="Gestionar"></button>
+            (click)="cargarAltaCuit()" label="Gestionar"></button>
         <button type="button" pButton icon="pi pi-close" (click)="cancelarGestionAltaCUIT()" label="Cancelar"
             class="ui-button-secondary"></button>
     </p-footer>

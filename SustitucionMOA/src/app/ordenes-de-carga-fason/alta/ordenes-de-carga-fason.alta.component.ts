@@ -23,6 +23,7 @@ import { Domicilio } from '../../common/models/ordenes-de-carga/domicilio';
 import { Planta } from '../../common/models/ordenes-de-carga/planta';
 import { MSG_ALERTA_NO_ESCALABLE } from '../../common/models/ordenes-de-carga/ValidarCamionResponse';
 import { Checkbox } from 'primeng/checkbox';
+import { EstadoOrdenDeCargaFason } from '../../common/models/ordenes-de-carga-fason/estadoOrdenDeCargaFason';
 
 @Component({
     selector: 'app-alta',
@@ -71,8 +72,8 @@ export class OrdenesDeCargaFasonAltaComponent
         CUITDestinatario: false, CUITIntermediarioFlete: false
     };
 
-    patentesChasis: any;
-    patentesAcoplados: any;
+    patentesChasis: any = [];
+    patentesAcoplados: any = [];
 
     clienteCUIT: string = "";
     clienteCodigo: string = "";
@@ -110,14 +111,17 @@ export class OrdenesDeCargaFasonAltaComponent
     mensajeCuitDestino: string = "";
     editando = false;
 
-    cuitsTransporte: any;
-    cuilsChofer: any;
+    cuitsTransporte: any = [];
+    cuilsChofer: any = [];
 
     validarCNRTSubject = new Subject();
     validarCNRTSubscription?: Subscription;
     subscriptions = new Subscription();
     escalableCNRT?: boolean;
 
+    get noPuedeEditarCuitsTerceros() {
+        return this.ordenDeCargaFason.Id && this.ordenDeCargaFason.Estado == EstadoOrdenDeCargaFason.Entregada;
+    }
     generalFormatter(data: any): string {
         return `${data['label']}`;
     }
@@ -157,7 +161,7 @@ export class OrdenesDeCargaFasonAltaComponent
 
         if (this.ordenDeCargaFasonId > 0) {
             this.obtenerOrdenDeCarga();
-        } else {
+        } else if (this.esAdmin) {
             this.obtenerCorredores();
             this.cargarClientes('');
         }
@@ -339,7 +343,6 @@ export class OrdenesDeCargaFasonAltaComponent
         this.mensajeComponent.setMsgsEmpty();
         this.spinnerComponent.showIt();
         this.unsubscribe();
-        console.log("grabar ordenDeCargaFason", this.ordenDeCargaFason);
         this.blockUI.start('Grabando...');
         try {
             if (this.ordenDeCargaFasonId > 0) {
@@ -441,6 +444,9 @@ export class OrdenesDeCargaFasonAltaComponent
 
                         const producto = this.listaProductos.find(producto => producto.MaterialId == this.ordenDeCargaFason.Producto_Id)
                         this.selectProducto(producto);
+                        if (this.ordenDeCargaFason.CUITDestino)
+                            this.onDestinoIngresado(this.ordenDeCargaFason.CUITDestino)
+
                     }
                 },
                 error => {
@@ -500,17 +506,13 @@ export class OrdenesDeCargaFasonAltaComponent
                         //this.blockUI.stop();
                     } else {
                         this.listaCorredores = this.ordenarYFiltrarCorredores(result.corredores);
-                        console.log("this.CodigoCorredor " + this.CodigoCorredor);
                         if (this.CodigoCorredor != "") {
                             let seleccionado = this.listaCorredores.filter(a => a.CodigoProveedor == this.CodigoCorredor);
-                            console.log("seleccionado ", seleccionado);
                             if (seleccionado != null && seleccionado.length > 0) {
-                                console.log("seleccionado[0] ", seleccionado[0]);
 
                                 this.corredorSeleccionado = seleccionado[0];
                                 this.ordenDeCargaFason.CUITCorredor = this.corredorSeleccionado.CUIT;
                                 this.ordenDeCargaFason.CorredorId = this.corredorSeleccionado.Id;
-                                console.log("asdasd " + this.corredorSeleccionado.Id, this.corredorSeleccionado);
                                 this.cargarClientes(this.corredorSeleccionado.CodigoProveedor);
                             }
                         }
@@ -934,6 +936,7 @@ export class OrdenesDeCargaFasonAltaComponent
                 this.clienteSeleccionado = proveedor;
                 this.clienteCodigo = proveedor.CodigoProveedor;
                 this.ordenDeCargaFason.CUITCliente = this.clienteSeleccionado.CUIT;
+                this.onClienteSeleccionado();
             }
         });
     }
@@ -1135,5 +1138,14 @@ export class OrdenesDeCargaFasonAltaComponent
                 }
             }
             );
+    }
+    cargarAltaCuit() {
+        const campo = this.displayModal;
+        const razonSocial = this.razonSocialParaGestion;
+        this.razonSocialParaGestion = "";
+        this.gestiona[campo] = true;
+        this.ordenDeCargaFason[campo.replace("CUIT", "RazonSocial")] = razonSocial;
+        this.displayModal = null;
+        this.mensajesGestionCuit[campo] = `Se solicitará la gestión del alta para el cuit: ${this.ordenDeCargaFason[campo]}`;
     }
 }
