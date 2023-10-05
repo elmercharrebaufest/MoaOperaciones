@@ -2232,7 +2232,7 @@ namespace SustitucionMOAUtils.Services
                     }
                 }
                 repositorio.GuardarCambios();
-                Logger.Log.Info($"ObtenerSolpesDesdeSAPJob fin");
+                Logger.Log.Info($"ObtenerSolpesDesdeSAPJob fin  numero{obtenerSolpRequest.NumeroSolp}");
 
                 //actualizo el estado en la creacion/actualizacion del la solp
                 //foreach (var resultPosicion in result.Posiciones)
