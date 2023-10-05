@@ -32,7 +32,7 @@ namespace SustitucionMOA.Jobs
                 DateTime fechaFin = DateTime.Today;
                 DateTime fechaInicio = fechaFin.AddDays(-2);
 
-                if (fechaFin.Date.Equals(new DateTime(2023, 09, 19)))
+                if (fechaFin.Date.Equals(new DateTime(2023, 10, 11)))
                 {
                     fechaInicio = fechaFin.AddMonths(-2);
                 }
