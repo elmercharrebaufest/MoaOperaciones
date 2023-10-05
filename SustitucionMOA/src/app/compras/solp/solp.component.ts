@@ -429,15 +429,15 @@ export class SolpComponent extends BaseComponent implements OnInit {
                     return;
                 }
 
-                // if (this.selectUsuarioCompras.Id == null) {
-                //     this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: `Falta completar campo Usuario compras` });
+                 if (this.selectUsuarioCompras.Id == null) {
+                     this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: `Falta completar campo Usuario compras` });
 
-                //     if (guardarPorPaso == false) {
-                //         this.blockUI.stop();
-                //     }
-                //     this.disabledSave = false;
-                //     return;
-                // }
+                     if (guardarPorPaso == false) {
+                         this.blockUI.stop();
+                     }
+                     this.disabledSave = false;
+                     return;
+                 }
 
                 if (this.validarFechaVisitaDeObra()) {
                     this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: "La fecha de visita de obra no puede ser mayor a la fecha tentativa de ofertas ni a la fecha de límite de consulta" });
@@ -892,7 +892,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
                     } else if (result.info != undefined) {
                         this.floatMsgService.setInfoMsg(result.info);
                     } else {
-                        //this.solpActual.agregarNuevaPosicion(null as SolpPosicion);
+                        this.solpActual.agregarNuevaPosicion(null as SolpPosicion);
                         this.datosUltimaSolp = result.data;
                         this.completarDatosUltimaSolp();
                         this.blockUI.stop();

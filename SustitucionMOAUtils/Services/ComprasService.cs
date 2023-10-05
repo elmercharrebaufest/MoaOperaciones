@@ -1603,25 +1603,6 @@ namespace SustitucionMOAUtils.Services
             return lista;
         }
 
-        //private void EnviarMailSolpLiberada(Solp solp, Usuario usuario) //-- No borrar por las dudas
-        //{
-        //    try
-        //    {
-        //        var cuerpoTemplate = File.ReadAllText(EMAIL_TEMPLATE_SOLP);
-        //        string asunto = "MOA COMPRAS - Solp Liberada";
-
-        //        var cuerpo = string.Format(cuerpoTemplate, solp.NroSolp, usuario.Mail);
-        //        var Destinatario = usuario.Mail;
-
-
-
-        //        emailService.EnviarMail(new List<string> { Destinatario }, asunto, cuerpo, null, null, null, null);
-        //    }
-        //    catch (Exception e)
-        //    {
-        //    }
-        //}
-
         public ObtenerSolpSAPResponse ObtenerSolpsSAP(DateTime fechaDesde, DateTime fechaHasta, string numeroSolp,
                                     string centroLogistico, string filtroTipoPosicion, string indicadorDeLiberacion, string origenCreacion, List<string> creadoPorUsuarios,
                                     string tipoDeImputacion, bool ObtenerDireccionDeEntrega, bool ObtenerImputacion, bool ObtenerServicios, bool MostrarItemsBorrados
@@ -1690,8 +1671,10 @@ namespace SustitucionMOAUtils.Services
 
             if (solp != null)
             {
+                var enviarMail = solp.SeEnvioMailLiberacion != true;
                 solp.FechaLiberacionSap = fechaLiberacion;
                 solp.EstadoSolpSap_Id = estadoSolpSapLiberada;
+                solp.SeEnvioMailLiberacion = true;
                 repositorio.GuardarCambios();
 
                 if (!solp.PeticionesDeOferta.Any())
@@ -1706,7 +1689,59 @@ namespace SustitucionMOAUtils.Services
                         CrearPeticionAutomatica(solp, new List<int> { solp.ProveedorAsignado_Id.Value }, null, false);
                     }
                 }
+                if (solp.UsuarioCompras != null && solp.Posiciones.Select(x => x.TipoPosicion.Codigo).FirstOrDefault() == "SERVICIO" && enviarMail)
+                {
+                    try
+                    {
+                        EnviarMailSolpLiberada(solp, "");
+                    }
+                    catch (Exception e)
+                    {
+                        Logger.Log.Info($"EnviarMailSolpLiberada nro de solp {solp.NroSolp}");
+                    }
+                }
             }
+        }
+        private void EnviarMailSolpLiberada(Solp solp, string mensaje = "")
+        {
+            try
+            {
+                Logger.Log.Info($"EnviarMailSolpLiberada nro de solp {solp.NroSolp}");
+                Logger.Log.Info($"copia mail comprador {solp.UsuarioCompras.Mail}");
+                Logger.Log.Info($"copia mail creador {solp.UsuarioCreacion.Mail}");
+                Logger.Log.Info($"fecha {DateTime.Now}");
+                var copia = new List<string> { solp.UsuarioCreacion.Mail };
+                if (!string.IsNullOrEmpty(solp?.UsuarioCreacion?.Mail))
+                {
+                    copia.Add(solp.UsuarioCreacion.Mail);
+                    Log.Info($"copia mail solicitante {solp.UsuarioCreacion.Mail}");
+                }
+                var asunto = "";
+                var enviarA = new List<string> { solp.UsuarioCompras.Mail };
+                asunto += $"Nueva SOLP Liberada - {solp.NroSolp} - {solp.UsuarioCreacion.ObtenerRazonSocial()}";
+                emailService.EnviarMail(enviarA, asunto, "", copia, CuerpoMailSolpLiberada(solp, mensaje), null, "");
+            }
+            catch (Exception e)
+            {
+                Logger.Log.Info($"Error al enviar mail {solp.UsuarioCompras.Mail}  Nro de SOLP {solp.NroSolp}");
+                Logger.Log.Error(e);
+            }
+        }
+        private AlternateView CuerpoMailSolpLiberada(Solp solp, string mensaje)
+        {
+            var filePath = System.Web.HttpContext.Current.Server.MapPath("~/Content/Images/header/logo_.png");
+            LinkedResource res = new LinkedResource(filePath);
+            res.ContentId = Guid.NewGuid().ToString();
+            string htmlBody = "";
+            htmlBody += $"En el presente mail se informa la liberación de la SOLP {solp.NroSolp} generada con Molinos Agro S.A. <br />";
+            htmlBody += mensaje + "<br/>";
+            htmlBody += "En caso de tener alguna consulta, ingresar a www.moaoperaciones.com.ar " +
+                "<br/><br/>Saludos Cordiales<br/>" +
+                "Molinos Agro S.A. <br/><br/> " +
+                 @"<img width:'5%' src='cid:" + res.ContentId + @"'/>";
+            AlternateView alternateView = AlternateView.CreateAlternateViewFromString(htmlBody, null, "text/html");
+            alternateView.LinkedResources.Add(res);
+            return alternateView;
         }
 
         public void ActualizarFechaLiberacionOC(string nroOc, DateTime fechaLiberacion)

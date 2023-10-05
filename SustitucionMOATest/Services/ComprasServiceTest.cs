@@ -1886,5 +1886,28 @@ namespace SustitucionMOATest.Services
             repositorioMock.Verify(x => x.Agregar(It.IsAny<CotizacionPosicion>()), Times.Never);
             repositorioMock.Verify(x => x.GuardarCambios(), Times.Exactly(6));
         }
+
+        [Test]
+        public void ActualizarFechaLiberacionConUsuarioComprasYTipoServicioEnviaMail()
+        {
+            var solpLocal = solp;
+            solpLocal.UsuarioCompras = new UsuarioCompras(); // Simula que hay un usuario de compras asignado
+            solpLocal.SeEnvioMailLiberacion = false; // Asegura que el correo no se ha enviado previamente
+            solpLocal.Posiciones = new List<SolpPosicion>
+                                    {
+                                        new SolpPosicion
+                                        {
+                                            Id = 1,
+                                            TipoPosicion = new TablaGeneral
+                                            {
+                                                Codigo = "SERVICIO"
+                                            },
+                                        }
+                                    };
+            repositorioMock.Setup(y => y.Obtener(It.IsAny<Expression<Func<Solp, bool>>>())).Returns(solpLocal); // Usar solpLocal en lugar de solp
+            repositorioMock.Setup(y => y.Obtener(It.IsAny<Expression<Func<TablaSap, bool>>>())).Returns(new TablaSap { Id = 1 });
+            target.ActualizarFechaLiberacion(solpLocal.NroSolp, DateTime.Now);
+            repositorioMock.Verify(x => x.GuardarCambios(), Times.Exactly(1));
+        }
     }
 }
