@@ -203,10 +203,12 @@ namespace SustitucionMOAUtils.Services
                 request.DestinatarioExisteScato = CuitExisteScato(request.CUITDestinatario);
                 request.DestinoExisteScato = CuitExisteScato(request.CUITDestino);
 
+                var producto = repositorio.Obtener<Material>(request.Producto_Id);
 
                 for (int i = 0; i < request.CantidadDeViajes; i++)
                 {
                     var ordenEntity = new OrdenDeCargaFason(request);
+                    ordenEntity.Producto = producto;
                     ActualizarOrdenDeCarga(ordenEntity, existeTransporteEIntermediario);
                     repositorio.Agregar(ordenEntity);
 
