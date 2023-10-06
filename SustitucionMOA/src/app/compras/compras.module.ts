@@ -60,7 +60,6 @@ import { NgbAlertModule } from '@ng-bootstrap/ng-bootstrap';
 import { ProveedorPeticionComponent } from './dashboard-comprador/proveedor-peticion/proveedor-peticion.component';
 import { AltaProveedorComponent } from './dashboard-comprador/alta-proveedor/alta-proveedor.component';
 import { ListadoDashboardProveedorComponent } from './dashboard-proveedor/listado-dashboard-proveedor/listado-dashboard-proveedor.component';
-import { FiltroDashboardProveedorComponent } from './dashboard-proveedor/filtro-dashboard-proveedor/filtro-dashboard-proveedor.component';
 import { VerOfertasComponent } from './dashboard-comprador/ver-ofertas/ver-ofertas.component';
 import { RevisionTecnicaComponent } from './dashboard/revision-tecnica/revision-tecnica.component';
 
@@ -141,7 +140,6 @@ import { CerrarCotizacionComponent } from './dashboard-comprador/cerrar-cotizaci
         AltaProveedorComponent,
         ProveedorPeticionComponent,
         ListadoDashboardProveedorComponent,
-        FiltroDashboardProveedorComponent,
         VerOfertasComponent,
         RevisionTecnicaComponent,
         PeticionDeOfertaFormularioComponent,

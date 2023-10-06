@@ -1455,7 +1455,7 @@ namespace SustitucionMOATest.Services
             repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<PeticionDeOferta, bool>>>(),
              It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null)).Returns(new List<PeticionDeOferta> { peticionDeOferta });
 
-            var result = target.ListarPOProveedor(new Paginacion(), "nroSolp", "username");
+            var result = target.ListarPOProveedor(new Paginacion(), "nroSolp", "nroPo", "nombrePedido", "username", null, null, null, null);
             Assert.That(result, Is.Not.Null);
             Assert.AreEqual(listaPO.GetType(), result.GetType());
         }

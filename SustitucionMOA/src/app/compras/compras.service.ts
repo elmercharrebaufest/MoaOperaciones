@@ -24,6 +24,8 @@ export class ComprasService extends BaseService {
         orden: "",
         columna: "Id",
         nroSolp: "",
+        nroPo: "",
+        nombrePedido: "",
         fechaDesde: null,
         fechaHasta: null,
         estados: "",
@@ -32,7 +34,9 @@ export class ComprasService extends BaseService {
         web: true,
         usuarioId: null,
         centros: "",
-        grupoDeCompras: ""
+        grupoDeCompras: "",
+        estadoLicitacion: null,
+        estadoCotizacion: null
     }
     listaSolp: any;
     observableListaSolp = new Subject<any[]>();
@@ -289,7 +293,7 @@ export class ComprasService extends BaseService {
         fechaHora.setMinutes(hora.getMinutes());
         fechaHora.setSeconds(hora.getSeconds());
         return fechaHora;
-        
+
     }
 
     // getCodigosProveedores(electrico, consultoria, civil, ingenieria, mecanico) {
@@ -468,7 +472,14 @@ export class ComprasService extends BaseService {
         itemsPorPagina: number,
         orden: string = this.filtros.orden,
         columna: string = this.filtros.columna,
-        nroSolp: string = this.filtros.nroSolp) {
+        nroSolp: string = this.filtros.nroSolp,
+        nroPo: string = this.filtros.nroPo,
+        nombrePedido: string = this.filtros.nombrePedido,
+        estadoLicitacion: number | null = this.filtros.estadoLicitacion,
+        estadoCotizacion: number | null = this.filtros.estadoCotizacion,
+        fechaDesde: string = this.filtros.fechaDesde,
+        fechaHasta: string | null = this.filtros.fechaHasta
+    ) {
         let params: HttpParams = new HttpParams()
         pagina = pagina != null ? pagina : this.filtros.pagina;
         itemsPorPagina = itemsPorPagina != null ? itemsPorPagina : this.filtros.itemsPorPagina;
@@ -478,6 +489,12 @@ export class ComprasService extends BaseService {
         params = params.set('orden', orden);
         params = params.set('columna', columna);
         params = params.set('nroSolp', nroSolp);
+        params = params.set('nroPo', nroPo);
+        params = params.set('nombrePedido', nombrePedido);
+        params = params.set('estadoLicitacion', estadoLicitacion != null? estadoLicitacion.toString() : null);
+        params = params.set('estadoCotizacion', estadoCotizacion != null? estadoCotizacion.toString() : null);
+        params = params.set('fechaDesde', (fechaDesde != null ? fechaDesde : ""));
+        params = params.set('fechaHasta', (fechaHasta != null ? fechaHasta : ""));
         return this.http
             .get<any[]>('/api/compras/ListarPOProveedor', { params: params, headers: this.headers }).subscribe(
                 (data: any[]) => {

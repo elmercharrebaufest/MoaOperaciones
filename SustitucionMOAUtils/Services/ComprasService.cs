@@ -18,6 +18,7 @@ using SustitucionMOAModel.Models.WSMapMOA.Compras;
 using SustitucionMOAModel.Models.WSMapMOA.Vendedor.Detalle;
 using SustitucionMOARepositorio;
 using SustitucionMOARepositorio.ConsultasEF;
+using SustitucionMOARepositorio.Extensiones;
 using SustitucionMOAUtils.Helpers;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
@@ -1763,8 +1764,8 @@ namespace SustitucionMOAUtils.Services
                     try
                     {
 
-                       EnviarMailOrdenCompra(adjudicaciones.Last(), "");
-                      
+                        EnviarMailOrdenCompra(adjudicaciones.Last(), "");
+
                     }
                     catch (Exception e)
                     {
@@ -1772,7 +1773,7 @@ namespace SustitucionMOAUtils.Services
                         Logger.Log.Error(e);
                     }
 
-                 
+
                 }
             }
             catch (Exception e)
@@ -2466,12 +2467,13 @@ namespace SustitucionMOAUtils.Services
             return todasLasSolp;
         }
 
-        public ListaPaginada<PeticionDeOfertaDto> ListarPOProveedor(Paginacion paginacion, string nroSolp, string username)
+        public ListaPaginada<PeticionDeOfertaDto> ListarPOProveedor(Paginacion paginacion, string nroSolp, string nroPo, string nombrePedido, string username, DateTime? desde, DateTime? hasta, int? estadoLicitacion, int? estadoCotizacion)
         {
             try
             {
                 var cuitUsuario = repositorio.Obtener<Usuario>(a => a.Mail == username).CUITRegistro;
-                var todasLasPO = repositorio.ListarConsultaPaginada(new ListarSolpPOConsulta(paginacion, nroSolp, cuitUsuario));
+                string[] palabras = nombrePedido.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                var todasLasPO = repositorio.ListarConsultaPaginada(new ListarSolpPOConsulta(paginacion, nroSolp, nroPo, palabras, cuitUsuario, estadoCotizacion, estadoLicitacion, desde, hasta));
                 var listId = todasLasPO.ToList().Select(y => y.Id);
                 if (todasLasPO != null && todasLasPO.Count() > 0)
                 {
@@ -3306,7 +3308,7 @@ namespace SustitucionMOAUtils.Services
 
                 if (enviarMail)
                 {
-                   
+
                     try
                     {
 
@@ -4324,7 +4326,7 @@ namespace SustitucionMOAUtils.Services
                     Logger.Log.Error(new Exception($"Error al enviar mail GrabarCircular en circular: " + circular.Id));
                     Logger.Log.Error(e);
                 }
-               
+
                 return respuestaGuardarSOLP;
 
             }
@@ -4482,7 +4484,7 @@ namespace SustitucionMOAUtils.Services
                     Logger.Log.Error(new Exception($"Error al enviar mail GrabarProveedoresEnPeticionDeOferta en peticion: " + peticion.Id));
                     Logger.Log.Error(e);
                 }
-               
+
                 return respuestaGuardarSOLP;
 
             }
