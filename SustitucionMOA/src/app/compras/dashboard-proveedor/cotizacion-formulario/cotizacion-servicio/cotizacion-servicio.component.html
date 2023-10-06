@@ -506,17 +506,8 @@
                                     </ng-template>
                                 </p-cellEditor>
                             </td>
-                            <td pEditableColumn class="columna">
-                                <div [ngClass]="{'invalido': esFinalizado &&
-                                                         (subposicionesCompras.UnidadCotizacionId <= 0)} ">
-                                    <p-dropdown [options]="unidades" dataKey="Id" optionLabel="Descripcion"
-                                        [(ngModel)]="subposicionesCompras.UnidadMedidaCotizacion" placeholder="Unidad"
-                                        [style]="{'width':'170px'}" [dropdown]="true"
-                                        (onFocus)=" $event.target.select();" filter="true" appendTo="body"
-                                        resetFilterOnHide="true"
-                                        (onChange)="onSelectUnidad(subposicionesCompras, posicionCompra.Id, $event); ">
-                                    </p-dropdown>
-                                </div>
+                            <td>
+                               {{subposicionesCompras.UnidadCotizacionDescripcion}}
                             </td>
                             <td pEditableColumn class="columna">
                                 <div [ngClass]="{'invalido': esFinalizado &&
