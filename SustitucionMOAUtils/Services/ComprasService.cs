@@ -18,6 +18,7 @@ using SustitucionMOAModel.Models.WSMapMOA.Compras;
 using SustitucionMOAModel.Models.WSMapMOA.Vendedor.Detalle;
 using SustitucionMOARepositorio;
 using SustitucionMOARepositorio.ConsultasEF;
+using SustitucionMOARepositorio.Extensiones;
 using SustitucionMOAUtils.Helpers;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
