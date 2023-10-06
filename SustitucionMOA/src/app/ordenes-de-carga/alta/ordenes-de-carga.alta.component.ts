@@ -27,7 +27,7 @@ import { EstadoOrdenDeCarga } from '../../common/models/ordenes-de-carga/estadoO
 import { Subject, Subscription, forkJoin } from 'rxjs';
 import { MessageService } from 'primeng/api';
 import { Checkbox } from 'primeng/checkbox';
-import { MSG_ALERTA_NO_ESCALABLE } from '../../common/models/ordenes-de-carga/ValidarCamionResponse';
+import { MSG_ALERTA_CAMION_NO_EXISTE, MSG_ALERTA_NO_ESCALABLE } from '../../common/models/ordenes-de-carga/ValidarCamionResponse';
 import { Permiso } from '../../common/enums/Permisos';
 
 @Component({
@@ -1504,12 +1504,17 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
                 if (!validezCNRTResponse) {
                     this.setValorEscalable()
                 } else {
-                    this.escalableCNRT = validezCNRTResponse.EsCamionEscalable;
-                    if (!this.escalableCNRT && this.ordenDeCarga.Escalable) {
-                        this.msgService.add(MSG_ALERTA_NO_ESCALABLE);
-                        this.setValorEscalable()
+                    if (!validezCNRTResponse.ExisteCamion) {
+                        this.msgService.add(MSG_ALERTA_CAMION_NO_EXISTE);
                     }
-                    this.displayModalEscalable = this.escalableCNRT && !this.ordenDeCarga.Escalable && !this.decidioEscalable;
+                    else {
+                        this.escalableCNRT = validezCNRTResponse.EsCamionEscalable;
+                        if (!this.escalableCNRT && this.ordenDeCarga.Escalable) {
+                            this.msgService.add(MSG_ALERTA_NO_ESCALABLE);
+                            this.setValorEscalable()
+                        }
+                        this.displayModalEscalable = this.escalableCNRT && !this.ordenDeCarga.Escalable && !this.decidioEscalable;
+                    }
                 }
             })
     }
