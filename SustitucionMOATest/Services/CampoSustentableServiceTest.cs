@@ -834,7 +834,7 @@ namespace SustitucionMOATest.Services
 
             var result = target.Listar(mailUsuarioTest);
 
-            usuario2Mock.Verify(u => u.TienePermiso(PermisoEnum.ComercialCamposSustentables), Times.Once);
+            usuario2Mock.Verify(u => u.TienePermiso(It.IsAny<PermisoEnum>()), Times.Once);
             usuario2Mock.Verify(u => u.TienePermiso(PermisoEnum.VerTodosCamposSustentable), Times.Once);
 
             repositorioMock.Verify(repo => repo.Listar(It.IsAny<Expression<Func<CampoProveedor, CampoProveedorListadoDto>>>(), It.IsAny<Expression<Func<CampoProveedor, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<DirOrden>()), Times.Once);
@@ -936,7 +936,7 @@ namespace SustitucionMOATest.Services
 
             var result = target.Listar(mailUsuarioTest);
 
-            usuario1Mock.Verify(u => u.TienePermiso(PermisoEnum.ComercialCamposSustentables), Times.Once);
+            usuario1Mock.Verify(u => u.TienePermiso(It.IsAny<PermisoEnum>()), Times.Once);
             usuario1Mock.Verify(u => u.TienePermiso(PermisoEnum.VerTodosCamposSustentable), Times.Once);
 
             repositorioMock.Verify(repo => repo.Listar(It.IsAny<Expression<Func<CampoProveedor, CampoProveedorListadoDto>>>(), It.IsAny<Expression<Func<CampoProveedor, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<DirOrden>()), Times.Once);
