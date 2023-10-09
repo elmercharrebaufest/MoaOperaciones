@@ -35,6 +35,7 @@ namespace SustitucionMOATest.Services
         {
             repositorioMock = new Mock<IRepositorio>();
             excelExportWrapperMock = new Mock<IExcelExportWrapper>();
+            dataAgroServiceMock = new Mock<IDataAgroService>();
 
             target = new CampoSustentableService(repositorioMock.Object, excelExportWrapperMock.Object, dataAgroServiceMock.Object);
         }
@@ -784,19 +785,17 @@ namespace SustitucionMOATest.Services
             DateTime hoy = new DateTime(2021, 8, 24);
             DateTime ayer = new DateTime(2021, 8, 23);
 
-            string permisoTodosCamposSustentable = "VER TODOS CAMPOS SUSTENTABLE";
-
             Mock<Usuario> usuario1Mock = new Mock<Usuario>();
             usuario1Mock.Setup(x => x.Mail).Returns("mailmail");
-            usuario1Mock.Setup(x => x.TienePermiso(permisoTodosCamposSustentable)).Returns(false);
+            usuario1Mock.Setup(x => x.TienePermiso(PermisoEnum.VerTodosCamposSustentable)).Returns(false);
 
             Mock<Usuario> usuario2Mock = new Mock<Usuario>();
             usuario2Mock.Setup(x => x.Mail).Returns("mail");
-            usuario2Mock.Setup(x => x.TienePermiso(permisoTodosCamposSustentable)).Returns(true);
+            usuario2Mock.Setup(x => x.TienePermiso(PermisoEnum.VerTodosCamposSustentable)).Returns(true);
 
             Mock<Usuario> usuario3Mock = new Mock<Usuario>();
             usuario3Mock.Setup(x => x.Mail).Returns((string)null);
-            usuario3Mock.Setup(x => x.TienePermiso(permisoTodosCamposSustentable)).Returns(false);
+            usuario3Mock.Setup(x => x.TienePermiso(PermisoEnum.VerTodosCamposSustentable)).Returns(false);
 
             var usuariosList = new List<Usuario>
             {
@@ -831,8 +830,8 @@ namespace SustitucionMOATest.Services
 
             var result = target.Listar(mailUsuarioTest);
 
-            usuario2Mock.Verify(u => u.TienePermiso(It.IsAny<string>()), Times.Once);
-            usuario2Mock.Verify(u => u.TienePermiso(permisoTodosCamposSustentable), Times.Once);
+            usuario2Mock.Verify(u => u.TienePermiso(It.IsAny<PermisoEnum>()), Times.Once);
+            usuario2Mock.Verify(u => u.TienePermiso(PermisoEnum.VerTodosCamposSustentable), Times.Once);
 
             repositorioMock.Verify(repo => repo.Listar(It.IsAny<Expression<Func<CampoProveedor, CampoProveedorListadoDto>>>(), It.IsAny<Expression<Func<CampoProveedor, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<DirOrden>()), Times.Once);
 
@@ -881,8 +880,6 @@ namespace SustitucionMOATest.Services
             DateTime hoy = new DateTime(2021, 8, 24);
             DateTime ayer = new DateTime(2021, 8, 23);
 
-            string permisoTodosCamposSustentable = "VER TODOS CAMPOS SUSTENTABLE";
-
             Proveedor proveedor1 = new Proveedor { Id = 1, CodigoProveedor = "prov1", RazonSocial = "Proveedor 1" };
             Proveedor proveedor2 = new Proveedor { Id = 2, CodigoProveedor = "prov2", RazonSocial = "Proveedor 2" };
             Proveedor proveedor3 = new Proveedor { Id = 3, CodigoProveedor = "prov3", RazonSocial = "Proveedor 3" };
@@ -890,15 +887,15 @@ namespace SustitucionMOATest.Services
             Mock<Usuario> usuario1Mock = new Mock<Usuario>();
             usuario1Mock.Setup(x => x.Mail).Returns("mailmail");
             usuario1Mock.Setup(x => x.Proveedores).Returns(new List<Proveedor> { proveedor1, proveedor2 });
-            usuario1Mock.Setup(x => x.TienePermiso(permisoTodosCamposSustentable)).Returns(false);
+            usuario1Mock.Setup(x => x.TienePermiso(PermisoEnum.VerTodosCamposSustentable)).Returns(false);
 
             Mock<Usuario> usuario2Mock = new Mock<Usuario>();
             usuario2Mock.Setup(x => x.Mail).Returns("mail");
-            usuario2Mock.Setup(x => x.TienePermiso(permisoTodosCamposSustentable)).Returns(true);
+            usuario2Mock.Setup(x => x.TienePermiso(PermisoEnum.VerTodosCamposSustentable)).Returns(true);
 
             Mock<Usuario> usuario3Mock = new Mock<Usuario>();
             usuario3Mock.Setup(x => x.Mail).Returns((string)null);
-            usuario3Mock.Setup(x => x.TienePermiso(permisoTodosCamposSustentable)).Returns(true);
+            usuario3Mock.Setup(x => x.TienePermiso(PermisoEnum.VerTodosCamposSustentable)).Returns(true);
 
             var usuariosList = new List<Usuario>
             {
@@ -929,8 +926,8 @@ namespace SustitucionMOATest.Services
 
             var result = target.Listar(mailUsuarioTest);
 
-            usuario1Mock.Verify(u => u.TienePermiso(It.IsAny<string>()), Times.Once);
-            usuario1Mock.Verify(u => u.TienePermiso(permisoTodosCamposSustentable), Times.Once);
+            usuario1Mock.Verify(u => u.TienePermiso(It.IsAny<PermisoEnum>()), Times.Once);
+            usuario1Mock.Verify(u => u.TienePermiso(PermisoEnum.VerTodosCamposSustentable), Times.Once);
 
             repositorioMock.Verify(repo => repo.Listar(It.IsAny<Expression<Func<CampoProveedor, CampoProveedorListadoDto>>>(), It.IsAny<Expression<Func<CampoProveedor, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<DirOrden>()), Times.Once);
 
