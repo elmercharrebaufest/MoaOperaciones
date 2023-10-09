@@ -80,6 +80,19 @@ namespace SustitucionMOAUtils.Services
             EstadoOrdenDeCarga.EntregaPendiente,
         };
 
+        private readonly List<EstadoOrdenDeCarga> estadosPuedeAnular = new List<EstadoOrdenDeCarga>
+        {
+            EstadoOrdenDeCarga.AnulacionSolicitada,
+            EstadoOrdenDeCarga.Confirmado,
+            EstadoOrdenDeCarga.ContratoVencido,
+            EstadoOrdenDeCarga.EntregaGenerada,
+            EstadoOrdenDeCarga.EntregaPendiente,
+            EstadoOrdenDeCarga.PendienteAprobacionCredito,
+            EstadoOrdenDeCarga.Vencida,
+            EstadoOrdenDeCarga.EdicionSolicitada,
+            EstadoOrdenDeCarga.EntregaAnuladaPedidoPendienteAnulacion
+        };
+
         public OrdenDeCargaService(
             IRepositorio repositorio,
             IOrdenCargaConsumerMOA ordenCargaConsumer,
@@ -1068,6 +1081,9 @@ namespace SustitucionMOAUtils.Services
         public string AnularOrden(int ordenId, string mailUsuario)
         {
             var orden = repositorio.Obtener<OrdenDeCarga>(ordenId);
+
+            if (!estadosPuedeAnular.Contains(orden.Estado))
+                throw new ValidationCustomException("La orden no puede anularse debido a su estado actual.");
 
             var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
             var puedeEnviarASAP = usuario.TienePermiso(PermisoEnum.EnviarASap);
