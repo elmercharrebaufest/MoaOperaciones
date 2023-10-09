@@ -4794,7 +4794,7 @@ namespace SustitucionMOAUtils.Services
                 var peticionDeOfertaSolpPosiciones = repositorio.Listar<PeticionDeOfertaSolpPosicion>();
                 var cotizacion = cotizacionDto.CotizacionId == 0 ? null :
                     repositorio.Obtener<Cotizacion>(cotizacionDto.CotizacionId);
-                var info = repositorio.Listar<TablaSap>(x => x.Tabla == TablasSap.Moneda || x.Tabla == TablasSap.Unidad);
+                var info = repositorio.Listar<TablaSap>(x => x.Tabla == TablasSap.Moneda || x.Tabla == TablasSap.Unidad);                
                 var esModificar = false;
                 if (cotizacion == null)
                 {
@@ -5363,10 +5363,40 @@ namespace SustitucionMOAUtils.Services
                 }
                 return respuestaGuardarSOLP;
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 throw;
             }
+        }
+
+        private List<string> DevolverMailResultadoLicitacion(PeticionDeOferta peticion)
+        {
+            var mails = new List<string>();
+            var adjudicacionPosiciones = repositorio.Listar<AdjudicacionPosicion>();
+            bool seAdjudicaronTodasLasPosiciones = peticion.Posiciones.All(p => adjudicacionPosiciones.Any(ap => ap.SolpPosicion_Id == p.SolpPosicion_Id));
+            if (seAdjudicaronTodasLasPosiciones)
+            {
+                // Obtener todos los usuarios que realizaron una cotización
+                var cotizaciones = repositorio.Listar<Cotizacion>()
+                .Where(cotizacion => peticion.Usuarios.Contains(cotizacion.PeticionDeOfertaUsuario))
+                .ToList();
+
+                foreach (var cotizacion in cotizaciones)
+                {
+                    var cotizacionIds = cotizacion.CotizacionPosiciones.Select(cp => cp.Id).ToList();
+
+                    // Verificar si al menos una de las adjudicaciones de posiciones tiene una cotización
+                    bool algunaAdjudicacionConCotizacion = cotizacionIds.Any(id =>
+                        adjudicacionPosiciones.Any(ap => ap.CotizacionPosicion_Id == id)
+                    );
+
+                    if (!algunaAdjudicacionConCotizacion)
+                    {
+                        mails.Add(cotizacion.PeticionDeOfertaUsuario.Usuario.Mail);
+                    }
+                }
+            }
+            return mails.Distinct().ToList();
         }
 
         private List<string> DevolverMailResultadoLicitacion(PeticionDeOferta peticion)
