@@ -3813,7 +3813,7 @@ namespace SustitucionMOAUtils.Services
             LinkedResource res = new LinkedResource(filePath);
             res.ContentId = Guid.NewGuid().ToString();
             string htmlBody = $"En el presente mail se informa la nueva PO {peticion.Id} generada con Molinos Agro S.A <br />";
-            
+
             if (!esProveedor)
             {
                 htmlBody = $"En el presente mail se informa la nueva PO {peticion.Id} que se envió a los siguientes proveedores: <br />";
@@ -3828,7 +3828,7 @@ namespace SustitucionMOAUtils.Services
 
                 htmlBody += $"<br />Observaciones: {observacionesFormatted} <br /><br />";
             }
-          
+
             if (esProveedor)
             {
                 var tienePliego = (peticion.Solp.TipoSolpSap == (int?)TipoSolpSap.Mantenimiento || peticion.Solp.TipoSolpSap == (int?)TipoSolpSap.Sap) && peticion.Solp.EstadoDocumento.Codigo == "CREADO";
@@ -3857,7 +3857,7 @@ namespace SustitucionMOAUtils.Services
                                "</a></p> <br />";
                 }
             }
-            
+
             htmlBody += "<br />En caso de tener alguna consulta, ingresar a www.moaoperaciones.com.ar " +
                 "<br/><br/>Saludos Cordiales<br/>" +
                 "Molinos Agro S.A. <br/><br/> " +
@@ -4695,7 +4695,7 @@ namespace SustitucionMOAUtils.Services
                 var peticionDeOfertaSolpPosiciones = repositorio.Listar<PeticionDeOfertaSolpPosicion>();
                 var cotizacion = cotizacionDto.CotizacionId == 0 ? null :
                     repositorio.Obtener<Cotizacion>(cotizacionDto.CotizacionId);
-                var info = repositorio.Listar<TablaSap>(x => x.Tabla == TablasSap.Moneda || x.Tabla == TablasSap.Unidad);
+                var info = repositorio.Listar<TablaSap>(x => x.Tabla == TablasSap.Moneda || x.Tabla == TablasSap.Unidad);                
                 var esModificar = false;
                 if (cotizacion == null)
                 {
@@ -4833,7 +4833,7 @@ namespace SustitucionMOAUtils.Services
                 return respuestaGuardarSOLP;
 
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 throw;
             }
@@ -5221,15 +5221,59 @@ namespace SustitucionMOAUtils.Services
                 {
                     adjudicacion.NumeroOrdenDeCompra = respuestaGuardarSOLP.NumeroPedido;
                     repositorio.GuardarCambios();
-                    //EnviarMailOrdenCompra(adjudicacion, mensaje);
+                   //EnviarMailOrdenCompra(adjudicacion, mensaje);
                 }
+                var mails = DevolverMailResultadoLicitacion(cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta);
+                bool esServicios = cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Solp.Posiciones.Select(x => x.TipoPosicion.Codigo).FirstOrDefault() != "MATERIALES";
+                if (mails.Count > 0 && esServicios)
+                {
 
+                    try
+                    {
+                        EnviarMailResultadoAdjudicacion(mails, adjudicacion.Cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta);
+                    }
+                    catch (Exception e)
+                    {
+                        Logger.Log.Info($"Error al enviar mail {adjudicacion.Cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Id}  para el cierre de la cotizacion");
+                    }                   
+               
+                }
                 return respuestaGuardarSOLP;
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 throw;
             }
+        }
+
+        private List<string> DevolverMailResultadoLicitacion(PeticionDeOferta peticion)
+        {
+            var mails = new List<string>();
+            var adjudicacionPosiciones = repositorio.Listar<AdjudicacionPosicion>();
+            bool seAdjudicaronTodasLasPosiciones = peticion.Posiciones.All(p => adjudicacionPosiciones.Any(ap => ap.SolpPosicion_Id == p.SolpPosicion_Id));
+            if (seAdjudicaronTodasLasPosiciones)
+            {
+                // Obtener todos los usuarios que realizaron una cotización
+                var cotizaciones = repositorio.Listar<Cotizacion>()
+                .Where(cotizacion => peticion.Usuarios.Contains(cotizacion.PeticionDeOfertaUsuario))
+                .ToList();
+
+                foreach (var cotizacion in cotizaciones)
+                {
+                    var cotizacionIds = cotizacion.CotizacionPosiciones.Select(cp => cp.Id).ToList();
+
+                    // Verificar si al menos una de las adjudicaciones de posiciones tiene una cotización
+                    bool algunaAdjudicacionConCotizacion = cotizacionIds.Any(id =>
+                        adjudicacionPosiciones.Any(ap => ap.CotizacionPosicion_Id == id)
+                    );
+
+                    if (!algunaAdjudicacionConCotizacion)
+                    {
+                        mails.Add(cotizacion.PeticionDeOfertaUsuario.Usuario.Mail);
+                    }
+                }
+            }
+            return mails.Distinct().ToList();
         }
 
         private decimal CalcularMontoTotal(AdjudicacionDto adjudicacionDto, Cotizacion cotizacion, List<TablaSap> info)
@@ -5770,6 +5814,45 @@ namespace SustitucionMOAUtils.Services
                 ultimoRegistro = registros.First();
             }
             return ultimoRegistro;
+        }
+
+        private void EnviarMailResultadoAdjudicacion(List<string> mails, PeticionDeOferta peticion)
+        {
+            try
+            {               
+                var asunto = "";
+                var enviarA = new List<string>();
+                asunto += $"Cierre de Licitación PO - {peticion.Id} ";
+                foreach (var mail in mails)
+                {
+                    var mailProveedor = new List<string> { mail };
+                    emailService.EnviarMail(mailProveedor, asunto, "", null, CuerpoMailResultadoAdjudicacion(peticion));
+                }           
+            }
+            catch (Exception e)
+            {
+                Logger.Log.Info($"Error al enviar mail {peticion.Id}  para el cierre de la cotizacion");
+                Logger.Log.Error(e);
+            }
+        }
+        private AlternateView CuerpoMailResultadoAdjudicacion(PeticionDeOferta peticion)
+        {
+            var filePath = System.Web.HttpContext.Current.Server.MapPath("~/Content/Images/header/logo_.png");
+            LinkedResource res = new LinkedResource(filePath);
+            res.ContentId = Guid.NewGuid().ToString();
+            string htmlBody = "";
+            htmlBody += $"Estimado proveedor, notificamos que Molinos Agro Sa ha generado el cierre de la licitación bajo número de Pet. De Oferta {peticion.Id}. <br />";
+            htmlBody += $"Bajo esta formalidad de aviso, informamos que su empresa <strong>no ha resultado adjudicada</strong>. Esperamos que sea un aporte útil a su seguimiento y sistema de gestión.. <br />";
+            htmlBody += $"Agradecemos su participación e interés. <br/><br/> ";
+
+            htmlBody += "<strong>No dar respuesta a este mail.</strong>" +
+                "<br/><br/>Atte…<br/>" +
+                "Molinos Agro S.A. <br/> Oficina Compras <br/><br/>" +
+                 @"<img width:'5%' src='cid:" + res.ContentId + @"'/>";
+
+            AlternateView alternateView = AlternateView.CreateAlternateViewFromString(htmlBody, null, "text/html");
+            alternateView.LinkedResources.Add(res);
+            return alternateView;
         }
     }
 
