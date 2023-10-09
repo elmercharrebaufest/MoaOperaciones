@@ -129,7 +129,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                  .Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id
                                                  && cp.CotizacionSubPosiciones.Any(s => s.SolpSubPosicion_Id == subposicion.Id)
                                                  ).FirstOrDefault().CotizacionSubPosiciones.Where(s => s.SolpSubPosicion_Id == subposicion.Id).FirstOrDefault().UnidadDeMedida_Id == null ?
-                                                "" : cotizacion.CotizacionPosiciones
+                                                subposicion.Unidad.Descripcion : cotizacion.CotizacionPosiciones
                                                  .Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id
                                                  && cp.CotizacionSubPosiciones.Any(s => s.SolpSubPosicion_Id == subposicion.Id)
                                                  ).FirstOrDefault().CotizacionSubPosiciones.Where(s => s.SolpSubPosicion_Id == subposicion.Id).FirstOrDefault().UnidadDeMedida.Descripcion,
@@ -138,7 +138,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                  .Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id
                                                  && cp.CotizacionSubPosiciones.Any(s => s.SolpSubPosicion_Id == subposicion.Id)
                                                  ).FirstOrDefault().CotizacionSubPosiciones.Where(s => s.SolpSubPosicion_Id == subposicion.Id).FirstOrDefault().UnidadDeMedida_Id == null ?
-                                                 0 : cotizacion.CotizacionPosiciones
+                                                 subposicion.Unidad.Id : cotizacion.CotizacionPosiciones
                                                  .Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id
                                                  && cp.CotizacionSubPosiciones.Any(s => s.SolpSubPosicion_Id == subposicion.Id)
                                                  ).FirstOrDefault().CotizacionSubPosiciones.Where(s => s.SolpSubPosicion_Id == subposicion.Id).FirstOrDefault().UnidadDeMedida.Id,
