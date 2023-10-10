@@ -130,6 +130,7 @@
     <Compile Include="Services\FacturaAnticipadaServiceTest.cs" />
     <Compile Include="Services\UsuarioServiceTest.cs" />
     <Compile Include="Services\VendedorServiceTest.cs" />
+    <Compile Include="WS\AzureAD\AzureADConsumerTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
