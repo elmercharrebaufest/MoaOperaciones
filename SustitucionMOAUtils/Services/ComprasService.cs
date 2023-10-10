@@ -173,6 +173,7 @@ namespace SustitucionMOAUtils.Services
                 solpEntity.Posiciones = new List<SolpPosicion>();
                 solpEntity.TrabajoYaHecho = solp.TrabajoYaHecho;
                 solpEntity.Adicional = solp.Adicional;
+                solpEntity.Urgencia = solp.Urgencia;
                 solpEntity.NroOrdenDeCompraAdicional = solp.NroOrdenDeCompraAdicional;
                 solpEntity.ProveedorAsignado_Id = solp.ProveedorAsignadoId;
                 pliegoEntity = solpEntity.Pliego;
@@ -197,6 +198,7 @@ namespace SustitucionMOAUtils.Services
                 pliegoEntity.NombreObra = solp.NombreDeObra;
                 solpEntity.TrabajoYaHecho = solp.TrabajoYaHecho;
                 solpEntity.Adicional = solp.Adicional;
+                solpEntity.Urgencia = solp.Urgencia;
                 solpEntity.NroOrdenDeCompraAdicional = solp.NroOrdenDeCompraAdicional;
                 solpEntity.ProveedorAsignado_Id = solp.ProveedorAsignadoId;
                 pliegoEntity.FiscalContrato = solp.FiscalContrato;
@@ -660,6 +662,19 @@ namespace SustitucionMOAUtils.Services
                     {
                         posiciones.EsConcluido = true;
                     }
+
+
+                    if (solpEntity.Urgencia == true)
+                    {
+                        try
+                        {
+                            EnviarMailSolpFinalizadaConUrgencia(solpEntity);
+                        }
+                        catch (Exception e)
+                        {
+                            Logger.Log.Info($"EnviarMailSolpFinalizada nro de solp {solpEntity.NroSolp}");
+                        }
+                    }
                 }
                 repositorio.GuardarCambios();
             }
@@ -1085,6 +1100,7 @@ namespace SustitucionMOAUtils.Services
                 ProveedorAsignadoId = solp.ProveedorAsignado_Id,
                 TrabajoYaHecho = solp.TrabajoYaHecho,
                 Adicional = solp.Adicional,
+                Urgencia = solp.Urgencia,
                 NroOrdenDeCompraAdicional = solp.NroOrdenDeCompraAdicional,
                 DeshabilitarAdicional = solp.Adjudicacions.Any(),
 
@@ -1690,7 +1706,7 @@ namespace SustitucionMOAUtils.Services
                         CrearPeticionAutomatica(solp, new List<int> { solp.ProveedorAsignado_Id.Value }, null, false);
                     }
                 }
-                if (solp.UsuarioCompras != null && solp.Posiciones.Select(x => x.TipoPosicion.Codigo).FirstOrDefault() == "SERVICIO" && enviarMail)
+                if (solp.UsuarioCompras != null && solp.Posiciones.Select(x => x.TipoPosicion.Codigo).FirstOrDefault() == "SERVICIO" && enviarMail && solp.Urgencia != true)
                 {
                     try
                     {
@@ -1701,8 +1717,56 @@ namespace SustitucionMOAUtils.Services
                         Logger.Log.Info($"EnviarMailSolpLiberada nro de solp {solp.NroSolp}");
                     }
                 }
+
             }
         }
+
+        private void EnviarMailSolpFinalizadaConUrgencia(Solp solp)
+        {
+            try
+            {
+                Logger.Log.Info($"EnviarMailSolpFinalizada nro de solp {solp.NroSolp}");
+                var usuarioCreacion = repositorio.Obtener<Usuario>(solp.UsuarioCreacion_Id);
+                var copia = new List<string> { usuarioCreacion.Mail };
+
+                if (!string.IsNullOrEmpty(usuarioCreacion.Mail))
+                {
+                    copia.Add(usuarioCreacion.Mail);
+                }
+                var asunto = "";
+
+                var usuariosComprasHabilitados = repositorio.Listar<UsuarioCompras>(x => x.Habilitado == true);
+
+                var enviarA = usuariosComprasHabilitados.Select(x => x.Mail).ToList();
+                //var enviarA = repositorio.Listar<UsuarioCompras, string>(x => x.Mail, null, x => x.Habilitado == true).ToList();
+                asunto += $"Nueva SOLP de urgencia Finalizada - {solp.NroSolp} - {usuarioCreacion.ObtenerRazonSocial()}";
+
+                emailService.EnviarMail(enviarA, asunto, "", copia, CuerpoMailSolpFinalizada(solp), null, "");
+            }
+            catch (Exception e)
+            {
+                Logger.Log.Info($"Error al enviar mail - Nro de SOLP {solp.NroSolp}");
+                Logger.Log.Error(e);
+            }
+        }
+
+        private AlternateView CuerpoMailSolpFinalizada(Solp solp)
+        {
+            var filePath = System.Web.HttpContext.Current.Server.MapPath("~/Content/Images/header/logo_.png");
+            LinkedResource res = new LinkedResource(filePath);
+            res.ContentId = Guid.NewGuid().ToString();
+            string htmlBody = "";
+            htmlBody += $"En el presente mail se informa la finalizacion de la SOLP {solp.NroSolp} generada con Molinos Agro S.A. <br />";
+            htmlBody += "<br/>";
+            htmlBody += "En caso de tener alguna consulta, ingresar a www.moaoperaciones.com.ar " +
+                "<br/><br/>Saludos Cordiales<br/>" +
+                "Molinos Agro S.A. <br/><br/> " +
+                 @"<img width:'5%' src='cid:" + res.ContentId + @"'/>";
+            AlternateView alternateView = AlternateView.CreateAlternateViewFromString(htmlBody, null, "text/html");
+            alternateView.LinkedResources.Add(res);
+            return alternateView;
+        }
+
         private void EnviarMailSolpLiberada(Solp solp, string mensaje = "")
         {
             try
@@ -1720,6 +1784,7 @@ namespace SustitucionMOAUtils.Services
                 var asunto = "";
                 var enviarA = new List<string> { solp.UsuarioCompras.Mail };
                 asunto += $"Nueva SOLP Liberada - {solp.NroSolp} - {solp.UsuarioCreacion.ObtenerRazonSocial()}";
+
                 emailService.EnviarMail(enviarA, asunto, "", copia, CuerpoMailSolpLiberada(solp, mensaje), null, "");
             }
             catch (Exception e)
@@ -2578,7 +2643,7 @@ namespace SustitucionMOAUtils.Services
                   item.FechaCircular == null ? item.PlazoDeOfertaCierre.Value :
                   item.PlazoDeOfertaCierre.Value > item.FechaCircular.Value ? item.PlazoDeOfertaCierre.Value : item.PlazoDeOfertaCircular.Value;
 
-                        if (item.Cotizacion != null && fecha >= hoy)
+                        if (item.Cotizacion != null && fecha >= hoy && todasLasOfertas.Urgencia != true)
                         {
                             mensaje = "Plazo de oferta sin finalizar";
                             verAdjudicar = false;

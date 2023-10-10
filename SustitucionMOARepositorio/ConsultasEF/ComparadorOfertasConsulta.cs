@@ -42,6 +42,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                     TipoPosicionCodigo = po.Solp.Posiciones.Select(x => x.TipoPosicion.Codigo).FirstOrDefault(),
                                     NroSolp = po.Solp.NroSolp,
                                     Adicional = po.Solp.Adicional,
+                                    Urgencia = po.Solp.Urgencia,
                                     NroOrdenDeCompraAdicional = po.Solp.NroOrdenDeCompraAdicional,
                                     EstaLiberado = po.Solp.EstadoSolpSap.CodigoSap == "05",
                                     PeticionDeOfertaPosicion = (from pop in contexto.Set<PeticionDeOfertaSolpPosicion>()

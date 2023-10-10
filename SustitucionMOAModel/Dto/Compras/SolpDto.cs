@@ -85,6 +85,7 @@ namespace SustitucionMOAModel.Dto
         public bool VerPublicar { get; set; }
         public bool VerCircular { get; set; }
         public bool? Adicional { get; set; }
+        public bool? Urgencia { get; set; }
         public string NroOrdenDeCompraAdicional { get; set; }
         public bool DeshabilitarAdicional { get; set; }
         public int? ProveedorIdAdicional { get; set; }

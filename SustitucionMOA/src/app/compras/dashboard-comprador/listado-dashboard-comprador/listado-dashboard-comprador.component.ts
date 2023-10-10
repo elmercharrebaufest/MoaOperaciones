@@ -574,9 +574,6 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
                                 this.visualizarAlertCotizacion = true;
                             }
                         }
-
-                        
-                        console.log("this.visualizarAlertCotizacion", this.visualizarAlertCotizacion)
                         this.blockUI.stop();
                     }
                 },

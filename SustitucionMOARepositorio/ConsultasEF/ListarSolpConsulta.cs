@@ -57,6 +57,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                     Adicional = x.Adicional,
                                     NroOrdenDeCompraAdicional = x.NroOrdenDeCompraAdicional,
                                     TrabajoYaHecho = x.TrabajoYaHecho,
+                                    Urgencia = x.Urgencia,
                                     PosicionCompras = (from posicion in contexto.Set<SolpPosicion>()
                                                        where posicion.Solp_Id == x.Id
                                                        select new SolpPosicionDto()

@@ -93,6 +93,7 @@ namespace SustitucionMOAModel.Dto
         public DateTime? FechaCircular { get; set; }
         public decimal? PorcentajeDeHoras { get; set; }
         public bool? AdjuntoPliego { get; set; }
+        public bool? Urgencia { get; set; }
     }
 
     public class PeticionDeOfertaSolpPosicionDto
