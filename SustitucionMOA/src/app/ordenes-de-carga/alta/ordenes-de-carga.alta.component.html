@@ -93,8 +93,10 @@
                                     Destino mercadería:
                                 </div>
                                 <div class="styled-select">
-                                    <textarea id="DestinoMercaderia" [(ngModel)]="ordenDeCarga.DestinoMercaderia"
-                                        rows="5" [disabled]="editando || null"></textarea>
+                                    <textarea id="DestinoMercaderia" placeholder="Máximo de 40 caracteres"
+                                        [(ngModel)]="ordenDeCarga.DestinoMercaderia" rows="2"
+                                        [maxLength]="40"
+                                        [disabled]="editando || null"></textarea>
                                 </div>
                             </div>
                             <ng-container *ngIf="validaCPEDG">
@@ -271,8 +273,8 @@
                                 </div>
                                 <div class="styled-select autocomplete">
                                     <input auto-complete [(ngModel)]="ordenDeCarga.PatenteAcoplado"
-                                        (ngModelChange)="patenteAcopladoSelected($event);onPatenteSeleccionada();validarCNRT()" maxlength="7"
-                                        [source]="patentesAcoplados" [min-chars]="2"
+                                        (ngModelChange)="patenteAcopladoSelected($event);onPatenteSeleccionada();validarCNRT()"
+                                        maxlength="7" [source]="patentesAcoplados" [min-chars]="2"
                                         [no-match-found-text]="'No se encontraron resultados'"
                                         [value-formatter]="generalFormatterAcoplado"
                                         [list-formatter]="generalFormatterAcoplado" mask="AAAAAAA" />

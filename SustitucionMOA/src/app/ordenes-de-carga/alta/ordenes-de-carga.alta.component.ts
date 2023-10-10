@@ -618,11 +618,17 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
         }
     }
 
-    chasisAcopladoSelected(event: any) {
-        this.ordenDeCarga.ChasisAcoplado = event.toUpperCase();;
+    chasisAcopladoSelected(event: string | { value: string }) {
+        if (typeof (event) === "string")
+            this.ordenDeCarga.ChasisAcoplado = event.toUpperCase();
+        else if (event.value)
+            this.ordenDeCarga.ChasisAcoplado = event.value.toUpperCase();
     }
-    patenteAcopladoSelected(event: any) {
-        this.ordenDeCarga.PatenteAcoplado = event.toUpperCase();;
+    patenteAcopladoSelected(event: string | { value: string }) {
+        if (typeof (event) === "string")
+            this.ordenDeCarga.PatenteAcoplado = event.toUpperCase();
+        else if (event.value)
+            this.ordenDeCarga.PatenteAcoplado = event.value.toUpperCase();
     }
     cuitChoferSelected(value: any) {
         this.ordenDeCarga.CUITChofer = value.value;
