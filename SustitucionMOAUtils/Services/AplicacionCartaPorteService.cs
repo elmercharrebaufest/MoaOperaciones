@@ -9,6 +9,9 @@ using SustitucionMOAFotmatter;
 using SustitucionMOAModel.Enums;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Enums.SustitucionMOAModel.Enums;
+using SustitucionMOAModel.Dto.AplicacionCartaPorte;
+using System.ComponentModel.DataAnnotations;
+using SustitucionMOAUtils.Logger;
 
 namespace SustitucionMOAUtils.Services
 {
@@ -18,10 +21,6 @@ namespace SustitucionMOAUtils.Services
         public AplicacionCartaPorteService(IRepositorio repositorio)
         {
             this.repositorio = repositorio;
-        }
-        public Resultado Agregar(AplicacionCartaPorte aplicacionCCPP, string mailUsuario)
-        {
-            return new Resultado() { Mensaje = "Testeo exitoso" };
         }
         public List<AplicacionCartaPorteDto> Listar(string mailUsuario, string fechaInicio, string fechaFin)
         {
@@ -58,6 +57,63 @@ namespace SustitucionMOAUtils.Services
                 throw new InfoCustomException("No se puede eliminar la aplicación.");
             aplicacion.Estado = EstadoAplicacionCartaPorte.Eliminado;
             repositorio.GuardarCambios();
+        }
+        public List<ContratoParaAplicacionCartaPorte> ObtenerContratos(string mailUsuario)
+        {
+            var usuario = repositorio.Obtener<Usuario>(us => us.Mail == mailUsuario);
+
+            var codigoProveedor = usuario.ObtenerProveedorAsignado().CodigoProveedor;
+
+
+            return new List<ContratoParaAplicacionCartaPorte> {
+                new ContratoParaAplicacionCartaPorte {NumeroContrato="123456"},
+                new ContratoParaAplicacionCartaPorte {NumeroContrato="1237686"},
+                new ContratoParaAplicacionCartaPorte {NumeroContrato="918023"},
+                new ContratoParaAplicacionCartaPorte {NumeroContrato="12436746"},
+            };
+
+        }
+        public List<CartaPorteParaAplicacionCartaPorte> ObtenerCartasPorte(string numeroContrato, string mailUsuario)
+        {
+            var usuario = repositorio.Obtener<Usuario>(us => us.Mail == mailUsuario);
+
+            var codigoProveedor = usuario.ObtenerProveedorAsignado().CodigoProveedor;
+
+            return new List<CartaPorteParaAplicacionCartaPorte> {
+               new CartaPorteParaAplicacionCartaPorte {NumeroCartaPorte="123456", KgPendientes=4},
+                new CartaPorteParaAplicacionCartaPorte {NumeroCartaPorte="1237686",KgPendientes=12},
+                new CartaPorteParaAplicacionCartaPorte {NumeroCartaPorte="918023",KgPendientes=28},
+                new CartaPorteParaAplicacionCartaPorte {NumeroCartaPorte="12436746", KgPendientes = 4},};
+        }
+
+        public void GuardarAplicacion(CrearAplicacionCartaPorte aplicacionACrear, string mailUsuario)
+        {
+            ValidarSchema(aplicacionACrear, "AplicacionCartaPorte", "GuardarAplicacion");
+            if (!aplicacionACrear.ValidarKilogramos())
+                throw new InfoCustomException("Revisar valor de KG.");
+            var contratosValidos = ObtenerContratos(mailUsuario);
+            if (!aplicacionACrear.ValidarContrato(contratosValidos))
+                throw new InfoCustomException("Revisar contrato seleccionado.");
+            var cartasPorteValidas = ObtenerCartasPorte(aplicacionACrear.Contrato, mailUsuario);
+            if (!aplicacionACrear.ValidarCartaPorteSeleccionada(cartasPorteValidas))
+                throw new InfoCustomException("Revisar carta porte seleccionada.");
+            var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
+
+            var aplicacion = new AplicacionCartaPorte(aplicacionACrear, usuario);
+            repositorio.Agregar(aplicacion);
+
+            repositorio.GuardarCambios();
+        }
+
+        private void ValidarSchema<T>(T schema, string controller, string metodo)
+        {
+            var validationContext = new ValidationContext(schema);
+            var validationResults = new List<ValidationResult>();
+            if (!Validator.TryValidateObject(schema, validationContext, validationResults))
+            {
+                Log.Debug(controller, metodo, string.Join("; ", validationResults.Select(valRes => valRes.ErrorMessage)));
+                throw new InfoCustomException("Error validando formulario.");
+            }
         }
     }
 }
