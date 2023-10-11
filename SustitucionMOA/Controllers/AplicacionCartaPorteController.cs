@@ -2,6 +2,7 @@
 using SustitucionMOAAssets;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
+using SustitucionMOAModel.Dto.AplicacionCartaPorte;
 using SustitucionMOAModel.Entities;
 using SustitucionMOASecurity;
 using SustitucionMOAUtils.Interfaces;
@@ -120,5 +121,80 @@ namespace SustitucionMOA.Controllers
             return ContentCustom(response);
         }
 
+        public ContentResult ObtenerContratos()
+        {
+            var response = new SustitucionMOAApiResponse<ContratoParaAplicacionCartaPorteResponse>();
+            try
+            {
+                var mailUsuario = SessionPersister.getUsername();
+                response.Data = new ContratoParaAplicacionCartaPorteResponse { Contratos = aplicacionCCPPService.ObtenerContratos(mailUsuario) };
+            }
+            catch (InfoCustomException ice)
+            {
+                response.Info = ice.Message;
+            }
+            catch (ValidationCustomException vce)
+            {
+                response.Error = vce.Message;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                response.Error = ErrorMsg.Error;
+            }
+            return ContentCustom(response);
+        }
+
+        [HttpGet]
+        public ContentResult ObtenerCartasPorte(string numeroContrato)
+        {
+            var response = new SustitucionMOAApiResponse<CartaPorteParaAplicacionCartaPorteResponse>();
+            try
+            {
+                var mailUsuario = SessionPersister.getUsername();
+                response.Data = new CartaPorteParaAplicacionCartaPorteResponse { CartasPorte = aplicacionCCPPService.ObtenerCartasPorte(numeroContrato, mailUsuario) };
+            }
+            catch (InfoCustomException ice)
+            {
+                response.Info = ice.Message;
+            }
+            catch (ValidationCustomException vce)
+            {
+                response.Error = vce.Message;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                response.Error = ErrorMsg.Error;
+            }
+            return ContentCustom(response);
+        }
+        [HttpPost]
+        public ContentResult GuardarAplicacion(string aplicacionCCPPJSON)
+        {
+            var response = new SustitucionMOAApiResponse<bool>();
+            try
+            {
+
+                var aplicacionACrear = JsonConvert.DeserializeObject<CrearAplicacionCartaPorte>(aplicacionCCPPJSON);
+                var mailUsuario = SessionPersister.getUsername();
+                aplicacionCCPPService.GuardarAplicacion(aplicacionACrear, mailUsuario);
+                response.Data = true;
+            }
+            catch (InfoCustomException ice)
+            {
+                response.Info = ice.Message;
+            }
+            catch (ValidationCustomException vce)
+            {
+                response.Error = vce.Message;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                response.Error = ErrorMsg.Error;
+            }
+            return ContentCustom(response);
+        }
     }
 }
