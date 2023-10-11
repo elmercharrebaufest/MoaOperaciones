@@ -19,8 +19,9 @@ export class AplicacionCcppBaseComponent extends ListBaseComponent {
     constructor(protected service: AplicacionCcppService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
     }
-
-    public crearSecciones() {
+    ngOnInit() {
+        this.setTabs();
+        this.checkPermisos();
         this.navService.setSeccionList(
             [
                 new Seccion(`/${SeccionAplicacionCCPP}`, SeccionAplicacionCCPP, 'Carga manual'),
@@ -28,6 +29,9 @@ export class AplicacionCcppBaseComponent extends ListBaseComponent {
                 new Seccion(`/${SeccionAplicacionCCPP}/listado`, SeccionAplicacionCCPP, 'Estado de cargas'),
             ]
         );
+        this.extraOnInit();
     }
+
+    extraOnInit() { }
     estadosAplicacionCCPP = EstadoAplicacionCCPP
 }

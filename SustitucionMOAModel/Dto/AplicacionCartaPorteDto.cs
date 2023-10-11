@@ -1,8 +1,11 @@
-﻿using SustitucionMOAModel.Entities;
+﻿
 using SustitucionMOAModel.Enums.SustitucionMOAModel.Enums;
 using SustitucionMOAModel.Models;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Entities = SustitucionMOAModel.Entities;
 
 namespace SustitucionMOAModel.Dto
 {
@@ -23,7 +26,7 @@ namespace SustitucionMOAModel.Dto
         public string FechaActualizacion { get; set; }
 
 
-        public AplicacionCartaPorteDto(AplicacionCartaPorte aplicacionCCPP)
+        public AplicacionCartaPorteDto(Entities.AplicacionCartaPorte aplicacionCCPP)
         {
             var colorEstado = EstadoAplicacionCartaPorteExtensions.ObtenerSemaforo(aplicacionCCPP.Estado);
             var labelEstado = EstadoAplicacionCartaPorteExtensions.ToFriendlyString(aplicacionCCPP.Estado);
