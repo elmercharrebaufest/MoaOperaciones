@@ -19,7 +19,7 @@ import { Permiso } from '../../common/enums/Permisos';
   templateUrl: './listado.component.html',
   styleUrls: ['./listado.component.css']
 })
-export class ListadoComponent extends AplicacionCcppBaseComponent implements OnInit, OnDestroy {
+export class ListadoComponent extends AplicacionCcppBaseComponent implements OnDestroy {
   @BlockUI() blockUI: NgBlockUI;
   @ViewChild("FiltroEstado") filtroEstadoComponent: DropdownComponent;
   aplicaciones?: AplicacionCCPP[];
@@ -43,10 +43,10 @@ export class ListadoComponent extends AplicacionCcppBaseComponent implements OnI
     protected modalService: ModalService) {
     super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
   }
-
-  ngOnInit() {
-    this.crearSecciones();
+  setTabs(): void {
     this.setMenuSeccionTab(SeccionAplicacionCCPP, 'Estado de cargas');
+  }
+  extraOnInit() {
     this.getListado()
   }
   get isVisible(): boolean {
