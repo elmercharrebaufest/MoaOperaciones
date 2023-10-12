@@ -110,6 +110,27 @@ namespace SustitucionMOARepositorio
         /// <returns>Lista de entidades</returns>
         TEntidad ObtenerConsultaEscalar<TEntidad>(IConsultaEscalar<TEntidad> consulta);
         ListaPaginada<TEntidad> ListarConOrdenYPaginado<TEntidad>(IQueryable<TEntidad> lista, Paginacion paginacion) where TEntidad : class;
-        IQueryable<TEntidad> ListarQuery<TEntidad>(Expression<Func<TEntidad, bool>> filtro = null) where TEntidad : class;
+        
+
+        IQueryable<TEntidad> Incluir<TEntidad>(params Expression<Func<TEntidad, object>>[] includes) where TEntidad : class;
+
+        TEntidad Obtener<TEntidad>(Expression<Func<TEntidad, bool>> condition, params Expression<Func<TEntidad, object>>[] navProperties) where TEntidad : class;
+
+        IQueryable<TEntidad> ListarTodos<TEntidad>() where TEntidad : class;
+       
+
+        IQueryable<TEntidad> ListarTodos<TEntidad>(params Expression<Func<TEntidad, object>>[] navProperties) where TEntidad : class;
+
+
+        IQueryable<TEntidad> ListarConsultable<TEntidad>(Expression<Func<TEntidad, bool>> condition) where TEntidad : class;
+
+        IQueryable<TEntidad> ListarConsultable<TEntidad>(Expression<Func<TEntidad, bool>> condition, params Expression<Func<TEntidad, object>>[] navProperties) where TEntidad : class;
+        
+
+        IQueryable<TEntidad> ListarPaginado<TEntidad>(Expression<Func<TEntidad, bool>> condition, Expression<Func<TEntidad, object>> orderBy, int page, int pageSize) where TEntidad : class;
+
+
+        IQueryable<TEntidad> ListarPaginado<TEntidad>(Expression<Func<TEntidad, bool>> condition, Expression<Func<TEntidad, object>> orderBy, int page, int pageSize, params Expression<Func<TEntidad, object>>[] navProperties) where TEntidad : class;
+       
     }
 }

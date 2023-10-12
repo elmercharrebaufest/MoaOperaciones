@@ -18,6 +18,7 @@ namespace SustitucionMOARepositorio
         private readonly DbContext context;
         private const int SqlFkError = 547;
 
+
         public RepositorioEF(DbContext context)
         { //Forzar el uso del Sql Provider para que la EntityFramework.SqlServer.dll se copie al proyecto web
             //http://robsneuron.blogspot.com/2013/11/entity-framework-upgrade-to-6.html
@@ -26,41 +27,69 @@ namespace SustitucionMOARepositorio
             this.context = context;
         }
 
-        private IDbSet<TEntidad> Set<TEntidad>() where TEntidad : class
+        public TEntidad Agregar<TEntidad>(TEntidad entidad) where TEntidad : class
         {
-            return context.Set<TEntidad>();
+            return Set<TEntidad>().Add(entidad);
         }
 
-        public TEntidad Obtener<TEntidad>(object id) where TEntidad : class
+        public void AgregarTodos<TEntidad>(IEnumerable<TEntidad> items, List<KeyValuePair<string, string>> properties = null) where TEntidad : class
         {
-            return Set<TEntidad>().Find(id);
-        }
-
-        public TEntidad Obtener<TEntidad>(Expression<Func<TEntidad, bool>> condicion) where TEntidad : class
-        {
-            return Set<TEntidad>().FirstOrDefault(condicion);
-        }
-
-        public TProyeccion Obtener<TEntidad, TProyeccion>(Expression<Func<TEntidad, bool>> condicion, Expression<Func<TEntidad, TProyeccion>> proyeccion) where TEntidad : class
-        {
-            return Set<TEntidad>().Where(condicion).Select(proyeccion).FirstOrDefault();
-        }
-        public TEntidad ObtenerNoTracking<TEntidad>(Expression<Func<TEntidad, bool>> filtro) where TEntidad : class
-        {
-            return Set<TEntidad>().AsNoTracking().FirstOrDefault(filtro);
-        }
-
-        public TEntidad Obtener<TEntidad>(IEnumerable<Expression<Func<TEntidad, object>>> includes, Expression<Func<TEntidad, bool>> filtro) where TEntidad : class
-        {
-            IQueryable<TEntidad> resultado = Set<TEntidad>();
-
-            foreach (var i in includes)
+            var enumerable = items as IList<TEntidad> ?? items.ToList();
+            if (enumerable.Any())
             {
-                resultado = resultado.Include(i);
+                var dataTable = enumerable.ToDataTable(true, properties);
+                context.SqlBulkInsert(dataTable, dataTable.TableName);
+            }
+        }
+
+        public int Contar<TEntidad>() where TEntidad : class
+        {
+            return Set<TEntidad>().Count();
+        }
+
+        public int Contar<TEntidad>(Expression<Func<TEntidad, bool>> filtro) where TEntidad : class
+        {
+            return Set<TEntidad>().Count(filtro);
+        }
+        public void Dispose()
+        {
+            context.Dispose();
+        }
+
+        public bool Existe<TEntidad>(Expression<Func<TEntidad, bool>> filtro) where TEntidad : class
+        {
+            return Set<TEntidad>().Any(filtro);
+        }
+
+        public int GuardarCambios()
+        {
+            try
+            {
+                return context.SaveChanges();
+            }
+            catch (DataException e)
+            {
+                if (ObtenerCodigoError(e) == SqlFkError)
+                {
+                    throw new EntidadReferenciadaException(string.Empty, e);
+                }
+                throw;
+            }
+        }
+
+
+        public IQueryable<TEntidad> Incluir<TEntidad>(params Expression<Func<TEntidad, object>>[] includes) where TEntidad : class
+        {
+            IQueryable<TEntidad> query = this.Set<TEntidad>();
+
+            foreach (var include in includes)
+            {
+                query = query.Include(include);
             }
 
-            return resultado.SingleOrDefault(filtro);
+            return query;
         }
+
 
         public List<TEntidad> Listar<TEntidad>(Expression<Func<TEntidad, bool>> filtro = null, int maxResultados = 0, string orden = null, DirOrden direccionOrden = DirOrden.Asc, IEnumerable<Expression<Func<TEntidad, object>>> includes = null) where TEntidad : class
         {
@@ -100,115 +129,6 @@ namespace SustitucionMOARepositorio
             return resultado.GroupBy(agrupamiento, proyeccion).Select(g => g.ToList());
         }
 
-        private static IQueryable<TProyeccion> ListarProyeccionQueryable<TProyeccion>(IQueryable<TProyeccion> resultadoFinal, string orden, DirOrden direccionOrden, int maxResultados)
-        {
-
-            if (orden != null)
-            {
-                var selectorOrden = Expresiones.Propiedad<TProyeccion>(orden);
-                resultadoFinal = direccionOrden == DirOrden.Asc
-                                 ? resultadoFinal.OrderBy(selectorOrden)
-                                 : resultadoFinal.OrderByDescending(selectorOrden);
-            }
-            //CAMBIE ESTO ARA ACA ABAJO
-            if (maxResultados != 0)
-            {
-                resultadoFinal = resultadoFinal.Take(maxResultados);
-            }
-
-            return resultadoFinal;
-        }
-
-        public int Contar<TEntidad>() where TEntidad : class
-        {
-            return Set<TEntidad>().Count();
-        }
-
-        public int Contar<TEntidad>(Expression<Func<TEntidad, bool>> filtro) where TEntidad : class
-        {
-            return Set<TEntidad>().Count(filtro);
-        }
-
-        public bool Existe<TEntidad>(Expression<Func<TEntidad, bool>> filtro) where TEntidad : class
-        {
-            return Set<TEntidad>().Any(filtro);
-        }
-
-        public TEntidad Agregar<TEntidad>(TEntidad entidad) where TEntidad : class
-        {
-            return Set<TEntidad>().Add(entidad);
-        }
-
-        public void AgregarTodos<TEntidad>(IEnumerable<TEntidad> items, List<KeyValuePair<string, string>> properties = null) where TEntidad : class
-        {
-            var enumerable = items as IList<TEntidad> ?? items.ToList();
-            if (enumerable.Any())
-            {
-                var dataTable = enumerable.ToDataTable(true, properties);
-                context.SqlBulkInsert(dataTable, dataTable.TableName);
-            }
-        }
-
-        public TEntidad Remover<TEntidad>(object id) where TEntidad : class
-        {
-            return Remover(Obtener<TEntidad>(id));
-        }
-
-        public TEntidad Remover<TEntidad>(TEntidad entidad) where TEntidad : class
-        {
-            return Set<TEntidad>().Remove(entidad);
-        }
-        public void RemoverTodos<TEntidad>(IEnumerable<TEntidad> entidades) where TEntidad : class
-        {
-            foreach (var entidad in entidades)
-            {
-                Set<TEntidad>().Remove(entidad);
-            }
-        }
-        public void TruncarTabla<TEntidad>() where TEntidad : class
-        {
-            var tabla = typeof(TEntidad).Name;
-            context.Database.ExecuteSqlCommand("TRUNCATE TABLE [" + tabla + "]");
-        }
-        public int GuardarCambios()
-        {
-            try
-            {
-                return context.SaveChanges();
-            }
-            catch (DataException e)
-            {
-                if (ObtenerCodigoError(e) == SqlFkError)
-                {
-                    throw new EntidadReferenciadaException(string.Empty, e);
-                }
-                throw;
-            }
-        }
-
-        public TEntidad ObtenerConsultaEscalar<TEntidad>(IConsultaEscalar<TEntidad> consulta)
-        {
-            return consulta.Ejecutar(context);
-        }
-
-        public void Dispose()
-        {
-            context.Dispose();
-        }
-
-        private int ObtenerCodigoError(DataException e)
-        {
-            var code = 0;
-            if (e.InnerException != null)
-            {
-                var sqlEx = e.InnerException.InnerException as SqlException;
-                if (sqlEx != null)
-                {
-                    code = sqlEx.Number;
-                }
-            }
-            return code;
-        }
 
         public ListaPaginada<TProyeccion> Listar<TEntidad, TProyeccion>(Expression<Func<TEntidad, TProyeccion>> proyeccion, Paginacion paginacion, Expression<Func<TEntidad, bool>> filtro = null) where TEntidad : class
         {
@@ -272,9 +192,144 @@ namespace SustitucionMOARepositorio
 
             return queryEntidad.Select(proyeccion).ToList();
         }
-        public IQueryable<TEntidad> ListarQuery<TEntidad>(Expression<Func<TEntidad, bool>> filtro = null) where TEntidad : class
+
+        public IQueryable<TEntidad> ListarTodos<TEntidad>() where TEntidad : class
         {
-            return filtro != null ? Set<TEntidad>().Where(filtro) : Set<TEntidad>();
+            return this.Set<TEntidad>();
+        }
+
+        public IQueryable<TEntidad> ListarTodos<TEntidad>(params Expression<Func<TEntidad, object>>[] navProperties) where TEntidad : class
+        {
+            var res = this.context.Set<TEntidad>().Include(navProperties[0]);
+            for (var i = 1; i < navProperties.Count(); i++)
+            {
+                res = res.Include(navProperties[i]);
+            }
+
+            return res;
+        }
+
+        public IQueryable<TEntidad> ListarConsultable<TEntidad>(Expression<Func<TEntidad, bool>> condition) where TEntidad : class
+        {
+            return this.context.Set<TEntidad>().Where(condition);
+        }
+
+        public IQueryable<TEntidad> ListarConsultable<TEntidad>(Expression<Func<TEntidad, bool>> condition, params Expression<Func<TEntidad, object>>[] navProperties) where TEntidad : class
+        {
+            if (navProperties.Any())
+            {
+                var res = this.context.Set<TEntidad>().Include(navProperties[0]);
+                for (var i = 1; i < navProperties.Count(); i++)
+                {
+                    res = res.Include(navProperties[i]);
+                }
+
+                return res.Where(condition);
+            }
+
+            return this.ListarConsultable(condition);
+        }
+
+        public IQueryable<TEntidad> ListarPaginado<TEntidad>(Expression<Func<TEntidad, bool>> condition, Expression<Func<TEntidad, object>> orderBy, int page, int pageSize) where TEntidad : class
+        {
+            return this.ListarConsultable(condition).OrderBy(orderBy).Skip((page - 1) * pageSize).Take(pageSize);
+        }
+
+        public IQueryable<TEntidad> ListarPaginado<TEntidad>(Expression<Func<TEntidad, bool>> condition, Expression<Func<TEntidad, object>> orderBy, int page, int pageSize, params Expression<Func<TEntidad, object>>[] navProperties) where TEntidad : class
+        {
+            return this.ListarConsultable(condition, navProperties).OrderBy(orderBy).Skip((page - 1) * pageSize).Take(pageSize);
+        }
+
+        public TEntidad Obtener<TEntidad>(object id) where TEntidad : class
+        {
+            return Set<TEntidad>().Find(id);
+        }
+
+        public TEntidad Obtener<TEntidad>(Expression<Func<TEntidad, bool>> condicion) where TEntidad : class
+        {
+            return Set<TEntidad>().FirstOrDefault(condicion);
+        }
+
+        public TProyeccion Obtener<TEntidad, TProyeccion>(Expression<Func<TEntidad, bool>> condicion, Expression<Func<TEntidad, TProyeccion>> proyeccion) where TEntidad : class
+        {
+            return Set<TEntidad>().Where(condicion).Select(proyeccion).FirstOrDefault();
+        }
+        public TEntidad ObtenerNoTracking<TEntidad>(Expression<Func<TEntidad, bool>> filtro) where TEntidad : class
+        {
+            return Set<TEntidad>().AsNoTracking().FirstOrDefault(filtro);
+        }
+
+        public TEntidad Obtener<TEntidad>(IEnumerable<Expression<Func<TEntidad, object>>> includes, Expression<Func<TEntidad, bool>> filtro) where TEntidad : class
+        {
+            IQueryable<TEntidad> resultado = Set<TEntidad>();
+
+            foreach (var i in includes)
+            {
+                resultado = resultado.Include(i);
+            }
+
+            return resultado.SingleOrDefault(filtro);
+        }
+
+        public TEntidad Obtener<TEntidad>(Expression<Func<TEntidad, bool>> condition, params Expression<Func<TEntidad, object>>[] navProperties) where TEntidad : class
+        {
+            if (navProperties.Any())
+            {
+                var res = this.context.Set<TEntidad>().Include(navProperties[0]);
+                for (var i = 1; i < navProperties.Count(); i++)
+                {
+                    res = res.Include(navProperties[i]);
+                }
+
+                return res.Where(condition).FirstOrDefault();
+            }
+
+            return this.Obtener(condition);
+        }
+
+        public TEntidad ObtenerConsultaEscalar<TEntidad>(IConsultaEscalar<TEntidad> consulta)
+        {
+            return consulta.Ejecutar(context);
+        }
+
+        public TEntidad Remover<TEntidad>(object id) where TEntidad : class
+        {
+            return Remover(Obtener<TEntidad>(id));
+        }
+
+        public TEntidad Remover<TEntidad>(TEntidad entidad) where TEntidad : class
+        {
+            return Set<TEntidad>().Remove(entidad);
+        }
+        public void RemoverTodos<TEntidad>(IEnumerable<TEntidad> entidades) where TEntidad : class
+        {
+            foreach (var entidad in entidades)
+            {
+                Set<TEntidad>().Remove(entidad);
+            }
+        }
+        public void TruncarTabla<TEntidad>() where TEntidad : class
+        {
+            var tabla = typeof(TEntidad).Name;
+            context.Database.ExecuteSqlCommand("TRUNCATE TABLE [" + tabla + "]");
+        }
+        private static IQueryable<TProyeccion> ListarProyeccionQueryable<TProyeccion>(IQueryable<TProyeccion> resultadoFinal, string orden, DirOrden direccionOrden, int maxResultados)
+        {
+
+            if (orden != null)
+            {
+                var selectorOrden = Expresiones.Propiedad<TProyeccion>(orden);
+                resultadoFinal = direccionOrden == DirOrden.Asc
+                                 ? resultadoFinal.OrderBy(selectorOrden)
+                                 : resultadoFinal.OrderByDescending(selectorOrden);
+            }
+            //CAMBIE ESTO ARA ACA ABAJO
+            if (maxResultados != 0)
+            {
+                resultadoFinal = resultadoFinal.Take(maxResultados);
+            }
+
+            return resultadoFinal;
         }
 
         private IQueryable<TEntidad> ListarQueryable<TEntidad>(IQueryable<TEntidad> resultado, Expression<Func<TEntidad, bool>> filtro, string orden, DirOrden direccionOrden, int maxResultados, IEnumerable<Expression<Func<TEntidad, object>>> includes = null) where TEntidad : class
@@ -306,6 +361,25 @@ namespace SustitucionMOARepositorio
             }
 
             return resultado;
+        }
+
+        private int ObtenerCodigoError(DataException e)
+        {
+            var code = 0;
+            if (e.InnerException != null)
+            {
+                var sqlEx = e.InnerException.InnerException as SqlException;
+                if (sqlEx != null)
+                {
+                    code = sqlEx.Number;
+                }
+            }
+            return code;
+        }
+
+        private IDbSet<TEntidad> Set<TEntidad>() where TEntidad : class
+        {
+            return context.Set<TEntidad>();
         }
     }
 }
