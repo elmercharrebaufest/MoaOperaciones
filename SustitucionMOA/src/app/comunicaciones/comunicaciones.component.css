@@ -6,7 +6,7 @@
     
 }
 
-.container-communication {
+.container-panel {
     border-left: 1px solid gray;
     border-right: 1px solid gray;
     border-bottom: 1px solid gray;
@@ -18,11 +18,12 @@
     overflow-y: auto;
   }
 
-.container-notificacion {
+.container-communication {
     display: flex; 
     justify-content: space-between; 
     z-index: 1; 
     position: relative;
+    width: -moz-available;
 }
 
 .title {
@@ -94,10 +95,6 @@
   .button-unread:hover {
     background-color: darkgreen; 
     box-shadow: 0 0 2px rgba(0, 0, 0, 0.5); 
-  }
-
-  .button-unread-hide {
-    display: none;
   }
 
   .text-new {

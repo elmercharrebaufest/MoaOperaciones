@@ -2,8 +2,8 @@
 <parameters>
 	<setParameter name="IIS Web Application Name" value="MoaOperaciones" />
 
-  <setParameter name="CONTEXTO-Web.config Connection String" value="data source=hci-sql2k19-01;User Id=MoaUser;Password=Moa$3030;initial catalog=MOAOperacionesInt;Pooling=False" />
-  <setParameter name="HfContexto-Web.config Connection String" value="data source=hci-sql2k19-01;User Id=MoaUser;Password=Moa$3030;Initial Catalog=MOAOperacionesHangfireInt;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False"/>
+  <setParameter name="CONTEXTO-Web.config Connection String" value="data source=HCI-SQL2K19-DES.huenei.com.ar;User Id=MoaUser;Password=Huenei%5050;initial catalog=MOAOperaciones;Pooling=False" />
+  <setParameter name="HfContexto-Web.config Connection String" value="data source=HCI-SQL2K19-DES.huenei.com.ar;User Id=MoaUser;Password=Huenei%5050;Initial Catalog=MOAOperacionesHangfire;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False"/>
  <setParameter name="RutaArchivosProveedores Config" value="C:/ArchivosProveedores" />
 
 	<setParameter name="PasswordSapEnc Config" value="JJB4bZok9i28exDKsPlaTA==" />

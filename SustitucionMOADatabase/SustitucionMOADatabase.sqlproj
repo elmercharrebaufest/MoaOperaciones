@@ -243,6 +243,8 @@
     <None Include="DatabaseNewPublishPRE.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="jji.publish.xml" />
+    <None Include="DatabasePublishHueInt.xml" />
   </ItemGroup>
   <ItemGroup>
     <None Include="scripts\UpdateRolesEditables.sql" />

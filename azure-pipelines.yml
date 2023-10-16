@@ -1,0 +1,41 @@
+trigger:
+- branches:
+  include:
+  - merge-QaMOA
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+stages:
+- stage: PullRequest
+  jobs:
+  - job: PullRequestJob
+    steps:
+    - task: UsePythonVersion@0
+      inputs:
+        versionSpec: '3.x'
+        addToPath: true
+
+    - script: |
+        # Configurar la información de autenticación para el repositorio Qa
+        echo 'export AZURE_DEVOPS_EXT_PAT=TuTokenDeAccesoPersonal' >> ~/.bashrc
+        source ~/.bashrc
+
+        # Clonar el otro repositorio
+        git clone https://molinosagro@dev.azure.com/molinosagro/MoaOperaciones/_git/MoaOperaciones
+        cd MoaOperaciones
+
+        # Crear una nueva rama para la pull request
+        git checkout -b feature-branch-sync
+
+        # Realizar los cambios necesarios
+        # ...
+
+        # Hacer commit y push a la nueva rama
+        git add .
+        git commit -m "Realizar cambios"
+        git push origin feature-branch-sync
+
+        # Crear el pull request
+        az repos pr create --repository QaHuenei --source-branch feature-branch-Sync --target-branch QaHuenei --title "Solicitud de pull request" --description "Descripción del pull request"
+      displayName: 'Crear Pull Request'

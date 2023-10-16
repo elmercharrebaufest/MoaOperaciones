@@ -113,6 +113,10 @@ namespace SustitucionMOAUtils.Services
             //guardo los nuevos archivos asociados a la notificacion 
             notificacion.ArchivosAdjuntos = oNotificacion.ArchivosAdjuntos;
 
+            //EliminarNotificacionesPorId(idNotificacion);
+            List<NotificacionLeida> notificacionesAEliminar = repositorio.Listar<NotificacionLeida>(x => x.Notificacion_Id == idNotificacion).ToList();
+            repositorio.RemoverTodos(notificacionesAEliminar);
+
             repositorio.GuardarCambios();
 
             return SuccessMsg.NotificacionActualizada;
@@ -281,6 +285,36 @@ namespace SustitucionMOAUtils.Services
             else
             {
                 return "No se agrega registro. Noticia leída previamente.";
+            }
+        }
+
+
+        /// <summary>
+        /// Cuando el admin edita una notificacion, se marca como no leída para todos los usuarios.
+        /// </summary>
+        /// <param name="NotificacionId"></param>
+        /// <param name="mailUsuario"></param>
+        /// <returns></returns>
+        public string EliminarNotificacionesPorId(int IdParaBorrar)
+        {
+            List<NotificacionLeida> notificacionesAEliminar = repositorio.Listar<NotificacionLeida>(x => x.Notificacion_Id == IdParaBorrar).ToList();
+
+            if (notificacionesAEliminar.Count > 0)
+            {
+                //foreach (var notificacion in notificacionesAEliminar)
+                //{
+                //    repositorio.Remover(notificacion);
+                //}
+
+                repositorio.RemoverTodos(notificacionesAEliminar);
+
+                repositorio.GuardarCambios();
+
+                return SuccessMsg.NotificacionActualizada;
+            }
+            else
+            {
+                return "No se encontraron notificaciones con el Id proporcionado.";
             }
         }
 

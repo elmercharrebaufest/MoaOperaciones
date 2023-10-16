@@ -1,16 +1,6 @@
-﻿using DocumentFormat.OpenXml.Office.CustomUI;
-using SustitucionMOAAssets;
-using SustitucionMOAModel.CustomExceptions;
-using SustitucionMOAModel.Dto;
-using SustitucionMOAModel.Entities;
-using SustitucionMOAModel.Models;
+﻿using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Models.ViewModel.Liquidacion;
-using SustitucionMOAModel.Models.ViewModel.Notificacion;
-using SustitucionMOAModel.Models.WebApiMap.ScatoRepositorio;
-using SustitucionMOAModel.Models.WSMapMOA.CartaPorte.Formulario;
 using SustitucionMOAModel.Models.WSMapMOA.Liquidacion;
-using SustitucionMOAModel.Models.WSMapMOA.Noticia;
-using SustitucionMOAModel.Models.WSMapMOA.Pesificacion;
 using SustitucionMOAModel.Models.WSMapMOA.Vendedor.Detalle;
 using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Interfaces;
@@ -18,10 +8,7 @@ using SustitucionMOAWS.WSConsumers;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.Entity;
-using System.Data.Objects;
 using System.Linq;
-using System.Web;
 using Comunicacion = SustitucionMOAModel.Entities.Comunicacion;
 
 namespace SustitucionMOAUtils.Services
@@ -63,7 +50,7 @@ namespace SustitucionMOAUtils.Services
                     Id = x.Id,
                     ComunicacionTipo = x.ComunicacionTipo,
                     ProveedorId = x.ProveedorId,
-                    FechaCreacion = x.FechaCreacion.ToString(),
+                    FechaCreacion = x.FechaCreacion.ToString("dd/MM/yyyy HH:mm"),
                     Leida = x.Leida
                 })
                 .OrderBy(x => x.Leida)
@@ -177,18 +164,29 @@ namespace SustitucionMOAUtils.Services
         /// <returns></returns>
         public String ProcesarCM05(string vendedor, string proveedor)
         {
-            // Obtener datos fiscales de SAP
-            VendedorDetalleWSMOAResponse response = new VendedorDetalleConsumerMOA().request(vendedor, proveedor);
-            string anioCM05 = response.cabeceras[0].cm05;
 
-            bool cm05vencido = Cm05Vencido(anioCM05);
-            bool cm05comunicado = Cm05Comunicado(vendedor, anioCM05);
+            try
+            {
+                VendedorDetalleWSMOAResponse response = new VendedorDetalleConsumerMOA().request(vendedor, proveedor);
+                string anioCM05 = response.cabeceras[0].cm05;
 
-            ComunicarCM05(cm05vencido, cm05comunicado, vendedor, anioCM05);
+                bool cm05vencido = Cm05Vencido(anioCM05);
+                bool cm05comunicado = Cm05Comunicado(vendedor, anioCM05);
 
-            ReComunicarCM05(cm05vencido, cm05comunicado, vendedor, anioCM05);
+                ComunicarCM05(cm05vencido, cm05comunicado, vendedor, anioCM05);
+                ReComunicarCM05(cm05vencido, cm05comunicado, vendedor, anioCM05);
 
-            return "Fin de revision: CM05.";
+                return "Fin de revision: CM05.";
+            }
+            catch (Exception e)
+            {
+                Logger.Log.Error(
+                    System.Web.HttpContext.Current.Request.UserHostAddress, "", this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+
+                string mensaje = $"Falló revisión CM05";
+                return mensaje;
+
+            }
         }
 
         /// <summary>
@@ -243,7 +241,7 @@ namespace SustitucionMOAUtils.Services
                 {
                     ComunicacionTipo = 3,
                     ProveedorId = vendedor,
-                    FechaCreacion = DateTime.Now,
+                    FechaCreacion = DateTime.Now.AddSeconds(-DateTime.Now.Second).AddMilliseconds(-DateTime.Now.Second),
                     Leida = false,
                     CM05 = anioCM05
                 };
@@ -284,7 +282,7 @@ namespace SustitucionMOAUtils.Services
                         {
                             ComunicacionTipo = 3,
                             ProveedorId = vendedor,
-                            FechaCreacion = DateTime.Now,
+                            FechaCreacion = DateTime.Now.AddSeconds(-DateTime.Now.Second).AddMilliseconds(-DateTime.Now.Second),
                             Leida = false,
                             CM05 = anioCM05,
                             FechaRecomunicacion = DateTime.Now
@@ -306,17 +304,28 @@ namespace SustitucionMOAUtils.Services
         /// <returns></returns>
         public String ProcesarCuentasHabilitadas(string vendedor, string proveedor)
         {
-            // Obtener datos fiscales de SAP
-            VendedorDetalleWSMOAResponse response = new VendedorDetalleConsumerMOA().request(vendedor, proveedor);
-            List<Cuenta> cuentasHabilitadas = response.cuentas;
+            try
+            {
+                VendedorDetalleWSMOAResponse response = new VendedorDetalleConsumerMOA().request(vendedor, proveedor);
+                List<Cuenta> cuentasHabilitadas = response.cuentas;
 
-            bool cuentasHabilitadasDebeNotificarse = CuentasHabilitadasConFaltantes(cuentasHabilitadas);
-            bool cuentasHabilitadasComunicado = CuentasHabilitadasComunicado(vendedor);
+                bool cuentasHabilitadasDebeNotificarse = CuentasHabilitadasConFaltantes(cuentasHabilitadas);
+                bool cuentasHabilitadasComunicado = CuentasHabilitadasComunicado(vendedor);
 
-            ComunicarCuentasHabilitadas(cuentasHabilitadasDebeNotificarse, cuentasHabilitadasComunicado, vendedor);
-            ReComunicarCuentasHabilitadas(cuentasHabilitadasDebeNotificarse, cuentasHabilitadasComunicado, vendedor);
+                ComunicarCuentasHabilitadas(cuentasHabilitadasDebeNotificarse, cuentasHabilitadasComunicado, vendedor);
+                ReComunicarCuentasHabilitadas(cuentasHabilitadasDebeNotificarse, cuentasHabilitadasComunicado, vendedor);
 
-            return "Fin de revision: Cuentas Habilitadas.";
+                return "Fin de revision: Cuentas Habilitadas.";
+
+            }
+            catch (Exception e)
+            {
+                Logger.Log.Error(
+                    System.Web.HttpContext.Current.Request.UserHostAddress, "", this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+
+                string mensaje = $"Fin de busqueda. Cantidad de liquidaciones observadas: 0";
+                return mensaje;
+            }
         }
 
 
@@ -374,7 +383,7 @@ namespace SustitucionMOAUtils.Services
                 {
                     ComunicacionTipo = 4,
                     ProveedorId = vendedor,
-                    FechaCreacion = DateTime.Now,
+                    FechaCreacion = DateTime.Now.AddSeconds(-DateTime.Now.Second).AddMilliseconds(-DateTime.Now.Second),
                     Leida = false
                 };
                 repositorio.Agregar(oComunicacion);
@@ -413,7 +422,7 @@ namespace SustitucionMOAUtils.Services
                         {
                             ComunicacionTipo = 4,
                             ProveedorId = vendedor,
-                            FechaCreacion = DateTime.Now,
+                            FechaCreacion = DateTime.Now.AddSeconds(-DateTime.Now.Second).AddMilliseconds(-DateTime.Now.Second),
                             Leida = false,
                             FechaRecomunicacion = DateTime.Now
                         };
@@ -447,12 +456,14 @@ namespace SustitucionMOAUtils.Services
                 string mensaje = $"Fin de busqueda. Cantidad liquidaciones observadas: {cantidad}";
                 return mensaje;
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
+                Logger.Log.Error(
+                    System.Web.HttpContext.Current.Request.UserHostAddress, "", this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+
                 string mensaje = $"Fin de busqueda. Cantidad de liquidaciones observadas: 0";
                 return mensaje;
             }
-
 
         }
 
@@ -466,6 +477,10 @@ namespace SustitucionMOAUtils.Services
         {
             // Agregar aquí la lógica para verificar cuentasHabilitadasDebeNotificarse y cuentasHabilitadasComunicado si es necesario.
 
+           
+
+        
+
             if (liquidacionesObservadas != null)
             {
                 foreach (var liquidacion in liquidacionesObservadas)
@@ -477,7 +492,7 @@ namespace SustitucionMOAUtils.Services
                         {
                             ComunicacionTipo = 6,
                             ProveedorId = vendedor,
-                            FechaCreacion = DateTime.Now,
+                            FechaCreacion = DateTime.Now.AddSeconds(-DateTime.Now.Second).AddMilliseconds(-DateTime.Now.Second),
                             Leida = false,
                             Comprobante = liquidacion.comprobante
                         };

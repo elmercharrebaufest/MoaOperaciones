@@ -9,6 +9,8 @@ import { ComunicacionesService } from './comunicaciones.service';
 import { SessionDataService } from '../common/services/SessionDataService';
 import { LayoutComponent } from '../layout/layout.component';
 import { Router } from '@angular/router';
+import { forEach } from '@angular/router/src/utils/collection';
+
 
 @Component({
   selector: 'app-comunicaciones',
@@ -21,6 +23,7 @@ export class ComunicacionesComponent extends BaseComponent implements OnInit {
   communication: any;
   idProveedor: string;
   communicationRead: boolean[] = [];
+  arrayFecha: any;
   quantityCommunication: number = 0;
   hasCommunications: boolean = false;
   showButtonMoreCommunications: boolean = false;
@@ -58,7 +61,7 @@ export class ComunicacionesComponent extends BaseComponent implements OnInit {
   getComunicaciones(idProveedor, start_date, end_date) {
     this.communicationRead = [];
     this.quantityCommunication = 0;
-    let observadaFound = false;
+    this.arrayFecha = new Set<string>();
   
     try {
       this.unsubscribe();
@@ -75,28 +78,88 @@ export class ComunicacionesComponent extends BaseComponent implements OnInit {
             } else {
               this.showButtonMoreCommunications = false;
             }
-          }
-  
-          this.communication = result.data.filter((item: any) => {
-            if (item.Leida == true) {
-              this.communicationRead[item.Id] = true;
-            } else {
-              this.communicationRead[item.Id] = false;
-              this.quantityCommunication++;
-            }
-  
-            if (item.ComunicacionTipo == 6) {
-              if (!observadaFound) {
-                observadaFound = true;
-                return true;
-              } else {
-                return false;
               }
-            } else {
-              return true;
-            }
-          });
+
+
+
+              //const arrayFiltrado = result.data.filter(element => element.ComunicacionTipo === 6);
+
+              const agrupadoPorFecha = result.data.reduce((result, element) => {
+                  const fechaCreacion = element.FechaCreacion;
+
+                  // Verificar si ya existe una entrada en el resultado para esta fecha
+                  if (!result[fechaCreacion]) {
+                      result[fechaCreacion] = [];
+                  }
+
+                  // Agregar el elemento al grupo de la fecha correspondiente
+                  result[fechaCreacion].push(element);
+
+                  return result;
+              }, {});
+
+              this.communication = agrupadoPorFecha;
+
   
+          //this.communication = result.data.filter((item: any) => {
+          //  if (item.ComunicacionTipo === 6) {
+          //    if (!this.arrayFecha.has(item.FechaCreacion)) {
+                
+          //      this.arrayFecha.add(item.FechaCreacion);
+          //      return true; 
+          //    }
+          //    return false;
+          //  } else {
+          //    return true;
+          //  }
+          //});
+
+              console.log(this.communication);
+              console.log(this.arrayFecha);
+
+
+              
+
+         
+
+
+              const auxComunications = Object.keys(this.communication);
+
+              auxComunications.forEach((key) => {
+
+                  let contar = true;
+                  this.communication[key].forEach((item, i) => {
+                      
+                       
+                      if (item.Leida === false) {
+                        
+
+                          if (item.ComunicacionTipo === 6 && item.FechaCreacion === key && contar) {
+                              this.quantityCommunication++
+                              contar = false;
+                          }
+
+                          if (item.ComunicacionTipo !== 6)
+                               this.quantityCommunication++
+
+                      }
+                          
+                  })  
+                  
+              });
+
+
+              
+
+
+
+          //    const unreadCommunications = this.communication.filter((item: any) =>
+          //        item.Leida === false
+          //    );
+
+          //this.quantityCommunication = unreadCommunications.length;
+              //this.layoutComponent.updateQuantity(23);
+
           this.layoutComponent.updateQuantity(this.quantityCommunication);
         }
       );
@@ -104,7 +167,9 @@ export class ComunicacionesComponent extends BaseComponent implements OnInit {
       return false;
     }
     return false;
-  }
+    }
+
+
   
   dateConvert() {
     var today = new Date();
@@ -131,39 +196,39 @@ export class ComunicacionesComponent extends BaseComponent implements OnInit {
   dateFormat(dateString: string): String {
 
     // Verifica si tiene a.m o p.m la fecha
-    if (!dateString.includes("a. m.") && !dateString.includes("p. m.")) {
-      // Obtener las horas del dateString
-      const [hh] = dateString.split(":");
-      const hour24 = parseInt(hh);
+    //if (!dateString.includes("a. m.") && !dateString.includes("p. m.")) {
+    //  // Obtener las horas del dateString
+    //  const [hh] = dateString.split(":");
+    //  const hour24 = parseInt(hh);
   
-      // Determinar si es "AM" o "PM" y actualizar 'dateString'
-      if (hour24 >= 12) {
-        dateString += "p. m.";
-      } else {
-        dateString += "a. m.";
-      }
-    }
+    //  // Determinar si es "AM" o "PM" y actualizar 'dateString'
+    //  if (hour24 >= 12) {
+    //    dateString += "p. m.";
+    //  } else {
+    //    dateString += "a. m.";
+    //  }
+    //}
 
     const part = dateString.split(" ");
     const date = part[0]; // "09/01/2023"
     const hour = part[1];  // "12:00:00"
-    const ampm = part[2]; // a.m p.m
+    //const ampm = part[2]; // a.m p.m
 
     const [hh, mm, ss] = hour.split(":");
 
     let hour24 = hh;
 
-    if (ampm.toLowerCase() === "p.") {
-      // Si es PM, agrega 12 a la hora (excepto a las 12 PM)
-      if (hh !== "12") {
-        hour24 = String(Number(hh) + 12);
-      }
-    } else if (ampm.toLowerCase() === "a.") {
-      // Si es AM y la hora es 12 AM, cambia la hora a 00
-      if (hh === "12") {
-        hour24 = "00";
-      }
-    }
+    //if (ampm.toLowerCase() === "p.") {
+    //  // Si es PM, agrega 12 a la hora (excepto a las 12 PM)
+    //  if (hh !== "12") {
+    //    hour24 = String(Number(hh) + 12);
+    //  }
+    //} else if (ampm.toLowerCase() === "a.") {
+    //  // Si es AM y la hora es 12 AM, cambia la hora a 00
+    //  if (hh === "12") {
+    //    hour24 = "00";
+    //  }
+    //}
 
     // La hora en formato de 24 horas
     const hour24Format = `${hour24}:${mm}`;
@@ -171,26 +236,39 @@ export class ComunicacionesComponent extends BaseComponent implements OnInit {
     return hour24Format
   }
 
-  openCommunication(notificacionId: number) {
-    if (this.communicationRead[notificacionId] == false) {
-      this.serviceComunicaciones.postComunicacionLeida(notificacionId).subscribe();
+    openCommunication(notificaciones, fechacreacion, tipoComunicacion,i) {
+
+  
+        const ids = [];
+
+        notificaciones.forEach((notificacion) => {
+            if (notificacion.Leida == false && notificacion.ComunicacionTipo === tipoComunicacion)
+                ids.push(notificacion.Id);
+        });
+
+        
+
+        if (ids.length)
+        this.serviceComunicaciones.postComunicacionLeida(ids).subscribe();
+      setTimeout(() => {
+        this.getComunicaciones(this.idProveedor, this.startDate, this.endDate);
+      }, 500);
+    
+
+        this.redirect(notificaciones[i].ComunicacionTipo);
+  }
+
+  unreadCommunication(notificacion) {
+    if (notificacion.Leida == true) {
+      this.serviceComunicaciones.postComunicacionNoLeida(notificacion.Id).subscribe();
+
       setTimeout(() => {
         this.getComunicaciones(this.idProveedor, this.startDate, this.endDate);
       }, 500);
     }
   }
 
-  unreadCommunication(notificacionId: number) {
-    if (this.communicationRead[notificacionId] == true) {
-      this.serviceComunicaciones.postComunicacionNoLeida(notificacionId).subscribe();
-
-      setTimeout(() => {
-        this.getComunicaciones(this.idProveedor, this.startDate, this.endDate);
-      }, 500);
-    }
-  }
-
-  redirect(filter: String, communicationType: number) {
+  redirect(communicationType: number) {
     switch (communicationType) {
       case 3:
         this.router.navigate(['/consulta/crear-consulta'], { queryParams: { filter : 'CM05' }});
@@ -214,5 +292,12 @@ export class ComunicacionesComponent extends BaseComponent implements OnInit {
         this.getComunicaciones(this.idProveedor, this.startDate, this.endDate);
         this.checkCommunications();
     }, 15000);
+    }
+
+      // Función auxiliar para obtener las claves del objeto
+    objectKeys(obj: any) {
+
+        var retu = Object.keys(obj)
+    return retu;
   }
 }

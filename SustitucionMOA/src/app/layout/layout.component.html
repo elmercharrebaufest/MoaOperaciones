@@ -244,12 +244,15 @@
                         <li><a (click)="cerrarSesion()" href="#" class="animate"><span class="fa fa-sign-out"
                                     aria-hidden="true"></span>Cerrar sesión</a></li> -->
                         <li>
-                            <div id="UserNotification" class="clearfix"> <span id="notificationOpen"
-                                    onClick="notificationOpen()"> <span class="fa fa-bell-o" aria-hidden="true"></span>
+                            <div id="UserNotification" class="clearfix">
+                                <span id="notificationOpen" onClick="notificationClose()">
+                                    <span id="notificationBell" class="fa fa-bell-o" aria-hidden="true"></span>
                                     <span class="badge">{{quantityCommunications}}</span>
-                                </span> <span id="notificationClose" onClick="notificationClose()"> <span
-                                        class="fa fa-bell-o" aria-hidden="true"></span> <span
-                                        class="badge">{{quantityCommunications}}</span> </span>
+                                </span> <span id="notificationClose" onClick="notificationClose()">
+                                    <span id="notificationBell"
+                                          class="fa fa-bell-o" aria-hidden="true"></span> <span id="notificationBell"
+                                                                                                class="badge">{{quantityCommunications}}</span>
+                                </span>
                             </div>
                         </li>
                         <li id="liUser"><span id="userOpenSmall" onClick="userOpenSmall()" class="fa fa-user-circle-o"
@@ -268,21 +271,22 @@
                     <li id="liHome">
                         <span class="MenuSmallText"> INICIO</span>
                         <span (click)="goToSeccion('/home')"
-                            *ngIf="isAuthorized('CONSULTAR HOME') && isGranosSelected()" class="fa fa-home "
-                            aria-hidden="true"></span>
+                              *ngIf="isAuthorized('CONSULTAR HOME') && isGranosSelected()" class="fa fa-home "
+                              aria-hidden="true"></span>
                         <span (click)="goToSeccion('/home-ngs')"
-                            *ngIf="isAuthorized('CONSULTAR HOME NG') && isNoGranosSelected()" class="fa fa-home "
-                            aria-hidden="true"></span>
+                              *ngIf="isAuthorized('CONSULTAR HOME NG') && isNoGranosSelected()" class="fa fa-home "
+                              aria-hidden="true"></span>
                     </li>
-                    <li id="liUser"><span class="MenuSmallText">USUARIO</span><span id="userOpenSmall"
-                            onClick="userOpenSmall()" class="fa fa-user-circle-o" aria-hidden="true"></span> <span
-                            id="userCloseSmall" onClick="userCloseSmall()" class="fa fa-times"
-                            aria-hidden="true"></span>
+                    <li id="liUser">
+                        <span class="MenuSmallText">USUARIO</span><span id="userOpenSmall"
+                                                                        onClick="userOpenSmall()" class="fa fa-user-circle-o" aria-hidden="true"></span> <span id="userCloseSmall" onClick="userCloseSmall()" class="fa fa-times"
+                                                                                                                                                               aria-hidden="true"></span>
                     </li>
-                    <li id="liNoti"><span class="badge">{{cantidadNot()}}</span><span id="notificationOpenSmall"
-                            onClick="notificationOpenSmall()" class="fa fa-bell-o" aria-hidden="true"></span><span
-                            id="notificationCloseSmall" onClick="notificationCloseSmall()" class="fa fa-times"
-                            aria-hidden="true"></span></li>
+                    <li id="liNoti">
+                        <span class="badge">{{quantityCommunications}}</span>
+                        <span id="notificationOpenSmall" onClick="notificationCloseSmall()" class="fa fa-bell-o" aria-hidden="true"></span>
+                        <span id="notificationCloseSmall" onClick="notificationCloseSmall()" class="fa fa-times"aria-hidden="true"></span>
+                    </li>
                 </ul>
             </nav>
             <div class="myMenu"><span class="MenuSmallText"> MENÚ </span><span id="myMenuOpen" class="fa fa-bars"
@@ -808,20 +812,13 @@
         </div>
     </usuario-small>
 </header-user>
-<notifications-container id="notificationSmall" style="display:none; margin-right: 125px; width: 35%; background: #F4F4F4;">
-    <noti-small id="notiSmall" class="clearfix" *ngIf="noticiasNotEmpty()">
-        <app-comunicaciones></app-comunicaciones>
-        <!-- <div *ngFor="let notificacion of noticias.notificaciones" class="notification info">
-            <info-container>{{notificacion.texto}} </info-container>
-        </div>
-
-        <div *ngFor="let noticia of noticias.noticias" class="notification info clickleable"
-            (click)="openModalNoticia(noticia)">
-            <date-container><span class="fa  fa-info-circle " aria-hidden="true"></span> {{noticia.cabecera.fecha}}
-            </date-container>
-            <info-container>{{noticia.cabecera.titulo}} </info-container>
-        </div> -->
-
-    </noti-small>
-</notifications-container>
+<div *ngIf="showComunicaciones">
+    <div *ngIf="noticiasNotEmpty()">
+        <notifications-container id="notificationSmall" style="display:none; margin-right: 125px; width: 35%; background: #F4F4F4;">
+            <noti-small id="notiSmall" class="clearfix">
+                <app-comunicaciones></app-comunicaciones>
+            </noti-small>
+        </notifications-container>
+    </div>
+</div>
 <block-ui></block-ui>
