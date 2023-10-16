@@ -1,12 +1,18 @@
 .titleNovedad {
     padding: 0px 0px 0px 7%;
     font-size: 30px;
-
 }
 
 .novedadContainer {
     display: block;
     width: 100%;
+}
+
+.d-flex {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: -moz-available;
 }
 
 strong {
@@ -22,19 +28,19 @@ strong {
 
 .beforeArrow {
     float: left;
-    width: 10%;
+    width: 6%;
 }
 
 .beforeArrow-individual {
     float: left;
     width: 10%;
     position: relative;
-    left: 2%;
+    left: -19%;
 }
 
 .nextArrow {
     float: right;
-    width: 10%;
+    width: 6%;
     text-align: right;
 }
 
@@ -46,16 +52,6 @@ strong {
     overflow: hidden;
     text-overflow: ellipsis;
     width: 228px;
-}
-
-.text-title-individual {
-    height: 30%;
-    font-family: "Roboto Condensed", Arial, sans-serif;
-    color: #3f4845;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    width: 446px;
 }
 
 .read-button {
@@ -72,7 +68,7 @@ strong {
 
 .new-button {
     background-color: #1f8241ed;
-    color:white;
+    color: white;
     border-color: #1f8241ed;
     padding: 5px;
 }
@@ -81,10 +77,13 @@ strong {
     background-color: #2c2675ed;
     width: 80%;
     font-family: "Roboto Condensed", Arial, sans-serif;
+    max-width: 140px;
+    &:hover
 
-    &:hover {
-        cursor: default !important;
-    }
+{
+    cursor: default !important;
+}
+
 }
 
 .text-date {
@@ -95,6 +94,7 @@ strong {
 .btn-hide {
     visibility: hidden;
 }
+
 
 .card-w-icon {
     width: 50%;
@@ -117,6 +117,7 @@ strong {
     width: 100% !important;
 }
 
+
 .card-text {
     height: 74px;
     display: block;
@@ -132,6 +133,7 @@ strong {
 
 
 
+
 .read-button-individual {
 
     width: 100%;
@@ -140,19 +142,8 @@ strong {
 
 }
 
-
 .w-card {
     width: 52%;
-}
-
-.card-individual {
-    width: 80% !important;
-    padding: 22px;
-    margin: 6px;
-    border-radius: 10px;
-    height: 270px;
-    display: block;
-    background-color: #ffffffb3;
 }
 
 .card-group {
@@ -163,7 +154,7 @@ strong {
     height: 270px;
     display: block;
     background-color: #ffffffb3;
-    max-width: 29%;
+    max-width: 40%;
 }
 
 .new-b {
@@ -178,31 +169,18 @@ strong {
     display: contents;
 }
 
-.center-card-individual {
-    justify-content: center;
-    align-items: center;
-    display: flex;
-    width: inherit;
-}
-
 .b-image {
     border: 1px solid #b0b0b0;
     border-radius: 4px;
     border-width: 0;
 }
 
-.d-flex {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: -moz-available;
+.imagenPrevisualizacion {
+  /*  object-fit: cover;*/
+    height: 55px;
+    width: 55px;
 }
 
-.imagenPrevisualizacion {
-    object-fit: cover;
-    height: 45px;
-    width: 55px;    
-}
 
 .imagenPrevisualizacion-individual {
     height: 220px;
@@ -212,10 +190,12 @@ strong {
 
 }
 
+
 .card-header {
     display: flex;
     justify-content: space-between;
 }
+
 
 .card-header-individual {
     display: flex;
@@ -231,8 +211,8 @@ h5 {
     display: flex;
     justify-content: center;
     margin-top: 10px;
-  }
-  
+}
+
 .point {
     width: 10px;
     height: 10px;
@@ -242,82 +222,39 @@ h5 {
     cursor: pointer;
 }
 
-.point.active {
-    background-color: #007bff;
-}
+    .point.active {
+        background-color: #007bff;
+    }
 
 @media (max-width: 4000px) {
     .card-group {
         width: 20% !important;
     }
-
-    .card-individual {
-        width: 38% !important;
-    }
-
-    .imagenPrevisualizacion-individual {
-        right: 38%;
-    }
 }
 
 @media (max-width: 3000px) {
 
-    .imagenPrevisualizacion-individual {
-        right: 36%;
-    }
-
     .card-group {
         width: 25% !important;
-    }
-    
-    .card-individual {
-        width: 36% !important;
     }
 }
 
 @media (max-width: 2500px) {
     .card-group {
-        width: 25% !important;
-    }
-    
-    .card-individual {
-        width: 51% !important;
-    }
-
-    .imagenPrevisualizacion-individual {
-        right: 33%;
+        width: 35% !important;
     }
 }
 
 @media (max-width: 2000px) {
-   
+
     .card-group {
         width: 50% !important;
     }
-
-    .card-individual {
-        width: 52% !important;
-    }
-
-    .imagenPrevisualizacion-individual {
-        right: 30%;
-    }
 }
 
-@media (max-width: 1500px) {
-    .card-individual {
-        width: 60% !important;
-    }
-
-    .imagenPrevisualizacion-individual {
-        right: 27%;
-        height: 210px;
-        width: 215px;
-    }
-}
 
 @media (max-width: 576px) {
-  .novedadContainer {
-    flex-direction: column;
-  }
+    .novedadContainer {
+        flex-direction: column;
+    }
 }

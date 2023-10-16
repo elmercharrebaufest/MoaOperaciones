@@ -64,8 +64,6 @@ export class CarouselNotificacionesComponent extends BaseComponent implements On
   ngOnInit(): void {
     this.navService.setSeccionList([]);
     this.getNotificaciones();
-    if (this.data != null && this.data.ArchivosAdjuntos > 0)
-    this.onMouseLeave();
   }
 
   getNotificaciones() {
@@ -109,6 +107,9 @@ export class CarouselNotificacionesComponent extends BaseComponent implements On
             }
           }
           this.actualizarNotificaciones();
+          if(this.data.length > 3) {
+            this.onMouseLeave();
+          }
         },
         error => {
         }
@@ -146,12 +147,12 @@ export class CarouselNotificacionesComponent extends BaseComponent implements On
     return 'data:image/png;base64,' + base64;
   }
 
-  actualizarNotificaciones() {
+    actualizarNotificaciones() {        
     const inicio = this.currentPage * this.itemsPerPage;
 
     const fin = inicio + this.itemsPerPage;
-    this.showPreviousButton = this.currentPage != 0;
-    this.showNextButton = this.contadorNotificaciones < this.newsEnabled;
+        this.showPreviousButton = this.currentPage != 0;
+        this.showNextButton = this.currentPage < this.totalPages - 1 || (this.itemsPerPage > 0 && this.currentPage == 0 && this.newsEnabled > 3);        
     this.newCurrent = this.data.slice(inicio, fin);
 
     this.calculatePoints();
@@ -162,7 +163,7 @@ export class CarouselNotificacionesComponent extends BaseComponent implements On
     else this.enableIndividualNews = false
   }
 
-  calculatePoints() {
+    calculatePoints() {        
     this.totalPages = Math.ceil(this.newsEnabled / 3);
     this.pointsArray = new Array(this.totalPages).fill(null);
   }
@@ -174,7 +175,7 @@ export class CarouselNotificacionesComponent extends BaseComponent implements On
     this.actualizarNotificaciones();
   }
   
-  nextNews() {
+  nextNews() {      
     this.currentPage++;
     this.contadorNotificaciones = this.contadorNotificaciones + 3;
     this.selectedPoint++;

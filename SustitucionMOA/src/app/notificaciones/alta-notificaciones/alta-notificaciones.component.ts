@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Params } from "@angular/router";
 import { BaseComponent } from '../../common/base-components/base-component';
 import { Notificacion } from '../../common/models/notificacion';
@@ -30,6 +30,8 @@ export class AltaNotificacionesComponent extends BaseComponent implements OnInit
 
     @ViewChild(SpinnerComponent)
     protected spinnerComponent: SpinnerComponent;
+
+    @ViewChild('horaInicioSelect') horaInicioSelect: ElementRef;
 
     rolesUsuarioSeleccionado: Array<Rol> = [];
     tipoUsuarioArray: Array<TipoUsuario> = [];
@@ -285,7 +287,6 @@ export class AltaNotificacionesComponent extends BaseComponent implements OnInit
 
 
     convertBase64ToFile(archivo): File {
-        debugger
         const mimeType = archivo.AdjuntoTipo; // Cambia el tipo MIME según tu caso
         const byteCharacters = atob(archivo.AdjuntoContenido);
         const byteArrays = [];
@@ -417,8 +418,7 @@ export class AltaNotificacionesComponent extends BaseComponent implements OnInit
 
     submit() {
 
-        this.fecha_inicio = (<HTMLInputElement>document.querySelectorAll('[fechaInicioInput]')[0]).value;
-        this.fecha_fin = (<HTMLInputElement>document.querySelectorAll('[fechaFinInput]')[0]).value;
+        this.horaInicio = this.horaInicioSelect.nativeElement.value;
 
         if (!this.validar()) {
             this.spinnerComponent.hideIt();
@@ -432,14 +432,27 @@ export class AltaNotificacionesComponent extends BaseComponent implements OnInit
         
         var dateParts = this.fecha_inicio.split("/");
 
-        this.notificacion.FechaInicio = new Date(+dateParts[2], +dateParts[1] - 1, +dateParts[0]);
+        const startDateString = (<HTMLInputElement>document.querySelectorAll('[fechaInicioInput]')[0]).value;
+        const endDateString = (<HTMLInputElement>document.querySelectorAll('[fechaFinInput]')[0]).value;
+        
+        const startDateParts = startDateString.split('/');
+        const endDateParts = endDateString.split('/');
+        
+        const startDateFormatted = startDateParts[1] + '/' + startDateParts[0] + '/' + startDateParts[2];
+        const endDateFormatted = endDateParts[1] + '/' + endDateParts[0] + '/' + endDateParts[2];
+        
+        const startDate = new Date(startDateFormatted);
+        const endDate = new Date(endDateFormatted);
 
-        dateParts = this.fecha_fin.split("/");
-
-        this.notificacion.FechaFin = new Date(+dateParts[2], +dateParts[1] - 1, +dateParts[0]); 
+        startDate.setUTCHours(this.horaInicio, 0, 0, 0);
+        endDate.setUTCHours(this.horaInicio, 0, 0, 0);
+        
+        this.notificacion.FechaInicio = new Date(startDate.toISOString());
+        this.notificacion.FechaFin = new Date(endDate.toISOString());
 
         this.notificacion.FechaCreacion = new Date();
 
+        this.notificacion.HoraInicio = this.horaInicio;
         
         this.adjuntos = this.notificacion.ArchivosAdjuntos;
 

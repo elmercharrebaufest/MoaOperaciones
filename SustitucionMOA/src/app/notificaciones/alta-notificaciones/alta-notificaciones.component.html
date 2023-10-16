@@ -64,7 +64,7 @@
                 Hora
               </div>
               <div class="styled-select">
-                <select [(ngModel)]="horaInicio">
+                <select [(ngModel)]="horaInicio" #horaInicioSelect>
                   <option value="{{i}}" *ngFor="let item of [].constructor(23); let i = index">{{i | number: '2.0-0'}}:
                     00
                   </option>

@@ -187,6 +187,7 @@
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
+    <Content Include="Hue.INT.DeployParameters.xml" />
     <Content Include="NEW.PRE.DeployParameters .Debug.xml" />
     <Content Include="NEW.PRE.DeployParameters .Release.xml" />
     <Content Include="NEW.PRE.DeployParameters .xml" />

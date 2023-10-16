@@ -23,8 +23,8 @@ export class ComunicacionesService extends BaseService {
         .pipe(timeoutWith(600000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde "))));
   }
 
-  public postComunicacionLeida(idComunicacion: number): Observable<any> {
-    const objectComunicacion = { ItemId: [idComunicacion] };
+    public postComunicacionLeida(idComunicacion: number[]): Observable<any> {
+    const objectComunicacion = { ItemId: idComunicacion };
     return this.http
       .post('/api/Comunicacion/PostComunicacionLeida', objectComunicacion, {
         headers: this.headers
