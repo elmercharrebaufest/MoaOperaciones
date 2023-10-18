@@ -3288,7 +3288,7 @@ namespace SustitucionMOAUtils.Services
 
                 return solp;
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 throw;
             }
@@ -4828,7 +4828,14 @@ namespace SustitucionMOAUtils.Services
                                     UnidadDeMedida = sub.UnidadDeMedidaId > 0 ? info.Where(unidad => unidad.Id == sub.UnidadDeMedidaId).FirstOrDefault() : null,
                                     CotizacionPosicion_Id = sub.CotizacionPosicionId,
                                     SolpSubPosicion_Id = sub.SolpSubPosicionId,
-                                }).ToList() : null
+                                }).ToList() : null,
+                                PrimerPlazoDeOferta = x.PrimerPlazoDeOferta,
+                                PrimeraCantidad = x.PrimeraCantidad,
+                                SegundoPlazoDeOferta = x.SegundoPlazoDeOferta,
+                                SegundaCantidad = x.SegundaCantidad,
+                                TercerPlazoDeOferta = x.TercerPlazoDeOferta,
+                                TerceraCantidad = x.TerceraCantidad,
+
 
                             }).ToList() : null,
                             UsuarioCreador = usuario,
@@ -4976,6 +4983,12 @@ namespace SustitucionMOAUtils.Services
                     cotizacionPosicion.UnidadDeMedida = cotizacionPos.UnidadDeMedidaId > 0 && cotizacionPos.UnidadDeMedidaId != null ? info.Where(unidad => unidad.Id == cotizacionPos.UnidadDeMedidaId).FirstOrDefault() : null;
                     cotizacionPosicion.NoDisponible = cotizacionPos.NoDisponible;
                     cotizacionPosicion.FechaDeVigencia = (DateTime?)cotizacionPos.FechaDeVigencia;
+                    cotizacionPosicion.PrimerPlazoDeOferta = cotizacionPos.PrimerPlazoDeOferta;
+                    cotizacionPosicion.PrimeraCantidad = cotizacionPos.PrimeraCantidad;
+                    cotizacionPosicion.SegundoPlazoDeOferta = cotizacionPos.SegundoPlazoDeOferta;
+                    cotizacionPosicion.SegundaCantidad = cotizacionPos.SegundaCantidad;
+                    cotizacionPosicion.TercerPlazoDeOferta = cotizacionPos.TercerPlazoDeOferta;
+                    cotizacionPosicion.TerceraCantidad = cotizacionPos.TerceraCantidad;
 
                     if (cotizacionPosicion.CotizacionSubPosiciones != null && cotizacionPosicion.CotizacionSubPosiciones.Count > 0)
                     {
@@ -5027,6 +5040,12 @@ namespace SustitucionMOAUtils.Services
                     Moneda = x.MonedaId > 0 ? info.Where(moneda => moneda.Id == x.MonedaId).FirstOrDefault() : null,
                     UnidadDeMedida = x.UnidadDeMedidaId > 0 ? info.Where(unidad => unidad.Id == x.UnidadDeMedidaId).FirstOrDefault() : null,
                     NoDisponible = x.NoDisponible,
+                    PrimerPlazoDeOferta = x.PrimerPlazoDeOferta,
+                    PrimeraCantidad = x.PrimeraCantidad,
+                    SegundoPlazoDeOferta = x.SegundoPlazoDeOferta,
+                    SegundaCantidad = x.SegundaCantidad,
+                    TercerPlazoDeOferta = x.TercerPlazoDeOferta,
+                    TerceraCantidad = x.TerceraCantidad,
                     CotizacionSubPosiciones = cotizacionDto.CotizacionSubposiciones.Count > 0 ? cotizacionDto.CotizacionSubposiciones.Where(y => y.CotizacionPosicionId == x.PeticionDeOfertaSolpPosicionId).Select(sub => new CotizacionSubPosicion
                     {
                         Cantidad = sub.Cantidad,

@@ -45,7 +45,12 @@ export interface CotizacionPosicionDto {
     UnidadComprasDescripcion: string,
     CotizacionSubPosiciones?: CotizacionSubPosicionDto[]
     NoDisponible: boolean
-
+    PrimerPlazoDeOferta: number
+    PrimeraCantidad: number
+    SegundoPlazoDeOferta: number
+    SegundaCantidad: number
+    TercerPlazoDeOferta : number
+    TerceraCantidad : number
 }
 
 export interface CotizacionSubPosicionDto {

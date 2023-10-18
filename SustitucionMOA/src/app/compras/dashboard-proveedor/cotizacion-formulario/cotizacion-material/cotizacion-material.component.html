@@ -9,12 +9,13 @@
             <strong>Por favor, revise los archivos adjuntos antes de cotizar, puede descargarlos <span
                     style="text-decoration: underline; cursor:pointer"
                     (click)="generarZipPliego(peticion.Solp_Id)">aquí</span></strong>
-        </div>
+        </div>        
     </div>
     <div class="row myRow" style="padding-top: 2px;">
         <div *ngIf="posicionesCompra != undefined">
         </div>
         <div class="row-fluid">
+            <div class="table-container">
         <p-table class="table-responsive" styleClass="font-size: 10px" #tabla
             [value]="peticion.PeticionDeOfertaPosicion" dataKey="Id">
             <ng-template pTemplate="header" let-columns>
@@ -49,8 +50,9 @@
                       text-transform: none !important;">Fecha de <br />vigencia</th>
                     <th class="columna" style="width: 80px; background-color: #4a1884 !important;
                     text-transform: none !important;">Fecha de <br />entrega</th>
-                    <th class="columna" style="width: 66px; background-color:#4a1884 !important;
+                    <th class="columna" style="width: 90px; background-color:#4a1884 !important;
                     text-transform: none !important;">Plazo de <br /> entrega</th>
+                
                 </tr>
             </ng-template>
             <ng-template pTemplate="body" let-posicionesCompra let-expanded="expanded" let-columns="columns"
@@ -174,44 +176,18 @@
                             </p-cellEditor>
                         </td>
                     <td pEditableColumn class="columna" style="cursor:pointer">
-                        <p-cellEditor>
-                            <ng-template pTemplate="input" style="width: 100% !important">
-                                <p-calendar [minDate]="hoy" class="calendar" appendTo="body" [locale]="es"
-                                    dateFormat="dd-M-yy" [disabled]="posicionesCompra.Posiciones.CotizacionPosicion.NoDisponible == true"
-                                    [(ngModel)]="posicionesCompra.Posiciones.CotizacionPosicion.FechaDeEntrega"                                    
-                                    (ngModelChange)="calcularPlazo(posicionesCompra?.Posiciones?.CotizacionPosicion, posicionesCompra.Id)"
-                                    >
-                                </p-calendar>
-                            </ng-template>
-                            <ng-template pTemplate="output">
-                                <div style="height: 20px;" [ngClass]="{'invalido': esFinalizado && 
-                                     (posicionesCompra.Posiciones.CotizacionPosicion.FechaDeEntrega == null)}">
-                                    {{ posicionesCompra?.Posiciones?.CotizacionPosicion?.FechaDeEntrega |
+                         {{ posicionesCompra?.Posiciones?.CotizacionPosicion?.FechaDeEntrega |
                                     date:'dd/MM/yy' }}
-                                </div>
-                            </ng-template>
-                        </p-cellEditor>
                     </td>
-                    <td pEditableColumn class="columna">
-                        <p-cellEditor>
-                            <ng-template pTemplate="input">
-                                <input pInputText type="number" [disabled]="posicionesCompra.Posiciones.CotizacionPosicion.NoDisponible == true"
-                                    [(ngModel)]="posicionesCompra.Posiciones.CotizacionPosicion.PlazoDeEntrega"
-                                    pKeyFilter="int"
-                                    (ngModelChange)="calcularFechaEntrega(posicionesCompra?.Posiciones?.CotizacionPosicion, posicionesCompra.Id)"
-                                    (onFocus)=" $event.target.select();" />
-                                  
-                                </ng-template>
-                            <ng-template pTemplate="output">
-                                {{ posicionesCompra?.Posiciones?.CotizacionPosicion?.PlazoDeEntrega | number: '1.0-0' }}
-                                días
-                            </ng-template>
-                        </p-cellEditor>
+                    <td class="columna" style="overflow: hidden; height: 25px;">
+                        <button class="plazoDeOferta btn" style="font-size: 13px;" (click)="abrirPlazoDeOferta(posicionesCompra?.Posiciones?.CotizacionPosicion, posicionesCompra?.Posiciones?.Cantidad)">Agregar</button>
                     </td>
+                   
                 </tr>
             </ng-template>
         </p-table>
     </div>
+        </div>
     </div>
     <div *ngIf="visualizarMensajeDeModificacion" class="col-md-12">
         <strong>Por favor, explique en las observaciones por qué modificó la cantidad y/o unidad de medida.</strong>
@@ -299,4 +275,11 @@
         <br>
         <br>
     </div>
+    <app-plazo-de-oferta
+                  [(displayPlazo)]="displayPlazo"
+                  (cerrarPlazoEmitter)="cerrarPlazo()"
+                  [(cotizacionPosicion)]="cotizacionPosicion"
+                  [(cantidadSolicitada)]="cantidadSolicitada">
+   </app-plazo-de-oferta>
 </section>
+

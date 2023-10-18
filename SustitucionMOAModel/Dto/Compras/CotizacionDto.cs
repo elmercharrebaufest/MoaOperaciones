@@ -67,6 +67,12 @@ namespace SustitucionMOAModel.Dto
         public bool? NoDisponible { get; set; }
         public DateTime? FechaDeVigencia { get; set; }
         public string FechaDeVigenciaFormateado { get; set; }
+        public int? PrimerPlazoDeOferta { get; set; }
+        public decimal? PrimeraCantidad { get; set; }
+        public int? SegundoPlazoDeOferta { get; set; }
+        public decimal? SegundaCantidad { get; set; }
+        public int? TercerPlazoDeOferta { get; set; }
+        public decimal? TerceraCantidad { get; set; }
     }
 
     public class CotizacionSubPosicionDto
@@ -99,6 +105,14 @@ namespace SustitucionMOAModel.Dto
         public decimal TotalPesos { get; set; }
         public bool? NoDisponible { get; set; }
         public DateTime? FechaDeVigencia { get; set; }
+
+        public int? PrimerPlazoDeOferta { get; set; }
+        public decimal? PrimeraCantidad { get; set; }
+
+        public int? SegundoPlazoDeOferta { get; set; }
+        public decimal? SegundaCantidad { get; set; }
+        public int? TercerPlazoDeOferta { get; set; }
+        public decimal? TerceraCantidad { get; set; }
     }
 
     public class GuardarCotizacion

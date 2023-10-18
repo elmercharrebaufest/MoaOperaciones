@@ -18,6 +18,13 @@ namespace SustitucionMOAModel.Entities
         public DateTime? FechaDeEntrega { get; set; }
         public DateTime? FechaDeVigencia { get; set; }
 
+        public int? PrimerPlazoDeOferta { get; set; }
+        public decimal? PrimeraCantidad { get; set; }
+
+        public int? SegundoPlazoDeOferta { get; set; }
+        public decimal? SegundaCantidad { get; set; }
+        public int? TercerPlazoDeOferta { get; set; }
+        public decimal? TerceraCantidad { get; set; }
 
         [ForeignKey("Cotizacion_Id")]
         public virtual Cotizacion Cotizacion { get; set; }
