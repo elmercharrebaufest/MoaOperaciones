@@ -120,8 +120,8 @@ export class MisConsultasComponent extends ListBaseComponent {
         this.checkPermisos();
 
         if (this.securityService.tienePermiso("CARGAR CONSULTA")) {
-            this.navService.setSeccionList([new Seccion('/consulta/crear-consulta', 'crear-consulta', 'Nueva Consulta'), new Seccion('/consulta/mis-consultas', 'consulta', 'Mis Consultas')]);
-        }
+            this.navService.setSeccionList([new Seccion('/consulta/crear-consulta', 'crear-consulta', 'Nueva Consulta'), new Seccion('/consulta/mis-consultas', 'consulta', 'Mis Consultas'), 
+            new Seccion('/consulta/crear-consulta-interna', 'crear-consulta-interna','Nueva consulta interna')]);        }
         else {
             this.navService.setSeccionList([new Seccion('/consulta/mis-consultas', 'consulta', 'Mis Consultas')]);
         }

@@ -4,9 +4,12 @@ import { BaseService } from './../common/services/BaseService';
 import { Comentario } from './consulta';
 import { map } from 'rxjs/operators';
 import { HttpHeaders, HttpParams } from '@angular/common/http';
+import { OrdenDeCarga } from '../common/models/ordenes-de-carga/ordenDeCarga';
 
 @Injectable()
 export class ConsultaService extends BaseService {
+
+    private ordenDeCarga: any;
 
     public AgregarConsulta(consulta: object, comentario: Comentario, archivo: any = null) {
         let consultaJson = JSON.stringify(consulta);
@@ -42,6 +45,20 @@ export class ConsultaService extends BaseService {
 
         return this.http
             .get('/api/consulta/Combos', { params: params, headers: this.headers });
+    }
+
+    public getCombosConsultaInterna(ordenId: number): Observable<any> {
+        let params: HttpParams = new HttpParams();
+        params = params.set('ordenId', ordenId.toString());
+        return this.http
+            .get('/api/consulta/CombosConsultaInterna', { params: params, headers: this.headers });
+    }
+
+    public getDestinatarios(ordenId: number): Observable<any> {
+        let params: HttpParams = new HttpParams();
+        params = params.set('ordenId', ordenId.toString());
+        return this.http
+            .get('/api/consulta/GetDestinatariosConsulta', { params: params, headers: this.headers });
     }
 
     public listarConsultas(): Observable<any> {
@@ -175,5 +192,13 @@ export class ConsultaService extends BaseService {
 
         return this.http
             .post('/api/consulta/AnularConsulta', payload, { headers: this.headersPost })
+    }
+
+    setOrdenParaConsulta(dato: any){
+        this.ordenDeCarga = dato;
+    }
+
+    getOrdenParaConsulta(){
+        return this.ordenDeCarga;
     }
 }

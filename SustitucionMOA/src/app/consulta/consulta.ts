@@ -87,3 +87,8 @@ export interface Reclamo{
     Certificado;
     Importe;
 }
+
+export class Destinatario{
+    Campo: string;
+    Mail: string;
+}

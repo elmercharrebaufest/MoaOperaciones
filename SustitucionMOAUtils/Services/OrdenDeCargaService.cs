@@ -36,6 +36,7 @@ namespace SustitucionMOAUtils.Services
         readonly FeriadoService _feriadoService = new FeriadoService();
         protected readonly IFeriadoService feriadoService;
         protected readonly IEmailFasService emailFasService;
+        protected readonly IUsuarioService usuarioService;
 
         protected readonly IFacturaAnticipadaService _facturaAnticipadaService;
         protected readonly IKgDisponiblesFasService _kgDisponiblesFasService;
@@ -84,6 +85,7 @@ namespace SustitucionMOAUtils.Services
             IRepositorio repositorio,
             IOrdenCargaConsumerMOA ordenCargaConsumer,
             IFeriadoService feriadoService,
+            IUsuarioService usuarioService,
             IScatoRepositorioClient scatoRepositorioClient,
             IScatoConsumer scatoConsumer,
             IEmailFasService emailFasService,
@@ -93,6 +95,7 @@ namespace SustitucionMOAUtils.Services
             ) : base(ordenCargaConsumer, scatoConsumer, scatoRepositorioClient, repositorio)
         {
             this.feriadoService = feriadoService;
+            this.usuarioService = usuarioService;
             _usuarioAutomaticoSAP = ConfigurationManager.AppSettings["UsuarioAutomaticoSAP"];
             this.emailFasService = emailFasService;
             _facturaAnticipadaService = facturaAnticipadaService;
@@ -2847,6 +2850,28 @@ namespace SustitucionMOAUtils.Services
             return new Resultado { Mensaje = msg };
         }
 
+        public List<DestinatarioDto> ObtenerDestinatariosConsulta(int ordenId)
+        {
+            List<DestinatarioDto> destinatarios = new List<DestinatarioDto>();
+
+            if (ordenId == 0)
+            {
+                var usuarios = usuarioService.GetUsuarios().Where(u => u.Habilitado == true);  
+                destinatarios = usuarios.Select(u => new DestinatarioDto{
+                    Campo = "Usuario Web",
+                    Mail = u.Mail
+                }).ToList();
+                return destinatarios;
+            }
+
+            var orden = this.repositorio.Obtener<OrdenDeCarga>(o => o.Id == ordenId);            
+
+            var mailCreador = this.repositorio.Obtener<Usuario>(u => u.Id == orden.UsuarioCreacion_Id);
+            if (mailCreador != null)
+                destinatarios.Add(new DestinatarioDto { Campo = "Usuario creador", Mail = mailCreador.Mail }); 
+
+            return destinatarios.ToList();
+        }
 
         #region ALTA_MASIVA_CLIENTES_SAP_WEB
         public List<ClienteSAPResponse> GetClientesVigentesSAP(string fechaInicio, string fechaFin)

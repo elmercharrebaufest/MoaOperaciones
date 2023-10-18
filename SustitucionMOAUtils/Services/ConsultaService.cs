@@ -670,6 +670,7 @@ namespace SustitucionMOAUtils.Services
         {
             try
             {
+                var esInterno = usuario.Permisos.FirstOrDefault(p => p == "VER TODAS ORDENES DE CARGA") != null ? true : false;
                 List<string> exclude = new List<string>() { };
                 List<Categoria> categorias = new List<Categoria>() { };
 
@@ -686,12 +687,14 @@ namespace SustitucionMOAUtils.Services
                 {
                     var categoriasNuevosUsuarios = new List<string>() { "OTRO", "FWEB" };
                     categorias = repositorio.Listar<Categoria>(c => categoriasNuevosUsuarios.Contains(c.Code)).OrderBy(c => c.Nombre).ToList();
+                }else if (esInterno)
+                {
+                    categorias = repositorio.Listar<Categoria>(c => c.Code == "ORD");
                 }
                 else
                 {
                     categorias = repositorio.Listar<Categoria>(c => !exclude.Contains(c.Code)).OrderBy(c => c.Nombre).ToList();
                 }
-
                 return categorias.Select(x => new CategoriaDto(x)).ToList();
             }
             catch (ValidationCustomException e)
@@ -729,12 +732,21 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        public List<SubCategoriaDto> ObtenerSubCategorias()
+        public List<SubCategoriaDto> ObtenerSubCategorias(UsuarioDto usuario)
         {
             try
             {
+                var esInterno = usuario.Permisos.Contains("VER TODAS ORDENES DE CARGA");
                 var subcategorias = repositorio.Listar<SubCategoria>().OrderBy(c => c.Nombre);
-                return subcategorias.Select(x => new SubCategoriaDto(x)).ToList();
+                if (esInterno)
+                {
+                    var categoriaOrdenes = repositorio.Obtener<Categoria>(c => c.Code == "ORD");
+                    return subcategorias.Where(c => c.Categoria_Id == categoriaOrdenes.Id).Select(x => new SubCategoriaDto(x)).ToList();
+                }
+                else
+                {
+                    return subcategorias.Select(x => new SubCategoriaDto(x)).ToList();
+                }
             }
             catch (ValidationCustomException e)
             {
@@ -1142,5 +1154,6 @@ namespace SustitucionMOAUtils.Services
             var usuario = repositorio.Obtener<Usuario>(x => x.Mail == username);
             return string.Format("{0}/{1}", rutaArchivosCM05, usuario.Id);
         }
-    }
+
+    }   
 }
