@@ -21,7 +21,6 @@ import { mergeMap, map, switchMap } from 'rxjs/operators';
 import { from, Observable, of } from 'rxjs';
 import { ObtenerContratoMarcoService } from './obtener-contrato-marco/obtener-contrato-marco.service';
 import { ContratoMarco, ContratoMarcoSubposicion, ObtenerContratoMarco } from './obtener-contrato-marco/contrato-marco.model';
-import { element } from '@angular/core/src/render3';
 
 declare var $: any;
 
@@ -79,7 +78,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
     disabled: boolean = true;
     concluido: boolean = false;
 
-    // Declaro las variables de la grilla
+    //Variables de la grilla
     centroEntrega: SelectItem[];
     monedaCompras: SelectItem[];
     almacenEntrega: SelectItem[];
@@ -213,7 +212,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         this.setTabs();
         this.setCombos();
 
-        //Hace que clase documento no use la primer opcion como predeterminada
+        //Hace que clase documento no use la primera opcion como predeterminada
         var clase = this.claseDocumento != undefined ? this.claseDocumento[0] : null;
         let claseDocumento = this.model.selectClaseDocumento !== undefined && this.model.selectClaseDocumento.Id > 0 ? this.model.selectClaseDocumento : clase;
         this.model.selectClaseDocumento = this.model.selectClaseDocumento !== undefined && this.model.selectClaseDocumento.Id > 0 ? this.model.selectClaseDocumento : 0;
@@ -240,7 +239,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         this.listadoPosicionActual = this.model.posicionActual ? this.model.posicionActual.listadoSubPosiciones : [];
 
         if (this.model.vincularAPliego) {
-            this.mensajesEncabezado.push({ severity: 'warn', summary: '', detail: 'No es posible editar esta pantalla desde la plataforma. Para editar dirijase a SAP' });
+            this.mensajesEncabezado.push({ severity: 'warn', summary: '', detail: 'No es posible editar esta pantalla desde la plataforma. Para editar diríjase a SAP.' });
             this.formularioActual.disable();
         }
         else {
@@ -282,9 +281,14 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
     }
 
     agregarPosicion() {
-        this.model.agregarNuevaPosicion(null as SolpPosicion);
-        this.setupAlmacenEntregaByCentro();      
-        this.model.posicionActual.setTabPosicion();
+        if (this.model.posiciones.length > 0) {
+            this.model.agregarNuevaPosicion(this.model.posicionActual);
+        } else {
+            this.model.agregarNuevaPosicion(null as SolpPosicion);
+            this.model.posicionActual.setTabPosicion();
+        }
+        this.setupAlmacenEntregaByCentro();
+        this.validarNuevaPosicion();
     }
 
     duplicarPosicion(el: HTMLElement) {
@@ -1324,7 +1328,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         }
     }
 
-    private deshabilitarImputaciones(){
+    private deshabilitarImputaciones() {
         this.model.posiciones.forEach(element => {
             element.setTabPosicion();
         });
