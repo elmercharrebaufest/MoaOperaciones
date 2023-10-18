@@ -434,7 +434,7 @@ namespace SustitucionMOAWS.WSConsumers
                 }
                 
             }
-           
+            solpPedidoSAP.IM_URL = ConfigurationManager.AppSettings["SpaUrl"] + "/verLegajoOrdenDeCompra/" + adjudicacion.Id +"/"+ adjudicacion.Token;
 
             return solpPedidoSAP;
         }

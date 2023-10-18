@@ -20,6 +20,7 @@ namespace SustitucionMOAModel.Dto
         public bool NuevoUsuario{ get; set; }
         public string ApiKey { get; set; }
         public string UsuarioSap { get; set; }
+        public string RazonSocial { get; set; }
         public TipoUsuarioDto TipoUsuario { get; set; }
         public UsuarioDto() { }
 
@@ -51,6 +52,7 @@ namespace SustitucionMOAModel.Dto
 
             CodigoProveedor = ObtenerCodigoProveedor();
             Permisos = new List<string>();
+            RazonSocial = usuario.ObtenerRazonSocial();
         }
 
         private string ObtenerCodigoProveedor()

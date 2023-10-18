@@ -590,6 +590,17 @@ export class ComprasService extends BaseService {
             });
     }
 
+    verLegajoParaExternos(adjudicacionId: string, token: string): Observable<any> {
+        let params: HttpParams = new HttpParams();
+        params = params.set("adjudicacionId", adjudicacionId);
+        params = params.set("token", token);
+        return this.http
+            .get("/api/compras/ObtenerLegajoParaExternos", {
+                params: params,
+                headers: this.headers,
+            });
+    }
+
     descargarArchivo(idArchivo: number): Observable<any> {
         let params: HttpParams = new HttpParams();
         params = params.set("idArchivo", idArchivo.toString());

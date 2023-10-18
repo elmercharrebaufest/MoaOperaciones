@@ -18,7 +18,6 @@ using SustitucionMOAModel.Models.WSMapMOA.Compras;
 using SustitucionMOAModel.Models.WSMapMOA.Vendedor.Detalle;
 using SustitucionMOARepositorio;
 using SustitucionMOARepositorio.ConsultasEF;
-using SustitucionMOARepositorio.Extensiones;
 using SustitucionMOAUtils.Helpers;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
@@ -1712,7 +1711,7 @@ namespace SustitucionMOAUtils.Services
                     {
                         EnviarMailSolpLiberada(solp, "");
                     }
-                    catch (Exception e)
+                    catch (Exception)
                     {
                         Logger.Log.Info($"EnviarMailSolpLiberada nro de solp {solp.NroSolp}");
                     }
@@ -3431,8 +3430,8 @@ namespace SustitucionMOAUtils.Services
         {
             List<LegajoDto> legajo = new List<LegajoDto>();
             var peticion = repositorio.Obtener<PeticionDeOferta>(peticionDeOfertaId);
-            var middleFileName = peticion.Solp.NroSolp == null ? (peticion.Solp.Pliego.NombreObra == null ? "xxxx" : peticion.Solp.Pliego.NombreObra) : peticion.Solp.NroSolp;
-            var pdfFilename = $"Solp-{middleFileName}-pliego-{DateTime.Now.ToString("yyyyMMdd")}.pdf";
+            var middleFileName = peticion.Solp.NroSolp ?? peticion.Solp.Pliego.NombreObra ?? "xxxx";
+            var pdfFilename = $"Solp-{middleFileName}-pliego-{DateTime.Now:yyyyMMdd}.pdf";
 
             //invento registro con id de archivo 0 para bajar el pliego
             legajo.Add(new LegajoDto
@@ -3442,7 +3441,9 @@ namespace SustitucionMOAUtils.Services
                 PeticionDeOfertaId = peticionDeOfertaId,
                 SolpId = peticion.Solp_Id,
                 Fecha = peticion.Solp.FechaCreacion,
-                FechaFormateado = peticion.Solp.FechaCreacion.ToString("dd/MM/yyyy")
+                FechaFormateado = peticion.Solp.FechaCreacion.ToString("dd/MM/yyyy"),
+                Usuario = new UsuarioDto { CUIT = peticion.Solp.UsuarioCreacion.CUITRegistro, Mail = peticion.Solp.UsuarioCreacion.Mail, Id = peticion.Solp.UsuarioCreacion_Id.Value },
+                Tipo = TipoLegajo.Pliego
             });
 
             // buscar archivos de la solp
@@ -3460,7 +3461,9 @@ namespace SustitucionMOAUtils.Services
                             PeticionDeOfertaId = peticionDeOfertaId,
                             SolpId = peticion.Solp_Id,
                             Fecha = peticion.Solp.FechaCreacion,
-                            FechaFormateado = peticion.Solp.FechaCreacion.ToString("dd/MM/yyyy")
+                            FechaFormateado = peticion.Solp.FechaCreacion.ToString("dd/MM/yyyy"),
+                            Usuario = new UsuarioDto { CUIT = peticion.Solp.UsuarioCreacion.CUITRegistro, Mail = peticion.Solp.UsuarioCreacion.Mail, Id = peticion.Solp.UsuarioCreacion_Id.Value },
+                            Tipo = TipoLegajo.Solp
                         });
                     }
                 }
@@ -3476,7 +3479,9 @@ namespace SustitucionMOAUtils.Services
                     PeticionDeOfertaId = peticionDeOfertaId,
                     SolpId = peticion.Solp_Id,
                     Fecha = item.Fecha,
-                    FechaFormateado = item.Fecha.ToString("dd/MM/yyyy")
+                    FechaFormateado = item.Fecha.ToString("dd/MM/yyyy"),
+                    Usuario = new UsuarioDto { CUIT = peticion.Usuario.CUITRegistro, Mail = peticion.Usuario.Mail, Id = peticion.UsuarioCreador_Id },
+                    Tipo = TipoLegajo.PeticionDeOferta
                 });
             }
 
@@ -3493,7 +3498,9 @@ namespace SustitucionMOAUtils.Services
                         PeticionDeOfertaId = peticionDeOfertaId,
                         SolpId = peticion.Solp_Id,
                         Fecha = peticion.FechaCreacion,
-                        FechaFormateado = peticion.FechaCreacion.ToString("dd/MM/yyyy")
+                        FechaFormateado = peticion.FechaCreacion.ToString("dd/MM/yyyy"),
+                        Usuario = new UsuarioDto { CUIT = peticion.Usuario.CUITRegistro, Mail = peticion.Usuario.Mail, Id = peticion.UsuarioCreador_Id },
+                        Tipo = TipoLegajo.PeticionDeOferta
                     });
                 }
             }
@@ -3521,7 +3528,9 @@ namespace SustitucionMOAUtils.Services
                         SolpId = peticion.Solp_Id,
                         Fecha = circular.FechaCreacion,
                         FechaFormateado = circular.FechaCreacion.ToString("dd/MM/yyyy"),
-                        Leido = !noLeido
+                        Leido = !noLeido,
+                        Usuario = new UsuarioDto { CUIT = circular.Usuario.CUITRegistro, Mail = circular.Usuario.Mail, Id = circular.UsuarioCreador_Id },
+                        Tipo = TipoLegajo.Circular
                     });
                 }
                 //buscar comentarios de la circular
@@ -3533,7 +3542,9 @@ namespace SustitucionMOAUtils.Services
                     SolpId = peticion.Solp_Id,
                     Fecha = circular.FechaCreacion,
                     FechaFormateado = circular.FechaCreacion.ToString("dd/MM/yyyy"),
-                    Leido = !noLeido
+                    Leido = !noLeido,
+                    Usuario = new UsuarioDto { CUIT = circular.Usuario.CUITRegistro, Mail = circular.Usuario.Mail, Id = circular.UsuarioCreador_Id },
+                    Tipo = TipoLegajo.Circular
                 });
                 //buscar cambios de fechas de la circular
                 if (circular.RequiereCambioDeFechas == true)
@@ -3548,7 +3559,9 @@ namespace SustitucionMOAUtils.Services
                             SolpId = peticion.Solp_Id,
                             Fecha = circular.FechaCreacion,
                             FechaFormateado = circular.FechaCreacion.ToString("dd/MM/yyyy"),
-                            Leido = !noLeido
+                            Leido = !noLeido,
+                            Usuario = new UsuarioDto { CUIT = circular.Usuario.CUITRegistro, Mail = circular.Usuario.Mail, Id = circular.UsuarioCreador_Id },
+                            Tipo = TipoLegajo.Circular
                         });
                     }
                     if (circular.FechaDeEntrega.HasValue)
@@ -3561,7 +3574,9 @@ namespace SustitucionMOAUtils.Services
                             SolpId = peticion.Solp_Id,
                             Fecha = circular.FechaCreacion,
                             FechaFormateado = circular.FechaCreacion.ToString("dd/MM/yyyy"),
-                            Leido = !noLeido
+                            Leido = !noLeido,
+                            Usuario = new UsuarioDto { CUIT = circular.Usuario.CUITRegistro, Mail = circular.Usuario.Mail, Id = circular.UsuarioCreador_Id },
+                            Tipo = TipoLegajo.Circular
                         });
                     }
                 }
@@ -3577,19 +3592,20 @@ namespace SustitucionMOAUtils.Services
                 }
             }
 
-
             //Cierres plazo de oferta
             var cierres = repositorio.Listar<PeticionDeOfertaCierre>(a => a.PeticionDeOferta_Id == peticionDeOfertaId);
-            foreach (var cierre in circulares)
+            foreach (var cierre in cierres)
             {
                 legajo.Add(new LegajoDto
                 {
                     ArchivoId = null,
-                    Observacion = "Cierre Cotizacion: " + cierre.Observaciones,
+                    Observacion = "Cierre Cotización: " + cierre.Observacion,
                     PeticionDeOfertaId = peticionDeOfertaId,
                     SolpId = peticion.Solp_Id,
-                    Fecha = cierre.FechaCreacion,
-                    FechaFormateado = cierre.FechaCreacion.ToString("dd/MM/yyyy")
+                    Fecha = cierre.Fecha,
+                    FechaFormateado = cierre.Fecha.ToString("dd/MM/yyyy"),
+                    Usuario = new UsuarioDto { CUIT = cierre.Usuario.CUITRegistro, Mail = cierre.Usuario.Mail, Id = cierre.Usuario_Id },
+                    Tipo = TipoLegajo.CierreOferta
                 });
             }
 
@@ -4760,7 +4776,7 @@ namespace SustitucionMOAUtils.Services
                 var peticionDeOfertaSolpPosiciones = repositorio.Listar<PeticionDeOfertaSolpPosicion>();
                 var cotizacion = cotizacionDto.CotizacionId == 0 ? null :
                     repositorio.Obtener<Cotizacion>(cotizacionDto.CotizacionId);
-                var info = repositorio.Listar<TablaSap>(x => x.Tabla == TablasSap.Moneda || x.Tabla == TablasSap.Unidad);                
+                var info = repositorio.Listar<TablaSap>(x => x.Tabla == TablasSap.Moneda || x.Tabla == TablasSap.Unidad);
                 var esModificar = false;
                 if (cotizacion == null)
                 {
@@ -5276,18 +5292,23 @@ namespace SustitucionMOAUtils.Services
                         SolpPosicion_Id = cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Solp.Posiciones
                           .Where(y => y.Id == x.SolpPosicion_Id).FirstOrDefault().Id
                     }).ToList(),
+                    Token = Guid.NewGuid().ToString()
                 };
 
+                adjudicacion.NumeroOrdenDeCompra = "";
                 repositorio.Agregar(adjudicacion);
-
+                repositorio.GuardarCambios();
                 respuestaGuardarSOLP = CrearOrdenDeCompra(adjudicacion);
 
                 if (respuestaGuardarSOLP.Errores == null || respuestaGuardarSOLP.Errores.Count == 0)
                 {
                     adjudicacion.NumeroOrdenDeCompra = respuestaGuardarSOLP.NumeroPedido;
-                    repositorio.GuardarCambios();
-                   //EnviarMailOrdenCompra(adjudicacion, mensaje);
                 }
+                else
+                {
+                    repositorio.Remover(adjudicacion);
+                }
+                repositorio.GuardarCambios();
                 var mails = DevolverMailResultadoLicitacion(cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta);
                 bool esServicios = cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Solp.Posiciones.Select(x => x.TipoPosicion.Codigo).FirstOrDefault() != "MATERIALES";
                 if (mails.Count > 0 && esServicios)
@@ -5297,15 +5318,15 @@ namespace SustitucionMOAUtils.Services
                     {
                         EnviarMailResultadoAdjudicacion(mails, adjudicacion.Cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta);
                     }
-                    catch (Exception e)
+                    catch (Exception)
                     {
                         Logger.Log.Info($"Error al enviar mail {adjudicacion.Cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Id}  para el cierre de la cotizacion");
-                    }                   
-               
+                    }
+
                 }
                 return respuestaGuardarSOLP;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 throw;
             }
@@ -5884,7 +5905,7 @@ namespace SustitucionMOAUtils.Services
         private void EnviarMailResultadoAdjudicacion(List<string> mails, PeticionDeOferta peticion)
         {
             try
-            {               
+            {
                 var asunto = "";
                 var enviarA = new List<string>();
                 asunto += $"Cierre de Licitación PO - {peticion.Id} ";
@@ -5892,7 +5913,7 @@ namespace SustitucionMOAUtils.Services
                 {
                     var mailProveedor = new List<string> { mail };
                     emailService.EnviarMail(mailProveedor, asunto, "", null, CuerpoMailResultadoAdjudicacion(peticion));
-                }           
+                }
             }
             catch (Exception e)
             {
@@ -5918,6 +5939,23 @@ namespace SustitucionMOAUtils.Services
             AlternateView alternateView = AlternateView.CreateAlternateViewFromString(htmlBody, null, "text/html");
             alternateView.LinkedResources.Add(res);
             return alternateView;
+        }
+
+        public LegajoExternoDto ObtenerLegajoParaExternos(int adjudicacionId, string token)
+        {
+            LegajoExternoDto resultado = new LegajoExternoDto();
+            var adjudicacion = repositorio.Obtener<Adjudicacion>(x => x.Id == adjudicacionId && x.Token == token);
+            if (adjudicacion != null)
+            {
+                var cotizacion = adjudicacion.Cotizacion;
+                resultado.NroOrdenDeCompra = adjudicacion.NumeroOrdenDeCompra;
+                resultado.NroSolp = adjudicacion.Solp.NroSolp;
+                resultado.Proveedor = new UsuarioDto(adjudicacion.Cotizacion.PeticionDeOfertaUsuario.Usuario);
+                resultado.FechaAdjudicacionFormateado = adjudicacion.FechaCreacion.ToString("dd/MM/yyyy");
+
+                resultado.ListaLegajos = ObtenerLegajo(cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta_Id, cotizacion.PeticionDeOfertaUsuario_Id);
+            }
+            return resultado;
         }
     }
 

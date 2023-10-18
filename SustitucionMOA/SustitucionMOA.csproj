@@ -365,6 +365,7 @@
     <Content Include="src\app\compras\dashboard-proveedor\listado-dashboard-proveedor\listado-dashboard-proveedor.component.html" />
     <Content Include="src\app\compras\dashboard\revision-tecnica\revision-tecnica.component.css" />
     <Content Include="src\app\compras\dashboard\revision-tecnica\revision-tecnica.component.html" />
+    <Content Include="src\app\compras\legajo-externo\legajo-externo.component.html" />
     <Content Include="src\app\compras\peticion-de-oferta-formulario\peticion-de-oferta-formulario.component.css" />
     <Content Include="src\app\compras\peticion-de-oferta-formulario\peticion-de-oferta-formulario.component.html" />
     <Content Include="src\app\compras\peticion-de-oferta-formulario\registro-info\registro-info\registro-info.component.css" />
@@ -1178,6 +1179,7 @@
     <TypeScriptCompile Include="src\app\compras\enum-paso-solp.ts" />
     <TypeScriptCompile Include="src\app\compras\enum-tipo-imputacion.ts" />
     <TypeScriptCompile Include="src\app\compras\enum-tipo-solp-sap.ts" />
+    <TypeScriptCompile Include="src\app\compras\legajo-externo\legajo-externo.component.ts" />
     <TypeScriptCompile Include="src\app\compras\peticion-de-oferta-formulario\peticion-de-oferta-formulario.component.spec.ts" />
     <TypeScriptCompile Include="src\app\compras\peticion-de-oferta-formulario\peticion-de-oferta-formulario.component.ts" />
     <TypeScriptCompile Include="src\app\compras\peticion-de-oferta-formulario\registro-info\registro-info\registro-info.component.ts" />

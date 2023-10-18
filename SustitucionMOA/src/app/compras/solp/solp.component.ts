@@ -429,7 +429,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
                     return;
                 }
 
-                 if (this.selectUsuarioCompras.Id == null) {
+                 if (this.solpActual.posicionActual.esTipoPosicionServicio && this.selectUsuarioCompras.Id == null) {
                      this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: `Falta completar campo Usuario compras` });
 
                      if (guardarPorPaso == false) {

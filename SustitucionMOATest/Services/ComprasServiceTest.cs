@@ -15,6 +15,7 @@ using SustitucionMOAWS.Interfaces;
 using SustitucionMOAWS.WSConsumers;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
@@ -259,7 +260,7 @@ namespace SustitucionMOATest.Services
                                     CpEntrega = "CP",
                                     CalleEntrega = "Calle",
                                     NumeroEntrega = "NroEntrega",
-                                    Subposiciones = new List<SolpSubposicion> { new SolpSubposicion { 
+                                    Subposiciones = new List<SolpSubposicion> { new SolpSubposicion {
                                         Id = 1, Tarea = "Tarea", Cantidad = 2, PrecioBruto = 500, Unidad = new TablaSap { CodigoSap = "UNI" } } }
                                 }
                             },
@@ -347,7 +348,8 @@ namespace SustitucionMOATest.Services
             Solp = new Solp
             {
                 Id = 1,
-                UsuarioCreacion = new Usuario { Id = 1, Mail = "bmelgarejo@prueba.com", },
+                UsuarioCreacion = new Usuario { Id = 1, Mail = "bmelgarejo@prueba.com", CUITRegistro = "005522" },
+                UsuarioCreacion_Id = 1,
                 NroSolp = "3344534",
                 Posiciones = new List<SolpPosicion>
                             {
@@ -361,7 +363,8 @@ namespace SustitucionMOATest.Services
                                     }
                                 }
                             },
-                Pliego = new Pliego { Id = 1, NombreObra = "Obra Pliego", VisitasMasivas = new List<PliegoVisita>() }
+                Pliego = new Pliego { Id = 1, NombreObra = "Obra Pliego", VisitasMasivas = new List<PliegoVisita>() },
+                FechaCreacion = DateTime.Now
             },
             Posiciones = new List<PeticionDeOfertaSolpPosicion>
                 {
@@ -554,31 +557,11 @@ namespace SustitucionMOATest.Services
 
             var posicionesMock = new List<SolpPosicion>() { new SolpPosicion() { Id = 1 } };
 
-            var solpMock = new Solp() 
-            { 
-                Id = 1, 
-                Pliego_Id = 1, 
-                Pliego = pliegoMock, 
-                UsuarioCreacion_Id = 1, 
-                UsuarioCreacion = usuarioMock,
-                FechaCreacion = DateTime.Now,
-                FechaModificacion = DateTime.Now,
-                UsuarioModificacion_Id = 1,
-                UsuarioModificacion = usuarioMock,
-                ClaseDocumento_Id = 1,
-                ClaseDocumento = claseDocumentoMock,
-                EstadoDocumento_Id = 1,
-                EstadoSolpSap = claseDocumentoMock,
-                EstadoSolpSap_Id = 1,
-                EstadoDocumento = tablaEstado,
-                Posiciones = posicionesMock
-            };
-
             var pathbase = $"{ConfigurationManager.AppSettings["RutaArchivosCompras"]}/{DateTime.Now.Ticks}";
 
             repositorioMock
                .Setup(x => x.Obtener(It.IsAny<Expression<Func<Solp, bool>>>()))
-               .Returns(solpMock);
+               .Returns(solp);
 
             var expected = $"Solp-xxx-pliego-{DateTime.Now.ToString("yyyyMMdd")}.zip";
             var result = target.GenerarZipPliego(solpMock.Id, pathbase);
@@ -843,11 +826,16 @@ namespace SustitucionMOATest.Services
                 Errores = new List<CrearPedidoConsumerMOAError> { },
                 Resultado = "OK"
             });
+            repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<AdjudicacionPosicion, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null))
+                .Returns(new List<AdjudicacionPosicion> { new AdjudicacionPosicion { Id = 1, SolpPosicion_Id = 1 } });
+            repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<Cotizacion, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null))
+                .Returns(new List<Cotizacion> { cotizacion });
+
             var result = target.GrabarAdjudicacion(adjudicacionDto, 1);
 
             repositorioMock.Verify(x => x.Agregar(It.IsAny<Adjudicacion>()), Times.Once);
 
-            repositorioMock.Verify(x => x.GuardarCambios(), Times.Once);
+            repositorioMock.Verify(x => x.GuardarCambios(), Times.Exactly(2));
             Assert.That(result.Errores.Count == 0);
         }
 
@@ -898,11 +886,16 @@ namespace SustitucionMOATest.Services
                 Errores = new List<CrearPedidoConsumerMOAError> { },
                 Resultado = "OK"
             });
+            repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<AdjudicacionPosicion, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null))
+                .Returns(new List<AdjudicacionPosicion> { new AdjudicacionPosicion { Id = 1, SolpPosicion_Id = 1 } });
+            repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<Cotizacion, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null))
+                .Returns(new List<Cotizacion> { cotizacion });
+
             var result = target.GrabarAdjudicacion(adjudicacionDto, 1);
 
             repositorioMock.Verify(x => x.Agregar(It.IsAny<Adjudicacion>()), Times.Once);
 
-            repositorioMock.Verify(x => x.GuardarCambios(), Times.Once);
+            repositorioMock.Verify(x => x.GuardarCambios(), Times.Exactly(2));
             Assert.That(result.Errores.Count == 0);
         }
 
@@ -1099,21 +1092,7 @@ namespace SustitucionMOATest.Services
                         Id = 1,
                         PeticionDeOferta = new PeticionDeOferta
                     {
-                        Solp = new Solp
-                        {
-                            Id = 1,
-                            Posiciones = new List<SolpPosicion>
-                            {
-                                new SolpPosicion
-                                {
-                                    Id = 1,
-                                    TipoPosicion = new TablaGeneral
-                                    {
-                                        Codigo = "MATERIALES"
-                                    },
-                                }
-                            }
-                        }
+                        Solp = solp
                     }
                     }
                 }
@@ -1306,6 +1285,10 @@ namespace SustitucionMOATest.Services
                 ProveedorId = 1, PosicionId = 1, CantidadAdjudicacion = 5, Moneda = "ARP"
             } };
             SetUpOCPeticionCotizacion();
+            repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<AdjudicacionPosicion, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null))
+                .Returns(new List<AdjudicacionPosicion> { new AdjudicacionPosicion { Id = 1, SolpPosicion_Id = 1 } });
+            repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<Cotizacion, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null))
+                .Returns(new List<Cotizacion> { cotizacion });
 
             var result = target.CrearOrdenDeCompraConRegistroInfo(registroInfo, 1);
             var expected = new List<RespuestaCrearOrdenDeCompra> { new RespuestaCrearOrdenDeCompra {
@@ -1314,7 +1297,7 @@ namespace SustitucionMOATest.Services
 
             repositorioMock.Verify(x => x.Agregar(It.IsAny<PeticionDeOferta>()), Times.Once);
             repositorioMock.Verify(x => x.Agregar(It.IsAny<Cotizacion>()), Times.Once);
-            repositorioMock.Verify(x => x.GuardarCambios(), Times.Exactly(5));
+            repositorioMock.Verify(x => x.GuardarCambios(), Times.Exactly(6));
             Assert.IsNotNull(result);
             Assert.That(result.First().Errores.Count == 0);
             Assert.AreEqual(expected.Count, result.Count);
@@ -1507,89 +1490,6 @@ namespace SustitucionMOATest.Services
         [Test]
         public void ObtenerUltimaSolpOk()
         {
-            var solp = new Solp
-            {
-                Pliego = new Pliego
-                {
-                    Telefono = "3232323",
-                    FiscalContrato = "Fiscal contrato"
-                },
-                ClaseDocumento = new TablaSap
-                {
-                    Id = 1,
-                    Tabla = "Clase",
-                    Codigo = "32434",
-                    CodigoSap = "28328",
-                    Descripcion = "Descripcion",
-                    Padre_id = 1
-                },
-                Posiciones = new List<SolpPosicion>()
-               {
-                   new SolpPosicion
-                   {
-                        GrupoCompras = new TablaSap
-                        {
-                           Id = 1,
-                           Tabla = "Clase",
-                           Codigo = "32434",
-                           CodigoSap = "28328",
-                           Descripcion = "Descripcion",
-                           Padre_id = 1
-                        },
-                        CuentaMayorSap = new TablaSap
-                        {
-                           Id = 1,
-                           Tabla = "Clase",
-                           Codigo = "32434",
-                           CodigoSap = "28328",
-                           Descripcion = "Descripcion",
-                           Padre_id = 1
-                        },
-                        Almacen = new TablaSap
-                        {
-                           Id = 1,
-                           Tabla = "Clase",
-                           Codigo = "32434",
-                           CodigoSap = "28328",
-                           Descripcion = "Descripcion",
-                           Padre_id = 1
-                        },
-                        Centro = new TablaSap
-                        {
-                           Id = 1,
-                           Tabla = "Clase",
-                           Codigo = "32434",
-                           CodigoSap = "28328",
-                           Descripcion = "Descripcion",
-                           Padre_id = 1
-                        },
-                        TipoPosicion = new TablaGeneral
-                        {
-                           Id = 1,
-                           Tabla = "Clase",
-                           Codigo = "32434",
-                           Descripcion = "Descripcion",
-                           Padre_Id = 1
-                        },
-                        Subposiciones = new List<SolpSubposicion>()
-                        {
-                            new SolpSubposicion
-                            {
-                                CuentaMayorSap = new TablaSap
-                                 {
-                                     Id = 1,
-                                     Tabla = "Clase",
-                                     Codigo = "32434",
-                                     CodigoSap = "28328",
-                                     Descripcion = "Descripcion",
-                                     Padre_id = 1
-                                 },
-                            }
-                        }
-                   }
-               }
-
-            };
             repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<Solp, bool>>>(), It.IsAny<int>(), It.IsAny<string>(),
                 DirOrden.Asc, null)).Returns(new List<Solp>() { solp });
 
@@ -1908,6 +1808,28 @@ namespace SustitucionMOATest.Services
             repositorioMock.Setup(y => y.Obtener(It.IsAny<Expression<Func<TablaSap, bool>>>())).Returns(new TablaSap { Id = 1 });
             target.ActualizarFechaLiberacion(solpLocal.NroSolp, DateTime.Now);
             repositorioMock.Verify(x => x.GuardarCambios(), Times.Exactly(1));
+        }
+
+        [Test]
+        public void ObtenerLegajoOk()
+        {
+            LegajoExternoDto legajo = new LegajoExternoDto { ListaLegajos = new List<LegajoDto>() };
+            repositorioMock.Setup(y => y.Obtener(It.IsAny<Expression<Func<Adjudicacion, bool>>>())).Returns(new Adjudicacion
+            {
+                Cotizacion = new Cotizacion { PeticionDeOfertaUsuario = new PeticionDeOfertaUsuario { Id = 1, Usuario = new Usuario { Id = 1, TipoUsuario = new TipoUsuario { Id = 1, Nombre = "", NombreCorto = "" } } }, PeticionDeOfertaUsuario_Id = 1 },
+                Solp = solp
+            });
+            //para ObtenerLegajo():
+            repositorioMock.Setup(x => x.Obtener<PeticionDeOferta>(It.IsAny<int>())).Returns(peticionDeOferta);
+            repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<PeticionDeOfertaCierre, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null))
+                .Returns(new List<PeticionDeOfertaCierre> { new PeticionDeOfertaCierre { Id = 1, Fecha = DateTime.Now, Observacion = "", Usuario_Id = 1, Usuario = new Usuario { Id = 1, Mail = "", CUITRegistro = "005522" } } });
+            repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<Circular, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null))
+                .Returns(new List<Circular> { new Circular { Id = 1, Archivos = new Collection<Archivo> { new Archivo { Id = 1, Ruta = "Ruta" } }, FechaCreacion = DateTime.Now, Usuario = new Usuario { Id = 1, TipoUsuario = new TipoUsuario { Id = 1, Nombre = "", NombreCorto = "" } } } });
+
+            var result = target.ObtenerLegajoParaExternos(1, "token"); //pasa por ObtenerLegajo() también
+            Assert.That(result, Is.Not.Null);
+            Assert.AreEqual(result.ListaLegajos.GetType(), legajo.ListaLegajos.GetType());
+            Assert.AreEqual(result.GetType(), legajo.GetType());
         }
     }
 }
