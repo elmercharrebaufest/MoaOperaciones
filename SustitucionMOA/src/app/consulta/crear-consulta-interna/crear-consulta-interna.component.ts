@@ -13,9 +13,6 @@ import { SendDataService } from '../send-data.service';
 import { DropdownComponent } from '../../common/view-child/dropdown/dropdown.component';
 import { OrdenesDeCargaService } from '../../ordenes-de-carga/ordenes-de-carga.service';
 import { DatePipe } from '@angular/common';
-import { forkJoin } from 'rxjs';
-import { ApiResponse } from '../../aplicacion-ccpp/aplicacion-ccpp.service';
-
 
 declare var $: any;
 
@@ -214,40 +211,6 @@ export class CrearConsultaInternaComponent extends ListBaseComponent {
 
   }
 
-  obtenerOrdenes() {
-    try {
-      let fecha_fin = new Date();
-      let fecha_inicio = new Date().setMonth(fecha_fin.getMonth() - 3);
-      this.unsubscribe();
-      this.subscription = this.ordenDeCargaService.getListado(
-        this.datePipe.transform(fecha_inicio, 'yyyy-MM-dd'),
-        this.datePipe.transform(fecha_fin, 'yyyy-MM-dd')).subscribe(
-          result => {
-            this.spinnerComponent.hideIt();
-            if (result.logout == true) {
-              this.sessionDataService.logout();
-            } else if (result.error != undefined && result.error != "") {
-              this.mensajeComponent.setErrorMsg(result.error);
-            } else if (result.info != undefined) {
-              this.mensajeComponent.setInfoMsg(result.info);
-            } else {
-              this.ordenes = result;
-              console.log(this.ordenes)
-            }
-          },
-          error => {
-            this.spinnerComponent.hideIt();
-            this.mensajeComponent.setErrorMsg(error.message);
-          }
-        );
-    } catch (e) {
-      this.mensajeComponent.setErrorMsg(e);
-      return false; //<-- Prevent Refresh
-    }
-    return false; //<-- Prevent Refresh
-
-  }
-
   showDialog() {
     this.displayModal = true;
   }
@@ -275,6 +238,4 @@ export class CrearConsultaInternaComponent extends ListBaseComponent {
       }
     }
   }
-
-
 }
