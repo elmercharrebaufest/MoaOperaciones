@@ -18,7 +18,6 @@ using SustitucionMOAModel.Models.WSMapMOA.Compras;
 using SustitucionMOAModel.Models.WSMapMOA.Vendedor.Detalle;
 using SustitucionMOARepositorio;
 using SustitucionMOARepositorio.ConsultasEF;
-using SustitucionMOARepositorio.Extensiones;
 using SustitucionMOAUtils.Helpers;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
@@ -4794,7 +4793,7 @@ namespace SustitucionMOAUtils.Services
                 var peticionDeOfertaSolpPosiciones = repositorio.Listar<PeticionDeOfertaSolpPosicion>();
                 var cotizacion = cotizacionDto.CotizacionId == 0 ? null :
                     repositorio.Obtener<Cotizacion>(cotizacionDto.CotizacionId);
-                var info = repositorio.Listar<TablaSap>(x => x.Tabla == TablasSap.Moneda || x.Tabla == TablasSap.Unidad);                
+                var info = repositorio.Listar<TablaSap>(x => x.Tabla == TablasSap.Moneda || x.Tabla == TablasSap.Unidad);
                 var esModificar = false;
                 if (cotizacion == null)
                 {
@@ -5363,7 +5362,7 @@ namespace SustitucionMOAUtils.Services
                 }
                 return respuestaGuardarSOLP;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 throw;
             }
