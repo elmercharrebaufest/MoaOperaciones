@@ -4677,6 +4677,13 @@ namespace SustitucionMOAUtils.Services
                 peticiones.First().PeticionDeOferta.UsuarioRevision_Id = usuarioId;
                 peticiones.First().PeticionDeOferta.PlazoDeOferta = fechaActual.AddDays(-1);
             }
+            if (finalizar) 
+            {
+                var fechaActual = DateTime.Now; 
+                peticiones.First().PeticionDeOferta.FechaFinalizacionRevision = fechaActual;
+                peticiones.First().PeticionDeOferta.UsuarioRevision_Id = usuarioId;
+                peticiones.First().PeticionDeOferta.PlazoDeOferta = fechaActual.AddDays(-1);
+            }
             repositorio.GuardarCambios();
 
             return respuesta;
