@@ -261,10 +261,10 @@
                                                 </td>
                                                 <td class="columna" [style.color]="licitacion.EstadoColor">{{licitacion.Estado}}</td>
                                                 <td class="columna">                                                   
-                                                    <button *ngIf="licitacion.Estado == 'Abierto'" class="publicar btn" style="margin-right: 10px;" (click)="obtenerPeticionDeOferta(licitacion.Id)">
+                                                    <button class="publicar btn" *ngIf="licitacion.RevisionFinalizada != true" style="margin-right: 10px;" (click)="obtenerPeticionDeOferta(licitacion.Id)">
                                                         Revisión Técnica
                                                     </button>
-                                                    <button class="publicar btn " *ngIf="rowData.VerCircular == true" style="margin-right: 10px;"  (click)="obtenerPeticionDeOfertaCircular(licitacion.Id)">
+                                                    <button class="publicar btn " *ngIf="rowData.VerCircular == true && licitacion.RevisionFinalizada != true" style="margin-right: 10px;"  (click)="obtenerPeticionDeOfertaCircular(licitacion.Id)">
                                                         Circular
                                                     </button>
                                                 </td> 
@@ -325,7 +325,7 @@
                 (cerrardisplayRevisionTecnicaEmitter)="cerrarModalRevisionTecnica()"
                 (descargarArchivoEmitter)="descargarArchivo($event)"
                 (descargarAdjuntosCotizacionEmitter)="descargarAdjuntosCotizacion($event)"
-                (grabarRevisionTecnicaEmitter)="grabarRevisionTecnica()"
+                (grabarRevisionTecnicaEmitter)="grabarRevisionTecnica($event)"
                 [(peticion)]="peticion">
 </app-revision-tecnica> 
 

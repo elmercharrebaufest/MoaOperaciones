@@ -933,6 +933,7 @@ namespace SustitucionMOAUtils.Services
                                     .Where(x => x.Circular.RequiereCambioDeFechas == true && x.Circular.PlazoDeOferta.HasValue)
                                     .OrderByDescending(x => x.Circular.Id).FirstOrDefault().Circular.FechaCreacion,
                     PlazoDeOfertaCierre = po.Cierres.Any() ? po.Cierres.OrderByDescending(x => x.Fecha).FirstOrDefault().Fecha : (DateTime?)null,
+                    RevisionFinalizada = po.FechaFinalizacionRevision != null
                 });
 
                 var ordenCompra = repositorio.Listar<Adjudicacion, AdjudicacionDto>(adjudicacion => new AdjudicacionDto
@@ -4281,6 +4282,7 @@ namespace SustitucionMOAUtils.Services
                     RespetaMateriales = c.RespetaMateriales,
                     CotizacionEstadoDescripcion = c.CotizacionEstado.Descripcion,
                     PorcentajeDeHoras = c.PorcentajeDeHoras,
+                    
                     Archivos = c.Archivos/*.Where(x => x.FileKey == FileKeys.AdjuntoCotizacionRevisionTecnica)*/.Select(archivo => new LegajoDto
                     {
 
@@ -4319,6 +4321,9 @@ namespace SustitucionMOAUtils.Services
             peticion.TipoPosicionCodigo = peticionEntidad.Solp.Posiciones.Select(x => x.TipoPosicion.Codigo).FirstOrDefault();
             peticion.Id = peticionEntidad.Id;
             peticion.PlazoDeOfertaEstado = peticionEntidad.PlazoDeOferta > DateTime.Now.Date ? "Abierto" : "Cerrado";
+            peticion.TieneVisitaObraBool = peticionEntidad.Solp.Pliego.TieneVisitaObra??false;
+            peticion.TieneVisitaObraMasiva = peticionEntidad.Solp.Pliego.TieneVisitaObraMasiva ?? false;
+
 
             var fechaEntrega = peticionEntidad.Posiciones.Select(x => x.SolpPosicion).OrderByDescending(x => x.FechaEntregaServicio).FirstOrDefault()?.FechaEntregaServicio;
             peticion.FechaEntregaFormateado = fechaEntrega != null ? fechaEntrega.Value.ToString("yyyy-MM-dd") : "";
@@ -4633,7 +4638,7 @@ namespace SustitucionMOAUtils.Services
             return filePath;
         }
 
-        public RespuestaGuardarSOLP GrabarRevisionTecnica(List<PeticionDeOfertaUsarioDto> revision, int usuarioId)
+        public RespuestaGuardarSOLP GrabarRevisionTecnica(List<PeticionDeOfertaUsarioDto> revision, int usuarioId, bool finalizar)
         {
             RespuestaGuardarSOLP respuesta = new RespuestaGuardarSOLP();
             var ids = revision.Select(a => a.Id);
@@ -4659,6 +4664,13 @@ namespace SustitucionMOAUtils.Services
                 {
                     peticion.ObservacionNoCumple = data.ObservacionNoCumple;
                 }
+            }
+            if (finalizar) 
+            {
+                var fechaActual = DateTime.Now; 
+                peticiones.First().PeticionDeOferta.FechaFinalizacionRevision = fechaActual;
+                peticiones.First().PeticionDeOferta.UsuarioRevision_Id = usuarioId;
+                peticiones.First().PeticionDeOferta.PlazoDeOferta = fechaActual.AddDays(-1);
             }
             repositorio.GuardarCambios();
 

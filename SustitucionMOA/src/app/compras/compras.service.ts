@@ -706,10 +706,12 @@ export class ComprasService extends BaseService {
             });
     }
 
-    public grabarRevisionTecnica(petisiones: PeticionDeOfertaUsarioDto[]) {
+    public grabarRevisionTecnica(petisiones: PeticionDeOfertaUsarioDto[], finalizar: boolean) {
         let json = JSON.stringify(petisiones);
         var payload = new FormData();
         payload.append('json', json);
+        payload.append('finalizar', finalizar.toString());
+
 
         return this.http
             .post<any>('/api/compras/GrabarRevisionTecnica', payload, { headers: this.headers });

@@ -8,7 +8,10 @@
     CONSTRAINT [PK_PeticionDeOferta] PRIMARY KEY CLUSTERED ([Id] ASC),
     [RegistroInfo] BIT NULL, 
     [AdjuntoPliego] BIT NULL, 
+    [UsuarioRevision_Id] INT NULL, 
+    [FechaFinalizacionRevision] DATETIME2 NULL, 
     CONSTRAINT [FK.PeticionDeOferta_Usuario_UsuarioCreadorId] FOREIGN KEY ([UsuarioCreador_Id]) REFERENCES [Usuario]([Id]),
+    CONSTRAINT [FK.PeticionDeOfertaUsuario_Usuario_UsuarioRevision_Id] FOREIGN KEY ([UsuarioRevision_Id]) REFERENCES [Usuario]([Id]),
     CONSTRAINT [FK.UsuarioCreador_Solp_Solp_Id] FOREIGN KEY ([Solp_Id]) REFERENCES [Solp]([Id]),
 
 );

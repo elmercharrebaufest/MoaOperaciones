@@ -532,4 +532,18 @@
     <Property Name="ParentElementType" Value="SqlTable" />
     <Property Name="NewName" Value="ConfigurarHora" />
   </Operation>
+  <Operation Name="Rename Refactor" Key="3d7c3e58-e1e8-43ab-b674-32491df7276b" ChangeDateTime="10/11/2023 12:25:31">
+    <Property Name="ElementName" Value="[dbo].[PeticionDeOferta].[Usuario]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[PeticionDeOferta]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="UsuarioRevision" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="d36a4fd7-9e57-455a-aac2-78be06b93fc9" ChangeDateTime="10/11/2023 12:28:01">
+    <Property Name="ElementName" Value="[dbo].[PeticionDeOferta].[UsuarioRevision]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[PeticionDeOferta]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="UsuarioRevision_Id" />
+  </Operation>
 </Operations>

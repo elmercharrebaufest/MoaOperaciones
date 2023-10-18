@@ -28,20 +28,28 @@
                             <div class="col-md-3">
                                 <strong style="color: #666666;">Visita técnica</strong>
                             </div>
-                            <div class="col-md-9">
+                            <div class="col-md-9" *ngIf="peticion.TieneVisitaObraMasiva == true || peticion.TieneVisitaObraBool == true">
                                 <label style="padding-right:20px;">
                                     <input type="radio"
                                            [name]="'visitaTecnica-' + p.Id"
                                            [value]="true"
-                                           [(ngModel)]="p.RealizoVisita" />
+                                           [(ngModel)]="p.RealizoVisita"
+                                           (change)="checkVisitaTecnica()" />
                                     Realizo la visita
                                 </label>
                                 <label>
                                     <input type="radio"
                                            [name]="'visitaTecnica-' + p.Id"
                                            [value]="false"
-                                           [(ngModel)]="p.RealizoVisita" />
+                                           [(ngModel)]="p.RealizoVisita"
+                                           (change)="checkVisitaTecnica()" />
                                     No realizo la visita
+                                </label>
+                               
+                            </div>
+                            <div class="col-md-9" *ngIf="peticion.TieneVisitaObraMasiva != true && peticion.TieneVisitaObraBool != true">
+                                <label >
+                                   Visita No requirida
                                 </label>
                             </div>
                         </div>
@@ -76,14 +84,16 @@
                                             <input type="radio"
                                                    [name]="'PropuestaTecnicaAprobada-' + p.Id"
                                                    [value]="true"
-                                                   [(ngModel)]="p.PropuestaTecnicaAprobada" />
+                                                   [(ngModel)]="p.PropuestaTecnicaAprobada" 
+                                                   (change)="checkPropuestaTecnica()" />
                                             Cumple
                                         </label>
                                         <label>
                                             <input type="radio"
                                                    [name]="'PropuestaTecnicaAprobada-' + p.Id"
                                                    [value]="false"
-                                                   [(ngModel)]="p.PropuestaTecnicaAprobada" />
+                                                   [(ngModel)]="p.PropuestaTecnicaAprobada"
+                                                   (change)="checkPropuestaTecnica()" />
                                             No cumple
                                         </label>
                                     </div>
@@ -125,12 +135,12 @@
     </div>
     <p-footer>
         <button type="button" class="btn btn-danger botonesComprasColor" (click)="onCerrarPeticion()">CANCELAR</button>
-        <button type="button" class="btn btn-primary botonesComprasColor" (click)="enviar()">ENVIAR</button>
-
+        <button type="button" class="btn btn-primary botonesComprasColor" (click)="guardarRT()">GUARDAR</button>
+        <button type="button" class="btn btn-success botonesComprasColor" (click)="confirmarFinalizacion()">FINALIZAR</button>
     </p-footer>
 </p-dialog>
 
-<p-confirmDialog #dialogo header="Confirmación" icon="pi pi-exclamation-triangle" [width]="400" [responsive]="true" appendTo="body">
+<p-confirmDialog #dialogo key="finalizarRevision" header="Confirmación" icon="pi pi-exclamation-triangle" [width]="400" [responsive]="true" appendTo="body">
     <p-footer>
         <button type="button" pButton label="Cancelar" class="ui-button-info botonModal" (click)="dialogo.reject()"></button>
         <button type="button" pButton label="Aceptar" class="ui-button-success botonModal" (click)="dialogo.accept()"></button>
@@ -147,3 +157,4 @@
         <button type="button" class="btn btn-primary botonesComprasColor botonModal" (click)="salir()">Aceptar</button>
     </p-footer>
 </p-dialog>
+
