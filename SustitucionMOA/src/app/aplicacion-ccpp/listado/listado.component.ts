@@ -12,6 +12,7 @@ import { DropdownComponent, DropdownOption } from '../../common/view-child/dropd
 
 import * as XLSX from 'xlsx';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
+import { Permiso } from '../../common/enums/Permisos';
 
 @Component({
   selector: 'app-listado',
@@ -29,7 +30,7 @@ export class ListadoComponent extends AplicacionCcppBaseComponent implements OnI
   ccppFiltro = new FormControl();
   estadoFiltro = new FormControl();
   clienteFiltro = new FormControl();
-  esAdmin = this.isAuthorized('ADMIN APLICACIONES CCPP');
+  esAdmin = this.isAuthorized(Permiso.AdminAppCCPP);
   disabled = false;
   show = false;
   develop = true;
@@ -135,5 +136,20 @@ export class ListadoComponent extends AplicacionCcppBaseComponent implements OnI
     this.opcionesEstadoAplicacionCCPP = FiltroEstados;
     this.opcionesClientes = FiltroClientes;
   }
-  eliminarAplicacion(aplicacion: AplicacionCCPP) { }
+  eliminarAplicacion(aplicacion: AplicacionCCPP) {
+    this.blockUI.start("Eliminando ...");
+    console.log(aplicacion)
+    try {
+      this.service.eliminarAplicacion(aplicacion.Id).subscribe({
+        next: (res) => {
+          this.blockUI.stop();
+          this.getListado();
+        },
+        error: (err) => this.blockUI.stop()
+        ,
+      })
+    } catch (error) {
+      this.blockUI.stop()
+    }
+  }
 }

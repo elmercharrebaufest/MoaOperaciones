@@ -7,4 +7,6 @@ export enum Permiso {
     FasonVerOrdenesDeCarga = "VER ORDENES DE CARGA FASON",
     FleteMOA = "FASON - MODIFICA FLETE MOA",
     FasonModificarCampoReventa = "FASON - MODIFICAR CAMPO REVENTA",
+    AdminAppCCPP = "ADMIN APLICACIONES CCPP",
+    AbmAppCCPP = "ABM APLICACIONES CCPP",
 }

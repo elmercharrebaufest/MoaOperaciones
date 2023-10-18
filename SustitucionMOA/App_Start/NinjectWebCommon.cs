@@ -14,6 +14,7 @@ using SustitucionMOAUtils.Services;
 using SustitucionMOAUtils.Services.Email;
 using SustitucionMOAUtils.Validadores;
 using SustitucionMOAUtils.Wrappers;
+using SustitucionMOAWS.AzureAD;
 using SustitucionMOAWS.Interfaces;
 using SustitucionMOAWS.ScatoWebService;
 using SustitucionMOAWS.WebApi;
@@ -204,6 +205,9 @@ namespace SustitucionMOA.App_Start
 
             // CNRT WebApi
             kernel.Bind<ICNRTClient>().To(typeof(CNRTClient)).InSingletonScope();
+
+            // Azure
+            kernel.Bind<IAzureADConsumer>().To(typeof(AzureADConsumer)).InScope(ctx => OperationContext.Current);
 
             kernel.Bind<DbContext>().To<MOAOperacionesDbContext>().InTransientScope();
             kernel.Bind<IRepositorio>().To<RepositorioEF>().InTransientScope();

@@ -1,16 +1,14 @@
 ﻿using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums.SustitucionMOAModel.Enums;
 using SustitucionMOAModel.Models;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SustitucionMOAModel.Dto
 {
     public class AplicacionCartaPorteDto
     {
+        public int Id { get; set; }
         public string MailUsuario { get; set; }
         public string RazonSocial { get; set; }
         public string RazonSocialCuit { get; set; }
@@ -43,6 +41,7 @@ namespace SustitucionMOAModel.Dto
             this.Kilogramos = aplicacionCCPP.Kilogramos;
             this.Error = aplicacionCCPP.Error;
             this.Estado = aplicacionCCPP.Estado;
+            this.Id = aplicacionCCPP.Id;
         }
     }
     public class AplicacionCartaPorteFiltrosDto
