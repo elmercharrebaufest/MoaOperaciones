@@ -10,6 +10,7 @@ namespace SustitucionMOAModel.Dto
     {
         public string Campo { get; set; }
         public string Mail { get; set; }
+        public int UsuarioId { get; set; }
         public DestinatarioDto() { }
 
     }

@@ -91,4 +91,5 @@ export interface Reclamo{
 export class Destinatario{
     Campo: string;
     Mail: string;
+    UsuarioId: number;
 }

@@ -2859,7 +2859,8 @@ namespace SustitucionMOAUtils.Services
                 var usuarios = usuarioService.GetUsuarios().Where(u => u.Habilitado == true);  
                 destinatarios = usuarios.Select(u => new DestinatarioDto{
                     Campo = "Usuario Web",
-                    Mail = u.Mail
+                    Mail = u.Mail,
+                    UsuarioId = u.Id,
                 }).ToList();
                 return destinatarios;
             }
