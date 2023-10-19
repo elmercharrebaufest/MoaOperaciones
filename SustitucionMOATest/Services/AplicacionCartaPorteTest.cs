@@ -6,6 +6,7 @@ using SustitucionMOAModel.Enums.SustitucionMOAModel.Enums;
 using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Services;
+using SustitucionMOAWS.Interfaces;
 
 namespace SustitucionMOATest.Services
 {
@@ -13,13 +14,15 @@ namespace SustitucionMOATest.Services
     public class AplicacionCartaPorteTest
     {
         private Mock<IRepositorio> repositorio;
+        private Mock<IAplicacionCartaPorteConsumer> consumer;
         private IAplicacionCartaPorteService aplicacionCCPPService;
 
         [SetUp]
         public void SetUp()
         {
             repositorio = new Mock<IRepositorio> ();
-            aplicacionCCPPService = new AplicacionCartaPorteService(repositorio.Object);
+            consumer = new Mock<IAplicacionCartaPorteConsumer>();
+            aplicacionCCPPService = new AplicacionCartaPorteService(repositorio.Object, consumer.Object);
         }
 
         [Test]
