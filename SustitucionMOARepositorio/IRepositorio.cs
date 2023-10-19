@@ -110,27 +110,77 @@ namespace SustitucionMOARepositorio
         /// <returns>Lista de entidades</returns>
         TEntidad ObtenerConsultaEscalar<TEntidad>(IConsultaEscalar<TEntidad> consulta);
         ListaPaginada<TEntidad> ListarConOrdenYPaginado<TEntidad>(IQueryable<TEntidad> lista, Paginacion paginacion) where TEntidad : class;
-        
 
+        /// <summary>
+        /// Retorna una consulta IQueryable que incluye propiedades de navegación especificadas para la entidad TEntidad.
+        /// </summary>
+        /// <typeparam name="TEntidad">Tipo de entidad.</typeparam>
+        /// <param name="includes">Expresiones de propiedades de navegación a incluir en la consulta.</param>
+        /// <returns>Consulta IQueryable con propiedades de navegación incluidas.</returns>
         IQueryable<TEntidad> Incluir<TEntidad>(params Expression<Func<TEntidad, object>>[] includes) where TEntidad : class;
 
+        /// <summary>
+        /// Obtiene una entidad TEntidad que cumple con una condición especificada y opcionalmente incluye propiedades de navegación.
+        /// </summary>
+        /// <typeparam name="TEntidad">Tipo de entidad.</typeparam>
+        /// <param name="condition">Condición para seleccionar la entidad.</param>
+        /// <param name="navProperties">Expresiones de propiedades de navegación a incluir.</param>
+        /// <returns>Entidad TEntidad que cumple con la condición.</returns>
         TEntidad Obtener<TEntidad>(Expression<Func<TEntidad, bool>> condition, params Expression<Func<TEntidad, object>>[] navProperties) where TEntidad : class;
-
+        
+        /// <summary>
+        /// Lista todas las entidades de tipo TEntidad.
+        /// </summary>
+        /// <typeparam name="TEntidad">Tipo de entidad.</typeparam>
+        /// <returns>Consulta IQueryable de todas las entidades TEntidad.</returns>
         IQueryable<TEntidad> ListarTodos<TEntidad>() where TEntidad : class;
-       
 
+        /// <summary>
+        /// Lista todas las entidades de tipo TEntidad incluyendo propiedades de navegación especificadas.
+        /// </summary>
+        /// <typeparam name="TEntidad">Tipo de entidad.</typeparam>
+        /// <param name="navProperties">Expresiones de propiedades de navegación a incluir en la consulta.</param>
+        /// <returns>Consulta IQueryable de todas las entidades TEntidad con propiedades de navegación incluidas.</returns>
         IQueryable<TEntidad> ListarTodos<TEntidad>(params Expression<Func<TEntidad, object>>[] navProperties) where TEntidad : class;
 
-
+        /// <summary>
+        /// Lista todas las entidades de tipo TEntidad que cumplen con una condición especificada.
+        /// </summary>
+        /// <typeparam name="TEntidad">Tipo de entidad.</typeparam>
+        /// <param name="condition">Condición para seleccionar las entidades.</param>
+        /// <returns>Consulta IQueryable de entidades TEntidad que cumplen con la condición.</returns>
         IQueryable<TEntidad> ListarConsultable<TEntidad>(Expression<Func<TEntidad, bool>> condition) where TEntidad : class;
-
-        IQueryable<TEntidad> ListarConsultable<TEntidad>(Expression<Func<TEntidad, bool>> condition, params Expression<Func<TEntidad, object>>[] navProperties) where TEntidad : class;
         
+        /// <summary>
+        /// Lista todas las entidades de tipo TEntidad que cumplen con una condición especificada e incluye propiedades de navegación especificadas.
+        /// </summary>
+        /// <typeparam name="TEntidad">Tipo de entidad.</typeparam>
+        /// <param name="condition">Condición para seleccionar las entidades.</param>
+        /// <param name="navProperties">Expresiones de propiedades de navegación a incluir en la consulta.</param>
+        /// <returns>Consulta IQueryable de entidades TEntidad que cumplen con la condición con propiedades de navegación incluidas.</returns>
+        IQueryable<TEntidad> ListarConsultable<TEntidad>(Expression<Func<TEntidad, bool>> condition, params Expression<Func<TEntidad, object>>[] navProperties) where TEntidad : class;
 
+        /// <summary>
+        /// Lista entidades de tipo TEntidad paginadas y ordenadas según una condición y expresión de orden.
+        /// </summary>
+        /// <typeparam name="TEntidad">Tipo de entidad.</typeparam>
+        /// <param name="condition">Condición para seleccionar las entidades.</param>
+        /// <param name="orderBy">Expresión de orden para la consulta.</param>
+        /// <param name="page">Número de página.</param>
+        /// <param name="pageSize">Tamaño de página.</param>
+        /// <returns>Consulta IQueryable de entidades TEntidad paginadas y ordenadas.</returns>
         IQueryable<TEntidad> ListarPaginado<TEntidad>(Expression<Func<TEntidad, bool>> condition, Expression<Func<TEntidad, object>> orderBy, int page, int pageSize) where TEntidad : class;
 
-
-        IQueryable<TEntidad> ListarPaginado<TEntidad>(Expression<Func<TEntidad, bool>> condition, Expression<Func<TEntidad, object>> orderBy, int page, int pageSize, params Expression<Func<TEntidad, object>>[] navProperties) where TEntidad : class;
-       
+        /// <summary>
+        /// Lista entidades de tipo TEntidad paginadas y ordenadas según una condición y expresión de orden, incluyendo propiedades de navegación especificadas.
+        /// </summary>
+        /// <typeparam name="TEntidad">Tipo de entidad.</typeparam>
+        /// <param name="condition">Condición para seleccionar las entidades.</param>
+        /// <param name="orderBy">Expresión de orden para la consulta.</param>
+        /// <param name="page">Número de página.</param>
+        /// <param name="pageSize">Tamaño de página.</param>
+        /// <param name="navProperties">Expresiones de propiedades de navegación a incluir en la consulta.</param>
+        /// <returns>Consulta IQueryable de entidades TEntidad paginadas y ordenadas con propiedades de navegación incluidas.</returns>
+        IQueryable<TEntidad> ListarPaginado<TEntidad>(Expression<Func<TEntidad, bool>> condition, Expression<Func<TEntidad, object>> orderBy, int page, int pageSize, params Expression<Func<TEntidad, object>>[] navProperties) where TEntidad : class;       
     }
 }
