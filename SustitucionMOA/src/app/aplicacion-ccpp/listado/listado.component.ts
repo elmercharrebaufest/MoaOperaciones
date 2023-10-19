@@ -85,6 +85,8 @@ export class ListadoComponent extends AplicacionCcppBaseComponent implements OnD
           this.aplicaciones = res.data
           this.setOpciones(res.filtros)
         }
+      }, err => {
+        this.blockUI.stop()
       });
   }
   limpiarListado() {

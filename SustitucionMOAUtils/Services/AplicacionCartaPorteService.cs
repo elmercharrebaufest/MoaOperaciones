@@ -12,15 +12,18 @@ using SustitucionMOAModel.Enums.SustitucionMOAModel.Enums;
 using SustitucionMOAModel.Dto.AplicacionCartaPorte;
 using System.ComponentModel.DataAnnotations;
 using SustitucionMOAUtils.Logger;
+using SustitucionMOAWS.Interfaces;
 
 namespace SustitucionMOAUtils.Services
 {
     public class AplicacionCartaPorteService : IAplicacionCartaPorteService
     {
         protected readonly IRepositorio repositorio;
-        public AplicacionCartaPorteService(IRepositorio repositorio)
+        protected readonly IAplicacionCartaPorteConsumer consumer;
+        public AplicacionCartaPorteService(IRepositorio repositorio, IAplicacionCartaPorteConsumer consumer)
         {
             this.repositorio = repositorio;
+            this.consumer = consumer;
         }
         public List<AplicacionCartaPorteDto> Listar(string mailUsuario, string fechaInicio, string fechaFin)
         {
@@ -65,12 +68,8 @@ namespace SustitucionMOAUtils.Services
             var codigoProveedor = usuario.ObtenerProveedorAsignado().CodigoProveedor;
 
 
-            return new List<ContratoParaAplicacionCartaPorte> {
-                new ContratoParaAplicacionCartaPorte {NumeroContrato="123456"},
-                new ContratoParaAplicacionCartaPorte {NumeroContrato="1237686"},
-                new ContratoParaAplicacionCartaPorte {NumeroContrato="918023"},
-                new ContratoParaAplicacionCartaPorte {NumeroContrato="12436746"},
-            };
+
+            return consumer.ObtenerContratosProveedor("",codigoProveedor);
 
         }
         public List<CartaPorteParaAplicacionCartaPorte> ObtenerCartasPorte(string numeroContrato, string mailUsuario)
@@ -79,11 +78,7 @@ namespace SustitucionMOAUtils.Services
 
             var codigoProveedor = usuario.ObtenerProveedorAsignado().CodigoProveedor;
 
-            return new List<CartaPorteParaAplicacionCartaPorte> {
-               new CartaPorteParaAplicacionCartaPorte {NumeroCartaPorte="123456", KgPendientes=4},
-                new CartaPorteParaAplicacionCartaPorte {NumeroCartaPorte="1237686",KgPendientes=12},
-                new CartaPorteParaAplicacionCartaPorte {NumeroCartaPorte="918023",KgPendientes=28},
-                new CartaPorteParaAplicacionCartaPorte {NumeroCartaPorte="12436746", KgPendientes = 4},};
+            return consumer.ObtenerCartasPorteProveedor(numeroContrato, codigoProveedor);
         }
 
         public void GuardarAplicacion(CrearAplicacionCartaPorte aplicacionACrear, string mailUsuario)
