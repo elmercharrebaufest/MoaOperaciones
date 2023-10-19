@@ -34,6 +34,7 @@ namespace SustitucionMOATest.Services
         private OrdenDeCarga ordenDeCarga;
         private List<OrdenDeCargaCambiosHistorial> ordenDeCargaCambiosHistorial;
         private Mock<IFeriadoService> feriadoService;
+        private Mock<IUsuarioService> usuarioService;
         private Mock<IEmailFasService> mIEmailFasService;
         private Mock<IFacturaAnticipadaService> mIFacturaAnticipadaService;
         private Mock<IScatoRepositorioClient> mIScatoRepositorioClient;
@@ -65,8 +66,9 @@ namespace SustitucionMOATest.Services
             mIEmailFasService = new Mock<IEmailFasService>();
             mIKgDisponiblesFasService = new Mock<IKgDisponiblesFasService>();
             mICNRTClient = new Mock<ICNRTClient>();
+            
             AddProvider(301301301, EstadoAprobacion.Aprobado, "Test", "RS", "dylopez@baufest.com", "233333333333", new TipoUsuario { Id = 5, Nombre = "Cliente", NombreCorto = "CLI" });
-            target = new OrdenDeCargaService(repositorioMock.Object, consumerOrdenCargaMOA.Object, feriadoService.Object,
+            target = new OrdenDeCargaService(repositorioMock.Object, consumerOrdenCargaMOA.Object, feriadoService.Object, usuarioService.Object,
                 mIScatoRepositorioClient.Object, mIScatoConsumer.Object, mIEmailFasService.Object, mIFacturaAnticipadaService.Object,
                 mIKgDisponiblesFasService.Object, mICNRTClient.Object);
             ordenDeCarga = new OrdenDeCarga
