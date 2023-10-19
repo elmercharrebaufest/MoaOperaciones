@@ -538,4 +538,5 @@ IF NOT EXISTS(SELECT 1 FROM RolPermisoPorRol inner join PermisoPorRol on Permiso
 --    END
 
 IF NOT EXISTS(SELECT 1 FROM RolPermisoPorRol inner join PermisoPorRol on PermisoPorRol.Id = RolPermisoPorRol.PermisoPorRol_Id inner join Rol on Rol.Id = RolPermisoPorRol.Rol_Id WHERE Rol.Nombre = 'ADMINISTRACION' and PermisoPorRol.Permiso = 'HANGFIREDASHBOARD') BEGIN insert into RolPermisoPorRol values ((select id from rol where rol.Nombre = 'ADMINISTRACION'),(select id from PermisoPorRol where PermisoPorRol.Permiso = 'HANGFIREDASHBOARD')) END
+IF NOT EXISTS(SELECT 1 FROM RolPermisoPorRol inner join PermisoPorRol on PermisoPorRol.Id = RolPermisoPorRol.PermisoPorRol_Id inner join Rol on Rol.Id = RolPermisoPorRol.Rol_Id WHERE Rol.Nombre = 'COMERCIAL' and PermisoPorRol.Permiso = 'CARGAR CONSULTA INTERNA') BEGIN insert into RolPermisoPorRol values ((select id from rol where rol.Nombre = 'COMERCIAL'),(select id from PermisoPorRol where PermisoPorRol.Permiso = 'CARGAR CONSULTA INTERNA')) END
 

@@ -121,8 +121,13 @@ export class MisConsultasComponent extends ListBaseComponent {
 
         if (this.securityService.tienePermiso("CARGAR CONSULTA")) {
             this.navService.setSeccionList([new Seccion('/consulta/crear-consulta', 'crear-consulta', 'Nueva Consulta'), new Seccion('/consulta/mis-consultas', 'consulta', 'Mis Consultas'), 
-            new Seccion('/consulta/crear-consulta-interna', 'crear-consulta-interna','Nueva consulta interna')]);        }
-        else {
+            ]);        
+        }
+        else if(this.securityService.tienePermiso("CARGAR CONSULTA INTERNA")){
+            this.navService.setSeccionList([new Seccion('/consulta/crear-consulta-interna', 'crear-consulta-interna', 'Nueva Consulta'), new Seccion('/consulta/mis-consultas', 'consulta', 'Mis Consultas'), 
+        ]);
+        }
+         else{
             this.navService.setSeccionList([new Seccion('/consulta/mis-consultas', 'consulta', 'Mis Consultas')]);
         }
     }
