@@ -1314,9 +1314,32 @@ namespace SustitucionMOATest.Services
                  }
             };
 
+            var finalizar = false;
+
             repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<PeticionDeOfertaUsuario, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null))
                 .Returns(new List<PeticionDeOfertaUsuario>() { new PeticionDeOfertaUsuario { Id = 1, RealizoVisita = true, PeticionDeOferta = peticionDeOferta } });
-            target.GrabarRevisionTecnica(peticiones, 1);
+            target.GrabarRevisionTecnica(peticiones, 1, finalizar);
+            repositorioMock.Verify(y => y.Listar(It.IsAny<Expression<Func<PeticionDeOfertaUsuario, bool>>>(),
+                It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null), Times.Once);
+            repositorioMock.Verify(x => x.GuardarCambios(), Times.Exactly(1));
+        }
+
+        [Test]
+        public void GrabarRevisionTecnicaFinalizarTrueOk()
+        {
+            var peticiones = new List<PeticionDeOfertaUsarioDto>
+            {
+                new PeticionDeOfertaUsarioDto
+                 {
+                   Id = 1
+                 }
+            };
+
+            var finalizar = true;
+
+            repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<PeticionDeOfertaUsuario, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null))
+                .Returns(new List<PeticionDeOfertaUsuario>() { new PeticionDeOfertaUsuario { Id = 1, RealizoVisita = true, PeticionDeOferta = peticionDeOferta } });
+            target.GrabarRevisionTecnica(peticiones, 1, finalizar);
             repositorioMock.Verify(y => y.Listar(It.IsAny<Expression<Func<PeticionDeOfertaUsuario, bool>>>(),
                 It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null), Times.Once);
             repositorioMock.Verify(x => x.GuardarCambios(), Times.Exactly(1));
