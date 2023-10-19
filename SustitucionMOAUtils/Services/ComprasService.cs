@@ -4842,10 +4842,10 @@ namespace SustitucionMOAUtils.Services
                             FechaCreacion = DateTime.Now
                         };
 
-                        if (cotizacionDto.RespetaServicios == true && cotizacionDto.RespetaMateriales == true)
-                        {
-                            cotizacion.PeticionDeOfertaUsuario.PropuestaTecnicaAprobada = true;
-                        }
+                        //if (cotizacionDto.RespetaServicios == true && cotizacionDto.RespetaMateriales == true)
+                        //{
+                        //    cotizacion.PeticionDeOfertaUsuario.PropuestaTecnicaAprobada = true;
+                        //}
                     }
                     repositorio.Agregar(cotizacion);
                 }
@@ -4878,10 +4878,10 @@ namespace SustitucionMOAUtils.Services
                     }
                     esModificar = cotizacion.CotizacionEstado_Id == (int)CotizacionEstadoEnum.Cotizado;
 
-                    if (cotizacionDto.RespetaServicios == true && cotizacionDto.RespetaMateriales == true)
-                    {
-                        cotizacion.PeticionDeOfertaUsuario.PropuestaTecnicaAprobada = true;
-                    }
+                    //if (cotizacionDto.RespetaServicios == true && cotizacionDto.RespetaMateriales == true)
+                    //{
+                    //    cotizacion.PeticionDeOfertaUsuario.PropuestaTecnicaAprobada = true;
+                    //}
                 }
 
                 repositorio.GuardarCambios();
