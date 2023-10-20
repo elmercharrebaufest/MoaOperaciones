@@ -119,15 +119,7 @@ namespace SustitucionMOAUtils.Services
                 var crearPedido = VerificarOrden(ordenDeCarga, ordenDeCarga.Cliente, false);
                 Log.Debug(this.GetType().Name, "Agregar", $" crearPedido: {crearPedido}");
                 repositorio.Agregar(ordenDeCarga);
-                repositorio.GuardarCambios();
 
-                NotificarContratoSinKm(ordenDeCarga);
-                NotificarTransporte(ordenDeCarga.Id);
-
-                if (ordenDeCarga.Estado == EstadoOrdenDeCarga.ContratoVencido)
-                {
-                    emailFasService.EnviarMailContratoVencido(ordenDeCarga);
-                }
                 if (crearPedido && (ordenPuedeEnviarseDirectoSap || usuarioPuedeEnviarASAP))
                 {
                     ordenDeCarga.ContratoSAP = ordenDeCarga.ContratoIngresado;
@@ -154,14 +146,7 @@ namespace SustitucionMOAUtils.Services
                             VerificarSituacionCrediticia(ordenDeCarga, true);
                         }
                     }
-                    repositorio.GuardarCambios();
-
-                }
-                if (!ordenPuedeEnviarseDirectoSap)
-                {
-                    emailFasService.EnviarMailVariosContratos(ordenDeCarga);
-                }
-                NotificarVariasFacturas(ordenDeCarga);
+                }                
 
                 if (ordenDeCarga.Estado == EstadoOrdenDeCarga.SinEnviarASAP &&
                     (!ContratoTieneKgDisponibles(ordenDeCarga) ||
@@ -169,8 +154,23 @@ namespace SustitucionMOAUtils.Services
                 {
                     ordenDeCarga.Estado = EstadoOrdenDeCarga.Pendiente;
                     ordenDeCarga.DescripcionErrorInterno = "Orden con pedido entre 0 a 15Tn";
-                    repositorio.GuardarCambios();
                 }
+                repositorio.GuardarCambios();
+
+                if (ordenDeCarga.Estado == EstadoOrdenDeCarga.ContratoVencido)
+                {
+                    emailFasService.EnviarMailContratoVencido(ordenDeCarga);
+                }
+
+                if (!ordenPuedeEnviarseDirectoSap)
+                {
+                    emailFasService.EnviarMailVariosContratos(ordenDeCarga);
+                }
+
+                NotificarContratoSinKm(ordenDeCarga);
+                NotificarTransporte(ordenDeCarga.Id);
+                NotificarVariasFacturas(ordenDeCarga);
+
                 var resultado = new Resultado { IdEntidad = ordenDeCarga.Id, Mensaje = SuccessMsg.OrdenDeCargaAgregada };
                 Log.Info($"Result: {resultado.ToJson()}");
                 return resultado;
@@ -266,7 +266,7 @@ namespace SustitucionMOAUtils.Services
                     ordenDeCarga.CodigoCorredor = corredor.CodigoProveedor;
                     ordenDeCarga.Corredor_Id = corredor.Id;
                     ordenDeCarga.CUITCorredor = corredor.CUIT;
-                    cliente = usuario.Proveedores.Where(prov => prov.CUIT == ordenDeCarga.CUITCliente && prov.TipoProveedor.Id == (int)TipoUsuarioEnum.Cliente).First();
+                    cliente = usuario.Proveedores.First(prov => prov.CUIT == ordenDeCarga.CUITCliente && prov.TipoProveedor.Id == (int)TipoUsuarioEnum.Cliente);
                     if (cliente == null)
                         throw new Exception("Su usuario no está habilitado para operar con esa CUIT");
                 }
