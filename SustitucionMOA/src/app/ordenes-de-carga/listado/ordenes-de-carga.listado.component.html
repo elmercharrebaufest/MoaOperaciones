@@ -147,10 +147,7 @@
               <td>{{ordenDeCarga.DescripcionEstadoListado}}</td>
               <!-- <td *ngIf="esTercero || esPuerto">{{ordenDeCarga.Orden}}</td> -->
               <td>{{ordenDeCarga.Fecha}}</td>
-              <td style="text-align: center;">{{ordenDeCarga.Contrato}}
-                <span *ngIf="ordenDeCarga.TipoContrato == tipoContrato.FacturaAnticipada " class="fa fa-credit-card"
-                  aria-hidden="true" pTooltip="Anticipado" tooltipPosition="bottom"></span>
-              </td>
+              <td>{{ordenDeCarga.Contrato}}</td>
               <td *ngIf="esInterno || esMesaFas">{{ordenDeCarga.Pedido}}</td>
               <td>{{ordenDeCarga.Material}}</td>
               <td style="text-align: center;">{{ordenDeCarga.PatenteChasis}}
