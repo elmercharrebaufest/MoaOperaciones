@@ -19,14 +19,10 @@
     <AssemblyName>SustitucionMOA</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <UseIISExpress>true</UseIISExpress>
-    <IISExpressSSLPort>
-    </IISExpressSSLPort>
-    <IISExpressAnonymousAuthentication>
-    </IISExpressAnonymousAuthentication>
-    <IISExpressWindowsAuthentication>
-    </IISExpressWindowsAuthentication>
-    <IISExpressUseClassicPipelineMode>
-    </IISExpressUseClassicPipelineMode>
+    <IISExpressSSLPort>58280</IISExpressSSLPort>
+    <IISExpressAnonymousAuthentication>enabled</IISExpressAnonymousAuthentication>
+    <IISExpressWindowsAuthentication>disabled</IISExpressWindowsAuthentication>
+    <IISExpressUseClassicPipelineMode>false</IISExpressUseClassicPipelineMode>
     <UseGlobalApplicationHostFile />
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
@@ -313,8 +309,15 @@
     <Content Include="dist\*.js" />
     <Content Include="dist\styles.*.css" />
     <Content Include="Libs\Kendo.DynamicLinq.dll" />
+    <Content Include="NEW.PRE.DeployParameters.Debug.xml" />
+    <Content Include="NEW.PRE.DeployParameters.Release.xml" />
     <Content Include="NEW.PRE.DeployParameters.xml" />
+    <Content Include="NEW.PROD.DeployParameters.xml" />
+    <Content Include="NEW.QABaufest.DeployParameters.Debug.xml" />
+    <Content Include="NEW.QABaufest.DeployParameters.Release.xml" />
     <Content Include="NEW.QABaufest.DeployParameters.xml" />
+    <Content Include="NEW.QAHuenei.DeployParameters.Debug.xml" />
+    <Content Include="NEW.QAHuenei.DeployParameters.Release.xml" />
     <Content Include="NEW.QAHuenei.DeployParameters.xml" />
     <Content Include="NOTUSE_UPDATE.DeployParameters.Debug.xml" />
     <Content Include="PRE.DeployParameters.Debug.xml">
@@ -330,9 +333,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="PREHotFix.DeployParameters.xml" />
-    <Content Include="QABaufest.DeployParameters.xml" />
     <Content Include="QAHotFix.DeployParameters.xml" />
-    <Content Include="QAHuenei.DeployParameters.xml" />
     <Content Include="src\app\common\shared-components\buscador\buscador.component.css" />
     <Content Include="src\app\common\shared-components\buscador\buscador.component.html" />
     <Content Include="src\app\common\shared-components\seleccionar-proveedor\seleccionar-proveedor.component.css" />
