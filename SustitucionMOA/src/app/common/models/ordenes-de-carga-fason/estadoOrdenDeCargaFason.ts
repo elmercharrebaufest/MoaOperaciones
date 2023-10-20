@@ -1,7 +1,13 @@
 export enum EstadoOrdenDeCargaFason {
-    Generada, 
-    Pendiente, 
-    Vencida, 
+    Generada,
+    Pendiente,
+    Vencida,
     Entregada,
-    SinEstado
+    SinEstado,
+    PendienteCompensacion,
+    PendienteContabilizacion,
+    EdicionSolicitada,
+    EdicionRechazada,
+    AnulacionSolicitada,
+    Anulada,
 }

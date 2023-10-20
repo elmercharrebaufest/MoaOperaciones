@@ -12,21 +12,26 @@ using SustitucionMOAModel.Models.WSMapMOA;
 using SustitucionMOAModel.Models.WSMapMOA.Contrato;
 using SustitucionMOAModel.Models.WSMapMOA.PDF;
 using SustitucionMOAModel.Models.WSMapMOA.Fijacion.Detalle;
+using SustitucionMOAUtils.Interfaces;
 
 namespace SustitucionMOAUtils.Services
 {
-    public class ContratoService
+    public class ContratoService : IContratoService
     {
-        public ContratoViewModel getVigentes(string proveedor, string fechaInicio, string fechaFin) {
+        public ContratoService()
+        {
+
+        }
+        public ContratoViewModel ObtenerVigentes(string proveedor, string fechaInicio, string fechaFin) {
             try
             {
-                List<FechaWS> fechas = CommonService.toDateList(fechaInicio, fechaFin);
+                List<FechaWS> fechas = CommonUtil.toDateList(fechaInicio, fechaFin);
                 ContratoViewModel dataView = new ContratoViewModel();
                 dataView.filtroProducto = new DropdownContent();
                 dataView.filtroVendedor = new DropdownContent();
                 dataView.filtroTipoContrato = new DropdownContent();
                 dataView.data = (ContratosWSMOAResponse)new ContratosConsumerMOA().request(proveedor, fechas);
-                validarRespuesta(dataView.data);
+                ValidarRespuesta(dataView.data);
                 try
                 {
                     dataView.filtroProducto = new DropdownContent(dataView.data.contratosInfo.GroupBy(i => i.material).Select(x => new DropdownOption { value = x.Key, label = x.Key + " (" + x.Count() + ")" }).ToList());
@@ -49,18 +54,18 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        public ContratosNoCumplidosViewModel getContratosNoCumplidos(string proveedor, string fechaInicio, string fechaFin, List<string> contratos, string tipoOperacion, string tipoOperacionMsj)
+        public ContratosNoCumplidosViewModel ObtenerContratosNoCumplidos(string proveedor, string fechaInicio, string fechaFin, List<string> contratos, string tipoOperacion, string tipoOperacionMsj)
         {
             try
             {
 
-                List<FechaWS> fechas = CommonService.toDateList(fechaInicio, fechaFin);
+                List<FechaWS> fechas = CommonUtil.toDateList(fechaInicio, fechaFin);
                 ContratosNoCumplidosViewModel dataView = new ContratosNoCumplidosViewModel();
                 dataView.filtroProducto = new DropdownContent();
                 dataView.filtroVendedor = new DropdownContent();
                 dataView.filtroTipoContrato = new DropdownContent();
                 dataView.data = (ContratosNoCumplidosWSMOAResponse)new FijacionesConsumerMOA().request(proveedor, contratos, fechas, tipoOperacion);
-                validarRespuesta(dataView.data, tipoOperacionMsj);
+                ValidarRespuesta(dataView.data, tipoOperacionMsj);
                 try
                 {
                     dataView.filtroProducto = new DropdownContent(dataView.data.contratosInfo.GroupBy(i => i.material).Select(x => new DropdownOption { value = x.Key, label = x.Key + " (" + x.Count() + ")" }).ToList());
@@ -83,7 +88,7 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        public ContratoDetalleWSMOAResponse getDetalleContrato(string proveedor, string numeroContrato)
+        public ContratoDetalleWSMOAResponse ObtenerDetalleContrato(string proveedor, string numeroContrato)
         {
             try
             {
@@ -118,7 +123,7 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        public FijacionDetalleWSMOAResponse getDetalleFijacion(string proveedor, string numeroContrato, string fijacion)
+        public FijacionDetalleWSMOAResponse ObtenerDetalleFijacion(string proveedor, string numeroContrato, string fijacion)
         {
             try
             {
@@ -160,13 +165,13 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        public string downloadVigentes(string proveedor, string fechaInicio, string fechaFin)
+        public string DescargarVigentes(string proveedor, string fechaInicio, string fechaFin)
         {
             try
             {
-                List<FechaWS> fechas = CommonService.toDateList(fechaInicio, fechaFin);
+                List<FechaWS> fechas = CommonUtil.toDateList(fechaInicio, fechaFin);
                 ContratosExcelWSMOAResponse data = (ContratosExcelWSMOAResponse)new ContratosExcelConsumerMOA().request(proveedor, fechas);
-                validarRespuesta(data);
+                ValidarRespuesta(data);
                 return ExcelExport.ToExcel(data.contratosInfo, new string[] { "ID Vendedor", "Contrato Molinos", "Contrato Proveedor", "Vendedor", "Producto", "Cantidad Kilos", "Unidad Cant. Kilos", "Precio", "Moneda", "Lugar Descarga", "Cosecha", "Estado Boleto ", "Aplicaciones", "Unidad Apliaciones", "Liquidado", "Unidad Liquidado", "Ultimo Movimiento", "Estado" }, "Reporte Contratos Vigentes");
 
             }
@@ -184,13 +189,13 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        public string downloadNoCumplidos(string proveedor, string fechaInicio, string fechaFin, string tipoOperacion, string nombreArchivo, string tipoOperacionMsj)
+        public string DescargarNoCumplidos(string proveedor, string fechaInicio, string fechaFin, string tipoOperacion, string nombreArchivo, string tipoOperacionMsj)
         {
             try
             {
-                List<FechaWS> fechas = CommonService.toDateList(fechaInicio, fechaFin);
+                List<FechaWS> fechas = CommonUtil.toDateList(fechaInicio, fechaFin);
                 ContratosNoCumplidosExcelWSMOAResponse data = (ContratosNoCumplidosExcelWSMOAResponse)new FijacionesExcelConsumerMOA().request(proveedor, new List<string>() { }, fechas, tipoOperacion);
-                validarRespuesta(data, tipoOperacionMsj);
+                ValidarRespuesta(data, tipoOperacionMsj);
                 return ExcelExport.ToExcel(data.contratosInfo, new string[] { "Contrato Molinos", "Contrato Proveedor", "Vendedor", "Producto", "Cantidad Kilos", "Unidad Cant. Kilos", "Kilos Fijados", "Unidad Kilos Fijados", "Ampliado", "Unidad Ampliado", "Anulado", "Unidad Anulado", "Importe", "Moneda", "Fecha de Anulacion", "Liquidado", "Unidad Liquidado", "Total", "Unidad Total", "Estado" }, nombreArchivo);
 
             }
@@ -208,7 +213,7 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        public string downloadDetalle(string proveedor, string numeroContrato)
+        public string DescargarDetalle(string proveedor, string numeroContrato)
         {
             try
             {
@@ -242,7 +247,7 @@ namespace SustitucionMOAUtils.Services
         }
 
         
-        public Pdf downloadPDFCalidad(string proveedor, string numeroContrato)
+        public Pdf DescargarPDFCalidad(string proveedor, string numeroContrato)
         {
             try
             {
@@ -278,7 +283,7 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        public Pdf downloadBoletoFisico(string proveedor, string contrato)
+        public Pdf DescargarBoletoFisico(string proveedor, string contrato)
         {
             try
             {
@@ -307,7 +312,7 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        public string downloadDetalleFijacion(string proveedor, string numeroContrato, string fijacion)
+        public string DescargarDetalleFijacion(string proveedor, string numeroContrato, string fijacion)
         {
             try
             {
@@ -339,7 +344,7 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        private void validarRespuesta(ContratosWSMOAResponse data) {
+        private void ValidarRespuesta(ContratosWSMOAResponse data) {
             if (data == null)
                 throw new ValidationCustomException(ErrorMsg.Error);
             if (data.error != null && data.error.codigo != null && data.error.codigo != "" && data.error.codigo != "11" && data.error.codigo != "16")
@@ -348,7 +353,7 @@ namespace SustitucionMOAUtils.Services
                 throw new InfoCustomException(String.Format(InfoMsg.SinRegistros, "Contratos"));
         }
 
-        private void validarRespuesta(ContratosNoCumplidosWSMOAResponse data, string tipoOperacionMsj)
+        private void ValidarRespuesta(ContratosNoCumplidosWSMOAResponse data, string tipoOperacionMsj)
         {
             if (data == null)
                 throw new ValidationCustomException(ErrorMsg.Error);
@@ -358,7 +363,7 @@ namespace SustitucionMOAUtils.Services
                 throw new InfoCustomException(String.Format(InfoMsg.SinRegistros, tipoOperacionMsj));
         }
 
-        private void validarRespuesta(ContratosExcelWSMOAResponse data)
+        private void ValidarRespuesta(ContratosExcelWSMOAResponse data)
         {
             if (data == null)
                 throw new ValidationCustomException(ErrorMsg.Error);
@@ -368,7 +373,7 @@ namespace SustitucionMOAUtils.Services
                 throw new InfoCustomException(String.Format(InfoMsg.SinRegistros, "Contratos"));
         }
 
-        private void validarRespuesta(ContratosNoCumplidosExcelWSMOAResponse data, string tipoOperacionMsj)
+        private void ValidarRespuesta(ContratosNoCumplidosExcelWSMOAResponse data, string tipoOperacionMsj)
         {
             if (data == null)
                 throw new ValidationCustomException(ErrorMsg.Error);

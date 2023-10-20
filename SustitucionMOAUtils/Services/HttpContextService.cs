@@ -1,9 +1,6 @@
 ﻿using SustitucionMOAUtils.Interfaces;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.IO;
 
 namespace SustitucionMOAUtils.Services
 {
@@ -17,6 +14,11 @@ namespace SustitucionMOAUtils.Services
         public string ObtenerPathLogoMail()
         {
             return System.Web.HttpContext.Current.Server.MapPath("~/Content/Images/header/logo_.png");
+        }
+
+        public string GetDirectory(string path)
+        {
+            return Path.Combine(AppDomain.CurrentDomain.RelativeSearchPath, path);
         }
     }
 }

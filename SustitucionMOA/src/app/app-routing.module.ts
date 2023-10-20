@@ -140,10 +140,10 @@ const appRoutes: Routes = [
                 path: "ordenes-de-carga",
                 loadChildren: "./ordenes-de-carga/ordenes-de-carga.module#OrdenesDeCargaModule",
             },
-            // {
-            //     path: "ordenes-de-carga-fason",
-            //     loadChildren: "./ordenes-de-carga-fason/ordenes-de-carga-fason.module#OrdenesDeCargaFasonModule",
-            // },
+            {
+                path: "ordenes-de-carga-fason",
+                loadChildren: "./ordenes-de-carga-fason/ordenes-de-carga-fason.module#OrdenesDeCargaFasonModule",
+            },
             {
                 path: "reporte-contrato",
                 loadChildren: "./reporte-contrato/reporte-contrato.module#ReporteContratoModule",
@@ -165,10 +165,10 @@ const appRoutes: Routes = [
             { path: "logPesificacion", loadChildren: "./log-pesificacion/log-pesificacion.module#LogPesificacionModule" },
             { path: "compras", loadChildren: "./compras/compras.module#ComprasModule" },
             { path: "apikey", component: ApikeyComponent },
-            {
-                path: "echeq",
-                loadChildren: "./echeq/echeq.module#EcheqModule",
-            },
+            // {
+            //     path: "echeq",
+            //     loadChildren: "./echeq/echeq.module#EcheqModule",
+            // },
             {
                 path: "aplicaciones-ccpp",
                 loadChildren: "./aplicacion-ccpp/aplicacion-ccpp.module#AplicacionCcppModule"

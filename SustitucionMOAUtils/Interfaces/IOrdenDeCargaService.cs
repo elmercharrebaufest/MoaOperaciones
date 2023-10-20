@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace SustitucionMOAUtils.Interfaces
 {
-    public interface IOrdenDeCargaService
+    public interface IOrdenDeCargaService : IOrdenDeCargaServiceBase
     {
         Resultado Agregar(OrdenDeCarga ordenDeCarga, string mailUsuario);
         Resultado Editar(OrdenDeCarga ordenDeCarga, string mailUsuario);
@@ -33,8 +33,6 @@ namespace SustitucionMOAUtils.Interfaces
         OrdenDeCargaDto ObtenerPatentes(OrdenDeCarga orden, string mailUsuario);
         VisualizarClienteResponse VisualizarCliente(VisualizarClienteRequest request);
 
-        ProveedorDto ObtenerProveedor(int idProveedor);
-
         VisualizarProductoResponse VisualizarProducto(VisualizarProductoRequest request);
         ValidarCorredorClienteContratoProductoResponse ValidarCorredorClienteContratoProducto(ValidarCorredorClienteContratoProductoRequest request);
         string NotificarVencimientoOrdenCarga(int ordenId, string mailUsuario);
@@ -46,16 +44,20 @@ namespace SustitucionMOAUtils.Interfaces
         string EnviarOrdenesASAP(List<int> ordenesIds, string mailUsuario);
         ValidarSisaCorredorClienteResponse ValidarSisaCorredorCliente(string corredorCodigo, string clienteCodigo);
         bool ValidarSisaCuit(string cuit, string campo);
-        bool EmailGestionarAlta(string cuit, string razonSocial, bool esIntermediarioFlete);
+        bool EnviarMailAltaCuitTerceros(bool gestionaFlete, bool gestionaDestino, bool gestionaDestinatario, string ordenId);
         bool ValidarCuitRuca(string cuit);
         ValidarCuitExisteScatoResponse ValidarCuitExisteScato(string cuit);
-        List<PlantaDto> ObtenerPlantasDestino(string destinoCuit);
-        List<DomicilioDto> ObtenerDomiciliosDestino(string destinoCuit);
         ValidarIntermediarioFleteResponse ValidarIntermediarioFlete(string cuit);
         (bool, Chofer) ValidarCuilChofer(string cuilChofer);
-        bool ValidarCuilChoferDigito(string cuilChofer);
-        bool ValidarCuitTransporteDigito(string cuitTransporte);
         Resultado SeleccionarFactura(int ordenId, string numeroFacturaSeleccionada, string mailUsuario);
         void VerificarCompensacion(int ordenId);
+        List<AutoCompleteDropdownElement> ObtenerCuilsChofer(OrdenDeCarga ordenDeCarga, string mailUsuario);
+        List<AutoCompleteDropdownElement> ObtenerCuitsTransporte(OrdenDeCarga ordenDeCarga, string mailUsuario);
+        bool ValidarOrdenActivaScato(string ordenId);
+        Resultado VerificarCuitsTerceros(int ordenId, string usuarioEmail);
+        ValidarCamionResponse ValidarCamion(string patenteChasis, string patenteAcoplado);
+
+        List<ClienteSAPResponse> GetClientesVigentesSAP(string fechaIni, string fechaFin);
+        List<SustitucionMOAModel.Entities.Proveedor> FiltrarNoExistentesWeb(List<ClienteSAPResponse> clientes);
     }
 }

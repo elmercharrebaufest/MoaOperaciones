@@ -85,13 +85,13 @@ export class Generacion1Component extends ListBaseComponent  {
         this.onEstCompleto.emit({codigo :EnumPasoSolp.PliegoGeneracion1, esPasoInvalido : this.validadorPasoSolpService.esPasoInvalido()});
     }
 
-    parsearFecha() {
-        this.fechaEntrega = (<HTMLInputElement>document.querySelectorAll('[fechaInicioInput]')[0]).value;
-        if (this.fechaEntrega != '' && this.fechaEntrega != null && this.horaEntrega != '' && this.horaEntrega != null) {
-            var dateParts = this.fechaEntrega.split("-");
-            this.model.fechaDeEntregaDeOfertasFecha = new Date(+dateParts[0], +dateParts[1] - 1, +dateParts[2], this.horaEntrega);
-        }
-    }
+    // parsearFecha() {
+    //     this.fechaEntrega = (<HTMLInputElement>document.querySelectorAll('[fechaInicioInput]')[0]).value;
+    //     if (this.fechaEntrega != '' && this.fechaEntrega != null && this.horaEntrega != '' && this.horaEntrega != null) {
+    //         var dateParts = this.fechaEntrega.split("-");
+    //         this.model.fechaDeEntregaDeOfertasFecha = new Date(+dateParts[0], +dateParts[1] - 1, +dateParts[2], this.horaEntrega);
+    //     }
+    // }
 
 
     setTabs() {

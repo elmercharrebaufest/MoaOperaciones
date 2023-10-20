@@ -4,6 +4,7 @@ using NUnit.Framework;
 using SustitucionMOA.Controllers;
 using SustitucionMOA.Utils;
 using SustitucionMOAModel.Dto;
+using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Interfaces;
@@ -313,6 +314,161 @@ namespace SustitucionMOATest.Controllers
             Assert.AreEqual(valor.Count, 2);
             // Realiza más aserciones según sea necesario.
         }
+
+        [Test]
+        public void AutocompleteMaterialRFCTest()
+        {
+
+            string material = "MaterialEjemplo";
+            string centro = "CentroEjemplo";
+            string grupoDeCompras = "GrupoEjemplo";
+
+            var expected = new RegistroInfoDto
+            {
+                Id = "1",
+                Precio = 100.00m,
+                Cantidad = 50,
+                Vendedor = "Vendedor Ejemplo",
+                NombreProveedor = "Proveedor de Ejemplo",
+                Unidad = "Unidad de Medida",
+                Moneda = "USD",
+                Centro = "Centro de Operaciones",
+                Fecha = "2023-09-29",
+                Codigo = "ABC123",
+                PosicionId = 1,
+                DescripcionPosicion = "Descripción de la Posición",
+                CantidadAdjudicacion = 25,
+                Cuit = "123456789",
+                Indice = 2,
+                ProveedorId = 789,
+                Numero = 9876,
+                Deshabilitado = false,
+                MonedaId = 1,
+                UnidadId = 2,
+                FechaUltimaCompra = "2023-09-28",
+                FechaVigencia = "2023-10-15",
+                MaterialCodigo = "MATERIAL123",
+                NumeroOrdenDeCompra = "OC-12345",
+                GrupoDeCompras = "Grupo de Compras A",
+                OrganizacionDeCompra = "Organización de Compra B",
+            };
+
+            comprasServiceMock.Setup(s => s.ObtenerUltimoRegistroMaterial(material, centro, grupoDeCompras))
+                            .Returns(expected);
+
+
+            var result = target.AutocompleteMaterialRFC(material, centro, grupoDeCompras) as JsonResult;
+
+            string expectedjson = JsonConvert.SerializeObject(expected);
+
+            string resultJson = JsonConvert.SerializeObject(result.Data);
+
+            Assert.AreEqual(expectedjson, resultJson);
+            // Verificar que el resultado sea un JsonResult
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result is JsonResult);
+        }
+
+        [Test]
+        public void ObtenerUltimaSolpTest()
+        {
+            // Configuración de la prueba
+            var usuarioId = 5776; // Establece el ID del usuario actual que esperas en tu servicio
+
+
+            usuarioServiceMock.Setup(u => u.GetUsuario(It.IsAny<string>())).Returns(new UsuarioDto { Id = usuarioId });
+
+            var solpEjemplo = new DatosUltimaSolpDto
+            {
+                FiscalContrato = "Fiscal",
+                Telefono = "12121212",
+                ClaseDocumento = new TablaSapDto
+                {
+                    Id = 12,
+                    Tabla = "ClaseDocumento",
+                    Codigo = "21",
+                    CodigoSap = "21",
+                    Descripcion = "ClaseDocumento",
+                    IdPadre = 1
+                },
+                GrupoCompras = new TablaSapDto
+                {
+                    Id = 12,
+                    Tabla = "GrupoCompras",
+                    Codigo = "21",
+                    CodigoSap = "21",
+                    Descripcion = "GrupoCompras1",
+                    IdPadre = 1
+                },
+
+                CuentaMayor = new TablaSapDto
+                {
+                    Id = 12,
+                    Tabla = "CuentaMayor",
+                    Codigo = "21",
+                    CodigoSap = "21",
+                    Descripcion = "CuentaMayor",
+                    IdPadre = 1
+                },
+
+                Almacen = new TablaSapDto
+                {
+                    Id = 12,
+                    Tabla = "Almacen",
+                    Codigo = "21",
+                    CodigoSap = "21",
+                    Descripcion = "Almacen",
+                    IdPadre = 1
+                },
+
+                TipoPosicion = new TablaGeneralDto
+                {
+                    Id = 12,
+                    Tabla = "TipoPosicion",
+                    Codigo = "21",
+                    Descripcion = "TipoPosicion",
+                    IdPadre = 1
+                },
+
+                Centro = new TablaSapDto
+                {
+                    Id = 12,
+                    Tabla = "Centro",
+                    Codigo = "21",
+                    CodigoSap = "21",
+                    Descripcion = "Centro",
+                    IdPadre = 1
+                },
+
+                CuentaMayorSP = new TablaSapDto
+                {
+                    Id = 12,
+                    Tabla = "CuentaMayorSP",
+                    Codigo = "21",
+                    CodigoSap = "21",
+                    Descripcion = "CuentaMayorSP",
+                    IdPadre = 1
+                },
+
+
+            };
+
+            comprasServiceMock.Setup(s => s.ObtenerUltimaSolp(It.IsAny<int>()))
+                          .Returns(solpEjemplo);
+
+
+
+            // Actuar
+            var result = target.ObtenerUltimaSolp() as JsonResult;
+
+            // Verificar que el resultado sea un JsonResult
+            Assert.IsNotNull(result);
+
+            var a = serializer.Serialize(result);
+            Assert.AreEqual("{\"ContentEncoding\":null,\"ContentType\":null,\"Data\":{\"data\":{\"FiscalContrato\":\"Fiscal\",\"Telefono\":\"12121212\",\"ClaseDocumento\":{\"Id\":12,\"Tabla\":\"ClaseDocumento\",\"Codigo\":\"21\",\"CodigoSap\":\"21\",\"Descripcion\":\"ClaseDocumento\",\"IdPadre\":1,\"CodigoDescripcion\":\"21 - ClaseDocumento\"},\"TipoPosicion\":{\"Id\":12,\"Tabla\":\"TipoPosicion\",\"Codigo\":\"21\",\"Descripcion\":\"TipoPosicion\",\"IdPadre\":1,\"Padre\":null},\"Almacen\":{\"Id\":12,\"Tabla\":\"Almacen\",\"Codigo\":\"21\",\"CodigoSap\":\"21\",\"Descripcion\":\"Almacen\",\"IdPadre\":1,\"CodigoDescripcion\":\"21 - Almacen\"},\"CuentaMayor\":{\"Id\":12,\"Tabla\":\"CuentaMayor\",\"Codigo\":\"21\",\"CodigoSap\":\"21\",\"Descripcion\":\"CuentaMayor\",\"IdPadre\":1,\"CodigoDescripcion\":\"21 - CuentaMayor\"},\"CuentaMayorSP\":{\"Id\":12,\"Tabla\":\"CuentaMayorSP\",\"Codigo\":\"21\",\"CodigoSap\":\"21\",\"Descripcion\":\"CuentaMayorSP\",\"IdPadre\":1,\"CodigoDescripcion\":\"21 - CuentaMayorSP\"},\"GrupoCompras\":{\"Id\":12,\"Tabla\":\"GrupoCompras\",\"Codigo\":\"21\",\"CodigoSap\":\"21\",\"Descripcion\":\"GrupoCompras1\",\"IdPadre\":1,\"CodigoDescripcion\":\"21 - GrupoCompras1\"},\"Centro\":{\"Id\":12,\"Tabla\":\"Centro\",\"Codigo\":\"21\",\"CodigoSap\":\"21\",\"Descripcion\":\"Centro\",\"IdPadre\":1,\"CodigoDescripcion\":\"21 - Centro\"}}},\"JsonRequestBehavior\":0,\"MaxJsonLength\":2147483647,\"RecursionLimit\":null}", a);
+          
+        }
+
 
     }
 }

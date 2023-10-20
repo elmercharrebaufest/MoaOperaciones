@@ -12,6 +12,7 @@ using SustitucionMOAAssets;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOASecurity;
 using SustitucionMOAUtils.DBMethods;
+using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
 using SustitucionMOAUtils.Services;
 
@@ -20,15 +21,23 @@ namespace SustitucionMOA.Controllers
     [System.Web.Mvc.SessionState(System.Web.SessionState.SessionStateBehavior.ReadOnly)]
     public class AduanaController : BaseController
     {
-        DBService _dbService = new DBService();
-        AduanaService _aduanaService = new AduanaService();
+        private readonly IDBService dBService;        
+        private readonly IAduanaService aduanaService;
+
+        public AduanaController(IAduanaService aduanaService, IDBService dBService)
+        {
+            this.aduanaService = aduanaService;
+            this.dBService = dBService;
+        }
+
+
 
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.CONSULTAR_PESADAS)]
         public ActionResult getPesada(int centro, string fechaInicio, string fechaFin)
         {
             try
             {
-                return JsonCustom(_dbService.SqlSPReporte(centro, fechaInicio, fechaFin));
+                return JsonCustom(dBService.SqlSPReporte(centro, fechaInicio, fechaFin));
             }
             catch (InfoCustomException e)
             {
@@ -49,7 +58,7 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                return JsonCustom(_dbService.SqlSPDeltallePesada(centro, nroOrden));
+                return JsonCustom(dBService.SqlSPDeltallePesada(centro, nroOrden));
             }
             catch (ValidationCustomException e)
             {
@@ -66,7 +75,7 @@ namespace SustitucionMOA.Controllers
         public ActionResult obtenerImagenCamaraConsolidacion(string url, string nombre) {
             try
             {
-                return JsonCustom(_aduanaService.ObtenerImagen(url, nombre));
+                return JsonCustom(aduanaService.ObtenerImagen(url, nombre));
             }
             catch (InfoCustomException e)
             {

@@ -1,12 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.IO;
-using System.Linq;
-using System.Runtime.Remoting.Metadata.W3cXsd2001;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SustitucionMOAModel.Dto
 {
@@ -26,7 +19,6 @@ namespace SustitucionMOAModel.Dto
         public decimal PrecioFinal { get; set; }
         public string Proveedor { get; set; }
         public string TipoPosicionCodigo { get; set; }
-
         public string TextoDeCabecera { get; set; }
         public string CondicionesDeEntrega { get; set; }
         public string CondicionesDePago { get; set; }

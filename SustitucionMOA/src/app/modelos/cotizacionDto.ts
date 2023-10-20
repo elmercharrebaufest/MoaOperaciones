@@ -23,6 +23,7 @@ export interface CotizacionDto {
 }
 
 export interface CotizacionPosicionDto {
+    FechaDeVigencia: any
     PlazoDeEntrega: number
     Id: number,
     Cotizacion_Id: number,
@@ -58,6 +59,8 @@ export interface CotizacionSubPosicionDto {
 }
 
 export interface GuardarCotizacion{
+    monedaCompras: string
+    FechaDeVigencia?: any
     UnidadDeMedidaSubpos?: any
     CantidadSubpos?: number
     Posicion: string,

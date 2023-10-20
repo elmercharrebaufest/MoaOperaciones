@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SustitucionMOAModel.Enums
+﻿namespace SustitucionMOAModel.Enums
 {
     namespace SustitucionMOAModel.Enums
     {
@@ -13,7 +7,8 @@ namespace SustitucionMOAModel.Enums
             Pendiente,
             Aplicado,
             Error,
-            SinEstado
+            SinEstado,
+            Eliminado
         }
 
         public static class EstadoAplicacionCartaPorteExtensions
@@ -23,6 +18,7 @@ namespace SustitucionMOAModel.Enums
                 switch (me)
                 {
                     case EstadoAplicacionCartaPorte.Error:
+                    case EstadoAplicacionCartaPorte.Eliminado:
                         return "red";
                     case EstadoAplicacionCartaPorte.Pendiente:
                         return "orange";
@@ -39,6 +35,8 @@ namespace SustitucionMOAModel.Enums
                 {
                     case EstadoAplicacionCartaPorte.Error:
                         return "Error";
+                    case EstadoAplicacionCartaPorte.Eliminado:
+                        return "Eliminado";
                     case EstadoAplicacionCartaPorte.Aplicado:
                         return "Aplicado";
                     case EstadoAplicacionCartaPorte.Pendiente:
@@ -57,6 +55,8 @@ namespace SustitucionMOAModel.Enums
                         return "Aplicado";
                     case 0:
                         return "Pendiente";
+                    case 4:
+                        return "Eliminado";
                     default:
                         return "Sin estado";
                 }
@@ -74,6 +74,8 @@ namespace SustitucionMOAModel.Enums
                         return "Aplicación aceptada";
                     case EstadoAplicacionCartaPorte.Error:
                         return "Aplicación rechazada";
+                    case EstadoAplicacionCartaPorte.Eliminado:
+                        return "Aplicación eliminada";
                     default:
                         return "Sin estado";
                 }
@@ -90,6 +92,8 @@ namespace SustitucionMOAModel.Enums
                         return EstadoAplicacionCartaPorte.Aplicado;
                     case "Error":
                         return EstadoAplicacionCartaPorte.Error;
+                    case "Eliminado":
+                        return EstadoAplicacionCartaPorte.Eliminado;
                     default:
                         return EstadoAplicacionCartaPorte.SinEstado;
                 }

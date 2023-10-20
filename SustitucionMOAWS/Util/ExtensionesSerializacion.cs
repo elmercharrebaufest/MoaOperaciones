@@ -7,6 +7,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization.Json;
+using System.ServiceModel;
+using System.ServiceModel.Security;
 using System.Text;
 using System.Xml.Serialization;
 
@@ -85,6 +87,42 @@ namespace SustitucionMOAWS.Util
         public static IList<T> CloneList<T>(this IList<T> source) where T : ICloneable
         {
             return source.Select(item => (T)item.Clone()).ToList();
+        }
+
+        public static BasicHttpBinding getBindingSapBasic()
+        {
+            BasicHttpBinding binding = new BasicHttpBinding
+
+            {
+                Name = "sap_basic",
+                CloseTimeout = TimeSpan.FromMinutes(1),
+                OpenTimeout = TimeSpan.FromMinutes(1),
+                ReceiveTimeout = TimeSpan.FromMinutes(10),
+                SendTimeout = TimeSpan.FromMinutes(1.5),
+                AllowCookies = false,
+                BypassProxyOnLocal = false,
+                HostNameComparisonMode = HostNameComparisonMode.StrongWildcard,
+                MaxBufferPoolSize = 5000000,
+                MaxBufferSize = int.MaxValue, // 2147483647
+                MaxReceivedMessageSize = int.MaxValue, // 2147483647
+                MessageEncoding = WSMessageEncoding.Text,
+                TextEncoding = Encoding.UTF8,
+                TransferMode = TransferMode.Buffered,
+                UseDefaultWebProxy = true,
+            };
+
+
+            binding.ReaderQuotas.MaxDepth = 32;
+            binding.ReaderQuotas.MaxStringContentLength = 8192;
+            binding.ReaderQuotas.MaxArrayLength = 16384;
+            binding.ReaderQuotas.MaxBytesPerRead = 4096;
+            binding.ReaderQuotas.MaxNameTableCharCount = 16384;
+            binding.Security.Mode = BasicHttpSecurityMode.TransportCredentialOnly;
+            binding.Security.Transport.ClientCredentialType = HttpClientCredentialType.Basic;
+            binding.Security.Message.ClientCredentialType = BasicHttpMessageCredentialType.UserName;
+            binding.Security.Message.AlgorithmSuite = SecurityAlgorithmSuite.Default;
+            return binding;
+
         }
     }
 }

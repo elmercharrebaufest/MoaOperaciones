@@ -25,8 +25,8 @@ export class Solp extends CommonResponse {
     public telefono: string;
     public mail: string;
     public fechaDeEntregaDeOfertasFecha: Date;
-    public fechaDeEntregaDeOfertasHora: Time;
-    public horaEntrega: any;
+    public fechaDeEntregaDeOfertasHora: Date;
+    public horaEntrega: Date;
     public fechaEntrega: Date;
    
     //paso 2
@@ -63,20 +63,15 @@ export class Solp extends CommonResponse {
     public observacionesCotizacion: string;
     public trabajoHecho: boolean;
     public adicional: boolean;
-
+    public monedaOC: string;
     public proveedorAsignado_Id: number;
     public proveedorAsignado: string;
-
     public ordenDeCompra: string;
     public codigoProveedorSap: string;
     public RazonSocialSap: string;
-
-
     public validarTrabajoHecho: boolean;
     public validarAdicional: boolean;
-
     public mensajeCotizacion: string;
-
     public archivosCotizacionesNuevos: Array<File>;
     public archivosCotizaciones: Array<ArchivoModel>
 
@@ -172,6 +167,7 @@ export class Solp extends CommonResponse {
             this.fiscalContrato = solp.FiscalContrato || '';
             this.telefono = solp.Telefono || '';
             this.mail = solp.Email || sessionStorage.getItem("username");
+
             if (solp.FechaHoraEntrega != null) {
                 this.fechaEntrega = new Date(this.getDateFromAspNetFormat(solp.FechaHoraEntrega));
                 this.horaEntrega = new Date(this.getDateFromAspNetFormat(solp.FechaHoraEntrega));
@@ -179,6 +175,7 @@ export class Solp extends CommonResponse {
                 this.fechaEntrega = new Date();
                 this.fechaEntrega.setDate(this.fechaEntrega.getDate() + 7);
             }
+
             //this.fechaEntrega = new Date(this.getDateFromAspNetFormat(solp.FechaHoraEntrega));
             this.emailLinkToken = solp.EmailLinkToken;
             this.selectTipoPosicion =  solp.TipoPosicion && solp.TipoPosicion.Codigo || ''
@@ -209,7 +206,7 @@ export class Solp extends CommonResponse {
             if (solp.FechaHoraLimiteConsulta != null) {
                 this.fechaLimiteFecha = new Date(this.getDateFromAspNetFormat(solp.FechaHoraLimiteConsulta));
                 this.fechaLimiteHora = new Date(this.getDateFromAspNetFormat(solp.FechaHoraLimiteConsulta));
-            }
+            } 
             this.observacionesGeneracion = solp.ObservacionesGeneracion;
 
             // Paso 3
@@ -247,12 +244,12 @@ export class Solp extends CommonResponse {
             this.trabajoHecho = solp.TrabajoYaHecho;
             this.adicional = solp.Adicional;
             this.ordenDeCompra = solp.NroOrdenDeCompraAdicional;
-			this.ordenDeCompraOriginal = solp.NroOrdenDeCompraAdicional;
+            this.ordenDeCompraOriginal = solp.NroOrdenDeCompraAdicional;
             this.proveedorIdAdicional = solp.ProveedorIdAdicional;
             this.proveedorRazonSocialAdicional = solp.ProveedorRazonSocialAdicional
             this.deshabilitarAdicional = solp.DeshabilitarAdicional;
+            this.monedaOC = solp.MonedaOC;
             
-
             //pop up finalizar
             this.revisadoPor = solp.RevisadoPor || '';
 

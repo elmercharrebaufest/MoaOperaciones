@@ -2,28 +2,22 @@
 using SustitucionMOAModel.Entities;
 using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Interfaces;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using SustitucionMOAModel.Enums.SustitucionMOAModel.Enums;
-using SustitucionMOAAssets;
-using SustitucionMOAModel.CustomExceptions;
 using System.Data.Entity;
 using SustitucionMOAFotmatter;
+using SustitucionMOAModel.Enums;
+using SustitucionMOAModel.CustomExceptions;
+using SustitucionMOAModel.Enums.SustitucionMOAModel.Enums;
 
 namespace SustitucionMOAUtils.Services
 {
     public class AplicacionCartaPorteService : IAplicacionCartaPorteService
     {
-        protected readonly IRepositorio _repositorio;
-        //protected readonly IAplicacionCartaPorteConsumerMOA _consumer;
-        public AplicacionCartaPorteService(
-            IRepositorio repositorio
-            //IAplicacionCartaPorteConsumerMOA consumer,
-            )
+        protected readonly IRepositorio repositorio;
+        public AplicacionCartaPorteService(IRepositorio repositorio)
         {
-            this._repositorio = repositorio;
-            //this._consumer = consumer;
+            this.repositorio = repositorio;
         }
         public Resultado Agregar(AplicacionCartaPorte aplicacionCCPP, string mailUsuario)
         {
@@ -34,13 +28,14 @@ namespace SustitucionMOAUtils.Services
             var fechaInicioDateTime = DataFormatter.StringToDateTime(fechaInicio, "fechaInicio");
             var fechaFinDateTime = DataFormatter.StringToDateTime(fechaFin, "fechaFin");
 
-            var usuario = _repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
+            var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
             string cuit = usuario.CUITRegistro;
-            bool isAdmin = usuario.TienePermiso("ADMIN APLICACIONES CCPP");
+            bool isAdmin = usuario.TienePermiso(PermisoEnum.AbmAplicacionesCcpp);
 
-            var rawList = _repositorio.Listar<AplicacionCartaPorte>(apl =>
+            var rawList = repositorio.Listar<AplicacionCartaPorte>(apl =>
                 (isAdmin || apl.Proveedor.CUIT == cuit) &&
-                fechaInicioDateTime <= apl.FechaAlta && fechaFinDateTime >= DbFunctions.TruncateTime(apl.FechaAlta)
+                fechaInicioDateTime <= apl.FechaAlta && fechaFinDateTime >= DbFunctions.TruncateTime(apl.FechaAlta) &&
+                apl.Estado != EstadoAplicacionCartaPorte.Eliminado
             ) ;
 
             var lista = rawList.Select(apl => new AplicacionCartaPorteDto(apl)).ToList();
@@ -53,6 +48,16 @@ namespace SustitucionMOAUtils.Services
         public AplicacionCartaPorteFiltrosDto ObtenerFiltros(List<AplicacionCartaPorteDto> aplicaciones)
         {
             return new AplicacionCartaPorteFiltrosDto(aplicaciones);
+        }
+        public void EliminarAplicacion(int aplicacionId)
+        {
+            var aplicacion = repositorio.Obtener<AplicacionCartaPorte>(aplicacionId);
+            if(aplicacion == null)
+                throw new InfoCustomException("No se ha encontrado la aplicacion.");
+            if (aplicacion.Estado != EstadoAplicacionCartaPorte.Pendiente)
+                throw new InfoCustomException("No se puede eliminar la aplicacion.");
+            aplicacion.Estado = EstadoAplicacionCartaPorte.Eliminado;
+            repositorio.GuardarCambios();
         }
     }
 }
