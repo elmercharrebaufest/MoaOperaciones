@@ -10,6 +10,5 @@ namespace SustitucionMOAUtils.Interfaces
         List<AplicacionCartaPorteDto> Listar(string mailUsuario, string fechaInicio, string fechaFin);
         AplicacionCartaPorteFiltrosDto ObtenerFiltros(List<AplicacionCartaPorteDto> aplicaciones);
         AplicacionCartaPorteDto Obtener(int aplicacionCCPPId,string mailUsuario);
-        void EliminarAplicacion(int aplicacionId);
     }
 }
