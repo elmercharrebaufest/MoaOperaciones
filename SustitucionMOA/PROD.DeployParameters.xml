@@ -181,4 +181,8 @@
 	<setParameter name="ScatoRepositorioUsername Config" value="ScatoLogistica" />
 	<setParameter name="ScatoRepositorioPassword Config" value="ServicioExternoPass" />
 
+	<setParameter name="AzureADTenantId Config" value="moagro.onmicrosoft.com" />
+	<setParameter name="AzureADAppId Config" value="560b50b4-0d0d-42b9-b6ed-792cba10142c" />
+	<setParameter name="AzureADAppSecret Config" value="7~1e6GkakqN0_kCpb60r2b7_-EIU5c34MU" />
+
 </parameters>

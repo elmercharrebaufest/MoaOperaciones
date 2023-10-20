@@ -148,6 +148,10 @@
 	<setParameter name="ScatoRepositorioUsername Config" value="ScatoLogistica" />
 	<setParameter name="ScatoRepositorioPassword Config" value="ServicioExternoPass" />
 
+	<setParameter name="AzureADTenantId Config" value="moagroQA.onmicrosoft.com" />
+	<setParameter name="AzureADAppId Config" value="7c93e4a8-7eb3-4a72-9d32-0776b363013f" />
+	<setParameter name="AzureADAppSecret Config" value="slg8Q~uFRSH_1IMPekXmcZzix3bwXX62Tpqf8dyM" />
+
   <setParameter name="BAPI_INFORECORD_GETLISTPortType Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=BAPI_INFORECORD_GETLIST&amp;interfaceNamespace=urn%3Asap-com%3Adocument%3Asap%3Arfc%3Afunctions"  />
 
 

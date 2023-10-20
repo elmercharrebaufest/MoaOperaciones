@@ -122,14 +122,10 @@
                 <td [ngClass]="[aplicacion.ColorEstado,'fw-bold']">{{aplicacion.LabelEstado}}</td>
                 <td>{{aplicacion.Error}}</td>
                 <td>
-                  <ng-container *ngIf="!develop">
-                    <i *ngIf="aplicacion.Estado === estadosAplicacionCCPP.Pendiente"
-                      (click)="eliminarAplicacion(aplicacion)">
-                      <img src="../../../../Content/images/icons/trashRed.svg" alt="trashRed" class="cursor-pointer"
-                        style="height:25px;" />
-                    </i>
-                  </ng-container>
-
+                  <i *ngIf="aplicacion.Estado === estadosAplicacionCCPP.Pendiente">
+                    <img (click)="eliminarAplicacion(aplicacion)" src="../../../../Content/images/icons/trashRed.svg"
+                      alt="trashRed" class="cursor-pointer" style="height:25px;" />
+                  </i>
                 </td>
               </tr>
             </tbody>
