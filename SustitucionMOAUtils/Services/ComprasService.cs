@@ -717,6 +717,7 @@ namespace SustitucionMOAUtils.Services
                 repositorio.GuardarCambios();
             }
             respuestaGuardarSOLP.IdEntidad = solp.Id.Value;
+            ValidarSolpAnulada(solp.NroSolp);
             return respuestaGuardarSOLP;
 
             #region'NO BORRAR EL CODIGO COMENTADO EN ESTA REGION'
@@ -2305,6 +2306,8 @@ namespace SustitucionMOAUtils.Services
 
                         if (solp.Id == 0)
                             repositorio.Agregar(solp);
+
+                       
                     }
                     catch (Exception e)
                     {
@@ -2333,7 +2336,9 @@ namespace SustitucionMOAUtils.Services
                     }
                 }
                 repositorio.GuardarCambios();
+                ValidarSolpAnulada(obtenerSolpRequest.NumeroSolp);
                 Logger.Log.Info($"ObtenerSolpesDesdeSAPJob fin  numero{obtenerSolpRequest.NumeroSolp}");
+             
 
                 //actualizo el estado en la creacion/actualizacion del la solp
                 //foreach (var resultPosicion in result.Posiciones)
@@ -2345,7 +2350,7 @@ namespace SustitucionMOAUtils.Services
                 //    }
                 //}
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 throw;
             }
@@ -5987,6 +5992,74 @@ namespace SustitucionMOAUtils.Services
                 resultado.ListaLegajos = ObtenerLegajo(cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta_Id, cotizacion.PeticionDeOfertaUsuario_Id);
             }
             return resultado;
+        }
+
+        private void ValidarSolpAnulada(string nroSolp)
+        {
+            var solp = repositorio.Obtener<Solp>(x => x.NroSolp == nroSolp && x.TrabajoYaHecho != true
+            && x.PeticionesDeOferta.Count() > 0 && x.Adjudicacions.Count() == 0 && x.SeEnvioMailAnulacion != true);
+            if (solp != null)
+            {
+                if(solp.Posiciones.All(x => x.Estado))
+                {
+                    try
+                    {
+                        solp.SeEnvioMailAnulacion = true;
+                        repositorio.GuardarCambios();
+                        EnviarMailSolpAnulada(solp);
+                    }
+                    catch (Exception e)
+                    {
+                        throw;
+                    }
+                }
+            }
+        }
+
+        private void EnviarMailSolpAnulada(Solp solp)
+        {
+            try
+            {
+                var asunto = "";
+                var enviarA = new List<string>();
+                var peticionesId = solp.PeticionesDeOferta.Select(y => y.Id);
+                var peticionesDeOfertaUsuario = repositorio.Listar<PeticionDeOfertaUsuario>(x => peticionesId.Contains(x.PeticionDeOferta_Id));
+                foreach (var peticion in solp.PeticionesDeOferta)
+                {
+                    asunto += $"Cierre por Baja de Requerimiento PO - {peticion.Id} ";
+                    foreach (var peticionUsuario in peticionesDeOfertaUsuario.Where(x => x.PeticionDeOferta_Id == peticion.Id))
+                    {
+                        var mailProveedor = new List<string> { peticionUsuario.Usuario.Mail };
+                        emailService.EnviarMail(mailProveedor, asunto, "", null, CuerpoMailSolpAnulada(peticion));
+                    }                    
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Log.Info($"Error al enviar EnviarMailSolpAnulada");
+                Logger.Log.Error(e);
+            }
+        }
+        private AlternateView CuerpoMailSolpAnulada(PeticionDeOferta peticion)
+        {
+            
+            var filePath = Path.Combine(HttpRuntime.AppDomainAppPath, "Content/Images/header/logo_.png");
+           // var filePath = HttpRuntime.AppDomainAppPath.Server.MapPath("~/Content/Images/header/logo_.png");
+            LinkedResource res = new LinkedResource(filePath);
+            res.ContentId = Guid.NewGuid().ToString();
+            string htmlBody = "";
+            htmlBody += $"Estimado proveedor, notificamos que Molinos Agro Sa ha generado el cierre de la compulsa bajo número de Pet. De Oferta {peticion.Id}. <br/><br/>";
+            htmlBody += $"Bajo esta formalidad de aviso, informamos que la compañía <strong>ha desestimado avanzar en la compra del material o servicio solicitado.</strong> <br/><br/>";
+            htmlBody += $"Sepa disculpar las molestias ocasionadas. <br/><br/> ";
+
+            htmlBody += "<strong>No dar respuesta a este mail.</strong>" +
+                "<br/><br/>Atte…<br/>" +
+                "Molinos Agro S.A. <br/> Oficina Compras <br/><br/>" +
+                 @"<img width:'5%' src='cid:" + res.ContentId + @"'/>";
+
+            AlternateView alternateView = AlternateView.CreateAlternateViewFromString(htmlBody, null, "text/html");
+            alternateView.LinkedResources.Add(res);
+            return alternateView;
         }
     }
 

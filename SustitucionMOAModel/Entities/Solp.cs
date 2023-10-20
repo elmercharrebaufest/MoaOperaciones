@@ -34,6 +34,9 @@ namespace SustitucionMOAModel.Entities
         public string NroOrdenDeCompraAdicional { get; set; }
         public bool? SeEnvioMailLiberacion { get; set; }
 
+        public bool? SeEnvioMailAnulacion { get; set; }
+        
+
         [ForeignKey("ProveedorAsignado_Id")]
         public virtual Usuario ProveedorAsignado { get; set; }
 
