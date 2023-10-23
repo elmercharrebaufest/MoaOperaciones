@@ -79,7 +79,7 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
         this.usuario = sessionStorage.getItem("username"); this.onBuscar();
     }
-    
+
     tablaSolp: any[];
     tablaSolpCopy: any[];
     cols: any[];
@@ -549,7 +549,7 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
             this.ordenesDeCompra.push(adjudicacion);
         });
     }
-      
+
     obtenerPeticionDeOfertaParaCerrar(Id) {
         this.blockUI.start('Cargando...');
         this.service.obtenerPeticionDeOferta(Id)
@@ -562,15 +562,13 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
                         this.peticion = result.data;
                         this.displayCerrarCotizacion = true;
                         this.visualizarAlertCotizacion = false;
-                        if(this.peticion.Usuarios.every(usuario => usuario.Cotizacion == null)){
+                        if (this.peticion.Usuarios.every(usuario => usuario.Cotizacion == null)) {
                             this.visualizarAlertCotizacion = true;
                         }
-                        else 
-                        {
-                            if(this.peticion.Usuarios.some(usuario => usuario.Cotizacion != null && usuario.Cotizacion.CotizacionEstadoDescripcion == "Cotizado"))                            
-                            {
+                        else {
+                            if (this.peticion.Usuarios.some(usuario => usuario.Cotizacion != null && usuario.Cotizacion.CotizacionEstadoDescripcion == "Cotizado")) {
                                 this.visualizarAlertCotizacion = false;
-                            }else{
+                            } else {
                                 this.visualizarAlertCotizacion = true;
                             }
                         }
@@ -608,7 +606,7 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
                             label: e.Descripcion, value: e.Id
                         }));
                         result.Usuarios.forEach(x => x.forEach(d => this.usuarioFiltro.push({
-                            label: d.Mail, value: d.Id
+                            label: d.Id === 0 ? "" : d.Mail, value: d.Id
                         })));
                         result.Centro.forEach(c => this.centroFiltro.push({
                             label: c.Codigo + " - " + c.Descripcion, value: c.Id
