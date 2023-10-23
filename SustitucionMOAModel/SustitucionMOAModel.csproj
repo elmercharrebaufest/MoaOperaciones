@@ -59,6 +59,8 @@
     <Compile Include="Consulta\DirOrden.cs" />
     <Compile Include="Consulta\Expresiones.cs" />
     <Compile Include="Consulta\ListaPaginada.cs" />
+    <Compile Include="Dto\EstadoSolicitudOrdenDeCargaBaseDto.cs" />
+    <Compile Include="Dto\Compras\DatosUltimaSolpDto.cs" />
     <Compile Include="Dto\Compras\RegistroInfoDto.cs" />
     <Compile Include="Dto\Compras\AdjudicacionDto.cs" />
     <Compile Include="Dto\Compras\AdjudicacionPosicionDto.cs" />
@@ -66,8 +68,13 @@
     <Compile Include="Dto\Compras\CircularDto.cs" />
     <Compile Include="Dto\Compras\ProveedorComprasDto.cs" />
     <Compile Include="Dto\DolarMaterialDto.cs" />
+    <Compile Include="Dto\OrdenDeCargaFason\EstadoSolicitudAnulacionFason.cs" />
+    <Compile Include="Dto\OrdenDeCargaFason\EstadoSolicitudEdicionFason.cs" />
+    <Compile Include="Dto\OrdenDeCarga\ClienteSAPResponse.cs" />
     <Compile Include="Dto\OrdenDeCarga\FacturaOrdenCarga.cs" />
     <Compile Include="Dto\Compras\CotizacionDto.cs" />
+    <Compile Include="Dto\OrdenDeCarga\GestionCuitDto.cs" />
+    <Compile Include="Dto\OrdenDeCarga\ValidarCamionResponse.cs" />
     <Compile Include="Dto\OrdenDeCarga\ValidarIntermediarioFleteResponse.cs" />
     <Compile Include="Dto\OrdenDeCarga\ValidaSisaCuit.cs" />
     <Compile Include="Dto\OrdenDeCarga\ValidarCuitExisteScatoResponse.cs" />
@@ -174,6 +181,7 @@
     <Compile Include="Entities\CotizacionHora.cs" />
     <Compile Include="Entities\CotizacionPosicion.cs" />
     <Compile Include="Entities\CotizacionSubPosicion.cs" />
+    <Compile Include="Entities\PeticionDeOfertaCierre.cs" />
     <Compile Include="Entities\PeticionDeOfertaSolpPosicion.cs" />
     <Compile Include="Entities\PeticionDeOfertaUsuario.cs" />
     <Compile Include="Entities\PeticionDeOfertaArchivo.cs" />
@@ -271,6 +279,11 @@
     <Compile Include="Models\DataAgro\ContratoAPrecio.cs" />
     <Compile Include="Models\DataAgro\RptCartaDePresentacionInfo.cs" />
     <Compile Include="Models\ViewModel\ReclamoImpositivo.cs" />
+    <Compile Include="Models\WebApiMap\CNRT\Dominio.cs" />
+    <Compile Include="Models\WebApiMap\CNRT\Equipo.cs" />
+    <Compile Include="Models\WebApiMap\CNRT\EquiposResponse.cs" />
+    <Compile Include="Models\WebApiMap\CNRT\Rto.cs" />
+    <Compile Include="Models\WebApiMap\CNRT\Ruta.cs" />
     <Compile Include="Models\WebApiMap\ScatoRepositorio\Chofer.cs" />
     <Compile Include="Models\WebApiMap\ScatoRepositorio\CodigoMensajeObtenerChoferPorCuil.cs" />
     <Compile Include="Models\WebApiMap\ScatoRepositorio\Domicilio.cs" />

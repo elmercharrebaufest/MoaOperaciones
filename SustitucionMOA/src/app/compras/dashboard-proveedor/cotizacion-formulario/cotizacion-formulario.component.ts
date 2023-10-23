@@ -110,6 +110,13 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
                 var date = new Date(milliseconds);
                 this.posicionesCompra[index].Posiciones.FechaEntregaServicio = date
             }
+
+            if (this.posicionesCompra[index].Posiciones.CotizacionPosicion.FechaDeVigencia != null) {
+                var milliseconds = parseInt(this.posicionesCompra[index].Posiciones.CotizacionPosicion.FechaDeVigencia.substring(6));
+                var date = new Date(milliseconds);
+                this.posicionesCompra[index].Posiciones.CotizacionPosicion.FechaDeVigencia = date
+            }
+            
         }
 
     }
@@ -221,7 +228,7 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
             }
             this.cotizaciones.forEach(function (cotizacion, i) {
                 if (!breakFor && (cotizacion.NoDisponible == false || cotizacion.NoDisponible == undefined)) {
-                    if ((cotizacion.Cantidad <= 0 || cotizacion.Cantidad == undefined) && cotizacion.UnidadDeMedidaId == 0 && cotizacion.MonedaId == 0 && cotizacion.Precio <= 0 && cotizacion.FechaDeEntrega == null) {
+                    if ((cotizacion.Cantidad <= 0 || cotizacion.Cantidad == undefined) && cotizacion.UnidadDeMedidaId == 0 && cotizacion.MonedaId == 0 && cotizacion.Precio <= 0 && cotizacion.FechaDeEntrega == null && cotizacion.FechaDeVigencia == null) {
                         mensaje = "Pos. " + cotizacion.Posicion + " Por favor tildar NO DISPONIBLE en el caso de no contar con el material";
                         return mensaje;
                     }
@@ -245,8 +252,20 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
                         breakFor = true;
                         return mensaje;
                     }
+                    const decimalPart = (cotizacion.Precio % 1).toFixed(2);
+                    if(decimalPart != '0.00' && cotizacion.monedaCompras == "CLP"){
+                        mensaje = "Pos. " + cotizacion.Posicion + ": Para la moneda seleccionada no es posible ingresar decimales en el precio";
+                        breakFor = true;
+                        return mensaje;
+                    }
                     if (cotizacion.FechaDeEntrega == null) {
                         mensaje = "Pos. " + cotizacion.Posicion + " - La Fecha de entrega cotizada es obligatoria";
+                        breakFor = true;
+                        return mensaje;
+                    }
+
+                    if (cotizacion.FechaDeVigencia == null) {
+                        mensaje = "Pos. " + cotizacion.Posicion + " - La Fecha de vigencia es obligatoria";
                         breakFor = true;
                         return mensaje;
                     }
@@ -340,6 +359,11 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
                     return mensaje
                 }
             }
+            if ((!this.peticion.PorcentajeDeHoras || this.peticion.PorcentajeDeHoras == 0) &&
+                this.peticion.Cotizacion.CotizacionesHoras.filter(x => x.Gremio == 'UOCRA' || x.ConfigurarHora == true).some(x => Number(x.CantidadPersonas) > 0))
+            {
+                mensaje = "El campo Porcentaje de horas es obligatorio cuando se ingresa la estimación de horas en UOCRA";
+            }
 
             var self = this;
             this.cotizacionSubposiciones.forEach(function (subposicion, i) {
@@ -361,6 +385,12 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
                     }
                     if (subposicion.Precio <= 0) {
                         mensaje = "Propuesta Economica - " + "Pos. " + subposicion.Posicion + ": El Precio cotizado es obligatorio";
+                        breakFor = true;
+                        return mensaje;
+                    }
+                    const decimalPart = (subposicion.Precio % 1).toFixed(2);
+                    if(decimalPart != '0.00' && subposicion.monedaCompras == "CLP"){
+                        mensaje = "Propuesta Economica - " + "Pos. " + subposicion.Posicion + ": Para la moneda seleccionada no es posible ingresar decimales en el precio";
                         breakFor = true;
                         return mensaje;
                     }

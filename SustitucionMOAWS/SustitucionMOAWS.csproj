@@ -33,6 +33,9 @@
     <Reference Include="AutoMapper, Version=7.0.1.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
       <HintPath>..\packages\AutoMapper.7.0.1\lib\net45\AutoMapper.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Identity.Client, Version=4.17.1.0, Culture=neutral, PublicKeyToken=0a613f4dd989e8ae, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Identity.Client.4.17.1\lib\net45\Microsoft.Identity.Client.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -44,6 +47,7 @@
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.IdentityModel" />
     <Reference Include="System.IO.Compression" />
     <Reference Include="System.Net.Http.Formatting, Version=5.2.9.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.9\lib\net45\System.Net.Http.Formatting.dll</HintPath>
@@ -63,8 +67,14 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AzureAD\AzureADConsumer.cs" />
+    <Compile Include="AzureAD\IUsersGraphAPIClient.cs" />
+    <Compile Include="AzureAD\Model\ObtenerUsuarioResponse.cs" />
+    <Compile Include="AzureAD\UsersGraphAPIClient.cs" />
     <Compile Include="CredentialService\DataAgroWSCredential.cs" />
     <Compile Include="CredentialService\SAPCredential.cs" />
+    <Compile Include="Interfaces\IAzureADConsumer.cs" />
+    <Compile Include="Interfaces\ICNRTClient.cs" />
     <Compile Include="Interfaces\IOrdenCargaConsumerMOA.cs" />
     <Compile Include="Interfaces\IComprasSolpConsumer.cs" />
     <Compile Include="Interfaces\IListarPesificacionesConsumer.cs" />
@@ -79,6 +89,11 @@
     <Compile Include="ResponseHandler\OrdenCarga\ControlCargaResponseHandler.cs" />
     <Compile Include="ResponseHandler\OrdenCarga\ModEntregaResponseHandler.cs" />
     <Compile Include="ResponseHandler\OrdenCarga\OrdenCargaEntreResponseHandler.cs" />
+    <Compile Include="Service References\AgregarRegistroInfoServiceWebMOA\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
     <Compile Include="Service References\AplicacionesWebServiceMOA\Reference.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -510,6 +525,7 @@
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
     <Compile Include="Util\ExtensionesSerializacion.cs" />
+    <Compile Include="WebApi\CNRTClient.cs" />
     <Compile Include="WebApi\ScatoRepositorioClient.cs" />
     <Compile Include="WSConsumers\AplicacionesConsumerMOA.cs" />
     <Compile Include="WSConsumers\CambioPassConsumerMOA.cs" />
@@ -521,6 +537,7 @@
     <Compile Include="WSConsumers\ContratoDetalleConsumerMOA.cs" />
     <Compile Include="WSConsumers\ComprobantesNGConsumerMOA.cs" />
     <Compile Include="WSConsumers\CrearPedidoConsumerMOA.cs" />
+    <Compile Include="WSConsumers\AgregarRegistroInfoConsumerMOA.cs" />
     <Compile Include="WSConsumers\EcheqAnularAperturaChequeConsumerMOA.cs" />
     <Compile Include="WSConsumers\EcheqCargaAperturaChequeConsumerMOA.cs" />
     <Compile Include="WSConsumers\EcheqModificacionDocumentoChequeConsumerMOA.cs" />
@@ -610,6 +627,7 @@
     </None>
     <None Include="packages.config" />
     <None Include="Properties\DataSources\System.Diagnostics.EventLogEntry.datasource" />
+    <None Include="Service References\AgregarRegistroInfoServiceWebMOA\SI_MMRFC_MANTENER_REGINFO.wsdl" />
     <None Include="Service References\AplicacionesWebServiceMOA\SI_MPMF_MOAOP_APLICACIONES.wsdl" />
     <None Include="Service References\AplicacionesWebServiceMOA\SustitucionMOAWS.AplicacionesWebServiceMOA.SI_MPMF_MOAOP_APLICACIONESResponse.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
@@ -2315,6 +2333,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <WCFMetadataStorage Include="Service References\AgregarRegistroInfoServiceWebMOA\" />
     <WCFMetadataStorage Include="Service References\AplicacionesWebServiceMOA\" />
     <WCFMetadataStorage Include="Service References\CambioPassWebServiceMOA\" />
     <WCFMetadataStorage Include="Service References\CartaPorteDetalleWebServiceMOA\" />
@@ -3463,6 +3482,19 @@
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\AgregarRegistroInfoServiceWebMOA\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\AgregarRegistroInfoServiceWebMOA\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\AgregarRegistroInfoServiceWebMOA\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

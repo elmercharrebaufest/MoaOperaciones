@@ -8,18 +8,23 @@ using SustitucionMOAAssets;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Models.WSMapMOA.ContactoMail;
 using SustitucionMOAUtils.Email;
+using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAValidator;
 using SustitucionMOAWS.WSConsumers;
 
 namespace SustitucionMOAUtils.Services
 {
-    public class ContactoMailService
+    public class ContactoMailService : IContactoMailService
     {
-        public string sendContactoMail(ContactoContenido contactoContenido, HttpPostedFileBase file)
+        public ContactoMailService()
+        {
+
+        }
+        public string SendContactoMail(ContactoContenido contactoContenido, HttpPostedFileBase file)
         {
             try
             {
-                contactoContenido = validarCampos(contactoContenido);
+                contactoContenido = ValidarCampos(contactoContenido);
 
                 string fileName = "";
                 var archivoBytes = new byte[0];
@@ -51,7 +56,7 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        public List<CategoriaContacto> getCategorias()
+        public List<CategoriaContacto> ObtenerCategorias()
         {
             try
             {
@@ -72,7 +77,7 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        private ContactoContenido validarCampos(ContactoContenido contactoContenido)
+        private ContactoContenido ValidarCampos(ContactoContenido contactoContenido)
         {
 
             contactoContenido.proveedor = InputValidator.notEmptyOrNullString(contactoContenido.proveedor, "Proveedor");

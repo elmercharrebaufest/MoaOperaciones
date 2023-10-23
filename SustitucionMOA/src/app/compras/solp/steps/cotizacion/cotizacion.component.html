@@ -17,36 +17,36 @@
                         </div>
 
                     </div> -->
-                    
+
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 margenInput">
                         <label class="labelCompras" for="editorTexto"> Adjuntar Anexos</label>
                         <p-fileUpload [styles]="{'margin-left':'-13px'}" name="fileUploadCotizaciones" auto="true" multiple="multiple" chooseLabel="Elegir archivo"
-                                        [showUploadButton]=false [showCancelButton]=false [customUpload]="true" (uploadHandler)="uploadHandler($event)">
+                                      [showUploadButton]=false [showCancelButton]=false [customUpload]="true" (uploadHandler)="uploadHandler($event)">
                             <ng-template *ngIf="model.archivosCotizacionesNuevos.length == 0" pTemplate="toolbar">
-                                <div *ngIf="model.archivosCotizacionesNuevos.length == 0" 
-                                        style="display: inline !important; font-family: Roboto Regular !important; color: #666666;">
+                                <div *ngIf="model.archivosCotizacionesNuevos.length == 0"
+                                     style="display: inline !important; font-family: Roboto Regular !important; color: #666666;">
                                     Ningun archivo elegido
                                 </div>
                             </ng-template>
                             <ng-template let-file pTemplate="file">
-                            </ng-template>                     
+                            </ng-template>
                         </p-fileUpload>
                     </div>
                     <div class="col-md-12 row" style="margin-left: -1px; margin-bottom: 3px">
                         <p-panel *ngIf="model.archivosCotizacionesNuevos.length > 0 || model.archivosCotizaciones.length > 0" header="Anexos agregados" [toggleable]="true" [collapsed]="false">
                             <div class="row myRow">
                                 <div class="col-xs-12 col-md-9"
-                                        *ngFor="let archivo of model.archivosCotizaciones">
+                                     *ngFor="let archivo of model.archivosCotizaciones">
                                     <img class="pointer" src="./Content/images/icons/trashRed.svg" alt="imageAlt"
-                                            (click)="eliminarArchivo(false,archivo)" style="width: 26px;" />
+                                         (click)="eliminarArchivo(false,archivo)" style="width: 26px;" />
                                     <a class="link-archivo pointer" (click)="descargarArchivo(archivo)">
                                         {{archivo.nombreArchivo}}
                                     </a>
                                 </div>
                                 <div class="col-xs-12 col-md-9"
-                                        *ngFor="let archivo of model.archivosCotizacionesNuevos">
+                                     *ngFor="let archivo of model.archivosCotizacionesNuevos">
                                     <img class="pointer" src="./Content/images/icons/trashRed.svg" alt="imageAlt"
-                                            (click)="eliminarArchivo(true,archivo)" style="width: 26px;" />
+                                         (click)="eliminarArchivo(true,archivo)" style="width: 26px;" />
                                     <a class="link-archivo pointer" (click)="descargarArchivo(archivo)" style="font-weight: lighter;">
                                         {{archivo.name}}
                                     </a>
@@ -60,7 +60,7 @@
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 margenInput">
                         Observaciones
                         <textarea [ngModelOptions]="{standalone:true}" [(ngModel)]="model.observacionesCotizacion" (ngModelChange)="validacionTrabajoHecho()"
-                                    name="observaciones" id="observaciones" cols="30" rows="5" placeholder="Indicar la cantidad de días con que se cuenta a partir de tener el equipo disponible, en una parada programada o que el trabajo depende de otros"></textarea>
+                                  name="observaciones" id="observaciones" cols="30" rows="5" placeholder="Indicar la cantidad de días con que se cuenta a partir de tener el equipo disponible, en una parada programada o que el trabajo depende de otros"></textarea>
                         <div *ngIf="this.model.validarTrabajoHecho == false && (this.model.observacionesCotizacion == ''  || this.model.observacionesCotizacion == undefined || this.model.observacionesCotizacion == null)">
                             <p class="text-danger">Campo obligatorio</p>
                         </div>
@@ -105,12 +105,12 @@
                             <label class="labelCompras" for="checkbox"> Condiciones especiales</label>
                             <div>
                                 <p-checkbox [ngModelOptions]="{standalone:true}" name="trabajoHecho" [(ngModel)]="model.trabajoHecho" label="Trabajo ya hecho" formControlName="trabajoHecho"
-                                binary="true" (click)="validacionTrabajoHecho(); limpiarCheck();" [disabled]="validarCondiciones('trabajoHecho')"></p-checkbox>
-                            </div> 
+                                            binary="true" (click)="validacionTrabajoHecho(); limpiarCheck();" [disabled]="validarFinalizada()"></p-checkbox>
+                            </div>
                         </div>
-                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" *ngIf="model.trabajoHecho">
+                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" *ngIf="model.trabajoHecho && !model.adicional">
                             <div class="col-xs-12 col-sm-10" style="font-size: 14px;">
-                                <strong>Selección de proveedores</strong>
+                                <strong>Selección de proveedores *</strong>
                             </div>
                             <div class="col-xs-12 col-sm-10 col-md-4" style="font-size: 24px; margin-bottom: 20px;">
                                 <p-autoComplete [(ngModel)]="proveedorSeleccionado"
@@ -132,34 +132,37 @@
                                     </ng-template>
                                 </p-autoComplete>
                                 <div *ngIf="this.model.validarTrabajoHecho == false && (!this.proveedorSeleccionado || this.proveedorSeleccionado == '' || this.proveedorSeleccionado === undefined);">
-                                    <p class="text-danger" style="font-size: 16px; margin-top: 1em;">Campo obligatorio</p>
+                                    <p class="text-danger" style="font-size: 16px; margin-top: 1em;">Campo obligatorio si no se marca Adicional</p>
                                 </div>
                             </div>
-                        </div>  
+                        </div>
                         <div class="col-xs-12 col-sm-12 col-md-12 margenInput" style="margin-top: 1em;">
                             <p-checkbox [ngModelOptions]="{standalone:true}" name="adicional" [(ngModel)]="model.adicional" label="Adicional / Mano de obra administrada / Ajuste" formControlName="adicional"
-                            binary="true" (click)="validacionTrabajoHecho(); limpiarCheckAdicional()" [disabled]="validarCondiciones('adicional')"></p-checkbox>
+                                        binary="true" (click)="validacionTrabajoHecho(); limpiarCheckAdicional()" [disabled]="validarFinalizada()"></p-checkbox>
                         </div>
                         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" *ngIf="model.adicional">
                             <div class="col-xs-12 col-sm-10" style="font-size: 14px;">
-                                <strong>Ingrese Nro. de orden de compra</strong>
+                                <strong>Ingrese Nro. de orden de compra *</strong>
                             </div>
                             <div class="col-xs-12 col-sm-10 col-md-4" style="font-size: 24px; margin-bottom: 20px;">
-                                <input type="text"  
-                                    class="styled-select inputAltura"
-                                    pInputText
-                                    [(ngModel)]="model.ordenDeCompra" 
-                                    (keyup)="obtenerOrdenDeCompra()" 
-                                    placeholder="Nro de orden de compra"
-                                    formControlName="ordenDeCompra"
-                                    maxlength="10" 
-                                    (ngModelChange)="validacionTrabajoHecho();">
+                                <input type="text"
+                                       class="styled-select inputAltura"
+                                       pInputText
+                                       [(ngModel)]="model.ordenDeCompra"
+                                       (keyup)="obtenerOrdenDeCompra()"
+                                       placeholder="Número de orden de compra"
+                                       formControlName="ordenDeCompra"
+                                       maxlength="10"
+                                       (ngModelChange)="validacionTrabajoHecho();">
                             </div>
                             <div class="col-xs-12 col-sm-10 col-md-4" *ngIf="ordenDeCompraSap != null && ordenDeCompraSap.Error == null && model.ordenDeCompra != ''">
-                                <label for="ordenDeCompra"><strong>Razon social: {{ordenDeCompraSap?.Cabecera?.RazonSocialProveedor}}</strong></label>
-
+                                <label for="ordenDeCompra">
+                                    Razón social: <strong>{{ordenDeCompraSap?.Cabecera?.RazonSocialProveedor}}</strong><br />
+                                    Fecha de Creación: {{ordenDeCompraSap?.Cabecera?.FechaCreacionString}}<br />
+                                    Monto Total: {{ordenDeCompraSap?.Cabecera?.MontoTotal | number: '1.2-2'}} <strong>{{ordenDeCompraSap?.Cabecera?.Moneda}}</strong>
+                                </label>
                             </div>
-                        </div>  
+                        </div>
                     </div>
                 </div>
                 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 alinearTitulo">
@@ -172,7 +175,7 @@
     </div>
 </form>
 
-<p-confirmDialog #dialogo header="Confirmaci�n" icon="pi pi-exclamation-triangle" [width]="400" [responsive]="true" appendTo="body">
+<p-confirmDialog #dialogo header="Confirmación" icon="pi pi-exclamation-triangle" [width]="400" [responsive]="true" appendTo="body">
     <p-footer>
         <button type="button" pButton label="Cancelar" class="ui-button-info botonModal" (click)="dialogo.reject()"></button>
         <button type="button" pButton label="Aceptar" class="ui-button-success botonModal" (click)="dialogo.accept()"></button>

@@ -24,7 +24,7 @@ body.ui-paginator.ui-dropdown{
 }
 
 .columna{
-    word-break: break-all; word-wrap:break-word; font-size: 12px;;
+    word-break: break-all; word-wrap:break-word; font-size: 10px;;
 }
 
 .headerth {
@@ -34,5 +34,15 @@ body.ui-paginator.ui-dropdown{
 
 .padding{
     padding: 8px;
-  }
+}
   
+  /* ::ng-deep .ui-paginator{
+    width: 100% !important;
+} */
+
+.col-lg-1 {
+    width: 10%;
+}
+
+
+

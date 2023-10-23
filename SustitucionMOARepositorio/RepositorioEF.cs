@@ -272,6 +272,10 @@ namespace SustitucionMOARepositorio
 
             return queryEntidad.Select(proyeccion).ToList();
         }
+        public IQueryable<TEntidad> ListarQuery<TEntidad>(Expression<Func<TEntidad, bool>> filtro = null) where TEntidad : class
+        {
+            return filtro != null ? Set<TEntidad>().Where(filtro) : Set<TEntidad>();
+        }
 
         private IQueryable<TEntidad> ListarQueryable<TEntidad>(IQueryable<TEntidad> resultado, Expression<Func<TEntidad, bool>> filtro, string orden, DirOrden direccionOrden, int maxResultados, IEnumerable<Expression<Func<TEntidad, object>>> includes = null) where TEntidad : class
         {
@@ -293,7 +297,7 @@ namespace SustitucionMOARepositorio
                                  : resultado.OrderByDescending(selectorOrden);
             }
 
-            if(includes != null)
+            if (includes != null)
             {
                 foreach (var i in includes)
                 {

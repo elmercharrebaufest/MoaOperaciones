@@ -1,4 +1,5 @@
-﻿using SustitucionMOAModel.Enums;
+﻿using SustitucionMOAModel.Dto.OrdenDeCargaFason;
+using SustitucionMOAModel.Enums;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -45,19 +46,76 @@ namespace SustitucionMOAModel.Entities
         public string NroRemito { get; set; }
         public string UniMedCant { get; set; }
         public string KmARecorrer { get; set; }
+        public string CUITIntermediarioFlete { get; set; }
+        public string RazonSocialIntermediarioFlete { get; set; }
+        public bool FleteMOA { get; set; }
+        public bool Reventa { get; set; }
+        public string PlantaCodigo { get; set; }
+        public string DomicilioTipo { get; set; }
+        public short? DomicilioOrden { get; set; }
+        public string DomicilioDescr { get; set; }
+        public bool Escalable { get; set; }
 
-        public void ActualizarEstado()
-        {
-            if (Estado != EstadoOrdenDeCargaFason.Entregada)
+        public string CUITDestinatario { get; set; }
+
+        public string RazonSocialDestinatario { get; set; }
+
+        public string CUITDestino { get; set; }
+
+        public string RazonSocialDestino { get; set; }
+
+        public bool? DestinatarioExisteScato { get; set; }
+        public bool? DestinoExisteScato { get; set; }
+        public string DestinoMercaderia { get; set; }
+
+        public bool CuitsTerceroExisten { 
+            get
             {
-                if (!TransporteExiste)
+                if (Producto.ValidaSisaRuca)
                 {
-                    Estado = EstadoOrdenDeCargaFason.Pendiente;
+                    var existeDestino = DestinoExisteScato ?? false;
+                    var existeDestinatario = DestinatarioExisteScato ?? false;
+                    return existeDestino && existeDestinatario;
                 }
-            }
+                return true;
+            } 
         }
 
-
+        public OrdenDeCargaFason() { }
+        public OrdenDeCargaFason(CrearOrdenDeCargaFasonRequest request)
+        {
+            Cantidad = request.Cantidad;
+            Cliente_Id = request.Cliente;
+            CorredorId = request.CorredorId;
+            CUILChofer = request.CUILChofer;
+            CUITTransporte = request.CUITTransporte;
+            LocalidadId = request.Destino.LocalidadId;
+            LocalidadDescripcion = request.Destino.LocalidadDescripcion;
+            FechaCreacion = DateTime.Now;
+            FechaRetiro = request.FechaRetiro;
+            NombreChofer = request.NombreChofer;
+            Observacion = request.Observacion;
+            PatenteAcoplado = request.PatenteAcoplado;
+            PatenteChasis = request.PatenteChasis;
+            Producto_Id = request.Producto_Id;
+            RazonSocialTransporte = request.RazonSocialTransporte;
+            KmARecorrer = request.Destino.KmARecorrer;
+            FleteMOA = request.FleteMOA;
+            CUITIntermediarioFlete = request.CUITIntermediarioFlete;
+            RazonSocialIntermediarioFlete = request.RazonSocialIntermediarioFlete;
+            Reventa = request.Reventa;
+            PlantaCodigo = request.PlantaCodigo;
+            DomicilioTipo = request.DomicilioTipo;
+            DomicilioOrden = request.DomicilioOrden;
+            DomicilioDescr = request.DomicilioDescr;
+            CUITDestinatario = request.CUITDestinatario;
+            RazonSocialDestinatario = request.RazonSocialDestinatario;
+            CUITDestino = request.CUITDestino;
+            RazonSocialDestino = request.RazonSocialDestino;
+            DestinatarioExisteScato = request.DestinatarioExisteScato;
+            DestinoExisteScato = request.DestinoExisteScato;
+            DestinoMercaderia = request.DestinoMercaderia;
+        }
         public override bool Equals(object obj)
         {
             return obj is OrdenDeCargaFason carga &&
@@ -79,7 +137,19 @@ namespace SustitucionMOAModel.Entities
                 Producto_Id == carga.Producto_Id &&
                 TransporteExiste == carga.TransporteExiste &&
                 CorredorId == carga.CorredorId &&
-                KmARecorrer == carga.KmARecorrer;
+                KmARecorrer == carga.KmARecorrer &&
+                FleteMOA == carga.FleteMOA &&
+                Reventa == carga.Reventa &&
+                CUITIntermediarioFlete == carga.CUITIntermediarioFlete &&
+                RazonSocialIntermediarioFlete == carga.RazonSocialIntermediarioFlete &&
+                PlantaCodigo == carga.PlantaCodigo &&
+                DomicilioTipo == carga.DomicilioTipo &&
+                DomicilioOrden == carga.DomicilioOrden &&
+                DomicilioDescr == carga.DomicilioDescr &&
+                DestinoMercaderia == carga.DestinoMercaderia &&
+                DestinatarioExisteScato == carga.DestinatarioExisteScato &&
+                DestinoExisteScato == carga.DestinoExisteScato;
+                ;
         }
 
         public override int GetHashCode()

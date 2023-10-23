@@ -2,6 +2,7 @@
 using SustitucionMOAAssets;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOASecurity;
+using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
 using SustitucionMOAUtils.Services;
 using System;
@@ -14,7 +15,12 @@ namespace SustitucionMOA.Controllers
 {
     public class FacturaController : BaseController
     {
-        private FacturaService _facturaService = new FacturaService();
+        private readonly IFacturaService facturaService;
+
+        public FacturaController(IFacturaService facturaService)
+        {
+            this.facturaService = facturaService;
+        }
 
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.CARGAR_FACT_PROV)]
         public ActionResult subirPDF(string factura, HttpPostedFileBase file)
@@ -28,7 +34,7 @@ namespace SustitucionMOA.Controllers
                     {
                         string folderPath = Server.MapPath("/") + "Facturas\\";
 
-                        return JsonCustom(new { data = _facturaService.subirPDF(file, folderPath) });
+                        return JsonCustom(new { data = facturaService.SubirPDF(file, folderPath) });
                     }
                     else
                     {

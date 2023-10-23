@@ -60,7 +60,7 @@ namespace SustitucionMOAUtils.Services
         {
             try
             {
-                List<FechaWS> fechas = CommonService.toDateList(fechaInicio, fechaFin);
+                List<FechaWS> fechas = CommonUtil.toDateList(fechaInicio, fechaFin);
                 LiquidacionViewModel dataView = new LiquidacionViewModel();
                 dataView.filtroProducto = new DropdownContent();
                 dataView.filtroObservacion = new DropdownContent();
@@ -85,7 +85,7 @@ namespace SustitucionMOAUtils.Services
         public LiquidacionViewModel getLiquidaciones(string proveedor, string tipo, string fechaInicio, string fechaFin) {
             try
             {
-                List<FechaWS> fechas = CommonService.toDateList(fechaInicio, fechaFin);
+                List<FechaWS> fechas = CommonUtil.toDateList(fechaInicio, fechaFin);
                 LiquidacionViewModel dataView = new LiquidacionViewModel();
                 dataView.filtroProducto = new DropdownContent();
                 dataView.filtroObservacion = new DropdownContent();
@@ -156,7 +156,7 @@ namespace SustitucionMOAUtils.Services
             try
             {
                 
-                List<FechaWS> fechas = CommonService.toDateList(fechaInicio, fechaFin);
+                List<FechaWS> fechas = CommonUtil.toDateList(fechaInicio, fechaFin);
                 LiquidacionNGViewModel dataView = new LiquidacionNGViewModel();
                
                 dataView.filtroObservacion = new DropdownContent();
@@ -210,7 +210,7 @@ namespace SustitucionMOAUtils.Services
         {
             try
             {
-                List<FechaWS> fechas = CommonService.toDateList(fechaInicio, fechaFin);
+                List<FechaWS> fechas = CommonUtil.toDateList(fechaInicio, fechaFin);
 
                 ComprobantesNGWSMOAResponse result =  (ComprobantesNGWSMOAResponse)new ComprobantesNGConsumerMOA().request(proveedor, fechas);
 
@@ -237,7 +237,7 @@ namespace SustitucionMOAUtils.Services
         {
             try
             {
-                List<FechaWS> fechas = CommonService.toDateList(fechaInicio, fechaFin);
+                List<FechaWS> fechas = CommonUtil.toDateList(fechaInicio, fechaFin);
                 LiquidacionExcelWSMOAResponse data = (LiquidacionExcelWSMOAResponse) new LiquidacionesExcelConsumerMOA().request(proveedor, fechas,"","");
                 validarRespuesta(data);
                 data.liquidaciones = data.liquidaciones.Where(x => x.solapa == "A").ToList();
@@ -263,7 +263,7 @@ namespace SustitucionMOAUtils.Services
         {
             try
             {
-                List<FechaWS> fechas = CommonService.toDateList(fechaInicio, fechaFin);
+                List<FechaWS> fechas = CommonUtil.toDateList(fechaInicio, fechaFin);
                 LiquidacionExcelWSMOAResponse data = (LiquidacionExcelWSMOAResponse)new LiquidacionesExcelConsumerMOA().request(proveedor, fechas,"","");
                 validarRespuesta(data);
                 data.liquidaciones = data.liquidaciones.Where(x => x.solapa == "O").ToList();
@@ -289,7 +289,7 @@ namespace SustitucionMOAUtils.Services
         {
             try
             {
-                List<FechaWS> fechas = CommonService.toDateList(fechaInicio, fechaFin);
+                List<FechaWS> fechas = CommonUtil.toDateList(fechaInicio, fechaFin);
                 LiquidacionExcelWSMOAResponse data = (LiquidacionExcelWSMOAResponse)new LiquidacionesExcelConsumerMOA().request(proveedor, fechas,"","");
                 validarRespuesta(data);
                 data.liquidaciones = data.liquidaciones.Where(x => x.solapa == "P").ToList();
@@ -315,7 +315,7 @@ namespace SustitucionMOAUtils.Services
         {
             try
             {
-                List<FechaWS> fechas = CommonService.toDateList(fechaInicio, fechaFin);
+                List<FechaWS> fechas = CommonUtil.toDateList(fechaInicio, fechaFin);
                 LiquidacionExcelNGWSMOAResponse data = (LiquidacionExcelNGWSMOAResponse)new LiquidacionesExcelNGConsumerMOA().request(proveedor, fechas);
                 validarRespuestaNG(data);
                 data.liquidaciones = data.liquidaciones.Where(x => x.observaciones == "").ToList();
@@ -341,7 +341,7 @@ namespace SustitucionMOAUtils.Services
         {
             try
             {
-                List<FechaWS> fechas = CommonService.toDateList(fechaInicio, fechaFin);
+                List<FechaWS> fechas = CommonUtil.toDateList(fechaInicio, fechaFin);
                 LiquidacionExcelNGWSMOAResponse data = (LiquidacionExcelNGWSMOAResponse)new LiquidacionesExcelNGConsumerMOA().request(proveedor, fechas);
                 validarRespuestaNG(data);
                 data.liquidaciones = data.liquidaciones.Where(x => x.observaciones != "").ToList();
@@ -367,7 +367,7 @@ namespace SustitucionMOAUtils.Services
         {
             try
             {
-                List<FechaWS> fechas = CommonService.toDateList(fechaInicio, fechaFin);
+                List<FechaWS> fechas = CommonUtil.toDateList(fechaInicio, fechaFin);
                 LiquidacionExcelNGWSMOAResponse data = (LiquidacionExcelNGWSMOAResponse)new LiquidacionesExcelNGConsumerMOA().request(proveedor, fechas);
                 validarRespuestaNG(data);
                 data.liquidaciones = data.liquidaciones.ToList();
@@ -393,7 +393,7 @@ namespace SustitucionMOAUtils.Services
         {
             try
             {
-                List<FechaWS> fechas = CommonService.toDateList(fechaInicio, fechaFin);
+                List<FechaWS> fechas = CommonUtil.toDateList(fechaInicio, fechaFin);
                 ComprobantesExcelNGWSMOAResponse data = (ComprobantesExcelNGWSMOAResponse)new ComprobantesExcelNGConsumerMOA().request(proveedor, fechas);
                 validarRespuestaNG(data);
                 data.comprobantes = data.comprobantes.ToList();
@@ -421,7 +421,7 @@ namespace SustitucionMOAUtils.Services
         {
             try
             {
-                List<FechaWS> fechas = CommonService.toDateList(fechaInicio, fechaFin);
+                List<FechaWS> fechas = CommonUtil.toDateList(fechaInicio, fechaFin);
                 LiquidacionExcelNGWSMOAResponse data = (LiquidacionExcelNGWSMOAResponse)new LiquidacionesExcelNGConsumerMOA().request(proveedor, fechas);
                 validarRespuestaNG(data);
                 return ExcelExport.ToExcel(data.liquidaciones, new string[] { "ID", "Vencimiento", "Tipo", "Comprobante", "Total", "Moneda", "Orden de Compra", "Observacion" }, "Reporte Comprobantes Pagos");

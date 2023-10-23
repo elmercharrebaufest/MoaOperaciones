@@ -6,6 +6,7 @@ using System.Web.Mvc;
 using SustitucionMOAAssets;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOASecurity;
+using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
 using SustitucionMOAUtils.Services;
 
@@ -14,18 +15,23 @@ namespace SustitucionMOA.Controllers
     [System.Web.Mvc.SessionState(System.Web.SessionState.SessionStateBehavior.ReadOnly)]
     public class ContratoController : BaseController
     {
-        private ContratoService _contratoService = new ContratoService();
+        private readonly IContratoService contratoService;
 
         private const string _fijaciones = "FIJ";
         private const string _ampliaciones = "AMP";
         private const string _anulaciones = "ANU";
+
+        public ContratoController(IContratoService contratoService)
+        {
+            this.contratoService = contratoService;
+        }
 
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.CONSULTAR_CONTRATO)]
         public ActionResult getVigentes(string periodo, string fechaInicio, string fechaFin)
         {
             try
             {
-                return JsonCustom(_contratoService.getVigentes(SessionPersister.Proveedor, fechaInicio, fechaFin));
+                return JsonCustom(contratoService.ObtenerVigentes(SessionPersister.Proveedor, fechaInicio, fechaFin));
             }
             catch (InfoCustomException e)
             {
@@ -52,7 +58,7 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                return JsonCustom(_contratoService.getContratosNoCumplidos(SessionPersister.Proveedor, fechaInicio, fechaFin, new List<string>() { }, _fijaciones, "Fijaciones"));
+                return JsonCustom(contratoService.ObtenerContratosNoCumplidos(SessionPersister.Proveedor, fechaInicio, fechaFin, new List<string>() { }, _fijaciones, "Fijaciones"));
             }
             catch (InfoCustomException e)
             {
@@ -79,7 +85,7 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                return JsonCustom(_contratoService.getContratosNoCumplidos(SessionPersister.Proveedor, fechaInicio, fechaFin, new List<string>() { }, _ampliaciones, "Ampliaciones"));
+                return JsonCustom(contratoService.ObtenerContratosNoCumplidos(SessionPersister.Proveedor, fechaInicio, fechaFin, new List<string>() { }, _ampliaciones, "Ampliaciones"));
             }
             catch (InfoCustomException e)
             {
@@ -106,7 +112,7 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                return JsonCustom(_contratoService.getContratosNoCumplidos(SessionPersister.Proveedor, fechaInicio, fechaFin, new List<string>() { }, _anulaciones, "Anulaciones"));
+                return JsonCustom(contratoService.ObtenerContratosNoCumplidos(SessionPersister.Proveedor, fechaInicio, fechaFin, new List<string>() { }, _anulaciones, "Anulaciones"));
             }
             catch (InfoCustomException e)
             {
@@ -133,7 +139,7 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                return JsonCustom(_contratoService.getDetalleContrato(SessionPersister.Proveedor, numeroContrato));
+                return JsonCustom(contratoService.ObtenerDetalleContrato(SessionPersister.Proveedor, numeroContrato));
             }
             catch (InfoCustomException e)
             {
@@ -160,7 +166,7 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                return JsonCustom(_contratoService.getDetalleFijacion(SessionPersister.Proveedor, numeroContrato, fijacion));
+                return JsonCustom(contratoService.ObtenerDetalleFijacion(SessionPersister.Proveedor, numeroContrato, fijacion));
             }
             catch (InfoCustomException e)
             {
@@ -187,7 +193,7 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                return JsonCustom(_contratoService.downloadBoletoFisico(SessionPersister.Proveedor, numeroContrato));
+                return JsonCustom(contratoService.DescargarBoletoFisico(SessionPersister.Proveedor, numeroContrato));
             }
             catch (InfoCustomException e)
             {
@@ -214,7 +220,7 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                return JsonCustom(_contratoService.downloadDetalle(SessionPersister.Proveedor, numeroContrato));
+                return JsonCustom(contratoService.DescargarDetalle(SessionPersister.Proveedor, numeroContrato));
             }
             catch (InfoCustomException e)
             {
@@ -241,7 +247,7 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                return JsonCustom(_contratoService.downloadPDFCalidad(SessionPersister.Proveedor, numeroContrato));
+                return JsonCustom(contratoService.DescargarPDFCalidad(SessionPersister.Proveedor, numeroContrato));
             }
             catch (InfoCustomException e)
             {
@@ -270,7 +276,7 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                return JsonCustom(_contratoService.downloadVigentes(SessionPersister.Proveedor, fechaInicio, fechaFin));
+                return JsonCustom(contratoService.DescargarVigentes(SessionPersister.Proveedor, fechaInicio, fechaFin));
             }
             catch (InfoCustomException e)
             {
@@ -297,7 +303,7 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                return JsonCustom(_contratoService.downloadNoCumplidos(SessionPersister.Proveedor, fechaInicio, fechaFin, _fijaciones, "Reporte Fijaciones", "Fijaciones"));
+                return JsonCustom(contratoService.DescargarNoCumplidos(SessionPersister.Proveedor, fechaInicio, fechaFin, _fijaciones, "Reporte Fijaciones", "Fijaciones"));
             }
             catch (InfoCustomException e)
             {
@@ -324,7 +330,7 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                return JsonCustom(_contratoService.downloadNoCumplidos(SessionPersister.Proveedor, fechaInicio, fechaFin, _ampliaciones, "Reporte Ampliaciones", "Ampliaciones"));
+                return JsonCustom(contratoService.DescargarNoCumplidos(SessionPersister.Proveedor, fechaInicio, fechaFin, _ampliaciones, "Reporte Ampliaciones", "Ampliaciones"));
             }
             catch (InfoCustomException e)
             {
@@ -351,7 +357,7 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                return JsonCustom(_contratoService.downloadNoCumplidos(SessionPersister.Proveedor, fechaInicio, fechaFin, _anulaciones, "Reporte Anulaciones", "Anulaciones"));
+                return JsonCustom(contratoService.DescargarNoCumplidos(SessionPersister.Proveedor, fechaInicio, fechaFin, _anulaciones, "Reporte Anulaciones", "Anulaciones"));
             }
             catch (InfoCustomException e)
             {
@@ -378,7 +384,7 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                return JsonCustom(_contratoService.downloadDetalleFijacion(SessionPersister.Proveedor, numeroContrato, fijacion));
+                return JsonCustom(contratoService.DescargarDetalleFijacion(SessionPersister.Proveedor, numeroContrato, fijacion));
             }
             catch (InfoCustomException e)
             {

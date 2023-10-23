@@ -68,16 +68,8 @@ namespace SustitucionMOA
                j => j.Execute(),
                "30 8 * * *", tz);
 
-            //RecurringJob.AddOrUpdate<Jobs.IActualizarEstadoSolpSapJob>(
-            //    "ActualizarEstadoSolpSapJob",
-            //    j => j.Execute(),
-            //    "0 * * * *", tz);
             RecurringJob.RemoveIfExists("ActualizarEstadoSolpSapJob");
 
-            //RecurringJob.AddOrUpdate<Jobs.IObtenerSolpsDesdeSAPJob>(
-            //    "ObtenerSolpsDesdeSAPJob",
-            //    j => j.Execute(),
-            //    "0 0 * 12 *", tz);
             RecurringJob.RemoveIfExists("ObtenerSolpsDesdeSAPJob");
 
             RecurringJob.AddOrUpdate<Jobs.IActualizarLocalidades>("ActualizarLocalidades", j => j.Execute(),
@@ -94,6 +86,14 @@ namespace SustitucionMOA
                 "VerificarSituacionCrediticiaJob",
                 j => j.Execute(),
                 "*/15 * * * *", tz);
+            RecurringJob.AddOrUpdate<Jobs.IVerificarTransporteOrdenesDeCargaFasonJob>(
+                "VerificarTransporteOrdenesDeCargaFasonJob",
+                j => j.Execute(),
+                "0 * * * *", tz);
+            RecurringJob.AddOrUpdate<Jobs.IAltaClienteSAPJob>(
+               "AltaClienteSAPJob",
+               j => j.Execute(),
+               "0 13,23 * * *", tz);
         }
     }
 
@@ -120,12 +120,12 @@ namespace SustitucionMOA
                         // Busca la reclamación "permisos" con el valor "APIKEY"
                         IEnumerable<System.Security.Claims.Claim> permisosClaim = userIdentity.FindAll("permisos");
 
-                        if (permisosClaim != null && permisosClaim.Any(a=>a.Value == "HANGFIREDASHBOARD"))
+                        if (permisosClaim != null && permisosClaim.Any(a => a.Value == "HANGFIREDASHBOARD"))
                         {
                             boolAuthorizeCurrentUserToAccessHangFireDashboard = true;
                         }
                     }
-                }                
+                }
             }
             return boolAuthorizeCurrentUserToAccessHangFireDashboard;
 

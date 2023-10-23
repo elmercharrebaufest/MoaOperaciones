@@ -29,5 +29,9 @@ namespace SustitucionMOAModel.Dto
         public string FechaVigencia { get; set; }
         public string MaterialCodigo { get; set; }
         public string NumeroOrdenDeCompra { get; set; }
+
+        public string GrupoDeCompras { get; set; }
+        public string OrganizacionDeCompra { get; set; }
+        public DateTime FechaVigenciaFormateada { get; set; }
     }
 }

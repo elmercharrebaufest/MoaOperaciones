@@ -1,35 +1,41 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using SustitucionMOAAssets;
+﻿using SustitucionMOAAssets;
 using SustitucionMOAFotmatter;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Models.DBMap.RYD;
 using SustitucionMOAModel.Models.DBMap.RYD.CargaPesada;
+using SustitucionMOAModel.Models.WSMapMOA.Balanza;
 using SustitucionMOAUtils.DBMethods;
+using SustitucionMOAUtils.Export;
+using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAValidator;
 using SustitucionMOAWS.WSConsumers;
-using SustitucionMOAUtils.Export;
-using SustitucionMOAModel.Models.WSMapMOA.Balanza;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace SustitucionMOAUtils.Services
 {
-    public class RYDService
+    public class RYDService : IRYDService
     {
         DBService _dbService = new DBService();
 
-        public InputsCargaPesadas getDataInputsCargaPesadas(int centro)
+        public RYDService()
+        {
+
+        }
+
+        public InputsCargaPesadas ObtenerDataInputsCargaPesadas(int centro)
         {
             try
             {
                 InputsCargaPesadas dataInputs = new InputsCargaPesadas();
 
-                dataInputs.balanzas = getBalanzas(centro, true);
-                dataInputs.bodegas = getBodegas();
-                dataInputs.commodities = getCommodities();
-                dataInputs.destinos = getDestinos();
-                dataInputs.exportadores = getExportadores();
-                dataInputs.vapores = getVapores();
+                dataInputs.balanzas = ObtenerBalanzas(centro, true);
+                dataInputs.bodegas = ObtenerBodegas();
+                dataInputs.commodities = ObtenerCommodities();
+                dataInputs.destinos = ObtenerDestinos();
+                dataInputs.exportadores = ObtenerExportadores();
+                dataInputs.vapores = ObtenerVapores();
 
                 return dataInputs;
             }
@@ -39,11 +45,11 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        public List<DbElement> getFiltrosInforme(int centro)
+        public List<DbElement> ObtenerFiltrosInforme(int centro)
         {
             try
             {
-                return initDropdownVacio(getBalanzas(centro,false));
+                return InicializarDropdownVacio(ObtenerBalanzas(centro,false));
             }
             catch (Exception e)
             {
@@ -51,13 +57,13 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        public FiltroListadoPesadas getFiltrosListadoPesadas()
+        public FiltroListadoPesadas ObtenerFiltrosListadoPesadas()
         {
             try
             {
                 FiltroListadoPesadas dataInputs = new FiltroListadoPesadas();
-                dataInputs.commodities = initDropdownTodo(getCommodities());
-                dataInputs.exportadores = initDropdownTodo(getExportadores());
+                dataInputs.commodities = InicializarDropdownTodo(ObtenerCommodities());
+                dataInputs.exportadores = InicializarDropdownTodo(ObtenerExportadores());
                 return dataInputs;
             }
             catch (Exception e)
@@ -66,7 +72,7 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        public PesadaBalanzaInforme getInforme(int centro, string balanza)
+        public PesadaBalanzaInforme ObtenerInforme(int centro, string balanza)
         {
             try
             {
@@ -90,7 +96,7 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        public ListadoEncabezadoPesadas getListadoPesadas(int empresa, string commodity, string exportador, string fechaInicio, string fechaFin)
+        public ListadoEncabezadoPesadas ObtenerListadoPesadas(int empresa, string commodity, string exportador, string fechaInicio, string fechaFin)
         {
             try
             {
@@ -111,11 +117,11 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        public string downloadInforme(int centro, string balanza)
+        public string DescargarInforme(int centro, string balanza)
         {
             try
             {
-                PesadaBalanzaInforme data = getInforme(centro, balanza);
+                PesadaBalanzaInforme data = ObtenerInforme(centro, balanza);
 
                 return ExcelExport.ToExcel(data.pesadas, new string[] { "Nro Pesada", "Fecha", "Hora", "Peso Tara", "Peso Bruto", "Peso Neto"}, "Reporte RYD Informe");
             }
@@ -133,11 +139,11 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        public string downloadListadoPesada(int empresa, string commodity, string exportador, string fechaInicio, string fechaFin)
+        public string DescargarListadoPesada(int empresa, string commodity, string exportador, string fechaInicio, string fechaFin)
         {
             try
             {
-                ListadoEncabezadoPesadas data = getListadoPesadas(empresa, commodity, exportador, fechaInicio, fechaFin);
+                ListadoEncabezadoPesadas data = ObtenerListadoPesadas(empresa, commodity, exportador, fechaInicio, fechaFin);
 
                 return ExcelExport.ToExcel(data.pesadas, new string[] { "Nro Viaje", "Vapor", "Commodity", "Exportador", "Fecha", "Total TN Cargadas", "00-06", "'06-12", "'12-18", "18-24" }, "Reporte RYD Informe");
             }
@@ -155,12 +161,12 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        public string registrarPesada(int codigo, string balanza, string fecha, string bodega, string commodity, string destino, string exportador, string vapor, int pesoProgramado, int pesoAcumulado, int numeroPesada, string fechaPesada, double pesoTara, double pesoBruto)
+        public string RegistrarPesada(int codigo, string balanza, string fecha, string bodega, string commodity, string destino, string exportador, string vapor, int pesoProgramado, int pesoAcumulado, int numeroPesada, string fechaPesada, double pesoTara, double pesoBruto)
         {
             string docSap = "";
             DateTime fechaInicio, fechaPesadaDT;
             int commodityInt, exportadorInt;
-            validarDatos(balanza, fecha, bodega, commodity, destino, exportador, vapor, pesoProgramado, pesoAcumulado, numeroPesada, fechaPesada, pesoTara, pesoBruto);
+            ValidarDatos(balanza, fecha, bodega, commodity, destino, exportador, vapor, pesoProgramado, pesoAcumulado, numeroPesada, fechaPesada, pesoTara, pesoBruto);
             fechaInicio = DataFormatter.StringToDateTime(fecha, "Fecha Encabezado");
             fechaInicio = fechaInicio.AddSeconds(-fechaInicio.Second);
             fechaPesadaDT = DataFormatter.StringToDateTime(fechaPesada, "Fecha Pesada");
@@ -202,10 +208,10 @@ namespace SustitucionMOAUtils.Services
             return "";
         }
 
-        public string finalizarCargaPesadas(int codigo, string balanza, string fecha)
+        public string FinalizarCargaPesadas(int codigo, string balanza, string fecha)
         {
             DateTime fechaInicio;
-            validarDatosEncabezadoFinalizarCarga(balanza, fecha);
+            ValidarDatosEncabezadoFinalizarCarga(balanza, fecha);
             try
             {
                 fechaInicio = DataFormatter.StringToDateTime(fecha, "Fecha Encabezado");
@@ -219,12 +225,12 @@ namespace SustitucionMOAUtils.Services
             return SuccessMsg.DatosPesadasGuardadosOK;
         }
 
-        public CargaPesadaBalanza verificarBalanzaEnProceso(int codigo, string balanza) {
+        public CargaPesadaBalanza VerificarBalanzaEnProceso(int codigo, string balanza) {
             CargaPesadaBalanza cargaEnProceso = _dbService.SqlSPBalanzaEnProcesoData(codigo, balanza);
             return cargaEnProceso;
         }
 
-        private List<DbElement> getBalanzas(int centro, bool soloManuales)
+        private List<DbElement> ObtenerBalanzas(int centro, bool soloManuales)
         {
             List<DbParameter> parametros = new List<DbParameter>();
             parametros.Add(new DbParameter("centro", centro));
@@ -232,45 +238,45 @@ namespace SustitucionMOAUtils.Services
             return _dbService.SqlSPCBElement("Sp_cb_Balanzas", parametros);
         }
 
-        private List<DbElement> getBodegas()
+        private List<DbElement> ObtenerBodegas()
         {
             return _dbService.SqlSPCBElement("Sp_cb_Bodegas", new List<DbParameter>());
         }
 
-        private List<DbElement> getCommodities()
+        private List<DbElement> ObtenerCommodities()
         {
             return _dbService.SqlSPCBElement("Sp_cb_Commodities", new List<DbParameter>());
         }
 
-        private List<DbElement> getDestinos()
+        private List<DbElement> ObtenerDestinos()
         {
             return _dbService.SqlSPCBElement("Sp_cb_Destinos", new List<DbParameter>());
         }
 
-        private List<DbElement> getExportadores()
+        private List<DbElement> ObtenerExportadores()
         {
             return _dbService.SqlSPCBElement("Sp_cb_Exportadores", new List<DbParameter>());
         }
 
-        private List<DbElement> getVapores()
+        private List<DbElement> ObtenerVapores()
         {
             return _dbService.SqlSPCBElement("Sp_cb_Vapores", new List<DbParameter>());
         }
 
-        private List<DbElement> initDropdownTodo(List<DbElement> data)
+        private List<DbElement> InicializarDropdownTodo(List<DbElement> data)
         {
             List<DbElement> options = new List<DbElement>();
             options.Add(new DbElement() { value = "", label = "Todos" });
-            return initDropdown(options, data);
+            return InicializarDropdown(options, data);
         }
 
-        private List<DbElement> initDropdownVacio(List<DbElement> data)
+        private List<DbElement> InicializarDropdownVacio(List<DbElement> data)
         {
             List<DbElement> options = new List<DbElement>();
-            return initDropdown(options, data);
+            return InicializarDropdown(options, data);
         }
 
-        private List<DbElement> initDropdown(List<DbElement> options, List<DbElement> data)
+        private List<DbElement> InicializarDropdown(List<DbElement> options, List<DbElement> data)
         {
             if (data != null)
             {
@@ -280,16 +286,16 @@ namespace SustitucionMOAUtils.Services
         }
 
 
-        private void validarDatosEncabezadoFinalizarCarga(string balanza, string fecha) {
+        private void ValidarDatosEncabezadoFinalizarCarga(string balanza, string fecha) {
             InputValidator.notEmptyOrNull(balanza, "Balanza");
         }
 
-        private void validarDatos(string balanza, string fecha, string bodega, string commodity, string destino, string exportador, string vapor, int pesoProgramado, int pesoAcumulado, int numeroPesada, string fechaPesada, double pesoTara, double pesoBruto) {
-            validarDatosEncabezado(balanza, fecha, bodega, commodity, destino, exportador, vapor, pesoProgramado, pesoAcumulado);
-            validarDatosPesada(numeroPesada, fechaPesada, pesoTara, pesoBruto);
+        private void ValidarDatos(string balanza, string fecha, string bodega, string commodity, string destino, string exportador, string vapor, int pesoProgramado, int pesoAcumulado, int numeroPesada, string fechaPesada, double pesoTara, double pesoBruto) {
+            ValidarDatosEncabezado(balanza, fecha, bodega, commodity, destino, exportador, vapor, pesoProgramado, pesoAcumulado);
+            ValidarDatosPesada(numeroPesada, fechaPesada, pesoTara, pesoBruto);
         }
 
-        private void validarDatosEncabezado(string balanza, string fecha, string bodega, string commodity, string destino, string exportador, string vapor, int pesoProgramado, int pesoAcumulado)
+        private void ValidarDatosEncabezado(string balanza, string fecha, string bodega, string commodity, string destino, string exportador, string vapor, int pesoProgramado, int pesoAcumulado)
         {
             InputValidator.notEmptyOrNull(balanza, "Balanza");
             InputValidator.notEmptyOrNull(bodega, "Bodega");
@@ -299,7 +305,7 @@ namespace SustitucionMOAUtils.Services
             InputValidator.notEmptyOrNull(vapor, "Vapor");
         }
 
-        protected void validarDatosPesada(int numeroPesada, string fechaPesada, double pesoTara, double pesoBruto)
+        protected void ValidarDatosPesada(int numeroPesada, string fechaPesada, double pesoTara, double pesoBruto)
         {
 
         }

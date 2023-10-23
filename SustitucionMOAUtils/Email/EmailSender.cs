@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Net.Mail;
 using System.Text;
+using DocumentFormat.OpenXml.Spreadsheet;
 using SustitucionMOAModel.Models.WSMapMOA.ContactoMail;
 using SustitucionMOAModel.Models.WSMapMOA.Reporte;
 
@@ -11,6 +13,11 @@ namespace SustitucionMOAUtils.Email
 {
     public class EmailSender
     {
+        protected static string GenerarAsunto(string asunto)
+        {
+            var prefijoAsunto = ConfigurationManager.AppSettings["EmailAsuntoPrefijo"];
+            return prefijoAsunto + asunto;
+        }
         public static void send(ContactoContenido contactoContenido, byte[] file, string fileName)
         {
 
@@ -41,6 +48,7 @@ namespace SustitucionMOAUtils.Email
                 catch { }
             }
 
+            mail.Subject = GenerarAsunto(mail.Subject);
             client.Send(mail);
         }
 
@@ -68,6 +76,7 @@ namespace SustitucionMOAUtils.Email
                 catch { }
             }
 
+            mail.Subject = GenerarAsunto(mail.Subject);
             client.Send(mail);
 
         }
@@ -109,6 +118,7 @@ namespace SustitucionMOAUtils.Email
             {
                 mail.To.Add(reporte.Destinatario);
             }
+            mail.Subject = GenerarAsunto(mail.Subject);
             client.Send(mail);
 
         }
@@ -244,6 +254,7 @@ namespace SustitucionMOAUtils.Email
                 //    }
                 //}
                 SmtpClient oCliente = GetSmtpClient();
+                oMensaje.Subject = GenerarAsunto(oMensaje.Subject);
                 oCliente.Send(oMensaje);
             }
             catch (Exception ex)
@@ -297,6 +308,7 @@ namespace SustitucionMOAUtils.Email
                     }
                 }
                 SmtpClient oCliente = GetSmtpClient();
+                oMensaje.Subject = GenerarAsunto(oMensaje.Subject);
                 oCliente.Send(oMensaje);
             }
             catch (Exception ex)

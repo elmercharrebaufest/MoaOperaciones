@@ -78,7 +78,7 @@ namespace SustitucionMOAUtils.Services
                 fechaFin = DateTime.Now.ToShortDateString();
             }
 
-            List<Models.FechaWS> fechas = CommonService.toDateList(fechaInicio, fechaFin);
+            List<Models.FechaWS> fechas = CommonUtil.toDateList(fechaInicio, fechaFin);
             VendedoresWSMOAResponse response = new VendedoresWSMOAResponse();
             try
             {
@@ -172,7 +172,7 @@ namespace SustitucionMOAUtils.Services
                     fechaFin = DateTime.Now.ToShortDateString();
                 }
 
-                List<Models.FechaWS> fechas = CommonService.toDateList(fechaInicio, fechaFin);
+                List<Models.FechaWS> fechas = CommonUtil.toDateList(fechaInicio, fechaFin);
                 try
                 {
                     response = vendedoresConsumerMOA.Request(codigoProveedor, fechas);
@@ -358,13 +358,10 @@ namespace SustitucionMOAUtils.Services
 
             if (usuario.EsAdmin() || usuario.TienePermiso(PermisoEnum.ElegirTodosVendedores))
             {
-
-                listadoProveedores.AddRange(
-                    repositorio
+                listadoProveedores = repositorio
                         .Listar<Proveedor>(p => p.EstadoAprobacion == EstadoAprobacion.Aprobado)
                         .Where(filtro)
-                        .Select(proveedor => new ProveedorDto(proveedor))
-                );
+                        .Select(proveedor => new ProveedorDto(proveedor,false)).ToList();
             }
             else
             {
@@ -376,7 +373,7 @@ namespace SustitucionMOAUtils.Services
                     proveedores = proveedores.Where(filtro).ToList();
                 }
 
-                listadoProveedores.AddRange(proveedores.Select(proveedor => new ProveedorDto(proveedor)).ToList());
+                listadoProveedores.AddRange(proveedores.Select(proveedor => new ProveedorDto(proveedor,false)).ToList());
             }
 
 

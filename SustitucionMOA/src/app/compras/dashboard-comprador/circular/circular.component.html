@@ -72,10 +72,15 @@
 
             </div>
             <div class="col-md-12 row myRow alinearTitulo margenInput" *ngIf="peticion != null && visualizarFechas">
-                <div class="col-md-4">
+                <div class="col-md-6">
                     <p-calendar [locale]="es" class="styled-select" [showIcon]="true" dateFormat="dd-M-yy" appendTo="body"
-                        [readonlyInput]="true" [minDate]="hoy" [(ngModel)]="plazoDeOferta">
+                        [readonlyInput]="true" [minDate]="hoy" [(ngModel)]="plazoDeOfertaFecha">
                     </p-calendar>
+                </div>
+
+                <div class="col-md-6">
+                    <p-calendar [ngModelOptions]="{standalone:true}" name="plazoDeOfertaHora" class="styled-select" [(ngModel)]="plazoDeOfertaHora" 
+                    [locale]="es" [showIcon]="true" icon="fa fa-clock-o" [timeOnly]="true"></p-calendar>
                 </div>
             </div>
             <div class="col-md-12 row myRow alinearTitulo margenInput" *ngIf="peticion != null && visualizarFechas">

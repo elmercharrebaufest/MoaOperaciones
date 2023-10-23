@@ -10,6 +10,7 @@ using SustitucionMOACustomException;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Models.DBMap.RYD;
 using SustitucionMOASecurity;
+using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
 using SustitucionMOAUtils.Services;
 
@@ -18,14 +19,19 @@ namespace SustitucionMOA.Controllers
     [System.Web.Mvc.SessionState(System.Web.SessionState.SessionStateBehavior.ReadOnly)]
     public class RYDMantenimientoController : BaseController
     {
-        RYDMantenimientoService _rydMantenimientoService = new RYDMantenimientoService();
+        private readonly IRYDMantenimientoService mantenimientoService;
+
+        public RYDMantenimientoController(IRYDMantenimientoService mantenimientoService)
+        {
+            this.mantenimientoService = mantenimientoService;
+        }
 
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.ABM_BALANZAS)]
         public ActionResult getInputDropDown()
         {
             try
             {
-                return JsonCustom(new { data = _rydMantenimientoService.getInputDropDown(1029) });
+                return JsonCustom(new { data = mantenimientoService.ObtenerInputDropDown(1029) });
             }
             catch (Exception e)
             {
@@ -39,7 +45,7 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                return JsonCustom(new { data = _rydMantenimientoService.getDataInputsCommoditie() });
+                return JsonCustom(new { data = mantenimientoService.ObtenerDataInputsCommoditie() });
             }
             catch (Exception e)
             {
@@ -53,7 +59,7 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                return JsonCustom(new { data = _rydMantenimientoService.getDataInputsExportador() });
+                return JsonCustom(new { data = mantenimientoService.ObtenerDataInputsExportador() });
             }
             catch (Exception e)
             {
@@ -67,7 +73,7 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                return JsonCustom(new { data = _rydMantenimientoService.getFiltrosNroPuesto(1029, itcID) });
+                return JsonCustom(new { data = mantenimientoService.ObtenerFiltrosNroPuesto(1029, itcID) });
             }
             catch (Exception e)
             {
@@ -81,7 +87,7 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                return JsonCustom(new { data = _rydMantenimientoService.getFiltrosExportador(exportador) });
+                return JsonCustom(new { data = mantenimientoService.ObtenerFiltrosExportador(exportador) });
             }
             catch (ValidationCustomException e)
             {
@@ -99,7 +105,7 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                return JsonCustom(new { data = _rydMantenimientoService.getFiltrosCommodities(commoditie) });
+                return JsonCustom(new { data = mantenimientoService.ObtenerFiltrosCommodities(commoditie) });
             }
             catch (ValidationCustomException e)
             {
@@ -117,7 +123,7 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                return JsonCustom(new { data = _rydMantenimientoService.buscarBalanza(1029, "", descripcion, tipoId, codigoCabezalId, codigoSAP) });
+                return JsonCustom(new { data = mantenimientoService.BuscarBalanza(1029, "", descripcion, tipoId, codigoCabezalId, codigoSAP) });
             }
             catch (ValidationCustomException e)
             {
@@ -135,7 +141,7 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                return JsonCustom(new { data = _rydMantenimientoService.guardarBalanza(1029, codigo, descripcion, automatico, toleria, centroEmisor, tolerX, tipoId, pesoMaximo, codigoSAP, codigoCabezalId, itcId, nroPuestoId, tipoAccesoId) });
+                return JsonCustom(new { data = mantenimientoService.GuardarBalanza(1029, codigo, descripcion, automatico, toleria, centroEmisor, tolerX, tipoId, pesoMaximo, codigoSAP, codigoCabezalId, itcId, nroPuestoId, tipoAccesoId) });
             }
             catch (ValidationCustomException e)
             {
@@ -153,7 +159,7 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                return JsonCustom(new { data = _rydMantenimientoService.actualizarBalanza(1029, codigo, descripcion, automatico, toleria, centroEmisor, tolerX, tipoId, pesoMaximo, codigoSAP, codigoCabezalId, itcId, nroPuestoId, tipoAccesoId) });
+                return JsonCustom(new { data = mantenimientoService.ActualizarBalanza(1029, codigo, descripcion, automatico, toleria, centroEmisor, tolerX, tipoId, pesoMaximo, codigoSAP, codigoCabezalId, itcId, nroPuestoId, tipoAccesoId) });
             }
             catch (ValidationCustomException e)
             {
@@ -171,7 +177,7 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                return JsonCustom(new { data = _rydMantenimientoService.borrarBalanza(1029, codigo) });
+                return JsonCustom(new { data = mantenimientoService.BorrarBalanza(1029, codigo) });
             }
             catch (ValidationCustomException e)
             {
@@ -189,7 +195,7 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                return JsonCustom(new { data = _rydMantenimientoService.guardarCommodity(materialSAP, almacenOrigen, descripcion) });
+                return JsonCustom(new { data = mantenimientoService.GuardarCommodity(materialSAP, almacenOrigen, descripcion) });
             }
             catch (ValidationCustomException e)
             {
@@ -207,7 +213,7 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                return JsonCustom(new { data = _rydMantenimientoService.actualizarCommodity(materialSAP, almacenOrigen, descripcion, commodityId) });
+                return JsonCustom(new { data = mantenimientoService.ActualizarCommodity(materialSAP, almacenOrigen, descripcion, commodityId) });
             }
             catch (ValidationCustomException e)
             {
@@ -225,7 +231,7 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                return JsonCustom(new { data = _rydMantenimientoService.borrarCommodity(commodityId) });
+                return JsonCustom(new { data = mantenimientoService.BorrarCommodity(commodityId) });
             }
             catch (ValidationCustomException e)
             {
@@ -243,7 +249,7 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                return JsonCustom(new { data = _rydMantenimientoService.guardarExportador(almacenSAP, descripcion) });
+                return JsonCustom(new { data = mantenimientoService.GuardarExportador(almacenSAP, descripcion) });
             }
             catch (ValidationCustomException e)
             {
@@ -261,7 +267,7 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                return JsonCustom(new { data = _rydMantenimientoService.actualizarExportador(almacenSAP, descripcion, exportadorId) });
+                return JsonCustom(new { data = mantenimientoService.ActualizarExportador(almacenSAP, descripcion, exportadorId) });
             }
             catch (ValidationCustomException e)
             {
@@ -279,7 +285,7 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                return JsonCustom(new { data = _rydMantenimientoService.borrarExportador(exportadorId) });
+                return JsonCustom(new { data = mantenimientoService.BorrarExportador(exportadorId) });
             }
             catch (ValidationCustomException e)
             {
@@ -294,7 +300,7 @@ namespace SustitucionMOA.Controllers
 
         //public ActionResult busqueda()
         //{
-        //        return Json(new { data = _rydMantenimientoService.busqueda() }, JsonRequestBehavior.AllowGet);
+        //        return Json(new { data = mantenimientoService.busqueda() }, JsonRequestBehavior.AllowGet);
         //}
 
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.ABM_BALANZAS)]
@@ -302,7 +308,7 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                return JsonCustom(new { data = _rydMantenimientoService.buscarBalanzaAplicar(1029, codigoId, "", "", "", "") });
+                return JsonCustom(new { data = mantenimientoService.BuscarBalanzaAplicar(1029, codigoId, "", "", "", "") });
             }
             catch (ValidationCustomException e)
             {
