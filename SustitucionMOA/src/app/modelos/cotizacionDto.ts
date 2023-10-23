@@ -76,6 +76,7 @@ export interface GuardarCotizacion{
     Cantidad: number
     FechaDeEntrega: Date    
     NoDisponible: boolean
+    PrimerPlazoDeOferta: number
 }
 
 export interface CotizacionHoraDto{

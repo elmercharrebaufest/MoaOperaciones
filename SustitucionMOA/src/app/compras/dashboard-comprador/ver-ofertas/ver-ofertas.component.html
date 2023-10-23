@@ -349,7 +349,7 @@
                     <ng-container *ngFor="let proveedor of tablaOfertas.Usuarios">
                         <th class="headerth border2-left" style="background-color: #4760ac !important; width: 120px !important; height: 33.45px;" colspan="3">Precio total</th>
                         <th class="headerth" style="background-color: #4760ac !important; width: 120px !important;height: 33.45px;" colspan="3">Total ARP</th>
-                        <th class="headerth" style="background-color: #4760ac !important; width: 300px !important;height: 33.45px;" colspan="3">Fecha de entrega</th>
+                        <th class="headerth" style="background-color: #4760ac !important; width: 300px !important;height: 33.45px;" colspan="3">Plazo de entrega</th>
                     </ng-container>
                 </tr>
             </ng-template>
@@ -368,7 +368,8 @@
                                         {{ proveedor.VerImportes ? 'ARP ' + (cotizacionPosicion.TotalARPCotizacionPosicion | number:'1.2-2') : '' }}
                                         <i *ngIf="!proveedor.VerImportes" class="fa fa-eye-slash noVisible"></i>
                                     </td>
-                                    <td class="columna" style="width: 300px !important;" colspan="3">{{cotizacionPosicion.FechaDeEntregaFormateada}}</td>
+                                    <!--<td class="columna" style="width: 300px !important;" colspan="3">{{cotizacionPosicion.FechaDeEntregaFormateada}}</td>-->
+                                    <td class="columna" style="width: 300px !important;" colspan="3">{{cotizacionPosicion.PrimerPlazoDeOferta != null ? cotizacionPosicion.PrimerPlazoDeOferta + ' días' : 'sin plazo' }}</td>
                                 </ng-container>
                             </ng-container>
                         </ng-container>

@@ -4287,7 +4287,7 @@ namespace SustitucionMOAUtils.Services
                     RespetaMateriales = c.RespetaMateriales,
                     CotizacionEstadoDescripcion = c.CotizacionEstado.Descripcion,
                     PorcentajeDeHoras = c.PorcentajeDeHoras,
-                    
+
                     Archivos = c.Archivos/*.Where(x => x.FileKey == FileKeys.AdjuntoCotizacionRevisionTecnica)*/.Select(archivo => new LegajoDto
                     {
 
@@ -4326,7 +4326,7 @@ namespace SustitucionMOAUtils.Services
             peticion.TipoPosicionCodigo = peticionEntidad.Solp.Posiciones.Select(x => x.TipoPosicion.Codigo).FirstOrDefault();
             peticion.Id = peticionEntidad.Id;
             peticion.PlazoDeOfertaEstado = peticionEntidad.PlazoDeOferta > DateTime.Now.Date ? "Abierto" : "Cerrado";
-            peticion.TieneVisitaObraBool = peticionEntidad.Solp.Pliego.TieneVisitaObra??false;
+            peticion.TieneVisitaObraBool = peticionEntidad.Solp.Pliego.TieneVisitaObra ?? false;
             peticion.TieneVisitaObraMasiva = peticionEntidad.Solp.Pliego.TieneVisitaObraMasiva ?? false;
 
 
@@ -4670,9 +4670,9 @@ namespace SustitucionMOAUtils.Services
                     peticion.ObservacionNoCumple = data.ObservacionNoCumple;
                 }
             }
-            if (finalizar) 
+            if (finalizar)
             {
-                var fechaActual = DateTime.Now; 
+                var fechaActual = DateTime.Now;
                 peticiones.First().PeticionDeOferta.FechaFinalizacionRevision = fechaActual;
                 peticiones.First().PeticionDeOferta.UsuarioRevision_Id = usuarioId;
                 peticiones.First().PeticionDeOferta.PlazoDeOferta = fechaActual.AddDays(-1);

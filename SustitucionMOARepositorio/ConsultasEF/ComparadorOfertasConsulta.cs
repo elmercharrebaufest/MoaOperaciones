@@ -182,6 +182,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                             TotalPosicionCotizacion = 0,
                                                             TotalPesos = 0,
                                                             NoDisponible = cotizacion != null ? cotizacion.CotizacionPosiciones.Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == p.PeticionDeOfertaSolpPosicion.Id).FirstOrDefault().NoDisponible : null,
+                                                            PrimerPlazoDeOferta = cotizacion != null ? cotizacion.CotizacionPosiciones.Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == p.PeticionDeOfertaSolpPosicion.Id).FirstOrDefault().PrimerPlazoDeOferta : null,
                                                             CotizacionSubPosiciones = (from subpos in contexto.Set<CotizacionSubPosicion>()
                                                                                        where p.Id == subpos.CotizacionPosicion_Id
                                                                                        select new CotizacionSubPosicionDto()
@@ -213,7 +214,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                 return resultado.First();
 
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }

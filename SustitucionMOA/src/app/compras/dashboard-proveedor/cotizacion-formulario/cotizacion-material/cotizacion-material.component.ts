@@ -449,7 +449,6 @@ export class CotizacionMaterialComponent extends ListBaseComponent implements On
         this.displayPlazo = true;
         this.cotizacionPosicion = cotizacionPosicion;
         this.cantidadSolicitada = cantidad;
-        console.log("cantidad soli", this.cantidadSolicitada);
       }
 
       cerrarPlazo() {
