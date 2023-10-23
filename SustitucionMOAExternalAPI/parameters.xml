@@ -14,6 +14,12 @@
                            /@address" />
 	</parameter>
 
+  <parameter name="Url Config">
+    <parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/appSettings/add[@key='Url']
+                           /@value" />
+  </parameter>
+
 	<parameter name="BasicHttpBinding_IServicioComandos Service Endpoint Address">
 		<parameterEntry kind="XmlFile" scope="Web.config"
 						match="/configuration/system.serviceModel/client

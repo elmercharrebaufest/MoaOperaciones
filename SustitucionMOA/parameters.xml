@@ -265,6 +265,11 @@
 						match="/configuration/appSettings/add[@key='AzureADAppSecret']
                            /@value" />
 	</parameter>
+  <parameter name="Url Config">
+    <parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/appSettings/add[@key='Url']
+                           /@value" />
+  </parameter>
 
 	<parameter name="BasicHttpBinding_IServicioRepositorio Service Endpoint Address">
 		<parameterEntry kind="XmlFile" scope="Web.config"
