@@ -986,7 +986,7 @@ namespace SustitucionMOATest.Services
             DateTime hoy = new DateTime(2021, 8, 24);
             DateTime ayer = new DateTime(2021, 8, 23);
 
-            string permisoEsAdminCampos = "VER TODOS CAMPOS SUSTENTABLE";
+            var permisoEsAdminCampos = PermisoEnum.VerTodosCamposSustentable;
 
             Mock<Usuario> usuario1Mock = new Mock<Usuario>();
             usuario1Mock.Setup(x => x.Mail).Returns("mail");
@@ -1016,8 +1016,8 @@ namespace SustitucionMOATest.Services
 
             var campoCosecha2 = new CampoCosecha { Campo = campoSustentable2, Cosecha = new Cosecha { Nombre = "cosecha 2" }, ToneladasAprobadas = 80, Cosecha_Id = 2, MotivoRechazo = "motivo rechazo 2" };
 
-            Proveedor proveedor1 = new Proveedor { Id = 1, CodigoProveedor = "prov1", RazonSocial = "Proveedor 1" };
-            Proveedor proveedor2 = new Proveedor { Id = 2, CodigoProveedor = "prov2", RazonSocial = "Proveedor 2" };
+            Proveedor proveedor1 = new Proveedor { Id = 1, CodigoProveedor = "prov1", RazonSocial = "Proveedor 1", CUIT = "cuit1" };
+            Proveedor proveedor2 = new Proveedor { Id = 2, CodigoProveedor = "prov2", RazonSocial = "Proveedor 2", CUIT = "cuit2" };
 
             var campoProveedorList = new List<CampoProveedor>
             {
@@ -1056,7 +1056,7 @@ namespace SustitucionMOATest.Services
             DateTime hoy = new DateTime(2021, 8, 24);
             DateTime ayer = new DateTime(2021, 8, 23);
 
-            string permisoEsAdminCampos = "VER TODOS CAMPOS SUSTENTABLE";
+            var permisoEsAdminCampos = PermisoEnum.VerTodosCamposSustentable;
 
             Proveedor proveedor1 = new Proveedor { Id = 1, CodigoProveedor = "prov1", RazonSocial = "Proveedor 1" };
             Proveedor proveedor2 = new Proveedor { Id = 2, CodigoProveedor = "prov2", RazonSocial = "Proveedor 2" };
