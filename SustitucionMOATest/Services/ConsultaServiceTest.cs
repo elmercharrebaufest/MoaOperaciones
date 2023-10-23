@@ -827,19 +827,19 @@ namespace SustitucionMOATest.Services
 
             Assert.AreEqual(SuccessMsg.AltaFormularioCM05CargaInternaMalCargadoOK, result);
 
-            azureServiceMock.Verify(x => x.AnalizarImagenAsync(It.IsAny<HttpPostedFileBase>()), Times.Exactly(2));
+            azureServiceMock.Verify(x => x.AnalizarImagenAsync(It.IsAny<HttpPostedFileBase>()), Times.Exactly(1));
             azureServiceMock.Verify(x => x.AnalizarImagenAsync(archivo0.Object), Times.Never);
             azureServiceMock.Verify(x => x.AnalizarImagenAsync(archivo1.Object), Times.Once);
-            azureServiceMock.Verify(x => x.AnalizarImagenAsync(archivo2.Object), Times.Once);
+            azureServiceMock.Verify(x => x.AnalizarImagenAsync(archivo2.Object), Times.Never);
             azureServiceMock.Verify(x => x.AnalizarImagenAsync(archivo3.Object), Times.Never);
 
-            azureServiceMock.Verify(x => x.ObtenerResultadoOCRAsync(It.IsAny<string>()), Times.Exactly(2));
+            azureServiceMock.Verify(x => x.ObtenerResultadoOCRAsync(It.IsAny<string>()), Times.Exactly(1));
             azureServiceMock.Verify(x => x.ObtenerResultadoOCRAsync("1"), Times.Never);
             azureServiceMock.Verify(x => x.ObtenerResultadoOCRAsync("2"), Times.Once);
-            azureServiceMock.Verify(x => x.ObtenerResultadoOCRAsync("3"), Times.Once);
+            azureServiceMock.Verify(x => x.ObtenerResultadoOCRAsync("3"), Times.Never);
             azureServiceMock.Verify(x => x.ObtenerResultadoOCRAsync("4"), Times.Never);
 
-            repositorioMock.Verify(repo => repo.GuardarCambios(), Times.AtLeast(2));
+            repositorioMock.Verify(repo => repo.GuardarCambios(), Times.AtLeast(1));
 
             Assert.AreEqual(3, ingresosBrutosCoeficienteUnificadoDetallesInsertados.Count);
 

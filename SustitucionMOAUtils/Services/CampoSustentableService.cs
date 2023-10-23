@@ -566,7 +566,7 @@ namespace SustitucionMOAUtils.Services
         public string ExportarCamposProveedores(string mailUsuario)
         {
             var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
-            var esAdminCampos = usuario.TienePermiso("VER TODOS CAMPOS SUSTENTABLE");
+            var esAdminCampos = usuario.TienePermiso(PermisoEnum.VerTodosCamposSustentable);
             var headersBase = new List<string>() { "Cosecha", "Campo", "Proveedor", "Cuit", "Estado", "Motivo", "Ha Totales", "Ha Soja", "Toneladas Aprobadas", "Razon Social", "Fecha Creacion" };
             dynamic listado;
 

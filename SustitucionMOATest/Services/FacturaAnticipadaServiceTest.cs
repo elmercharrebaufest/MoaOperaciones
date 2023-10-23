@@ -173,14 +173,14 @@ namespace SustitucionMOATest.Services
         public void SeleccionarFactura_NumeroFacturaNull_ThrowInvalidCustomException()
         {
             Assert.That(
-                () => _facturaAnticipadaService.SeleccionarFactura(It.IsAny<OrdenDeCarga>(), null),
+                () => _facturaAnticipadaService.SeleccionarFactura(new OrdenDeCarga(), null),
                 Throws.TypeOf<InfoCustomException>());
         }
         [Test]
         public void SeleccionarFactura_OrdenNoExiste_ThrowInvalidCustomException()
         {
             Assert.That(
-                () => _facturaAnticipadaService.SeleccionarFactura(null, It.IsAny<string>()),
+                () => _facturaAnticipadaService.SeleccionarFactura(new OrdenDeCarga(), It.IsAny<string>()),
                 Throws.TypeOf<InfoCustomException>());
         }
         [Test]
