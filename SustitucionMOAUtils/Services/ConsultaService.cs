@@ -12,6 +12,7 @@ using SustitucionMOAUtils.Email;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Interfaces.Helpers;
 using SustitucionMOAUtils.Logger;
+using SustitucionMOAUtils.DesignPattern.Classes;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -24,6 +25,8 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
+using SustitucionMOAUtils.DesignPattern.Interfaces;
+using System.ServiceModel.Channels;
 
 namespace SustitucionMOAUtils.Services
 {
@@ -32,16 +35,18 @@ namespace SustitucionMOAUtils.Services
         private readonly IRepositorio repositorio;
         private readonly IAzureService azureService;
         private readonly ITimeProvider timeProvider;
+        private readonly IConsultaContext consultaContext;
 
         private readonly string rutaArchivosConsulta = ConfigurationManager.AppSettings["RutaArchivosConsulta"];
         private static readonly string EMAIL_TEMPLATE = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "RespuestaConsulta.html");
         private readonly string rutaArchivosCM05 = ConfigurationManager.AppSettings["RutaArchivosCM05"];
 
-        public ConsultaService(IRepositorio repositorio, IAzureService azureService, ITimeProvider timeProvider)
+        public ConsultaService(IRepositorio repositorio, IAzureService azureService, ITimeProvider timeProvider, IConsultaContext consultaContext)
         {
             this.repositorio = repositorio;
             this.azureService = azureService;
             this.timeProvider = timeProvider;
+            this.consultaContext = consultaContext;
         }
 
         public virtual void ActualizarEstadoConsulta(int consultaId, int estadoConsultaId)
@@ -108,6 +113,7 @@ namespace SustitucionMOAUtils.Services
         {
             string mensajeResultado = string.Empty;
 
+            //consultaContext.ExecuteStrategy("Ordenes", "Hola");
             consulta.Id = -1;
             consulta.Detalle.Id = -1;
             consulta.FechaCreacion = DateTime.Now;
@@ -271,6 +277,7 @@ namespace SustitucionMOAUtils.Services
                 FechaCreacion = c.FechaCreacion,
                 FechaUltimaModificacion = c.FechaUltimaModificacion,
                 UsuarioId = c.Usuario_Id,
+                UsuarioInternoId = c.UsuarioInterno_Id,
                 Usuario = new UsuarioDto()
                 {
                     Id = c.Usuario.Id,
@@ -285,12 +292,13 @@ namespace SustitucionMOAUtils.Services
                 Importe = c.Detalle != null ? c.Detalle.Importe : null,
                 Impuesto = c.Detalle != null ? c.Detalle.Impuesto : null,
                 BolsaEmisoraOblea = c.Detalle != null ? c.Detalle.BolsaEmisoraOblea : "",
+                OrdenId = c.Detalle != null ? c.Detalle.Orden_Id : null,
                 CausaConsultaId = c.Detalle.CausaConsulta != null ? c.Detalle.CausaConsulta_Id : null,
                 CausaConsulta = c.Detalle.CausaConsulta != null ? new CausaConsultaDto
                 {
                     Id = c.Detalle.CausaConsulta.Id,
                     Nombre = c.Detalle.CausaConsulta.Nombre
-                } : null
+                } : null,
             };
 
             ret.Comentarios = c.Comentarios.Select(x => new ComentarioDto()
@@ -1155,5 +1163,44 @@ namespace SustitucionMOAUtils.Services
             return string.Format("{0}/{1}", rutaArchivosCM05, usuario.Id);
         }
 
+        public AgregarConsultaResponseDto AgregarConsultaInterna(Consulta consulta, Comentario comentario, HttpFileCollectionBase files)
+        {
+            string mensajeResultado = string.Empty;
+            consulta.Id = -1;
+            consulta.Detalle.Id = -1;
+            consulta.FechaCreacion = DateTime.Now;
+            consulta.FechaUltimaModificacion = DateTime.Now;
+
+            Categoria categoria = repositorio.Obtener<Categoria>(c => c.Id == consulta.Categoria_Id);
+
+            comentario.ComentarioRecordado = new List<ComentarioRecordado>();
+
+            if (consulta.Comentarios == null)
+            {
+                consulta.Comentarios = new List<Comentario>();
+            }
+
+            consulta.Comentarios.Add(comentario);
+            var estrategia = this.consultaContext.GetStrategy(categoria.Nombre);
+            estrategia.AgregarConsulta(consulta,comentario);
+
+            repositorio.Agregar(consulta);
+
+            repositorio.GuardarCambios();
+
+            estrategia.EnviarMailInterno(consulta, comentario);
+
+            if (files.Count > 0)
+            {
+                Comentario primerComentario = repositorio.Obtener<Comentario>(c => c.Consulta_Id == consulta.Id);
+                AgregarAdjuntoComentario(consulta.Id, primerComentario.Id, files);
+            }
+
+            return new AgregarConsultaResponseDto
+            {
+                ConsultaDto = ObtenerConsulta(consulta.Id),
+                Mensaje = mensajeResultado,
+            };
+        }
     }   
 }

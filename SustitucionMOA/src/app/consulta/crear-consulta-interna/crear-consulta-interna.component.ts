@@ -79,6 +79,8 @@ export class CrearConsultaInternaComponent extends ListBaseComponent {
   proveedorId: number;
   esCorredor: boolean = sessionStorage.getItem("tipoUsuario") === "CORR";
 
+  checkPermisos() { this.securityService.tienePermisoRedirect("CONTACTO MAIL"); }
+
   setTabs() {
     this.setMenuSeccionTab("consulta", "crear-consulta-interna");
   }
@@ -92,7 +94,6 @@ export class CrearConsultaInternaComponent extends ListBaseComponent {
       this.ordenId = this.ordenSeleccionada.Id;
     }
     this.getCombosConsultaInterna();
-    console.log(this.ordenes);
     $(".adjuntarArchivo").click(function () {
       $(".adjuntarArchivo1").click();
     });
@@ -237,7 +238,7 @@ export class CrearConsultaInternaComponent extends ListBaseComponent {
     this.detalle = {
       Consulta_Id: 0, Fecha: null, ComprobanteNo: null, OtroComprobanteNo: null,
       ContratoNo: null, Importe: null, Impuesto: null, BolsaEmisoraOblea: null, Material_Id: null,
-      OrdenId: this.ordenId
+      Orden_Id: this.ordenId
     }
 
     this.consulta = {
@@ -250,7 +251,7 @@ export class CrearConsultaInternaComponent extends ListBaseComponent {
     let comentario: Comentario = { consulta_Id: 0, Detalle: this.comentario, Fecha: new Date(), Recordado: false, FechaRecordado: new Date() };
 
     try {
-      this.subscription = this.service.AgregarConsulta(this.consulta, comentario, this.listaArchivos).subscribe(
+      this.subscription = this.service.AgregarConsultaInterna(this.consulta, comentario, this.listaArchivos).subscribe(
         (result: any) => {
           if (result.logout == true) {
             this.sessionDataService.logout();
@@ -344,7 +345,7 @@ export class CrearConsultaInternaComponent extends ListBaseComponent {
     if (this.categoriaCode == 'ORD' && this.ordenId > 0) {
       if (this.subcategoria.Code == 'CTG') {
         this.asunto = `Orden Nro ${this.ordenId} - CTG Pendiente.`
-        this.comentario = `Estimado usuario, la CTG para la patente: ${this.ordenSeleccionada.PatenteChasis} se encuentra pendiente.`;
+        this.comentario = `Estimado usuario, la CTG para la patente: ${this.ordenSeleccionada.PatenteChasis? this.ordenSeleccionada.PatenteChasis : this.ordenSeleccionada.ChasisAcoplado} se encuentra pendiente.`;
       } else if (this.subcategoria.Code == 'ERROROC') {
         this.asunto = `Orden Nro ${this.ordenId} - Error de datos.`
         this.comentario = `Estimado usuario, hubo un error en uno de los datos ingresados para la orden nro ${this.ordenId}.`;

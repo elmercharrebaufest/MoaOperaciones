@@ -68,7 +68,6 @@ namespace SustitucionMOA.Controllers
                 var consulta = JsonConvert.DeserializeObject<Consulta>(consultaJson);
                 var comentario = JsonConvert.DeserializeObject<Comentario>(comentarioJson);
                 comentario.Fecha = DateTime.Now;
-                if(consulta.Usuario_Id == 0)
                 consulta.Usuario_Id = ObtenerUsuarioActual().Id;
 
                 return JsonCustom(consultaService.AgregarConsulta(consulta, comentario, Request.Files));
@@ -492,6 +491,39 @@ namespace SustitucionMOA.Controllers
             {
                 Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
                 return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [CustomPermisoAuthorizeAttribute(Roles = Permiso.CONTACTO_MAIL)]
+        [HttpPost]
+        public JsonResult AgregarConsultaInterna(string consultaJson, string comentarioJson)
+        {
+            try
+            {
+                var consulta = JsonConvert.DeserializeObject<Consulta>(consultaJson);
+                var comentario = JsonConvert.DeserializeObject<Comentario>(comentarioJson);
+                comentario.Fecha = DateTime.Now;
+                consulta.UsuarioInterno_Id = ObtenerUsuarioActual().Id;
+
+                return JsonCustom(consultaService.AgregarConsultaInterna(consulta, comentario, Request.Files));
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                if (e.LoguearExcepcion)
+                {
+                    Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.InnerException ?? e);
+                }
+
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception e)
             {

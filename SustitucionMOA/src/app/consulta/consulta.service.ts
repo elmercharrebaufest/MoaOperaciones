@@ -194,11 +194,23 @@ export class ConsultaService extends BaseService {
             .post('/api/consulta/AnularConsulta', payload, { headers: this.headersPost })
     }
 
-    setOrdenParaConsulta(dato: any){
-        this.ordenDeCarga = dato;
-    }
+    public AgregarConsultaInterna(consulta: object, comentario: Comentario, archivo: any = null) {
+        let consultaJson = JSON.stringify(consulta);
+        let comentarioJson = JSON.stringify(comentario);
+        var payload = new FormData();
 
-    getOrdenParaConsulta(){
-        return this.ordenDeCarga;
+        if (archivo != null) {
+            for (let i = 0; i < archivo.length; i++) {
+                let fileToUpload = archivo[i];
+                payload.append("file", fileToUpload, fileToUpload.name);
+            }
+        }
+
+        payload.append('consultaJson', consultaJson);
+        payload.append('comentarioJson', comentarioJson);
+        payload.append("file", archivo);
+
+        return this.http
+            .post('/api/consulta/AgregarConsultaInterna', payload, { headers: this.headers });
     }
 }

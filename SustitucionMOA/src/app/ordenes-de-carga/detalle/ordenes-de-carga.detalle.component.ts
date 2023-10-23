@@ -135,6 +135,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
             }
         });
     }
+    
     confirmarRSA(Id) {
         this.confirmationService.confirm({
             key: 'confirmarRSA',
