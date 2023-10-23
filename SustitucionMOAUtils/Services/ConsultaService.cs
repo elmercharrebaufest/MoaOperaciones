@@ -113,7 +113,6 @@ namespace SustitucionMOAUtils.Services
         {
             string mensajeResultado = string.Empty;
 
-            //consultaContext.ExecuteStrategy("Ordenes", "Hola");
             consulta.Id = -1;
             consulta.Detalle.Id = -1;
             consulta.FechaCreacion = DateTime.Now;
@@ -1172,7 +1171,6 @@ namespace SustitucionMOAUtils.Services
             consulta.FechaUltimaModificacion = DateTime.Now;
 
             Categoria categoria = repositorio.Obtener<Categoria>(c => c.Id == consulta.Categoria_Id);
-
             comentario.ComentarioRecordado = new List<ComentarioRecordado>();
 
             if (consulta.Comentarios == null)
@@ -1183,10 +1181,6 @@ namespace SustitucionMOAUtils.Services
             consulta.Comentarios.Add(comentario);
             var estrategia = this.consultaContext.GetStrategy(categoria.Nombre);
             estrategia.AgregarConsulta(consulta,comentario);
-
-            repositorio.Agregar(consulta);
-
-            repositorio.GuardarCambios();
 
             estrategia.EnviarMailInterno(consulta, comentario);
 
