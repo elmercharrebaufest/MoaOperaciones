@@ -748,43 +748,37 @@ namespace SustitucionMOATest.Services
 
             string cuitProveedorTest = "99 99999 9999";
 
-            var archivos = new Mock<HttpFileCollectionBase>();
+            var archivo0 = new Mock<HttpPostedFileBase>();
+            archivo0.Setup(a => a.ContentType).Returns("text");
 
             var archivo1 = new Mock<HttpPostedFileBase>();
-            archivo1.Setup(a => a.ContentType).Returns("text");
+            archivo1.Setup(a => a.ContentType).Returns("application/pdf");
 
             var archivo2 = new Mock<HttpPostedFileBase>();
             archivo2.Setup(a => a.ContentType).Returns("application/pdf");
+            archivo2.Setup(a => a.FileName).Returns("C:/ArchivosProveedores/Consultas/CM05.pdf");
 
             var archivo3 = new Mock<HttpPostedFileBase>();
-            archivo3.Setup(a => a.ContentType).Returns("application/pdf");
-            archivo3.Setup(a => a.FileName).Returns("C:/ArchivosProveedores/Consultas/CM05.pdf");
 
-            var archivo4 = new Mock<HttpPostedFileBase>();
 
-            archivos.Setup(x => x.Count).Returns(4);
-
-            archivos.Setup(x => x[0]).Returns(archivo1.Object);
-            azureServiceMock.Setup(az => az.AnalizarImagenAsync(archivo1.Object)).ReturnsAsync("1");
+            azureServiceMock.Setup(az => az.AnalizarImagenAsync(archivo0.Object)).ReturnsAsync("1");
 
             IList<string> resultOCR1 = new List<string>();
             azureServiceMock.Setup(az => az.ObtenerResultadoOCRAsync("1")).ReturnsAsync(resultOCR1);
 
-            archivos.Setup(x => x[1]).Returns(archivo2.Object);
-            azureServiceMock.Setup(az => az.AnalizarImagenAsync(archivo2.Object)).ReturnsAsync("2");
+            azureServiceMock.Setup(az => az.AnalizarImagenAsync(archivo1.Object)).ReturnsAsync("2");
 
             IList<string> resultOCR2 = new List<string> {
                 "1", "2", "", "", "OSIRIS",
                 "CUIT:", "20-12312313-1", "Anticipo:", "55", "Sede:", "903",
-                "Determinación del Coeficiente Unificad0",
+                "Determinación del Coeficiente Unificado",
                 "Coeficiente Unificado",
                 "901", "Capital Federal", "15/05/2021", "18/06/2021", "0,2134", "0,323", "0,2221",
                 "904", "Cordoba", "23/12/2018", "3,3", "223,4", "0,55",
             };
             azureServiceMock.Setup(az => az.ObtenerResultadoOCRAsync("2")).ReturnsAsync(resultOCR2);
 
-            archivos.Setup(x => x[2]).Returns(archivo3.Object);
-            azureServiceMock.Setup(az => az.AnalizarImagenAsync(archivo3.Object)).ReturnsAsync("3");
+            azureServiceMock.Setup(az => az.AnalizarImagenAsync(archivo2.Object)).ReturnsAsync("3");
 
             IList<string> resultOCR3 = new List<string> {
                 "1", "2", "", "", "OSIRIS",
@@ -797,8 +791,7 @@ namespace SustitucionMOATest.Services
             };
             azureServiceMock.Setup(az => az.ObtenerResultadoOCRAsync("3")).ReturnsAsync(resultOCR3);
 
-            archivos.Setup(x => x[3]).Returns(archivo4.Object);
-            azureServiceMock.Setup(az => az.AnalizarImagenAsync(archivo4.Object)).ReturnsAsync("4");
+            azureServiceMock.Setup(az => az.AnalizarImagenAsync(archivo3.Object)).ReturnsAsync("4");
 
             IList<string> resultOCR4 = new List<string>();
             azureServiceMock.Setup(az => az.ObtenerResultadoOCRAsync("4")).ReturnsAsync(resultOCR4);
@@ -823,15 +816,22 @@ namespace SustitucionMOATest.Services
                 new Archivo { Id = 3, Ruta = "C:/ArchivosProveedores/Consultas/324_CM06.pdf" },
             };
 
+            var archivos = new Mock<HttpFileCollectionBase>();
+            archivos.Setup(a => a[0]).Returns(archivo0.Object);
+            archivos.Setup(a => a[1]).Returns(archivo1.Object);
+            archivos.Setup(a => a[2]).Returns(archivo2.Object);
+            archivos.Setup(a => a[3]).Returns(archivo3.Object);
+            archivos.Setup(a => a.Count).Returns(4);
+
             string result = targetMock.Object.ProcesarCM05(archivos.Object, cuitProveedorTest, null, true);
 
             Assert.AreEqual(SuccessMsg.AltaFormularioCM05CargaInternaMalCargadoOK, result);
 
             azureServiceMock.Verify(x => x.AnalizarImagenAsync(It.IsAny<HttpPostedFileBase>()), Times.Exactly(2));
-            azureServiceMock.Verify(x => x.AnalizarImagenAsync(archivo1.Object), Times.Never);
+            azureServiceMock.Verify(x => x.AnalizarImagenAsync(archivo0.Object), Times.Never);
+            azureServiceMock.Verify(x => x.AnalizarImagenAsync(archivo1.Object), Times.Once);
             azureServiceMock.Verify(x => x.AnalizarImagenAsync(archivo2.Object), Times.Once);
-            azureServiceMock.Verify(x => x.AnalizarImagenAsync(archivo3.Object), Times.Once);
-            azureServiceMock.Verify(x => x.AnalizarImagenAsync(archivo4.Object), Times.Never);
+            azureServiceMock.Verify(x => x.AnalizarImagenAsync(archivo3.Object), Times.Never);
 
             azureServiceMock.Verify(x => x.ObtenerResultadoOCRAsync(It.IsAny<string>()), Times.Exactly(2));
             azureServiceMock.Verify(x => x.ObtenerResultadoOCRAsync("1"), Times.Never);
@@ -1008,7 +1008,7 @@ namespace SustitucionMOATest.Services
             var result = targetMock.Object.AnularConsulta(consultaIdTest, usuarioIdTest, motivoRechazoTest);
 
             targetMock.Verify(x => x.ActualizarEstadoConsulta(It.IsAny<int>(), It.IsAny<int>()), Times.Once);
-            targetMock.Verify(x => x.ActualizarEstadoConsulta(consultaIdTest, (int)EstadosConsulta.Finalizado), Times.Once);
+            targetMock.Verify(x => x.ActualizarEstadoConsulta(consultaIdTest, (int)EstadosConsulta.Rechazado), Times.Once);
 
             targetMock.Verify(x => x.AgregarComentario(It.IsAny<int>(), It.IsAny<ComentarioDto>(), It.IsAny<HttpFileCollectionBase>()), Times.Once);
             targetMock.Verify(x => x.AgregarComentario(
@@ -1065,7 +1065,7 @@ namespace SustitucionMOATest.Services
             var result = targetMock.Object.AnularConsulta(consultaIdTest, usuarioIdTest, motivoRechazoTest);
 
             targetMock.Verify(x => x.ActualizarEstadoConsulta(It.IsAny<int>(), It.IsAny<int>()), Times.Once);
-            targetMock.Verify(x => x.ActualizarEstadoConsulta(consultaIdTest, (int)EstadosConsulta.Finalizado), Times.Once);
+            targetMock.Verify(x => x.ActualizarEstadoConsulta(consultaIdTest, (int)EstadosConsulta.Rechazado), Times.Once);
 
             targetMock.Verify(x => x.AgregarComentario(It.IsAny<int>(), It.IsAny<ComentarioDto>(), It.IsAny<HttpFileCollectionBase>()), Times.Once);
             targetMock.Verify(x => x.AgregarComentario(
