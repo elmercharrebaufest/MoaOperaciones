@@ -96,8 +96,8 @@ namespace SustitucionMOAUtils.Services
         public Resultado Editar(string mailUsuario, CampoProveedor campoProveedorObj, HttpPostedFileBase archivoKmz)
         {
             var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
-            var editarAdmin = usuario.TienePermiso("EDICION CAMPOS CREADOS");
-            var editarComercial = usuario.TienePermiso("COMERCIAL CAMPOS SUSTENTABLES");
+            var editarAdmin = usuario.TienePermiso(PermisoEnum.EdicionCamposCreados);
+            var editarComercial = usuario.TienePermiso(PermisoEnum.ComercialCamposSustentables);
             if (!(editarAdmin || editarComercial))
                 throw new ValidationCustomException(ErrorMsg.ErrorSinPermiso);
 
@@ -610,8 +610,8 @@ namespace SustitucionMOAUtils.Services
 
         private List<TProyeccion> ListarCampos<TProyeccion>(Usuario usuario, Expression<Func<CampoProveedor, TProyeccion>> proyeccion) where TProyeccion : class
         {
-            var esAdmin = usuario.TienePermiso("VER TODOS CAMPOS SUSTENTABLE");
-            var esComercial = usuario.TienePermiso("COMERCIAL CAMPOS SUSTENTABLES");
+            var esAdmin = usuario.TienePermiso(PermisoEnum.VerTodosCamposSustentable);
+            var esComercial = usuario.TienePermiso(PermisoEnum.ComercialCamposSustentables);
             if (esAdmin || esComercial)
             {
                 return repositorio.Listar(proyeccion, p => !p.Borrado, 0, "FechaCreacion", SustitucionMOAModel.Consultas.DirOrden.Desc);
