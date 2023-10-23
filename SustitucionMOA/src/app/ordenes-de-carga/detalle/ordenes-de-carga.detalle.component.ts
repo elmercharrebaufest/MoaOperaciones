@@ -1,6 +1,6 @@
 import { DatePipe } from '@angular/common';
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute, Params } from '@angular/router';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 import { BaseComponent } from '../../common/base-components/base-component';
 import { CorredorContrato } from '../../common/models/ordenes-de-carga/corredorContrato';
 import { EstadoOrdenDeCarga } from '../../common/models/ordenes-de-carga/estadoOrdenDeCarga';
@@ -19,6 +19,7 @@ import { ConfirmationService } from 'primeng/api';
 import { TipoContrato } from '../../common/models/ordenes-de-carga/obtenerContratosDisponiblesResponse';
 import { Factura } from '../../common/models/ordenes-de-carga/Factura';
 import { finalize } from 'rxjs/operators';
+import { SendDataService } from '../../consulta/send-data.service';
 
 @Component({
     selector: 'app-ordenes-de-carga.detalle',
@@ -102,9 +103,11 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
     constructor(protected service: OrdenesDeCargaService,
         protected usuarioService: UsuarioService, protected navService: NavService,
         private route: ActivatedRoute,
+        private router: Router,
         protected sessionDataService: SessionDataService, protected securytiService: SecurityService,
         protected floatMsgService: FloatMsgService, protected modalService: ModalService,
         public datepipe: DatePipe,
+        private sendDataService: SendDataService,
         private confirmationService: ConfirmationService) {
         super(navService, securytiService, floatMsgService, modalService);
         this.mostrarBotonVolverADetalle = !!sessionStorage.getItem(VOLVER_A_DETALLE_REPORTE);
@@ -132,6 +135,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
             }
         });
     }
+    
     confirmarRSA(Id) {
         this.confirmationService.confirm({
             key: 'confirmarRSA',
@@ -996,5 +1000,14 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
         } catch (e) {
             this.mensajeComponent.setErrorMsg(e);
         }
+    }
+
+    nuevaConsultaInterna() {
+        this.sendDataService.setData({
+            orden: this.ordenDeCarga,
+            codSubcategoria: "FAS", 
+        });
+        this.router.navigate(['/consulta/crear-consulta-interna'], {
+        });
     }
 }
