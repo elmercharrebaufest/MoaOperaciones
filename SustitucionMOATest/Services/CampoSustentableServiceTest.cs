@@ -118,8 +118,8 @@ namespace SustitucionMOATest.Services
                     Cosecha = new Cosecha { Nombre = "20-21" }
                 }
             };
-
-            FileStream fileStream = new FileStream("C:\\ArchivosCampoSustentableTest\\TestKMZ.KMZ", FileMode.Open, FileAccess.Read);
+            
+            FileStream fileStream = new FileStream(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, ".\\TestFiles\\Example.KMZ"), FileMode.Open, FileAccess.Read);
             Mock<HttpPostedFileBase> uploadedFile = new Mock<HttpPostedFileBase>();
 
             uploadedFile
