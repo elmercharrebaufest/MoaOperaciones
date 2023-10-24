@@ -94,8 +94,7 @@
                                 </div>
                                 <div class="styled-select">
                                     <textarea id="DestinoMercaderia" placeholder="Máximo de 40 caracteres"
-                                        [(ngModel)]="ordenDeCarga.DestinoMercaderia" rows="2"
-                                        [maxLength]="40"
+                                        [(ngModel)]="ordenDeCarga.DestinoMercaderia" rows="2" [maxLength]="40"
                                         [disabled]="editando || null"></textarea>
                                 </div>
                             </div>
@@ -245,7 +244,8 @@
                                     Camión escalable:
                                 </div>
                                 <p-checkbox #escalableCheckbox name="escalable" [binary]="true"
-                                    [(ngModel)]="ordenDeCarga.Escalable" (ngModelChange)="validarEscalable()">
+                                    [(ngModel)]="ordenDeCarga.Escalable"
+                                    (ngModelChange)="!errorAlValidarEscalable? validarEscalable(): null">
                                 </p-checkbox>
                             </div>
                         </div>

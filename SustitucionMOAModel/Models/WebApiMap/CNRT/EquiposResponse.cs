@@ -10,7 +10,7 @@ namespace SustitucionMOAModel.Models.WebApiMap.CNRT
     {
         public string Result { get; set; }
 
-        public int Status { get; set; }
+        public int? Status { get; set; }
 
         public Equipo Data { get; set; }
 
