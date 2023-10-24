@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SustitucionMOAModel.Entities
 {
@@ -21,5 +17,6 @@ namespace SustitucionMOAModel.Entities
         public DateTime FechaActualizacion { get; set; }
         public string UsuarioActualizacion { get; set; }
         public bool EsRevendedor { get; set; }
+        public string OrganizacionDeCompra { get; set; }
     }
 }

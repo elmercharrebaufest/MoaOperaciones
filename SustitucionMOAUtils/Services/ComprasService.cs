@@ -120,7 +120,7 @@ namespace SustitucionMOAUtils.Services
             this.agregarRegistroInfoConsumerMOA = agregarRegistroInfoConsumerMOA;
             this.emailService = emailService;
             this.reporteOrdenDeCompraConsumerMOA = reporteOrdenDeCompraConsumerMOA;
-    }
+        }
 
         public RespuestaGuardarSOLP GuardarSolp(SolpDto solp, HttpFileCollectionBase adjuntos)
         {
@@ -2310,7 +2310,7 @@ namespace SustitucionMOAUtils.Services
                         if (solp.Id == 0)
                             repositorio.Agregar(solp);
 
-                       
+
                     }
                     catch (Exception e)
                     {
@@ -2341,7 +2341,7 @@ namespace SustitucionMOAUtils.Services
                 repositorio.GuardarCambios();
                 ValidarSolpAnulada(obtenerSolpRequest.NumeroSolp);
                 Logger.Log.Info($"ObtenerSolpesDesdeSAPJob fin  numero{obtenerSolpRequest.NumeroSolp}");
-             
+
 
                 //actualizo el estado en la creacion/actualizacion del la solp
                 //foreach (var resultPosicion in result.Posiciones)
@@ -4591,7 +4591,14 @@ namespace SustitucionMOAUtils.Services
         private RespuestaCrearOrdenDeCompra CrearOrdenDeCompra(Adjudicacion AdjudicacionEntity)
         {
             var respuesta = new RespuestaCrearOrdenDeCompra();
+            respuesta.Errores = new List<string>();
             CrearPedidoConsumerMOAResponse resultadoCrearPedido = new CrearPedidoConsumerMOAResponse();
+            if (string.IsNullOrEmpty(AdjudicacionEntity.Usuario.OrganizacionDeCompra))
+            {
+                respuesta.Errores.Add("El usuario creador no tiene una organización de compra registrada en su perfil. Comunicarse con sistemas para agregarla.");
+                return respuesta;
+            }
+
             if (AdjudicacionEntity.Cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Solp.Adicional == true)
             {
                 resultadoCrearPedido = modificarOrdenDeCompraConsumerMOA.Request(AdjudicacionEntity);
@@ -4601,7 +4608,6 @@ namespace SustitucionMOAUtils.Services
                 resultadoCrearPedido = crearPedidoConsumerMOA.Request(AdjudicacionEntity);
             }
 
-            respuesta.Errores = new List<string>();
             respuesta.NumeroPedido = resultadoCrearPedido.NumeroPedido;
             respuesta.NumeroSolp = AdjudicacionEntity.Solp.NroSolp;
             foreach (var error in resultadoCrearPedido.Errores.Where(x => x.Tipo == "E"))
@@ -4609,6 +4615,7 @@ namespace SustitucionMOAUtils.Services
                 var mensaje = error.Mensaje.Trim();
                 respuesta.Errores.Add(mensaje);
             }
+
             if (respuesta.Errores.Count == 0)
             {
                 respuesta.Mensaje = "OK";
@@ -4948,7 +4955,7 @@ namespace SustitucionMOAUtils.Services
                 return respuestaGuardarSOLP;
 
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 throw;
             }
@@ -6040,7 +6047,7 @@ namespace SustitucionMOAUtils.Services
             && x.PeticionesDeOferta.Count() > 0 && x.Adjudicacions.Count() == 0 && x.SeEnvioMailAnulacion != true);
             if (solp != null)
             {
-                if(solp.Posiciones.All(x => x.Estado))
+                if (solp.Posiciones.All(x => x.Estado))
                 {
                     try
                     {
@@ -6071,7 +6078,7 @@ namespace SustitucionMOAUtils.Services
                     {
                         var mailProveedor = new List<string> { peticionUsuario.Usuario.Mail };
                         emailService.EnviarMail(mailProveedor, asunto, "", null, CuerpoMailSolpAnulada(peticion));
-                    }                    
+                    }
                 }
             }
             catch (Exception e)
@@ -6082,9 +6089,9 @@ namespace SustitucionMOAUtils.Services
         }
         private AlternateView CuerpoMailSolpAnulada(PeticionDeOferta peticion)
         {
-            
+
             var filePath = Path.Combine(HttpRuntime.AppDomainAppPath, "Content/Images/header/logo_.png");
-           // var filePath = HttpRuntime.AppDomainAppPath.Server.MapPath("~/Content/Images/header/logo_.png");
+            // var filePath = HttpRuntime.AppDomainAppPath.Server.MapPath("~/Content/Images/header/logo_.png");
             LinkedResource res = new LinkedResource(filePath);
             res.ContentId = Guid.NewGuid().ToString();
             string htmlBody = "";
@@ -6102,7 +6109,7 @@ namespace SustitucionMOAUtils.Services
             return alternateView;
         }
 
-        public List<OrdenDeCompraSAPDto> ObtenerReporteOrdenDeCompra(string nroOC, string fechaDesde, string fechasHasta, string codigoProveedor) 
+        public List<OrdenDeCompraSAPDto> ObtenerReporteOrdenDeCompra(string nroOC, string fechaDesde, string fechasHasta, string codigoProveedor)
         {
             var result = reporteOrdenDeCompraConsumerMOA.Request(nroOC, fechaDesde, codigoProveedor);
 

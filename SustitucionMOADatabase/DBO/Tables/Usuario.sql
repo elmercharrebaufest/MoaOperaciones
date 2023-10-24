@@ -1,20 +1,20 @@
 CREATE TABLE [dbo].[Usuario](
 	[Id] [int] IDENTITY(1,1) NOT NULL,
-	[Mail] [nvarchar](max) NULL,
-	[CUITRegistro] [nvarchar](max) NULL,
+	[Mail] [nvarchar](200) NULL,
+	[CUITRegistro] [nvarchar](50) NULL,
 	[Habilitado] [bit] NOT NULL,
 	[TipoUsuario_Id] [int] NULL,
-
- [UltimoLogin] SMALLDATETIME NULL, 
-    [SeccionesVisitadas] NVARCHAR(MAX) NOT NULL DEFAULT '', 
+	[UltimoLogin] SMALLDATETIME NULL, 
+	[SeccionesVisitadas] NVARCHAR(MAX) NOT NULL DEFAULT '', 
 	[AceptoTyC] BIT NOT NULL DEFAULT 0, 
 	[AceptoTyCFecha] DATETIME,
-	[ApiKey] NVARCHAR(MAX) NULL
-    CONSTRAINT [PK_dbo.Usuario] PRIMARY KEY CLUSTERED 
+	[ApiKey] NVARCHAR(100) NULL
+	CONSTRAINT [PK_dbo.Usuario] PRIMARY KEY CLUSTERED 
 (
 	[Id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY], 
-    [UsuarioSap] NVARCHAR(MAX) NULL DEFAULT ''
+	[UsuarioSap] NVARCHAR(20) NULL DEFAULT '', 
+	[OrganizacionDeCompra] NVARCHAR(20) NULL 
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
 

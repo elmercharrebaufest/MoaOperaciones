@@ -22,6 +22,7 @@ namespace SustitucionMOAModel.Dto
         public string UsuarioSap { get; set; }
         public string RazonSocial { get; set; }
         public TipoUsuarioDto TipoUsuario { get; set; }
+        public string OrganizacionDeCompra { get; set; }
         public UsuarioDto() { }
 
         public UsuarioDto(Usuario usuario)
@@ -53,6 +54,7 @@ namespace SustitucionMOAModel.Dto
             CodigoProveedor = ObtenerCodigoProveedor();
             Permisos = new List<string>();
             RazonSocial = usuario.ObtenerRazonSocial();
+            OrganizacionDeCompra = usuario.OrganizacionDeCompra;
         }
 
         private string ObtenerCodigoProveedor()
