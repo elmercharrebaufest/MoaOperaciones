@@ -16,6 +16,7 @@ import { Causa, Comentario, Categoria, Subcategoria, Consulta, ReclamoImpositivo
 import { InformeComercialComponent } from '../../alta-proveedores/informe-comercial/informe-comercial.component';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { ConfirmationService } from 'primeng/api';
+import { HttpStatusCodes } from '../../common/models/httpStatusCodes';
 
 declare var $: any;
 
@@ -236,7 +237,7 @@ export class CrearConsultaComponent extends ListBaseComponent {
                     }
                 },
                 error => {
-                    this.floatMsgService.setErrorMsg(error.message);
+                    this.floatMsgService.setErrorMsg(HttpStatusCodes.friendlyStatusCode(error.status));
                 }
 
             );

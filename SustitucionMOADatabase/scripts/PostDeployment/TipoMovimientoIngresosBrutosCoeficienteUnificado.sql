@@ -22,3 +22,18 @@ IF NOT EXISTS (SELECT TOP 1 1 FROM TipoMovimientoIngresosBrutosCoeficienteUnific
 BEGIN
     INSERT TipoMovimientoIngresosBrutosCoeficienteUnificado (Id, Descripcion) VALUES (5, 'Error')
 END
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM TipoMovimientoIngresosBrutosCoeficienteUnificado WHERE Descripcion = 'Edicion de Estado') 
+BEGIN
+    INSERT TipoMovimientoIngresosBrutosCoeficienteUnificado (Id, Descripcion) VALUES (6, 'Edicion de Estado')
+END
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM TipoMovimientoIngresosBrutosCoeficienteUnificado WHERE Descripcion = 'Edicion de Cabecera') 
+BEGIN
+    INSERT TipoMovimientoIngresosBrutosCoeficienteUnificado (Id, Descripcion) VALUES (7, 'Edicion de Cabecera')
+END
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM TipoMovimientoIngresosBrutosCoeficienteUnificado WHERE Descripcion = 'Edicion de Detalle') 
+BEGIN
+    INSERT TipoMovimientoIngresosBrutosCoeficienteUnificado (Id, Descripcion) VALUES (8, 'Edicion de Detalle')
+END
