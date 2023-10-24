@@ -8,6 +8,7 @@ using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using SustitucionMOAModel.Models.DataAgro;
 using SustitucionMOARepositorio;
+using SustitucionMOAUtils.DesignPattern.Interfaces;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Interfaces.Helpers;
 using SustitucionMOAUtils.Services;
@@ -28,6 +29,7 @@ namespace SustitucionMOATest.Services
         private Mock<IRepositorio> repositorioMock;
         private Mock<IAzureService> azureServiceMock;
         private Mock<ITimeProvider> timeProviderMock;
+        private Mock<IConsultaContext> consultaContext;
 
         [SetUp]
         public void SetUp()
@@ -35,7 +37,8 @@ namespace SustitucionMOATest.Services
             repositorioMock = new Mock<IRepositorio>();
             azureServiceMock = new Mock<IAzureService>();
             timeProviderMock = new Mock<ITimeProvider>();
-            target = new ConsultaService(repositorioMock.Object, azureServiceMock.Object, timeProviderMock.Object);
+            consultaContext = new Mock<IConsultaContext>();
+            target = new ConsultaService(repositorioMock.Object, azureServiceMock.Object, timeProviderMock.Object, consultaContext.Object);
         }
 
         [Test]

@@ -135,10 +135,8 @@ export class CrearConsultaComponent extends ListBaseComponent {
     ngOnInit() {
         this.setTabs();
         this.checkPermisos();
-        this.navService.setSeccionList([new Seccion('/consulta/crear-consulta', 'crear-consulta', 'Nueva Consulta'), new Seccion('/consulta/mis-consultas', 'consulta', 'Mis Consultas')]);
-        //this.getData();
+        this.setSeccionList();
         this.getCombos();
-
         if (this.esCorredor) {
             this.codigoCorredor = sessionStorage.getItem("proveedor");
         }
@@ -150,6 +148,24 @@ export class CrearConsultaComponent extends ListBaseComponent {
         });
 
         this.validarNombre();
+    }
+
+    setSeccionList() {
+        if (this.securityService.tienePermiso("CARGAR CONSULTA") && this.securityService.tienePermiso("CARGAR CONSULTA INTERNA")) {
+            this.navService.setSeccionList([new Seccion('/consulta/crear-consulta', 'crear-consulta', 'Nueva Consulta'), new Seccion('/consulta/mis-consultas', 'consulta', 'Mis Consultas'),
+            new Seccion('/consulta/crear-consulta-interna', 'crear-consulta-interna', 'Nueva Consulta Interna')
+            ]);
+        }
+        else if (this.securityService.tienePermiso("CARGAR CONSULTA")) {
+            this.navService.setSeccionList([new Seccion('/consulta/crear-consulta', 'crear-consulta', 'Nueva Consulta'), new Seccion('/consulta/mis-consultas', 'consulta', 'Mis Consultas')
+            ]);
+        } else if (this.securityService.tienePermiso("CARGAR CONSULTA INTERNA")) {
+            this.navService.setSeccionList([new Seccion('/consulta/crear-consulta-interna', 'crear-consulta-interna', 'Nueva Consulta Interna'), new Seccion('/consulta/mis-consultas', 'consulta', 'Mis Consultas')
+            ]);
+        } else {
+            this.navService.setSeccionList([new Seccion('/consulta/mis-consultas', 'consulta', 'Mis Consultas')
+            ]);
+        }
     }
 
     ngAfterViewInit(): void {
