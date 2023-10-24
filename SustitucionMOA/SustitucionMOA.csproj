@@ -19,14 +19,10 @@
     <AssemblyName>SustitucionMOA</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <UseIISExpress>true</UseIISExpress>
-    <IISExpressSSLPort>
-    </IISExpressSSLPort>
-    <IISExpressAnonymousAuthentication>
-    </IISExpressAnonymousAuthentication>
-    <IISExpressWindowsAuthentication>
-    </IISExpressWindowsAuthentication>
-    <IISExpressUseClassicPipelineMode>
-    </IISExpressUseClassicPipelineMode>
+    <IISExpressSSLPort>58280</IISExpressSSLPort>
+    <IISExpressAnonymousAuthentication>enabled</IISExpressAnonymousAuthentication>
+    <IISExpressWindowsAuthentication>disabled</IISExpressWindowsAuthentication>
+    <IISExpressUseClassicPipelineMode>false</IISExpressUseClassicPipelineMode>
     <UseGlobalApplicationHostFile />
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
@@ -342,12 +338,16 @@
     <Content Include="src\app\common\shared-components\seleccionar-proveedor\seleccionar-proveedor.component.html" />
     <Content Include="src\app\compras\dashboard-comprador\alta-proveedor\alta-proveedor.component.css" />
     <Content Include="src\app\compras\dashboard-comprador\alta-proveedor\alta-proveedor.component.html" />
+    <Content Include="src\app\compras\dashboard-comprador\cerrar-cotizacion\cerrar-cotizacion.component.css" />
+    <Content Include="src\app\compras\dashboard-comprador\cerrar-cotizacion\cerrar-cotizacion.component.html" />
     <Content Include="src\app\compras\dashboard-comprador\circular\circular.component.css" />
     <Content Include="src\app\compras\dashboard-comprador\circular\circular.component.html" />
     <Content Include="src\app\compras\dashboard-comprador\legajo\legajo.component.css" />
     <Content Include="src\app\compras\dashboard-comprador\legajo\legajo.component.html" />
     <Content Include="src\app\compras\dashboard-comprador\listado-dashboard-comprador\listado-dashboard-comprador.component.css" />
     <Content Include="src\app\compras\dashboard-comprador\listado-dashboard-comprador\listado-dashboard-comprador.component.html" />
+    <Content Include="src\app\compras\dashboard-comprador\orden-de-compra-detalle\ordenDeCompraDetalle.component.css" />
+    <Content Include="src\app\compras\dashboard-comprador\orden-de-compra-detalle\ordenDeCompraDetalle.component.html" />
     <Content Include="src\app\compras\dashboard-comprador\proveedor-peticion\proveedor-peticion.component.css" />
     <Content Include="src\app\compras\dashboard-comprador\proveedor-peticion\proveedor-peticion.component.html" />
     <Content Include="src\app\compras\dashboard-comprador\ver-ofertas\ver-ofertas.component.css" />
@@ -356,6 +356,8 @@
     <Content Include="src\app\compras\dashboard-proveedor\cotizacion-formulario\cotizacion-formulario.component.html" />
     <Content Include="src\app\compras\dashboard-proveedor\cotizacion-formulario\cotizacion-material\cotizacion-material.component.css" />
     <Content Include="src\app\compras\dashboard-proveedor\cotizacion-formulario\cotizacion-material\cotizacion-material.component.html" />
+    <Content Include="src\app\compras\dashboard-proveedor\cotizacion-formulario\cotizacion-material\plazo-de-oferta\plazo-de-oferta.component.css" />
+    <Content Include="src\app\compras\dashboard-proveedor\cotizacion-formulario\cotizacion-material\plazo-de-oferta\plazo-de-oferta.component.html" />
     <Content Include="src\app\compras\dashboard-proveedor\cotizacion-formulario\cotizacion-servicio\cotizacion-servicio.component.css" />
     <Content Include="src\app\compras\dashboard-proveedor\cotizacion-formulario\cotizacion-servicio\cotizacion-servicio.component.html" />
     <Content Include="src\app\compras\dashboard-proveedor\listado-dashboard-proveedor\listado-dashboard-proveedor.component.css" />
@@ -363,10 +365,14 @@
     <Content Include="src\app\compras\dashboard\revision-tecnica\revision-tecnica.component.css" />
     <Content Include="src\app\compras\dashboard\revision-tecnica\revision-tecnica.component.html" />
     <Content Include="src\app\compras\legajo-externo\legajo-externo.component.html" />
+    <Content Include="src\app\compras\panel-horas\panel-horas.component.css" />
+    <Content Include="src\app\compras\panel-horas\panel-horas.component.html" />
     <Content Include="src\app\compras\peticion-de-oferta-formulario\peticion-de-oferta-formulario.component.css" />
     <Content Include="src\app\compras\peticion-de-oferta-formulario\peticion-de-oferta-formulario.component.html" />
     <Content Include="src\app\compras\peticion-de-oferta-formulario\registro-info\registro-info\registro-info.component.css" />
     <Content Include="src\app\compras\peticion-de-oferta-formulario\registro-info\registro-info\registro-info.component.html" />
+    <Content Include="src\app\compras\reporte-oc\reporte-oc.component.css" />
+    <Content Include="src\app\compras\reporte-oc\reporte-oc.component.html" />
     <Content Include="src\app\compras\solp\finalizar\finalizar-solp.component.html" />
     <Content Include="src\app\compras\solp\solp.component.html" />
     <Content Include="src\app\compras\solp\stepper-actions\stepper-actions.component.html" />
@@ -1158,15 +1164,19 @@
     <TypeScriptCompile Include="src\app\compras\compras.service.ts" />
     <TypeScriptCompile Include="src\app\compras\dashboard-comprador\alta-proveedor\alta-proveedor.component.spec.ts" />
     <TypeScriptCompile Include="src\app\compras\dashboard-comprador\alta-proveedor\alta-proveedor.component.ts" />
+    <TypeScriptCompile Include="src\app\compras\dashboard-comprador\cerrar-cotizacion\cerrar-cotizacion.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\compras\dashboard-comprador\cerrar-cotizacion\cerrar-cotizacion.component.ts" />
     <TypeScriptCompile Include="src\app\compras\dashboard-comprador\circular\circular.component.ts" />
     <TypeScriptCompile Include="src\app\compras\dashboard-comprador\legajo\legajo.component.spec.ts" />
     <TypeScriptCompile Include="src\app\compras\dashboard-comprador\legajo\legajo.component.ts" />
     <TypeScriptCompile Include="src\app\compras\dashboard-comprador\listado-dashboard-comprador\listado-dashboard-comprador.component.ts" />
+    <TypeScriptCompile Include="src\app\compras\dashboard-comprador\orden-de-compra-detalle\ordenDeCompraDetalle.component.ts" />
     <TypeScriptCompile Include="src\app\compras\dashboard-comprador\proveedor-peticion\proveedor-peticion.component.ts" />
     <TypeScriptCompile Include="src\app\compras\dashboard-comprador\ver-ofertas\ver-ofertas.component.spec.ts" />
     <TypeScriptCompile Include="src\app\compras\dashboard-comprador\ver-ofertas\ver-ofertas.component.ts" />
     <TypeScriptCompile Include="src\app\compras\dashboard-proveedor\cotizacion-formulario\cotizacion-formulario.component.ts" />
     <TypeScriptCompile Include="src\app\compras\dashboard-proveedor\cotizacion-formulario\cotizacion-material\cotizacion-material.component.ts" />
+    <TypeScriptCompile Include="src\app\compras\dashboard-proveedor\cotizacion-formulario\cotizacion-material\plazo-de-oferta\plazo-de-oferta.component.ts" />
     <TypeScriptCompile Include="src\app\compras\dashboard-proveedor\cotizacion-formulario\cotizacion-servicio\cotizacion-servicio.component.ts" />
     <TypeScriptCompile Include="src\app\compras\dashboard-proveedor\listado-dashboard-proveedor\listado-dashboard-proveedor.component.spec.ts" />
     <TypeScriptCompile Include="src\app\compras\dashboard-proveedor\listado-dashboard-proveedor\listado-dashboard-proveedor.component.ts" />
@@ -1177,10 +1187,14 @@
     <TypeScriptCompile Include="src\app\compras\enum-tipo-imputacion.ts" />
     <TypeScriptCompile Include="src\app\compras\enum-tipo-solp-sap.ts" />
     <TypeScriptCompile Include="src\app\compras\legajo-externo\legajo-externo.component.ts" />
+    <TypeScriptCompile Include="src\app\compras\panel-horas\panel-horas.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\compras\panel-horas\panel-horas.component.ts" />
     <TypeScriptCompile Include="src\app\compras\peticion-de-oferta-formulario\peticion-de-oferta-formulario.component.spec.ts" />
     <TypeScriptCompile Include="src\app\compras\peticion-de-oferta-formulario\peticion-de-oferta-formulario.component.ts" />
     <TypeScriptCompile Include="src\app\compras\peticion-de-oferta-formulario\registro-info\registro-info\registro-info.component.ts" />
     <TypeScriptCompile Include="src\app\compras\preview\pliego.preview.component.ts" />
+    <TypeScriptCompile Include="src\app\compras\reporte-oc\reporte-oc.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\compras\reporte-oc\reporte-oc.component.ts" />
     <TypeScriptCompile Include="src\app\compras\solp\finalizar\finalizar-solp.component.spec.ts" />
     <TypeScriptCompile Include="src\app\compras\solp\finalizar\finalizar-solp.component.ts" />
     <TypeScriptCompile Include="src\app\compras\solp\solp-posicion.ts" />

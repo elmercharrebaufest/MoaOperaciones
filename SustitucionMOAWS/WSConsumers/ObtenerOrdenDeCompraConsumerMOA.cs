@@ -239,8 +239,8 @@ namespace SustitucionMOAWS.WSConsumers
                 pos.SolpPosicion_Id = 0;
                 pos.Id = 0;
                 pos.MaterialComprasCodigo = posicion.MATERIAL?.TrimStart('0');
-                pos.MaterialComprasDescripcion = !string.IsNullOrEmpty(posicion.MATERIAL) ? materiales.Where(x => x.CodigoSap == posicion.MATERIAL).FirstOrDefault().Descripcion : "";
-                pos.MaterialTextoAmpliado = !string.IsNullOrEmpty(posicion.MATERIAL) ? materiales.Where(x => x.CodigoSap == posicion.MATERIAL).FirstOrDefault().TextoAmpliado : "";
+                pos.MaterialComprasDescripcion = !string.IsNullOrEmpty(posicion.MATERIAL) ? materiales.Where(x => x.CodigoSap == posicion.MATERIAL).FirstOrDefault()?.Descripcion : "";
+                pos.MaterialTextoAmpliado = !string.IsNullOrEmpty(posicion.MATERIAL) ? materiales.Where(x => x.CodigoSap == posicion.MATERIAL).FirstOrDefault()?.TextoAmpliado : "";
                 pos.Indice = int.Parse(posicion.PO_ITEM);
                 pos.Tarea = posicion.SHORT_TEXT;
                 pos.TextoSuministro = string.Join(" ", POTEXTITEM.Where(a => a.PO_ITEM == posicion.PO_ITEM && a.TEXT_ID == "F02").Select(a => a.TEXT_LINE));
