@@ -121,6 +121,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
 
     intermediarioFleteCuitFormatoValido: boolean = true;
     escalableCNRT?: boolean;
+    errorAlValidarEscalable = false;
     ordenActivaScato: boolean = false;
     mensajeValidacionScato: string = "";
 
@@ -1507,6 +1508,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
             .subscribe(res => {
                 this.validando.Escalable = false;
                 const validezCNRTResponse = this.manejarErroresApiResponse(res)
+                this.errorAlValidarEscalable = !!(res.error || res.info);
                 if (!validezCNRTResponse) {
                     this.setValorEscalable()
                 } else {
