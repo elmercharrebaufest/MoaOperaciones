@@ -23,6 +23,7 @@ namespace SustitucionMOAModel.Dto
         public DateTime FechaCreacion { get; set; }
         public DateTime FechaUltimaModificacion { get; set; }
         public int UsuarioId { get; set; }
+        public int? UsuarioInternoId { get; set; }
         public int UsuarioActualId { get; set; }
         public string Material { get; set; }
         public int? Material_Id { get; set; }
@@ -34,7 +35,7 @@ namespace SustitucionMOAModel.Dto
         public Decimal? Importe { get; set; }
         public string Impuesto { get; set; }
         public string BolsaEmisoraOblea { get; set; }
-
+        public int? OrdenId { get; set; }
 
         public CategoriaDto Categoria { get; set; }
         public SubCategoriaDto SubCategoria { get; set; }
@@ -79,6 +80,7 @@ namespace SustitucionMOAModel.Dto
             this.FechaCreacion = consulta.FechaCreacion;
             this.FechaUltimaModificacion = consulta.FechaUltimaModificacion;
             this.UsuarioId = consulta.Usuario_Id;
+            this.UsuarioInternoId = consulta.UsuarioInterno_Id;
             this.Usuario = new UsuarioDto(consulta.Usuario);
             if (consulta.Detalle != null) {
                 this.Fecha = consulta.Detalle.Fecha;
@@ -88,6 +90,8 @@ namespace SustitucionMOAModel.Dto
                 this.Importe = consulta.Detalle.Importe;
                 this.Impuesto = consulta.Detalle.Impuesto;
                 this.BolsaEmisoraOblea = consulta.Detalle.BolsaEmisoraOblea;
+                this.OrdenId = consulta.Detalle.Orden_Id;
+               
                 if(consulta.Detalle.CausaConsulta != null)
                 {
                     this.CausaConsultaId = consulta.Id;
