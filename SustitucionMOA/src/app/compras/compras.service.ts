@@ -802,7 +802,6 @@ export class ComprasService extends BaseService {
             CondicionesDeEntrega: adjudicacion.CondicionesDeEntrega,
             CondicionesDePago: adjudicacion.CondicionesDePago,
             Garantias: adjudicacion.Garantias
-
         });
 
         var payload = new FormData();
@@ -867,5 +866,17 @@ export class ComprasService extends BaseService {
             .post<any>('/api/compras/CerrarCotizacion', payload, { headers: this.headers });
     }
 
+    public obtenerReporteOrdenDeCompra(nroOC: string, fechaDesde: string, fechaHasta: string, codigoProveedor: string): Observable<any> {
+        let params: HttpParams = new HttpParams();
+        params = params.set("nroOC", nroOC);
+        params = params.set("fechaDesde", fechaDesde);
+        params = params.set("fechaHasta", fechaHasta);
+        params = params.set("codigoProveedor", codigoProveedor);
 
+        return this.http
+            .get("/api/compras/ObtenerReporteOrdenDeCompra", {
+                params: params,
+                headers: this.headers
+            });
+    }
 }

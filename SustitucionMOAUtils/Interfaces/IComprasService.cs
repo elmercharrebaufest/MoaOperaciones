@@ -74,5 +74,7 @@ namespace SustitucionMOAUtils.Interfaces
         RegistroInfoDto ObtenerUltimoRegistroMaterial(string material, string centro, string grupoDeCompras);
         void ActualizarFechaLiberacionOC(string nroOc, DateTime fechaLiberacion);
         LegajoExternoDto ObtenerLegajoParaExternos(int adjudicacionId, string token);
+        List<OrdenDeCompraSAPDto> ObtenerReporteOrdenDeCompra(string nroOC, string fechaDesde, string fechaHasta, string codigoProveedor);
+
     }
 }

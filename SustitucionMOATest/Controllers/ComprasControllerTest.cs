@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using NUnit.Framework;
 using SustitucionMOA.Controllers;
 using SustitucionMOA.Utils;
+using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
@@ -375,7 +376,6 @@ namespace SustitucionMOATest.Controllers
             // Configuración de la prueba
             var usuarioId = 5776; // Establece el ID del usuario actual que esperas en tu servicio
 
-
             usuarioServiceMock.Setup(u => u.GetUsuario(It.IsAny<string>())).Returns(new UsuarioDto { Id = usuarioId });
 
             var solpEjemplo = new DatosUltimaSolpDto
@@ -449,14 +449,10 @@ namespace SustitucionMOATest.Controllers
                     Descripcion = "CuentaMayorSP",
                     IdPadre = 1
                 },
-
-
             };
 
             comprasServiceMock.Setup(s => s.ObtenerUltimaSolp(It.IsAny<int>()))
                           .Returns(solpEjemplo);
-
-
 
             // Actuar
             var result = target.ObtenerUltimaSolp() as JsonResult;
@@ -469,6 +465,59 @@ namespace SustitucionMOATest.Controllers
           
         }
 
+        [Test]
+        public void ObtenerReporteOrdenDeCompra_CasoExitoso()
+        {
+            // Arrange
+            var nroOC = "12345";
+            var fechaDesde = "2023-01-01";
+            var fechaHasta = "2023-02-01";
+            var codigoProveedor = "PROV123";
 
+            comprasServiceMock.Setup(x => x.ObtenerReporteOrdenDeCompra(nroOC, fechaDesde, fechaHasta, codigoProveedor))
+                .Returns(new List<OrdenDeCompraSAPDto>
+                {
+                new OrdenDeCompraSAPDto
+                {
+                    Cabecera = new OrdenDeCompraSAPCabecera
+                    {
+                        OrdenDeCompra = "OC123",
+                        CodigoProveedor = "PROV456",
+                        RazonSocialProveedor = "Proveedor XYZ",
+                        Moneda = "USD",
+                        MontoTotal = 1000,
+                        CreadoPor = "Usuario123",
+                        ClaseDocumento = "DocumentoClase123",
+                        FechaCreacion = DateTime.Now,
+                        Tipo = "Materiales",
+                    },
+                    Mensaje = "Mensaje de prueba",
+                }
+                
+                });
+
+            var result = target.ObtenerReporteOrdenDeCompra(nroOC, fechaDesde, fechaHasta, codigoProveedor) as JsonResult;
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.Data);
+        }
+
+        [Test]
+        public void ObtenerReporteOrdenDeCompra_InfoCustomException()
+        {
+            // Arrange
+            var nroOC = "12345";
+            var fechaDesde = "2023-01-01";
+            var fechaHasta = "2023-02-01";
+            var codigoProveedor = "PROV123";
+
+            comprasServiceMock.Setup(x => x.ObtenerReporteOrdenDeCompra(nroOC, fechaDesde, fechaHasta, codigoProveedor))
+                .Throws(new InfoCustomException("Información personalizada"));
+
+            var result = target.ObtenerReporteOrdenDeCompra(nroOC, fechaDesde, fechaHasta, codigoProveedor) as JsonResult;
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.Data);
+        }
     }
 }

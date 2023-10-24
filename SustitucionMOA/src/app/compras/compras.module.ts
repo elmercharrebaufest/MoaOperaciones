@@ -76,6 +76,7 @@ import {AccordionModule} from 'primeng/accordion';
 import { RegistroInfoComponent } from './peticion-de-oferta-formulario/registro-info/registro-info/registro-info.component';
 import { CerrarCotizacionComponent } from './dashboard-comprador/cerrar-cotizacion/cerrar-cotizacion.component';
 import { PlazoDeOfertaComponent } from './dashboard-proveedor/cotizacion-formulario/cotizacion-material/plazo-de-oferta/plazo-de-oferta.component';
+import { ReporteOcComponent } from './reporte-oc/reporte-oc.component';
 
 @NgModule({
     imports: [
@@ -152,7 +153,8 @@ import { PlazoDeOfertaComponent } from './dashboard-proveedor/cotizacion-formula
         TextosAdjudicarComponent,
         RegistroInfoComponent,
         CerrarCotizacionComponent,
-        PlazoDeOfertaComponent
+        PlazoDeOfertaComponent,
+        ReporteOcComponent
     ],
     providers: [
         ComprasService,

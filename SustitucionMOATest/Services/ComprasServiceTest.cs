@@ -52,6 +52,8 @@ namespace SustitucionMOATest.Services
         private Mock<IVendedoresConsumerMOA> vendedoresConsumerMOAMock;
         private Mock<IAgregarRegistroInfoConsumerMOA> agregarRegistroInfoConsumerMOAMock;
         private Mock<IEmailService> emailServiceMock;
+        private Mock<IReporteOrdenDeCompraConsumerMOA> reporteOrdenDeCompraConsumerMOAMock;
+
         private string filePath = "";
 
         private readonly GuardarCotizacion guardarCotizacion = new GuardarCotizacion
@@ -450,6 +452,7 @@ namespace SustitucionMOATest.Services
             obtenerProveedorConsumerMOA = new Mock<IObtenerProveedorConsumerMOA>();
             vendedoresConsumerMOAMock = new Mock<IVendedoresConsumerMOA>();
             emailServiceMock = new Mock<IEmailService>();
+            reporteOrdenDeCompraConsumerMOAMock = new Mock<IReporteOrdenDeCompraConsumerMOA>();
 
             httpContextServiceMock.Setup(x => x.ObtenerPathLogoMail()).Returns(TestContext.CurrentContext.TestDirectory + "\\Util\\LogoBaufest.png");
             filePath = Path.GetFullPath(TestContext.CurrentContext.TestDirectory + "\\Util\\LogoBaufest.png");
@@ -478,7 +481,8 @@ namespace SustitucionMOATest.Services
                 modificarOrdenDeCompraConsumerMOAMock.Object,
                 vendedoresConsumerMOAMock.Object,
                 agregarRegistroInfoConsumerMOAMock.Object,
-                emailServiceMock.Object
+                emailServiceMock.Object,
+                reporteOrdenDeCompraConsumerMOAMock.Object
                 );
         }
 
@@ -1853,6 +1857,34 @@ namespace SustitucionMOATest.Services
             Assert.That(result, Is.Not.Null);
             Assert.AreEqual(result.ListaLegajos.GetType(), legajo.ListaLegajos.GetType());
             Assert.AreEqual(result.GetType(), legajo.GetType());
+        }
+
+        [Test]
+        public void ObtenerReporteOrdenDeCompra_FechaHastaNull_ResultadoCorrecto()
+        {
+            // Arrange
+            string nroOC = "12345";
+            string fechaDesde = "2023-01-01";
+            string fechaHasta = null;
+            string codigoProveedor = "PROV123";
+
+            reporteOrdenDeCompraConsumerMOAMock.Setup(x => x.Request(nroOC, fechaDesde, codigoProveedor))
+                .Returns(new List<OrdenDeCompraSAPDto>
+                {
+                new OrdenDeCompraSAPDto
+                {
+                    Cabecera = new OrdenDeCompraSAPCabecera
+                    {
+                        FechaCreacion = DateTime.Parse("2023-02-01")
+                    }
+                }
+                });
+
+            var result = target.ObtenerReporteOrdenDeCompra(nroOC, fechaDesde, fechaHasta, codigoProveedor);
+
+            Assert.IsNotNull(result);
+            Assert.AreEqual(1, result.Count);
+            Assert.AreEqual(DateTime.Parse("2023-02-01"), result[0].Cabecera.FechaCreacion);
         }
     }
 }

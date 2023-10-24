@@ -450,6 +450,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
+    <Compile Include="Service References\ReporteOCWebServiceMOA\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
     <Compile Include="Service References\ScatoComandosWebService\Reference.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -586,6 +591,7 @@
     <Compile Include="WSConsumers\ProformaFleteProcedenciaConsumerMOA.cs" />
     <Compile Include="WSConsumers\RecepcionesConsumerMOA.cs" />
     <Compile Include="WSConsumers\ReporteContratoConsumerMOA.cs" />
+    <Compile Include="WSConsumers\ReporteOrdenDeCompraConsumerMOA.cs" />
     <Compile Include="WSConsumers\ServicioSuscriptorAccesosConsumer.cs" />
     <Compile Include="WSConsumers\ScatoComandosConsumer.cs" />
     <Compile Include="WSConsumers\ScatoConsumer.cs" />
@@ -1097,6 +1103,7 @@
     <None Include="Service References\RecepcionesWebServiceMOA\SustitucionMOAWS.RecepcionesWebServiceMOA.ZMPES49901.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
+    <None Include="Service References\ReporteOCWebServiceMOA\BAPI_PO_GETITEMS.wsdl" />
     <None Include="Service References\ScatoComandosWebService\ServicioComandos10.xsd">
       <SubType>Designer</SubType>
     </None>
@@ -2398,6 +2405,7 @@
     <WCFMetadataStorage Include="Service References\PesificacionWebServiceMOA\" />
     <WCFMetadataStorage Include="Service References\ProformaFleteProcedenciaServiceMOA\" />
     <WCFMetadataStorage Include="Service References\RecepcionesWebServiceMOA\" />
+    <WCFMetadataStorage Include="Service References\ReporteOCWebServiceMOA\" />
     <WCFMetadataStorage Include="Service References\ScatoComandosWebService\" />
     <WCFMetadataStorage Include="Service References\ScatoWebService\" />
     <WCFMetadataStorage Include="Service References\ServicioSuscriptorAccesos\" />
@@ -3481,6 +3489,18 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Service References\AgregarRegistroInfoServiceWebMOA\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\ReporteOCWebServiceMOA\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\ReporteOCWebServiceMOA\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\ReporteOCWebServiceMOA\Reference.svcmap">
       <Generator>WCF Proxy Generator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>

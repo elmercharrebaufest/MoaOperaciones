@@ -66,6 +66,8 @@ namespace SustitucionMOAUtils.Services
         private readonly IModificarOrdenDeCompraConsumerMOA modificarOrdenDeCompraConsumerMOA;
         private readonly IVendedoresConsumerMOA vendedoresConsumerMOA;
         private readonly IAgregarRegistroInfoConsumerMOA agregarRegistroInfoConsumerMOA;
+        private readonly IReporteOrdenDeCompraConsumerMOA reporteOrdenDeCompraConsumerMOA;
+
         private readonly string rutaArchivosCompras = ConfigurationManager.AppSettings["RutaArchivosCompras"];
         private readonly IEmailService emailService;
         //private static readonly string EMAIL_TEMPLATE_SOLP = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "Solp.html");
@@ -91,7 +93,7 @@ namespace SustitucionMOAUtils.Services
             IModificarOrdenDeCompraConsumerMOA modificarOrdenDeCompraConsumerMOA,
             IVendedoresConsumerMOA vendedoresConsumerMOA,
             IAgregarRegistroInfoConsumerMOA agregarRegistroInfoConsumerMOA,
-            IEmailService emailService)
+            IEmailService emailService, IReporteOrdenDeCompraConsumerMOA reporteOrdenDeCompraConsumerMOA)
         {
             this.repositorio = repositorio;
             this.CecoSolpConsumerMOA = CecoSolpConsumerMOA;
@@ -117,7 +119,8 @@ namespace SustitucionMOAUtils.Services
             this.vendedoresConsumerMOA = vendedoresConsumerMOA;
             this.agregarRegistroInfoConsumerMOA = agregarRegistroInfoConsumerMOA;
             this.emailService = emailService;
-        }
+            this.reporteOrdenDeCompraConsumerMOA = reporteOrdenDeCompraConsumerMOA;
+    }
 
         public RespuestaGuardarSOLP GuardarSolp(SolpDto solp, HttpFileCollectionBase adjuntos)
         {
@@ -6097,6 +6100,21 @@ namespace SustitucionMOAUtils.Services
             AlternateView alternateView = AlternateView.CreateAlternateViewFromString(htmlBody, null, "text/html");
             alternateView.LinkedResources.Add(res);
             return alternateView;
+        }
+
+        public List<OrdenDeCompraSAPDto> ObtenerReporteOrdenDeCompra(string nroOC, string fechaDesde, string fechasHasta, string codigoProveedor) 
+        {
+            var result = reporteOrdenDeCompraConsumerMOA.Request(nroOC, fechaDesde, codigoProveedor);
+
+            var fechaHastaDate = string.IsNullOrEmpty(fechasHasta) ? DateTime.Now : DateTime.Parse(fechasHasta);
+
+            //result = result.Where(x => x.Cabecera?.FechaCreacion <= fechaHastaDate).ToList();
+
+            result = result
+              .Where(x => x.Cabecera == null || (x.Cabecera.FechaCreacion <= fechaHastaDate))
+              .ToList();
+
+            return result;
         }
     }
 
