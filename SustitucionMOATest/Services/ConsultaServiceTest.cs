@@ -40,8 +40,9 @@ namespace SustitucionMOATest.Services
             azureServiceMock = new Mock<IAzureService>();
             timeProviderMock = new Mock<ITimeProvider>();
             consultaContext = new Mock<IConsultaContext>();
-            target = new ConsultaService(repositorioMock.Object, azureServiceMock.Object, timeProviderMock.Object, consultaContext.Object, gestionImpuestoServiceMock.Object, consultaCommon.Object);
             consultaCommon = new Mock<IConsultaCommon>();
+            gestionImpuestoServiceMock = new Mock<IGestionImpuestosService>();
+            target = new ConsultaService(repositorioMock.Object, azureServiceMock.Object, timeProviderMock.Object, consultaContext.Object, gestionImpuestoServiceMock.Object, consultaCommon.Object);
         }
 
         [Test]

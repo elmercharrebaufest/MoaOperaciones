@@ -44,8 +44,7 @@ namespace SustitucionMOAUtils.Services
         private static readonly string EMAIL_TEMPLATE = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "RespuestaConsulta.html");
         private readonly string rutaArchivosCM05 = ConfigurationManager.AppSettings["RutaArchivosCM05"];
 
-        public ConsultaService(IRepositorio repositorio, IAzureService azureService, ITimeProvider timeProvider, IConsultaContext consultaContext, IGestionImpuestosService gestionImpuestosService)
-        public ConsultaService(IRepositorio repositorio, IAzureService azureService, ITimeProvider timeProvider, IConsultaContext consultaContext, IConsultaCommon consultaCommon)
+        public ConsultaService(IRepositorio repositorio, IAzureService azureService, ITimeProvider timeProvider, IConsultaContext consultaContext, IGestionImpuestosService gestionImpuestosService, IConsultaCommon consultaCommon)
         {
             this.repositorio = repositorio;
             this.azureService = azureService;
