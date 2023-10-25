@@ -2628,7 +2628,7 @@ namespace SustitucionMOAUtils.Services
                     }
                     //  item.VerAdjudicar = item.Cotizacion == null ? false : item.Cotizacion != null && item.PlazoDeOferta.Date <= hoy && item.Cotizacion.CotizacionEstadoDescripcion == "Cotizado" ? false : item.EstaHabilitado ? false : todasLasOfertas.EstaLiberado ? false: true;
 
-                   
+
                     var mensaje = "Adjudicar";
                     var verAdjudicar = true;
                     item.VerImportes = true;
@@ -6206,7 +6206,7 @@ namespace SustitucionMOAUtils.Services
 
         private bool ValidarVisualizarPrecio(int usuarioId, int peticionDeOfertaId)
         {
-            return repositorio.Listar<PeticionDeOfertaVisualizacionPrecio>(x => x.UsuarioCreador_Id == usuarioId && x.PeticionDeOferta_Id == peticionDeOfertaId).Any();            
+            return repositorio.Listar<PeticionDeOfertaVisualizacionPrecio>(x => x.UsuarioCreador_Id == usuarioId && x.PeticionDeOferta_Id == peticionDeOfertaId).Any();
         }
 
     }
