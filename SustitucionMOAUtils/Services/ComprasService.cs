@@ -6206,8 +6206,7 @@ namespace SustitucionMOAUtils.Services
 
         private bool ValidarVisualizarPrecio(int usuarioId, int peticionDeOfertaId)
         {
-            var visualizacionPrecio = repositorio.Listar<PeticionDeOfertaVisualizacionPrecio>(x => x.UsuarioCreador_Id == usuarioId && x.PeticionDeOferta_Id == peticionDeOfertaId);
-            return visualizacionPrecio.Count == 0;
+            return repositorio.Listar<PeticionDeOfertaVisualizacionPrecio>(x => x.UsuarioCreador_Id == usuarioId && x.PeticionDeOferta_Id == peticionDeOfertaId).Any();            
         }
 
     }
