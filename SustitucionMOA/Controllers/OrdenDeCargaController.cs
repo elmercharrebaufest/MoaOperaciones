@@ -1148,12 +1148,12 @@ namespace SustitucionMOA.Controllers
             }
             catch (ValidationCustomException vce)
             {
-                response.Error = vce.Message;
+                response.Info = vce.Message;
             }
             catch (Exception ex)
             {
                 Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                response.Error = ErrorMsg.Error;
+                response.Info = "No se ha podido validar la escalabilidad del camión.";
             }
             return ContentCustom(response);
         }
