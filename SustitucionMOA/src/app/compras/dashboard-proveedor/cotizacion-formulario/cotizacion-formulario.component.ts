@@ -17,6 +17,7 @@ import { PeticionDeOfertaDto, PeticionDeOfertaSolpPosicionDto } from '../../../m
 import { CotizacionMaterialComponent } from './cotizacion-material/cotizacion-material.component';
 import { GuardarCotizacion } from '../../../modelos/cotizacionDto';
 import { CotizacionServicioComponent } from './cotizacion-servicio/cotizacion-servicio.component';
+import { forEach } from '@angular/router/src/utils/collection';
 
 @Component({
     selector: 'app-cotizacion-formulario',
@@ -303,6 +304,15 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
                 mensaje = "El campo respeta servicios es obligatorio";
                 return mensaje;
             }
+            var count = 0;
+            this.posicionesCompra.forEach(function (posicionServicio, i) {
+                count++;
+                if (posicionServicio.Posiciones.CotizacionPosicion.PrimerPlazoDeOferta <= 0 || posicionServicio.Posiciones.CotizacionPosicion.PrimerPlazoDeOferta == undefined) {
+                    mensaje = "Propuesta Económica - " + "Pos. " + count + " - El plazo de entrega es obligatorio: Debe indicar la cantidad de días.";
+                    breakFor = true;
+                    return mensaje;
+                }
+            });
 
             this.cotizacion.CotizacionesHoras.forEach(function (cotizacionHora, i) {
                 if (!breakFor) {
@@ -389,11 +399,6 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
                     const decimalPart = (subposicion.Precio % 1).toFixed(2);
                     if (decimalPart != '0.00' && subposicion.monedaCompras == "CLP") {
                         mensaje = "Propuesta Económica - " + "Pos. " + subposicion.Posicion + ": Para la moneda seleccionada no es posible ingresar decimales en el precio";
-                        breakFor = true;
-                        return mensaje;
-                    }
-                    if (subposicion.PrimerPlazoDeOferta <= 0 || subposicion.PrimerPlazoDeOferta == undefined) {
-                        mensaje = "Propuesta Económica - " + "Pos. " + subposicion.Posicion + " - El plazo de entrega es obligatorio: Debe indicar la cantidad de días.";
                         breakFor = true;
                         return mensaje;
                     }

@@ -415,7 +415,7 @@
                     <ng-template pTemplate="header" let-columns>
                         <tr>
                             <th class="columna" style="background-color: #4760ac !important;"></th>
-                            <th class="columna" style="background-color: #4760ac !important;">Pos.</th>
+                            <th class="columna" style="background-color: #4760ac !important;">Posición</th>
                             <th class="columna" style="background-color: #4760ac !important;">Descripción</th>
                             <th class="columna" style="background-color: #4760ac !important;">Precio Total ARP</th>
                             <th class="columna" style="background-color: #4760ac !important;">Fecha de entrega</th>
@@ -441,9 +441,8 @@
                             <td class="columna" pEditableColumn style="font-size: 11px !important;">
                                 <p-cellEditor>
                                     <ng-template pTemplate="input">
-                                        <input type="text" pKeyFilter="num"
-                                               [(ngModel)]="posicionCompra.Posiciones.CotizacionPosicion.PrimerPlazoDeOferta" placeholder="Días"
-                                               numeric-format>
+                                        <input type="text" pKeyFilter="int" min="0" numeric-format
+                                               [(ngModel)]="posicionCompra.Posiciones.CotizacionPosicion.PrimerPlazoDeOferta" placeholder="Días">
                                     </ng-template>
                                     <ng-template pTemplate="output">
                                         <div [ngClass]="{'invalido': esFinalizado && (posicionCompra?.Posiciones?.CotizacionPosicion?.PrimerPlazoDeOfertan <= 0)} ">
@@ -459,7 +458,7 @@
                     </ng-template>
                     <ng-template pTemplate="rowexpansion" let-posicionCompra let-columns="columns">
                         <tr>
-                            <td [attr.colspan]="6">
+                            <td [attr.colspan]="7">
                                 <div class="col-sm-12 col-md-12 col-lg-12" style="font-size:16px;padding:20px">
                                     <p-table [value]="posicionCompra.Posiciones?.SubposicionesCompras">
                                         <ng-template pTemplate="header">
