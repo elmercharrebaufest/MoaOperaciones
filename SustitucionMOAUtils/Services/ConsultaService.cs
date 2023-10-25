@@ -27,6 +27,7 @@ using System.Threading.Tasks;
 using System.Web;
 using SustitucionMOAUtils.DesignPattern.Interfaces;
 using System.ServiceModel.Channels;
+using SustitucionMOAUtils.Helpers;
 
 namespace SustitucionMOAUtils.Services
 {
@@ -36,17 +37,19 @@ namespace SustitucionMOAUtils.Services
         private readonly IAzureService azureService;
         private readonly ITimeProvider timeProvider;
         private readonly IConsultaContext consultaContext;
+        private readonly IConsultaCommon consultaCommon;
 
         private readonly string rutaArchivosConsulta = ConfigurationManager.AppSettings["RutaArchivosConsulta"];
         private static readonly string EMAIL_TEMPLATE = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "RespuestaConsulta.html");
         private readonly string rutaArchivosCM05 = ConfigurationManager.AppSettings["RutaArchivosCM05"];
 
-        public ConsultaService(IRepositorio repositorio, IAzureService azureService, ITimeProvider timeProvider, IConsultaContext consultaContext)
+        public ConsultaService(IRepositorio repositorio, IAzureService azureService, ITimeProvider timeProvider, IConsultaContext consultaContext, IConsultaCommon consultaCommon)
         {
             this.repositorio = repositorio;
             this.azureService = azureService;
             this.timeProvider = timeProvider;
             this.consultaContext = consultaContext;
+            this.consultaCommon = consultaCommon;
         }
 
         public virtual void ActualizarEstadoConsulta(int consultaId, int estadoConsultaId)
@@ -239,6 +242,7 @@ namespace SustitucionMOAUtils.Services
             includes.Add(x => x.SubCategoria);
             includes.Add(x => x.EstadoConsulta);
             includes.Add(x => x.Detalle.CausaConsulta);
+            includes.Add(x => x.Usuario);
 
             var c = repositorio.Obtener<Consulta>(includes, y => y.Id == consultaId);
 
@@ -1179,15 +1183,21 @@ namespace SustitucionMOAUtils.Services
             }
 
             consulta.Comentarios.Add(comentario);
+            
             var estrategia = this.consultaContext.GetStrategy(categoria.Nombre);
-            estrategia.AgregarConsulta(consulta,comentario);
-
-            estrategia.EnviarMailInterno(consulta, comentario);
+            consulta = estrategia.AgregarConsulta(consulta,comentario);
+            
+            if(consulta == null)
+            {
+                throw new ValidationCustomException("Hubo un problema al intentar generar la consulta.");
+            }
+            
+            consultaCommon.EnviarMailInterno(consulta, comentario);
 
             if (files.Count > 0)
             {
                 Comentario primerComentario = repositorio.Obtener<Comentario>(c => c.Consulta_Id == consulta.Id);
-                AgregarAdjuntoComentario(consulta.Id, primerComentario.Id, files);
+                consultaCommon.AgregarAdjuntoComentario(consulta.Id, primerComentario.Id, files);
             }
 
             return new AgregarConsultaResponseDto

@@ -10,7 +10,6 @@ namespace SustitucionMOAUtils.DesignPattern.Interfaces
     public interface IConsultaStrategy
     {
         string Name { get; }
-        void AgregarConsulta(Consulta consulta, Comentario comentario);
-        void EnviarMailInterno(Consulta consulta, Comentario comentario);
+        Consulta AgregarConsulta(Consulta consulta, Comentario comentario);
     }
 }

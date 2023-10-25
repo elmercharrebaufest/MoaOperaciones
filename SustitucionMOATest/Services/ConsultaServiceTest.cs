@@ -30,6 +30,7 @@ namespace SustitucionMOATest.Services
         private Mock<IAzureService> azureServiceMock;
         private Mock<ITimeProvider> timeProviderMock;
         private Mock<IConsultaContext> consultaContext;
+        private Mock<IConsultaCommon> consultaCommon;
 
         [SetUp]
         public void SetUp()
@@ -38,7 +39,8 @@ namespace SustitucionMOATest.Services
             azureServiceMock = new Mock<IAzureService>();
             timeProviderMock = new Mock<ITimeProvider>();
             consultaContext = new Mock<IConsultaContext>();
-            target = new ConsultaService(repositorioMock.Object, azureServiceMock.Object, timeProviderMock.Object, consultaContext.Object);
+            consultaCommon = new Mock<IConsultaCommon>();
+            target = new ConsultaService(repositorioMock.Object, azureServiceMock.Object, timeProviderMock.Object, consultaContext.Object, consultaCommon.Object);
         }
 
         [Test]
