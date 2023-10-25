@@ -102,7 +102,11 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
 
     seleccionarTodo() {
         if (this.TodasPosicionesSeleccionadas) {
-            this.tablaOfertas.PeticionDeOfertaPosicion.map(pos => pos.Selected = true);
+            this.tablaOfertas.PeticionDeOfertaPosicion.map(pos => {
+                if (!pos.Posicion.AdjudicacionCompleta) {
+                    pos.Selected = true;
+                }
+            });
         } else {
             this.tablaOfertas.PeticionDeOfertaPosicion.map(pos => pos.Selected = false);
         }
