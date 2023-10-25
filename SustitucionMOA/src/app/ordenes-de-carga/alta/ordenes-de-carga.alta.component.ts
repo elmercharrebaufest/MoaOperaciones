@@ -1509,20 +1509,18 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
                 this.validando.Escalable = false;
                 const validezCNRTResponse = this.manejarErroresApiResponse(res)
                 this.errorAlValidarEscalable = !!(res.error || res.info);
-                if (!validezCNRTResponse) {
-                    this.setValorEscalable()
-                } else {
-                    if (!validezCNRTResponse.ExisteCamion) {
-                        this.msgService.add(MSG_ALERTA_CAMION_NO_EXISTE);
+                if (this.errorAlValidarEscalable || !validezCNRTResponse)
+                    return;
+                if (!validezCNRTResponse.ExisteCamion) {
+                    this.msgService.add(MSG_ALERTA_CAMION_NO_EXISTE);
+                }
+                else {
+                    this.escalableCNRT = validezCNRTResponse.EsCamionEscalable;
+                    if (!this.escalableCNRT && this.ordenDeCarga.Escalable) {
+                        this.msgService.add(MSG_ALERTA_NO_ESCALABLE);
+                        this.setValorEscalable()
                     }
-                    else {
-                        this.escalableCNRT = validezCNRTResponse.EsCamionEscalable;
-                        if (!this.escalableCNRT && this.ordenDeCarga.Escalable) {
-                            this.msgService.add(MSG_ALERTA_NO_ESCALABLE);
-                            this.setValorEscalable()
-                        }
-                        this.displayModalEscalable = this.escalableCNRT && !this.ordenDeCarga.Escalable && !this.decidioEscalable;
-                    }
+                    this.displayModalEscalable = this.escalableCNRT && !this.ordenDeCarga.Escalable && !this.decidioEscalable;
                 }
             })
     }
