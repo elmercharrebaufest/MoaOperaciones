@@ -2800,7 +2800,7 @@ namespace SustitucionMOAUtils.Services
 
                 var tipoVehiculo = cnrtResponse.TipoVehiculoCNRTSegunCategoriaEscalado;
 
-                if (dominios.Any(d => d.Rto.CantEjes <= 0) && (
+                if (dominios.Any(d => d.Ruta == null || d.Ruta.CantEjes <= 0) && (
                         tipoVehiculo == null ||
                         tipoVehiculo == CNRTModel.TipoVehiculoCNRT.CamionBitren))
                 {
