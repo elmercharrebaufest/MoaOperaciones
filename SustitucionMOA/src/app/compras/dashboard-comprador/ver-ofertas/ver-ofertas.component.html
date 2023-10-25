@@ -1,6 +1,6 @@
 <section class="container-fluid clearfix">
     <div class="row titleSection1">
-        <div class="col-xs-12 col-sm-10 letraTitulo">
+        <div class="col-sm-10 letraTitulo">
             <strong>
                 Ver ofertas {{tablaOfertas.TipoPosicionCodigo}} | SOLP #{{tablaOfertas.NroSolp}}
                 <b *ngIf="tablaOfertas.Id">
@@ -11,8 +11,11 @@
                 </b>
             </strong>
         </div>
-
-
+        <div class="col-sm-2 letraTitulo" *ngIf="tablaOfertas.VerPrecio">
+            <button class="publicar btn btn-success" style="margin-right: 10px;" (click)="abrirModalPrecios()">
+                Ver Precios
+            </button>        
+        </div>
     </div>
     <br>
 </section>
@@ -573,4 +576,11 @@
                       (aceptarModalTextosEmitter)="aceptarModalTextos()"
                       [(adjudicacion)]="adjudicacion">
 </app-textos-adjudicar>
+
+
+<app-visualizar-precio 
+                      [(displayVisualizarPrecio)]="displayVisualizarPrecio"
+                      (cerrarModalPreciosEmitter)="cerrarModalPrecios()" 
+                      [(peticionOferta_Id)]="peticionOferta_Id">
+</app-visualizar-precio>
 

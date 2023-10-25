@@ -11,6 +11,7 @@ import { PeticionDeOfertaCierreDto, PeticionDeOfertaDto, PeticionDeOfertaUsarioD
 import { AdjudicacionDto } from '../modelos/adjudicacion';
 import { OrdenDeCompraSap } from '../modelos/ordenDeCompraSap';
 import { RegistroInfoDto } from '../modelos/registro-info';
+import { PeticionVisualizacionPrecioDto } from '../modelos/peticion-visualizar-precio-dto';
 
 @Injectable({
     providedIn: 'root'
@@ -865,7 +866,23 @@ export class ComprasService extends BaseService {
         return this.http
             .post<any>('/api/compras/CerrarCotizacion', payload, { headers: this.headers });
     }
-
+ public GrabarPeticionDeOfertaVisualizacionPrecio(peticion: PeticionVisualizacionPrecioDto) {            
+    
+        const jsonPayload = JSON.stringify({
+            Observacion: peticion.Observacion,
+            PeticionDeOferta_Id: peticion.PeticionOfertaId
+        });
+        
+        console.log(jsonPayload, "json")
+        const payload = new FormData();
+        payload.append('json', jsonPayload);
+    
+        peticion.Adjuntos.forEach((fileToUpload: File) => {
+            payload.append("filePeticionDeOfertaVisualizacionPrecio", fileToUpload, fileToUpload.name);
+        });
+    
+        return this.http.post<any>('/api/compras/GrabarPeticionDeOfertaVisualizacionPrecio', payload, { headers: this.headers });
+    }
     public obtenerReporteOrdenDeCompra(nroOC: string, fechaDesde: string, fechaHasta: string, codigoProveedor: string): Observable<any> {
         let params: HttpParams = new HttpParams();
         params = params.set("nroOC", nroOC);

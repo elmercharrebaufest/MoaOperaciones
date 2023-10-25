@@ -51,6 +51,8 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
     @Input()
     public peticionHs: CotizacionHoraDto;
     error: string;
+    displayVisualizarPrecio: boolean;
+    peticionOferta_Id: number;
 
 
     constructor(protected service: ComprasService, protected usuarioService: UsuarioService, protected navService: NavService, protected sessionDataService: SessionDataService,
@@ -62,8 +64,8 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
     ngOnInit() {
         if (this.route.params) {
             this.route.params.forEach((params: Params) => {
-                let peticionOferta_Id = parseInt(params["id"]);
-                this.verOfertas(peticionOferta_Id);
+                this.peticionOferta_Id = parseInt(params["id"]);
+                this.verOfertas(this.peticionOferta_Id);
             })
         };
 
@@ -392,5 +394,15 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
             event.target.value = 0; // Borra el valor si es negativo
         }
     }
+
+    cerrarModalPrecios() {
+        this.displayVisualizarPrecio = false;
+    }
+
+    abrirModalPrecios() {
+        this.displayVisualizarPrecio = true;
+    }
+
+    
 
 }

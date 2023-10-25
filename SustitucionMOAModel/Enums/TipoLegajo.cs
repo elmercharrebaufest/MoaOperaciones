@@ -9,5 +9,8 @@
         public const string Cotizacion = "Cotización";
         public const string Legajo = "Legajo";
         public const string Solp = "SOLP";
+        public const string PeticionDeOfertaVisualizacionPrecio = "Visualizacion de Precio";
+
+        
     }
 }

@@ -2586,7 +2586,10 @@ namespace SustitucionMOAUtils.Services
                     FechaHasta = fechaHasta,
                     NumeroSolp = todasLasOfertas.NroSolp,
                 };
+                var esAdmin = usuario.Permisos.Any(p => p == "ADJUDICAR DENTRO DEL PLAZO DE OFERTAS");
                 var solp = obtenerSolpConsumerMOA.RequestSolpWithNroAndDates(filtros);
+
+                todasLasOfertas.VerPrecio = ValidarVisualizarPrecio(usuario.Id, PeticionOferta_Id) && esAdmin;
 
                 foreach (var item in todasLasOfertas.Usuarios)
                 {
@@ -2625,7 +2628,7 @@ namespace SustitucionMOAUtils.Services
                     }
                     //  item.VerAdjudicar = item.Cotizacion == null ? false : item.Cotizacion != null && item.PlazoDeOferta.Date <= hoy && item.Cotizacion.CotizacionEstadoDescripcion == "Cotizado" ? false : item.EstaHabilitado ? false : todasLasOfertas.EstaLiberado ? false: true;
 
-                    var esAdmin = usuario.Permisos.Any(p => p == "ADJUDICAR DENTRO DEL PLAZO DE OFERTAS");
+                   
                     var mensaje = "Adjudicar";
                     var verAdjudicar = true;
                     item.VerImportes = true;
@@ -2657,6 +2660,10 @@ namespace SustitucionMOAUtils.Services
                             verAdjudicar = false;
                             item.VerImportes = false;
                         }
+                    }
+                    else
+                    {
+                        item.VerImportes = !todasLasOfertas.VerPrecio;
                     }
                     if (!item.EstaHabilitado)
                     {
@@ -3439,6 +3446,7 @@ namespace SustitucionMOAUtils.Services
         {
             List<LegajoDto> legajo = new List<LegajoDto>();
             var peticion = repositorio.Obtener<PeticionDeOferta>(peticionDeOfertaId);
+            var peticionPrecio = repositorio.Obtener<PeticionDeOfertaVisualizacionPrecio>(x => x.PeticionDeOferta_Id == peticionDeOfertaId);
             var middleFileName = peticion.Solp.NroSolp ?? peticion.Solp.Pliego.NombreObra ?? "xxxx";
             var pdfFilename = $"Solp-{middleFileName}-pliego-{DateTime.Now:yyyyMMdd}.pdf";
 
@@ -3589,6 +3597,21 @@ namespace SustitucionMOAUtils.Services
                         });
                     }
                 }
+
+                //buscar archivos de la peticion visualizacion de precio
+
+                legajo.Add(new LegajoDto
+                {
+                    ArchivoId = peticionPrecio.Archivo.Id,
+                    Observacion = peticionPrecio.Archivo.ObtenerNombre(peticionPrecio.Archivo.Ruta),
+                    PeticionDeOfertaId = peticionDeOfertaId,
+                    SolpId = peticion.Solp_Id,
+                    Fecha = peticionPrecio.FechaCreacion,
+                    FechaFormateado = peticionPrecio.FechaCreacion.ToString("dd/MM/yyyy"),
+                    Usuario = new UsuarioDto { CUIT = peticionPrecio.Usuario.CUITRegistro, Mail = peticionPrecio.Usuario.Mail, Id = peticionPrecio.UsuarioCreador_Id },
+                    Tipo = TipoLegajo.PeticionDeOfertaVisualizacionPrecio
+
+                });
 
                 if (noLeido)
                 {
@@ -6123,6 +6146,70 @@ namespace SustitucionMOAUtils.Services
 
             return result;
         }
+        public Resultado GrabarPeticionDeOfertaVisualizacionPrecio(PeticionDeOfertaVisualizacionPrecioDto peticionDeOfertaVisualizacionPrecioDto, HttpFileCollectionBase adjuntos)
+        {
+            try
+            {
+                var resultado = new Resultado();
+                var peticionDeOfertaVisualizacionPrecio = new PeticionDeOfertaVisualizacionPrecio()
+                {
+                    Observaciones = peticionDeOfertaVisualizacionPrecioDto.Observacion,
+                    PeticionDeOferta_Id = peticionDeOfertaVisualizacionPrecioDto.PeticionDeOferta_Id,
+                    UsuarioCreador_Id = peticionDeOfertaVisualizacionPrecioDto.UsuarioCreador_Id,
+                    FechaCreacion = DateTime.Now,
+                };
+                repositorio.Agregar(peticionDeOfertaVisualizacionPrecio);
+                repositorio.GuardarCambios();
+                GrabarArchivosEnPeticionDeOfertaVisualizacionPrecio(peticionDeOfertaVisualizacionPrecio, adjuntos);
+                repositorio.GuardarCambios();
+                resultado.IdEntidad = peticionDeOfertaVisualizacionPrecio.Id;
+                return resultado;
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
+        }
+
+        private void GrabarArchivosEnPeticionDeOfertaVisualizacionPrecio(PeticionDeOfertaVisualizacionPrecio peticionDeOfertaVisualizacionPrecio, HttpFileCollectionBase files)
+        {
+
+            var ruta = ObtenerRutaArchivos(peticionDeOfertaVisualizacionPrecio.Id, FileKeys.PeticionDeOfertaVisualizacionPrecio);
+            var filesEspecificaciones = files.GetMultiple("filePeticionDeOfertaVisualizacionPrecio");
+
+            for (int i = 0; i < filesEspecificaciones.Count; i++)
+            {
+                var file = filesEspecificaciones[i];
+                var rutaArchivo = string.Concat(ruta, "/", Path.GetFileName(file.FileName));
+                var rutaArchivoRename = string.Concat(ruta, "/", Path.GetFileName(file.FileName));
+
+                Directory.CreateDirectory(ruta);
+
+                int copyNro = 1;
+                while (File.Exists(rutaArchivoRename))
+                {
+                    rutaArchivoRename = string.Concat(ruta, "/", Path.GetFileName($"({copyNro}) " + file.FileName));
+                    copyNro += 1;
+                }
+
+                peticionDeOfertaVisualizacionPrecio.Archivo = new Archivo
+                {
+                    FileKey = FileKeys.PeticionDeOfertaVisualizacionPrecio,
+                    Ruta = rutaArchivoRename
+
+                };
+
+                file.SaveAs(rutaArchivoRename);
+
+            }
+        }
+
+        private bool ValidarVisualizarPrecio(int usuarioId, int peticionDeOfertaId)
+        {
+            var visualizacionPrecio = repositorio.Listar<PeticionDeOfertaVisualizacionPrecio>(x => x.UsuarioCreador_Id == usuarioId && x.PeticionDeOferta_Id == peticionDeOfertaId);
+            return visualizacionPrecio.Count == 0;
+        }
+
     }
 
     public static class SolpTemplateKeys
