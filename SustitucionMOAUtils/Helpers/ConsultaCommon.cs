@@ -107,7 +107,7 @@ namespace SustitucionMOAUtils.Helpers
                         fileData = reader.ReadBytes(file.ContentLength);
                     }
 
-                    fileDataDictionary.Add(fileName, fileData);
+                    fileDataDictionary.Add(file.FileName, fileData);
                 }
             }
 

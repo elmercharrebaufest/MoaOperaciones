@@ -39,7 +39,7 @@ namespace SustitucionMOAUtils.DesignPattern.Classes
                 consulta.EstadoConsulta_Id = 4;
                 consulta.CodigoProveedor = proveedor.CodigoProveedor;
                 consulta.RazonSocialProveedor = proveedor.RazonSocial;
-                comentario.Usuario_Id = consulta.UsuarioInterno_Id;
+                comentario.Usuario_Id = (int)consulta.UsuarioInterno_Id;
 
                 this.repositorio.Agregar(consulta);
                 this.repositorio.GuardarCambios();
