@@ -27,7 +27,7 @@ import { EstadoOrdenDeCarga } from '../../common/models/ordenes-de-carga/estadoO
 import { Subject, Subscription, forkJoin } from 'rxjs';
 import { MessageService } from 'primeng/api';
 import { Checkbox } from 'primeng/checkbox';
-import { MSG_ALERTA_NO_ESCALABLE } from '../../common/models/ordenes-de-carga/ValidarCamionResponse';
+import { MSG_ALERTA_CAMION_NO_EXISTE, MSG_ALERTA_NO_ESCALABLE } from '../../common/models/ordenes-de-carga/ValidarCamionResponse';
 import { Permiso } from '../../common/enums/Permisos';
 
 @Component({
@@ -619,11 +619,17 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
         }
     }
 
-    chasisAcopladoSelected(event: any) {
-        this.ordenDeCarga.ChasisAcoplado = event.toUpperCase();;
+    chasisAcopladoSelected(event: string | { value: string }) {
+        if (typeof (event) === "string")
+            this.ordenDeCarga.ChasisAcoplado = event.toUpperCase();
+        else if (event.value)
+            this.ordenDeCarga.ChasisAcoplado = event.value.toUpperCase();
     }
-    patenteAcopladoSelected(event: any) {
-        this.ordenDeCarga.PatenteAcoplado = event.toUpperCase();;
+    patenteAcopladoSelected(event: string | { value: string }) {
+        if (typeof (event) === "string")
+            this.ordenDeCarga.PatenteAcoplado = event.toUpperCase();
+        else if (event.value)
+            this.ordenDeCarga.PatenteAcoplado = event.value.toUpperCase();
     }
     cuitChoferSelected(value: any) {
         this.ordenDeCarga.CUITChofer = value.value;
