@@ -74,21 +74,47 @@ namespace SustitucionMOAUtils.Helpers
         {
             return string.Format("{0}/{1}/{2}", rutaArchivosConsulta, comentario.Consulta.Usuario_Id, comentario.Consulta_Id);
         }
-        public void EnviarMailInterno(Consulta consulta, Comentario comentario)
+        public void EnviarMailInterno(Consulta consulta, Comentario comentario, HttpFileCollectionBase files)
         {
             try
             {
                 var cuerpoTemplate = File.ReadAllText(EMAIL_TEMPLATE);
                 var cuerpo = string.Format(cuerpoTemplate, consulta.Asunto, !string.IsNullOrWhiteSpace(comentario.Detalle) ? comentario.Detalle : "-");
                 string asunto = "Molinos Agro - Consulta N° " + consulta.Id + ":" + consulta.Asunto;
-
-                EmailSender.EnviarMail(new List<string> { consulta.Usuario.Mail }, asunto, cuerpo, null, null, null, null);
+                Dictionary<string, byte[]> archivos = ConvertFiles(files);
+                EmailSender.EnviarMail(new List<string> { consulta.Usuario.Mail }, asunto, cuerpo, null, null, null, null, null, null, archivos);
             }
             catch (Exception ex)
             {
                 Log.Error(ex);
                 throw ex;
             }
+        }
+
+        private Dictionary<string, byte[]> ConvertFiles(HttpFileCollectionBase files)
+        {
+            Dictionary<string, byte[]> fileDataDictionary = new Dictionary<string, byte[]>();
+
+            foreach (string fileName in files.AllKeys)
+            {
+                HttpPostedFileBase file = files[fileName];
+
+                if (file.ContentLength > 0)
+                {
+                    byte[] fileData;
+                    using (BinaryReader reader = new BinaryReader(file.InputStream))
+                    {
+                        fileData = reader.ReadBytes(file.ContentLength);
+                    }
+
+                    fileDataDictionary.Add(fileName, fileData);
+                }
+            }
+
+            if (fileDataDictionary.Count == 0)
+                return null;
+
+            return fileDataDictionary;
         }
     
 

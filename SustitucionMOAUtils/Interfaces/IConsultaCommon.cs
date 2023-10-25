@@ -11,6 +11,6 @@ namespace SustitucionMOAUtils.Interfaces
     public interface IConsultaCommon
     {
         string AgregarAdjuntoComentario(int consultaId, int comentarioId, HttpFileCollectionBase files);
-        void EnviarMailInterno(Consulta consulta, Comentario comentario);
+        void EnviarMailInterno(Consulta consulta, Comentario comentario, HttpFileCollectionBase files);
     }
 }

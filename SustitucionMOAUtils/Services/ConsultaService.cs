@@ -1192,13 +1192,13 @@ namespace SustitucionMOAUtils.Services
                 throw new ValidationCustomException("Hubo un problema al intentar generar la consulta.");
             }
             
-            consultaCommon.EnviarMailInterno(consulta, comentario);
-
             if (files.Count > 0)
             {
                 Comentario primerComentario = repositorio.Obtener<Comentario>(c => c.Consulta_Id == consulta.Id);
                 consultaCommon.AgregarAdjuntoComentario(consulta.Id, primerComentario.Id, files);
             }
+
+            consultaCommon.EnviarMailInterno(consulta, comentario, files);
 
             return new AgregarConsultaResponseDto
             {
