@@ -23,12 +23,13 @@ namespace SustitucionMOAModel.Entities
         public int? CausaConsulta_Id { get; set; }
         public string BolsaEmisoraOblea { get; set; }
         public int? Material_Id { get; set; }
+        public int? Orden_Id { get; set; }
+
         [Required]
         [ForeignKey("Id")]
         public virtual Consulta Consulta { get; set; }
 
         [ForeignKey("CausaConsulta_Id")]
         public virtual CausaConsulta CausaConsulta { get; set; }
-        public int? Orden_Id { get; set; }
     }
 }

@@ -143,11 +143,13 @@
     <Compile Include="Export\ExcelValidator.cs" />
     <Compile Include="Export\PDFExport.cs" />
     <Compile Include="Extensions\ObjectExtensions.cs" />
+    <Compile Include="Helpers\ConsultaCommon.cs" />
     <Compile Include="Helpers\CustomImageTagProcessor.cs" />
     <Compile Include="Helpers\ExtensionesSerializacion.cs" />
     <Compile Include="Helpers\GenericCopier.cs" />
     <Compile Include="Helpers\TwoColumnHeaderFooter.cs" />
     <Compile Include="Helpers\CurrentTimeProvider.cs" />
+    <Compile Include="Interfaces\IConsultaCommon.cs" />
     <Compile Include="Interfaces\IDBService.cs" />
     <Compile Include="Interfaces\IEmailFasonService.cs" />
     <Compile Include="Interfaces\IRYDService.cs" />
