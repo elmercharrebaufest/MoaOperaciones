@@ -3603,7 +3603,7 @@ namespace SustitucionMOAUtils.Services
                 legajo.Add(new LegajoDto
                 {
                     ArchivoId = peticionPrecio.Archivo.Id,
-                    Observacion = peticionPrecio.Archivo.ObtenerNombre(peticionPrecio.Archivo.Ruta),
+                    Observacion = peticionPrecio.Observaciones,
                     PeticionDeOfertaId = peticionDeOfertaId,
                     SolpId = peticion.Solp_Id,
                     Fecha = peticionPrecio.FechaCreacion,

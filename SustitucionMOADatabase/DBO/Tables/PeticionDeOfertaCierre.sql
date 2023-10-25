@@ -1,7 +1,6 @@
 ﻿CREATE TABLE [dbo].[PeticionDeOfertaCierre] (
     [Id]                     INT            IDENTITY (1, 1) NOT NULL,
-    [PeticionDeOferta_Id] INT            NOT NULL,
-    [Adjunto_Id] INT            NULL,
+    [PeticionDeOferta_Id] INT            NOT NULL,  
     [Usuario_Id] INT NOT NULL,
     [Fecha]          DATETIME2 (7)  NOT NULL,
     [Observacion]              NVARCHAR(1000)            NOT NULL,
