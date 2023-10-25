@@ -30,7 +30,7 @@
           <div class="col-xs-1 col-md-1">
           </div>
           <div class="col-xs-4 col-md-4">
-              <div class="col-xs-6 col-md-6" style="text-align: left;">
+              <div class="col-xs-6 col-md-6" style="text-align: left;" *ngIf="this.tipoSolp != 'SIN_PLIEGO'">
                   <button class="btn btn-primary botonesComprasColor" *ngIf="pasoActual.Preview" (click)="onPreview()">PREVIEW</button>&nbsp;
               </div>
               <div class="col-xs-6 col-md-6" style="text-align: right;">

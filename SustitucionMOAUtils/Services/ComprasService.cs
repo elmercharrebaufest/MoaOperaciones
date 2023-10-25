@@ -985,7 +985,7 @@ namespace SustitucionMOAUtils.Services
                     EstadoSolpSapId = x.NroSolp != null && x.Posiciones.All(p => p.Estado == false) ? -1 : (x.EstadoSolpSap != null ? x.EstadoSolpSap_Id : 0),
                     EstadoSolpSap = new TablaSapDto { Descripcion = x.EstadoSolpSap != null ? x.EstadoSolpSap.Descripcion : "", Id = x.EstadoSolpSap != null ? x.EstadoSolpSap.Id : 0 },
                     EstadoSolpDescripcion = x.NroSolp != null && x.Posiciones.All(p => p.Estado == false) ? "Borrado en SAP" : (x.EstadoSolpSap != null ? x.EstadoSolpSap.Descripcion : ""),
-                    TipoSolp = new TablaGeneralDto { Descripcion = x.TipoSolp != null ? x.TipoSolp.Descripcion : "" },
+                    TipoSolp = new TablaGeneralDto { Descripcion = x.TipoSolp != null ? x.TipoSolp.Descripcion : "" , Codigo = x.TipoSolp != null ? x.TipoSolp.Codigo : "" },
                     VincularPliego = !x.Pliego_Id.HasValue,
                     TieneCondicionesGenerales = x.Pliego == null ? (bool?)null : x.Pliego.TieneCondicionesGenerales,
                     RevisadoPor = x.Pliego == null ? "" : x.Pliego.RevisadoPor,
@@ -995,6 +995,7 @@ namespace SustitucionMOAUtils.Services
                     ItemPorPagina = paginacion.ItemsPorPagina,
                     Pagina = paginacion.Pagina,
                     TipoPosicionCodigo = x.Posiciones.Select(posiciones => posiciones.TipoPosicion.Codigo).FirstOrDefault(),
+                    SolpConAdjuntos = x.Pliego.Archivos.Where(r => r.FileKey == FileKeys.AdjuntoCotizacionesSolp).Any() 
                 },
                 paginacion,
                 x => x.FechaBorrado == null && (string.IsNullOrEmpty(nroSolp) || x.NroSolp.ToUpper().StartsWith(nroSolp.ToUpper())) &&
@@ -1466,7 +1467,11 @@ namespace SustitucionMOAUtils.Services
             var middleFileName = solp.NroSolp == null ? (solp.Pliego.NombreObra == null ? "xxxx" : solp.Pliego.NombreObra) : solp.NroSolp;
             var pdfFilename = $"Solp-{middleFileName}-pliego-{DateTime.Now.ToString("yyyyMMdd")}.pdf";
             var pdfFilePath = $"{pathBase}/{pdfFilename}";
-            File.WriteAllBytes(pdfFilePath, GenerarSolpPdf(idSolp));
+
+            if (solp.TipoSolp.Codigo == "CON_PLIEGO")
+            { 
+                File.WriteAllBytes(pdfFilePath, GenerarSolpPdf(idSolp));
+            }
 
             if (solp.Pliego.Archivos != null && solp.Pliego.Archivos.Any<Archivo>(x => x.FileKey == FileKeys.AdjuntoSolp || x.FileKey == FileKeys.AdjuntoCotizacionesSolp))
             {
@@ -1485,7 +1490,11 @@ namespace SustitucionMOAUtils.Services
                                 archivo.CreateEntryFromFile(archivoSubido.Ruta, fileName);
                             }
                         }
-                        archivo.CreateEntryFromFile(pdfFilePath, pdfFilename);
+
+                        if (solp.TipoSolp.Codigo == "CON_PLIEGO")
+                        {
+                            archivo.CreateEntryFromFile(pdfFilePath, pdfFilename);
+                        }
                     }
                 }
                 return filePath;
@@ -2475,6 +2484,11 @@ namespace SustitucionMOAUtils.Services
                 }
             }
 
+            if (solp.TipoSolp.Descripcion == "SIN_PLIEGO" && solp.Pliego.Archivos.Count > 0)
+            {
+                return SolpDescargaZipPorLink.SinArchivos;
+            }
+
             return SolpDescargaZipPorLink.PuedeDescargar;
         }
 
@@ -3450,18 +3464,23 @@ namespace SustitucionMOAUtils.Services
             var middleFileName = peticion.Solp.NroSolp ?? peticion.Solp.Pliego.NombreObra ?? "xxxx";
             var pdfFilename = $"Solp-{middleFileName}-pliego-{DateTime.Now:yyyyMMdd}.pdf";
 
-            //invento registro con id de archivo 0 para bajar el pliego
-            legajo.Add(new LegajoDto
+            var tienePliego = (peticion.Solp.TipoSolpSap == (int?)TipoSolpSap.Mantenimiento || peticion.Solp.TipoSolpSap == (int?)TipoSolpSap.Sap) && peticion.Solp.EstadoDocumento.Codigo == "CREADO";
+            
+            if (tienePliego || peticion.Solp.TipoSolp.Codigo == "CON_PLIEGO") 
             {
-                ArchivoId = 0,
-                Observacion = pdfFilename,
-                PeticionDeOfertaId = peticionDeOfertaId,
-                SolpId = peticion.Solp_Id,
-                Fecha = peticion.Solp.FechaCreacion,
-                FechaFormateado = peticion.Solp.FechaCreacion.ToString("dd/MM/yyyy"),
-                Usuario = new UsuarioDto { CUIT = peticion.Solp.UsuarioCreacion.CUITRegistro, Mail = peticion.Solp.UsuarioCreacion.Mail, Id = peticion.Solp.UsuarioCreacion_Id.Value },
-                Tipo = TipoLegajo.Pliego
-            });
+                //invento registro con id de archivo 0 para bajar el pliego
+                legajo.Add(new LegajoDto
+                {
+                    ArchivoId = 0,
+                    Observacion = pdfFilename,
+                    PeticionDeOfertaId = peticionDeOfertaId,
+                    SolpId = peticion.Solp_Id,
+                    Fecha = peticion.Solp.FechaCreacion,
+                    FechaFormateado = peticion.Solp.FechaCreacion.ToString("dd/MM/yyyy"),
+                    Usuario = new UsuarioDto { CUIT = peticion.Solp.UsuarioCreacion.CUITRegistro, Mail = peticion.Solp.UsuarioCreacion.Mail, Id = peticion.Solp.UsuarioCreacion_Id.Value },
+                    Tipo = TipoLegajo.Pliego
+                });
+            }
 
             // buscar archivos de la solp
             if (peticion.Solp.Pliego != null && peticion.Solp.Pliego.Archivos != null && peticion.Solp.Pliego.Archivos.Any<Archivo>(x => x.FileKey == FileKeys.AdjuntoSolp || x.FileKey == FileKeys.AdjuntoCotizacionesSolp))

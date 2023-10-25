@@ -439,8 +439,17 @@ namespace SustitucionMOA.Controllers
                 string errorMsg = puedeDescargar == SolpDescargaZipPorLink.SolpIdNoExiste
                                                         ? "Solp no disponible para descarga."
                                                         : "Token no coincide, no tiene permiso para realizar la descarga";
+
+                if (puedeDescargar == SolpDescargaZipPorLink.SinArchivos) 
+                {
+                    errorMsg = "Solp no disponible para descarga.";
+                }
+                
                 return Json(new { error = errorMsg }, JsonRequestBehavior.AllowGet);
+
             }
+
+
             var path = $"{ConfigurationManager.AppSettings["RutaArchivosCompras"]}/{DateTime.Now.Ticks}";
             Directory.CreateDirectory(path);
 

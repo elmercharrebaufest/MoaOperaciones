@@ -198,7 +198,8 @@
                                 <img class="pointer" src="./Content/images/icons/editar.svg" alt="editar"
                                     (click)="goToSeccionEdit('/compras/solp', rowData.Id, rowData.NroSolp)" /></span>
                         </div>
-                        <div class="col-md-2">
+                        <div class="col-md-2" 
+                        *ngIf="rowData.TipoSolp.Codigo == 'CON_PLIEGO' || rowData.SolpConAdjuntos">
                             <span><img class="pointer" src="./Content/images/icons/descargar.svg" alt="descargar"
                                     (click)="generarZipPliego(rowData.Id)" /></span>
                         </div>

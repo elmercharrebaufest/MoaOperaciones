@@ -93,6 +93,7 @@ namespace SustitucionMOAModel.Dto
         public string MonedaOC { get; set; }
         public decimal MontoTotalOC { get; set; }
         public string FechaCreacionOC { get; set; }
+        public bool SolpConAdjuntos { get; set; }
 
         public SolpDto() { }
         public SolpDto(Solp entity)

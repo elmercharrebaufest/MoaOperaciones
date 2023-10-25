@@ -103,7 +103,7 @@
     <br>
     <p-footer>
         <button class="btn btn-success botonesComprasColor" (click)="showEmailPopup(displaySAP, false)">Enviar Email</button>
-        <button class="btn btn-secondary botonesCompras" (click)="generarZipPliego(solpActual.id)">Descargar SOLP</button>
+        <button *ngIf="solpActual.tipoSolp == 'CON_PLIEGO' || tieneAdjuntos" class="btn btn-secondary botonesCompras" (click)="generarZipPliego(solpActual.id)">Descargar SOLP</button>
         <button class="btn btn-primary botonesComprasColor botonModal" (click)="solpFinalizadaVolverHome()">Volver a la home</button>
     </p-footer>
 </p-dialog>
@@ -117,7 +117,7 @@
     <br>
     <p-footer>
         <button class="btn btn-success botonesComprasColor" (click)="showEmailPopup(false, displaySAPEditar)">Enviar Email</button>
-        <button class="btn btn-secondary botonesCompras" (click)="generarZipPliego(solpActual.id)">Descargar SOLP</button>
+        <button *ngIf="solpActual.tipoSolp == 'CON_PLIEGO' || tieneAdjuntos" class="btn btn-secondary botonesCompras" (click)="generarZipPliego(solpActual.id)">Descargar SOLP</button>
         <button class="btn btn-primary botonesComprasColor botonModal" (click)="salir()">Volver a la home</button>
     </p-footer>
 </p-dialog>
@@ -130,7 +130,7 @@
     <br> Puede descargar la SOLP y enviarla por mail.
     <br>
     <p-footer>
-        <button type="button" class="btn btn-secondary botonesCompras" (click)="generarZipPliego(solpActual.id)">Descargar SOLP</button>
+        <button *ngIf="solpActual.tipoSolp == 'CON_PLIEGO' || tieneAdjuntos" type="button" class="btn btn-secondary botonesCompras" (click)="generarZipPliego(solpActual.id)">Descargar SOLP</button>
         <button type="button" class="btn btn-primary botonesComprasColor botonModal" (click)="salir()">Volver a la home</button>
     </p-footer>
 </p-dialog>

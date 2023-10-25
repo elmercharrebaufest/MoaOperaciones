@@ -103,6 +103,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
     flagSolpFinalizada: boolean = false;
     tieneContratoMarco: boolean = false;
     datosUltimaSolp: any;
+    tieneAdjuntos: boolean = false;
 
     set pasoActual(value: Paso) {
         this.actualizarPasoCompleto(this._pasoActual);
@@ -1013,6 +1014,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
         this.displayFinalizar = false;
         this.mostrarMensajeCampos();
         this.mostrarMensajeCotizacion();
+        this.validarAdjuntosDescargarSolp();
     }
 
     // Abre el modal del boton finalizar
@@ -1100,7 +1102,11 @@ export class SolpComponent extends BaseComponent implements OnInit {
             });
     }
 
-
+    validarAdjuntosDescargarSolp(){ 
+        if(this.solpActual.especificacionesViewModel.archivosEspecificaciones.length > 0 || this.solpActual.archivosCotizaciones.length > 0){
+            this.tieneAdjuntos = true;
+        }
+    }
 
     private getCCEmails(): string[] {
         const ccEmails: string[] = [];
@@ -1194,5 +1200,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
         const token = this.solpActual.emailLinkToken;
         return `${window.location.origin}/api/compras/DescargarPliegoDesdeLink?solpId=${solpId}&token=${token}`;
     }
+
+
 
 }
