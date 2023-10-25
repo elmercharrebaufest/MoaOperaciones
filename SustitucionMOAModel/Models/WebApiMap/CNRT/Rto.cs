@@ -8,23 +8,23 @@ namespace SustitucionMOAModel.Models.WebApiMap.CNRT
 {
     public class Rto
     {
-        public int Id { get; set; }
+        public int? Id { get; set; }
 
         public string NroPlanilla { get; set; }
 
-        public int CodigoTaller { get; set; }
+        public int? CodigoTaller { get; set; }
 
-        public int CodigoAuditoria { get; set; }
+        public int? CodigoAuditoria { get; set; }
 
         public string Dominio { get; set; }
 
         public string PaisRadicacion { get; set; }
 
-        public DateTime FechaRevision { get; set; }
+        public DateTime? FechaRevision { get; set; }
 
-        public DateTime FechaVencimiento { get; set; }
+        public DateTime? FechaVencimiento { get; set; }
 
-        public DateTime FechaFinVigencia { get; set; }
+        public DateTime? FechaFinVigencia { get; set; }
 
         public string CodigoTipoUso { get; set; }
 
@@ -42,7 +42,7 @@ namespace SustitucionMOAModel.Models.WebApiMap.CNRT
 
         public string ConfiguracionEjes { get; set; }
 
-        public int CantEjes { get; set; }
+        public int? CantEjes { get; set; }
 
         public object MarcaTacografo { get; set; }
 
@@ -66,8 +66,8 @@ namespace SustitucionMOAModel.Models.WebApiMap.CNRT
 
         public string VersionRto { get; set; }
 
-        public DateTime FechaUltimaModificacion { get; set; }
+        public DateTime? FechaUltimaModificacion { get; set; }
 
-        public DateTime FechaProceso { get; set; }
+        public DateTime? FechaProceso { get; set; }
     }
 }

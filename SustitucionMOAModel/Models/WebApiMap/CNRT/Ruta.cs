@@ -8,23 +8,23 @@ namespace SustitucionMOAModel.Models.WebApiMap.CNRT
 {
     public class Ruta
     {
-        public int Id { get; set; }
+        public int? Id { get; set; }
 
         public string CuitEmpresa { get; set; }
 
         public string Dominio { get; set; }
 
-        public DateTime FechaValidacion { get; set; }
+        public DateTime? FechaValidacion { get; set; }
 
-        public DateTime FechaAlta { get; set; }
+        public DateTime? FechaAlta { get; set; }
 
         public string NroCertificado { get; set; }
 
         public string NroConstancia { get; set; }
 
-        public DateTime FechaVencimientoConstancia { get; set; }
+        public DateTime? FechaVencimientoConstancia { get; set; }
 
-        public DateTime FechaUltimaActualizacion { get; set; }
+        public DateTime? FechaUltimaActualizacion { get; set; }
 
         public DateTime? FechaBaja { get; set; }
 
@@ -38,7 +38,7 @@ namespace SustitucionMOAModel.Models.WebApiMap.CNRT
 
         public string TipoCaja { get; set; }
 
-        public int AnioModelo { get; set; }
+        public int? AnioModelo { get; set; }
 
         public object MarcaCarroceria { get; set; }
 
@@ -52,6 +52,6 @@ namespace SustitucionMOAModel.Models.WebApiMap.CNRT
 
         public bool Historico { get; set; }
 
-        public DateTime FechaProceso { get; set; }
+        public DateTime? FechaProceso { get; set; }
     }
 }

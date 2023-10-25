@@ -37,18 +37,21 @@ namespace SustitucionMOAUtils.Services
         private readonly IAzureService azureService;
         private readonly ITimeProvider timeProvider;
         private readonly IConsultaContext consultaContext;
+        private readonly IGestionImpuestosService gestionImpuestosService;
         private readonly IConsultaCommon consultaCommon;
 
         private readonly string rutaArchivosConsulta = ConfigurationManager.AppSettings["RutaArchivosConsulta"];
         private static readonly string EMAIL_TEMPLATE = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "RespuestaConsulta.html");
         private readonly string rutaArchivosCM05 = ConfigurationManager.AppSettings["RutaArchivosCM05"];
 
+        public ConsultaService(IRepositorio repositorio, IAzureService azureService, ITimeProvider timeProvider, IConsultaContext consultaContext, IGestionImpuestosService gestionImpuestosService)
         public ConsultaService(IRepositorio repositorio, IAzureService azureService, ITimeProvider timeProvider, IConsultaContext consultaContext, IConsultaCommon consultaCommon)
         {
             this.repositorio = repositorio;
             this.azureService = azureService;
             this.timeProvider = timeProvider;
             this.consultaContext = consultaContext;
+            this.gestionImpuestosService = gestionImpuestosService;
             this.consultaCommon = consultaCommon;
         }
 
@@ -624,6 +627,14 @@ namespace SustitucionMOAUtils.Services
                 {
                     consulta.Categoria_Id = repositorio.Obtener<Categoria>(c => c.Code == "PARDIR").Id;
                     consulta.SubCategoria_Id = repositorio.Obtener<SubCategoria>(sc => sc.Categoria_Id == consulta.Categoria_Id).Id;
+                }
+            }
+
+            if(categoria.Code == "ACT")
+            {
+                if(subCategoria.Code == "CM05" && estado.Code == "CER")
+                {
+                    gestionImpuestosService.ActualizarCM05(consultaId, usuario);
                 }
             }
 

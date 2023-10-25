@@ -1,28 +1,16 @@
-﻿using iTextSharp.text;
-using iTextSharp.text.pdf;
-using SustitucionMOAAssets;
+﻿using SustitucionMOAAssets;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
-using SustitucionMOAModel.Models.ViewModel;
 using SustitucionMOARepositorio;
-using SustitucionMOAUtils.Email;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Interfaces.Helpers;
-using SustitucionMOAUtils.Logger;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
-using System.Globalization;
-using System.IO;
 using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Web;
+
 
 namespace SustitucionMOAUtils.Services
 {
@@ -30,16 +18,14 @@ namespace SustitucionMOAUtils.Services
     {
         private readonly IRepositorio repositorio;
         private readonly ITimeProvider timeProvider;
-        private readonly IConsultaService consultaService;
         private readonly IAzureService azureService;
 
         private readonly string rutaArchivosCM05 = ConfigurationManager.AppSettings["RutaArchivosCM05"];
 
-        public GestionImpuestosService(IRepositorio repositorio, ITimeProvider timeProvider, IAzureService azureService, IConsultaService consultaService)
+        public GestionImpuestosService(IRepositorio repositorio, ITimeProvider timeProvider, IAzureService azureService)
         {
             this.repositorio = repositorio;
             this.timeProvider = timeProvider;
-            this.consultaService = consultaService;
             this.azureService = azureService;
         }
 
@@ -50,13 +36,13 @@ namespace SustitucionMOAUtils.Services
             {
                 Id = x.Id,
                 EstadoId = x.EstadoIngresosBrutosCoeficienteUnificado.Id,
-                Estado = new EstadoIngresosBrutosCoeficienteUnificadoDto() 
-                    { 
-                        Id = x.EstadoIngresosBrutosCoeficienteUnificado.Id,
-                        Descripcion = x.EstadoIngresosBrutosCoeficienteUnificado.Descripcion
-                    },
+                Estado = new EstadoIngresosBrutosCoeficienteUnificadoDto()
+                {
+                    Id = x.EstadoIngresosBrutosCoeficienteUnificado.Id,
+                    Descripcion = x.EstadoIngresosBrutosCoeficienteUnificado.Descripcion
+                },
                 Secuencia = x.SecuenciaIngresosBrutosCoeficienteUnificado_Id == null ?
-                    null : 
+                    null :
                     new SecuenciaIngresosBrutosCoeficienteUnificadoDto()
                     {
                         Id = x.SecuenciaIngresosBrutosCoeficienteUnificado.Id,
@@ -71,7 +57,7 @@ namespace SustitucionMOAUtils.Services
                 SecuenciaId = x.SecuenciaIngresosBrutosCoeficienteUnificado_Id,
                 ConsultaId = x.Consulta_Id,
                 RazonSocial = x.RazonSocial,
-            },null,0,"Id",SustitucionMOAModel.Consultas.DirOrden.Desc);
+            }, null, 0, "Id", SustitucionMOAModel.Consultas.DirOrden.Desc);
         }
 
         public IList<IngresosBrutosCoeficienteUnificadoDetalleDto> ListarDetalles(int idCabecera)
@@ -97,7 +83,7 @@ namespace SustitucionMOAUtils.Services
         {
             var ingresosBrutosCoeficienteUnificadoDetalle = repositorio.Obtener<IngresosBrutosCoeficienteUnificadoDetalle>(ingresosBrutosCoeficienteUnificadoDetalleDto.Id);
 
-            if(ingresosBrutosCoeficienteUnificadoDetalle == null)
+            if (ingresosBrutosCoeficienteUnificadoDetalle == null)
                 throw new InfoCustomException(String.Format(InfoMsg.SinRegistros, "registros de detalles de coeficientes unificados"));
 
             ingresosBrutosCoeficienteUnificadoDetalle.CoeficienteGastos = ingresosBrutosCoeficienteUnificadoDetalleDto.CoeficienteGastos;
@@ -111,7 +97,7 @@ namespace SustitucionMOAUtils.Services
 
             repositorio.GuardarCambios();
 
-            return new EditarIngresosBrutosCoeficienteUnificadoDetalleResponseDto 
+            return new EditarIngresosBrutosCoeficienteUnificadoDetalleResponseDto
             {
                 Mensaje = SuccessMsg.IngresosBrutosCoeficienteUnificadoDetalleActualizadoOK,
                 FechaUltimaModificacion = ingresosBrutosCoeficienteUnificadoDetalle.FechaUltimaModificacion
@@ -198,7 +184,7 @@ namespace SustitucionMOAUtils.Services
             var estados = repositorio.Listar<EstadoIngresosBrutosCoeficienteUnificado>()
                 .Select(e => new EstadoIngresosBrutosCoeficienteUnificadoDto(e)).OrderBy(x => x.Descripcion).ToList();
 
-            if(estados.Count < 1 || estados == null)
+            if (estados.Count < 1 || estados == null)
                 throw new InfoCustomException(String.Format(InfoMsg.SinRegistros, "registros de estados"));
 
             return estados;
@@ -247,5 +233,29 @@ namespace SustitucionMOAUtils.Services
 
             return result;
         }
+ 
+        public void ActualizarCM05(int consultaId, Usuario usuario)
+        {
+            var ingresoBrutoCU = this.repositorio.Obtener<IngresosBrutosCoeficienteUnificado>(i => i.Consulta_Id == consultaId);
+            if (ingresoBrutoCU == null)
+            {
+                throw new InfoCustomException($"No se encontró la gestion de CM05 para la consulta nro: {consultaId}.");
+            }
+            ingresoBrutoCU.EstadoIngresosBrutosCoeficienteUnificado_Id = 3;
+
+            var movimientoIngresosBrutosCoeficienteUnificado = new MovimientoIngresosBrutosCoeficienteUnificado
+            {
+                IngresosBrutosCoeficienteUnificado_Id = ingresoBrutoCU.Id,
+                Observaciones = $"Cambió de estado por usuario: {usuario.Mail}",
+                Fecha = timeProvider.Now(),
+                TipoMovimientoIngresosBrutosCoeficienteUnificado_Id = 6,
+                OrigenMovimientoIngresosBrutosCoeficienteUnificado_Id = 1,
+                EstadoAnterior_Id = ingresoBrutoCU.EstadoIngresosBrutosCoeficienteUnificado_Id,
+                EstadoPosterior_Id = 3,
+            };
+            repositorio.Agregar(movimientoIngresosBrutosCoeficienteUnificado);
+            repositorio.GuardarCambios();
+        }
+
     }
 }
