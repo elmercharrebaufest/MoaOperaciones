@@ -222,7 +222,7 @@ export class CrearConsultaComponent extends ListBaseComponent {
                         //result.materiales.forEach(x => this.listaMateriales.push({ label: x.Descripcion, value: x.MaterialId }));
                     
                         this.route.queryParams.subscribe((queryParams) => {
-                            if (queryParams.filter === 'Actualizacion-Impositiva') {
+                            if (queryParams.filter === 'Actualizacion-Impositiva' || queryParams.filter === 'ExencionesVencidas' || queryParams.filter === 'ExencionesProximasAVencer') {
                                 this.categoria = this.categorias.find(c => c.Nombre === 'Actualización');
                                 this.setSubcategorias(this.categoria);
                                 this.subcategoriaCount = 1;

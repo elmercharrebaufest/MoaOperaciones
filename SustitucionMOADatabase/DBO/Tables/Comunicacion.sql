@@ -8,5 +8,7 @@
     [Detalle] NVARCHAR(MAX) NULL,
     [CM05] varchar(4), 
     [FechaRecomunicacion] DATETIME NULL, 
-    [Comprobante] NVARCHAR(20) NULL 
+    [Comprobante] NVARCHAR(20) NULL, 
+    [FechaVencimiento] DATETIME NULL, 
+    [DescripcionWeb] NVARCHAR(50) NULL 
 )

@@ -20,5 +20,7 @@ namespace SustitucionMOAModel.Entities
         public string CM05 { get; set; }
         public DateTime? FechaRecomunicacion { get; set; }
         public string Comprobante { get; set; }
+        public DateTime? FechaVencimiento { get; set; }
+        public string DescripcionWeb { get; set; }
     }
 }

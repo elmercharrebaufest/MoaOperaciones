@@ -1,4 +1,6 @@
 ﻿using SustitucionMOAModel.Dto;
+using SustitucionMOAModel.Entities;
+using SustitucionMOAModel.Enums;
 using SustitucionMOAModel.Models.ViewModel.Liquidacion;
 using SustitucionMOAModel.Models.WSMapMOA.Liquidacion;
 using SustitucionMOAModel.Models.WSMapMOA.Vendedor.Detalle;
@@ -19,6 +21,8 @@ namespace SustitucionMOAUtils.Services
     {
         protected readonly IRepositorio repositorio;
         private readonly ILiquidacionService _liquidacionService;
+
+        DateTime fechaActual = DateTime.Now;
 
         public ComunicacionService(IRepositorio repositorio, ILiquidacionService liquidacionService)
         {
@@ -41,6 +45,7 @@ namespace SustitucionMOAUtils.Services
             ProcesarCM05(vendedor, proveedor);
             ProcesarCuentasHabilitadas(vendedor, proveedor);
             ProcesarLiquidacionesObservadas(vendedor, fechaInicio, fechaFin);
+            ProcesarExenciones(vendedor, proveedor);
 
             var listado = repositorio
                 .Listar<Comunicacion>()
@@ -51,7 +56,12 @@ namespace SustitucionMOAUtils.Services
                     ComunicacionTipo = x.ComunicacionTipo,
                     ProveedorId = x.ProveedorId,
                     FechaCreacion = x.FechaCreacion.ToString("dd/MM/yyyy HH:mm"),
-                    Leida = x.Leida
+                    Leida = x.Leida,
+                    CM05 = x.CM05,
+                    FechaRecomunicacion = (x.FechaRecomunicacion != null) ? (DateTime)x.FechaRecomunicacion : DateTime.MinValue,
+                    Comprobante = x.Comprobante,
+                    FechaVencimiento = (x.FechaVencimiento != null) ? (DateTime)x.FechaVencimiento : DateTime.MinValue,
+                    DescripcionWeb = x.DescripcionWeb,
                 })
                 .OrderBy(x => x.Leida)
                 .ThenByDescending(
@@ -217,7 +227,7 @@ namespace SustitucionMOAUtils.Services
         private bool Cm05Comunicado(string vendedor, string anioCM05)
         {
             bool comunicacionPersistida = repositorio.Listar<Comunicacion>()
-                .Any(x => x.ComunicacionTipo == 3
+                .Any(x => x.ComunicacionTipo == (int)ComunicacionTipoEnum.CM05Vencido
                        && x.ProveedorId == vendedor
                        && x.CM05 == anioCM05);
 
@@ -239,7 +249,7 @@ namespace SustitucionMOAUtils.Services
             {
                 Comunicacion oComunicacion = new Comunicacion
                 {
-                    ComunicacionTipo = 3,
+                    ComunicacionTipo = (int)ComunicacionTipoEnum.CM05Vencido,
                     ProveedorId = vendedor,
                     FechaCreacion = DateTime.Now.AddSeconds(-DateTime.Now.Second).AddMilliseconds(-DateTime.Now.Second),
                     Leida = false,
@@ -263,7 +273,7 @@ namespace SustitucionMOAUtils.Services
             if (cm05vencido && cm05comunicado)
             {
                 Comunicacion oComunicacion = repositorio.Listar<Comunicacion>()
-                    .Where(x => x.ComunicacionTipo == 3
+                    .Where(x => x.ComunicacionTipo == (int)ComunicacionTipoEnum.CM05Vencido
                                 && x.ProveedorId == vendedor
                                 && x.CM05 == anioCM05)
                     .OrderByDescending(x => x.FechaCreacion)
@@ -280,7 +290,7 @@ namespace SustitucionMOAUtils.Services
                     {
                         Comunicacion oReComunicacion = new Comunicacion
                         {
-                            ComunicacionTipo = 3,
+                            ComunicacionTipo = (int)ComunicacionTipoEnum.CM05Vencido,
                             ProveedorId = vendedor,
                             FechaCreacion = DateTime.Now.AddSeconds(-DateTime.Now.Second).AddMilliseconds(-DateTime.Now.Second),
                             Leida = false,
@@ -361,7 +371,7 @@ namespace SustitucionMOAUtils.Services
         private bool CuentasHabilitadasComunicado(string vendedor)
         {
             bool comunicacionPersistida = repositorio.Listar<Comunicacion>()
-                .Any(x => x.ComunicacionTipo == 4
+                .Any(x => x.ComunicacionTipo == (int)ComunicacionTipoEnum.CuentasHabilitadas
                        && x.ProveedorId == vendedor);
 
             return comunicacionPersistida;
@@ -381,7 +391,7 @@ namespace SustitucionMOAUtils.Services
             {
                 Comunicacion oComunicacion = new Comunicacion
                 {
-                    ComunicacionTipo = 4,
+                    ComunicacionTipo = (int)ComunicacionTipoEnum.CuentasHabilitadas,
                     ProveedorId = vendedor,
                     FechaCreacion = DateTime.Now.AddSeconds(-DateTime.Now.Second).AddMilliseconds(-DateTime.Now.Second),
                     Leida = false
@@ -391,7 +401,7 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-
+        
         /// <summary>
         /// Verifica si cuentas habilitadas, fue comunicado previamente, la notificacion fue leída y transcurrieron 15 días de la comunicacion
         /// Entonces persiste una nueva notificacion.
@@ -404,7 +414,7 @@ namespace SustitucionMOAUtils.Services
             if (cuentasHabilitadasDebeNotificarse && cuentasHabilitadasComunicado)
             {
                 Comunicacion oComunicacion = repositorio.Listar<Comunicacion>()
-                    .Where(x => x.ComunicacionTipo == 4
+                    .Where(x => x.ComunicacionTipo == (int)ComunicacionTipoEnum.CuentasHabilitadas
                                 && x.ProveedorId == vendedor)
                     .OrderByDescending(x => x.FechaCreacion)
                     .FirstOrDefault();
@@ -420,7 +430,7 @@ namespace SustitucionMOAUtils.Services
                     {
                         Comunicacion oReComunicacion = new Comunicacion
                         {
-                            ComunicacionTipo = 4,
+                            ComunicacionTipo = (int)ComunicacionTipoEnum.CuentasHabilitadas,
                             ProveedorId = vendedor,
                             FechaCreacion = DateTime.Now.AddSeconds(-DateTime.Now.Second).AddMilliseconds(-DateTime.Now.Second),
                             Leida = false,
@@ -475,12 +485,7 @@ namespace SustitucionMOAUtils.Services
         /// <param name="vendedor"></param>
         public void ComunicarLiquidacionesObservadas(List<LiquidacionView> liquidacionesObservadas, string vendedor)
         {
-            // Agregar aquí la lógica para verificar cuentasHabilitadasDebeNotificarse y cuentasHabilitadasComunicado si es necesario.
-
-           
-
-        
-
+            // Agregar aquí la lógica para verificar cuentasHabilitadasDebeNotificarse y cuentasHabilitadasComunicado si es necesario            if (liquidacionesObservadas != null)
             if (liquidacionesObservadas != null)
             {
                 foreach (var liquidacion in liquidacionesObservadas)
@@ -490,7 +495,7 @@ namespace SustitucionMOAUtils.Services
                     {
                         Comunicacion oComunicacion = new Comunicacion
                         {
-                            ComunicacionTipo = 6,
+                            ComunicacionTipo = (int)ComunicacionTipoEnum.LiquidacionesObservadas,
                             ProveedorId = vendedor,
                             FechaCreacion = DateTime.Now.AddSeconds(-DateTime.Now.Second).AddMilliseconds(-DateTime.Now.Second),
                             Leida = false,
@@ -515,13 +520,177 @@ namespace SustitucionMOAUtils.Services
         private bool ExisteComprobanteEnBaseDeDatos(int comunicacionTipo, string proveedorId, string comprobante)
         {
             bool comunicacionPersistida = repositorio.Listar<Comunicacion>()
-                .Any(x => x.ComunicacionTipo == 6
+                .Any(x => x.ComunicacionTipo == (int)ComunicacionTipoEnum.LiquidacionesObservadas
                     && x.ProveedorId == proveedorId
                     && x.Comprobante == comprobante);
 
             return comunicacionPersistida; 
         }
 
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        /// <summary>
+        /// Metodo principal para persistencia de la comunicacion (Notificacion) referente a Exenciones vencidas o por vencer.
+        /// </summary>
+        /// <param name="vendedor"></param>
+        /// <param name="proveedor"></param>
+        /// <returns></returns>
+        public String ProcesarExenciones(string vendedor, string proveedor)
+        {
+            int diasFuturos = 15;
+
+            try
+            {
+                List<Exencion> _exenciones = ObtenerExencionesPorProveedor(vendedor, proveedor);
+
+                //FiltrarExencionesConFechaMenor
+                DateTime fechaLimite = fechaActual.AddDays(diasFuturos);
+
+                _exenciones = _exenciones .Where(x => DateTime.Parse(x.fechaHastaDate) < fechaLimite) .ToList();
+
+                //ModificarDescripcionSegunTablaAnexa
+                List<TipoRetencion> retenciones = repositorio.Listar<TipoRetencion>();
+
+                foreach (var exencion in _exenciones)
+                {
+                    TipoRetencion retencion = retenciones.FirstOrDefault(r => r.DenominacionActual == exencion.descripcion);
+                    if (retencion != null)
+                        exencion.descripcion = retencion.DescripcionWeb;
+                }
+
+                //FiltrarExencionesPorDescripcion
+                _exenciones = _exenciones.Where(e => e.descripcion != "NO ACTIVO").ToList();
+
+
+                List<Exencion> exencionesVencidas = FiltrarExencionesConFechaMenor(_exenciones, fechaActual, 0);
+                List<Exencion> exencionesVencidasNoPersistidas = ObtenerExencionesNoPersistidas(exencionesVencidas, vendedor, (int)ComunicacionTipoEnum.ExencionesVencidas);
+                PersistirExenciones(exencionesVencidasNoPersistidas, fechaActual, vendedor, (int)ComunicacionTipoEnum.ExencionesVencidas);
+
+                List<Exencion> exencionesAVencer = FiltrarExencionesConFechaMayorIgual(_exenciones, fechaActual, 0);
+                List<Exencion> exencionesAVencerNoPersistidas = ObtenerExencionesNoPersistidas(exencionesAVencer, vendedor, (int)ComunicacionTipoEnum.ExencionesAVencer);
+                PersistirExenciones(exencionesAVencerNoPersistidas, fechaActual, vendedor, (int)ComunicacionTipoEnum.ExencionesAVencer);
+
+                return "Fin de revision: Exenciones vencidas y por vencer.";
+            }
+            catch (Exception e)
+            {
+                Logger.Log.Error(
+                    System.Web.HttpContext.Current.Request.UserHostAddress, "", this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                string mensaje = "Fin de revision: Exenciones vencidas y por vencer. Falló !!! ";
+                return mensaje;
+            }
+        }
+
+
+        /// <summary>
+        /// Obtener datos de SAP
+        /// </summary>
+        /// <param name="vendedor"></param>
+        /// <param name="proveedor"></param>
+        /// <returns></returns>
+        public List<Exencion> ObtenerExencionesPorProveedor(string vendedor, string proveedor)
+        {
+            VendedorDetalleWSMOAResponse response = new VendedorDetalleConsumerMOA().request(vendedor, proveedor);
+            List<Exencion> exenciones = response.exenciones;
+
+            return exenciones;
+        }
+
+
+        /// <summary>
+        /// Filtrar exenciones con fecha menor a una fecha dada más n días agregados.
+        /// </summary>
+        /// <param name="exencionesDelProveedor"></param>
+        /// <param name="fechaActual"></param>
+        /// <param name="diasAgregados"></param>
+        /// <returns></returns>
+        public List<Exencion> FiltrarExencionesConFechaMenor(List<Exencion> exencionesDelProveedor, DateTime fechaActual, int diasAgregados)
+        {
+            DateTime fechaLimite = fechaActual.AddDays(diasAgregados);
+
+            List<Exencion> exenciones = exencionesDelProveedor
+                .Where(x => DateTime.Parse(x.fechaHastaDate) < fechaLimite)
+                .ToList();
+
+            return exenciones;
+        }
+
+
+        /// <summary>
+        /// Filtrar exenciones con fecha mayor o igual a una fecha dada más n días agregados.
+        /// </summary>
+        /// <param name="exencionesDelProveedor"></param>
+        /// <param name="fechaActual"></param>
+        /// <param name="diasAgregados"></param>
+        /// <returns></returns>
+        public List<Exencion> FiltrarExencionesConFechaMayorIgual(List<Exencion> exencionesDelProveedor, DateTime fechaActual, int diasAgregados)
+        {
+            DateTime fechaLimite = fechaActual.AddDays(diasAgregados);
+
+            List<Exencion> exenciones = exencionesDelProveedor
+                .Where(x => DateTime.Parse(x.fechaHastaDate) >= fechaLimite)
+                .ToList();
+
+            return exenciones;
+        }
+
+
+        /// <summary>
+        /// Obtener exencion grabada anteriormente para el tipo de comunicacion
+        /// </summary>
+        /// <param name="exenciones"></param>
+        /// <param name="vendedor"></param>
+        /// <param name="tipoComunicacion"></param>
+        /// <returns></returns>
+        public List<Exencion> ObtenerExencionesNoPersistidas(List<Exencion> exenciones, string vendedor, int tipoComunicacion)
+        {
+            List<Comunicacion> comunicacionPersistidaPreviamente = repositorio.Listar<Comunicacion>()
+                .Where(x => x.ComunicacionTipo == tipoComunicacion
+                    && x.ProveedorId == vendedor
+                )
+                .ToList();
+
+            List<Exencion> exencionesNoPersistidas = exenciones
+                .Where(ex => !comunicacionPersistidaPreviamente
+                    .Any(com => com.FechaVencimiento != null && com.FechaVencimiento.Value.ToString("yyyy-MM-dd") == ex.fechaHastaDate))
+                .ToList();
+
+            return exencionesNoPersistidas;
+        }
+
+
+        /// <summary>
+        /// Graba la notificacion de exenciones en la base de datos
+        /// </summary>
+        /// <param name="exenciones"></param>
+        /// <param name="fechaActual"></param>
+        /// <param name="vendedor"></param>
+        /// <param name="tipoComunicacion"></param>
+        public void PersistirExenciones(List<Exencion> exenciones, DateTime fechaActual, string vendedor, int tipoComunicacion)
+        {
+            if (exenciones != null)
+            {
+                foreach (var exencion in exenciones)
+                {
+                    Comunicacion oComunicacion = new Comunicacion
+                    {
+                        ComunicacionTipo = tipoComunicacion,
+                        ProveedorId = vendedor,
+                        FechaCreacion = fechaActual,
+                        Leida = false,
+                        FechaVencimiento = DateTime.Parse(exencion.fechaHastaDate),
+                        DescripcionWeb = exencion.descripcion
+                    };
+
+                    repositorio.Agregar(oComunicacion);
+                    repositorio.GuardarCambios();
+                }
+            }
+        }
+
     }
 }
+
+
+
 
