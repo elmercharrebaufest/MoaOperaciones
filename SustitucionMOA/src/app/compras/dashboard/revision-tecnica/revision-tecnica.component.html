@@ -58,7 +58,7 @@
                             <div class="col-md-3">
                                 <strong style="color: #666666;">Propuesta técnica</strong>
                             </div>
-                            <div *ngIf="p.Cotizacion else sinCotizacion">
+                            <div *ngIf="p.Cotizacion && p.Cotizacion.CotizacionEstado_Id == 1 else sinCotizacion">
                                 <div *ngIf="peticion.TipoPosicionCodigo != 'MATERIALES'">
                                 <div *ngIf="p.Cotizacion.TieneObservacionTecnica" class="col-md-7">
                                     {{p.Cotizacion.ObservacionTecnica}}
