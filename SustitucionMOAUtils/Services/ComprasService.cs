@@ -2603,7 +2603,7 @@ namespace SustitucionMOAUtils.Services
                 var esAdmin = usuario.Permisos.Any(p => p == "ADJUDICAR DENTRO DEL PLAZO DE OFERTAS");
                 var solp = obtenerSolpConsumerMOA.RequestSolpWithNroAndDates(filtros);
 
-                todasLasOfertas.VerPrecio = ValidarVisualizarPrecio(usuario.Id, PeticionOferta_Id) && esAdmin;
+                todasLasOfertas.VerBotonVerPrecio = ValidarVisualizarPrecio(usuario.Id, PeticionOferta_Id) && esAdmin;
 
                 foreach (var item in todasLasOfertas.Usuarios)
                 {
@@ -2677,7 +2677,7 @@ namespace SustitucionMOAUtils.Services
                     }
                     else
                     {
-                        item.VerImportes = !todasLasOfertas.VerPrecio;
+                        item.VerImportes = !todasLasOfertas.VerBotonVerPrecio;
                     }
                     if (!item.EstaHabilitado)
                     {
@@ -2687,6 +2687,7 @@ namespace SustitucionMOAUtils.Services
                     item.MensajeAdjudicar = mensaje;
                     item.VerAdjudicar = verAdjudicar;
                 }
+             
                 foreach (var posicion in todasLasOfertas.PeticionDeOfertaPosicion)
                 {
 
@@ -6225,7 +6226,7 @@ namespace SustitucionMOAUtils.Services
 
         private bool ValidarVisualizarPrecio(int usuarioId, int peticionDeOfertaId)
         {
-            return repositorio.Listar<PeticionDeOfertaVisualizacionPrecio>(x => x.UsuarioCreador_Id == usuarioId && x.PeticionDeOferta_Id == peticionDeOfertaId).Any();
+            return !repositorio.Listar<PeticionDeOfertaVisualizacionPrecio>(x => x.UsuarioCreador_Id == usuarioId && x.PeticionDeOferta_Id == peticionDeOfertaId).Any();
         }
 
     }

@@ -96,7 +96,7 @@ namespace SustitucionMOAModel.Dto
         public bool? Urgencia { get; set; }
         public bool? TieneVisitaObraBool { get; set; }
         public bool RevisionFinalizada { get; set; }
-        public bool VerPrecio { get; set; }
+        public bool VerBotonVerPrecio { get; set; }
     }
 
     public class PeticionDeOfertaSolpPosicionDto

@@ -493,8 +493,8 @@ export class ComprasService extends BaseService {
         params = params.set('nroSolp', nroSolp);
         params = params.set('nroPo', nroPo);
         params = params.set('nombrePedido', nombrePedido);
-        params = params.set('estadoLicitacion', estadoLicitacion != null? estadoLicitacion.toString() : null);
-        params = params.set('estadoCotizacion', estadoCotizacion != null? estadoCotizacion.toString() : null);
+        params = params.set('estadoLicitacion', estadoLicitacion != null ? estadoLicitacion.toString() : null);
+        params = params.set('estadoCotizacion', estadoCotizacion != null ? estadoCotizacion.toString() : null);
         params = params.set('fechaDesde', (fechaDesde != null ? fechaDesde : ""));
         params = params.set('fechaHasta', (fechaHasta != null ? fechaHasta : ""));
         return this.http
@@ -866,23 +866,24 @@ export class ComprasService extends BaseService {
         return this.http
             .post<any>('/api/compras/CerrarCotizacion', payload, { headers: this.headers });
     }
- public GrabarPeticionDeOfertaVisualizacionPrecio(peticion: PeticionVisualizacionPrecioDto) {            
-    
+
+    public GrabarPeticionDeOfertaVisualizacionPrecio(peticion: PeticionVisualizacionPrecioDto) {
+
         const jsonPayload = JSON.stringify({
             Observacion: peticion.Observacion,
             PeticionDeOferta_Id: peticion.PeticionOfertaId
         });
-        
         console.log(jsonPayload, "json")
         const payload = new FormData();
         payload.append('json', jsonPayload);
-    
+
         peticion.Adjuntos.forEach((fileToUpload: File) => {
             payload.append("filePeticionDeOfertaVisualizacionPrecio", fileToUpload, fileToUpload.name);
         });
-    
+
         return this.http.post<any>('/api/compras/GrabarPeticionDeOfertaVisualizacionPrecio', payload, { headers: this.headers });
     }
+
     public obtenerReporteOrdenDeCompra(nroOC: string, fechaDesde: string, fechaHasta: string, codigoProveedor: string): Observable<any> {
         let params: HttpParams = new HttpParams();
         params = params.set("nroOC", nroOC);
