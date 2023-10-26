@@ -893,7 +893,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
                     } else if (result.info != undefined) {
                         this.floatMsgService.setInfoMsg(result.info);
                     } else {
-                        this.solpActual.agregarNuevaPosicion(null as SolpPosicion);
+                     //this.solpActual.agregarNuevaPosicion(null as SolpPosicion);
                         this.datosUltimaSolp = result.data;
                         this.completarDatosUltimaSolp();
                         this.blockUI.stop();
