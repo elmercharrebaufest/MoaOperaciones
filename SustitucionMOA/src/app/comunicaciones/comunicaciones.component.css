@@ -10,6 +10,7 @@
     border-left: 1px solid gray;
     border-right: 1px solid gray;
     border-bottom: 1px solid gray;
+    padding-right: 2px;
 }
 
 .scrollable-container {
@@ -117,7 +118,6 @@
 }
 
 .container-date {
-    display: grid;
     margin-right: 24px;
 }
 

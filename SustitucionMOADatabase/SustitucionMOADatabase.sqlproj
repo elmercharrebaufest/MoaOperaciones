@@ -208,6 +208,8 @@
     <None Include="scripts\Comunicacion\ComunicacionTipo.sql" />
     <Build Include="DBO\Tables\Comunicacion.sql" />
     <Build Include="DBO\Tables\ComunicacionTipo.sql" />
+    <None Include="scripts\Comunicacion\ComunicacionTipo.sql" />
+    <Build Include="DBO\Tables\TipoRetencion.sql" />
     <Build Include="DBO\Tables\NotificacionAdjunto.sql" />
     <Build Include="DBO\Tables\NotificacionLeida.sql" />
     <Build Include="DBO\Tables\NotificacionPrioridad.sql" />
@@ -244,6 +246,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="jji.publish.xml" />
+    <None Include="scripts\Comunicacion\TipoRetencion.sql" />
     <None Include="DatabasePublishHueInt.xml" />
   </ItemGroup>
   <ItemGroup>

@@ -56,6 +56,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Enums\ComunicacionTipoEnum.cs" />
     <Compile Include="Consulta\DirOrden.cs" />
     <Compile Include="Consulta\Expresiones.cs" />
     <Compile Include="Consulta\ListaPaginada.cs" />
@@ -164,6 +165,7 @@
     <Compile Include="Dto\TablaEstadoDto.cs" />
     <Compile Include="Dto\Compras\TablaGeneralDto.cs" />
     <Compile Include="Dto\Compras\TablaSapDto.cs" />
+    <Compile Include="Dto\TipoRetencionDto.cs" />
     <Compile Include="Dto\TipoUsuarioDto.cs" />
     <Compile Include="Dto\Compras\UsuarioComprasDto.cs" />
     <Compile Include="Dto\Compras\UsuarioComprasRelacionConUsuariosDto.cs" />
@@ -188,6 +190,7 @@
     <Compile Include="Entities\PeticionDeOferta.cs" />
     <Compile Include="Entities\OrdenDeCargaFason.cs" />
     <Compile Include="Entities\ProveedorAuditoria.cs" />
+    <Compile Include="Entities\TipoRetencion.cs" />
     <Compile Include="Entities\UnidadMedidaSap.cs" />
     <Compile Include="Enums\RolEnum.cs" />
     <Compile Include="Enums\TipoContratoFAS.cs" />

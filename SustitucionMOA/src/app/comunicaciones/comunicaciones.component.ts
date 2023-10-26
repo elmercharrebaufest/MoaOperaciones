@@ -9,8 +9,6 @@ import { ComunicacionesService } from './comunicaciones.service';
 import { SessionDataService } from '../common/services/SessionDataService';
 import { LayoutComponent } from '../layout/layout.component';
 import { Router } from '@angular/router';
-import { forEach } from '@angular/router/src/utils/collection';
-
 
 @Component({
   selector: 'app-comunicaciones',
@@ -23,7 +21,8 @@ export class ComunicacionesComponent extends BaseComponent implements OnInit {
   communication: any;
   idProveedor: string;
   communicationRead: boolean[] = [];
-  arrayFecha: any;
+  arrayVencidas: any;
+  arrayProximasAVencer: any;
   quantityCommunication: number = 0;
   hasCommunications: boolean = false;
   showButtonMoreCommunications: boolean = false;
@@ -61,7 +60,8 @@ export class ComunicacionesComponent extends BaseComponent implements OnInit {
   getComunicaciones(idProveedor, start_date, end_date) {
     this.communicationRead = [];
     this.quantityCommunication = 0;
-    this.arrayFecha = new Set<string>();
+    this.arrayVencidas = new Set();
+    this.arrayProximasAVencer = new Set();
   
     try {
       this.unsubscribe();
@@ -78,87 +78,81 @@ export class ComunicacionesComponent extends BaseComponent implements OnInit {
             } else {
               this.showButtonMoreCommunications = false;
             }
+         }
+
+         const agrupadoPorFecha = result.data.reduce((result, element) => {
+              const fechaCreacion = element.FechaCreacion;
+
+              if (!result[fechaCreacion]) {
+                  result[fechaCreacion] = [];
               }
 
+              result[fechaCreacion].push(element);
 
+              return result; 
+          }, {});
 
-              //const arrayFiltrado = result.data.filter(element => element.ComunicacionTipo === 6);
+          this.communication = agrupadoPorFecha;
 
-              const agrupadoPorFecha = result.data.reduce((result, element) => {
-                  const fechaCreacion = element.FechaCreacion;
+          const filteredCommunication = {};
 
-                  // Verificar si ya existe una entrada en el resultado para esta fecha
-                  if (!result[fechaCreacion]) {
-                      result[fechaCreacion] = [];
-                  }
+          for (const fecha in this.communication) {
+            const items = this.communication[fecha];
+            const filteredItems = [];
+          
+            let tipo1Found = false;
+            let tipo2Found = false;
+          
+            for (const item of items) {
+              if (item.ComunicacionTipo === 1 && !tipo1Found) {
+                filteredItems.push(item);
+                tipo1Found = true;
+              } else if (item.ComunicacionTipo === 2 && !tipo2Found) {
+                filteredItems.push(item);
+                tipo2Found = true;
+              } else if (item.ComunicacionTipo !== 1 && item.ComunicacionTipo !== 2) {
+                filteredItems.push(item);
+              }
+            }
+          
+            if (filteredItems.length > 0) {
+              filteredCommunication[fecha] = filteredItems;
+            }
+          }
 
-                  // Agregar el elemento al grupo de la fecha correspondiente
-                  result[fechaCreacion].push(element);
+          this.communication = filteredCommunication;
 
-                  return result;
-              }, {});
+          result.data.forEach((item: any) => {
+            if (item.ComunicacionTipo === 1 && item.DescripcionWeb !== null) {
+              this.arrayVencidas.add(item.DescripcionWeb);
+            }
+          });
+          
+          this.arrayVencidas = Array.from(this.arrayVencidas);
 
-              this.communication = agrupadoPorFecha;
+          result.data.forEach((item: any) => {
+            if (item.ComunicacionTipo === 2 && item.DescripcionWeb !== null) {
+              this.arrayProximasAVencer.add(item.DescripcionWeb);
+            }
+          });
+          
+          this.arrayProximasAVencer = Array.from(this.arrayProximasAVencer);
 
-  
-          //this.communication = result.data.filter((item: any) => {
-          //  if (item.ComunicacionTipo === 6) {
-          //    if (!this.arrayFecha.has(item.FechaCreacion)) {
-                
-          //      this.arrayFecha.add(item.FechaCreacion);
-          //      return true; 
-          //    }
-          //    return false;
-          //  } else {
-          //    return true;
-          //  }
-          //});
+          const auxComunications = Object.keys(this.communication);
 
-              console.log(this.communication);
-              console.log(this.arrayFecha);
-
-
-              
-
-         
-
-
-              const auxComunications = Object.keys(this.communication);
-
-              auxComunications.forEach((key) => {
-
-                  let contar = true;
-                  this.communication[key].forEach((item, i) => {
-                      
-                       
-                      if (item.Leida === false) {
-                        
-
-                          if (item.ComunicacionTipo === 6 && item.FechaCreacion === key && contar) {
-                              this.quantityCommunication++
-                              contar = false;
-                          }
-
-                          if (item.ComunicacionTipo !== 6)
-                               this.quantityCommunication++
-
-                      }
-                          
-                  })  
-                  
-              });
-
-
-              
-
-
-
-          //    const unreadCommunications = this.communication.filter((item: any) =>
-          //        item.Leida === false
-          //    );
-
-          //this.quantityCommunication = unreadCommunications.length;
-              //this.layoutComponent.updateQuantity(23);
+          auxComunications.forEach((key) => {
+            let contar = true;
+            this.communication[key].forEach((item, i) => {
+              if (item.Leida === false) {
+                if (item.ComunicacionTipo === (1 || 2 || 6) && item.FechaCreacion === key && contar) {
+                  this.quantityCommunication++
+                  contar = false;
+                }
+                if (item.ComunicacionTipo !== (1 || 2 || 6))
+                  this.quantityCommunication++
+                }
+            })  
+          });
 
           this.layoutComponent.updateQuantity(this.quantityCommunication);
         }
@@ -195,40 +189,13 @@ export class ComunicacionesComponent extends BaseComponent implements OnInit {
   
   dateFormat(dateString: string): String {
 
-    // Verifica si tiene a.m o p.m la fecha
-    //if (!dateString.includes("a. m.") && !dateString.includes("p. m.")) {
-    //  // Obtener las horas del dateString
-    //  const [hh] = dateString.split(":");
-    //  const hour24 = parseInt(hh);
-  
-    //  // Determinar si es "AM" o "PM" y actualizar 'dateString'
-    //  if (hour24 >= 12) {
-    //    dateString += "p. m.";
-    //  } else {
-    //    dateString += "a. m.";
-    //  }
-    //}
-
     const part = dateString.split(" ");
-    const date = part[0]; // "09/01/2023"
-    const hour = part[1];  // "12:00:00"
-    //const ampm = part[2]; // a.m p.m
+    const date = part[0];
+    const hour = part[1]; 
 
     const [hh, mm, ss] = hour.split(":");
 
     let hour24 = hh;
-
-    //if (ampm.toLowerCase() === "p.") {
-    //  // Si es PM, agrega 12 a la hora (excepto a las 12 PM)
-    //  if (hh !== "12") {
-    //    hour24 = String(Number(hh) + 12);
-    //  }
-    //} else if (ampm.toLowerCase() === "a.") {
-    //  // Si es AM y la hora es 12 AM, cambia la hora a 00
-    //  if (hh === "12") {
-    //    hour24 = "00";
-    //  }
-    //}
 
     // La hora en formato de 24 horas
     const hour24Format = `${hour24}:${mm}`;
@@ -236,26 +203,21 @@ export class ComunicacionesComponent extends BaseComponent implements OnInit {
     return hour24Format
   }
 
-    openCommunication(notificaciones, fechacreacion, tipoComunicacion,i) {
+  openCommunication(notificaciones, fechacreacion, tipoComunicacion,i) {
+    const ids = [];
 
+    notificaciones.forEach((notificacion) => {
+      if (notificacion.Leida == false && notificacion.ComunicacionTipo === tipoComunicacion)
+        ids.push(notificacion.Id);
+    }); 
+
+    if (ids.length)
+      this.serviceComunicaciones.postComunicacionLeida(ids).subscribe();
+    setTimeout(() => {
+      this.getComunicaciones(this.idProveedor, this.startDate, this.endDate);
+    }, 500);
   
-        const ids = [];
-
-        notificaciones.forEach((notificacion) => {
-            if (notificacion.Leida == false && notificacion.ComunicacionTipo === tipoComunicacion)
-                ids.push(notificacion.Id);
-        });
-
-        
-
-        if (ids.length)
-        this.serviceComunicaciones.postComunicacionLeida(ids).subscribe();
-      setTimeout(() => {
-        this.getComunicaciones(this.idProveedor, this.startDate, this.endDate);
-      }, 500);
-    
-
-        this.redirect(notificaciones[i].ComunicacionTipo);
+    this.redirect(notificaciones[i].ComunicacionTipo);
   }
 
   unreadCommunication(notificacion) {
@@ -270,6 +232,14 @@ export class ComunicacionesComponent extends BaseComponent implements OnInit {
 
   redirect(communicationType: number) {
     switch (communicationType) {
+      case 1:
+        this.router.navigate(['/consulta/crear-consulta'], { queryParams: { filter : 'ExencionesVencidas' }});
+        break;
+
+      case 2:
+        this.router.navigate(['/consulta/crear-consulta'], { queryParams: { filter : 'ExencionesProximasAVencer' }});
+        break;
+
       case 3:
         this.router.navigate(['/consulta/crear-consulta'], { queryParams: { filter : 'CM05' }});
         break;
@@ -289,15 +259,14 @@ export class ComunicacionesComponent extends BaseComponent implements OnInit {
 
   private checkCommunications() {
     setTimeout(() => {
-        this.getComunicaciones(this.idProveedor, this.startDate, this.endDate);
-        this.checkCommunications();
+      this.getComunicaciones(this.idProveedor, this.startDate, this.endDate);
+      this.checkCommunications();
     }, 15000);
-    }
+  }
 
-      // Función auxiliar para obtener las claves del objeto
+    // FunciÃ³n auxiliar para obtener las claves del objeto
     objectKeys(obj: any) {
-
-        var retu = Object.keys(obj)
+      var retu = Object.keys(obj)
     return retu;
   }
 }

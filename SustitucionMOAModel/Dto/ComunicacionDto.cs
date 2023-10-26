@@ -15,10 +15,11 @@ namespace SustitucionMOAModel.Dto
         public string ProveedorId { get; set; }
         public string FechaCreacion { get; set; }
         public bool Leida { get; set; }
-
-        //public void Add(ComunicacionDto comunicacionDto)
-        //{
-        //    throw new NotImplementedException();
-        //}
+        public string Detalle { get; set; }
+        public string CM05 { get; set; }
+        public DateTime FechaRecomunicacion { get; set; }
+        public string Comprobante { get; set; }
+        public DateTime FechaVencimiento { get; set; }
+        public string DescripcionWeb { get; set; }
     }
 }

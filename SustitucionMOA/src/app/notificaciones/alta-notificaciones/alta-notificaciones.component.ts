@@ -58,6 +58,10 @@ export class AltaNotificacionesComponent extends BaseComponent implements OnInit
 
     allRoles: boolean = false;
     allTipos: boolean = false;
+
+    titulos: Array<string> = ["Externo", "Interno"];
+    rolesSeleccionados: Array<Rol> = [];
+    
     
     constructor(protected service: NotificacionesService,
         protected usuarioService: UsuarioService, protected navService: NavService,
@@ -395,8 +399,11 @@ export class AltaNotificacionesComponent extends BaseComponent implements OnInit
                     } else if (result.info != undefined) {
                         this.mensajeComponent.setInfoMsg(result.info);
                     } else {
-                        this.roles = result.data.roles;
+                      
+                        this.roles = result.data.roles.filter((rol) => rol.Code === "Externo" || rol.Code === "Interno");
                     }
+
+                  
                 },
                 error => {
                     this.mensajeComponent.setErrorMsg(error.message);
@@ -406,6 +413,8 @@ export class AltaNotificacionesComponent extends BaseComponent implements OnInit
             this.mensajeComponent.setErrorMsg(e);
         }
     }
+
+
     
     checkAllRoles() {
         setTimeout(() => {
@@ -417,6 +426,10 @@ export class AltaNotificacionesComponent extends BaseComponent implements OnInit
 
 
     submit() {
+
+        this.fecha_inicio = (<HTMLInputElement>document.querySelectorAll('[fechaInicioInput]')[0]).value;
+        this.fecha_fin = (<HTMLInputElement>document.querySelectorAll('[fechaFinInput]')[0]).value;
+
 
         this.horaInicio = this.horaInicioSelect.nativeElement.value;
 
