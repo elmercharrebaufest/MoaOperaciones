@@ -72,7 +72,6 @@ export class ReporteOcComponent extends ListBaseComponent {
 
     obtenerReporteOrdenDeCompra() {
         try {
-            this.spinnerComponent.showIt();
             this.subscription = this.service.obtenerReporteOrdenDeCompra(this.nroOc, this.fechaDesde, this.fechaHasta, this.codigoProveedor).subscribe(
                 (result: any) => {
                     if (result.logout == true) {
@@ -83,26 +82,21 @@ export class ReporteOcComponent extends ListBaseComponent {
                         this.floatMsgService.setInfoMsg(result.info);
                     } else {
                         this.ordenDeCompraSap = result;
-                        this.spinnerComponent.hideIt();
                     }
                 },
                 error => {
                     this.floatMsgService.setErrorMsg(error.message);
-                    this.spinnerComponent.hideIt();
 
                 });
         } catch (e) {
             this.floatMsgService.setErrorMsg(e);
-            this.spinnerComponent.hideIt();
 
             return false; //<-- Prevent Refresh
         }
-        this.spinnerComponent.hideIt();
         return false; //<-- Prevent Refresh
     }
 
     onBuscar() {
-        this.spinnerComponent.showIt();
         this.obtenerReporteOrdenDeCompra();
     }
 

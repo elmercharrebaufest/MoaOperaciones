@@ -6160,6 +6160,8 @@ namespace SustitucionMOAUtils.Services
 
             //result = result.Where(x => x.Cabecera?.FechaCreacion <= fechaHastaDate).ToList();
 
+            result = result.OrderByDescending(x => x.Cabecera.FechaCreacion).ToList();
+
             result = result
               .Where(x => x.Cabecera == null || (x.Cabecera.FechaCreacion <= fechaHastaDate))
               .ToList();
