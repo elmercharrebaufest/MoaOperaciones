@@ -127,7 +127,7 @@
         ¡Felicitaciones!
     </p-header>
     <br> La vinculación del Pliego se realizó correctamente.
-    <br> Puede descargar la SOLP y enviarla por mail.
+    <br> <p *ngIf="solpActual.tipoSolp == 'CON_PLIEGO' || tieneAdjuntos">Puede descargar la SOLP y enviarla por mail.</p>
     <br>
     <p-footer>
         <button *ngIf="solpActual.tipoSolp == 'CON_PLIEGO' || tieneAdjuntos" type="button" class="btn btn-secondary botonesCompras" (click)="generarZipPliego(solpActual.id)">Descargar SOLP</button>

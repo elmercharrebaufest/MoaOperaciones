@@ -17,7 +17,7 @@
 
                         <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
                             <p-calendar showButtonBar="true" [showIcon]="true" placeholder="Filtro fechas"
-                                        dateFormat="dd/mm/yy" (onSelect)="onSelect($event)" appendTo="body"
+                                        dateFormat="dd/mm/yy" (onSelect)="onSelect($event)" appendTo="body" [monthNavigator]="true" [yearNavigator]="true" yearRange="2010:2030"
                                         [(ngModel)]="rangeDates" selectionMode="range" [readonlyInput]="true" [locale]="locale"
                                         (onClearClick)="returnToTodaysDate()">
                             </p-calendar>
@@ -32,13 +32,13 @@
     </section>
     <spinner></spinner>
     <div class="col-sm-12 col-md-12 col-lg-12" style="margin-left: -15px;">
-        <p-table #tabla [value]="ordenDeCompraSap" [paginator]="true" [rows]="10" responsiveLayout="scroll | stack" dataKey="Id">
+        <p-table #tabla [value]="ordenDeCompraSap" [paginator]="true" [rows]="10" responsiveLayout="scroll | stack" dataKey="Id" sortMode="multiple">
             <ng-template pTemplate="header" let-columns>
                 <tr style="font-size: 15px;">
-                    <th class="columna" style="text-transform: none !important;">Nro OC</th>
-                    <th class="columna" style="text-transform: none !important;">Fecha adjudicacion</th>
-                    <th class="columna" style="text-transform: none !important;">Monto Total</th>
-                    <th class="columna" style="text-transform: none !important;">Moneda</th>
+                    <th [pSortableColumn]="'Cabecera.OrdenDeCompra'" class="columna" style="text-transform: none !important;">Nro OC <p-sortIcon [field]="'Cabecera.OrdenDeCompra'" ariaLabel="Activate to sort" ariaLabelDesc="Activate to sort in descending order" ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon></th>
+                    <th [pSortableColumn]="'Cabecera.FechaCreacion'" class="columna" style="text-transform: none !important;">Fecha adjudicacion <p-sortIcon [field]="'Cabecera.FechaCreacion'" ariaLabel="Activate to sort" ariaLabelDesc="Activate to sort in descending order" ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon></th>
+                    <th [pSortableColumn]="'Cabecera.MontoTotal'" class="columna" style="text-transform: none !important;">Monto Total <p-sortIcon [field]="'Cabecera.MontoTotal'" ariaLabel="Activate to sort" ariaLabelDesc="Activate to sort in descending order" ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon></th>
+                    <th [pSortableColumn]="'Cabecera.Moneda'" class="columna" style="text-transform: none !important;">Moneda <p-sortIcon [field]="'Cabecera.Moneda'" ariaLabel="Activate to sort" ariaLabelDesc="Activate to sort in descending order" ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon></th>
                     <th class="columna" style="width: 300px !important; text-transform: none !important;"></th>
                 </tr>
             </ng-template>
