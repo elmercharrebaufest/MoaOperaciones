@@ -895,7 +895,9 @@ export class SolpComponent extends BaseComponent implements OnInit {
                     } else {
                      //this.solpActual.agregarNuevaPosicion(null as SolpPosicion);
                         this.datosUltimaSolp = result.data;
-                        this.completarDatosUltimaSolp();
+                        if(this.datosUltimaSolp != null){
+                            this.completarDatosUltimaSolp();
+                        }
                         this.blockUI.stop();
                     }
                 },
