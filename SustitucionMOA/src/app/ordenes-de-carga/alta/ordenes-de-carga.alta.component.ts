@@ -284,16 +284,6 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
                 this.mensajeComponent.setInfoMsg("Seleccione una planta.");
                 return false;
             }
-            const tieneMensajes = Object.keys(this.mensajesOrdenDeCarga).some(key => this.mensajesOrdenDeCarga[key])
-            if (tieneMensajes) {
-                this.mensajeComponent.setInfoMsg("Hay campos que no son válidos.");
-                return false;
-            }
-            const estaValidando = Object.keys(this.validando).some(key => this.validando[key]);
-            if (estaValidando) {
-                this.mensajeComponent.setInfoMsg("Hay campos que todavía se están validando");
-                return false;
-            }
         }
         else {
             if (!this.ordenDeCarga.DestinoMercaderia || this.ordenDeCarga.DestinoMercaderia.length < 5) {
@@ -301,6 +291,18 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
                 return false;
             }
         }
+
+        const estaValidando = Object.keys(this.validando).some(key => this.validando[key]);
+        if (estaValidando) {
+            this.mensajeComponent.setInfoMsg("Hay campos que todavía se están validando");
+            return false;
+        }
+
+        const hayMensajeExtra = Object.keys(this.mensajesOrdenDeCarga).find(key => this.mensajesOrdenDeCarga[key]);       
+        if (hayMensajeExtra) {
+            this.mensajeComponent.setInfoMsg(hayMensajeExtra);
+            return false;
+            }
 
         if (!this.ordenDeCarga.Producto_Id) {
             this.mensajeComponent.setInfoMsg("Seleccione un contrato.");
@@ -1438,9 +1440,8 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
     }
     validarKilosDisponibles() {
         this.mensajesOrdenDeCarga.ContratoSeleccionado = null;
-        const esInterno = (this.esComercial || this.esAdmin);
 
-        if (this.ordenDeCargaId == 0 && !esInterno) {
+        if (this.ordenDeCargaId == 0) {
             this.floatMsgService.setMsgsEmpty();
             if (this.ordenDeCarga.ContratoSeleccionado) {
                 const { KgDisponibles } = this.ordenDeCarga.ContratoSeleccionado;
@@ -1458,9 +1459,8 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
     }
     validarKilosDisponiblesPedido() {
         this.mensajesOrdenDeCarga.NumeroFacturaSeleccionada = null;
-        const esInterno = (this.esComercial || this.esAdmin);
 
-        if (this.ordenDeCargaId == 0 && !esInterno) {
+        if (this.ordenDeCargaId == 0) {
             this.floatMsgService.setMsgsEmpty();
             if (this.facturaSeleccionada) {
                 const { KgDisponibles } = this.facturaSeleccionada;
