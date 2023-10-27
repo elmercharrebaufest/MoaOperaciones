@@ -147,7 +147,7 @@ namespace SustitucionMOAUtils.Services.Email
         {
             var cuerpoTemplate = File.ReadAllText(TEMPLATE_NOTIFICACION_ORDENES);
 
-            var descripcion = "Hay más de una factura para seleccionar.";
+            var descripcion = "El cliente ha seleccionado un pedido con menos de 15 tn disponibles.";
             var cabecera = "Orden: " + ordenDeCarga.Id;
             var tablaOrdenes = GenerarTablaOrdenesANotificar(new OrdenDeCarga[] { ordenDeCarga });
             var cuerpo = string.Format(cuerpoTemplate, "", "", tablaOrdenes, descripcion, cabecera);
@@ -155,7 +155,7 @@ namespace SustitucionMOAUtils.Services.Email
             var emailSenderData = new EmailSenderData
             {
                 Mails = emailService.ObtenerListaDestinatarios(new string[] { DireccionMailAlimentacionAnimal, DireccionMailMesaVentaFas, DireccionMailComerciales }),
-                Asunto = $"Varias facturas pendientes - {ordenDeCarga.Cliente.RazonSocial}",
+                Asunto = $"Factura con menos de 15 tn - {ordenDeCarga.Cliente.RazonSocial}",
                 Cuerpo = cuerpo
             };
             emailService.EnviarMail(emailSenderData);
@@ -165,15 +165,15 @@ namespace SustitucionMOAUtils.Services.Email
         {
             var cuerpoTemplate = File.ReadAllText(TEMPLATE_NOTIFICACION_ORDENES);
 
-            var descripcion = "Se encontraron varios contratos para el mismo cliente";
-            var cabecera = "Orden: ";
+            var descripcion = "El cliente ha seleccionado un contrato con menos de 15 tn disponibles.";
+            var cabecera = "Orden: " + ordenDeCarga.Id;
             var tablaOrdenes = GenerarTablaOrdenesANotificar(new OrdenDeCarga[] { ordenDeCarga });
             var cuerpo = string.Format(cuerpoTemplate, "", "", tablaOrdenes, descripcion, cabecera);
 
             var emailSenderData = new EmailSenderData
             {
                 Mails = emailService.ObtenerListaDestinatarios(new string[] { DireccionMailMesaVentaFas, DireccionMailComerciales }),
-                Asunto = $"Varios ctto pendientes - {ordenDeCarga.Cliente.RazonSocial}",
+                Asunto = $"Contrato con menos de 15 tn - {ordenDeCarga.Cliente.RazonSocial}",
                 Cuerpo = cuerpo
             };
             emailService.EnviarMail(emailSenderData);
