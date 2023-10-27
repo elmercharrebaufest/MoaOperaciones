@@ -109,7 +109,7 @@ namespace SustitucionMOAUtils.Services
                 LlenarOrdenAltaCorredorCliente(ordenDeCarga, usuario);
                 ValidarOrdenDeCargaAlta(ordenDeCarga);
                 LlenarOrdenAlta(ordenDeCarga, usuario);
-                var ordenPuedeEnviarseDirectoSap = ValidarKgDisponiblesEnviaDirectamenteASAP(ordenDeCarga, usuario);
+                var ordenPuedeEnviarseDirectoSap = ContratoTieneKgDisponibles(ordenDeCarga);
 
                 var usuarioPuedeEnviarASAP = usuario.TienePermiso(PermisoEnum.EnviarASap);
 
@@ -130,7 +130,7 @@ namespace SustitucionMOAUtils.Services
                     ordenDeCarga.ContratoSAP = ordenDeCarga.ContratoIngresado;
                     if (ordenDeCarga.EsFacturaAnticipada)
                     {
-                        if (ValidarKgDisponiblesEnviaPedidoDirectamenteASAP(ordenDeCarga, usuario))
+                        if (PedidoTieneKgDisponibles(ordenDeCarga))
                         {
                             ordenDeCarga.NumeroFacturaSeleccionada = ordenDeCarga.NumeroFactura;
                             ordenDeCarga.NumeroPedido = ordenDeCarga.NumeroPedidoIngresado;
@@ -1800,7 +1800,7 @@ namespace SustitucionMOAUtils.Services
                 if (!string.IsNullOrEmpty(orden.ContratoSAP) && string.IsNullOrEmpty(orden.NumeroPedido) && crearPedido && !orden.EsFacturaAnticipada)
                     CrearPedidoEnSAP(orden, orden.Cliente, true, false, mailUsuario);
                 var aprobadoCredito = orden.AprobadoCredito || ObtenerSituacionCrediticia(orden);
-                if (aprobadoCredito && string.IsNullOrEmpty(orden.NumeroEntrega))
+                if (aprobadoCredito && string.IsNullOrEmpty(orden.NumeroEntrega) && !string.IsNullOrEmpty(orden.NumeroPedido))
                 {
                     GenerarEntregaSAP(orden);
                 }
@@ -1994,7 +1994,13 @@ namespace SustitucionMOAUtils.Services
         private Resultado GenerarEntregaSAP(OrdenDeCarga orden)
         {
             Log.Info("Ejecuta OrdenDeCargaService.GenerarEntregaSAP");
-
+            
+            if (string.IsNullOrEmpty(orden.NumeroPedido) && orden.EsFacturaAnticipada)
+            {
+                orden.Estado = EstadoOrdenDeCarga.Pendiente;
+                orden.DescripcionErrorInterno = "Orden con pedido entre 0 a 15Tn";
+                return new Resultado { Mensaje = "No se pudo generar la entrega. No se ha seleccionado una factura." };
+            }
             if (!ValidarExistenciaIntermediarioFlete(orden))
             {
                 orden.TransporteExiste = false;
@@ -2525,40 +2531,6 @@ namespace SustitucionMOAUtils.Services
             {
                 throw new Exception("Error en validación de reventa. No está cargado el Cliente para la Orden");
             }
-        }
-
-        /// <summary>
-        /// Validar la cantidad de kgs disponibles es la adecuada
-        /// </summary>
-        /// <param name="orden"></param>
-        /// <param name="usuario"></param>
-        private bool ValidarKgDisponiblesEnviaDirectamenteASAP(OrdenDeCarga orden, Usuario usuario)
-        {
-            var esAdmin = usuario.TienePermiso(PermisoEnum.VerTodasOrdenesDeCarga);
-            var esComercial = usuario.TienePermiso(PermisoEnum.VerOrdenesDeCargaParaComerciales);
-            var esMesaFas = usuario.TienePermiso(PermisoEnum.VerOrdenesDeCargaParaMesaFas);
-            var esPuerto = usuario.TienePermiso(PermisoEnum.VerOrdenesDeCargaParaPuerto);
-
-            var esInterno = (esAdmin || esComercial || esMesaFas || esPuerto);
-            if (!esInterno)
-            {
-                return ContratoTieneKgDisponibles(orden);
-            }
-            return true;
-        }
-        private bool ValidarKgDisponiblesEnviaPedidoDirectamenteASAP(OrdenDeCarga orden, Usuario usuario)
-        {
-            var esAdmin = usuario.TienePermiso(PermisoEnum.VerTodasOrdenesDeCarga);
-            var esComercial = usuario.TienePermiso(PermisoEnum.VerOrdenesDeCargaParaComerciales);
-            var esMesaFas = usuario.TienePermiso(PermisoEnum.VerOrdenesDeCargaParaMesaFas);
-            var esPuerto = usuario.TienePermiso(PermisoEnum.VerOrdenesDeCargaParaPuerto);
-
-            var esInterno = (esAdmin || esComercial || esMesaFas || esPuerto);
-            if (!esInterno)
-            {
-                return PedidoTieneKgDisponibles(orden);
-            }
-            return true;
         }
 
         private ControlCargaResponseHandler ControlarCarga(OrdenDeCarga ordenDeCarga, string codigoProveedor, bool soloSisa)
