@@ -1,8 +1,8 @@
 
 <div class="row titleSection">
      <div class="col-xs-12 col-sm-10 "> <strong>Cotización {{peticion.TipoPosicionCodigo}} | SOLP #{{peticion.NroSolp}} 
-                                            <b *ngIf="peticion.PeticionDeOfertaPosicion != null">
-                                                | PO # {{peticion.PeticionDeOfertaPosicion[0].PeticionDeOferta_Id}}
+                                            <b *ngIf="peticion.PeticionDeOfertaPosicion != null && peticion.PeticionDeOfertaPosicion != undefined">
+                                                | PO # {{peticion.PeticionDeOfertaPosicion[0]?.PeticionDeOferta_Id}}
                                             </b>         
              </strong>
     </div>
