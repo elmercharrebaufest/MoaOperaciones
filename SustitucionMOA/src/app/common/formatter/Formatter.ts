@@ -70,7 +70,7 @@
             return '';
         }
 
-        const formattedNumber = numericValue.toLocaleString('es', {
+        const formattedNumber = numericValue.toLocaleString('es-AR', {
             minimumFractionDigits: 0,
             maximumFractionDigits: 2,
         });
