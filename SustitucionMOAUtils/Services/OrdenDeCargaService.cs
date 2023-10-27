@@ -2491,6 +2491,10 @@ namespace SustitucionMOAUtils.Services
 
         private void ValidarOrdenDeCargaAlta(OrdenDeCarga orden)
         {
+            if(orden.PatenteAcoplado == orden.ChasisAcoplado)
+            {
+                throw new InfoCustomException("Las patentes de chásis y acoplado no pueden ser iguales.");
+            }
             ValidarCuilChofer(orden);
             ValidarReventa(orden);
         }
