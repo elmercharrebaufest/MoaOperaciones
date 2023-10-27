@@ -182,6 +182,7 @@ export class RevisionTecnicaComponent implements OnInit, OnChanges {
                 key: 'finalizarRevision',
                 message: 'Una vez finalizada la revisión técnica ya no podrá editarse. Esta seguro que deseea cerrar la revisión tecnica?',
                 accept: () => {
+
                     this.grabarRevisionTecnicaEmitter.next({ finalizar: true });
                 },
                 reject: () => {
