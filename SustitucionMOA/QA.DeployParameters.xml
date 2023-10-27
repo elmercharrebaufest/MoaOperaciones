@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <parameters>
 	<setParameter name="IIS Web Application Name" value="MOAOperacionesQA" />
-	<setParameter name="CONTEXTO-Web.config Connection String" value="data source=APPAGLQA.molinosagro.ad,1450;initial catalog=MOAOperacionesQA;integrated security=True;MultipleActiveResultSets=True;App=EntityFramework" />
-	<setParameter name="HfContexto-Web.config Connection String" value="data source=APPAGLQA.molinosagro.ad,1450;Initial Catalog=MOAOperacionesHangfireQA;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False"/>
+	<setParameter name="CONTEXTO-Web.config Connection String" value="data source=APPAGLQA.molinosagro.ad,1450;initial catalog=MoaoperacionesQAhotfix;integrated security=True;MultipleActiveResultSets=True;App=EntityFramework" />
+	<setParameter name="HfContexto-Web.config Connection String" value="data source=APPAGLQA.molinosagro.ad,1450;Initial Catalog=MOAOperacionesHangfireQAhotfix;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False"/>
 	<setParameter name="RutaArchivosProveedores Config" value="C:/ArchivosProveedores" />
 
 	<setParameter name="PasswordSapEnc Config" value="JJB4bZok9i28exDKsPlaTA==" />
