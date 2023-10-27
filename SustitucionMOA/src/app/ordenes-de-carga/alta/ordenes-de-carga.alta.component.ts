@@ -253,6 +253,10 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
             this.mensajeComponent.setInfoMsg("Ingrese un número de chasis válido.");
             return false;
         }
+        if (this.ordenDeCarga.ChasisAcoplado == this.ordenDeCarga.PatenteAcoplado) {
+            this.mensajeComponent.setInfoMsg("Las patentes de chásis y acoplado no pueden ser iguales.");
+            return false;
+        }
         if (!this.ordenDeCarga.RazonSocialTransporte || this.ordenDeCarga.RazonSocialTransporte.trim().length < 2) {
             this.mensajeComponent.setInfoMsg("Ingrese la razón social del transporte.");
             return false;
