@@ -346,7 +346,7 @@ namespace SustitucionMOATest.Services
         {
             Id = 1,
             Usuario = new Usuario { Id = 1, Mail = "bmelgarejo@prueba.com", UsuarioSap = "UsuarioSAP" },
-            PlazoDeOferta = DateTime.Now.AddDays(5),
+            PlazoDeOferta = DateTime.Now.AddDays(5),            
             Solp = new Solp
             {
                 Id = 1,
@@ -366,7 +366,11 @@ namespace SustitucionMOATest.Services
                                 }
                             },
                 Pliego = new Pliego { Id = 1, NombreObra = "Obra Pliego", VisitasMasivas = new List<PliegoVisita>() },
-                FechaCreacion = DateTime.Now
+                FechaCreacion = DateTime.Now,
+                TipoSolp = new TablaGeneral
+                {
+                    Codigo = "SIN_PLIEGO"
+                }
             },
             Posiciones = new List<PeticionDeOfertaSolpPosicion>
                 {
@@ -1906,7 +1910,10 @@ namespace SustitucionMOATest.Services
                 .Returns(new List<PeticionDeOfertaCierre> { new PeticionDeOfertaCierre { Id = 1, Fecha = DateTime.Now, Observacion = "", Usuario_Id = 1, Usuario = new Usuario { Id = 1, Mail = "", CUITRegistro = "005522" } } });
             repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<Circular, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null))
                 .Returns(new List<Circular> { new Circular { Id = 1, Archivos = new Collection<Archivo> { new Archivo { Id = 1, Ruta = "Ruta" } }, FechaCreacion = DateTime.Now, Usuario = new Usuario { Id = 1, TipoUsuario = new TipoUsuario { Id = 1, Nombre = "", NombreCorto = "" } } } });
-
+        
+            repositorioMock.Setup(y => y.Obtener(It.IsAny<Expression<Func<PeticionDeOfertaVisualizacionPrecio, bool>>>()))
+                .Returns(new PeticionDeOfertaVisualizacionPrecio { Archivo = new Archivo { Id = 1, Ruta = "Ruta" }, FechaCreacion = DateTime.Now, PeticionDeOferta_Id = 1, UsuarioCreador_Id = 1, Observaciones = "Observacion", Usuario = new Usuario { Id = 1, TipoUsuario = new TipoUsuario { Id = 1, Nombre = "", NombreCorto = "" } } });
+            
             var result = target.ObtenerLegajoParaExternos(1, "token"); //pasa por ObtenerLegajo() también
             Assert.That(result, Is.Not.Null);
             Assert.AreEqual(result.ListaLegajos.GetType(), legajo.ListaLegajos.GetType());
@@ -1939,6 +1946,29 @@ namespace SustitucionMOATest.Services
             Assert.IsNotNull(result);
             Assert.AreEqual(1, result.Count);
             Assert.AreEqual(DateTime.Parse("2023-02-01"), result[0].Cabecera.FechaCreacion);
+        }
+        [Test]
+        public void GrabarPeticionDeOfertaVisualizacionPrecioOk()
+        {
+            var peticion = new PeticionDeOfertaVisualizacionPrecioDto
+            {
+                Observacion = "Observacion",
+                UsuarioCreador_Id = 1,
+                PeticionDeOferta_Id = 1,
+                FechaCreacion = DateTime.Now,                
+            };
+            FileStream fileStream = new FileStream(filePath, FileMode.Open);
+            Mock<HttpPostedFileBase> file1 = new Mock<HttpPostedFileBase>();
+            file1.Setup(d => d.FileName).Returns("LogoBaufest.png");
+            file1.Setup(d => d.InputStream).Returns(fileStream);
+            file1.Setup(d => d.ContentLength).Returns(Convert.ToInt32(fileStream.Length));
+
+            var adjuntosMock = new Mock<HttpFileCollectionBase>();
+            adjuntosMock.Setup(x => x.GetMultiple(It.IsAny<string>())).Returns(new List<HttpPostedFileBase> { file1.Object });
+
+            var result = target.GrabarPeticionDeOfertaVisualizacionPrecio(peticion, adjuntosMock.Object);
+            repositorioMock.Verify(x => x.Agregar(It.IsAny<PeticionDeOfertaVisualizacionPrecio>()), Times.Once);
+            repositorioMock.Verify(x => x.GuardarCambios(), Times.Exactly(2));
         }
     }
 }
