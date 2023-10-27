@@ -134,7 +134,7 @@ namespace SustitucionMOAUtils.Services
                             GenerarEntregaSAP(ordenDeCarga);
                         else
                         {
-                            ordenDeCarga.DescripcionErrorInterno = "Se debe seleccionar una factura.";
+                            ordenDeCarga.DescripcionErrorInterno = "Orden con pedido entre 0 a 15Tn.";
                             ordenDeCarga.Estado = EstadoOrdenDeCarga.Pendiente;
                         }
                     }
@@ -153,7 +153,7 @@ namespace SustitucionMOAUtils.Services
                     (ordenDeCarga.EsFacturaAnticipada && !PedidoTieneKgDisponibles(ordenDeCarga))))
                 {
                     ordenDeCarga.Estado = EstadoOrdenDeCarga.Pendiente;
-                    ordenDeCarga.DescripcionErrorInterno = "Orden con pedido entre 0 a 15Tn";
+                    ordenDeCarga.DescripcionErrorInterno = "Orden con contrato/pedido entre 0 a 15Tn.";
                 }
                 repositorio.GuardarCambios();
 

@@ -298,11 +298,11 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
             return false;
         }
 
-        const hayMensajeExtra = Object.keys(this.mensajesOrdenDeCarga).find(key => this.mensajesOrdenDeCarga[key]);       
-        if (hayMensajeExtra) {
-            this.mensajeComponent.setInfoMsg(hayMensajeExtra);
+        const hayMensajeExtraKey = Object.keys(this.mensajesOrdenDeCarga).find(key => this.mensajesOrdenDeCarga[key]);
+        if (hayMensajeExtraKey) {
+            this.mensajeComponent.setInfoMsg(this.mensajesOrdenDeCarga[hayMensajeExtraKey]);
             return false;
-            }
+        }
 
         if (!this.ordenDeCarga.Producto_Id) {
             this.mensajeComponent.setInfoMsg("Seleccione un contrato.");
@@ -782,6 +782,15 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
         this.facturasDisponibles = [];
         this.ordenDeCarga.NumeroFactura = null;
         this.facturaSeleccionada = null;
+        this.mensajesOrdenDeCarga = {
+            ... this.mensajesOrdenDeCarga,
+            CUITIntermediarioFlete: null,
+            CUITCorredor: null,
+            CUITCliente: null,
+            CUITDestino: null,
+            CUITDestinatario: null,
+            NumeroFacturaSeleccionada: null,
+        }
         if (this.ordenDeCarga.ContratoSeleccionado) {
             this.Contrato = this.ordenDeCarga.ContratoSeleccionado.NumeroContrato;
             this.ordenDeCarga.ContratoIngresado = this.ordenDeCarga.ContratoSeleccionado.NumeroContrato;
