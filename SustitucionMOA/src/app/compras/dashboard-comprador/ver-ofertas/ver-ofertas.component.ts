@@ -403,6 +403,33 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
         this.displayVisualizarPrecio = true;
     }
 
+
+      obtenerPrimerPlazo(cotizacionPosicion: any): string {
+        let plazos = '';
     
+        if (cotizacionPosicion.PrimerPlazoDeOferta > 0) {
+            plazos += 'Plazo: ' + cotizacionPosicion.PrimerPlazoDeOferta + ' - Cantidad: ' + cotizacionPosicion.PrimeraCantidad;
+        } else {
+            plazos += 'sin Plazo';
+        }    
+        return plazos;
+      }
+
+      obtenerSegundoPlazo(cotizacionPosicion: any): string {
+        let plazos = '';
+        if (cotizacionPosicion.SegundoPlazoDeOferta > 0) {
+            plazos += 'Plazo: ' + cotizacionPosicion.SegundoPlazoDeOferta + ' - Cantidad: ' + cotizacionPosicion.SegundaCantidad ;
+        }
+        return plazos;
+      }
+      
+      obtenerTercerPlazo(cotizacionPosicion: any): string {
+        let plazos = '';
+       
+        if (cotizacionPosicion.TercerPlazoDeOferta > 0) {
+            plazos += 'Plazo: ' + cotizacionPosicion.TercerPlazoDeOferta + ' - Cantidad: ' + cotizacionPosicion.TerceraCantidad ;
+        }
+        return plazos;
+      }
 
 }
