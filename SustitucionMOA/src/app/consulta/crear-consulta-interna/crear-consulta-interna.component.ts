@@ -13,6 +13,7 @@ import { DropdownComponent } from '../../common/view-child/dropdown/dropdown.com
 import { OrdenesDeCargaService } from '../../ordenes-de-carga/ordenes-de-carga.service';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { ConfirmationService } from 'primeng/api';
+import { Subscription } from 'rxjs';
 
 declare var $: any;
 
@@ -79,6 +80,8 @@ export class CrearConsultaInternaComponent extends ListBaseComponent {
   proveedorId: number;
   esCorredor: boolean = sessionStorage.getItem("tipoUsuario") === "CORR";
 
+  subscriptionDestinatarios: Subscription;
+
   checkPermisos() { this.securityService.tienePermisoRedirect("CONTACTO MAIL"); }
 
   setTabs() {
@@ -94,6 +97,7 @@ export class CrearConsultaInternaComponent extends ListBaseComponent {
       this.ordenId = this.ordenSeleccionada.Id;
     }
     this.getCombosConsultaInterna();
+    this.getDestinatarios();
     $(".adjuntarArchivo").click(function () {
       $(".adjuntarArchivo1").click();
     });
@@ -101,6 +105,8 @@ export class CrearConsultaInternaComponent extends ListBaseComponent {
 
   public ngOnDestroy(): void {
     this.sendDataService.limpiarData();
+    this.subscription.unsubscribe();
+    this.subscriptionDestinatarios.unsubscribe();
   }
 
   setSeccionList() {
@@ -122,7 +128,6 @@ export class CrearConsultaInternaComponent extends ListBaseComponent {
   }
 
   getCombosConsultaInterna() {
-    this.unsubscribe();
     try {
       this.subscription = this.service.getCombosConsultaInterna(this.ordenId).subscribe(
         (result: any) => {
@@ -156,10 +161,9 @@ export class CrearConsultaInternaComponent extends ListBaseComponent {
   }
 
   getDestinatarios() {
-    this.unsubscribe();
     this.searchingCampos = true;
     try {
-      this.subscription = this.service.getDestinatarios(this.ordenId).subscribe(
+      this.subscriptionDestinatarios = this.service.getDestinatarios(this.ordenId).subscribe(
         (result: any) => {
           this.searchingCampos = false;
           if (result.logout == true) {
@@ -203,6 +207,7 @@ export class CrearConsultaInternaComponent extends ListBaseComponent {
       this.files = fileList;
       for (let i = 0; i < fileList.length; i++) {
         file = fileList[i];
+        //file.name = "file" + i; //si no es aca se senombra en el postConsulta
         this.listaArchivos.push(file);
       }
     }
@@ -210,7 +215,6 @@ export class CrearConsultaInternaComponent extends ListBaseComponent {
     let $formInput = $('input[type=file]');
     $formInput.val(null);
   }
-
 
   borrarArchivo(i: number) {
     this.listaArchivos.splice(i, 1);
@@ -238,7 +242,7 @@ export class CrearConsultaInternaComponent extends ListBaseComponent {
     this.detalle = {
       Consulta_Id: 0, Fecha: null, ComprobanteNo: null, OtroComprobanteNo: null,
       ContratoNo: null, Importe: null, Impuesto: null, BolsaEmisoraOblea: null, Material_Id: null,
-      Orden_Id: this.ordenId
+      Orden_Id: this.ordenId, PatenteChasis: this.getPatenteChasisOC()
     }
 
     this.consulta = {
@@ -249,7 +253,7 @@ export class CrearConsultaInternaComponent extends ListBaseComponent {
     }
 
     let comentario: Comentario = { consulta_Id: 0, Detalle: this.comentario, Fecha: new Date(), Recordado: false, FechaRecordado: new Date() };
-
+    
     try {
       this.subscription = this.service.AgregarConsultaInterna(this.consulta, comentario, this.listaArchivos).subscribe(
         (result: any) => {
@@ -338,14 +342,15 @@ export class CrearConsultaInternaComponent extends ListBaseComponent {
     this.ordenId = this.ordenSeleccionada.Id;
     this.setearComentario();
     this.destinatario = undefined;
+    this.subscriptionDestinatarios.unsubscribe();
     this.getDestinatarios();
   }
 
   setearComentario() {
-    if (this.categoriaCode == 'ORD' && this.ordenId > 0) {
+    if (this.categoriaCode == 'ORD' && this.ordenId > 0 && this.subcategoria !=null) {
       if (this.subcategoria.Code == 'CTG') {
         this.asunto = `Orden Nro ${this.ordenId} - CTG Pendiente.`
-        this.comentario = `Estimado usuario, la CTG para la patente: ${this.ordenSeleccionada.PatenteChasis? this.ordenSeleccionada.PatenteChasis : this.ordenSeleccionada.ChasisAcoplado} se encuentra pendiente.`;
+        this.comentario = `Estimado usuario, la CTG para la patente: ${this.getPatenteChasisOC()} se encuentra pendiente.`;
       } else if (this.subcategoria.Code == 'ERROROC') {
         this.asunto = `Orden Nro ${this.ordenId} - Error de datos.`
         this.comentario = `Estimado usuario, hubo un error en uno de los datos ingresados para la orden nro ${this.ordenId}.`;
@@ -388,6 +393,13 @@ export class CrearConsultaInternaComponent extends ListBaseComponent {
       this.mensajeComponent.setErrorMsg("Debe seleccionar una orden.");
       return true;
     }
+  }
+
+  getPatenteChasisOC(): string{
+      if(this.categoriaCode !== 'ORD')
+      return null;
+      return this.ordenSeleccionada.PatenteChasis? this.ordenSeleccionada.PatenteChasis 
+      : this.ordenSeleccionada.ChasisAcoplado? this.ordenSeleccionada.ChasisAcoplado : null;
   }
 
 }

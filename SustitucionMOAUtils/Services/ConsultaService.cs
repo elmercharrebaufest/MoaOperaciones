@@ -298,6 +298,7 @@ namespace SustitucionMOAUtils.Services
                 Impuesto = c.Detalle != null ? c.Detalle.Impuesto : null,
                 BolsaEmisoraOblea = c.Detalle != null ? c.Detalle.BolsaEmisoraOblea : "",
                 OrdenId = c.Detalle != null ? c.Detalle.Orden_Id : null,
+                PatenteChasis = c.Detalle != null ? c.Detalle.PatenteChasis : null,
                 CausaConsultaId = c.Detalle.CausaConsulta != null ? c.Detalle.CausaConsulta_Id : null,
                 CausaConsulta = c.Detalle.CausaConsulta != null ? new CausaConsultaDto
                 {
@@ -488,7 +489,7 @@ namespace SustitucionMOAUtils.Services
             includes.Add(x => x.EstadoConsulta);
 
             var usuario = repositorio.Obtener<Usuario>(usuarioId);
-            var esInterno = usuario.TienePermiso("CONSULTA ABM");
+            var esInterno = usuario.TienePermiso(PermisoEnum.ConsultaAbm);
             var categorias = usuario.Roles.Where(x => x.Categorias.Any()).SelectMany(x => x.Categorias).Select(x => x.Id).ToList();
 
             ret = repositorio.Listar<Consulta>(x => (obtenerTodos && categorias.Contains(x.Categoria.Id)) || x.Usuario_Id == usuarioId, includes: includes)
@@ -528,12 +529,15 @@ namespace SustitucionMOAUtils.Services
                     FechaCreacion = x.FechaCreacion,
                     FechaUltimaModificacion = x.FechaUltimaModificacion,
                     UsuarioId = x.Usuario_Id,
+                    UsuarioInternoId = x.UsuarioInterno_Id,
                     Fecha = x.Detalle != null ? x.Detalle.Fecha : null,
                     ComprobanteNo = x.Detalle != null ? x.Detalle.ComprobanteNo : "",
                     OtroComprobanteNo = x.Detalle != null ? x.Detalle.OtroComprobanteNo : "",
                     ContratoNo = x.Detalle != null ? x.Detalle.ContratoNo : "",
                     Importe = x.Detalle != null ? x.Detalle.Importe : null,
                     Impuesto = x.Detalle != null ? x.Detalle.Impuesto : null,
+                    OrdenId = x.Detalle != null ? x.Detalle.Orden_Id : null,
+                    PatenteChasis = x.Detalle != null ? x.Detalle.PatenteChasis : null,
                     BolsaEmisoraOblea = x.Detalle != null ? x.Detalle.BolsaEmisoraOblea : "",
                     CausaConsultaId = x.Detalle.CausaConsulta != null ? x.Detalle.CausaConsulta_Id : null,
                     CausaConsulta = x.Detalle.CausaConsulta != null ? new CausaConsultaDto
@@ -657,7 +661,7 @@ namespace SustitucionMOAUtils.Services
             {
                 var file = files[i];
                 var fileName = string.Format("{0}_{1}", comentario.Id, Path.GetFileName(file.FileName));
-
+                
                 var ruta = ArmarRutaCarpeta(comentario); // $"{ConfigurationManager.AppSettings["RutaArchivosProveedores"]}/{proveedor.CUIT}/{proveedor.Id}/{FileKeys.Consultas}/{consultaId}";
                 var rutaArchivo = string.Concat(ruta, "/", fileName);
 
@@ -1179,8 +1183,6 @@ namespace SustitucionMOAUtils.Services
         public AgregarConsultaResponseDto AgregarConsultaInterna(Consulta consulta, Comentario comentario, HttpFileCollectionBase files)
         {
             string mensajeResultado = string.Empty;
-            consulta.Id = -1;
-            consulta.Detalle.Id = -1;
             consulta.FechaCreacion = DateTime.Now;
             consulta.FechaUltimaModificacion = DateTime.Now;
 

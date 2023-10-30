@@ -313,7 +313,7 @@ namespace SustitucionMOAUtils.Email
             }
             catch (Exception ex)
             {
-                throw;
+                throw ex;
             }
         }
     }
