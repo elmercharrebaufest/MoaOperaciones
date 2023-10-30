@@ -90,10 +90,10 @@
                             </div>
                             <div *ngIf="ordenDeCarga.ContratoSeleccionado && !validaCPEDG" class="col-xs-12 col-md-11">
                                 <div class="formulario-label">
-                                    Destino mercadería:
+                                    Destino mercadería (localidad - provincia):
                                 </div>
                                 <div class="styled-select">
-                                    <textarea id="DestinoMercaderia" placeholder="Máximo de 40 caracteres"
+                                    <textarea id="DestinoMercaderia" placeholder="Localidad - Provincia"
                                         [(ngModel)]="ordenDeCarga.DestinoMercaderia" rows="2" [maxLength]="40"
                                         [disabled]="editando || null"></textarea>
                                 </div>
