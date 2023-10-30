@@ -6090,7 +6090,7 @@ namespace SustitucionMOAUtils.Services
             && x.PeticionesDeOferta.Count() > 0 && x.Adjudicacions.Count() == 0 && x.SeEnvioMailAnulacion != true);
             if (solp != null)
             {
-                if (solp.Posiciones.All(x => x.Estado))
+                if (solp.Posiciones.All(x => !x.Estado))
                 {
                     try
                     {
