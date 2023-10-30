@@ -159,7 +159,7 @@ namespace SustitucionMOAUtils.Services
                             VerificarSituacionCrediticia(ordenDeCarga, true);
                         }
                     }
-                }                
+                }
 
                 if (ordenDeCarga.Estado == EstadoOrdenDeCarga.SinEnviarASAP &&
                     (!ContratoTieneKgDisponibles(ordenDeCarga) ||
@@ -1907,7 +1907,8 @@ namespace SustitucionMOAUtils.Services
             foreach (var ordenDeCarga in repositorio
                 .Listar<OrdenDeCarga>(q => q.TipoContrato == TipoContratoFAS.Normal && q.Estado == EstadoOrdenDeCarga.SinEnviarASAP))
             {
-                if (ContratoEntre15a30Tn(ordenDeCarga)){
+                if (ContratoEntre15a30Tn(ordenDeCarga))
+                {
                     var crearOrdenEnSAPRequest = new CrearOrdenEnSAPRequest()
                     {
                         IdOrdenDeCarga = ordenDeCarga.Id,
@@ -2013,7 +2014,7 @@ namespace SustitucionMOAUtils.Services
         private Resultado GenerarEntregaSAP(OrdenDeCarga orden)
         {
             Log.Info("Ejecuta OrdenDeCargaService.GenerarEntregaSAP");
-            
+
             if (string.IsNullOrEmpty(orden.NumeroPedido) && orden.EsFacturaAnticipada)
             {
                 orden.Estado = EstadoOrdenDeCarga.Pendiente;
@@ -2454,7 +2455,10 @@ namespace SustitucionMOAUtils.Services
         {
             var orden = repositorio.Obtener<OrdenDeCarga>(ordenId);
             Log.Info($"Verificar Compensacion: orden: {ordenId}");
-
+            VerificarCompensacion(orden);
+        }
+        private void VerificarCompensacion(OrdenDeCarga orden)
+        {
             if (orden == null)
                 throw new InfoCustomException("No se encontró la orden");
 
@@ -2516,7 +2520,7 @@ namespace SustitucionMOAUtils.Services
 
         private void ValidarOrdenDeCargaAlta(OrdenDeCarga orden)
         {
-            if(orden.PatenteAcoplado == orden.ChasisAcoplado)
+            if (orden.PatenteAcoplado == orden.ChasisAcoplado)
             {
                 throw new InfoCustomException("Las patentes de chásis y acoplado no pueden ser iguales.");
             }
@@ -2851,8 +2855,9 @@ namespace SustitucionMOAUtils.Services
 
             if (ordenId == 0)
             {
-                var usuarios = usuarioService.GetUsuarios().Where(u => u.Habilitado == true);  
-                destinatarios = usuarios.Select(u => new DestinatarioDto{
+                var usuarios = usuarioService.GetUsuarios().Where(u => u.Habilitado == true);
+                destinatarios = usuarios.Select(u => new DestinatarioDto
+                {
                     Campo = "Usuario Web",
                     Mail = u.Mail,
                     UsuarioId = u.Id,
@@ -2860,11 +2865,11 @@ namespace SustitucionMOAUtils.Services
                 return destinatarios;
             }
 
-            var orden = this.repositorio.Obtener<OrdenDeCarga>(o => o.Id == ordenId);            
+            var orden = this.repositorio.Obtener<OrdenDeCarga>(o => o.Id == ordenId);
 
             var mailCreador = this.repositorio.Obtener<Usuario>(u => u.Id == orden.UsuarioCreacion_Id);
             if (mailCreador != null)
-                destinatarios.Add(new DestinatarioDto { Campo = "Usuario creador", Mail = mailCreador.Mail }); 
+                destinatarios.Add(new DestinatarioDto { Campo = "Usuario creador", Mail = mailCreador.Mail });
 
             return destinatarios.ToList();
         }
@@ -2939,6 +2944,16 @@ namespace SustitucionMOAUtils.Services
 
         #endregion
 
+        public void VerificarOrdenesFacturaCompensadaJob()
+        {
+            var estadoJob = repositorio.Obtener<HabilitacionJob>(a => a.Nombre == "VerificarOrdenesFacturaCompensadaJob");
+            if (estadoJob == null || !estadoJob.Habilitado)
+                return;
 
+            foreach (var ordenDeCarga in repositorio.Listar<OrdenDeCarga>(oc => oc.TipoContrato == TipoContratoFAS.Anticipado && oc.Estado == EstadoOrdenDeCarga.PendienteCompensacion))
+            {
+                VerificarCompensacion(ordenDeCarga);
+            }
+        }
     }
 }
