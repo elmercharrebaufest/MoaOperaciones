@@ -61,6 +61,7 @@ namespace SustitucionMOATest.Services
             consumerOrdenCargaMOA = new Mock<IOrdenCargaConsumerMOA>();
             mIFacturaAnticipadaService = new Mock<IFacturaAnticipadaService>();
             feriadoService = new Mock<IFeriadoService>();
+            usuarioService = new Mock<IUsuarioService>();
             mIScatoRepositorioClient = new Mock<IScatoRepositorioClient>();
             mIScatoConsumer = new Mock<IScatoConsumer>();
             feriadoService.Setup(fs => fs.ObtenerFeriados()).Returns(new List<DateTime>());
