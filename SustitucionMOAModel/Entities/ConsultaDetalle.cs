@@ -24,6 +24,7 @@ namespace SustitucionMOAModel.Entities
         public string BolsaEmisoraOblea { get; set; }
         public int? Material_Id { get; set; }
         public int? Orden_Id { get; set; }
+        public string PatenteChasis { get; set; }
 
         [Required]
         [ForeignKey("Id")]

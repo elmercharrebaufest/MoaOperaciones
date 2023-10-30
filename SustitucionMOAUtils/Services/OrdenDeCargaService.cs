@@ -81,6 +81,19 @@ namespace SustitucionMOAUtils.Services
             EstadoOrdenDeCarga.EntregaPendiente,
         };
 
+        private readonly List<EstadoOrdenDeCarga> estadosPuedeAnular = new List<EstadoOrdenDeCarga>
+        {
+            EstadoOrdenDeCarga.AnulacionSolicitada,
+            EstadoOrdenDeCarga.Confirmado,
+            EstadoOrdenDeCarga.ContratoVencido,
+            EstadoOrdenDeCarga.EntregaGenerada,
+            EstadoOrdenDeCarga.EntregaPendiente,
+            EstadoOrdenDeCarga.PendienteAprobacionCredito,
+            EstadoOrdenDeCarga.Vencida,
+            EstadoOrdenDeCarga.EdicionSolicitada,
+            EstadoOrdenDeCarga.EntregaAnuladaPedidoPendienteAnulacion
+        };
+
         public OrdenDeCargaService(
             IRepositorio repositorio,
             IOrdenCargaConsumerMOA ordenCargaConsumer,
@@ -319,15 +332,16 @@ namespace SustitucionMOAUtils.Services
                     var nuevo = !string.IsNullOrEmpty(prop.valB?.ToString()) ? prop.valB?.ToString() : "-";
                     if (anterior != "-" && nuevo != "-")
                     {
-                        var registroHistorial = new OrdenDeCargaCambiosHistorial();
-                        registroHistorial.Id = 0;
-                        registroHistorial.Antes = anterior;
-                        registroHistorial.Despues = nuevo;
-                        registroHistorial.NombreColumnaCambio = prop.PropertyName;
-                        registroHistorial.FechaCambio = DateTime.Now;
-                        registroHistorial.Usuario_Id = usuario.Id;
-                        registroHistorial.OrdenDeCarga_Id = ordenDeCarga.Id;
-                        historialCambios.Add(registroHistorial);
+                        historialCambios.Add(new OrdenDeCargaCambiosHistorial
+                        {
+                            Id = 0,
+                            Antes = anterior,
+                            Despues = nuevo,
+                            NombreColumnaCambio = prop.PropertyName,
+                            FechaCambio = DateTime.Now,
+                            Usuario_Id = usuario.Id,
+                            OrdenDeCarga_Id = ordenDeCarga.Id,
+                        });
                     }
                 }
                 //Solicitud de edición
@@ -344,7 +358,6 @@ namespace SustitucionMOAUtils.Services
 
                 if (puedeEnviarASAP && ordenEditar.NumeroEntrega != null)
                 {
-
                     var resultadoSAP = ordenCargaConsumer.ModificarEntregaOrdenCarga(new ModificarEntregaRequest(ordenEditar));
                     if (resultadoSAP.HayError)
                         throw new InfoCustomException(resultadoSAP.Errores[0].Message);
@@ -1071,6 +1084,9 @@ namespace SustitucionMOAUtils.Services
         public string AnularOrden(int ordenId, string mailUsuario)
         {
             var orden = repositorio.Obtener<OrdenDeCarga>(ordenId);
+
+            if (!estadosPuedeAnular.Contains(orden.Estado))
+                throw new ValidationCustomException("La orden no puede anularse debido a su estado actual.");
 
             var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
             var puedeEnviarASAP = usuario.TienePermiso(PermisoEnum.EnviarASap);
@@ -2366,6 +2382,9 @@ namespace SustitucionMOAUtils.Services
 
         public bool EnviarMailAltaCuitTerceros(bool gestionaFlete, bool gestionaDestino, bool gestionaDestinatario, string ordenId)
         {
+            Log.Info($"EnviarMailAltaCuitTerceros params => gestionaFlete: {gestionaFlete}, " +
+                $"gestionaDestino: {gestionaDestino}, gestionaDestinatario: {gestionaDestinatario}, ordenId:{ordenId}");
+
             var ordenDeCarga = this.repositorio.Obtener<OrdenDeCarga>(o => o.Id.ToString() == ordenId);
 
             if (gestionaFlete)

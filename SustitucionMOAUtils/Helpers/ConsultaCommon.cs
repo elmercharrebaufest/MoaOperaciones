@@ -25,7 +25,7 @@ namespace SustitucionMOAUtils.Helpers
 
         public ConsultaCommon(IRepositorio repositorio)
         {
-            this.repositorio = repositorio; 
+            this.repositorio = repositorio;
         }
         public string AgregarAdjuntoComentario(int consultaId, int comentarioId, HttpFileCollectionBase files)
         {
@@ -86,8 +86,7 @@ namespace SustitucionMOAUtils.Helpers
             }
             catch (Exception ex)
             {
-                Log.Error(ex);
-                throw ex;
+                Log.Error("Hubo un problema al intentar enviar el mail al externo.", ex);
             }
         }
 
@@ -95,10 +94,9 @@ namespace SustitucionMOAUtils.Helpers
         {
             Dictionary<string, byte[]> fileDataDictionary = new Dictionary<string, byte[]>();
 
-            foreach (string fileName in files.AllKeys)
+            for (int i = 0; i < files.Count; i++)
             {
-                HttpPostedFileBase file = files[fileName];
-
+                var file = files[i];
                 if (file.ContentLength > 0)
                 {
                     byte[] fileData;
@@ -106,7 +104,6 @@ namespace SustitucionMOAUtils.Helpers
                     {
                         fileData = reader.ReadBytes(file.ContentLength);
                     }
-
                     fileDataDictionary.Add(file.FileName, fileData);
                 }
             }
@@ -116,8 +113,6 @@ namespace SustitucionMOAUtils.Helpers
 
             return fileDataDictionary;
         }
-    
 
-
-}
+    }
 }

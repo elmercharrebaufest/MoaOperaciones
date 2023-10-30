@@ -37,7 +37,7 @@ namespace SustitucionMOAUtils.DesignPattern.Classes
 
                 consulta.Usuario_Id = orden.UsuarioCreacion_Id;
                 consulta.EstadoConsulta_Id = 4;
-                consulta.CodigoProveedor = proveedor.CodigoProveedor;
+                consulta.CodigoProveedor = proveedor.CodigoProveedor?? "-";
                 consulta.RazonSocialProveedor = proveedor.RazonSocial;
                 comentario.Usuario_Id = (int)consulta.UsuarioInterno_Id;
 
