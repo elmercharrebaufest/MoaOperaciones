@@ -2382,6 +2382,9 @@ namespace SustitucionMOAUtils.Services
 
         public bool EnviarMailAltaCuitTerceros(bool gestionaFlete, bool gestionaDestino, bool gestionaDestinatario, string ordenId)
         {
+            Log.Info($"EnviarMailAltaCuitTerceros params => gestionaFlete: {gestionaFlete}, " +
+                $"gestionaDestino: {gestionaDestino}, gestionaDestinatario: {gestionaDestinatario}, ordenId:{ordenId}");
+
             var ordenDeCarga = this.repositorio.Obtener<OrdenDeCarga>(o => o.Id.ToString() == ordenId);
 
             if (gestionaFlete)

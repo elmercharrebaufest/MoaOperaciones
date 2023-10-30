@@ -417,6 +417,16 @@ export class DetalleConsultaComponent extends BaseComponent {
                 Value: this.consulta.OtroComprobanteNo,
                 NewLine: true,
             },
+            {
+                Nombre: "N° Orden", 
+                Value: this.consulta.OrdenId,
+                NewLine: false
+            },
+            {
+                Nombre: "Patente Chasis", 
+                Value: this.consulta.PatenteChasis,
+                NewLine: false
+            },
         ];
     }
 
