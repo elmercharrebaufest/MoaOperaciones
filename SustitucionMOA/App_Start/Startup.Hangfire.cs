@@ -94,6 +94,10 @@ namespace SustitucionMOA
                "AltaClienteSAPJob",
                j => j.Execute(),
                "0 13,23 * * *", tz);
+            RecurringJob.AddOrUpdate<Jobs.IVerificarOrdenesFacturaCompensadaJob>(
+                "VerificarOrdenesFacturaCompensadaJob",
+                j => j.Execute(),
+                "0 * * * *", tz);
         }
     }
 
