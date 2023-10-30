@@ -332,15 +332,16 @@ namespace SustitucionMOAUtils.Services
                     var nuevo = !string.IsNullOrEmpty(prop.valB?.ToString()) ? prop.valB?.ToString() : "-";
                     if (anterior != "-" && nuevo != "-")
                     {
-                        var registroHistorial = new OrdenDeCargaCambiosHistorial();
-                        registroHistorial.Id = 0;
-                        registroHistorial.Antes = anterior;
-                        registroHistorial.Despues = nuevo;
-                        registroHistorial.NombreColumnaCambio = prop.PropertyName;
-                        registroHistorial.FechaCambio = DateTime.Now;
-                        registroHistorial.Usuario_Id = usuario.Id;
-                        registroHistorial.OrdenDeCarga_Id = ordenDeCarga.Id;
-                        historialCambios.Add(registroHistorial);
+                        historialCambios.Add(new OrdenDeCargaCambiosHistorial
+                        {
+                            Id = 0,
+                            Antes = anterior,
+                            Despues = nuevo,
+                            NombreColumnaCambio = prop.PropertyName,
+                            FechaCambio = DateTime.Now,
+                            Usuario_Id = usuario.Id,
+                            OrdenDeCarga_Id = ordenDeCarga.Id,
+                        });
                     }
                 }
                 //Solicitud de edición
@@ -357,7 +358,6 @@ namespace SustitucionMOAUtils.Services
 
                 if (puedeEnviarASAP && ordenEditar.NumeroEntrega != null)
                 {
-
                     var resultadoSAP = ordenCargaConsumer.ModificarEntregaOrdenCarga(new ModificarEntregaRequest(ordenEditar));
                     if (resultadoSAP.HayError)
                         throw new InfoCustomException(resultadoSAP.Errores[0].Message);
