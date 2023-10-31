@@ -1970,5 +1970,64 @@ namespace SustitucionMOATest.Services
             repositorioMock.Verify(x => x.Agregar(It.IsAny<PeticionDeOfertaVisualizacionPrecio>()), Times.Once);
             repositorioMock.Verify(x => x.GuardarCambios(), Times.Exactly(2));
         }
+
+        [Test]
+        public void AutocompleteServicioSolpOk()
+        {
+            // Arrange
+            string valor = "Servicio 1 Descripción";
+
+            var serviciosSimulados = new List<ServicioSolp>
+            {
+                new ServicioSolp { Descripcion = "Servicio 1 Descripción" },
+                new ServicioSolp { Descripcion = "Servicio 2" },
+                new ServicioSolp { Descripcion = "Descripción de otro servicio" },
+                new ServicioSolp { Descripcion = "Servicio 3 Descripción" }
+            };
+
+            repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<ServicioSolp, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null)).Returns(serviciosSimulados);
+
+            List<ServicioSolpDto> result = target.AutocompleteServicioSolp(valor);
+
+            Assert.That(result, Is.Not.Null);
+
+            foreach (var servicioDto in result)
+            {
+                Assert.That(serviciosSimulados.Any(s => s.Descripcion.Contains(servicioDto.Descripcion)), Is.True);
+            }
+        }
+
+        [Test]
+        public void AutocompleteCodigoServicioSolpOk()
+        {
+            // Arrange
+            string valor = "123"; // Establece un valor de búsqueda
+
+            // Crea una lista de ServicioSolp simulada que contiene elementos coincidentes y no coincidentes con el valor de búsqueda
+            var serviciosSimulados = new List<ServicioSolp>
+            {
+                new ServicioSolp { CodigoSap = 123 },
+                new ServicioSolp { CodigoSap = 456 },
+                new ServicioSolp { CodigoSap = 12345 },
+                new ServicioSolp { CodigoSap = 7890 }
+            };
+
+            // Configura el mock del repositorio para devolver la lista simulada
+            repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<ServicioSolp, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null)).Returns(serviciosSimulados);
+
+            // Act
+            List<ServicioSolpDto> result = target.AutocompleteCodigoServicioSolp(valor);
+
+            // Assert
+            Assert.That(result, Is.Not.Null);
+
+            // Verificar que la lista resultante contenga elementos códigos que contengan el valor de búsqueda
+            foreach (var servicioDto in result)
+            {
+                Assert.That(serviciosSimulados.Any(s => s.CodigoSap.ToString().Contains(servicioDto.Codigo.ToString())), Is.True);
+            }
+        }
+
+
     }
 }
