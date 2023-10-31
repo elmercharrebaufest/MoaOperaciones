@@ -19,10 +19,14 @@
     <AssemblyName>SustitucionMOA</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <UseIISExpress>true</UseIISExpress>
-    <IISExpressSSLPort>58280</IISExpressSSLPort>
-    <IISExpressAnonymousAuthentication>enabled</IISExpressAnonymousAuthentication>
-    <IISExpressWindowsAuthentication>disabled</IISExpressWindowsAuthentication>
-    <IISExpressUseClassicPipelineMode>false</IISExpressUseClassicPipelineMode>
+    <IISExpressSSLPort>
+    </IISExpressSSLPort>
+    <IISExpressAnonymousAuthentication>
+    </IISExpressAnonymousAuthentication>
+    <IISExpressWindowsAuthentication>
+    </IISExpressWindowsAuthentication>
+    <IISExpressUseClassicPipelineMode>
+    </IISExpressUseClassicPipelineMode>
     <UseGlobalApplicationHostFile />
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
@@ -313,6 +317,7 @@
     <Content Include="NEW.PRE.DeployParameters.Release.xml" />
     <Content Include="NEW.PRE.DeployParameters.xml" />
     <Content Include="NEW.PROD.DeployParameters.xml" />
+    <Content Include="NEW.QACompras.DeployParameters.xml" />
     <Content Include="NEW.QABaufest.DeployParameters.Debug.xml" />
     <Content Include="NEW.QABaufest.DeployParameters.Release.xml" />
     <Content Include="NEW.QABaufest.DeployParameters.xml" />

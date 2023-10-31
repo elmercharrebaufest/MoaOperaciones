@@ -208,6 +208,7 @@
     <Content Include="NEW.PRE.DeployParameters .Release.xml" />
     <Content Include="NEW.PRE.DeployParameters .xml" />
     <Content Include="NEW.PROD.DeployParameters.xml" />
+    <Content Include="NEW.QACompras.DeployParameters.xml" />
     <Content Include="NEW.QA.Baufest.DeployParameters.Debug.xml" />
     <Content Include="NEW.QA.Baufest.DeployParameters.Release.xml" />
     <Content Include="NEW.QA.Baufest.DeployParameters.xml" />
