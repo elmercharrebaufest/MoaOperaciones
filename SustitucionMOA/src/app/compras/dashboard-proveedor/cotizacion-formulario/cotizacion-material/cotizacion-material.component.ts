@@ -412,7 +412,6 @@ export class CotizacionMaterialComponent extends ListBaseComponent implements On
         cotizacion.MonedaCodigo = null;
         cotizacion.Moneda_Id = null;
         cotizacion.Precio = null;
-        cotizacion.FechaDeEntrega = null;
         cotizacion.UnidadDeMedida_Id = null;
         cotizacion.UnidadMedida = null;
         cotizacion.PlazoDeEntrega = null;
