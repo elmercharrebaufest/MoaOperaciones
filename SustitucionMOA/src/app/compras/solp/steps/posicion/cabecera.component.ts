@@ -280,15 +280,13 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         }
     }
 
+    
     agregarPosicion() {
-        if (this.model.posiciones.length > 0) {
-            this.model.agregarNuevaPosicion(this.model.posicionActual);
-        } else {
-            this.model.agregarNuevaPosicion(null as SolpPosicion);
-            this.model.posicionActual.setTabPosicion();
-        }
-        this.setupAlmacenEntregaByCentro();
-        this.validarNuevaPosicion();
+        var ultimaPosicion = this.model.posiciones.length > 0 ? 
+        this.model.posiciones[this.model.posiciones.length - 1] as any : null;
+        this.model.agregarNuevaPosicion(ultimaPosicion as SolpPosicion);   
+        this.setupAlmacenEntregaByCentro();      
+        this.model.posicionActual.setTabPosicion();
     }
 
     duplicarPosicion(el: HTMLElement) {
