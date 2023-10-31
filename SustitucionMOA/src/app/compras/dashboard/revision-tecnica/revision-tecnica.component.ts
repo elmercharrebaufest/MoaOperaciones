@@ -137,14 +137,15 @@ export class RevisionTecnicaComponent implements OnInit, OnChanges {
 
     checkPropuestaTecnica() {
         var faltaCheck = false;
+
         if (this.peticion.TipoPosicionCodigo != 'MATERIALES') {
             if (this.peticion.TieneVisitaObraMasiva == true || this.peticion.TieneVisitaObraBool == true) {
-                faltaCheck = this.peticion.Usuarios.some(x => (x.PropuestaTecnicaAprobada == null || x.PropuestaTecnicaAprobada == undefined || x.RealizoVisita == null || x.RealizoVisita == undefined) && x.Cotizacion != null);
+                faltaCheck = this.peticion.Usuarios.some(x => (x.PropuestaTecnicaAprobada == null || x.PropuestaTecnicaAprobada == undefined || x.RealizoVisita == null || x.RealizoVisita == undefined) && x.Cotizacion != null && x.Cotizacion.CotizacionEstado_Id == 1);
             } else {
-                faltaCheck = this.peticion.Usuarios.some(x => ((x.PropuestaTecnicaAprobada == null || x.PropuestaTecnicaAprobada == undefined) && x.Cotizacion != null));
+                faltaCheck = this.peticion.Usuarios.some(x => ((x.PropuestaTecnicaAprobada == null || x.PropuestaTecnicaAprobada == undefined) && x.Cotizacion != null && x.Cotizacion.CotizacionEstado_Id == 1));
             }
         } else {
-            faltaCheck = this.peticion.Usuarios.some(x => (x.PropuestaTecnicaAprobada == null || x.PropuestaTecnicaAprobada == undefined) && x.Cotizacion != null &&
+            faltaCheck = this.peticion.Usuarios.some(x => (x.PropuestaTecnicaAprobada == null || x.PropuestaTecnicaAprobada == undefined) && x.Cotizacion != null && x.Cotizacion.CotizacionEstado_Id == 1 &&
                 x.Cotizacion.RespetaMateriales == false );
         }
 
