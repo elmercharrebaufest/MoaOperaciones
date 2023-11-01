@@ -11,6 +11,7 @@ using SustitucionMOAModel.Models.WSMapMOA.Vendedor;
 using SustitucionMOAModel.Models.WSMapMOA.Vendedor.Detalle;
 using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Interfaces;
+using SustitucionMOAUtils.Logger;
 using SustitucionMOAWS.WSConsumers;
 using System;
 using System.Collections.Generic;
@@ -703,5 +704,107 @@ namespace SustitucionMOAUtils.Services
 
         #endregion
 
+        #region EliminarCuitNoHabilitado
+        public string EliminarCuitNoHabilitado(int proveedorId, string mailUsuarioSesion)
+        {
+            Log.Info("Inicio UsuarioService.EliminarCuitNoHabilitado");
+            var usuarioSesion = repositorio.Obtener<Entidades.Usuario>(u => u.Mail == mailUsuarioSesion);
+            var proveedorABorrar = repositorio.Obtener<Entidades.Proveedor>(p => p.Id == proveedorId);
+            var usuarioABorrar = obtenerUsuarioDelVendedor(proveedorABorrar);
+
+            if (usuarioSesion.EsAdmin() && proveedorABorrar.EstadoAprobacion.Equals(EstadoAprobacion.AltaIncompleta))
+            {
+                bool puedeEliminarseProveedor = PuedeEliminarseProveedor(proveedorABorrar.Id);
+                //Caso en el que se deba borrar al proveedor y su usuario que no opero con ningun otro vendedor 
+                //Ni realizo acciones en el sistema.
+                if (puedeEliminarseProveedor && PuedeEliminarseUsuario(usuarioABorrar.Id))
+                {
+                    Log.Info("Eliminando proveedor id: " + proveedorABorrar.Id + " y su usuario id: " + usuarioABorrar.Id);
+                    var historialProveedor = repositorio.Listar<Entidades.ProveedorHistorialAprobacion>
+                    (h => h.Proveedor_Id == proveedorABorrar.Id);
+                    repositorio.RemoverTodos<Entidades.ProveedorHistorialAprobacion>(historialProveedor);
+                    repositorio.Remover<Entidades.Proveedor>(proveedorABorrar);
+
+                    var tipoDelUsuario = repositorio.Obtener<Entidades.UsuarioNoGranos>(ng => ng.Id == usuarioABorrar.Id);
+                    if (tipoDelUsuario != null)
+                        repositorio.Remover<Entidades.UsuarioNoGranos>(tipoDelUsuario);
+                    repositorio.Remover<Entidades.Usuario>(usuarioABorrar);
+                }
+                //Caso en el que solo eliminamos el alta ya que el usuario puede operar con otro vendedores.
+                else if (puedeEliminarseProveedor && usuarioABorrar.Proveedores.Count() > 1)
+                {
+                    Log.Info("Eliminando solo proveedor id: " + proveedorABorrar.Id);
+                    var historialProveedor = repositorio.Listar<Entidades.ProveedorHistorialAprobacion>
+                    (h => h.Proveedor_Id == proveedorABorrar.Id);
+                    repositorio.RemoverTodos<Entidades.ProveedorHistorialAprobacion>(historialProveedor);
+                    repositorio.Remover<Entidades.Proveedor>(proveedorABorrar);
+                }
+                else
+                {
+                    Log.Info("No se puede eliminar al usuario del sistema.");
+                    throw new InfoCustomException("No se puede eliminar al proveedor debido a alguna de las siguientes" +
+                        " razones: 1) Este usuario realizó acciones " +
+                        "en el sistema. 2) Otros usuarios operan con este mismo. 3) Este usuario opera con otros proveedores.");
+                }
+                try
+                {
+                    repositorio.GuardarCambios();
+                    Log.Info("Finaliza OK UsuarioService.EliminarCuitNoHabilitado - Cambios guardados correctamente.");
+                    return "Se ha eliminado correctamente el usuario: " + usuarioABorrar.Mail;
+                }
+                catch (Exception e)
+                {
+                    Log.Info("Hubo un error al intentar eliminar al proveedor con id: " + proveedorId);
+                    Log.Error(e);
+                    return ErrorMsg.Error;
+                }
+            }
+            else
+            {
+                throw new InfoCustomException("Ud no posee los permisos suficientes para realizar para borrar un usuario.");
+            }
+        }
+
+        public List<ProveedorDto> GetVendedoresDelUsuario(string mail)
+        {
+            return vendedorService.GetVendedoresDelUsuario(mail);
+        }
+
+        public bool PuedeEliminarseProveedor(int id)
+        {
+            var proveedor = repositorio.Obtener<Entidades.Proveedor>(p => p.Id == id);
+            var solpProveedor = repositorio.Listar<Entidades.SolpProveedor>(c => c.Proveedor_Id == id).FirstOrDefault();
+            var campoProveedor = repositorio.Listar<Entidades.CampoProveedor>(c => c.Proveedor_Id == id).FirstOrDefault();
+            var decCampoSustentable = repositorio.Listar<Entidades.DeclaracionCampoSustentable>(d => d.Proveedor_Id == id).FirstOrDefault();
+            var appCartaPorte = repositorio.Listar<Entidades.AplicacionCartaPorte>(a => a.Proveedor_Id == id).FirstOrDefault();
+            var provAuditoria = repositorio.Listar<Entidades.ProveedorAuditoria>(p => p.Proveedor_Id == id).FirstOrDefault();
+            var relEmpleados = repositorio.Listar<Entidades.ProveedorRelacionConEmpleados>(r => r.Proveedor_Id == id).FirstOrDefault();
+            var relFunc = repositorio.Listar<Entidades.ProveedorRelacionConFuncionarios>(r => r.Proveedor_Id == id).FirstOrDefault();
+
+            return solpProveedor == null && campoProveedor == null && decCampoSustentable == null &&
+                appCartaPorte == null && provAuditoria == null && relEmpleados == null && relFunc == null
+                && proveedor.UsuariosAsociados.Count() <= 1;
+        }
+        public bool PuedeEliminarseUsuario(int id)
+        {
+            var usuario = repositorio.Obtener<Entidades.Usuario>(u => u.Id == id);
+            var consultas = repositorio.Listar<Entidades.Consulta>(c => c.Usuario_Id == id).FirstOrDefault();
+            var comentarios = repositorio.Listar<Entidades.Comentario>(c => c.Usuario_Id == id).FirstOrDefault();
+            var solp = repositorio.Listar<Entidades.Solp>(s => s.UsuarioCreacion_Id == id).FirstOrDefault();
+            var usuarioCompras = repositorio.Listar<Entidades.UsuarioComprasRelacionConUsuarios>(u => u.Usuario_Id == id).FirstOrDefault();
+            var cotizaciones = repositorio.Listar<Entidades.Cotizacion>(c => c.UsuarioCreador_Id == id).FirstOrDefault();
+            var adjudicacion = repositorio.Listar<Entidades.Adjudicacion>(a => a.UsuarioCreador_Id == id).FirstOrDefault();
+            var circular = repositorio.Listar<Entidades.Circular>(c => c.UsuarioCreador_Id == id).FirstOrDefault();
+            return consultas == null && comentarios == null && solp == null && usuarioCompras == null &&
+                cotizaciones == null && circular == null && adjudicacion == null && usuario.Proveedores.Count() <= 1;
+        }
+
+        public Entidades.Usuario obtenerUsuarioDelVendedor(Entidades.Proveedor prov)
+        {
+            return repositorio.Obtener<Entidades.Usuario>(u => u.Mail == prov.Mail && u.TipoUsuario.Id == prov.TipoProveedor.Id
+            && u.CUITRegistro == prov.CUIT);
+        }
+
+        #endregion
     }
 }
