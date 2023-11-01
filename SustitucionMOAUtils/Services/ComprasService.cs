@@ -2601,6 +2601,7 @@ namespace SustitucionMOAUtils.Services
                     NumeroSolp = todasLasOfertas.NroSolp,
                 };
                 var esAdmin = usuario.Permisos.Any(p => p == "ADJUDICAR DENTRO DEL PLAZO DE OFERTAS");
+
                 var solp = obtenerSolpConsumerMOA.RequestSolpWithNroAndDates(filtros);
 
                 todasLasOfertas.VerBotonVerPrecio = ValidarVisualizarPrecio(usuario.Id, PeticionOferta_Id) && esAdmin;
@@ -2661,12 +2662,13 @@ namespace SustitucionMOAUtils.Services
                         mensaje = "SOLP Sin liberar";
                         verAdjudicar = false;
                     }
+                    var fecha = (item.PlazoDeOfertaCierre == null && item.FechaCircular == null) ? item.PlazoDeOfertaOriginal :
+                    item.PlazoDeOfertaCierre == null ? item.PlazoDeOfertaCircular.Value :
+                    item.FechaCircular == null ? item.PlazoDeOfertaCierre.Value :
+                    item.PlazoDeOfertaCierre.Value > item.FechaCircular.Value ? item.PlazoDeOfertaCierre.Value : item.PlazoDeOfertaCircular.Value;
+
                     if (!esAdmin)
                     {
-                        var fecha = (item.PlazoDeOfertaCierre == null && item.FechaCircular == null) ? item.PlazoDeOfertaOriginal :
-                  item.PlazoDeOfertaCierre == null ? item.PlazoDeOfertaCircular.Value :
-                  item.FechaCircular == null ? item.PlazoDeOfertaCierre.Value :
-                  item.PlazoDeOfertaCierre.Value > item.FechaCircular.Value ? item.PlazoDeOfertaCierre.Value : item.PlazoDeOfertaCircular.Value;
 
                         if (item.Cotizacion != null && fecha >= hoy && todasLasOfertas.Urgencia != true)
                         {
@@ -2677,7 +2679,14 @@ namespace SustitucionMOAUtils.Services
                     }
                     else
                     {
-                        item.VerImportes = !todasLasOfertas.VerBotonVerPrecio;
+                        if (item.Cotizacion != null && fecha <= hoy && todasLasOfertas.Urgencia == true)
+                        {
+                            item.VerImportes = true;
+                        }
+                        else 
+                        { 
+                            item.VerImportes = !todasLasOfertas.VerBotonVerPrecio;
+                        }
                     }
                     if (!item.EstaHabilitado)
                     {
