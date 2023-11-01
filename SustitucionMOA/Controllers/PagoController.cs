@@ -6,6 +6,7 @@ using System.Web.Mvc;
 using SustitucionMOAAssets;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOASecurity;
+using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
 using SustitucionMOAUtils.Services;
 
@@ -14,15 +15,22 @@ namespace SustitucionMOA.Controllers
     [System.Web.Mvc.SessionState(System.Web.SessionState.SessionStateBehavior.ReadOnly)]
     public class PagoController : BaseController
     {
-        PagoService _pagoService = new PagoService();
-        PDFService _pdfService = new PDFService();
+        protected readonly IPDFService pDFService;
+        protected readonly IPagoService pagoService;
+
+        public PagoController(IPagoService pagoService, IPDFService pDFService)
+        {
+            this.pagoService = pagoService;
+            this.pDFService = pDFService;
+        }
+
 
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.CONSULTAR_PAGOS)]
         public ActionResult getEmitidos(string periodo, string fechaInicio, string fechaFin)
         {
             try
             {
-                return JsonCustom(_pagoService.getEmitidos(SessionPersister.Proveedor, fechaInicio, fechaFin));
+                return JsonCustom(pagoService.ObtenerEmitidos(SessionPersister.Proveedor, fechaInicio, fechaFin));
             }
             catch (InfoCustomException e)
             {
@@ -49,7 +57,7 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                return JsonCustom(_pagoService.downloadEmitidos(SessionPersister.Proveedor, fechaInicio, fechaFin));
+                return JsonCustom(pagoService.DescargarEmitidos(SessionPersister.Proveedor, fechaInicio, fechaFin));
             }
             catch (InfoCustomException e)
             {
@@ -76,7 +84,7 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                return JsonCustom(_pagoService.getEmitidosNG(SessionPersister.Proveedor, fechaInicio, fechaFin, SessionPersister.Sociedad));
+                return JsonCustom(pagoService.ObtenerEmitidosNG(SessionPersister.Proveedor, fechaInicio, fechaFin, SessionPersister.Sociedad));
             }
             catch (InfoCustomException e)
             {
@@ -103,7 +111,7 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                return JsonCustom(_pagoService.getComprobantes(documento, fecha, SessionPersister.Sociedad, fiscalYear));
+                return JsonCustom(pagoService.ObtenerComprobantes(documento, fecha, SessionPersister.Sociedad, fiscalYear));
             }
             catch (InfoCustomException e)
             {
@@ -130,7 +138,7 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                return JsonCustom(_pagoService.downloadEmitidosNG(SessionPersister.Proveedor, fechaInicio, fechaFin, SessionPersister.Sociedad));
+                return JsonCustom(pagoService.DescargarEmitidosNG(SessionPersister.Proveedor, fechaInicio, fechaFin, SessionPersister.Sociedad));
             }
             catch (InfoCustomException e)
             {
@@ -157,7 +165,7 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                return JsonCustom(_pagoService.getDetalle(SessionPersister.Proveedor, numeroPago));
+                return JsonCustom(pagoService.ObtenerDetalle(SessionPersister.Proveedor, numeroPago));
             }
             catch (InfoCustomException e)
             {
@@ -184,7 +192,7 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                return JsonCustom(_pagoService.downloadDetalle(SessionPersister.Proveedor, numeroPago));
+                return JsonCustom(pagoService.DescargarDetalle(SessionPersister.Proveedor, numeroPago));
             }
             catch (InfoCustomException e)
             {
@@ -211,7 +219,7 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                return JsonCustom(_pdfService.downloadDocumentPDF(documento, ejercicio, SessionPersister.Proveedor, SessionPersister.Sociedad));
+                return JsonCustom(pDFService.DescargarDocumentPDF(documento, ejercicio, SessionPersister.Proveedor, SessionPersister.Sociedad));
             }
             catch (InfoCustomException e)
             {

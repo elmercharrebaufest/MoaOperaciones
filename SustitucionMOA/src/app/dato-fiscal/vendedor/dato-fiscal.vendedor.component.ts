@@ -9,6 +9,8 @@ import { Seccion } from "./../../common/models/seccion";
 import { BaseComponent } from "./../../common/base-components/base-component";
 import { SessionDataService } from "./../../common/services/SessionDataService";
 import { ModalService } from "./../../common/services/ModalService";
+import { HttpErrorResponse } from "@angular/common/http";
+import { HttpStatusCodes } from "../../common/models/httpStatusCodes";
 
 @Component({
     selector: "list",
@@ -113,9 +115,9 @@ export class VendedoresListComponent extends BaseComponent implements OnInit {
                         console.table(this.data)
                     }
                 },
-                (error) => {
+                (error: HttpErrorResponse) => {
                     this.spinnerComponent.hideIt();
-                    this.mensajeComponent.setErrorMsg(error.message);
+                    this.mensajeComponent.setErrorMsg(HttpStatusCodes.friendlyStatusCode(error.status));
                 }
             );
         } catch (e) {

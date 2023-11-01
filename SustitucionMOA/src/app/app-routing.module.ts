@@ -142,10 +142,10 @@ const appRoutes: Routes = [
                 path: "ordenes-de-carga",
                 loadChildren: "./ordenes-de-carga/ordenes-de-carga.module#OrdenesDeCargaModule",
             },
-            // {
-            //     path: "ordenes-de-carga-fason",
-            //     loadChildren: "./ordenes-de-carga-fason/ordenes-de-carga-fason.module#OrdenesDeCargaFasonModule",
-            // },
+            {
+                path: "ordenes-de-carga-fason",
+                loadChildren: "./ordenes-de-carga-fason/ordenes-de-carga-fason.module#OrdenesDeCargaFasonModule",
+            },
             {
                 path: "reporte-contrato",
                 loadChildren: "./reporte-contrato/reporte-contrato.module#ReporteContratoModule",

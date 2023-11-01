@@ -102,7 +102,7 @@ namespace SustitucionMOAUtils.Services
             return repositorio.Obtener<Usuario>(u => u.Mail == mail);
         }
 
-        public NoticiasDetallesWSMOAResponse getNoticias(string proveedor)
+        public NoticiasDetallesWSMOAResponse ObtenerNoticias(string proveedor)
         {
             try
             {

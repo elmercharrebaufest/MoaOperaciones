@@ -1,10 +1,5 @@
-﻿using SustitucionMOAModel.Dto;
-using SustitucionMOAModel.Entities;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
 
 namespace SustitucionMOAModel.Dto
 {
@@ -34,6 +29,7 @@ namespace SustitucionMOAModel.Dto
         public string RespetaMaterialesColor { get; set; }
         public string RespetaMaterialesDescripcion { get; set; }
         public bool TieneObservacionEconomica { get; set; }
+        public decimal? PorcentajeDeHoras { get; set; }
     }
 
     public class CotizacionPosicionDto
@@ -69,6 +65,8 @@ namespace SustitucionMOAModel.Dto
         public decimal TotalPesos { get; set; }
         public decimal TotalPosicionCotizacion { get; set; }
         public bool? NoDisponible { get; set; }
+        public DateTime? FechaDeVigencia { get; set; }
+        public string FechaDeVigenciaFormateado { get; set; }
     }
 
     public class CotizacionSubPosicionDto
@@ -100,6 +98,7 @@ namespace SustitucionMOAModel.Dto
         public decimal PrecioTotal { get; set; }
         public decimal TotalPesos { get; set; }
         public bool? NoDisponible { get; set; }
+        public DateTime? FechaDeVigencia { get; set; }
     }
 
     public class GuardarCotizacion
@@ -112,16 +111,17 @@ namespace SustitucionMOAModel.Dto
         public List<ArchivoDto> ArchivosGuardados { get; set; } = new List<ArchivoDto>();
         public int CotizacionId { get; set; }
         public bool EsFinalizado { get; set; }
-
         public bool? RespetaMateriales { get; set; }
         public bool? RespetaServicios { get; set; }
         public List<CotizacionHorasDto> CotizacionesHoras { get; set; } = new List<CotizacionHorasDto>();
-         public int? MonedaId { get; set; }
+        public int? MonedaId { get; set; }
         public int? UnidadDeMedidaId { get; set; }
         public int? Cantidad { get; set; }
         public DateTime? FechaDeEntrega { get; set; }
         public List<CotizacionSubposicionesDto> CotizacionSubposiciones { get; set; } = new List<CotizacionSubposicionesDto>();
         public bool ConfigurarHora { get; set; }
+        public DateTime? FechaDeVigencia { get; set; }
+        public decimal? PorcentajeDeHoras { get; set; }
     }
 
 

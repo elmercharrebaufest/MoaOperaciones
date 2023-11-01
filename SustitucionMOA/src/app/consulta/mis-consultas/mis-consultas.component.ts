@@ -6,18 +6,19 @@ import { MensajeComponent } from './../../common/view-child/mensaje/mensaje.comp
 import { SpinnerComponent } from './../../common/view-child/spinner/spinner.component';
 import { SessionDataService } from './../../common/services/SessionDataService';
 import { SecurityService } from './../../common/services/SecurityService';
-import { DropdownComponent, DropdownOption } from './../../common/view-child/dropdown/dropdown.component';
+import { DropdownComponent } from './../../common/view-child/dropdown/dropdown.component';
 import { SpinnerSmallComponent } from './../../common/view-child/spinner-small/spinner-small.component';
 import { NavService } from './../../common/services/NavService';
 import { FloatMsgService } from './../../common/services/FloatMsgService';
 import { ModalService } from './../../common/services/ModalService';
-import { element } from '@angular/core/src/render3/instructions';
 import { Seccion } from '../../common/models/seccion';
 import { ConsultaService } from '../consulta.service';
 import { Table } from 'primeng/table';
 import { Categoria, Consulta, EstadoConsulta, Subcategoria, Materiales } from '../consulta';
 import { SelectItem } from 'primeng/components/common/selectitem';
 import { formatDate } from '@angular/common';
+import { HttpErrorResponse } from '@angular/common/http';
+import { HttpStatusCodes } from '../../common/models/httpStatusCodes';
 
 declare var $: any;
 
@@ -237,8 +238,6 @@ export class MisConsultasComponent extends ListBaseComponent {
                     } else if (result.info != undefined) {
                         this.floatMsgService.setInfoMsg(result.info);
                     } else {
-                        // this.categorias = result.categorias;
-                        // this.estados = result.estados;
                         this.subcategorias = result.subcategorias;
                         this.subcategoriasList = [];
                         this.subcategorias.forEach(x => this.subcategoriasList.push({ label: x.Nombre, value: x.Id }));
@@ -249,8 +248,9 @@ export class MisConsultasComponent extends ListBaseComponent {
                         this.setColumnas();
                     }
                 },
-                error => {
-                    this.floatMsgService.setErrorMsg(error.message);
+                (error: HttpErrorResponse)=> {
+                    this.floatMsgService.setErrorMsg(HttpStatusCodes.friendlyStatusCode(error.status));
+                    console.log(error.message);
                 }
 
             );
@@ -308,14 +308,12 @@ export class MisConsultasComponent extends ListBaseComponent {
 
                         let estadosCode = ['INI', 'GES', 'GESRTA', 'DOC'];
                         this.estadosSummary = result.data.estados.filter(e=> estadosCode.indexOf(e.Code) >= 0);
-
-
                     }
                 },
-                error => {
-                    this.floatMsgService.setErrorMsg(error.message);
+                (error: HttpErrorResponse) => {
+                    this.floatMsgService.setErrorMsg(HttpStatusCodes.friendlyStatusCode(error.status));
+                    console.log(error.message);
                 }
-
             );
         } catch (e) {
             this.floatMsgService.setErrorMsg(e);

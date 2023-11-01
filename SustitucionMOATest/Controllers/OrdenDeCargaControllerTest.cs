@@ -5,6 +5,7 @@ using SustitucionMOA.Controllers;
 using SustitucionMOA.Utils;
 using SustitucionMOAAssets;
 using SustitucionMOAModel.Dto;
+using SustitucionMOAModel.Dto.OrdenDeCarga;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAUtils.Interfaces;
 using System;
@@ -183,5 +184,34 @@ namespace SustitucionMOATest.Controllers
 
         }
 
+        [Test]
+        public void ValidarCamionTest()
+        {
+            var chasisParam = "CHA135";
+            var acopladoParam = "ACO246";
+
+            var serviceResponse = new ValidarCamionResponse
+            {
+                ExisteCamion = true,
+                EsCamionEscalable = true
+            };
+
+            ordenDeCargaServiceMock
+                .Setup(x => x.ValidarCamion(chasisParam, acopladoParam))
+                .Returns(serviceResponse);
+
+            var result = target.ValidarCamion(chasisParam, acopladoParam);
+
+            var expected = new SustitucionMOAApiResponse<ValidarCamionResponse>
+            {
+                Data = serviceResponse,
+                Error = null,
+                Info = null,
+                Logout = false
+            };
+            var expectedJson = JsonConvert.SerializeObject(expected);
+
+            Assert.AreEqual(expectedJson, result.Content);
+        }
     }
 }

@@ -212,6 +212,7 @@ namespace SustitucionMOAWS.WSConsumers
                 IM_TRANSPORTISTA_REAL: cuit_int_flete,
                 IM_USUARIO: "CACERESN",
                 IM_ZZCODPLANTA: entregaReq.PlantaCodigo,
+                //IM_DESTINO_MERCADERIA: entregaReq.DestinoMercaderia,
                 EX_MENSAJE: out string mensaje).Trim();
 
             Log.Info($"SI_MPMF_MOAOP_ORDEN_CARGA_ENTRE Response: {new { entrega, mensaje }}");
@@ -317,6 +318,7 @@ namespace SustitucionMOAWS.WSConsumers
                     PedidoCliente = item.PEDIDO_CLIENTE,
                     PosNr = item.POSNR,
                     Cliente = item.CLIENTE,
+                    CuitCliente = item.CUIT_CLIENTE,
                     NombreCliente = item.NOMBRE_CLIENTE,
                     Corredor = item.CORREDOR,
                     DescripcionMaterial = item.DESC_MATERIAL,

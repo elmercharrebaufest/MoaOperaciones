@@ -11,35 +11,40 @@ using SustitucionMOAModel.Models.WSMapMOA.Pago.Comprobante;
 using SustitucionMOAModel.Models.WSMapMOA.Pago.Detalle;
 using SustitucionMOAModel.Models.WSMapMOA.Pago.NoGranos;
 using SustitucionMOAUtils.Export;
+using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAValidator;
 using SustitucionMOAWS.WSConsumers;
 
 namespace SustitucionMOAUtils.Services
 {
-    public class PagoService
+    public class PagoService : IPagoService
     {
-        public PagoViewModel getEmitidos(string proveedor, string fechaInicio, string fechaFin)
+        public PagoService()
         {
-            return getPagos(proveedor, "EMITIDO", fechaInicio, fechaFin);
+
+        }
+        public PagoViewModel ObtenerEmitidos(string proveedor, string fechaInicio, string fechaFin)
+        {
+            return ObtenerPagos(proveedor, "EMITIDO", fechaInicio, fechaFin);
         }
 
-        public PagoNGViewModel getEmitidosNG(string proveedor, string fechaInicio, string fechaFin, string sociedad)
+        public PagoNGViewModel ObtenerEmitidosNG(string proveedor, string fechaInicio, string fechaFin, string sociedad)
         {
-            return getPagosNG(proveedor, "EMITIDO", fechaInicio, fechaFin, sociedad);
+            return ObtenerPagosNG(proveedor, "EMITIDO", fechaInicio, fechaFin, sociedad);
         }
 
-        public PagoViewModel getPagos(string proveedor, string tipo, string fechaInicio, string fechaFin)
+        public PagoViewModel ObtenerPagos(string proveedor, string tipo, string fechaInicio, string fechaFin)
         {
             try
             {
-                List<FechaWS> fechas = CommonService.toDateList(fechaInicio, fechaFin);
+                List<FechaWS> fechas = CommonUtil.toDateList(fechaInicio, fechaFin);
                 PagoViewModel dataView = new PagoViewModel();
                 dataView.filtroID = new DropdownContent();
                 dataView.filtroTitular = new DropdownContent();
                 dataView.filtroContratoMolinos = new DropdownContent();
                 dataView.filtroContratoProveedores = new DropdownContent();
                 dataView.data = (PagosWSMOAReponse) new PagosConsumerMOA().request(proveedor, fechas);
-                validarRespuesta(dataView.data);
+                ValidarRespuesta(dataView.data);
                 try
                 {
                     dataView.filtroID = new DropdownContent(dataView.data.pagos.GroupBy(i => i.idPago).Select(x => new DropdownOption { value = x.Key, label = x.Key + " (" + x.Count() + ")" }).ToList());
@@ -62,18 +67,18 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        public PagoNGViewModel getPagosNG(string proveedor, string tipo, string fechaInicio, string fechaFin, string sociedad)
+        public PagoNGViewModel ObtenerPagosNG(string proveedor, string tipo, string fechaInicio, string fechaFin, string sociedad)
         {
             try
             {
-                List<FechaWS> fechas = CommonService.toDateList(fechaInicio, fechaFin);
+                List<FechaWS> fechas = CommonUtil.toDateList(fechaInicio, fechaFin);
                 PagoNGViewModel dataView = new PagoNGViewModel();
                 dataView.filtroID = new DropdownContent();
                 dataView.filtroTitular = new DropdownContent();
                 dataView.filtroContratoMolinos = new DropdownContent();
                 dataView.filtroContratoProveedores = new DropdownContent();
                 dataView.data = (PagosNGWSMOAResponse) new PagosNGConsumerMOA().request(proveedor, fechas, sociedad);
-                validarRespuesta(dataView.data);
+                ValidarRespuesta(dataView.data);
                 try
                 {
                     dataView.filtroID = new DropdownContent(dataView.data.pagos.GroupBy(i => i.numeroPago).Select(x => new DropdownOption { value = x.Key, label = x.Key + " (" + x.Count() + ")" }).ToList());
@@ -96,13 +101,13 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        public PagoComprobanteWSMOAResponse getComprobantes(string documento, string fecha, string sociedad, string fiscalYear)
+        public PagoComprobanteWSMOAResponse ObtenerComprobantes(string documento, string fecha, string sociedad, string fiscalYear)
         {
             try
             {
                 DateTime fechaDate = DataFormatter.StringToDateTime(fecha, "Fecha");
                 PagoComprobanteWSMOAResponse data = new PagoComprobantesConsumerMOA().request(documento, fechaDate, sociedad, fiscalYear);
-                validarRespuesta(data);
+                ValidarRespuesta(data);
                 return data;
             }
             catch (InfoCustomException e)
@@ -119,13 +124,13 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        public string downloadEmitidos(string proveedor, string fechaInicio, string fechaFin)
+        public string DescargarEmitidos(string proveedor, string fechaInicio, string fechaFin)
         {
             try
             {
-                List<FechaWS> fechas = CommonService.toDateList(fechaInicio, fechaFin);
+                List<FechaWS> fechas = CommonUtil.toDateList(fechaInicio, fechaFin);
                 PagosExcelWSMOAReponse data = (PagosExcelWSMOAReponse)new PagosExcelConsumerMOA().request(proveedor, fechas);
-                validarRespuesta(data);
+                ValidarRespuesta(data);
                 return ExcelExport.ToExcel(data.pagos, new string[] { "Proveedor", "Fecha de Acreditacion", "ID Pago", "Moneda", "Total Mercaderia", "IVA", "Retencion", "Monto", "Contrato Molinos", "Contrato Proveedor", "Fecha Pago", "Comprobante", "Tipo Comprobante", "Concepto"}, "Reporte Pagos Emitidos");
             }
             catch (InfoCustomException e)
@@ -142,13 +147,13 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        public string downloadEmitidosNG(string proveedor, string fechaInicio, string fechaFin, string sociedad)
+        public string DescargarEmitidosNG(string proveedor, string fechaInicio, string fechaFin, string sociedad)
         {
             try
             {
-                List<FechaWS> fechas = CommonService.toDateList(fechaInicio, fechaFin);
+                List<FechaWS> fechas = CommonUtil.toDateList(fechaInicio, fechaFin);
                 PagosNGExcelWSMOAReponse data = (PagosNGExcelWSMOAReponse)new PagosExcelNGConsumerMOA().request(proveedor, fechas, sociedad);
-                validarRespuesta(data);
+                ValidarRespuesta(data);
                 return ExcelExport.ToExcel(data.pagos, new string[] { "Fecha Pago", "Numero Pago", "Periodo Fiscal", "Via Pago", "Moneda", "Total Mercaderia", "Retencion",  "Monto" }, "Reporte Pagos Emitidos");
             }
             catch (InfoCustomException e)
@@ -165,7 +170,7 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        public PagoDetalleWSMOAResponse getDetalle(string proveedor, string numeroPago)
+        public PagoDetalleWSMOAResponse ObtenerDetalle(string proveedor, string numeroPago)
         {
             try
             {
@@ -195,7 +200,7 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        public string downloadDetalle(string proveedor, string numeroPago)
+        public string DescargarDetalle(string proveedor, string numeroPago)
         {
             try
             {
@@ -222,7 +227,7 @@ namespace SustitucionMOAUtils.Services
         }
 
 
-        private void validarRespuesta(PagosWSMOAReponse data) {
+        private void ValidarRespuesta(PagosWSMOAReponse data) {
             if(data == null)
                 throw new ValidationCustomException(ErrorMsg.ErrorWS);
             if (data.error != null && data.error.codigo != null && data.error.codigo != "" && data.error.codigo != "06" && data.error.codigo != "00" && data.error.codigo != "01")
@@ -231,7 +236,7 @@ namespace SustitucionMOAUtils.Services
                 throw new InfoCustomException(String.Format(InfoMsg.SinRegistros, "Pagos"));
         }
 
-        private void validarRespuesta(PagosExcelWSMOAReponse data)
+        private void ValidarRespuesta(PagosExcelWSMOAReponse data)
         {
             if (data == null)
                 throw new ValidationCustomException(ErrorMsg.ErrorWS);
@@ -241,7 +246,7 @@ namespace SustitucionMOAUtils.Services
                 throw new InfoCustomException(String.Format(InfoMsg.SinRegistros, "Pagos"));
         }
 
-        private void validarRespuesta(PagosNGWSMOAResponse data)
+        private void ValidarRespuesta(PagosNGWSMOAResponse data)
         {
             if (data == null)
                 throw new ValidationCustomException(ErrorMsg.ErrorWS);
@@ -249,7 +254,7 @@ namespace SustitucionMOAUtils.Services
                 throw new InfoCustomException(String.Format(InfoMsg.SinRegistros, "Pagos"));
         }
 
-        private void validarRespuesta(PagosNGExcelWSMOAReponse data)
+        private void ValidarRespuesta(PagosNGExcelWSMOAReponse data)
         {
             if (data == null)
                 throw new ValidationCustomException(ErrorMsg.ErrorWS);
@@ -258,7 +263,7 @@ namespace SustitucionMOAUtils.Services
         }
 
 
-        private void validarRespuesta(PagoComprobanteWSMOAResponse data) {
+        private void ValidarRespuesta(PagoComprobanteWSMOAResponse data) {
             if (data == null)
                 throw new ValidationCustomException(ErrorMsg.ErrorWS);
             if (data.comprobantes == null || data.comprobantes.Count == 0)

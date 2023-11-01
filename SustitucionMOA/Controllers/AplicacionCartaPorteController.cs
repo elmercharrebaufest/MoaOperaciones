@@ -1,8 +1,8 @@
 ﻿using Newtonsoft.Json;
 using SustitucionMOAAssets;
 using SustitucionMOAModel.CustomExceptions;
+using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
-using SustitucionMOAModel.Enums;
 using SustitucionMOASecurity;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
@@ -13,11 +13,11 @@ namespace SustitucionMOA.Controllers
 {
     public class AplicacionCartaPorteController : BaseController
     {
-        readonly IAplicacionCartaPorteService _aplicacionCCPPService;
+        readonly IAplicacionCartaPorteService aplicacionCCPPService;
 
         public AplicacionCartaPorteController(IAplicacionCartaPorteService aplicacionCCPPService)
         {
-            this._aplicacionCCPPService = aplicacionCCPPService;
+            this.aplicacionCCPPService = aplicacionCCPPService;
         }
 
         [HttpPost]
@@ -27,7 +27,7 @@ namespace SustitucionMOA.Controllers
             {
                 var aplicacionCCPP = JsonConvert.DeserializeObject<AplicacionCartaPorte>(aplicacionCCPPJson);
                 var mailUsuario = SessionPersister.getUsername();
-                return JsonCustom(new { data = _aplicacionCCPPService.Agregar(aplicacionCCPP, mailUsuario) });
+                return JsonCustom(new { data = aplicacionCCPPService.Agregar(aplicacionCCPP, mailUsuario) });
             }
             catch (InfoCustomException e)
             {
@@ -50,10 +50,10 @@ namespace SustitucionMOA.Controllers
             try
             {
                 var mailUsuario = SessionPersister.getUsername();
-                var data = _aplicacionCCPPService.Listar(mailUsuario, fechaInicio, fechaFin);
+                var data = aplicacionCCPPService.Listar(mailUsuario, fechaInicio, fechaFin);
                 if (! (data.Count > 0))
                     throw new InfoCustomException("No se han encontrado aplicaciones cargadas");
-                var filtros = _aplicacionCCPPService.ObtenerFiltros(data);
+                var filtros = aplicacionCCPPService.ObtenerFiltros(data);
                 return JsonCustom(new { data, filtros });
             }
             catch (InfoCustomException e)
@@ -78,7 +78,7 @@ namespace SustitucionMOA.Controllers
             {
                 var mailUsuario = SessionPersister.getUsername();
 
-                return JsonCustom(new { data = _aplicacionCCPPService.Obtener(aplicacionCCPPId, mailUsuario) });
+                return JsonCustom(new { data = aplicacionCCPPService.Obtener(aplicacionCCPPId, mailUsuario) });
             }
             catch (InfoCustomException e)
             {
@@ -93,6 +93,31 @@ namespace SustitucionMOA.Controllers
                 Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
+        }
+
+        [HttpGet]
+        public ContentResult EliminarAplicacion(int aplicacionId)
+        {
+            var response = new SustitucionMOAApiResponse<bool>();
+            try
+            {
+               aplicacionCCPPService.EliminarAplicacion(aplicacionId);
+               response.Data = true;
+            }
+            catch (InfoCustomException ice)
+            {
+                response.Info = ice.Message;
+            }
+            catch (ValidationCustomException vce)
+            {
+                response.Error = vce.Message;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                response.Error = ErrorMsg.Error;
+            }
+            return ContentCustom(response);
         }
 
     }

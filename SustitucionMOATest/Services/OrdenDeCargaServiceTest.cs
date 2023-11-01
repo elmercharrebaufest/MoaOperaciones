@@ -21,6 +21,7 @@ using SustitucionMOAWS.ResponseHandler.OrdenCarga;
 using SustitucionMOAModel.Util;
 using SustitucionMOAModel.Models.WSMapMOA.OrdenCarga;
 using SustitucionMOAModel.Enums.MoaWS.OrdenCargaWS;
+using SustitucionMOAModel.Models.WebApiMap.CNRT;
 
 namespace SustitucionMOATest.Services
 {
@@ -38,6 +39,7 @@ namespace SustitucionMOATest.Services
         private Mock<IScatoRepositorioClient> mIScatoRepositorioClient;
         private Mock<IScatoConsumer> mIScatoConsumer;
         private Mock<IKgDisponiblesFasService> mIKgDisponiblesFasService;
+        private Mock<ICNRTClient> mICNRTClient;
 
         private ScatoRepo.Respuesta<ScatoRepo.Chofer> _respuestaChofer;
         private ScatoRepo.Respuesta<ScatoRepo.Chofer> _respuestaTransporte;
@@ -62,9 +64,11 @@ namespace SustitucionMOATest.Services
             feriadoService.Setup(fs => fs.ObtenerFeriados()).Returns(new List<DateTime>());
             mIEmailFasService = new Mock<IEmailFasService>();
             mIKgDisponiblesFasService = new Mock<IKgDisponiblesFasService>();
+            mICNRTClient = new Mock<ICNRTClient>();
             AddProvider(301301301, EstadoAprobacion.Aprobado, "Test", "RS", "dylopez@baufest.com", "233333333333", new TipoUsuario { Id = 5, Nombre = "Cliente", NombreCorto = "CLI" });
             target = new OrdenDeCargaService(repositorioMock.Object, consumerOrdenCargaMOA.Object, feriadoService.Object,
-                mIScatoRepositorioClient.Object, mIScatoConsumer.Object, mIEmailFasService.Object, mIFacturaAnticipadaService.Object, mIKgDisponiblesFasService.Object);
+                mIScatoRepositorioClient.Object, mIScatoConsumer.Object, mIEmailFasService.Object, mIFacturaAnticipadaService.Object,
+                mIKgDisponiblesFasService.Object, mICNRTClient.Object);
             ordenDeCarga = new OrdenDeCarga
             {
                 Id = 1,
@@ -994,7 +998,7 @@ namespace SustitucionMOATest.Services
         {
             ordenDeCarga.Reventa = true;
             SetupAgregarTests();
-            
+
             var expected = $"Cliente {_proveedorUsuario.RazonSocial}({_proveedorUsuario.CUIT}) no es revendedor. No puede modificar campo reventa";
 
             var ex = Assert.Throws<ValidationCustomException>(() => target.Agregar(ordenDeCarga, _mailSesionUsuario));
@@ -1050,6 +1054,150 @@ namespace SustitucionMOATest.Services
             Assert.That(result, Is.True);
 
         }
+
+        [Test]
+        public void ValidarCamion_ExisteCamionEscalable()
+        {
+            var chasisParam = "CHA135";
+            var acopladoParam = "ACO246";
+
+            var cnrtRes = new EquiposResponse
+            {
+                Data = new Equipo
+                {
+                    CategoriaEscalado = "D",
+                    Dominios = new List<Dominio>
+                    {
+                        new Dominio { Rto = new Rto { CantEjes = 2 } },
+                        new Dominio { Rto = new Rto { CantEjes = 3 } }
+                    }
+                }
+            };
+
+            mICNRTClient
+                .Setup(x => x.ObtenerEquipos(chasisParam, acopladoParam))
+                .Returns(cnrtRes);
+
+            var result = target.ValidarCamion(chasisParam, acopladoParam);
+
+            Assert.That(result.ExisteCamion, Is.True);
+            Assert.That(result.EsCamionEscalable, Is.True);
+            mICNRTClient.Verify(x => x.ObtenerEquipos(chasisParam, acopladoParam), Times.Once);
+        }
+
+        [Test]
+        public void ValidarCamion_ExisteCamionNoEscalable()
+        {
+            var chasisParam = "CHA135";
+            var acopladoParam = "ACO246";
+
+            var cnrtRes = new EquiposResponse
+            {
+                Data = new Equipo
+                {
+                    CategoriaEscalado = "A",
+                    Dominios = new List<Dominio>
+                    {
+                        new Dominio { Rto = new Rto { CantEjes = 2 } },
+                        new Dominio { Rto = new Rto { CantEjes = 3 } }
+                    }
+                }
+            };
+
+            mICNRTClient
+                .Setup(x => x.ObtenerEquipos(chasisParam, acopladoParam))
+                .Returns(cnrtRes);
+
+            var result = target.ValidarCamion(chasisParam, acopladoParam);
+
+            Assert.That(result.ExisteCamion, Is.True);
+            Assert.That(result.EsCamionEscalable, Is.False);
+            mICNRTClient.Verify(x => x.ObtenerEquipos(chasisParam, acopladoParam), Times.Once);
+        }
+
+        [Test]
+        public void ValidarCamion_NoExisteCamionEsBitren()
+        {
+            var chasisParam = "CHA135";
+            var acopladoParam = "ACO246";
+
+            var cnrtRes = new EquiposResponse
+            {
+                Data = new Equipo
+                {
+                    CategoriaEscalado = "A",
+                    Dominios = new List<Dominio>
+                    {
+                        new Dominio { Rto = new Rto { CantEjes = 2 } },
+                        new Dominio { Rto = new Rto { CantEjes = 0 } }
+                    }
+                }
+            };
+
+            mICNRTClient
+                .Setup(x => x.ObtenerEquipos(chasisParam, acopladoParam))
+                .Returns(cnrtRes);
+
+            var result = target.ValidarCamion(chasisParam, acopladoParam);
+
+            Assert.That(result.ExisteCamion, Is.False);
+            mICNRTClient.Verify(x => x.ObtenerEquipos(chasisParam, acopladoParam), Times.Once);
+        }
+
+        [Test]
+        public void ValidarCamion_NoExisteCamionSinTipoVehiculo()
+        {
+            var chasisParam = "CHA135";
+            var acopladoParam = "ACO246";
+
+            var cnrtRes = new EquiposResponse
+            {
+                Data = new Equipo
+                {
+                    CategoriaEscalado = "F",
+                    Dominios = new List<Dominio>
+                    {
+                        new Dominio { Rto = new Rto { CantEjes = 2 } },
+                        new Dominio { Rto = new Rto { CantEjes = 0 } }
+                    }
+                }
+            };
+
+            mICNRTClient
+                .Setup(x => x.ObtenerEquipos(chasisParam, acopladoParam))
+                .Returns(cnrtRes);
+
+            var result = target.ValidarCamion(chasisParam, acopladoParam);
+
+            Assert.That(result.ExisteCamion, Is.False);
+            mICNRTClient.Verify(x => x.ObtenerEquipos(chasisParam, acopladoParam), Times.Once);
+        }
+
+        [Test]
+        public void ValidarCamion_NoExisteCamionSinDominios()
+        {
+            var chasisParam = "CHA135";
+            var acopladoParam = "ACO246";
+
+            var cnrtRes = new EquiposResponse
+            {
+                Data = new Equipo
+                {
+                    CategoriaEscalado = "A",
+                    Dominios = new List<Dominio>()
+                }
+            };
+
+            mICNRTClient
+                .Setup(x => x.ObtenerEquipos(chasisParam, acopladoParam))
+                .Returns(cnrtRes);
+
+            var result = target.ValidarCamion(chasisParam, acopladoParam);
+
+            Assert.That(result.ExisteCamion, Is.False);
+            mICNRTClient.Verify(x => x.ObtenerEquipos(chasisParam, acopladoParam), Times.Once);
+        }
+
         private void AddProvider(int id, EstadoAprobacion estadoAprobacion, string observaciones, string razonSocial, string mail, string cUIT, TipoUsuario tipoProveedor)
         {
             var proveedor = new Proveedor

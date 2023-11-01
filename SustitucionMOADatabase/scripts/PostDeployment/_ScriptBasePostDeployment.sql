@@ -30,9 +30,13 @@ Post-Deployment Script Template
 :r .\Material.sql
 :r .\Estados.sql
 :r .\UnidadMedidaSap.sql
+
 :r ..\Notificaciones\Notificacion.sql
 :r ..\Notificaciones\NotificacionFechaCreacion.sql
 :r ..\Notificaciones\NotificacionPrioridad.sql
 :r ..\Comunicacion\ComunicacionTipo.sql
 :r ..\Comunicacion\TipoRetencion.sql
+
+:r .\UsuariosConRolFleteMOA.sql
+
 

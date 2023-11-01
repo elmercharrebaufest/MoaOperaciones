@@ -11,6 +11,7 @@
     [CondicionesDeEntrega]          NVARCHAR(MAX) NULL,
     [CondicionesDePago]          NVARCHAR(MAX) NULL,
     [Garantias]          NVARCHAR(MAX) NULL,
+    [FechaLiberacionSap] DATETIME2 NULL, 
     CONSTRAINT [PK_Adjudicacion] PRIMARY KEY CLUSTERED ([Id] ASC),
     CONSTRAINT [FK.Adjudicacion_Usuario_UsuarioCreadorId] FOREIGN KEY ([UsuarioCreador_Id]) REFERENCES [Usuario]([Id]),
     CONSTRAINT [FK.Adjudicacion_Usuario_CotizacionId] FOREIGN KEY ([Cotizacion_Id]) REFERENCES [Cotizacion]([Id]),

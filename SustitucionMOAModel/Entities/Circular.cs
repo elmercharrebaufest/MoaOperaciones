@@ -27,6 +27,5 @@ namespace SustitucionMOAModel.Entities
 
         [InverseProperty("Circular")]
         public virtual ICollection<Archivo> Archivos { get; set; } = new List<Archivo>();
-
     }
 }

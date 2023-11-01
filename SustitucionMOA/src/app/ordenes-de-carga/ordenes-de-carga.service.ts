@@ -1,24 +1,25 @@
 
-import { throwError as observableThrowError, Observable, BehaviorSubject } from 'rxjs';
+import { throwError as observableThrowError, Observable, BehaviorSubject, of } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { HttpParams } from '@angular/common/http';
-import { BaseService } from './../common/services/BaseService';
 import { timeoutWith } from 'rxjs/operators';
 import { OrdenDeCarga } from '../common/models/ordenes-de-carga/ordenDeCarga';
 import { ObtenerContratosDisponiblesResponse } from '../common/models/ordenes-de-carga/obtenerContratosDisponiblesResponse';
 import { ApiResponse } from '../common/models/response';
 import { ValidarSisaCorredorClienteResponse } from '../common/models/ordenes-de-carga/validarSisaCorredorClienteResponse';
-import { ValidarCuitExisteScatoResponse } from '../common/models/ordenes-de-carga/validarSisaCorredorClienteResponse copy';
+import { ValidarCuitExisteScatoResponse } from '../common/models/ordenes-de-carga-common/ValidarCuitExisteScatoResponse';
 import { Planta } from '../common/models/ordenes-de-carga/planta';
 import { Domicilio } from '../common/models/ordenes-de-carga/domicilio';
 import { ValidarIntermediarioFleteResponse } from '../common/models/ordenes-de-carga/ValidarIntermediarioFleteResponse';
 import { Factura } from '../common/models/ordenes-de-carga/Factura';
+import { OrdenesBaseService } from '../common/base-components/ordenes-base-component';
 import { Proveedor } from '../common/models/proveedor';
+import { ValidarCamionResponse } from '../common/models/ordenes-de-carga/ValidarCamionResponse';
 
 @Injectable({
     providedIn: 'root'
 })
-export class OrdenesDeCargaService extends BaseService {
+export class OrdenesDeCargaService extends OrdenesBaseService {
     private _ordenDeCargaSeleccionado = new BehaviorSubject<number>(0);
     private estadosFiltro = new BehaviorSubject<Array<string>>([
         "Pendiente",
@@ -397,18 +398,21 @@ export class OrdenesDeCargaService extends BaseService {
                 { params: params, headers: this.headers })
             .pipe(timeoutWith(360000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
     }
-    public enviarMailGestionarAltaCuit(cuit: string, razonSocial: string, esIntermediarioFlete: boolean): Observable<ApiResponse<boolean>> {
-        let params: HttpParams = new HttpParams()
-            .append("cuit", cuit)
-            .append("razonSocial", razonSocial)
-            .append("esIntermediarioFlete", esIntermediarioFlete.toString());
 
+    public EnviarMailAltaCuitTerceros(gestionaFlete: boolean, gestionaDestino: boolean, gestionaDestinatario: boolean,
+        ordenId: string): Observable<ApiResponse<boolean>> {
+        const payload = {
+            gestionaFlete,
+            gestionaDestino,
+            gestionaDestinatario,
+            ordenId
+        }
         return this.http
-            .get<ApiResponse<boolean>>(
-                '/api/OrdenDeCarga/GestionarAltaCuit',
-                { params: params, headers: this.headers })
-            .pipe(timeoutWith(360000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
+            .post<ApiResponse<boolean>>(
+                '/api/OrdenDeCarga/EnviarMailAltaCuitTerceros',
+                payload)
     }
+
     public obtenerPlantasDestino(destinoCuit: string): Observable<ApiResponse<Planta[]>> {
         let params: HttpParams = new HttpParams()
             .append("destinoCuit", destinoCuit);
@@ -488,6 +492,60 @@ export class OrdenesDeCargaService extends BaseService {
         return this.http
             .get<ApiResponse<boolean>>(
                 '/api/OrdenDeCarga/VerificarCompensacion',
+                { params: params, headers: this.headers })
+            .pipe(timeoutWith(360000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
+    }
+
+    public getCuilsChofer(ordenDeCarga: OrdenDeCarga): Observable<any> {
+        let payload = new FormData();
+        payload.append(
+            "ordenDeCargaJson",
+            JSON.stringify(ordenDeCarga)
+        );
+        return this.http
+            .post('/api/OrdenDeCarga/ObtenerCuilsChofer', payload);
+    }
+
+    public getCuitsTransporte(ordenDeCarga: OrdenDeCarga): Observable<any> {
+        let payload = new FormData();
+        payload.append(
+            "ordenDeCargaJson",
+            JSON.stringify(ordenDeCarga)
+        );
+        return this.http
+            .post('/api/OrdenDeCarga/ObtenerCuitsTransporte', payload);
+    }
+
+    public validarOrdenActivaScato(ordenId: string): Observable<ApiResponse<boolean>> {
+        let params: HttpParams = new HttpParams()
+            .append("ordenId", ordenId);
+
+        return this.http
+            .get<ApiResponse<boolean>>(
+                '/api/OrdenDeCarga/ValidarOrdenActivaScato',
+                { params: params, headers: this.headers })
+            .pipe(timeoutWith(360000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
+    }
+
+    public verificarCuitsTerceros(ordenId: number): Observable<ApiResponse<boolean>> {
+        let params: HttpParams = new HttpParams()
+            .append("ordenId", ordenId.toString());
+
+        return this.http
+            .get<ApiResponse<boolean>>(
+                '/api/OrdenDeCarga/VerificarCuitsTerceros',
+                { params: params, headers: this.headers })
+            .pipe(timeoutWith(360000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
+    }
+
+    public verificarCNRT(chasis: string, acoplado: string): Observable<ApiResponse<ValidarCamionResponse>> {
+        let params: HttpParams = new HttpParams()
+            .append("patenteChasis", chasis)
+            .append("patenteAcoplado", acoplado);
+
+        return this.http
+            .get<ApiResponse<ValidarCamionResponse>>(
+                '/api/OrdenDeCarga/ValidarCamion',
                 { params: params, headers: this.headers })
             .pipe(timeoutWith(360000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
     }

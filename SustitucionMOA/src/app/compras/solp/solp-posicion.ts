@@ -73,7 +73,7 @@ export class SolpPosicion {
     // Moneda
     public selectMonedaCompras: any;
     public monedaSeleccionada: any;
-
+    public MonedaId: number;
     public posicionSeleccionada: any;
     public imputacionSeleccionada: any;
 
@@ -101,7 +101,6 @@ export class SolpPosicion {
     public provedorFijo: any;
     public nombreProveedor: any;
     public orgCompras: any;
-
     public posicionValida: boolean;
 
     //subPosiciones
@@ -109,7 +108,6 @@ export class SolpPosicion {
 
     //validacion
     public tabsPosicionValidos: TabsImputacionValidas = new TabsImputacionValidas();
-
 
     public isNewRow: boolean
     Cantidad?: any;
@@ -128,13 +126,15 @@ export class SolpPosicion {
         return typeof this.mensaje;
     }
 
-    constructor(numeroPosicion, fiscalContrato, fechaEntrega, posicionADuplicar, 
-        centroPorDefecto, direccionCentroPorDefecto, monedaPorDefecto, selectTipoPosicion) {
+    constructor(numeroPosicion?, fiscalContrato?, fechaEntrega?, posicionADuplicar?, 
+        centroPorDefecto?, direccionCentroPorDefecto?, monedaPorDefecto?, selectTipoPosicion?) {
         this.id = uuid.v4();
         this.numeroPosicion = numeroPosicion;
         this.plazoDeEntrega = 10;
-        this.fechaEntregaServicio = new Date(fechaEntrega);
-        this.fechaEntregaServicio.setDate(fechaEntrega.getDate() + parseInt(this.plazoDeEntrega.toString()));
+        if(fechaEntrega != null){
+            this.fechaEntregaServicio =  new Date(fechaEntrega);
+            this.fechaEntregaServicio.setDate(fechaEntrega.getDate() + parseInt(this.plazoDeEntrega.toString()));
+        }
 
         this.fechaDeLiberacion = new Date();
         this.listadoSubPosiciones = new Array<SubPosicionViewModel>();
@@ -174,7 +174,7 @@ export class SolpPosicion {
             this.selectSolicitanteCompras = posicionADuplicar.selectSolicitanteCompras;
             this.necesidadCompras = posicionADuplicar.necesidadCompras;
             this.selectArticuloCompras = posicionADuplicar.selectArticuloCompras;
-            this.textoSuministro = posicionADuplicar.textoSuministro;
+            //this.textoSuministro = posicionADuplicar.textoSuministro;
             this.motivo = posicionADuplicar.motivo;
             this.modelo = posicionADuplicar.modelo;
             // this.rubroElectrico = posicionADuplicar.rubroElectrico;
@@ -236,7 +236,7 @@ export class SolpPosicion {
         let hasTipoImputacion = typeof this.tipoImputacion != "undefined" && this.tipoImputacion;
 
         let isVisibleImputaciones = this.esTipoPosicionMaterial;
-        let isDisabledImputaciones = this.esTipoPosicionServicio || (hasCodigoServicio && (!hasTipoImputacion || (hasTipoImputacion && hasTipoImputacion.Id == 0)));
+        let isDisabledImputaciones = this.esTipoPosicionServicio || ((!hasTipoImputacion || (hasTipoImputacion && hasTipoImputacion.Id == 0)));
 
         this.tabItems = [
             { label: 'Subposiciones', visible: this.esTipoPosicionServicio, disabled: this.esTipoPosicionMaterial },
@@ -283,7 +283,6 @@ export class SolpPosicion {
         if (this.esTipoPosicionMaterial){
             this.validateImputaciones();
         }        
-        
     }
 
     public validateSubposiciones() {
@@ -312,37 +311,37 @@ export class SolpPosicion {
             }
             if (hasNotUnidadSeleccionada || !pos.unidadSeleccionada.Id) {
                 this.tabsPosicionValidos.tabSubposiciones = false;
-                this.mensaje = "Pos. " + this.numeroPosicion + " - El campo unidad en la subposicion es obligatorio";
+                this.mensaje = "Paso #5 - Pos. " + this.numeroPosicion + " - El campo unidad en la subposición es obligatorio";
 
                 return this.mensaje;
             }
             if (hasNotTareaSubcontratarObj) {
                 this.tabsPosicionValidos.tabSubposiciones = false;
-                this.mensaje = "Pos. " + this.numeroPosicion + " - El campo tarea a sub contratar en la subposicion  es obligatorio";
+                this.mensaje = "Paso #5 - Pos. " + this.numeroPosicion + " - El campo tarea a sub contratar en la subposición  es obligatorio";
       
                 return this.mensaje;
             }
             if (hasNotCuentaTd) {
                 this.tabsPosicionValidos.tabSubposiciones = false;
-                this.mensaje = "Pos. " + this.numeroPosicion + " - El campo cantidad en la subposicion es obligatorio";
+                this.mensaje = "Paso #5 - Pos. " + this.numeroPosicion + " - El campo cantidad en la subposición es obligatorio";
       
                 return this.mensaje;
             }
             if (!pos.precioBruto || pos.precioBruto.toString() == "" || typeof pos.precioBruto === "undefined" || pos.precioBruto.toString() == "0") {
                 this.tabsPosicionValidos.tabSubposiciones = false;
-                this.mensaje = "Pos. " + this.numeroPosicion + " - El campo precio en la subposicion es obligatorio";
+                this.mensaje = "Paso #5 - Pos. " + this.numeroPosicion + " - El campo precio en la subposición es obligatorio";
       
                 return this.mensaje;
             }
             if (hasNotCuentaMayor || !pos.cuentaMayor.Id) {
                 this.tabsPosicionValidos.tabSubposiciones = false;
-                this.mensaje = "Pos. " + this.numeroPosicion + " - El campo cuenta mayor en la subposicion es obligatorio";
+                this.mensaje = "Paso #5 - Pos. " + this.numeroPosicion + " - El campo cuenta mayor en la subposición es obligatorio";
       
                 return this.mensaje;
             }
             if (hasNotTipoImputacion || !pos.tipoImputacion.Id) {
                 this.tabsPosicionValidos.tabSubposiciones = false;
-                this.mensaje = "Pos. " + this.numeroPosicion + " - El campo imputacion en la subposicion es obligatorio";
+                this.mensaje = "Paso #5 - Pos. " + this.numeroPosicion + " - El campo imputación en la subposición es obligatorio";
       
                 return this.mensaje;
             }
@@ -355,7 +354,7 @@ export class SolpPosicion {
         {
           this.mensaje = "";
           this.tabsPosicionValidos.tabDireccionEntrega = false;
-          this.mensaje = "Pos. " + this.numeroPosicion + " - El campo calle de entrega es obligatorio";
+          this.mensaje = "Paso #5 - Pos. " + this.numeroPosicion + " - El campo calle de entrega es obligatorio";
 
           return this.mensaje;
         } 
@@ -368,14 +367,14 @@ export class SolpPosicion {
             if (!this.valorImputacion || typeof this.valorImputacion === "undefined" || typeof this.valorImputacion === undefined)
             {
                 this.tabsPosicionValidos.tabImputacion = false;
-                this.mensaje = "Pos. " + this.numeroPosicion + " - El campo imputacion es obligatorio";
+                this.mensaje = "Paso #5 - Pos. " + this.numeroPosicion + " - El campo imputacion es obligatorio";
                 return this.mensaje;
             }
 
             if (!this.cuentaMayor || typeof this.cuentaMayor === "undefined" || typeof this.cuentaMayor === undefined)
             {
                 this.tabsPosicionValidos.tabImputacion = false;
-                this.mensaje = "Pos. " + this.numeroPosicion + " - El campo cuenta mayor es obligatorio";
+                this.mensaje = "Paso #5 - Pos. " + this.numeroPosicion + " - El campo cuenta mayor es obligatorio";
                 return this.mensaje;
             }
         }
@@ -392,7 +391,7 @@ export class SolpPosicion {
         if (typeof this.selectGrupoCompras === "undefined" || this.selectGrupoCompras.Id == 0)
         {
           this.tabsPosicionValidos.tabDatosPosicion = false;
-          this.mensaje = "Pos. " + this.numeroPosicion + " - El campo grupo de compras es obligatorio";
+          this.mensaje = "Paso #5 - Pos. " + this.numeroPosicion + " - El campo grupo de compras es obligatorio";
 
           return this.mensaje;
         }
@@ -401,7 +400,7 @@ export class SolpPosicion {
         {
           this.mensaje = "";  
           this.tabsPosicionValidos.tabDatosPosicion = false;
-          this.mensaje = "Pos. " + this.numeroPosicion + " - El campo grupo de articulo es obligatorio";
+          this.mensaje = "Paso #5 - Pos. " + this.numeroPosicion + " - El campo grupo de artículo es obligatorio";
 
           return this.mensaje;
         }
@@ -409,8 +408,7 @@ export class SolpPosicion {
         if (!this.selectSolicitanteCompras || this.selectSolicitanteCompras == "" || typeof this.selectSolicitanteCompras === "undefined")
         {
           this.tabsPosicionValidos.tabDatosPosicion = false;
-          this.mensaje = "Pos. " + this.numeroPosicion + " - El campo solicitante de compras es obligatorio";
-
+          this.mensaje = "Paso #5 - Pos. " + this.numeroPosicion + " - El campo solicitante de compras es obligatorio";
 
           return this.mensaje;
         }
@@ -420,7 +418,7 @@ export class SolpPosicion {
             {
               this.mensaje = "";
               this.tabsPosicionValidos.tabDatosPosicion = false;
-              this.mensaje = "Pos. " + this.numeroPosicion + " - El campo texto de suministro es obligatorio";
+              this.mensaje = "Paso #5 - Pos. " + this.numeroPosicion + " - El campo texto de suministro es obligatorio";
 
               return this.mensaje;
             }
@@ -432,7 +430,7 @@ export class SolpPosicion {
                 if (!this.modelo || this.modelo == "" || this.modelo == undefined)
                 {
                   this.tabsPosicionValidos.tabDatosPosicion = false;
-                  this.mensaje = "Pos. " + this.numeroPosicion + " - El campo modelo es obligatorio";
+                  this.mensaje = "Paso #5 - Pos. " + this.numeroPosicion + " - El campo modelo es obligatorio";
     
                   return this.mensaje;
                 }
@@ -440,12 +438,11 @@ export class SolpPosicion {
                 if (!this.motivo || this.motivo == "" || this.motivo == undefined)
                 {
                   this.tabsPosicionValidos.tabDatosPosicion = false;
-                  this.mensaje = "Pos. " + this.numeroPosicion + " - El campo motivo es obligatorio";
+                  this.mensaje = "Paso #5 - Pos. " + this.numeroPosicion + " - El campo motivo es obligatorio";
     
                   return this.mensaje;
                 }
             }
-          
         }
        
     }
@@ -454,7 +451,7 @@ export class SolpPosicion {
         if (typeof this.fechaEntregaServicio === "undefined" || typeof this.plazoDeEntrega === "undefined" || this.plazoDeEntrega.toString() == "")
         {
           this.tabsPosicionValidos.tabFechas = false;
-          this.mensaje = "Pos. " + this.numeroPosicion + " - El campo fecha de entrega y plazo de entrega son obligatorios";
+          this.mensaje = "Paso #5 - Pos. " + this.numeroPosicion + " - El campo fecha de entrega y plazo de entrega son obligatorios";
 
           return this.mensaje;
         }
@@ -468,7 +465,7 @@ export class SolpPosicion {
         if (!this.selectCentroEntrega || typeof this.selectCentroEntrega === "undefined" || this.selectCentroEntrega == undefined)
         {
             this.tabsPosicionValidos.tabPosiciones = false;
-            this.mensaje = "Pos. " + this.numeroPosicion + " - El campo centro de entrega es obligatorio";
+            this.mensaje = "Paso #5 - Pos. " + this.numeroPosicion + " - El campo centro de entrega es obligatorio";
 
             return this.mensaje;
         }
@@ -476,8 +473,7 @@ export class SolpPosicion {
         if (!this.tareaSubcontratarObj || typeof this.tareaSubcontratarObj === "undefined" || this.tareaSubcontratarObj == "")
         {
             this.tabsPosicionValidos.tabPosiciones = false;
-            this.mensaje = "Pos. " + this.numeroPosicion + " - El campo descripcion es obligatorio";
-            console.log("descaripcion", this.tareaSubcontratarObj)
+            this.mensaje = "Paso #5 - Pos. " + this.numeroPosicion + " - El campo descripción es obligatorio";
             return this.mensaje;
         }
 
@@ -485,7 +481,7 @@ export class SolpPosicion {
             this.mensaje = "";
             if (!this.selectAlmacenEntrega || typeof this.selectAlmacenEntrega === "undefined" || typeof this.selectAlmacenEntrega === undefined) {
                 this.tabsPosicionValidos.tabPosiciones = false;
-                this.mensaje = "Pos. " + this.numeroPosicion + " - El campo almacen de entrega es obligatorio";
+                this.mensaje = "Paso #5 - Pos. " + this.numeroPosicion + " - El campo almacén de entrega es obligatorio";
                 return this.mensaje;
             }
         }
@@ -494,7 +490,7 @@ export class SolpPosicion {
             if (!this.tipoImputacion || typeof this.tipoImputacion === "undefined" || this.tipoImputacion === undefined )
             {
                 this.tabsPosicionValidos.tabPosiciones = false;
-                this.mensaje = "Pos. " + this.numeroPosicion + " - El campo tipo de imputacion es obligatorio";
+                this.mensaje = "Paso #5 - Pos. " + this.numeroPosicion + " - El campo tipo de imputación es obligatorio";
       
                 return this.mensaje;
             }
@@ -504,7 +500,7 @@ export class SolpPosicion {
             if (!this.monedaSeleccionada || typeof this.monedaSeleccionada === "undefined" || typeof this.monedaSeleccionada === undefined || !this.monedaSeleccionada.Id)
             {
                 this.tabsPosicionValidos.tabPosiciones = false;
-                this.mensaje = "Pos. " + this.numeroPosicion + " - El campo moneda es obligatorio";
+                this.mensaje = "Paso #5 - Pos. " + this.numeroPosicion + " - El campo moneda es obligatorio";
       
                 return this.mensaje;
             }
@@ -514,7 +510,7 @@ export class SolpPosicion {
             if (!this.unidadSeleccionada || this.unidadSeleccionada == "" || typeof this.unidadSeleccionada === "undefined" || typeof this.unidadSeleccionada === undefined || !this.unidadSeleccionada.Id )
             {
                 this.tabsPosicionValidos.tabPosiciones = false;
-                this.mensaje = "Pos. " + this.numeroPosicion + " - El campo unidad es obligatorio";
+                this.mensaje = "Paso #5 - Pos. " + this.numeroPosicion + " - El campo unidad es obligatorio";
       
                 return this.mensaje;
             }
@@ -522,14 +518,14 @@ export class SolpPosicion {
             {
                 this.mensaje = "";
                 this.tabsPosicionValidos.tabPosiciones = false;
-                this.mensaje = "Pos. " + this.numeroPosicion + " - El campo cantidad es obligatorio";
+                this.mensaje = "Paso #5 - Pos. " + this.numeroPosicion + " - El campo cantidad es obligatorio";
       
                 return this.mensaje;
             }
             if (!this.precioBruto || this.precioBruto == "" || typeof this.precioBruto === "undefined" || this.precioBruto == "0" || typeof this.precioBruto === undefined)
             {
                 this.tabsPosicionValidos.tabPosiciones = false;
-                this.mensaje = "Pos. " + this.numeroPosicion + " - El campo precio es obligatorio";
+                this.mensaje = "Paso #5 - Pos. " + this.numeroPosicion + " - El campo precio es obligatorio";
       
                 return this.mensaje;
             }

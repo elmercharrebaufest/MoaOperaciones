@@ -19,14 +19,10 @@
     <AssemblyName>SustitucionMOA</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <UseIISExpress>true</UseIISExpress>
-    <IISExpressSSLPort>
-    </IISExpressSSLPort>
-    <IISExpressAnonymousAuthentication>
-    </IISExpressAnonymousAuthentication>
-    <IISExpressWindowsAuthentication>
-    </IISExpressWindowsAuthentication>
-    <IISExpressUseClassicPipelineMode>
-    </IISExpressUseClassicPipelineMode>
+    <IISExpressSSLPort>58280</IISExpressSSLPort>
+    <IISExpressAnonymousAuthentication>enabled</IISExpressAnonymousAuthentication>
+    <IISExpressWindowsAuthentication>disabled</IISExpressWindowsAuthentication>
+    <IISExpressUseClassicPipelineMode>false</IISExpressUseClassicPipelineMode>
     <UseGlobalApplicationHostFile />
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
@@ -55,6 +51,9 @@
     <Reference Include="Antlr3.Runtime, Version=3.4.1.9004, Culture=neutral, PublicKeyToken=eb42632606e9261f, processorArchitecture=MSIL">
       <HintPath>..\packages\Antlr.3.4.1.9004\lib\Antlr3.Runtime.dll</HintPath>
       <Private>True</Private>
+    </Reference>
+    <Reference Include="Castle.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <HintPath>..\packages\Castle.Core.4.2.0\lib\net45\Castle.Core.dll</HintPath>
     </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.4.4\lib\net45\EntityFramework.dll</HintPath>
@@ -141,6 +140,9 @@
     </Reference>
     <Reference Include="Ninject, Version=3.3.4.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
       <HintPath>..\packages\Ninject.3.3.4\lib\net45\Ninject.dll</HintPath>
+    </Reference>
+    <Reference Include="Ninject.Extensions.Factory, Version=3.3.2.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
+      <HintPath>..\packages\Ninject.Extensions.Factory.3.3.2\lib\net45\Ninject.Extensions.Factory.dll</HintPath>
     </Reference>
     <Reference Include="Ninject.Web.Common, Version=3.3.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
       <HintPath>..\packages\Ninject.Web.Common.3.3.0\lib\net45\Ninject.Web.Common.dll</HintPath>
@@ -251,7 +253,9 @@
     <Content Include="Content\images\buttons\upload.png" />
     <Content Include="Content\images\header\key-solid.svg" />
     <Content Include="Content\images\header\logo.png" />
-    <Content Include="Content\images\header\logo_.png" />
+    <Content Include="Content\images\header\logo_.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Content\images\icons\carpeta.svg" />
     <Content Include="Content\images\icons\contract.svg" />
     <Content Include="Content\images\icons\descargar.svg" />
@@ -293,7 +297,6 @@
     <Content Include="dist\Content\images\header\logoLogin.png" />
     <Content Include="dist\Content\images\header\logoOLD.png" />
     <Content Include="dist\Content\images\header\logoSmall.png" />
-    <Content Include="dist\Content\images\header\logo_.png" />
     <Content Include="dist\Content\images\header\sideBack.jpg" />
     <Content Include="dist\Content\js\bootstrap-datetimepicker.es.js" />
     <Content Include="dist\Content\js\bootstrap-datetimepicker.js" />
@@ -342,8 +345,6 @@
     <Content Include="src\app\compras\dashboard-comprador\alta-proveedor\alta-proveedor.component.html" />
     <Content Include="src\app\compras\dashboard-comprador\circular\circular.component.css" />
     <Content Include="src\app\compras\dashboard-comprador\circular\circular.component.html" />
-    <Content Include="src\app\compras\dashboard-comprador\filtro-dashboard-comprador\filtro-dashboard-comprador.component.css" />
-    <Content Include="src\app\compras\dashboard-comprador\filtro-dashboard-comprador\filtro-dashboard-comprador.component.html" />
     <Content Include="src\app\compras\dashboard-comprador\legajo\legajo.component.css" />
     <Content Include="src\app\compras\dashboard-comprador\legajo\legajo.component.html" />
     <Content Include="src\app\compras\dashboard-comprador\listado-dashboard-comprador\listado-dashboard-comprador.component.css" />
@@ -1111,6 +1112,8 @@
     <Compile Include="Jobs\ActualizarEstadoSolpSapJob.cs" />
     <Compile Include="Jobs\ActualizarSISAJob.cs" />
     <Compile Include="Jobs\ActualizarLocalidadesJob.cs" />
+    <Compile Include="Jobs\VerificarTransporteOrdenesDeCargaFasonJob.cs" />
+    <Compile Include="Jobs\AltaClienteSAPJob.cs" />
     <Compile Include="Jobs\ReporteLogins.cs" />
     <Compile Include="Jobs\EnviarASAPOrdenDeCargaJob.cs" />
     <Compile Include="Jobs\ObtenerSolpsDesdeSAPJob.cs" />
@@ -1167,7 +1170,6 @@
     <TypeScriptCompile Include="src\app\compras\dashboard-comprador\alta-proveedor\alta-proveedor.component.spec.ts" />
     <TypeScriptCompile Include="src\app\compras\dashboard-comprador\alta-proveedor\alta-proveedor.component.ts" />
     <TypeScriptCompile Include="src\app\compras\dashboard-comprador\circular\circular.component.ts" />
-    <TypeScriptCompile Include="src\app\compras\dashboard-comprador\filtro-dashboard-comprador\filtro-dashboard-comprador.component.ts" />
     <TypeScriptCompile Include="src\app\compras\dashboard-comprador\legajo\legajo.component.spec.ts" />
     <TypeScriptCompile Include="src\app\compras\dashboard-comprador\legajo\legajo.component.ts" />
     <TypeScriptCompile Include="src\app\compras\dashboard-comprador\listado-dashboard-comprador\listado-dashboard-comprador.component.ts" />
@@ -1555,6 +1557,9 @@
       <Project>{CB32F9E6-ED7B-4623-B624-0EA3717D06C2}</Project>
       <Name>SustitucionMOAWS</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

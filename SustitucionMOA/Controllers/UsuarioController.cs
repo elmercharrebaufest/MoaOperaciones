@@ -267,7 +267,7 @@ namespace SustitucionMOA.Controllers
                 {
                     if (!Globals.EsLocal)
                     {
-                        noticias = _loginService.getNoticias(vendedor);
+                        noticias = _loginService.ObtenerNoticias(vendedor);
                         noticias.cantidad = 0;
                         if (noticias != null && noticias.noticias != null)
                         {
