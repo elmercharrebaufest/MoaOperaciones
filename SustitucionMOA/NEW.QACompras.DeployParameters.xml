@@ -15,9 +15,9 @@
 
 	<setParameter name="DataAgroURL Config" value="http://test.dataagro.com.ar" />
 
-	<setParameter name="SpaUrl Config" value="https://qabaufest.moaoperaciones.com.ar/web" />
+	<setParameter name="SpaUrl Config" value="https://qacompras.moaoperaciones.com.ar/web" />
   <setParameter name="Url Config" value="http://gslopidevqa00.molinosagro.ad:50000/" />
-	<setParameter name="ida:RedirectUri Config" value="https://qabaufest.moaoperaciones.com.ar/" />
+	<setParameter name="ida:RedirectUri Config" value="https://qacompras.moaoperaciones.com.ar/" />
 	<setParameter name="ida:Tenant Config" value="moagroQA.onmicrosoft.com" />
 	<setParameter name="ida:TenantId Config" value="196fe16f-d755-45a8-a27d-47856a18d695" />
 	<setParameter name="ida:ClientId Config" value="331d5323-ba12-498c-956c-e001d44e3088" />
