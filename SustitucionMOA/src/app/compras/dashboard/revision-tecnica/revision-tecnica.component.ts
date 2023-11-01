@@ -109,7 +109,7 @@ export class RevisionTecnicaComponent implements OnInit, OnChanges {
         if (this.peticion.Usuarios.find(x =>
             (x.ObservacionNoCumple == "" || isNullOrUndefined(x.ObservacionNoCumple))
             && x.PropuestaTecnicaAprobada == false)) {
-            this.error = "El campo Observacion es obligatorio";
+            this.error = "El campo Observación es obligatorio";
             this.visualizarAlert = true;
             return true;
         }
@@ -121,7 +121,7 @@ export class RevisionTecnicaComponent implements OnInit, OnChanges {
 
             if (this.peticion.TieneVisitaObraMasiva == true || this.peticion.TieneVisitaObraBool == true) {
                 if (!alMenosUnoSeleccionado) {
-                    this.error = "Todos los checks deben estar seleccionados para finalizar la revision tecnica";
+                    this.error = "Todos los checks deben estar seleccionados para finalizar la revisión técnica";
                     this.visualizarAlert = true;
                     return true;
                 } else {
@@ -137,19 +137,20 @@ export class RevisionTecnicaComponent implements OnInit, OnChanges {
 
     checkPropuestaTecnica() {
         var faltaCheck = false;
+
         if (this.peticion.TipoPosicionCodigo != 'MATERIALES') {
             if (this.peticion.TieneVisitaObraMasiva == true || this.peticion.TieneVisitaObraBool == true) {
-                faltaCheck = this.peticion.Usuarios.some(x => (x.PropuestaTecnicaAprobada == null || x.PropuestaTecnicaAprobada == undefined || x.RealizoVisita == null || x.RealizoVisita == undefined) && x.Cotizacion != null);
+                faltaCheck = this.peticion.Usuarios.some(x => (x.PropuestaTecnicaAprobada == null || x.PropuestaTecnicaAprobada == undefined || x.RealizoVisita == null || x.RealizoVisita == undefined) && x.Cotizacion != null && x.Cotizacion.CotizacionEstado_Id == 1);
             } else {
-                faltaCheck = this.peticion.Usuarios.some(x => ((x.PropuestaTecnicaAprobada == null || x.PropuestaTecnicaAprobada == undefined) && x.Cotizacion != null));
+                faltaCheck = this.peticion.Usuarios.some(x => ((x.PropuestaTecnicaAprobada == null || x.PropuestaTecnicaAprobada == undefined) && x.Cotizacion != null && x.Cotizacion.CotizacionEstado_Id == 1));
             }
         } else {
-            faltaCheck = this.peticion.Usuarios.some(x => (x.PropuestaTecnicaAprobada == null || x.PropuestaTecnicaAprobada == undefined) && x.Cotizacion != null &&
-                x.Cotizacion.RespetaMateriales == false );
+            faltaCheck = this.peticion.Usuarios.some(x => (x.PropuestaTecnicaAprobada == null || x.PropuestaTecnicaAprobada == undefined) && x.Cotizacion != null && x.Cotizacion.CotizacionEstado_Id == 1 &&
+                x.Cotizacion.RespetaMateriales == false);
         }
 
         if (faltaCheck) {
-            this.error = "Todos los checks deben estar seleccionados para finalizar la revision tecnica";
+            this.error = "Todos los checks deben estar seleccionados para finalizar la revisión técnica";
             this.visualizarAlert = true;
             return true;
         }
@@ -180,7 +181,7 @@ export class RevisionTecnicaComponent implements OnInit, OnChanges {
         if (!this.checkVisitaTecnica() && !this.checkPropuestaTecnica() && !this.validarPeticion()) {
             this.confirmationService.confirm({
                 key: 'finalizarRevision',
-                message: 'Una vez finalizada la revisión técnica ya no podrá editarse. Esta seguro que deseea cerrar la revisión tecnica?',
+                message: 'Una vez finalizada la revisión técnica ya no podrá editarse. ¿Está seguro de que desea cerrar la revisión técnica?',
                 accept: () => {
 
                     this.grabarRevisionTecnicaEmitter.next({ finalizar: true });

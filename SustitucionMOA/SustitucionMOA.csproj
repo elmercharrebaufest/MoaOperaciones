@@ -356,7 +356,6 @@
     <Content Include="src\app\compras\dashboard-comprador\proveedor-peticion\proveedor-peticion.component.html" />
     <Content Include="src\app\compras\dashboard-comprador\ver-ofertas\textos-adjudicar\textos-adjudicar.component.css" />
     <Content Include="src\app\compras\dashboard-comprador\ver-ofertas\textos-adjudicar\textos-adjudicar.component.html" />
-    <Content Include="src\app\compras\dashboard-comprador\ver-ofertas\textos-adjudicar\textos-adjudicar.component.js" />
     <Content Include="src\app\compras\dashboard-comprador\ver-ofertas\ver-ofertas.component.css" />
     <Content Include="src\app\compras\dashboard-comprador\ver-ofertas\ver-ofertas.component.html" />
     <Content Include="src\app\compras\dashboard-comprador\ver-ofertas\visualizar-precio\visualizar-precio.component.css" />
@@ -1048,7 +1047,6 @@
     <Content Include="src\proxy.conf.json" />
     <Content Include="src\web.config" />
     <Content Include="Template\solp-email\solp-email.hbs" />
-    <Content Include="src\app\compras\dashboard-comprador\ver-ofertas\textos-adjudicar\textos-adjudicar.component.js.map" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
