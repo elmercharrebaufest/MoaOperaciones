@@ -698,14 +698,14 @@ namespace SustitucionMOAUtils.Services
                 var esInterno = usuario.Permisos.FirstOrDefault(p => p == "VER TODAS ORDENES DE CARGA") != null ? true : false;
                 List<string> exclude = new List<string>() { };
                 List<Categoria> categorias = new List<Categoria>() { };
-
+                
                 if (excluir.HasValue && excluir == true)
                 {
-                    exclude = new List<string>() { "PARDIR", "PARCOR", "FINDIR", "FINCOR" };
+                    exclude = new List<string>() { "PARDIR", "PARCOR", "FINDIR", "FINCOR", "ORD" };
                 }
                 else
                 {
-                    exclude = new List<string>() { };
+                    exclude = new List<string>() { "ORD" };
                 }
 
                 if (usuario.NuevoUsuario)
