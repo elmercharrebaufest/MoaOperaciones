@@ -2637,14 +2637,13 @@ namespace SustitucionMOAUtils.Services
         public bool ValidarOrdenActivaScato(string ordenId)
         {
             var orden = this.repositorio.Obtener<OrdenDeCarga>(o => o.Id.ToString() == ordenId);
-            if (orden == null)
-                return false;
             if (string.IsNullOrEmpty(orden.NumeroEntrega))
                 return false;
             Log.Info($"Obteniendo estado de la orden {orden.Id} en Scato con nro Entrega: " + orden.NumeroEntrega);
             var result = this.scatoConsumer.ObtenerRecorridoNoRechazadoPorNumeroDocumento(orden.NumeroEntrega).FirstOrDefault();
             if (result == null)
                 return false;
+            Log.Info($"ScatoConsumer.ObtenerRecorridoNoRechazadoPorNumeroDocumento Params => OrdenId: {orden.Id}, NroEntrega: {orden.NumeroEntrega}, Response => Terminado:{result.Terminado}");
             return result.Terminado != true;
         }
 
