@@ -22,16 +22,26 @@
           <strong>Plazo</strong>
         </div>
         <div class="col-md-2">
-          <input type="text" pKeyFilter="num" [(ngModel)]="cotizacionPosicion.PrimerPlazoDeOferta" placeholder="Días"
-            pInputText class="styled-select inputAltura" numeric>
+          <input type="text" pKeyFilter="num" 
+          [(ngModel)]="cotizacionPosicion.PrimerPlazoDeOferta" 
+          placeholder="Días"
+          pInputText class="styled-select inputAltura" 
+          numeric-format 
+          (focus)="onEditarCelda(cotizacionPosicion, 'PrimerPlazoDeOferta', 0)"
+          (blur)="onReestablecerValor(cotizacionPosicion, 'PrimerPlazoDeOferta')">
         </div>
         <div class="col-md-2" style="margin-top: 12px;">
           <strong>Cantidad</strong>
         </div>
         <div class="col-md-3">
-          <input type="text" pKeyFilter="num" [(ngModel)]="cotizacionPosicion.PrimeraCantidad" placeholder="0"
-            pInputText class="styled-select inputAltura" numeric-format>
-
+          <input type="text" pKeyFilter="num" 
+          [(ngModel)]="cotizacionPosicion.PrimeraCantidad" 
+          placeholder="0"
+          pInputText 
+          class="styled-select inputAltura" 
+          numeric-format 
+          (focus)="onEditarCelda(cotizacionPosicion, 'PrimeraCantidad', 0)"
+          (blur)="onReestablecerValor(cotizacionPosicion, 'PrimeraCantidad')">
         </div>
         <div class="col-md-1" *ngIf="mostrarBotonAgregarSegundo" style="cursor: pointer">
           <span (click)="agregarSegundaPosicion()" style="color: #1C7CD5;">
@@ -46,15 +56,26 @@
           <strong>Plazo</strong>
         </div>
         <div class="col-md-2">
-          <input type="text" pKeyFilter="num" [(ngModel)]="cotizacionPosicion.SegundoPlazoDeOferta" placeholder="Días"
-            pInputText class="styled-select inputAltura" numeric>
+          <input type="text" pKeyFilter="num" 
+            [(ngModel)]="cotizacionPosicion.SegundoPlazoDeOferta" 
+            placeholder="Días"
+            pInputText 
+            class="styled-select inputAltura" 
+            numeric-format   
+            (focus)="onEditarCelda(cotizacionPosicion, 'SegundoPlazoDeOferta', 0)"
+            (blur)="onReestablecerValor(cotizacionPosicion, 'SegundoPlazoDeOferta')">
         </div>
         <div class="col-md-2" style="margin-top: 12px;">
           <strong>Cantidad</strong>
         </div>
         <div class="col-md-3">
-          <input type="text" pKeyFilter="num" [(ngModel)]="cotizacionPosicion.SegundaCantidad" placeholder="0"
-            pInputText class="styled-select inputAltura" numeric-format>
+          <input type="text" pKeyFilter="num" 
+          [(ngModel)]="cotizacionPosicion.SegundaCantidad" 
+          placeholder="0"
+          pInputText class="styled-select inputAltura" 
+          numeric-format 
+          (focus)="onEditarCelda(cotizacionPosicion, 'SegundaCantidad', 0)"
+          (blur)="onReestablecerValor(cotizacionPosicion, 'SegundaCantidad')">
         </div>
         <div class="col-md-1" style="margin-top: 7px;">
           <div *ngIf="!mostrarTerceraPosicion" style="cursor: pointer">
@@ -78,15 +99,27 @@
           <strong>Plazo</strong>
         </div>
         <div class="col-md-2">
-          <input type="text" pKeyFilter="num" [(ngModel)]="cotizacionPosicion.TercerPlazoDeOferta" placeholder="Días"
-            pInputText class="styled-select inputAltura" numeric>
+          <input type="text" pKeyFilter="num" 
+            [(ngModel)]="cotizacionPosicion.TercerPlazoDeOferta" 
+            placeholder="Días"
+            pInputText 
+            class="styled-select inputAltura" 
+            numeric-format 
+            (focus)="onEditarCelda(cotizacionPosicion, 'TercerPlazoDeOferta', 0)"
+            (blur)="onReestablecerValor(cotizacionPosicion, 'TercerPlazoDeOferta')">
         </div>
         <div class="col-md-2" style="margin-top: 12px;">
           <strong>Cantidad</strong>
         </div>
         <div class="col-md-3">
-          <input type="text" pKeyFilter="num" [(ngModel)]="cotizacionPosicion.TerceraCantidad" placeholder="0"
-            pInputText class="styled-select inputAltura" numeric-format>
+          <input type="text" pKeyFilter="num" 
+            [(ngModel)]="cotizacionPosicion.TerceraCantidad" 
+            placeholder="0"
+            pInputText 
+            class="styled-select inputAltura" 
+            numeric-format
+            (focus)="onEditarCelda(cotizacionPosicion, 'TerceraCantidad', 0)"
+            (blur)="onReestablecerValor(cotizacionPosicion, 'TerceraCantidad')">
         </div>
         <div class="col-md-1" *ngIf="mostrarTerceraPosicion" style="cursor: pointer">
           <span (click)="ocultarTerceraPosicion()" style="color: #1C7CD5;">
