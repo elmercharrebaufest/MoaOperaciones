@@ -79,14 +79,14 @@
                                                (ngModelChange)="calcularValorNeto(posicionesCompra?.Posiciones?.CotizacionPosicion, posicionesCompra.Id); mostrarMensajeNoRespetaCondiciones()" />
                                     </ng-template>
                                     <ng-template pTemplate="output">
-                                        <div [ngClass]="{'invalido': (esFinalizado && posicionesCompra.Posiciones.CotizacionPosicion.Cantidad != undefined) &&
+                                        <div [ngClass]="{'invalido': (esFinalizado && posicionesCompra.Posiciones.CotizacionPosicion.NoDisponible != true && posicionesCompra.Posiciones.CotizacionPosicion.Cantidad != undefined) &&
                                              (posicionesCompra.Posiciones.CotizacionPosicion.Cantidad <= 0)} ">
                                     {{ posicionesCompra?.Posiciones?.CotizacionPosicion?.Cantidad | number:'1.2-2'}} </div>
                                     </ng-template>
                                 </p-cellEditor>
                             </td>
                             <td pEditableColumn class="columna">
-                                <div [ngClass]="{'invalido': esFinalizado &&
+                                <div [ngClass]="{'invalido': esFinalizado && posicionesCompra.Posiciones.CotizacionPosicion.NoDisponible != true && 
                                      (posicionesCompra.Posiciones.CotizacionPosicion.UnidadDeMedida_Id <= 0)} ">
                             <p-dropdown [options]="unidades" dataKey="Codigo" optionLabel="Descripcion"
                                 [disabled]="posicionesCompra.Posiciones.CotizacionPosicion.NoDisponible == true"
@@ -99,7 +99,7 @@
                         </div>
                             </td>
                             <td class="columna">
-                                <div [ngClass]="{'invalido': esFinalizado &&
+                                <div [ngClass]="{'invalido': esFinalizado && posicionesCompra.Posiciones.CotizacionPosicion.NoDisponible != true && 
                                      (posicionesCompra.Posiciones.CotizacionPosicion.Moneda_Id <= 0)}">
 
                              <p-dropdown
@@ -146,7 +146,7 @@
                                     </ng-template>
 
                                     <ng-template pTemplate="output">
-                                        <div [ngClass]="{'invalido': (esFinalizado && posicionesCompra.Posiciones.CotizacionPosicion.Precio != undefined) &&
+                                        <div [ngClass]="{'invalido': (esFinalizado && posicionesCompra.Posiciones.CotizacionPosicion.NoDisponible != true && posicionesCompra.Posiciones.CotizacionPosicion.Precio != undefined) &&
                                              (posicionesCompra.Posiciones.CotizacionPosicion.Precio <= 0)}" pKeyFilter="int">
                                     {{ posicionesCompra?.Posiciones?.CotizacionPosicion?.Precio | number:'1.2-2'}}
                                 </div>
@@ -167,7 +167,7 @@
                                         </p-calendar>
                                     </ng-template>
                                     <ng-template pTemplate="output">
-                                        <div style="height: 20px;" [ngClass]="{'invalido': esFinalizado &&
+                                        <div style="height: 20px;" [ngClass]="{'invalido': esFinalizado && posicionesCompra.Posiciones.CotizacionPosicion.NoDisponible != true &&
                                          (posicionesCompra.Posiciones.CotizacionPosicion.FechaDeVigencia == null)}">
                                             {{ posicionesCompra?.Posiciones?.CotizacionPosicion?.FechaDeVigencia | date:'dd/MM/yy' }}
                                         </div>
@@ -177,9 +177,15 @@
                             <td class="columna">
                                 {{ posicionesCompra?.Posiciones?.CotizacionPosicion?.FechaDeEntrega | date:'dd/MM/yy' }}
                             </td>
-                            <td class="columna" style="overflow: hidden; height: 25px;">
-                                <button class="plazoDeOferta btn" style="font-size: 13px;" (click)="abrirPlazoDeOferta(posicionesCompra?.Posiciones?.CotizacionPosicion, posicionesCompra?.Posiciones?.Cantidad)">Agregar</button>
+                            <td class="columna" style="overflow: hidden; height: 25px; text-align: center;">
+                                <div [ngClass]="{'invalido': esFinalizado && posicionesCompra.Posiciones.CotizacionPosicion.NoDisponible != true}">
+                                    <button class="plazoDeOferta btn" style="font-size: 13px;" (click)="abrirPlazoDeOferta(posicionesCompra?.Posiciones?.CotizacionPosicion, posicionesCompra?.Posiciones?.Cantidad)">
+                                        Agregar
+                                    </button>
+                                   
+                                </div>
                             </td>
+                            
 
                         </tr>
                     </ng-template>

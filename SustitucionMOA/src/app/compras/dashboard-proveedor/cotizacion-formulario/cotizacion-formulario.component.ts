@@ -231,6 +231,7 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
                 if (!breakFor && (cotizacion.NoDisponible == false || cotizacion.NoDisponible == undefined)) {
                     if ((cotizacion.Cantidad <= 0 || cotizacion.Cantidad == undefined) && cotizacion.UnidadDeMedidaId == 0 && cotizacion.MonedaId == 0 && cotizacion.Precio <= 0 && cotizacion.FechaDeEntrega == null && cotizacion.FechaDeVigencia == null) {
                         mensaje = "Pos. " + cotizacion.Posicion + " Por favor tildar NO DISPONIBLE en el caso de no contar con el material";
+                        breakFor = true;
                         return mensaje;
                     }
                     if (cotizacion.Cantidad <= 0 || cotizacion.Cantidad == undefined) {
@@ -326,7 +327,7 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
                             etapaPlazo++;
                           
                         } else if(cantidadAcumulada != cotizacion.Cantidad){
-                            mensaje = `Pos. ${ cotizacion.Posicion}: Debe completar el ${i === 0 ? 'primer' : i === 1 ? 'segundo' : 'tercer'} plazo antes de continuar.`;
+                            mensaje = `Pos. ${ cotizacion.Posicion}: Debe completar el plazo de entrega antes de continuar.`;
                             breakFor = true;
                             return mensaje;
                         }
