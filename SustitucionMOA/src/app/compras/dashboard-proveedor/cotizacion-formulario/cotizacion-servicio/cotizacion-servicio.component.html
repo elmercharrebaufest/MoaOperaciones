@@ -445,7 +445,7 @@
                                                [(ngModel)]="posicionCompra.Posiciones.CotizacionPosicion.PrimerPlazoDeOferta" placeholder="Días">
                                     </ng-template>
                                     <ng-template pTemplate="output">
-                                        <div [ngClass]="{'invalido': esFinalizado && (posicionCompra?.Posiciones?.CotizacionPosicion?.PrimerPlazoDeOfertan <= 0)} ">
+                                        <div [ngClass]="{'invalido': esFinalizado && (posicionCompra?.Posiciones?.CotizacionPosicion?.PrimerPlazoDeOferta <= 0)} ">
                                             {{posicionCompra?.Posiciones?.CotizacionPosicion?.PrimerPlazoDeOferta | number:'1.2-2'}}
                                         </div>
                                     </ng-template>
