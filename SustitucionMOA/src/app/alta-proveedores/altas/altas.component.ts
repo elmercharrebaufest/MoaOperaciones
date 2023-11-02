@@ -20,6 +20,7 @@ import { FiltroFechaComponent } from '../../common/view-child/filtro-fecha/filtr
 import { ConfirmationService, SelectItem } from 'primeng/api';
 import { BehaviorSubject } from 'rxjs';
 import { DropdownOption } from '../../common/view-child/dropdown/dropdown.component';
+import { take } from 'rxjs/operators';
 declare var $: any;
 
 
@@ -133,7 +134,8 @@ export class AltasComponent extends BaseComponent implements OnInit {
         try {
             this.unsubscribe();
             this.subscription = this.altaEmpresaService.getEmpresas(this.idTipoProveedor,
-                this.filtroFechaComponent.fecha_inicio, this.filtroFechaComponent.fecha_fin).subscribe(
+                this.filtroFechaComponent.fecha_inicio, this.filtroFechaComponent.fecha_fin)
+                .subscribe(
                     (result: any) => {
                         this.spinnerComponent.hideIt();
                         if (result.logout == true) {
@@ -998,8 +1000,7 @@ export class AltasComponent extends BaseComponent implements OnInit {
             mail + ", una vez realizada la operación, él mismo deberá volver a registrarse" +
             " para operar en el sistema.",
             accept: () => {
-                //this.eliminarAltaUsuario(id);
-                this.getEmpresa();
+                this.eliminarAltaUsuario(id);
             },
             reject: () => {
             }
@@ -1008,7 +1009,7 @@ export class AltasComponent extends BaseComponent implements OnInit {
 
     eliminarAltaUsuario(proveedorId: number){
         this.spinnerModal.showIt();
-        this.altaEmpresaService.eliminarCuitNoHabilitado(proveedorId)
+        this.altaEmpresaService.eliminarCuitNoHabilitado(proveedorId).pipe(take(1))
         .subscribe(
             (result) => {
                 this.spinnerComponent.hideIt();

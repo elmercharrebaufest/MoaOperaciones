@@ -12,6 +12,7 @@ using SustitucionMOAModel.Models.WSMapMOA.Vendedor.Detalle;
 using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
+using SustitucionMOAWS.Interfaces;
 using SustitucionMOAWS.WSConsumers;
 using System;
 using System.Collections.Generic;
@@ -28,11 +29,13 @@ namespace SustitucionMOAUtils.Services
     {
         protected readonly IRepositorio repositorio;
         protected readonly IVendedorService vendedorService;
+        protected readonly IAzureADConsumer azureADConsumer;
 
-        public UsuarioService(IRepositorio repositorio, IVendedorService vendedorService)
+        public UsuarioService(IRepositorio repositorio, IVendedorService vendedorService, IAzureADConsumer azureADConsumer)
         {
             this.repositorio = repositorio;
             this.vendedorService = vendedorService;
+            this.azureADConsumer = azureADConsumer;
         }
 
         public void SeccionVisitada(string mailUsuario, string seccion)
@@ -707,61 +710,70 @@ namespace SustitucionMOAUtils.Services
         #region EliminarCuitNoHabilitado
         public string EliminarCuitNoHabilitado(int proveedorId, string mailUsuarioSesion)
         {
-            Log.Info("Inicio UsuarioService.EliminarCuitNoHabilitado");
             var usuarioSesion = repositorio.Obtener<Entidades.Usuario>(u => u.Mail == mailUsuarioSesion);
             var proveedorABorrar = repositorio.Obtener<Entidades.Proveedor>(p => p.Id == proveedorId);
             var usuarioABorrar = obtenerUsuarioDelVendedor(proveedorABorrar);
+            bool puedeEliminarseProveedor = PuedeEliminarseProveedor(proveedorABorrar.Id);
+            bool puedeEliminarseUsuario = PuedeEliminarseUsuario(usuarioABorrar.Id);
+            bool eliminarUsuarioAzure = false;
 
-            if (usuarioSesion.EsAdmin() && proveedorABorrar.EstadoAprobacion.Equals(EstadoAprobacion.AltaIncompleta))
+            if (!usuarioSesion.EsAdmin())
+                throw new InfoCustomException("Ud no posee los permisos suficientes para realizar para borrar un usuario.");
+
+            if (!proveedorABorrar.EstadoAprobacion.Equals(EstadoAprobacion.AltaIncompleta))
+                throw new InfoCustomException("El usuario no se encuentra en estado CUIT NO HABILITADO.");
+
+            Log.Info($"Inicio UsuarioService.EliminarCuitNoHabilitado params => proveedorId: {proveedorId}");
+            /*Caso en el que se deba borrar al proveedor y su usuario que no opero con ningun otro vendedor 
+            Ni realizo acciones en el sistema.*/
+            if (puedeEliminarseProveedor && puedeEliminarseUsuario)
             {
-                bool puedeEliminarseProveedor = PuedeEliminarseProveedor(proveedorABorrar.Id);
-                //Caso en el que se deba borrar al proveedor y su usuario que no opero con ningun otro vendedor 
-                //Ni realizo acciones en el sistema.
-                if (puedeEliminarseProveedor && PuedeEliminarseUsuario(usuarioABorrar.Id))
-                {
-                    Log.Info("Eliminando proveedor id: " + proveedorABorrar.Id + " y su usuario id: " + usuarioABorrar.Id);
-                    var historialProveedor = repositorio.Listar<Entidades.ProveedorHistorialAprobacion>
-                    (h => h.Proveedor_Id == proveedorABorrar.Id);
-                    repositorio.RemoverTodos<Entidades.ProveedorHistorialAprobacion>(historialProveedor);
-                    repositorio.Remover<Entidades.Proveedor>(proveedorABorrar);
+                Log.Info("EliminarCuitNoHabilitado - Eliminando proveedor id: " + proveedorABorrar.Id + ", usuario id: " + usuarioABorrar.Id);
+                var historialProveedor = repositorio.Listar<Entidades.ProveedorHistorialAprobacion>
+                (h => h.Proveedor_Id == proveedorABorrar.Id);
+                repositorio.RemoverTodos<Entidades.ProveedorHistorialAprobacion>(historialProveedor);
+                repositorio.Remover<Entidades.Proveedor>(proveedorABorrar);
 
-                    var tipoDelUsuario = repositorio.Obtener<Entidades.UsuarioNoGranos>(ng => ng.Id == usuarioABorrar.Id);
-                    if (tipoDelUsuario != null)
-                        repositorio.Remover<Entidades.UsuarioNoGranos>(tipoDelUsuario);
-                    repositorio.Remover<Entidades.Usuario>(usuarioABorrar);
-                }
-                //Caso en el que solo eliminamos el alta ya que el usuario puede operar con otro vendedores.
-                else if (puedeEliminarseProveedor && usuarioABorrar.Proveedores.Count() > 1)
-                {
-                    Log.Info("Eliminando solo proveedor id: " + proveedorABorrar.Id);
-                    var historialProveedor = repositorio.Listar<Entidades.ProveedorHistorialAprobacion>
-                    (h => h.Proveedor_Id == proveedorABorrar.Id);
-                    repositorio.RemoverTodos<Entidades.ProveedorHistorialAprobacion>(historialProveedor);
-                    repositorio.Remover<Entidades.Proveedor>(proveedorABorrar);
-                }
-                else
-                {
-                    Log.Info("No se puede eliminar al usuario del sistema.");
-                    throw new InfoCustomException("No se puede eliminar al proveedor debido a alguna de las siguientes" +
-                        " razones: 1) Este usuario realizó acciones " +
-                        "en el sistema. 2) Otros usuarios operan con este mismo. 3) Este usuario opera con otros proveedores.");
-                }
-                try
-                {
-                    repositorio.GuardarCambios();
-                    Log.Info("Finaliza OK UsuarioService.EliminarCuitNoHabilitado - Cambios guardados correctamente.");
-                    return "Se ha eliminado correctamente el usuario: " + usuarioABorrar.Mail;
-                }
-                catch (Exception e)
-                {
-                    Log.Info("Hubo un error al intentar eliminar al proveedor con id: " + proveedorId);
-                    Log.Error(e);
-                    return ErrorMsg.Error;
-                }
+                var tipoDelUsuario = repositorio.Obtener<Entidades.UsuarioNoGranos>(ng => ng.Id == usuarioABorrar.Id);
+                if (tipoDelUsuario != null)
+                    repositorio.Remover<Entidades.UsuarioNoGranos>(tipoDelUsuario);
+
+                repositorio.Remover<Entidades.Usuario>(usuarioABorrar);
+                eliminarUsuarioAzure = true;
+            }
+            /*Caso en el que solo eliminamos el alta ya que el usuario puede operar con otro vendedores.*/
+            else if (puedeEliminarseProveedor && usuarioABorrar.Proveedores.Count() > 1)
+            {
+                Log.Info("Eliminando solo proveedor id: " + proveedorABorrar.Id);
+                var historialProveedor = repositorio.Listar<Entidades.ProveedorHistorialAprobacion>
+                (h => h.Proveedor_Id == proveedorABorrar.Id);
+                repositorio.RemoverTodos<Entidades.ProveedorHistorialAprobacion>(historialProveedor);
+                repositorio.Remover<Entidades.Proveedor>(proveedorABorrar);
             }
             else
             {
-                throw new InfoCustomException("Ud no posee los permisos suficientes para realizar para borrar un usuario.");
+                if (usuarioABorrar.Proveedores.Count() == 1)
+                    throw new ValidationCustomException($"No se puede eliminar al proveedor {usuarioABorrar.Mail} debido" +
+                        $" a que su usuario realizo operaciones en el sistema y solo opera con este mismo.");
+                else
+                throw new ValidationCustomException($"No se puede eliminar al usuario {usuarioABorrar.Mail} debido a que el mismo" +
+                    $" posee operaciones en el sistema.");
+            }
+            try
+            {
+                if (eliminarUsuarioAzure)
+                {
+                    this.azureADConsumer.BorrarUsuarioSegunMail(usuarioABorrar.Mail);
+                }
+                repositorio.GuardarCambios();
+                Log.Info("Finaliza OK UsuarioService.EliminarCuitNoHabilitado.");
+                return "Se ha eliminado correctamente al usuario: " + usuarioABorrar.Mail;
+            }
+            catch (Exception e)
+            {
+                Log.Info("Hubo un error al intentar eliminar al proveedor con id: " + proveedorId);
+                Log.Error(e);
+                throw new ValidationCustomException(ErrorMsg.Error, true);
             }
         }
 
