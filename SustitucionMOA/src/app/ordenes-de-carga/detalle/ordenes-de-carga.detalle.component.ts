@@ -352,7 +352,6 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                     } else if (result.info != undefined) {
                     } else {
                         this.ordenDeCarga = result.data;
-                        this.verificarOrdenActivaScato(this.ordenDeCarga.Id.toString());
                         this.validaCPEDG = this.ordenDeCarga.ValidaSisaRuca;
                         this.separarCadenas();
                         this.verificarBotones()
@@ -670,6 +669,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
     }
 
     abrirModalAnular() {
+        this.verificarOrdenActivaScato(this.ordenDeCarga.Id.toString());
         document.getElementById("openAnularOrden").click();
     }
     abrirModalAnularVencimiento() {
@@ -679,9 +679,9 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
         document.getElementById("openModalActivarOC").click();
     }
     abrirModalEdicionFinalizada() {
+        this.verificarOrdenActivaScato(this.ordenDeCargaId.toString());
         document.getElementById("openEdicionFinalizada").click();
     }
-
 
     anularOrden() {
         this.mensajeComponent.setMsgsEmpty();
@@ -940,6 +940,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
     }
 
     verificarOrdenActivaScato(ordenId: string){
+        this.mensajeValidacionScato = undefined;
         this.spinnerComponent.showIt();
         this.unsubscribe();
         try {
@@ -961,6 +962,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                 },
                 error => {
                     this.mensajeComponent.setErrorMsg(error.message);
+                    this.mensajeValidacionScato = "No se pudo validar si la orden esta activa en Scato."
                 }
             );
         } catch (e) {

@@ -60,6 +60,7 @@
     <Compile Include="Consulta\Expresiones.cs" />
     <Compile Include="Consulta\ListaPaginada.cs" />
     <Compile Include="Dto\DestinatarioDto.cs" />
+    <Compile Include="Dto\AplicacionCartaPorte\AplicacionCartaPorteApiDto.cs" />
     <Compile Include="Dto\EstadoSolicitudOrdenDeCargaBaseDto.cs" />
     <Compile Include="Dto\Compras\DatosUltimaSolpDto.cs" />
     <Compile Include="Dto\Compras\RegistroInfoDto.cs" />

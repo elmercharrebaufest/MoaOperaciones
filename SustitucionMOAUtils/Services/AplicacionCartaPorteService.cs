@@ -53,9 +53,9 @@ namespace SustitucionMOAUtils.Services
         {
             var aplicacion = repositorio.Obtener<AplicacionCartaPorte>(aplicacionId);
             if(aplicacion == null)
-                throw new InfoCustomException("No se ha encontrado la aplicacion.");
+                throw new InfoCustomException("No se ha encontrado la aplicación.");
             if (aplicacion.Estado != EstadoAplicacionCartaPorte.Pendiente)
-                throw new InfoCustomException("No se puede eliminar la aplicacion.");
+                throw new InfoCustomException("No se puede eliminar la aplicación.");
             aplicacion.Estado = EstadoAplicacionCartaPorte.Eliminado;
             repositorio.GuardarCambios();
         }
