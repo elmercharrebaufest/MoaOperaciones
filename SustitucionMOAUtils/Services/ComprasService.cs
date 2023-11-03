@@ -3561,6 +3561,7 @@ namespace SustitucionMOAUtils.Services
             //circular
             var peticionDeOfertaUsuarios_Id = peticion.Usuarios.Where(u => peticiondeOfertaUsuarioId == null || u.Id == peticiondeOfertaUsuarioId).Select(u => u.Id).ToList();
             var circulares = repositorio.Listar<Circular>(x => x.PeticionDeOfertaUsuarios.Any(a => peticionDeOfertaUsuarios_Id.Contains(a.PeticionDeOfertaUsuario_Id)));
+            var peticionVisualizacionPrecio = repositorio.Listar<PeticionDeOfertaVisualizacionPrecio>(x => x.PeticionDeOferta_Id == peticion.Id);
 
             foreach (var circular in circulares)
             {
@@ -3635,19 +3636,21 @@ namespace SustitucionMOAUtils.Services
                 }
 
                 //buscar archivos de la peticion visualizacion de precio
+                if (peticionVisualizacionPrecio.Count > 0) 
+                { 
+                    legajo.Add(new LegajoDto
+                    {
+                        ArchivoId = peticionPrecio.Archivo.Id,
+                        Observacion = peticionPrecio.Observaciones,
+                        PeticionDeOfertaId = peticionDeOfertaId,
+                        SolpId = peticion.Solp_Id,
+                        Fecha = peticionPrecio.FechaCreacion,
+                        FechaFormateado = peticionPrecio.FechaCreacion.ToString("dd/MM/yyyy"),
+                        Usuario = new UsuarioDto { CUIT = peticionPrecio.Usuario.CUITRegistro, Mail = peticionPrecio.Usuario.Mail, Id = peticionPrecio.UsuarioCreador_Id },
+                        Tipo = TipoLegajo.PeticionDeOfertaVisualizacionPrecio
 
-                legajo.Add(new LegajoDto
-                {
-                    ArchivoId = peticionPrecio.Archivo.Id,
-                    Observacion = peticionPrecio.Observaciones,
-                    PeticionDeOfertaId = peticionDeOfertaId,
-                    SolpId = peticion.Solp_Id,
-                    Fecha = peticionPrecio.FechaCreacion,
-                    FechaFormateado = peticionPrecio.FechaCreacion.ToString("dd/MM/yyyy"),
-                    Usuario = new UsuarioDto { CUIT = peticionPrecio.Usuario.CUITRegistro, Mail = peticionPrecio.Usuario.Mail, Id = peticionPrecio.UsuarioCreador_Id },
-                    Tipo = TipoLegajo.PeticionDeOfertaVisualizacionPrecio
-
-                });
+                    });
+                }
 
                 if (noLeido)
                 {
