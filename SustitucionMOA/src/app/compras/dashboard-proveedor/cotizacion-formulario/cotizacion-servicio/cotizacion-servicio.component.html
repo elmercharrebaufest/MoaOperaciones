@@ -441,12 +441,16 @@
                             <td class="columna" pEditableColumn style="font-size: 11px !important;">
                                 <p-cellEditor>
                                     <ng-template pTemplate="input">
-                                        <input type="text" pKeyFilter="int" min="0" numeric-format
-                                               [(ngModel)]="posicionCompra.Posiciones.CotizacionPosicion.PrimerPlazoDeOferta" placeholder="Días">
+                                        <input type="text" pKeyFilter="num" 
+                                            numeric-format
+                                            [(ngModel)]="posicionCompra.Posiciones.CotizacionPosicion.PrimerPlazoDeOferta" 
+                                            placeholder="Días" 
+                                            (focus)="onEditarCelda(posicionCompra.Posiciones.CotizacionPosicion, 'PrimerPlazoDeOferta', 0)"
+                                            (blur)="onReestablecerValor(posicionCompra.Posiciones.CotizacionPosicion, 'PrimerPlazoDeOferta')">
                                     </ng-template>
                                     <ng-template pTemplate="output">
-                                        <div [ngClass]="{'invalido': esFinalizado && (posicionCompra?.Posiciones?.CotizacionPosicion?.PrimerPlazoDeOferta <= 0)} ">
-                                            {{posicionCompra?.Posiciones?.CotizacionPosicion?.PrimerPlazoDeOferta | number:'1.2-2'}}
+                                        <div [ngClass]="{'invalido': esFinalizado && (posicionCompra?.Posiciones?.CotizacionPosicion?.PrimerPlazoDeOferta <= 0)}">
+                                            {{posicionCompra?.Posiciones?.CotizacionPosicion?.PrimerPlazoDeOferta}}
                                         </div>
                                     </ng-template>
                                 </p-cellEditor>
