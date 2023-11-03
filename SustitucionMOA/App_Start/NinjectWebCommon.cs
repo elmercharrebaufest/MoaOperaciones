@@ -75,7 +75,7 @@ namespace SustitucionMOA.App_Start
         /// <param name="kernel">The kernel.</param>
         private static void RegisterServices(IKernel kernel)
         {
-
+           
             //kernel.Bind<ICartaPorteService>().To(typeof(CartaPorteService)).InScope(ctx => OperationContext.Current);
             //kernel.Bind<ILocalidadService>().To(typeof(LocalidadService)).InScope(ctx => OperationContext.Current);
             //kernel.Bind<ICuentaCorrienteService>().To(typeof(CuentaCorrienteService)).InScope(ctx => OperationContext.Current);
@@ -106,7 +106,6 @@ namespace SustitucionMOA.App_Start
             kernel.Bind<IReporteLiquidacionesInformadasJob>().To(typeof(ReporteLiquidacionesInformadasJob)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IVerificarTransporteOrdenesDeCargaJob>().To(typeof(VerificarTransporteOrdenesDeCargaJob)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IVerificarTransporteOrdenesDeCargaFasonJob>().To(typeof(VerificarTransporteOrdenesDeCargaFasonJob)).InScope(ctx => OperationContext.Current);
-            kernel.Bind<IVerificarOrdenesFacturaCompensadaJob>().To(typeof(VerificarOrdenesFacturaCompensadaJob)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IEnviarASAPOrdenDeCargaJob>().To(typeof(EnviarASAPOrdenDeCargaJob)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IReporteCamposSustentablesTSAJob>().To(typeof(ReporteCamposSustentablesTSAJob)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IReporteConflictosCamposSustentablesJob>().To(typeof(ReporteConflictosCamposSustentablesJob)).InScope(ctx => OperationContext.Current);
@@ -136,9 +135,9 @@ namespace SustitucionMOA.App_Start
             kernel.Bind<IObtenerRegistroInfoConsumerMOA>().To(typeof(ObtenerRegistroInfoConsumerMOA)).InScope(ctx => OperationContext.Current);
             //kernel.Bind<IEmailService>().To(typeof(EmailService)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IAltaClienteSAPJob>().To(typeof(AltaClienteSAPJob)).InScope(ctx => OperationContext.Current);
-
+           
             #region Registro
-
+           
             var assembly = Assembly.Load("SustitucionMOAUtils");
 
             var types = assembly.GetTypes()
@@ -211,16 +210,15 @@ namespace SustitucionMOA.App_Start
             // Azure
             kernel.Bind<IAzureADConsumer>().To(typeof(AzureADConsumer)).InScope(ctx => OperationContext.Current);
 
-            kernel.Bind<DbContext>().To<MOAOperacionesDbContext>().InTransientScope();
-            kernel.Bind<IRepositorio>().To<RepositorioEF>().InTransientScope();
+            kernel.Bind<DbContext>().To<MOAOperacionesDbContext>().InScope(ctx => HttpContext.Current);
+            kernel.Bind<IRepositorio>().To<RepositorioEF>().InScope(ctx => HttpContext.Current);
             kernel.Bind<ICache, Cache>().To<Cache>().InSingletonScope();
 
             //Consulta Strategies
             kernel.Bind<IConsultaContext>().To<ConsultaContext>().InTransientScope();
-
             kernel.Bind<IConsultaStrategy>().To<ConsultaOrdenesStrategy>().InTransientScope();
-
             kernel.Bind<IConsultaCommon>().To<ConsultaCommon>().InTransientScope();
+
 
             //Activador Ninject Hangfire
             GlobalConfiguration.Configuration.UseNinjectActivator(kernel);

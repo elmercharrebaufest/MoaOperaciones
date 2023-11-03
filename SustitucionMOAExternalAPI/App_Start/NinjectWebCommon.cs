@@ -223,8 +223,8 @@ namespace SustitucionMOAExternalAPI.App_Start
             kernel.Bind<ICNRTClient>().To(typeof(CNRTClient)).InSingletonScope();
 
             //kernel.Bind<IExternalApiService>().To(typeof(ExternalApiService)).InScope(ctx => OperationContext.Current);
-            kernel.Bind<DbContext>().To<MOAOperacionesDbContext>().InScope(ctx => HttpContext.Current);
-            kernel.Bind<IRepositorio>().To<RepositorioEF>().InScope(ctx => HttpContext.Current);
+            kernel.Bind<DbContext>().To<MOAOperacionesDbContext>().InTransientScope();
+            kernel.Bind<IRepositorio>().To<RepositorioEF>().InTransientScope();
             kernel.Bind<ICache, Cache>().To<Cache>().InSingletonScope();
             kernel.Bind<IServicioSuscriptorAccesosConsumer>().To(typeof(ServicioSuscriptorAccesosConsumer)).InScope(ctx => OperationContext.Current);
             //kernel.Bind<IOrdenDeCargaApiService>().To(typeof(OrdenDeCargaApiService)).InScope(ctx => OperationContext.Current);
