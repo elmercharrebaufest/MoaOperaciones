@@ -94,7 +94,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                                 .Where(p => p.Circular.RequiereCambioDeFechas == true && p.Circular.PlazoDeOferta.HasValue)
                                                                 .OrderByDescending(p => p.Circular.Id).FirstOrDefault().Circular.FechaCreacion,
                                                               PlazoDeOfertaCierre = po.Cierres.Any() ? po.Cierres.OrderByDescending(p => p.Fecha).FirstOrDefault().Fecha : (DateTime?)null,
-                                                              RevisionFinalizada = po.FechaFinalizacionRevision != null,
+                                                              RevisionFinalizada = po.RevisionTecnica_Id != null,
 
                                                               Observaciones = po.Observaciones,
                                                           })

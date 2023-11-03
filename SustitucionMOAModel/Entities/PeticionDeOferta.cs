@@ -16,8 +16,7 @@ namespace SustitucionMOAModel.Entities
         public string Observaciones { get; set; }
         public bool? RegistroInfo { get; set; }
         public bool? AdjuntoPliego { get; set; }
-        public int? UsuarioRevision_Id { get; set; }
-        public DateTime? FechaFinalizacionRevision { get; set; }
+        public int? RevisionTecnica_Id { get; set; }
 
         [ForeignKey("UsuarioCreador_Id")]
         public virtual Usuario Usuario { get; set; }
@@ -37,8 +36,8 @@ namespace SustitucionMOAModel.Entities
         [InverseProperty("PeticionDeOferta")]
         public virtual ICollection<PeticionDeOfertaCierre> Cierres { get; set; } = new List<PeticionDeOfertaCierre>();
 
-        [ForeignKey("UsuarioRevision_Id")]
-        public virtual Usuario UsuarioRevision { get; set; }
+        [ForeignKey("RevisionTecnica_Id")]
+        public virtual PeticionDeOfertaRevisionTecnica RevisionTecnica { get; set; }
 
     }
 }

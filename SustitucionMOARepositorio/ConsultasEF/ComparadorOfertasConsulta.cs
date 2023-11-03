@@ -45,6 +45,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                     Urgencia = po.Solp.Urgencia,
                                     NroOrdenDeCompraAdicional = po.Solp.NroOrdenDeCompraAdicional,
                                     EstaLiberado = po.Solp.EstadoSolpSap.CodigoSap == "05",
+                                    RevisionFinalizada = po.RevisionTecnica_Id != null,
                                     PeticionDeOfertaPosicion = (from pop in contexto.Set<PeticionDeOfertaSolpPosicion>()
                                                                 where po.Id == pop.PeticionDeOferta_Id && pop.SolpPosicion.EsConcluido == true && pop.SolpPosicion.Estado == true
                                                                 select new PeticionDeOfertaSolpPosicionDto()

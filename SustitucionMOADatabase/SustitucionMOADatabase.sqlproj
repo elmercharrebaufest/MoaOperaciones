@@ -202,6 +202,7 @@
     <None Include="scripts\PostDeployment\UnidadMedidaSap.sql" />
     <Build Include="DBO\Tables\PeticionDeOfertaCierre.sql" />
     <Build Include="DBO\Tables\PeticionDeOfertaVisualizacionPrecio.sql" />
+    <Build Include="DBO\Tables\PeticionDeOfertaRevisionTecnica.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DatabasePublishQA.xml" />

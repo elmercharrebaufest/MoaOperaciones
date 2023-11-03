@@ -14,6 +14,7 @@ using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using SustitucionMOAModel.Models.WSMapMOA;
+using SustitucionMOAModel.Models.WSMapMOA.CartaPorte.Formulario;
 using SustitucionMOAModel.Models.WSMapMOA.Compras;
 using SustitucionMOAModel.Models.WSMapMOA.Vendedor.Detalle;
 using SustitucionMOARepositorio;
@@ -937,7 +938,7 @@ namespace SustitucionMOAUtils.Services
                                     .Where(x => x.Circular.RequiereCambioDeFechas == true && x.Circular.PlazoDeOferta.HasValue)
                                     .OrderByDescending(x => x.Circular.Id).FirstOrDefault().Circular.FechaCreacion,
                     PlazoDeOfertaCierre = po.Cierres.Any() ? po.Cierres.OrderByDescending(x => x.Fecha).FirstOrDefault().Fecha : (DateTime?)null,
-                    RevisionFinalizada = po.FechaFinalizacionRevision != null
+                    RevisionFinalizada = po.RevisionTecnica != null && po.RevisionTecnica.Fecha != null
                 });
 
                 var ordenCompra = repositorio.Listar<Adjudicacion, AdjudicacionDto>(adjudicacion => new AdjudicacionDto
@@ -985,7 +986,7 @@ namespace SustitucionMOAUtils.Services
                     EstadoSolpSapId = x.NroSolp != null && x.Posiciones.All(p => p.Estado == false) ? -1 : (x.EstadoSolpSap != null ? x.EstadoSolpSap_Id : 0),
                     EstadoSolpSap = new TablaSapDto { Descripcion = x.EstadoSolpSap != null ? x.EstadoSolpSap.Descripcion : "", Id = x.EstadoSolpSap != null ? x.EstadoSolpSap.Id : 0 },
                     EstadoSolpDescripcion = x.NroSolp != null && x.Posiciones.All(p => p.Estado == false) ? "Borrado en SAP" : (x.EstadoSolpSap != null ? x.EstadoSolpSap.Descripcion : ""),
-                    TipoSolp = new TablaGeneralDto { Descripcion = x.TipoSolp != null ? x.TipoSolp.Descripcion : "" , Codigo = x.TipoSolp != null ? x.TipoSolp.Codigo : "" },
+                    TipoSolp = new TablaGeneralDto { Descripcion = x.TipoSolp != null ? x.TipoSolp.Descripcion : "", Codigo = x.TipoSolp != null ? x.TipoSolp.Codigo : "" },
                     VincularPliego = !x.Pliego_Id.HasValue,
                     TieneCondicionesGenerales = x.Pliego == null ? (bool?)null : x.Pliego.TieneCondicionesGenerales,
                     RevisadoPor = x.Pliego == null ? "" : x.Pliego.RevisadoPor,
@@ -995,7 +996,7 @@ namespace SustitucionMOAUtils.Services
                     ItemPorPagina = paginacion.ItemsPorPagina,
                     Pagina = paginacion.Pagina,
                     TipoPosicionCodigo = x.Posiciones.Select(posiciones => posiciones.TipoPosicion.Codigo).FirstOrDefault(),
-                    SolpConAdjuntos = x.Pliego.Archivos.Where(r => r.FileKey == FileKeys.AdjuntoCotizacionesSolp).Any() 
+                    SolpConAdjuntos = x.Pliego.Archivos.Where(r => r.FileKey == FileKeys.AdjuntoCotizacionesSolp).Any()
                 },
                 paginacion,
                 x => x.FechaBorrado == null && (string.IsNullOrEmpty(nroSolp) || x.NroSolp.ToUpper().StartsWith(nroSolp.ToUpper())) &&
@@ -1469,7 +1470,7 @@ namespace SustitucionMOAUtils.Services
             var pdfFilePath = $"{pathBase}/{pdfFilename}";
 
             if (solp.TipoSolp.Codigo == "CON_PLIEGO")
-            { 
+            {
                 File.WriteAllBytes(pdfFilePath, GenerarSolpPdf(idSolp));
             }
 
@@ -2667,24 +2668,23 @@ namespace SustitucionMOAUtils.Services
                     item.FechaCircular == null ? item.PlazoDeOfertaCierre.Value :
                     item.PlazoDeOfertaCierre.Value > item.FechaCircular.Value ? item.PlazoDeOfertaCierre.Value : item.PlazoDeOfertaCircular.Value;
 
-                    if (!esAdmin)
-                    {
 
-                        if (item.Cotizacion != null && fecha >= hoy && todasLasOfertas.Urgencia != true)
-                        {
-                            mensaje = "Plazo de oferta sin finalizar";
-                            verAdjudicar = false;
-                            item.VerImportes = false;
-                        }
+
+                    if (item.Cotizacion != null && fecha >= hoy && todasLasOfertas.Urgencia != true)
+                    {
+                        mensaje = "Plazo de oferta sin finalizar";
+                        verAdjudicar = false;
+                        item.VerImportes = false;
                     }
-                    else
+
+                    if (esAdmin)
                     {
                         if (item.Cotizacion != null && fecha <= hoy && todasLasOfertas.Urgencia == true)
                         {
                             item.VerImportes = true;
                         }
-                        else 
-                        { 
+                        else
+                        {
                             item.VerImportes = !todasLasOfertas.VerBotonVerPrecio;
                         }
                     }
@@ -2693,10 +2693,17 @@ namespace SustitucionMOAUtils.Services
                         mensaje = "Proveedor desahabilitado";
                         verAdjudicar = false;
                     }
+                    if (!todasLasOfertas.RevisionFinalizada)
+                    {
+                        mensaje = "Revisión técnica sin finalizar.";
+                        verAdjudicar = false;
+                    }
                     item.MensajeAdjudicar = mensaje;
                     item.VerAdjudicar = verAdjudicar;
                 }
-             
+
+
+
                 foreach (var posicion in todasLasOfertas.PeticionDeOfertaPosicion)
                 {
 
@@ -3475,8 +3482,8 @@ namespace SustitucionMOAUtils.Services
             var pdfFilename = $"Solp-{middleFileName}-pliego-{DateTime.Now:yyyyMMdd}.pdf";
 
             var tienePliego = (peticion.Solp.TipoSolpSap == (int?)TipoSolpSap.Mantenimiento || peticion.Solp.TipoSolpSap == (int?)TipoSolpSap.Sap) && peticion.Solp.EstadoDocumento.Codigo == "CREADO";
-            
-            if (tienePliego || peticion.Solp.TipoSolp.Codigo == "CON_PLIEGO") 
+
+            if (tienePliego || peticion.Solp.TipoSolp.Codigo == "CON_PLIEGO")
             {
                 //invento registro con id de archivo 0 para bajar el pliego
                 legajo.Add(new LegajoDto
@@ -4735,15 +4742,11 @@ namespace SustitucionMOAUtils.Services
             if (finalizar)
             {
                 var fechaActual = DateTime.Now;
-                peticiones.First().PeticionDeOferta.FechaFinalizacionRevision = fechaActual;
-                peticiones.First().PeticionDeOferta.UsuarioRevision_Id = usuarioId;
-                peticiones.First().PeticionDeOferta.PlazoDeOferta = fechaActual;
-            }
-            if (finalizar) 
-            {
-                var fechaActual = DateTime.Now; 
-                peticiones.First().PeticionDeOferta.FechaFinalizacionRevision = fechaActual;
-                peticiones.First().PeticionDeOferta.UsuarioRevision_Id = usuarioId;
+                peticiones.First().PeticionDeOferta.RevisionTecnica = new PeticionDeOfertaRevisionTecnica
+                {
+                    Usuario_Id = usuarioId,
+                    Fecha = DateTime.Now
+                };
                 peticiones.First().PeticionDeOferta.PlazoDeOferta = fechaActual;
             }
             repositorio.GuardarCambios();
