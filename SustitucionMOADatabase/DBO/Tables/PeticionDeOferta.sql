@@ -7,11 +7,10 @@
     [Observaciones]              NVARCHAR(MAX)            NOT NULL,   
     [RegistroInfo] BIT NULL, 
     [AdjuntoPliego] BIT NULL, 
-    [UsuarioRevision_Id] INT NULL, 
-    [FechaFinalizacionRevision] DATETIME2 NULL, 
+    [RevisionTecnica_Id] INT NULL, 
     CONSTRAINT [PK_PeticionDeOferta] PRIMARY KEY CLUSTERED ([Id] ASC),
     CONSTRAINT [FK.PeticionDeOferta_Usuario_UsuarioCreadorId] FOREIGN KEY ([UsuarioCreador_Id]) REFERENCES [Usuario]([Id]),
-    CONSTRAINT [FK.PeticionDeOfertaUsuario_Usuario_UsuarioRevision_Id] FOREIGN KEY ([UsuarioRevision_Id]) REFERENCES [Usuario]([Id]),
+    CONSTRAINT [FK.PeticionDeOferta_RevisionTecnica_RevisionTecnica_Id] FOREIGN KEY ([RevisionTecnica_Id]) REFERENCES [PeticionDeOfertaRevisionTecnica]([Id]),
     CONSTRAINT [FK.PeticionDeOfertaUsuario_UsuarioCreador_Solp_Solp_Id] FOREIGN KEY ([Solp_Id]) REFERENCES [Solp]([Id])
 
 );

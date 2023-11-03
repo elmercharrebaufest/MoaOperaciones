@@ -183,6 +183,7 @@
     <Compile Include="Entities\CotizacionHora.cs" />
     <Compile Include="Entities\CotizacionPosicion.cs" />
     <Compile Include="Entities\CotizacionSubPosicion.cs" />
+    <Compile Include="Entities\PeticionDeOfertaRevisionTecnica.cs" />
     <Compile Include="Entities\PeticionDeOfertaVisualizacionPrecio.cs" />
     <Compile Include="Entities\PeticionDeOfertaCierre.cs" />
     <Compile Include="Entities\PeticionDeOfertaSolpPosicion.cs" />
