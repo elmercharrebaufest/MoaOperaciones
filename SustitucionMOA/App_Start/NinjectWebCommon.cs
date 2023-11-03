@@ -106,6 +106,7 @@ namespace SustitucionMOA.App_Start
             kernel.Bind<IReporteLiquidacionesInformadasJob>().To(typeof(ReporteLiquidacionesInformadasJob)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IVerificarTransporteOrdenesDeCargaJob>().To(typeof(VerificarTransporteOrdenesDeCargaJob)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IVerificarTransporteOrdenesDeCargaFasonJob>().To(typeof(VerificarTransporteOrdenesDeCargaFasonJob)).InScope(ctx => OperationContext.Current);
+            kernel.Bind<IVerificarOrdenesFacturaCompensadaJob>().To(typeof(VerificarOrdenesFacturaCompensadaJob)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IEnviarASAPOrdenDeCargaJob>().To(typeof(EnviarASAPOrdenDeCargaJob)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IReporteCamposSustentablesTSAJob>().To(typeof(ReporteCamposSustentablesTSAJob)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IReporteConflictosCamposSustentablesJob>().To(typeof(ReporteConflictosCamposSustentablesJob)).InScope(ctx => OperationContext.Current);
