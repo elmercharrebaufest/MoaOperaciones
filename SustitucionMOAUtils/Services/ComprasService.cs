@@ -2605,7 +2605,7 @@ namespace SustitucionMOAUtils.Services
 
                 var solp = obtenerSolpConsumerMOA.RequestSolpWithNroAndDates(filtros);
 
-                todasLasOfertas.VerBotonVerPrecio = ValidarVisualizarPrecio(usuario.Id, PeticionOferta_Id) && esAdmin;
+              
 
                 foreach (var item in todasLasOfertas.Usuarios)
                 {
@@ -2668,7 +2668,10 @@ namespace SustitucionMOAUtils.Services
                     item.FechaCircular == null ? item.PlazoDeOfertaCierre.Value :
                     item.PlazoDeOfertaCierre.Value > item.FechaCircular.Value ? item.PlazoDeOfertaCierre.Value : item.PlazoDeOfertaCircular.Value;
 
-
+                    var visualizacion = ValidarVisualizarPrecio(usuario.Id, PeticionOferta_Id);
+                    todasLasOfertas.VerBotonVerPrecio = visualizacion &&
+                  esAdmin && (!todasLasOfertas.RevisionFinalizada || fecha >= hoy);
+                   
 
                     if (item.Cotizacion != null && fecha >= hoy && todasLasOfertas.Urgencia != true)
                     {
@@ -2679,15 +2682,12 @@ namespace SustitucionMOAUtils.Services
 
                     if (esAdmin)
                     {
-                        if (item.Cotizacion != null && fecha <= hoy && todasLasOfertas.Urgencia == true)
+                        if (!todasLasOfertas.VerBotonVerPrecio && todasLasOfertas.RevisionFinalizada)
                         {
                             item.VerImportes = true;
                         }
-                        else
-                        {
-                            item.VerImportes = !todasLasOfertas.VerBotonVerPrecio;
-                        }
                     }
+
                     if (!item.EstaHabilitado)
                     {
                         mensaje = "Proveedor desahabilitado";
