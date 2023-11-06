@@ -754,7 +754,7 @@ namespace SustitucionMOAUtils.Services
             {
                 if (usuarioABorrar.Proveedores.Count() == 1)
                     throw new ValidationCustomException($"No se puede eliminar al proveedor {usuarioABorrar.Mail} debido" +
-                        $" a que su usuario realizo operaciones en el sistema y solo opera con este mismo.");
+                        $" a que su usuario realizo operaciones en el sistema y solo opera con este proveedor.");
                 else
                 throw new ValidationCustomException($"No se puede eliminar al usuario {usuarioABorrar.Mail} debido a que el mismo" +
                     $" posee operaciones en el sistema.");
