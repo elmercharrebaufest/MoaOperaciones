@@ -249,7 +249,7 @@
                                         <span title="Copiar correo del proveedor" class="fa fa-envelope"
                                             style="font-size: 22px; color: #075088; margin-right: 5px;"></span>
                                     </a>
-                                    <a id="p{{empresa.Id}}" *ngIf="empresa.EstadoAprobacion == 15" (click)="confirmarBorrarAlta(empresa.Id, empresa.Mail)" data-toggle="popover"
+                                    <a id="p{{empresa.Id}}" *ngIf="empresa.EstadoAprobacion == 15 && esAdmin" (click)="confirmarBorrarAlta(empresa.Id, empresa.Mail)" data-toggle="popover"
                                         data-trigger="focus" data-placement="top" title="{{empresa.Mail}}" data-html="true">
                                         <span title="Eliminar proveedor del sistema" class="fa fa-trash"
                                             style="font-size: 22px; color: #075088; margin-right: 5px;"></span>

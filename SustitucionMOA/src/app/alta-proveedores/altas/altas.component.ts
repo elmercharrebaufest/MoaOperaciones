@@ -94,7 +94,8 @@ export class AltasComponent extends BaseComponent implements OnInit {
     contieneDocumentacionFisica: number = 0;
     puedeAltaInterna: boolean = this.isAuthorized('ALTA INTERNA GRANOS');
     puedeAltaInternaNoGranos: boolean = this.isAuthorized('ALTA INTERNA NO GRANOS');
-
+    esAdmin : boolean = this.isAuthorized('ELIMINAR USUARIO DE WEB');
+    
     ngOnInit(): void { 
         this.navService.setSeccionList([]);
         $('[data-toggle="tooltip"]').tooltip();
