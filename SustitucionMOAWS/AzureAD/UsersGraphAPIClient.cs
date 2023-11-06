@@ -51,7 +51,10 @@ namespace SustitucionMOAWS.AzureAD
 
             try
             {
-                url = ObtenerUrl("users", $"$filter=displayName eq '{displayName}'");
+                url = ObtenerUrl("users", $"$select=id,userPrincipalName,businessPhones,displayName," +
+                    $"givenName,jobTitle,mail,mobilePhone,officeLocation,preferredLanguage,surname " +
+                    "&$filter=identities/any(c:c/issuerAssignedId " +
+                    $"eq '{displayName}' and c/issuer eq '{displayName}')");
 
                 apiResponse = SendGraphRequest(HttpMethod.Get, url, null).GetAwaiter().GetResult();
 
