@@ -17,6 +17,7 @@ import { InformeComercialComponent } from '../../alta-proveedores/informe-comerc
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { ConfirmationService } from 'primeng/api';
 import { HttpStatusCodes } from '../../common/models/httpStatusCodes';
+import { DatosLiquidacionObservada, SendDataService } from '../send-data.service';
 
 declare var $: any;
 
@@ -45,6 +46,8 @@ export class CrearConsultaComponent extends ListBaseComponent {
     @ViewChild('recaptchaComponent')
     protected captcha: ReCaptchaComponent;
 
+    datosLiquidacionObservada?: DatosLiquidacionObservada;
+
     constructor(
         protected service: ConsultaService,
         protected navService: NavService,
@@ -54,10 +57,12 @@ export class CrearConsultaComponent extends ListBaseComponent {
         protected modalService: ModalService,
         protected route: ActivatedRoute,
         protected router: Router,
-        private confirmationService: ConfirmationService) {
+        private confirmationService: ConfirmationService,
+        private sendDataService: SendDataService) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
         this.categoriaDropdownComponent = new DropdownComponent();
         this.spinnerSmallComponent = new SpinnerSmallComponent();
+        this.datosLiquidacionObservada = sendDataService.getDatosLiquidacionObservada();
     }
 
     checkPermisos() { this.securityService.tienePermisoRedirect("CONTACTO MAIL"); }
@@ -134,7 +139,6 @@ export class CrearConsultaComponent extends ListBaseComponent {
     }
 
     ngOnInit() {
-        this.setTabs();
         this.checkPermisos();
         this.setSeccionList();
         this.getCombos();
@@ -149,6 +153,7 @@ export class CrearConsultaComponent extends ListBaseComponent {
         });
 
         this.validarNombre();
+        this.setTabs();
     }
 
     setSeccionList() {
@@ -233,6 +238,9 @@ export class CrearConsultaComponent extends ListBaseComponent {
                             this.proveedorId = result.proveedorId
                         }
                         this.listaMateriales = result.materiales;
+                        if (this.datosLiquidacionObservada) {
+                            this.setValoresInicialesParaLiquidacionObservada()
+                        }
                         //result.materiales.forEach(x => this.listaMateriales.push({ label: x.Descripcion, value: x.MaterialId }));
                     }
                 },
@@ -454,7 +462,7 @@ export class CrearConsultaComponent extends ListBaseComponent {
         }
     }
 
-    
+
 
     postConsulta() {
         this.blockUI.start('Generando Consulta');
@@ -742,5 +750,22 @@ export class CrearConsultaComponent extends ListBaseComponent {
             this.floatMsgService.setErrorMsg(e);
             return false; //<-- Prevent Refresh
         }
+    }
+
+    public extraOnDestroy(): void {
+        this.sendDataService.limpiarDatosLiquidacionObservados();
+    }
+
+    setValoresInicialesParaLiquidacionObservada() {
+        const code = this.datosLiquidacionObservada.Tipo == "Final" ? "FIN" : "PAR";
+        const categoria = this.categorias.find(categoria => categoria.Code === code)
+        if (categoria)
+            this.setSubcategorias(categoria)
+        const subCategoria = this.subcategoriasList.find(subcategoria => subcategoria.Nombre === "No registradas, Observadas y Rechazadas")
+        if (subCategoria) {
+            this.subcategoria = subCategoria;
+            this.setCodeSubcategoria(categoria)
+        }
+        this.asunto = `Liquidación observada - nro comprobante ${this.datosLiquidacionObservada.NroComprobante}`
     }
 }

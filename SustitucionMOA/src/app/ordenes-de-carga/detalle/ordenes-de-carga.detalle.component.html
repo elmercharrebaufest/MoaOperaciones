@@ -782,9 +782,13 @@
                     <h4 class="modal-title" id="modalEdicionFinalizada">Edicion finalizada</h4>
                 </div>
                 <div class="modal-body">
+                    <div *ngIf="mensajeValidacionScato" class="row" class="col-xs-12 col-sm-12 col-md-12 alertScato text-center">
+                        {{mensajeValidacionScato}}
+                    </div>
                     <div class="row" class="col-xs-12 col-sm-12 col-md-12 text-center">
                         ¿Está seguro de que desea finalizar la edición de la orden de carga?
                     </div>
+                    <br>
                 </div>
                 <div class="modal-footer" style="border-top:none;">
                     <button type="button" class="btn-custom btn-cerrar btn-chico" data-dismiss="modal"

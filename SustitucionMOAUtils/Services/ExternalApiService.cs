@@ -40,9 +40,9 @@ namespace SustitucionMOAUtils.Services
 
                 return usuario.Roles.ToList();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                throw ex;
             }
         }
 

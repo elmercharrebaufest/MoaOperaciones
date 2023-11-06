@@ -137,6 +137,12 @@
 	<setParameter name="EmailToMesaVentaFas Config" value="mesafassanlorenzo@molinosagro.com.ar" />
 	<setParameter name="EmailToGestionAltaCuit Config" value="Mesaentsl@molinosagro.com.ar" />
 	<setParameter name="CopiaEmailToGestionAltaCuit Config" value="mesafassanlorenzo@molinosagro.com.ar" />
+	<setParameter name="EmailAltaTempranaCuitFasonTo Config" value="Mesaentsl@molinosagro.com.ar"/>
+	<setParameter name="EmailAltaTempranaCuitFasonCC Config" value="mesafassanlorenzo@molinosagro.com.ar;comerciolocal@molinosagro.com.ar"/>
+	<setParameter name="EmailAltaTempranaCuitFasTo Config" value="Mesaentsl@molinosagro.com.ar"/>
+	<setParameter name="EmailAltaTempranaCuitFasCC Config" value="mesafassanlorenzo@molinosagro.com.ar"/>
+	<setParameter name="EmailAltaIntermediarioFleteTo Config" value="Mesaentsl@molinosagro.com.ar" />
+	<setParameter name="EmailAltaIntermediarioFleteCC Config" value="mesafassanlorenzo@molinosagro.com.ar" />
 	<!--<setParameter name="EmailAsuntoPrefijo Config" value=" " />-->
 	<setParameter name="EmailToCobranzas Config" value="cobranzasfas@molinosagro.com.ar" />
 	<setParameter name="EmailToComerciales Config" value="comerciolocal@molinosagro.com.ar" />
