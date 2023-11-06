@@ -1,7 +1,8 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { EmailComposeModel } from './email-compose.model';
 import { EmailComposeService } from './email-compose.service';
+import { Solp } from '../../compras/solp/solp';
 
 @Component({
   selector: 'email-compose',
@@ -12,6 +13,8 @@ export class EmailComposeComponent implements OnInit {
 
   @Output()
   sendEmailWrapperEmitter = new EventEmitter<EmailComposeModel>(); 
+
+  @Input() solpActual: Solp;
 
   public visible: boolean = false;
   public model: EmailComposeModel = new EmailComposeModel();
@@ -106,5 +109,6 @@ export class EmailComposeComponent implements OnInit {
     const fromEmaildomain = this.model.from.substring(this.model.from.lastIndexOf("@") +1);
     return molinosAgroDomain == fromEmaildomain.toLocaleLowerCase();
   }
+
 
 }
