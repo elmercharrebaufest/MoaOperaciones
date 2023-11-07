@@ -346,7 +346,7 @@ namespace SustitucionMOATest.Services
         {
             Id = 1,
             Usuario = new Usuario { Id = 1, Mail = "bmelgarejo@prueba.com", UsuarioSap = "UsuarioSAP" },
-            PlazoDeOferta = DateTime.Now.AddDays(5),            
+            PlazoDeOferta = DateTime.Now.AddDays(5),
             Solp = new Solp
             {
                 Id = 1,
@@ -1910,10 +1910,12 @@ namespace SustitucionMOATest.Services
                 .Returns(new List<PeticionDeOfertaCierre> { new PeticionDeOfertaCierre { Id = 1, Fecha = DateTime.Now, Observacion = "", Usuario_Id = 1, Usuario = new Usuario { Id = 1, Mail = "", CUITRegistro = "005522" } } });
             repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<Circular, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null))
                 .Returns(new List<Circular> { new Circular { Id = 1, Archivos = new Collection<Archivo> { new Archivo { Id = 1, Ruta = "Ruta" } }, FechaCreacion = DateTime.Now, Usuario = new Usuario { Id = 1, TipoUsuario = new TipoUsuario { Id = 1, Nombre = "", NombreCorto = "" } } } });
-        
+
             repositorioMock.Setup(y => y.Obtener(It.IsAny<Expression<Func<PeticionDeOfertaVisualizacionPrecio, bool>>>()))
                 .Returns(new PeticionDeOfertaVisualizacionPrecio { Archivo = new Archivo { Id = 1, Ruta = "Ruta" }, FechaCreacion = DateTime.Now, PeticionDeOferta_Id = 1, UsuarioCreador_Id = 1, Observaciones = "Observacion", Usuario = new Usuario { Id = 1, TipoUsuario = new TipoUsuario { Id = 1, Nombre = "", NombreCorto = "" } } });
-            
+            repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<PeticionDeOfertaVisualizacionPrecio, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null))
+                .Returns(new List<PeticionDeOfertaVisualizacionPrecio> { new PeticionDeOfertaVisualizacionPrecio { Id = 1 } });
+
             var result = target.ObtenerLegajoParaExternos(1, "token"); //pasa por ObtenerLegajo() también
             Assert.That(result, Is.Not.Null);
             Assert.AreEqual(result.ListaLegajos.GetType(), legajo.ListaLegajos.GetType());
@@ -1955,7 +1957,7 @@ namespace SustitucionMOATest.Services
                 Observacion = "Observacion",
                 UsuarioCreador_Id = 1,
                 PeticionDeOferta_Id = 1,
-                FechaCreacion = DateTime.Now,                
+                FechaCreacion = DateTime.Now,
             };
             FileStream fileStream = new FileStream(filePath, FileMode.Open);
             Mock<HttpPostedFileBase> file1 = new Mock<HttpPostedFileBase>();
