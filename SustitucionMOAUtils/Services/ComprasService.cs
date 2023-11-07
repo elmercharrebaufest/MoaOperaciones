@@ -4717,7 +4717,7 @@ namespace SustitucionMOAUtils.Services
                         var fileKey = "";
                         if (cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Solp.Posiciones.First().TipoPosicion.Codigo == "MATERIALES")
                         {
-                            if (cotizacion.RespetaMateriales != true)
+                            if (cotizacion.RespetaMateriales == false)
                             {
                                 fileKey = "CotizacionRevisionEconomica";
                             }
