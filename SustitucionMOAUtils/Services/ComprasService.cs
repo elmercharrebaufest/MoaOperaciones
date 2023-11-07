@@ -2453,7 +2453,8 @@ namespace SustitucionMOAUtils.Services
 
         public void EnviarEmailSolp(EmailComposeDto emailCompose)
         {
-            Handlebars.RegisterHelper("isTrue", (ctx, args) => {
+            Handlebars.RegisterHelper("isTrue", (ctx, args) =>
+            {
                 if (args.Length != 1)
                 {
                     throw new ArgumentOutOfRangeException();
@@ -2465,7 +2466,7 @@ namespace SustitucionMOAUtils.Services
                 return str1 == "true" || str1 == "1" || str1 == "True";
             });
 
-          
+
             var templateContent = GetSolpEmailTemplate();
             var template = Handlebars.Compile(templateContent);
             var bodyHtml = template(emailCompose);
@@ -2618,7 +2619,7 @@ namespace SustitucionMOAUtils.Services
 
                 var solp = obtenerSolpConsumerMOA.RequestSolpWithNroAndDates(filtros);
 
-              
+
 
                 foreach (var item in todasLasOfertas.Usuarios)
                 {
@@ -2684,7 +2685,7 @@ namespace SustitucionMOAUtils.Services
                     var visualizacion = ValidarVisualizarPrecio(usuario.Id, PeticionOferta_Id);
                     todasLasOfertas.VerBotonVerPrecio = visualizacion &&
                   esAdmin && (!todasLasOfertas.RevisionFinalizada || fecha >= hoy);
-                   
+
 
                     if (item.Cotizacion != null && fecha >= hoy && todasLasOfertas.Urgencia != true)
                     {
@@ -3649,8 +3650,8 @@ namespace SustitucionMOAUtils.Services
                 }
 
                 //buscar archivos de la peticion visualizacion de precio
-                if (peticionVisualizacionPrecio.Count > 0) 
-                { 
+                if (peticionVisualizacionPrecio.Count > 0)
+                {
                     legajo.Add(new LegajoDto
                     {
                         ArchivoId = peticionPrecio.Archivo.Id,
@@ -4713,7 +4714,19 @@ namespace SustitucionMOAUtils.Services
                     //peticion de oferta
                     if (cotizacion.Archivos != null)
                     {
-                        foreach (var archivoSubido in cotizacion.Archivos)
+                        var fileKey = "";
+                        if (cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Solp.Posiciones.First().TipoPosicion.Codigo == "MATERIALES")
+                        {
+                            if (cotizacion.RespetaMateriales != true)
+                            {
+                                fileKey = "CotizacionRevisionEconomica";
+                            }
+                        }
+                        else
+                        {
+                            fileKey = "CotizacionRevisionTecnica";
+                        }
+                        foreach (var archivoSubido in cotizacion.Archivos.Where(a => a.FileKey == fileKey))
                         {
                             if (File.Exists(archivoSubido.Ruta))
                             {
