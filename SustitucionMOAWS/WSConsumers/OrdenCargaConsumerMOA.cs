@@ -9,12 +9,12 @@ using SustitucionMOAModel.Util;
 using SustitucionMOAWS.CredentialService;
 using SustitucionMOAWS.Interfaces;
 using SustitucionMOAWS.Logger;
-using SustitucionMOAWS.ModificarEntregaOrdenFasWebServiceMOA;
+using SustitucionMOAWS.ModificarEntregaOrdenFasV2WebServiceMOA;
 using SustitucionMOAWS.ModificarOrdenCargaFasWebServiceMOA;
 using SustitucionMOAWS.OrdenCargaControlEstadoSAP;
 using SustitucionMOAWS.OrdenCargaControlSAP;
 using SustitucionMOAWS.OrdenCargaCrearSAP;
-using SustitucionMOAWS.OrdenCargaEstadoEntregadaSAP;
+using SustitucionMOAWS.OrdenCargaEstadoEntregadaV2SAP;
 using SustitucionMOAWS.OrdenCargaVisualizarCliente;
 using SustitucionMOAWS.ResponseHandler.OrdenCarga;
 using SustitucionMOAWS.Util;
@@ -153,8 +153,8 @@ namespace SustitucionMOAWS.WSConsumers
 
 
         /*
-            * RFC Z_MPMF_MOAOP_ORDEN_CARGA_ENTRE 
-        http://gslopidevqa00.molinosagro.ad:50000/dir/wsdl?p=ic/369af869c9a8315aa009c44333c52001
+            * RFC Z_SI_MPMF_MOAOP_ORD_CARGA_ENT_V2 
+        http://gslopidevqa00.molinosagro.ad:50000/dir/wsdl?p=ic/307fa30560243c4f9617b38cff85b111
         enviando:
         IM_PEDIDO	Obligatorio	Número de Pedido (VBELN)
         IM_TRANSPORTISTA	Obligatorio	CUIT de Transportista (STCD1)
@@ -171,14 +171,14 @@ namespace SustitucionMOAWS.WSConsumers
         •	En campo aparte se devuelve el Número de Entrega
 
         Función	Código	Mensaje reemplazado
-        Z_MPMF_MOAOP_ORDEN_CARGA_ENTRE 	OE-00	'OK'
-        Z_MPMF_MOAOP_ORDEN_CARGA_ENTRE 	OE-01	'No existe tranportista'
-        Z_MPMF_MOAOP_ORDEN_CARGA_ENTRE 	OE-02	'Entrega Creada - Error al insertar'
+        Z_SI_MPMF_MOAOP_ORD_CARGA_ENT_V2 	OE-00	'OK'
+        Z_SI_MPMF_MOAOP_ORD_CARGA_ENT_V2 	OE-01	'No existe tranportista'
+        Z_SI_MPMF_MOAOP_ORD_CARGA_ENT_V2 	OE-02	'Entrega Creada - Error al insertar'
 
         */
         public OrdenCargaEntreResponseHandler CrearEntrega(CrearEntregaRequest entregaReq, bool pedidoAnticipado = false)
         {
-            var service = new SI_MPMF_MOAOP_ORDEN_CARGA_ENTREClient();
+            var service = new SI_MPMF_MOAOP_ORD_CARGA_ENT_V2Client();
             var cuit_tr = !string.IsNullOrEmpty(entregaReq.TransportistaReal) ? entregaReq.TransportistaReal : entregaReq.Transportista;
             var cuit_int_flete = !string.IsNullOrEmpty(entregaReq.TransportistaReal) ? entregaReq.Transportista : entregaReq.TransportistaReal;
             service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
@@ -186,13 +186,13 @@ namespace SustitucionMOAWS.WSConsumers
             if (!pedidoAnticipado)
                 entregaReq = LimpiarRequestSinPedidoAnticipado(entregaReq);
 
-            Log.Info($"SI_MPMF_MOAOP_ORDEN_CARGA_ENTRE " +
+            Log.Info($"SI_SI_MPMF_MOAOP_ORD_CARGA_ENT_V2 " +
                 $"Request: {entregaReq.ToJson()}, " +
                 $"pedidoAnticipado: {pedidoAnticipado}, " +
                 $"cuit_tr: {cuit_tr}, " +
                 $"cuit_int_flete: {cuit_int_flete}.");
 
-            var entrega = service.SI_MPMF_MOAOP_ORDEN_CARGA_ENTRE(
+            var entrega = service.SI_MPMF_MOAOP_ORD_CARGA_ENT_V2(
                 IM_CUITDESTF: entregaReq.CuitDestino,
                 IM_CUITDESTINAT: entregaReq.CuitDestinatario,
                 IM_DOCUMENTO: entregaReq.Documento,
@@ -215,7 +215,7 @@ namespace SustitucionMOAWS.WSConsumers
                 IM_DESTINO_MERCADERIA: entregaReq.DestinoMercaderia,
                 EX_MENSAJE: out string mensaje).Trim();
 
-            Log.Info($"SI_MPMF_MOAOP_ORDEN_CARGA_ENTRE Response: {new { entrega, mensaje }}");
+            Log.Info($"SI_SI_MPMF_MOAOP_ORD_CARGA_ENT_V2 Response: {new { entrega, mensaje }}");
 
             return new OrdenCargaEntreResponseHandler(mensaje, entrega);
         }
@@ -408,21 +408,21 @@ namespace SustitucionMOAWS.WSConsumers
 
         public ModEntregaResponseHandler AnularEntregaOrdenCarga(string nroEntrega)
         {
-            var service = new SI_MPMF_MOAOP_MOD_ENTREGAClient();
+            var service = new SI_MPMF_MOAOP_MOD_ENTREGA_V2Client();
             service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
             service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
-            Log.Info($"SI_MPMF_MOAOP_MOD_ENTREGA Request: {nroEntrega}");
+            Log.Info($"SI_MPMF_MOAOP_MOD_ENTREGA_V2 Request: {nroEntrega}");
 
-            var result = service.SI_MPMF_MOAOP_MOD_ENTREGA("", "X", "", "", "", nroEntrega, "", "", "");
+            var result = service.SI_MPMF_MOAOP_MOD_ENTREGA_V2("", "X", "", "", "", nroEntrega, "", "", "");
 
-            Log.Info($"SI_MPMF_MOAOP_MOD_ENTREGA Result: {new { result, nroEntrega }}");
+            Log.Info($"SI_MPMF_MOAOP_MOD_ENTREGA_V2 Result: {new { result, nroEntrega }}");
 
             return new ModEntregaResponseHandler(result);
         }
 
         public ResultadoGenerico ModificarEntregaOrdenCarga(ModificarEntregaRequest req)
         {
-            var service = new SI_MPMF_MOAOP_MOD_ENTREGAClient();
+            var service = new SI_MPMF_MOAOP_MOD_ENTREGA_V2Client();
             service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
             service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
 
@@ -438,12 +438,12 @@ namespace SustitucionMOAWS.WSConsumers
                     req.CUITTransporte :
                     req.CUITIntermediarioFlete;
 
-            Log.Info($"SI_MPMF_MOAOP_MOD_ENTREGA " +
+            Log.Info($"SI_MPMF_MOAOP_MOD_ENTREGA_V2 " +
                 $"Request: {req.ToJson()}, " +
                 $"codigoSapTransporte: {codigoSapTransporte}, " +
                 $"cuitTransportistaReal: {cuitTransportistaReal}.");
 
-            var result = service.SI_MPMF_MOAOP_MOD_ENTREGA(
+            var result = service.SI_MPMF_MOAOP_MOD_ENTREGA_V2(
                             IM_ACOPLADO: req.Acoplado,
                             IM_BORRAR: "",
                             IM_CHASIS: req.Chasis,
@@ -453,7 +453,7 @@ namespace SustitucionMOAWS.WSConsumers
                             IM_TIPODOC: req.TipoDoc,
                             IM_TRANSPORTE: codigoSapTransporte,
                             IM_TRANSPORTISTA_REAL: cuitTransportistaReal);
-            Log.Info($"SI_MPMF_MOAOP_MOD_ENTREGA Result: {new { result, nroEntrega = req.NumeroEntrega }}");
+            Log.Info($"SI_MPMF_MOAOP_MOD_ENTREGA_V2 Result: {new { result, nroEntrega = req.NumeroEntrega }}");
 
             var resultado = new ResultadoGenerico();
             if (result != "Se actualizaron los datos correctamente")
