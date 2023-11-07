@@ -20,6 +20,7 @@ export class EmailComposeComponent implements OnInit {
   public model: EmailComposeModel = new EmailComposeModel();
 
   formGroupEmail: FormGroup
+  tieneAdjuntos: boolean;
 
   constructor(private emailComposeService: EmailComposeService,
     private formBuilder: FormBuilder) {
@@ -109,6 +110,5 @@ export class EmailComposeComponent implements OnInit {
     const fromEmaildomain = this.model.from.substring(this.model.from.lastIndexOf("@") +1);
     return molinosAgroDomain == fromEmaildomain.toLocaleLowerCase();
   }
-
 
 }
