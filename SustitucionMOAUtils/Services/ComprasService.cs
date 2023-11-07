@@ -2453,6 +2453,19 @@ namespace SustitucionMOAUtils.Services
 
         public void EnviarEmailSolp(EmailComposeDto emailCompose)
         {
+            Handlebars.RegisterHelper("isTrue", (ctx, args) => {
+                if (args.Length != 1)
+                {
+                    throw new ArgumentOutOfRangeException();
+                }
+
+                string str1 = args[0].ToString();
+
+
+                return str1 == "true" || str1 == "1" || str1 == "True";
+            });
+
+          
             var templateContent = GetSolpEmailTemplate();
             var template = Handlebars.Compile(templateContent);
             var bodyHtml = template(emailCompose);
