@@ -342,7 +342,6 @@ export class LayoutComponent implements OnDestroy {
 
         modalService.modalShowFleteProcedencia.subscribe(
             modalShowFleteProcedencia => {
-                this.setEmptyMsjModal();
                 this.showFleteProcedencia = modalShowFleteProcedencia
             });
 
