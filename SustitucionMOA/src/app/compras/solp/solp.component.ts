@@ -1081,6 +1081,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
         emailModel.subject = this.getEmailSubject(esPrimeraFinalizacion, esPosteriorFinalizacion);
         emailModel.body = this.emailBody;
         emailModel.downloadLinkUrl = this.downloadLinkUrl;
+        emailModel.tieneAdjuntos = (this.solpActual.especificacionesViewModel.archivosEspecificaciones.length > 0 || this.solpActual.archivosCotizaciones.length > 0) ? true : false;
         this.emailComposeService.show(emailModel);
     }
 
