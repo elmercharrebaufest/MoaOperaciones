@@ -2,7 +2,7 @@ import { HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { BaseService } from '../common/services/BaseService';
-import { AplicacionCCPP, AplicacionCCPPFiltro, AplicacionCCPPForm, CartaPorteParaAplicacionCartaPorteResponse, ContratoParaAplicacionCartaPorteResponse } from './aplicacion-ccpp.model';
+import { AplicacionCCPP, AplicacionCCPPFiltro, AplicacionCCPPForm, ComboAppContratosCCPPResponse, } from './aplicacion-ccpp.model';
 import { ApiResponse } from '../common/models/response';
 
 export interface ListadoRequest {
@@ -18,7 +18,7 @@ export class AplicacionCcppService extends BaseService {
       .append('fechaFin', fechaFin);
 
     return this.http
-    .get<ApiResponse<AplicacionCCPP[], AplicacionCCPPFiltro>>(`${this.baseUrl}/GetListado`, { params });
+      .get<ApiResponse<AplicacionCCPP[], AplicacionCCPPFiltro>>(`${this.baseUrl}/GetListado`, { params });
   }
   eliminarAplicacion(aplicacionId: number): Observable<ApiResponse<boolean>> {
     const params = new HttpParams()
@@ -26,15 +26,11 @@ export class AplicacionCcppService extends BaseService {
 
     return this.http.get<ApiResponse<boolean>>(`${this.baseUrl}/EliminarAplicacion`, { params });
   }
-  obtenerContratos(): Observable<ApiResponse<ContratoParaAplicacionCartaPorteResponse>> {
+  obtenerComboContratosCcpp(): Observable<ApiResponse<ComboAppContratosCCPPResponse>> {
     return this.http
-      .get<ApiResponse<ContratoParaAplicacionCartaPorteResponse>>(`${this.baseUrl}/ObtenerContratos`);
+      .get<ApiResponse<ComboAppContratosCCPPResponse>>(`${this.baseUrl}/ObtenerComboContratosCcpp`);
   }
-  obtenerCartasPorte(numeroContrato: string): Observable<ApiResponse<CartaPorteParaAplicacionCartaPorteResponse>> {
-    const params = new HttpParams().append('numeroContrato', numeroContrato)
-    return this.http
-      .get<ApiResponse<CartaPorteParaAplicacionCartaPorteResponse>>(`${this.baseUrl}/ObtenerCartasPorte`, { params });
-  }
+
   guardarAplicacion(aplicacion: AplicacionCCPPForm): Observable<ApiResponse<boolean>> {
     let payload = new FormData();
     payload.append(

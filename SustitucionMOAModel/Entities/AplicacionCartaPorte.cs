@@ -24,11 +24,11 @@ namespace SustitucionMOAModel.Entities
         public DateTime FechaAlta { get; set; }
         public DateTime? FechaActualizacion { get; set; }
         public AplicacionCartaPorte() { }
-        public AplicacionCartaPorte(CrearAplicacionCartaPorte aplicacionACrear, Usuario usuario)
+        public AplicacionCartaPorte(CrearAplicacionCartaPorte aplicacionACrear, Usuario usuario, Proveedor proveedorSeleccionado)
         {
             Usuario_Id = usuario.Id;
-            Proveedor_Id = usuario.ObtenerProveedorAsignado().Id;
-            Contrato = aplicacionACrear.Contrato;
+            Proveedor_Id = proveedorSeleccionado.Id;
+            Contrato = aplicacionACrear.ContratoSeleccionado.NumeroContrato;
             CartaPorte = aplicacionACrear.CartaPorteSeleccionada.NumeroCartaPorte;
             Kilogramos = (int)aplicacionACrear.Kilogramos;
             Estado = EstadoAplicacionCartaPorte.Pendiente;

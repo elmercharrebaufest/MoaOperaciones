@@ -100,6 +100,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
+    <Compile Include="Service References\AplicacionCartaPortePendienteAplicarWebServiceMOA\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
     <Compile Include="Service References\CambioPassWebServiceMOA\Reference.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -538,7 +543,7 @@
     <Compile Include="Util\ExtensionesSerializacion.cs" />
     <Compile Include="WebApi\CNRTClient.cs" />
     <Compile Include="WebApi\ScatoRepositorioClient.cs" />
-    <Compile Include="WSConsumers\AplicacionCartaPorteConsumenr.cs" />
+    <Compile Include="WSConsumers\AplicacionCartaPorteConsumer.cs" />
     <Compile Include="WSConsumers\AplicacionesConsumerMOA.cs" />
     <Compile Include="WSConsumers\CambioPassConsumerMOA.cs" />
     <Compile Include="WSConsumers\CartaPorteDetalleConsumerMOA.cs" />
@@ -622,6 +627,7 @@
     <Compile Include="WSConsumers\VendedoresConsumerMOA.cs" />
     <Compile Include="WSConsumers\VendedorHabilitadoConsumerMOA.cs" />
     <Compile Include="WSConsumers\VinculaDetalleConsumerMOA.cs" />
+    <Compile Include="WSRequests\AplicacionCartaPorte\AppCartasPortePendienteRequest.cs" />
     <Compile Include="WSRequests\OrdenCarga\ControlCargaRequest.cs" />
     <Compile Include="WSRequests\OrdenCarga\CrearEntregaRequest.cs" />
     <Compile Include="WSRequests\OrdenCarga\CrearOrdenRequest.cs" />
@@ -656,6 +662,7 @@
     <None Include="Service References\AplicacionesWebServiceMOA\SustitucionMOAWS.AplicacionesWebServiceMOA.ZMPES4910.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
+    <None Include="Service References\AplicacionCartaPortePendienteAplicarWebServiceMOA\SI_MPMF_MOAOP_PENDIENTE_APLICAR.wsdl" />
     <None Include="Service References\CambioPassWebServiceMOA\SI_MPMF_MOAOP_LOGIN_CAMBIOPASS.wsdl" />
     <None Include="Service References\CambioPassWebServiceMOA\SustitucionMOAWS.CambioPassWebServiceMOA.SI_MPMF_MOAOP_LOGIN_CAMBIOPASSResponse.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
@@ -2349,6 +2356,7 @@
   <ItemGroup>
     <WCFMetadataStorage Include="Service References\AgregarRegistroInfoServiceWebMOA\" />
     <WCFMetadataStorage Include="Service References\AplicacionesWebServiceMOA\" />
+    <WCFMetadataStorage Include="Service References\AplicacionCartaPortePendienteAplicarWebServiceMOA\" />
     <WCFMetadataStorage Include="Service References\CambioPassWebServiceMOA\" />
     <WCFMetadataStorage Include="Service References\CartaPorteDetalleWebServiceMOA\" />
     <WCFMetadataStorage Include="Service References\CartaPorteFormularioCTGWebServiceMOA\" />
@@ -3530,6 +3538,18 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Service References\OrdenCargaEstadoEntregadaV2SAP\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\AplicacionCartaPortePendienteAplicarWebServiceMOA\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\AplicacionCartaPortePendienteAplicarWebServiceMOA\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\AplicacionCartaPortePendienteAplicarWebServiceMOA\Reference.svcmap">
       <Generator>WCF Proxy Generator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>

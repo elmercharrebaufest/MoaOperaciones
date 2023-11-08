@@ -11,8 +11,7 @@ namespace SustitucionMOAUtils.Interfaces
         AplicacionCartaPorteFiltrosDto ObtenerFiltros(List<AplicacionCartaPorteDto> aplicaciones);
         AplicacionCartaPorteDto Obtener(int aplicacionCCPPId,string mailUsuario);
         void EliminarAplicacion(int aplicacionId);
-        List<ContratoParaAplicacionCartaPorte> ObtenerContratos(string mailUsuario);
-        List<CartaPorteParaAplicacionCartaPorte> ObtenerCartasPorte(string numeroContrato, string mailUsuario);
+        ComboAplicacionesContratosCcppResponse ObtenerCombosDeContratoCCPP(string mailUsuario, string codigoProveedor);
         void GuardarAplicacion(CrearAplicacionCartaPorte aplicacionACrear, string mailUsuario);
     }
 }

@@ -6,11 +6,14 @@ import { SessionDataService } from "../../common/services/SessionDataService";
 import { SecurityService } from "../../common/services/SecurityService";
 import { FloatMsgService } from "../../common/services/FloatMsgService";
 import { ModalService } from "../../common/services/ModalService";
-import { FormControl, FormGroup, Validators } from "@angular/forms";
-import { CartaPorteParaAplicacionCartaPorte, ContratoParaAplicacionCartaPorte, SeccionAplicacionCCPP } from "../aplicacion-ccpp.model";
+import { AbstractControl, FormControl, FormGroup, Validators } from "@angular/forms";
+import { AplicacionCCPPForm, CartaPorteParaAplicacionCartaPorte, ContratoParaAplicacionCartaPorte, SeccionAplicacionCCPP } from "../aplicacion-ccpp.model";
 import { Subscription } from "rxjs";
-import { debounceTime, filter } from "rxjs/operators";
 import { MessageService } from "primeng/api";
+import { registerLocaleData } from '@angular/common';
+import es from '@angular/common/locales/es'
+import { BlockUI, NgBlockUI } from "ng-block-ui";
+import { filter } from "rxjs/operators";
 
 export const MSG_ALERTA_CREADO = { severity: 'success', summary: 'Aplicación CCPP', detail: 'La aplicación fue guardada exitosamente.', life: 5000 };
 export const MSG_ALERTA_NO_CREADO = (msg: string) => ({ severity: 'error', summary: 'Aplicación CCPP', detail: msg, life: 10000 });
@@ -20,9 +23,11 @@ export const MSG_ALERTA_NO_CREADO = (msg: string) => ({ severity: 'error', summa
     templateUrl: "carga-manual.component.html"
 })
 export class CargaManual extends AplicacionCcppBaseComponent implements OnInit {
+    @BlockUI() blockUI: NgBlockUI;
 
     contratos: ContratoParaAplicacionCartaPorte[] = [];
     cartasPorte: CartaPorteParaAplicacionCartaPorte[] = [];
+    cartasPorteOpcion: CartaPorteParaAplicacionCartaPorte[] = [];
 
     aplicacionCCPPForm: FormGroup;
     subscriptions = new Subscription();
@@ -39,49 +44,61 @@ export class CargaManual extends AplicacionCcppBaseComponent implements OnInit {
     ) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
         this.startForm()
+        registerLocaleData(es);
     }
     startForm() {
+        this.obtenerComboContratosCartasPorte();
         this.aplicacionCCPPForm = new FormGroup({
-            Contrato: new FormControl(null, [Validators.required, Validators.minLength(6), Validators.maxLength(10)]),
-            CartaPorteSeleccionada: new FormControl({ value: null, disabled: true }, [Validators.required, Validators.minLength(6), Validators.maxLength(10)]),
+            ContratoSeleccionado: new FormControl(null, [Validators.required,]),
+            CartaPorteSeleccionada: new FormControl({ value: null, disabled: true }, [Validators.required]),
             Kilogramos: new FormControl(null, [Validators.required]),
+
+            //Controles manuales
+            Contrato: new FormControl(null, [Validators.required, Validators.minLength(6), Validators.maxLength(20)]),
+            CartaPorte: new FormControl({ value: null, disabled: true }, [Validators.required, Validators.minLength(6), Validators.maxLength(20)])
         })
     }
     setTabs(): void {
         this.setMenuSeccionTab(SeccionAplicacionCCPP, 'Carga manual');
     }
 
+    getControl(controlName: keyof AplicacionCCPPForm): AbstractControl {
+        return this.aplicacionCCPPForm.get(controlName);
+    }
+
+    get contratoControl() {
+        return this.getControl("Contrato");
+    }
+    get contratoSeleccionadoControl() {
+        return this.getControl("ContratoSeleccionado");
+    }
+    get cartaPorteControl() {
+        return this.getControl("CartaPorte");
+    }
+    get cartaPorteSeleccionadaControl() {
+        return this.getControl("CartaPorteSeleccionada");
+    }
+    get kilogramosControl() {
+        return this.getControl("Kilogramos");
+    }
+
     extraOnInit(): void {
-        const contratoControl = this.aplicacionCCPPForm.get("Contrato");
-        const cartaPorteSeleccionadaControl = this.aplicacionCCPPForm.get("CartaPorteSeleccionada");
-        const kilogramosControl = this.aplicacionCCPPForm.get("Kilogramos");
+        const ctoControl = this.contratoControl;
+        const ccppControl = this.cartaPorteControl;
+        const contratoSeleccionadoControl = this.contratoSeleccionadoControl;
+        const cartaPorteSeleccionadaControl = this.cartaPorteSeleccionadaControl;
+        const kilogramosControl = this.kilogramosControl;
+
         this.subscriptions.add(
-            this.service.obtenerContratos().subscribe({
-                next: (res) => this.contratos = res.data.Contratos
-            })
-        )
-        this.subscriptions.add(
-            contratoControl
+            contratoSeleccionadoControl
                 .valueChanges.pipe(
-                    debounceTime(500),
-                    filter(() => contratoControl.valid)
+                    filter(() => contratoSeleccionadoControl.valid)
                 ).subscribe({
                     next: (contrato) => {
-                        if (typeof (contrato) !== "string") {
-                            contrato = contrato.NumeroContrato;
-                            contratoControl.setValue(contrato, { emitEvent: false })
-                        }
                         cartaPorteSeleccionadaControl.disable();
+                        ccppControl.disable();
                         kilogramosControl.setValue(null);
-                        this.obtenerCartasPorteSubscription = this.service
-                            .obtenerCartasPorte(contrato)
-                            .subscribe({
-                                next: (res) => {
-                                    this.cartasPorte = res.data.CartasPorte
-                                    cartaPorteSeleccionadaControl.enable();
-                                    this.aplicacionCCPPForm.updateValueAndValidity()
-                                }
-                            })
+                        this.filtrarCartasPorte(contrato.Material);
                     },
                 }),
         )
@@ -98,6 +115,33 @@ export class CargaManual extends AplicacionCcppBaseComponent implements OnInit {
                     }
                 })
         )
+
+        //Subscripciones para campos manuales
+        this.subscriptions.add(
+            ctoControl.valueChanges.pipe(
+                filter(() => ctoControl.valid)
+            ).subscribe(nroContrato => {
+                const contrato = this.contratos.find(cto => cto.NumeroContrato === nroContrato)
+                if (!contrato)
+                    return;
+                contratoSeleccionadoControl.setValue(contrato);
+            })
+        )
+        this.subscriptions.add(
+            ccppControl.valueChanges.pipe(
+                filter(() => ccppControl.valid)
+            ).subscribe(nroCcpp => {
+                const ccpp = this.cartasPorteOpcion.find(cp => cp.NumeroCartaPorte === nroCcpp)
+                if (!ccpp) {
+                    kilogramosControl.setValidators([Validators.required, Validators.min(1)]);
+                    kilogramosControl.setValue(null)
+                    kilogramosControl.updateValueAndValidity({ onlySelf: true })
+                    cartaPorteSeleccionadaControl.setValue(null)
+                    return;
+                }
+                cartaPorteSeleccionadaControl.setValue(ccpp);
+            })
+        )
     }
 
     public extraOnDestroy(): void {
@@ -106,11 +150,15 @@ export class CargaManual extends AplicacionCcppBaseComponent implements OnInit {
             this.obtenerCartasPorteSubscription.unsubscribe()
     }
 
-    formatterContratos(data: ContratoParaAplicacionCartaPorte): string {
+    formatterContratos(data: ContratoParaAplicacionCartaPorte) {
         return data.NumeroContrato;
+    }
+    formatterCartaPorte(data: CartaPorteParaAplicacionCartaPorte) {
+        return data.NumeroCartaPorte;
     }
 
     reset() {
+        this.obtenerComboContratosCartasPorte();
         this.aplicacionCCPPForm.reset()
     }
 
@@ -129,5 +177,30 @@ export class CargaManual extends AplicacionCcppBaseComponent implements OnInit {
                 }
             }
         })
+    }
+    filtrarCartasPorte(material?: string) {
+        if (!material) {
+            this.cartasPorteOpcion = [...this.cartasPorte]
+            return;
+        }
+        this.cartasPorteOpcion = this.cartasPorte.filter(ccpp => ccpp.Material === material);
+        this.cartaPorteSeleccionadaControl.enable();
+        //Anulacion de ccpp input manual
+        this.cartaPorteControl.enable();
+        //--
+        this.aplicacionCCPPForm.updateValueAndValidity()
+    }
+    obtenerComboContratosCartasPorte() {
+        this.blockUI.start();
+        this.subscriptions.add(
+            this.service.obtenerComboContratosCcpp().subscribe({
+                next: (res) => {
+                    this.contratos = res.data.Contratos
+                    this.cartasPorte = res.data.CartasPorte
+                    this.filtrarCartasPorte();
+                    this.blockUI.stop();
+                }
+            })
+        )
     }
 }

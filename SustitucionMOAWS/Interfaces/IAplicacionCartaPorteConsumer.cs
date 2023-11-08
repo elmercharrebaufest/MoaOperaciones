@@ -1,11 +1,12 @@
 ﻿using SustitucionMOAModel.Dto.AplicacionCartaPorte;
+using SustitucionMOAWS.AplicacionCartaPortePendienteAplicarWebServiceMOA;
+using SustitucionMOAWS.WSRequests.AplicacionCartaPorte;
 using System.Collections.Generic;
 
 namespace SustitucionMOAWS.Interfaces
 {
     public interface IAplicacionCartaPorteConsumer
     {
-        List<CartaPorteParaAplicacionCartaPorte> ObtenerCartasPorteProveedor(string contrato, string proveedor);
-        List<ContratoParaAplicacionCartaPorte> ObtenerContratosProveedor(string cartaPorte, string proveedor);
+        ZMPES7070[] ObtenerAplicacionesPendientes(AppCartasPortePendienteRequest request);
     }
 }

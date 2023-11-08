@@ -8,7 +8,7 @@ namespace SustitucionMOAModel.Dto.AplicacionCartaPorte
     public class CrearAplicacionCartaPorte
     {
         [Required]
-        public string Contrato { get; set; }
+        public ContratoParaAplicacionCartaPorte ContratoSeleccionado { get; set; }
         [Required]
         public CartaPorteParaAplicacionCartaPorte CartaPorteSeleccionada { get; set; }
         [Required]
@@ -20,11 +20,11 @@ namespace SustitucionMOAModel.Dto.AplicacionCartaPorte
         }
         public bool ValidarContrato(List<ContratoParaAplicacionCartaPorte> contratosValidos)
         {
-            return contratosValidos.Any(contrato => contrato.NumeroContrato == Contrato);
+            return contratosValidos.Any(contrato => contrato.NumeroContrato == ContratoSeleccionado.NumeroContrato);
         }
         public bool ValidarCartaPorteSeleccionada(List<CartaPorteParaAplicacionCartaPorte> cartasPorteValidas)
         {
-            return cartasPorteValidas.Any(cartaPorte => cartaPorte.NumeroCartaPorte == CartaPorteSeleccionada.NumeroCartaPorte);
+            return CartaPorteSeleccionada.Material == ContratoSeleccionado.Material && cartasPorteValidas.Any(cartaPorte => cartaPorte.NumeroCartaPorte == CartaPorteSeleccionada.NumeroCartaPorte);
         }
     }
 }

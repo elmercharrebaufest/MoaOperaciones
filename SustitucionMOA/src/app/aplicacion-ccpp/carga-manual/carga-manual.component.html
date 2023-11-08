@@ -23,23 +23,31 @@
                             <div class="formulario-label">
                                 Ctto:
                             </div>
-                            <div class="styled-select autocomplete">
-                                <input auto-complete [formControlName]="'Contrato'" [source]="contratos"
-                                    [no-match-found-text]="'No se encontraron resultados'" class="input-resized"
-                                    [value-formatter]="formatterContratos" [list-formatter]="formatterContratos" />
+                            <div class="styled-select ">
+                                <input [formControlName]="'Contrato'" class="input-resized" />
                             </div>
+                            <!-- <div class="styled-select" style="overflow: initial;">
+                                <p-dropdown name="contrato" [formControlName]="'ContratoSeleccionado'"
+                                    [options]="contratos" optionLabel="NumeroContrato" placeholder="Seleccione contrato"
+                                    [filter]="true" filterBy="value.NumeroContrato">
+
+                                </p-dropdown>
+                            </div> -->
                         </div>
                         <div class="col-xs-12 col-md-4">
                             <div class="formulario-label">
                                 CCPP:
                             </div>
-                            <div class="styled-select" style="overflow: initial;">
+                            <div class="styled-select ">
+                                <input [formControlName]="'CartaPorte'" class="input-resized" />
+                            </div>
+                            <!-- <div class="styled-select" style="overflow: initial;">
                                 <p-dropdown name="ccpp" [formControlName]="'CartaPorteSeleccionada'"
-                                    [options]="cartasPorte" optionLabel="NumeroCartaPorte" placeholder="Seleccione CCPP"
-                                    [filter]="true" filterBy="value.NumeroCartaPorte">
+                                    [options]="cartasPorteOpcion" optionLabel="NumeroCartaPorte"
+                                    placeholder="Seleccione CCPP" [filter]="true" filterBy="value.NumeroCartaPorte">
 
                                 </p-dropdown>
-                            </div>
+                            </div> -->
                         </div>
                         <div class="col-xs-12 col-md-4">
                             <div class="formulario-label">
@@ -51,10 +59,10 @@
                         </div>
                     </div>
                 </form>
-                <div class="col-12 p-2" *ngIf="aplicacionCCPPForm.get('CartaPorteSeleccionada')?.value">
+                <div class="col-12 p-2" *ngIf="cartaPorteSeleccionadaControl?.value">
                     <p>
-                        *{{aplicacionCCPPForm.get('CartaPorteSeleccionada')?.value.KgPendientes | number}} KG
-                        pendientes.
+                        *Máximo {{cartaPorteSeleccionadaControl?.value.KgPendientes | number: '':'es'}} KG
+                        para aplicar.
                     </p>
                 </div>
                 <div class="col-12 p-2 d-flex justify-start gap-2">

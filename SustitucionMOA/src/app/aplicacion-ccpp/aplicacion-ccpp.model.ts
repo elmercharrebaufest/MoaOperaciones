@@ -10,7 +10,9 @@ export interface AplicacionCCPPForm {
     Id: number;
     Contrato: string;
     CartaPorteSeleccionada: CartaPorteParaAplicacionCartaPorte;
+    ContratoSeleccionado: ContratoParaAplicacionCartaPorte;
     Kilogramos: number;
+    CartaPorte: string;
 }
 export interface AplicacionCCPP extends AplicacionCCPPForm {
     Proveedor_Id?: number;
@@ -37,14 +39,15 @@ export const SeccionAplicacionCCPP = "aplicaciones-ccpp";
 
 export type ContratoParaAplicacionCartaPorte = {
     NumeroContrato: string;
-}
-export type ContratoParaAplicacionCartaPorteResponse = {
-    Contratos: ContratoParaAplicacionCartaPorte[]
+    CodigoProveedor: string;
+    Material: string;
 }
 export type CartaPorteParaAplicacionCartaPorte = {
     NumeroCartaPorte: string;
     KgPendientes: number;
+    Material: string;
 }
-export type CartaPorteParaAplicacionCartaPorteResponse = {
+export type ComboAppContratosCCPPResponse = {
+    Contratos: ContratoParaAplicacionCartaPorte[]
     CartasPorte: CartaPorteParaAplicacionCartaPorte[]
 }

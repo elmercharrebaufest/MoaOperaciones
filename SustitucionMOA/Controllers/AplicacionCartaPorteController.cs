@@ -97,38 +97,14 @@ namespace SustitucionMOA.Controllers
             return ContentCustom(response);
         }
 
-        public ContentResult ObtenerContratos()
+        public ContentResult ObtenerComboContratosCcpp()
         {
-            var response = new SustitucionMOAApiResponse<ContratoParaAplicacionCartaPorteResponse>();
+            var response = new SustitucionMOAApiResponse<ComboAplicacionesContratosCcppResponse>();
             try
             {
                 var mailUsuario = SessionPersister.getUsername();
-                response.Data = new ContratoParaAplicacionCartaPorteResponse { Contratos = aplicacionCCPPService.ObtenerContratos(mailUsuario) };
-            }
-            catch (InfoCustomException ice)
-            {
-                response.Info = ice.Message;
-            }
-            catch (ValidationCustomException vce)
-            {
-                response.Error = vce.Message;
-            }
-            catch (Exception ex)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                response.Error = ErrorMsg.Error;
-            }
-            return ContentCustom(response);
-        }
-
-        [HttpGet]
-        public ContentResult ObtenerCartasPorte(string numeroContrato)
-        {
-            var response = new SustitucionMOAApiResponse<CartaPorteParaAplicacionCartaPorteResponse>();
-            try
-            {
-                var mailUsuario = SessionPersister.getUsername();
-                response.Data = new CartaPorteParaAplicacionCartaPorteResponse { CartasPorte = aplicacionCCPPService.ObtenerCartasPorte(numeroContrato, mailUsuario) };
+                var codigoProveedor = SessionPersister.Proveedor;
+                response.Data = aplicacionCCPPService.ObtenerCombosDeContratoCCPP(mailUsuario, codigoProveedor);
             }
             catch (InfoCustomException ice)
             {
