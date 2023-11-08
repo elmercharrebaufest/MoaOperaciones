@@ -67,7 +67,7 @@ namespace SustitucionMOAUtils.Services
                     ConsultaId = x.ConsultaId,
                     UsuarioId = x.UsuarioId,
                     ConsultaCategoriaId = x.ConsultaCategoriaId,
-                    DescripcionCategoria = x.ConsultaCategoriaId == 0 ? "" : repositorio.Obtener<Categoria>(x.ConsultaCategoriaId).Nombre
+                    DescripcionCategoria = x.ConsultaCategoriaId == null ? "" : repositorio.Obtener<Categoria>(x.ConsultaCategoriaId).Nombre
                 })
                 .OrderBy(x => x.Leida)
                 .ThenByDescending(

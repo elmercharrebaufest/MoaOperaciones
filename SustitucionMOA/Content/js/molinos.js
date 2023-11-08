@@ -66,7 +66,7 @@ var userCloseSmall = function() {
 }
 
 function notificationOpenSmall() {
-    setTimeout(function () {
+   
     closeNav()
     userCloseSmall()
     $("#liNoti").addClass("liSelectClass");
@@ -75,11 +75,11 @@ function notificationOpenSmall() {
     document.getElementById("notificationOpenSmall").style.display = "none";
     document.getElementById("notificationSmall").style.right = "0";
         $("#coverAll").fadeIn();
-    }, 5000);
+   
 }
 
 function notificationCloseSmall() {
-    setTimeout(function () {
+   
     $("#liNoti").removeClass("liSelectClass");
     document.getElementById("notificationCloseSmall").style.display = "none";
     document.getElementById("notificationOpenSmall").style.display = "block";
@@ -87,7 +87,7 @@ function notificationCloseSmall() {
     $("#notificationSmall").css({ "right": "0" });
     $("#coverAll").fadeOut();
         document.getElementById("notificationSmall").style.display = "none";
-    }, 5000);
+    
 }
 
 function openNav() {
@@ -113,21 +113,21 @@ function closeNav() {
 }
 
 function notificationOpen() {
-    setTimeout(function () {
+   
     $("#notificationSmall, #notificationClose").css({"display" : "block"});
     $("#notificationOpen").css({ "display" : "none" });
     $("#notificationSmall").css({ "right" : "0" });
      $("#coverAll").fadeIn();
-    }, 5000);
+   
 }
 
 function notificationClose() {
-    setTimeout(function() {
+  
         $("#notificationClose, #notificationSmall").css({ "display": "none" });
         $("#notificationOpen").css({ "display": "block" });
         $("#notificationSmall").css({ "right": "-270px" });
         $("#coverAll").fadeOut();
-      }, 5000);
+     
 }
 
 function backHome() {
