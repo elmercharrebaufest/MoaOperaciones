@@ -536,30 +536,5 @@ namespace SustitucionMOAUtils.Services
 
         private TipoUsuario ObtenerTipoPorNombreCorto(string nombreCorto) => repositorio.Obtener<TipoUsuario>(t => t.NombreCorto == nombreCorto);
 
-        public List<ProveedorDto> GetVendedoresDelUsuario(string mail)
-        {
-            List<ProveedorDto> listadoVendedores = new List<ProveedorDto>();
-            var usuario = repositorio.Obtener<Entities.Usuario>(t => t.Mail == mail);
-            listadoVendedores.AddRange(usuario.Proveedores.Select(p => new ProveedorDto
-            {
-                CodigoProveedor = p.CodigoProveedor ?? "",
-                CUIT = p.CUIT,
-                EstadoAprobacion = p.EstadoAprobacion,
-                EstadoAprobacionDescripcion = p.EstadoAprobacion.ToFriendlyString(),
-                Id = p.Id,
-                IdComercialDataAgro = p.IdComercialDataAgro,
-                IdDataAgro = p.IdDataAgro,
-                Mail = p.Mail ?? "",
-                Observaciones = p.Observaciones,
-                RazonSocial = p.RazonSocial ?? "",
-                FechaSolicitud = p.FechaSolicitud,
-                Comercial = p.Comercial,
-                EstadoSIPER = p.EstadoSIPER,
-                ContieneDocumentacionFisica = p.ContieneDocumentacionFisica,
-                IdTipoProveedor = p.TipoProveedor.Id
-            }).ToList());
-
-            return listadoVendedores;
-        }
     }
 }
