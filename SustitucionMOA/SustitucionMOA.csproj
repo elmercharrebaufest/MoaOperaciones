@@ -386,8 +386,6 @@
     <Content Include="src\app\compras\solp\steps\posicion\tab-subposicion\tab-subposicion.component.html" />
     <Content Include="src\app\comunicaciones\comunicaciones.component.css" />
     <Content Include="src\app\comunicaciones\comunicaciones.component.html" />
-    <Content Include="src\app\liquidacion\informada\liquidacion.informada.component.html" />
-    <Content Include="src\app\liquidacion\informar\liquidacion.informar.component.html" />
     <Content Include="src\app\liquidacion\no-granos\pendiente-registro\liquidacion.no-granos.pendiente-registro.component.html" />
     <Content Include="src\app\liquidacion\no-granos\registrada\liquidacion.no-granos.registrado.component.html" />
     <Content Include="src\app\listado-novedades\listado-novedades.component.css" />
@@ -1252,8 +1250,6 @@
     <TypeScriptCompile Include="src\app\echeq\echeq.component.ts" />
     <TypeScriptCompile Include="src\app\echeq\echeq.module.ts" />
     <TypeScriptCompile Include="src\app\echeq\echeq.service.ts" />
-    <TypeScriptCompile Include="src\app\liquidacion\informada\liquidacion.informada.component.ts" />
-    <TypeScriptCompile Include="src\app\liquidacion\informar\liquidacion.informar.component.ts" />
     <TypeScriptCompile Include="src\app\liquidacion\no-granos\liquidacion-no-granos-routing.module.ts" />
     <TypeScriptCompile Include="src\app\liquidacion\no-granos\liquidacion-no-granos.module.ts" />
     <TypeScriptCompile Include="src\app\liquidacion\no-granos\pendiente-registro\liquidacion.no-granos.pendiente-registro.component.ts" />

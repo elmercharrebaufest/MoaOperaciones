@@ -1,148 +1,141 @@
 <div id="comunicacionesPanel">
-  <div class="container-title">
-    <strong class="title">
-      Notificaciones
-    </strong>
-  </div>
-
-  <div *ngIf="hasCommunications" class="container-panel scrollable-container">
-    <ng-container *ngFor="let key of objectKeys(communication)">
-        <ng-container  *ngFor="let item of communication[key];let i = index">
-            <div *ngIf="item.Leida == 0">
-                <div *ngIf="item.ComunicacionTipo == 6 && i === 0    || (item.ComunicacionTipo == 6 && i>0 && !(item.ComunicacionTipo === communication[key][i - 1].ComunicacionTipo)) || (item.ComunicacionTipo == 6 && i>0 && !(item.FechaCreacion === communication[key][i - 1].FechaCreacion)) " 
-                class="container-communication position-r" (click)="openCommunication(communication[key], item.FechaCreacion ,item.ComunicacionTipo, i)">
-                    <div id="body-message-comunicaciones" [ngClass]="{'message-body-read': communicationRead[item.Id], 'message-body': !communicationRead[item.Id]}">
-                        <div>
-                            <div id="comunicacion-target">Posee liquidaciones observadas. Por favor, revisar.</div>
-                        </div>
-
-                        <div class="container-date">
-                            <div class="date">{{ item.FechaCreacion.split(" ")[0]}}</div>
-                            <div class="date">{{ dateFormat(item.FechaCreacion)}}</div>
-                        </div>
-                    </div>
-
-                    <div class="triangle">
-                        <div class="text-new">Nuevo</div>
-                    </div>
-                </div>
-
-                <div *ngIf="item.ComunicacionTipo !== 6" class="container-communication position-r" (click)="openCommunication(communication[key], item.FechaCreacion ,item.ComunicacionTipo,i)">
-                    <div id="body-message-comunicaciones" [ngClass]="{'message-body-read': communicationRead[item.Id], 'message-body': !communicationRead[item.Id]}">
-                        
-                        <div *ngIf="item.ComunicacionTipo == 1">
-                            <div id="comunicacion-target">Tiene exenciones vencidas sobre los siguientes impuestos:</div>
-                            <div *ngFor="let element of arrayVencidas; let i = index">- {{ element }}</div>
-                        </div>
-
-                        <div *ngIf="item.ComunicacionTipo == 2">
-                            <div id="comunicacion-target">Tiene exenciones próximas a vencer sobre los siguientes impuestos:</div>
-                            <div *ngFor="let element of arrayProximasAVencer; let i = index">- {{ element }}</div>
-                        </div>
-
-                        <div *ngIf="item.ComunicacionTipo == 3">
-                            <div id="comunicacion-target">Su CM05 se encuentra vencido. Por favor actualizar.</div>
-                        </div>
-
-                        <div *ngIf="item.ComunicacionTipo == 4">
-                            <div id="comunicacion-target">Su cuenta informada en SISA no se encuentra actualizada en nuestros registros. Por favor informar.</div>
-                        </div>
-
-                        <div *ngIf="item.ComunicacionTipo != 3  && item.ComunicacionTipo != 4 && item.ComunicacionTipo != 6  && item.ComunicacionTipo != 1  && item.ComunicacionTipo != 2">
-                            <div id="comunicacion-target" style="padding-right: 2px;">-Detalle ejemplo para notificación de tipo {{ item.ComunicacionTipo }}. </div>
-                            <div style="padding-right: 2px;">-{{ item.Detalle }}</div>
-                        </div>
-
-                        <div class="container-date">
-                            <div class="date">{{ item.FechaCreacion.split(" ")[0]}}</div>
-                            <div class="date">{{ dateFormat(item.FechaCreacion)}}</div>
-                        </div>
-                    </div>
-
-                    <div class="triangle">
-                        <div class="text-new">Nuevo</div>
-                    </div>
-                </div>
-            </div>
-            <div *ngIf="item.Leida == 1" style="display: flex;">
-                <div *ngIf="item.ComunicacionTipo == 6 && i === 0    || (item.ComunicacionTipo == 6 && i>0 && !(item.ComunicacionTipo === communication[key][i - 1].ComunicacionTipo)) || (item.ComunicacionTipo == 6 && i>0 && !(item.FechaCreacion === communication[key][i - 1].FechaCreacion))"
-                        class="container-communication" (click)="openCommunication(communication[key], item.FechaCreacion ,item.ComunicacionTipo,i)">
-                    <div id="body-message-comunicaciones" class="message-body-read">
-
-                        
-                        <div *ngIf="item.ComunicacionTipo == 6">
-                            <div id="comunicacion-target">Posee liquidaciones observadas. Por favor, revisar.</div>
-                        </div>
-
-                        
-
-                        <div class="container-date">
-                            <div class="date">{{ item.FechaCreacion.split(" ")[0]}}</div>
-                            <div class="date">{{ dateFormat(item.FechaCreacion) }}</div>
-                        </div>
-
-                    </div>
-
-                </div>
-
-                <div *ngIf="item.ComunicacionTipo !== 6" class="container-communication" 
-                        (click)="openCommunication(communication[key], item.FechaCreacion ,item.ComunicacionTipo,i)">
-                    <div id="body-message-comunicaciones" class="message-body-read">
-
-                        <div *ngIf="item.ComunicacionTipo == 1">
-                            <div id="comunicacion-target">Tiene exenciones vencidas sobre los siguientes impuestos:</div>
-                            <div *ngFor="let element of arrayVencidas; let i = index">- {{ element }}</div>
-                        </div>
-
-                        <div *ngIf="item.ComunicacionTipo == 2">
-                            <div id="comunicacion-target">Tiene exenciones próximas a vencer sobre los siguientes impuestos:</div>
-                            <div *ngFor="let element of arrayProximasAVencer; let i = index">- {{ element }}</div>
-                        </div>
-
-                        <div *ngIf="item.ComunicacionTipo == 3">
-                            <div id="comunicacion-target">Su CM05 se encuentra vencido. Por favor actualizar.</div>
-                        </div>
-
-                        <div *ngIf="item.ComunicacionTipo == 4">
-                            <div id="comunicacion-target">Su cuenta informada en SISA no se encuentra actualizada en nuestros registros. Por favor informar.</div>
-                        </div>
-
-                        <div *ngIf="item.ComunicacionTipo == 6">
-                            <div id="comunicacion-target">Posee liquidaciones observadas. Por favor, revisar.</div>
-                        </div>
-
-                        <div *ngIf="item.ComunicacionTipo != 3 && item.ComunicacionTipo != 4 && item.ComunicacionTipo != 6  && item.ComunicacionTipo != 1 && item.ComunicacionTipo != 2">
-                            <div id="comunicacion-target" style="padding-right: 2px;">-Detalle ejemplo para notificación de tipo {{ item.ComunicacionTipo }}. </div>
-                        </div>
-
-                        <div class="container-date">
-                            <div class="date">{{ item.FechaCreacion.split(" ")[0]}}</div>
-                            <div class="date">{{ dateFormat(item.FechaCreacion) }}</div>
-                        </div>
-
-                    </div>
-
-                </div>
-
-                <div style="width: auto;">
-                    <button id="unread-button" class="button-unread" (click)="unreadCommunication(item)" title="Marcar como no leída"></button>
-                </div>
-            </div>
-        </ng-container>
-    </ng-container>
-  </div>
-
-  <div *ngIf="!hasCommunications">
-    <div>
-      <div style="justify-content: center; display: grid;">
-        <p class="text-no-communications">No posee notificaciones.</p>
-      </div>
+    <div class="container-title">
+        <strong class="title">
+            Notificaciones
+        </strong>
     </div>
-  </div>
 
-  <div *ngIf="showButtonMoreCommunications" class="container-button">
-    <button class="button-previous-communications">
-      Ver notificaciones anteriores
-    </button>
-  </div>
+    <div *ngIf="hasCommunications" class="container-panel scrollable-container">
+        <ng-container *ngFor="let key of objectKeys(communication)">
+            <ng-container  *ngFor="let item of communication[key];let i = index">
+                <div *ngIf="item.Leida == 0">
+                    <div *ngIf="item.ComunicacionTipo == 6 && i === 0    || (item.ComunicacionTipo == 6 && i>0 && !(item.ComunicacionTipo === communication[key][i - 1].ComunicacionTipo)) || (item.ComunicacionTipo == 6 && i>0 && !(item.FechaCreacion === communication[key][i - 1].FechaCreacion)) " 
+                        class="container-communication position-r" (click)="openCommunication(communication[key], item.FechaCreacion ,item.ComunicacionTipo, i, item.Id)">
+                        <div id="body-message-comunicaciones" [ngClass]="{'message-body-read': communicationRead[item.Id], 'message-body': !communicationRead[item.Id]}">
+                            <div>
+                                <div id="comunicacion-target">Posee liquidaciones observadas. Por favor, revisar.</div>
+                            </div>
+
+                            <div class="container-date">
+                                <div class="date">{{ item.FechaCreacion.split(" ")[0]}}</div>
+                                <div class="date">{{ dateFormat(item.FechaCreacion)}}</div>
+                            </div>
+                        </div>
+
+                        <div class="triangle">
+                            <div class="text-new">Nuevo</div>
+                        </div>
+                    </div>
+
+                    <div *ngIf="item.ComunicacionTipo !== 6" class="container-communication position-r" (click)="openCommunication(communication[key], item.FechaCreacion ,item.ComunicacionTipo,i, item.Id)">
+                        <div id="body-message-comunicaciones" [ngClass]="{'message-body-read': communicationRead[item.Id], 'message-body': !communicationRead[item.Id]}">
+
+                            <div *ngIf="item.ComunicacionTipo == 1">
+                                <div id="comunicacion-target">Tiene exenciones vencidas sobre los siguientes impuestos:</div>
+                                <div *ngFor="let element of arrayVencidas; let i = index">- {{ element }}</div>
+                            </div>
+
+                            <div *ngIf="item.ComunicacionTipo == 2">
+                                <div id="comunicacion-target">Tiene exenciones próximas a vencer sobre los siguientes impuestos:</div>
+                                <div *ngFor="let element of arrayProximasAVencer; let i = index">- {{ element }}</div>
+                            </div>
+
+                            <div *ngIf="item.ComunicacionTipo == 3">
+                                <div id="comunicacion-target">Su CM05 se encuentra vencido. Por favor actualizar.</div>
+                            </div>
+
+                            <div *ngIf="item.ComunicacionTipo == 4">
+                                <div id="comunicacion-target">Su cuenta informada en SISA no se encuentra actualizada en nuestros registros. Por favor informar.</div>
+                            </div>
+
+                            <div *ngIf="item.ComunicacionTipo == 5">
+                                <div id="comunicacion-target">Tiene {{ item.Cantidad }} {{ item.Cantidad === 1 ? 'consulta' : 'consultas' }} pendiente{{ item.Cantidad !== 1 ? 's' : '' }} de respuesta. Categoría: {{ item.DescripcionCategoria }}.</div>
+                              </div>
+
+                            <div class="container-date">
+                                <div class="date">{{ item.FechaCreacion.split(" ")[0]}}</div>
+                                <div class="date">{{ dateFormat(item.FechaCreacion)}}</div>
+                            </div>
+                        </div>
+
+                        <div class="triangle">
+                            <div class="text-new">Nuevo</div>
+                        </div>
+                    </div>
+                </div>
+                <div *ngIf="item.Leida == 1" style="display: flex;">
+                    <div *ngIf="item.ComunicacionTipo == 6 && i === 0    || (item.ComunicacionTipo == 6 && i>0 && !(item.ComunicacionTipo === communication[key][i - 1].ComunicacionTipo)) || (item.ComunicacionTipo == 6 && i>0 && !(item.FechaCreacion === communication[key][i - 1].FechaCreacion))"
+                        class="container-communication" (click)="openCommunication(communication[key], item.FechaCreacion ,item.ComunicacionTipo,i, item.Id)">
+                        <div id="body-message-comunicaciones" class="message-body-read">
+                            <div *ngIf="item.ComunicacionTipo == 6">
+                                <div id="comunicacion-target">Posee liquidaciones observadas. Por favor, revisar.</div>
+                            </div>
+
+                            <div class="container-date">
+                                <div class="date">{{ item.FechaCreacion.split(" ")[0]}}</div>
+                                <div class="date">{{ dateFormat(item.FechaCreacion) }}</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div *ngIf="item.ComunicacionTipo !== 6" class="container-communication" 
+                            (click)="openCommunication(communication[key], item.FechaCreacion ,item.ComunicacionTipo,i, item.Id)">
+                        <div id="body-message-comunicaciones" class="message-body-read">
+    
+                            <div *ngIf="item.ComunicacionTipo == 1">
+                                <div id="comunicacion-target">Tiene exenciones vencidas sobre los siguientes impuestos:</div>
+                                <div *ngFor="let element of arrayVencidas; let i = index">- {{ element }}</div>
+                            </div>
+    
+                            <div *ngIf="item.ComunicacionTipo == 2">
+                                <div id="comunicacion-target">Tiene exenciones próximas a vencer sobre los siguientes impuestos:</div>
+                                <div *ngFor="let element of arrayProximasAVencer; let i = index">- {{ element }}</div>
+                            </div>
+    
+                            <div *ngIf="item.ComunicacionTipo == 3">
+                                <div id="comunicacion-target">Su CM05 se encuentra vencido. Por favor actualizar.</div>
+                            </div>
+    
+                            <div *ngIf="item.ComunicacionTipo == 4">
+                                <div id="comunicacion-target">Su cuenta informada en SISA no se encuentra actualizada en nuestros registros. Por favor informar.</div>
+                            </div>
+
+                            <div *ngIf="item.ComunicacionTipo == 5">
+                                <div id="comunicacion-target">Tiene {{ item.Cantidad }} {{ item.Cantidad === 1 ? 'consulta' : 'consultas' }} pendiente{{ item.Cantidad !== 1 ? 's' : '' }} de respuesta. Categoría: {{ item.DescripcionCategoria }}.</div>
+                              </div>
+    
+                            <div *ngIf="item.ComunicacionTipo == 6">
+                                <div id="comunicacion-target">Posee liquidaciones observadas. Por favor, revisar.</div>
+                            </div>
+    
+                            <div class="container-date">
+                                <div class="date">{{ item.FechaCreacion.split(" ")[0]}}</div>
+                                <div class="date">{{ dateFormat(item.FechaCreacion) }}</div>
+                            </div>
+    
+                        </div>
+                    </div>
+
+                    <div style="width: auto;">
+                        <button id="unread-button" class="button-unread" (click)="unreadCommunication(item)" title="Marcar como no leída"></button>
+                    </div>
+
+                </div>
+            </ng-container>
+        </ng-container>
+    </div>
+
+    <div *ngIf="!hasCommunications">
+        <div>
+            <div style="justify-content: center; display: grid;">
+                <p class="text-no-communications">No posee notificaciones.</p>
+            </div>
+        </div>
+    </div>
+
+    <div *ngIf="showButtonMoreCommunications" class="container-button">
+        <button class="button-previous-communications">
+        Ver notificaciones anteriores
+        </button>
+    </div>
 </div>

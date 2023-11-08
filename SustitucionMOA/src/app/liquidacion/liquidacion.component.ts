@@ -45,22 +45,19 @@ export class LiquidacionBaseComponent extends ListBaseComponent {
         sessionStorage.getItem("proveedor");
         if (this.securityService.tienePermiso("INFORMAR LIQUIDACION")) {
             this.navService.setSeccionList([
-                new Seccion('/liquidacion/informar', 'liquidacion', 'Informar'),
-                new Seccion('/liquidacion/informada', 'liquidacion', 'Informadas'),
                 new Seccion('/liquidacion/aprobada', 'liquidacion', 'Aprobadas'),
                 new Seccion('/liquidacion/observada', 'liquidacion', 'Observadas'),
                 new Seccion('/liquidacion/paga', 'liquidacion', 'Pagas'),
-                
-               
+                new Seccion('/liquidacion/informada', 'liquidacion', 'Informadas'),
+                new Seccion('/liquidacion/informar', 'liquidacion', 'Informar')
             ]);
         }
         else {
             this.navService.setSeccionList([
-                new Seccion('/liquidacion/informada', 'liquidacion', 'Informadas'),
                 new Seccion('/liquidacion/aprobada', 'liquidacion', 'Aprobadas'),
                 new Seccion('/liquidacion/observada', 'liquidacion', 'Observadas'),
                 new Seccion('/liquidacion/paga', 'liquidacion', 'Pagas'),
-  
+                new Seccion('/liquidacion/informada', 'liquidacion', 'Informadas'),
             ]);
         }
         this.getData();

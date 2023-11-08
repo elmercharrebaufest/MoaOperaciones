@@ -234,6 +234,11 @@ export class CrearConsultaComponent extends ListBaseComponent {
                                 this.subcategoriaCount = 1;
                                 this.subcategoria = this.subcategoriasList.find(c => c.Nombre === 'CM 05');
                             }
+                            if (queryParams.filter === 'Solicitud-Informacion') {
+                                this.categoria = this.categorias.find(c => c.Nombre === queryParams.categoria);
+                                this.setSubcategorias(this.categoria);
+                                this.subcategoriaCount = 1;
+                            }
                           });
 
                     }
