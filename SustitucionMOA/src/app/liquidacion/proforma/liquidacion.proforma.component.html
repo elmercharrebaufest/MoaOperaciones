@@ -52,7 +52,7 @@
             </div>
         </div>
         <!--factura-->
-        <div id="Pago" class="Pago">
+        <div *ngIf="!faltanDatosCalidad" id="Pago" class="Pago">
             <div class="PagoColumn">
                 <table class="CalidadCCPP" width="100%" border="0" cellspacing="0" cellpadding="0">
                     <tr>
@@ -105,6 +105,12 @@
                         <td><span [ngClass]="(isNegative(data.saldoAPagar.total)) ? 'PagoNegative' : 'PagoPositive'">{{data.saldoAPagar.totalString}}</span></td>
                     </tr>
                 </table>
+            </div>
+        </div>
+        <div *ngIf="faltanDatosCalidad" class="formulario-input;">
+            <div class="alert alert-warning">
+                <i aria-hidden="true" class="fa fa-exclamation-triangle"></i>
+                Proforma no disponible. Faltan resultados de calidad.
             </div>
         </div>
         <!--Botones mobile-->
