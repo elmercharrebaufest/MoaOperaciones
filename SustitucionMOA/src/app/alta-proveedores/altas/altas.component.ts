@@ -17,9 +17,10 @@ import { RelacionConFuncionarios } from '../../common/models/relacionConFunciona
 import { formatDate } from '@angular/common';
 import * as XLSX from 'xlsx';
 import { FiltroFechaComponent } from '../../common/view-child/filtro-fecha/filtro-fecha.component';
-import { SelectItem } from 'primeng/api';
+import { ConfirmationService, SelectItem } from 'primeng/api';
 import { BehaviorSubject } from 'rxjs';
 import { DropdownOption } from '../../common/view-child/dropdown/dropdown.component';
+import { take } from 'rxjs/operators';
 declare var $: any;
 
 
@@ -49,7 +50,8 @@ export class AltasComponent extends BaseComponent implements OnInit {
     @ViewChild(FiltroFechaComponent)
     protected filtroFechaComponent: FiltroFechaComponent;
 
-    constructor(protected altaEmpresaService: AltaEmpresaService, protected service: EmpresaGranosService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securytiService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService) {
+    constructor(protected altaEmpresaService: AltaEmpresaService, protected service: EmpresaGranosService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securytiService: SecurityService, protected floatMsgService: FloatMsgService, 
+        protected modalService: ModalService, protected confirmationService: ConfirmationService) {
         super(navService, securytiService, floatMsgService, modalService);
         this.mensajeComponent = new MensajeComponent();
         this.spinnerComponent = new SpinnerComponent();
@@ -92,7 +94,8 @@ export class AltasComponent extends BaseComponent implements OnInit {
     contieneDocumentacionFisica: number = 0;
     puedeAltaInterna: boolean = this.isAuthorized('ALTA INTERNA GRANOS');
     puedeAltaInternaNoGranos: boolean = this.isAuthorized('ALTA INTERNA NO GRANOS');
-
+    esAdmin : boolean = this.isAuthorized('ELIMINAR USUARIO DE WEB');
+    
     ngOnInit(): void { 
         this.navService.setSeccionList([]);
         $('[data-toggle="tooltip"]').tooltip();
@@ -132,7 +135,8 @@ export class AltasComponent extends BaseComponent implements OnInit {
         try {
             this.unsubscribe();
             this.subscription = this.altaEmpresaService.getEmpresas(this.idTipoProveedor,
-                this.filtroFechaComponent.fecha_inicio, this.filtroFechaComponent.fecha_fin).subscribe(
+                this.filtroFechaComponent.fecha_inicio, this.filtroFechaComponent.fecha_fin)
+                .subscribe(
                     (result: any) => {
                         this.spinnerComponent.hideIt();
                         if (result.logout == true) {
@@ -988,5 +992,44 @@ export class AltasComponent extends BaseComponent implements OnInit {
             this.mensajeComponent.setErrorMsg(e);
 
         }
+    }
+
+    confirmarBorrarAlta(id: number, mail: string) {
+        this.confirmationService.confirm({
+            key: 'confirmarBorrado',
+            message: "Se va a proceder a realizar la baja del usuario: " +
+            mail + ", una vez realizada la operación, él mismo deberá volver a registrarse" +
+            " para operar en el sistema.",
+            accept: () => {
+                this.eliminarAltaUsuario(id);
+            },
+            reject: () => {
+            }
+        });
+    }
+
+    eliminarAltaUsuario(proveedorId: number){
+        this.spinnerModal.showIt();
+        this.altaEmpresaService.eliminarCuitNoHabilitado(proveedorId).pipe(take(1))
+        .subscribe(
+            (result) => {
+                this.spinnerComponent.hideIt();
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.mensajeComponent.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.mensajeComponent.setInfoMsg(result.info);
+                    }else{
+                        this.getEmpresa();
+                        this.mensajeComponent.setSuccessMsg(result.data);
+                    } 
+                }
+            ,
+            (error) => {
+                this.spinnerModal.hideIt();
+                this.mensajeError = error.message;
+            }
+        );
     }
 }

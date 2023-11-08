@@ -41,5 +41,14 @@ namespace SustitucionMOAModel.Models.WSMapMOA.Liquidacion
         public string fechaDocumento { get; set; }
         public string solapa { get; set; }
 
+        public bool linkConsulta
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(observaciones))
+                    return false;
+                return observaciones.Contains("Generar consulta vía web");
+            }
+        }
     }
 }

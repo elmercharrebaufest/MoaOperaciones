@@ -98,4 +98,11 @@ export class AltaEmpresaService extends BaseService {
         return this.http
             .get('/api/AltaEmpresaGranos/GrabarNuevoProveedorGranos', { params: params, headers: this.headers });
     }
+
+    public eliminarCuitNoHabilitado(proveedorId: number): Observable<any> {
+        let params: HttpParams = new HttpParams();
+        params = params.append("proveedorId", proveedorId.toString());
+        return this.http
+            .get("/api/usuario/eliminarCuitNoHabilitado", { params: params, headers: this.headers });
+    }
 }

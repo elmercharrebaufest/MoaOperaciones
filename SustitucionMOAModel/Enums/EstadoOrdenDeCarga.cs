@@ -46,9 +46,10 @@
                 case EstadoOrdenDeCarga.EntregaAnuladaPedidoPendienteAnulacion:
                     return "yellow";
                 case EstadoOrdenDeCarga.EntregaGenerada:
-                case EstadoOrdenDeCarga.Entregada:
 
                     return "green";
+                case EstadoOrdenDeCarga.Entregada:
+                    return "green_entregada";
                 case EstadoOrdenDeCarga.SinEnviarASAP:
                     return "bluesap";
                 default:

@@ -253,6 +253,10 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
             this.mensajeComponent.setInfoMsg("Ingrese un número de chasis válido.");
             return false;
         }
+        if (this.ordenDeCarga.ChasisAcoplado == this.ordenDeCarga.PatenteAcoplado) {
+            this.mensajeComponent.setInfoMsg("Las patentes de chásis y acoplado no pueden ser iguales.");
+            return false;
+        }
         if (!this.ordenDeCarga.RazonSocialTransporte || this.ordenDeCarga.RazonSocialTransporte.trim().length < 2) {
             this.mensajeComponent.setInfoMsg("Ingrese la razón social del transporte.");
             return false;
@@ -280,22 +284,24 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
                 this.mensajeComponent.setInfoMsg("Seleccione una planta.");
                 return false;
             }
-            const tieneMensajes = Object.keys(this.mensajesOrdenDeCarga).some(key => this.mensajesOrdenDeCarga[key])
-            if (tieneMensajes) {
-                this.mensajeComponent.setInfoMsg("Hay campos que no son válidos.");
-                return false;
-            }
-            const estaValidando = Object.keys(this.validando).some(key => this.validando[key]);
-            if (estaValidando) {
-                this.mensajeComponent.setInfoMsg("Hay campos que todavía se están validando");
-                return false;
-            }
         }
         else {
             if (!this.ordenDeCarga.DestinoMercaderia || this.ordenDeCarga.DestinoMercaderia.length < 5) {
                 this.mensajeComponent.setInfoMsg("Ingrese un destino de mercadería.");
                 return false;
             }
+        }
+
+        const estaValidando = Object.keys(this.validando).some(key => this.validando[key]);
+        if (estaValidando) {
+            this.mensajeComponent.setInfoMsg("Hay campos que todavía se están validando");
+            return false;
+        }
+
+        const hayMensajeExtraKey = Object.keys(this.mensajesOrdenDeCarga).find(key => this.mensajesOrdenDeCarga[key]);
+        if (hayMensajeExtraKey) {
+            this.mensajeComponent.setInfoMsg(this.mensajesOrdenDeCarga[hayMensajeExtraKey]);
+            return false;
         }
 
         if (!this.ordenDeCarga.Producto_Id) {
@@ -776,6 +782,15 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
         this.facturasDisponibles = [];
         this.ordenDeCarga.NumeroFactura = null;
         this.facturaSeleccionada = null;
+        this.mensajesOrdenDeCarga = {
+            ... this.mensajesOrdenDeCarga,
+            CUITIntermediarioFlete: null,
+            CUITCorredor: null,
+            CUITCliente: null,
+            CUITDestino: null,
+            CUITDestinatario: null,
+            NumeroFacturaSeleccionada: null,
+        }
         if (this.ordenDeCarga.ContratoSeleccionado) {
             this.Contrato = this.ordenDeCarga.ContratoSeleccionado.NumeroContrato;
             this.ordenDeCarga.ContratoIngresado = this.ordenDeCarga.ContratoSeleccionado.NumeroContrato;
@@ -1434,9 +1449,8 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
     }
     validarKilosDisponibles() {
         this.mensajesOrdenDeCarga.ContratoSeleccionado = null;
-        const esInterno = (this.esComercial || this.esAdmin);
 
-        if (this.ordenDeCargaId == 0 && !esInterno) {
+        if (this.ordenDeCargaId == 0) {
             this.floatMsgService.setMsgsEmpty();
             if (this.ordenDeCarga.ContratoSeleccionado) {
                 const { KgDisponibles } = this.ordenDeCarga.ContratoSeleccionado;
@@ -1454,9 +1468,8 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
     }
     validarKilosDisponiblesPedido() {
         this.mensajesOrdenDeCarga.NumeroFacturaSeleccionada = null;
-        const esInterno = (this.esComercial || this.esAdmin);
 
-        if (this.ordenDeCargaId == 0 && !esInterno) {
+        if (this.ordenDeCargaId == 0) {
             this.floatMsgService.setMsgsEmpty();
             if (this.facturaSeleccionada) {
                 const { KgDisponibles } = this.facturaSeleccionada;

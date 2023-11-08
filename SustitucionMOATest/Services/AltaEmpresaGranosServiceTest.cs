@@ -115,14 +115,14 @@ namespace SustitucionMOATest.Services
         [Test]
         public void GrabarProveedorAltaInternaGranosTest()
         {
+            var mailUsuario = "existente@mail.com";
             var infoDataAgro = new SustitucionMOAWS.DataAgroServices.ResultadoValidarProveedorComercial
             {
                 ProveedorCBU = "1234",
                 ProveedorClasificacion = "Productor",
-                ProveedorSISAEstadoCuit = "1"
+                ProveedorSISAEstadoCuit = "1",
+                ProveedorMails= new string[] {mailUsuario.ToUpper()}
             };
-
-            var mailUsuario = "existente@mail.com";
 
             int proveedorId = 1;
 
