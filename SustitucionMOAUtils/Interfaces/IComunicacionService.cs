@@ -8,7 +8,7 @@ namespace SustitucionMOAUtils.Interfaces
 {
     public interface IComunicacionService
     {
-        List<ComunicacionDto> ObtenerComunicacionesPorProveedor(string vendedor, string proveedor, string fechaInicio, string fechaFin);
+        List<ComunicacionDto> ObtenerComunicacionesPorProveedor(string vendedor, string proveedor, string fechaInicio, string fechaFin, int usuarioId, bool obtenerTodos);
         string   GrabarComunicacionComoLeida(ComunicacionListaIdDto comunicacionIds);
         string GrabarComunicacionComoNoLeida(ComunicacionListaIdDto comunicacionIds);
         String ProcesarCM05(string vendedor, string proveedor);

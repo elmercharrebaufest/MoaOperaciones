@@ -23,9 +23,12 @@ export class ComunicacionesComponent extends BaseComponent implements OnInit {
   communicationRead: boolean[] = [];
   arrayVencidas: any;
   arrayProximasAVencer: any;
+  contadorConsultas: number;
   quantityCommunication: number = 0;
   hasCommunications: boolean = false;
   showButtonMoreCommunications: boolean = false;
+  ids: any;
+  filter: string;
 
   startDate: String;
   endDate: String;
@@ -62,6 +65,9 @@ export class ComunicacionesComponent extends BaseComponent implements OnInit {
     this.quantityCommunication = 0;
     this.arrayVencidas = new Set();
     this.arrayProximasAVencer = new Set();
+    this.contadorConsultas = 0;
+    this.arrayVencidas = new Set();
+    this.arrayProximasAVencer = new Set();
   
     try {
       this.unsubscribe();
@@ -78,9 +84,9 @@ export class ComunicacionesComponent extends BaseComponent implements OnInit {
             } else {
               this.showButtonMoreCommunications = false;
             }
-         }
+          }
 
-         const agrupadoPorFecha = result.data.reduce((result, element) => {
+        const agrupadoPorFecha = result.data.reduce((result, element) => {
               const fechaCreacion = element.FechaCreacion;
 
               if (!result[fechaCreacion]) {
@@ -92,13 +98,15 @@ export class ComunicacionesComponent extends BaseComponent implements OnInit {
               return result; 
           }, {});
 
-          this.communication = agrupadoPorFecha;
+              this.communication = agrupadoPorFecha;
 
-          const filteredCommunication = {};
+          let filteredCommunication = {};
 
           for (const fecha in this.communication) {
             const items = this.communication[fecha];
             const filteredItems = [];
+            const seenCategories = {};
+            const categoryCounts = {};
           
             let tipo1Found = false;
             let tipo2Found = false;
@@ -110,32 +118,48 @@ export class ComunicacionesComponent extends BaseComponent implements OnInit {
               } else if (item.ComunicacionTipo === 2 && !tipo2Found) {
                 filteredItems.push(item);
                 tipo2Found = true;
-              } else if (item.ComunicacionTipo !== 1 && item.ComunicacionTipo !== 2) {
+              } else if (item.ComunicacionTipo !== 1 && item.ComunicacionTipo !== 2 && item.ComunicacionTipo !== 5) {
                 filteredItems.push(item);
               }
+            
+              // Filtrar por DescripcionCategoria
+              if (item.ComunicacionTipo === 5 && !seenCategories[item.DescripcionCategoria]) {
+                filteredItems.push(item);
+                categoryCounts[item.DescripcionCategoria] = 1;
+                seenCategories[item.DescripcionCategoria] = true;
+              }
+              else {
+                categoryCounts[item.DescripcionCategoria]++;
+              }
+            }
+
+            for (const item of filteredItems) {
+              item.Cantidad = categoryCounts[item.DescripcionCategoria];
             }
           
             if (filteredItems.length > 0) {
               filteredCommunication[fecha] = filteredItems;
             }
           }
-
+          
           this.communication = filteredCommunication;
 
           result.data.forEach((item: any) => {
             if (item.ComunicacionTipo === 1 && item.DescripcionWeb !== null) {
               this.arrayVencidas.add(item.DescripcionWeb);
             }
+
+            if (item.ComunicacionTipo === 2 && item.DescripcionWeb !== null) {
+              this.arrayProximasAVencer.add(item.DescripcionWeb);
+            }
+
+            if (item.ComunicacionTipo === 5) {
+              this.contadorConsultas++;
+            }
           });
           
           this.arrayVencidas = Array.from(this.arrayVencidas);
 
-          result.data.forEach((item: any) => {
-            if (item.ComunicacionTipo === 2 && item.DescripcionWeb !== null) {
-              this.arrayProximasAVencer.add(item.DescripcionWeb);
-            }
-          });
-          
           this.arrayProximasAVencer = Array.from(this.arrayProximasAVencer);
 
           const auxComunications = Object.keys(this.communication);
@@ -144,11 +168,11 @@ export class ComunicacionesComponent extends BaseComponent implements OnInit {
             let contar = true;
             this.communication[key].forEach((item, i) => {
               if (item.Leida === false) {
-                if (item.ComunicacionTipo === (1 || 2 || 6) && item.FechaCreacion === key && contar) {
+                if (item.ComunicacionTipo === (1 || 2 || 5 || 6) && item.FechaCreacion === key && contar) {
                   this.quantityCommunication++
                   contar = false;
                 }
-                if (item.ComunicacionTipo !== (1 || 2 || 6))
+                if (item.ComunicacionTipo !== (1 || 2 || 5 || 6))
                   this.quantityCommunication++
                 }
             })  
@@ -203,12 +227,16 @@ export class ComunicacionesComponent extends BaseComponent implements OnInit {
     return hour24Format
   }
 
-  openCommunication(notificaciones, fechacreacion, tipoComunicacion,i) {
+  openCommunication(notificaciones, fechacreacion, tipoComunicacion, i, idNotificacion) {
     const ids = [];
-
+    this.filter = "";
     notificaciones.forEach((notificacion) => {
-      if (notificacion.Leida == false && notificacion.ComunicacionTipo === tipoComunicacion)
+      if (notificacion.Leida == false && notificacion.ComunicacionTipo === tipoComunicacion) {
         ids.push(notificacion.Id);
+      }
+      if (notificacion.ComunicacionTipo === 5 && notificacion.Id === idNotificacion) {
+        this.filter = notificacion.DescripcionCategoria;
+      }
     }); 
 
     if (ids.length)
@@ -216,8 +244,7 @@ export class ComunicacionesComponent extends BaseComponent implements OnInit {
     setTimeout(() => {
       this.getComunicaciones(this.idProveedor, this.startDate, this.endDate);
     }, 500);
-  
-    this.redirect(notificaciones[i].ComunicacionTipo);
+    this.redirect(notificaciones[i].ComunicacionTipo, this.filter);
   }
 
   unreadCommunication(notificacion) {
@@ -230,7 +257,7 @@ export class ComunicacionesComponent extends BaseComponent implements OnInit {
     }
   }
 
-  redirect(communicationType: number) {
+  redirect(communicationType: number, filter: string) {
     switch (communicationType) {
       case 1:
         this.router.navigate(['/consulta/crear-consulta'], { queryParams: { filter : 'ExencionesVencidas' }});
@@ -246,6 +273,10 @@ export class ComunicacionesComponent extends BaseComponent implements OnInit {
 
       case 4:
         this.router.navigate(['/consulta/crear-consulta'], { queryParams: { filter: 'Actualizacion-Impositiva' }});
+        break;
+      
+      case 5:
+        this.router.navigate(['/consulta/crear-consulta'], { queryParams: { filter: 'Solicitud-Informacion', categoria: filter }});
         break;
 
       case 6:

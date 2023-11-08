@@ -10,5 +10,8 @@
     [FechaRecomunicacion] DATETIME NULL, 
     [Comprobante] NVARCHAR(20) NULL, 
     [FechaVencimiento] DATETIME NULL, 
-    [DescripcionWeb] NVARCHAR(50) NULL 
+    [DescripcionWeb] NVARCHAR(50) NULL, 
+    [ConsultaId] INT NULL, 
+    [ConsultaCategoriaId] INT NULL, 
+    [UsuarioId] INT NULL 
 )

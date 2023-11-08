@@ -20,12 +20,19 @@ namespace SustitucionMOA.Controllers
     {
         readonly IComunicacionService comunicacionService;
         //private readonly ILiquidacionService liquidacionService;
+        private readonly IUsuarioService usuarioService;
 
-        public ComunicacionController(IComunicacionService comunicacionService)
+        public ComunicacionController(IComunicacionService comunicacionService, IUsuarioService usuarioService)
         {
             this.comunicacionService = comunicacionService;
+            this.usuarioService = usuarioService;
         }
 
+        private UsuarioDto ObtenerUsuarioActual()
+        {
+            string userMail = SessionPersister.getUsername();
+            return usuarioService.GetUsuario(userMail);
+        }
 
         public ActionResult GetAllByProveedor(string vendedor, string fechaInicio, string fechaFin)
         {
@@ -35,7 +42,11 @@ namespace SustitucionMOA.Controllers
                 {
                     vendedor = SessionPersister.Proveedor;
                 }
-                return JsonCustom(new { data = comunicacionService.ObtenerComunicacionesPorProveedor(vendedor, SessionPersister.Proveedor, fechaInicio, fechaFin) });
+
+                UsuarioDto usuarioActual = ObtenerUsuarioActual();
+                bool obtenerTodos = usuarioActual.Permisos.Contains(Permiso.CONSULTA_AMB);
+
+                return JsonCustom(new { data = comunicacionService.ObtenerComunicacionesPorProveedor(vendedor, SessionPersister.Proveedor, fechaInicio, fechaFin, usuarioActual.Id, obtenerTodos) });
             }
             catch (InfoCustomException e)
             {
@@ -58,8 +69,6 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                //var _a = JsonConvert.DeserializeObject<List<int>>(comunicacionIds);
-                //var _a = new List<int>();
                 return JsonCustom(new { data = comunicacionService.GrabarComunicacionComoLeida(comunicacionIds) });
             }
             catch (InfoCustomException e)

@@ -21,5 +21,12 @@ namespace SustitucionMOAModel.Dto
         public string Comprobante { get; set; }
         public DateTime FechaVencimiento { get; set; }
         public string DescripcionWeb { get; set; }
+        public int? ConsultaId { get; set; }
+        public int? ConsultaCategoriaId { get; set; }
+        public int? UsuarioId { get; set; }
+
+        public string DescripcionCategoria { get; set; }
+
+        //public virtual Categoria categoria { get; set; }
     }
 }
