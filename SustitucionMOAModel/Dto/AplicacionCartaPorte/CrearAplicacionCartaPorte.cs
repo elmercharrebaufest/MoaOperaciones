@@ -16,7 +16,7 @@ namespace SustitucionMOAModel.Dto.AplicacionCartaPorte
 
         public bool ValidarKilogramos()
         {
-            return Kilogramos <= CartaPorteSeleccionada.KgPendientes;
+            return Kilogramos <= CartaPorteSeleccionada.KgPendientes && Kilogramos > 0;
         }
         public bool ValidarContrato(List<ContratoParaAplicacionCartaPorte> contratosValidos)
         {

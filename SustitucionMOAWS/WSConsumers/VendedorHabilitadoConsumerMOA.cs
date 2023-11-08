@@ -15,9 +15,10 @@ namespace SustitucionMOAWS.WSConsumers
 {
     public class VendedorHabilitadoConsumerMOA : IVendedorHabilitadoConsumerMOA
     {
-        readonly SI_MPMF_MOAOP_VENDED_HABILITClient service = new SI_MPMF_MOAOP_VENDED_HABILITClient();
+        readonly SI_MPMF_MOAOP_VENDED_HABILITClient service;
         public VendedorHabilitadoConsumerMOA()
         {
+            service = new SI_MPMF_MOAOP_VENDED_HABILITClient();
             service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
             service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
         }

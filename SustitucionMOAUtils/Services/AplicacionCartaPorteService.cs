@@ -15,6 +15,7 @@ using SustitucionMOAUtils.Logger;
 using SustitucionMOAWS.Interfaces;
 using SustitucionMOAWS.AplicacionCartaPortePendienteAplicarWebServiceMOA;
 using AppCCPPRequests = SustitucionMOAWS.WSRequests.AplicacionCartaPorte;
+using SustitucionMOAUtils.Helpers;
 
 namespace SustitucionMOAUtils.Services
 {
@@ -65,8 +66,8 @@ namespace SustitucionMOAUtils.Services
         }
         public ComboAplicacionesContratosCcppResponse ObtenerCombosDeContratoCCPP(string mailUsuario, string codigoProveedor) {
             var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
-            var proveedorAsignado = usuario.ObtenerProveedorAsignado();
-            Log.Info($"el mail:{mailUsuario} el codigo proveedor: {codigoProveedor} codigo proveedor asignado: {proveedorAsignado.CodigoProveedor}");
+            var proveedorAsignado = usuario.ObtenerProveedorAsignado() ?? usuario.ObtenerProveedor();
+            Log.Info($"Busqueda combo app ccpp: mail={mailUsuario} el codigo proveedor= {codigoProveedor} codigo proveedor asignado= {proveedorAsignado.CodigoProveedor}");
 
             var codigoProveedorSeleccionado = ObtenerCodigoProveedorSeleccionado(usuario, proveedorAsignado, codigoProveedor);            
             var codigoCorredor = usuario.EsCorredor() ? proveedorAsignado.CodigoProveedor : null;
@@ -84,6 +85,7 @@ namespace SustitucionMOAUtils.Services
         }
         public void GuardarAplicacion(CrearAplicacionCartaPorte aplicacionACrear, string mailUsuario)
         {
+            Log.Info($"Aplicaciones CCPP: GuardarAplicacion datos:{aplicacionACrear.ToJson()}");
             ValidarSchema(aplicacionACrear, "AplicacionCartaPorte", "GuardarAplicacion");
             if (!aplicacionACrear.ValidarKilogramos())
                 throw new InfoCustomException("Revisar valor de KG.");

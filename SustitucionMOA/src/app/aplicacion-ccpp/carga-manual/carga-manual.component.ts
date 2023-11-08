@@ -17,6 +17,7 @@ import { filter } from "rxjs/operators";
 
 export const MSG_ALERTA_CREADO = { severity: 'success', summary: 'Aplicación CCPP', detail: 'La aplicación fue guardada exitosamente.', life: 5000 };
 export const MSG_ALERTA_NO_CREADO = (msg: string) => ({ severity: 'error', summary: 'Aplicación CCPP', detail: msg, life: 10000 });
+export const MSG_ALERTA_NO_KG_DISPONIBLES = { severity: 'warn', summary: 'Aplicación CCPP', detail: "La carta de porte seleccionada no cuenta con kg disponibles.", life: 15000 };
 
 @Component({
     styleUrls: ['carga-manual.component.css'],
@@ -109,6 +110,9 @@ export class CargaManual extends AplicacionCcppBaseComponent implements OnInit {
                 )
                 .subscribe({
                     next: (cartaSeleccionada) => {
+                        if (!cartaSeleccionada.KgPendientes) {
+                            this.msgService.add(MSG_ALERTA_NO_KG_DISPONIBLES)
+                        }
                         kilogramosControl.setValidators([Validators.required, Validators.min(1), Validators.max(cartaSeleccionada.KgPendientes)]);
                         kilogramosControl.setValue(cartaSeleccionada.KgPendientes)
                         kilogramosControl.updateValueAndValidity({ onlySelf: true })
