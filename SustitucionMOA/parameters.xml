@@ -222,6 +222,11 @@
 							match="/configuration/appSettings/add[@key='EmailAltaIntermediarioFleteCC']
                            /@value" />
 	</parameter>
+	<parameter name="EmailKgsMenos15TNFasTo Config">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+							match="/configuration/appSettings/add[@key='EmailKgsMenos15TNFasTo']
+                           /@value" />
+	</parameter>
 
 
 	<parameter name="PasswordSapEnc Config">

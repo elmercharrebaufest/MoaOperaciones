@@ -51,6 +51,7 @@
 	<setParameter name="EmailAltaIntermediarioFleteTo Config" value="sebastian.serighetti@molinosagro.com.ar;marian.rabellato@molinosagro.com.ar" />
 	<setParameter name="EmailAltaIntermediarioFleteCC Config" value="moaoperaciones@baufest.com" />
 	<setParameter name="EmailAsuntoPrefijo Config" value="[PRE] " />
+	<setParameter name="EmailKgsMenos15TNFasTo Config" value="sebastian.serighetti@molinosagro.com.ar; noelia.caceres@molinosagro.com.ar; luciano.calaon@molinosagro.com.ar; moaoperaciones@molinosagro.com.ar"/>
 
 	<setParameter name="ComputerVisionApiKey Config" value="4ebc562f2be5457a96329ae69d84f192" />
 	<setParameter name="ComputerVisionEndpoint Config" value="https://moaopsocr.cognitiveservices.azure.com/" />
