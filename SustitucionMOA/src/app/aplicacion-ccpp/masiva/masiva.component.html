@@ -1,0 +1,35 @@
+<div class="content-wraper">
+    <!-- CONTENT-->
+    <section class="container-fluid clearfix">
+        <!--Title-->
+        <div class="row titleSection d-flex justify-between">
+            <div class="col-xs-12 col-sm-10"><strong>Aplicación de CCPP</strong> </div>
+            <div class="col-xs-12 col-sm-8 col-md-8" style="display: flex; justify-content: flex-end;">
+                <a (click)="descargarTemplateCsv()" style="text-decoration:none!important">
+                    <div class="btnSection animate align-right">
+                        Template <img src="Content/images/icons/descargar.svg" alt="exportar" />
+                    </div>
+                </a>
+                <a (click)="descargarTemplateCsv()" style="text-decoration:none!important">
+                    <div class="btnSection animate align-right">
+                        Tutorial <i class="fa fa-file-word-o" aria-hidden="true"></i>
+                    </div>
+                </a>
+            </div>
+        </div>
+        <!--End Title-->
+
+        <div class="row myRow cargaDeDatosFields cargaDeDatosForm">
+            <div class="clearfix myTables">
+                <mensaje></mensaje>
+                <spinner></spinner>
+                <div class="col-xs-12">
+                    Archivo: *
+                    <div class="styled-select">
+                        <input type="file" accept=".csv" (change)="cargarArchivo($event)" placeholder="Cargar archivo">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>

@@ -15,6 +15,7 @@ import { MessageService } from 'primeng/api';
 import { AplicacionCcppService } from './aplicacion-ccpp.service';
 import { AplicacionCcppRoutingModule } from './aplicacion-ccpp-routing.module';
 import { ListadoComponent } from './listado/listado.component';
+import { MasivaComponent } from './masiva/masiva.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CargaManual } from './carga-manual/carga-manual.component';
 import { TooltipModule } from 'primeng/tooltip';
@@ -36,7 +37,7 @@ import { TooltipModule } from 'primeng/tooltip';
     TooltipModule,
     ToastModule,
   ],
-  declarations: [ListadoComponent, CargaManual],
+  declarations: [ListadoComponent, CargaManual, MasivaComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   providers: [AplicacionCcppService, MessageService]
 })
