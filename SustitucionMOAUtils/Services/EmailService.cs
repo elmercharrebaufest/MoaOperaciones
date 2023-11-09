@@ -3,6 +3,7 @@ using SustitucionMOAUtils.Interfaces;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Mail;
+using System.Threading.Tasks;
 
 namespace SustitucionMOAUtils.Services
 {
@@ -25,12 +26,12 @@ namespace SustitucionMOAUtils.Services
         // Este método es para poder mockear el envío de mail al testear
         public void EnviarMail(EmailSenderData emailSenderData)
         {
-            EmailSender.EnviarMail(emailSenderData);
+            Task.Run(() => EmailSender.EnviarMailAsync(emailSenderData)); 
         }
 
         public void EnviarMail(List<string> enviarA, string asunto, string cuerpo, List<string> copia = null, AlternateView vistaAlternativa = null, byte[] archivo = null, string nombreArchivo = null, string enviarDesde = null, List<string> copiaOculta = null, Dictionary<string, byte[]> archivos = null)
         {
-            EmailSender.EnviarMail(enviarA,  asunto,  cuerpo,  copia ,  vistaAlternativa ,  archivo ,  nombreArchivo ,  enviarDesde,  copiaOculta ,archivos);
+            Task.Run(() => EmailSender.EnviarMailAsync(enviarA,  asunto,  cuerpo,  copia ,  vistaAlternativa ,  archivo ,  nombreArchivo ,  enviarDesde,  copiaOculta ,archivos));
         }
     }
 }
