@@ -2,7 +2,7 @@ import { HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { BaseService } from '../common/services/BaseService';
-import { AplicacionCCPP, AplicacionCCPPFiltro } from './aplicacion-ccpp.model';
+import { AplicacionCCPP, AplicacionCCPPFiltro, AplicacionCCPPForm, ComboAppContratosCCPPResponse, } from './aplicacion-ccpp.model';
 import { ApiResponse } from '../common/models/response';
 
 export interface ListadoRequest {
@@ -17,12 +17,28 @@ export class AplicacionCcppService extends BaseService {
       .append('fechaInicio', fechaInicio)
       .append('fechaFin', fechaFin);
 
-    return this.http.get<ApiResponse<AplicacionCCPP[], AplicacionCCPPFiltro>>(`${this.baseUrl}/GetListado`, { params });
+    return this.http
+      .get<ApiResponse<AplicacionCCPP[], AplicacionCCPPFiltro>>(`${this.baseUrl}/GetListado`, { params });
   }
   eliminarAplicacion(aplicacionId: number): Observable<ApiResponse<boolean>> {
     const params = new HttpParams()
       .append('aplicacionId', aplicacionId.toString())
 
     return this.http.get<ApiResponse<boolean>>(`${this.baseUrl}/EliminarAplicacion`, { params });
+  }
+  obtenerComboContratosCcpp(): Observable<ApiResponse<ComboAppContratosCCPPResponse>> {
+    return this.http
+      .get<ApiResponse<ComboAppContratosCCPPResponse>>(`${this.baseUrl}/ObtenerComboContratosCcpp`);
+  }
+
+  guardarAplicacion(aplicacion: AplicacionCCPPForm): Observable<ApiResponse<boolean>> {
+    let payload = new FormData();
+    payload.append(
+      "aplicacionCCPPJSON",
+      JSON.stringify(aplicacion)
+    );
+    return this.http
+      .post<ApiResponse<boolean>>
+      (`${this.baseUrl}/GuardarAplicacion`, payload);
   }
 }

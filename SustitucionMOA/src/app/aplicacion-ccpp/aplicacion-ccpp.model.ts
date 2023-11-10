@@ -6,14 +6,19 @@ export enum EstadoAplicacionCCPP {
 }
 export type ColorEstado = 'red' | 'green' | 'orange'
 
-export interface AplicacionCCPP {
+export interface AplicacionCCPPForm {
     Id: number;
+    Contrato: string;
+    CartaPorteSeleccionada: CartaPorteParaAplicacionCartaPorte;
+    ContratoSeleccionado: ContratoParaAplicacionCartaPorte;
+    Kilogramos: number;
+    CartaPorte: string;
+}
+export interface AplicacionCCPP extends AplicacionCCPPForm {
     Proveedor_Id?: number;
     Proveedor?: any;
-    Contrato: string;
     CartaPorte: string;
     Estado: EstadoAplicacionCCPP
-    Kilogramos: number;
     Usuario_Id?: number;
     Usuario?: any;
     Error?: string;
@@ -31,3 +36,18 @@ export interface AplicacionCCPPFiltro {
     FiltroClientes: Array<DropdownOption>;
 }
 export const SeccionAplicacionCCPP = "aplicaciones-ccpp";
+
+export type ContratoParaAplicacionCartaPorte = {
+    NumeroContrato: string;
+    CodigoProveedor: string;
+    Material: string;
+}
+export type CartaPorteParaAplicacionCartaPorte = {
+    NumeroCartaPorte: string;
+    KgPendientes: number;
+    Material: string;
+}
+export type ComboAppContratosCCPPResponse = {
+    Contratos: ContratoParaAplicacionCartaPorte[]
+    CartasPorte: CartaPorteParaAplicacionCartaPorte[]
+}

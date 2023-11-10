@@ -1,7 +1,7 @@
 export interface ApiResponse<T, U = {}> {
-  data: T,
+  data?: T,
   info?: string;
   error?: string;
-  filtros: U;
+  filtros?: U;
   logout?: boolean;
 }
