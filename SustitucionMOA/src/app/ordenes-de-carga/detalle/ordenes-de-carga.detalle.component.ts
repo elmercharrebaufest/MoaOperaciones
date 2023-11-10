@@ -135,7 +135,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
             }
         });
     }
-    
+
     confirmarRSA(Id) {
         this.confirmationService.confirm({
             key: 'confirmarRSA',
@@ -285,7 +285,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
             }
 
             if (this.ordenDeCarga.ContratoSeleccionado) {
-                if (this.ordenDeCarga.ContratoSeleccionado.KgDisponibles < KILOS_DISPONIBLES_APROBADO &&
+                if (this.ordenDeCarga.ContratoSeleccionado.KgDisponibles < KILOS_DISPONIBLES_APROBADO ||
                     !this.ordenDeCarga.ContratoSAP) {
                     this.mostrarBotonContratos = true;
                 }
@@ -939,7 +939,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
             sessionStorage.removeItem(VOLVER_A_DETALLE_REPORTE)
     }
 
-    verificarOrdenActivaScato(ordenId: string){
+    verificarOrdenActivaScato(ordenId: string) {
         this.mensajeValidacionScato = undefined;
         this.spinnerComponent.showIt();
         this.unsubscribe();
@@ -971,7 +971,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
             this.mensajeValidacionScato = "No se pudo validar si la orden esta activa en Scato."
         }
     }
-    
+
     verificarCuitsTerceros() {
         this.mensajeComponent.setMsgsEmpty();
         this.spinnerComponent.showIt();
@@ -1007,7 +1007,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
     nuevaConsultaInterna() {
         this.sendDataService.setData({
             orden: this.ordenDeCarga,
-            codSubcategoria: "FAS", 
+            codSubcategoria: "FAS",
         });
         this.router.navigate(['/consulta/crear-consulta-interna'], {
         });
