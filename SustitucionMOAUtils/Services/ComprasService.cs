@@ -2619,7 +2619,7 @@ namespace SustitucionMOAUtils.Services
 
                 var solp = obtenerSolpConsumerMOA.RequestSolpWithNroAndDates(filtros);
 
-
+                var noSolicitoVerPrecios = ValidarVisualizarPrecio(usuario.Id, PeticionOferta_Id);
 
                 foreach (var item in todasLasOfertas.Usuarios)
                 {
@@ -2686,29 +2686,22 @@ namespace SustitucionMOAUtils.Services
                         mensaje = "SOLP Sin liberar";
                         verAdjudicar = false;
                     }
-                    var fecha = (item.PlazoDeOfertaCierre == null && item.FechaCircular == null) ? item.PlazoDeOfertaOriginal :
+                    var fechaFinPlazo = (item.PlazoDeOfertaCierre == null && item.FechaCircular == null) ? item.PlazoDeOfertaOriginal :
                     item.PlazoDeOfertaCierre == null ? item.PlazoDeOfertaCircular.Value :
                     item.FechaCircular == null ? item.PlazoDeOfertaCierre.Value :
                     item.PlazoDeOfertaCierre.Value > item.FechaCircular.Value ? item.PlazoDeOfertaCierre.Value : item.PlazoDeOfertaCircular.Value;
 
-                    var visualizacion = ValidarVisualizarPrecio(usuario.Id, PeticionOferta_Id);
-                    todasLasOfertas.VerBotonVerPrecio = visualizacion &&
-                  esAdmin && (!todasLasOfertas.RevisionFinalizada || fecha >= hoy);
 
-
-                    if (item.Cotizacion != null && fecha >= hoy && todasLasOfertas.Urgencia != true)
+                    if (item.Cotizacion != null && fechaFinPlazo >= hoy && todasLasOfertas.Urgencia != true)
                     {
                         mensaje = "Plazo de oferta sin finalizar";
                         verAdjudicar = false;
                         item.VerImportes = false;
                     }
 
-                    if (esAdmin)
+                    if (esAdmin && !noSolicitoVerPrecios)
                     {
-                        if (!todasLasOfertas.VerBotonVerPrecio && todasLasOfertas.RevisionFinalizada)
-                        {
-                            item.VerImportes = true;
-                        }
+                        item.VerImportes = true;
                     }
 
                     if (!item.EstaHabilitado)
@@ -2736,6 +2729,7 @@ namespace SustitucionMOAUtils.Services
                     item.VerAdjudicar = verAdjudicar;
                 }
 
+                todasLasOfertas.VerBotonVerPrecio = noSolicitoVerPrecios && esAdmin && todasLasOfertas.Usuarios.Any(a => a.VerImportes == false);
 
 
                 foreach (var posicion in todasLasOfertas.PeticionDeOfertaPosicion)
@@ -2774,6 +2768,7 @@ namespace SustitucionMOAUtils.Services
                         }
                     }
                 }
+
                 return todasLasOfertas;
             }
             catch (Exception e)
