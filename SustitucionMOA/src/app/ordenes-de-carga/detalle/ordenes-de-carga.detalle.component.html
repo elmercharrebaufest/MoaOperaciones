@@ -22,7 +22,7 @@
                     <button type="button" pButton icon="fa fa-refresh" (click)="obtenerOrdenDeCarga()"
                         style="background-color: #075088; float: right; top: 5%;"></button> &nbsp;
                 </div>
-                <div style="float: left; padding-left: 2px;">
+                <div *ngIf="esInterno" style="float: left; padding-left: 2px;">
                     <button type="button" pButton icon="fa fa-comments" (click)="nuevaConsultaInterna()"
                         style="background-color: #075088; float: right; top: 5%;" pTooltip="Nueva consulta interna"></button> &nbsp;
                 </div>

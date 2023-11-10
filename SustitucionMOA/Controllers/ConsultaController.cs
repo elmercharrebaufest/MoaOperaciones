@@ -444,7 +444,7 @@ namespace SustitucionMOA.Controllers
                 DateTime fechaInicio = fechaFin.AddMonths(-6);
                 return JsonCustom(new
                 {
-                    categorias = consultaService.ObtenerCategorias(false, usuarioActual),
+                    categorias = consultaService.ObtenerCategoriasInterno(false, usuarioActual),
                     subcategorias = consultaService.ObtenerSubCategorias(usuarioActual),
                     ordenes = ordenDeCargaService.Listar(usuarioActual.Mail, fechaInicio.ToString("dd/MM/yyyy"), fechaFin.ToString("dd/MM/yyyy")),
                     proveedorId = SessionPersister.ProveedorId,

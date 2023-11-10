@@ -695,7 +695,6 @@ namespace SustitucionMOAUtils.Services
         {
             try
             {
-                var esInterno = usuario.Permisos.FirstOrDefault(p => p == "VER TODAS ORDENES DE CARGA") != null ? true : false;
                 List<string> exclude = new List<string>() { };
                 List<Categoria> categorias = new List<Categoria>() { };
                 
@@ -712,14 +711,45 @@ namespace SustitucionMOAUtils.Services
                 {
                     var categoriasNuevosUsuarios = new List<string>() { "OTRO", "FWEB" };
                     categorias = repositorio.Listar<Categoria>(c => categoriasNuevosUsuarios.Contains(c.Code)).OrderBy(c => c.Nombre).ToList();
-                }else if (esInterno)
-                {
-                    categorias = repositorio.Listar<Categoria>(c => c.Code == "ORD");
                 }
                 else
                 {
                     categorias = repositorio.Listar<Categoria>(c => !exclude.Contains(c.Code)).OrderBy(c => c.Nombre).ToList();
                 }
+                return categorias.Select(x => new CategoriaDto(x)).ToList();
+            }
+            catch (ValidationCustomException e)
+            {
+                throw e;
+            }
+            catch (InfoCustomException e)
+            {
+                throw e;
+            }
+            catch (Exception e)
+            {
+                throw new WSCustomException(ErrorMsg.ErrorWS, e);
+            }
+        }
+
+        public List<CategoriaDto> ObtenerCategoriasInterno(Boolean? excluir, UsuarioDto usuario)
+        {
+            try
+            {
+                List<string> categoriasContacto = new List<string>
+                {
+                    "BOL", "DATMAE", "REI", "ACT", "PAR", "FIN", "CAL", "COM",
+                    "COMP", "APP", "PES", "PAG", "FWEB", "MATBA",
+                    "PROVGC", "FLECONSULTA", "OTRO", "PARDIR", "PARCOR",
+                    "FINDIR", "FINCOR", "FLE", "CRDECPE", "ORD"
+                };
+  
+                var user = repositorio.Obtener<Usuario>(u => u.Id == usuario.Id);
+                var rolesUsuario = user.Roles.Where(r => categoriasContacto.Contains(r.Codigo))
+                    .Select(r => r.Codigo).ToList();
+
+                var categorias = repositorio.Listar<Categoria>(c => rolesUsuario.Contains(c.Code));
+
                 return categorias.Select(x => new CategoriaDto(x)).ToList();
             }
             catch (ValidationCustomException e)
@@ -761,17 +791,8 @@ namespace SustitucionMOAUtils.Services
         {
             try
             {
-                var esInterno = usuario.Permisos.Contains("VER TODAS ORDENES DE CARGA");
                 var subcategorias = repositorio.Listar<SubCategoria>().OrderBy(c => c.Nombre);
-                if (esInterno)
-                {
-                    var categoriaOrdenes = repositorio.Obtener<Categoria>(c => c.Code == "ORD");
-                    return subcategorias.Where(c => c.Categoria_Id == categoriaOrdenes.Id).Select(x => new SubCategoriaDto(x)).ToList();
-                }
-                else
-                {
-                    return subcategorias.Select(x => new SubCategoriaDto(x)).ToList();
-                }
+                return subcategorias.Select(x => new SubCategoriaDto(x)).ToList();
             }
             catch (ValidationCustomException e)
             {
