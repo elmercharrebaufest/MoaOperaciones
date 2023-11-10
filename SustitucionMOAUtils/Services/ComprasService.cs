@@ -2623,8 +2623,12 @@ namespace SustitucionMOAUtils.Services
 
                 foreach (var item in todasLasOfertas.Usuarios)
                 {
+                    var respetaMateriales = true;
                     if (item.Cotizacion != null && item.Cotizacion.CotizacionPosiciones != null)
                     {
+                        if (item.Cotizacion.RespetaMateriales == false)
+                            respetaMateriales = false;
+
                         foreach (var item2 in item.Cotizacion.CotizacionPosiciones)
                         {
                             decimal cambio = 0;
@@ -2672,6 +2676,11 @@ namespace SustitucionMOAUtils.Services
                         mensaje = "Oferta sin finalizar";
                         verAdjudicar = false;
                     }
+                    if (item.Cotizacion != null && item.PropuestaTecnicaAprobada == false)
+                    {
+                        mensaje = "Propuesta técnica Rechazada";
+                        verAdjudicar = false;
+                    }
                     if (!todasLasOfertas.EstaLiberado)
                     {
                         mensaje = "SOLP Sin liberar";
@@ -2707,10 +2716,21 @@ namespace SustitucionMOAUtils.Services
                         mensaje = "Proveedor desahabilitado";
                         verAdjudicar = false;
                     }
-                    if (!todasLasOfertas.RevisionFinalizada)
+                    if (todasLasOfertas.TipoPosicionCodigo == "MATERIALES")
                     {
-                        mensaje = "Revisión técnica sin finalizar.";
-                        verAdjudicar = false;
+                        if (!respetaMateriales && !todasLasOfertas.RevisionFinalizada)
+                        {
+                            mensaje = "Revisión técnica sin finalizar.";
+                            verAdjudicar = false;
+                        }
+                    }
+                    else
+                    {
+                        if (!todasLasOfertas.RevisionFinalizada)
+                        {
+                            mensaje = "Revisión técnica sin finalizar.";
+                            verAdjudicar = false;
+                        }
                     }
                     item.MensajeAdjudicar = mensaje;
                     item.VerAdjudicar = verAdjudicar;
