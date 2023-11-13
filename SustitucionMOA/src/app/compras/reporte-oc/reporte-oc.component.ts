@@ -137,6 +137,7 @@ export class ReporteOcComponent extends ListBaseComponent {
                     }
                     else {
                         this.ordenDeCompra = result.data;
+                        this.ordenDeCompra.usuarioExterno = true;
                         this.blockUI.stop();
                     }
                 },
