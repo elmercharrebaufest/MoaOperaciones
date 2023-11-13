@@ -299,40 +299,17 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
                         { plazo: cotizacion.PrimerPlazoDeOferta, cantidad: Number(cotizacion.PrimeraCantidad) },
                         { plazo: cotizacion.SegundoPlazoDeOferta, cantidad: Number(cotizacion.SegundaCantidad) },
                         { plazo: cotizacion.TercerPlazoDeOferta, cantidad: Number(cotizacion.TerceraCantidad) },
-                      ];
-                  
-                      let etapaPlazo = 0;
-                      let etapaCantidad = 0;
-                      let cantidadAcumulada = 0;
-                  
-                      for (let i = 0; i < plazosYOfertas.length; i++) {
-                        const plazoOferta = plazosYOfertas[i];
-                  
-                        if (plazoOferta.plazo > 0 && etapaPlazo === i) {
-                        
-                            if (plazoOferta.cantidad > 0) {
-                              if (cantidadAcumulada + plazoOferta.cantidad != cotizacion.Cantidad) {
-                                mensaje = "Pos. " + cotizacion.Posicion + ": La suma de las cantidades deben ser igual a la cantidad cotizada: "
-                                  + self.formatearNumero(cotizacion.Cantidad);
-                                breakFor = true;
-                                return mensaje;
-                              }
-                              cantidadAcumulada += plazoOferta.cantidad;
-                              etapaCantidad++;
-                            } else {
-                              mensaje = `Pos. ${ cotizacion.Posicion}: Debe completar la cantidad en el ${i === 0 ? 'primer' : i === 1 ? 'segundo' : 'tercer'} plazo.`;
-                              breakFor = true;
-                              return mensaje;
-                            }
-                            etapaPlazo++;
-                          
-                        } else if(cantidadAcumulada != cotizacion.Cantidad){
-                            mensaje = `Pos. ${ cotizacion.Posicion}: Debe completar el plazo de entrega antes de continuar.`;
-                            breakFor = true;
-                            return mensaje;
-                        }
-                  
-                      }
+                    ];
+
+                    const sumaCantidades = plazosYOfertas.reduce((suma, item) => suma + (item.cantidad || 0), 0);
+                    const sumaCorrecta = sumaCantidades === cotizacion.Cantidad;
+
+                    if (!sumaCorrecta) {
+                        mensaje = "Pos. " + cotizacion.Posicion + ": La suma de las cantidades debe ser igual a la cantidad cotizada: "
+                            + self.formatearNumero(cotizacion.Cantidad);
+                        breakFor = true;
+                        return mensaje;
+                    }
                 }
             });
         } else {
@@ -473,5 +450,5 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
 
     formatearNumero(numero: number) {
         return numero.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
-      }
+    }
 }

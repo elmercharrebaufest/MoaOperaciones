@@ -62,9 +62,9 @@ export class PlazoDeOfertaComponent implements OnInit, OnChanges {
   }
 
   cancelarPlazo() {
-    this.limpiarPrimeraPosicion();
-    this.limpiarSegundaPosicion();
-    this.limpiarTerceraPosicion();
+    //this.limpiarPrimeraPosicion();
+    //this.limpiarSegundaPosicion();
+    //this.limpiarTerceraPosicion();
     this.onCerrarPlazo();
   }
 
@@ -140,7 +140,7 @@ export class PlazoDeOfertaComponent implements OnInit, OnChanges {
     }
 
     if (cantidadTotalIngresada != this.cantidad) {
-      this.error = "La suma de las cantidades deben ser igual a la cantidad " + (this.esCantidadCotizacion ? "solicitada: " : "cotizada: ")
+      this.error = "La suma de las cantidades debe ser igual a la cantidad " + (this.esCantidadCotizacion ? "solicitada: " : "cotizada: ")
         + this.formatearNumero(this.cantidad);
       this.visualizarAlert = true;
       return noGuardar = true;
@@ -180,7 +180,7 @@ export class PlazoDeOfertaComponent implements OnInit, OnChanges {
       
           if (plazoOferta.cantidad > 0) {
             if (cantidadAcumulada + plazoOferta.cantidad > this.cantidad) {
-              this.error = "La suma de las cantidades deben ser igual a la cantidad " + (this.esCantidadCotizacion ? "solicitada: " : "cotizada: ")
+              this.error = "La suma de las cantidades debe ser igual a la cantidad " + (this.esCantidadCotizacion ? "solicitada: " : "cotizada: ")
                 + this.formatearNumero(this.cantidad);
             }
             cantidadAcumulada += plazoOferta.cantidad;
