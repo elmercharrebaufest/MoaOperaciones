@@ -400,6 +400,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
+    <Compile Include="Service References\OrdenCargaEstadoEntregadaV3SAP\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
     <Compile Include="Service References\OrdenCargaVisualizarCliente\Reference.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -1010,6 +1015,7 @@
     <None Include="Service References\ObtenerServiciosSolpWebServiceMOA\SI_MMRFC_OBTENER_SERVICIOS.wsdl" />
     <None Include="Service References\ObtenerSolpWebServiceMOA\SI_MMRFC_OBTENER_SOLPED.wsdl" />
     <None Include="Service References\OrdenCargaEstadoEntregadaV2SAP\SI_MPMF_MOAOP_ORD_CARGA_ENT_V2.wsdl" />
+    <None Include="Service References\OrdenCargaEstadoEntregadaV3SAP\SI_MPMF_MOAOP_ORD_CARGA_ENT_V3.wsdl" />
     <None Include="Service References\OrdenCargaVisualizarCliente\SI_MPMF_MOAOP_VISUALIZAR_ZFAS.wsdl" />
     <None Include="Service References\OrdenesDeCompraParaSolpWebServiceMOA\Z_MMRFC_OC_PARA_SOLP.wsdl" />
     <None Include="Service References\PagoComprobantesWebServiceMOA\SI_MPMF_MOAOP_DET_PAGOS_NG.wsdl" />
@@ -2416,6 +2422,7 @@
     <WCFMetadataStorage Include="Service References\ObtenerServiciosSolpWebServiceMOA\" />
     <WCFMetadataStorage Include="Service References\ObtenerSolpWebServiceMOA\" />
     <WCFMetadataStorage Include="Service References\OrdenCargaEstadoEntregadaV2SAP\" />
+    <WCFMetadataStorage Include="Service References\OrdenCargaEstadoEntregadaV3SAP\" />
     <WCFMetadataStorage Include="Service References\OrdenCargaVisualizarCliente\" />
     <WCFMetadataStorage Include="Service References\OrdenesDeCompraParaSolpWebServiceMOA\" />
     <WCFMetadataStorage Include="Service References\PagoComprobantesWebServiceMOA\" />
@@ -3550,6 +3557,17 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Service References\AplicacionCartaPortePendienteAplicarWebServiceMOA\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+   <None Include="Service References\OrdenCargaEstadoEntregadaV3SAP\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\OrdenCargaEstadoEntregadaV3SAP\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\OrdenCargaEstadoEntregadaV3SAP\Reference.svcmap">
       <Generator>WCF Proxy Generator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>
