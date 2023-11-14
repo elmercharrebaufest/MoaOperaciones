@@ -5576,6 +5576,7 @@ namespace SustitucionMOAUtils.Services
         {
             var nroSolp = repositorio.Obtener<Solp, string>(a => a.Id == solpId, a => a.NroSolp);
             var respuestaSAP = obtenerOrdenesDeCompraParaSOLPConsumerMOA.Request(nroSolp, "");
+            var estados = repositorio.Listar<TablaSap>(x => x.Tabla == TablasSap.EstadoOC).ToList();
             var listaResultado = respuestaSAP.Select(adjudicacion => new AdjudicacionDto()
             {
                 Id = 0,
@@ -5585,7 +5586,11 @@ namespace SustitucionMOAUtils.Services
                 FechaCreacion = adjudicacion.Cabecera.FechaCreacion,
                 Proveedor = adjudicacion.Cabecera.RazonSocialProveedor,
                 MonedaDescripcion = adjudicacion.Cabecera.Moneda,
-                PrecioFinal = adjudicacion.Cabecera.MontoTotal
+                PrecioFinal = adjudicacion.Cabecera.MontoTotal,
+                PrecioBruto = adjudicacion.Cabecera.MontoBruto,
+                EstadoLiberacionCodigo = adjudicacion.Cabecera.EstadoLiberacionCodigo,
+                EstadoLiberacionDetalle = estados.SingleOrDefault(a => a.CodigoSap == adjudicacion.Cabecera.EstadoLiberacionCodigo)?.Descripcion ?? "",
+
             }).OrderBy(fc => fc.FechaCreacion).ToList();
 
             return listaResultado;
