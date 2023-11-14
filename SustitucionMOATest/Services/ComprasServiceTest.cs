@@ -968,6 +968,8 @@ namespace SustitucionMOATest.Services
             var nroSolp = "0212303121";
             repositorioMock.Setup(y => y.Obtener(It.IsAny<Expression<Func<Solp, bool>>>(), It.IsAny<Expression<Func<Solp, string>>>()))
             .Returns(nroSolp);
+            repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<TablaSap, bool>>>(),
+                It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null)).Returns(new List<TablaSap>() { new TablaSap { CodigoSap = "1", Id = 1 } });
             obtenerOrdenesDeCompraParaSOLPConsumerMOAMock.Setup(y => y.Request(It.IsAny<string>(), It.IsAny<string>())).Returns(new List<OrdenDeCompraSAPDto> {
                 new OrdenDeCompraSAPDto { Cabecera = new OrdenDeCompraSAPCabecera { Tipo = "", OrdenDeCompra = "", FechaCreacion = new DateTime(), RazonSocialProveedor = "Proveedor", Moneda = "ARP", MontoTotal = 1500 } }
             });
