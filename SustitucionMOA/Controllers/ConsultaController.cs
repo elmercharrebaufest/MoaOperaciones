@@ -179,7 +179,7 @@ namespace SustitucionMOA.Controllers
                 var usuarioActual = ObtenerUsuarioActual();
                 var obtenerTodos = usuarioActual.Permisos.Contains(Permiso.CONSULTA_AMB);
                 var consultas = consultaService.ListarConsultas(usuarioActual.Id, obtenerTodos);
-                var categorias = consultaService.ObtenerCategorias(false, usuarioActual);
+                var categorias = consultaService.ObtenerCategorias(false, usuarioActual, true);
                 var estados = consultaService.ObtenerEstados();
 
                 categorias.ForEach(x => x.Cantidad = consultas.Count(c => c.CategoriaId == x.Id));
@@ -312,7 +312,7 @@ namespace SustitucionMOA.Controllers
         }
 
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.CONTACTO_MAIL)]
-        public ActionResult Combos(Boolean? excluir)
+        public ActionResult Combos(Boolean? excluir, Boolean? mostrarCategoriaInterno)
         {
             try
             {
@@ -320,7 +320,7 @@ namespace SustitucionMOA.Controllers
                 var obtenerTodos = usuarioActual.Permisos.Contains(Permiso.CONSULTA_AMB);
 
                 return JsonCustom(new { 
-                    categorias = consultaService.ObtenerCategorias(excluir, usuarioActual),
+                    categorias = consultaService.ObtenerCategorias(excluir, usuarioActual, mostrarCategoriaInterno),
                     subcategorias = consultaService.ObtenerSubCategorias(usuarioActual),
                     estados = consultaService.ObtenerEstados(),
                     causas = consultaService.ObtenerCausas(),
