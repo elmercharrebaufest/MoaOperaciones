@@ -30,7 +30,7 @@ export class ListadoComponent extends AplicacionCcppBaseComponent implements OnD
   ccppFiltro = new FormControl();
   estadoFiltro = new FormControl();
   clienteFiltro = new FormControl();
-  esAdmin = this.isAuthorized(Permiso.AdminAppCCPP); 
+  esAdmin = this.isAuthorized(Permiso.AdminAppCCPP);
   disabled = false;
   show = false;
   develop = true;
@@ -142,7 +142,11 @@ export class ListadoComponent extends AplicacionCcppBaseComponent implements OnD
     this.blockUI.start("Eliminando ...");
     try {
       this.service.eliminarAplicacion(aplicacion.Id).subscribe({
-        next: (res) => {
+        next: ({ info, error, logout }) => {
+          if (logout)
+            this.sessionDataService.logout()
+          else if (info || error)
+            this.mensajeComponent.setInfoMsg(info || error);
           this.blockUI.stop();
           this.getListado();
         },
@@ -150,6 +154,7 @@ export class ListadoComponent extends AplicacionCcppBaseComponent implements OnD
         ,
       })
     } catch (error) {
+      console.error(error)
       this.blockUI.stop()
     }
   }
