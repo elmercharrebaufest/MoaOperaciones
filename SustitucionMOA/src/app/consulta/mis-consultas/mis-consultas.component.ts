@@ -242,7 +242,7 @@ export class MisConsultasComponent extends ListBaseComponent {
 
     getCombos() {
         try {
-            this.subscription = this.service.getCombos(false).subscribe(
+            this.subscription = this.service.getCombos(false, true).subscribe(
                 (result: any) => {
                     if (result.logout == true) {
                         this.sessionDataService.logout();

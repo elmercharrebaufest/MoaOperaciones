@@ -39,9 +39,10 @@ export class ConsultaService extends BaseService {
             .get(`/api/Consulta/RecordarComentario`, { params: params, headers: this.headers });
     }
 
-    public getCombos(excluir: boolean): Observable<any> {
+    public getCombos(excluir: boolean, mostrarCategoriaInterno: boolean): Observable<any> {
         let params: HttpParams = new HttpParams();
         params = params.set('excluir', excluir.toString());
+        params = params.set('mostrarCategoriaInterno', mostrarCategoriaInterno.toString());
 
         return this.http
             .get('/api/consulta/Combos', { params: params, headers: this.headers });

@@ -222,7 +222,7 @@ export class CrearConsultaComponent extends ListBaseComponent {
     getCombos() {
         this.unsubscribe();
         try {
-            this.subscription = this.service.getCombos(true).subscribe(
+            this.subscription = this.service.getCombos(true, false).subscribe(
                 (result: any) => {
                     if (result.logout == true) {
                         this.sessionDataService.logout();
