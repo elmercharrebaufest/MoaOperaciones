@@ -244,7 +244,8 @@
                                     Camión escalable:
                                 </div>
                                 <p-checkbox #escalableCheckbox name="escalable" [binary]="true"
-                                    [(ngModel)]="ordenDeCarga.Escalable" (ngModelChange)="validarEscalable()">
+                                    [(ngModel)]="ordenDeCarga.Escalable"
+                                    (ngModelChange)="!errorAlValidarEscalable? validarEscalable(): null">
                                 </p-checkbox>
                             </div>
                         </div>
