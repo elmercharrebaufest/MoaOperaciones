@@ -691,21 +691,24 @@ namespace SustitucionMOAUtils.Services
             return errores.Any() ? string.Join(".", errores) : SuccessMsg.ArchivoSubidoOK;
         }
 
-        public List<CategoriaDto> ObtenerCategorias(Boolean? excluir, UsuarioDto usuario)
+        public List<CategoriaDto> ObtenerCategorias(Boolean? excluir, UsuarioDto usuario, Boolean? mostrarCategoriaInterno)
         {
             try
             {
                 List<string> exclude = new List<string>() { };
                 List<Categoria> categorias = new List<Categoria>() { };
-                
+
                 if (excluir.HasValue && excluir == true)
                 {
-                    exclude = new List<string>() { "PARDIR", "PARCOR", "FINDIR", "FINCOR", "ORD" };
+                    exclude = new List<string>() { "PARDIR", "PARCOR", "FINDIR", "FINCOR" };
                 }
                 else
                 {
-                    exclude = new List<string>() { "ORD" };
+                    exclude = new List<string>() { };
                 }
+
+                if (mostrarCategoriaInterno == false)
+                    exclude.Add("ORD");
 
                 if (usuario.NuevoUsuario)
                 {
