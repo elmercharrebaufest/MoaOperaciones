@@ -47,7 +47,7 @@ export class OrdenesDeCargaListado extends ListBaseComponent implements OnInit {
     datosAux: any[];
     //primerListado: any[];
     listaEnviarASAP: number[] = [];
-    
+
     productoSelected: string = "Todos";
     listaProductos: any = null;
     private selectUndefinedOptionValue: any;
@@ -66,6 +66,8 @@ export class OrdenesDeCargaListado extends ListBaseComponent implements OnInit {
 
     descripcionEstadoOrdenCarga: any[];
     entregada: string = "Entregada";
+
+    tipoConrato = TipoContrato;
 
     constructor(protected service: OrdenesDeCargaService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService, private confirmationService: ConfirmationService) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
