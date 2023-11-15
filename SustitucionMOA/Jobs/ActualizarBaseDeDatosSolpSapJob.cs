@@ -52,11 +52,12 @@ namespace SustitucionMOA.Jobs
         {
             if (listaSap.Count > 0)
             {
-                var listaBase = repositorio.Listar<TablaSap>(c => c.Tabla == tablaSap).ToList();
+                var listaBase = repositorio.Listar<TablaSap>(c => c.Tabla == tablaSap);
 
                 for (int i = 0; i < listaSap.Count; i++)
                 {
-                    if (!listaBase.Any(x => x.CodigoSap == listaSap[i].CodigoSap && x.Descripcion == listaSap[i].Descripcion))
+                    var item = listaBase.FirstOrDefault(x => x.CodigoSap == listaSap[i].CodigoSap);
+                    if (item == null)
                     {
                         var ordenAgregar = new TablaSap()
                         {
@@ -68,6 +69,11 @@ namespace SustitucionMOA.Jobs
                         };
 
                         repositorio.Agregar(ordenAgregar);
+                    }
+                    else
+                    {
+                        if (item.Descripcion != listaSap[i].Descripcion)
+                            item.Descripcion = listaSap[i].Descripcion;
                     }
                 }
             }

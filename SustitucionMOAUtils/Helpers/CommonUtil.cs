@@ -36,5 +36,29 @@ namespace SustitucionMOAUtils.Services
             fechaDateTime = DataFormatter.StringToDateTime(fecha, name);
             return fechaDateTime;
         }
+
+        public static DateTime? obtenerFechaMayor(List<DateTime?> fechas)
+        {
+            if (fechas == null || fechas.Count == 0)
+            {
+                return null;
+            }
+
+            DateTime? fechaMayor = null;
+
+            foreach (DateTime? fecha in fechas)
+            {
+                if (fecha.HasValue)
+                {
+                    if (!fechaMayor.HasValue || DateTime.Compare(fecha.Value, fechaMayor.Value) > 0)
+                    {
+                        fechaMayor = fecha;
+                    }
+                }
+            }
+
+            return fechaMayor;
+        }
+
     }
 }

@@ -1,6 +1,7 @@
 export interface OrdenDeCompraSap{
     Cabecera: OrdenDeCompraSAPCabecera;
     Error: ErrorOC,
+    Mensaje: string
     //Posiciones:  OrdenDeCompraSAPPosicion();
 }
 

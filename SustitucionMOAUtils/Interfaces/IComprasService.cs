@@ -1,6 +1,5 @@
 ﻿using SustitucionMOAModel.Consultas;
 using SustitucionMOAModel.Dto;
-using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using SustitucionMOAModel.Models.WSMapMOA;
 using SustitucionMOAModel.Models.WSMapMOA.Compras;
@@ -57,10 +56,10 @@ namespace SustitucionMOAUtils.Interfaces
         RespuestaGuardarSOLP GrabarCircular(CircularDto circularDto, HttpFileCollectionBase adjuntos);
         PeticionDeOfertaDto ObtenerPeticionDeOfertaParaCircular(int peticionId);
         RespuestaGuardarSOLP GrabarProveedoresEnPeticionDeOferta(List<int> usuariosId, int peticionId);
-        ListaPaginada<PeticionDeOfertaDto> ListarPOProveedor(Paginacion paginacion, string nroSolp, string username);
+        ListaPaginada<PeticionDeOfertaDto> ListarPOProveedor(Paginacion paginacion, string nroSolp, string nroPo, string nombrePedido, string username, DateTime? desde, DateTime? hasta, int? estadoLicitacion, int? estadoCotizacion);
         PeticionDeOfertaDto ListarOfertasComprador(int PeticionOferta_Id, UsuarioDto usuario);
         string DescargarAdjuntosCotizacion(int idCotizacion, string pathBase);
-        RespuestaGuardarSOLP GrabarRevisionTecnica(List<PeticionDeOfertaUsarioDto> revision, int usuarioId);
+        RespuestaGuardarSOLP GrabarRevisionTecnica(List<PeticionDeOfertaUsarioDto> revision, int usuarioId, bool finalizar);
         PeticionDeOfertaDto TraerCotizacion(int peticionId);
         RespuestaGuardarSOLP GrabarCotizacion(GuardarCotizacion cotizacionDto, HttpFileCollectionBase adjuntos, bool esFinalizado, int usuarioActualId, bool enviarMail);
         GuardarCotizacion ObtenerPrecioTotalPosicionProveedor(GuardarCotizacion cotizacionDto);
@@ -74,5 +73,10 @@ namespace SustitucionMOAUtils.Interfaces
         DatosUltimaSolpDto ObtenerUltimaSolp(int usuarioId);
         RegistroInfoDto ObtenerUltimoRegistroMaterial(string material, string centro, string grupoDeCompras);
         void ActualizarFechaLiberacionOC(string nroOc, DateTime fechaLiberacion);
+        LegajoExternoDto ObtenerLegajoParaExternos(int adjudicacionId, string token);
+        List<OrdenDeCompraSAPDto> ObtenerReporteOrdenDeCompra(string nroOC, string fechaDesde, string fechaHasta, string codigoProveedor);
+
+
+        Resultado GrabarPeticionDeOfertaVisualizacionPrecio(PeticionDeOfertaVisualizacionPrecioDto peticionDeOfertaVisualizacionPrecioDto, HttpFileCollectionBase adjuntos);
     }
 }

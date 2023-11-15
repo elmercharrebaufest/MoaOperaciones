@@ -346,7 +346,8 @@ export class CotizacionServicioComponent extends ListBaseComponent implements On
                 FechaDeEntrega: cotizacion.Posiciones.FechaEntregaServicio,
                 UnidadMedida: cotizacion.Posiciones.CotizacionPosicion.UnidadComprasDescripcion,
                 monedaCompras: cotizacion.Posiciones.CotizacionPosicion.MonedaCodigo,
-                NoDisponible: false
+                NoDisponible: false,
+                PrimerPlazoDeOferta: cotizacion.Posiciones.CotizacionPosicion.PrimerPlazoDeOferta
             };
         });
     }
@@ -533,9 +534,9 @@ export class CotizacionServicioComponent extends ListBaseComponent implements On
     validarPorcentaje() {
         const parsedValue = Number(this.peticion.PorcentajeDeHoras);
         if (isNaN(parsedValue)) {
-           this.peticion.PorcentajeDeHoras = 0;
+            this.peticion.PorcentajeDeHoras = 0;
         } else if (parsedValue > 100) {
-          this.peticion.PorcentajeDeHoras = 100;
+            this.peticion.PorcentajeDeHoras = 100;
         }
-      }
+    }
 }

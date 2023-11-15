@@ -15,29 +15,44 @@ namespace SustitucionMOARepositorio.ConsultasEF
     {
         private readonly Paginacion Paginacion;
         private readonly string NroSolp;
+        private readonly string NroPo;
+        private readonly string[] NombrePedido;
         private readonly string CuitUsuario;
-        public ListarSolpPOConsulta(Paginacion paginacion, string nroSolp, string cuitUsuario)
+        private readonly int? EstadoCotizacion;
+        private readonly int? EstadoLicitacion;
+        private readonly DateTime? FechaDesde;
+        private readonly DateTime? FechaHasta;
+        
+        public ListarSolpPOConsulta(Paginacion paginacion, string nroSolp, string nroPo, string[] nombrePedido, string cuitUsuario, int? estadoCotizacion, int? estadoLicitacion, DateTime? desde, DateTime? hasta)
         {
             Paginacion = paginacion;
-            NroSolp = nroSolp;
+            NroSolp = nroSolp.Trim();
+            NroPo = nroPo.Trim();
+            NombrePedido = nombrePedido;
             CuitUsuario = cuitUsuario;
+            EstadoCotizacion = estadoCotizacion;
+            EstadoLicitacion = estadoLicitacion;
+            FechaDesde = desde;
+            FechaHasta = hasta;
         }
         public ListaPaginada<PeticionDeOfertaDto> Ejecutar(DbContext contexto)
         {
             var hoy = DateTime.Now;
             var ayer = hoy.AddDays(-1);
-            var fechas = new List<DateTime?>();
             try
             {
                 ((IObjectContextAdapter)contexto).ObjectContext.CommandTimeout = 180;
-                var nroDeSolp = NroSolp.Trim();
                 var resultado = from x in contexto.Set<PeticionDeOfertaUsuario>()
                                 join peticionDeOferta in contexto.Set<PeticionDeOferta>() on x.PeticionDeOferta_Id equals peticionDeOferta.Id into peticion
                                 from peticionDeOferta in peticion.DefaultIfEmpty()
                                 join cotizacion in contexto.Set<Cotizacion>() on x.Id equals cotizacion.PeticionDeOfertaUsuario_Id into peticionCotizacion
                                 from cotizacion in peticionCotizacion.DefaultIfEmpty()
-                                where (string.IsNullOrEmpty(nroDeSolp) || x.PeticionDeOferta.Solp.NroSolp.ToUpper().StartsWith(nroDeSolp.ToUpper()))
-                                && x.Usuario.CUITRegistro == CuitUsuario && x.PeticionDeOferta.RegistroInfo != true
+                                where (string.IsNullOrEmpty(NroSolp) || x.PeticionDeOferta.Solp.NroSolp.StartsWith(NroSolp))
+                                && (string.IsNullOrEmpty(NroPo) || x.PeticionDeOferta.Id.ToString().StartsWith(NroPo))
+                                && (!NombrePedido.Any() || NombrePedido.All(p => x.PeticionDeOferta.Solp.Pliego.NombreObra.ToUpper().Contains(p.ToUpper())))
+                                && x.Usuario.CUITRegistro == CuitUsuario && x.PeticionDeOferta.RegistroInfo != true &&
+                                (EstadoCotizacion == null || EstadoCotizacion == 0 && cotizacion == null || x.Cotizaciones.Any(c => c.CotizacionEstado_Id == EstadoCotizacion)) 
+                                
                                 select new PeticionDeOfertaDto
                                 {
                                     Id = x.PeticionDeOferta.Id,
@@ -146,9 +161,13 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                     TieneAdjudicacion = cotizacion != null && cotizacion.Adjudicaciones.Any(),
 
                                 };
-
-                var itemsTotales = resultado.Count();
-
+                if (FechaDesde.HasValue || FechaHasta.HasValue || EstadoLicitacion.HasValue)
+                {
+                    resultado = resultado.Where(po =>
+                    (!FechaDesde.HasValue || po.PlazoDeOferta >= FechaDesde.Value) &&
+                    (!FechaHasta.HasValue || po.PlazoDeOferta <= FechaHasta.Value) &&
+                    (!EstadoLicitacion.HasValue || po.Estado_Id == EstadoLicitacion.Value));
+                }
                 return resultado.OrdenarPaginarLista(Paginacion);
             }
             catch (Exception)

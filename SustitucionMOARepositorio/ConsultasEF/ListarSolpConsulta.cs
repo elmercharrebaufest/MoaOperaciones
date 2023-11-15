@@ -2,6 +2,7 @@
 using SustitucionMOAModel.Consultas;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
+using SustitucionMOAModel.Enums;
 using SustitucionMOARepositorio.Extensiones;
 using System;
 using System.Collections.Generic;
@@ -52,11 +53,13 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                     NombreDeObra = x.Pliego == null ? "" : x.Pliego.NombreObra,
                                     FechaCreacionFormateada = SqlFunctions.DateName("day", x.FechaCreacion) + "/" + SqlFunctions.DatePart("month", x.FechaCreacion) + "/" + SqlFunctions.DateName("year", x.FechaCreacion),
                                     FechaCreacion = x.FechaCreacion,
-                                    TipoSolp = new TablaGeneralDto { Descripcion = x.TipoSolp != null ? x.TipoSolp.Descripcion : "" },
+                                    TipoSolp = new TablaGeneralDto { Descripcion = x.TipoSolp != null ? x.TipoSolp.Descripcion : "" , Codigo = x.TipoSolp != null ? x.TipoSolp.Codigo : "" },
                                     TipoSolpSap = x.TipoSolpSap,
                                     Adicional = x.Adicional,
                                     NroOrdenDeCompraAdicional = x.NroOrdenDeCompraAdicional,
                                     TrabajoYaHecho = x.TrabajoYaHecho,
+                                    Urgencia = x.Urgencia,
+                                    SolpConAdjuntos = x.Pliego.Archivos.Where(r => r.FileKey == FileKeys.AdjuntoCotizacionesSolp).Any(),
                                     PosicionCompras = (from posicion in contexto.Set<SolpPosicion>()
                                                        where posicion.Solp_Id == x.Id
                                                        select new SolpPosicionDto()
@@ -91,7 +94,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                                 .Where(p => p.Circular.RequiereCambioDeFechas == true && p.Circular.PlazoDeOferta.HasValue)
                                                                 .OrderByDescending(p => p.Circular.Id).FirstOrDefault().Circular.FechaCreacion,
                                                               PlazoDeOfertaCierre = po.Cierres.Any() ? po.Cierres.OrderByDescending(p => p.Fecha).FirstOrDefault().Fecha : (DateTime?)null,
-
+                                                              RevisionFinalizada = po.RevisionTecnica_Id != null,
 
                                                               Observaciones = po.Observaciones,
                                                           })

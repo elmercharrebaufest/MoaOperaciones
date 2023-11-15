@@ -47,6 +47,9 @@ export class CotizacionMaterialComponent extends ListBaseComponent implements On
     displayCotizacionCreada: boolean;
     visualizarMensajeDeModificacion: boolean = false;
     hoy: Date = new Date();
+    displayPlazo: boolean;
+    cotizacionPosicion: CotizacionPosicionDto;
+    cantidadSolicitada: number;
 
     constructor(protected service: ComprasService, protected usuarioService: UsuarioService, protected navService: NavService, protected sessionDataService: SessionDataService,
         protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService,
@@ -334,6 +337,12 @@ export class CotizacionMaterialComponent extends ListBaseComponent implements On
                 NoDisponible: cotizacion.Posiciones.CotizacionPosicion.NoDisponible,
                 FechaDeVigencia: cotizacion.Posiciones.CotizacionPosicion.FechaDeVigencia != undefined ?
                 cotizacion.Posiciones.CotizacionPosicion.FechaDeVigencia : null,
+                PrimerPlazoDeOferta: cotizacion.Posiciones.CotizacionPosicion.PrimerPlazoDeOferta != null ? cotizacion.Posiciones.CotizacionPosicion.PrimerPlazoDeOferta : 0,
+                PrimeraCantidad: cotizacion.Posiciones.CotizacionPosicion.PrimeraCantidad != null ? cotizacion.Posiciones.CotizacionPosicion.PrimeraCantidad : 0,
+                SegundoPlazoDeOferta: cotizacion.Posiciones.CotizacionPosicion.SegundoPlazoDeOferta != null ? cotizacion.Posiciones.CotizacionPosicion.SegundoPlazoDeOferta : 0,
+                SegundaCantidad: cotizacion.Posiciones.CotizacionPosicion.SegundaCantidad != null ? cotizacion.Posiciones.CotizacionPosicion.SegundaCantidad : 0,
+                TercerPlazoDeOferta: cotizacion.Posiciones.CotizacionPosicion.TercerPlazoDeOferta != null ? cotizacion.Posiciones.CotizacionPosicion.TercerPlazoDeOferta : 0,
+                TerceraCantidad: cotizacion.Posiciones.CotizacionPosicion.TerceraCantidad != null ? cotizacion.Posiciones.CotizacionPosicion.TerceraCantidad : 0,
             };
         });
     }
@@ -403,12 +412,17 @@ export class CotizacionMaterialComponent extends ListBaseComponent implements On
         cotizacion.MonedaCodigo = null;
         cotizacion.Moneda_Id = null;
         cotizacion.Precio = null;
-        cotizacion.FechaDeEntrega = null;
         cotizacion.UnidadDeMedida_Id = null;
         cotizacion.UnidadMedida = null;
         cotizacion.PlazoDeEntrega = null;
         cotizacion.PrecioTotal = null;
         cotizacion.FechaDeVigencia = null;
+        cotizacion.PrimerPlazoDeOferta  = null;
+        cotizacion.PrimeraCantidad  = null;
+        cotizacion.SegundoPlazoDeOferta = null;
+        cotizacion.SegundaCantidad = null;
+        cotizacion.TercerPlazoDeOferta = null;
+        cotizacion.TerceraCantidad = null;
     }
 
     onEditarCelda(cotizacion: any, campo: string, valorInicial: any) {
@@ -429,4 +443,14 @@ export class CotizacionMaterialComponent extends ListBaseComponent implements On
           event.target.value = 0; // Borra el valor si es negativo
         }
       }
+
+      abrirPlazoDeOferta(cotizacionPosicion: CotizacionPosicionDto, cantidad: number){
+        this.displayPlazo = true;
+        this.cotizacionPosicion = cotizacionPosicion;
+        this.cantidadSolicitada = cantidad;
+      }
+
+      cerrarPlazo() {
+        this.displayPlazo = false;
+    }
 }

@@ -8,6 +8,7 @@ import { ListadoDashboardProveedorComponent } from './dashboard-proveedor/listad
 import { PeticionDeOfertaFormularioComponent } from './peticion-de-oferta-formulario/peticion-de-oferta-formulario.component';
 import { CotizacionFormularioComponent } from './dashboard-proveedor/cotizacion-formulario/cotizacion-formulario.component';
 import { VerOfertasComponent } from './dashboard-comprador/ver-ofertas/ver-ofertas.component';
+import { ReporteOcComponent } from './reporte-oc/reporte-oc.component';
 
 const routes: Routes = [
     { path: '', component: DashboardComponent },
@@ -21,7 +22,9 @@ const routes: Routes = [
     { path: "peticion-de-oferta-formulario/:id", component: PeticionDeOfertaFormularioComponent },
     { path: "dashboard-proveedor/cotizacion", component: CotizacionFormularioComponent },
     { path: "dashboard-proveedor/cotizacion/:id", component: CotizacionFormularioComponent },
-    { path: "ver-ofertas/:id", component: VerOfertasComponent }
+    { path: "ver-ofertas/:id", component: VerOfertasComponent },
+    { path: "reporte-oc", component: ReporteOcComponent }
+
 
 
 ];

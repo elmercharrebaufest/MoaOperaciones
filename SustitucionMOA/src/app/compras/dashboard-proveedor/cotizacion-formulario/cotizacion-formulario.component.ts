@@ -17,6 +17,7 @@ import { PeticionDeOfertaDto, PeticionDeOfertaSolpPosicionDto } from '../../../m
 import { CotizacionMaterialComponent } from './cotizacion-material/cotizacion-material.component';
 import { GuardarCotizacion } from '../../../modelos/cotizacionDto';
 import { CotizacionServicioComponent } from './cotizacion-servicio/cotizacion-servicio.component';
+import { forEach } from '@angular/router/src/utils/collection';
 
 @Component({
     selector: 'app-cotizacion-formulario',
@@ -116,7 +117,7 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
                 var date = new Date(milliseconds);
                 this.posicionesCompra[index].Posiciones.CotizacionPosicion.FechaDeVigencia = date
             }
-            
+
         }
 
     }
@@ -230,6 +231,7 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
                 if (!breakFor && (cotizacion.NoDisponible == false || cotizacion.NoDisponible == undefined)) {
                     if ((cotizacion.Cantidad <= 0 || cotizacion.Cantidad == undefined) && cotizacion.UnidadDeMedidaId == 0 && cotizacion.MonedaId == 0 && cotizacion.Precio <= 0 && cotizacion.FechaDeEntrega == null && cotizacion.FechaDeVigencia == null) {
                         mensaje = "Pos. " + cotizacion.Posicion + " Por favor tildar NO DISPONIBLE en el caso de no contar con el material";
+                        breakFor = true;
                         return mensaje;
                     }
                     if (cotizacion.Cantidad <= 0 || cotizacion.Cantidad == undefined) {
@@ -253,7 +255,7 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
                         return mensaje;
                     }
                     const decimalPart = (cotizacion.Precio % 1).toFixed(2);
-                    if(decimalPart != '0.00' && cotizacion.monedaCompras == "CLP"){
+                    if (decimalPart != '0.00' && cotizacion.monedaCompras == "CLP") {
                         mensaje = "Pos. " + cotizacion.Posicion + ": Para la moneda seleccionada no es posible ingresar decimales en el precio";
                         breakFor = true;
                         return mensaje;
@@ -263,7 +265,6 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
                         breakFor = true;
                         return mensaje;
                     }
-
                     if (cotizacion.FechaDeVigencia == null) {
                         mensaje = "Pos. " + cotizacion.Posicion + " - La Fecha de vigencia es obligatoria";
                         breakFor = true;
@@ -293,6 +294,22 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
                             return mensaje;
                         }
                     }
+
+                    const plazosYOfertas = [
+                        { plazo: cotizacion.PrimerPlazoDeOferta, cantidad: Number(cotizacion.PrimeraCantidad) },
+                        { plazo: cotizacion.SegundoPlazoDeOferta, cantidad: Number(cotizacion.SegundaCantidad) },
+                        { plazo: cotizacion.TercerPlazoDeOferta, cantidad: Number(cotizacion.TerceraCantidad) },
+                    ];
+
+                    const sumaCantidades = plazosYOfertas.reduce((suma, item) => suma + (item.cantidad || 0), 0);
+                    const sumaCorrecta = sumaCantidades === cotizacion.Cantidad;
+
+                    if (!sumaCorrecta) {
+                        mensaje = "Pos. " + cotizacion.Posicion + ": La suma de las cantidades debe ser igual a la cantidad cotizada: "
+                            + self.formatearNumero(cotizacion.Cantidad);
+                        breakFor = true;
+                        return mensaje;
+                    }
                 }
             });
         } else {
@@ -304,6 +321,15 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
                 mensaje = "El campo respeta servicios es obligatorio";
                 return mensaje;
             }
+            var count = 0;
+            this.posicionesCompra.forEach(function (posicionServicio, i) {
+                count++;
+                if (posicionServicio.Posiciones.CotizacionPosicion.PrimerPlazoDeOferta <= 0 || posicionServicio.Posiciones.CotizacionPosicion.PrimerPlazoDeOferta == undefined) {
+                    mensaje = "Propuesta Económica - " + "Pos. " + count + " - El plazo de entrega es obligatorio: Debe indicar la cantidad de días.";
+                    breakFor = true;
+                    return mensaje;
+                }
+            });
 
             this.cotizacion.CotizacionesHoras.forEach(function (cotizacionHora, i) {
                 if (!breakFor) {
@@ -360,41 +386,39 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
                 }
             }
             if ((!this.peticion.PorcentajeDeHoras || this.peticion.PorcentajeDeHoras == 0) &&
-                this.peticion.Cotizacion.CotizacionesHoras.filter(x => x.Gremio == 'UOCRA' || x.ConfigurarHora == true).some(x => Number(x.CantidadPersonas) > 0))
-            {
-                mensaje = "El campo Porcentaje de horas es obligatorio cuando se ingresa la estimación de horas en UOCRA";
+                this.peticion.Cotizacion.CotizacionesHoras.filter(x => x.Gremio == 'UOCRA' || x.ConfigurarHora == true).some(x => Number(x.CantidadPersonas) > 0)) {
+                mensaje = "El campo Porcentaje de expediente es obligatorio cuando se ingresa la estimación de horas en UOCRA";
             }
 
             var self = this;
             this.cotizacionSubposiciones.forEach(function (subposicion, i) {
                 if (!breakFor) {
                     if (subposicion.Cantidad <= 0 || subposicion.Cantidad == undefined) {
-                        mensaje = "Propuesta Economica - " + "Pos. " + subposicion.Posicion + ": La Ctd. cotizada es obligatoria";
+                        mensaje = "Propuesta Económica - " + "Pos. " + subposicion.Posicion + ": La Ctd. cotizada es obligatoria";
                         breakFor = true;
                         return mensaje;
                     }
                     if (subposicion.UnidadDeMedidaId == 0) {
-                        mensaje = "Propuesta Economica - " + "Pos. " + subposicion.Posicion + ": La Um. cotizada es obligatoria";
+                        mensaje = "Propuesta Económica - " + "Pos. " + subposicion.Posicion + ": La Um. cotizada es obligatoria";
                         breakFor = true;
                         return mensaje;
                     }
                     if (subposicion.MonedaId == 0) {
-                        mensaje = "Propuesta Economica - " + "Pos. " + subposicion.Posicion + ": La Moneda es obligatoria";
+                        mensaje = "Propuesta Económica - " + "Pos. " + subposicion.Posicion + ": La Moneda es obligatoria";
                         breakFor = true;
                         return mensaje;
                     }
                     if (subposicion.Precio <= 0) {
-                        mensaje = "Propuesta Economica - " + "Pos. " + subposicion.Posicion + ": El Precio cotizado es obligatorio";
+                        mensaje = "Propuesta Económica - " + "Pos. " + subposicion.Posicion + ": El Precio cotizado es obligatorio";
                         breakFor = true;
                         return mensaje;
                     }
                     const decimalPart = (subposicion.Precio % 1).toFixed(2);
-                    if(decimalPart != '0.00' && subposicion.monedaCompras == "CLP"){
-                        mensaje = "Propuesta Economica - " + "Pos. " + subposicion.Posicion + ": Para la moneda seleccionada no es posible ingresar decimales en el precio";
+                    if (decimalPart != '0.00' && subposicion.monedaCompras == "CLP") {
+                        mensaje = "Propuesta Económica - " + "Pos. " + subposicion.Posicion + ": Para la moneda seleccionada no es posible ingresar decimales en el precio";
                         breakFor = true;
                         return mensaje;
                     }
-
                     if (self.peticion.RespetaServicios == false || self.peticion.RespetaMateriales == false) {
                         if (self.peticion.ObservacionTecnica == "" && ((self.archivosTecnico == null
                             || self.archivosTecnico.length == 0 &&
@@ -422,5 +446,9 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
         }
 
         return mensaje;
+    }
+
+    formatearNumero(numero: number) {
+        return numero.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
     }
 }

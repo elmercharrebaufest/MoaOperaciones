@@ -32,6 +32,8 @@ export interface PeticionDeOfertaDto{
     PlazoDeOfertaEstado?: string,
     Adicional?: boolean,
     NroOrdenDeCompraAdicional?: string,
+    TieneVisitaObraMasiva?: boolean,
+    TieneVisitaObraBool?: boolean
 }
 
 export interface PeticionDeOfertaUsarioDto {

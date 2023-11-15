@@ -201,7 +201,6 @@ namespace SustitucionMOAWS.WSConsumers
         private ModificarPedidoSAP ConvertirAdjudicacion(Adjudicacion adjudicacion)
         {
             //TODO: Crear OC ConvertirSOLP - fields hardcodeados o para revisar
-            ///PURCH_ORG ok por ahora. OrganizacionCompras hardcode 2029
             ///DOC_TYPE  ok por ahora. Clase de documento de compras / Estrategia de liberacion hardcore ZPE1 
 
             ///STREET y STREET_NO ok. no tenemos el campo separado mandamos todo en street            
@@ -210,8 +209,8 @@ namespace SustitucionMOAWS.WSConsumers
 
             var proveedorCodigoDeLaAdjudicacion = adjudicacion.Posiciones.First().CotizacionPosicion.Cotizacion.PeticionDeOfertaUsuario.Usuario.ObtenerCodigoProveedor();
             var usuarioCreadorAdjudicacion = adjudicacion.Usuario.UsuarioSap;
+            var usuarioOrganizacionDeCompra = adjudicacion.Usuario.OrganizacionDeCompra;
             var solp = adjudicacion.Solp;
-
             ModificarPedidoSAP modificarPedidoSAP = new ModificarPedidoSAP();
             modificarPedidoSAP.PURCHASEORDER = adjudicacion.Cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Solp.NroOrdenDeCompraAdicional;// "4123001763";
 
@@ -238,8 +237,8 @@ namespace SustitucionMOAWS.WSConsumers
             //var PUR_GROUP = solp.Posiciones.Where(a => posIds.Contains(a.Id)).First().GrupoCompras.CodigoSap.ToString();
             //cabeceraDelPedido.COMP_CODE = "MOA"; //COMP_CODE BUKRS   Sociedad
             //cabeceraDelPedido.DOC_TYPE = "ZPE1";//solp.ClaseDocumento.CodigoSap; //DOC_TYPE    ESART Clase de documento de compras
-            //cabeceraDelPedido.VENDOR = proveedorCodigoDeLaAdjudicacion;//VENDOR ELIFN   Número de cuenta del proveedor
-            //cabeceraDelPedido.PURCH_ORG = "2029";//PURCH_ORG EKORG   Organización de compras
+            //cabeceraDelPedido.VENDOR = proveedorCodigoDeLaAdjudicacion; //VENDOR ELIFN   Número de cuenta del proveedor
+            //cabeceraDelPedido.PURCH_ORG = usuarioOrganizacionDeCompra; //PURCH_ORG EKORG   Organización de compras
             //cabeceraDelPedido.PUR_GROUP = PUR_GROUP;  //PUR_GROUP   BKGRP Grupo de compras
             //cabeceraDelPedido.CURRENCY = CURRENCY; //CURRENCY WAERS   Clave de moneda
             //cabeceraDelPedido.CREATED_BY = usuarioCreadorAdjudicacion;//CREATED_BY ERNAM   Nombre del responsable que ha añadido el objeto

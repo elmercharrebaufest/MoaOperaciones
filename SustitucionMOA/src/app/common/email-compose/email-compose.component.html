@@ -118,7 +118,7 @@
         <hr class="prototipo">
         <section class="container-fluid">
           <div class="row">
-            <div class="col-md-12 ui-fluid">
+            <div class="col-md-12 ui-fluid" *ngIf="solpActual.tipoSolp == 'CON_PLIEGO' || (this.solpActual.especificacionesViewModel.archivosEspecificaciones.length > 0 || this.solpActual.archivosCotizaciones.length > 0)">
               <a href="{{ model.downloadLinkUrl }}" target="_blank" rel="nofollow	noopener noreferrer" class="e-link">
                 <i class="fa fa-download fa-lg"></i>&nbsp;
                 <b>Descargar Legajo</b>

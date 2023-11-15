@@ -9,6 +9,7 @@ namespace SustitucionMOAModel.Dto
         public string Mail { get; set; }
         public string UsuarioModificacion { get; set; }
         public int IdTipoUsuario { get; set; }
+        public string OrganizacionDeCompra { get; set; }
         public List<ProveedoresModificacionDto> Proveedores { get; set; }
     }
     public class ProveedoresModificacionDto

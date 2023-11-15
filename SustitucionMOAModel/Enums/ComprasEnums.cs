@@ -24,7 +24,8 @@ namespace SustitucionMOAModel.Enums
     {
         SolpIdNoExiste = 1,
         EmailTokenInvalido = 2,
-        PuedeDescargar = 3
+        PuedeDescargar = 3,
+        SinArchivos = 4
     }
 
     public static class ComprasEnumsExtensions
