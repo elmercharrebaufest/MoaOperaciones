@@ -57,23 +57,23 @@ export class CircularComponent implements OnInit, OnChanges {
     }
 
     ngOnChanges(changes: SimpleChanges): void {
-        if (!this.solicitante) {
+        // if (!this.solicitante) {
             if (this.peticion != null) {
                 this.selectedProv = this.peticion.Usuarios.map(x => x.UsuarioId);
             }
-        }
-        else {
-            if (this.peticion != null) {
-                if (this.peticion.PlazoDeOfertaEstado == "Abierto") {
-                    this.selectedProv = this.peticion.Usuarios
-                        .map(x => x.UsuarioId);
-                } else {
-                    this.selectedProv = this.peticion.Usuarios
-                        .filter(x => x.ValidacionCircularSolicitante) // Filtra solo los proveedores habilitados
-                        .map(x => x.UsuarioId);
-                }
-            }
-        }
+        // }
+        // else {
+        //     if (this.peticion != null) {
+        //         if (this.peticion.PlazoDeOfertaEstado == "Abierto") {
+        //             this.selectedProv = this.peticion.Usuarios
+        //                 .map(x => x.UsuarioId);
+        //         } else {
+        //             this.selectedProv = this.peticion.Usuarios
+        //                 .filter(x => x.ValidacionCircularSolicitante) // Filtra solo los proveedores habilitados
+        //                 .map(x => x.UsuarioId);
+        //         }
+        //     }
+        // }
     }
 
     ngOnInit() {

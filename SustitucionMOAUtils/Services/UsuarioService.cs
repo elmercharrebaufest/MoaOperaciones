@@ -1,14 +1,8 @@
-﻿using DocumentFormat.OpenXml.Office2010.Excel;
-using SustitucionMOAAssets;
+﻿using SustitucionMOAAssets;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
-using SustitucionMOAModel.Models.WSMapMOA.Login;
-using SustitucionMOAModel.Models.WSMapMOA.Usuario;
-using SustitucionMOAModel.Models.WSMapMOA.Usuario.Perfil;
-using SustitucionMOAModel.Models.WSMapMOA.Vendedor;
-using SustitucionMOAModel.Models.WSMapMOA.Vendedor.Detalle;
 using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
@@ -20,7 +14,6 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using Entidades = SustitucionMOAModel.Entities;
-using Models = SustitucionMOAModel.Models;
 
 
 namespace SustitucionMOAUtils.Services
@@ -421,9 +414,9 @@ namespace SustitucionMOAUtils.Services
         {
             UsuarioNoGranos usuarioNoGranos = new UsuarioNoGranos { Mail = proveedorDto.Mail, CUITRegistro = proveedorDto.CUIT, SeccionesVisitadas = "" };
 
-            TipoUsuario tipoUsuario =  repositorio.Obtener<TipoUsuario>(t => t.NombreCorto == "NG");
+            TipoUsuario tipoUsuario = repositorio.Obtener<TipoUsuario>(t => t.NombreCorto == "NG");
 
-            Entidades.Usuario usuario = new Entidades.Usuario { Mail = proveedorDto.Mail, CUITRegistro = proveedorDto.CUIT, SeccionesVisitadas = "", TipoUsuario = tipoUsuario};
+            Entidades.Usuario usuario = new Entidades.Usuario { Mail = proveedorDto.Mail, CUITRegistro = proveedorDto.CUIT, SeccionesVisitadas = "", TipoUsuario = tipoUsuario };
 
             usuarioNoGranos.TipoUsuario = tipoUsuario;
 
@@ -534,7 +527,7 @@ namespace SustitucionMOAUtils.Services
             return resultado;
         }
 
-        public IEnumerable<IGrouping<int, UsuarioDto>> ListarUsuarioCreadorSolp() 
+        public IEnumerable<IGrouping<int, UsuarioDto>> ListarUsuarioCreadorSolp()
         {
             return repositorio.Listar<Solp, UsuarioDto>(solp => new UsuarioDto
             {
@@ -569,7 +562,7 @@ namespace SustitucionMOAUtils.Services
         {
             var proveedores = repositorio.Listar<Proveedor>(x => x.Mail == email && x.TipoProveedor.Id == tipoProveedorId && x.CUIT == cuitUsuario);
             List<ProveedorDto> listaProvedores = new List<ProveedorDto>();
-            foreach(var proveedor in proveedores)
+            foreach (var proveedor in proveedores)
             {
                 listaProvedores.Add(new ProveedorDto(proveedor));
             }
@@ -596,7 +589,7 @@ namespace SustitucionMOAUtils.Services
         {
             List<ProveedorAuditoriaDto> listaAuditoria = new List<ProveedorAuditoriaDto>();
             var listaProveedorAuditoria = repositorio.Listar<Entidades.ProveedorAuditoria>(x => x.Usuario_Id == usuarioId);
-            foreach ( var proveedor in listaProveedorAuditoria)
+            foreach (var proveedor in listaProveedorAuditoria)
             {
                 var tipoProveedor = repositorio.Obtener<Entidades.TipoUsuario>(x => x.Id == proveedor.TipoProveedor_Id);
                 listaAuditoria.Add(new ProveedorAuditoriaDto()
@@ -618,24 +611,25 @@ namespace SustitucionMOAUtils.Services
         }
         private void GuardarProveedorAuditoria(Proveedor proveedorActual, ProveedoresModificacionDto proveedorModificado, UsuarioModificacionDto usuarioModificacionDto)
         {
-            if (!proveedorActual.Mail.Equals(usuarioModificacionDto.Mail) || 
+            if (!proveedorActual.Mail.Equals(usuarioModificacionDto.Mail) ||
                 !proveedorActual.CUIT.Equals(proveedorModificado.Cuit) ||
                  proveedorActual.TipoProveedor.Id != proveedorModificado.IdTipoProveedor ||
                 !proveedorActual.RazonSocial.Equals(proveedorModificado.RazonSocial) || !proveedorActual.CodigoProveedor.Equals(proveedorModificado.CodigoProveedor) ||
                  proveedorActual.CodigoProveedor != proveedorModificado.CodigoProveedor ||
-                 proveedorActual.EsRevendedor != proveedorModificado.EsRevendedor)
+                 proveedorActual.EsRevendedor != proveedorModificado.EsRevendedor || proveedorActual.OrganizacionDeCompra != usuarioModificacionDto.OrganizacionDeCompra)
             {
                 ProveedorAuditoria proveedorAuditoria = new ProveedorAuditoria();
                 proveedorAuditoria.Proveedor_Id = proveedorActual.Id;
                 proveedorAuditoria.Usuario_Id = usuarioModificacionDto.Id;
                 proveedorAuditoria.CodigoProveedor = proveedorModificado.CodigoProveedor;
                 proveedorAuditoria.Mail = usuarioModificacionDto.Mail;
-                proveedorAuditoria.Cuit = proveedorModificado.Cuit; 
+                proveedorAuditoria.Cuit = proveedorModificado.Cuit;
                 proveedorAuditoria.TipoProveedor_Id = proveedorModificado.IdTipoProveedor;
                 proveedorAuditoria.RazonSocial = proveedorModificado.RazonSocial;
                 proveedorAuditoria.FechaActualizacion = DateTime.Now;
                 proveedorAuditoria.UsuarioActualizacion = usuarioModificacionDto.UsuarioModificacion;
                 proveedorAuditoria.EsRevendedor = proveedorModificado.EsRevendedor;
+                proveedorAuditoria.OrganizacionDeCompra = usuarioModificacionDto.OrganizacionDeCompra;
                 repositorio.Agregar(proveedorAuditoria);
             }
         }
@@ -644,41 +638,35 @@ namespace SustitucionMOAUtils.Services
             string resultado = string.Empty;
             try
             {
-                Entidades.Usuario usuario = repositorio.Obtener<Entidades.Usuario>(x => x.Id == usuarioModificacionDto.Id);
+                Usuario usuario = repositorio.Obtener<Usuario>(x => x.Id == usuarioModificacionDto.Id);
                 usuario.CUITRegistro = usuarioModificacionDto.Cuit;
                 usuario.Mail = usuarioModificacionDto.Mail;
-                usuario.TipoUsuario = repositorio.Obtener<Entidades.TipoUsuario>(x => x.Id == usuarioModificacionDto.IdTipoUsuario);
+                usuario.TipoUsuario = repositorio.Obtener<TipoUsuario>(x => x.Id == usuarioModificacionDto.IdTipoUsuario);
+                usuario.OrganizacionDeCompra = usuarioModificacionDto.OrganizacionDeCompra;
                 repositorio.GuardarCambios();
                 if (usuarioModificacionDto.Proveedores != null)
                 {
-                    usuario = repositorio.Obtener<Entidades.Usuario>(x => x.Id == usuarioModificacionDto.Id);
                     foreach (var proveedor in usuario.Proveedores)
                     {
                         var proveedorModificado = usuarioModificacionDto.Proveedores.Where(x => x.Id == proveedor.Id).FirstOrDefault();
                         if (proveedorModificado != null)
                         {
-                            this.GuardarProveedorAuditoria(proveedor, proveedorModificado, usuarioModificacionDto);
+                            GuardarProveedorAuditoria(proveedor, proveedorModificado, usuarioModificacionDto);
                             proveedor.Mail = usuarioModificacionDto.Mail;
                             proveedor.CUIT = proveedorModificado.Cuit;
                             proveedor.RazonSocial = proveedorModificado.RazonSocial;
                             proveedor.CodigoProveedor = proveedorModificado.CodigoProveedor;
-                            proveedor.TipoProveedor = repositorio.Obtener<Entidades.TipoUsuario>(x => x.Id == proveedorModificado.IdTipoProveedor);
+                            proveedor.TipoProveedor = repositorio.Obtener<TipoUsuario>(x => x.Id == proveedorModificado.IdTipoProveedor);
                             proveedor.EsRevendedor = proveedorModificado.EsRevendedor;
                             repositorio.GuardarCambios();
                         }
                     }
                 }
-                
-                
                 resultado = "OK";
             }
             catch (Exception ex)
             {
                 resultado = ex.Message;
-            }
-            finally
-            {
-
             }
             return resultado;
         }
@@ -703,7 +691,6 @@ namespace SustitucionMOAUtils.Services
 
             return proveedor;
         }
-
 
         #endregion
 

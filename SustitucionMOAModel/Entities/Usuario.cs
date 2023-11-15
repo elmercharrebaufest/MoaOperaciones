@@ -18,20 +18,20 @@ namespace SustitucionMOAModel.Entities
         public string CUITRegistro { get; set; }
         public bool Habilitado { get; set; }
         public string SeccionesVisitadas { get; set; }
-
         public virtual TipoUsuario TipoUsuario { get; set; }
-
         public DateTime? UltimoLogin { get; set; }
 
         [InverseProperty("UsuariosAsociados")]
         public virtual ICollection<Proveedor> Proveedores { get; set; }
         [InverseProperty("Usuarios")]
         public virtual ICollection<Rol> Roles { get; set; }
+
         public bool AceptoTyC { get; set; }
         public DateTime? AceptoTyCFecha { get; set; }
         public string ApiKey { get; set; }
         //public virtual ICollection<Archivo> Archivos { get; set; }
         public string UsuarioSap { get; set; }
+        public string OrganizacionDeCompra { get; set; }
 
         [InverseProperty("Usuario")]
         public virtual ICollection<PeticionDeOferta> Peticiones { get; set; }
@@ -51,11 +51,11 @@ namespace SustitucionMOAModel.Entities
             Proveedor proveedor = null;
             try
             {
-                proveedor = Proveedores.Where(p => p.CUIT == this.CUITRegistro && this.TipoUsuario.Id == p.TipoProveedor.Id).FirstOrDefault();
+                proveedor = Proveedores.Where(p => p.CUIT == CUITRegistro && TipoUsuario.Id == p.TipoProveedor.Id).FirstOrDefault();
             }
             catch (Exception)
             {
-                proveedor = Proveedores.Where(p => p.CUIT == this.CUITRegistro).FirstOrDefault();
+                proveedor = Proveedores.Where(p => p.CUIT == CUITRegistro).FirstOrDefault();
             }
 
             if (proveedor == null)
@@ -75,10 +75,7 @@ namespace SustitucionMOAModel.Entities
         {
             try
             {
-                return Proveedores.Where(p =>
-                    p.CUIT == this.CUITRegistro &&
-                    this.TipoUsuario.Id == p.TipoProveedor.Id
-                    ).FirstOrDefault();
+                return Proveedores.Where(p => p.CUIT == CUITRegistro && TipoUsuario.Id == p.TipoProveedor.Id).FirstOrDefault();
             }
             catch
             {
@@ -116,7 +113,7 @@ namespace SustitucionMOAModel.Entities
 
         public string ObtenerRazonSocial()
         {
-            if (Proveedores.Count >= 1)
+            if (Proveedores != null && Proveedores.Count >= 1)
             {
                 if (!string.IsNullOrEmpty(ObtenerProveedor().RazonSocial))
                     return ObtenerProveedor().RazonSocial;
@@ -131,7 +128,7 @@ namespace SustitucionMOAModel.Entities
 
         public string ObtenerCodigoProveedor()
         {
-            if (Proveedores.Count >= 1)
+            if (Proveedores != null && Proveedores.Count >= 1)
             {
                 if (!string.IsNullOrEmpty(ObtenerProveedor().CodigoProveedor))
                     return ObtenerProveedor().CodigoProveedor;

@@ -108,7 +108,9 @@ export class CotizacionComponent extends ListBaseComponent {
             trabajoHecho: new FormControl('', Validators.required),
             proveedorSeleccionado: new FormControl('', Validators.required),
             adicional: new FormControl('', Validators.required),
-            ordenDeCompra: new FormControl({ value: '', disabled: this.model.deshabilitarAdicional }, Validators.required)
+            ordenDeCompra: new FormControl({ value: '', disabled: this.model.deshabilitarAdicional }, Validators.required),
+            urgencia: new FormControl('', Validators.required),
+
         });
 
         this.validadorPasoSolpService.formulario = this.formularioCotizacion;
@@ -269,7 +271,7 @@ export class CotizacionComponent extends ListBaseComponent {
     validacionTrabajoHecho() {
         this.model.validarTrabajoHecho = true;
 
-        if (this.model.trabajoHecho == true || this.model.adicional == true) {
+        if (this.model.trabajoHecho == true || this.model.adicional == true || this.model.urgencia == true) {
 
             if (this.model.observacionesCotizacion == "" || this.model.observacionesCotizacion == undefined || this.model.observacionesCotizacion == null) {
                 this.model.mensajeCotizacion = "Debe agregar una observación en el paso #4";
@@ -277,10 +279,12 @@ export class CotizacionComponent extends ListBaseComponent {
                 this.model.validarTrabajoHecho = false;
             }
 
-            if ((this.model.archivosCotizaciones == null || this.model.archivosCotizaciones.length == 0) && (this.model.archivosCotizacionesNuevos == null || this.model.archivosCotizacionesNuevos.length == 0)) {
-                this.model.mensajeCotizacion = "Debe adjuntar un archivo en el paso #4";
-                this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: `${this.model.mensajeCotizacion}` });
-                this.model.validarTrabajoHecho = false;
+            if (this.model.trabajoHecho == true || this.model.adicional == true){
+                if ((this.model.archivosCotizaciones == null || this.model.archivosCotizaciones.length == 0) && (this.model.archivosCotizacionesNuevos == null || this.model.archivosCotizacionesNuevos.length == 0)) {
+                    this.model.mensajeCotizacion = "Debe adjuntar un archivo en el paso #4";
+                    this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: `${this.model.mensajeCotizacion}` });
+                    this.model.validarTrabajoHecho = false;
+                }
             }
 
             if (this.model.trabajoHecho == true && this.model.adicional != true) {
@@ -299,6 +303,7 @@ export class CotizacionComponent extends ListBaseComponent {
                 }
             }
         }
+
         return this.model.validarTrabajoHecho;
     }
 
@@ -364,10 +369,12 @@ export class CotizacionComponent extends ListBaseComponent {
     }
 
     validarFinalizada() {
-        if (this.estaFinalizada == true) {
+        if (this.estaFinalizada) {
             return true;
         }
+        return false;
     }
+    
 
     validarCondiciones(campoCheck) { //se usaba para asignar el valor a disabled en los checkboxes cuando eran excluyentes
         if (this.estaFinalizada == true) {
@@ -382,6 +389,10 @@ export class CotizacionComponent extends ListBaseComponent {
         if (this.model.trabajoHecho == true && campoCheck == 'adicional') {
             return true;
         }
+        if (this.model.trabajoHecho == true && campoCheck == 'urgencia') {
+            return true;
+        }
         return false
     }
+
 }
