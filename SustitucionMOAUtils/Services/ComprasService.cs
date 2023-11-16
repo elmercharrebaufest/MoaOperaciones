@@ -5786,6 +5786,13 @@ namespace SustitucionMOAUtils.Services
 
         private PeticionDeOferta CrearPeticionAutomatica(Solp solp, List<int> usuariosIds, List<SolpPosicion> solpPosicions = null, bool esRegistroInfo = false, List<RegistroInfoDto> registroInfoLista = null)
         {
+            int usuarioCreacionPOId = solp.UsuarioCreacion.Id;
+            if (solp.UsuarioCompras_Id.HasValue)
+            {
+                var usuarioId = repositorio.Obtener<Usuario, int?>(a => a.Mail == solp.UsuarioCompras.Mail, a => a.Id);
+                if (usuarioId.HasValue)
+                    usuarioCreacionPOId = usuarioId.Value;
+            }
             var peticion = new GuardarPeticionDeOfertaDto()
             {
                 Observacion = "",
@@ -5794,7 +5801,7 @@ namespace SustitucionMOAUtils.Services
                 UsuarioIds = usuariosIds,
                 UsuarioActual = new UsuarioDto
                 {
-                    Id = solp.UsuarioCreacion.Id
+                    Id = usuarioCreacionPOId
                 },
                 Adjuntos = null,
                 RegistroInfo = esRegistroInfo
