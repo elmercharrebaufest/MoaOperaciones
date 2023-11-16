@@ -1,5 +1,6 @@
 ﻿using Moq;
 using NUnit.Framework;
+using NUnit.Framework.Constraints;
 using NUnit.Framework.Internal;
 using SustitucionMOAModel.Consultas;
 using SustitucionMOAModel.Dto;
@@ -1428,7 +1429,8 @@ namespace SustitucionMOATest.Services
                     RazonSocialProveedor = "PARISI",
                     CUITProveedor = "2737237394",
                     CodigoProveedor = "003723739",
-                    Usuario_Id = 1
+                    Usuario_Id = 1,
+                    UsuarioComprasSAP = "A"
                 },
             });
 
@@ -1438,12 +1440,19 @@ namespace SustitucionMOATest.Services
 
             repositorioMock.Setup(y => y.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>())).Returns(new Usuario
             {
+                Mail = "test",
                 CUITRegistro = "232323",
                 TipoUsuario = new TipoUsuario { Id = 3 },
-                Id = 1
+                Id = 1,
+                Proveedores = new List<Proveedor> { new Proveedor { Id = 1, CUIT = "232323", TipoProveedor = new TipoUsuario { Id = 3 } } }
             });
-            target.ObtenerOrdenDeCompra(It.IsAny<string>());
-            repositorioMock.Verify(y => y.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>()), Times.Once);
+            repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<Adjudicacion, bool>>>(),
+             It.IsAny<int>(), It.IsAny<string>(), It.IsAny<DirOrden>(), null)).Returns(new List<Adjudicacion> { new Adjudicacion { Usuario = new Usuario { Mail = "test2" } } });
+            repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<UsuarioCompras, bool>>>(),
+             It.IsAny<int>(), It.IsAny<string>(), It.IsAny<DirOrden>(), null)).Returns(new List<UsuarioCompras> { new UsuarioCompras { Id = 1, Mail = "test2" } });
+
+            target.ObtenerOrdenDeCompra("454565645");
+            repositorioMock.Verify(y => y.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>()), Times.Exactly(2));
 
         }
 
@@ -1464,6 +1473,8 @@ namespace SustitucionMOATest.Services
             obtenerProveedorConsumerMOA.Setup(x => x.ObtenerProveedor(It.IsAny<string>())).Returns(new ObtenerProveedorWSMOAResponse { MAIL = "bmelgarejo@test.com", NAME = "PARISI" });
             vendedoresConsumerMOAMock.Setup(x => x.Request(It.IsAny<string>(), (It.IsAny<List<SustitucionMOAModel.Models.FechaWS>>()))).Returns(new SustitucionMOAModel.Models.WSMapMOA.Vendedor.VendedoresWSMOAResponse
             { vendedores = new List<SustitucionMOAModel.Models.WSMapMOA.Vendedor.Vendedor> { new SustitucionMOAModel.Models.WSMapMOA.Vendedor.Vendedor { cuit = "232323" } } });
+            repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<Adjudicacion, bool>>>(),
+             It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null)).Returns(new List<Adjudicacion> { new Adjudicacion { Usuario = new Usuario { Mail = "" } } });
 
             target.ObtenerOrdenDeCompra(It.IsAny<string>());
             repositorioMock.Verify(y => y.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>()), Times.Once);

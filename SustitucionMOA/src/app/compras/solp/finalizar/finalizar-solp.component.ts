@@ -19,12 +19,6 @@ export class FinalizarSolpComponent implements OnInit {
     @Input()
     solpActual: Solp;
 
-    @Input()
-    selectUsuarioCompras: any;
-
-    @Input()
-    usuarioComprasList: any[] = [];
-
     @Output() cancelarFinalizarEmitter = new EventEmitter();
 
     @Output() finalizarEmitter = new EventEmitter<{ selectUsuarioCompras: any, solpActual: Solp }>();
@@ -40,7 +34,7 @@ export class FinalizarSolpComponent implements OnInit {
 
     onFinalizar() {
         const updatedInfo = {
-            selectUsuarioCompras: this.selectUsuarioCompras,
+            selectUsuarioCompras: this.solpActual.selectUsuarioCompras,
             solpActual: this.solpActual
         };
         this.finalizarEmitter.next(updatedInfo);

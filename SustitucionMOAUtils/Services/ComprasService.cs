@@ -5833,6 +5833,40 @@ namespace SustitucionMOAUtils.Services
                     };
                 }
             }
+            if (result.Error == null || string.IsNullOrEmpty(result.Error.Mensaje))
+            {
+                try
+                {
+                    var usuariosCompras = repositorio.Listar<UsuarioCompras>();
+
+                    var usuario = repositorio.Obtener<Usuario>(a => a.UsuarioSap == result.Cabecera.UsuarioComprasSAP)?.Mail;
+                    var usuarioCompras = usuariosCompras.FirstOrDefault(a => a.Mail == usuario)?.Id;
+                    result.Cabecera.UsuarioCompras_Id = usuarioCompras;
+
+                    if (result.Cabecera.UsuarioCompras_Id == null)
+                    {
+                        var adjudicacion = repositorio.Listar<Adjudicacion>(a => a.NumeroOrdenDeCompra == nroOC, 1, "Id", DirOrden.Desc).FirstOrDefault();
+                        if (adjudicacion != null)
+                        {
+                            usuarioCompras = usuariosCompras.FirstOrDefault(a => a.Mail == adjudicacion.Usuario.Mail)?.Id;
+                            result.Cabecera.UsuarioCompras_Id = usuarioCompras;
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    result.Error = new ErrorOC
+                    {
+                        Mensaje = e.Message,
+                        Tipo = "E"
+                    };
+                    result.Cabecera = new OrdenDeCompraSAPCabecera
+                    {
+                        OrdenDeCompra = "",
+                        CodigoProveedor = ""
+                    };
+                }
+            }
             return result;
         }
 
