@@ -28,6 +28,8 @@ using System.Linq.Expressions;
 using System.Threading;
 using SustitucionMOAWS.ResponseHandler.OrdenCarga;
 using CNRTModel = SustitucionMOAModel.Models.WebApiMap.CNRT;
+using System.Collections;
+using System.Data.Entity;
 
 namespace SustitucionMOAUtils.Services
 {
@@ -93,6 +95,12 @@ namespace SustitucionMOAUtils.Services
             EstadoOrdenDeCarga.EdicionSolicitada,
             EstadoOrdenDeCarga.EntregaAnuladaPedidoPendienteAnulacion
         };
+        private readonly EstadoOrdenDeCarga[] estadosNoPuedeCompararPatentes = new EstadoOrdenDeCarga[] {
+            EstadoOrdenDeCarga.Anulada,
+            EstadoOrdenDeCarga.Entregada,
+            EstadoOrdenDeCarga.Vencida,
+        };
+        private readonly int diasPreviosParaCompararPatentes = -4;
 
         public OrdenDeCargaService(
             IRepositorio repositorio,
@@ -809,11 +817,11 @@ namespace SustitucionMOAUtils.Services
 
             var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
 
-            var esAdmin = usuario.TienePermiso("VER TODAS ORDENES DE CARGA");
-            var esTercero = usuario.TienePermiso("VER ORDENES DE CARGA DE TERCEROS");
-            var esComercial = usuario.TienePermiso("VER ORDENES DE CARGA PARA COMERCIALES");
-            var esMesaFas = usuario.TienePermiso("VER ORDENES DE CARGA PARA MESA FAS");
-            var esPuerto = usuario.TienePermiso("VER ORDENES DE CARGA PARA PUERTO");
+            var esAdmin = usuario.TienePermiso(PermisoEnum.VerTodasOrdenesDeCarga);
+            var esTercero = usuario.TienePermiso(PermisoEnum.VerOrdenesDeCargaDeTerceros);
+            var esComercial = usuario.TienePermiso(PermisoEnum.VerOrdenesDeCargaParaComerciales);
+            var esMesaFas = usuario.TienePermiso(PermisoEnum.VerOrdenesDeCargaParaMesaFas);
+            var esPuerto = usuario.TienePermiso(PermisoEnum.VerOrdenesDeCargaParaPuerto);
             var descripcion = EstadoOrdenDeCarga.EdicionRechazada;
             //Log.Debug(this.GetType().Name, "Listar", $" esAdmin: " + esAdmin);
             //Log.Debug(this.GetType().Name, "Listar", $" esTercero: " + esTercero);
@@ -889,9 +897,11 @@ namespace SustitucionMOAUtils.Services
                 Expression<Func<OrdenDeCarga, bool>> filtro = o => o.FechaCarga <= fechaFinDateTime
                     && o.FechaCarga >= fechaIncioDateTime
                     && filtrosEstados.Contains(o.Estado);
-                var listadoConFiltro = repositorio.Listar<OrdenDeCarga>(filtro);
+                var listadoConFiltro = repositorio.ListarConsultable<OrdenDeCarga>(filtro);
+                var hashPatentesCargadas = ObtenerHashPatentesCargadas(listadoConFiltro.AsEnumerable());
 
                 listado = listadoConFiltro
+                    .ToList()
                     .Select(x => new OrdenDeCargaDto
                     {
                         Id = x.Id,
@@ -914,7 +924,8 @@ namespace SustitucionMOAUtils.Services
                         EstaSeleccionado = false,
                         EdicionRechazada = x.EdicionRechazada,
                         Escalable = x.Escalable,
-                        TipoContrato = x.TipoContrato
+                        TipoContrato = x.TipoContrato,
+                        TienePatentesRepetidas = VerificarOrdenConPatentesRepetidas(x, hashPatentesCargadas),
                     }).OrderByDescending(y => y.Id).ToList();
             }
             else
@@ -999,7 +1010,8 @@ namespace SustitucionMOAUtils.Services
                 ContratoSeleccionado = new ContratoOrdenFas(orden)
                 {
                     KgDisponibles = _kgDisponiblesFasService.ObtenerKgDisponiblesContrato(contratoSAP, ordenesPendientes)
-                }
+                },
+                OrdenesConPatentesRepetidas= esInterno? ObtenerOrdenesConPatentesRepetidas(orden) : null,
             };
 
             return ordenDto;
@@ -2959,5 +2971,64 @@ namespace SustitucionMOAUtils.Services
                 VerificarCompensacion(ordenDeCarga);
             }
         }
+        #region COMPARACION_PATENTES
+        private (DateTime, DateTime) ObtenerFechasComparacionPatentes()
+        {
+            var hoy = DateTime.Now;
+            return (hoy, hoy.AddDays(diasPreviosParaCompararPatentes));
+        }
+        private Hashtable ObtenerHashPatentesCargadas()
+        {
+            var (hoy, fechaTope) = ObtenerFechasComparacionPatentes();
+
+            return ObtenerHashPatentesCargadas(
+                repositorio.ListarConsultable<OrdenDeCarga>(oc=> oc.FechaCarga <= hoy && DbFunctions.TruncateTime(oc.FechaCarga) >= fechaTope ).AsEnumerable()
+                );
+        }
+        private Hashtable ObtenerHashPatentesCargadas(IEnumerable<OrdenDeCarga>ordenes)
+        {
+            var hashPatentesCargadas = new Hashtable();
+            ordenes
+                .Where(oc =>
+                    !estadosNoPuedeCompararPatentes.Contains(oc.Estado)
+                )
+                .ToList()
+                .ForEach(oc =>
+                {
+                    var key = oc.ObtenerKeyHashPatentes();
+                    if (hashPatentesCargadas.ContainsKey(key))
+                    {
+                        var ordenesCargadas = (List<int>)hashPatentesCargadas[key];
+                        ordenesCargadas.Add(oc.Id);
+                        hashPatentesCargadas[key] = ordenesCargadas;
+                    }
+                    else
+                    {
+                        hashPatentesCargadas.Add(key, new List<int> { oc.Id });
+                    }
+                });
+            return hashPatentesCargadas;
+        }
+        private bool VerificarOrdenConPatentesRepetidas(OrdenDeCarga orden, Hashtable hashPatentesCargadas)
+        {
+            var key = orden.ObtenerKeyHashPatentes();
+            if (hashPatentesCargadas.ContainsKey(key))
+            {
+                var ordenesCargadas = (List<int>)hashPatentesCargadas[key];
+                return ordenesCargadas.Count > 1;
+            }
+            return false;
+        }
+        private List<int> ObtenerOrdenesConPatentesRepetidas(OrdenDeCarga orden)
+        {
+            var hashPatentesCargadas = ObtenerHashPatentesCargadas();
+            if (!VerificarOrdenConPatentesRepetidas(orden, hashPatentesCargadas))
+            {
+                return null;
+            }
+            var ordenesConPatentesRepetidas = (List<int>)hashPatentesCargadas[orden.ObtenerKeyHashPatentes()];
+            return ordenesConPatentesRepetidas.Where(id=>id!= orden.Id).ToList();
+        }
+        #endregion
     }
 }
