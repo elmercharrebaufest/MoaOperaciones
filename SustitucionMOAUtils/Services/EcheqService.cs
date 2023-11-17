@@ -107,9 +107,10 @@ namespace SustitucionMOAUtils.Services
         public bool ContratoTieneCesionDePago(string proveedor, string contrato)
         {
             ContratoDetalleWSMOAResponse response = (ContratoDetalleWSMOAResponse)new ContratoDetalleConsumerMOA().request(proveedor, contrato);
+            //Se considera en este caso, como un contrato con cesion de pago.
             if (response == null || response.error == "06")
             {
-                throw new InfoCustomException(String.Format(InfoMsg.ElementoNoExiste, "Contrato", contrato));
+                return false;
             }
 
             if (response.error != null && response.error != "" && response.error != "01")
