@@ -1120,6 +1120,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
                 }
 
                 let almacenSeleccionadoObj = this.combos.Almacen.find(x => x.Codigo == pos.almacen);
+                newPos.selectComboAlmacenes = this.combos.Almacen;
                 if (almacenSeleccionadoObj) {
                     newPos.selectAlmacenEntrega = almacenSeleccionadoObj;
                 }
@@ -1164,7 +1165,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
                 }
 
                 this.model.agregarNuevaPosicionDesdeContratoMarco(newPos);
-                this.agregarPosicion();
+                //this.agregarPosicion();
 
             });
             this.model.calcularValorTotalPorMoneda();

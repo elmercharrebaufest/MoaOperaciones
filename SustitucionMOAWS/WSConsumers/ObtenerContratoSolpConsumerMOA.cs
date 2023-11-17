@@ -42,6 +42,59 @@ namespace SustitucionMOAWS.WSConsumers
                 BAPIRETURN[] EX_RETURN = new BAPIRETURN[] { };
                 ZMPES5910[] EX_SUB_ITEM = new ZMPES5910[] { };
 
+                return new ContratoSolpWSMOAResponse
+                {
+                    error = "",
+                    ContratosSolp = new List<ContratoSolp> {
+                        new ContratoSolp {
+                            NumeroDocumentoCompras = "213213", //NUMBER  EBELN Número del documento de compras
+                            Sociedad = "moa", //COMP_CODE BUKRS   Sociedad
+                            IndicadorDeBorrado = "", //DELETE_IND_HDR  ELOEK Indicador de borrado en el documento de compras
+                            NumeroCuentaProveedor = "034343", //VENDOR  ELIFN Número de cuenta del proveedor
+                            NombreProveedor = "pepe",  //NAM_VENDOR LFA1-NAME1  Nombre del Proveedor
+                            OrganizacionCompras = "2023", //PURCH_ORG   EKORG Organización de compras
+                            GrupoCompras = "207", //PUR_GROUP BKGRP   Grupo de compras
+                            ClaveMoneda = "ARS", //CURRENCY    WAERS Clave de moneda
+                            InicioPeriodoValidez = "20230101", //VPER_START KDATB   In.período validez
+                            FinPeriodoValidez = "20240101",//VPER_END KDATE   Fin período validez
+                            Posiciones = new List<ContratoSolpPosicion> { 
+                                new ContratoSolpPosicion {
+                                    NumeroDocumentoCompras = "234234", //NUMBER  EBELN   Número del documento de compras
+                                    NumeroPosicionDocumentoCompras = "01", //ITEM_NO EBELP   Número de posición del documento de compras
+                                    IndicadorDeBorrado = "", //DELETE_IND  ELOEK   Indicador de borrado en el documento de compras
+                                    NumeroMaterial = "000000000050901045", //MATERIAL    MATNR18 Número de material (18 caracteres)
+                                    TextoMaterialOServicio = "aaaaaaaaaa", //SHORT_TEXT  TXZ01   Texto de Material o Servicio
+                                    Centro = "1001", //PLANT   WERKS_D Centro
+                                    Almacen = "1000", //STGE_LOC    LGORT_D Almacén
+                                    CantidadPrevista = 12321, //TARGET_QTY  KTMNG   Cantidad prevista
+                                    UnidadMedida = "UNI", //PO_UNIT BSTME   Unidad de medida de pedido
+                                    ImporteMonedaBapi = 12321, //NET_PRICE   BAPICUREXT  Importe de moneda para BAPIs (con 9 decimales)
+                                    TipoPosicionDocumentoCompras = "9", //ITEM_CAT    PSTYP   Tipo de posición del documento de compras
+                                    TipoImputacionCompras = "K", //ACCTASSCAT  KNTTP   Tipo de imputación
+                                    NumeroPaquete = "01", //PCKG_NO PACKNO  Nº paquete
+                                    GrupoArticuloMateriales = "22038", //MATKL   MATKL   Grupo de Articulo de Materiales
+                                    SubPosiciones = new List<ContratoSolpSubposicion>()
+                                } ,
+                                new ContratoSolpPosicion {
+                                    NumeroDocumentoCompras = "234234", //NUMBER  EBELN   Número del documento de compras
+                                    NumeroPosicionDocumentoCompras = "02", //ITEM_NO EBELP   Número de posición del documento de compras
+                                    IndicadorDeBorrado = "", //DELETE_IND  ELOEK   Indicador de borrado en el documento de compras
+                                    NumeroMaterial = "000000000050615514", //MATERIAL    MATNR18 Número de material (18 caracteres)
+                                    TextoMaterialOServicio = "bbbbb", //SHORT_TEXT  TXZ01   Texto de Material o Servicio
+                                    Centro = "1001", //PLANT   WERKS_D Centro
+                                    Almacen = "1000", //STGE_LOC    LGORT_D Almacén
+                                    CantidadPrevista = 12321, //TARGET_QTY  KTMNG   Cantidad prevista
+                                    UnidadMedida = "UNI", //PO_UNIT BSTME   Unidad de medida de pedido
+                                    ImporteMonedaBapi = 12321, //NET_PRICE   BAPICUREXT  Importe de moneda para BAPIs (con 9 decimales)
+                                    TipoPosicionDocumentoCompras = "9", //ITEM_CAT    PSTYP   Tipo de posición del documento de compras
+                                    TipoImputacionCompras = "K", //ACCTASSCAT  KNTTP   Tipo de imputación
+                                    NumeroPaquete = "01", //PCKG_NO PACKNO  Nº paquete
+                                    GrupoArticuloMateriales = "22038", //MATKL   MATKL   Grupo de Articulo de Materiales
+                                    SubPosiciones = new List<ContratoSolpSubposicion>()
+                                }
+                            }
+                } }
+                };
 
                 string resultado = service.SI_MMRFC_OBTENER_CONTRATO(IM_COMP_CODE, IM_CONTRACT, IM_DETAIL, IM_ITEM_NO, IM_MATERIAL, IM_NOM_VENDOR, IM_PLANT, IM_TEXT_POS, IM_VENDOR, out EX_HEADER, out EX_ITEM, out EX_RETURN, out EX_SUB_ITEM);
 
@@ -107,7 +160,7 @@ namespace SustitucionMOAWS.WSConsumers
 
                     result.ContratosSolp.Add(contrato);
                 }
-            }      
+            }
             result.error = resultado;
 
             return result;
@@ -115,7 +168,8 @@ namespace SustitucionMOAWS.WSConsumers
 
         private List<ContratoSolpSubposicion> ObtenerSubPosiciones(ZMPES5900 posicion, ZMPES5910[] subPosiciones)
         {
-            return subPosiciones.Where(x => x.NUMBER == posicion.NUMBER && x.ITEM_NO == posicion.ITEM_NO).Select(subPos => new ContratoSolpSubposicion {
+            return subPosiciones.Where(x => x.NUMBER == posicion.NUMBER && x.ITEM_NO == posicion.ITEM_NO).Select(subPos => new ContratoSolpSubposicion
+            {
 
                 //Resultado de Subosiciones del Contratos Marco           
                 NumeroDocumentoCompras = subPos.NUMBER, //NUMBER  EBELN   Número del documento de compras

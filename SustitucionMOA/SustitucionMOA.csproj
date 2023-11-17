@@ -19,14 +19,10 @@
     <AssemblyName>SustitucionMOA</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <UseIISExpress>true</UseIISExpress>
-    <IISExpressSSLPort>
-    </IISExpressSSLPort>
-    <IISExpressAnonymousAuthentication>
-    </IISExpressAnonymousAuthentication>
-    <IISExpressWindowsAuthentication>
-    </IISExpressWindowsAuthentication>
-    <IISExpressUseClassicPipelineMode>
-    </IISExpressUseClassicPipelineMode>
+    <IISExpressSSLPort>58280</IISExpressSSLPort>
+    <IISExpressAnonymousAuthentication>enabled</IISExpressAnonymousAuthentication>
+    <IISExpressWindowsAuthentication>disabled</IISExpressWindowsAuthentication>
+    <IISExpressUseClassicPipelineMode>false</IISExpressUseClassicPipelineMode>
     <UseGlobalApplicationHostFile />
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
@@ -390,6 +386,10 @@
     <Content Include="src\app\compras\solp\steps\generacion2\generacion2.component.html" />
     <Content Include="src\app\compras\solp\steps\posicion\cabecera.component.css" />
     <Content Include="src\app\compras\solp\steps\posicion\cabecera.component.html" />
+    <Content Include="src\app\compras\solp\steps\posicion\contrato-marco\contrato-marco.component.css" />
+    <Content Include="src\app\compras\solp\steps\posicion\contrato-marco\contrato-marco.component.html" />
+    <Content Include="src\app\compras\solp\steps\posicion\obtener-contrato-marco\obtener-contrato-marco.component.css" />
+    <Content Include="src\app\compras\solp\steps\posicion\obtener-contrato-marco\obtener-contrato-marco.component.html" />
     <Content Include="src\app\compras\solp\steps\posicion\tab-datos-posicion\tab-datos-posicion.component.html" />
     <Content Include="src\app\compras\solp\steps\posicion\tab-direccion-entrega\tab-direccion-entrega.component.html" />
     <Content Include="src\app\compras\solp\steps\posicion\tab-fechas\tab-fechas.component.html" />
@@ -1219,6 +1219,13 @@
     <TypeScriptCompile Include="src\app\compras\solp\steps\generacion1\generacion1.component.ts" />
     <TypeScriptCompile Include="src\app\compras\solp\steps\generacion2\generacion2.component.ts" />
     <TypeScriptCompile Include="src\app\compras\solp\steps\posicion\cabecera.component.ts" />
+    <TypeScriptCompile Include="src\app\compras\solp\steps\posicion\contrato-marco\contrato-marco.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\compras\solp\steps\posicion\contrato-marco\contrato-marco.component.ts" />
+    <TypeScriptCompile Include="src\app\compras\solp\steps\posicion\contrato-marco\contrato-marco.ts" />
+    <TypeScriptCompile Include="src\app\compras\solp\steps\posicion\obtener-contrato-marco\contrato-marco.model.ts" />
+    <TypeScriptCompile Include="src\app\compras\solp\steps\posicion\obtener-contrato-marco\obtener-contrato-marco.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\compras\solp\steps\posicion\obtener-contrato-marco\obtener-contrato-marco.component.ts" />
+    <TypeScriptCompile Include="src\app\compras\solp\steps\posicion\obtener-contrato-marco\obtener-contrato-marco.service.ts" />
     <TypeScriptCompile Include="src\app\compras\solp\steps\posicion\tab-datos-posicion\tab-datos-posicion.component.ts" />
     <TypeScriptCompile Include="src\app\compras\solp\steps\posicion\tab-direccion-entrega\tab-direccion-entrega.component.ts" />
     <TypeScriptCompile Include="src\app\compras\solp\steps\posicion\tab-fechas\tab-fechas.component.ts" />
