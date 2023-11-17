@@ -674,26 +674,35 @@ namespace SustitucionMOATest.Services
         [Test()]
         public void AutocompleteServiciosSapTest()
         {
-            List<TablaSap> ListaSap = new List<TablaSap>
+            List<TablaSapDto> ListaSap = new List<TablaSapDto>
             {
-                new TablaSap {Id=1, Descripcion = "Prueba 1", CodigoSap="MOA", Tabla = TablasSap.CodigoServicioSap},
-                new TablaSap {Id=2, Descripcion = "Prueba 2", CodigoSap="Otro", Tabla = TablasSap.CodigoServicioSap},
-                new TablaSap {Id=3, Descripcion = "Prueba 3", CodigoSap="MOA", Tabla = TablasSap.CodigoServicioSap},
-                new TablaSap {Id=4, Descripcion = "Prueba 1", CodigoSap="MOA Operaciones", Tabla = TablasSap.CodigoServicioSap},
-                new TablaSap {Id=5, Descripcion = "Prueba 1", CodigoSap="MOA", Tabla = TablasSap.CecoSolpSap},
+                new TablaSapDto {Id=1, Descripcion = "Prueba 1", CodigoSap="MOA", Tabla = TablasSap.CodigoServicioSap},
+                new TablaSapDto {Id=2, Descripcion = "Prueba 2", CodigoSap="Otro", Tabla = TablasSap.CodigoServicioSap},
+                new TablaSapDto {Id=3, Descripcion = "Prueba 3", CodigoSap="MOA", Tabla = TablasSap.CodigoServicioSap},
+                new TablaSapDto {Id=4, Descripcion = "Prueba 1", CodigoSap="MOA Operaciones", Tabla = TablasSap.CodigoServicioSap},
+                new TablaSapDto {Id=5, Descripcion = "Prueba 1", CodigoSap="MOA", Tabla = TablasSap.CecoSolpSap},
             };
 
-            repositorioMock
-                .Setup(x => x.Listar(It.IsAny<Expression<Func<TablaSap, bool>>>(),
-                                It.IsAny<int>(),
-                                It.IsAny<string>(),
-                                It.IsAny<DirOrden>(),
-                                It.IsAny<IEnumerable<Expression<Func<TablaSap, object>>>>()))
+            repositorioMock.Setup(x => x.Listar(
+                It.IsAny<Expression<Func<TablaSap, TablaSapDto>>>(), 
+                It.IsAny<Expression<Func<TablaSap, bool>>>(), 
+                It.IsAny<int>(), 
+                It.IsAny<string>(),
+                It.IsAny<DirOrden>()))
                 .Returns(ListaSap);
+
+            //repositorioMock
+            //    .Setup(x => x.Listar(It.IsAny<Expression<Func<TablaSap, TablaSap>>>(),
+            //                    It.IsAny<int>(),
+            //                    It.IsAny<string>(),
+            //                    It.IsAny<DirOrden>(),
+            //                    It.IsAny<IEnumerable<Expression<Func<TablaSap, object>>>>()))
+            //    .Returns(ListaSap);
+
 
             var expected = new List<TablaSapDto>
             {
-                new TablaSapDto { Id = 2,  Descripcion = "Prueba 2", CodigoSap="Otro", Tabla = TablasSap.CodigoServicioSap }
+                new TablaSapDto { Id = 1,  Descripcion = "Prueba 2", CodigoSap="Otro", Tabla = TablasSap.CodigoServicioSap }
             };
 
             var result = target.AutocompleteTablaSap(TablasSap.CodigoServicioSap, "ot");
@@ -1992,15 +2001,19 @@ namespace SustitucionMOATest.Services
             // Arrange
             string valor = "Servicio 1 Descripción";
 
-            var serviciosSimulados = new List<ServicioSolp>
+            var serviciosSimulados = new List<ServicioSolpDto>
             {
-                new ServicioSolp { Descripcion = "Servicio 1 Descripción" },
-                new ServicioSolp { Descripcion = "Servicio 2" },
-                new ServicioSolp { Descripcion = "Descripción de otro servicio" },
-                new ServicioSolp { Descripcion = "Servicio 3 Descripción" }
+                new ServicioSolpDto { Descripcion = "Servicio 1 Descripción" },
             };
 
-            repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<ServicioSolp, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null)).Returns(serviciosSimulados);
+            repositorioMock.Setup(x => x.Listar(
+                It.IsAny<Expression<Func<ServicioSolp, ServicioSolpDto>>>(),
+                It.IsAny<Expression<Func<ServicioSolp, bool>>>(),
+                It.IsAny<int>(),
+                It.IsAny<string>(),
+                It.IsAny<DirOrden>()))
+                .Returns(serviciosSimulados);
+
 
             List<ServicioSolpDto> result = target.AutocompleteServicioSolp(valor);
 
@@ -2019,17 +2032,20 @@ namespace SustitucionMOATest.Services
             string valor = "123"; // Establece un valor de búsqueda
 
             // Crea una lista de ServicioSolp simulada que contiene elementos coincidentes y no coincidentes con el valor de búsqueda
-            var serviciosSimulados = new List<ServicioSolp>
+            var serviciosSimulados = new List<ServicioSolpDto>
             {
-                new ServicioSolp { CodigoSap = 123 },
-                new ServicioSolp { CodigoSap = 456 },
-                new ServicioSolp { CodigoSap = 12345 },
-                new ServicioSolp { CodigoSap = 7890 }
+                new ServicioSolpDto { Codigo = 123 },
+                new ServicioSolpDto { Codigo = 12345 },
             };
 
             // Configura el mock del repositorio para devolver la lista simulada
-            repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<ServicioSolp, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null)).Returns(serviciosSimulados);
-
+            repositorioMock.Setup(x => x.Listar(
+                            It.IsAny<Expression<Func<ServicioSolp, ServicioSolpDto>>>(),
+                            It.IsAny<Expression<Func<ServicioSolp, bool>>>(),
+                            It.IsAny<int>(),
+                            It.IsAny<string>(),
+                            It.IsAny<DirOrden>()))
+                            .Returns(serviciosSimulados);
             // Act
             List<ServicioSolpDto> result = target.AutocompleteCodigoServicioSolp(valor);
 
@@ -2039,7 +2055,7 @@ namespace SustitucionMOATest.Services
             // Verificar que la lista resultante contenga elementos códigos que contengan el valor de búsqueda
             foreach (var servicioDto in result)
             {
-                Assert.That(serviciosSimulados.Any(s => s.CodigoSap.ToString().Contains(servicioDto.Codigo.ToString())), Is.True);
+                Assert.That(serviciosSimulados.Any(s => s.Codigo.ToString().Contains(servicioDto.Codigo.ToString())), Is.True);
             }
         }
 

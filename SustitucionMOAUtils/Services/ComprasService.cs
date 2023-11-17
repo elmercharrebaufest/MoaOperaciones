@@ -1600,35 +1600,56 @@ namespace SustitucionMOAUtils.Services
 
         public List<TablaSapDto> AutocompleteTablaSap(string tabla, string valor)
         {
-            var lista = repositorio.Listar<TablaSap>(x => x.Tabla == tabla)
-            .FindAll(e => e.Descripcion.ToLower().Contains(valor.ToLower()) || e.CodigoSap.ToLower().Contains(valor.ToLower()))
-            .Select(s => new TablaSapDto
+            var lista = repositorio.Listar<TablaSap, TablaSapDto>(s => new TablaSapDto
             {
                 Id = s.Id,
                 Descripcion = s.Descripcion,
                 CodigoSap = s.CodigoSap,
                 Codigo = s.Codigo,
                 Tabla = s.Tabla
-            }).ToList();
-
+            }, x => x.Tabla == tabla && (
+            x.Descripcion.Contains(valor) || x.CodigoSap.Contains(valor)
+            ));
             return lista;
         }
 
         public List<ServicioSolpDto> AutocompleteServicioSolp(string valor)
         {
             string[] palabras = valor.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-            List<ServicioSolpDto> lista = repositorio.Listar<ServicioSolp>()
-            .FindAll(e => palabras.All(p => e.Descripcion.ToLower().Contains(p)))
-            .Select(s => new ServicioSolpDto(s)).ToList();
+            List<ServicioSolpDto> lista = repositorio.Listar<ServicioSolp, ServicioSolpDto>(x =>
+            new ServicioSolpDto
+            {
+                Id = x.Id,
+                Codigo = x.CodigoSap,
+                Descripcion = x.Descripcion,
+                GrupoArticulos = x.GrupoArticulos,
+                TipoServicio = x.TipoServicio,
+                AmbitoServicio = x.AmbitoServicio,
+                Edicion = x.Edicion,
+                UnidadMedidaBase = x.UnidadMedidaBase,
+                SSCItem = x.SSCItem,
+            }
+            , e => palabras.All(p => e.Descripcion.Contains(p)));
 
             return lista;
         }
 
         public List<ServicioSolpDto> AutocompleteCodigoServicioSolp(string valor)
         {
-            List<ServicioSolpDto> lista = repositorio.Listar<ServicioSolp>()
-                .FindAll(e => e.CodigoSap.ToString().ToLower().Contains(valor.ToLower()))
-                .Select(s => new ServicioSolpDto(s)).ToList();
+            List<ServicioSolpDto> lista = repositorio.Listar<ServicioSolp, ServicioSolpDto>(x =>
+             new ServicioSolpDto
+             {
+                 Id = x.Id,
+                 Codigo = x.CodigoSap,
+                 Descripcion = x.Descripcion,
+                 GrupoArticulos = x.GrupoArticulos,
+                 TipoServicio = x.TipoServicio,
+                 AmbitoServicio = x.AmbitoServicio,
+                 Edicion = x.Edicion,
+                 UnidadMedidaBase = x.UnidadMedidaBase,
+                 SSCItem = x.SSCItem,
+             }
+             , e => e.CodigoSap.ToString().Contains(valor));
 
             return lista;
         }
