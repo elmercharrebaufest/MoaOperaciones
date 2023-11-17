@@ -1465,11 +1465,11 @@ namespace SustitucionMOAUtils.Services
         public string GenerarZipPliego(int idSolp, string pathBase)
         {
             var solp = repositorio.Obtener<Solp>(idSolp);
-            var middleFileName = solp.NroSolp == null ? (solp.Pliego.NombreObra == null ? "xxxx" : solp.Pliego.NombreObra) : solp.NroSolp;
-            var pdfFilename = $"Solp-{middleFileName}-pliego-{DateTime.Now.ToString("yyyyMMdd")}.pdf";
+            var middleFileName = solp.NroSolp ?? (solp.Pliego.NombreObra ?? "xxxx");
+            var pdfFilename = $"Solp-{middleFileName}-pliego-{DateTime.Now:yyyyMMdd}.pdf";
             var pdfFilePath = $"{pathBase}/{pdfFilename}";
 
-            if (solp.TipoSolp.Codigo == "CON_PLIEGO")
+            if (solp.TipoSolp?.Codigo == "CON_PLIEGO" || (solp.TipoSolpSap == 3 && solp.Urgencia.Value))
             {
                 File.WriteAllBytes(pdfFilePath, GenerarSolpPdf(idSolp));
             }
@@ -1492,7 +1492,7 @@ namespace SustitucionMOAUtils.Services
                             }
                         }
 
-                        if (solp.TipoSolp.Codigo == "CON_PLIEGO")
+                        if (solp.TipoSolp?.Codigo == "CON_PLIEGO" || (solp.TipoSolpSap == 3 && solp.Urgencia.Value))
                         {
                             archivo.CreateEntryFromFile(pdfFilePath, pdfFilename);
                         }
