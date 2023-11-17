@@ -14,7 +14,6 @@ using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using SustitucionMOAModel.Models.WSMapMOA;
-using SustitucionMOAModel.Models.WSMapMOA.CartaPorte.Formulario;
 using SustitucionMOAModel.Models.WSMapMOA.Compras;
 using SustitucionMOAModel.Models.WSMapMOA.Vendedor.Detalle;
 using SustitucionMOARepositorio;
@@ -675,7 +674,7 @@ namespace SustitucionMOAUtils.Services
                         }
                         catch (Exception e)
                         {
-                            Logger.Log.Info($"EnviarMailSolpFinalizada nro de solp {solpEntity.NroSolp}");
+                            Log.Info($"EnviarMailSolpFinalizada nro de solp {solpEntity.NroSolp} - Error: " + e);
                         }
                     }
                 }
@@ -2094,6 +2093,7 @@ namespace SustitucionMOAUtils.Services
                 List<ServicioSolp> listaServicioSolp = repositorio.Listar<ServicioSolp>();
                 int? estadoIncompletoId = repositorio.Obtener<TablaEstado>(x => x.Tabla == TablasEstado.EstadoDocumento && x.Codigo == "INCOMPLETO")?.Id;
                 //int? estadoIncompletoId = repositorio.Obtener<TablaEstado>(x => x.Tabla == TablasEstado.EstadoDocumento && x.Codigo == EstadoDocumentoSolp.Incompleto.Code())?.Id;
+                List<UnidadMedidaSap> unidadMedidaSap = repositorio.Listar<UnidadMedidaSap>();
 
                 List<string> numeroSolicitudes = result.Posiciones.Select(a => a.NumeroSolicitud).Distinct().ToList();
                 var solpdsDB = repositorio.Listar<Solp>(s => numeroSolicitudes.Contains(s.NroSolp));
@@ -2200,8 +2200,10 @@ namespace SustitucionMOAUtils.Services
                         if (posicionEntity.TipoPosicion_Id == 10)
                         {
                             posicionEntity.Cantidad = posicion.Cantidad;
-                            TablaSap unidadMedidapos = unidadesDeMedida.FirstOrDefault(um => um.Codigo == posicion.UnidadMedida);
-                            posicionEntity.Unidad_Id = unidadMedidapos?.Id;
+                            var codigoUnidad = unidadMedidaSap.Where(a => a.Tecnica == posicion.UnidadMedida || 
+                            a.UM == posicion.UnidadMedida || a.Comercial == posicion.UnidadMedida ||
+                            a.TextoUM == posicion.UnidadMedida || a.TextoUM2 == posicion.UnidadMedida).Single().Comercial;
+                            posicionEntity.Unidad_Id = tablaSap.Where(x => x.CodigoSap == codigoUnidad).FirstOrDefault()?.Id;
                             posicionEntity.PrecioBruto = posicion.PrecioSolp;
                             if (tipoImputacion != null)
                             {
@@ -2272,7 +2274,9 @@ namespace SustitucionMOAUtils.Services
                                                       ti.NumeroPosicion == subPosicion.NumeroPosicion &&
                                                       ti.NumeroDeSerie == imputacionSubposicion.NumeroActualImputacion);
 
-                            TablaSap unidadMedida = unidadesDeMedida.FirstOrDefault(um => um.Codigo == subPosicion.UnidadDeMedida);
+                            var codigoUnidad = unidadMedidaSap.Where(a => a.Tecnica == subPosicion.UnidadDeMedida ||
+                            a.UM == subPosicion.UnidadDeMedida || a.Comercial == subPosicion.UnidadDeMedida ||
+                            a.TextoUM == subPosicion.UnidadDeMedida || a.TextoUM2 == subPosicion.UnidadDeMedida).Single().Comercial;
 
                             TablaSap tipoImputacionSubposicion =
                                 tipoImputacionPosicion == null || imputacionSubposicion == null || tipoImputacionSAP == null ? null :
@@ -2295,7 +2299,7 @@ namespace SustitucionMOAUtils.Services
                             subPosicionEntity.CuentaMayor_Id = cuentaSolpSap?.Id;
                             subPosicionEntity.TipoImputacion_Id = tipoImputacionSubposicion?.Id;
                             subPosicionEntity.Cantidad = subPosicion.Cantidad;
-                            subPosicionEntity.Unidad_Id = unidadMedida?.Id;
+                            subPosicionEntity.Unidad_Id = tablaSap.Where(x => x.CodigoSap == codigoUnidad).FirstOrDefault()?.Id;
                             subPosicionEntity.PrecioBruto = subPosicion.PrecioUnitario;
                             subPosicionEntity.Estado = true;
 
