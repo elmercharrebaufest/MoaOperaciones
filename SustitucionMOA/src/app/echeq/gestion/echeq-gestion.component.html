@@ -13,6 +13,7 @@
             <app-echeq-filtros (applyFilterEmitter)="applyFilter($event)" (searchDataEmitter)="searchData($event)"></app-echeq-filtros>
 
             <!-- Aca le paso la lista al componente como una propiedad -->
+            <spinner></spinner>
             <app-echeq-grilla [(echeqContratos)]="contratosFiltrados"></app-echeq-grilla>
 
     </section>
