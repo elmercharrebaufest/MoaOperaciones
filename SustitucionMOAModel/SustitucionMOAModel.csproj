@@ -310,6 +310,7 @@
     <Compile Include="Models\WSMapMOA\Compras\FuenteAprovisionamiento.cs" />
     <Compile Include="Models\WSMapMOA\Compras\FuenteAprovisionamientoWSMOAResponse.cs" />
     <Compile Include="Models\WSMapMOA\Compras\ObtenerProveedorWSMOAResponse.cs" />
+    <Compile Include="Models\WSMapMOA\Compras\UnidadesDeMedida.cs" />
     <Compile Include="Models\WSMapMOA\Compras\Orden.cs" />
     <Compile Include="Models\WSMapMOA\Compras\OrdenWSMOAResponse.cs" />
     <Compile Include="Models\WSMapMOA\Compras\Material.cs" />

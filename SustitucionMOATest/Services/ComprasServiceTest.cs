@@ -1,6 +1,5 @@
 ﻿using Moq;
 using NUnit.Framework;
-using NUnit.Framework.Constraints;
 using NUnit.Framework.Internal;
 using SustitucionMOAModel.Consultas;
 using SustitucionMOAModel.Dto;
@@ -54,6 +53,7 @@ namespace SustitucionMOATest.Services
         private Mock<IAgregarRegistroInfoConsumerMOA> agregarRegistroInfoConsumerMOAMock;
         private Mock<IEmailService> emailServiceMock;
         private Mock<IReporteOrdenDeCompraConsumerMOA> reporteOrdenDeCompraConsumerMOAMock;
+        private Mock<IObtenerUnidadesDeMedidaAlternativasConsumerMOA> obtenerUnidadesDeMedidaAlternativasConsumerMOAMock;
 
         private string filePath = "";
 
@@ -458,6 +458,7 @@ namespace SustitucionMOATest.Services
             vendedoresConsumerMOAMock = new Mock<IVendedoresConsumerMOA>();
             emailServiceMock = new Mock<IEmailService>();
             reporteOrdenDeCompraConsumerMOAMock = new Mock<IReporteOrdenDeCompraConsumerMOA>();
+            obtenerUnidadesDeMedidaAlternativasConsumerMOAMock = new Mock<IObtenerUnidadesDeMedidaAlternativasConsumerMOA>();
 
             httpContextServiceMock.Setup(x => x.ObtenerPathLogoMail()).Returns(TestContext.CurrentContext.TestDirectory + "\\Util\\LogoBaufest.png");
             filePath = Path.GetFullPath(TestContext.CurrentContext.TestDirectory + "\\Util\\LogoBaufest.png");
@@ -487,7 +488,8 @@ namespace SustitucionMOATest.Services
                 vendedoresConsumerMOAMock.Object,
                 agregarRegistroInfoConsumerMOAMock.Object,
                 emailServiceMock.Object,
-                reporteOrdenDeCompraConsumerMOAMock.Object
+                reporteOrdenDeCompraConsumerMOAMock.Object,
+                obtenerUnidadesDeMedidaAlternativasConsumerMOAMock.Object
                 );
         }
 
@@ -684,9 +686,9 @@ namespace SustitucionMOATest.Services
             };
 
             repositorioMock.Setup(x => x.Listar(
-                It.IsAny<Expression<Func<TablaSap, TablaSapDto>>>(), 
-                It.IsAny<Expression<Func<TablaSap, bool>>>(), 
-                It.IsAny<int>(), 
+                It.IsAny<Expression<Func<TablaSap, TablaSapDto>>>(),
+                It.IsAny<Expression<Func<TablaSap, bool>>>(),
+                It.IsAny<int>(),
                 It.IsAny<string>(),
                 It.IsAny<DirOrden>()))
                 .Returns(ListaSap);
@@ -1422,8 +1424,20 @@ namespace SustitucionMOATest.Services
         [Test]
         public void TraerCotizacionOk()
         {
-            repositorioMock.Setup(y => y.ObtenerConsultaEscalar(It.IsAny<TraerCotizacionConsulta>())).Returns(new PeticionDeOfertaDto { CotizacionId = 1, Cotizacion = new CotizacionDto { ArchivosCotizacion = null } });
+            repositorioMock.Setup(y => y.ObtenerConsultaEscalar(It.IsAny<TraerCotizacionConsulta>())).Returns(new PeticionDeOfertaDto
+            {
+                CotizacionId = 1,
+                Cotizacion = new CotizacionDto { ArchivosCotizacion = null },
+                TipoPosicionCodigo = "MATERIALES",
+                PeticionDeOfertaPosicion = new List<PeticionDeOfertaSolpPosicionDto> { new PeticionDeOfertaSolpPosicionDto { Posiciones = new SolpPosicionDto { Codigo = "000000000050224373" } } }
+            });
             repositorioMock.Setup(y => y.Obtener<Cotizacion>(It.IsAny<int>())).Returns(cotizacion);
+            var tablaSapDto = new List<TablaSapDto> { new TablaSapDto { Codigo = "FINALIZADA", Tabla = "EstadoSolpSap", CodigoSap = "05", Descripcion = "Liberación concluida" },
+            new TablaSapDto { Id = -1, Descripcion = "Borrado en SAP" }};
+            var tablaSap = new List<TablaSap> { new TablaSap { Codigo = "FINALIZADA", Tabla = "EstadoSolpSap", CodigoSap = "05", Descripcion = "Liberación concluida" } };
+            repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<TablaSap, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null)).Returns(tablaSap);
+            obtenerUnidadesDeMedidaAlternativasConsumerMOAMock.Setup(y => y.Request(It.IsAny<List<string>>())).Returns(new List<UnidadesDeMedida>
+            { new UnidadesDeMedida { CodigoMaterial = "000000000050224373", UnidadDeMedida = "UNI", Denominador = 1, Numerador = 1 }});
             target.TraerCotizacion(It.IsAny<int>());
             repositorioMock.Verify(y => y.ObtenerConsultaEscalar(It.IsAny<TraerCotizacionConsulta>()), Times.Once);
         }
@@ -2190,7 +2204,6 @@ namespace SustitucionMOATest.Services
             Assert.IsTrue(File.Exists(result));
 
         }
-
     }
 
 }

@@ -86,9 +86,9 @@
                                 </p-cellEditor>
                             </td>
                             <td pEditableColumn class="columna">
-                                <div [ngClass]="{'invalido': esFinalizado && posicionesCompra.Posiciones.CotizacionPosicion.NoDisponible != true && 
+                                <div [ngClass]="{'invalido': esFinalizado && posicionesCompra.Posiciones.CotizacionPosicion.NoDisponible != true &&
                                      (posicionesCompra.Posiciones.CotizacionPosicion.UnidadDeMedida_Id <= 0)} ">
-                            <p-dropdown [options]="unidades" dataKey="Codigo" optionLabel="Descripcion"
+                            <p-dropdown [options]="getUnidades(posicionesCompra)" dataKey="Codigo" optionLabel="Descripcion"
                                 [disabled]="posicionesCompra.Posiciones.CotizacionPosicion.NoDisponible == true"
                                 [(ngModel)]="posicionesCompra.Posiciones.CotizacionPosicion.UnidadMedida"
                                 placeholder="Unidad" [style]="{'width':'170px'}" [dropdown]="true"
@@ -99,7 +99,7 @@
                         </div>
                             </td>
                             <td class="columna">
-                                <div [ngClass]="{'invalido': esFinalizado && posicionesCompra.Posiciones.CotizacionPosicion.NoDisponible != true && 
+                                <div [ngClass]="{'invalido': esFinalizado && posicionesCompra.Posiciones.CotizacionPosicion.NoDisponible != true &&
                                      (posicionesCompra.Posiciones.CotizacionPosicion.Moneda_Id <= 0)}">
 
                              <p-dropdown
@@ -182,10 +182,10 @@
                                     <button class="plazoDeOferta btn" style="font-size: 13px;" (click)="abrirPlazoDeOferta(posicionesCompra?.Posiciones?.CotizacionPosicion, posicionesCompra?.Posiciones?.Cantidad)">
                                         Agregar
                                     </button>
-                                   
+
                                 </div>
                             </td>
-                            
+
 
                         </tr>
                     </ng-template>

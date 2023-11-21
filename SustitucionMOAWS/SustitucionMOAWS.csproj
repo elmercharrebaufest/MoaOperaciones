@@ -470,6 +470,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
+    <Compile Include="Service References\ObtenerUnidadesDeMedidaAlternativasWebServiceMOA\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
     <Compile Include="Service References\UsuarioDesbloquearWebServiceMOA\Reference.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -542,6 +547,7 @@
     <Compile Include="WSConsumers\EcheqVisualizarDisponibleChequeConsumerMOA.cs" />
     <Compile Include="WSConsumers\EcheqVisualizarPendientePagoConsumerMOA.cs" />
     <Compile Include="WSConsumers\ModificarOrdenDeCompraConsumerMOA.cs" />
+    <Compile Include="WSConsumers\ObtenerUnidadesDeMedidaAlternativasConsumerMOA.cs" />
     <Compile Include="WSConsumers\ObtenerProveedorConsumerMOA.cs" />
     <Compile Include="WSConsumers\ObtenerRegistroInfoConsumerMOA.cs" />
     <Compile Include="WSConsumers\ObtenerOrdenDeCompraConsumerMOA.cs" />
@@ -2229,6 +2235,7 @@
     <None Include="Service References\ServicioSuscriptorAccesos\ServicioSuscriptor3.xsd">
       <SubType>Designer</SubType>
     </None>
+    <None Include="Service References\ObtenerUnidadesDeMedidaAlternativasWebServiceMOA\SI_MMRFC_UM_ALTERNATIVAS.wsdl" />
     <None Include="Service References\UsuarioDesbloquearWebServiceMOA\SI_MPMF_MOAOP_LOGIN_DESBUSR.wsdl" />
     <None Include="Service References\UsuarioDesbloquearWebServiceMOA\SustitucionMOAWS.UsuarioDesbloquearWebServiceMOA.SI_MPMF_MOAOP_LOGIN_DESBUSRResponse.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
@@ -2409,6 +2416,7 @@
     <WCFMetadataStorage Include="Service References\ScatoComandosWebService\" />
     <WCFMetadataStorage Include="Service References\ScatoWebService\" />
     <WCFMetadataStorage Include="Service References\ServicioSuscriptorAccesos\" />
+    <WCFMetadataStorage Include="Service References\ObtenerUnidadesDeMedidaAlternativasWebServiceMOA\" />
     <WCFMetadataStorage Include="Service References\UsuarioDesbloquearWebServiceMOA\" />
     <WCFMetadataStorage Include="Service References\UsuarioHabilitarWebServiceMOA\" />
     <WCFMetadataStorage Include="Service References\UsuarioInhabilitarWebServiceMOA\" />
@@ -3501,6 +3509,18 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Service References\ReporteOCWebServiceMOA\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\ObtenerUnidadesDeMedidaAlternativasWebServiceMOA\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\ObtenerUnidadesDeMedidaAlternativasWebServiceMOA\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\ObtenerUnidadesDeMedidaAlternativasWebServiceMOA\Reference.svcmap">
       <Generator>WCF Proxy Generator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>
