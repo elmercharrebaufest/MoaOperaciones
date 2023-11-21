@@ -12,6 +12,7 @@ import { AdjudicacionDto } from '../modelos/adjudicacion';
 import { OrdenDeCompraSap } from '../modelos/ordenDeCompraSap';
 import { RegistroInfoDto } from '../modelos/registro-info';
 import { PeticionVisualizacionPrecioDto } from '../modelos/peticion-visualizar-precio-dto';
+import { ChatInternoComprasDto } from './chat-interno/chat-interno.interface';
 
 @Injectable({
     providedIn: 'root'
@@ -893,6 +894,39 @@ export class ComprasService extends BaseService {
 
         return this.http
             .get("/api/compras/ObtenerReporteOrdenDeCompra", {
+                params: params,
+                headers: this.headers
+            });
+    }
+
+    public obtenerChat(peticionDeOfertaId: string): Observable<PeticionDeOfertaDto> {
+        let params: HttpParams = new HttpParams();
+        params = params.set("peticionDeOfertaId", peticionDeOfertaId);
+       
+        return this.http
+            .get("/api/compras/ObtenerChat", {
+                params: params,
+                headers: this.headers
+            });
+    }
+
+    public grabarMensajeChatInterno(mensaje: ChatInternoComprasDto) {
+        let json = JSON.stringify(mensaje);
+        
+
+        var payload = new FormData();
+        payload.append('json', json);
+
+        return this.http
+            .post<ChatInternoComprasDto>('/api/compras/GrabarMensajeChatInterno', payload, { headers: this.headers });
+    }
+
+    public obtenerYExportarChat(peticionDeOfertaId: string): Observable<any> {
+        let params: HttpParams = new HttpParams();
+        params = params.set("peticionDeOfertaId", peticionDeOfertaId);
+       
+        return this.http
+            .get("/api/compras/ObtenerYExportarChat", {
                 params: params,
                 headers: this.headers
             });

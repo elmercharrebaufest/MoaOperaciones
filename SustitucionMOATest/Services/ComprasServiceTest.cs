@@ -2059,6 +2059,138 @@ namespace SustitucionMOATest.Services
             }
         }
 
+        [Test]
+        public void ObtenerChatTest()
+        {
+            int peticionDeOfertaId = 1;
+            int usuarioActualId = 2;
+
+            var peticionDeOferta = new PeticionDeOferta
+            {
+                Id = 1,
+                FechaCreacion = DateTime.Now,
+                Usuarios = new List<PeticionDeOfertaUsuario>
+            {
+                new PeticionDeOfertaUsuario
+                {
+                    Usuario = new Usuario
+                    {
+                        CUITRegistro = "123456789",
+                        Mail = "test@mail.com",
+                    }
+                }
+            },
+                ChatInternoCompras = new List<ChatInternoCompras>
+            {
+                    new ChatInternoCompras
+                    {
+                        Id = 1,
+                        FechaEnvio = DateTime.Now,
+                        Usuario = new Usuario
+                        {
+                            Mail = "test@mail.com",
+                            Roles = new List<Rol> { new Rol { Codigo = "COMPRADOR" } }
+                        },
+                    }
+                }
+            };
+
+            repositorioMock.Setup(x => x.Obtener<PeticionDeOferta>(It.IsAny<int>())).Returns(peticionDeOferta);
+
+            var result = target.ObtenerChat(peticionDeOfertaId, usuarioActualId);
+
+            Assert.IsNotNull(result);
+            Assert.AreEqual(peticionDeOferta.Id, result.PeticionDeOferta_Id);
+            Assert.AreEqual(peticionDeOferta.FechaCreacion.ToString("dd-MM-yyyy HH-mm-ss"), result.FechaCreacion);
+            Assert.AreEqual(peticionDeOferta.FechaCreacion, result.FechaCreacionDate);
+            Assert.AreEqual(usuarioActualId, result.UsuarioActualId);
+
+            repositorioMock.Verify(x => x.Obtener<PeticionDeOferta>(peticionDeOfertaId), Times.Once);
+            repositorioMock.Verify(x => x.GuardarCambios(), Times.Once);
+        }
+
+        [Test]
+        public void GrabarMensajeChatInternoTest()
+        {
+            var mensajeDto = new ChatInternoComprasDto
+            {
+                Mensaje = "Test Message",
+                PeticionDeOferta_Id = 1,
+                Usuario_Id = 2
+            };
+
+            var chatInternoCompras = new ChatInternoCompras
+            {
+                Id = 0,
+                FechaEnvio = DateTime.Now,
+                Leido = false,
+                Mensaje = mensajeDto.Mensaje,
+                PeticionDeOferta_Id = mensajeDto.PeticionDeOferta_Id,
+                Usuario_Id = mensajeDto.Usuario_Id
+            };
+
+            repositorioMock.Setup(x => x.Agregar(It.IsAny<ChatInternoCompras>())).Callback((ChatInternoCompras entity) =>
+            {
+                Assert.AreEqual(chatInternoCompras.Mensaje, entity.Mensaje);
+                Assert.AreEqual(chatInternoCompras.PeticionDeOferta_Id, entity.PeticionDeOferta_Id);
+                Assert.AreEqual(chatInternoCompras.Usuario_Id, entity.Usuario_Id);
+            });
+
+            var result = target.GrabarMensajeChatInterno(mensajeDto);
+
+            repositorioMock.Verify(x => x.Agregar(It.IsAny<ChatInternoCompras>()), Times.Once, "Agregar method should be called once.");
+            repositorioMock.Verify(x => x.GuardarCambios(), Times.Once, "GuardarCambios method should be called once.");
+
+            Assert.IsNotNull(result);
+            Assert.AreEqual(chatInternoCompras.Id, result.IdEntidad);
+        }
+
+        [Test]
+        public void ExportarChatInternoAtextoTest()
+        {
+            var peticionId = 1;
+            var rutaArchivo = "C:/ArchivosCompras/638358293160300956";
+
+            var peticion = new PeticionDeOferta
+            {
+                Id = peticionId,
+                FechaCreacion = DateTime.Now,
+                Usuario = new Usuario { Mail = "comprador@mail.com" },
+                Usuarios = new List<PeticionDeOfertaUsuario>
+                {
+                    new PeticionDeOfertaUsuario
+                    {
+                        Usuario = new Usuario
+                        {
+                            CUITRegistro = "123456789",
+                            Mail = "proveedor1@mail.com",
+                        }
+                    },
+                },
+                ChatInternoCompras = new List<ChatInternoCompras>
+                {
+                    new ChatInternoCompras
+                    {
+                        Id = 1,
+                        FechaEnvio = DateTime.Now,
+                        Usuario = new Usuario { Mail = "proveedor1@mail.com" },
+                        Mensaje = "Mensaje 1",
+                    },
+                }
+            };
+
+            repositorioMock.Setup(x => x.Obtener<PeticionDeOferta>(peticionId)).Returns(peticion);
+
+            var result = target.ExportarChatInternoAtexto(peticionId, rutaArchivo);
+
+            repositorioMock.Verify(x => x.Obtener<PeticionDeOferta>(peticionId), Times.Once);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result);
+            Assert.IsTrue(File.Exists(result));
+
+        }
 
     }
+
 }

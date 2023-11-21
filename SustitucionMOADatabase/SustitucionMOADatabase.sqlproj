@@ -205,6 +205,7 @@
     <Build Include="DBO\Tables\PeticionDeOfertaRevisionTecnica.sql" />
     <Build Include="DBO\Tables\RegionSap.sql" />
     <None Include="scripts\PostDeployment\RegionSap.sql" />
+    <Build Include="DBO\Tables\ChatInternoCompras.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DatabasePublishQA.xml" />

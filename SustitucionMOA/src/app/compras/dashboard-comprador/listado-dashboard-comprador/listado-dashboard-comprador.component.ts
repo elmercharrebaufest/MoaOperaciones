@@ -17,6 +17,7 @@ import { Subscription } from 'rxjs';
 import { PeticionDeOfertaDto } from '../../../modelos/peticion-de-oferta-model';
 import { CircularDto } from '../../../modelos/circular-model';
 import { AdjudicacionDto, AdjudicacionPosicionDto } from '../../../modelos/adjudicacion';
+import { ChatComprasDto } from '../../chat-interno/chat-interno.interface';
 
 declare var $: any;
 
@@ -71,6 +72,8 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
     centroFiltro: SelectItem[];
     selectCentro: string[] = [];
     usuariosResult: any;
+    displayChatInterno: boolean = false;
+    chatLeido: boolean = false;
 
     constructor(protected service: ComprasService, protected navService: NavService,
         protected sessionDataService: SessionDataService, protected securityService: SecurityService,
@@ -229,79 +232,7 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
         this.displayLegajo = false;
     }
 
-    descargarArchivo({ archivoId }) {
-        if (archivoId == 0) {
-            let SolpId = this.legajo[0].SolpId;
-            this.blockUI.start("Generando...");
-            this.service.getPdf(SolpId)
-                .subscribe(
-                    (result) => {
-                        if (result.logout == true) {
-                            this.sessionDataService.logout();
-                        }
-                        else {
-                            var byteArray = new Uint8Array(result.FileContents);
-                            var blob = new Blob([byteArray], {
-                                type: "application/octet-stream",
-                            });
-
-                            this.downloadArchivoLocal(blob, result.FileDownloadName);
-                        }
-                        this.blockUI.stop();
-                    },
-                    (error) => {
-                        this.blockUI.stop();
-                        this.mensajeComponent.setErrorMsg(error.message);
-                    }
-                )
-        } else if (archivoId < 0) {
-            this.blockUI.start("Generando...");
-            this.service.getPdfPeticionDeOfertaUsuario(archivoId)
-                .subscribe(
-                    (result) => {
-                        if (result.logout == true) {
-                            this.sessionDataService.logout();
-                        }
-                        else {
-                            var byteArray = new Uint8Array(result.FileContents);
-                            var blob = new Blob([byteArray], {
-                                type: "application/octet-stream",
-                            });
-
-                            this.downloadArchivoLocal(blob, result.FileDownloadName);
-                        }
-                        this.blockUI.stop();
-                    },
-                    (error) => {
-                        this.blockUI.stop();
-                        this.mensajeComponent.setErrorMsg(error.message);
-                    }
-                )
-        }
-        else {
-            this.blockUI.start("Descargando...");
-            this.service.DescargarArchivo(archivoId)
-                .subscribe(
-                    (result) => {
-                        if (result.logout == true) {
-                            this.sessionDataService.logout();
-                        }
-                        else {
-                            var byteArray = new Uint8Array(result.FileContents);
-                            var blob = new Blob([byteArray], {
-                                type: "application/octet-stream",
-                            });
-                            this.downloadArchivoLocal(blob, result.FileDownloadName);
-                            this.blockUI.stop();
-                        }
-                    },
-                    (error) => {
-                        this.mensajeComponent.setErrorMsg(error.message);
-                        this.blockUI.stop();
-                    }
-                )
-        }
-    }
+   
 
     private downloadArchivoLocal(blob: Blob, nombreArchivo: string): void {
         if (window.navigator.msSaveOrOpenBlob) {
@@ -585,8 +516,52 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
             )
     }
 
+    public chat: ChatComprasDto;
+
+    obtenerPeticionDeOfertaParaChat(Id) {
+        try {
+            this.displayChatInterno = false;
+            this.subscription = this.service.obtenerChat(Id)
+              .subscribe(
+                (result: any) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.floatMsgService.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.floatMsgService.setInfoMsg(result.info);
+                    } else {
+                        result.Mensajes = result.Mensajes.map((x) => {
+                            x.FechaEnvioDate = new Date(
+                                this.getDateFromAspNetFormat(x.FechaEnvioDate)                                
+                            );   
+                            return x;
+                        });
+                        result.FechaCreacionDate = new Date(
+                            this.getDateFromAspNetFormat(result.FechaCreacionDate)                                
+                        );   
+                        this.chat = result;
+                        this.displayChatInterno = true;
+                        this.chatLeido = true;
+                    };
+                },
+                (error) => {
+                  this.floatMsgService.setErrorMsg(error.message);
+              }
+          );
+      } catch (e) {
+          this.floatMsgService.setErrorMsg(e);
+          return false; //<-- Prevent Refresh
+      }
+      return false; //<-- Prevent Refresh
+    }
+
     cerrarModalCotizacion() {
         this.displayCerrarCotizacion = false;
+    }
+
+    cerrarModalChat() {
+        this.displayChatInterno = false;
     }
 
     getCombos() {

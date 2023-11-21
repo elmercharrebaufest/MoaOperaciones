@@ -222,9 +222,16 @@
                                         <ng-template pTemplate="body" let-licitacion>
                                             <tr>
                                                 <td id="agregarProveedor">
-                                                    <div *ngIf="(rowData.Adicional == null || rowData.TrabajoYaHecho == null) && (rowData.Adicional == null && rowData.TrabajoYaHecho == null)">
-                                                        <img class="pointer" src="./Content/images/icons/editar.svg" alt="Editar"
-                                                             (click)="obtenerPeticionDeOfertaParaProveedor(licitacion.Id)" />
+                                                    <div >
+                                                        <span *ngIf="(rowData.Adicional == null || rowData.TrabajoYaHecho == null) && (rowData.Adicional == null && rowData.TrabajoYaHecho == null)">
+                                                            <img class="pointer" src="./Content/images/icons/agregar-proveedor.svg" alt="Editar"
+                                                            (click)="obtenerPeticionDeOfertaParaProveedor(licitacion.Id)" />
+                                                        </span> 
+                                                        <span style="margin-left: 10px;">
+                                                            <img class="pointer" src="./Content/images/icons/chat.svg" alt="chat"
+                                                            (click)="obtenerPeticionDeOfertaParaChat(licitacion.Id)"/>
+                                                            <div class="punto-rojo" *ngIf="licitacion.ChatSinLeer == true && chatLeido == false"></div>
+                                                        </span>                                                       
                                                     </div>
                                                 </td>
                                                 <td class="columna">{{licitacion.Id}}</td>
@@ -329,4 +336,9 @@
                            (cerrarModalCotizacionEmitter)="cerrarModalCotizacion()" [(peticion)]="peticion"
                            [(visualizarAlertCotizacion)]="visualizarAlertCotizacion">
     </app-cerrar-cotizacion>
+
+    <app-chat-interno [(displayChatInterno)]="displayChatInterno" 
+        [(chat)]="chat">
+        (cerrardisplayChatEmitter)="cerrarModalChat()"
+    </app-chat-interno>
 </div>

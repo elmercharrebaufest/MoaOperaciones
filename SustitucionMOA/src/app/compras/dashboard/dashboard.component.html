@@ -242,7 +242,8 @@
                                 <p-tabPanel header="Licitaciones" [selected]="true">
                                     <p-table [value]="rowData.PeticionesDeOferta">
                                         <ng-template pTemplate="header">
-                                            <tr style="font-size: 15px;">                                               
+                                            <tr style="font-size: 15px;">   
+                                                <th class="columna" style="text-transform: none !important;"></th>                                            
                                                 <th class="columna" style="text-transform: none !important;">Pedido de Cotización</th>
                                                 <th class="columna" style="text-transform: none !important;">Plazo de Oferta</th>
                                                 <th class="columna" style="text-transform: none !important;">Estado Lic.</th>
@@ -256,6 +257,12 @@
                                         </ng-template>
                                         <ng-template pTemplate="body" let-licitacion>
                                             <tr>                                    
+                                                <td class="columna">
+                                                    <span>
+                                                        <img class="pointer" src="./Content/images/icons/chat.svg" alt="chat"
+                                                            style="cursor:default" />
+                                                    </span>
+                                                </td>
                                                 <td class="columna">{{licitacion.Id}}</td>
                                                 <td class="columna">                                                    
                                                     {{licitacion.PlazoDeOferta | customDateFormat | date :'d/M/yyyy HH:mm'}}

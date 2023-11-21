@@ -44,5 +44,14 @@ body.ui-paginator.ui-dropdown{
     width: 10%;
 }
 
+.punto-rojo {
+    position: absolute;
+    top: 38px;
+    left: 65px;
+    width: 10px;
+    height: 10px;
+    background-color: red;
+    border-radius: 50%;
+}
 
 

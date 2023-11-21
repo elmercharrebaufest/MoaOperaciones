@@ -2578,9 +2578,9 @@ namespace SustitucionMOAUtils.Services
             return result.ContratosSolp;
         }
 
-        public ListaPaginada<SolpDto> ListarSolpComprador(Paginacion paginacion, string nroSolp, List<int> usuarios = null, List<int> estados = null, List<int> centros = null, List<int> grupoDeCompras = null)
+        public ListaPaginada<SolpDto> ListarSolpComprador(int usuario_Id, Paginacion paginacion, string nroSolp, List<int> usuarios = null, List<int> estados = null, List<int> centros = null, List<int> grupoDeCompras = null)
         {
-            var todasLasSolp = repositorio.ListarConsultaPaginada(new ListarSolpConsulta(paginacion, nroSolp, usuarios, estados, centros, grupoDeCompras));
+            var todasLasSolp = repositorio.ListarConsultaPaginada(new ListarSolpConsulta(paginacion, nroSolp, usuarios, estados, centros, grupoDeCompras, usuario_Id));
             if (todasLasSolp != null && todasLasSolp.Count() > 0)
             {
                 todasLasSolp.FirstOrDefault().ItemsTotales = todasLasSolp.ItemsTotales;
@@ -3734,6 +3734,22 @@ namespace SustitucionMOAUtils.Services
                 });
             }
 
+            //Chat interno
+            if (peticion.ChatInternoCompras != null && peticion.ChatInternoCompras.Count > 0) 
+            {
+                legajo.Add(new LegajoDto
+                {
+                    ArchivoId = 0,
+                    Observacion = "Chat interno",
+                    PeticionDeOfertaId = peticionDeOfertaId,
+                    SolpId = peticion.Solp_Id,
+                    Fecha = peticion.ChatInternoCompras.First().FechaEnvio,
+                    FechaFormateado = peticion.ChatInternoCompras.First().FechaEnvio.ToString("dd/MM/yyyy"),
+                    Usuario = new UsuarioDto { CUIT = peticion.ChatInternoCompras.First().Usuario.CUITRegistro, Mail = peticion.ChatInternoCompras.First().Usuario.Mail, Id = peticion.ChatInternoCompras.First().Usuario_Id },
+                    Tipo = TipoLegajo.ChatInterno
+                });
+            }
+
             return legajo.OrderByDescending(x => x.Fecha).ToList();
         }
 
@@ -3843,9 +3859,26 @@ namespace SustitucionMOAUtils.Services
                             }
                         }
                     }
+
                     //adjuntos del proveedor (preguntar?)
                     //agrega pliego
                     archivo.CreateEntryFromFile(pdfFilePath, pliegoFilename);
+
+                    //Chat interno
+                    if (peticion.ChatInternoCompras != null && peticion.ChatInternoCompras.Count > 0) 
+                    {
+                        var path = $"{ConfigurationManager.AppSettings["RutaArchivosCompras"]}/{DateTime.Now.Ticks}";
+                        Directory.CreateDirectory(path);
+
+                        string rutaTxt = ExportarChatInternoAtexto(peticion.Id, path);
+                        byte[] fileBytes = System.IO.File.ReadAllBytes(rutaTxt);
+                        string fileName = Path.GetFileName(rutaTxt);
+
+                        archivo.CreateEntryFromFile(rutaTxt, fileName);
+
+                        //Para evitar sobrecargar el server con zips, una vez cargado lo borro
+                        Directory.Delete(path, true);
+                    }
                 }
             }
 
@@ -6326,7 +6359,116 @@ namespace SustitucionMOAUtils.Services
             return !repositorio.Listar<PeticionDeOfertaVisualizacionPrecio>(x => x.UsuarioCreador_Id == usuarioId && x.PeticionDeOferta_Id == peticionDeOfertaId).Any();
         }
 
-    }
+        public ChatComprasDto ObtenerChat(int peticionDeOfertaId, int usuarioActualId)
+        {
+            ChatComprasDto chat = new ChatComprasDto();
+            var peticion = repositorio.Obtener<PeticionDeOferta>(peticionDeOfertaId);
+
+            chat.PeticionDeOferta_Id = peticion.Id;
+            chat.FechaCreacion = peticion.FechaCreacion.ToString("dd-MM-yyyy HH-mm-ss");
+            chat.FechaCreacionDate = peticion.FechaCreacion;
+            chat.UsuarioActualId = usuarioActualId;
+
+            chat.Proveedores = peticion.Usuarios.Select(u => new ProveedorDto
+            {
+                CUIT = u.Usuario.CUITRegistro,
+                Mail = u.Usuario.Mail,
+                RazonSocial = u.Usuario.ObtenerRazonSocial()
+            }).ToList();
+
+            foreach (var item in peticion.ChatInternoCompras.Where(l => l.Usuario_Id != usuarioActualId))
+            {
+                item.Leido = true;
+            }
+            repositorio.GuardarCambios();
+
+            chat.Mensajes = peticion.ChatInternoCompras.Select(m => new ChatInternoComprasDto
+            {
+                Id = m.Id,
+                FechaEnvio = m.FechaEnvio.ToString("dd-MM-yyyy HH-mm-ss"),
+                FechaEnvioDate = m.FechaEnvio,
+                FechaDiaEnvio = m.FechaEnvio.ToString("ddd, d MMM"),
+                Leido = m.Leido,
+                Mail = m.Usuario.Mail,
+                Mensaje = m.Mensaje,
+                PeticionDeOferta_Id = m.PeticionDeOferta_Id,
+                RolUsuario = m.Usuario.Roles.Any(r => r.Codigo == "COMPRADOR") ? "COMPRADOR" : "SOLICITANTE",
+                Usuario_Id = m.Usuario_Id
+            }).ToList();
+
+            return chat;
+        }
+
+        public Resultado GrabarMensajeChatInterno(ChatInternoComprasDto mensaje)
+        {
+            try
+            {
+                var resultado = new Resultado();
+                var chatInternoCompras = new ChatInternoCompras()
+                {
+                    FechaEnvio = DateTime.Now,
+                    Leido = false,
+                    Mensaje = mensaje.Mensaje,
+                    PeticionDeOferta_Id = mensaje.PeticionDeOferta_Id,
+                    Usuario_Id = mensaje.Usuario_Id
+                };
+
+                repositorio.Agregar(chatInternoCompras);
+                repositorio.GuardarCambios();
+              
+                resultado.IdEntidad = chatInternoCompras.Id;
+                return resultado;
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
+        }
+
+        public string ExportarChatInternoAtexto(int peticionDeOfertaId, string rutaArchivo)
+        {
+            try
+            {
+                var peticion = repositorio.Obtener<PeticionDeOferta>(peticionDeOfertaId);
+                //var chatInterno = repositorio.Obtener<ChatComprasDto>(chat.PeticionDeOferta_Id);
+
+                var txtFilename = $"ChatInterno-PO-{peticionDeOfertaId}-{DateTime.Now.ToString("yyyyMMdd")}.txt";
+                var txtFilePath = $"{rutaArchivo}/{txtFilename}";
+
+                using (StreamWriter sw = new StreamWriter(txtFilePath))
+                {
+                    // Escribir información general del chat
+                    sw.WriteLine($"Peticion de oferta : {peticion.Id}");
+                    sw.WriteLine($"Fecha creacion: {peticion.FechaCreacion}");
+                    sw.WriteLine($"Comprador: {peticion.Usuario.Mail}");
+
+                    // Escribir información de proveedores
+                    sw.WriteLine();
+                    sw.WriteLine("Proveedores:");
+                    foreach (var usuario in peticion.Usuarios)
+                    {
+                        sw.WriteLine($"CUIT: {usuario.Usuario.CUITRegistro}, Mail: {usuario.Usuario.Mail}, RazonSocial: {usuario.Usuario.ObtenerRazonSocial()}");
+                    }
+
+                    // Escribir mensajes del chat
+                    sw.WriteLine();
+                    sw.WriteLine("Mensajes:");
+                    foreach (var mensaje in peticion.ChatInternoCompras)
+                    {                     
+                        sw.WriteLine($"{mensaje.FechaEnvio.ToString("dd-MM-yyyy HH:mm")} - {mensaje.Usuario.Mail} - {mensaje.Mensaje}");
+                    }
+                }
+                return txtFilePath;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+}
+    
+    
+
 
     public static class SolpTemplateKeys
     {

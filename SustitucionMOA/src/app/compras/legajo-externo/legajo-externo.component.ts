@@ -46,8 +46,8 @@ export class LegajoExternoComponent implements OnInit {
                 });
     }
 
-    descargarArchivo(archivoId: number) {
-        if (archivoId == 0) {
+    descargarArchivo(archivoId: number, tipoLegajo) {
+        if (tipoLegajo == "SOLP") {
             let SolpId = this.legajo.ListaLegajos[0].SolpId;
             this.blockUI.start("Generando...");
             this.service.getPdf(SolpId)
@@ -65,7 +65,7 @@ export class LegajoExternoComponent implements OnInit {
                         this.blockUI.stop();
                         this.mensajeComponent.setErrorMsg(error.message);
                     })
-        } else if (archivoId < 0) {
+        } else if (tipoLegajo == "Petición de Oferta") {
             this.blockUI.start("Generando...");
             this.service.getPdfPeticionDeOfertaUsuario(archivoId)
                 .subscribe(
@@ -82,8 +82,25 @@ export class LegajoExternoComponent implements OnInit {
                         this.blockUI.stop();
                         this.mensajeComponent.setErrorMsg(error.message);
                     })
-        }
-        else {
+        } else if (tipoLegajo == "Chat Interno") {
+            let peticionDeOfertaId = this.legajo.ListaLegajos[0].PeticionDeOfertaId;
+            this.blockUI.start("Generando...");
+            this.service.obtenerYExportarChat(peticionDeOfertaId.toString())
+                .subscribe(
+                    (result) => {
+                        var byteArray = new Uint8Array(result.FileContents);
+                        var blob = new Blob([byteArray], {
+                            type: "text/plain",
+                        });
+
+                        this.downloadArchivoLocal(blob, result.FileDownloadName);
+                        this.blockUI.stop();
+                    },
+                    (error) => {
+                        this.blockUI.stop();
+                        this.mensajeComponent.setErrorMsg(error.message);
+                    })
+        } else {
             this.blockUI.start("Descargando...");
             this.service.DescargarArchivo(archivoId)
                 .subscribe(
