@@ -15,6 +15,7 @@ export class MisEcheqGrillaComponent extends EcheqGestionComponent implements On
   @Input() echeqContratos: Array<EcheqContrato>;
   @Input() datosReporte: Array<EcheqReporte>;
 
+  verColumnaMarcadas = false;
 
   documentoSelect: EcheqDocumento;
 

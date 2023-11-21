@@ -25,7 +25,7 @@
                     <th tabindex="0" rowspan="1" colspan="1">
                         Nro de COE
                     </th>
-                    <th tabindex="0" rowspan="1" colspan="1">
+                    <th tabindex="0" rowspan="1" colspan="1" *ngIf="verColumnaMarcadas">
                         Liq. Marcadas
                     </th>
                     <th tabindex="0" rowspan="1" colspan="1">
@@ -55,7 +55,7 @@
                         <td>{{reporte.CodigoProveedor}}</td>
                         <td>{{reporte.Contrato}}</td>
                         <td>{{reporte.NumeroCOE}}</td>
-                        <td>{{reporte.LiquidacionMarcada ? 'Sí' : 'No'}}</td>
+                        <td *ngIf="verColumnaMarcadas">{{reporte.LiquidacionMarcada ? 'Sí' : 'No'}}</td>
                         <td>{{reporte.EcheqGenerados ? 'Sí' : 'No'}}</td>
                         <td>{{reporte.FechaCreacion.slice(6, -2) | date: 'dd/MM/yyyy HH:mm:ss' }}</td>
                         <td>{{reporte.CantidadDeEcheqs}}</td>
