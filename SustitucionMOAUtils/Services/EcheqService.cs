@@ -706,7 +706,7 @@ namespace SustitucionMOAUtils.Services
 
                 var usuario = repositorio.Obtener<SustitucionMOAModel.Entities.Usuario>(u => u.Mail == mailUsuario);
 
-                var esAdmin = usuario.TienePermiso("VER ECHEQ ADMIN");
+                var esAdmin = usuario.TienePermiso(SustitucionMOAModel.Enums.PermisoEnum.VerEcheqAdmin);
 
 
                 List<EcheqReporteDto> result = repositorio.Listar<EcheqLiquidacion, EcheqReporteDto>(x => new EcheqReporteDto
@@ -718,6 +718,7 @@ namespace SustitucionMOAUtils.Services
                     LiquidacionMarcada = x.MarcaCheque,
                     FechaCreacion = x.FechaCreacion,
                     Liquidacion = x.Documento,
+                    NumeroCOE = x.NumeroCOE
                 }, x => x.MarcaCheque && (x.EcheqNegocio.Proveedor.CodigoProveedor == codigoProveedor || esAdmin) && fechaIncioDateTime <= DbFunctions.TruncateTime(x.FechaCreacion) && fechaFinDateTime >= DbFunctions.TruncateTime(x.FechaCreacion)); // falta filtrar por fechas
 
 
