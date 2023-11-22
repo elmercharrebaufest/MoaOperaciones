@@ -208,7 +208,6 @@ export class ChatInternoComponent extends BaseComponent implements OnInit {
 
     validar() {
         this.visualizarAlert = false;
-        console.log("estoy", this.mensajeNuevo);
         if (this.mensajeNuevo == undefined || this.mensajeNuevo == "") {
             this.error = "No se pueden enviar mensajes vacios.";
             this.visualizarAlert = true;
