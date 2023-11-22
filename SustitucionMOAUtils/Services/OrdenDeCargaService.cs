@@ -920,7 +920,9 @@ namespace SustitucionMOAUtils.Services
             else
             {
                 var usuariosConMismoCuit = repositorio.Listar<Usuario, int>(x => x.Id, x => x.CUITRegistro == usuario.CUITRegistro);
-                var listadoSinFiltro = repositorio.Listar<OrdenDeCarga>(n => usuariosConMismoCuit.Contains(n.UsuarioCreacion_Id) && n.FechaCarga <= fechaFinDateTime
+                var proveedor = usuario.ObtenerProveedorAsignado() ?? usuario.ObtenerProveedor();
+                var listadoSinFiltro = repositorio.Listar<OrdenDeCarga>(n => (usuariosConMismoCuit.Contains(n.UsuarioCreacion_Id) || n.Cliente.CodigoProveedor == proveedor.CodigoProveedor) 
+                    && n.FechaCarga <= fechaFinDateTime
                     && n.FechaCarga >= fechaIncioDateTime
                     && (_estadosListarNoInternos.Contains(n.Estado))
                     );
