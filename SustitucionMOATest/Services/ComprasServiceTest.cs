@@ -2163,7 +2163,10 @@ namespace SustitucionMOATest.Services
         public void ExportarChatInternoAtextoTest()
         {
             var peticionId = 1;
-            var rutaArchivo = "C:/ArchivosCompras/638358293160300956";
+            //var rutaArchivo = "C:/ArchivosCompras/638358293160300956";
+
+            var rutaArchivo = Path.Combine(Path.GetTempPath(), "ArchivosComprasTest", Guid.NewGuid().ToString());
+            Directory.CreateDirectory(rutaArchivo);
 
             var peticion = new PeticionDeOferta
             {
