@@ -4,7 +4,7 @@ import { ActivatedRoute, Params } from '@angular/router';
 import { BaseComponent } from '../../common/base-components/base-component';
 import { CorredorContrato } from '../../common/models/ordenes-de-carga/corredorContrato';
 import { EstadoOrdenDeCarga } from '../../common/models/ordenes-de-carga/estadoOrdenDeCarga';
-import { KILOS_DISPONIBLES_APROBADO, OrdenDeCarga } from '../../common/models/ordenes-de-carga/ordenDeCarga';
+import { KILOS_DISPONIBLES_APROBADO, OrdenDeCarga, VOLVER_A_DETALLE_REPORTE } from '../../common/models/ordenes-de-carga/ordenDeCarga';
 import { FloatMsgService } from '../../common/services/FloatMsgService';
 import { ModalService } from '../../common/services/ModalService';
 import { NavService } from '../../common/services/NavService';
@@ -39,7 +39,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
     mensajeError: string = "";
     mensajeSeleccionarContrato?: string;
     mensajeSeleccionarFactura?: string;
-
+    mensajeValidacionScato: string = "";
     ordenDeCargaHistorial: any = {};
     estadosVerHistorial: EstadoOrdenDeCarga[] = [
         EstadoOrdenDeCarga.Anulada,
@@ -72,6 +72,8 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
     mostrarBotonForzarCreacionPedido: boolean = false;
     mostrarBotonEditar: boolean = false;
     mostrarBotonSeleccionarFactura: boolean = false;
+    mostrarBotonVolverADetalle: boolean = false;
+    mostrarBotonVerificarCuitsTercero: boolean = false;
 
     mostrarListadoInterno: boolean = false;
     mostrarListadoTercero: boolean = false;
@@ -84,6 +86,8 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
     mostrarBotonEdicionFinalizada: boolean = false;
     mostrarBotonVerificarCompensacion: boolean = false;
 
+    ordenActivaScato: boolean = false;
+
     // esInterno: boolean = false;
     esInterno: boolean = this.isAuthorized('VER TODAS ORDENES DE CARGA');
     esTercero: boolean = this.isAuthorized('VER ORDENES DE CARGA DE TERCEROS');
@@ -93,6 +97,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
     esCorredor: boolean = sessionStorage.getItem("tipoUsuario") === "CORR";
     esAnulador: boolean = this.isAuthorized('ANULAR ORDEN DE CARGA');
 
+    navegandoADetalle = false;
 
     constructor(protected service: OrdenesDeCargaService,
         protected usuarioService: UsuarioService, protected navService: NavService,
@@ -102,8 +107,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
         public datepipe: DatePipe,
         private confirmationService: ConfirmationService) {
         super(navService, securytiService, floatMsgService, modalService);
-
-        // this.esInterno = this.isAuthorized('VER TODAS ORDENES DE CARGA');
+        this.mostrarBotonVolverADetalle = !!sessionStorage.getItem(VOLVER_A_DETALLE_REPORTE);
     }
 
     ngOnInit() {
@@ -112,7 +116,6 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
         });
 
         this.navService.setSeccionList([]);
-
         if (this.ordenDeCargaId > 0) {
             this.obtenerOrdenDeCarga();
         }
@@ -256,7 +259,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
         this.mostrarBotonEdicionFinalizada = false;
         this.mostrarBotonSeleccionarFactura = false;
         this.mostrarBotonVerificarCompensacion = false;
-
+        this.mostrarBotonVerificarCuitsTercero = false;
 
         if (this.estadosVerHistorial.indexOf(this.ordenDeCarga.Estado) >= 0) {
             this.mostrarBotonVerHistorial = true;
@@ -277,11 +280,9 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                 this.mostrarBotonEdicionFinalizada = true;
             }
 
-            //if (this.ordenDeCarga.ContratoSAP === "-" && this.ordenDeCarga.ContratosRespuesta != "-") {
             if (this.ordenDeCarga.ContratoSeleccionado) {
-                // if (this.ordenDeCarga.ContratoSeleccionado.KgDisponiblesTn < KILOS_DISPONIBLES_APROBADO &&
-                if (this.ordenDeCarga.ContratoSeleccionado.KgDisponibles < 15000 &&
-                    this.ordenDeCarga.ContratoSAP === "-") {
+                if (this.ordenDeCarga.ContratoSeleccionado.KgDisponibles < KILOS_DISPONIBLES_APROBADO &&
+                    !this.ordenDeCarga.ContratoSAP) {
                     this.mostrarBotonContratos = true;
                 }
             }
@@ -318,6 +319,9 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
             if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.PendienteCompensacion) {
                 this.mostrarBotonVerificarCompensacion = true;
             }
+            if ((this.ordenDeCarga.Estado == EstadoOrdenDeCarga.Pendiente || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.EntregaPendiente) && this.ordenDeCarga.NecesitaVerificarCuitsTerceros) {
+                this.mostrarBotonVerificarCuitsTercero = true;
+            }
         }
         if (this.esAnulador) {
             this.mostrarBotonAnular = true;
@@ -344,6 +348,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                     } else if (result.info != undefined) {
                     } else {
                         this.ordenDeCarga = result.data;
+                        this.verificarOrdenActivaScato(this.ordenDeCarga.Id.toString());
                         this.validaCPEDG = this.ordenDeCarga.ValidaSisaRuca;
                         this.separarCadenas();
                         this.verificarBotones()
@@ -917,6 +922,78 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
         } catch (e) {
             this.spinnerComponent.hideIt();
             this.blockUI.stop();
+            this.mensajeComponent.setErrorMsg(e);
+        }
+    }
+    navegarADetalle() {
+        this.navegandoADetalle = true;
+        this.goToSeccion('/reporte-contrato/');
+    }
+
+    public extraOnDestroy(): void {
+        if (!this.navegandoADetalle)
+            sessionStorage.removeItem(VOLVER_A_DETALLE_REPORTE)
+    }
+
+    verificarOrdenActivaScato(ordenId: string){
+        this.spinnerComponent.showIt();
+        this.unsubscribe();
+        try {
+            this.service.validarOrdenActivaScato(ordenId).pipe(
+                finalize(() => { this.blockUI.stop(); this.spinnerComponent.hideIt() })
+            ).subscribe(
+                result => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                        return;
+                    } else if ((result.error != undefined && result.error != "") || result.info != undefined) {
+                        this.mensajeValidacionScato = "No se pudo validar si la orden esta activa en Scato."
+                    } else {
+                        this.ordenActivaScato = result.data;
+                        if (this.ordenActivaScato) {
+                            this.mensajeValidacionScato = "Actualmente la orden se encuentra activa en Scato."
+                        }
+                    }
+                },
+                error => {
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+            );
+        } catch (e) {
+            this.spinnerComponent.hideIt();
+            this.blockUI.stop();
+            this.mensajeValidacionScato = "No se pudo validar si la orden esta activa en Scato."
+        }
+    }
+    
+    verificarCuitsTerceros() {
+        this.mensajeComponent.setMsgsEmpty();
+        this.spinnerComponent.showIt();
+        this.unsubscribe();
+        this.blockUI.start('Procesando...');
+        try {
+            this.subscriptionDropDowns = this.service.verificarCuitsTerceros(this.ordenDeCargaId).subscribe(
+                result => {
+                    this.blockUI.stop();
+                    this.spinnerComponent.hideIt();
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.mensajeComponent.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.mensajeComponent.setInfoMsg(result.info);
+                    } else {
+                        this.mensajeComponent.setMsgsEmpty();
+                        this.ordenDeCarga.DescripcionErrorInterno = null;
+                        this.obtenerOrdenDeCarga();
+                    }
+                },
+                error => {
+                    this.blockUI.stop();
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+            );
+        } catch (e) {
             this.mensajeComponent.setErrorMsg(e);
         }
     }

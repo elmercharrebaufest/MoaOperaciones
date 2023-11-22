@@ -4,12 +4,14 @@ import { SolpPosicion } from "../compras/solp/solp-posicion"
 import { CotizacionDto } from "./cotizacionDto"
 
 export interface PeticionDeOfertaDto{
+    PorcentajeDeHoras?: any
     PersonalHoras?: boolean,
     RespetaMateriales?: boolean,
     RespetaServicios?: boolean,
     Id?: number,
     FechaEntregaFormateado?: string,
     PlazoDeOferta?: Date,
+    PlazoDeOfertaHora?: Date
     CUIT?: string,
     Mail?: string,
     Usuarios?: PeticionDeOfertaUsarioDto[],
@@ -27,7 +29,9 @@ export interface PeticionDeOfertaDto{
     SolpDto?: any,
     Selected?: boolean,
     Cantidad?: number,
-    PlazoDeOfertaEstado?: string
+    PlazoDeOfertaEstado?: string,
+    Adicional?: boolean,
+    NroOrdenDeCompraAdicional?: string,
 }
 
 export interface PeticionDeOfertaUsarioDto {
@@ -60,4 +64,11 @@ export interface PeticionDeOfertaSolpPosicionDto{
     NoDisponible: boolean,
 }
 
+export interface PeticionDeOfertaCierreDto{
+    Id: number
+    PeticionDeOferta_Id?: number
+    Usuario_Id?: number
+    Fecha?: Date,
+    Observaciones: string
+}
 

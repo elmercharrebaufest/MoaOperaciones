@@ -29,10 +29,8 @@
                     <title-caps>Refinar resultados</title-caps>
                 </div>
                 <div id="searchVer" class="col-xs-12 col-sm-12 col-md-12">
-                    <app-filtro-fecha-reporte leyenda="Rango máximo de 8 meses" 
-                                              (ClickEvent)="getListadoFechas()"
-                                              (FiltroPendientes)="filtroPendientes($event)"
-                                              ></app-filtro-fecha-reporte>
+                    <app-filtro-fecha-reporte leyenda="Rango máximo de 8 meses" (ClickEvent)="getListadoFechas()"
+                        (FiltroPendientes)="filtroPendientes($event)"></app-filtro-fecha-reporte>
                 </div>
                 <div id="searchProducto" class="col-xs-12 col-sm-6 col-md-15">
                     <p>Producto:</p>
@@ -58,7 +56,7 @@
                             [disabled]="disabled">
                     </div>
                 </div>
-                
+
                 <div id="searchProducto" class="col-xs-12 col-sm-6 col-md-15">
                     <p>Tipo Contrato:</p>
                     <div class="styled-select">
@@ -73,7 +71,7 @@
                     </div>
 
                 </div>
-            
+
             </div>
         </div>
         <!-- End Search-->
@@ -131,11 +129,9 @@
                     <tbody>
                         <tr *ngFor="let cabeceraContrato of cabecera | customFilter : 'Contrato' : filtroContrato  | orderedColumn : {property: (orderedByColumn), direction: orderDirection} ; let odd = odd"
                             role="row" [class.odd]="!odd">
-                            <td><a class="animate" 
-                                   style="cursor:pointer;" 
-                                   data-toggle="modal"
-                                   data-target="#modalDetalleContrato" 
-                                   (click)="guardarFiltros();verDetalleContrato(cabeceraContrato.Contrato)">{{cabeceraContrato.Contrato}}</a>
+                            <td><a class="animate" style="cursor:pointer;" data-toggle="modal"
+                                    data-target="#modalDetalleContrato"
+                                    (click)="guardarFiltros();verDetalleContrato(cabeceraContrato.Contrato)">{{cabeceraContrato.Contrato}}</a>
                             </td>
                             <td *ngIf="verNroPedidoCliente">{{cabeceraContrato.PedidoCliente}}</td>
                             <td>{{cabeceraContrato.FechaDesde| date: 'dd/MM/yyyy'}}</td>
@@ -151,11 +147,11 @@
                                 </div>
                             </td>
                             <td [ngStyle]="{'font-weight':cabeceraContrato.NombreCliente == '' ? '700': ''}">
-                                {{cabeceraContrato.KilosTotales | number}}</td>
+                                {{cabeceraContrato.KilosTotales | number:'':'es'}}</td>
                             <td [ngStyle]="{'font-weight':cabeceraContrato.NombreCliente == '' ? '700': ''}">
-                                {{cabeceraContrato.KilosEntregados | number}}</td>
+                                {{cabeceraContrato.KilosEntregados | number:'':'es'}}</td>
                             <td [ngStyle]="{'font-weight':cabeceraContrato.NombreCliente == '' ? '700': ''}">
-                                {{cabeceraContrato.KilosPendienteEntrega | number}}</td>
+                                {{cabeceraContrato.KilosPendienteEntrega | number:'':'es'}}</td>
                             <td>{{cabeceraContrato.Precio}}</td>
                             <td>{{cabeceraContrato.CondicionEntrega}}</td>
                         </tr>
@@ -170,9 +166,9 @@
                             <td *ngIf="verCliente"></td>
                             <td *ngIf="verCorredor"></td>
                             <td style="text-align :center" tabindex="0">TOTAL</td>
-                            <td [ngStyle]="{'font-weight':'bold'}">{{KilosTotales | number}}</td>
-                            <td [ngStyle]="{'font-weight':'bold'}">{{KilosEntregados | number}}</td>
-                            <td [ngStyle]="{'font-weight':'bold'}">{{KilosPendienteEntrega | number}}</td>
+                            <td [ngStyle]="{'font-weight':'bold'}">{{KilosTotales | number:'':'es'}}</td>
+                            <td [ngStyle]="{'font-weight':'bold'}">{{KilosEntregados | number:'':'es'}}</td>
+                            <td [ngStyle]="{'font-weight':'bold'}">{{KilosPendienteEntrega | number:'':'es'}}</td>
                             <td></td>
                             <td></td>
                             <td></td>
@@ -185,22 +181,24 @@
     </section>
     <!--End CONTENT-->
 </div>
-<div class="modal fade" id="modalDetalleContrato" tabindex="-1" role="dialog"
-     aria-labelledby="cartaDePresentacionLabel" data-backdrop="false"
-     style="background-color: rgba(0, 0, 0, 0.5);">
+
+<button type="button" #modalDetalleReporteContrato style="display:none" id="openModalDetalleReporteContrato"
+    data-toggle="modal" data-target="#modalDetalleContrato"></button>
+
+<div class="modal fade" id="modalDetalleContrato" tabindex="-1" role="dialog" aria-labelledby="cartaDePresentacionLabel"
+    data-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content" style="width: max-content;">
             <div class="modal-header">
-                <button id="cerrarModalUsuario" type="button" class="close btn-close" data-dismiss="modal"
-                    aria-label="Close">
+                <button #cerrarModalDetalle id="cerrarModalUsuario" type="button" class="close btn-close"
+                    data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
                 <h4 class="modal-title" id="cartaDePresentacionLabel">Contrato {{contratoSeleccionadoId}}</h4>
             </div>
             <div class="modal-body">
-                <app-detalle></app-detalle>
+                <app-detalle (navegarDetalle)="cerrarModalDetalle.click()"></app-detalle>
             </div>
         </div>
     </div>
 </div>
-

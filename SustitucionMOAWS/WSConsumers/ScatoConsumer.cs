@@ -111,18 +111,22 @@ namespace SustitucionMOAWS.WSConsumers
 
             return result;
         }
-        public ValidarCuitExisteScatoResponse ExisteCuitDestinoDestinatario(string cuit, bool logger = true)
+
+        public ClienteDto[] ObtenerClientesPorCuit(string cuit)
         {
-            if (logger)
-                Log.Info(string.Format("Validar Existe CUIT en SCATO: {0}", cuit));
-
-            var listaClientes = service.ListarClientesPorCuit(DataFormatter.CuitConGuion(cuit));
-            var result = ValidarCuitExisteScatoResponse.Nuevo(listaClientes.Length > 0, listaClientes.FirstOrDefault()?.Descripcion);
-
-            if (logger)
-                Log.Info(string.Format("Result Existe CUIT en SCATO: {0}; Result: {1}", cuit, result.Existe ? "Existe" : "No existe"));
-
-            return result;
+            var cuitConGuiones = string.Empty;
+            try
+            {
+                cuitConGuiones = DataFormatter.CuitConGuion(cuit);
+                Log.Info("Scato ObtenerClientesPorCuit con CUIT " + cuitConGuiones);
+                var clientes = service.ListarClientesPorCuit(cuitConGuiones);
+                return clientes;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "ObtenerClientesPorCuit con CUIT " + cuitConGuiones);
+                throw new Exception("Error en consulta Scato");
+            }
         }
 
         public ProveedorDto ObtenerProveedorPorCuit(string cuit)
@@ -135,7 +139,7 @@ namespace SustitucionMOAWS.WSConsumers
 
                 Log.Info(string.Format("ScatoConsumer.ObtenerProveedorPorCuit. cuit: {0}, cuitGuiones: {1}, proveedor: {2}",
                     cuit, cuitGuiones, proveedor.ToJson()));
-                
+
                 return proveedor;
             }
             catch (Exception ex)
@@ -144,6 +148,24 @@ namespace SustitucionMOAWS.WSConsumers
                 throw ex;
             }
         }
+
+        public RecorridoDto[] ObtenerRecorridoNoRechazadoPorNumeroDocumento(string nroEntrega)
+        {
+            try
+            {
+                var recorridos = service.ObtenerRecorridoNoRechazadoPorNumeroDocumento(nroEntrega);
+                Log.Info(string.Format("ScatoConsumer.ObtenerRecorridoNoRechazadoPorNumeroDocumento. nroEntrega: {0}",
+                    nroEntrega));
+                return recorridos;
+            }
+            catch (Exception ex)
+            {
+                Log.Error("", "", "ScatoConsumer", "ObtenerRecorridoNoRechazadoPorNumeroDocumento", string.Format("nroEntrega: {0}", nroEntrega));
+                throw ex;
+            }
+        }
+
+
     }
 
 }

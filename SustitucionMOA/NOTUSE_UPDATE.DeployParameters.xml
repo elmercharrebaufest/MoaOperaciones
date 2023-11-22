@@ -30,14 +30,16 @@
 
 	<setParameter name="EmailToReporteCamposSustentables Config" value="mpfeiffer@baufest.com,martin.pfe@gmail.com,evilliate@baufest.com,jyon@baufest.com" />
 	<setParameter name="EmailToUsuariosCompras Config" value="rorlando@baufest.com" />
-
 	<setParameter name="EmailToMesaENTSL Config" value="emartin@baufest.com;Ivan.Curtis@molinosagro.com.ar;noelia.caceres@molinosagro.com.ar;luciano.calaon@molinosagro.com.ar;martin.manoni@molinosagro.com.ar;diego.figueredo@molinosagro.com.ar" />
 	<setParameter name="EmailToMesaVentaFas Config" value="moaoperaciones@baufest.com;Ivan.Curtis@molinosagro.com.ar;noelia.caceres@molinosagro.com.ar;luciano.calaon@molinosagro.com.ar;martin.manoni@molinosagro.com.ar;diego.figueredo@molinosagro.com.ar" />
 	<setParameter name="EmailToCobranzas Config" value="emartin@baufest.com;dylopez@baufest.com;elpacheco@baufest.com;Ivan.Curtis@molinosagro.com.ar;noelia.caceres@molinosagro.com.ar;luciano.calaon@molinosagro.com.ar;martin.manoni@molinosagro.com.ar;diego.figueredo@molinosagro.com.ar" />
 	<setParameter name="EmailToComerciales Config" value="moaoperaciones@baufest.com;dylopez@baufest.com;elpacheco@baufest.com;Ivan.Curtis@molinosagro.com.ar;noelia.caceres@molinosagro.com.ar;luciano.calaon@molinosagro.com.ar;martin.manoni@molinosagro.com.ar;diego.figueredo@molinosagro.com.ar" />
 	<setParameter name="EmailToComercialesAlimAnimal Config" value="moaoperaciones@baufest.com;Ivan.Curtis@molinosagro.com.ar;noelia.caceres@molinosagro.com.ar;luciano.calaon@molinosagro.com.ar;martin.manoni@molinosagro.com.ar;diego.figueredo@molinosagro.com.ar" />
-
 	<setParameter name="EmailToAuditoria Config" value="alejandra.duarte@molinosagro.com.ar,santiago.barbarotta@molinosagro.com.ar" />
+	<setParameter name="EmailAltaTempranaCuitFasonTo Config" value="moaoperaciones@baufest.com"/>
+	<setParameter name="EmailAltaTempranaCuitFasonCC Config" value="noelia.caceres@molinosagro.com.ar;luciano.calaon@molinosagro.com.ar"/>
+	<setParameter name="EmailAltaTempranaCuitFasTo Config" value="moaoperaciones@baufest.com"/>
+	<setParameter name="EmailAltaTempranaCuitFasCC Config" value="noelia.caceres@molinosagro.com.ar;luciano.calaon@molinosagro.com.ar"/>
 
 	<setParameter name="ComputerVisionApiKey Config" value="4ebc562f2be5457a96329ae69d84f192" />
 	<setParameter name="ComputerVisionEndpoint Config" value="https://moaopsocr.cognitiveservices.azure.com/" />

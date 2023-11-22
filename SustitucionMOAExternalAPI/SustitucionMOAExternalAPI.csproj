@@ -165,6 +165,7 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\InformarViajeOrdenesDeCargaFasController.cs" />
     <Compile Include="Controllers\InformarViajeOrdenesDeCargaFasonController.cs" />
+    <Compile Include="Controllers\LiberacionOCController.cs" />
     <Compile Include="Controllers\ObtenerOrdenesDeCargaController.cs" />
     <Compile Include="Controllers\CpOtrosPuertosController.cs" />
     <Compile Include="Controllers\AccesoQrController.cs" />
@@ -181,9 +182,25 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap-theme.css" />
+    <Content Include="Content\bootstrap-theme.css.map" />
     <Content Include="Content\bootstrap-theme.min.css" />
+    <Content Include="Content\bootstrap-theme.min.css.map" />
     <Content Include="Content\bootstrap.css" />
+    <Content Include="Content\bootstrap.css.map" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\bootstrap.min.css.map" />
+    <Content Include="Content\Images\header\key-solid.svg" />
+    <Content Include="Content\Images\header\login.jpg" />
+    <Content Include="Content\Images\header\loginSmall.jpg" />
+    <Content Include="Content\Images\header\logo.png" />
+    <Content Include="Content\Images\header\logoEndosado.ai" />
+    <Content Include="Content\Images\header\logoEndosado.png" />
+    <Content Include="Content\Images\header\logoLogin.png" />
+    <Content Include="Content\Images\header\logoOLD.png" />
+    <Content Include="Content\Images\header\logoSmall.png" />
+    <Content Include="Content\Images\header\logo_.png" />
+    <Content Include="Content\Images\header\sideBack.jpg" />
+    <Content Include="Content\Site.css" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
@@ -258,7 +275,6 @@
     <Content Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>
-    <Content Include="Content\Site.css" />
     <Content Include="Views\Web.config" />
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
@@ -279,18 +295,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.eot" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Content\bootstrap.min.css.map" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Content\bootstrap.css.map" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Content\bootstrap-theme.min.css.map" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Content\bootstrap-theme.css.map" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

@@ -6,6 +6,10 @@ namespace SustitucionMOAUtils.Services
 {
     public class OrdenDeCargaEstadoService : IOrdenDeCargaEstadoService
     {
+        public OrdenDeCargaEstadoService()
+        {
+
+        }
         public void AccionesARealizar(OrdenDeCarga orden)
         {
             //throw new NotImplementedException();

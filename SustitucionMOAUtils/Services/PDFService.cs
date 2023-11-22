@@ -7,13 +7,18 @@ using SustitucionMOAAssets;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Models.WSMapMOA;
 using SustitucionMOAModel.Models.WSMapMOA.PDF;
+using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAWS.WSConsumers;
 
 namespace SustitucionMOAUtils.Services
 {
-    public class PDFService
+    public class PDFService: IPDFService
     {
-        public Pdf downloadDocumentPDF(string documento, string ejercicio, string proveedor, string sociedad)
+        public PDFService()
+        {
+
+        }
+        public Pdf DescargarDocumentPDF(string documento, string ejercicio, string proveedor, string sociedad)
         {
             try
             {

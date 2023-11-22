@@ -144,6 +144,17 @@
     <Compile Include="Helpers\GenericCopier.cs" />
     <Compile Include="Helpers\TwoColumnHeaderFooter.cs" />
     <Compile Include="Helpers\CurrentTimeProvider.cs" />
+    <Compile Include="Interfaces\IDBService.cs" />
+    <Compile Include="Interfaces\IEmailFasonService.cs" />
+    <Compile Include="Interfaces\IRYDService.cs" />
+    <Compile Include="Interfaces\IRYDMantenimientoService.cs" />
+    <Compile Include="Interfaces\IPDFService.cs" />
+    <Compile Include="Interfaces\IPagoService.cs" />
+    <Compile Include="Interfaces\ILoginService.cs" />
+    <Compile Include="Interfaces\IFacturaService.cs" />
+    <Compile Include="Interfaces\IFleteService.cs" />
+    <Compile Include="Interfaces\IContratoService.cs" />
+    <Compile Include="Interfaces\IAduanaService.cs" />
     <Compile Include="Interfaces\IAltaEmpresaNoGranosService.cs" />
     <Compile Include="Interfaces\IComprasService.cs" />
     <Compile Include="Interfaces\IComunicacionService.cs" />
@@ -159,6 +170,7 @@
     <Compile Include="Interfaces\IFacturaAnticipadaService.cs" />
     <Compile Include="Interfaces\IKgDisponiblesFasService.cs" />
     <Compile Include="Interfaces\IOrdenDeCargaEstadoService.cs" />
+    <Compile Include="Interfaces\IOrdenDeCargaServiceBase.cs" />
     <Compile Include="Interfaces\IOrdenesCargaApi.cs" />
     <Compile Include="Interfaces\IEcheqService.cs" />
     <Compile Include="Interfaces\IFeriadoService.cs" />
@@ -190,8 +202,14 @@
     <Compile Include="Services\AduanaService.cs" />
     <Compile Include="Services\AltaEmpresaNoGranosService.cs" />
     <Compile Include="Services\AplicacionCartaPorteService.cs" />
+
     <Compile Include="Services\ComunicacionService.cs" />
+
+    <Compile Include="Interfaces\IEmailService.cs" />
+    <Compile Include="Services\Email\EmailFasonService.cs" />
     <Compile Include="Services\KgDisponiblesFasService.cs" />
+    <Compile Include="Services\OrdenDeCargaServiceBase.cs" />
+
     <Compile Include="Services\OrdenDeCargaEstadoService.cs" />
     <Compile Include="Services\FacturaAnticipadaService.cs" />
     <Compile Include="Services\ComprasService.cs" />
@@ -207,7 +225,7 @@
     <Compile Include="Services\AltaEmpresaGranosService.cs" />
     <Compile Include="Services\AzureB2CService.cs" />
     <Compile Include="Services\CartaPorteService.cs" />
-    <Compile Include="Services\CommonService.cs" />
+    <Compile Include="Helpers\CommonUtil.cs" />
     <Compile Include="Services\ContactoMailService.cs" />
     <Compile Include="Services\ContratoService.cs" />
     <Compile Include="Services\CuentaCorrienteService.cs" />

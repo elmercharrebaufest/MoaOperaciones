@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
 
 namespace SustitucionMOA.Jobs
 {
-   
+
     public interface IVerificarTransporteOrdenesDeCargaJob : IHangfireJob { }
 
     public class VerificarTransporteOrdenesDeCargaJob : IVerificarTransporteOrdenesDeCargaJob

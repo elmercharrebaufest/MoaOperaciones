@@ -35,7 +35,7 @@ namespace SustitucionMOAUtils.Services
         {
             try
             {
-                List<FechaWS> fechas = CommonService.toDateList(fechaInicio, fechaFin);
+                List<FechaWS> fechas = CommonUtil.toDateList(fechaInicio, fechaFin);
                 List<string> cartaPorte = new List<string>();
                 CartaPorteDescargaViewModel dataView = new CartaPorteDescargaViewModel
                 {
@@ -83,7 +83,7 @@ namespace SustitucionMOAUtils.Services
         {
             try
             {
-                List<FechaWS> fechas = CommonService.toDateList(fechaInicio, fechaFin);
+                List<FechaWS> fechas = CommonUtil.toDateList(fechaInicio, fechaFin);
                 List<string> contratos = new List<string>();
                 CartaPorteViewModel dataView = new CartaPorteViewModel
                 {
@@ -130,7 +130,7 @@ namespace SustitucionMOAUtils.Services
         {
             try
             {
-                List<FechaWS> fechas = CommonService.toDateList(fechaInicio, fechaFin);
+                List<FechaWS> fechas = CommonUtil.toDateList(fechaInicio, fechaFin);
                 List<string>  contratos = new List<string>();
                 CartaPorteExcelWSMOAResponse data = (CartaPorteExcelWSMOAResponse)new AplicacionesExcelConsumerMOA().request(proveedor, fechas, contratos,"");
                 ValidarRespuesta(data);
@@ -154,7 +154,7 @@ namespace SustitucionMOAUtils.Services
         {
             try
             {
-                List<FechaWS> fechas = CommonService.toDateList(fechaInicio, fechaFin);
+                List<FechaWS> fechas = CommonUtil.toDateList(fechaInicio, fechaFin);
                 List<string> cartaPorte = new List<string>();
                 CartaPorteDescargaExcelWSMOAResponse data = (CartaPorteDescargaExcelWSMOAResponse)new RecepcionesExcelConsumerMOA().request(proveedor, fechas, cartaPorte);
                 ValidarRespuesta(data);

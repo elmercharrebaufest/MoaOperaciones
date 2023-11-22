@@ -66,7 +66,7 @@ export class DashboardComponent extends ListBaseComponent {
     ordenesDeCompra: AdjudicacionDto[] = [];
     ordenDeCompra: any;
     displayOrdenDeCompra: boolean;
-    
+
     constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService, protected route: ActivatedRoute, protected router: Router, private confirmationService: ConfirmationService) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
 
@@ -90,7 +90,6 @@ export class DashboardComponent extends ListBaseComponent {
     fechaFin: any = null;
     rangeDates: Date[];
     tipoFiltroFecha = 1;
-
 
     desdeDashboard: Date;
     hastaDashboard: Date;
@@ -381,7 +380,7 @@ export class DashboardComponent extends ListBaseComponent {
 
     eliminarPosicionDashboard(idSolp) {
         this.confirmationService.confirm({
-            message: '¿Está seguro que desea eliminar la SOLP?',
+            message: '¿Está seguro de que desea eliminar la SOLP?',
             accept: () => {
                 this.borrarSolp(idSolp)
             },
@@ -656,7 +655,7 @@ export class DashboardComponent extends ListBaseComponent {
         this.displayOrdenDeCompra = true;
     }
 
-    obtenerAdjudicacion(nroOC){       
+    obtenerAdjudicacion(nroOC) {
         this.blockUI.start('Cargando...')
         this.service.obtenerAdjudicacion(nroOC)
             .subscribe(
@@ -665,7 +664,7 @@ export class DashboardComponent extends ListBaseComponent {
                         this.sessionDataService.logout();
                     }
                     else {
-                        this.ordenDeCompra = result.data;                      
+                        this.ordenDeCompra = result.data;
                         this.blockUI.stop();
                     }
                 },
@@ -676,7 +675,7 @@ export class DashboardComponent extends ListBaseComponent {
             )
     }
 
-    listarAdjudicaciones(solpId){      
+    listarAdjudicaciones(solpId) {
         this.blockUI.start('Cargando...')
         this.service.listarAdjudicaciones(solpId)
             .subscribe(
@@ -685,14 +684,14 @@ export class DashboardComponent extends ListBaseComponent {
                         this.sessionDataService.logout();
                     }
                     else {
-                        if(this.ordenesDeCompra.length > 0){
+                        if (this.ordenesDeCompra.length > 0) {
                             for (let i = this.ordenesDeCompra.length - 1; i >= 0; i--) {
                                 if (this.ordenesDeCompra[i].Solp_Id === solpId) {
-                                  this.ordenesDeCompra.splice(i, 1);
+                                    this.ordenesDeCompra.splice(i, 1);
                                 }
-                              }
-                        }                    
-                        this.mapData(result.data);        
+                            }
+                        }
+                        this.mapData(result.data);
                         this.blockUI.stop();
                     }
                 },
@@ -703,41 +702,40 @@ export class DashboardComponent extends ListBaseComponent {
             )
     }
 
-    filtrarOrdenesDeCompra(solpId): AdjudicacionDto[] {       
+    filtrarOrdenesDeCompra(solpId): AdjudicacionDto[] {
         return this.ordenesDeCompra.filter(orden => orden.Solp_Id == solpId);
-      }
+    }
 
-      mapData(data: any[]): void {
+    mapData(data: any[]): void {
         data.forEach((item: any) => {
-          const adjudicacion: AdjudicacionDto = {
-            Id: item.Id,
-            Cotizacion_Id: item.Cotizacion_Id,
-            AdjudicacionPosiciones: item.AdjudicacionPosiciones.map((posicion: any) => {
-              const adjudicacionPosicion: AdjudicacionPosicionDto = {
-                Id: posicion.Id,
-                Adjudicacion_Id: posicion.Adjudicacion_Id,
-                CotizacionPosicion_Id: posicion.CotizacionPosicion_Id,
-                Cantidad: posicion.Cantidad,
-                SolpPosicion_Id: posicion.SolpPosicion_Id,
-              };
-              return adjudicacionPosicion;
-            }),
-            Solp_Id: item.Solp_Id,
-            Moneda_Id: item.Moneda_Id,
-            TextoDeCabecera: item.TextoDeCabecera,
-            CondicionesDeEntrega: item.CondicionesDeEntrega,
-            CondicionesDePago: item.CondicionesDePago,
-            Garantias: item.Garantias,
-            TipoPosicionCodigo: item.TipoPosicionCodigo || '',
-            NumeroOrdenDeCompra: item.NumeroOrdenDeCompra || '',
-            FechaCreacion: item.FechaCreacion || '',
-            Proveedor: item.Proveedor || '',
-            MonedaDescripcion: item.MonedaDescripcion || '',
-            PrecioFinal: item.PrecioFinal || 0,
-          };
-          this.ordenesDeCompra.push(adjudicacion); 
+            const adjudicacion: AdjudicacionDto = {
+                Id: item.Id,
+                Cotizacion_Id: item.Cotizacion_Id,
+                AdjudicacionPosiciones: item.AdjudicacionPosiciones.map((posicion: any) => {
+                    const adjudicacionPosicion: AdjudicacionPosicionDto = {
+                        Id: posicion.Id,
+                        Adjudicacion_Id: posicion.Adjudicacion_Id,
+                        CotizacionPosicion_Id: posicion.CotizacionPosicion_Id,
+                        Cantidad: posicion.Cantidad,
+                        SolpPosicion_Id: posicion.SolpPosicion_Id,
+                    };
+                    return adjudicacionPosicion;
+                }),
+                Solp_Id: item.Solp_Id,
+                Moneda_Id: item.Moneda_Id,
+                TextoDeCabecera: item.TextoDeCabecera,
+                CondicionesDeEntrega: item.CondicionesDeEntrega,
+                CondicionesDePago: item.CondicionesDePago,
+                Garantias: item.Garantias,
+                TipoPosicionCodigo: item.TipoPosicionCodigo || '',
+                NumeroOrdenDeCompra: item.NumeroOrdenDeCompra || '',
+                FechaCreacion: item.FechaCreacion || '',
+                Proveedor: item.Proveedor || '',
+                MonedaDescripcion: item.MonedaDescripcion || '',
+                PrecioFinal: item.PrecioFinal || 0,
+            };
+            this.ordenesDeCompra.push(adjudicacion);
         });
-      }
+    }
 
 }
-

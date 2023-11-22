@@ -45,6 +45,8 @@ namespace SustitucionMOAModel.Dto
         public string DomicilioDescr { get; set; }
         public bool Reventa { get; set; }
         public bool Escalable { get; set; }
+        public TipoContratoFAS TipoContrato { get; set; }
+        public string DestinoMercaderia { get; set; }
 
         public OrdenDeCargaDto()
         {
@@ -89,6 +91,8 @@ namespace SustitucionMOAModel.Dto
             CUITIntermediarioFlete = orden.CUITIntermediarioFlete;
             Reventa = orden.Reventa;
             Escalable = orden.Escalable;
+            NumeroPedido = orden.NumeroPedido;
+            DestinoMercaderia = orden.DestinoMercaderia;
         }
 
         public int Id { get; set; }
@@ -124,6 +128,8 @@ namespace SustitucionMOAModel.Dto
         public string DomicilioDescr { get; set; }
         public bool Reventa { get; set; }
         public bool Escalable { get; set; }
+        public string NumeroPedido { get; set; }
+        public string DestinoMercaderia { get; set; }
     }
 
     public class OrdenDeCargaHistorialDto
@@ -159,6 +165,7 @@ namespace SustitucionMOAModel.Dto
         public string DescripcionEstado { get; set; }
         public string ColorSemaforo { get; set; }
         public string Chofer { get; set; }
+        public string CUITChofer { get; set; }
         public string FechaCarga { get; set; }
         public string Transporte { get; set; }
         public int Cantidad { get; set; }
@@ -208,9 +215,10 @@ namespace SustitucionMOAModel.Dto
         public bool FechaVencimientoAmpliada { get; set; }
         public bool EdicionRechazada { get; set; }
         public bool Escalable { get; set; }
-
+        public bool NecesitaVerificarCuitsTerceros { get; set; }
+        public string DestinoMercaderia { get; set; }
         public OrdenDeCargaDetalleDto() { }
-        
+
         public OrdenDeCargaDetalleDto(Ent.OrdenDeCarga orden, List<OrdenDeCargaCambiosHistorialDto> ordenDeCargaCambiosHistorial, Proveedor cliente)
         {
             Id = orden.Id;
@@ -225,7 +233,7 @@ namespace SustitucionMOAModel.Dto
             Cantidad = orden.Cantidad;
             ChasisAcoplado = orden.ChasisAcoplado;
             Chofer = $"{orden.NombreChofer} ({orden.CUITChofer})";
-            ContratoSAP = string.IsNullOrEmpty(orden.ContratoSAP) ? "-" : orden.ContratoSAP;
+            ContratoSAP = orden.ContratoSAP;
             PedidoSAP = string.IsNullOrEmpty(orden.PedidoSAP) ? "-" : orden.PedidoSAP;
             Corredor = orden.CodigoCorredor;
             RazonSocialCorredor = string.IsNullOrWhiteSpace(orden.Corredor?.RazonSocial) ? "-" : orden.Corredor?.RazonSocial;
@@ -264,6 +272,9 @@ namespace SustitucionMOAModel.Dto
             NumeroFactura = orden.NumeroFactura;
             NumeroFacturaSeleccionada = orden.NumeroFacturaSeleccionada;
             TipoContrato = orden.TipoContrato;
+            CUITChofer = orden.CUITChofer;
+            NecesitaVerificarCuitsTerceros = orden.Producto.ValidaSisaRuca && !orden.CuitTerceroExisteScato;
+            DestinoMercaderia = orden.DestinoMercaderia;
         }
 
         public override bool Equals(object obj)
@@ -297,7 +308,9 @@ namespace SustitucionMOAModel.Dto
                    DescripcionEstadoUsuarioFinal == dto.DescripcionEstadoUsuarioFinal &&
                    MensajeValidacionSAP == dto.MensajeValidacionSAP &&
                    NumeroFacturaSeleccionada == dto.NumeroFacturaSeleccionada &&
-                   NumeroFactura == dto.NumeroFactura;
+                   NumeroFactura == dto.NumeroFactura &&
+                   NecesitaVerificarCuitsTerceros == dto.NecesitaVerificarCuitsTerceros &&
+                   DestinoMercaderia == dto.DestinoMercaderia;
         }
 
         public override int GetHashCode()

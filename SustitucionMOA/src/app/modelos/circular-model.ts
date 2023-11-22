@@ -1,7 +1,8 @@
 export interface CircularDto{    
     Observacion: string
     UsuarioIds: number[]
-    PlazoDeOferta: Date
+    PlazoDeOfertaFecha: Date
+    PlazoDeOfertaHora: Date
     FechaEntrega: Date
     Adjuntos: Array<File>    
     RequiereCambioDeFecha: boolean
