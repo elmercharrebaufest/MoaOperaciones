@@ -260,7 +260,13 @@
     <Content Include="Content\images\header\logo_.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Content\images\icons\agregar-proveedor.svg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Content\images\icons\carpeta.svg" />
+    <Content Include="Content\images\icons\chat.svg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Content\images\icons\contract.svg" />
     <Content Include="Content\images\icons\descargar.svg" />
     <Content Include="Content\images\icons\doc-file.svg" />

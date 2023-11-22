@@ -10,6 +10,11 @@
           </p-header>
           <!-- CONTENT-->          
           <div class="container-fluid" style="margin-top: 20px; margin-bottom: 20px;">
+            <p>
+                <ngb-alert type="danger" [dismissible]="false" *ngIf="visualizarAlert">
+                    <strong>Error! </strong>{{ error }}
+                </ngb-alert>
+            </p>
             <!-- CONTENIDO -->
             <div class="row">
                 <!-- DETALLE DE CONSULTA -->
@@ -52,7 +57,7 @@
                     <textarea class="col-xs-12 col-sm-12 col-md-9" [(ngModel)]="mensajeNuevo" name="mensaje" placeholder="Añadir Comentario"></textarea>
     
                     <div class="col-xs-12 col-sm-12 col-md-2">
-                        <button (click)="grabarMensajeChatInterno()"  class="mx-auto d-block enviarComentario"
+                        <button (click)="validar()"  class="mx-auto d-block enviarComentario"
                             href="#" style="text-decoration:none!important">
                             <div class="btn-custom btn-mediano btn-add animate align-center btn-enviar-comentario">Enviar
                             </div>

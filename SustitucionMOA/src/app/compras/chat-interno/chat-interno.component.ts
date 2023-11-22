@@ -13,23 +13,24 @@ import { SessionDataService } from '../../common/services/SessionDataService';
 import { ComprasService } from '../compras.service';
 import localeES from '@angular/common/locales/es';
 import { registerLocaleData } from '@angular/common';
-import es from '@angular/common/locales/es';
 import { Notificacion } from '../../common/models/notificacion';
 import { Rol } from '../../common/models/rol';
-
 import { NotificacionesService } from '../../notificaciones/notificaciones.service';
-import { Proveedor } from '../../common/models/proveedor';
-import { first } from 'rxjs/operators';
+import { BlockUI, NgBlockUI } from 'ng-block-ui';
+import { SpinnerComponent } from '../../common/view-child/spinner/spinner.component';
+import { ConsultaService } from '../../consulta/consulta.service';
 registerLocaleData(localeES, 'es');
 
 @Component({
   selector: 'app-chat-interno',
   templateUrl: './chat-interno.component.html',
-  providers: [{ provide: LOCALE_ID, useValue: 'es' }],
-  styleUrls: ['./chat-interno.component.css']
+  providers: [{ provide: LOCALE_ID, useValue: 'es' }, { provide: ConsultaService, useClass: ConsultaService }],
+  styleUrls: ['./chat-interno.component.css'],
+  
 })
 export class ChatInternoComponent extends BaseComponent implements OnInit {
 
+  @BlockUI() blockUI: NgBlockUI;
   @Input() displayChatInterno: boolean;
   @Input() chat: ChatComprasDto;
   @Output() cerrardisplayChatEmitter = new EventEmitter();
@@ -44,6 +45,9 @@ export class ChatInternoComponent extends BaseComponent implements OnInit {
   @ViewChild("spinnerModal")
   protected spinnerModal: SpinnerSmallComponent;
 
+  @ViewChild(SpinnerComponent)
+  protected spinnerComponent: SpinnerComponent;
+
   @ViewChild(MensajeComponent)
   protected mensajeComponent: MensajeComponent;
 
@@ -52,6 +56,11 @@ export class ChatInternoComponent extends BaseComponent implements OnInit {
   mensajeNuevo: string = "";
   notificacion: Notificacion = new Notificacion();
   roles: Array<Rol> = [];
+  visualizarAlert = false;
+  error: string = "";
+
+
+
   constructor(
     private route: ActivatedRoute,
     protected service: ComprasService,
@@ -64,8 +73,10 @@ export class ChatInternoComponent extends BaseComponent implements OnInit {
     protected modalService: ModalService,
     protected html_sanitizer: DomSanitizer,
     ) {
-    super(navService, securityService, floatMsgService, modalService);
-    this.mensajeComponent = new MensajeComponent();
+        super(navService, securityService, floatMsgService, modalService);
+        this.mensajeComponent = new MensajeComponent();
+        this.spinnerComponent = new SpinnerComponent();
+
     }
 
 
@@ -84,21 +95,26 @@ export class ChatInternoComponent extends BaseComponent implements OnInit {
             (result: any) => {
                 if (result.logout == true) {
                     this.sessionDataService.logout();
+                    this.blockUI.stop();
+
                 } else if (
                     result.error != undefined &&
                     result.error != ""
                 ) {
                     this.mensajeComponent.setErrorMsg(result.error);
+                    this.blockUI.stop();
                 } else if (result.info != undefined) {
                     this.mensajeComponent.setInfoMsg(result.info);
+                    this.blockUI.stop();
                 } else {
                     this.resultado = result.info;
+
                     this.actualizarChat();
                     this.mensajeNuevo = "";
                 }
             },
             (error) => {
-                // this.spinnerModal.hideIt();
+                this.spinnerModal.hideIt();
             }
         );
     }
@@ -189,4 +205,16 @@ export class ChatInternoComponent extends BaseComponent implements OnInit {
           this.contenedorMensajes.nativeElement.scrollTop = this.contenedorMensajes.nativeElement.scrollHeight;
         }
       }
+
+    validar() {
+        this.visualizarAlert = false;
+        console.log("estoy", this.mensajeNuevo);
+        if (this.mensajeNuevo == undefined || this.mensajeNuevo == "") {
+            this.error = "No se pueden enviar mensajes vacios.";
+            this.visualizarAlert = true;
+            return true;
+        } else {
+            this.grabarMensajeChatInterno();
+        }
+    }
 }
