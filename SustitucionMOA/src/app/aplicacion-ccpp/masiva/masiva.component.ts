@@ -58,7 +58,7 @@ export class MasivaComponent extends AplicacionCcppBaseComponent implements OnIn
     //         return false;
     //     }
         if (this.archivo == null ) {
-            this.mensajeComponent.setErrorMsg("Debe seleccionar un archivo .csv v�lido");
+            this.mensajeComponent.setErrorMsg("Debe seleccionar un archivo .csv válido");
             this.blockUI.stop();
             return;
         }
