@@ -51,3 +51,20 @@ export type ComboAppContratosCCPPResponse = {
     Contratos: ContratoParaAplicacionCartaPorte[]
     CartasPorte: CartaPorteParaAplicacionCartaPorte[]
 }
+
+export type EnviarCargaMasivaResponse = {
+    HayErroresValidacion: boolean;
+    ErroresValidacion: ErrorValidacionCargaMasivaCCPP[];
+    AplicacionesGuardadas: AplicacionGuardadaCargaMasivaCCPP[];
+}
+
+export interface AplicacionGuardadaCargaMasivaCCPP {
+    ContratoNumero: string;
+    CartaDePorte: string;
+    Kilos: string;
+}
+
+export interface ErrorValidacionCargaMasivaCCPP extends AplicacionGuardadaCargaMasivaCCPP {
+    Fila: number;
+    Error: string;
+}

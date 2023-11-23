@@ -19,14 +19,10 @@
     <AssemblyName>SustitucionMOA</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <UseIISExpress>true</UseIISExpress>
-    <IISExpressSSLPort>
-    </IISExpressSSLPort>
-    <IISExpressAnonymousAuthentication>
-    </IISExpressAnonymousAuthentication>
-    <IISExpressWindowsAuthentication>
-    </IISExpressWindowsAuthentication>
-    <IISExpressUseClassicPipelineMode>
-    </IISExpressUseClassicPipelineMode>
+    <IISExpressSSLPort>58280</IISExpressSSLPort>
+    <IISExpressAnonymousAuthentication>enabled</IISExpressAnonymousAuthentication>
+    <IISExpressWindowsAuthentication>disabled</IISExpressWindowsAuthentication>
+    <IISExpressUseClassicPipelineMode>false</IISExpressUseClassicPipelineMode>
     <UseGlobalApplicationHostFile />
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
@@ -339,6 +335,12 @@
     </Content>
     <Content Include="PREHotFix.DeployParameters.xml" />
     <Content Include="QAHotFix.DeployParameters.xml" />
+    <Content Include="src\app\aplicacion-ccpp\carga-manual\carga-manual.component.css" />
+    <Content Include="src\app\aplicacion-ccpp\carga-manual\carga-manual.component.html" />
+    <Content Include="src\app\aplicacion-ccpp\listado\listado.component.css" />
+    <Content Include="src\app\aplicacion-ccpp\listado\listado.component.html" />
+    <Content Include="src\app\aplicacion-ccpp\masiva\masiva.component.css" />
+    <Content Include="src\app\aplicacion-ccpp\masiva\masiva.component.html" />
     <Content Include="src\app\common\shared-components\buscador\buscador.component.css" />
     <Content Include="src\app\common\shared-components\buscador\buscador.component.html" />
     <Content Include="src\app\common\shared-components\seleccionar-proveedor\seleccionar-proveedor.component.css" />
@@ -454,6 +456,14 @@
     <TypeScriptCompile Include="src\app\alta-proveedores\empresa-no-granos\empresa-no-granos.service.ts" />
     <TypeScriptCompile Include="src\app\apikey\apikey.component.ts" />
     <TypeScriptCompile Include="src\app\apikey\apikey.service.ts" />
+    <TypeScriptCompile Include="src\app\aplicacion-ccpp\aplicacion-ccpp-routing.module.ts" />
+    <TypeScriptCompile Include="src\app\aplicacion-ccpp\aplicacion-ccpp.base.component.ts" />
+    <TypeScriptCompile Include="src\app\aplicacion-ccpp\aplicacion-ccpp.model.ts" />
+    <TypeScriptCompile Include="src\app\aplicacion-ccpp\aplicacion-ccpp.module.ts" />
+    <TypeScriptCompile Include="src\app\aplicacion-ccpp\aplicacion-ccpp.service.ts" />
+    <TypeScriptCompile Include="src\app\aplicacion-ccpp\carga-manual\carga-manual.component.ts" />
+    <TypeScriptCompile Include="src\app\aplicacion-ccpp\listado\listado.component.ts" />
+    <TypeScriptCompile Include="src\app\aplicacion-ccpp\masiva\masiva.component.ts" />
     <TypeScriptCompile Include="src\app\common\models\fijacionesAutomaticas.ts" />
     <Content Include="src\app\common\shared-components\autocomplete-localidad\autocomplete-localidad.component.css" />
     <Content Include="src\app\common\shared-components\autocomplete-localidad\autocomplete-localidad.component.html" />
@@ -991,6 +1001,8 @@
     <Content Include="Documentacion\INSTRUCTIVO CARGA DE CONTRATO - CORREDOR.pdf" />
     <Content Include="Documentacion\INSTRUCTIVO CARGA DE CONTRATO - DIRECTO.pdf" />
     <Content Include="libman.json" />
+    <Content Include="Documentacion\TemplateAplicCCPP.csv" />
+    <Content Include="Documentacion\TutorialAplicCCPP.docx" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\PublishFiles.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />

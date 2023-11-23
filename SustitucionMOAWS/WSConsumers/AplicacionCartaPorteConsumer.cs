@@ -1,6 +1,8 @@
 ﻿using SustitucionMOAWS.AplicacionCartaPortePendienteAplicarWebServiceMOA;
 using SustitucionMOAWS.CredentialService;
 using SustitucionMOAWS.Interfaces;
+using SustitucionMOAWS.Logger;
+using SustitucionMOAWS.Util;
 using SustitucionMOAWS.WSRequests.AplicacionCartaPorte;
 
 
@@ -18,14 +20,16 @@ namespace SustitucionMOAWS.WSConsumers
 
         public ZMPES7070[] ObtenerAplicacionesPendientes(AppCartasPortePendienteRequest request)
         {
-            ZMPES7070[] listaApplicaciones;
+            Log.Info($"SI_MPMF_MOAOP_PENDIENTE_APLICAR Request: {request.ToJson()}");
+
             var result = serviceAppCartasPortePendienteAplicacion.SI_MPMF_MOAOP_PENDIENTE_APLICAR(
                 IM_CORREDOR: request.Corredor,
                 IM_MATERIAL: request.Material,
                 IM_PROVEEDOR: request.Proveedor,
-                out listaApplicaciones
+                out ZMPES7070[] listaApplicaciones
                 );
 
+            Log.Info($"SI_MPMF_MOAOP_PENDIENTE_APLICAR Result: {result}. Listado: {listaApplicaciones.ToJson()}.");
             return listaApplicaciones;
         }
     }
