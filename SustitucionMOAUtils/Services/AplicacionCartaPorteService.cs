@@ -2,6 +2,7 @@
 using SustitucionMOAModel.Entities;
 using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Data.Entity;
@@ -16,6 +17,12 @@ using SustitucionMOAWS.Interfaces;
 using SustitucionMOAWS.AplicacionCartaPortePendienteAplicarWebServiceMOA;
 using AppCCPPRequests = SustitucionMOAWS.WSRequests.AplicacionCartaPorte;
 using SustitucionMOAUtils.Helpers;
+using System.Web;
+using System.IO;
+using CsvHelper;
+using System.Globalization;
+using SustitucionMOAUtils.Helpers.CSV;
+using System.Net.Http.Headers;
 
 namespace SustitucionMOAUtils.Services
 {
@@ -65,16 +72,9 @@ namespace SustitucionMOAUtils.Services
             repositorio.GuardarCambios();
         }
         public ComboAplicacionesContratosCcppResponse ObtenerCombosDeContratoCCPP(string mailUsuario, string codigoProveedor) {
-            var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
-            var proveedorAsignado = usuario.ObtenerProveedorAsignado() ?? usuario.ObtenerProveedor();
-            Log.Info($"Busqueda combo app ccpp: mail={mailUsuario} el codigo proveedor= {codigoProveedor} codigo proveedor asignado= {proveedorAsignado.CodigoProveedor}");
+            Log.Info($"Busqueda combo app ccpp: mail={mailUsuario} el codigo proveedor= {codigoProveedor}");
 
-            var codigoProveedorSeleccionado = ObtenerCodigoProveedorSeleccionado(usuario, proveedorAsignado, codigoProveedor);            
-            var codigoCorredor = usuario.EsCorredor() ? proveedorAsignado.CodigoProveedor : null;
-            
-            var aplicacionesPendientes = consumer.ObtenerAplicacionesPendientes(
-                new AppCCPPRequests.AppCartasPortePendienteRequest { Proveedor = codigoProveedorSeleccionado, Corredor = codigoCorredor}
-            );
+            var aplicacionesPendientes = ObtenerAplicacionesDisponiblesSap(mailUsuario, codigoProveedor);
 
             var contratos = ObtenerContratosDisponibles(aplicacionesPendientes);
 
@@ -112,6 +112,92 @@ namespace SustitucionMOAUtils.Services
             repositorio.Agregar(aplicacion);
 
             repositorio.GuardarCambios();
+        }
+
+        public CargaMasivaResponse ProcesarCargaMasiva(HttpPostedFileBase archivo, string usuarioMail, string proveedorCodigo)
+        {
+            if (archivo == null || archivo.ContentLength == 0 || Path.GetExtension(archivo.FileName).ToLower() != ".csv")
+            {
+                throw new ValidationCustomException("Debe seleccionar un archivo .csv válido");
+            }
+
+            var registrosArchivo = ObtenerRegistrosCargaMasiva(archivo);
+
+            var aplicacionesDisponiblesSap = ObtenerAplicacionesDisponiblesSap(usuarioMail, proveedorCodigo);
+
+            var contratosDisponibles = ObtenerContratosDisponibles(aplicacionesDisponiblesSap);
+
+            var aplicacionesPendientesDeProcesar = ObtenerAplicacionesPendientes(proveedorCodigo);
+
+            var cartasPorteDisponibles = ObtenerCartasPorteDisponibles(aplicacionesDisponiblesSap, aplicacionesPendientesDeProcesar);
+
+
+            var fila = 2; // Fila inicial en el csv
+            var registrosConError = new List<ErrorValidacionCargaMasivaCCPP>();
+            var registrosOK = new List<AplicacionGuardadaCargaMasivaCCPP>();
+
+            foreach (var regItem in registrosArchivo)
+            {
+                if (RegistroCargaMasivaEsValido(regItem, out string msjError, contratosDisponibles,
+                        cartasPorteDisponibles, aplicacionesPendientesDeProcesar, registrosOK))
+                {
+                    registrosOK.Add(new AplicacionGuardadaCargaMasivaCCPP
+                    {
+                        ContratoNumero = regItem.ContratoNumero,
+                        CartaDePorte = regItem.CartaDePorte,
+                        Kilos = int.Parse(regItem.Kilos)
+                    });
+                }
+                else
+                {
+                    registrosConError.Add(new ErrorValidacionCargaMasivaCCPP
+                    {
+                        Fila = fila,
+                        ContratoNumero = regItem.ContratoNumero,
+                        CartaDePorte = regItem.CartaDePorte,
+                        Kilos = int.Parse(regItem.Kilos),
+                        Error = msjError
+                    });
+                }
+                fila++;
+            }
+
+            if (registrosConError.Any())
+            {
+                return new CargaMasivaResponse
+                {
+                    HayErroresValidacion = true,
+                    ErroresValidacion = registrosConError
+                };
+            }
+            else
+            {
+                var usuario = repositorio.Obtener<Usuario>(u => u.Mail == usuarioMail);
+                var proveedor = repositorio.Obtener<Proveedor>(p =>
+                    p.CodigoProveedor == contratosDisponibles.First().CodigoProveedor &&
+                    p.EstadoAprobacion == EstadoAprobacion.Aprobado);
+
+                foreach (var aplNueva in registrosOK)
+                {
+                    repositorio.Agregar(new AplicacionCartaPorte
+                    {
+                        Usuario_Id = usuario.Id,
+                        Proveedor_Id = proveedor.Id,
+                        Contrato = aplNueva.ContratoNumero,
+                        CartaPorte = aplNueva.CartaDePorte,
+                        Kilogramos = aplNueva.Kilos,
+                        Estado = EstadoAplicacionCartaPorte.Pendiente,
+                        FechaAlta = DateTime.Now
+                    });
+                }
+                repositorio.GuardarCambios();
+
+                return new CargaMasivaResponse
+                {
+                    HayErroresValidacion = false,
+                    AplicacionesGuardadas = registrosOK
+                };
+            }
         }
 
         private void ValidarSchema<T>(T schema, string controller, string metodo)
@@ -169,6 +255,82 @@ namespace SustitucionMOAUtils.Services
         private List<AplicacionCartaPorte> ObtenerAplicacionesPendientes(string codigoProveedorSeleccionado)
         {
             return repositorio.Listar<AplicacionCartaPorte>(app => app.Estado == EstadoAplicacionCartaPorte.Pendiente && app.Proveedor.CodigoProveedor == codigoProveedorSeleccionado);
+        }
+
+        private ZMPES7070[] ObtenerAplicacionesDisponiblesSap(string usuarioMail, string proveedorCodigo)
+        {
+            var usuario = repositorio.Obtener<Usuario>(u => u.Mail == usuarioMail);
+            var proveedorAsignado = usuario.ObtenerProveedor();
+            var codigoProveedorSeleccionado = ObtenerCodigoProveedorSeleccionado(usuario, proveedorAsignado, proveedorCodigo);
+            var codigoCorredor = usuario.EsCorredor() ? proveedorAsignado.CodigoProveedor : null;
+
+            var ccppPendienteReq = new AppCCPPRequests.AppCartasPortePendienteRequest
+            {
+                Proveedor = codigoProveedorSeleccionado,
+                Corredor = codigoCorredor
+            };
+
+            return consumer.ObtenerAplicacionesPendientes(ccppPendienteReq);
+        }
+
+        private List<AplicacionCCPPRecord> ObtenerRegistrosCargaMasiva(HttpPostedFileBase archivo)
+        {
+            using (var streamReader = new StreamReader(archivo.InputStream))
+            using (var csvReader = new CsvReader(streamReader, CultureInfo.InvariantCulture))
+            {
+                csvReader.Context.RegisterClassMap<AplicacionCCPPRecordMap>();
+                var registrosArchivo = csvReader.GetRecords<AplicacionCCPPRecord>();
+                return registrosArchivo.ToList();
+            }
+        }
+
+        private bool RegistroCargaMasivaEsValido(AplicacionCCPPRecord registroMasiva, out string error,
+            List<ContratoParaAplicacionCartaPorte> contratosDisponibles,
+            List<CartaPorteParaAplicacionCartaPorte> cartasPorteDisponibles,
+            List<AplicacionCartaPorte> aplicacionesPendientesBD,
+            List<AplicacionGuardadaCargaMasivaCCPP> aplicacionesAnterioresDelArchivo)
+        {
+            var contrato = contratosDisponibles.FirstOrDefault(c => c.NumeroContrato == registroMasiva.ContratoNumero);
+            var cartaPorte = cartasPorteDisponibles.FirstOrDefault(cp => cp.NumeroCartaPorte == registroMasiva.CartaDePorte);
+
+            if (contrato == null || cartaPorte == null)
+            {
+                error = (contrato == null && cartaPorte == null) ?
+                            "Contrato y Carta de porte inexistentes" :
+                            (contrato == null ? "Contrato inexistente" : "Carta de porte inexistente");
+                return false;
+            }
+
+            if (contrato.Material != cartaPorte.Material)
+            {
+                error = "La Carta de porte no se corresponde con el Contrato";
+                return false;
+            }
+
+            if (!int.TryParse(registroMasiva.Kilos, out int kilosSolicitados) || kilosSolicitados == 0)
+            {
+                error = $"El valor ingresado en Kilos es inválido {(registroMasiva.Kilos)}";
+                return false;
+            }
+
+            var kilosPendientesAplicar = aplicacionesPendientesBD
+                .Where(x => x.CartaPorte == registroMasiva.CartaDePorte)
+                .Sum(x => x.Kilogramos);
+
+            var kilosArchivoEnProceso = aplicacionesAnterioresDelArchivo
+                .Where(x => x.CartaDePorte == registroMasiva.CartaDePorte)
+                .Sum(x => x.Kilos);
+
+            var kilosDisponibles = cartaPorte.KgPendientes - kilosPendientesAplicar - kilosArchivoEnProceso;
+
+            if (kilosDisponibles < kilosSolicitados)
+            {
+                error = "No hay kilos disponibles para aplicar suficientes para la cantidad solicitada";
+                return false;
+            }
+
+            error = string.Empty;
+            return true;
         }
     }
 }
