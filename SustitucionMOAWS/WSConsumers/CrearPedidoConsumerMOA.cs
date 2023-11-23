@@ -123,7 +123,7 @@ namespace SustitucionMOAWS.WSConsumers
             var unidadesDeMedidaSAP = new List<UnidadesDeMedida>();
             if (esPosicionDeMateriales)
             {
-                unidadesDeMedidaSAP = obtenerUnidadesDeMedidaConsumerMOA.Request(solp.Posiciones.Select(x => x.MaterialSolp.Codigo).ToList());
+                unidadesDeMedidaSAP = obtenerUnidadesDeMedidaConsumerMOA.Request(solp.Posiciones.Select(x => x.MaterialSolp?.Codigo).ToList());
             }
 
             //aca el metodo solo usa las posiciones seleccionadas por el comprador

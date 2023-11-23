@@ -6055,13 +6055,13 @@ namespace SustitucionMOAUtils.Services
         private List<RegistroInfoDto> CrearRegistroInfoDto(Cotizacion cotizacion)
         {
             var registros = new List<RegistroInfoDto>();
-            var solpPosiciones = cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Solp.Posiciones;
+            var solpPosiciones = cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Solp.Posiciones.Where(x => x.MaterialSolp != null);
             var unidadesDeMedidaSAP = new List<UnidadesDeMedida>();
-            if (solpPosiciones.First().TipoPosicion.Codigo == "MATERIALES")
+            if (solpPosiciones.Count() > 0 && solpPosiciones.First().TipoPosicion.Codigo == "MATERIALES")
             {
-                unidadesDeMedidaSAP = obtenerUnidadesDeMedidaConsumerMOA.Request(cotizacion.CotizacionPosiciones.Select(x => x.PeticionDeOfertaSolpPosicion.SolpPosicion.MaterialSolp.Codigo).ToList());
+                unidadesDeMedidaSAP = obtenerUnidadesDeMedidaConsumerMOA.Request(solpPosiciones.Select(x => x.MaterialSolp.Codigo).ToList());
             }
-            foreach (var cotizacionPosicion in cotizacion.CotizacionPosiciones.Where(x => x.NoDisponible != true))
+            foreach (var cotizacionPosicion in cotizacion.CotizacionPosiciones.Where(x => x.NoDisponible != true && x.PeticionDeOfertaSolpPosicion.SolpPosicion.MaterialSolp != null)) //excluye no catalogados
             {
                 var registro = new RegistroInfoDto
                 {
