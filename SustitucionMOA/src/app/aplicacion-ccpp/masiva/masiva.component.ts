@@ -17,7 +17,7 @@ import { ApiResponse } from '../../common/models/response';
 })
 export class MasivaComponent extends AplicacionCcppBaseComponent implements OnInit, OnDestroy {
     @BlockUI() blockUI: NgBlockUI;
-
+    
     archivo: File | null = null;
     archivoFueProcesado: boolean = false;
     hayErroresValidacion: boolean = false;
@@ -34,7 +34,7 @@ export class MasivaComponent extends AplicacionCcppBaseComponent implements OnIn
     ) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
     }
-    
+
     ngOnInit() {
         this.setMenuSeccionTab(SeccionAplicacionCCPP, 'Carga masiva');
     }
