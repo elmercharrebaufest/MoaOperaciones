@@ -2646,8 +2646,11 @@ namespace SustitucionMOAUtils.Services
                 var esAdmin = usuario.Permisos.Any(p => p == "ADJUDICAR DENTRO DEL PLAZO DE OFERTAS");
                 var solp = obtenerSolpConsumerMOA.RequestSolpWithNroAndDates(filtros);
                 var noSolicitoVerPrecios = ValidarVisualizarPrecio(usuario.Id, PeticionOferta_Id);
-                var unidadesDeMedidaSAP = obtenerUnidadesDeMedidaConsumerMOA.Request(todasLasOfertas.PeticionDeOfertaPosicion.Select(x => x.Posicion.CodigoMaterialSap.Codigo).ToList());
-
+                var unidadesDeMedidaSAP = new List<UnidadesDeMedida>();
+                if (todasLasOfertas.TipoPosicionCodigo == "MATERIALES")
+                {
+                    unidadesDeMedidaSAP = obtenerUnidadesDeMedidaConsumerMOA.Request(todasLasOfertas.PeticionDeOfertaPosicion.Select(x => x.Posicion.CodigoMaterialSap.Codigo).ToList());
+                }
                 foreach (var item in todasLasOfertas.Usuarios)
                 {
                     var respetaMateriales = true;
@@ -2662,15 +2665,14 @@ namespace SustitucionMOAUtils.Services
                             if (solpPosicion != null && cotizacionPosicion.UnidadMedida.Descripcion != solpPosicion.Unidad.Descripcion)
                             {
                                 var unidadesDelMaterial = unidadesDeMedidaSAP.Where(x => x.CodigoMaterial == solpPosicion.CodigoMaterialSap.Codigo).ToList();
-                                var unidadBase = unidadesDelMaterial.First(x => x.Numerador == 1 && x.Denominador == 1);
                                 var unidadSolicitada = unidadesDelMaterial.First(x => x.UnidadDeMedida == solpPosicion.Unidad.Descripcion);
                                 var unidadCotizada = unidadesDelMaterial.First(x => x.UnidadDeMedida == cotizacionPosicion.UnidadMedida.Descripcion);
                                 cotizacionPosicion.UnidadMedida.Descripcion = unidadSolicitada.UnidadDeMedida;
                                 cotizacionPosicion.Cantidad = Math.Round(cotizacionPosicion.Cantidad * (unidadCotizada.Numerador / unidadCotizada.Denominador) / (unidadSolicitada.Numerador / unidadSolicitada.Denominador), 2);
                                 cotizacionPosicion.Precio = Math.Round((cotizacionPosicion.Precio / (unidadCotizada.Numerador / unidadCotizada.Denominador)) * (unidadSolicitada.Numerador / unidadSolicitada.Denominador), 2);
                             };
-                            decimal cambio = 0;
-                            if (!tipodecambio.TryGetValue(cotizacionPosicion.Moneda_Id, out cambio) && cotizacionPosicion.Moneda_Id > 0)
+                            
+                            if (!tipodecambio.TryGetValue(cotizacionPosicion.Moneda_Id, out decimal cambio) && cotizacionPosicion.Moneda_Id > 0)
                             {
                                 var tipoCambio = ObtenerTipoCambio(cotizacionPosicion.Moneda_Id, destino.Id, DateTime.Now);
                                 tipodecambio.Add(cotizacionPosicion.Moneda_Id, tipoCambio.TipoCambio);
@@ -6054,7 +6056,11 @@ namespace SustitucionMOAUtils.Services
         {
             var registros = new List<RegistroInfoDto>();
             var solpPosiciones = cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Solp.Posiciones;
-            var unidadesDeMedidaSAP = obtenerUnidadesDeMedidaConsumerMOA.Request(cotizacion.CotizacionPosiciones.Select(x => x.PeticionDeOfertaSolpPosicion.SolpPosicion.MaterialSolp.Codigo).ToList());
+            var unidadesDeMedidaSAP = new List<UnidadesDeMedida>();
+            if (solpPosiciones.First().TipoPosicion.Codigo == "MATERIALES")
+            {
+                unidadesDeMedidaSAP = obtenerUnidadesDeMedidaConsumerMOA.Request(cotizacion.CotizacionPosiciones.Select(x => x.PeticionDeOfertaSolpPosicion.SolpPosicion.MaterialSolp.Codigo).ToList());
+            }
             foreach (var cotizacionPosicion in cotizacion.CotizacionPosiciones.Where(x => x.NoDisponible != true))
             {
                 var registro = new RegistroInfoDto

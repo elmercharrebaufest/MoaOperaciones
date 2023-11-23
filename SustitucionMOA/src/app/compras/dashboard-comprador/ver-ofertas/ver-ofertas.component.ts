@@ -296,7 +296,7 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
 
     confirmacionAdjudicar() {
         this.confirmationService.confirm({
-            header: "¡Ultimo Paso!",
+            header: "¡Último Paso!",
             acceptLabel: "SI, CONFIRMAR",
             rejectLabel: "VOLVER",
             message: 'Está a punto de enviar la adjudicacion <b>¿Desea continuar?</b>',
