@@ -151,7 +151,7 @@ namespace SustitucionMOAUtils.Services
                     //TODO: validar si está en un estado modificable
 
                     solpEntity.UsuarioModificacion_Id = solp.UsuarioActual.Id;
-                    if (solpEntity.TipoSolpSap == (int?)TipoSolpSap.Mantenimiento || solpEntity.TipoSolpSap == (int?)TipoSolpSap.Sap)
+                    if (solpEntity.TipoSolpSap == (int?)TipoSolpSap.Mantenimiento || solpEntity.TipoSolpSap == (int?)TipoSolpSap.ReposicionAutomatica || solpEntity.TipoSolpSap == (int?)TipoSolpSap.Sap)
                     {
                         solpEntity.UsuarioCreacion_Id = solp.UsuarioActual.Id;
                     }
@@ -698,7 +698,7 @@ namespace SustitucionMOAUtils.Services
                 if (respuestaGuardarSOLP.Errores.Count == 0)
                 {
                     respuestaGuardarSOLP.Mensaje = "OK";
-                    if (solpEntity.TipoSolpSap == (int?)TipoSolpSap.Mantenimiento || solpEntity.TipoSolpSap == (int?)TipoSolpSap.Sap)
+                    if (solpEntity.TipoSolpSap == (int?)TipoSolpSap.Mantenimiento || solpEntity.TipoSolpSap == (int?)TipoSolpSap.ReposicionAutomatica || solpEntity.TipoSolpSap == (int?)TipoSolpSap.Sap)
                     {
                         var estadoCreadoCodigo = EstadoDocumentoSolp.Creado.Code();
                         var estadoCreado = repositorio.Obtener<TablaEstado>(x => x.Tabla == TablasEstado.EstadoDocumento && x.Codigo == estadoCreadoCodigo);
@@ -914,7 +914,7 @@ namespace SustitucionMOAUtils.Services
             return repositorio.Listar<CentroDireccion>().Select(x => new CentroDireccionDto(x)).ToList();
         }
 
-        public ListaPaginada<SolpDto> ListarSolp(UsuarioDto usuarioActual, Paginacion paginacion, string nroSolp, DateTime? desde, DateTime? hasta, bool? sap, bool? mantenimiento, bool? web, int? usuarioId, List<int> estados = null)
+        public ListaPaginada<SolpDto> ListarSolp(UsuarioDto usuarioActual, Paginacion paginacion, string nroSolp, DateTime? desde, DateTime? hasta, bool? sap, bool? mantenimiento, bool? web, bool? repoAutomatica, int? usuarioId, List<int> estados = null)
         {
             try
             {
@@ -1005,9 +1005,9 @@ namespace SustitucionMOAUtils.Services
                 (!estados.Any() || (x.EstadoSolpSap_Id != null && estados.Contains((int)x.EstadoSolpSap_Id)) || (estados.Any(y => y == -1) && x.NroSolp != null && x.Posiciones.All(p => p.Estado == false))) &&
                 (usuarioId == null || (x.UsuarioCreacion_Id != null && usuarioId == x.UsuarioCreacion_Id)) &&
                 (sap == true && x.TipoSolpSap == 3 ||
-                mantenimiento == true && x.TipoSolpSap == 2 ||
+                mantenimiento == true && x.TipoSolpSap == 2 || repoAutomatica == true && x.TipoSolpSap == 4 ||
                 (web == true && (x.TipoSolpSap == null || x.TipoSolpSap == 1))
-                || (sap == false && mantenimiento == false && web == false)) &&
+                || (sap == false && mantenimiento == false && web == false && repoAutomatica == false)) &&
                 (desde == null || x.FechaCreacion >= desde.Value) && (fechaHasta == null || x.FechaCreacion <= fechaHasta.Value));
                 if (todasLasSolp.Items != null && todasLasSolp.Items.Count() > 0)
                 {
@@ -1020,7 +1020,6 @@ namespace SustitucionMOAUtils.Services
                         item.OrdenesDeCompraSolicitante = ordenCompra.Where(oc => oc.Solp_Id == item.Id).OrderBy(x => x.FechaCreacion).ToList();
 
                     }
-
                 }
 
                 return todasLasSolp;
@@ -1029,7 +1028,6 @@ namespace SustitucionMOAUtils.Services
             {
                 throw;
             }
-
         }
 
         public SolpDto TraerSolpId(int idSolp)
@@ -1128,7 +1126,7 @@ namespace SustitucionMOAUtils.Services
                 EstadoSolpSapId = solp.EstadoSolpSap_Id,
                 EstadoDocumentoId = solp.EstadoDocumento_Id,
 
-                //Posiciones = (x.TipoSolpSap == (int)TipoSolpSap.Sap || x.TipoSolpSap == (int)TipoSolpSap.Mantenimiento) ? 
+                //Posiciones = (x.TipoSolpSap == (int)TipoSolpSap.Sap || x.TipoSolpSap == (int)TipoSolpSap.Mantenimiento || x.TipoSolpSap == (int)TipoSolpSap.ReposicionAutomatica) ? 
                 //                x.Posiciones.Select(p => new SolpPosicionDto(p)).ToList() : 
                 //                x.Posiciones.Where(p => !p.FechaBaja.HasValue).Select(p => new SolpPosicionDto(p)).ToList(),
 
@@ -1137,7 +1135,7 @@ namespace SustitucionMOAUtils.Services
                 EstadoPasos = solp.EstadoPasos,
                 EmailLinkToken = solp.EmailLinkToken
             };
-            if (solpDevuelta.TipoSolpSap == (int)TipoSolpSap.Mantenimiento || solpDevuelta.TipoSolpSap == (int)TipoSolpSap.Sap)
+            if (solpDevuelta.TipoSolpSap == (int)TipoSolpSap.Mantenimiento || solpDevuelta.TipoSolpSap == (int)TipoSolpSap.ReposicionAutomatica || solpDevuelta.TipoSolpSap == (int)TipoSolpSap.Sap)
             {
                 if (solpDevuelta.JornadaLaboral == null || solpDevuelta.JornadaLaboral.Count() == 0)
                     solpDevuelta.JornadaLaboral = new List<DayOfWeek> { DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday, DayOfWeek.Thursday, DayOfWeek.Friday };
@@ -2142,7 +2140,7 @@ namespace SustitucionMOAUtils.Services
                                         NroSolp = posicion.NumeroSolicitud,
                                         ClaseDocumento_Id = clasesDeDocumento.SingleOrDefault(cd => cd.Codigo == posicion.TipoDocumento)?.Id,
                                         EstadoPasos = "0,0,0,0,1",
-                                        TipoSolpSap = tipoImputacion != null && !string.IsNullOrEmpty(tipoImputacion.IdOrden) && posicion.OrigenCreacion == "F" ? (int?)TipoSolpSap.Mantenimiento : (int?)TipoSolpSap.Sap,
+                                        TipoSolpSap = tipoImputacion != null && !string.IsNullOrEmpty(tipoImputacion.IdOrden) && posicion.OrigenCreacion == "F" ? (int?)TipoSolpSap.Mantenimiento : posicion.OrigenCreacion == "B" || posicion.OrigenCreacion == "U" ? (int?)TipoSolpSap.ReposicionAutomatica : (int?)TipoSolpSap.Sap,
                                         Pliego = new Pliego
                                         {
                                             SupervisorSector = string.Empty,
@@ -2156,7 +2154,7 @@ namespace SustitucionMOAUtils.Services
 
                             solpsFinales.Add(solp);
                         }
-                        if (solp.TipoSolpSap == (int)TipoSolpSap.Mantenimiento || solp.TipoSolpSap == (int)TipoSolpSap.Sap)
+                        if (solp.TipoSolpSap == (int)TipoSolpSap.Mantenimiento || solp.TipoSolpSap == (int)TipoSolpSap.ReposicionAutomatica || solp.TipoSolpSap == (int)TipoSolpSap.Sap)
                         {
                             if (solp.UsuarioCreacion_Id == 0 || solp.UsuarioCreacion_Id == null)
                             {
@@ -2671,7 +2669,7 @@ namespace SustitucionMOAUtils.Services
                                 cotizacionPosicion.Cantidad = Math.Round(cotizacionPosicion.Cantidad * (unidadCotizada.Numerador / unidadCotizada.Denominador) / (unidadSolicitada.Numerador / unidadSolicitada.Denominador), 2);
                                 cotizacionPosicion.Precio = Math.Round((cotizacionPosicion.Precio / (unidadCotizada.Numerador / unidadCotizada.Denominador)) * (unidadSolicitada.Numerador / unidadSolicitada.Denominador), 2);
                             };
-                            
+
                             if (!tipodecambio.TryGetValue(cotizacionPosicion.Moneda_Id, out decimal cambio) && cotizacionPosicion.Moneda_Id > 0)
                             {
                                 var tipoCambio = ObtenerTipoCambio(cotizacionPosicion.Moneda_Id, destino.Id, DateTime.Now);
@@ -3550,7 +3548,7 @@ namespace SustitucionMOAUtils.Services
             var middleFileName = peticion.Solp.NroSolp ?? peticion.Solp.Pliego.NombreObra ?? "xxxx";
             var pdfFilename = $"Solp-{middleFileName}-pliego-{DateTime.Now:yyyyMMdd}.pdf";
 
-            var tienePliego = (peticion.Solp.TipoSolpSap == (int?)TipoSolpSap.Mantenimiento || peticion.Solp.TipoSolpSap == (int?)TipoSolpSap.Sap) && peticion.Solp.EstadoDocumento.Codigo == "CREADO";
+            var tienePliego = (peticion.Solp.TipoSolpSap == (int?)TipoSolpSap.Mantenimiento || peticion.Solp.TipoSolpSap == (int?)TipoSolpSap.Sap || peticion.Solp.TipoSolpSap == (int?)TipoSolpSap.ReposicionAutomatica) && peticion.Solp.EstadoDocumento.Codigo == "CREADO";
 
             if (tienePliego || peticion.Solp.TipoSolp.Codigo == "CON_PLIEGO")
             {
@@ -4085,7 +4083,7 @@ namespace SustitucionMOAUtils.Services
 
             if (esProveedor)
             {
-                var esDeServicioSapMantConPliego = (peticion.Solp.TipoSolpSap == (int?)TipoSolpSap.Mantenimiento || peticion.Solp.TipoSolpSap == (int?)TipoSolpSap.Sap) && peticion.Solp.Posiciones.Select(x => x.TipoPosicion.Codigo).FirstOrDefault() == "SERVICIO" && peticion.Solp.EstadoDocumento.Codigo == "CREADO";
+                var esDeServicioSapMantConPliego = (peticion.Solp.TipoSolpSap == (int?)TipoSolpSap.Mantenimiento || peticion.Solp.TipoSolpSap == (int?)TipoSolpSap.ReposicionAutomatica || peticion.Solp.TipoSolpSap == (int?)TipoSolpSap.Sap) && peticion.Solp.Posiciones.Select(x => x.TipoPosicion.Codigo).FirstOrDefault() == "SERVICIO" && peticion.Solp.EstadoDocumento.Codigo == "CREADO";
                 var esDeServicioWebConPliego = peticion.Solp.Posiciones.Select(x => x.TipoPosicion.Codigo).FirstOrDefault() == "SERVICIO" && (peticion.Solp.TipoSolpSap == (int?)TipoSolpSap.Web) && peticion.Solp.TipoSolp.Codigo != "SIN_PLIEGO";
 
                 if (esDeServicioWebConPliego || esDeServicioSapMantConPliego)

@@ -49,6 +49,7 @@ export class DashboardComponent extends ListBaseComponent {
     sap: boolean = false;
     mantenimiento: boolean = false;
     web: boolean = false;
+    repoAutomatica: boolean = false;
     orden: string;
     columnaOrden: string;
     length = 0;
@@ -274,7 +275,7 @@ export class DashboardComponent extends ListBaseComponent {
             this.spinnerComponent.showIt();
             let multiSelectValues = this.selectEstadoSolp.join(",")
             this.subscription = this.service.getListarSolp(this.pageIndex, this.pageSize, this.orden, this.columnaOrden, this.nroSolp,
-                this.fechaInicio, this.fechaFin, this.sap, this.mantenimiento, this.web, multiSelectValues, this.selectUsuario
+            this.fechaInicio, this.fechaFin, this.sap, this.mantenimiento, this.web, this.repoAutomatica, multiSelectValues, this.selectUsuario
             ).subscribe(
                 (result: any) => {
 

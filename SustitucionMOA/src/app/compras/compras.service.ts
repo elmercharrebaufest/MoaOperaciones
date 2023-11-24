@@ -34,6 +34,7 @@ export class ComprasService extends BaseService {
         sap: true,
         mantenimiento: true,
         web: true,
+        repoAutomatica: true,
         usuarioId: null,
         centros: "",
         grupoDeCompras: "",
@@ -65,6 +66,7 @@ export class ComprasService extends BaseService {
         sap: boolean = this.filtros.sap,
         mantenimiento: boolean = this.filtros.mantenimiento,
         web: boolean = this.filtros.web,
+        repoAutomatica: boolean = this.filtros.repoAutomatica,
         estados: any = this.filtros.estados,
         usuarioId: any = this.filtros.usuarioId): Observable<any> {
         let params: HttpParams = new HttpParams();
@@ -81,6 +83,7 @@ export class ComprasService extends BaseService {
         params = params.set('sap', sap.toString());
         params = params.set('mantenimiento', mantenimiento.toString());
         params = params.set('web', web.toString());
+        params = params.set('repoAutomatica', repoAutomatica.toString());
         params = params.set('estados', estados);
         params = params.set('usuarioId', (usuarioId != null ? usuarioId.toString() : ""));
         return this.http
