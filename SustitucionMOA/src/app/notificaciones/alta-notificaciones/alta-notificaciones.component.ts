@@ -240,8 +240,24 @@ export class AltaNotificacionesComponent extends BaseComponent implements OnInit
     }
 
     validar() {
+
+        if (this.horaInicio.toString() == "") {
+            this.mensajeError = "Ingrese la Hora";
+            return false;
+        }
+
         if (this.notificacion.Nombre.length < 3) {
-            this.mensajeError = "Ingrese el nombre.";
+            this.mensajeError = "El Campo nombre debe tener al menos 3 caracteres.";
+            return false;
+        }
+
+        if (this.notificacion.Mensaje.length < 3) {
+            this.mensajeError = "El Campo Mensaje debe tener al menos 3 caracteres.";
+            return false;
+        }
+
+        if (this.fecha_inicio >= this.fecha_fin) {
+            this.mensajeError = "La Fecha Desde debe ser menos a la Fecha Hasta";
             return false;
         }
 

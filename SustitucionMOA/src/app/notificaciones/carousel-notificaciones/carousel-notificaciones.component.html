@@ -13,7 +13,7 @@
             </div>
 
             <div class="center-card">
-                <div *ngFor="let notificacion of newCurrent; let i = index" class="card-group" [ngClass]="{'new-b': !notificacionLeida[notificacion.Id], 'viewed-b': notificacionLeida[notificacion.Id]}">
+                <div *ngFor="let notificacion of newCurrent; let i = index" [@efecto] class="card-group" [ngClass]="{'new-b': !notificacionLeida[notificacion.Id], 'viewed-b': notificacionLeida[notificacion.Id]}">
                     <div class="card-header">
 
                         <div class="w-card">

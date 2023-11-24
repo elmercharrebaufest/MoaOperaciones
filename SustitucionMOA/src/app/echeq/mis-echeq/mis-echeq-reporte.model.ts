@@ -1,5 +1,4 @@
 export class EcheqReporte {
-    debugger
     public RazonSocial: string; 
     public Mail: string; 
     public CodigoProveedor: string; 

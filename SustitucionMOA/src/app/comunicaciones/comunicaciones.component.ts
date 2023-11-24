@@ -292,7 +292,7 @@ export class ComunicacionesComponent extends BaseComponent implements OnInit {
     setTimeout(() => {
       this.getComunicaciones(this.idProveedor, this.startDate, this.endDate);
       this.checkCommunications();
-    }, 15000);
+    }, 600000);
   }
 
     // Función auxiliar para obtener las claves del objeto

@@ -76,6 +76,8 @@ import { TextosAdjudicarComponent } from './dashboard-comprador/ver-ofertas/text
 import {AccordionModule} from 'primeng/accordion';
 import { RegistroInfoComponent } from './peticion-de-oferta-formulario/registro-info/registro-info/registro-info.component';
 import { CerrarCotizacionComponent } from './dashboard-comprador/cerrar-cotizacion/cerrar-cotizacion.component';
+import { ListadoDashboardCertificacionDeServiciosComponent } from './dashboard-entrada-de-servicio/listado-dashboard-certificacion-de-servicios/listado-dashboard-certificacion-de-servicios.component';
+import { FiltroDashboardCertificacionDeServiciosComponent } from './dashboard-entrada-de-servicio/filtro-dashboard-certificacion-de-servicios/filtro-dashboard-certificacion-de-servicios.component';
 
 @NgModule({
     imports: [
@@ -152,6 +154,9 @@ import { CerrarCotizacionComponent } from './dashboard-comprador/cerrar-cotizaci
         OrdenDeCompraDetalleComponent,
         TextosAdjudicarComponent,
         RegistroInfoComponent,
+        ListadoDashboardCertificacionDeServiciosComponent,
+        FiltroDashboardCertificacionDeServiciosComponent,
+      
         CerrarCotizacionComponent
     ],
     providers: [

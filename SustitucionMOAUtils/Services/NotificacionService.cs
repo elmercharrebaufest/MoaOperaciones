@@ -36,7 +36,18 @@ namespace SustitucionMOAUtils.Services
                 throw new ValidationCustomException(mensajeError);
             }
 
+
             string resultado;
+
+            //formatea el mensaje. si hay una imagen la ajusta al ancho de la pantalla 
+            if (!notificacion.Mensaje.Contains("<img width= 100%"))
+            {
+                notificacion.Mensaje = notificacion.Mensaje.Replace("<img", "<img width= 100%");
+
+            }
+
+
+
             if ((notificacion?.Id ?? 0) > 0)
             {
                 resultado = Editar(notificacion);
@@ -52,7 +63,25 @@ namespace SustitucionMOAUtils.Services
 
         private string ValidarNotificacion(Notificacion notificacion)
         {
-       
+            if (notificacion.Prioridad==0)
+            {
+                notificacion.Prioridad = 2;
+            }
+            if (notificacion.Nombre.Length < 3)
+            {
+                return "El campo Nombre debe tener al menos 3 caracteres";
+            }
+            if (notificacion.Mensaje.Length <3)
+            {
+                return "El campo Mensaje debe tener al menos 3 caracteres";
+            }
+
+            if (notificacion.FechaInicio>= notificacion.FechaFin)
+            {
+                return "La Fecha Desde debe ser menos a la Fecha Hasta";
+
+            }
+
             if (repositorio.Existe<Notificacion>(n => n.Nombre == notificacion.Nombre && n.Id != notificacion.Id))
             {
                 return "Ya existe una notificación con el mismo nombre";

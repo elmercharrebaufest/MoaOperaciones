@@ -2,6 +2,7 @@
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Models.WSMapMOA.Compras;
+using SustitucionMOAWS.ObtenerEntradaDeServicioPorNumeroWebServiceMOA;
 using SustitucionMOAWS.WSConsumers;
 
 namespace SustitucionMOAWS.Interfaces
@@ -61,5 +62,12 @@ namespace SustitucionMOAWS.Interfaces
     {
         ObtenerProveedorWSMOAResponse ObtenerProveedor(string codigoProveedor);
     }
-    
+
+    public interface IObtenerEntradaDeServicioPorNumeroConsumerMOA
+    {
+        OrdenCompraEntradaServicioDto ObtenerEntradaServicio(string nroES);
+        //BAPIESSR ObtenerEntradaServicio(string nroES);
+    }
+
+
 }

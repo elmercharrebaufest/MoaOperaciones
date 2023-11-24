@@ -157,6 +157,7 @@
     <Compile Include="Interfaces\IAduanaService.cs" />
     <Compile Include="Interfaces\IAltaEmpresaNoGranosService.cs" />
     <Compile Include="Interfaces\IComprasService.cs" />
+    <Compile Include="Interfaces\IOrderService.cs" />
     <Compile Include="Interfaces\IComunicacionService.cs" />
     <Compile Include="Interfaces\IContactoMailService.cs" />
     <Compile Include="Interfaces\IConsultaService.cs" />
@@ -202,14 +203,12 @@
     <Compile Include="Services\AduanaService.cs" />
     <Compile Include="Services\AltaEmpresaNoGranosService.cs" />
     <Compile Include="Services\AplicacionCartaPorteService.cs" />
-
+    <Compile Include="Services\OrderService.cs" />
     <Compile Include="Services\ComunicacionService.cs" />
-
     <Compile Include="Interfaces\IEmailService.cs" />
     <Compile Include="Services\Email\EmailFasonService.cs" />
     <Compile Include="Services\KgDisponiblesFasService.cs" />
     <Compile Include="Services\OrdenDeCargaServiceBase.cs" />
-
     <Compile Include="Services\OrdenDeCargaEstadoService.cs" />
     <Compile Include="Services\FacturaAnticipadaService.cs" />
     <Compile Include="Services\ComprasService.cs" />
