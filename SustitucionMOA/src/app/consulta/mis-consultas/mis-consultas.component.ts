@@ -117,8 +117,10 @@ export class MisConsultasComponent extends ListBaseComponent {
 
         this.route.queryParams.subscribe(params => {
             const filtrosActivados = params['filtrosActivados'];
+            const categoria = params['categoria'];
             if (filtrosActivados && filtrosActivados === 'true') {
                 this.showFilters = true;
+                this.table.filter(categoria, 'Categoria.Nombre', 'equals');
             }
         });
 
