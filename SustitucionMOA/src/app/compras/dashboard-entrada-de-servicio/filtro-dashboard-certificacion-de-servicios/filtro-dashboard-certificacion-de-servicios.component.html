@@ -1,0 +1,15 @@
+<form id="filtroForm" [formGroup]="filtroForm">
+  <spinner></spinner>
+  <div class="row">
+    <div class="form-group col-md-3">
+      <input class="col-xs-12 col-sm-12 col-md-12 col-lg-12" formControlName="proveedor" pInputText type="text" placeholder="Buscar por proveedor">
+    </div>
+
+    <div class="form-group col-md-4">
+      <input class="col-xs-12 col-sm-12 col-md-12 col-lg-12" formControlName="ordenCompraId" pInputText type="text" placeholder="Buscar por número de Orden de Compra (OC)">
+    </div>
+    <div class="form-group col-md-3">
+      <button class="btn buscar" (click)="onBuscar()">Buscar</button>
+    </div>
+  </div>
+</form>

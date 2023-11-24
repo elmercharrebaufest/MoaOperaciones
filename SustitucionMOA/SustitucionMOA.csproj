@@ -19,10 +19,14 @@
     <AssemblyName>SustitucionMOA</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <UseIISExpress>true</UseIISExpress>
-    <IISExpressSSLPort>58280</IISExpressSSLPort>
-    <IISExpressAnonymousAuthentication>enabled</IISExpressAnonymousAuthentication>
-    <IISExpressWindowsAuthentication>disabled</IISExpressWindowsAuthentication>
-    <IISExpressUseClassicPipelineMode>false</IISExpressUseClassicPipelineMode>
+    <IISExpressSSLPort>
+    </IISExpressSSLPort>
+    <IISExpressAnonymousAuthentication>
+    </IISExpressAnonymousAuthentication>
+    <IISExpressWindowsAuthentication>
+    </IISExpressWindowsAuthentication>
+    <IISExpressUseClassicPipelineMode>
+    </IISExpressUseClassicPipelineMode>
     <UseGlobalApplicationHostFile />
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
@@ -1063,6 +1067,7 @@
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="App_Start\Startup.Hangfire.cs" />
     <Compile Include="Controllers\AplicacionCartaPorteController.cs" />
+    <Compile Include="Controllers\OrderController.cs" />
     <Compile Include="Controllers\ComunicacionController.cs" />
     <Compile Include="Controllers\EcheqController.cs" />
     <Compile Include="Controllers\AduanaController.cs" />
@@ -1542,7 +1547,7 @@
       <Name>SustitucionMOARepositorio</Name>
     </ProjectReference>
     <ProjectReference Include="..\SustitucionMOAUtils\SustitucionMOAUtils.csproj">
-      <Project>{DA180EE1-E819-4216-B0F5-2377A22EA72A}</Project>
+      <Project>{da180ee1-e819-4216-b0f5-2377a22ea72a}</Project>
       <Name>SustitucionMOAUtils</Name>
     </ProjectReference>
     <ProjectReference Include="..\SustitucionMOAValidator\SustitucionMOAValidator.csproj">
@@ -1550,7 +1555,7 @@
       <Name>SustitucionMOAValidator</Name>
     </ProjectReference>
     <ProjectReference Include="..\SustitucionMOAWS\SustitucionMOAWS.csproj">
-      <Project>{CB32F9E6-ED7B-4623-B624-0EA3717D06C2}</Project>
+      <Project>{cb32f9e6-ed7b-4623-b624-0ea3717d06c2}</Project>
       <Name>SustitucionMOAWS</Name>
     </ProjectReference>
   </ItemGroup>

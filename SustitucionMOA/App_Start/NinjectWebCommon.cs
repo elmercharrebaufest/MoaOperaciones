@@ -170,6 +170,7 @@ namespace SustitucionMOA.App_Start
                 }
             }
             #endregion
+            kernel.Bind<IOrderService>().To(typeof(OrderService)).InScope(ctx => OperationContext.Current);
 
             #region InterfacesSAP
             kernel.Bind<IVendedorHabilitadoConsumerMOA>().To(typeof(VendedorHabilitadoConsumerMOA)).InScope(ctx => OperationContext.Current);

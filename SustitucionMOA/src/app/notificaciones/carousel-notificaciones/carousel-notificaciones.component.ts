@@ -8,11 +8,52 @@ import { SecurityService } from '../../common/services/SecurityService';
 import { SessionDataService } from '../../common/services/SessionDataService';
 import { NotificacionesService } from '../notificaciones.service';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
+import {
+  animate,
+  state,
+  style,
+  transition,
+  trigger
+} from "@angular/animations";
 
 @Component({
   selector: 'app-carousel-notificaciones',
   templateUrl: './carousel-notificaciones.component.html',
-  styleUrls: ['./carousel-notificaciones.component.css']
+  styleUrls: ['./carousel-notificaciones.component.css'],
+  animations: [
+    trigger("efecto", [
+      state(
+        "void",
+        style({
+          opacity: 0,
+          overflow: "hidden"
+        })
+      ),
+      //element being added into DOM.
+      transition(":enter", [
+        animate(
+          "1000ms ease-in-out",
+          style({ 
+            opacity: 1,
+
+            overflow: "hidden"
+          })
+        )
+      ]),
+      //element being removed from DOM.
+      transition(":leave", [
+        animate(
+          "0ms ease-in-out",
+          style({
+            opacity: 0,
+
+            overflow: "hidden"
+          })
+        )
+      ])
+    ])
+  ]
+  
 })
 export class CarouselNotificacionesComponent extends BaseComponent implements OnInit {
 
@@ -81,30 +122,30 @@ export class CarouselNotificacionesComponent extends BaseComponent implements On
           } else if (result.info != undefined) {
           } else {
             this.data = result.data;
-            if (this.data.length > 0) {
-              this.showNews = true;
-              this.notificacionLeida = [];
-              this.data.forEach((notificacion: any) => {
-                this.newCurrent.push(notificacion);
+              if (this.data.length > 0) {
+                  this.showNews = true;
+                  this.notificacionLeida = [];
+                  this.data.forEach((notificacion: any) => {
+                      this.newCurrent.push(notificacion);
 
-                if (notificacion.Leida == 1) {
-                  this.notificacionLeida[notificacion.Id] = true;
-                } else {
-                  this.notificacionLeida[notificacion.Id] = false;
-                }
-                if(notificacion.Habilitada == true) {
-                  this.newsEnabled++;
-                }
+                      if (notificacion.Leida == 1) {
+                          this.notificacionLeida[notificacion.Id] = true;
+                      } else {
+                          this.notificacionLeida[notificacion.Id] = false;
+                      }
+                      if(notificacion.Habilitada == true) {
+                          this.newsEnabled++;
+                      }
 
-                notificacion.ArchivosAdjuntos.forEach((adjunto: any) => {
-                  this.attachedCurrent.push(adjunto);
-                  
-                  if(adjunto.AdjuntoTipo == 'previsualizacion') {
-                    this.imagenPrevisualizacion = true;
-                  }
-                })     
-              });
-            }
+                      notificacion.ArchivosAdjuntos.forEach((adjunto: any) => {
+                          this.attachedCurrent.push(adjunto);
+
+                          if(adjunto.AdjuntoTipo == 'previsualizacion') {
+                              this.imagenPrevisualizacion = true;
+                          }
+                      })
+                  });
+              } 
           }
           this.actualizarNotificaciones();
           if(this.data.length > 3) {
@@ -147,7 +188,10 @@ export class CarouselNotificacionesComponent extends BaseComponent implements On
     return 'data:image/png;base64,' + base64;
   }
 
-    actualizarNotificaciones() {        
+    actualizarNotificaciones() {    
+    if (this.data.length == 4) {
+        this.itemsPerPage = 2;
+    }
     const inicio = this.currentPage * this.itemsPerPage;
 
     const fin = inicio + this.itemsPerPage;

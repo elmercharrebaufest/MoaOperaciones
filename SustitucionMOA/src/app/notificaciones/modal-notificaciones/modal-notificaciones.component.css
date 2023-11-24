@@ -5,12 +5,11 @@
   width: 1000px;
 }
 
-.modal-body {
-    width: 97%;
+.modal-body {    
     display: flex;
     padding: 5px;
     min-height: 200px;
-    width: min-content;
+    width: 509px;
     height: 458px;
 }
 
@@ -45,9 +44,9 @@ padding-top: 14px;
     border-radius: 4px !important;
     position: relative;
     min-width: 570px;
-    width: fit-content;
     /* max-width: 70%; */
-    height: 528px;
+    width: 970px;
+    height: 517px;
 }
 
 .m-header{
@@ -84,6 +83,7 @@ padding-top: 14px;
     /*width: calc(100% + 20px);*/
     width: fit-content;
     margin-bottom: 25px;
+    max-width: 100%;
 }
 
 .close-b {
@@ -93,12 +93,13 @@ padding-top: 14px;
 .modal-flex{
   display: flex;
   padding: 5px;
-  width: 40%;
+  width: 45%;
+  height: 76%;
 }
 
 .modal-message {
   /*width: 60%;*/
-  min-width: 320px;
+  min-width: 373px;
 }
 
 .w-image {
@@ -106,7 +107,7 @@ padding-top: 14px;
     /*height: 275px;
   width: 230px;*/
     object-fit: contain;
-    width: 100%; /* Ancho al 100% del contenedor */
+    width: 90%; /* Ancho al 100% del contenedor */
     height: 100%; /* Alto al 100% del contenedor */
 }
 
@@ -117,15 +118,16 @@ padding-top: 14px;
     padding-right: 10px;
   width: 80%;
   height: auto;
-  max-height: 275px;
+  max-height: 316px;
   justify-content: center;
 }
 
 
 video {
-  width: 304px;
-  margin-right: 8px;
-  height: 275px;
+  width: 506px;
+  margin-right: 142px;
+  height: 363px;
+  margin-left:95px;
 }
 
 .nombre-header{
@@ -165,10 +167,10 @@ video {
 
 .carousel {
   position: relative;
-  max-width: 100%;
+  max-width: 117%;
   overflow: hidden;
   margin: auto;
-  min-width: 385px;
+  min-width: 613px;
 }
 
 .carousel-inner {
@@ -202,7 +204,7 @@ video {
 .next {
     display: flex;
     align-items: center;
-    width: min-content;
+    width: 88px;
     height: min-content;
     cursor: default;
 }
@@ -228,6 +230,8 @@ video {
 
 .pdf-image {
   padding-bottom: 20px;
+  height:180px;
+  width: 136px;
 }
 
 .isZoomed {

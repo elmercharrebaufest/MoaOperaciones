@@ -63,9 +63,12 @@
                         </div>
                     </div>
                 </div>
+
                 <div *ngIf="item.Leida == 1">
+
                     <div *ngIf="item.ComunicacionTipo == 6 && i === 0    || (item.ComunicacionTipo == 6 && i>0 && !(item.ComunicacionTipo === communication[key][i - 1].ComunicacionTipo)) || (item.ComunicacionTipo == 6 && i>0 && !(item.FechaCreacion === communication[key][i - 1].FechaCreacion))"
-                        class="container-communication position-r" (click)="openCommunication(communication[key], item.FechaCreacion ,item.ComunicacionTipo,i, item.Id)">
+ class="container-communication position-r" (click)="openCommunication(communication[key], item.FechaCreacion ,item.ComunicacionTipo,i, item.Id)">
+
                         <div id="body-message-comunicaciones" class="message-body-read">
                             <div *ngIf="item.ComunicacionTipo == 6">
                                 <div id="comunicacion-target">Posee liquidaciones observadas. Por favor, revisar.</div>
@@ -78,8 +81,10 @@
                         </div>
                     </div>
 
+
                     <div *ngIf="item.ComunicacionTipo !== 6" class="container-communication position-r" 
                             (click)="openCommunication(communication[key], item.FechaCreacion ,item.ComunicacionTipo,i, item.Id)">
+
                         <div id="body-message-comunicaciones" class="message-body-read">
     
                             <div *ngIf="item.ComunicacionTipo == 1">
