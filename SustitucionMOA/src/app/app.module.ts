@@ -42,9 +42,9 @@ import { HomeComponent } from "./home/home.component";
 import { HomeNGSComponent } from "./home/no-granos/home.no-granos.component";
 import { LayoutComponent } from "./layout/layout.component";
 import { LayoutService } from "./layout/layout.service";
-import { AltaNotificacionesComponent } from './notificaciones/alta-notificaciones/alta-notificaciones.component';
+//import { AltaNotificacionesComponent } from './notificaciones/alta-notificaciones/alta-notificaciones.component'; //esta declarado en el NotificacionModule
 import { CarouselNotificacionesComponent } from './notificaciones/carousel-notificaciones/carousel-notificaciones.component';
-import { ListadoNotificacionesComponent } from './notificaciones/listado-notificaciones/listado-notificaciones.component';
+//import { ListadoNotificacionesComponent } from './notificaciones/listado-notificaciones/listado-notificaciones.component'; //esta declarado en el NotificacionModule
 import { NotificacionesService } from "./notificaciones/notificaciones.service";
 import { PesificacionComponent } from "./pesificacion/pesificacion.component";
 import { UsuarioAltaEmpresaNoGranosComponent } from "./usuario/alta-empresa-no-granos/usuario.alta-empresa-no-granos.component";
@@ -80,6 +80,8 @@ import { ModalNotificacionesComponent } from "./notificaciones/modal-notificacio
 import { ListadoNovedadesComponent } from './listado-novedades/listado-novedades.component';
 import { AngularEditorModule } from '@kolkov/angular-editor';;
 import { ComunicacionesComponent } from './comunicaciones/comunicaciones.component'
+import { NotificacionesModule } from "./notificaciones/notificaciones.module";
+
 
 @NgModule({
   imports: [
@@ -102,7 +104,8 @@ import { ComunicacionesComponent } from './comunicaciones/comunicaciones.compone
     MultiSelectModule,
     ToastModule,
     QuillModule,
-    AngularEditorModule
+    AngularEditorModule,
+    NotificacionesModule
   ],
   declarations: [
     AppComponent,
@@ -120,8 +123,8 @@ import { ComunicacionesComponent } from './comunicaciones/comunicaciones.compone
     EmpresaNoGranosComponent,
     AltasComponent,
     EstadoSolicitudComponent,
-    AltaNotificacionesComponent,
-    ListadoNotificacionesComponent,
+    //AltaNotificacionesComponent,
+    //ListadoNotificacionesComponent,
     CarouselNotificacionesComponent,
     VentaSustentableBaseComponent,
     FaqComponent,

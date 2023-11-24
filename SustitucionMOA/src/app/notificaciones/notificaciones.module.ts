@@ -8,6 +8,7 @@ import { NotificacionesService } from './notificaciones.service';
 import { FormsModule } from '@angular/forms';
 import { SharedModule } from '../common/shared.module';
 import { NgxPaginationModule } from 'ngx-pagination';
+import { TooltipModule } from 'primeng/tooltip';
 
 @NgModule({
   imports: [
@@ -17,6 +18,7 @@ import { NgxPaginationModule } from 'ngx-pagination';
     FormsModule,
     SharedModule,
     NgxPaginationModule,
+    TooltipModule
   ],
   declarations: [
     AltaNotificacionesComponent,

@@ -16,6 +16,7 @@ import { UsuarioService } from '../../usuario/usuario.service';
 import { NotificacionesService } from '../notificaciones.service';
 import { AngularEditorConfig } from "@kolkov/angular-editor";
 import { Adjuntos } from '../../common/models/adjuntos';
+
 declare var $: any;
 
 @Component({

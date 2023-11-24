@@ -115,7 +115,7 @@
                               <div class="col-xs-12 formulario-label font-n">
                                   Insertar imagen de previsualización
                               </div>
-                              <input id="previewImageFile" class="input-select" type="file" (change)="cargarImagenPrevisualizacion($event)" accept="image/*" [multiple]="false">
+                              <input id="previewImageFile"  pTooltip="Se recomienda un tamaño máximo de 596x490px para evitar una pérdida en la calidad de imagen al visualizar." class="input-select" type="file" (change)="cargarImagenPrevisualizacion($event)" accept="image/*" [multiple]="false">
                           </div>
                       </div>
                       <div>
