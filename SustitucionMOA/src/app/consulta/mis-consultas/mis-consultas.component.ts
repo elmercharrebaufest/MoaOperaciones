@@ -88,6 +88,7 @@ export class MisConsultasComponent extends ListBaseComponent {
     }
 
     ngAfterViewInit(): void {
+        debugger
         this.listarConsultas();
         this.getCombos();
 
@@ -113,9 +114,19 @@ export class MisConsultasComponent extends ListBaseComponent {
             else
                 return true;
         }
+
+        this.route.queryParams.subscribe(params => {
+            const filtrosActivados = params['filtrosActivados'];
+            if (filtrosActivados && filtrosActivados === 'true') {
+                this.showFilters = true;
+            }
+        });
+
+
     }
 
     ngOnInit() {
+        debugger
         this.setTabs();
         this.checkPermisos();
 

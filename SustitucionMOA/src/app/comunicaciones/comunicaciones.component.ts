@@ -276,7 +276,7 @@ export class ComunicacionesComponent extends BaseComponent implements OnInit {
         break;
       
       case 5:
-        this.router.navigate(['/consulta/crear-consulta'], { queryParams: { filter: 'Solicitud-Informacion', categoria: filter }});
+            this.router.navigate(['/consulta/mis-consultas'], { queryParams: { filtrosActivados: true, filter: 'Solicitud-Informacion', categoria: filter }});
         break;
 
       case 6:
