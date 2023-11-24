@@ -174,16 +174,19 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
     }
 
     ngOnInit(): void {
+        this.setCombos();
+
         if (this.model.posiciones.length == 0) {
             this.agregarPosicion();
             this.deshabilitarImputaciones();
         }
-        this.listarContratosAsociados();
+
         if (this.model.posicionActual != undefined) {
             this.model.posicionActual.setTabPosicion();
         }
 
-        this.setCombos();
+
+        this.listarContratosAsociados();
     }
 
     public setCombos(): void {
@@ -200,11 +203,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
                     posicion.selectComboAlmacenes = this.combos.Almacen.filter(x => x.IdPadre == posicion.selectCentroEntrega.Id);
                 });
             }
-        }
-        if (!this.model.nroSolp && !this.combos.CombosSeteados) {
-            this.completarDatosUltimaSolp();
-            this.combos.CombosSeteados = true;
-        }
+        }        
     }
 
     ngOnChanges() {
@@ -287,6 +286,10 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         this.model.agregarNuevaPosicion(ultimaPosicion as SolpPosicion);   
         this.setupAlmacenEntregaByCentro();      
         this.model.posicionActual.setTabPosicion();
+        if (!this.model.nroSolp && !this.combos.CombosSeteados) {
+            this.completarDatosUltimaSolp();
+            this.combos.CombosSeteados = true;
+        }
     }
 
     duplicarPosicion(el: HTMLElement) {
@@ -1300,6 +1303,14 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
             if (this.model.posiciones[0] != undefined) {
                 if (this.datosUltimaSolp.Centro != null) {
                     this.model.posiciones[0].selectCentroEntrega = this.datosUltimaSolp.Centro;
+                    this.model.posicionActual = this.model.posiciones[0];
+
+                    console.log("this.combos.CentrosDireccion", this.combos.CentrosDireccion);
+                    console.log("this.model.posicionActual.selectCentroEntrega.CodigoSap", this.model.posicionActual.selectCentroEntrega)
+                    let direccionCentro = this.combos.CentrosDireccion.find(x => x.CodigoSap == this.model.posicionActual.selectCentroEntrega.CodigoSap);
+                    console.log("direccionCentro",direccionCentro);
+                    this.fillValoresDireccion(direccionCentro);
+
                 }
 
                 if (this.datosUltimaSolp.Almacen != null) {

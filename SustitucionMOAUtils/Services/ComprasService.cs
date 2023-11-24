@@ -6170,6 +6170,7 @@ namespace SustitucionMOAUtils.Services
                                    Id = ultimaSolp.Posiciones.FirstOrDefault().Centro.Id,
                                    Tabla = ultimaSolp.Posiciones.FirstOrDefault().Centro.Tabla,
                                    Codigo = ultimaSolp.Posiciones.FirstOrDefault().Centro.Codigo,
+                                   CodigoSap = ultimaSolp.Posiciones.FirstOrDefault().Centro.CodigoSap,
                                    Descripcion = ultimaSolp.Posiciones.FirstOrDefault().Centro.Descripcion,
                                    IdPadre = ultimaSolp.Posiciones.FirstOrDefault().Centro.Padre_id
                                }
