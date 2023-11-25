@@ -372,8 +372,8 @@ export class MisConsultasComponent extends ListBaseComponent {
                         let estadosCode = ['INI', 'GES', 'GESRTA', 'DOC'];
                         this.estadosSummary = result.data.estados.filter(e => estadosCode.indexOf(e.Code) >= 0);
 
-                        debugger;
-                        this.setfilter();
+                       
+                        //this.setfilter();
                     }
                 },
                 (error: HttpErrorResponse) => {
