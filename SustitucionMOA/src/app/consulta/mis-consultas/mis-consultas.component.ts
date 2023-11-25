@@ -373,7 +373,7 @@ export class MisConsultasComponent extends ListBaseComponent {
                         this.estadosSummary = result.data.estados.filter(e => estadosCode.indexOf(e.Code) >= 0);
 
                        
-                        //this.setfilter();
+                        this.setfilter();
                     }
                 },
                 (error: HttpErrorResponse) => {
