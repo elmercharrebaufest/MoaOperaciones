@@ -136,7 +136,7 @@ export class MisConsultasComponent extends ListBaseComponent {
 
             if (filtrosActivados && filtrosActivados === 'true') {
                 this.showFilters = true;
-                //this.table.filter(categoria, 'Categoria.Nombre', 'equals');
+                
             }
 
             if (filtrosActivados && filtrosActivados === 'true' && categoria) {
@@ -161,13 +161,16 @@ export class MisConsultasComponent extends ListBaseComponent {
                 const estadoSeleccionado = this.estados.find(estado => estado.Code === valor);
                 if (estadoSeleccionado) {
                     this.estadoConsultaSeleccionado = [estadoSeleccionado]; // Asigna la opción seleccionada al filtro
+                  
+                    this.table.filter(estadoSeleccionado.Descripcion, 'EstadoConsulta.Descripcion', 'equals');
                 }
                 break;
             case 'Categoria':
                 // Encuentra la opción correspondiente en la lista de categorías y selecciónala
                 const categoriaSeleccionada = this.categorias.find(categoria => categoria.Nombre === valor);
                 if (categoriaSeleccionada) {
-                   this.categoriaSeleccionada = [categoriaSeleccionada]; // Asigna la opción seleccionada al filtro
+                    this.categoriaSeleccionada = [categoriaSeleccionada]; // Asigna la opción seleccionada al filtro
+                    this.table.filter(categoriaSeleccionada.Nombre, 'Categoria.Nombre', 'equals');
                     // Además, puedes manejar cualquier lógica relacionada con la selección de subcategorías si es necesario
                 }
                 break;
