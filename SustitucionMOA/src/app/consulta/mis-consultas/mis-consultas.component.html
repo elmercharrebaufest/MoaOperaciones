@@ -118,14 +118,14 @@
                                         <input *ngSwitchCase="'text'" pInputText type="text" (input)="dt.filter($event.target.value, col.field, 'contains')" class="filters-text-table" >
                                         <div *ngSwitchCase="'custom'">
                                             <p-multiSelect appendTo="body" *ngIf="col.field == 'EstadoConsulta'" [options]="estados" defaultLabel="Todos" optionLabel="Descripcion" dataKey="Id"  [maxSelectedLabels]="1"
-                                                (onChange)="dt.filter(getIds($event.value), 'EstadoConsultaId', 'in')" >
+                                                (onChange)="dt.filter(getIds($event.value), 'EstadoConsultaId', 'in')"  [(ngModel)]="estadoSeleccionado">
                                                 <ng-template let-estado pTemplate="item">
                                                     <span class="label label-default" [ngStyle]="{'background-color': estado.value.Color}" >{{estado.label}} <span class="badge" *ngIf="!isExternal">{{estado.value.Cantidad}}</span></span>
                                                 </ng-template>
                                             </p-multiSelect>
 
                                             <p-multiSelect appendTo="body" *ngIf="col.field == 'Categoria'" [options]="categorias" defaultLabel="Todos" optionLabel="Nombre" dataKey="Id" [maxSelectedLabels]="1"
-                                                (onChange)="dt.filter(getIds($event.value), 'CategoriaId', 'in'); setSubcategorias($event.value)" [style]="{'width.%': 100}">
+                                                (onChange)="dt.filter(getIds($event.value), 'CategoriaId', 'in'); setSubcategorias($event.value)" [style]="{'width.%': 100}" [(ngModel)]="categoriaSeleccionada">
                                                 <ng-template let-categoria pTemplate="item">
                                                     <label>{{categoria.label}} <span class="badge right" *ngIf="!isExternal">{{categoria.value.Cantidad}}</span></label>
                                                 </ng-template>
