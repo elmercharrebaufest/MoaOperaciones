@@ -90,7 +90,7 @@ export class MisConsultasComponent extends ListBaseComponent {
     }
 
     ngAfterViewInit(): void {
-        debugger
+  
         this.listarConsultas();
         this.getCombos();
 
@@ -158,7 +158,7 @@ export class MisConsultasComponent extends ListBaseComponent {
         switch (columna) {
             case 'EstadoConsulta':
                 // Encuentra la opción correspondiente en la lista de estados y selecciónala
-                const estadoSeleccionado = this.estados.find(estado => estado.Descripcion === valor);
+                const estadoSeleccionado = this.estados.find(estado => estado.Code === valor);
                 if (estadoSeleccionado) {
                     this.estadoConsultaSeleccionado = [estadoSeleccionado]; // Asigna la opción seleccionada al filtro
                 }
