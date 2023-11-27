@@ -185,7 +185,7 @@
                         {{ rowData.EstadoSolpSap.Descripcion || "" }}
                     </td>
                     <td colspan="2" class="columna" style="text-align: center;">
-                        <button *ngIf="rowData.EstadoSolpSap.CodigoSap == '05' && rowData.VerPublicar == true && !rowData.Adicional"
+                        <button *ngIf="rowData.VerPublicar"
                                 class="publicar btn btn-success" style="font-size: 12px;"
                                 (click)="publicarCotizacion(rowData.Id)">
                             Publicar
@@ -222,16 +222,16 @@
                                         <ng-template pTemplate="body" let-licitacion>
                                             <tr>
                                                 <td id="agregarProveedor">
-                                                    <div >
+                                                    <div>
                                                         <span *ngIf="(rowData.Adicional == null || rowData.TrabajoYaHecho == null) && (rowData.Adicional == null && rowData.TrabajoYaHecho == null)">
                                                             <img class="pointer" src="./Content/images/icons/agregar-proveedor.svg" alt="Editar"
-                                                            (click)="obtenerPeticionDeOfertaParaProveedor(licitacion.Id)" />
-                                                        </span> 
+                                                                 (click)="obtenerPeticionDeOfertaParaProveedor(licitacion.Id)" />
+                                                        </span>
                                                         <span style="margin-left: 10px;">
                                                             <img class="pointer" src="./Content/images/icons/chat.svg" alt="chat"
-                                                            (click)="obtenerPeticionDeOfertaParaChat(licitacion.Id)"/>
+                                                                 (click)="obtenerPeticionDeOfertaParaChat(licitacion.Id)" />
                                                             <div class="punto-rojo" *ngIf="licitacion.ChatSinLeer == true && chatLeido == false"></div>
-                                                        </span>                                                       
+                                                        </span>
                                                     </div>
                                                 </td>
                                                 <td class="columna">{{licitacion.Id}}</td>
@@ -337,8 +337,8 @@
                            [(visualizarAlertCotizacion)]="visualizarAlertCotizacion">
     </app-cerrar-cotizacion>
 
-    <app-chat-interno [(displayChatInterno)]="displayChatInterno" 
-        [(chat)]="chat">
+    <app-chat-interno [(displayChatInterno)]="displayChatInterno"
+                      [(chat)]="chat">
         (cerrardisplayChatEmitter)="cerrarModalChat()"
     </app-chat-interno>
 </div>

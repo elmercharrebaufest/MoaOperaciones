@@ -271,10 +271,12 @@
     <Content Include="Content\images\icons\descargar.svg" />
     <Content Include="Content\images\icons\doc-file.svg" />
     <Content Include="Content\images\icons\editar.svg" />
+    <Content Include="Content\images\icons\gears.svg" />
     <Content Include="Content\images\icons\liquidaciones.svg" />
     <Content Include="Content\images\icons\paper.svg" />
     <Content Include="Content\images\icons\pay.svg" />
     <Content Include="Content\images\icons\SAP.svg" />
+    <Content Include="Content\images\icons\scalable-truck.svg" />
     <Content Include="Content\images\icons\trash.svg" />
     <Content Include="Content\images\icons\trashRed.svg" />
     <Content Include="Content\images\icons\trashWhite.svg" />
