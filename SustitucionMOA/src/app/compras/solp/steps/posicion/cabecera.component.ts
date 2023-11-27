@@ -203,7 +203,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
                     posicion.selectComboAlmacenes = this.combos.Almacen.filter(x => x.IdPadre == posicion.selectCentroEntrega.Id);
                 });
             }
-        }        
+        }
     }
 
     ngOnChanges() {
@@ -279,12 +279,12 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         }
     }
 
-    
+
     agregarPosicion() {
-        var ultimaPosicion = this.model.posiciones.length > 0 ? 
-        this.model.posiciones[this.model.posiciones.length - 1] as any : null;
-        this.model.agregarNuevaPosicion(ultimaPosicion as SolpPosicion);   
-        this.setupAlmacenEntregaByCentro();      
+        var ultimaPosicion = this.model.posiciones.length > 0 ?
+            this.model.posiciones[this.model.posiciones.length - 1] as any : null;
+        this.model.agregarNuevaPosicion(ultimaPosicion as SolpPosicion);
+        this.setupAlmacenEntregaByCentro();
         this.model.posicionActual.setTabPosicion();
         if (!this.model.nroSolp && !this.combos.CombosSeteados) {
             this.completarDatosUltimaSolp();
@@ -783,7 +783,12 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
 
     autocompleteSap(event, tablaAFiltrar, soloDescripcion = false) {
         try {
-            this.subscription = this.service.autocompleteSap(tablaAFiltrar || this.tablaAFiltrar, event.query.toLowerCase()).subscribe(
+            let filter = tablaAFiltrar || this.tablaAFiltrar;
+            if (filter == 'OrdenSolpSap' && event.query.toLowerCase().length < 4) {
+                this.autocomplete = [];
+                return;
+            }
+            this.subscription = this.service.autocompleteSap(filter, event.query.toLowerCase()).subscribe(
                 (result: any) => {
                     if (result.logout == true) {
                         this.sessionDataService.logout();
@@ -1308,7 +1313,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
                     console.log("this.combos.CentrosDireccion", this.combos.CentrosDireccion);
                     console.log("this.model.posicionActual.selectCentroEntrega.CodigoSap", this.model.posicionActual.selectCentroEntrega)
                     let direccionCentro = this.combos.CentrosDireccion.find(x => x.CodigoSap == this.model.posicionActual.selectCentroEntrega.CodigoSap);
-                    console.log("direccionCentro",direccionCentro);
+                    console.log("direccionCentro", direccionCentro);
                     this.fillValoresDireccion(direccionCentro);
 
                 }
