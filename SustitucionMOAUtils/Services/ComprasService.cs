@@ -1610,7 +1610,7 @@ namespace SustitucionMOAUtils.Services
                 Tabla = s.Tabla
             }, x => x.Tabla == tabla && (
             x.Descripcion.Contains(valor) || x.CodigoSap.Contains(valor)
-            ));
+            ),10000);
             return lista;
         }
 
