@@ -67,13 +67,8 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AzureAD\AzureADConsumer.cs" />
-    <Compile Include="AzureAD\IUsersGraphAPIClient.cs" />
-    <Compile Include="AzureAD\Model\ObtenerUsuarioResponse.cs" />
-    <Compile Include="AzureAD\UsersGraphAPIClient.cs" />
     <Compile Include="CredentialService\DataAgroWSCredential.cs" />
     <Compile Include="CredentialService\SAPCredential.cs" />
-    <Compile Include="Interfaces\IAzureADConsumer.cs" />
     <Compile Include="Interfaces\ICNRTClient.cs" />
     <Compile Include="Interfaces\IOrdenCargaConsumerMOA.cs" />
     <Compile Include="Interfaces\IComprasSolpConsumer.cs" />
@@ -474,6 +469,12 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
+    <Compile Include="Service References\ReporteOCWebServiceMOA\Reference.cs" />
+    <Compile Include="Service References\ReporteOCWebServiceMOA\Reference1.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
     <Compile Include="Service References\ScatoComandosWebService\Reference.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -610,6 +611,7 @@
     <Compile Include="WSConsumers\ProformaFleteProcedenciaConsumerMOA.cs" />
     <Compile Include="WSConsumers\RecepcionesConsumerMOA.cs" />
     <Compile Include="WSConsumers\ReporteContratoConsumerMOA.cs" />
+    <Compile Include="WSConsumers\ReporteOrdenDeCompraConsumerMOA.cs" />
     <Compile Include="WSConsumers\ServicioSuscriptorAccesosConsumer.cs" />
     <Compile Include="WSConsumers\ScatoComandosConsumer.cs" />
     <Compile Include="WSConsumers\ScatoConsumer.cs" />
@@ -1124,6 +1126,7 @@
     <None Include="Service References\RecepcionesWebServiceMOA\SustitucionMOAWS.RecepcionesWebServiceMOA.ZMPES49901.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
+    <None Include="Service References\ReporteOCWebServiceMOA\BAPI_PO_GETITEMS.wsdl" />
     <None Include="Service References\ScatoComandosWebService\ServicioComandos10.xsd">
       <SubType>Designer</SubType>
     </None>
@@ -3550,6 +3553,14 @@
       <Generator>WCF Proxy Generator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Service References\ReporteOCWebServiceMOA\configuration.svcinfo" />
+    <Content Include="Service References\ReporteOCWebServiceMOA\configuration91.svcinfo" />
+    <Content Include="Service References\ReporteOCWebServiceMOA\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference1.cs</LastGenOutput>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
