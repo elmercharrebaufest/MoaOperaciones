@@ -1200,13 +1200,13 @@ namespace SustitucionMOATest.Services
             repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<TablaSap, bool>>>(),
                 It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null)).Returns(new List<TablaSap>() { new TablaSap { CodigoSap = "ARP", Id = 1 } });
 
-            target.CrearCotizacionConTrabajoYaHecho(solp, false);
+            target.CrearCotizacionConTrabajoYaHecho(solp);
 
             repositorioMock.Verify(y => y.Obtener<Usuario>(It.IsAny<int>()), Times.Once);
             repositorioMock.Verify(y => y.Obtener<PeticionDeOfertaUsuario>(It.IsAny<int>()), Times.Once);
             repositorioMock.Verify(y => y.Listar(It.IsAny<Expression<Func<TablaSap, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null), Times.Once);
 
-            repositorioMock.Verify(x => x.GuardarCambios(), Times.Exactly(4));
+            repositorioMock.Verify(x => x.GuardarCambios(), Times.Exactly(5));
         }
 
         [Test]

@@ -1610,7 +1610,7 @@ namespace SustitucionMOAUtils.Services
                 Tabla = s.Tabla
             }, x => x.Tabla == tabla && (
             x.Descripcion.Contains(valor) || x.CodigoSap.Contains(valor)
-            ),10000);
+            ), 10000);
             return lista;
         }
 
@@ -1806,26 +1806,26 @@ namespace SustitucionMOAUtils.Services
         {
             try
             {
-                Logger.Log.Info($"EnviarMailSolpLiberada nro de solp {solp.NroSolp}");
-                Logger.Log.Info($"copia mail comprador {solp.UsuarioCompras.Mail}");
-                Logger.Log.Info($"copia mail creador {solp.UsuarioCreacion.Mail}");
-                Logger.Log.Info($"fecha {DateTime.Now}");
+                Log.Info($"EnviarMailSolpLiberada Nro de SOLP {solp.NroSolp}");
+                Log.Info($"Copia mail comprador {solp.UsuarioCompras.Mail}");
+                Log.Info($"Copia mail creador {solp.UsuarioCreacion.Mail}");
+                Log.Info($"Fecha {DateTime.Now}");
                 var copia = new List<string> { solp.UsuarioCreacion.Mail };
                 if (!string.IsNullOrEmpty(solp?.UsuarioCreacion?.Mail))
                 {
                     copia.Add(solp.UsuarioCreacion.Mail);
-                    Log.Info($"copia mail solicitante {solp.UsuarioCreacion.Mail}");
+                    Log.Info($"Copia mail solicitante {solp.UsuarioCreacion.Mail}");
                 }
-                var asunto = "";
+                var asunto = solp.TrabajoYaHecho == true ? "Nueva SOLP de trabajo ya hecho liberada" : "Nueva SOLP liberada";
+                asunto += $": {solp.NroSolp} - {solp.UsuarioCreacion.ObtenerRazonSocial()}";
                 var enviarA = new List<string> { solp.UsuarioCompras.Mail };
-                asunto += $"Nueva SOLP Liberada - {solp.NroSolp} - {solp.UsuarioCreacion.ObtenerRazonSocial()}";
 
                 emailService.EnviarMail(enviarA, asunto, "", copia, CuerpoMailSolpLiberada(solp, mensaje), null, "");
             }
             catch (Exception e)
             {
-                Logger.Log.Info($"Error al enviar mail {solp.UsuarioCompras.Mail}  Nro de SOLP {solp.NroSolp}");
-                Logger.Log.Error(e);
+                Log.Info($"Error al enviar mail {solp.UsuarioCompras.Mail} - Nro de SOLP {solp.NroSolp}");
+                Log.Error(e);
             }
         }
         private AlternateView CuerpoMailSolpLiberada(Solp solp, string mensaje)
@@ -3486,12 +3486,9 @@ namespace SustitucionMOAUtils.Services
 
                 if (enviarMail)
                 {
-
                     try
                     {
-
                         EnviarMailPeticionDeOferta(peticion, peticion.Usuarios.ToList());
-
                     }
                     catch (Exception e)
                     {
@@ -5414,8 +5411,8 @@ namespace SustitucionMOAUtils.Services
             res.ContentId = Guid.NewGuid().ToString();
             var proveedor = cotizacion.UsuarioCreador.ObtenerProveedor();
             string htmlBody = "";
-            htmlBody += $"En el presente mail, se informa la cotización realizada para SOLP " +
-                $"{cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Solp.NroSolp} y la PO {cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Id} generada por el proveedor {proveedor.RazonSocial} ({proveedor.CUIT}) <br /> <br/>";
+            htmlBody += $"En el presente mail se informa la cotización realizada para la SOLP " +
+                $"{cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Solp.NroSolp} y la PO {cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Id}, generada por el proveedor {proveedor.RazonSocial} ({proveedor.CUIT}). <br /> <br/>";
 
             var todasLasPosicionesNoDisponibles = cotizacion.CotizacionPosiciones.All(x => x.NoDisponible != null && x.NoDisponible.Value);
             var algunaPosicionNoDisponible = cotizacion.CotizacionPosiciones.Any(x => x.NoDisponible != null && x.NoDisponible.Value);
@@ -5748,18 +5745,23 @@ namespace SustitucionMOAUtils.Services
             return adjudicar;
         }
 
-        public void CrearCotizacionConTrabajoYaHecho(Solp solp, bool enviarMail = true)
+        public void CrearCotizacionConTrabajoYaHecho(Solp solp)
         {
             try
             {
-                RespuestaGuardarSOLP respuestaCotizacion;
-                Cotizacion cotizacionNueva;
                 //Crear Peticion 
-                var usuariosIds = new List<int>();
-                usuariosIds.Add(solp.ProveedorAsignado_Id.Value);
+                var usuariosIds = new List<int> { solp.ProveedorAsignado_Id.Value };
                 PeticionDeOferta peticionEntidad = CrearPeticionAutomatica(solp, usuariosIds);
                 //Crear Cotizacion
-                CrearCotizacionAutomatica(solp, enviarMail, peticionEntidad, out respuestaCotizacion, out cotizacionNueva, null);
+                CrearCotizacionAutomatica(solp, false, peticionEntidad, out RespuestaGuardarSOLP respuestaCotizacion, out Cotizacion cotizacionNueva, null);
+                //Completar revisión técnica
+                peticionEntidad.RevisionTecnica = new PeticionDeOfertaRevisionTecnica
+                {
+                    Usuario_Id = peticionEntidad.UsuarioCreador_Id,
+                    Fecha = DateTime.Now
+                };
+                peticionEntidad.PlazoDeOferta = DateTime.Now;
+                repositorio.GuardarCambios();
             }
             catch (Exception)
             {
