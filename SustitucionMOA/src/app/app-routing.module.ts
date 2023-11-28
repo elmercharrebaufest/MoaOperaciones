@@ -22,7 +22,7 @@ import { TicketPesadaComponent } from "./ticket-pesada/ticket-pesada.component";
 import { GestionCM05Component } from "./gestionCM05/gestionCM05.component";
 import { ApikeyComponent } from "./apikey/apikey.component";
 import { PesificacionesGuardadasComponent } from "./pesificacion/pesificaciones-guardadas/pesificaciones-guardadas.component";
-
+import { LegajoExternoComponent } from './compras/legajo-externo/legajo-externo.component';
 
 const appRoutes: Routes = [
     // { path: "documentacion", component: DocumentacionComponent },
@@ -37,6 +37,7 @@ const appRoutes: Routes = [
     //   canActivate: [LoginGuard],
     // },
     { path: "ticket-pesada", component: TicketPesadaComponent },
+    { path: "verLegajoOrdenDeCompra/:id/:token", component: LegajoExternoComponent },
 
     {
         path: "",
@@ -165,15 +166,14 @@ const appRoutes: Routes = [
             { path: "logPesificacion", loadChildren: "./log-pesificacion/log-pesificacion.module#LogPesificacionModule" },
             { path: "compras", loadChildren: "./compras/compras.module#ComprasModule" },
             { path: "apikey", component: ApikeyComponent },
-            // {
-            //     path: "echeq",
-            //     loadChildren: "./echeq/echeq.module#EcheqModule",
-            // },
+            {
+                path: "echeq",
+                loadChildren: "./echeq/echeq.module#EcheqModule",
+            },
             {
                 path: "aplicaciones-ccpp",
                 loadChildren: "./aplicacion-ccpp/aplicacion-ccpp.module#AplicacionCcppModule"
             }
-
         ],
     },
     { path: "**", component: HomeComponent },

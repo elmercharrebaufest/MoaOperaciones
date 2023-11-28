@@ -60,7 +60,6 @@ import { NgbAlertModule } from '@ng-bootstrap/ng-bootstrap';
 import { ProveedorPeticionComponent } from './dashboard-comprador/proveedor-peticion/proveedor-peticion.component';
 import { AltaProveedorComponent } from './dashboard-comprador/alta-proveedor/alta-proveedor.component';
 import { ListadoDashboardProveedorComponent } from './dashboard-proveedor/listado-dashboard-proveedor/listado-dashboard-proveedor.component';
-import { FiltroDashboardProveedorComponent } from './dashboard-proveedor/filtro-dashboard-proveedor/filtro-dashboard-proveedor.component';
 import { VerOfertasComponent } from './dashboard-comprador/ver-ofertas/ver-ofertas.component';
 import { RevisionTecnicaComponent } from './dashboard/revision-tecnica/revision-tecnica.component';
 
@@ -76,6 +75,9 @@ import { TextosAdjudicarComponent } from './dashboard-comprador/ver-ofertas/text
 import {AccordionModule} from 'primeng/accordion';
 import { RegistroInfoComponent } from './peticion-de-oferta-formulario/registro-info/registro-info/registro-info.component';
 import { CerrarCotizacionComponent } from './dashboard-comprador/cerrar-cotizacion/cerrar-cotizacion.component';
+import { PlazoDeOfertaComponent } from './dashboard-proveedor/cotizacion-formulario/cotizacion-material/plazo-de-oferta/plazo-de-oferta.component';
+import { VisalizarPrecioComponent } from './dashboard-comprador/ver-ofertas/visualizar-precio/visualizar-precio.component';
+import { ReporteOcComponent } from './reporte-oc/reporte-oc.component';
 
 @NgModule({
     imports: [
@@ -141,7 +143,6 @@ import { CerrarCotizacionComponent } from './dashboard-comprador/cerrar-cotizaci
         AltaProveedorComponent,
         ProveedorPeticionComponent,
         ListadoDashboardProveedorComponent,
-        FiltroDashboardProveedorComponent,
         VerOfertasComponent,
         RevisionTecnicaComponent,
         PeticionDeOfertaFormularioComponent,
@@ -152,7 +153,10 @@ import { CerrarCotizacionComponent } from './dashboard-comprador/cerrar-cotizaci
         OrdenDeCompraDetalleComponent,
         TextosAdjudicarComponent,
         RegistroInfoComponent,
-        CerrarCotizacionComponent
+        CerrarCotizacionComponent,
+        PlazoDeOfertaComponent,
+        ReporteOcComponent,
+        VisalizarPrecioComponent
     ],
     providers: [
         ComprasService,

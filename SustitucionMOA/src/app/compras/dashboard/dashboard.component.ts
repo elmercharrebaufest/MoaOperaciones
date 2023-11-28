@@ -511,7 +511,6 @@ export class DashboardComponent extends ListBaseComponent {
                         this.peticion = result.data;
                         this.displayRevisionTecnica = true;
                         this.blockUI.stop();
-                        console.log("peticion", this.peticion)
                     }
                 },
                 (error) => {
@@ -613,9 +612,9 @@ export class DashboardComponent extends ListBaseComponent {
             )
     }
 
-    grabarRevisionTecnica() {
+    grabarRevisionTecnica(revision: any) {
         this.blockUI.start('Grabando...');
-        this.service.grabarRevisionTecnica(this.peticion.Usuarios)
+        this.service.grabarRevisionTecnica(this.peticion.Usuarios, revision.finalizar)
             .subscribe(
                 (result) => {
                     if (result.logout == true) {

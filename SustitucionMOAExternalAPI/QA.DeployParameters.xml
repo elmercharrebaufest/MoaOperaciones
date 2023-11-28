@@ -2,7 +2,7 @@
 <parameters>
   <setParameter name="Url Config" value="http://gslopidevqa00.molinosagro.ad:50000/" />
 	<setParameter name="IIS Web Application Name" value="MOAOperacionesQA/externalApi" />
-	<setParameter name="CONTEXTO-Web.config Connection String" value="data source=APPAGLQA.molinosagro.ad,1450;initial catalog=MOAOperacionesQA;integrated security=True;MultipleActiveResultSets=True;App=EntityFramework" />
+	<setParameter name="CONTEXTO-Web.config Connection String" value="data source=APPAGLQA.molinosagro.ad,1450;initial catalog=MoaoperacionesPREhotfix;integrated security=True;MultipleActiveResultSets=True;App=EntityFramework" />
 	<setParameter name="BasicHttpBinding_IServicioRepositorio Service Endpoint Address" value="http://scatoqa.molinosagro.com.ar/Scato.serviciosWeb/ServicioRepositorio.svc" />
 	<setParameter name="BasicHttpBinding_IServicioComandos Service Endpoint Address" value="http://scatoqa.molinosagro.com.ar/Scato.serviciosWeb/ServicioComandos.svc" />
 	<setParameter name="BasicHttpBinding_IServicioSuscriptor Service Endpoint Address" value="http://gsloaccesos01.molinosagro.ad:8080/Pedidos_QA/Servicios/ServicioSuscriptor.svc" />

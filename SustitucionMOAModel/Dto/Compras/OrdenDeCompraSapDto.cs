@@ -9,6 +9,7 @@ namespace SustitucionMOAModel.Dto
         public OrdenDeCompraSAPCabecera Cabecera { get; set; }
         public List<OrdenDeCompraSAPPosicion> Posiciones { get; set; } = new List<OrdenDeCompraSAPPosicion>();
         public ErrorOC Error { get; set; }
+        public string Mensaje { get; set; }
     }
 
     public class OrdenDeCompraSAPCabecera
@@ -26,6 +27,7 @@ namespace SustitucionMOAModel.Dto
         public string FechaCreacionString { get; set; }
         public string TipoDocCompras { get; set; }
         public int? Usuario_Id { get; set; }
+        public string TipoSolp { get; set; }
 
         //        <COMP_CODE>MOA</COMP_CODE>// fijo
         //        <DOC_TYPE>ZPE1</DOC_TYPE>//tipo de documento

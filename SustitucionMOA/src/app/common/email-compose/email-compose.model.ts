@@ -6,6 +6,7 @@ export class EmailComposeModel {
     subject: string;
     body: string;
     downloadLinkUrl: string;
+    tieneAdjuntos: boolean;
 }
 
 export interface EmailCompose {

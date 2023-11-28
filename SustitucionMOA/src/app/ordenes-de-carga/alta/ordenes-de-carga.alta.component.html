@@ -273,8 +273,8 @@
                                 </div>
                                 <div class="styled-select autocomplete">
                                     <input auto-complete [(ngModel)]="ordenDeCarga.PatenteAcoplado"
-                                        (ngModelChange)="patenteAcopladoSelected($event);onPatenteSeleccionada();validarCNRT()"
-                                        maxlength="7" [source]="patentesAcoplados" [min-chars]="2"
+                                        (ngModelChange)="patenteAcopladoSelected($event);onPatenteSeleccionada();validarCNRT()" maxlength="7"
+                                        [source]="patentesAcoplados" [min-chars]="2"
                                         [no-match-found-text]="'No se encontraron resultados'"
                                         [value-formatter]="generalFormatterAcoplado"
                                         [list-formatter]="generalFormatterAcoplado" mask="AAAAAAA" />
@@ -497,7 +497,7 @@
 <p-dialog [header]="'Camión escalable'" [(visible)]="displayModalEscalable" [modal]="true" [responsive]="true"
     [style]="{width: '350px', minWidth: '200px', maxWidth:'350px'}" [minY]="70" [draggable]="false" appendTo="body"
     [closable]="false">
-    <p>No se marcó la orden como escalable y los datos ingresados son de un camión escalable.</p><br>
+    <p>No se marcó la orden como escalable y los datos ingreados son de un camión escalable.</p><br>
     <p>¿Desea que se marque como escalable?</p>
     <p-footer>
         <button type="button" pButton icon="pi pi-check" (click)="marcarComoEscalable()" label="Si"></button>

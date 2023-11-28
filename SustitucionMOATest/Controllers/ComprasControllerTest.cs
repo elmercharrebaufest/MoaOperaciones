@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using NUnit.Framework;
 using SustitucionMOA.Controllers;
 using SustitucionMOA.Utils;
+using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
@@ -29,6 +30,10 @@ namespace SustitucionMOATest.Controllers
         private string mailUsuario = "mail@mail.com";
         private JavaScriptSerializer serializer;
 
+        private Mock<HttpContextBase> Context = new Mock<HttpContextBase>();
+        private Mock<HttpRequestBase> Request = new Mock<HttpRequestBase>();
+        private string filePath = Path.GetFullPath(TestContext.CurrentContext.TestDirectory + "\\Util\\LogoBaufest.png");
+
         [SetUp]
         public void SetUp()
         {
@@ -46,10 +51,13 @@ namespace SustitucionMOATest.Controllers
             claims.AddClaim(new Claim(Globals.ClaimsNombreType, "mail"));
 
             var principal = new GenericPrincipal(fakeIdentity, null);
+    
+
 
             Thread.CurrentPrincipal = principal;
 
             target = new ComprasController(comprasServiceMock.Object, usuarioServiceMock.Object);
+
         }
 
         //[Test()]
@@ -375,7 +383,6 @@ namespace SustitucionMOATest.Controllers
             // Configuración de la prueba
             var usuarioId = 5776; // Establece el ID del usuario actual que esperas en tu servicio
 
-
             usuarioServiceMock.Setup(u => u.GetUsuario(It.IsAny<string>())).Returns(new UsuarioDto { Id = usuarioId });
 
             var solpEjemplo = new DatosUltimaSolpDto
@@ -449,14 +456,10 @@ namespace SustitucionMOATest.Controllers
                     Descripcion = "CuentaMayorSP",
                     IdPadre = 1
                 },
-
-
             };
 
             comprasServiceMock.Setup(s => s.ObtenerUltimaSolp(It.IsAny<int>()))
                           .Returns(solpEjemplo);
-
-
 
             // Actuar
             var result = target.ObtenerUltimaSolp() as JsonResult;
@@ -469,6 +472,86 @@ namespace SustitucionMOATest.Controllers
           
         }
 
+        [Test]
+        public void ObtenerReporteOrdenDeCompra_CasoExitoso()
+        {
+            // Arrange
+            var nroOC = "12345";
+            var fechaDesde = "2023-01-01";
+            var fechaHasta = "2023-02-01";
+            var codigoProveedor = "PROV123";
 
+            comprasServiceMock.Setup(x => x.ObtenerReporteOrdenDeCompra(nroOC, fechaDesde, fechaHasta, codigoProveedor))
+                .Returns(new List<OrdenDeCompraSAPDto>
+                {
+                new OrdenDeCompraSAPDto
+                {
+                    Cabecera = new OrdenDeCompraSAPCabecera
+                    {
+                        OrdenDeCompra = "OC123",
+                        CodigoProveedor = "PROV456",
+                        RazonSocialProveedor = "Proveedor XYZ",
+                        Moneda = "USD",
+                        MontoTotal = 1000,
+                        CreadoPor = "Usuario123",
+                        ClaseDocumento = "DocumentoClase123",
+                        FechaCreacion = DateTime.Now,
+                        Tipo = "Materiales",
+                    },
+                    Mensaje = "Mensaje de prueba",
+                }
+                
+                });
+
+            var result = target.ObtenerReporteOrdenDeCompra(nroOC, fechaDesde, fechaHasta, codigoProveedor) as JsonResult;
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.Data);
+        }
+
+        [Test]
+        public void ObtenerReporteOrdenDeCompra_InfoCustomException()
+        {
+            // Arrange
+            var nroOC = "12345";
+            var fechaDesde = "2023-01-01";
+            var fechaHasta = "2023-02-01";
+            var codigoProveedor = "PROV123";
+
+            comprasServiceMock.Setup(x => x.ObtenerReporteOrdenDeCompra(nroOC, fechaDesde, fechaHasta, codigoProveedor))
+                .Throws(new InfoCustomException("Información personalizada"));
+
+            var result = target.ObtenerReporteOrdenDeCompra(nroOC, fechaDesde, fechaHasta, codigoProveedor) as JsonResult;
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.Data);
+        }
+
+        [Test]
+        public void GrabarPeticionDeOfertaVisualizacionPrecioOK()
+        {
+
+            var json = "{\"Id\":1,\"PeticionDeOferta_Id\":2,\"Archivo_Id\":3,\"UsuarioCreador_Id\":4,\"FechaCreacion\":\"2023-10-27T12:00:00\",\"Observacion\":\"Esta es una observación\",\"Adjuntos\":[{\"Id\":101,\"NombreArchivo\":\"archivo1.pdf\",\"Tamaño\":1024},{\"Id\":102,\"NombreArchivo\":\"archivo2.docx\",\"Tamaño\":2048}]}";
+
+            var archivoMock = new Mock<HttpPostedFileBase>();
+            archivoMock.Setup(a => a.FileName).Returns(filePath); // Configura el nombre del archivo
+            archivoMock.Setup(a => a.ContentLength).Returns(1024); // Configura el tamaño del archivo       
+            var files = new Mock<HttpFileCollectionBase>();
+            files.Setup(f => f.Count).Returns(1); // Número de archivos en la colección
+            files.Setup(f => f.Get(0)).Returns(archivoMock.Object); // Obtiene el archivo en la colección
+            Request.Setup(r => r.Files).Returns(files.Object);
+            Context.Setup(c => c.Request).Returns(Request.Object);
+            target.ControllerContext = new ControllerContext(Context.Object, new System.Web.Routing.RouteData(), target);
+            // Arrange      
+            comprasServiceMock.Setup(s => s.GrabarPeticionDeOfertaVisualizacionPrecio(It.IsAny<PeticionDeOfertaVisualizacionPrecioDto>(), It.IsAny<HttpFileCollectionBase>()))
+            .Returns(new Resultado { IdEntidad = 1 });
+            usuarioServiceMock.Setup(s => s.GetUsuario(It.IsAny<string>()))
+            .Returns(new UsuarioDto { Id = 1 });
+
+            var result = target.GrabarPeticionDeOfertaVisualizacionPrecio(json) as JsonResult;
+
+            // Assert
+            Assert.IsNotNull(result);
+        }
     }
 }

@@ -433,9 +433,9 @@
                                 <div *ngIf="isAuthorized('CREAR CONTRATOS')">
                                     <a (click)="goToSeccion('/reporte/contrato')" href="#">Reporte de mis cargas</a>
                                 </div>
-                                <!-- <div *ngIf="isAuthorized('VER ECHEQ')">
+                                <div *ngIf="isAuthorized('VER ECHEQ')">
                                     <a (click)="goToSeccion('/echeq/gestion')" href="#">Gestión Echeq</a>
-                                </div> -->
+                                </div>
                             </ng-container>
                             <ng-container
                                 *ngIf="isNoGranosSelected() || (!isAmbos() && (isCliente() || isAuthorized('CONSULTAR HOME NG')))">
@@ -636,6 +636,12 @@
                             <div *ngIf="isAuthorized('VER SOLPS PROVEEDOR')">
                                 <a (click)="goToSeccion('/compras/dashboardProveedor')" href="#">
                                     DASHBOARD PROVEEDOR
+                                </a>
+                            </div>
+
+                            <div *ngIf="isAuthorized('VER SOLPS PROVEEDOR')">
+                                <a (click)="goToSeccion('/compras/reporte-oc')" href="#">
+                                    REPORTE ORDEN DE COMPRA
                                 </a>
                             </div>
                         </div>

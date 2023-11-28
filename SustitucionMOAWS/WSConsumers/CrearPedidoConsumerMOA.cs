@@ -1,5 +1,4 @@
-﻿
-using SustitucionMOAFotmatter;
+﻿using SustitucionMOAFotmatter;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAWS.CrearPedidoWebServiceMOA;
 using SustitucionMOAWS.CredentialService;
@@ -86,7 +85,6 @@ namespace SustitucionMOAWS.WSConsumers
                 respuesta.Errores.Add(error);
             }
 
-
             serxml = new System.Xml.Serialization.XmlSerializer(respuesta.GetType());
             ms = new MemoryStream();
             serxml.Serialize(ms, respuesta);
@@ -96,31 +94,27 @@ namespace SustitucionMOAWS.WSConsumers
                 writer.WriteLine(xml);
             }
 
-
             return respuesta;
         }
 
         private SolpPedidoSAPDto ConvertirSOLP(Adjudicacion adjudicacion)
         {
             //TODO: Crear OC ConvertirSOLP - fields hardcodeados o para revisar
-            ///PURCH_ORG ok por ahora. OrganizacionCompras hardcode 2029
             ///DOC_TYPE  ok por ahora. Clase de documento de compras / Estrategia de liberacion hardcore ZPE1 
 
             ///STREET y STREET_NO ok. no tenemos el campo separado mandamos todo en street            
             ///SERIAL_NO/serialNumber siempre 1 por que se imputa todo a lo mismo sino son imputaciones multiples, en ese caso analizar como se envia.
 
-
             var proveedorCodigoDeLaAdjudicacion = adjudicacion.Posiciones.First().CotizacionPosicion.Cotizacion.PeticionDeOfertaUsuario.Usuario.ObtenerCodigoProveedor();
             var usuarioCreadorAdjudicacion = adjudicacion.Usuario.UsuarioSap;
+            var usuarioOrganizacionDeCompra = adjudicacion.Usuario.OrganizacionDeCompra;
             var solp = adjudicacion.Solp;
-
             SolpPedidoSAPDto solpPedidoSAP = new SolpPedidoSAPDto();
             int numeroPosicion = 0;
             string preqItem = "";
             string numeroDeImputacion = "";
             var PCKG_NO = 1000;
             var numeroDePaquete = 1;
-
 
             bool esPosicionDeMateriales = solp.Posiciones.First().TipoPosicion.Codigo == "MATERIALES";
 
@@ -142,7 +136,7 @@ namespace SustitucionMOAWS.WSConsumers
                 cabeceraDelPedido.COMP_CODE = "MOA"; //COMP_CODE BUKRS   Sociedad
                 cabeceraDelPedido.DOC_TYPE = "ZPE1";//solp.ClaseDocumento.CodigoSap; //DOC_TYPE    ESART Clase de documento de compras
                 cabeceraDelPedido.VENDOR = proveedorCodigoDeLaAdjudicacion;//VENDOR ELIFN   Número de cuenta del proveedor
-                cabeceraDelPedido.PURCH_ORG = "2029";//PURCH_ORG EKORG   Organización de compras
+                cabeceraDelPedido.PURCH_ORG = usuarioOrganizacionDeCompra;//PURCH_ORG EKORG   Organización de compras
                 cabeceraDelPedido.PUR_GROUP = posicion.GrupoCompras.CodigoSap.ToString(); //PUR_GROUP   BKGRP Grupo de compras
                 cabeceraDelPedido.CURRENCY = adjudicacionPosicion.CotizacionPosicion.Moneda.Codigo; //CURRENCY WAERS   Clave de moneda
                 cabeceraDelPedido.CREATED_BY = usuarioCreadorAdjudicacion;//CREATED_BY ERNAM   Nombre del responsable que ha añadido el objeto
@@ -205,8 +199,6 @@ namespace SustitucionMOAWS.WSConsumers
                 IM_POITEM.VAL_TYPE = "";
                 IM_POITEM.NO_MORE_GR = "";
                 IM_POITEM.FINAL_INV = "";
-
-
 
                 switch (posicion.TipoImputacion?.Codigo.ToLower())
                 {
@@ -350,7 +342,6 @@ namespace SustitucionMOAWS.WSConsumers
                     STREET_NO = "",//no tenemos el campo separado en calle y altura
                 });
 
-
                 //subposiciones
                 if (!esPosicionDeMateriales)
                 {
@@ -401,9 +392,6 @@ namespace SustitucionMOAWS.WSConsumers
                     }
                     PCKG_NO++;
                 }
-
-
-
             }
 
             var listaVaciaTexto = new string[] {""};
@@ -434,7 +422,7 @@ namespace SustitucionMOAWS.WSConsumers
                 }
                 
             }
-           
+            solpPedidoSAP.IM_URL = ConfigurationManager.AppSettings["SpaUrl"] + "/verLegajoOrdenDeCompra/" + adjudicacion.Id +"/"+ adjudicacion.Token;
 
             return solpPedidoSAP;
         }
@@ -904,7 +892,6 @@ namespace SustitucionMOAWS.WSConsumers
 
     public class SolpPedidoSAPDto
     {
-
         public List<ZMPES6830> IM_POACCOUNTList { get; set; }
         public List<ZMPES6840> IM_POACCOUNTXList { get; set; }
         public List<ZMPES6820> IM_POADDREDELIVERYList { get; set; }
@@ -923,8 +910,6 @@ namespace SustitucionMOAWS.WSConsumers
         public List<BAPIMEPOTEXT> IM_POTEXTITEMList { get; set; }
         public List<BAPIESLLC> IM_SERVICESList { get; set; }
         public string IM_URL { get; set; }
-
-
 
 
         public SolpPedidoSAPDto()
@@ -955,7 +940,5 @@ namespace SustitucionMOAWS.WSConsumers
         CrearPedidoConsumerMOAResponse Request(Adjudicacion adjudicacion);
 
     }
-
-  
 
 }

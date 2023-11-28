@@ -1,6 +1,7 @@
 .columna {
-    word-break: break-all; 
-    word-wrap:break-word; 
+    word-break: break-all !important; 
+    white-space: normal; 
+    word-wrap: break-word;
     font-size: 11px !important;
     text-transform: none !important;
 }
@@ -81,5 +82,16 @@ input[type=number] {
   font-size: 13px !important;
 }
 
+.plazoDeOferta{
+  border: 1px solid #4760ac !important;
+  background: #4760ac;
+  color: white
+}
+
+/* Estilo para el contenedor de la tabla */
+.table-container {
+  overflow-x: auto; /* Habilita la barra de desplazamiento horizontal si es necesario */
+  white-space: nowrap; /* Evita que el contenido se divida en varias líneas */
+}
 
 

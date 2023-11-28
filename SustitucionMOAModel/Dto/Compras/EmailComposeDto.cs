@@ -8,9 +8,10 @@ namespace SustitucionMOAModel.Dto
         public List<string> To { get; set; }
         public List<string> Cc { get; set; }
         public List<string> Bcc { get; set; }
-
         public string Subject { get; set; }
         public string Body { get; set; }
         public string DownloadLinkUrl { get; set; }
+        public bool TieneAdjuntos { get; set; }
+        public string Html { get; set; }
     }
 }
