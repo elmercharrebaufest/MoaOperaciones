@@ -19,14 +19,10 @@
     <AssemblyName>SustitucionMOA</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <UseIISExpress>true</UseIISExpress>
-    <IISExpressSSLPort>
-    </IISExpressSSLPort>
-    <IISExpressAnonymousAuthentication>
-    </IISExpressAnonymousAuthentication>
-    <IISExpressWindowsAuthentication>
-    </IISExpressWindowsAuthentication>
-    <IISExpressUseClassicPipelineMode>
-    </IISExpressUseClassicPipelineMode>
+    <IISExpressSSLPort>58280</IISExpressSSLPort>
+    <IISExpressAnonymousAuthentication>enabled</IISExpressAnonymousAuthentication>
+    <IISExpressWindowsAuthentication>disabled</IISExpressWindowsAuthentication>
+    <IISExpressUseClassicPipelineMode>false</IISExpressUseClassicPipelineMode>
     <UseGlobalApplicationHostFile />
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
@@ -344,7 +340,6 @@
     </Content>
     <Content Include="PREHotFix.DeployParameters.xml" />
     <Content Include="QAHotFix.DeployParameters.xml" />
-    <Content Include="src\app\aplicacion-ccpp\aplicacion-ccpp.module.js" />
     <Content Include="src\app\aplicacion-ccpp\listado\listado.component.css" />
     <Content Include="src\app\aplicacion-ccpp\listado\listado.component.html" />
     <Content Include="src\app\common\shared-components\buscador\buscador.component.css" />
