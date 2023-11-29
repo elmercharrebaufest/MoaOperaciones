@@ -106,6 +106,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                               RevisionFinalizada = po.RevisionTecnica_Id != null,
                                                               ChatSinLeer = po.ChatInternoCompras.Any(a => a.Leido == false && a.Usuario.Roles.Any(r => r.Codigo == rol)),
                                                               Observaciones = po.Observaciones,
+                                                              RecotizacionEconomica = po.RevisionTecnica == null ? false : po.RevisionTecnica.RecotizacionEconomica
                                                           })
                                 };
 

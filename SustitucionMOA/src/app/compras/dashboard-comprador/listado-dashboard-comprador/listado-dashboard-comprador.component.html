@@ -210,6 +210,7 @@
                                                 <th class="columna" style="width: 100px !important"></th>
                                                 <th class="columna">Pedido de Cotización</th>
                                                 <th class="columna">Plazo de Oferta</th>
+                                                <th class="columna">Recotizar</th>
                                                 <th class="columna">Estado Lic.</th>
                                                 <th class="columna" style="width: 440px !important"></th>
                                             </tr>
@@ -238,6 +239,9 @@
                                                 <td class="columna">
                                                     {{licitacion.PlazoDeOfertaFormateado}}
                                                 </td>
+                                                <td class="columna">
+                                                    {{licitacion.RecotizacionEconomica == true ? 'Si' : 'No'}}
+                                                </td>                                                
                                                 <td class="columna" [style.color]="licitacion.EstadoColor">{{licitacion.Estado}}</td>
                                                 <td class="columna">
                                                     <button class="publicar btn " style="margin-right: 10px;" (click)="verLegajo(licitacion.Id)">

@@ -99,6 +99,8 @@ namespace SustitucionMOAModel.Dto
         public bool RevisionFinalizada { get; set; }
         public bool VerBotonVerPrecio { get; set; }
         public bool ChatSinLeer { get; set; }
+        public bool RecotizacionEconomica { get; set; }
+        public PeticionDeOfertaRevisionTecnicaDto RevisionTecnica { get; set; }
         public List<PeticionDeOfertaUsuarioAdicionalDto> UsuariosAdicionales { get; set; }
 
     }
@@ -142,7 +144,6 @@ namespace SustitucionMOAModel.Dto
         public DateTime? PlazoDeOfertaCircular { get; set; }
         public DateTime? PlazoDeOfertaCierre { get; set; }
         public DateTime? FechaCircular { get; set; }
-
     }
 
     public class PeticionDeOfertaCierreDto
@@ -152,6 +153,17 @@ namespace SustitucionMOAModel.Dto
         public int Usuario_Id { get; set; }
         public DateTime Fecha { get; set; }
         public string Observacion { get; set; }
+    }
+
+    public class PeticionDeOfertaRevisionTecnicaDto
+    {
+        public int Id { get; set; }
+        public int Usuario_Id { get; set; }
+        public DateTime Fecha { get; set; }
+        public bool RecotizacionEconomica { get; set; }
+        public bool? ModificacionSolp { get; set; }
+        public string ObservacionRecotizacion { get; set; }
+        public bool Finalizada { get; set; }
     }
 
     public class PeticionDeOfertaUsuarioAdicionalDto

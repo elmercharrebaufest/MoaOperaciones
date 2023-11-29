@@ -14,7 +14,7 @@ import { SpinnerComponent } from '../../common/view-child/spinner/spinner.compon
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { EnumTipoSolpSap } from '../enum-tipo-solp-sap';
 import { Paginator } from 'primeng/paginator';
-import { PeticionDeOfertaDto } from '../../modelos/peticion-de-oferta-model';
+import { PeticionDeOfertaDto, PeticionDeOfertaRevisionTecnicaDto } from '../../modelos/peticion-de-oferta-model';
 import { forEach } from '@angular/router/src/utils/collection';
 import { AdjudicacionDto, AdjudicacionPosicionDto } from '../../modelos/adjudicacion';
 
@@ -613,18 +613,16 @@ export class DashboardComponent extends ListBaseComponent {
             )
     }
 
-    grabarRevisionTecnica(revision: any) {
+    grabarRevisionTecnica(event) {
         this.blockUI.start('Grabando...');
-        this.service.grabarRevisionTecnica(this.peticion.Usuarios, revision.finalizar)
+        this.service.grabarRevisionTecnica(this.peticion.Usuarios, event.finalizar, event.revisionTecnica)
             .subscribe(
                 (result) => {
                     if (result.logout == true) {
                         this.sessionDataService.logout();
                     }
                     else {
-                        if (result) {
-
-                        }
+                        if (result) {}
                         this.displayRevisionTecnica = false;
                         this.blockUI.stop();
                     }

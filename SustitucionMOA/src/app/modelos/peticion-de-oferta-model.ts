@@ -34,7 +34,10 @@ export interface PeticionDeOfertaDto{
     Adicional?: boolean,
     NroOrdenDeCompraAdicional?: string,
     TieneVisitaObraMasiva?: boolean,
-    TieneVisitaObraBool?: boolean
+    TieneVisitaObraBool?: boolean,
+    Estado?: string,
+    RevisionFinalizada?: boolean,
+    RevisionTecnica?: PeticionDeOfertaRevisionTecnicaDto
 }
 
 export interface PeticionDeOfertaUsarioDto {
@@ -48,7 +51,8 @@ export interface PeticionDeOfertaUsarioDto {
     RealizoVisita?: boolean,
     EstaHabilitado: boolean,
     ValidacionCircularSolicitante?: boolean,
-    ObservacionNoCumple?: string
+    ObservacionNoCumple?: string,
+    Deshabilitado?: boolean
 }
 
 export interface PeticionDeOfertaUsarioAdicionalDto {
@@ -83,3 +87,11 @@ export interface PeticionDeOfertaCierreDto{
     Observaciones: string
 }
 
+export interface PeticionDeOfertaRevisionTecnicaDto{
+    Id: number,
+    Usuario_Id?: number,
+    RecotizacionEconomica?: boolean,
+    ModificacionSolp?: boolean,
+    ObservacionRecotizacion?: string,
+    Finalizada?: boolean
+}

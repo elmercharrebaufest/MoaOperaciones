@@ -428,6 +428,18 @@ namespace SustitucionMOATest.Services
                     }
             }
         };
+        private readonly PeticionDeOfertaRevisionTecnicaDto peticionDeOfertaRevisionTecnica = new PeticionDeOfertaRevisionTecnicaDto
+        {
+            Id = 1,
+            Usuario_Id = 1,
+            Fecha = DateTime.Now,
+            RecotizacionEconomica = false,
+            ModificacionSolp = false,
+            ObservacionRecotizacion = "Observacion",
+            Finalizada = true
+        };
+
+
 
 
         [SetUp]
@@ -1392,9 +1404,18 @@ namespace SustitucionMOATest.Services
 
             var finalizar = false;
 
+            var revision = new PeticionDeOfertaRevisionTecnicaDto
+            {
+                Id = 1
+            };
+
             repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<PeticionDeOfertaUsuario, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null))
                 .Returns(new List<PeticionDeOfertaUsuario>() { new PeticionDeOfertaUsuario { Id = 1, RealizoVisita = true, PeticionDeOferta = peticionDeOferta } });
-            target.GrabarRevisionTecnica(peticiones, 1, finalizar);
+
+            repositorioMock.Setup(y => y.Agregar(It.IsAny<PeticionDeOfertaRevisionTecnica>())).Returns(new PeticionDeOfertaRevisionTecnica { Id = 1 });
+
+
+            target.GrabarRevisionTecnica(peticiones, 1, finalizar, revision);
             repositorioMock.Verify(y => y.Listar(It.IsAny<Expression<Func<PeticionDeOfertaUsuario, bool>>>(),
                 It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null), Times.Once);
             repositorioMock.Verify(x => x.GuardarCambios(), Times.Exactly(1));
@@ -1407,15 +1428,22 @@ namespace SustitucionMOATest.Services
             {
                 new PeticionDeOfertaUsarioDto
                  {
-                   Id = 1
+                   Id = 1,
+                   PlazoDeOferta = DateTime.Now.AddDays(-5)
                  }
             };
 
             var finalizar = true;
 
             repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<PeticionDeOfertaUsuario, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null))
-                .Returns(new List<PeticionDeOfertaUsuario>() { new PeticionDeOfertaUsuario { Id = 1, RealizoVisita = true, PeticionDeOferta = peticionDeOferta } });
-            target.GrabarRevisionTecnica(peticiones, 1, finalizar);
+                .Returns(new List<PeticionDeOfertaUsuario>() { new PeticionDeOfertaUsuario { Id = 1, RealizoVisita = true, PeticionDeOferta = peticionDeOferta,  } });
+            repositorioMock.Setup(y => y.Agregar(It.IsAny<PeticionDeOfertaRevisionTecnicaDto>())).Returns(peticionDeOfertaRevisionTecnica);
+          
+
+            repositorioMock.Setup(y => y.Obtener(It.IsAny<Expression<Func<PeticionDeOferta, bool>>>(), It.IsAny<Expression<Func<PeticionDeOferta, PeticionDeOfertaDto>>>()))
+                .Returns(new PeticionDeOfertaDto { Id = 1, Solp_Id = 1, RegistroInfo = false, UsuarioCreador_Id = 1, PlazoDeOferta = DateTime.Now.AddDays(-5) });
+
+            target.GrabarRevisionTecnica(peticiones, 1, finalizar, peticionDeOfertaRevisionTecnica);
             repositorioMock.Verify(y => y.Listar(It.IsAny<Expression<Func<PeticionDeOfertaUsuario, bool>>>(),
                 It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null), Times.Once);
             repositorioMock.Verify(x => x.GuardarCambios(), Times.Exactly(1));

@@ -1087,12 +1087,14 @@ namespace SustitucionMOA.Controllers
         }
 
         [HttpPost]
-        public ActionResult GrabarRevisionTecnica(string json, bool finalizar)
+        public ActionResult GrabarRevisionTecnica(string json, bool finalizar, string jsonRevision)
         {
             try
             {
-                var revision = JsonConvert.DeserializeObject<List<PeticionDeOfertaUsarioDto>>(json);
-                var result = service.GrabarRevisionTecnica(revision, ObtenerUsuarioActual().Id, finalizar);
+                var peticionDeOfertaUsuarioDto = JsonConvert.DeserializeObject<List<PeticionDeOfertaUsarioDto>>(json);
+                var revision = JsonConvert.DeserializeObject<PeticionDeOfertaRevisionTecnicaDto>(jsonRevision);
+
+                var result = service.GrabarRevisionTecnica(peticionDeOfertaUsuarioDto, ObtenerUsuarioActual().Id, finalizar, revision);
                 return JsonCustom(new { data = result });
             }
             catch (InfoCustomException e)

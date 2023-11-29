@@ -7,7 +7,7 @@ import { EmailComposeModel } from '../common/email-compose/email-compose.model';
 import { SolpPosicion } from './solp/solp-posicion';
 import { AltaNuevoProveedor, EnvioSolpCompra, SolpCompraDto } from './solp-compra';
 import { CircularDto } from '../modelos/circular-model';
-import { PeticionDeOfertaCierreDto, PeticionDeOfertaDto, PeticionDeOfertaUsarioDto } from '../modelos/peticion-de-oferta-model';
+import { PeticionDeOfertaCierreDto, PeticionDeOfertaDto, PeticionDeOfertaRevisionTecnicaDto, PeticionDeOfertaUsarioDto } from '../modelos/peticion-de-oferta-model';
 import { AdjudicacionDto } from '../modelos/adjudicacion';
 import { OrdenDeCompraSap } from '../modelos/ordenDeCompraSap';
 import { RegistroInfoDto } from '../modelos/registro-info';
@@ -711,12 +711,14 @@ export class ComprasService extends BaseService {
             });
     }
 
-    public grabarRevisionTecnica(petisiones: PeticionDeOfertaUsarioDto[], finalizar: boolean) {
-        let json = JSON.stringify(petisiones);
+    public grabarRevisionTecnica(peticiones: PeticionDeOfertaUsarioDto[], finalizar: boolean, revisionTecnica: PeticionDeOfertaRevisionTecnicaDto) {
+        let json = JSON.stringify(peticiones);
+        let jsonRevision = JSON.stringify(revisionTecnica);
+
         var payload = new FormData();
         payload.append('json', json);
         payload.append('finalizar', finalizar.toString());
-
+        payload.append('jsonRevision', jsonRevision);
 
         return this.http
             .post<any>('/api/compras/GrabarRevisionTecnica', payload, { headers: this.headers });
@@ -877,7 +879,6 @@ export class ComprasService extends BaseService {
             Observacion: peticion.Observacion,
             PeticionDeOferta_Id: peticion.PeticionOfertaId
         });
-        console.log(jsonPayload, "json")
         const payload = new FormData();
         payload.append('json', jsonPayload);
 
