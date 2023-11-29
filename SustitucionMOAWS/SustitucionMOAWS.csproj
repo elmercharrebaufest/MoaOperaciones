@@ -480,7 +480,8 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
-    <Compile Include="Service References\ReporteOCWebServiceMOA\Reference.cs">
+    <Compile Include="Service References\ReporteOCWebServiceMOA\Reference.cs" />
+    <Compile Include="Service References\ReporteOCWebServiceMOA\Reference1.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.svcmap</DependentUpon>
@@ -3590,7 +3591,7 @@
   <ItemGroup>
     <None Include="Service References\ReporteOCWebServiceMOA\Reference.svcmap">
       <Generator>WCF Proxy Generator</Generator>
-      <LastGenOutput>Reference.cs</LastGenOutput>
+      <LastGenOutput>Reference1.cs</LastGenOutput>
     </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -10,8 +10,9 @@ export interface ListadoRequest {
   fechaInicio: string;
   fechaFin: string;
 }
+
 @Injectable()
-export class AplicacionCcppService extends BaseService {
+export class AplicacionCcppService extends BaseService{
   private baseUrl = "/api/AplicacionCartaPorte/";
   getListado({ fechaInicio, fechaFin }: ListadoRequest): Observable<ApiResponse<AplicacionCCPP[], AplicacionCCPPFiltro>> {
     const params = new HttpParams()
@@ -49,6 +50,6 @@ export class AplicacionCcppService extends BaseService {
 
     return this.http
       .post(`${this.baseUrl}/CargarMasiva`, payload, { headers: this.headersPost })
-      .pipe(timeoutWith(360000, observableThrowError(new Error("Se escedió el tiempo de espera, por favor inténtelo más tarde"))));
+      .pipe(timeoutWith(360000, observableThrowError(new Error("Se escedi� el tiempo de espera, por favor int�ntelo m�s tarde"))));
     }
 }
