@@ -312,7 +312,7 @@ namespace SustitucionMOAUtils.Services
                 try
                 {
                     var finalizoPrimeraVez = string.IsNullOrEmpty(solpEntity.NroSolp);
-                    respuestaGuardarSOLP = FinalizarSolp(solp, solpEntity, postEntitySubPosicionesEliminadas, respuestaGuardarSOLP);
+                    respuestaGuardarSOLP = FinalizarSolp(solpEntity, postEntitySubPosicionesEliminadas);
                     GuardarUsuarioComprasRelacionado(solp);
                 }
                 catch (Exception e)
@@ -636,8 +636,9 @@ namespace SustitucionMOAUtils.Services
             return solp;
         }
 
-        private RespuestaGuardarSOLP FinalizarSolp(SolpDto solp, Solp solpEntity, SolpPosicion postEntitySubPosicionesEliminadas, RespuestaGuardarSOLP respuestaGuardarSOLP)
+        private RespuestaGuardarSOLP FinalizarSolp( Solp solpEntity, SolpPosicion postEntitySubPosicionesEliminadas)
         {
+            RespuestaGuardarSOLP respuestaGuardarSOLP = new RespuestaGuardarSOLP();
             //variables para ver a que request accedemos
             //var crearPedidoConsumer = crearPedido(solpEntity);
             //var crearSolpComsumer = crearSolp(solpEntity);
@@ -709,7 +710,7 @@ namespace SustitucionMOAUtils.Services
                         pos.CantidadSubposicionesEnSAP = pos.Subposiciones.Count;
                         pos.EsConcluido = true;
                     }
-                    if (solp.TrabajoYaHecho == true && solpEntity.EstadoSolpSap?.CodigoSap == "05")
+                    if (solpEntity.TrabajoYaHecho == true && solpEntity.EstadoSolpSap?.CodigoSap == "05")
                     {
                         ActualizarOfertasAlEditarSolpLiberada(solpEntity);
                     }
@@ -720,12 +721,12 @@ namespace SustitucionMOAUtils.Services
                 {
                     //revertir los cambios si da error
                     ObtenerSolpesDesdeSAPJob(new ObtenerSolpRequest { NumeroSolp = solpEntity.NroSolp, FechaDesde = new DateTime(2010, 01, 01), FechaHasta = DateTime.Now.Date.AddDays(1) });
-                    respuestaGuardarSOLP.Solp = TraerSolpId(solp.Id.Value);
+                    respuestaGuardarSOLP.Solp = TraerSolpId(solpEntity.Id);
                 }
                 repositorio.GuardarCambios();
             }
-            respuestaGuardarSOLP.IdEntidad = solp.Id.Value;
-            ValidarSolpAnulada(solp.NroSolp);
+            respuestaGuardarSOLP.IdEntidad = solpEntity.Id;
+            ValidarSolpAnulada(solpEntity.NroSolp);
             return respuestaGuardarSOLP;
 
             #region'NO BORRAR EL CODIGO COMENTADO EN ESTA REGION'
