@@ -146,6 +146,12 @@
                                      style="width: 30px; height: 30px; cursor:default" />
                             </span>
                         </div>
+                        <div *ngIf="rowData.TipoSolpSap == 4" class="col-md-2">
+                            <span>
+                                <img class="pointer" src="./Content/images/icons/gears.svg" alt="Reposición Automática"
+                                     style="height: 30px; cursor:default" />
+                            </span>
+                        </div>
                         <div class="col-md-2"
                              *ngIf="rowData.TipoSolp.Codigo == 'CON_PLIEGO' || (rowData.TipoSolp.Codigo == 'SIN_PLIEGO' && rowData.SolpConAdjuntos)">
                             <span>
