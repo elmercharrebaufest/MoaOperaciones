@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SustitucionMOAModel.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -98,6 +99,8 @@ namespace SustitucionMOAModel.Dto
         public bool RevisionFinalizada { get; set; }
         public bool VerBotonVerPrecio { get; set; }
         public bool ChatSinLeer { get; set; }
+        public List<PeticionDeOfertaUsuarioAdicionalDto> UsuariosAdicionales { get; set; }
+
     }
 
     public class PeticionDeOfertaSolpPosicionDto
@@ -149,5 +152,30 @@ namespace SustitucionMOAModel.Dto
         public int Usuario_Id { get; set; }
         public DateTime Fecha { get; set; }
         public string Observacion { get; set; }
+    }
+
+    public class PeticionDeOfertaUsuarioAdicionalDto
+    {
+
+        public PeticionDeOfertaUsuarioAdicionalDto()
+        {
+        }
+               
+        public PeticionDeOfertaUsuarioAdicionalDto(PeticionDeOfertaUsuarioAdicional entidad)
+        {
+            this.UsuarioId = entidad.Usuario_Id;
+            this.Id = entidad.Id;
+            this.RazonSocial = entidad.Usuario.ObtenerRazonSocial();
+            this.CUIT = entidad.Usuario.CUITRegistro;
+            this.Mail = entidad.Usuario.Mail;
+
+        }
+
+        public int UsuarioId { get; set; }
+        public string RazonSocial { get; set; }
+        public int Id { get; set; }
+        public string CUIT { get; set; }
+        public string Mail { get; set; }      
+
     }
 }

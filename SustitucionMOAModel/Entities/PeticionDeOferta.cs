@@ -41,5 +41,8 @@ namespace SustitucionMOAModel.Entities
 
         [InverseProperty("PeticionDeOferta")]
         public virtual ICollection<ChatInternoCompras> ChatInternoCompras { get; set; } = new List<ChatInternoCompras>();
+
+        [InverseProperty("PeticionDeOferta")]
+        public virtual ICollection<PeticionDeOfertaUsuarioAdicional> UsuariosAdicionales { get; set; } = new List<PeticionDeOfertaUsuarioAdicional>();
     }
 }

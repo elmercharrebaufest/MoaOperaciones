@@ -36,6 +36,7 @@ using System.Net;
 using System.Net.Mail;
 using System.Text;
 using System.Web;
+using System.Web.Caching;
 using Image = iTextSharp.text.Image;
 
 
@@ -3459,6 +3460,25 @@ namespace SustitucionMOAUtils.Services
                 }
                 var fechaOferta = posiciones.First().Solp.TrabajoYaHecho == true ? DateTime.Today.AddDays(-1) : posiciones.First().Solp.Pliego?.FechaHoraEntrega;
                 var usuarios = repositorio.Listar<Usuario>();
+
+                List<PeticionDeOfertaUsuario> poUsuarios = new List<PeticionDeOfertaUsuario>();
+                List<PeticionDeOfertaUsuarioAdicional> poUsuariosAdicionales = new List<PeticionDeOfertaUsuarioAdicional>();
+
+                foreach (var proveedor in usuarios.Where(x => peticionDeOferta.UsuarioIds.Contains(x.Id)).GroupBy(a => a.CUITRegistro))
+                {
+                    poUsuarios.Add(new PeticionDeOfertaUsuario { Usuario_Id = proveedor.First().Id });
+
+                    foreach (var adicional in proveedor)
+                    {
+                        if (adicional.Id != proveedor.First().Id)
+                        {
+                            poUsuariosAdicionales.Add(new PeticionDeOfertaUsuarioAdicional { Usuario_Id = adicional.Id });
+                        }
+                    }
+
+                }
+                var usuario = repositorio.Obtener<Usuario>(peticionDeOferta.UsuarioActual.Id);
+
                 var peticion = new PeticionDeOferta()
                 {
                     UsuarioCreador_Id = peticionDeOferta.UsuarioActual.Id,
@@ -3468,7 +3488,8 @@ namespace SustitucionMOAUtils.Services
                     Observaciones = peticionDeOferta.Observacion ?? "",
                     Posiciones = posicionesPeticion,
                     PlazoDeOferta = fechaOferta ?? posiciones.OrderByDescending(x => x.FechaEntregaServicio).Select(x => x.FechaEntregaServicio).FirstOrDefault().Value,
-                    Usuarios = usuarios.Where(x => peticionDeOferta.UsuarioIds.Contains(x.Id)).Select(a => new PeticionDeOfertaUsuario { Usuario_Id = a.Id }).ToList(),
+                    Usuarios = poUsuarios,
+                    UsuariosAdicionales = poUsuariosAdicionales,
                     RegistroInfo = peticionDeOferta.RegistroInfo,
                     AdjuntoPliego = peticionDeOferta.AdjuntoPliego
                 };
@@ -3488,7 +3509,7 @@ namespace SustitucionMOAUtils.Services
                 {
                     try
                     {
-                        EnviarMailPeticionDeOferta(peticion, peticion.Usuarios.ToList());
+                        EnviarMailPeticionDeOferta(peticion, peticion.Usuarios.ToList(), peticion.UsuariosAdicionales.ToList());
                     }
                     catch (Exception e)
                     {
@@ -4013,7 +4034,7 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        private void EnviarMailPeticionDeOferta(PeticionDeOferta peticion, List<PeticionDeOfertaUsuario> usuarios)
+        private void EnviarMailPeticionDeOferta(PeticionDeOferta peticion, List<PeticionDeOfertaUsuario> usuarios, List<PeticionDeOfertaUsuarioAdicional> usuariosAdicionales)
         {
             var archs = ObtenerArchivosPeticionDeOferta(peticion);
             var solicitanteYComprador = new List<string> { peticion.Usuario.Mail };
@@ -4024,13 +4045,37 @@ namespace SustitucionMOAUtils.Services
             var proveedores = new List<string>();
             var asunto = $"MOA - Pedido de Oferta {peticion.Id}: {peticion.Solp.Pliego.NombreObra}";
 
-            foreach (var prov in usuarios)
+            List<UsuarioDto> usuariosDto = new List<UsuarioDto>();
+            foreach (var item in usuarios)
             {
-                proveedores.Add(prov.Usuario.ObtenerRazonSocial() + " - " + prov.Usuario.Mail);
-                var enviarA = new List<string> { prov.Usuario.Mail };
+                usuariosDto.Add(new UsuarioDto
+                {
+                    Mail = item.Usuario.Mail,
+                    RazonSocial = item.Usuario.ObtenerRazonSocial(),
+                    CUIT = item.Usuario.CUITRegistro,
+                    CodigoProveedor = item.Usuario.ObtenerCodigoProveedor()
+                });
+            }
+            foreach (var item in usuariosAdicionales)
+            {
+                usuariosDto.Add(new UsuarioDto
+                {
+                    Mail = item.Usuario.Mail,
+                    RazonSocial = item.Usuario.ObtenerRazonSocial(),
+                    CUIT = item.Usuario.CUITRegistro,
+                    CodigoProveedor = item.Usuario.ObtenerCodigoProveedor()
+                });
+            }
+
+            foreach (var prov in usuariosDto.GroupBy(a => a.CUIT))
+            {
+
+                proveedores.AddRange(prov.Select(a => a.RazonSocial + " - " + a.Mail).ToList());
+
+                var enviarA = prov.Select(a => a.Mail).ToList();
                 if (peticion.Posiciones.Select(x => x.SolpPosicion).Where(x => x.TipoPosicion_Id != null).FirstOrDefault().TipoPosicion.Codigo == "MATERIALES")
                 {
-                    var pdf = GenerarPDFPeticionDeOferta(peticion, prov.Usuario.ObtenerCodigoProveedor());
+                    var pdf = GenerarPDFPeticionDeOferta(peticion, prov.First().CodigoProveedor);
                     if (archs.ContainsKey("Peticion de Oferta.pdf"))
                         archs.Remove("Peticion de Oferta.pdf");
                     archs.Add("Peticion de Oferta.pdf", pdf);
@@ -4395,6 +4440,9 @@ namespace SustitucionMOAUtils.Services
 
 
                 var enviarA = new List<string> { adjudicacion.Cotizacion.PeticionDeOfertaUsuario.Usuario.Mail };
+                var adicionales = adjudicacion.Cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.UsuariosAdicionales;
+                enviarA.AddRange(adicionales.Where(a => a.Usuario.CUITRegistro == adjudicacion.Cotizacion.PeticionDeOfertaUsuario.Usuario.CUITRegistro).Select(a => a.Usuario.Mail).ToList());
+
                 asunto += $"Nueva OC creada - {adjudicacion.NumeroOrdenDeCompra} - {adjudicacion.Usuario.ObtenerRazonSocial()}";
                 var pdf = GenerarPDFOrdenCompra(adjudicacion, adjudicacion.Usuario.ObtenerCodigoProveedor());
 
@@ -4485,6 +4533,7 @@ namespace SustitucionMOAUtils.Services
                 usuarios.Add(usuario);
             }
             peticion.Usuarios = usuarios;
+            peticion.UsuariosAdicionales = peticionEntidad.UsuariosAdicionales.Select(a => new PeticionDeOfertaUsuarioAdicionalDto(a)).ToList();
             peticion.TipoPosicionCodigo = peticionEntidad.Solp.Posiciones.Select(x => x.TipoPosicion.Codigo).FirstOrDefault();
             peticion.Id = peticionEntidad.Id;
             peticion.PlazoDeOfertaEstado = peticionEntidad.PlazoDeOferta > DateTime.Now.Date ? "Abierto" : "Cerrado";
@@ -4655,9 +4704,12 @@ namespace SustitucionMOAUtils.Services
             {
                 copia.Add(circular.PeticionDeOfertaUsuarios?.First().PeticionDeOfertaUsuario?.PeticionDeOferta?.Usuario?.Mail);
             }
+            var peticionDeOferta_Id = circular.PeticionDeOfertaUsuarios.First().PeticionDeOfertaUsuario.PeticionDeOferta_Id;
+            var adicionales = repositorio.Listar<PeticionDeOfertaUsuarioAdicional>(p => p.PeticionDeOferta_Id == peticionDeOferta_Id);
             foreach (var prov in circular.PeticionDeOfertaUsuarios)
             {
                 var enviarA = new List<string> { prov.PeticionDeOfertaUsuario.Usuario.Mail };
+                enviarA.AddRange(adicionales.Where(a => a.Usuario.CUITRegistro == prov.PeticionDeOfertaUsuario.Usuario.CUITRegistro).Select(a => a.Usuario.Mail).ToList());
                 asunto = $"Nueva circular con PO {prov.PeticionDeOfertaUsuario.PeticionDeOferta_Id} - {prov.PeticionDeOfertaUsuario.Usuario.ObtenerRazonSocial()}";
 
                 emailService.EnviarMail(enviarA, asunto, "", copia, CuerpoMailCircular(prov), null, null, null, null, archs);
@@ -4722,14 +4774,42 @@ namespace SustitucionMOAUtils.Services
                 var usuarios = repositorio.Listar<Usuario>();
 
                 var peticion = repositorio.Obtener<PeticionDeOferta>(peticionId);
-                var nuevosUsuarios = usuarios.Where(x => usuariosId.Contains(x.Id)).Select(a => new PeticionDeOfertaUsuario { Usuario_Id = a.Id, PeticionDeOferta_Id = peticion.Id, Usuario = usuarios.Where(y => y.Id == a.Id).FirstOrDefault(), PeticionDeOferta = peticion }).ToList();
-                peticion.Usuarios = nuevosUsuarios;
+
+
+                List<PeticionDeOfertaUsuario> poUsuarios = new List<PeticionDeOfertaUsuario>();
+                List<PeticionDeOfertaUsuarioAdicional> poUsuariosAdicionales = new List<PeticionDeOfertaUsuarioAdicional>();
+
+
+                foreach (var proveedor in usuarios.Where(x => usuariosId.Contains(x.Id)).GroupBy(a => a.CUITRegistro))
+                {
+                    int ii = 0;
+                    if (peticion.Usuarios.All(a => a.Usuario.CUITRegistro != proveedor.First().CUITRegistro))
+                    {
+                        var usuario = new PeticionDeOfertaUsuario { Usuario_Id = proveedor.First().Id, PeticionDeOferta_Id = peticion.Id };
+                        poUsuarios.Add(usuario);
+                        peticion.Usuarios.Add(usuario);
+                        ii = 1;
+                    }
+
+                    for (int i = ii; i < proveedor.Count(); i++)
+                    {
+                        var poAdicional = new PeticionDeOfertaUsuarioAdicional { Usuario_Id = proveedor.ToList()[i].Id, PeticionDeOferta_Id = peticion.Id };
+                        poUsuariosAdicionales.Add(poAdicional);
+                        peticion.UsuariosAdicionales.Add(poAdicional);
+                    }
+
+
+
+                }
+
+
+
                 repositorio.GuardarCambios();
                 respuestaGuardarSOLP.IdEntidad = peticion.Id;
                 try
                 {
 
-                    EnviarMailPeticionDeOferta(peticion, nuevosUsuarios);
+                    EnviarMailPeticionDeOferta(peticion, poUsuarios, poUsuariosAdicionales);
 
                 }
                 catch (Exception e)
@@ -5575,6 +5655,7 @@ namespace SustitucionMOAUtils.Services
         {
             var mails = new List<string>();
             var adjudicacionPosiciones = repositorio.Listar<AdjudicacionPosicion>();
+            var adicionales = repositorio.Listar<PeticionDeOfertaUsuarioAdicional>(a => a.PeticionDeOferta_Id == peticion.Id);
             bool seAdjudicaronTodasLasPosiciones = peticion.Posiciones.All(p => adjudicacionPosiciones.Any(ap => ap.SolpPosicion_Id == p.SolpPosicion_Id));
             if (seAdjudicaronTodasLasPosiciones)
             {
@@ -5595,6 +5676,7 @@ namespace SustitucionMOAUtils.Services
                     if (!algunaAdjudicacionConCotizacion)
                     {
                         mails.Add(cotizacion.PeticionDeOfertaUsuario.Usuario.Mail);
+                        mails.AddRange(adicionales.Where(a => a.Usuario.CUITRegistro == cotizacion.PeticionDeOfertaUsuario.Usuario.CUITRegistro).Select(a => a.Usuario.Mail).ToList());
                     }
                 }
             }
@@ -6297,10 +6379,12 @@ namespace SustitucionMOAUtils.Services
                 var peticionesDeOfertaUsuario = repositorio.Listar<PeticionDeOfertaUsuario>(x => peticionesId.Contains(x.PeticionDeOferta_Id));
                 foreach (var peticion in solp.PeticionesDeOferta)
                 {
+                    var adicionales = repositorio.Listar<PeticionDeOfertaUsuarioAdicional>(x => x.PeticionDeOferta_Id == peticion.Id);
                     asunto += $"Cierre por Baja de Requerimiento PO - {peticion.Id} ";
                     foreach (var peticionUsuario in peticionesDeOfertaUsuario.Where(x => x.PeticionDeOferta_Id == peticion.Id))
                     {
                         var mailProveedor = new List<string> { peticionUsuario.Usuario.Mail };
+                        mailProveedor.AddRange(adicionales.Where(a => a.Usuario.CUITRegistro == peticionUsuario.Usuario.CUITRegistro).Select(a => a.Usuario.Mail).ToList());
                         emailService.EnviarMail(mailProveedor, asunto, "", null, CuerpoMailSolpAnulada(peticion));
                     }
                 }

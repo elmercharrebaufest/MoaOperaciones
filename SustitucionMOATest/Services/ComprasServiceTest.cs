@@ -1202,7 +1202,7 @@ namespace SustitucionMOATest.Services
 
             target.CrearCotizacionConTrabajoYaHecho(solp);
 
-            repositorioMock.Verify(y => y.Obtener<Usuario>(It.IsAny<int>()), Times.Once);
+            repositorioMock.Verify(y => y.Obtener<Usuario>(It.IsAny<int>()), Times.Exactly(2));
             repositorioMock.Verify(y => y.Obtener<PeticionDeOfertaUsuario>(It.IsAny<int>()), Times.Once);
             repositorioMock.Verify(y => y.Listar(It.IsAny<Expression<Func<TablaSap, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null), Times.Once);
 
@@ -1514,7 +1514,7 @@ namespace SustitucionMOATest.Services
             SetUpOCPeticionCotizacion();
             target.ActualizarFechaLiberacion(solpLocal.NroSolp, DateTime.Now);
 
-            repositorioMock.Verify(x => x.GuardarCambios(), Times.Exactly(5));
+            repositorioMock.Verify(x => x.GuardarCambios(), Times.Exactly(6));
         }
 
         [Test]
@@ -1653,7 +1653,7 @@ namespace SustitucionMOATest.Services
                 }
             };
             repositorioMock.Setup(y => y.Obtener<Cotizacion>(It.IsAny<int>())).Returns(cotizacion);
-            var result = target.DescargarAdjuntosCotizacion(It.IsAny<int>(), It.IsAny<string>());
+            var result = target.DescargarAdjuntosCotizacion(It.IsAny<int>(), TestContext.CurrentContext.TestDirectory);
             repositorioMock.Verify(y => y.Obtener<Cotizacion>(It.IsAny<int>()), Times.Once);
         }
 

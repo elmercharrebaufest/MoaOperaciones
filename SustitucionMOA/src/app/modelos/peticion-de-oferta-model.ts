@@ -15,6 +15,7 @@ export interface PeticionDeOfertaDto{
     CUIT?: string,
     Mail?: string,
     Usuarios?: PeticionDeOfertaUsarioDto[],
+    UsuariosAdicionales?: PeticionDeOfertaUsarioAdicionalDto[],
     Solp_Id?: number,
     NroSolp?: string,
     FechaCreacion?: Date,
@@ -48,6 +49,14 @@ export interface PeticionDeOfertaUsarioDto {
     EstaHabilitado: boolean,
     ValidacionCircularSolicitante?: boolean,
     ObservacionNoCumple?: string
+}
+
+export interface PeticionDeOfertaUsarioAdicionalDto {
+    Id: number,
+    RazonSocial: string,
+    UsuarioId: number,
+    Mail?: string,
+    CUIT?: string   
 }
     
 export interface PeticionDeOfertaSolpPosicionDto{
