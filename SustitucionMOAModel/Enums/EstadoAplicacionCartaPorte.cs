@@ -64,6 +64,8 @@ namespace SustitucionMOAModel.Enums
                         return "Aplicación aceptada";
                     case EstadoAplicacionCartaPorte.Error:
                         return "Aplicación rechazada";
+                    case EstadoAplicacionCartaPorte.Eliminado:
+                        return "Aplicación eliminada";
                     default:
                         return "Sin estado";
                 }

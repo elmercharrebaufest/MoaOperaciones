@@ -50,6 +50,6 @@ export class AplicacionCcppService extends BaseService{
 
     return this.http
       .post(`${this.baseUrl}/CargarMasiva`, payload, { headers: this.headersPost })
-      .pipe(timeoutWith(360000, observableThrowError(new Error("Se escedi� el tiempo de espera, por favor int�ntelo m�s tarde"))));
+      .pipe(timeoutWith(360000, observableThrowError(new Error("Se escedió el tiempo de espera, por favor inténtelo más tarde"))));
     }
 }
