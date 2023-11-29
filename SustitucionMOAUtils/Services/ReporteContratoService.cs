@@ -3,6 +3,7 @@ using SustitucionMOAFotmatter;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Models;
+using SustitucionMOAModel.Enums;
 using SustitucionMOAModel.Models.ViewModel.ReporteContrato;
 using SustitucionMOAModel.Models.WSMapMOA.ReporteContrato;
 using SustitucionMOARepositorio;
@@ -27,6 +28,7 @@ namespace SustitucionMOAUtils.Services
         }
 
         public ReporteContratoViewModel GetContratosReporte(
+            string mailUsuario,
             string proveedor,
             string fechaInicio,
             string fechaFin,
@@ -42,13 +44,30 @@ namespace SustitucionMOAUtils.Services
                 throw new ValidationCustomException("El rango de fecha no puede ser mayor a 240 días.");
             }
 
-            List<FechaWS> fechas = new List<FechaWS>();
-            var proveedorDB = repositorio.Obtener<Proveedor>(x => x.CodigoProveedor == proveedor);
+            var usuario = repositorio.Obtener<SustitucionMOAModel.Entities.Usuario>(us => us.Mail == mailUsuario);
+
+            if(usuario == null)
+            {
+                throw new ValidationCustomException("El usuario no existe. Reinicie su sesión.");
+            }
+
+            Proveedor proveedorDB;
+
+
+            if (usuario.TieneRol(RolEnum.Multifirma))
+            {
+                proveedorDB = repositorio.Obtener<Proveedor>(x => x.CodigoProveedor == proveedor);
+            }
+            else
+            {
+                proveedorDB = usuario.ObtenerProveedorAsignado();
+            }
+            
 
             var request = new ReporteContratoWSMOARequest()
             {
                 Cliente = proveedorDB.TipoProveedor.NombreCorto == "CORR" ? "" : proveedor,
-                Pendiente = mostrarPendientes == true ? "X" : "",
+                Pendiente = mostrarPendientes  ? "X" : "",
                 Corredor = proveedorDB.TipoProveedor.NombreCorto == "CORR" ? proveedor : "",
                 Material = "",
                 TipoContrato = "",

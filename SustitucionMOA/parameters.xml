@@ -222,6 +222,11 @@
 							match="/configuration/appSettings/add[@key='EmailAltaIntermediarioFleteCC']
                            /@value" />
 	</parameter>
+	<parameter name="EmailKgsMenos15TNFasTo Config">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+							match="/configuration/appSettings/add[@key='EmailKgsMenos15TNFasTo']
+                           /@value" />
+	</parameter>
 
 
 	<parameter name="PasswordSapEnc Config">
@@ -641,6 +646,18 @@
                            /endpoint[@name='SI_MPMF_MOAOP_ORDEN_CARGA_ENTRE']
                            /@address" />
 	</parameter>
+	<parameter name="SI_MPMF_MOAOP_ORD_CARGA_ENT_V2 Service Endpoint Address">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+							match="/configuration/system.serviceModel/client
+                           /endpoint[@name='SI_MPMF_MOAOP_ORD_CARGA_ENT_V2']
+                           /@address" />
+	</parameter>
+	<parameter name="SI_MPMF_MOAOP_ORD_CARGA_ENT_V3 Service Endpoint Address">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+							match="/configuration/system.serviceModel/client
+                           /endpoint[@name='SI_MPMF_MOAOP_ORD_CARGA_ENT_V3']
+                           /@address" />
+	</parameter>
 	<parameter name="SI_MPMF_MOAOP_CONTROL_ESTADO Service Endpoint Address">
 		<parameterEntry kind="XmlFile" scope="Web.config"
 							match="/configuration/system.serviceModel/client
@@ -756,14 +773,24 @@
                         /endpoint[@name='SI_MPMF_MOAOP_MOD_ENTREGA']
                         /@address" />
 	</parameter>
-
+	<parameter name="SI_MPMF_MOAOP_MOD_ENTREGA_V2 Service Endpoint Address">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+								match="/configuration/system.serviceModel/client
+                        /endpoint[@name='SI_MPMF_MOAOP_MOD_ENTREGA_V2']
+                        /@address" />
+	</parameter>
 	<parameter name="SI_MPMF_MOAOP_MOD_ORDEN_CARGA Service Endpoint Address">
 		<parameterEntry kind="XmlFile" scope="Web.config"
 								match="/configuration/system.serviceModel/client
                         /endpoint[@name='SI_MPMF_MOAOP_MOD_ORDEN_CARGA']
                         /@address" />
 	</parameter>
-
+	<parameter name="SI_MPMF_MOAOP_PENDIENTE_APLICAR Service Endpoint Address">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+								match="/configuration/system.serviceModel/client
+                        /endpoint[@name='SI_MPMF_MOAOP_PENDIENTE_APLICAR']
+                        /@address" />
+	</parameter>
 	<parameter name="SI_MMRFC_OBTENER_TIPO_CAMBIO Service Endpoint Address">
 		<parameterEntry kind="XmlFile" scope="Web.config"
 							match="/configuration/system.serviceModel/client

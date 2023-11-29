@@ -14,6 +14,8 @@ export interface Consulta {
     FechaUltimaModificacion;
     UsuarioId;
     UsuarioActualId;
+    UsuarioInternoId;
+
 
     Fecha;
     ComprobanteNo;
@@ -22,6 +24,8 @@ export interface Consulta {
     Importe;
     Impuesto;
     BolsaEmisoraOblea;
+    OrdenId;
+    PatenteChasis;
 
     Categoria;
     SubCategoria?;
@@ -86,4 +90,10 @@ export interface Reclamo{
     Fecha;
     Certificado;
     Importe;
+}
+
+export class Destinatario{
+    Campo: string;
+    Mail: string;
+    UsuarioId: number;
 }

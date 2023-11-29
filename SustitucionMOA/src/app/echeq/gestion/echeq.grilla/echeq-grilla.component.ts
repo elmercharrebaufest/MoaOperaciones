@@ -1,6 +1,6 @@
 import { trigger, state, style, transition, animate } from '@angular/animations';
-import { Component, Input, OnInit} from '@angular/core';
-import { EcheqContrato, EcheqDocumento } from '../echeq-contrato.model';
+import { Component, Input, OnInit } from '@angular/core';
+import { ClasificacionEcheq, EcheqContrato, EcheqDocumento } from '../echeq-contrato.model';
 import { registerLocaleData } from '@angular/common';
 import es from '@angular/common/locales/es';
 import { ConfirmationService } from 'primeng/api';
@@ -35,6 +35,8 @@ export class GrillaComponent extends EcheqGestionComponent implements OnInit {
 
     echeqApertura: EcheqApertura;
     //listaChequesAux: EcheqApertura[];
+
+    clasificacionEcheq = ClasificacionEcheq
 
     aforoConf: number;
     cantidadEcheq: number;
@@ -367,30 +369,30 @@ export class GrillaComponent extends EcheqGestionComponent implements OnInit {
     }
     private errorMarcarDesmarcarContrato(contrato: string, esMarcar: boolean) {
         let contratoSeleccionado = this.echeqContratos.find(x => x.contrato == contrato);
-        if (contratoSeleccionado!=null){
-            contratoSeleccionado.selected = esMarcar? false : true;
-            if(contratoSeleccionado.documentos !=null && contratoSeleccionado.documentos.length){
-                contratoSeleccionado.documentos.forEach(item=>{
+        if (contratoSeleccionado != null) {
+            contratoSeleccionado.selected = esMarcar ? false : true;
+            if (contratoSeleccionado.documentos != null && contratoSeleccionado.documentos.length) {
+                contratoSeleccionado.documentos.forEach(item => {
                     this.errorMarcaDesmarcaDocumento(item.parentId, item.numeroCOE, esMarcar);
                 });
             }
         }
     }
-    private errorMarcaDesmarcaDocumento(parentId: string ,numeroCOE: string , esMarcar:boolean){
+    private errorMarcaDesmarcaDocumento(parentId: string, numeroCOE: string, esMarcar: boolean) {
         let contrato = this.echeqContratos.find(contrato => contrato.id == parentId);
-        contrato.selected = esMarcar? false: true;
-        if (contrato.documentos.length > 0){
+        contrato.selected = esMarcar ? false : true;
+        if (contrato.documentos.length > 0) {
             let documentos = contrato.documentos.find(documento => documento.numeroCOE == numeroCOE);
-            documentos.selected = esMarcar? false: true;
+            documentos.selected = esMarcar ? false : true;
         }
     }
-    private errorAperturaDocumento(contratoSeleccionado: string ,numeroCOESeleccionado: string ){
-        if (this.esNuevoEcheq){
-            let contratos = this.echeqContratos.filter(x=> x.contrato == contratoSeleccionado);
-            if (contratos!=null && contratos.length > 0) {
+    private errorAperturaDocumento(contratoSeleccionado: string, numeroCOESeleccionado: string) {
+        if (this.esNuevoEcheq) {
+            let contratos = this.echeqContratos.filter(x => x.contrato == contratoSeleccionado);
+            if (contratos != null && contratos.length > 0) {
                 let documentosContrato = contratos[0].documentos;
-                let documentos = documentosContrato.filter(x=> x.numeroCOE == numeroCOESeleccionado);
-                if (documentos!=null && documentos.length > 0)
+                let documentos = documentosContrato.filter(x => x.numeroCOE == numeroCOESeleccionado);
+                if (documentos != null && documentos.length > 0)
                     documentos[0].listaChequesApertura = [];
             }
         }

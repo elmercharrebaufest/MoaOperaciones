@@ -1,6 +1,6 @@
 import { DatePipe } from '@angular/common';
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute, Params } from '@angular/router';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 import { BaseComponent } from '../../common/base-components/base-component';
 import { CorredorContrato } from '../../common/models/ordenes-de-carga/corredorContrato';
 import { EstadoOrdenDeCarga } from '../../common/models/ordenes-de-carga/estadoOrdenDeCarga';
@@ -19,6 +19,7 @@ import { ConfirmationService } from 'primeng/api';
 import { TipoContrato } from '../../common/models/ordenes-de-carga/obtenerContratosDisponiblesResponse';
 import { Factura } from '../../common/models/ordenes-de-carga/Factura';
 import { finalize } from 'rxjs/operators';
+import { SendDataService } from '../../consulta/send-data.service';
 
 @Component({
     selector: 'app-ordenes-de-carga.detalle',
@@ -102,9 +103,11 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
     constructor(protected service: OrdenesDeCargaService,
         protected usuarioService: UsuarioService, protected navService: NavService,
         private route: ActivatedRoute,
+        private router: Router,
         protected sessionDataService: SessionDataService, protected securytiService: SecurityService,
         protected floatMsgService: FloatMsgService, protected modalService: ModalService,
         public datepipe: DatePipe,
+        private sendDataService: SendDataService,
         private confirmationService: ConfirmationService) {
         super(navService, securytiService, floatMsgService, modalService);
         this.mostrarBotonVolverADetalle = !!sessionStorage.getItem(VOLVER_A_DETALLE_REPORTE);
@@ -132,6 +135,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
             }
         });
     }
+
     confirmarRSA(Id) {
         this.confirmationService.confirm({
             key: 'confirmarRSA',
@@ -281,7 +285,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
             }
 
             if (this.ordenDeCarga.ContratoSeleccionado) {
-                if (this.ordenDeCarga.ContratoSeleccionado.KgDisponibles < KILOS_DISPONIBLES_APROBADO &&
+                if (this.ordenDeCarga.ContratoSeleccionado.KgDisponibles < KILOS_DISPONIBLES_APROBADO ||
                     !this.ordenDeCarga.ContratoSAP) {
                     this.mostrarBotonContratos = true;
                 }
@@ -348,7 +352,6 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                     } else if (result.info != undefined) {
                     } else {
                         this.ordenDeCarga = result.data;
-                        this.verificarOrdenActivaScato(this.ordenDeCarga.Id.toString());
                         this.validaCPEDG = this.ordenDeCarga.ValidaSisaRuca;
                         this.separarCadenas();
                         this.verificarBotones()
@@ -666,6 +669,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
     }
 
     abrirModalAnular() {
+        this.verificarOrdenActivaScato(this.ordenDeCarga.Id.toString());
         document.getElementById("openAnularOrden").click();
     }
     abrirModalAnularVencimiento() {
@@ -675,9 +679,9 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
         document.getElementById("openModalActivarOC").click();
     }
     abrirModalEdicionFinalizada() {
+        this.verificarOrdenActivaScato(this.ordenDeCargaId.toString());
         document.getElementById("openEdicionFinalizada").click();
     }
-
 
     anularOrden() {
         this.mensajeComponent.setMsgsEmpty();
@@ -935,7 +939,8 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
             sessionStorage.removeItem(VOLVER_A_DETALLE_REPORTE)
     }
 
-    verificarOrdenActivaScato(ordenId: string){
+    verificarOrdenActivaScato(ordenId: string) {
+        this.mensajeValidacionScato = undefined;
         this.spinnerComponent.showIt();
         this.unsubscribe();
         try {
@@ -957,6 +962,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                 },
                 error => {
                     this.mensajeComponent.setErrorMsg(error.message);
+                    this.mensajeValidacionScato = "No se pudo validar si la orden esta activa en Scato."
                 }
             );
         } catch (e) {
@@ -965,7 +971,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
             this.mensajeValidacionScato = "No se pudo validar si la orden esta activa en Scato."
         }
     }
-    
+
     verificarCuitsTerceros() {
         this.mensajeComponent.setMsgsEmpty();
         this.spinnerComponent.showIt();
@@ -996,5 +1002,14 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
         } catch (e) {
             this.mensajeComponent.setErrorMsg(e);
         }
+    }
+
+    nuevaConsultaInterna() {
+        this.sendDataService.setData({
+            orden: this.ordenDeCarga,
+            codSubcategoria: "FAS",
+        });
+        this.router.navigate(['/consulta/crear-consulta-interna'], {
+        });
     }
 }

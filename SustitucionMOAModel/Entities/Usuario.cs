@@ -442,7 +442,7 @@ namespace SustitucionMOAModel.Entities
                 case "COMPRASADMIN": return RolEnum.ComprasAdmin;
                 case "FLETE MOA": return RolEnum.FleteMOA;
                 case "REVENDEDOR FASON": return RolEnum.RevendedorFason;
-
+                case "ORDEN DE CARGA": return RolEnum.OrdenDeCarga;
                 //default: throw new Exception("Rol no mapeado: " + codigoRol);
                 default: return null;
             }

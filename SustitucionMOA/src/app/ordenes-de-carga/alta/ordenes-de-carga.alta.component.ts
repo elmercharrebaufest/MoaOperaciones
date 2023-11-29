@@ -222,6 +222,8 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
             this.service.getMateriales().subscribe(
                 (result) => {
                     this.listaMateriales = result.data;
+                    if (this.editando && !this.Contrato)
+                        this.onContratoSeleccionadoChanged()
                 },
                 (error) => {
                     console.error(error);
@@ -253,6 +255,10 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
             this.mensajeComponent.setInfoMsg("Ingrese un número de chasis válido.");
             return false;
         }
+        if (this.ordenDeCarga.ChasisAcoplado == this.ordenDeCarga.PatenteAcoplado) {
+            this.mensajeComponent.setInfoMsg("Las patentes de chásis y acoplado no pueden ser iguales.");
+            return false;
+        }
         if (!this.ordenDeCarga.RazonSocialTransporte || this.ordenDeCarga.RazonSocialTransporte.trim().length < 2) {
             this.mensajeComponent.setInfoMsg("Ingrese la razón social del transporte.");
             return false;
@@ -280,22 +286,24 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
                 this.mensajeComponent.setInfoMsg("Seleccione una planta.");
                 return false;
             }
-            const tieneMensajes = Object.keys(this.mensajesOrdenDeCarga).some(key => this.mensajesOrdenDeCarga[key])
-            if (tieneMensajes) {
-                this.mensajeComponent.setInfoMsg("Hay campos que no son válidos.");
-                return false;
-            }
-            const estaValidando = Object.keys(this.validando).some(key => this.validando[key]);
-            if (estaValidando) {
-                this.mensajeComponent.setInfoMsg("Hay campos que todavía se están validando");
-                return false;
-            }
         }
         else {
             if (!this.ordenDeCarga.DestinoMercaderia || this.ordenDeCarga.DestinoMercaderia.length < 5) {
                 this.mensajeComponent.setInfoMsg("Ingrese un destino de mercadería.");
                 return false;
             }
+        }
+
+        const estaValidando = Object.keys(this.validando).some(key => this.validando[key]);
+        if (estaValidando) {
+            this.mensajeComponent.setInfoMsg("Hay campos que todavía se están validando");
+            return false;
+        }
+
+        const hayMensajeExtraKey = Object.keys(this.mensajesOrdenDeCarga).find(key => this.mensajesOrdenDeCarga[key]);
+        if (hayMensajeExtraKey) {
+            this.mensajeComponent.setInfoMsg(this.mensajesOrdenDeCarga[hayMensajeExtraKey]);
+            return false;
         }
 
         if (!this.ordenDeCarga.Producto_Id) {
@@ -773,9 +781,20 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
     }
 
     onContratoSeleccionadoChanged = () => {
+        if (this.editando && !this.listaMateriales)
+            return;
         this.facturasDisponibles = [];
         this.ordenDeCarga.NumeroFactura = null;
         this.facturaSeleccionada = null;
+        this.mensajesOrdenDeCarga = {
+            ... this.mensajesOrdenDeCarga,
+            CUITIntermediarioFlete: null,
+            CUITCorredor: null,
+            CUITCliente: null,
+            CUITDestino: null,
+            CUITDestinatario: null,
+            NumeroFacturaSeleccionada: null,
+        }
         if (this.ordenDeCarga.ContratoSeleccionado) {
             this.Contrato = this.ordenDeCarga.ContratoSeleccionado.NumeroContrato;
             this.ordenDeCarga.ContratoIngresado = this.ordenDeCarga.ContratoSeleccionado.NumeroContrato;
@@ -796,7 +815,8 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
             this.ordenDeCarga.Producto_Id = this.selectUndefinedOptionValue;
             this.validaCPEDG = false;
         }
-        this.ordenDeCarga.Reventa = this.validaCPEDG && this.clienteSeleccionado.EsRevendedor && !this.ordenDeCarga.Reventa;
+        if (!this.editando)
+            this.ordenDeCarga.Reventa = this.validaCPEDG && this.clienteSeleccionado.EsRevendedor && !this.ordenDeCarga.Reventa;
     }
 
     onPatenteSeleccionada() {
@@ -1434,9 +1454,8 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
     }
     validarKilosDisponibles() {
         this.mensajesOrdenDeCarga.ContratoSeleccionado = null;
-        const esInterno = (this.esComercial || this.esAdmin);
 
-        if (this.ordenDeCargaId == 0 && !esInterno) {
+        if (this.ordenDeCargaId == 0) {
             this.floatMsgService.setMsgsEmpty();
             if (this.ordenDeCarga.ContratoSeleccionado) {
                 const { KgDisponibles } = this.ordenDeCarga.ContratoSeleccionado;
@@ -1454,9 +1473,8 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
     }
     validarKilosDisponiblesPedido() {
         this.mensajesOrdenDeCarga.NumeroFacturaSeleccionada = null;
-        const esInterno = (this.esComercial || this.esAdmin);
 
-        if (this.ordenDeCargaId == 0 && !esInterno) {
+        if (this.ordenDeCargaId == 0) {
             this.floatMsgService.setMsgsEmpty();
             if (this.facturaSeleccionada) {
                 const { KgDisponibles } = this.facturaSeleccionada;
@@ -1560,7 +1578,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
                         this.sessionDataService.logout();
                         return;
                     } else if ((result.error != undefined && result.error != "") || result.info != undefined) {
-                        this.mensajeValidacionScato = "No se pudo validar si la orden esta activa en Scato."
+                        this.mensajeValidacionScato = "No se pudo validar si la orden está activa en Scato."
                     } else {
                         this.ordenActivaScato = result.data;
                         if (this.ordenActivaScato) {
@@ -1575,7 +1593,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
                 }
             );
         } catch (e) {
-            this.mensajeValidacionScato = "No se pudo validar si la orden esta activa en Scato."
+            this.mensajeValidacionScato = "No se pudo validar si la orden está activa en Scato."
         }
     }
 

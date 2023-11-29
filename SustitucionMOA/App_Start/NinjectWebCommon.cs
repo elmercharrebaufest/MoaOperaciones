@@ -10,10 +10,12 @@ using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Interfaces.Helpers;
 using SustitucionMOAUtils.Interfaces.Validadores;
 using SustitucionMOAUtils.Interfaces.Wrappers;
+using SustitucionMOAUtils.DesignPattern.Classes;
 using SustitucionMOAUtils.Services;
 using SustitucionMOAUtils.Services.Email;
 using SustitucionMOAUtils.Validadores;
 using SustitucionMOAUtils.Wrappers;
+using SustitucionMOAWS.AzureAD;
 using SustitucionMOAWS.Interfaces;
 using SustitucionMOAWS.ScatoWebService;
 using SustitucionMOAWS.WebApi;
@@ -24,7 +26,7 @@ using System.Linq;
 using System.Reflection;
 using System.ServiceModel;
 using System.Web;
-
+using SustitucionMOAUtils.DesignPattern.Interfaces;
 
 [assembly: WebActivatorEx.PreApplicationStartMethod(typeof(SustitucionMOA.App_Start.NinjectWebCommon), "Start")]
 [assembly: WebActivatorEx.ApplicationShutdownMethodAttribute(typeof(SustitucionMOA.App_Start.NinjectWebCommon), "Stop")]
@@ -104,6 +106,7 @@ namespace SustitucionMOA.App_Start
             kernel.Bind<IReporteLiquidacionesInformadasJob>().To(typeof(ReporteLiquidacionesInformadasJob)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IVerificarTransporteOrdenesDeCargaJob>().To(typeof(VerificarTransporteOrdenesDeCargaJob)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IVerificarTransporteOrdenesDeCargaFasonJob>().To(typeof(VerificarTransporteOrdenesDeCargaFasonJob)).InScope(ctx => OperationContext.Current);
+            kernel.Bind<IVerificarOrdenesFacturaCompensadaJob>().To(typeof(VerificarOrdenesFacturaCompensadaJob)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IEnviarASAPOrdenDeCargaJob>().To(typeof(EnviarASAPOrdenDeCargaJob)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IReporteCamposSustentablesTSAJob>().To(typeof(ReporteCamposSustentablesTSAJob)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IReporteConflictosCamposSustentablesJob>().To(typeof(ReporteConflictosCamposSustentablesJob)).InScope(ctx => OperationContext.Current);
@@ -167,6 +170,7 @@ namespace SustitucionMOA.App_Start
             #region InterfacesSAP
             kernel.Bind<IVendedorHabilitadoConsumerMOA>().To(typeof(VendedorHabilitadoConsumerMOA)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IOrdenCargaConsumerMOA>().To(typeof(OrdenCargaConsumerMOA)).InScope(ctx => OperationContext.Current);
+            kernel.Bind<IAplicacionCartaPorteConsumer>().To(typeof(AplicacionCartaPorteConsumer)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IListarPesificacionesConsumer>().To(typeof(ListarPesificacionesConsumer)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IObtenerCecoSolpConsumerMOA>().To(typeof(ObtenerCecoSolpConsumerMOA)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IObtenerCuentasSolpConsumerMOA>().To(typeof(ObtenerCuentasSolpConsumerMOA)).InScope(ctx => OperationContext.Current);
@@ -207,9 +211,19 @@ namespace SustitucionMOA.App_Start
             // CNRT WebApi
             kernel.Bind<ICNRTClient>().To(typeof(CNRTClient)).InSingletonScope();
 
-            kernel.Bind<DbContext>().To<MOAOperacionesDbContext>().InTransientScope();
-            kernel.Bind<IRepositorio>().To<RepositorioEF>().InTransientScope();
+            // Azure
+            kernel.Bind<IAzureADConsumer>().To(typeof(AzureADConsumer)).InScope(ctx => OperationContext.Current);
+
+            kernel.Bind<DbContext>().To<MOAOperacionesDbContext>().InScope(ctx => HttpContext.Current);
+            kernel.Bind<IRepositorio>().To<RepositorioEF>().InScope(ctx => HttpContext.Current);
             kernel.Bind<ICache, Cache>().To<Cache>().InSingletonScope();
+
+            //Consulta Strategies
+            kernel.Bind<IConsultaContext>().To<ConsultaContext>().InTransientScope();
+            kernel.Bind<IConsultaStrategy>().To<ConsultaOrdenesStrategy>().InTransientScope();
+            kernel.Bind<IConsultaCommon>().To<ConsultaCommon>().InTransientScope();
+
+
             //Activador Ninject Hangfire
             GlobalConfiguration.Configuration.UseNinjectActivator(kernel);
         }

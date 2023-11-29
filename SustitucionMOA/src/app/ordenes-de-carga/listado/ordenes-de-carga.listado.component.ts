@@ -47,7 +47,7 @@ export class OrdenesDeCargaListado extends ListBaseComponent implements OnInit {
     datosAux: any[];
     //primerListado: any[];
     listaEnviarASAP: number[] = [];
-    
+
     productoSelected: string = "Todos";
     listaProductos: any = null;
     private selectUndefinedOptionValue: any;
