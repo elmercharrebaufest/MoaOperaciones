@@ -36,7 +36,6 @@ using System.Net;
 using System.Net.Mail;
 using System.Text;
 using System.Web;
-using System.Web.Caching;
 using Image = iTextSharp.text.Image;
 
 
@@ -867,7 +866,7 @@ namespace SustitucionMOAUtils.Services
 
                 }
 
-                if (posNueva) 
+                if (posNueva)
                 {
                     foreach (var poUsusario in po.Usuarios)
                     {
@@ -880,7 +879,7 @@ namespace SustitucionMOAUtils.Services
                         }
                     }
                 }
-                
+
 
                 repositorio.GuardarCambios();
             }
@@ -3833,12 +3832,12 @@ namespace SustitucionMOAUtils.Services
             // revision tecnica anticipada
             if (peticion.RevisionTecnica != null)
             {
-                if (peticion.RevisionTecnica.RecotizacionEconomica) 
+                if (peticion.RevisionTecnica.RecotizacionEconomica)
                 {
                     legajo.Add(new LegajoDto
                     {
                         ArchivoId = 0,
-                        Observacion = "Solicitud de re cotizacion - " + peticion.RevisionTecnica.ObservacionRecotizacion,
+                        Observacion = "Solicitud de re cotización - " + peticion.RevisionTecnica.ObservacionRecotizacion,
                         PeticionDeOfertaId = peticionDeOfertaId,
                         SolpId = peticion.Solp_Id,
                         Fecha = peticion.RevisionTecnica.Fecha,
@@ -5053,7 +5052,7 @@ namespace SustitucionMOAUtils.Services
                     ObservacionRecotizacion = revision.ObservacionRecotizacion
                 };
             }
-            else 
+            else
             {
                 peticiones.First().PeticionDeOferta.RevisionTecnica.Usuario_Id = usuarioId;
                 peticiones.First().PeticionDeOferta.RevisionTecnica.Fecha = DateTime.Now;
@@ -5089,7 +5088,7 @@ namespace SustitucionMOAUtils.Services
                     repositorio.Agregar(po);
                 }
 
-          
+
                 peticiones.First().PeticionDeOferta.PlazoDeOferta = fechaActual;
             }
             repositorio.GuardarCambios();
@@ -5990,7 +5989,10 @@ namespace SustitucionMOAUtils.Services
                 peticionEntidad.RevisionTecnica = new PeticionDeOfertaRevisionTecnica
                 {
                     Usuario_Id = peticionEntidad.UsuarioCreador_Id,
-                    Fecha = DateTime.Now
+                    Fecha = DateTime.Now,
+                    RecotizacionEconomica = false,
+                    ObservacionRecotizacion = "Trabajo ya hecho",
+                    Finalizada = true
                 };
                 peticionEntidad.PlazoDeOferta = DateTime.Now;
                 repositorio.GuardarCambios();
