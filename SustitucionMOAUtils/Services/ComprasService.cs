@@ -715,7 +715,6 @@ namespace SustitucionMOAUtils.Services
                         ActualizarOfertasAlEditarSolpLiberada(solpEntity);
                     }
 
-                    //Creo que podria ir aca 
                     ActualizarPeticionDeOfertaAlEditarSolp(solpEntity);
                 }
                 else

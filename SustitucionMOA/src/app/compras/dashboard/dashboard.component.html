@@ -268,7 +268,9 @@
                                                 <td class="columna">
                                                     <span>
                                                         <img class="pointer" src="./Content/images/icons/chat.svg" alt="chat"
-                                                             style="cursor:default" />
+                                                             (click)="obtenerPeticionDeOfertaParaChat(licitacion.Id)" />
+                                                        <div class="punto-rojo" *ngIf="licitacion.ChatSinLeer == true && chatLeido == false"></div>
+
                                                     </span>
                                                 </td>
                                                 <td class="columna">{{licitacion.Id}}</td>
@@ -368,3 +370,9 @@
                              (cerrarOrdenDeCompraEmitter)="cerrarOrdenDeCompra()"
                              [(ordenDeCompra)]="ordenDeCompra">
 </app-orden-de-compra-detalle>
+
+<app-chat-interno 
+        [(displayChatInterno)]="displayChatInterno"
+        [(chat)]="chat">
+        (cerrardisplayChatEmitter)="cerrarModalChat()"
+</app-chat-interno>

@@ -74,6 +74,8 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
     usuariosResult: any;
     displayChatInterno: boolean = false;
     chatLeido: boolean = false;
+    public chat: ChatComprasDto;
+
 
     constructor(protected service: ComprasService, protected navService: NavService,
         protected sessionDataService: SessionDataService, protected securityService: SecurityService,
@@ -516,7 +518,6 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
             )
     }
 
-    public chat: ChatComprasDto;
 
     obtenerPeticionDeOfertaParaChat(Id) {
         try {
