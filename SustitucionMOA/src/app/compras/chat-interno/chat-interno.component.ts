@@ -156,6 +156,8 @@ export class ChatInternoComponent extends BaseComponent implements OnInit {
     }
 
     onCerrarPeticion() {
+        this.error = "";
+        this.visualizarAlert = false;
         this.cerrardisplayChatEmitter.next();
     }
 
@@ -207,6 +209,7 @@ export class ChatInternoComponent extends BaseComponent implements OnInit {
       }
 
     validar() {
+        this.error = "";
         this.visualizarAlert = false;
         if (this.mensajeNuevo == undefined || this.mensajeNuevo == "") {
             this.error = "No se pueden enviar mensajes vacios.";
