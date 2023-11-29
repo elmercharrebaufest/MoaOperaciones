@@ -1,9 +1,8 @@
-
 import { PosicionCompra } from "../compras/solp-compra"
 import { SolpPosicion } from "../compras/solp/solp-posicion"
 import { CotizacionDto } from "./cotizacionDto"
 
-export interface PeticionDeOfertaDto{
+export interface PeticionDeOfertaDto {
     PorcentajeDeHoras?: any
     PersonalHoras?: boolean,
     RespetaMateriales?: boolean,
@@ -38,6 +37,8 @@ export interface PeticionDeOfertaDto{
     Estado?: string,
     RevisionFinalizada?: boolean,
     RevisionTecnica?: PeticionDeOfertaRevisionTecnicaDto
+    PideDescripcionTecnica?: boolean,
+    PideDocumentacionTecnica?: boolean
 }
 
 export interface PeticionDeOfertaUsarioDto {
@@ -62,8 +63,8 @@ export interface PeticionDeOfertaUsarioAdicionalDto {
     Mail?: string,
     CUIT?: string   
 }
-    
-export interface PeticionDeOfertaSolpPosicionDto{
+
+export interface PeticionDeOfertaSolpPosicionDto {
     CantidadPendiente: number
     AdjudicacionCompleta: boolean
     valorTotal: number
@@ -79,7 +80,7 @@ export interface PeticionDeOfertaSolpPosicionDto{
     NoDisponible: boolean,
 }
 
-export interface PeticionDeOfertaCierreDto{
+export interface PeticionDeOfertaCierreDto {
     Id: number
     PeticionDeOferta_Id?: number
     Usuario_Id?: number

@@ -1,14 +1,9 @@
-﻿using Molinos.Scato.Repositorio;
-using SustitucionMOAModel.Consultas;
-using SustitucionMOAModel.Dto;
+﻿using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
-using SustitucionMOARepositorio.Extensiones;
 using System;
-using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Data.Entity.SqlServer;
-using System.IO;
 using System.Linq;
 
 namespace SustitucionMOARepositorio.ConsultasEF
@@ -18,11 +13,10 @@ namespace SustitucionMOARepositorio.ConsultasEF
         private readonly int PeticionDeOfertaUsuario_Id;
         public TraerCotizacionConsulta(int peticionDeOfertaUsuario_Id)
         {
-            this.PeticionDeOfertaUsuario_Id = peticionDeOfertaUsuario_Id;
+            PeticionDeOfertaUsuario_Id = peticionDeOfertaUsuario_Id;
         }
         public PeticionDeOfertaDto Ejecutar(DbContext contexto)
         {
-            
             try
             {
                 ((IObjectContextAdapter)contexto).ObjectContext.CommandTimeout = 180;
@@ -47,6 +41,8 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                     TipoPosicionCodigo = po.PeticionDeOferta.Solp.Posiciones.Select(x => x.TipoPosicion.Codigo).FirstOrDefault(),
                                     CotizacionId = cotizacion != null ? cotizacion.Id : 0,
                                     PorcentajeDeHoras = cotizacion.PorcentajeDeHoras,
+                                    PideDescripcionTecnica = po.PeticionDeOferta.Solp.Pliego.TieneDescripcionTecnica == true,
+                                    PideDocumentacionTecnica = po.PeticionDeOferta.Solp.Pliego.TieneDocumentacionTecnica == true,
                                     PeticionDeOfertaPosicion = po.PeticionDeOferta.Posiciones.Where(posi => posi.SolpPosicion.EsConcluido == true && posi.SolpPosicion.Estado == true).Select(pop =>
                                     new PeticionDeOfertaSolpPosicionDto()
                                     {
@@ -250,15 +246,13 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                     }).ToList().OrderBy(x => x.Posiciones.Indice)
                                 };
 
-                var cc = resultado.First();
-                return cc;
+                var result = resultado.First();
+                return result;
             }
             catch (Exception ex)
             {
-               throw;
+               throw ex;
             }
         }
-
-
     }
 }

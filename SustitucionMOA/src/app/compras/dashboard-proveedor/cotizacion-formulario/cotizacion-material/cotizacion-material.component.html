@@ -197,27 +197,40 @@
         <strong>Por favor, explique en las observaciones por qué modificó la cantidad y/o unidad de medida.</strong>
     </div>
     <br>
+
     <div class="col-md-12 row myRow alinearTitulo margenInput">
         <div class="col-md-12 titulosModal">
-            <label>La propuesta técnica de <strong>materiales</strong> respeta las condiciones de pago *</label>
+            <label *ngIf="!peticion.PideDescripcionTecnica; else elseText1">La propuesta técnica de <strong>materiales</strong> respeta las condiciones de pago *</label>
+            <ng-template #elseText1>
+                <label *ngIf="!peticion.PideDocumentacionTecnica; else elseText2" class="labelCompras">
+                    <strong style="font-size: 14px;">Es obligatorio adjuntar una descripción técnica sin valores comerciales.</strong>
+                </label>
+                <ng-template #elseText2>
+                    <label class="labelCompras">
+                        <strong style="font-size: 14px;">Es obligatorio adjuntar una descripción técnica y la documentación respaldatoria.</strong>
+                    </label>
+                </ng-template>
+            </ng-template>
         </div>
     </div>
-    <div class="col-md-12">
-        <div class="col-md-2" style="width: 10px;">
-            <label>Sí</label>
+    <ng-container *ngIf="!peticion.PideDescripcionTecnica">
+        <div class="col-md-12">
+            <div class="col-md-2" style="width: 10px;">
+                <label>Sí</label>
+            </div>
+            <div class="col-md-2">
+                <input type="radio" id="RespetaMateriales1" name="respetaMateriales"
+                       [(ngModel)]="peticion.RespetaMateriales" [value]="true" />
+            </div>
+            <div class="col-md-2" style="width: 10px;">
+                <label>No</label>
+            </div>
+            <div class="col-md-2">
+                <input type="radio" id="RespetaMateriales2" name="respetaMateriales"
+                       [(ngModel)]="peticion.RespetaMateriales" [value]="false" />
+            </div>
         </div>
-        <div class="col-md-2">
-            <input type="radio" id="RespetaMateriales1" name="respetaMateriales"
-                   [(ngModel)]="peticion.RespetaMateriales" [value]="true" />
-        </div>
-        <div class="col-md-2" style="width: 10px;">
-            <label>No</label>
-        </div>
-        <div class="col-md-2">
-            <input type="radio" id="RespetaMateriales2" name="respetaMateriales"
-                   [(ngModel)]="peticion.RespetaMateriales" [value]="false" />
-        </div>
-    </div>
+    </ng-container>
     <div class="inputCompras">
         <p>
             <ngb-alert type="danger" [dismissible]="false" *ngIf="visualizarAlert">
@@ -226,9 +239,14 @@
         </p>
         <div class="row myRow" style="padding-top: 2px;">
             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                <label class="labelCompras" for="editorTexto">
-                    <strong style="font-size: 14px;">Adjuntar documentación (opcional)</strong>
+                <label *ngIf="peticion.PideDescripcionTecnica || visualizarMensajeDeModificacion; else elseText" class="labelCompras" for="editorTexto">
+                    <strong style="font-size: 14px;">Adjuntar documentación *</strong>
                 </label>
+                <ng-template #elseText>
+                    <label class="labelCompras" for="editorTexto">
+                        <strong style="font-size: 14px;">Adjuntar documentación (opcional)</strong>
+                    </label>
+                </ng-template>
                 <p-fileUpload [styles]="{'margin-left':'-13px; cursor: pointer;'}" name="fileUploadPeticionDeOferta"
                               auto="true" multiple="multiple" chooseLabel="Elegir archivo" [showUploadButton]=false
                               [showCancelButton]=false [customUpload]="true" (uploadHandler)="uploadHandler($event)">
@@ -267,9 +285,14 @@
             </div>
             <div class="row myRow">
                 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                    <label class="labelCompras">
-                        <strong style="font-size: 14px;"> Observaciones (opcional) </strong>
+                    <label *ngIf="visualizarMensajeDeModificacion; else elseObs" class="labelCompras" for="editorTexto">
+                        <strong style="font-size: 14px;">Observaciones *</strong>
                     </label>
+                    <ng-template #elseObs>
+                        <label class="labelCompras" for="editorTexto">
+                            <strong style="font-size: 14px;">Observaciones (opcional)</strong>
+                        </label>
+                    </ng-template>
                     <textarea name="Observacion" ngDefaultControl [(ngModel)]="this.peticion.ObservacionEconomica"
                               placeholder="Agregue los comentarios que crea necesarios..." cols="30" rows="1"></textarea>
                 </div>

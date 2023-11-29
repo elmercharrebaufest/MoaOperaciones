@@ -270,11 +270,11 @@ export class CotizacionMaterialComponent extends ListBaseComponent implements On
     public validarCambios(cotizacion: any, peticionId: number) {
         this.visualizarMensajeDeModificacion = false;
         var respuesta = false;
-        if (cotizacion.Cantidad >= 0) {
+        if (cotizacion.Cantidad > 0) {
             respuesta = this.posicionesCompra.filter(x => x.Id == peticionId)[0].Posiciones.Cantidad != cotizacion.Cantidad;
 
         }
-        if (!respuesta && cotizacion.UnidadMedida != undefined) {
+        if (!respuesta && cotizacion.UnidadMedida != undefined && cotizacion.UnidadMedida.Id != 0) {
             respuesta = this.posicionesCompra.filter(x => x.Id == peticionId)[0].Posiciones.UnidadId != cotizacion.UnidadMedida.Id
         }
         return respuesta;

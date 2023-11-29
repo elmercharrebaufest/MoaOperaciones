@@ -16,14 +16,14 @@
             </div>
             <div class="col-md-2">
                 <input type="radio" id="RespetaMateriales1" name="respetaMateriales"
-                       [(ngModel)]="peticion.RespetaMateriales" [value]="true" [(disabled)]="peticion.RevisionFinalizada"/>
+                       [(ngModel)]="peticion.RespetaMateriales" [value]="true" [(disabled)]="peticion.RevisionFinalizada" />
             </div>
             <div class="col-md-2" style="width: 10px;">
                 <label>No</label>
             </div>
             <div class="col-md-2">
                 <input type="radio" id="RespetaMateriales2" name="respetaMateriales"
-                       [(ngModel)]="peticion.RespetaMateriales" [value]="false" [(disabled)]="peticion.RevisionFinalizada"/>
+                       [(ngModel)]="peticion.RespetaMateriales" [value]="false" [(disabled)]="peticion.RevisionFinalizada" />
             </div>
         </div>
         <div class="col-md-12 row myRow alinearTitulo margenInput">
@@ -37,21 +37,31 @@
             </div>
             <div class="col-md-2">
                 <input type="radio" id="RespetaServicios1" name="respetaServicios"
-                       [(ngModel)]="peticion.RespetaServicios" [value]="true" [(disabled)]="peticion.RevisionFinalizada"/>
+                       [(ngModel)]="peticion.RespetaServicios" [value]="true" [(disabled)]="peticion.RevisionFinalizada" />
             </div>
             <div class="col-md-2" style="width: 10px;">
                 <label>No</label>
             </div>
             <div class="col-md-2">
                 <input type="radio" id="RespetaServicios2" name="respetaServicios"
-                       [(ngModel)]="peticion.RespetaServicios" [value]="false" [(disabled)]="peticion.RevisionFinalizada"/>
+                       [(ngModel)]="peticion.RespetaServicios" [value]="false" [(disabled)]="peticion.RevisionFinalizada" />
             </div>
         </div>
         <br>
         <br>
         <div class="col-md-12 row myRow alinearTitulo margenInput">
             <div class="col-md-12 titulosModal">
-                <strong>Si alguna de las opciones es "No", debe adjuntar un archivo o agregar una observación.</strong>
+                <ng-container *ngIf="peticion.PideDescripcionTecnica && !peticion.PideDocumentacionTecnica; else elseBlock">
+                    <strong>En este apartado es obligatorio adjuntar una descripción técnica del trabajo sin valores comerciales.</strong>
+                </ng-container>
+                <ng-template #elseBlock>
+                    <ng-container *ngIf="peticion.PideDescripcionTecnica && peticion.PideDocumentacionTecnica; else textoDefault">
+                        <strong>En este apartado es obligatorio adjuntar una descripción técnica y la documentación respaldatoria.</strong>
+                    </ng-container>
+                    <ng-template #textoDefault>
+                        <strong>Si alguna de las opciones es "No", debe adjuntar un archivo o agregar una observación.</strong>
+                    </ng-template>
+                </ng-template>
             </div>
         </div>
         <div class="inputCompras">
@@ -70,11 +80,10 @@
                     </p-fileUpload>
                 </div>
 
-                <div class="col-md-12 row" style="margin-left: -1px; margin-bottom: 3px">
-                    <p-panel *ngIf="peticion?.Cotizacion?.ArchivosCotizacion?.length > 0 || archivosTecnico?.length > 0"
-                             header="Anexos agregados" [toggleable]="true" [collapsed]="false">
+                <div *ngIf="peticion?.Cotizacion?.ArchivosCotizacion?.length > 0 || archivosTecnico?.length > 0"
+                     class="col-md-12 row" style="margin-left: -1px; margin-bottom: 3px">
+                    <p-panel header="Anexos agregados" [toggleable]="true" [collapsed]="false">
                         <div class="row myRow">
-
                             <!-- Archivos que ya fueron guardados-->
                             <div class="col-xs-12 col-md-9" *ngFor="let archivoTecnico of archivosTecnico">
                                 <img class="pointer" src="./Content/images/icons/trashRed.svg" alt="imageAlt"
@@ -85,8 +94,7 @@
                             </div>
                             <!--Fin Archivos que ya fueron guardados-->
                             <!--Archivos nuevos-->
-                            <div class="col-xs-12 col-md-9"
-                                 *ngFor="let archivo of peticion.Cotizacion.ArchivosCotizacion">
+                            <div class="col-xs-12 col-md-9" *ngFor="let archivo of peticion.Cotizacion.ArchivosCotizacion">
                                 <div *ngIf="archivo?.FileKey == 'CotizacionRevisionTecnica'">
                                     <img class="pointer" src="./Content/images/icons/trashRed.svg" alt="imageAlt"
                                          (click)="eliminarArchivo(false, archivo, false)" style="width: 26px;" />
@@ -113,7 +121,6 @@
                 </div>
             </div>
         </div>
-
     </section>
 </div>
 <br>
@@ -384,9 +391,8 @@
                                                 </p-cellEditor>
                                             </td>
                                             <td style="text-align:center">
-                                                <img style="cursor:pointer" src="./Content/images/icons/trashRed.svg"
-                                                     alt="imageAlt" (click)="eliminarRow(index)" style="width: 26px;" />
-
+                                                <img style="cursor: pointer; width: 26px;" src="./Content/images/icons/trashRed.svg"
+                                                     alt="imageAlt" (click)="eliminarRow(index)" />
                                             </td>
                                         </tr>
                                     </ng-container>
@@ -433,6 +439,9 @@
                             <td class="columna">{{posicionCompra?.Posiciones?.Indice}}</td>
                             <td class="columna">{{posicionCompra?.Posiciones?.Tarea}}</td>
                             <td class="columna">{{posicionCompra?.Posiciones?.PrecioTotal | number:'1.2-2'}}</td>
+
+
+
                             <!--<td class="columna">{{posicionCompra?.Posiciones?.FechaEntregaServicio | customDateFormat |
                             date :'d/M/yyyy' }}</td>-->
                             <td class="columna">
@@ -441,12 +450,12 @@
                             <td class="columna" pEditableColumn style="font-size: 11px !important;">
                                 <p-cellEditor>
                                     <ng-template pTemplate="input">
-                                        <input type="text" pKeyFilter="num" 
-                                            numeric-format
-                                            [(ngModel)]="posicionCompra.Posiciones.CotizacionPosicion.PrimerPlazoDeOferta" 
-                                            placeholder="Días" 
-                                            (focus)="onEditarCelda(posicionCompra.Posiciones.CotizacionPosicion, 'PrimerPlazoDeOferta', 0)"
-                                            (blur)="onReestablecerValor(posicionCompra.Posiciones.CotizacionPosicion, 'PrimerPlazoDeOferta')">
+                                        <input type="text" pKeyFilter="num"
+                                               numeric-format
+                                               [(ngModel)]="posicionCompra.Posiciones.CotizacionPosicion.PrimerPlazoDeOferta"
+                                               placeholder="Días"
+                                               (focus)="onEditarCelda(posicionCompra.Posiciones.CotizacionPosicion, 'PrimerPlazoDeOferta', 0)"
+                                               (blur)="onReestablecerValor(posicionCompra.Posiciones.CotizacionPosicion, 'PrimerPlazoDeOferta')">
                                     </ng-template>
                                     <ng-template pTemplate="output">
                                         <div [ngClass]="{'invalido': esFinalizado && (posicionCompra?.Posiciones?.CotizacionPosicion?.PrimerPlazoDeOferta <= 0)}">
@@ -558,9 +567,6 @@
                     </ng-template>
                 </p-table>
             </div>
-        </div>
-        <div *ngIf="visualizarMensajeDeModificacion" class="col-md-12" style="text-align: end;">
-            <label>Por favor, explique en las observaciones por qué modificó la cantidad.</label>
         </div>
         <br>
         <br>
