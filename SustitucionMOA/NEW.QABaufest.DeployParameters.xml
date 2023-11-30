@@ -26,7 +26,10 @@
 	<setParameter name="ida:SignUpPolicyId Config" value="B2C_1_Registro" />
 	<setParameter name="ida:SignInPolicyId Config" value="B2C_1_IniciodeSesion" />
 	<setParameter name="defAmbiente Config" value="Ambiente de prueba" />
-
+  <setParameter name="AzureADTenantId Config" value="moagroQA.onmicrosoft.com" />
+  <setParameter name="AzureADAppId Config" value="7c93e4a8-7eb3-4a72-9d32-0776b363013f" />
+  <setParameter name="AzureADAppSecret Config" value="slg8Q~uFRSH_1IMPekXmcZzix3bwXX62Tpqf8dyM" />
+  
 	<setParameter name="ida:SignUpAndSignInPolicyId Config" value="B2C_1_RegistroConLogin" />
 
 	<setParameter name="ida:EditProfilePolicyId Config" value="B2C_1_EditProfile" />
