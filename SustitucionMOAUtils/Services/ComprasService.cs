@@ -312,7 +312,7 @@ namespace SustitucionMOAUtils.Services
                 try
                 {
                     var finalizoPrimeraVez = string.IsNullOrEmpty(solpEntity.NroSolp);
-                    respuestaGuardarSOLP = FinalizarSolp(solpEntity, postEntitySubPosicionesEliminadas);
+                    respuestaGuardarSOLP = FinalizarSolp(solpEntity, postEntitySubPosicionesEliminadas, respuestaGuardarSOLP);
                     GuardarUsuarioComprasRelacionado(solp);
                 }
                 catch (Exception e)
@@ -636,9 +636,8 @@ namespace SustitucionMOAUtils.Services
             return solp;
         }
 
-        private RespuestaGuardarSOLP FinalizarSolp( Solp solpEntity, SolpPosicion postEntitySubPosicionesEliminadas)
+        private RespuestaGuardarSOLP FinalizarSolp( Solp solpEntity, SolpPosicion postEntitySubPosicionesEliminadas, RespuestaGuardarSOLP respuestaGuardarSOLP)
         {
-            RespuestaGuardarSOLP respuestaGuardarSOLP = new RespuestaGuardarSOLP();
             //variables para ver a que request accedemos
             //var crearPedidoConsumer = crearPedido(solpEntity);
             //var crearSolpComsumer = crearSolp(solpEntity);
