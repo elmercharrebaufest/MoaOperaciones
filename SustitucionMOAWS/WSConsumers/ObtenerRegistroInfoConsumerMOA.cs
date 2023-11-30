@@ -1,5 +1,7 @@
 ﻿using SustitucionMOAFotmatter;
 using SustitucionMOAModel.Dto;
+using SustitucionMOAModel.Entities;
+using SustitucionMOARepositorio;
 using SustitucionMOAWS.CredentialService;
 using SustitucionMOAWS.Interfaces;
 using SustitucionMOAWS.ObtenerRegistroInfoConsumerMOA;
@@ -13,12 +15,14 @@ namespace SustitucionMOAWS.WSConsumers
     {
         BAPI_INFORECORD_GETLISTPortTypeClient service;
 
-        public ObtenerRegistroInfoConsumerMOA()
+        private readonly IRepositorio repositorio;
+        public ObtenerRegistroInfoConsumerMOA(IRepositorio repositorio)
         {
             var url = "http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=BAPI_INFORECORD_GETLIST&amp;interfaceNamespace=urn%3Asap-com%3Adocument%3Asap%3Arfc%3Afunctions";
             service = new BAPI_INFORECORD_GETLISTPortTypeClient(SAPCredential.CrearSapBasicBinding(), SAPCredential.DevolverEndpoint(url));
             service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
             service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
+            this.repositorio = repositorio;
         }
 
         List<RegistroInfoDto> IObtenerRegistroInfoConsumerMOA.ObtenerRegistroInfoConsumer(string material, string centro, string grupoDeCompras)
@@ -45,15 +49,21 @@ namespace SustitucionMOAWS.WSConsumers
         {
             var registros = new List<RegistroInfoDto>();
             var hoy = DateTime.Now.Date;
+            var unidadMedidaSap = repositorio.Listar<UnidadMedidaSap>();
             foreach (var info in INFORECORD_GENERAL)
             {
                 foreach (var purch in INFORECORD_PURCHORG.Where(a => a.INFO_REC == info.INFO_REC))
                 {
+                    var codigoUnidad = unidadMedidaSap.Where(a =>
+                a.Tecnica == info.PO_UNIT || a.UM == info.PO_UNIT || 
+                a.Comercial == info.PO_UNIT || a.TextoUM == info.PO_UNIT ||
+                a.TextoUM2 == info.PO_UNIT).Single().Comercial;
+
                     var registroInfo = new RegistroInfoDto
                     {
                         Cantidad = purch.NRM_PO_QTY,
                         Precio = purch.NET_PRICE,
-                        Unidad = info.PO_UNIT,
+                        Unidad = codigoUnidad,
                         Moneda = purch.CURRENCY,
                         Vendedor = info.VENDOR,
                         FechaVigencia = purch.PRICE_DATE,

@@ -3360,7 +3360,6 @@ namespace SustitucionMOAUtils.Services
                 var solp = repositorio.ObtenerConsultaEscalar(new ObtenerSolpCompras(id));
                 var hoy = DateTime.Now.Date;
                 var tablaSap = repositorio.Listar<TablaSap>(x => x.Tabla == TablasSap.Moneda || x.Tabla == TablasSap.Unidad);
-                var unidadMedidaSap = repositorio.Listar<UnidadMedidaSap>();
                 DateTime fechaDesde = Convert.ToDateTime(ConfigurationManager.AppSettings["FechaInicioConsultaSolp"].ToString());
                 DateTime fechaHasta = Convert.ToDateTime(ConfigurationManager.AppSettings["FechaFinConsultaSolp"].ToString());
                 var filtros = new ObtenerSolpRequest
@@ -3398,13 +3397,6 @@ namespace SustitucionMOAUtils.Services
                                     }
                                     try
                                     {
-                                        var codigoUnidad = unidadMedidaSap.Where(a =>
-                                        a.Tecnica == registroInfo.Unidad ||
-                                        a.UM == registroInfo.Unidad ||
-                                        a.Comercial == registroInfo.Unidad ||
-                                        a.TextoUM == registroInfo.Unidad ||
-                                        a.TextoUM2 == registroInfo.Unidad).Single().Comercial;
-
                                         registrosInfo.Add(new RegistroInfoDto
                                         {
                                             Id = registroInfo.Id,
@@ -3426,7 +3418,7 @@ namespace SustitucionMOAUtils.Services
                                             Deshabilitado = registroInfo.FechaFormateada != null ? registroInfo.FechaFormateada < hoy : false,
                                             CantidadAdjudicacion = 0,
                                             MonedaId = tablaSap.Where(x => x.CodigoSap == registroInfo.Moneda).FirstOrDefault().Id,
-                                            UnidadId = tablaSap.Where(x => x.CodigoSap == codigoUnidad).FirstOrDefault().Id,
+                                            UnidadId = tablaSap.Where(x => x.CodigoSap == registroInfo.Unidad).FirstOrDefault().Id,
                                             MaterialCodigo = registroInfo.MaterialCodigo,
                                             NumeroOrdenDeCompra = registroInfo.NumeroOrdenDeCompra
                                         });
