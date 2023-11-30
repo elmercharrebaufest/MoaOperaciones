@@ -48,7 +48,7 @@ namespace SustitucionMOAUtils.Services
                 (isAdmin || apl.Proveedor.CUIT == cuit) &&
                 fechaInicioDateTime <= apl.FechaAlta && fechaFinDateTime >= DbFunctions.TruncateTime(apl.FechaAlta) &&
                 apl.Estado != EstadoAplicacionCartaPorte.Eliminado
-            ) ;
+            );
 
             var lista = rawList.Select(apl => new AplicacionCartaPorteDto(apl)).ToList();
             return lista;
@@ -64,14 +64,15 @@ namespace SustitucionMOAUtils.Services
         public void EliminarAplicacion(int aplicacionId)
         {
             var aplicacion = repositorio.Obtener<AplicacionCartaPorte>(aplicacionId);
-            if(aplicacion == null)
+            if (aplicacion == null)
                 throw new InfoCustomException("No se ha encontrado la aplicación.");
             if (aplicacion.Estado != EstadoAplicacionCartaPorte.Pendiente)
                 throw new InfoCustomException("No se puede eliminar la aplicación.");
             aplicacion.Estado = EstadoAplicacionCartaPorte.Eliminado;
             repositorio.GuardarCambios();
         }
-        public ComboAplicacionesContratosCcppResponse ObtenerCombosDeContratoCCPP(string mailUsuario, string codigoProveedor) {
+        public ComboAplicacionesContratosCcppResponse ObtenerCombosDeContratoCCPP(string mailUsuario, string codigoProveedor)
+        {
             Log.Info($"Busqueda combo app ccpp: mail={mailUsuario} el codigo proveedor= {codigoProveedor}");
 
             var aplicacionesPendientes = ObtenerAplicacionesDisponiblesSap(mailUsuario, codigoProveedor);
@@ -81,7 +82,7 @@ namespace SustitucionMOAUtils.Services
             var aplicacionesPendientesAplicar = ObtenerAplicacionesPendientes(codigoProveedor);
             var cartasPorte = ObtenerCartasPorteDisponibles(aplicacionesPendientes, aplicacionesPendientesAplicar);
 
-            return new ComboAplicacionesContratosCcppResponse { CartasPorte= cartasPorte, Contratos= contratos};
+            return new ComboAplicacionesContratosCcppResponse { CartasPorte = cartasPorte, Contratos = contratos };
         }
         public void GuardarAplicacion(CrearAplicacionCartaPorte aplicacionACrear, string mailUsuario)
         {
@@ -90,7 +91,8 @@ namespace SustitucionMOAUtils.Services
             if (!aplicacionACrear.ValidarKilogramos())
                 throw new InfoCustomException("Revisar valor de KG.");
 
-            var aplicacionesPendientes = consumer.ObtenerAplicacionesPendientes(new AppCCPPRequests.AppCartasPortePendienteRequest {
+            var aplicacionesPendientes = consumer.ObtenerAplicacionesPendientes(new AppCCPPRequests.AppCartasPortePendienteRequest
+            {
                 Proveedor = aplicacionACrear.ContratoSeleccionado.CodigoProveedor
             });
             var contratosValidos = ObtenerContratosDisponibles(aplicacionesPendientes);
@@ -106,7 +108,7 @@ namespace SustitucionMOAUtils.Services
 
             var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
 
-            var proveedor = repositorio.Obtener<Proveedor>(p=>p.CodigoProveedor == aplicacionACrear.ContratoSeleccionado.CodigoProveedor && p.EstadoAprobacion == EstadoAprobacion.Aprobado);
+            var proveedor = repositorio.Obtener<Proveedor>(p => p.CodigoProveedor == aplicacionACrear.ContratoSeleccionado.CodigoProveedor && p.EstadoAprobacion == EstadoAprobacion.Aprobado);
 
             var aplicacion = new AplicacionCartaPorte(aplicacionACrear, usuario, proveedor);
             repositorio.Agregar(aplicacion);
