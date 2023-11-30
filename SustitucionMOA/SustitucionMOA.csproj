@@ -19,14 +19,10 @@
     <AssemblyName>SustitucionMOA</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <UseIISExpress>true</UseIISExpress>
-    <IISExpressSSLPort>
-    </IISExpressSSLPort>
-    <IISExpressAnonymousAuthentication>
-    </IISExpressAnonymousAuthentication>
-    <IISExpressWindowsAuthentication>
-    </IISExpressWindowsAuthentication>
-    <IISExpressUseClassicPipelineMode>
-    </IISExpressUseClassicPipelineMode>
+    <IISExpressSSLPort>58280</IISExpressSSLPort>
+    <IISExpressAnonymousAuthentication>enabled</IISExpressAnonymousAuthentication>
+    <IISExpressWindowsAuthentication>disabled</IISExpressWindowsAuthentication>
+    <IISExpressUseClassicPipelineMode>false</IISExpressUseClassicPipelineMode>
     <UseGlobalApplicationHostFile />
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
@@ -321,6 +317,9 @@
     <Content Include="NEW.QABaufest.DeployParameters.Debug.xml" />
     <Content Include="NEW.QABaufest.DeployParameters.Release.xml" />
     <Content Include="NEW.QABaufest.DeployParameters.xml" />
+    <Content Include="NEW.QAHuenei.DeployParameters.Debug.xml" />
+    <Content Include="NEW.QAHuenei.DeployParameters.Release.xml" />
+    <Content Include="NEW.QAHuenei.DeployParameters.xml" />
     <Content Include="NOTUSE_UPDATE.DeployParameters.Debug.xml" />
     <Content Include="PRE.DeployParameters.Debug.xml">
       <DependentUpon>PRE.DeployParameters.xml</DependentUpon>
