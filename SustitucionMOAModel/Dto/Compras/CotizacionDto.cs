@@ -16,7 +16,7 @@ namespace SustitucionMOAModel.Dto
         public string ObservacionEconomica { get; set; }
         public int Revision { get; set; }
         public string CotizacionEstadoDescripcion { get; set; }
-        public List<LegajoDto> Archivos { get; set; } = new List<LegajoDto>();
+        public List<ArchivoDto> Archivos { get; set; } = new List<ArchivoDto>();
         public bool TieneObservacionTecnica { get; set; }
         public List<CotizacionPosicionDto> CotizacionPosiciones { get; set; } = new List<CotizacionPosicionDto>();
         public bool TieneAdjuntos { get; set; }

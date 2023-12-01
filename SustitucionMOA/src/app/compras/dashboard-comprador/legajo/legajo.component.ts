@@ -70,7 +70,7 @@ export class LegajoComponent extends ListBaseComponent implements OnInit {
     }
 
     descargarArchivo(archivoId, tipoLegajo) {
-        if (tipoLegajo == "SOLP") {
+        if (tipoLegajo == "SOLP" || tipoLegajo == "Pliego") {
             let SolpId = this.legajo[0].SolpId;
             this.blockUI.start("Generando...");
             this.service.getPdf(SolpId)

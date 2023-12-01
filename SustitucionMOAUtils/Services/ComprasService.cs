@@ -4569,11 +4569,11 @@ namespace SustitucionMOAUtils.Services
                     CotizacionEstadoDescripcion = c.CotizacionEstado.Descripcion,
                     PorcentajeDeHoras = c.PorcentajeDeHoras,
 
-                    Archivos = c.Archivos/*.Where(x => x.FileKey == FileKeys.AdjuntoCotizacionRevisionTecnica)*/.Select(archivo => new LegajoDto
+                    Archivos = c.Archivos.Select(archivo => new ArchivoDto
                     {
-
-                        ArchivoId = archivo.Id,
-                        Observacion = archivo.ObtenerNombre(archivo.Ruta),
+                        Id = archivo.Id,
+                        FileKey = archivo.FileKey,
+                        Ruta = archivo.ObtenerNombre(archivo.Ruta),
                     }).ToList(),
                     CotizacionesHoras = c.CotizacionesHoras.Select(x => new CotizacionHorasDto
                     {
