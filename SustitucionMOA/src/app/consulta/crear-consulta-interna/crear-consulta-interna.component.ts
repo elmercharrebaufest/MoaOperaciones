@@ -1,4 +1,4 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 import { ListBaseComponent } from '../../common/base-components/list-base-component';
 import { ConsultaService } from '../consulta.service';
 import { Seccion } from '../../common/models/seccion';
@@ -14,6 +14,8 @@ import { OrdenesDeCargaService } from '../../ordenes-de-carga/ordenes-de-carga.s
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { ConfirmationService } from 'primeng/api';
 import { Subscription } from 'rxjs';
+import { AngularEditorComponent, AngularEditorConfig } from '@kolkov/angular-editor';
+import { GET_ANGULAR_EDITOR_CONFIG, eliminarBotonesExtraEditor } from '../../common/configs/angularEditor.configs';
 
 declare var $: any;
 
@@ -23,7 +25,7 @@ declare var $: any;
   providers: [{ provide: ConsultaService, useClass: ConsultaService }],
   styleUrls: ['./crear-consulta-interna.component.css']
 })
-export class CrearConsultaInternaComponent extends ListBaseComponent {
+export class CrearConsultaInternaComponent extends ListBaseComponent implements AfterViewInit {
 
   @ViewChild('fileInput')
   protected fileInput: ElementRef;
@@ -32,6 +34,8 @@ export class CrearConsultaInternaComponent extends ListBaseComponent {
 
   @ViewChild('dropdown_categoria')
   protected categoriaDropdownComponent: DropdownComponent;
+
+  @ViewChild("angularEditorComentario") editor: AngularEditorComponent;
 
   constructor(
     protected service: ConsultaService,
@@ -82,6 +86,8 @@ export class CrearConsultaInternaComponent extends ListBaseComponent {
 
   subscriptionDestinatarios: Subscription;
 
+  config: AngularEditorConfig = GET_ANGULAR_EDITOR_CONFIG();
+
   checkPermisos() { this.securityService.tienePermisoRedirect("CONTACTO MAIL"); }
 
   setTabs() {
@@ -101,6 +107,9 @@ export class CrearConsultaInternaComponent extends ListBaseComponent {
     $(".adjuntarArchivo").click(function () {
       $(".adjuntarArchivo1").click();
     });
+  }
+  ngAfterViewInit(): void {
+    this.eliminarBotonesExtra()
   }
 
   public ngOnDestroy(): void {
@@ -253,7 +262,7 @@ export class CrearConsultaInternaComponent extends ListBaseComponent {
     }
 
     let comentario: Comentario = { consulta_Id: 0, Detalle: this.comentario, Fecha: new Date(), Recordado: false, FechaRecordado: new Date() };
-    
+
     try {
       this.subscription = this.service.AgregarConsultaInterna(this.consulta, comentario, this.listaArchivos).subscribe(
         (result: any) => {
@@ -347,7 +356,7 @@ export class CrearConsultaInternaComponent extends ListBaseComponent {
   }
 
   setearComentario() {
-    if (this.categoriaCode == 'ORD' && this.ordenId > 0 && this.subcategoria !=null) {
+    if (this.categoriaCode == 'ORD' && this.ordenId > 0 && this.subcategoria != null) {
       if (this.subcategoria.Code == 'CTG') {
         this.asunto = `Orden Nro ${this.ordenId} - CTG Pendiente.`
         this.comentario = `Estimado usuario, la CTG para la patente: ${this.getPatenteChasisOC()} se encuentra pendiente.`;
@@ -395,11 +404,22 @@ export class CrearConsultaInternaComponent extends ListBaseComponent {
     }
   }
 
-  getPatenteChasisOC(): string{
-      if(this.categoriaCode !== 'ORD')
+  getPatenteChasisOC(): string {
+    if (this.categoriaCode !== 'ORD')
       return null;
-      return this.ordenSeleccionada.PatenteChasis? this.ordenSeleccionada.PatenteChasis 
-      : this.ordenSeleccionada.ChasisAcoplado? this.ordenSeleccionada.ChasisAcoplado : null;
+    return this.ordenSeleccionada.PatenteChasis ? this.ordenSeleccionada.PatenteChasis
+      : this.ordenSeleccionada.ChasisAcoplado ? this.ordenSeleccionada.ChasisAcoplado : null;
+  }
+  eliminarBotonesExtra() {
+    let divToolBar = document.getElementsByClassName(
+      "angular-editor-toolbar"
+    )[0];
+    const subscript = $("#subscript-");
+    const superscript = $("#superscript-");
+
+    const editorTextArea = $(".angular-editor-textarea");
+    const editorButton = $(".angular-editor-button");
+    eliminarBotonesExtraEditor(divToolBar, subscript, superscript, editorTextArea, editorButton)
   }
 
 }
