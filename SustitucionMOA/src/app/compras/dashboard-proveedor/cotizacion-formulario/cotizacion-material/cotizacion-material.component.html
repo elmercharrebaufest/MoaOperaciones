@@ -178,7 +178,8 @@
                                 {{ posicionesCompra?.Posiciones?.CotizacionPosicion?.FechaDeEntrega | date:'dd/MM/yy' }}
                             </td>
                             <td class="columna" style="overflow: hidden; height: 25px; text-align: center;">
-                                <div [ngClass]="{'invalido': esFinalizado && posicionesCompra.Posiciones.CotizacionPosicion.NoDisponible != true}">
+                                <div [ngClass]="{'invalido': esFinalizado && posicionesCompra.Posiciones.CotizacionPosicion.NoDisponible != true 
+                                    && (posicionesCompra.Posiciones.CotizacionPosicion.PrimerPlazoDeOferta <= 0 || posicionesCompra.Posiciones.CotizacionPosicion.PrimeraCantidad <= 0)}">
                                     <button class="plazoDeOferta btn" style="font-size: 13px;" (click)="abrirPlazoDeOferta(posicionesCompra?.Posiciones?.CotizacionPosicion, posicionesCompra?.Posiciones?.Cantidad)">
                                         Agregar
                                     </button>
