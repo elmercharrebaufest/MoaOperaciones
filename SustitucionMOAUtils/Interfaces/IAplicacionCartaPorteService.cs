@@ -2,6 +2,7 @@
 using SustitucionMOAModel.Dto.AplicacionCartaPorte;
 using SustitucionMOAModel.Entities;
 using System.Collections.Generic;
+using System.Web;
 
 namespace SustitucionMOAUtils.Interfaces
 {
@@ -13,5 +14,7 @@ namespace SustitucionMOAUtils.Interfaces
         void EliminarAplicacion(int aplicacionId);
         ComboAplicacionesContratosCcppResponse ObtenerCombosDeContratoCCPP(string mailUsuario, string codigoProveedor);
         void GuardarAplicacion(CrearAplicacionCartaPorte aplicacionACrear, string mailUsuario);
+
+        CargaMasivaResponse ProcesarCargaMasiva(HttpPostedFileBase archivo, string usuarioMail, string proveedorCodigo);
     }
 }

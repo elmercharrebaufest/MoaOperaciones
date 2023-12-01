@@ -1,9 +1,8 @@
 import { Component, ViewChild } from "@angular/core";
 import { FormControl, FormGroup } from "@angular/forms";
-import { Router, ActivatedRoute, Params } from "@angular/router";
+import { ActivatedRoute, Params } from "@angular/router";
 import { ListBaseComponent } from "../../common/base-components/list-base-component";
 import { Archivo } from "../../common/models/archivo";
-import { InformeComercial } from "../../common/models/informeComercial";
 import { Material } from "../../common/models/material";
 import { NuevoAcopio } from "../../common/models/nuevoAcopio";
 import { NuevoProduccion } from "../../common/models/nuevoProduccion";
@@ -15,12 +14,8 @@ import { SessionDataService } from "../../common/services/SessionDataService";
 import { MensajeComponent } from "../../common/view-child/mensaje/mensaje.component";
 import { SpinnerSmallComponent } from "../../common/view-child/spinner-small/spinner-small.component";
 import { EmpresaNoGranosService } from "./empresa-no-granos.service";
-import { ContactoComercial } from "../../common/models/contactoComercial";
 import { RelacionConEmpleados } from "../../common/models//RelacionConEmpleados";
 import { RelacionConFuncionarios } from "../../common/models/relacionConFuncionarios";
-import { forEach } from "@angular/router/src/utils/collection";
-import { CartaPresentacion } from "../../common/models/cartaPresentacion";
-import * as $ from 'jquery';
 
 @Component({
     selector: "app-empresa-no-granos",
@@ -79,7 +74,8 @@ export class EmpresaNoGranosComponent extends ListBaseComponent {
     CBUNoGranos: string = "";
     esUsuarioCompras: boolean = false;
     ingresoAPlanta: boolean = false;
-    siperObligatorio: boolean = false; 
+    siperObligatorio: boolean = false;
+    declaracionVinculosObligatorio: boolean = false;
 
     esGuardarYNotificar: boolean = false;
     Comentarios: string = "";
@@ -209,6 +205,7 @@ export class EmpresaNoGranosComponent extends ListBaseComponent {
                     this.razonSocial = result.RazonSocial;
                     this.ingresoAPlanta = result.IngresoAPlanta;
                     this.siperObligatorio = result.SiperObligatorio;
+                    this.declaracionVinculosObligatorio = result.DeclaracionVinculosObligatorio;
                 },
                 (error) => {
                     this.mensajeComponent.setErrorMsg(error.message);
@@ -225,7 +222,7 @@ export class EmpresaNoGranosComponent extends ListBaseComponent {
         let fileKey: string = archivo.FileKey;
 
         this.subscription = this.service
-            .descargarArchivoSubido(fileKey, archivoID)
+            .descargarArchivoSubido(fileKey, archivoID, this.proveedorId)
             .subscribe(
                 (result) => {
                     this.spinnerSmallComponent.hideIt();
@@ -449,9 +446,8 @@ export class EmpresaNoGranosComponent extends ListBaseComponent {
             this.mensajeComponent.setErrorMsg("Debe completar el CBU");
             return true;
         }
-    
-        if(!this.esGuardarYNotificar)
-        {
+
+        if (!this.esGuardarYNotificar) {
             if (this.relacionConEmpleadosChecked == null) {
                 this.mensajeComponent.setErrorMsg(
                     "Debe completar V\u00EDnculos a declarar con Empleados de Molinos agro S.A."
@@ -566,7 +562,7 @@ export class EmpresaNoGranosComponent extends ListBaseComponent {
                 );
                 return true;
             }
-        } 
+        }
 
         return false;
     }
@@ -607,7 +603,7 @@ export class EmpresaNoGranosComponent extends ListBaseComponent {
                         .getElementById("IdIngresoBruto" + this.IdIngresoBruto.toString())
                         .setAttribute("checked", "true");
                 }
-                
+
                 if (result.VinculoConEmpleadosDeMolinos != null) {
                     console.log("Entramos")
                     this.codigoConductaVisto = true;
@@ -642,8 +638,7 @@ export class EmpresaNoGranosComponent extends ListBaseComponent {
                 }
 
 
-                if (this.esUsuarioCompras && !this.codigoDeConducta)
-                {
+                if (this.esUsuarioCompras && !this.codigoDeConducta) {
                     this.esGuardarYNotificar = true;
                 }
             },
@@ -665,7 +660,7 @@ export class EmpresaNoGranosComponent extends ListBaseComponent {
         document
             .getElementById("openModalNotificacion")
             .click();
-        
+
         if (this.esUsuarioCompras) {
             this.navService.navegarSeccion(
                 "altas"

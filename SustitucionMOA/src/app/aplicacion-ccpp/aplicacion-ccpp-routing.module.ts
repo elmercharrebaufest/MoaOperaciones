@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { ListadoComponent } from './listado/listado.component';
 import { CargaManual } from './carga-manual/carga-manual.component';
+import { MasivaComponent } from './masiva/masiva.component';
 
 const routes: Routes = [
   {
@@ -10,7 +11,7 @@ const routes: Routes = [
   },
   {
     path: "masiva",
-    component: ListadoComponent
+    component: MasivaComponent
   },
   {
     path: "",

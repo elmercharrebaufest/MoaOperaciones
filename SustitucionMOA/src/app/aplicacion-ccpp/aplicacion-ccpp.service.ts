@@ -1,16 +1,18 @@
 import { HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, throwError as observableThrowError } from 'rxjs';
 import { BaseService } from '../common/services/BaseService';
-import { AplicacionCCPP, AplicacionCCPPFiltro, AplicacionCCPPForm, ComboAppContratosCCPPResponse, } from './aplicacion-ccpp.model';
+import { AplicacionCCPP, AplicacionCCPPFiltro, AplicacionCCPPForm, ComboAppContratosCCPPResponse, EnviarCargaMasivaResponse, } from './aplicacion-ccpp.model';
 import { ApiResponse } from '../common/models/response';
+import { timeoutWith } from 'rxjs/operators';
 
 export interface ListadoRequest {
   fechaInicio: string;
   fechaFin: string;
 }
+
 @Injectable()
-export class AplicacionCcppService extends BaseService {
+export class AplicacionCcppService extends BaseService{
   private baseUrl = "/api/AplicacionCartaPorte/";
   getListado({ fechaInicio, fechaFin }: ListadoRequest): Observable<ApiResponse<AplicacionCCPP[], AplicacionCCPPFiltro>> {
     const params = new HttpParams()
@@ -41,4 +43,13 @@ export class AplicacionCcppService extends BaseService {
       .post<ApiResponse<boolean>>
       (`${this.baseUrl}/GuardarAplicacion`, payload);
   }
+
+  enviarCargaMasiva(archivo: File): Observable<ApiResponse<EnviarCargaMasivaResponse>> {
+    let payload = new FormData();
+    payload.append("archivo", archivo);
+
+    return this.http
+      .post(`${this.baseUrl}/CargarMasiva`, payload, { headers: this.headersPost })
+      .pipe(timeoutWith(360000, observableThrowError(new Error("Se escedió el tiempo de espera, por favor inténtelo más tarde"))));
+    }
 }
