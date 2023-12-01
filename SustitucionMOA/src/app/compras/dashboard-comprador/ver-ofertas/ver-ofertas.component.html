@@ -1,6 +1,6 @@
 <section class="container-fluid clearfix">
     <div class="row titleSection1">
-        <div class="col-xs-12 col-sm-10 letraTitulo">
+        <div class="col-sm-10 letraTitulo">
             <strong>
                 Ver ofertas {{tablaOfertas.TipoPosicionCodigo}} | SOLP #{{tablaOfertas.NroSolp}}
                 <b *ngIf="tablaOfertas.Id">
@@ -11,8 +11,11 @@
                 </b>
             </strong>
         </div>
-
-
+        <div class="col-sm-2 letraTitulo" *ngIf="tablaOfertas.VerBotonVerPrecio">
+            <button class="publicar btn btn-success" style="margin-right: 10px;" (click)="abrirModalPrecios()">
+                Ver Precios
+            </button>        
+        </div>
     </div>
     <br>
 </section>
@@ -101,10 +104,12 @@
                         <th class="headerth2" style="width: 100px !important; height: 0px !important; background-color: transparent !important; border: none !important;"></th>
                         <th class="headerth2" style="width: 100px !important; height: 0px !important; background-color: transparent !important; border: none !important;"></th>
                         <th class="headerth2" style="width: 90px !important; height: 0px !important; background-color: transparent !important; border: none !important;"></th>
+                        <th class="headerth2" style="width: 90px !important; height: 0px !important; background-color: transparent !important; border: none !important;"></th>
+                    
                     </ng-container>
                 </tr>
                 <tr>
-                    <th class="headerth border2-left" *ngFor="let proveedor of tablaOfertas.Usuarios" colspan="6" style="background-color: #4760ac !important; width: 570px !important;">{{proveedor.RazonSocial}}</th>
+                    <th class="headerth border2-left" *ngFor="let proveedor of tablaOfertas.Usuarios" colspan="7" style="background-color: #4760ac !important; width: 660px !important;">{{proveedor.RazonSocial}}</th>
                 </tr>
                 <tr>
                     <ng-container *ngFor="let proveedor of tablaOfertas.Usuarios">
@@ -114,6 +119,7 @@
                         <th class="headerth" style="background-color: #4760ac !important; width: 100px !important;">Precio<br /> total</th>
                         <th class="headerth" style="background-color: #4760ac !important; width: 100px !important;">Total ARP</th>
                         <th class="headerth" style="background-color: #4760ac !important; width: 90px !important; ">Fecha de <br />entrega</th>
+                        <th class="headerth" style="background-color: #4760ac !important; width: 90px !important; ">Plazo de <br />oferta</th>
                     </ng-container>
                 </tr>
             </ng-template>
@@ -139,28 +145,38 @@
                                             <i *ngIf="!proveedor.VerImportes" class="fa fa-eye-slash noVisible"></i>
                                         </td>
                                         <td class="columna" style="width: 90px !important; ">{{cotizacionPosicion.FechaDeEntregaFormateada}}</td>
+                                        <td class="columna" style="width: 90px !important;  text-align: center;" >
+                                            <span 
+                                            class="pi pi-calendar" 
+                                            style="font-size:25px;top:5px;color:gray;"
+                                            pTooltip ="{{ obtenerPrimerPlazo(cotizacionPosicion) }} 
+                                            {{ obtenerSegundoPlazo(cotizacionPosicion) }} 
+                                            {{ obtenerTercerPlazo(cotizacionPosicion) }}" tooltipPosition="left"
+                                            [escape]="false">
+                                      </span>
+                                           </td>
                                     </ng-container>
                                     <ng-container *ngIf="cotizacionPosicion.NoDisponible == true">
-                                        <td class="columna border2-left" colspan="6" style="width: 570px !important;">No disponible</td>
+                                        <td class="columna border2-left" colspan="7" style="width: 660px !important;">No disponible</td>
                                     </ng-container>
                                 </ng-container>
                             </ng-container>
                         </ng-container>
                         <ng-container *ngIf="proveedor.Cotizacion == null">
-                            <td class="columna border2-left" colspan="6" style="width: 570px !important;">Sin cotizar</td>
+                            <td class="columna border2-left" colspan="7" style="width: 660px !important;">Sin cotizar</td>
                         </ng-container>
                     </ng-container>
                 </tr>
                 <tr *ngIf="esUltimaPosicion(peticionPosicion)">
                     <ng-container *ngFor="let proveedor of tablaOfertas.Usuarios">
                         <ng-container *ngIf="proveedor.Cotizacion != null">
-                            <td colspan="6" class="columna border2-left" style="width: 570px !important;">
+                            <td colspan="7" class="columna border2-left" style="width: 660px !important;">
                                 {{ proveedor.VerImportes ? 'ARP ' + (proveedor.Cotizacion.TotalGlobal | number:'1.2-2') : '' }}
                                 <i *ngIf="!proveedor.VerImportes" class="fa fa-eye-slash noVisible" style="justify-content:left"></i>
                             </td>
                         </ng-container>
                         <ng-container *ngIf="proveedor.Cotizacion == null">
-                            <td class="columna border2-left" colspan="6" style="width: 570px !important;">Sin cotizar</td>
+                            <td class="columna border2-left" colspan="7" style="width: 660px !important;">Sin cotizar</td>
                         </ng-container>
                     </ng-container>
 
@@ -169,7 +185,7 @@
                 <tr *ngIf="esUltimaPosicion(peticionPosicion)">
                     <ng-container *ngFor="let proveedor of tablaOfertas.Usuarios">
                         <ng-container *ngIf="proveedor.Cotizacion != null">
-                            <td colspan="6" class="columna border2-left" style="width: 570px !important;">
+                            <td colspan="7" class="columna border2-left" style="width: 660px !important;">
                                 <div class="col-md-2" *ngIf="proveedor.Cotizacion.TieneAdjuntos">
                                     <span><img class="pointer" src="./Content/images/icons/descargar.svg" alt="descargar" (click)="descargarAdjuntosCotizacion(proveedor.Cotizacion.Id)" /></span>
                                 </div>
@@ -177,26 +193,26 @@
                             </td>
                         </ng-container>
                         <ng-container *ngIf="proveedor.Cotizacion == null">
-                            <td class="columna border2-left" colspan="6" style="width: 570px !important;">Sin cotizar</td>
+                            <td class="columna border2-left" colspan="7" style="width: 660px !important;">Sin cotizar</td>
                         </ng-container>
                     </ng-container>
                 </tr>
                 <tr *ngIf="esUltimaPosicion(peticionPosicion)">
                     <ng-container *ngFor="let proveedor of tablaOfertas.Usuarios">
                         <ng-container *ngIf="proveedor.Cotizacion != null">
-                            <td colspan="6" style="width: 540px !important;" class="columna border2-left" [style.color]="proveedor.Cotizacion.RespetaMaterialesColor">
+                            <td colspan="7" style="width: 630px !important;" class="columna border2-left" [style.color]="proveedor.Cotizacion.RespetaMaterialesColor">
                                 {{proveedor.Cotizacion.RespetaMaterialesDescripcion}}
                             </td>
                         </ng-container>
                         <ng-container *ngIf="proveedor.Cotizacion == null">
-                            <td class="columna border2-left" style="width: 540px !important;" colspan="6">Sin observaciones</td>
+                            <td class="columna border2-left" style="width: 630px !important;" colspan="7">Sin observaciones</td>
                         </ng-container>
                     </ng-container>
                 </tr>
                 <tr *ngIf="esUltimaPosicion(peticionPosicion)">
                     <ng-container *ngFor="let proveedor of tablaOfertas.Usuarios">
                         <ng-container *ngIf="proveedor.Cotizacion != null">
-                            <td colspan="6" style="width: 540px !important;" class="columna border2-left" [style.color]="proveedor.EstadoPropuestaTecnicaColor">
+                            <td colspan="7" style="width: 630px !important;" class="columna border2-left" [style.color]="proveedor.EstadoPropuestaTecnicaColor">
                                 {{proveedor.EstadoPropuestaTecnica}}
                                 <span *ngIf="proveedor.PropuestaTecnicaAprobada == false"
                                       class="glyphicon glyphicon-info-sign"
@@ -207,7 +223,7 @@
                             </td>
                         </ng-container>
                         <ng-container *ngIf="proveedor.Cotizacion == null">
-                            <td class="columna border2-left" style="width: 540px !important;" colspan="6">Sin observaciones</td>
+                            <td class="columna border2-left" style="width: 630px !important;" colspan="7">Sin observaciones</td>
                         </ng-container>
                     </ng-container>
                 </tr>
@@ -215,7 +231,7 @@
                     <ng-container *ngFor="let proveedor of tablaOfertas.Usuarios">
                         <ng-container>
                             <!--*ngIf="proveedor.Cotizacion != null"-->
-                            <td class="columna border2-left" colspan="6" style="width: 570px !important;">
+                            <td class="columna border2-left" colspan="7" style="width: 660px !important;">
                                 <button [disabled]="!proveedor.VerAdjudicar" class="publicar btn btn-success" style="font-size: 12px;" (click)="crearAdjudicacion(proveedor)">
                                     Adjudicar
                                 </button>
@@ -349,7 +365,7 @@
                     <ng-container *ngFor="let proveedor of tablaOfertas.Usuarios">
                         <th class="headerth border2-left" style="background-color: #4760ac !important; width: 120px !important; height: 33.45px;" colspan="3">Precio total</th>
                         <th class="headerth" style="background-color: #4760ac !important; width: 120px !important;height: 33.45px;" colspan="3">Total ARP</th>
-                        <th class="headerth" style="background-color: #4760ac !important; width: 300px !important;height: 33.45px;" colspan="3">Fecha de entrega</th>
+                        <th class="headerth" style="background-color: #4760ac !important; width: 300px !important;height: 33.45px;" colspan="3">Plazo de entrega</th>
                     </ng-container>
                 </tr>
             </ng-template>
@@ -368,7 +384,8 @@
                                         {{ proveedor.VerImportes ? 'ARP ' + (cotizacionPosicion.TotalARPCotizacionPosicion | number:'1.2-2') : '' }}
                                         <i *ngIf="!proveedor.VerImportes" class="fa fa-eye-slash noVisible"></i>
                                     </td>
-                                    <td class="columna" style="width: 300px !important;" colspan="3">{{cotizacionPosicion.FechaDeEntregaFormateada}}</td>
+                                    <!--<td class="columna" style="width: 300px !important;" colspan="3">{{cotizacionPosicion.FechaDeEntregaFormateada}}</td>-->
+                                    <td class="columna" style="width: 300px !important;" colspan="3">{{cotizacionPosicion.PrimerPlazoDeOferta != null ? cotizacionPosicion.PrimerPlazoDeOferta + ' días' : 'sin plazo' }}</td>
                                 </ng-container>
                             </ng-container>
                         </ng-container>
@@ -572,4 +589,11 @@
                       (aceptarModalTextosEmitter)="aceptarModalTextos()"
                       [(adjudicacion)]="adjudicacion">
 </app-textos-adjudicar>
+
+
+<app-visualizar-precio 
+                      [(displayVisualizarPrecio)]="displayVisualizarPrecio"
+                      (cerrarModalPreciosEmitter)="cerrarModalPrecios()" 
+                      [(peticionOferta_Id)]="peticionOferta_Id">
+</app-visualizar-precio>
 

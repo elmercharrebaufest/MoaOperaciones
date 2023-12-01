@@ -42,8 +42,11 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                     TipoPosicionCodigo = po.Solp.Posiciones.Select(x => x.TipoPosicion.Codigo).FirstOrDefault(),
                                     NroSolp = po.Solp.NroSolp,
                                     Adicional = po.Solp.Adicional,
+                                    Urgencia = po.Solp.Urgencia,
                                     NroOrdenDeCompraAdicional = po.Solp.NroOrdenDeCompraAdicional,
                                     EstaLiberado = po.Solp.EstadoSolpSap.CodigoSap == "05",
+                                    RevisionFinalizada = po.RevisionTecnica_Id != null,
+                                    PlazoDeOfertaCierre = po.Cierres.Any() ? po.Cierres.OrderByDescending(p => p.Fecha).FirstOrDefault().Fecha : (DateTime?)null,
                                     PeticionDeOfertaPosicion = (from pop in contexto.Set<PeticionDeOfertaSolpPosicion>()
                                                                 where po.Id == pop.PeticionDeOferta_Id && pop.SolpPosicion.EsConcluido == true && pop.SolpPosicion.Estado == true
                                                                 select new PeticionDeOfertaSolpPosicionDto()
@@ -173,14 +176,20 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                             },
                                                             Moneda_Id = p.PeticionDeOfertaSolpPosicion.SolpPosicion.TipoPosicion_Id == 9 ? p.PeticionDeOfertaSolpPosicion.SolpPosicion.Moneda_Id ?? 0 : p.Moneda_Id ?? 0,
                                                             MonedaDescripcion = cotizacion != null && p.Moneda != null ? p.Moneda.Codigo : "",
-                                                            FechaDeEntrega = p.FechaDeEntrega,
-                                                            FechaDeEntregaFormateada = SqlFunctions.DateName("day", p.FechaDeEntrega) + "/" + SqlFunctions.DatePart("month", p.FechaDeEntrega) + "/" + SqlFunctions.DateName("year", p.FechaDeEntrega),
+                                                            FechaDeEntrega =  p.FechaDeEntrega,
+                                                            FechaDeEntregaFormateada =  SqlFunctions.DateName("day", p.FechaDeEntrega) + "/" + SqlFunctions.DatePart("month", p.FechaDeEntrega) + "/" + SqlFunctions.DateName("year", p.FechaDeEntrega),
                                                             Precio = p.Precio ?? 0,
                                                             PrecioTotal = p.Cantidad != null && p.Precio != null ? p.Cantidad.Value * p.Precio.Value : 0,
                                                             TotalARPCotizacionPosicion = 0,
                                                             TotalPosicionCotizacion = 0,
                                                             TotalPesos = 0,
                                                             NoDisponible = cotizacion != null ? cotizacion.CotizacionPosiciones.Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == p.PeticionDeOfertaSolpPosicion.Id).FirstOrDefault().NoDisponible : null,
+                                                            PrimerPlazoDeOferta = cotizacion != null ? cotizacion.CotizacionPosiciones.Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == p.PeticionDeOfertaSolpPosicion.Id).FirstOrDefault().PrimerPlazoDeOferta : null,
+                                                            SegundoPlazoDeOferta = cotizacion != null ? cotizacion.CotizacionPosiciones.Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == p.PeticionDeOfertaSolpPosicion.Id).FirstOrDefault().SegundoPlazoDeOferta : null,
+                                                            TercerPlazoDeOferta = cotizacion != null ? cotizacion.CotizacionPosiciones.Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == p.PeticionDeOfertaSolpPosicion.Id).FirstOrDefault().TercerPlazoDeOferta : null,
+                                                            PrimeraCantidad = cotizacion != null ? cotizacion.CotizacionPosiciones.Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == p.PeticionDeOfertaSolpPosicion.Id).FirstOrDefault().PrimeraCantidad : null,
+                                                            SegundaCantidad = cotizacion != null ? cotizacion.CotizacionPosiciones.Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == p.PeticionDeOfertaSolpPosicion.Id).FirstOrDefault().SegundaCantidad : null,
+                                                            TerceraCantidad = cotizacion != null ? cotizacion.CotizacionPosiciones.Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == p.PeticionDeOfertaSolpPosicion.Id).FirstOrDefault().TerceraCantidad : null,
                                                             CotizacionSubPosiciones = (from subpos in contexto.Set<CotizacionSubPosicion>()
                                                                                        where p.Id == subpos.CotizacionPosicion_Id
                                                                                        select new CotizacionSubPosicionDto()
@@ -212,7 +221,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                 return resultado.First();
 
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }

@@ -51,6 +51,8 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
     @Input()
     public peticionHs: CotizacionHoraDto;
     error: string;
+    displayVisualizarPrecio: boolean;
+    peticionOferta_Id: number;
 
 
     constructor(protected service: ComprasService, protected usuarioService: UsuarioService, protected navService: NavService, protected sessionDataService: SessionDataService,
@@ -62,8 +64,8 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
     ngOnInit() {
         if (this.route.params) {
             this.route.params.forEach((params: Params) => {
-                let peticionOferta_Id = parseInt(params["id"]);
-                this.verOfertas(peticionOferta_Id);
+                this.peticionOferta_Id = parseInt(params["id"]);
+                this.verOfertas(this.peticionOferta_Id);
             })
         };
 
@@ -102,7 +104,11 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
 
     seleccionarTodo() {
         if (this.TodasPosicionesSeleccionadas) {
-            this.tablaOfertas.PeticionDeOfertaPosicion.map(pos => pos.Selected = true);
+            this.tablaOfertas.PeticionDeOfertaPosicion.map(pos => {
+                if (!pos.Posicion.AdjudicacionCompleta) {
+                    pos.Selected = true;
+                }
+            });
         } else {
             this.tablaOfertas.PeticionDeOfertaPosicion.map(pos => pos.Selected = false);
         }
@@ -388,5 +394,42 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
             event.target.value = 0; // Borra el valor si es negativo
         }
     }
+
+    cerrarModalPrecios() {
+        this.displayVisualizarPrecio = false;
+    }
+
+    abrirModalPrecios() {
+        this.displayVisualizarPrecio = true;
+    }
+
+
+      obtenerPrimerPlazo(cotizacionPosicion: any): string {
+        let plazos = '';
+    
+        if (cotizacionPosicion.PrimerPlazoDeOferta > 0) {
+            plazos += 'Plazo: ' + cotizacionPosicion.PrimerPlazoDeOferta + ' - Cantidad: ' + cotizacionPosicion.PrimeraCantidad;
+        } else {
+            plazos += 'sin Plazo';
+        }    
+        return plazos;
+      }
+
+      obtenerSegundoPlazo(cotizacionPosicion: any): string {
+        let plazos = '';
+        if (cotizacionPosicion.SegundoPlazoDeOferta > 0) {
+            plazos += 'Plazo: ' + cotizacionPosicion.SegundoPlazoDeOferta + ' - Cantidad: ' + cotizacionPosicion.SegundaCantidad ;
+        }
+        return plazos;
+      }
+      
+      obtenerTercerPlazo(cotizacionPosicion: any): string {
+        let plazos = '';
+       
+        if (cotizacionPosicion.TercerPlazoDeOferta > 0) {
+            plazos += 'Plazo: ' + cotizacionPosicion.TercerPlazoDeOferta + ' - Cantidad: ' + cotizacionPosicion.TerceraCantidad ;
+        }
+        return plazos;
+      }
 
 }

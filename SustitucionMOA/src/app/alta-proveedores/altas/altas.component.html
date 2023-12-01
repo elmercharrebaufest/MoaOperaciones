@@ -63,7 +63,7 @@
                             <option value="0" selected>Todos</option>
                             <option value="2" selected>Granos</option>
                             <option value="3" selected>No granos</option>
-                            <option value="4" selected>Corredor</option>
+                            <option value="4" selected>Corredor/Granos</option>
                             <option value="5" selected>Cliente</option>
                         </select>
                     </div>
@@ -217,7 +217,7 @@
                             <tr *ngFor="let empresa of data
                                 | customFilterOr : 'CUIT' : 'RazonSocial' : filtroAlta
                                 | customFilter : 'EstadoAprobacionDescripcion' : selectedEstado
-                                | customNumericFilter : 'IdTipoUsuario' : idTipoProveedor : 0
+                                | customTipoProveedorFilter : 'IdTipoUsuario' : idTipoProveedor : 0
                                 | orderedColumn : {property: orderedByColumn, direction: orderDirection}
                                 | customFilterBoolean : 'ContieneDocumentacionFisica' : (contieneDocumentacionFisica == 0 ? null:  (contieneDocumentacionFisica != 2)) : (idTipoProveedor != 1)
                                 | paginate: { itemsPerPage:itemsPerPage, currentPage: p }

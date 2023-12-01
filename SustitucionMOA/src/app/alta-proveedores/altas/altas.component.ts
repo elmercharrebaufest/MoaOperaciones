@@ -907,7 +907,6 @@ export class AltasComponent extends BaseComponent implements OnInit {
 
     cambiarFiltroTipoProveedor(tipoProveedor: number) {
         this.idTipoProveedor = tipoProveedor;
-
         this.getEstados();
     }
 

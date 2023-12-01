@@ -39,9 +39,10 @@ export class ConsultaService extends BaseService {
             .get(`/api/Consulta/RecordarComentario`, { params: params, headers: this.headers });
     }
 
-    public getCombos(excluir: boolean): Observable<any> {
+    public getCombos(excluir: boolean, mostrarCategoriaInterno: boolean): Observable<any> {
         let params: HttpParams = new HttpParams();
         params = params.set('excluir', excluir.toString());
+        params = params.set('mostrarCategoriaInterno', mostrarCategoriaInterno.toString());
 
         return this.http
             .get('/api/consulta/Combos', { params: params, headers: this.headers });
@@ -129,6 +130,14 @@ export class ConsultaService extends BaseService {
 
         return this.http
             .post('/api/consulta/ActualizarEstado', payload, { headers: this.headersPost });
+    }
+
+    public reabrirConsulta(consultaId: number) {
+        var payload = new FormData();
+        payload.append('consultaId', consultaId.toString());
+
+        return this.http
+            .post('/api/consulta/ReabrirConsulta', payload, { headers: this.headersPost });
     }
 
     DescargarArchivo(archivoId: number): Observable<any> {

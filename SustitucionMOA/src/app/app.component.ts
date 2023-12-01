@@ -12,8 +12,6 @@ import { UsuarioLogueado } from './common/models/usuario-logueado';
 import { Subscription } from 'rxjs';
 import { ConfirmationService } from 'primeng/components/common/api';
 
-
-
 @Component({
     selector: 'my-app',
     templateUrl: `app.component.html`
@@ -51,29 +49,29 @@ export class AppComponent implements OnDestroy {
 
     @HostListener('window:keydown', ['$event'])
     keyEvent(event: KeyboardEvent) {
-        if(event.altKey == true && event.ctrlKey == true && event.key == "b" ){          
+        if (event.altKey == true && event.ctrlKey == true && event.key == "b") {
             document.getElementById("aboutScreenBTN").click();
-        };                  
+        };
     }
 
     closeAboutScreen() {
         document.getElementById("aboutScreenBTN").click();
     }
-    
 
     ngOnInit() {
 
         this.navService.setSeccionList([]);
         this.navService.setSeccionActive('');
-
-        if (this.location.path() === '/ticket-pesada') {
+        const path = this.location.path();
+        if (path === '/ticket-pesada') {
             this.navService.navegarSeccion("ticket-pesada");
+        } else if (path.match(/^\/verLegajoOrdenDeCompra\/\d+\/[a-f0-9-]+$/)) {
+            this.navService.navegarSeccion(path);
         }
         else {
             this.validarLoginAzure();
         }
     }
-
 
     validarLoginAzure() {
         let headers = new HttpHeaders();
@@ -85,26 +83,26 @@ export class AppComponent implements OnDestroy {
 
         this.validarLoginSub = this.http
             .get<UsuarioLogueado>('/api/Home/ValidarLoginAzure', { headers: headers }).subscribe(
-            (result:any) => {
-                if (result.tipoUsuario == "DATAAGROLOGIN") {
-                    if (result.error != undefined && result.error != "") {
-                        this.mensajeComponent.setErrorMsg(result.error);
-                    } else if (result.url == undefined || result.url == "") {
-                        this.mensajeComponent.setErrorMsg("No se pudo obtener la URL destino");
+                (result: any) => {
+                    if (result.tipoUsuario == "DATAAGROLOGIN") {
+                        if (result.error != undefined && result.error != "") {
+                            this.mensajeComponent.setErrorMsg(result.error);
+                        } else if (result.url == undefined || result.url == "") {
+                            this.mensajeComponent.setErrorMsg("No se pudo obtener la URL destino");
+                        } else {
+                            window.location.href = result.url;
+                        }
                     } else {
-                        window.location.href = result.url;
-                    }
-                } else {
-                    if (result.error != undefined && result.error != "") {
-                        alert(result.error);
-                        window.location.href = window.location.origin + '/SignOut';
-                    }
-                    else {
-                        this.loginUser(result);
+                        if (result.error != undefined && result.error != "") {
+                            alert(result.error);
+                            window.location.href = window.location.origin + '/SignOut';
+                        }
+                        else {
+                            this.loginUser(result);
+                        }
                     }
                 }
-            }
-        );
+            );
     }
 
     loginUser(result: any) {
@@ -132,9 +130,6 @@ export class AppComponent implements OnDestroy {
         this.sessionDataService.setCuit(result.cuit);
         this.sessionDataService.setProveedorId(result.proveedorId);
 
-
-
-
         sessionStorage.setItem("granosSelected", result.granosFlag == 'A' ? 'G' : result.granosFlag);
 
         this.navService.navegarSeccion(result.redirectURL);
@@ -145,25 +140,25 @@ export class AppComponent implements OnDestroy {
     }
     aceptarTyC() {
         this.aceptarTyCSub = this.http
-            .get<{error:string, data:boolean}>('/api/Home/AceptarTyC', {})
-        .subscribe((result:any) => {
-            if (result.error != undefined && result.error != "") {
-                this.mensajeComponent.setErrorMsg(result.error);
-            } else {
-                document.getElementById("openModalaceptoTyCModal").click();
-            }
-        });
+            .get<{ error: string, data: boolean }>('/api/Home/AceptarTyC', {})
+            .subscribe((result: any) => {
+                if (result.error != undefined && result.error != "") {
+                    this.mensajeComponent.setErrorMsg(result.error);
+                } else {
+                    document.getElementById("openModalaceptoTyCModal").click();
+                }
+            });
     }
 
     checkTyCChecked(event) {
         this.disabledAgreement = !event.target.checked;
     }
 
-    ngOnDestroy(){
-        if(this.validarLoginSub)
+    ngOnDestroy() {
+        if (this.validarLoginSub)
             this.validarLoginSub.unsubscribe();
-            
-        if(this.aceptarTyCSub)
-        this.aceptarTyCSub.unsubscribe();   
+
+        if (this.aceptarTyCSub)
+            this.aceptarTyCSub.unsubscribe();
     }
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ConfirmationService } from 'primeng/api';
 import { FloatMsgService } from '../../common/services/FloatMsgService';
@@ -10,6 +10,7 @@ import { EcheqBaseComponent } from '../echeq.component';
 import { EcheqService } from '../echeq.service';
 import { EcheqContrato } from './echeq-contrato.model';
 import { EcheqFilter } from './echeq.filtros/echeq-filter.model';
+import { SpinnerComponent } from '../../common/view-child/spinner/spinner.component';
 
 
 @Component({
@@ -17,8 +18,12 @@ import { EcheqFilter } from './echeq.filtros/echeq-filter.model';
     templateUrl: `echeq-gestion.component.html`,
     providers: [EcheqService]
 })
+
+
 export class EcheqGestionComponent extends EcheqBaseComponent implements OnInit{
 
+    @ViewChild(SpinnerComponent)
+    protected spinnerComponent: SpinnerComponent;
 
     constructor(protected echeqService: EcheqService, 
                 protected navService: NavService,  
@@ -48,8 +53,9 @@ export class EcheqGestionComponent extends EcheqBaseComponent implements OnInit{
     //Este es el que me trae la info apenas entro al modulo
     public getContratoPendientePago(filter: EcheqFilter) {
         try {
+            this.spinnerComponent.showIt();
             this.echeqService.GetData(filter.periodo, filter.fechaInicio, filter.fechaFin).subscribe(response => {
-               
+                this.spinnerComponent.hideIt();
                 if (response.logout == true) {
                     this.sessionDataService.logout();
                 } else if (response.error != undefined && response.error != "") {
@@ -66,11 +72,13 @@ export class EcheqGestionComponent extends EcheqBaseComponent implements OnInit{
                     },  
             error => {
                 this.floatMsgService.setErrorMsg(error.message);
+                this.spinnerComponent.hideIt();
             });
            
         } 
         catch (e) {
-            this.floatMsgService.setErrorMsg(e);          
+            this.floatMsgService.setErrorMsg(e);    
+            this.spinnerComponent.hideIt();      
         }   
     }
 

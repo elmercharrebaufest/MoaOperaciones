@@ -319,9 +319,11 @@ namespace SustitucionMOAUtils.Services
                 Log.Debug(this.GetType().Name, "Editar", $" usuarioPuedeEnviarASAP: {puedeEnviarASAP}");
                 Log.Debug(this.GetType().Name, "Editar", $" chofer en Scato: {choferEnScato.ToJson()}");
 
+                
                 var cargarDatosOCEditar = CargarDatosOCEditar(ordenDeCarga, usuario);
                 var ordenEditar = cargarDatosOCEditar.Item1;
                 var listaValoresDiferentes = cargarDatosOCEditar.Item2;
+                var contratoKgDisponibles = cargarDatosOCEditar.Item3;
 
                 foreach (var prop in listaValoresDiferentes)
                 {
@@ -376,10 +378,16 @@ namespace SustitucionMOAUtils.Services
                 {
                     GenerarEntregaSAP(ordenEditar);
                 }
-                else if (ordenEditar.Estado == EstadoOrdenDeCarga.SinEnviarASAP && ordenEditar.EsFacturaAnticipada && ordenEditar.SinSeleccionarFactura)
-                {
-                    ordenEditar.Estado = EstadoOrdenDeCarga.Pendiente;
-                    ordenEditar.DescripcionErrorInterno = "Se debe seleccionar una factura.";
+                else if (ordenEditar.Estado == EstadoOrdenDeCarga.SinEnviarASAP) {
+                    if (!ordenEditar.EsFacturaAnticipada && !contratoKgDisponibles)
+                    {
+                        ordenEditar.Estado = EstadoOrdenDeCarga.Pendiente;
+                        ordenEditar.DescripcionErrorInterno = "Orden con contrato entre 0 a 15Tn.";
+                    }
+                    else if (ordenEditar.EsFacturaAnticipada && ordenEditar.SinSeleccionarFactura) {
+                        ordenEditar.Estado = EstadoOrdenDeCarga.Pendiente;
+                        ordenEditar.DescripcionErrorInterno = "Se debe seleccionar una factura.";
+                    }
                     repositorio.GuardarCambios();
                 }
 
@@ -393,7 +401,7 @@ namespace SustitucionMOAUtils.Services
                 return new Resultado { error = ex.Message };
             }
         }
-        private (OrdenDeCarga, List<Variance>) CargarDatosOCEditar(OrdenDeCarga ordenDeCarga, Usuario usuario)
+        private (OrdenDeCarga, List<Variance>, bool) CargarDatosOCEditar(OrdenDeCarga ordenDeCarga, Usuario usuario)
         {
             Log.Info($"CargarDatosOCEditar(ordenDeCarga: {ordenDeCarga.ToDto().ToJson()}, usuario: {usuario?.Id.ToJson()})");
             var ordenEditar = repositorio.Obtener<OrdenDeCarga>(ordenDeCarga.Id);
@@ -414,6 +422,7 @@ namespace SustitucionMOAUtils.Services
             ordenEditar.NumeroPedidoIngresado = ordenDeCarga.NumeroPedidoIngresado;
             ordenEditar.PedidoSAP = ordenDeCarga.NumeroPedidoIngresado;
             ordenEditar.Escalable = ordenDeCarga.Escalable;
+            var contratoKgDisponibles = ContratoConMas15TN(ordenEditar);
             var validaCPEDG = product.ValidaSisaRuca;
             if (validaCPEDG && string.IsNullOrEmpty(ordenDeCarga.CUITDestinatario))
                 UsarCUITClienteParaDestinatario(ordenEditar);
@@ -444,7 +453,7 @@ namespace SustitucionMOAUtils.Services
                 else
                 {
                     var crearPedido = !string.IsNullOrWhiteSpace(ordenEditar.ContratoSAP) || verificarOrden;
-                    if (crearPedido && puedeEnviarASAP && !ordenEditar.EsFacturaAnticipada)
+                    if (crearPedido && puedeEnviarASAP && !ordenEditar.EsFacturaAnticipada && contratoKgDisponibles)
                     {
                         if (string.IsNullOrWhiteSpace(ordenEditar.ContratoSAP))
                         {
@@ -460,7 +469,7 @@ namespace SustitucionMOAUtils.Services
             }
             ordenEditar.Observacion = ordenDeCarga.Observacion;
             ordenEditar.TransporteExiste = TransporteExiste(ordenDeCarga);
-            return (ordenEditar, listaValoresDiferentes);
+            return (ordenEditar, listaValoresDiferentes, contratoKgDisponibles);
         }
 
         private void NotificarContratoSinKm(OrdenDeCarga orden)
@@ -1907,7 +1916,7 @@ namespace SustitucionMOAUtils.Services
             foreach (var ordenDeCarga in repositorio
                 .Listar<OrdenDeCarga>(q => q.TipoContrato == TipoContratoFAS.Normal && q.Estado == EstadoOrdenDeCarga.SinEnviarASAP))
             {
-                if (ContratoEntre15a30Tn(ordenDeCarga))
+                if (ContratoConMas15TN(ordenDeCarga))
                 {
                     var crearOrdenEnSAPRequest = new CrearOrdenEnSAPRequest()
                     {
@@ -1926,7 +1935,7 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        private bool ContratoEntre15a30Tn(OrdenDeCarga orden)
+        private bool ContratoConMas15TN(OrdenDeCarga orden)
         {
             var numeroContrato = string.IsNullOrEmpty(orden.ContratoSAP) ? orden.ContratoIngresado : orden.ContratoSAP;
             Log.Info($"Validar kg orden 0 a 15tn: patente={orden.PatenteAcoplado}, chasis={orden.ChasisAcoplado}, " +
@@ -1941,11 +1950,7 @@ namespace SustitucionMOAUtils.Services
             var ordenesPendientes = ObtenerOrdenesPendientesDeCliente(orden.Cliente.CodigoProveedor).Where(ordenPendiente => ordenPendiente.Id != orden.Id).ToList();
             var kilosDisponibles = _kgDisponiblesFasService.ObtenerKgDisponiblesContrato(contratoSAP, ordenesPendientes);
 
-            if (kilosDisponibles <= Constante.FAS_KILOS_LIMITE_INFERIOR)
-                return false;
-            if (kilosDisponibles < Constante.FAS_KILOS_LIMITE_SUPERIOR)
-                return false;
-            return true;
+            return  kilosDisponibles >= Constante.FAS_KILOS_LIMITE_SUPERIOR;
         }
 
         #endregion

@@ -1,54 +1,56 @@
-<p-dialog class="popup-container" [(visible)]="displayCerrarCotizacion" modal="modal" 
-    [width]="650" [draggable]="false" [closable]="true"
-    (onHide)="onCerrarModalCotizar()" appendTo="body" positionTop="30"
-    [height]="450"
-    [max] [contentStyle]="{ 
-        'max-height':'450px', 
+<p-dialog class="popup-container" [(visible)]="displayCerrarCotizacion" modal="modal"
+          [width]="650" [draggable]="false" [closable]="true"
+          (onHide)="onCerrarModalCotizar()" appendTo="body" positionTop="30"
+          [height]="450"
+          [max] [contentStyle]="{
+        'max-height':'450px',
         'min-height':'400px'}">
     <p-header class="headerModal" style="color: #067935;">
-        <b>Cerrar cotizacion </b> <span *ngIf="peticion != null"> - PO #{{peticion.Id}}</span>
+        <b>Cerrar cotización </b> <span *ngIf="peticion != null"> - PO #{{peticion.Id}}</span>
     </p-header>
     <div class="container-fluid" style="height: 273.75px;">
         <section class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
             <div class="inputCompras">
                 <p>
-                    <ngb-alert type="danger" [dismissible]="false" *ngIf="visualizarAlert" >
-                       <strong>Error! </strong>{{ error }}</ngb-alert>
+                    <ngb-alert type="danger" [dismissible]="false" *ngIf="visualizarAlert">
+                        <strong>Error! </strong>{{ error }}
+                    </ngb-alert>
                 </p>
                 <p>
-                    <ngb-alert type="warning" [dismissible]="false" *ngIf="visualizarAlertCotizacion" >
-                       <strong>Advertencia! </strong>Vas a cerrar una peticion de oferta sin cotizaciones finalizadas</ngb-alert>
+                    <ngb-alert type="warning" [dismissible]="false" *ngIf="visualizarAlertCotizacion">
+                        <strong>Advertencia! </strong>Va a cerrar una petición de oferta sin cotizaciones finalizadas
+                    </ngb-alert>
                 </p>
-                
+
                 <div class="row myRow" style="padding-top: 2px;">
-                  <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                      <label class="labelCompras" ><strong>Observaciones*</strong></label>
-                      <textarea name="Observacion" ngDefaultControl [(ngModel)]="observacion" placeholder="Agregue los comentarios que crea necesario para los proveedores..." cols="30" rows="5"></textarea>
-                  </div>
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <label class="labelCompras"><strong>Observaciones*</strong></label>
+                        <textarea name="Observación" ngDefaultControl [(ngModel)]="observacion" placeholder="Agregue los comentarios que crea necesarios para los proveedores..." cols="30" rows="5"></textarea>
+                    </div>
                 </div>
             </div>
             <div class="aviso">
-                NOTA: Al cerrar un cotizacion se puede volver a abrir el plazo de oferta mediante una circular
+                NOTA: Al cerrar un cotización se puede volver a abrir el plazo de oferta mediante una circular.
             </div>
         </section>
     </div>
     <p-footer>
         <button type="button" class="btn btn-danger botonesComprasColor" (click)="onCerrarModalCotizar()">CANCELAR</button>
-        <button type="button" class="btn btn-primary botonesComprasColor" (click)="cerrarCotizacion(peticion?.Id, Observacion)">ENVIAR</button>
+        <button type="button" class="btn btn-primary botonesComprasColor" (click)="cerrarCotizacion(peticion?.Id, observacion)">ENVIAR</button>
 
     </p-footer>
 </p-dialog>
 
-<p-confirmDialog #dialogo header="Confirmación" icon="pi pi-exclamation-triangle" [width]="400" [responsive]="true" appendTo="body" >
+<p-confirmDialog #dialogo header="Confirmación" icon="pi pi-exclamation-triangle" [width]="400" [responsive]="true" appendTo="body">
     <p-footer>
-        <button type="button" pButton  label="Cancelar" class="ui-button-info botonModal" (click)="dialogo.reject()"></button>
-        <button type="button" pButton  label="Aceptar" class="ui-button-success botonModal" (click)="dialogo.accept()"></button>
+        <button type="button" pButton label="Cancelar" class="ui-button-info botonModal" (click)="dialogo.reject()"></button>
+        <button type="button" pButton label="Aceptar" class="ui-button-success botonModal" (click)="dialogo.accept()"></button>
     </p-footer>
 </p-confirmDialog>
 
 <p-dialog [(visible)]="displayOkCerrarCotizacion" [width]="400" modal="modal" appendTo="body" [draggable]="false" [contentStyle]="{'overflow':'visible', 'max-height':'100px', 'min-height':'100px'}" [closable]="false">
     <p-header class="headerModal">
-        Exito
+        Éxito
     </p-header>
     <br> Se han cerrado las cotizaciones para la petición de oferta #{{peticion?.IdEntidad}} correctamente.
     <br>

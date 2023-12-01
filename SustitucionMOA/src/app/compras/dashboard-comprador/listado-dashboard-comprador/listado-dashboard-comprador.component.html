@@ -8,21 +8,26 @@
     <spinner></spinner>
     <div class="row">
         <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
-            <p-multiSelect [options]="usuarioFiltro" [(ngModel)]="selectUsuario" defaultLabel="Usuario solicitante" [maxSelectedLabels]="1" selectedItemsLabel="{0} usuarios elegidos"></p-multiSelect>
+            <p-multiSelect [options]="usuarioFiltro" [(ngModel)]="selectUsuario" defaultLabel="Usuario Solicitante"
+                           [maxSelectedLabels]="1" selectedItemsLabel="{0} usuarios elegidos"></p-multiSelect>
         </div>
         <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
-            <p-multiSelect [options]="estadoSolpItem" [(ngModel)]="selectEstadoSolp" defaultLabel="Estado SOLP" selectedItemsLabel="{0} estados elegidos"></p-multiSelect>
+            <p-multiSelect [options]="estadoSolpItem" [(ngModel)]="selectEstadoSolp" defaultLabel="Estado SOLP"
+                           selectedItemsLabel="{0} estados elegidos"></p-multiSelect>
         </div>
         <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
-            <p-multiSelect [options]="grupoComprasFiltro" [(ngModel)]="selectGrupoCompras" defaultLabel="Grupo de Compras" [maxSelectedLabels]="1" selectedItemsLabel="{0} grupos de compras"></p-multiSelect>
+            <p-multiSelect [options]="grupoComprasFiltro" [(ngModel)]="selectGrupoCompras"
+                           defaultLabel="Grupo de Compras" [maxSelectedLabels]="1"
+                           selectedItemsLabel="{0} grupos de compras"></p-multiSelect>
         </div>
         <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3" style="padding-right: 30px;">
-            <p-multiSelect [options]="centroFiltro" [(ngModel)]="selectCentro" defaultLabel="Centro" [maxSelectedLabels]="2" selectedItemsLabel="{0} centros elegidos"></p-multiSelect>
+            <p-multiSelect [options]="centroFiltro" [(ngModel)]="selectCentro" defaultLabel="Centro"
+                           [maxSelectedLabels]="2" selectedItemsLabel="{0} centros elegidos"></p-multiSelect>
         </div>
         <div class="row myRow">
             <div class="form-group col-md-3">
-                <input class="col-xs-12 col-sm-12 col-md-12 col-lg-12" pInputText type="text"
-                       [(ngModel)]="nroSolp" placeholder="Buscar por numero de solp">
+                <input class="col-xs-12 col-sm-12 col-md-12 col-lg-12" pInputText type="text" [(ngModel)]="nroSolp"
+                       placeholder="Buscar por número de SOLP">
             </div>
             <div class="form-group col-md-3" style="text-align: center;">
                 <button class="btn buscar" (click)="onBuscar()">Buscar</button>
@@ -43,7 +48,8 @@
                             <i [ngClass]="{'fa': true, 'fa-solid fa-sort-down': true, 'arrow': true, 'unselected': columnaOrden === 'NroSolp' && orden == 'ASC' }"></i>
                         </span>
                     </th>
-                    <th class="headerth" title="Numero de OC" (click)="onOrder('NroOrdenDeCompraAdicional')" style="width: 85px">
+                    <th class="headerth" title="Numero de OC" (click)="onOrder('NroOrdenDeCompraAdicional')"
+                        style="width: 85px">
                         Adicional
                         <span>
                             <i [ngClass]="{'fa': true, 'fa-solid fa-sort-up': true, 'arrow': true, 'unselected': columnaOrden === 'NroOrdenDeCompraAdicional' && orden == 'DESC'  }"></i>
@@ -58,14 +64,16 @@
                         </span>
                     </th>
 
-                    <th title="Fecha de creacion de SOLP" class="headerth" (click)="onOrder('FechaCreacion')" style="width: 80px;">
+                    <th title="Fecha de creacion de SOLP" class="headerth" (click)="onOrder('FechaCreacion')"
+                        style="width: 80px;">
                         Fecha creación
                         <span>
                             <i [ngClass]="{'fa': true, 'fa-solid fa-sort-up': true, 'arrow': true, 'unselected': columnaOrden === 'FechaCreacion' && orden == 'DESC'  }"></i>
                             <i [ngClass]="{'fa': true, 'fa-solid fa-sort-down': true, 'arrow': true, 'unselected': columnaOrden === 'FechaCreacion' && orden == 'ASC' }"></i>
                         </span>
                     </th>
-                    <th title="Fecha de Liberacion de SOLP" class="headerth" (click)="onOrder('FechaLiberacionSap')" style="width: 90px;">
+                    <th title="Fecha de Liberacion de SOLP" class="headerth" (click)="onOrder('FechaLiberacionSap')"
+                        style="width: 90px;">
                         Fecha <br /> Liberacion
                         <span>
                             <i [ngClass]="{'fa': true, 'fa-solid fa-sort-up': true, 'arrow': true, 'unselected': columnaOrden === 'FechaLiberacionSap' && orden == 'DESC'  }"></i>
@@ -73,7 +81,8 @@
                         </span>
                     </th>
 
-                    <th title="Mail del solicitante" class="headerth columna" (click)="onOrder('UsuarioActual.Mail')" style="width:150px ;">
+                    <th title="Mail del solicitante" class="headerth columna" (click)="onOrder('UsuarioActual.Mail')"
+                        style="width:150px ;">
                         Solicitante
                         <span>
                             <i [ngClass]="{'fa': true, 'fa-solid fa-sort-up': true, 'arrow': true, 'unselected': columnaOrden === 'UsuarioActual.Mail' && orden == 'DESC'  }"></i>
@@ -90,14 +99,16 @@
                     </th>
 
 
-                    <th title="Tipo de  SOLP" class="headerth" (click)="onOrder('TipoSolp.Descripcion')" style="width: 65px;">
+                    <th title="Tipo de  SOLP" class="headerth" (click)="onOrder('TipoSolp.Descripcion')"
+                        style="width: 65px;">
                         Tipo
                         <span>
                             <i [ngClass]="{'fa': true, 'fa-solid fa-sort-up': true, 'arrow': true, 'unselected': columnaOrden === 'TipoSolp.Descripcion' && orden == 'DESC'  }"></i>
                             <i [ngClass]="{'fa': true, 'fa-solid fa-sort-down': true, 'arrow': true, 'unselected': columnaOrden === 'TipoSolp.Descripcion' && orden == 'ASC' }"></i>
                         </span>
                     </th>
-                    <th title="Tipo de  SOLP" class="headerth" (click)="onOrder('EstadoSolpSap.Descripcion')" style="width: 75px;">
+                    <th title="Tipo de  SOLP" class="headerth" (click)="onOrder('EstadoSolpSap.Descripcion')"
+                        style="width: 75px;">
                         Estado
                         <span>
                             <i [ngClass]="{'fa': true, 'fa-solid fa-sort-up': true, 'arrow': true, 'unselected': columnaOrden === 'EstadoSolpSap.Descripcion' && orden == 'DESC'  }"></i>
@@ -118,6 +129,11 @@
                         </a>
                     </td>
                     <td class="col-lg-12 col-md-12 col-sm-12" style="padding-left: 0px; padding-right: 0px;">
+                        <div *ngIf="rowData.Urgencia" class="col-md-2">
+                            <span data-toggle="tooltip" title="Solp Urgencia">
+                                <i class="pi pi-exclamation-triangle" style="color: red; font-size: 3rem"></i>
+                            </span>
+                        </div>
                         <div *ngIf="rowData.TipoSolpSap == 2" class="col-md-2">
                             <span>
                                 <img class="pointer" src="./Content/images/icons/worker.svg" alt="Mantenimiento"
@@ -130,7 +146,8 @@
                                      style="width: 30px; height: 30px; cursor:default" />
                             </span>
                         </div>
-                        <div class="col-md-2">
+                        <div class="col-md-2"
+                             *ngIf="rowData.TipoSolp.Codigo == 'CON_PLIEGO' || (rowData.TipoSolp.Codigo == 'SIN_PLIEGO' && rowData.SolpConAdjuntos)">
                             <span>
                                 <img class="pointer" src="./Content/images/icons/descargar.svg" alt="descargar"
                                      (click)="generarZipPliego(rowData.Id)" />
@@ -168,7 +185,8 @@
                         {{ rowData.EstadoSolpSap.Descripcion || "" }}
                     </td>
                     <td colspan="2" class="columna" style="text-align: center;">
-                        <button *ngIf="rowData.EstadoSolpSap.CodigoSap == '05' && rowData.VerPublicar == true && !rowData.Adicional" class="publicar btn btn-success" style="font-size: 12px;"
+                        <button *ngIf="rowData.EstadoSolpSap.CodigoSap == '05' && rowData.VerPublicar == true && !rowData.Adicional"
+                                class="publicar btn btn-success" style="font-size: 12px;"
                                 (click)="publicarCotizacion(rowData.Id)">
                             Publicar
                         </button>
@@ -205,7 +223,8 @@
                                             <tr>
                                                 <td id="agregarProveedor">
                                                     <div *ngIf="(rowData.Adicional == null || rowData.TrabajoYaHecho == null) && (rowData.Adicional == null && rowData.TrabajoYaHecho == null)">
-                                                        <img class="pointer" src="./Content/images/icons/editar.svg" alt="Editar" (click)="obtenerPeticionDeOfertaParaProveedor(licitacion.Id)" />
+                                                        <img class="pointer" src="./Content/images/icons/editar.svg" alt="Editar"
+                                                             (click)="obtenerPeticionDeOfertaParaProveedor(licitacion.Id)" />
                                                     </div>
                                                 </td>
                                                 <td class="columna">{{licitacion.Id}}</td>
@@ -217,13 +236,18 @@
                                                     <button class="publicar btn " style="margin-right: 10px;" (click)="verLegajo(licitacion.Id)">
                                                         Legajo
                                                     </button>
-                                                    <button class="publicar btn " *ngIf="rowData.VerCircular == true" style="margin-right: 10px;" (click)="obtenerPeticionDeOferta(licitacion.Id)">
+                                                    <!--&& licitacion.RevisionFinalizada == true-->
+                                                    <button class="publicar btn "
+                                                            *ngIf="rowData.VerCircular == true "
+                                                            style="margin-right: 10px;" (click)="obtenerPeticionDeOferta(licitacion.Id)">
                                                         Circular
                                                     </button>
-                                                    <button class="publicar btn btn-success" style="margin-right: 10px;" (click)="verOfertas(licitacion.Id)">
+                                                    <button class="publicar btn btn-success" style="margin-right: 10px;"
+                                                            (click)="verOfertas(licitacion.Id)">
                                                         Ver Ofertas
                                                     </button>
-                                                    <button class="publicar btn" *ngIf="licitacion.EstadoColor == 'Green'" (click)="obtenerPeticionDeOfertaParaCerrar(licitacion.Id)">
+                                                    <button class="publicar btn" *ngIf="licitacion.EstadoColor == 'Green'"
+                                                            (click)="obtenerPeticionDeOfertaParaCerrar(licitacion.Id)">
                                                         Cerrar Cotizacion
                                                     </button>
                                                 </td>
@@ -261,7 +285,8 @@
                                                 <td class="columna">{{orden.PrecioFinal | number:'1.2-2'}}</td>
                                                 <td class="columna">{{orden.MonedaDescripcion}}</td>
                                                 <td class="columna">
-                                                    <button class="publicar btn btn-success" (click)="verDetalleOrdenDeCompra(orden.NumeroOrdenDeCompra)">
+                                                    <button class="publicar btn btn-success"
+                                                            (click)="verDetalleOrdenDeCompra(orden.NumeroOrdenDeCompra)">
                                                         Ver detalle
                                                     </button>
                                                 </td>
@@ -278,34 +303,26 @@
         <p-paginator #paginator [rows]="10" [totalRecords]="length" (onPageChange)="handlePageEvent($event)"></p-paginator>
     </div>
 
-    <app-legajo [(displayLegajo)]="displayLegajo"
-                [(usuarioProveedor)]="usuarioProveedor"
-                (cerrarLegajoEmitter)="cerrarLegajo()"
-                (descargarArchivoEmitter)="descargarArchivo($event)"
-                (descargarLegajoEmitter)="descargarLegajo()"
-                (adjuntarArchivoLegajoEmitter)="adjuntarArchivoLegajo($event)"
+    <app-legajo [(displayLegajo)]="displayLegajo" [(usuarioProveedor)]="usuarioProveedor"
+                (cerrarLegajoEmitter)="cerrarLegajo()" (descargarArchivoEmitter)="descargarArchivo($event)"
+                (descargarLegajoEmitter)="descargarLegajo()" (adjuntarArchivoLegajoEmitter)="adjuntarArchivoLegajo($event)"
                 [(legajo)]="legajo">
     </app-legajo>
 
-    <app-circular [(locale)]="es"
-                  [(displayCircular)]="displayCircular"
-                  (cerrarCircularEmitter)="cerrarCircular()"
+    <app-circular [(locale)]="es" [(displayCircular)]="displayCircular" (cerrarCircularEmitter)="cerrarCircular()"
                   [(peticion)]="peticion">
     </app-circular>
 
-    <app-proveedor-peticion [(displayProveedor)]="displayProveedor"
-                            (cerrarModalProveedorEmitter)="cerrarModalProveedor()"
+    <app-proveedor-peticion [(displayProveedor)]="displayProveedor" (cerrarModalProveedorEmitter)="cerrarModalProveedor()"
                             [(peticion)]="peticion">
     </app-proveedor-peticion>
 
     <app-orden-de-compra-detalle [(displayOrdenDeCompra)]="displayOrdenDeCompra"
-                                 (cerrarOrdenDeCompraEmitter)="cerrarOrdenDeCompra()"
-                                 [(ordenDeCompra)]="ordenDeCompra">
+                                 (cerrarOrdenDeCompraEmitter)="cerrarOrdenDeCompra()" [(ordenDeCompra)]="ordenDeCompra">
     </app-orden-de-compra-detalle>
 
     <app-cerrar-cotizacion [(displayCerrarCotizacion)]="displayCerrarCotizacion"
-                           (cerrarModalCotizacionEmitter)="cerrarModalCotizacion()"
-                           [(peticion)]="peticion"
+                           (cerrarModalCotizacionEmitter)="cerrarModalCotizacion()" [(peticion)]="peticion"
                            [(visualizarAlertCotizacion)]="visualizarAlertCotizacion">
     </app-cerrar-cotizacion>
 </div>

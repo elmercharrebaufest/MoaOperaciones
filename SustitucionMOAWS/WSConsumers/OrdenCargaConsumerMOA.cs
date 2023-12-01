@@ -14,7 +14,7 @@ using SustitucionMOAWS.ModificarOrdenCargaFasWebServiceMOA;
 using SustitucionMOAWS.OrdenCargaControlEstadoSAP;
 using SustitucionMOAWS.OrdenCargaControlSAP;
 using SustitucionMOAWS.OrdenCargaCrearSAP;
-using SustitucionMOAWS.OrdenCargaEstadoEntregadaV2SAP;
+using SustitucionMOAWS.OrdenCargaEstadoEntregadaV3SAP;
 using SustitucionMOAWS.OrdenCargaVisualizarCliente;
 using SustitucionMOAWS.ResponseHandler.OrdenCarga;
 using SustitucionMOAWS.Util;
@@ -178,7 +178,7 @@ namespace SustitucionMOAWS.WSConsumers
         */
         public OrdenCargaEntreResponseHandler CrearEntrega(CrearEntregaRequest entregaReq, bool pedidoAnticipado = false)
         {
-            var service = new SI_MPMF_MOAOP_ORD_CARGA_ENT_V2Client();
+            var service = new SI_MPMF_MOAOP_ORD_CARGA_ENT_V3Client();
             var cuit_tr = !string.IsNullOrEmpty(entregaReq.TransportistaReal) ? entregaReq.TransportistaReal : entregaReq.Transportista;
             var cuit_int_flete = !string.IsNullOrEmpty(entregaReq.TransportistaReal) ? entregaReq.Transportista : entregaReq.TransportistaReal;
             service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
@@ -186,13 +186,13 @@ namespace SustitucionMOAWS.WSConsumers
             if (!pedidoAnticipado)
                 entregaReq = LimpiarRequestSinPedidoAnticipado(entregaReq);
 
-            Log.Info($"SI_SI_MPMF_MOAOP_ORD_CARGA_ENT_V2 " +
+            Log.Info($"SI_SI_MPMF_MOAOP_ORD_CARGA_ENT_V3 " +
                 $"Request: {entregaReq.ToJson()}, " +
                 $"pedidoAnticipado: {pedidoAnticipado}, " +
                 $"cuit_tr: {cuit_tr}, " +
                 $"cuit_int_flete: {cuit_int_flete}.");
 
-            var entrega = service.SI_MPMF_MOAOP_ORD_CARGA_ENT_V2(
+            var entrega = service.SI_MPMF_MOAOP_ORD_CARGA_ENT_V3(
                 IM_CUITDESTF: entregaReq.CuitDestino,
                 IM_CUITDESTINAT: entregaReq.CuitDestinatario,
                 IM_DOCUMENTO: entregaReq.Documento,
@@ -215,7 +215,7 @@ namespace SustitucionMOAWS.WSConsumers
                 IM_DESTINO_MERCADERIA: entregaReq.DestinoMercaderia,
                 EX_MENSAJE: out string mensaje).Trim();
 
-            Log.Info($"SI_SI_MPMF_MOAOP_ORD_CARGA_ENT_V2 Response: {new { entrega, mensaje }}");
+            Log.Info($"SI_SI_MPMF_MOAOP_ORD_CARGA_ENT_V3 Response: {new { entrega, mensaje }}");
 
             return new OrdenCargaEntreResponseHandler(mensaje, entrega);
         }

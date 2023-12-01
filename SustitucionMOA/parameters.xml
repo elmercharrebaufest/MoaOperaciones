@@ -652,6 +652,12 @@
                            /endpoint[@name='SI_MPMF_MOAOP_ORD_CARGA_ENT_V2']
                            /@address" />
 	</parameter>
+	<parameter name="SI_MPMF_MOAOP_ORD_CARGA_ENT_V3 Service Endpoint Address">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+							match="/configuration/system.serviceModel/client
+                           /endpoint[@name='SI_MPMF_MOAOP_ORD_CARGA_ENT_V3']
+                           /@address" />
+	</parameter>
 	<parameter name="SI_MPMF_MOAOP_CONTROL_ESTADO Service Endpoint Address">
 		<parameterEntry kind="XmlFile" scope="Web.config"
 							match="/configuration/system.serviceModel/client

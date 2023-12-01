@@ -691,11 +691,10 @@ namespace SustitucionMOAUtils.Services
             return errores.Any() ? string.Join(".", errores) : SuccessMsg.ArchivoSubidoOK;
         }
 
-        public List<CategoriaDto> ObtenerCategorias(Boolean? excluir, UsuarioDto usuario)
+        public List<CategoriaDto> ObtenerCategorias(Boolean? excluir, UsuarioDto usuario, Boolean? mostrarCategoriaInterno)
         {
             try
             {
-                var esInterno = usuario.Permisos.FirstOrDefault(p => p == "VER TODAS ORDENES DE CARGA") != null ? true : false;
                 List<string> exclude = new List<string>() { };
                 List<Categoria> categorias = new List<Categoria>() { };
 
@@ -708,18 +707,52 @@ namespace SustitucionMOAUtils.Services
                     exclude = new List<string>() { };
                 }
 
+                if (mostrarCategoriaInterno == false)
+                    exclude.Add("ORD");
+
                 if (usuario.NuevoUsuario)
                 {
                     var categoriasNuevosUsuarios = new List<string>() { "OTRO", "FWEB" };
                     categorias = repositorio.Listar<Categoria>(c => categoriasNuevosUsuarios.Contains(c.Code)).OrderBy(c => c.Nombre).ToList();
-                }else if (esInterno)
-                {
-                    categorias = repositorio.Listar<Categoria>(c => c.Code == "ORD");
                 }
                 else
                 {
                     categorias = repositorio.Listar<Categoria>(c => !exclude.Contains(c.Code)).OrderBy(c => c.Nombre).ToList();
                 }
+                return categorias.Select(x => new CategoriaDto(x)).ToList();
+            }
+            catch (ValidationCustomException e)
+            {
+                throw e;
+            }
+            catch (InfoCustomException e)
+            {
+                throw e;
+            }
+            catch (Exception e)
+            {
+                throw new WSCustomException(ErrorMsg.ErrorWS, e);
+            }
+        }
+
+        public List<CategoriaDto> ObtenerCategoriasInterno(Boolean? excluir, UsuarioDto usuario)
+        {
+            try
+            {
+                List<string> categoriasContacto = new List<string>
+                {
+                    "BOL", "DATMAE", "REI", "ACT", "PAR", "FIN", "CAL", "COM",
+                    "COMP", "APP", "PES", "PAG", "FWEB", "MATBA",
+                    "PROVGC", "FLECONSULTA", "OTRO", "PARDIR", "PARCOR",
+                    "FINDIR", "FINCOR", "FLE", "CRDECPE", "ORD"
+                };
+  
+                var user = repositorio.Obtener<Usuario>(u => u.Id == usuario.Id);
+                var rolesUsuario = user.Roles.Where(r => categoriasContacto.Contains(r.Codigo))
+                    .Select(r => r.Codigo).ToList();
+
+                var categorias = repositorio.Listar<Categoria>(c => rolesUsuario.Contains(c.Code));
+
                 return categorias.Select(x => new CategoriaDto(x)).ToList();
             }
             catch (ValidationCustomException e)
@@ -761,17 +794,8 @@ namespace SustitucionMOAUtils.Services
         {
             try
             {
-                var esInterno = usuario.Permisos.Contains("VER TODAS ORDENES DE CARGA");
                 var subcategorias = repositorio.Listar<SubCategoria>().OrderBy(c => c.Nombre);
-                if (esInterno)
-                {
-                    var categoriaOrdenes = repositorio.Obtener<Categoria>(c => c.Code == "ORD");
-                    return subcategorias.Where(c => c.Categoria_Id == categoriaOrdenes.Id).Select(x => new SubCategoriaDto(x)).ToList();
-                }
-                else
-                {
-                    return subcategorias.Select(x => new SubCategoriaDto(x)).ToList();
-                }
+                return subcategorias.Select(x => new SubCategoriaDto(x)).ToList();
             }
             catch (ValidationCustomException e)
             {
@@ -1218,5 +1242,36 @@ namespace SustitucionMOAUtils.Services
                 Mensaje = mensajeResultado,
             };
         }
+
+        public void ReabrirConsulta(int consultaId, UsuarioDto usuarioActual)
+        {
+            var consulta = GetConsulta(consultaId);
+
+            if (usuarioActual.Id != consulta.Usuario_Id)
+                throw new ValidationCustomException("No se puede reabrir la consulta ya que ud no inició esta consulta.");
+
+            var estadoIniciado = GetEstadoConsulta("INI");
+            var estadoCerrado = GetEstadoConsulta("CER");
+            
+            if (consulta.EstadoConsulta_Id != estadoCerrado.Id)
+                throw new ValidationCustomException("La consulta ya se encuentra en gestión.");
+            
+            if (consulta.UsuarioInterno_Id != null)
+                throw new ValidationCustomException("Ud no tiene permiso para reabrir esta consulta.");
+
+            consulta.EstadoConsulta_Id = estadoIniciado.Id;
+            this.repositorio.GuardarCambios();
+        }
+
+        private EstadoConsulta GetEstadoConsulta(string codigo)
+        {
+            var estadoConsulta = repositorio.Obtener<EstadoConsulta>(c => c.Code == codigo);
+
+            if (estadoConsulta == null) 
+                throw new InfoCustomException("No existe el estado de la consulta.");
+
+            return estadoConsulta;
+        }
+
     }   
 }

@@ -222,6 +222,8 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
             this.service.getMateriales().subscribe(
                 (result) => {
                     this.listaMateriales = result.data;
+                    if (this.editando && !this.Contrato)
+                        this.onContratoSeleccionadoChanged()
                 },
                 (error) => {
                     console.error(error);
@@ -779,6 +781,8 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
     }
 
     onContratoSeleccionadoChanged = () => {
+        if (this.editando && !this.listaMateriales)
+            return;
         this.facturasDisponibles = [];
         this.ordenDeCarga.NumeroFactura = null;
         this.facturaSeleccionada = null;
@@ -811,7 +815,8 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
             this.ordenDeCarga.Producto_Id = this.selectUndefinedOptionValue;
             this.validaCPEDG = false;
         }
-        this.ordenDeCarga.Reventa = this.validaCPEDG && this.clienteSeleccionado.EsRevendedor && !this.ordenDeCarga.Reventa;
+        if (!this.editando)
+            this.ordenDeCarga.Reventa = this.validaCPEDG && this.clienteSeleccionado.EsRevendedor && !this.ordenDeCarga.Reventa;
     }
 
     onPatenteSeleccionada() {
@@ -1573,7 +1578,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
                         this.sessionDataService.logout();
                         return;
                     } else if ((result.error != undefined && result.error != "") || result.info != undefined) {
-                        this.mensajeValidacionScato = "No se pudo validar si la orden esta activa en Scato."
+                        this.mensajeValidacionScato = "No se pudo validar si la orden está activa en Scato."
                     } else {
                         this.ordenActivaScato = result.data;
                         if (this.ordenActivaScato) {
@@ -1588,7 +1593,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
                 }
             );
         } catch (e) {
-            this.mensajeValidacionScato = "No se pudo validar si la orden esta activa en Scato."
+            this.mensajeValidacionScato = "No se pudo validar si la orden está activa en Scato."
         }
     }
 

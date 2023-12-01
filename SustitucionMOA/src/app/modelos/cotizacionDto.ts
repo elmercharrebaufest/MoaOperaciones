@@ -45,7 +45,12 @@ export interface CotizacionPosicionDto {
     UnidadComprasDescripcion: string,
     CotizacionSubPosiciones?: CotizacionSubPosicionDto[]
     NoDisponible: boolean
-
+    PrimerPlazoDeOferta: number
+    PrimeraCantidad: number
+    SegundoPlazoDeOferta: number
+    SegundaCantidad: number
+    TercerPlazoDeOferta : number
+    TerceraCantidad : number
 }
 
 export interface CotizacionSubPosicionDto {
@@ -58,7 +63,7 @@ export interface CotizacionSubPosicionDto {
     Precio: number
 }
 
-export interface GuardarCotizacion{
+export interface GuardarCotizacion{   
     monedaCompras: string
     FechaDeVigencia?: any
     UnidadDeMedidaSubpos?: any
@@ -70,7 +75,13 @@ export interface GuardarCotizacion{
     UnidadDeMedidaId: number
     Cantidad: number
     FechaDeEntrega: Date    
-    NoDisponible: boolean
+    NoDisponible: boolean   
+    TerceraCantidad?: any
+    SegundaCantidad?: any
+    PrimeraCantidad?: any
+    PrimerPlazoDeOferta?: number
+    TercerPlazoDeOferta?: any
+    SegundoPlazoDeOferta?: any
 }
 
 export interface CotizacionHoraDto{

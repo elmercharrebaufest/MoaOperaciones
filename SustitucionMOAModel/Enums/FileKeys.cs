@@ -40,5 +40,6 @@ namespace SustitucionMOAModel.Enums
         public const string AdjuntoCotizacionRevisionTecnica = "CotizacionRevisionTecnica";
         public const string AdjuntoCotizacionRevisionEconomica = "CotizacionRevisionEconomica";
         public const string DeclaracionVinculosAltaInterna = "declaracionVinculosAltaInterna";
+        public const string PeticionDeOfertaVisualizacionPrecio = "PeticionDeOfertaVisualizacionPrecio";
     }
 }

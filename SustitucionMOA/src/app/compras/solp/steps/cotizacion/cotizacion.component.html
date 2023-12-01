@@ -105,7 +105,7 @@
                             <label class="labelCompras" for="checkbox"> Condiciones especiales</label>
                             <div>
                                 <p-checkbox [ngModelOptions]="{standalone:true}" name="trabajoHecho" [(ngModel)]="model.trabajoHecho" label="Trabajo ya hecho" formControlName="trabajoHecho"
-                                            binary="true" (click)="validacionTrabajoHecho(); limpiarCheck();" [disabled]="validarFinalizada()"></p-checkbox>
+                                            binary="true" (click)="validacionTrabajoHecho(); limpiarCheck();" [disabled]="validarFinalizada() || model.urgencia"></p-checkbox>
                             </div>
                         </div>
                         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" *ngIf="model.trabajoHecho && !model.adicional">
@@ -163,11 +163,15 @@
                                 </label>
                             </div>
                         </div>
+                        <div class="col-xs-12 col-sm-12 col-md-12 margenInput" style="margin-top: 1em;">
+                            <p-checkbox [ngModelOptions]="{standalone:true}" name="urgencia" [(ngModel)]="model.urgencia" label="Urgencia" formControlName="urgencia"
+                                        binary="true" (click)="validacionTrabajoHecho();" [disabled]="validarFinalizada() || model.trabajoHecho"></p-checkbox>
+                        </div>
                     </div>
-                </div>
-                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 alinearTitulo">
-                    <div class="margenInput obligatorio">
-                        * Campos obligatorios
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 alinearTitulo">
+                        <div class="margenInput obligatorio">
+                            * Campos obligatorios
+                        </div>
                     </div>
                 </div>
             </div>
