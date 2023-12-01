@@ -115,7 +115,7 @@ export class DetalleConsultaComponent extends BaseComponent {
     estadoId: number;
     categoriaId: number;
     MostrarDatosAdicionales: boolean = false;
-
+    puedeReabrir: boolean = false;
     listaArchivos: Array<File> = new Array<File>();
 
     tieneSubcategorias: boolean = false;
@@ -670,7 +670,6 @@ export class DetalleConsultaComponent extends BaseComponent {
                             return x;
                         });
                         this.consulta = result;
-
                         this.setDatosExtra();
                         if (this.consulta.EstadoConsulta.Code == "INI" && this.esInterno) {
                             this.cambiarEstadoPorCode("GES");
@@ -689,6 +688,12 @@ export class DetalleConsultaComponent extends BaseComponent {
                         this.consulta.Fecha = new Date(
                             this.getDateFromAspNetFormat(this.consulta.Fecha)
                         );
+
+                        if(this.consulta.EstadoConsulta.Code == "CER" && !this.esInterno && 
+                        this.consulta.UsuarioInternoId == undefined){
+                            this.puedeReabrir = true;
+                        }
+
                         this.estadoId = result.EstadoConsultaId;
                         this.categoriaId = result.CategoriaId;
                         this.subcategoriaId = result.SubCategoriaId;
@@ -812,5 +817,34 @@ export class DetalleConsultaComponent extends BaseComponent {
 
     borrarArchivo(i: number) {
         this.listaArchivos.splice(i, 1);
+    }
+
+    reabrirConsulta(): void {
+        this.mensajeComponent.setMsgsEmpty();
+        this.subscription = this.service
+            .reabrirConsulta(this.consultaId)
+            .subscribe(
+                (result: any) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (
+                        result.error != undefined &&
+                        result.error != ""
+                    ) {
+                        this.mensajeComponent.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.mensajeComponent.setInfoMsg(result.info);
+                    } else {
+                        this.mensajeComponent.setSuccessMsg(
+                            "La consulta se reabrió correctamente."
+                        );
+                        this.puedeReabrir = false;
+                        this.getDetalleConsulta();
+                    }
+                },
+                (error) => {
+                    this.spinnerModal.hideIt();
+                }
+            );
     }
 }
