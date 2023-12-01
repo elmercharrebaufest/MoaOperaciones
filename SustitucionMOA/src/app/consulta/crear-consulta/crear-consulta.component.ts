@@ -771,7 +771,9 @@ export class CrearConsultaComponent extends ListBaseComponent {
         this.asunto = `Liquidación observada - nro comprobante ${this.datosLiquidacionObservada.NroComprobante}`
         this.comprobante = this.datosLiquidacionObservada.NroComprobante
         this.contrato = this.datosLiquidacionObservada.NroContrato
-        this.setValorProveedorParaLiquidacionObservada()
+
+        if (this.esCorredor)
+            this.setValorProveedorParaLiquidacionObservada()
     }
     setValorProveedorParaLiquidacionObservada() {
         this.selectProveedor.setSelected({
