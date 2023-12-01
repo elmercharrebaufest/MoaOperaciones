@@ -1578,7 +1578,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
                         this.sessionDataService.logout();
                         return;
                     } else if ((result.error != undefined && result.error != "") || result.info != undefined) {
-                        this.mensajeValidacionScato = "No se pudo validar si la orden esta activa en Scato."
+                        this.mensajeValidacionScato = "No se pudo validar si la orden está activa en Scato."
                     } else {
                         this.ordenActivaScato = result.data;
                         if (this.ordenActivaScato) {
@@ -1593,7 +1593,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
                 }
             );
         } catch (e) {
-            this.mensajeValidacionScato = "No se pudo validar si la orden esta activa en Scato."
+            this.mensajeValidacionScato = "No se pudo validar si la orden está activa en Scato."
         }
     }
 

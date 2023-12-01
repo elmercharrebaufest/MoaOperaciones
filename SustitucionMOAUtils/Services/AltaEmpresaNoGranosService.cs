@@ -212,7 +212,8 @@ namespace SustitucionMOAUtils.Services
                 ProveedorCUIT = proveedor.CUIT,
                 RazonSocial = proveedor.RazonSocial,
                 IngresoAPlanta = proveedor.IngresoAPlanta ?? false,
-                SiperObligatorio = proveedor.SiperObligatorio ?? false
+                SiperObligatorio = proveedor.SiperObligatorio ?? false,
+                DeclaracionVinculosObligatorio = proveedor.AltaInterna ?? false
             };
 
             return info;

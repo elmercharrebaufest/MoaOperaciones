@@ -132,6 +132,14 @@ export class ConsultaService extends BaseService {
             .post('/api/consulta/ActualizarEstado', payload, { headers: this.headersPost });
     }
 
+    public reabrirConsulta(consultaId: number) {
+        var payload = new FormData();
+        payload.append('consultaId', consultaId.toString());
+
+        return this.http
+            .post('/api/consulta/ReabrirConsulta', payload, { headers: this.headersPost });
+    }
+
     DescargarArchivo(archivoId: number): Observable<any> {
         let headers = new HttpHeaders();
         headers = headers.append("Content-Type", "application/json");

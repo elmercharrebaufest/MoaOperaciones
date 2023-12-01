@@ -1242,5 +1242,36 @@ namespace SustitucionMOAUtils.Services
                 Mensaje = mensajeResultado,
             };
         }
+
+        public void ReabrirConsulta(int consultaId, UsuarioDto usuarioActual)
+        {
+            var consulta = GetConsulta(consultaId);
+
+            if (usuarioActual.Id != consulta.Usuario_Id)
+                throw new ValidationCustomException("No se puede reabrir la consulta ya que ud no inició esta consulta.");
+
+            var estadoIniciado = GetEstadoConsulta("INI");
+            var estadoCerrado = GetEstadoConsulta("CER");
+            
+            if (consulta.EstadoConsulta_Id != estadoCerrado.Id)
+                throw new ValidationCustomException("La consulta ya se encuentra en gestión.");
+            
+            if (consulta.UsuarioInterno_Id != null)
+                throw new ValidationCustomException("Ud no tiene permiso para reabrir esta consulta.");
+
+            consulta.EstadoConsulta_Id = estadoIniciado.Id;
+            this.repositorio.GuardarCambios();
+        }
+
+        private EstadoConsulta GetEstadoConsulta(string codigo)
+        {
+            var estadoConsulta = repositorio.Obtener<EstadoConsulta>(c => c.Code == codigo);
+
+            if (estadoConsulta == null) 
+                throw new InfoCustomException("No existe el estado de la consulta.");
+
+            return estadoConsulta;
+        }
+
     }   
 }
