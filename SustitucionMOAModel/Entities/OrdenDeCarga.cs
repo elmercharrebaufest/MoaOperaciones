@@ -156,6 +156,10 @@ namespace SustitucionMOAModel.Entities
                 return $"No se pudo generar la entrega. No existe {msgDestinatario}{slash}{msgDestino}.";
             }
         }
+        public string ObtenerKeyHashPatentes()
+        {
+            return $"{PatenteAcoplado}.{ChasisAcoplado}";
+        }
 
         /// <summary>
         /// Actualiza la Orden según su estado interno
