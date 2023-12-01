@@ -4,10 +4,12 @@ using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Dto.AplicacionCartaPorte;
 using SustitucionMOAModel.Entities;
+using SustitucionMOAModel.Enums;
 using SustitucionMOASecurity;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
 using System;
+using System.Web;
 using System.Web.Mvc;
 
 namespace SustitucionMOA.Controllers
@@ -132,6 +134,32 @@ namespace SustitucionMOA.Controllers
                 var mailUsuario = SessionPersister.getUsername();
                 aplicacionCCPPService.GuardarAplicacion(aplicacionACrear, mailUsuario);
                 response.Data = true;
+            }
+            catch (InfoCustomException ice)
+            {
+                response.Info = ice.Message;
+            }
+            catch (ValidationCustomException vce)
+            {
+                response.Error = vce.Message;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                response.Error = ErrorMsg.Error;
+            }
+            return ContentCustom(response);
+        }
+
+        [HttpPost]
+        public ContentResult CargarMasiva(HttpPostedFileBase archivo)
+        {
+            var response = new SustitucionMOAApiResponse<CargaMasivaResponse>();
+            try
+            {
+                var mailUsuario = SessionPersister.getUsername();
+                var codigoProveedor = SessionPersister.Proveedor;
+                response.Data = aplicacionCCPPService.ProcesarCargaMasiva(archivo, mailUsuario, codigoProveedor);
             }
             catch (InfoCustomException ice)
             {

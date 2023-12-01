@@ -103,6 +103,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
     flagSolpFinalizada: boolean = false;
     tieneContratoMarco: boolean = false;
     datosUltimaSolp: any;
+    tieneAdjuntos: boolean = false;
 
     set pasoActual(value: Paso) {
         this.actualizarPasoCompleto(this._pasoActual);
@@ -429,15 +430,15 @@ export class SolpComponent extends BaseComponent implements OnInit {
                     return;
                 }
 
-                // if (this.selectUsuarioCompras.Id == null) {
-                //     this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: `Falta completar campo Usuario compras` });
+                 if (this.solpActual.posicionActual.esTipoPosicionServicio && this.selectUsuarioCompras.Id == null) {
+                     this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: `Falta completar campo Usuario compras` });
 
-                //     if (guardarPorPaso == false) {
-                //         this.blockUI.stop();
-                //     }
-                //     this.disabledSave = false;
-                //     return;
-                // }
+                     if (guardarPorPaso == false) {
+                         this.blockUI.stop();
+                     }
+                     this.disabledSave = false;
+                     return;
+                 }
 
                 if (this.validarFechaVisitaDeObra()) {
                     this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: "La fecha de visita de obra no puede ser mayor a la fecha tentativa de ofertas ni a la fecha de límite de consulta" });
@@ -542,6 +543,11 @@ export class SolpComponent extends BaseComponent implements OnInit {
                                 } else {
                                     this.displaySAP = true;
                                 }
+
+                                //TODO aca iria el metodo para el mail
+                                // this.showEmailPopup(esPrimeraFinalizacion, esPosteriorFinalizacion);
+                                // this.sendEmail(emailModel);
+
                             }
                             else {
                                 if (result.Solp.NroSolp != "" && result.Solp.NroSolp != null) {
@@ -554,9 +560,6 @@ export class SolpComponent extends BaseComponent implements OnInit {
                                 this.listadoErrores = result.Errores;
                                 this.displayErrorSAP = true;
                             }
-                            // if (this.solpActual.nroSolp) {
-                            //     this.displaySAPEditar = true;
-                            // }
                         }
                     }
                     this.disabledSave = false;
@@ -709,8 +712,6 @@ export class SolpComponent extends BaseComponent implements OnInit {
         return validarFechaLimiteConsulta;
     }
 
-
-
     validarFechaLimiteYObra() {
         if (this.solpActual.listaVisitas.length === 0) { //se evita listaVisitas.reduce() cuando listaVisitas está vacía
             return false;
@@ -860,7 +861,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
                     } else {
                         this.combos = result;
                         this.combos.flagSolpFinalizada = this.flagSolpFinalizada;
-                        //this.obtenerUsuarioCompras();
+                        this.obtenerUsuarioCompras();
                         this.setupCentroPorDefecto();
                         this.setupDireccionCentroPorDefecto();
                         this.setupMonedaPorDefecto();
@@ -892,9 +893,11 @@ export class SolpComponent extends BaseComponent implements OnInit {
                     } else if (result.info != undefined) {
                         this.floatMsgService.setInfoMsg(result.info);
                     } else {
-                        //this.solpActual.agregarNuevaPosicion(null as SolpPosicion);
+                     //this.solpActual.agregarNuevaPosicion(null as SolpPosicion);
                         this.datosUltimaSolp = result.data;
-                        this.completarDatosUltimaSolp();
+                        if(this.datosUltimaSolp != null){
+                            this.completarDatosUltimaSolp();
+                        }
                         this.blockUI.stop();
                     }
                 },
@@ -911,7 +914,6 @@ export class SolpComponent extends BaseComponent implements OnInit {
         }
         return false; //<-- Prevent Refresh
     }
-
 
     private completarDatosUltimaSolp() {
         this.solpActual.fiscalContrato = this.datosUltimaSolp.FiscalContrato;
@@ -1005,8 +1007,8 @@ export class SolpComponent extends BaseComponent implements OnInit {
     }
 
     // Todos los Modal
-    finalizar({ solpActual }) {
-        //this.selectUsuarioCompras = selectUsuarioCompras;
+    finalizar({ selectUsuarioCompras, solpActual }) {
+        this.selectUsuarioCompras = selectUsuarioCompras;
         this.solpActual = solpActual;
 
         this.cabecera.validarTabCompleto();
@@ -1014,6 +1016,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
         this.displayFinalizar = false;
         this.mostrarMensajeCampos();
         this.mostrarMensajeCotizacion();
+        this.validarAdjuntosDescargarSolp();
     }
 
     // Abre el modal del boton finalizar
@@ -1078,6 +1081,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
         emailModel.subject = this.getEmailSubject(esPrimeraFinalizacion, esPosteriorFinalizacion);
         emailModel.body = this.emailBody;
         emailModel.downloadLinkUrl = this.downloadLinkUrl;
+        emailModel.tieneAdjuntos = (this.solpActual.especificacionesViewModel.archivosEspecificaciones.length > 0 || this.solpActual.archivosCotizaciones.length > 0) ? true : false;
         this.emailComposeService.show(emailModel);
     }
 
@@ -1101,6 +1105,12 @@ export class SolpComponent extends BaseComponent implements OnInit {
             });
     }
 
+    validarAdjuntosDescargarSolp(){ 
+        if(this.solpActual.especificacionesViewModel.archivosEspecificaciones.length > 0 || this.solpActual.archivosCotizaciones.length > 0){
+            this.tieneAdjuntos = true;
+        }
+    }
+
     private getCCEmails(): string[] {
         const ccEmails: string[] = [];
 
@@ -1118,12 +1128,25 @@ export class SolpComponent extends BaseComponent implements OnInit {
     private getToEmails(): string[] {
         const toEmails: string[] = [];
 
-        if (this.solpActual.mail != undefined && this.solpActual.mail != null) {
-            toEmails.push(this.solpActual.mail);
+        if (this.solpActual.urgencia == true) {
+            // Asegurémonos de que usuarioComprasList esté inicializada
+            if (!this.usuarioComprasList) {
+              this.usuarioComprasList = [];
+            }    
+            // Copiar todos los correos electrónicos de usuarioComprasList a toEmails
+            this.usuarioComprasList.forEach((usuario, index) => {
+                if (index !== 0) {
+                    toEmails.push(usuario.CodigoDescripcion);
+                }
+            });
         } else {
-            const username = sessionStorage.getItem("username");
-            if (username) {
-                toEmails.push(username);
+            if (this.solpActual.mail != undefined && this.solpActual.mail != null) {
+                toEmails.push(this.solpActual.mail);
+            } else {
+                const username = sessionStorage.getItem("username");
+                if (username) {
+                    toEmails.push(username);
+                }
             }
         }
         return toEmails;
@@ -1143,12 +1166,19 @@ export class SolpComponent extends BaseComponent implements OnInit {
         if (esPrimeraFinalizacion) {
             //SOLP N°” + *nnnnn* + “PLIEGO:” + *detalle del pliego*
             // subject = `SOLP N° ${this.solpActual.NroSolp || ""} PLIEGO: ${this.nombreDePedido}`;
-            subject = `SOLP N° ${this.solpActual.NroSolp || ""} ${this.solpActual.tipoSolp === "SIN_PLIEGO" ? "" : " PLIEGO: " + this.nombreDePedido}`;
-
+            if(this.solpActual.urgencia == true){
+                subject = `Nueva SOLP de urgencia Finalizada - N° ${this.solpActual.NroSolp || ""} ${this.solpActual.tipoSolp === "SIN_PLIEGO" ? "" : " PLIEGO: " + this.nombreDePedido}`;
+            } else {
+                subject = `SOLP N° ${this.solpActual.NroSolp || ""} ${this.solpActual.tipoSolp === "SIN_PLIEGO" ? "" : " PLIEGO: " + this.nombreDePedido}`;
+            }
         }
         if (esPosteriorFinalizacion) {
             //ACTUALIZACIÓN SOLP N°” + *nnnnn* + “PLIEGO:” + *detalle del pliego*
-            subject = `ACTUALIZACIÓN SOLP N° ${this.solpActual.NroSolp || ""} ${this.solpActual.tipoSolp === "SIN_PLIEGO" ? "" : " PLIEGO: " + this.nombreDePedido}`;
+            if(this.solpActual.urgencia == true){
+                subject = `ACTUALIZACIÓN de SOLP de urgencia - N° ${this.solpActual.NroSolp || ""} ${this.solpActual.tipoSolp === "SIN_PLIEGO" ? "" : " PLIEGO: " + this.nombreDePedido}`;
+            } else {
+                subject = `ACTUALIZACIÓN SOLP N° ${this.solpActual.NroSolp || ""} ${this.solpActual.tipoSolp === "SIN_PLIEGO" ? "" : " PLIEGO: " + this.nombreDePedido}`;
+            }
         }
         return subject;
     }
@@ -1173,5 +1203,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
         const token = this.solpActual.emailLinkToken;
         return `${window.location.origin}/api/compras/DescargarPliegoDesdeLink?solpId=${solpId}&token=${token}`;
     }
+
+
 
 }

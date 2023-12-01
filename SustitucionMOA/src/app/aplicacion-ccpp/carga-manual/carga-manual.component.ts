@@ -16,7 +16,7 @@ import { BlockUI, NgBlockUI } from "ng-block-ui";
 import { filter } from "rxjs/operators";
 
 export const MSG_ALERTA_CREADO = { severity: 'success', summary: 'Aplicación CCPP', detail: 'La aplicación fue guardada exitosamente.', life: 5000 };
-export const MSG_ALERTA_NO_CREADO = (msg: string) => ({ severity: 'error', summary: 'Aplicación CCPP', detail: msg, life: 10000 });
+export const MSG_ALERTA_ERROR_INFO_API = (msg: string) => ({ severity: 'error', summary: 'Aplicación CCPP', detail: msg, life: 10000 });
 export const MSG_ALERTA_NO_KG_DISPONIBLES = { severity: 'warn', summary: 'Aplicación CCPP', detail: "La carta de porte seleccionada no cuenta con kg disponibles.", life: 15000 };
 
 @Component({
@@ -174,7 +174,7 @@ export class CargaManual extends AplicacionCcppBaseComponent implements OnInit {
                 if (logout)
                     this.sessionDataService.logout()
                 else if (info || error)
-                    this.msgService.add(MSG_ALERTA_NO_CREADO(info || error))
+                    this.msgService.add(MSG_ALERTA_ERROR_INFO_API(info || error))
                 else if (data) {
                     this.msgService.add(MSG_ALERTA_CREADO)
                     this.reset()
@@ -198,11 +198,17 @@ export class CargaManual extends AplicacionCcppBaseComponent implements OnInit {
         this.blockUI.start();
         this.subscriptions.add(
             this.service.obtenerComboContratosCcpp().subscribe({
-                next: (res) => {
-                    this.contratos = res.data.Contratos
-                    this.cartasPorte = res.data.CartasPorte
-                    this.filtrarCartasPorte();
+                next: ({ logout, info, error, data }) => {
                     this.blockUI.stop();
+                    if (logout)
+                        this.sessionDataService.logout()
+                    else if (info || error)
+                        this.msgService.add(MSG_ALERTA_ERROR_INFO_API(info || error))
+                    else if (data) {
+                        this.contratos = data.Contratos
+                        this.cartasPorte = data.CartasPorte
+                        this.filtrarCartasPorte();
+                    }
                 }
             })
         )

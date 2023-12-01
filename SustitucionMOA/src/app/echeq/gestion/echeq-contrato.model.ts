@@ -101,6 +101,11 @@ export class EcheqDocumento {
     }
 }
 
+export enum ClasificacionEcheq {
+    Productor="PRODUCTOR",
+    Acopiador="ACOPIADOR"
+}
+
 export class ObtenerContrato {
     public proveedor: string;
 }

@@ -179,7 +179,7 @@ namespace SustitucionMOA.Controllers
                 var usuarioActual = ObtenerUsuarioActual();
                 var obtenerTodos = usuarioActual.Permisos.Contains(Permiso.CONSULTA_AMB);
                 var consultas = consultaService.ListarConsultas(usuarioActual.Id, obtenerTodos);
-                var categorias = consultaService.ObtenerCategorias(false, usuarioActual);
+                var categorias = consultaService.ObtenerCategorias(false, usuarioActual, true);
                 var estados = consultaService.ObtenerEstados();
 
                 categorias.ForEach(x => x.Cantidad = consultas.Count(c => c.CategoriaId == x.Id));
@@ -312,7 +312,7 @@ namespace SustitucionMOA.Controllers
         }
 
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.CONTACTO_MAIL)]
-        public ActionResult Combos(Boolean? excluir)
+        public ActionResult Combos(Boolean? excluir, Boolean? mostrarCategoriaInterno)
         {
             try
             {
@@ -320,7 +320,7 @@ namespace SustitucionMOA.Controllers
                 var obtenerTodos = usuarioActual.Permisos.Contains(Permiso.CONSULTA_AMB);
 
                 return JsonCustom(new { 
-                    categorias = consultaService.ObtenerCategorias(excluir, usuarioActual),
+                    categorias = consultaService.ObtenerCategorias(excluir, usuarioActual, mostrarCategoriaInterno),
                     subcategorias = consultaService.ObtenerSubCategorias(usuarioActual),
                     estados = consultaService.ObtenerEstados(),
                     causas = consultaService.ObtenerCausas(),
@@ -524,6 +524,29 @@ namespace SustitucionMOA.Controllers
                 }
 
                 return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        public JsonResult ReabrirConsulta(int consultaId)
+        {
+            try
+            {
+                var usuarioActual = ObtenerUsuarioActual();
+                consultaService.ReabrirConsulta(consultaId, usuarioActual);
+                return JsonCustom(new { });
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception e)
             {

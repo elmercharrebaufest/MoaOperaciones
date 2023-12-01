@@ -63,6 +63,7 @@ export class Solp extends CommonResponse {
     public observacionesCotizacion: string;
     public trabajoHecho: boolean;
     public adicional: boolean;
+    public urgencia: boolean;
     public monedaOC: string;
     public proveedorAsignado_Id: number;
     public proveedorAsignado: string;
@@ -243,6 +244,7 @@ export class Solp extends CommonResponse {
             this.proveedorAsignado = solp.ProveedorAsignado;
             this.trabajoHecho = solp.TrabajoYaHecho;
             this.adicional = solp.Adicional;
+            this.urgencia = solp.Urgencia;
             this.ordenDeCompra = solp.NroOrdenDeCompraAdicional;
             this.ordenDeCompraOriginal = solp.NroOrdenDeCompraAdicional;
             this.proveedorIdAdicional = solp.ProveedorIdAdicional;

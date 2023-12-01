@@ -11,6 +11,7 @@ import { PeticionDeOfertaCierreDto, PeticionDeOfertaDto, PeticionDeOfertaUsarioD
 import { AdjudicacionDto } from '../modelos/adjudicacion';
 import { OrdenDeCompraSap } from '../modelos/ordenDeCompraSap';
 import { RegistroInfoDto } from '../modelos/registro-info';
+import { PeticionVisualizacionPrecioDto } from '../modelos/peticion-visualizar-precio-dto';
 
 @Injectable({
     providedIn: 'root'
@@ -24,6 +25,8 @@ export class ComprasService extends BaseService {
         orden: "",
         columna: "Id",
         nroSolp: "",
+        nroPo: "",
+        nombrePedido: "",
         fechaDesde: null,
         fechaHasta: null,
         estados: "",
@@ -32,7 +35,9 @@ export class ComprasService extends BaseService {
         web: true,
         usuarioId: null,
         centros: "",
-        grupoDeCompras: ""
+        grupoDeCompras: "",
+        estadoLicitacion: null,
+        estadoCotizacion: null
     }
     listaSolp: any;
     observableListaSolp = new Subject<any[]>();
@@ -160,6 +165,7 @@ export class ComprasService extends BaseService {
             ProveedorAsignadoId: solp.proveedorAsignado_Id,
             TrabajoYaHecho: solp.trabajoHecho,
             Adicional: solp.adicional,
+            Urgencia: solp.urgencia,
             NroOrdenDeCompraAdicional: solp.ordenDeCompra,
             RevisadoPor: solp.revisadoPor,
             ClaseDocumento: this.getObjetoCodigo(solp.selectClaseDocumento && solp.selectClaseDocumento.Codigo),
@@ -289,7 +295,7 @@ export class ComprasService extends BaseService {
         fechaHora.setMinutes(hora.getMinutes());
         fechaHora.setSeconds(hora.getSeconds());
         return fechaHora;
-        
+
     }
 
     // getCodigosProveedores(electrico, consultoria, civil, ingenieria, mecanico) {
@@ -468,7 +474,14 @@ export class ComprasService extends BaseService {
         itemsPorPagina: number,
         orden: string = this.filtros.orden,
         columna: string = this.filtros.columna,
-        nroSolp: string = this.filtros.nroSolp) {
+        nroSolp: string = this.filtros.nroSolp,
+        nroPo: string = this.filtros.nroPo,
+        nombrePedido: string = this.filtros.nombrePedido,
+        estadoLicitacion: number | null = this.filtros.estadoLicitacion,
+        estadoCotizacion: number | null = this.filtros.estadoCotizacion,
+        fechaDesde: string = this.filtros.fechaDesde,
+        fechaHasta: string | null = this.filtros.fechaHasta
+    ) {
         let params: HttpParams = new HttpParams()
         pagina = pagina != null ? pagina : this.filtros.pagina;
         itemsPorPagina = itemsPorPagina != null ? itemsPorPagina : this.filtros.itemsPorPagina;
@@ -478,6 +491,12 @@ export class ComprasService extends BaseService {
         params = params.set('orden', orden);
         params = params.set('columna', columna);
         params = params.set('nroSolp', nroSolp);
+        params = params.set('nroPo', nroPo);
+        params = params.set('nombrePedido', nombrePedido);
+        params = params.set('estadoLicitacion', estadoLicitacion != null ? estadoLicitacion.toString() : null);
+        params = params.set('estadoCotizacion', estadoCotizacion != null ? estadoCotizacion.toString() : null);
+        params = params.set('fechaDesde', (fechaDesde != null ? fechaDesde : ""));
+        params = params.set('fechaHasta', (fechaHasta != null ? fechaHasta : ""));
         return this.http
             .get<any[]>('/api/compras/ListarPOProveedor', { params: params, headers: this.headers }).subscribe(
                 (data: any[]) => {
@@ -567,6 +586,17 @@ export class ComprasService extends BaseService {
         }
         return this.http
             .get("/api/compras/ObtenerLegajo", {
+                params: params,
+                headers: this.headers,
+            });
+    }
+
+    verLegajoParaExternos(adjudicacionId: string, token: string): Observable<any> {
+        let params: HttpParams = new HttpParams();
+        params = params.set("adjudicacionId", adjudicacionId);
+        params = params.set("token", token);
+        return this.http
+            .get("/api/compras/ObtenerLegajoParaExternos", {
                 params: params,
                 headers: this.headers,
             });
@@ -677,10 +707,12 @@ export class ComprasService extends BaseService {
             });
     }
 
-    public grabarRevisionTecnica(petisiones: PeticionDeOfertaUsarioDto[]) {
+    public grabarRevisionTecnica(petisiones: PeticionDeOfertaUsarioDto[], finalizar: boolean) {
         let json = JSON.stringify(petisiones);
         var payload = new FormData();
         payload.append('json', json);
+        payload.append('finalizar', finalizar.toString());
+
 
         return this.http
             .post<any>('/api/compras/GrabarRevisionTecnica', payload, { headers: this.headers });
@@ -771,7 +803,6 @@ export class ComprasService extends BaseService {
             CondicionesDeEntrega: adjudicacion.CondicionesDeEntrega,
             CondicionesDePago: adjudicacion.CondicionesDePago,
             Garantias: adjudicacion.Garantias
-
         });
 
         var payload = new FormData();
@@ -836,5 +867,34 @@ export class ComprasService extends BaseService {
             .post<any>('/api/compras/CerrarCotizacion', payload, { headers: this.headers });
     }
 
+    public GrabarPeticionDeOfertaVisualizacionPrecio(peticion: PeticionVisualizacionPrecioDto) {
 
+        const jsonPayload = JSON.stringify({
+            Observacion: peticion.Observacion,
+            PeticionDeOferta_Id: peticion.PeticionOfertaId
+        });
+        console.log(jsonPayload, "json")
+        const payload = new FormData();
+        payload.append('json', jsonPayload);
+
+        peticion.Adjuntos.forEach((fileToUpload: File) => {
+            payload.append("filePeticionDeOfertaVisualizacionPrecio", fileToUpload, fileToUpload.name);
+        });
+
+        return this.http.post<any>('/api/compras/GrabarPeticionDeOfertaVisualizacionPrecio', payload, { headers: this.headers });
+    }
+
+    public obtenerReporteOrdenDeCompra(nroOC: string, fechaDesde: string, fechaHasta: string, codigoProveedor: string): Observable<any> {
+        let params: HttpParams = new HttpParams();
+        params = params.set("nroOC", nroOC);
+        params = params.set("fechaDesde", fechaDesde);
+        params = params.set("fechaHasta", fechaHasta);
+        params = params.set("codigoProveedor", codigoProveedor);
+
+        return this.http
+            .get("/api/compras/ObtenerReporteOrdenDeCompra", {
+                params: params,
+                headers: this.headers
+            });
+    }
 }

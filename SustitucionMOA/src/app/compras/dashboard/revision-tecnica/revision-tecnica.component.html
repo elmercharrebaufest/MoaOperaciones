@@ -28,20 +28,26 @@
                             <div class="col-md-3">
                                 <strong style="color: #666666;">Visita técnica</strong>
                             </div>
-                            <div class="col-md-9">
+                            <div class="col-md-9" *ngIf="peticion.TieneVisitaObraMasiva == true || peticion.TieneVisitaObraBool == true">
                                 <label style="padding-right:20px;">
                                     <input type="radio"
                                            [name]="'visitaTecnica-' + p.Id"
                                            [value]="true"
                                            [(ngModel)]="p.RealizoVisita" />
-                                    Realizo la visita
+                                    Realizó la visita
                                 </label>
                                 <label>
                                     <input type="radio"
                                            [name]="'visitaTecnica-' + p.Id"
                                            [value]="false"
                                            [(ngModel)]="p.RealizoVisita" />
-                                    No realizo la visita
+                                    No realizó la visita
+                                </label>
+
+                            </div>
+                            <div class="col-md-9" *ngIf="peticion.TieneVisitaObraMasiva != true && peticion.TieneVisitaObraBool != true">
+                                <label>
+                                    Visita no requerida
                                 </label>
                             </div>
                         </div>
@@ -50,26 +56,26 @@
                             <div class="col-md-3">
                                 <strong style="color: #666666;">Propuesta técnica</strong>
                             </div>
-                            <div *ngIf="p.Cotizacion else sinCotizacion">
+                            <div *ngIf="p.Cotizacion && p.Cotizacion.CotizacionEstado_Id == 1 else sinCotizacion">
                                 <div *ngIf="peticion.TipoPosicionCodigo != 'MATERIALES'">
-                                <div *ngIf="p.Cotizacion.TieneObservacionTecnica" class="col-md-7">
-                                    {{p.Cotizacion.ObservacionTecnica}}
-                                 
+                                    <div *ngIf="p.Cotizacion.TieneObservacionTecnica" class="col-md-7">
+                                        {{p.Cotizacion.ObservacionTecnica}}
+
+                                    </div>
+                                    <div *ngIf="!p.Cotizacion.TieneObservacionTecnica" class="col-md-5">
+                                        No tiene observación técnica
+                                    </div>
                                 </div>
-                                <div *ngIf="!p.Cotizacion.TieneObservacionTecnica" class="col-md-5">
-                                    No tiene observacion tecnica
-                                </div>     
-                                </div>                        
                                 <div *ngIf="peticion.TipoPosicionCodigo == 'MATERIALES'">
-                                <div *ngIf="p.Cotizacion.TieneObservacionEconomica" class="col-md-7">
-                                    {{p.Cotizacion.ObservacionEconomica}}
-                                 
+                                    <div *ngIf="p.Cotizacion.TieneObservacionEconomica" class="col-md-7">
+                                        {{p.Cotizacion.ObservacionEconomica}}
+
+                                    </div>
+                                    <div *ngIf="!p.Cotizacion.TieneObservacionEconomica" class="col-md-5">
+                                        No tiene observación técnica
+                                    </div>
                                 </div>
-                                <div *ngIf="!p.Cotizacion.TieneObservacionEconomica" class="col-md-5">
-                                    No tiene observacion tecnica
-                                </div>
-                            </div>
-                                <div class="col-md-7"  *ngIf="(p.Cotizacion.RespetaMateriales == false && peticion.TipoPosicionCodigo == 'MATERIALES') || peticion.TipoPosicionCodigo != 'MATERIALES'">
+                                <div class="col-md-7" *ngIf="(p.Cotizacion.RespetaMateriales == false && peticion.TipoPosicionCodigo == 'MATERIALES') || peticion.TipoPosicionCodigo != 'MATERIALES'">
                                     <div class="col-md-7"></div>
                                     <div class="col-md-5">
                                         <label style="padding-right:10px;">
@@ -89,8 +95,8 @@
                                     </div>
                                 </div>
                                 <div class="col-xs-12 col-sm-7 col-md-7 col-lg-7" *ngIf="p.PropuestaTecnicaAprobada == false">
-                                    <label class="labelCompras" ><strong style="color: #666666;">Observaciones*</strong></label>
-                                    <textarea name="Observacion" ngDefaultControl [(ngModel)]="p.ObservacionNoCumple" placeholder="Agregue los comentarios que crea necesario..." cols="30" rows="1"></textarea>
+                                    <label class="labelCompras"><strong style="color: #666666;">Observaciones *</strong></label>
+                                    <textarea name="Observacion" ngDefaultControl [(ngModel)]="p.ObservacionNoCumple" placeholder="Agregue los comentarios que crea necesarios..." cols="30" rows="1"></textarea>
                                 </div>
                                 <div class="col-md-1" *ngIf="peticion.TipoPosicionCodigo != 'MATERIALES'">
                                     <span style="cursor:pointer;" (click)="mostrarPanelHs(p)">
@@ -111,7 +117,7 @@
                                 </div>
                             </div>
                             <ng-template #sinCotizacion>
-                                Sin Cotizacion
+                                Sin Cotización
                             </ng-template>
                         </div>
                         <hr>
@@ -125,12 +131,12 @@
     </div>
     <p-footer>
         <button type="button" class="btn btn-danger botonesComprasColor" (click)="onCerrarPeticion()">CANCELAR</button>
-        <button type="button" class="btn btn-primary botonesComprasColor" (click)="enviar()">ENVIAR</button>
-
+        <button type="button" class="btn btn-primary botonesComprasColor" (click)="guardarRT()">GUARDAR</button>
+        <button type="button" class="btn btn-success botonesComprasColor" (click)="confirmarFinalizacion()">FINALIZAR</button>
     </p-footer>
 </p-dialog>
 
-<p-confirmDialog #dialogo header="Confirmación" icon="pi pi-exclamation-triangle" [width]="400" [responsive]="true" appendTo="body">
+<p-confirmDialog #dialogo key="finalizarRevision" header="Confirmación" icon="pi pi-exclamation-triangle" [width]="400" [responsive]="true" appendTo="body">
     <p-footer>
         <button type="button" pButton label="Cancelar" class="ui-button-info botonModal" (click)="dialogo.reject()"></button>
         <button type="button" pButton label="Aceptar" class="ui-button-success botonModal" (click)="dialogo.accept()"></button>
@@ -139,7 +145,7 @@
 
 <p-dialog [(visible)]="displayOkPeticion" [width]="400" modal="modal" appendTo="body" [draggable]="false" [contentStyle]="{'overflow':'visible', 'max-height':'100px', 'min-height':'100px'}" [closable]="false">
     <p-header class="headerModal">
-        ¡Revisión Tecnica creada!
+        ¡Revisión Técnica creada!
     </p-header>
     <br> La revisión técnica para la petición #{{nroPeticion}} se creó correctamente.
     <br>
@@ -147,3 +153,4 @@
         <button type="button" class="btn btn-primary botonesComprasColor botonModal" (click)="salir()">Aceptar</button>
     </p-footer>
 </p-dialog>
+

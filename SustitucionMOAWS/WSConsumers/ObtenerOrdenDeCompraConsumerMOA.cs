@@ -196,7 +196,8 @@ namespace SustitucionMOAWS.WSConsumers
         BAPIMEPOTEXT[] POTEXTITEM, BAPIESLLC[] POSERVICES, BAPIMEPOSCHEDULE[] POSCHEDULE, BAPIMEPOADDRDELIVERY[] POADDRDELIVERY)
         {
             AdjudicacionDto adjudicacion = new AdjudicacionDto();
-            var materiales = repositorio.Listar<MaterialSolp>();
+            var codigoMateriales = POITEM.Select(a => a.MATERIAL).ToList();
+            var materiales = repositorio.Listar<MaterialSolp>(x => codigoMateriales.Contains(x.CodigoSap));
 
             if (RETURN == null)
             {
@@ -207,7 +208,10 @@ namespace SustitucionMOAWS.WSConsumers
             var unidades = repositorio.Listar<TablaSap>(a => a.Tabla == "Unidad");
             var servicios = new List<ServicioSolp>();
             if (POITEM.First().ITEM_CAT == "9")
-                servicios = repositorio.Listar<ServicioSolp>();
+            {
+                var codigoServicios = POSERVICES.Select(a => a.SERVICE).ToList();
+                servicios = repositorio.Listar<ServicioSolp>(x => codigoServicios.Contains(x.Codigo));
+            }
 
             adjudicacion.Id = 0;
             adjudicacion.TipoPosicionCodigo = POITEM.First().ITEM_CAT == "9" ? "SERVICIOS" : "MATERIALES";
@@ -235,8 +239,8 @@ namespace SustitucionMOAWS.WSConsumers
                 pos.SolpPosicion_Id = 0;
                 pos.Id = 0;
                 pos.MaterialComprasCodigo = posicion.MATERIAL?.TrimStart('0');
-                pos.MaterialComprasDescripcion = !string.IsNullOrEmpty(posicion.MATERIAL) ? materiales.Where(x => x.CodigoSap == posicion.MATERIAL).FirstOrDefault().Descripcion : "";
-                pos.MaterialTextoAmpliado = !string.IsNullOrEmpty(posicion.MATERIAL) ? materiales.Where(x => x.CodigoSap == posicion.MATERIAL).FirstOrDefault().TextoAmpliado : "";
+                pos.MaterialComprasDescripcion = !string.IsNullOrEmpty(posicion.MATERIAL) ? materiales.Where(x => x.CodigoSap == posicion.MATERIAL).FirstOrDefault()?.Descripcion : "";
+                pos.MaterialTextoAmpliado = !string.IsNullOrEmpty(posicion.MATERIAL) ? materiales.Where(x => x.CodigoSap == posicion.MATERIAL).FirstOrDefault()?.TextoAmpliado : "";
                 pos.Indice = int.Parse(posicion.PO_ITEM);
                 pos.Tarea = posicion.SHORT_TEXT;
                 pos.TextoSuministro = string.Join(" ", POTEXTITEM.Where(a => a.PO_ITEM == posicion.PO_ITEM && a.TEXT_ID == "F02").Select(a => a.TEXT_LINE));

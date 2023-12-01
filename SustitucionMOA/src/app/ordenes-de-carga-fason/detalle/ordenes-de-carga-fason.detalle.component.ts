@@ -120,7 +120,8 @@ export class OrdenesDeCargaFasonDetalleComponent extends ListBaseComponent imple
                     }
                 },
                 error => {
-
+                    this.blockUI.stop();
+                    this.mensajeComponent.setErrorMsg(error.message);
                 }
             );
         } catch (e) {

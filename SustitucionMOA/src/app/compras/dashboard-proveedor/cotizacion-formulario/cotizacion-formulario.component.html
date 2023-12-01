@@ -1,8 +1,8 @@
 
 <div class="row titleSection">
      <div class="col-xs-12 col-sm-10 "> <strong>Cotización {{peticion.TipoPosicionCodigo}} | SOLP #{{peticion.NroSolp}} 
-                                            <b *ngIf="peticion.PeticionDeOfertaPosicion != null">
-                                                | PO # {{peticion.PeticionDeOfertaPosicion[0].PeticionDeOferta_Id}}
+                                            <b *ngIf="peticion.PeticionDeOfertaPosicion != null && peticion.PeticionDeOfertaPosicion != undefined">
+                                                | PO # {{peticion.PeticionDeOfertaPosicion[0]?.PeticionDeOferta_Id}}
                                             </b>         
              </strong>
     </div>
@@ -55,7 +55,7 @@
     <p-header class="headerModal">
         ¡Cotización creada!
     </p-header>
-     <br> La cotización se {{esFinalizado ? "finalizó " : "creó "}} correctamente. 
+     <br> La cotización se {{esFinalizado ? "finalizó " : "guardó "}} correctamente. 
     <br>
     <p-footer>
         <button type="button" class="btn btn-primary botonesComprasColor botonModal" (click)="salir()">Aceptar</button>

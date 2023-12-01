@@ -1,5 +1,6 @@
 <div class="content-wraper">
     <!-- CONTENT-->
+
     <section class="container-fluid clearfix">
         <!--Title-->
         <div class="row titleSection">
@@ -62,7 +63,7 @@
                             <option value="0" selected>Todos</option>
                             <option value="2" selected>Granos</option>
                             <option value="3" selected>No granos</option>
-                            <option value="4" selected>Corredor</option>
+                            <option value="4" selected>Corredor/Granos</option>
                             <option value="5" selected>Cliente</option>
                         </select>
                     </div>
@@ -217,7 +218,7 @@
                             <tr *ngFor="let empresa of data
                                 | customFilterOr : 'CUIT' : 'RazonSocial' : filtroAlta
                                 | customFilter : 'EstadoAprobacionDescripcion' : selectedEstado
-                                | customNumericFilter : 'IdTipoUsuario' : idTipoProveedor : 0
+                                | customTipoProveedorFilter : 'IdTipoUsuario' : idTipoProveedor : 0
                                 | orderedColumn : {property: orderedByColumn, direction: orderDirection}
                                 | customFilterBoolean : 'ContieneDocumentacionFisica' : (contieneDocumentacionFisica == 0 ? null:  (contieneDocumentacionFisica != 2)) : (idTipoProveedor != 1)
                                 | paginate: { itemsPerPage:itemsPerPage, currentPage: p }
@@ -802,6 +803,23 @@
                                 </label>
 
                                 <span *ngFor="let archivo of listaArchivos | archivosFilterPipe:'SIPER'">
+                                    <a (click)="descargarArchivo(archivo)">
+                                        {{archivo.Nombre}}
+                                    </a>
+                                </span>
+                            </div>
+                            <div class="form-group grey" *ngIf="empresaSeleccionada.AltaInterna">
+                                <label>
+                                    Declaración Vínculos
+                                </label>&nbsp;
+                                <label style="color:red;"
+                                    *ngIf="(listaArchivos | archivosFilterPipe:'declaracionVinculosAltaInterna').length === 0">
+                                    Sin
+                                    Adjuntar
+                                </label>
+
+                                <span
+                                    *ngFor="let archivo of listaArchivos | archivosFilterPipe:'declaracionVinculosAltaInterna'">
                                     <a (click)="descargarArchivo(archivo)">
                                         {{archivo.Nombre}}
                                     </a>

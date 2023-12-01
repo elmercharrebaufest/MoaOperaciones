@@ -9,7 +9,9 @@
   <setParameter name="BasicHttpBinding_IServicioSuscriptor Service Endpoint Address" value="http://gsloaccesos01.molinosagro.ad:8081/Servicios/ServicioSuscriptor.svc" />
 
   <setParameter name="PasswordSapEnc Config" value="/ZeEum06O947GGBswhXnAw==" />
-  
+  <setParameter name="AzureADTenantId Config" value="moagro.onmicrosoft.com" />
+  <setParameter name="AzureADAppId Config" value="560b50b4-0d0d-42b9-b6ed-792cba10142c" />
+  <setParameter name="AzureADAppSecret Config" value="7~1e6GkakqN0_kCpb60r2b7_-EIU5c34MU" />
   <setParameter name="SI_MMRFC_OBTENER_CUENTAS Service Endpoint Address" value="http://gslopiprd00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MMRFC_OBTENER_CUENTAS&amp;interfaceNamespace=urn%3AOPERACIONES" />
   <setParameter name="SI_MMRFC_OBTENER_SERVICIOS Service Endpoint Address" value="http://gslopiprd00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MMRFC_OBTENER_SERVICIOS&amp;interfaceNamespace=urn%3AOPERACIONES" />
   <setParameter name="SI_MMRFC_OBTENER_CECO Service Endpoint Address" value="http://gslopiprd00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MMRFC_OBTENER_CECO&amp;interfaceNamespace=urn%3AOPERACIONES" />

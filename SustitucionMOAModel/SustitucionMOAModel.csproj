@@ -59,12 +59,14 @@
     <Compile Include="Consulta\DirOrden.cs" />
     <Compile Include="Consulta\Expresiones.cs" />
     <Compile Include="Consulta\ListaPaginada.cs" />
+    <Compile Include="Dto\AplicacionCartaPorte\CargaMasivaResponse.cs" />
     <Compile Include="Dto\AplicacionCartaPorte\ComboAplicacionesContratosCcppResponse.cs" />
     <Compile Include="Dto\DestinatarioDto.cs" />
     <Compile Include="Dto\AplicacionCartaPorte\AplicacionCartaPorteApiDto.cs" />
     <Compile Include="Dto\AplicacionCartaPorte\CartaPorteParaAplicacionCartaPorte.cs" />
     <Compile Include="Dto\AplicacionCartaPorte\ContratoParaAplicacionCartaPorte.cs" />
     <Compile Include="Dto\AplicacionCartaPorte\CrearAplicacionCartaPorte.cs" />
+    <Compile Include="Dto\PeticionDeOfertaVisualizacionPrecioDto.cs" />
     <Compile Include="Dto\EstadoSolicitudOrdenDeCargaBaseDto.cs" />
     <Compile Include="Dto\Compras\DatosUltimaSolpDto.cs" />
     <Compile Include="Dto\Compras\RegistroInfoDto.cs" />
@@ -74,6 +76,7 @@
     <Compile Include="Dto\Compras\CircularDto.cs" />
     <Compile Include="Dto\Compras\ProveedorComprasDto.cs" />
     <Compile Include="Dto\DolarMaterialDto.cs" />
+    <Compile Include="Dto\LegajoExternoDto.cs" />
     <Compile Include="Dto\OrdenDeCargaFason\EstadoSolicitudAnulacionFason.cs" />
     <Compile Include="Dto\OrdenDeCargaFason\EstadoSolicitudEdicionFason.cs" />
     <Compile Include="Dto\OrdenDeCarga\ClienteSAPResponse.cs" />
@@ -187,6 +190,8 @@
     <Compile Include="Entities\CotizacionHora.cs" />
     <Compile Include="Entities\CotizacionPosicion.cs" />
     <Compile Include="Entities\CotizacionSubPosicion.cs" />
+    <Compile Include="Entities\PeticionDeOfertaRevisionTecnica.cs" />
+    <Compile Include="Entities\PeticionDeOfertaVisualizacionPrecio.cs" />
     <Compile Include="Entities\PeticionDeOfertaCierre.cs" />
     <Compile Include="Entities\PeticionDeOfertaSolpPosicion.cs" />
     <Compile Include="Entities\PeticionDeOfertaUsuario.cs" />
@@ -195,6 +200,7 @@
     <Compile Include="Entities\OrdenDeCargaFason.cs" />
     <Compile Include="Entities\ProveedorAuditoria.cs" />
     <Compile Include="Entities\UnidadMedidaSap.cs" />
+    <Compile Include="Enums\TipoLegajo.cs" />
     <Compile Include="Enums\RolEnum.cs" />
     <Compile Include="Enums\TipoContratoFAS.cs" />
     <Compile Include="Enums\EstadoAplicacionCartaPorte.cs" />

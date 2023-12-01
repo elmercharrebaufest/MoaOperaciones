@@ -691,21 +691,24 @@ namespace SustitucionMOAUtils.Services
             return errores.Any() ? string.Join(".", errores) : SuccessMsg.ArchivoSubidoOK;
         }
 
-        public List<CategoriaDto> ObtenerCategorias(Boolean? excluir, UsuarioDto usuario)
+        public List<CategoriaDto> ObtenerCategorias(Boolean? excluir, UsuarioDto usuario, Boolean? mostrarCategoriaInterno)
         {
             try
             {
                 List<string> exclude = new List<string>() { };
                 List<Categoria> categorias = new List<Categoria>() { };
-                
+
                 if (excluir.HasValue && excluir == true)
                 {
-                    exclude = new List<string>() { "PARDIR", "PARCOR", "FINDIR", "FINCOR", "ORD" };
+                    exclude = new List<string>() { "PARDIR", "PARCOR", "FINDIR", "FINCOR" };
                 }
                 else
                 {
-                    exclude = new List<string>() { "ORD" };
+                    exclude = new List<string>() { };
                 }
+
+                if (mostrarCategoriaInterno == false)
+                    exclude.Add("ORD");
 
                 if (usuario.NuevoUsuario)
                 {
@@ -1239,5 +1242,36 @@ namespace SustitucionMOAUtils.Services
                 Mensaje = mensajeResultado,
             };
         }
+
+        public void ReabrirConsulta(int consultaId, UsuarioDto usuarioActual)
+        {
+            var consulta = GetConsulta(consultaId);
+
+            if (usuarioActual.Id != consulta.Usuario_Id)
+                throw new ValidationCustomException("No se puede reabrir la consulta ya que ud no inició esta consulta.");
+
+            var estadoIniciado = GetEstadoConsulta("INI");
+            var estadoCerrado = GetEstadoConsulta("CER");
+            
+            if (consulta.EstadoConsulta_Id != estadoCerrado.Id)
+                throw new ValidationCustomException("La consulta ya se encuentra en gestión.");
+            
+            if (consulta.UsuarioInterno_Id != null)
+                throw new ValidationCustomException("Ud no tiene permiso para reabrir esta consulta.");
+
+            consulta.EstadoConsulta_Id = estadoIniciado.Id;
+            this.repositorio.GuardarCambios();
+        }
+
+        private EstadoConsulta GetEstadoConsulta(string codigo)
+        {
+            var estadoConsulta = repositorio.Obtener<EstadoConsulta>(c => c.Code == codigo);
+
+            if (estadoConsulta == null) 
+                throw new InfoCustomException("No existe el estado de la consulta.");
+
+            return estadoConsulta;
+        }
+
     }   
 }
