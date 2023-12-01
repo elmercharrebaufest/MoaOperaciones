@@ -114,11 +114,14 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
     }
 
     ngOnInit() {
+        this.navService.setSeccionList([]);
         this.route.params.forEach((params: Params) => {
             if (params["id"] > 0) this.ordenDeCargaId = params["id"];
+            this.cargarDetalle()
         });
+    }
 
-        this.navService.setSeccionList([]);
+    cargarDetalle() {
         if (this.ordenDeCargaId > 0) {
             this.obtenerOrdenDeCarga();
         }
