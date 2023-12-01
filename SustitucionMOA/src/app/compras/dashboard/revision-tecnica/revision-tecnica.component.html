@@ -103,7 +103,7 @@
                                         <i class="pi pi-clock" style="font-size: 3rem; color: grey;"></i>
                                     </span>
                                 </div>
-                                <div class="col-md-1" *ngIf="p.Cotizacion.Archivos.length == 1">
+                                <div class="col-md-1" *ngIf="p.Cotizacion.Archivos.length == 1 && p.Cotizacion.Archivos[0].FileKey == 'CotizacionRevisionTecnica'">
                                     <span>
                                         <img style="cursor:pointer;" src="./Content/images/icons/descargar.svg" alt="descargar"
                                              (click)="descargarArchivo(p.Cotizacion.Archivos[0].Id)" />
