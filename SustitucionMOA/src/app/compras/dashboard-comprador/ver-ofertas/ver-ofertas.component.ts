@@ -144,7 +144,7 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
 
     descargarAdjuntosCotizacion(cotizacionId) {
         this.blockUI.start("Descargando...");
-        this.service.DescargarAdjuntosCotizacion(cotizacionId)
+        this.service.DescargarAdjuntosCotizacion(cotizacionId, false)
             .subscribe(
                 (result) => {
                     if (result.logout == true) {

@@ -700,9 +700,10 @@ export class ComprasService extends BaseService {
             .post<any>('/api/compras/GrabarProveedorEnPeticion', payload, { headers: this.headers });
     }
 
-    DescargarAdjuntosCotizacion(cotizacionId: number): Observable<any> {
+    DescargarAdjuntosCotizacion(cotizacionId: number, desdeRevisionTecnica: boolean): Observable<any> {
         let params: HttpParams = new HttpParams();
         params = params.set("cotizacionId", cotizacionId.toString());
+        params = params.set("desdeRevisionTecnica", desdeRevisionTecnica.toString());
 
         return this.http
             .get("/api/compras/DescargarAdjuntosCotizacion", {

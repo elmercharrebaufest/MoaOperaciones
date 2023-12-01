@@ -4963,7 +4963,7 @@ namespace SustitucionMOAUtils.Services
             return respuesta;
         }
 
-        public string DescargarAdjuntosCotizacion(int idCotizacion, string pathBase)
+        public string DescargarAdjuntosCotizacion(int idCotizacion, string pathBase, bool desdeRevisionTecnica)
         {
             var cotizacion = repositorio.Obtener<Cotizacion>(idCotizacion);
 
@@ -4976,8 +4976,28 @@ namespace SustitucionMOAUtils.Services
                 {
                     if (cotizacion.Archivos != null)
                     {
+                        List<string> fileKey = new List<string>();
+                        if (desdeRevisionTecnica)
+                        {
+                            if (cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Solp.Posiciones.First().TipoPosicion.Codigo == "MATERIALES")
+                            {
+                                if (cotizacion.RespetaMateriales == false)
+                                {
+                                    fileKey.Add("CotizacionRevisionEconomica");
+                                }
+                            }
+                            else
+                            {
+                                fileKey.Add("CotizacionRevisionTecnica");
+                            }
+                        }
+                        else
+                        {
+                            fileKey.Add("CotizacionRevisionEconomica");
+                            fileKey.Add("CotizacionRevisionTecnica");
+                        }
 
-                        foreach (var archivoSubido in cotizacion.Archivos.Where(a => a.FileKey == "CotizacionRevisionEconomica" || a.FileKey == "CotizacionRevisionTecnica"))
+                        foreach (var archivoSubido in cotizacion.Archivos.Where(a => fileKey.Contains(a.FileKey)))
                         {
                             if (File.Exists(archivoSubido.Ruta))
                             {

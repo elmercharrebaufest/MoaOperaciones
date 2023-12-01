@@ -1063,14 +1063,14 @@ namespace SustitucionMOA.Controllers
         }
 
         [HttpGet]
-        public ActionResult DescargarAdjuntosCotizacion(int cotizacionId)
+        public ActionResult DescargarAdjuntosCotizacion(int cotizacionId, bool desdeRevisionTecnica)
         {
             try
             {
                 var path = $"{ConfigurationManager.AppSettings["RutaArchivosCompras"]}/{DateTime.Now.Ticks}";
                 Directory.CreateDirectory(path);
 
-                string rutaZip = service.DescargarAdjuntosCotizacion(cotizacionId, path);
+                string rutaZip = service.DescargarAdjuntosCotizacion(cotizacionId, path, desdeRevisionTecnica);
                 byte[] fileBytes = System.IO.File.ReadAllBytes(rutaZip);
                 string fileName = Path.GetFileName(rutaZip);
 

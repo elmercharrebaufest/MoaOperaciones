@@ -578,7 +578,7 @@ export class DashboardComponent extends ListBaseComponent {
 
     descargarAdjuntosCotizacion({ cotizacionId }) {
         this.blockUI.start("Descargando...");
-        this.service.DescargarAdjuntosCotizacion(cotizacionId)
+        this.service.DescargarAdjuntosCotizacion(cotizacionId, true)
             .subscribe(
                 (result) => {
                     if (result.logout == true) {

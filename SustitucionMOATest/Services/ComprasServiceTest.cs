@@ -1436,9 +1436,9 @@ namespace SustitucionMOATest.Services
             var finalizar = true;
 
             repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<PeticionDeOfertaUsuario, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null))
-                .Returns(new List<PeticionDeOfertaUsuario>() { new PeticionDeOfertaUsuario { Id = 1, RealizoVisita = true, PeticionDeOferta = peticionDeOferta,  } });
+                .Returns(new List<PeticionDeOfertaUsuario>() { new PeticionDeOfertaUsuario { Id = 1, RealizoVisita = true, PeticionDeOferta = peticionDeOferta, } });
             repositorioMock.Setup(y => y.Agregar(It.IsAny<PeticionDeOfertaRevisionTecnicaDto>())).Returns(peticionDeOfertaRevisionTecnica);
-          
+
 
             repositorioMock.Setup(y => y.Obtener(It.IsAny<Expression<Func<PeticionDeOferta, bool>>>(), It.IsAny<Expression<Func<PeticionDeOferta, PeticionDeOfertaDto>>>()))
                 .Returns(new PeticionDeOfertaDto { Id = 1, Solp_Id = 1, RegistroInfo = false, UsuarioCreador_Id = 1, PlazoDeOferta = DateTime.Now.AddDays(-5) });
@@ -1681,7 +1681,7 @@ namespace SustitucionMOATest.Services
                 }
             };
             repositorioMock.Setup(y => y.Obtener<Cotizacion>(It.IsAny<int>())).Returns(cotizacion);
-            var result = target.DescargarAdjuntosCotizacion(It.IsAny<int>(), TestContext.CurrentContext.TestDirectory);
+            var result = target.DescargarAdjuntosCotizacion(It.IsAny<int>(), TestContext.CurrentContext.TestDirectory, true);
             repositorioMock.Verify(y => y.Obtener<Cotizacion>(It.IsAny<int>()), Times.Once);
         }
 
