@@ -4,6 +4,7 @@ import { BaseService } from "../common/services/BaseService";
 export interface DatosLiquidacionObservada {
     Tipo: "Parcial" | "Final";
     NroComprobante: number | string;
+    NroContrato: number | string;
 }
 
 @Injectable({
