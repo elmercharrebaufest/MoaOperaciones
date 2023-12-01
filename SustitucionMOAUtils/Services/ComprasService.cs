@@ -636,7 +636,7 @@ namespace SustitucionMOAUtils.Services
             return solp;
         }
 
-        private RespuestaGuardarSOLP FinalizarSolp( Solp solpEntity, SolpPosicion postEntitySubPosicionesEliminadas, RespuestaGuardarSOLP respuestaGuardarSOLP)
+        private RespuestaGuardarSOLP FinalizarSolp(Solp solpEntity, SolpPosicion postEntitySubPosicionesEliminadas, RespuestaGuardarSOLP respuestaGuardarSOLP)
         {
             //variables para ver a que request accedemos
             //var crearPedidoConsumer = crearPedido(solpEntity);
@@ -4967,29 +4967,17 @@ namespace SustitucionMOAUtils.Services
         {
             var cotizacion = repositorio.Obtener<Cotizacion>(idCotizacion);
 
-            var zipFilename = $"Cotizacion-{cotizacion.Id}-{cotizacion.FechaCreacion.ToString("yyyyMMdd")}.zip";
+            var zipFilename = $"Cotizacion-{cotizacion.Id}-{cotizacion.FechaCreacion:yyyyMMdd}.zip";
             var filePath = $"{pathBase}/{zipFilename}";
 
             using (FileStream zipToOpen = new FileStream(filePath, FileMode.OpenOrCreate))
             {
                 using (ZipArchive archivo = new ZipArchive(zipToOpen, ZipArchiveMode.Update))
                 {
-                    //peticion de oferta
                     if (cotizacion.Archivos != null)
                     {
-                        var fileKey = "";
-                        if (cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Solp.Posiciones.First().TipoPosicion.Codigo == "MATERIALES")
-                        {
-                            if (cotizacion.RespetaMateriales == false)
-                            {
-                                fileKey = "CotizacionRevisionEconomica";
-                            }
-                        }
-                        else
-                        {
-                            fileKey = "CotizacionRevisionTecnica";
-                        }
-                        foreach (var archivoSubido in cotizacion.Archivos.Where(a => a.FileKey == fileKey))
+
+                        foreach (var archivoSubido in cotizacion.Archivos.Where(a => a.FileKey == "CotizacionRevisionEconomica" || a.FileKey == "CotizacionRevisionTecnica"))
                         {
                             if (File.Exists(archivoSubido.Ruta))
                             {
