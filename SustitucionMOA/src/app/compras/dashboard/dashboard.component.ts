@@ -737,6 +737,8 @@ export class DashboardComponent extends ListBaseComponent {
                 Proveedor: item.Proveedor || '',
                 MonedaDescripcion: item.MonedaDescripcion || '',
                 PrecioFinal: item.PrecioFinal || 0,
+                PrecioBruto: item.PrecioBruto || 0,
+                EstadoLiberacionDetalle: item.EstadoLiberacionDetalle || '',
             };
             this.ordenesDeCompra.push(adjudicacion);
         });
