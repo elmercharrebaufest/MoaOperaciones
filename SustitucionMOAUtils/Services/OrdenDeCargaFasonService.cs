@@ -52,10 +52,10 @@ namespace SustitucionMOAUtils.Services
                 fechaFinDateTime = fechaFinDateTime.AddDays(1);
 
 
-                var clientes = usuario.Proveedores.Select(c => c.CodigoProveedor);
+                var codigoProveedorClientesRelacionados = usuario.Proveedores.Select(c => c.CodigoProveedor);
                 var tipoUsuarioId = usuario.TipoUsuario.Id;
                 var listadoDB = repositorio.Listar<OrdenDeCargaFason>(x =>
-                (esInterno || clientes.Contains(x.Cliente.CodigoProveedor))
+                (esInterno || codigoProveedorClientesRelacionados.Contains(x.Cliente.CodigoProveedor))
                 && x.FechaCreacion >= fechaIncioDateTime && x.FechaCreacion <= fechaFinDateTime
                 && (esInterno || (tipoUsuarioId == 5 ? x.CorredorId == null : x.CorredorId != null))
                 );
