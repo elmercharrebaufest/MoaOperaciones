@@ -19,10 +19,14 @@
     <AssemblyName>SustitucionMOA</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <UseIISExpress>true</UseIISExpress>
-    <IISExpressSSLPort>58280</IISExpressSSLPort>
-    <IISExpressAnonymousAuthentication>enabled</IISExpressAnonymousAuthentication>
-    <IISExpressWindowsAuthentication>disabled</IISExpressWindowsAuthentication>
-    <IISExpressUseClassicPipelineMode>false</IISExpressUseClassicPipelineMode>
+    <IISExpressSSLPort>
+    </IISExpressSSLPort>
+    <IISExpressAnonymousAuthentication>
+    </IISExpressAnonymousAuthentication>
+    <IISExpressWindowsAuthentication>
+    </IISExpressWindowsAuthentication>
+    <IISExpressUseClassicPipelineMode>
+    </IISExpressUseClassicPipelineMode>
     <UseGlobalApplicationHostFile />
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
@@ -1291,6 +1295,16 @@
     <TypeScriptCompile Include="src\app\liquidacion\no-granos\liquidacion-no-granos.module.ts" />
     <TypeScriptCompile Include="src\app\liquidacion\no-granos\pendiente-registro\liquidacion.no-granos.pendiente-registro.component.ts" />
     <TypeScriptCompile Include="src\app\liquidacion\no-granos\registrada\liquidacion.no-granos.registrado.component.ts" />
+    <TypeScriptCompile Include="src\app\modelos\adjudicacion.ts" />
+    <TypeScriptCompile Include="src\app\modelos\circular-model.ts" />
+    <TypeScriptCompile Include="src\app\modelos\cotizacionDto.ts" />
+    <TypeScriptCompile Include="src\app\modelos\legajoDto.ts" />
+    <TypeScriptCompile Include="src\app\modelos\legajoExternoDto.ts" />
+    <TypeScriptCompile Include="src\app\modelos\ordenDeCompraSap.ts" />
+    <TypeScriptCompile Include="src\app\modelos\peticion-de-oferta-model.ts" />
+    <TypeScriptCompile Include="src\app\modelos\peticion-visualizar-precio-dto.ts" />
+    <TypeScriptCompile Include="src\app\modelos\registro-info.ts" />
+    <TypeScriptCompile Include="src\app\modelos\resultadoDto.ts" />
     <TypeScriptCompile Include="src\app\notificaciones\alta-notificaciones\alta-notificaciones.component.spec.ts" />
     <TypeScriptCompile Include="src\app\notificaciones\alta-notificaciones\alta-notificaciones.component.ts" />
     <TypeScriptCompile Include="src\app\notificaciones\carousel-notificaciones\carousel-notificaciones.component.spec.ts" />

@@ -1310,12 +1310,8 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
                     this.model.posiciones[0].selectCentroEntrega = this.datosUltimaSolp.Centro;
                     this.model.posicionActual = this.model.posiciones[0];
 
-                    console.log("this.combos.CentrosDireccion", this.combos.CentrosDireccion);
-                    console.log("this.model.posicionActual.selectCentroEntrega.CodigoSap", this.model.posicionActual.selectCentroEntrega)
                     let direccionCentro = this.combos.CentrosDireccion.find(x => x.CodigoSap == this.model.posicionActual.selectCentroEntrega.CodigoSap);
-                    console.log("direccionCentro", direccionCentro);
                     this.fillValoresDireccion(direccionCentro);
-
                 }
 
                 if (this.datosUltimaSolp.Almacen != null) {
