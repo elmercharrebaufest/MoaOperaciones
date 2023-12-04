@@ -183,6 +183,8 @@
     <Compile Include="Entities\AplicacionCartaPorte.cs" />
     <Compile Include="Entities\Adjudicacion.cs" />
     <Compile Include="Entities\AdjudicacionPosicion.cs" />
+    <Compile Include="Entities\AplicacionCartaPorteCargaMasiva.cs" />
+    <Compile Include="Entities\AplicacionCartaPorteCargaMasivaFila.cs" />
     <Compile Include="Entities\Circular.cs" />
     <Compile Include="Entities\CircularPeticionDeOfertaUsuario.cs" />
     <Compile Include="Entities\Cotizacion.cs" />

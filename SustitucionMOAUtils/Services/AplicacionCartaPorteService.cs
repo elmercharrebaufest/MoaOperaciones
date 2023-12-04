@@ -74,8 +74,9 @@ namespace SustitucionMOAUtils.Services
         public ComboAplicacionesContratosCcppResponse ObtenerCombosDeContratoCCPP(string mailUsuario, string codigoProveedor)
         {
             Log.Info($"Busqueda combo app ccpp: mail={mailUsuario} el codigo proveedor= {codigoProveedor}");
+            var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
 
-            var aplicacionesPendientes = ObtenerAplicacionesDisponiblesSap(mailUsuario, codigoProveedor);
+            var aplicacionesPendientes = ObtenerAplicacionesDisponiblesSap(usuario, codigoProveedor);
 
             var contratos = ObtenerContratosDisponibles(aplicacionesPendientes);
 
@@ -123,9 +124,11 @@ namespace SustitucionMOAUtils.Services
                 throw new ValidationCustomException("Debe seleccionar un archivo .csv válido");
             }
 
+            var usuario = repositorio.Obtener<Usuario>(u => u.Mail == usuarioMail);
+
             var registrosArchivo = ObtenerRegistrosCargaMasiva(archivo);
 
-            var aplicacionesDisponiblesSap = ObtenerAplicacionesDisponiblesSap(usuarioMail, proveedorCodigo);
+            var aplicacionesDisponiblesSap = ObtenerAplicacionesDisponiblesSap(usuario, proveedorCodigo);
 
             var contratosDisponibles = ObtenerContratosDisponibles(aplicacionesDisponiblesSap);
 
@@ -133,13 +136,30 @@ namespace SustitucionMOAUtils.Services
 
             var cartasPorteDisponibles = ObtenerCartasPorteDisponibles(aplicacionesDisponiblesSap, aplicacionesPendientesDeProcesar);
 
+            var logCargaMasiva = new AplicacionCartaPorteCargaMasiva
+            {
+                Fecha = DateTime.Now,
+                NombreArchivo = archivo.FileName,
+                UsuarioId = usuario.Id
+            };
+            repositorio.Agregar(logCargaMasiva);
 
-            var fila = 2; // Fila inicial en el csv
+            short fila = 2; // Fila inicial en el csv
             var registrosConError = new List<ErrorValidacionCargaMasivaCCPP>();
             var registrosOK = new List<AplicacionGuardadaCargaMasivaCCPP>();
 
             foreach (var regItem in registrosArchivo)
             {
+                var logCargaMasivaFila = new AplicacionCartaPorteCargaMasivaFila
+                {
+                    AplicacionCartaPorteCargaMasiva = logCargaMasiva,
+                    CartaPorte = regItem.CartaDePorte,
+                    Contrato = regItem.ContratoNumero,
+                    FilaNumero = fila,
+                    Kilos = regItem.Kilos
+                };
+                repositorio.Agregar(logCargaMasivaFila);
+
                 if (RegistroCargaMasivaEsValido(regItem, out string msjError, contratosDisponibles,
                         cartasPorteDisponibles, aplicacionesPendientesDeProcesar, registrosOK))
                 {
@@ -160,46 +180,14 @@ namespace SustitucionMOAUtils.Services
                         Kilos = int.Parse(regItem.Kilos),
                         Error = msjError
                     });
+                    logCargaMasivaFila.Error = msjError;
                 }
                 fila++;
             }
 
-            if (registrosConError.Any())
-            {
-                return new CargaMasivaResponse
-                {
-                    HayErroresValidacion = true,
-                    ErroresValidacion = registrosConError
-                };
-            }
-            else
-            {
-                var usuario = repositorio.Obtener<Usuario>(u => u.Mail == usuarioMail);
-                var proveedor = repositorio.Obtener<Proveedor>(p =>
-                    p.CodigoProveedor == contratosDisponibles.First().CodigoProveedor &&
-                    p.EstadoAprobacion == EstadoAprobacion.Aprobado);
-
-                foreach (var aplNueva in registrosOK)
-                {
-                    repositorio.Agregar(new AplicacionCartaPorte
-                    {
-                        Usuario_Id = usuario.Id,
-                        Proveedor_Id = proveedor.Id,
-                        Contrato = aplNueva.ContratoNumero,
-                        CartaPorte = aplNueva.CartaDePorte,
-                        Kilogramos = aplNueva.Kilos,
-                        Estado = EstadoAplicacionCartaPorte.Pendiente,
-                        FechaAlta = DateTime.Now
-                    });
-                }
-                repositorio.GuardarCambios();
-
-                return new CargaMasivaResponse
-                {
-                    HayErroresValidacion = false,
-                    AplicacionesGuardadas = registrosOK
-                };
-            }
+            var codigoProveedor = contratosDisponibles.First().CodigoProveedor;
+            var response = GuardarCargaMasivaAplicaciones(registrosConError, registrosOK, codigoProveedor, usuario);
+            return response;
         }
 
         private void ValidarSchema<T>(T schema, string controller, string metodo)
@@ -259,9 +247,8 @@ namespace SustitucionMOAUtils.Services
             return repositorio.Listar<AplicacionCartaPorte>(app => app.Estado == EstadoAplicacionCartaPorte.Pendiente && app.Proveedor.CodigoProveedor == codigoProveedorSeleccionado);
         }
 
-        private ZMPES7070[] ObtenerAplicacionesDisponiblesSap(string usuarioMail, string proveedorCodigo)
+        private ZMPES7070[] ObtenerAplicacionesDisponiblesSap(Usuario usuario, string proveedorCodigo)
         {
-            var usuario = repositorio.Obtener<Usuario>(u => u.Mail == usuarioMail);
             var proveedorAsignado = usuario.ObtenerProveedor();
             var codigoProveedorSeleccionado = ObtenerCodigoProveedorSeleccionado(usuario, proveedorAsignado, proveedorCodigo);
             var codigoCorredor = usuario.EsCorredor() ? proveedorAsignado.CodigoProveedor : null;
@@ -333,6 +320,47 @@ namespace SustitucionMOAUtils.Services
 
             error = string.Empty;
             return true;
+        }
+
+        private CargaMasivaResponse GuardarCargaMasivaAplicaciones(List<ErrorValidacionCargaMasivaCCPP> registrosConError,
+            List<AplicacionGuardadaCargaMasivaCCPP> registrosOK, string codigoProveedor, Usuario usuario)
+        {
+            if (registrosConError.Any())
+            {
+                repositorio.GuardarCambios();
+                return new CargaMasivaResponse
+                {
+                    HayErroresValidacion = true,
+                    ErroresValidacion = registrosConError
+                };
+            }
+            else
+            {
+                var proveedor = repositorio.Obtener<Proveedor>(p =>
+                    p.CodigoProveedor == codigoProveedor &&
+                    p.EstadoAprobacion == EstadoAprobacion.Aprobado);
+
+                foreach (var aplNueva in registrosOK)
+                {
+                    repositorio.Agregar(new AplicacionCartaPorte
+                    {
+                        Usuario_Id = usuario.Id,
+                        Proveedor_Id = proveedor.Id,
+                        Contrato = aplNueva.ContratoNumero,
+                        CartaPorte = aplNueva.CartaDePorte,
+                        Kilogramos = aplNueva.Kilos,
+                        Estado = EstadoAplicacionCartaPorte.Pendiente,
+                        FechaAlta = DateTime.Now
+                    });
+                }
+                repositorio.GuardarCambios();
+
+                return new CargaMasivaResponse
+                {
+                    HayErroresValidacion = false,
+                    AplicacionesGuardadas = registrosOK
+                };
+            }
         }
     }
 }
