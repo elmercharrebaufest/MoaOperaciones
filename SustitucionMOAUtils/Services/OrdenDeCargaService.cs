@@ -2856,24 +2856,20 @@ namespace SustitucionMOAUtils.Services
         public List<DestinatarioDto> ObtenerDestinatariosConsulta(int ordenId)
         {
             List<DestinatarioDto> destinatarios = new List<DestinatarioDto>();
+            DateTime inicioUltimoAnio = DateTime.Now.AddYears(-2);
 
             if (ordenId == 0)
             {
-                var usuarios = usuarioService.GetUsuarios().Where(u => u.Habilitado == true);
-                destinatarios = usuarios.Select(u => new DestinatarioDto
-                {
-                    Campo = "Usuario Web",
-                    Mail = u.Mail,
-                    UsuarioId = u.Id,
-                }).ToList();
+                var usuarios = this.repositorio.Listar<Usuario>(u => u.Habilitado == true && u.UltimoLogin > inicioUltimoAnio);
+                destinatarios = usuarios.Select(u => new DestinatarioDto(u)).ToList();
                 return destinatarios;
             }
 
             var orden = this.repositorio.Obtener<OrdenDeCarga>(o => o.Id == ordenId);
 
-            var mailCreador = this.repositorio.Obtener<Usuario>(u => u.Id == orden.UsuarioCreacion_Id);
-            if (mailCreador != null)
-                destinatarios.Add(new DestinatarioDto { Campo = "Usuario creador", Mail = mailCreador.Mail });
+            var usuarioCreador = this.repositorio.Obtener<Usuario>(u => u.Id == orden.UsuarioCreacion_Id);
+            if (usuarioCreador != null)
+                destinatarios.Add(new DestinatarioDto(usuarioCreador));
 
             return destinatarios.ToList();
         }

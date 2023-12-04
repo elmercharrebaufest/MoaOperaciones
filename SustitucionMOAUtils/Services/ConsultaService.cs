@@ -753,7 +753,7 @@ namespace SustitucionMOAUtils.Services
 
                 var categorias = repositorio.Listar<Categoria>(c => rolesUsuario.Contains(c.Code));
 
-                return categorias.Select(x => new CategoriaDto(x)).ToList();
+                return categorias.Select(x => new CategoriaDto(x)).OrderBy(c => c.Nombre).ToList();
             }
             catch (ValidationCustomException e)
             {
@@ -1209,6 +1209,9 @@ namespace SustitucionMOAUtils.Services
             string mensajeResultado = string.Empty;
             consulta.FechaCreacion = DateTime.Now;
             consulta.FechaUltimaModificacion = DateTime.Now;
+
+            EstadoConsulta estado = repositorio.Obtener<EstadoConsulta>(e => e.Code == "DOC");
+            consulta.EstadoConsulta_Id = estado.Id;
 
             Categoria categoria = repositorio.Obtener<Categoria>(c => c.Id == consulta.Categoria_Id);
             comentario.ComentarioRecordado = new List<ComentarioRecordado>();

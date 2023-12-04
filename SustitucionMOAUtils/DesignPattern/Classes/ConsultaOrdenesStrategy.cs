@@ -18,10 +18,11 @@ namespace SustitucionMOAUtils.DesignPattern.Classes
 {
     public class ConsultaOrdenesStrategy : IConsultaStrategy
     {
+        public List<string> Names => new List<string>() {"Orden de Carga"};
+
         private readonly IRepositorio repositorio;
         private readonly IUsuarioService usuarioService;
 
-        public string Name => "Orden de Carga";
         public ConsultaOrdenesStrategy(IRepositorio repositorio, IUsuarioService usuarioService)
         {
             this.repositorio = repositorio;
@@ -36,7 +37,6 @@ namespace SustitucionMOAUtils.DesignPattern.Classes
                 Proveedor proveedor = usuario.Proveedores.First(p => p.Mail == usuario.Mail && p.CUIT == usuario.CUITRegistro);
 
                 consulta.Usuario_Id = orden.UsuarioCreacion_Id;
-                consulta.EstadoConsulta_Id = 4;
                 consulta.CodigoProveedor = proveedor.CodigoProveedor?? "-";
                 consulta.RazonSocialProveedor = proveedor.RazonSocial;
                 comentario.Usuario_Id = (int)consulta.UsuarioInterno_Id;

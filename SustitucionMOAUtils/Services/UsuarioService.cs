@@ -3,6 +3,7 @@ using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
+using SustitucionMOAModel.Models.Raw;
 using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
@@ -803,5 +804,14 @@ namespace SustitucionMOAUtils.Services
         }
 
         #endregion
+
+        public List<ProveedorRaw> GetVendedoresRawDelUsuario(int usuarioId)
+        {
+            var vendedores = new List<ProveedorRaw>();
+            var usuario = this.repositorio.Obtener<Entidades.Usuario>(u => u.Id == usuarioId);
+            vendedores = usuario.Proveedores.Select(p => new ProveedorRaw(p)).ToList();
+            return vendedores;
+        }   
+
     }
 }

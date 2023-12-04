@@ -144,7 +144,10 @@
     <Compile Include="Credentials\CamCredential.cs" />
     <Compile Include="Credentials\DBCredential.cs" />
     <Compile Include="DesignPattern\Classes\ConsultaContext.cs" />
+    <Compile Include="DesignPattern\Classes\ConsultaFinalStrategy.cs" />
+    <Compile Include="DesignPattern\Classes\ConsultaGeneralStrategy.cs" />
     <Compile Include="DesignPattern\Classes\ConsultaOrdenesStrategy.cs" />
+    <Compile Include="DesignPattern\Classes\ConsultaParcialStrategy.cs" />
     <Compile Include="DesignPattern\Interfaces\IConsultaStrategy.cs" />
     <Compile Include="DesignPattern\Interfaces\IConsultaContext.cs" />
     <Compile Include="Email\DBMethods\DBService.cs" />

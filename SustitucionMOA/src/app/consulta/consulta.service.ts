@@ -62,6 +62,13 @@ export class ConsultaService extends BaseService {
             .get('/api/consulta/GetDestinatariosConsulta', { params: params, headers: this.headers });
     }
 
+    public getVendedoresUsuario(idUsuario: number): Observable<any> {
+        let params: HttpParams = new HttpParams();
+        params = params.set('idUsuario', idUsuario.toString());
+        return this.http
+            .get('/api/consulta/GetVendedoresUsuario', { params: params, headers: this.headers });
+    }
+
     public listarConsultas(): Observable<any> {
         return this.http
             .get('/api/consulta/Consultas', { headers: this.headers });

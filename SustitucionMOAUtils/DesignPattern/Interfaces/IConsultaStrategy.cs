@@ -9,7 +9,7 @@ namespace SustitucionMOAUtils.DesignPattern.Interfaces
 {
     public interface IConsultaStrategy
     {
-        string Name { get; }
+        List<string> Names { get; }
         Consulta AgregarConsulta(Consulta consulta, Comentario comentario);
     }
 }
