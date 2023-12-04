@@ -969,6 +969,8 @@ namespace SustitucionMOAUtils.Services
                 var hoy = DateTime.Now.Date;
                 var usuariosCompras = repositorio.Listar<UsuarioCompras>();
                 var usuariosComprasRelacion = repositorio.Listar<UsuarioComprasRelacionConUsuarios>(x => x.Usuario_Id == usuarioActual.Id);
+                Usuario usuario = repositorio.Obtener<Usuario>(u => u.Id == usuarioActual.Id);                                   
+                var rol = usuario.Roles.Any(r => r.Codigo == "COMPRADOR") ? "SOLP" : "COMPRADOR";
                 nroSolp = nroSolp.Trim();
                 //var peticionCierre = repositorio.Listar<PeticionDeOfertaCierre, PeticionDeOfertaCierreDto>(pc => new PeticionDeOfertaCierreDto());
                 var peticionesDeOferta = repositorio.Listar<PeticionDeOferta, PeticionDeOfertaDto>(po => new PeticionDeOfertaDto
@@ -988,6 +990,7 @@ namespace SustitucionMOAUtils.Services
                                     .OrderByDescending(x => x.Circular.Id).FirstOrDefault().Circular.FechaCreacion,
                     PlazoDeOfertaCierre = po.Cierres.Any() ? po.Cierres.OrderByDescending(x => x.Fecha).FirstOrDefault().Fecha : (DateTime?)null,
                     RevisionFinalizada = po.RevisionTecnica != null && po.RevisionTecnica.Fecha != null,
+                    ChatSinLeer = po.ChatInternoCompras.Any(a => a.Leido == false && a.Usuario.Roles.Any(r => r.Codigo == rol)),
 
                 });
 
@@ -4623,7 +4626,8 @@ namespace SustitucionMOAUtils.Services
 
         private PeticionDeOfertaDto ObtenerPeticionDeOfertaDto(int peticionId)
         {
-            return repositorio.Obtener<PeticionDeOferta, PeticionDeOfertaDto>(po => po.Id == peticionId, po =>
+            
+            var peticionDeOfertaDto =  repositorio.Obtener<PeticionDeOferta, PeticionDeOfertaDto>(po => po.Id == peticionId, po =>
                          new PeticionDeOfertaDto()
                          {
                              Id = po.Id,
@@ -4638,12 +4642,18 @@ namespace SustitucionMOAUtils.Services
                                                      .Where(p => p.Circular.RequiereCambioDeFechas == true && p.Circular.PlazoDeOferta.HasValue)
                                                      .OrderByDescending(p => p.Circular.Id).FirstOrDefault().Circular.FechaCreacion,
                              PlazoDeOfertaCierre = po.Cierres.Any() ? po.Cierres.OrderByDescending(p => p.Fecha).FirstOrDefault().Fecha : (DateTime?)null,
-                             RevisionFinalizada = po.RevisionTecnica_Id != null,
                              Observaciones = po.Observaciones,
                              TipoPosicionCodigo = po.Solp.Posiciones.Select(x => x.TipoPosicion.Codigo).FirstOrDefault(),
                              TieneVisitaObraBool = po.Solp.Pliego.TieneVisitaObra ?? false,
                              TieneVisitaObraMasiva = po.Solp.Pliego.TieneVisitaObraMasiva ?? false,
+                             RevisionTecnicaId = po.RevisionTecnica_Id
                          });
+
+            var revisionFinalizada = repositorio.Obtener<PeticionDeOfertaRevisionTecnica>(x => x.Id == peticionDeOfertaDto.RevisionTecnicaId);
+
+            peticionDeOfertaDto.RevisionFinalizada = revisionFinalizada == null ?  false : revisionFinalizada.Finalizada;
+
+            return peticionDeOfertaDto;
         }
 
         private static bool ValidacionCircularSolicitante(PeticionDeOfertaUsuario u, CotizacionDto cotizacion)

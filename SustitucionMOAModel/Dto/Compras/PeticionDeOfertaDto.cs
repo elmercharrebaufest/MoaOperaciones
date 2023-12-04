@@ -104,6 +104,8 @@ namespace SustitucionMOAModel.Dto
         public List<PeticionDeOfertaUsuarioAdicionalDto> UsuariosAdicionales { get; set; }
         public bool PideDescripcionTecnica { get; set; }
         public bool PideDocumentacionTecnica { get; set; }
+        public int? RevisionTecnicaId { get; set; }
+
     }
 
     public class PeticionDeOfertaSolpPosicionDto
