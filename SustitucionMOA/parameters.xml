@@ -204,7 +204,16 @@
 							match="/configuration/appSettings/add[@key='EmailAltaTempranaCuitFasTo']
                            /@value" />
 	</parameter>
-
+	<parameter name="EmailAltaTransporteFasonTo Config">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+							match="/configuration/appSettings/add[@key='EmailAltaTransporteFasTo']
+                           /@value" />
+	</parameter>
+	<parameter name="EmailAltaTransporteFasonCC Config">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+							match="/configuration/appSettings/add[@key='EmailAltaTransporteFasonCC']
+                           /@value" />
+	</parameter>
 	<parameter name="EmailAltaTempranaCuitFasCC Config">
 		<parameterEntry kind="XmlFile" scope="Web.config"
 							match="/configuration/appSettings/add[@key='EmailAltaTempranaCuitFasCC']
