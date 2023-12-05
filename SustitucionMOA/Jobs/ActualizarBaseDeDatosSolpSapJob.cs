@@ -43,8 +43,8 @@ namespace SustitucionMOA.Jobs
             }
             catch (Exception e)
             {
-
                 Log.Error(e);
+                throw;
             }
         }
 
