@@ -90,16 +90,16 @@
                             </div>
                             <div *ngIf="ordenDeCarga.ContratoSeleccionado && !validaCPEDG" class="col-xs-12 col-md-11">
                                 <div class="formulario-label">
-                                    Destino mercadería:
+                                    Destino mercadería (localidad - provincia):
                                 </div>
                                 <div class="styled-select">
-                                    <textarea id="DestinoMercaderia" placeholder="Máximo de 40 caracteres"
+                                    <textarea id="DestinoMercaderia" placeholder="Localidad - Provincia"
                                         [(ngModel)]="ordenDeCarga.DestinoMercaderia" rows="2" [maxLength]="40"
                                         [disabled]="editando || null"></textarea>
                                 </div>
                             </div>
                             <ng-container *ngIf="validaCPEDG">
-                                <div class=" col-xs-12 col-md-12 mt-2" *ngIf="clienteSeleccionado.EsRevendedor">
+                                <div class=" col-xs-12 col-md-12 mt-2" *ngIf="clienteSeleccionado?.EsRevendedor">
                                     <div class="formulario-label" style="margin-bottom: 8px;">
                                         <p-checkbox name="reventa" [binary]="true"
                                             [(ngModel)]="ordenDeCarga.Reventa"></p-checkbox>
@@ -273,8 +273,8 @@
                                 </div>
                                 <div class="styled-select autocomplete">
                                     <input auto-complete [(ngModel)]="ordenDeCarga.PatenteAcoplado"
-                                        (ngModelChange)="patenteAcopladoSelected($event);onPatenteSeleccionada();validarCNRT()" maxlength="7"
-                                        [source]="patentesAcoplados" [min-chars]="2"
+                                        (ngModelChange)="patenteAcopladoSelected($event);onPatenteSeleccionada();validarCNRT()"
+                                        maxlength="7" [source]="patentesAcoplados" [min-chars]="2"
                                         [no-match-found-text]="'No se encontraron resultados'"
                                         [value-formatter]="generalFormatterAcoplado"
                                         [list-formatter]="generalFormatterAcoplado" mask="AAAAAAA" />
@@ -497,7 +497,7 @@
 <p-dialog [header]="'Camión escalable'" [(visible)]="displayModalEscalable" [modal]="true" [responsive]="true"
     [style]="{width: '350px', minWidth: '200px', maxWidth:'350px'}" [minY]="70" [draggable]="false" appendTo="body"
     [closable]="false">
-    <p>No se marcó la orden como escalable y los datos ingreados son de un camión escalable.</p><br>
+    <p>No se marcó la orden como escalable y los datos ingresados son de un camión escalable.</p><br>
     <p>¿Desea que se marque como escalable?</p>
     <p-footer>
         <button type="button" pButton icon="pi pi-check" (click)="marcarComoEscalable()" label="Si"></button>

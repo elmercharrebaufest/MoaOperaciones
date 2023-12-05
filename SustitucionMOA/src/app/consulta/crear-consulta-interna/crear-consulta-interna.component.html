@@ -1,0 +1,129 @@
+<div class="content-wraper">
+  <!-- CONTENT-->
+  <section class="container-fluid clearfix">
+    <!--Title-->
+    <div class="row titleSection">
+      <div class="col-xs-12 col-sm-10" style="font-weight: bold;">Generar Consulta Interna</div>
+    </div>
+    <mensaje></mensaje>
+    <spinner></spinner>
+    <!--End Title-->
+    <!-- Form-->
+    <div class="row myRow firstSection mySearch cargaDeDatos">
+      <div class="rounded shadow col-xs-12 col-sm-6 col-md-8">
+        <div class="row myRow cargaDeDatosFields cargaDeDatosForm" style="padding: 20px;">
+          <div class="col-xs-12 col-sm-6 col-md-6">
+            <p class="crearConsultaTitulos">Categor&iacute;a<span class="requerido">*</span></p>
+            <p-dropdown [options]="categorias" optionLabel="Nombre" dataKey="Id" [(ngModel)]="categoria"
+              [maxSelectedLabels]="1" autoWidth="false" placeholder="Elegir Categoria"
+              (onChange)="setSubcategorias($event.value)" [filter]="true"
+              filterBy="value.Nombre">
+            </p-dropdown>
+          </div>
+
+          <div class="col-xs-12 col-sm-6 col-md-6">
+            <p class="crearConsultaTitulos">Subcategor&iacute;a<span class="requerido">*</span></p>
+            <p-dropdown [options]="subcategoriasList" optionLabel="Nombre" dataKey="Id" [(ngModel)]="subcategoria"
+              [maxSelectedLabels]="1" autoWidth="false" placeholder="Elegir Subcategoria" [filter]="true"
+              filterBy="value?.Nombre" (onChange)="setearComentario()">
+            </p-dropdown>
+          </div>
+
+          <div *ngIf="categoriaCode == 'ORD'" class="col-xs-12 col-sm-4 col-md-4">
+            <p class="crearConsultaTitulos">Orden Nro:<span class="requerido">*</span></p>
+            <div class="styled-select">
+              <input type="search" [(ngModel)]="ordenId" class="fourRounded"
+                     aria-controls="tableModal" required disabled>
+                 
+          </div>
+          </div>
+          <div *ngIf="categoriaCode == 'ORD'" class="col-xs-12 col-sm-2 col-md-2">
+            <p class="crearConsultaTitulos"></p>
+      <button pButton type="button" icon="fa fa-search" iconPos="left" (click)="showDialog()"></button>
+          </div>
+          <div class="col-xs-12 col-sm-6 col-md-6">
+            <p class="crearConsultaTitulos">Destinatario<span class="requerido">*</span></p>
+            <p-dropdown [options]="destinatarios" optionLabel="Mail" dataKey="Campo" [(ngModel)]="destinatario"
+              [maxSelectedLabels]="1" autoWidth="false" placeholder="Elija un destinatario" [filter]="true"
+              filterBy="value.Mail">
+            </p-dropdown>
+            <spinner-loading [show]="searchingCampos"></spinner-loading>
+          </div>
+          <div class="col-xs-12 col-sm-12 col-md-12">
+            <p class="crearConsultaTitulos">Asunto<span class="requerido">*</span></p>
+            <div class="styled-select ">
+              <input type="search" [(ngModel)]="asunto" class="fourRounded" aria-controls="tableModal">
+            </div>
+          </div>
+          <div class="for myRow">
+            <div class="col-xs-12 col-sm-12 col-md-12">
+              <p class="crearConsultaTitulos">Comentario<span class="requerido">*</span></p>
+              <textarea type="search" [(ngModel)]="comentario" [value]=""
+                class="fourRounded crearConsultaComentario" aria-controls="tableModal" rows="8"></textarea>
+            </div>
+          </div>
+
+          <div class="col-xs-12 col-sm-12 col-md-12 row">
+            <input class="adjuntarArchivo" #fileInput type="image" src="Content/images/buttons/Adjuntar.svg"
+              style="padding-left: 15px; margin-top: 15px; width: 190px;">
+            <input class="adjuntarArchivo1" #fileInput type="file" style="display:none" (change)="cargarArchivo($event)"
+              multiple>
+            <br />
+
+            <div *ngIf="listaArchivos.length > 0" class="col-xs-12 col-sm-12 col-md-12 archivosBox">
+              <ng-container *ngFor="let Archivo of listaArchivos, let i = index">
+                <p class="col-md-11">{{Archivo.name}}</p>
+                <span class="fa fa-times col-md-1" (click)="borrarArchivo(i)"></span>
+                <br>
+              </ng-container>
+            </div>
+            <br>
+          </div>
+
+          <div class="col-md-12">
+            <P class="leyenda">
+              ^ Requerido ingresar al menos uno de los campos.<br>
+              <span class="requerido">*</span> campo obligatorio.
+            </P>
+          </div>
+
+          <div class="myRow row">
+            <div class="col text-center">
+              <button class="mx-auto d-block enviarComentario" (click)="postConsulta()" href="#"
+                style="text-decoration:none!important">
+                <div class="btn-custom btn-mediano btn-add animate align-center btn-enviar">Enviar</div>
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+      <spinner></spinner>
+    </div>
+    <!-- END form-->
+  </section>
+</div>
+
+<p-dialog header="Seleccione orden" [(visible)]="displayModal" [width]="500" modal="modal" appendTo="body"
+  [draggable]="false">
+  <p-dataView #dv [value]="ordenes" [paginator]="true" [rows]="10"
+    filterBy="Id,RazonSocialCliente,RazonSocialCorredor,Contrato,Pedido,Material,PatenteChasis">
+    <p-header>
+      <input type="search" pInputText placeholder="Buscar por campo..." (keyup)="dv.filter($event.target.value)">
+    </p-header>
+    <p-footer>Elija uno de la lista.</p-footer>
+    <ng-template let-orden pTemplate="listItem">
+      <div style="font-size:14px; color:black; border-bottom: 1px solid black;">
+        Nro:{{orden.Id}} &nbsp;&nbsp; Nro. Entrega: {{orden.Entrega}}<br>
+        Cliente: {{orden.RazonSocialCliente}} &nbsp;&nbsp; Corredor: {{orden.RazonSocialCorredor}}<br>
+        Ctto: {{orden.Contrato}} &nbsp;&nbsp; Pedido: {{orden.Pedido}}<br>
+        Material: {{orden.Material}} &nbsp;&nbsp; Chasis: {{orden.PatenteChasis}}
+        <br>
+        <button class="mx-auto d-block enviarComentario" (click)="onSelectOrden(orden)"
+          style="text-decoration:none!important;">
+          <div class="btn-custom-select btn-chico animate align-center btn-seleccionar-elemento">Seleccionar</div>
+        </button>
+      </div>
+    </ng-template>
+  </p-dataView>
+</p-dialog>

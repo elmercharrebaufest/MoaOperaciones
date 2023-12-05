@@ -3,7 +3,7 @@
     <section class="container-fluid clearfix">
         <!--Title-->
         <div class="row titleSection">
-            <div class="col-xs-10 col-sm-10 ">
+            <div class="col-xs-10 col-sm-9 ">
                 <strong *ngIf="esInterno || esMesaFas || esPuerto">
                     Orden de carga #{{ordenDeCarga.Id}} - {{ordenDeCarga.DescripcionEstado}}
                     <strong *ngIf="ordenDeCarga.DescripcionEstado=='Error de datos'">- Valide los datos ingresados al
@@ -17,10 +17,14 @@
             </div>
 
 
-            <div class="col-xs-12 col-sm-2" style="display: flex; justify-content: flex-end;">
+            <div class="col-xs-12 col-sm-3" style="display: flex; justify-content: flex-end;">
                 <div style="float: right;">
                     <button type="button" pButton icon="fa fa-refresh" (click)="obtenerOrdenDeCarga()"
                         style="background-color: #075088; float: right; top: 5%;"></button> &nbsp;
+                </div>
+                <div *ngIf="esInterno" style="float: left; padding-left: 2px;">
+                    <button type="button" pButton icon="fa fa-comments" (click)="nuevaConsultaInterna()"
+                        style="background-color: #075088; float: right; top: 5%;" pTooltip="Nueva consulta interna"></button> &nbsp;
                 </div>
                 <!-- Button trigger modal -->
                 <button *ngIf="mostrarBotonEditar" type="button"
@@ -778,9 +782,13 @@
                     <h4 class="modal-title" id="modalEdicionFinalizada">Edicion finalizada</h4>
                 </div>
                 <div class="modal-body">
+                    <div *ngIf="mensajeValidacionScato" class="row" class="col-xs-12 col-sm-12 col-md-12 alertScato text-center">
+                        {{mensajeValidacionScato}}
+                    </div>
                     <div class="row" class="col-xs-12 col-sm-12 col-md-12 text-center">
                         ¿Está seguro de que desea finalizar la edición de la orden de carga?
                     </div>
+                    <br>
                 </div>
                 <div class="modal-footer" style="border-top:none;">
                     <button type="button" class="btn-custom btn-cerrar btn-chico" data-dismiss="modal"

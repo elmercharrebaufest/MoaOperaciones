@@ -25,6 +25,7 @@ namespace SustitucionMOAUtils.Services.Email
         private static readonly string DireccionMailMesaVentaFas = ConfigurationManager.AppSettings["EmailToMesaVentaFas"];
         private static readonly string DireccionToAltaTempranaCuitFas = ConfigurationManager.AppSettings["EmailAltaTempranaCuitFasTo"];
         private static readonly string DireccionCCAltaTempranaCuitFas = ConfigurationManager.AppSettings["EmailAltaTempranaCuitFasCC"];
+        private static readonly string DireccionToKgsMenos15TNFas = ConfigurationManager.AppSettings["EmailKgsMenos15TNFasTo"];
 
         private readonly IEmailService emailService;
 
@@ -147,15 +148,15 @@ namespace SustitucionMOAUtils.Services.Email
         {
             var cuerpoTemplate = File.ReadAllText(TEMPLATE_NOTIFICACION_ORDENES);
 
-            var descripcion = "Hay más de una factura para seleccionar.";
+            var descripcion = "El cliente ha seleccionado un pedido con menos de 15 tn disponibles.";
             var cabecera = "Orden: " + ordenDeCarga.Id;
             var tablaOrdenes = GenerarTablaOrdenesANotificar(new OrdenDeCarga[] { ordenDeCarga });
             var cuerpo = string.Format(cuerpoTemplate, "", "", tablaOrdenes, descripcion, cabecera);
 
             var emailSenderData = new EmailSenderData
             {
-                Mails = emailService.ObtenerListaDestinatarios(new string[] { DireccionMailAlimentacionAnimal, DireccionMailMesaVentaFas, DireccionMailComerciales }),
-                Asunto = $"Varias facturas pendientes - {ordenDeCarga.Cliente.RazonSocial}",
+                Mails = emailService.ObtenerListaDestinatarios(new string[] { DireccionMailAlimentacionAnimal, DireccionToKgsMenos15TNFas, DireccionMailComerciales }),
+                Asunto = $"Factura con menos de 15 tn - {ordenDeCarga.Cliente.RazonSocial}",
                 Cuerpo = cuerpo
             };
             emailService.EnviarMail(emailSenderData);
@@ -165,15 +166,15 @@ namespace SustitucionMOAUtils.Services.Email
         {
             var cuerpoTemplate = File.ReadAllText(TEMPLATE_NOTIFICACION_ORDENES);
 
-            var descripcion = "Se encontraron varios contratos para el mismo cliente";
-            var cabecera = "Orden: ";
+            var descripcion = "El cliente ha seleccionado un contrato con menos de 15 tn disponibles.";
+            var cabecera = "Orden: " + ordenDeCarga.Id;
             var tablaOrdenes = GenerarTablaOrdenesANotificar(new OrdenDeCarga[] { ordenDeCarga });
             var cuerpo = string.Format(cuerpoTemplate, "", "", tablaOrdenes, descripcion, cabecera);
 
             var emailSenderData = new EmailSenderData
             {
-                Mails = emailService.ObtenerListaDestinatarios(new string[] { DireccionMailMesaVentaFas, DireccionMailComerciales }),
-                Asunto = $"Varios ctto pendientes - {ordenDeCarga.Cliente.RazonSocial}",
+                Mails = emailService.ObtenerListaDestinatarios(new string[] { DireccionToKgsMenos15TNFas, DireccionMailComerciales }),
+                Asunto = $"Contrato con menos de 15 tn - {ordenDeCarga.Cliente.RazonSocial}",
                 Cuerpo = cuerpo
             };
             emailService.EnviarMail(emailSenderData);

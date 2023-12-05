@@ -24,6 +24,7 @@ namespace SustitucionMOAExternalAPI.App_Start
     using SustitucionMOAUtils.Interfaces.Wrappers;
     using SustitucionMOAUtils.Validadores;
     using SustitucionMOAUtils.Wrappers;
+    using SustitucionMOAWS.AzureAD;
     using SustitucionMOAWS.Interfaces;
     using SustitucionMOAWS.ScatoWebService;
     using SustitucionMOAWS.WebApi;
@@ -217,6 +218,9 @@ namespace SustitucionMOAExternalAPI.App_Start
 
             // CNRT WebApi
             kernel.Bind<ICNRTClient>().To(typeof(CNRTClient)).InSingletonScope();
+
+            // Azure AD Consumer
+            kernel.Bind<IAzureADConsumer>().To(typeof(AzureADConsumer)).InSingletonScope();
 
             //kernel.Bind<IExternalApiService>().To(typeof(ExternalApiService)).InScope(ctx => OperationContext.Current);
             kernel.Bind<DbContext>().To<MOAOperacionesDbContext>().InTransientScope();

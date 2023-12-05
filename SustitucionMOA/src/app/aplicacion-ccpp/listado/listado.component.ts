@@ -12,13 +12,14 @@ import { DropdownComponent, DropdownOption } from '../../common/view-child/dropd
 
 import * as XLSX from 'xlsx';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
+import { Permiso } from '../../common/enums/Permisos';
 
 @Component({
   selector: 'app-listado',
   templateUrl: './listado.component.html',
   styleUrls: ['./listado.component.css']
 })
-export class ListadoComponent extends AplicacionCcppBaseComponent implements OnInit, OnDestroy {
+export class ListadoComponent extends AplicacionCcppBaseComponent implements OnDestroy {
   @BlockUI() blockUI: NgBlockUI;
   @ViewChild("FiltroEstado") filtroEstadoComponent: DropdownComponent;
   aplicaciones?: AplicacionCCPP[];
@@ -29,7 +30,7 @@ export class ListadoComponent extends AplicacionCcppBaseComponent implements OnI
   ccppFiltro = new FormControl();
   estadoFiltro = new FormControl();
   clienteFiltro = new FormControl();
-  esAdmin = this.isAuthorized('ADMIN APLICACIONES CCPP');
+  esAdmin = this.isAuthorized(Permiso.AdminAppCCPP); 
   disabled = false;
   show = false;
   develop = true;
@@ -42,10 +43,10 @@ export class ListadoComponent extends AplicacionCcppBaseComponent implements OnI
     protected modalService: ModalService) {
     super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
   }
-
-  ngOnInit() {
-    this.crearSecciones();
+  setTabs(): void {
     this.setMenuSeccionTab(SeccionAplicacionCCPP, 'Estado de cargas');
+  }
+  extraOnInit() {
     this.getListado()
   }
   get isVisible(): boolean {
@@ -84,6 +85,8 @@ export class ListadoComponent extends AplicacionCcppBaseComponent implements OnI
           this.aplicaciones = res.data
           this.setOpciones(res.filtros)
         }
+      }, err => {
+        this.blockUI.stop()
       });
   }
   limpiarListado() {
@@ -135,5 +138,24 @@ export class ListadoComponent extends AplicacionCcppBaseComponent implements OnI
     this.opcionesEstadoAplicacionCCPP = FiltroEstados;
     this.opcionesClientes = FiltroClientes;
   }
-  eliminarAplicacion(aplicacion: AplicacionCCPP) { }
+  eliminarAplicacion(aplicacion: AplicacionCCPP) {
+    this.blockUI.start("Eliminando ...");
+    try {
+      this.service.eliminarAplicacion(aplicacion.Id).subscribe({
+        next: ({ info, error, logout }) => {
+          if (logout)
+            this.sessionDataService.logout()
+          else if (info || error)
+            this.mensajeComponent.setInfoMsg(info || error);
+          this.blockUI.stop();
+          this.getListado();
+        },
+        error: (err) => this.blockUI.stop()
+        ,
+      })
+    } catch (error) {
+      console.error(error)
+      this.blockUI.stop()
+    }
+  }
 }

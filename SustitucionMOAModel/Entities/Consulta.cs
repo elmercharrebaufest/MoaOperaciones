@@ -20,10 +20,10 @@ namespace SustitucionMOAModel.Entities
         public int? SubCategoria_Id { get; set; }
         public string Asunto { get; set; }
         public int EstadoConsulta_Id { get; set; }
+        public int Usuario_Id { get; set; }
         public DateTime FechaCreacion { get; set; }
         public DateTime FechaUltimaModificacion { get; set; }
-        public int Usuario_Id { get; set; }
-
+        public int? UsuarioInterno_Id { get; set; }
 
         [ForeignKey("Usuario_Id")]
         public virtual Usuario Usuario { get; set; }

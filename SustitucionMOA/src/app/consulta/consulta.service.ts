@@ -4,9 +4,12 @@ import { BaseService } from './../common/services/BaseService';
 import { Comentario } from './consulta';
 import { map } from 'rxjs/operators';
 import { HttpHeaders, HttpParams } from '@angular/common/http';
+import { OrdenDeCarga } from '../common/models/ordenes-de-carga/ordenDeCarga';
 
 @Injectable()
 export class ConsultaService extends BaseService {
+
+    private ordenDeCarga: any;
 
     public AgregarConsulta(consulta: object, comentario: Comentario, archivo: any = null) {
         let consultaJson = JSON.stringify(consulta);
@@ -36,12 +39,27 @@ export class ConsultaService extends BaseService {
             .get(`/api/Consulta/RecordarComentario`, { params: params, headers: this.headers });
     }
 
-    public getCombos(excluir: boolean): Observable<any> {
+    public getCombos(excluir: boolean, mostrarCategoriaInterno: boolean): Observable<any> {
         let params: HttpParams = new HttpParams();
         params = params.set('excluir', excluir.toString());
+        params = params.set('mostrarCategoriaInterno', mostrarCategoriaInterno.toString());
 
         return this.http
             .get('/api/consulta/Combos', { params: params, headers: this.headers });
+    }
+
+    public getCombosConsultaInterna(ordenId: number): Observable<any> {
+        let params: HttpParams = new HttpParams();
+        params = params.set('ordenId', ordenId.toString());
+        return this.http
+            .get('/api/consulta/CombosConsultaInterna', { params: params, headers: this.headers });
+    }
+
+    public getDestinatarios(ordenId: number): Observable<any> {
+        let params: HttpParams = new HttpParams();
+        params = params.set('ordenId', ordenId.toString());
+        return this.http
+            .get('/api/consulta/GetDestinatariosConsulta', { params: params, headers: this.headers });
     }
 
     public listarConsultas(): Observable<any> {
@@ -175,5 +193,25 @@ export class ConsultaService extends BaseService {
 
         return this.http
             .post('/api/consulta/AnularConsulta', payload, { headers: this.headersPost })
+    }
+
+    public AgregarConsultaInterna(consulta: object, comentario: Comentario, archivo: any = null) {
+        let consultaJson = JSON.stringify(consulta);
+        let comentarioJson = JSON.stringify(comentario);
+        var payload = new FormData();
+
+        if (archivo != null) {
+            for (let i = 0; i < archivo.length; i++) {
+                let fileToUpload = archivo[i];
+                payload.append("file", fileToUpload, fileToUpload.name);
+            }
+        }
+
+        payload.append('consultaJson', consultaJson);
+        payload.append('comentarioJson', comentarioJson);
+        payload.append("file", archivo);
+
+        return this.http
+            .post('/api/consulta/AgregarConsultaInterna', payload, { headers: this.headers });
     }
 }

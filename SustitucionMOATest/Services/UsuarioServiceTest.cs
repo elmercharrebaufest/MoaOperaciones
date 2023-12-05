@@ -1,5 +1,6 @@
 ﻿using Moq;
 using NUnit.Framework;
+using SustitucionMOA.Jobs;
 using SustitucionMOAAssets;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
@@ -7,6 +8,7 @@ using SustitucionMOAModel.Enums;
 using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Services;
+using SustitucionMOAWS.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,6 +22,7 @@ namespace SustitucionMOATest.Services
         private UsuarioService target;
         private Mock<IRepositorio> repositorioMock;
         private Mock<IVendedorService> vendedorServiceMock;
+        private Mock<IAzureADConsumer> azureADConsumerMock; 
 
 
         [SetUp]
@@ -27,7 +30,8 @@ namespace SustitucionMOATest.Services
         {
             repositorioMock = new Mock<IRepositorio>();
             vendedorServiceMock = new Mock<IVendedorService>();
-            target = new UsuarioService(repositorioMock.Object, vendedorServiceMock.Object);
+            azureADConsumerMock = new Mock<IAzureADConsumer>();
+            target = new UsuarioService(repositorioMock.Object, vendedorServiceMock.Object, azureADConsumerMock.Object);
         }
 
         [Test]

@@ -2271,7 +2271,7 @@ namespace SustitucionMOAUtils.Services
                         posicionEntity.NroNecesidad = posicion.NumeroRequerimientoInterno;
                         posicionEntity.EsConcluido = true;
 
-                        if (posicionEntity.TipoPosicion_Id == 10)
+                        if (posicion.Tipo == "0")
                         {
                             posicionEntity.Cantidad = posicion.Cantidad;
                             var codigoUnidad = unidadMedidaSap.Where(a => a.Tecnica == posicion.UnidadMedida ||

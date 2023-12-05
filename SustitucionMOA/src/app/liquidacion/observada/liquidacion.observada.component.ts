@@ -10,6 +10,7 @@ import { NavService } from './../../common/services/NavService';
 import { FloatMsgService } from './../../common/services/FloatMsgService';
 import { SecurityService } from './../../common/services/SecurityService';
 import { ModalService } from './../../common/services/ModalService';
+import { SendDataService } from '../../consulta/send-data.service';
 
 
 
@@ -20,7 +21,15 @@ import { ModalService } from './../../common/services/ModalService';
 })
 export class LiquidacionObservadaComponent extends LiquidacionBaseComponent {
 
-    constructor(protected service: LiquidacionObservadaService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService) {
+    constructor(
+        protected service: LiquidacionObservadaService,
+        protected navService: NavService,
+        protected sessionDataService: SessionDataService,
+        protected securityService: SecurityService,
+        protected floatMsgService: FloatMsgService,
+        protected modalService: ModalService,
+        private sendDataService: SendDataService
+    ) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
     }
 
@@ -29,7 +38,7 @@ export class LiquidacionObservadaComponent extends LiquidacionBaseComponent {
     }
 
     acortar(value: string) {
-        return value.slice(0,8);
+        return value.slice(0, 8);
     }
 
     tituloArchivo = "ReporteLiquidacionesObservadas.xls";
@@ -46,5 +55,15 @@ export class LiquidacionObservadaComponent extends LiquidacionBaseComponent {
             { etiqueta: "Falta", valor: liquidacion.observaciones }
         ]);
         return false;
+    }
+
+    navegarAConsulta(liquidacion: any) {
+        if (liquidacion.linkConsulta) {
+            this.sendDataService.setDatosLiquidacionObservada({
+                Tipo: liquidacion.tipo,
+                NroComprobante: liquidacion.comprobante
+            })
+            return this.goToSeccionParam("consulta", "crear-consulta")
+        }
     }
 }
