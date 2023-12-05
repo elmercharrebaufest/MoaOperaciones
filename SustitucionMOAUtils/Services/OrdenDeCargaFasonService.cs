@@ -198,24 +198,28 @@ namespace SustitucionMOAUtils.Services
             try
             {
                 ValidarRequest(request, mailUsuario);
-                var existeTransporteEIntermediario = TransporteExiste(request.CUITTransporte, request.CUITIntermediarioFlete);
+                var existeTransporte = TransporteExiste(request.CUITTransporte);
+                var existeIntermediarioFlete = string.IsNullOrEmpty(request.CUITIntermediarioFlete) || TransporteExiste(request.CUITIntermediarioFlete);
 
                 request.DestinatarioExisteScato = CuitExisteScato(request.CUITDestinatario);
                 request.DestinoExisteScato = CuitExisteScato(request.CUITDestino);
 
                 var producto = repositorio.Obtener<Material>(request.Producto_Id);
-
+                int? ultimoId = null;
                 for (int i = 0; i < request.CantidadDeViajes; i++)
                 {
                     var ordenEntity = new OrdenDeCargaFason(request);
                     ordenEntity.Producto = producto;
-                    ActualizarOrdenDeCarga(ordenEntity, existeTransporteEIntermediario);
+                    var detalleActualizar = ObtenerDetallesActualizar(ordenEntity, existeTransporte, existeIntermediarioFlete);
+                    ActualizarOrdenDeCarga(detalleActualizar, i==0);
                     repositorio.Agregar(ordenEntity);
 
                     repositorio.GuardarCambios();
+                    ultimoId = (int)ordenEntity.Id;
                 }
+                
 
-                var resultado = new Resultado { Mensaje = SuccessMsg.OrdenDeCargaAgregada };
+                var resultado = new Resultado { Mensaje = SuccessMsg.OrdenDeCargaAgregada, IdEntidad= ultimoId ?? 0 };
                 return resultado;
             }
             catch (Exception ex)
@@ -511,15 +515,21 @@ namespace SustitucionMOAUtils.Services
             repositorio.GuardarCambios();
             return OrdenDeCargaFasonDto(orden, usuario);
         }
-        private void ActualizarOrdenDeCarga(OrdenDeCargaFason orden)
+        private void ActualizarOrdenDeCarga(OrdenDeCargaFason orden, bool enviarNotificaciones = false)
         {
-            var existeTransporteEIntermediario = TransporteExiste(orden);
-            ActualizarOrdenDeCarga(orden, existeTransporteEIntermediario);
+            var detalleAActualizar = ObtenerDetallesActualizar(orden);
+         
+            ActualizarOrdenDeCarga(detalleAActualizar, enviarNotificaciones);
         }
-        private void ActualizarOrdenDeCarga(OrdenDeCargaFason orden, bool existeTransporteEIntermediario)
+        private void ActualizarOrdenDeCarga(DetallesActualizarOrdenDeCargaFason detalle, bool enviarNotificaciones = false)
         {
-            orden.TransporteExiste = existeTransporteEIntermediario;
+            var orden = detalle.orden;
+            orden.TransporteExiste = detalle.existeTransporteEIntermediario;
             orden.Estado = ObtenerEstadoOrden(orden);
+            if (enviarNotificaciones)
+            {
+                NotificacionesNecesarias(detalle);
+            }
         }
         private EstadoOrdenDeCargaFason ObtenerEstadoOrden(OrdenDeCargaFason orden)
         {
@@ -534,7 +544,7 @@ namespace SustitucionMOAUtils.Services
             return EstadoOrdenDeCargaFason.Pendiente;
         }
         /// <summary>
-        /// Modifica los datos de la request según validaciones respecto al usuario que realizala petición
+        /// Modifica los datos de la request según validaciones respecto al usuario que realiza la petición
         /// </summary>
         /// <param name="request"></param>
         /// <param name="mailUsuario"></param>
@@ -570,18 +580,7 @@ namespace SustitucionMOAUtils.Services
             var esInterno = usuario.TienePermiso(PermisoEnum.VerOrdenesDeCargaFasonAdmin);
             return new OrdenDeCargaFasonDto(orden, esInterno);
         }
-        private bool TransporteExiste(OrdenDeCargaFason orden)
-        {
-            return TransporteExiste(orden.CUITTransporte, orden.CUITIntermediarioFlete);
-        }
-        private bool TransporteExiste(string transporte, string intermediarioFlete)
-        {
-            var existeTransporte = TransporteExiste(transporte);
-            //Si no tiene Cuit intermediario flete lo tomamos como que existe
-            var existeIntermediarioFlete = string.IsNullOrEmpty(intermediarioFlete) || TransporteExiste(intermediarioFlete);
 
-            return existeTransporte && existeIntermediarioFlete;
-        }
         private bool TransporteExiste(string CUITTransporte)
         {
             Log.Info("TransporteExiste OrdenCargaControlEstadoRequest " + $"Cuit {CUITTransporte ?? ""}");
@@ -596,6 +595,26 @@ namespace SustitucionMOAUtils.Services
                 return null;
 
             return ValidarCuitExisteScato(cuit).Existe;
+        }
+        private DetallesActualizarOrdenDeCargaFason ObtenerDetallesActualizar(OrdenDeCargaFason orden, 
+            bool? existeTransportePreRevisado=null, 
+            bool? existeIntermediarioFletePreRevisado = null)
+        {
+            var existeTransporte = existeTransportePreRevisado != null ? (bool)existeTransportePreRevisado : TransporteExiste(orden.CUITTransporte);
+            var existeIntermediarioFlete = existeIntermediarioFletePreRevisado != null ? (bool)existeIntermediarioFletePreRevisado : string.IsNullOrEmpty(orden.CUITIntermediarioFlete) || TransporteExiste(orden.CUITIntermediarioFlete);
+            return new DetallesActualizarOrdenDeCargaFason
+            {
+                orden = orden,
+                existeTransporte = existeTransporte,
+                existeIntermediarioFlete = existeIntermediarioFlete,
+            };
+        }
+        private void NotificacionesNecesarias(DetallesActualizarOrdenDeCargaFason detallesOrden)
+        {
+            if (!detallesOrden.existeTransporte)
+            {
+                emailFasonService.EnviarMailTransporteNoExiste(detallesOrden.orden);
+            }
         }
     }
 }
