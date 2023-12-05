@@ -2,6 +2,7 @@
 using SustitucionMOAAssets;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
+using SustitucionMOAModel.Dto.OrdenDeCargaFason;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using SustitucionMOAModel.Models.ViewModel.AltaEmpresa;
@@ -737,6 +738,23 @@ namespace SustitucionMOAUtils.Services
             repositorio.GuardarCambios();
 
             return SuccessMsg.ObservacionAgregadaOK;
+        }
+
+        public Resultado VerificarExistenciaEmpresa(string cuit)
+        {
+            var resultado = new Resultado();
+            var proveedor = this.repositorio.Obtener<Proveedor>(p => p.CUIT == cuit);
+
+            if (proveedor == null)
+            {
+                resultado.error = $"No se encontró el cuit : {cuit} en el sistema.";
+            }
+            else
+            {
+                resultado.Mensaje = $"El cuit {cuit} se encuentra registrado en el sistema con Razon Social: {proveedor.RazonSocial}, Codigo de Proveedor: {proveedor.CodigoProveedor}";
+            }
+
+            return resultado;
         }
     }
 }
