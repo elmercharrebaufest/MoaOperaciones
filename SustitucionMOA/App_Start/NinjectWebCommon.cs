@@ -26,6 +26,7 @@ using System.Reflection;
 using System.ServiceModel;
 using System.Web;
 using SustitucionMOAUtils.DesignPattern.Interfaces;
+using SustitucionMOAUtils.Interfaces;
 
 [assembly: WebActivatorEx.PreApplicationStartMethod(typeof(SustitucionMOA.App_Start.NinjectWebCommon), "Start")]
 [assembly: WebActivatorEx.ApplicationShutdownMethodAttribute(typeof(SustitucionMOA.App_Start.NinjectWebCommon), "Stop")]
