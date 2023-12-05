@@ -167,7 +167,7 @@ namespace SustitucionMOAUtils.Services
                     {
                         ContratoNumero = regItem.ContratoNumero,
                         CartaDePorte = regItem.CartaDePorte,
-                        Kilos = int.Parse(regItem.Kilos)
+                        Kilos = regItem.Kilos
                     });
                 }
                 else
@@ -177,7 +177,7 @@ namespace SustitucionMOAUtils.Services
                         Fila = fila,
                         ContratoNumero = regItem.ContratoNumero,
                         CartaDePorte = regItem.CartaDePorte,
-                        Kilos = int.Parse(regItem.Kilos),
+                        Kilos = regItem.Kilos,
                         Error = msjError
                     });
                     logCargaMasivaFila.Error = msjError;
@@ -298,7 +298,7 @@ namespace SustitucionMOAUtils.Services
 
             if (!int.TryParse(registroMasiva.Kilos, out int kilosSolicitados) || kilosSolicitados == 0)
             {
-                error = $"El valor ingresado en Kilos es inválido {(registroMasiva.Kilos)}";
+                error = $"El valor ingresado en Kilos es inválido ({registroMasiva.Kilos})";
                 return false;
             }
 
@@ -308,7 +308,7 @@ namespace SustitucionMOAUtils.Services
 
             var kilosArchivoEnProceso = aplicacionesAnterioresDelArchivo
                 .Where(x => x.CartaDePorte == registroMasiva.CartaDePorte)
-                .Sum(x => x.Kilos);
+                .Sum(x => int.Parse(x.Kilos));
 
             var kilosDisponibles = cartaPorte.KgPendientes - kilosPendientesAplicar - kilosArchivoEnProceso;
 
@@ -348,7 +348,7 @@ namespace SustitucionMOAUtils.Services
                         Proveedor_Id = proveedor.Id,
                         Contrato = aplNueva.ContratoNumero,
                         CartaPorte = aplNueva.CartaDePorte,
-                        Kilogramos = aplNueva.Kilos,
+                        Kilogramos = int.Parse(aplNueva.Kilos),
                         Estado = EstadoAplicacionCartaPorte.Pendiente,
                         FechaAlta = DateTime.Now
                     });
