@@ -92,6 +92,7 @@ export class AltasComponent extends BaseComponent implements OnInit {
     codigoCliente: string;
     descripcionEstadoAlta: SelectItem[];
     contieneDocumentacionFisica: number = 0;
+    cuitIngresado: string = "";
     puedeAltaInterna: boolean = this.isAuthorized('ALTA INTERNA GRANOS');
     puedeAltaInternaNoGranos: boolean = this.isAuthorized('ALTA INTERNA NO GRANOS');
     esAdmin : boolean = this.isAuthorized('ELIMINAR USUARIO DE WEB');
@@ -1031,4 +1032,53 @@ export class AltasComponent extends BaseComponent implements OnInit {
             }
         );
     }
+
+    revisarCUITFormatoValido(cuit: string): boolean {
+        return cuit && cuit.length == 11 && !Number.isNaN(cuit as unknown as number)
+    }
+
+    verificarExistenciaEmpresa(){
+        this.mensajeComponent.setMsgsEmpty();
+        if(!this.revisarCUITFormatoValido(this.cuitIngresado)){
+            this.mensajeComponent.setErrorMsg("Debe ingresar un cuit valido.");
+            return;
+        }
+        let msjModal = "";
+        this.spinnerModal.showIt();
+        this.altaEmpresaService.verificarExistenciaEmpresa(this.cuitIngresado)
+        .subscribe(
+            (result) => {
+                this.spinnerComponent.hideIt();
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.mensajeComponent.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.mensajeComponent.setInfoMsg(result.info);
+                    }else{
+                        if(result.data.error != undefined){
+                            msjModal = result.data.error;
+                        }else
+                            msjModal = result.data.Mensaje;
+                        this.abrirModalVerificarExisteCuit(msjModal);
+                    } 
+                    console.log(result);
+                }
+            ,
+            (error) => {
+                this.spinnerModal.hideIt();
+                this.mensajeError = error.message;
+            }
+        );
+    }
+
+    abrirModalVerificarExisteCuit(mensaje: string) {
+        this.confirmationService.confirm({
+            key: 'verificarExistenciaCuit',
+            message: mensaje,
+            accept: () => {
+            },
+        });
+    }
+
 }
