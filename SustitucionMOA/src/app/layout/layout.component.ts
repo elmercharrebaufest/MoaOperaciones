@@ -223,8 +223,12 @@ export class LayoutComponent implements OnDestroy {
                         this.textoTooltip2 = '';
                         break;
                     case 'Gestion':
-                    case 'Mis Echeq':
                         this.auxiliarSeccionesVisitadas = 'Gestion';
+                        this.textoTooltip = 'Instructivo Productor: <a href="https://b2cmoagro.blob.core.windows.net/moaopublic/echeqProductor.mp4" target="_blank">Click aqui</a>.';
+                        this.textoTooltip2 = 'Instructivo Acopiador: <a href="https://b2cmoagro.blob.core.windows.net/moaopublic/echeqAcopiador.mp4" target="_blank">Click aqui</a>.';
+                        break;
+                        case 'Mis Echeq':
+                        this.auxiliarSeccionesVisitadas = 'Mis Echeq';
                         this.textoTooltip = 'En esta categoría podrás cargar tus echeqs';
                         this.textoTooltip2 = '';
                         break;
