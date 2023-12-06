@@ -66,6 +66,7 @@
     <Compile Include="Dto\AplicacionCartaPorte\CartaPorteParaAplicacionCartaPorte.cs" />
     <Compile Include="Dto\AplicacionCartaPorte\ContratoParaAplicacionCartaPorte.cs" />
     <Compile Include="Dto\AplicacionCartaPorte\CrearAplicacionCartaPorte.cs" />
+    <Compile Include="Dto\OrdenDeCargaFason\DetallesActualizarOrdenDeCargaFason.cs" />
     <Compile Include="Dto\PeticionDeOfertaVisualizacionPrecioDto.cs" />
     <Compile Include="Dto\EstadoSolicitudOrdenDeCargaBaseDto.cs" />
     <Compile Include="Dto\Compras\DatosUltimaSolpDto.cs" />
@@ -183,6 +184,8 @@
     <Compile Include="Entities\AplicacionCartaPorte.cs" />
     <Compile Include="Entities\Adjudicacion.cs" />
     <Compile Include="Entities\AdjudicacionPosicion.cs" />
+    <Compile Include="Entities\AplicacionCartaPorteCargaMasiva.cs" />
+    <Compile Include="Entities\AplicacionCartaPorteCargaMasivaFila.cs" />
     <Compile Include="Entities\Circular.cs" />
     <Compile Include="Entities\CircularPeticionDeOfertaUsuario.cs" />
     <Compile Include="Entities\Cotizacion.cs" />

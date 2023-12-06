@@ -33,7 +33,8 @@ export class OrdenesDeCargaFasonListadoComponent extends ListBaseComponent imple
     "Edición solicitada",
     "Edición rechazada",
     "Anulación solicitada",
-    "Anulada"
+    "Anulada",
+    "En proceso"
   ];
   descripcionEstadoOrdenCarga: any[];
   listaProductos: Material[];
@@ -71,7 +72,8 @@ export class OrdenesDeCargaFasonListadoComponent extends ListBaseComponent imple
       this.descripcionEstadoOrdenCarga = [
         { label: "OK", value: "OK" },
         { label: "Orden vencida", value: "Orden vencida" },
-        { label: "Orden entregada", value: "Orden entregada" }
+        { label: "Orden entregada", value: "Orden entregada" },
+        { label: "En proceso", value: "En proceso" },
       ];
 
       this.estadosSelected = ["OK"];

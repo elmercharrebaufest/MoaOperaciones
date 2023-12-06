@@ -49,6 +49,8 @@
 	<setParameter name="CopiaEmailToGestionAltaCuit Config" value="moaoperaciones@baufest.com" />
 	<setParameter name="EmailAltaTempranaCuitFasonTo Config" value="moaoperaciones@baufest.com" />
 	<setParameter name="EmailAltaTempranaCuitFasonCC Config" value="sebastian.serighetti@molinosagro.com.ar;marian.rabellato@molinosagro.com.ar;dhidalgo@baufest.com" />
+	<setParameter name="EmailAltaTransporteFasonTo Config" value="sebastian.serighetti@molinosagro.com.ar;marian.rabellato@molinosagro.com.ar;noelia.caceres@molinosagro.com.ar" />
+	<setParameter name="EmailAltaTransporteFasonCC Config" value="moa.operaciones@molinosagro.com.ar" />
 	<setParameter name="EmailAltaTempranaCuitFasTo Config" value="moaoperaciones@baufest.com" />
 	<setParameter name="EmailAltaTempranaCuitFasCC Config" value="sebastian.serighetti@molinosagro.com.ar;marian.rabellato@molinosagro.com.ar;dhidalgo@baufest.com" />
 	<setParameter name="EmailAltaIntermediarioFleteTo Config" value="sebastian.serighetti@molinosagro.com.ar;marian.rabellato@molinosagro.com.ar" />

@@ -80,10 +80,20 @@
                     </div>
                 </div>
 
-                <div class="col-xs-12 col-sm-6 col-md-4 " style="padding-top:2rem">
+                <div class="col-xs-12 col-sm-6 col-md-4">    
+                    Verificar existencia CUIT:
+                <div class="styled-select">
+                    <div class="ui-inputgroup">
+                        <input type="text" pInputText placeholder="Ingrese un CUIT" mask="00-00000000-0" [(ngModel)]="cuitIngresado">   
+                        <button style="color: white; background-color: #075088;" pButton type="button" label="Verificar" (click)="verificarExistenciaEmpresa()"></button>      
+                    </div>
+                </div>
+
+                </div><div class="col-xs-12 col-sm-6 col-md-4 " style="padding-top:2rem">
                     <button style="color: white;  background-color: #067935;" type="button" pButton icon="fa fa-refresh"
                         (click)="getEmpresa()"></button>
                 </div>
+
             </div>
         </div>
 
@@ -1555,5 +1565,13 @@
             (click)="dialogo.reject()"></button>
         <button type="button" pButton label="Aceptar" class="ui-button-success botonModal"
             (click)="dialogo.accept()"></button>
+    </p-footer>
+</p-confirmDialog>
+
+<p-confirmDialog #dialogoExisteCuit key="verificarExistenciaCuit" header="Verificar existencia de CUIT"
+    icon="pi pi-exclamation-triangle" [width]="400" [responsive]="true" appendTo="body">
+    <p-footer>
+        <button type="button" pButton label="Aceptar" class="ui-button-success botonModal"
+            (click)="dialogoExisteCuit.accept()"></button>
     </p-footer>
 </p-confirmDialog>
