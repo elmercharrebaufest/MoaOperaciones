@@ -989,7 +989,7 @@ namespace SustitucionMOAUtils.Services
                                     .Where(x => x.Circular.RequiereCambioDeFechas == true && x.Circular.PlazoDeOferta.HasValue)
                                     .OrderByDescending(x => x.Circular.Id).FirstOrDefault().Circular.FechaCreacion,
                     PlazoDeOfertaCierre = po.Cierres.Any() ? po.Cierres.OrderByDescending(x => x.Fecha).FirstOrDefault().Fecha : (DateTime?)null,
-                    RevisionFinalizada = po.RevisionTecnica != null && po.RevisionTecnica.Fecha != null,
+                    RevisionFinalizada = po.RevisionTecnica != null && po.RevisionTecnica.Finalizada,
                     ChatSinLeer = po.ChatInternoCompras.Any(a => a.Leido == false && a.Usuario.Roles.Any(r => r.Codigo == rol)),
 
                 });
