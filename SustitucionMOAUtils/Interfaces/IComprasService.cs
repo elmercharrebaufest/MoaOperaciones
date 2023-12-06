@@ -17,7 +17,7 @@ namespace SustitucionMOAUtils.Interfaces
         List<TablaSapDto> ObtenerTablaSap(string tabla);
         List<TablaGeneralDto> ObtenerTablaGeneral(string tabla);
         List<CentroDireccionDto> ObtenerCentrosDireccion();
-        ListaPaginada<SolpDto> ListarSolp(UsuarioDto usuarioActual, Paginacion paginacion, string nroSolp, DateTime? desde, DateTime? hasta, bool? sap, bool? mantenimiento, bool? web, bool? repoAutomatica, int? usuarioId, List<int> estados = null);
+        ListaPaginada<SolpDto> ListarSolp(UsuarioDto usuarioActual, Paginacion paginacion, string nroSolp, DateTime? desde, DateTime? hasta, bool? sap, bool? mantenimiento, bool? web, bool? repoAutomatica, List<int> usuarios = null, List<int> estados = null);
         string BorrarSolp(int idSolp);
         SolpDto TraerSolpId(int idSolp);
         List<TablaEstadoDto> ObtenerTablaEstado(string tabla);

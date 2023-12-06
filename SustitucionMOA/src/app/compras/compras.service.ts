@@ -47,13 +47,11 @@ export class ComprasService extends BaseService {
 
 
     public getCombos(): Observable<any> {
-        return this.http
-            .get('/api/compras/Combos', { headers: this.headers });
+        return this.http.get('/api/compras/Combos', { headers: this.headers });
     }
 
     public obtenerUltimaSolp(): Observable<any> {
-        return this.http
-            .get('/api/compras/ObtenerUltimaSolp', { headers: this.headers });
+        return this.http.get('/api/compras/ObtenerUltimaSolp', { headers: this.headers });
     }
 
     public getListarSolp(pagina: number,
@@ -68,7 +66,7 @@ export class ComprasService extends BaseService {
         web: boolean = this.filtros.web,
         repoAutomatica: boolean = this.filtros.repoAutomatica,
         estados: any = this.filtros.estados,
-        usuarioId: any = this.filtros.usuarioId): Observable<any> {
+        usuarios: any = this.filtros.usuarioId): Observable<any> {
         let params: HttpParams = new HttpParams();
         pagina = pagina != null ? pagina : this.filtros.pagina;
         itemsPorPagina = itemsPorPagina != null ? itemsPorPagina : this.filtros.itemsPorPagina;
@@ -85,24 +83,21 @@ export class ComprasService extends BaseService {
         params = params.set('web', web.toString());
         params = params.set('repoAutomatica', repoAutomatica.toString());
         params = params.set('estados', estados);
-        params = params.set('usuarioId', (usuarioId != null ? usuarioId.toString() : ""));
-        return this.http
-            .get('/api/compras/ListarSolp', { params: params, headers: this.headers });
+        params = params.set('usuarios', usuarios);
+        return this.http.get('/api/compras/ListarSolp', { params: params, headers: this.headers });
     }
 
     public borrarSolp(idSolp: number): Observable<any> {
         let params: HttpParams = new HttpParams();
         params = params.set('idSolp', idSolp.toString());
 
-        return this.http
-            .get('/api/compras/BorrarSolp', { params: params, headers: this.headers });
+        return this.http.get('/api/compras/BorrarSolp', { params: params, headers: this.headers });
     }
 
     public traerSolpId(idSolp: number): Observable<any> {
         let params: HttpParams = new HttpParams();
         params = params.set('idSolp', idSolp.toString());
-        return this.http
-            .get('/api/compras/TraerSolpId', { params: params, headers: this.headers });
+        return this.http.get('/api/compras/TraerSolpId', { params: params, headers: this.headers });
     }
 
     getPdf(idSolp): Observable<any> {

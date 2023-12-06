@@ -961,7 +961,7 @@ namespace SustitucionMOAUtils.Services
             return repositorio.Listar<CentroDireccion>().Select(x => new CentroDireccionDto(x)).ToList();
         }
 
-        public ListaPaginada<SolpDto> ListarSolp(UsuarioDto usuarioActual, Paginacion paginacion, string nroSolp, DateTime? desde, DateTime? hasta, bool? sap, bool? mantenimiento, bool? web, bool? repoAutomatica, int? usuarioId, List<int> estados = null)
+        public ListaPaginada<SolpDto> ListarSolp(UsuarioDto usuarioActual, Paginacion paginacion, string nroSolp, DateTime? desde, DateTime? hasta, bool? sap, bool? mantenimiento, bool? web, bool? repoAutomatica, List<int> usuarios = null, List<int> estados = null)
         {
             try
             {
@@ -1041,7 +1041,7 @@ namespace SustitucionMOAUtils.Services
                     EstadoSolpDescripcion = x.NroSolp != null && x.Posiciones.All(p => p.Estado == false) ? "Borrado en SAP" : (x.EstadoSolpSap != null ? x.EstadoSolpSap.Descripcion : ""),
                     TipoSolp = new TablaGeneralDto { Descripcion = x.TipoSolp != null ? x.TipoSolp.Descripcion : "", Codigo = x.TipoSolp != null ? x.TipoSolp.Codigo : "" },
                     VincularPliego = !x.Pliego_Id.HasValue,
-                    TieneCondicionesGenerales = x.Pliego == null ? (bool?)null : x.Pliego.TieneCondicionesGenerales,
+                    TieneCondicionesGenerales = x.Pliego == null ? null : x.Pliego.TieneCondicionesGenerales,
                     RevisadoPor = x.Pliego == null ? "" : x.Pliego.RevisadoPor,
                     TipoSolpSap = x.TipoSolpSap,
                     EstadoPasos = x.EstadoPasos,
@@ -1054,9 +1054,8 @@ namespace SustitucionMOAUtils.Services
                 paginacion,
                 x => x.FechaBorrado == null && (string.IsNullOrEmpty(nroSolp) || x.NroSolp.ToUpper().StartsWith(nroSolp.ToUpper())) &&
                 (!estados.Any() || (x.EstadoSolpSap_Id != null && estados.Contains((int)x.EstadoSolpSap_Id)) || (estados.Any(y => y == -1) && x.NroSolp != null && x.Posiciones.All(p => p.Estado == false))) &&
-                (usuarioId == null || (x.UsuarioCreacion_Id != null && usuarioId == x.UsuarioCreacion_Id)) &&
-                (sap == true && x.TipoSolpSap == 3 ||
-                mantenimiento == true && x.TipoSolpSap == 2 || repoAutomatica == true && x.TipoSolpSap == 4 ||
+                (!usuarios.Any() || (x.UsuarioCreacion_Id != null && usuarios.Contains((int)x.UsuarioCreacion_Id))) &&
+                (sap == true && x.TipoSolpSap == 3 || mantenimiento == true && x.TipoSolpSap == 2 || repoAutomatica == true && x.TipoSolpSap == 4 ||
                 (web == true && (x.TipoSolpSap == null || x.TipoSolpSap == 1))
                 || (sap == false && mantenimiento == false && web == false && repoAutomatica == false)) &&
                 (desde == null || x.FechaCreacion >= desde.Value) && (fechaHasta == null || x.FechaCreacion <= fechaHasta.Value));
@@ -1066,11 +1065,9 @@ namespace SustitucionMOAUtils.Services
                     todasLasSolp.Items.FirstOrDefault().ItemsTotales = todasLasSolp.ItemsTotales;
                     foreach (var item in todasLasSolp)
                     {
-
                         item.PeticionesDeOferta = peticionesDeOferta.Where(peticionDeOferta => peticionDeOferta.RegistroInfo != true && peticionDeOferta.Solp_Id == item.Id).ToList();
                         item.TienePeticionDeOferta = peticionesDeOferta.Any(peticionDeOferta => peticionDeOferta.RegistroInfo != true && peticionDeOferta.Solp_Id == item.Id);
                         item.OrdenesDeCompraSolicitante = ordenCompra.Where(oc => oc.Solp_Id == item.Id).OrderBy(x => x.FechaCreacion).ToList();
-
                     }
                 }
 

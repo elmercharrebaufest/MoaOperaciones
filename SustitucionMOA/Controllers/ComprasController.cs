@@ -143,7 +143,7 @@ namespace SustitucionMOA.Controllers
         }
 
         [HttpGet]
-        public ActionResult ListarSolp(int? pagina = null, int? itemsPorPagina = null, string orden = null, string columna = null, string nroSolp = null, DateTime? fechaDesde = null, DateTime? fechaHasta = null, bool? sap = null, bool? mantenimiento = null, bool? web = null, bool? repoAutomatica = null, string estados = null, int? usuarioId = null)
+        public ActionResult ListarSolp(int? pagina = null, int? itemsPorPagina = null, string orden = null, string columna = null, string nroSolp = null, DateTime? fechaDesde = null, DateTime? fechaHasta = null, bool? sap = null, bool? mantenimiento = null, bool? web = null, bool? repoAutomatica = null, string estados = null, string usuarios = null)
         {
             try
             {
@@ -151,8 +151,8 @@ namespace SustitucionMOA.Controllers
                 var paginacion = new Paginacion((!string.IsNullOrEmpty(columna) ? columna : null), ordenar, (pagina == null) ? 0 : pagina.Value, (itemsPorPagina == 0 || !itemsPorPagina.HasValue) ? 10 : itemsPorPagina.Value);
                 return JsonCustom(new
                 {
-                    data = service.ListarSolp(ObtenerUsuarioActual(), paginacion, nroSolp, fechaDesde,
-                    fechaHasta, sap, mantenimiento, web, repoAutomatica, usuarioId, (!string.IsNullOrEmpty(estados) ? estados.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>()))
+                    data = service.ListarSolp(ObtenerUsuarioActual(), paginacion, nroSolp, fechaDesde, fechaHasta, sap, mantenimiento, web, repoAutomatica,
+                    !string.IsNullOrEmpty(usuarios) ? usuarios.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(), (!string.IsNullOrEmpty(estados) ? estados.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>()))
                 });
             }
             catch (InfoCustomException e)

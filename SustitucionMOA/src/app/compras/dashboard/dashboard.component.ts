@@ -91,7 +91,7 @@ export class DashboardComponent extends ListBaseComponent {
     tablaSolpCopy: any[];
 
     usuarioFiltro: SelectItem[];
-    selectUsuario: number | null;
+    selectUsuario: string[] = [];
 
     cols: any[];
     serviciosDashboard: any = "Servicios"
@@ -286,7 +286,7 @@ export class DashboardComponent extends ListBaseComponent {
             this.spinnerComponent.showIt();
             let multiSelectValues = this.selectEstadoSolp.join(",")
             this.subscription = this.service.getListarSolp(this.pageIndex, this.pageSize, this.orden, this.columnaOrden, this.nroSolp,
-            this.fechaInicio, this.fechaFin, this.sap, this.mantenimiento, this.web, this.repoAutomatica, multiSelectValues, this.selectUsuario
+                this.fechaInicio, this.fechaFin, this.sap, this.mantenimiento, this.web, this.repoAutomatica, multiSelectValues, this.selectUsuario.join(",")
             ).subscribe(
                 (result: any) => {
 
