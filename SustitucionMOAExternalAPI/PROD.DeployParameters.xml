@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<parameters>
+  <setParameter name="Url Config" value="http://gslopiprd00.molinosagro.ad:50000/" />
+	<setParameter name="IIS Web Application Name" value="MOAOperaciones/externalApi" />
+	<setParameter name="ConnectionMOADB-Web.config Connection String" value="48aeT2pkByRD/Pt9RTmajdbvJN9aCRxXaB1MEvGX056WayW5HIgN3y65/0dIgGfU4BjD+9GBbnVTqueQqHs73k0TqCeqVC/Zx1F/jxikiOgcWf8r0BSfyBvV1oeAPV4tswkLb4Q8uWu7IAQNoXF0zFvvLnNhhATqEv0XGxt2bfZ80AGJmX2ypbDJi5MNQNMpUVcbMnOz+rhBGG/NYAvTrQ==" />
+	<setParameter name="CONTEXTO-Web.config Connection String" value="data source=10.12.12.114;User Id=MOAOPPRDUSR;Password=Bf575c53dc;initial catalog=Moaoperaciones;Pooling=False" />
+	<setParameter name="BasicHttpBinding_IServicioRepositorio Service Endpoint Address" value="http://scato.molinosagro.com.ar/Scato.serviciosWeb/ServicioRepositorio.svc" />
+	<setParameter name="BasicHttpBinding_IServicioComandos Service Endpoint Address" value="http://scato.molinosagro.com.ar/Scato.serviciosWeb/ServicioComandos.svc" />
+	<setParameter name="BasicHttpBinding_IServicioSuscriptor Service Endpoint Address" value="http://gsloaccesos01.molinosagro.ad:8081/Servicios/ServicioSuscriptor.svc" />
+	<setParameter name="PasswordSapEnc Config" value="/ZeEum06O947GGBswhXnAw==" />
+	<setParameter name="SI_MMRFC_OBTENER_FUENTE_APROV Service Endpoint Address" value="http://gslopiprd00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MMRFC_OBTENER_FUENTE_APROV&amp;interfaceNamespace=urn%3AOPERACIONES" />
+	<setParameter name="SI_MMRFC_OBTENER_CONTRATO Service Endpoint Address" value="http://gslopiprd00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MMRFC_OBTENER_CONTRATO&amp;interfaceNamespace=urn%3AOPERACIONES" />
+	<setParameter name="SI_MMRFC_OBTENER_TIPO_CAMBIO Service Endpoint Address" value="http://gslopiprd00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MMRFC_OBTENER_TIPO_CAMBIO&amp;interfaceNamespace=urn%3AOPERACIONES" />
+</parameters>

@@ -224,7 +224,7 @@ namespace SustitucionMOAUtils.Services
                     && n.Habilitada
                 )
             .AsEnumerable()
-            .Where(n => n.FiltroRoles.Any(x => usuario.Roles.Any(y => y.Id == x.Id))
+            .Where(n => n.FiltroRoles.Any(x => usuario.Roles.Any(y => y.Id == x.Id) && DateTime.Now>=n.FechaInicio && DateTime.Now<=n.FechaFin && n.Habilitada == true)
                       
             ).Select(x => new NotificacionDto
             {
@@ -361,7 +361,7 @@ namespace SustitucionMOAUtils.Services
                     && n.Habilitada
                 )
             .AsEnumerable()
-            .Where(n => n.FiltroRoles.Any(x => usuario.Roles.Any(y => y.Id == x.Id)))
+            .Where(n => n.FiltroRoles.Any(x => usuario.Roles.Any(y => y.Id == x.Id)) && n.Habilitada==true)
             .Select(x => new NotificacionSinAdjuntosDto
             {
                 Id = x.Id,
