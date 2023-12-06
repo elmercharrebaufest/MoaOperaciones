@@ -6183,7 +6183,7 @@ namespace SustitucionMOAUtils.Services
                     var usuariosCompras = repositorio.Listar<UsuarioCompras>();
 
                     var usuario = repositorio.Obtener<Usuario>(a => a.UsuarioSap == result.Cabecera.UsuarioComprasSAP)?.Mail;
-                    var usuarioCompras = usuariosCompras.FirstOrDefault(a => a.Mail == usuario)?.Id;
+                    var usuarioCompras = usuariosCompras.FirstOrDefault(a => a.Mail.ToLower() == usuario.ToLower())?.Id;
                     result.Cabecera.UsuarioCompras_Id = usuarioCompras;
 
                     if (result.Cabecera.UsuarioCompras_Id == null)
@@ -6191,7 +6191,7 @@ namespace SustitucionMOAUtils.Services
                         var adjudicacion = repositorio.Listar<Adjudicacion>(a => a.NumeroOrdenDeCompra == nroOC, 1, "Id", DirOrden.Desc).FirstOrDefault();
                         if (adjudicacion != null)
                         {
-                            usuarioCompras = usuariosCompras.FirstOrDefault(a => a.Mail == adjudicacion.Usuario.Mail)?.Id;
+                            usuarioCompras = usuariosCompras.FirstOrDefault(a => a.Mail.ToLower() == adjudicacion.Usuario.Mail.ToLower())?.Id;
                             result.Cabecera.UsuarioCompras_Id = usuarioCompras;
                         }
                     }
