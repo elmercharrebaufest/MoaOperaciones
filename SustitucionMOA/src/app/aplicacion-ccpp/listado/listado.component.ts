@@ -19,7 +19,7 @@ import { Permiso } from '../../common/enums/Permisos';
   templateUrl: './listado.component.html',
   styleUrls: ['./listado.component.css']
 })
-export class ListadoComponent extends AplicacionCcppBaseComponent implements OnInit, OnDestroy {
+export class ListadoComponent extends AplicacionCcppBaseComponent implements OnDestroy {
   @BlockUI() blockUI: NgBlockUI;
   @ViewChild("FiltroEstado") filtroEstadoComponent: DropdownComponent;
   aplicaciones?: AplicacionCCPP[];
@@ -30,7 +30,7 @@ export class ListadoComponent extends AplicacionCcppBaseComponent implements OnI
   ccppFiltro = new FormControl();
   estadoFiltro = new FormControl();
   clienteFiltro = new FormControl();
-  esAdmin = this.isAuthorized(Permiso.AdminAppCCPP);
+  esAdmin = this.isAuthorized(Permiso.AdminAppCCPP); 
   disabled = false;
   show = false;
   develop = true;
@@ -43,10 +43,10 @@ export class ListadoComponent extends AplicacionCcppBaseComponent implements OnI
     protected modalService: ModalService) {
     super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
   }
-
-  ngOnInit() {
-    this.crearSecciones();
+  setTabs(): void {
     this.setMenuSeccionTab(SeccionAplicacionCCPP, 'Estado de cargas');
+  }
+  extraOnInit() {
     this.getListado()
   }
   get isVisible(): boolean {
@@ -85,6 +85,8 @@ export class ListadoComponent extends AplicacionCcppBaseComponent implements OnI
           this.aplicaciones = res.data
           this.setOpciones(res.filtros)
         }
+      }, err => {
+        this.blockUI.stop()
       });
   }
   limpiarListado() {
@@ -138,10 +140,13 @@ export class ListadoComponent extends AplicacionCcppBaseComponent implements OnI
   }
   eliminarAplicacion(aplicacion: AplicacionCCPP) {
     this.blockUI.start("Eliminando ...");
-    console.log(aplicacion)
     try {
       this.service.eliminarAplicacion(aplicacion.Id).subscribe({
-        next: (res) => {
+        next: ({ info, error, logout }) => {
+          if (logout)
+            this.sessionDataService.logout()
+          else if (info || error)
+            this.mensajeComponent.setInfoMsg(info || error);
           this.blockUI.stop();
           this.getListado();
         },
@@ -149,6 +154,7 @@ export class ListadoComponent extends AplicacionCcppBaseComponent implements OnI
         ,
       })
     } catch (error) {
+      console.error(error)
       this.blockUI.stop()
     }
   }

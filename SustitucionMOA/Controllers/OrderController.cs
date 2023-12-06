@@ -28,26 +28,26 @@ namespace SustitucionMOA.Controllers
 
         //[ValidateInput(false)]
         //[CustomPermisoAuthorizeAttribute(Roles = Permiso.ABM_SOLP)]
-        public ActionResult GetByProveedor(OrderParamsDto parametros)
-        {
-            try
-            {
-                // Este debe combinarse con permisos de usuario.
-                //if (parametros.vendedor == "" || parametros.vendedor == null)
-                //{
-                //    parametros.vendedor = SessionPersister.Proveedor;
-                //}
+        //public ActionResult GetByProveedor(OrderParamsDto parametros)
+        //{
+        //    try
+        //    {
+        //        // Este debe combinarse con permisos de usuario.
+        //        //if (parametros.vendedor == "" || parametros.vendedor == null)
+        //        //{
+        //        //    parametros.vendedor = SessionPersister.Proveedor;
+        //        //}
 
-                List<OrdenCompraDto> result = orderService.ObtenerOrdenesCompraPorProveedor(parametros);
+        //        List<OrdenCompraDto> result = orderService.ObtenerOrdenesCompraPorProveedor(parametros);
 
-                return JsonCustom(new { data = result });
-            }
-            catch (Exception ex)
-            {
-                // Manejo de errores
-                return JsonCustom(new { error = ex.Message });
-            }
-        }
+        //        return JsonCustom(new { data = result });
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        // Manejo de errores
+        //        return JsonCustom(new { error = ex.Message });
+        //    }
+        //}
 
     }
 }

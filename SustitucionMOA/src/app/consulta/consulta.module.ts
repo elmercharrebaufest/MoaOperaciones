@@ -7,6 +7,7 @@ import { ConsultaService } from './consulta.service';
 import { CrearConsultaComponent } from './crear-consulta/crear-consulta.component';
 import { MisConsultasComponent } from './mis-consultas/mis-consultas.component';
 import { DetalleConsultaComponent } from './detalle/consulta-detalle.component';
+import { CrearConsultaInternaComponent } from './crear-consulta-interna/crear-consulta-interna.component';
 import { TableModule } from 'primeng/table';
 import { DropdownModule } from 'primeng/dropdown';
 import { MultiSelectModule } from 'primeng/multiselect';
@@ -24,7 +25,7 @@ import { ConfirmationService } from 'primeng/api';
 import { FileDropModule } from 'ngx-file-drop';
 import { AngularEditorModule } from '@kolkov/angular-editor';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
-import { ComunicacionesModule } from '../comunicaciones/comunicaciones.module';
+import {DataViewModule} from 'primeng/dataview';
 
 @NgModule({
   imports: [
@@ -48,11 +49,13 @@ import { ComunicacionesModule } from '../comunicaciones/comunicaciones.module';
     FileDropModule,
     AngularEditorModule,
     ProgressSpinnerModule,
-    // ComunicacionesModule
+    DataViewModule
+    
   ],
   declarations: [
     MisConsultasComponent,
     CrearConsultaComponent,
+    CrearConsultaInternaComponent,
     DetalleConsultaComponent,
   ],
   providers: [

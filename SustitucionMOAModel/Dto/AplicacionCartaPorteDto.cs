@@ -1,4 +1,4 @@
-﻿using SustitucionMOAModel.Entities;
+﻿
 using SustitucionMOAModel.Enums.SustitucionMOAModel.Enums;
 using SustitucionMOAModel.Models;
 using System.Collections.Generic;
@@ -8,7 +8,7 @@ namespace SustitucionMOAModel.Dto
 {
     public class AplicacionCartaPorteDto
     {
-        public int Id { get; set; }
+        public int Id { get;set;}
         public string MailUsuario { get; set; }
         public string RazonSocial { get; set; }
         public string RazonSocialCuit { get; set; }
@@ -23,10 +23,10 @@ namespace SustitucionMOAModel.Dto
         public string FechaActualizacion { get; set; }
 
 
-        public AplicacionCartaPorteDto(AplicacionCartaPorte aplicacionCCPP)
+        public AplicacionCartaPorteDto(Entities.AplicacionCartaPorte aplicacionCCPP)
         {
-            var colorEstado = EstadoAplicacionCartaPorteExtensions.ObtenerSemaforo(aplicacionCCPP.Estado);
-            var labelEstado = EstadoAplicacionCartaPorteExtensions.ToFriendlyString(aplicacionCCPP.Estado);
+            var colorEstado = aplicacionCCPP.Estado.ObtenerSemaforo();
+            var labelEstado = aplicacionCCPP.Estado.ToFriendlyString();
             var razonSocial = aplicacionCCPP.Proveedor?.RazonSocial ?? string.Empty;
 
             this.MailUsuario = aplicacionCCPP.Usuario?.Mail ?? string.Empty;
@@ -41,7 +41,7 @@ namespace SustitucionMOAModel.Dto
             this.Kilogramos = aplicacionCCPP.Kilogramos;
             this.Error = aplicacionCCPP.Error;
             this.Estado = aplicacionCCPP.Estado;
-            this.Id = aplicacionCCPP.Id;
+            this.Id =aplicacionCCPP.Id;
         }
     }
     public class AplicacionCartaPorteFiltrosDto
@@ -51,7 +51,13 @@ namespace SustitucionMOAModel.Dto
         public List<DropdownOption> FiltroClientes;
         public AplicacionCartaPorteFiltrosDto(List<AplicacionCartaPorteDto> aplicaciones)
         {
-            this.FiltroEstados = aplicaciones.GroupBy(apl => apl.Estado).Select(x => new DropdownOption { value = x.Key.ToString(), label = $"{EstadoAplicacionCartaPorteExtensions.ToFriendlyStringFromInt(((int)x.Key))} ({x.Count()})" }).ToList();
+            this.FiltroEstados = aplicaciones
+                .GroupBy(apl => apl.Estado)
+                .Select(x => new DropdownOption
+                    {
+                        value = x.Key.ToString(), label = $"{x.Key.ToFriendlyString()} ({x.Count()})" 
+                    })
+                .ToList();
             this.FiltroClientes = aplicaciones.GroupBy(apl => apl.RazonSocialCuit).Select(x => new DropdownOption { value = x.Key, label = $"{x.Key} ({x.Count()})" }).ToList();
             AgregarOpciontodos();
         }

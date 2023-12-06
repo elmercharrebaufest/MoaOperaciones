@@ -1,14 +1,13 @@
 ﻿import { DatePipe } from "@angular/common";
 import {
-  CUSTOM_ELEMENTS_SCHEMA,
-  NgModule,
-  NO_ERRORS_SCHEMA
+    CUSTOM_ELEMENTS_SCHEMA,
+    NgModule,
+    NO_ERRORS_SCHEMA
 } from "@angular/core";
 import { ReactiveFormsModule, FormsModule } from "@angular/forms";
 import { HttpClientModule } from "@angular/common/http";
 import { BrowserModule } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
-
 import { ReCaptchaModule } from "angular2-recaptcha";
 import { BlockUIModule } from 'ng-block-ui';
 import { SelectModule } from "ng2-select";
@@ -25,8 +24,6 @@ import { EstadoSolicitudComponent } from "./alta-proveedores/estado-solicitud/es
 import { EstadoSolicitudService } from "./alta-proveedores/estado-solicitud/estado-solicitud.service";
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
-
-
 import { LoginGuard } from "./common/security/login-guard";
 import { DataService } from "./common/services/DataService";
 import { FloatMsgService } from "./common/services/FloatMsgService";
@@ -54,7 +51,6 @@ import { UsuarioService } from "./usuario/usuario.service";
 import { VendedorStatusComponent } from "./vendedor/vendedor_status.component";
 import { VendedorStatusService } from "./vendedor/vendedor_status.service";
 import { FaqComponent } from './faq/faq.component'
-
 import { TicketPesadaComponent } from './ticket-pesada/ticket-pesada.component'
 import { TicketPesadaService } from "./ticket-pesada/ticket-pesada.service";
 import { ConsultaBaseComponent } from "./consulta/consulta.component";
@@ -62,12 +58,13 @@ import { ConsultaService } from "./consulta/consulta.service";
 import { VentaSustentableBaseComponent } from './venta-sustentable/venta-sustentable.component';
 import { LogPesificacionModule } from './log-pesificacion/log-pesificacion.module';
 import { ComprasModule } from "./compras/compras.module";
-
 import { ApikeyComponent } from "./apikey/apikey.component";
 import { ApikeyService } from "./apikey/apikey.service";
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ConfirmationService } from 'primeng/api';
 import { PesificacionesGuardadasComponent } from './pesificacion/pesificaciones-guardadas/pesificaciones-guardadas.component'
+
+import { LegajoExternoComponent } from './compras/legajo-externo/legajo-externo.component';
 import { PesificacionBaseComponent } from "./pesificacion/pesificacion-base.component";
 import { ModificarDatosComponent } from './usuario/modificar-datos/modificar-datos.component';
 import { ToastModule } from "primeng/toast";
@@ -140,31 +137,31 @@ import { NotificacionesModule } from "./notificaciones/notificaciones.module";
     ListadoNovedadesComponent,
     ModalNotificacionesComponent,
     ComunicacionesComponent,
-
+    LegajoExternoComponent
     ],
-  providers: [
-    DatePipe,
-    SessionDataService,
-    NavService,
-    FloatMsgService,
-    LoginGuard,
-    DataService,
-    AduanaService,
-    LayoutService,
-    UsuarioService,
-    VendedorStatusService,
-    ServiceLocator,
-    ModalService,
-    SecurityService,
-    EmpresaGranosService,
-    EstadoSolicitudService,
-    NotificacionesService,
-    TicketPesadaService,
-    ConsultaService,
-    ConfirmationService,
-    ApikeyService,
-  ],
-  bootstrap: [AppComponent],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA]
+    providers: [
+        DatePipe,
+        SessionDataService,
+        NavService,
+        FloatMsgService,
+        LoginGuard,
+        DataService,
+        AduanaService,
+        LayoutService,
+        UsuarioService,
+        VendedorStatusService,
+        ServiceLocator,
+        ModalService,
+        SecurityService,
+        EmpresaGranosService,
+        EstadoSolicitudService,
+        NotificacionesService,
+        TicketPesadaService,
+        ConsultaService,
+        ConfirmationService,
+        ApikeyService,
+    ],
+    bootstrap: [AppComponent],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA]
 })
 export class AppModule { }

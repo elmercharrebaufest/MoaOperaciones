@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Data.SqlTypes;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -22,6 +23,9 @@ namespace SustitucionMOAModel.Entities
         public int? CausaConsulta_Id { get; set; }
         public string BolsaEmisoraOblea { get; set; }
         public int? Material_Id { get; set; }
+        public int? Orden_Id { get; set; }
+        public string PatenteChasis { get; set; }
+
         [Required]
         [ForeignKey("Id")]
         public virtual Consulta Consulta { get; set; }

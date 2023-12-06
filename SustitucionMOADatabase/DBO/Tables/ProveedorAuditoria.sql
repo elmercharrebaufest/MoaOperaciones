@@ -10,6 +10,7 @@
     [FechaActualizacion] DATETIME NULL, 
     [UsuarioActualizacion] VARCHAR(200) NULL,
     [EsRevendedor] BIT NOT NULL DEFAULT 0, 
+    [OrganizacionDeCompra] VARCHAR(150) NULL, 
     CONSTRAINT [PK_dbo.ProveedorAuditoria] PRIMARY KEY CLUSTERED 
    (
 	[Id] ASC

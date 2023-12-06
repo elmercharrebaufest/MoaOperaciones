@@ -10,7 +10,7 @@ namespace SustitucionMOAUtils.Interfaces
     {
         //List<OrdenCompraDto> GetByProveedor(string vendedor);
         //List<OrdenCompraDto> ServicioOrdenesCompraFake(string vendedor);
-        List<OrdenCompraDto> ObtenerOrdenesCompraPorProveedor(OrderParamsDto parametros);
+        //List<OrdenCompraDto> ObtenerOrdenesCompraPorProveedor(OrderParamsDto parametros);
 
     }
 }

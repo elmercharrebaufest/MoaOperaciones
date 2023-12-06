@@ -4,11 +4,12 @@
     {
         public enum EstadoAplicacionCartaPorte
         {
-            Pendiente,
-            Aplicado,
-            Error,
-            SinEstado,
-            Eliminado
+            Pendiente = 0,
+            Aplicado = 1,
+            Error = 2,
+            SinEstado = 3,
+            Eliminado = 4,
+            EnProceso = 5
         }
 
         public static class EstadoAplicacionCartaPorteExtensions
@@ -21,6 +22,7 @@
                     case EstadoAplicacionCartaPorte.Eliminado:
                         return "red";
                     case EstadoAplicacionCartaPorte.Pendiente:
+                    case EstadoAplicacionCartaPorte.EnProceso:
                         return "orange";
                     case EstadoAplicacionCartaPorte.Aplicado:
                         return "green";
@@ -41,34 +43,19 @@
                         return "Aplicado";
                     case EstadoAplicacionCartaPorte.Pendiente:
                         return "Pendiente";
+                    case EstadoAplicacionCartaPorte.EnProceso:
+                        return "En proceso";
                     default:
                         return "Sin estado";
                 }
             }
-            public static string ToFriendlyStringFromInt(int me)
-            {
-                switch (me)
-                {
-                    case 2:
-                        return "Error";
-                    case 1:
-                        return "Aplicado";
-                    case 0:
-                        return "Pendiente";
-                    case 4:
-                        return "Eliminado";
-                    default:
-                        return "Sin estado";
-                }
-            }
-
-
 
             public static string ToUserFriendlyString(this EstadoAplicacionCartaPorte me)
             {
                 switch (me)
                 {
                     case EstadoAplicacionCartaPorte.Pendiente:
+                    case EstadoAplicacionCartaPorte.EnProceso:
                         return "En proceso";
                     case EstadoAplicacionCartaPorte.Aplicado:
                         return "Aplicación aceptada";
@@ -83,7 +70,6 @@
 
             public static EstadoAplicacionCartaPorte ObtenerDescripcionEstado(string estado)
             {
-
                 switch (estado)
                 {
                     case "Pendiente":
@@ -94,12 +80,12 @@
                         return EstadoAplicacionCartaPorte.Error;
                     case "Eliminado":
                         return EstadoAplicacionCartaPorte.Eliminado;
+                    case "En proceso":
+                        return EstadoAplicacionCartaPorte.EnProceso;
                     default:
                         return EstadoAplicacionCartaPorte.SinEstado;
                 }
             }
-
         }
     }
-
 }

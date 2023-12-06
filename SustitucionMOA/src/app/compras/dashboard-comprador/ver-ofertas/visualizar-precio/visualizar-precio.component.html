@@ -1,0 +1,79 @@
+<p-dialog [(visible)]="displayVisualizarPrecio" modal="modal" [width]="650" [draggable]="false" [closable]="false"
+    appendTo="body" positionTop="30" [height]="450" [max] [contentStyle]="{ 
+        'max-height':'450px', 
+        'min-height':'400px'}">
+    <p-header class="headerModal" style="color: #067935;">
+        <b>Visualizacion de precios</b>
+    </p-header>
+    <div class="container-fluid" style="height: 273.75px;">
+        <section class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+            <p>
+                <ngb-alert type="danger" [dismissible]="false" *ngIf="visualizarAlert">
+                    <strong>Error! </strong>{{ error }}</ngb-alert>
+            </p>
+            <div class="row myRow" style="padding-top: 2px;">
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <label class="labelCompras" for="editorTexto"> <strong>Adjuntar documentación
+                        </strong> </label>
+                    <p-fileUpload [styles]="{'margin-left':'-13px; cursor: pointer;'}"
+                        name="filePeticionDeOfertaVisualizacionPrecio" auto="true" multiple="false"
+                        chooseLabel="Elegir archivo" [showUploadButton]=false [showCancelButton]=false
+                        [customUpload]="true" (uploadHandler)="uploadHandler($event)">
+                        <ng-template let-file pTemplate="file">
+                        </ng-template>
+                    </p-fileUpload>
+                </div>
+            </div>
+            <div class="col-md-12 row" style="margin-left: -1px; margin-bottom: 3px; padding: 0px;">
+                <p-panel *ngIf="this.peticionVisualizacionPrecio.Adjuntos != undefined && this.peticionVisualizacionPrecio.Adjuntos.length > 0" header="Adjuntos agregados" [toggleable]="true"
+                    [collapsed]="false">
+                    <div class="row myRow">
+                        <div class="col-xs-12 col-md-12" *ngFor="let archivo of this.peticionVisualizacionPrecio.Adjuntos">
+                            <img src="./Content/images/icons/trashRed.svg" alt="imageAlt"
+                                (click)="eliminarArchivo(archivo)"
+                                style="width: 26px; padding-bottom: 3px; cursor: pointer;" />
+                            <a class="link-archivo" (click)="descargarArchivo(archivo)"
+                                style="font-weight: lighter; margin-left: 10px;cursor: pointer;">{{archivo.name }}
+                            </a>
+                        </div>
+
+                    </div>
+                </p-panel>
+                <div class="row myRow">
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <label class="labelCompras"><strong>Observaciones*</strong></label>
+                        <textarea name="Observacion" ngDefaultControl
+                            [(ngModel)]="peticionVisualizacionPrecio.Observacion"
+                            placeholder="Agregue los comentarios que crea necesario..." cols="30" rows="1"></textarea>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    <p-footer>
+        <button type="button" class="btn btn-danger" (click)="onCerrarPrecios()">CANCELAR</button>
+        <button type="button" class="btn btn-primary" (click)="grabarPeticionDeOfertaVisualizacionPrecio()">ACEPTAR</button>
+    </p-footer>
+</p-dialog>
+
+<!-- <p-confirmDialog #dialogo header="Confirmación" icon="pi pi-exclamation-triangle" [width]="400" [responsive]="true"
+    appendTo="body">
+    <p-footer>
+        <button type="button" pButton label="Cancelar" class="ui-button-info botonModal"
+            (click)="dialogo.reject()"></button>
+        <button type="button" pButton label="Aceptar" class="ui-button-success botonModal"
+            (click)="dialogo.accept()"></button>
+    </p-footer>
+</p-confirmDialog> -->
+
+<p-dialog [(visible)]="displayOkPeticion" [width]="400" modal="modal" appendTo="body" [draggable]="false"
+    [contentStyle]="{'overflow':'visible', 'max-height':'100px', 'min-height':'100px'}" [closable]="false">
+    <p-header class="headerModal">
+        ¡Registro enviado!
+    </p-header>
+    <br> Se guardo el registro para la visualizacion de precios
+    <br>
+    <p-footer>
+        <button type="button" class="btn btn-primary botonesComprasColor botonModal" (click)="salir()">Aceptar</button>
+    </p-footer>
+</p-dialog>

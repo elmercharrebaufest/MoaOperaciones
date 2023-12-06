@@ -72,8 +72,6 @@ export class MisConsultasComponent extends ListBaseComponent {
     esInterno = this.isAuthorized('CONSULTA ABM');
     widthModal: string;
     asunto: string;
-    estadoConsultaSeleccionado: EstadoConsulta[];
-    categoriaSeleccionada: Categoria[];
 
     @HostListener('window:resize', ['$event']) onResize(event) {
         this.setColumnasByWindowSize();
@@ -90,14 +88,8 @@ export class MisConsultasComponent extends ListBaseComponent {
     }
 
     ngAfterViewInit(): void {
-  
         this.listarConsultas();
         this.getCombos();
-
-
-
-
-
 
         this.es = {
             firstDayOfWeek: 1,
@@ -114,82 +106,37 @@ export class MisConsultasComponent extends ListBaseComponent {
             if (filter[0] != null && filter[1] != null)
                 return value >= filter[0] &&
                     value <= filter[1];
-            else if (filter[0] != null && filter[1] == null){
-                return value >= filter[0];}
+            else if (filter[0] != null && filter[1] == null) {
+                return value >= filter[0];
+            }
             else if (filter[0] == null && filter[1] != null)
                 return value <= filter[1]
             else
                 return true;
         }
-
-       
-
-
-    }
-
-    setfilter() {
-        this.route.queryParams.subscribe(params => {
-            const filtrosActivados = params['filtrosActivados'];
-            const categoria = params['categoria'];
-            const estadoConsulta = params['filter'];
-
-
-            if (filtrosActivados && filtrosActivados === 'true') {
-                this.showFilters = true;
-                
-            }
-
-            if (filtrosActivados && filtrosActivados === 'true' && categoria) {
-                this.seleccionarOpcionFiltro('Categoria', categoria);
-            }
-
-            if (filtrosActivados && filtrosActivados === 'true' && estadoConsulta) {
-                this.seleccionarOpcionFiltro('EstadoConsulta', estadoConsulta);
-            }
-
-
-            
-        });
-    }
-    
-
-    seleccionarOpcionFiltro(columna: string, valor: string) {
-        debugger
-        switch (columna) {
-            case 'EstadoConsulta':
-                // Encuentra la opción correspondiente en la lista de estados y selecciónala
-                const estadoSeleccionado = this.estados.find(estado => estado.Code === valor);
-                if (estadoSeleccionado) {
-                    this.estadoConsultaSeleccionado = [estadoSeleccionado]; // Asigna la opción seleccionada al filtro
-                  
-                    this.table.filter(estadoSeleccionado.Descripcion, 'EstadoConsulta.Descripcion', 'equals');
-                }
-                break;
-            case 'Categoria':
-                // Encuentra la opción correspondiente en la lista de categorías y selecciónala
-                const categoriaSeleccionada = this.categorias.find(categoria => categoria.Nombre === valor);
-                if (categoriaSeleccionada) {
-                    this.categoriaSeleccionada = [categoriaSeleccionada]; // Asigna la opción seleccionada al filtro
-                    this.table.filter(categoriaSeleccionada.Nombre, 'Categoria.Nombre', 'equals');
-                    // Además, puedes manejar cualquier lógica relacionada con la selección de subcategorías si es necesario
-                }
-                break;
-            // Repite el proceso para otros filtros si es necesario
-            default:
-                break;
-        }
     }
 
     ngOnInit() {
-        debugger
         this.setTabs();
         this.checkPermisos();
+        this.setSeccionList();
+    }
 
-        if (this.securityService.tienePermiso("CARGAR CONSULTA")) {
-            this.navService.setSeccionList([new Seccion('/consulta/crear-consulta', 'crear-consulta', 'Nueva Consulta'), new Seccion('/consulta/mis-consultas', 'consulta', 'Mis Consultas')]);
+    setSeccionList() {
+        if (this.securityService.tienePermiso("CARGAR CONSULTA") && this.securityService.tienePermiso("CARGAR CONSULTA INTERNA")) {
+            this.navService.setSeccionList([new Seccion('/consulta/crear-consulta', 'crear-consulta', 'Nueva Consulta'), new Seccion('/consulta/mis-consultas', 'consulta', 'Mis Consultas'),
+            new Seccion('/consulta/crear-consulta-interna', 'crear-consulta-interna', 'Nueva Consulta Interna')
+            ]);
         }
-        else {
-            this.navService.setSeccionList([new Seccion('/consulta/mis-consultas', 'consulta', 'Mis Consultas')]);
+        else if (this.securityService.tienePermiso("CARGAR CONSULTA")) {
+            this.navService.setSeccionList([new Seccion('/consulta/crear-consulta', 'crear-consulta', 'Nueva Consulta'), new Seccion('/consulta/mis-consultas', 'consulta', 'Mis Consultas')
+            ]);
+        } else if (this.securityService.tienePermiso("CARGAR CONSULTA INTERNA")) {
+            this.navService.setSeccionList([new Seccion('/consulta/crear-consulta-interna', 'crear-consulta-interna', 'Nueva Consulta Interna'), new Seccion('/consulta/mis-consultas', 'consulta', 'Mis Consultas')
+            ]);
+        } else {
+            this.navService.setSeccionList([new Seccion('/consulta/mis-consultas', 'consulta', 'Mis Consultas')
+            ]);
         }
     }
 
@@ -201,17 +148,17 @@ export class MisConsultasComponent extends ListBaseComponent {
 
     setColumnas() {
         this.cols = [
-            { field: 'Id',                      header: 'Id',           filterType: 'text',     visibleExternal: true,  width: 6,  size: 4 },
-            { field: 'RazonSocialCorredor',     header: 'Corredor',     filterType: 'text',     visibleExternal: false, width: 10, size: 4 },
-            { field: 'RazonSocialProveedor',    header: 'Proveedor',    filterType: 'text',     visibleExternal: false, width: 10, size: 3 },
-            { field: 'Categoria',               header: 'Categoria',    filterType: 'custom',   visibleExternal: true,  width: 10, size: 1, sortdropdown: 'Categoria.Nombre'},
-            { field: 'SubCategoria',            header: 'Subcategoria', filterType: 'custom',   visibleExternal: false, width: 12, size: 2, sortdropdown: 'SubCategoria.Nombre'},
-            { field: 'Asunto',                  header: 'Asunto',       filterType: 'text',     visibleExternal: true,  width: 16, size: 0 },
-            { field: 'EstadoConsulta',          header: 'Estado',       filterType: 'custom',   visibleExternal: true,  width: 10, size: 1, sortdropdown: 'EstadoConsulta.Descripcion' },
-            { field: 'Material',                header: 'Material',     filterType: 'custom',   visibleExternal: true,  width: 10, size: 3, sortdropdown: 'Material' },
-            { field: 'FechaCreacion',           header: 'Fecha Inicio', filterType: 'date',     visibleExternal: false, width: 12, size: 3, selectionMode : 'single' },
-            { field: 'FechaUltimaModificacion', header: 'Ult. Modif.',  filterType: 'date',     visibleExternal: true,  width: 12, size: 3, selectionMode : 'single' },
-            { field: 'DiasReclamo',             header: 'Días',         filterType: 'text',     visibleExternal: false, width: 6,  size: 4 },
+            { field: 'Id', header: 'Id', filterType: 'text', visibleExternal: true, width: 6, size: 4 },
+            { field: 'RazonSocialCorredor', header: 'Corredor', filterType: 'text', visibleExternal: false, width: 10, size: 4 },
+            { field: 'RazonSocialProveedor', header: 'Proveedor', filterType: 'text', visibleExternal: false, width: 10, size: 3 },
+            { field: 'Categoria', header: 'Categoria', filterType: 'custom', visibleExternal: true, width: 10, size: 1, sortdropdown: 'Categoria.Nombre' },
+            { field: 'SubCategoria', header: 'Subcategoria', filterType: 'custom', visibleExternal: false, width: 12, size: 2, sortdropdown: 'SubCategoria.Nombre' },
+            { field: 'Asunto', header: 'Asunto', filterType: 'text', visibleExternal: true, width: 16, size: 0 },
+            { field: 'EstadoConsulta', header: 'Estado', filterType: 'custom', visibleExternal: true, width: 10, size: 1, sortdropdown: 'EstadoConsulta.Descripcion' },
+            { field: 'Material', header: 'Material', filterType: 'custom', visibleExternal: true, width: 10, size: 3, sortdropdown: 'Material' },
+            { field: 'FechaCreacion', header: 'Fecha Inicio', filterType: 'date', visibleExternal: false, width: 12, size: 3, selectionMode: 'single' },
+            { field: 'FechaUltimaModificacion', header: 'Ult. Modif.', filterType: 'date', visibleExternal: true, width: 12, size: 3, selectionMode: 'single' },
+            { field: 'DiasReclamo', header: 'Días', filterType: 'text', visibleExternal: false, width: 6, size: 4 },
         ];
 
         let isExternal = this.isExternal;
@@ -295,8 +242,8 @@ export class MisConsultasComponent extends ListBaseComponent {
 
     getCombos() {
         try {
-            this.subscription = this.service.getCombos(false).subscribe(
-                (result:any) => {
+            this.subscription = this.service.getCombos(false, true).subscribe(
+                (result: any) => {
                     if (result.logout == true) {
                         this.sessionDataService.logout();
                     } else if (result.error != undefined && result.error != "") {
@@ -314,7 +261,7 @@ export class MisConsultasComponent extends ListBaseComponent {
                         this.setColumnas();
                     }
                 },
-                (error: HttpErrorResponse)=> {
+                (error: HttpErrorResponse) => {
                     this.floatMsgService.setErrorMsg(HttpStatusCodes.friendlyStatusCode(error.status));
                     console.log(error.message);
                 }
@@ -328,8 +275,8 @@ export class MisConsultasComponent extends ListBaseComponent {
         return false; //<-- Prevent Refresh
     }
 
-    openModal(idConsulta, asunto){
-        if(this.mostrarDetalle){
+    openModal(idConsulta, asunto) {
+        if (this.mostrarDetalle) {
             this.resetVariables();
         }
 
@@ -345,7 +292,7 @@ export class MisConsultasComponent extends ListBaseComponent {
         this.unsubscribe();
         try {
             this.subscription = this.service.listarConsultas().subscribe(
-                (result:any) => {
+                (result: any) => {
                     if (result.logout == true) {
                         this.sessionDataService.logout();
                     } else if (result.error != undefined && result.error != "") {
@@ -374,9 +321,6 @@ export class MisConsultasComponent extends ListBaseComponent {
 
                         let estadosCode = ['INI', 'GES', 'GESRTA', 'DOC'];
                         this.estadosSummary = result.data.estados.filter(e => estadosCode.indexOf(e.Code) >= 0);
-
-                       
-                        this.setfilter();
                     }
                 },
                 (error: HttpErrorResponse) => {
@@ -398,7 +342,7 @@ export class MisConsultasComponent extends ListBaseComponent {
 
     getLabel(option) {
         this.materialesList.forEach(element => {
-            if(element.value == option){
+            if (element.value == option) {
                 console.log(element);
                 return element.label;
             }
@@ -431,7 +375,7 @@ export class MisConsultasComponent extends ListBaseComponent {
         this.DownloadJsonData(data, 'Consultas', true);
     }
 
-    resetVariables(){
+    resetVariables() {
         this.consultaId = 1;
         this.mostrarDetalle = false;
     }

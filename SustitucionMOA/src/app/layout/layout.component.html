@@ -285,7 +285,7 @@
                     <li id="liNoti">
                         <span class="badge">{{quantityCommunications}}</span>
                         <span id="notificationOpenSmall" onClick="notificationCloseSmall()" class="fa fa-bell-o" aria-hidden="true"></span>
-                        <span id="notificationCloseSmall" onClick="notificationCloseSmall()" class="fa fa-times"aria-hidden="true"></span>
+                        <span id="notificationCloseSmall" onClick="notificationCloseSmall()" class="fa fa-times" aria-hidden="true"></span>
                     </li>
                 </ul>
             </nav>
@@ -425,7 +425,7 @@
                         <div class="panel-body">
                             <ng-container *ngIf="isGranosSelected()">
                                 <div *ngIf="isAuthorized('ABM APLICACIONES CCPP')">
-                                    <a (click)="goToSeccion('/aplicaciones-ccpp/listado')" href="#">
+                                    <a (click)="goToSeccion('/aplicaciones-ccpp')" href="#">
                                         {{
 "Aplicación de
                                         CCPP"|uppercase
@@ -446,34 +446,29 @@
                                 <div *ngIf="(isAuthorized('PESIFICACION') || isAuthorized('VER PESIFICACIONES')) && isGranosSelected()">
                                     <a (click)="goToSeccion('/pesificacion')" href="#"> Pesificaci&oacute;n</a>
                                 </div>
-                                <div *ngIf="isAuthorized('CREAR CONTRATOS') && isGranosSelected()">
+                                <div *ngIf="isAuthorized('CREAR CONTRATOS')">
                                     <a (click)="goToSeccion('/crear-contrato/cargarnegocio')" href="#">
                                         Carga de
                                         negocios
                                     </a>
                                 </div>
-                                <div *ngIf="isAuthorized('CREAR CONTRATOS') && isGranosSelected()">
+                                <div *ngIf="isAuthorized('CREAR CONTRATOS')">
                                     <a (click)="goToSeccion('/reporte/contrato')" href="#">Reporte de mis cargas</a>
                                 </div>
-
                                 <div *ngIf="isAuthorized('VER ECHEQ')">
-
                                     <a (click)="goToSeccion('/echeq/gestion')" href="#">Gestión Echeq</a>
-
                                 </div>
-
                             </ng-container>
-                            <ng-container
-                                *ngIf="isNoGranosSelected() || (!isAmbos() && (isCliente() || isAuthorized('CONSULTAR HOME NG')))">
+                            <ng-container *ngIf="isNoGranosSelected() || (!isAmbos() && (isCliente() || isAuthorized('CONSULTAR HOME NG')))">
                                 <div>
                                     <a (click)="goToSeccion('/ordenes-de-carga/')" href="#">Ordenes de carga</a>
                                 </div>
-
                                 <div *ngIf="isAuthorized('VER ORDENES DE CARGA FASON')">
-                                    <a (click)="goToSeccion('/ordenes-de-carga-fason/')" href="#">Ordenes de carga
-                                        fason</a>
-
-                                </div> 
+                                    <a (click)="goToSeccion('/ordenes-de-carga-fason/')" href="#">
+                                        Ordenes de carga
+                                        fason
+                                    </a>
+                                </div>
                                 <div>
                                     <a (click)="goToSeccion('/reporte-contrato/')" href="#">Reporte de contratos</a>
                                 </div>
@@ -518,7 +513,7 @@
                             </div>
                             <div *ngIf="isAuthorized('ALTA EMPRESA NO GRANOS')">
                                 <a (click)="goToSeccion('/alta-empresa-no-granos')" href="#">
-                                    <!--data-toggle="tab">-->Alta Empresa
+                                    <!--data-toggle="tab">-->Alta Proveedor
                                 </a>
                             </div>
                             <div *ngIf="isAuthorized('ESTADO SOLICITUD') && !isAuthorized('CONSULTAR VENDEDOR PENDIENTES')">
@@ -555,7 +550,8 @@
         </div>
     </div>
 
-        <!-- Esto está repetido aproposito. Si puede CARGAR CONSULTA lo direcciona a la parte de alta. Caso contrario lo lleva al listado-->
+
+    <!-- Esto está repetido aproposito. Si puede CARGAR CONSULTA lo direcciona a la parte de alta. Caso contrario lo lleva al listado-->
                 <div class="panel panel-default"
                      *ngIf="isAuthorized('CONTACTO MAIL') && !isAuthorized('CARGAR CONSULTA') ">
                     <div class="panel-heading seccion" role="tab" id="contacto">
@@ -565,10 +561,6 @@
                         </a>
                     </div>
                 </div>
-
-
-
-
                 <div class="panel panel-default"
                      *ngIf="isAuthorized('CONTACTO MAIL') && isAuthorized('CARGAR CONSULTA') ">
                     <div class="panel-heading seccion" role="tab" id="contacto">
@@ -666,12 +658,13 @@
                                     DASHBOARD PROVEEDOR
                                 </a>
                             </div>
+
                             <!--se comenta hasta pasar el modulo-->
                             <!--<div>
-                                <a (click)="goToSeccion('/compras/dashboardCertificacionDeServicios')" href="#">
-                                    CERTIFICACIÓN DE SERVICIOS
-                                </a>
-                            </div>-->
+        <a (click)="goToSeccion('/compras/dashboardCertificacionDeServicios')" href="#">
+            CERTIFICACIÓN DE SERVICIOS
+        </a>
+    </div>-->
                         </div>
                     </div>
 
@@ -745,8 +738,8 @@
             aria-hidden="true"></i>{{mensajeSuccess}}
     </div>
     <!-- Tab panes -->
-    <div [hidden]="!tieneSecciones" class="SubMenu-wrapper row">
-        <div class="SubMenu myTab clearfix col-xs-12 col-sm-10">
+    <div class="SubMenu-wrapper row">
+        <div class="SubMenu myTab clearfix col-xs-12 col-sm-10" [hidden]="!tieneSecciones">
             <div class="tab-content ">
                 <div class="tab-pane fade active in" id="Inicio">
                     <ul class="nav">

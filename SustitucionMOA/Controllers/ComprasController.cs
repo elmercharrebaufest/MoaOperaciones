@@ -439,8 +439,17 @@ namespace SustitucionMOA.Controllers
                 string errorMsg = puedeDescargar == SolpDescargaZipPorLink.SolpIdNoExiste
                                                         ? "Solp no disponible para descarga."
                                                         : "Token no coincide, no tiene permiso para realizar la descarga";
+
+                if (puedeDescargar == SolpDescargaZipPorLink.SinArchivos) 
+                {
+                    errorMsg = "Solp no disponible para descarga.";
+                }
+                
                 return Json(new { error = errorMsg }, JsonRequestBehavior.AllowGet);
+
             }
+
+
             var path = $"{ConfigurationManager.AppSettings["RutaArchivosCompras"]}/{DateTime.Now.Ticks}";
             Directory.CreateDirectory(path);
 
@@ -692,7 +701,8 @@ namespace SustitucionMOA.Controllers
         }
 
         [HttpGet]
-        public ActionResult ListarPOProveedor(int? pagina = null, int? itemsPorPagina = null, string orden = null, string columna = null, string nroSolp = null)
+        public ActionResult ListarPOProveedor(int? pagina = null, int? itemsPorPagina = null, string orden = null, string columna = null, string nroSolp = null, string nroPo = null, string nombrePedido = null,
+                    int? estadoLicitacion = null, int? estadoCotizacion = null, DateTime? fechaDesde = null, DateTime? fechaHasta = null)
         {
             try
             {
@@ -701,7 +711,7 @@ namespace SustitucionMOA.Controllers
 
                 return JsonCustom(new
                 {
-                    data = service.ListarPOProveedor(paginacion, nroSolp, SessionPersister.getUsername())
+                    data = service.ListarPOProveedor(paginacion, nroSolp, nroPo, nombrePedido, SessionPersister.getUsername(), fechaDesde, fechaHasta, estadoLicitacion, estadoCotizacion)
                 });
             }
             catch (InfoCustomException e)
@@ -714,12 +724,12 @@ namespace SustitucionMOA.Controllers
             }
             catch (WSCustomException e)
             {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
                 return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception e)
             {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
         }
@@ -1075,12 +1085,12 @@ namespace SustitucionMOA.Controllers
         }
 
         [HttpPost]
-        public ActionResult GrabarRevisionTecnica(string json)
+        public ActionResult GrabarRevisionTecnica(string json, bool finalizar)
         {
             try
             {
                 var revision = JsonConvert.DeserializeObject<List<PeticionDeOfertaUsarioDto>>(json);
-                var result = service.GrabarRevisionTecnica(revision, ObtenerUsuarioActual().Id);
+                var result = service.GrabarRevisionTecnica(revision, ObtenerUsuarioActual().Id, finalizar);
                 return JsonCustom(new { data = result });
             }
             catch (InfoCustomException e)
@@ -1355,7 +1365,80 @@ namespace SustitucionMOA.Controllers
             }
             catch (Exception e)
             {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [AllowAnonymous]
+        [HttpGet]
+        public ActionResult ObtenerLegajoParaExternos(int adjudicacionId, string token)
+        {
+            try
+            {
+                var result = service.ObtenerLegajoParaExternos(adjudicacionId, token);
+                return JsonCustom(new { data = result });
+            }
+            catch (WSCustomException e)
+            {
                 Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+        
+         [HttpPost]
+        public ActionResult GrabarPeticionDeOfertaVisualizacionPrecio(string json)
+        {
+            try
+            {
+                var peticion = JsonConvert.DeserializeObject<PeticionDeOfertaVisualizacionPrecioDto>(json);
+                peticion.UsuarioCreador_Id = ObtenerUsuarioActual().Id;
+                var result = service.GrabarPeticionDeOfertaVisualizacionPrecio(peticion, Request.Files);
+                return JsonCustom(new { data = result });
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e }, JsonRequestBehavior.AllowGet);
+            }
+            catch (WSCustomException e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpGet]
+        public JsonResult ObtenerReporteOrdenDeCompra(string nroOC, string fechaDesde, string fechaHasta, string codigoProveedor)
+        {
+            try
+            {
+                return JsonCustom(service.ObtenerReporteOrdenDeCompra(nroOC, fechaDesde, fechaHasta, codigoProveedor));
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
         }

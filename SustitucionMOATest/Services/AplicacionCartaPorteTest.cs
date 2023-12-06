@@ -1,11 +1,19 @@
 ﻿using Moq;
 using NUnit.Framework;
+using SustitucionMOAModel.Consultas;
 using SustitucionMOAModel.CustomExceptions;
+using SustitucionMOAModel.Dto.AplicacionCartaPorte;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums.SustitucionMOAModel.Enums;
 using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Services;
+using SustitucionMOAWS.AplicacionCartaPortePendienteAplicarWebServiceMOA;
+using SustitucionMOAWS.Interfaces;
+using SustitucionMOAWS.WSRequests.AplicacionCartaPorte;
+using System;
+using System.Collections.Generic;
+using System.Linq.Expressions;
 
 namespace SustitucionMOATest.Services
 {
@@ -13,13 +21,19 @@ namespace SustitucionMOATest.Services
     public class AplicacionCartaPorteTest
     {
         private Mock<IRepositorio> repositorio;
+        private Mock<IAplicacionCartaPorteConsumer> consumer;
         private IAplicacionCartaPorteService aplicacionCCPPService;
+
+
+        private ZMPES7070 contratoListado;
+        private ZMPES7070 cartaPorteListada;
 
         [SetUp]
         public void SetUp()
         {
-            repositorio = new Mock<IRepositorio> ();
-            aplicacionCCPPService = new AplicacionCartaPorteService(repositorio.Object);
+            repositorio = new Mock<IRepositorio>();
+            consumer = new Mock<IAplicacionCartaPorteConsumer>();
+            aplicacionCCPPService = new AplicacionCartaPorteService(repositorio.Object, consumer.Object);
         }
 
         [Test]
@@ -41,7 +55,7 @@ namespace SustitucionMOATest.Services
         {
             repositorio.Setup(repositorio =>
                 repositorio.Obtener<AplicacionCartaPorte>(It.IsAny<int>())
-            ).Returns(new AplicacionCartaPorte { Estado = estado});
+            ).Returns(new AplicacionCartaPorte { Estado = estado });
 
             Assert.That(
                 () => aplicacionCCPPService.EliminarAplicacion(It.IsAny<int>()),
@@ -55,7 +69,194 @@ namespace SustitucionMOATest.Services
                 repositorio.Obtener<AplicacionCartaPorte>(It.IsAny<int>())
             ).Returns(aplicacionAEliminar);
             aplicacionCCPPService.EliminarAplicacion(It.IsAny<int>());
-            Assert.That( aplicacionAEliminar.Estado, Is.EqualTo(EstadoAplicacionCartaPorte.Eliminado));
+            Assert.That(aplicacionAEliminar.Estado, Is.EqualTo(EstadoAplicacionCartaPorte.Eliminado));
+        }
+        [Test]
+        public void GuardarAplicacion_TodoValido_CreaAplicacion()
+        {
+            var mailUsuario = "tester@baufest.com";
+            var material = "0012";
+            var codigoProveedor = "49012";
+            var kgMaximo = 4500;
+
+            SetContratoListado(codigoProveedor, material);
+            SetCartaPorteListada(kgMaximo, material);
+
+
+            var contratoSeleccionado = new ContratoParaAplicacionCartaPorte (contratoListado.CONTRATO, contratoListado.MATERIAL, contratoListado.PROVEEDOR);
+            var cartaPorteSeleccionada = new CartaPorteParaAplicacionCartaPorte(cartaPorteListada.CCPP, cartaPorteListada.CANTIDAD, cartaPorteListada.MATERIAL);
+
+            var aplicacionesRespuestaSAP = new ZMPES7070[] { contratoListado, cartaPorteListada };
+            SetupGuardarAplicacion(mailUsuario, codigoProveedor,aplicacionesRespuestaSAP);
+
+
+            var aplicacionAGuardar = new CrearAplicacionCartaPorte
+            {
+                ContratoSeleccionado = contratoSeleccionado,
+                CartaPorteSeleccionada = cartaPorteSeleccionada,
+                Kilogramos = kgMaximo
+            };
+            aplicacionCCPPService.GuardarAplicacion(aplicacionAGuardar, mailUsuario);
+
+            repositorio.Verify(r => r.Agregar(It.IsAny<AplicacionCartaPorte>()), Times.Once);
+            repositorio.Verify(r => r.GuardarCambios(), Times.Once);
+        }
+
+        [Test]
+        public void GuardarAplicacion_MasKgQueDisponibles_ThrowErrorInfoValidacion()
+        {
+            var mailUsuario = "tester@baufest.com";
+            var codigoProveedor = "49012";
+            var material = "0012";
+            var kgMaximo = 4500;
+
+            SetContratoListado(codigoProveedor, material);
+            SetCartaPorteListada(kgMaximo, material);
+
+
+            var contratoSeleccionado = new ContratoParaAplicacionCartaPorte(contratoListado.CONTRATO, contratoListado.MATERIAL, contratoListado.PROVEEDOR);
+            var cartaPorteSeleccionada = new CartaPorteParaAplicacionCartaPorte(cartaPorteListada.CCPP, cartaPorteListada.CANTIDAD, cartaPorteListada.MATERIAL);
+
+            var aplicacionesRespuestaSAP = new ZMPES7070[] { contratoListado, cartaPorteListada };
+            SetupGuardarAplicacion(mailUsuario, codigoProveedor, aplicacionesRespuestaSAP);
+
+
+            var aplicacionAGuardar = new CrearAplicacionCartaPorte
+            {
+                ContratoSeleccionado = contratoSeleccionado,
+                CartaPorteSeleccionada = cartaPorteSeleccionada,
+                Kilogramos = 5000
+            };
+
+            Assert.That(
+                () => aplicacionCCPPService.GuardarAplicacion(aplicacionAGuardar,mailUsuario),
+                Throws.TypeOf<InfoCustomException>());
+        }
+        [Test]
+        public void GuardarAplicacion_ContratoNoEstaEnRespuestaDeSAP_ThrowErrorInfoValidacion()
+        {
+            var mailUsuario = "tester@baufest.com";
+            var codigoProveedor = "49012";
+            var material = "0012";
+            var kgMaximo = 4500;
+
+            SetContratoListado(codigoProveedor, material);
+            SetCartaPorteListada(kgMaximo, material);
+
+
+            var contratoSeleccionado = new ContratoParaAplicacionCartaPorte(contratoListado.CONTRATO, contratoListado.MATERIAL, contratoListado.PROVEEDOR);
+            var cartaPorteSeleccionada = new CartaPorteParaAplicacionCartaPorte(cartaPorteListada.CCPP, cartaPorteListada.CANTIDAD, cartaPorteListada.MATERIAL);
+
+            var aplicacionesRespuestaSAP = new ZMPES7070[] { cartaPorteListada };
+            SetupGuardarAplicacion(mailUsuario, codigoProveedor, aplicacionesRespuestaSAP);
+
+
+            var aplicacionAGuardar = new CrearAplicacionCartaPorte
+            {
+                ContratoSeleccionado = contratoSeleccionado,
+                CartaPorteSeleccionada = cartaPorteSeleccionada,
+                Kilogramos = kgMaximo
+            };
+
+            Assert.That(
+                () => aplicacionCCPPService.GuardarAplicacion(aplicacionAGuardar, mailUsuario),
+                Throws.TypeOf<InfoCustomException>());
+        }
+        [Test]
+        public void GuardarAplicacion_CartaPorteNoEstaEnRespuestaDeSAP_ThrowErrorInfoValidacion()
+        {
+            var mailUsuario = "tester@baufest.com";
+            var codigoProveedor = "49012";
+            var material = "0012";
+            var kgMaximo = 4500;
+
+            SetContratoListado(codigoProveedor, material);
+            SetCartaPorteListada(kgMaximo, material);
+
+
+            var contratoSeleccionado = new ContratoParaAplicacionCartaPorte(contratoListado.CONTRATO, contratoListado.MATERIAL, contratoListado.PROVEEDOR);
+            var cartaPorteSeleccionada = new CartaPorteParaAplicacionCartaPorte(cartaPorteListada.CCPP, cartaPorteListada.CANTIDAD, cartaPorteListada.MATERIAL);
+
+            var aplicacionesRespuestaSAP = new ZMPES7070[] { contratoListado };
+            SetupGuardarAplicacion(mailUsuario, codigoProveedor, aplicacionesRespuestaSAP);
+
+
+            var aplicacionAGuardar = new CrearAplicacionCartaPorte
+            {
+                ContratoSeleccionado = contratoSeleccionado,
+                CartaPorteSeleccionada = cartaPorteSeleccionada,
+                Kilogramos = kgMaximo
+            };
+
+            Assert.That(
+                () => aplicacionCCPPService.GuardarAplicacion(aplicacionAGuardar, mailUsuario),
+                Throws.TypeOf<InfoCustomException>());
+        }
+        [Test]
+        public void GuardarAplicacion_MaterialesDiferentesEnCartaPorteContrato_ThrowErrorInfoValidacion()
+        {
+            var mailUsuario = "tester@baufest.com";
+            var codigoProveedor = "49012";
+            var material = "0012";
+            var materialDistinto = "12300";
+            var kgMaximo = 4500;
+
+            SetContratoListado(codigoProveedor, materialDistinto);
+            SetCartaPorteListada(kgMaximo, material);
+
+
+            var contratoSeleccionado = new ContratoParaAplicacionCartaPorte(contratoListado.CONTRATO, contratoListado.MATERIAL, contratoListado.PROVEEDOR);
+            var cartaPorteSeleccionada = new CartaPorteParaAplicacionCartaPorte(cartaPorteListada.CCPP, cartaPorteListada.CANTIDAD, cartaPorteListada.MATERIAL);
+
+            var aplicacionesRespuestaSAP = new ZMPES7070[] { contratoListado, cartaPorteListada };
+            SetupGuardarAplicacion(mailUsuario, codigoProveedor, aplicacionesRespuestaSAP);
+
+
+            var aplicacionAGuardar = new CrearAplicacionCartaPorte
+            {
+                ContratoSeleccionado = contratoSeleccionado,
+                CartaPorteSeleccionada = cartaPorteSeleccionada,
+                Kilogramos = kgMaximo
+            };
+
+            Assert.That(
+                () => aplicacionCCPPService.GuardarAplicacion(aplicacionAGuardar, mailUsuario),
+                Throws.TypeOf<InfoCustomException>());
+        }
+        private void SetContratoListado(string codigoProveedor, string material)
+        {
+           contratoListado = new ZMPES7070 { CONTRATO = "12345", PROVEEDOR = codigoProveedor, MATERIAL = material };
+        }
+        private void SetCartaPorteListada(decimal kgMaximo, string material)
+        {
+            cartaPorteListada = new ZMPES7070 { CCPP = "123142", CANTIDAD = kgMaximo, MATERIAL = material };
+        }
+        private void SetupGuardarAplicacion(string mailUsuario, string codigoProveedor , ZMPES7070[] aplicacionesRespuestaSAP, List<AplicacionCartaPorte> aplicacionesCargadas = null)
+        {
+            repositorio.Setup(r => r.Obtener<Usuario>(u => u.Mail== mailUsuario)).Returns(
+                new Usuario {
+                    Roles = new Rol[] {
+                        new Rol
+                        {
+                            PermisosAsociados = new PermisoPorRol[]
+                            {
+                                new PermisoPorRol {Permiso =  "SELECCIONAR VENDEDOR"}
+                            }
+                        }
+                    },
+                }
+            );
+            consumer.Setup(c=>c.ObtenerAplicacionesPendientes(It.IsAny<AppCartasPortePendienteRequest>())).Returns( aplicacionesRespuestaSAP);
+            repositorio.Setup(r => r.Listar(It.IsAny<Expression<Func<AplicacionCartaPorte, bool>>>(),0,null,DirOrden.Asc,null)).Returns(
+                aplicacionesCargadas ?? new List<AplicacionCartaPorte>()
+            );
+            repositorio.Setup(r => r.Obtener(It.IsAny<Expression<Func<Proveedor, bool>>>())).Returns(
+                new Proveedor
+                {
+                    CodigoProveedor = codigoProveedor
+                }
+            );
+
         }
     }
 }

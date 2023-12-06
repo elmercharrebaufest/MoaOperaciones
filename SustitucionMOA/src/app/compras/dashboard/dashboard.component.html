@@ -46,7 +46,7 @@
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="margin-left: -46px;">
                         <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
                             <input class="col-xs-12 col-sm-12 col-md-12 col-lg-12 inputAltura" pInputText type="text"
-                                [(ngModel)]="nroSolp" placeholder="Buscar por numero de solp">
+                                [(ngModel)]="nroSolp" placeholder="Buscar por número de SOLP">
                         </div>
                         <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
                             <p-multiSelect [options]="estadoSolpItem" [(ngModel)]="selectEstadoSolp"
@@ -67,18 +67,17 @@
                                 <p-checkbox class="checkboxFechas" binary="true" label="Web" [(ngModel)]="web"></p-checkbox>
                             </span>
                         </div>
-                        <div class="col-md-1 col-lg-1  buttonBuscar">
+                        <div class="col-xs-3 col-md-2 col-lg-2  buttonBuscar">
                             <button class="btn buscar" (click)="onBuscar()">Buscar</button>
                         </div>
                     </div>
 
-                    
                     <div class="row myRow" style="margin-left: -31px;">
-                        <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4 inputAltura" style="width: 24%;">                      
+                        <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3 inputAltura" style="width: 24%;">                      
                             <p-dropdown [options]="usuarioFiltro" [(ngModel)]="selectUsuario" name="selectUsuario" placeholder="Buscar usuario" filter="true" showClear="true"></p-dropdown>                  
                         </div> 
                         <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
-                            <p-calendar [inputStyle]="{ 'width': '220px'}" showButtonBar="true" [showIcon]="true"  placeholder="Filtro fechas"
+                            <p-calendar showButtonBar="true" [showIcon]="true"  placeholder="Filtro fechas"
                                 dateFormat="dd/mm/yy" (onSelect)="onSelect($event)" appendTo="body"
                                 [(ngModel)]="rangeDates" selectionMode="range" [readonlyInput]="true" [locale]="locale"
                                 (onClearClick)="returnToTodaysDate()" >
@@ -199,7 +198,8 @@
                                 <img class="pointer" src="./Content/images/icons/editar.svg" alt="editar"
                                     (click)="goToSeccionEdit('/compras/solp', rowData.Id, rowData.NroSolp)" /></span>
                         </div>
-                        <div class="col-md-2">
+                        <div class="col-md-2" 
+                        *ngIf="rowData.TipoSolp.Codigo == 'CON_PLIEGO' || rowData.SolpConAdjuntos">
                             <span><img class="pointer" src="./Content/images/icons/descargar.svg" alt="descargar"
                                     (click)="generarZipPliego(rowData.Id)" /></span>
                         </div>
@@ -262,10 +262,10 @@
                                                 </td>
                                                 <td class="columna" [style.color]="licitacion.EstadoColor">{{licitacion.Estado}}</td>
                                                 <td class="columna">                                                   
-                                                    <button *ngIf="licitacion.Estado == 'Abierto'" class="publicar btn" style="margin-right: 10px;" (click)="obtenerPeticionDeOferta(licitacion.Id)">
+                                                    <button class="publicar btn" *ngIf="licitacion.RevisionFinalizada != true" style="margin-right: 10px;" (click)="obtenerPeticionDeOferta(licitacion.Id)">
                                                         Revisión Técnica
                                                     </button>
-                                                    <button class="publicar btn " *ngIf="rowData.VerCircular == true" style="margin-right: 10px;"  (click)="obtenerPeticionDeOfertaCircular(licitacion.Id)">
+                                                    <button class="publicar btn " *ngIf="rowData.VerCircular == true && licitacion.RevisionFinalizada != true" style="margin-right: 10px;"  (click)="obtenerPeticionDeOfertaCircular(licitacion.Id)">
                                                         Circular
                                                     </button>
                                                 </td> 
@@ -326,7 +326,7 @@
                 (cerrardisplayRevisionTecnicaEmitter)="cerrarModalRevisionTecnica()"
                 (descargarArchivoEmitter)="descargarArchivo($event)"
                 (descargarAdjuntosCotizacionEmitter)="descargarAdjuntosCotizacion($event)"
-                (grabarRevisionTecnicaEmitter)="grabarRevisionTecnica()"
+                (grabarRevisionTecnicaEmitter)="grabarRevisionTecnica($event)"
                 [(peticion)]="peticion">
 </app-revision-tecnica> 
 

@@ -13,6 +13,7 @@ import { NavService } from '../../../common/services/NavService';
 import { SecurityService } from '../../../common/services/SecurityService';
 import { SessionDataService } from '../../../common/services/SessionDataService';
 import { ComprasService } from '../../compras.service';
+import { SelectItem } from 'primeng/api';
 
 @Component({
     selector: 'app-listado-dashboard-proveedor',
@@ -21,7 +22,16 @@ import { ComprasService } from '../../compras.service';
 })
 export class ListadoDashboardProveedorComponent extends ListBaseComponent {
 
-    protected locale: any;
+    protected locale: any = {
+        firstDayOfWeek: 0,
+        dayNames: ["Domingo", "Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado"],
+        dayNamesShort: ["Dom", "Lun", "Mar", "Mie", "Jue", "Vie", "Sab"],
+        dayNamesMin: ["Do", "Lu", "Ma", "Mi", "Ju", "Vi", "Sa"],
+        monthNames: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"],
+        monthNamesShort: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"],
+        today: 'Hoy',
+        clear: 'Borrar'
+    };
 
     @ViewChild("tabla")
     protected tabla: Table;
@@ -33,9 +43,11 @@ export class ListadoDashboardProveedorComponent extends ListBaseComponent {
 
     @ViewChild(SpinnerComponent)
     protected spinnerComponent: SpinnerComponent;
-
-
+    @ViewChild('myCalendar', undefined)
+    private calendar: any;
     nroSolp: string = "";
+    nroPo: string = "";
+    nombrePedido: string = "";
     orden: string;
     columnaOrden: string = "";
     columnaNombre: string = "";
@@ -49,6 +61,17 @@ export class ListadoDashboardProveedorComponent extends ListBaseComponent {
     legajo: any;
     usuarioProveedor: boolean = true;
     itemSelected: any;
+    tablaPO: any[];
+    cols: any[];
+    usuario: string;// = "Prueba";
+    // verTodas: boolean = this.isAuthorized('VER SOLPS PROVEEDOR');
+    estadoCotizacion: SelectItem[] = [{ label: "Sin Cotizar", value: 0 }, { label: "Cotizado", value: 1 }, { label: "Incompleta", value: 2 }];
+    selectEstadoCotizacion: number | null = null;
+    estadoLicitacion: SelectItem[] = [{ label: "Abierto", value: 1 }, { label: "Cerrado", value: 2 }];
+    selectEstadoLicitacion: number | null = null;
+    fechaDesde: string = null;
+    fechaHasta: string = null;
+    rangeDates: Date[];
 
     constructor(protected service: ComprasService, protected navService: NavService,
         protected sessionDataService: SessionDataService, protected securityService: SecurityService,
@@ -58,15 +81,9 @@ export class ListadoDashboardProveedorComponent extends ListBaseComponent {
         this.usuario = sessionStorage.getItem("username");
     }
 
-    //#region Variables 
-    tablaPO: any[];
-    cols: any[];
-    usuario: string;// = "Prueba";
-    // verTodas: boolean = this.isAuthorized('VER SOLPS PROVEEDOR');
-    //#endregion
-
     ngOnInit() {
         this.getListarPO();
+        this.listarPO();
     }
 
     ngOnDestroy(): void {
@@ -110,8 +127,7 @@ export class ListadoDashboardProveedorComponent extends ListBaseComponent {
 
     listarPO() {
         this.spinnerComponent.showIt();
-        this.service.getListarPOProveedor(this.pageIndex, this.pageSize, this.orden, this.columnaOrden, this.nroSolp);
-
+        this.service.getListarPOProveedor(this.pageIndex, this.pageSize, this.orden, this.columnaOrden, this.nroSolp, this.nroPo, this.nombrePedido, this.selectEstadoLicitacion, this.selectEstadoCotizacion, this.fechaDesde, this.fechaHasta);
     }
 
     onOrder(columna: string) {
@@ -343,4 +359,29 @@ export class ListadoDashboardProveedorComponent extends ListBaseComponent {
         }
     }
 
+    onBuscar() {
+        this.spinnerComponent.showIt();
+        this.service.getListarPOProveedor(1, 10, "", "", this.nroSolp, this.nroPo, this.nombrePedido, this.selectEstadoLicitacion, this.selectEstadoCotizacion, this.fechaDesde, this.fechaHasta);
+    }
+
+    returnToTodaysDate() {
+        this.fechaDesde = "";
+        this.fechaHasta = "";
+        if (this.tablaPO.length > 0) {
+            this.mensajeComponent.setMsgsEmpty();
+        }
+    }
+
+    onSelect(event: any) {
+        if (this.rangeDates[0] && this.rangeDates[1] == null) {
+            let d = new Date(Date.parse(event));
+            this.fechaDesde = `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
+        } else {
+            let d = new Date(Date.parse(event));
+            this.fechaHasta = `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
+            if (this.rangeDates[1]) {
+                this.calendar.overlayVisible = false;
+            }
+        }
+    }
 }

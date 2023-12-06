@@ -163,6 +163,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\SwaggerConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Controllers\AplicacionCartaPorteController.cs" />
     <Compile Include="Controllers\InformarViajeOrdenesDeCargaFasController.cs" />
     <Compile Include="Controllers\InformarViajeOrdenesDeCargaFasonController.cs" />
     <Compile Include="Controllers\LiberacionOCController.cs" />
@@ -204,59 +205,12 @@
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
-    <Content Include="Hue.INT.DeployParameters.xml" />
-    <Content Include="NEW.PRE.DeployParameters .Debug.xml" />
-    <Content Include="NEW.PRE.DeployParameters .Release.xml" />
     <Content Include="NEW.PRE.DeployParameters .xml" />
     <Content Include="NEW.PROD.DeployParameters.xml" />
-    <Content Include="NEW.QA.Baufest.DeployParameters.Debug.xml" />
-    <Content Include="NEW.QA.Baufest.DeployParameters.Release.xml" />
+    <Content Include="NEW.QACompras.DeployParameters.xml" />
     <Content Include="NEW.QA.Baufest.DeployParameters.xml" />
-    <Content Include="NEW.QA.Huenei.DeployParameters.Debug.xml" />
-    <Content Include="NEW.QA.Huenei.DeployParameters.Release.xml" />
     <Content Include="NEW.QA.Huenei.DeployParameters.xml" />
     <Content Include="parameters.xml" />
-    <Content Include="PREHotFix.DeployParameters.xml" />
-    <Content Include="PROD.DeployParameters.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="PRE.DeployParameters.Debug.xml">
-      <DependentUpon>PRE.DeployParameters.xml</DependentUpon>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="PRE.DeployParameters.Release.xml">
-      <DependentUpon>PRE.DeployParameters.xml</DependentUpon>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="PRE.DeployParameters.xml">
-      <SubType>Designer</SubType>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="QAHotFix.DeployParameters.xml" />
-    <Content Include="NOTUSE_UPDATE.DeployParameters.Debug.xml">
-      <DependentUpon>NOTUSE_UPDATE.DeployParameters.xml</DependentUpon>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="NOTUSE_UPDATE.DeployParameters.Release.xml">
-      <DependentUpon>NOTUSE_UPDATE.DeployParameters.xml</DependentUpon>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="NOTUSE_UPDATE.DeployParameters.xml">
-      <SubType>Designer</SubType>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="QA.DeployParameters.Debug.xml">
-      <DependentUpon>QA.DeployParameters.xml</DependentUpon>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="QA.DeployParameters.Release.xml">
-      <DependentUpon>QA.DeployParameters.xml</DependentUpon>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="QA.DeployParameters.xml">
-      <SubType>Designer</SubType>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
@@ -265,9 +219,6 @@
     <Content Include="Scripts\jquery-3.4.1.slim.js" />
     <Content Include="Scripts\jquery-3.4.1.slim.min.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
-    <Content Include="NOTUSE_STAGING.DeployParameters.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>

@@ -39,5 +39,6 @@ namespace SustitucionMOAModel.Enums
         public const string Circular = "Circular";
         public const string AdjuntoCotizacionRevisionTecnica = "CotizacionRevisionTecnica";
         public const string AdjuntoCotizacionRevisionEconomica = "CotizacionRevisionEconomica";
+        public const string PeticionDeOfertaVisualizacionPrecio = "PeticionDeOfertaVisualizacionPrecio";
     }
 }

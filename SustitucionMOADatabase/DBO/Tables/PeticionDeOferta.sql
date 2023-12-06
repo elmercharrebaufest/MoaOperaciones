@@ -4,12 +4,14 @@
     [Solp_Id] INT NOT NULL,
     [FechaCreacion]          DATETIME2 (7)  NOT NULL,
     [PlazoDeOferta]          DATETIME2 (7)  NOT NULL,
-    [Observaciones]              NVARCHAR(MAX)            NOT NULL
-    CONSTRAINT [PK_PeticionDeOferta] PRIMARY KEY CLUSTERED ([Id] ASC),
+    [Observaciones]              NVARCHAR(MAX)            NOT NULL,   
     [RegistroInfo] BIT NULL, 
     [AdjuntoPliego] BIT NULL, 
+    [RevisionTecnica_Id] INT NULL, 
+    CONSTRAINT [PK_PeticionDeOferta] PRIMARY KEY CLUSTERED ([Id] ASC),
     CONSTRAINT [FK.PeticionDeOferta_Usuario_UsuarioCreadorId] FOREIGN KEY ([UsuarioCreador_Id]) REFERENCES [Usuario]([Id]),
-    CONSTRAINT [FK.UsuarioCreador_Solp_Solp_Id] FOREIGN KEY ([Solp_Id]) REFERENCES [Solp]([Id]),
+    CONSTRAINT [FK.PeticionDeOferta_RevisionTecnica_RevisionTecnica_Id] FOREIGN KEY ([RevisionTecnica_Id]) REFERENCES [PeticionDeOfertaRevisionTecnica]([Id]),
+    CONSTRAINT [FK.PeticionDeOfertaUsuario_UsuarioCreador_Solp_Solp_Id] FOREIGN KEY ([Solp_Id]) REFERENCES [Solp]([Id])
 
 );
 

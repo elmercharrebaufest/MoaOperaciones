@@ -62,7 +62,7 @@
                             <option value="0" selected>Todos</option>
                             <option value="2" selected>Granos</option>
                             <option value="3" selected>No granos</option>
-                            <option value="4" selected>Corredor</option>
+                            <option value="4" selected>Corredor/Granos</option>
                             <option value="5" selected>Cliente</option>
                         </select>
                     </div>
@@ -216,7 +216,7 @@
                             <tr *ngFor="let empresa of data
                                 | customFilterOr : 'CUIT' : 'RazonSocial' : filtroAlta
                                 | customFilter : 'EstadoAprobacionDescripcion' : selectedEstado
-                                | customNumericFilter : 'IdTipoUsuario' : idTipoProveedor : 0
+                                | customTipoProveedorFilter : 'IdTipoUsuario' : idTipoProveedor : 0
                                 | orderedColumn : {property: orderedByColumn, direction: orderDirection}
                                 | customFilterBoolean : 'ContieneDocumentacionFisica' : (contieneDocumentacionFisica == 0 ? null:  (contieneDocumentacionFisica != 2)) : (idTipoProveedor != 1)
                                 | paginate: { itemsPerPage:itemsPerPage, currentPage: p }
@@ -247,6 +247,11 @@
                                         title="{{empresa.Mail}}" data-html="true"
                                         data-content="Mail Copiado al portapapeles">
                                         <span title="Copiar correo del proveedor" class="fa fa-envelope"
+                                            style="font-size: 22px; color: #075088; margin-right: 5px;"></span>
+                                    </a>
+                                    <a id="p{{empresa.Id}}" *ngIf="empresa.EstadoAprobacion == 15 && esAdmin" (click)="confirmarBorrarAlta(empresa.Id, empresa.Mail)" data-toggle="popover"
+                                        data-trigger="focus" data-placement="top" title="{{empresa.Mail}}" data-html="true">
+                                        <span title="Eliminar proveedor del sistema" class="fa fa-trash"
                                             style="font-size: 22px; color: #075088; margin-right: 5px;"></span>
                                     </a>
                                     <button
@@ -1521,3 +1526,10 @@
         </div>
     </div>
 </div>
+
+<p-confirmDialog #dialogo key="confirmarBorrado" header="Confirmación de borrado de alta" icon="pi pi-exclamation-triangle" [width]="400" [responsive]="true" appendTo="body" >
+    <p-footer>
+        <button type="button" pButton  label="Cancelar" class="ui-button-info botonModal" (click)="dialogo.reject()"></button>
+        <button type="button" pButton  label="Aceptar" class="ui-button-success botonModal" (click)="dialogo.accept()"></button>
+    </p-footer>
+</p-confirmDialog>

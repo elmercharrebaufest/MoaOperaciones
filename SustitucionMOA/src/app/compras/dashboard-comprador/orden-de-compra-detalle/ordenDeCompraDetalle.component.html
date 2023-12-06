@@ -155,7 +155,7 @@
     <p-tabPanel header="Racional De Compras" >
         
             <p-accordion >
-                <p-accordionTab  header="Texto de Cabecera" 
+                <p-accordionTab  header="Texto de Cabecera" *ngIf="ordenDeCompra?.usuarioExterno != true"
                  style="box-sizing: inherit !important;"   [(selected)]="activeTabs[0]">
                    <div *ngIf="ordenDeCompra?.TextoDeCabecera; else sinTexto" >
                           {{ordenDeCompra?.TextoDeCabecera}}

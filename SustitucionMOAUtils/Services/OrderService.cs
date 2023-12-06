@@ -20,7 +20,6 @@ using Comunicacion = SustitucionMOAModel.Entities.Comunicacion;
 using SustitucionMOAModel.Models.WebApiMap.ScatoRepositorio;
 using DocumentFormat.OpenXml.Spreadsheet;
 using System.Reflection;
-using SustitucionMOAWS.ObtenerEntradaDeServicioPorNumeroWebServiceMOA;
 
 namespace SustitucionMOAUtils.Services
 
@@ -37,25 +36,6 @@ namespace SustitucionMOAUtils.Services
             this.repositorio = repositorio;
             this.consultaService = consultaService;
             //_liquidacionService = liquidacionService;
-        }
-
-        public List<OrdenCompraDto> ObtenerOrdenesCompraPorProveedor(OrderParamsDto parametros)
-        {
-            //Obtiene OC, todo el arbol completo.
-            List<OrdenCompraDto> result = ServicioSAP_OrdenesCompraCompleto(parametros);
-
-            // Filtra si se proporciona nroOC
-            if (!string.IsNullOrEmpty(parametros.OrdenCompraId))
-                result = result.Where(orden => orden.OrdenCompraId.ToString() == parametros.OrdenCompraId).ToList();
-
-            // Ordena si se proporciona la columna de orden y el tipo de orden
-            if (!string.IsNullOrEmpty(parametros.ColumnaOrden))
-                result = OrdenarOrdenesCompra(result, parametros.ColumnaOrden, parametros.OrdenAscendente);
-
-            // Realiza la paginación
-            result = PaginarResultados(result, parametros.pagina, parametros.elementosPorPagina);
-
-            return result;
         }
 
         /// <summary>
@@ -102,70 +82,6 @@ namespace SustitucionMOAUtils.Services
         }
 
 
-        // Consultas a servicios SAP para distintos datos de ordenes de compra
-        public List<OrdenCompraDto> ServicioSAP_OrdenesCompraCompleto(OrderParamsDto parametros)
-        {
-            //Obtiene OC con Cabeceras y Posiciones
-            List<OrdenCompraDto> ordenesCompra = new ObtenerOrdenesDeCompraConsumerMOA().Request(parametros); //Cabecera y posiciones
-
-            //Obtiene 1 Entrada de Servicio, prueba para obtener todas las necesarias.
-            OrdenCompraEntradaServicioDto entradaServicio = new ObtenerEntradaDeServicioPorNumeroConsumerMOA().ObtenerEntradaServicio("1001457023");
-
-            //Obtiene Oc con ItemsLineas
-            List<AdjudicacionDto> OrdenesCompraConItemLinea = new List<AdjudicacionDto>(); //
-            List< OrdenCompraItemDto > ItemsLinea = new List<OrdenCompraItemDto>(); // ItemsLinea con referencia a posiciones
-            foreach (var orden in ordenesCompra)
-            {
-                string nroOC = orden.OrdenCompraId.ToString();
-                //Solo pruebas de desarrollo, luego se debe eliminar.
-                if (nroOC == "4123001500")
-                {
-                    var aux = "solo pruebas";
-                }
-                AdjudicacionDtoCopia detalleOrdendeCompra = new ObtenerOrdenDeCompraConsumerMOA(repositorio).ObtenerOrdenDeCompraConItems(nroOC);
-
-                List<OrdenCompraPosicionDto> PosicionesAux = new List<OrdenCompraPosicionDto>();
-                
-                foreach (var posicionSap in detalleOrdendeCompra.AdjudicacionPosiciones)
-                {
-                    List<OrdenCompraItemDto> ItemsAux = new List<OrdenCompraItemDto>();
-
-                    if (posicionSap != null && posicionSap.SubposicionesCompras != null && posicionSap.SubposicionesCompras.Any())
-                    {
-                        foreach (var item in posicionSap.SubposicionesCompras)
-                        {
-                            OrdenCompraItemDto PosicionItem = new OrdenCompraItemDto();
-
-                            PosicionItem.ItemId = item.Indice;
-                            PosicionItem.PosicionId = posicionSap.Indice;
-                            PosicionItem.Descripcion = item.Tarea;
-                            PosicionItem.ServicioNumero = item.CodigoSolp;
-                            PosicionItem.Cantidad = item.Cantidad;
-                            PosicionItem.PrecioBruto = item.PrecioBruto;
-                            //PosicionItem.PCKG_NO = item.PCKG_NO;
-
-                            ItemsAux.Add(PosicionItem);
-                        }
-                    }
-                    OrdenCompraPosicionDto aux = new OrdenCompraPosicionDto();
-
-                    aux.Items = ItemsAux;
-                    aux.Descripcion = posicionSap.Tarea;
-                    //Mapear campos de posiciones
-
-                    PosicionesAux.Add(aux);
-                    //orden.Posiciones = PosicionesAux;
-                }
-
-                orden.Posiciones = PosicionesAux;
-            }
-            return ordenesCompra;
-        }
-
-
-        //Estre se podría eliminar.
-        public void ObtenerOrdenesCompraItemsLineas(List<OrdenCompraDto> ordenesCompras)
-        {
-        }
+       
     }
 }

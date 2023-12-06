@@ -201,7 +201,6 @@ namespace SustitucionMOAWS.WSConsumers
         private ModificarPedidoSAP ConvertirAdjudicacion(Adjudicacion adjudicacion)
         {
             //TODO: Crear OC ConvertirSOLP - fields hardcodeados o para revisar
-            ///PURCH_ORG ok por ahora. OrganizacionCompras hardcode 2029
             ///DOC_TYPE  ok por ahora. Clase de documento de compras / Estrategia de liberacion hardcore ZPE1 
 
             ///STREET y STREET_NO ok. no tenemos el campo separado mandamos todo en street            
@@ -210,8 +209,8 @@ namespace SustitucionMOAWS.WSConsumers
 
             var proveedorCodigoDeLaAdjudicacion = adjudicacion.Posiciones.First().CotizacionPosicion.Cotizacion.PeticionDeOfertaUsuario.Usuario.ObtenerCodigoProveedor();
             var usuarioCreadorAdjudicacion = adjudicacion.Usuario.UsuarioSap;
+            var usuarioOrganizacionDeCompra = adjudicacion.Usuario.OrganizacionDeCompra;
             var solp = adjudicacion.Solp;
-
             ModificarPedidoSAP modificarPedidoSAP = new ModificarPedidoSAP();
             modificarPedidoSAP.PURCHASEORDER = adjudicacion.Cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Solp.NroOrdenDeCompraAdicional;// "4123001763";
 
@@ -238,8 +237,8 @@ namespace SustitucionMOAWS.WSConsumers
             //var PUR_GROUP = solp.Posiciones.Where(a => posIds.Contains(a.Id)).First().GrupoCompras.CodigoSap.ToString();
             //cabeceraDelPedido.COMP_CODE = "MOA"; //COMP_CODE BUKRS   Sociedad
             //cabeceraDelPedido.DOC_TYPE = "ZPE1";//solp.ClaseDocumento.CodigoSap; //DOC_TYPE    ESART Clase de documento de compras
-            //cabeceraDelPedido.VENDOR = proveedorCodigoDeLaAdjudicacion;//VENDOR ELIFN   Número de cuenta del proveedor
-            //cabeceraDelPedido.PURCH_ORG = "2029";//PURCH_ORG EKORG   Organización de compras
+            //cabeceraDelPedido.VENDOR = proveedorCodigoDeLaAdjudicacion; //VENDOR ELIFN   Número de cuenta del proveedor
+            //cabeceraDelPedido.PURCH_ORG = usuarioOrganizacionDeCompra; //PURCH_ORG EKORG   Organización de compras
             //cabeceraDelPedido.PUR_GROUP = PUR_GROUP;  //PUR_GROUP   BKGRP Grupo de compras
             //cabeceraDelPedido.CURRENCY = CURRENCY; //CURRENCY WAERS   Clave de moneda
             //cabeceraDelPedido.CREATED_BY = usuarioCreadorAdjudicacion;//CREATED_BY ERNAM   Nombre del responsable que ha añadido el objeto
@@ -414,6 +413,8 @@ namespace SustitucionMOAWS.WSConsumers
                 });
 
                 //Nombre: ZBAPIMEPOACCOUNT IM_POACCOUNT Denominación:	Imputación
+
+
                 var imputacion = new BAPIMEPOACCOUNT();
                 imputacion.PO_ITEM = poItem;
                 imputacion.SERIAL_NO = numeroDeImputacion;
@@ -422,9 +423,9 @@ namespace SustitucionMOAWS.WSConsumers
                 imputacion.QUANTITYSpecified = imputacion.QUANTITY > 0;
                 imputacion.BUS_AREA = "GENE";
                 imputacion.CO_AREA = "MOA";
-                imputacion.COSTCENTER = ObtenerImputacion(esPosicionDeMateriales, posicion, "centrodecosto");
-                imputacion.ORDERID = ObtenerImputacion(esPosicionDeMateriales, posicion, "ordendeot");
-                imputacion.PROFIT_CTR = ObtenerImputacion(esPosicionDeMateriales, posicion, "siniestrobeneficio");
+                imputacion.COSTCENTER = ObtenerImputacion(esPosicionDeMateriales, posicion, new List<string> { "centrodecosto" });
+                imputacion.ORDERID = ObtenerImputacion(esPosicionDeMateriales, posicion, new List<string> { "ordendeot", "ordendeinversion" });
+                imputacion.PROFIT_CTR = ObtenerImputacion(esPosicionDeMateriales, posicion, new List<string> { "siniestrobeneficio" });
                 imputacion.SUB_NUMBER = "";
                 imputacion.ASSET_NO = "";
                 imputacion.COSTOBJECT = "";
@@ -444,7 +445,7 @@ namespace SustitucionMOAWS.WSConsumers
                     CO_AREA = "X",
                     COSTOBJECT = "",
                     COSTCENTER = (posicion.TipoImputacion?.Codigo.ToLower() == "centrodecosto") ? "X" : "",
-                    ORDERID = (posicion.TipoImputacion?.Codigo.ToLower() == "ordendeot") ? "X" : "",
+                    ORDERID = (posicion.TipoImputacion?.Codigo.ToLower() == "ordendeot" || posicion.TipoImputacion?.Codigo.ToLower() == "ordendeinversion") ? "X" : "",
                     PROFIT_CTR = (posicion.TipoImputacion?.Codigo.ToLower() == "siniestrobeneficio") ? "X" : ""
                 });
 
@@ -550,10 +551,10 @@ namespace SustitucionMOAWS.WSConsumers
             return modificarPedidoSAP;
         }
 
-        private static string ObtenerImputacion(bool esPosicionDeMateriales, SolpPosicion posicion, string tipo)
+        private static string ObtenerImputacion(bool esPosicionDeMateriales, SolpPosicion posicion, List<string> tipos)
         {
 
-            if (posicion.TipoImputacion?.Codigo.ToLower() == tipo)
+            if (tipos.Contains(posicion.TipoImputacion?.Codigo.ToLower()))
             {
                 if (esPosicionDeMateriales)
                 {

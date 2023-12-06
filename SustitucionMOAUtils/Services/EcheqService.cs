@@ -10,6 +10,7 @@ using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Models;
 using SustitucionMOAModel.Models.WSMapMOA.CartaPorte.Formulario;
+using SustitucionMOAModel.Models.WSMapMOA.Contrato.Detalle;
 using SustitucionMOAModel.Models.WSMapMOA.Echeq;
 using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Interfaces;
@@ -57,18 +58,21 @@ namespace SustitucionMOAUtils.Services
                 result.Where(x => x.Clasificacion == "PRODUCTOR" && x.MarcaCheque == true).ToList().ForEach(x => x.Documentos.ForEach(k => k.MarcaCheque = true));
                 result.Where(x => x.Clasificacion != "PRODUCTOR" && x.Documentos.Any(e => e.MarcaCheque == true)).ToList().ForEach(k => k.MarcaCheque = true);
 
+                List<string> cttosConCesionPago = this.GetContratosConCesionPago(result, proveedor);
+                var resultFiltrado = result.Where(x => !cttosConCesionPago.Contains(x.Contrato)).ToList();
+
                 List<string> documentos = result.Where(a => a.MarcaCheque).SelectMany(a => a.Documentos.Where(b => b.MarcaCheque).Select(b => b.Documento)).ToList();
                 var aperturas = repositorio.Listar<EcheqApertura>(x => x.Estado == true &&
                    documentos.Contains(x.EcheqLiquidacion.Documento));
 
                 foreach (var apertura in aperturas)
                 {
-                    EcheqLiquidacionDto liquidacion = result
+                    EcheqLiquidacionDto liquidacion = resultFiltrado
                         .Where(a => a.Contrato == apertura.EcheqLiquidacion.EcheqNegocio.Contrato && a.Pedido == apertura.EcheqLiquidacion.EcheqNegocio.Pedido)
                         .SelectMany(a => a.Documentos).Where(a => a.Documento == apertura.EcheqLiquidacion.Documento).SingleOrDefault();
                     liquidacion.Aperturas.Add(new EcheqAperturaDto { OrdenCheque = apertura.OrdenCheque, ImporteCheque = apertura.ImporteCheque });
                 }
-                return result;
+                return resultFiltrado;
             }
             catch (ValidationCustomException e)
             {
@@ -84,6 +88,38 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
+        private List<string> GetContratosConCesionPago(List<EcheqNegocioDto> result, string proveedor)
+        {
+            HashSet<string> cttos = new HashSet<string>(result.Select(c => c.Contrato));
+            List<string> cttosConCesionPago = new List<string>();
+
+            foreach (string ctto in cttos)
+            {
+               if(this.ContratoTieneCesionDePago(proveedor, ctto))
+                {
+                    cttosConCesionPago.Add(ctto);
+                }
+            }
+
+            return cttosConCesionPago;
+        }
+
+        public bool ContratoTieneCesionDePago(string proveedor, string contrato)
+        {
+            ContratoDetalleWSMOAResponse response = (ContratoDetalleWSMOAResponse)new ContratoDetalleConsumerMOA().request(proveedor, contrato);
+            //Se considera en este caso, como un contrato con cesion de pago.
+            if (response == null || response.error == "06")
+            {
+                return false;
+            }
+
+            if (response.error != null && response.error != "" && response.error != "01")
+            {
+                throw new ValidationCustomException(ErrorMsg.Error);
+            }
+
+            return response.condicionesPago.Any(condicion => condicion.Trim().ToUpper().Contains("CESIÓN DE PAGOS"));
+        }
         public string MarcarContrato(EcheqRequestModel request)
         {
             try
@@ -670,7 +706,7 @@ namespace SustitucionMOAUtils.Services
 
                 var usuario = repositorio.Obtener<SustitucionMOAModel.Entities.Usuario>(u => u.Mail == mailUsuario);
 
-                var esAdmin = usuario.TienePermiso("VER ECHEQ ADMIN");
+                var esAdmin = usuario.TienePermiso(SustitucionMOAModel.Enums.PermisoEnum.VerEcheqAdmin);
 
 
                 List<EcheqReporteDto> result = repositorio.Listar<EcheqLiquidacion, EcheqReporteDto>(x => new EcheqReporteDto
@@ -682,6 +718,7 @@ namespace SustitucionMOAUtils.Services
                     LiquidacionMarcada = x.MarcaCheque,
                     FechaCreacion = x.FechaCreacion,
                     Liquidacion = x.Documento,
+                    NumeroCOE = x.NumeroCOE
                 }, x => x.MarcaCheque && (x.EcheqNegocio.Proveedor.CodigoProveedor == codigoProveedor || esAdmin) && fechaIncioDateTime <= DbFunctions.TruncateTime(x.FechaCreacion) && fechaFinDateTime >= DbFunctions.TruncateTime(x.FechaCreacion)); // falta filtrar por fechas
 
 

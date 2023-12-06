@@ -13,6 +13,28 @@
                            /endpoint[@name='BasicHttpBinding_IServicioRepositorio']
                            /@address" />
 	</parameter>
+  <parameter name="AzureADTenantId Config">
+    <parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/appSettings/add[@key='AzureADTenantId']
+                           /@value" />
+  </parameter>
+
+  <parameter name="AzureADAppId Config">
+    <parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/appSettings/add[@key='AzureADAppId']
+                           /@value" />
+  </parameter>
+
+  <parameter name="AzureADAppSecret Config">
+    <parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/appSettings/add[@key='AzureADAppSecret']
+                           /@value" />
+  </parameter>
+  <parameter name="Url Config">
+    <parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/appSettings/add[@key='Url']
+                           /@value" />
+  </parameter>
 
   <parameter name="Url Config">
     <parameterEntry kind="XmlFile" scope="Web.config"

@@ -533,6 +533,8 @@ namespace SustitucionMOAUtils.Services
         {
             return string.Concat("00", CUIT.Substring(2, 8));
         }
+
         private TipoUsuario ObtenerTipoPorNombreCorto(string nombreCorto) => repositorio.Obtener<TipoUsuario>(t => t.NombreCorto == nombreCorto);
+
     }
 }

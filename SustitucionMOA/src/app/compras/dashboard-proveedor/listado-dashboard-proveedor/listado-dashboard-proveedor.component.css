@@ -2,17 +2,18 @@
     width: 33%;
 }
 
-.fa{
-    margin-right:-8.7px;
+.fa {
+    margin-right: -8.7px;
 }
+
 .buscar {
     background-color: #1C7CD5;
     border-color: #1C7CD5;
     color: white;
-    width: 100%;   
+    width: 100%;
 }
 
-.buttonBuscar{
+.buttonBuscar {
     margin-left: -121px;
     margin-top: 4px;
 }
@@ -23,14 +24,17 @@
     width: 10% !important;
 } */
 
-.columna{
-    word-break: break-all; word-wrap:break-word; font-size: 10px;;
+.columna {
+    word-break: break-all;
+    word-wrap: break-word;
+    font-size: 10px;
 }
 
 .headerth {
-    font-size: 11px !important; 
-    cursor:pointer;
+    font-size: 11px !important;
+    cursor: pointer;
 }
+
 .contenedor-imagen {
     position: relative;
 }
@@ -45,6 +49,14 @@
     border-radius: 50%;
 }
 
-::ng-deep .ui-paginator{
+::ng-deep .ui-paginator {
     width: 100% !important;
+}
+
+::ng-deep .ui-calendar {
+    width: 100%;
+}
+
+::ng-deep .ui-calendar .ui-inputtext {
+    width: calc(100% - 2.357em);
 }

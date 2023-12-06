@@ -1,4 +1,5 @@
-﻿using SustitucionMOAModel.Enums.SustitucionMOAModel.Enums;
+﻿using SustitucionMOAModel.Dto.AplicacionCartaPorte;
+using SustitucionMOAModel.Enums.SustitucionMOAModel.Enums;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -22,5 +23,17 @@ namespace SustitucionMOAModel.Entities
         public string Error { get; set; }
         public DateTime FechaAlta { get; set; }
         public DateTime? FechaActualizacion { get; set; }
+        public AplicacionCartaPorte() { }
+        public AplicacionCartaPorte(CrearAplicacionCartaPorte aplicacionACrear, Usuario usuario, Proveedor proveedorSeleccionado)
+        {
+            Usuario_Id = usuario.Id;
+            Proveedor_Id = proveedorSeleccionado.Id;
+            Contrato = aplicacionACrear.ContratoSeleccionado.NumeroContrato;
+            CartaPorte = aplicacionACrear.CartaPorteSeleccionada.NumeroCartaPorte;
+            Kilogramos = (int)aplicacionACrear.Kilogramos;
+            Estado = EstadoAplicacionCartaPorte.Pendiente;
+            FechaAlta = DateTime.Now;
+            FechaActualizacion = null;
+        }
     }
 }
