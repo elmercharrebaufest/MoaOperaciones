@@ -355,12 +355,26 @@ export class AltaNotificacionesComponent extends BaseComponent implements OnInit
                         this.notificacion = result.data;
 
                         console.log(this.roles)
+                        //this.notificacion.FiltroRoles.forEach(element => {
+                        //    this.roles.find(x => x.Id == element.toString()).checked = true
+                        //});
+
                         this.notificacion.FiltroRoles.forEach(element => {
-                            this.roles.find(x => x.Id == element.toString()).checked = true
+                            const foundRole = this.roles.find(x => x.Id == element.toString());
+                            if (foundRole) {
+                                foundRole.checked = true;
+                            }
                         });
 
 
-                        this.allRoles = this.roles.filter(x => x.checked).length == this.roles.length;
+
+
+                        //this.allRoles = this.roles.filter(x => x.checked).length == this.roles.length;
+
+                        const rolesWithChecked = this.roles.filter(x => x.checked !== undefined && x.checked);
+                        this.allRoles = rolesWithChecked.length === this.roles.length;
+
+
 
                         this.fecha_inicio = this.notificacion.FechaInicio.toString();
                         this.horaInicio = this.notificacion.HoraInicio;
