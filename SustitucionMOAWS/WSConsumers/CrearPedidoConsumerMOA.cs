@@ -303,9 +303,9 @@ namespace SustitucionMOAWS.WSConsumers
                 imputacion.QUANTITYSpecified = imputacion.QUANTITY > 0;
                 imputacion.BUS_AREA = "GENE";
                 imputacion.CO_AREA = "MOA";
-                imputacion.COSTCENTER = ObtenerImputacion(esPosicionDeMateriales, posicion, "centrodecosto");
-                imputacion.ORDERID = ObtenerImputacion(esPosicionDeMateriales, posicion, "ordendeot");
-                imputacion.PROFIT_CTR = ObtenerImputacion(esPosicionDeMateriales, posicion, "siniestrobeneficio");
+                imputacion.COSTCENTER = ObtenerImputacion(esPosicionDeMateriales, posicion, new List<string> { "centrodecosto" });
+                imputacion.ORDERID = ObtenerImputacion(esPosicionDeMateriales, posicion, new List<string> { "ordendeot", "ordendeinversion" });
+                imputacion.PROFIT_CTR = ObtenerImputacion(esPosicionDeMateriales, posicion, new List<string> { "siniestrobeneficio" });
                 imputacion.SUB_NUMBER = "";
                 imputacion.ASSET_NO = "";
                 imputacion.COSTOBJECT = "";
@@ -325,7 +325,7 @@ namespace SustitucionMOAWS.WSConsumers
                     CO_AREA = "X",
                     COSTOBJECT = "",
                     COSTCENTER = (posicion.TipoImputacion?.Codigo.ToLower() == "centrodecosto") ? "X" : "",
-                    ORDERID = (posicion.TipoImputacion?.Codigo.ToLower() == "ordendeot") ? "X" : "",
+                    ORDERID = (posicion.TipoImputacion?.Codigo.ToLower() == "ordendeot" || posicion.TipoImputacion?.Codigo.ToLower() == "ordendeinversion") ? "X" : "",
                     PROFIT_CTR = (posicion.TipoImputacion?.Codigo.ToLower() == "siniestrobeneficio") ? "X" : ""
                 });
 
@@ -427,10 +427,10 @@ namespace SustitucionMOAWS.WSConsumers
             return solpPedidoSAP;
         }
 
-        private static string ObtenerImputacion(bool esPosicionDeMateriales, SolpPosicion posicion, string tipo)
+        private static string ObtenerImputacion(bool esPosicionDeMateriales, SolpPosicion posicion, List<string> tipos)
         {
 
-            if (posicion.TipoImputacion?.Codigo.ToLower() == tipo)
+            if (tipos.Contains(posicion.TipoImputacion?.Codigo.ToLower()))
             {
                 if (esPosicionDeMateriales)
                 {
@@ -445,6 +445,7 @@ namespace SustitucionMOAWS.WSConsumers
             {
                 return "";
             }
+
         }
 
         private static string ObtenerCuentaMayor(bool esPosicionDeMateriales, SolpPosicion posicion)
