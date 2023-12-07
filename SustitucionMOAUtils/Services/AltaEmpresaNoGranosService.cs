@@ -5,8 +5,6 @@ using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
-using SustitucionMOAModel.Models.DataAgro;
-using SustitucionMOAModel.Models.ViewModel.AltaEmpresa;
 using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAWS.CredentialService;
@@ -43,13 +41,13 @@ namespace SustitucionMOAUtils.Services
             , string ServicioPrestado, string OrganizacionDeCompra, string RazonDeEleccion, int FacturacionAnual, string SolicitanteInterno, string usuarioMail,
             int? idProveedor, string observacionesParaElProveedor, bool requiereVerificacionCompras, bool ingresoAPlanta, bool altaInterna, bool siperObligatorio, string observacionInterna)
         {
-            if (repositorio.Existe<Proveedor>(x => x.CUIT == cuit && x.Id != idProveedor))
+            if (repositorio.Existe<Proveedor>(x => x.CUIT == cuit && x.Id != idProveedor && x.EstadoAprobacion==EstadoAprobacion.Aprobado))
             {
                 throw new ValidationCustomException("El CUIT ya esta registrado.");
             }
-            if (repositorio.Existe<Proveedor>(x => x.Mail == email && x.Id != idProveedor))
+            if (repositorio.Existe<Proveedor>(x => x.Mail == email && x.CUIT == cuit))
             {
-                throw new ValidationCustomException("El Email ya esta registrado.");
+                throw new ValidationCustomException("El Email ya tiene registrado esta CUIT.");
             }
             if (dataAgroService.ProveedorApocrifo(cuit))
             {
@@ -102,6 +100,16 @@ namespace SustitucionMOAUtils.Services
                 repositorio.Agregar(proveedor);
             }
 
+            var usuarioYaregistrado = repositorio.Obtener<Usuario>(u => u.Mail == email);
+            if (usuarioYaregistrado != null)
+            {
+                if (!usuarioYaregistrado.TieneRol(RolEnum.Multifirma))
+                {
+                    usuarioYaregistrado.AgregarRol(repositorio.Obtener<Rol>(r => r.Codigo == "MF"));
+                }
+                usuarioYaregistrado.Proveedores.Add(proveedor);
+            }
+
             repositorio.GuardarCambios();
             EnviarMailAltaNoGranos(proveedor, observacionesParaElProveedor, null, "Molinos Agro - Alta Iniciada", "iniciada");
 
@@ -140,14 +148,14 @@ namespace SustitucionMOAUtils.Services
 
         public string HabilitarProveedorOperando(int proveedorId, string razonSocial)
         {
-            if(proveedorId <= 0) throw new InfoCustomException("Id invalido.");
+            if (proveedorId <= 0) throw new InfoCustomException("Id invalido.");
 
             Proveedor proveedor = repositorio.Obtener<Proveedor>(p => p.Id == proveedorId);
             if (proveedor == null) throw new InfoCustomException("No se encontro proveedor con ese Id.");
             if (proveedor.TipoProveedor.NombreCorto != "NG") throw new InfoCustomException("El proveedor no es No Granos.");
 
             Usuario usuario = proveedor.UsuariosAsociados.First();
-            if(usuario == null) throw new InfoCustomException("El usuario no existe.");
+            if (usuario == null) throw new InfoCustomException("El usuario no existe.");
 
             //actualizo los datos del proveedor
             proveedor.EstadoAprobacion = EstadoAprobacion.Aprobado;
@@ -168,7 +176,7 @@ namespace SustitucionMOAUtils.Services
             return "Proveedor Habilitado.";
         }
 
-        public string RechazarProveedorNoGranos(int idProveedor, string usuarioMail,string observacionesParaElProveedor)
+        public string RechazarProveedorNoGranos(int idProveedor, string usuarioMail, string observacionesParaElProveedor)
         {
 
             Proveedor proveedor = repositorio.Obtener<Proveedor>(x => x.Id == idProveedor);
@@ -429,13 +437,13 @@ namespace SustitucionMOAUtils.Services
                 //guardo en el historial el cambio realizado
                 proveedor.HistorialAprobaciones.Add(
                 new ProveedorHistorialAprobacion
-                   {
-                       Fecha = DateTime.Now,
-                       EstadoAprobacion = proveedor.EstadoAprobacion,
-                       Observacion = string.Format("Documentación física: {0}", contieneDocumentacionFisica ? "Presentada" : "Faltante") ,
-                       Proveedor_Id = proveedorId,
-                       Usuario_Id = usuario.Id
-                   });
+                {
+                    Fecha = DateTime.Now,
+                    EstadoAprobacion = proveedor.EstadoAprobacion,
+                    Observacion = string.Format("Documentación física: {0}", contieneDocumentacionFisica ? "Presentada" : "Faltante"),
+                    Proveedor_Id = proveedorId,
+                    Usuario_Id = usuario.Id
+                });
 
                 repositorio.GuardarCambios();
                 return true;
