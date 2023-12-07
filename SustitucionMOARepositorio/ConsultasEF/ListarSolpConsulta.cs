@@ -103,7 +103,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                                 .Where(p => p.Circular.RequiereCambioDeFechas == true && p.Circular.PlazoDeOferta.HasValue)
                                                                 .OrderByDescending(p => p.Circular.Id).FirstOrDefault().Circular.FechaCreacion,
                                                               PlazoDeOfertaCierre = po.Cierres.Any() ? po.Cierres.OrderByDescending(p => p.Fecha).FirstOrDefault().Fecha : (DateTime?)null,
-                                                              RevisionFinalizada = po.RevisionTecnica != null && po.RevisionTecnica.Finalizada,
+                                                              RevisionFinalizada = po.RevisionTecnica == null ? false : po.RevisionTecnica.Finalizada,
                                                               ChatSinLeer = po.ChatInternoCompras.Any(a => a.Leido == false && a.Usuario.Roles.Any(r => r.Codigo == rol)),
                                                               Observaciones = po.Observaciones,
                                                               RecotizacionEconomica = po.RevisionTecnica == null ? false : po.RevisionTecnica.RecotizacionEconomica
