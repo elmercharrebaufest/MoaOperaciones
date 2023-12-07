@@ -41,7 +41,7 @@ namespace SustitucionMOAUtils.Services
             , string ServicioPrestado, string OrganizacionDeCompra, string RazonDeEleccion, int FacturacionAnual, string SolicitanteInterno, string usuarioMail,
             int? idProveedor, string observacionesParaElProveedor, bool requiereVerificacionCompras, bool ingresoAPlanta, bool altaInterna, bool siperObligatorio, string observacionInterna)
         {
-            if (repositorio.Existe<Proveedor>(x => x.CUIT == cuit && x.Id != idProveedor && x.EstadoAprobacion==EstadoAprobacion.Aprobado))
+            if (repositorio.Existe<Proveedor>(x => x.CUIT == cuit && x.Id != idProveedor ))
             {
                 throw new ValidationCustomException("El CUIT ya esta registrado.");
             }
