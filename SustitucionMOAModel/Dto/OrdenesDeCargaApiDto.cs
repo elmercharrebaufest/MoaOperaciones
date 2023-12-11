@@ -42,6 +42,7 @@ namespace SustitucionMOAModel.Dto
         public string RazonSocialDestino { get; set; }
         public string CUITIntermediarioFlete { get; set; }
         public string RazonSocialIntermediarioFlete { get; set; }
+        public string DestinoMercaderia { get; set; }
 
         public OrdenesDeCargaApiDto(Entities.OrdenDeCarga ordenFas)
         {
@@ -99,6 +100,7 @@ namespace SustitucionMOAModel.Dto
             RazonSocialDestino =ordenFason.RazonSocialDestino;
             CUITIntermediarioFlete =ordenFason.CUITIntermediarioFlete;
             RazonSocialIntermediarioFlete =ordenFason.RazonSocialIntermediarioFlete;
+            DestinoMercaderia = ordenFason.DestinoMercaderia;
     }
 
         private string ParseNombreProducto(string nombreMaterial)
