@@ -67,11 +67,12 @@
                             <div *ngIf="ordenDeCargaFason.ProductoSeleccionado && !validaCPEDG"
                                 class="col-xs-12 col-md-11">
                                 <div class="formulario-label">
-                                    Destino mercadería:
+                                    Destino mercadería (localidad - provincia):
                                 </div>
                                 <div class="styled-select">
                                     <textarea id="DestinoMercaderia" [(ngModel)]="ordenDeCargaFason.DestinoMercaderia"
-                                        rows="2" [disabled]="editando || null"></textarea>
+                                        placeholder="Localidad - Provincia" rows="2"
+                                        [disabled]="editando || null"></textarea>
                                 </div>
                             </div>
 
@@ -194,7 +195,7 @@
                             </ng-container>
                             <div class="clearfix"></div>
 
-                            <div class="col-xs-12 col-md-12">
+                            <div class="col-xs-12 col-md-12" *ngIf="esAdmin">
                                 <div class="formulario-label">
                                     Cantidad (Kgs):
                                 </div>
