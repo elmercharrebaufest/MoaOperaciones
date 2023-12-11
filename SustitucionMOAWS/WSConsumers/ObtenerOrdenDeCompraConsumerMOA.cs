@@ -259,6 +259,7 @@ namespace SustitucionMOAWS.WSConsumers
                 {
                     var fecha = POSCHEDULE.First(a => a.PO_ITEM == posicion.PO_ITEM).DELIVERY_DATE;
                     pos.FechaEntregaServicio = DateTime.ParseExact(fecha, "dd.MM.yyyy", System.Globalization.CultureInfo.InvariantCulture);
+                    pos.FechaEntregaServicioFormateado = fecha;
                 }
                 catch
                 {

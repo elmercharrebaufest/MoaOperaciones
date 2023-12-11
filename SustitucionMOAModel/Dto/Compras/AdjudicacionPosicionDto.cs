@@ -28,5 +28,6 @@ namespace SustitucionMOAModel.Dto
         public string MonedaCodigo { get; set; }
         public string CentroComprasCodigo { get; set; }
         public string MaterialTextoAmpliado { get; set; }
+        public string FechaEntregaServicioFormateado { get; set; }
     }
 }
