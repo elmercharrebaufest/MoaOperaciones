@@ -969,7 +969,7 @@ namespace SustitucionMOAUtils.Services
                 var hoy = DateTime.Now.Date;
                 var usuariosCompras = repositorio.Listar<UsuarioCompras>();
                 var usuariosComprasRelacion = repositorio.Listar<UsuarioComprasRelacionConUsuarios>(x => x.Usuario_Id == usuarioActual.Id);
-                Usuario usuario = repositorio.Obtener<Usuario>(u => u.Id == usuarioActual.Id);                                   
+                Usuario usuario = repositorio.Obtener<Usuario>(u => u.Id == usuarioActual.Id);
                 var rol = usuario.Roles.Any(r => r.Codigo == "COMPRADOR") ? "SOLP" : "COMPRADOR";
                 nroSolp = nroSolp.Trim();
                 //var peticionCierre = repositorio.Listar<PeticionDeOfertaCierre, PeticionDeOfertaCierreDto>(pc => new PeticionDeOfertaCierreDto());
@@ -1942,7 +1942,8 @@ namespace SustitucionMOAUtils.Services
             if (resultSap.Servicios.Any())
             {
                 var listaBase = repositorio.Listar<ServicioSolp>();
-
+                int agregados = 0;
+                int actualizados = 0;
                 foreach (var servicio in resultSap.Servicios)
                 {
                     int codigoNum = 0;
@@ -1963,6 +1964,7 @@ namespace SustitucionMOAUtils.Services
                                 UnidadMedidaBase = servicio.Bas,
                                 SSCItem = servicio.SSCItem
                             });
+                            agregados += 1;
                         }
                         else
                         {
@@ -1976,7 +1978,10 @@ namespace SustitucionMOAUtils.Services
                         }
                     }
                 }
+                Log.Info($"items agregados: {agregados}");
+                Log.Info($"items actualizados: {actualizados}");
             }
+
 
             repositorio.GuardarCambios();
         }
@@ -2019,6 +2024,7 @@ namespace SustitucionMOAUtils.Services
                 List<TablaSap> cuentas = tablaSap.Where(x => x.Tabla == TablasSap.CuentasSolpSap).ToList();
 
                 var contador = 0;
+                int agregados = 0;
                 foreach (var material in Materiales)
                 {
                     try
@@ -2029,6 +2035,8 @@ namespace SustitucionMOAUtils.Services
                         contador += 1;
                         if (item == null)
                         {
+                            agregados += 1;
+
                             repositorio.Agregar(new MaterialSolp
                             {
                                 Centro_Id = centroId,
@@ -2073,6 +2081,7 @@ namespace SustitucionMOAUtils.Services
                         {
                             repositorio.GuardarCambios();
                         }
+
                     }
                     catch (Exception e)
                     {
@@ -2080,7 +2089,8 @@ namespace SustitucionMOAUtils.Services
                         Logger.Log.Error(e);
                     }
                 }
-
+                Log.Info($"items agregados: {agregados}");
+                Log.Info($"items actualizados: {idsActualizados.Count}");
                 listaBase.Where(a => !idsActualizados.Contains(a.Id)).ToList().ForEach(a => a.Estado = false);
             }
             repositorio.GuardarCambios();
@@ -4624,8 +4634,8 @@ namespace SustitucionMOAUtils.Services
 
         private PeticionDeOfertaDto ObtenerPeticionDeOfertaDto(int peticionId)
         {
-            
-            var peticionDeOfertaDto =  repositorio.Obtener<PeticionDeOferta, PeticionDeOfertaDto>(po => po.Id == peticionId, po =>
+
+            var peticionDeOfertaDto = repositorio.Obtener<PeticionDeOferta, PeticionDeOfertaDto>(po => po.Id == peticionId, po =>
                          new PeticionDeOfertaDto()
                          {
                              Id = po.Id,
@@ -4649,7 +4659,7 @@ namespace SustitucionMOAUtils.Services
 
             var revisionFinalizada = repositorio.Obtener<PeticionDeOfertaRevisionTecnica>(x => x.Id == peticionDeOfertaDto.RevisionTecnicaId);
 
-            peticionDeOfertaDto.RevisionFinalizada = revisionFinalizada == null ?  false : revisionFinalizada.Finalizada;
+            peticionDeOfertaDto.RevisionFinalizada = revisionFinalizada == null ? false : revisionFinalizada.Finalizada;
 
             return peticionDeOfertaDto;
         }
