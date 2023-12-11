@@ -2275,8 +2275,7 @@ namespace SustitucionMOAUtils.Services
                         {
                             posicionEntity.Cantidad = posicion.Cantidad;
                             var codigoUnidad = unidadMedidaSap.Where(a => a.Tecnica == posicion.UnidadMedida ||
-                            a.UM == posicion.UnidadMedida || a.Comercial == posicion.UnidadMedida ||
-                            a.TextoUM == posicion.UnidadMedida || a.TextoUM2 == posicion.UnidadMedida).Single().Comercial;
+                            a.UM == posicion.UnidadMedida || a.Comercial == posicion.UnidadMedida).Single().Comercial;
                             posicionEntity.Unidad_Id = tablaSap.Where(x => x.CodigoSap == codigoUnidad).FirstOrDefault()?.Id;
                             posicionEntity.PrecioBruto = posicion.PrecioSolp;
                             if (tipoImputacion != null)
@@ -2349,8 +2348,7 @@ namespace SustitucionMOAUtils.Services
                                                       ti.NumeroDeSerie == imputacionSubposicion.NumeroActualImputacion);
 
                             var codigoUnidad = unidadMedidaSap.Where(a => a.Tecnica == subPosicion.UnidadDeMedida ||
-                            a.UM == subPosicion.UnidadDeMedida || a.Comercial == subPosicion.UnidadDeMedida ||
-                            a.TextoUM == subPosicion.UnidadDeMedida || a.TextoUM2 == subPosicion.UnidadDeMedida).Single().Comercial;
+                            a.UM == subPosicion.UnidadDeMedida || a.Comercial == subPosicion.UnidadDeMedida).Single().Comercial;
 
                             TablaSap tipoImputacionSubposicion =
                                 tipoImputacionPosicion == null || imputacionSubposicion == null || tipoImputacionSAP == null ? null :

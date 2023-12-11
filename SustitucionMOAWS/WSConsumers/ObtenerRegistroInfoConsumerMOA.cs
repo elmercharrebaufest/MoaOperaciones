@@ -55,9 +55,8 @@ namespace SustitucionMOAWS.WSConsumers
                 foreach (var purch in INFORECORD_PURCHORG.Where(a => a.INFO_REC == info.INFO_REC))
                 {
                     var codigoUnidad = unidadMedidaSap.Where(a =>
-                a.Tecnica == info.PO_UNIT || a.UM == info.PO_UNIT || 
-                a.Comercial == info.PO_UNIT || a.TextoUM == info.PO_UNIT ||
-                a.TextoUM2 == info.PO_UNIT).Single().Comercial;
+                a.Tecnica == info.PO_UNIT || a.UM == info.PO_UNIT ||
+                a.Comercial == info.PO_UNIT).Single().Comercial;
 
                     var registroInfo = new RegistroInfoDto
                     {
