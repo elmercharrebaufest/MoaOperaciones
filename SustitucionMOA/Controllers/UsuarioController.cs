@@ -20,6 +20,7 @@ using System.Net;
 using System.Security.Claims;
 using System.Text.RegularExpressions;
 using System.Web;
+using System.Web.Helpers;
 using System.Web.Http;
 using System.Web.Mvc;
 using HttpGetAttribute = System.Web.Http.HttpGetAttribute;
@@ -692,7 +693,7 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                var proveedor = JsonConvert.DeserializeObject<ProveedorDto>(json);           
+                var proveedor = JsonConvert.DeserializeObject<ProveedorDto>(json);
                 var result = _usuarioService.GrabarProveedor(proveedor);
                 return JsonCustom(new { data = result });
             }
@@ -791,7 +792,7 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                return JsonCustom(new { data = new { proveedores = _usuarioService.GetProvedoresEmail(tipoProveedorId,email, cuitUsuario) } });
+                return JsonCustom(new { data = new { proveedores = _usuarioService.GetProvedoresEmail(tipoProveedorId, email, cuitUsuario) } });
             }
             catch (InfoCustomException e)
             {
@@ -879,6 +880,63 @@ namespace SustitucionMOA.Controllers
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
         }
-
+        #region AsignarNuevoCUIT
+        [System.Web.Http.HttpGet]
+        public ActionResult GetProveedorAprobadoPorCuit(string cuit)
+        {
+            try
+            {
+                string mailUsuarioSesion = SessionPersister.getUsername();
+                return JsonCustom(new { data = _usuarioService.GetProveedorAprobadoPorCuit(cuit, mailUsuarioSesion) });
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (WSCustomException e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+        [System.Web.Http.HttpPost]
+        public ActionResult AsignarNuevaCUIT(string datosAAsignar)
+        {
+            try
+            {
+                string mailUsuarioSesion = SessionPersister.getUsername();
+                var datos = JsonConvert.DeserializeObject<AsignarNuevaCuitDto>(datosAAsignar);
+                _usuarioService.AsignarNuevaCUIT(datos, mailUsuarioSesion);
+                return JsonCustom(new { data = true });
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (WSCustomException e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+        #endregion
     }
 }
