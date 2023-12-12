@@ -124,7 +124,7 @@
             <ng-template pTemplate="body" let-rowData let-expanded="expanded" let-columns="columns">
                 <tr (dblclick)="onRowDblClick($event, rowData)">
                     <td>
-                        <a href="#" [pRowToggler]="rowData">
+                        <a href="#" [pRowToggler]="rowData" (click)="listarExpand()">
                             <i [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
                         </a>
                     </td>

@@ -202,6 +202,13 @@ export class DashboardComponent extends ListBaseComponent {
         }
     }
 
+    listarExpand() { 
+        setTimeout(() => {
+            $('[id^="ui-tabpanel-"]').css('padding', '0');
+            $('[id^="ui-tabpanel-"]').css('transition', 'none').css('animation', 'none');
+        }, 0.01);        
+    }
+
     filtrarPorSap() {
         this.checkedFilterSap = !this.checkedFilterSap;
         this.filtrarTablaPorTipoSolp();

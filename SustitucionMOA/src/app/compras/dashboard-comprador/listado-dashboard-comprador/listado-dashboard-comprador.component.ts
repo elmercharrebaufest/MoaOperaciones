@@ -108,6 +108,13 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
         this.subscripcionSolp.unsubscribe();
     }
 
+    listarExpand() { 
+        setTimeout(() => {
+            $('[id^="ui-tabpanel-"]').css('padding', '0');
+            $('[id^="ui-tabpanel-"]').css('transition', 'none').css('animation', 'none');
+        }, 0.01);        
+    }
+
     getListarSolp() {
         try {
             this.spinnerComponent.showIt();

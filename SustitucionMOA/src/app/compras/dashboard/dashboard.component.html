@@ -162,7 +162,7 @@
                 <tr [pSelectableRow]="rowData">
                     <td (dblclick)="onRowDblClick($event, rowData)">
                         <div *ngIf="rowData.TienePeticionDeOferta">
-                            <a href="#" [pRowToggler]="rowData">
+                            <a href="#" [pRowToggler]="rowData" (click)="listarExpand()">
                                 <i [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
                             </a>
                         </div>
@@ -247,7 +247,12 @@
                     <td [attr.colspan]="9">
                         <div class="col-sm-12 col-md-12 col-lg-12" style="font-size:16px;padding:20px">
                             <p-tabView>
-                                <p-tabPanel header="Licitaciones" [selected]="true">
+                                <p-tabPanel [selected]="true">
+                                    <ng-template pTemplate="header">
+                                        <div class="padding">
+                                            Licitaciones
+                                        </div>
+                                    </ng-template>
                                     <p-table [value]="rowData.PeticionesDeOferta">
                                         <ng-template pTemplate="header">
                                             <tr style="font-size: 15px;">
