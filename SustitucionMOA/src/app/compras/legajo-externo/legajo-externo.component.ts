@@ -19,6 +19,7 @@ export class LegajoExternoComponent implements OnInit {
     visualizarAlert = false;
     adjudicacionId: string;
     token: string;
+    cargarPantalla = false;
 
     constructor(private route: ActivatedRoute, protected service: ComprasService) {
     }
@@ -39,6 +40,7 @@ export class LegajoExternoComponent implements OnInit {
                 (result) => {
                     this.legajo = result.data;
                     this.blockUI.stop();
+                    this.cargarPantalla = true;
                 },
                 (error) => {
                     this.blockUI.stop();
