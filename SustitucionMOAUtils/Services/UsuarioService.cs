@@ -805,5 +805,82 @@ namespace SustitucionMOAUtils.Services
         }
 
         #endregion
+
+        #region AsignarNuevoCUIT
+        public ProveedorDto GetProveedorAprobadoPorCuit(string cuit, string mailUsuarioSesion)
+        {
+
+            var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuarioSesion);
+
+            if (usuario == null || !usuario.TieneRol(RolEnum.Administracion))
+            {
+                throw new InfoCustomException("Usuario no autorizado a realizar esta acción.");
+            }
+            var proveedor = repositorio.Obtener<Proveedor>(p => p.CUIT == cuit && p.EstadoAprobacion == EstadoAprobacion.Aprobado);
+
+            if (proveedor == null)
+            {
+                return null;
+            }
+
+            return new ProveedorDto
+            {
+                RazonSocial = proveedor.RazonSocial,
+                CodigoProveedor = proveedor.CodigoProveedor,
+                IdTipoProveedor = proveedor.TipoProveedor.Id
+            };
+        }
+        public void AsignarNuevaCUIT(AsignarNuevaCuitDto datosAsignar, string mailUsuarioSesion)
+        {
+            var usuarioSesion = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuarioSesion);
+
+            if (usuarioSesion == null || !usuarioSesion.TieneRol(RolEnum.Administracion))
+            {
+                throw new InfoCustomException("Usuario no autorizado a realizar esta acción.");
+            }
+
+            var usuario = repositorio.Obtener<Usuario>(u => u.Mail == datosAsignar.MailUsuario && u.Id == datosAsignar.IdUsuario);
+
+            if (usuario == null)
+            {
+                throw new InfoCustomException("No se ha encontrado un usuario para asignar la cuit.");
+            }
+
+            if(usuario.Proveedores.Any(p=>p.CUIT == datosAsignar.CuitAAsignar))
+            {
+                throw new InfoCustomException("El usuario ya tiene asignada la cuit solicitada.");
+            }
+
+            var proveedorAAsignar = new Proveedor
+            {
+                CUIT = datosAsignar.CuitAAsignar,
+                RazonSocial = datosAsignar.RazonSocialAAsignar,
+                CodigoProveedor = datosAsignar.CodigoProveedorAAsignar,
+                TipoProveedor = repositorio.Obtener<TipoUsuario>(datosAsignar.TipoProveedorIdAAsignar),
+                EstadoAprobacion = EstadoAprobacion.Aprobado,
+
+                SolicitanteInterno = usuario.Mail,
+            };
+
+            var historialProveedor = new ProveedorHistorialAprobacion
+            {
+                EstadoAprobacion = proveedorAAsignar.EstadoAprobacion,
+                Usuario = usuarioSesion,
+                Observacion = "Proveedor asignado manualmente de forma directa a traves de asignaciones de CUIT",
+                Fecha = DateTime.Now,
+            };
+
+            proveedorAAsignar.HistorialAprobaciones = new List<ProveedorHistorialAprobacion> { historialProveedor };
+
+            if (!usuario.TieneRol(RolEnum.Multifirma))
+            {
+                var rolMultifirma = repositorio.Obtener<Rol>(r => r.Codigo == "MF");
+                usuario.AgregarRol(rolMultifirma);
+            }
+            usuario.Proveedores.Add(proveedorAAsignar);
+
+            repositorio.GuardarCambios();
+        }
+        #endregion
     }
 }

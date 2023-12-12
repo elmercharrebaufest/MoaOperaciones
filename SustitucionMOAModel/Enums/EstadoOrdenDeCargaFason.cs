@@ -79,7 +79,10 @@
             switch (me)
             {
                 case EstadoOrdenDeCargaFason.Vencida:
+                case EstadoOrdenDeCargaFason.Anulada:
                     return "red";
+                case EstadoOrdenDeCargaFason.AnulacionSolicitada:
+                case EstadoOrdenDeCargaFason.EdicionSolicitada:
                 case EstadoOrdenDeCargaFason.Pendiente:
                     return "yellow";
                 case EstadoOrdenDeCargaFason.Generada:
@@ -88,12 +91,8 @@
                     return "white";
                 case EstadoOrdenDeCargaFason.PendienteCompensacion:
                 case EstadoOrdenDeCargaFason.PendienteContabilizacion:
-                case EstadoOrdenDeCargaFason.EdicionSolicitada:
                 case EstadoOrdenDeCargaFason.EdicionRechazada:
-                case EstadoOrdenDeCargaFason.AnulacionSolicitada:
-                case EstadoOrdenDeCargaFason.Anulada:
                     return "";
-
                 default:
                     throw new System.Exception("Semáforo no mapeado");
             }

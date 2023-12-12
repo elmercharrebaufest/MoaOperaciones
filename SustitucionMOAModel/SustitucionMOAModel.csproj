@@ -61,11 +61,13 @@
     <Compile Include="Consulta\ListaPaginada.cs" />
     <Compile Include="Dto\AplicacionCartaPorte\CargaMasivaResponse.cs" />
     <Compile Include="Dto\AplicacionCartaPorte\ComboAplicacionesContratosCcppResponse.cs" />
+    <Compile Include="Dto\AsignarNuevaCuitDto.cs" />
     <Compile Include="Dto\DestinatarioDto.cs" />
     <Compile Include="Dto\AplicacionCartaPorte\AplicacionCartaPorteApiDto.cs" />
     <Compile Include="Dto\AplicacionCartaPorte\CartaPorteParaAplicacionCartaPorte.cs" />
     <Compile Include="Dto\AplicacionCartaPorte\ContratoParaAplicacionCartaPorte.cs" />
     <Compile Include="Dto\AplicacionCartaPorte\CrearAplicacionCartaPorte.cs" />
+    <Compile Include="Dto\OrdenDeCargaFason\DetallesActualizarOrdenDeCargaFason.cs" />
     <Compile Include="Dto\PeticionDeOfertaVisualizacionPrecioDto.cs" />
     <Compile Include="Dto\EstadoSolicitudOrdenDeCargaBaseDto.cs" />
     <Compile Include="Dto\Compras\DatosUltimaSolpDto.cs" />
