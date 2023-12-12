@@ -1,5 +1,6 @@
 ﻿using Molinos.Scato.Repositorio;
 using SustitucionMOAModel.Consultas;
+using SustitucionMOAModel.Dto;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -103,7 +104,7 @@ namespace SustitucionMOARepositorio
         /// </summary>
         /// <returns>Cantidad de entidades agregadas o actualizadas</returns>
         int GuardarCambios();
-
+        
         /// <summary>
         /// Obtener las consultas realizadas por EF
         /// </summary>

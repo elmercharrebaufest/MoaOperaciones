@@ -96,6 +96,8 @@
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="MOAOperacionesDbContext.cs" />
     <Compile Include="RepositorioEF.cs" />
+    <Compile Include="Repositorios\Interfaces\IRepositorioUsuario.cs" />
+    <Compile Include="Repositorios\RepositorioUsuario.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Migrations\202008272151267_Initial.resx">

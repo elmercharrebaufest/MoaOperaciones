@@ -4,6 +4,7 @@ using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using SustitucionMOARepositorio;
+using SustitucionMOARepositorio.Repositorios.Interfaces;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
 using SustitucionMOAWS.Interfaces;
@@ -20,11 +21,11 @@ namespace SustitucionMOAUtils.Services
 {
     public class UsuarioService : IUsuarioService
     {
-        protected readonly IRepositorio repositorio;
+        protected readonly IRepositorioUsuario repositorio;
         protected readonly IVendedorService vendedorService;
         protected readonly IAzureADConsumer azureADConsumer;
 
-        public UsuarioService(IRepositorio repositorio, IVendedorService vendedorService, IAzureADConsumer azureADConsumer)
+        public UsuarioService(IRepositorioUsuario repositorio, IVendedorService vendedorService, IAzureADConsumer azureADConsumer)
         {
             this.repositorio = repositorio;
             this.vendedorService = vendedorService;
@@ -44,9 +45,10 @@ namespace SustitucionMOAUtils.Services
         {
             try
             {
-                List<Entidades.Usuario> usuarios = repositorio.Listar<Entidades.Usuario>();
+                //List<Entidades.Usuario> usuarios = repositorio.Listar<Entidades.Usuario>();
 
-                List<UsuarioDto> usuariosDto = usuarios.Select(x => new UsuarioDto(x)).ToList();
+                //List<UsuarioDto> usuariosDto = usuarios.Select(x => new UsuarioDto(x)).ToList();
+                var usuariosDto = repositorio.ObtenerUsuarios();
 
                 if (usuariosDto.Count == 0)
                 {

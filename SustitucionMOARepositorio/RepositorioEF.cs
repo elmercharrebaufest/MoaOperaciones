@@ -1,5 +1,7 @@
 ﻿using Molinos.Scato.Repositorio;
 using SustitucionMOAModel.Consultas;
+using SustitucionMOAModel.Dto;
+using SustitucionMOAModel.Entities;
 using SustitucionMOARepositorio.Extensiones;
 using System;
 using System.Collections.Generic;
@@ -13,7 +15,8 @@ using System.Linq.Expressions;
 
 namespace SustitucionMOARepositorio
 {
-    public sealed class RepositorioEF : IRepositorio
+    //public sealed class RepositorioEF : IRepositorio
+    public class RepositorioEF : IRepositorio
     {
         private readonly DbContext context;
         private const int SqlFkError = 547;
@@ -313,6 +316,7 @@ namespace SustitucionMOARepositorio
             var tabla = typeof(TEntidad).Name;
             context.Database.ExecuteSqlCommand("TRUNCATE TABLE [" + tabla + "]");
         }
+
         private static IQueryable<TProyeccion> ListarProyeccionQueryable<TProyeccion>(IQueryable<TProyeccion> resultadoFinal, string orden, DirOrden direccionOrden, int maxResultados)
         {
 
@@ -377,7 +381,7 @@ namespace SustitucionMOARepositorio
             return code;
         }
 
-        private IDbSet<TEntidad> Set<TEntidad>() where TEntidad : class
+        protected IDbSet<TEntidad> Set<TEntidad>() where TEntidad : class
         {
             return context.Set<TEntidad>();
         }
