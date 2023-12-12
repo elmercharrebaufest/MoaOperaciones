@@ -239,7 +239,7 @@ namespace SustitucionMOAUtils.Services
             var ingresoBrutoCU = this.repositorio.Obtener<IngresosBrutosCoeficienteUnificado>(i => i.Consulta_Id == consultaId);
             if (ingresoBrutoCU == null)
             {
-                throw new InfoCustomException($"No se encontró la gestion de CM05 para la consulta nro: {consultaId}.");
+                return;
             }
 
             var movimientoIngresosBrutosCoeficienteUnificado = new MovimientoIngresosBrutosCoeficienteUnificado
