@@ -46,6 +46,7 @@
 	<setParameter name="EmailAltaTempranaCuitFasCC Config" value="noelia.caceres@molinosagro.com.ar;luciano.calaon@molinosagro.com.ar"/>
 	<setParameter name="EmailAltaIntermediarioFleteTo Config" value="sebastian.serighetti@molinosagro.com.ar;marian.rabellato@molinosagro.com.ar" />
 	<setParameter name="EmailAltaIntermediarioFleteCC Config" value="moaoperaciones@baufest.com" />
+	<setParameter name="EmailConsultaInternaCC Config" value="sebastian.serighetti@molinosagro.com.ar; noelia.caceres@molinosagro.com.ar; moaoperaciones@baufest.com"/>
 
 	<setParameter name="EmailAsuntoPrefijo Config" value="[PRE] " />
 
