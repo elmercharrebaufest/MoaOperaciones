@@ -135,7 +135,7 @@ export class Solp extends CommonResponse {
         this.tipoSolpSap = EnumTipoSolpSap.Web;       
         this.estadoPasos = "0,0,0,0,0";
         this.jornadaLaboralDias = setupJornadaLaboralDias();
-        this.horaEntrega = new Date(1, 1, 1, 10, 0, 0, 0);
+        this.horaEntrega = new Date(1, 1, 1, 12, 0, 0, 0);
         this.fechaLimiteFecha = this.sumarDias(fechaLimiteFecha, 6);
         this.fechaLimiteHora = new Date(1, 1, 1, 10, 0, 0, 0);
         this.visitaDeObraFecha = new Date();
