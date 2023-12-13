@@ -2019,6 +2019,7 @@ namespace SustitucionMOAUtils.Services
                 List<TablaSap> cuentas = tablaSap.Where(x => x.Tabla == TablasSap.CuentasSolpSap).ToList();
 
                 var contador = 0;
+                int agregados = 0;
                 foreach (var material in Materiales)
                 {
                     try
@@ -2029,6 +2030,7 @@ namespace SustitucionMOAUtils.Services
                         contador += 1;
                         if (item == null)
                         {
+                            agregados += 1;
                             repositorio.Agregar(new MaterialSolp
                             {
                                 Centro_Id = centroId,
@@ -2080,7 +2082,8 @@ namespace SustitucionMOAUtils.Services
                         Logger.Log.Error(e);
                     }
                 }
-
+                Log.Info($"items agregados: {agregados}");
+                Log.Info($"items actualizados: {idsActualizados.Count}");
                 listaBase.Where(a => !idsActualizados.Contains(a.Id)).ToList().ForEach(a => a.Estado = false);
             }
             repositorio.GuardarCambios();
