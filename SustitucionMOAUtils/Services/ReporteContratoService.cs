@@ -46,28 +46,23 @@ namespace SustitucionMOAUtils.Services
 
             var usuario = repositorio.Obtener<SustitucionMOAModel.Entities.Usuario>(us => us.Mail == mailUsuario);
 
-            if(usuario == null)
+            if (usuario == null)
             {
                 throw new ValidationCustomException("El usuario no existe. Reinicie su sesión.");
             }
 
-            Proveedor proveedorDB;
+            var proveedorDB = repositorio.Obtener<Proveedor>(x => x.CodigoProveedor == proveedor);
 
-
-            if (usuario.TieneRol(RolEnum.Multifirma))
-            {
-                proveedorDB = repositorio.Obtener<Proveedor>(x => x.CodigoProveedor == proveedor);
-            }
-            else
+            if (!usuario.TienePermiso(PermisoEnum.SeleccionarVendedor))
             {
                 proveedorDB = usuario.ObtenerProveedorAsignado();
             }
-            
+
 
             var request = new ReporteContratoWSMOARequest()
             {
                 Cliente = proveedorDB.TipoProveedor.NombreCorto == "CORR" ? "" : proveedor,
-                Pendiente = mostrarPendientes  ? "X" : "",
+                Pendiente = mostrarPendientes ? "X" : "",
                 Corredor = proveedorDB.TipoProveedor.NombreCorto == "CORR" ? proveedor : "",
                 Material = "",
                 TipoContrato = "",
@@ -190,7 +185,7 @@ namespace SustitucionMOAUtils.Services
                 Cliente = proveedorDB.TipoProveedor.NombreCorto == "CORR" ? "" : proveedor,
                 Corredor = proveedorDB.TipoProveedor.NombreCorto == "CORR" ? proveedor : "",
                 Contrato = contrato,
-                Fechas = new List<FechaWS> { new FechaWS { fechaInicio = dateInicio,fechaFin = dateFin}}
+                Fechas = new List<FechaWS> { new FechaWS { fechaInicio = dateInicio, fechaFin = dateFin } }
             };
 
             ReporteContratoViewModel view = new ReporteContratoViewModel();
