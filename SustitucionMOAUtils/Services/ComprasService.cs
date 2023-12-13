@@ -1942,7 +1942,8 @@ namespace SustitucionMOAUtils.Services
             if (resultSap.Servicios.Any())
             {
                 var listaBase = repositorio.Listar<ServicioSolp>();
-
+                int agregados = 0;
+                int actualizados = 0;
                 foreach (var servicio in resultSap.Servicios)
                 {
                     int codigoNum = 0;
@@ -1963,6 +1964,7 @@ namespace SustitucionMOAUtils.Services
                                 UnidadMedidaBase = servicio.Bas,
                                 SSCItem = servicio.SSCItem
                             });
+                            agregados += 1;
                         }
                         else
                         {
@@ -1976,6 +1978,8 @@ namespace SustitucionMOAUtils.Services
                         }
                     }
                 }
+                Log.Info($"items agregados: {agregados}");
+                Log.Info($"items actualizados: {actualizados}");
             }
 
             repositorio.GuardarCambios();
