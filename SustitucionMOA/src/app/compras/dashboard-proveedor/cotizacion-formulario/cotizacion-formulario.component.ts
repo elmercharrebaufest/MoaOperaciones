@@ -189,7 +189,11 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
                         this.floatMsgService.setInfoMsg(result.info);
                     } else {
                         // this.nroPeticion = result.data.IdEntidad;
-                        this.displayCotizacionCreada = true;
+                        if(result.data.Errores && result.data.Errores.length > 0){
+                            this.floatMsgService.setErrorMsg(result.data.Errores[0]);
+                        }else{
+                            this.displayCotizacionCreada = true;
+                        }                        
                     }
                     this.blockUI.stop();
                 },

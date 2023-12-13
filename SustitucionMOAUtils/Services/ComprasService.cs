@@ -1942,8 +1942,7 @@ namespace SustitucionMOAUtils.Services
             if (resultSap.Servicios.Any())
             {
                 var listaBase = repositorio.Listar<ServicioSolp>();
-                int agregados = 0;
-                int actualizados = 0;
+
                 foreach (var servicio in resultSap.Servicios)
                 {
                     int codigoNum = 0;
@@ -1964,7 +1963,6 @@ namespace SustitucionMOAUtils.Services
                                 UnidadMedidaBase = servicio.Bas,
                                 SSCItem = servicio.SSCItem
                             });
-                            agregados += 1;
                         }
                         else
                         {
@@ -1978,10 +1976,7 @@ namespace SustitucionMOAUtils.Services
                         }
                     }
                 }
-                Log.Info($"items agregados: {agregados}");
-                Log.Info($"items actualizados: {actualizados}");
             }
-
 
             repositorio.GuardarCambios();
         }
@@ -2024,7 +2019,6 @@ namespace SustitucionMOAUtils.Services
                 List<TablaSap> cuentas = tablaSap.Where(x => x.Tabla == TablasSap.CuentasSolpSap).ToList();
 
                 var contador = 0;
-                int agregados = 0;
                 foreach (var material in Materiales)
                 {
                     try
@@ -2035,8 +2029,6 @@ namespace SustitucionMOAUtils.Services
                         contador += 1;
                         if (item == null)
                         {
-                            agregados += 1;
-
                             repositorio.Agregar(new MaterialSolp
                             {
                                 Centro_Id = centroId,
@@ -2081,7 +2073,6 @@ namespace SustitucionMOAUtils.Services
                         {
                             repositorio.GuardarCambios();
                         }
-
                     }
                     catch (Exception e)
                     {
@@ -2089,8 +2080,7 @@ namespace SustitucionMOAUtils.Services
                         Logger.Log.Error(e);
                     }
                 }
-                Log.Info($"items agregados: {agregados}");
-                Log.Info($"items actualizados: {idsActualizados.Count}");
+
                 listaBase.Where(a => !idsActualizados.Contains(a.Id)).ToList().ForEach(a => a.Estado = false);
             }
             repositorio.GuardarCambios();
@@ -2724,10 +2714,14 @@ namespace SustitucionMOAUtils.Services
                             {
                                 var unidadesDelMaterial = unidadesDeMedidaSAP.Where(x => x.CodigoMaterial == solpPosicion.CodigoMaterialSap.Codigo).ToList();
                                 var unidadSolicitada = unidadesDelMaterial.First(x => x.UnidadDeMedida == solpPosicion.Unidad.Descripcion);
-                                var unidadCotizada = unidadesDelMaterial.First(x => x.UnidadDeMedida == cotizacionPosicion.UnidadMedida.Descripcion);
-                                cotizacionPosicion.UnidadMedida.Descripcion = unidadSolicitada.UnidadDeMedida;
-                                cotizacionPosicion.Cantidad = Math.Round(cotizacionPosicion.Cantidad * (unidadCotizada.Numerador / unidadCotizada.Denominador) / (unidadSolicitada.Numerador / unidadSolicitada.Denominador), 2);
-                                cotizacionPosicion.Precio = Math.Round((cotizacionPosicion.Precio / (unidadCotizada.Numerador / unidadCotizada.Denominador)) * (unidadSolicitada.Numerador / unidadSolicitada.Denominador), 2);
+                                if (!string.IsNullOrEmpty(cotizacionPosicion.UnidadMedida.Descripcion))
+                                {
+                                    var unidadCotizada = unidadesDelMaterial.First(x => x.UnidadDeMedida == cotizacionPosicion.UnidadMedida.Descripcion);
+                                    cotizacionPosicion.UnidadMedida.Descripcion = unidadSolicitada.UnidadDeMedida;
+                                    cotizacionPosicion.Cantidad = Math.Round(cotizacionPosicion.Cantidad * (unidadCotizada.Numerador / unidadCotizada.Denominador) / (unidadSolicitada.Numerador / unidadSolicitada.Denominador), 2);
+                                    cotizacionPosicion.Precio = Math.Round((cotizacionPosicion.Precio / (unidadCotizada.Numerador / unidadCotizada.Denominador)) * (unidadSolicitada.Numerador / unidadSolicitada.Denominador), 2);
+                                }                               
+                         
                             };
 
                             if (!tipodecambio.TryGetValue(cotizacionPosicion.Moneda_Id, out decimal cambio) && cotizacionPosicion.Moneda_Id > 0)
@@ -4636,26 +4630,26 @@ namespace SustitucionMOAUtils.Services
         {
 
             var peticionDeOfertaDto = repositorio.Obtener<PeticionDeOferta, PeticionDeOfertaDto>(po => po.Id == peticionId, po =>
-                         new PeticionDeOfertaDto()
-                         {
-                             Id = po.Id,
-                             Solp_Id = po.Solp_Id,
-                             FechaCreacion = po.FechaCreacion,
-                             UsuarioCreador_Id = po.UsuarioCreador_Id,
-                             PlazoDeOfertaOriginal = po.PlazoDeOferta,
-                             PlazoDeOfertaCircular = po.Usuarios.GroupBy(p => p).SelectMany(p => p.Key.Circulares)
-                                                     .Where(p => p.Circular.RequiereCambioDeFechas == true && p.Circular.PlazoDeOferta.HasValue)
-                                                     .OrderByDescending(p => p.Circular.Id).FirstOrDefault().Circular.PlazoDeOferta,
-                             FechaCircular = po.Usuarios.GroupBy(p => p).SelectMany(p => p.Key.Circulares)
-                                                     .Where(p => p.Circular.RequiereCambioDeFechas == true && p.Circular.PlazoDeOferta.HasValue)
-                                                     .OrderByDescending(p => p.Circular.Id).FirstOrDefault().Circular.FechaCreacion,
-                             PlazoDeOfertaCierre = po.Cierres.Any() ? po.Cierres.OrderByDescending(p => p.Fecha).FirstOrDefault().Fecha : (DateTime?)null,
-                             Observaciones = po.Observaciones,
-                             TipoPosicionCodigo = po.Solp.Posiciones.Select(x => x.TipoPosicion.Codigo).FirstOrDefault(),
-                             TieneVisitaObraBool = po.Solp.Pliego.TieneVisitaObra ?? false,
-                             TieneVisitaObraMasiva = po.Solp.Pliego.TieneVisitaObraMasiva ?? false,
-                             RevisionTecnicaId = po.RevisionTecnica_Id
-                         });
+                        new PeticionDeOfertaDto()
+                        {
+                            Id = po.Id,
+                            Solp_Id = po.Solp_Id,
+                            FechaCreacion = po.FechaCreacion,
+                            UsuarioCreador_Id = po.UsuarioCreador_Id,
+                            PlazoDeOfertaOriginal = po.PlazoDeOferta,
+                            PlazoDeOfertaCircular = po.Usuarios.GroupBy(p => p).SelectMany(p => p.Key.Circulares)
+                                                    .Where(p => p.Circular.RequiereCambioDeFechas == true && p.Circular.PlazoDeOferta.HasValue)
+                                                    .OrderByDescending(p => p.Circular.Id).FirstOrDefault().Circular.PlazoDeOferta,
+                            FechaCircular = po.Usuarios.GroupBy(p => p).SelectMany(p => p.Key.Circulares)
+                                                    .Where(p => p.Circular.RequiereCambioDeFechas == true && p.Circular.PlazoDeOferta.HasValue)
+                                                    .OrderByDescending(p => p.Circular.Id).FirstOrDefault().Circular.FechaCreacion,
+                            PlazoDeOfertaCierre = po.Cierres.Any() ? po.Cierres.OrderByDescending(p => p.Fecha).FirstOrDefault().Fecha : (DateTime?)null,
+                            Observaciones = po.Observaciones,
+                            TipoPosicionCodigo = po.Solp.Posiciones.Select(x => x.TipoPosicion.Codigo).FirstOrDefault(),
+                            TieneVisitaObraBool = po.Solp.Pliego.TieneVisitaObra ?? false,
+                            TieneVisitaObraMasiva = po.Solp.Pliego.TieneVisitaObraMasiva ?? false,
+                            RevisionTecnicaId = po.RevisionTecnica_Id
+                        });
 
             var revisionFinalizada = repositorio.Obtener<PeticionDeOfertaRevisionTecnica>(x => x.Id == peticionDeOfertaDto.RevisionTecnicaId);
 
@@ -5342,6 +5336,17 @@ namespace SustitucionMOAUtils.Services
                     //}
                 }
 
+                bool tieneUnidadDeMedidaNula = cotizacionDto.CotizacionPosiciones?.Any(pos =>
+                pos.UnidadDeMedidaId == null || !info.Any(unidad => unidad.Id == pos.UnidadDeMedidaId) ||
+                (cotizacionDto.CotizacionSubposiciones != null && cotizacionDto.CotizacionSubposiciones.Any(subPosicion =>
+                 subPosicion.UnidadDeMedidaId == null ||  !info.Any(unidad => unidad.Id == subPosicion.UnidadDeMedidaId)))) ?? false;
+
+                if (esFinalizado && tieneUnidadDeMedidaNula)
+                {
+                  respuestaGuardarSOLP.Errores.Add("Debe ingresar la unidad de medida");
+                  return respuestaGuardarSOLP;
+                }
+
                 repositorio.GuardarCambios();
                 GuardarCotizacionHora(cotizacionDto, cotizacion);
                 if (adjuntos != null && adjuntos.Count > 0)
@@ -5492,9 +5497,9 @@ namespace SustitucionMOAUtils.Services
                     Moneda_Id = x.MonedaId > 0 ? x.MonedaId : (int?)null,
                     Precio = x.Precio,
                     UnidadDeMedida_Id = x.UnidadDeMedidaId > 0 ? x.UnidadDeMedidaId : (int?)null,
+                    UnidadDeMedida = x.UnidadDeMedidaId > 0 ? info.Where(unidad => unidad.Id == x.UnidadDeMedidaId).FirstOrDefault() : null,
                     PeticionDeOfertaSolpPosicion_Id = x.PeticionDeOfertaSolpPosicionId,
                     Moneda = x.MonedaId > 0 ? info.Where(moneda => moneda.Id == x.MonedaId).FirstOrDefault() : null,
-                    UnidadDeMedida = x.UnidadDeMedidaId > 0 ? info.Where(unidad => unidad.Id == x.UnidadDeMedidaId).FirstOrDefault() : null,
                     NoDisponible = x.NoDisponible,
                     PrimerPlazoDeOferta = x.PrimerPlazoDeOferta,
                     PrimeraCantidad = x.PrimeraCantidad,
