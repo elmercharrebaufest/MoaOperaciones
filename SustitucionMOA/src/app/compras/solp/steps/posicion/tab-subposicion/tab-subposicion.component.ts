@@ -105,6 +105,7 @@ export class TabSubposicionComponent extends ListBaseComponent {
     }
 
     validarErrorCustom(subposicion: any, valor: any, campoAValidar: string) {
+        if (valor == null || valor == undefined) { valor = ""; }
         return ((this.camposObligatorios.find(x => x.campo == campoAValidar).esObligatorio) && valor.toString().length == 0);
     }
 
