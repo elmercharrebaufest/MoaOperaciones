@@ -334,7 +334,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
             this.mostrarBotonAnular = true;
         }
         if (!(this.ordenDeCarga.Estado == EstadoOrdenDeCarga.AnulacionSolicitada || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.EdicionSolicitada)) {
-            if (this.esTercero || ((this.esCliente || this.esCorredor) && !this.mostrarBotonAnular))
+            if ((this.esTercero || ((this.esCliente || this.esCorredor) && !this.mostrarBotonAnular)) && !(this.ordenDeCarga.Estado == EstadoOrdenDeCarga.Vencida))
                 this.mostrarBotonSolicitarAnulacion = true;
 
             if (this.ordenDeCarga.EdicionRechazada != true)
