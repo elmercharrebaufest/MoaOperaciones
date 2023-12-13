@@ -81,20 +81,11 @@ export class AltaNotificacionesComponent extends BaseComponent implements OnInit
 
         this.navService.setSeccionList([]);
 
-        //this.getRolesOptions();
+        this.getRolesOptions();
 
-        this.getRolesOptions().then(() => {
-            if (this.notificacionId > 0) {
-                this.obtenerNotificacion();
-            }
-        }).catch((error) => {
-            // Manejar errores si la función getRolesOptions() falla.
-            console.log(error)
-        });
-
-
-
-      
+        if (this.notificacionId > 0) {
+            this.obtenerNotificacion();
+        }
     }
 
     config: AngularEditorConfig = {
@@ -353,28 +344,11 @@ export class AltaNotificacionesComponent extends BaseComponent implements OnInit
                         this.mensajeComponent.setInfoMsg(result.info);
                     } else {
                         this.notificacion = result.data;
-
-                        console.log(this.roles)
-                        //this.notificacion.FiltroRoles.forEach(element => {
-                        //    this.roles.find(x => x.Id == element.toString()).checked = true
-                        //});
-
                         this.notificacion.FiltroRoles.forEach(element => {
-                            const foundRole = this.roles.find(x => x.Id == element.toString());
-                            if (foundRole) {
-                                foundRole.checked = true;
-                            }
+                            this.roles.find(x => x.Id == element.toString()).checked = true
                         });
 
-
-
-
-                        //this.allRoles = this.roles.filter(x => x.checked).length == this.roles.length;
-
-                        const rolesWithChecked = this.roles.filter(x => x.checked !== undefined && x.checked);
-                        this.allRoles = rolesWithChecked.length === this.roles.length;
-
-
+                        this.allRoles = this.roles.filter(x => x.checked).length == this.roles.length;
 
                         this.fecha_inicio = this.notificacion.FechaInicio.toString();
                         this.horaInicio = this.notificacion.HoraInicio;
@@ -431,7 +405,7 @@ export class AltaNotificacionesComponent extends BaseComponent implements OnInit
         }
     }
 
-    async getRolesOptions() {
+    getRolesOptions() {
         try {
             this.subscriptionDropDowns = this.usuarioService.getRoles().subscribe(
                 (result:any) => {
