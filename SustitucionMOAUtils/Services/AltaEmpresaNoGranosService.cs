@@ -45,7 +45,7 @@ namespace SustitucionMOAUtils.Services
             {
                 throw new ValidationCustomException("El CUIT ya esta registrado.");
             }
-            if (repositorio.Existe<Proveedor>(x => x.Mail == email && x.CUIT == cuit))
+            if (repositorio.Existe<Proveedor>(x => x.Mail == email && x.CUIT == cuit && x.Id != idProveedor))
             {
                 throw new ValidationCustomException("El Email ya tiene registrado esta CUIT.");
             }
