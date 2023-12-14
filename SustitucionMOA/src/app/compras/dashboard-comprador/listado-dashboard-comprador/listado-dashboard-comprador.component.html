@@ -5,37 +5,59 @@
     <br>
 </section>
 <div style="padding-top: 0px !important;">
-    <spinner></spinner>
     <div class="row">
-        <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
+        <div class="col-md-3 col-lg-3">
             <p-multiSelect [options]="usuarioFiltro" [(ngModel)]="selectUsuario" defaultLabel="Usuario Solicitante"
                            [maxSelectedLabels]="1" selectedItemsLabel="{0} usuarios elegidos"></p-multiSelect>
         </div>
-        <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
+        <div class="col-md-3 col-lg-3">
             <p-multiSelect [options]="estadoSolpItem" [(ngModel)]="selectEstadoSolp" defaultLabel="Estado SOLP"
                            selectedItemsLabel="{0} estados elegidos"></p-multiSelect>
         </div>
-        <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
+        <div class="col-md-3 col-lg-3">
             <p-multiSelect [options]="grupoComprasFiltro" [(ngModel)]="selectGrupoCompras"
                            defaultLabel="Grupo de Compras" [maxSelectedLabels]="1"
                            selectedItemsLabel="{0} grupos de compras"></p-multiSelect>
         </div>
-        <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3" style="padding-right: 30px;">
+        <div class="col-md-3 col-lg-3" style="padding-right: 30px;">
             <p-multiSelect [options]="centroFiltro" [(ngModel)]="selectCentro" defaultLabel="Centro"
                            [maxSelectedLabels]="2" selectedItemsLabel="{0} centros elegidos"></p-multiSelect>
         </div>
         <div class="row myRow">
-            <div class="form-group col-md-3">
+            <div class="col-md-3">
                 <input class="col-xs-12 col-sm-12 col-md-12 col-lg-12" pInputText type="text" [(ngModel)]="nroSolp"
                        placeholder="Buscar por número de SOLP">
             </div>
-            <div class="form-group col-md-3" style="text-align: center;">
+            <div class="col-md-3 col-lg-3">
+                <p-calendar showButtonBar="true" [showIcon]="true" placeholder="Buscar por fechas"
+                            dateFormat="dd/mm/yy" (onSelect)="onSelect($event)" appendTo="body"
+                            [(ngModel)]="rangeDates" selectionMode="range" [readonlyInput]="true" [locale]="locale"
+                            (onClearClick)="returnToTodaysDate()">
+                </p-calendar>
+            </div>
+            <div class="col-md-4 col-lg-3" style="margin-top: 10px;">
+                <span style="margin-top: 1px;padding-right: 1px;">
+                    <p-checkbox class="checkboxFechas" binary="true" label="SAP" [(ngModel)]="sap"></p-checkbox>
+                </span>
+                <span class="padding1" style="margin-right: 5px; margin-left: 5px;">
+                    <p-checkbox class="checkboxFechas" binary="true" label="OT" pTooltip="Mantenimiento"
+                                [(ngModel)]="mantenimiento"></p-checkbox>
+                </span>
+                <span class="padding1" style="margin-right: 5px;">
+                    <p-checkbox class="checkboxFechas" binary="true" label="Web" [(ngModel)]="web"></p-checkbox>
+                </span>
+                <span class="padding1" style="margin-right: 5px;">
+                    <p-checkbox class="checkboxFechas" binary="true" label="Repo. Autom." pTooltip="Reposición Automática"
+                                [(ngModel)]="repoAutomatica"></p-checkbox>
+                </span>
+            </div>
+            <div class="col-md-3" style="text-align: center; padding-right: 30px;">
                 <button class="btn buscar" (click)="onBuscar()">Buscar</button>
             </div>
         </div>
     </div>
-
-    <div class="col-sm-12 col-md-12 col-lg-12" style="margin-left: -15px; width: 100% !important;">
+    <spinner></spinner>
+    <div class="col-sm-12 col-md-12 col-lg-12" style="margin-left: -15px; width: 100% !important; padding-top: 10px;">
         <p-table #tabla [value]="tablaSolp" responsiveLayout="scroll | stack" dataKey="Id">
             <ng-template pTemplate="header" let-columns>
                 <tr>
@@ -247,7 +269,7 @@
                                                 </td>
                                                 <td class="columna">
                                                     {{licitacion.RecotizacionEconomica == true ? 'Si' : 'No'}}
-                                                </td>                                                
+                                                </td>
                                                 <td class="columna" [style.color]="licitacion.EstadoColor">{{licitacion.Estado}}</td>
                                                 <td class="columna">
                                                     <button class="publicar btn " style="margin-right: 10px;" (click)="verLegajo(licitacion.Id)">

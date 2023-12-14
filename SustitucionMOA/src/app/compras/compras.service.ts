@@ -62,7 +62,7 @@ export class ComprasService extends BaseService {
         columna: string = this.filtros.columna,
         nroSolp: string = this.filtros.nroSolp,
         fechaDesde: any = this.filtros.fechaDesde,
-        fechaHasta: any | null = this.filtros.fechaHasta,
+        fechaHasta: any = this.filtros.fechaHasta,
         sap: boolean = this.filtros.sap,
         mantenimiento: boolean = this.filtros.mantenimiento,
         web: boolean = this.filtros.web,
@@ -452,7 +452,13 @@ export class ComprasService extends BaseService {
         estados: any = this.filtros.estados,
         usuarios: any = this.filtros.usuarioId,
         centros: any = this.filtros.centros,
-        grupoDeCompras: any = this.filtros.grupoDeCompras) {
+        grupoDeCompras: any = this.filtros.grupoDeCompras,
+        fechaDesde: any = this.filtros.fechaDesde,
+        fechaHasta: any = this.filtros.fechaHasta,
+        sap: boolean = this.filtros.sap,
+        mantenimiento: boolean = this.filtros.mantenimiento,
+        web: boolean = this.filtros.web,
+        repoAutomatica: boolean = this.filtros.repoAutomatica) {
         let params: HttpParams = new HttpParams()
         pagina = pagina != null ? pagina : this.filtros.pagina;
         itemsPorPagina = itemsPorPagina != null ? itemsPorPagina : this.filtros.itemsPorPagina;
@@ -466,6 +472,12 @@ export class ComprasService extends BaseService {
         params = params.set('usuarios', usuarios);
         params = params.set('centros', centros);
         params = params.set('grupoDeCompras', grupoDeCompras);
+        params = params.set('fechaDesde', (fechaDesde != null ? fechaDesde : ""));
+        params = params.set('fechaHasta', (fechaHasta != null ? fechaHasta : ""));
+        params = params.set('sap', sap.toString());
+        params = params.set('mantenimiento', mantenimiento.toString());
+        params = params.set('web', web.toString());
+        params = params.set('repoAutomatica', repoAutomatica.toString());
         return this.http
             .get<any[]>('/api/compras/ListarSolpComprador', { params: params, headers: this.headers }).subscribe(
                 (data: any[]) => {
@@ -907,7 +919,7 @@ export class ComprasService extends BaseService {
     public obtenerChat(peticionDeOfertaId: string): Observable<PeticionDeOfertaDto> {
         let params: HttpParams = new HttpParams();
         params = params.set("peticionDeOfertaId", peticionDeOfertaId);
-       
+
         return this.http
             .get("/api/compras/ObtenerChat", {
                 params: params,
@@ -917,7 +929,7 @@ export class ComprasService extends BaseService {
 
     public grabarMensajeChatInterno(mensaje: ChatInternoComprasDto) {
         let json = JSON.stringify(mensaje);
-        
+
 
         var payload = new FormData();
         payload.append('json', json);
@@ -929,7 +941,7 @@ export class ComprasService extends BaseService {
     public obtenerYExportarChat(peticionDeOfertaId: string): Observable<any> {
         let params: HttpParams = new HttpParams();
         params = params.set("peticionDeOfertaId", peticionDeOfertaId);
-       
+
         return this.http
             .get("/api/compras/ObtenerYExportarChat", {
                 params: params,

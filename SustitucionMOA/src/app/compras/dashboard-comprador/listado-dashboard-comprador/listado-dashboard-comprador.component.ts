@@ -38,10 +38,12 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
     protected locale: any;
     protected model: Solp;
     protected tabla: Table;
+    private calendar: any;
     nroSolp: string = "";
     sap: boolean = false;
     mantenimiento: boolean = false;
     web: boolean = false;
+    repoAutomatica: boolean = false;
     orden: string;
     columnaOrden: string;
     length = 0;
@@ -75,7 +77,9 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
     displayChatInterno: boolean = false;
     chatLeido: boolean = false;
     public chat: ChatComprasDto;
-
+    fechaInicio: any = null;
+    fechaFin: any = null;
+    rangeDates: Date[];
 
     constructor(protected service: ComprasService, protected navService: NavService,
         protected sessionDataService: SessionDataService, protected securityService: SecurityService,
@@ -83,6 +87,16 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
         protected route: ActivatedRoute, protected router: Router) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
         this.usuario = sessionStorage.getItem("username"); this.onBuscar();
+        this.locale = {
+            firstDayOfWeek: 0,
+            dayNames: ["Domingo", "Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado"],
+            dayNamesShort: ["Dom", "Lun", "Mar", "Mie", "Jue", "Vie", "Sab"],
+            dayNamesMin: ["Do", "Lu", "Ma", "Mi", "Ju", "Vi", "Sa"],
+            monthNames: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"],
+            monthNamesShort: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"],
+            today: 'Hoy',
+            clear: 'Borrar'
+        };
     }
 
     tablaSolp: any[];
@@ -108,11 +122,11 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
         this.subscripcionSolp.unsubscribe();
     }
 
-    listarExpand() { 
+    listarExpand() {
         setTimeout(() => {
             $('[id^="ui-tabpanel-"]').css('padding', '0');
             $('[id^="ui-tabpanel-"]').css('transition', 'none').css('animation', 'none');
-        }, 0.01);        
+        }, 0.01);
     }
 
     getListarSolp() {
@@ -151,9 +165,8 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
 
     listarSolp() {
         this.spinnerComponent.showIt();
-        this.service.getListarSolpCompras(this.pageIndex, this.pageSize, this.orden, this.columnaOrden, this.nroSolp, this.selectEstadoSolp.join(","),
-            this.selectUsuario.join(","), this.selectCentro.join(","), this.selectGrupoCompras.join(","));
-
+        this.service.getListarSolpCompras(this.pageIndex, this.pageSize, this.orden, this.columnaOrden, this.nroSolp, this.selectEstadoSolp.join(","), this.selectUsuario.join(","),
+            this.selectCentro.join(","), this.selectGrupoCompras.join(","), this.fechaInicio, this.fechaFin, this.sap, this.mantenimiento, this.web, this.repoAutomatica);
     }
 
     onOrder(columna: string) {
@@ -240,8 +253,6 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
     cerrarLegajo() {
         this.displayLegajo = false;
     }
-
-   
 
     private downloadArchivoLocal(blob: Blob, nombreArchivo: string): void {
         if (window.navigator.msSaveOrOpenBlob) {
@@ -525,43 +536,42 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
             )
     }
 
-
     obtenerPeticionDeOfertaParaChat(Id) {
         try {
             this.displayChatInterno = false;
             this.subscription = this.service.obtenerChat(Id)
-              .subscribe(
-                (result: any) => {
-                    if (result.logout == true) {
-                        this.sessionDataService.logout();
-                    } else if (result.error != undefined && result.error != "") {
-                        this.floatMsgService.setErrorMsg(result.error);
-                    } else if (result.info != undefined) {
-                        this.floatMsgService.setInfoMsg(result.info);
-                    } else {
-                        result.Mensajes = result.Mensajes.map((x) => {
-                            x.FechaEnvioDate = new Date(
-                                this.getDateFromAspNetFormat(x.FechaEnvioDate)                                
-                            );   
-                            return x;
-                        });
-                        result.FechaCreacionDate = new Date(
-                            this.getDateFromAspNetFormat(result.FechaCreacionDate)                                
-                        );   
-                        this.chat = result;
-                        this.displayChatInterno = true;
-                        this.chatLeido = true;
-                    };
-                },
-                (error) => {
-                  this.floatMsgService.setErrorMsg(error.message);
-              }
-          );
-      } catch (e) {
-          this.floatMsgService.setErrorMsg(e);
-          return false; //<-- Prevent Refresh
-      }
-      return false; //<-- Prevent Refresh
+                .subscribe(
+                    (result: any) => {
+                        if (result.logout == true) {
+                            this.sessionDataService.logout();
+                        } else if (result.error != undefined && result.error != "") {
+                            this.floatMsgService.setErrorMsg(result.error);
+                        } else if (result.info != undefined) {
+                            this.floatMsgService.setInfoMsg(result.info);
+                        } else {
+                            result.Mensajes = result.Mensajes.map((x) => {
+                                x.FechaEnvioDate = new Date(
+                                    this.getDateFromAspNetFormat(x.FechaEnvioDate)
+                                );
+                                return x;
+                            });
+                            result.FechaCreacionDate = new Date(
+                                this.getDateFromAspNetFormat(result.FechaCreacionDate)
+                            );
+                            this.chat = result;
+                            this.displayChatInterno = true;
+                            this.chatLeido = true;
+                        };
+                    },
+                    (error) => {
+                        this.floatMsgService.setErrorMsg(error.message);
+                    }
+                );
+        } catch (e) {
+            this.floatMsgService.setErrorMsg(e);
+            return false; //<-- Prevent Refresh
+        }
+        return false; //<-- Prevent Refresh
     }
 
     cerrarModalCotizacion() {
@@ -614,7 +624,29 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
     }
 
     onBuscar() {
+        this.spinnerComponent.showIt();
         this.service.getListarSolpCompras(1, 10, "", "", this.nroSolp, this.selectEstadoSolp.join(","),
-            this.selectUsuario.join(","), this.selectCentro.join(","), this.selectGrupoCompras.join(","));
+            this.selectUsuario.join(","), this.selectCentro.join(","), this.selectGrupoCompras.join(","), this.fechaInicio, this.fechaFin, this.sap, this.mantenimiento, this.web, this.repoAutomatica);
+    }
+
+    returnToTodaysDate() {
+        this.fechaInicio = "";
+        this.fechaFin = "";
+        if (this.tablaSolp.length > 0) {
+            this.mensajeComponent.setMsgsEmpty();
+        }
+    }
+
+    onSelect(event: any) {
+        if (this.rangeDates[0] && this.rangeDates[1] == null) {
+            let d = new Date(Date.parse(event));
+            this.fechaInicio = `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
+        } else {
+            let d = new Date(Date.parse(event));
+            this.fechaFin = `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
+            if (this.rangeDates[1]) { // If second date is selected
+                this.calendar.overlayVisible = false;
+            }
+        }
     }
 }
