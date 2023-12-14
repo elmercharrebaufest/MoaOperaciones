@@ -54,9 +54,7 @@ namespace SustitucionMOAWS.WSConsumers
             {
                 foreach (var purch in INFORECORD_PURCHORG.Where(a => a.INFO_REC == info.INFO_REC))
                 {
-                    var codigoUnidad = unidadMedidaSap.Where(a =>
-                a.Tecnica == info.PO_UNIT || a.UM == info.PO_UNIT ||
-                a.Comercial == info.PO_UNIT).Single().Comercial;
+                    var codigoUnidad = unidadMedidaSap.Where(a => a.UM == info.PO_UNIT).Single().Comercial;
 
                     var registroInfo = new RegistroInfoDto
                     {
@@ -78,11 +76,6 @@ namespace SustitucionMOAWS.WSConsumers
             }
 
             return registros;
-        }
-
-        public static string PrepararFecha(DateTime fecha)
-        {
-            return fecha.ToString("yyyy-MM-dd");
         }
     }
 }

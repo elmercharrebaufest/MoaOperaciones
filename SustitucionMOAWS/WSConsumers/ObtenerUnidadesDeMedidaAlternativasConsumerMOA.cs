@@ -41,7 +41,7 @@ namespace SustitucionMOAWS.WSConsumers
 
                 foreach (var umAlt in EX_UM_ALT)
                 {
-                    var codigoUnidad = unidadMedidaSap.Where(a => a.Tecnica == umAlt.UM || a.UM == umAlt.UM || a.Comercial == umAlt.UM).Single().Comercial;
+                    var codigoUnidad = unidadMedidaSap.Where(a => a.UM == umAlt.UM).Single().Comercial;
 
                     result.Add(new UnidadesDeMedida
                     {
