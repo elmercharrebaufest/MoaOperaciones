@@ -162,7 +162,6 @@
     <Compile Include="Helpers\GenericCopier.cs" />
     <Compile Include="Helpers\TwoColumnHeaderFooter.cs" />
     <Compile Include="Helpers\CurrentTimeProvider.cs" />
-    <Compile Include="Interfaces\IConsultaCommon.cs" />
     <Compile Include="Interfaces\IAplicacionCartaPorteApiService.cs" />
     <Compile Include="Interfaces\IDBService.cs" />
     <Compile Include="Interfaces\IEmailFasonService.cs" />
