@@ -5246,7 +5246,7 @@ namespace SustitucionMOAUtils.Services
                     repositorio.Obtener<Cotizacion>(cotizacionDto.CotizacionId);
                 var info = repositorio.Listar<TablaSap>(x => x.Tabla == TablasSap.Moneda || x.Tabla == TablasSap.Unidad);
                 var esModificar = false;
-
+                
                 if (cotizacion == null)
                 {
                     if (peticionUsuario != null)
@@ -5340,11 +5340,17 @@ namespace SustitucionMOAUtils.Services
                     //    cotizacion.PeticionDeOfertaUsuario.PropuestaTecnicaAprobada = true;
                     //}
                 }
-
-                bool tieneUnidadDeMedidaNula = cotizacionDto.CotizacionPosiciones?.Any(pos =>
-                pos.UnidadDeMedidaId == null || !info.Any(unidad => unidad.Id == pos.UnidadDeMedidaId) ||
-                (cotizacionDto.CotizacionSubposiciones != null && cotizacionDto.CotizacionSubposiciones.Any(subPosicion =>
-                 subPosicion.UnidadDeMedidaId == null ||  !info.Any(unidad => unidad.Id == subPosicion.UnidadDeMedidaId)))) ?? false;
+                bool tieneUnidadDeMedidaNula = false;
+                if (peticionUsuario.PeticionDeOferta.Solp.Posiciones.FirstOrDefault().TipoPosicion.Codigo == "MATERIALES")
+                {
+                    tieneUnidadDeMedidaNula = tieneUnidadDeMedidaNula = cotizacionDto.CotizacionPosiciones?.Any(pos =>
+                    pos.UnidadDeMedidaId == null || !info.Any(unidad => unidad.Id == pos.UnidadDeMedidaId)) ?? false;
+                }
+                else
+                {
+                    tieneUnidadDeMedidaNula = cotizacionDto.CotizacionSubposiciones != null && cotizacionDto.CotizacionSubposiciones.Any(subPosicion =>
+                    subPosicion.UnidadDeMedidaId == null || !info.Any(unidad => unidad.Id == subPosicion.UnidadDeMedidaId));
+                }   
 
                 if (esFinalizado && tieneUnidadDeMedidaNula)
                 {
