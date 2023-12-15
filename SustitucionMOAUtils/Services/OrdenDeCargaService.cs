@@ -251,8 +251,7 @@ namespace SustitucionMOAUtils.Services
 
             ordenDeCarga.TransporteExiste = TransporteExiste(ordenDeCarga);
 
-            var dayOfWeek = ordenDeCarga.FechaCarga.DayOfWeek;
-            ordenDeCarga.FechaVencimiento = (dayOfWeek == DayOfWeek.Friday || dayOfWeek == DayOfWeek.Thursday) ? CalcularFechaVencimiento(4, DateTime.Now) : CalcularFechaVencimiento(2, DateTime.Now);
+            ordenDeCarga.FechaVencimiento = CalcularFechaVencimiento(DateTime.Now);
         }
 
         private void LlenarOrdenAltaCorredorCliente(OrdenDeCarga ordenDeCarga, Usuario usuario)
@@ -318,11 +317,7 @@ namespace SustitucionMOAUtils.Services
                 var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
                 var esAdmin = usuario.TienePermiso(PermisoEnum.VerTodasOrdenesDeCarga);
                 var puedeEnviarASAP = usuario.TienePermiso(PermisoEnum.EnviarASap);
-                var esTercero = usuario.TienePermiso(PermisoEnum.VerOrdenesDeCargaDeTerceros);
-                var esComercial = usuario.TienePermiso(PermisoEnum.VerOrdenesDeCargaParaComerciales);
-                var esMesaFas = usuario.TienePermiso(PermisoEnum.VerOrdenesDeCargaParaMesaFas);
-                var esPuerto = usuario.TienePermiso(PermisoEnum.VerOrdenesDeCargaParaPuerto);
-                var esInterno = (esAdmin || esComercial || esMesaFas || esPuerto);
+                var esInterno = EsUsuarioInterno(usuario);
 
                 Log.Debug(this.GetType().Name, "Editar", $" usuarioPuedeEnviarASAP: {puedeEnviarASAP}");
                 Log.Debug(this.GetType().Name, "Editar", $" chofer en Scato: {choferEnScato.ToJson()}");
@@ -500,15 +495,13 @@ namespace SustitucionMOAUtils.Services
         public CrearOrdenEnSAPResponse CrearOrdenEnSAP(CrearOrdenEnSAPRequest request, bool puedeEnviarASAP = false)
         {
             Log.Info($"CrearOrdenEnSAP(request: {request.ToJson()}, usuarioPuedeEnviarASAP: {puedeEnviarASAP})");
-            var response = new CrearOrdenEnSAPResponse();
-            response.ResultCreation = true;
+            var response = new CrearOrdenEnSAPResponse { ResultCreation = true };
             var creadaEnSAP = false;
             try
             {
                 var ordenDeCarga = repositorio.Obtener<OrdenDeCarga>(q => q.Id == request.IdOrdenDeCarga);
                 var mailUsuarioSAP = puedeEnviarASAP ? request.MailUsuarioSAP : _usuarioAutomaticoSAP;
                 var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuarioSAP);
-                //var validarKg = "X";
 
                 var crearOrdenReq = new CrearOrdenRequest
                 {
@@ -823,14 +816,7 @@ namespace SustitucionMOAUtils.Services
             var esMesaFas = usuario.TienePermiso(PermisoEnum.VerOrdenesDeCargaParaMesaFas);
             var esPuerto = usuario.TienePermiso(PermisoEnum.VerOrdenesDeCargaParaPuerto);
             var descripcion = EstadoOrdenDeCarga.EdicionRechazada;
-            //Log.Debug(this.GetType().Name, "Listar", $" esAdmin: " + esAdmin);
-            //Log.Debug(this.GetType().Name, "Listar", $" esTercero: " + esTercero);
-            //Log.Debug(this.GetType().Name, "Listar", $" esComercial: " + esComercial);
-            //Log.Debug(this.GetType().Name, "Listar", $" esMesaFas: " + esMesaFas);
-            //Log.Debug(this.GetType().Name, "Listar", $" esPuerto: " + esPuerto);
-            //Log.Debug(this.GetType().Name, "Listar", $" estadoOrdenDeCarga: " + EstadoOrdenDeCargaExtensions.ToFriendlyString(descripcion));
-            var esInterno = (esAdmin || esComercial || esMesaFas || esPuerto);
-            //Log.Debug(this.GetType().Name, "Listar", $" esInterno: " + esInterno);
+            var esInterno = EsUsuarioInterno(usuario);
             fechaFinDateTime = fechaFinDateTime.AddDays(1);
 
             List<OrdenDeCargaDto> listado = new List<OrdenDeCargaDto>();
@@ -973,19 +959,9 @@ namespace SustitucionMOAUtils.Services
         public OrdenDeCargaDetalleDto Obtener(string mailUsuario, int ordenId)
         {
             var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
+            var esInterno = EsUsuarioInterno(usuario);
 
-            List<OrdenDeCargaCambiosHistorialDto> listado = new List<OrdenDeCargaCambiosHistorialDto>();
             OrdenDeCarga orden;
-
-
-            var esAdmin = usuario.TienePermiso("VER TODAS ORDENES DE CARGA");
-            var esTercero = usuario.TienePermiso("VER ORDENES DE CARGA DE TERCEROS");
-            var esComercial = usuario.TienePermiso("VER ORDENES DE CARGA PARA COMERCIALES");
-            var esMesaFas = usuario.TienePermiso("VER ORDENES DE CARGA PARA MESA FAS");
-            var esPuerto = usuario.TienePermiso("VER ORDENES DE CARGA PARA PUERTO");
-
-            var esInterno = (esAdmin || esComercial || esMesaFas || esPuerto);
-
             if (esInterno)
             {
                 orden = repositorio.Obtener<OrdenDeCarga>(ordenId);
@@ -999,7 +975,6 @@ namespace SustitucionMOAUtils.Services
             if (orden == null) throw new InfoCustomException("No se encontró ninguna orden de carga");
 
             Proveedor cliente = repositorio.Obtener<Proveedor>(orden.Cliente_Id);
-            //  var ordenDeCargaCambiosHistorial = repositorio.Listar<OrdenDeCargaCambiosHistorial>(ordenes => ordenes.OrdenDeCarga_Id == orden.Id);
 
             var ordenDeCargaCambiosHistorial = ObtenerCambiosHistorial(orden);
 
@@ -1013,7 +988,7 @@ namespace SustitucionMOAUtils.Services
                 {
                     KgDisponibles = _kgDisponiblesFasService.ObtenerKgDisponiblesContrato(contratoSAP, ordenesPendientes)
                 },
-                OrdenesConPatentesRepetidas= esInterno? ObtenerOrdenesConPatentesRepetidas(orden) : null,
+                OrdenesConPatentesRepetidas = esInterno ? ObtenerOrdenesConPatentesRepetidas(orden) : null
             };
 
             return ordenDto;
@@ -1713,7 +1688,6 @@ namespace SustitucionMOAUtils.Services
                     orden.DescripcionCodigoVerificacionSap = _transporteNoExiste;
                     emailFasService.EnviarMailTransporteNoExiste(orden);
                 }
-
             }
             if (orden.TransporteExiste && !string.IsNullOrEmpty(orden.ContratoSAP))
             {
@@ -1970,7 +1944,6 @@ namespace SustitucionMOAUtils.Services
         #endregion
 
 
-
         #region Etapa2
         public Resultado VerificarSituacionCrediticia(int ordenId)
         {
@@ -2002,7 +1975,6 @@ namespace SustitucionMOAUtils.Services
                     {
                         return new Resultado { info = "Verifique el crédito del pedido." };
                     }
-
                 }
                 else
                 {
@@ -2168,36 +2140,27 @@ namespace SustitucionMOAUtils.Services
             Log.Info($"ValidarVencimientoContrato return : true");
             return true;
         }
-        public DateTime CalcularFechaVencimiento(int dias, DateTime desde)
-        {
-            var feriados = feriadoService.ObtenerFeriados();
-            var fechaHoy = desde;
-            var fechaFinal = desde.AddDays(dias);
-            foreach (var fechaFeriado in feriados)
-            {
-                if (fechaFeriado.DayOfWeek.ToString() == "Saturday" || fechaFeriado.DayOfWeek.ToString() == "Sunday")
-                    continue;
-                if ((fechaFeriado.Date >= fechaHoy) && (fechaFeriado.Date <= fechaFinal))
-                {
-                    dias++;
-                }
-            }
-
-            var fechaVencimiento = desde.AddDays(dias);
-            return fechaVencimiento;
-        }
+        
         #endregion
 
         public string ActivarOC(int ordenId, string mailUsuario)
         {
-            var Usuario_Id = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario).Id;
-
+            var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
+            var Usuario_Id = usuario.Id;
             var orden = repositorio.Obtener<OrdenDeCarga>(x => x.Id == ordenId);
+
             var fechaVencimientoOriginal = orden.FechaVencimiento.Value;
+            var fechaVencimientoNueva = CalcularFechaVencimiento(fechaVencimientoOriginal);
+
+            if (!EsUsuarioInterno(usuario))
+            {
+                fechaVencimientoNueva = fechaVencimientoNueva.AddDays(-1);
+            }
+
             orden.Estado = EstadoOrdenDeCarga.EntregaGenerada;
-            var dayOfWeek = orden.FechaVencimiento.Value.DayOfWeek;
-            orden.FechaVencimiento = (dayOfWeek == DayOfWeek.Friday || dayOfWeek == DayOfWeek.Thursday) ? CalcularFechaVencimiento(4, orden.FechaVencimiento.Value) : CalcularFechaVencimiento(2, orden.FechaVencimiento.Value);
+            orden.FechaVencimiento = fechaVencimientoNueva;
             orden.FechaVencimientoAmpliada = true;
+
             orden.HistorialCambios.Add(new OrdenDeCargaCambiosHistorial
             {
                 Antes = EstadoOrdenDeCarga.Vencida.ToFriendlyString(),
@@ -2225,8 +2188,8 @@ namespace SustitucionMOAUtils.Services
             repositorio.GuardarCambios();
 
             return SuccessMsg.OrdenDeCargaActualizada;
-
         }
+
         public void VerificarSituacionCrediticiaJob()
         {
             if (!repositorio.Obtener<HabilitacionJob>(a => a.Nombre == "VerificarSituacionCrediticiaJob").Habilitado)
@@ -3032,5 +2995,41 @@ namespace SustitucionMOAUtils.Services
             return ordenesConPatentesRepetidas.Where(id=>id!= orden.Id).ToList();
         }
         #endregion
+
+        private bool EsUsuarioInterno(Usuario usuario)
+        {
+            var esAdmin = usuario.TienePermiso(PermisoEnum.VerTodasOrdenesDeCarga);
+            var esComercial = usuario.TienePermiso(PermisoEnum.VerOrdenesDeCargaParaComerciales);
+            var esMesaFas = usuario.TienePermiso(PermisoEnum.VerOrdenesDeCargaParaMesaFas);
+            var esPuerto = usuario.TienePermiso(PermisoEnum.VerOrdenesDeCargaParaPuerto);
+
+            var esInterno = (esAdmin || esComercial || esMesaFas || esPuerto);
+
+            return esInterno;
+        }
+
+        private DateTime CalcularFechaVencimiento(DateTime fechaOrigen)
+        {
+            var dayOfWeek = fechaOrigen.DayOfWeek;
+            var cantidadDiasDeMargen = (dayOfWeek == DayOfWeek.Friday || dayOfWeek == DayOfWeek.Thursday) ? 4 : 2;
+
+            var fechaFinal = fechaOrigen.AddDays(cantidadDiasDeMargen);
+
+            var feriados = feriadoService.ObtenerFeriados();
+            
+            foreach (var fechaFeriado in feriados)
+            {
+                if (fechaFeriado.DayOfWeek != DayOfWeek.Saturday &&
+                    fechaFeriado.DayOfWeek != DayOfWeek.Sunday &&
+                    fechaFeriado.Date >= fechaOrigen && 
+                    fechaFeriado.Date <= fechaFinal)
+                {
+                    cantidadDiasDeMargen++;
+                }
+            }
+
+            var fechaVencimiento = fechaOrigen.AddDays(cantidadDiasDeMargen);
+            return fechaVencimiento;
+        }
     }
 }
