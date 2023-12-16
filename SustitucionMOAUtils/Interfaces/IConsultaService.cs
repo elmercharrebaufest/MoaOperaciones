@@ -34,5 +34,6 @@ namespace SustitucionMOAUtils.Interfaces
         List<MaterialDto> ObtenerMaterial(TablaSeccionMaterial tablaSeccionMaterial);
         string AnularConsulta(int consultaId, int usuarioId, string motivoRechazo);
         string ProcesarCM05(HttpFileCollectionBase archivos, string cuitProveedor, int? comentario_Id = null, bool esCargaInterna = false);
+        List<ConsultaDto> ObtenerConsultasPorProveedor(int usuarioId, string vendedor, bool obtenerTodos);
     }
 }

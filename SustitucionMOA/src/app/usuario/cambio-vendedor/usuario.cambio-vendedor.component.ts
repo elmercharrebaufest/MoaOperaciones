@@ -9,11 +9,12 @@ import { SecurityService } from './../../common/services/SecurityService';
 import { SessionDataService } from './../../common/services/SessionDataService';
 import { ModalService } from './../../common/services/ModalService';
 import { BuscadorService } from '../../common/shared-components/buscador/buscador.service';
+import { ComunicacionesService } from './../../comunicaciones/comunicaciones.service';
 
 @Component({
     selector: 'app-usuario-cambio-vendedor',
     templateUrl: `usuario.cambio-vendedor.component.html`,
-    providers: [UsuarioService]
+    providers: [UsuarioService,ComunicacionesService]
 })
 export class UsuarioCambioVendedorComponent extends BaseComponent implements OnInit {
 
@@ -23,7 +24,14 @@ export class UsuarioCambioVendedorComponent extends BaseComponent implements OnI
     @ViewChild(SpinnerComponent)
     protected spinnerComponent: SpinnerComponent;
 
-    constructor(protected service: UsuarioService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService, protected readonly buscadorService: BuscadorService) {
+    constructor(protected service: UsuarioService,
+        protected navService: NavService,
+        protected sessionDataService: SessionDataService,
+        protected securityService: SecurityService,
+        protected floatMsgService: FloatMsgService,
+        protected modalService: ModalService,
+        protected readonly buscadorService: BuscadorService,
+        protected comunicacionesService: ComunicacionesService) {
         super(navService, securityService, floatMsgService, modalService);
         this.mensajeComponent = new MensajeComponent();
         this.spinnerComponent = new SpinnerComponent();
@@ -99,7 +107,8 @@ export class UsuarioCambioVendedorComponent extends BaseComponent implements OnI
         try {
             this.unsubscribe();
             this.subscription = this.service.seleccionarVendedor(vendedor, descripcion).subscribe(
-                (result:any) => {
+                (result: any) => {
+          
                     this.spinnerComponent.hideIt();
                     if (result.logout == true) {
                         this.sessionDataService.logout();
@@ -115,6 +124,7 @@ export class UsuarioCambioVendedorComponent extends BaseComponent implements OnI
                         sessionStorage.setItem("noticias", JSON.stringify(result.noticias));
                         this.sessionDataService.setNoticias(result.noticias);
                     }
+                    //this.comunicacionesService.getComunicaciones(result.vendedor, "", "");
                 },
                 error => {
                     this.mensajeComponent.setErrorMsg(error.message);

@@ -602,22 +602,25 @@ namespace SustitucionMOAUtils.Services
         public String ProcesarMensajesDeContacto(string vendedor, int usuarioId, bool obtenerTodos)
         {
             //Obtener Mensajes del Usuario logueado
-            List<ConsultaDto> _TodoLosMensajes = consultaService.ListarConsultas(usuarioId, obtenerTodos);
+            //List<ConsultaDto> _TodoLosMensajes = consultaService.ListarConsultas(usuarioId, obtenerTodos);
+
+            List<ConsultaDto> consultasAlProveedor = consultaService.ObtenerConsultasPorProveedor(usuarioId,vendedor, obtenerTodos);
+
             //Filtrar por estado
-            List<ConsultaDto> _mensajesParaRevisar = _TodoLosMensajes.Where(x => x.EstadoConsultaId == 4).ToList();
+            //List<ConsultaDto> _mensajesParaRevisar = _TodoLosMensajes.Where(x => x.EstadoConsultaId == 4).ToList();
 
             //Obtener notificaciones anteriores
-            List < Comunicacion > _mensajesYaNotificados = repositorio.Listar<Comunicacion>()
+            List < Comunicacion > consultasYaComunicadadas = repositorio.Listar<Comunicacion>()
                 .Where(x => x.ComunicacionTipo == (int)ComunicacionTipoEnum.ComunicacionesUsuarios)
                 .ToList();
 
             //Obtener solo los mensajes que son nuevos
-            List<ConsultaDto> _mensajesNuevos = _mensajesParaRevisar
-                .Where(mensaje => !_mensajesYaNotificados.Any(persistido => persistido.ConsultaId == mensaje.Id))
+            List<ConsultaDto> comunicacionesNuevas = consultasAlProveedor
+                .Where(mensaje => !consultasYaComunicadadas.Any(persistido => persistido.ConsultaId == mensaje.Id))
                 .ToList();
 
-            PersistirMensajesDeUsuario(_mensajesNuevos, vendedor, (int)ComunicacionTipoEnum.ComunicacionesUsuarios);
-            RePersistirMensajesDeUsuario(_mensajesParaRevisar, _mensajesYaNotificados, vendedor, (int)ComunicacionTipoEnum.ComunicacionesUsuarios);
+            PersistirMensajesDeUsuario(comunicacionesNuevas, vendedor, (int)ComunicacionTipoEnum.ComunicacionesUsuarios);
+            RePersistirMensajesDeUsuario(consultasAlProveedor, consultasYaComunicadadas, vendedor, (int)ComunicacionTipoEnum.ComunicacionesUsuarios);
 
             return "Fin de revision: Mensajes de Contacto.";
         }

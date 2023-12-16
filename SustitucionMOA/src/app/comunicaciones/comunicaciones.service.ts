@@ -21,7 +21,9 @@ export class ComunicacionesService extends BaseService {
     return this.http
         .get('/api/Comunicacion/GetAllByProveedor', { params: params, headers: this.headers })
         .pipe(timeoutWith(600000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde "))));
-  }
+    }
+
+
 
   public postComunicacionLeida(idComunicacion: number[]): Observable<any> {
     const objectComunicacion = { ItemId: idComunicacion };

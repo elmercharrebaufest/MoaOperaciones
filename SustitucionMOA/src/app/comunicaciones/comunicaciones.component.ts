@@ -33,6 +33,9 @@ export class ComunicacionesComponent extends BaseComponent implements OnInit {
   startDate: String;
   endDate: String;
 
+
+
+
   constructor(
     protected navService: NavService, 
     protected securytiService: SecurityService,
@@ -51,14 +54,18 @@ export class ComunicacionesComponent extends BaseComponent implements OnInit {
     sessionDataService.proveedor$.subscribe(
       proveedor => {
           this.idProveedor = proveedor;
-      });
+        });
+
+     
+
   }
 
   ngOnInit() {
     this.dateConvert();
     this.getComunicaciones(this.idProveedor, this.startDate, this.endDate);
     this.checkCommunications();
-  }
+    }
+  
 
   getComunicaciones(idProveedor, start_date, end_date) {
     this.communicationRead = [];
@@ -72,7 +79,8 @@ export class ComunicacionesComponent extends BaseComponent implements OnInit {
     try {
       this.unsubscribe();
       this.subscription = this.serviceComunicaciones.getComunicaciones(idProveedor, start_date, end_date).subscribe(
-        (result: any) => {
+          (result: any) => {
+            
           if (result.data.length == 0) {
             this.hasCommunications = false;
             this.showButtonMoreCommunications = false;
@@ -230,6 +238,8 @@ export class ComunicacionesComponent extends BaseComponent implements OnInit {
   openCommunication(notificaciones, fechacreacion, tipoComunicacion, i, idNotificacion) {
     const ids = [];
     this.filter = "";
+    let proveedorDescripcion = sessionStorage.getItem("nombre");;
+ 
     notificaciones.forEach((notificacion) => {
       if (notificacion.Leida == false && notificacion.ComunicacionTipo === tipoComunicacion) {
         ids.push(notificacion.Id);
@@ -244,7 +254,7 @@ export class ComunicacionesComponent extends BaseComponent implements OnInit {
     setTimeout(() => {
       this.getComunicaciones(this.idProveedor, this.startDate, this.endDate);
     }, 500);
-    this.redirect(notificaciones[i].ComunicacionTipo, this.filter);
+    this.redirect(notificaciones[i].ComunicacionTipo, this.filter ,proveedorDescripcion);
   }
 
   unreadCommunication(notificacion) {
@@ -257,7 +267,7 @@ export class ComunicacionesComponent extends BaseComponent implements OnInit {
     }
   }
 
-  redirect(communicationType: number, filter: string) {
+  redirect(communicationType: number, filter: string,nombreProveedor:string) {
     switch (communicationType) {
       case 1:
         this.router.navigate(['/consulta/crear-consulta'], { queryParams: { filter : 'ExencionesVencidas' }});
@@ -276,7 +286,7 @@ export class ComunicacionesComponent extends BaseComponent implements OnInit {
         break;
       
       case 5:
-            this.router.navigate(['/consulta/mis-consultas'], { queryParams: { filtrosActivados: true, filter: 'DOC', categoria: filter }});
+            this.router.navigate(['/consulta/mis-consultas'], { queryParams: { filtrosActivados: true, filter: 'DOC', categoria: filter, proveedor: nombreProveedor }});
         break;
 
       case 6:
@@ -299,5 +309,7 @@ export class ComunicacionesComponent extends BaseComponent implements OnInit {
     objectKeys(obj: any) {
       var retu = Object.keys(obj)
     return retu;
-  }
+    }
+
+
 }
