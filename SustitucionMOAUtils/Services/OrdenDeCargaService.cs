@@ -102,6 +102,13 @@ namespace SustitucionMOAUtils.Services
         };
         private readonly int diasPreviosParaCompararPatentes = -4;
 
+        private readonly string[] codigosEstadoConsultaHabilitados = new string[] {
+            "INI",
+            "GES",
+            "GESRTA",
+            "DOC"
+        };
+
         public OrdenDeCargaService(
             IRepositorio repositorio,
             IOrdenCargaConsumerMOA ordenCargaConsumer,
@@ -819,6 +826,8 @@ namespace SustitucionMOAUtils.Services
             var esInterno = EsUsuarioInterno(usuario);
             fechaFinDateTime = fechaFinDateTime.AddDays(1);
 
+            
+
             List<OrdenDeCargaDto> listado = new List<OrdenDeCargaDto>();
             if (esInterno)
             {
@@ -885,7 +894,8 @@ namespace SustitucionMOAUtils.Services
                     && filtrosEstados.Contains(o.Estado);
                 var listadoConFiltro = repositorio.ListarConsultable<OrdenDeCarga>(filtro);
                 var hashPatentesCargadas = ObtenerHashPatentesCargadas(listadoConFiltro.AsEnumerable());
-
+                var consultas = repositorio.Listar<ConsultaDetalle>(cd => listadoConFiltro.Any(orden => orden.Id == cd.Orden_Id) 
+                    && codigosEstadoConsultaHabilitados.Contains(cd.Consulta.EstadoConsulta.Code));
                 listado = listadoConFiltro
                     .ToList()
                     .Select(x => new OrdenDeCargaDto
@@ -912,6 +922,7 @@ namespace SustitucionMOAUtils.Services
                         Escalable = x.Escalable,
                         TipoContrato = x.TipoContrato,
                         TienePatentesRepetidas = VerificarOrdenConPatentesRepetidas(x, hashPatentesCargadas),
+                        TieneConsultasRealizadas = consultas.Any(cd => cd.Orden_Id == x.Id)
                     }).OrderByDescending(y => y.Id).ToList();
             }
             else
@@ -923,7 +934,9 @@ namespace SustitucionMOAUtils.Services
                     && n.FechaCarga >= fechaIncioDateTime
                     && (_estadosListarNoInternos.Contains(n.Estado))
                     );
-                //Log.Debug(this.GetType().Name, "Listar", $" listadoSinFiltro: {listadoSinFiltro.ToJson()}");
+                var consultas = repositorio.Listar<ConsultaDetalle>(cd => listadoSinFiltro.Any(orden => orden.Id == cd.Orden_Id)
+                    && codigosEstadoConsultaHabilitados.Contains(cd.Consulta.EstadoConsulta.Code));
+
                 listado = listadoSinFiltro
                     .Select(x => new OrdenDeCargaDto
                     {
@@ -943,7 +956,8 @@ namespace SustitucionMOAUtils.Services
                         NoEstaEnSAP = (x.Estado.ToFriendlyString() == "Sin Enviar a SAP"),
                         EstaSeleccionado = false,
                         EdicionRechazada = x.EdicionRechazada,
-                        TipoContrato = x.TipoContrato
+                        TipoContrato = x.TipoContrato,
+                        TieneConsultasRealizadas = consultas.Any(cd=>cd.Orden_Id == x.Id)
                     }).OrderByDescending(y => y.Id).ToList();
             }
             if (listado == null || listado.Count == 0)
