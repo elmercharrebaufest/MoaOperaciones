@@ -77,6 +77,8 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
     displayChatInterno: boolean = false;
     chatLeido: boolean = false;
     public chat: ChatComprasDto;
+    tratada: any;
+
     fechaInicio: any = null;
     fechaFin: any = null;
     rangeDates: Date[];
@@ -342,8 +344,30 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
             )
     }
 
-    publicarCotizacion(Id: string) {
-        this.goToSeccionParam('/compras/peticion-de-oferta-formulario', Id);
+    publicarCotizacion(Id: string, nroSolp: string) {   
+        this.blockUI.start('Cargando...');  
+        this.service.validarSolpTratada(nroSolp)
+        .subscribe(
+            (result) => {
+                if (result.logout == true) {
+                    this.sessionDataService.logout();
+                }
+                else {                   
+                    if(result){  
+                        this.floatMsgService.setErrorMsg("No se puede crear una nueva PO por que la SOLP fue tratada desde SAP");
+                    }else{
+                       this.goToSeccionParam('/compras/peticion-de-oferta-formulario', Id);
+                    }
+                    this.blockUI.stop();
+                }
+            },
+            (error) => {
+                this.blockUI.stop();
+                this.mensajeComponent.setErrorMsg(error.message);
+            }
+        )
+       
+        
     }
 
     onRowDblClick(a, b) {

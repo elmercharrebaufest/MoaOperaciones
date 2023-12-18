@@ -263,6 +263,7 @@ namespace SustitucionMOATest.Services
                                     CpEntrega = "CP",
                                     CalleEntrega = "Calle",
                                     NumeroEntrega = "NroEntrega",
+
                                     Subposiciones = new List<SolpSubposicion> { new SolpSubposicion {
                                         Id = 1, Tarea = "Tarea", Cantidad = 2, PrecioBruto = 500, Unidad = new TablaSap { CodigoSap = "UNI" } } }
                                 }
@@ -2224,6 +2225,18 @@ namespace SustitucionMOATest.Services
         }
 
         [Test]
+
+        public void ValidarSolpTratadaTest()
+        {
+            repositorioMock.Setup(y => y.Obtener(It.IsAny<Expression<Func<Solp, bool>>>())).Returns(solp);
+            obtenerSolpConsumerMOAMock.Setup(y => y.RequestSolpWithNroAndDates(It.IsAny<ObtenerSolpRequest>())).Returns(new ObtenerSolpSAPResponse
+            {
+                Posiciones = new List<PosicionSolpSAP> { new PosicionSolpSAP { Cantidad = 1000, NumeroPosicion = "00011" } }
+            });
+            target.ValidarSolpTratada("02929292");
+            repositorioMock.Verify(y => y.Obtener(It.IsAny<Expression<Func<Solp, bool>>>()), Times.Once);
+        }
+
         public void ListarSolpCompradorOk()
         {
             var listaSolp = new ListaPaginada<SolpDto>(new List<SolpDto> { new SolpDto { Id = 1, ItemsTotales = 7 } }, 1, 10, 5);
@@ -2234,5 +2247,4 @@ namespace SustitucionMOATest.Services
             Assert.AreEqual(listaSolp.GetType(), result.GetType());
         }
     }
-
 }

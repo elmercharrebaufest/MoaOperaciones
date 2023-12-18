@@ -215,7 +215,7 @@
                     <td colspan="2" class="columna" style="text-align: center;">
                         <button *ngIf="rowData.VerPublicar"
                                 class="publicar btn btn-success" style="font-size: 12px;"
-                                (click)="publicarCotizacion(rowData.Id)">
+                                (click)="publicarCotizacion(rowData.Id, rowData.NroSolp)">                                
                             Publicar
                         </button>
                     </td>
