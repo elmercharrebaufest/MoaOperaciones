@@ -48,6 +48,7 @@ namespace SustitucionMOAModel.Dto
         public TipoContratoFAS TipoContrato { get; set; }
         public string DestinoMercaderia { get; set; }
         public bool TienePatentesRepetidas { get; set; }
+        public bool TieneConsultasRealizadas { get; set; }
         public OrdenDeCargaDto()
         {
             this.ordenes = new List<AutoCompleteDropdownElement> { };
