@@ -2725,8 +2725,8 @@ namespace SustitucionMOAUtils.Services
                                     cotizacionPosicion.UnidadMedida.Descripcion = unidadSolicitada.UnidadDeMedida;
                                     cotizacionPosicion.Cantidad = Math.Round(cotizacionPosicion.Cantidad * (unidadCotizada.Numerador / unidadCotizada.Denominador) / (unidadSolicitada.Numerador / unidadSolicitada.Denominador), 2);
                                     cotizacionPosicion.Precio = Math.Round((cotizacionPosicion.Precio / (unidadCotizada.Numerador / unidadCotizada.Denominador)) * (unidadSolicitada.Numerador / unidadSolicitada.Denominador), 2);
-                                }                               
-                         
+                                }
+
                             };
 
                             if (!tipodecambio.TryGetValue(cotizacionPosicion.Moneda_Id, out decimal cambio) && cotizacionPosicion.Moneda_Id > 0)
@@ -5354,8 +5354,8 @@ namespace SustitucionMOAUtils.Services
 
                 if (esFinalizado && tieneUnidadDeMedidaNula)
                 {
-                  respuestaGuardarSOLP.Errores.Add("Debe ingresar la unidad de medida");
-                  return respuestaGuardarSOLP;
+                    respuestaGuardarSOLP.Errores.Add("Debe ingresar la unidad de medida");
+                    return respuestaGuardarSOLP;
                 }
 
                 repositorio.GuardarCambios();
@@ -6786,6 +6786,47 @@ namespace SustitucionMOAUtils.Services
             }
             catch (Exception ex)
             {
+                throw;
+            }
+        }
+
+        public bool ValidarSolpTratada(string nroSolp)
+        {
+            DateTime fechaDesde = Convert.ToDateTime(ConfigurationManager.AppSettings["FechaInicioConsultaSolp"].ToString());
+            DateTime fechaHasta = Convert.ToDateTime(ConfigurationManager.AppSettings["FechaFinConsultaSolp"].ToString());
+            var filtros = new ObtenerSolpRequest
+            {
+                FechaDesde = fechaDesde,
+                FechaHasta = fechaHasta,
+                NumeroSolp = nroSolp,
+            };
+            var tratada = false;
+            try
+            {
+
+                if (!string.IsNullOrEmpty(nroSolp))
+                {
+                    var solpEntidad = repositorio.Obtener<Solp>(a => a.NroSolp == nroSolp);
+                    var solp = obtenerSolpConsumerMOA.RequestSolpWithNroAndDates(filtros);
+                    var cantidadPendienteSap = (decimal)0;
+                    foreach (var item in solpEntidad.Posiciones)
+                    {
+                        cantidadPendienteSap += solp != null && solp.Posiciones.Count > 0 &&
+                          solp.Posiciones.Any(x => Int32.Parse(x.NumeroPosicion) == item.Indice) ?
+                          (solp.Posiciones.Where(x => Int32.Parse(x.NumeroPosicion) == item.Indice).FirstOrDefault().Ordered) : 0;
+
+                    }
+                    tratada = (solpEntidad.Posiciones.Sum(x => x.Cantidad) - cantidadPendienteSap) < 0;
+
+                }
+
+                return tratada;
+
+            }
+            catch (Exception e)
+            {
+                Logger.Log.Info($"ValidarSolpTratada" + nroSolp);
+                Logger.Log.Error(e);
                 throw;
             }
         }

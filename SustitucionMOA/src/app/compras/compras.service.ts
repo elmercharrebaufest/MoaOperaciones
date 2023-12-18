@@ -936,4 +936,15 @@ export class ComprasService extends BaseService {
                 headers: this.headers
             });
     }
+
+    public validarSolpTratada(nroSolp: string): Observable<any> {
+        let params: HttpParams = new HttpParams();
+        params = params.set("nroSolp", nroSolp);
+       
+        return this.http
+            .get("/api/compras/ValidarSolpTratada", {
+                params: params,
+                headers: this.headers
+            });
+    }
 }

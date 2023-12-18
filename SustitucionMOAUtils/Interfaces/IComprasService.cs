@@ -79,5 +79,7 @@ namespace SustitucionMOAUtils.Interfaces
         ChatComprasDto ObtenerChat(int peticionDeOfertaId, int usuarioActualId);
         Resultado GrabarMensajeChatInterno(ChatInternoComprasDto mensaje);
         string ExportarChatInternoAtexto(int peticionDeOfertaId, string rutaArchivo);
+
+        bool ValidarSolpTratada(string nroSolp);
     }
 }
