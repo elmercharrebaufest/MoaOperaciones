@@ -37,5 +37,8 @@ namespace SustitucionMOAModel.Entities
         [ForeignKey("Moneda_Id")]
         public virtual TablaSap Moneda { get; set; }
         public DateTime? FechaLiberacionSap { get; set; }
+        
+        [ForeignKey("RegionSap_Id")]
+        public virtual RegionSap RegionSap { get; set; }
     }
 }

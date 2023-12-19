@@ -553,4 +553,11 @@
     <Property Name="ParentElementType" Value="SqlTable" />
     <Property Name="NewName" Value="RevisionTecnica_Id" />
   </Operation>
+  <Operation Name="Rename Refactor" Key="bbdd8884-aa68-4374-828a-90e955688dbc" ChangeDateTime="12/19/2023 13:01:57">
+    <Property Name="ElementName" Value="[dbo].[CentroDireccion].[RegionSAP]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[CentroDireccion]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="RegionSAP_Id" />
+  </Operation>
 </Operations>

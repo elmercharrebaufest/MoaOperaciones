@@ -6827,6 +6827,11 @@ namespace SustitucionMOAUtils.Services
                 throw;
             }
         }
+        public List<RegionSap> ListarRegionesSap()
+        {
+            List<RegionSap> lista = repositorio.Listar<RegionSap>(x => x.CodigoPais == "AR").ToList();
+            return lista;
+        }
     }
 
 

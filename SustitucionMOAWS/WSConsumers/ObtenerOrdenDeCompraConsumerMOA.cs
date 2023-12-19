@@ -186,7 +186,7 @@ namespace SustitucionMOAWS.WSConsumers
                 resultado.Cabecera.MontoTotal += pos.NET_PRICE * pos.QUANTITY;
                 resultado.Posiciones.Add(new OrdenDeCompraSAPPosicion
                 {
-                    Indice = pos.PO_ITEM
+                    Indice = pos.PO_ITEM,
                 });
             }
             return resultado;
