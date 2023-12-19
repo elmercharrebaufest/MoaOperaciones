@@ -222,7 +222,6 @@ namespace SustitucionMOAWS.WSConsumers
             var numeroDePaquete = 1;
 
             var ocSAP = obtenerOrdenDeCompraconsumerMOA.ObtenerOrdenDeCompra(modificarPedidoSAP.PURCHASEORDER);
-
             int nroItemPO = ocSAP.Posiciones.Max(a => a.NumeroItemOC);
 
             bool esPosicionDeMateriales = solp.Posiciones.First().TipoPosicion.Codigo == "MATERIALES";
@@ -460,6 +459,7 @@ namespace SustitucionMOAWS.WSConsumers
                     TEL1_NUMBR = "",
                     STREET = posicion.CalleEntrega,
                     STREET_NO = "",//no tenemos el campo separado en calle y altura
+                    REGION = ""
                 });
 
 

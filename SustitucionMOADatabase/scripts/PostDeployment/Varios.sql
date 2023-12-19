@@ -70,3 +70,13 @@ IF NOT EXISTS (SELECT TOP 1 1 FROM Configuracion WHERE Code = 'PliegoDeGeneralid
 BEGIN
 	insert into Configuracion values ('PliegoDeGeneralidades','https://b2cmoagro.blob.core.windows.net/moaopublic/PliegoGeneralidades.pdf')
 END
+
+update CentroDireccion set RegionSap_Id = '9' where CodigoSap = '1001';
+update CentroDireccion set RegionSap_Id = '20' where CodigoSap = '1029';
+update CentroDireccion set RegionSap_Id = '17' where CodigoSap = '1075';
+update CentroDireccion set RegionSap_Id = '23' where CodigoSap = '1072';
+update CentroDireccion set RegionSap_Id = '11' where CodigoSap = '1030';
+update CentroDireccion set RegionSap_Id = '9' where CodigoSap = '1035';
+update CentroDireccion set RegionSap_Id = '9' where CodigoSap = '1036';
+update CentroDireccion set RegionSap_Id = '11' where CodigoSap = '1126';
+update CentroDireccion set RegionSap_Id = '21' where CodigoSap = '1127';

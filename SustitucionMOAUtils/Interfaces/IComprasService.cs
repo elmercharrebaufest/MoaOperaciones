@@ -1,5 +1,6 @@
 ﻿using SustitucionMOAModel.Consultas;
 using SustitucionMOAModel.Dto;
+using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using SustitucionMOAModel.Models.WSMapMOA;
 using SustitucionMOAModel.Models.WSMapMOA.Compras;
@@ -79,7 +80,7 @@ namespace SustitucionMOAUtils.Interfaces
         ChatComprasDto ObtenerChat(int peticionDeOfertaId, int usuarioActualId);
         Resultado GrabarMensajeChatInterno(ChatInternoComprasDto mensaje);
         string ExportarChatInternoAtexto(int peticionDeOfertaId, string rutaArchivo);
-
+        List<RegionSap> ListarRegionesSap();
         bool ValidarSolpTratada(string nroSolp);
     }
 }

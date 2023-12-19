@@ -435,8 +435,7 @@ IF NOT EXISTS (SELECT TOP 1 1 FROM CentroDireccion WHERE CodigoSap = '8107') BEG
 IF NOT EXISTS (SELECT TOP 1 1 FROM CentroDireccion WHERE CodigoSap = '8118') BEGIN INSERT INTO CentroDireccion(CodigoSap, Direccion, Numero, Cp, Pais) VALUES('8118', 'Av. Las Rosas 190', '', 'B2900FVN', 'AR') END
 IF NOT EXISTS (SELECT TOP 1 1 FROM CentroDireccion WHERE CodigoSap = '9000') BEGIN INSERT INTO CentroDireccion(CodigoSap, Direccion, Numero, Cp, Pais) VALUES('9000', 'Uriburu 3364', '22387', '2000', 'AR') END
 
-
--- Alamacen
+-- Almacen
 
 IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.TablaSap WHERE Tabla = 'Almacen' and Codigo = '1000' and Padre_Id = (SELECT Id FROM TablaSap WHERE Tabla = 'Centro' and CodigoSap = '1001')) BEGIN INSERT INTO TablaSap(Tabla, Codigo, CodigoSap, Descripcion, Padre_id) VALUES('Almacen', '1000', '1000', 'DepósitoAV Alm27', (SELECT Id FROM TablaSap WHERE Tabla = 'Centro' and CodigoSap = '1001')) END
 IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.TablaSap WHERE Tabla = 'Almacen' and Codigo = '1004' and Padre_Id = (SELECT Id FROM TablaSap WHERE Tabla = 'Centro' and CodigoSap = '1001')) BEGIN INSERT INTO TablaSap(Tabla, Codigo, CodigoSap, Descripcion, Padre_id) VALUES('Almacen', '1004', '1004', 'Cross Docking', (SELECT Id FROM TablaSap WHERE Tabla = 'Centro' and CodigoSap = '1001')) END
