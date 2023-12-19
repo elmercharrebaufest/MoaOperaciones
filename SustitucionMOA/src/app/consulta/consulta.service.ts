@@ -1,7 +1,7 @@
 import { Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { BaseService } from './../common/services/BaseService';
-import { Comentario } from './consulta';
+import { Comentario, Destinatario } from './consulta';
 import { map } from 'rxjs/operators';
 import { HttpHeaders, HttpParams } from '@angular/common/http';
 import { OrdenDeCarga } from '../common/models/ordenes-de-carga/ordenDeCarga';
@@ -53,6 +53,13 @@ export class ConsultaService extends BaseService {
         params = params.set('ordenId', ordenId.toString());
         return this.http
             .get('/api/consulta/CombosConsultaInterna', { params: params, headers: this.headers });
+    }
+
+    public getDestinatariosFas(ordenId: number): Observable<any> {
+        let params: HttpParams = new HttpParams();
+        params = params.set('ordenId', ordenId.toString());
+        return this.http
+            .get('/api/consulta/GetDestinatariosConsultaFas', { params: params, headers: this.headers });
     }
 
     public getDestinatarios(ordenId: number): Observable<any> {
@@ -203,9 +210,10 @@ export class ConsultaService extends BaseService {
             .post('/api/consulta/AnularConsulta', payload, { headers: this.headersPost })
     }
 
-    public AgregarConsultaInterna(consulta: object, comentario: Comentario, archivo: any = null) {
+    public AgregarConsultaInterna(consulta: object, comentario: Comentario, archivo: any = null, destinatariosFas: Destinatario[]) {
         let consultaJson = JSON.stringify(consulta);
         let comentarioJson = JSON.stringify(comentario);
+        let destinatariosFasJson = JSON.stringify(destinatariosFas);
         var payload = new FormData();
 
         if (archivo != null) {
@@ -217,6 +225,7 @@ export class ConsultaService extends BaseService {
 
         payload.append('consultaJson', consultaJson);
         payload.append('comentarioJson', comentarioJson);
+        payload.append('destinatariosFasJson', destinatariosFasJson);
         payload.append("file", archivo);
 
         return this.http

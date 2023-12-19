@@ -538,6 +538,21 @@ namespace SustitucionMOAUtils.Services
             }).GroupBy(x => x.Id);
         }
 
+        public List<DestinatarioDto> ObtenerDestinatariosConsulta()
+        {
+            List<DestinatarioDto> destinatarios = new List<DestinatarioDto>();
+
+            var usuarios = this.GetUsuarios().Where(u => u.Habilitado == true);
+            destinatarios = usuarios.Select(u => new DestinatarioDto
+            {
+                Campo = "Usuario Web",
+                Mail = u.Mail,
+                UsuarioId = u.Id,
+            }).ToList();
+            return destinatarios;
+        }
+
+
         #region Metodos de modificacion de alta usuario
         public UsuarioDto GetUsuarioPorId(int id)
         {

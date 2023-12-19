@@ -1,4 +1,5 @@
-﻿using SustitucionMOAModel.Entities;
+﻿using SustitucionMOAModel.Dto;
+using SustitucionMOAModel.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,8 +12,8 @@ namespace SustitucionMOAUtils.DesignPattern.Interfaces
     public interface IConsultaStrategy
     {
         string Name { get; }
-        Consulta AgregarConsulta(Consulta consulta, Comentario comentario);
-        string GuardarAdjuntoComentario(int consultaId, int comentarioId, HttpFileCollectionBase files);
-        void EnviarMail(Consulta consulta, Comentario comentario, HttpFileCollectionBase files);
+        Consulta AgregarConsulta(Consulta consulta, Comentario comentario, List<DestinatarioDto> destinatarios, HttpFileCollectionBase files);
+        string GuardarAdjuntoComentario(int consultaId, HttpFileCollectionBase files);
+        void EnviarMail(Consulta consulta, Comentario comentario, HttpFileCollectionBase files, List<DestinatarioDto> destinatarios);
     }
 }

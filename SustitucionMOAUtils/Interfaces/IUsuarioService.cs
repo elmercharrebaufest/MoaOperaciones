@@ -40,5 +40,7 @@ namespace SustitucionMOAUtils.Interfaces
         string EliminarCuitNoHabilitado(int proveedorId, string mailUsuarioSesion);
         ProveedorDto GetProveedorAprobadoPorCuit(string cuit, string mailUsuarioSesion);
         void AsignarNuevaCUIT(AsignarNuevaCuitDto datosAsignar, string mailUsuarioSesion);
+        List<DestinatarioDto> ObtenerDestinatariosConsulta();
+
     }
 }
