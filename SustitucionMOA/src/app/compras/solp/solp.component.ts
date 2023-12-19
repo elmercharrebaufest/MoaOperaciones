@@ -163,11 +163,13 @@ export class SolpComponent extends BaseComponent implements OnInit {
 
                     if (numeroSolp != "") this.flagSolpFinalizada = true;
                     this.tituloSolp();
+
                 });
 
                 if (this.solpId > 0) {
                     this.setComponentMode(ComponentMode.Edition);
                     this.traerSolpId(this.solpId);
+                    
                 } else {
                     this.setComponentMode(ComponentMode.Creation);
                     this.setearPasos();
@@ -232,6 +234,17 @@ export class SolpComponent extends BaseComponent implements OnInit {
         }
     }
 
+    tituloSolpEditar(nroSolp) {
+        console.log("nroSolp", nroSolp)
+        if(nroSolp != null && nroSolp !== 0 && nroSolp != "" && nroSolp !== "0" && nroSolp != undefined ){
+            this.titulo = `Edición de SOLP - # ${nroSolp}`;
+        } else {
+            this.titulo = 'Edición de SOLP';
+        }
+         
+    }
+
+
     setearPasos() {
         switch (this.solpActual.tipoSolp) {
             case "CON_PLIEGO":
@@ -288,6 +301,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
                         this.setearPasos();
                         this.blockUI.stop();
                         this.spinnerComponent.hideIt();
+                        this.tituloSolpEditar(this.solpActual.nroSolp);
                     }
                 },
                 error => {
