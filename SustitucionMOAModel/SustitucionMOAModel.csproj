@@ -181,6 +181,8 @@
     <Compile Include="Dto\Compras\UsuarioComprasDto.cs" />
     <Compile Include="Dto\Compras\UsuarioComprasRelacionConUsuariosDto.cs" />
     <Compile Include="Dto\UsuarioModificacionDto.cs" />
+    <Compile Include="Entities\PaisesSap.cs" />
+    <Compile Include="Entities\RegionSap.cs" />
     <Compile Include="Entities\ChatInternoCompras.cs" />
     <Compile Include="Entities\AplicacionCartaPorte.cs" />
     <Compile Include="Entities\Adjudicacion.cs" />
