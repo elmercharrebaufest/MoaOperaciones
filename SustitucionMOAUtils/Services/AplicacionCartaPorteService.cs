@@ -1,28 +1,28 @@
-﻿using SustitucionMOAModel.Dto;
+﻿using CsvHelper;
+using CsvHelper.Configuration;
+using SustitucionMOAFotmatter;
+using SustitucionMOAModel.CustomExceptions;
+using SustitucionMOAModel.Dto;
+using SustitucionMOAModel.Dto.AplicacionCartaPorte;
 using SustitucionMOAModel.Entities;
+using SustitucionMOAModel.Enums;
+using SustitucionMOAModel.Enums.SustitucionMOAModel.Enums;
 using SustitucionMOARepositorio;
+using SustitucionMOAUtils.Helpers;
+using SustitucionMOAUtils.Helpers.CSV;
 using SustitucionMOAUtils.Interfaces;
+using SustitucionMOAUtils.Logger;
+using SustitucionMOAWS.AplicacionCartaPortePendienteAplicarWebServiceMOA;
+using SustitucionMOAWS.Interfaces;
+using AppCCPPRequests = SustitucionMOAWS.WSRequests.AplicacionCartaPorte;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Data.Entity;
-using SustitucionMOAFotmatter;
-using SustitucionMOAModel.Enums;
-using SustitucionMOAModel.CustomExceptions;
-using SustitucionMOAModel.Enums.SustitucionMOAModel.Enums;
-using SustitucionMOAModel.Dto.AplicacionCartaPorte;
 using System.ComponentModel.DataAnnotations;
-using SustitucionMOAUtils.Logger;
-using SustitucionMOAWS.Interfaces;
-using SustitucionMOAWS.AplicacionCartaPortePendienteAplicarWebServiceMOA;
-using AppCCPPRequests = SustitucionMOAWS.WSRequests.AplicacionCartaPorte;
-using SustitucionMOAUtils.Helpers;
-using System.Web;
-using System.IO;
-using CsvHelper;
+using System.Data.Entity;
 using System.Globalization;
-using SustitucionMOAUtils.Helpers.CSV;
-using System.Net.Http.Headers;
+using System.IO;
+using System.Linq;
+using System.Web;
 
 namespace SustitucionMOAUtils.Services
 {
@@ -131,10 +131,18 @@ namespace SustitucionMOAUtils.Services
             var aplicacionesDisponiblesSap = ObtenerAplicacionesDisponiblesSap(usuario, proveedorCodigo);
 
             var contratosDisponibles = ObtenerContratosDisponibles(aplicacionesDisponiblesSap);
+            if (!contratosDisponibles.Any())
+            {
+                throw new ValidationCustomException("No se encontraron contratos disponibles en SAP");
+            }
 
             var aplicacionesPendientesDeProcesar = ObtenerAplicacionesPendientes(proveedorCodigo);
 
             var cartasPorteDisponibles = ObtenerCartasPorteDisponibles(aplicacionesDisponiblesSap, aplicacionesPendientesDeProcesar);
+            if (!cartasPorteDisponibles.Any())
+            {
+                throw new ValidationCustomException("No se encontraron cartas de porte disponibles en SAP");
+            }
 
             var logCargaMasiva = new AplicacionCartaPorteCargaMasiva
             {
@@ -264,13 +272,29 @@ namespace SustitucionMOAUtils.Services
 
         private List<AplicacionCCPPRecord> ObtenerRegistrosCargaMasiva(HttpPostedFileBase archivo)
         {
+            var registrosArchivo = new List<AplicacionCCPPRecord>();
+
             using (var streamReader = new StreamReader(archivo.InputStream))
-            using (var csvReader = new CsvReader(streamReader, CultureInfo.InvariantCulture))
+            using (var csvReader = new CsvReader(streamReader,
+                new CsvConfiguration(CultureInfo.InvariantCulture) { Delimiter = ";" }))
             {
-                csvReader.Context.RegisterClassMap<AplicacionCCPPRecordMap>();
-                var registrosArchivo = csvReader.GetRecords<AplicacionCCPPRecord>();
-                return registrosArchivo.ToList();
+                try
+                {
+                    csvReader.Context.RegisterClassMap<AplicacionCCPPRecordMap>();
+                    registrosArchivo = csvReader.GetRecords<AplicacionCCPPRecord>().ToList();
+                }
+                catch (HeaderValidationException hvex)
+                {
+                    Log.Error(hvex);
+                    throw new ValidationCustomException("Error en las cabeceras del archivo. Verificar que la cabecera tenga el formato 'CONTRATO;CARTA DE PORTE;KILOS'", hvex);
+                }
             }
+
+            if (!registrosArchivo.Any())
+            {
+                throw new ValidationCustomException("No se encontraron registros en el archivo. Si el mismo tiene datos, verifique el formato: cabecera 'CONTRATO;CARTA DE PORTE;KILOS' y ';' como separador en cada campo de cada registro.");
+            }
+            return registrosArchivo;
         }
 
         private bool RegistroCargaMasivaEsValido(AplicacionCCPPRecord registroMasiva, out string error,
