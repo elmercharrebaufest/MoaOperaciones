@@ -59,7 +59,7 @@ namespace SustitucionMOAUtils.Interfaces
 
         List<ClienteSAPResponse> GetClientesVigentesSAP(string fechaIni, string fechaFin);
         List<SustitucionMOAModel.Entities.Proveedor> FiltrarNoExistentesWeb(List<ClienteSAPResponse> clientes);
-        List<DestinatarioDto> ObtenerDestinatariosConsulta(int ordenId);
+        List<DestinatarioDto> ObtenerDestinatariosConsultaFas(int ordenId);
         void VerificarOrdenesFacturaCompensadaJob();
     }
 }

@@ -32,5 +32,10 @@ namespace SustitucionMOAModel.Entities
 
         [ForeignKey("CausaConsulta_Id")]
         public virtual CausaConsulta CausaConsulta { get; set; }
+
+        public object Clone()
+        {
+            return this.MemberwiseClone() as object;
+        }
     }
 }

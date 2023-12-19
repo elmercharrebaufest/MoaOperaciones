@@ -8,7 +8,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SustitucionMOAModel.Entities
 {
-    public class Consulta
+    public class Consulta : ICloneable
     {
         [Key]
         public int Id { get; set; }
@@ -43,5 +43,10 @@ namespace SustitucionMOAModel.Entities
         public virtual ICollection<Comentario> Comentarios { get; set; }
 
         public Consulta() { }
+
+        public object Clone()
+        {
+            return this.MemberwiseClone() as object;
+        }
     }
 }

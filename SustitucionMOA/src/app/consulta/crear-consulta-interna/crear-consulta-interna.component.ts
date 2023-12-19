@@ -58,6 +58,8 @@ export class CrearConsultaInternaComponent extends ListBaseComponent implements 
   subcategorias: Subcategoria[] = [];
   subcategoriasList: Subcategoria[] = [];
   destinatarios: Destinatario[];
+  destinatariosOrden: Destinatario[];
+  destinatariosFas: Destinatario[];
   comentario: string = "";
   ordenes: any[] = [];
   ordenSeleccionada: any = {};
@@ -101,9 +103,10 @@ export class CrearConsultaInternaComponent extends ListBaseComponent implements 
     if (this.dataRecibida != undefined) {
       this.ordenSeleccionada = this.dataRecibida.orden;
       this.ordenId = this.ordenSeleccionada.Id;
+      this.getDestinatariosOrden();
     }
     this.getCombosConsultaInterna();
-    this.getDestinatarios();
+    this.getAllDestinatarios();
     $(".adjuntarArchivo").click(function () {
       $(".adjuntarArchivo1").click();
     });
@@ -151,7 +154,7 @@ export class CrearConsultaInternaComponent extends ListBaseComponent implements 
             this.subcategorias = result.subcategorias;
             this.ordenes = result.ordenes;
             this.setearDefaultCombos(result.categorias, result.subcategorias);
-            this.getDestinatarios();
+            //this.getAllDestinatarios();
 
             if (!this.esCorredor) {
               this.proveedorId = result.proveedorId
@@ -169,7 +172,7 @@ export class CrearConsultaInternaComponent extends ListBaseComponent implements 
     return false; //<-- Prevent Refresh
   }
 
-  getDestinatarios() {
+  getAllDestinatarios() {
     this.searchingCampos = true;
     try {
       this.subscriptionDestinatarios = this.service.getDestinatarios(this.ordenId).subscribe(
@@ -183,6 +186,34 @@ export class CrearConsultaInternaComponent extends ListBaseComponent implements 
             this.floatMsgService.setInfoMsg(result.info);
           } else {
             this.destinatarios = result.destinatarios;
+          }
+        },
+        error => {
+          this.floatMsgService.setErrorMsg(error.message);
+          this.searchingCampos = false;
+        }
+      );
+    } catch (e) {
+      this.floatMsgService.setErrorMsg(e);
+      return false; //<-- Prevent Refresh
+    }
+    return false; //<-- Prevent Refresh
+  }
+
+  getDestinatariosOrden() {
+    this.searchingCampos = true;
+    try {
+      this.subscriptionDestinatarios = this.service.getDestinatariosFas(this.ordenId).subscribe(
+        (result: any) => {
+          this.searchingCampos = false;
+          if (result.logout == true) {
+            this.sessionDataService.logout();
+          } else if (result.error != undefined && result.error != "") {
+            this.floatMsgService.setErrorMsg(result.error);
+          } else if (result.info != undefined) {
+            this.floatMsgService.setInfoMsg(result.info);
+          } else {
+            this.destinatariosOrden = result.destinatarios;
           }
         },
         error => {
@@ -258,13 +289,17 @@ export class CrearConsultaInternaComponent extends ListBaseComponent implements 
       CodigoCorredor: null, RazonSocialCorredor: null,
       CodigoProveedor: null, RazonSocialProveedor: null,
       Categoria_Id: this.categoria.Id, Detalle: this.detalle,
-      SubCategoria_Id: this.subcategoria.Id, Asunto: this.asunto, Usuario_Id: this.destinatario.UsuarioId
+      SubCategoria_Id: this.subcategoria.Id, Asunto: this.asunto, Usuario_Id: 0
     }
 
     let comentario: Comentario = { consulta_Id: 0, Detalle: this.comentario, Fecha: new Date(), Recordado: false, FechaRecordado: new Date() };
 
+    if(this.categoriaCode !== 'ORD'){
+      this.destinatariosFas = undefined; 
+    }
+
     try {
-      this.subscription = this.service.AgregarConsultaInterna(this.consulta, comentario, this.listaArchivos).subscribe(
+      this.subscription = this.service.AgregarConsultaInterna(this.consulta, comentario, this.listaArchivos, this.destinatariosFas).subscribe(
         (result: any) => {
           if (result.logout == true) {
             this.sessionDataService.logout();
@@ -340,7 +375,6 @@ export class CrearConsultaInternaComponent extends ListBaseComponent implements 
     }
   }
 
-
   showDialog() {
     this.displayModal = true;
   }
@@ -350,9 +384,9 @@ export class CrearConsultaInternaComponent extends ListBaseComponent implements 
     this.ordenSeleccionada = orden;
     this.ordenId = this.ordenSeleccionada.Id;
     this.setearComentario();
-    this.destinatario = undefined;
+    this.destinatariosFas = undefined;
     this.subscriptionDestinatarios.unsubscribe();
-    this.getDestinatarios();
+    this.getDestinatariosOrden();
   }
 
   setearComentario() {
@@ -388,8 +422,14 @@ export class CrearConsultaInternaComponent extends ListBaseComponent implements 
       return true;
     }
 
-    if (this.destinatario == undefined) {
+
+    if (this.destinatario == undefined && this.categoriaCode !== "ORD") {
       this.mensajeComponent.setErrorMsg("El campo Destinatario esta vacio.");
+      return true;
+    }
+
+    if ((this.destinatariosFas == undefined || this.destinatariosFas.length == 0) && this.categoriaCode === "ORD") {
+      this.mensajeComponent.setErrorMsg("Debe elegir al menos un destinatario.");
       return true;
     }
 
@@ -421,5 +461,13 @@ export class CrearConsultaInternaComponent extends ListBaseComponent implements 
     const editorButton = $(".angular-editor-button");
     eliminarBotonesExtraEditor(divToolBar, subscript, superscript, editorTextArea, editorButton)
   }
+
+  mostrarAviso(){
+    this.mensajeComponent.setMsgsEmpty();
+      if(this.destinatariosFas.length > 1){
+        this.mensajeComponent.setInfoMsg("Se va a proceder a crear una consulta para cada uno de los destinatarios seleccionados.");
+        return true;
+      }
+    }
 
 }

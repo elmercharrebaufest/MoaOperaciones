@@ -1202,7 +1202,7 @@ namespace SustitucionMOAUtils.Services
             return string.Format("{0}/{1}", rutaArchivosCM05, usuario.Id);
         }
 
-        public AgregarConsultaResponseDto AgregarConsultaInterna(Consulta consulta, Comentario comentario, HttpFileCollectionBase files)
+        public AgregarConsultaResponseDto AgregarConsultaInterna(Consulta consulta, Comentario comentario, HttpFileCollectionBase files, List<DestinatarioDto> destinatarios)
         {
             string mensajeResultado = string.Empty;
 
@@ -1210,20 +1210,7 @@ namespace SustitucionMOAUtils.Services
           
             var estrategia = this.consultaContext.GetStrategy(categoria.Nombre);
             
-            consulta = estrategia.AgregarConsulta(consulta,comentario);
-            
-            if(consulta == null)
-            {
-                throw new ValidationCustomException("Hubo un problema al intentar generar la consulta.");
-            }
-            
-            if (files.Count > 0)
-            {
-                Comentario primerComentario = repositorio.Obtener<Comentario>(c => c.Consulta_Id == consulta.Id);
-                estrategia.GuardarAdjuntoComentario(consulta.Id, primerComentario.Id, files);
-            }
-
-            estrategia.EnviarMail(consulta, comentario, files);
+            consulta = estrategia.AgregarConsulta(consulta, comentario, destinatarios, files);
 
             return new AgregarConsultaResponseDto
             {

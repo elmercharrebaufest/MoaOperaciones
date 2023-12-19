@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Web;
@@ -473,13 +474,42 @@ namespace SustitucionMOA.Controllers
             }
         }
 
+        public ActionResult GetDestinatariosConsultaFas(int ordenId)
+        {
+            try
+            {
+                return JsonCustom(new
+                {
+                    destinatarios = ordenDeCargaService.ObtenerDestinatariosConsultaFas(ordenId)
+                });
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e }, JsonRequestBehavior.AllowGet);
+            }
+            catch (WSCustomException e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
         public ActionResult GetDestinatariosConsulta(int ordenId)
         {
             try
             {
                 return JsonCustom(new
                 {
-                    destinatarios = ordenDeCargaService.ObtenerDestinatariosConsulta(ordenId)
+                    destinatarios = usuarioService.ObtenerDestinatariosConsulta()
                 });
             }
             catch (InfoCustomException e)
@@ -504,16 +534,18 @@ namespace SustitucionMOA.Controllers
 
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.CONTACTO_MAIL)]
         [HttpPost, ValidateInput(false)]
-        public JsonResult AgregarConsultaInterna(string consultaJson, string comentarioJson)
+        public JsonResult AgregarConsultaInterna(string consultaJson, string comentarioJson, string destinatariosFasJson)
         {
             try
             {
                 var consulta = JsonConvert.DeserializeObject<Consulta>(consultaJson);
                 var comentario = JsonConvert.DeserializeObject<Comentario>(comentarioJson);
+                var destinatarios = JsonConvert.DeserializeObject<List<DestinatarioDto>>(destinatariosFasJson);
+
                 comentario.Fecha = DateTime.Now;
                 consulta.UsuarioInterno_Id = ObtenerUsuarioActual().Id;
 
-                return JsonCustom(consultaService.AgregarConsultaInterna(consulta, comentario, Request.Files));
+                return JsonCustom(consultaService.AgregarConsultaInterna(consulta, comentario, Request.Files, destinatarios));
             }
             catch (InfoCustomException e)
             {

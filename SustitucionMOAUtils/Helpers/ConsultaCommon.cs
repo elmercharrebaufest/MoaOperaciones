@@ -77,16 +77,16 @@ namespace SustitucionMOAUtils.Helpers
         {
             return string.Format("{0}/{1}/{2}", rutaArchivosConsulta, comentario.Consulta.Usuario_Id, comentario.Consulta_Id);
         }
-        protected void EnviarMailInterno(Consulta consulta, Comentario comentario, HttpFileCollectionBase files, List<string> destinatariosCC)
+        protected void EnviarMailInterno(Consulta consulta, Comentario comentario, HttpFileCollectionBase files, List<string> destinatariosCC, string mailDestinatario)
         {
             try
             {
                 var cuerpoTemplate = File.ReadAllText(EMAIL_TEMPLATE);
                 var cuerpo = string.Format(cuerpoTemplate, consulta.Asunto, !string.IsNullOrWhiteSpace(comentario.Detalle) ? comentario.Detalle : "-");
-                string asunto = "Molinos Agro - Consulta N° " + consulta.Id + ":" + consulta.Asunto;
+                string asunto = "Molinos Agro - Consulta N° " + consulta.Id + ": " + consulta.Asunto;
                 Dictionary<string, byte[]> archivos = ConvertFiles(files);
-                EmailSender.EnviarMail(new List<string> { consulta.Usuario.Mail }, asunto, cuerpo,
-                    destinatariosCC, null, null, null, null, null, archivos);
+                EmailSender.EnviarMail(new List<string> { mailDestinatario }, asunto, cuerpo,
+                    null, null, null, null, null, destinatariosCC, archivos);
             }
             catch (Exception ex)
             {
@@ -118,7 +118,7 @@ namespace SustitucionMOAUtils.Helpers
             return fileDataDictionary;
         }
 
-        protected void CompletarCamposIniciales(Consulta consulta, Comentario comentario)
+        protected void CompletarCampos(Consulta consulta, Comentario comentario)
         {
             consulta.FechaCreacion = DateTime.Now;
             consulta.FechaUltimaModificacion = DateTime.Now;
@@ -132,7 +132,10 @@ namespace SustitucionMOAUtils.Helpers
                 consulta.Comentarios = new List<Comentario>();
             }
 
-            consulta.Comentarios.Add(comentario);
+            consulta.Comentarios.Add(comentario.Clone() as Comentario);
+
+            consulta.Detalle = consulta.Detalle.Clone() as ConsultaDetalle;
+
         }
     }
 }

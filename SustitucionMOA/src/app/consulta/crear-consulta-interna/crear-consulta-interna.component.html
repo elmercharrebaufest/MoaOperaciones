@@ -40,10 +40,18 @@
             <p class="crearConsultaTitulos"></p>
             <button pButton type="button" icon="fa fa-search" iconPos="left" (click)="showDialog()"></button>
           </div>
-          <div class="col-xs-12 col-sm-6 col-md-6">
+          <div *ngIf="categoriaCode == 'ORD'" class="col-xs-12 col-sm-6 col-md-6">
+            <p class="crearConsultaTitulos">Destinatario<span class="requerido">*</span></p>
+            <p-multiSelect [options]="destinatariosOrden" appendTo="body" optionLabel="Mail" [(ngModel)]="destinatariosFas"
+              defaultLabel="Elija al menos un destinatario" [filter]="true"
+              filterBy="value.Mail" (onChange)="mostrarAviso()">
+            </p-multiSelect>
+            <spinner-loading [show]="searchingCampos"></spinner-loading>
+          </div>
+          <div *ngIf="categoriaCode !== 'ORD'" class="col-xs-12 col-sm-6 col-md-6">
             <p class="crearConsultaTitulos">Destinatario<span class="requerido">*</span></p>
             <p-dropdown [options]="destinatarios" optionLabel="Mail" dataKey="Campo" [(ngModel)]="destinatario"
-              [maxSelectedLabels]="1" autoWidth="false" placeholder="Elija un destinatario" [filter]="true"
+              autoWidth="false" placeholder="Elija un destinatario" [filter]="true"
               filterBy="value.Mail">
             </p-dropdown>
             <spinner-loading [show]="searchingCampos"></spinner-loading>

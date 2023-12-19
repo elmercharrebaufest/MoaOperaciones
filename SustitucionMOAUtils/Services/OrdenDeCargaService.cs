@@ -2844,19 +2844,12 @@ namespace SustitucionMOAUtils.Services
             return new Resultado { Mensaje = msg };
         }
 
-        public List<DestinatarioDto> ObtenerDestinatariosConsulta(int ordenId)
+        public List<DestinatarioDto> ObtenerDestinatariosConsultaFas(int ordenId)
         {
             List<DestinatarioDto> destinatarios = new List<DestinatarioDto>();
 
             if (ordenId == 0)
             {
-                var usuarios = usuarioService.GetUsuarios().Where(u => u.Habilitado == true);
-                destinatarios = usuarios.Select(u => new DestinatarioDto
-                {
-                    Campo = "Usuario Web",
-                    Mail = u.Mail,
-                    UsuarioId = u.Id,
-                }).ToList();
                 return destinatarios;
             }
 
@@ -2864,7 +2857,11 @@ namespace SustitucionMOAUtils.Services
 
             var mailCreador = this.repositorio.Obtener<Usuario>(u => u.Id == orden.UsuarioCreacion_Id);
             if (mailCreador != null)
-                destinatarios.Add(new DestinatarioDto { Campo = "Usuario creador", Mail = mailCreador.Mail });
+                destinatarios.Add(new DestinatarioDto { Campo = "Usuario creador", Mail = mailCreador.Mail, UsuarioId = mailCreador.Id });
+
+            var mailCliente = this.repositorio.Obtener<Usuario>(u => u.Mail == orden.Cliente.Mail && u.TipoUsuario.Id == orden.Cliente.TipoProveedor.Id);
+            if(mailCliente !=null)
+                destinatarios.Add(new DestinatarioDto { Campo = "Cliente", Mail = mailCliente.Mail, UsuarioId = mailCliente.Id });
 
             return destinatarios.ToList();
         }
