@@ -15,7 +15,6 @@ import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { EnumTipoSolpSap } from '../enum-tipo-solp-sap';
 import { Paginator } from 'primeng/paginator';
 import { PeticionDeOfertaDto, PeticionDeOfertaRevisionTecnicaDto } from '../../modelos/peticion-de-oferta-model';
-import { forEach } from '@angular/router/src/utils/collection';
 import { AdjudicacionDto, AdjudicacionPosicionDto } from '../../modelos/adjudicacion';
 import { ChatComprasDto } from '../chat-interno/chat-interno.interface';
 
@@ -27,7 +26,6 @@ declare var $: any;
     templateUrl: `dashboard.component.html`,
     styleUrls: ['../compras.component.css',
         './dashboard.component.css']
-
 })
 export class DashboardComponent extends ListBaseComponent {
 
@@ -70,6 +68,43 @@ export class DashboardComponent extends ListBaseComponent {
     displayOrdenDeCompra: boolean;
     displayChatInterno: boolean = false;
     chatLeido: boolean = false;
+
+    filtrosSolicitante: {
+        nroSolp: string;
+        sap: boolean;
+        mantenimiento: boolean;
+        web: boolean;
+        usuarios: string[];
+        estadoSolp: string[];
+        fechaDesde: Date;
+        fechaHasta: Date;
+    } = {
+            nroSolp: "",
+            sap: false,
+            mantenimiento: false,
+            web: false,
+            usuarios: [],
+            estadoSolp: [],
+            fechaDesde: new Date(),
+            fechaHasta: new Date(),
+        };
+
+    constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService, protected route: ActivatedRoute, protected router: Router, private confirmationService: ConfirmationService) {
+        super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
+
+        this.usuario = sessionStorage.getItem("username");
+        this.locale = {
+            firstDayOfWeek: 0,
+            dayNames: ["Domingo", "Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado"],
+            dayNamesShort: ["Dom", "Lun", "Mar", "Mie", "Jue", "Vie", "Sab"],
+            dayNamesMin: ["Do", "Lu", "Ma", "Mi", "Ju", "Vi", "Sa"],
+            monthNames: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"],
+            monthNamesShort: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"],
+            today: 'Hoy',
+            clear: 'Borrar'
+        };
+
+    }
 
     filteredfechas: any;
     solpFecha: any = new Array();
@@ -173,6 +208,7 @@ export class DashboardComponent extends ListBaseComponent {
 
     ngOnInit() {
         this.navService.setSeccionList([]);
+        this.recuperarFiltros();
         this.getListarSolp();
 
         this.desdeDashboard = new Date();
@@ -650,9 +686,18 @@ export class DashboardComponent extends ListBaseComponent {
     }
 
     onBuscar() {
+        this.filtrosSolicitante.nroSolp = this.nroSolp;
+        this.filtrosSolicitante.sap = this.sap;
+        this.filtrosSolicitante.mantenimiento = this.mantenimiento;
+        this.filtrosSolicitante.web = this.web;
+        //this.filtrosSolicitante.usuarios = this.selectUsuario;
+        this.filtrosSolicitante.estadoSolp = this.selectEstadoSolp;
+        this.filtrosSolicitante.fechaDesde = this.fechaInicio;
+        this.filtrosSolicitante.fechaHasta = this.fechaFin;
         this.paginator.changePage(0);
         this.pageIndex = 1;
         this.getListarSolp();
+        sessionStorage.setItem('filtrosSolicitante', JSON.stringify(this.filtrosSolicitante));
     }
 
     cerrarOrdenDeCompra() {
@@ -791,4 +836,17 @@ export class DashboardComponent extends ListBaseComponent {
         this.displayChatInterno = false;
     }
 
+    recuperarFiltros() {
+        const filtrosGuardados = JSON.parse(sessionStorage.getItem('filtrosSolicitante'));
+        if (filtrosGuardados) {
+            this.nroSolp = filtrosGuardados.nroSolp;
+            this.sap = filtrosGuardados.sap;
+            this.mantenimiento = filtrosGuardados.mantenimiento;
+            this.web = filtrosGuardados.web;
+            this.selectUsuario = filtrosGuardados.usuarios;
+            this.selectEstadoSolp = filtrosGuardados.estadoSolp;
+            this.fechaInicio = filtrosGuardados.fechaDesde;
+            this.fechaFin = filtrosGuardados.fechaHasta;
+        }
+    }
 }

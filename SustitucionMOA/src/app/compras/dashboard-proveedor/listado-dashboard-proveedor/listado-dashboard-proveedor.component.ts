@@ -71,6 +71,25 @@ export class ListadoDashboardProveedorComponent extends ListBaseComponent {
     fechaDesde: string = null;
     fechaHasta: string = null;
     rangeDates: Date[];
+    filtrosProveedor: {
+        nroSolp: string;
+        nroPo: string;
+        nombrePedido: string;
+        usuarios: string[];
+        estadoLicitacion: number | null;
+        estadoCotizacion: number | null;
+        fechaDesde: string;
+        fechaHasta: string;
+    } = {
+            nroSolp: "",
+            nroPo: "",
+            nombrePedido: "",
+            usuarios: [],
+            estadoLicitacion: null,
+            estadoCotizacion: null,
+            fechaDesde: null,
+            fechaHasta: null,
+        };
 
     constructor(protected service: ComprasService, protected navService: NavService,
         protected sessionDataService: SessionDataService, protected securityService: SecurityService,
@@ -81,6 +100,7 @@ export class ListadoDashboardProveedorComponent extends ListBaseComponent {
     }
 
     ngOnInit() {
+        this.recuperarFiltros();
         this.getListarPO();
         this.listarPO();
     }
@@ -359,8 +379,16 @@ export class ListadoDashboardProveedorComponent extends ListBaseComponent {
     }
 
     onBuscar() {
+        this.filtrosProveedor.nroSolp = this.nroSolp;
+        this.filtrosProveedor.nroPo = this.nroPo;
+        this.filtrosProveedor.nombrePedido = this.nombrePedido;
+        this.filtrosProveedor.estadoLicitacion = this.selectEstadoLicitacion;
+        this.filtrosProveedor.estadoCotizacion = this.selectEstadoCotizacion;
+        this.filtrosProveedor.fechaDesde = this.fechaDesde;
+        this.filtrosProveedor.fechaHasta = this.fechaHasta;
         this.spinnerComponent.showIt();
         this.service.getListarPOProveedor(1, 10, "", "", this.nroSolp, this.nroPo, this.nombrePedido, this.selectEstadoLicitacion, this.selectEstadoCotizacion, this.fechaDesde, this.fechaHasta);
+        sessionStorage.setItem('filtrosProveedor', JSON.stringify(this.filtrosProveedor));
     }
 
     returnToTodaysDate() {
@@ -381,6 +409,19 @@ export class ListadoDashboardProveedorComponent extends ListBaseComponent {
             if (this.rangeDates[1]) {
                 this.calendar.overlayVisible = false;
             }
+        }
+    }
+
+    recuperarFiltros() {
+        const filtrosGuardados = JSON.parse(sessionStorage.getItem('filtrosProveedor'));
+        if (filtrosGuardados) {
+            this.nroSolp = filtrosGuardados.nroSolp;
+            this.nroPo = filtrosGuardados.nroPo;
+            this.nombrePedido = filtrosGuardados.nombrePedido;
+            this.selectEstadoLicitacion = filtrosGuardados.estadoLicitacion;
+            this.selectEstadoCotizacion = filtrosGuardados.estadoCotizacion;
+            this.fechaDesde = filtrosGuardados.fechaDesde;
+            this.fechaHasta = filtrosGuardados.fechaHasta;
         }
     }
 }

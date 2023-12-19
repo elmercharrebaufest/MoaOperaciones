@@ -1222,7 +1222,6 @@
     <TypeScriptCompile Include="src\app\compras\dashboard-proveedor\cotizacion-formulario\cotizacion-material\cotizacion-material.component.ts" />
     <TypeScriptCompile Include="src\app\compras\dashboard-proveedor\cotizacion-formulario\cotizacion-material\plazo-de-oferta\plazo-de-oferta.component.ts" />
     <TypeScriptCompile Include="src\app\compras\dashboard-proveedor\cotizacion-formulario\cotizacion-servicio\cotizacion-servicio.component.ts" />
-    <TypeScriptCompile Include="src\app\compras\dashboard-proveedor\listado-dashboard-proveedor\listado-dashboard-proveedor.component.spec.ts" />
     <TypeScriptCompile Include="src\app\compras\dashboard-proveedor\listado-dashboard-proveedor\listado-dashboard-proveedor.component.ts" />
     <TypeScriptCompile Include="src\app\compras\dashboard\dashboard.component.ts" />
     <TypeScriptCompile Include="src\app\compras\dashboard\revision-tecnica\revision-tecnica.component.ts" />

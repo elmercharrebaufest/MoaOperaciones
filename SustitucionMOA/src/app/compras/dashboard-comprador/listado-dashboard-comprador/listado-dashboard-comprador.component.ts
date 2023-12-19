@@ -82,13 +82,34 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
     fechaInicio: any = null;
     fechaFin: any = null;
     rangeDates: Date[];
+    filtrosComprador: {
+        nroSolp: string;
+        sap: boolean;
+        mantenimiento: boolean;
+        web: boolean;
+        usuarios: string[];
+        estadoSolp: string[];
+        gruposCompras: string[];
+        centros: string[];
+        //fechaDesde: Date;
+        //fechaHasta: Date;
+    } = {
+            nroSolp: "",
+            sap: false,
+            mantenimiento: false,
+            web: false,
+            usuarios: [],
+            estadoSolp: [],
+            gruposCompras: [],
+            centros: [],
+        };
 
     constructor(protected service: ComprasService, protected navService: NavService,
         protected sessionDataService: SessionDataService, protected securityService: SecurityService,
         protected floatMsgService: FloatMsgService, protected modalService: ModalService,
         protected route: ActivatedRoute, protected router: Router) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
-        this.usuario = sessionStorage.getItem("username"); this.onBuscar();
+        this.usuario = sessionStorage.getItem("username"); this.recuperarFiltros(); this.listarSolp();
         this.locale = {
             firstDayOfWeek: 0,
             dayNames: ["Domingo", "Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado"],
@@ -113,6 +134,7 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
     displayCerrarCotizacion: boolean;
 
     ngOnInit() {
+        this.recuperarFiltros();
         this.getListarSolp();
     }
 
@@ -649,8 +671,17 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
 
     onBuscar() {
         this.spinnerComponent.showIt();
+        this.filtrosComprador.nroSolp = this.nroSolp;
+        this.filtrosComprador.sap = this.sap;
+        this.filtrosComprador.mantenimiento = this.mantenimiento;
+        this.filtrosComprador.web = this.web;
+        this.filtrosComprador.usuarios = this.selectUsuario;
+        this.filtrosComprador.estadoSolp = this.selectEstadoSolp;
+        this.filtrosComprador.gruposCompras = this.selectGrupoCompras;
+        this.filtrosComprador.centros = this.selectCentro;
         this.service.getListarSolpCompras(1, 10, "", "", this.nroSolp, this.selectEstadoSolp.join(","),
             this.selectUsuario.join(","), this.selectCentro.join(","), this.selectGrupoCompras.join(","), this.fechaInicio, this.fechaFin, this.sap, this.mantenimiento, this.web, this.repoAutomatica);
+        sessionStorage.setItem('filtrosComprador', JSON.stringify(this.filtrosComprador));
     }
 
     returnToTodaysDate() {
@@ -673,4 +704,19 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
             }
         }
     }
+    
+    recuperarFiltros() {
+        const filtrosGuardados = JSON.parse(sessionStorage.getItem('filtrosComprador'));
+        if (filtrosGuardados) {
+            this.nroSolp = filtrosGuardados.nroSolp;
+            this.sap = filtrosGuardados.sap;
+            this.mantenimiento = filtrosGuardados.mantenimiento;
+            this.web = filtrosGuardados.web;
+            this.selectUsuario = filtrosGuardados.usuarios;
+            this.selectEstadoSolp = filtrosGuardados.estadoSolp;
+            this.selectGrupoCompras = filtrosGuardados.gruposCompras;
+            this.selectCentro = filtrosGuardados.centros;
+            //this.fechaInicio = filtrosGuardados.fechaDesde;
+            //this.fechaFin = filtrosGuardados.fechaHasta;
+        }
 }
