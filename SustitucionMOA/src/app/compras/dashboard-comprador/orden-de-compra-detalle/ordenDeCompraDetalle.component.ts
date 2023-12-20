@@ -12,6 +12,7 @@ import { SessionDataService } from '../../../common/services/SessionDataService'
 import { CircularDto } from '../../../modelos/circular-model';
 import { PeticionDeOfertaDto } from '../../../modelos/peticion-de-oferta-model';
 import { ComprasService } from '../../compras.service';
+import { AdjudicacionDto } from '../../../modelos/adjudicacion';
 
 @Component({
     selector: 'app-orden-de-compra-detalle',
@@ -24,7 +25,7 @@ export class OrdenDeCompraDetalleComponent implements OnInit, OnChanges {
     @Input()
     displayOrdenDeCompra: boolean;
     @Input()
-    public ordenDeCompra: any;       
+    public ordenDeCompra: AdjudicacionDto;       
     @Output() cerrarOrdenDeCompraEmitter = new EventEmitter();
     activeTabs: boolean[] = [false, false, false, false];
     constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService,
@@ -33,7 +34,6 @@ export class OrdenDeCompraDetalleComponent implements OnInit, OnChanges {
     }
     ngOnChanges(changes: SimpleChanges): void {
         if(this.ordenDeCompra != null){
-       
         }
     }
     

@@ -7,11 +7,12 @@ import { EmailComposeModel } from '../common/email-compose/email-compose.model';
 import { SolpPosicion } from './solp/solp-posicion';
 import { AltaNuevoProveedor, EnvioSolpCompra, SolpCompraDto } from './solp-compra';
 import { CircularDto } from '../modelos/circular-model';
-import { PeticionDeOfertaCierreDto, PeticionDeOfertaDto, PeticionDeOfertaUsarioDto } from '../modelos/peticion-de-oferta-model';
+import { PeticionDeOfertaCierreDto, PeticionDeOfertaDto, PeticionDeOfertaRevisionTecnicaDto, PeticionDeOfertaUsarioDto } from '../modelos/peticion-de-oferta-model';
 import { AdjudicacionDto } from '../modelos/adjudicacion';
 import { OrdenDeCompraSap } from '../modelos/ordenDeCompraSap';
 import { RegistroInfoDto } from '../modelos/registro-info';
 import { PeticionVisualizacionPrecioDto } from '../modelos/peticion-visualizar-precio-dto';
+import { ChatInternoComprasDto } from './chat-interno/chat-interno.interface';
 
 @Injectable({
     providedIn: 'root'
@@ -33,6 +34,7 @@ export class ComprasService extends BaseService {
         sap: true,
         mantenimiento: true,
         web: true,
+        repoAutomatica: true,
         usuarioId: null,
         centros: "",
         grupoDeCompras: "",
@@ -64,6 +66,7 @@ export class ComprasService extends BaseService {
         sap: boolean = this.filtros.sap,
         mantenimiento: boolean = this.filtros.mantenimiento,
         web: boolean = this.filtros.web,
+        repoAutomatica: boolean = this.filtros.repoAutomatica,
         estados: any = this.filtros.estados,
         usuarioId: any = this.filtros.usuarioId): Observable<any> {
         let params: HttpParams = new HttpParams();
@@ -80,6 +83,7 @@ export class ComprasService extends BaseService {
         params = params.set('sap', sap.toString());
         params = params.set('mantenimiento', mantenimiento.toString());
         params = params.set('web', web.toString());
+        params = params.set('repoAutomatica', repoAutomatica.toString());
         params = params.set('estados', estados);
         params = params.set('usuarioId', (usuarioId != null ? usuarioId.toString() : ""));
         return this.http
@@ -696,9 +700,10 @@ export class ComprasService extends BaseService {
             .post<any>('/api/compras/GrabarProveedorEnPeticion', payload, { headers: this.headers });
     }
 
-    DescargarAdjuntosCotizacion(cotizacionId: number): Observable<any> {
+    DescargarAdjuntosCotizacion(cotizacionId: number, desdeRevisionTecnica: boolean): Observable<any> {
         let params: HttpParams = new HttpParams();
         params = params.set("cotizacionId", cotizacionId.toString());
+        params = params.set("desdeRevisionTecnica", desdeRevisionTecnica.toString());
 
         return this.http
             .get("/api/compras/DescargarAdjuntosCotizacion", {
@@ -707,12 +712,14 @@ export class ComprasService extends BaseService {
             });
     }
 
-    public grabarRevisionTecnica(petisiones: PeticionDeOfertaUsarioDto[], finalizar: boolean) {
-        let json = JSON.stringify(petisiones);
+    public grabarRevisionTecnica(peticiones: PeticionDeOfertaUsarioDto[], finalizar: boolean, revisionTecnica: PeticionDeOfertaRevisionTecnicaDto) {
+        let json = JSON.stringify(peticiones);
+        let jsonRevision = JSON.stringify(revisionTecnica);
+
         var payload = new FormData();
         payload.append('json', json);
         payload.append('finalizar', finalizar.toString());
-
+        payload.append('jsonRevision', jsonRevision);
 
         return this.http
             .post<any>('/api/compras/GrabarRevisionTecnica', payload, { headers: this.headers });
@@ -873,7 +880,6 @@ export class ComprasService extends BaseService {
             Observacion: peticion.Observacion,
             PeticionDeOferta_Id: peticion.PeticionOfertaId
         });
-        console.log(jsonPayload, "json")
         const payload = new FormData();
         payload.append('json', jsonPayload);
 
@@ -893,6 +899,39 @@ export class ComprasService extends BaseService {
 
         return this.http
             .get("/api/compras/ObtenerReporteOrdenDeCompra", {
+                params: params,
+                headers: this.headers
+            });
+    }
+
+    public obtenerChat(peticionDeOfertaId: string): Observable<PeticionDeOfertaDto> {
+        let params: HttpParams = new HttpParams();
+        params = params.set("peticionDeOfertaId", peticionDeOfertaId);
+       
+        return this.http
+            .get("/api/compras/ObtenerChat", {
+                params: params,
+                headers: this.headers
+            });
+    }
+
+    public grabarMensajeChatInterno(mensaje: ChatInternoComprasDto) {
+        let json = JSON.stringify(mensaje);
+        
+
+        var payload = new FormData();
+        payload.append('json', json);
+
+        return this.http
+            .post<ChatInternoComprasDto>('/api/compras/GrabarMensajeChatInterno', payload, { headers: this.headers });
+    }
+
+    public obtenerYExportarChat(peticionDeOfertaId: string): Observable<any> {
+        let params: HttpParams = new HttpParams();
+        params = params.set("peticionDeOfertaId", peticionDeOfertaId);
+       
+        return this.http
+            .get("/api/compras/ObtenerYExportarChat", {
                 params: params,
                 headers: this.headers
             });

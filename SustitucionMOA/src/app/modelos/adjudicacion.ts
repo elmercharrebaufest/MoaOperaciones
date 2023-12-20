@@ -14,6 +14,10 @@ export interface AdjudicacionDto{
     Proveedor ?: string
     MonedaDescripcion?: string
     PrecioFinal ?: number 
+    PrecioBruto?: number
+    EstadoLiberacionCodigo?: string
+    EstadoLiberacionDetalle?: string
+
 }
 
 export interface AdjudicacionPosicionDto{

@@ -42,7 +42,7 @@
                         <td class="columna" style="border: none !important; width: 50px;">
                             <span *ngIf="rowData.ArchivoId != null">
                                 <img style="cursor:pointer;" src="./Content/images/icons/descargar.svg" alt="descargar"
-                                     (click)="descargarArchivo(rowData.ArchivoId)" />
+                                     (click)="descargarArchivo(rowData.ArchivoId, rowData.Tipo)" />
                             </span>
                         </td>
                     </tr>

@@ -203,6 +203,10 @@
     <Build Include="DBO\Tables\PeticionDeOfertaCierre.sql" />
     <Build Include="DBO\Tables\PeticionDeOfertaVisualizacionPrecio.sql" />
     <Build Include="DBO\Tables\PeticionDeOfertaRevisionTecnica.sql" />
+    <Build Include="DBO\Tables\RegionSap.sql" />
+    <None Include="scripts\PostDeployment\RegionSap.sql" />
+    <Build Include="DBO\Tables\ChatInternoCompras.sql" />
+    <Build Include="DBO\Tables\PeticionDeOfertaUsuarioAdicional.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DatabasePublishQA.xml" />

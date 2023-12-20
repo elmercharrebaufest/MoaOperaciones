@@ -153,7 +153,6 @@ export class PeticionDeOfertaFormularioComponent extends ListBaseComponent imple
 
     //elimno el archivo, llamar al servicio de eliminacion
     eliminarAdjuntoNuevo(archivo): void {
-        console.log(archivo);
         var indice = this.archivos.indexOf(archivo)
         this.archivos.splice(indice, 1)
     }

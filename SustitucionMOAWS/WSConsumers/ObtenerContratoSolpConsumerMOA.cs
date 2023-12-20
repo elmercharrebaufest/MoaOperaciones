@@ -41,7 +41,7 @@ namespace SustitucionMOAWS.WSConsumers
                 ZMPES5900[] EX_ITEM = new ZMPES5900[] { };
                 BAPIRETURN[] EX_RETURN = new BAPIRETURN[] { };
                 ZMPES5910[] EX_SUB_ITEM = new ZMPES5910[] { };
-
+                
 
                 string resultado = service.SI_MMRFC_OBTENER_CONTRATO(IM_COMP_CODE, IM_CONTRACT, IM_DETAIL, IM_ITEM_NO, IM_MATERIAL, IM_NOM_VENDOR, IM_PLANT, IM_TEXT_POS, IM_VENDOR, out EX_HEADER, out EX_ITEM, out EX_RETURN, out EX_SUB_ITEM);
 
@@ -107,7 +107,7 @@ namespace SustitucionMOAWS.WSConsumers
 
                     result.ContratosSolp.Add(contrato);
                 }
-            }      
+            }
             result.error = resultado;
 
             return result;
@@ -115,7 +115,8 @@ namespace SustitucionMOAWS.WSConsumers
 
         private List<ContratoSolpSubposicion> ObtenerSubPosiciones(ZMPES5900 posicion, ZMPES5910[] subPosiciones)
         {
-            return subPosiciones.Where(x => x.NUMBER == posicion.NUMBER && x.ITEM_NO == posicion.ITEM_NO).Select(subPos => new ContratoSolpSubposicion {
+            return subPosiciones.Where(x => x.NUMBER == posicion.NUMBER && x.ITEM_NO == posicion.ITEM_NO).Select(subPos => new ContratoSolpSubposicion
+            {
 
                 //Resultado de Subosiciones del Contratos Marco           
                 NumeroDocumentoCompras = subPos.NUMBER, //NUMBER  EBELN   Número del documento de compras

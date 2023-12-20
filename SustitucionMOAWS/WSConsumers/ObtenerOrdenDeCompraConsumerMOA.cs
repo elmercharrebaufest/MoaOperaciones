@@ -175,6 +175,7 @@ namespace SustitucionMOAWS.WSConsumers
             {
                 OrdenDeCompra = POHEADER.PO_NUMBER,
                 CodigoProveedor = POHEADER.VENDOR,
+                UsuarioComprasSAP = POHEADER.CREATED_BY,
                 Moneda = POHEADER.CURRENCY,
                 FechaCreacion = DateTime.ParseExact(POHEADER.CREAT_DATE, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture),
                 FechaCreacionString = DateTime.ParseExact(POHEADER.CREAT_DATE, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture).ToShortDateString()
@@ -258,6 +259,7 @@ namespace SustitucionMOAWS.WSConsumers
                 {
                     var fecha = POSCHEDULE.First(a => a.PO_ITEM == posicion.PO_ITEM).DELIVERY_DATE;
                     pos.FechaEntregaServicio = DateTime.ParseExact(fecha, "dd.MM.yyyy", System.Globalization.CultureInfo.InvariantCulture);
+                    pos.FechaEntregaServicioFormateado = fecha;
                 }
                 catch
                 {

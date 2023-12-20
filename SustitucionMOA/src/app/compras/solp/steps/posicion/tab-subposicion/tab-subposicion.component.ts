@@ -105,6 +105,7 @@ export class TabSubposicionComponent extends ListBaseComponent {
     }
 
     validarErrorCustom(subposicion: any, valor: any, campoAValidar: string) {
+        if (valor == null || valor == undefined) { valor = ""; }
         return ((this.camposObligatorios.find(x => x.campo == campoAValidar).esObligatorio) && valor.toString().length == 0);
     }
 
@@ -475,7 +476,13 @@ export class TabSubposicionComponent extends ListBaseComponent {
 
     autocompleteSap(event, tablaAFiltrar, soloDescripcion = false) {
         try {
-            this.subscription = this.service.autocompleteSap(tablaAFiltrar || this.tablaAFiltrar, event.query.toLowerCase()).subscribe(
+            let filter = tablaAFiltrar || this.tablaAFiltrar;
+            if (filter == 'OrdenSolpSap' && event.query.toLowerCase().length < 4) {
+                this.autocomplete = [];
+                return;
+            }
+
+            this.subscription = this.service.autocompleteSap(filter, event.query.toLowerCase()).subscribe(
                 (result: any) => {
                     if (result.logout == true) {
                         this.sessionDataService.logout();

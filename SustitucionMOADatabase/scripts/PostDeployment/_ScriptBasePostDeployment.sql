@@ -31,5 +31,6 @@ Post-Deployment Script Template
 :r .\Estados.sql
 :r .\UnidadMedidaSap.sql
 :r .\UsuariosConRolFleteMOA.sql
+:r .\RegionSap.sql
 
 

@@ -279,7 +279,7 @@ export class CotizacionComponent extends ListBaseComponent {
                 this.model.validarTrabajoHecho = false;
             }
 
-            if (this.model.trabajoHecho == true || this.model.adicional == true){
+            if (this.model.trabajoHecho == true || this.model.adicional == true) {
                 if ((this.model.archivosCotizaciones == null || this.model.archivosCotizaciones.length == 0) && (this.model.archivosCotizacionesNuevos == null || this.model.archivosCotizacionesNuevos.length == 0)) {
                     this.model.mensajeCotizacion = "Debe adjuntar un archivo en el paso #4";
                     this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: `${this.model.mensajeCotizacion}` });
@@ -339,7 +339,6 @@ export class CotizacionComponent extends ListBaseComponent {
                         } else if (result.info != undefined) {
                             this.floatMsgService.setInfoMsg(result.info);
                         } else {
-                            console.log(this.model, "SOLP")
                             if (this.estaFinalizada == true && this.model.proveedorIdAdicional && this.model.proveedorIdAdicional != result.data.Cabecera.Usuario_Id) {
                                 this.floatMsgService.setErrorMsg("La OC ingresada debe ser para el proveedor " + this.model.proveedorRazonSocialAdicional);
                                 this.model.ordenDeCompra = "";
@@ -349,6 +348,12 @@ export class CotizacionComponent extends ListBaseComponent {
                                 this.model.ordenDeCompra = this.ordenDeCompraSap.Cabecera.OrdenDeCompra;
                                 this.model.proveedorAsignado = this.ordenDeCompraSap.Cabecera.RazonSocialProveedor;
                                 this.model.monedaOC = this.ordenDeCompraSap.Cabecera.Moneda;
+                                this.model.usuarioComprasId = this.ordenDeCompraSap.Cabecera.UsuarioCompras_Id;     
+                                
+                                this.model.selectUsuarioCompras = this.model.usuarioComprasId > 0
+                                    ? this.model.usuarioComprasList.find(x => x.Id === this.model.usuarioComprasId)
+                                    : this.model.usuarioComprasList[0];
+
                                 if (this.ordenDeCompraSap.Error) {
                                     this.floatMsgService.setErrorMsg(this.ordenDeCompraSap.Error.Mensaje);
                                     this.limpiarCheckAdicional();
@@ -374,7 +379,7 @@ export class CotizacionComponent extends ListBaseComponent {
         }
         return false;
     }
-    
+
 
     validarCondiciones(campoCheck) { //se usaba para asignar el valor a disabled en los checkboxes cuando eran excluyentes
         if (this.estaFinalizada == true) {
