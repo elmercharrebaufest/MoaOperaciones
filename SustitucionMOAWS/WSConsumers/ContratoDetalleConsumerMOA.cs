@@ -388,22 +388,34 @@ namespace SustitucionMOAWS.WSConsumers
 
 
             result.calidad = calidades.GroupBy(x => x.CCPP)
-                .Select(x => new Calidad
-                {
-                    ccpp = x.Key,
-                    kgAplicadosTotal = SAPFormatter.FormatearCantidad(x.Sum(r => r.KG_APLI), "KG"),
-                    kgNetosTotal = SAPFormatter.FormatearCantidad(x.Sum(r => r.KG_NETOS), "KG"),
-                    kgDtoTotal = SAPFormatter.FormatearCantidad(x.Sum(r => r.KG_DTO), "KG"),
-                    dtoPorcTotal = SAPFormatter.FormatearCantidad(x.Sum(r => r.DTO), "%"),
-                    registros = x.Select(e => new CalidadElement()
+                .Select(x => {
+                    var calidad = new Calidad
                     {
-                        calaResul = e.CALA_RESUL,
-                        camaResul = e.CAMA_RESUL,
-                        caract = e.CARACT,
-                        dto = e.DTO,
-                        kgDto = SAPFormatter.FormatearCantidad(e.KG_DTO, e.UNIDAD),
-                        certificado = e.NRO_CERT,
-                    }).ToList()
+                        ccpp = x.Key,
+                        kgAplicadosTotal = SAPFormatter.FormatearCantidad(x.Sum(r => r.KG_APLI), "KG"),
+                        kgNetosTotal = SAPFormatter.FormatearCantidad(x.Sum(r => r.KG_NETOS), "KG"),
+                        kgDtoTotal = SAPFormatter.FormatearCantidad(x.Sum(r => r.KG_DTO), "KG"),
+                        dtoPorcTotal = SAPFormatter.FormatearCantidad(x.Sum(r => r.DTO), "%"),
+                        camaraAPresent = x.First().CAMARA_A_PRESENT,
+                        registros = x.Select(e => new CalidadElement()
+                        {
+                            calaResul = e.CALA_RESUL,
+                            camaResul = e.CARACT.ToUpper().Contains("HUMEDAD") ? e.CALA_RESUL : e.CAMA_RESUL,
+                            caract = e.CARACT,
+                            dto = e.DTO,
+                            kgDto = SAPFormatter.FormatearCantidad(e.KG_DTO, e.UNIDAD),
+                            kgDtoValor = e.KG_DTO,
+                            certificado = e.NRO_CERT,
+                            //Información para excels
+                            recResul = e.REC_RESUL,
+                            recCert = e.REC_CERT,
+                            kgApli = e.KG_APLI,
+                            kgNetos = e.KG_NETOS,
+                            unidad = e.UNIDAD,
+                        }).ToList()
+                    };
+                    calidad.SetearEstadoCamara();
+                    return calidad;
                 }).ToList();
 
             result.calidadExcelDetalle = calidades.Select(x => new CalidadExcelDetalle

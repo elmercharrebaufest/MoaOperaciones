@@ -180,7 +180,7 @@ namespace SustitucionMOAUtils.Export
             return sw.ToString();
         }
 
-        public static string ToExcelContratoDetalle(object ampliacionesAnulacionesList, object aplicacionesList, object calidadList, object caracteristicasList, object condicionesPagoList, object fijacionesList, object hijosList, object liquidacionesList, object pagosList, object resumenList, string[] ampliacionesAnulacionesHeaders, string[] aplicacionesHeaders, string[] calidadHeaders, string[] caracteristicasHeaders, string[] condicionesPagoHeaders, string[] fijacionesHeaders, string[] hijosHeaders, string[] liquidacionesHeaders, string[] pagosHeaders, string[] resumenHeaders, string titulo)
+        public static string ToExcelContratoDetalle(object ampliacionesAnulacionesList, object aplicacionesList, List<CalidadContratoDetalleExcel> calidadList, object caracteristicasList, object condicionesPagoList, object fijacionesList, object hijosList, object liquidacionesList, object pagosList, object resumenList, string[] ampliacionesAnulacionesHeaders, string[] aplicacionesHeaders, string[] calidadHeaders, string[] caracteristicasHeaders, string[] condicionesPagoHeaders, string[] fijacionesHeaders, string[] hijosHeaders, string[] liquidacionesHeaders, string[] pagosHeaders, string[] resumenHeaders, string titulo)
         {
 
             StringWriter sw = new StringWriter();
@@ -301,13 +301,12 @@ namespace SustitucionMOAUtils.Export
             subgridTitulo.Rows[0].Cells[0].ColumnSpan = calidadHeaders.Count();
             subgridTitulo.RenderControl(htw);
 
-            List<CalidadExcelDetalle> calidades = (List<CalidadExcelDetalle>)calidadList;
 
-            if (calidades.Count() == 0)
+            if (calidadList.Count() == 0)
             {
-                calidades.Add(new CalidadExcelDetalle());
+                calidadList.Add(new CalidadContratoDetalleExcel());
 
-                gridData.DataSource = calidades;
+                gridData.DataSource = calidadList;
             }
             else
             {

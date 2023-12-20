@@ -22,6 +22,19 @@ namespace SustitucionMOAModel.Models.WSMapMOA.Contrato.Detalle
         public decimal dto { get; set; }
 
     }
+    public class CalidadContratoDetalleExcel {
+        public string ccpp { get; set; }
+        public string caract { get; set; }
+        public string resultado { get; set; }
+        public string nroCert { get; set; }
+        public decimal recResul { get; set; }
+        public string recCert { get; set; }
+        public string kgDto { get; set; }
+        public decimal kgApli { get; set; }
+        public decimal kgNetos { get; set; }
+        public string unidad { get; set; }
+        public decimal dto { get; set; }
+    }
 
     public class CalidadPDFDetalle
     {
