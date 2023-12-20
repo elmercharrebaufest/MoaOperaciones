@@ -9,6 +9,7 @@ import { FormsModule } from '@angular/forms';
 import { SharedModule } from '../common/shared.module';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { TooltipModule } from 'primeng/tooltip';
+import { ToastModule } from 'primeng/toast';
 
 @NgModule({
   imports: [
@@ -18,7 +19,8 @@ import { TooltipModule } from 'primeng/tooltip';
     FormsModule,
     SharedModule,
     NgxPaginationModule,
-    TooltipModule
+    TooltipModule,
+    ToastModule
   ],
   declarations: [
     AltaNotificacionesComponent,

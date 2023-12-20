@@ -17,13 +17,15 @@ import { NotificacionesService } from '../notificaciones.service';
 import { AngularEditorConfig } from "@kolkov/angular-editor";
 import { Adjuntos } from '../../common/models/adjuntos';
 
+import { MessageService } from 'primeng/api';
+
 declare var $: any;
 
 @Component({
     selector: 'app-alta-notificaciones',
     templateUrl: './alta-notificaciones.component.html',
     styleUrls: ['./alta-notificaciones.component.css'],
-    providers: [NotificacionesService, DatePipe]
+    providers: [NotificacionesService, DatePipe, MessageService]
 })
 export class AltaNotificacionesComponent extends BaseComponent implements OnInit {
     @ViewChild(MensajeComponent)
@@ -53,6 +55,7 @@ export class AltaNotificacionesComponent extends BaseComponent implements OnInit
     fecha_creacion: string;
     selectedPrioridad: string;
     mensajeError: string = "";
+    nombreError: string = "";
     detalle: string = "";
     file: any;
     listaArchivos: Array<File> = new Array<File>();
@@ -69,7 +72,8 @@ export class AltaNotificacionesComponent extends BaseComponent implements OnInit
         private route: ActivatedRoute,
         protected sessionDataService: SessionDataService, protected securytiService: SecurityService,
         protected floatMsgService: FloatMsgService, protected modalService: ModalService,
-        public datepipe: DatePipe) {
+        public datepipe: DatePipe,
+        private messageService: MessageService) {
         super(navService, securytiService, floatMsgService, modalService);
     }
 
@@ -81,11 +85,25 @@ export class AltaNotificacionesComponent extends BaseComponent implements OnInit
 
         this.navService.setSeccionList([]);
 
-        this.getRolesOptions();
+        //this.getRolesOptions();
 
-        if (this.notificacionId > 0) {
-            this.obtenerNotificacion();
-        }
+        
+        this.getRolesOptions()
+            .then((message) => {
+                // Aquí puedes ejecutar el código que necesitas después de obtener los roles
+                if (this.notificacionId > 0) {
+                    this.obtenerNotificacion();
+                }
+            })
+            .catch((error) => {
+                // Manejo de errores si la obtención de roles falla
+                console.error("Error en la obtención de roles:", error);
+            });
+
+
+        //if (this.notificacionId > 0) {
+        //    this.obtenerNotificacion();
+        //}
     }
 
     config: AngularEditorConfig = {
@@ -207,6 +225,8 @@ export class AltaNotificacionesComponent extends BaseComponent implements OnInit
 
         this.eliminarBotonesExtra();
 
+        //this.focusSection("focusSection");
+
         $(document).ready(function () {
             $(".form_datetime1").datetimepicker({
                 format: 'dd/mm/yyyy',
@@ -240,59 +260,91 @@ export class AltaNotificacionesComponent extends BaseComponent implements OnInit
         });
     }
 
+   
+    focusSection(sectionId) {
+        var section = document.getElementById(sectionId);
+        section.focus();
+    }
+   
+
     validar() {
+        //this.messageService.add({ severity: 'error', summary: 'Error', detail: 'El Campo nombre debe tener al menos 3 caracteres.' });
 
-        if (this.horaInicio.toString() == "") {
-            this.mensajeError = "Ingrese la Hora";
-            return false;
-        }
 
-        if (this.notificacion.Nombre.length < 3) {
+        if (this.notificacion.Nombre === undefined || this.notificacion.Nombre.length < 3) {
+            debugger
             this.mensajeError = "El Campo nombre debe tener al menos 3 caracteres.";
-            return false;
-        }
+          
+            //this.errorInput.nativeElement.focus();
+            //this.enfocarInput();
 
-        if (this.notificacion.Mensaje.length < 3) {
-            this.mensajeError = "El Campo Mensaje debe tener al menos 3 caracteres.";
-            return false;
-        }
-
-        if (this.fecha_inicio >= this.fecha_fin) {
-            this.mensajeError = "La Fecha Desde debe ser menos a la Fecha Hasta";
+            this.focusSection("Nombre");
+            //this.messageService.add({ severity: 'error', summary: 'Error', detail: this.mensajeError });
+            this.messageService.add({ key: 'tc', severity: 'error', summary: 'error', detail: this.mensajeError });
+            //this.messageService.add({ key: 'tl', severity: 'error', summary: 'Error', detail: 'El Campo nombre debe tener al menos 3 caracteres.' });
             return false;
         }
 
         if (this.fecha_inicio.length == 0) {
             this.mensajeError = "Ingrese la fecha de inicio.";
+            this.focusSection("noCursor");
+            this.messageService.add({ key: 'tc', severity: 'error', summary: 'error', detail: this.mensajeError });
             return false;
         }
-        
+
+        if (this.fecha_inicio.length != 0 && this.fecha_fin.length != 0 && this.fecha_inicio >= this.fecha_fin) {
+            this.mensajeError = "La Fecha Desde debe ser menos a la Fecha Hasta";
+            this.focusSection("noCursor");
+            this.messageService.add({ key: 'tc', severity: 'error', summary: 'error', detail: this.mensajeError });
+            return false;
+        }
+
+        if (this.horaInicio.toString() == "") {
+            this.mensajeError = "Ingrese la Hora";
+            this.focusSection("hora");
+            this.messageService.add({ key: 'tc', severity: 'error', summary: 'error', detail: this.mensajeError });
+            return false;
+        }
+
         if (this.fecha_fin.length == 0) {
             this.mensajeError = "Ingrese la fecha de fin.";
+            this.focusSection("fechaFin");
+            this.messageService.add({ key: 'tc', severity: 'error', summary: 'error', detail: this.mensajeError });
             return false;
         }
-                
-        if (this.notificacion.LinkAdjunto != undefined) {
-            if (this.notificacion.LinkAdjunto.length > 0) {
-                if (!this.validarURL()) {
-                    this.mensajeError = "La dirección del link adjunto es inválida.";
-                    return false;
-                }
-            }
+
+        if (this.notificacion.Mensaje === undefined || this.notificacion.Mensaje.length < 3) {
+            this.mensajeError = "El Campo Mensaje debe tener al menos 3 caracteres.";
+            this.focusSection("editor");
+            this.messageService.add({ key: 'tc', severity: 'error', summary: 'error', detail: this.mensajeError });
+            return false;
         }
+
+        //if (this.notificacion.LinkAdjunto != undefined) {
+        //    if (this.notificacion.LinkAdjunto.length > 0) {
+        //        if (!this.validarURL()) {
+        //            this.mensajeError = "La dirección del link adjunto es inválida.";
+        //            this.messageService.add({ key: 'tc', severity: 'error', summary: 'error', detail: this.mensajeError });
+        //            return false;
+        //        }
+        //    }
+        //}
 
         if (this.notificacion.Mensaje.length == 0) {
             this.mensajeError = "Ingrese el mensaje.";
+            this.focusSection("editor");
+            this.messageService.add({ key: 'tc', severity: 'error', summary: 'error', detail: this.mensajeError });
             return false;
         }
 
-        if (this.roles.filter(x => x.checked).length == 0)
-        {
+        if (this.roles.filter(x => x.checked).length == 0) {
             this.mensajeError = "Seleccione algún rol.";
+            this.focusSection("seccionRoles");
+            this.messageService.add({ key: 'tc', severity: 'error', summary: 'error', detail: this.mensajeError });
             return false;
         }
-        
-            
+
+
         return true;
     }
 
@@ -405,31 +457,66 @@ export class AltaNotificacionesComponent extends BaseComponent implements OnInit
         }
     }
 
-    getRolesOptions() {
-        try {
-            this.subscriptionDropDowns = this.usuarioService.getRoles().subscribe(
-                (result:any) => {
-                    if (result.logout == true) {
-                        this.sessionDataService.logout();
-                    } else if (result.error != undefined && result.error != "") {
-                        this.mensajeComponent.setErrorMsg(result.error);
-                    } else if (result.info != undefined) {
-                        this.mensajeComponent.setInfoMsg(result.info);
-                    } else {
+    //getRolesOptions() {
+    //    try {
+    //        this.subscriptionDropDowns = this.usuarioService.getRoles().subscribe(
+    //            (result:any) => {
+    //                if (result.logout == true) {
+    //                    this.sessionDataService.logout();
+    //                } else if (result.error != undefined && result.error != "") {
+    //                    this.mensajeComponent.setErrorMsg(result.error);
+    //                } else if (result.info != undefined) {
+    //                    this.mensajeComponent.setInfoMsg(result.info);
+    //                } else {
                       
-                        this.roles = result.data.roles.filter((rol) => rol.Code === "Externo" || rol.Code === "Interno");
-                    }
+    //                    this.roles = result.data.roles.filter((rol) => rol.Code === "Externo" || rol.Code === "Interno");
+    //                    //this.roles = result.data.roles;
+    //                }
 
                   
-                },
-                error => {
-                    this.mensajeComponent.setErrorMsg(error.message);
-                }
-            );
-        } catch (e) {
-            this.mensajeComponent.setErrorMsg(e);
-        }
+    //            },
+    //            error => {
+    //                this.mensajeComponent.setErrorMsg(error.message);
+    //            }
+    //        );
+    //    } catch (e) {
+    //        this.mensajeComponent.setErrorMsg(e);
+    //    }
+    //}
+
+
+    getRolesOptions(): Promise<any> {
+        return new Promise((resolve, reject) => {
+            try {
+                this.subscriptionDropDowns = this.usuarioService.getRoles().subscribe(
+                    (result: any) => {
+                        if (result.logout == true) {
+                            this.sessionDataService.logout();
+                            reject("Usuario desconectado");
+                        } else if (result.error != undefined && result.error != "") {
+                            this.mensajeComponent.setErrorMsg(result.error);
+                            reject("Error en la obtención de roles");
+                        } else if (result.info != undefined) {
+                            this.mensajeComponent.setInfoMsg(result.info);
+                            resolve("Información recibida");
+                        } else {
+                            this.roles = result.data.roles.filter((rol) => rol.Code === "Externo" || rol.Code === "Interno");
+                            //this.roles = result.data.roles;
+                            resolve("Roles obtenidos");
+                        }
+                    },
+                    error => {
+                        this.mensajeComponent.setErrorMsg(error.message);
+                        reject(error.message);
+                    }
+                );
+            } catch (e) {
+                this.mensajeComponent.setErrorMsg(e);
+                reject(e);
+            }
+        });
     }
+
 
 
     

@@ -74,3 +74,21 @@
   font-size: 15px;
   color: white;
 }
+
+
+/* Cambiar el color de fondo del toast */
+.ui-toast {
+    background-color: #333;
+    color: #fff;
+}
+
+/* Modificar el tamaño del texto del mensaje */
+.ui-toast-message {
+    font-size: 14px;
+}
+
+/* Personalizar el icono del toast */
+.ui-toast-icon {
+    color: #ffcc00; /* Cambiar el color del icono */
+    font-size: 20px; /* Cambiar el tamaño del icono */
+}
