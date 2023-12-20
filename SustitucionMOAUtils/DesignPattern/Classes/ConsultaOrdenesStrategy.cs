@@ -24,11 +24,13 @@ namespace SustitucionMOAUtils.DesignPattern.Classes
 {
     public class ConsultaOrdenesStrategy : ConsultaCommon, IConsultaStrategy
     {
+        public List<string> Names => new List<string>() {"Orden de Carga"};
+
+        private readonly IRepositorio repositorio;
         private readonly IUsuarioService usuarioService;
         private static readonly string consultaInternaCC = ConfigurationManager.AppSettings["EmailConsultaInternaCC"];
 
-        public string Name => "Orden de Carga";
-        public ConsultaOrdenesStrategy(IRepositorio repositorio, IEmailService emailService, IUsuarioService usuarioService): base(repositorio, emailService)
+        public ConsultaOrdenesStrategy(IRepositorio repositorio, IUsuarioService usuarioService)
         {
             this.usuarioService = usuarioService;
         }

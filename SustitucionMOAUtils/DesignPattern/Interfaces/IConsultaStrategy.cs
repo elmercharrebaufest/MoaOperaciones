@@ -11,6 +11,8 @@ namespace SustitucionMOAUtils.DesignPattern.Interfaces
 {
     public interface IConsultaStrategy
     {
+        List<string> Names { get; }
+        Consulta AgregarConsulta(Consulta consulta, Comentario comentario);
         string Name { get; }
         Consulta AgregarConsulta(Consulta consulta, Comentario comentario, List<DestinatarioDto> destinatarios, HttpFileCollectionBase files);
         string GuardarAdjuntoComentario(int consultaId, HttpFileCollectionBase files);

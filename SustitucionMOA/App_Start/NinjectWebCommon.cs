@@ -224,7 +224,9 @@ namespace SustitucionMOA.App_Start
             //Consulta Strategies
             kernel.Bind<IConsultaContext>().To<ConsultaContext>().InTransientScope();
             kernel.Bind<IConsultaStrategy>().To<ConsultaOrdenesStrategy>().InTransientScope();
-
+            kernel.Bind<IConsultaStrategy>().To<ConsultaFinalStrategy>().InTransientScope();
+            kernel.Bind<IConsultaStrategy>().To<ConsultaParcialStrategy>().InTransientScope();
+            kernel.Bind<IConsultaStrategy>().To<ConsultaGeneralStrategy>().InTransientScope();
 
             //Activador Ninject Hangfire
             GlobalConfiguration.Configuration.UseNinjectActivator(kernel);

@@ -1,6 +1,7 @@
 ﻿using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
+using SustitucionMOAModel.Models.Raw;
 using SustitucionMOAModel.Models.WSMapMOA.Login;
 using SustitucionMOAModel.Models.WSMapMOA.Usuario;
 using SustitucionMOAModel.Models.WSMapMOA.Usuario.Perfil;
@@ -38,6 +39,7 @@ namespace SustitucionMOAUtils.Interfaces
         IEnumerable<IGrouping<int, UsuarioDto>> ListarUsuarioCreadorSolp();
         ProveedorDto TraerProveedorEnSAP(string codigoProveedor, string codigoCorredor);
         string EliminarCuitNoHabilitado(int proveedorId, string mailUsuarioSesion);
+        List<ProveedorRaw> GetVendedoresRawDelUsuario(int usuarioId);
         ProveedorDto GetProveedorAprobadoPorCuit(string cuit, string mailUsuarioSesion);
         void AsignarNuevaCUIT(AsignarNuevaCuitDto datosAsignar, string mailUsuarioSesion);
         List<DestinatarioDto> ObtenerDestinatariosConsulta();

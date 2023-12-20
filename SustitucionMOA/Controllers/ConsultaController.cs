@@ -452,6 +452,7 @@ namespace SustitucionMOA.Controllers
                     subcategorias = consultaService.ObtenerSubCategorias(usuarioActual),
                     ordenes = ordenDeCargaService.Listar(usuarioActual.Mail, fechaInicio.ToString("dd/MM/yyyy"), fechaFin.ToString("dd/MM/yyyy")),
                     proveedorId = SessionPersister.ProveedorId,
+                    materiales = consultaService.ObtenerMaterial(TablaSeccionMaterial.Contacto),
                 });
             }
             catch (InfoCustomException e)
@@ -510,6 +511,35 @@ namespace SustitucionMOA.Controllers
                 return JsonCustom(new
                 {
                     destinatarios = usuarioService.ObtenerDestinatariosConsulta()
+                });
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e }, JsonRequestBehavior.AllowGet);
+            }
+            catch (WSCustomException e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        public ActionResult GetVendedoresUsuario(int idUsuario)
+        {
+            try
+            {
+                return JsonCustom(new
+                {
+                    vendedores = usuarioService.GetVendedoresRawDelUsuario(idUsuario)
                 });
             }
             catch (InfoCustomException e)

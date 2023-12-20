@@ -751,7 +751,7 @@ namespace SustitucionMOAUtils.Services
 
                 var categorias = repositorio.Listar<Categoria>(c => rolesUsuario.Contains(c.Code));
 
-                return categorias.Select(x => new CategoriaDto(x)).ToList();
+                return categorias.Select(x => new CategoriaDto(x)).OrderBy(c => c.Nombre).ToList();
             }
             catch (ValidationCustomException e)
             {
@@ -1205,6 +1205,9 @@ namespace SustitucionMOAUtils.Services
         public AgregarConsultaResponseDto AgregarConsultaInterna(Consulta consulta, Comentario comentario, HttpFileCollectionBase files, List<DestinatarioDto> destinatarios)
         {
             string mensajeResultado = string.Empty;
+
+            EstadoConsulta estado = repositorio.Obtener<EstadoConsulta>(e => e.Code == "DOC");
+            consulta.EstadoConsulta_Id = estado.Id;
 
             Categoria categoria = repositorio.Obtener<Categoria>(c => c.Id == consulta.Categoria_Id);
           
