@@ -71,7 +71,8 @@
 
                 <div class="row myRow">
                     <div class="col-md-3 col-lg-3 inputAltura">
-                        <p-dropdown [options]="usuarioFiltro" [(ngModel)]="selectUsuario" name="selectUsuario" placeholder="Buscar por usuario" filter="true" showClear="true"></p-dropdown>
+                        <p-multiSelect [options]="usuarioFiltro" [(ngModel)]="selectUsuario" defaultLabel="Buscar por usuario"
+                                       [maxSelectedLabels]="1" selectedItemsLabel="{0} usuarios elegidos"></p-multiSelect>
                     </div>
                     <div class="col-md-3 col-lg-3">
                         <p-calendar showButtonBar="true" [showIcon]="true" placeholder="Buscar por fechas"
