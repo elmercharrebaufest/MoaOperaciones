@@ -20,7 +20,6 @@ import { ChatComprasDto } from '../chat-interno/chat-interno.interface';
 
 declare var $: any;
 
-
 @Component({
     selector: 'dashboard',
     templateUrl: `dashboard.component.html`,
@@ -59,7 +58,6 @@ export class DashboardComponent extends ListBaseComponent {
     public ordenCompra: any;
     public solicitante: boolean = true;
     displayRevisionTecnica: boolean;
-
     displayCircular: boolean = false;
     combos: any;
     usuariosResult: any;
@@ -74,6 +72,7 @@ export class DashboardComponent extends ListBaseComponent {
         sap: boolean;
         mantenimiento: boolean;
         web: boolean;
+        repoAutomatica: boolean;
         usuarios: string[];
         estadoSolp: string[];
         fechaDesde: Date;
@@ -83,28 +82,12 @@ export class DashboardComponent extends ListBaseComponent {
             sap: false,
             mantenimiento: false,
             web: false,
+            repoAutomatica: false,
             usuarios: [],
             estadoSolp: [],
             fechaDesde: new Date(),
             fechaHasta: new Date(),
         };
-
-    constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService, protected route: ActivatedRoute, protected router: Router, private confirmationService: ConfirmationService) {
-        super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
-
-        this.usuario = sessionStorage.getItem("username");
-        this.locale = {
-            firstDayOfWeek: 0,
-            dayNames: ["Domingo", "Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado"],
-            dayNamesShort: ["Dom", "Lun", "Mar", "Mie", "Jue", "Vie", "Sab"],
-            dayNamesMin: ["Do", "Lu", "Ma", "Mi", "Ju", "Vi", "Sa"],
-            monthNames: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"],
-            monthNamesShort: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"],
-            today: 'Hoy',
-            clear: 'Borrar'
-        };
-
-    }
 
     filteredfechas: any;
     solpFecha: any = new Array();
@@ -112,7 +95,6 @@ export class DashboardComponent extends ListBaseComponent {
     fechaFin: any = null;
     rangeDates: Date[];
     tipoFiltroFecha = 1;
-
     desdeDashboard: Date;
     hastaDashboard: Date;
     estadoSolpItem: SelectItem[];
@@ -124,21 +106,31 @@ export class DashboardComponent extends ListBaseComponent {
     display: boolean = false;
     tablaSolp: any[];
     tablaSolpCopy: any[];
-
     usuarioFiltro: SelectItem[];
     selectUsuario: string[] = [];
-
     cols: any[];
     serviciosDashboard: any = "Servicios"
     solp: Solp = new Solp();
     usuario: string;// = "Prueba";
-
     checkedFilterSap = false;
     checkedFilterMantenimiento = false;
     checkedFilterWeb = false;
-
     verTodas: boolean = this.isAuthorized('VER TODAS SOLPS');
     public chat: ChatComprasDto;
+
+    cards = [
+        { nombre: "Con documento de pliego", path: "/compras/solp/0", tipoSolp: "CON_PLIEGO" },
+        { nombre: "Sin pliego", path: "/compras/solp/0", tipoSolp: "SIN_PLIEGO" },
+        // { nombre: "Con documentos requerimientos", path: ""},
+        // { nombre: "Sin documento", path: ""},
+        // { nombre: "Emergencia", path: ""},
+        // { nombre: "Adicional", path: ""}
+    ]
+
+    subtitulos = [
+        { nombre: "Servicio y/o Material catalogado y sin catalogar" },
+        { nombre: "Servicio y/o Material catalogado" },
+    ]
 
     constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService, protected route: ActivatedRoute, protected router: Router, private confirmationService: ConfirmationService) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
@@ -160,20 +152,6 @@ export class DashboardComponent extends ListBaseComponent {
     showDialog() {
         this.display = true;
     }
-
-    cards = [
-        { nombre: "Con documento de pliego", path: "/compras/solp/0", tipoSolp: "CON_PLIEGO" },
-        { nombre: "Sin pliego", path: "/compras/solp/0", tipoSolp: "SIN_PLIEGO" },
-        // { nombre: "Con documentos requerimientos", path: ""},
-        // { nombre: "Sin documento", path: ""},
-        // { nombre: "Emergencia", path: ""},
-        // { nombre: "Adicional", path: ""}
-    ]
-
-    subtitulos = [
-        { nombre: "Servicio y/o Material catalogado y sin catalogar" },
-        { nombre: "Servicio y/o Material catalogado" },
-    ]
 
     goToSeccion(path: string) {
         $("#mySidenav").css({ 'right': '-270px' });
@@ -236,11 +214,11 @@ export class DashboardComponent extends ListBaseComponent {
         }
     }
 
-    listarExpand() { 
+    listarExpand() {
         setTimeout(() => {
             $('[id^="ui-tabpanel-"]').css('padding', '0');
             $('[id^="ui-tabpanel-"]').css('transition', 'none').css('animation', 'none');
-        }, 0.01);        
+        }, 0.01);
     }
 
     filtrarPorSap() {
@@ -669,7 +647,7 @@ export class DashboardComponent extends ListBaseComponent {
                         this.sessionDataService.logout();
                     }
                     else {
-                        if (result) {}
+                        if (result) { }
                         this.displayRevisionTecnica = false;
                         this.blockUI.stop();
                     }
@@ -690,7 +668,8 @@ export class DashboardComponent extends ListBaseComponent {
         this.filtrosSolicitante.sap = this.sap;
         this.filtrosSolicitante.mantenimiento = this.mantenimiento;
         this.filtrosSolicitante.web = this.web;
-        //this.filtrosSolicitante.usuarios = this.selectUsuario;
+        this.filtrosSolicitante.repoAutomatica = this.repoAutomatica;
+        this.filtrosSolicitante.usuarios = this.selectUsuario;
         this.filtrosSolicitante.estadoSolp = this.selectEstadoSolp;
         this.filtrosSolicitante.fechaDesde = this.fechaInicio;
         this.filtrosSolicitante.fechaHasta = this.fechaFin;
@@ -798,38 +777,38 @@ export class DashboardComponent extends ListBaseComponent {
         try {
             this.displayChatInterno = false;
             this.subscription = this.service.obtenerChat(Id)
-              .subscribe(
-                (result: any) => {
-                    if (result.logout == true) {
-                        this.sessionDataService.logout();
-                    } else if (result.error != undefined && result.error != "") {
-                        this.floatMsgService.setErrorMsg(result.error);
-                    } else if (result.info != undefined) {
-                        this.floatMsgService.setInfoMsg(result.info);
-                    } else {
-                        result.Mensajes = result.Mensajes.map((x) => {
-                            x.FechaEnvioDate = new Date(
-                                this.getDateFromAspNetFormat(x.FechaEnvioDate)                                
-                            );   
-                            return x;
-                        });
-                        result.FechaCreacionDate = new Date(
-                            this.getDateFromAspNetFormat(result.FechaCreacionDate)                                
-                        );   
-                        this.chat = result;
-                        this.displayChatInterno = true;
-                        this.chatLeido = true;
-                    };
-                },
-                (error) => {
-                  this.floatMsgService.setErrorMsg(error.message);
-              }
-          );
-      } catch (e) {
-          this.floatMsgService.setErrorMsg(e);
-          return false; //<-- Prevent Refresh
-      }
-      return false; //<-- Prevent Refresh
+                .subscribe(
+                    (result: any) => {
+                        if (result.logout == true) {
+                            this.sessionDataService.logout();
+                        } else if (result.error != undefined && result.error != "") {
+                            this.floatMsgService.setErrorMsg(result.error);
+                        } else if (result.info != undefined) {
+                            this.floatMsgService.setInfoMsg(result.info);
+                        } else {
+                            result.Mensajes = result.Mensajes.map((x) => {
+                                x.FechaEnvioDate = new Date(
+                                    this.getDateFromAspNetFormat(x.FechaEnvioDate)
+                                );
+                                return x;
+                            });
+                            result.FechaCreacionDate = new Date(
+                                this.getDateFromAspNetFormat(result.FechaCreacionDate)
+                            );
+                            this.chat = result;
+                            this.displayChatInterno = true;
+                            this.chatLeido = true;
+                        };
+                    },
+                    (error) => {
+                        this.floatMsgService.setErrorMsg(error.message);
+                    }
+                );
+        } catch (e) {
+            this.floatMsgService.setErrorMsg(e);
+            return false; //<-- Prevent Refresh
+        }
+        return false; //<-- Prevent Refresh
     }
 
     cerrarModalChat() {
@@ -843,6 +822,7 @@ export class DashboardComponent extends ListBaseComponent {
             this.sap = filtrosGuardados.sap;
             this.mantenimiento = filtrosGuardados.mantenimiento;
             this.web = filtrosGuardados.web;
+            this.repoAutomatica = filtrosGuardados.repoAutomatica;
             this.selectUsuario = filtrosGuardados.usuarios;
             this.selectEstadoSolp = filtrosGuardados.estadoSolp;
             this.fechaInicio = filtrosGuardados.fechaDesde;

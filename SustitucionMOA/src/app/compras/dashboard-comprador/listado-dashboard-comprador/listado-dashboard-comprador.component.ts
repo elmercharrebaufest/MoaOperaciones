@@ -78,35 +78,48 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
     chatLeido: boolean = false;
     public chat: ChatComprasDto;
     tratada: any;
-
-    fechaInicio: any = null;
-    fechaFin: any = null;
+    fechaDesde: string = null;
+    fechaHasta: string = null;
     rangeDates: Date[];
     filtrosComprador: {
         nroSolp: string;
         sap: boolean;
         mantenimiento: boolean;
         web: boolean;
+        repoAutomatica: boolean;
         usuarios: string[];
         estadoSolp: string[];
         gruposCompras: string[];
         centros: string[];
-        //fechaDesde: Date;
-        //fechaHasta: Date;
+        fechaDesde: string;
+        fechaHasta: string;
     } = {
             nroSolp: "",
             sap: false,
             mantenimiento: false,
             web: false,
+            repoAutomatica: false,
             usuarios: [],
             estadoSolp: [],
             gruposCompras: [],
             centros: [],
+            fechaDesde: null,
+            fechaHasta: null,
         };
 
-    constructor(protected service: ComprasService, protected navService: NavService,
-        protected sessionDataService: SessionDataService, protected securityService: SecurityService,
-        protected floatMsgService: FloatMsgService, protected modalService: ModalService,
+    tablaSolp: any[];
+    tablaSolpCopy: any[];
+    cols: any[];
+    serviciosDashboard: any = "Servicios"
+    solp: Solp = new Solp();
+    checkedFilterSap = false;
+    checkedFilterMantenimiento = false;
+    checkedFilterWeb = false;
+    verTodas: boolean = this.isAuthorized('VER TODAS SOLPS');
+    displayCerrarCotizacion: boolean;
+
+    constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService,
+        protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService,
         protected route: ActivatedRoute, protected router: Router) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
         this.usuario = sessionStorage.getItem("username"); this.recuperarFiltros(); this.listarSolp();
@@ -121,17 +134,6 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
             clear: 'Borrar'
         };
     }
-
-    tablaSolp: any[];
-    tablaSolpCopy: any[];
-    cols: any[];
-    serviciosDashboard: any = "Servicios"
-    solp: Solp = new Solp();
-    checkedFilterSap = false;
-    checkedFilterMantenimiento = false;
-    checkedFilterWeb = false;
-    verTodas: boolean = this.isAuthorized('VER TODAS SOLPS');
-    displayCerrarCotizacion: boolean;
 
     ngOnInit() {
         this.recuperarFiltros();
@@ -190,7 +192,7 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
     listarSolp() {
         this.spinnerComponent.showIt();
         this.service.getListarSolpCompras(this.pageIndex, this.pageSize, this.orden, this.columnaOrden, this.nroSolp, this.selectEstadoSolp.join(","), this.selectUsuario.join(","),
-            this.selectCentro.join(","), this.selectGrupoCompras.join(","), this.fechaInicio, this.fechaFin, this.sap, this.mantenimiento, this.web, this.repoAutomatica);
+            this.selectCentro.join(","), this.selectGrupoCompras.join(","), this.fechaDesde, this.fechaHasta, this.sap, this.mantenimiento, this.web, this.repoAutomatica);
     }
 
     onOrder(columna: string) {
@@ -366,30 +368,30 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
             )
     }
 
-    publicarCotizacion(Id: string, nroSolp: string) {   
-        this.blockUI.start('Cargando...');  
+    publicarCotizacion(Id: string, nroSolp: string) {
+        this.blockUI.start('Cargando...');
         this.service.validarSolpTratada(nroSolp)
-        .subscribe(
-            (result) => {
-                if (result.logout == true) {
-                    this.sessionDataService.logout();
-                }
-                else {                   
-                    if(result){  
-                        this.floatMsgService.setErrorMsg("No se puede crear una nueva PO por que la SOLP fue tratada desde SAP");
-                    }else{
-                       this.goToSeccionParam('/compras/peticion-de-oferta-formulario', Id);
+            .subscribe(
+                (result) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
                     }
+                    else {
+                        if (result) {
+                            this.floatMsgService.setErrorMsg("No se puede crear una nueva PO por que la SOLP fue tratada desde SAP");
+                        } else {
+                            this.goToSeccionParam('/compras/peticion-de-oferta-formulario', Id);
+                        }
+                        this.blockUI.stop();
+                    }
+                },
+                (error) => {
                     this.blockUI.stop();
+                    this.mensajeComponent.setErrorMsg(error.message);
                 }
-            },
-            (error) => {
-                this.blockUI.stop();
-                this.mensajeComponent.setErrorMsg(error.message);
-            }
-        )
-       
-        
+            )
+
+
     }
 
     onRowDblClick(a, b) {
@@ -675,18 +677,21 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
         this.filtrosComprador.sap = this.sap;
         this.filtrosComprador.mantenimiento = this.mantenimiento;
         this.filtrosComprador.web = this.web;
+        this.filtrosComprador.repoAutomatica = this.repoAutomatica;
         this.filtrosComprador.usuarios = this.selectUsuario;
         this.filtrosComprador.estadoSolp = this.selectEstadoSolp;
         this.filtrosComprador.gruposCompras = this.selectGrupoCompras;
         this.filtrosComprador.centros = this.selectCentro;
+        this.filtrosComprador.fechaDesde = this.fechaDesde;
+        this.filtrosComprador.fechaHasta = this.fechaHasta;
         this.service.getListarSolpCompras(1, 10, "", "", this.nroSolp, this.selectEstadoSolp.join(","),
-            this.selectUsuario.join(","), this.selectCentro.join(","), this.selectGrupoCompras.join(","), this.fechaInicio, this.fechaFin, this.sap, this.mantenimiento, this.web, this.repoAutomatica);
+            this.selectUsuario.join(","), this.selectCentro.join(","), this.selectGrupoCompras.join(","), this.fechaDesde, this.fechaHasta, this.sap, this.mantenimiento, this.web, this.repoAutomatica);
         sessionStorage.setItem('filtrosComprador', JSON.stringify(this.filtrosComprador));
     }
 
     returnToTodaysDate() {
-        this.fechaInicio = "";
-        this.fechaFin = "";
+        this.fechaDesde = "";
+        this.fechaHasta = "";
         if (this.tablaSolp.length > 0) {
             this.mensajeComponent.setMsgsEmpty();
         }
@@ -695,16 +700,16 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
     onSelect(event: any) {
         if (this.rangeDates[0] && this.rangeDates[1] == null) {
             let d = new Date(Date.parse(event));
-            this.fechaInicio = `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
+            this.fechaDesde = `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
         } else {
             let d = new Date(Date.parse(event));
-            this.fechaFin = `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
+            this.fechaHasta = `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
             if (this.rangeDates[1]) { // If second date is selected
                 this.calendar.overlayVisible = false;
             }
         }
     }
-    
+
     recuperarFiltros() {
         const filtrosGuardados = JSON.parse(sessionStorage.getItem('filtrosComprador'));
         if (filtrosGuardados) {
@@ -712,11 +717,13 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
             this.sap = filtrosGuardados.sap;
             this.mantenimiento = filtrosGuardados.mantenimiento;
             this.web = filtrosGuardados.web;
+            this.repoAutomatica = filtrosGuardados.repoAutomatica;
             this.selectUsuario = filtrosGuardados.usuarios;
             this.selectEstadoSolp = filtrosGuardados.estadoSolp;
             this.selectGrupoCompras = filtrosGuardados.gruposCompras;
             this.selectCentro = filtrosGuardados.centros;
-            //this.fechaInicio = filtrosGuardados.fechaDesde;
-            //this.fechaFin = filtrosGuardados.fechaHasta;
+            this.fechaDesde = filtrosGuardados.fechaDesde;
+            this.fechaHasta = filtrosGuardados.fechaHasta;
         }
+    }
 }
