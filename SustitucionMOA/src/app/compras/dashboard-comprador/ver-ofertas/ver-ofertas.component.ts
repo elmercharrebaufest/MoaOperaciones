@@ -47,6 +47,8 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
     displayVisualizarErrores: boolean;
     numeroOrdenDeCompra: any;
     displayPanelHs: boolean = false;
+    textoRacionalCompleto: boolean;
+    displayTextoIncompleto: boolean;
 
     @Input()
     public peticionHs: CotizacionHoraDto;
@@ -67,6 +69,7 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
                 this.peticionOferta_Id = parseInt(params["id"]);
                 this.verOfertas(this.peticionOferta_Id);
             })
+            this.textoRacionalCompleto = true;
         };
 
         if (this.tablaOfertas == null) {
@@ -248,7 +251,11 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
             this.adjudicacion.AdjudicacionPosiciones = lista;
             this.adjudicacion.Cotizacion_Id = usuario.Cotizacion.Id;
             this.adjudicacion.Solp_Id = this.tablaOfertas.Solp_Id;
-            this.confirmacionAdjudicar();
+            if(this.textoRacionalCompleto == true){
+                this.displayTextoIncompleto = true;
+            } else {
+                this.confirmacionAdjudicar();
+            }
         } else {
             this.floatMsgService.setInfoMsg("Debe seleccionar alguna posición para adjudicar");
         }
@@ -357,12 +364,15 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
         this.displayVisualizarErrores = false;
     }
 
-    abrilModalTextos() {
+    abrilModalTextos(textosIncompletos: boolean) {
         this.displayTextos = true;
+        this.textoRacionalCompleto = textosIncompletos;
     }
 
-    cerrarModalTextos() {
+    cerrarModalTextos(textosIncompletos: boolean) {
         this.displayTextos = false;
+        this.textoRacionalCompleto = textosIncompletos;
+
     }
 
     aceptarModalTextos() {
@@ -430,6 +440,14 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
             plazos += 'Plazo: ' + cotizacionPosicion.TercerPlazoDeOferta + ' - Cantidad: ' + cotizacionPosicion.TerceraCantidad ;
         }
         return plazos;
+      }
+
+      continuarAdjudicacion(){
+        this.confirmacionAdjudicar();
+      }
+
+      noContinuarAdjudicacion(){
+        this.displayTextoIncompleto = false;
       }
 
 }

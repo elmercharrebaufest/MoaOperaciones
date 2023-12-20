@@ -576,6 +576,22 @@
     </p-footer>
 </p-dialog>
 
+<p-dialog [(visible)]="displayTextoIncompleto" [width]="400" modal="modal" appendTo="body" [draggable]="false" [contentStyle]="{'max-height':'500px', 'min-height':'100px'}" [closable]="false">
+    <p-header class="headerModal">
+        ¡Atencion!
+    </p-header>
+    <strong>No se completó ningún racional </strong>
+    <br>
+    <br>
+    ¿Desea continuar con la adjudicación?
+    <p-footer>
+        <button type="button" class="btn btn-danger botonesComprasColor botonModal" (click)="noContinuarAdjudicacion()">No</button>
+        <button type="button" class="btn btn-primary botonesComprasColor botonModal" (click)="continuarAdjudicacion()">Si</button>
+
+    </p-footer>
+</p-dialog>
+
+
 <p-confirmDialog #dialogo header="Confirmación" icon="pi pi-exclamation-triangle" [width]="400" [responsive]="true" appendTo="body">
     <p-footer>
         <button type="button" pButton label="Cancelar" class="ui-button-info botonModal" (click)="dialogo.reject()"></button>
@@ -585,8 +601,8 @@
 
 <app-textos-adjudicar #textoAdjudicar
                       [(displayTextos)]="displayTextos"
-                      (cerrarModalTextosEmitter)="cerrarModalTextos()"
-                      (aceptarModalTextosEmitter)="aceptarModalTextos()"
+                      (cerrarModalTextosEmitter)="cerrarModalTextos($event)"
+                      (aceptarModalTextosEmitter)="aceptarModalTextos($event)"
                       [(adjudicacion)]="adjudicacion">
 </app-textos-adjudicar>
 
