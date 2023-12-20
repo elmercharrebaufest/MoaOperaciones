@@ -68,7 +68,8 @@ namespace SustitucionMOAWS.WSConsumers
                         Id = info.INFO_REC,
                         FechaFormateada = !string.IsNullOrEmpty(purch.PRICE_DATE) ? SAPFormatter.GetDateTime(purch.PRICE_DATE) : (DateTime?)null,
                         MaterialCodigo = info.MATERIAL,
-                        NumeroOrdenDeCompra = purch.PO_NUMBER
+                        NumeroOrdenDeCompra = purch.PO_NUMBER,
+                        GrupoDeCompras = purch.PUR_GROUP
                     };
 
                     registros.Add(registroInfo);

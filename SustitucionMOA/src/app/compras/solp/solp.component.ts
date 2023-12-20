@@ -160,16 +160,12 @@ export class SolpComponent extends BaseComponent implements OnInit {
                     } else {
                         numeroSolp = params["id"].split(',')[1];
                     }
-
                     if (numeroSolp != "") this.flagSolpFinalizada = true;
                     this.tituloSolp();
-
                 });
-
                 if (this.solpId > 0) {
                     this.setComponentMode(ComponentMode.Edition);
                     this.traerSolpId(this.solpId);
-                    
                 } else {
                     this.setComponentMode(ComponentMode.Creation);
                     this.setearPasos();
@@ -235,7 +231,6 @@ export class SolpComponent extends BaseComponent implements OnInit {
     }
 
     tituloSolpEditar(nroSolp) {
-        console.log("nroSolp", nroSolp)
         if(nroSolp != null && nroSolp !== 0 && nroSolp != "" && nroSolp !== "0" && nroSolp != undefined ){
             this.titulo = `Edición de SOLP - # ${nroSolp}`;
         } else {
