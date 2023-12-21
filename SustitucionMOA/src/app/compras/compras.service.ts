@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { EventEmitter, Injectable } from '@angular/core';
 import { HttpParams } from '@angular/common/http';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { BaseService } from '../common/services/BaseService';
@@ -24,6 +24,8 @@ export class ComprasService extends BaseService {
         pagina: 1,
         itemsPorPagina: 10,
         orden: "",
+        ordenAscendente: false,
+        columnaNombre: '',
         columna: "Id",
         nroSolp: "",
         nroPo: "",
@@ -45,6 +47,7 @@ export class ComprasService extends BaseService {
     observableListaSolp = new Subject<any[]>();
     observableListaPO = new Subject<any[]>();
 
+    onDataUpdate: EventEmitter<void> = new EventEmitter<void>();
 
     public getCombos(): Observable<any> {
         return this.http
@@ -125,7 +128,33 @@ export class ComprasService extends BaseService {
                 headers: this.headers,
             });
     }
+    notifyDataUpdate() {
+        this.onDataUpdate.emit();
+    }
 
+    public getByProveedor(
+        fechaInicio: any = this.filtros.fechaDesde,
+        proveedorId: string,
+        ordenCompraId: string,
+        columnaOrden: string = this.filtros.columnaNombre,
+        ordenAscendente: boolean = this.filtros.ordenAscendente,
+        pagina: number = this.filtros.pagina,
+        elementosPorPagina: number = this.filtros.itemsPorPagina,
+    ): Observable<any> {
+
+        let params: HttpParams = new HttpParams();
+
+        params = params.set('fechaInicio', (fechaInicio != null ? fechaInicio : ""));
+        params = params.set('vendedor', proveedorId);
+        params = params.set('ordenCompraId', ordenCompraId);
+        params = params.set('columnaOrden', columnaOrden);
+        params = params.set('ordenAscendente', ordenAscendente.toString());
+        params = params.set('pagina', pagina.toString());
+        params = params.set('elementosPorPagina', elementosPorPagina.toString());
+
+        return this.http
+            .get<any[]>('/api/Order/GetByProveedor', { params: params, headers: this.headers })
+    }
     public GuardarSolp(solp: Solp) {
         let solpJson = JSON.stringify({
             Id: solp.id,

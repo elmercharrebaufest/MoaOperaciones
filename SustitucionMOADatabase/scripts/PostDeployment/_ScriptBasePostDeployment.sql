@@ -33,4 +33,12 @@ Post-Deployment Script Template
 :r .\UsuariosConRolFleteMOA.sql
 :r .\RegionSap.sql
 
+:r ..\Notificaciones\Notificacion.sql
+:r ..\Notificaciones\NotificacionFechaCreacion.sql
+:r ..\Notificaciones\NotificacionPrioridad.sql
+:r ..\Comunicacion\ComunicacionTipo.sql
+:r ..\Comunicacion\TipoRetencion.sql
+
+:r .\UsuariosConRolFleteMOA.sql
+
 

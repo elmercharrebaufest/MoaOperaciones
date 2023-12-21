@@ -80,6 +80,10 @@ import { VisalizarPrecioComponent } from './dashboard-comprador/ver-ofertas/visu
 import { ReporteOcComponent } from './reporte-oc/reporte-oc.component';
 import { ChatInternoComponent } from './chat-interno/chat-interno.component';
 
+import { ListadoDashboardCertificacionDeServiciosComponent } from './dashboard-entrada-de-servicio/listado-dashboard-certificacion-de-servicios/listado-dashboard-certificacion-de-servicios.component';
+import { FiltroDashboardCertificacionDeServiciosComponent } from './dashboard-entrada-de-servicio/filtro-dashboard-certificacion-de-servicios/filtro-dashboard-certificacion-de-servicios.component';
+
+
 @NgModule({
     imports: [
         CommonModule,
@@ -158,7 +162,9 @@ import { ChatInternoComponent } from './chat-interno/chat-interno.component';
         PlazoDeOfertaComponent,
         ReporteOcComponent,
         VisalizarPrecioComponent,
-        ChatInternoComponent
+        ChatInternoComponent,
+        ListadoDashboardCertificacionDeServiciosComponent,
+        FiltroDashboardCertificacionDeServiciosComponent,
     ],
     providers: [
         ComprasService,

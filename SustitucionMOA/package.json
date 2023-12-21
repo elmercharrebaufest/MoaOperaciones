@@ -37,7 +37,7 @@
     "@kolkov/angular-editor": "^0.18.8",
     "@ng-bootstrap/ng-bootstrap": "^4.2.2",
     "angular-in-memory-web-api": "^0.6.1",
-    "angular-ng-autocomplete": "^2.0.5",
+    "angular-ng-autocomplete": "^1.0.1",
     "angular2-recaptcha": "^1.1.0",
     "base64-arraybuffer": "^0.1.5",
     "bootstrap": "^3.3.7",

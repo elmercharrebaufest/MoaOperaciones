@@ -27,8 +27,12 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                if (vendedor == "" || vendedor == null) {
+                if (vendedor == "" || vendedor == null)
+                {
                     vendedor = SessionPersister.Proveedor;
+                }
+                else {
+                    return JsonCustom(new { data = _vendedorService.GetDatosFiscales(vendedor, vendedor) });
                 }
                 return JsonCustom(new { data = _vendedorService.GetDatosFiscales(vendedor, SessionPersister.Proveedor) });
             }

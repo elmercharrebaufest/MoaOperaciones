@@ -72,6 +72,8 @@ export class MisConsultasComponent extends ListBaseComponent {
     esInterno = this.isAuthorized('CONSULTA ABM');
     widthModal: string;
     asunto: string;
+    estadoConsultaSeleccionado: EstadoConsulta[];
+    categoriaSeleccionada: Categoria[];
 
     @HostListener('window:resize', ['$event']) onResize(event) {
         this.setColumnasByWindowSize();
@@ -113,6 +115,68 @@ export class MisConsultasComponent extends ListBaseComponent {
                 return value <= filter[1]
             else
                 return true;
+        }
+    }
+
+    setfilter() {
+        this.route.queryParams.subscribe(params => {
+            const filtrosActivados = params['filtrosActivados'];
+            const categoria = params['categoria'];
+            const estadoConsulta = params['filter'];
+            const proveedor = params['proveedor'];
+
+
+            if (filtrosActivados && filtrosActivados === 'true') {
+                this.showFilters = true;
+
+            }
+
+            if (filtrosActivados && filtrosActivados === 'true' && categoria) {
+                this.seleccionarOpcionFiltro('RazonSocialProveedor', proveedor);
+            }
+
+            if (filtrosActivados && filtrosActivados === 'true' && categoria) {
+                this.seleccionarOpcionFiltro('Categoria', categoria);
+            }
+
+            if (filtrosActivados && filtrosActivados === 'true' && estadoConsulta) {
+                this.seleccionarOpcionFiltro('EstadoConsulta', estadoConsulta);
+            }
+
+
+
+        });
+    }
+
+
+    seleccionarOpcionFiltro(columna: string, valor: string) {
+        debugger
+        switch (columna) {
+
+            case 'RazonSocialProveedor':
+                this.table.filter(valor, 'RazonSocialProveedor', 'contains');
+                break;
+            case 'EstadoConsulta':
+                // Encuentra la opción correspondiente en la lista de estados y selecciónala
+                const estadoSeleccionado = this.estados.find(estado => estado.Code === valor);
+                if (estadoSeleccionado) {
+                    this.estadoConsultaSeleccionado = [estadoSeleccionado]; // Asigna la opción seleccionada al filtro
+
+                    this.table.filter(estadoSeleccionado.Descripcion, 'EstadoConsulta.Descripcion', 'equals');
+                }
+                break;
+            case 'Categoria':
+                // Encuentra la opción correspondiente en la lista de categorías y selecciónala
+                const categoriaSeleccionada = this.categorias.find(categoria => categoria.Nombre === valor);
+                if (categoriaSeleccionada) {
+                    this.categoriaSeleccionada = [categoriaSeleccionada]; // Asigna la opción seleccionada al filtro
+                    this.table.filter(categoriaSeleccionada.Nombre, 'Categoria.Nombre', 'equals');
+                    // Además, puedes manejar cualquier lógica relacionada con la selección de subcategorías si es necesario
+                }
+                break;
+            // Repite el proceso para otros filtros si es necesario
+            default:
+                break;
         }
     }
 
@@ -321,6 +385,9 @@ export class MisConsultasComponent extends ListBaseComponent {
 
                         let estadosCode = ['INI', 'GES', 'GESRTA', 'DOC'];
                         this.estadosSummary = result.data.estados.filter(e => estadosCode.indexOf(e.Code) >= 0);
+
+
+                        this.setfilter();
                     }
                 },
                 (error: HttpErrorResponse) => {

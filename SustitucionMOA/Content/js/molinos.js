@@ -66,6 +66,7 @@ var userCloseSmall = function() {
 }
 
 function notificationOpenSmall() {
+   
     closeNav()
     userCloseSmall()
     $("#liNoti").addClass("liSelectClass");
@@ -73,16 +74,20 @@ function notificationOpenSmall() {
     document.getElementById("notificationCloseSmall").style.display = "block";
     document.getElementById("notificationOpenSmall").style.display = "none";
     document.getElementById("notificationSmall").style.right = "0";
-    $("#coverAll").fadeIn();
+        $("#coverAll").fadeIn();
+   
 }
 
 function notificationCloseSmall() {
+   
     $("#liNoti").removeClass("liSelectClass");
     document.getElementById("notificationCloseSmall").style.display = "none";
     document.getElementById("notificationOpenSmall").style.display = "block";
     document.getElementById("notificationSmall").style.right = "-270px";
+    $("#notificationSmall").css({ "right": "0" });
     $("#coverAll").fadeOut();
-    document.getElementById("notificationSmall").style.display = "none";
+        document.getElementById("notificationSmall").style.display = "none";
+    
 }
 
 function openNav() {
@@ -95,24 +100,34 @@ function openNav() {
 }
 
 function closeNav() {
-    document.getElementById("mySidenav").style.right = "-270px";
+    var mySidenav = document.getElementById("mySidenav");
+    if (mySidenav) {
+        mySidenav.style.right = "-270px";
+    } else {
+        console.log("El elemento con ID 'mySidenav' no se encontró en el DOM.");
+    }
+    // document.getElementById("mySidenav").style.right = "-270px";
     document.getElementById("myMenuClose").style.display = "none";
     document.getElementById("myMenuOpen").style.display = "block";
     $("#coverAll").fadeOut();
 }
 
 function notificationOpen() {
+   
     $("#notificationSmall, #notificationClose").css({"display" : "block"});
     $("#notificationOpen").css({ "display" : "none" });
     $("#notificationSmall").css({ "right" : "0" });
-    $("#coverAll").fadeIn();
+     $("#coverAll").fadeIn();
+   
 }
 
 function notificationClose() {
-    $("#notificationClose, #notificationSmall").css({ "display": "none" });
-    $("#notificationOpen").css({ "display": "block" });
-    $("#notificationSmall").css({ "right" : "-270px" });
-    $("#coverAll").fadeOut();
+  
+        $("#notificationClose, #notificationSmall").css({ "display": "none" });
+        $("#notificationOpen").css({ "display": "block" });
+        $("#notificationSmall").css({ "right": "-270px" });
+        $("#coverAll").fadeOut();
+     
 }
 
 function backHome() {

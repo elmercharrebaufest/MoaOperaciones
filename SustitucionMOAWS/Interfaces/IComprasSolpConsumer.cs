@@ -63,4 +63,12 @@ namespace SustitucionMOAWS.Interfaces
     {
         List<UnidadesDeMedida> Request(List<string> codigosMaterial);
     }
+
+    public interface IObtenerEntradaDeServicioPorNumeroConsumerMOA
+    {
+        OrdenCompraEntradaServicioDto ObtenerEntradaServicio(string nroES);
+        //BAPIESSR ObtenerEntradaServicio(string nroES);
+    }
+
+
 }

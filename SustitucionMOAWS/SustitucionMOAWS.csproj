@@ -3578,7 +3578,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-   <None Include="Service References\OrdenCargaEstadoEntregadaV3SAP\configuration91.svcinfo" />
+    <None Include="Service References\OrdenCargaEstadoEntregadaV3SAP\configuration91.svcinfo" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Service References\OrdenCargaEstadoEntregadaV3SAP\configuration.svcinfo" />

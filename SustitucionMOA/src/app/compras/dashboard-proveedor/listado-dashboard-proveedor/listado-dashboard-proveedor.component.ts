@@ -49,7 +49,8 @@ export class ListadoDashboardProveedorComponent extends ListBaseComponent {
     nroPo: string = "";
     nombrePedido: string = "";
     orden: string;
-    columnaOrden: string;
+    columnaOrden: string = "";
+    columnaNombre: string = "";
     length = 0;
     pageSize: number = 10;
     pageIndex: number = 1;

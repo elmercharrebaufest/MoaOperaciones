@@ -416,6 +416,8 @@ namespace SustitucionMOAWS.VendedorDetalleWebServiceMOA {
         
         private string fECHA_HASTAField;
         
+        private string tIPO_RETENCIONField;
+        
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=0)]
         public string PROVEEDOR {
@@ -485,6 +487,18 @@ namespace SustitucionMOAWS.VendedorDetalleWebServiceMOA {
             set {
                 this.fECHA_HASTAField = value;
                 this.RaisePropertyChanged("FECHA_HASTA");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=5)]
+        public string TIPO_RETENCION {
+            get {
+                return this.tIPO_RETENCIONField;
+            }
+            set {
+                this.tIPO_RETENCIONField = value;
+                this.RaisePropertyChanged("TIPO_RETENCION");
             }
         }
         
