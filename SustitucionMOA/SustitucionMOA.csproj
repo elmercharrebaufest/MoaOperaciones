@@ -284,8 +284,6 @@
     <Content Include="Content\images\icons\trashWhite.svg" />
     <Content Include="Content\images\icons\worker.svg" />
     <Content Include="Content\images\LogoBaufest.png" />
-    <Content Include="dist\glyphicons-halflings-regular.3b31e1de93290779334c.svg" />
-    <Content Include="dist\glyphicons-halflings-regular.89889688147bd7575d63.svg" />
     <Content Include="dist\styles.cb0933410b1fce3af1dc.css" />
     <Content Include="Hue.INT.DeployParameters.xml" />
     <Content Include="Libs\Kendo.DynamicLinq.dll" />
