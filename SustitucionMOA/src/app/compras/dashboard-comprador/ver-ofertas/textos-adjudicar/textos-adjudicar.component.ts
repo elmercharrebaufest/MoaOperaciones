@@ -27,10 +27,8 @@ export class TextosAdjudicarComponent implements OnInit {
     public adjudicacion: AdjudicacionDto;
     index: number
 
-    textosIncompletos: boolean;
-
-    @Output() cerrarModalTextosEmitter = new EventEmitter<{ textosIncompletos: boolean }>();
-    @Output() aceptarModalTextosEmitter = new EventEmitter<{ textosIncompletos: boolean }>();
+    @Output() cerrarModalTextosEmitter = new EventEmitter();
+    @Output() aceptarModalTextosEmitter = new EventEmitter();
     activeTabs: boolean[] = [false, false, false, false];
 
     constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService,
@@ -54,8 +52,6 @@ export class TextosAdjudicarComponent implements OnInit {
         }  
         this.closeAccordion();
         this.cerrarModalTextosEmitter.next();
-        this.validacionTextosIncompletos();
-      
     }
 
    reestablecerDatos(){
@@ -63,16 +59,6 @@ export class TextosAdjudicarComponent implements OnInit {
         this.adjudicacion.CondicionesDePago = "";
         this.adjudicacion.Garantias = "";
         this.adjudicacion.TextoDeCabecera = "";  
-   }
-
-   validacionTextosIncompletos(){
-    this.textosIncompletos = false;
-    if(this.adjudicacion.CondicionesDeEntrega == "" 
-        && this.adjudicacion.CondicionesDePago == "" 
-        && this.adjudicacion.Garantias == "" 
-        && this.adjudicacion.TextoDeCabecera == ""){
-            this.textosIncompletos = true;
-    }
    }
 
   closeAccordion() {

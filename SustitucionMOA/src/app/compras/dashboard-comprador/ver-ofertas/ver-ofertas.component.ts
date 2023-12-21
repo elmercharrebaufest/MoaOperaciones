@@ -47,7 +47,7 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
     displayVisualizarErrores: boolean;
     numeroOrdenDeCompra: any;
     displayPanelHs: boolean = false;
-    textoRacionalCompleto: boolean;
+    textoRacionalInCompleto: boolean;
     displayTextoIncompleto: boolean;
 
     @Input()
@@ -69,7 +69,7 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
                 this.peticionOferta_Id = parseInt(params["id"]);
                 this.verOfertas(this.peticionOferta_Id);
             })
-            this.textoRacionalCompleto = true;
+            this.textoRacionalInCompleto = true;
         };
 
         if (this.tablaOfertas == null) {
@@ -251,7 +251,8 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
             this.adjudicacion.AdjudicacionPosiciones = lista;
             this.adjudicacion.Cotizacion_Id = usuario.Cotizacion.Id;
             this.adjudicacion.Solp_Id = this.tablaOfertas.Solp_Id;
-            if(this.textoRacionalCompleto == true){
+            this.validacionTextosIncompletos();
+            if(this.textoRacionalInCompleto == true){
                 this.displayTextoIncompleto = true;
             } else {
                 this.confirmacionAdjudicar();
@@ -355,6 +356,16 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
         return false; //<-- Prevent Refresh
     }
 
+    validacionTextosIncompletos(){
+        this.textoRacionalInCompleto = false;
+        if((this.adjudicacion.CondicionesDeEntrega == "" || this.adjudicacion.CondicionesDeEntrega == undefined) 
+            && (this.adjudicacion.CondicionesDePago == "" || this.adjudicacion.CondicionesDePago == undefined)
+            && (this.adjudicacion.Garantias == "" || this.adjudicacion.Garantias == undefined)
+            && (this.adjudicacion.TextoDeCabecera == "" || this.adjudicacion.TextoDeCabecera == undefined)){
+                this.textoRacionalInCompleto = true;
+        }
+    }
+
     salir() {
         this.displayAdjudicacionCreada = false;
         this.verOfertas(this.tablaOfertas.Id.toString())
@@ -364,15 +375,12 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
         this.displayVisualizarErrores = false;
     }
 
-    abrilModalTextos(textosIncompletos: boolean) {
+    abrilModalTextos() {
         this.displayTextos = true;
-        this.textoRacionalCompleto = textosIncompletos;
     }
 
-    cerrarModalTextos(textosIncompletos: boolean) {
+    cerrarModalTextos() {
         this.displayTextos = false;
-        this.textoRacionalCompleto = textosIncompletos;
-
     }
 
     aceptarModalTextos() {
