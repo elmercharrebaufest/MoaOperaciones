@@ -118,24 +118,5 @@ namespace SustitucionMOAUtils.Helpers
             return fileDataDictionary;
         }
 
-        protected void CompletarCampos(Consulta consulta, Comentario comentario)
-        {
-            consulta.FechaCreacion = DateTime.Now;
-            consulta.FechaUltimaModificacion = DateTime.Now;
-
-            Categoria categoria = repositorio.Obtener<Categoria>(c => c.Id == consulta.Categoria_Id);
-            
-            comentario.ComentarioRecordado = new List<ComentarioRecordado>();
-
-            if (consulta.Comentarios == null)
-            {
-                consulta.Comentarios = new List<Comentario>();
-            }
-
-            consulta.Comentarios.Add(comentario.Clone() as Comentario);
-
-            consulta.Detalle = consulta.Detalle.Clone() as ConsultaDetalle;
-
-        }
     }
 }

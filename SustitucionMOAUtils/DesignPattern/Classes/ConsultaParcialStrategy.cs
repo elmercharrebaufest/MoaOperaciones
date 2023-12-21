@@ -1,4 +1,5 @@
-﻿using SustitucionMOAModel.Entities;
+﻿using SustitucionMOAModel.Dto;
+using SustitucionMOAModel.Entities;
 using SustitucionMOARepositorio;
 using SustitucionMOAUtils.DesignPattern.Interfaces;
 using SustitucionMOAUtils.Interfaces;
@@ -8,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace SustitucionMOAUtils.DesignPattern.Classes
 {
@@ -55,6 +57,11 @@ namespace SustitucionMOAUtils.DesignPattern.Classes
                 Log.Info(e.Message);
                 return null;
             }
+        }
+
+        public Consulta AgregarConsulta(Consulta consulta, Comentario comentario, List<DestinatarioDto> destinatarios, HttpFileCollectionBase files)
+        {
+            throw new NotImplementedException();
         }
     }
 }

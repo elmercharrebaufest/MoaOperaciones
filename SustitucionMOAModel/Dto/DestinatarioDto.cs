@@ -19,5 +19,6 @@ namespace SustitucionMOAModel.Dto
             UsuarioId = u.Id;
             NombreTipoUsuario = u.TipoUsuario.NombreCorto;
         }
+        public DestinatarioDto() { }
     }
 }

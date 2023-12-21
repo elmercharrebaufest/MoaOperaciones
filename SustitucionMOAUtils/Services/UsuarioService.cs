@@ -542,14 +542,9 @@ namespace SustitucionMOAUtils.Services
         public List<DestinatarioDto> ObtenerDestinatariosConsulta()
         {
             List<DestinatarioDto> destinatarios = new List<DestinatarioDto>();
-
-            var usuarios = this.GetUsuarios().Where(u => u.Habilitado == true);
-            destinatarios = usuarios.Select(u => new DestinatarioDto
-            {
-                Campo = "Usuario Web",
-                Mail = u.Mail,
-                UsuarioId = u.Id,
-            }).ToList();
+            var fechaUltimoAño = DateTime.Now.AddYears(-1);
+            var usuarios = this.repositorio.Listar<Usuario>(u => u.Habilitado == true && u.UltimoLogin > fechaUltimoAño);
+            destinatarios = usuarios.Select(u => new DestinatarioDto(u)).ToList();
             return destinatarios;
         }
 
