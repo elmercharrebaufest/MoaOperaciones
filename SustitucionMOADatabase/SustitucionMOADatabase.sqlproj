@@ -220,7 +220,7 @@
     <Build Include="DBO\Tables\NotificacionAdjunto.sql" />
     <Build Include="DBO\Tables\NotificacionLeida.sql" />
     <Build Include="DBO\Tables\NotificacionPrioridad.sql" />
-    <Build Include="scripts\Comunicacion\TipoRetencion.sql" />
+    <None Include="scripts\Comunicacion\TipoRetencion.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DatabasePublishQA.xml" />
