@@ -18,6 +18,9 @@ namespace SustitucionMOAUtils.Services
 {
     public class ContratoService : IContratoService
     {
+        private readonly string PEND_CAMARA_EXCEL = "PEND. CÁMARA";
+        private readonly string CAMARA_EXCEL = "CÁMARA";
+        private readonly string CALADO_EXCEL = "CALADO";
         public ContratoService()
         {
 
@@ -248,14 +251,14 @@ namespace SustitucionMOAUtils.Services
                         else if ((r.kgDtoValor > 0 && c.camaraPendiente) || !c.camaraPendiente)
                         {
                             var value = c.camaraPendiente ? r.calaResul : r.camaResul;
-                            var agregado = c.camaraPendiente ? "PEND. CÁMARA" :
-                                            c.tieneCertificado ? "CÁMARA" : "CALADO";
-                            detalle.resultado = $"{value} ({agregado})";
+                            var identificadorResultadoCalidad = c.camaraPendiente ? PEND_CAMARA_EXCEL :
+                                            c.tieneCertificado ? CAMARA_EXCEL : CALADO_EXCEL;
+                            detalle.resultado = identificadorResultadoCalidad == PEND_CAMARA_EXCEL? PEND_CAMARA_EXCEL : $"{value}";
                         }
 
                         if (string.IsNullOrEmpty(detalle.resultado) && c.camaraPendiente)
                         {
-                            detalle.resultado = "PEND. CÁMARA";
+                            detalle.resultado = PEND_CAMARA_EXCEL;
                         }
 
                         return detalle;
