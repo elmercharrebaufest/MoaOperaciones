@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using SustitucionMOAModel.Dto;
+using SustitucionMOAModel.Dto.OrdenesCompra;
 using SustitucionMOAModel.Models.WSMapMOA.Compras;
 using SustitucionMOAWS.WSConsumers;
 
@@ -66,7 +67,7 @@ namespace SustitucionMOAWS.Interfaces
 
     public interface IObtenerEntradaDeServicioPorNumeroConsumerMOA
     {
-        OrdenCompraEntradaServicioDto ObtenerEntradaServicio(string nroES);
+        EntradaServicioDto ObtenerEntradaServicio(string nroES);
         //BAPIESSR ObtenerEntradaServicio(string nroES);
     }
 

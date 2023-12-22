@@ -7,13 +7,25 @@
 </section>
 <div class="content-wraper" style="padding-top: 0px !important;">
     <spinner></spinner>
-    <app-filtro-dashboard-certificacion-de-servicios></app-filtro-dashboard-certificacion-de-servicios>
-    <div class="col-sm-12 col-md-12 col-lg-12" style="margin-left: -15px;">
+    <!-- <app-filtro-dashboard-certificacion-de-servicios></app-filtro-dashboard-certificacion-de-servicios> -->
+    <div class="col-sm-12 col-md-12 col-lg-12" style="padding: 0px; border: 1px solid rgb(200, 200, 200);">
 
-        <p-table #tabla [value]="tablaPO" responsiveLayout="scroll | stack" dataKey="Id">
+        <p-table  #tabla [value]="tablaPO" responsiveLayout="scroll | stack" dataKey="NumeroOrdenDeCompra"
+        [paginator]="true" 
+    [rows]="10" 
+    [columns]="columns"
+    [globalFilterFields]="['NumeroOrdenDeCompra','Proveedor']" >
+    <ng-template pTemplate="caption" style="border: none !important;">
+		<div class="p-d-flex">
+			<span class="p-input-icon-left p-ml-auto">
+                <i class="pi pi-search" style="padding-right: 0.5em;"></i>
+                <input pInputText type="text" (input)="tabla.filterGlobal($event.target.value, 'contains')" placeholder="BUSCADOR OC / PROVEEDOR" style="width: 40%;" />
+            </span>
+		</div>
+	</ng-template >
             <ng-template pTemplate="header" let-columns class="lista-header">
                 <tr>
-                    <th class="headerth" title="Detalle" style="width: 40px; text-align: center;">
+                    <th class="headerth" title="Detalle" style="width: 32px; text-align: center;">
                         Detalle
                     </th>
                     <th class="headerth" title="Fecha" (click)="onOrder('Fecha')" style="width: 80px">
@@ -55,35 +67,375 @@
 
                 </tr>
             </ng-template>
-            <ng-template pTemplate="body" let-rowData let-columns="columns">
+            <ng-template pTemplate="body" let-rowData let-columns="columns" let-expanded="expanded">
                 <tr>
                     <td class="columna" style="text-align: center;">
-                        <a href="#" [pRowToggler]="rowData">
+                        <a href="#"  [pRowToggler]="rowData">
                             <i [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
                         </a>
                     </td>
                     <td class="columna">
-                        {{rowData.Fecha | customDateFormat | date :'d/M/yyyy' }}
+                        {{ rowData.FechaCreacion | date:'yyyy-MM-dd' }}
+                        <!-- {{rowData.FechaCreacion}} -->
                     </td>
                     <td class="columna">
-                        {{rowData.OrdenCompraId || ""}}
+                        {{rowData.NumeroOrdenDeCompra || ""}}
                     </td>
                     <td class="columna">
-                        {{rowData.ProveedorNombre}}
+                        {{rowData.Proveedor}}
                     </td>
                     <td class="columna">
-                        {{rowData.Descripcion }}
+                        -
                     </td>
                     <td class="columna">
                         {{rowData.MontoTotal}}
                     </td>
                 </tr>
             </ng-template>
-        </p-table>
+            <ng-template pTemplate="rowexpansion" let-rowData let-columns="columns">
 
-        <p-paginator #paginator [rows]="10" [totalRecords]="length"
+                <div  style="margin: 1em; " >
+
+                <!-- <tr  *ngFor="let posicion of rowData.Posiciones" > -->
+                    <td [attr.colspan]="6" class="fz"  style="margin: 1em; border: 1px solid rgb(200, 200, 200);  ">
+                        <div>
+                            <p-table [value]="rowData.Posiciones" responsiveLayout="scroll | stack" dataKey="Id">
+            
+                                <ng-template pTemplate="header" class="fz">
+                                    <tr>
+
+                                        <th title="Arrow" class="headerth columna bg-e" style="width: 32px; text-align: center;">
+                                        </th>
+                    
+                                        <th title="Posicion" class="headerth columna bg-e">
+                                            Posición
+                                        </th>
+
+                                        <th title="Material" class="headerth columna bg-e">
+                                            Material
+                                        </th>
+
+                                        <th title="TxtBrev" class="headerth columna bg-e" style="width: 128px;" >
+                                            Txt.brev
+                                        </th>
+
+                                        <th title="CtdPedido" class="headerth columna bg-e" >
+                                            Ctd. Pedido
+                                        </th>
+
+                                        <th title="U" class="headerth columna bg-e">
+                                            U
+                                        </th> 
+
+                                        <th title="T" class="headerth columna bg-e">
+                                            T
+                                        </th> 
+
+                                        <th title="FeEntrega" class="headerth columna bg-e" >
+                                            Fe. Entrega
+                                        </th>
+
+                                        <th title="PrecioNeto" class="headerth columna bg-e" >
+                                            Prc.neto
+                                        </th>
+
+                                         <th title="Moneda" class="headerth columna bg-e" >
+                                            Moneda
+                                        </th>
+
+                                        <th title="Porcentajes" class="headerth columna bg-e" style="width: 54px;" >
+                                            porc. %
+                                        </th>
+
+                                        <th title="CPP" class="headerth columna bg-e" >
+                                            CPP
+                                        </th>
+
+                                        <th title="GrupoArt" class="headerth columna bg-e" >
+                                            Grupo art.
+                                        </th>
+
+                                        <th title="Ce" class="headerth columna bg-e" >
+                                            Ce.
+                                        </th>
+
+                                        <th title="Almacen" class="headerth columna bg-e" >
+                                            Almacén
+                                        </th>
+
+                                        <th title="Solicitante" class="headerth columna bg-e" style="width: 10em;" >
+                                            Solicitante
+                                        </th>
+                                        
+                                        <th title="NroSolped" class="headerth columna bg-e" >
+                                            NRO_SOLPED
+                                        </th>
+                                    </tr>
+                                </ng-template>
+            
+                                <ng-template pTemplate="body" let-rowData  let-expanded="expanded">
+                                    <tr>
+                                        <td class="columna" style="text-align: center;">
+                                            <a href="#"  [pRowToggler]="rowData">
+                                                <i [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
+                                            </a>
+                                        </td>
+                                        <td class="columna">
+                                            {{rowData.NumeroPosicion}}
+                                        </td>
+                                        <td class="columna">
+                                            {{rowData.Material}}
+                                        </td>
+                                        <td class="columna">
+                                            {{rowData.Descripcion}}
+                                        </td>
+                                        <td class="columna">
+                                            -
+                                        </td>   
+                                        <td class="columna">
+                                            -
+                                        </td>
+                                        <td class="columna">
+                                            -
+                                        </td>
+                                        <td class="columna">
+                                            -
+                                        </td>
+                                        <td class="columna">
+                                            -
+                                        </td>
+                                        <td class="columna">
+                                            {{rowData.MonedaDescripcion}}                                            
+                                        </td>
+                                        <td class="columna percentage" style="border: 0 !important;">
+                                            -
+                                        </td>
+                                        <td class="columna">
+                                            -
+                                        </td>
+                                        <td class="columna">
+                                            -
+                                        </td>
+                                        <td class="columna">
+                                            -
+                                        </td>
+                                        <td class="columna">
+                                            {{rowData.Almacen}}
+                                        </td>
+                                        <td class="columna">
+                                            {{rowData.Solicitante}}
+                                        </td>
+                                        <td class="columna">
+                                            {{rowData.NumeroSolp}}
+                                        </td>
+                                    </tr>
+                                </ng-template>
+
+                                <ng-template pTemplate="rowexpansion" let-rowData let-columns="columns">
+                                    <div style="padding: 1em" >
+                                        <p-table [value]="rowData.Items" responsiveLayout="scroll | stack" dataKey="ServicioNumero">
+                                            <ng-template pTemplate="header" class="fz bg-c">
+                                                <tr class="bg-c">
+        
+                                                    <th title="Seleccion" class="headerth columna bg-c" style="width: 9em;
+                                                    text-align: center; border-left: 1px solid #075088 !important;" >
+                                                        Selección
+                                                    </th>
+        
+                                                    <th title="NroItem" class="headerth columna bg-c" >
+                                                        NRO_ITEM ó LINEA
+                                                    </th>
+        
+                                                    <th title="L" class="headerth columna bg-c" >
+                                                        L
+                                                    </th>
+        
+                                                    <th title="NumeroServicio" class="headerth columna bg-c" >
+                                                        N° Servicio
+                                                    </th>
+        
+                                                    <th title="TextBrev" class="headerth columna bg-c" style="width: 20em;" >
+                                                        Txt.brev
+                                                    </th>
+        
+                                                    <th title="Cantidad" class="headerth columna bg-c" >
+                                                        Cantidad
+                                                    </th>
+        
+                                                    <th title="UM" class="headerth columna bg-c" style="width: 6em;" >
+                                                        UM
+                                                    </th>
+        
+                                                    <th title="PrecioBruto" class="headerth columna bg-c" >
+                                                        Precio bruto
+                                                    </th>
+        
+                                                    <th title="Moneda" class="headerth columna bg-c" >
+                                                        Moneda
+                                                    </th>
+        
+                                                    <th title="Toler" class="headerth columna bg-c" >
+                                                        Toler
+                                                    </th>
+        
+                                                    <th title="Porcentaje" class="headerth columna bg-c" style="width: 6em; border: 0 !important;" >
+                                                        porc. %
+                                                    </th>
+                                                </tr>
+                                            </ng-template>
+                                            <ng-template pTemplate="body" let-rowData let-item>
+                                                <tr>
+                                                    <td class="columna" style="text-align: center;">
+        
+                                                        <input style="margin-right: 5px;" type="checkbox" [(ngModel)]="item.isSelected" (change)="onCheckboxChange(i)">
+                                
+
+                                                            <a  *ngIf="rowData.EntradasServicio.length > 0" href="#" style="margin-left: 5px;" [pRowToggler]="rowData">
+                                                                <i [ngClass]="isTableExpanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
+                                                            </a>
+                                                        
+                                                    </td>
+        
+                                                    <td class="columna">
+                                                        {{rowData.NumeroLinea}}
+                                                    </td>
+        
+                                                    <td class="columna">
+                                                        -
+                                                    </td>
+                                                    
+                                                    <td class="columna">
+                                                        {{rowData.ServicioNumero}}
+                                                    </td>
+                                                    <td class="columna">
+                                                        {{rowData.Descripcion}}
+                                                    </td>
+                                                    <td class="columna">
+                                                        {{rowData.Cantidad}}
+                                                    </td>
+                                                    <td class="columna">
+                                                        {{rowData.UM}}
+                                                    </td>
+                                                    <td class="columna">
+                                                        {{rowData.PrecioBruto}}
+                                                    </td>
+                                                    <td class="columna">
+                                                        -
+                                                    </td>
+                                                    <td class="columna">
+                                                        {{rowData.Toler}}
+                                                    </td>
+                                                    <td class="columna percentage" style="border: 0 !important;">
+                                                        -
+                                                    </td>
+                                                </tr>
+                                            </ng-template>
+
+                                            <ng-template pTemplate="rowexpansion" let-rowData let-columns="columns">
+
+                                                <!-- <tr  *ngFor="let data of rowData.EntradasServicio" > -->
+                                                    <div style="padding: 1em" >
+
+                                                    <td style="margin: 1em; border: 1px solid rgb(200, 200, 200);  ">
+                                                    
+                                                        <p-table [value]="rowData.EntradasServicio" responsiveLayout="scroll | stack" dataKey="Id">
+                                                            <ng-template pTemplate="header" class="fz bg-d">
+                                                                <tr class="bg-d">
+                        
+                                                                    <th title="NroEs" class="headerth columna bg-d" style="width: 10em;
+                                                                    text-align: center;" >
+                                                                        NRO_ES
+                                                                    </th>
+                        
+                                                                    <th title="FechaEs" class="headerth columna bg-d" style="width: 10em;" >
+                                                                        Fecha_ES
+                                                                    </th>
+                        
+                                                                    <th title="Cantidad" class="headerth columna bg-d" >
+                                                                        Cantidad
+                                                                    </th>
+                        
+                                                                    <th title="FechaDocumento" class="headerth columna bg-d" >
+                                                                        Fecha Documento -> Fecha de prestación de servicios
+                                                                    </th>
+                        
+                                                                    <th title="Referencia" class="headerth columna bg-d" >
+                                                                        Referencia -> N° remito
+                                                                    </th>
+                        
+                                                                    <th title="TextoBreveDesc" class="headerth columna bg-d" >
+                                                                        Texto Breve - Desc. ES
+                                                                    </th>
+                        
+                                                                    <th title="EliminarEs" class="headerth columna bg-d" >
+                                                                        Eliminar ES
+                                                                    </th>
+                                                                </tr>
+                                                            </ng-template>
+                                        
+                                                            <ng-template pTemplate="body"  let-rowDatas let-item>
+                                                                <tr>
+                        
+                                                                    <td class="columna" style="width: 100px;">
+                                                                        {{rowDatas.Id}}
+                                                                    </td>
+                        
+                                                                    <td class="columna" style="width: 85px;">
+                                                                        {{rowDatas.Fecha}}
+                                                                    </td>
+                        
+                                                                    <td class="columna">
+                                                                        {{rowDatas.Cantidad}}
+                                                                    </td>
+                                                                    <td class="columna">
+                                                                        -
+                                                                    </td>
+                                                                    <td class="columna">
+                                                                        -
+                                                                    </td>
+                                                                    <td class="columna">
+                                                                        {{rowDatas.TextoBreve}}
+                                                                    </td>
+                                                                    <td class="columna" style="text-align: center;">
+                                                                        <i (click)="deleteES(i)">
+                                                                            <img src="../../../../../Content/images/icons/trashRed.svg" alt="trashRed" class="cursor-pointer"
+                                                                            style="height:25px;" />
+                                                                        </i>
+                                                                    </td>
+                                                                
+                                                                </tr>
+                                                            </ng-template>
+                                                        </p-table>
+                                                    </td>
+                                                </div>
+
+                                                <!-- </tr> -->
+
+                                            </ng-template>
+
+                                        </p-table>
+                                    </div>
+        
+                                    
+
+
+                                </ng-template>
+
+                            </p-table>
+
+                            
+                            
+                        </div>
+                    </td>
+                <!-- </tr> -->
+
+            </div>
+            </ng-template>
+        </p-table>
+<!-- 
+        <p-paginator #paginator [rows]="1" [totalRecords]="tablaPO.length"
             (onPageChange)="handlePageEvent($event)">
-        </p-paginator>
+        </p-paginator> -->
 
     </div>
 </div>

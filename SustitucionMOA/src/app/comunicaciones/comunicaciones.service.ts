@@ -21,7 +21,7 @@ export class ComunicacionesService extends BaseService {
     return this.http
         .get('/api/Comunicacion/GetAllByProveedor', { params: params, headers: this.headers })
         .pipe(timeoutWith(30000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde "))));
-    }
+  }
 
 
 

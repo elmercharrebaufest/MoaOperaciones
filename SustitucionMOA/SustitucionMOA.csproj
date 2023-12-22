@@ -260,30 +260,25 @@
     <Content Include="Content\images\header\logo_.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Content\images\icons\agregar-proveedor.svg">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="Content\images\icons\carpeta.svg" />
-    <Content Include="Content\images\icons\chat.svg">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="Content\images\icons\contract.svg" />
     <Content Include="Content\images\icons\descargar.svg" />
     <Content Include="Content\images\icons\doc-file.svg" />
     <Content Include="Content\images\icons\editar.svg" />
-    <Content Include="Content\images\icons\gears.svg" />
     <Content Include="Content\images\icons\liquidaciones.svg" />
     <Content Include="Content\images\icons\paper.svg" />
     <Content Include="Content\images\icons\pay.svg" />
     <Content Include="Content\images\icons\pdf-download-icon.png" />
     <Content Include="Content\images\icons\pdf-icon.png" />
     <Content Include="Content\images\icons\SAP.svg" />
-    <Content Include="Content\images\icons\scalable-truck.svg" />
     <Content Include="Content\images\icons\trash.svg" />
     <Content Include="Content\images\icons\trashRed.svg" />
     <Content Include="Content\images\icons\trashWhite.svg" />
     <Content Include="Content\images\icons\worker.svg" />
-    <Content Include="Content\images\LogoBaufest.png" /> 
+    <Content Include="Content\images\LogoBaufest.png" />
+    <Content Include="dist\glyphicons-halflings-regular.*.svg" />
+    <Content Include="dist\*.js" />
+    <Content Include="dist\styles.*.css" />
     <Content Include="Hue.INT.DeployParameters.xml" />
     <Content Include="Libs\Kendo.DynamicLinq.dll" />
     <Content Include="NEW.PRE.DeployParameters.Debug.xml" />
@@ -378,10 +373,6 @@
     <Content Include="src\app\compras\solp\steps\generacion2\generacion2.component.html" />
     <Content Include="src\app\compras\solp\steps\posicion\cabecera.component.css" />
     <Content Include="src\app\compras\solp\steps\posicion\cabecera.component.html" />
-    <Content Include="src\app\compras\solp\steps\posicion\contrato-marco\contrato-marco.component.css" />
-    <Content Include="src\app\compras\solp\steps\posicion\contrato-marco\contrato-marco.component.html" />
-    <Content Include="src\app\compras\solp\steps\posicion\obtener-contrato-marco\obtener-contrato-marco.component.css" />
-    <Content Include="src\app\compras\solp\steps\posicion\obtener-contrato-marco\obtener-contrato-marco.component.html" />
     <Content Include="src\app\compras\solp\steps\posicion\tab-datos-posicion\tab-datos-posicion.component.html" />
     <Content Include="src\app\compras\solp\steps\posicion\tab-direccion-entrega\tab-direccion-entrega.component.html" />
     <Content Include="src\app\compras\solp\steps\posicion\tab-fechas\tab-fechas.component.html" />
@@ -959,13 +950,10 @@
     <Content Include="officetohtml\layout\styles\fonts\FontAwesome.otf" />
     <Content Include="src\app\alta-proveedores\empresa-no-granos\empresa-no-granos.component.scss" />
     <Content Include="Documentacion\CodigoDeConductaParaProveedoresMOA.pdf" />
-    <Content Include="dist\glyphicons-halflings-regular.2469ccfe446daa49d5c1.eot" />
-    <Content Include="dist\glyphicons-halflings-regular.f4769f9bdb7466be6508.eot" />
-    <Content Include="dist\glyphicons-halflings-regular.aa9c7490c2fd52cb96c7.ttf" />
-    <Content Include="dist\glyphicons-halflings-regular.e18bbf611f2a2e43afc0.ttf" />
-    <Content Include="dist\glyphicons-halflings-regular.7c4cbe928205c888831b.woff" />
-    <Content Include="dist\glyphicons-halflings-regular.fa2772327f55d8198301.woff" />
-    <Content Include="dist\glyphicons-halflings-regular.448c34a56d699c29117a.woff2" />
+    <Content Include="dist\glyphicons-halflings-regular.*.eot" />
+    <Content Include="dist\glyphicons-halflings-regular.*.ttf" />
+    <Content Include="dist\glyphicons-halflings-regular.*.woff" />
+    <Content Include="dist\glyphicons-halflings-regular.*.woff2" />
     <Content Include="dist\*.js.map" />
     <Content Include="Content\fonts\glyphicons-halflings-regular.eot" />
     <Content Include="Content\fonts\glyphicons-halflings-regular.ttf" />
@@ -1210,7 +1198,6 @@
     <TypeScriptCompile Include="src\app\compras\preview\pliego.preview.component.ts" />
     <TypeScriptCompile Include="src\app\compras\reporte-oc\reporte-oc.component.spec.ts" />
     <TypeScriptCompile Include="src\app\compras\reporte-oc\reporte-oc.component.ts" />
-    <TypeScriptCompile Include="src\app\compras\solp-compra.ts" />
     <TypeScriptCompile Include="src\app\compras\solp\finalizar\finalizar-solp.component.spec.ts" />
     <TypeScriptCompile Include="src\app\compras\solp\finalizar\finalizar-solp.component.ts" />
     <TypeScriptCompile Include="src\app\compras\solp\solp-posicion.ts" />
@@ -1225,13 +1212,6 @@
     <TypeScriptCompile Include="src\app\compras\solp\steps\generacion1\generacion1.component.ts" />
     <TypeScriptCompile Include="src\app\compras\solp\steps\generacion2\generacion2.component.ts" />
     <TypeScriptCompile Include="src\app\compras\solp\steps\posicion\cabecera.component.ts" />
-    <TypeScriptCompile Include="src\app\compras\solp\steps\posicion\contrato-marco\contrato-marco.component.spec.ts" />
-    <TypeScriptCompile Include="src\app\compras\solp\steps\posicion\contrato-marco\contrato-marco.component.ts" />
-    <TypeScriptCompile Include="src\app\compras\solp\steps\posicion\contrato-marco\contrato-marco.ts" />
-    <TypeScriptCompile Include="src\app\compras\solp\steps\posicion\obtener-contrato-marco\contrato-marco.model.ts" />
-    <TypeScriptCompile Include="src\app\compras\solp\steps\posicion\obtener-contrato-marco\obtener-contrato-marco.component.spec.ts" />
-    <TypeScriptCompile Include="src\app\compras\solp\steps\posicion\obtener-contrato-marco\obtener-contrato-marco.component.ts" />
-    <TypeScriptCompile Include="src\app\compras\solp\steps\posicion\obtener-contrato-marco\obtener-contrato-marco.service.ts" />
     <TypeScriptCompile Include="src\app\compras\solp\steps\posicion\tab-datos-posicion\tab-datos-posicion.component.ts" />
     <TypeScriptCompile Include="src\app\compras\solp\steps\posicion\tab-direccion-entrega\tab-direccion-entrega.component.ts" />
     <TypeScriptCompile Include="src\app\compras\solp\steps\posicion\tab-fechas\tab-fechas.component.ts" />

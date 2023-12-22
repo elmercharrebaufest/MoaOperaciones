@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SustitucionMOAModel.Dto.OrdenesCompra;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,11 +9,14 @@ namespace SustitucionMOAModel.Dto
 {
     public class OrdenCompraDto
     {
-        public long OrdenCompraId { get; set; }
+        public long Id { get; set; }
         public string ProveedorNombre { get; set; }
         public string Fecha { get; set; }
         public string Descripcion { get; set; }
         public decimal MontoTotal { get; set; }
-        public List<OrdenCompraPosicionDto> Posiciones { get; set; }
+        public List<PosicionDto> Posiciones { get; set; }
+        public string ProveedorNumero { get; set; }
+        //public List<OrdenCompraPosicionDto> Posiciones { get; set; }
+        //public List<PosicionDto> PosicionesTmp2 { get; set; } = new List<PosicionDto>();
     }
 }

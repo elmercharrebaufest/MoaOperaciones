@@ -19,7 +19,6 @@ export class LegajoExternoComponent implements OnInit {
     visualizarAlert = false;
     adjudicacionId: string;
     token: string;
-    cargarPantalla = false;
 
     constructor(private route: ActivatedRoute, protected service: ComprasService) {
     }
@@ -40,7 +39,6 @@ export class LegajoExternoComponent implements OnInit {
                 (result) => {
                     this.legajo = result.data;
                     this.blockUI.stop();
-                    this.cargarPantalla = true;
                 },
                 (error) => {
                     this.blockUI.stop();
@@ -48,8 +46,8 @@ export class LegajoExternoComponent implements OnInit {
                 });
     }
 
-    descargarArchivo(archivoId: number, tipoLegajo) {
-        if (tipoLegajo == "SOLP") {
+    descargarArchivo(archivoId: number) {
+        if (archivoId == 0) {
             let SolpId = this.legajo.ListaLegajos[0].SolpId;
             this.blockUI.start("Generando...");
             this.service.getPdf(SolpId)
@@ -67,7 +65,7 @@ export class LegajoExternoComponent implements OnInit {
                         this.blockUI.stop();
                         this.mensajeComponent.setErrorMsg(error.message);
                     })
-        } else if (tipoLegajo == "Petición de Oferta") {
+        } else if (archivoId < 0) {
             this.blockUI.start("Generando...");
             this.service.getPdfPeticionDeOfertaUsuario(archivoId)
                 .subscribe(
@@ -84,25 +82,8 @@ export class LegajoExternoComponent implements OnInit {
                         this.blockUI.stop();
                         this.mensajeComponent.setErrorMsg(error.message);
                     })
-        } else if (tipoLegajo == "Chat Interno") {
-            let peticionDeOfertaId = this.legajo.ListaLegajos[0].PeticionDeOfertaId;
-            this.blockUI.start("Generando...");
-            this.service.obtenerYExportarChat(peticionDeOfertaId.toString())
-                .subscribe(
-                    (result) => {
-                        var byteArray = new Uint8Array(result.FileContents);
-                        var blob = new Blob([byteArray], {
-                            type: "text/plain",
-                        });
-
-                        this.downloadArchivoLocal(blob, result.FileDownloadName);
-                        this.blockUI.stop();
-                    },
-                    (error) => {
-                        this.blockUI.stop();
-                        this.mensajeComponent.setErrorMsg(error.message);
-                    })
-        } else {
+        }
+        else {
             this.blockUI.start("Descargando...");
             this.service.DescargarArchivo(archivoId)
                 .subscribe(

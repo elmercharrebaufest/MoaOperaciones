@@ -23,28 +23,54 @@ body.ui-paginator.ui-dropdown{
     width: 10% !important;
 }
 
+
+
+
+th{
+    border: 0px !important;
+}
+
+
+
 .columna{
     word-break: break-all; word-wrap:break-word; font-size: 12px;;
 }
 
 .headerth {
-    font-size: 11px !important; 
-    cursor:pointer;
-    padding: 1.571em 0.857em !important;
-    font-size: 12px !important;
+    font-size: 9px !important; 
+    width: max-content;
     color: #ffffff !important;
     background-color: #666666 !important;
-}
-.contenedor-imagen {
-    position: relative;
+    padding: 1.571em 0.857em !important;
 }
 
-.punto-rojo {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 10px;
-    height: 10px;
-    background-color: red;
-    border-radius: 50%;
+.padding{
+    padding: 8px;
+  }
+  
+.td {
+    padding: 0px;
+}
+
+.fz {
+    font-size: 0px;
+}
+
+.bg-e {
+    background-color: #959595 !important;
+}
+.bg-c {
+    background-color: #075088 !important;
+}
+
+.bg-d {
+    background-color: #1C7CD5 !important;
+}
+
+
+.percentage {
+    background-color: #2acc53 !important;
+    text-align: center;
+    color: black;
+    border: 2px solid #756f6f !important;
 }

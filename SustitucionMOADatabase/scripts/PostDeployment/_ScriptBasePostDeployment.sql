@@ -31,7 +31,14 @@ Post-Deployment Script Template
 :r .\Estados.sql
 :r .\UnidadMedidaSap.sql
 :r .\UsuariosConRolFleteMOA.sql
-:r .\RegionSap.sql
+
+:r ..\Notificaciones\Notificacion.sql
+:r ..\Notificaciones\NotificacionFechaCreacion.sql
+:r ..\Notificaciones\NotificacionPrioridad.sql
+:r ..\Comunicacion\ComunicacionTipo.sql
+:r ..\Comunicacion\TipoRetencion.sql
+
+:r .\UsuariosConRolFleteMOA.sql
 
 :r ..\Notificaciones\Notificacion.sql
 :r ..\Notificaciones\NotificacionFechaCreacion.sql

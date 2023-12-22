@@ -5933,9 +5933,9 @@ namespace SustitucionMOAUtils.Services
                 Proveedor = adjudicacion.Cabecera.RazonSocialProveedor,
                 MonedaDescripcion = adjudicacion.Cabecera.Moneda,
                 PrecioFinal = adjudicacion.Cabecera.MontoTotal,
-                PrecioBruto = adjudicacion.Cabecera.MontoBruto,
-                EstadoLiberacionCodigo = adjudicacion.Cabecera.EstadoLiberacionCodigo,
-                EstadoLiberacionDetalle = estados.SingleOrDefault(a => a.CodigoSap == adjudicacion.Cabecera.EstadoLiberacionCodigo)?.Descripcion ?? "",
+                //PrecioBruto = adjudicacion.Cabecera.MontoBruto,
+                //EstadoLiberacionCodigo = adjudicacion.Cabecera.EstadoLiberacionCodigo,
+                //EstadoLiberacionDetalle = estados.SingleOrDefault(a => a.CodigoSap == adjudicacion.Cabecera.EstadoLiberacionCodigo)?.Descripcion ?? "",
 
             }).OrderBy(fc => fc.FechaCreacion).ToList();
 
@@ -6200,19 +6200,19 @@ namespace SustitucionMOAUtils.Services
                 {
                     var usuariosCompras = repositorio.Listar<UsuarioCompras>();
 
-                    var usuario = repositorio.Obtener<Usuario>(a => a.UsuarioSap == result.Cabecera.UsuarioComprasSAP)?.Mail;
-                    var usuarioCompras = usuariosCompras.FirstOrDefault(a => a.Mail.ToLower() == usuario.ToLower())?.Id;
-                    result.Cabecera.UsuarioCompras_Id = usuarioCompras;
+                    //var usuario = repositorio.Obtener<Usuario>(a => a.UsuarioSap == result.Cabecera.UsuarioComprasSAP)?.Mail;
+                    //var usuarioCompras = usuariosCompras.FirstOrDefault(a => a.Mail.ToLower() == usuario.ToLower())?.Id;
+                    //result.Cabecera.UsuarioCompras_Id = usuarioCompras;
 
-                    if (result.Cabecera.UsuarioCompras_Id == null)
-                    {
-                        var adjudicacion = repositorio.Listar<Adjudicacion>(a => a.NumeroOrdenDeCompra == nroOC, 1, "Id", DirOrden.Desc).FirstOrDefault();
-                        if (adjudicacion != null)
-                        {
-                            usuarioCompras = usuariosCompras.FirstOrDefault(a => a.Mail.ToLower() == adjudicacion.Usuario.Mail.ToLower())?.Id;
-                            result.Cabecera.UsuarioCompras_Id = usuarioCompras;
-                        }
-                    }
+                    //if (result.Cabecera.UsuarioCompras_Id == null)
+                    //{
+                    //    var adjudicacion = repositorio.Listar<Adjudicacion>(a => a.NumeroOrdenDeCompra == nroOC, 1, "Id", DirOrden.Desc).FirstOrDefault();
+                    //    if (adjudicacion != null)
+                    //    {
+                    //        usuarioCompras = usuariosCompras.FirstOrDefault(a => a.Mail.ToLower() == adjudicacion.Usuario.Mail.ToLower())?.Id;
+                    //        result.Cabecera.UsuarioCompras_Id = usuarioCompras;
+                    //    }
+                    //}
                 }
                 catch (Exception e)
                 {

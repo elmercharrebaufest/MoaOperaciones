@@ -30,7 +30,7 @@ export class FiltroDashboardCertificacionDeServiciosComponent extends ListBaseCo
    fechaInicio =  "2023-10-01";
    protected spinnerComponent: SpinnerComponent;
    usuario: string;
-   subscripcionPO: Subscription;
+  //  subscripcionPO: Subscription;
    tablaPO: any;
    //#endregion
  

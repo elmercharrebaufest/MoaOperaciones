@@ -20,6 +20,8 @@ using Comunicacion = SustitucionMOAModel.Entities.Comunicacion;
 using SustitucionMOAModel.Models.WebApiMap.ScatoRepositorio;
 using DocumentFormat.OpenXml.Spreadsheet;
 using System.Reflection;
+using SustitucionMOAWS.ObtenerEntradaDeServicioPorNumeroWebServiceMOA;
+using SustitucionMOAModel.Dto.OrdenesCompra;
 
 namespace SustitucionMOAUtils.Services
 
@@ -38,16 +40,30 @@ namespace SustitucionMOAUtils.Services
             //_liquidacionService = liquidacionService;
         }
 
+        public List<DetalleOrdenDeCompraDto> ObtenerOrdenesCompraConDetalle(OrderParamsDto parametros)
+        {
+            List<DetalleOrdenDeCompraDto> result = ServicioSAP_OrdenesCompraCabeceras(parametros);
+
+            // Ordena si se proporciona la columna de orden y el tipo de orden
+            if (!string.IsNullOrEmpty(parametros.ColumnaOrden))
+                result = OrdenarOrdenesCompra(result, parametros.ColumnaOrden, parametros.OrdenAscendente);
+
+            // Realiza la paginación
+            result = PaginarResultados(result, parametros.pagina, parametros.elementosPorPagina);
+
+            return result;
+        }
+
         /// <summary>
         /// Realiza ordenamiento del objeto OrdenCompraDto según la columna y el tipo de orden especificados
         /// </summary>
-        public List<OrdenCompraDto> OrdenarOrdenesCompra(List<OrdenCompraDto> ordenes, string columnaOrden, bool ordenAscendente)
+        public List<DetalleOrdenDeCompraDto> OrdenarOrdenesCompra(List<DetalleOrdenDeCompraDto> ordenes, string columnaOrden, bool ordenAscendente)
         {
             if (string.IsNullOrEmpty(columnaOrden))
                 return ordenes; // Sin ordenación si no se especifica una columna
 
             // reflexión para obtener la propiedad de la columna
-            var propiedadOrden = typeof(OrdenCompraDto).GetProperty(columnaOrden, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
+            var propiedadOrden = typeof(DetalleOrdenDeCompraDto).GetProperty(columnaOrden, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
 
             if (propiedadOrden == null)
                 return ordenes; // Si la propiedad no se encuentra, no se realiza ordenación
@@ -63,7 +79,7 @@ namespace SustitucionMOAUtils.Services
         /// <summary>
         /// Pagina los resultados de la lista de ordenes de compra
         /// </summary>
-        public List<OrdenCompraDto> PaginarResultados(List<OrdenCompraDto> resultados, int? pagina, int? elementosPorPagina)
+        public List<DetalleOrdenDeCompraDto> PaginarResultados(List<DetalleOrdenDeCompraDto> resultados, int? pagina, int? elementosPorPagina)
         {
             // Establecer valores predeterminados si son nulos o inválidos
             int paginaValida = (pagina.HasValue && pagina.Value > 0) ? pagina.Value : 1;
@@ -76,12 +92,37 @@ namespace SustitucionMOAUtils.Services
             }
             else
             {
-                // Si la página solicitada está fuera de rango, devuelve una lista vacía
-                return new List<OrdenCompraDto>();
+                return new List<DetalleOrdenDeCompraDto>(); // Si la página solicitada está fuera de rango, devuelve una lista vacía
             }
         }
 
 
-       
+        // Consultas a servicios SAP con distintos de busqueda
+        public List<DetalleOrdenDeCompraDto> ServicioSAP_OrdenesCompraCabeceras(OrderParamsDto parametros)
+        {
+            //Obtiene Cabeceras de Ordenes de Compra
+            List<OrdenCompraDto> ordenesCompra = new ObtenerOrdenesDeCompraConsumerMOA().Request(parametros);
+
+            // Filtra por número de orden de compra, si se proporciona el parámetro
+            if (parametros.OrdenCompraId != null)
+                ordenesCompra = ordenesCompra.Where(orden => orden.Id.ToString() == parametros.OrdenCompraId).ToList();
+
+            //Recorro las ordenes de compra y obtengo el detalle de cada una
+            List< DetalleOrdenDeCompraDto> result = new List<DetalleOrdenDeCompraDto>();
+            foreach (var ordenCompra in ordenesCompra)
+            {
+                string nroOC = ordenCompra.Id.ToString();
+                
+                //Solo pruebas de desarrollo, luego se debe eliminar.
+                if (nroOC == "4123001500" || nroOC == "4123001336" || nroOC == "4123001899" || nroOC == "4123001916" || nroOC == "4123001874") {  }
+
+                // Obtengo detalle de una OC
+                DetalleOrdenDeCompraDto detalleOrdendeCompra = new ObtenerOrdenDeCompraConsumerMOA(repositorio).ObtenerDetalleDeOrdenDeCompra(nroOC);
+
+                result.Add(detalleOrdendeCompra);
+            }
+
+            return result;
+        }
     }
 }

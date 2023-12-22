@@ -45,36 +45,21 @@ namespace SustitucionMOAWS.WSConsumers
                                      ref detalle,
                                      ref bapiReturn
                                     );
-            return Map(cabecera, detalle);
+            return Map(cabecera);
             //turn new List<OrdenDeCompraSAPCabecera>();
         }
 
-        private List<OrdenCompraDto> Map(BAPIEKKOL[] cabecera, BAPIEKPOC[] detalle)
+        private List<OrdenCompraDto> Map(BAPIEKKOL[] cabecera)
         {
             List<OrdenCompraDto> result = new List<OrdenCompraDto>();
-            List<OrdenCompraPosicionDto> posiciones = new List<OrdenCompraPosicionDto>();
-
-            foreach (var item in detalle)
-            {
-                var aux = new OrdenCompraPosicionDto()
-                {
-                    OrdenCompraId = long.Parse(item.PO_NUMBER),
-                    PosicionId = int.Parse(item.PO_ITEM),
-                    Material = item.MATERIAL,
-                    Descripcion = item.SHORT_TEXT,
-                    PrecioNeto = item.NET_PRICE,
-                    Solicitante = item.PREQ_NAME,
-                    Solped = long.TryParse(item.ADDRESS, out long parsedSolped) ? parsedSolped : 0
-                };
-                posiciones.Add(aux);
-            }
+            List<OrdenCompraDto> posiciones = new List<OrdenCompraDto>();
 
             foreach (var item in cabecera)
             {
                 //Suma de los netos de las posiciones
-                decimal montoTotal = detalle
-                    .Where(det => det.PO_NUMBER == item.PO_NUMBER)
-                    .Sum(det => det.NET_PRICE);
+                //decimal montoTotal = detalle
+                //    .Where(det => det.PO_NUMBER == item.PO_NUMBER)
+                //    .Sum(det => det.NET_PRICE);
 
                 // Parsear la fecha y formatearla
                 DateTime fecha = DateTime.ParseExact(item.DOC_DATE, "yyyy-MM-dd", CultureInfo.InvariantCulture);
@@ -82,14 +67,7 @@ namespace SustitucionMOAWS.WSConsumers
 
                 result.Add(new OrdenCompraDto
                 {
-                    OrdenCompraId = long.Parse(item.PO_NUMBER),
-                    ProveedorNombre = item.VEND_NAME,
-                    //Fecha = SAPFormatter.GetDateTime(item.DOC_DATE),
-                    Fecha = fechaFormateada,
-                    Descripcion = "Falta Determinar Descripcion de Orden de Compra",
-                    MontoTotal = montoTotal, 
-                    //Posiciones = new List<OrdenCompraPosicionDto>()
-                    Posiciones = posiciones.Where(x => x.OrdenCompraId == long.Parse(item.PO_NUMBER)).ToList() // Si no tiene nro. Solped fallaba
+                    Id = long.Parse(item.PO_NUMBER),
                 });
             }
             

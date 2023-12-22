@@ -31,7 +31,7 @@ export class ComunicacionesComponent extends BaseComponent implements OnInit {
   filter: string;
 
   startDate: String;
-    endDate: String;
+  endDate: String;
 
     // Define una variable para almacenar los IDs
     comunicacionTipoSeisIds: number[] = [];
@@ -62,7 +62,7 @@ export class ComunicacionesComponent extends BaseComponent implements OnInit {
     sessionDataService.proveedor$.subscribe(
       proveedor => {
           this.idProveedor = proveedor;
-        });
+      });
 
      
 
@@ -72,7 +72,7 @@ export class ComunicacionesComponent extends BaseComponent implements OnInit {
     this.dateConvert();
     this.getComunicaciones(this.idProveedor, this.startDate, this.endDate);
     this.checkCommunications();
-    }
+  }
 
     ngOnDestroy() {
         this.quantityCommunication = 0;
@@ -91,36 +91,36 @@ export class ComunicacionesComponent extends BaseComponent implements OnInit {
     try {
       this.unsubscribe();
       this.subscription = this.serviceComunicaciones.getComunicaciones(idProveedor, start_date, end_date).subscribe(
-          (result: any) => {
+        (result: any) => {
              
-                  if (result.data.length == 0) {
-                    this.hasCommunications = false;
-                    this.showButtonMoreCommunications = false;
-                    this.communication = [];
-                  } else {
-                    this.hasCommunications = true;
-                    if (result.data.length > 15) {
-                      this.showButtonMoreCommunications = true;
-                    } else {
-                      this.showButtonMoreCommunications = false;
-                    }
-                  }
+          if (result.data.length == 0) {
+            this.hasCommunications = false;
+            this.showButtonMoreCommunications = false;
+            this.communication = [];
+          } else {
+            this.hasCommunications = true;
+            if (result.data.length > 15) {
+              this.showButtonMoreCommunications = true;
+            } else {
+              this.showButtonMoreCommunications = false;
+            }
+          }
 
-                const agrupadoPorFecha = result.data.reduce((result, element) => {
-                      const fechaCreacion = element.FechaCreacion;
+        const agrupadoPorFecha = result.data.reduce((result, element) => {
+              const fechaCreacion = element.FechaCreacion;
 
-                      if (!result[fechaCreacion]) {
-                          result[fechaCreacion] = [];
-                      }
+              if (!result[fechaCreacion]) {
+                  result[fechaCreacion] = [];
+              }
 
-                      result[fechaCreacion].push(element);
+              result[fechaCreacion].push(element);
 
-                      return result; 
-                }, {});
+              return result; 
+          }, {});
 
               this.communication = agrupadoPorFecha;
 
-              let filteredCommunication = {};
+          let filteredCommunication = {};
 
           for (const fecha in this.communication) {
             const items = this.communication[fecha];
@@ -182,7 +182,7 @@ export class ComunicacionesComponent extends BaseComponent implements OnInit {
 
           this.arrayProximasAVencer = Array.from(this.arrayProximasAVencer);
 
-              const auxComunications = Object.keys(this.communication);
+          const auxComunications = Object.keys(this.communication);
 
           auxComunications.forEach((key) => {
            
@@ -191,17 +191,17 @@ export class ComunicacionesComponent extends BaseComponent implements OnInit {
               let contarConsultas = true;
               let contarliquidaciones = true;
            
-              this.communication[key].forEach((item, i) => {
+            this.communication[key].forEach((item, i) => {
 
                  
-                  if (item.Leida === false) {
+              if (item.Leida === false) {
 
                       
                       if (item.ComunicacionTipo === 1 && item.FechaCreacion === key && contarExencionesVencidas)
                       {
                             this.quantityCommunication++;
                           contarExencionesVencidas = false;
-                      }
+                }
                       if (item.ComunicacionTipo === 2 && item.FechaCreacion === key && contarExencionesAVencer)
                         {
                                 this.quantityCommunication++;
@@ -218,10 +218,10 @@ export class ComunicacionesComponent extends BaseComponent implements OnInit {
                       }
 
                       if (item.ComunicacionTipo !== 1 && item.ComunicacionTipo !== 2 && item.ComunicacionTipo !== 5 && item.ComunicacionTipo !== 6) { this.quantityCommunication++ }
-                  }
+                }
             })  
           });
-              
+
           this.layoutComponent.updateQuantity(this.quantityCommunication);
         }
       );
@@ -293,10 +293,10 @@ export class ComunicacionesComponent extends BaseComponent implements OnInit {
     this.redirect(notificaciones[i].ComunicacionTipo, this.filter ,proveedorDescripcion);
   }
 
-    unreadCommunication(notificacion) {
+  unreadCommunication(notificacion) {
         console.log(notificacion)
       
-        if (notificacion.Leida == true) {
+    if (notificacion.Leida == true) {
 
             //if (notificacion.ComunicacionTipo === 1 ||
             //    notificacion.ComunicacionTipo === 2 ||
@@ -326,7 +326,7 @@ export class ComunicacionesComponent extends BaseComponent implements OnInit {
             //    this.serviceComunicaciones.postComunicacionNoLeida(ids).subscribe();
             //}
            /* else {*/
-                this.serviceComunicaciones.postComunicacionNoLeida(notificacion.Id).subscribe();
+      this.serviceComunicaciones.postComunicacionNoLeida(notificacion.Id).subscribe();
            /* }*/
     
 
@@ -378,7 +378,7 @@ export class ComunicacionesComponent extends BaseComponent implements OnInit {
     objectKeys(obj: any) {
       var retu = Object.keys(obj)
     return retu;
-    }
+  }
 
 
 }

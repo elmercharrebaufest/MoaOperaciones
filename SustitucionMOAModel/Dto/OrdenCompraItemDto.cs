@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SustitucionMOAModel.Dto.OrdenesCompra;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -18,7 +19,7 @@ namespace SustitucionMOAModel.Dto
         public decimal? PrecioBruto { get; set; }
         public decimal Monto { get; set; }
         public string Toler { get; set; }
-        public List<OrdenCompraEntradaServicioDto> EntradaServicio { get; set; }
+        public List<EntradaServicioDto> EntradaServicio { get; set; }
         public string PCKG_NO { get; set; }
         public string SUBPCKG_NO { get; set; }
     }
