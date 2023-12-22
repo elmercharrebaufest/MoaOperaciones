@@ -65,6 +65,10 @@ export class ComunicacionesComponent extends BaseComponent implements OnInit {
     this.getComunicaciones(this.idProveedor, this.startDate, this.endDate);
     this.checkCommunications();
     }
+
+    ngOnDestroy() {
+        this.quantityCommunication = 0;
+    }
   
 
   getComunicaciones(idProveedor, start_date, end_date) {
@@ -80,35 +84,35 @@ export class ComunicacionesComponent extends BaseComponent implements OnInit {
       this.unsubscribe();
       this.subscription = this.serviceComunicaciones.getComunicaciones(idProveedor, start_date, end_date).subscribe(
           (result: any) => {
-            
-          if (result.data.length == 0) {
-            this.hasCommunications = false;
-            this.showButtonMoreCommunications = false;
-            this.communication = [];
-          } else {
-            this.hasCommunications = true;
-            if (result.data.length > 15) {
-              this.showButtonMoreCommunications = true;
-            } else {
-              this.showButtonMoreCommunications = false;
-            }
-          }
+             
+                  if (result.data.length == 0) {
+                    this.hasCommunications = false;
+                    this.showButtonMoreCommunications = false;
+                    this.communication = [];
+                  } else {
+                    this.hasCommunications = true;
+                    if (result.data.length > 15) {
+                      this.showButtonMoreCommunications = true;
+                    } else {
+                      this.showButtonMoreCommunications = false;
+                    }
+                  }
 
-        const agrupadoPorFecha = result.data.reduce((result, element) => {
-              const fechaCreacion = element.FechaCreacion;
+                const agrupadoPorFecha = result.data.reduce((result, element) => {
+                      const fechaCreacion = element.FechaCreacion;
 
-              if (!result[fechaCreacion]) {
-                  result[fechaCreacion] = [];
-              }
+                      if (!result[fechaCreacion]) {
+                          result[fechaCreacion] = [];
+                      }
 
-              result[fechaCreacion].push(element);
+                      result[fechaCreacion].push(element);
 
-              return result; 
-          }, {});
+                      return result; 
+                }, {});
 
               this.communication = agrupadoPorFecha;
 
-          let filteredCommunication = {};
+              let filteredCommunication = {};
 
           for (const fecha in this.communication) {
             const items = this.communication[fecha];
@@ -170,22 +174,46 @@ export class ComunicacionesComponent extends BaseComponent implements OnInit {
 
           this.arrayProximasAVencer = Array.from(this.arrayProximasAVencer);
 
-          const auxComunications = Object.keys(this.communication);
+              const auxComunications = Object.keys(this.communication);
 
           auxComunications.forEach((key) => {
-            let contar = true;
-            this.communication[key].forEach((item, i) => {
-              if (item.Leida === false) {
-                if (item.ComunicacionTipo === (1 || 2 || 5 || 6) && item.FechaCreacion === key && contar) {
-                  this.quantityCommunication++
-                  contar = false;
-                }
-                if (item.ComunicacionTipo !== (1 || 2 || 5 || 6))
-                  this.quantityCommunication++
-                }
+           
+              let contarExencionesVencidas = true;
+              let contarExencionesAVencer = true;
+              let contarConsultas = true;
+              let contarliquidaciones = true;
+           
+              this.communication[key].forEach((item, i) => {
+
+                 
+                  if (item.Leida === false) {
+
+                      
+                      if (item.ComunicacionTipo === 1 && item.FechaCreacion === key && contarExencionesVencidas)
+                      {
+                            this.quantityCommunication++;
+                          contarExencionesVencidas = false;
+                      }
+                      if (item.ComunicacionTipo === 2 && item.FechaCreacion === key && contarExencionesAVencer)
+                        {
+                                this.quantityCommunication++;
+                          contarExencionesAVencer = false;
+                      }
+                      if (item.ComunicacionTipo === 5 && item.FechaCreacion === key && contarConsultas) {
+                          this.quantityCommunication++;
+                          contarConsultas = false;
+                      }
+
+                      if (item.ComunicacionTipo === 6 && item.FechaCreacion === key && contarliquidaciones) {
+                          this.quantityCommunication++;
+                          contarliquidaciones = false;
+                      }
+
+                      if (item.ComunicacionTipo !== 1 && item.ComunicacionTipo !== 2 && item.ComunicacionTipo !== 5 && item.ComunicacionTipo !== 6) { this.quantityCommunication++ }
+                  }
             })  
           });
-
+              
           this.layoutComponent.updateQuantity(this.quantityCommunication);
         }
       );
@@ -302,7 +330,7 @@ export class ComunicacionesComponent extends BaseComponent implements OnInit {
     setTimeout(() => {
       this.getComunicaciones(this.idProveedor, this.startDate, this.endDate);
       this.checkCommunications();
-    }, 600000);
+    }, 500);
   }
 
     // Función auxiliar para obtener las claves del objeto

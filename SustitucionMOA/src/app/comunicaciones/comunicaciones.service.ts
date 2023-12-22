@@ -20,7 +20,7 @@ export class ComunicacionesService extends BaseService {
     params = params.append('fechaFin', end_date);
     return this.http
         .get('/api/Comunicacion/GetAllByProveedor', { params: params, headers: this.headers })
-        .pipe(timeoutWith(600000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde "))));
+        .pipe(timeoutWith(30000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde "))));
     }
 
 
@@ -31,7 +31,7 @@ export class ComunicacionesService extends BaseService {
       .post('/api/Comunicacion/PostComunicacionLeida', objectComunicacion, {
         headers: this.headers
       })
-      .pipe(timeoutWith(600000, throwError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde "))));
+        .pipe(timeoutWith(30000, throwError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde "))));
   }
 
   public postComunicacionNoLeida(idComunicacion: number[]): Observable<any> {
@@ -40,7 +40,7 @@ export class ComunicacionesService extends BaseService {
       .post('/api/Comunicacion/PostComunicacionNoLeida', objectComunicacion, {
         headers: this.headers
       })
-      .pipe(timeoutWith(600000, throwError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde "))
+        .pipe(timeoutWith(30000, throwError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde "))
     ));
   }
 }

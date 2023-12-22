@@ -106,7 +106,7 @@ function closeNav() {
     } else {
         console.log("El elemento con ID 'mySidenav' no se encontró en el DOM.");
     }
-    // document.getElementById("mySidenav").style.right = "-270px";
+    document.getElementById("mySidenav").style.right = "-270px";
     document.getElementById("myMenuClose").style.display = "none";
     document.getElementById("myMenuOpen").style.display = "block";
     $("#coverAll").fadeOut();

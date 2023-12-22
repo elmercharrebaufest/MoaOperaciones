@@ -57,7 +57,7 @@ namespace SustitucionMOAUtils.Services
                     Id = x.Id,
                     ComunicacionTipo = x.ComunicacionTipo,
                     ProveedorId = x.ProveedorId,
-                    FechaCreacion = x.FechaCreacion.ToString(),
+                    FechaCreacion = x.FechaCreacion.ToString("dd/MM/yyyy HH:mm"),
                     Leida = x.Leida,
                     CM05 = x.CM05,
                     FechaRecomunicacion = (x.FechaRecomunicacion != null) ? (DateTime)x.FechaRecomunicacion : DateTime.MinValue,
