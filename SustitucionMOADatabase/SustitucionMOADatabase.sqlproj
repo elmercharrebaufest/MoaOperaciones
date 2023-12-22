@@ -64,6 +64,8 @@
     <Folder Include="DBO\Views" />
     <Folder Include="scripts\PreDeployment" />
     <Folder Include="scripts\PostDeployment" />
+    <Folder Include="scripts\Notificaciones" />
+    <Folder Include="scripts\Comunicacion" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="DBO\Tables\ProveedorHistorialAprobacion.sql" />
@@ -203,10 +205,21 @@
     <Build Include="DBO\Tables\PeticionDeOfertaCierre.sql" />
     <Build Include="DBO\Tables\PeticionDeOfertaVisualizacionPrecio.sql" />
     <Build Include="DBO\Tables\PeticionDeOfertaRevisionTecnica.sql" />
-    <Build Include="DBO\Tables\RegionSap.sql" />
-    <None Include="scripts\PostDeployment\RegionSap.sql" />
-    <Build Include="DBO\Tables\ChatInternoCompras.sql" />
-    <Build Include="DBO\Tables\PeticionDeOfertaUsuarioAdicional.sql" />
+
+    <None Include="scripts\Notificaciones\Notificacion.sql" />
+    <None Include="scripts\Notificaciones\NotificacionFechaCreacion.sql" />
+    <None Include="scripts\Notificaciones\NotificacionPrioridad.sql" />
+    <None Include="scripts\Comunicacion\ComunicacionTipo.sql" />
+    <Build Include="DBO\Tables\Comunicacion.sql" />
+    <Build Include="DBO\Tables\ComunicacionTipo.sql" />
+    <None Include="scripts\Comunicacion\ComunicacionTipo.sql" />
+    <Build Include="DBO\Tables\TipoRetencion.sql" />
+    <Build Include="DBO\Tables\NotificacionAdjunto.sql" />
+    <Build Include="DBO\Tables\NotificacionLeida.sql" />
+    <Build Include="DBO\Tables\NotificacionPrioridad.sql" />
+
+    
+
   </ItemGroup>
   <ItemGroup>
     <None Include="DatabasePublishQA.xml" />

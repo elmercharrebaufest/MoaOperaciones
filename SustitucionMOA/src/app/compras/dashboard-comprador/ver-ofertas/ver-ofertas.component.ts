@@ -144,7 +144,7 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
 
     descargarAdjuntosCotizacion(cotizacionId) {
         this.blockUI.start("Descargando...");
-        this.service.DescargarAdjuntosCotizacion(cotizacionId, false)
+        this.service.DescargarAdjuntosCotizacion(cotizacionId)
             .subscribe(
                 (result) => {
                     if (result.logout == true) {
@@ -296,7 +296,7 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
 
     confirmacionAdjudicar() {
         this.confirmationService.confirm({
-            header: "¡Último Paso!",
+            header: "¡Ultimo Paso!",
             acceptLabel: "SI, CONFIRMAR",
             rejectLabel: "VOLVER",
             message: 'Está a punto de enviar la adjudicacion <b>¿Desea continuar?</b>',

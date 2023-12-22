@@ -124,7 +124,7 @@
             <ng-template pTemplate="body" let-rowData let-expanded="expanded" let-columns="columns">
                 <tr (dblclick)="onRowDblClick($event, rowData)">
                     <td>
-                        <a href="#" [pRowToggler]="rowData" (click)="listarExpand()">
+                        <a href="#" [pRowToggler]="rowData">
                             <i [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
                         </a>
                     </td>
@@ -144,12 +144,6 @@
                             <span>
                                 <img class="pointer" src="./Content/images/icons/SAP.svg" alt="SAP"
                                      style="width: 30px; height: 30px; cursor:default" />
-                            </span>
-                        </div>
-                        <div *ngIf="rowData.TipoSolpSap == 4" class="col-md-2">
-                            <span>
-                                <img class="pointer" src="./Content/images/icons/gears.svg" alt="Reposición Automática"
-                                     style="height: 30px; cursor:default" />
                             </span>
                         </div>
                         <div class="col-md-2"
@@ -191,7 +185,7 @@
                         {{ rowData.EstadoSolpSap.Descripcion || "" }}
                     </td>
                     <td colspan="2" class="columna" style="text-align: center;">
-                        <button *ngIf="rowData.VerPublicar"
+                        <button *ngIf="rowData.EstadoSolpSap.CodigoSap == '05' && rowData.VerPublicar == true && !rowData.Adicional"
                                 class="publicar btn btn-success" style="font-size: 12px;"
                                 (click)="publicarCotizacion(rowData.Id)">
                             Publicar
@@ -216,38 +210,27 @@
                                                 <th class="columna" style="width: 100px !important"></th>
                                                 <th class="columna">Pedido de Cotización</th>
                                                 <th class="columna">Plazo de Oferta</th>
-                                                <th class="columna">Recotizar</th>
                                                 <th class="columna">Estado Lic.</th>
                                                 <th class="columna" style="width: 440px !important"></th>
                                             </tr>
                                         </ng-template>
                                         <ng-template pTemplate="emptymessage">
                                             <tr>
-                                                <td style="text-align: center;" colspan="6">Sin datos</td>
+                                                <td style="text-align: center;" colspan="5">Sin datos</td>
                                             </tr>
                                         </ng-template>
                                         <ng-template pTemplate="body" let-licitacion>
                                             <tr>
                                                 <td id="agregarProveedor">
-                                                    <div>
-                                                        <span *ngIf="(rowData.Adicional == null || rowData.TrabajoYaHecho == null) && (rowData.Adicional == null && rowData.TrabajoYaHecho == null)">
-                                                            <img class="pointer" src="./Content/images/icons/agregar-proveedor.svg" alt="Editar"
-                                                                 (click)="obtenerPeticionDeOfertaParaProveedor(licitacion.Id)" />
-                                                        </span>
-                                                        <span style="margin-left: 10px;">
-                                                            <img class="pointer" src="./Content/images/icons/chat.svg" alt="chat"
-                                                                 (click)="obtenerPeticionDeOfertaParaChat(licitacion.Id)" />
-                                                            <div class="punto-rojo" *ngIf="licitacion.ChatSinLeer == true && chatLeido == false"></div>
-                                                        </span>
+                                                    <div *ngIf="(rowData.Adicional == null || rowData.TrabajoYaHecho == null) && (rowData.Adicional == null && rowData.TrabajoYaHecho == null)">
+                                                        <img class="pointer" src="./Content/images/icons/editar.svg" alt="Editar"
+                                                             (click)="obtenerPeticionDeOfertaParaProveedor(licitacion.Id)" />
                                                     </div>
                                                 </td>
                                                 <td class="columna">{{licitacion.Id}}</td>
                                                 <td class="columna">
                                                     {{licitacion.PlazoDeOfertaFormateado}}
                                                 </td>
-                                                <td class="columna">
-                                                    {{licitacion.RecotizacionEconomica == true ? 'Si' : 'No'}}
-                                                </td>                                                
                                                 <td class="columna" [style.color]="licitacion.EstadoColor">{{licitacion.Estado}}</td>
                                                 <td class="columna">
                                                     <button class="publicar btn " style="margin-right: 10px;" (click)="verLegajo(licitacion.Id)">
@@ -285,15 +268,13 @@
                                                 <th class="columna">Fecha de creación</th>
                                                 <th class="columna">Proveedor</th>
                                                 <th class="columna">Monto total</th>
-                                                <th class="columna">Monto bruto</th>
                                                 <th class="columna">Moneda</th>
-                                                <th class="columna">Estado</th>
                                                 <th class="columna"></th>
                                             </tr>
                                         </ng-template>
                                         <ng-template pTemplate="emptymessage">
                                             <tr>
-                                                <td style="text-align: center;" colspan="8">Sin datos</td>
+                                                <td style="text-align: center;" colspan="6">Sin datos</td>
                                             </tr>
                                         </ng-template>
                                         <ng-template pTemplate="body" let-orden>
@@ -302,9 +283,7 @@
                                                 <td class="columna">{{orden.FechaCreacion | customDateFormat | date :'d/M/yyyy HH:mm' }}</td>
                                                 <td class="columna">{{orden.Proveedor}}</td>
                                                 <td class="columna">{{orden.PrecioFinal | number:'1.2-2'}}</td>
-                                                <td class="columna">{{orden.PrecioBruto | number:'1.2-2'}}</td>
                                                 <td class="columna">{{orden.MonedaDescripcion}}</td>
-                                                <td class="columna">{{orden.EstadoLiberacionDetalle}}</td>
                                                 <td class="columna">
                                                     <button class="publicar btn btn-success"
                                                             (click)="verDetalleOrdenDeCompra(orden.NumeroOrdenDeCompra)">
@@ -346,9 +325,4 @@
                            (cerrarModalCotizacionEmitter)="cerrarModalCotizacion()" [(peticion)]="peticion"
                            [(visualizarAlertCotizacion)]="visualizarAlertCotizacion">
     </app-cerrar-cotizacion>
-
-    <app-chat-interno [(displayChatInterno)]="displayChatInterno"
-                      [(chat)]="chat">
-        (cerrardisplayChatEmitter)="cerrarModalChat()"
-    </app-chat-interno>
 </div>

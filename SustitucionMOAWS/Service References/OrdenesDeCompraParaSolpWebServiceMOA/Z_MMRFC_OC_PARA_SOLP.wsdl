@@ -208,27 +208,6 @@
               </xsd:restriction>
             </xsd:simpleType>
           </xsd:element>
-          <xsd:element minOccurs="0" name="BRTWR">
-            <xsd:annotation>
-              <xsd:documentation>Gross order value in PO currency</xsd:documentation>
-            </xsd:annotation>
-            <xsd:simpleType>
-              <xsd:restriction base="xsd:decimal">
-                <xsd:totalDigits value="13" />
-                <xsd:fractionDigits value="2" />
-              </xsd:restriction>
-            </xsd:simpleType>
-          </xsd:element>
-          <xsd:element minOccurs="0" name="FRGKE">
-            <xsd:annotation>
-              <xsd:documentation>Release Indicator: Purchasing Document</xsd:documentation>
-            </xsd:annotation>
-            <xsd:simpleType>
-              <xsd:restriction base="xsd:string">
-                <xsd:maxLength value="1" />
-              </xsd:restriction>
-            </xsd:simpleType>
-          </xsd:element>
         </xsd:sequence>
       </xsd:complexType>
     </xsd:schema>

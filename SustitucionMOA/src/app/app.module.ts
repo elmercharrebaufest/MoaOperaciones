@@ -39,9 +39,9 @@ import { HomeComponent } from "./home/home.component";
 import { HomeNGSComponent } from "./home/no-granos/home.no-granos.component";
 import { LayoutComponent } from "./layout/layout.component";
 import { LayoutService } from "./layout/layout.service";
-import { AltaNotificacionesComponent } from './notificaciones/alta-notificaciones/alta-notificaciones.component';
+//import { AltaNotificacionesComponent } from './notificaciones/alta-notificaciones/alta-notificaciones.component'; //esta declarado en el NotificacionModule
 import { CarouselNotificacionesComponent } from './notificaciones/carousel-notificaciones/carousel-notificaciones.component';
-import { ListadoNotificacionesComponent } from './notificaciones/listado-notificaciones/listado-notificaciones.component';
+//import { ListadoNotificacionesComponent } from './notificaciones/listado-notificaciones/listado-notificaciones.component'; //esta declarado en el NotificacionModule
 import { NotificacionesService } from "./notificaciones/notificaciones.service";
 import { PesificacionComponent } from "./pesificacion/pesificacion.component";
 import { UsuarioAltaEmpresaNoGranosComponent } from "./usuario/alta-empresa-no-granos/usuario.alta-empresa-no-granos.component";
@@ -63,64 +63,81 @@ import { ApikeyService } from "./apikey/apikey.service";
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ConfirmationService } from 'primeng/api';
 import { PesificacionesGuardadasComponent } from './pesificacion/pesificaciones-guardadas/pesificaciones-guardadas.component'
+
+import { LegajoExternoComponent } from './compras/legajo-externo/legajo-externo.component';
 import { PesificacionBaseComponent } from "./pesificacion/pesificacion-base.component";
 import { ModificarDatosComponent } from './usuario/modificar-datos/modificar-datos.component';
 import { ToastModule } from "primeng/toast";
 import { UsuarioAuditoriaListComponent } from './usuario/usuario-auditoria-list/usuario-auditoria-list.component';
-import { LegajoExternoComponent } from './compras/legajo-externo/legajo-externo.component';
+
+import { QuillModule } from "ngx-quill";
+import { ModalNotificacionesComponent } from "./notificaciones/modal-notificaciones/modal-notificaciones.component";
+
+
+import { ListadoNovedadesComponent } from './listado-novedades/listado-novedades.component';
+import { AngularEditorModule } from '@kolkov/angular-editor';;
+import { ComunicacionesComponent } from './comunicaciones/comunicaciones.component'
+import { NotificacionesModule } from "./notificaciones/notificaciones.module";
 
 
 @NgModule({
-    imports: [
-        BrowserModule,
-        BrowserAnimationsModule,
-        HttpClientModule,
-        AppRoutingModule,
-        FormsModule,
-        ReactiveFormsModule,
-        NgxPaginationModule,
-        SelectModule,
-        ModalModule,
-        ReCaptchaModule,
-        SharedModule,
-        LogPesificacionModule,
-        NgxMaskModule.forRoot(),
-        BlockUIModule.forRoot(),
-        ComprasModule,
-        ConfirmDialogModule,
-        MultiSelectModule,
-        ToastModule
-    ],
-    declarations: [
-        AppComponent,
-        ContactoMailComponent,
-        HomeComponent,
-        HomeNGSComponent,
-        LayoutComponent,
-        NoAutorizadoComponent,
-        UsuarioListComponent,
-        UsuarioAltaEmpresaNoGranosComponent,
-        UsuarioCambioVendedorComponent,
-        VendedorStatusComponent,
-        PesificacionComponent,
-        EmpresaGranosComponent,
-        EmpresaNoGranosComponent,
-        AltasComponent,
-        EstadoSolicitudComponent,
-        AltaNotificacionesComponent,
-        ListadoNotificacionesComponent,
-        CarouselNotificacionesComponent,
-        VentaSustentableBaseComponent,
-        FaqComponent,
-        TicketPesadaComponent,
-        ConsultaBaseComponent,
-        VentaSustentableBaseComponent,
-        ApikeyComponent,
-        PesificacionesGuardadasComponent,
-        PesificacionBaseComponent,
-        ModificarDatosComponent,
-        UsuarioAuditoriaListComponent,
-        LegajoExternoComponent
+  imports: [
+    BrowserModule,
+    BrowserAnimationsModule,
+    HttpClientModule,
+    AppRoutingModule,
+    FormsModule,
+    ReactiveFormsModule,
+    NgxPaginationModule,
+    SelectModule,
+    ModalModule,
+    ReCaptchaModule,
+    SharedModule,
+    LogPesificacionModule,
+    NgxMaskModule.forRoot(),
+    BlockUIModule.forRoot(),
+    ComprasModule,
+    ConfirmDialogModule,
+    MultiSelectModule,
+    ToastModule,
+    QuillModule,
+    AngularEditorModule,
+    NotificacionesModule
+  ],
+  declarations: [
+    AppComponent,
+    ContactoMailComponent,
+    HomeComponent,
+    HomeNGSComponent,
+    LayoutComponent,
+    NoAutorizadoComponent,
+    UsuarioListComponent,
+    UsuarioAltaEmpresaNoGranosComponent,
+    UsuarioCambioVendedorComponent,
+    VendedorStatusComponent,
+    PesificacionComponent,
+    EmpresaGranosComponent,
+    EmpresaNoGranosComponent,
+    AltasComponent,
+    EstadoSolicitudComponent,
+    //AltaNotificacionesComponent,
+    //ListadoNotificacionesComponent,
+    CarouselNotificacionesComponent,
+    VentaSustentableBaseComponent,
+    FaqComponent,
+    TicketPesadaComponent,
+    ConsultaBaseComponent,
+    VentaSustentableBaseComponent,
+    ApikeyComponent,
+    PesificacionesGuardadasComponent,
+    PesificacionBaseComponent,
+    ModificarDatosComponent,
+
+    UsuarioAuditoriaListComponent,
+    ListadoNovedadesComponent,
+    ModalNotificacionesComponent,
+    ComunicacionesComponent,
+    LegajoExternoComponent
     ],
     providers: [
         DatePipe,

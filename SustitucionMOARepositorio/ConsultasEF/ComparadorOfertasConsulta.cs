@@ -45,7 +45,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                     Urgencia = po.Solp.Urgencia,
                                     NroOrdenDeCompraAdicional = po.Solp.NroOrdenDeCompraAdicional,
                                     EstaLiberado = po.Solp.EstadoSolpSap.CodigoSap == "05",
-                                    RevisionFinalizada = po.RevisionTecnica == null ? false : po.RevisionTecnica.Finalizada,
+                                    RevisionFinalizada = po.RevisionTecnica_Id != null,
                                     PlazoDeOfertaCierre = po.Cierres.Any() ? po.Cierres.OrderByDescending(p => p.Fecha).FirstOrDefault().Fecha : (DateTime?)null,
                                     PeticionDeOfertaPosicion = (from pop in contexto.Set<PeticionDeOfertaSolpPosicion>()
                                                                 where po.Id == pop.PeticionDeOferta_Id && pop.SolpPosicion.EsConcluido == true && pop.SolpPosicion.Estado == true
@@ -111,7 +111,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                         u.Usuario.Proveedores.Where(p => p.CUIT == u.Usuario.CUITRegistro && u.Usuario.TipoUsuario.Id == p.TipoProveedor.Id).FirstOrDefault().Mail : u.Usuario.CUITRegistro,
                                                     PropuestaTecnicaAprobada = u.PropuestaTecnicaAprobada,
                                                     RealizoVisita = u.RealizoVisita,
-                                                    EstadoVisita = u.RealizoVisita == true ? "Realizada" : po.Solp.TrabajoYaHecho == true ? "Trabajo ya hecho" : "Sin realizar",
+                                                    EstadoVisita = u.RealizoVisita == true ? "Realizada" : "Sin realizar",
                                                     EstadoVisitaColor = u.RealizoVisita == true ? "Green" : "Red",
                                                     EstadoPropuestaTecnica = u.PropuestaTecnicaAprobada == null ? "Sin analizar" : (u.PropuestaTecnicaAprobada == true ? "Aprobada" : "Rechazada"),
                                                     ObservacionNoCumple = u.ObservacionNoCumple,
@@ -176,8 +176,8 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                             },
                                                             Moneda_Id = p.PeticionDeOfertaSolpPosicion.SolpPosicion.TipoPosicion_Id == 9 ? p.PeticionDeOfertaSolpPosicion.SolpPosicion.Moneda_Id ?? 0 : p.Moneda_Id ?? 0,
                                                             MonedaDescripcion = cotizacion != null && p.Moneda != null ? p.Moneda.Codigo : "",
-                                                            FechaDeEntrega = p.FechaDeEntrega,
-                                                            FechaDeEntregaFormateada = SqlFunctions.DateName("day", p.FechaDeEntrega) + "/" + SqlFunctions.DatePart("month", p.FechaDeEntrega) + "/" + SqlFunctions.DateName("year", p.FechaDeEntrega),
+                                                            FechaDeEntrega =  p.FechaDeEntrega,
+                                                            FechaDeEntregaFormateada =  SqlFunctions.DateName("day", p.FechaDeEntrega) + "/" + SqlFunctions.DatePart("month", p.FechaDeEntrega) + "/" + SqlFunctions.DateName("year", p.FechaDeEntrega),
                                                             Precio = p.Precio ?? 0,
                                                             PrecioTotal = p.Cantidad != null && p.Precio != null ? p.Cantidad.Value * p.Precio.Value : 0,
                                                             TotalARPCotizacionPosicion = 0,

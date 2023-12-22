@@ -143,7 +143,7 @@ namespace SustitucionMOA.Controllers
         }
 
         [HttpGet]
-        public ActionResult ListarSolp(int? pagina = null, int? itemsPorPagina = null, string orden = null, string columna = null, string nroSolp = null, DateTime? fechaDesde = null, DateTime? fechaHasta = null, bool? sap = null, bool? mantenimiento = null, bool? web = null, bool? repoAutomatica = null, string estados = null, int? usuarioId = null)
+        public ActionResult ListarSolp(int? pagina = null, int? itemsPorPagina = null, string orden = null, string columna = null, string nroSolp = null, DateTime? fechaDesde = null, DateTime? fechaHasta = null, bool? sap = null, bool? mantenimiento = null, bool? web = null, string estados = null, int? usuarioId = null)
         {
             try
             {
@@ -152,7 +152,7 @@ namespace SustitucionMOA.Controllers
                 return JsonCustom(new
                 {
                     data = service.ListarSolp(ObtenerUsuarioActual(), paginacion, nroSolp, fechaDesde,
-                    fechaHasta, sap, mantenimiento, web, repoAutomatica, usuarioId, (!string.IsNullOrEmpty(estados) ? estados.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>()))
+                    fechaHasta, sap, mantenimiento, web, usuarioId, (!string.IsNullOrEmpty(estados) ? estados.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>()))
                 });
             }
             catch (InfoCustomException e)
@@ -673,12 +673,10 @@ namespace SustitucionMOA.Controllers
             {
                 var ordenar = orden == "ASC" ? DirOrden.Asc : DirOrden.Desc;
                 var paginacion = new Paginacion((!string.IsNullOrEmpty(columna) ? columna : "Id"), ordenar, (pagina == null) ? 0 : pagina.Value, (itemsPorPagina == 0 || !itemsPorPagina.HasValue) ? 10 : itemsPorPagina.Value);
-                var usuario_Id = ObtenerUsuarioActual().Id;
-
 
                 return JsonCustom(new
                 {
-                    data = service.ListarSolpComprador(usuario_Id, paginacion, nroSolp, !string.IsNullOrEmpty(usuarios) ? usuarios.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(), !string.IsNullOrEmpty(estados) ? estados.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(),
+                    data = service.ListarSolpComprador(paginacion, nroSolp, !string.IsNullOrEmpty(usuarios) ? usuarios.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(), !string.IsNullOrEmpty(estados) ? estados.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(),
                     !string.IsNullOrEmpty(centros) ? centros.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(), !string.IsNullOrEmpty(grupoDeCompras) ? grupoDeCompras.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>())
                 });
             }
@@ -1063,14 +1061,14 @@ namespace SustitucionMOA.Controllers
         }
 
         [HttpGet]
-        public ActionResult DescargarAdjuntosCotizacion(int cotizacionId, bool desdeRevisionTecnica)
+        public ActionResult DescargarAdjuntosCotizacion(int cotizacionId)
         {
             try
             {
                 var path = $"{ConfigurationManager.AppSettings["RutaArchivosCompras"]}/{DateTime.Now.Ticks}";
                 Directory.CreateDirectory(path);
 
-                string rutaZip = service.DescargarAdjuntosCotizacion(cotizacionId, path, desdeRevisionTecnica);
+                string rutaZip = service.DescargarAdjuntosCotizacion(cotizacionId, path);
                 byte[] fileBytes = System.IO.File.ReadAllBytes(rutaZip);
                 string fileName = Path.GetFileName(rutaZip);
 
@@ -1087,14 +1085,12 @@ namespace SustitucionMOA.Controllers
         }
 
         [HttpPost]
-        public ActionResult GrabarRevisionTecnica(string json, bool finalizar, string jsonRevision)
+        public ActionResult GrabarRevisionTecnica(string json, bool finalizar)
         {
             try
             {
-                var peticionDeOfertaUsuarioDto = JsonConvert.DeserializeObject<List<PeticionDeOfertaUsarioDto>>(json);
-                var revision = JsonConvert.DeserializeObject<PeticionDeOfertaRevisionTecnicaDto>(jsonRevision);
-
-                var result = service.GrabarRevisionTecnica(peticionDeOfertaUsuarioDto, ObtenerUsuarioActual().Id, finalizar, revision);
+                var revision = JsonConvert.DeserializeObject<List<PeticionDeOfertaUsarioDto>>(json);
+                var result = service.GrabarRevisionTecnica(revision, ObtenerUsuarioActual().Id, finalizar);
                 return JsonCustom(new { data = result });
             }
             catch (InfoCustomException e)
@@ -1395,7 +1391,7 @@ namespace SustitucionMOA.Controllers
             }
         }
         
-        [HttpPost]
+         [HttpPost]
         public ActionResult GrabarPeticionDeOfertaVisualizacionPrecio(string json)
         {
             try
@@ -1443,81 +1439,6 @@ namespace SustitucionMOA.Controllers
             catch (Exception e)
             {
                 Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
-        }
-
-        [HttpGet]
-        public JsonResult ObtenerChat(int peticionDeOfertaId) 
-        {
-            try
-            {
-                return JsonCustom(service.ObtenerChat(peticionDeOfertaId, ObtenerUsuarioActual().Id));
-            }
-            catch (InfoCustomException e)
-            {
-                return Json(new { info = e }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
-        }
-
-        [HttpPost]
-        public ActionResult GrabarMensajeChatInterno(string json)
-        {
-            try
-            {
-                var mensaje = JsonConvert.DeserializeObject<ChatInternoComprasDto>(json);
-                mensaje.Usuario_Id = ObtenerUsuarioActual().Id;
-                var result = service.GrabarMensajeChatInterno(mensaje);
-                return JsonCustom(new { data = result });
-            }
-            catch (InfoCustomException e)
-            {
-                return Json(new { info = e }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e }, JsonRequestBehavior.AllowGet);
-            }
-            catch (WSCustomException e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
-        }
-
-        public ActionResult ObtenerYExportarChat(int peticionDeOfertaId)
-        {
-            try
-            {
-                var path = $"{ConfigurationManager.AppSettings["RutaArchivosCompras"]}/{DateTime.Now.Ticks}";
-                Directory.CreateDirectory(path);
-
-                string rutaTxt = service.ExportarChatInternoAtexto(peticionDeOfertaId, path);
-                byte[] fileBytes = System.IO.File.ReadAllBytes(rutaTxt);
-                string fileName = Path.GetFileName(rutaTxt);
-
-                //Para evitar sobrecargar el server con zips, una vez cargado lo borro
-                Directory.Delete(path, true);
-
-                return JsonCustom(File(fileBytes, System.Net.Mime.MediaTypeNames.Text.Plain, fileName));
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
         }

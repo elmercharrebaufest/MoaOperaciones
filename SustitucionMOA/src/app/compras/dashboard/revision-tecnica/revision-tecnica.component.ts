@@ -11,7 +11,7 @@ import { NavService } from '../../../common/services/NavService';
 import { SecurityService } from '../../../common/services/SecurityService';
 import { SessionDataService } from '../../../common/services/SessionDataService';
 import { CircularDto } from '../../../modelos/circular-model';
-import { PeticionDeOfertaDto, PeticionDeOfertaRevisionTecnicaDto, PeticionDeOfertaUsarioDto } from '../../../modelos/peticion-de-oferta-model';
+import { PeticionDeOfertaDto, PeticionDeOfertaUsarioDto } from '../../../modelos/peticion-de-oferta-model';
 import { ComprasService } from '../../compras.service';
 import { PanelHorasComponent } from '../../panel-horas/panel-horas.component';
 
@@ -28,7 +28,6 @@ export class RevisionTecnicaComponent implements OnInit, OnChanges {
 
     @Input()
     public peticion: PeticionDeOfertaDto;
-    revisionTecnica: PeticionDeOfertaRevisionTecnicaDto;
     fechaDeEntrega: Date
     plazoDeOferta: Date
     public circular: CircularDto;
@@ -36,7 +35,6 @@ export class RevisionTecnicaComponent implements OnInit, OnChanges {
     val1: string = "No";
     val2: string;
     ObservacionNoCumple: any;
-    ObservacionRecotizacion: any;
     visualizarFechas: boolean;
     plazoDias: string;
     selectedProv: number[] = []
@@ -48,7 +46,7 @@ export class RevisionTecnicaComponent implements OnInit, OnChanges {
     visualizarAlert = false;
     @Output() descargarArchivoEmitter = new EventEmitter<{ archivoId: number }>();
     @Output() descargarAdjuntosCotizacionEmitter = new EventEmitter<{ cotizacionId: number }>();
-    @Output() grabarRevisionTecnicaEmitter = new EventEmitter<{ finalizar: boolean, revisionTecnica: PeticionDeOfertaRevisionTecnicaDto }>();
+    @Output() grabarRevisionTecnicaEmitter = new EventEmitter<{ finalizar: boolean }>();
 
     @ViewChild('panelHoras') panelHoras: PanelHorasComponent;
 
@@ -56,13 +54,23 @@ export class RevisionTecnicaComponent implements OnInit, OnChanges {
         protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService,
         protected route: ActivatedRoute, protected router: Router, private confirmationService: ConfirmationService, private formBuilder: FormBuilder) {
     }
-
     ngOnChanges(changes: SimpleChanges): void {
-        this.iniciarDatosPeticion();
+
     }
 
     ngOnInit() {
-        this.iniciarDatosPeticion();
+        if (this.peticion == null) {
+            this.peticion = {
+                Id: null,
+                FechaEntregaFormateado: null,
+                PlazoDeOferta: null,
+                CUIT: null,
+                Mail: null,
+                Usuarios: new Array(),
+                SolpDto: null,
+                Selected: null
+            };
+        }
     }
 
     autocompletarFechaDeEntrega() {
@@ -74,42 +82,21 @@ export class RevisionTecnicaComponent implements OnInit, OnChanges {
 
     onCerrarPeticion() {
         this.visualizarAlert = false;
-        this.iniciarDatosPeticion();
+        this.iniciarModalPeticion();
         this.cerrardisplayRevisionTecnicaEmitter.next();
     }
 
-    estaSeleccionado(seleccion) {}
+    estaSeleccionado(seleccion) {
 
-    private armarPeticion() {
-        let revision: PeticionDeOfertaRevisionTecnicaDto = {
-            Id: 0,
-            Usuario_Id: 0,
-            RecotizacionEconomica: false,
-            ModificacionSolp: false,
-            ObservacionRecotizacion: "",
-            Finalizada: false
-        };
-        return revision;
     }
 
-    iniciarDatosPeticion() {
-        if (this.peticion == null || this.peticion == undefined) {
-            this.peticion = {
-                Id: null,
-                FechaEntregaFormateado: null,
-                PlazoDeOferta: null,
-                CUIT: null,
-                Mail: null,
-                Usuarios: new Array(),
-                SolpDto: null,
-                Selected: null,
-            };
-        }
+    private armarPeticion() {
 
-        if (this.peticion != null && (this.peticion.RevisionTecnica == null || this.peticion.RevisionTecnica == undefined)) {
+    }
 
-            this.peticion.RevisionTecnica = this.armarPeticion();
-        }
+
+    iniciarModalPeticion() {
+
     }
 
     salir() {
@@ -126,69 +113,6 @@ export class RevisionTecnicaComponent implements OnInit, OnChanges {
             this.visualizarAlert = true;
             return true;
         }
-    }
-
-    validarPlazoDeOferta() {
-        this.visualizarAlert = false;
-        if (this.peticion.Estado != "Cerrado") {
-            this.error = "No se puede finalizar la Revisión tecnica ya que el plazo de oferta no se encuentra vencido";
-            this.visualizarAlert = true;
-            return true;
-        }  else {
-            this.error = ""; // Borra el mensaje de error si al menos uno está seleccionado
-            this.visualizarAlert = false;
-            return false;
-        }
-    }
-
-    validarCotizacionFinalizada(){
-        this.visualizarAlert = false;
-        var todasCotizacionesFinalizadas: boolean = this.peticion.Usuarios.every(u => 
-            u.Cotizacion && u.Cotizacion.CotizacionEstado_Id == 1
-          );
-        if (todasCotizacionesFinalizadas == false) {
-            this.error = "No se puede finalizar la Revisión tecnica ya que hay cotizaciones sin finalizar";
-            this.visualizarAlert = true;
-            return true;
-        }
-    }
-
-    checkRecotizacionEconomica(){
-        const alMenosUnoSeleccionado = this.peticion.RevisionTecnica.RecotizacionEconomica !== null && this.peticion.RevisionTecnica.RecotizacionEconomica !== undefined;
-
-        if (!alMenosUnoSeleccionado) {
-            this.error = "Todos los checks deben estar seleccionados para finalizar la revisión técnica";
-            this.visualizarAlert = true;
-            return true;
-        } else {
-
-            if(this.peticion.RevisionTecnica.RecotizacionEconomica == false){
-                this.error = ""; // Borra el mensaje de error si al menos uno está seleccionado
-                this.visualizarAlert = false;
-                return false;
-            } else {
-
-                const alMenosUnCheckSeleccionado = this.peticion.RevisionTecnica.ModificacionSolp !== null && this.peticion.RevisionTecnica.ModificacionSolp !== undefined;
-                if (!alMenosUnCheckSeleccionado) {
-                    this.error = "Debe indicar si va a realizar modificaciones en la SOLP";
-                    this.visualizarAlert = true;
-                    return true;
-                }
-
-                if (this.peticion.Usuarios.find(x =>
-                    (this.peticion.RevisionTecnica.ObservacionRecotizacion == "" || isNullOrUndefined(this.peticion.RevisionTecnica.ObservacionRecotizacion)))) {
-                    this.error = "El campo Observación de recotizacion es obligatorio";
-                    this.visualizarAlert = true;
-                    return true;
-                }
-
-
-                this.error = ""; // Borra el mensaje de error si al menos uno está seleccionado
-                this.visualizarAlert = false;
-                return false;
-            }
-        }
-
     }
 
     checkVisitaTecnica() {
@@ -241,7 +165,7 @@ export class RevisionTecnicaComponent implements OnInit, OnChanges {
     }
 
     guardarRT() {
-        this.grabarRevisionTecnicaEmitter.next({ finalizar: false, revisionTecnica: this.peticion.RevisionTecnica });
+        this.grabarRevisionTecnicaEmitter.next({ finalizar: false });
     }
 
     mostrarPanelHs(p) {
@@ -249,25 +173,23 @@ export class RevisionTecnicaComponent implements OnInit, OnChanges {
             p.MostrarPanel = true;
         } else {
             p.MostrarPanel = false;
+
         }
     }
 
     confirmarFinalizacion() {
-        if (!this.checkVisitaTecnica() 
-            && !this.checkPropuestaTecnica() 
-            && !this.validarPeticion() 
-            && (!this.validarPlazoDeOferta() || !this.validarCotizacionFinalizada()) 
-            && !this.checkRecotizacionEconomica()
-            ) {
+        if (!this.checkVisitaTecnica() && !this.checkPropuestaTecnica() && !this.validarPeticion()) {
             this.confirmationService.confirm({
                 key: 'finalizarRevision',
                 message: 'Una vez finalizada la revisión técnica ya no podrá editarse. ¿Está seguro de que desea cerrar la revisión técnica?',
                 accept: () => {
-                    this.grabarRevisionTecnicaEmitter.next({ finalizar: true, revisionTecnica: this.peticion.RevisionTecnica });
+
+                    this.grabarRevisionTecnicaEmitter.next({ finalizar: true });
                 },
                 reject: () => {
                 }
             });
+
         }
     }
 }

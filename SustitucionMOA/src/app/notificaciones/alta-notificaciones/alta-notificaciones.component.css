@@ -8,6 +8,40 @@
     padding-bottom: 35px;
 }
 
+.input-select {
+    border: 1px solid #95959561;
+    width: 50%;
+    padding: 4px;
+    width: 500px;
+    cursor: pointer;
+}
+
+.text-lista-adjuntos {
+    overflow: hidden;
+    white-space: -moz-pre-space;
+    text-overflow: ellipsis;
+    display: block;
+}
+
+.display-f {
+    display: -webkit-inline-box;
+    width: 25%;
+}
+
+.m-b {
+    margin-bottom: 4px;
+}
+
+.delete-f {
+    width: 35%;
+    display: flex;
+    justify-content: space-between;
+}
+
+.font-n {
+    font-weight: normal;
+}
+
 .checkboxGrande {
     zoom: 1.1;
 }
@@ -19,4 +53,24 @@
 
 .containerBotones {
     padding-top: 15px;
+}
+
+.step-container {
+    position: relative;
+    text-align: left;
+    background-color: white;
+    border-radius: 11px;
+    margin-bottom: 15px;
+}
+
+.step-container-header {
+  padding: 10px;
+  background-color: #959595;
+  border-top-left-radius: 11px;
+  border-top-right-radius: 11px;
+  margin-bottom: 20px;
+  width: 100%;
+  height: auto;
+  font-size: 15px;
+  color: white;
 }

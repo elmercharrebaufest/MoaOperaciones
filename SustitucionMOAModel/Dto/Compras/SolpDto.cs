@@ -252,7 +252,6 @@ namespace SustitucionMOAModel.Dto
         public int Solp_Id { get; set; }
         public decimal? CantidadAdjudicada { get; set; }
         public string GrupoComprasCodigo { get; set; }
-        public List<TablaSapDto> UnidadesDeMedida { get; set; }
 
         public SolpPosicionDto() { }
 

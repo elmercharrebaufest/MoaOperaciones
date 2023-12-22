@@ -28,10 +28,6 @@ namespace SustitucionMOAModel.Dto
         public string TipoDocCompras { get; set; }
         public int? Usuario_Id { get; set; }
         public string TipoSolp { get; set; }
-        public decimal MontoBruto { get; set; }
-        public string EstadoLiberacionCodigo { get; set; }
-        public int? UsuarioCompras_Id { get; set; }
-        public string UsuarioComprasSAP { get; set; }
 
         //        <COMP_CODE>MOA</COMP_CODE>// fijo
         //        <DOC_TYPE>ZPE1</DOC_TYPE>//tipo de documento

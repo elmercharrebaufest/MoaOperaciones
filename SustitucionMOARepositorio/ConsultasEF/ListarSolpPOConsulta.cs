@@ -22,7 +22,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
         private readonly int? EstadoLicitacion;
         private readonly DateTime? FechaDesde;
         private readonly DateTime? FechaHasta;
-
+        
         public ListarSolpPOConsulta(Paginacion paginacion, string nroSolp, string nroPo, string[] nombrePedido, string cuitUsuario, int? estadoCotizacion, int? estadoLicitacion, DateTime? desde, DateTime? hasta)
         {
             Paginacion = paginacion;
@@ -51,8 +51,8 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                 && (string.IsNullOrEmpty(NroPo) || x.PeticionDeOferta.Id.ToString().StartsWith(NroPo))
                                 && (!NombrePedido.Any() || NombrePedido.All(p => x.PeticionDeOferta.Solp.Pliego.NombreObra.ToUpper().Contains(p.ToUpper())))
                                 && x.Usuario.CUITRegistro == CuitUsuario && x.PeticionDeOferta.RegistroInfo != true &&
-                                (EstadoCotizacion == null || EstadoCotizacion == 0 && cotizacion == null || x.Cotizaciones.Any(c => c.CotizacionEstado_Id == EstadoCotizacion))
-                                && x.PeticionDeOferta.Solp.Posiciones.Any(p => p.Estado == true)
+                                (EstadoCotizacion == null || EstadoCotizacion == 0 && cotizacion == null || x.Cotizaciones.Any(c => c.CotizacionEstado_Id == EstadoCotizacion)) 
+                                
                                 select new PeticionDeOfertaDto
                                 {
                                     Id = x.PeticionDeOferta.Id,

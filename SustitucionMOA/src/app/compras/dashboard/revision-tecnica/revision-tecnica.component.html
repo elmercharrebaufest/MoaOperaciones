@@ -103,10 +103,10 @@
                                         <i class="pi pi-clock" style="font-size: 3rem; color: grey;"></i>
                                     </span>
                                 </div>
-                                <div class="col-md-1" *ngIf="p.Cotizacion.Archivos.length == 1 && p.Cotizacion.Archivos[0].FileKey == 'CotizacionRevisionTecnica' || p.Cotizacion.RespetaMateriales == false">
+                                <div class="col-md-1" *ngIf="p.Cotizacion.Archivos.length == 1">
                                     <span>
                                         <img style="cursor:pointer;" src="./Content/images/icons/descargar.svg" alt="descargar"
-                                             (click)="descargarArchivo(p.Cotizacion.Archivos[0].Id)" />
+                                             (click)="descargarArchivo(p.Cotizacion.Archivos[0].ArchivoId)" />
                                     </span>
                                 </div>
                                 <div class="col-md-1" *ngIf="p.Cotizacion.Archivos.length > 1">
@@ -125,68 +125,10 @@
                             <app-panel-horas [peticionHs]="p.Cotizacion.CotizacionesHoras" [cotizacion]="p.Cotizacion"></app-panel-horas>
                         </div>
                     </div>
-                    <div class="col-md-12" style="margin-left: -18px;">
-                        <h3 style="font-size:x-large;font-weight:bold;">Solicitud de recotizacion</h3>
-                    </div>
-                    <br>
-                    <div *ngIf="peticion != null">
-                        <div class="row">
-                            <div class="col-md-3">
-                                <strong style="color: #666666;">Requiere re cotización economica</strong>
-                            </div>
-                            <div class="col-md-9">
-                                <label style="padding-right:20px;">
-                                    <input type="radio"
-                                           [name]="'recotizacionEconomica-' + peticion.RevisionTecnica?.Id"
-                                           [value]="true"
-                                           [(ngModel)]="peticion.RevisionTecnica.RecotizacionEconomica" />
-                                    Si
-                                </label>
-                                <label>
-                                    <input type="radio"
-                                           [name]="'recotizacionEconomica-' + peticion.RevisionTecnica?.Id"
-                                           [value]="false"
-                                           [(ngModel)]="peticion.RevisionTecnica.RecotizacionEconomica" />
-                                    No
-                                </label>
-                            </div>
-                        </div>
-
-                        <br>
-
-                        <div class="row" *ngIf="peticion.RevisionTecnica?.RecotizacionEconomica == true">
-                            <div class="col-md-3">
-                                <strong style="color: #666666;">Modificación en la SOLP (paso 5) *</strong>
-                            </div>
-                            <div class="col-md-9">
-                                <label style="padding-right:20px;">
-                                    <input type="radio"
-                                           [name]="'modificarSolp-' + peticion.RevisionTecnica?.Id"
-                                           [value]="true"
-                                           [(ngModel)]="peticion.RevisionTecnica.ModificacionSolp" />
-                                    Si
-                                </label>
-                                <label>
-                                    <input type="radio"
-                                           [name]="'modificarSolp-' + peticion.RevisionTecnica?.Id"
-                                           [value]="false"
-                                           [(ngModel)]="peticion.RevisionTecnica.ModificacionSolp" />
-                                    No
-                                </label>
-                            </div>
-                            <br>
-
-                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="margin-top: 15px;">
-                                <label class="labelCompras"><strong style="color: #666666;">Observaciones *</strong></label>
-                                <textarea name="ObservacionRecotizacion" ngDefaultControl [(ngModel)]="peticion.RevisionTecnica.ObservacionRecotizacion" placeholder="Agregue los comentarios que crea necesarios..." cols="30" rows="1"></textarea>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
         </section>
     </div>
-
     <p-footer>
         <button type="button" class="btn btn-danger botonesComprasColor" (click)="onCerrarPeticion()">CANCELAR</button>
         <button type="button" class="btn btn-primary botonesComprasColor" (click)="guardarRT()">GUARDAR</button>

@@ -1,35 +1,60 @@
-<div *ngIf="mostrarNotificaciones">
-  <div class="col-xs-12 col-md-12 tituloNotificacion">
-    <strong>¡Bienvenido!</strong>
-  </div>
-  <div class="col-xs-12 col-md-12 subtituloNotificacion">
-    Hoy tienes una nueva noticia.
-  </div>
-
-  <div class="col-xs-12 col-md-12 notificacionContainer">
-
-    <div class="col-xs-12 col-md-8 col-lg-9 container notificacionMensaje">
-      <div class="divAnterior">
-        <i class="fa fa-caret-left btnPrevious" *ngIf="mostrarBotonAnterior" (click)="notificacionAnterior()"></i>
-      </div>
-      <div class="divMensaje">{{notificacionActual?.Mensaje || ""}}</div>
-      <div class="divSiguiente">
-        <i class="fa fa-caret-right btnNext" *ngIf="mostrarBotonSiguiente" (click)="siguienteNotificacion()"></i>
-      </div>
+<div *ngIf="showNews">
+    <div class="col-xs-12 col-md-12 titleNovedad">
+        <strong>¡Bienvenido {{nombre}}!</strong>
     </div>
-    <div class="col-xs-12 col-md-4 col-lg-3 notificacionContenedorBotones">
-      <div class="row">
-        <div class="col-xs-6 col-md-6 col-lg-6">
-          <a *ngIf="mostrarVerMas" href="{{notificacionActual?.LinkAdjunto || ''}}" target="blank"
-            class="btn-custom btn-guardar btn-chico">VER MAS</a>
+    <div class="col-xs-12 col-md-12 novedadContainer" (mouseenter)="onMouseEnter()" (mouseleave)="onMouseLeave()">
+        <div class="d-flex">
+            <div *ngIf="!enableIndividualNews" class="beforeArrow">
+                <i class="fa fa-caret-left btnPrevious" *ngIf="showPreviousButton" (click)="previousNews()"></i>
+            </div>
+
+            <div *ngIf="enableIndividualNews" class="beforeArrow-individual">
+                <i class="fa fa-caret-left btnPrevious" *ngIf="showPreviousButton" (click)="previousNews()"></i>
+            </div>
+
+            <div class="center-card">
+                <div *ngFor="let notificacion of newCurrent; let i = index" [@efecto] class="card-group" [ngClass]="{'new-b': !notificacionLeida[notificacion.Id], 'viewed-b': notificacionLeida[notificacion.Id]}">
+                    <div class="card-header">
+
+                        <div class="w-card">
+                            <a [ngClass]="{'btn-hide': notificacionLeida[notificacion.Id]}" class="btn btn-primary new-label">Nuevo</a>
+                            <p class="text-date">{{notificacion?.FechaInicio.split(" ")[0] }}</p>
+                        </div>
+
+                        <div>
+                            <div *ngFor="let adjunto of notificacion.ArchivosAdjuntos" class="w-card">
+                                <div *ngIf="adjunto.AdjuntoTipo == 'previsualizacion'">
+                                    <img class="b-image imagenPrevisualizacion" id="imagePrevisualization" [src]="convertImage(adjunto.AdjuntoContenido)" alt="Imagen">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <app-modal-notificaciones #myModal id="openModalHiddenButton" [notificacion]="notificacionModal" [adjunto]="adjuntoModal"></app-modal-notificaciones>
+
+                    <div class="card-body">
+                        <h5 class="card-title text-title">{{notificacion?.Nombre || ""}}</h5>
+                        <p class="card-text text-message" [innerHTML]="notificacion?.Mensaje || ''"></p>
+                    </div>
+
+                    <a class="btn btn-primary read-button" (click)="openModalNovedad(notificacion.Id)" [ngClass]="{'new-button': !notificacionLeida[notificacion.Id], 'viewed-button': notificacionLeida[notificacion.Id] }">
+                        {{ notificacionLeida[notificacion.Id] ? 'Volver a leer' : 'Leer' }}
+                    </a>
+
+                </div>
+            </div>
+
+            <div class="nextArrow">
+                <i class="fa fa-caret-right btnNext" *ngIf="showNextButton" (click)="nextNews()"></i>
+            </div>
         </div>
-        <div class="col-xs-6 col-md-6 col-lg-6">
-          <button class="btn-custom btn-cerrar btn-chico" (click)="cerrarNotificaciones()"> CERRAR </button>
+
+        <div class="pointsContainer">
+            <span *ngFor="let point of pointsArray; let i = index"
+                  class="point"
+                  [ngClass]="{ 'active': i === selectedPoint }"
+                  (click)="changePage(i)"></span>
         </div>
-      </div>
     </div>
-  </div>
-</div>
-<div class="divPaddingFinal">
 
 </div>

@@ -57,38 +57,23 @@ export class CircularComponent implements OnInit, OnChanges {
     }
 
     ngOnChanges(changes: SimpleChanges): void {
-        if (this.solicitante) {
+        // if (!this.solicitante) {
             if (this.peticion != null) {
                 this.selectedProv = this.peticion.Usuarios.map(x => x.UsuarioId);
             }
-        } else {
-            if (this.peticion != null) {
-                if (this.peticion.TipoPosicionCodigo == "SERVICIO") {
-                    if(this.peticion.RevisionFinalizada){
-                        this.selectedProv = this.peticion.Usuarios
-                            .filter(x => x.PropuestaTecnicaAprobada)
-                            .map(x => x.UsuarioId);
-
-                        // Establecer la propiedad Deshabilitado para los usuarios que no cumplen la condición
-                        this.peticion.Usuarios.forEach(x => x.Deshabilitado = !this.selectedProv.includes(x.UsuarioId));
-
-                    } else {
-                        // Establecer la propiedad Deshabilitado para los usuarios que no cumplen la condición
-                        this.peticion.Usuarios.forEach(x => x.Deshabilitado = !this.selectedProv.includes(x.UsuarioId));
-                    }
-                } else {
-                    this.selectedProv = this.peticion.Usuarios
-                        .filter(x => x.Cotizacion.CotizacionEstado_Id == 1 
-                            && (this.peticion.RespetaMateriales == true 
-                            || (this.peticion.RespetaMateriales == false 
-                            && (this.peticion.RevisionFinalizada && x.PropuestaTecnicaAprobada))))
-                        .map(x => x.UsuarioId);      
-
-                        // Establecer la propiedad Deshabilitado para los usuarios que no cumplen la condición
-                        this.peticion.Usuarios.forEach(x => x.Deshabilitado = !this.selectedProv.includes(x.UsuarioId));                    
-                }
-            }
-        }
+        // }
+        // else {
+        //     if (this.peticion != null) {
+        //         if (this.peticion.PlazoDeOfertaEstado == "Abierto") {
+        //             this.selectedProv = this.peticion.Usuarios
+        //                 .map(x => x.UsuarioId);
+        //         } else {
+        //             this.selectedProv = this.peticion.Usuarios
+        //                 .filter(x => x.ValidacionCircularSolicitante) // Filtra solo los proveedores habilitados
+        //                 .map(x => x.UsuarioId);
+        //         }
+        //     }
+        // }
     }
 
     ngOnInit() {
@@ -120,6 +105,7 @@ export class CircularComponent implements OnInit, OnChanges {
       
             // La variable 'date' ahora contiene la fecha deseada
             this.fechaDeEntrega = date;
+            console.log("this.fechaDeEntrega", this.fechaDeEntrega);
           } else {
             console.error('El formato de la fecha no es válido');
           }

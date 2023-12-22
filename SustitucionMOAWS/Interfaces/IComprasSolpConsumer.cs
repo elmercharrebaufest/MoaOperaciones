@@ -1,6 +1,9 @@
 ﻿using System.Collections.Generic;
 using SustitucionMOAModel.Dto;
+using SustitucionMOAModel.Dto.OrdenesCompra;
+using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Models.WSMapMOA.Compras;
+using SustitucionMOAWS.ObtenerEntradaDeServicioPorNumeroWebServiceMOA;
 using SustitucionMOAWS.WSConsumers;
 
 namespace SustitucionMOAWS.Interfaces
@@ -24,6 +27,7 @@ namespace SustitucionMOAWS.Interfaces
     {
         object request();
     }
+
 
     public interface IObtenerMaterialesSolpConsumerMOA
     {
@@ -59,8 +63,12 @@ namespace SustitucionMOAWS.Interfaces
     {
         ObtenerProveedorWSMOAResponse ObtenerProveedor(string codigoProveedor);
     }
-    public interface IObtenerUnidadesDeMedidaAlternativasConsumerMOA
+
+    public interface IObtenerEntradaDeServicioPorNumeroConsumerMOA
     {
-        List<UnidadesDeMedida> Request(List<string> codigosMaterial);
+        EntradaServicioDto ObtenerEntradaServicio(string nroES);
+        //BAPIESSR ObtenerEntradaServicio(string nroES);
     }
+
+
 }

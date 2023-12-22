@@ -26,8 +26,5 @@ namespace SustitucionMOAModel.Dto
         public string Centro { get; set; }
         public string CalleEntrega { get; set; }
         public string CodigoPostal { get; set; }
-        public decimal PrecioBruto { get; set; }
-        public string EstadoLiberacionCodigo { get; set; }
-        public string EstadoLiberacionDetalle { get; set; }
     }
 }

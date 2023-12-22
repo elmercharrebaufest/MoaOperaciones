@@ -7,8 +7,7 @@ namespace SustitucionMOAModel.Dto
         //public ServicioSolpDto(object servicioSolp) {}
         public ServicioSolpDto(ServicioSolp servicioSolp)
         {
-            if (servicioSolp != null)
-            {
+            if (servicioSolp != null) {
 
                 Id = servicioSolp.Id;
                 Codigo = servicioSolp.CodigoSap;
@@ -22,9 +21,8 @@ namespace SustitucionMOAModel.Dto
 
             }
 
-
+           
         }
-        public ServicioSolpDto() { }
 
         public int Id { get; set; }
         public int Codigo { get; set; }//SERVICE

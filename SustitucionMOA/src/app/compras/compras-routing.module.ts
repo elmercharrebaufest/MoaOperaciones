@@ -1,3 +1,4 @@
+
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { SolpComponent } from './solp/solp.component';
@@ -10,6 +11,8 @@ import { CotizacionFormularioComponent } from './dashboard-proveedor/cotizacion-
 import { VerOfertasComponent } from './dashboard-comprador/ver-ofertas/ver-ofertas.component';
 import { ReporteOcComponent } from './reporte-oc/reporte-oc.component';
 
+import { ListadoDashboardCertificacionDeServiciosComponent } from './dashboard-entrada-de-servicio/listado-dashboard-certificacion-de-servicios/listado-dashboard-certificacion-de-servicios.component';
+
 const routes: Routes = [
     { path: '', component: DashboardComponent },
     { path: "solp", component: SolpComponent },
@@ -18,6 +21,7 @@ const routes: Routes = [
     { path: "dashboard", component: DashboardComponent },
     { path: "dashboardComprador", component: ListadoDashboardCompradorComponent },
     { path: "dashboardProveedor", component: ListadoDashboardProveedorComponent },
+    { path: "dashboardCertificacionDeServicios", component: ListadoDashboardCertificacionDeServiciosComponent },
     { path: "peticion-de-oferta-formulario", component: PeticionDeOfertaFormularioComponent },
     { path: "peticion-de-oferta-formulario/:id", component: PeticionDeOfertaFormularioComponent },
     { path: "dashboard-proveedor/cotizacion", component: CotizacionFormularioComponent },

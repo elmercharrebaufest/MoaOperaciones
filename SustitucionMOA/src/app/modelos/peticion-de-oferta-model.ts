@@ -1,8 +1,9 @@
+
 import { PosicionCompra } from "../compras/solp-compra"
 import { SolpPosicion } from "../compras/solp/solp-posicion"
 import { CotizacionDto } from "./cotizacionDto"
 
-export interface PeticionDeOfertaDto {
+export interface PeticionDeOfertaDto{
     PorcentajeDeHoras?: any
     PersonalHoras?: boolean,
     RespetaMateriales?: boolean,
@@ -14,7 +15,6 @@ export interface PeticionDeOfertaDto {
     CUIT?: string,
     Mail?: string,
     Usuarios?: PeticionDeOfertaUsarioDto[],
-    UsuariosAdicionales?: PeticionDeOfertaUsarioAdicionalDto[],
     Solp_Id?: number,
     NroSolp?: string,
     FechaCreacion?: Date,
@@ -33,12 +33,7 @@ export interface PeticionDeOfertaDto {
     Adicional?: boolean,
     NroOrdenDeCompraAdicional?: string,
     TieneVisitaObraMasiva?: boolean,
-    TieneVisitaObraBool?: boolean,
-    Estado?: string,
-    RevisionFinalizada?: boolean,
-    RevisionTecnica?: PeticionDeOfertaRevisionTecnicaDto
-    PideDescripcionTecnica?: boolean,
-    PideDocumentacionTecnica?: boolean
+    TieneVisitaObraBool?: boolean
 }
 
 export interface PeticionDeOfertaUsarioDto {
@@ -52,19 +47,10 @@ export interface PeticionDeOfertaUsarioDto {
     RealizoVisita?: boolean,
     EstaHabilitado: boolean,
     ValidacionCircularSolicitante?: boolean,
-    ObservacionNoCumple?: string,
-    Deshabilitado?: boolean
+    ObservacionNoCumple?: string
 }
-
-export interface PeticionDeOfertaUsarioAdicionalDto {
-    Id: number,
-    RazonSocial: string,
-    UsuarioId: number,
-    Mail?: string,
-    CUIT?: string   
-}
-
-export interface PeticionDeOfertaSolpPosicionDto {
+    
+export interface PeticionDeOfertaSolpPosicionDto{
     CantidadPendiente: number
     AdjudicacionCompleta: boolean
     valorTotal: number
@@ -80,7 +66,7 @@ export interface PeticionDeOfertaSolpPosicionDto {
     NoDisponible: boolean,
 }
 
-export interface PeticionDeOfertaCierreDto {
+export interface PeticionDeOfertaCierreDto{
     Id: number
     PeticionDeOferta_Id?: number
     Usuario_Id?: number
@@ -88,11 +74,3 @@ export interface PeticionDeOfertaCierreDto {
     Observaciones: string
 }
 
-export interface PeticionDeOfertaRevisionTecnicaDto{
-    Id: number,
-    Usuario_Id?: number,
-    RecotizacionEconomica?: boolean,
-    ModificacionSolp?: boolean,
-    ObservacionRecotizacion?: string,
-    Finalizada?: boolean
-}

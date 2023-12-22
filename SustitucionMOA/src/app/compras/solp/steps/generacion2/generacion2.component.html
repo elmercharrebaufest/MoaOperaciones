@@ -63,7 +63,7 @@
 
                         <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                             <div class="col-xs-12 col-sm-12 col-md-12 margenInput">
-                                Responsable del sector *
+                                Responsable sector *
                                 <div class="col-md-12 ui-fluid" style="padding-left: 0em;">
                                     <p-chips [(ngModel)]="model.supervisorSector" formControlName="supervisorSector" name="supervisorSector" placeholder="Ingrese responsable" id="supervisorSector" [suggestions]="resultadoSupervisorSector" (completeMethod)="search($event)" addOnTab="true" [addOnBlur]="true" (blur)="onBlur('supervisorSector')"></p-chips>
                                 </div>
@@ -72,7 +72,7 @@
                                 </div>
                             </div>
                             <div class="col-xs-12 col-sm-12 col-md-12 margenInput">
-                                Responsable del trabajo *
+                                Responsable de trabajo *
                                 <div class="col-md-12 ui-fluid" style="padding-left: 0em;">
                                     <p-chips [(ngModel)]="model.supervisorTrabajo" formControlName="supervisorTrabajo" name="supervisorTrabajo" placeholder="Ingrese responsable" id="supervisorTrabajo" [suggestions]="resultadoSupervisorTrabajo" (completeMethod)="search($event)" addOnTab="true" [addOnBlur]="true" (blur)="onBlur('supervisorTrabajo')"></p-chips>
                                 </div>
@@ -100,10 +100,10 @@
                                             binary="true"></p-checkbox>
                             </div>
 
-                            <div class="col-xs-12 col-sm-12 col-md-12 margenInput">
+                             <div class="col-xs-12 col-sm-12 col-md-12 margenInput">
                                 <p-checkbox [ngModelOptions]="{standalone:true}" [(ngModel)]="model.grillaPersonal" label="Grilla personal/horas" formControlName="grillaPersonal"
                                             binary="true"></p-checkbox>
-                            </div>
+                            </div> 
 
                             <div class="col-xs-12 col-sm-12 col-md-12 margenInput">
                                 <p-checkbox [ngModelOptions]="{standalone:true}" [(ngModel)]="model.tecnicoSeguridad" label="Técnico de seguridad" formControlName="tecnicoSeguridad"
@@ -122,12 +122,12 @@
 
                             <div class="col-xs-12 col-sm-12 col-md-12 margenInput">
                                 <p-checkbox [ngModelOptions]="{standalone:true}" [(ngModel)]="model.descripcionTecnica" formControlName="descripcionTecnica"
-                                            label="Descripción técnica del trabajo" binary="true" (click)="onDescripcionTecnicaChange()"></p-checkbox>
+                                            label="Descripción técnica del trabajo" binary="true"></p-checkbox>
                             </div>
 
                             <div class="col-xs-12 col-sm-12 col-md-12 margenInput">
                                 <p-checkbox [ngModelOptions]="{standalone:true}" [(ngModel)]="model.entregaDocumentacion" formControlName="entregaDocumentacion"
-                                            label="Entrega de documentación técnica" binary="true" [disabled]="!model.descripcionTecnica"></p-checkbox>
+                                            label="Entrega de documentación técnica" binary="true"></p-checkbox>
                             </div>
 
                             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 inputRight margenInput">

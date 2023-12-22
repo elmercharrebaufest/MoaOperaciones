@@ -2,5 +2,4 @@
     Web = 1,
     Mantenimiento = 2,
     SAP = 3,
-    ReposicionAutomatica = 4
 }

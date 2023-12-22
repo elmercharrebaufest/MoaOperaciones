@@ -116,6 +116,8 @@ export class SolpComponent extends BaseComponent implements OnInit {
 
     pasos: Paso[];
 
+    selectUsuarioCompras: any;
+    usuarioComprasList: any[] = [];
 
     titulo: string = "";
     tituloNroSolp: string = "";
@@ -428,7 +430,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
                     return;
                 }
 
-                if (this.solpActual.posicionActual.esTipoPosicionServicio && this.solpActual.selectUsuarioCompras.Id == null) {
+                 if (this.solpActual.posicionActual.esTipoPosicionServicio && this.selectUsuarioCompras.Id == null) {
                      this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: `Falta completar campo Usuario compras` });
 
                      if (guardarPorPaso == false) {
@@ -466,7 +468,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
                 }
             }
             this.solpActual.Finalizar = enviarSap;
-            this.solpActual.usuarioComprasId = this.solpActual.selectUsuarioCompras != null ? this.solpActual.selectUsuarioCompras.Id : null;
+            this.solpActual.usuarioComprasId = this.selectUsuarioCompras != null ? this.selectUsuarioCompras.Id : null;
 
             if (this.solpActual.especificacionesViewModel.observaciones == null)
                 this.solpActual.especificacionesViewModel.observaciones = "";
@@ -930,17 +932,17 @@ export class SolpComponent extends BaseComponent implements OnInit {
                     } else if (result.info != undefined) {
                         this.floatMsgService.setInfoMsg(result.info);
                     } else {
-                        this.solpActual.usuarioComprasList = [];
+                        this.usuarioComprasList = [];
                         result.data.forEach(element => {
-                            this.solpActual.usuarioComprasList.push({
+                            this.usuarioComprasList.push({
                                 Id: element.UsuarioCompras.Id,
                                 CodigoDescripcion: element.UsuarioCompras.Mail
                             });
                         });
-                        this.solpActual.usuarioComprasList = [{ Id: null, CodigoDescripcion: "Seleccione un usuario" }, ...this.solpActual.usuarioComprasList];
-                        this.solpActual.selectUsuarioCompras = this.solpActual.usuarioComprasId > 0
-                            ? this.solpActual.usuarioComprasList.find(x => x.Id === this.solpActual.usuarioComprasId)
-                            : this.solpActual.usuarioComprasList[0];
+                        this.usuarioComprasList = [{ Id: null, CodigoDescripcion: "Seleccione un usuario" }, ...this.usuarioComprasList];
+                        this.selectUsuarioCompras = this.solpActual.usuarioComprasId > 0
+                            ? this.usuarioComprasList.find(x => x.Id === this.solpActual.usuarioComprasId)
+                            : this.usuarioComprasList[0];
                         this.spinnerComponent.hideIt();
                     }
                 },
@@ -1006,8 +1008,8 @@ export class SolpComponent extends BaseComponent implements OnInit {
 
     // Todos los Modal
     finalizar({ selectUsuarioCompras, solpActual }) {
+        this.selectUsuarioCompras = selectUsuarioCompras;
         this.solpActual = solpActual;
-        this.solpActual.selectUsuarioCompras = selectUsuarioCompras;
 
         this.cabecera.validarTabCompleto();
         this.guardarCambios({ mostrarPreview: false, enviarSap: true, guardarPorPaso: false });
@@ -1128,11 +1130,11 @@ export class SolpComponent extends BaseComponent implements OnInit {
 
         if (this.solpActual.urgencia == true) {
             // Asegurémonos de que usuarioComprasList esté inicializada
-            if (!this.solpActual.usuarioComprasList) {
-                this.solpActual.usuarioComprasList = [];
+            if (!this.usuarioComprasList) {
+              this.usuarioComprasList = [];
             }    
             // Copiar todos los correos electrónicos de usuarioComprasList a toEmails
-            this.solpActual.usuarioComprasList.forEach((usuario, index) => {
+            this.usuarioComprasList.forEach((usuario, index) => {
                 if (index !== 0) {
                     toEmails.push(usuario.CodigoDescripcion);
                 }
@@ -1184,7 +1186,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
     private get emailTo(): string {
         let emailTo = "";
         if (this.solpActual.usuarioComprasId != null) {
-            let usuarioCompras = this.solpActual.usuarioComprasList.find(x => x.Id === this.solpActual.usuarioComprasId);
+            let usuarioCompras = this.usuarioComprasList.find(x => x.Id === this.solpActual.usuarioComprasId);
             if (usuarioCompras != null) {
                 emailTo = usuarioCompras.CodigoDescripcion;
             }

@@ -12,7 +12,7 @@
     CONSTRAINT [FK.PeticionDeOfertaUsuario_Usuario_UsuarioCreadorId] FOREIGN KEY ([Usuario_Id]) REFERENCES [Usuario]([Id]),
 	CONSTRAINT [FK.PeticionDeOfertaUsuario_Usuario_RealizoVisitaUsuario_Id] FOREIGN KEY ([RealizoVisitaUsuario_Id]) REFERENCES [Usuario]([Id]),
     CONSTRAINT [FK.PeticionDeOfertaUsuario_Usuario_PropuestaTecnicaUsuario_Id] FOREIGN KEY ([PropuestaTecnicaUsuario_Id]) REFERENCES [Usuario]([Id]),
-	CONSTRAINT [PK_PeticionDeOfertaUsuario] PRIMARY KEY ([Id]),
+    CONSTRAINT [PK_PeticionDeOfertaUsuario] PRIMARY KEY ([Id]),
 ) ON [PRIMARY]
 GO
 

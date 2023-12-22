@@ -242,6 +242,27 @@ export class CrearConsultaComponent extends ListBaseComponent {
                             this.setValoresInicialesParaLiquidacionObservada()
                         }
                         //result.materiales.forEach(x => this.listaMateriales.push({ label: x.Descripcion, value: x.MaterialId }));
+
+                        this.route.queryParams.subscribe((queryParams) => {
+                            if (queryParams.filter === 'Actualizacion-Impositiva' || queryParams.filter === 'ExencionesVencidas' || queryParams.filter === 'ExencionesProximasAVencer') {
+                                this.categoria = this.categorias.find(c => c.Nombre === 'Actualización');
+                                this.setSubcategorias(this.categoria);
+                                this.subcategoriaCount = 1;
+                                this.subcategoria = this.subcategoriasList.find(c => c.Nombre === 'Impositiva');
+                            }
+                            if (queryParams.filter === 'CM05') {
+                                this.categoria = this.categorias.find(c => c.Nombre === 'Actualización');
+                                this.setSubcategorias(this.categoria);
+                                this.subcategoriaCount = 1;
+                                this.subcategoria = this.subcategoriasList.find(c => c.Nombre === 'CM 05');
+                            }
+                            if (queryParams.filter === 'Solicitud-Informacion') {
+                                this.categoria = this.categorias.find(c => c.Nombre === queryParams.categoria);
+                                this.setSubcategorias(this.categoria);
+                                this.subcategoriaCount = 1;
+                            }
+                        });
+
                     }
                 },
                 error => {

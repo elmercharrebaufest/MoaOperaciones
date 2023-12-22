@@ -174,19 +174,16 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
     }
 
     ngOnInit(): void {
-        this.setCombos();
-
         if (this.model.posiciones.length == 0) {
             this.agregarPosicion();
             this.deshabilitarImputaciones();
         }
-
+        this.listarContratosAsociados();
         if (this.model.posicionActual != undefined) {
             this.model.posicionActual.setTabPosicion();
         }
 
-
-        this.listarContratosAsociados();
+        this.setCombos();
     }
 
     public setCombos(): void {
@@ -203,6 +200,10 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
                     posicion.selectComboAlmacenes = this.combos.Almacen.filter(x => x.IdPadre == posicion.selectCentroEntrega.Id);
                 });
             }
+        }
+        if (!this.model.nroSolp && !this.combos.CombosSeteados) {
+            this.completarDatosUltimaSolp();
+            this.combos.CombosSeteados = true;
         }
     }
 
@@ -279,17 +280,13 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         }
     }
 
-
+    
     agregarPosicion() {
-        var ultimaPosicion = this.model.posiciones.length > 0 ?
-            this.model.posiciones[this.model.posiciones.length - 1] as any : null;
-        this.model.agregarNuevaPosicion(ultimaPosicion as SolpPosicion);
-        this.setupAlmacenEntregaByCentro();
+        var ultimaPosicion = this.model.posiciones.length > 0 ? 
+        this.model.posiciones[this.model.posiciones.length - 1] as any : null;
+        this.model.agregarNuevaPosicion(ultimaPosicion as SolpPosicion);   
+        this.setupAlmacenEntregaByCentro();      
         this.model.posicionActual.setTabPosicion();
-        if (!this.model.nroSolp && !this.combos.CombosSeteados) {
-            this.completarDatosUltimaSolp();
-            this.combos.CombosSeteados = true;
-        }
     }
 
     duplicarPosicion(el: HTMLElement) {
@@ -783,12 +780,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
 
     autocompleteSap(event, tablaAFiltrar, soloDescripcion = false) {
         try {
-            let filter = tablaAFiltrar || this.tablaAFiltrar;
-            if (filter == 'OrdenSolpSap' && event.query.toLowerCase().length < 4) {
-                this.autocomplete = [];
-                return;
-            }
-            this.subscription = this.service.autocompleteSap(filter, event.query.toLowerCase()).subscribe(
+            this.subscription = this.service.autocompleteSap(tablaAFiltrar || this.tablaAFiltrar, event.query.toLowerCase()).subscribe(
                 (result: any) => {
                     if (result.logout == true) {
                         this.sessionDataService.logout();
@@ -1128,7 +1120,6 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
                 }
 
                 let almacenSeleccionadoObj = this.combos.Almacen.find(x => x.Codigo == pos.almacen);
-                newPos.selectComboAlmacenes = this.combos.Almacen;
                 if (almacenSeleccionadoObj) {
                     newPos.selectAlmacenEntrega = almacenSeleccionadoObj;
                 }
@@ -1173,7 +1164,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
                 }
 
                 this.model.agregarNuevaPosicionDesdeContratoMarco(newPos);
-                //this.agregarPosicion();
+                this.agregarPosicion();
 
             });
             this.model.calcularValorTotalPorMoneda();
@@ -1308,10 +1299,6 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
             if (this.model.posiciones[0] != undefined) {
                 if (this.datosUltimaSolp.Centro != null) {
                     this.model.posiciones[0].selectCentroEntrega = this.datosUltimaSolp.Centro;
-                    this.model.posicionActual = this.model.posiciones[0];
-
-                    let direccionCentro = this.combos.CentrosDireccion.find(x => x.CodigoSap == this.model.posicionActual.selectCentroEntrega.CodigoSap);
-                    this.fillValoresDireccion(direccionCentro);
                 }
 
                 if (this.datosUltimaSolp.Almacen != null) {

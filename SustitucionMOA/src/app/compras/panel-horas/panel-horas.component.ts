@@ -34,6 +34,8 @@ export class PanelHorasComponent extends ListBaseComponent implements OnInit {
   @Input() cotizacion: CotizacionDto[];
 
 
-  ngOnInit() {}
+  ngOnInit() {
+    console.log("cotizacion", this.cotizacion)
+  }
 
 }
