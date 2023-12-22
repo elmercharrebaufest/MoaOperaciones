@@ -43,11 +43,11 @@ namespace SustitucionMOAUtils.Services
         public List<ComunicacionDto> ObtenerComunicacionesPorProveedor(string vendedor, string proveedor, string fechaInicio, 
                                                                        string fechaFin, int usuarioId,    bool obtenerTodos)
         {
-            ProcesarCM05(vendedor, proveedor);
-            if (!string.IsNullOrEmpty(vendedor) && char.ToLower(vendedor[0]) != 'c') ProcesarCuentasHabilitadas(vendedor, proveedor); //Si comienza con C no ejecuta MMSN-301
-            ProcesarLiquidacionesObservadas(vendedor, fechaInicio, fechaFin);
-            ProcesarExenciones(vendedor, proveedor);
-            ProcesarMensajesDeContacto(vendedor, usuarioId, obtenerTodos);
+            //ProcesarCM05(vendedor, proveedor);
+            //if (!string.IsNullOrEmpty(vendedor) && char.ToLower(vendedor[0]) != 'c') ProcesarCuentasHabilitadas(vendedor, proveedor); //Si comienza con C no ejecuta MMSN-301
+            //ProcesarLiquidacionesObservadas(vendedor, fechaInicio, fechaFin);
+            //ProcesarExenciones(vendedor, proveedor);
+            //ProcesarMensajesDeContacto(vendedor, usuarioId, obtenerTodos);
 
             List<ComunicacionDto> listado = repositorio
                 .Listar<Comunicacion>()
@@ -82,6 +82,18 @@ namespace SustitucionMOAUtils.Services
 
             return listado;
         }
+
+        public void ActualizarComunicacionesPorProveedor(string vendedor, string proveedor, string fechaInicio,
+                                                                       string fechaFin, int usuarioId, bool obtenerTodos)
+        {
+            ProcesarCM05(vendedor, proveedor);
+            if (!string.IsNullOrEmpty(vendedor) && char.ToLower(vendedor[0]) != 'c') ProcesarCuentasHabilitadas(vendedor, proveedor); //Si comienza con C no ejecuta MMSN-301
+            ProcesarLiquidacionesObservadas(vendedor, fechaInicio, fechaFin);
+            ProcesarExenciones(vendedor, proveedor);
+            ProcesarMensajesDeContacto(vendedor, usuarioId, obtenerTodos);            
+        }
+
+
 
 
         public string GrabarComunicacionComoLeida(ComunicacionListaIdDto notificacionIds)

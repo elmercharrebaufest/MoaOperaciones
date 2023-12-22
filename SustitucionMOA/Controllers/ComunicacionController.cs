@@ -46,6 +46,8 @@ namespace SustitucionMOA.Controllers
                 UsuarioDto usuarioActual = ObtenerUsuarioActual();
                 bool obtenerTodos = usuarioActual.Permisos.Contains(Permiso.CONSULTA_AMB);
 
+                comunicacionService.ActualizarComunicacionesPorProveedor(vendedor, SessionPersister.Proveedor, fechaInicio, fechaFin, usuarioActual.Id, obtenerTodos);
+
                 return JsonCustom(new { data = comunicacionService.ObtenerComunicacionesPorProveedor(vendedor, SessionPersister.Proveedor, fechaInicio, fechaFin, usuarioActual.Id, obtenerTodos) });
             }
             catch (InfoCustomException e)

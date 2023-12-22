@@ -15,5 +15,9 @@ namespace SustitucionMOAUtils.Interfaces
         String ProcesarCuentasHabilitadas(string vendedor, string proveedor);
         //string ObtenerLiquidacionesObservadas(string vendedor, string proveedor);
         string ProcesarLiquidacionesObservadas(string vendedor, string fechaInicio, string fechaFin);
+
+        void ActualizarComunicacionesPorProveedor(string vendedor, string proveedor, string fechaInicio, string fechaFin, int usuarioId, bool obtenerTodos);
+
+        
     }
 }
