@@ -16,7 +16,8 @@ export interface AdjudicacionDto{
     PrecioFinal ?: number 
     PrecioBruto?: number
     EstadoLiberacionCodigo?: string
-    EstadoLiberacionDetalle?: string
+    EstadoLiberacionDetalle?: string,
+    RegionSap?: number 
 
 }
 

@@ -75,8 +75,17 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                                         MonedaId = pop.SolpPosicion.Moneda_Id,
                                                                         Unidad = new TablaSapDto
                                                                         {
-                                                                            Descripcion = pop.SolpPosicion.Unidad.Descripcion
+                                                                            Descripcion = pop.SolpPosicion.Unidad.Descripcion,
+                                                                            CodigoSap = pop.SolpPosicion.Unidad.CodigoSap
+
                                                                         },
+                                                                        Centro = new TablaSapDto
+                                                                        {
+                                                                            Descripcion = pop.SolpPosicion.Centro.Descripcion,
+                                                                            CodigoSap = pop.SolpPosicion.Centro.CodigoSap
+
+                                                                        },
+                                                                        CentroId = pop.SolpPosicion.Centro_Id,
 
                                                                         Subposiciones = pop.SolpPosicion.Subposiciones.Select(s => new SolpSubposicionDto
                                                                         {
@@ -87,7 +96,8 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                                             Cantidad = s.Cantidad,
                                                                             Unidad = new TablaSapDto
                                                                             {
-                                                                                Descripcion = s.Unidad.Descripcion
+                                                                                Descripcion = s.Unidad.Descripcion,
+                                                                                CodigoSap = s.Unidad.Descripcion
                                                                             },
                                                                             Numero = s.Numero
 
@@ -172,7 +182,8 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                             Cantidad = p.Cantidad ?? 1,
                                                             UnidadMedida = new TablaSapDto
                                                             {
-                                                                Descripcion = p.UnidadDeMedida.Descripcion
+                                                                Descripcion = p.UnidadDeMedida.Descripcion,
+                                                                CodigoSap = p.UnidadDeMedida.CodigoSap
                                                             },
                                                             Moneda_Id = p.PeticionDeOfertaSolpPosicion.SolpPosicion.TipoPosicion_Id == 9 ? p.PeticionDeOfertaSolpPosicion.SolpPosicion.Moneda_Id ?? 0 : p.Moneda_Id ?? 0,
                                                             MonedaDescripcion = cotizacion != null && p.Moneda != null ? p.Moneda.Codigo : "",
@@ -201,7 +212,8 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                                                            UnidadDeMedida_Id = subpos.UnidadDeMedida_Id ?? 0,
                                                                                            UnidadMedida = new TablaSapDto
                                                                                            {
-                                                                                               Descripcion = subpos.UnidadDeMedida.Descripcion
+                                                                                               Descripcion = subpos.UnidadDeMedida.Descripcion,
+                                                                                               CodigoSap = subpos.UnidadDeMedida.CodigoSap
                                                                                            },
                                                                                            MonedaDescripcion = subpos.Moneda != null ? subpos.Moneda.Codigo : "",
                                                                                            PrecioUnidad = subpos.Precio ?? 0,

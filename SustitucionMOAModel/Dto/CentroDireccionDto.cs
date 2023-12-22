@@ -15,6 +15,7 @@ namespace SustitucionMOAModel.Dto
         public string Numero { get; set; }
         public string Cp { get; set; }
         public string Pais { get; set; }
+        public int RegionSap_Id { get; set; }
 
         public CentroDireccionDto()
         {
@@ -28,6 +29,7 @@ namespace SustitucionMOAModel.Dto
             this.Numero = entity.Numero;
             this.Cp = entity.Cp;
             this.Pais = entity.Pais;
+            this.RegionSap_Id = entity.RegionSap_Id;
         }
     }
 }

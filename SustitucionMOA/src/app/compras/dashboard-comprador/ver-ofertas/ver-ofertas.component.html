@@ -599,6 +599,27 @@
     </p-footer>
 </p-confirmDialog>
 
+<p-dialog [(visible)]="displayRegionSap" [width]="800" modal="modal" appendTo="body" [draggable]="false" [contentStyle]="{'max-height':'600px', 'min-height':'400px'}" [closable]="false">
+    <p-header class="headerModal">
+        Seleccione la región de la orden de compra
+    </p-header>
+    <section class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+        <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3 margenInput">
+            <label>Region</label>
+            <div>
+                <p-dropdown [options]="regionSap" [(ngModel)]="selectedRegion" placeholder="Elegir region" dataKey="value" optionLabel="label">
+                </p-dropdown>
+            </div>
+        </div>
+    </section>
+
+   
+    <p-footer>
+        <button type="button" class="btn btn-primary botonesComprasColor botonModal" (click)="aceptarRegion()">Aceptar</button>
+        <button type="button" class="btn btn-primary botonesComprasColor botonModal" (click)="salirRegion()">Cancelar</button>
+    </p-footer>
+</p-dialog>
+
 <app-textos-adjudicar #textoAdjudicar
                       [(displayTextos)]="displayTextos"
                       (cerrarModalTextosEmitter)="cerrarModalTextos()"

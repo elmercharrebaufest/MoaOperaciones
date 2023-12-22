@@ -1,7 +1,7 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { ActivatedRoute, Params, Router } from '@angular/router';
-import { ConfirmationService } from 'primeng/api';
+import { ConfirmationService, SelectItem } from 'primeng/api';
 import { FloatMsgService } from '../../../common/services/FloatMsgService';
 import { ModalService } from '../../../common/services/ModalService';
 import { NavService } from '../../../common/services/NavService';
@@ -49,12 +49,18 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
     displayPanelHs: boolean = false;
     textoRacionalInCompleto: boolean;
     displayTextoIncompleto: boolean;
+    regionSap: SelectItem[];
+    selectedRegion: any;
+    displayRegionSap: boolean;
+    centroDire: any;
 
     @Input()
     public peticionHs: CotizacionHoraDto;
     error: string;
     displayVisualizarPrecio: boolean;
     peticionOferta_Id: number;
+    resultado: any;
+    centroLista: any[];
 
 
     constructor(protected service: ComprasService, protected usuarioService: UsuarioService, protected navService: NavService, protected sessionDataService: SessionDataService,
@@ -105,6 +111,10 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
         }
     }
 
+    ngAfterViewInit(): void {
+        this.getCombos();
+    }
+
     seleccionarTodo() {
         if (this.TodasPosicionesSeleccionadas) {
             this.tablaOfertas.PeticionDeOfertaPosicion.map(pos => {
@@ -130,6 +140,8 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
                         this.floatMsgService.setInfoMsg(result.info);
                     } else {
                         this.tablaOfertas = result.data;
+                        console.log("this.tablaOfertas verOfertas", this.tablaOfertas)
+
                     }
                     this.blockUI.stop();
                 },
@@ -218,7 +230,7 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
                 if (peticion.Selected && !peticion.Posicion.AdjudicacionCompleta) {
                     usuario.Cotizacion.CotizacionPosiciones.forEach((cotizacionPos) => {
                         if (peticion.Id == cotizacionPos.PeticionDeOfertaSolpPosicion_Id)
-                            lista.push({
+                        lista.push({
                                 Posicion: peticion.Posicion.Indice,
                                 CotizacionPosicion_Id: cotizacionPos.Id,
                                 Cantidad: this.tablaOfertas.TipoPosicionCodigo == 'MATERIALES' ?
@@ -230,14 +242,15 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
                                     peticion.Posicion.CantidadAdjudicada : 1,
                                 NoDisponible: cotizacionPos.NoDisponible,
                                 MonedaCotizacion: cotizacionPos.Moneda_Id,
-                                MonedaPO: peticion.Posicion.MonedaId
+                                MonedaPO: peticion.Posicion.MonedaId,
+                                CentroPosicion: peticion.Posicion.Centro
                             })
                     })
                 } else {
                     peticion.Selected = false;
                 }
             });
-
+            console.log("lista", lista);
             if (lista.length > 0) {
                 this.error = this.validarAdjudicacion(lista);
                 if (this.error != "") {
@@ -248,9 +261,21 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
                 this.floatMsgService.setInfoMsg("Debe seleccionar alguna posición válida para adjudicar");
                 return;
             }
+            // var posRegion = lista[0].CentroPosicion.CodigoSap;
+            // console.log("posRegion", posRegion);
+
+            // if (posRegion) {
+            //     this.centroDire = this.centroLista.find(c => c.CodigoSap == posRegion);
+            //     console.log("centroDire", this.centroDire);
+            //     console.log("this.centroLista", this.centroLista);
+            //     this.selectedRegion = { label: this.centroDire.Descripcion, value: this.centroDire.Id };
+            //     console.log("this.selectedRegion", this.selectedRegion);
+            // }
+
             this.adjudicacion.AdjudicacionPosiciones = lista;
             this.adjudicacion.Cotizacion_Id = usuario.Cotizacion.Id;
             this.adjudicacion.Solp_Id = this.tablaOfertas.Solp_Id;
+            // this.displayRegionSap = true;
             this.validacionTextosIncompletos();
             if(this.textoRacionalInCompleto == true){
                 this.displayTextoIncompleto = true;
@@ -422,40 +447,86 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
     }
 
 
-      obtenerPrimerPlazo(cotizacionPosicion: any): string {
-        let plazos = '';
+    obtenerPrimerPlazo(cotizacionPosicion: any): string {
+    let plazos = '';
+
+    if (cotizacionPosicion.PrimerPlazoDeOferta > 0) {
+        plazos += 'Plazo: ' + cotizacionPosicion.PrimerPlazoDeOferta + ' - Cantidad: ' + cotizacionPosicion.PrimeraCantidad;
+    } else {
+        plazos += 'sin Plazo';
+    }    
+    return plazos;
+    }
+
+    obtenerSegundoPlazo(cotizacionPosicion: any): string {
+    let plazos = '';
+    if (cotizacionPosicion.SegundoPlazoDeOferta > 0) {
+        plazos += 'Plazo: ' + cotizacionPosicion.SegundoPlazoDeOferta + ' - Cantidad: ' + cotizacionPosicion.SegundaCantidad ;
+    }
+    return plazos;
+    }
     
-        if (cotizacionPosicion.PrimerPlazoDeOferta > 0) {
-            plazos += 'Plazo: ' + cotizacionPosicion.PrimerPlazoDeOferta + ' - Cantidad: ' + cotizacionPosicion.PrimeraCantidad;
-        } else {
-            plazos += 'sin Plazo';
-        }    
-        return plazos;
-      }
+    obtenerTercerPlazo(cotizacionPosicion: any): string {
+    let plazos = '';
+    
+    if (cotizacionPosicion.TercerPlazoDeOferta > 0) {
+        plazos += 'Plazo: ' + cotizacionPosicion.TercerPlazoDeOferta + ' - Cantidad: ' + cotizacionPosicion.TerceraCantidad ;
+    }
+    return plazos;
+    }
 
-      obtenerSegundoPlazo(cotizacionPosicion: any): string {
-        let plazos = '';
-        if (cotizacionPosicion.SegundoPlazoDeOferta > 0) {
-            plazos += 'Plazo: ' + cotizacionPosicion.SegundoPlazoDeOferta + ' - Cantidad: ' + cotizacionPosicion.SegundaCantidad ;
-        }
-        return plazos;
-      }
-      
-      obtenerTercerPlazo(cotizacionPosicion: any): string {
-        let plazos = '';
-       
-        if (cotizacionPosicion.TercerPlazoDeOferta > 0) {
-            plazos += 'Plazo: ' + cotizacionPosicion.TercerPlazoDeOferta + ' - Cantidad: ' + cotizacionPosicion.TerceraCantidad ;
-        }
-        return plazos;
-      }
+    // aceptarRegion(){
+    //     this.adjudicacion.RegionSap = this.selectedRegion;
 
-      continuarAdjudicacion(){
+    //     this.validacionTextosIncompletos();
+    //         if(this.textoRacionalInCompleto == true){
+    //             this.displayTextoIncompleto = true;
+    //         } else {
+    //             this.confirmacionAdjudicar();
+    //         }
+    // }
+
+    salirRegion(){
+        this.displayRegionSap = false;
+    }
+
+    continuarAdjudicacion(){
         this.confirmacionAdjudicar();
-      }
+    }
 
-      noContinuarAdjudicacion(){
-        this.displayTextoIncompleto = false;
-      }
+    noContinuarAdjudicacion(){
+    this.displayTextoIncompleto = false;
+    }
 
+    getCombos() {
+        try {
+            this.subscription = this.service.getCombos().subscribe(
+                (result: any) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.floatMsgService.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.floatMsgService.setInfoMsg(result.info);
+                    } else {
+                        this.regionSap = [];
+                        this.centroLista = [];
+                        result.CentrosDireccion.forEach(d => this.centroLista.push({
+                            label: d.Descripcion, value: d.Id
+                        }));
+                        result.Regiones.forEach(d => this.regionSap.push({
+                            label: d.Descripcion, value: d.Id
+                        }));
+                    }
+                },
+                error => {
+                    this.floatMsgService.setErrorMsg(error.message);
+                }
+            );
+        } catch (e) {
+            this.floatMsgService.setErrorMsg(e);
+            return false; //<-- Prevent Refresh
+        }
+        return false; //<-- Prevent Refresh
+    }
 }

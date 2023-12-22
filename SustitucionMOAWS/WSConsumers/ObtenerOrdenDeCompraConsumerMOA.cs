@@ -184,9 +184,14 @@ namespace SustitucionMOAWS.WSConsumers
             foreach (var pos in POITEM.ToList())
             {
                 resultado.Cabecera.MontoTotal += pos.NET_PRICE * pos.QUANTITY;
+                var dato = POADDRDELIVERY.Where(x => x.PO_ITEM == pos.PO_ITEM).SingleOrDefault();
                 resultado.Posiciones.Add(new OrdenDeCompraSAPPosicion
                 {
                     Indice = pos.PO_ITEM,
+                    DireccionDeEntrega = new OrdenDeCompraSAPPosicionDireccionDeEntrega
+                    {
+                        RegionSap = dato.REGION
+                    }
                 });
             }
             return resultado;

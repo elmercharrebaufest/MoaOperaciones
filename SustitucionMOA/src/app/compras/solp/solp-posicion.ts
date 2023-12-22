@@ -118,6 +118,7 @@ export class SolpPosicion {
     CantidadAdjudicacion: any;
     CantidadAdjudicada: any;
     NoDisponible: any;
+    Centro: any;
     
     public mensaje: string = "";
 
