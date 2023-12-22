@@ -131,7 +131,7 @@ namespace SustitucionMOAWS.WSConsumers
             foreach (var solpPosicion in solp.Posiciones.Where(a => posIds.Contains(a.Id)).OrderBy(x => x.Id))
             {
                 var adjudicacionPosicion = adjudicacion.Posiciones.Where(a => a.CotizacionPosicion.PeticionDeOfertaSolpPosicion.SolpPosicion_Id == solpPosicion.Id).Single();
-                decimal precioConvertido = adjudicacionPosicion.CotizacionPosicion.Precio.Value;
+                decimal precioConvertido = adjudicacionPosicion.CotizacionPosicion.Precio ?? 0;
                 string unidadDeMedida = esPosicionDeMateriales ? adjudicacionPosicion.CotizacionPosicion.UnidadDeMedida.Descripcion : "001";
                 if (esPosicionDeMateriales && solpPosicion.Unidad_Id != adjudicacionPosicion.CotizacionPosicion.UnidadDeMedida_Id)
                 {
