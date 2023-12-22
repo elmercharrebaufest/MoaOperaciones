@@ -252,4 +252,7 @@ export class Generacion2Component extends ListBaseComponent {
         }
     }
 
+    onDescripcionTecnicaChange() {
+        if (this.model.descripcionTecnica != true) this.model.entregaDocumentacion = false;
+    }
 }

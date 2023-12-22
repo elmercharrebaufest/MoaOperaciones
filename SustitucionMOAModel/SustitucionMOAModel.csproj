@@ -68,6 +68,7 @@
     <Compile Include="Dto\AplicacionCartaPorte\ContratoParaAplicacionCartaPorte.cs" />
     <Compile Include="Dto\AplicacionCartaPorte\CrearAplicacionCartaPorte.cs" />
     <Compile Include="Dto\OrdenDeCargaFason\DetallesActualizarOrdenDeCargaFason.cs" />
+    <Compile Include="Dto\Compras\ChatComprasDto.cs" />
     <Compile Include="Dto\PeticionDeOfertaVisualizacionPrecioDto.cs" />
     <Compile Include="Dto\EstadoSolicitudOrdenDeCargaBaseDto.cs" />
     <Compile Include="Dto\Compras\DatosUltimaSolpDto.cs" />
@@ -182,6 +183,7 @@
     <Compile Include="Dto\Compras\UsuarioComprasDto.cs" />
     <Compile Include="Dto\Compras\UsuarioComprasRelacionConUsuariosDto.cs" />
     <Compile Include="Dto\UsuarioModificacionDto.cs" />
+    <Compile Include="Entities\ChatInternoCompras.cs" />
     <Compile Include="Entities\AplicacionCartaPorte.cs" />
     <Compile Include="Entities\Adjudicacion.cs" />
     <Compile Include="Entities\AdjudicacionPosicion.cs" />
@@ -194,6 +196,7 @@
     <Compile Include="Entities\CotizacionHora.cs" />
     <Compile Include="Entities\CotizacionPosicion.cs" />
     <Compile Include="Entities\CotizacionSubPosicion.cs" />
+    <Compile Include="Entities\PeticionDeOfertaUsuarioAdicional.cs" />
     <Compile Include="Entities\PeticionDeOfertaRevisionTecnica.cs" />
     <Compile Include="Entities\PeticionDeOfertaVisualizacionPrecio.cs" />
     <Compile Include="Entities\PeticionDeOfertaCierre.cs" />
@@ -319,6 +322,7 @@
     <Compile Include="Models\WSMapMOA\Compras\FuenteAprovisionamiento.cs" />
     <Compile Include="Models\WSMapMOA\Compras\FuenteAprovisionamientoWSMOAResponse.cs" />
     <Compile Include="Models\WSMapMOA\Compras\ObtenerProveedorWSMOAResponse.cs" />
+    <Compile Include="Models\WSMapMOA\Compras\UnidadesDeMedida.cs" />
     <Compile Include="Models\WSMapMOA\Compras\Orden.cs" />
     <Compile Include="Models\WSMapMOA\Compras\OrdenWSMOAResponse.cs" />
     <Compile Include="Models\WSMapMOA\Compras\Material.cs" />

@@ -22,7 +22,6 @@ namespace SustitucionMOAModel.Entities
         public int? PropuestaTecnicaUsuario_Id { get; set; }
         public string ObservacionNoCumple { get; set; }
 
-
         [ForeignKey("PeticionDeOferta_Id")]
         public virtual PeticionDeOferta PeticionDeOferta { get; set; }
 
@@ -41,5 +40,6 @@ namespace SustitucionMOAModel.Entities
 
         [InverseProperty("PeticionDeOfertaUsuario")]
         public virtual ICollection<CircularPeticionDeOfertaUsuario> Circulares { get; set; } = new List<CircularPeticionDeOfertaUsuario>();
+
     }
 }

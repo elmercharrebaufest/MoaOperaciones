@@ -1,0 +1,105 @@
+<p-dialog [(visible)]="displayChatInterno" modal="modal"
+          [width]="1000" [draggable]="false" [closable]="true"
+          (onHide)="onCerrarPeticion()" appendTo="body" positionTop="30"
+          (onShow)="onMostrarDialog()"
+         [contentStyle]="{
+        'max-height':'800px',
+        'min-height':'550px'}">
+          <p-header class="headerModal" style="color: #067935;">
+            <b>Chat </b> <span *ngIf="chat?.PeticionDeOferta_Id != null">Petici&oacute;n de oferta #{{chat?.PeticionDeOferta_Id}}</span>
+          </p-header>
+          <!-- CONTENT-->          
+          <div class="container-fluid" style="margin-top: 20px; margin-bottom: 20px;">
+            <p>
+                <ngb-alert type="danger" [dismissible]="false" *ngIf="visualizarAlert">
+                    <strong>Error! </strong>{{ error }}
+                </ngb-alert>
+            </p>
+            <!-- CONTENIDO -->
+            <div class="row">
+                <!-- DETALLE DE CONSULTA -->
+                <div class="col-xs-8 col-sm-8 col-md-8">
+                    <div #contenedorMensajes class="rounded shadow detalleChat">
+                        <!-- Mostrar comentarios -->
+                        <ng-container *ngIf="chat?.Mensajes.length > 0; else loader">
+                            <div *ngFor="let mensajes of chat.Mensajes let i = index">
+                                <!-- Renderizar comentarios -->
+                                <div class="fechaComentario col-xs-12 col-sm-6 col-md-12" *ngIf="i == 0 || (mensajes.FechaDiaEnvio != chat.Mensajes[i-1].FechaDiaEnvio)">
+                                    <p class="fechaComentarioTexto">
+                                        {{mensajes.FechaEnvioDate | date :'EEEE,d MMM'}}
+                                    </p>
+                                </div>
+                                <div class="row myRow">
+                                    <div [ngClass]="comentarioPropio(mensajes) ? 'comentarioPropio' : 'comentarioRespuesta' " class="col-xs-12 col-sm-6 col-md-7" >
+                                        {{mensajes.Mensaje}}
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <p [ngClass]="comentarioPropio(mensajes) ? 'horaComentarioRespuesta' : 'horaComentario'"
+                                        class="col-xs-12 col-sm-12 col-md-12">
+                                        {{mensajes.Mail}} - {{mensajes.FechaEnvioDate | date :'h:mm:ss a'}}
+                                    </p>                       
+                                </div>
+                            </div>
+                        </ng-container>
+
+                        <!-- Mostrar loader si no hay comentarios -->
+                        <ng-template #loader>
+                            <div style="width: 100%; display: flex; justify-content: center;">
+                                <p>No hay mensajes</p>
+                            </div>
+                        </ng-template>
+        
+                    </div>
+                    <!-- AÑADIR COMENTARIO -->
+                    <hr>
+                    <textarea class="col-xs-12 col-sm-12 col-md-9" [(ngModel)]="mensajeNuevo" name="mensaje" placeholder="Añadir Comentario"></textarea>
+    
+                    <div class="col-xs-12 col-sm-12 col-md-2">
+                        <button (click)="validar()"  class="mx-auto d-block enviarComentario"
+                            href="#" style="text-decoration:none!important">
+                            <div class="btn-custom btn-mediano btn-add animate align-center btn-enviar-comentario">Enviar
+                            </div>
+                        </button>
+                    </div>
+                </div>
+        
+                <!-- MENÚ LATERAL -->
+                <div class="col-xs-4 col-sm-4 col-md-4">
+                    <div class="rounded shadow col-xs-12 col-sm-12 col-md-12 menuLateralConsulta">
+                        <div>
+                            <span *ngIf="chat?.PeticionDeOferta_Id != null"><strong>Petici&oacute;n de oferta </strong>#{{chat?.PeticionDeOferta_Id}}</span>
+                        </div>
+                        <hr style="margin-top: 10px; margin-bottom: 10px;">
+                        <div>
+                            <div class="col-md-12">
+                                <ng-container>
+                                    <div>
+                                        <strong>Fecha Creacion:</strong> {{chat?.FechaCreacionDate | date :'dd/MM/yyyy' }}<br>
+                                    </div>
+                                    <div>
+                                        <strong>Proveedores:</strong> <br>
+                                    </div>
+                                    <ng-container *ngIf="chat?.Proveedores.length > 0; else nohay">
+                                        <div *ngFor="let proveedor of chat.Proveedores let i = index">
+                                            <p>{{proveedor.RazonSocial}}</p>
+                                            <p>{{proveedor.Mail}}</p>
+                                        </div>
+                                    </ng-container>
+                                </ng-container>    
+                                <div style="margin-top: 107px;">
+                                    <button (click)="obtenerYExportarChat(chat?.PeticionDeOferta_Id)"  
+                                    class="mx-auto d-block enviarComentario"
+                                    href="#" style="text-decoration:none!important">
+                                <div class="btn-custom btn-mediano btn-add animate align-center btn-enviar-comentario">Exportar</div>
+                            </button>
+                                </div>                            
+                              
+                            </div>
+                        </div>                           
+                    </div>
+                </div>
+            </div>
+        </div>
+</p-dialog>

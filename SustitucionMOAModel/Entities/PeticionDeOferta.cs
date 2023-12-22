@@ -39,5 +39,10 @@ namespace SustitucionMOAModel.Entities
         [ForeignKey("RevisionTecnica_Id")]
         public virtual PeticionDeOfertaRevisionTecnica RevisionTecnica { get; set; }
 
+        [InverseProperty("PeticionDeOferta")]
+        public virtual ICollection<ChatInternoCompras> ChatInternoCompras { get; set; } = new List<ChatInternoCompras>();
+
+        [InverseProperty("PeticionDeOferta")]
+        public virtual ICollection<PeticionDeOfertaUsuarioAdicional> UsuariosAdicionales { get; set; } = new List<PeticionDeOfertaUsuarioAdicional>();
     }
 }

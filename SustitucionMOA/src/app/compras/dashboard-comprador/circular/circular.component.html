@@ -111,9 +111,15 @@
             </div>
             <div class="row myRow alinearTitulo margenInput" *ngIf="peticion != null">  
                 <div class="col-md-12" *ngFor="let p of peticion.Usuarios"  >
-                    <p-checkbox name="group1" [value]="p.UsuarioId"
-                            [label]="p.RazonSocial" [(ngModel)]="selectedProv" inputId="{{p.UsuarioId}}"></p-checkbox>
-                            <br/>
+                    <p-checkbox 
+                        name="group1" 
+                        [value]="p.UsuarioId"
+                        [label]="p.RazonSocial" 
+                        [(ngModel)]="selectedProv" 
+                        inputId="{{p.UsuarioId}}"
+                        [disabled]="p.Deshabilitado">
+                    </p-checkbox>
+                    <br/>
                 </div>
             </div>
         </section>
