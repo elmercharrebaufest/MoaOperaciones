@@ -53,7 +53,8 @@ export interface PeticionDeOfertaUsarioDto {
     EstaHabilitado: boolean,
     ValidacionCircularSolicitante?: boolean,
     ObservacionNoCumple?: string,
-    Deshabilitado?: boolean
+    Deshabilitado?: boolean,
+    Centro: any
 }
 
 export interface PeticionDeOfertaUsarioAdicionalDto {
@@ -78,6 +79,7 @@ export interface PeticionDeOfertaSolpPosicionDto {
     Selected: boolean,
     TodasPosicionesSeleccionadas: boolean,
     NoDisponible: boolean,
+    CentroId?: number
 }
 
 export interface PeticionDeOfertaCierreDto {

@@ -59,6 +59,7 @@ namespace SustitucionMOAModel.Dto
     public class OrdenDeCompraSAPPosicionDireccionDeEntrega
     {
         //POADDRDELIVERY
+        public string RegionSap { get; set; }
     }
 
     public class ErrorOC

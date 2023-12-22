@@ -80,3 +80,31 @@ update CentroDireccion set RegionSap_Id = '9' where CodigoSap = '1035';
 update CentroDireccion set RegionSap_Id = '9' where CodigoSap = '1036';
 update CentroDireccion set RegionSap_Id = '11' where CodigoSap = '1126';
 update CentroDireccion set RegionSap_Id = '21' where CodigoSap = '1127';
+
+update CentroDireccion set RegionSap_Id = '20' where CodigoSap = '1034' 
+												  or CodigoSap = '1067' 
+												  or CodigoSap = '1068'
+												  or CodigoSap = '1069'
+												  or CodigoSap = '1070'
+												  or CodigoSap = '1071'
+												  or CodigoSap = '1073'
+												  or CodigoSap = '1074'
+												  or CodigoSap = '1086'
+												  or CodigoSap = '1087'
+												  or CodigoSap = '1164'
+												  or CodigoSap = '1165'
+												  or CodigoSap = '1166'
+												  or CodigoSap = '1167'
+												  or CodigoSap = '1168'
+												  or CodigoSap = '1169'
+												  or CodigoSap = '1170'
+												  or CodigoSap = '1500'
+												  or CodigoSap = '1600'
+												  or CodigoSap = '2000'
+												  or CodigoSap = '2001'
+												  or CodigoSap = '5000'
+												  or CodigoSap = '6000'
+												  or CodigoSap = '8107'
+												  or CodigoSap = '8118'
+												  or CodigoSap = '9000'; 
+

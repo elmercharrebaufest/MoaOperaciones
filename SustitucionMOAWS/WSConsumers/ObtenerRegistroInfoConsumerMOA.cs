@@ -75,7 +75,6 @@ namespace SustitucionMOAWS.WSConsumers
                     registros.Add(registroInfo);
                 }
             }
-
             return registros;
         }
     }

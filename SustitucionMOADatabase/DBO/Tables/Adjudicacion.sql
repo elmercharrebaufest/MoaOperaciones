@@ -13,11 +13,11 @@
     [Garantias]          NVARCHAR(MAX) NULL,
     [FechaLiberacionSap] DATETIME2 NULL, 
     [Token] NVARCHAR(50) NULL, 
-    [RegionSap_Id] INT NULL, 
+    [RegionSap_Id] INT NOT NULL DEFAULT 20, 
     CONSTRAINT [PK_Adjudicacion] PRIMARY KEY CLUSTERED ([Id] ASC),
     CONSTRAINT [FK.Adjudicacion_Usuario_UsuarioCreadorId] FOREIGN KEY ([UsuarioCreador_Id]) REFERENCES [Usuario]([Id]),
     CONSTRAINT [FK.Adjudicacion_Usuario_CotizacionId] FOREIGN KEY ([Cotizacion_Id]) REFERENCES [Cotizacion]([Id]),
     CONSTRAINT [FK.Adjudicacion_Usuario_SolpId] FOREIGN KEY ([Solp_Id]) REFERENCES [Solp]([Id]),
     CONSTRAINT [FK.Adjudicacion_Adjudicacion_MonedaId] FOREIGN KEY (Moneda_Id) REFERENCES [TablaSap]([Id]),
-    CONSTRAINT [FK.Adjudicacion_RegionSap_RegionSAP_Id] FOREIGN KEY ([RegionSAP_Id]) REFERENCES [RegionSap]([Id]),
+    CONSTRAINT [FK.Adjudicacion_RegionSap_RegionSap_Id] FOREIGN KEY ([RegionSap_Id]) REFERENCES [RegionSap]([Id]),
 );
