@@ -37,15 +37,3 @@ Post-Deployment Script Template
 :r ..\Notificaciones\NotificacionPrioridad.sql
 :r ..\Comunicacion\ComunicacionTipo.sql
 :r ..\Comunicacion\TipoRetencion.sql
-
-:r .\UsuariosConRolFleteMOA.sql
-
-:r ..\Notificaciones\Notificacion.sql
-:r ..\Notificaciones\NotificacionFechaCreacion.sql
-:r ..\Notificaciones\NotificacionPrioridad.sql
-:r ..\Comunicacion\ComunicacionTipo.sql
-:r ..\Comunicacion\TipoRetencion.sql
-
-:r .\UsuariosConRolFleteMOA.sql
-
-
