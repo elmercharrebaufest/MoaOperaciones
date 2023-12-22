@@ -281,7 +281,7 @@ export class ComunicacionesComponent extends BaseComponent implements OnInit {
       this.serviceComunicaciones.postComunicacionLeida(ids).subscribe();
     setTimeout(() => {
       this.getComunicaciones(this.idProveedor, this.startDate, this.endDate);
-    }, 30000);
+    }, 500);
     this.redirect(notificaciones[i].ComunicacionTipo, this.filter ,proveedorDescripcion);
   }
 
@@ -291,7 +291,7 @@ export class ComunicacionesComponent extends BaseComponent implements OnInit {
 
       setTimeout(() => {
         this.getComunicaciones(this.idProveedor, this.startDate, this.endDate);
-      }, 30000);
+      }, 2000);
     }
   }
 
