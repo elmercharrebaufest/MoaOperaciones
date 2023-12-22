@@ -31,7 +31,15 @@ export class ComunicacionesComponent extends BaseComponent implements OnInit {
   filter: string;
 
   startDate: String;
-  endDate: String;
+    endDate: String;
+
+    // Define una variable para almacenar los IDs
+    comunicacionTipoSeisIds: number[] = [];
+
+    ExencionesVencidasIds: number[] = [];
+    ExencionesAVencerIds: number[] = [];
+    ConsultasIds: number[] = [];
+    liquidacionesIds: number[] = [];
 
 
 
@@ -281,13 +289,46 @@ export class ComunicacionesComponent extends BaseComponent implements OnInit {
       this.serviceComunicaciones.postComunicacionLeida(ids).subscribe();
     setTimeout(() => {
       this.getComunicaciones(this.idProveedor, this.startDate, this.endDate);
-    }, 500);
+    }, 2000);
     this.redirect(notificaciones[i].ComunicacionTipo, this.filter ,proveedorDescripcion);
   }
 
-  unreadCommunication(notificacion) {
-    if (notificacion.Leida == true) {
-      this.serviceComunicaciones.postComunicacionNoLeida(notificacion.Id).subscribe();
+    unreadCommunication(notificacion) {
+        console.log(notificacion)
+      
+        if (notificacion.Leida == true) {
+
+            //if (notificacion.ComunicacionTipo === 1 ||
+            //    notificacion.ComunicacionTipo === 2 ||
+            //    notificacion.ComunicacionTipo === 5 || notificacion.ComunicacionTipo === 6) {
+
+            //    console.log(this.communication)
+
+            //    const idsFiltrados = this.communication
+            //        .filter(item => item.ComunicacionTipo === notificacion.ComunicacionTipo)
+            //        .map(item => item.id);
+
+            //    console.log(idsFiltrados)
+                
+            //    debugger
+            //    //const idsFiltrados = notificacion
+            //    //    .filter(item => item.ComunicacionTipo === notificacion.ComunicacionTipo)
+            //    //    .map(item => item.id);
+
+            //    //console.log(idsFiltrados); // Esto mostrará [1, 3, 5]
+            //    let ids = [];;
+            //    ids = notificacion.ComunicacionTipo === 1 ? this.ExencionesVencidasIds : ids;
+            //    ids = notificacion.ComunicacionTipo === 2 ? this.ExencionesAVencerIds : ids;
+            //    ids = notificacion.ComunicacionTipo === 5 ? this.ConsultasIds : ids;
+            //    ids = notificacion.ComunicacionTipo === 6  ? this.liquidacionesIds : ids;
+
+
+            //    this.serviceComunicaciones.postComunicacionNoLeida(ids).subscribe();
+            //}
+           /* else {*/
+                this.serviceComunicaciones.postComunicacionNoLeida(notificacion.Id).subscribe();
+           /* }*/
+    
 
       setTimeout(() => {
         this.getComunicaciones(this.idProveedor, this.startDate, this.endDate);

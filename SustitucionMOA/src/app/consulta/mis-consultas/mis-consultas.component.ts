@@ -150,7 +150,7 @@ export class MisConsultasComponent extends ListBaseComponent {
 
 
     seleccionarOpcionFiltro(columna: string, valor: string) {
-        debugger
+      
         switch (columna) {
 
             case 'RazonSocialProveedor':

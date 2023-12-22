@@ -272,7 +272,7 @@ export class AltaNotificacionesComponent extends BaseComponent implements OnInit
 
 
         if (this.notificacion.Nombre === undefined || this.notificacion.Nombre.length < 3) {
-            debugger
+          
             this.mensajeError = "El Campo nombre debe tener al menos 3 caracteres.";
           
             //this.errorInput.nativeElement.focus();
