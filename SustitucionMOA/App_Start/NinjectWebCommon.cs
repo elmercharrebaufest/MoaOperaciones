@@ -215,7 +215,8 @@ namespace SustitucionMOA.App_Start
             kernel.Bind<ICNRTClient>().To(typeof(CNRTClient)).InSingletonScope();
 
             // Azure
-            kernel.Bind<IAzureADConsumer>().To(typeof(AzureADConsumer)).InScope(ctx => OperationContext.Current);
+            kernel.Bind<IAzureADConsumer>().To(typeof(AzureADConsumer)).InTransientScope();
+            kernel.Bind<IUsersGraphAPIClient>().To(typeof(UsersGraphAPIClient)).InScope(ctx => HttpContext.Current);
 
             kernel.Bind<DbContext>().To<MOAOperacionesDbContext>().InScope(ctx => HttpContext.Current);
             kernel.Bind<IRepositorio>().To<RepositorioEF>().InScope(ctx => HttpContext.Current);

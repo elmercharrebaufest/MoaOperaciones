@@ -23,25 +23,17 @@ namespace SustitucionMOAWS.AzureAD
         private static readonly string AppId = ConfigurationManager.AppSettings["AzureADAppId"];
         private static readonly string AppSecret = ConfigurationManager.AppSettings["AzureADAppSecret"];
 
-        private string AccessToken { get; }
-
-        public UsersGraphAPIClient()
+        private string _accessToken;
+        private string AccessToken
         {
-            Log.Info("Inicializa cliente API Graph [Users]");
-
-            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-
-            IConfidentialClientApplication confidentialClientApplication = ConfidentialClientApplicationBuilder
-                .Create(AppId)
-                .WithTenantId(TenantId)
-                .WithClientSecret(AppSecret)
-                .Build();
-
-            var authResult = confidentialClientApplication
-                .AcquireTokenForClient(new string[] { "https://graph.microsoft.com/.default" })
-                .ExecuteAsync().GetAwaiter().GetResult();
-
-            AccessToken = authResult.AccessToken;
+            get
+            {
+                if (string.IsNullOrEmpty(_accessToken))
+                {
+                    _accessToken = ObtenerAccessToken();
+                }
+                return _accessToken;
+            }
         }
 
         public virtual ObtenerUsuarioResponse ObtenerUsuarioPorDisplayName(string displayName)
@@ -111,10 +103,11 @@ namespace SustitucionMOAWS.AzureAD
         {
             try
             {
+                var token = this.AccessToken;
                 using (HttpClient httpClient = new HttpClient())
                 using (HttpRequestMessage request = new HttpRequestMessage(method, url))
                 {
-                    request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", this.AccessToken);
+                    request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
                     if (!string.IsNullOrEmpty(data))
                     {
@@ -155,6 +148,23 @@ namespace SustitucionMOAWS.AzureAD
             }
 
             return url;
+        }
+
+        private string ObtenerAccessToken()
+        {
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+
+            IConfidentialClientApplication confidentialClientApplication = ConfidentialClientApplicationBuilder
+                .Create(AppId)
+                .WithTenantId(TenantId)
+                .WithClientSecret(AppSecret)
+                .Build();
+
+            var authResult = confidentialClientApplication
+                .AcquireTokenForClient(new string[] { "https://graph.microsoft.com/.default" })
+                .ExecuteAsync().GetAwaiter().GetResult();
+
+            return authResult.AccessToken;
         }
     }
 }

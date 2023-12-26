@@ -221,6 +221,7 @@ namespace SustitucionMOAExternalAPI.App_Start
 
             // Azure AD Consumer
             kernel.Bind<IAzureADConsumer>().To(typeof(AzureADConsumer)).InSingletonScope();
+            kernel.Bind<IUsersGraphAPIClient>().To(typeof(UsersGraphAPIClient)).InSingletonScope();
 
             //kernel.Bind<IExternalApiService>().To(typeof(ExternalApiService)).InScope(ctx => OperationContext.Current);
             kernel.Bind<DbContext>().To<MOAOperacionesDbContext>().InTransientScope();
