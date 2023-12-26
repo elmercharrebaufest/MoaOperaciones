@@ -5791,7 +5791,8 @@ namespace SustitucionMOAUtils.Services
                         SolpPosicion_Id = cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Solp.Posiciones
                           .Where(y => y.Id == x.SolpPosicion_Id).FirstOrDefault().Id
                     }).ToList(),
-                    Token = Guid.NewGuid().ToString()
+                    Token = Guid.NewGuid().ToString(),
+                    RegionSap_Id = 20
                 };
 
                 adjudicacion.NumeroOrdenDeCompra = "";
