@@ -17,8 +17,8 @@ import { Subscription } from 'rxjs';
 import { AngularEditorComponent, AngularEditorConfig } from '@kolkov/angular-editor';
 import { GET_ANGULAR_EDITOR_CONFIG, eliminarBotonesExtraEditor } from '../../common/configs/angularEditor.configs';
 import { ReCaptchaComponent } from 'angular2-recaptcha';
-import { Proveedor } from '../../common/models/proveedor';
 import { ProveedorRaw } from '../../common/models/proveedorraw';
+import { UsuarioService } from '../../usuario/usuario.service';
 
 declare var $: any;
 
@@ -41,10 +41,10 @@ export class CrearConsultaInternaComponent extends ListBaseComponent implements 
   @ViewChild("angularEditorComentario") editor: AngularEditorComponent;
 
   @ViewChild('dtp_fecha_pago')
-    protected fechaPagoDTP: ElementRef;
+  protected fechaPagoDTP: ElementRef;
 
-    @ViewChild('recaptchaComponent')
-    protected captcha: ReCaptchaComponent;
+  @ViewChild('recaptchaComponent')
+  protected captcha: ReCaptchaComponent;
 
   constructor(
     protected service: ConsultaService,
@@ -55,7 +55,8 @@ export class CrearConsultaInternaComponent extends ListBaseComponent implements 
     protected floatMsgService: FloatMsgService,
     protected modalService: ModalService,
     protected ordenDeCargaService: OrdenesDeCargaService,
-    private confirmationService: ConfirmationService
+    private confirmationService: ConfirmationService,
+    protected usuarioService: UsuarioService
   ) {
     super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
     this.dataRecibida = this.sendDataService.getData();
@@ -134,12 +135,12 @@ export class CrearConsultaInternaComponent extends ListBaseComponent implements 
       this.getDestinatariosOrden();
     }
     this.getCombosConsultaInterna();
-    this.getAllDestinatarios();
+    this.getVendedores();
     $(".adjuntarArchivo").click(function () {
       $(".adjuntarArchivo1").click();
     });
   }
- 
+
   ngAfterViewInit(): void {
     this.eliminarBotonesExtra()
   }
@@ -183,9 +184,7 @@ export class CrearConsultaInternaComponent extends ListBaseComponent implements 
             this.subcategorias = result.subcategorias;
             this.listaMateriales = result.materiales;
             this.ordenes = result.ordenes;
-
             this.setearDefaultCombos(result.categorias, result.subcategorias);
-            //this.getDestinatarios();
 
             if (!this.esCorredor) {
               this.proveedorId = result.proveedorId
@@ -203,10 +202,10 @@ export class CrearConsultaInternaComponent extends ListBaseComponent implements 
     return false; //<-- Prevent Refresh
   }
 
-  getAllDestinatarios() {
+  getDestinatario() {
     this.searchingCampos = true;
     try {
-      this.subscriptionDestinatarios = this.service.getDestinatarios(this.ordenId).subscribe(
+      this.subscriptionDestinatarios = this.service.getDestinatarios(this.vendedor.Id).subscribe(
         (result: any) => {
           this.searchingCampos = false;
           if (result.logout == true) {
@@ -217,6 +216,7 @@ export class CrearConsultaInternaComponent extends ListBaseComponent implements 
             this.floatMsgService.setInfoMsg(result.info);
           } else {
             this.destinatarios = result.destinatarios;
+            this.destinatario = null;
           }
         },
         error => {
@@ -231,31 +231,35 @@ export class CrearConsultaInternaComponent extends ListBaseComponent implements 
     return false; //<-- Prevent Refresh
   }
 
-  getVendedoresUsuario() {
-    this.searchingCampos = true;
+  getVendedores() {
+    this.mensajeComponent.setMsgsEmpty();
+    this.spinnerComponent.showIt();
     try {
-      this.subscriptionDestinatarios = this.service.getVendedoresUsuario(this.destinatario.UsuarioId).subscribe(
+      this.subscriptionDestinatarios = this.service.getVendedoresUsuario().subscribe(
         (result: any) => {
-          this.searchingCampos = false;
+          this.spinnerComponent.hideIt();
           if (result.logout == true) {
             this.sessionDataService.logout();
           } else if (result.error != undefined && result.error != "") {
-            this.floatMsgService.setErrorMsg(result.error);
+            this.mensajeComponent.setErrorMsg(result.error);
           } else if (result.info != undefined) {
-            this.floatMsgService.setInfoMsg(result.info);
+            this.mensajeComponent.setInfoMsg(result.info);
           } else {
             this.vendedores = result.vendedores;
           }
         },
         error => {
-          this.floatMsgService.setErrorMsg(error.message);
-          this.searchingCampos = false;
+          this.spinnerComponent.hideIt();
+          this.mensajeComponent.setErrorMsg(error.message);
         }
+
       );
     } catch (e) {
-      this.floatMsgService.setErrorMsg(e);
+      this.spinnerComponent.hideIt();
+      this.mensajeComponent.setErrorMsg(e);
       return false; //<-- Prevent Refresh
     }
+
     return false; //<-- Prevent Refresh
   }
 
@@ -290,6 +294,8 @@ export class CrearConsultaInternaComponent extends ListBaseComponent implements 
   setSubcategorias(categoria) {
     this.categoria = categoria;
     this.categoriaCode = this.categoria.Code;
+    this.subcategoria = undefined;
+    this.subcategoriaCode = undefined;
     this.subcategoriasList = [];
     this.subcategorias.forEach(x => {
       if (x.CategoriaId == categoria.Id) {
@@ -308,7 +314,6 @@ export class CrearConsultaInternaComponent extends ListBaseComponent implements 
       this.files = fileList;
       for (let i = 0; i < fileList.length; i++) {
         file = fileList[i];
-        //file.name = "file" + i; //si no es aca se senombra en el postConsulta
         this.listaArchivos.push(file);
       }
     }
@@ -335,7 +340,7 @@ export class CrearConsultaInternaComponent extends ListBaseComponent implements 
     this.Avisos(this.categoriaCode);
     this.limpiarDetalle();
   }
-  
+
   postConsulta() {
     this.blockUI.start('Generando Consulta');
     this.spinnerComponent.showIt();
@@ -356,18 +361,18 @@ export class CrearConsultaInternaComponent extends ListBaseComponent implements 
       ContratoNo: this.contrato, Importe: this.importe, Impuesto: this.impuesto, BolsaEmisoraOblea: this.bolsaEmisoraOblea, Material_Id: null,
       Orden_Id: this.ordenId, PatenteChasis: this.getPatenteChasisOC()
     }
-    //TODO Completar con campos
+
     this.consulta = {
-      CodigoCorredor: this.vendedor.CodigoCorredor, RazonSocialCorredor: this.vendedor.RazonSocialCorredor,
-      CodigoProveedor: this.vendedor.CodigoProveedor, RazonSocialProveedor: this.vendedor.RazonSocial,
+      CodigoCorredor: this.getCodigoCorredor(), RazonSocialCorredor: this.getRazonSocialCorredor(),
+      CodigoProveedor: this.getCodigoProveedor(), RazonSocialProveedor: this.getRazonSocialProveedor(),
       Categoria_Id: this.categoria.Id, Detalle: this.detalle,
-      SubCategoria_Id: this.subcategoria.Id, Asunto: this.asunto, Usuario_Id: 0
+      SubCategoria_Id: this.subcategoria ? this.subcategoria.Id : null, Asunto: this.asunto, Usuario_Id: this.getUsuarioId()
     }
 
     let comentario: Comentario = { consulta_Id: 0, Detalle: this.comentario, Fecha: new Date(), Recordado: false, FechaRecordado: new Date() };
 
-    if(this.categoriaCode !== 'ORD'){
-      this.destinatariosFas = undefined; 
+    if (this.categoriaCode !== 'ORD') {
+      this.destinatariosFas = undefined;
     }
 
     try {
@@ -497,6 +502,11 @@ export class CrearConsultaInternaComponent extends ListBaseComponent implements 
 
     if (this.destinatario == undefined && this.categoriaCode !== "ORD") {
       this.mensajeComponent.setErrorMsg("El campo Destinatario esta vacio.");
+      return true;
+    }
+
+    if ((this.vendedor == undefined || this.vendedor == null) && this.categoriaCode !== "ORD") {
+      this.mensajeComponent.setErrorMsg("El campo Vendedor esta vacio.");
       return true;
     }
 
@@ -672,6 +682,15 @@ export class CrearConsultaInternaComponent extends ListBaseComponent implements 
         return true;
       }
     }
+
+    if ((this.categoriaCode == 'PARCOR' || this.categoriaCode == 'FINCOR') && this.destinatario.NombreTipoUsuario != 'CORR') {
+      this.mensajeComponent.setErrorMsg("Para utilizar esta categoría debe seleccionar un corredor.");
+      return true;
+    }
+    if ((this.categoriaCode == 'PARDIR' || this.categoriaCode == 'FINDIR') && this.destinatario.NombreTipoUsuario == 'CORR') {
+      this.mensajeComponent.setErrorMsg("Para utilizar esta categoría debe seleccionar un usuario de uno de estos tipos: Granos, No Granos, o Cliente.");
+      return true;
+    }
   }
 
   getPatenteChasisOC(): string {
@@ -694,63 +713,182 @@ export class CrearConsultaInternaComponent extends ListBaseComponent implements 
   }
 
   generarVariable() {
-    this.reclamoImpositivo.RazonSocialEmpresa = "Aca va razonsocial de proveedor seleccionado" //this.nombre;
+    this.reclamoImpositivo.RazonSocialEmpresa = this.vendedor.RazonSocial;
     this.reclamoImpositivo.Reclamos = [
-        { Fecha: "", Importe: "", Certificado: "" }
+      { Fecha: "", Importe: "", Certificado: "" }
     ]
-}
-agregarReclamo() {
-  this.reclamoImpositivo.Reclamos.push({ Fecha: "", Importe: "", Certificado: "" });
-}
+  }
+  agregarReclamo() {
+    this.reclamoImpositivo.Reclamos.push({ Fecha: "", Importe: "", Certificado: "" });
+  }
 
-eliminarReclamo(numeroReclamo: number) {
-  this.reclamoImpositivo.Reclamos.forEach((value, index) => {
+  eliminarReclamo(numeroReclamo: number) {
+    this.reclamoImpositivo.Reclamos.forEach((value, index) => {
       if (this.reclamoImpositivo.Reclamos.indexOf(value) == numeroReclamo) this.reclamoImpositivo.Reclamos.splice(index, 1);
-  });
-}
-
-setFechaReclamo(numeroReclamo: number, event: Event) {
-  this.reclamoImpositivo.Reclamos[numeroReclamo].Fecha = event
-}
-
-Avisos(categoriaCode) {
-  this.mensajeComponent.setMsgsEmpty();
-  if (categoriaCode == "BOL" && this.subcategoriaCode == "OPC") {
-      this.mensajeComponent.setInfoMsg("Recuerde Adjuntar liquidación y la oblea emitida por bolsa");
-      return true;
+    });
   }
-  if (categoriaCode == "ACT" && this.subcategoriaCode == "IMP") {
-      this.mensajeComponent.setInfoMsg("Recuerde Adjuntar Constancia");
-      return true;
+
+  setFechaReclamo(numeroReclamo: number, event: Event) {
+    this.reclamoImpositivo.Reclamos[numeroReclamo].Fecha = event
   }
-  if (categoriaCode == "ACT" && this.subcategoriaCode == "CM05") {
-      this.mensajeComponent.setInfoMsg("Recuerde adjuntar un único formulario CM05.");
-      return true;
-  }
-  this.mensajeComponent.setMsgsEmpty();
-}
 
-handleCorrectCaptcha(event: any) {
-  this.captchaOk = event;
-}
-
-limpiarDetalle(){
-  this.fecha = undefined;
-  this.comprobante = undefined;
-  this.comprobanteExtra = undefined;
-  this.contrato = undefined;
-  this.importe = undefined;
-  this.impuesto = undefined;
-  this.bolsaEmisoraOblea = undefined;
-  this.ordenId = undefined; 
-}
-
-  mostrarAviso(){
+  validarReclamo() {
     this.mensajeComponent.setMsgsEmpty();
-      if(this.destinatariosFas.length > 1){
-        this.mensajeComponent.setInfoMsg("Se va a proceder a crear una consulta para cada uno de los destinatarios seleccionados.");
+    if (this.reclamoImpositivo.RazonSocialProveedor == "" || !this.reclamoImpositivo.RazonSocialProveedor) {
+      this.mensajeComponent.setErrorMsg("El campo razón social proveedor esta vacío.");
+      return true;
+    }
+    if (this.reclamoImpositivo.Dni == "" || !this.reclamoImpositivo.Dni) {
+      this.mensajeComponent.setErrorMsg("El campo DNI esta vacío.");
+      return true;
+    }
+    if (this.reclamoImpositivo.Cuit == "" || !this.reclamoImpositivo.Cuit) {
+      this.mensajeComponent.setErrorMsg("El campo Cuit esta vacío.");
+      return true;
+    }
+    if (this.reclamoImpositivo.Vinculo == "" || !this.reclamoImpositivo.Vinculo) {
+      this.mensajeComponent.setErrorMsg("El campo vinculo esta vacío.");
+      return true;
+    }
+    this.reclamoImpositivo.Reclamos.forEach(reclamo => {
+      if (reclamo.Certificado == "" || !reclamo.Certificado) {
+        this.mensajeComponent.setErrorMsg("El campo N° certificado esta vacío.");
         return true;
       }
+      if (reclamo.Fecha == "" || !reclamo.Fecha) {
+        this.mensajeComponent.setErrorMsg("El campo fecha esta vacío.");
+        return true;
+      }
+      if (reclamo.Importe == "" || !reclamo.Importe) {
+        this.mensajeComponent.setErrorMsg("El campo importe esta vacío.");
+        return true;
+      }
+    });
+
+    return false;
+  }
+
+  generarReclamoImpositivo() {
+    this.blockUI.start('Generando documento.');
+    this.spinnerComponent.showIt();
+
+    if (this.validarReclamo()) {
+      this.spinnerComponent.hideIt();
+      this.blockUI.stop();
+      return;
     }
+
+    try {
+      this.subscription = this.service.generarReclamoImpositivo(this.reclamoImpositivo).subscribe(
+        (result: any) => {
+          if (result.logout == true) {
+            this.sessionDataService.logout();
+            this.blockUI.stop();
+          } else if (result.error != undefined && result.error != "") {
+            this.floatMsgService.setErrorMsg(result.error);
+            this.blockUI.stop();
+          } else if (result.info != undefined) {
+            this.floatMsgService.setInfoMsg(result.info);
+            this.blockUI.stop();
+          } else {
+            this.spinnerComponent.hideIt();
+            var byteArray = new Uint8Array(result.FileContents);
+            var blob = new Blob([byteArray], {
+              type: "application/octet-stream",
+            });
+
+            var url = window.URL.createObjectURL(blob);
+            var link = document.createElement("a");
+            document.body.appendChild(link);
+            link.href = url;
+            link.download = result.FileDownloadName;
+            link.click();
+            setTimeout(function () {
+              window.URL.revokeObjectURL(url);
+            }, 0);
+            this.blockUI.stop();
+            return false;
+          }
+        },
+        error => {
+          this.floatMsgService.setErrorMsg(error.message);
+        }
+
+      );
+    } catch (e) {
+      this.floatMsgService.setErrorMsg(e);
+      return false; //<-- Prevent Refresh
+    }
+  }
+
+  Avisos(categoriaCode) {
+    this.mensajeComponent.setMsgsEmpty();
+    if (categoriaCode == "BOL" && this.subcategoriaCode == "OPC") {
+      this.mensajeComponent.setInfoMsg("Recuerde Adjuntar liquidación y la oblea emitida por bolsa");
+      return true;
+    }
+    if (categoriaCode == "ACT" && this.subcategoriaCode == "IMP") {
+      this.mensajeComponent.setInfoMsg("Recuerde Adjuntar Constancia");
+      return true;
+    }
+    if (categoriaCode == "ACT" && this.subcategoriaCode == "CM05") {
+      this.mensajeComponent.setInfoMsg("Recuerde adjuntar un único formulario CM05.");
+      return true;
+    }
+    this.mensajeComponent.setMsgsEmpty();
+  }
+
+  handleCorrectCaptcha(event: any) {
+    this.captchaOk = event;
+  }
+
+  limpiarDetalle() {
+    this.fecha = undefined;
+    this.comprobante = undefined;
+    this.comprobanteExtra = undefined;
+    this.contrato = undefined;
+    this.importe = undefined;
+    this.impuesto = undefined;
+    this.bolsaEmisoraOblea = undefined;
+    this.ordenId = undefined;
+  }
+
+  mostrarAviso() {
+    this.mensajeComponent.setMsgsEmpty();
+    if (this.destinatariosFas.length > 1) {
+      this.mensajeComponent.setInfoMsg("Se va a proceder a crear una consulta para cada uno de los destinatarios seleccionados.");
+      return true;
+    }
+  }
+
+  getCodigoCorredor() {
+    if (!this.vendedor)
+      return null;
+    return this.vendedor.CodigoCorredor ? this.vendedor.CodigoCorredor : null;
+  }
+
+  getRazonSocialCorredor() {
+    if (!this.vendedor)
+      return null;
+    return this.vendedor.RazonSocialCorredor ? this.vendedor.RazonSocialCorredor : null;
+  }
+
+  getCodigoProveedor() {
+    if (!this.vendedor)
+      return null;
+    return this.vendedor.CodigoProveedor ? this.vendedor.CodigoProveedor : null;
+  }
+
+  getRazonSocialProveedor() {
+    if (!this.vendedor)
+      return null;
+    return this.vendedor.RazonSocial ? this.vendedor.RazonSocial : null;
+  }
+
+  getUsuarioId() {
+    if (!this.destinatario)
+      return 0;
+    return this.destinatario.UsuarioId ? this.destinatario.UsuarioId : 0;
+  }
 
 }

@@ -3,9 +3,11 @@ using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using SustitucionMOARepositorio;
 using SustitucionMOAUtils.DesignPattern.Interfaces;
+using SustitucionMOAUtils.Helpers;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
 using System;
+using System.CodeDom;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,23 +16,22 @@ using System.Web;
 
 namespace SustitucionMOAUtils.DesignPattern.Classes
 {
-    public class ConsultaFinalStrategy : IConsultaStrategy
+    public class ConsultaFinalStrategy : ConsultaCommon, IConsultaStrategy
     {
         public List<string> Names => new List<string>() { "Final" };
         
-        private readonly IRepositorio repositorio;
         private readonly IUsuarioService usuarioService;
 
-        public ConsultaFinalStrategy(IRepositorio repositorio, IUsuarioService usuarioService)
+        public ConsultaFinalStrategy(IRepositorio repositorio, IEmailService emailService, IUsuarioService usuarioService) : base(repositorio, emailService)
         {
-            this.repositorio = repositorio;
             this.usuarioService = usuarioService;
         }
 
-        public Consulta AgregarConsulta(Consulta consulta, Comentario comentario)
+        public Consulta AgregarConsulta(Consulta consulta, Comentario comentario, List<DestinatarioDto> destinatarios, HttpFileCollectionBase files)
         {
             try
             {
+                this.RellenarCampos(consulta, comentario);
                 Usuario usuario = this.repositorio.Obtener<Usuario>(u => u.Id == consulta.Usuario_Id);
                 var subcategoria = this.repositorio.Obtener<SubCategoria>(s => s.Id == consulta.SubCategoria_Id);
 
@@ -46,23 +47,24 @@ namespace SustitucionMOAUtils.DesignPattern.Classes
                     var subcategoriaCode = subcategoria.Code + "FD";
                     consulta.SubCategoria_Id = repositorio.Obtener<SubCategoria>(sc => sc.Code == subcategoriaCode).Id;
                 }
-
-                comentario.Usuario_Id = (int)consulta.UsuarioInterno_Id;
-
                 this.repositorio.Agregar(consulta);
                 this.repositorio.GuardarCambios();
+
+                if (files.Count > 0)
+                {
+                    GuardarAdjuntoComentario(consulta.Id, files);
+                }
+
+                EnviarMail(consulta, comentario, files);
+
                 return consulta;
             }
             catch (Exception e)
             {
-                Log.Info(e.Message);
-                return null;
+                Log.Error("Ha ocurrido un error al intentar generar la consulta.", e);
+                throw e;
             }
         }
 
-        public Consulta AgregarConsulta(Consulta consulta, Comentario comentario, List<DestinatarioDto> destinatarios, HttpFileCollectionBase files)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

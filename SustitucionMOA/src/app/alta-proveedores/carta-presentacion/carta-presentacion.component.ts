@@ -62,7 +62,7 @@ export class CartaPresentacionComponent extends BaseComponent implements OnInit 
 
   @Input() proveedorId: number;
   @Input() displayType: string;
-
+  @Input() proveedorMail: string;
 
   ngOnInit(): void {
     this.agregarCampoCartaPresentacion();
@@ -76,7 +76,6 @@ export class CartaPresentacionComponent extends BaseComponent implements OnInit 
       }
     }, 1000);
 
-    this.cartaPresentacion.vendedorMailContacto = sessionStorage.getItem("username");
   }
 
 
@@ -88,6 +87,7 @@ export class CartaPresentacionComponent extends BaseComponent implements OnInit 
     else {
       this.floatMsgService.setInfoMsg("No hay un proveedor seleccionado para completar la carta de presentación.")
     }
+    this.cartaPresentacion.vendedorMailContacto = this.proveedorMail == undefined ? sessionStorage.getItem("username") : this.proveedorMail;
   }
 
   obtenerCampanias() {
@@ -212,7 +212,7 @@ export class CartaPresentacionComponent extends BaseComponent implements OnInit 
 
     this.mensajeError = "";
     this.subscription = this.service
-      .generarCartaPresentacion(this.cartaPresentacion, this.proveedorId)
+      .generarCartaPresentacion(this.cartaPresentacion, this.proveedorMail, this.proveedorId)
       .subscribe(
         (result) => {
           this.spinnerCartaPresentacion.hideIt();

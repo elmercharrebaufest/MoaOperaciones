@@ -13,6 +13,7 @@ using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 
@@ -24,6 +25,7 @@ namespace SustitucionMOAUtils.Helpers
         protected readonly IEmailService emailService;
         private readonly string rutaArchivosConsulta = ConfigurationManager.AppSettings["RutaArchivosConsulta"];
         private static readonly string EMAIL_TEMPLATE = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "RespuestaConsulta.html");
+        protected static readonly string consultaInternaCC = ConfigurationManager.AppSettings["EmailConsultaInternaCC"];
 
         public ConsultaCommon(IRepositorio repositorio, IEmailService emailService)
         {
@@ -118,5 +120,40 @@ namespace SustitucionMOAUtils.Helpers
             return fileDataDictionary;
         }
 
+        protected void RellenarCampos(Consulta consulta, Comentario comentario)
+        {
+            consulta.FechaCreacion = DateTime.Now;
+            consulta.FechaUltimaModificacion = DateTime.Now;
+
+            Categoria categoria = repositorio.Obtener<Categoria>(c => c.Id == consulta.Categoria_Id);
+
+            comentario.ComentarioRecordado = new List<ComentarioRecordado>();
+
+            if (consulta.Comentarios == null)
+            {
+                consulta.Comentarios = new List<Comentario>();
+            }
+
+            consulta.Comentarios.Add(comentario);
+
+            comentario.Usuario_Id = (int)consulta.UsuarioInterno_Id;
+
+            var estadoSolicitudInfo = this.repositorio.Obtener<EstadoConsulta>(e => e.Code == "DOC");
+            consulta.EstadoConsulta_Id = estadoSolicitudInfo.Id;
+        }
+        protected string GuardarAdjuntoComentario(int consultaId, HttpFileCollectionBase files)
+        {
+            Comentario primerComentario = repositorio.Obtener<Comentario>(c => c.Consulta_Id == consultaId);
+            var res = this.AgregarAdjuntoComentario(consultaId, primerComentario.Id, files);
+            return res;
+        }
+        protected void EnviarMail(Consulta consulta, Comentario comentario, HttpFileCollectionBase files)
+        {
+            var destinatariosCC = this.emailService.ObtenerListaDestinatarios(new string[] { consultaInternaCC });
+            var usuario = this.repositorio.Obtener<Usuario>(u => u.Id == consulta.Usuario_Id);
+            this.EnviarMailInterno(consulta, comentario, files, destinatariosCC, usuario.Mail);
+        }
+
+       
     }
 }

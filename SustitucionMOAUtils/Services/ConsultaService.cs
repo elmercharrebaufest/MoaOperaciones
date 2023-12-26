@@ -1206,9 +1206,6 @@ namespace SustitucionMOAUtils.Services
         {
             string mensajeResultado = string.Empty;
 
-            EstadoConsulta estado = repositorio.Obtener<EstadoConsulta>(e => e.Code == "DOC");
-            consulta.EstadoConsulta_Id = estado.Id;
-
             Categoria categoria = repositorio.Obtener<Categoria>(c => c.Id == consulta.Categoria_Id);
           
             var estrategia = this.consultaContext.GetStrategy(categoria.Nombre);
@@ -1221,7 +1218,6 @@ namespace SustitucionMOAUtils.Services
                 Mensaje = mensajeResultado,
             };
         }
-
         public void ReabrirConsulta(int consultaId, UsuarioDto usuarioActual)
         {
             var consulta = GetConsulta(consultaId);

@@ -539,12 +539,11 @@ namespace SustitucionMOAUtils.Services
             }).GroupBy(x => x.Id);
         }
 
-        public List<DestinatarioDto> ObtenerDestinatariosConsulta()
+        public List<DestinatarioDto> ObtenerDestinatariosConsulta(int proveedorId)
         {
             List<DestinatarioDto> destinatarios = new List<DestinatarioDto>();
-            var fechaUltimoAño = DateTime.Now.AddYears(-1);
-            var usuarios = this.repositorio.Listar<Usuario>(u => u.Habilitado == true && u.UltimoLogin > fechaUltimoAño);
-            destinatarios = usuarios.Select(u => new DestinatarioDto(u)).ToList();
+            var proveedor = this.repositorio.Obtener<Proveedor>(p => p.Id == proveedorId);
+            destinatarios = proveedor.UsuariosAsociados.Select(u => new DestinatarioDto(u)).ToList();
             return destinatarios;
         }
 
@@ -893,14 +892,7 @@ namespace SustitucionMOAUtils.Services
             repositorio.GuardarCambios();
         }
         #endregion
-
-        public List<ProveedorRaw> GetVendedoresRawDelUsuario(int usuarioId)
-        {
-            var vendedores = new List<ProveedorRaw>();
-            var usuario = this.repositorio.Obtener<Entidades.Usuario>(u => u.Id == usuarioId);
-            vendedores = usuario.Proveedores.Select(p => new ProveedorRaw(p)).ToList();
-            return vendedores;
-        }   
+  
 
     }
 }

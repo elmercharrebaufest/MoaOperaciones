@@ -143,6 +143,7 @@
   <ItemGroup>
     <Compile Include="Credentials\CamCredential.cs" />
     <Compile Include="Credentials\DBCredential.cs" />
+    <Compile Include="DesignPattern\Classes\ConsultaActualizacionStrategy.cs" />
     <Compile Include="DesignPattern\Classes\ConsultaContext.cs" />
     <Compile Include="DesignPattern\Classes\ConsultaFinalStrategy.cs" />
     <Compile Include="DesignPattern\Classes\ConsultaGeneralStrategy.cs" />

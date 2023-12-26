@@ -48,8 +48,8 @@ export class EmpresaGranosService extends BaseService {
 
     generarInformeComercial(
         informeComercial: InformeComercial,
+        mailUsuario: string,
         proveedorId?: number
-
     ): Observable<any> {
         let payload = new FormData();
         payload.append(
@@ -58,6 +58,7 @@ export class EmpresaGranosService extends BaseService {
         );
 
         payload.append("proveedorId", proveedorId.toString());
+        payload.append("mailUsuario", mailUsuario);
 
         return this.http
             .post("/api/AltaEmpresaGranos/GenerarInformeComercial", payload)
@@ -75,7 +76,8 @@ export class EmpresaGranosService extends BaseService {
 
     generarCartaPresentacion(
         cartaPresentacion: CartaPresentacion,
-        proveedorId?: number
+        mailUsuario: string,
+        proveedorId?: number,
     ): Observable<any> {
         let payload = new FormData();
         payload.append(
@@ -83,6 +85,7 @@ export class EmpresaGranosService extends BaseService {
             JSON.stringify(cartaPresentacion)
         );
         payload.append("proveedorId", proveedorId.toString());
+        payload.append("mailUsuario", mailUsuario);
 
         return this.http
             .post("/api/AltaEmpresaGranos/GenerarCartaPresentacion", payload)
