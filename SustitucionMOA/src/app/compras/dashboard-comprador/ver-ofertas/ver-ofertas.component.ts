@@ -14,7 +14,7 @@ import { Table } from 'primeng/table';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { PeticionDeOfertaDto, PeticionDeOfertaSolpPosicionDto, PeticionDeOfertaUsarioDto } from '../../../modelos/peticion-de-oferta-model';
 import { Solp } from '../../solp/solp';
-import { CotizacionHoraDto, CotizacionDto } from '../../../modelos/cotizacionDto';
+import { CotizacionHoraDto, CotizacionDto, CotizacionPosicionDto } from '../../../modelos/cotizacionDto';
 import { AdjudicacionDto } from '../../../modelos/adjudicacion';
 import { TextosAdjudicarComponent } from './textos-adjudicar/textos-adjudicar.component';
 
@@ -59,8 +59,14 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
     error: string;
     displayVisualizarPrecio: boolean;
     peticionOferta_Id: number;
+    displayGenerarOCMoneda: boolean;
+    generarOC: boolean;
+    moneda: any;
     resultado: any;
     centroLista: any[];
+    usuario: any;
+    lista: any[];
+    numerosDePedido: any;
 
 
     constructor(protected service: ComprasService, protected usuarioService: UsuarioService, protected navService: NavService, protected sessionDataService: SessionDataService,
@@ -224,13 +230,15 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
     }
 
     crearAdjudicacion(usuario: PeticionDeOfertaUsarioDto) {
-        var lista = []
+        this.lista = []
+        this.usuario = usuario;
+        this.adjudicacion.Proveedor = usuario.CodigoProveedor;
         if (this.tablaOfertas.PeticionDeOfertaPosicion.filter(x => x.Selected).length > 0) {
             this.tablaOfertas.PeticionDeOfertaPosicion.forEach((peticion) => {
                 if (peticion.Selected && !peticion.Posicion.AdjudicacionCompleta) {
                     usuario.Cotizacion.CotizacionPosiciones.forEach((cotizacionPos) => {
                         if (peticion.Id == cotizacionPos.PeticionDeOfertaSolpPosicion_Id)
-                        lista.push({
+                        this.lista.push({
                                 Posicion: peticion.Posicion.Indice,
                                 CotizacionPosicion_Id: cotizacionPos.Id,
                                 Cantidad: this.tablaOfertas.TipoPosicionCodigo == 'MATERIALES' ?
@@ -243,6 +251,7 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
                                 NoDisponible: cotizacionPos.NoDisponible,
                                 MonedaCotizacion: cotizacionPos.Moneda_Id,
                                 MonedaPO: peticion.Posicion.MonedaId,
+                                MonedaId: cotizacionPos.Moneda_Id,
                                 CentroPosicion: peticion.Posicion.Centro
                             })
                     })
@@ -250,9 +259,9 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
                     peticion.Selected = false;
                 }
             });
-            console.log("lista", lista);
-            if (lista.length > 0) {
-                this.error = this.validarAdjudicacion(lista);
+            console.log("lista", this.lista);
+            if (this.lista.length > 0) {
+                this.error = this.validarAdjudicacion(this.lista);
                 if (this.error != "") {
                     this.floatMsgService.setErrorMsg(this.error)
                     return;
@@ -272,15 +281,19 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
             //     console.log("this.selectedRegion", this.selectedRegion);
             // }
 
-            this.adjudicacion.AdjudicacionPosiciones = lista;
+            this.adjudicacion.AdjudicacionPosiciones = this.lista;
             this.adjudicacion.Cotizacion_Id = usuario.Cotizacion.Id;
             this.adjudicacion.Solp_Id = this.tablaOfertas.Solp_Id;
+           
+            //this.confirmacionAdjudicar();
             // this.displayRegionSap = true;
             this.validacionTextosIncompletos();
             if(this.textoRacionalInCompleto == true){
                 this.displayTextoIncompleto = true;
             } else {
-                this.confirmacionAdjudicar();
+           
+                this.proveedor = usuario.CodigoProveedor;
+                this.mostrarModalGenerarOCMoneda(usuario)
             }
         } else {
             this.floatMsgService.setInfoMsg("Debe seleccionar alguna posición para adjudicar");
@@ -327,13 +340,95 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
         return this.error;
     }
 
+    mostrarValidacionMoneda() {
+        const posicionesSeleccionadas = this.tablaOfertas.PeticionDeOfertaPosicion
+            .filter(x => x.Selected && !x.Posicion.AdjudicacionCompleta);
+
+        const posiciones = this.usuario.Cotizacion.CotizacionPosiciones
+            .filter(cotizacionPos =>
+                posicionesSeleccionadas.some(peticion => peticion.Id === cotizacionPos.PeticionDeOfertaSolpPosicion_Id)
+            );
+
+        const primeraMoneda = posiciones[0].Moneda_Id; // Tomamos la moneda de la primera posición
+
+        for (let i = 0; i < posiciones.length; i++) {
+            if (posiciones[i].Moneda_Id !== primeraMoneda) {
+                return true; // Si encontramos una moneda diferente, devolvemos true
+            }
+           
+            for (let j = 0; j < posiciones[i].CotizacionSubPosiciones.length; j++) {
+                if (posiciones[i].CotizacionSubPosiciones[j].Moneda_Id !== primeraMoneda) {
+                    return true; // Si encontramos una moneda diferente, devolvemos true
+                }
+            }
+        }
+
+        return false;
+    }
+
+    ocultarGenerarOCSerivicioDiferentesMonedas(){
+        if(this.tablaOfertas.TipoPosicionCodigo != 'MATERIALES'){
+
+        }
+    }
+
+    mostrarModalGenerarOCMoneda(proveedor){
+        if(this.mostrarValidacionMoneda()){
+            this.displayGenerarOCMoneda = true;
+            this.devolverMonedaProveedor(proveedor.CodigoProveedor);
+        }else{
+            this.confirmacionAdjudicar();
+        }
+    }
+
+    onGenerarOC(){
+        this.generarOC = false;
+        this.confirmacionAdjudicar();
+    }
+
+    onGenerarOCProveedor(){
+        this.generarOC = true;
+        if(this.moneda == undefined){
+         this.floatMsgService.setErrorMsg("El proveedor no tiene una moneda configurada");
+         this.onCerrarMoneda();
+        }else{
+            this.confirmacionAdjudicar();
+        }
+      
+    }
+
+    onCerrarMoneda(){
+        this.displayGenerarOCMoneda = false;
+    }
+
+    devolverMonedaProveedor(codigo) {
+        this.blockUI.start('Cargando...');
+        this.service.devolverMonedaProveedor(codigo)
+            .subscribe(
+                (result) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    }
+                    else {
+                        this.moneda = result.Moneda;                   
+                        this.blockUI.stop();
+                    }
+                },
+                (error) => {
+                    this.blockUI.stop();
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+            )
+       this.blockUI.stop();
+    }
+
     confirmacionAdjudicar() {
         this.confirmationService.confirm({
             header: "¡Último Paso!",
             acceptLabel: "SI, CONFIRMAR",
             rejectLabel: "VOLVER",
             message: 'Está a punto de enviar la adjudicacion <b>¿Desea continuar?</b>',
-            accept: () => {
+            accept: () => {            
                 this.guardarAdjudicacion()
             },
             reject: () => {
@@ -343,6 +438,7 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
 
     guardarAdjudicacion() {
         this.blockUI.start("Grabando...");
+        this.adjudicacion.EsMonedaProveedor = this.generarOC;
         try {
             this.guardarAdjudicacionTextos();
             this.subscription = this.service.GrabarAdjudicacion(this.adjudicacion).subscribe(
@@ -357,14 +453,18 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
                     else if (result.Errores != undefined && result.Errores != null && result.Errores.length > 0) {
                         this.errores = result.Errores;
                         this.displayVisualizarErrores = true;
+                        this.onCerrarMoneda();
+                        this.noContinuarAdjudicacion();                        
                     }
                     else {
-                        this.numeroOrdenDeCompra = result.NumeroPedido;
+                        this.numerosDePedido = result.NumerosDePedido;
                         this.displayAdjudicacionCreada = true;
                         this.adjudicacion.CondicionesDeEntrega = "";
                         this.adjudicacion.CondicionesDePago = "";
                         this.adjudicacion.Garantias = "";
                         this.adjudicacion.TextoDeCabecera = "";
+                        this.onCerrarMoneda();
+                        this.noContinuarAdjudicacion();
                     }
                     this.blockUI.stop();
                 },
@@ -491,7 +591,9 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
     }
 
     continuarAdjudicacion(){
-        this.confirmacionAdjudicar();
+        this.displayTextoIncompleto = false;
+        this.proveedor = this.usuario.CodigoProveedor;
+        this.mostrarModalGenerarOCMoneda(this.usuario)
     }
 
     noContinuarAdjudicacion(){

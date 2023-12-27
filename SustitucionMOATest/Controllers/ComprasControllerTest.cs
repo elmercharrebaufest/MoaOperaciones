@@ -553,5 +553,17 @@ namespace SustitucionMOATest.Controllers
             // Assert
             Assert.IsNotNull(result);
         }
+
+        [Test]
+        public void DevolverMonedaProveedorOK()
+        {
+
+            comprasServiceMock.Setup(x => x.DevolverMonedaProveedor(It.IsAny<string>())).Returns(new ProveedorComprasDto { Moneda = "ARP"});
+
+            var result = target.DevolverMonedaProveedor(It.IsAny<string>()) as JsonResult;
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.Data);
+        }
     }
 }

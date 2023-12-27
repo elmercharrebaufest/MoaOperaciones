@@ -29,5 +29,7 @@ namespace SustitucionMOAModel.Dto
         public decimal PrecioBruto { get; set; }
         public string EstadoLiberacionCodigo { get; set; }
         public string EstadoLiberacionDetalle { get; set; }
+
+        public bool EsMonedaProveedor { get; set; }
     }
 }

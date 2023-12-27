@@ -2237,6 +2237,7 @@ namespace SustitucionMOATest.Services
             repositorioMock.Verify(y => y.Obtener(It.IsAny<Expression<Func<Solp, bool>>>()), Times.Once);
         }
 
+        [Test]
         public void ListarSolpCompradorOk()
         {
             var listaSolp = new ListaPaginada<SolpDto>(new List<SolpDto> { new SolpDto { Id = 1, ItemsTotales = 7 } }, 1, 10, 5);
@@ -2246,5 +2247,17 @@ namespace SustitucionMOATest.Services
             Assert.That(result, Is.Not.Null);
             Assert.AreEqual(listaSolp.GetType(), result.GetType());
         }
+
+        [Test]
+        public void DevolverMonedaProveedorOk()
+        {
+            obtenerProveedorConsumerMOA.Setup(x => x.ObtenerProveedor(It.IsAny<string>())).Returns(new ObtenerProveedorWSMOAResponse { MAIL = "bmelgarejo@test.com", NAME = "PARISI", CURRENCY = "ARP" });
+            vendedoresConsumerMOAMock.Setup(x => x.Request(It.IsAny<string>(), (It.IsAny<List<SustitucionMOAModel.Models.FechaWS>>()))).Returns(new SustitucionMOAModel.Models.WSMapMOA.Vendedor.VendedoresWSMOAResponse
+            { vendedores = new List<SustitucionMOAModel.Models.WSMapMOA.Vendedor.Vendedor> { new SustitucionMOAModel.Models.WSMapMOA.Vendedor.Vendedor { cuit = "232323" } } });
+
+            var result = target.DevolverMonedaProveedor(It.IsAny<string>());
+            Assert.That(result, Is.Not.Null);
+        }
+
     }
 }

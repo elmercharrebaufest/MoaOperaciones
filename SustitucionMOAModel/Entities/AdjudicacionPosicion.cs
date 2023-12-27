@@ -13,7 +13,7 @@ namespace SustitucionMOAModel.Entities
         public int SolpPosicion_Id { get; set; }
         public string Texto { get; set; }
 
-
+        public decimal? Monto { get; set; }
         [ForeignKey("Adjudicacion_Id")]
         public virtual Adjudicacion Adjudicacion { get; set; }
 

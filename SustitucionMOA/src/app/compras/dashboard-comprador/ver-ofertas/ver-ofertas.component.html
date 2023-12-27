@@ -550,11 +550,14 @@
         <button type="button" class="btn btn-danger botonesComprasColor" (click)="onCerrarPanel()">CANCELAR</button>
     </p-footer>
 </p-dialog>
-<p-dialog [(visible)]="displayAdjudicacionCreada" [width]="400" modal="modal" appendTo="body" [draggable]="false" [contentStyle]="{'overflow':'visible', 'max-height':'100px', 'min-height':'100px'}" [closable]="false">
+<p-dialog [(visible)]="displayAdjudicacionCreada" [width]="400" modal="modal" appendTo="body" [draggable]="false" [contentStyle]="{'overflow':'visible', 'max-height':'500px', 'min-height':'100px'}" [closable]="false">
     <p-header class="headerModal">
         ¡Adjudicación creada!
     </p-header>
-    <br> La adjudicación con el número de orden {{numeroOrdenDeCompra}} se creó correctamente.
+    <br> A continuacion se listan las ordenes de compras creadas:
+    <div *ngFor="let numero of numerosDePedido">
+        {{ numero }}
+    </div>
     <br>
     <p-footer>
         <button type="button" class="btn btn-primary botonesComprasColor botonModal" (click)="salir()">Aceptar</button>
@@ -586,7 +589,7 @@
     ¿Desea continuar con la adjudicación?
     <p-footer>
         <button type="button" class="btn btn-danger botonesComprasColor botonModal" (click)="noContinuarAdjudicacion()">No</button>
-        <button type="button" class="btn btn-primary botonesComprasColor botonModal" (click)="continuarAdjudicacion()">Si</button>
+        <button type="button" class="btn btn-primary botonesComprasColor botonModal" (click)="continuarAdjudicacion(proveedor)">Si</button>
 
     </p-footer>
 </p-dialog>
@@ -634,3 +637,40 @@
                       [(peticionOferta_Id)]="peticionOferta_Id">
 </app-visualizar-precio>
 
+
+<p-dialog [(visible)]="displayGenerarOCMoneda" modal="modal" 
+    [width]="600" [draggable]="false" [closable]="true"
+    (onHide)="onCerrarMoneda()" appendTo="body" 
+    [height]="200"
+    [max] [contentStyle]="{ 
+        'max-height':'150px', 
+        'min-height':'150px'}">
+    <p-header class="headerModal" style="color: #067935;">
+          <b>Posiciones en distintas monedas</b>
+    </p-header>
+   
+        <section class="col-md-12">
+            <div class="row">
+                <div class="col-md-12">
+                   Está a punto de adjudicar posiciones con distintas monedas
+                </div>   
+            </div>
+            <br>
+            <div class="row">
+                <div class="col-md-12">
+                    <button type="button" class="btn btn-success botonesComprasColor" style="width: 100%;" (click)="onGenerarOC()">Generar una OC por cada moneda</button>      
+                </div>                
+            </div>
+            <br>
+            <div class="row">
+                <div  class="col-md-12">
+                    <button type="button" class="btn btn-primary botonesComprasColor" style="width: 100%;"  (click)="onGenerarOCProveedor()">Generar una única OC en la moneda del proveedor {{moneda != undefined ? moneda : " - No disponible"}}</button>       
+                </div>                
+            </div>
+            <br>            
+        </section>
+ 
+    <p-footer>
+        <button type="button" class="btn btn-danger botonesComprasColor" (click)="onCerrarMoneda()">CANCELAR</button>
+    </p-footer>
+</p-dialog>

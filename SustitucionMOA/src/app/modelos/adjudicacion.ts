@@ -1,4 +1,5 @@
-export interface AdjudicacionDto{  
+export interface AdjudicacionDto{
+    EsMonedaProveedor?: boolean  
     Id?: number  
     Cotizacion_Id?: number
     AdjudicacionPosiciones?: AdjudicacionPosicionDto[]

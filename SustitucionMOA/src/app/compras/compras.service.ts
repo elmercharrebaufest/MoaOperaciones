@@ -816,7 +816,9 @@ export class ComprasService extends BaseService {
             TextoDeCabecera: adjudicacion.TextoDeCabecera,
             CondicionesDeEntrega: adjudicacion.CondicionesDeEntrega,
             CondicionesDePago: adjudicacion.CondicionesDePago,
-            Garantias: adjudicacion.Garantias
+            Garantias: adjudicacion.Garantias,
+            EsMonedaProveedor: adjudicacion.EsMonedaProveedor,
+            Proveedor: adjudicacion.Proveedor
         });
 
         var payload = new FormData();
@@ -953,5 +955,36 @@ export class ComprasService extends BaseService {
                 params: params,
                 headers: this.headers
             });
+    }
+    
+      devolverMonedaProveedor(codigoProveedor: string): Observable<any> {
+        let params: HttpParams = new HttpParams();
+        params = params.set("codigoProveedor", codigoProveedor.toString());
+        
+        return this.http
+            .get("/api/compras/DevolverMonedaProveedor", {
+                params: params,
+                headers: this.headers,
+            });
+    }
+
+    validarSubposicionConDiferenteMoneda(adjudicacion: AdjudicacionDto) {
+        let json = JSON.stringify({
+            Cotizacion_Id: adjudicacion.Cotizacion_Id,
+            AdjudicacionPosiciones: adjudicacion.AdjudicacionPosiciones,
+            Solp_Id: adjudicacion.Solp_Id,
+            TextoDeCabecera: adjudicacion.TextoDeCabecera,
+            CondicionesDeEntrega: adjudicacion.CondicionesDeEntrega,
+            CondicionesDePago: adjudicacion.CondicionesDePago,
+            Garantias: adjudicacion.Garantias,
+            EsMonedaProveedor: adjudicacion.EsMonedaProveedor,
+            Proveedor: adjudicacion.Proveedor
+        });
+
+        var payload = new FormData();
+        payload.append('json', json);
+
+        return this.http
+            .post<any>('/api/compras/ValidarSubposicionConMonedaDiferente', payload, { headers: this.headers });
     }
 }

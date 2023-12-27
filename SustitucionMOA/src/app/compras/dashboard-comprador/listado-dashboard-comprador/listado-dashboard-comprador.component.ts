@@ -378,7 +378,7 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
                     }
                     else {
                         if (result) {
-                            this.floatMsgService.setErrorMsg("No se puede crear una nueva PO por que la SOLP fue tratada desde SAP");
+                            this.floatMsgService.setErrorMsg("No se puede crear una nueva PO porque la SOLP fue tratada desde SAP");
                         } else {
                             this.goToSeccionParam('/compras/peticion-de-oferta-formulario', Id);
                         }

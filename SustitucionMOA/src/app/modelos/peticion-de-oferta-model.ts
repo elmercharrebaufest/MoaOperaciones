@@ -42,6 +42,7 @@ export interface PeticionDeOfertaDto {
 }
 
 export interface PeticionDeOfertaUsarioDto {
+    CodigoProveedor: string
     Id: number,
     RazonSocial: string,
     UsuarioId: number,

@@ -425,5 +425,7 @@ namespace SustitucionMOAModel.Dto
         public string NumeroPedido { get; set; }
         public string NumeroSolp { get; set; }
         public string Proveedor { get; set; }
+        public List<string> NumerosDePedido { get; set; }
+        public bool MostrarModalMoneda { get; set; }
     }
 }
