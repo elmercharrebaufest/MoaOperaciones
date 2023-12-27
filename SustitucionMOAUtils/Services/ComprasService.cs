@@ -5381,7 +5381,7 @@ namespace SustitucionMOAUtils.Services
                     if (!cotizacion.CotizacionPosiciones.All(x => x.NoDisponible == true))
                     {
                         var registros = CrearRegistroInfoDto(cotizacion);
-                        var respuesta = agregarRegistroInfoConsumerMOA.AgregarRegistroInfo(registros, esModificar);
+                        var respuesta = agregarRegistroInfoConsumerMOA.AgregarRegistroInfo(registros);
                         if (respuesta.Errores != null && respuesta.Errores.Any(x => x.Tipo == "E"))
                         {
                             try
