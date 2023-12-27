@@ -568,7 +568,7 @@
     <p-header class="headerModal">
         Errores
     </p-header>
-    <strong>A continuación se listan los errores en SAP: </strong>
+    <strong>A continuación se listan los errores generados: </strong>
     <br>
     <br>
     <div *ngFor="let error of errores">
@@ -589,7 +589,7 @@
     ¿Desea continuar con la adjudicación?
     <p-footer>
         <button type="button" class="btn btn-danger botonesComprasColor botonModal" (click)="noContinuarAdjudicacion()">No</button>
-        <button type="button" class="btn btn-primary botonesComprasColor botonModal" (click)="continuarAdjudicacion(proveedor)">Si</button>
+        <button type="button" class="btn btn-primary botonesComprasColor botonModal" (click)="continuarAdjudicacion()">Si</button>
 
     </p-footer>
 </p-dialog>
