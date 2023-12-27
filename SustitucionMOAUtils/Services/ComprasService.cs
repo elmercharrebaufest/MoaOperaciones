@@ -5242,8 +5242,7 @@ namespace SustitucionMOAUtils.Services
                 var cotizacion = cotizacionDto.CotizacionId == 0 ? null :
                     repositorio.Obtener<Cotizacion>(cotizacionDto.CotizacionId);
                 var info = repositorio.Listar<TablaSap>(x => x.Tabla == TablasSap.Moneda || x.Tabla == TablasSap.Unidad);
-                var esModificar = false;
-
+               
                 if (cotizacion == null)
                 {
                     if (peticionUsuario != null)
@@ -5329,8 +5328,7 @@ namespace SustitucionMOAUtils.Services
                     if (cotizacion.Archivos == null)
                     {
                         cotizacion.Archivos = new List<Archivo>();
-                    }
-                    esModificar = cotizacion.CotizacionEstado_Id == (int)CotizacionEstadoEnum.Cotizado;
+                    }                
 
                     //if (cotizacionDto.RespetaServicios == true && cotizacionDto.RespetaMateriales == true)
                     //{
@@ -5374,6 +5372,8 @@ namespace SustitucionMOAUtils.Services
                     Logger.Log.Error(new Exception($"Error al enviar mail GrabarCotizacion en cotizacion: " + cotizacion.Id));
                     Logger.Log.Error(e);
                 }
+
+              
 
                 if (cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.RegistroInfo != true && cotizacion.CotizacionEstado_Id == (int)CotizacionEstadoEnum.Cotizado
                     && cotizacion.CotizacionPosiciones.FirstOrDefault().PeticionDeOfertaSolpPosicion.SolpPosicion.TipoPosicion.Codigo == "MATERIALES")
@@ -6409,7 +6409,9 @@ namespace SustitucionMOAUtils.Services
                     Precio = cotizacionPosicion.Precio.Value,
                     FechaVigencia = cotizacionPosicion.FechaDeVigencia.HasValue ? cotizacionPosicion.FechaDeVigencia.Value.ToString("yyyy-MM-dd") : DateTime.Now.AddDays(15).Date.ToString("yyyy-MM-dd"),
                     FechaVigenciaFormateada = cotizacionPosicion.FechaDeVigencia ?? DateTime.Now.AddDays(15).Date,
-                    GrupoDeCompras = cotizacionPosicion.PeticionDeOfertaSolpPosicion.SolpPosicion.GrupoCompras.Codigo
+                    GrupoDeCompras = cotizacionPosicion.PeticionDeOfertaSolpPosicion.SolpPosicion.GrupoCompras.Codigo,
+                    EsModificar = ObtenerUltimoRegistroMaterial(cotizacionPosicion.PeticionDeOfertaSolpPosicion.SolpPosicion.MaterialSolp.Codigo,
+                    cotizacionPosicion.PeticionDeOfertaSolpPosicion.SolpPosicion.Centro.Codigo, "2029").EsModificar
                 };
                 var solpPosicion = solpPosiciones.FirstOrDefault(p => p.MaterialSolp.Codigo == cotizacionPosicion.PeticionDeOfertaSolpPosicion.SolpPosicion.MaterialSolp.Codigo);
                 if (solpPosicion != null && cotizacionPosicion.UnidadDeMedida.Id != solpPosicion.Unidad_Id)
@@ -6533,12 +6535,13 @@ namespace SustitucionMOAUtils.Services
         public RegistroInfoDto ObtenerUltimoRegistroMaterial(string material, string centro, string grupoDeCompras)
         {
             RegistroInfoDto ultimoRegistro = new RegistroInfoDto();
-
+            ultimoRegistro.EsModificar = false;
             var registros = obtenerRegistroInfoConsumerMOA.ObtenerRegistroInfoConsumer(material, centro, grupoDeCompras)
-                               .Where(x => x.NumeroOrdenDeCompra != null).OrderByDescending(x => x.FechaUltimaCompra);
+                               .Where(x => x.NumeroOrdenDeCompra != null).OrderByDescending(x => x.FechaUltimaCompra);            
             if (registros.Any())
             {
                 ultimoRegistro = registros.First();
+                ultimoRegistro.EsModificar = true;
             }
             return ultimoRegistro;
         }

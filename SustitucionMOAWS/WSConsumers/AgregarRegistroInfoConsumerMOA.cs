@@ -165,7 +165,7 @@ namespace SustitucionMOAWS.WSConsumers
                     },
                 };
 
-                if (esModificar)
+                if (registro.EsModificar)
                 {
                     registroInfoSAP.CONDITION = new List<MEWICONDITION>()
                     {
