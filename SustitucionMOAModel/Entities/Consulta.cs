@@ -24,6 +24,7 @@ namespace SustitucionMOAModel.Entities
         public DateTime FechaCreacion { get; set; }
         public DateTime FechaUltimaModificacion { get; set; }
         public int? UsuarioInterno_Id { get; set; }
+        public DateTime? FechaVtoReapertura { get; set; }
 
         [ForeignKey("Usuario_Id")]
         public virtual Usuario Usuario { get; set; }
