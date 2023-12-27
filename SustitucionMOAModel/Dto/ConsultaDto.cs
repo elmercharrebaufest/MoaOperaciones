@@ -24,6 +24,7 @@ namespace SustitucionMOAModel.Dto
         public DateTime FechaUltimaModificacion { get; set; }
         public int UsuarioId { get; set; }
         public int? UsuarioInternoId { get; set; }
+        public DateTime? FechaVtoReapertura { get; set; }
         public int UsuarioActualId { get; set; }
         public string Material { get; set; }
         public int? Material_Id { get; set; }
@@ -54,6 +55,22 @@ namespace SustitucionMOAModel.Dto
             } 
         }
 
+        public bool PuedeReabrir
+        {
+            get
+            {
+                if (this.EstadoConsulta.Code == EstadosConsulta.Finalizado.Code() && this.UsuarioInternoId == null
+                    && this.FechaVtoReapertura != null && DateTime.Now < this.FechaVtoReapertura)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }         
+            }
+        }
+
         public ConsultaDto() { }
 
         public ConsultaDto(Consulta consulta)
@@ -82,6 +99,7 @@ namespace SustitucionMOAModel.Dto
             this.FechaUltimaModificacion = consulta.FechaUltimaModificacion;
             this.UsuarioId = consulta.Usuario_Id;
             this.UsuarioInternoId = consulta.UsuarioInterno_Id;
+            this.FechaVtoReapertura = consulta.FechaVtoReapertura;
             this.Usuario = new UsuarioDto(consulta.Usuario);
             if (consulta.Detalle != null) {
                 this.Fecha = consulta.Detalle.Fecha;

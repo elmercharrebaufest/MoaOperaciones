@@ -281,6 +281,7 @@ namespace SustitucionMOAUtils.Services
                 FechaUltimaModificacion = c.FechaUltimaModificacion,
                 UsuarioId = c.Usuario_Id,
                 UsuarioInternoId = c.UsuarioInterno_Id,
+                FechaVtoReapertura = c.FechaVtoReapertura,
                 Usuario = new UsuarioDto()
                 {
                     Id = c.Usuario.Id,
@@ -528,6 +529,7 @@ namespace SustitucionMOAUtils.Services
                     FechaUltimaModificacion = x.FechaUltimaModificacion,
                     UsuarioId = x.Usuario_Id,
                     UsuarioInternoId = x.UsuarioInterno_Id,
+                    FechaVtoReapertura = x.FechaVtoReapertura,
                     Fecha = x.Detalle != null ? x.Detalle.Fecha : null,
                     ComprobanteNo = x.Detalle != null ? x.Detalle.ComprobanteNo : "",
                     OtroComprobanteNo = x.Detalle != null ? x.Detalle.OtroComprobanteNo : "",
@@ -587,6 +589,12 @@ namespace SustitucionMOAUtils.Services
             var usuario = repositorio.Obtener<Usuario>(u => u.Id == consulta.Usuario_Id);
             consulta.Categoria_Id = categoriaId;
             consulta.EstadoConsulta_Id = estadoConsultaId;
+
+            if(consulta.EstadoConsulta.Code != "CERR" && estado.Code == "CERR")
+            {
+                consulta.FechaVtoReapertura = DateTime.Now.AddDays(7);
+            }
+
             if (subcategoriaId != 0)
             {
                 consulta.SubCategoria_Id = subcategoriaId;

@@ -13,6 +13,7 @@
 	[FechaCreacion] DATETIME2 NOT NULL DEFAULT (getdate()), 
 	[FechaUltimaModificacion] DATETIME2 NOT NULL DEFAULT (getdate()), 
 [UsuarioInterno_Id] INT NULL, 
+    [FechaVtoReapertura] DATETIME2 NULL, 
     CONSTRAINT [PK_dbo.Consulta] PRIMARY KEY CLUSTERED 
 (
 	[Id] ASC

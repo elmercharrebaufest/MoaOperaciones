@@ -15,6 +15,7 @@ export interface Consulta {
     UsuarioId;
     UsuarioActualId;
     UsuarioInternoId;
+    FechaVtoReapertura;
 
 
     Fecha;
@@ -35,6 +36,7 @@ export interface Consulta {
     
     DiasReclamo;
     Usuario?;
+    PuedeReabrir;
 }
 
 export interface EstadoConsulta {
