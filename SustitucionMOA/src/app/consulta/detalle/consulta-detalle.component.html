@@ -166,7 +166,7 @@
                             <strong>Fecha Creacion:</strong> {{this.consulta.FechaCreacion | date:'dd/MM/yyyy'}}
                         </ng-container>
                     </div>
-                    <div *ngIf="puedeReabrir" class="botonActualizarCombos" style="margin-top: 10px;">
+                    <div *ngIf="this.consulta.PuedeReabrir && !esInterno" class="botonActualizarCombos" style="margin-top: 10px;">
                         <spinner-small></spinner-small>
                         <button (click)="reabrirConsulta()" class="mx-auto d-block enviarComentario"
                             style="text-decoration:none!important; padding-bottom: 15px;">

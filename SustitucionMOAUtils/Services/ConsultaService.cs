@@ -575,6 +575,7 @@ namespace SustitucionMOAUtils.Services
             var categoria = repositorio.Obtener<Categoria>(c => c.Id == categoriaId);
             SubCategoria subCategoria = new SubCategoria() { };
             var estado = repositorio.Obtener<EstadoConsulta>(c => c.Id == estadoConsultaId);
+            var estadoCerrado = repositorio.Obtener<EstadoConsulta>(c => c.Code == "CER");
 
             if (subcategoriaId.HasValue && subcategoriaId != 0)
             {
@@ -588,12 +589,13 @@ namespace SustitucionMOAUtils.Services
             var consulta = GetConsulta(consultaId);
             var usuario = repositorio.Obtener<Usuario>(u => u.Id == consulta.Usuario_Id);
             consulta.Categoria_Id = categoriaId;
-            consulta.EstadoConsulta_Id = estadoConsultaId;
 
-            if(consulta.EstadoConsulta.Code != "CERR" && estado.Code == "CERR")
+            if(consulta.EstadoConsulta_Id != estadoCerrado.Id 
+                && estado.Id == estadoCerrado.Id)
             {
                 consulta.FechaVtoReapertura = DateTime.Now.AddDays(7);
             }
+            consulta.EstadoConsulta_Id = estadoConsultaId;
 
             if (subcategoriaId != 0)
             {

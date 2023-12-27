@@ -115,7 +115,6 @@ export class DetalleConsultaComponent extends BaseComponent {
     estadoId: number;
     categoriaId: number;
     MostrarDatosAdicionales: boolean = false;
-    puedeReabrir: boolean = false;
     listaArchivos: Array<File> = new Array<File>();
 
     tieneSubcategorias: boolean = false;
@@ -689,11 +688,6 @@ export class DetalleConsultaComponent extends BaseComponent {
                             this.getDateFromAspNetFormat(this.consulta.Fecha)
                         );
 
-                        if(this.consulta.EstadoConsulta.Code == "CER" && !this.esInterno && 
-                        this.consulta.UsuarioInternoId == undefined){
-                            this.puedeReabrir = true;
-                        }
-
                         this.estadoId = result.EstadoConsultaId;
                         this.categoriaId = result.CategoriaId;
                         this.subcategoriaId = result.SubCategoriaId;
@@ -838,7 +832,6 @@ export class DetalleConsultaComponent extends BaseComponent {
                         this.mensajeComponent.setSuccessMsg(
                             "La consulta se reabrió correctamente."
                         );
-                        this.puedeReabrir = false;
                         this.getDetalleConsulta();
                     }
                 },
