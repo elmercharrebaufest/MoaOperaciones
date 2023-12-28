@@ -5338,7 +5338,7 @@ namespace SustitucionMOAUtils.Services
                 bool tieneUnidadDeMedidaNula = false;
                 if (peticionUsuario.PeticionDeOferta.Solp.Posiciones.FirstOrDefault().TipoPosicion.Codigo == "MATERIALES")
                 {
-                    tieneUnidadDeMedidaNula = tieneUnidadDeMedidaNula = cotizacionDto.CotizacionPosiciones?.Any(pos =>
+                    tieneUnidadDeMedidaNula = tieneUnidadDeMedidaNula = cotizacionDto.CotizacionPosiciones.Where(x => !(x.NoDisponible == true))?.Any(pos =>
                     pos.UnidadDeMedidaId == null || !info.Any(unidad => unidad.Id == pos.UnidadDeMedidaId)) ?? false;
                 }
                 else
