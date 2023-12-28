@@ -5372,7 +5372,6 @@ namespace SustitucionMOAUtils.Services
                     Logger.Log.Error(new Exception($"Error al enviar mail GrabarCotizacion en cotizacion: " + cotizacion.Id));
                     Logger.Log.Error(e);
                 }
-
               
 
                 if (cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.RegistroInfo != true && cotizacion.CotizacionEstado_Id == (int)CotizacionEstadoEnum.Cotizado
@@ -5381,22 +5380,15 @@ namespace SustitucionMOAUtils.Services
                     if (!cotizacion.CotizacionPosiciones.All(x => x.NoDisponible == true))
                     {
                         var registros = CrearRegistroInfoDto(cotizacion);
-                        var respuesta = agregarRegistroInfoConsumerMOA.AgregarRegistroInfo(registros);
-                        if (respuesta.Errores != null && respuesta.Errores.Any(x => x.Tipo == "E"))
+                        if (registros.Any(x => !x.EsModificar))
                         {
-                            try
-                            {
-                                EnviarMailAvisoDeErrorRegistroInfo(cotizacion);
-                            }
-                            catch (Exception e)
-                            {
-
-                                Logger.Log.Error(new Exception($"Error al enviar mail AgregarRegistroInfo en cotizacion: " + cotizacion.Id));
-                                Logger.Log.Error(e);
-                            }
+                            CrearRegistroInfo(cotizacion, registros.Where(x => !x.EsModificar).ToList());
                         }
+                        registros.ForEach(x => x.EsModificar = true);
+                        CrearRegistroInfo(cotizacion, registros);
                     }
                 }
+
                 respuestaGuardarSOLP.IdEntidad = cotizacion.Id;
                 repositorio.GuardarCambios();
                 return respuestaGuardarSOLP;
@@ -5405,6 +5397,24 @@ namespace SustitucionMOAUtils.Services
             catch (Exception)
             {
                 throw;
+            }
+        }
+
+        private void CrearRegistroInfo(Cotizacion cotizacion, List<RegistroInfoDto> registros)
+        {
+            var respuesta = agregarRegistroInfoConsumerMOA.AgregarRegistroInfo(registros);
+            if (respuesta.Errores != null && respuesta.Errores.Any(x => x.Tipo == "E"))
+            {
+                try
+                {
+                    EnviarMailAvisoDeErrorRegistroInfo(cotizacion);
+                }
+                catch (Exception e)
+                {
+
+                    Logger.Log.Error(new Exception($"Error al enviar mail AgregarRegistroInfo en cotizacion: " + cotizacion.Id));
+                    Logger.Log.Error(e);
+                }
             }
         }
 
