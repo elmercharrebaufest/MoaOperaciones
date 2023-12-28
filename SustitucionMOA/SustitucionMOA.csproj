@@ -1005,6 +1005,8 @@
     <Content Include="dist\glyphicons-halflings-regular.*.woff2" />
     <Content Include="dist\*.js.map" />
     <Content Include="dist\web.config" />
+	<Content Include="dist\Content\fonts\Roboto-Regular.ttf" />
+
     <Content Include="Content\fonts\glyphicons-halflings-regular.eot" />
     <Content Include="Content\fonts\glyphicons-halflings-regular.ttf" />
     <Content Include="Content\fonts\glyphicons-halflings-regular.woff" />
@@ -1572,6 +1574,8 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+	<Folder Include="dist\assets\css\" />
+
     <Folder Include="src\app\echeq\gestion\" />
     <Folder Include="Views\Default\" />
     <Folder Include="Views\Documentos\" />
