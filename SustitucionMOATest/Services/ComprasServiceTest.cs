@@ -1526,7 +1526,7 @@ namespace SustitucionMOATest.Services
         public void AutocompleteMaterialRFCOk()
         {
             RegistroInfoDto registroInfo = new RegistroInfoDto { Cantidad = 5, Moneda = "USDM", Centro = "1029", GrupoDeCompras = "" };
-            obtenerRegistroInfoConsumerMOAMock.Setup(y => y.ObtenerRegistroInfoConsumer(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+            obtenerRegistroInfoConsumerMOAMock.Setup(y => y.ObtenerRegistroInfoConsumer(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
                 .Returns(new List<RegistroInfoDto> { registroInfo });
             var result = target.ObtenerUltimoRegistroMaterial("codigoMaterial", "codigoCentro", "codigoGrupoDeCompras");
             Assert.That(result, Is.Not.Null);

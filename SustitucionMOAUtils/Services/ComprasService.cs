@@ -3382,7 +3382,7 @@ namespace SustitucionMOAUtils.Services
 
                 foreach (var posicionAgrupada in consultaRegistro)
                 {
-                    var registros = obtenerRegistroInfoConsumerMOA.ObtenerRegistroInfoConsumer(posicionAgrupada.Key.Material, posicionAgrupada.Key.Centro, posicionAgrupada.Key.GrupoDeCompras);
+                    var registros = obtenerRegistroInfoConsumerMOA.ObtenerRegistroInfoConsumer(posicionAgrupada.Key.Material, posicionAgrupada.Key.Centro, posicionAgrupada.Key.GrupoDeCompras, "");
                     if (registros != null)
                     {
                         CrearProveedor(registros.Select(x => x.Vendedor).ToList());
@@ -6409,8 +6409,8 @@ namespace SustitucionMOAUtils.Services
                     FechaVigencia = cotizacionPosicion.FechaDeVigencia.HasValue ? cotizacionPosicion.FechaDeVigencia.Value.ToString("yyyy-MM-dd") : DateTime.Now.AddDays(15).Date.ToString("yyyy-MM-dd"),
                     FechaVigenciaFormateada = cotizacionPosicion.FechaDeVigencia ?? DateTime.Now.AddDays(15).Date,
                     GrupoDeCompras = cotizacionPosicion.PeticionDeOfertaSolpPosicion.SolpPosicion.GrupoCompras.Codigo,
-                    EsModificar = ObtenerUltimoRegistroMaterial(cotizacionPosicion.PeticionDeOfertaSolpPosicion.SolpPosicion.MaterialSolp.Codigo,
-                    cotizacionPosicion.PeticionDeOfertaSolpPosicion.SolpPosicion.Centro.Codigo, "2029").EsModificar
+                    EsModificar = ObtenerUltimoRegistroPorMaterialYProveedor(cotizacionPosicion.PeticionDeOfertaSolpPosicion.SolpPosicion.MaterialSolp.Codigo,
+                    cotizacionPosicion.PeticionDeOfertaSolpPosicion.SolpPosicion.Centro.Codigo, "2029", cotizacionPosicion.Cotizacion.UsuarioCreador.ObtenerCodigoProveedor()).EsModificar
                 };
                 var solpPosicion = solpPosiciones.FirstOrDefault(p => p.MaterialSolp.Codigo == cotizacionPosicion.PeticionDeOfertaSolpPosicion.SolpPosicion.MaterialSolp.Codigo);
                 if (solpPosicion != null && cotizacionPosicion.UnidadDeMedida.Id != solpPosicion.Unidad_Id)
@@ -6535,7 +6535,21 @@ namespace SustitucionMOAUtils.Services
         {
             RegistroInfoDto ultimoRegistro = new RegistroInfoDto();
             ultimoRegistro.EsModificar = false;
-            var registros = obtenerRegistroInfoConsumerMOA.ObtenerRegistroInfoConsumer(material, centro, grupoDeCompras)
+            var registros = obtenerRegistroInfoConsumerMOA.ObtenerRegistroInfoConsumer(material, centro, grupoDeCompras, "")
+                               .Where(x => x.NumeroOrdenDeCompra != null).OrderByDescending(x => x.FechaUltimaCompra);            
+            if (registros.Any())
+            {
+                ultimoRegistro = registros.First();
+                ultimoRegistro.EsModificar = true;
+            }
+            return ultimoRegistro;
+        }
+
+        private RegistroInfoDto ObtenerUltimoRegistroPorMaterialYProveedor(string material, string centro, string grupoDeCompras, string proveedor)
+        {
+            RegistroInfoDto ultimoRegistro = new RegistroInfoDto();
+            ultimoRegistro.EsModificar = false;
+            var registros = obtenerRegistroInfoConsumerMOA.ObtenerRegistroInfoConsumer(material, centro, grupoDeCompras, proveedor)
                                .Where(x => x.NumeroOrdenDeCompra != null).OrderByDescending(x => x.FechaUltimaCompra);
             if (registros.Any())
             {
