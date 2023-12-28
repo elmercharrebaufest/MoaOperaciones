@@ -2681,7 +2681,7 @@ namespace SustitucionMOAUtils.Services
             try
             {
                 var hoy = DateTime.Now;
-                 var todasLasOfertas = repositorio.ObtenerConsultaEscalar(new ComparadorOfertasConsulta(PeticionOferta_Id));
+                var todasLasOfertas = repositorio.ObtenerConsultaEscalar(new ComparadorOfertasConsulta(PeticionOferta_Id));
                 Dictionary<int, decimal> tipodecambio = new Dictionary<int, decimal>();
                 var destino = repositorio.Obtener<TablaSap>(x => x.Codigo == "ARP" && x.Tabla == TablasSap.Moneda);
                 var adjudicaciones = repositorio.Listar<Adjudicacion>(x => x.Solp_Id == todasLasOfertas.Solp_Id);
@@ -5242,7 +5242,7 @@ namespace SustitucionMOAUtils.Services
                 var cotizacion = cotizacionDto.CotizacionId == 0 ? null :
                     repositorio.Obtener<Cotizacion>(cotizacionDto.CotizacionId);
                 var info = repositorio.Listar<TablaSap>(x => x.Tabla == TablasSap.Moneda || x.Tabla == TablasSap.Unidad);
-               
+
                 if (cotizacion == null)
                 {
                     if (peticionUsuario != null)
@@ -5328,7 +5328,7 @@ namespace SustitucionMOAUtils.Services
                     if (cotizacion.Archivos == null)
                     {
                         cotizacion.Archivos = new List<Archivo>();
-                    }                
+                    }
 
                     //if (cotizacionDto.RespetaServicios == true && cotizacionDto.RespetaMateriales == true)
                     //{
@@ -5373,7 +5373,7 @@ namespace SustitucionMOAUtils.Services
                     Logger.Log.Error(e);
                 }
 
-              
+
 
                 if (cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.RegistroInfo != true && cotizacion.CotizacionEstado_Id == (int)CotizacionEstadoEnum.Cotizado
                     && cotizacion.CotizacionPosiciones.FirstOrDefault().PeticionDeOfertaSolpPosicion.SolpPosicion.TipoPosicion.Codigo == "MATERIALES")
@@ -5757,6 +5757,7 @@ namespace SustitucionMOAUtils.Services
 
         public RespuestaCrearOrdenDeCompra GrabarAdjudicacion(AdjudicacionDto adjudicacionDto, int usuarioActualId, string mensaje = "")
         {
+            var adjudicacion = new Adjudicacion();
             try
             {
                 var respuestaGuardarSOLP = new RespuestaCrearOrdenDeCompra();
@@ -5769,7 +5770,6 @@ namespace SustitucionMOAUtils.Services
                     var monedaProv = DevolverMonedaProveedor(adjudicacionDto.Proveedor).Moneda;
                     if (!string.IsNullOrEmpty(monedaProv))
                     {
-
                         adjudicacionDto.Moneda_Id = tablasap.Where(moneda => moneda.CodigoSap == monedaProv).FirstOrDefault().Id;
                         adjudicacionDto.AdjudicacionPosiciones.ForEach(x => x.MonedaId = adjudicacionDto.Moneda_Id);
                     }
@@ -5789,18 +5789,16 @@ namespace SustitucionMOAUtils.Services
                         return respuestaGuardarSOLP;
                     }
                 }
-                
 
                 //adjudicacionDto.Moneda_Id = tablasap.Where(moneda => moneda.CodigoSap == "ARP").FirstOrDefault().Id;
-                var posicionesPorMoneda = adjudicacionDto.AdjudicacionPosiciones
-                 .GroupBy(posicion => posicion.MonedaId);
+                var posicionesPorMoneda = adjudicacionDto.AdjudicacionPosiciones.GroupBy(posicion => posicion.MonedaId);
 
                 foreach (var grupo in posicionesPorMoneda)
                 {
                     var monedaKey = grupo.Key; // Obtener la moneda del grupo actual
                     if (monedaKey != null)
                     {
-                        var adjudicacion = new Adjudicacion()
+                        adjudicacion = new Adjudicacion
                         {
                             Cotizacion_Id = adjudicacionDto.Cotizacion_Id,
                             Moneda_Id = monedaKey.Value,
@@ -5819,7 +5817,7 @@ namespace SustitucionMOAUtils.Services
                             Posiciones = adjudicacionDto.AdjudicacionPosiciones.Select(x => new AdjudicacionPosicion
                             {
                                 Cantidad = x.Cantidad,
-                                Monto = cotizacion.CotizacionPosiciones.Where(y => y.Id == x.CotizacionPosicion_Id).FirstOrDefault().Precio.Value * 
+                                Monto = cotizacion.CotizacionPosiciones.Where(y => y.Id == x.CotizacionPosicion_Id).FirstOrDefault().Precio.Value *
                                 ObtenerTipoCambio(cotizacion.CotizacionPosiciones.Where(y => y.Id == x.CotizacionPosicion_Id).FirstOrDefault().Moneda_Id.Value, monedaKey.Value, DateTime.Now).TipoCambio,
                                 CotizacionPosicion_Id = x.CotizacionPosicion_Id,
                                 CotizacionPosicion = cotizacion.CotizacionPosiciones.Where(y => y.Id == x.CotizacionPosicion_Id).FirstOrDefault(),
@@ -5829,10 +5827,9 @@ namespace SustitucionMOAUtils.Services
                                   .Where(y => y.Id == x.SolpPosicion_Id).FirstOrDefault().Id
                             }).ToList(),
                             Token = Guid.NewGuid().ToString(),
-                            RegionSap_Id = 20
+                            RegionSap_Id = 20,
+                            NumeroOrdenDeCompra = ""
                         };
-
-                        adjudicacion.NumeroOrdenDeCompra = "";
                         repositorio.Agregar(adjudicacion);
                         repositorio.GuardarCambios();
                         respuestaGuardarSOLP = CrearOrdenDeCompra(adjudicacion);
@@ -5847,22 +5844,19 @@ namespace SustitucionMOAUtils.Services
                             repositorio.Remover(adjudicacion);
                         }
 
-
                         repositorio.GuardarCambios();
-                        var mails = DevolverMailResultadoLicitacion(cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta);
-                        bool esServicios = cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Solp.Posiciones.Select(x => x.TipoPosicion.Codigo).FirstOrDefault() != "MATERIALES";
-                        if (mails.Count > 0 && esServicios)
+                        try
                         {
-
-                            try
+                            var mails = DevolverMailResultadoLicitacion(cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta);
+                            bool esServicios = cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Solp.Posiciones.Select(x => x.TipoPosicion.Codigo).FirstOrDefault() != "MATERIALES";
+                            if (mails.Count > 0 && esServicios)
                             {
                                 EnviarMailResultadoAdjudicacion(mails, adjudicacion.Cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta);
                             }
-                            catch (Exception)
-                            {
-                                Logger.Log.Info($"Error al enviar mail {adjudicacion.Cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Id}  para el cierre de la cotizacion");
-                            }
-
+                        }
+                        catch (Exception)
+                        {
+                            Logger.Log.Info($"Error al enviar mail {adjudicacion.Cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Id} para el cierre de la cotizacion");
                         }
                     }
                 }
@@ -5871,6 +5865,11 @@ namespace SustitucionMOAUtils.Services
             }
             catch (Exception e)
             {
+                if (adjudicacion.Id > 0)
+                {
+                    repositorio.Remover(adjudicacion);
+                    repositorio.GuardarCambios();
+                }
                 throw;
             }
         }
@@ -5882,10 +5881,10 @@ namespace SustitucionMOAUtils.Services
             foreach (var posicion in posicionesAValidar)
             {
                 var monedaPosicion = posicion.Moneda_Id; // Obtener el ID de la moneda de la posición
-                
+
                 if (posicion.CotizacionSubPosiciones.Count > 0 && posicion.CotizacionSubPosiciones.Any(subposicion => subposicion.Moneda_Id != monedaPosicion))
                 {
-                    if(respuestaGuardarSOLP.Errores == null)
+                    if (respuestaGuardarSOLP.Errores == null)
                     {
                         respuestaGuardarSOLP.Errores = new List<string>();
                     }
@@ -6537,7 +6536,7 @@ namespace SustitucionMOAUtils.Services
             RegistroInfoDto ultimoRegistro = new RegistroInfoDto();
             ultimoRegistro.EsModificar = false;
             var registros = obtenerRegistroInfoConsumerMOA.ObtenerRegistroInfoConsumer(material, centro, grupoDeCompras)
-                               .Where(x => x.NumeroOrdenDeCompra != null).OrderByDescending(x => x.FechaUltimaCompra);            
+                               .Where(x => x.NumeroOrdenDeCompra != null).OrderByDescending(x => x.FechaUltimaCompra);
             if (registros.Any())
             {
                 ultimoRegistro = registros.First();
