@@ -165,9 +165,7 @@ namespace SustitucionMOAWS.WSConsumers
                     },
                 };
 
-                if (registro.EsModificar)
-                {
-                    registroInfoSAP.CONDITION = new List<MEWICONDITION>()
+                registroInfoSAP.CONDITION = new List<MEWICONDITION>()
                     {
                        new MEWICONDITION
                        {
@@ -188,6 +186,9 @@ namespace SustitucionMOAWS.WSConsumers
                         COND_VALUESpecified = true,
                         }
                     };
+
+                if (registro.EsModificar)
+                {                 
 
                     registroInfoSAP.MEWIVALIDITY = new List<MEWIVALIDITY>()
                     {

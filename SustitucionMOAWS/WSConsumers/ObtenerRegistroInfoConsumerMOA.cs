@@ -25,7 +25,7 @@ namespace SustitucionMOAWS.WSConsumers
             this.repositorio = repositorio;
         }
 
-        List<RegistroInfoDto> IObtenerRegistroInfoConsumerMOA.ObtenerRegistroInfoConsumer(string material, string centro, string grupoDeCompras)
+        List<RegistroInfoDto> IObtenerRegistroInfoConsumerMOA.ObtenerRegistroInfoConsumer(string material, string centro, string grupoDeCompras, string proveedor)
         {
             try
             {
@@ -35,7 +35,7 @@ namespace SustitucionMOAWS.WSConsumers
                 BAPIEINE[] INFORECORD_PURCHORG = new BAPIEINE[] { };
                 BAPIRETURN[] bAPIRETURNs = new BAPIRETURN[] { };
                 service.BAPI_INFORECORD_GETLIST("", "", "", material, bAPIMGVMATNR, "", "", centro, "", "", "",
-                                                ""/*grupoDeCompras*/, "", "", "", "", "", ref INFORECORD_GENERAL, ref INFORECORD_PURCHORG, ref bAPIEINEs, ref bAPIRETURNs);
+                                                ""/*grupoDeCompras*/,"", proveedor, "", "", "", ref INFORECORD_GENERAL, ref INFORECORD_PURCHORG, ref bAPIEINEs, ref bAPIRETURNs);
 
                 return Map(INFORECORD_GENERAL, INFORECORD_PURCHORG, bAPIRETURNs);
             }
