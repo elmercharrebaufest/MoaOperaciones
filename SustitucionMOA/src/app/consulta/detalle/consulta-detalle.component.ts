@@ -147,7 +147,6 @@ export class DetalleConsultaComponent extends BaseComponent {
         this.checkPermisos();
         this.jqueryOnInit();
         this.getCombos();
-        this.getDetalleConsulta();
     }
 
     ngAfterViewInit(): void {
@@ -624,6 +623,7 @@ export class DetalleConsultaComponent extends BaseComponent {
                             this.tieneSubcategorias = true;
                         }*/
                         this.causasConsulta = result.causas;
+                        this.getDetalleConsulta();
                     }
                 },
                 (error) => {
