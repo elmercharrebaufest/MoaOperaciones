@@ -23,21 +23,12 @@ body.ui-paginator.ui-dropdown{
     width: 10% !important;
 }
 
-
-
-
-th{
-    border: 0px !important;
-}
-
-
-
 .columna{
     word-break: break-all; word-wrap:break-word; font-size: 12px;;
 }
 
-.headerth { 
-    font-size: 10px !important;
+.headerth {
+    font-size: 9px !important; 
     width: max-content;
     color: #ffffff !important;
     background-color: #666666 !important;
@@ -56,17 +47,9 @@ th{
     font-size: 0px;
 }
 
-.bg-e {
-    background-color: #959595 !important;
-}
 .bg-c {
-    background-color: #075088 !important;
+    background-color: #21643e !important;
 }
-
-.bg-d {
-    background-color: #1C7CD5 !important;
-}
-
 
 .percentage {
     background-color: #2acc53 !important;
@@ -75,43 +58,19 @@ th{
     border: 2px solid #756f6f !important;
 }
 
-.container-button {
-    justify-content: center;
-    display: flex;
-    padding-top: 10px;
-    padding-bottom: 10px;
+.dialog-accept-button {
+    background-color: #0b880b;
+    width: 33px !important;
 }
 
-.button-certificar {
-    color: white;
-    background: #075088;
-    border: none;
-    border-radius: 6px;
-    width: 40px;
-    padding: 10px;
-    font-weight: bolder;
-    min-width: 22%;
-    text-align: center;
-    font-size: 16px;
+.dialog-reject-button {
+    background-color: #e33030;
+    width: 33px !important;
 }
 
-
-.expandSmallColumn {
-    width:35px;
-}
-
-.expandSmallColumn2 {
-    width: 50px;
-}
-
-.expandSmallColumn3 {
+.text-brev{
+    white-space: nowrap; 
+    overflow: hidden; 
+    text-overflow: ellipsis;
     width: 80px;
-}
-
-.expandSmallColumn4 {
-    width: 90px;
-}
-
-.expandSmallColumn5 {
-    width: 180px;
 }

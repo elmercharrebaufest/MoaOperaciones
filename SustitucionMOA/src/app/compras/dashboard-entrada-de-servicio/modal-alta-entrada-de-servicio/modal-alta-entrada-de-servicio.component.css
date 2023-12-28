@@ -1,0 +1,161 @@
+
+  .header-table {
+    background-color: #075088 !important;
+    color: white;
+    border: none !important;
+    width: 50%;
+}
+
+.fila-par {
+  background-color: #fff; /* Fondo blanco para filas pares */
+}
+
+.bg-color {
+  background-color: #f5f5f5; /* Fondo gris claro para filas impares */
+}
+
+.input-group {
+  display: flex;
+}
+
+.input-group input {
+  width: 40%;
+  margin-left: 5px;
+  margin-right: 5px; /* Ajusta el espacio entre los inputs */
+}
+
+.container-button {
+  justify-content: center;
+  display: flex;
+}
+
+.button-continuar {
+  color: white;
+  background: #075088;
+  border: none;
+  border-radius: 6px;
+  width: 40px;
+  padding: 10px;
+  font-weight: bolder;
+  min-width: 35%;
+  text-align: center;
+  font-size: 16px;
+  margin-top: 4px;
+}
+
+.bg-c {
+  background-color: #1C7CD5;
+  padding: 8px !important;
+  text-align: center;
+  font-size: 15px;
+  width: auto;
+}
+
+.button-group {
+  display: flex;
+  justify-content: center;
+}
+
+.d-flex-1 {
+  max-width: 80%;
+  margin: 0 auto;
+}
+
+.d-flex-2 {
+  display: inline-block;
+  padding-right: 15px;
+  min-width: 50%;
+  width: auto;
+  max-width: min-content;
+}
+
+.d-flex-3 {
+  display: inline-block;
+  padding-right: 15px;
+  /* min-width: 45%;
+  width: 50%; */
+  min-width: 33%;
+  width: auto;
+  max-width: min-content;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 40px;
+
+}
+
+.tooltip-container {
+  position: relative;
+  cursor: pointer; 
+  max-width: 100px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: auto;
+}
+
+.tooltip-text {
+  visibility: hidden;
+  width: 200px; 
+  background-color: #333;
+  color: #fff;
+  text-align: center;
+  padding: 5px;
+  border-radius: 5px;
+  position: absolute;
+  z-index: 1;
+  bottom: 125%; 
+  left: 50%;
+  margin-left: -100px;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.tooltip-container:hover .tooltip-text {
+  visibility: visible;
+  opacity: 1;
+}
+
+.modal-container {
+  background-color: #fff;
+  width: 80vw;
+  max-width: 1000px;
+  height: 80vh;
+  max-height: 80vh;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  overflow: auto; 
+  padding: 8px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  padding: 8px;
+  border: 1px solid #ddd;
+  text-align: left;
+}
+
+@media screen and (max-width: 600px) {
+  .modal-container {
+    width: 90vw;
+  }
+}
+
+@media screen and (max-width: 400px) {
+  .modal-container {
+    width: 95vw;
+  }
+}

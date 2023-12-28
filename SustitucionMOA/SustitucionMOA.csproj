@@ -276,7 +276,7 @@
     <Content Include="Content\images\icons\trashWhite.svg" />
     <Content Include="Content\images\icons\worker.svg" />
     <Content Include="Content\images\LogoBaufest.png" />
-	   <Content Include="dist\Content\css\blockui.css" />
+    <Content Include="dist\Content\css\blockui.css" />
     <Content Include="dist\Content\css\bootstrap.min.css" />
     <Content Include="dist\Content\css\font-awesome.css" />
     <Content Include="dist\Content\css\font-awesome.min.css" />
@@ -378,6 +378,8 @@
     <Content Include="src\app\compras\dashboard-entrada-de-servicio\filtro-dashboard-certificacion-de-servicios\filtro-dashboard-certificacion-de-servicios.component.html" />
     <Content Include="src\app\compras\dashboard-entrada-de-servicio\listado-dashboard-certificacion-de-servicios\listado-dashboard-certificacion-de-servicios.component.css" />
     <Content Include="src\app\compras\dashboard-entrada-de-servicio\listado-dashboard-certificacion-de-servicios\listado-dashboard-certificacion-de-servicios.component.html" />
+    <Content Include="src\app\compras\dashboard-entrada-de-servicio\modal-alta-entrada-de-servicio\modal-alta-entrada-de-servicio.component.css" />
+    <Content Include="src\app\compras\dashboard-entrada-de-servicio\modal-alta-entrada-de-servicio\modal-alta-entrada-de-servicio.component.html" />
     <Content Include="src\app\compras\dashboard-proveedor\cotizacion-formulario\cotizacion-formulario.component.css" />
     <Content Include="src\app\compras\dashboard-proveedor\cotizacion-formulario\cotizacion-formulario.component.html" />
     <Content Include="src\app\compras\dashboard-proveedor\cotizacion-formulario\cotizacion-material\cotizacion-material.component.css" />
@@ -1005,8 +1007,7 @@
     <Content Include="dist\glyphicons-halflings-regular.*.woff2" />
     <Content Include="dist\*.js.map" />
     <Content Include="dist\web.config" />
-	<Content Include="dist\Content\fonts\Roboto-Regular.ttf" />
-
+    <Content Include="dist\Content\fonts\Roboto-Regular.ttf" />
     <Content Include="Content\fonts\glyphicons-halflings-regular.eot" />
     <Content Include="Content\fonts\glyphicons-halflings-regular.ttf" />
     <Content Include="Content\fonts\glyphicons-halflings-regular.woff" />
@@ -1229,6 +1230,8 @@
     <TypeScriptCompile Include="src\app\compras\dashboard-entrada-de-servicio\filtro-dashboard-certificacion-de-servicios\filtro-dashboard-certificacion-de-servicios.component.ts" />
     <TypeScriptCompile Include="src\app\compras\dashboard-entrada-de-servicio\listado-dashboard-certificacion-de-servicios\listado-dashboard-certificacion-de-servicios.component.spec.ts" />
     <TypeScriptCompile Include="src\app\compras\dashboard-entrada-de-servicio\listado-dashboard-certificacion-de-servicios\listado-dashboard-certificacion-de-servicios.component.ts" />
+    <TypeScriptCompile Include="src\app\compras\dashboard-entrada-de-servicio\modal-alta-entrada-de-servicio\modal-alta-entrada-de-servicio.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\compras\dashboard-entrada-de-servicio\modal-alta-entrada-de-servicio\modal-alta-entrada-de-servicio.component.ts" />
     <TypeScriptCompile Include="src\app\compras\dashboard-proveedor\cotizacion-formulario\cotizacion-formulario.component.ts" />
     <TypeScriptCompile Include="src\app\compras\dashboard-proveedor\cotizacion-formulario\cotizacion-material\cotizacion-material.component.ts" />
     <TypeScriptCompile Include="src\app\compras\dashboard-proveedor\cotizacion-formulario\cotizacion-material\plazo-de-oferta\plazo-de-oferta.component.ts" />
@@ -1574,8 +1577,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-	<Folder Include="dist\assets\css\" />
-
+    <Folder Include="dist\assets\css\" />
     <Folder Include="src\app\echeq\gestion\" />
     <Folder Include="Views\Default\" />
     <Folder Include="Views\Documentos\" />

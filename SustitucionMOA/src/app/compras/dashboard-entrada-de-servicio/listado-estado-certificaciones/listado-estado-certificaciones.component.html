@@ -1,0 +1,207 @@
+<section class="container-fluid clearfix">
+  <div class="row titleSection">
+      <div class="col-xs-12 col-sm-10 "> <strong>Dashboard - Solicitudes de certificaciones</strong></div>
+  </div>
+  <br>
+</section>
+<div class="content-wraper" style="padding-top: 0px !important;">
+  <spinner></spinner>
+  <!-- <app-filtro-dashboard-certificacion-de-servicios></app-filtro-dashboard-certificacion-de-servicios> -->
+  <div class="col-sm-12 col-md-12 col-lg-12" style="margin-left: -15px;">
+
+      <p-table #tabla [value]="tablaPO" responsiveLayout="scroll | stack" dataKey="Id">
+          <ng-template pTemplate="header" let-columns class="lista-header">
+              <tr>
+                  <th class="headerth" title="Detalle" style="width: 32px; text-align: center;">
+                      
+                  </th>
+
+                  <th class="headerth" title="ID_ES" style="width: 150px; text-align: center;">
+                      ID_ES
+                  </th>
+                  <th class="headerth" title="Fecha" (click)="onOrder('Fecha')" style="width: 86px">
+                      Fecha
+                      <span>
+                          <i
+                              [ngClass]="{'fa': true, 'fa-solid fa-sort-up': true, 'arrow': true, 'unselected': columna === 'Fecha' && orden == false  }"></i>
+                          <i
+                              [ngClass]="{'fa': true, 'fa-solid fa-sort-down': true, 'arrow': true, 'unselected': columnaOrden === 'Fecha' && orden == true }"></i>
+                      </span>
+                  </th>
+
+                  <th title="Número de OC" class="headerth" (click)="onOrder('OrdenCompraId')" style="width: 90px">
+                      Orden de compra
+                      <span>
+                          <i
+                              [ngClass]="{'fa': true, 'fa-solid fa-sort-up': true, 'arrow': true, 'unselected': columnaOrden === 'OrdenCompraId' && orden == false  }"></i>
+                          <i
+                              [ngClass]="{'fa': true, 'fa-solid fa-sort-down': true, 'arrow': true, 'unselected': columnaOrden === 'OrdenCompraId' && orden == true }"></i>
+                      </span>
+                  </th>
+
+                  <th title="Proveedor" class="headerth" (click)="onOrder('ProveedorNombre')" style="width: 105px;">
+                      Proveedor
+                      <span>
+                          <i
+                              [ngClass]="{'fa': true, 'fa-solid fa-sort-up': true, 'arrow': true, 'unselected': columnaOrden === 'ProveedorNombre' && orden == false  }"></i>
+                          <i
+                              [ngClass]="{'fa': true, 'fa-solid fa-sort-down': true, 'arrow': true, 'unselected': columnaOrden === 'ProveedorNombre' && orden == true }"></i>
+                      </span>
+                  </th>
+                  <th title="Descripción" class="headerth" style="width: 90px;">
+                      Descripción
+                  </th>
+
+                  <th title="Monto total" class="headerth columna" style="width:80px ;">
+                      Monto total
+                  </th>
+
+                  <th title="Usuario" class="headerth columna" style="width:90px ;">
+                      Usuario o Área
+                  </th>
+
+                  <th  class="headerth columna" style="width:40px ;">
+                    
+                  </th>
+
+                  <th title="Estado" class="headerth columna" style="width:120px;">
+                      Estado
+                  </th>
+
+                  <th title="Facturado" class="headerth columna" style="width:80px ;">
+                      Facturado
+                  </th>
+
+                  <th title="Acciones" class="headerth columna" style="width:90px ;">
+                      Acciones
+                  </th>
+
+                  <th title="Reasignar" class="headerth columna" style="width:145px ;">
+                      Reasignar
+                  </th>
+
+              </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-rowData let-columns="columns">
+              <tr>
+                  <td class="columna" style="text-align: center;">
+                      <a href="#" (click)="toggleRow(rowData)" [pRowToggler]="rowData">
+                          <i [ngClass]="expandedRows.includes(rowData) ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
+                      </a>
+                  </td>
+
+                  <td class="columna">
+                    ES_100147538495
+                  </td>
+                  <td class="columna">
+                      {{rowData.Fecha | customDateFormat | date :'d/M/yyyy' }}
+                  </td>
+                  <td class="columna">
+                      {{rowData.OrdenCompraId || ""}}
+                  </td>
+                  <td class="columna">
+                      {{rowData.ProveedorNombre}}
+                  </td>
+                  <td class="columna">
+                      Desc. Item o Linea
+                  </td>
+                  <td class="columna">
+                      {{rowData.MontoTotal}}
+                  </td>
+                  <td class="columna">
+                    S - Solicitante
+                  </td>
+                  <td class="columna">
+                    PA
+                  </td>
+                  <td class="columna">
+                    Certificación pendiente
+                  </td>
+                  <td class="columna">
+                    
+                  </td>
+                  <td class="columna">
+                    <button type="button" pButton icon="pi pi-check" class="dialog-accept-button" ></button>
+                    <button type="button" pButton icon="pi pi-times" class="dialog-reject-button" ></button>
+                  </td>
+                  <td class="columna">
+                    <div class="styled-select">
+                      <dropdown [tipoDropdown]="'filtroSC'" [options]="filtroVendedor"></dropdown>
+                    </div>
+                  </td>
+              </tr>
+          </ng-template>
+          <ng-template pTemplate="rowexpansion" let-rowData let-columns="columns">
+              <tr *ngFor="let posicion of rowData.Posiciones" >
+                  <td [attr.colspan]="14" class="fz" *ngIf="expandedRows.includes(rowData)">
+                      <div style="margin: 0px 34px 0px 34px;">
+                          <p-table [value]="posicion.Items" responsiveLayout="scroll | stack" dataKey="ItemId">
+          
+                              <ng-template pTemplate="header" class="fz">
+                                  <tr>
+                  
+                                      <th title="Posicion" class="headerth columna bg-c">
+                                          N° de Ítem
+                                      </th>
+
+                                      <th title="Material" class="headerth columna bg-c">
+                                          N° de Servicio
+                                      </th>
+
+                                      <th title="TxtBrev" class="headerth columna bg-c" style="width: 128px;" >
+                                          Descripción
+                                      </th>
+
+                                      <th title="CtdPedido" class="headerth columna bg-c" >
+                                          Cantidad
+                                      </th>
+
+                                      <th title="U" class="headerth columna bg-c">
+                                          UM
+                                      </th> 
+
+                                      <th title="T" class="headerth columna bg-c">
+                                          Monto
+                                      </th> 
+
+                                  </tr>
+                              </ng-template>
+          
+                              <ng-template pTemplate="body" let-item>
+                                  <tr>
+
+                                      <td class="columna">
+                                          Ítem_001
+                                      </td>
+                                      <td class="columna">
+                                          3001400
+                                      </td>
+                                      <td class="columna">
+                                          Descripción ítem o Línea 001
+                                      </td>
+                                      <td class="columna">
+                                          1
+                                      </td>
+                                      <td class="columna">
+                                          UNI
+                                      </td>
+                                      <td class="columna">
+                                          1000
+                                      </td>
+                                  </tr>
+                              </ng-template>
+                          </p-table>
+                      </div>
+                  </td>
+              </tr>
+
+
+          </ng-template>
+      </p-table>
+
+      <p-paginator #paginator [rows]="10" [totalRecords]="length"
+          (onPageChange)="handlePageEvent($event)">
+      </p-paginator>
+
+  </div>
+</div>
