@@ -169,6 +169,7 @@ export class ComprasService extends BaseService {
             RevisadoPor: solp.revisadoPor,
             ClaseDocumento: this.getObjetoCodigo(solp.selectClaseDocumento && solp.selectClaseDocumento.Codigo),
             Finalizar: solp.Finalizar,
+            LiberadoresSapSolp: solp.liberadoresSap,
             Posiciones: solp.posiciones.map(x => {
 
                 return {
@@ -949,7 +950,7 @@ export class ComprasService extends BaseService {
     public validarSolpTratada(nroSolp: string): Observable<any> {
         let params: HttpParams = new HttpParams();
         params = params.set("nroSolp", nroSolp);
-       
+
         return this.http
             .get("/api/compras/ValidarSolpTratada", {
                 params: params,
@@ -986,5 +987,11 @@ export class ComprasService extends BaseService {
 
         return this.http
             .post<any>('/api/compras/ValidarSubposicionConMonedaDiferente', payload, { headers: this.headers });
+    }
+    
+    public listarLiberadorSap(): Observable<any> {
+        return this.http.get("/api/compras/ListarLiberadorSap", {
+            headers: this.headers,
+        });
     }
 }

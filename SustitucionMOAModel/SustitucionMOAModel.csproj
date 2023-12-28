@@ -61,6 +61,7 @@
     <Compile Include="Consulta\ListaPaginada.cs" />
     <Compile Include="Dto\AplicacionCartaPorte\CargaMasivaResponse.cs" />
     <Compile Include="Dto\AplicacionCartaPorte\ComboAplicacionesContratosCcppResponse.cs" />
+    <Compile Include="Dto\LiberadorSapDto.cs" />
     <Compile Include="Dto\DestinatarioDto.cs" />
     <Compile Include="Dto\AplicacionCartaPorte\AplicacionCartaPorteApiDto.cs" />
     <Compile Include="Dto\AplicacionCartaPorte\CartaPorteParaAplicacionCartaPorte.cs" />
@@ -204,6 +205,7 @@
     <Compile Include="Entities\PeticionDeOferta.cs" />
     <Compile Include="Entities\OrdenDeCargaFason.cs" />
     <Compile Include="Entities\ProveedorAuditoria.cs" />
+    <Compile Include="Entities\LiberadorSap.cs" />
     <Compile Include="Entities\UnidadMedidaSap.cs" />
     <Compile Include="Enums\TipoLegajo.cs" />
     <Compile Include="Enums\RolEnum.cs" />

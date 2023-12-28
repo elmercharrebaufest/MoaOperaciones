@@ -84,6 +84,6 @@ namespace SustitucionMOAUtils.Interfaces
         ProveedorComprasDto DevolverMonedaProveedor(string codigoProveedor);
         List<RegionSap> ListarRegionesSap();
         bool ValidarSolpTratada(string nroSolp);
-
+        List<LiberadorSapDto> ListarLiberadorSap();
     }
 }

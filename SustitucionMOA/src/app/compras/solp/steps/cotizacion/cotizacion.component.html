@@ -53,15 +53,15 @@
                                 </div>
                             </div>
                         </p-panel>
-                        <div *ngIf="this.model.validarTrabajoHecho == false && ((this.model.archivosCotizaciones == null || this.model.archivosCotizaciones.length == 0) && (this.model.archivosCotizacionesNuevos == null || this.model.archivosCotizacionesNuevos.length == 0));">
+                        <div *ngIf="this.model.validacionCheck == false && ((this.model.archivosCotizaciones == null || this.model.archivosCotizaciones.length == 0) && (this.model.archivosCotizacionesNuevos == null || this.model.archivosCotizacionesNuevos.length == 0));">
                             <p class="text-danger">Campo obligatorio</p>
                         </div>
                     </div>
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 margenInput">
                         Observaciones
-                        <textarea [ngModelOptions]="{standalone:true}" [(ngModel)]="model.observacionesCotizacion" (ngModelChange)="validacionTrabajoHecho()"
+                        <textarea [ngModelOptions]="{standalone:true}" [(ngModel)]="model.observacionesCotizacion" (ngModelChange)="validarChecks()"
                                   name="observaciones" id="observaciones" cols="30" rows="5" placeholder="Indicar la cantidad de días con que se cuenta a partir de tener el equipo disponible, en una parada programada o que el trabajo depende de otros"></textarea>
-                        <div *ngIf="this.model.validarTrabajoHecho == false && (this.model.observacionesCotizacion == ''  || this.model.observacionesCotizacion == undefined || this.model.observacionesCotizacion == null)">
+                        <div *ngIf="this.model.validacionCheck == false && (this.model.observacionesCotizacion == ''  || this.model.observacionesCotizacion == undefined || this.model.observacionesCotizacion == null)">
                             <p class="text-danger">Campo obligatorio</p>
                         </div>
                     </div>
@@ -105,7 +105,7 @@
                             <label class="labelCompras" for="checkbox"> Condiciones especiales</label>
                             <div>
                                 <p-checkbox [ngModelOptions]="{standalone:true}" name="trabajoHecho" [(ngModel)]="model.trabajoHecho" label="Trabajo ya hecho / Material entregado" formControlName="trabajoHecho"
-                                            binary="true" (click)="validacionTrabajoHecho(); limpiarCheck();" [disabled]="validarFinalizada() || model.urgencia"></p-checkbox>
+                                            binary="true" (click)="validarChecks(); limpiarCheck();" [disabled]="validarFinalizada() || model.urgencia"></p-checkbox>
                             </div>
                         </div>
                         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" *ngIf="model.trabajoHecho && !model.adicional">
@@ -123,7 +123,7 @@
                                                 [minLength]="3"
                                                 [forceSelection]="true"
                                                 [disabled]="estaFinalizada"
-                                                (ngModelChange)="validacionTrabajoHecho()">
+                                                (ngModelChange)="validarChecks()">
                                     <ng-template let-proveedor pTemplate="item">
                                         <div class="ui-helper-clearfix">
                                             <div style="font-size:12px;margin:10px 10px 0 0">{{proveedor.Mail}}</div>
@@ -131,14 +131,14 @@
                                         </div>
                                     </ng-template>
                                 </p-autoComplete>
-                                <div *ngIf="this.model.validarTrabajoHecho == false && (!this.proveedorSeleccionado || this.proveedorSeleccionado == '' || this.proveedorSeleccionado === undefined);">
+                                <div *ngIf="this.model.validacionCheck == false && (!this.proveedorSeleccionado || this.proveedorSeleccionado == '' || this.proveedorSeleccionado === undefined);">
                                     <p class="text-danger" style="font-size: 16px; margin-top: 1em;">Campo obligatorio si no se marca Adicional</p>
                                 </div>
                             </div>
                         </div>
                         <div class="col-xs-12 col-sm-12 col-md-12 margenInput" style="margin-top: 1em;">
                             <p-checkbox [ngModelOptions]="{standalone:true}" name="adicional" [(ngModel)]="model.adicional" label="Adicional / Mano de obra administrada / Ajuste" formControlName="adicional"
-                                        binary="true" (click)="validacionTrabajoHecho(); limpiarCheckAdicional()" [disabled]="validarFinalizada()"></p-checkbox>
+                                        binary="true" (click)="validarChecks(); limpiarCheckAdicional()" [disabled]="validarFinalizada()"></p-checkbox>
                         </div>
                         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" *ngIf="model.adicional">
                             <div class="col-xs-12 col-sm-10" style="font-size: 14px;">
@@ -153,7 +153,7 @@
                                        placeholder="Número de orden de compra"
                                        formControlName="ordenDeCompra"
                                        maxlength="10"
-                                       (ngModelChange)="validacionTrabajoHecho();">
+                                       (ngModelChange)="validarChecks();">
                             </div>
                             <div class="col-xs-12 col-sm-10 col-md-4" *ngIf="ordenDeCompraSap != null && ordenDeCompraSap.Error == null && model.ordenDeCompra != ''">
                                 <label for="ordenDeCompra">
@@ -165,7 +165,29 @@
                         </div>
                         <div class="col-xs-12 col-sm-12 col-md-12 margenInput" style="margin-top: 1em;">
                             <p-checkbox [ngModelOptions]="{standalone:true}" name="urgencia" [(ngModel)]="model.urgencia" label="Urgencia" formControlName="urgencia"
-                                        binary="true" (click)="validacionTrabajoHecho();" [disabled]="model.trabajoHecho || (validarFinalizada() && model.tipoSolpSap != 3)"></p-checkbox>
+                                        binary="true" (click)="validarChecks(); listarLiberadorSap();" [disabled]="model.trabajoHecho || (validarFinalizada() && model.tipoSolpSap != 3)"></p-checkbox>
+                        </div>
+                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" *ngIf="model.urgencia">
+                            <div class="col-xs-12 col-sm-10" style="font-size: 14px;">
+                                <strong>Elija a los liberadores de esta SOLP e incluya al menos un jefe *</strong>
+                            </div>
+                            <div class="col-xs-12">
+                                <div class="col-md-4">
+                                    <p-multiSelect [options]="liberadoresJefes" [(ngModel)]="selectJefes" defaultLabel="Jefes" formControlName="jefes"
+                                                   [maxSelectedLabels]="1" selectedItemsLabel="{0} jefes" optionDisabled="disabled" (onChange)="onLiberadoresChange($event)">
+                                    </p-multiSelect>
+                                </div>
+                                <div class="col-md-4">
+                                    <p-multiSelect [options]="liberadoresGerentes" [(ngModel)]="selectGerentes" defaultLabel="Gerentes" formControlName="gerentes"
+                                                   [maxSelectedLabels]="2" selectedItemsLabel="{0} gerentes" optionDisabled="disabled" (onChange)="onLiberadoresChange($event)">
+                                    </p-multiSelect>
+                                </div>
+                                <div class="col-md-4">
+                                    <p-multiSelect [options]="liberadoresDirectores" [(ngModel)]="selectDirectores" defaultLabel="Directores" formControlName="directores"
+                                                   [maxSelectedLabels]="2" selectedItemsLabel="{0} directores" optionDisabled="disabled" (onChange)="onLiberadoresChange($event)">
+                                    </p-multiSelect>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 alinearTitulo">

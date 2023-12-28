@@ -127,9 +127,9 @@ namespace SustitucionMOARepositorio.ConsultasEF
 
                 return resultado.OrdenarPaginarLista(Paginacion);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
+                throw;
             }
         }
     }

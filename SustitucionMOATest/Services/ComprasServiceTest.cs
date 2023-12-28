@@ -284,12 +284,12 @@ namespace SustitucionMOATest.Services
                 ObservacionesCotizacion = "",
                 Archivos = new List<Archivo> { new Archivo { FileKey = "fileKey" } },
             },
-            Adjudicacions = new List<Adjudicacion>(),
+            Adjudicaciones = new List<Adjudicacion>(),
             EstadoSolpSap_Id = 1,
             EstadoDocumento_Id = 1,
             EstadoDocumento = new TablaEstado(),
             EstadoPasos = "",
-
+            LiberadoresSapSolp = new List<LiberadorSapSolp> { new LiberadorSapSolp { Id = 1, Solp_Id = 1, LiberadorSap_Id = 1 } }
         };
         private readonly SolpDto solpDto = new SolpDto
         {
@@ -342,7 +342,8 @@ namespace SustitucionMOATest.Services
                         Cantidad = 1000,
                         Codigo = "123",
                     }
-                }
+                },
+            LiberadoresSapSolp = new List<LiberadorSapSolpDto> { new LiberadorSapSolpDto { Id = 1, Solp_Id = 1, LiberadorSap_Id = 1 } }
         };
         private readonly PeticionDeOferta peticionDeOferta = new PeticionDeOferta
         {
@@ -2259,5 +2260,17 @@ namespace SustitucionMOATest.Services
             Assert.That(result, Is.Not.Null);
         }
 
+        [Test]
+        public void ListarLiberadorSapOk()
+        {
+            var liberadorSapDto = new List<LiberadorSapDto> { new LiberadorSapDto { NombreCompleto = "Nombre", Cargo = "Cargo", Habilitado = true, LiberadorSapTipo_Id = 1 } };
+            repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<LiberadorSap, LiberadorSapDto>>>(), It.IsAny<Expression<Func<LiberadorSap, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc))
+              .Returns(new List<LiberadorSapDto>() { new LiberadorSapDto { NombreCompleto = "Nombre", Cargo = "Cargo", Habilitado = true, LiberadorSapTipo_Id = 1 } });
+
+            var result = target.ListarLiberadorSap();
+
+            Assert.That(result, Is.Not.Null);
+            Assert.AreEqual(result.GetType(), liberadorSapDto.GetType());
+        }
     }
 }
