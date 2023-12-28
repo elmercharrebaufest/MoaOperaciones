@@ -243,6 +243,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\css\blockui.css" />
+    <Content Include="Content\css\fonts\open-sans-v15-latin-300.svg" />
+    <Content Include="Content\css\fonts\open-sans-v15-latin-700.svg" />
+    <Content Include="Content\css\fonts\open-sans-v15-latin-regular.svg" />
     <Content Include="Content\css\fonts\primeicons.svg" />
     <Content Include="Content\css\primeicons.css" />
     <Content Include="Content\css\primeng.min.css" />
@@ -1024,6 +1027,33 @@
     <Content Include="libman.json" />
     <Content Include="Documentacion\TemplateAplicCCPP.csv" />
     <Content Include="Documentacion\TutorialAplicCCPP.docx" />
+    <Content Include="Content\css\fonts\open-sans-v15-latin-300.eot" />
+    <Content Include="Content\css\fonts\open-sans-v15-latin-300.ttf" />
+    <Content Include="Content\css\fonts\open-sans-v15-latin-300.woff" />
+    <Content Include="Content\css\fonts\open-sans-v15-latin-300.woff2" />
+    <Content Include="Content\css\fonts\open-sans-v15-latin-700.eot" />
+    <Content Include="Content\css\fonts\open-sans-v15-latin-700.ttf" />
+    <Content Include="Content\css\fonts\open-sans-v15-latin-700.woff" />
+    <Content Include="Content\css\fonts\open-sans-v15-latin-700.woff2" />
+    <Content Include="Content\css\fonts\open-sans-v15-latin-regular.eot" />
+    <Content Include="Content\css\fonts\open-sans-v15-latin-regular.ttf" />
+    <Content Include="Content\css\fonts\open-sans-v15-latin-regular.woff" />
+    <Content Include="Content\css\fonts\open-sans-v15-latin-regular.woff2" />
+    <Content Include="Content\fonts\Roboto-Black.ttf" />
+    <Content Include="Content\fonts\Roboto-BlackItalic.ttf" />
+    <Content Include="Content\fonts\Roboto-Bold.ttf" />
+    <Content Include="Content\fonts\Roboto-BoldCondensed.ttf" />
+    <Content Include="Content\fonts\Roboto-BoldCondensedItalic.ttf" />
+    <Content Include="Content\fonts\Roboto-BoldItalic.ttf" />
+    <Content Include="Content\fonts\Roboto-Condensed.ttf" />
+    <Content Include="Content\fonts\Roboto-CondensedItalic.ttf" />
+    <Content Include="Content\fonts\Roboto-Italic.ttf" />
+    <Content Include="Content\fonts\Roboto-Light.ttf" />
+    <Content Include="Content\fonts\Roboto-LightItalic.ttf" />
+    <Content Include="Content\fonts\Roboto-Medium.ttf" />
+    <Content Include="Content\fonts\Roboto-MediumItalic.ttf" />
+    <Content Include="Content\fonts\Roboto-Thin.ttf" />
+    <Content Include="Content\fonts\Roboto-ThinItalic.ttf" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\PublishFiles.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
