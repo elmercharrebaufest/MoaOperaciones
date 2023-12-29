@@ -33,7 +33,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
             EstadoCotizacion = estadoCotizacion;
             EstadoLicitacion = estadoLicitacion;
             FechaDesde = desde;
-            FechaHasta = hasta;
+            FechaHasta = hasta.HasValue ? hasta.Value.AddDays(1) : hasta;
         }
         public ListaPaginada<PeticionDeOfertaDto> Ejecutar(DbContext contexto)
         {

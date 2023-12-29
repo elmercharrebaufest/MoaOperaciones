@@ -38,7 +38,6 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
     protected locale: any;
     protected model: Solp;
     protected tabla: Table;
-    private calendar: any;
     nroSolp: string = "";
     sap: boolean = false;
     mantenimiento: boolean = false;
@@ -701,12 +700,10 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
         if (this.rangeDates[0] && this.rangeDates[1] == null) {
             let d = new Date(Date.parse(event));
             this.fechaDesde = `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
+            this.fechaHasta = '';
         } else {
             let d = new Date(Date.parse(event));
             this.fechaHasta = `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
-            if (this.rangeDates[1]) { // If second date is selected
-                this.calendar.overlayVisible = false;
-            }
         }
     }
 
@@ -724,6 +721,15 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
             this.selectCentro = filtrosGuardados.centros;
             this.fechaDesde = filtrosGuardados.fechaDesde;
             this.fechaHasta = filtrosGuardados.fechaHasta;
+            if (this.fechaDesde != undefined && this.fechaDesde.length > 0) {
+                const [year, month, day] = this.fechaDesde.split('-').map(Number); //se maneja el cambio de día incorrecto por la zona horaria local
+                if (this.fechaHasta != undefined && this.fechaHasta.length > 0) {
+                    const [year2, month2, day2] = this.fechaHasta.split('-').map(Number);
+                    this.rangeDates = [new Date(year, month - 1, day), new Date(year2, month2 - 1, day2)];
+                } else {
+                    this.rangeDates = [new Date(year, month - 1, day)];
+                }
+            }
         }
     }
 }

@@ -44,7 +44,6 @@ export class ListadoDashboardProveedorComponent extends ListBaseComponent {
     @ViewChild(SpinnerComponent)
     protected spinnerComponent: SpinnerComponent;
     @ViewChild('myCalendar', undefined)
-    private calendar: any;
     nroSolp: string = "";
     nroPo: string = "";
     nombrePedido: string = "";
@@ -403,12 +402,10 @@ export class ListadoDashboardProveedorComponent extends ListBaseComponent {
         if (this.rangeDates[0] && this.rangeDates[1] == null) {
             let d = new Date(Date.parse(event));
             this.fechaDesde = `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
+            this.fechaHasta = '';
         } else {
             let d = new Date(Date.parse(event));
             this.fechaHasta = `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
-            if (this.rangeDates[1]) {
-                this.calendar.overlayVisible = false;
-            }
         }
     }
 
@@ -422,6 +419,15 @@ export class ListadoDashboardProveedorComponent extends ListBaseComponent {
             this.selectEstadoCotizacion = filtrosGuardados.estadoCotizacion;
             this.fechaDesde = filtrosGuardados.fechaDesde;
             this.fechaHasta = filtrosGuardados.fechaHasta;
+            if (this.fechaDesde != undefined && this.fechaDesde.length > 0) {
+                const [year, month, day] = this.fechaDesde.split('-').map(Number); //se maneja el cambio de día incorrecto por la zona horaria local
+                if (this.fechaHasta != undefined && this.fechaHasta.length > 0) {
+                    const [year2, month2, day2] = this.fechaHasta.split('-').map(Number);
+                    this.rangeDates = [new Date(year, month - 1, day), new Date(year2, month2 - 1, day2)];
+                } else {
+                    this.rangeDates = [new Date(year, month - 1, day)];
+                }
+            }
         }
     }
 }

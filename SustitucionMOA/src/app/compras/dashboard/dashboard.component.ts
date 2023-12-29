@@ -42,7 +42,6 @@ export class DashboardComponent extends ListBaseComponent {
     protected spinnerComponent: SpinnerComponent;
 
     @ViewChild('myCalendar', undefined)
-    private calendar: any;
     nroSolp: string = "";
     sap: boolean = false;
     mantenimiento: boolean = false;
@@ -75,8 +74,8 @@ export class DashboardComponent extends ListBaseComponent {
         repoAutomatica: boolean;
         usuarios: string[];
         estadoSolp: string[];
-        fechaDesde: Date;
-        fechaHasta: Date;
+        fechaDesde: string;
+        fechaHasta: string;
     } = {
             nroSolp: "",
             sap: false,
@@ -85,14 +84,14 @@ export class DashboardComponent extends ListBaseComponent {
             repoAutomatica: false,
             usuarios: [],
             estadoSolp: [],
-            fechaDesde: new Date(),
-            fechaHasta: new Date(),
+            fechaDesde: null,
+            fechaHasta: null,
         };
 
     filteredfechas: any;
     solpFecha: any = new Array();
-    fechaInicio: any = null;
-    fechaFin: any = null;
+    fechaInicio: string = null;
+    fechaFin: string = null;
     rangeDates: Date[];
     tipoFiltroFecha = 1;
     desdeDashboard: Date;
@@ -146,7 +145,6 @@ export class DashboardComponent extends ListBaseComponent {
             today: 'Hoy',
             clear: 'Borrar'
         };
-
     }
 
     showDialog() {
@@ -205,12 +203,10 @@ export class DashboardComponent extends ListBaseComponent {
         if (this.rangeDates[0] && this.rangeDates[1] == null) {
             let d = new Date(Date.parse(event));
             this.fechaInicio = `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
+            this.fechaFin = '';
         } else {
             let d = new Date(Date.parse(event));
             this.fechaFin = `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
-            if (this.rangeDates[1]) { // If second date is selected
-                this.calendar.overlayVisible = false;
-            }
         }
     }
 
@@ -827,6 +823,15 @@ export class DashboardComponent extends ListBaseComponent {
             this.selectEstadoSolp = filtrosGuardados.estadoSolp;
             this.fechaInicio = filtrosGuardados.fechaDesde;
             this.fechaFin = filtrosGuardados.fechaHasta;
+            if (this.fechaInicio != undefined && this.fechaInicio.length > 0) {
+                const [year, month, day] = this.fechaInicio.split('-').map(Number); //se maneja el cambio de día incorrecto por la zona horaria local
+                if (this.fechaFin != undefined && this.fechaFin.length > 0) {
+                    const [year2, month2, day2] = this.fechaFin.split('-').map(Number);
+                    this.rangeDates = [new Date(year, month - 1, day), new Date(year2, month2 - 1, day2)];
+                } else {
+                    this.rangeDates = [new Date(year, month - 1, day)];
+                }
+            }
         }
     }
 }
