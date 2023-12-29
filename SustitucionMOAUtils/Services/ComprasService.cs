@@ -5801,13 +5801,35 @@ namespace SustitucionMOAUtils.Services
                 }
 
                 //adjudicacionDto.Moneda_Id = tablasap.Where(moneda => moneda.CodigoSap == "ARP").FirstOrDefault().Id;
+                var todasLasCotizacionPosiciones = cotizacion.CotizacionPosiciones.ToDictionary(x => x.Id);
+                var todasLasSolpPosiciones = cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Solp.Posiciones.ToDictionary(x => x.Id);
+
                 var posicionesPorMoneda = adjudicacionDto.AdjudicacionPosiciones.GroupBy(posicion => posicion.MonedaId);
 
                 foreach (var grupo in posicionesPorMoneda)
                 {
-                    var monedaKey = grupo.Key; // Obtener la moneda del grupo actual
+                    var monedaKey = grupo.Key;
                     if (monedaKey != null)
                     {
+                        var posiciones = grupo.Select(x =>
+                        {
+                            var cotizacionPosicion = todasLasCotizacionPosiciones.TryGetValue(x.CotizacionPosicion_Id, out var cotPos) ? cotPos : null;
+                            var solpPosicion = todasLasSolpPosiciones.TryGetValue(x.SolpPosicion_Id, out var solpPos) ? solpPos : null;
+
+                            var monto = cotizacionPosicion?.Precio.Value *
+                                        ObtenerTipoCambio(cotizacionPosicion?.Moneda_Id ?? 0, monedaKey.Value, DateTime.Now).TipoCambio ?? 0;
+
+                            return new AdjudicacionPosicion
+                            {
+                                Cantidad = x.Cantidad,
+                                Monto = monto,
+                                CotizacionPosicion_Id = x.CotizacionPosicion_Id,
+                                CotizacionPosicion = cotizacionPosicion,
+                                Posicion = solpPosicion,
+                                SolpPosicion_Id = x.SolpPosicion_Id
+                            };
+                        }).ToList();
+
                         adjudicacion = new Adjudicacion
                         {
                             Cotizacion_Id = adjudicacionDto.Cotizacion_Id,
@@ -5824,22 +5846,12 @@ namespace SustitucionMOAUtils.Services
                             CondicionesDePago = adjudicacionDto.CondicionesDePago,
                             Garantias = adjudicacionDto.Garantias,
                             TextoDeCabecera = adjudicacionDto.TextoDeCabecera,
-                            Posiciones = adjudicacionDto.AdjudicacionPosiciones.Select(x => new AdjudicacionPosicion
-                            {
-                                Cantidad = x.Cantidad,
-                                Monto = cotizacion.CotizacionPosiciones.Where(y => y.Id == x.CotizacionPosicion_Id).FirstOrDefault().Precio.Value *
-                                ObtenerTipoCambio(cotizacion.CotizacionPosiciones.Where(y => y.Id == x.CotizacionPosicion_Id).FirstOrDefault().Moneda_Id.Value, monedaKey.Value, DateTime.Now).TipoCambio,
-                                CotizacionPosicion_Id = x.CotizacionPosicion_Id,
-                                CotizacionPosicion = cotizacion.CotizacionPosiciones.Where(y => y.Id == x.CotizacionPosicion_Id).FirstOrDefault(),
-                                Posicion = cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Solp.Posiciones
-                                  .Where(y => y.Id == x.SolpPosicion_Id).FirstOrDefault(),
-                                SolpPosicion_Id = cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Solp.Posiciones
-                                  .Where(y => y.Id == x.SolpPosicion_Id).FirstOrDefault().Id
-                            }).ToList(),
+                            Posiciones = posiciones,
                             Token = Guid.NewGuid().ToString(),
                             RegionSap_Id = 20,
                             NumeroOrdenDeCompra = ""
                         };
+
                         repositorio.Agregar(adjudicacion);
                         repositorio.GuardarCambios();
                         respuestaGuardarSOLP = CrearOrdenDeCompra(adjudicacion);
