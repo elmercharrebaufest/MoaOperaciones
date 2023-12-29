@@ -386,7 +386,7 @@ export class DashboardComponent extends ListBaseComponent {
                             label: cd.Descripcion, value: cd.Id
                         }));
                         result.Usuarios.forEach(x => x.forEach(d => this.usuarioFiltro.push({
-                            label: d.Mail, value: d.Id
+                            label: d.Id === 0 ? "" : d.Mail, value: d.Id
                         })))
                     }
                 },
