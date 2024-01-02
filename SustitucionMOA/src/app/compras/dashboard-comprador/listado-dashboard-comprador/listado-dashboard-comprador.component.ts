@@ -92,6 +92,7 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
         centros: string[];
         fechaDesde: string;
         fechaHasta: string;
+        pageIndex: number;
     } = {
             nroSolp: "",
             sap: false,
@@ -104,6 +105,7 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
             centros: [],
             fechaDesde: null,
             fechaHasta: null,
+            pageIndex: 1
         };
 
     tablaSolp: any[];
@@ -171,6 +173,7 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
                         this.length = result.data.length > 0 ? result.data[0].ItemsTotales : result.data.length;
                         this.pageSize = result.data.length > 0 ? result.data[0].ItemPorPagina : 10;
                         this.pageIndex = result.data.length > 0 ? result.data[0].Pagina : 1;
+                        this.paginator.first = this.pageIndex * this.pageSize - this.pageSize;
                     }
                     this.spinnerComponent.hideIt()
                 },
@@ -207,8 +210,12 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
     handlePageEvent(e: any) {
         this.pageSize = e.rows;
         this.pageIndex = e.page + 1;
+        this.filtrosComprador = {
+            ...this.filtrosComprador,
+            pageIndex: this.pageIndex
+        };
+        sessionStorage.setItem('filtrosComprador', JSON.stringify(this.filtrosComprador));
         this.listarSolp();
-
     }
 
     generarZipPliego(idSolp) {
@@ -671,6 +678,7 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
     }
 
     onBuscar() {
+        this.pageIndex = 1;
         this.spinnerComponent.showIt();
         this.filtrosComprador.nroSolp = this.nroSolp;
         this.filtrosComprador.sap = this.sap;
@@ -721,6 +729,7 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
             this.selectCentro = filtrosGuardados.centros;
             this.fechaDesde = filtrosGuardados.fechaDesde;
             this.fechaHasta = filtrosGuardados.fechaHasta;
+            this.pageIndex = filtrosGuardados.pageIndex;
             if (this.fechaDesde != undefined && this.fechaDesde.length > 0) {
                 const [year, month, day] = this.fechaDesde.split('-').map(Number); //se maneja el cambio de día incorrecto por la zona horaria local
                 if (this.fechaHasta != undefined && this.fechaHasta.length > 0) {

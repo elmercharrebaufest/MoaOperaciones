@@ -79,6 +79,7 @@ export class ListadoDashboardProveedorComponent extends ListBaseComponent {
         estadoCotizacion: number | null;
         fechaDesde: string;
         fechaHasta: string;
+        pageIndex: number;
     } = {
             nroSolp: "",
             nroPo: "",
@@ -88,6 +89,7 @@ export class ListadoDashboardProveedorComponent extends ListBaseComponent {
             estadoCotizacion: null,
             fechaDesde: null,
             fechaHasta: null,
+            pageIndex: 1
         };
 
     constructor(protected service: ComprasService, protected navService: NavService,
@@ -125,7 +127,7 @@ export class ListadoDashboardProveedorComponent extends ListBaseComponent {
                         this.length = result.data.length > 0 ? result.data[0].ItemsTotales : result.data.length;
                         this.pageSize = result.data.length > 0 ? result.data[0].ItemPorPagina : 10;
                         this.pageIndex = result.data.length > 0 ? result.data[0].Pagina : 1;
-
+                        this.paginator.first = this.pageIndex * this.pageSize - this.pageSize;
                     }
                     this.spinnerComponent.hideIt()
                 },
@@ -161,6 +163,11 @@ export class ListadoDashboardProveedorComponent extends ListBaseComponent {
     handlePageEvent(e: any) {
         this.pageSize = e.rows;
         this.pageIndex = e.page + 1;
+        this.filtrosProveedor = {
+            ...this.filtrosProveedor,
+            pageIndex: this.pageIndex
+        };
+        sessionStorage.setItem('filtrosProveedor', JSON.stringify(this.filtrosProveedor));
         this.listarPO();
     }
 
@@ -378,6 +385,7 @@ export class ListadoDashboardProveedorComponent extends ListBaseComponent {
     }
 
     onBuscar() {
+        this.pageIndex = 1;
         this.filtrosProveedor.nroSolp = this.nroSolp;
         this.filtrosProveedor.nroPo = this.nroPo;
         this.filtrosProveedor.nombrePedido = this.nombrePedido;
@@ -419,6 +427,7 @@ export class ListadoDashboardProveedorComponent extends ListBaseComponent {
             this.selectEstadoCotizacion = filtrosGuardados.estadoCotizacion;
             this.fechaDesde = filtrosGuardados.fechaDesde;
             this.fechaHasta = filtrosGuardados.fechaHasta;
+            this.pageIndex = filtrosGuardados.pageIndex;
             if (this.fechaDesde != undefined && this.fechaDesde.length > 0) {
                 const [year, month, day] = this.fechaDesde.split('-').map(Number); //se maneja el cambio de día incorrecto por la zona horaria local
                 if (this.fechaHasta != undefined && this.fechaHasta.length > 0) {

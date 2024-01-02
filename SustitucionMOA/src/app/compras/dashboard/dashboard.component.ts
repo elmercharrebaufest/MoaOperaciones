@@ -76,6 +76,7 @@ export class DashboardComponent extends ListBaseComponent {
         estadoSolp: string[];
         fechaDesde: string;
         fechaHasta: string;
+        pageIndex: number;
     } = {
             nroSolp: "",
             sap: false,
@@ -86,6 +87,7 @@ export class DashboardComponent extends ListBaseComponent {
             estadoSolp: [],
             fechaDesde: null,
             fechaHasta: null,
+            pageIndex: 1
         };
 
     filteredfechas: any;
@@ -183,8 +185,8 @@ export class DashboardComponent extends ListBaseComponent {
     }
 
     ngOnInit() {
-        this.navService.setSeccionList([]);
         this.recuperarFiltros();
+        this.navService.setSeccionList([]);
         this.getListarSolp();
 
         this.desdeDashboard = new Date();
@@ -320,6 +322,7 @@ export class DashboardComponent extends ListBaseComponent {
                         this.length = result.data.length > 0 ? result.data[0].ItemsTotales : 0;
                         this.pageSize = result.data.length > 0 ? result.data[0].ItemPorPagina : 10;
                         this.pageIndex = result.data.length > 0 ? result.data[0].Pagina : 1;
+                        this.paginator.first = this.pageIndex * this.pageSize - this.pageSize;
                     }
                 },
                 error => {
@@ -517,8 +520,12 @@ export class DashboardComponent extends ListBaseComponent {
     handlePageEvent(e: any) {
         this.pageSize = e.rows;
         this.pageIndex = e.page + 1;
+        this.filtrosSolicitante = {
+            ...this.filtrosSolicitante,
+            pageIndex: this.pageIndex
+        };
+        sessionStorage.setItem('filtrosSolicitante', JSON.stringify(this.filtrosSolicitante));
         this.getListarSolp()
-
     }
 
     obtenerPeticionDeOferta(Id) {
@@ -660,6 +667,7 @@ export class DashboardComponent extends ListBaseComponent {
     }
 
     onBuscar() {
+        this.pageIndex = 1;
         this.filtrosSolicitante.nroSolp = this.nroSolp;
         this.filtrosSolicitante.sap = this.sap;
         this.filtrosSolicitante.mantenimiento = this.mantenimiento;
@@ -670,7 +678,6 @@ export class DashboardComponent extends ListBaseComponent {
         this.filtrosSolicitante.fechaDesde = this.fechaInicio;
         this.filtrosSolicitante.fechaHasta = this.fechaFin;
         this.paginator.changePage(0);
-        this.pageIndex = 1;
         this.getListarSolp();
         sessionStorage.setItem('filtrosSolicitante', JSON.stringify(this.filtrosSolicitante));
     }
@@ -823,6 +830,7 @@ export class DashboardComponent extends ListBaseComponent {
             this.selectEstadoSolp = filtrosGuardados.estadoSolp;
             this.fechaInicio = filtrosGuardados.fechaDesde;
             this.fechaFin = filtrosGuardados.fechaHasta;
+            this.pageIndex = filtrosGuardados.pageIndex;
             if (this.fechaInicio != undefined && this.fechaInicio.length > 0) {
                 const [year, month, day] = this.fechaInicio.split('-').map(Number); //se maneja el cambio de día incorrecto por la zona horaria local
                 if (this.fechaFin != undefined && this.fechaFin.length > 0) {
