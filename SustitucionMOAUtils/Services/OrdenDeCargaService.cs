@@ -929,15 +929,15 @@ namespace SustitucionMOAUtils.Services
             {
                 var usuariosConMismoCuit = repositorio.Listar<Usuario, int>(x => x.Id, x => x.CUITRegistro == usuario.CUITRegistro);
                 var proveedor = usuario.ObtenerProveedorAsignado() ?? usuario.ObtenerProveedor();
-                var listadoSinFiltro = repositorio.Listar<OrdenDeCarga>(n => (usuariosConMismoCuit.Contains(n.UsuarioCreacion_Id) || n.Cliente.CodigoProveedor == proveedor.CodigoProveedor) 
+                var listadoConFiltro = repositorio.ListarConsultable<OrdenDeCarga>(n => (usuariosConMismoCuit.Contains(n.UsuarioCreacion_Id) || n.Cliente.CodigoProveedor == proveedor.CodigoProveedor) 
                     && n.FechaCarga <= fechaFinDateTime
                     && n.FechaCarga >= fechaIncioDateTime
                     && (_estadosListarNoInternos.Contains(n.Estado))
                     );
-                var consultas = repositorio.Listar<ConsultaDetalle>(cd => listadoSinFiltro.Any(orden => orden.Id == cd.Orden_Id)
+                var consultas = repositorio.Listar<ConsultaDetalle>(cd => listadoConFiltro.Any(orden => orden.Id == cd.Orden_Id)
                     && codigosEstadoConsultaHabilitados.Contains(cd.Consulta.EstadoConsulta.Code));
 
-                listado = listadoSinFiltro
+                listado = listadoConFiltro.ToList()
                     .Select(x => new OrdenDeCargaDto
                     {
                         Id = x.Id,
