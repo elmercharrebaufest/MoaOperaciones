@@ -42,6 +42,7 @@ export class AppComponent implements OnDestroy {
     disabledAgreement: boolean = true;
 
     aboutScreen: boolean;
+    path: string;
 
     salir() {
         this.navService.navegarSeccion('/compras');
@@ -62,13 +63,11 @@ export class AppComponent implements OnDestroy {
 
         this.navService.setSeccionList([]);
         this.navService.setSeccionActive('');
-        const path = this.location.path();
-        if (path === '/ticket-pesada') {
+        this.path = this.location.path();
+        if (this.path === '/ticket-pesada') {
             this.navService.navegarSeccion("ticket-pesada");
-        } else if (path.match(/^\/verLegajoOrdenDeCompra\/\d+\/[a-f0-9-]+$/)) {
-            this.navService.navegarSeccion(path);
-        }else if(path === '/consulta/mis-consultas' ){
-            this.navService.navegarSeccion('consulta/mis-consultas');
+        } else if (this.path.match(/^\/verLegajoOrdenDeCompra\/\d+\/[a-f0-9-]+$/)) {
+            this.navService.navegarSeccion(this.path);
         }
         else {
             this.validarLoginAzure();
@@ -134,8 +133,8 @@ export class AppComponent implements OnDestroy {
 
         sessionStorage.setItem("granosSelected", result.granosFlag == 'A' ? 'G' : result.granosFlag);
 
-        this.navService.navegarSeccion(result.redirectURL);
-
+        this.redirigir(result);
+        
         if (result.aceptoTyC != true) {
             document.getElementById("openModalaceptoTyCModal").click();
         }
@@ -163,4 +162,17 @@ export class AppComponent implements OnDestroy {
         if (this.aceptarTyCSub)
             this.aceptarTyCSub.unsubscribe();
     }
+
+    redirigir(result: any){
+        if(this.path === '/consulta/mis-consultas'){
+            setTimeout
+            (
+            () =>
+            {  this.navService.navegarSeccion('/consulta/mis-consultas'); }, 3);
+           
+        }else{
+            this.navService.navegarSeccion(result.redirectURL);
+        }
+    }
+
 }
