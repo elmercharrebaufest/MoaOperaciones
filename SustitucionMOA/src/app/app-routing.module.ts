@@ -178,7 +178,6 @@ const appRoutes: Routes = [
         ],
     },
     { path: "**", component: HomeComponent},
-    { path: "/home/consulta/mis-consultas", component: HomeComponent },
    
 ];
 
