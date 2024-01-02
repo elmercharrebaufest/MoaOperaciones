@@ -52,18 +52,12 @@ namespace SustitucionMOAModel.Dto
 
         public int LiberadorSap_Id { get; set; }
 
-        public SolpDto Solp { get; set; }
-
-        public LiberadorSapDto LiberadorSap { get; set; }
-
         public LiberadorSapSolpDto() { }
         public LiberadorSapSolpDto(LiberadorSapSolp entidad)
         {
-            Id = entidad.Id; Solp_Id = entidad.Solp_Id; LiberadorSap_Id = entidad.LiberadorSap_Id;
+            Id = entidad.Id;
             Solp_Id = entidad.Solp_Id;
             LiberadorSap_Id = entidad.LiberadorSap_Id;
-            Solp = entidad.Solp != null ? new SolpDto(entidad.Solp) : new SolpDto();
-            LiberadorSap = entidad.LiberadorSap != null ? new LiberadorSapDto(entidad.LiberadorSap) : new LiberadorSapDto();
         }
     }
 }

@@ -139,9 +139,12 @@ export class CotizacionComponent extends ListBaseComponent {
         } else {
             this.estaFinalizada = false
         }
-        
+
         this.listarLiberadorSap();
-        this.validarChecks();
+        setTimeout(() => { //espera para que termine el listar antes de validar
+            this.validarChecks();
+        }, 1500);
+
     }
 
     ngOnDestroy() {

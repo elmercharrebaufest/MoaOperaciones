@@ -156,18 +156,25 @@ namespace SustitucionMOAUtils.Services
                         solpEntity.UsuarioCreacion_Id = solp.UsuarioActual.Id;
                     }
                     solpEntity.FechaModificacion = DateTime.Now;
-                    //solpEntity.NroSolp = solp.NroSolp;
                     pliegoEntity = solpEntity.Pliego;
 
                     enviarMailUrgencia = solpEntity.Posiciones.Where(a => a.TipoPosicion_Id != null).FirstOrDefault()?.TipoPosicion.Codigo == "SERVICIO";
-                    while (enviarMailUrgencia)
+                    if (enviarMailUrgencia && !string.IsNullOrEmpty(solpEntity.NroSolp))
                     {
-                        if (solp.Posiciones.Count <= solpEntity.Posiciones.Count) enviarMailUrgencia = false;
-                        for (int i = 0; i < solpEntity.Posiciones.Count; i++)
-                        {
-                            if (solp.Posiciones.ElementAt(i).Cantidad <= solpEntity.Posiciones.ElementAt(i).Cantidad || solp.Posiciones.ElementAt(i).PrecioBruto <= solpEntity.Posiciones.ElementAt(i).PrecioBruto)
-                                enviarMailUrgencia = false;
-                        }
+                        enviarMailUrgencia = false;
+                        if (solp.Posiciones.Count > solpEntity.Posiciones.Count) enviarMailUrgencia = true;
+                        else
+                            for (int i = 0; i < solpEntity.Posiciones.Count; i++)
+                            {
+                                if (solp.Posiciones[i].Subposiciones.Count > solpEntity.Posiciones.ToList()[i].Subposiciones.Count) enviarMailUrgencia = true;
+                                else
+                                    for (int j = 0; j < solpEntity.Posiciones.ToList()[i].Subposiciones.Count; j++)
+                                    {
+                                        if (solp.Posiciones[i].Subposiciones[j].Cantidad > solpEntity.Posiciones.ElementAt(i).Subposiciones.ElementAt(j).Cantidad
+                                            || solp.Posiciones[i].Subposiciones[j].PrecioBruto > solpEntity.Posiciones.ElementAt(i).Subposiciones.ElementAt(j).PrecioBruto)
+                                            enviarMailUrgencia = true;
+                                    }
+                            }
                     }
                 }
             }
@@ -305,16 +312,12 @@ namespace SustitucionMOAUtils.Services
                 }
             }
 
-            if (solpEntity.LiberadoresSapSolp.Any()) //repositorio.RemoverTodos(solpEntity.LiberadoresSapSolp);
-                foreach (var liberador in solpEntity.LiberadoresSapSolp.ToList())
-                {
-                    repositorio.Remover(liberador);
-                }
+            if (solpEntity.LiberadoresSapSolp.Any())
+                repositorio.RemoverTodos(solpEntity.LiberadoresSapSolp.ToList());
             if (solp.LiberadoresSapSolp.Any())
             {
                 solpEntity.LiberadoresSapSolp = solp.LiberadoresSapSolp.Select(dto => new LiberadorSapSolp
                 {
-                    //Solp_Id = dto.Solp_Id,
                     LiberadorSap_Id = dto.LiberadorSap_Id
                 }).ToList();
             }
@@ -737,6 +740,17 @@ namespace SustitucionMOAUtils.Services
                     }
 
                     ActualizarPeticionDeOfertaAlEditarSolp(solpEntity);
+                    if (enviarMailUrgencia)
+                    {
+                        try
+                        {
+                            EnviarMailSolpFinalizadaConUrgencia(solpEntity);
+                        }
+                        catch (Exception e)
+                        {
+                            Log.Info($"EnviarMailSolpFinalizadaConUrgencia nro de solp {solpEntity.NroSolp} - Error: " + e);
+                        }
+                    }
                 }
                 else
                 {
@@ -788,7 +802,7 @@ namespace SustitucionMOAUtils.Services
             //	}		
             #endregion
         }
-        
+
         private void ActualizarOfertasAlEditarSolpLiberada(Solp solpEntity)
         {
             var peticionDeOfertaId = repositorio.Obtener<PeticionDeOferta>(x => x.Solp_Id == solpEntity.Id)?.Id;
@@ -1904,7 +1918,7 @@ namespace SustitucionMOAUtils.Services
                 Log.Error(e);
             }
         }
-        
+
         private AlternateView CuerpoMailSolpLiberada(Solp solp, string mensaje)
         {
             var filePath = System.Web.HttpContext.Current.Server.MapPath("~/Content/Images/header/logo_.png");
@@ -6975,8 +6989,12 @@ namespace SustitucionMOAUtils.Services
 
         public List<LiberadorSapDto> ListarLiberadorSap()
         {
-            List<LiberadorSapDto> lista = repositorio.Listar<LiberadorSap, LiberadorSapDto>(x => new LiberadorSapDto {
-                Id = x.Id, NombreCompleto = x.NombreCompleto, Cargo = x.Cargo, Obligatorio = x.Obligatorio 
+            List<LiberadorSapDto> lista = repositorio.Listar<LiberadorSap, LiberadorSapDto>(x => new LiberadorSapDto
+            {
+                Id = x.Id,
+                NombreCompleto = x.NombreCompleto,
+                Cargo = x.Cargo,
+                Obligatorio = x.Obligatorio
             }, x => x.Habilitado);
             return lista;
         }
