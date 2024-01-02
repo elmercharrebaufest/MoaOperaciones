@@ -67,6 +67,8 @@ export class AppComponent implements OnDestroy {
             this.navService.navegarSeccion("ticket-pesada");
         } else if (path.match(/^\/verLegajoOrdenDeCompra\/\d+\/[a-f0-9-]+$/)) {
             this.navService.navegarSeccion(path);
+        }else if(path === '/consulta/mis-consultas' ){
+            this.navService.navegarSeccion('consulta/mis-consultas');
         }
         else {
             this.validarLoginAzure();
