@@ -1872,7 +1872,7 @@ namespace SustitucionMOAUtils.Services
                     Log.Info($"Copia mail solicitante {solp.UsuarioCreacion.Mail}");
                 }
                 var asunto = solp.TrabajoYaHecho == true ? "Nueva SOLP de trabajo ya hecho liberada" : "Nueva SOLP liberada";
-                asunto += $": {solp.NroSolp} - {solp.UsuarioCreacion.ObtenerRazonSocial()}";
+                asunto += $": {solp.NroSolp}";
                 var enviarA = new List<string> { solp.UsuarioCompras.Mail };
 
                 emailService.EnviarMail(enviarA, asunto, "", copia, CuerpoMailSolpLiberada(solp, mensaje), null, "");
@@ -5685,7 +5685,7 @@ namespace SustitucionMOAUtils.Services
             var filePath = httpContextService.ObtenerPathLogoMail();
             LinkedResource res = new LinkedResource(filePath);
             res.ContentId = Guid.NewGuid().ToString();
-            var proveedor = cotizacion.UsuarioCreador.ObtenerProveedor();
+            var proveedor = cotizacion.PeticionDeOfertaUsuario.Usuario.ObtenerProveedor();
             string htmlBody = "";
             htmlBody += $"En el presente mail se informa la cotización realizada para la SOLP " +
                 $"{cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Solp.NroSolp} y la PO {cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Id}, generada por el proveedor {proveedor.RazonSocial} ({proveedor.CUIT}). <br /> <br/>";
