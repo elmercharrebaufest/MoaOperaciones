@@ -84,18 +84,6 @@ export class HomeComponent extends BaseComponent implements OnInit, OnDestroy {
         this.setTabs();
         this.navService.setSeccionList([]);
         this.getData();
-        this.redirigirASeccion();
-    }
-
-    redirigirASeccion(){
-        const currentUrl = this.router.url;
-        // Verifica si la URL comienza con "/home/"
-        //this.router.navigate(["consulta/mis-consultas"]);
-        if(currentUrl.startsWith('/home/')) {
-            // Suprime la palabra "/home" y redirige al resto de la URL
-        const restOfUrl = currentUrl.substring('/home/'.length);
-            this.router.navigate([restOfUrl]);
-        }
     }
 
     getData() {
