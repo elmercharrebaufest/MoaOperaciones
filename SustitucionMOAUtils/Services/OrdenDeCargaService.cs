@@ -489,7 +489,7 @@ namespace SustitucionMOAUtils.Services
             {
                 var usuariosConMismoCuit = repositorio.Listar<Usuario, int>(x => x.Id, x => x.CUITRegistro == usuario.CUITRegistro);
                 var proveedor = usuario.ObtenerProveedorAsignado() ?? usuario.ObtenerProveedor();
-                var listadoSinFiltro = repositorio.Listar<OrdenDeCarga>(n => (usuariosConMismoCuit.Contains(n.UsuarioCreacion_Id) || n.Cliente.CodigoProveedor == proveedor.CodigoProveedor)
+                var listadoConFiltro = repositorio.ListarConsultable<OrdenDeCarga>(n => (usuariosConMismoCuit.Contains(n.UsuarioCreacion_Id) || n.Cliente.CodigoProveedor == proveedor.CodigoProveedor)
                     && n.FechaCarga <= fechaFinDateTime
                     && n.FechaCarga >= fechaIncioDateTime
                     && (filtroEstados.Contains(n.Estado))
