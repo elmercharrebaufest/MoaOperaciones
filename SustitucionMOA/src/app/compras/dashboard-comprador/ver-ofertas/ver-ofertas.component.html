@@ -637,6 +637,13 @@
                       [(peticionOferta_Id)]="peticionOferta_Id">
 </app-visualizar-precio>
 
+<app-posicion-plazo
+                      [(displayPlazo)]="displayPlazo"
+                      (cerrarPlazoEmitter)="cerrarPlazo()"
+                      (guardarPlazoEmitter)="guardarPlazo($event)"
+                      [(lista)]="lista">
+</app-posicion-plazo>
+
 
 <p-dialog [(visible)]="displayGenerarOCMoneda" modal="modal" 
     [width]="600" [draggable]="false" [closable]="true"
@@ -668,8 +675,7 @@
                 </div>                
             </div>
             <br>            
-        </section>
- 
+        </section> 
     <p-footer>
         <button type="button" class="btn btn-danger botonesComprasColor" (click)="onCerrarMoneda()">CANCELAR</button>
     </p-footer>

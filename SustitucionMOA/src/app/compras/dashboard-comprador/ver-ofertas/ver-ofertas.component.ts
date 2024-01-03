@@ -67,7 +67,7 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
     usuario: any;
     lista: any[];
     numerosDePedido: any;
-
+    displayPlazo: boolean;
 
     constructor(protected service: ComprasService, protected usuarioService: UsuarioService, protected navService: NavService, protected sessionDataService: SessionDataService,
         protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService,
@@ -241,6 +241,7 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
                         this.lista.push({
                                 Posicion: peticion.Posicion.Indice,
                                 CotizacionPosicion_Id: cotizacionPos.Id,
+                                PlazoDeEntrega: peticion.Posicion.FechaEntregaServicio,
                                 Cantidad: this.tablaOfertas.TipoPosicionCodigo == 'MATERIALES' ?
                                     peticion.Posicion.CantidadAdjudicacion : 1,
                                 SolpPosicion_Id: peticion.Posicion.Id,
@@ -252,15 +253,17 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
                                 MonedaCotizacion: cotizacionPos.Moneda_Id,
                                 MonedaPO: peticion.Posicion.MonedaId,
                                 MonedaId: cotizacionPos.Moneda_Id,
-                                CentroPosicion: peticion.Posicion.Centro
+                                CentroPosicion: peticion.Posicion.Centro,
+                                Descripcion: peticion.Posicion.CodigoMaterialSap.Descripcion == null ? peticion.Posicion.Tarea : peticion.Posicion.CodigoMaterialSap.Descripcion
                             })
                     })
                 } else {
                     peticion.Selected = false;
                 }
             });
-            console.log("lista", this.lista);
+            this.parsearFecha();
             if (this.lista.length > 0) {
+                console.log(this.lista, "LISTAAA")
                 this.error = this.validarAdjudicacion(this.lista);
                 if (this.error != "") {
                     this.floatMsgService.setErrorMsg(this.error)
@@ -290,13 +293,26 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
             this.validacionTextosIncompletos();
             if(this.textoRacionalInCompleto == true){
                 this.displayTextoIncompleto = true;
-            } else {
-           
-                this.proveedor = usuario.CodigoProveedor;
-                this.mostrarModalGenerarOCMoneda(usuario)
+            } else { 
+                console.log(this.lista, "ACAAAA")          
+                this.abrirModalPosicionPlazo();        
             }
+
+           
         } else {
             this.floatMsgService.setInfoMsg("Debe seleccionar alguna posición para adjudicar");
+        }
+    }
+
+    public parsearFecha() {
+        if (this.lista != undefined) {
+            for (let index = 0; index < this.lista.length; index++) {
+                if (this.lista[index].PlazoDeEntrega != null) {
+                    var milliseconds = parseInt(this.lista[index].PlazoDeEntrega.substring(6));
+                    var date = new Date(milliseconds);
+                    this.lista[index].PlazoDeEntrega = date
+                }
+            }
         }
     }
 
@@ -592,8 +608,7 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
 
     continuarAdjudicacion(){
         this.displayTextoIncompleto = false;
-        this.proveedor = this.usuario.CodigoProveedor;
-        this.mostrarModalGenerarOCMoneda(this.usuario)
+        this.abrirModalPosicionPlazo();        
     }
 
     noContinuarAdjudicacion(){
@@ -630,5 +645,20 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
             return false; //<-- Prevent Refresh
         }
         return false; //<-- Prevent Refresh
+    }
+
+    abrirModalPosicionPlazo(){
+        this.displayPlazo = true;
+    }
+
+    cerrarPlazo(){     
+        this.displayPlazo = false;
+    }
+
+    guardarPlazo(listaParam: any[]){
+       this.lista = listaParam;
+       this.displayPlazo = false;
+       this.proveedor = this.usuario.CodigoProveedor;
+       this.mostrarModalGenerarOCMoneda(this.usuario)
     }
 }

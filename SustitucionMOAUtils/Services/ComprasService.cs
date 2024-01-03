@@ -5837,16 +5837,24 @@ namespace SustitucionMOAUtils.Services
 
                             var monto = cotizacionPosicion?.Precio.Value *
                                         ObtenerTipoCambio(cotizacionPosicion?.Moneda_Id ?? 0, monedaKey.Value, DateTime.Now).TipoCambio ?? 0;
-
-                            return new AdjudicacionPosicion
+                           
+                            var ap = new AdjudicacionPosicion
                             {
                                 Cantidad = x.Cantidad,
                                 Monto = monto,
                                 CotizacionPosicion_Id = x.CotizacionPosicion_Id,
                                 CotizacionPosicion = cotizacionPosicion,
                                 Posicion = solpPosicion,
-                                SolpPosicion_Id = x.SolpPosicion_Id
+                                SolpPosicion_Id = x.SolpPosicion_Id,
+                                PlazoDeEntrega = cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta
+                                .Solp.Posiciones.FirstOrDefault().TipoPosicion.Codigo == "MATERIALES" ? x.PlazoDeEntrega.Value
+                                : x.PlazoDeEntrega.Value.AddDays(cotizacionPosicion.PrimerPlazoDeOferta.Value)
                             };
+                            if(cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Solp.Posiciones.FirstOrDefault().TipoPosicion.Codigo != "MATERIALES")
+                            {
+                                ap.Monto = DevolverMontoServicio(ap, tablasap.Where(moneda => moneda.Id == monedaKey.Value).FirstOrDefault().Codigo);
+                            }                      
+                            return ap;
                         }).ToList();
 
                         adjudicacion = new Adjudicacion
@@ -5870,6 +5878,8 @@ namespace SustitucionMOAUtils.Services
                             RegionSap_Id = 20,
                             NumeroOrdenDeCompra = ""
                         };
+
+                        
 
                         repositorio.Agregar(adjudicacion);
                         repositorio.GuardarCambios();
@@ -5913,6 +5923,27 @@ namespace SustitucionMOAUtils.Services
                 }
                 throw;
             }
+        }
+
+        private decimal DevolverMontoServicio(AdjudicacionPosicion adjudicacionPosicion, string monedaCodigo)
+        {
+            decimal total = 0;
+            var fecha = DateTime.Now;
+            decimal tipoDeCambio = 1;
+            var moneda = adjudicacionPosicion.CotizacionPosicion.CotizacionSubPosiciones.FirstOrDefault().Moneda.Codigo;
+
+                if (moneda != monedaCodigo)
+                {
+                    tipoDeCambio = obtenerTipoCambioConsumerMOA.Request(fecha.ToString("yyyy-MM-dd"), moneda, monedaCodigo).TipoCambio;
+                }
+
+                foreach (var item in adjudicacionPosicion.CotizacionPosicion.CotizacionSubPosiciones)
+                {
+                    total += item.Cantidad.Value * item.Precio.Value * tipoDeCambio;
+                }
+            
+
+            return total;
         }
 
         private RespuestaCrearOrdenDeCompra ValidarAdjudicarSubposicionMoneda(List<int> cotizacionPosicionIds, List<CotizacionPosicion> cotizacionPosiciones, RespuestaCrearOrdenDeCompra respuestaGuardarSOLP)
@@ -6168,7 +6199,8 @@ namespace SustitucionMOAUtils.Services
                             CotizacionPosicion_Id = x.Id,
                             Cantidad = registroInfo.FirstOrDefault(a => a.PosicionId == x.PeticionDeOfertaSolpPosicion.SolpPosicion_Id)?.CantidadAdjudicacion ?? 1,
                             SolpPosicion_Id = x.PeticionDeOfertaSolpPosicion.SolpPosicion_Id,
-                            MonedaId = x.Moneda_Id
+                            MonedaId = x.Moneda_Id,
+                            PlazoDeEntrega = x.PeticionDeOfertaSolpPosicion.SolpPosicion.FechaEntregaServicio
                         }).ToList();
 
                     var adjudicacion = new AdjudicacionDto()
@@ -6183,6 +6215,7 @@ namespace SustitucionMOAUtils.Services
                         CondicionesDePago = "",
                         CondicionesDeEntrega = "",
                         Garantias = "",
+                        
 
                     };
                     string mensaje = "Orden de compra generada a partir de las órdenes: " + string.Join(", ", registroInfo.Select(a => a.NumeroOrdenDeCompra));

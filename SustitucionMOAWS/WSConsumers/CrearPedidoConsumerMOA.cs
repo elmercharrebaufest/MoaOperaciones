@@ -169,7 +169,7 @@ namespace SustitucionMOAWS.WSConsumers
                 cabeceraDelPedido.PMNTTRMS = ""; //"BASE"; //PMNTTRMS    DZTERM Clave de condiciones de pago
                 //cabeceraDelPedido.EXCH_RATE = 0; //EXCH_RATE   WKURS Tipo de cambio de moneda
                 cabeceraDelPedido.EX_RATE_FX = ""; //EX_RATE_FX KUFIX   Indicador tipo de cambio fijo
-
+                
                 solpPedidoSAP.IM_POHEADERList = cabeceraDelPedido;
                 solpPedidoSAP.IM_POHEADERXList = new ZMPES6790
                 {
@@ -250,7 +250,7 @@ namespace SustitucionMOAWS.WSConsumers
                 IM_POITEM.PREQ_NO = solp.NroSolp;
                 IM_POITEM.PREQ_ITEM = preqItem;
                 IM_POITEM.PCKG_NO = esPosicionDeMateriales ? "" : $"{numeroDePaquete:0000000000}";
-
+           
                 solpPedidoSAP.IM_POITEMList.Add(IM_POITEM);
 
                 solpPedidoSAP.IM_POITEMXList.Add(new ZMPES6810
@@ -411,6 +411,20 @@ namespace SustitucionMOAWS.WSConsumers
                     }
                     PCKG_NO++;
                 }
+
+                solpPedidoSAP.IM_POSCHEDULEList.Add(new BAPIMEPOSCHEDULE
+                {
+                    DELIVERY_DATE = SAPFormatter.PrepararFecha(adjudicacionPosicion.PlazoDeEntrega),
+                    PO_ITEM = preqItem,
+                    SCHED_LINE = "1"
+                });
+
+                solpPedidoSAP.IM_POSCHEDULEXList.Add(new BAPIMEPOSCHEDULX
+                {
+                    DELIVERY_DATE = "X",
+                    PO_ITEM = preqItem,
+                    SCHED_LINE = "1"
+                });
             }
 
             var listaVaciaTexto = new string[] { "" };
@@ -442,7 +456,7 @@ namespace SustitucionMOAWS.WSConsumers
 
             }
             solpPedidoSAP.IM_URL = ConfigurationManager.AppSettings["SpaUrl"] + "/verLegajoOrdenDeCompra/" + adjudicacion.Id + "/" + adjudicacion.Token;
-
+           
             return solpPedidoSAP;
         }
    

@@ -58,6 +58,8 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                                     {
                                                                         Id = pop.SolpPosicion.Id,
                                                                         Indice = pop.SolpPosicion.Indice,
+                                                                        FechaEntregaServicio = pop.SolpPosicion.FechaEntregaServicio != null ? pop.SolpPosicion.FechaEntregaServicio :
+                                                                        (DateTime?)null,
                                                                         CodigoMaterialSap = new MaterialSolpDto
                                                                         {
                                                                             Descripcion = pop.SolpPosicion.MaterialSolp.Descripcion,

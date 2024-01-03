@@ -29,5 +29,6 @@ namespace SustitucionMOAModel.Dto
         public string CentroComprasCodigo { get; set; }
         public string MaterialTextoAmpliado { get; set; }
         public string FechaEntregaServicioFormateado { get; set; }
+        public DateTime? PlazoDeEntrega { get; set; }
     }
 }

@@ -131,6 +131,7 @@ namespace SustitucionMOATest.Services
                                     {
                                         Codigo = "MATERIALES"
                                     },
+                                    FechaEntregaServicio = DateTime.Now
                                 }
                             }
                     },
@@ -147,6 +148,7 @@ namespace SustitucionMOATest.Services
                             Moneda_Id = 1,
                             Cantidad = 1000,
                             PrecioBruto = 1000,
+                            FechaEntregaServicio = DateTime.Now,
                             Subposiciones = new List<SolpSubposicion>
                             {
 
@@ -159,6 +161,7 @@ namespace SustitucionMOATest.Services
                     new PeticionDeOfertaUsuario
                     {
                         Id = 1,
+                        
                         PeticionDeOferta = new PeticionDeOferta
                     {
                         Solp = new Solp
@@ -173,6 +176,7 @@ namespace SustitucionMOATest.Services
                                     {
                                         Codigo = "MATERIALES"
                                     },
+                                    FechaEntregaServicio = DateTime.Now
                                 }
                             }
                         }
@@ -189,7 +193,7 @@ namespace SustitucionMOATest.Services
                         Cantidad = 1000,
                         Moneda_Id = 1,
                         Precio = 1000,
-                        PeticionDeOfertaSolpPosicion = new PeticionDeOfertaSolpPosicion { SolpPosicion_Id = 1 },
+                        PeticionDeOfertaSolpPosicion = new PeticionDeOfertaSolpPosicion { SolpPosicion_Id = 1, SolpPosicion = new SolpPosicion{ FechaEntregaServicio = DateTime.Now} },
                         PeticionDeOfertaSolpPosicion_Id = 1,
                         CotizacionSubPosiciones = new List<CotizacionSubPosicion>
                         {
@@ -263,7 +267,7 @@ namespace SustitucionMOATest.Services
                                     CpEntrega = "CP",
                                     CalleEntrega = "Calle",
                                     NumeroEntrega = "NroEntrega",
-
+                                    FechaEntregaServicio = DateTime.Now,
                                     Subposiciones = new List<SolpSubposicion> { new SolpSubposicion {
                                         Id = 1, Tarea = "Tarea", Cantidad = 2, PrecioBruto = 500, Unidad = new TablaSap { CodigoSap = "UNI" } } }
                                 }
@@ -508,7 +512,7 @@ namespace SustitucionMOATest.Services
         private void SetUpOCPeticionCotizacion()
         {
             var registroInfo = new List<RegistroInfoDto>() { new RegistroInfoDto { ProveedorId = 1, PosicionId = 1, CantidadAdjudicacion = 5, Moneda = "ARP" } };
-            var adjudicacionPosiciones = new List<AdjudicacionPosicionDto> { new AdjudicacionPosicionDto { Adjudicacion_Id = 1 } };
+            var adjudicacionPosiciones = new List<AdjudicacionPosicionDto> { new AdjudicacionPosicionDto { Adjudicacion_Id = 1, PlazoDeEntrega = DateTime.Now } };
             //var POConRegistroInfo = peticionDeOferta;
             //POConRegistroInfo.RegistroInfo = true;
 
@@ -518,15 +522,15 @@ namespace SustitucionMOATest.Services
 
 
             repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<SolpPosicion, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null))
-                            .Returns(new List<SolpPosicion>() { new SolpPosicion { Id = 1, Solp = new Solp {
+                            .Returns(new List<SolpPosicion>() { new SolpPosicion { Id = 1, FechaEntregaServicio = DateTime.Now, Solp = new Solp {
                     TrabajoYaHecho = true,
-                    Posiciones = new List<SolpPosicion> { new SolpPosicion { Id = 1} },
+                    Posiciones = new List<SolpPosicion> { new SolpPosicion { Id = 1, FechaEntregaServicio = DateTime.Now} },
                     UsuarioCreacion = new Usuario { Id = 1 },
                     UsuarioCreacion_Id = 1
                 } } });
             repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<PeticionDeOfertaSolpPosicion, bool>>>(),
             It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null)).Returns(new List<PeticionDeOfertaSolpPosicion>() { new PeticionDeOfertaSolpPosicion {
-                Id = 1, SolpPosicion = new SolpPosicion { TipoPosicion = new TablaGeneral { Codigo = "SERVICIOS" } }
+                Id = 1, SolpPosicion = new SolpPosicion {  FechaEntregaServicio = DateTime.Now, TipoPosicion = new TablaGeneral { Codigo = "SERVICIOS" } }
             } });
 
             repositorioMock.Setup(x => x.Listar<Usuario>(null, 0, null, DirOrden.Asc, null)).Returns(new List<Usuario> { new Usuario { Id = 1, Mail = "drodriguez@prueba.com" } });
@@ -828,6 +832,7 @@ namespace SustitucionMOATest.Services
                         SolpPosicion_Id = 1,
                         PrecioTotal = 1000,
                         MonedaId = 1,
+                        PlazoDeEntrega = DateTime.Now,
                     }
                 },
                 Cotizacion_Id = 1,
@@ -888,6 +893,7 @@ namespace SustitucionMOATest.Services
                         SolpPosicion_Id = 1,
                         PrecioTotal = 1000,
                         MonedaId = 1,
+                        PlazoDeEntrega = DateTime.Now,
                     }
                 },
                 Cotizacion_Id = 1,
@@ -948,6 +954,7 @@ namespace SustitucionMOATest.Services
                         SolpPosicion_Id = 1,
                         PrecioTotal = 1000,
                         MonedaId = 1,
+                        PlazoDeEntrega = DateTime.Now,
                     }
                 },
                 Cotizacion_Id = 1,

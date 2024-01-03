@@ -121,6 +121,9 @@ export class SolpPosicion {
     Centro: any;
     
     public mensaje: string = "";
+    CodigoMaterialSap: any;
+    Tarea: any;
+    FechaEntregaServicio: any;
 
     public get getMensaje(): string  {
 
