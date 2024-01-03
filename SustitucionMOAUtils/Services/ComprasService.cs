@@ -158,7 +158,7 @@ namespace SustitucionMOAUtils.Services
                     solpEntity.FechaModificacion = DateTime.Now;
                     pliegoEntity = solpEntity.Pliego;
 
-                    enviarMailUrgencia = solpEntity.Posiciones.Where(a => a.TipoPosicion_Id != null).FirstOrDefault()?.TipoPosicion.Codigo == "SERVICIO";
+                    enviarMailUrgencia = enviarMailUrgencia && solpEntity.Posiciones.Where(a => a.TipoPosicion_Id != null).FirstOrDefault()?.TipoPosicion.Codigo == "SERVICIO";
                     if (enviarMailUrgencia && !string.IsNullOrEmpty(solpEntity.NroSolp))
                     {
                         enviarMailUrgencia = false;
