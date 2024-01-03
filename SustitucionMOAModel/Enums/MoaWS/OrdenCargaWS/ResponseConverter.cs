@@ -26,6 +26,11 @@ namespace SustitucionMOAModel.Enums.MoaWS.OrdenCargaWS
 
         private static readonly Dictionary<string, CrearOrdenResEnum> RespuestasCrearOrdenDict = new Dictionary<string, CrearOrdenResEnum>
         {
+            //OV-00   'OK'
+            //OV-01   'Verificar Contrato, Material, Cliente'
+            //OV-02   'Verificar cantidad pendiente de Contratada'
+            //OV-03   'Pedido creado - Verificar Crédito de pedido'
+
             { "OV-00", CrearOrdenResEnum.PedidoCreado },
             { "OV-01", CrearOrdenResEnum.VerificarDatos },
             { "OV-02", CrearOrdenResEnum.VerificarCantidadPendiente },

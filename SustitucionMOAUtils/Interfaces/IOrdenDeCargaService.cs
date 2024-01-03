@@ -13,7 +13,7 @@ namespace SustitucionMOAUtils.Interfaces
         CrearOrdenEnSAPResponse CrearOrdenEnSAP(CrearOrdenEnSAPRequest request, bool puedeEnviarASAP = false);
         List<OrdenDeCargaDto> Listar(string mailUsuario, string fechaInicio, string fechaFin);
         OrdenDeCargaDetalleDto Obtener(string mailUsuario, int ordenId);
-        OrdenDeCargaEditarDto ObtenerEditar(string mailUsuario, int ordenId);
+        OrdenDeCargaEditarDto ObtenerEditar(int ordenId);
         List<OrdenDeCargaHistorialDto> ObtenerEditarHistorial(string mailUsuario, int ordenId);
         string AnularOrden(int ordenId, string mailUsuario);
         string SolicitarAnulacionOrden(int ordenId, string mailUsuario);
@@ -30,7 +30,7 @@ namespace SustitucionMOAUtils.Interfaces
         void CrearOrdenEnSAPBulk();
         List<OrdenDeCarga> VerificarVencimientoOrdenDeCarga();
         string ForzarCreacionOrden(int ordenId, string mailUsuario);
-        OrdenDeCargaDto ObtenerPatentes(OrdenDeCarga orden, string mailUsuario);
+        OrdenDeCargaDto ObtenerPatentes(OrdenDeCarga orden);
         VisualizarClienteResponse VisualizarCliente(VisualizarClienteRequest request);
 
         VisualizarProductoResponse VisualizarProducto(VisualizarProductoRequest request);
@@ -38,9 +38,8 @@ namespace SustitucionMOAUtils.Interfaces
         string NotificarVencimientoOrdenCarga(int ordenId, string mailUsuario);
         string ActivarOC(int ordenId, string mailUsuario);
         OrdenDeCargaDetalleDto ObtenerPorNroEntrega(string mailUsuario, string nroEntrega);
-        List<OrdenDeCargaCambiosHistorialDto> ObtenerCambiosHistorial(OrdenDeCarga orden);
         void VerificarSituacionCrediticiaJob();
-        ObtenerContratosDisponiblesResponse ObtenerContratosDisponibles(ObtenerContratosDisponiblesRequest req, string mailUsuario);
+        ObtenerContratosDisponiblesResponse ObtenerContratosDisponibles(ObtenerContratosDisponiblesRequest req);
         string EnviarOrdenesASAP(List<int> ordenesIds, string mailUsuario);
         ValidarSisaCorredorClienteResponse ValidarSisaCorredorCliente(string corredorCodigo, string clienteCodigo);
         bool ValidarSisaCuit(string cuit, string campo);
@@ -49,12 +48,12 @@ namespace SustitucionMOAUtils.Interfaces
         ValidarCuitExisteScatoResponse ValidarCuitExisteScato(string cuit);
         ValidarIntermediarioFleteResponse ValidarIntermediarioFlete(string cuit);
         (bool, Chofer) ValidarCuilChofer(string cuilChofer);
-        Resultado SeleccionarFactura(int ordenId, string numeroFacturaSeleccionada, string mailUsuario);
+        Resultado SeleccionarFactura(int ordenId, string numeroFacturaSeleccionada);
         void VerificarCompensacion(int ordenId);
-        List<AutoCompleteDropdownElement> ObtenerCuilsChofer(OrdenDeCarga ordenDeCarga, string mailUsuario);
+        List<AutoCompleteDropdownElement> ObtenerCuilsChofer(OrdenDeCarga ordenDeCarga);
         List<AutoCompleteDropdownElement> ObtenerCuitsTransporte(OrdenDeCarga ordenDeCarga, string mailUsuario);
         bool ValidarOrdenActivaScato(string ordenId);
-        Resultado VerificarCuitsTerceros(int ordenId, string usuarioEmail);
+        Resultado VerificarCuitsTerceros(int ordenId);
         ValidarCamionResponse ValidarCamion(string patenteChasis, string patenteAcoplado);
 
         List<ClienteSAPResponse> GetClientesVigentesSAP(string fechaIni, string fechaFin);
