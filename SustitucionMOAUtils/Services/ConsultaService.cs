@@ -40,6 +40,7 @@ namespace SustitucionMOAUtils.Services
         private readonly IGestionImpuestosService gestionImpuestosService;
 
         private readonly string rutaArchivosConsulta = ConfigurationManager.AppSettings["RutaArchivosConsulta"];
+        private readonly string rutaMisConsultas = ConfigurationManager.AppSettings["UrlMisConsultas"];
         private static readonly string EMAIL_TEMPLATE = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "RespuestaConsulta.html");
         private readonly string rutaArchivosCM05 = ConfigurationManager.AppSettings["RutaArchivosCM05"];
 
@@ -410,7 +411,7 @@ namespace SustitucionMOAUtils.Services
                 var consulta = repositorio.Obtener<Consulta>(c => c.Id == consultaId);
                 var copia = new List<string>();
                 var cuerpoTemplate = File.ReadAllText(EMAIL_TEMPLATE);
-                var cuerpo = string.Format(cuerpoTemplate, consulta.Asunto, !string.IsNullOrWhiteSpace(consulta.Comentarios.Last().Detalle) ? consulta.Comentarios.Last().Detalle : "-");
+                var cuerpo = string.Format(cuerpoTemplate, consulta.Asunto, !string.IsNullOrWhiteSpace(consulta.Comentarios.Last().Detalle) ? consulta.Comentarios.Last().Detalle : "-", rutaMisConsultas);
                 string asunto = "Molinos Agro - Recordatorio: Respuesta a su consulta N°: " + consulta.Id + " con asunto: " + consulta.Asunto;
 
                 EmailSender.EnviarMail(new List<string> { consulta.Usuario.Mail }, asunto, cuerpo, copia, null, null, null);
@@ -436,7 +437,7 @@ namespace SustitucionMOAUtils.Services
             try
             {
                 var cuerpoTemplate = File.ReadAllText(EMAIL_TEMPLATE);
-                var cuerpo = string.Format(cuerpoTemplate, consulta.Asunto, !string.IsNullOrWhiteSpace(comentario) ? comentario : "-");
+                var cuerpo = string.Format(cuerpoTemplate, consulta.Asunto, !string.IsNullOrWhiteSpace(comentario) ? comentario : "-", rutaMisConsultas);
                 string asunto = "Molinos Agro - Respuesta a su consulta N°: " + consulta.Id + " con asunto: " + consulta.Asunto;
 
                 EmailSender.EnviarMail(new List<string> { consulta.Usuario.Mail }, asunto, cuerpo, copia, null, null, null);
@@ -454,7 +455,7 @@ namespace SustitucionMOAUtils.Services
                 var cuerpoTemplate = File.ReadAllText(EMAIL_TEMPLATE);
                 Consulta consulta = GetConsulta(consultaId);
 
-                var cuerpo = string.Format(cuerpoTemplate, consulta.Asunto, !string.IsNullOrWhiteSpace(consulta.Comentarios.Last().Detalle) ? consulta.Comentarios.Last().Detalle : "-");
+                var cuerpo = string.Format(cuerpoTemplate, consulta.Asunto, !string.IsNullOrWhiteSpace(consulta.Comentarios.Last().Detalle) ? consulta.Comentarios.Last().Detalle : "-", rutaMisConsultas);
                 string asunto = "Molinos Agro - Respuesta a su consulta N°: " + consulta.Id + " con asunto: " + consulta.Asunto;
 
                 EmailSender.EnviarMail(new List<string> { consulta.Usuario.Mail }, asunto, cuerpo, null, null, null, null);
