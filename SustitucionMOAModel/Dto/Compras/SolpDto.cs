@@ -95,6 +95,7 @@ namespace SustitucionMOAModel.Dto
         public string FechaCreacionOC { get; set; }
         public bool SolpConAdjuntos { get; set; }
         public List<LiberadorSapSolpDto> LiberadoresSapSolp { get; set; } = new List<LiberadorSapSolpDto>();
+        public bool ChatSinLeer { get; set; }
 
         public SolpDto() { }
         public SolpDto(Solp entity)

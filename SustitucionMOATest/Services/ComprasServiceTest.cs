@@ -2062,24 +2062,13 @@ namespace SustitucionMOATest.Services
         [Test]
         public void ObtenerChatTest()
         {
-            int peticionDeOfertaId = 1;
+            int solpId = 1;
             int usuarioActualId = 2;
 
-            var peticionDeOferta = new PeticionDeOferta
+            var solp = new Solp
             {
                 Id = 1,
                 FechaCreacion = DateTime.Now,
-                Usuarios = new List<PeticionDeOfertaUsuario>
-            {
-                new PeticionDeOfertaUsuario
-                {
-                    Usuario = new Usuario
-                    {
-                        CUITRegistro = "123456789",
-                        Mail = "test@mail.com",
-                    }
-                }
-            },
                 ChatInternoCompras = new List<ChatInternoCompras>
             {
                     new ChatInternoCompras
@@ -2091,21 +2080,22 @@ namespace SustitucionMOATest.Services
                             Mail = "test@mail.com",
                             Roles = new List<Rol> { new Rol { Codigo = "COMPRADOR" } }
                         },
+                        Solp_Id = solpId
                     }
                 }
             };
 
-            repositorioMock.Setup(x => x.Obtener<PeticionDeOferta>(It.IsAny<int>())).Returns(peticionDeOferta);
+            repositorioMock.Setup(x => x.Obtener<Solp>(It.IsAny<int>())).Returns(solp);
 
-            var result = target.ObtenerChat(peticionDeOfertaId, usuarioActualId);
+            var result = target.ObtenerChat(solpId, usuarioActualId);
 
             Assert.IsNotNull(result);
-            Assert.AreEqual(peticionDeOferta.Id, result.PeticionDeOferta_Id);
-            Assert.AreEqual(peticionDeOferta.FechaCreacion.ToString("dd-MM-yyyy HH-mm-ss"), result.FechaCreacion);
-            Assert.AreEqual(peticionDeOferta.FechaCreacion, result.FechaCreacionDate);
+            Assert.AreEqual(solp.Id, result.Solp_Id);
+            Assert.AreEqual(solp.FechaCreacion.ToString("dd-MM-yyyy HH-mm-ss"), result.FechaCreacion);
+            Assert.AreEqual(solp.FechaCreacion, result.FechaCreacionDate);
             Assert.AreEqual(usuarioActualId, result.UsuarioActualId);
 
-            repositorioMock.Verify(x => x.Obtener<PeticionDeOferta>(peticionDeOfertaId), Times.Once);
+            repositorioMock.Verify(x => x.Obtener<Solp>(solpId), Times.Once);
             repositorioMock.Verify(x => x.GuardarCambios(), Times.Once);
         }
 
@@ -2115,7 +2105,7 @@ namespace SustitucionMOATest.Services
             var mensajeDto = new ChatInternoComprasDto
             {
                 Mensaje = "Test Message",
-                PeticionDeOferta_Id = 1,
+                Solp_Id = 1,
                 Usuario_Id = 2
             };
 
@@ -2125,14 +2115,14 @@ namespace SustitucionMOATest.Services
                 FechaEnvio = DateTime.Now,
                 Leido = false,
                 Mensaje = mensajeDto.Mensaje,
-                PeticionDeOferta_Id = mensajeDto.PeticionDeOferta_Id,
+                Solp_Id = mensajeDto.Solp_Id,
                 Usuario_Id = mensajeDto.Usuario_Id
             };
 
             repositorioMock.Setup(x => x.Agregar(It.IsAny<ChatInternoCompras>())).Callback((ChatInternoCompras entity) =>
             {
                 Assert.AreEqual(chatInternoCompras.Mensaje, entity.Mensaje);
-                Assert.AreEqual(chatInternoCompras.PeticionDeOferta_Id, entity.PeticionDeOferta_Id);
+                Assert.AreEqual(chatInternoCompras.Solp_Id, entity.Solp_Id);
                 Assert.AreEqual(chatInternoCompras.Usuario_Id, entity.Usuario_Id);
             });
 
@@ -2148,27 +2138,16 @@ namespace SustitucionMOATest.Services
         [Test]
         public void ExportarChatInternoAtextoTest()
         {
-            var peticionId = 1;
+            var solp_id = 1;
 
             var rutaArchivo = Path.Combine(Path.GetTempPath(), "ArchivosComprasTest", Guid.NewGuid().ToString());
             Directory.CreateDirectory(rutaArchivo);
 
-            var peticion = new PeticionDeOferta
+            var solp = new Solp
             {
-                Id = peticionId,
+                Id = solp_id,
                 FechaCreacion = DateTime.Now,
-                Usuario = new Usuario { Mail = "comprador@mail.com" },
-                Usuarios = new List<PeticionDeOfertaUsuario>
-                {
-                    new PeticionDeOfertaUsuario
-                    {
-                        Usuario = new Usuario
-                        {
-                            CUITRegistro = "123456789",
-                            Mail = "proveedor1@mail.com",
-                        }
-                    },
-                },
+                UsuarioCreacion = new Usuario { Mail = "comprador@mail.com" },               
                 ChatInternoCompras = new List<ChatInternoCompras>
                 {
                     new ChatInternoCompras
@@ -2181,11 +2160,11 @@ namespace SustitucionMOATest.Services
                 }
             };
 
-            repositorioMock.Setup(x => x.Obtener<PeticionDeOferta>(peticionId)).Returns(peticion);
+            repositorioMock.Setup(x => x.Obtener<Solp>(solp_id)).Returns(solp);
 
-            var result = target.ExportarChatInternoAtexto(peticionId, rutaArchivo);
+            var result = target.ExportarChatInternoAtexto(solp_id, rutaArchivo);
 
-            repositorioMock.Verify(x => x.Obtener<PeticionDeOferta>(peticionId), Times.Once);
+            repositorioMock.Verify(x => x.Obtener<Solp>(solp_id), Times.Once);
 
             Assert.IsNotNull(result);
             Assert.IsNotNull(result);

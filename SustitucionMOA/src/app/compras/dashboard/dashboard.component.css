@@ -34,9 +34,9 @@ body.ui-paginator.ui-dropdown {
 }
 
 .punto-rojo {
-    position: absolute;
-    top: 48px;
-    left: 30px;
+    position: relative;
+    top: -29px;
+    left: -6px;
     width: 10px;
     height: 10px;
     background-color: red;

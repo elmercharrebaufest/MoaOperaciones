@@ -117,6 +117,7 @@ export class AppComponent implements OnDestroy {
         sessionStorage.setItem("apikey", result.apikey);
         sessionStorage.setItem("cuit", result.cuit)
         sessionStorage.setItem("proveedorId", result.proveedorId)
+        sessionStorage.setItem("usuarioId", result.usuarioId)
 
         this.sessionDataService.setNombre(result.nombre);
         this.sessionDataService.setUsername(result.username);
@@ -129,6 +130,7 @@ export class AppComponent implements OnDestroy {
         this.sessionDataService.setApikey(result.apikey);
         this.sessionDataService.setCuit(result.cuit);
         this.sessionDataService.setProveedorId(result.proveedorId);
+        this.sessionDataService.setUsuarioId(result.usuarioId);
 
         sessionStorage.setItem("granosSelected", result.granosFlag == 'A' ? 'G' : result.granosFlag);
 

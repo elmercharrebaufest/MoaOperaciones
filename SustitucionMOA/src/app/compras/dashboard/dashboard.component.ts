@@ -64,7 +64,6 @@ export class DashboardComponent extends ListBaseComponent {
     ordenDeCompra: any;
     displayOrdenDeCompra: boolean;
     displayChatInterno: boolean = false;
-    chatLeido: boolean = false;
 
     filtrosSolicitante: {
         nroSolp: string;
@@ -776,12 +775,15 @@ export class DashboardComponent extends ListBaseComponent {
         });
     }
 
-    obtenerPeticionDeOfertaParaChat(Id) {
+    obtenerChatExterno(rowData) {
         try {
+            this.blockUI.start('Cargando ');
             this.displayChatInterno = false;
-            this.subscription = this.service.obtenerChat(Id)
+            rowData.ChatSinLeer = false;
+            this.subscription = this.service.obtenerChat(rowData.Id)
                 .subscribe(
                     (result: any) => {
+                        this.blockUI.stop();
                         if (result.logout == true) {
                             this.sessionDataService.logout();
                         } else if (result.error != undefined && result.error != "") {
@@ -800,14 +802,15 @@ export class DashboardComponent extends ListBaseComponent {
                             );
                             this.chat = result;
                             this.displayChatInterno = true;
-                            this.chatLeido = true;
                         };
                     },
                     (error) => {
+                        this.blockUI.stop();
                         this.floatMsgService.setErrorMsg(error.message);
                     }
                 );
         } catch (e) {
+            this.blockUI.stop();
             this.floatMsgService.setErrorMsg(e);
             return false; //<-- Prevent Refresh
         }

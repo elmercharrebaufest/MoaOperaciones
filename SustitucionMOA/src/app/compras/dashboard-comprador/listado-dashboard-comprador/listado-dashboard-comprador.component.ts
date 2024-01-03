@@ -74,7 +74,6 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
     selectCentro: string[] = [];
     usuariosResult: any;
     displayChatInterno: boolean = false;
-    chatLeido: boolean = false;
     public chat: ChatComprasDto;
     tratada: any;
     fechaDesde: string = null;
@@ -590,12 +589,15 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
             )
     }
 
-    obtenerPeticionDeOfertaParaChat(Id) {
+    obtenerChatExterno(rowData) {
         try {
+            this.blockUI.start('Cargando ');
             this.displayChatInterno = false;
-            this.subscription = this.service.obtenerChat(Id)
+            rowData.ChatSinLeer = false;
+            this.subscription = this.service.obtenerChat(rowData.Id)
                 .subscribe(
                     (result: any) => {
+                        this.blockUI.stop();
                         if (result.logout == true) {
                             this.sessionDataService.logout();
                         } else if (result.error != undefined && result.error != "") {
@@ -614,14 +616,15 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
                             );
                             this.chat = result;
                             this.displayChatInterno = true;
-                            this.chatLeido = true;
                         };
                     },
                     (error) => {
+                        this.blockUI.stop();
                         this.floatMsgService.setErrorMsg(error.message);
                     }
                 );
         } catch (e) {
+            this.blockUI.stop();
             this.floatMsgService.setErrorMsg(e);
             return false; //<-- Prevent Refresh
         }

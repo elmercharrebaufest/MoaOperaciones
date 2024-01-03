@@ -77,9 +77,9 @@ namespace SustitucionMOAUtils.Interfaces
         LegajoExternoDto ObtenerLegajoParaExternos(int adjudicacionId, string token);
         List<OrdenDeCompraSAPDto> ObtenerReporteOrdenDeCompra(string nroOC, string fechaDesde, string fechaHasta, string codigoProveedor);
         Resultado GrabarPeticionDeOfertaVisualizacionPrecio(PeticionDeOfertaVisualizacionPrecioDto peticionDeOfertaVisualizacionPrecioDto, HttpFileCollectionBase adjuntos);
-        ChatComprasDto ObtenerChat(int peticionDeOfertaId, int usuarioActualId);
+        ChatComprasDto ObtenerChat(int solpId, int usuarioActualId);
         Resultado GrabarMensajeChatInterno(ChatInternoComprasDto mensaje);
-        string ExportarChatInternoAtexto(int peticionDeOfertaId, string rutaArchivo);
+        string ExportarChatInternoAtexto(int solpId, string rutaArchivo);
 
         ProveedorComprasDto DevolverMonedaProveedor(string codigoProveedor);
         List<RegionSap> ListarRegionesSap();

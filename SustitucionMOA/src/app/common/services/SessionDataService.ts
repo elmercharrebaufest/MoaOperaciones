@@ -21,6 +21,7 @@ export class SessionDataService {
     public apikey = new Subject<string>();
     public cuit = new Subject<string>();
     public proveedorId = new Subject<string>();
+    public usuarioId = new Subject<string>();
 
 
 
@@ -36,6 +37,7 @@ export class SessionDataService {
     apikey$ = this.apikey.asObservable();
     cuit$ = this.cuit.asObservable();
     proveedorId$ = this.proveedorId.asObservable();
+    usuarioId$ = this.usuarioId.asObservable();
 
 
 
@@ -87,6 +89,10 @@ export class SessionDataService {
         this.proveedorId.next(value);
     }
 
+    setUsuarioId(value: string) {
+        this.usuarioId.next(value);
+    }
+
     logout() {
         this.setUsername("");
         this.setNombre("");
@@ -100,6 +106,7 @@ export class SessionDataService {
         this.setApikey("");
         this.setCuit("");
         this.setProveedorId("");
+        this.setUsuarioId("");
 
         sessionStorage.clear();
 

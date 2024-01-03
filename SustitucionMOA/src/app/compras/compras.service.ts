@@ -914,9 +914,9 @@ export class ComprasService extends BaseService {
             });
     }
 
-    public obtenerChat(peticionDeOfertaId: string): Observable<PeticionDeOfertaDto> {
+    public obtenerChat(solpId: string): Observable<PeticionDeOfertaDto> {
         let params: HttpParams = new HttpParams();
-        params = params.set("peticionDeOfertaId", peticionDeOfertaId);
+        params = params.set("solpId", solpId);
 
         return this.http
             .get("/api/compras/ObtenerChat", {
@@ -936,9 +936,9 @@ export class ComprasService extends BaseService {
             .post<ChatInternoComprasDto>('/api/compras/GrabarMensajeChatInterno', payload, { headers: this.headers });
     }
 
-    public obtenerYExportarChat(peticionDeOfertaId: string): Observable<any> {
+    public obtenerYExportarChat(solpId: string): Observable<any> {
         let params: HttpParams = new HttpParams();
-        params = params.set("peticionDeOfertaId", peticionDeOfertaId);
+        params = params.set("solpId", solpId);
 
         return this.http
             .get("/api/compras/ObtenerYExportarChat", {

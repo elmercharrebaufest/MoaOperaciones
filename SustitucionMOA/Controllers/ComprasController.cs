@@ -1448,11 +1448,11 @@ namespace SustitucionMOA.Controllers
         }
 
         [HttpGet]
-        public JsonResult ObtenerChat(int peticionDeOfertaId)
+        public JsonResult ObtenerChat(int solpId)
         {
             try
             {
-                return JsonCustom(service.ObtenerChat(peticionDeOfertaId, ObtenerUsuarioActual().Id));
+                return JsonCustom(service.ObtenerChat(solpId, ObtenerUsuarioActual().Id));
             }
             catch (InfoCustomException e)
             {
@@ -1499,14 +1499,14 @@ namespace SustitucionMOA.Controllers
             }
         }
 
-        public ActionResult ObtenerYExportarChat(int peticionDeOfertaId)
+        public ActionResult ObtenerYExportarChat(int solpId)
         {
             try
             {
                 var path = $"{ConfigurationManager.AppSettings["RutaArchivosCompras"]}/{DateTime.Now.Ticks}";
                 Directory.CreateDirectory(path);
 
-                string rutaTxt = service.ExportarChatInternoAtexto(peticionDeOfertaId, path);
+                string rutaTxt = service.ExportarChatInternoAtexto(solpId, path);
                 byte[] fileBytes = System.IO.File.ReadAllBytes(rutaTxt);
                 string fileName = Path.GetFileName(rutaTxt);
 

@@ -560,4 +560,11 @@
     <Property Name="ParentElementType" Value="SqlTable" />
     <Property Name="NewName" Value="RegionSAP_Id" />
   </Operation>
+  <Operation Name="Rename Refactor" Key="1a3a3a67-ee36-46ca-99b6-25f5dece5b24" ChangeDateTime="01/02/2024 18:03:52">
+    <Property Name="ElementName" Value="[dbo].[ChatInternoCompras].[PeticionDeOferta_Id]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[ChatInternoCompras]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="Solp_Id" />
+  </Operation>
 </Operations>

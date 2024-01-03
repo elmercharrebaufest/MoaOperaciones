@@ -102,6 +102,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                     VerCircular = x.TrabajoYaHecho == null || x.TrabajoYaHecho == false,
                                     FechaLiberacionSapFormateada = x.FechaLiberacionSap == null ? "" : SqlFunctions.DateName("day", x.FechaLiberacionSap) + "/" + SqlFunctions.DatePart("month", x.FechaLiberacionSap) + "/" + SqlFunctions.DateName("year", x.FechaLiberacionSap),
                                     FechaLiberacionSap = x.FechaLiberacionSap,
+                                    ChatSinLeer = x.ChatInternoCompras.Any(a => a.Leido == false && a.Usuario.Roles.Any(r => r.Codigo == rol)),
                                     PeticionesDeOferta = (from po in contexto.Set<PeticionDeOferta>()
                                                           where po.Solp_Id == x.Id && po.RegistroInfo != true
                                                           select new PeticionDeOfertaDto()
@@ -119,7 +120,6 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                                 .OrderByDescending(p => p.Circular.Id).FirstOrDefault().Circular.FechaCreacion,
                                                               PlazoDeOfertaCierre = po.Cierres.Any() ? po.Cierres.OrderByDescending(p => p.Fecha).FirstOrDefault().Fecha : (DateTime?)null,
                                                               RevisionFinalizada = po.RevisionTecnica != null && po.RevisionTecnica.Finalizada,
-                                                              ChatSinLeer = po.ChatInternoCompras.Any(a => a.Leido == false && a.Usuario.Roles.Any(r => r.Codigo == rol)),
                                                               Observaciones = po.Observaciones,
                                                               RecotizacionEconomica = po.RevisionTecnica != null && po.RevisionTecnica.RecotizacionEconomica
                                                           })

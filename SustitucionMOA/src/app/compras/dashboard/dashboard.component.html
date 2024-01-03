@@ -207,6 +207,13 @@
                             <span>
                                 <img class="pointer" src="./Content/images/icons/descargar.svg" alt="descargar"
                                      (click)="generarZipPliego(rowData.Id)" />
+                            </span>                           
+                        </div>
+                        <div class="col-md-2">                            
+                            <span>
+                                <img class="pointer" src="./Content/images/icons/chat.svg" alt="chat"
+                                     (click)="obtenerChatExterno(rowData)" />
+                                <div class="punto-rojo" *ngIf="rowData.ChatSinLeer == true"></div>
                             </span>
                         </div>
                     </td>
@@ -269,12 +276,7 @@
                                         <ng-template pTemplate="body" let-licitacion>
                                             <tr>
                                                 <td class="columna">
-                                                    <span>
-                                                        <img class="pointer" src="./Content/images/icons/chat.svg" alt="chat"
-                                                             (click)="obtenerPeticionDeOfertaParaChat(licitacion.Id)" />
-                                                        <div class="punto-rojo" *ngIf="licitacion.ChatSinLeer == true && chatLeido == false"></div>
-
-                                                    </span>
+                                                    
                                                 </td>
                                                 <td class="columna">{{licitacion.Id}}</td>
                                                 <td class="columna">
