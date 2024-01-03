@@ -977,13 +977,7 @@ namespace SustitucionMOAUtils.Services
 
         public List<TablaSapDto> ObtenerTablaSap(string tabla)
         {
-            var tablaSap = new List<TablaSapDto>();
-            if (tabla == TablasSap.Centro || tabla == TablasSap.GrupoCompras)
-            {
-                tablaSap = repositorio.Listar<TablaSap>(x => x.Tabla == tabla && x.FiltroComprador == true).Select(x => new TablaSapDto(x)).ToList();
-            }
-            else
-                tablaSap = repositorio.Listar<TablaSap>(x => x.Tabla == tabla).Select(x => new TablaSapDto(x)).ToList();
+            var tablaSap = repositorio.Listar<TablaSap>(x => x.Tabla == tabla).Select(x => new TablaSapDto(x)).ToList();
             if (tabla == TablasSap.EstadoSolpSap)
             {
                 tablaSap.Add(new TablaSapDto { Id = -1, Descripcion = "Borrado en SAP" });

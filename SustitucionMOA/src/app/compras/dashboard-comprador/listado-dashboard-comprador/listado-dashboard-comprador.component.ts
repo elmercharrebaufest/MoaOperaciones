@@ -658,10 +658,10 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
                         result.Usuarios.forEach(x => x.forEach(d => this.usuarioFiltro.push({
                             label: d.Id === 0 ? "" : d.Mail, value: d.Id
                         })));
-                        result.Centro.forEach(c => this.centroFiltro.push({
+                        result.Centro.forEach(c => c.FiltroComprador === true && this.centroFiltro.push({
                             label: c.Codigo + " - " + c.Descripcion, value: c.Id
                         }));
-                        result.GrupoCompras.forEach(gc => this.grupoComprasFiltro.push({
+                        result.GrupoCompras.forEach(gc => gc.FiltroComprador === true && this.grupoComprasFiltro.push({
                             label: gc.Codigo + " - " + gc.Descripcion, value: gc.Id
                         }));
                     }
