@@ -1832,7 +1832,6 @@ namespace SustitucionMOAUtils.Services
                         Logger.Log.Info($"EnviarMailSolpLiberada nro de solp {solp.NroSolp}");
                     }
                 }
-
             }
         }
 
@@ -1901,6 +1900,7 @@ namespace SustitucionMOAUtils.Services
                 }
                 var asunto = solp.TrabajoYaHecho == true ? "Nueva SOLP de trabajo ya hecho liberada" : "Nueva SOLP liberada";
                 asunto += $": {solp.NroSolp}";
+                if (solp.Adicional == true) asunto += $" - con Adicional OC: {solp.NroOrdenDeCompraAdicional}";
                 var enviarA = new List<string> { solp.UsuarioCompras.Mail };
 
                 emailService.EnviarMail(enviarA, asunto, "", copia, CuerpoMailSolpLiberada(solp, mensaje), null, "");
@@ -4150,6 +4150,7 @@ namespace SustitucionMOAUtils.Services
             }
             var proveedores = new List<string>();
             var asunto = $"MOA - Pedido de Oferta {peticion.Id}: {peticion.Solp.Pliego.NombreObra}";
+            if (peticion.Solp.Adicional == true) asunto += $" - con Adicional OC: {peticion.Solp.NroOrdenDeCompraAdicional}";
 
             List<UsuarioDto> usuariosDto = new List<UsuarioDto>();
             foreach (var item in usuarios)
@@ -4917,10 +4918,8 @@ namespace SustitucionMOAUtils.Services
 
                 var peticion = repositorio.Obtener<PeticionDeOferta>(peticionId);
 
-
                 List<PeticionDeOfertaUsuario> poUsuarios = new List<PeticionDeOfertaUsuario>();
                 List<PeticionDeOfertaUsuarioAdicional> poUsuariosAdicionales = new List<PeticionDeOfertaUsuarioAdicional>();
-
 
                 foreach (var proveedor in usuarios.Where(x => usuariosId.Contains(x.Id)).GroupBy(a => a.CUITRegistro))
                 {
@@ -4939,20 +4938,13 @@ namespace SustitucionMOAUtils.Services
                         poUsuariosAdicionales.Add(poAdicional);
                         peticion.UsuariosAdicionales.Add(poAdicional);
                     }
-
-
-
                 }
-
-
 
                 repositorio.GuardarCambios();
                 respuestaGuardarSOLP.IdEntidad = peticion.Id;
                 try
                 {
-
                     EnviarMailPeticionDeOferta(peticion, poUsuarios, poUsuariosAdicionales);
-
                 }
                 catch (Exception e)
                 {
@@ -4961,7 +4953,6 @@ namespace SustitucionMOAUtils.Services
                 }
 
                 return respuestaGuardarSOLP;
-
             }
             catch (Exception)
             {
