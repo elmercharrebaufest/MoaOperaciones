@@ -292,11 +292,17 @@ export class AltaNotificacionesComponent extends BaseComponent implements OnInit
             return false;
         }
 
-        if (this.fecha_inicio.length != 0 && this.fecha_fin.length != 0 && this.fecha_inicio >= this.fecha_fin) {
-            this.mensajeError = "La Fecha Desde debe ser menos a la Fecha Hasta";
-            this.focusSection("noCursor");
-            this.messageService.add({ key: 'tc', severity: 'error', summary: 'error', detail: this.mensajeError });
-            return false;
+        if (this.fecha_inicio.length != 0 && this.fecha_fin.length != 0) {
+            
+            const fechaInicio = new Date(this.fecha_inicio);
+            const fechaFin = new Date(this.fecha_fin);
+            if (fechaInicio.getFullYear() > fechaFin.getFullYear() ||
+                (fechaInicio.getFullYear() === fechaFin.getFullYear() && fechaInicio > fechaFin)) {
+                this.mensajeError = "La Fecha Desde debe ser menor a la Fecha Hasta";
+                this.focusSection("noCursor");
+                this.messageService.add({ key: 'tc', severity: 'error', summary: 'error', detail: this.mensajeError });
+                return false;
+            }
         }
 
         if (this.horaInicio.toString() == "") {
