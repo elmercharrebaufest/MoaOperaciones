@@ -9,4 +9,5 @@ export enum Permiso {
     FasonModificarCampoReventa = "FASON - MODIFICAR CAMPO REVENTA",
     AdminAppCCPP = "ADMIN APLICACIONES CCPP",
     AbmAppCCPP = "ABM APLICACIONES CCPP",
+    ComercialCamposSustentables = "COMERCIAL CAMPOS SUSTENTABLES",
 }

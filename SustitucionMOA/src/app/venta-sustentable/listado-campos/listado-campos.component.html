@@ -62,7 +62,7 @@
 
                 </div>
 
-                <div class="col-xs-12 col-sm-12 col-md-4" *ngIf="esInterno">
+                <div class="col-xs-12 col-sm-12 col-md-4" *ngIf="esInterno || esComercial">
 
                     Id
 
@@ -104,7 +104,7 @@
 
                 </div>
 
-                <div class="col-xs-12 col-sm-12 col-md-4" *ngIf="esCorredor || esInterno">
+                <div class="col-xs-12 col-sm-12 col-md-4" *ngIf="esCorredor || esInterno || esComercial">
                     <p>Por Vendedor</p>
                     <p-autoComplete [(ngModel)]="selectedCountryAdvanced" [dropdown]="true" field="label"
                         [suggestions]="filteredProveedor" (completeMethod)="filterProveedor($event)" appendTo="body"
