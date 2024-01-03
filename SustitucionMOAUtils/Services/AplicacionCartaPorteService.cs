@@ -8,6 +8,7 @@ using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using SustitucionMOAModel.Enums.SustitucionMOAModel.Enums;
 using SustitucionMOARepositorio;
+using SustitucionMOAUtils.Extensions;
 using SustitucionMOAUtils.Helpers;
 using SustitucionMOAUtils.Helpers.CSV;
 using SustitucionMOAUtils.Interfaces;
@@ -30,11 +31,13 @@ namespace SustitucionMOAUtils.Services
     {
         protected readonly IRepositorio repositorio;
         protected readonly IAplicacionCartaPorteConsumer consumer;
+
         public AplicacionCartaPorteService(IRepositorio repositorio, IAplicacionCartaPorteConsumer consumer)
         {
             this.repositorio = repositorio;
             this.consumer = consumer;
         }
+
         public List<AplicacionCartaPorteDto> Listar(string mailUsuario, string fechaInicio, string fechaFin)
         {
             var fechaInicioDateTime = DataFormatter.StringToDateTime(fechaInicio, "fechaInicio");
@@ -237,6 +240,7 @@ namespace SustitucionMOAUtils.Services
                     codigoProveedor: app.PROVEEDOR
                     )).ToList();
         }
+
         private string ObtenerCodigoProveedorSeleccionado(Usuario usuario, Proveedor proveedorAsignado, string codigoSeleccionado)
         {
             var puedeSeleccionarProveedor = usuario.TienePermiso(PermisoEnum.SeleccionarVendedor);
@@ -303,6 +307,9 @@ namespace SustitucionMOAUtils.Services
             List<AplicacionCartaPorte> aplicacionesPendientesBD,
             List<AplicacionGuardadaCargaMasivaCCPP> aplicacionesAnterioresDelArchivo)
         {
+            registroMasiva.ContratoNumero = registroMasiva.ContratoNumero.ToContratoSAP();
+            registroMasiva.CartaDePorte = registroMasiva.CartaDePorte.ToCartaPorteSAP();
+
             var contrato = contratosDisponibles.FirstOrDefault(c => c.NumeroContrato == registroMasiva.ContratoNumero);
             var cartaPorte = cartasPorteDisponibles.FirstOrDefault(cp => cp.NumeroCartaPorte == registroMasiva.CartaDePorte);
 
