@@ -13,6 +13,12 @@
                            /@value" />
 	</parameter>
 
+	<parameter name="UrlMisConsultas Config">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/appSettings/add[@key='UrlMisConsultas']
+                           /@value" />
+	</parameter>
+
 	<parameter name="DataAgroURL Config">
 		<parameterEntry kind="XmlFile" scope="Web.config"
 						match="/configuration/appSettings/add[@key='DataAgroURL']
