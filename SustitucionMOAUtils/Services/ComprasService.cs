@@ -943,12 +943,18 @@ namespace SustitucionMOAUtils.Services
 
         public List<TablaSapDto> ObtenerTablaSap(string tabla)
         {
-            var tablaSolp = repositorio.Listar<TablaSap>(x => x.Tabla == tabla).Select(x => new TablaSapDto(x)).ToList();
+            var tablaSap = new List<TablaSapDto>();
+            if (tabla == TablasSap.Centro || tabla == TablasSap.GrupoCompras)
+            {
+                tablaSap = repositorio.Listar<TablaSap>(x => x.Tabla == tabla && x.FiltroComprador == true).Select(x => new TablaSapDto(x)).ToList();
+            }
+            else
+                tablaSap = repositorio.Listar<TablaSap>(x => x.Tabla == tabla).Select(x => new TablaSapDto(x)).ToList();
             if (tabla == TablasSap.EstadoSolpSap)
             {
-                tablaSolp.Add(new TablaSapDto { Id = -1, Descripcion = "Borrado en SAP" });
+                tablaSap.Add(new TablaSapDto { Id = -1, Descripcion = "Borrado en SAP" });
             }
-            return tablaSolp;
+            return tablaSap;
         }
 
         public List<TablaGeneralDto> ObtenerTablaGeneral(string tabla)
@@ -5372,7 +5378,7 @@ namespace SustitucionMOAUtils.Services
                     Logger.Log.Error(new Exception($"Error al enviar mail GrabarCotizacion en cotizacion: " + cotizacion.Id));
                     Logger.Log.Error(e);
                 }
-              
+
 
                 if (cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.RegistroInfo != true && cotizacion.CotizacionEstado_Id == (int)CotizacionEstadoEnum.Cotizado
                     && cotizacion.CotizacionPosiciones.FirstOrDefault().PeticionDeOfertaSolpPosicion.SolpPosicion.TipoPosicion.Codigo == "MATERIALES")
@@ -6558,7 +6564,7 @@ namespace SustitucionMOAUtils.Services
             RegistroInfoDto ultimoRegistro = new RegistroInfoDto();
             ultimoRegistro.EsModificar = false;
             var registros = obtenerRegistroInfoConsumerMOA.ObtenerRegistroInfoConsumer(material, centro, grupoDeCompras, "")
-                               .Where(x => x.NumeroOrdenDeCompra != null).OrderByDescending(x => x.FechaUltimaCompra);            
+                               .Where(x => x.NumeroOrdenDeCompra != null).OrderByDescending(x => x.FechaUltimaCompra);
             if (registros.Any())
             {
                 ultimoRegistro = registros.First();
