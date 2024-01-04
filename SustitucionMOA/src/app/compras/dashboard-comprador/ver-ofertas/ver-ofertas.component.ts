@@ -53,6 +53,7 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
     selectedRegion: any;
     displayRegionSap: boolean;
     centroDire: any;
+    centroDireLista: any;
 
     @Input()
     public peticionHs: CotizacionHoraDto;
@@ -146,8 +147,6 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
                         this.floatMsgService.setInfoMsg(result.info);
                     } else {
                         this.tablaOfertas = result.data;
-                        console.log("this.tablaOfertas verOfertas", this.tablaOfertas)
-
                     }
                     this.blockUI.stop();
                 },
@@ -263,7 +262,6 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
             });
             this.parsearFecha();
             if (this.lista.length > 0) {
-                console.log(this.lista, "LISTAAA")
                 this.error = this.validarAdjudicacion(this.lista);
                 if (this.error != "") {
                     this.floatMsgService.setErrorMsg(this.error)
@@ -273,32 +271,31 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
                 this.floatMsgService.setInfoMsg("Debe seleccionar alguna posición válida para adjudicar");
                 return;
             }
-            // var posRegion = lista[0].CentroPosicion.CodigoSap;
-            // console.log("posRegion", posRegion);
+            var posRegion = this.lista[0].CentroPosicion.CodigoSap;
 
-            // if (posRegion) {
-            //     this.centroDire = this.centroLista.find(c => c.CodigoSap == posRegion);
-            //     console.log("centroDire", this.centroDire);
-            //     console.log("this.centroLista", this.centroLista);
-            //     this.selectedRegion = { label: this.centroDire.Descripcion, value: this.centroDire.Id };
-            //     console.log("this.selectedRegion", this.selectedRegion);
-            // }
+            if (posRegion) {
+                this.centroDire = this.centroDireLista.find(c => c.label == posRegion);
+                this.selectedRegion = { label: this.centroDire.label, value: this.centroDire.value };
+            }
 
             this.adjudicacion.AdjudicacionPosiciones = this.lista;
             this.adjudicacion.Cotizacion_Id = usuario.Cotizacion.Id;
             this.adjudicacion.Solp_Id = this.tablaOfertas.Solp_Id;
            
-            //this.confirmacionAdjudicar();
-            // this.displayRegionSap = true;
             this.validacionTextosIncompletos();
             if(this.textoRacionalInCompleto == true){
                 this.displayTextoIncompleto = true;
             } else { 
-                console.log(this.lista, "ACAAAA")          
                 this.abrirModalPosicionPlazo();        
             }
 
-           
+            this.displayRegionSap = true;
+
+            if(!this.displayRegionSap){
+                this.proveedor = usuario.CodigoProveedor;
+                this.mostrarModalGenerarOCMoneda(usuario);
+            }
+            
         } else {
             this.floatMsgService.setInfoMsg("Debe seleccionar alguna posición para adjudicar");
         }
@@ -591,16 +588,15 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
     return plazos;
     }
 
-    // aceptarRegion(){
-    //     this.adjudicacion.RegionSap = this.selectedRegion;
-
-    //     this.validacionTextosIncompletos();
-    //         if(this.textoRacionalInCompleto == true){
-    //             this.displayTextoIncompleto = true;
-    //         } else {
-    //             this.confirmacionAdjudicar();
-    //         }
-    // }
+    aceptarRegion(){
+        this.adjudicacion.RegionSap = this.selectedRegion.value;
+        console.log("this.selectedRegion", this.selectedRegion.value);
+        this.validacionTextosIncompletos();
+        if(this.textoRacionalInCompleto == true){
+            this.displayTextoIncompleto = true;
+        }
+        this.displayRegionSap = false;
+    }
 
     salirRegion(){
         this.displayRegionSap = false;
@@ -627,9 +623,9 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
                         this.floatMsgService.setInfoMsg(result.info);
                     } else {
                         this.regionSap = [];
-                        this.centroLista = [];
-                        result.CentrosDireccion.forEach(d => this.centroLista.push({
-                            label: d.Descripcion, value: d.Id
+                        this.centroDireLista = [];
+                        result.CentrosDireccion.forEach(d => this.centroDireLista.push({
+                            label: d.CodigoSap, value: d.RegionSap_Id
                         }));
                         result.Regiones.forEach(d => this.regionSap.push({
                             label: d.Descripcion, value: d.Id

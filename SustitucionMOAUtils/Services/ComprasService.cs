@@ -5824,7 +5824,7 @@ namespace SustitucionMOAUtils.Services
                 var todasLasSolpPosiciones = cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Solp.Posiciones.ToDictionary(x => x.Id);
 
                 var posicionesPorMoneda = adjudicacionDto.AdjudicacionPosiciones.GroupBy(posicion => posicion.MonedaId);
-
+                var regiones = repositorio.Listar<RegionSap>();
                 foreach (var grupo in posicionesPorMoneda)
                 {
                     var monedaKey = grupo.Key;
@@ -5875,7 +5875,8 @@ namespace SustitucionMOAUtils.Services
                             TextoDeCabecera = adjudicacionDto.TextoDeCabecera,
                             Posiciones = posiciones,
                             Token = Guid.NewGuid().ToString(),
-                            RegionSap_Id = 20,
+                            RegionSap = regiones.Where(c => c.Id == adjudicacionDto.RegionSap).FirstOrDefault(),
+                            RegionSap_Id = adjudicacionDto.RegionSap,
                             NumeroOrdenDeCompra = ""
                         };
 
@@ -6179,6 +6180,8 @@ namespace SustitucionMOAUtils.Services
                 RespuestaGuardarSOLP respuestaCotizacion;
                 Cotizacion cotizacionNueva;
                 var solpPosicionIds = registroInfo.Select(registro => registro.PosicionId).ToList();
+                var centroSolp = solp.Posiciones.FirstOrDefault().Centro.CodigoSap;
+                var centroRegion = repositorio.Obtener<CentroDireccion>(cr => cr.CodigoSap == centroSolp);
 
                 List<SolpPosicion> posiciones = solp.Posiciones.Where(a => solpPosicionIds.Contains(a.Id)).ToList();
                 //Crear Peticion 
@@ -6213,8 +6216,7 @@ namespace SustitucionMOAUtils.Services
                         CondicionesDePago = "",
                         CondicionesDeEntrega = "",
                         Garantias = "",
-
-
+                        RegionSap = centroRegion.RegionSap.Id
                     };
                     string mensaje = "Orden de compra generada a partir de las órdenes: " + string.Join(", ", registroInfo.Select(a => a.NumeroOrdenDeCompra));
 

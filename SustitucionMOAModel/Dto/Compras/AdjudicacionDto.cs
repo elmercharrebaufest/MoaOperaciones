@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using SustitucionMOAModel.Entities;
 
 namespace SustitucionMOAModel.Dto
 {
@@ -29,7 +30,8 @@ namespace SustitucionMOAModel.Dto
         public decimal PrecioBruto { get; set; }
         public string EstadoLiberacionCodigo { get; set; }
         public string EstadoLiberacionDetalle { get; set; }
-
         public bool EsMonedaProveedor { get; set; }
+        public int RegionSap { get; set; }
+
     }
 }

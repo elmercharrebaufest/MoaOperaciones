@@ -459,7 +459,7 @@ namespace SustitucionMOAWS.WSConsumers
                     TEL1_NUMBR = "",
                     STREET = posicion.CalleEntrega,
                     STREET_NO = "",//no tenemos el campo separado en calle y altura
-                    REGION = ""
+                    REGION = adjudicacion.RegionSap.CodigoSap
                 });
 
 

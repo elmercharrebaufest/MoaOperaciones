@@ -550,6 +550,7 @@
         <button type="button" class="btn btn-danger botonesComprasColor" (click)="onCerrarPanel()">CANCELAR</button>
     </p-footer>
 </p-dialog>
+
 <p-dialog [(visible)]="displayAdjudicacionCreada" [width]="400" modal="modal" appendTo="body" [draggable]="false" [contentStyle]="{'overflow':'visible', 'max-height':'500px', 'min-height':'100px'}" [closable]="false">
     <p-header class="headerModal">
         ¡Adjudicación creada!
@@ -580,8 +581,8 @@
 </p-dialog>
 
 <p-dialog [(visible)]="displayTextoIncompleto" [width]="400" modal="modal" appendTo="body" [draggable]="false" [contentStyle]="{'max-height':'500px', 'min-height':'100px'}" [closable]="false">
-    <p-header class="headerModal">
-        ¡Atencion!
+    <p-header class="headerModal" style="color: #067935;">
+        <b>¡Atencion!</b>
     </p-header>
     <strong>No se completó ningún racional </strong>
     <br>
@@ -602,24 +603,21 @@
     </p-footer>
 </p-confirmDialog>
 
-<p-dialog [(visible)]="displayRegionSap" [width]="800" modal="modal" appendTo="body" [draggable]="false" [contentStyle]="{'max-height':'600px', 'min-height':'400px'}" [closable]="false">
-    <p-header class="headerModal">
-        Seleccione la región de la orden de compra
+<p-dialog [(visible)]="displayRegionSap" [width]="600" modal="modal" appendTo="body" [draggable]="false" [contentStyle]="{'max-height':'300px', 'min-height':'150px'}" [closable]="false">
+    <p-header class="headerModal" style="color: #067935;">
+        <b>Configuración de la región de la orden de compra</b>
     </p-header>
     <section class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-        <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3 margenInput">
-            <label>Region</label>
-            <div>
-                <p-dropdown [options]="regionSap" [(ngModel)]="selectedRegion" placeholder="Elegir region" dataKey="value" optionLabel="label">
-                </p-dropdown>
-            </div>
+        <div class="col-xs-12 col-sm-12 col-md-9 col-lg-9 margenInput">
+            <label>¿Desea cambiar la región de la orden de compra?</label>
+            <p-dropdown [options]="regionSap" [(ngModel)]="selectedRegion" dataKey="value" optionLabel="label">
+            </p-dropdown>
         </div>
     </section>
 
-   
     <p-footer>
-        <button type="button" class="btn btn-primary botonesComprasColor botonModal" (click)="aceptarRegion()">Aceptar</button>
-        <button type="button" class="btn btn-primary botonesComprasColor botonModal" (click)="salirRegion()">Cancelar</button>
+        <button type="button" class="btn btn-danger botonesComprasColor botonModal" (click)="salirRegion()">CANCELAR</button>
+        <button type="button" class="btn btn-primary botonesComprasColor botonModal" (click)="aceptarRegion()">ACEPTAR</button>
     </p-footer>
 </p-dialog>
 

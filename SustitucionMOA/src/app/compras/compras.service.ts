@@ -819,7 +819,8 @@ export class ComprasService extends BaseService {
             CondicionesDePago: adjudicacion.CondicionesDePago,
             Garantias: adjudicacion.Garantias,
             EsMonedaProveedor: adjudicacion.EsMonedaProveedor,
-            Proveedor: adjudicacion.Proveedor
+            Proveedor: adjudicacion.Proveedor,
+            RegionSap: adjudicacion.RegionSap
         });
 
         var payload = new FormData();

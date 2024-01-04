@@ -2258,5 +2258,22 @@ namespace SustitucionMOATest.Services
             Assert.That(result, Is.Not.Null);
             Assert.AreEqual(result.GetType(), liberadorSapDto.GetType());
         }
+
+        [Test]
+        public void ListarRegionesSap_DeberiaDevolverListaDeRegiones()
+        {
+            var regionesEsperadas = new List<RegionSap>
+            {
+                new RegionSap { CodigoPais = "AR", CodigoSap = "Region1" },
+                new RegionSap { CodigoPais = "AR", CodigoSap = "Region2" }
+            };
+
+            repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<RegionSap, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null)).Returns(regionesEsperadas);
+
+            var resultado = target.ListarRegionesSap();
+
+            Assert.That(resultado, Is.Not.Null);
+            Assert.AreEqual(resultado.GetType(), regionesEsperadas.GetType());
+        }
     }
 }
