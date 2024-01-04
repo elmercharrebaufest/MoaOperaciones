@@ -67,6 +67,7 @@ export interface PeticionDeOfertaUsarioAdicionalDto {
 }
 
 export interface PeticionDeOfertaSolpPosicionDto {
+    EstaEliminado?: boolean
     CantidadPendiente: number
     AdjudicacionCompleta: boolean
     valorTotal: number

@@ -2737,7 +2737,7 @@ namespace SustitucionMOAUtils.Services
                         if (item.Cotizacion.RespetaMateriales == false)
                             respetaMateriales = false;
 
-                        foreach (var cotizacionPosicion in item.Cotizacion.CotizacionPosiciones)
+                        foreach (var cotizacionPosicion in item.Cotizacion.CotizacionPosiciones.Where(x => !x.EstaEliminado))
                         {
                             var solpPosicion = todasLasOfertas.PeticionDeOfertaPosicion.Where(x => x.Id == cotizacionPosicion.PeticionDeOfertaSolpPosicion_Id).First()?.Posicion;
                             if (solpPosicion != null && cotizacionPosicion.UnidadMedida.Descripcion != solpPosicion.Unidad.Descripcion)

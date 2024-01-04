@@ -116,6 +116,7 @@ namespace SustitucionMOAModel.Dto
         public SolpPosicionDto Posiciones { get; set; }
         public int SolpId { get; set; }
         public SolpPosicionDto PosicionPeticion { get; set; }
+        public bool EstaEliminado { get; set; }
     }
 
     public class PeticionDeOfertaUsarioDto

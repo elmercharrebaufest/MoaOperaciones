@@ -48,12 +48,13 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                     RevisionFinalizada = po.RevisionTecnica == null ? false : po.RevisionTecnica.Finalizada,
                                     PlazoDeOfertaCierre = po.Cierres.Any() ? po.Cierres.OrderByDescending(p => p.Fecha).FirstOrDefault().Fecha : (DateTime?)null,
                                     PeticionDeOfertaPosicion = (from pop in contexto.Set<PeticionDeOfertaSolpPosicion>()
-                                                                where po.Id == pop.PeticionDeOferta_Id && pop.SolpPosicion.EsConcluido == true && pop.SolpPosicion.Estado == true
+                                                                where po.Id == pop.PeticionDeOferta_Id && pop.SolpPosicion.EsConcluido == true
                                                                 select new PeticionDeOfertaSolpPosicionDto()
                                                                 {
                                                                     Id = pop.Id,
                                                                     PeticionDeOferta_Id = pop.PeticionDeOferta_Id,
                                                                     SolpPosicion_Id = pop.SolpPosicion_Id,
+                                                                    EstaEliminado = pop.SolpPosicion.Estado != true,
                                                                     Posicion = new SolpPosicionDto
                                                                     {
                                                                         Id = pop.SolpPosicion.Id,
@@ -130,7 +131,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                     EstadoPropuestaTecnica = u.PropuestaTecnicaAprobada == null ? "Sin analizar" : (u.PropuestaTecnicaAprobada == true ? "Aprobada" : "Rechazada"),
                                                     ObservacionNoCumple = u.ObservacionNoCumple,
                                                     EstadoPropuestaTecnicaColor = u.PropuestaTecnicaAprobada == null ? "Orange" : (u.PropuestaTecnicaAprobada == true ? "Green" : "Red"),
-
+                                                  
                                                     //PlazoDeOferta = u.Circulares.Any(circu => circu.Circular.RequiereCambioDeFechas == true && circu.Circular.PlazoDeOferta.HasValue) ?
                                                     //u.Circulares.Where(circu => circu.Circular.RequiereCambioDeFechas == true && circu.Circular.PlazoDeOferta.HasValue)
                                                     //                .OrderByDescending(circu => circu.Circular.PlazoDeOferta).FirstOrDefault().Circular.PlazoDeOferta.Value :
@@ -177,10 +178,11 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                             Id = ch.Id
                                                         }).ToList(),
 
-                                                        CotizacionPosiciones = cotizacion.CotizacionPosiciones.Where(posic => posic.PeticionDeOfertaSolpPosicion.SolpPosicion.EsConcluido == true && posic.PeticionDeOfertaSolpPosicion.SolpPosicion.Estado == true)
+                                                        CotizacionPosiciones = cotizacion.CotizacionPosiciones.Where(posic => posic.PeticionDeOfertaSolpPosicion.SolpPosicion.EsConcluido == true)
                                                         .Select(p => new CotizacionPosicionDto
                                                         {
                                                             Id = p.Id,
+                                                            EstaEliminado = p.PeticionDeOfertaSolpPosicion.SolpPosicion.Estado != true,
                                                             Cotizacion_Id = p.Cotizacion_Id,
                                                             PeticionDeOfertaSolpPosicion_Id = p.PeticionDeOfertaSolpPosicion_Id,
                                                             Cantidad = p.Cantidad ?? 1,
