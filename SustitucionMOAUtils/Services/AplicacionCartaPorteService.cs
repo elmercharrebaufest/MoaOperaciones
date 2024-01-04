@@ -172,7 +172,7 @@ namespace SustitucionMOAUtils.Services
                 repositorio.Agregar(logCargaMasivaFila);
 
                 if (RegistroCargaMasivaEsValido(regItem, out string msjError, contratosDisponibles,
-                        cartasPorteDisponibles, aplicacionesPendientesDeProcesar, registrosOK))
+                        cartasPorteDisponibles, registrosOK))
                 {
                     registrosOK.Add(new AplicacionGuardadaCargaMasivaCCPP
                     {
@@ -304,7 +304,7 @@ namespace SustitucionMOAUtils.Services
         private bool RegistroCargaMasivaEsValido(AplicacionCCPPRecord registroMasiva, out string error,
             List<ContratoParaAplicacionCartaPorte> contratosDisponibles,
             List<CartaPorteParaAplicacionCartaPorte> cartasPorteDisponibles,
-            List<AplicacionCartaPorte> aplicacionesPendientesBD,
+            //List<AplicacionCartaPorte> aplicacionesPendientesBD,
             List<AplicacionGuardadaCargaMasivaCCPP> aplicacionesAnterioresDelArchivo)
         {
             registroMasiva.ContratoNumero = registroMasiva.ContratoNumero.ToContratoSAP();
@@ -333,15 +333,16 @@ namespace SustitucionMOAUtils.Services
                 return false;
             }
 
-            var kilosPendientesAplicar = aplicacionesPendientesBD
-                .Where(x => x.CartaPorte == registroMasiva.CartaDePorte)
-                .Sum(x => x.Kilogramos);
+            //var kilosPendientesAplicar = aplicacionesPendientesBD
+            //    .Where(x => x.CartaPorte == registroMasiva.CartaDePorte)
+            //    .Sum(x => x.Kilogramos);
 
             var kilosArchivoEnProceso = aplicacionesAnterioresDelArchivo
                 .Where(x => x.CartaDePorte == registroMasiva.CartaDePorte)
                 .Sum(x => int.Parse(x.Kilos));
 
-            var kilosDisponibles = cartaPorte.KgPendientes - kilosPendientesAplicar - kilosArchivoEnProceso;
+            //var kilosDisponibles = cartaPorte.KgPendientes - kilosPendientesAplicar - kilosArchivoEnProceso;
+            var kilosDisponibles = cartaPorte.KgPendientes - kilosArchivoEnProceso;
 
             if (kilosDisponibles < kilosSolicitados)
             {
