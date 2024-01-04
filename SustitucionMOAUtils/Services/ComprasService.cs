@@ -5834,14 +5834,11 @@ namespace SustitucionMOAUtils.Services
                         {
                             var cotizacionPosicion = todasLasCotizacionPosiciones.TryGetValue(x.CotizacionPosicion_Id, out var cotPos) ? cotPos : null;
                             var solpPosicion = todasLasSolpPosiciones.TryGetValue(x.SolpPosicion_Id, out var solpPos) ? solpPos : null;
-
-                            var monto = cotizacionPosicion?.Precio.Value *
-                                        ObtenerTipoCambio(cotizacionPosicion?.Moneda_Id ?? 0, monedaKey.Value, DateTime.Now).TipoCambio ?? 0;
+                            decimal monto = 0;                           
 
                             var ap = new AdjudicacionPosicion
                             {
                                 Cantidad = x.Cantidad,
-                                Monto = monto,
                                 CotizacionPosicion_Id = x.CotizacionPosicion_Id,
                                 CotizacionPosicion = cotizacionPosicion,
                                 Posicion = solpPosicion,
@@ -5850,11 +5847,19 @@ namespace SustitucionMOAUtils.Services
                                 .Solp.Posiciones.FirstOrDefault().TipoPosicion.Codigo == "MATERIALES" ? x.PlazoDeEntrega.Value
                                 : x.PlazoDeEntrega.Value.AddDays(cotizacionPosicion.PrimerPlazoDeOferta.Value)
                             };
+
                             if (cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Solp.Posiciones.FirstOrDefault().TipoPosicion.Codigo != "MATERIALES")
                             {
-                                ap.Monto = DevolverMontoServicio(ap, tablasap.Where(moneda => moneda.Id == monedaKey.Value).FirstOrDefault().Codigo);
+                                monto = DevolverMontoServicio(ap, tablasap.Where(moneda => moneda.Id == monedaKey.Value).FirstOrDefault().Codigo);
                             }
+                            else
+                            {
+                                monto = cotizacionPosicion?.Precio.Value *
+                                ObtenerTipoCambio(cotizacionPosicion?.Moneda_Id ?? 0, monedaKey.Value, DateTime.Now).TipoCambio ?? 0;
+                            }
+                            ap.Monto = monto;
                             return ap;
+
                         }).ToList();
 
                         adjudicacion = new Adjudicacion
@@ -5948,22 +5953,26 @@ namespace SustitucionMOAUtils.Services
         private RespuestaCrearOrdenDeCompra ValidarAdjudicarSubposicionMoneda(List<int> cotizacionPosicionIds, List<CotizacionPosicion> cotizacionPosiciones, RespuestaCrearOrdenDeCompra respuestaGuardarSOLP)
         {
             var posicionesAValidar = cotizacionPosiciones.Where(posicion => cotizacionPosicionIds.Contains(posicion.Id));
-
+            var todasLasSubposiciones = new List<CotizacionSubPosicion>();
             foreach (var posicion in posicionesAValidar)
-            {
-                var monedaPosicion = posicion.Moneda_Id; // Obtener el ID de la moneda de la posición
+            {             
+                todasLasSubposiciones.AddRange(posicion.CotizacionSubPosiciones);            
+            }
 
-                if (posicion.CotizacionSubPosiciones.Count > 0 && posicion.CotizacionSubPosiciones.Any(subposicion => subposicion.Moneda_Id != monedaPosicion))
+            foreach (var item in todasLasSubposiciones)
+            {
+                bool monedasIguales = todasLasSubposiciones.Select(s => s.Moneda_Id).Distinct().Count() == 1;
+                if (!monedasIguales)
                 {
                     if (respuestaGuardarSOLP.Errores == null)
                     {
                         respuestaGuardarSOLP.Errores = new List<string>();
                     }
-                    respuestaGuardarSOLP.Errores.Add("Alguna de las subposiciones seleccionadas tiene una moneda diferente a la posición");
+                    respuestaGuardarSOLP.Errores.Add("Todas las subposiciones seleccionadas deben tener la misma moneda");
                     respuestaGuardarSOLP.MostrarModalMoneda = true;
                     return respuestaGuardarSOLP;
                 }
-            }
+            }          
 
             return respuestaGuardarSOLP;
         }

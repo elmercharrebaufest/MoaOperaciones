@@ -356,23 +356,24 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
     mostrarValidacionMoneda() {
         const posicionesSeleccionadas = this.tablaOfertas.PeticionDeOfertaPosicion
             .filter(x => x.Selected && !x.Posicion.AdjudicacionCompleta);
-
+    
         const posiciones = this.usuario.Cotizacion.CotizacionPosiciones
             .filter(cotizacionPos =>
                 posicionesSeleccionadas.some(peticion => peticion.Id === cotizacionPos.PeticionDeOfertaSolpPosicion_Id)
             );
 
         const primeraMoneda = posiciones[0].Moneda_Id; // Tomamos la moneda de la primera posición
-
+        const todasLasSubposiciones = [];
         for (let i = 0; i < posiciones.length; i++) {
             if (posiciones[i].Moneda_Id !== primeraMoneda) {
                 return true; // Si encontramos una moneda diferente, devolvemos true
             }
-           
-            for (let j = 0; j < posiciones[i].CotizacionSubPosiciones.length; j++) {
-                if (posiciones[i].CotizacionSubPosiciones[j].Moneda_Id !== primeraMoneda) {
-                    return true; // Si encontramos una moneda diferente, devolvemos true
-                }
+            todasLasSubposiciones.push(...posiciones[i].CotizacionSubPosiciones);
+        }
+
+        for (let i = 1; i < todasLasSubposiciones.length; i++) {
+            if (todasLasSubposiciones[i].Moneda_Id !== todasLasSubposiciones[i - 1].Moneda_Id) {
+                return true;
             }
         }
 
