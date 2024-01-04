@@ -369,6 +369,8 @@
     <Content Include="src\app\compras\dashboard-comprador\orden-de-compra-detalle\ordenDeCompraDetalle.component.html" />
     <Content Include="src\app\compras\dashboard-comprador\proveedor-peticion\proveedor-peticion.component.css" />
     <Content Include="src\app\compras\dashboard-comprador\proveedor-peticion\proveedor-peticion.component.html" />
+    <Content Include="src\app\compras\dashboard-comprador\ver-ofertas\posicion-plazo\posicion-plazo.component.css" />
+    <Content Include="src\app\compras\dashboard-comprador\ver-ofertas\posicion-plazo\posicion-plazo.component.html" />
     <Content Include="src\app\compras\dashboard-comprador\ver-ofertas\textos-adjudicar\textos-adjudicar.component.css" />
     <Content Include="src\app\compras\dashboard-comprador\ver-ofertas\textos-adjudicar\textos-adjudicar.component.html" />
     <Content Include="src\app\compras\dashboard-comprador\ver-ofertas\ver-ofertas.component.css" />
@@ -1214,6 +1216,7 @@
     <TypeScriptCompile Include="src\app\compras\dashboard-comprador\listado-dashboard-comprador\listado-dashboard-comprador.component.ts" />
     <TypeScriptCompile Include="src\app\compras\dashboard-comprador\orden-de-compra-detalle\ordenDeCompraDetalle.component.ts" />
     <TypeScriptCompile Include="src\app\compras\dashboard-comprador\proveedor-peticion\proveedor-peticion.component.ts" />
+    <TypeScriptCompile Include="src\app\compras\dashboard-comprador\ver-ofertas\posicion-plazo\posicion-plazo.component.ts" />
     <TypeScriptCompile Include="src\app\compras\dashboard-comprador\ver-ofertas\textos-adjudicar\textos-adjudicar.component.ts" />
     <TypeScriptCompile Include="src\app\compras\dashboard-comprador\ver-ofertas\ver-ofertas.component.spec.ts" />
     <TypeScriptCompile Include="src\app\compras\dashboard-comprador\ver-ofertas\ver-ofertas.component.ts" />

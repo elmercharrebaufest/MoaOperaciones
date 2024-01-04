@@ -62,8 +62,8 @@
             <ng-template pTemplate="header" let-columns>
                 <tr>
                     <th style="width: 40px"></th>
-                    <th data-toggle="tooltip" title="Acciones SOLP" style="width: 50px"></th>
-                    <th class="headerth" title="Numero SOLP" (click)="onOrder('NroSolp')" style="width: 85px">
+                    <th data-toggle="tooltip" title="Acciones SOLP" style="width: 65px"></th>
+                    <th class="headerth" title="Numero SOLP" (click)="onOrder('NroSolp')" style="width: 80px">
                         Nro SOLP
                         <span>
                             <i [ngClass]="{'fa': true, 'fa-solid fa-sort-up': true, 'arrow': true, 'unselected': columnaOrden === 'NroSolp' && orden == 'DESC'  }"></i>
@@ -137,7 +137,7 @@
                             <i [ngClass]="{'fa': true, 'fa-solid fa-sort-down': true, 'arrow': true, 'unselected': columnaOrden === 'EstadoSolpSap.Descripcion' && orden == 'ASC' }"></i>
                         </span>
                     </th>
-                    <th data-toggle="tooltip" colspan="2" style="width: 90px;">
+                    <th data-toggle="tooltip" colspan="2" style="width: 80px;">
 
                     </th>
                 </tr>

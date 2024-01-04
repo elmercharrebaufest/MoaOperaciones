@@ -59,7 +59,6 @@ namespace SustitucionMOARepositorio.ConsultasEF
                 var nroDeSolp = NroSolp.Trim();
                 var resultado = from x in contexto.Set<Solp>()
                                 where (string.IsNullOrEmpty(nroDeSolp) || x.NroSolp.ToUpper().StartsWith(nroDeSolp.ToUpper())) &&
-                                x.Posiciones.All(p => p.NumeroContratoSuperior == "" || p.NumeroContratoSuperior == null) &&
                                 (!Usuarios.Any() || (x.UsuarioCreacion_Id != null && Usuarios.Contains((int)x.UsuarioCreacion_Id))) &&
                                 (!Estados.Any() || (x.EstadoSolpSap_Id != null && Estados.Contains((int)x.EstadoSolpSap_Id))) &&
                                 (!Centros.Any() || x.Posiciones.Any(c => Centros.Contains(c.Centro_Id))) &&
@@ -98,7 +97,8 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                     ItemPorPagina = Paginacion.ItemsPorPagina,
                                     Pagina = Paginacion.Pagina,
                                     EstadoSolpSap = x.EstadoSolpSap_Id != null ? new TablaSapDto { Id = x.EstadoSolpSap_Id ?? 0, CodigoSap = x.EstadoSolpSap.CodigoSap, Descripcion = x.EstadoSolpSap.Descripcion } : new TablaSapDto { Id = 0, CodigoSap = "", Descripcion = "" },
-                                    VerPublicar = x.EstadoSolpSap.CodigoSap == "05" && x.TrabajoYaHecho != true && x.Adicional != true || !string.IsNullOrEmpty(x.NroSolp) && x.Posiciones.Any(p => p.TipoPosicion.Codigo == "SERVICIO") && x.Urgencia == true && x.Adicional != true,
+                                    VerPublicar = x.Posiciones.All(p => p.NumeroContratoSuperior == "" || p.NumeroContratoSuperior == null) &&
+                                        (x.EstadoSolpSap.CodigoSap == "05" && x.TrabajoYaHecho != true && x.Adicional != true || !string.IsNullOrEmpty(x.NroSolp) && x.Posiciones.Any(p => p.TipoPosicion.Codigo == "SERVICIO") && x.Urgencia == true && x.Adicional != true),
                                     VerCircular = x.TrabajoYaHecho == null || x.TrabajoYaHecho == false,
                                     FechaLiberacionSapFormateada = x.FechaLiberacionSap == null ? "" : SqlFunctions.DateName("day", x.FechaLiberacionSap) + "/" + SqlFunctions.DatePart("month", x.FechaLiberacionSap) + "/" + SqlFunctions.DateName("year", x.FechaLiberacionSap),
                                     FechaLiberacionSap = x.FechaLiberacionSap,
