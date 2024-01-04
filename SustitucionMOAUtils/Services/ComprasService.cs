@@ -1023,7 +1023,7 @@ namespace SustitucionMOAUtils.Services
                                     .Where(x => x.Circular.RequiereCambioDeFechas == true && x.Circular.PlazoDeOferta.HasValue)
                                     .OrderByDescending(x => x.Circular.Id).FirstOrDefault().Circular.FechaCreacion,
                     PlazoDeOfertaCierre = po.Cierres.Any() ? po.Cierres.OrderByDescending(x => x.Fecha).FirstOrDefault().Fecha : (DateTime?)null,
-                    RevisionFinalizada = po.RevisionTecnica != null && po.RevisionTecnica.Finalizada,                   
+                    RevisionFinalizada = po.RevisionTecnica != null && po.RevisionTecnica.Finalizada,
                 });
 
                 var ordenCompra = repositorio.Listar<Adjudicacion, AdjudicacionDto>(adjudicacion => new AdjudicacionDto
@@ -5837,7 +5837,7 @@ namespace SustitucionMOAUtils.Services
 
                             var monto = cotizacionPosicion?.Precio.Value *
                                         ObtenerTipoCambio(cotizacionPosicion?.Moneda_Id ?? 0, monedaKey.Value, DateTime.Now).TipoCambio ?? 0;
-                           
+
                             var ap = new AdjudicacionPosicion
                             {
                                 Cantidad = x.Cantidad,
@@ -5850,10 +5850,10 @@ namespace SustitucionMOAUtils.Services
                                 .Solp.Posiciones.FirstOrDefault().TipoPosicion.Codigo == "MATERIALES" ? x.PlazoDeEntrega.Value
                                 : x.PlazoDeEntrega.Value.AddDays(cotizacionPosicion.PrimerPlazoDeOferta.Value)
                             };
-                            if(cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Solp.Posiciones.FirstOrDefault().TipoPosicion.Codigo != "MATERIALES")
+                            if (cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Solp.Posiciones.FirstOrDefault().TipoPosicion.Codigo != "MATERIALES")
                             {
                                 ap.Monto = DevolverMontoServicio(ap, tablasap.Where(moneda => moneda.Id == monedaKey.Value).FirstOrDefault().Codigo);
-                            }                      
+                            }
                             return ap;
                         }).ToList();
 
@@ -5878,8 +5878,6 @@ namespace SustitucionMOAUtils.Services
                             RegionSap_Id = 20,
                             NumeroOrdenDeCompra = ""
                         };
-
-                        
 
                         repositorio.Agregar(adjudicacion);
                         repositorio.GuardarCambios();
@@ -5914,7 +5912,7 @@ namespace SustitucionMOAUtils.Services
                 respuestaGuardarSOLP.NumerosDePedido = numerosDePedido;
                 return respuestaGuardarSOLP;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 if (adjudicacion.Id > 0)
                 {
@@ -5932,16 +5930,16 @@ namespace SustitucionMOAUtils.Services
             decimal tipoDeCambio = 1;
             var moneda = adjudicacionPosicion.CotizacionPosicion.CotizacionSubPosiciones.FirstOrDefault().Moneda.Codigo;
 
-                if (moneda != monedaCodigo)
-                {
-                    tipoDeCambio = obtenerTipoCambioConsumerMOA.Request(fecha.ToString("yyyy-MM-dd"), moneda, monedaCodigo).TipoCambio;
-                }
+            if (moneda != monedaCodigo)
+            {
+                tipoDeCambio = obtenerTipoCambioConsumerMOA.Request(fecha.ToString("yyyy-MM-dd"), moneda, monedaCodigo).TipoCambio;
+            }
 
-                foreach (var item in adjudicacionPosicion.CotizacionPosicion.CotizacionSubPosiciones)
-                {
-                    total += item.Cantidad.Value * item.Precio.Value * tipoDeCambio;
-                }
-            
+            foreach (var item in adjudicacionPosicion.CotizacionPosicion.CotizacionSubPosiciones)
+            {
+                total += item.Cantidad.Value * item.Precio.Value * tipoDeCambio;
+            }
+
 
             return total;
         }
@@ -6215,7 +6213,7 @@ namespace SustitucionMOAUtils.Services
                         CondicionesDePago = "",
                         CondicionesDeEntrega = "",
                         Garantias = "",
-                        
+
 
                     };
                     string mensaje = "Orden de compra generada a partir de las órdenes: " + string.Join(", ", registroInfo.Select(a => a.NumeroOrdenDeCompra));
@@ -6285,13 +6283,7 @@ namespace SustitucionMOAUtils.Services
 
         private PeticionDeOferta CrearPeticionAutomatica(Solp solp, List<int> usuariosIds, List<SolpPosicion> solpPosicions = null, bool esRegistroInfo = false, List<RegistroInfoDto> registroInfoLista = null)
         {
-            int usuarioCreacionPOId = solp.UsuarioCreacion.Id;
-            if (solp.UsuarioCompras_Id.HasValue)
-            {
-                var usuarioId = repositorio.Obtener<Usuario, int?>(a => a.Mail == solp.UsuarioCompras.Mail, a => a.Id);
-                if (usuarioId.HasValue)
-                    usuarioCreacionPOId = usuarioId.Value;
-            }
+            int usuarioCreacionPOId = ObtenerCompradorCondicionesEspeciales(solp);
             var peticion = new GuardarPeticionDeOfertaDto()
             {
                 Observacion = "",
@@ -6305,10 +6297,37 @@ namespace SustitucionMOAUtils.Services
                 Adjuntos = null,
                 RegistroInfo = esRegistroInfo
             };
+
             var resultado = GrabarPeticionDeOferta(peticion, null, solp.TrabajoYaHecho != true && solp.Adicional == true, registroInfoLista);
             var peticionEntidad = repositorio.Obtener<PeticionDeOferta>(resultado.IdEntidad);
 
             return peticionEntidad;
+        }
+
+        private int ObtenerCompradorCondicionesEspeciales(Solp solp)
+        {
+            int usuarioCreadorPOId = solp.UsuarioCreacion.Id;
+            if (solp.UsuarioCompras_Id.HasValue)
+            {
+                var usuarioId = repositorio.Obtener<Usuario, int?>(a => a.Mail == solp.UsuarioCompras.Mail, a => a.Id);
+                if (usuarioId.HasValue) usuarioCreadorPOId = usuarioId.Value;
+            }
+            else
+            {
+                if (solp.Adicional == true)
+                {
+                    var creadorAdj = repositorio.Obtener<Adjudicacion, int?>(a => a.NumeroOrdenDeCompra == solp.NroOrdenDeCompraAdicional, a => a.UsuarioCreador_Id);
+                    if (creadorAdj.HasValue) usuarioCreadorPOId = creadorAdj.Value;
+                    else
+                    {
+                        var adjudicacionDto = obtenerOrdenDeCompraConsumerMOA.ObtenerOrdenDeCompraAdjudicacion(solp.NroOrdenDeCompraAdicional);
+                        if (adjudicacionDto != null && adjudicacionDto.UsuarioCreador_Id != 0)
+                            usuarioCreadorPOId = adjudicacionDto.UsuarioCreador_Id;
+                    }
+                }
+            }
+
+            return usuarioCreadorPOId;
         }
 
         public OrdenDeCompraSAPDto ObtenerOrdenDeCompra(string nroOC)
