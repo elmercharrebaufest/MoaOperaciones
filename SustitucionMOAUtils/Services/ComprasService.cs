@@ -5794,6 +5794,7 @@ namespace SustitucionMOAUtils.Services
                 var cotizacion = repositorio.Obtener<Cotizacion>(adjudicacionDto.Cotizacion_Id);
                 var tablasap = repositorio.Listar<TablaSap>(x => x.Tabla == TablasSap.Moneda || x.Tabla == TablasSap.Unidad);
                 var numerosDePedido = new List<string>();
+                var esMateriales = cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Solp.Posiciones.FirstOrDefault().TipoPosicion.Codigo == "MATERIALES";
                 if (adjudicacionDto.EsMonedaProveedor)
                 {
                     var monedaProv = DevolverMonedaProveedor(adjudicacionDto.Proveedor).Moneda;
@@ -5816,6 +5817,10 @@ namespace SustitucionMOAUtils.Services
                     if (respuestaGuardarSOLP.Errores != null && respuestaGuardarSOLP.Errores.Any())
                     {
                         return respuestaGuardarSOLP;
+                    }
+                    if(!esMateriales)
+                    {
+                        adjudicacionDto.AdjudicacionPosiciones.ForEach(x => x.MonedaId = cotizacionPosiciones.FirstOrDefault().CotizacionSubPosiciones.FirstOrDefault().Moneda_Id);
                     }
                 }
 
@@ -5843,12 +5848,11 @@ namespace SustitucionMOAUtils.Services
                                 CotizacionPosicion = cotizacionPosicion,
                                 Posicion = solpPosicion,
                                 SolpPosicion_Id = x.SolpPosicion_Id,
-                                PlazoDeEntrega = cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta
-                                .Solp.Posiciones.FirstOrDefault().TipoPosicion.Codigo == "MATERIALES" ? x.PlazoDeEntrega.Value
+                                PlazoDeEntrega = esMateriales ? x.PlazoDeEntrega.Value
                                 : x.PlazoDeEntrega.Value.AddDays(cotizacionPosicion.PrimerPlazoDeOferta.Value)
                             };
 
-                            if (cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Solp.Posiciones.FirstOrDefault().TipoPosicion.Codigo != "MATERIALES")
+                            if (!esMateriales)
                             {
                                 monto = DevolverMontoServicio(ap, tablasap.Where(moneda => moneda.Id == monedaKey.Value).FirstOrDefault().Codigo);
                             }
@@ -5904,8 +5908,7 @@ namespace SustitucionMOAUtils.Services
                         try
                         {
                             var mails = DevolverMailResultadoLicitacion(cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta);
-                            bool esServicios = cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Solp.Posiciones.Select(x => x.TipoPosicion.Codigo).FirstOrDefault() != "MATERIALES";
-                            if (mails.Count > 0 && esServicios)
+                            if (mails.Count > 0 && !esMateriales)
                             {
                                 EnviarMailResultadoAdjudicacion(mails, cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta);
                             }
