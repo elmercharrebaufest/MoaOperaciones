@@ -958,11 +958,11 @@ export class ComprasService extends BaseService {
                 headers: this.headers
             });
     }
-    
-      devolverMonedaProveedor(codigoProveedor: string): Observable<any> {
+
+    devolverMonedaProveedor(codigoProveedor: string): Observable<any> {
         let params: HttpParams = new HttpParams();
         params = params.set("codigoProveedor", codigoProveedor.toString());
-        
+
         return this.http
             .get("/api/compras/DevolverMonedaProveedor", {
                 params: params,
@@ -989,9 +989,15 @@ export class ComprasService extends BaseService {
         return this.http
             .post<any>('/api/compras/ValidarSubposicionConMonedaDiferente', payload, { headers: this.headers });
     }
-    
+
     public listarLiberadorSap(): Observable<any> {
         return this.http.get("/api/compras/ListarLiberadorSap", {
+            headers: this.headers,
+        });
+    }
+
+    public listarUsuarioCreadorSolp(): Observable<any> {
+        return this.http.get("/api/compras/ListarUsuarioCreadorSolp", {
             headers: this.headers,
         });
     }

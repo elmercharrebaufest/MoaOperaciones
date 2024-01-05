@@ -1584,21 +1584,13 @@ namespace SustitucionMOA.Controllers
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
         }
-        
+
         [HttpGet]
         public ActionResult ListarLiberadorSap()
         {
             try
             {
                 return JsonCustom(new { data = service.ListarLiberadorSap() });
-            }
-            catch (InfoCustomException e)
-            {
-                return Json(new { info = e }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception e)
             {
@@ -1607,5 +1599,18 @@ namespace SustitucionMOA.Controllers
             }
         }
 
+        [HttpGet]
+        public ActionResult ListarUsuarioCreadorSolp()
+        {
+            try
+            {
+                return JsonCustom(new { data = usuarioService.ListarUsuarioCreadorSolp() });
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
     }
 }

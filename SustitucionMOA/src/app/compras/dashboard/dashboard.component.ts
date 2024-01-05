@@ -23,8 +23,7 @@ declare var $: any;
 @Component({
     selector: 'dashboard',
     templateUrl: `dashboard.component.html`,
-    styleUrls: ['../compras.component.css',
-        './dashboard.component.css']
+    styleUrls: ['../compras.component.css', './dashboard.component.css']
 })
 export class DashboardComponent extends ListBaseComponent {
 
@@ -184,12 +183,19 @@ export class DashboardComponent extends ListBaseComponent {
     }
 
     ngOnInit() {
+        this.listarUsuarioCreadorSolp();
         this.recuperarFiltros();
         this.navService.setSeccionList([]);
-        this.getListarSolp();
+        setTimeout(() => { //espera a tener los usuarios antes de listar
+            this.getListarSolp();
+        }, 1850);
 
         this.desdeDashboard = new Date();
         this.hastaDashboard = new Date();
+    }
+
+    ngAfterViewInit(): void {
+        this.getCombos();
     }
 
     returnToTodaysDate() {
@@ -278,10 +284,6 @@ export class DashboardComponent extends ListBaseComponent {
         else {
             this.mensajeComponent.setMsgsEmpty();
         }
-    }
-
-    ngAfterViewInit(): void {
-        this.getCombos();
     }
 
     getStatusDocumentoSolp(data: any): String {
@@ -398,8 +400,33 @@ export class DashboardComponent extends ListBaseComponent {
             return false; //<-- Prevent Refresh
         }
 
-        return false; //<-- Prevent Refresh
+        return false;
+    }
 
+    listarUsuarioCreadorSolp() {
+        try {
+            this.subscription = this.service.listarUsuarioCreadorSolp().subscribe(
+                (result: any) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.floatMsgService.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.floatMsgService.setInfoMsg(result.info);
+                    } else {
+                        result.data.forEach(x => x.forEach(x => {
+                            if (x.Id == sessionStorage.getItem("usuarioId") && !this.selectUsuario.includes(x.Id))
+                                this.selectUsuario.push(x.Id);
+                        }));
+                    }
+                },
+                error => { this.floatMsgService.setErrorMsg(error.message); }
+            );
+        } catch (e) {
+            this.floatMsgService.setErrorMsg(e);
+            return false;
+        }
+        return false;
     }
 
     eliminarPosicionDashboard(idSolp) {
