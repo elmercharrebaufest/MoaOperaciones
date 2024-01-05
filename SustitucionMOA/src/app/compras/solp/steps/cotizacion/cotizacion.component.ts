@@ -141,10 +141,6 @@ export class CotizacionComponent extends ListBaseComponent {
         }
 
         this.listarLiberadorSap();
-        setTimeout(() => { //espera para que termine el listar antes de validar
-            this.validarChecks();
-        }, 1500);
-
     }
 
     ngOnDestroy() {
@@ -428,6 +424,8 @@ export class CotizacionComponent extends ListBaseComponent {
                             liberadoresIds = this.liberadoresDirectores.map(x => x.value);
                             this.selectDirectores = this.selectDirectores.concat(this.model.liberadoresSap.map(lib => lib.LiberadorSap_Id)
                                 .filter(id => !this.selectDirectores.includes(id) && liberadoresIds.includes(id)));
+
+                            this.validarChecks();
                         }
                     },
                     error => {

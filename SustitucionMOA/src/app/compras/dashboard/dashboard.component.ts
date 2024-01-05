@@ -183,12 +183,12 @@ export class DashboardComponent extends ListBaseComponent {
     }
 
     ngOnInit() {
-        this.listarUsuarioCreadorSolp();
         this.recuperarFiltros();
+        this.listarUsuarioCreadorSolp();
         this.navService.setSeccionList([]);
-        setTimeout(() => { //espera a tener los usuarios antes de listar
-            this.getListarSolp();
-        }, 1850);
+        //setTimeout(() => { //espera a tener los usuarios antes de listar
+        //    this.getListarSolp();
+        //}, 1850);
 
         this.desdeDashboard = new Date();
         this.hastaDashboard = new Date();
@@ -418,6 +418,7 @@ export class DashboardComponent extends ListBaseComponent {
                             if (x.Id == sessionStorage.getItem("usuarioId") && !this.selectUsuario.includes(x.Id))
                                 this.selectUsuario.push(x.Id);
                         }));
+                        this.getListarSolp();
                     }
                 },
                 error => { this.floatMsgService.setErrorMsg(error.message); }
