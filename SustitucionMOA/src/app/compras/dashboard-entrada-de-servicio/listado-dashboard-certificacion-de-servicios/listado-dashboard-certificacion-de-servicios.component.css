@@ -68,8 +68,15 @@ th{
 }
 
 
-.percentage {
+.percentage-green {
     background-color: #2acc53 !important;
+    text-align: center;
+    color: black;
+    border: 2px solid #756f6f !important;
+}
+
+.percentage-yellow {
+    background-color: yellow !important;
     text-align: center;
     color: black;
     border: 2px solid #756f6f !important;

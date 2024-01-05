@@ -22,6 +22,9 @@ using DocumentFormat.OpenXml.Spreadsheet;
 using System.Reflection;
 using SustitucionMOAWS.ObtenerEntradaDeServicioPorNumeroWebServiceMOA;
 using SustitucionMOAModel.Dto.OrdenesCompra;
+using SustitucionMOAModel.Consultas;
+using SustitucionMOAWS.ScatoWebService;
+using SustitucionMOAWS.ScatoComandosWebService;
 
 namespace SustitucionMOAUtils.Services
 
@@ -40,7 +43,7 @@ namespace SustitucionMOAUtils.Services
             //_liquidacionService = liquidacionService;
         }
 
-        public List<DetalleOrdenDeCompraDto> ObtenerOrdenesCompraConDetalle(OrderParamsDto parametros)
+        public ListaPaginada<DetalleOrdenDeCompraDto> ObtenerOrdenesCompraConDetalle(OrderParamsDto parametros)
         {
             List<DetalleOrdenDeCompraDto> result = ServicioSAP_OrdenesCompraCabeceras(parametros);
 
@@ -49,9 +52,9 @@ namespace SustitucionMOAUtils.Services
                 result = OrdenarOrdenesCompra(result, parametros.ColumnaOrden, parametros.OrdenAscendente);
 
             // Realiza la paginación
-            result = PaginarResultados(result, parametros.pagina, parametros.elementosPorPagina);
+            var response = PaginarResultados(result, parametros.pagina, parametros.elementosPorPagina);
 
-            return result;
+            return response;
         }
 
         /// <summary>
@@ -79,21 +82,29 @@ namespace SustitucionMOAUtils.Services
         /// <summary>
         /// Pagina los resultados de la lista de ordenes de compra
         /// </summary>
-        public List<DetalleOrdenDeCompraDto> PaginarResultados(List<DetalleOrdenDeCompraDto> resultados, int? pagina, int? elementosPorPagina)
+        public ListaPaginada<DetalleOrdenDeCompraDto> PaginarResultados(List<DetalleOrdenDeCompraDto> resultados, int pagina, int? elementosPorPagina)
         {
             // Establecer valores predeterminados si son nulos o inválidos
-            int paginaValida = (pagina.HasValue && pagina.Value > 0) ? pagina.Value : 1;
+            int itemsTotales = resultados.Count();
+            List<DetalleOrdenDeCompraDto> resultado;
+
+            int paginaValida =  pagina > 0 ? pagina : 1;
             int elementosPorPaginaValidos = (elementosPorPagina.HasValue && elementosPorPagina.Value > 0) ? elementosPorPagina.Value : 5;
 
             int indiceInicial = (paginaValida - 1) * elementosPorPaginaValidos;
-            if (indiceInicial >= 0 && indiceInicial < resultados.Count)
-            {
-                return resultados.Skip(indiceInicial).Take(elementosPorPaginaValidos).ToList();
-            }
-            else
-            {
-                return new List<DetalleOrdenDeCompraDto>(); // Si la página solicitada está fuera de rango, devuelve una lista vacía
-            }
+            //if (indiceInicial >= 0 && indiceInicial < resultados.ToList().Count)
+            //{
+                //resultado = resultado.Skip((paginacion.Pagina - 1) * paginacion.ItemsPorPagina).Take(paginacion.ItemsPorPagina);
+                resultado = resultados.Skip(indiceInicial).Take(elementosPorPaginaValidos).ToList();
+
+                return new ListaPaginada<DetalleOrdenDeCompraDto>(resultado.ToList(), paginaValida, elementosPorPaginaValidos, itemsTotales);
+
+                //return resultados.Skip(indiceInicial).Take(elementosPorPaginaValidos).ToList();
+            //}
+            //else
+            //{
+            //    return new ListaPaginada<DetalleOrdenDeCompraDto>(); // Si la página solicitada está fuera de rango, devuelve una lista vacía
+            //}
         }
 
 
@@ -118,6 +129,8 @@ namespace SustitucionMOAUtils.Services
 
                 // Obtengo detalle de una OC
                 DetalleOrdenDeCompraDto detalleOrdendeCompra = new ObtenerOrdenDeCompraConsumerMOA(repositorio).ObtenerDetalleDeOrdenDeCompra(nroOC);
+                detalleOrdendeCompra.NombreProveedor = ordenCompra.ProveedorNombre;
+                detalleOrdendeCompra.MonedaDescripcion = ordenCompra.MonedaDescripcion;
 
                 result.Add(detalleOrdendeCompra);
             }

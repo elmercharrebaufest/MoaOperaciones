@@ -359,6 +359,7 @@ namespace SustitucionMOAWS.WSConsumers
            // Obtiene datos de la cabecera de una OC
             detalleOrdenDeCompra.NumeroOrdenDeCompra = POHEADER.PO_NUMBER;
             detalleOrdenDeCompra.Proveedor = POHEADER.VENDOR;
+            //detalleOrdenDeCompra.NombreProveedor = POHEADER.
             detalleOrdenDeCompra.MontoTotal = Math.Round(POITEM.Sum(a => a.QUANTITY * a.NET_PRICE), 4);
             detalleOrdenDeCompra.FechaCreacion = DateTime.ParseExact(POHEADER.CREAT_DATE, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture).ToString();
             detalleOrdenDeCompra.UsuarioCreador = POHEADER.CREATED_BY;
@@ -387,17 +388,25 @@ namespace SustitucionMOAWS.WSConsumers
                 pos.Contrato = posicion.AGREEMENT;
                 pos.Solicitante = posicion.PREQ_NAME;
                 //pos.MonedaId = posicion.CURRENCY;
+                pos.MonedaDescripcion = POHEADER.CURRENCY_ISO;
 
-                pos.Items = ObtenerItemsdelaPosicion(POSERVICES, POHISTORY, pos.Id) ;
-                         
+                pos.Items = ObtenerItemsdelaPosicion(POSERVICES, POHISTORY, POHEADER, pos.Id);
+
                 detalleOrdenDeCompra.Posiciones.Add(pos);
             }
 
             return detalleOrdenDeCompra;
         }
 
-
-        private List<ItemDto> ObtenerItemsdelaPosicion(BAPIESLLC[] pOSERVICES, BAPIEKBE[] pOHISTORY, int idPosicion)
+        /// <summary>
+        /// Load Items of a position
+        /// </summary>
+        /// <param name="pOSERVICES"></param>
+        /// <param name="pOHISTORY"></param>
+        /// <param name="POCOND">MMSN-460 - Added as mentioned in v.1.8 - HU02-Compras-MVP1 - Detalle de OCs - Posiciones - Solicitante</param>
+        /// <param name="idPosicion"></param>
+        /// <returns></returns>
+        private List<ItemDto> ObtenerItemsdelaPosicion(BAPIESLLC[] pOSERVICES, BAPIEKBE[] pOHISTORY, BAPIMEPOHEADER POHEADER, int idPosicion)
         {
             List<ItemDto> itemsDeLaPosicion = new List<ItemDto>();
             string idPosicionString = idPosicion.ToString("D10");
@@ -411,23 +420,39 @@ namespace SustitucionMOAWS.WSConsumers
             {
                 ItemDto itemDto = new ItemDto();
 
+
                 itemDto.Id = item.PCKG_NO;
                 itemDto.NumeroLinea = int.Parse(item.EXT_LINE);
                 itemDto.Descripcion = item.SHORT_TEXT;
                 itemDto.Cantidad = item.QUANTITY;
                 itemDto.PosicionId = Convert.ToInt32(item.PCKG_NO);
-                itemDto.PrecioBruto = Math.Round((item.QUANTITY != 0) ? item.NET_VALUE / item.QUANTITY : 0,4);
-                itemDto.ServicioNumero = long.Parse(item.SERVICE ==""?"0":item.SERVICE);
+                itemDto.PrecioBruto = Math.Round((item.QUANTITY != 0) ? item.NET_VALUE / item.QUANTITY : 0, 4);
+                itemDto.ServicioNumero = item.SERVICE != "" ? long.Parse(item.SERVICE) : 0;
                 itemDto.UM = item.BASE_UOM;
                 itemDto.Importe = Math.Round((item.QUANTITY != 0) ? item.NET_VALUE / item.QUANTITY : 0, 4);
+                //MMSN-460 - Moneda
+                itemDto.Moneda = POHEADER.CURRENCY;
+                //MMSN-460 - Nro de servicio
+                itemDto.ServicioNumero = item.SERVICE != "" ? int.Parse(item.SERVICE) : 0;
+                //MMSN-460 - Porcentaje (inicialización - necesaria para FE)
+                itemDto.Porcentaje = "0"; // si no tiene entradas de servicios asociadas el porcentaje es 0
+                itemDto.CantidadReal = itemDto.Cantidad;
 
                 itemDto.EntradasServicio = ObtenerEntradasDeServicioDelItem(pOSERVICES, pOHISTORY, itemDto.Id);
+                if (itemDto.EntradasServicio.Count > 0)
+                {
+                    itemDto = CalcularCampos(itemDto);
+                }
+
 
                 itemsDeLaPosicion.Add(itemDto);
             }
 
             return itemsDeLaPosicion;
         }
+
+
+      
 
         private List<EntradaServicioDto> ObtenerEntradasDeServicioDelItem(BAPIESLLC[] pOSERVICES, BAPIEKBE[] pOHISTORY, string idDelItem)
         {
@@ -459,6 +484,58 @@ namespace SustitucionMOAWS.WSConsumers
 
         }
 
+        /// <summary>
+        /// MMSN-460: Calculo de Cantidad Real y Porcentaje para ItemDTO
+        /// </summary>
+        /// <param name="itemDto"></param>
+        /// <returns></returns>
+        private ItemDto CalcularCampos(ItemDto itemDto)
+        {
+            bool calcularPorcentaje = false;
+
+            //MMSN-460 - Cantidad Real
+            //Inicializar en 0 si hay elementos en ES
+            if (itemDto.EntradasServicio.Count > 0)
+            {
+                itemDto.CantidadReal = 0;
+                calcularPorcentaje = true;
+            }
+
+            try
+            {
+                //recorrer la lista de Entradas de Servicio, y contabilizar la cantidad
+                foreach (var es in itemDto.EntradasServicio)
+                {
+                    if (es.Cantidad != null)
+                    {
+                        itemDto.CantidadReal = itemDto.CantidadReal + es.Cantidad;
+                    }
+
+                }
+
+                //MMSN-460 - Porcentaje (% del item = cantidadReal x 100 / cantidad)
+                if (itemDto.Cantidad != null && itemDto.Cantidad != 0)
+                {
+                    if (calcularPorcentaje == true && (itemDto.CantidadReal != null && itemDto.CantidadReal != 0))
+                    {
+                        double res = Convert.ToDouble((itemDto.CantidadReal * 100) / itemDto.Cantidad);
+                        itemDto.Porcentaje = res.ToString("0.##");
+
+                        if (itemDto.Porcentaje.EndsWith(".00"))
+                        {
+                            var redondeo = Math.Round(res);
+                            itemDto.Porcentaje = res.ToString();
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                //Evito detener ejecución
+            }
+
+            return itemDto;
+        }
         private void ObtenerDetalleDeOrdenDeCompraSap(
             string nroOC, out BAPIMEPOITEM[] POITEM, out BAPIRET2[] RETURN, out BAPIMEPOHEADER POHEADER, out BAPIEIKP result,
            out BAPIMEPOTEXTHEADER[] POTEXTHEADER, out BAPIMEPOTEXT[] POTEXTITEM, out BAPIESLLC[] POSERVICES, out BAPIMEPOSCHEDULE[] POSCHEDULE,

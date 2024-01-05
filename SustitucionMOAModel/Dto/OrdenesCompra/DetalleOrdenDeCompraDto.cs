@@ -11,7 +11,9 @@ using System.Threading.Tasks;
 namespace SustitucionMOAModel.Dto.OrdenesCompra
 {
     public class DetalleOrdenDeCompraDto
-    {    
+    {
+       
+
         public int Id { get; set; }
         public int Cotizacion_Id { get; set; }
         public int Solp_Id { get; set; }
@@ -34,5 +36,11 @@ namespace SustitucionMOAModel.Dto.OrdenesCompra
         public string Centro { get; set; }
         public string CalleEntrega { get; set; }
         public string CodigoPostal { get; set; }
+
+        public int ItemPorPagina { get; set; }
+        public int Pagina { get; set; }
+        public int ItemsTotales { get; set; }
+
+        public string NombreProveedor { get; set; }
     }
 }

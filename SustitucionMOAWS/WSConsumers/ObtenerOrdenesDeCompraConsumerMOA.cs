@@ -68,6 +68,9 @@ namespace SustitucionMOAWS.WSConsumers
                 result.Add(new OrdenCompraDto
                 {
                     Id = long.Parse(item.PO_NUMBER),
+                    ProveedorNombre = item.VEND_NAME,
+                    MonedaDescripcion = item.CURRENCY_ISO
+                    
                 });
             }
             

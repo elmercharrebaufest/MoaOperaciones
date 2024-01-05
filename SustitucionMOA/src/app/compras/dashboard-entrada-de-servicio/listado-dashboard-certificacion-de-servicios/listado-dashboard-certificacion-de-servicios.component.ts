@@ -174,10 +174,13 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
           // this.subscripcionPO = this.service.getByProveedor("2023-01-28", proveedor, "4123001336", this.columnaOrden , this.ordenAscendente, this.pageIndex, this.pageSize).subscribe(
           this.subscripcionPO = this.service.getByProveedor(this.fechaInicio, proveedor, ordenCompraId, this.columnaOrden , this.ordenAscendente, this.pageIndex, this.pageSize).subscribe(
                 (result:any) => {
+                 
                   if (result.logout == true) {
                     this.sessionDataService.logout();
                   } else if (result.error != undefined && result.error != "") {
+                    this.floatMsgService.setErrorMsg(result.error);
                   } else if (result.info != undefined) {
+                    this.floatMsgService.setInfoMsg(result.info);
                   } else {
                       this.tablaPO = result.data; 
                       this.length = result.data.length > 0 ? result.data[0].ItemsTotales : result.data.length;

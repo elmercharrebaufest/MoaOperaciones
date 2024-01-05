@@ -16,6 +16,7 @@ namespace SustitucionMOAModel.Dto
         public decimal MontoTotal { get; set; }
         public List<PosicionDto> Posiciones { get; set; }
         public string ProveedorNumero { get; set; }
+        public string MonedaDescripcion { get; set; }
         //public List<OrdenCompraPosicionDto> Posiciones { get; set; }
         //public List<PosicionDto> PosicionesTmp2 { get; set; } = new List<PosicionDto>();
     }

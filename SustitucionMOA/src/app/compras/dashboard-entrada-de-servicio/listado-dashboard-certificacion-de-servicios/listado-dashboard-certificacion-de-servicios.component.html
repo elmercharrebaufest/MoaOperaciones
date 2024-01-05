@@ -1,7 +1,11 @@
 <section class="container-fluid clearfix">
     <div class="row titleSection">
-        <div class="col-xs-12 col-sm-10 "> <strong>Dashboard - Solicitante - Lista de todas las OCs - Certificación de
-                Servicios</strong></div>
+        <div class="col-xs-12 col-sm-10 ">
+            <strong>
+                Dashboard - Solicitante - Lista de todas las OCs - Certificación de
+                Servicios
+            </strong>
+        </div>
     </div>
     <br>
 </section>
@@ -10,12 +14,11 @@
     <!-- <app-filtro-dashboard-certificacion-de-servicios></app-filtro-dashboard-certificacion-de-servicios> -->
     <div class="col-sm-12 col-md-12 col-lg-12" style="padding: 0px; border: 1px solid rgb(200, 200, 200);">
 
-        <p-table  #tabla [value]="tablaPO" responsiveLayout="scroll | stack" dataKey="NumeroOrdenDeCompra"
-            [paginator]="true" 
-            [rows]="10" 
-            [columns]="columns"
-            [globalFilterFields]="['NumeroOrdenDeCompra','Proveedor']" >
-           
+        <p-table #tabla [value]="tablaPO" responsiveLayout="scroll | stack" dataKey="NumeroOrdenDeCompra"
+               
+                 [columns]="columns"
+                 [globalFilterFields]="['NumeroOrdenDeCompra','Proveedor']">
+
             <ng-template pTemplate="caption" style="border: none !important;">
                 <div class="p-d-flex">
                     <span class="p-input-icon-left p-ml-auto">
@@ -23,44 +26,48 @@
                         <input pInputText type="text" (input)="tabla.filterGlobal($event.target.value, 'contains')" placeholder="BUSCADOR OC / PROVEEDOR" style="width: 40%;" />
                     </span>
                 </div>
-            </ng-template >
+            </ng-template>
 
             <ng-template pTemplate="header" let-columns class="lista-header">
                 <tr>
-                    <th class="headerth" title="Detalle" style="width: 32px; text-align: center;">
+                    <!--<th class="headerth" title="Detalle" style="width: 32px; text-align: center;">
+                        Detalle
+                    </th>-->
+
+                    <th title="Detalle" class="headerth columna" style="width: 32px; text-align: center;">
                         Detalle
                     </th>
+
                     <th class="headerth" title="Fecha" (click)="onOrder('Fecha')" style="width: 80px">
                         Fecha
                         <span>
-                            <i
-                                [ngClass]="{'fa': true, 'fa-solid fa-sort-up': true, 'arrow': true, 'unselected': columna === 'Fecha' && orden == false  }"></i>
-                            <i
-                                [ngClass]="{'fa': true, 'fa-solid fa-sort-down': true, 'arrow': true, 'unselected': columnaOrden === 'Fecha' && orden == true }"></i>
+                            <i [ngClass]="{'fa': true, 'fa-solid fa-sort-up': true, 'arrow': true, 'unselected': columna === 'Fecha' && orden == false  }"></i>
+                            <i [ngClass]="{'fa': true, 'fa-solid fa-sort-down': true, 'arrow': true, 'unselected': columnaOrden === 'Fecha' && orden == true }"></i>
                         </span>
                     </th>
 
                     <th title="Número de OC" class="headerth" (click)="onOrder('OrdenCompraId')" style="width: 80px">
                         Número de OC
                         <span>
-                            <i
-                                [ngClass]="{'fa': true, 'fa-solid fa-sort-up': true, 'arrow': true, 'unselected': columnaOrden === 'OrdenCompraId' && orden == false  }"></i>
-                            <i
-                                [ngClass]="{'fa': true, 'fa-solid fa-sort-down': true, 'arrow': true, 'unselected': columnaOrden === 'OrdenCompraId' && orden == true }"></i>
+                            <i [ngClass]="{'fa': true, 'fa-solid fa-sort-up': true, 'arrow': true, 'unselected': columnaOrden === 'OrdenCompraId' && orden == false  }"></i>
+                            <i [ngClass]="{'fa': true, 'fa-solid fa-sort-down': true, 'arrow': true, 'unselected': columnaOrden === 'OrdenCompraId' && orden == true }"></i>
                         </span>
                     </th>
 
                     <th title="Proveedor" class="headerth" (click)="onOrder('ProveedorNombre')" style="width: 105px;">
                         Proveedor
                         <span>
-                            <i
-                                [ngClass]="{'fa': true, 'fa-solid fa-sort-up': true, 'arrow': true, 'unselected': columnaOrden === 'ProveedorNombre' && orden == false  }"></i>
-                            <i
-                                [ngClass]="{'fa': true, 'fa-solid fa-sort-down': true, 'arrow': true, 'unselected': columnaOrden === 'ProveedorNombre' && orden == true }"></i>
+                            <i [ngClass]="{'fa': true, 'fa-solid fa-sort-up': true, 'arrow': true, 'unselected': columnaOrden === 'ProveedorNombre' && orden == false  }"></i>
+                            <i [ngClass]="{'fa': true, 'fa-solid fa-sort-down': true, 'arrow': true, 'unselected': columnaOrden === 'ProveedorNombre' && orden == true }"></i>
                         </span>
                     </th>
-                    <th title="Descripción" class="headerth" style="width: 90px;">
-                        Descripción
+                    <th title="RazonSocial" class="headerth" style="width: 90px;">
+                        Razon Social
+                    </th>
+
+
+                    <th title="OrdenCompraMoneda" class="headerth columna">
+                        Moneda
                     </th>
 
                     <th title="Monto total" class="headerth columna" style="width:80px ;">
@@ -72,11 +79,18 @@
 
             <ng-template pTemplate="body" let-rowData let-columns="columns" let-expanded="expanded">
                 <tr [pSelectableRow]="rowData">
-                    <td class="columna" style="text-align: center;">
+                    <!--<td class="columna" style="text-align: center;">
                         <a href="#" (click)="toggleRow(rowData.Posiciones)" [pRowToggler]="rowData">
                             <i [ngClass]="expandedRows ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
                         </a>
-                      </td>
+                    </td>-->
+                    <td class="columna" style="text-align: center;">
+                        <a href="#" [pRowToggler]="rowData">
+                            
+                            <i [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
+                        </a>
+                    </td>
+
                     <td class="columna">
                         {{ rowData.FechaCreacion | date:'yyyy-MM-dd' }}
                     </td>
@@ -87,7 +101,10 @@
                         {{rowData.Proveedor}}
                     </td>
                     <td class="columna">
-                        -
+                        {{rowData.NombreProveedor}}
+                    </td>
+                    <td class="columna">
+                        {{rowData.MonedaDescripcion}}
                     </td>
                     <td class="columna">
                         {{rowData.MontoTotal}}
@@ -96,7 +113,7 @@
             </ng-template>
 
             <ng-template pTemplate="rowexpansion" let-rowData let-columns="columns">
-                <div style="margin: 1em;" >
+                <div style="margin: 1em;">
                 <td class="fz">
                     <div style="width: 140%; border: 1px solid rgb(200, 200, 200); margin: 1em;">
                         <p-table [value]="rowData.Posiciones" responsiveLayout="scroll | stack" dataKey="Id">
@@ -166,10 +183,10 @@
                                     </td>
 
                                     <!-- <td class="columna" style="text-align: center;">
-                        <a href="#" (click)="toggleTable(posicion.PosicionId)" [pRowToggler]="rowData">
-                            <i [ngClass]="isTableExpanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
-                        </a>
-                    </td> -->
+                                        <a href="#" (click)="toggleTable(posicion.PosicionId)" [pRowToggler]="rowData">
+                                            <i [ngClass]="isTableExpanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
+                                        </a>
+                                    </td> -->
                                     <td class="columna">
                                         {{rowData.NumeroPosicion}}
                                     </td>
@@ -210,7 +227,7 @@
                             </ng-template>
 
                             <ng-template pTemplate="rowexpansion" let-rowData let-columns="columns">
-                              <div style="padding: 1em">
+                                <div style="padding: 1em">
                                     <!--td fz-->
                                 <td class="fz">
                                     <!--div widht-->
@@ -303,9 +320,11 @@
                                                     <td class="columna">
                                                         {{(rowData.CantidadReal != null && rowData.CantidadReal != 0) ? rowData.CantidadReal : '-' }}
                                                     </td>
-                                                    <td class="columna percentage" style="border: 0 !important;">
-                                                        {{rowData.Porcentaje != "" ? rowData.Porcentaje : '-'}}
+                                                    <td [ngClass]="{'percentage-green': rowData.Porcentaje >= 100, 'percentage-yellow': rowData.Porcentaje <= 99}"
+                                                        class="columna" style="border: 0 !important;">
+                                                        {{rowData.Porcentaje != "" ? rowData.Porcentaje : '-'}} %
                                                     </td>
+
                                                     <td class="columna">
                                                         {{rowData.Solicitante != "" ? rowData.Solicitante : '-'}}
                                                     </td>
@@ -315,7 +334,7 @@
                                             <ng-template pTemplate="rowexpansion" let-rowData let-columns="columns">
 
                                                 <!-- <tr  *ngFor="let data of rowData.EntradasServicio" > -->
-                                              <div style="padding: 1em">
+                                                <div style="padding: 1em">
 
                                                 <td style="margin: 1em">
                                                     <!--div width-->
@@ -411,26 +430,27 @@
                                                     </div>
                                                 </td>
                                                 <!--/div-->
-                                               </div>
-                                            </ng-template>
-                                        </p-table>
                                     </div>
-                                </td>
-                            </div>
-                    </ng-template>
+                            </ng-template>
+                        </p-table>
+                    </div>
+                </td>
+    </div>
+    </ng-template>
 
-                            </p-table>
-                        </div>
+    </p-table>
+</div>
                     </td>
                 </div>
             </ng-template>
 
         </p-table>
-        <div class="container-button">
-            <button (click)="openModal()" class="button-certificar">
-                Certificar ES - Ítem
-            </button>
-        </div>
-        <app-modal-alta-entrada-de-servicio *ngIf="showModal" [itemSelected]="itemSelected" [itemIdSelected]="itemIdSelected" (closeModal)="onCloseModal()"></app-modal-alta-entrada-de-servicio>
+<p-paginator #paginator [rows]="10" [totalRecords]="length" (onPageChange)="handlePageEvent($event)"></p-paginator>
+<div class="container-button">
+    <button (click)="openModal()" class="button-certificar">
+        Certificar ES - Ítem
+    </button>
+</div>
+<app-modal-alta-entrada-de-servicio *ngIf="showModal" [itemSelected]="itemSelected" [itemIdSelected]="itemIdSelected" (closeModal)="onCloseModal()"></app-modal-alta-entrada-de-servicio>
     </div>
 </div>

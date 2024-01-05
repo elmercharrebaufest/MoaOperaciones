@@ -1,4 +1,5 @@
-﻿using SustitucionMOAModel.Dto;
+﻿using SustitucionMOAModel.Consultas;
+using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Dto.OrdenesCompra;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Models.ViewModel.Notificacion;
@@ -11,7 +12,7 @@ namespace SustitucionMOAUtils.Interfaces
     {
         //List<OrdenCompraDto> GetByProveedor(string vendedor);
         //List<OrdenCompraDto> ServicioOrdenesCompraFake(string vendedor);
-        List<DetalleOrdenDeCompraDto> ObtenerOrdenesCompraConDetalle(OrderParamsDto parametros);
+        ListaPaginada<DetalleOrdenDeCompraDto> ObtenerOrdenesCompraConDetalle(OrderParamsDto parametros);
 
     }
 }

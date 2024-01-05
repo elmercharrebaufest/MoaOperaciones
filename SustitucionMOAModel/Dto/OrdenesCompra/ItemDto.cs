@@ -26,5 +26,25 @@ namespace SustitucionMOAModel.Dto.OrdenesCompra
         public string UM { get; set; }
         public decimal? Importe { get; set; }
         public List<EntradaServicioDto> EntradasServicio { get; set; }
+
+        /// <summary>
+        /// POHEADER.CURRENCY 
+        /// </summary>
+        public string Moneda { get; set; }
+
+        /// <summary>
+        /// MMSN-460 - Suma de las cantidades de las ES ingresadas por OC
+        /// </summary>
+        public decimal? CantidadReal { get; set; }
+
+        /// <summary>
+        /// MMSN-460 - % del item = cantidadReal x 100 / cantidad
+        /// </summary>
+        public string Porcentaje { get; set; }
+
+        /// <summary>
+        /// MMSN-460 - Mismo solicitante para el item que la posición.
+        /// </summary>
+        public string Solicitante { get; set; }
     }
 }

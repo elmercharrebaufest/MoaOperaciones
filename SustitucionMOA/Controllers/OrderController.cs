@@ -29,6 +29,7 @@ namespace SustitucionMOA.Controllers
 
         //[ValidateInput(false)]
         //[CustomPermisoAuthorizeAttribute(Roles = Permiso.ABM_SOLP)]
+        [HttpGet]
         public ActionResult GetByProveedor(OrderParamsDto parametros)
         {
             try
@@ -41,9 +42,14 @@ namespace SustitucionMOA.Controllers
 
                 //parametros.OrdenCompraId = "4123001971"; //"4123001549";
 
-                List<DetalleOrdenDeCompraDto> result = orderService.ObtenerOrdenesCompraConDetalle(parametros);
+                ListaPaginada<DetalleOrdenDeCompraDto> result = orderService.ObtenerOrdenesCompraConDetalle(parametros);
 
-                return JsonCustom(new { data = result });
+                
+                result.Items.FirstOrDefault().ItemsTotales = result.ItemsTotales;
+                result.Items.FirstOrDefault().Pagina = result.Pagina;
+                result.Items.FirstOrDefault().ItemPorPagina = result.ItemsPorPagina;
+
+                return ContentCustom(new { data = result });
             }
             catch (Exception ex)
             {
