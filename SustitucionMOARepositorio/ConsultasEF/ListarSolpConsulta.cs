@@ -82,7 +82,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                     NroOrdenDeCompraAdicional = x.NroOrdenDeCompraAdicional,
                                     TrabajoYaHecho = x.TrabajoYaHecho,
                                     Urgencia = x.Urgencia,
-                                    SolpConAdjuntos = x.Pliego.Archivos.Where(r => r.FileKey == FileKeys.AdjuntoCotizacionesSolp).Any(),
+                                    SolpConAdjuntos = x.Pliego.Archivos.Where(r => r.FileKey == FileKeys.AdjuntoCotizacionesSolp || r.FileKey == FileKeys.AdjuntoSolp).Any(),
                                     PosicionCompras = (from posicion in contexto.Set<SolpPosicion>()
                                                        where posicion.Solp_Id == x.Id
                                                        select new SolpPosicionDto()

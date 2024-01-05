@@ -1081,7 +1081,7 @@ namespace SustitucionMOAUtils.Services
                     ItemPorPagina = paginacion.ItemsPorPagina,
                     Pagina = paginacion.Pagina,
                     TipoPosicionCodigo = x.Posiciones.Select(posiciones => posiciones.TipoPosicion.Codigo).FirstOrDefault(),
-                    SolpConAdjuntos = x.Pliego.Archivos.Where(r => r.FileKey == FileKeys.AdjuntoCotizacionesSolp).Any(),
+                    SolpConAdjuntos = x.Pliego.Archivos.Where(r => r.FileKey == FileKeys.AdjuntoCotizacionesSolp || r.FileKey == FileKeys.EspecificacionesTecnicasPliego).Any(),
                     ChatSinLeer = x.ChatInternoCompras.Any(a => a.Leido == false && a.Usuario.Roles.Any(r => r.Codigo == rol)),
                 },
                 paginacion,
@@ -1549,12 +1549,12 @@ namespace SustitucionMOAUtils.Services
             var pdfFilename = $"Solp-{middleFileName}-pliego-{DateTime.Now:yyyyMMdd}.pdf";
             var pdfFilePath = $"{pathBase}/{pdfFilename}";
 
-            if (solp.TipoSolp?.Codigo == "CON_PLIEGO" || (solp.TipoSolpSap == 3 && solp.Urgencia.Value))
+            if (solp.TipoSolp != null && solp.TipoSolp.Codigo == "CON_PLIEGO" || (solp.TipoSolpSap == 3 && solp.Urgencia != null && solp.Urgencia.Value))
             {
                 File.WriteAllBytes(pdfFilePath, GenerarSolpPdf(idSolp));
             }
 
-            if (solp.Pliego.Archivos != null && solp.Pliego.Archivos.Any<Archivo>(x => x.FileKey == FileKeys.AdjuntoSolp || x.FileKey == FileKeys.AdjuntoCotizacionesSolp))
+            if (solp.Pliego.Archivos != null && solp.Pliego.Archivos.Any<Archivo>(x => x.FileKey == FileKeys.AdjuntoSolp || x.FileKey == FileKeys.AdjuntoCotizacionesSolp || x.FileKey == FileKeys.EspecificacionesTecnicasPliego))
             {
                 var zipFilename = $"Solp-{middleFileName}-pliego-{DateTime.Now.ToString("yyyyMMdd")}.zip";
                 var filePath = $"{pathBase}/{zipFilename}";
@@ -1565,14 +1565,14 @@ namespace SustitucionMOAUtils.Services
                     {
                         foreach (var archivoSubido in solp.Pliego.Archivos)
                         {
-                            if (File.Exists(archivoSubido.Ruta) && (archivoSubido.FileKey == FileKeys.AdjuntoSolp || archivoSubido.FileKey == FileKeys.AdjuntoCotizacionesSolp))
+                            if (File.Exists(archivoSubido.Ruta) && (archivoSubido.FileKey == FileKeys.AdjuntoSolp || archivoSubido.FileKey == FileKeys.AdjuntoCotizacionesSolp || archivoSubido.FileKey == FileKeys.EspecificacionesTecnicasPliego))
                             {
                                 string fileName = Path.GetFileName(archivoSubido.Ruta);
                                 archivo.CreateEntryFromFile(archivoSubido.Ruta, fileName);
                             }
                         }
 
-                        if (solp.TipoSolp?.Codigo == "CON_PLIEGO" || (solp.TipoSolpSap == 3 && solp.Urgencia.Value))
+                        if (solp.TipoSolp != null && solp.TipoSolp.Codigo == "CON_PLIEGO" || (solp.TipoSolpSap == 3 && solp.Urgencia != null && solp.Urgencia.Value))
                         {
                             archivo.CreateEntryFromFile(pdfFilePath, pdfFilename);
                         }
@@ -5883,6 +5883,7 @@ namespace SustitucionMOAUtils.Services
                             RegionSap = regiones.Where(c => c.Id == adjudicacionDto.RegionSap).FirstOrDefault(),
                             RegionSap_Id = adjudicacionDto.RegionSap,
                             NumeroOrdenDeCompra = ""
+                            
                         };
 
                         repositorio.Agregar(adjudicacion);
@@ -5911,7 +5912,7 @@ namespace SustitucionMOAUtils.Services
                         }
                         catch (Exception)
                         {
-                            Logger.Log.Info($"Error al enviar mail { cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Id} para el cierre de la cotizacion");
+                            Logger.Log.Info($"Error al enviar mail {cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Id} para el cierre de la cotizacion");
                         }
                     }
                 }
@@ -5920,7 +5921,7 @@ namespace SustitucionMOAUtils.Services
             }
             catch (Exception)
             {
-                if (adjudicacion != null && adjudicacion.Id > 0)
+                if (adjudicacion.Id > 0)
                 {
                     repositorio.Remover(adjudicacion);
                     repositorio.GuardarCambios();
