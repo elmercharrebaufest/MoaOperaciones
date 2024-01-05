@@ -412,7 +412,7 @@ export class DashboardComponent extends ListBaseComponent {
                         this.floatMsgService.setInfoMsg(result.info);
                     } else {
                         result.data.forEach(x => x.forEach(x => {
-                            if (x.Id == sessionStorage.getItem("usuarioId") && !this.selectUsuario.includes(x.Id))
+                            if (x.Id == sessionStorage.getItem("usuarioId") && this.selectUsuario.length === 0 && !this.selectUsuario.includes(x.Id))
                                 this.selectUsuario.push(x.Id);
                         }));
                         this.getListarSolp();
