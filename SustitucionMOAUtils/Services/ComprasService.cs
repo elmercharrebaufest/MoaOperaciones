@@ -5906,12 +5906,12 @@ namespace SustitucionMOAUtils.Services
                             bool esServicios = cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Solp.Posiciones.Select(x => x.TipoPosicion.Codigo).FirstOrDefault() != "MATERIALES";
                             if (mails.Count > 0 && esServicios)
                             {
-                                EnviarMailResultadoAdjudicacion(mails, adjudicacion.Cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta);
+                                EnviarMailResultadoAdjudicacion(mails, cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta);
                             }
                         }
                         catch (Exception)
                         {
-                            Logger.Log.Info($"Error al enviar mail {adjudicacion.Cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Id} para el cierre de la cotizacion");
+                            Logger.Log.Info($"Error al enviar mail { cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Id} para el cierre de la cotizacion");
                         }
                     }
                 }
@@ -5920,7 +5920,7 @@ namespace SustitucionMOAUtils.Services
             }
             catch (Exception)
             {
-                if (adjudicacion.Id > 0)
+                if (adjudicacion != null && adjudicacion.Id > 0)
                 {
                     repositorio.Remover(adjudicacion);
                     repositorio.GuardarCambios();
