@@ -1664,7 +1664,10 @@ namespace SustitucionMOAUtils.Services
         {
             string resultado = SuccessMsg.OrdenDeCargaActualizada;
             var orden = repositorio.Obtener<OrdenDeCarga>(ordenId);
-
+            if(orden != null && !string.IsNullOrEmpty(orden.ContratoSAP))
+            {
+                return new Resultado { info = "La orden ya tiene un contrato seleccionado." };
+            }
             orden.ContratoSAP = contratoSAP;
             orden.DescripcionErrorInterno = "";
             var logCambioEstado = orden.ActualizarEstado();
@@ -1710,7 +1713,7 @@ namespace SustitucionMOAUtils.Services
                     if (orden.TipoContrato == TipoContratoFAS.Anticipado)
                         return GenerarEntregaSAP(orden);
 
-                    var creadaEnSaP = CrearPedidoEnSAP(orden, orden.Cliente, true, false, mailUsuario);
+                    var creadaEnSaP = !string.IsNullOrEmpty(orden.NumeroPedido) || CrearPedidoEnSAP(orden, orden.Cliente, true, false, mailUsuario);
                     if (creadaEnSaP)
                     {
                         return VerificarSituacionCrediticia(orden, true);
