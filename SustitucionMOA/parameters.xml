@@ -295,7 +295,37 @@
 						match="/configuration/appSettings/add[@key='Url']
                            /@value" />
   </parameter>
-
+	<parameter name="DriveCampoSustentablesApplicationName Config">
+    	<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/appSettings/add[@key='DriveCampoSustentablesApplicationName']
+                           /@value" />
+	</parameter>
+	<parameter name="DriveCampoSustentablesClientId Config">
+    	<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/appSettings/add[@key='DriveCampoSustentablesClientId']
+                           /@value" />
+	</parameter>
+	<parameter name="DriveCampoSustentablesClientSecret Config">
+    	<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/appSettings/add[@key='DriveCampoSustentablesClientSecret']
+                           /@value" />
+	</parameter>
+	<parameter name="DriveCampoSustentablesUsuario Config">
+    	<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/appSettings/add[@key='DriveCampoSustentablesUsuario']
+                           /@value" />
+	</parameter>
+	<parameter name="DriveCampoSustentablesInputFolderId Config">
+    	<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/appSettings/add[@key='DriveCampoSustentablesInputFolderId']
+                           /@value" />
+	</parameter>
+	<parameter name="DriveCampoSustentablesOutputFolderId Config">
+    	<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/appSettings/add[@key='DriveCampoSustentablesOutputFolderId']
+                           /@value" />
+	</parameter>
+	<!--Service Enpoint-->
 	<parameter name="BasicHttpBinding_IServicioRepositorio Service Endpoint Address">
 		<parameterEntry kind="XmlFile" scope="Web.config"
 						match="/configuration/system.serviceModel/client
