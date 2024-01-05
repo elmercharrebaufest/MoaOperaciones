@@ -318,7 +318,7 @@
                                         <ng-template pTemplate="body" let-orden>
                                             <tr>
                                                 <td class="columna">{{orden.NumeroOrdenDeCompra}}</td>
-                                                <td class="columna">{{orden.FechaCreacion | customDateFormat | date :'d/M/yyyy HH:mm' }}</td>
+                                                <td class="columna">{{orden.FechaCreacion | customDateFormat | date :'d/M/yyyy' }}</td>
                                                 <td class="columna">{{orden.Proveedor}}</td>
                                                 <td class="columna">{{orden.PrecioFinal | number:'1.2-2'}}</td>
                                                 <td class="columna">{{orden.PrecioBruto | number:'1.2-2'}}</td>
