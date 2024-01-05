@@ -596,7 +596,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
                         if (!this.listaStringCompleta([
                             this.solpActual.nombreDePedido,
                             this.solpActual.fiscalContrato,
-                            this.solpActual.mail,
+                            this.isEmailInvalid(this.solpActual.mail),
                             this.solpActual.fechaEntrega,
                             this.solpActual.horaEntrega
                         ])) {
@@ -671,6 +671,19 @@ export class SolpComponent extends BaseComponent implements OnInit {
             }
         }
     }
+
+    isEmailInvalid(value: any) {
+        const EMAIL_REGEXP = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+
+        if(value == ''){
+            return true;
+        }
+
+        if (value != null && value !== '') {
+            return EMAIL_REGEXP.test(value)
+        }
+    }
+
 
     validarFechaVisitaDeObra() {
         if (this.solpActual.listaVisitas.length === 0) { //se evita listaVisitas.reduce() cuando listaVisitas está vacía

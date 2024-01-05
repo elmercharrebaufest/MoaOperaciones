@@ -1847,6 +1847,13 @@ namespace SustitucionMOAUtils.Services
                 {
                     copia.Add(usuarioCreacion.Mail);
                 }
+
+                if (!string.IsNullOrEmpty(solp.Pliego?.Email))
+                {
+                    //Mail del solicitante
+                    copia.Add(solp.Pliego.Email);
+                }
+
                 var asunto = $"Nueva SOLP de urgencia Finalizada - {solp.NroSolp} - {usuarioCreacion.ObtenerRazonSocial()}";
 
                 var usuariosComprasHabilitados = repositorio.Listar<UsuarioCompras>(x => x.Habilitado == true);
@@ -1898,6 +1905,14 @@ namespace SustitucionMOAUtils.Services
                     copia.Add(solp.UsuarioCreacion.Mail);
                     Log.Info($"Copia mail solicitante {solp.UsuarioCreacion.Mail}");
                 }
+
+                if (!string.IsNullOrEmpty(solp?.Pliego.Email))
+                {
+                    //Mail del solicitante
+                    copia.Add(solp.Pliego.Email);
+                    Log.Info($"Copia mail solicitante paso 1 {solp.Pliego.Email}");
+                }
+
                 var asunto = solp.TrabajoYaHecho == true ? "Nueva SOLP de trabajo ya hecho liberada" : "Nueva SOLP liberada";
                 asunto += $": {solp.NroSolp}";
                 if (solp.Adicional == true) asunto += $" - con Adicional OC: {solp.NroOrdenDeCompraAdicional}";
@@ -4148,6 +4163,13 @@ namespace SustitucionMOAUtils.Services
             {
                 solicitanteYComprador.Add(peticion.Solp.UsuarioCreacion.Mail);
             }
+
+            if (!string.IsNullOrEmpty(peticion.Solp.Pliego.Email))
+            {
+                //Mail al solicitante
+                solicitanteYComprador.Add(peticion.Solp.Pliego.Email);
+            }
+
             var proveedores = new List<string>();
             var asunto = $"MOA - Pedido de Oferta {peticion.Id}: {peticion.Solp.Pliego.NombreObra}";
             if (peticion.Solp.Adicional == true) asunto += $" - con Adicional OC: {peticion.Solp.NroOrdenDeCompraAdicional}";
@@ -4538,6 +4560,15 @@ namespace SustitucionMOAUtils.Services
                 Logger.Log.Info($"fecha {DateTime.Now}");
 
                 var copia = new List<string> { adjudicacion.Usuario.Mail };
+
+
+                if (!string.IsNullOrEmpty(adjudicacion.Solp.Pliego.Email))
+                {
+                    //Mail del solicitante
+                    copia.Add(adjudicacion.Solp.Pliego.Email);
+                    Log.Info($"copia mail solicitante paso 1 {adjudicacion.Solp.Pliego.Email}");
+                }
+
                 if (!string.IsNullOrEmpty(adjudicacion.Solp?.UsuarioCreacion?.Mail))
                 {
                     copia.Add(adjudicacion.Solp.UsuarioCreacion.Mail);
@@ -4843,6 +4874,13 @@ namespace SustitucionMOAUtils.Services
             {
                 copia.Add(circular.PeticionDeOfertaUsuarios?.First().PeticionDeOfertaUsuario?.PeticionDeOferta?.Solp?.UsuarioCreacion?.Mail);
             }
+
+            if (!string.IsNullOrEmpty(circular.PeticionDeOfertaUsuarios?.First().PeticionDeOfertaUsuario?.PeticionDeOferta?.Solp.Pliego.Email))
+            {
+                //Mail al solicitante
+                copia.Add(circular.PeticionDeOfertaUsuarios?.First().PeticionDeOfertaUsuario?.PeticionDeOferta?.Solp.Pliego.Email);
+            }
+
             if (!string.IsNullOrEmpty(circular.PeticionDeOfertaUsuarios?.First().PeticionDeOfertaUsuario?.PeticionDeOferta?.Usuario?.Mail))
             {
                 copia.Add(circular.PeticionDeOfertaUsuarios?.First().PeticionDeOfertaUsuario?.PeticionDeOferta?.Usuario?.Mail);
@@ -5679,6 +5717,13 @@ namespace SustitucionMOAUtils.Services
             {
                 enviarA.Add(peticion.Solp.UsuarioCreacion.Mail);
             }
+
+            if (!string.IsNullOrEmpty(peticion.Solp?.Pliego?.Email))
+            {
+                //Mail del solicitante
+                enviarA.Add(peticion.Solp.Pliego.Email);
+            }
+
             asunto += "NUEVA cotización creada - SOLP " + peticion.Solp.NroSolp;
             emailService.EnviarMail(enviarA, asunto, "", null, CuerpoMailCotizacion(cotizacion), null, null, null, null);
         }
