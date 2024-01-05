@@ -5912,7 +5912,7 @@ namespace SustitucionMOAUtils.Services
                         }
                         catch (Exception)
                         {
-                            Logger.Log.Info($"Error al enviar mail {cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Id} para el cierre de la cotizacion");
+                            Logger.Log.Info($"Error al enviar mail { cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Id} para el cierre de la cotizacion");
                         }
                     }
                 }
@@ -5921,7 +5921,7 @@ namespace SustitucionMOAUtils.Services
             }
             catch (Exception)
             {
-                if (adjudicacion.Id > 0)
+                if (adjudicacion != null && adjudicacion.Id > 0)
                 {
                     repositorio.Remover(adjudicacion);
                     repositorio.GuardarCambios();
