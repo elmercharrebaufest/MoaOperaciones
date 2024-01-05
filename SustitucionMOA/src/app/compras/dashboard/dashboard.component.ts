@@ -186,9 +186,6 @@ export class DashboardComponent extends ListBaseComponent {
         this.recuperarFiltros();
         this.listarUsuarioCreadorSolp();
         this.navService.setSeccionList([]);
-        //setTimeout(() => { //espera a tener los usuarios antes de listar
-        //    this.getListarSolp();
-        //}, 1850);
 
         this.desdeDashboard = new Date();
         this.hastaDashboard = new Date();
