@@ -7066,7 +7066,11 @@ namespace SustitucionMOAUtils.Services
                           solp.Posiciones.Any(x => Int32.Parse(x.NumeroPosicion) == item.Indice) ?
                           (solp.Posiciones.Where(x => Int32.Parse(x.NumeroPosicion) == item.Indice).FirstOrDefault().Ordered) : 0;
                     }
-                    tratada = (solpEntidad.Posiciones.Sum(x => x.Cantidad) - cantidadPendienteSap) <= 0;
+
+                    if(cantidadPendienteSap > 0)
+                    {
+                        tratada = (solpEntidad.Posiciones.Sum(x => x.Cantidad) - cantidadPendienteSap) <= 0;
+                    }                 
                 }
                 return tratada;
             }
