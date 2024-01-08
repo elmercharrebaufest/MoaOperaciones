@@ -146,7 +146,7 @@ export class ListadoNovedadesComponent extends BaseComponent implements OnInit {
                     // this.notificacionModal = this.da;
                     this.modal.mostrarModal();
                   }    
-                }, 500);
+                }, 800);
               }
               
             },
