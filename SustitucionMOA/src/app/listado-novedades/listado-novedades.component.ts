@@ -143,7 +143,7 @@ export class ListadoNovedadesComponent extends BaseComponent implements OnInit {
                         this.adjuntoModal.push(adjunto);
                       }
                     })  
-                    // this.notificacionModal = this.da;
+                   
                     this.modal.mostrarModal();
                   }    
                 }, 800);
