@@ -3038,11 +3038,11 @@ namespace SustitucionMOAUtils.Services
 
                 //IM_PRITEM.DES_VENDOR = null; //DES_VENDOR WLIEF   Proveedor deseado
                 //Contrato marco          
-                IM_PRITEM.FIXED_VEND = posicion.ProveedorFijo; //FIXED_VEND FLIEF   Proveedor fijo
-                IM_PRITEM.PURCH_ORG = posicion.OrganizacionCompras; //PURCH_ORG EKORG   Organización de compras        
+                IM_PRITEM.FIXED_VEND = posicion.ProveedorAdjudicado != null ? posicion.ProveedorAdjudicado.ObtenerCodigoProveedor() : ""; //FIXED_VEND FLIEF   Proveedor fijo
+                IM_PRITEM.PURCH_ORG = posicion.GrupoDeComprasCodigo; //PURCH_ORG EKORG   Organización de compras        
                 IM_PRITEM.AGREEMENT = posicion.NumeroContratoSuperior; //AGREEMENT   KONNR Número del contrato superior
                 IM_PRITEM.AGMT_ITEM = posicion.NumeroPosicionContratoSuperior; //AGMT_ITEM   KTPNR Número de posición del contrato superior
-                                                                               //IM_PRITEM.INFO_REC = null; //INFO_REC    INFNR Número del registro info de compras
+                IM_PRITEM.INFO_REC = posicion.RegistroInfoNro; //INFO_REC    INFNR Número del registro info de compras
                 IM_PRITEM.CLOSED = null; //Contrato marco? No está en este MVP //CLOSED  EBAKZ Solicitud de pedido concluida
                 IM_PRITEM.CURRENCY = posicion.Moneda.CodigoSap; //CURRENCY    WAERS Clave de moneda
                 IM_PRITEM.CURRENCY_ISO = null; //CURRENCY_ISO BAPIISOCD   Código ISO para moneda
@@ -3086,11 +3086,11 @@ namespace SustitucionMOAUtils.Services
                     ITEM_CAT = "X",
                     ACCTASSCAT = "X",
                     //DES_VENDOR = "X",
-                    //FIXED_VEND = "X",
-                    //PURCH_ORG = "X",
+                    FIXED_VEND = posicion.ProveedorAdjudicado_Id != null ? "X" : "",
+                    PURCH_ORG = !string.IsNullOrEmpty(posicion.GrupoDeComprasCodigo) ? "X" : "",
                     //AGREEMENT = "X",
                     //AGMT_ITEM = "X",
-                    //INFO_REC = "X",
+                    INFO_REC = !string.IsNullOrEmpty(posicion.RegistroInfoNro) ? "X" :"",
                     //CLOSED = "X",
                     CURRENCY = "X",
                     //CURRENCY_ISO = "X",
@@ -5942,7 +5942,7 @@ namespace SustitucionMOAUtils.Services
                         if (respuestaGuardarSOLP.Errores == null || respuestaGuardarSOLP.Errores.Count == 0)
                         {
                             adjudicacion.NumeroOrdenDeCompra = respuestaGuardarSOLP.NumeroPedido;
-                            numerosDePedido.Add(adjudicacion.NumeroOrdenDeCompra);
+                            numerosDePedido.Add(adjudicacion.NumeroOrdenDeCompra);                           
                         }
                         else
                         {
@@ -5965,6 +5965,7 @@ namespace SustitucionMOAUtils.Services
                     }
                 }
                 respuestaGuardarSOLP.NumerosDePedido = numerosDePedido;
+                ActualizarDatosSolp(numerosDePedido, cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Solp);
                 return respuestaGuardarSOLP;
             }
             catch (Exception)
@@ -7093,6 +7094,38 @@ namespace SustitucionMOAUtils.Services
                 Obligatorio = x.Obligatorio
             }, x => x.Habilitado);
             return lista;
+        }
+
+        private void ActualizarDatosSolp(List<string> nroOrdenDeCompra, Solp solp)
+        {
+            try
+            {
+
+                var respuestaGuardarSOLP = new RespuestaGuardarSOLP { Solp = new SolpDto { NroSolp = solp.NroSolp } };
+                if (nroOrdenDeCompra.Count > 0)
+                {
+                    foreach (var nro in nroOrdenDeCompra)
+                    {
+                        var ordenDeCompra = ObtenerOrdenDeCompra(nro);
+                        var proveedor = ObtenerProveedorCompras(ordenDeCompra.Cabecera.CodigoProveedor);
+                        foreach (var posicionSap in ordenDeCompra.Posiciones.Where(x => x.NroSolp == solp.NroSolp))
+                        {
+                            var posicion = solp.Posiciones.Where(x => x.Indice == Int32.Parse(posicionSap.Indice)).FirstOrDefault();
+                            posicion.ProveedorAdjudicado_Id = proveedor.Usuario_Id;
+                            posicion.RegistroInfoNro = posicionSap.RegistroInfo;
+                            posicion.GrupoDeComprasCodigo = ordenDeCompra.Cabecera.GrupoDeComprasCodigo;
+                        }
+                    }
+
+                    FinalizarSolp(solp, null, respuestaGuardarSOLP, false);
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Log.Info($"ActualizarDatosSolp" + solp.NroSolp);
+                Logger.Log.Error(e);
+                throw;
+            }
         }
 
     }

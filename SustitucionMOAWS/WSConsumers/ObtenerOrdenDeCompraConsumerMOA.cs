@@ -178,7 +178,8 @@ namespace SustitucionMOAWS.WSConsumers
                 UsuarioComprasSAP = POHEADER.CREATED_BY,
                 Moneda = POHEADER.CURRENCY,
                 FechaCreacion = DateTime.ParseExact(POHEADER.CREAT_DATE, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture),
-                FechaCreacionString = DateTime.ParseExact(POHEADER.CREAT_DATE, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture).ToShortDateString()
+                FechaCreacionString = DateTime.ParseExact(POHEADER.CREAT_DATE, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture).ToShortDateString(),
+                GrupoDeComprasCodigo = POHEADER.PUR_GROUP
             };
 
             foreach (var pos in POITEM.ToList())
@@ -188,6 +189,8 @@ namespace SustitucionMOAWS.WSConsumers
                 resultado.Posiciones.Add(new OrdenDeCompraSAPPosicion
                 {
                     Indice = pos.PO_ITEM,
+                    RegistroInfo = pos.INFO_REC,
+                    NroSolp = pos.PREQ_NO,
                     DireccionDeEntrega = new OrdenDeCompraSAPPosicionDireccionDeEntrega
                     {
                         RegionSap = dato.REGION
