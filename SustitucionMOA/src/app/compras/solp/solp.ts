@@ -69,7 +69,7 @@ export class Solp extends CommonResponse {
     public ordenDeCompra: string;
     public codigoProveedorSap: string;
     public RazonSocialSap: string;
-    public validacionCheck: boolean;
+    public validacionCheck: boolean = true;
     public validarAdicional: boolean;
     public mensajeCotizacion: string;
     public archivosCotizacionesNuevos: Array<File>;

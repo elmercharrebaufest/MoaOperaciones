@@ -684,7 +684,6 @@ export class SolpComponent extends BaseComponent implements OnInit {
         }
     }
 
-
     validarFechaVisitaDeObra() {
         if (this.solpActual.listaVisitas.length === 0) { //se evita listaVisitas.reduce() cuando listaVisitas está vacía
             return false;
