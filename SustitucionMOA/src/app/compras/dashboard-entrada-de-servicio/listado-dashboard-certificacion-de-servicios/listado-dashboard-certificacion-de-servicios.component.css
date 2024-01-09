@@ -36,6 +36,10 @@ th{
     word-break: break-all; word-wrap:break-word; font-size: 12px;;
 }
 
+.almacen-centro{
+    font-size: 12px;;
+}
+
 .emptyData{
     text-align: center;
 }
