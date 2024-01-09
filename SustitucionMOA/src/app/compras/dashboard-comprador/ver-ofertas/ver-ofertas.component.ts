@@ -21,8 +21,7 @@ import { TextosAdjudicarComponent } from './textos-adjudicar/textos-adjudicar.co
 @Component({
     selector: 'app-ver-ofertas',
     templateUrl: './ver-ofertas.component.html',
-    styleUrls: [
-        './ver-ofertas.component.css']
+    styleUrls: ['./ver-ofertas.component.css']
 })
 export class VerOfertasComponent extends ListBaseComponent implements OnInit {
     @BlockUI() blockUI: NgBlockUI;
@@ -237,7 +236,7 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
                 if (peticion.Selected && !peticion.Posicion.AdjudicacionCompleta) {
                     usuario.Cotizacion.CotizacionPosiciones.forEach((cotizacionPos) => {
                         if (peticion.Id == cotizacionPos.PeticionDeOfertaSolpPosicion_Id)
-                        this.lista.push({
+                            this.lista.push({
                                 Posicion: peticion.Posicion.Indice,
                                 CotizacionPosicion_Id: cotizacionPos.Id,
                                 PlazoDeEntrega: peticion.Posicion.FechaEntregaServicio,
@@ -281,21 +280,21 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
             this.adjudicacion.AdjudicacionPosiciones = this.lista;
             this.adjudicacion.Cotizacion_Id = usuario.Cotizacion.Id;
             this.adjudicacion.Solp_Id = this.tablaOfertas.Solp_Id;
-           
+
             this.validacionTextosIncompletos();
-            if(this.textoRacionalInCompleto == true){
+            if (this.textoRacionalInCompleto == true) {
                 this.displayTextoIncompleto = true;
-            } else { 
-                this.abrirModalPosicionPlazo();        
+            } else {
+                this.abrirModalPosicionPlazo();
             }
 
             this.displayRegionSap = true;
 
-            if(!this.displayRegionSap){
+            if (!this.displayRegionSap) {
                 this.proveedor = usuario.CodigoProveedor;
                 this.mostrarModalGenerarOCMoneda(usuario);
             }
-            
+
         } else {
             this.floatMsgService.setInfoMsg("Debe seleccionar alguna posición para adjudicar");
         }
@@ -356,7 +355,7 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
     mostrarValidacionMoneda() {
         const posicionesSeleccionadas = this.tablaOfertas.PeticionDeOfertaPosicion
             .filter(x => x.Selected && !x.Posicion.AdjudicacionCompleta);
-    
+
         const posiciones = this.usuario.Cotizacion.CotizacionPosiciones
             .filter(cotizacionPos =>
                 posicionesSeleccionadas.some(peticion => peticion.Id === cotizacionPos.PeticionDeOfertaSolpPosicion_Id)
@@ -380,38 +379,38 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
         return false;
     }
 
-    ocultarGenerarOCSerivicioDiferentesMonedas(){
-        if(this.tablaOfertas.TipoPosicionCodigo != 'MATERIALES'){
+    ocultarGenerarOCSerivicioDiferentesMonedas() {
+        if (this.tablaOfertas.TipoPosicionCodigo != 'MATERIALES') {
 
         }
     }
 
-    mostrarModalGenerarOCMoneda(proveedor){
-        if(this.mostrarValidacionMoneda()){
+    mostrarModalGenerarOCMoneda(proveedor) {
+        if (this.mostrarValidacionMoneda()) {
             this.displayGenerarOCMoneda = true;
             this.devolverMonedaProveedor(proveedor.CodigoProveedor);
-        }else{
+        } else {
             this.confirmacionAdjudicar();
         }
     }
 
-    onGenerarOC(){
+    onGenerarOC() {
         this.generarOC = false;
         this.confirmacionAdjudicar();
     }
 
-    onGenerarOCProveedor(){
+    onGenerarOCProveedor() {
         this.generarOC = true;
-        if(this.moneda == undefined){
-         this.floatMsgService.setErrorMsg("El proveedor no tiene una moneda configurada");
-         this.onCerrarMoneda();
-        }else{
+        if (this.moneda == undefined) {
+            this.floatMsgService.setErrorMsg("El proveedor no tiene una moneda configurada");
+            this.onCerrarMoneda();
+        } else {
             this.confirmacionAdjudicar();
         }
-      
+
     }
 
-    onCerrarMoneda(){
+    onCerrarMoneda() {
         this.displayGenerarOCMoneda = false;
     }
 
@@ -424,7 +423,7 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
                         this.sessionDataService.logout();
                     }
                     else {
-                        this.moneda = result.Moneda;                   
+                        this.moneda = result.Moneda;
                         this.blockUI.stop();
                     }
                 },
@@ -433,7 +432,7 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
                     this.mensajeComponent.setErrorMsg(error.message);
                 }
             )
-       this.blockUI.stop();
+        this.blockUI.stop();
     }
 
     confirmacionAdjudicar() {
@@ -441,8 +440,8 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
             header: "¡Último Paso!",
             acceptLabel: "SI, CONFIRMAR",
             rejectLabel: "VOLVER",
-            message: 'Está a punto de enviar la adjudicacion <b>¿Desea continuar?</b>',
-            accept: () => {            
+            message: 'Está a punto de enviar la adjudicación. <br/><b>¿Desea continuar?</b><br/><br/>',
+            accept: () => {
                 this.guardarAdjudicacion()
             },
             reject: () => {
@@ -468,7 +467,7 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
                         this.errores = result.Errores;
                         this.displayVisualizarErrores = true;
                         this.onCerrarMoneda();
-                        this.noContinuarAdjudicacion();                        
+                        this.noContinuarAdjudicacion();
                     }
                     else {
                         this.numerosDePedido = result.NumerosDePedido;
@@ -495,13 +494,13 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
         return false; //<-- Prevent Refresh
     }
 
-    validacionTextosIncompletos(){
+    validacionTextosIncompletos() {
         this.textoRacionalInCompleto = false;
-        if((this.adjudicacion.CondicionesDeEntrega == "" || this.adjudicacion.CondicionesDeEntrega == undefined) 
+        if ((this.adjudicacion.CondicionesDeEntrega == "" || this.adjudicacion.CondicionesDeEntrega == undefined)
             && (this.adjudicacion.CondicionesDePago == "" || this.adjudicacion.CondicionesDePago == undefined)
             && (this.adjudicacion.Garantias == "" || this.adjudicacion.Garantias == undefined)
-            && (this.adjudicacion.TextoDeCabecera == "" || this.adjudicacion.TextoDeCabecera == undefined)){
-                this.textoRacionalInCompleto = true;
+            && (this.adjudicacion.TextoDeCabecera == "" || this.adjudicacion.TextoDeCabecera == undefined)) {
+            this.textoRacionalInCompleto = true;
         }
     }
 
@@ -559,57 +558,56 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
     abrirModalPrecios() {
         this.displayVisualizarPrecio = true;
     }
-
-
+    
     obtenerPrimerPlazo(cotizacionPosicion: any): string {
-    let plazos = '';
+        let plazos = '';
 
-    if (cotizacionPosicion.PrimerPlazoDeOferta > 0) {
-        plazos += 'Plazo: ' + cotizacionPosicion.PrimerPlazoDeOferta + ' - Cantidad: ' + cotizacionPosicion.PrimeraCantidad;
-    } else {
-        plazos += 'sin Plazo';
-    }    
-    return plazos;
+        if (cotizacionPosicion.PrimerPlazoDeOferta > 0) {
+            plazos += 'Plazo: ' + cotizacionPosicion.PrimerPlazoDeOferta + ' - Cantidad: ' + cotizacionPosicion.PrimeraCantidad;
+        } else {
+            plazos += 'sin Plazo';
+        }
+        return plazos;
     }
 
     obtenerSegundoPlazo(cotizacionPosicion: any): string {
-    let plazos = '';
-    if (cotizacionPosicion.SegundoPlazoDeOferta > 0) {
-        plazos += 'Plazo: ' + cotizacionPosicion.SegundoPlazoDeOferta + ' - Cantidad: ' + cotizacionPosicion.SegundaCantidad ;
-    }
-    return plazos;
-    }
-    
-    obtenerTercerPlazo(cotizacionPosicion: any): string {
-    let plazos = '';
-    
-    if (cotizacionPosicion.TercerPlazoDeOferta > 0) {
-        plazos += 'Plazo: ' + cotizacionPosicion.TercerPlazoDeOferta + ' - Cantidad: ' + cotizacionPosicion.TerceraCantidad ;
-    }
-    return plazos;
+        let plazos = '';
+        if (cotizacionPosicion.SegundoPlazoDeOferta > 0) {
+            plazos += 'Plazo: ' + cotizacionPosicion.SegundoPlazoDeOferta + ' - Cantidad: ' + cotizacionPosicion.SegundaCantidad;
+        }
+        return plazos;
     }
 
-    aceptarRegion(){
+    obtenerTercerPlazo(cotizacionPosicion: any): string {
+        let plazos = '';
+
+        if (cotizacionPosicion.TercerPlazoDeOferta > 0) {
+            plazos += 'Plazo: ' + cotizacionPosicion.TercerPlazoDeOferta + ' - Cantidad: ' + cotizacionPosicion.TerceraCantidad;
+        }
+        return plazos;
+    }
+
+    aceptarRegion() {
         this.adjudicacion.RegionSap = this.selectedRegion.value;
         console.log("this.selectedRegion", this.selectedRegion.value);
         this.validacionTextosIncompletos();
-        if(this.textoRacionalInCompleto == true){
+        if (this.textoRacionalInCompleto == true) {
             this.displayTextoIncompleto = true;
         }
         this.displayRegionSap = false;
     }
 
-    salirRegion(){
+    salirRegion() {
         this.displayRegionSap = false;
     }
 
-    continuarAdjudicacion(){
+    continuarAdjudicacion() {
         this.displayTextoIncompleto = false;
-        this.abrirModalPosicionPlazo();        
+        this.abrirModalPosicionPlazo();
     }
 
-    noContinuarAdjudicacion(){
-    this.displayTextoIncompleto = false;
+    noContinuarAdjudicacion() {
+        this.displayTextoIncompleto = false;
     }
 
     getCombos() {
@@ -644,18 +642,18 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
         return false; //<-- Prevent Refresh
     }
 
-    abrirModalPosicionPlazo(){
+    abrirModalPosicionPlazo() {
         this.displayPlazo = true;
     }
 
-    cerrarPlazo(){     
+    cerrarPlazo() {
         this.displayPlazo = false;
     }
 
-    guardarPlazo(listaParam: any[]){
-       this.lista = listaParam;
-       this.displayPlazo = false;
-       this.proveedor = this.usuario.CodigoProveedor;
-       this.mostrarModalGenerarOCMoneda(this.usuario)
+    guardarPlazo(listaParam: any[]) {
+        this.lista = listaParam;
+        this.displayPlazo = false;
+        this.proveedor = this.usuario.CodigoProveedor;
+        this.mostrarModalGenerarOCMoneda(this.usuario)
     }
 }

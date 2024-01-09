@@ -14,7 +14,7 @@
         <div class="col-sm-2 letraTitulo" *ngIf="tablaOfertas.VerBotonVerPrecio">
             <button class="publicar btn btn-success" style="margin-right: 10px;" (click)="abrirModalPrecios()">
                 Ver Precios
-            </button>        
+            </button>
         </div>
     </div>
     <br>
@@ -105,7 +105,7 @@
                         <th class="headerth2" style="width: 100px !important; height: 0px !important; background-color: transparent !important; border: none !important;"></th>
                         <th class="headerth2" style="width: 90px !important; height: 0px !important; background-color: transparent !important; border: none !important;"></th>
                         <th class="headerth2" style="width: 90px !important; height: 0px !important; background-color: transparent !important; border: none !important;"></th>
-                    
+
                     </ng-container>
                 </tr>
                 <tr>
@@ -145,16 +145,15 @@
                                             <i *ngIf="!proveedor.VerImportes" class="fa fa-eye-slash noVisible"></i>
                                         </td>
                                         <td class="columna" [ngStyle]="{'background-color': cotizacionPosicion.EstaEliminado ? '#ff00002e' : 'transparent'}" style="width: 90px !important; ">{{cotizacionPosicion.FechaDeEntregaFormateada}}</td>
-                                        <td class="columna" [ngStyle]="{'background-color': cotizacionPosicion.EstaEliminado ? '#ff00002e' : 'transparent'}" style="width: 90px !important;  text-align: center;" >
-                                            <span 
-                                            class="pi pi-calendar" 
-                                            style="font-size:25px;top:5px;color:gray;"
-                                            pTooltip ="{{ obtenerPrimerPlazo(cotizacionPosicion) }} 
-                                            {{ obtenerSegundoPlazo(cotizacionPosicion) }} 
+                                        <td class="columna" [ngStyle]="{'background-color': cotizacionPosicion.EstaEliminado ? '#ff00002e' : 'transparent'}" style="width: 90px !important;  text-align: center;">
+                                            <span class="pi pi-calendar"
+                                                  style="font-size:25px;top:5px;color:gray;"
+                                                  pTooltip="{{ obtenerPrimerPlazo(cotizacionPosicion) }}
+                                            {{ obtenerSegundoPlazo(cotizacionPosicion) }}
                                             {{ obtenerTercerPlazo(cotizacionPosicion) }}" tooltipPosition="left"
-                                            [escape]="false">
-                                      </span>
-                                           </td>
+                                                  [escape]="false">
+                                            </span>
+                                        </td>
                                     </ng-container>
                                     <ng-container *ngIf="cotizacionPosicion.NoDisponible == true">
                                         <td class="columna border2-left" [ngStyle]="{'background-color': cotizacionPosicion.EstaEliminado ? '#ff00002e' : 'transparent'}" colspan="7" style="width: 660px !important;">No disponible</td>
@@ -271,7 +270,7 @@
             </ng-template>
 
             <ng-template pTemplate="frozenbody" let-peticionPosicion>
-                <tr style="visibility: collapse !important;" >
+                <tr style="visibility: collapse !important;">
                     <td class="headerth2" style="width: 40px !important; height: 0px !important; border: none !important;" [ngStyle]="{'background-color': peticionPosicion.EstaEliminado ? '#ff00002e' : 'transparent'}"></td>
                     <td class="headerth2" style="width: 40px !important; height: 0px !important; border: none !important;" [ngStyle]="{'background-color': peticionPosicion.EstaEliminado ? '#ff00002e' : 'transparent'}"></td>
                     <td class="headerth2" style="width: 40px !important; height: 0px !important;  border: none !important;" [ngStyle]="{'background-color': peticionPosicion.EstaEliminado ? '#ff00002e' : 'transparent'}"></td>
@@ -551,7 +550,7 @@
     </p-footer>
 </p-dialog>
 
-<p-dialog [(visible)]="displayAdjudicacionCreada" [width]="400" modal="modal" appendTo="body" [draggable]="false" [contentStyle]="{'overflow':'visible', 'max-height':'500px', 'min-height':'100px'}" [closable]="false">
+<p-dialog [(visible)]="displayAdjudicacionCreada" [width]="500" modal="modal" appendTo="body" [draggable]="false" [contentStyle]="{'overflow':'visible', 'max-height':'500px', 'min-height':'100px'}" [closable]="false">
     <p-header class="headerModal">
         ¡Adjudicación creada!
     </p-header>
@@ -565,24 +564,22 @@
     </p-footer>
 </p-dialog>
 
-<p-dialog [(visible)]="displayVisualizarErrores" [width]="400" modal="modal" appendTo="body" [draggable]="false" [contentStyle]="{'overflow':'scroll', 'max-height':'500px', 'min-height':'100px'}" [closable]="false">
+<p-dialog [(visible)]="displayVisualizarErrores" [width]="500" modal="modal" appendTo="body" [draggable]="false" [contentStyle]="{'overflow':'scroll', 'max-height':'600px', 'min-height':'100px'}" [closable]="false">
     <p-header class="headerModal">
         Errores
     </p-header>
     <strong>A continuación se listan los errores generados: </strong>
     <br>
     <br>
-    <div *ngFor="let error of errores">
-        {{ error }}
-    </div>
+    <div *ngFor="let error of errores" [innerHTML]="error" style="white-space: pre-line"></div>
     <p-footer>
         <button type="button" class="btn btn-primary botonesComprasColor botonModal" (click)="salirVisualizarErrores()">Aceptar</button>
     </p-footer>
 </p-dialog>
 
-<p-dialog [(visible)]="displayTextoIncompleto" [width]="400" modal="modal" appendTo="body" [draggable]="false" [contentStyle]="{'max-height':'500px', 'min-height':'100px'}" [closable]="false">
+<p-dialog [(visible)]="displayTextoIncompleto" [width]="500" modal="modal" appendTo="body" [draggable]="false" [contentStyle]="{'max-height':'500px', 'min-height':'100px'}" [closable]="false">
     <p-header class="headerModal" style="color: #067935;">
-        <b>¡Atencion!</b>
+        <b>¡Atención!</b>
     </p-header>
     <strong>No se completó ningún racional </strong>
     <br>
@@ -590,13 +587,13 @@
     ¿Desea continuar con la adjudicación?
     <p-footer>
         <button type="button" class="btn btn-danger botonesComprasColor botonModal" (click)="noContinuarAdjudicacion()">No</button>
-        <button type="button" class="btn btn-primary botonesComprasColor botonModal" (click)="continuarAdjudicacion()">Si</button>
+        <button type="button" class="btn btn-primary botonesComprasColor botonModal" (click)="continuarAdjudicacion()">Sí</button>
 
     </p-footer>
 </p-dialog>
 
 
-<p-confirmDialog #dialogo header="Confirmación" icon="pi pi-exclamation-triangle" [width]="400" [responsive]="true" appendTo="body">
+<p-confirmDialog #dialogo header="Confirmación" icon="pi pi-exclamation-triangle" [width]="500" [responsive]="true" appendTo="body">
     <p-footer>
         <button type="button" pButton label="Cancelar" class="ui-button-info botonModal" (click)="dialogo.reject()"></button>
         <button type="button" pButton label="Aceptar" class="ui-button-success botonModal" (click)="dialogo.accept(); "></button>
@@ -629,51 +626,43 @@
 </app-textos-adjudicar>
 
 
-<app-visualizar-precio 
-                      [(displayVisualizarPrecio)]="displayVisualizarPrecio"
-                      (cerrarModalPreciosEmitter)="cerrarModalPrecios()" 
-                      [(peticionOferta_Id)]="peticionOferta_Id">
+<app-visualizar-precio [(displayVisualizarPrecio)]="displayVisualizarPrecio"
+                       (cerrarModalPreciosEmitter)="cerrarModalPrecios()"
+                       [(peticionOferta_Id)]="peticionOferta_Id">
 </app-visualizar-precio>
 
-<app-posicion-plazo
-                      [(displayPlazo)]="displayPlazo"
-                      (cerrarPlazoEmitter)="cerrarPlazo()"
-                      (guardarPlazoEmitter)="guardarPlazo($event)"
-                      [(lista)]="lista">
+<app-posicion-plazo [(displayPlazo)]="displayPlazo"
+                    (cerrarPlazoEmitter)="cerrarPlazo()"
+                    (guardarPlazoEmitter)="guardarPlazo($event)"
+                    [(lista)]="lista">
 </app-posicion-plazo>
 
 
-<p-dialog [(visible)]="displayGenerarOCMoneda" modal="modal" 
-    [width]="600" [draggable]="false" [closable]="true"
-    (onHide)="onCerrarMoneda()" appendTo="body" 
-    [height]="200"
-    [max] [contentStyle]="{ 
-        'max-height':'150px', 
-        'min-height':'150px'}">
+<p-dialog [(visible)]="displayGenerarOCMoneda" modal="modal" [width]="600" [draggable]="false" [closable]="true"
+          (onHide)="onCerrarMoneda()" appendTo="body" [height]="200" [max] [contentStyle]="{'max-height':'150px', 'min-height':'150px'}">
     <p-header class="headerModal" style="color: #067935;">
-          <b>Posiciones en distintas monedas</b>
+        <b>Posiciones en distintas monedas</b>
     </p-header>
-   
-        <section class="col-md-12">
-            <div class="row">
-                <div class="col-md-12">
-                   Está a punto de adjudicar posiciones con distintas monedas
-                </div>   
+    <section class="col-md-12">
+        <div class="row">
+            <div class="col-md-12">
+                Está a punto de adjudicar posiciones con distintas monedas
             </div>
-            <br>
-            <div class="row">
-                <div class="col-md-12">
-                    <button type="button" class="btn btn-success botonesComprasColor" style="width: 100%;" (click)="onGenerarOC()">Generar una OC por cada moneda</button>      
-                </div>                
+        </div>
+        <br>
+        <div class="row">
+            <div class="col-md-12">
+                <button type="button" class="btn btn-success botonesComprasColor" style="width: 100%;" (click)="onGenerarOC()">Generar una OC por cada moneda</button>
             </div>
-            <br>
-            <div class="row">
-                <div  class="col-md-12">
-                    <button type="button" class="btn btn-primary botonesComprasColor" style="width: 100%;"  (click)="onGenerarOCProveedor()">Generar una única OC en la moneda del proveedor {{moneda != undefined ? moneda : " - No disponible"}}</button>       
-                </div>                
+        </div>
+        <br>
+        <div class="row">
+            <div class="col-md-12">
+                <button type="button" class="btn btn-primary botonesComprasColor" style="width: 100%;" (click)="onGenerarOCProveedor()">Generar una única OC en la moneda del proveedor {{moneda != undefined ? moneda : " - No disponible"}}</button>
             </div>
-            <br>            
-        </section> 
+        </div>
+        <br>
+    </section>
     <p-footer>
         <button type="button" class="btn btn-danger botonesComprasColor" (click)="onCerrarMoneda()">CANCELAR</button>
     </p-footer>
