@@ -351,19 +351,21 @@ export class CotizacionComponent extends ListBaseComponent {
                                 this.model.ordenDeCompra = "";
                             } else {
                                 this.ordenDeCompraSap = result.data;
-                                this.model.proveedorAsignado_Id = this.ordenDeCompraSap.Cabecera.Usuario_Id;
-                                this.model.ordenDeCompra = this.ordenDeCompraSap.Cabecera.OrdenDeCompra;
-                                this.model.proveedorAsignado = this.ordenDeCompraSap.Cabecera.RazonSocialProveedor;
-                                this.model.monedaOC = this.ordenDeCompraSap.Cabecera.Moneda;
-                                this.model.usuarioComprasId = this.ordenDeCompraSap.Cabecera.UsuarioCompras_Id;
 
-                                this.model.selectUsuarioCompras = this.model.usuarioComprasId > 0
-                                    ? this.model.usuarioComprasList.find(x => x.Id === this.model.usuarioComprasId)
-                                    : this.model.usuarioComprasList[0];
-
-                                if (this.ordenDeCompraSap.Error) {
+                                if (this.ordenDeCompraSap.Error != null) {
                                     this.floatMsgService.setErrorMsg(this.ordenDeCompraSap.Error.Mensaje);
                                     this.limpiarCheckAdicional();
+                                } else {
+                                    this.model.proveedorAsignado_Id = this.ordenDeCompraSap.Cabecera.Usuario_Id;
+                                    this.model.ordenDeCompra = this.ordenDeCompraSap.Cabecera.OrdenDeCompra;
+                                    this.model.proveedorAsignado = this.ordenDeCompraSap.Cabecera.RazonSocialProveedor;
+                                    this.model.monedaOC = this.ordenDeCompraSap.Cabecera.Moneda;
+                                    this.model.usuarioComprasId = this.ordenDeCompraSap.Cabecera.UsuarioCompras_Id;
+    
+                                    this.model.selectUsuarioCompras = this.model.usuarioComprasId > 0
+                                        ? this.model.usuarioComprasList.find(x => x.Id === this.model.usuarioComprasId)
+                                        : this.model.usuarioComprasList[0];
+    
                                 }
                             }
                         }

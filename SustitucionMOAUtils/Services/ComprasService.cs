@@ -6223,6 +6223,7 @@ namespace SustitucionMOAUtils.Services
         public AdjudicacionDto ObtenerAdjudicacion(string nroOC)
         {
             var adjudicar = obtenerOrdenDeCompraConsumerMOA.ObtenerOrdenDeCompraAdjudicacion(nroOC);
+
             var monedaPesos = repositorio.Obtener<TablaSap>(a => a.Tabla == "Moneda" && a.CodigoSap == "ARP");
             if (adjudicar.Moneda_Id != monedaPesos.Id)
             {

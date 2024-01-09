@@ -171,32 +171,37 @@ namespace SustitucionMOAWS.WSConsumers
                 }
             }
 
-            resultado.Cabecera = new OrdenDeCompraSAPCabecera
+            if (resultado.Error == null) 
             {
-                OrdenDeCompra = POHEADER.PO_NUMBER,
-                CodigoProveedor = POHEADER.VENDOR,
-                UsuarioComprasSAP = POHEADER.CREATED_BY,
-                Moneda = POHEADER.CURRENCY,
-                FechaCreacion = DateTime.ParseExact(POHEADER.CREAT_DATE, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture),
-                FechaCreacionString = DateTime.ParseExact(POHEADER.CREAT_DATE, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture).ToShortDateString(),
-                GrupoDeComprasCodigo = POHEADER.PUR_GROUP
-            };
-
-            foreach (var pos in POITEM.ToList())
-            {
-                resultado.Cabecera.MontoTotal += pos.NET_PRICE * pos.QUANTITY;
-                var dato = POADDRDELIVERY.Where(x => x.PO_ITEM == pos.PO_ITEM).SingleOrDefault();
-                resultado.Posiciones.Add(new OrdenDeCompraSAPPosicion
+                resultado.Cabecera = new OrdenDeCompraSAPCabecera
                 {
-                    Indice = pos.PO_ITEM,
-                    RegistroInfo = pos.INFO_REC,
-                    NroSolp = pos.PREQ_NO,
-                    DireccionDeEntrega = new OrdenDeCompraSAPPosicionDireccionDeEntrega
+                    OrdenDeCompra = POHEADER.PO_NUMBER,
+                    CodigoProveedor = POHEADER.VENDOR,
+                    UsuarioComprasSAP = POHEADER.CREATED_BY,
+                    Moneda = POHEADER.CURRENCY,
+                    FechaCreacion = DateTime.ParseExact(POHEADER.CREAT_DATE, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture),
+                    FechaCreacionString = DateTime.ParseExact(POHEADER.CREAT_DATE, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture).ToShortDateString(),
+                    GrupoDeComprasCodigo = POHEADER.PUR_GROUP
+                };
+
+                foreach (var pos in POITEM.ToList())
+                {
+                    resultado.Cabecera.MontoTotal += pos.NET_PRICE * pos.QUANTITY;
+                    var dato = POADDRDELIVERY.Where(x => x.PO_ITEM == pos.PO_ITEM).SingleOrDefault();
+                    resultado.Posiciones.Add(new OrdenDeCompraSAPPosicion
                     {
-                        RegionSap = dato.REGION
-                    }
-                });
+                        Indice = pos.PO_ITEM,
+                        RegistroInfo = pos.INFO_REC,
+                        NroSolp = pos.PREQ_NO,
+                        DireccionDeEntrega = new OrdenDeCompraSAPPosicionDireccionDeEntrega
+                        {
+                            RegionSap = dato.REGION
+                        }
+                    });
+                }
             }
+
+           
             return resultado;
         }
 
