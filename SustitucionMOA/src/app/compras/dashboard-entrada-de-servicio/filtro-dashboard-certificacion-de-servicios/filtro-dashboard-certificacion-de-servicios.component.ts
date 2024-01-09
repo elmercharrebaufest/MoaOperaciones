@@ -49,7 +49,8 @@ export class FiltroDashboardCertificacionDeServiciosComponent extends ListBaseCo
  ngOnInit(): void {  
   this.filtroForm = new FormGroup ({
     proveedor: new FormControl(''),
-    ordenCompraId: new FormControl('')
+    ordenCompraId: new FormControl(''),
+    fechaInicio: new FormControl('')
   });  
 
   this.spinnerComponent = new SpinnerComponent();
@@ -58,7 +59,8 @@ export class FiltroDashboardCertificacionDeServiciosComponent extends ListBaseCo
   public setFiltroBuquedaForm() {
     this.filtroForm = this.fb.group({
       proveedor: [''],
-      ordenCompraId: ['']
+        ordenCompraId: [''],
+        fechaInicio: ['']
     }); 
   }
 
@@ -68,7 +70,8 @@ export class FiltroDashboardCertificacionDeServiciosComponent extends ListBaseCo
   
   onBuscar() {
     this.proveedor = this.filtroForm.get('proveedor').value;
-    this.ordenCompraId = this.filtroForm.get('ordenCompraId').value;
-    this.listadoComponent.getListarPO(this.proveedor, this.ordenCompraId);
+      this.ordenCompraId = this.filtroForm.get('ordenCompraId').value
+      this.fechaInicio = this.filtroForm.get('fechaInicio').value;
+      this.listadoComponent.getListarPO(this.proveedor, this.ordenCompraId, this.fechaInicio);
   }
 }
