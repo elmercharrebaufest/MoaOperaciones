@@ -189,13 +189,6 @@
                             </span>
                         </div>
                         <div class="col-md-2"
-                             *ngIf="(rowData.NroSolp == '' || rowData.NroSolp == null) && rowData.UsuarioActual.Mail == usuario">
-                            <span>
-                                <img class="pointer" src="./Content/images/icons/trash.svg" alt="trash"
-                                     (click)="eliminarPosicionDashboard(rowData.Id)" />
-                            </span>
-                        </div>
-                        <div class="col-md-2"
                              *ngIf="rowData.EstadoSolpSap.Descripcion != 'Liberada' && (rowData.UsuarioActual.Mail == usuario || verTodas)">
                             <span>
                                 <img class="pointer" src="./Content/images/icons/editar.svg" alt="editar" style="height:28px;"
@@ -207,13 +200,20 @@
                             <span>
                                 <img class="pointer" src="./Content/images/icons/descargar.svg" alt="descargar"
                                      (click)="generarZipPliego(rowData.Id)" />
-                            </span>                           
+                            </span>
                         </div>
-                        <div class="col-md-2">                            
+                        <div class="col-md-2">
                             <span>
                                 <img class="pointer" src="./Content/images/icons/chat.svg" alt="chat"
-                                     (click)="obtenerChatExterno(rowData)" />
+                                     (click)="obtenerChatExterno(rowData)" style="height: 30px;" />
                                 <div class="punto-rojo" *ngIf="rowData.ChatSinLeer == true"></div>
+                            </span>
+                        </div>
+                        <div class="col-md-2"
+                             *ngIf="(rowData.NroSolp == '' || rowData.NroSolp == null) && rowData.UsuarioActual.Mail == usuario">
+                            <span>
+                                <img class="pointer" src="./Content/images/icons/trash.svg" alt="trash"
+                                     (click)="eliminarPosicionDashboard(rowData.Id)" />
                             </span>
                         </div>
                     </td>

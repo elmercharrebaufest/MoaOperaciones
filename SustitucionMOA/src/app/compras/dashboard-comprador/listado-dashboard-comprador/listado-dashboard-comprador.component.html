@@ -151,15 +151,8 @@
                         </a>
                     </td>
                     <td class="col-lg-12 col-md-12 col-sm-12" style="padding-left: 0px; padding-right: 0px;">
-                        <div class="col-md-2">
-                            <span>
-                                <img class="pointer" src="./Content/images/icons/chat.svg" alt="chat"
-                                     (click)="obtenerChatExterno(rowData)" />
-                                <div class="punto-rojo" *ngIf="rowData.ChatSinLeer == true"></div>
-                            </span>                            
-                        </div>
                         <div *ngIf="rowData.Urgencia" class="col-md-2">
-                            <span data-toggle="tooltip" title="Solp Urgencia">
+                            <span data-toggle="tooltip" title="Urgencia">
                                 <i class="pi pi-exclamation-triangle" style="color: red; font-size: 3rem"></i>
                             </span>
                         </div>
@@ -181,13 +174,19 @@
                                      style="height: 30px; cursor:default" />
                             </span>
                         </div>
-                        <div class="col-md-2" *ngIf="rowData.TipoSolp.Codigo == 'CON_PLIEGO' || rowData.SolpConAdjuntos">                            
+                        <div class="col-md-2" *ngIf="rowData.TipoSolp.Codigo == 'CON_PLIEGO' || rowData.SolpConAdjuntos">
                             <span>
                                 <img class="pointer" src="./Content/images/icons/descargar.svg" alt="descargar"
                                      (click)="generarZipPliego(rowData.Id)" />
                             </span>
                         </div>
-
+                        <div class="col-md-2">
+                            <span>
+                                <img class="pointer" src="./Content/images/icons/chat.svg" alt="chat"
+                                     (click)="obtenerChatExterno(rowData)" style="height: 30px;" />
+                                <div class="punto-rojo" *ngIf="rowData.ChatSinLeer == true"></div>
+                            </span>
+                        </div>
                     </td>
                     <td class="columna">
                         {{rowData.NroSolp}}
@@ -260,9 +259,9 @@
                                                 <td id="agregarProveedor">
                                                     <div>
                                                         <span *ngIf="(rowData.Adicional == null || rowData.TrabajoYaHecho == null) && (rowData.Adicional == null && rowData.TrabajoYaHecho == null)">
-                                                            <img class="pointer" src="./Content/images/icons/agregar-proveedor.svg" alt="Editar"
-                                                                 (click)="obtenerPeticionDeOfertaParaProveedor(licitacion.Id)" />
-                                                        </span>                                                        
+                                                            <img class="pointer" src="./Content/images/icons/add-user.svg" title="Agregar proveedor"
+                                                                 (click)="obtenerPeticionDeOfertaParaProveedor(licitacion.Id)" style="height: 30px;" />
+                                                        </span>
                                                     </div>
                                                 </td>
                                                 <td class="columna">{{licitacion.Id}}</td>
