@@ -1099,7 +1099,7 @@ namespace SustitucionMOAUtils.Services
                     ItemPorPagina = paginacion.ItemsPorPagina,
                     Pagina = paginacion.Pagina,
                     TipoPosicionCodigo = x.Posiciones.Select(posiciones => posiciones.TipoPosicion.Codigo).FirstOrDefault(),
-                    SolpConAdjuntos = x.Pliego.Archivos.Where(r => r.FileKey == FileKeys.AdjuntoCotizacionesSolp || r.FileKey == FileKeys.EspecificacionesTecnicasPliego).Any(),
+                    SolpConAdjuntos = x.Pliego.Archivos.Where(r => r.FileKey == FileKeys.AdjuntoCotizacionesSolp).Any(),
                     ChatSinLeer = x.ChatInternoCompras.Any(a => a.Leido == false && a.Usuario.Roles.Any(r => r.Codigo == rol)),
                 },
                 paginacion,
@@ -1572,7 +1572,7 @@ namespace SustitucionMOAUtils.Services
                 File.WriteAllBytes(pdfFilePath, GenerarSolpPdf(idSolp));
             }
 
-            if (solp.Pliego.Archivos != null && solp.Pliego.Archivos.Any<Archivo>(x => x.FileKey == FileKeys.AdjuntoSolp || x.FileKey == FileKeys.AdjuntoCotizacionesSolp || x.FileKey == FileKeys.EspecificacionesTecnicasPliego))
+            if (solp.Pliego.Archivos != null && solp.Pliego.Archivos.Any<Archivo>(x => x.FileKey == FileKeys.AdjuntoSolp || x.FileKey == FileKeys.AdjuntoCotizacionesSolp))
             {
                 var zipFilename = $"Solp-{middleFileName}-pliego-{DateTime.Now.ToString("yyyyMMdd")}.zip";
                 var filePath = $"{pathBase}/{zipFilename}";
@@ -1583,7 +1583,7 @@ namespace SustitucionMOAUtils.Services
                     {
                         foreach (var archivoSubido in solp.Pliego.Archivos)
                         {
-                            if (File.Exists(archivoSubido.Ruta) && (archivoSubido.FileKey == FileKeys.AdjuntoSolp || archivoSubido.FileKey == FileKeys.AdjuntoCotizacionesSolp || archivoSubido.FileKey == FileKeys.EspecificacionesTecnicasPliego))
+                            if (File.Exists(archivoSubido.Ruta) && (archivoSubido.FileKey == FileKeys.AdjuntoSolp || archivoSubido.FileKey == FileKeys.AdjuntoCotizacionesSolp))
                             {
                                 string fileName = Path.GetFileName(archivoSubido.Ruta);
                                 archivo.CreateEntryFromFile(archivoSubido.Ruta, fileName);
