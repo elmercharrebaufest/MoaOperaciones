@@ -44,10 +44,16 @@ namespace SustitucionMOA.Controllers
 
                 ListaPaginada<DetalleOrdenDeCompraDto> result = orderService.ObtenerOrdenesCompraConDetalle(parametros);
 
+                if (result.Items.Count > 0)
+                {
+                    result.Items.FirstOrDefault().ItemsTotales = result.ItemsTotales;
+                    result.Items.FirstOrDefault().Pagina = result.Pagina;
+                    result.Items.FirstOrDefault().ItemPorPagina = result.ItemsPorPagina;
+
+                }
+                    
                 
-                result.Items.FirstOrDefault().ItemsTotales = result.ItemsTotales;
-                result.Items.FirstOrDefault().Pagina = result.Pagina;
-                result.Items.FirstOrDefault().ItemPorPagina = result.ItemsPorPagina;
+               
 
                 return ContentCustom(new { data = result });
             }

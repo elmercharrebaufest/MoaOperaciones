@@ -365,6 +365,19 @@ namespace SustitucionMOAWS.WSConsumers
             detalleOrdenDeCompra.UsuarioCreador = POHEADER.CREATED_BY;
             detalleOrdenDeCompra.Posiciones = new List<PosicionDto>();
 
+            try
+            {
+                var centros = repositorio.Listar<TablaSap>(a => a.Tabla == "Centro");
+                var almacenes = repositorio.Listar<TablaSap>(a => a.Tabla == "Almacen");
+
+            }
+            catch (Exception)
+            {
+
+               
+            }
+           
+
             /// Por cada Posicion ...
             foreach (var posicion in POITEM)
             {
@@ -382,8 +395,8 @@ namespace SustitucionMOAWS.WSConsumers
                 pos.CentroComprasCodigo = posicion.PLANT;
                 pos.UM = posicion.PO_UNIT;
                 pos.GrupoArticulos = posicion.MATL_GROUP;
-                pos.Centro = posicion.PLANT;
-                pos.Almacen = posicion.STGE_LOC;
+                pos.Centro = posicion.PLANT + centros.FirstOrDefault(a => a.Codigo == posicion.PLANT).Descripcion;
+                pos.Almacen = posicion.STGE_LOC + almacenes.FirstOrDefault(a => a.Codigo == posicion.STGE_LOC).Descripcion;
                 pos.NumeroSolp = posicion.PREQ_NO;
                 pos.Contrato = posicion.AGREEMENT;
                 pos.Solicitante = posicion.PREQ_NAME;

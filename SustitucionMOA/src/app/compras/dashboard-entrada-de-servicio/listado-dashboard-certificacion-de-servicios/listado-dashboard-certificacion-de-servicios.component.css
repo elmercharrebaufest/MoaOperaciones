@@ -36,6 +36,13 @@ th{
     word-break: break-all; word-wrap:break-word; font-size: 12px;;
 }
 
+.emptyData{
+    text-align: center;
+}
+
+
+
+
 .headerth { 
     font-size: 10px !important;
     width: max-content;

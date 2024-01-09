@@ -15,6 +15,9 @@ import { ComprasService } from '../../compras.service';
 import { Seccion } from '../../../common/models/seccion';
 import { Location } from '@angular/common';
 import { ModalAltaEntradaDeServicioComponent } from '../modal-alta-entrada-de-servicio/modal-alta-entrada-de-servicio.component';
+import { throwError as observableThrowError, Observable } from 'rxjs';
+//import { FiltroFechaComponent } from './../../common/view-child/filtro-fecha/filtro-fecha.component';
+import { FiltroFechaComponent } from './../../../common/view-child/filtro-fecha/filtro-fecha.component';
 
 @Component({
   selector: 'app-listado-dashboard-certificacion-de-servicios',
@@ -22,6 +25,20 @@ import { ModalAltaEntradaDeServicioComponent } from '../modal-alta-entrada-de-se
   styleUrls: ['./listado-dashboard-certificacion-de-servicios.component.css']
 })
 export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseComponent {
+
+    constructor(protected service: ComprasService, protected navService: NavService,
+        protected sessionDataService: SessionDataService, protected securityService: SecurityService,
+        protected floatMsgService: FloatMsgService, protected modalService: ModalService,
+        protected route: ActivatedRoute, protected router: Router,
+        private location: Location) {
+        super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
+        this.usuario = sessionStorage.getItem("username");
+        this.vendedor = sessionStorage.getItem("proveedor");
+        this.filtroFechaComponent = new FiltroFechaComponent();
+    }
+
+    @ViewChild(FiltroFechaComponent)
+    protected filtroFechaComponent: FiltroFechaComponent;
 
     protected locale: any;
 
@@ -60,15 +77,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
 
     expandedRow: any; 
 
-    constructor(protected service: ComprasService, protected navService: NavService,
-        protected sessionDataService: SessionDataService, protected securityService: SecurityService,
-        protected floatMsgService: FloatMsgService, protected modalService: ModalService,
-        protected route: ActivatedRoute, protected router: Router,
-        private location: Location) {
-        super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
-        this.usuario = sessionStorage.getItem("username");
-        this.vendedor = sessionStorage.getItem("proveedor");
-    }
+ 
     
     //#region Variables 
     tablaPO: any[];
@@ -81,7 +90,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
 
     
     ngOnInit() {       
-      this.getListarPO(this.proveedor, this.ordenCompraId);
+    
       this.navService.setSeccionList([]);
       this.navService.setSeccionActive('');
 
@@ -161,18 +170,25 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
     }
   }
 
+    getOrders(periodo: string, fecha_inicio: string, fecha_fin: string){
+      this.getListarPO(this.proveedor, this.ordenCompraId, this.filtroFechaComponent.fecha_inicio);
+    }
 
-  ngOnDestroy(): void {
-      // this.subscripcionPO.unsubscribe();
-  }
+    onBuscar() {
+      
+      this.getListarPO(this.proveedor, this.ordenCompraId,  this.filtroFechaComponent.fecha_inicio);
+    }
 
-  getListarPO(proveedor, ordenCompraId) {
+   
+
+
+    getListarPO(proveedor, ordenCompraId,fecha_inicio) {
       this.getFecha();
       try {
           this.spinnerComponent.showIt();
           this.unsubscribe();
           // this.subscripcionPO = this.service.getByProveedor("2023-01-28", proveedor, "4123001336", this.columnaOrden , this.ordenAscendente, this.pageIndex, this.pageSize).subscribe(
-          this.subscripcionPO = this.service.getByProveedor(this.fechaInicio, proveedor, ordenCompraId, this.columnaOrden , this.ordenAscendente, this.pageIndex, this.pageSize).subscribe(
+          this.subscripcionPO = this.service.getByProveedor(fecha_inicio, proveedor, ordenCompraId, this.columnaOrden , this.ordenAscendente, this.pageIndex, this.pageSize).subscribe(
                 (result:any) => {
                  
                   if (result.logout == true) {
@@ -219,7 +235,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
           this.ordenAscendente = this.ordenAscendente == false ? true : false;
       }
       this.columnaOrden = columna;
-      this.getListarPO(this.proveedor, this.ordenCompraId);
+      this.getListarPO(this.proveedor, this.ordenCompraId, this.fechaInicio);
   }
 
   deleteES(item: any) {
@@ -229,7 +245,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
   handlePageEvent(e: any) {
       this.pageSize = e.rows;
       this.pageIndex = e.page + 1;
-      this.getListarPO(this.proveedor, this.ordenCompraId);
+      this.getListarPO(this.proveedor, this.ordenCompraId, this.fechaInicio);
   }
 
   openModal() {

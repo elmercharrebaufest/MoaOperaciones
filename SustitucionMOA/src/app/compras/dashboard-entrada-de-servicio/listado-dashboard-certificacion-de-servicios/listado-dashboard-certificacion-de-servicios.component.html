@@ -9,24 +9,88 @@
     </div>
     <br>
 </section>
+
+
+
 <div class="content-wraper" style="padding-top: 0px !important;">
+
+    <!--Search-->
+    <div class="row myRow firstSection mySearch">
+        <div class="col-xs-12 col-md-12 rounded shadow animate">
+            <div class="col-xs-12 col-md-12 search-header">
+                <title-caps>Refinar resultados</title-caps>
+            </div>
+            <div id="searchVer" class="col-xs-12 col-sm-6 col-md-15">
+                <!-- <p>Ver</p> -->
+                <filtro-fecha (ClickEvent)="getOrders()"></filtro-fecha>
+            </div>
+            <!-- <div id="searchMostrar" class="col-xs-12 col-sm-6 col-md-15">
+                <p>Mostrar</p>
+                <div class="styled-select">
+                    <dropdown [tipoDropdown]="'numberItems'" (select)="setItemsPerPage($event)"></dropdown>
+                </div>
+            </div> -->
+            <div id="searchOrder" class="col-xs-12 col-sm-6 col-md-15">
+                <!-- <p>Mostrar</p> -->
+                <div class="styled-select">
+
+                    <!-- <div class="p-d-flex"> -->
+                        <span class="p-input-icon-left p-ml-auto">
+                            <!-- <i class="pi pi-search"></i> -->
+                            <input pInputText type="text"  [(ngModel)]="ordenCompraId" placeholder="Orden de compra" />
+                        </span>
+                    <!-- </div> -->
+
+                </div>
+            </div>
+            <div id="searchProveedor" class="col-xs-12 col-sm-6 col-md-15">
+                <!-- <p>Mostrar</p> -->
+                <div class="styled-select">
+
+                    <!-- <div class="p-d-flex"> -->
+                        <span class="p-input-icon-left p-ml-auto">
+                            <!-- <i class="pi pi-search"></i> -->
+                            <input pInputText type="text"  [(ngModel)]="proveedor" placeholder="Proveedor"/>
+                        </span>
+                    
+                </div>
+            </div>
+
+            <div id="btonSearch" class="col-xs-12 col-sm-6 col-md-15">
+
+                <span class="p-input-icon-left p-ml-auto">
+                    <!-- <i class="pi pi-search"></i> -->
+                    <button class="btn buscar" (click)="onBuscar()">Buscar</button>
+                </span>
+
+                <!-- <div class="p-input-icon-left p-ml-auto buttonBuscar">
+                   
+                </div> -->
+            </div>
+
+           
+
+            <!-- <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
+                <input class="col-xs-12 col-sm-12 col-md-12 col-lg-12 inputAltura" pInputText type="text"
+                       [(ngModel)]="nroSolp" placeholder="Buscar por número de SOLP">
+            </div> -->
+
+
+
+
+
+        </div>
+    </div>
+    <!-- End Search-->
     <spinner></spinner>
     <!-- <app-filtro-dashboard-certificacion-de-servicios></app-filtro-dashboard-certificacion-de-servicios> -->
     <div class="col-sm-12 col-md-12 col-lg-12" style="padding: 0px; border: 1px solid rgb(200, 200, 200);">
 
         <p-table #tabla [value]="tablaPO" responsiveLayout="scroll | stack" dataKey="NumeroOrdenDeCompra"
-               
                  [columns]="columns"
                  [globalFilterFields]="['NumeroOrdenDeCompra','Proveedor']">
 
-            <ng-template pTemplate="caption" style="border: none !important;">
-                <div class="p-d-flex">
-                    <span class="p-input-icon-left p-ml-auto">
-                        <i class="pi pi-search" style="padding-right: 0.5em;"></i>
-                        <input pInputText type="text" (input)="tabla.filterGlobal($event.target.value, 'contains')" placeholder="BUSCADOR OC / PROVEEDOR" style="width: 40%;" />
-                    </span>
-                </div>
-            </ng-template>
+         
 
             <ng-template pTemplate="header" let-columns class="lista-header">
                 <tr>
@@ -86,7 +150,7 @@
                     </td>-->
                     <td class="columna" style="text-align: center;">
                         <a href="#" [pRowToggler]="rowData">
-                            
+
                             <i [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
                         </a>
                     </td>
@@ -109,6 +173,11 @@
                     <td class="columna">
                         {{rowData.MontoTotal}}
                     </td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+                <tr>
+                    <td class="emptyData" colspan="7">No hay ordenes de compra para mostrar</td>
                 </tr>
             </ng-template>
 
@@ -225,6 +294,11 @@
                                     </td>
                                 </tr>
                             </ng-template>
+                            <ng-template pTemplate="emptymessage">
+                                <tr>
+                                    <td class="emptyData" colspan="7">No hay posiciones de para mostrar</td>
+                                </tr>
+                            </ng-template>
 
                             <ng-template pTemplate="rowexpansion" let-rowData let-columns="columns">
                                 <div style="padding: 1em">
@@ -330,6 +404,11 @@
                                                     </td>
                                                 </tr>
                                             </ng-template>
+                                            <ng-template pTemplate="emptymessage">
+                                                <tr>
+                                                    <td class="emptyData" colspan="11">No hay servicios para mostrar</td>
+                                                </tr>
+                                            </ng-template>
 
                                             <ng-template pTemplate="rowexpansion" let-rowData let-columns="columns">
 
@@ -423,6 +502,11 @@
                                                                         </i>
                                                                     </td>
 
+                                                                </tr>
+                                                            </ng-template>
+                                                            <ng-template pTemplate="emptymessage">
+                                                                <tr>
+                                                                    <td class="emptyData" colspan="9">No hay servicios para mostrar</td>
                                                                 </tr>
                                                             </ng-template>
                                                         </p-table>
