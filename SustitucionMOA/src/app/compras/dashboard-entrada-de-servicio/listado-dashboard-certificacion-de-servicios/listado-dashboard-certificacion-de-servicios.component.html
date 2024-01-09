@@ -10,8 +10,6 @@
     <br>
 </section>
 
-
-
 <div class="content-wraper" style="padding-top: 0px !important;">
 
     <!--Search-->
@@ -86,7 +84,7 @@
     <!-- <app-filtro-dashboard-certificacion-de-servicios></app-filtro-dashboard-certificacion-de-servicios> -->
     <div class="col-sm-12 col-md-12 col-lg-12" style="padding: 0px; border: 1px solid rgb(200, 200, 200);">
 
-        <p-table #tabla [value]="tablaPO" responsiveLayout="scroll | stack" dataKey="NumeroOrdenDeCompra"
+        <p-table #tabla [value]="tablaPO" [responsive]="true" dataKey="NumeroOrdenDeCompra"
                  [columns]="columns"
                  [globalFilterFields]="['NumeroOrdenDeCompra','Proveedor']">
 
@@ -182,10 +180,10 @@
             </ng-template>
 
             <ng-template pTemplate="rowexpansion" let-rowData let-columns="columns">
-                <div style="margin: 1em;">
-                <td class="fz">
-                    <div style="width: 140%; border: 1px solid rgb(200, 200, 200); margin: 1em;">
-                        <p-table [value]="rowData.Posiciones" responsiveLayout="scroll | stack"   dataKey="Id">
+                <tr>
+                <td colspan="7" >
+                    <div class="p-3">
+                        <p-table [value]="rowData.Posiciones" dataKey="Id">
 
                             <ng-template pTemplate="header" class="fz">
                                 <tr>
@@ -301,12 +299,12 @@
                             </ng-template>
 
                             <ng-template pTemplate="rowexpansion" let-rowData let-columns="columns">
-                                <div style="padding: 1em">
+                                <tr style="padding: 1em">
                                     <!--td fz-->
-                                <td class="fz">
+                                <td colspan="12">
                                     <!--div widht-->
-                                    <div style="width: 140%; padding: 1em;">
-                                        <p-table [value]="rowData.Items" responsiveLayout="scroll | stack" dataKey="ServicioNumero">
+                                    <div class="p-3">
+                                        <p-table [value]="rowData.Items" dataKey="ServicioNumero">
                                             <ng-template pTemplate="header" class="fz bg-c">
                                                 <tr class="bg-c">
 
@@ -413,12 +411,11 @@
                                             <ng-template pTemplate="rowexpansion" let-rowData let-columns="columns">
 
                                                 <!-- <tr  *ngFor="let data of rowData.EntradasServicio" > -->
-                                                <div style="padding: 1em">
-
-                                                <td style="margin: 1em">
+                                                <tr>
+                                                <td colspan="9">
                                                     <!--div width-->
-                                                    <div style="width: 122%; padding: 1em;">
-                                                        <p-table [value]="rowData.EntradasServicio" responsiveLayout="scroll | stack" dataKey="Id">
+                                                    <div class="p-3">
+                                                        <p-table [value]="rowData.EntradasServicio" dataKey="Id">
                                                             <ng-template pTemplate="header" class="fz bg-d">
                                                                 <tr class="bg-d">
 
@@ -497,8 +494,7 @@
                                                                     </td>
                                                                     <td class="columna" style="text-align: center;">
                                                                         <i (click)="deleteES(i)">
-                                                                            <img src="../../../../../Content/images/icons/trashRed.svg" alt="trashRed" class="cursor-pointer"
-                                                                                 style="height:25px;" />
+                                                                            <img src="../../../../../Content/images/icons/trashRed.svg" alt="trashRed" class="cursor-pointer" style="height:25px;" />
                                                                         </i>
                                                                     </td>
 
@@ -514,27 +510,32 @@
                                                     </div>
                                                 </td>
                                                 <!--/div-->
+                                                </tr>
+                                            </ng-template>
+                                        </p-table>
                                     </div>
+                                </td>
+                                </tr>
                             </ng-template>
+                            
+                                
                         </p-table>
                     </div>
                 </td>
-    </div>
-    </ng-template>
-
-    </p-table>
-</div>
-                    </td>
-                </div>
+                </tr>
             </ng-template>
-
         </p-table>
-<p-paginator #paginator [rows]="10" [totalRecords]="length" (onPageChange)="handlePageEvent($event)"></p-paginator>
-<div class="container-button">
-    <button (click)="openModal()" class="button-certificar">
-        Certificar ES - Ítem
-    </button>
-</div>
-<app-modal-alta-entrada-de-servicio *ngIf="showModal" [itemSelected]="itemSelected" [itemIdSelected]="itemIdSelected" (closeModal)="onCloseModal()"></app-modal-alta-entrada-de-servicio>
+        <p-paginator #paginator [rows]="10" [totalRecords]="length" (onPageChange)="handlePageEvent($event)"></p-paginator>
     </div>
+  
+
+                    
+
+    <!-- <div class="container-button">
+        <button (click)="openModal()" class="button-certificar">
+            Certificar ES - Ítem
+        </button>
+    </div>
+    <app-modal-alta-entrada-de-servicio *ngIf="showModal" [itemSelected]="itemSelected" [itemIdSelected]="itemIdSelected" (closeModal)="onCloseModal()"></app-modal-alta-entrada-de-servicio> -->
 </div>
+
