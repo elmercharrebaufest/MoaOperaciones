@@ -158,12 +158,13 @@ namespace SustitucionMOAUtils.Services
                     solpEntity.FechaModificacion = DateTime.Now;
                     pliegoEntity = solpEntity.Pliego;
 
-                    enviarMailUrgencia = enviarMailUrgencia && solpEntity.Posiciones.Where(a => a.TipoPosicion_Id != null).FirstOrDefault()?.TipoPosicion.Codigo == "SERVICIO";
                     if (enviarMailUrgencia && !string.IsNullOrEmpty(solpEntity.NroSolp))
                     {
                         enviarMailUrgencia = false;
                         if (solp.Posiciones.Count > solpEntity.Posiciones.Count) enviarMailUrgencia = true;
                         else
+                            if (solpEntity.Posiciones.Where(a => a.TipoPosicion_Id != null).FirstOrDefault()?.TipoPosicion.Codigo == "SERVICIO")
+                        {
                             for (int i = 0; i < solpEntity.Posiciones.Count; i++)
                             {
                                 if (solp.Posiciones[i].Subposiciones.Count > solpEntity.Posiciones.ToList()[i].Subposiciones.Count) enviarMailUrgencia = true;
@@ -175,6 +176,16 @@ namespace SustitucionMOAUtils.Services
                                             enviarMailUrgencia = true;
                                     }
                             }
+                        }
+                        else
+                        {
+                            for (int i = 0; i < solpEntity.Posiciones.Count; i++)
+                            {
+                                if (solp.Posiciones[i].Cantidad > solpEntity.Posiciones.ElementAt(i).Cantidad || solp.Posiciones[i].PrecioBruto > solpEntity.Posiciones.ElementAt(i).PrecioBruto)
+                                    enviarMailUrgencia = true;
+                            }
+                        }
+
                     }
                 }
             }
@@ -510,11 +521,11 @@ namespace SustitucionMOAUtils.Services
                         if (subpos.Unidad != null)
                             subposEntity.Unidad = repositorio.Obtener<TablaSap>(x => x.Tabla == TablasSap.Unidad && x.Codigo == subpos.Unidad.Codigo);
 
-                        if (subpos.CodigoServicioSap != null) 
-                        { 
+                        if (subpos.CodigoServicioSap != null)
+                        {
                             subposEntity.ServicioSolp = repositorio.Obtener<ServicioSolp>(x => x.CodigoSap == subpos.CodigoServicioSap.Codigo);
                         }
-                        else 
+                        else
                         {
                             subposEntity.ServicioSolp = null;
                             subposEntity.ServicioSolp_Id = null;
