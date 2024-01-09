@@ -788,7 +788,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
     }
 
     validarMonedaOCesDistinta() {
-        if (this.solpActual.adicional == true && this.solpActual.monedaOC != this.solpActual.posicionActual.monedaSeleccionada.Codigo) {
+        if (this.solpActual.adicional == true && !this.solpActual.posiciones.every(x => x.monedaSeleccionada.Codigo == this.solpActual.monedaOC)) {
             return true;
         } else return false;
     }
