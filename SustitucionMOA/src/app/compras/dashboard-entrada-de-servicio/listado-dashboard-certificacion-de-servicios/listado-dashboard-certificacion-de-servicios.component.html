@@ -255,40 +255,40 @@
                                             <i [ngClass]="isTableExpanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
                                         </a>
                                     </td> -->
-                                    <td class="columna">
+                                    <td >
                                         {{rowData.NumeroPosicion}}
                                     </td>
-                                    <td class="columna">
+                                    <td >
                                         {{rowData.Descripcion != "" ? rowData.Descripcion : '-'}}
                                     </td>
-                                    <td class="columna">
+                                    <td >
                                         {{rowData.Cantidad != 0 ? rowData.Cantidad : '-'}}
                                     </td>
-                                    <td class="columna">
+                                    <td>
                                         {{rowData.UM != "" ? rowData.UM : '-'}}
                                     </td>
-                                    <td class="columna">
+                                    <td >
                                         {{rowData.PrecioUnidad != null ? rowData.PrecioUnidad : '-'}}
                                     </td>
                                     <!-- <td class="columna">
                                         {{rowData.MonedaDescripcion != "" ? rowData.MonedaDescripcion : '-'}}
                                     </td> -->
-                                    <td class="columna">
+                                    <td>
                                         {{rowData.GrupoArticulos != "" ? rowData.GrupoArticulos : '-'}}
                                     </td>
-                                    <td class="columna">
+                                    <td >
                                         {{rowData.Centro != "" ? rowData.Centro : '-'}}
                                     </td>
-                                    <td class="columna">
+                                    <td >
                                         {{rowData.Almacen != "" ? rowData.Almacen : '-'}}
                                     </td>
-                                    <td class="columna">
+                                    <td >
                                         {{rowData.NumeroSolp != "" ? rowData.NumeroSolp : '-'}}
                                     </td>
-                                    <td class="columna">
+                                    <td >
                                         {{rowData.Contrato != "" ? rowData.Contrato : '-'}}
                                     </td>
-                                    <td class="columna">
+                                    <td>
                                         {{rowData.Solicitante != "" ? rowData.Solicitante : '-'}}
                                     </td>
                                 </tr>
@@ -357,7 +357,7 @@
                                             </ng-template>
                                             <ng-template pTemplate="body" let-rowData let-item>
                                                 <tr>
-                                                    <td class="columna" style="text-align: center;">
+                                                    <td  style="text-align: center;">
 
                                                         <input style="margin-right: 5px;" type="checkbox" [(ngModel)]="item.isSelected" (change)="onCheckboxChange(rowData)">
 
@@ -368,33 +368,33 @@
 
                                                     </td>
 
-                                                    <td class="columna">
+                                                    <td >
                                                         {{rowData.NumeroLinea != 0 ? rowData.NumeroLinea : '-'}}
                                                     </td>
 
-                                                    <td class="columna">
+                                                    <td >
                                                         {{rowData.ServicioNumero != 0 ? rowData.ServicioNumero : '-'}}
                                                     </td>
-                                                    <td class="columna">
+                                                    <td >
                                                         {{rowData.Descripcion != "" ? rowData.Descripcion : '-'}}
                                                     </td>
-                                                    <td class="columna">
+                                                    <td >
                                                         {{rowData.Cantidad  != 0 ? rowData.Cantidad : '-'}}
                                                     </td>
-                                                    <td class="columna">
+                                                    <td >
                                                         {{rowData.UM != "" ? rowData.UM : '-'}}
                                                     </td>
-                                                    <td class="columna">
+                                                    <td >
                                                         {{rowData.Importe != 0 ? rowData.Importe : '-'}}
                                                     </td>
                                                     <!-- <td class="columna">
                                                         {{rowData.Moneda != "" ? rowData.Moneda : '-'}}
                                                     </td> -->
-                                                    <td class="columna">
+                                                    <td >
                                                         {{(rowData.CantidadReal != null && rowData.CantidadReal != 0) ? rowData.CantidadReal : '-' }}
                                                     </td>
                                                     <td [ngClass]="{'percentage-green': rowData.Porcentaje >= 100, 'percentage-yellow': rowData.Porcentaje <= 99}"
-                                                        class="columna" style="border: 0 !important;">
+                                                       style="border: 0 !important;">
                                                         {{rowData.Porcentaje != "" ? rowData.Porcentaje : '-'}} %
                                                     </td>
 
@@ -462,41 +462,41 @@
                                                             <ng-template pTemplate="body" let-rowDatas let-item>
                                                                 <tr>
 
-                                                                    <td class="columna" style="width: 100px;">
+                                                                    <td  style="width: 100px;">
                                                                         {{rowDatas.Id}}
                                                                     </td>
 
-                                                                    <td class="columna" style="width: 85px;">
+                                                                    <td  style="width: 85px;">
                                                                         <!-- {{rowDatas.Fecha | date:'yyyy-MM-dd' }} -->
                                                                         {{rowData.Fecha | date:'dd/MM/yyyy'}}
                                                                     </td>
 
-                                                                    <td class="columna">
+                                                                    <td >
                                                                         <!-- {{rowDatas.FechaDocumentoString | date:'yyyy-MM-dd' }} -->
                                                                         {{rowData.FechaDocumentoString | date:'dd/MM/yyyy' }}
                                                                     </td>
 
-                                                                    <td class="columna">
+                                                                    <td >
                                                                         <!-- {{rowDatas.FechaContabilizacion | date:'yyyy-MM-dd' }} -->
                                                                         {{rowData.FechaContabilizacion | date:'dd/MM/yyyy' }}
                                                                     </td>
 
-                                                                    <td class="columna">
+                                                                    <td >
                                                                         {{rowDatas.Referencia != "" ? rowDatas.Referencia : '-'}}
                                                                     </td>
 
-                                                                    <td class="columna">
+                                                                    <td >
                                                                         {{rowDatas.Cantidad != "" ? rowDatas.Cantidad : '-'}}
                                                                     </td>
 
-                                                                    <td class="columna">
+                                                                    <td>
                                                                         {{rowDatas.TextoBreve}}
                                                                     </td>
 
-                                                                    <td class="columna">
+                                                                    <td >
                                                                         {{rowDatas.ImporteARPUSD}}
                                                                     </td>
-                                                                    <td class="columna" style="text-align: center;">
+                                                                    <td  style="text-align: center;">
                                                                         <i (click)="deleteES(i)">
                                                                             <img src="../../../../../Content/images/icons/trashRed.svg" alt="trashRed" class="cursor-pointer" style="height:25px;" />
                                                                         </i>
