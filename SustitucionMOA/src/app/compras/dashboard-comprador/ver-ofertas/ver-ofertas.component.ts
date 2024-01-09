@@ -281,19 +281,9 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
             this.adjudicacion.Cotizacion_Id = usuario.Cotizacion.Id;
             this.adjudicacion.Solp_Id = this.tablaOfertas.Solp_Id;
 
-            this.validacionTextosIncompletos();
-            if (this.textoRacionalInCompleto == true) {
-                this.displayTextoIncompleto = true;
-            } else {
-                this.abrirModalPosicionPlazo();
-            }
-
             this.displayRegionSap = true;
 
-            if (!this.displayRegionSap) {
-                this.proveedor = usuario.CodigoProveedor;
-                this.mostrarModalGenerarOCMoneda(usuario);
-            }
+            this.validacionTextosIncompletos();
 
         } else {
             this.floatMsgService.setInfoMsg("Debe seleccionar alguna posición para adjudicar");
@@ -590,11 +580,13 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
     aceptarRegion() {
         this.adjudicacion.RegionSap = this.selectedRegion.value;
         console.log("this.selectedRegion", this.selectedRegion.value);
-        this.validacionTextosIncompletos();
-        if (this.textoRacionalInCompleto == true) {
-            this.displayTextoIncompleto = true;
-        }
+        this.validacionTextosIncompletos();       
         this.displayRegionSap = false;
+        if (this.textoRacionalInCompleto == true) {
+             this.displayTextoIncompleto = true;
+        }else{
+            this.abrirModalPosicionPlazo();
+        }
     }
 
     salirRegion() {
@@ -608,6 +600,7 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
 
     noContinuarAdjudicacion() {
         this.displayTextoIncompleto = false;
+        this.abrirModalPosicionPlazo();
     }
 
     getCombos() {
