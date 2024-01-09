@@ -510,8 +510,15 @@ namespace SustitucionMOAUtils.Services
                         if (subpos.Unidad != null)
                             subposEntity.Unidad = repositorio.Obtener<TablaSap>(x => x.Tabla == TablasSap.Unidad && x.Codigo == subpos.Unidad.Codigo);
 
-                        if (subpos.CodigoServicioSap != null)
+                        if (subpos.CodigoServicioSap != null) 
+                        { 
                             subposEntity.ServicioSolp = repositorio.Obtener<ServicioSolp>(x => x.CodigoSap == subpos.CodigoServicioSap.Codigo);
+                        }
+                        else 
+                        {
+                            subposEntity.ServicioSolp = null;
+                            subposEntity.ServicioSolp_Id = null;
+                        }
 
                         posEntity.Subposiciones.Add(subposEntity);
                     }
