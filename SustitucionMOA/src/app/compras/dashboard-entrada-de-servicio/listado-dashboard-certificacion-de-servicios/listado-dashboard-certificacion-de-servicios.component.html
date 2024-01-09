@@ -154,7 +154,8 @@
                     </td>
 
                     <td class="columna">
-                        {{ rowData.FechaCreacion | date:'yyyy-MM-dd' }}
+                        <!-- {{ rowData.FechaCreacion | date:'yyyy-MM-dd' }} -->
+                        {{ rowData.FechaCreacion | date:'dd/MM/yyyy' }}
                     </td>
                     <td class="columna">
                         {{rowData.NumeroOrdenDeCompra || ""}}
@@ -188,26 +189,26 @@
                             <ng-template pTemplate="header" class="fz">
                                 <tr>
 
-                                    <th title="Arrow" class="headerth bg-e" style="width: 32px; text-align: center;">
+                                    <th title="Arrow" class="headerth bg-f" style="width: 32px; text-align: center;">
                                     </th>
 
-                                    <th title="Posicion" class="headerth bg-e">
+                                    <th title="Posicion" class="headerth bg-f">
                                         Posición
                                     </th>
 
-                                    <th title="TxtBrev" class="headerth columna bg-e expandSmallColumn5">
+                                    <th title="TxtBrev" class="headerth columna bg-f expandSmallColumn5">
                                         Descripción de la posición
                                     </th>
 
-                                    <th title="CtdPedido" class="headerth columna bg-e">
+                                    <th title="CtdPedido" class="headerth columna bg-f">
                                         Cantidad
                                     </th>
 
-                                    <th title="UM" class="headerth columna bg-e expandSmallColumn">
+                                    <th title="UM" class="headerth columna bg-f expandSmallColumn">
                                         UM
                                     </th>
 
-                                    <th title="PrecioNeto" class="headerth columna bg-e expandSmallColumn3">
+                                    <th title="PrecioNeto" class="headerth columna bg-f expandSmallColumn3">
                                         Prc.neto
                                     </th>
 
@@ -215,27 +216,27 @@
                                         Moneda
                                     </th> -->
 
-                                    <th title="GrupoArt" class="headerth columna bg-e">
+                                    <th title="GrupoArt" class="headerth columna bg-f">
                                         Grupo art.
                                     </th>
 
-                                    <th title="Centro" class="headerth columna bg-e expandSmallColumn3">
+                                    <th title="Centro" class="headerth columna bg-f expandSmallColumn3">
                                         Centro
                                     </th>
 
-                                    <th title="Almacen" class="headerth columna bg-e">
+                                    <th title="Almacen" class="headerth columna bg-f">
                                         Almacén
                                     </th>
 
-                                    <th title="NroSolped" class="headerth columna bg-e expandSmallColumn4">
+                                    <th title="NroSolped" class="headerth columna bg-f expandSmallColumn4">
                                         NRO_SOLPED
                                     </th>
 
-                                    <th title="Contrato" class="headerth columna bg-e expandSmallColumn3">
+                                    <th title="Contrato" class="headerth columna bg-f expandSmallColumn3">
                                         Contrato
                                     </th>
 
-                                    <th title="Solicitante" class="headerth columna bg-e" style="width: 10em;">
+                                    <th title="Solicitante" class="headerth columna bg-f" style="width: 10em;">
                                         Solicitante
                                     </th>
                                 </tr>
@@ -466,15 +467,18 @@
                                                                     </td>
 
                                                                     <td class="columna" style="width: 85px;">
-                                                                        {{rowDatas.Fecha | date:'yyyy-MM-dd' }}
+                                                                        <!-- {{rowDatas.Fecha | date:'yyyy-MM-dd' }} -->
+                                                                        {{rowData.Fecha | date:'dd/MM/yyyy'}}
                                                                     </td>
 
                                                                     <td class="columna">
-                                                                        {{rowDatas.FechaDocumentoString | date:'yyyy-MM-dd' }}
+                                                                        <!-- {{rowDatas.FechaDocumentoString | date:'yyyy-MM-dd' }} -->
+                                                                        {{rowData.FechaDocumentoString | date:'dd/MM/yyyy' }}
                                                                     </td>
 
                                                                     <td class="columna">
-                                                                        {{rowDatas.FechaContabilizacion | date:'yyyy-MM-dd' }}
+                                                                        <!-- {{rowDatas.FechaContabilizacion | date:'yyyy-MM-dd' }} -->
+                                                                        {{rowData.FechaContabilizacion | date:'dd/MM/yyyy' }}
                                                                     </td>
 
                                                                     <td class="columna">
