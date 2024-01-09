@@ -32,6 +32,6 @@ namespace SustitucionMOAModel.Dto
         public string EstadoLiberacionDetalle { get; set; }
         public bool EsMonedaProveedor { get; set; }
         public int RegionSap { get; set; }
-
+        public bool CreadoAutomatico { get; set; }
     }
 }

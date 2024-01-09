@@ -5016,7 +5016,7 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        private RespuestaCrearOrdenDeCompra CrearOrdenDeCompra(Adjudicacion AdjudicacionEntity)
+        private RespuestaCrearOrdenDeCompra CrearOrdenDeCompra(Adjudicacion AdjudicacionEntity, bool creadoAutomatico = false)
         {
             var respuesta = new RespuestaCrearOrdenDeCompra();
             respuesta.Errores = new List<string>();
@@ -5033,7 +5033,7 @@ namespace SustitucionMOAUtils.Services
             }
             else
             {
-                resultadoCrearPedido = crearPedidoConsumerMOA.Request(AdjudicacionEntity);
+                resultadoCrearPedido = crearPedidoConsumerMOA.Request(AdjudicacionEntity, creadoAutomatico);
             }
 
             respuesta.NumeroPedido = resultadoCrearPedido.NumeroPedido;
@@ -5873,16 +5873,16 @@ namespace SustitucionMOAUtils.Services
                     }
                 }
                 else
-                {
-                    var cotizacionPosicionIds = adjudicacionDto.AdjudicacionPosiciones.Select(x => x.CotizacionPosicion_Id).ToList();
-                    var cotizacionPosiciones = cotizacion.CotizacionPosiciones.Where(posicion => cotizacionPosicionIds.Contains(posicion.Id)).ToList();
-                    ValidarAdjudicarSubposicionMoneda(cotizacionPosicionIds, cotizacionPosiciones, respuestaGuardarSOLP);
-                    if (respuestaGuardarSOLP.Errores != null && respuestaGuardarSOLP.Errores.Any())
-                    {
-                        return respuestaGuardarSOLP;
-                    }
+                {                   
                     if (!esMateriales)
                     {
+                        var cotizacionPosicionIds = adjudicacionDto.AdjudicacionPosiciones.Select(x => x.CotizacionPosicion_Id).ToList();
+                        var cotizacionPosiciones = cotizacion.CotizacionPosiciones.Where(posicion => cotizacionPosicionIds.Contains(posicion.Id)).ToList();
+                        ValidarAdjudicarSubposicionMoneda(cotizacionPosicionIds, cotizacionPosiciones, respuestaGuardarSOLP);                      
+                        if (respuestaGuardarSOLP.Errores != null && respuestaGuardarSOLP.Errores.Any())
+                        {
+                            return respuestaGuardarSOLP;
+                        }
                         adjudicacionDto.AdjudicacionPosiciones.ForEach(x => x.MonedaId = cotizacionPosiciones.FirstOrDefault().CotizacionSubPosiciones.FirstOrDefault().Moneda_Id);
                     }
                 }
@@ -5912,7 +5912,7 @@ namespace SustitucionMOAUtils.Services
                                 Posicion = solpPosicion,
                                 SolpPosicion_Id = x.SolpPosicion_Id,
                                 PlazoDeEntrega = esMateriales ? x.PlazoDeEntrega.Value
-                                : x.PlazoDeEntrega.Value.AddDays(cotizacionPosicion.PrimerPlazoDeOferta.Value)
+                                : x.PlazoDeEntrega.Value.AddDays(cotizacionPosicion.PrimerPlazoDeOferta ?? 0)
                             };
 
                             if (!esMateriales)
@@ -5966,7 +5966,7 @@ namespace SustitucionMOAUtils.Services
                         }
                         repositorio.Agregar(adjudicacion);
                         repositorio.GuardarCambios();
-                        respuestaGuardarSOLP = CrearOrdenDeCompra(adjudicacion);
+                        respuestaGuardarSOLP = CrearOrdenDeCompra(adjudicacion, adjudicacionDto.CreadoAutomatico);
 
                         if (respuestaGuardarSOLP.Errores == null || respuestaGuardarSOLP.Errores.Count == 0)
                         {
@@ -6307,7 +6307,7 @@ namespace SustitucionMOAUtils.Services
                         RegionSap = centroRegion.RegionSap.Id
                     };
                     string mensaje = "Orden de compra generada a partir de las órdenes: " + string.Join(", ", registroInfo.Select(a => a.NumeroOrdenDeCompra));
-
+                    adjudicacion.CreadoAutomatico = true;
                     var resultado = GrabarAdjudicacion(adjudicacion, usuarioActual, mensaje);
                     return resultado;
                 }

@@ -604,7 +604,7 @@ namespace SustitucionMOATest.Services
             repositorioMock.Setup(y => y.Obtener<TablaSap>(It.IsAny<int>())).Returns(new TablaSap { CodigoSap = "ARP", Id = 1 });
             obtenerTipoCambioConsumerMOAMock.Setup(y => y.Request(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
                 .Returns(new ObtenerTipoCambioConsumerMOAResponse { MonedaDestino = "ARP", MonedaOrigen = "USD", TipoCambio = 450 });
-            crearPedidoConsumerMOAMock.Setup(y => y.Request(It.IsAny<Adjudicacion>())).Returns(new CrearPedidoConsumerMOAResponse
+            crearPedidoConsumerMOAMock.Setup(y => y.Request(It.IsAny<Adjudicacion>(), It.IsAny<bool>())).Returns(new CrearPedidoConsumerMOAResponse
             {
                 NumeroPedido = "383383932",
                 Errores = new List<CrearPedidoConsumerMOAError> { },
@@ -947,7 +947,7 @@ namespace SustitucionMOATest.Services
              .Returns(new TablaEstado { Id = 1, Codigo = "23234" });
             crearSolpConsumerMOAMock.Setup(x => x.Request(It.IsAny<SolpSAPDto>())).Returns(new CrearSolpConsumerMOAResponse { NumeroSolp = "383737373", Resultado = "OK", Errores = new List<CrearSolpConsumerMOAError>() });
 
-            crearPedidoConsumerMOAMock.Setup(y => y.Request(It.IsAny<Adjudicacion>())).Returns(new CrearPedidoConsumerMOAResponse
+            crearPedidoConsumerMOAMock.Setup(y => y.Request(It.IsAny<Adjudicacion>(), It.IsAny<bool>())).Returns(new CrearPedidoConsumerMOAResponse
             {
                 NumeroPedido = "383383932",
                 Errores = new List<CrearPedidoConsumerMOAError> { },
@@ -1009,7 +1009,7 @@ namespace SustitucionMOATest.Services
                     MonedaOrigen = "USD",
                     TipoCambio = 450
                 });
-            crearPedidoConsumerMOAMock.Setup(y => y.Request(It.IsAny<Adjudicacion>())).Returns(new CrearPedidoConsumerMOAResponse
+            crearPedidoConsumerMOAMock.Setup(y => y.Request(It.IsAny<Adjudicacion>(), It.IsAny<bool>())).Returns(new CrearPedidoConsumerMOAResponse
             {
                 NumeroPedido = "383383932",
                 Errores = new List<CrearPedidoConsumerMOAError> { },

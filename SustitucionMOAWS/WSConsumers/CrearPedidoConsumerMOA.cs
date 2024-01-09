@@ -31,9 +31,9 @@ namespace SustitucionMOAWS.WSConsumers
             obtenerTipoCambioConsumerMOA = _obtenerTipoCambioConsumerMOA;
         }
 
-        public CrearPedidoConsumerMOAResponse Request(Adjudicacion adjudicacion)
+        public CrearPedidoConsumerMOAResponse Request(Adjudicacion adjudicacion, bool creadoAutomatico = false)
         {
-            var solpPedidoSAP = ConvertirSOLP(adjudicacion);
+            var solpPedidoSAP = ConvertirSOLP(adjudicacion, creadoAutomatico);
 
             var serxml = new System.Xml.Serialization.XmlSerializer(solpPedidoSAP.GetType());
             var ms = new MemoryStream();
@@ -103,7 +103,7 @@ namespace SustitucionMOAWS.WSConsumers
             return respuesta;
         }
 
-        private SolpPedidoSAPDto ConvertirSOLP(Adjudicacion adjudicacion)
+        private SolpPedidoSAPDto ConvertirSOLP(Adjudicacion adjudicacion, bool creadoAutomatico = false)
         {
             //TODO: Crear OC ConvertirSOLP - fields hardcodeados o para revisar
             ///DOC_TYPE  ok por ahora. Clase de documento de compras / Estrategia de liberacion hardcore ZPE1 
@@ -296,8 +296,10 @@ namespace SustitucionMOAWS.WSConsumers
                 solpPedidoSAP.IM_POCONDList.Add(new ZMPES6870
                 {
                     ITM_NUMBER = preqItem,  //el número de ítem al que corresponda la condición
-                    COND_TYPE = "ZP01",// siempre va el mismo dato
-                    COND_VALUE = IM_POITEM.NET_PRICE, //el importe de la condición
+                    COND_TYPE = creadoAutomatico ? "ZP01" : "ZP00",
+                    //ZP01 toma los datos del registro info
+                    //ZP00 toma los datos de la adjudicacion
+                    COND_VALUE = IM_POITEM.NET_PRICE, //el importe de la condición
                     COND_VALUESpecified = true,
                     CURRENCY = adjudicacion.Moneda.Codigo /*adjudicacionPosicion.CotizacionPosicion.Moneda.Codigo*/,//moneda de la adjudicacion
                     CHANGE_ID = "U",// siempra va el mismo valor
@@ -992,7 +994,7 @@ namespace SustitucionMOAWS.WSConsumers
 
     public interface ICrearPedidoConsumerMOA
     {
-        CrearPedidoConsumerMOAResponse Request(Adjudicacion adjudicacion);
+        CrearPedidoConsumerMOAResponse Request(Adjudicacion adjudicacion, bool creadoAutomatico = false);
 
     }
 
