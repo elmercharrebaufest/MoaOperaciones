@@ -365,17 +365,11 @@ namespace SustitucionMOAWS.WSConsumers
             detalleOrdenDeCompra.UsuarioCreador = POHEADER.CREATED_BY;
             detalleOrdenDeCompra.Posiciones = new List<PosicionDto>();
 
-            try
-            {
+         
                 var centros = repositorio.Listar<TablaSap>(a => a.Tabla == "Centro");
                 var almacenes = repositorio.Listar<TablaSap>(a => a.Tabla == "Almacen");
 
-            }
-            catch (Exception)
-            {
-
-               
-            }
+          
            
 
             /// Por cada Posicion ...
