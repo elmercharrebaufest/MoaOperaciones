@@ -1853,7 +1853,7 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        private void EnviarMailSolpFinalizadaConUrgencia(Solp solp) //solo si es solp de servicios - A CONFIRMAR
+        private void EnviarMailSolpFinalizadaConUrgencia(Solp solp)
         {
             try
             {
@@ -5873,12 +5873,12 @@ namespace SustitucionMOAUtils.Services
                     }
                 }
                 else
-                {                   
+                {
                     if (!esMateriales)
                     {
                         var cotizacionPosicionIds = adjudicacionDto.AdjudicacionPosiciones.Select(x => x.CotizacionPosicion_Id).ToList();
                         var cotizacionPosiciones = cotizacion.CotizacionPosiciones.Where(posicion => cotizacionPosicionIds.Contains(posicion.Id)).ToList();
-                        ValidarAdjudicarSubposicionMoneda(cotizacionPosicionIds, cotizacionPosiciones, respuestaGuardarSOLP);                      
+                        ValidarAdjudicarSubposicionMoneda(cotizacionPosicionIds, cotizacionPosiciones, respuestaGuardarSOLP);
                         if (respuestaGuardarSOLP.Errores != null && respuestaGuardarSOLP.Errores.Any())
                         {
                             return respuestaGuardarSOLP;
@@ -5955,12 +5955,19 @@ namespace SustitucionMOAUtils.Services
                         if (adjudicacion.Posiciones.FirstOrDefault().Posicion.TipoPosicion.Codigo == "SERVICIO")
                         {
                             var precioSolp = adjudicacion.Posiciones.SelectMany(p => p.Posicion.Subposiciones).Sum(subpos => subpos.PrecioBruto * subpos.Cantidad);
+                            var precioCotizacion = adjudicacion.Posiciones.SelectMany(c => c.CotizacionPosicion.CotizacionSubPosiciones).Sum(subpos => subpos.Precio * subpos.Cantidad);
 
-                            if (adjudicacion.Posiciones.First().Posicion.Moneda_Id != adjudicacion.Moneda_Id || precioSolp != adjudicacion.MontoTotal)
+                            if (adjudicacion.Posiciones.Any(x => x.Posicion.Moneda_Id != adjudicacion.Moneda_Id))
+                            {
+                                respuestaGuardarSOLP.Errores = new List<string> { $"La moneda de lo solicitado en la SOLP no coincide con la moneda de la cotización.\n" +
+                                    $"Por favor, edite la SOLP para que la moneda y monto sean iguales a lo que cotizó el proveedor e intente adjudicar nuevamente.\n\n" };
+                                return respuestaGuardarSOLP;
+                            }
+                            if (precioSolp != precioCotizacion)
                             {
                                 respuestaGuardarSOLP.Errores = new List<string> { $"El monto cotizado no coincide con el monto solicitado en la SOLP.\n \n" +
-                                    $"- A adjudicar: {adjudicacion.Moneda.CodigoSap} {adjudicacion.MontoTotal:N2}\n " +
-                                    $"- Solicitado: {adjudicacion.Posiciones.First().Posicion.Moneda.CodigoSap} {precioSolp:N2}\n\n" };
+                                    $"- A adjudicar: {adjudicacion.Moneda.CodigoSap} {precioCotizacion:N2}\n " +
+                                    $"- Solicitado: {adjudicacion.Moneda.CodigoSap} {precioSolp:N2}\n\n" };
                                 return respuestaGuardarSOLP;
                             }
                         }
