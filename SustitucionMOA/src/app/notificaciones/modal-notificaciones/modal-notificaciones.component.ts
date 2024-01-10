@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, SecurityContext } from '@angular/core';
+import { Component, Input, OnInit, SecurityContext, SimpleChanges } from '@angular/core';
 import { ModalService } from '../../common/services/ModalService';
 import { DomSanitizer, SafeResourceUrl, SafeUrl } from '@angular/platform-browser';
 
@@ -31,7 +31,17 @@ export class ModalNotificacionesComponent implements OnInit {
   ngOnInit() {
     if (this.notificacion != null && this.notificacion.ArchivosAdjuntos > 0 && this.isOpen == true)
     this.onMouseLeave();
-  }
+    }
+
+    ngOnChanges(changes: SimpleChanges) {
+        if (changes.notificacion && changes.notificacion.currentValue) {
+            this.notificacion = changes.notificacion.currentValue;
+
+            if (this.notificacion.ArchivosAdjuntos && this.notificacion.ArchivosAdjuntos.length > 0) {
+                this.calcularContadorAdjuntos();
+            }
+        }
+    }
 
   nextImage() {
     if (this.isOpen = true) this.currentIndex = (this.currentIndex + 1) % this.notificacion.ArchivosAdjuntos.length;
@@ -92,12 +102,10 @@ export class ModalNotificacionesComponent implements OnInit {
   }
 
   mostrarModal() {
-    if (this.notificacion != null)
+ 
     this.isOpen = true;
     
-    if (this.notificacion.ArchivosAdjuntos && this.notificacion.ArchivosAdjuntos.length > 0) {
-      this.calcularContadorAdjuntos();
-    }
+    
   }
 
   onMouseEnter() {

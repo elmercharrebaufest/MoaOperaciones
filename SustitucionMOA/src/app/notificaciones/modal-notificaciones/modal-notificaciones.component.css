@@ -102,6 +102,14 @@ padding-top: 14px;
   min-width: 373px;
 }
 
+.modal-message-center {
+    width: auto;
+    text-align: center;
+    font-size: large;
+    position: relative;
+    top: 50%;
+}
+
 .w-image {
     /*object-fit: cover;*/
     /*height: 275px;

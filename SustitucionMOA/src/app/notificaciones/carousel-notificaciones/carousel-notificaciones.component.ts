@@ -73,7 +73,7 @@ export class CarouselNotificacionesComponent extends BaseComponent implements On
   nombre: string;
   notificacionModal: any;
   adjuntoModal = [];
-  mostarModal: boolean = false;
+
 
   currentPage = 0;
   itemsPerPage = 3;
@@ -240,46 +240,42 @@ export class CarouselNotificacionesComponent extends BaseComponent implements On
     this.actualizarNotificaciones();
   }
 
-  openModalNovedad(notificacionId: number) {
-    this.notificacionModal = null;
-  
-    try {
-      this.service.postNotificacionLeida(notificacionId).subscribe(
-        (result: any) => {
-          if (result.logout == true) {
-            this.sessionDataService.logout();
-          } else if (result.error != undefined && result.error != "") {
-          } else if (result.info != undefined) {
-          } else {
-            this.getNotificacion(notificacionId);
-            this.mostarModal = true;
-            setTimeout(() => {
-              if (this.notificacionModal != null) {
-                if (this.notificacionModal.Leida == 1) {
-                  this.notificacionLeida[this.notificacionModal.Id] = true;
-                } else {
-                  this.notificacionLeida[this.notificacionModal.Id] = false;
+    openModalNovedad(notificacionId: number) {
+        this.notificacionModal = null;
+
+        try {
+            this.service.postNotificacionLeida(notificacionId).subscribe(
+                async (result: any) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                    } else if (result.info != undefined) {
+                    } else {
+                        setTimeout(() => { this.modal.mostrarModal(); }, 200);
+                        let result = await this.service.getNotificacion(notificacionId).toPromise();
+                        if (result.data) {
+                            this.notificacionModal = result.data;
+                            this.notificacionLeida[this.notificacionModal.id] = this.notificacionModal.Leida == 1 ? true : false;
+
+                            this.notificacionModal.ArchivosAdjuntos.forEach((adjunto: any) => {
+                                if (adjunto.AdjuntoTipo != 'previsualizacion') {
+                                    this.adjuntoModal.push(adjunto);
+                                }
+                            })
+                        } else {
+                            // Do nothing
+                        }
+                    }
+
+                },
+                error => {
                 }
-    
-                this.notificacionModal.ArchivosAdjuntos.forEach((adjunto: any) => { 
-                  if(adjunto.AdjuntoTipo != 'previsualizacion') {
-                    this.adjuntoModal.push(adjunto);
-                  }
-                })  
-                this.modal.mostrarModal();
-              }    
-            }, 500);
-          }
-          
-        },
-        error => {
+            );
+        } catch (e) {
+            return false; //<-- Prevent Refresh
         }
-      );
-    } catch (e) {
-      return false; //<-- Prevent Refresh
+        return false; //<-- Prevent Refresh
     }
-    return false; //<-- Prevent Refresh
-  }
 
   onMouseEnter() {
     try {
