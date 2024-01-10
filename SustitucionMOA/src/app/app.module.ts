@@ -71,6 +71,7 @@ import { ToastModule } from "primeng/toast";
 import { UsuarioAuditoriaListComponent } from './usuario/usuario-auditoria-list/usuario-auditoria-list.component';
 import { LegajoExternoComponent } from './compras/legajo-externo/legajo-externo.component';
 import { GlobalErrorHandler } from "./common/services/GlobalErrorHandler";
+import { VerVendedoresComponent } from "./usuario/ver-vendedores/ver-vendedores.component";
 
 import { DropdownModule } from 'primeng/dropdown';
 import { ButtonModule } from "primeng/button";
@@ -136,7 +137,8 @@ import { TooltipModule } from "primeng/tooltip";
         PesificacionBaseComponent,
         ModificarDatosComponent,
         UsuarioAuditoriaListComponent,
-        LegajoExternoComponent
+        LegajoExternoComponent,
+        VerVendedoresComponent
     ],
     providers: [
         DatePipe,
