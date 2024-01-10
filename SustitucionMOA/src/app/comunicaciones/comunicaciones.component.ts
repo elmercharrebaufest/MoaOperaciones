@@ -120,7 +120,18 @@ export class ComunicacionesComponent extends BaseComponent implements OnInit {
 
               this.communication = agrupadoPorFecha;
 
-          let filteredCommunication = {};
+              let filteredCommunication = {};
+
+              //MMSN - 134: Ajuste - Notificaciones Apiladas
+              let skippedItems = [];
+              let stackedTypes = [1, 2, 6];
+
+              class stackedComm {
+                  Id: number;
+                  Type: number;
+              }
+
+              let skippedItemsByType = [];
 
           for (const fecha in this.communication) {
             const items = this.communication[fecha];
@@ -129,33 +140,61 @@ export class ComunicacionesComponent extends BaseComponent implements OnInit {
             const categoryCounts = {};
           
             let tipo1Found = false;
-            let tipo2Found = false;
+              let tipo2Found = false;
+              let tipo6Found = false;
           
-            for (const item of items) {
-              if (item.ComunicacionTipo === 1 && !tipo1Found) {
-                filteredItems.push(item);
-                tipo1Found = true;
-              } else if (item.ComunicacionTipo === 2 && !tipo2Found) {
-                filteredItems.push(item);
-                tipo2Found = true;
-              } else if (item.ComunicacionTipo !== 1 && item.ComunicacionTipo !== 2 && item.ComunicacionTipo !== 5) {
-                filteredItems.push(item);
-              }
-            
-              // Filtrar por DescripcionCategoria
-              if (item.ComunicacionTipo === 5 && !seenCategories[item.DescripcionCategoria]) {
-                filteredItems.push(item);
-                categoryCounts[item.DescripcionCategoria] = 1;
-                seenCategories[item.DescripcionCategoria] = true;
-              }
-              else {
-                categoryCounts[item.DescripcionCategoria]++;
-              }
-            }
+              for (const item of items) {
+                  if (item.ComunicacionTipo === 1 && !tipo1Found) {
+                      filteredItems.push(item);
+                      tipo1Found = true;
+                  } else if (item.ComunicacionTipo === 2 && !tipo2Found) {
+                      filteredItems.push(item);
+                      tipo2Found = true;
+                  } else if (item.ComunicacionTipo === 6 && !tipo6Found) {
+                      filteredItems.push(item);
+                      tipo6Found = true;
+                  } else if (item.ComunicacionTipo !== 1 && item.ComunicacionTipo !== 2 && item.ComunicacionTipo !== 5 && item.ComunicacionTipo !== 6) {
+                      filteredItems.push(item);
+                  } else if (stackedTypes.includes(item.ComunicacionTipo)) {
+                      const st = new stackedComm();
+                      st.Id = item.Id;
+                      st.Type = item.ComunicacionTipo;
+                      skippedItemsByType.push(st);
+                  }
 
-            for (const item of filteredItems) {
-              item.Cantidad = categoryCounts[item.DescripcionCategoria];
-            }
+                  // Filtrar por DescripcionCategoria
+                  if (item.ComunicacionTipo === 5 && !seenCategories[item.DescripcionCategoria]) {
+                      filteredItems.push(item);
+                      categoryCounts[item.DescripcionCategoria] = 1;
+                      seenCategories[item.DescripcionCategoria] = true;
+                  }
+                  else {
+                      categoryCounts[item.DescripcionCategoria]++;
+                      skippedItems.push(item);
+                  }
+              }
+
+              for (const item of filteredItems) {
+                  item.Cantidad = categoryCounts[item.DescripcionCategoria];
+
+                  if (item.ComunicacionTipo === 5) {
+                      item.OtherIds = [];
+                      for (let skipped of skippedItems) {
+                          if (skipped.DescripcionCategoria === item.DescripcionCategoria) {
+                              item.OtherIds.push(skipped.Id)
+                          }
+                      }
+                  }
+
+                  if (stackedTypes.includes(item.ComunicacionTipo)) {
+                      item.OtherIds = [];
+                      for (let skipped of skippedItemsByType) {
+                          if (skipped.Type === item.ComunicacionTipo && skipped.Id !== item.Id) {
+                              item.OtherIds.push(skipped);
+                          }
+                      }
+                  }
+              }
           
             if (filteredItems.length > 0) {
               filteredCommunication[fecha] = filteredItems;
@@ -271,70 +310,77 @@ export class ComunicacionesComponent extends BaseComponent implements OnInit {
     return hour24Format
   }
 
-  openCommunication(notificaciones, fechacreacion, tipoComunicacion, i, idNotificacion) {
-    const ids = [];
-    this.filter = "";
-    let proveedorDescripcion = sessionStorage.getItem("nombre");;
- 
-    notificaciones.forEach((notificacion) => {
-      if (notificacion.Leida == false && notificacion.ComunicacionTipo === tipoComunicacion) {
-        ids.push(notificacion.Id);
-      }
-      if (notificacion.ComunicacionTipo === 5 && notificacion.Id === idNotificacion) {
-        this.filter = notificacion.DescripcionCategoria;
-      }
-    }); 
 
-    if (ids.length)
-      this.serviceComunicaciones.postComunicacionLeida(ids).subscribe();
-    setTimeout(() => {
-      this.getComunicaciones(this.idProveedor, this.startDate, this.endDate);
-    }, 30000);
-    this.redirect(notificaciones[i].ComunicacionTipo, this.filter ,proveedorDescripcion);
-  }
+    //MMSN-134: Added DescripciónCategoria as parameter for Communication Methods & StackedTypes-->
+    openCommunication(notificaciones, fechacreacion, tipoComunicacion, i, idNotificacion, descripcionCategoria) {
+        const ids = [];
+        let stackedTypes = [1, 2, 6];
+        this.filter = "";
+        let proveedorDescripcion = sessionStorage.getItem("nombre");;
 
-  unreadCommunication(notificacion) {
-        console.log(notificacion)
-      
-    if (notificacion.Leida == true) {
+        notificaciones.forEach((notificacion) => {
+            if (notificacion.Leida == false && notificacion.ComunicacionTipo === tipoComunicacion) {
+                if (tipoComunicacion === 5 && notificacion.DescripcionCategoria === descripcionCategoria) {
+                    if (notificacion.OtherIds !== undefined && notificacion.OtherIds.length > 0) {
+                        for (let stacked of notificacion.OtherIds) {
+                            ids.push(stacked);
+                        }
+                        ids.push(notificacion.Id)
+                    }
+                    else {
+                        ids.push(notificacion.Id)
+                    }
+                }
+                else if (tipoComunicacion === 5 && notificacion.DescripcionCategoria !== descripcionCategoria) {
+                    //Do not notify if the type is 5 and the description doesn't match
+                }
+                else if (stackedTypes.includes(tipoComunicacion)) {
+                    if (notificacion.OtherIds !== undefined && notificacion.OtherIds.length > 0) {
+                        for (let stacked of notificacion.OtherIds) {
+                            ids.push(stacked.Id);
+                        }
+                    }
+                    ids.push(notificacion.Id);
+                }
+                else {
+                    ids.push(notificacion.Id);
+                }
+            }
+            if (notificacion.ComunicacionTipo === 5 && notificacion.Id === idNotificacion && notificacion.DescripcionCategoria === descripcionCategoria) {
+                this.filter = notificacion.DescripcionCategoria;
+            }
+        });
 
-            //if (notificacion.ComunicacionTipo === 1 ||
-            //    notificacion.ComunicacionTipo === 2 ||
-            //    notificacion.ComunicacionTipo === 5 || notificacion.ComunicacionTipo === 6) {
-
-            //    console.log(this.communication)
-
-            //    const idsFiltrados = this.communication
-            //        .filter(item => item.ComunicacionTipo === notificacion.ComunicacionTipo)
-            //        .map(item => item.id);
-
-            //    console.log(idsFiltrados)
-                
-            //    debugger
-            //    //const idsFiltrados = notificacion
-            //    //    .filter(item => item.ComunicacionTipo === notificacion.ComunicacionTipo)
-            //    //    .map(item => item.id);
-
-            //    //console.log(idsFiltrados); // Esto mostrará [1, 3, 5]
-            //    let ids = [];;
-            //    ids = notificacion.ComunicacionTipo === 1 ? this.ExencionesVencidasIds : ids;
-            //    ids = notificacion.ComunicacionTipo === 2 ? this.ExencionesAVencerIds : ids;
-            //    ids = notificacion.ComunicacionTipo === 5 ? this.ConsultasIds : ids;
-            //    ids = notificacion.ComunicacionTipo === 6  ? this.liquidacionesIds : ids;
-
-
-            //    this.serviceComunicaciones.postComunicacionNoLeida(ids).subscribe();
-            //}
-           /* else {*/
-      this.serviceComunicaciones.postComunicacionNoLeida(notificacion.Id).subscribe();
-           /* }*/
-    
-
-      setTimeout(() => {
-        this.getComunicaciones(this.idProveedor, this.startDate, this.endDate);
-      }, 30000);
+        if (ids.length)
+            this.serviceComunicaciones.postComunicacionLeida(ids).subscribe();
+        setTimeout(() => {
+            this.getComunicaciones(this.idProveedor, this.startDate, this.endDate);
+        }, 500);
+        this.redirect(notificaciones[i].ComunicacionTipo, this.filter, proveedorDescripcion);
     }
-  }
+
+    //MMSN-134: Check if there is stacked notifications -->
+    unreadCommunication(notificacion) {
+        const ids = [];
+        if (notificacion.Leida == true) {
+            ids.push(notificacion.Id)
+            if (notificacion.OtherIds !== undefined && notificacion.OtherIds.length > 0) {
+                for (let stacked of notificacion.OtherIds) {
+                    if (notificacion.ComunicacionTipo !== 5) {
+                        ids.push(stacked.Id);
+                    }
+                    else {
+                        ids.push(stacked);
+                    }
+                }
+            }
+            this.serviceComunicaciones.postComunicacionNoLeida(ids).subscribe();
+
+            setTimeout(() => {
+                this.getComunicaciones(this.idProveedor, this.startDate, this.endDate);
+            }, 500);
+        }
+    }
 
   redirect(communicationType: number, filter: string,nombreProveedor:string) {
     switch (communicationType) {
