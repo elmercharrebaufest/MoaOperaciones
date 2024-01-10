@@ -55,7 +55,7 @@ namespace SustitucionMOAModel.Dto
             }
 
             CodigoProveedor = ObtenerCodigoProveedor();
-            Permisos = new List<string>();
+            Permisos = usuario.ObtenerPermisos();
             RazonSocial = usuario.ObtenerRazonSocial();
             OrganizacionDeCompra = usuario.OrganizacionDeCompra;
         }

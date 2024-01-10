@@ -852,6 +852,29 @@ namespace SustitucionMOA.Controllers
             }
         }
 
+        [HttpGet]
+        [CustomPermisoAuthorizeAttribute(Roles = Permiso.ABM_USUARIOS)]
+        public ActionResult GetProvedoresUsuario(int usuarioId)
+        {
+            try
+            {
+                return JsonCustom(new { data = new { proveedores = _usuarioService.GetProveedoresUsuario(usuarioId)} });
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
         #endregion
 
         public ActionResult EliminarCuitNoHabilitado(int proveedorId)
@@ -937,6 +960,36 @@ namespace SustitucionMOA.Controllers
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
         }
+
+        [System.Web.Http.HttpPost]
+        public ActionResult DesasociarVendedor(int usuarioId, int proveedorId)
+        {
+            try
+            {
+                string mailUsuarioSesion = SessionPersister.getUsername();
+                _usuarioService.DesasociarVendedor(usuarioId, proveedorId, mailUsuarioSesion);
+                return JsonCustom(new { data = true });
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (WSCustomException e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
         #endregion
     }
 }

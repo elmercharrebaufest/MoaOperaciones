@@ -41,6 +41,7 @@ namespace SustitucionMOAUtils.Interfaces
         ProveedorDto GetProveedorAprobadoPorCuit(string cuit, string mailUsuarioSesion);
         void AsignarNuevaCUIT(AsignarNuevaCuitDto datosAsignar, string mailUsuarioSesion);
         List<DestinatarioDto> ObtenerDestinatariosConsulta();
-
+        List<ProveedorDto> GetProveedoresUsuario(int usuarioId);
+        void DesasociarVendedor(int usuarioId, int proveedorId, string mailUsuarioSesion);
     }
 }

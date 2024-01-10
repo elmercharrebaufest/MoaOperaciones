@@ -32,7 +32,8 @@ namespace SustitucionMOARepositorio.Repositorios
                         NombreCorto = u.TipoUsuario.NombreCorto
                     },
                     u.OrganizacionDeCompra,
-                    Proveedores = u.Proveedores.Select(x => new { x.CUIT, TipoId = x.TipoProveedor.Id, x.RazonSocial })
+                    Proveedores = u.Proveedores.Select(x => new { x.CUIT, TipoId = x.TipoProveedor.Id, x.RazonSocial }
+                    ),
                 }).ToList();
 
             var usuariosDto = (
@@ -64,7 +65,7 @@ namespace SustitucionMOARepositorio.Repositorios
                             u.Proveedores.FirstOrDefault(x => x.CUIT == u.CUITRegistro) ??
                             u.Proveedores.FirstOrDefault()
                         ).RazonSocial
-                        : ""
+                        : "",
                 }).ToList();
 
             return usuariosDto;

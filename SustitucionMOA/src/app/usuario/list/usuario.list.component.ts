@@ -106,6 +106,11 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
         this.usuarioModificacionSel = usuario.Mail;
         this.service.setUsuarioModificarDatos(id);
     }
+    abrirModalVerVendedores(usuario){
+        this.usuarioModificacionSel = usuario.Mail;
+        const id:number = usuario.Id;
+        this.service.setUsuarioVerVendedores(id);
+    }
     cerrarModalModificarDatos(event){
         if(event){
             let modal = document.getElementById('cerrarModalUsuario');
