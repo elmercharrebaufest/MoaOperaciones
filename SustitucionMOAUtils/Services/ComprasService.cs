@@ -1247,11 +1247,15 @@ namespace SustitucionMOAUtils.Services
             if (solpDevuelta.Adicional == true)
             {
                 var ordenDeCompraSAPDto = ObtenerOrdenDeCompra(solpDevuelta.NroOrdenDeCompraAdicional);
-                solpDevuelta.ProveedorIdAdicional = ordenDeCompraSAPDto.Cabecera.Usuario_Id;
-                solpDevuelta.ProveedorRazonSocialAdicional = ordenDeCompraSAPDto.Cabecera.RazonSocialProveedor;
-                solpDevuelta.MonedaOC = ordenDeCompraSAPDto.Cabecera.Moneda;
-                solpDevuelta.MontoTotalOC = ordenDeCompraSAPDto.Cabecera.MontoTotal;
-                solpDevuelta.FechaCreacionOC = ordenDeCompraSAPDto.Cabecera.FechaCreacionString;
+
+                if (ordenDeCompraSAPDto.Error == null)
+                { 
+                    solpDevuelta.ProveedorIdAdicional = ordenDeCompraSAPDto.Cabecera.Usuario_Id;
+                    solpDevuelta.ProveedorRazonSocialAdicional = ordenDeCompraSAPDto.Cabecera.RazonSocialProveedor;
+                    solpDevuelta.MonedaOC = ordenDeCompraSAPDto.Cabecera.Moneda;
+                    solpDevuelta.MontoTotalOC = ordenDeCompraSAPDto.Cabecera.MontoTotal;
+                    solpDevuelta.FechaCreacionOC = ordenDeCompraSAPDto.Cabecera.FechaCreacionString;
+                }
             }
 
             if (solpDevuelta.ProveedorAsignadoId != null)
@@ -1917,7 +1921,8 @@ namespace SustitucionMOAUtils.Services
                 Log.Info($"Copia mail comprador {solp.UsuarioCompras.Mail}");
                 Log.Info($"Copia mail creador {solp.UsuarioCreacion.Mail}");
                 Log.Info($"Fecha {DateTime.Now}");
-                var copia = new List<string> { solp.UsuarioCreacion.Mail };
+
+                var copia = new List<string> {};
                 if (!string.IsNullOrEmpty(solp?.UsuarioCreacion?.Mail))
                 {
                     copia.Add(solp.UsuarioCreacion.Mail);
