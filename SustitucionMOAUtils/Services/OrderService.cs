@@ -118,6 +118,11 @@ namespace SustitucionMOAUtils.Services
             if (parametros.OrdenCompraId != null)
                 ordenesCompra = ordenesCompra.Where(orden => orden.Id.ToString() == parametros.OrdenCompraId).ToList();
 
+
+
+            List<TablaSap> centros = repositorio.Listar<TablaSap>(a => a.Tabla == "Centro");
+            List<TablaSap> almacenes = repositorio.Listar<TablaSap>(a => a.Tabla == "Almacen");
+
             //Recorro las ordenes de compra y obtengo el detalle de cada una
             List< DetalleOrdenDeCompraDto> result = new List<DetalleOrdenDeCompraDto>();
             foreach (var ordenCompra in ordenesCompra)
@@ -128,7 +133,7 @@ namespace SustitucionMOAUtils.Services
                 if (nroOC == "4123001500" || nroOC == "4123001336" || nroOC == "4123001899" || nroOC == "4123001916" || nroOC == "4123001874") {  }
 
                 // Obtengo detalle de una OC
-                DetalleOrdenDeCompraDto detalleOrdendeCompra = new ObtenerOrdenDeCompraConsumerMOA(repositorio).ObtenerDetalleDeOrdenDeCompra(nroOC);
+                DetalleOrdenDeCompraDto detalleOrdendeCompra = new ObtenerOrdenDeCompraConsumerMOA(repositorio).ObtenerDetalleDeOrdenDeCompra(nroOC, centros, almacenes);
                 detalleOrdendeCompra.NombreProveedor = ordenCompra.ProveedorNombre;
                 detalleOrdendeCompra.MonedaDescripcion = ordenCompra.MonedaDescripcion;
 

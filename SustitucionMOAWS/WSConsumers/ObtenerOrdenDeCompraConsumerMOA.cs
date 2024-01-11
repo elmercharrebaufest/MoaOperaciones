@@ -324,7 +324,7 @@ namespace SustitucionMOAWS.WSConsumers
 
         /// ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        public DetalleOrdenDeCompraDto ObtenerDetalleDeOrdenDeCompra(string numeroDeOrdenCompra)
+        public DetalleOrdenDeCompraDto ObtenerDetalleDeOrdenDeCompra(string numeroDeOrdenCompra, List<TablaSap> centro, List<TablaSap> almacen)
         {
             try
             {
@@ -340,7 +340,7 @@ namespace SustitucionMOAWS.WSConsumers
                 BAPIEKBE[] POHISTORY;
                 ObtenerDetalleDeOrdenDeCompraSap(numeroDeOrdenCompra, out POITEM, out RETURN, out POHEADER, out result, out POTEXTHEADER, out POTEXTITEM, out POSERVICES, out POSCHEDULE, out POADDRDELIVERY, out POHISTORY);
 
-                return map(result, POHEADER, RETURN, POITEM, POTEXTHEADER, POTEXTITEM, POSERVICES, POSCHEDULE, POADDRDELIVERY, POHISTORY);
+                return map(result, POHEADER, RETURN, POITEM, POTEXTHEADER, POTEXTITEM, POSERVICES, POSCHEDULE, POADDRDELIVERY, POHISTORY , centro,almacen);
 
             }
             catch (Exception e)
@@ -351,7 +351,7 @@ namespace SustitucionMOAWS.WSConsumers
 
 
         private DetalleOrdenDeCompraDto map(BAPIEIKP result, BAPIMEPOHEADER POHEADER, BAPIRET2[] RETURN, BAPIMEPOITEM[] POITEM, BAPIMEPOTEXTHEADER[] POTEXTHEADER,
-        BAPIMEPOTEXT[] POTEXTITEM, BAPIESLLC[] POSERVICES, BAPIMEPOSCHEDULE[] POSCHEDULE, BAPIMEPOADDRDELIVERY[] POADDRDELIVERY, BAPIEKBE[] POHISTORY)
+        BAPIMEPOTEXT[] POTEXTITEM, BAPIESLLC[] POSERVICES, BAPIMEPOSCHEDULE[] POSCHEDULE, BAPIMEPOADDRDELIVERY[] POADDRDELIVERY, BAPIEKBE[] POHISTORY, List<TablaSap> centros, List<TablaSap> almacenes)
         {
             DetalleOrdenDeCompraDto detalleOrdenDeCompra = new DetalleOrdenDeCompraDto();
             var servicios = new List<ServicioSolp>();
@@ -365,12 +365,12 @@ namespace SustitucionMOAWS.WSConsumers
             detalleOrdenDeCompra.UsuarioCreador = POHEADER.CREATED_BY;
             detalleOrdenDeCompra.Posiciones = new List<PosicionDto>();
 
-         
-                var centros = repositorio.Listar<TablaSap>(a => a.Tabla == "Centro");
-                var almacenes = repositorio.Listar<TablaSap>(a => a.Tabla == "Almacen");
 
-          
-           
+            //var centros = repositorio.Listar<TablaSap>(a => a.Tabla == "Centro");
+            //var almacenes = repositorio.Listar<TablaSap>(a => a.Tabla == "Almacen");
+
+
+
 
             /// Por cada Posicion ...
             foreach (var posicion in POITEM)
@@ -389,8 +389,36 @@ namespace SustitucionMOAWS.WSConsumers
                 pos.CentroComprasCodigo = posicion.PLANT;
                 pos.UM = posicion.PO_UNIT;
                 pos.GrupoArticulos = posicion.MATL_GROUP;
-                pos.Centro = posicion.PLANT + "-" + centros.FirstOrDefault(a => a.Codigo == posicion.PLANT).Descripcion;
-                pos.Almacen = posicion.STGE_LOC+ "-" + almacenes.FirstOrDefault(a => a.Codigo == posicion.STGE_LOC).Descripcion;
+
+                TablaSap centro = centros.FirstOrDefault(a => a.Codigo == posicion.PLANT);
+                TablaSap Almacen = almacenes.FirstOrDefault(a => a.Codigo == posicion.STGE_LOC);
+
+                if (centro == null) {
+                    pos.Centro = posicion.PLANT + "- ";
+                };
+
+                if (centro != null)
+                {
+                    pos.Centro = posicion.PLANT + "-" + centro.Descripcion;
+                };
+
+                if (Almacen == null)
+                {
+                    pos.Almacen = posicion.STGE_LOC + "- ";
+                };
+
+                if (Almacen != null)
+                {
+                    pos.Almacen = posicion.STGE_LOC + "-" + Almacen.Descripcion;
+                };
+
+
+
+              
+
+                //pos.Centro = posicion.PLANT ;
+                //pos.Almacen = posicion.STGE_LOC;
+
                 pos.NumeroSolp = posicion.PREQ_NO;
                 pos.Contrato = posicion.AGREEMENT;
                 pos.Solicitante = posicion.PREQ_NAME;
