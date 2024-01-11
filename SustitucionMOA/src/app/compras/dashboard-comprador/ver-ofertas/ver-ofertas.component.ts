@@ -458,6 +458,7 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
                         this.displayVisualizarErrores = true;
                         this.onCerrarMoneda();
                         this.noContinuarAdjudicacion();
+                        this.cerrarPlazo();
                     }
                     else {
                         this.numerosDePedido = result.NumerosDePedido;
@@ -468,6 +469,7 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
                         this.adjudicacion.TextoDeCabecera = "";
                         this.onCerrarMoneda();
                         this.noContinuarAdjudicacion();
+                        this.cerrarPlazo();
                     }
                     this.blockUI.stop();
                 },
