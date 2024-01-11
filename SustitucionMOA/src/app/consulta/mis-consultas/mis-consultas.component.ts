@@ -132,7 +132,14 @@ export class MisConsultasComponent extends ListBaseComponent {
             }
 
             if (filtrosActivados && filtrosActivados === 'true' && categoria) {
-                this.seleccionarOpcionFiltro('RazonSocialProveedor', proveedor);
+                if (proveedor.startsWith('C')) {
+                    this.seleccionarOpcionFiltro('RazonSocialCorredor', proveedor);
+
+                }
+                else {
+                    this.seleccionarOpcionFiltro('RazonSocialProveedor', proveedor);
+                }
+                
             }
 
             if (filtrosActivados && filtrosActivados === 'true' && categoria) {
@@ -153,9 +160,14 @@ export class MisConsultasComponent extends ListBaseComponent {
       
         switch (columna) {
 
-            case 'RazonSocialProveedor':
-                this.table.filter(valor, 'RazonSocialProveedor', 'contains');
-                break;
+            
+
+            case 'RazonSocialCorredor':
+                this.table.filter(valor, 'RazonSocialCorredor', 'contains');
+        break;
+             case 'RazonSocialProveedor':
+        this.table.filter(valor, 'RazonSocialProveedor', 'contains');
+        break;
             case 'EstadoConsulta':
                 // Encuentra la opción correspondiente en la lista de estados y selecciónala
                 const estadoSeleccionado = this.estados.find(estado => estado.Code === valor);
