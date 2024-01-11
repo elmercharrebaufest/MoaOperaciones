@@ -7,6 +7,7 @@ using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using SustitucionMOARepositorio;
+using SustitucionMOARepositorio.Repositorios.Interfaces;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Interfaces.Wrappers;
 using SustitucionMOAUtils.Services;
@@ -24,14 +25,14 @@ namespace SustitucionMOATest.Services
     public class CampoSustentableServiceTest
     {
         private CampoSustentableService target;
-        private Mock<IRepositorio> repositorioMock;
+        private Mock<IRepositorioCampoSustentable> repositorioMock;
         private Mock<IExcelExportWrapper> excelExportWrapperMock;
         private Mock<IDataAgroService> dataAgroServiceMock;
 
         [SetUp]
         public void SetUp()
         {
-            repositorioMock = new Mock<IRepositorio>();
+            repositorioMock = new Mock<IRepositorioCampoSustentable>();
             excelExportWrapperMock = new Mock<IExcelExportWrapper>();
             dataAgroServiceMock = new Mock<IDataAgroService>();
 

@@ -5,9 +5,11 @@ using Newtonsoft.Json.Linq;
 using SustitucionMOAAssets;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
+using SustitucionMOAModel.Dto.CampoSustentable;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using SustitucionMOARepositorio;
+using SustitucionMOARepositorio.Repositorios.Interfaces;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Interfaces.Wrappers;
 using SustitucionMOAUtils.Logger;
@@ -28,12 +30,15 @@ namespace SustitucionMOAUtils.Services
 {
     public class CampoSustentableService : ICampoSustentableService
     {
-        private readonly IRepositorio repositorio;
+        private readonly IRepositorioCampoSustentable repositorio;
         private readonly string DataAgroURL;
         private readonly IExcelExportWrapper excelExport;
         private readonly IDataAgroService dataAgroService;
 
-        public CampoSustentableService(IRepositorio repositorio, IExcelExportWrapper excelExport, IDataAgroService dataAgroService)
+        public CampoSustentableService(
+            IRepositorioCampoSustentable repositorio,
+            IExcelExportWrapper excelExport,
+            IDataAgroService dataAgroService)
         {
             this.repositorio = repositorio;
             this.DataAgroURL = ConfigurationManager.AppSettings["DataAgroURL"];
@@ -43,10 +48,10 @@ namespace SustitucionMOAUtils.Services
 
         public Resultado Agregar(string mailUsuario, CampoProveedor campoProveedor, HttpPostedFileBase archivoKmz, bool UsarArchivoId)
         {
-            string ruta = "";
+            var ruta = "";
             var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
             ValidarUsuario(usuario, campoProveedor.Proveedor_Id);
-            ValidarCampo(usuario, campoProveedor, archivoKmz);
+            ValidarCampo(campoProveedor, archivoKmz);
             var declaracion = repositorio.Obtener<DeclaracionCampoSustentable>(d => d.Cosecha_Id == campoProveedor.CampoCosecha.Cosecha_Id && d.CUIT == campoProveedor.CUIT);
             campoProveedor.RazonSocial = declaracion.RazonSocial;
             campoProveedor.FechaCreacion = DateTime.Now;
@@ -65,32 +70,17 @@ namespace SustitucionMOAUtils.Services
             campoProveedor.CampoCosecha.Campo.IdScato = ObtenerIdScato(campoProveedor);
 
             repositorio.Agregar(campoProveedor);
-
-            repositorio.GuardarCambios();
-
             if (UsarArchivoId == false)
             {
-                GuardarArchivoKMZ(campoProveedor, archivoKmz);
-                repositorio.GuardarCambios();
-
+                ruta = GuardarArchivoKMZ(campoProveedor, archivoKmz);
             }
-            var archivo = archivoKmz == null ? Convert.ToBase64String(System.IO.File.ReadAllBytes(ruta)) : ConvertirArchivo64(archivoKmz);
+            repositorio.GuardarCambios();
+
+            EnviarCampoACertificadorDeSustentables(ruta, campoProveedor);
+
+            var archivo = archivoKmz == null ? Convert.ToBase64String(File.ReadAllBytes(ruta)) : ConvertirArchivo64(archivoKmz);
             InformarCampoSustentable(campoProveedor, archivo);
             return new Resultado { IdEntidad = campoProveedor.CampoCosecha_Id, Mensaje = SuccessMsg.CampoSustentableAgregado };
-        }
-
-        private void ValidarUsuario(Usuario usuario, int proveedorId)
-        {
-            var proveedor = repositorio.Obtener<Proveedor>(proveedorId);
-            var esComercial = usuario.TienePermiso(PermisoEnum.ComercialCamposSustentables);
-            var esAdmin = usuario.TienePermiso(PermisoEnum.VerTodosCamposSustentable);
-            if (!(esAdmin || esComercial))
-            {
-                if (!usuario.Proveedores.Any(p => p.CUIT == proveedor.CUIT))
-                {
-                    throw new ValidationCustomException("Su usuario no tiene habilitado el proveedor con el que intenta operar.");
-                }
-            }
         }
 
         public Resultado Editar(string mailUsuario, CampoProveedor campoProveedorObj, HttpPostedFileBase archivoKmz)
@@ -111,9 +101,6 @@ namespace SustitucionMOAUtils.Services
             }
 
             campoProveedor.FechaModificacion = DateTime.Now;
-            /*
-            ValidarCampo(usuario, campoProveedor, archivoKmz);
-            */
 
             campoProveedor.HectareasSoja = campoProveedorObj.HectareasSoja;
             campoProveedor.HectareasTotales = campoProveedorObj.HectareasTotales;
@@ -221,92 +208,6 @@ namespace SustitucionMOAUtils.Services
             return archivoResult;
         }
 
-        private byte[] GenerarPDFDeclaracion(DeclaracionCampoSustentableDto datos)
-        {
-            var urlReporteCampo = string.Concat(DataAgroURL, "/CamposSustentables/Generar");
-            var urlReporte = string.Concat(DataAgroURL, "/Download/Reporte");
-
-            string userName = DataAgroWSCredential.getUserName();
-            string password = DataAgroWSCredential.getPassword();
-            string dominio = DataAgroWSCredential.getDominio();
-
-            var httpClientHandler = new HttpClientHandler
-            {
-                Credentials = new NetworkCredential(userName, password, dominio),
-            };
-            var content = JsonConvert.SerializeObject(datos);
-
-            Log.Error("", "", "CampoSustentableService", "GenerarPDFDeclaracion", content);
-
-            var buffer = Encoding.UTF8.GetBytes(content);
-            var byteContent = new ByteArrayContent(buffer);
-            byteContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-
-            using (var client = new HttpClient(httpClientHandler, false))
-            {
-                var task = client.PostAsync(urlReporteCampo, byteContent);
-
-                task.Wait();
-
-                var response = task.Result;
-
-                var stringContent = response.Content.ReadAsStringAsync();
-
-                dynamic jsonResult = JObject.Parse(stringContent.Result);
-
-                if (bool.Parse(jsonResult.HayErrores.ToString()))
-                {
-                    throw new InfoCustomException(jsonResult.Errores[0].Message);
-                }
-
-                string downloadKey = jsonResult.DownloadKey;
-                byte[] InformeComercialPDF;
-                urlReporte = string.Concat(urlReporte, "?key=", downloadKey);
-                using (WebClient clienteDescarga = new WebClient())
-                {
-                    clienteDescarga.Credentials = new NetworkCredential(userName, password, dominio);
-
-                    InformeComercialPDF = clienteDescarga.DownloadData(urlReporte);
-                }
-
-                return InformeComercialPDF;
-            }
-        }
-
-        private void ValidarCampo(Usuario usuario, CampoProveedor campoProveedor, HttpPostedFileBase archivoKmz)
-        {
-            if (!VerificarDeclaracion(campoProveedor.Proveedor_Id, campoProveedor.CampoCosecha.Cosecha_Id, campoProveedor.CUIT).DeclaracionFirmada)
-            {
-                throw new ValidationCustomException("El proveedor seleccionado no tiene firmada la declaración.");
-            }
-
-            if (campoProveedor.Archivo_Id == 0 && Path.GetExtension(archivoKmz.FileName).ToLower() != ".kmz")
-            {
-                throw new ValidationCustomException("El archivo debe tener formato KMZ.");
-            }
-        }
-
-        private void GuardarArchivoKMZ(CampoProveedor campoProveedor, HttpPostedFileBase archivoKmz)
-        {
-
-            string fileName = string.Concat(campoProveedor.CampoCosecha.CampoSustentable_Id, ".kmz");
-
-            string rutaCarpeta = string.Concat(ConfigurationManager.AppSettings["RutaArchivosCampoSustentable"], "/", campoProveedor.CUIT);
-
-            string rutaArchivo = string.Concat(rutaCarpeta, "/", fileName);
-
-            Directory.CreateDirectory(rutaCarpeta);
-
-            if (File.Exists(rutaArchivo))
-            {
-                File.Delete(rutaArchivo);
-            }
-
-            campoProveedor.Archivo.Ruta = rutaArchivo;
-
-            archivoKmz.SaveAs(rutaArchivo);
-        }
-
         public EstadoDeclaracionSustentableDto VerificarDeclaracion(int proveedorId, int cosechaId, string CUITDeclaracion)
         {
             var proveedor = repositorio.Obtener<Proveedor>(proveedorId);
@@ -346,11 +247,6 @@ namespace SustitucionMOAUtils.Services
             }
 
             return estado;
-        }
-
-        private Cosecha ObtenerCosechaActual()
-        {
-            return repositorio.Obtener<Cosecha>(c => DateTime.Now > c.Inicio && DateTime.Now < c.Fin);
         }
 
         public string AdjuntarDeclaracionFirmada(string mailUsuario, int proveedorId, int cosechaId, string CUITDeclaracion, HttpPostedFileBase fileSubido)
@@ -605,7 +501,134 @@ namespace SustitucionMOAUtils.Services
             }
 
             return excelExport.ToExcel(listado, headersBase.ToArray(), "Reporte Campos Sustentables");
-            //return ExcelExport.ToExcel(listado, headersBase.ToArray(), "Reporte Campos Sustentables");
+        }
+
+        public string ObtenerRutaArchivoKMZ(int campoCosechaId, int proveedorId)
+        {
+            var campoProveedor = repositorio.Obtener<CampoProveedor>(x => x.Proveedor_Id == proveedorId && x.CampoCosecha_Id == campoCosechaId);
+
+            return campoProveedor.Archivo.Ruta;
+        }
+
+
+        private void ValidarUsuario(Usuario usuario, int proveedorId)
+        {
+            var proveedor = repositorio.Obtener<Proveedor>(proveedorId);
+            var esComercial = usuario.TienePermiso(PermisoEnum.ComercialCamposSustentables);
+            var esAdmin = usuario.TienePermiso(PermisoEnum.VerTodosCamposSustentable);
+            if (!(esAdmin || esComercial))
+            {
+                if (!usuario.Proveedores.Any(p => p.CUIT == proveedor.CUIT))
+                {
+                    throw new ValidationCustomException("Su usuario no tiene habilitado el proveedor con el que intenta operar.");
+                }
+            }
+        }
+
+        private byte[] GenerarPDFDeclaracion(DeclaracionCampoSustentableDto datos)
+        {
+            var urlReporteCampo = string.Concat(DataAgroURL, "/CamposSustentables/Generar");
+            var urlReporte = string.Concat(DataAgroURL, "/Download/Reporte");
+
+            string userName = DataAgroWSCredential.getUserName();
+            string password = DataAgroWSCredential.getPassword();
+            string dominio = DataAgroWSCredential.getDominio();
+
+            var httpClientHandler = new HttpClientHandler
+            {
+                Credentials = new NetworkCredential(userName, password, dominio),
+            };
+            var content = JsonConvert.SerializeObject(datos);
+
+            Log.Error("", "", "CampoSustentableService", "GenerarPDFDeclaracion", content);
+
+            var buffer = Encoding.UTF8.GetBytes(content);
+            var byteContent = new ByteArrayContent(buffer);
+            byteContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+
+            using (var client = new HttpClient(httpClientHandler, false))
+            {
+                var task = client.PostAsync(urlReporteCampo, byteContent);
+
+                task.Wait();
+
+                var response = task.Result;
+
+                var stringContent = response.Content.ReadAsStringAsync();
+
+                dynamic jsonResult = JObject.Parse(stringContent.Result);
+
+                if (bool.Parse(jsonResult.HayErrores.ToString()))
+                {
+                    throw new InfoCustomException(jsonResult.Errores[0].Message);
+                }
+
+                string downloadKey = jsonResult.DownloadKey;
+                byte[] InformeComercialPDF;
+                urlReporte = string.Concat(urlReporte, "?key=", downloadKey);
+                using (WebClient clienteDescarga = new WebClient())
+                {
+                    clienteDescarga.Credentials = new NetworkCredential(userName, password, dominio);
+
+                    InformeComercialPDF = clienteDescarga.DownloadData(urlReporte);
+                }
+
+                return InformeComercialPDF;
+            }
+        }
+
+        private void ValidarCampo(CampoProveedor campoProveedor, HttpPostedFileBase archivoKmz)
+        {
+            if (!VerificarDeclaracion(campoProveedor.Proveedor_Id, campoProveedor.CampoCosecha.Cosecha_Id, campoProveedor.CUIT).DeclaracionFirmada)
+            {
+                throw new ValidationCustomException("El proveedor seleccionado no tiene firmada la declaración.");
+            }
+
+            if (campoProveedor.Archivo_Id == 0 && Path.GetExtension(archivoKmz.FileName).ToLower() != ".kmz")
+            {
+                throw new ValidationCustomException("El archivo debe tener formato KMZ.");
+            }
+        }
+
+        private string GuardarArchivoKMZ(CampoProveedor campoProveedor, HttpPostedFileBase archivoKmz)
+        {
+            var fileName = string.Concat(campoProveedor.CampoCosecha.CampoSustentable_Id, ".kmz");
+            var rutaCarpeta = string.Concat(ConfigurationManager.AppSettings["RutaArchivosCampoSustentable"], "/", campoProveedor.CUIT);
+            var rutaArchivo = string.Concat(rutaCarpeta, "/", fileName);
+            
+            Directory.CreateDirectory(rutaCarpeta);
+
+            if (File.Exists(rutaArchivo))
+            {
+                File.Delete(rutaArchivo);
+            }
+            archivoKmz.SaveAs(rutaArchivo);
+
+            campoProveedor.Archivo.Ruta = rutaArchivo;
+            return rutaArchivo;
+        }
+
+        private void EnviarCampoACertificadorDeSustentables(string rutaArchivo, CampoProveedor campoProveedor)
+        {
+            var archivoCampoSustentable = new ArchivoCampoSustentable
+            {
+                CampoCosechaId = campoProveedor.CampoCosecha_Id,
+                IdArchivoRecepcion = 0,
+                ProcesadoUcropit = false,
+                ProveedorId = campoProveedor.Proveedor_Id
+            };
+            repositorio.Agregar(archivoCampoSustentable);
+
+            var reporteACertificadorDto = repositorio.ObtenerReporteCertificador(
+                campoProveedor.CampoCosecha_Id, campoProveedor.Proveedor_Id);
+
+            var reporteCertificadorJson = JsonConvert.SerializeObject(reporteACertificadorDto);
+
+            var nombreArchivo = $"{campoProveedor.CUIT}_{campoProveedor.CampoCosecha.CampoSustentable_Id}.kmz";
+
+            // TODO: Acá va la llamada al consumer del drive de ucropit
+
+            repositorio.GuardarCambios();
         }
 
         private List<TProyeccion> ListarCampos<TProyeccion>(Usuario usuario, Expression<Func<CampoProveedor, TProyeccion>> proyeccion) where TProyeccion : class
@@ -628,14 +651,7 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        public string ObtenerRutaArchivoKMZ(int campoCosechaId, int proveedorId)
-        {
-            CampoProveedor campoProveedor = repositorio.Obtener<CampoProveedor>(x => x.Proveedor_Id == proveedorId && x.CampoCosecha_Id == campoCosechaId);
-
-            return campoProveedor.Archivo.Ruta;
-        }
-
-        internal void InformarCampoSustentable(CampoProveedor campoProveedor, string archivoKmz)
+        private void InformarCampoSustentable(CampoProveedor campoProveedor, string archivoKmz)
         {
             dataAgroService.AltaCampoSustentable(campoProveedor, archivoKmz);
         }
@@ -663,7 +679,7 @@ namespace SustitucionMOAUtils.Services
         /// </summary>
         /// <param name="archivoKmz"></param>
         /// <returns></returns>
-        public string ConvertirArchivo64(HttpPostedFileBase archivoKmz)
+        private string ConvertirArchivo64(HttpPostedFileBase archivoKmz)
         {
             string theFileName = Path.GetFileName(archivoKmz.FileName);
             byte[] thePictureAsBytes = new byte[archivoKmz.ContentLength];
