@@ -18,6 +18,18 @@ namespace SustitucionMOAModel.Dto.OrdenesCompra
         public string TextoBreve { get; set; } //HEADER.SHORT_TEXT
         public string PCKG { get; set; }
 
+        //MMSN-460 - Añadir Ref_DOC_No
+        public string Referencia { get; set; }//HEADER.REF_DOC_NO
+
+        //MMSN-460 - Añadir Currency
+        public string ImporteARPUSD { get; set; } //HEADER.CURRENCY
+
+        //MMSN-460 - FechaDocumento p/ FE
+        public string FechaDocumentoString { get; set; }
+
+        //MMSN-460 - Fecha Contabilizacion
+        public string FechaContabilizacion { get; set; }
+
         public List<ItemEntradaServicioDto> Items { get; set; }
     }
 }

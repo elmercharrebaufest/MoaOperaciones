@@ -1,5 +1,6 @@
 <section class="container-fluid clearfix">
-    <div class="row titleSection">
+    <br>
+    <div class="row titleSection title-fix">
         <div class="col-xs-12 col-sm-10 ">
             <strong>
                 Dashboard - Solicitante - Lista de todas las OCs - Certificación de
@@ -19,7 +20,7 @@
                 <title-caps>Refinar resultados</title-caps>
             </div>
             <div id="searchVer" class="col-xs-12 col-sm-6 col-md-15">
-                <!-- <p>Ver</p> -->
+                <p>Ver:</p> 
                 <filtro-fecha (ClickEvent)="getOrders()"></filtro-fecha>
             </div>
             <!-- <div id="searchMostrar" class="col-xs-12 col-sm-6 col-md-15">
@@ -29,20 +30,20 @@
                 </div>
             </div> -->
             <div id="searchOrder" class="col-xs-12 col-sm-6 col-md-15">
-                <!-- <p>Mostrar</p> -->
+                <p> Número de OC:</p> 
                 <div class="styled-select">
 
                     <!-- <div class="p-d-flex"> -->
                         <span class="p-input-icon-left p-ml-auto">
                             <!-- <i class="pi pi-search"></i> -->
-                            <input pInputText type="text"  [(ngModel)]="ordenCompraId" placeholder="Orden de compra" />
+                            <input pInputText type="text"  [(ngModel)]="ordenCompraId" placeholder="Órden de compra" />
                         </span>
                     <!-- </div> -->
 
                 </div>
             </div>
             <div id="searchProveedor" class="col-xs-12 col-sm-6 col-md-15">
-                <!-- <p>Mostrar</p> -->
+                <p> Proveedor:</p> 
                 <div class="styled-select">
 
                     <!-- <div class="p-d-flex"> -->
@@ -103,7 +104,7 @@
                     <th class="headerth" title="Fecha" (click)="onOrder('Fecha')" style="width: 80px">
                         Fecha
                         <span>
-                            <i [ngClass]="{'fa': true, 'fa-solid fa-sort-up': true, 'arrow': true, 'unselected': columna === 'Fecha' && orden == false  }"></i>
+                            <i [ngClass]="{'fa': true, 'fa-solid fa-sort-up': true, 'arrow': true, 'unselected': columnaOrden === 'Fecha' && orden == false  }"></i>
                             <i [ngClass]="{'fa': true, 'fa-solid fa-sort-down': true, 'arrow': true, 'unselected': columnaOrden === 'Fecha' && orden == true }"></i>
                         </span>
                     </th>
@@ -124,7 +125,7 @@
                         </span>
                     </th>
                     <th title="RazonSocial" class="headerth" style="width: 90px;">
-                        Razon Social
+                        Razón Social
                     </th>
 
 
@@ -154,8 +155,7 @@
                     </td>
 
                     <td class="columna">
-                        <!-- {{ rowData.FechaCreacion | date:'yyyy-MM-dd' }} -->
-                        {{ rowData.FechaCreacion | date:'dd/MM/yyyy' }}
+                        {{rowData.FechaCreacion}}
                     </td>
                     <td class="columna">
                         {{rowData.NumeroOrdenDeCompra || ""}}
@@ -192,23 +192,23 @@
                                     <th title="Arrow" class="headerth bg-f" style="width: 32px; text-align: center;">
                                     </th>
 
-                                    <th title="Posicion" class="headerth bg-f">
+                                    <th title="Posicion" class="headerth bg-f limitedColumn">
                                         Posición
                                     </th>
 
-                                    <th title="TxtBrev" class="headerth bg-f expandSmallColumn5">
+                                    <th title="TxtBrev" class="headerth bg-f">
                                         Descripción de la posición
                                     </th>
 
-                                    <th title="CtdPedido" class="headerth columna bg-f">
+                                    <th title="CtdPedido" class="headerth columna bg-f limitedColumn">
                                         Cantidad
                                     </th>
 
-                                    <th title="UM" class="headerth  bg-f expandSmallColumn">
+                                    <th title="UM" class="headerth  bg-f">
                                         UM
                                     </th>
 
-                                    <th title="PrecioNeto" class="headerth  bg-f expandSmallColumn3">
+                                    <th title="PrecioNeto" class="headerth  bg-f">
                                         Prc.neto
                                     </th>
 
@@ -220,7 +220,7 @@
                                         Grupo art.
                                     </th>
 
-                                    <th title="Centro" class="headerth  bg-f expandSmallColumn3">
+                                    <th title="Centro" class="headerth  bg-f">
                                         Centro
                                     </th>
 
@@ -228,11 +228,11 @@
                                         Almacén
                                     </th>
 
-                                    <th title="NroSolped" class="headerth  bg-f expandSmallColumn4">
+                                    <th title="NroSolped" class="headerth  bg-f">
                                         NRO_SOLPED
                                     </th>
 
-                                    <th title="Contrato" class="headerth  bg-f expandSmallColumn3">
+                                    <th title="Contrato" class="headerth  bg-f">
                                         Contrato
                                     </th>
 
@@ -267,8 +267,8 @@
                                     <td>
                                         {{rowData.UM != "" ? rowData.UM : '-'}}
                                     </td>
-                                    <td >
-                                        {{rowData.PrecioUnidad != null ? rowData.PrecioUnidad : '-'}}
+                                    <td>
+                                        {{rowData.PrecioUnidadString != "" ? rowData.PrecioUnidadString : '-'}}
                                     </td>
                                     <!-- <td class="columna">
                                         {{rowData.MonedaDescripcion != "" ? rowData.MonedaDescripcion : '-'}}
@@ -309,7 +309,7 @@
                                             <ng-template pTemplate="header" class="fz bg-c">
                                                 <tr class="bg-c">
 
-                                                    <th title="Seleccion" class="headerth columna bg-c" style="width: 9em;
+                                                    <th title="Seleccion" class="headerth columna bg-c limitedColumn" style="width: 9em;
                                                     text-align: center; border-left: 1px solid #075088 !important;">
                                                         Selección
                                                     </th>
@@ -384,8 +384,8 @@
                                                     <td >
                                                         {{rowData.UM != "" ? rowData.UM : '-'}}
                                                     </td>
-                                                    <td >
-                                                        {{rowData.Importe != 0 ? rowData.Importe : '-'}}
+                                                    <td class="columna">
+                                                        {{rowData.ImporteString != "" ? rowData.ImporteString : '-'}}
                                                     </td>
                                                     <!-- <td class="columna">
                                                         {{rowData.Moneda != "" ? rowData.Moneda : '-'}}
@@ -468,17 +468,17 @@
 
                                                                     <td  style="width: 85px;">
                                                                         <!-- {{rowDatas.Fecha | date:'yyyy-MM-dd' }} -->
-                                                                        {{rowData.Fecha | date:'dd/MM/yyyy'}}
+                                                                        {{rowData.Fecha}}
                                                                     </td>
 
                                                                     <td >
                                                                         <!-- {{rowDatas.FechaDocumentoString | date:'yyyy-MM-dd' }} -->
-                                                                        {{rowData.FechaDocumentoString | date:'dd/MM/yyyy' }}
+                                                                        {{rowData.FechaDocumentoString}}
                                                                     </td>
 
                                                                     <td >
                                                                         <!-- {{rowDatas.FechaContabilizacion | date:'yyyy-MM-dd' }} -->
-                                                                        {{rowData.FechaContabilizacion | date:'dd/MM/yyyy' }}
+                                                                        {{rowData.FechaContabilizacion}}
                                                                     </td>
 
                                                                     <td >

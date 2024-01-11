@@ -1,70 +1,69 @@
-
 <div class="modal-notificacion" *ngIf="isOpen">
-  <div class="modal-dialog">
-      <div class="modal-content">
+    <div class="modal-dialog">
+        <div class="modal-content">
 
 
 
 
 
-          <button id="botonTransparente" class="botonTransparente btn-close" (click)="closeModal()">
-              <i class="glyphicon glyphicon-remove"></i>
-          </button>
+            <button id="botonTransparente" class="botonTransparente btn-close" (click)="closeModal()">
+                <i class="glyphicon glyphicon-remove"></i>
+            </button>
 
-          <div *ngIf="notificacion == null; else mostrarNotificacion" class="modal-message-center">
-              Cargando, por favor espere..
-          </div>
+            <div *ngIf="notificacion == null; else mostrarNotificacion" class="modal-message-center">
+                Cargando, por favor espere..
+            </div>
 
-          <ng-template #mostrarNotificacion>
-              <div class="modal-body">
-                  <div class="hide-scroll modal-message">
-                      <p class="nombre-header">{{notificacion.Nombre}}</p>
-                      <p class="fecha-mensaje">{{notificacion.FechaInicio.split(" ")[0] }}</p>
-                      <p class="modal-mensaje" [innerHTML]="notificacion.Mensaje" [ngClass]="{'expand-message': (notificacion.ArchivosAdjuntos.length == 0), 'adjust-scroll': (notificacion.ArchivosAdjuntos.length > 0)}"></p>
+            <ng-template #mostrarNotificacion>
+                <div class="modal-body">
+                    <div class="hide-scroll modal-message">
+                        <p class="nombre-header">{{notificacion.Nombre}}</p>
+                        <p class="fecha-mensaje">{{notificacion.FechaInicio.split(" ")[0] }}</p>
+                        <p class="modal-mensaje" [innerHTML]="notificacion.Mensaje" [ngClass]="{'expand-message': (notificacion.ArchivosAdjuntos.length == 0), 'adjust-scroll': (notificacion.ArchivosAdjuntos.length > 0)}"></p>
 
-                      <div class="footer-container">
-                          <a class="btn btn-primary btn-cerrar btn-footer" (click)="closeModal()">Cerrar</a>
-                      </div>
-                  </div>
+                        <div class="footer-container">
+                            <a class="btn btn-primary btn-cerrar btn-footer" (click)="closeModal()">Cerrar</a>
+                        </div>
+                    </div>
 
-                  <div class="carousel modal-flex" (mouseenter)="onMouseEnter()" (mouseleave)="onMouseLeave()" [ngClass]="{'hide-element': (notificacion.ArchivosAdjuntos.length == 0)}">
-                      <a *ngIf="notificacion.ArchivosAdjuntos.length > 1" class="carousel-control prev" (click)="prev()">&#8249;</a>
-                      <div class="carousel-inner ">
-                          <ng-container *ngFor="let adjuntoActual of notificacion.ArchivosAdjuntos; let i = index">
-                              <div class="carousel-item w-card" [class.active]="i === currentIndex" *ngIf="i === currentIndex">
-                                  <!-- <div class="carousel-item w-card" [class.active]="i === currentIndex" *ngIf="i === currentIndex"> -->
+                    <div class="carousel modal-flex" (mouseenter)="onMouseEnter()" (mouseleave)="onMouseLeave()" [ngClass]="{'hide-element': (notificacion.ArchivosAdjuntos.length == 0)}">
+                        <a *ngIf="notificacion.ArchivosAdjuntos.length > 1" class="carousel-control prev" (click)="prev()">&#8249;</a>
+                        <div class="carousel-inner ">
+                            <ng-container *ngFor="let adjuntoActual of notificacion.ArchivosAdjuntos; let i = index">
+                                <div class="carousel-item w-card" [class.active]="i === currentIndex" *ngIf="i === currentIndex">
+                                    <!-- <div class="carousel-item w-card" [class.active]="i === currentIndex" *ngIf="i === currentIndex"> -->
 
-                                  <div *ngIf="adjuntoActual.AdjuntoTipo.startsWith('image/')">
-                                      <img (click)="toggleZoom()" class="w-image" [src]="convertImage(adjuntoActual.AdjuntoContenido)" [alt]="'Imagen ' + (i + 1)">
-                                  </div>
+                                    <div *ngIf="adjuntoActual.AdjuntoTipo.startsWith('image/')">
+                                        <img (click)="toggleZoom()" class="w-image" [src]="convertImage(adjuntoActual.AdjuntoContenido)" [alt]="'Imagen ' + (i + 1)">
+                                    </div>
 
-                                  <div *ngIf="isZoomed" class="isZoomed">
-                                      <img (click)="toggleZoom()" [src]="convertImage(adjuntoActual.AdjuntoContenido)" [alt]="'Imagen ' + (i + 1)">
-                                  </div>
+                                    <div *ngIf="isZoomed" class="isZoomed">
+                                        <img (click)="toggleZoom()" [src]="convertImage(adjuntoActual.AdjuntoContenido)" [alt]="'Imagen ' + (i + 1)">
+                                    </div>
 
 
-                                  <div *ngIf="adjuntoActual.AdjuntoTipo.startsWith('video/')">
-                                      <video controls>
-                                          <source src="data:video/mp4;base64,{{adjuntoActual.AdjuntoContenido}}" type="video/mp4">
-                                          Tu navegador no soporta el formato de video.
-                                      </video>
-                                  </div>
+                                    <div *ngIf="adjuntoActual.AdjuntoTipo.startsWith('video/')">
+                                        <video controls>
+                                            <source src="data:video/mp4;base64,{{adjuntoActual.AdjuntoContenido}}" type="video/mp4">
+                                            Tu navegador no soporta el formato de video.
+                                        </video>
+                                    </div>
 
-                                  <div class="pdf-w" *ngIf="adjuntoActual.AdjuntoTipo.startsWith('application/pdf')">
-                                      <img class="pdf-image pdf-w" src="../../../../Content/images/icons/pdf-icon.png">
-                                      <a href="javascript:void(0);" (click)="downloadPdf(adjuntoActual.AdjuntoContenido, adjuntoActual.AdjuntoNombre)">
-                                          <img class="icon-pdf-download" src="../../../../Content/images/icons/pdf-download-icon.png" alt="Icono PDF" />
-                                      </a>
-                                  </div>
+                                    <div class="pdf-w" *ngIf="adjuntoActual.AdjuntoTipo.startsWith('application/pdf')">
+                                        <img class="pdf-image pdf-w" src="../../../../Content/images/icons/pdf-icon.png">
+                                        <a href="javascript:void(0);" (click)="downloadPdf(adjuntoActual.AdjuntoContenido, adjuntoActual.AdjuntoNombre)">
+                                            <img class="icon-pdf-download" src="../../../../Content/images/icons/pdf-download-icon.png" alt="Icono PDF" />
+                                        </a>
+                                    </div>
 
-                              </div>
-                          </ng-container>
-                      </div>
-                      <a *ngIf="notificacion.ArchivosAdjuntos.length > 1" class="carousel-control next" (click)="next()">&#8250;</a>
-                  </div>
+                                </div>
+                            </ng-container>
+                        </div>
+                        <a *ngIf="notificacion.ArchivosAdjuntos.length > 1" class="carousel-control next" (click)="next()">&#8250;</a>
+                    </div>
 
-              </div>
-          </ng-template>
-      </div>
-  </div>
+                </div>
+            </ng-template>
+        </div>
+    </div>
 </div>

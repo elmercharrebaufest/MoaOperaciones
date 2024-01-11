@@ -69,14 +69,15 @@
                     <div *ngIf="item.ComunicacionTipo == 6 && i === 0    || (item.ComunicacionTipo == 6 && i>0 && !(item.ComunicacionTipo === communication[key][i - 1].ComunicacionTipo)) || (item.ComunicacionTipo == 6 && i>0 && !(item.FechaCreacion === communication[key][i - 1].FechaCreacion))"
                          class="container-communication position-r" (click)="openCommunication(communication[key], item.FechaCreacion ,item.ComunicacionTipo,i, item.Id, item.DescripcionCategoria)">
 
-                        <div id="body-message-comunicaciones" class="message-body-read">
+
+                        <div id="body-message-comunicaciones" class="message-body-read" >
                             <div *ngIf="item.ComunicacionTipo == 6" style="width: 75%;">
                                 <div id="comunicacion-target">Posee liquidaciones observadas. Por favor, revisar.</div>
                             </div>
 
                             <div class="container-date">
                                 <div class="date">{{ item.FechaCreacion.split(" ")[0]}}</div>
-                                <div class="date">{{ dateFormat(item.FechaCreacion) }}</div>
+                                <div class="date">{{ dateFormat(item.FechaCreacion) }}</div>                                
                             </div>
                             <div class="date">
                                 <button id="unread-button" class="button-unread" (click)="unreadCommunication(item)" title="Marcar como no leída"> </button>

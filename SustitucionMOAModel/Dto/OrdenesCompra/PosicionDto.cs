@@ -41,6 +41,11 @@ namespace SustitucionMOAModel.Dto.OrdenesCompra
         public string NumeroSolp { get; set; }
         public string Contrato { get; set; }
         public string Solicitante { get; set; }
+
+        /// <summary>
+        /// MMSN-491 - Cambiar separador
+        /// </summary>
+        public string PrecioUnidadString { get; set; }
         /// <summary>
         /// Lista de Ids de las entradas de servicio
         /// </summary>
