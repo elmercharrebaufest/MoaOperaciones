@@ -34,7 +34,8 @@
                             </div>
 
                             <div class="styled-select">
-                                <input type="text" id="Nombre" [(ngModel)]="notificacion.Nombre">                              
+                                <input type="text" id="Nombre" [(ngModel)]="notificacion.Nombre">      
+                                *
                             </div>
                         </div>
                         <div class="col-xs-12 col-md-6">
@@ -58,11 +59,12 @@
                                             <input type="text" id="noCursor" value="{{fecha_inicio}}" fechaInicioInput readonly>
                                             <span class="input-group-addon"><span class="fa fa-calendar "></span></span>
                                         </div>
-
                                         <input type="hidden" #dtp_input1 id="dtp_input1" class="dtp_input1" value="{{fecha_inicio}}" />
+                                        *
                                         <br />
                                     </div>
                                 </fieldset>
+                              
                             </form>
                         </div>
                         <div class="col-xs-12 col-md-1">
@@ -76,6 +78,7 @@
                                         00
                                     </option>
                                 </select>
+                                *
                             </div>
                         </div>
 
@@ -92,9 +95,11 @@
                                             <span class="input-group-addon"><span class="fa fa-calendar "></span></span>
                                         </div>
                                         <input type="hidden" #dtp_input2 id="dtp_input2" class="dtp_input2" value="{{fecha_fin}}" />
+                                        *
                                         <br />
                                     </div>
                                 </fieldset>
+                               
                             </form>
                         </div>
 
@@ -217,6 +222,7 @@
                                 <div class="col-xs-12 col-sm-12 col-md-12 shadow contenedorNuevoComentario" id="contenedorNuevoComentario">
                                     <angular-editor [placeholder]="'Añadir Comentario'"
                                                     [(ngModel)]="notificacion.Mensaje" [config]="config" id="editor"></angular-editor>
+                                    *
                                 </div>
                             </div>
                         </div>

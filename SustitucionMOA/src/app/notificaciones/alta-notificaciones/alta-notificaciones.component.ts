@@ -280,7 +280,7 @@ export class AltaNotificacionesComponent extends BaseComponent implements OnInit
 
             this.focusSection("Nombre");
             //this.messageService.add({ severity: 'error', summary: 'Error', detail: this.mensajeError });
-            this.messageService.add({ key: 'tc', severity: 'error', summary: 'error', detail: this.mensajeError });
+            this.messageService.add({ key: 'tc', severity: 'warn', summary: 'Nombre', detail: this.mensajeError });
             //this.messageService.add({ key: 'tl', severity: 'error', summary: 'Error', detail: 'El Campo nombre debe tener al menos 3 caracteres.' });
             return false;
         }
@@ -288,7 +288,7 @@ export class AltaNotificacionesComponent extends BaseComponent implements OnInit
         if (this.fecha_inicio.length == 0) {
             this.mensajeError = "Ingrese la fecha de inicio.";
             this.focusSection("noCursor");
-            this.messageService.add({ key: 'tc', severity: 'error', summary: 'error', detail: this.mensajeError });
+            this.messageService.add({ key: 'tc', severity: 'warn', summary: 'Fecha', detail: this.mensajeError });
             return false;
         }
 
@@ -300,7 +300,7 @@ export class AltaNotificacionesComponent extends BaseComponent implements OnInit
                 (fechaInicio.getFullYear() === fechaFin.getFullYear() && fechaInicio > fechaFin)) {
                 this.mensajeError = "La Fecha Desde debe ser menor a la Fecha Hasta";
                 this.focusSection("noCursor");
-                this.messageService.add({ key: 'tc', severity: 'error', summary: 'error', detail: this.mensajeError });
+                this.messageService.add({ key: 'tc', severity: 'warn', summary: 'Fecha', detail: this.mensajeError });
                 return false;
             }
         }
@@ -308,21 +308,21 @@ export class AltaNotificacionesComponent extends BaseComponent implements OnInit
         if (this.horaInicio.toString() == "") {
             this.mensajeError = "Ingrese la Hora";
             this.focusSection("hora");
-            this.messageService.add({ key: 'tc', severity: 'error', summary: 'error', detail: this.mensajeError });
+            this.messageService.add({ key: 'tc', severity: 'warn', summary: 'Hora', detail: this.mensajeError });
             return false;
         }
 
         if (this.fecha_fin.length == 0) {
             this.mensajeError = "Ingrese la fecha de fin.";
             this.focusSection("fechaFin");
-            this.messageService.add({ key: 'tc', severity: 'error', summary: 'error', detail: this.mensajeError });
+            this.messageService.add({ key: 'tc', severity: 'warn', summary: 'Fecha', detail: this.mensajeError });
             return false;
         }
 
         if (this.notificacion.Mensaje === undefined || this.notificacion.Mensaje.length < 3) {
             this.mensajeError = "El Campo Mensaje debe tener al menos 3 caracteres.";
             this.focusSection("editor");
-            this.messageService.add({ key: 'tc', severity: 'error', summary: 'error', detail: this.mensajeError });
+            this.messageService.add({ key: 'tc', severity: 'warn', summary: 'Mensaje', detail: this.mensajeError });
             return false;
         }
 
@@ -339,14 +339,14 @@ export class AltaNotificacionesComponent extends BaseComponent implements OnInit
         if (this.notificacion.Mensaje.length == 0) {
             this.mensajeError = "Ingrese el mensaje.";
             this.focusSection("editor");
-            this.messageService.add({ key: 'tc', severity: 'error', summary: 'error', detail: this.mensajeError });
+            this.messageService.add({ key: 'tc', severity: 'warn', summary: 'Mensaje', detail: this.mensajeError });
             return false;
         }
 
         if (this.roles.filter(x => x.checked).length == 0) {
             this.mensajeError = "Seleccione algún rol.";
             this.focusSection("seccionRoles");
-            this.messageService.add({ key: 'tc', severity: 'error', summary: 'error', detail: this.mensajeError });
+            this.messageService.add({ key: 'tc', severity: 'warn', summary: 'Mensaje', detail: this.mensajeError });
             return false;
         }
 
