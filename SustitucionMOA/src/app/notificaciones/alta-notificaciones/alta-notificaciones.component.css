@@ -92,3 +92,39 @@
     color: #ffcc00; /* Cambiar el color del icono */
     font-size: 20px; /* Cambiar el tamaño del icono */
 }
+
+.styled-select {
+    display: flex;
+    align-items: center;
+}
+
+    .styled-select input {
+        margin-right: 5px; /* Ajusta el margen entre el input y el span según tus necesidades */
+    }
+
+
+    .styled-select span.requerido {
+        padding-left: 5px;
+      
+    }
+
+
+
+
+.styled-select {
+    margin-top: 10px; /* Ajusta el margen superior según tus necesidades */
+}
+
+.contenedorNuevoComentario {
+    display: flex;
+  
+}
+
+    .contenedorNuevoComentario span.requerido {
+        margin-left: 10px; /* Ajusta el margen entre el editor y el span según tus necesidades */
+    }
+
+.custom-width {
+    width: 95%; /* Establece el ancho al 95% del contenedor padre */
+    box-sizing: border-box; /* Incluye el padding y el borde en el ancho total */
+}

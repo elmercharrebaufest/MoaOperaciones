@@ -273,7 +273,7 @@ export class AltaNotificacionesComponent extends BaseComponent implements OnInit
 
         if (this.notificacion.Nombre === undefined || this.notificacion.Nombre.length < 3) {
           
-            this.mensajeError = "El Campo nombre debe tener al menos 3 caracteres.";
+            this.mensajeError = "El campo nombre debe tener al menos 3 caracteres.";
           
             //this.errorInput.nativeElement.focus();
             //this.enfocarInput();
@@ -286,7 +286,7 @@ export class AltaNotificacionesComponent extends BaseComponent implements OnInit
         }
 
         if (this.fecha_inicio.length == 0) {
-            this.mensajeError = "Ingrese la fecha de inicio.";
+            this.mensajeError = "Ingrese fecha desde.";
             this.focusSection("noCursor");
             this.messageService.add({ key: 'tc', severity: 'warn', summary: 'Fecha', detail: this.mensajeError });
             return false;
@@ -298,7 +298,7 @@ export class AltaNotificacionesComponent extends BaseComponent implements OnInit
             const fechaFin = new Date(this.fecha_fin);
             if (fechaInicio.getFullYear() > fechaFin.getFullYear() ||
                 (fechaInicio.getFullYear() === fechaFin.getFullYear() && fechaInicio > fechaFin)) {
-                this.mensajeError = "La Fecha Desde debe ser menor a la Fecha Hasta";
+                this.mensajeError = "La fecha desde debe ser menor a la fecha hasta";
                 this.focusSection("noCursor");
                 this.messageService.add({ key: 'tc', severity: 'warn', summary: 'Fecha', detail: this.mensajeError });
                 return false;
@@ -306,21 +306,21 @@ export class AltaNotificacionesComponent extends BaseComponent implements OnInit
         }
 
         if (this.horaInicio.toString() == "") {
-            this.mensajeError = "Ingrese la Hora";
+            this.mensajeError = "Ingrese la hora.";
             this.focusSection("hora");
             this.messageService.add({ key: 'tc', severity: 'warn', summary: 'Hora', detail: this.mensajeError });
             return false;
         }
 
         if (this.fecha_fin.length == 0) {
-            this.mensajeError = "Ingrese la fecha de fin.";
+            this.mensajeError = "Ingrese la fecha hasta.";
             this.focusSection("fechaFin");
             this.messageService.add({ key: 'tc', severity: 'warn', summary: 'Fecha', detail: this.mensajeError });
             return false;
         }
 
         if (this.notificacion.Mensaje === undefined || this.notificacion.Mensaje.length < 3) {
-            this.mensajeError = "El Campo Mensaje debe tener al menos 3 caracteres.";
+            this.mensajeError = "El campo mensaje debe tener al menos 3 caracteres.";
             this.focusSection("editor");
             this.messageService.add({ key: 'tc', severity: 'warn', summary: 'Mensaje', detail: this.mensajeError });
             return false;
