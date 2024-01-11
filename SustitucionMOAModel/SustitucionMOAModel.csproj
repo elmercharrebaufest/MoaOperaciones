@@ -61,6 +61,9 @@
     <Compile Include="Consulta\ListaPaginada.cs" />
     <Compile Include="Dto\AplicacionCartaPorte\CargaMasivaResponse.cs" />
     <Compile Include="Dto\AplicacionCartaPorte\ComboAplicacionesContratosCcppResponse.cs" />
+    <Compile Include="Dto\Compras\AdjudicacionEditarDto.cs" />
+    <Compile Include="Dto\Compras\AdjudicacionPosicionEditarDto.cs" />
+    <Compile Include="Dto\Compras\AdjudicacionSubPosicionEditarDto.cs" />
     <Compile Include="Dto\LiberadorSapDto.cs" />
     <Compile Include="Dto\DestinatarioDto.cs" />
     <Compile Include="Dto\AplicacionCartaPorte\AplicacionCartaPorteApiDto.cs" />

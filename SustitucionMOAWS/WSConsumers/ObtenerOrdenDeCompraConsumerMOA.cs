@@ -38,9 +38,12 @@ namespace SustitucionMOAWS.WSConsumers
                 BAPIESLLC[] POSERVICES;
                 BAPIMEPOSCHEDULE[] POSCHEDULE;
                 BAPIMEPOADDRDELIVERY[] POADDRDELIVERY;
-                ObtenerOcSap(nroOC, out POITEM, out RETURN, out POHEADER, out result, out POTEXTHEADER, out POTEXTITEM, out POSERVICES, out POSCHEDULE, out POADDRDELIVERY);
+                BAPIMEPOCOND[] POCOND;
+                BAPIMEPOACCOUNT[] POACCOUNT;
+                BAPIESKLC[] POSRVACCESSVALUES;
+                ObtenerOcSap(nroOC, out POITEM, out RETURN, out POHEADER, out result, out POTEXTHEADER, out POTEXTITEM, out POSERVICES, out POSCHEDULE, out POADDRDELIVERY, out POCOND, out POACCOUNT, out POSRVACCESSVALUES);
 
-                return mapOrdenDeCompraSAPDto(result, POHEADER, RETURN, POITEM, POTEXTHEADER, POTEXTITEM, POSERVICES, POSCHEDULE, POADDRDELIVERY);
+                return mapOrdenDeCompraSAPDto(result, POHEADER, RETURN, POITEM, POTEXTHEADER, POTEXTITEM, POSERVICES, POSCHEDULE, POADDRDELIVERY, POCOND, POSRVACCESSVALUES);
             }
             catch (Exception e)
             {
@@ -61,9 +64,37 @@ namespace SustitucionMOAWS.WSConsumers
                 BAPIESLLC[] POSERVICES;
                 BAPIMEPOSCHEDULE[] POSCHEDULE;
                 BAPIMEPOADDRDELIVERY[] POADDRDELIVERY;
-                ObtenerOcSap(nroOC, out POITEM, out RETURN, out POHEADER, out result, out POTEXTHEADER, out POTEXTITEM, out POSERVICES, out POSCHEDULE, out POADDRDELIVERY);
+                BAPIMEPOCOND[] POCOND;
+                BAPIMEPOACCOUNT[] POACCOUNT;
+                BAPIESKLC[] POSRVACCESSVALUES;
+                ObtenerOcSap(nroOC, out POITEM, out RETURN, out POHEADER, out result, out POTEXTHEADER, out POTEXTITEM, out POSERVICES, out POSCHEDULE, out POADDRDELIVERY, out POCOND,out POACCOUNT, out POSRVACCESSVALUES);
 
-                return mapAdjudicacionDto(result, POHEADER, RETURN, POITEM, POTEXTHEADER, POTEXTITEM, POSERVICES, POSCHEDULE, POADDRDELIVERY);
+                return mapAdjudicacionDto(result, POHEADER, RETURN, POITEM, POTEXTHEADER, POTEXTITEM, POSERVICES, POSCHEDULE, POADDRDELIVERY, POSRVACCESSVALUES);
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+        public ResultBAPI_PO_GETDETAIL1 ObtenerOrdenDeCompraRFC(string nroOC)
+        {
+            try
+            {
+                BAPIMEPOITEM[] POITEM;
+                BAPIRET2[] RETURN;
+                BAPIMEPOHEADER POHEADER;
+                BAPIEIKP result;
+                BAPIMEPOTEXTHEADER[] POTEXTHEADER;
+                BAPIMEPOTEXT[] POTEXTITEM;
+                BAPIESLLC[] POSERVICES;
+                BAPIMEPOSCHEDULE[] POSCHEDULE;
+                BAPIMEPOADDRDELIVERY[] POADDRDELIVERY;
+                BAPIMEPOCOND[] POCOND;
+                BAPIMEPOACCOUNT[] POACCOUNT;
+                BAPIESKLC[] POSRVACCESSVALUES;
+                ObtenerOcSap(nroOC, out POITEM, out RETURN, out POHEADER, out result, out POTEXTHEADER, out POTEXTITEM, out POSERVICES, out POSCHEDULE, out POADDRDELIVERY, out POCOND, out POACCOUNT, out POSRVACCESSVALUES);
+
+                return new ResultBAPI_PO_GETDETAIL1(result, POHEADER, RETURN, POITEM, POTEXTHEADER, POTEXTITEM, POSERVICES, POSCHEDULE, POADDRDELIVERY, POCOND, POACCOUNT, POSRVACCESSVALUES);
             }
             catch (Exception e)
             {
@@ -74,7 +105,7 @@ namespace SustitucionMOAWS.WSConsumers
         private void ObtenerOcSap(
             string nroOC, out BAPIMEPOITEM[] POITEM, out BAPIRET2[] RETURN, out BAPIMEPOHEADER POHEADER, out BAPIEIKP result,
            out BAPIMEPOTEXTHEADER[] POTEXTHEADER, out BAPIMEPOTEXT[] POTEXTITEM, out BAPIESLLC[] POSERVICES, out BAPIMEPOSCHEDULE[] POSCHEDULE,
-           out BAPIMEPOADDRDELIVERY[] POADDRDELIVERY
+           out BAPIMEPOADDRDELIVERY[] POADDRDELIVERY, out BAPIMEPOCOND[] POCOND, out BAPIMEPOACCOUNT[] POACCOUNT, out BAPIESKLC[] POSRVACCESSVALUES
             )
         {
             string ACCOUNT_ASSIGNMENT = "X";
@@ -87,9 +118,9 @@ namespace SustitucionMOAWS.WSConsumers
             string SERVICES = "X";
             string VERSION = "X";
 
-            BAPIMEPOACCOUNT[] POACCOUNT = new BAPIMEPOACCOUNT[] { };
+            POACCOUNT = new BAPIMEPOACCOUNT[] { };
             POADDRDELIVERY = new BAPIMEPOADDRDELIVERY[] { };
-            BAPIMEPOCOND[] POCOND = new BAPIMEPOCOND[] { };
+            POCOND = new BAPIMEPOCOND[] { };
             POITEM = new BAPIMEPOITEM[] { };
             POTEXTHEADER = new BAPIMEPOTEXTHEADER[] { };
             POTEXTITEM = new BAPIMEPOTEXT[] { };
@@ -112,7 +143,7 @@ namespace SustitucionMOAWS.WSConsumers
             BAPIEKKOP[] POPARTNER = new BAPIEKKOP[] { };
             POSCHEDULE = new BAPIMEPOSCHEDULE[] { };
             BAPIMEPOSHIPPEXP[] POSHIPPINGEXP = new BAPIMEPOSHIPPEXP[] { };
-            BAPIESKLC[] POSRVACCESSVALUES = new BAPIESKLC[] { };
+            POSRVACCESSVALUES = new BAPIESKLC[] { };
             BAPIMEPOSERIALNO[] SERIALNUMBER = new BAPIMEPOSERIALNO[] { };
 
             result = service.BAPI_PO_GETDETAIL1(ACCOUNT_ASSIGNMENT,
@@ -155,7 +186,7 @@ namespace SustitucionMOAWS.WSConsumers
 
 
         private OrdenDeCompraSAPDto mapOrdenDeCompraSAPDto(BAPIEIKP result, BAPIMEPOHEADER POHEADER, BAPIRET2[] RETURN, BAPIMEPOITEM[] POITEM, BAPIMEPOTEXTHEADER[] POTEXTHEADER,
-        BAPIMEPOTEXT[] POTEXTITEM, BAPIESLLC[] POSERVICES, BAPIMEPOSCHEDULE[] POSCHEDULE, BAPIMEPOADDRDELIVERY[] POADDRDELIVERY)
+        BAPIMEPOTEXT[] POTEXTITEM, BAPIESLLC[] POSERVICES, BAPIMEPOSCHEDULE[] POSCHEDULE, BAPIMEPOADDRDELIVERY[] POADDRDELIVERY, BAPIMEPOCOND[] POCOND, BAPIESKLC[] POSRVACCESSVALUES)
         {
             OrdenDeCompraSAPDto resultado = new OrdenDeCompraSAPDto();
 
@@ -207,7 +238,7 @@ namespace SustitucionMOAWS.WSConsumers
 
 
         private AdjudicacionDto mapAdjudicacionDto(BAPIEIKP result, BAPIMEPOHEADER POHEADER, BAPIRET2[] RETURN, BAPIMEPOITEM[] POITEM, BAPIMEPOTEXTHEADER[] POTEXTHEADER,
-        BAPIMEPOTEXT[] POTEXTITEM, BAPIESLLC[] POSERVICES, BAPIMEPOSCHEDULE[] POSCHEDULE, BAPIMEPOADDRDELIVERY[] POADDRDELIVERY)
+        BAPIMEPOTEXT[] POTEXTITEM, BAPIESLLC[] POSERVICES, BAPIMEPOSCHEDULE[] POSCHEDULE, BAPIMEPOADDRDELIVERY[] POADDRDELIVERY, BAPIESKLC[] POSRVACCESSVALUES)
         {
             AdjudicacionDto adjudicacion = new AdjudicacionDto();
             var codigoMateriales = POITEM.Select(a => a.MATERIAL).ToList();
@@ -267,6 +298,7 @@ namespace SustitucionMOAWS.WSConsumers
                 pos.MonedaCodigo = monedas.FirstOrDefault(a => a.Codigo == POHEADER.CURRENCY)?.CodigoSap;
                 pos.PrecioTotal = posicion.QUANTITY * posicion.NET_PRICE;
                 pos.CentroComprasCodigo = posicion.PLANT;
+                pos.Eliminado = posicion.DELETE_IND == "L";
 
                 try
                 {
@@ -296,6 +328,7 @@ namespace SustitucionMOAWS.WSConsumers
                         sub.MonedaCotizacionDescripcion = POHEADER.CURRENCY;
                         sub.MonedaCotizacionCodigo = monedas.FirstOrDefault(a => a.Codigo == POHEADER.CURRENCY)?.CodigoSap;
                         sub.PrecioTotalSubPosicion = subpos.NET_VALUE;
+                        sub.Eliminado = subpos.DELETE_IND == "L";
                         pos.SubposicionesCompras.Add(sub);
                     }
                 }
@@ -312,6 +345,7 @@ namespace SustitucionMOAWS.WSConsumers
                         sub.UnidadComprasDescripcion = unidades.FirstOrDefault(a => a.Codigo == subpos.BASE_UOM)?.Descripcion ?? "";
                         sub.MonedaCotizacionDescripcion = POHEADER.CURRENCY;
                         sub.PrecioTotalSubPosicion = sub.Cantidad ?? 0 * sub.PrecioBruto ?? 0;
+                        sub.Eliminado = subpos.DELETE_IND == "L";
                         pos.SubposicionesCompras.Add(sub);
                     }
                 }
@@ -321,6 +355,69 @@ namespace SustitucionMOAWS.WSConsumers
 
             return adjudicacion;
         }
+
+
+
     }
 
+    public class ResultBAPI_PO_GETDETAIL1
+    {
+        public BAPIEIKP Result { get; }
+        public BAPIMEPOHEADER POHEADER { get; }
+        public BAPIRET2[] RETURN { get; }
+        public BAPIMEPOITEM[] POITEM { get; }
+        public BAPIMEPOTEXTHEADER[] POTEXTHEADER { get; }
+        public BAPIMEPOTEXT[] POTEXTITEM { get; }
+        public BAPIESLLC[] POSERVICES { get; }
+        public BAPIMEPOSCHEDULE[] POSCHEDULE { get; }
+        public BAPIMEPOADDRDELIVERY[] POADDRDELIVERY { get; }
+        public BAPIMEPOCOND[] POCOND { get; }
+        public BAPIMEPOACCOUNT[] POACCOUNT{ get; set; }
+        public BAPIESKLC[] POSRVACCESSVALUES { get; set; }
+
+        public ResultBAPI_PO_GETDETAIL1(BAPIEIKP result, BAPIMEPOHEADER pOHEADER, BAPIRET2[] rETURN, BAPIMEPOITEM[] pOITEM, BAPIMEPOTEXTHEADER[] pOTEXTHEADER, BAPIMEPOTEXT[] pOTEXTITEM, BAPIESLLC[] pOSERVICES, BAPIMEPOSCHEDULE[] pOSCHEDULE, BAPIMEPOADDRDELIVERY[] pOADDRDELIVERY, BAPIMEPOCOND[] pOCOND, BAPIMEPOACCOUNT[] pOACCOUNT, BAPIESKLC[] pOSRVACCESSVALUES)
+        {
+            Result = result;
+            POHEADER = pOHEADER;
+            RETURN = rETURN;
+            POITEM = pOITEM;
+            POTEXTHEADER = pOTEXTHEADER;
+            POTEXTITEM = pOTEXTITEM;
+            POSERVICES = pOSERVICES;
+            POSCHEDULE = pOSCHEDULE;
+            POADDRDELIVERY = pOADDRDELIVERY;
+            POCOND = pOCOND;
+            POACCOUNT = pOACCOUNT;
+            POSRVACCESSVALUES = pOSRVACCESSVALUES;
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is ResultBAPI_PO_GETDETAIL1 other &&
+                   EqualityComparer<BAPIEIKP>.Default.Equals(Result, other.Result) &&
+                   EqualityComparer<BAPIMEPOHEADER>.Default.Equals(POHEADER, other.POHEADER) &&
+                   EqualityComparer<BAPIRET2[]>.Default.Equals(RETURN, other.RETURN) &&
+                   EqualityComparer<BAPIMEPOITEM[]>.Default.Equals(POITEM, other.POITEM) &&
+                   EqualityComparer<BAPIMEPOTEXTHEADER[]>.Default.Equals(POTEXTHEADER, other.POTEXTHEADER) &&
+                   EqualityComparer<BAPIMEPOTEXT[]>.Default.Equals(POTEXTITEM, other.POTEXTITEM) &&
+                   EqualityComparer<BAPIESLLC[]>.Default.Equals(POSERVICES, other.POSERVICES) &&
+                   EqualityComparer<BAPIMEPOSCHEDULE[]>.Default.Equals(POSCHEDULE, other.POSCHEDULE) &&
+                   EqualityComparer<BAPIMEPOADDRDELIVERY[]>.Default.Equals(POADDRDELIVERY, other.POADDRDELIVERY);
+        }
+
+        public override int GetHashCode()
+        {
+            int hashCode = 996742197;
+            hashCode = hashCode * -1521134295 + EqualityComparer<BAPIEIKP>.Default.GetHashCode(Result);
+            hashCode = hashCode * -1521134295 + EqualityComparer<BAPIMEPOHEADER>.Default.GetHashCode(POHEADER);
+            hashCode = hashCode * -1521134295 + EqualityComparer<BAPIRET2[]>.Default.GetHashCode(RETURN);
+            hashCode = hashCode * -1521134295 + EqualityComparer<BAPIMEPOITEM[]>.Default.GetHashCode(POITEM);
+            hashCode = hashCode * -1521134295 + EqualityComparer<BAPIMEPOTEXTHEADER[]>.Default.GetHashCode(POTEXTHEADER);
+            hashCode = hashCode * -1521134295 + EqualityComparer<BAPIMEPOTEXT[]>.Default.GetHashCode(POTEXTITEM);
+            hashCode = hashCode * -1521134295 + EqualityComparer<BAPIESLLC[]>.Default.GetHashCode(POSERVICES);
+            hashCode = hashCode * -1521134295 + EqualityComparer<BAPIMEPOSCHEDULE[]>.Default.GetHashCode(POSCHEDULE);
+            hashCode = hashCode * -1521134295 + EqualityComparer<BAPIMEPOADDRDELIVERY[]>.Default.GetHashCode(POADDRDELIVERY);
+            return hashCode;
+        }
+    }
 }

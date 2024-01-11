@@ -12,6 +12,7 @@ using SustitucionMOARepositorio.Extensiones;
 using SustitucionMOAWS.ModificarOCWebServiceMOA;
 using SustitucionMOAWS.Interfaces;
 using SustitucionMOARepositorio;
+using static SustitucionMOAWS.WSConsumers.ModificarOrdenDeCompraConsumerMOA;
 
 namespace SustitucionMOAWS.WSConsumers
 {
@@ -35,24 +36,8 @@ namespace SustitucionMOAWS.WSConsumers
         public CrearPedidoConsumerMOAResponse Request(Adjudicacion adjudicacion)
         {
             ModificarPedidoSAP modificarPedidoSAP = ConvertirAdjudicacion(adjudicacion);
-
-            var serxml = new System.Xml.Serialization.XmlSerializer(modificarPedidoSAP.GetType());
-            var ms = new MemoryStream();
-            serxml.Serialize(ms, modificarPedidoSAP);
-            string xml = Encoding.UTF8.GetString(ms.ToArray());
-
-            var fecha = DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss");
-
-            var nombreArchivoLlamada = string.Concat(adjudicacion.Solp_Id, " - ", fecha, " - modificar pedido.xml");
-
-            var rutaArchivoLlamada = Path.Combine(rutaArchivosXmls, "XMLS", nombreArchivoLlamada);
-
-            FileInfo fileCrear = new FileInfo(rutaArchivoLlamada);
-            fileCrear.Directory.Create();
-            File.WriteAllText(fileCrear.FullName, xml);
-
+            
             BAPIRET2[] result = EditarPedidoRequest(modificarPedidoSAP);
-
 
             var respuesta = new CrearPedidoConsumerMOAResponse();
 
@@ -73,22 +58,26 @@ namespace SustitucionMOAWS.WSConsumers
                 respuesta.Errores.Add(error);
             }
 
-
-            serxml = new System.Xml.Serialization.XmlSerializer(result.GetType());
-            ms = new MemoryStream();
-            serxml.Serialize(ms, result);
-            xml = Encoding.UTF8.GetString(ms.ToArray());
-            using (StreamWriter writer = File.AppendText(rutaArchivoLlamada))
-            {
-                writer.WriteLine(xml);
-            }
-
-
             return respuesta;
         }
 
-        private BAPIRET2[] EditarPedidoRequest(ModificarPedidoSAP modificarPedidoSAP)
+        public BAPIRET2[] EditarPedidoRequest(ModificarPedidoSAP modificarPedidoSAP)
         {
+            var serxml = new System.Xml.Serialization.XmlSerializer(modificarPedidoSAP.GetType());
+            var ms = new MemoryStream();
+            serxml.Serialize(ms, modificarPedidoSAP);
+            string xml = Encoding.UTF8.GetString(ms.ToArray());
+
+            var fecha = DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss");
+
+            var nombreArchivoLlamada = string.Concat(modificarPedidoSAP.PURCHASEORDER, " - ", fecha, " - modificar OC.xml");
+
+            var rutaArchivoLlamada = Path.Combine(rutaArchivosXmls, "XMLS", nombreArchivoLlamada);
+
+            FileInfo fileCrear = new FileInfo(rutaArchivoLlamada);
+            fileCrear.Directory.Create();
+            File.WriteAllText(fileCrear.FullName, xml);
+
             BAPIMEDCM_ALLVERSIONS[] ALLVERSIONS = modificarPedidoSAP.ALLVERSIONS?.ToArray();
             BAPIPAREX[] EXTENSIONIN = modificarPedidoSAP.EXTENSIONIN?.ToArray();
             BAPIPAREX[] EXTENSIONOUT = modificarPedidoSAP.EXTENSIONOUT?.ToArray();
@@ -194,9 +183,17 @@ namespace SustitucionMOAWS.WSConsumers
                  out BAPIEIKP EXPPOEXPIMPHEADER
             );
 
+            serxml = new System.Xml.Serialization.XmlSerializer(RETURN.GetType());
+            ms = new MemoryStream();
+            serxml.Serialize(ms, RETURN);
+            xml = Encoding.UTF8.GetString(ms.ToArray());
+            using (StreamWriter writer = File.AppendText(rutaArchivoLlamada))
+            {
+                writer.WriteLine(xml);
+            }
+
             return RETURN;
         }
-
 
         private ModificarPedidoSAP ConvertirAdjudicacion(Adjudicacion adjudicacion)
         {
@@ -723,6 +720,7 @@ namespace SustitucionMOAWS.WSConsumers
     public interface IModificarOrdenDeCompraConsumerMOA
     {
         CrearPedidoConsumerMOAResponse Request(Adjudicacion adjudicacion);
+        BAPIRET2[] EditarPedidoRequest(ModificarPedidoSAP modificarPedidoSAP);
 
     }
 

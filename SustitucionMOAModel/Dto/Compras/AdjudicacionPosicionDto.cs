@@ -30,5 +30,6 @@ namespace SustitucionMOAModel.Dto
         public string MaterialTextoAmpliado { get; set; }
         public string FechaEntregaServicioFormateado { get; set; }
         public DateTime? PlazoDeEntrega { get; set; }
+        public bool Eliminado { get; set; }
     }
 }
