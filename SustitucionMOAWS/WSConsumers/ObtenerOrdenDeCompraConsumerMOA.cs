@@ -23,6 +23,15 @@ namespace SustitucionMOAWS.WSConsumers
         BAPI_PO_GETDETAIL1PortTypeClient service;
         //private const string COMP_CODE = "MOA";
         private readonly IRepositorio repositorio;
+        /// <summary>
+        /// MMSN-491 - Modificar el formato de fecha. DD/MM/AAAA
+        /// </summary>
+        private string dateTimeFormat = "dd/MM/yyyy";
+
+        /// <summary>
+        /// //MMSN-491 - Ponerle separador de miles a la columna “Monto Total”. - Separador de miles ( , ) coma - Separador decimal ( . ) punto
+        /// </summary>
+        private string currencyFormat = "#,##0.00";
 
         public ObtenerOrdenDeCompraConsumerMOA(IRepositorio repositorio)
         {
@@ -324,7 +333,13 @@ namespace SustitucionMOAWS.WSConsumers
 
         /// ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        public DetalleOrdenDeCompraDto ObtenerDetalleDeOrdenDeCompra(string numeroDeOrdenCompra, List<TablaSap> centro, List<TablaSap> almacen)
+        /// <summary>
+        /// Obtiene Detalle de una Orden de Compra
+        /// Posición, item o línea, Entradas de Servicio si las tuviera, Historial de Entradas de Servicio.
+        /// </summary>
+        /// <param name="numeroDeOrdenCompra"></param>
+        /// <returns></returns>
+        public DetalleOrdenDeCompraDto ObtenerDetalleDeOrdenDeCompra(string numeroDeOrdenCompra)
         {
             try
             {
@@ -340,7 +355,7 @@ namespace SustitucionMOAWS.WSConsumers
                 BAPIEKBE[] POHISTORY;
                 ObtenerDetalleDeOrdenDeCompraSap(numeroDeOrdenCompra, out POITEM, out RETURN, out POHEADER, out result, out POTEXTHEADER, out POTEXTITEM, out POSERVICES, out POSCHEDULE, out POADDRDELIVERY, out POHISTORY);
 
-                return map(result, POHEADER, RETURN, POITEM, POTEXTHEADER, POTEXTITEM, POSERVICES, POSCHEDULE, POADDRDELIVERY, POHISTORY , centro,almacen);
+                return map(result, POHEADER, RETURN, POITEM, POTEXTHEADER, POTEXTITEM, POSERVICES, POSCHEDULE, POADDRDELIVERY, POHISTORY);
 
             }
             catch (Exception e)
@@ -351,7 +366,7 @@ namespace SustitucionMOAWS.WSConsumers
 
 
         private DetalleOrdenDeCompraDto map(BAPIEIKP result, BAPIMEPOHEADER POHEADER, BAPIRET2[] RETURN, BAPIMEPOITEM[] POITEM, BAPIMEPOTEXTHEADER[] POTEXTHEADER,
-        BAPIMEPOTEXT[] POTEXTITEM, BAPIESLLC[] POSERVICES, BAPIMEPOSCHEDULE[] POSCHEDULE, BAPIMEPOADDRDELIVERY[] POADDRDELIVERY, BAPIEKBE[] POHISTORY, List<TablaSap> centros, List<TablaSap> almacenes)
+        BAPIMEPOTEXT[] POTEXTITEM, BAPIESLLC[] POSERVICES, BAPIMEPOSCHEDULE[] POSCHEDULE, BAPIMEPOADDRDELIVERY[] POADDRDELIVERY, BAPIEKBE[] POHISTORY)
         {
             DetalleOrdenDeCompraDto detalleOrdenDeCompra = new DetalleOrdenDeCompraDto();
             var servicios = new List<ServicioSolp>();
@@ -361,13 +376,19 @@ namespace SustitucionMOAWS.WSConsumers
             detalleOrdenDeCompra.Proveedor = POHEADER.VENDOR;
             //detalleOrdenDeCompra.NombreProveedor = POHEADER.
             detalleOrdenDeCompra.MontoTotal = Math.Round(POITEM.Sum(a => a.QUANTITY * a.NET_PRICE), 4);
-            detalleOrdenDeCompra.FechaCreacion = DateTime.ParseExact(POHEADER.CREAT_DATE, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture).ToString();
+            //MMSN-491 - Ponerle separador de miles a la columna “Monto Total”. - Separador de miles ( , ) coma - Separador decimal ( . ) punto           
+            detalleOrdenDeCompra.MontoTotalString = detalleOrdenDeCompra.MontoTotal.ToString(currencyFormat, System.Globalization.CultureInfo.InvariantCulture);
+
+            ////MMSN-491 - Modificar el formato de fecha. DD/MM/AAAA
+            DateTime toFormat = DateTime.ParseExact(POHEADER.CREAT_DATE, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
+            detalleOrdenDeCompra.FechaCreacion = toFormat.ToString(dateTimeFormat);
+
             detalleOrdenDeCompra.UsuarioCreador = POHEADER.CREATED_BY;
             detalleOrdenDeCompra.Posiciones = new List<PosicionDto>();
 
 
-            //var centros = repositorio.Listar<TablaSap>(a => a.Tabla == "Centro");
-            //var almacenes = repositorio.Listar<TablaSap>(a => a.Tabla == "Almacen");
+            var centros = repositorio.Listar<TablaSap>(a => a.Tabla == "Centro");
+            var almacenes = repositorio.Listar<TablaSap>(a => a.Tabla == "Almacen");
 
 
 
@@ -385,38 +406,21 @@ namespace SustitucionMOAWS.WSConsumers
                 pos.Descripcion = posicion.SHORT_TEXT;               
                 pos.Cantidad = posicion.QUANTITY;
                 pos.PrecioUnidad = Math.Round(posicion.NET_PRICE, 4);
+
+                if(pos.PrecioUnidad != null)
+                {
+                    decimal notNullValue = (decimal)pos.PrecioUnidad;
+                    pos.PrecioUnidadString = notNullValue.ToString(currencyFormat, System.Globalization.CultureInfo.InvariantCulture);
+                }
+
                 pos.PrecioTotal = Math.Round(posicion.QUANTITY * posicion.NET_PRICE, 4);
                 pos.CentroComprasCodigo = posicion.PLANT;
                 pos.UM = posicion.PO_UNIT;
                 pos.GrupoArticulos = posicion.MATL_GROUP;
+                pos.Centro = posicion.PLANT + "-" + centros.FirstOrDefault(a => a.Codigo == posicion.PLANT).Descripcion;
+                pos.Almacen = posicion.STGE_LOC + "-" + almacenes.FirstOrDefault(a => a.Codigo == posicion.STGE_LOC).Descripcion;
 
-                TablaSap centro = centros.FirstOrDefault(a => a.Codigo == posicion.PLANT);
-                TablaSap Almacen = almacenes.FirstOrDefault(a => a.Codigo == posicion.STGE_LOC);
-
-                if (centro == null) {
-                    pos.Centro = posicion.PLANT + "- ";
-                };
-
-                if (centro != null)
-                {
-                    pos.Centro = posicion.PLANT + "-" + centro.Descripcion;
-                };
-
-                if (Almacen == null)
-                {
-                    pos.Almacen = posicion.STGE_LOC + "- ";
-                };
-
-                if (Almacen != null)
-                {
-                    pos.Almacen = posicion.STGE_LOC + "-" + Almacen.Descripcion;
-                };
-
-
-
-              
-
-                //pos.Centro = posicion.PLANT ;
+                //pos.Centro = posicion.PLANT;
                 //pos.Almacen = posicion.STGE_LOC;
 
                 pos.NumeroSolp = posicion.PREQ_NO;
@@ -461,10 +465,17 @@ namespace SustitucionMOAWS.WSConsumers
                 itemDto.Descripcion = item.SHORT_TEXT;
                 itemDto.Cantidad = item.QUANTITY;
                 itemDto.PosicionId = Convert.ToInt32(item.PCKG_NO);
-                itemDto.PrecioBruto = Math.Round((item.QUANTITY != 0) ? item.NET_VALUE / item.QUANTITY : 0, 4);
+                itemDto.PrecioBruto = Math.Round((item.QUANTITY != 0) ? item.NET_VALUE / item.QUANTITY : 0,4);               
                 itemDto.ServicioNumero = item.SERVICE != "" ? long.Parse(item.SERVICE) : 0;
                 itemDto.UM = item.BASE_UOM;
                 itemDto.Importe = Math.Round((item.QUANTITY != 0) ? item.NET_VALUE / item.QUANTITY : 0, 4);
+                
+                if(itemDto.Importe != null)
+                {
+                    decimal notNullValue = (decimal)itemDto.Importe;
+                    itemDto.ImporteString = notNullValue.ToString(currencyFormat, System.Globalization.CultureInfo.InvariantCulture);
+                }
+
                 //MMSN-460 - Moneda
                 itemDto.Moneda = POHEADER.CURRENCY;
                 //MMSN-460 - Nro de servicio
@@ -654,5 +665,30 @@ namespace SustitucionMOAWS.WSConsumers
                 out POHEADER);
         }
 
+        /// <summary>
+        /// MMSN-480: Devuelve verdadero si la entrada de servicio tiene factura
+        /// </summary>
+        /// <param name="nrosEntradasServicioFacturadas"></param>
+        /// <param name="nroES"></param>
+        /// <returns></returns>
+        public bool EntradaServicioTieneFactura(List<string> nrosEntradasServicioFacturadas, string nroES)
+        {
+            bool entradaServicioFacturada = nrosEntradasServicioFacturadas.Any(x => x == nroES);
+
+            return entradaServicioFacturada;
+        }
+
+        /// <summary>
+        /// MMSN-480: Devuelve verdadero si la fecha actual está dentro del período SAP (Dias del mes actual y mes anterior completo)
+        /// </summary>
+        /// <param name="fechaInicial"></param>
+        /// <param name="fechaActual"></param>
+        /// <returns></returns>
+        public bool DentroPeriodoSAP(DateTime fechaInicial, DateTime fechaActual)
+        {
+            int diferenciaEnMeses = ((fechaActual.Year - fechaInicial.Year) * 12) + fechaActual.Month - fechaInicial.Month;
+
+            return diferenciaEnMeses < 2;
+        }
     }
 }

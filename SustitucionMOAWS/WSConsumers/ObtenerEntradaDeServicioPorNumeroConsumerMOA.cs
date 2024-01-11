@@ -1,4 +1,5 @@
-﻿using SustitucionMOAFotmatter;
+﻿using Microsoft.SqlServer.Server;
+using SustitucionMOAFotmatter;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Dto.OrdenesCompra;
 using SustitucionMOAModel.Entities;
@@ -27,6 +28,10 @@ namespace SustitucionMOAWS.WSConsumers
         SI_MMRFC_BAPI_ENTRYSHEET_GETDETAILClient service;
         //private const string COMP_CODE = "MOA";
         private readonly IRepositorio repositorio;
+        /// <summary>
+        /// MMSN-491 - Modificar el formato de fecha. DD/MM/AAAA
+        /// </summary>
+        private string dateTimeFormat = "dd/MM/yyyy";
 
         public ObtenerEntradaDeServicioPorNumeroConsumerMOA()
         {
@@ -82,6 +87,22 @@ namespace SustitucionMOAWS.WSConsumers
 
                 items.Add(item);
             }
+            //MMSN-460 + MMSN-491
+            if (!String.IsNullOrEmpty(cabecera.CREATED_ON))
+            {
+                DateTime toFormat = DateTime.ParseExact(cabecera.CREATED_ON, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
+                result.Fecha = toFormat.ToString(dateTimeFormat);
+            }
+
+            if (!String.IsNullOrEmpty(cabecera.DOC_DATE))
+            {
+                DateTime toFormat = DateTime.ParseExact(cabecera.DOC_DATE, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
+                result.FechaDocumentoString = toFormat.ToString(dateTimeFormat);
+            }
+
+            result.Referencia = cabecera.REF_DOC_NO;
+            result.ImporteARPUSD = cabecera.CURRENCY;
+            result.FechaContabilizacion = cabecera.POST_DATE;
 
             result.Items = items;
 

@@ -10,7 +10,6 @@ import { SpinnerComponent } from '../common/view-child/spinner/spinner.component
 import { ListadoNovedadesService } from './listado-novedades.service'
 import { NotificacionesService } from '../notificaciones/notificaciones.service';
 import { ModalNotificacionesComponent } from '../notificaciones/modal-notificaciones/modal-notificaciones.component';
-import { async } from 'q';
 
 @Component({
 

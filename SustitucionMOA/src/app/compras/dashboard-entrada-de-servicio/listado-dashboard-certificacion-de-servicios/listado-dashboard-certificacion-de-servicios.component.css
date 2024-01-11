@@ -3,13 +3,14 @@
 }
 
 .fa{
-    margin-right:-8.7px;
+    margin-right:-11px;
 }
 .buscar {
     background-color: #1C7CD5;
     border-color: #1C7CD5;
     color: white;
     width: 100%;   
+    font-size: 18px;
 }
 
 .buttonBuscar{
@@ -45,12 +46,8 @@ th{
     text-align: center;
 }
 
-
-
-
-.headerth { 
-    /* font-size: 10px !important; */
-      font-size: 15px !important;
+.headerth {
+    font-size: 15px !important;
     width: max-content;
     color: #ffffff !important;
     background-color: #666666 !important;
@@ -146,4 +143,11 @@ th{
 
 .expandSmallColumn5 {
     width: 180px;
+}
+
+.limitedColumn {
+    max-width: 4em;
+    word-break: break-all;
+    word-wrap: break-word;
+    font-size: 15px;
 }

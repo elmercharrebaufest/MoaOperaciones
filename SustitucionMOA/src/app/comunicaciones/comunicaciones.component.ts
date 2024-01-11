@@ -133,6 +133,8 @@ export class ComunicacionesComponent extends BaseComponent implements OnInit {
 
               let skippedItemsByType = [];
 
+
+
           for (const fecha in this.communication) {
             const items = this.communication[fecha];
             const filteredItems = [];
@@ -140,8 +142,9 @@ export class ComunicacionesComponent extends BaseComponent implements OnInit {
             const categoryCounts = {};
           
             let tipo1Found = false;
-              let tipo2Found = false;
-              let tipo6Found = false;
+            let tipo2Found = false;
+            let tipo6Found = false;
+
           
               for (const item of items) {
                   if (item.ComunicacionTipo === 1 && !tipo1Found) {
@@ -310,7 +313,6 @@ export class ComunicacionesComponent extends BaseComponent implements OnInit {
     return hour24Format
   }
 
-
     //MMSN-134: Added DescripciónCategoria as parameter for Communication Methods & StackedTypes-->
     openCommunication(notificaciones, fechacreacion, tipoComunicacion, i, idNotificacion, descripcionCategoria) {
         const ids = [];
@@ -358,6 +360,7 @@ export class ComunicacionesComponent extends BaseComponent implements OnInit {
         }, 500);
         this.redirect(notificaciones[i].ComunicacionTipo, this.filter, proveedorDescripcion);
     }
+
 
     //MMSN-134: Check if there is stacked notifications -->
     unreadCommunication(notificacion) {

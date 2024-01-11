@@ -46,5 +46,10 @@ namespace SustitucionMOAModel.Dto.OrdenesCompra
         /// MMSN-460 - Mismo solicitante para el item que la posición.
         /// </summary>
         public string Solicitante { get; set; }
+
+        /// <summary>
+        /// MMSN-491 - Cambiar separador
+        /// </summary>
+        public string ImporteString { get; set; }
     }
 }
