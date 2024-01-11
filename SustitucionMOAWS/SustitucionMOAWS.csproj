@@ -92,6 +92,7 @@
     <Compile Include="CredentialService\DataAgroWSCredential.cs" />
     <Compile Include="CredentialService\SAPCredential.cs" />
     <Compile Include="GoogleDrive\GoogleDriveHelper.cs" />
+    <Compile Include="GoogleDrive\Interfaces\ICampoSustentableGoogleDrive.cs" />
     <Compile Include="GoogleDrive\Interfaces\IGoogleDriveHelper.cs" />
     <Compile Include="GoogleDrive\Models\GoogleDriveFileRequest.cs" />
     <Compile Include="GoogleDrive\Models\GoogleDriveHelperGenerator.cs" />

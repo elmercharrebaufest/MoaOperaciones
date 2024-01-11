@@ -16,7 +16,7 @@ namespace SustitucionMOAWS.GoogleDrive
         /// Setup the internal google DriveService class
         /// </summary>
         /// <param name="generator"></param>
-        public GoogleDriveHelper(GoogleDriveHelperGenerator generator)
+        public void SetCredentials(GoogleDriveHelperGenerator generator)
         {
             var credential = CreateCredentials(generator);
 

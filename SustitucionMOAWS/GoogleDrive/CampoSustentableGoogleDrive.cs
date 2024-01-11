@@ -1,49 +1,74 @@
-﻿using SustitucionMOAWS.GoogleDrive.Models;
+﻿using Google.Apis.Drive.v3.Data;
 using SustitucionMOAWS.GoogleDrive.Interfaces;
+using SustitucionMOAWS.GoogleDrive.Models;
+using System.Collections.Generic;
 using System.Configuration;
 
 namespace SustitucionMOAWS.GoogleDrive
 {
-    public sealed class CampoSustentableGoogleDrive
+    public sealed class CampoSustentableGoogleDrive : ICampoSustentableGoogleDrive
     {
-        private static readonly CampoSustentableGoogleDrive instance = new CampoSustentableGoogleDrive();
-        private GoogleDriveHelper _GoogleDriveHelper { get; set; }
 
-        public IGoogleDriveHelper Helper { get {
-                return _GoogleDriveHelper;
-            } }
+        private string ApplicationName => ConfigurationManager.AppSettings["DriveCampoSustentablesApplicationName"];
+        private string ClientId => ConfigurationManager.AppSettings["DriveCampoSustentablesClientId"];
+        private string ClientSecret => ConfigurationManager.AppSettings["DriveCampoSustentablesClientSecret"];
+        private string User => ConfigurationManager.AppSettings["DriveCampoSustentablesUsuario"];
 
-        public string InputFolderId
+        private readonly IGoogleDriveHelper Helper;
+
+        private string InputFolderId => ConfigurationManager.AppSettings["DriveCampoSustentablesInputFolderId"];
+
+        private string OutputFolderId => ConfigurationManager.AppSettings["DriveCampoSustentablesOutputFolderId"];
+
+
+        public CampoSustentableGoogleDrive(IGoogleDriveHelper helper)
         {
-            get
-            {
-                return ConfigurationManager.AppSettings["DriveCampoSustentablesInputFolderId"];
-            }
-        }
-        public string OutputFolderId
-        {
-            get
-            {
-                return ConfigurationManager.AppSettings["DriveCampoSustentablesOutputFolderId"];
-            }
+            Helper = helper;
+            InitGoogleDrive();
         }
 
-        private CampoSustentableGoogleDrive() {
-            _GoogleDriveHelper = new GoogleDriveHelper(
-                    new GoogleDriveHelperGenerator(
-                        applicationName: ConfigurationManager.AppSettings["DriveCampoSustentablesApplicationName"],
-                        clientId: ConfigurationManager.AppSettings["DriveCampoSustentablesClientId"],
-                        clientSecret: ConfigurationManager.AppSettings["DriveCampoSustentablesClientSecret"],
-                        user: ConfigurationManager.AppSettings["DriveCampoSustentablesUsuario"]
-                        ));
+        private void InitGoogleDrive()
+        {
+            Helper.SetCredentials(new GoogleDriveHelperGenerator(
+                applicationName: ApplicationName,
+                clientId: ClientId,
+                clientSecret: ClientSecret,
+                user: User
+                ));
         }
 
-        public static CampoSustentableGoogleDrive Instance
+        public void DownloadFile(GoogleDriveFileDownloadRequest downloadFileRequest)
         {
-            get
+            if(downloadFileRequest.FolderId is null)
             {
-                return instance;
+                downloadFileRequest.WithFolderId(OutputFolderId);
             }
+            
+            Helper.DownloadFile(downloadFileRequest);
+        }
+
+        public IList<File> GetFiles(string query = null, string fields = "nextPageToken, files(id, name)")
+        {
+            return Helper.GetFiles(query, fields);
+        }
+
+        public IList<File> GetFolderFiles(string folderId)
+        {
+            return Helper.GetFolderFiles(folderId);
+        }
+
+        public string GetFolderIdByName(string folderName)
+        {
+            return Helper.GetFolderIdByName(folderName);
+        }
+
+        public string UploadFile(GoogleDriveFileUploadRequest uploadFileRequest)
+        {
+            if(uploadFileRequest.FolderId is null)
+            {
+                uploadFileRequest.WithFolderId(InputFolderId);
+            }
+            return Helper.UploadFile(uploadFileRequest);
         }
 
     }

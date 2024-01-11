@@ -4,9 +4,8 @@ using SustitucionMOAWS.GoogleDrive.Models;
 
 namespace SustitucionMOAWS.GoogleDrive.Interfaces
 {
-    public interface IGoogleDriveHelper
+    public interface IGoogleDriveHelperUtils
     {
-
         /// <summary>
         /// Automatic download a file from drive (if found), to the specified path.
         /// </summary>
@@ -46,5 +45,10 @@ namespace SustitucionMOAWS.GoogleDrive.Interfaces
         /// <exception cref="FileNotFoundException"></exception>
         /// <exception cref="Exception"></exception>
         string UploadFile(GoogleDriveFileUploadRequest uploadFileRequest);
+
+    }
+    public interface IGoogleDriveHelper: IGoogleDriveHelperUtils
+    {
+        void SetCredentials(GoogleDriveHelperGenerator generator);
     }
 }
