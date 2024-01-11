@@ -111,7 +111,7 @@ update CentroDireccion set RegionSap_Id = '20' where CodigoSap = '1034'
 --Habilitar centros y grupos de compra usados por los compradores en TablaSap
 UPDATE TablaSap SET FiltroComprador = 1
 WHERE
-	(Tabla = 'Centro' AND CodigoSap IN ('1029', '1075', '1072', '1030', '1035', '1036', '1126', '1127', '1001'))
+	(Tabla = 'Centro' AND CodigoSap IN ('1029', '1075', '1071', '1072', '1030', '1035', '1036', '1126', '1127', '1001'))
 	OR
 	(Tabla = 'GrupoCompras' AND CodigoSap IN ('300', '600', '103', '215', '225', '228', '230', '231', '241', '401', '430', '455', '462', '601', '602', '603', '604', '605', '606', '607', '608', '609', '611', '612', '613', '614', '615', '616', '617', '618', '619', '620', '621', '622', '623', '624', '626', '627', '628', '629', '630', '631', '810'));
 
