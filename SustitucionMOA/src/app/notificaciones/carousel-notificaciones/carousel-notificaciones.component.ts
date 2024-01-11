@@ -252,21 +252,24 @@ export class CarouselNotificacionesComponent extends BaseComponent implements On
                     } else if (result.info != undefined) {
                     } else {
                         setTimeout(() => { this.modal.mostrarModal(); }, 200);
+
                         let result = await this.service.getNotificacion(notificacionId).toPromise();
+
                         if (result.data) {
                             this.notificacionModal = result.data;
-                            this.notificacionLeida[this.notificacionModal.id] = this.notificacionModal.Leida == 1 ? true : false;
 
-                            this.notificacionModal.ArchivosAdjuntos.forEach((adjunto: any) => {
-                                if (adjunto.AdjuntoTipo != 'previsualizacion') {
-                                    this.adjuntoModal.push(adjunto);
-                                }
-                            })
-                        } else {
-                            // Do nothing
+                            if (this.notificacionModal != null) {
+                                this.notificacionLeida[this.notificacionModal.Id] = this.notificacionModal.Leida == 1 ? true : false;
+
+                                this.notificacionModal.ArchivosAdjuntos.forEach((adjunto: any) => {
+                                    if (adjunto.AdjuntoTipo != 'previsualizacion') {
+                                        this.adjuntoModal.push(adjunto);
+                                    }
+                                })
+
+                            }
                         }
                     }
-
                 },
                 error => {
                 }

@@ -129,19 +129,22 @@ export class ListadoNovedadesComponent extends BaseComponent implements OnInit {
                     } else if (result.info != undefined) {
                     } else {
                         setTimeout(() => { this.modal.mostrarModal(); }, 200);
+
                         let result = await this.notificacionesService.getNotificacion(notificacionId).toPromise();
+
                         if (result.data) {
                             this.notificacionModal = result.data;
-                            this.notificacionLeida[this.notificacionModal.id] = this.notificacionModal.Leida == 1 ? true : false;
 
-                            this.notificacionModal.ArchivosAdjuntos.forEach((adjunto: any) => {
-                                if (adjunto.AdjuntoTipo != 'previsualizacion') {
-                                    this.adjuntoModal.push(adjunto);
-                                }
-                            })
+                            if (this.notificacionModal != null) {
+                                this.notificacionLeida[this.notificacionModal.Id] = this.notificacionModal.Leida == 1 ? true : false;
 
-                        } else {
-                            // Do nothing
+                                this.notificacionModal.ArchivosAdjuntos.forEach((adjunto: any) => {
+                                    if (adjunto.AdjuntoTipo != 'previsualizacion') {
+                                        this.adjuntoModal.push(adjunto);
+                                    }
+                                })
+
+                            }
                         }
                     }
 
