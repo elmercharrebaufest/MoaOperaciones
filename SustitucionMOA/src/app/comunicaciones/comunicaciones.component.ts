@@ -385,7 +385,10 @@ export class ComunicacionesComponent extends BaseComponent implements OnInit {
         }
     }
 
-  redirect(communicationType: number, filter: string,nombreProveedor:string) {
+    redirect(communicationType: number, filter: string, nombreProveedor: string) {
+
+        nombreProveedor = decodeURIComponent(nombreProveedor); 
+
     switch (communicationType) {
       case 1:
         this.router.navigate(['/consulta/crear-consulta'], { queryParams: { filter : 'ExencionesVencidas' }});
