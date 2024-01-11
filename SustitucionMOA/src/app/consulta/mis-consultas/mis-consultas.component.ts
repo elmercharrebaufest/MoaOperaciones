@@ -157,12 +157,17 @@ export class MisConsultasComponent extends ListBaseComponent {
 
 
     seleccionarOpcionFiltro(columna: string, valor: string) {
-      
+        debugger
+
+        valor = decodeURIComponent(valor); 
+
         switch (columna) {
 
-            
+         
 
             case 'RazonSocialCorredor':
+
+
                 this.table.filter(valor, 'RazonSocialCorredor', 'contains');
         break;
              case 'RazonSocialProveedor':
