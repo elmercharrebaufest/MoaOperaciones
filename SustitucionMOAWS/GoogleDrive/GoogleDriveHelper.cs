@@ -46,9 +46,9 @@ namespace SustitucionMOAWS.GoogleDrive
         public string UploadFile(GoogleDriveFileUploadRequest uploadFileRequest)
         {
             // Ensure file path exists and is accessible
-            if (!System.IO.File.Exists(uploadFileRequest.FilePath))
+            if (!System.IO.File.Exists(uploadFileRequest.FilePath) && uploadFileRequest.Bytes is null)
             {
-                throw new FileNotFoundException("File not found at the specified path.");
+                throw new FileNotFoundException("File not found at the specified path or there wasn't bytes provided.");
             }
 
             // Get file metadata
@@ -69,12 +69,16 @@ namespace SustitucionMOAWS.GoogleDrive
 
             try
             {
-                using (var stream = new FileStream(uploadFileRequest.FilePath, FileMode.Open))
+                if(uploadFileRequest.Bytes is null) 
                 {
-                    var request = DriveService.Files.Create(fileMetadata, stream, uploadFileRequest.MimeType);
-                    request.Upload();
-                    var file = request.ResponseBody;
-                    return file.Id; // Return the file ID for reference
+                    using (var stream = new FileStream(uploadFileRequest.FilePath, FileMode.Open))
+                    {
+                        return UploadFile(fileMetadata, stream, uploadFileRequest);
+                    }
+                }
+                using (var stream = new MemoryStream(uploadFileRequest.Bytes))
+                {
+                    return UploadFile(fileMetadata, stream, uploadFileRequest);
                 }
             }
             catch (Exception ex)
@@ -82,6 +86,13 @@ namespace SustitucionMOAWS.GoogleDrive
                 // Handle exceptions appropriately, consider logging or retry mechanisms
                 throw new Exception("File upload failed.", ex);
             }
+        }
+        private string UploadFile(Google.Apis.Drive.v3.Data.File fileMetadata, Stream stream, GoogleDriveFileUploadRequest uploadFileRequest)
+        {
+            var request = DriveService.Files.Create(fileMetadata, stream, uploadFileRequest.MimeType);
+            request.Upload();
+            var file = request.ResponseBody;
+            return file.Id; // Return the file ID for reference
         }
         public string GetFolderIdByName(string folderName)
         {

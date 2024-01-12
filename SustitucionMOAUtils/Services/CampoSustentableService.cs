@@ -5,15 +5,15 @@ using Newtonsoft.Json.Linq;
 using SustitucionMOAAssets;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
-using SustitucionMOAModel.Dto.CampoSustentable;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
-using SustitucionMOARepositorio;
 using SustitucionMOARepositorio.Repositorios.Interfaces;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Interfaces.Wrappers;
 using SustitucionMOAUtils.Logger;
 using SustitucionMOAWS.CredentialService;
+using SustitucionMOAWS.GoogleDrive.Interfaces;
+using SustitucionMOAWS.GoogleDrive.Models;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -34,16 +34,20 @@ namespace SustitucionMOAUtils.Services
         private readonly string DataAgroURL;
         private readonly IExcelExportWrapper excelExport;
         private readonly IDataAgroService dataAgroService;
+        private readonly ICampoSustentableGoogleDrive campoSustentableGoogleDrive;
 
         public CampoSustentableService(
             IRepositorioCampoSustentable repositorio,
             IExcelExportWrapper excelExport,
-            IDataAgroService dataAgroService)
+            IDataAgroService dataAgroService,
+            ICampoSustentableGoogleDrive campoSustentableGoogleDrive
+            )
         {
             this.repositorio = repositorio;
             this.DataAgroURL = ConfigurationManager.AppSettings["DataAgroURL"];
             this.excelExport = excelExport;
             this.dataAgroService = dataAgroService;
+            this.campoSustentableGoogleDrive = campoSustentableGoogleDrive;
         }
 
         public Resultado Agregar(string mailUsuario, CampoProveedor campoProveedor, HttpPostedFileBase archivoKmz, bool UsarArchivoId)
@@ -68,13 +72,14 @@ namespace SustitucionMOAUtils.Services
             campoProveedor.CampoCosecha.ToneladasAprobadas = -1;
 
             campoProveedor.CampoCosecha.Campo.IdScato = ObtenerIdScato(campoProveedor);
-
             repositorio.Agregar(campoProveedor);
-            if (UsarArchivoId == false)
+
+            repositorio.GuardarCambios();
+            if (!UsarArchivoId)
             {
                 ruta = GuardarArchivoKMZ(campoProveedor, archivoKmz);
+                repositorio.GuardarCambios();
             }
-            repositorio.GuardarCambios();
 
             EnviarCampoACertificadorDeSustentables(ruta, campoProveedor);
 
@@ -509,7 +514,31 @@ namespace SustitucionMOAUtils.Services
 
             return campoProveedor.Archivo.Ruta;
         }
+        public void DescargarArchivosDeGoogleDrive(ArchivoCampoSustentable archivoSinDescargar)
+        {
+            if (archivoSinDescargar.ProcesadoUcropit)
+            {
+                return;
+            }
+            var cuit = archivoSinDescargar.Proveedor.CUIT;
+            var nombreArchivo = $"{ObtenerNombreArchivoDrive(cuit, archivoSinDescargar.CampoCosecha)}.csv";
+            var rutaCarpeta = string.Concat(ConfigurationManager.AppSettings["RutaArchivosCampoSustentable"], "/", cuit);
+            var rutaGuardado = string.Concat(rutaCarpeta, "/", nombreArchivo);
 
+            campoSustentableGoogleDrive.DownloadFile(
+                new GoogleDriveFileDownloadRequest()
+                    .WithFilePath(rutaGuardado)
+                    .WithFileName(nombreArchivo)
+                );
+            var nuevoArchivo = new Archivo { FileKey = FileKeys.CampoSustentableAnalisisUcrop, Ruta = rutaGuardado, };
+
+            repositorio.Agregar(nuevoArchivo);
+
+            archivoSinDescargar.Archivo = nuevoArchivo;
+            archivoSinDescargar.ProcesadoUcropit = true;
+
+            repositorio.GuardarCambios();
+        }
 
         private void ValidarUsuario(Usuario usuario, int proveedorId)
         {
@@ -619,15 +648,7 @@ namespace SustitucionMOAUtils.Services
             };
             repositorio.Agregar(archivoCampoSustentable);
 
-            var reporteACertificadorDto = repositorio.ObtenerReporteCertificador(
-                campoProveedor.CampoCosecha_Id, campoProveedor.Proveedor_Id);
-
-            var reporteCertificadorJson = JsonConvert.SerializeObject(reporteACertificadorDto);
-
-            var nombreArchivo = $"{campoProveedor.CUIT}_{campoProveedor.CampoCosecha.CampoSustentable_Id}.kmz";
-
-            // TODO: Acá va la llamada al consumer del drive de ucropit
-
+            SubirArchivosAGoogleDrive(rutaArchivo, campoProveedor);
             repositorio.GuardarCambios();
         }
 
@@ -688,6 +709,37 @@ namespace SustitucionMOAUtils.Services
                 thePictureAsBytes = theReader.ReadBytes(archivoKmz.ContentLength);
             }
             return Convert.ToBase64String(thePictureAsBytes);
+        }
+        private string ObtenerNombreArchivoDrive(CampoProveedor campoProveedor)
+        {
+            return ObtenerNombreArchivoDrive(campoProveedor.CUIT,campoProveedor.CampoCosecha);
+        }
+        private string ObtenerNombreArchivoDrive(string cuit, CampoCosecha campoCosecha)
+        {
+            return $"{cuit}_{campoCosecha.CampoSustentable_Id}";
+        }
+        private void SubirArchivosAGoogleDrive(string rutaArchivo,CampoProveedor campoProveedor)
+        {
+            var reporteACertificadorDto = repositorio.ObtenerReporteCertificador(
+                campoProveedor.CampoCosecha_Id, campoProveedor.Proveedor_Id);
+
+            var reporteCertificadorJson = JsonConvert.SerializeObject(reporteACertificadorDto);
+            var jsonBytes = Encoding.UTF8.GetBytes(reporteCertificadorJson);
+
+            var nombreArchivo = ObtenerNombreArchivoDrive(campoProveedor);
+
+            var uploadFileKMZ = new GoogleDriveFileUploadRequest()
+                .WithFileUploadName($"{nombreArchivo}.kmz")
+                .WithFilePath(rutaArchivo);
+
+            campoSustentableGoogleDrive.UploadFile(uploadFileKMZ);
+
+            var uploadFileJSON = new GoogleDriveFileUploadRequest()
+                .WithFileUploadName($"{nombreArchivo}.json")
+                .WithMimeType("applications/json")
+                .WithBytes(jsonBytes);
+
+            campoSustentableGoogleDrive.UploadFile(uploadFileJSON);
         }
     }
 }

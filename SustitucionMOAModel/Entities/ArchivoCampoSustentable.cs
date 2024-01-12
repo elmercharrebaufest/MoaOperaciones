@@ -24,5 +24,8 @@ namespace SustitucionMOAModel.Entities
         public bool ProcesadoUcropit { get; set; }
 
         public int IdArchivoRecepcion { get; set; }
+        [ForeignKey("IdArchivoRecepcion")]
+        public virtual Archivo Archivo { get; set; }
+
     }
 }

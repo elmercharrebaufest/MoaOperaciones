@@ -9,6 +9,7 @@
         public string FilePath { get; set; }
 
     }
+
     public class GoogleDriveFileDownloadRequest : GoogleDriveFileRequest
     {
         /// <summary>
@@ -39,6 +40,7 @@
         /// </summary>
         public string FileUploadName { get; set; }
         public string MimeType { get; set; }
+        public byte[] Bytes { get; set; }
 
         public GoogleDriveFileUploadRequest WithFileUploadName(string fileUploadName)
         {
@@ -59,6 +61,11 @@
         public GoogleDriveFileUploadRequest WithFilePath(string filePath)
         {
             FilePath = filePath;
+            return this;
+        }
+        public GoogleDriveFileUploadRequest WithBytes(byte[] bytes)
+        {
+            Bytes = bytes;
             return this;
         }
     }

@@ -11,6 +11,7 @@ using SustitucionMOARepositorio.Repositorios.Interfaces;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Interfaces.Wrappers;
 using SustitucionMOAUtils.Services;
+using SustitucionMOAWS.GoogleDrive.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -28,6 +29,7 @@ namespace SustitucionMOATest.Services
         private Mock<IRepositorioCampoSustentable> repositorioMock;
         private Mock<IExcelExportWrapper> excelExportWrapperMock;
         private Mock<IDataAgroService> dataAgroServiceMock;
+        private Mock<ICampoSustentableGoogleDrive> googleDriveMock;
 
         [SetUp]
         public void SetUp()
@@ -35,8 +37,9 @@ namespace SustitucionMOATest.Services
             repositorioMock = new Mock<IRepositorioCampoSustentable>();
             excelExportWrapperMock = new Mock<IExcelExportWrapper>();
             dataAgroServiceMock = new Mock<IDataAgroService>();
+            googleDriveMock = new Mock<ICampoSustentableGoogleDrive>();
 
-            target = new CampoSustentableService(repositorioMock.Object, excelExportWrapperMock.Object, dataAgroServiceMock.Object);
+            target = new CampoSustentableService(repositorioMock.Object, excelExportWrapperMock.Object, dataAgroServiceMock.Object, googleDriveMock.Object);
         }
 
         [Test()]
