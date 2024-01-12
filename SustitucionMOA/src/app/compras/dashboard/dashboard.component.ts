@@ -596,6 +596,7 @@ export class DashboardComponent extends ListBaseComponent {
 
     cerrarModalRevisionTecnica() {
         this.displayRevisionTecnica = false;
+        this.onBuscar();
     }
 
     descargarArchivo({ archivoId }) {
@@ -688,6 +689,7 @@ export class DashboardComponent extends ListBaseComponent {
 
     cerrarCircular() {
         this.displayCircular = false;
+        this.onBuscar();
     }
 
     onBuscar() {
@@ -708,6 +710,8 @@ export class DashboardComponent extends ListBaseComponent {
 
     cerrarOrdenDeCompra() {
         this.displayOrdenDeCompra = false;
+        this.onBuscar();
+
     }
 
     verDetalleOrdenDeCompra(nroOC: any) {
@@ -844,6 +848,7 @@ export class DashboardComponent extends ListBaseComponent {
 
     cerrarModalChat() {
         this.displayChatInterno = false;
+        this.onBuscar();
     }
 
     recuperarFiltros() {

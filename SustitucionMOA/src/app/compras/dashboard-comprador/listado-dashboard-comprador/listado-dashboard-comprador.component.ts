@@ -451,14 +451,17 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
 
     cerrarCircular() {
         this.displayCircular = false;
+        this.onBuscar();
     }
 
     cerrarModalProveedor() {
         this.displayProveedor = false;
+        this.onBuscar();
     }
 
     cerrarOrdenDeCompra() {
         this.displayOrdenDeCompra = false;
+        this.onBuscar();
     }
 
     verDetalleOrdenDeCompra(nroOC: any) {
@@ -633,10 +636,12 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
 
     cerrarModalCotizacion() {
         this.displayCerrarCotizacion = false;
+        this.onBuscar();
     }
 
     cerrarModalChat() {
         this.displayChatInterno = false;
+        this.onBuscar();
     }
 
     getCombos() {
@@ -734,7 +739,7 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
             this.fechaHasta = filtrosGuardados.fechaHasta;
             this.pageIndex = filtrosGuardados.pageIndex;
             if (this.fechaDesde != undefined && this.fechaDesde.length > 0) {
-                const [year, month, day] = this.fechaDesde.split('-').map(Number); //se maneja el cambio de día incorrecto por la zona horaria local
+                const [year, month, day] = this.fechaDesde.split('-').map(Number); //se maneja el cambio de dï¿½a incorrecto por la zona horaria local
                 if (this.fechaHasta != undefined && this.fechaHasta.length > 0) {
                     const [year2, month2, day2] = this.fechaHasta.split('-').map(Number);
                     this.rangeDates = [new Date(year, month - 1, day), new Date(year2, month2 - 1, day2)];
