@@ -302,6 +302,14 @@ export class CotizacionComponent extends ListBaseComponent {
                 }
             }
 
+            if (this.model.adicional == true) {
+                if (this.model.ordenDeCompra.length == 0 || this.model.ordenDeCompra.length < 10) {
+                    this.model.mensajeCotizacion = "Debe ingresar los 10 números de OC en el paso #4";
+                    this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: `${this.model.mensajeCotizacion}` });
+                    this.model.validacionCheck = false;
+                }
+            }
+
             if (this.model.urgencia == true && this.selectJefes.length == 0) {
                 this.model.mensajeCotizacion = "Debe elegir al menos un jefe en el paso #4 para enviarle la notificación de urgencia";
                 this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: `${this.model.mensajeCotizacion}` });
