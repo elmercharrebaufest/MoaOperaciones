@@ -95,9 +95,9 @@ namespace SustitucionMOAUtils.Services
             //if (indiceInicial >= 0 && indiceInicial < resultados.ToList().Count)
             //{
                 //resultado = resultado.Skip((paginacion.Pagina - 1) * paginacion.ItemsPorPagina).Take(paginacion.ItemsPorPagina);
-                resultado = resultados.Skip(indiceInicial).Take(elementosPorPaginaValidos).ToList();
+                //resultado = resultados.Skip(indiceInicial).Take(elementosPorPaginaValidos).ToList();
 
-                return new ListaPaginada<DetalleOrdenDeCompraDto>(resultado.ToList(), paginaValida, elementosPorPaginaValidos, itemsTotales);
+                return new ListaPaginada<DetalleOrdenDeCompraDto>(resultados.ToList(), paginaValida, elementosPorPaginaValidos, itemsTotales);
 
                 //return resultados.Skip(indiceInicial).Take(elementosPorPaginaValidos).ToList();
             //}
@@ -118,8 +118,10 @@ namespace SustitucionMOAUtils.Services
             if (parametros.OrdenCompraId != null)
                 ordenesCompra = ordenesCompra.Where(orden => orden.Id.ToString() == parametros.OrdenCompraId).ToList();
 
-            List<TablaSap> centros = repositorio.Listar<TablaSap>(a => a.Tabla == "Centro");
-            List<TablaSap> almacenes = repositorio.Listar<TablaSap>(a => a.Tabla == "Almacen");
+            //List<TablaSap> centros = repositorio.Listar<TablaSap>(a => a.Tabla == "Centro");
+            //List<TablaSap> almacenes = repositorio.Listar<TablaSap>(a => a.Tabla == "Almacen");
+            List<TablaSap> centros = new List<TablaSap>();
+            List<TablaSap> almacenes = new List<TablaSap>();
 
 
             //Recorro las ordenes de compra y obtengo el detalle de cada una
