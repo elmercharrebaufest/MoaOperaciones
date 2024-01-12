@@ -92,7 +92,8 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
     ngOnInit() {       
     
       this.navService.setSeccionList([]);
-      this.navService.setSeccionActive('');
+        this.navService.setSeccionActive('');
+
 
     if (this.location.path() === '/compras/dashboardCertificacionDeServicios') {
       this.navService.navegarSeccion("/compras/dashboardCertificacionDeServicios");
@@ -108,8 +109,10 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
       ]
     );
 
-    this.navService.navegarSeccion("compras/dashboardCertificacionDeServicios");
-  }
+        this.navService.navegarSeccion("compras/dashboardCertificacionDeServicios");
+        this.getListarPO(this.proveedor, this.ordenCompraId, this.filtroFechaComponent.fecha_inicio);
+
+    }
 
   validarLoginAzure() {
     throw new Error('Method not implemented.');
