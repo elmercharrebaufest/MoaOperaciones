@@ -151,3 +151,8 @@ th{
     word-wrap: break-word;
     font-size: 15px;
 }
+
+
+.btn-buscar {
+    top: 32px;
+}
