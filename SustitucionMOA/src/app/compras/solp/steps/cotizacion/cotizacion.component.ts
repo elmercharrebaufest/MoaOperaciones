@@ -274,18 +274,16 @@ export class CotizacionComponent extends ListBaseComponent {
 
         if (this.model.trabajoHecho == true || this.model.adicional == true || this.model.urgencia == true) {
 
-            if (this.model.observacionesCotizacion == "" || this.model.observacionesCotizacion == undefined || this.model.observacionesCotizacion == null) {
-                this.model.mensajeCotizacion = "Debe agregar una observación en el paso #4";
+            if ((this.model.archivosCotizaciones == null || this.model.archivosCotizaciones.length == 0) && (this.model.archivosCotizacionesNuevos == null || this.model.archivosCotizacionesNuevos.length == 0)) {
+                this.model.mensajeCotizacion = "Debe adjuntar un archivo en el paso #4";
                 this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: `${this.model.mensajeCotizacion}` });
                 this.model.validacionCheck = false;
             }
 
-            if (this.model.trabajoHecho == true || this.model.adicional == true) {
-                if ((this.model.archivosCotizaciones == null || this.model.archivosCotizaciones.length == 0) && (this.model.archivosCotizacionesNuevos == null || this.model.archivosCotizacionesNuevos.length == 0)) {
-                    this.model.mensajeCotizacion = "Debe adjuntar un archivo en el paso #4";
-                    this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: `${this.model.mensajeCotizacion}` });
-                    this.model.validacionCheck = false;
-                }
+            if (this.model.observacionesCotizacion == "" || this.model.observacionesCotizacion == undefined || this.model.observacionesCotizacion == null) {
+                this.model.mensajeCotizacion = "Debe agregar una observación en el paso #4";
+                this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: `${this.model.mensajeCotizacion}` });
+                this.model.validacionCheck = false;
             }
 
             if (this.model.trabajoHecho == true && this.model.adicional != true) {
@@ -361,11 +359,11 @@ export class CotizacionComponent extends ListBaseComponent {
                                     this.model.proveedorAsignado = this.ordenDeCompraSap.Cabecera.RazonSocialProveedor;
                                     this.model.monedaOC = this.ordenDeCompraSap.Cabecera.Moneda;
                                     this.model.usuarioComprasId = this.ordenDeCompraSap.Cabecera.UsuarioCompras_Id;
-    
+
                                     this.model.selectUsuarioCompras = this.model.usuarioComprasId > 0
                                         ? this.model.usuarioComprasList.find(x => x.Id === this.model.usuarioComprasId)
                                         : this.model.usuarioComprasList[0];
-    
+
                                 }
                             }
                         }
