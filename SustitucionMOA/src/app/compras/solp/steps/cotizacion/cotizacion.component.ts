@@ -303,7 +303,7 @@ export class CotizacionComponent extends ListBaseComponent {
             }
 
             if (this.model.adicional == true) {
-                if (this.model.ordenDeCompra.length == 0 || this.model.ordenDeCompra.length < 10) {
+                if (this.model.ordenDeCompra == null || this.model.ordenDeCompra.length < 10) {
                     this.model.mensajeCotizacion = "Debe ingresar los 10 números de OC en el paso #4";
                     this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: `${this.model.mensajeCotizacion}` });
                     this.model.validacionCheck = false;
