@@ -3741,7 +3741,7 @@ namespace SustitucionMOAUtils.Services
                     Fecha = item.Fecha,
                     FechaFormateado = item.Fecha.ToString("dd/MM/yyyy"),
                     Usuario = new UsuarioDto { CUIT = peticion.Usuario.CUITRegistro, Mail = peticion.Usuario.Mail, Id = peticion.UsuarioCreador_Id },
-                    Tipo = TipoLegajo.PeticionDeOferta
+                    Tipo = peticiondeOfertaUsuarioId == null ? TipoLegajo.Legajo : TipoLegajo.PeticionDeOferta
                 });
             }
 
@@ -3848,7 +3848,7 @@ namespace SustitucionMOAUtils.Services
                     legajo.Add(new LegajoDto
                     {
                         ArchivoId = peticionPrecio.Archivo.Id,
-                        Observacion = peticionPrecio.Observaciones,
+                        Observacion = "PeticionDeOfertaVisualizacionPrecio" + peticionPrecio.Observaciones,
                         PeticionDeOfertaId = peticionDeOfertaId,
                         SolpId = peticion.Solp_Id,
                         Fecha = peticionPrecio.FechaCreacion,
@@ -3923,7 +3923,7 @@ namespace SustitucionMOAUtils.Services
 
                 legajo.Add(new LegajoDto
                 {
-                    ArchivoId = 0,
+                    ArchivoId = null,
                     Observacion = "Finalización revisión tecnica",
                     PeticionDeOfertaId = peticionDeOfertaId,
                     SolpId = peticion.Solp_Id,

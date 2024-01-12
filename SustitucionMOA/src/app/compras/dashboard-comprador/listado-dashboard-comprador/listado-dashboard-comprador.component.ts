@@ -461,7 +461,6 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
 
     cerrarOrdenDeCompra() {
         this.displayOrdenDeCompra = false;
-        this.onBuscar();
     }
 
     verDetalleOrdenDeCompra(nroOC: any) {
