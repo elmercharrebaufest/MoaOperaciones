@@ -55,7 +55,7 @@ namespace SustitucionMOAModel.Entities
         public string NumeroPedido { get; set; }
         public int? ProveedorAdjudicado_Id { get; set; }
         public string RegistroInfoNro { get; set; }
-        public string GrupoDeComprasCodigo { get; set; }
+        public string OrganizacionDeComprasCodigo { get; set; }
 
 
         public int? CantidadSubposicionesEnSAP { get; set; }

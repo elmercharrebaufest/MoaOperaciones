@@ -3071,7 +3071,7 @@ namespace SustitucionMOAUtils.Services
                 //IM_PRITEM.DES_VENDOR = null; //DES_VENDOR WLIEF   Proveedor deseado
                 //Contrato marco          
                 IM_PRITEM.FIXED_VEND = posicion.ProveedorAdjudicado != null ? posicion.ProveedorAdjudicado.ObtenerCodigoProveedor() : ""; //FIXED_VEND FLIEF   Proveedor fijo
-                IM_PRITEM.PURCH_ORG = posicion.GrupoDeComprasCodigo; //PURCH_ORG EKORG   Organización de compras        
+                IM_PRITEM.PURCH_ORG = posicion.OrganizacionDeComprasCodigo; //PURCH_ORG EKORG   Organización de compras
                 IM_PRITEM.AGREEMENT = posicion.NumeroContratoSuperior; //AGREEMENT   KONNR Número del contrato superior
                 IM_PRITEM.AGMT_ITEM = posicion.NumeroPosicionContratoSuperior; //AGMT_ITEM   KTPNR Número de posición del contrato superior
                 IM_PRITEM.INFO_REC = posicion.RegistroInfoNro; //INFO_REC    INFNR Número del registro info de compras
@@ -3119,7 +3119,7 @@ namespace SustitucionMOAUtils.Services
                     ACCTASSCAT = "X",
                     //DES_VENDOR = "X",
                     FIXED_VEND = posicion.ProveedorAdjudicado_Id != null ? "X" : "",
-                    PURCH_ORG = !string.IsNullOrEmpty(posicion.GrupoDeComprasCodigo) ? "X" : "",
+                    PURCH_ORG = !string.IsNullOrEmpty(posicion.OrganizacionDeComprasCodigo) ? "X" : "",                    
                     //AGREEMENT = "X",
                     //AGMT_ITEM = "X",
                     INFO_REC = !string.IsNullOrEmpty(posicion.RegistroInfoNro) ? "X" : "",
@@ -7673,7 +7673,7 @@ namespace SustitucionMOAUtils.Services
                             var posicion = solp.Posiciones.Where(x => x.Indice == Int32.Parse(posicionSap.Indice)).FirstOrDefault();
                             posicion.ProveedorAdjudicado_Id = proveedor.Usuario_Id;
                             posicion.RegistroInfoNro = posicionSap.RegistroInfo;
-                            posicion.GrupoDeComprasCodigo = ordenDeCompra.Cabecera.GrupoDeComprasCodigo;
+                            posicion.OrganizacionDeComprasCodigo = ordenDeCompra.Cabecera.OrganizacionDeComprasCodigo;
                         }
                     }
 

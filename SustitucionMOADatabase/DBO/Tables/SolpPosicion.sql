@@ -45,7 +45,7 @@
 	[OrganizacionCompras] NVARCHAR(50) NULL, 
     [ProveedorAdjudicado_Id] INT NULL, 
     [RegistroInfoNro] NVARCHAR(50) NULL, 
-    [GrupoDeComprasCodigo] NVARCHAR(50) NULL, 
+    [OrganizacionDeComprasCodigo] NVARCHAR(50) NULL, 
     CONSTRAINT [PK_dbo.SolpPosicion] PRIMARY KEY CLUSTERED 
 (
 	[Id] ASC

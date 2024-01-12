@@ -212,7 +212,7 @@ namespace SustitucionMOAWS.WSConsumers
                     Moneda = POHEADER.CURRENCY,
                     FechaCreacion = DateTime.ParseExact(POHEADER.CREAT_DATE, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture),
                     FechaCreacionString = DateTime.ParseExact(POHEADER.CREAT_DATE, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture).ToShortDateString(),
-                    GrupoDeComprasCodigo = POHEADER.PUR_GROUP
+                    OrganizacionDeComprasCodigo = POHEADER.PURCH_ORG
                 };
 
                 foreach (var pos in POITEM.ToList())
