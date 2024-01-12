@@ -503,7 +503,7 @@ namespace SustitucionMOAWS.WSConsumers
                 itemDto.ServicioNumero = item.SERVICE != "" ? int.Parse(item.SERVICE) : 0;
                 //MMSN-460 - Porcentaje (inicialización - necesaria para FE)
                 itemDto.Porcentaje = "0"; // si no tiene entradas de servicios asociadas el porcentaje es 0
-                itemDto.CantidadReal = itemDto.Cantidad;
+                itemDto.CantidadReal = 0; // si no tiene entras de servicios asociadas la cantidad real es = 0
 
                 itemDto.EntradasServicio = ObtenerEntradasDeServicioDelItem(pOSERVICES, pOHISTORY, itemDto.Id);
                 if (itemDto.EntradasServicio.Count > 0)
