@@ -4777,6 +4777,7 @@ namespace SustitucionMOAUtils.Services
 
                 var peticion = repositorio.Obtener<PeticionDeOferta>(circularDto.PeticionDeOferta_Id);
                 var usuario = repositorio.Obtener<Usuario>(circularDto.UsuarioId);
+                var rolUsuario = usuario.Roles.Any(r => r.Codigo == "COMPRADOR") ? "COMPRADOR" : "SOLICITANTE";
                 var circular = new Circular()
                 {
                     UsuarioCreador_Id = circularDto.UsuarioId,
@@ -4792,18 +4793,22 @@ namespace SustitucionMOAUtils.Services
                         PeticionDeOfertaUsuario_Id = a.Id
                     }).ToList()
                 };
+
                 foreach (var proveedor in peticion.Usuarios.Where(x => circularDto.UsuarioIds.Contains(x.Usuario_Id)))
                 {
-                    proveedor.PropuestaTecnicaAprobada = null;
-                    proveedor.PropuestaTecnicaFecha = null;
-                    proveedor.PropuestaTecnicaUsuario_Id = null;
-                    proveedor.ObservacionNoCumple = "";
-
+                    if (rolUsuario == "SOLICITANTE") 
+                    { 
+                        proveedor.PropuestaTecnicaAprobada = null;
+                        proveedor.PropuestaTecnicaFecha = null;
+                        proveedor.PropuestaTecnicaUsuario_Id = null;
+                        proveedor.ObservacionNoCumple = "";
+                    }
                     if (proveedor.Cotizaciones != null && proveedor.Cotizaciones.Count > 0 && proveedor.Cotizaciones.First().CotizacionEstado_Id == 1)
                     {
                         proveedor.Cotizaciones.First().CotizacionEstado_Id = 2;
                     }
                 }
+
                 circular = repositorio.Agregar(circular);
                 repositorio.GuardarCambios();
 
