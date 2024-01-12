@@ -171,7 +171,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
   }
 
     getOrders(periodo: string, fecha_inicio: string, fecha_fin: string){
-      this.getListarPO(this.proveedor, this.ordenCompraId, this.filtroFechaComponent.fecha_inicio);
+      //this.getListarPO(this.proveedor, this.ordenCompraId, this.filtroFechaComponent.fecha_inicio);
     }
 
     onBuscar() {
