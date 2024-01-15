@@ -3248,7 +3248,7 @@ namespace SustitucionMOAUtils.Services
                         OUTLINE = outlineNumber,
                         SRV_LINE = serviceLineNumber,
                         DEL_IND = eliminarSubPosicion ? "" : SAPFormatter.FormatearBooleano(!Convert.ToBoolean(subPosicion.Estado)),
-                        SERVICE = (subPosicion.ServicioSolp != null) ? "X" : "",
+                        SERVICE = "X",
                         SHORT_TEXT = (subPosicion.ServicioSolp == null) ? "X" : "",
                         QUANTITY = "X",
                         UOM = "X",
