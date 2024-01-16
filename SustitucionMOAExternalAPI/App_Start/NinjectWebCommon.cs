@@ -18,6 +18,8 @@ namespace SustitucionMOAExternalAPI.App_Start
     using Ninject.Web.WebApi;
     using SustitucionMOAExternalAPI.Managers;
     using SustitucionMOARepositorio;
+    using SustitucionMOARepositorio.Repositorios.Interfaces;
+    using SustitucionMOARepositorio.Repositorios;
     using SustitucionMOAUtils.Helpers;
     using SustitucionMOAUtils.Interfaces.Helpers;
     using SustitucionMOAUtils.Interfaces.Validadores;
@@ -222,6 +224,7 @@ namespace SustitucionMOAExternalAPI.App_Start
             // Azure AD Consumer
             kernel.Bind<IAzureADConsumer>().To(typeof(AzureADConsumer)).InSingletonScope();
             kernel.Bind<IUsersGraphAPIClient>().To(typeof(UsersGraphAPIClient)).InSingletonScope();
+            kernel.Bind<IRepositorioUsuario>().To<RepositorioUsuario>().InScope(ctx => HttpContext.Current);
 
             //kernel.Bind<IExternalApiService>().To(typeof(ExternalApiService)).InScope(ctx => OperationContext.Current);
             kernel.Bind<DbContext>().To<MOAOperacionesDbContext>().InTransientScope();
