@@ -115,3 +115,56 @@ WHERE
 	OR
 	(Tabla = 'GrupoCompras' AND CodigoSap IN ('300', '600', '103', '215', '225', '228', '230', '231', '241', '401', '430', '455', '462', '601', '602', '603', '604', '605', '606', '607', '608', '609', '611', '612', '613', '614', '615', '616', '617', '618', '619', '620', '621', '622', '623', '624', '626', '627', '628', '629', '630', '631', '810'));
 
+-- MonedaConversion
+
+-- Continuación del script
+IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.MonedaConversion WHERE MonedaCodigo = 'ROL') 
+    INSERT INTO MonedaConversion(MonedaCodigo, CantidadDecimal) VALUES ('ROL', 0)
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.MonedaConversion WHERE MonedaCodigo = 'RWF') 
+    INSERT INTO MonedaConversion(MonedaCodigo, CantidadDecimal) VALUES ('RWF', 0)
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.MonedaConversion WHERE MonedaCodigo = 'TJR') 
+    INSERT INTO MonedaConversion(MonedaCodigo, CantidadDecimal) VALUES ('TJR', 0)
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.MonedaConversion WHERE MonedaCodigo = 'TMM') 
+    INSERT INTO MonedaConversion(MonedaCodigo, CantidadDecimal) VALUES ('TMM', 0)
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.MonedaConversion WHERE MonedaCodigo = 'TND') 
+    INSERT INTO MonedaConversion(MonedaCodigo, CantidadDecimal) VALUES ('TND', 3)
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.MonedaConversion WHERE MonedaCodigo = 'TPE') 
+    INSERT INTO MonedaConversion(MonedaCodigo, CantidadDecimal) VALUES ('TPE', 0)
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.MonedaConversion WHERE MonedaCodigo = 'TRL') 
+    INSERT INTO MonedaConversion(MonedaCodigo, CantidadDecimal) VALUES ('TRL', 0)
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.MonedaConversion WHERE MonedaCodigo = 'UGX') 
+    INSERT INTO MonedaConversion(MonedaCodigo, CantidadDecimal) VALUES ('UGX', 0)
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.MonedaConversion WHERE MonedaCodigo = 'USDM') 
+    INSERT INTO MonedaConversion(MonedaCodigo, CantidadDecimal) VALUES ('USDM', 3)
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.MonedaConversion WHERE MonedaCodigo = 'USDN') 
+    INSERT INTO MonedaConversion(MonedaCodigo, CantidadDecimal) VALUES ('USDN', 5)
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.MonedaConversion WHERE MonedaCodigo = 'USDP') 
+    INSERT INTO MonedaConversion(MonedaCodigo, CantidadDecimal) VALUES ('USDP', 5)
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.MonedaConversion WHERE MonedaCodigo = 'VND') 
+    INSERT INTO MonedaConversion(MonedaCodigo, CantidadDecimal) VALUES ('VND', 0)
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.MonedaConversion WHERE MonedaCodigo = 'VUV') 
+    INSERT INTO MonedaConversion(MonedaCodigo, CantidadDecimal) VALUES ('VUV', 0)
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.MonedaConversion WHERE MonedaCodigo = 'XAF') 
+    INSERT INTO MonedaConversion(MonedaCodigo, CantidadDecimal) VALUES ('XAF', 0)
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.MonedaConversion WHERE MonedaCodigo = 'XOF') 
+    INSERT INTO MonedaConversion(MonedaCodigo, CantidadDecimal) VALUES ('XOF', 0)
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.MonedaConversion WHERE MonedaCodigo = 'XPF') 
+    INSERT INTO MonedaConversion(MonedaCodigo, CantidadDecimal) VALUES ('XPF', 0)
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.MonedaConversion WHERE MonedaCodigo = 'ZRN') 
+    INSERT INTO MonedaConversion(MonedaCodigo, CantidadDecimal) VALUES ('ZRN', 0)

@@ -244,6 +244,12 @@ namespace SustitucionMOAWS.WSConsumers
             var codigoMateriales = POITEM.Select(a => a.MATERIAL).ToList();
             var materiales = repositorio.Listar<MaterialSolp>(x => codigoMateriales.Contains(x.CodigoSap));
 
+            var monedasConversion = repositorio.Listar<MonedaConversion, MonedaConversionDto>(x => new MonedaConversionDto
+            {
+                CantidadDecimal = x.CantidadDecimal,
+                MonedaCodigo = x.MonedaCodigo
+            });
+
             if (RETURN == null)
             {
                 return null;
@@ -267,7 +273,7 @@ namespace SustitucionMOAWS.WSConsumers
             adjudicacion.Centro = POADDRDELIVERY.FirstOrDefault()?.NAME;
             adjudicacion.CalleEntrega = POADDRDELIVERY.FirstOrDefault()?.STREET;
             adjudicacion.CodigoPostal = POADDRDELIVERY.FirstOrDefault()?.POSTL_COD1;
-            adjudicacion.PrecioFinal = POITEM.Where(a=>a.DELETE_IND != "L").Sum(a => a.QUANTITY * a.NET_PRICE);
+            adjudicacion.PrecioFinal = POITEM.Where(a => a.DELETE_IND != "L").Sum(a => a.QUANTITY * CorregirImporte(a.NET_PRICE, POHEADER.CURRENCY, monedasConversion));
             adjudicacion.TextoDeCabecera = string.Join(" ", POTEXTHEADER.Where(a => a.TEXT_ID == "F01").Select(a => a.TEXT_LINE));
             adjudicacion.CondicionesDeEntrega = string.Join(" ", POTEXTHEADER.Where(a => a.TEXT_ID == "F05").Select(a => a.TEXT_LINE));
             adjudicacion.CondicionesDePago = string.Join(" ", POTEXTHEADER.Where(a => a.TEXT_ID == "F07").Select(a => a.TEXT_LINE));
@@ -293,14 +299,14 @@ namespace SustitucionMOAWS.WSConsumers
                 pos.TextoSuministro = string.Join(" ", POTEXTITEM.Where(a => a.PO_ITEM == posicion.PO_ITEM && a.TEXT_ID == "F02").Select(a => a.TEXT_LINE));
                 pos.Modelo = "";// posicion.Posicion.Modelo;
                 pos.Cantidad = posicion.QUANTITY;
-                pos.PrecioUnidad = posicion.NET_PRICE;
+                pos.PrecioUnidad = CorregirImporte(posicion.NET_PRICE, POHEADER.CURRENCY, monedasConversion);
                 pos.MonedaId = monedas.FirstOrDefault(a => a.Codigo == POHEADER.CURRENCY)?.Id;
                 var unidadSap = unidadesSAP.FirstOrDefault(a => a.UM == posicion.PO_UNIT);
                 var unidad = unidades.FirstOrDefault(a => a.Codigo == unidadSap?.Comercial);
                 pos.UnidadDescripcion = unidad?.Descripcion ?? "";
                 pos.MonedaDescripcion = monedas.FirstOrDefault(a => a.Codigo == POHEADER.CURRENCY)?.Descripcion;
                 pos.MonedaCodigo = monedas.FirstOrDefault(a => a.Codigo == POHEADER.CURRENCY)?.CodigoSap;
-                pos.PrecioTotal = posicion.QUANTITY * posicion.NET_PRICE;
+                pos.PrecioTotal = posicion.QUANTITY * CorregirImporte((posicion.NET_PRICE), POHEADER.CURRENCY, monedasConversion); 
                 pos.CentroComprasCodigo = posicion.PLANT;
                 pos.Eliminado = posicion.DELETE_IND == "L";
 
@@ -347,7 +353,7 @@ namespace SustitucionMOAWS.WSConsumers
                         sub.Tarea = subpos.SHORT_TEXT;
                         sub.CodigoSolp = servicios.FirstOrDefault(a => a.Codigo == subpos.SERVICE)?.CodigoSap ?? 0;
                         sub.Cantidad = subpos.QUANTITY;
-                        sub.PrecioBruto = subpos.NET_VALUE / subpos.PRICE_UNIT;
+                        sub.PrecioBruto = subpos.NET_VALUE / CorregirImporte(subpos.PRICE_UNIT, POHEADER.CURRENCY, monedasConversion);
                         sub.UnidadComprasDescripcion = unidades.FirstOrDefault(a => a.Codigo == subpos.BASE_UOM)?.Descripcion ?? "";
                         sub.MonedaCotizacionDescripcion = POHEADER.CURRENCY;
                         sub.PrecioTotalSubPosicion = sub.Cantidad ?? 0 * sub.PrecioBruto ?? 0;
@@ -363,7 +369,13 @@ namespace SustitucionMOAWS.WSConsumers
         }
 
 
-
+       private decimal CorregirImporte(decimal importe, string moneda, List<MonedaConversionDto> monedas)
+        {
+            int cantidadDecimal = monedas.Find(m => m.MonedaCodigo == moneda)?.CantidadDecimal ?? 2;
+            decimal factorCorreccion = (decimal)Math.Pow(10, cantidadDecimal - 2);
+            decimal importeCorregido = importe * factorCorreccion;
+            return importeCorregido;
+        }
     }
 
     public class ResultBAPI_PO_GETDETAIL1
