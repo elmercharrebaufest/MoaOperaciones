@@ -364,7 +364,50 @@
                             </div>
                         </div>
                     </div>
+                    <div class="col-xs-12 col-sm-12 col-md-12" *ngIf="this.categoriaCode == 'DISCAL' ">
+                        <div class="col-xs-12 col-sm-12 col-md-6">
+                            <p class="crearConsultaTitulos">
+                                N° de contrato MOA<span class="requerido">^</span>
+                            </p>
+                            <div class="styled-select">
+                                <input tooltipPosition="top"
+                                    pTooltip="Recuerde: puede ingresar múltiples separados por ; o ,"
+                                    [(ngModel)]="contrato" name="contrato" class="fourRounded"
+                                    aria-controls="tableModal" required>
+                            </div>
+                        </div>
 
+                        <div class="col-xs-12 col-sm-12 col-md-6">
+                            <p class="crearConsultaTitulos">
+                                CCPP<span class="requerido">^</span>
+                            </p>
+                            <div class="styled-select">
+                                <input type="search" tooltipPosition="top"
+                                    pTooltip="Recuerde: puede ingresar múltiples separados por ; o ,"
+                                    [(ngModel)]="comprobante" name="comprobante" class="fourRounded"
+                                    aria-controls="tableModal" required>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-sm-12 col-md-6">
+                            <p class="crearConsultaTitulos">
+                                Material<span class="requerido">*</span>
+                            </p>
+                            <p-dropdown [options]="listaMateriales" optionLabel="Descripcion" dataKey="MaterialId"
+                                [(ngModel)]="material" [maxSelectedLabels]="1" autoWidth="false"
+                                placeholder="Elegir material"
+                                (onChange)="this.comprobanteExtra = $event.value.Descripcion">
+                            </p-dropdown>
+                        </div>
+                        <div class="col-xs-12 col-sm-12 col-md-6">
+                            <p class="crearConsultaTitulos">
+                                Rubro<span class="requerido">*</span>
+                            </p>
+                            <div class="styled-select">
+                                <input type="search" tooltipPosition="top" [(ngModel)]="rubro" name="rubro"
+                                    class="fourRounded" aria-controls="tableModal" required>
+                            </div>
+                        </div>
+                    </div>
                     <!-- Expanded para cesion y rectificacion de cpe -->
                     <div class="col-xs-12 col-sm-12 col-md-12" *ngIf="this.categoriaCode == 'CRCPE'">
                         <div class="col-xs-12 col-sm-12 col-md-6">
