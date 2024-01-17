@@ -2,22 +2,8 @@
     <!-- CONTENT-->
     <section class="container-fluid clearfix">
         <!--Title-->
-        <div class="row titleSection d-flex justify-between">
+        <div class="row titleSection">
             <div class="col-xs-12 col-sm-10"><strong>Aplicación de CCPP</strong> </div>
-            <div class="col-xs-12 col-sm-8 col-md-8" style="display: flex; justify-content: flex-end;">
-                <a href="../../../Documentacion/TemplateAplicCCPP.csv" target="_blank"
-                                   style="text-decoration:none!important;margin-left:5px;margin-right:5px;">
-                    <div class="btnSection animate align-right">
-                        Template <img src="Content/images/icons/descargar.svg" alt="exportar" />
-                    </div>
-                </a>
-                <a href="../../../Documentacion/TutorialAplicCCPP.docx" target="_blank"
-                                   style="text-decoration:none!important;margin-left:5px;margin-right:5px;">
-                    <div class="btnSection animate align-right">
-                        Tutorial <i class="fa fa-file-word-o" aria-hidden="true"></i>
-                    </div>
-                </a>
-            </div>
         </div>
         <!--End Title-->
 
@@ -30,14 +16,28 @@
                         <!-- <spinner-small></spinner-small> -->
                         <title-caps>Carga masiva</title-caps>
                     </div>
-                <div class="col-xs-12">
-                        Archivo:
-                    <div class="styled-select">
-                        <input type="file" accept=".csv" (change)="cargarArchivo($event)" placeholder="Cargar archivo">
+                    <div class="col-xs-12" style="display: flex; justify-content: flex-start;">
+                        <a href="../../../Documentacion/TemplateAplicCCPP.csv" target="_blank"
+                            style="text-decoration:none!important;margin-right:10px">
+                            <div class="btnSection animate align-right" style="width: fit-content;">
+                                Carga masiva <i class="fa fa-file-word-o" aria-hidden="true"></i>
+                            </div>
+                        </a>
+                        <a href="../../../Documentacion/TutorialAplicCCPP.docx" target="_blank"
+                            style="text-decoration:none!important;margin-left:10px;">
+                            <div class="btnSection animate align-right">
+                                Tutorial <i class="fa fa-file-word-o" aria-hidden="true"></i>
+                            </div>
+                        </a>
                     </div>
+                    <div class="col-xs-12" style="margin-top: 10px;">
+                        Archivo:
+                        <div class="styled-select">
+                            <input type="file" accept=".csv" (change)="cargarArchivo($event)" placeholder="Cargar archivo">
+                        </div>
                     </div>
                     <hr>
-                    <div class="col-12 p-2 d-flex justify-start gap-2">
+                    <div class="col-12 p-2 d-flex justify-start gap-2" style="margin-top: 15px;">
                         <button (click)="cargarMasiva()" class="btn-custom btn-guardar btn-mediano">Enviar</button>
                         <spinner-small></spinner-small>
                     </div>

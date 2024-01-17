@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Web;
@@ -64,7 +65,7 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-               
+
                 var consulta = JsonConvert.DeserializeObject<Consulta>(consultaJson);
                 var comentario = JsonConvert.DeserializeObject<Comentario>(comentarioJson);
                 comentario.Fecha = DateTime.Now;
@@ -122,7 +123,7 @@ namespace SustitucionMOA.Controllers
             try
             {
                 var reclamoImpositivo = JsonConvert.DeserializeObject<ReclamoImpositivo>(reclamoImpositivoJson);
-                
+
                 string rutaArchivoSubido = consultaService.GenerarReclamoImpositivoPdf(reclamoImpositivo);
                 byte[] fileBytes = System.IO.File.ReadAllBytes(rutaArchivoSubido);
                 string fileName = Path.GetFileName(rutaArchivoSubido);
@@ -185,13 +186,15 @@ namespace SustitucionMOA.Controllers
                 categorias.ForEach(x => x.Cantidad = consultas.Count(c => c.CategoriaId == x.Id));
                 estados.ForEach(x => x.Cantidad = consultas.Count(c => c.EstadoConsultaId == x.Id));
 
-                return JsonCustom(new { data = new
+                return JsonCustom(new
                 {
-                    consultas,
-                    categorias,
-                    estados
-                }
-            });
+                    data = new
+                    {
+                        consultas,
+                        categorias,
+                        estados
+                    }
+                });
             }
             catch (InfoCustomException e)
             {
@@ -319,7 +322,8 @@ namespace SustitucionMOA.Controllers
                 var usuarioActual = ObtenerUsuarioActual();
                 var obtenerTodos = usuarioActual.Permisos.Contains(Permiso.CONSULTA_AMB);
 
-                return JsonCustom(new { 
+                return JsonCustom(new
+                {
                     categorias = consultaService.ObtenerCategorias(excluir, usuarioActual, mostrarCategoriaInterno),
                     subcategorias = consultaService.ObtenerSubCategorias(usuarioActual),
                     estados = consultaService.ObtenerEstados(),
@@ -327,7 +331,7 @@ namespace SustitucionMOA.Controllers
                     materiales = consultaService.ObtenerMaterial(TablaSeccionMaterial.Contacto),
                     isExternal = !obtenerTodos,
                     proveedorId = SessionPersister.ProveedorId
-                });;
+                }); ;
             }
             catch (InfoCustomException e)
             {
@@ -448,7 +452,36 @@ namespace SustitucionMOA.Controllers
                     subcategorias = consultaService.ObtenerSubCategorias(usuarioActual),
                     ordenes = ordenDeCargaService.Listar(usuarioActual.Mail, fechaInicio.ToString("dd/MM/yyyy"), fechaFin.ToString("dd/MM/yyyy")),
                     proveedorId = SessionPersister.ProveedorId,
-                }); 
+                });
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e }, JsonRequestBehavior.AllowGet);
+            }
+            catch (WSCustomException e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        public ActionResult GetDestinatariosConsultaFas(int ordenId)
+        {
+            try
+            {
+                return JsonCustom(new
+                {
+                    destinatarios = ordenDeCargaService.ObtenerDestinatariosConsultaFas(ordenId)
+                });
             }
             catch (InfoCustomException e)
             {
@@ -476,7 +509,7 @@ namespace SustitucionMOA.Controllers
             {
                 return JsonCustom(new
                 {
-                    destinatarios = ordenDeCargaService.ObtenerDestinatariosConsulta(ordenId)
+                    destinatarios = usuarioService.ObtenerDestinatariosConsulta()
                 });
             }
             catch (InfoCustomException e)
@@ -500,17 +533,19 @@ namespace SustitucionMOA.Controllers
         }
 
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.CONTACTO_MAIL)]
-        [HttpPost]
-        public JsonResult AgregarConsultaInterna(string consultaJson, string comentarioJson)
+        [HttpPost, ValidateInput(false)]
+        public JsonResult AgregarConsultaInterna(string consultaJson, string comentarioJson, string destinatariosFasJson)
         {
             try
             {
                 var consulta = JsonConvert.DeserializeObject<Consulta>(consultaJson);
                 var comentario = JsonConvert.DeserializeObject<Comentario>(comentarioJson);
+                var destinatarios = JsonConvert.DeserializeObject<List<DestinatarioDto>>(destinatariosFasJson);
+
                 comentario.Fecha = DateTime.Now;
                 consulta.UsuarioInterno_Id = ObtenerUsuarioActual().Id;
 
-                return JsonCustom(consultaService.AgregarConsultaInterna(consulta, comentario, Request.Files));
+                return JsonCustom(consultaService.AgregarConsultaInterna(consulta, comentario, Request.Files, destinatarios));
             }
             catch (InfoCustomException e)
             {
@@ -524,6 +559,29 @@ namespace SustitucionMOA.Controllers
                 }
 
                 return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        public JsonResult ReabrirConsulta(int consultaId)
+        {
+            try
+            {
+                var usuarioActual = ObtenerUsuarioActual();
+                consultaService.ReabrirConsulta(consultaId, usuarioActual);
+                return JsonCustom(new { });
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception e)
             {

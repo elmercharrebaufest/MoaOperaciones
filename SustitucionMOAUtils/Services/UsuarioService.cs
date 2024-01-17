@@ -4,6 +4,7 @@ using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using SustitucionMOARepositorio;
+using SustitucionMOARepositorio.Repositorios.Interfaces;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
 using SustitucionMOAWS.Interfaces;
@@ -20,11 +21,11 @@ namespace SustitucionMOAUtils.Services
 {
     public class UsuarioService : IUsuarioService
     {
-        protected readonly IRepositorio repositorio;
+        protected readonly IRepositorioUsuario repositorio;
         protected readonly IVendedorService vendedorService;
         protected readonly IAzureADConsumer azureADConsumer;
 
-        public UsuarioService(IRepositorio repositorio, IVendedorService vendedorService, IAzureADConsumer azureADConsumer)
+        public UsuarioService(IRepositorioUsuario repositorio, IVendedorService vendedorService, IAzureADConsumer azureADConsumer)
         {
             this.repositorio = repositorio;
             this.vendedorService = vendedorService;
@@ -44,9 +45,10 @@ namespace SustitucionMOAUtils.Services
         {
             try
             {
-                List<Entidades.Usuario> usuarios = repositorio.Listar<Entidades.Usuario>();
+                //List<Entidades.Usuario> usuarios = repositorio.Listar<Entidades.Usuario>();
 
-                List<UsuarioDto> usuariosDto = usuarios.Select(x => new UsuarioDto(x)).ToList();
+                //List<UsuarioDto> usuariosDto = usuarios.Select(x => new UsuarioDto(x)).ToList();
+                var usuariosDto = repositorio.ObtenerUsuarios();
 
                 if (usuariosDto.Count == 0)
                 {
@@ -536,6 +538,21 @@ namespace SustitucionMOAUtils.Services
             }).GroupBy(x => x.Id);
         }
 
+        public List<DestinatarioDto> ObtenerDestinatariosConsulta()
+        {
+            List<DestinatarioDto> destinatarios = new List<DestinatarioDto>();
+
+            var usuarios = this.GetUsuarios().Where(u => u.Habilitado == true);
+            destinatarios = usuarios.Select(u => new DestinatarioDto
+            {
+                Campo = "Usuario Web",
+                Mail = u.Mail,
+                UsuarioId = u.Id,
+            }).ToList();
+            return destinatarios;
+        }
+
+
         #region Metodos de modificacion de alta usuario
         public UsuarioDto GetUsuarioPorId(int id)
         {
@@ -802,6 +819,83 @@ namespace SustitucionMOAUtils.Services
             && u.CUITRegistro == prov.CUIT);
         }
 
+        #endregion
+
+        #region AsignarNuevoCUIT
+        public ProveedorDto GetProveedorAprobadoPorCuit(string cuit, string mailUsuarioSesion)
+        {
+
+            var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuarioSesion);
+
+            if (usuario == null || !usuario.TieneRol(RolEnum.Administracion))
+            {
+                throw new InfoCustomException("Usuario no autorizado a realizar esta acción.");
+            }
+            var proveedor = repositorio.Obtener<Proveedor>(p => p.CUIT == cuit && p.EstadoAprobacion == EstadoAprobacion.Aprobado);
+
+            if (proveedor == null)
+            {
+                return null;
+            }
+
+            return new ProveedorDto
+            {
+                RazonSocial = proveedor.RazonSocial,
+                CodigoProveedor = proveedor.CodigoProveedor,
+                IdTipoProveedor = proveedor.TipoProveedor.Id
+            };
+        }
+        public void AsignarNuevaCUIT(AsignarNuevaCuitDto datosAsignar, string mailUsuarioSesion)
+        {
+            var usuarioSesion = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuarioSesion);
+
+            if (usuarioSesion == null || !usuarioSesion.TieneRol(RolEnum.Administracion))
+            {
+                throw new InfoCustomException("Usuario no autorizado a realizar esta acción.");
+            }
+
+            var usuario = repositorio.Obtener<Usuario>(u => u.Mail == datosAsignar.MailUsuario && u.Id == datosAsignar.IdUsuario);
+
+            if (usuario == null)
+            {
+                throw new InfoCustomException("No se ha encontrado un usuario para asignar la cuit.");
+            }
+
+            if(usuario.Proveedores.Any(p=>p.CUIT == datosAsignar.CuitAAsignar))
+            {
+                throw new InfoCustomException("El usuario ya tiene asignada la cuit solicitada.");
+            }
+
+            var proveedorAAsignar = new Proveedor
+            {
+                CUIT = datosAsignar.CuitAAsignar,
+                RazonSocial = datosAsignar.RazonSocialAAsignar,
+                CodigoProveedor = datosAsignar.CodigoProveedorAAsignar,
+                TipoProveedor = repositorio.Obtener<TipoUsuario>(datosAsignar.TipoProveedorIdAAsignar),
+                EstadoAprobacion = EstadoAprobacion.Aprobado,
+
+                SolicitanteInterno = usuario.Mail,
+            };
+
+            var historialProveedor = new ProveedorHistorialAprobacion
+            {
+                EstadoAprobacion = proveedorAAsignar.EstadoAprobacion,
+                Usuario = usuarioSesion,
+                Observacion = "Proveedor asignado manualmente de forma directa a traves de asignaciones de CUIT",
+                Fecha = DateTime.Now,
+            };
+
+            proveedorAAsignar.HistorialAprobaciones = new List<ProveedorHistorialAprobacion> { historialProveedor };
+
+            if (!usuario.TieneRol(RolEnum.Multifirma))
+            {
+                var rolMultifirma = repositorio.Obtener<Rol>(r => r.Codigo == "MF");
+                usuario.AgregarRol(rolMultifirma);
+            }
+            usuario.Proveedores.Add(proveedorAAsignar);
+
+            repositorio.GuardarCambios();
+        }
         #endregion
     }
 }

@@ -8,7 +8,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SustitucionMOAModel.Entities
 {
-    public class Consulta
+    public class Consulta : ICloneable
     {
         [Key]
         public int Id { get; set; }
@@ -24,6 +24,7 @@ namespace SustitucionMOAModel.Entities
         public DateTime FechaCreacion { get; set; }
         public DateTime FechaUltimaModificacion { get; set; }
         public int? UsuarioInterno_Id { get; set; }
+        public DateTime? FechaVtoReapertura { get; set; }
 
         [ForeignKey("Usuario_Id")]
         public virtual Usuario Usuario { get; set; }
@@ -43,5 +44,10 @@ namespace SustitucionMOAModel.Entities
         public virtual ICollection<Comentario> Comentarios { get; set; }
 
         public Consulta() { }
+
+        public object Clone()
+        {
+            return this.MemberwiseClone() as object;
+        }
     }
 }

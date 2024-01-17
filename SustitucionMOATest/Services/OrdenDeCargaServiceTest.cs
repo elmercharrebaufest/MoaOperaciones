@@ -61,7 +61,6 @@ namespace SustitucionMOATest.Services
             consumerOrdenCargaMOA = new Mock<IOrdenCargaConsumerMOA>();
             mIFacturaAnticipadaService = new Mock<IFacturaAnticipadaService>();
             feriadoService = new Mock<IFeriadoService>();
-            usuarioService = new Mock<IUsuarioService>();
             mIScatoRepositorioClient = new Mock<IScatoRepositorioClient>();
             mIScatoConsumer = new Mock<IScatoConsumer>();
             feriadoService.Setup(fs => fs.ObtenerFeriados()).Returns(new List<DateTime>());
@@ -70,7 +69,7 @@ namespace SustitucionMOATest.Services
             mICNRTClient = new Mock<ICNRTClient>();
             
             AddProvider(301301301, EstadoAprobacion.Aprobado, "Test", "RS", "dylopez@baufest.com", "233333333333", new TipoUsuario { Id = 5, Nombre = "Cliente", NombreCorto = "CLI" });
-            target = new OrdenDeCargaService(repositorioMock.Object, consumerOrdenCargaMOA.Object, feriadoService.Object, usuarioService.Object,
+            target = new OrdenDeCargaService(repositorioMock.Object, consumerOrdenCargaMOA.Object, feriadoService.Object,
                 mIScatoRepositorioClient.Object, mIScatoConsumer.Object, mIEmailFasService.Object, mIFacturaAnticipadaService.Object,
                 mIKgDisponiblesFasService.Object, mICNRTClient.Object);
             ordenDeCarga = new OrdenDeCarga
@@ -767,7 +766,7 @@ namespace SustitucionMOATest.Services
                     It.IsAny<DirOrden>()))
                 .Returns(patentesDropDown);
 
-            var result = target.ObtenerPatentes(ordenDeCarga, mailUsuario);
+            var result = target.ObtenerPatentes(ordenDeCarga);
             Assert.IsNotNull(result);
             Assert.IsNotNull(result.ordenes);
             Assert.AreEqual(1, result.ordenes.Count);

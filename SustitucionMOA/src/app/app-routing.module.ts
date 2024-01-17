@@ -23,6 +23,7 @@ import { GestionCM05Component } from "./gestionCM05/gestionCM05.component";
 import { ApikeyComponent } from "./apikey/apikey.component";
 import { PesificacionesGuardadasComponent } from "./pesificacion/pesificaciones-guardadas/pesificaciones-guardadas.component";
 import { LegajoExternoComponent } from './compras/legajo-externo/legajo-externo.component';
+import { MisConsultasComponent } from "./consulta/mis-consultas/mis-consultas.component";
 
 const appRoutes: Routes = [
     // { path: "documentacion", component: DocumentacionComponent },
@@ -176,7 +177,8 @@ const appRoutes: Routes = [
             }
         ],
     },
-    { path: "**", component: HomeComponent },
+    { path: "**", component: HomeComponent},
+   
 ];
 
 @NgModule({

@@ -4,7 +4,7 @@ import { ActivatedRoute, Params, Router } from '@angular/router';
 import { BaseComponent } from '../../common/base-components/base-component';
 import { CorredorContrato } from '../../common/models/ordenes-de-carga/corredorContrato';
 import { EstadoOrdenDeCarga } from '../../common/models/ordenes-de-carga/estadoOrdenDeCarga';
-import { KILOS_DISPONIBLES_APROBADO, OrdenDeCarga, VOLVER_A_DETALLE_REPORTE } from '../../common/models/ordenes-de-carga/ordenDeCarga';
+import { OrdenDeCarga, VOLVER_A_DETALLE_REPORTE } from '../../common/models/ordenes-de-carga/ordenDeCarga';
 import { FloatMsgService } from '../../common/services/FloatMsgService';
 import { ModalService } from '../../common/services/ModalService';
 import { NavService } from '../../common/services/NavService';
@@ -114,11 +114,14 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
     }
 
     ngOnInit() {
+        this.navService.setSeccionList([]);
         this.route.params.forEach((params: Params) => {
             if (params["id"] > 0) this.ordenDeCargaId = params["id"];
+            this.cargarDetalle()
         });
+    }
 
-        this.navService.setSeccionList([]);
+    cargarDetalle() {
         if (this.ordenDeCargaId > 0) {
             this.obtenerOrdenDeCarga();
         }
@@ -285,8 +288,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
             }
 
             if (this.ordenDeCarga.ContratoSeleccionado) {
-                if (this.ordenDeCarga.ContratoSeleccionado.KgDisponibles < KILOS_DISPONIBLES_APROBADO ||
-                    !this.ordenDeCarga.ContratoSAP) {
+                if (!this.ordenDeCarga.ContratoSAP) {
                     this.mostrarBotonContratos = true;
                 }
             }
@@ -327,11 +329,17 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                 this.mostrarBotonVerificarCuitsTercero = true;
             }
         }
+        else {
+            if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.Vencida &&
+                this.ordenDeCarga.FechaVencimientoAmpliada == false) {
+                    this.mostrarBotonActivarOC = true;
+                }
+        }
         if (this.esAnulador) {
             this.mostrarBotonAnular = true;
         }
         if (!(this.ordenDeCarga.Estado == EstadoOrdenDeCarga.AnulacionSolicitada || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.EdicionSolicitada)) {
-            if (this.esTercero || ((this.esCliente || this.esCorredor) && !this.mostrarBotonAnular))
+            if ((this.esTercero || ((this.esCliente() || this.esCorredor) && !this.mostrarBotonAnular)) && !(this.ordenDeCarga.Estado == EstadoOrdenDeCarga.Vencida))
                 this.mostrarBotonSolicitarAnulacion = true;
 
             if (this.ordenDeCarga.EdicionRechazada != true)

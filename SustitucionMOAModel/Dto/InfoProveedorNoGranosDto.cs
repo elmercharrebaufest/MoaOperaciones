@@ -13,5 +13,6 @@ namespace SustitucionMOAModel.Dto
 
         public bool IngresoAPlanta { get; set; }
         public bool SiperObligatorio { get; set; }
+        public bool DeclaracionVinculosObligatorio { get; set; }
     }
 }

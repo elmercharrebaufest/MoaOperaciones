@@ -10,6 +10,9 @@ namespace SustitucionMOAUtils.Services.Email
         private static readonly string DireccionToAltaTempranaCuitFason = ConfigurationManager.AppSettings["EmailAltaTempranaCuitFasonTo"];
         private static readonly string DireccionCCAltaTempranaCuitFason = ConfigurationManager.AppSettings["EmailAltaTempranaCuitFasonCC"];
 
+        private static readonly string DireccionToAltaTransporteCuitFason = ConfigurationManager.AppSettings["EmailAltaTransporteFasonTo"];
+        private static readonly string DireccionCCAltaTransporteCuitFason = ConfigurationManager.AppSettings["EmailAltaTransporteFasonCC"];
+
         private readonly IEmailService emailService;
 
         public EmailFasonService(IEmailService emailService)
@@ -23,7 +26,7 @@ namespace SustitucionMOAUtils.Services.Email
 
             var emailSenderData = new EmailSenderData
             {
-                Mails = emailService.ObtenerListaDestinatarios(new string[] { DireccionToAltaTempranaCuitFason, DireccionCCAltaTempranaCuitFason }),
+                Mails = emailService.ObtenerListaDestinatarios(new string[] { DireccionToAltaTransporteCuitFason, DireccionCCAltaTransporteCuitFason }),
                 Asunto = $"ALTA TEMPRANA CLIENTE - NRO ORDEN: {ordenId}",
                 Cuerpo = $"Se solicita el alta temprana de: \n" + cuerpoDestinatario + cuerpoDestino
             };
@@ -33,9 +36,22 @@ namespace SustitucionMOAUtils.Services.Email
         {
             var emailSenderData = new EmailSenderData
             {
-                Mails = emailService.ObtenerListaDestinatarios(new string[] { DireccionToAltaTempranaCuitFason, DireccionCCAltaTempranaCuitFason }),
+                Mails = emailService.ObtenerListaDestinatarios(new string[] { DireccionToAltaTransporteCuitFason, DireccionCCAltaTransporteCuitFason }),
                 Asunto = $"ALTA CUIT INTERMEDIARIO FLETE - NRO ORDEN: {ordenId}",
                 Cuerpo = $"Razón social: {razonSocial}, CUIT: {cuit}"
+            };
+            emailService.EnviarMail(emailSenderData);
+        }
+
+        public void EnviarMailTransporteNoExiste(OrdenDeCargaFason ordenDeCarga)
+        {
+            var cuerpo = $"Razón social: {ordenDeCarga.RazonSocialTransporte} <br> CUIT: {ordenDeCarga.CUITTransporte}";
+
+            var emailSenderData = new EmailSenderData
+            {
+                Mails = emailService.ObtenerListaDestinatarios(new string[] { DireccionToAltaTransporteCuitFason, DireccionCCAltaTransporteCuitFason }),
+                Asunto = "ALTA TTE",
+                Cuerpo = cuerpo
             };
             emailService.EnviarMail(emailSenderData);
         }

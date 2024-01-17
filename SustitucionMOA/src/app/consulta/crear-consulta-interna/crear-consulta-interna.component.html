@@ -16,8 +16,7 @@
             <p class="crearConsultaTitulos">Categor&iacute;a<span class="requerido">*</span></p>
             <p-dropdown [options]="categorias" optionLabel="Nombre" dataKey="Id" [(ngModel)]="categoria"
               [maxSelectedLabels]="1" autoWidth="false" placeholder="Elegir Categoria"
-              (onChange)="setSubcategorias($event.value)" [filter]="true"
-              filterBy="value.Nombre">
+              (onChange)="setSubcategorias($event.value)" [filter]="true" filterBy="value.Nombre">
             </p-dropdown>
           </div>
 
@@ -32,19 +31,27 @@
           <div *ngIf="categoriaCode == 'ORD'" class="col-xs-12 col-sm-4 col-md-4">
             <p class="crearConsultaTitulos">Orden Nro:<span class="requerido">*</span></p>
             <div class="styled-select">
-              <input type="search" [(ngModel)]="ordenId" class="fourRounded"
-                     aria-controls="tableModal" required disabled>
-                 
-          </div>
+              <input type="search" [(ngModel)]="ordenId" class="fourRounded" aria-controls="tableModal" required
+                disabled>
+
+            </div>
           </div>
           <div *ngIf="categoriaCode == 'ORD'" class="col-xs-12 col-sm-2 col-md-2">
             <p class="crearConsultaTitulos"></p>
-      <button pButton type="button" icon="fa fa-search" iconPos="left" (click)="showDialog()"></button>
+            <button pButton type="button" icon="fa fa-search" iconPos="left" (click)="showDialog()"></button>
           </div>
-          <div class="col-xs-12 col-sm-6 col-md-6">
+          <div *ngIf="categoriaCode == 'ORD'" class="col-xs-12 col-sm-6 col-md-6">
+            <p class="crearConsultaTitulos">Destinatario<span class="requerido">*</span></p>
+            <p-multiSelect [options]="destinatariosOrden" appendTo="body" optionLabel="Mail" [(ngModel)]="destinatariosFas"
+              defaultLabel="Elija al menos un destinatario" [filter]="true"
+              filterBy="value.Mail" (onChange)="mostrarAviso()">
+            </p-multiSelect>
+            <spinner-loading [show]="searchingCampos"></spinner-loading>
+          </div>
+          <div *ngIf="categoriaCode !== 'ORD'" class="col-xs-12 col-sm-6 col-md-6">
             <p class="crearConsultaTitulos">Destinatario<span class="requerido">*</span></p>
             <p-dropdown [options]="destinatarios" optionLabel="Mail" dataKey="Campo" [(ngModel)]="destinatario"
-              [maxSelectedLabels]="1" autoWidth="false" placeholder="Elija un destinatario" [filter]="true"
+              autoWidth="false" placeholder="Elija un destinatario" [filter]="true"
               filterBy="value.Mail">
             </p-dropdown>
             <spinner-loading [show]="searchingCampos"></spinner-loading>
@@ -58,8 +65,8 @@
           <div class="for myRow">
             <div class="col-xs-12 col-sm-12 col-md-12">
               <p class="crearConsultaTitulos">Comentario<span class="requerido">*</span></p>
-              <textarea type="search" [(ngModel)]="comentario" [value]=""
-                class="fourRounded crearConsultaComentario" aria-controls="tableModal" rows="8"></textarea>
+              <angular-editor #angularEditorComentario [placeholder]="'Añadir Comentario'" [(ngModel)]="comentario"
+                [config]="config" style="color:black; font-weight:normal"></angular-editor>
             </div>
           </div>
 

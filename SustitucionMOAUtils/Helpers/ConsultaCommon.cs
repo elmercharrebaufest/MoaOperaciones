@@ -6,6 +6,7 @@ using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Email;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
+using SustitucionMOAUtils.Services;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -17,17 +18,20 @@ using System.Web;
 
 namespace SustitucionMOAUtils.Helpers
 {
-    public class ConsultaCommon : IConsultaCommon
+    public class ConsultaCommon
     {
-        private readonly IRepositorio repositorio;
+        protected readonly IRepositorio repositorio;
+        protected readonly IEmailService emailService;
         private readonly string rutaArchivosConsulta = ConfigurationManager.AppSettings["RutaArchivosConsulta"];
         private static readonly string EMAIL_TEMPLATE = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "RespuestaConsulta.html");
+        private readonly string rutaMisConsultas = ConfigurationManager.AppSettings["UrlMisConsultas"];
 
-        public ConsultaCommon(IRepositorio repositorio)
+        public ConsultaCommon(IRepositorio repositorio, IEmailService emailService)
         {
             this.repositorio = repositorio;
+            this.emailService = emailService;
         }
-        public string AgregarAdjuntoComentario(int consultaId, int comentarioId, HttpFileCollectionBase files)
+        protected string AgregarAdjuntoComentario(int consultaId, int comentarioId, HttpFileCollectionBase files)
         {
             var comentario = repositorio.Obtener<Comentario>(comentarioId);
 
@@ -70,19 +74,20 @@ namespace SustitucionMOAUtils.Helpers
             return errores.Any() ? string.Join(".", errores) : SuccessMsg.ArchivoSubidoOK;
         }
 
-        public string ArmarRutaCarpeta(Comentario comentario)
+        private string ArmarRutaCarpeta(Comentario comentario)
         {
             return string.Format("{0}/{1}/{2}", rutaArchivosConsulta, comentario.Consulta.Usuario_Id, comentario.Consulta_Id);
         }
-        public void EnviarMailInterno(Consulta consulta, Comentario comentario, HttpFileCollectionBase files)
+        protected void EnviarMailInterno(Consulta consulta, Comentario comentario, HttpFileCollectionBase files, List<string> destinatariosCC, string mailDestinatario)
         {
             try
             {
                 var cuerpoTemplate = File.ReadAllText(EMAIL_TEMPLATE);
-                var cuerpo = string.Format(cuerpoTemplate, consulta.Asunto, !string.IsNullOrWhiteSpace(comentario.Detalle) ? comentario.Detalle : "-");
-                string asunto = "Molinos Agro - Consulta N° " + consulta.Id + ":" + consulta.Asunto;
+                var cuerpo = string.Format(cuerpoTemplate, consulta.Asunto, !string.IsNullOrWhiteSpace(comentario.Detalle) ? comentario.Detalle : "-", rutaMisConsultas);
+                string asunto = "Molinos Agro - Consulta N° " + consulta.Id + ": " + consulta.Asunto;
                 Dictionary<string, byte[]> archivos = ConvertFiles(files);
-                EmailSender.EnviarMail(new List<string> { consulta.Usuario.Mail }, asunto, cuerpo, null, null, null, null, null, null, archivos);
+                EmailSender.EnviarMail(new List<string> { mailDestinatario }, asunto, cuerpo,
+                    null, null, null, null, null, destinatariosCC, archivos);
             }
             catch (Exception ex)
             {
@@ -114,5 +119,24 @@ namespace SustitucionMOAUtils.Helpers
             return fileDataDictionary;
         }
 
+        protected void CompletarCampos(Consulta consulta, Comentario comentario)
+        {
+            consulta.FechaCreacion = DateTime.Now;
+            consulta.FechaUltimaModificacion = DateTime.Now;
+
+            Categoria categoria = repositorio.Obtener<Categoria>(c => c.Id == consulta.Categoria_Id);
+            
+            comentario.ComentarioRecordado = new List<ComentarioRecordado>();
+
+            if (consulta.Comentarios == null)
+            {
+                consulta.Comentarios = new List<Comentario>();
+            }
+
+            consulta.Comentarios.Add(comentario.Clone() as Comentario);
+
+            consulta.Detalle = consulta.Detalle.Clone() as ConsultaDetalle;
+
+        }
     }
 }

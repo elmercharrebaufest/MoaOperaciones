@@ -11,13 +11,12 @@ import { SessionDataService } from './../../common/services/SessionDataService';
 import { DropdownComponent } from './../../common/view-child/dropdown/dropdown.component';
 import { SpinnerSmallComponent } from './../../common/view-child/spinner-small/spinner-small.component';
 import { ReCaptchaComponent } from 'angular2-recaptcha';
-import { SelectItem } from 'primeng/components/common/selectitem';
-import { Causa, Comentario, Categoria, Subcategoria, Consulta, ReclamoImpositivo, Reclamo, Materiales } from '../consulta';
-import { InformeComercialComponent } from '../../alta-proveedores/informe-comercial/informe-comercial.component';
+import { Causa, Comentario, Categoria, Subcategoria, ReclamoImpositivo, Materiales } from '../consulta';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { ConfirmationService } from 'primeng/api';
 import { HttpStatusCodes } from '../../common/models/httpStatusCodes';
 import { DatosLiquidacionObservada, SendDataService } from '../send-data.service';
+import { SeleccionarProveedorComponent } from '../../common/shared-components/seleccionar-proveedor/seleccionar-proveedor.component';
 
 declare var $: any;
 
@@ -45,6 +44,9 @@ export class CrearConsultaComponent extends ListBaseComponent {
 
     @ViewChild('recaptchaComponent')
     protected captcha: ReCaptchaComponent;
+
+    @ViewChild('selectProveedor')
+    protected selectProveedor: SeleccionarProveedorComponent;
 
     datosLiquidacionObservada?: DatosLiquidacionObservada;
 
@@ -85,7 +87,7 @@ export class CrearConsultaComponent extends ListBaseComponent {
     subcategorias: Subcategoria[];
     causas: Causa[];
 
-    codigoCorredor: any;
+    codigoCorredor: string;
     codigoProveedor: any;
     razonSocialProveedor: string = "";
     razonSocialCorredor: string;
@@ -767,5 +769,16 @@ export class CrearConsultaComponent extends ListBaseComponent {
             this.setCodeSubcategoria(categoria)
         }
         this.asunto = `Liquidación observada - nro comprobante ${this.datosLiquidacionObservada.NroComprobante}`
+        this.comprobante = this.datosLiquidacionObservada.NroComprobante
+        this.contrato = this.datosLiquidacionObservada.NroContrato
+
+        if (this.esCorredor)
+            this.setValorProveedorParaLiquidacionObservada()
+    }
+    setValorProveedorParaLiquidacionObservada() {
+        this.selectProveedor.setSelected({
+            idVendedor: this.codigoCorredor,
+            descVendedor: sessionStorage.getItem('nombre')
+        })
     }
 }

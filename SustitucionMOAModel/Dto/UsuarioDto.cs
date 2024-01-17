@@ -23,7 +23,10 @@ namespace SustitucionMOAModel.Dto
         public string RazonSocial { get; set; }
         public TipoUsuarioDto TipoUsuario { get; set; }
         public string OrganizacionDeCompra { get; set; }
-        public UsuarioDto() { }
+        public UsuarioDto()
+        {
+            Permisos = new List<string>();
+        }
 
         public UsuarioDto(Usuario usuario)
         {

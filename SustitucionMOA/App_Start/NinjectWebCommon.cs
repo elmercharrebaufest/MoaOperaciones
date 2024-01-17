@@ -26,6 +26,8 @@ using System.Reflection;
 using System.ServiceModel;
 using System.Web;
 using SustitucionMOAUtils.DesignPattern.Interfaces;
+using SustitucionMOARepositorio.Repositorios.Interfaces;
+using SustitucionMOARepositorio.Repositorios;
 using SustitucionMOAUtils.Interfaces;
 
 [assembly: WebActivatorEx.PreApplicationStartMethod(typeof(SustitucionMOA.App_Start.NinjectWebCommon), "Start")]
@@ -213,16 +215,17 @@ namespace SustitucionMOA.App_Start
             kernel.Bind<ICNRTClient>().To(typeof(CNRTClient)).InSingletonScope();
 
             // Azure
-            kernel.Bind<IAzureADConsumer>().To(typeof(AzureADConsumer)).InScope(ctx => OperationContext.Current);
+            kernel.Bind<IAzureADConsumer>().To(typeof(AzureADConsumer)).InTransientScope();
+            kernel.Bind<IUsersGraphAPIClient>().To(typeof(UsersGraphAPIClient)).InScope(ctx => HttpContext.Current);
 
             kernel.Bind<DbContext>().To<MOAOperacionesDbContext>().InScope(ctx => HttpContext.Current);
             kernel.Bind<IRepositorio>().To<RepositorioEF>().InScope(ctx => HttpContext.Current);
+            kernel.Bind<IRepositorioUsuario>().To<RepositorioUsuario>().InScope(ctx => HttpContext.Current);
             kernel.Bind<ICache, Cache>().To<Cache>().InSingletonScope();
 
             //Consulta Strategies
             kernel.Bind<IConsultaContext>().To<ConsultaContext>().InTransientScope();
             kernel.Bind<IConsultaStrategy>().To<ConsultaOrdenesStrategy>().InTransientScope();
-            kernel.Bind<IConsultaCommon>().To<ConsultaCommon>().InTransientScope();
 
 
             //Activador Ninject Hangfire

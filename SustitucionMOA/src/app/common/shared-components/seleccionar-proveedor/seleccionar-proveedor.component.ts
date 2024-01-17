@@ -160,4 +160,8 @@ export class SeleccionarProveedorComponent extends BaseComponent {
         this.selected = undefined;
     }
 
+    setSelected(item){
+        this.selected = item;
+        this.selectEvent(item)
+    }
 }

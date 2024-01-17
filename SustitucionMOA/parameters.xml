@@ -13,6 +13,12 @@
                            /@value" />
 	</parameter>
 
+	<parameter name="UrlMisConsultas Config">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/appSettings/add[@key='UrlMisConsultas']
+                           /@value" />
+	</parameter>
+
 	<parameter name="DataAgroURL Config">
 		<parameterEntry kind="XmlFile" scope="Web.config"
 						match="/configuration/appSettings/add[@key='DataAgroURL']
@@ -204,7 +210,16 @@
 							match="/configuration/appSettings/add[@key='EmailAltaTempranaCuitFasTo']
                            /@value" />
 	</parameter>
-
+	<parameter name="EmailAltaTransporteFasonTo Config">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+							match="/configuration/appSettings/add[@key='EmailAltaTransporteFasTo']
+                           /@value" />
+	</parameter>
+	<parameter name="EmailAltaTransporteFasonCC Config">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+							match="/configuration/appSettings/add[@key='EmailAltaTransporteFasonCC']
+                           /@value" />
+	</parameter>
 	<parameter name="EmailAltaTempranaCuitFasCC Config">
 		<parameterEntry kind="XmlFile" scope="Web.config"
 							match="/configuration/appSettings/add[@key='EmailAltaTempranaCuitFasCC']
@@ -227,7 +242,12 @@
 							match="/configuration/appSettings/add[@key='EmailKgsMenos15TNFasTo']
                            /@value" />
 	</parameter>
-
+	
+	<parameter name="EmailConsultaInternaCC Config">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+							match="/configuration/appSettings/add[@key='EmailConsultaInternaCC']
+                           /@value" />
+	</parameter>
 
 	<parameter name="PasswordSapEnc Config">
 		<parameterEntry kind="XmlFile" scope="Web.config"
@@ -646,18 +666,6 @@
                            /endpoint[@name='SI_MPMF_MOAOP_ORDEN_CARGA_ENTRE']
                            /@address" />
 	</parameter>
-	<parameter name="SI_MPMF_MOAOP_ORD_CARGA_ENT_V2 Service Endpoint Address">
-		<parameterEntry kind="XmlFile" scope="Web.config"
-							match="/configuration/system.serviceModel/client
-                           /endpoint[@name='SI_MPMF_MOAOP_ORD_CARGA_ENT_V2']
-                           /@address" />
-	</parameter>
-	<parameter name="SI_MPMF_MOAOP_ORD_CARGA_ENT_V3 Service Endpoint Address">
-		<parameterEntry kind="XmlFile" scope="Web.config"
-							match="/configuration/system.serviceModel/client
-                           /endpoint[@name='SI_MPMF_MOAOP_ORD_CARGA_ENT_V3']
-                           /@address" />
-	</parameter>
 	<parameter name="SI_MPMF_MOAOP_CONTROL_ESTADO Service Endpoint Address">
 		<parameterEntry kind="XmlFile" scope="Web.config"
 							match="/configuration/system.serviceModel/client
@@ -771,12 +779,6 @@
 		<parameterEntry kind="XmlFile" scope="Web.config"
 								match="/configuration/system.serviceModel/client
                         /endpoint[@name='SI_MPMF_MOAOP_MOD_ENTREGA']
-                        /@address" />
-	</parameter>
-	<parameter name="SI_MPMF_MOAOP_MOD_ENTREGA_V2 Service Endpoint Address">
-		<parameterEntry kind="XmlFile" scope="Web.config"
-								match="/configuration/system.serviceModel/client
-                        /endpoint[@name='SI_MPMF_MOAOP_MOD_ENTREGA_V2']
                         /@address" />
 	</parameter>
 	<parameter name="SI_MPMF_MOAOP_MOD_ORDEN_CARGA Service Endpoint Address">

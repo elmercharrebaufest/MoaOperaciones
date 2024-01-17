@@ -1,15 +1,20 @@
 .p-table td {
-    font-size: 10px; /* Ajusta el tamaño de fuente según tus necesidades */
-  }
+  font-size: 10px;
+  /* Ajusta el tamaño de fuente según tus necesidades */
+}
 
-  .headerModal {
-    top: 106px;
-    left: 381px;
-    width: 119px;
-    height: 26px;
-    text-align: left;
-    font: normal normal bold 20px/26px Roboto Regular;
-    letter-spacing: 0px;
-    color: #000000;
-    opacity: 1;
-  }
+.headerModal {
+  top: 106px;
+  left: 381px;
+  width: 119px;
+  height: 26px;
+  text-align: left;
+  font: normal normal bold 20px/26px Roboto Regular;
+  letter-spacing: 0px;
+  color: #000000;
+  opacity: 1;
+}
+
+a {
+  text-decoration: none;
+}
