@@ -18,6 +18,9 @@ import { ModalAltaEntradaDeServicioComponent } from '../modal-alta-entrada-de-se
 import { throwError as observableThrowError, Observable } from 'rxjs';
 //import { FiltroFechaComponent } from './../../common/view-child/filtro-fecha/filtro-fecha.component';
 import { FiltroFechaComponent } from './../../../common/view-child/filtro-fecha/filtro-fecha.component';
+import { ConfirmationService } from 'primeng/api';
+import { MensajeComponent } from '../../../common/view-child/mensaje/mensaje.component';
+
 
 @Component({
   selector: 'app-listado-dashboard-certificacion-de-servicios',
@@ -30,11 +33,11 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
         protected sessionDataService: SessionDataService, protected securityService: SecurityService,
         protected floatMsgService: FloatMsgService, protected modalService: ModalService,
         protected route: ActivatedRoute, protected router: Router,
+        private confirmationService: ConfirmationService,
         private location: Location) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
         this.usuario = sessionStorage.getItem("username");
         this.vendedor = sessionStorage.getItem("proveedor");
-        this.filtroFechaComponent = new FiltroFechaComponent();
     }
 
     @ViewChild(FiltroFechaComponent)
@@ -45,6 +48,8 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
     @ViewChild("tabla")
     protected tabla: Table;
 
+    @ViewChild(MensajeComponent)
+    protected mensajeComponent: MensajeComponent;
     @ViewChild("myModal") modal: ModalAltaEntradaDeServicioComponent;
 
     @BlockUI() blockUI: NgBlockUI;
@@ -71,6 +76,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
     checkSelected = false;
     itemIdSelected: Set<string> = new Set();
     itemSelected: any[] = [];
+    elementSelected: any[] = [];
     selectedItemId: number | null = null;
     selectedPosicionId: number | null = null;
     ordenCompraIdsMostradas: Set<number> = new Set<number>();
@@ -241,8 +247,35 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
       this.getListarPO(this.proveedor, this.ordenCompraId, this.fechaInicio);
   }
 
-  deleteES(item: any) {
-    //TODO: lógica para cuando se especifique el borrado de una ES
+  deleteES(ItemNumero: any) {
+    this.confirmationService.confirm({
+      message: 'Esta a punto de eliminar la entrada de servicio. <b>¿Desea confirmar?</b>',
+        accept: () => {
+          this.ejectDelete(ItemNumero);
+        },
+        reject: () => {
+
+        },
+      }
+    );
+  }
+
+  ejectDelete(ItemNumero) {
+    this.service.deleteES(ItemNumero).subscribe(
+      (result:any) => {
+        if (result.logout == true) {
+          this.sessionDataService.logout();
+        } else if (result.error != undefined && result.error != "") {
+          this.mensajeComponent.setErrorMsg(result.error);
+        } else if (result.info != undefined) {
+          this.mensajeComponent.setErrorMsg(result.error);
+        } else {
+          this.getListarPO(this.proveedor, this.ordenCompraId,this.fechaInicio);
+        }
+        this.spinnerComponent.hideIt()
+      }
+    );
+
   }
 
   handlePageEvent(e: any) {
@@ -251,16 +284,35 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
       this.getListarPO(this.proveedor, this.ordenCompraId, this.fechaInicio);
   }
 
-  openModal() {
-    if (this.itemIdSelected.size > 0) {
-      this.showModal = true;
-    }
-    else {
-      this.showModal = false;
-    }
-  }
+    openModal() {
+      this.searchElement();
 
-  onCloseModal() {
-    this.showModal = false;
-  }
+      if (this.itemIdSelected.size > 0) {
+          this.showModal = true;
+      }
+      else {
+          this.showModal = false;
+      }
+    }
+
+    searchElement() {
+      for (const ordenCompra of this.tablaPO) {
+        for (const posicion of ordenCompra.Posiciones) {
+          const itemEncontrado = posicion.Items.find(item => item.Id === this.itemSelected[0].Id);
+  
+          if (itemEncontrado) {
+            this.elementSelected = ordenCompra;
+            break;
+          }
+        }
+  
+        if (this.elementSelected) {
+          break;
+        }
+      }
+    }
+
+    onCloseModal() {
+        this.showModal = false;
+    }
 }

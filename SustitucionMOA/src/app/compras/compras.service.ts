@@ -1,18 +1,18 @@
 import { EventEmitter, Injectable } from '@angular/core';
 import { HttpParams } from '@angular/common/http';
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { Observable, Subject, throwError } from 'rxjs';
 import { BaseService } from '../common/services/BaseService';
 import { Solp } from './solp/solp';
 import { EmailComposeModel } from '../common/email-compose/email-compose.model';
 import { SolpPosicion } from './solp/solp-posicion';
-import { AltaNuevoProveedor, EnvioSolpCompra, SolpCompraDto } from './solp-compra';
+import { EnvioSolpCompra, SolpCompraDto } from './solp-compra';
 import { CircularDto } from '../modelos/circular-model';
 import { PeticionDeOfertaCierreDto, PeticionDeOfertaDto, PeticionDeOfertaRevisionTecnicaDto, PeticionDeOfertaUsarioDto } from '../modelos/peticion-de-oferta-model';
 import { AdjudicacionDto } from '../modelos/adjudicacion';
-import { OrdenDeCompraSap } from '../modelos/ordenDeCompraSap';
 import { RegistroInfoDto } from '../modelos/registro-info';
 import { PeticionVisualizacionPrecioDto } from '../modelos/peticion-visualizar-precio-dto';
 import { ChatInternoComprasDto } from './chat-interno/chat-interno.interface';
+import { timeoutWith } from 'rxjs/operators';
 
 @Injectable({
     providedIn: 'root'
@@ -128,6 +128,7 @@ export class ComprasService extends BaseService {
                 headers: this.headers,
             });
     }
+
     notifyDataUpdate() {
         this.onDataUpdate.emit();
     }
@@ -155,6 +156,45 @@ export class ComprasService extends BaseService {
         return this.http
             .get<any[]>('/api/Order/GetByProveedor', { params: params, headers: this.headers })
     }
+
+    public getByProveedorAsync(
+        fechaInicio: any = this.filtros.fechaDesde,
+        proveedorId: string, 
+        DocumentoNumero: string,
+        columnaOrden: string = this.filtros.columnaNombre,
+        ordenAscendente: boolean = this.filtros.ordenAscendente,
+        pagina: number = this.filtros.pagina, 
+        elementosPorPagina: number = this.filtros.itemsPorPagina,
+        ) : Observable<any> {
+
+        let params: HttpParams = new HttpParams();
+        
+        params = params.set('fechaInicio', (fechaInicio != null ? fechaInicio : ""));
+        params = params.set('vendedor', proveedorId);
+        params = params.set('documentoNumero', DocumentoNumero);
+        params = params.set('ColumnaOrden', columnaOrden);
+        params = params.set('OrdenAscendente', ordenAscendente.toString());
+        params = params.set('pagina', pagina.toString());
+        params = params.set('elementosPorPagina', elementosPorPagina.toString());
+        
+        return this.http
+            .get<any[]>('/api/EntradaServicio/GetByProveedorAsync', { params: params, headers: this.headers })
+    }
+
+    public deleteES(DocumentoNumero) {
+        let params: HttpParams = new HttpParams();
+        params = params.set('documentoNumero', DocumentoNumero);
+        return this.http
+            .delete<any[]>('/api/EntradaServicio/DeleteById', { params: params, headers: this.headers })
+    }
+
+    postCreateAsync(entradaServicioCreateParamsDto): Observable<any> {
+        return this.http.post('/api/EntradaServicio/CreateAsync', entradaServicioCreateParamsDto)
+          .pipe(
+            timeoutWith(30000, throwError(new Error('Se excedió el tiempo de espera, por favor inténtelo más tarde')))
+          );
+      }
+
     public GuardarSolp(solp: Solp) {
         let solpJson = JSON.stringify({
             Id: solp.id,

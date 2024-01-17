@@ -82,6 +82,8 @@ import { ChatInternoComponent } from './chat-interno/chat-interno.component';
 
 import { ListadoDashboardCertificacionDeServiciosComponent } from './dashboard-entrada-de-servicio/listado-dashboard-certificacion-de-servicios/listado-dashboard-certificacion-de-servicios.component';
 import { FiltroDashboardCertificacionDeServiciosComponent } from './dashboard-entrada-de-servicio/filtro-dashboard-certificacion-de-servicios/filtro-dashboard-certificacion-de-servicios.component';
+import { ListadoEstadoCertificacionesComponent } from './dashboard-entrada-de-servicio/listado-estado-certificaciones/listado-estado-certificaciones.component';
+import { ModalAltaEntradaDeServicioComponent } from './dashboard-entrada-de-servicio/modal-alta-entrada-de-servicio/modal-alta-entrada-de-servicio.component';
 
 
 @NgModule({
@@ -165,6 +167,8 @@ import { FiltroDashboardCertificacionDeServiciosComponent } from './dashboard-en
         ChatInternoComponent,
         ListadoDashboardCertificacionDeServiciosComponent,
         FiltroDashboardCertificacionDeServiciosComponent,
+        ListadoEstadoCertificacionesComponent,
+        ModalAltaEntradaDeServicioComponent
     ],
     providers: [
         ComprasService,

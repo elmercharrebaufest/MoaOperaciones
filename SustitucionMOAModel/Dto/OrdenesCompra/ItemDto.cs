@@ -23,6 +23,7 @@ namespace SustitucionMOAModel.Dto.OrdenesCompra
         public string ItemNumero { get; set; }
         public string SUBPCKG_NO { get; set; }
         public int NumeroLinea { get; set; }
+        public string LINE_NO { get; set; }
         public string UM { get; set; }
         public decimal? Importe { get; set; }
         public List<EntradaServicioDto> EntradasServicio { get; set; }

@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace SustitucionMOAModel.Dto.OrdenesCompra
 {
+    /// <summary>
+    /// Este dto se utiliza en la vista de Ordenes de Compra
+    /// </summary>
     public class EntradaServicioDto
     {
         public int Id { get; set; } //HEADER.SHEET_NO
@@ -13,11 +16,13 @@ namespace SustitucionMOAModel.Dto.OrdenesCompra
         //public string ItemId { get; set; }
         public string Fecha { get; set; } //HEADER.CREATED_ON
         public decimal? Cantidad { get; set; } //QUANTITY
-        //public DateTime FechaDocumento { get; set; } //HEADER.DOC_DATE
+        public DateTime FechaDocumento { get; set; } //HEADER.DOC_DATE
         //public List<string> Referencia { get; set; } 
         public string TextoBreve { get; set; } //HEADER.SHORT_TEXT
-        public string PCKG { get; set; }
-
+        public string ESS_PCKG_NO { get; set; }
+        public string ESS_LINE_NO { get; set; }
+        public string ESS_EXT_LINE { get; set; }
+        
         //MMSN-460 - Añadir Ref_DOC_No
         public string Referencia { get; set; }//HEADER.REF_DOC_NO
 
@@ -29,6 +34,8 @@ namespace SustitucionMOAModel.Dto.OrdenesCompra
 
         //MMSN-460 - Fecha Contabilizacion
         public string FechaContabilizacion { get; set; }
+
+        public bool SePuedeBorrar { get; set; }
 
         public List<ItemEntradaServicioDto> Items { get; set; }
     }

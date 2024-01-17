@@ -166,6 +166,7 @@
     <Compile Include="Interfaces\IAplicacionCartaPorteApiService.cs" />
     <Compile Include="Interfaces\IDBService.cs" />
     <Compile Include="Interfaces\IEmailFasonService.cs" />
+    <Compile Include="Interfaces\IEntradaServicioService.cs" />
     <Compile Include="Interfaces\IRYDService.cs" />
     <Compile Include="Interfaces\IRYDMantenimientoService.cs" />
     <Compile Include="Interfaces\IPDFService.cs" />
@@ -224,6 +225,7 @@
     <Compile Include="Services\AltaEmpresaNoGranosService.cs" />
     <Compile Include="Services\AplicacionCartaPorteApiService.cs" />
     <Compile Include="Services\AplicacionCartaPorteService.cs" />
+    <Compile Include="Services\EntradaServicioService.cs" />
     <Compile Include="Services\OrderService.cs" />
     <Compile Include="Services\ComunicacionService.cs" />
     <Compile Include="Interfaces\IEmailService.cs" />

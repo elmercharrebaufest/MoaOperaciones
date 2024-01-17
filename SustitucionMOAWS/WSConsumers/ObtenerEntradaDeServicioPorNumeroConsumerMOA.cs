@@ -41,11 +41,17 @@ namespace SustitucionMOAWS.WSConsumers
             //this.repositorio = repositorio;
         }
 
-        public EntradaServicioDto ObtenerEntradaServicio(string nroES) // El tipo que devuelve esta puesto solo para que no marque error
+
+        /// <summary>
+        /// Obtiene detalle de una entrada de servicio por numero de entrada de servicio
+        /// </summary>
+        /// <param name="nroES"></param>
+        /// <returns></returns>
+        public EntradaServicioDto ObtenerEntradaServicio(string nroES)
         {
             try
             {
-                string ENTRYSHEET = nroES; //Valor de prueba, existe en SAP
+                string ENTRYSHEET = nroES;
                 string LONG_TEXTS = "";
                 //BAPIESSR[] ENTRYSHEET_HEADER = new BAPIESSR[] { };
                 BAPIESKN[] ENTRYSHEET_ACCOUNT_ASSIGMENT = new BAPIESKN[] { };
@@ -64,7 +70,6 @@ namespace SustitucionMOAWS.WSConsumers
             {
                 throw e;
             }
-
         }
 
         private EntradaServicioDto Map(BAPIESSR cabecera, BAPIESLL[] entrySheetService)
@@ -72,18 +77,24 @@ namespace SustitucionMOAWS.WSConsumers
             EntradaServicioDto result = new EntradaServicioDto();
 
             IEnumerable<BAPIESLL> itemsEntrySheetService = entrySheetService
-                .Where(a => a.DELETE_IND != "X" && a.PLN_PCKG != "0000000000");
+                .Where(a => a.DELETE_IND != "X" && a.OUTL_IND != "X");
 
             List<ItemEntradaServicioDto> items = new List<ItemEntradaServicioDto>();
             foreach (var elementoEntrySheetService in itemsEntrySheetService)
             {
                 var item = new ItemEntradaServicioDto();
+                
 
                 item.Id = cabecera.SHEET_NO;
                 item.ItemNumero = elementoEntrySheetService.PLN_PCKG;
 
                 item.Cantidad = elementoEntrySheetService.QUANTITY;
                 item.Descripcion = elementoEntrySheetService.SHORT_TEXT;
+
+                item.PLN_PCKG = elementoEntrySheetService.PLN_PCKG;
+                item.PLN_LINE = elementoEntrySheetService.PLN_LINE;
+                item.PCKG_NO = elementoEntrySheetService.PCKG_NO;
+                item.LINE_NO = elementoEntrySheetService.LINE_NO;
 
                 items.Add(item);
             }
@@ -109,6 +120,55 @@ namespace SustitucionMOAWS.WSConsumers
             return result;
         }
 
-        
+        public List<EntradaServicioDetalleDto> ObtenerEntradaServicioDetalle(string nroES) // El tipo que devuelve esta puesto solo para que no marque error
+        {
+            try
+            {
+                string ENTRYSHEET = nroES; //Valor de prueba, existe en SAP
+                string LONG_TEXTS = "";
+                //BAPIESSR[] ENTRYSHEET_HEADER = new BAPIESSR[] { };
+                BAPIESKN[] ENTRYSHEET_ACCOUNT_ASSIGMENT = new BAPIESKN[] { };
+                BAPIESSRTX[] ENTRYSHEET_HEADER_TEXT = new BAPIESSRTX[] { };
+                BAPIESLL[] ENTRYSHEET_SERVICES = new BAPIESLL[] { };
+                //ENTRYSHEET_SERVICES = new BAPIESLL[] { };
+                BAPIESLLTX[] ENTRYSHEET_SERVICES_TEXTS = new BAPIESLLTX[] { };
+                BAPIESKL[] ENTRYSHEET_SRV_ACCASS_VALUES = new BAPIESKL[] { };
+                BAPIRETURN1[] RETURN = new BAPIRETURN1[] { };
+
+                BAPIESSR detalleES = service.SI_MMRFC_BAPI_ENTRYSHEET_GETDETAIL(ENTRYSHEET, LONG_TEXTS, ref ENTRYSHEET_ACCOUNT_ASSIGMENT, ref ENTRYSHEET_HEADER_TEXT, ref ENTRYSHEET_SERVICES, ref ENTRYSHEET_SERVICES_TEXTS, ref ENTRYSHEET_SRV_ACCASS_VALUES, ref RETURN);
+
+                return MapDetalle(detalleES, ENTRYSHEET_SERVICES);
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+
+        private List<EntradaServicioDetalleDto> MapDetalle(BAPIESSR cabecera, BAPIESLL[] entrySheetService)
+        {
+            List<EntradaServicioDetalleDto> result = new List<EntradaServicioDetalleDto>();
+
+            IEnumerable<BAPIESLL> itemsEntrySheetService = entrySheetService
+                .Where(a => a.DELETE_IND != "X" && a.OUTL_IND != "X");
+
+            List<EntradaServicioDetalleDto> items = new List<EntradaServicioDetalleDto>();
+            foreach (var elemento in itemsEntrySheetService)
+            {
+                var item = new EntradaServicioDetalleDto();
+
+                item.NumeroLinea = elemento.PLN_LINE;
+                item.PLN_PCKG = elemento.PLN_PCKG;
+                item.CodigoServicio = elemento.SERVICE;
+                item.Descripcion = elemento.SHORT_TEXT;
+                item.Cantidad = elemento.QUANTITY.ToString();
+                item.UM = elemento.BASE_UOM;
+                item.Monto = elemento.NET_VALUE;
+
+                items.Add(item);
+            }
+            return items;
+        }
+
     }
 }

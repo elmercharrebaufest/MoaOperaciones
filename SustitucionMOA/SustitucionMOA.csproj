@@ -1141,6 +1141,7 @@
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="App_Start\Startup.Hangfire.cs" />
     <Compile Include="Controllers\AplicacionCartaPorteController.cs" />
+    <Compile Include="Controllers\EntradaServicioController.cs" />
     <Compile Include="Controllers\OrderController.cs" />
     <Compile Include="Controllers\ComunicacionController.cs" />
     <Compile Include="Controllers\EcheqController.cs" />
