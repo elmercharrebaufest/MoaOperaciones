@@ -2709,16 +2709,41 @@ namespace SustitucionMOAUtils.Services
         public ListaPaginada<SolpDto> ListarSolpComprador(int usuario_Id, Paginacion paginacion, string nroSolp, DateTime? desde, DateTime? hasta, bool? sap, bool? mantenimiento, bool? web, bool? repoAutomatica, List<int> usuarios = null, List<int> estados = null, List<int> centros = null, List<int> grupoDeCompras = null)
         {
             var todasLasSolp = repositorio.ListarConsultaPaginada(new ListarSolpConsulta(paginacion, nroSolp, desde, hasta, sap, mantenimiento, web, repoAutomatica, usuarios, estados, centros, grupoDeCompras, usuario_Id));
+
             if (todasLasSolp != null && todasLasSolp.Count() > 0)
             {
+                var listId = todasLasSolp.Select(y => y.Id.Value).ToList();
+                var solpsDB = repositorio.Listar<Solp>(x => listId.Contains(x.Id));
                 todasLasSolp.FirstOrDefault().ItemsTotales = todasLasSolp.ItemsTotales;
-            }
-            foreach (var item in todasLasSolp.Items)
-            {
-                item.CentroFormateado = item.PosicionCompras != null ? string.Join(", ", item.PosicionCompras.OrderBy(x => x.CentroCodigo).GroupBy(x => x.CentroCodigo).Select(x => x.Key)) : "";
-                item.GrupoCompraFormateado = item.PosicionCompras != null ? string.Join(", ", item.PosicionCompras.OrderBy(x => x.GrupoComprasCodigo).GroupBy(x => x.GrupoComprasCodigo).Select(x => x.Key)) : "";
-            }
 
+
+                foreach (var item in todasLasSolp.Items)
+                {
+                    item.CentroFormateado = item.PosicionCompras != null ? string.Join(", ", item.PosicionCompras.OrderBy(x => x.CentroCodigo).GroupBy(x => x.CentroCodigo).Select(x => x.Key)) : "";
+                    item.GrupoCompraFormateado = item.PosicionCompras != null ? string.Join(", ", item.PosicionCompras.OrderBy(x => x.GrupoComprasCodigo).GroupBy(x => x.GrupoComprasCodigo).Select(x => x.Key)) : "";
+                    
+                    if (item.VerPublicar == true && item.PosicionCompras.Count() > 0)
+                    {
+                        var solpDB = solpsDB.First(i => i.Id == item.Id);
+                        if (item.PosicionCompras.First().TipoPosicion.Codigo == "SERVICIO")
+                        {
+                            if (solpDB.Adjudicaciones.Count > 0)
+                            {
+                                item.VerPublicar = false;
+                            }
+                        }
+                        else
+                        {
+                            var verPublicarDeshabilitado = solpDB.Posiciones.All(d => d.Cantidad <= d.AdjudicacionPosiciones.Sum(ap => ap.Cantidad));
+                            if (verPublicarDeshabilitado)
+                            {
+                                item.VerPublicar = false;
+                            }
+                        }
+                    }
+
+                }
+            }
             return todasLasSolp;
         }
 
