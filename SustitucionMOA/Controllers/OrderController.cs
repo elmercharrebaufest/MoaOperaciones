@@ -29,7 +29,7 @@ namespace SustitucionMOA.Controllers
 
         //[ValidateInput(false)]
         //[CustomPermisoAuthorizeAttribute(Roles = Permiso.ABM_SOLP)]
-        [HttpGet]
+        //[HttpGet]
         public ActionResult GetByProveedor(OrderParamsDto parametros)
         {
             try

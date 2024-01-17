@@ -1,6 +1,6 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
-import { Table } from 'primeng/table';
+import { Table, RowToggler } from 'primeng/table';
 import { ListBaseComponent } from '../../../common/base-components/list-base-component';
 import { SpinnerComponent } from '../../../common/view-child/spinner/spinner.component';
 import { Paginator } from 'primeng/paginator';
@@ -40,6 +40,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
         this.vendedor = sessionStorage.getItem("proveedor");
     }
 
+
     @ViewChild(FiltroFechaComponent)
     protected filtroFechaComponent: FiltroFechaComponent;
 
@@ -67,7 +68,8 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
     @ViewChild('paginator') paginator: Paginator
     subscripcionPO: Subscription
     ordenCompraId: string = "";
-    expandedRows: any[] = [];
+    //MMSN-519
+    expandedRows: boolean[] = [];
     posicionRow: any[] = [];
     isTableExpanded = false;
     isTableItemsExpanded = false;
@@ -80,6 +82,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
     selectedItemId: number | null = null;
     selectedPosicionId: number | null = null;
     ordenCompraIdsMostradas: Set<number> = new Set<number>();
+    filaExpandida: any;
 
     expandedRow: any; 
 
@@ -123,18 +126,13 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
   validarLoginAzure() {
     throw new Error('Method not implemented.');
   }
-    //#endregion
 
-  toggleRow(posicion: any) {
-    this.ordenCompraIdsMostradas.clear();
 
-    posicion.forEach((item: any) => {
-      if (!this.ordenCompraIdsMostradas.has(item.OrdenCompraId)) {
-        this.ordenCompraIdsMostradas.add(item.OrdenCompraId);
-      } else {
-      }
-    });
-  }
+  //toggleRow(rowData: any): void {
+  //  //console.log('RowData:', rowData);
+  //    this.filaExpandida = this.filaExpandida === rowData ? null : rowData;
+  //    //console.log('Row expandida:', this.filaExpandida);
+  //    const index = this.expandedRows.indexOf(rowData);
 
   toggleTable(posicionId: number) {
     if (this.selectedPosicionId === posicionId) {
@@ -178,9 +176,26 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
       this.itemSelected.push(item);
     }
   }
+    //MMSN-519
+    toggleRow(rowData: any) {
+       //MMSN-519 - Al activar un filtro, colapsar filas expandidas.
+       this.expandedRow = rowData;
+    }
 
-    getOrders(periodo: string, fecha_inicio: string, fecha_fin: string){
+    getOrders(periodo: string, fecha_inicio: string, fecha_fin: string) {
+        //MMSN-519 - Al activar un filtro, colapsar filas expandidas.
+        this.collapseExpanded()
+
       this.getListarPO(this.proveedor, this.ordenCompraId, this.filtroFechaComponent.fecha_inicio);
+    }
+
+    //MMSN-519 - Al activar un filtro, colapsar filas expandida
+    collapseExpanded() {
+        if (this.expandedRow != undefined) {
+            if (this.tabla.isRowExpanded(this.expandedRow)) {
+                this.tabla.toggleRow(this.expandedRow);
+            }           
+        }
     }
 
     //onBuscar() {

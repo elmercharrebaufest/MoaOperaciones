@@ -364,7 +364,20 @@ namespace SustitucionMOAWS.WSConsumers
             }
         }
 
-
+        /// <summary>
+        /// Mapea Detalle de una Orden de Compra
+        /// </summary>
+        /// <param name="result"></param>
+        /// <param name="POHEADER"></param>
+        /// <param name="RETURN"></param>
+        /// <param name="POITEM"></param>
+        /// <param name="POTEXTHEADER"></param>
+        /// <param name="POTEXTITEM"></param>
+        /// <param name="POSERVICES"></param>
+        /// <param name="POSCHEDULE"></param>
+        /// <param name="POADDRDELIVERY"></param>
+        /// <param name="POHISTORY"></param>
+        /// <returns></returns>
         private DetalleOrdenDeCompraDto map(BAPIEIKP result, BAPIMEPOHEADER POHEADER, BAPIRET2[] RETURN, BAPIMEPOITEM[] POITEM, BAPIMEPOTEXTHEADER[] POTEXTHEADER,
          BAPIMEPOTEXT[] POTEXTITEM, BAPIESLLC[] POSERVICES, BAPIMEPOSCHEDULE[] POSCHEDULE, BAPIMEPOADDRDELIVERY[] POADDRDELIVERY, BAPIEKBE[] POHISTORY, List<TablaSap> centros, List<TablaSap> almacenes)
         {
@@ -397,8 +410,7 @@ namespace SustitucionMOAWS.WSConsumers
             foreach (var posicion in POITEM)
             {
                 PosicionDto pos = new PosicionDto();
-                var ListaEntradasServicio = new List<string>(); // Para obtener las entradas de servicio de cada posicion
-
+                //var ListaEntradasServicio = new List<string>(); // Para obtener las entradas de servicio de cada posicion
               
                 pos.Id = int.Parse(posicion.PCKG_NO);
                 pos.NumeroPosicion = long.Parse(posicion.PO_ITEM);
@@ -475,8 +487,8 @@ namespace SustitucionMOAWS.WSConsumers
             if (itemsValidos == null)
                 return itemsDeLaPosicion;
 
-
-            foreach (var item in pOSERVICES.Where(x => x.PCKG_NO == itemsValidos.SUBPCKG_NO))
+            var items = pOSERVICES.Where(x => x.PCKG_NO == itemsValidos.SUBPCKG_NO);
+            foreach (var item in items)
             {
                 ItemDto itemDto = new ItemDto();
 

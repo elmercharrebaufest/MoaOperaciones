@@ -3,7 +3,7 @@
 }
 
 .fa{
-    margin-right:-11px;
+    margin-right:-10px;
 }
 .buscar {
     background-color: #1C7CD5;
@@ -24,22 +24,21 @@ body.ui-paginator.ui-dropdown{
     width: 10% !important;
 }
 
-
-
-
 th{
     border: 0px !important;
 }
 
-
+.detalle-th {    
+    text-align: center;
+}
 
 .columna{
     /* word-break: break-all; word-wrap:break-word; font-size: 12px; */
-     word-break: break-all; word-wrap:break-word; font-size: 15px;
+     word-break: break-all; word-wrap:break-word; font-size: 13px;
 }
 
 .almacen-centro{
-    font-size: 12px;;
+    font-size: 12px;
 }
 
 .emptyData{
@@ -47,11 +46,19 @@ th{
 }
 
 .headerth {
-    font-size: 15px !important;
+    font-size: 13px !important;
     width: max-content;
     color: #ffffff !important;
     background-color: #666666 !important;
-    padding: 1.571em 0.857em !important;
+    padding: 1em 0.857em !important;
+}
+
+.headerth2 {
+    font-size: 13px !important;
+    color: #ffffff !important;
+    background-color: #666666 !important;
+    padding: 1em 0.857em !important;
+    width: max-content;
 }
 
 .padding{
@@ -126,32 +133,19 @@ th{
 
 
 .expandSmallColumn {
-    width:35px;
+    width:4em;
 }
 
 .expandSmallColumn2 {
-    width: 50px;
-}
-
-.expandSmallColumn3 {
-    width: 80px;
-}
-
-.expandSmallColumn4 {
-    width: 90px;
-}
-
-.expandSmallColumn5 {
-    width: 180px;
+    width: 6em;
 }
 
 .limitedColumn {
-    max-width: 4em;
+    max-width: 2em;
     word-break: break-all;
     word-wrap: break-word;
-    font-size: 15px;
+    font-size: 13px;
 }
-
 
 .btn-buscar {
     top: 35px;

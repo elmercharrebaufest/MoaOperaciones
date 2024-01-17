@@ -35,26 +35,31 @@ namespace SustitucionMOAWS.WSConsumers
             string fechaInicio = parametros.fechaInicio;
             string vendedor = parametros.vendedor;
             string categoria = "9"; // 9 = Servicios
-            BAPIEKKOL[] cabecera = new BAPIEKKOL[] { };
+            BAPIEKKOL[] cabeceras = new BAPIEKKOL[] { };
             BAPIEKPOC[] detalle = new BAPIEKPOC[] { };
             BAPIRETURN[] bapiReturn = new BAPIRETURN[] { };
             service.BAPI_PO_GETITEMS("", "", "", fechaInicio, "", "", categoria, "", new BAPIMGVMATNR(), "",
                                      "", "", "", "", "", "", "", new BAPIMGVMATNR(), "", "",
                                      "", "", vendedor, "X",
-                                     ref cabecera,
+                                     ref cabeceras,
                                      ref detalle,
                                      ref bapiReturn
                                     );
-            return Map(cabecera);
-            //turn new List<OrdenDeCompraSAPCabecera>();
+            return Map(cabeceras);
+
         }
 
-        private List<OrdenCompraDto> Map(BAPIEKKOL[] cabecera)
+        /// <summary>
+        /// Parsea los datos de las cabeceras de las ordenes de compra
+        /// </summary>
+        /// <param name="cabeceras"></param>
+        /// <returns></returns>
+        private List<OrdenCompraDto> Map(BAPIEKKOL[] cabeceras)
         {
             List<OrdenCompraDto> result = new List<OrdenCompraDto>();
             List<OrdenCompraDto> posiciones = new List<OrdenCompraDto>();
 
-            foreach (var item in cabecera)
+            foreach (var item in cabeceras)
             {
                 //Suma de los netos de las posiciones
                 //decimal montoTotal = detalle

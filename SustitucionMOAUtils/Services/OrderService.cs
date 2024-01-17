@@ -108,15 +108,27 @@ namespace SustitucionMOAUtils.Services
         }
 
 
-        // Consultas a servicios SAP con distintos de busqueda
+        // Consultas a servicio SAP con distintos criterios de busqueda
         public List<DetalleOrdenDeCompraDto> ServicioSAP_OrdenesCompraCabeceras(OrderParamsDto parametros)
         {
-            //Obtiene Cabeceras de Ordenes de Compra
-            List<OrdenCompraDto> ordenesCompra = new ObtenerOrdenesDeCompraConsumerMOA().Request(parametros);
+            List<OrdenCompraDto> ordenesCompra = new List<OrdenCompraDto>();
+            // Si la consulta no tiene un número de orden de compra, se obtienen todas las ordenes de compra en el rango de fechas
+            if (parametros.OrdenCompraId == null)
+            {
+                ordenesCompra = new ObtenerOrdenesDeCompraConsumerMOA().Request(parametros);
+            }
+            else
+            {
+                if (long.TryParse(parametros.OrdenCompraId, out long ordenCompraId))
+                {
+                    OrdenCompraDto nuevaOrden = new OrdenCompraDto
+                    {
+                        Id = ordenCompraId,
+                    };
 
-            // Filtra por número de orden de compra, si se proporciona el parámetro
-            if (parametros.OrdenCompraId != null)
-                ordenesCompra = ordenesCompra.Where(orden => orden.Id.ToString() == parametros.OrdenCompraId).ToList();
+                    ordenesCompra.Add(nuevaOrden);
+                }
+            }
 
             //List<TablaSap> centros = repositorio.Listar<TablaSap>(a => a.Tabla == "Centro");
             //List<TablaSap> almacenes = repositorio.Listar<TablaSap>(a => a.Tabla == "Almacen");
@@ -130,13 +142,13 @@ namespace SustitucionMOAUtils.Services
             {
                 string nroOC = ordenCompra.Id.ToString();
                 
-                //Solo pruebas de desarrollo, luego se debe eliminar.
-                if (nroOC == "4123001500" || nroOC == "4123001336" || nroOC == "4123001899" || nroOC == "4123001916" || nroOC == "4123001874") {  }
 
                 // Obtengo detalle de una OC
                 DetalleOrdenDeCompraDto detalleOrdendeCompra = new ObtenerOrdenDeCompraConsumerMOA(repositorio).ObtenerDetalleDeOrdenDeCompra(nroOC, centros, almacenes);
+
                 detalleOrdendeCompra.NombreProveedor = ordenCompra.ProveedorNombre;
                 detalleOrdendeCompra.MonedaDescripcion = ordenCompra.MonedaDescripcion;
+
 
                 result.Add(detalleOrdendeCompra);
             }

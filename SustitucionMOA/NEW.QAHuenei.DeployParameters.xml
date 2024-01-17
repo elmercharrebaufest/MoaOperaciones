@@ -49,14 +49,13 @@
 	<setParameter name="CopiaEmailToGestionAltaCuit Config" value="moaoperaciones@baufest.com" />
 	<setParameter name="EmailAsuntoPrefijo Config" value="[QA] " />
 
-    <!--Servicios SAP que se necesitan consumir con HttpClient-->
-    <setParameter name="ServicioSAPEntradasServicioCabecera" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MMRFC_BAPI_ENTRYSHEET_GETLIST&amp;interfaceNamespace=urn%3AOPERACIONES" />
-    <setParameter name="ServicioSAPEntradasServicioCrear" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MMRFC_BAPI_ENTRYSHEET_CREATE&amp;interfaceNamespace=urn%3AOPERACIONES" />
-    <setParameter name="SOAPAction" value="http://sap.com/xi/WebService/soap1.1" />
-    <setParameter name="Authorization" value="Basic R1dFQlNSVl9HT0w6cHJ1ZWJh" />
+  <!--Servicios SAP que se necesitan consumir con HttpClient-->
+  <setParameter name="ServicioSAPEntradasServicioCabecera" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MMRFC_BAPI_ENTRYSHEET_GETLIST&amp;interfaceNamespace=urn%3AOPERACIONES" />
+  <setParameter name="ServicioSAPEntradasServicioCrear" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MMRFC_BAPI_ENTRYSHEET_CREATE&amp;interfaceNamespace=urn%3AOPERACIONES" />
+  <setParameter name="SOAPAction" value="http://sap.com/xi/WebService/soap1.1" />
+  <setParameter name="Authorization" value="Basic R1dFQlNSVl9HT0w6cHJ1ZWJh" />
 
-	
-	<setParameter name="ComputerVisionApiKey Config" value="4ebc562f2be5457a96329ae69d84f192" />
+  <setParameter name="ComputerVisionApiKey Config" value="4ebc562f2be5457a96329ae69d84f192" />
 	<setParameter name="ComputerVisionEndpoint Config" value="https://moaopsocr.cognitiveservices.azure.com/" />
 	<setParameter name="BlobStorageEndpoint Config" value="DefaultEndpointsProtocol=https;AccountName=webopdevstorage;AccountKey=degh9HC+9hXxFOEU/2HqhP1ZusanUvm9X31YqPQIT68DNsU+GuVnphhYa7Okoexu4R1X5s7xiH5/X3ouTXURew==;EndpointSuffix=core.windows.net" />
 
@@ -160,14 +159,14 @@
 
   <setParameter name="BAPI_INFORECORD_GETLISTPortType Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=BAPI_INFORECORD_GETLIST&amp;interfaceNamespace=urn%3Asap-com%3Adocument%3Asap%3Arfc%3Afunctions"  />
 
-   <!-- Ordenes de Compra y Entrada Servicio -->
-
-
+  <!-- Ordenes de Compra y Entrada Servicio -->
+  
   <setParameter name="Z_MMRFC_OC_PARA_SOLP Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=Z_MMRFC_OC_PARA_SOLP&amp;interfaceNamespace=urn:sap-com:document:sap:rfc:functions"  />
   <setParameter name="BAPI_PO_GETITEMSPortType Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=BAPI_PO_GETITEMS&amp;interfaceNamespace=urn:sap-com:document:sap:rfc:functions"  />
   <setParameter name="SI_MMRFC_BAPI_ENTRYSHEET_GETDETAIL Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=BAPI_PO_GETDETAIL1&amp;interfaceNamespace=urn:sap-com:document:sap:rfc:functions" />
   <setParameter name="SI_MMRFC_BAPI_ENTRYSHEET_GETLIST Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MMRFC_BAPI_ENTRYSHEET_GETLIST&amp;interfaceNamespace=urn:OPERACIONES" />
   <setParameter name="SI_MMRFC_BORRAR_HES Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MMRFC_BORRAR_HES&amp;interfaceNamespace=urn:OPERACIONES" />
   <setParameter name="SI_MMRFC_BAPI_ENTRYSHEET_CREATE Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MMRFC_BAPI_ENTRYSHEET_CREATE&amp;interfaceNamespace=urn:OPERACIONES" />
-	 
+
+
 </parameters>

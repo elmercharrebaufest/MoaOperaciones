@@ -494,6 +494,7 @@
     <TypeScriptCompile Include="src\app\aplicacion-ccpp\carga-manual\carga-manual.component.ts" />
     <TypeScriptCompile Include="src\app\aplicacion-ccpp\listado\listado.component.ts" />
     <TypeScriptCompile Include="src\app\aplicacion-ccpp\masiva\masiva.component.ts" />
+    <TypeScriptCompile Include="src\app\common\models\entradaServicio.ts" />
     <TypeScriptCompile Include="src\app\common\models\fijacionesAutomaticas.ts" />
     <Content Include="src\app\common\shared-components\autocomplete-localidad\autocomplete-localidad.component.css" />
     <Content Include="src\app\common\shared-components\autocomplete-localidad\autocomplete-localidad.component.html" />

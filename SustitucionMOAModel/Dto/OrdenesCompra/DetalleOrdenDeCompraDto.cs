@@ -11,22 +11,16 @@ using System.Threading.Tasks;
 namespace SustitucionMOAModel.Dto.OrdenesCompra
 {
     public class DetalleOrdenDeCompraDto
-    {
-       
-
-        public int Id { get; set; }
-        public int Cotizacion_Id { get; set; }
-        public int Solp_Id { get; set; }
+    {    
         public string NumeroOrdenDeCompra { get; set; }
         public string FechaCreacion { get; set; }
+        public string Proveedor { get; set; }
         public int UsuarioCreador_Id { get; set; }
         public string UsuarioCreador { get; set; }
         public int Moneda_Id { get; set; }
         public string MonedaDescripcion { get; set; }
         public decimal MontoTotal { get; set; }
-        public List<PosicionDto> Posiciones { get; set; } = new List<PosicionDto>();
-        public decimal PrecioFinal { get; set; }
-        public string Proveedor { get; set; }
+        public decimal PrecioFinal { get; set; }    
         public string TipoPosicionCodigo { get; set; }
 
         public string TextoDeCabecera { get; set; }
@@ -47,5 +41,7 @@ namespace SustitucionMOAModel.Dto.OrdenesCompra
         /// Monto Total with added separators as requested - MMSN-491
         /// </summary>
         public string MontoTotalString { get; set; }
+        
+        public List<PosicionDto> Posiciones { get; set; } = new List<PosicionDto>();
     }
 }

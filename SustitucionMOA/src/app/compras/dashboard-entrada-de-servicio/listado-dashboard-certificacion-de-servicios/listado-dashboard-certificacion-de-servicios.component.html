@@ -70,56 +70,21 @@
     <!-- End Search-->
     <spinner></spinner>
     <!-- <app-filtro-dashboard-certificacion-de-servicios></app-filtro-dashboard-certificacion-de-servicios> -->
-    <div
-        class="col-sm-12 col-md-12 col-lg-12"
-        style="padding: 0px; border: 1px solid rgb(200, 200, 200)"
-    >
-        <p-table
-            #tabla
-            [value]="tablaPO"
-            [responsive]="true"
-            dataKey="NumeroOrdenDeCompra"
-            [columns]="columns"
-            [paginator]="true"
-            [loading]="loading"
-            [rows]="10"
-            [globalFilterFields]="[
-                'NumeroOrdenDeCompra',
-                'Proveedor',
-                'NombreProveedor'
-            ]"
-        >
-            <ng-template pTemplate="caption" style="border: none !important">
+    <div class="col-sm-12 col-md-12 col-lg-12" style="padding: 0px; border: 1px solid rgb(200, 200, 200);">
+
+        <p-table #tabla [value]="tablaPO" [responsive]="true" dataKey="NumeroOrdenDeCompra"
+                 [columns]="columns"
+                 [paginator]="true"
+                 [loading]="loading"
+                 [rows]="10"
+                 [globalFilterFields]="['NumeroOrdenDeCompra','Proveedor', 'NombreProveedor']"  [resizableColumns]="true" [autoLayout]="true" rowExpandMode="single">
+
+            <ng-template pTemplate="caption" style="border: none !important;">
                 <div class="p-d-flex">
                     <span class="p-input-icon-left p-ml-auto">
-                        <i
-                            class="pi pi-search"
-                            style="padding-right: 0.5em"
-                        ></i>
-                        <input
-                            pInputText
-                            type="text"
-                            (input)="
-                                tabla.filterGlobal(
-                                    $event.target.value,
-                                    'contains'
-                                )
-                            "
-                            placeholder="BUSCADOR OC"
-                            style="width: 40%"
-                        />
-                        <input
-                            pInputText
-                            type="text"
-                            (input)="
-                                tabla.filterGlobal(
-                                    $event.target.value,
-                                    'contains'
-                                )
-                            "
-                            placeholder="BUSCADOR PROVEEDOR"
-                            style="width: 40%; margin-left: 1em"
-                        />
+                        <i class="pi pi-search" style="padding-right: 0.5em;"></i>
+                        <input pInputText type="text" (input)="tabla.filterGlobal($event.target.value, 'contains')" placeholder="BUSCADOR OC" style="width: 40%;" (click)="collapseExpanded()" />
+                        <input pInputText type="text" (input)="tabla.filterGlobal($event.target.value, 'contains')" placeholder="BUSCADOR PROVEEDOR" style="width: 40%; margin-left:1em" (click)="collapseExpanded()" />
                     </span>
                 </div>
             </ng-template>
@@ -130,20 +95,11 @@
                 Detalle
             </th>-->
 
-                    <th
-                        title="Detalle"
-                        class="headerth"
-                        style="width: 32px; text-align: center"
-                    >
+                    <th title="Detalle" class="headerth2 detalle-th">
                         Detalle
                     </th>
 
-                    <th
-                        class="headerth"
-                        title="Fecha"
-                        (click)="onOrder('Fecha')"
-                        style="width: 80px"
-                    >
+                    <th class="headerth2" title="Fecha" (click)="onOrder('Fecha')">
                         Fecha
                         <span>
                             <i
@@ -169,12 +125,7 @@
                         </span>
                     </th>
 
-                    <th
-                        title="Número de OC"
-                        class="headerth"
-                        (click)="onOrder('OrdenCompraId')"
-                        style="width: 80px"
-                    >
+                    <th title="Número de OC" class="headerth2" (click)="onOrder('OrdenCompraId')">
                         Número de OC
                         <span>
                             <i
@@ -200,12 +151,7 @@
                         </span>
                     </th>
 
-                    <th
-                        title="Proveedor"
-                        class="headerth"
-                        (click)="onOrder('ProveedorNombre')"
-                        style="width: 105px"
-                    >
+                    <th title="Proveedor" class="headerth2" (click)="onOrder('ProveedorNombre')">
                         Proveedor
                         <span>
                             <i
@@ -230,27 +176,16 @@
                             ></i>
                         </span>
                     </th>
-                    <th
-                        title="RazonSocial"
-                        class="headerth"
-                        style="width: 90px"
-                    >
+                    <th title="RazonSocial" class="headerth2">
                         Razón Social
                     </th>
 
-                    <th
-                        title="OrdenCompraMoneda"
-                        class="headerth columna"
-                        style="width: 90px"
-                    >
+
+                    <th title="OrdenCompraMoneda" class="headerth2">
                         Moneda
                     </th>
 
-                    <th
-                        title="Monto total"
-                        class="headerth columna"
-                        style="width: 80px"
-                    >
+                    <th title="Monto total" class="headerth2">
                         Monto total
                     </th>
                 </tr>
@@ -288,15 +223,9 @@
                     <i [ngClass]="expandedRows ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
                 </a>
             </td>-->
-                    <td class="columna" style="text-align: center">
-                        <a href="#" [pRowToggler]="rowData">
-                            <i
-                                [ngClass]="
-                                    expanded
-                                        ? 'pi pi-chevron-down'
-                                        : 'pi pi-chevron-right'
-                                "
-                            ></i>
+                    <td class="columna" style="text-align: center;">
+                        <a href="#" [pRowToggler]="rowData" (click)="toggleRow(rowData)">
+                            <i [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
                         </a>
                     </td>
 
@@ -339,44 +268,28 @@
                             <p-table [value]="rowData.Posiciones" dataKey="Id">
                                 <ng-template pTemplate="header" class="fz">
                                     <tr>
-                                        <th
-                                            title="Arrow"
-                                            class="headerth bg-f"
-                                            style="
-                                                width: 32px;
-                                                text-align: center;
-                                            "
-                                        ></th>
 
-                                        <th
-                                            title="Posicion"
-                                            class="headerth bg-f limitedColumn"
-                                        >
+                                        <th title="Arrow" class="headerth2 bg-f expandSmallColumn">
+                                            
+                                        </th>
+
+                                        <th title="Posicion" class="headerth2 bg-f">
                                             Posición
                                         </th>
 
-                                        <th
-                                            title="TxtBrev"
-                                            class="headerth bg-f"
-                                        >
+                                        <th title="TxtBrev" class="headerth2 bg-f">
                                             Descripción de la posición
                                         </th>
 
-                                        <th
-                                            title="CtdPedido"
-                                            class="headerth columna bg-f limitedColumn"
-                                        >
+                                        <th title="CtdPedido" class="headerth2 bg-f">
                                             Cantidad
                                         </th>
 
-                                        <th title="UM" class="headerth bg-f">
+                                        <th title="UM" class="headerth2 bg-f">
                                             UM
                                         </th>
 
-                                        <th
-                                            title="PrecioNeto"
-                                            class="headerth bg-f"
-                                        >
+                                        <th title="PrecioNeto" class="headerth2 bg-f expandSmallColumn2">
                                             Prc.neto
                                         </th>
 
@@ -384,46 +297,27 @@
                                     Moneda
                                 </th> -->
 
-                                        <th
-                                            title="GrupoArt"
-                                            class="headerth columna bg-f"
-                                        >
+                                        <th title="GrupoArt" class="headerth2 bg-f">
                                             Grupo art.
                                         </th>
 
-                                        <th
-                                            title="Centro"
-                                            class="headerth bg-f"
-                                        >
+                                        <th title="Centro" class="headerth2  bg-f">
                                             Centro
                                         </th>
 
-                                        <th
-                                            title="Almacen"
-                                            class="headerth columna bg-f"
-                                        >
+                                        <th title="Almacen" class="headerth2 bg-f">
                                             Almacén
                                         </th>
 
-                                        <th
-                                            title="NroSolped"
-                                            class="headerth bg-f"
-                                        >
+                                        <th title="NroSolped" class="headerth2 bg-f">
                                             NRO_SOLPED
                                         </th>
 
-                                        <th
-                                            title="Contrato"
-                                            class="headerth bg-f"
-                                        >
+                                        <th title="Contrato" class="headerth2 bg-f">
                                             Contrato
                                         </th>
 
-                                        <th
-                                            title="Solicitante"
-                                            class="headerth columna bg-f"
-                                            style="width: 10em"
-                                        >
+                                        <th title="Solicitante" class="headerth2 bg-f">
                                             Solicitante
                                         </th>
                                     </tr>
@@ -435,10 +329,7 @@
                                     let-expanded="expanded"
                                 >
                                     <tr>
-                                        <td
-                                            class="columna"
-                                            style="text-align: center"
-                                        >
+                                        <td style="text-align: center;">
                                             <a href="#" [pRowToggler]="rowData">
                                                 <i
                                                     [ngClass]="
@@ -560,37 +451,29 @@
                                                         class="fz bg-c"
                                                     >
                                                         <tr class="bg-c">
-                                                            <th
-                                                                title="Seleccion"
-                                                                class="headerth columna bg-c limitedColumn"
-                                                                style="
-                                                                    width: 9em;
-                                                                    text-align: center;
-                                                                    border-left: 1px
-                                                                        solid
-                                                                        #075088 !important;
-                                                                "
-                                                            >
+
+                                                            <th title="Seleccion" class="headerth columna bg-c limitedColumn" style="
+                                                    text-align: center; border-left: 1px solid #075088 !important;">
                                                                 Selección
                                                             </th>
 
                                                             <th
                                                                 title="NroItem"
-                                                                class="headerth columna bg-c"
+                                                                class="headerth2 bg-c"
                                                             >
                                                                 NRO LINEA
                                                             </th>
 
                                                             <th
                                                                 title="NumeroServicio"
-                                                                class="headerth columna bg-c"
+                                                                class="headerth2 bg-c"
                                                             >
                                                                 N° Servicio
                                                             </th>
 
                                                             <th
                                                                 title="TextBrev"
-                                                                class="headerth columna bg-c"
+                                                                class="headerth2 bg-c"
                                                                 style="
                                                                     width: 20em;
                                                                 "
@@ -601,14 +484,14 @@
 
                                                             <th
                                                                 title="Cantidad"
-                                                                class="headerth columna bg-c"
+                                                                class="headerth2 bg-c"
                                                             >
                                                                 Cantidad
                                                             </th>
 
                                                             <th
                                                                 title="UM"
-                                                                class="headerth columna bg-c"
+                                                                class="headerth2 bg-c"
                                                                 style="
                                                                     width: 6em;
                                                                 "
@@ -618,7 +501,7 @@
 
                                                             <th
                                                                 title="Importe"
-                                                                class="headerth bg-c expandSmallColumn3"
+                                                                class="headerth2 bg-c"
                                                             >
                                                                 Importe
                                                             </th>
@@ -629,14 +512,14 @@
 
                                                             <th
                                                                 title="CantidadReal"
-                                                                class="headerth columna bg-c"
+                                                                class="headerth2  bg-c"
                                                             >
                                                                 Cantidad Real
                                                             </th>
 
                                                             <th
                                                                 title="Porcentaje"
-                                                                class="headerth columna bg-c"
+                                                                class="headerth2 bg-c"
                                                                 style="
                                                                     width: 6em;
                                                                     border: 0 !important;

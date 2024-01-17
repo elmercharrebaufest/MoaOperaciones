@@ -12,7 +12,10 @@ import { AdjudicacionDto } from '../modelos/adjudicacion';
 import { RegistroInfoDto } from '../modelos/registro-info';
 import { PeticionVisualizacionPrecioDto } from '../modelos/peticion-visualizar-precio-dto';
 import { ChatInternoComprasDto } from './chat-interno/chat-interno.interface';
+
 import { timeoutWith } from 'rxjs/operators';
+import { EntradaServicio } from '../common/models/entradaServicio';
+
 
 @Injectable({
     providedIn: 'root'
