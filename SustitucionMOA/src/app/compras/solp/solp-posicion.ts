@@ -94,6 +94,7 @@ export class SolpPosicion {
     public precioBruto: any;
     public unidadSeleccionada: any;
     public unidadMedida: string;
+    public unidadesAlternativas: any;
     public tipoImputacion: any;
     public tareaSubcontratarObj: any;
     public numeroContratoSuperior: any;

@@ -294,7 +294,7 @@
                             <td [pEditableColumn]="posicion" *ngIf="esTipoMaterial">
                                 <p-dropdown filter="true"
                                             [(ngModel)]="posicion.unidadSeleccionada"
-                                            [options]="unidades"
+                                            [options]="posicion.unidadesAlternativas"
                                             optionLabel="Descripcion"
                                             dataKey="Id"
                                             appendTo="body"

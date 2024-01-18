@@ -1261,7 +1261,7 @@ namespace SustitucionMOAUtils.Services
                 var ordenDeCompraSAPDto = ObtenerOrdenDeCompra(solpDevuelta.NroOrdenDeCompraAdicional);
 
                 if (ordenDeCompraSAPDto.Error == null)
-                { 
+                {
                     solpDevuelta.ProveedorIdAdicional = ordenDeCompraSAPDto.Cabecera.Usuario_Id;
                     solpDevuelta.ProveedorRazonSocialAdicional = ordenDeCompraSAPDto.Cabecera.RazonSocialProveedor;
                     solpDevuelta.MonedaOC = ordenDeCompraSAPDto.Cabecera.Moneda;
@@ -1934,7 +1934,7 @@ namespace SustitucionMOAUtils.Services
                 Log.Info($"Copia mail creador {solp.UsuarioCreacion.Mail}");
                 Log.Info($"Fecha {DateTime.Now}");
 
-                var copia = new List<string> {};
+                var copia = new List<string> { };
                 if (!string.IsNullOrEmpty(solp?.UsuarioCreacion?.Mail))
                 {
                     copia.Add(solp.UsuarioCreacion.Mail);
@@ -2724,7 +2724,7 @@ namespace SustitucionMOAUtils.Services
                 {
                     item.CentroFormateado = item.PosicionCompras != null ? string.Join(", ", item.PosicionCompras.OrderBy(x => x.CentroCodigo).GroupBy(x => x.CentroCodigo).Select(x => x.Key)) : "";
                     item.GrupoCompraFormateado = item.PosicionCompras != null ? string.Join(", ", item.PosicionCompras.OrderBy(x => x.GrupoComprasCodigo).GroupBy(x => x.GrupoComprasCodigo).Select(x => x.Key)) : "";
-                    
+
                     if (item.VerPublicar == true && item.PosicionCompras.Count() > 0)
                     {
                         var solpDB = solpsDB.First(i => i.Id == item.Id);
@@ -2744,7 +2744,7 @@ namespace SustitucionMOAUtils.Services
                             }
                         }
 
-                        if (solpDB.ProveedorDefinido == true) 
+                        if (solpDB.ProveedorDefinido == true)
                         {
                             item.VerPublicar = false;
                         }
@@ -2831,7 +2831,6 @@ namespace SustitucionMOAUtils.Services
                                     cotizacionPosicion.Cantidad = Math.Round(cotizacionPosicion.Cantidad * (unidadCotizada.Numerador / unidadCotizada.Denominador) / (unidadSolicitada.Numerador / unidadSolicitada.Denominador), 2);
                                     cotizacionPosicion.Precio = Math.Round((cotizacionPosicion.Precio / (unidadCotizada.Numerador / unidadCotizada.Denominador)) * (unidadSolicitada.Numerador / unidadSolicitada.Denominador), 2);
                                 }
-
                             };
 
                             if (!tipodecambio.TryGetValue(cotizacionPosicion.Moneda_Id, out decimal cambio) && cotizacionPosicion.Moneda_Id > 0)
@@ -3152,7 +3151,7 @@ namespace SustitucionMOAUtils.Services
                     ACCTASSCAT = "X",
                     //DES_VENDOR = "X",
                     FIXED_VEND = posicion.ProveedorAdjudicado_Id != null ? "X" : "",
-                    PURCH_ORG = !string.IsNullOrEmpty(posicion.OrganizacionDeComprasCodigo) ? "X" : "",                    
+                    PURCH_ORG = !string.IsNullOrEmpty(posicion.OrganizacionDeComprasCodigo) ? "X" : "",
                     //AGREEMENT = "X",
                     //AGMT_ITEM = "X",
                     INFO_REC = !string.IsNullOrEmpty(posicion.RegistroInfoNro) ? "X" : "",
@@ -4829,8 +4828,8 @@ namespace SustitucionMOAUtils.Services
 
                 foreach (var proveedor in peticion.Usuarios.Where(x => circularDto.UsuarioIds.Contains(x.Usuario_Id)))
                 {
-                    if (rolUsuario == "SOLICITANTE") 
-                    { 
+                    if (rolUsuario == "SOLICITANTE")
+                    {
                         proveedor.PropuestaTecnicaAprobada = null;
                         proveedor.PropuestaTecnicaFecha = null;
                         proveedor.PropuestaTecnicaUsuario_Id = null;
@@ -5339,7 +5338,6 @@ namespace SustitucionMOAUtils.Services
                         {
                             var unidadesPorMaterialSAP = unidadesDeMedidaSAP.Where(x => x.CodigoMaterial == posicion.Posiciones.Codigo).Select(x => x.UnidadDeMedida).ToList();
                             posicion.Posiciones.UnidadesDeMedida = todasLasUM.Where(x => unidadesPorMaterialSAP.Contains(x.Codigo)).ToList();
-
                         }
                         else
                         {
@@ -7189,6 +7187,16 @@ namespace SustitucionMOAUtils.Services
             return lista;
         }
 
+        public List<TablaSapDto> ListarUnidadesDeMedida(string material)
+        {
+            List<TablaSapDto> resultado = new List<TablaSapDto>();
+            List<TablaSapDto> todasLasUM = ObtenerTablaSap(TablasSap.Unidad);
+            List<UnidadesDeMedida> unidadesDeMedidaSAP = obtenerUnidadesDeMedidaConsumerMOA.Request(new List<string> { material });
+            var unidadesPorMaterialSAP = unidadesDeMedidaSAP.Where(x => x.CodigoMaterial == material).Select(x => x.UnidadDeMedida).ToList();
+            resultado = todasLasUM.Where(x => unidadesPorMaterialSAP.Contains(x.Codigo)).ToList();
+
+            return resultado;
+        }
 
         public ResultadoGenerico EditarOrdenDeCompra(AdjudicacionEditarDto adjudicacion)
         {

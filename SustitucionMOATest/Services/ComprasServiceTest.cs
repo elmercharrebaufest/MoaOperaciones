@@ -217,7 +217,7 @@ namespace SustitucionMOATest.Services
                     new PeticionDeOfertaUsuario
                     {
                         Id = 1,
-                        
+
                         PeticionDeOferta = new PeticionDeOferta
                     {
                         Solp = new Solp
@@ -890,10 +890,10 @@ namespace SustitucionMOATest.Services
                 FechaCreacion = DateTime.Now,
                 Moneda_Id = 1,
                 UsuarioCreador_Id = 1,
-                Solp_Id = 1,                
+                Solp_Id = 1,
                 CondicionesDeEntrega = "Condiciones"
             };
-           
+
 
             repositorioMock.Setup(y => y.Obtener<Usuario>(It.IsAny<int>()))
                .Returns(new Usuario { Id = 1, CUITRegistro = "32332232", Habilitado = true, Mail = "bmelgarejo@prueba.com.ar", OrganizacionDeCompra = "2029" });
@@ -928,12 +928,12 @@ namespace SustitucionMOATest.Services
             vendedoresConsumerMOAMock.Setup(x => x.Request(It.IsAny<string>(), (It.IsAny<List<SustitucionMOAModel.Models.FechaWS>>()))).Returns(new SustitucionMOAModel.Models.WSMapMOA.Vendedor.VendedoresWSMOAResponse
             { vendedores = new List<SustitucionMOAModel.Models.WSMapMOA.Vendedor.Vendedor> { new SustitucionMOAModel.Models.WSMapMOA.Vendedor.Vendedor { cuit = "232323" } } });
 
-          
+
             repositorioMock
             .Setup(y => y.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>()))
-            .Returns(new Usuario { Id = 1, CUITRegistro = "232323", TipoUsuario = new TipoUsuario { Id = 3 },  Proveedores = new List<Proveedor>() { new Proveedor { Id = 1, RazonSocial = "ARROYITO", CUIT = "232323", TipoProveedor = new TipoUsuario { Id = 3 }  } }, Habilitado = true, Mail = "bmelgarejo@prueba.com.ar", OrganizacionDeCompra = "2029" });
+            .Returns(new Usuario { Id = 1, CUITRegistro = "232323", TipoUsuario = new TipoUsuario { Id = 3 }, Proveedores = new List<Proveedor>() { new Proveedor { Id = 1, RazonSocial = "ARROYITO", CUIT = "232323", TipoProveedor = new TipoUsuario { Id = 3 } } }, Habilitado = true, Mail = "bmelgarejo@prueba.com.ar", OrganizacionDeCompra = "2029" });
 
-            usuarioServiceMock.Setup(x => x.GrabarProveedor(It.IsAny<ProveedorDto>(), EstadoAprobacion.Aprobado)).Returns(new ResultadoGenerico { ProveedorDto = new ProveedorDto { Id = 1} });
+            usuarioServiceMock.Setup(x => x.GrabarProveedor(It.IsAny<ProveedorDto>(), EstadoAprobacion.Aprobado)).Returns(new ResultadoGenerico { ProveedorDto = new ProveedorDto { Id = 1 } });
             obtenerProveedorConsumerMOA.Setup(x => x.ObtenerProveedor(It.IsAny<string>())).Returns(new ObtenerProveedorWSMOAResponse { MAIL = "bmelgarejo@test.com", NAME = "PARISI" });
             repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<UsuarioCompras, bool>>>(),
                It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null)).Returns(new List<UsuarioCompras>() { new UsuarioCompras { Mail = "bmelgarejo@test.com", Id = 1 } });
@@ -2361,7 +2361,7 @@ namespace SustitucionMOATest.Services
             {
                 Id = solp_id,
                 FechaCreacion = DateTime.Now,
-                UsuarioCreacion = new Usuario { Mail = "comprador@mail.com" },               
+                UsuarioCreacion = new Usuario { Mail = "comprador@mail.com" },
                 ChatInternoCompras = new List<ChatInternoCompras>
                 {
                     new ChatInternoCompras
@@ -2481,6 +2481,26 @@ namespace SustitucionMOATest.Services
 
             Assert.That(resultado, Is.Not.Null);
             Assert.AreEqual(resultado.GetType(), regionesEsperadas.GetType());
+        }
+
+        [Test]
+        public void ListarUnidadesDeMedidaOk()
+        {
+            string material = "materialCodigo";
+            List<TablaSapDto> tablaSapDto = new List<TablaSapDto>();
+            var tablaSap = new List<TablaSap> { new TablaSap { Codigo = "FINALIZADA", Tabla = "EstadoSolpSap", CodigoSap = "05", Descripcion = "Liberación concluida" } };
+            repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<TablaSap, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null)).Returns(tablaSap);
+            obtenerUnidadesDeMedidaAlternativasConsumerMOAMock.Setup(y => y.Request(It.IsAny<List<string>>())).Returns(new List<UnidadesDeMedida>
+            { new UnidadesDeMedida { CodigoMaterial = "000000000050224373", UnidadDeMedida = "UNI", Denominador = 1, Numerador = 1 }});
+
+            var liberadorSapDto = new List<LiberadorSapDto> { new LiberadorSapDto { NombreCompleto = "Nombre", Cargo = "Cargo", Habilitado = true, LiberadorSapTipo_Id = 1 } };
+            repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<LiberadorSap, LiberadorSapDto>>>(), It.IsAny<Expression<Func<LiberadorSap, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc))
+              .Returns(new List<LiberadorSapDto>() { new LiberadorSapDto { NombreCompleto = "Nombre", Cargo = "Cargo", Habilitado = true, LiberadorSapTipo_Id = 1 } });
+
+            var result = target.ListarUnidadesDeMedida(material);
+
+            Assert.That(result, Is.Not.Null);
+            Assert.AreEqual(result.GetType(), tablaSapDto.GetType());
         }
     }
 }

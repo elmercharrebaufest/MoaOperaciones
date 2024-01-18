@@ -203,18 +203,15 @@ export class ComprasService extends BaseService {
                     TextoSuministro: x.textoSuministro,
                     Motivo: x.motivo,
                     Modelo: x.modelo,
-                    CodigoMaterialSap: this.getObjetoCodigo(x.codigoServicio && x.codigoServicio.Codigo), // pepito
-
-                    CodigoServicioSap: this.getObjetoCodigo(x.codigoServicio && x.codigoServicio.Codigo), // pepito
+                    CodigoMaterialSap: this.getObjetoCodigo(x.codigoServicio && x.codigoServicio.Codigo),
+                    CodigoServicioSap: this.getObjetoCodigo(x.codigoServicio && x.codigoServicio.Codigo),
                     Tarea: x.tareaSubcontratar,
                     Cantidad: x.cuentaTd,
                     PrecioBruto: x.precioBruto,
                     Unidad: this.getObjetoCodigo(x.unidadSeleccionada && x.unidadSeleccionada.Codigo),
-
                     CuentaMayor: this.getObjetoCodigo(x.cuentaMayor && x.cuentaMayor.Codigo),
                     TipoImputacionValor: this.getObjetoCodigo(x.valorImputacion && x.valorImputacion.Codigo, x.valorImputacion && x.valorImputacion.Tabla),
                     Provincia: x.selectProvincia,
-
 
                     Subposiciones: x.listadoSubPosiciones ? x.listadoSubPosiciones.filter(sp => {
                         return !!((sp.codigoServicio && sp.codigoServicio.Codigo) ||
@@ -399,6 +396,12 @@ export class ComprasService extends BaseService {
 
         return this.http
             .get<any[]>("/api/compras/AutocompleteMaterialRFC", { params: params })
+    }
+
+    listarUnidadesDeMedida(material: string) {
+        let params: HttpParams = new HttpParams().append('material', material);
+
+        return this.http.get<any[]>("/api/compras/ListarUnidadesDeMedida", { params: params })
     }
 
     obtenerDatosPorCodigosSap(codigos: any[]) {

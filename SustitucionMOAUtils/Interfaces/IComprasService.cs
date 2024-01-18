@@ -80,11 +80,11 @@ namespace SustitucionMOAUtils.Interfaces
         ChatComprasDto ObtenerChat(int solpId, int usuarioActualId);
         Resultado GrabarMensajeChatInterno(ChatInternoComprasDto mensaje);
         string ExportarChatInternoAtexto(int solpId, string rutaArchivo);
-
         ProveedorComprasDto DevolverMonedaProveedor(string codigoProveedor);
         List<RegionSap> ListarRegionesSap();
         bool ValidarSolpTratada(string nroSolp);
         List<LiberadorSapDto> ListarLiberadorSap();
+        List<TablaSapDto> ListarUnidadesDeMedida(string material);
         ResultadoGenerico EditarOrdenDeCompra(AdjudicacionEditarDto adjudicacion);
     }
 }
