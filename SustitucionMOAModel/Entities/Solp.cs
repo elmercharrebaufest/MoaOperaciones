@@ -33,13 +33,13 @@ namespace SustitucionMOAModel.Entities
         public bool? Urgencia { get; set; }
         public string NroOrdenDeCompraAdicional { get; set; }
         public bool? SeEnvioMailLiberacion { get; set; }
-
         public bool? SeEnvioMailAnulacion { get; set; }
-        
+        public bool? ProveedorDefinido { get; set; }
+
+
 
         [ForeignKey("ProveedorAsignado_Id")]
         public virtual Usuario ProveedorAsignado { get; set; }
-
         [ForeignKey("UsuarioCreacion_Id")]
         public virtual Usuario UsuarioCreacion { get; set; }
         [ForeignKey("UsuarioModificacion_Id")]

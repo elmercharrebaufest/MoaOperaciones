@@ -75,6 +75,12 @@ export class Solp extends CommonResponse {
     public archivosCotizacionesNuevos: Array<File>;
     public archivosCotizaciones: Array<ArchivoModel>;
     public liberadoresSap: any[] = [];
+    public proveedorDefinido: boolean;
+    public proveedorDefinidoAsignado_Id: number;
+    public proveedorDefinidoAsignado: string;
+
+
+
 
     //inicio Cabecera == paso 5
     public selectClaseDocumento: any;

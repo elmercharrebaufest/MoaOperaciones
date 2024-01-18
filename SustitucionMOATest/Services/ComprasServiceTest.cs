@@ -1709,6 +1709,19 @@ namespace SustitucionMOATest.Services
         }
 
         [Test]
+        public void ActualizarFechaLiberacionConProveedorDefinidoOk()
+        {
+            var solpLocal = solp;
+            solpLocal.ProveedorDefinido = true;
+            repositorioMock.Setup(y => y.Obtener(It.IsAny<Expression<Func<Solp, bool>>>())).Returns(solp);
+            repositorioMock.Setup(y => y.Obtener(It.IsAny<Expression<Func<TablaSap, bool>>>())).Returns(new TablaSap { Id = 1 });
+            SetUpOCPeticionCotizacion();
+            target.ActualizarFechaLiberacion(solpLocal.NroSolp, DateTime.Now);
+
+            repositorioMock.Verify(x => x.GuardarCambios(), Times.Exactly(3));
+        }
+
+        [Test]
         public void ActualizarFechaLiberacionConAdicionalOk()
         {
             var solpLocal = solp;

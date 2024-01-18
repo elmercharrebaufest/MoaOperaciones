@@ -112,6 +112,7 @@ export class CotizacionComponent extends ListBaseComponent {
             jefes: new FormControl('', Validators.required),
             gerentes: new FormControl('', Validators.required),
             directores: new FormControl('', Validators.required),
+            proveedorDefinido: new FormControl('', Validators.required)
         });
 
         this.validadorPasoSolpService.formulario = this.formularioCotizacion;
@@ -272,7 +273,7 @@ export class CotizacionComponent extends ListBaseComponent {
     validarChecks() {
         this.model.validacionCheck = true;
 
-        if (this.model.trabajoHecho == true || this.model.adicional == true || this.model.urgencia == true) {
+        if (this.model.trabajoHecho == true || this.model.adicional == true || this.model.urgencia == true || this.model.proveedorDefinido == true) {
 
             if ((this.model.archivosCotizaciones == null || this.model.archivosCotizaciones.length == 0) && (this.model.archivosCotizacionesNuevos == null || this.model.archivosCotizacionesNuevos.length == 0)) {
                 this.model.mensajeCotizacion = "Debe adjuntar un archivo en el paso #4";
@@ -286,7 +287,7 @@ export class CotizacionComponent extends ListBaseComponent {
                 this.model.validacionCheck = false;
             }
 
-            if (this.model.trabajoHecho == true && this.model.adicional != true) {
+            if (this.model.trabajoHecho == true && this.model.adicional != true || this.model.proveedorDefinido == true) {
                 if (!this.proveedorSeleccionado || this.proveedorSeleccionado == "" || typeof this.proveedorSeleccionado === "undefined") {
                     this.model.mensajeCotizacion = "Debe agregar un proveedor en el paso #4";
                     this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: `${this.model.mensajeCotizacion}` });
@@ -367,6 +368,10 @@ export class CotizacionComponent extends ListBaseComponent {
                                     this.model.proveedorAsignado = this.ordenDeCompraSap.Cabecera.RazonSocialProveedor;
                                     this.model.monedaOC = this.ordenDeCompraSap.Cabecera.Moneda;
                                     this.model.usuarioComprasId = this.ordenDeCompraSap.Cabecera.UsuarioCompras_Id;
+
+                                    this.model.proveedorDefinidoAsignado_Id = this.ordenDeCompraSap.Cabecera.Usuario_Id;
+                                    this.model.proveedorDefinidoAsignado = this.ordenDeCompraSap.Cabecera.RazonSocialProveedor;
+
 
                                     this.model.selectUsuarioCompras = this.model.usuarioComprasId > 0
                                         ? this.model.usuarioComprasList.find(x => x.Id === this.model.usuarioComprasId)

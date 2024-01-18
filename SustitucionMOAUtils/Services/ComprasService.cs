@@ -213,6 +213,7 @@ namespace SustitucionMOAUtils.Services
                 solpEntity.Pliego = new Pliego();
                 solpEntity.Posiciones = new List<SolpPosicion>();
                 solpEntity.TrabajoYaHecho = solp.TrabajoYaHecho;
+                solpEntity.ProveedorDefinido = solp.ProveedorDefinido;
                 solpEntity.Adicional = solp.Adicional;
                 solpEntity.Urgencia = solp.Urgencia;
                 solpEntity.NroOrdenDeCompraAdicional = solp.NroOrdenDeCompraAdicional;
@@ -238,6 +239,7 @@ namespace SustitucionMOAUtils.Services
                 solpEntity.TipoSolpSap = solp.TipoSolpSap;
                 pliegoEntity.NombreObra = solp.NombreDeObra;
                 solpEntity.TrabajoYaHecho = solp.TrabajoYaHecho;
+                solpEntity.ProveedorDefinido = solp.ProveedorDefinido;
                 solpEntity.Adicional = solp.Adicional;
                 solpEntity.Urgencia = solp.Urgencia;
                 solpEntity.NroOrdenDeCompraAdicional = solp.NroOrdenDeCompraAdicional;
@@ -1214,6 +1216,7 @@ namespace SustitucionMOAUtils.Services
                 ClaseDocumento = solp.ClaseDocumento != null ? new TablaSapDto(solp.ClaseDocumento) : new TablaSapDto(),
                 ProveedorAsignadoId = solp.ProveedorAsignado_Id,
                 TrabajoYaHecho = solp.TrabajoYaHecho,
+                ProveedorDefinido = solp.ProveedorDefinido,
                 Adicional = solp.Adicional,
                 Urgencia = solp.Urgencia,
                 NroOrdenDeCompraAdicional = solp.NroOrdenDeCompraAdicional,
@@ -1847,7 +1850,7 @@ namespace SustitucionMOAUtils.Services
                         CrearCotizacionConTrabajoYaHecho(solp);
                     }
 
-                    if (solp.TrabajoYaHecho != true && solp.Adicional == true)
+                    if ((solp.TrabajoYaHecho != true && solp.Adicional == true) || solp.ProveedorDefinido == true)
                     {
                         CrearPeticionAutomatica(solp, new List<int> { solp.ProveedorAsignado_Id.Value }, null, false);
                     }
@@ -2739,6 +2742,11 @@ namespace SustitucionMOAUtils.Services
                             {
                                 item.VerPublicar = false;
                             }
+                        }
+
+                        if (solpDB.ProveedorDefinido == true) 
+                        {
+                            item.VerPublicar = false;
                         }
                     }
 
