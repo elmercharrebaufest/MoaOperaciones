@@ -29,6 +29,8 @@ using SustitucionMOAUtils.DesignPattern.Interfaces;
 using SustitucionMOARepositorio.Repositorios.Interfaces;
 using SustitucionMOARepositorio.Repositorios;
 using SustitucionMOAUtils.Interfaces;
+using SustitucionMOAWS.GoogleDrive.Interfaces;
+using SustitucionMOAWS.GoogleDrive;
 
 [assembly: WebActivatorEx.PreApplicationStartMethod(typeof(SustitucionMOA.App_Start.NinjectWebCommon), "Start")]
 [assembly: WebActivatorEx.ApplicationShutdownMethodAttribute(typeof(SustitucionMOA.App_Start.NinjectWebCommon), "Stop")]
@@ -139,6 +141,7 @@ namespace SustitucionMOA.App_Start
             //kernel.Bind<IEmailService>().To(typeof(EmailService)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IAltaClienteSAPJob>().To(typeof(AltaClienteSAPJob)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IReporteOrdenDeCompraConsumerMOA>().To(typeof(ReporteOrdenDeCompraConsumerMOA)).InScope(ctx => OperationContext.Current);
+            kernel.Bind<ICcSsObtenerArchivosUcropJob>().To(typeof(CcSsObtenerArchivosUcropJob)).InScope(ctx => OperationContext.Current);
 
 
             #region Registro
@@ -221,13 +224,16 @@ namespace SustitucionMOA.App_Start
             kernel.Bind<DbContext>().To<MOAOperacionesDbContext>().InScope(ctx => HttpContext.Current);
             kernel.Bind<IRepositorio>().To<RepositorioEF>().InScope(ctx => HttpContext.Current);
             kernel.Bind<IRepositorioUsuario>().To<RepositorioUsuario>().InScope(ctx => HttpContext.Current);
+            kernel.Bind<IRepositorioCampoSustentable>().To<RepositorioCampoSustentable>().InScope(ctx => HttpContext.Current);
             kernel.Bind<ICache, Cache>().To<Cache>().InSingletonScope();
 
             //Consulta Strategies
             kernel.Bind<IConsultaContext>().To<ConsultaContext>().InTransientScope();
             kernel.Bind<IConsultaStrategy>().To<ConsultaOrdenesStrategy>().InTransientScope();
 
-
+            // GoogleDrive
+            kernel.Bind<IGoogleDriveHelper>().To<GoogleDriveHelper>().InScope(ctx => HttpContext.Current);
+            kernel.Bind<ICampoSustentableGoogleDrive>().To(typeof(CampoSustentableGoogleDrive)).InSingletonScope();
             //Activador Ninject Hangfire
             GlobalConfiguration.Configuration.UseNinjectActivator(kernel);
         }

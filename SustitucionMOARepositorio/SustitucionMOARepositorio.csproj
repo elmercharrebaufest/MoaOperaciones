@@ -96,7 +96,9 @@
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="MOAOperacionesDbContext.cs" />
     <Compile Include="RepositorioEF.cs" />
+    <Compile Include="Repositorios\Interfaces\IRepositorioCampoSustentable.cs" />
     <Compile Include="Repositorios\Interfaces\IRepositorioUsuario.cs" />
+    <Compile Include="Repositorios\RepositorioCampoSustentable.cs" />
     <Compile Include="Repositorios\RepositorioUsuario.cs" />
   </ItemGroup>
   <ItemGroup>

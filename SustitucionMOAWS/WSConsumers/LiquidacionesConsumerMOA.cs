@@ -73,7 +73,8 @@ namespace SustitucionMOAWS.WSConsumers
                     documento = liquidacion.DOCUMENTO,
                     sociedad = liquidacion.SOCIEDAD,
                     ejercicio = liquidacion.EJERCICIO,
-                    fijacion = liquidacion.FIJACION
+                    fijacion = liquidacion.FIJACION,
+                    Total = liquidacion.IMPORTE + liquidacion.IVA
                 }
                 );
             }

@@ -64,6 +64,13 @@
 	<setParameter name="ComputerVisionEndpoint Config" value="https://moaopsocr.cognitiveservices.azure.com/" />
 	<setParameter name="BlobStorageEndpoint Config" value="DefaultEndpointsProtocol=https;AccountName=webopdevstorage;AccountKey=degh9HC+9hXxFOEU/2HqhP1ZusanUvm9X31YqPQIT68DNsU+GuVnphhYa7Okoexu4R1X5s7xiH5/X3ouTXURew==;EndpointSuffix=core.windows.net" />
 
+	<setParameter name="DriveCampoSustentablesApplicationName Config" value="" />
+	<setParameter name="DriveCampoSustentablesClientId Config" value="" />
+	<setParameter name="DriveCampoSustentablesClientSecret Config" value="" />
+	<setParameter name="DriveCampoSustentablesUsuario Config" value="" />
+	<setParameter name="DriveCampoSustentablesInputFolderId Config" value="" />
+	<setParameter name="DriveCampoSustentablesOutputFolderId Config" value="" />
+
 	<setParameter name="BasicHttpBinding_IServicioRepositorio Service Endpoint Address" value="http://scatoqa.molinosagro.com.ar/Scato.serviciosWeb/ServicioRepositorio.svc" />
 
 	<setParameter name="SI_MPMF_MOAOP_APLICACIONES Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_APLICACIONES&amp;interfaceNamespace=urn%3AOPERACIONES"/>

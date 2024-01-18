@@ -655,6 +655,7 @@ namespace SustitucionMOAUtils.Services
         {
             var estadosPuedeAnular = new List<EstadoOrdenDeCarga>
             {
+                EstadoOrdenDeCarga.Pendiente,
                 EstadoOrdenDeCarga.AnulacionSolicitada,
                 EstadoOrdenDeCarga.Confirmado,
                 EstadoOrdenDeCarga.ContratoVencido,

@@ -98,6 +98,10 @@ namespace SustitucionMOA
                 "VerificarOrdenesFacturaCompensadaJob",
                 j => j.Execute(),
                 "0 * * * *", tz);
+            RecurringJob.AddOrUpdate<Jobs.ICcSsObtenerArchivosUcropJob>(
+                "CcSsObtenerArchivosUcropJob",
+                j => j.Execute(),
+                "*/5 * * * *", tz);
         }
     }
 

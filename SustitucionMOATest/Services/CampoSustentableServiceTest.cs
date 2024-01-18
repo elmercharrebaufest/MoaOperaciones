@@ -7,9 +7,12 @@ using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using SustitucionMOARepositorio;
+using SustitucionMOARepositorio.Repositorios.Interfaces;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Interfaces.Wrappers;
 using SustitucionMOAUtils.Services;
+using SustitucionMOAWS.GoogleDrive.Interfaces;
+using SustitucionMOAWS.GoogleDrive.Models;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -24,18 +27,20 @@ namespace SustitucionMOATest.Services
     public class CampoSustentableServiceTest
     {
         private CampoSustentableService target;
-        private Mock<IRepositorio> repositorioMock;
+        private Mock<IRepositorioCampoSustentable> repositorioMock;
         private Mock<IExcelExportWrapper> excelExportWrapperMock;
         private Mock<IDataAgroService> dataAgroServiceMock;
+        private Mock<ICampoSustentableGoogleDrive> googleDriveMock;
 
         [SetUp]
         public void SetUp()
         {
-            repositorioMock = new Mock<IRepositorio>();
+            repositorioMock = new Mock<IRepositorioCampoSustentable>();
             excelExportWrapperMock = new Mock<IExcelExportWrapper>();
             dataAgroServiceMock = new Mock<IDataAgroService>();
+            googleDriveMock = new Mock<ICampoSustentableGoogleDrive>();
 
-            target = new CampoSustentableService(repositorioMock.Object, excelExportWrapperMock.Object, dataAgroServiceMock.Object);
+            target = new CampoSustentableService(repositorioMock.Object, excelExportWrapperMock.Object, dataAgroServiceMock.Object, googleDriveMock.Object);
         }
 
         [Test()]
@@ -118,7 +123,7 @@ namespace SustitucionMOATest.Services
                     Cosecha = new Cosecha { Nombre = "20-21" }
                 }
             };
-            
+
             FileStream fileStream = new FileStream(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, ".\\TestFiles\\Example.KMZ"), FileMode.Open, FileAccess.Read);
             Mock<HttpPostedFileBase> uploadedFile = new Mock<HttpPostedFileBase>();
 
@@ -423,7 +428,8 @@ namespace SustitucionMOATest.Services
 
             var result = target.VerificarDeclaracion(proveedorId, cosechaId, CUIT);
 
-            var expected = new EstadoDeclaracionSustentableDto {
+            var expected = new EstadoDeclaracionSustentableDto
+            {
                 DeclaracionFirmada = true,
                 CosechaActual = "19-20",
                 CUIT = CUIT,
@@ -826,8 +832,8 @@ namespace SustitucionMOATest.Services
 
             this.repositorioMock
                 .Setup(repo => repo.Listar(
-                    It.IsAny<Expression<Func<CampoProveedor, CampoProveedorListadoDto>>>(), 
-                    It.IsAny<Expression<Func<CampoProveedor, bool>>>(), 
+                    It.IsAny<Expression<Func<CampoProveedor, CampoProveedorListadoDto>>>(),
+                    It.IsAny<Expression<Func<CampoProveedor, bool>>>(),
                     0, "FechaCreacion", DirOrden.Desc))
                 .Returns<Expression<Func<CampoProveedor, CampoProveedorListadoDto>>, Expression<Func<CampoProveedor, bool>>, int, string, DirOrden>
                     ((proy, filtro, maxResultados, orden, dirOrden) => campoProveedorList.Where(filtro.Compile()).Select(proy.Compile()).OrderByDescending(x => x.FechaCreacion).ToList());
@@ -884,7 +890,7 @@ namespace SustitucionMOATest.Services
             DateTime hoy = new DateTime(2021, 8, 24);
             DateTime ayer = new DateTime(2021, 8, 23);
 
-            Proveedor proveedor1 = new Proveedor { Id = 1, CodigoProveedor = "prov1", RazonSocial = "Proveedor 1", CUIT="cuit1" };
+            Proveedor proveedor1 = new Proveedor { Id = 1, CodigoProveedor = "prov1", RazonSocial = "Proveedor 1", CUIT = "cuit1" };
             Proveedor proveedor2 = new Proveedor { Id = 2, CodigoProveedor = "prov2", RazonSocial = "Proveedor 2", CUIT = "cuit2" };
             Proveedor proveedor3 = new Proveedor { Id = 3, CodigoProveedor = "prov3", RazonSocial = "Proveedor 3", CUIT = "cuit3" };
 
@@ -1037,11 +1043,11 @@ namespace SustitucionMOATest.Services
                 .Verify(excelExport => excelExport.ToExcel(It.IsAny<object>(), It.IsAny<string[]>(), It.IsAny<string>()), Times.Once);
             this.excelExportWrapperMock
                 .Verify(excelExport => excelExport.ToExcel(
-                    It.Is<List<CampoSustentableExportDTO>>(x => x.Count == 2 && 
-                        x[0].IdScato == 2 && 
-                        x[1].IdScato == 1), 
-                    It.IsAny<string[]>(), 
-                    It.IsAny<string>()), 
+                    It.Is<List<CampoSustentableExportDTO>>(x => x.Count == 2 &&
+                        x[0].IdScato == 2 &&
+                        x[1].IdScato == 1),
+                    It.IsAny<string[]>(),
+                    It.IsAny<string>()),
                 Times.Once);
 
             this.repositorioMock.Verify(repo => repo.Listar(It.IsAny<Expression<Func<CampoProveedor, CampoSustentableExportDTO>>>(), It.IsAny<Expression<Func<CampoProveedor, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<DirOrden>()), Times.Once);
@@ -1144,6 +1150,28 @@ namespace SustitucionMOATest.Services
             Assert.AreEqual("ruta6", result);
 
             this.repositorioMock.Verify(r => r.Obtener(It.IsAny<Expression<Func<CampoProveedor, bool>>>()), Times.Once);
+        }
+        [Test]
+        public void DescargarArchivosGoogle_ArchivoYaProcesado_ReturnAntes()
+        {
+            target.DescargarArchivosDeGoogleDrive(new ArchivoCampoSustentable { ProcesadoUcropit = true });
+            googleDriveMock.Verify(drive => drive.DownloadFile(It.IsAny<GoogleDriveFileDownloadRequest>()), Times.Never);
+        }
+        [Test]
+        public void DescargarArchivosGoogle_ArchivoSinProcesar_DescargaArchivo()
+        {
+            var archivoSinDescargar = new ArchivoCampoSustentable { 
+                ProcesadoUcropit = false,
+                Proveedor = new Proveedor { CUIT="cuit"},
+                CampoCosecha = new CampoCosecha { Campo = new CampoSustentable { Id = 3 }, CampoSustentable_Id=3 }
+            };
+            var rutaGuardadoDeseada = "/cuit/cuit_3.csv";
+
+            target.DescargarArchivosDeGoogleDrive(archivoSinDescargar);
+
+            googleDriveMock.Verify(drive => drive.DownloadFile(It.IsAny<GoogleDriveFileDownloadRequest>()), Times.Once);
+            repositorioMock.Verify(repositorio => repositorio.GuardarCambios(), Times.Once);
+            Assert.That(archivoSinDescargar.Archivo.Ruta, Is.EqualTo(rutaGuardadoDeseada));
         }
     }
 }

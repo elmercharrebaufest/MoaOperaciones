@@ -244,7 +244,7 @@ namespace SustitucionMOAUtils.Services
         private string ObtenerCodigoProveedorSeleccionado(Usuario usuario, Proveedor proveedorAsignado, string codigoSeleccionado)
         {
             var puedeSeleccionarProveedor = usuario.TienePermiso(PermisoEnum.SeleccionarVendedor);
-            if (usuario.EsCorredor() && !puedeSeleccionarProveedor)
+            if (usuario.EsCorredor() && (!puedeSeleccionarProveedor || proveedorAsignado.CodigoProveedor == codigoSeleccionado))
             {
                 return null;
             }
