@@ -1970,14 +1970,85 @@ namespace SustitucionMOAUtils.Services
             string htmlBody = "";
             htmlBody += $"En el presente mail se informa la liberación de la SOLP {solp.NroSolp} generada con Molinos Agro S.A. <br />";
             htmlBody += mensaje + "<br/>";
+            var esMaterial = solp.Posiciones.FirstOrDefault().TipoPosicion.Codigo == "MATERIALES";
+
+            // Agregar la tabla de posiciones y subposiciones
+            if (solp.Posiciones != null && solp.Posiciones.Any())
+            {
+                htmlBody += "<b>Detalle:</b><br/>";
+                htmlBody += "<br/>";
+
+                foreach (var posicion in solp.Posiciones)
+                {
+                    htmlBody += "<table style=\"border-collapse: collapse; border: 2px solid #ddd; text-align: center; font-size: 13px; width: 100%;\">";
+                    htmlBody += "<tr>" +
+                                "<th style=\"border: 2px solid #ddd; background-color: #017940; color: white; padding: 5px 0; width: 100px;\">Posición</th>" +
+                                "<th style=\"border: 2px solid #ddd; background-color: #017940; color: white; padding: 5px 0; width: 100px;\">Centro</th>" +
+                                "<th style=\"border: 2px solid #ddd; background-color: #017940; color: white; padding: 5px 0; width: 250px;\">Descripción</th>";
+                    if (esMaterial)
+                    {
+                        htmlBody += "<th style=\"border: 2px solid #ddd; background-color: #017940; color: white; padding: 5px 0; width: 250px;\">UM</th>" +
+                                    "<th style=\"border: 2px solid #ddd; background-color: #017940; color: white; padding: 5px 0; width: 250px;\">Cantidad</th>" +
+                                    "<th style=\"border: 2px solid #ddd; background-color: #017940; color: white; padding: 5px 0; width: 250px;\">Precio Bruto</th>";
+                    }
+
+                    htmlBody += "<th style=\"border: 2px solid #ddd; background-color: #017940; color: white; padding: 5px 0; width: 250px;\">Moneda</th>" +
+                                "<th style=\"border: 2px solid #ddd; background-color: #017940; color: white; padding: 5px 0; width: 250px;\">Grupo de compras</th>" +
+                                "</tr>";
+
+                    // Agregar la fila para la posición
+                    htmlBody += "<tr>" +
+                                $"<td style=\"border: 2px solid #ddd;\">{posicion.Indice}</td>" +
+                                $"<td style=\"border: 2px solid #ddd;\">{posicion.Centro.Codigo}</td>" +
+                                $"<td style=\"border: 2px solid #ddd;\">{(!string.IsNullOrEmpty(posicion.MaterialSolp?.Descripcion) ? posicion.MaterialSolp.Descripcion : posicion.Tarea)}</td>";
+
+                    if (esMaterial)
+                    {
+                        htmlBody += $"<td style=\"border: 2px solid #ddd;\">{posicion.Unidad?.CodigoSap}</td>" +
+                                    $"<td style=\"border: 2px solid #ddd;\">{posicion.Cantidad.Value.ToString("n2")}</td>" +
+                                    $"<td style=\"border: 2px solid #ddd;\">{posicion.PrecioBruto.Value.ToString("n2")}</td>";
+                    }
+
+                    htmlBody += $"<td style=\"border: 2px solid #ddd;\">{posicion.Moneda?.CodigoSap}</td>" +
+                                $"<td style=\"border: 2px solid #ddd;\">{posicion.GrupoCompras?.CodigoSap}</td>" +
+                                "</tr>";
+
+                    if (!esMaterial)
+                    {
+                        htmlBody += "<tr>" +
+                                    "<th style=\"border: 2px solid #ddd; background-color: #2e8b57; color: white; padding: 5px 0; width: 250px;\">Subposición</th>" +
+                                    "<th style=\"border: 2px solid #ddd; background-color: #2e8b57; color: white; padding: 5px 0; width: 250px;\">Tarea a subcontratar</th>" +
+                                    "<th style=\"border: 2px solid #ddd; background-color: #2e8b57; color: white; padding: 5px 0; width: 250px;\">Cantidad</th>" +
+                                    "<th style=\"border: 2px solid #ddd; background-color: #2e8b57; color: white; padding: 5px 0; width: 250px;\">UM</th>" +
+                                    "<th style=\"border: 2px solid #ddd; background-color: #2e8b57; color: white; padding: 5px 0; width: 250px;\">Precio bruto</th>" +
+                                    "</tr>";
+
+                        foreach (var subpos in posicion.Subposiciones)
+                        {
+                            htmlBody += "<tr>" +
+                                        $"<td style=\"border: 2px solid #ddd;\">{subpos.Numero}</td>" +
+                                        $"<td style=\"border: 2px solid #ddd;\">{subpos.Tarea}</td>" +
+                                        $"<td style=\"border: 2px solid #ddd;\">{subpos.Cantidad.Value.ToString("n2")}</td>" +
+                                        $"<td style=\"border: 2px solid #ddd;\">{subpos.Unidad.CodigoSap}</td>" +
+                                        $"<td style=\"border: 2px solid #ddd;\">{subpos.PrecioBruto.Value.ToString("n2")}</td>" +
+                                        "</tr>";
+                        }
+                    }
+
+                    htmlBody += "</table>";
+                    htmlBody += "<br/>";
+                }
+            }
+
             htmlBody += "En caso de tener alguna consulta, ingresar a www.moaoperaciones.com.ar " +
                 "<br/><br/>Saludos Cordiales<br/>" +
                 "Molinos Agro S.A. <br/><br/> " +
-                 @"<img width:'5%' src='cid:" + res.ContentId + @"'/>";
+                 @"<img width='15%' src='cid:" + res.ContentId + @"'/>";
             AlternateView alternateView = AlternateView.CreateAlternateViewFromString(htmlBody, null, "text/html");
             alternateView.LinkedResources.Add(res);
             return alternateView;
         }
+
 
         public void ActualizarFechaLiberacionOC(string nroOc, DateTime fechaLiberacion)
         {
