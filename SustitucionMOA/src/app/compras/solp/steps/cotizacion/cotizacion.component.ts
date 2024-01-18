@@ -369,10 +369,6 @@ export class CotizacionComponent extends ListBaseComponent {
                                     this.model.monedaOC = this.ordenDeCompraSap.Cabecera.Moneda;
                                     this.model.usuarioComprasId = this.ordenDeCompraSap.Cabecera.UsuarioCompras_Id;
 
-                                    this.model.proveedorDefinidoAsignado_Id = this.ordenDeCompraSap.Cabecera.Usuario_Id;
-                                    this.model.proveedorDefinidoAsignado = this.ordenDeCompraSap.Cabecera.RazonSocialProveedor;
-
-
                                     this.model.selectUsuarioCompras = this.model.usuarioComprasId > 0
                                         ? this.model.usuarioComprasList.find(x => x.Id === this.model.usuarioComprasId)
                                         : this.model.usuarioComprasList[0];
