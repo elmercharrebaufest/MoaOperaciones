@@ -1021,6 +1021,7 @@
     <Content Include="libman.json" />
     <Content Include="Documentacion\TemplateAplicCCPP.csv" />
     <Content Include="Documentacion\TutorialAplicCCPP.docx" />
+    <Content Include="Keys\inspired-bazaar-410214-81185894c80f.json" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\PublishFiles.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
