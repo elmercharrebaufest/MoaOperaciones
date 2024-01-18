@@ -1,8 +1,10 @@
-﻿using Google.Apis.Drive.v3.Data;
-using SustitucionMOAWS.GoogleDrive.Interfaces;
+﻿using SustitucionMOAWS.GoogleDrive.Interfaces;
 using SustitucionMOAWS.GoogleDrive.Models;
 using System.Collections.Generic;
 using System.Configuration;
+using GoogleFile = Google.Apis.Drive.v3.Data.File;
+using System.IO;
+using System;
 
 namespace SustitucionMOAWS.GoogleDrive
 {
@@ -10,8 +12,8 @@ namespace SustitucionMOAWS.GoogleDrive
     {
 
         private string ApplicationName => ConfigurationManager.AppSettings["DriveCampoSustentablesApplicationName"];
-        private string ClientId => ConfigurationManager.AppSettings["DriveCampoSustentablesClientId"];
-        private string ClientSecret => ConfigurationManager.AppSettings["DriveCampoSustentablesClientSecret"];
+        private string ServiceAccountEmail => ConfigurationManager.AppSettings["DriveCampoSustentablesServiceAccountEmail"];
+        private string ServiceAccountKey => ConfigurationManager.AppSettings["DriveCampoSustentablesServiceAccountKey"];
         private string User => ConfigurationManager.AppSettings["DriveCampoSustentablesUsuario"];
 
         private readonly IGoogleDriveHelper Helper;
@@ -29,10 +31,11 @@ namespace SustitucionMOAWS.GoogleDrive
 
         private void InitGoogleDrive()
         {
-            Helper.SetCredentials(new GoogleDriveHelperGenerator(
+            var serviceAccountKeyPath = $"{AppDomain.CurrentDomain.BaseDirectory}\\Keys\\{ServiceAccountKey}";
+            Helper.SetCredentials(new GoogleDriveHelperGeneratorWithService(
                 applicationName: ApplicationName,
-                clientId: ClientId,
-                clientSecret: ClientSecret,
+                serviceAccountEmail: ServiceAccountEmail,
+                serviceAccountKeyPath: serviceAccountKeyPath,
                 user: User
                 ));
         }
@@ -47,12 +50,12 @@ namespace SustitucionMOAWS.GoogleDrive
             Helper.DownloadFile(downloadFileRequest);
         }
 
-        public IList<File> GetFiles(string query = null, string fields = "nextPageToken, files(id, name)")
+        public IList<GoogleFile> GetFiles(string query = null, string fields = "nextPageToken, files(id, name)")
         {
             return Helper.GetFiles(query, fields);
         }
 
-        public IList<File> GetFolderFiles(string folderId)
+        public IList<GoogleFile> GetFolderFiles(string folderId)
         {
             return Helper.GetFolderFiles(folderId);
         }
