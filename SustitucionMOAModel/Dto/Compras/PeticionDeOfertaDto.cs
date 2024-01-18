@@ -104,7 +104,6 @@ namespace SustitucionMOAModel.Dto
         public bool PideDescripcionTecnica { get; set; }
         public bool PideDocumentacionTecnica { get; set; }
         public int? RevisionTecnicaId { get; set; }
-
     }
 
     public class PeticionDeOfertaSolpPosicionDto
@@ -179,12 +178,11 @@ namespace SustitucionMOAModel.Dto
 
         public PeticionDeOfertaUsuarioAdicionalDto(PeticionDeOfertaUsuarioAdicional entidad)
         {
-            this.UsuarioId = entidad.Usuario_Id;
-            this.Id = entidad.Id;
-            this.RazonSocial = entidad.Usuario.ObtenerRazonSocial();
-            this.CUIT = entidad.Usuario.CUITRegistro;
-            this.Mail = entidad.Usuario.Mail;
-
+            UsuarioId = entidad.Usuario_Id;
+            Id = entidad.Id;
+            RazonSocial = entidad.Usuario.ObtenerRazonSocial();
+            CUIT = entidad.Usuario.CUITRegistro;
+            Mail = entidad.Usuario.Mail;
         }
 
         public int UsuarioId { get; set; }
@@ -192,6 +190,5 @@ namespace SustitucionMOAModel.Dto
         public int Id { get; set; }
         public string CUIT { get; set; }
         public string Mail { get; set; }
-
     }
 }

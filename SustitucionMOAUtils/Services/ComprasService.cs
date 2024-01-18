@@ -139,7 +139,7 @@ namespace SustitucionMOAUtils.Services
             Solp solpEntity = null;
             Pliego pliegoEntity = null;
             SolpPosicion postEntitySubPosicionesEliminadas = null;
-            bool enviarMailUrgencia = solp.Urgencia == true && solp.Finalizar;
+            bool enviarMailUrgencia = solp.Urgencia == true && solp.Finalizar && solp.TrabajoYaHecho != true;
 
             if (solp.Id.HasValue)
             {
@@ -336,7 +336,7 @@ namespace SustitucionMOAUtils.Services
 
             if (solpEntity.LiberadoresSapSolp.Any())
                 repositorio.RemoverTodos(solpEntity.LiberadoresSapSolp.ToList());
-            if (solp.LiberadoresSapSolp.Any())
+            if (solp.TrabajoYaHecho != true && solp.LiberadoresSapSolp.Any())
             {
                 solpEntity.LiberadoresSapSolp = solp.LiberadoresSapSolp.Select(dto => new LiberadorSapSolp
                 {
@@ -731,7 +731,7 @@ namespace SustitucionMOAUtils.Services
                         }
                         catch (Exception e)
                         {
-                            Log.Info($"EnviarMailSolpFinalizadaConUrgencia nro de solp {solpEntity.NroSolp} - Error: " + e);
+                            Log.Info($"EnviarMailSolpFinalizadaConUrgencia Nro de SOLP: {solpEntity.NroSolp} - Error: " + e);
                         }
                     }
                 }
@@ -777,7 +777,7 @@ namespace SustitucionMOAUtils.Services
                         }
                         catch (Exception e)
                         {
-                            Log.Info($"EnviarMailSolpFinalizadaConUrgencia nro de solp {solpEntity.NroSolp} - Error: " + e);
+                            Log.Info($"EnviarMailSolpFinalizadaConUrgencia Nro de SOLP: {solpEntity.NroSolp} - Error: " + e);
                         }
                     }
                 }
@@ -1583,7 +1583,7 @@ namespace SustitucionMOAUtils.Services
             var pdfFilename = $"Solp-{middleFileName}-pliego-{DateTime.Now:yyyyMMdd}.pdf";
             var pdfFilePath = $"{pathBase}/{pdfFilename}";
 
-            if (solp.TipoSolp != null && solp.TipoSolp.Codigo == "CON_PLIEGO" || (solp.TipoSolpSap == 3 && solp.Urgencia != null && solp.Urgencia.Value))
+            if (solp.TipoSolp != null && solp.TipoSolp.Codigo == "CON_PLIEGO" || (solp.TipoSolpSap == 3 && solp.Urgencia == true && solp.TrabajoYaHecho != true))
             {
                 File.WriteAllBytes(pdfFilePath, GenerarSolpPdf(idSolp));
             }
@@ -1606,7 +1606,7 @@ namespace SustitucionMOAUtils.Services
                             }
                         }
 
-                        if (solp.TipoSolp != null && solp.TipoSolp.Codigo == "CON_PLIEGO" || (solp.TipoSolpSap == 3 && solp.Urgencia != null && solp.Urgencia.Value))
+                        if (solp.TipoSolp != null && solp.TipoSolp.Codigo == "CON_PLIEGO" || (solp.TipoSolpSap == 3 && solp.Urgencia == true && solp.TrabajoYaHecho != true))
                         {
                             archivo.CreateEntryFromFile(pdfFilePath, pdfFilename);
                         }
@@ -1855,7 +1855,7 @@ namespace SustitucionMOAUtils.Services
                         CrearPeticionAutomatica(solp, new List<int> { solp.ProveedorAsignado_Id.Value }, null, false);
                     }
                 }
-                if (solp.UsuarioCompras != null && solp.Posiciones.Select(x => x.TipoPosicion.Codigo).FirstOrDefault() == "SERVICIO" && enviarMail && solp.Urgencia != true)
+                if (solp.UsuarioCompras != null && solp.Posiciones.Select(x => x.TipoPosicion.Codigo).FirstOrDefault() == "SERVICIO" && enviarMail && (solp.Urgencia != true || solp.Urgencia == true && solp.TrabajoYaHecho == true))
                 {
                     try
                     {
@@ -1863,7 +1863,7 @@ namespace SustitucionMOAUtils.Services
                     }
                     catch (Exception)
                     {
-                        Logger.Log.Info($"EnviarMailSolpLiberada nro de solp {solp.NroSolp}");
+                        Logger.Log.Info($"EnviarMailSolpLiberada Nro de SOLP: {solp.NroSolp}");
                     }
                 }
             }

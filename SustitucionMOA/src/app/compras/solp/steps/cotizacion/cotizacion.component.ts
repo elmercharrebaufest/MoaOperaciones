@@ -311,7 +311,7 @@ export class CotizacionComponent extends ListBaseComponent {
                 }
             }
 
-            if (this.model.urgencia == true && this.selectJefes.length == 0) {
+            if (this.model.urgencia == true && this.model.trabajoHecho != true && this.selectJefes.length == 0) {
                 this.model.mensajeCotizacion = "Debe elegir al menos un jefe en el paso #4 para enviarle la notificación de urgencia";
                 this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: `${this.model.mensajeCotizacion}` });
                 this.model.validacionCheck = false;
