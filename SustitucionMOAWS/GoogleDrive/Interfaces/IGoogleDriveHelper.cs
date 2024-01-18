@@ -49,6 +49,15 @@ namespace SustitucionMOAWS.GoogleDrive.Interfaces
     }
     public interface IGoogleDriveHelper: IGoogleDriveHelperUtils
     {
+        /// <summary>
+        /// Setup the internal google DriveService class
+        /// </summary>
+        /// <param name="generator"></param>
         void SetCredentials(GoogleDriveHelperGenerator generator);
+        /// <summary>
+        /// Setup the internal google DriveService class
+        /// </summary>
+        /// <param name="generator"></param>
+        void SetCredentials(GoogleDriveHelperGeneratorWithService generator);
     }
 }

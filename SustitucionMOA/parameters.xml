@@ -300,14 +300,14 @@
 						match="/configuration/appSettings/add[@key='DriveCampoSustentablesApplicationName']
                            /@value" />
 	</parameter>
-	<parameter name="DriveCampoSustentablesClientId Config">
+	<parameter name="DriveCampoSustentablesServiceAccountEmail Config">
     	<parameterEntry kind="XmlFile" scope="Web.config"
-						match="/configuration/appSettings/add[@key='DriveCampoSustentablesClientId']
+						match="/configuration/appSettings/add[@key='DriveCampoSustentablesServiceAccountEmail']
                            /@value" />
 	</parameter>
-	<parameter name="DriveCampoSustentablesClientSecret Config">
+	<parameter name="DriveCampoSustentablesServiceAccountKey Config">
     	<parameterEntry kind="XmlFile" scope="Web.config"
-						match="/configuration/appSettings/add[@key='DriveCampoSustentablesClientSecret']
+						match="/configuration/appSettings/add[@key='DriveCampoSustentablesServiceAccountKey']
                            /@value" />
 	</parameter>
 	<parameter name="DriveCampoSustentablesUsuario Config">

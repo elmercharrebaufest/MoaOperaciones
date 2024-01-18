@@ -6,20 +6,29 @@ using System;
 using System.Collections.Generic;
 using SustitucionMOAWS.GoogleDrive.Models;
 using SustitucionMOAWS.GoogleDrive.Interfaces;
+using Google.Apis.Http;
 
 namespace SustitucionMOAWS.GoogleDrive
 {
     public sealed class GoogleDriveHelper : IGoogleDriveHelper
     {
         private DriveService DriveService { get; set; }
-        /// <summary>
-        /// Setup the internal google DriveService class
-        /// </summary>
-        /// <param name="generator"></param>
+        
         public void SetCredentials(GoogleDriveHelperGenerator generator)
         {
             var credential = CreateCredentials(generator);
 
+            SetDriveService(credential, generator);
+        }
+        public void SetCredentials(GoogleDriveHelperGeneratorWithService generator)
+        {
+            var credential = CreateCredentials(generator);
+
+            SetDriveService(credential, generator);
+        }
+
+        private void SetDriveService(IConfigurableHttpClientInitializer credential, BaseGoogleDriveHelperGenerator generator)
+        {
             DriveService = new DriveService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,
@@ -42,6 +51,17 @@ namespace SustitucionMOAWS.GoogleDrive
                 System.Threading.CancellationToken.None).Result;
 
             return credential;
+        }
+        private GoogleCredential CreateCredentials(GoogleDriveHelperGeneratorWithService generator)
+        {
+            string[] scopes = { DriveService.Scope.Drive };
+
+
+            using (var stream = new FileStream(generator.ServiceAccountKeyPath, FileMode.Open, FileAccess.Read))
+            {
+                return GoogleCredential.FromStream(stream)
+                    .CreateScoped(scopes);
+            }
         }
         public string UploadFile(GoogleDriveFileUploadRequest uploadFileRequest)
         {

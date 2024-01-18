@@ -64,12 +64,12 @@
 	<setParameter name="ComputerVisionEndpoint Config" value="https://moaopsocr.cognitiveservices.azure.com/" />
 	<setParameter name="BlobStorageEndpoint Config" value="DefaultEndpointsProtocol=https;AccountName=webopdevstorage;AccountKey=degh9HC+9hXxFOEU/2HqhP1ZusanUvm9X31YqPQIT68DNsU+GuVnphhYa7Okoexu4R1X5s7xiH5/X3ouTXURew==;EndpointSuffix=core.windows.net" />
 
-	<setParameter name="DriveCampoSustentablesApplicationName Config" value="" />
-	<setParameter name="DriveCampoSustentablesClientId Config" value="" />
-	<setParameter name="DriveCampoSustentablesClientSecret Config" value="" />
-	<setParameter name="DriveCampoSustentablesUsuario Config" value="" />
-	<setParameter name="DriveCampoSustentablesInputFolderId Config" value="" />
-	<setParameter name="DriveCampoSustentablesOutputFolderId Config" value="" />
+	<setParameter name="DriveCampoSustentablesApplicationName Config" value="PRUEBA_DRIVE" />
+	<setParameter name="DriveCampoSustentablesServiceAccountEmail Config" value="prueba-drive@inspired-bazaar-410214.iam.gserviceaccount.com" />
+	<setParameter name="DriveCampoSustentablesServiceAccountKey Config" value="inspired-bazaar-410214-81185894c80f.json" />
+	<setParameter name="DriveCampoSustentablesUsuario Config" value="pruebadrive603@gmail.com" />
+	<setParameter name="DriveCampoSustentablesInputFolderId Config" value="1mSsU5ALH-jsH2BYH2Hg_oinRycokFBr1" />
+	<setParameter name="DriveCampoSustentablesOutputFolderId Config" value="1kKkKjL1bm3SrT2xIgRuPBb0NiVuHpHoY" />
 
 	<setParameter name="BasicHttpBinding_IServicioRepositorio Service Endpoint Address" value="http://scatoqa.molinosagro.com.ar/Scato.serviciosWeb/ServicioRepositorio.svc" />
 
