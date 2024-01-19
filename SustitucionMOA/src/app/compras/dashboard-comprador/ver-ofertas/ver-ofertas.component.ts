@@ -151,7 +151,7 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
 
                         this.nroOC = this.tablaOfertas.NroOrdenDeCompraAdicional; 
 
-                        if(this.nroOC != null){
+                        if(this.nroOC != null || this.nroOC != ""){
                             this.obtenerAdjudicacion(this.nroOC);
                         }
                     }
@@ -180,11 +180,12 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
                     else {
                         this.ordenDeCompra = result.data;
 
-                        this.adjudicacion.CondicionesDeEntrega = this.ordenDeCompra.CondicionesDeEntrega;
-                        this.adjudicacion.CondicionesDePago = this.ordenDeCompra.CondicionesDePago;
-                        this.adjudicacion.Garantias = this.ordenDeCompra.Garantias;
-                        this.adjudicacion.TextoDeCabecera = this.ordenDeCompra.TextoDeCabecera;
-
+                        if(this.ordenDeCompra){
+                            this.adjudicacion.CondicionesDeEntrega = this.ordenDeCompra.CondicionesDeEntrega;
+                            this.adjudicacion.CondicionesDePago = this.ordenDeCompra.CondicionesDePago;
+                            this.adjudicacion.Garantias = this.ordenDeCompra.Garantias;
+                            this.adjudicacion.TextoDeCabecera = this.ordenDeCompra.TextoDeCabecera;
+                        }
                         this.blockUI.stop();
                     }
                 },
