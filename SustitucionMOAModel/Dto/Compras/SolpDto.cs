@@ -98,7 +98,7 @@ namespace SustitucionMOAModel.Dto
         public bool ChatSinLeer { get; set; }
         public bool TodasLasPosicionesBorradas { get; set; }
         public bool? ProveedorDefinido { get; set; }
-
+        public bool EditarCondicionesEspeciales { get; set; }
 
         public SolpDto() { }
         public SolpDto(Solp entity)

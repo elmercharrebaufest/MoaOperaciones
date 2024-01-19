@@ -76,6 +76,7 @@ export class Solp extends CommonResponse {
     public archivosCotizaciones: Array<ArchivoModel>;
     public liberadoresSap: any[] = [];
     public proveedorDefinido: boolean;
+    public editarCondicionesEspeciales: boolean;
 
 
 
@@ -256,6 +257,7 @@ export class Solp extends CommonResponse {
             this.deshabilitarAdicional = solp.DeshabilitarAdicional;
             this.monedaOC = solp.MonedaOC;
             this.liberadoresSap = solp.LiberadoresSapSolp;
+            this.editarCondicionesEspeciales = solp.EditarCondicionesEspeciales;
 
             //pop up finalizar
             this.revisadoPor = solp.RevisadoPor || '';

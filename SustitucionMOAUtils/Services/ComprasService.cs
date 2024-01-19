@@ -1153,6 +1153,7 @@ namespace SustitucionMOAUtils.Services
             includes.Add(u => u.UsuarioModificacion);
 
             var solp = repositorio.Obtener<Solp>(includes, s => s.Id == idSolp);
+            var po = repositorio.Obtener<PeticionDeOferta>(x => x.Solp_Id == idSolp);
 
             if (solp == null)
             {
@@ -1221,6 +1222,8 @@ namespace SustitucionMOAUtils.Services
                 Urgencia = solp.Urgencia,
                 NroOrdenDeCompraAdicional = solp.NroOrdenDeCompraAdicional,
                 DeshabilitarAdicional = solp.Adjudicaciones.Any(),
+                EditarCondicionesEspeciales = (solp.EstadoSolpSap_Id == null || solp.EstadoSolpSap_Id != 17) && po == null,
+
 
                 Adjuntos = solp.Pliego.Archivos.Where(a => a.FileKey == FileKeys.AdjuntoSolp || a.FileKey == FileKeys.AdjuntoCotizacionesSolp).Select(s => new ArchivoDto
                 {
