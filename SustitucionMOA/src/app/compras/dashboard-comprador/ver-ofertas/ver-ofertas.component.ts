@@ -53,6 +53,8 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
     displayRegionSap: boolean;
     centroDire: any;
     centroDireLista: any;
+    ordenDeCompra: AdjudicacionDto;
+    nroOC: string;
 
     @Input()
     public peticionHs: CotizacionHoraDto;
@@ -146,6 +148,12 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
                         this.floatMsgService.setInfoMsg(result.info);
                     } else {
                         this.tablaOfertas = result.data;
+
+                        this.nroOC = this.tablaOfertas.NroOrdenDeCompraAdicional; 
+
+                        if(this.nroOC != null){
+                            this.obtenerAdjudicacion(this.nroOC);
+                        }
                     }
                     this.blockUI.stop();
                 },
@@ -159,6 +167,32 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
             return false; //<-- Prevent Refresh
         }
         return false; //<-- Prevent Refresh
+    }
+
+    obtenerAdjudicacion(nroOC) {
+        this.blockUI.start('Cargando...');
+        this.service.obtenerAdjudicacion(nroOC)
+            .subscribe(
+                (result) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    }
+                    else {
+                        this.ordenDeCompra = result.data;
+
+                        this.adjudicacion.CondicionesDeEntrega = this.ordenDeCompra.CondicionesDeEntrega;
+                        this.adjudicacion.CondicionesDePago = this.ordenDeCompra.CondicionesDePago;
+                        this.adjudicacion.Garantias = this.ordenDeCompra.Garantias;
+                        this.adjudicacion.TextoDeCabecera = this.ordenDeCompra.TextoDeCabecera;
+
+                        this.blockUI.stop();
+                    }
+                },
+                (error) => {
+                    this.blockUI.stop();
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+            )
     }
 
     descargarAdjuntosCotizacion(cotizacionId) {
@@ -579,7 +613,6 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
 
     aceptarRegion() {
         this.adjudicacion.RegionSap = this.selectedRegion.value;
-        console.log("this.selectedRegion", this.selectedRegion.value);
         this.validacionTextosIncompletos();       
         this.displayRegionSap = false;
         if (this.textoRacionalInCompleto == true) {
