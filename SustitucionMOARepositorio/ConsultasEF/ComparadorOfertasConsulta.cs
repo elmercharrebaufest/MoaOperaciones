@@ -231,7 +231,14 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                                                        }).ToList()
 
                                                         }).ToList(),
-                                                        TieneAdjuntos = cotizacion.Archivos.Any()
+                                                        TieneAdjuntos = cotizacion.Archivos.Any(),
+                                                        Adjudicaciones = cotizacion.Adjudicaciones.Select(a => new AdjudicacionDto
+                                                        {
+                                                           CondicionesDeEntrega = a.CondicionesDeEntrega,
+                                                           CondicionesDePago = a.CondicionesDePago,
+                                                           Garantias = a.Garantias,
+                                                           TextoDeCabecera = a.TextoDeCabecera
+                                                        }).ToList(),
                                                     } : null,
                                                 }).ToList(),
                                 };
