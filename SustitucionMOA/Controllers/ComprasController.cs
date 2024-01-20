@@ -672,6 +672,7 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
+                service.EditarOrdenDeCompra(new AdjudicacionEditarDto());
                 var ordenar = orden == "ASC" ? DirOrden.Asc : DirOrden.Desc;
                 var paginacion = new Paginacion((!string.IsNullOrEmpty(columna) ? columna : "Id"), ordenar, (pagina == null) ? 0 : pagina.Value, (itemsPorPagina == 0 || !itemsPorPagina.HasValue) ? 10 : itemsPorPagina.Value);
                 var usuario_Id = ObtenerUsuarioActual().Id;
