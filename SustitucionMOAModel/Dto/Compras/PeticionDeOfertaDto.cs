@@ -55,7 +55,7 @@ namespace SustitucionMOAModel.Dto
         public DateTime? FechaEntrega { get; set; }
         public string FechaEntregaFormateado { get; set; }
         public IQueryable<CircularDto> CircularDto { get; set; }
-        public IQueryable<SolpDto> SolpDto { get; set; }
+        public SolpDto SolpDto { get; set; }
         public string NroSolp { get; set; }
         public string NombreDeObra { get; set; } //nombre de pedido
         public string UsuarioCreador { get; set; }

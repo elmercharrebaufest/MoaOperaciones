@@ -32,6 +32,8 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                 {
                                     Id = po.Id,
                                     Solp_Id = po.Solp_Id,
+                                    SolpDto = new SolpDto{ Urgencia = po.Solp.Urgencia, TrabajoYaHecho = po.Solp.TrabajoYaHecho, Adicional = po.Solp.Adicional, 
+                                        ProveedorDefinido = po.Solp.ProveedorDefinido, ObservacionesCotizacion = po.Solp.Pliego.ObservacionesCotizacion },
                                     FechaCreacion = po.FechaCreacion,
                                     FechaCreacionFormateada = SqlFunctions.DateName("day", po.FechaCreacion) + "/" + SqlFunctions.DatePart("month", po.FechaCreacion) + "/" + SqlFunctions.DateName("year", po.FechaCreacion),
                                     UsuarioCreador_Id = po.UsuarioCreador_Id,
@@ -45,7 +47,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                     Urgencia = po.Solp.Urgencia,
                                     NroOrdenDeCompraAdicional = po.Solp.NroOrdenDeCompraAdicional,
                                     EstaLiberado = po.Solp.EstadoSolpSap.CodigoSap == "05",
-                                    RevisionFinalizada = po.RevisionTecnica == null ? false : po.RevisionTecnica.Finalizada,
+                                    RevisionFinalizada = po.RevisionTecnica != null && po.RevisionTecnica.Finalizada,
                                     PlazoDeOfertaCierre = po.Cierres.Any() ? po.Cierres.OrderByDescending(p => p.Fecha).FirstOrDefault().Fecha : (DateTime?)null,
                                     PeticionDeOfertaPosicion = (from pop in contexto.Set<PeticionDeOfertaSolpPosicion>()
                                                                 where po.Id == pop.PeticionDeOferta_Id && pop.SolpPosicion.EsConcluido == true
@@ -59,8 +61,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                                     {
                                                                         Id = pop.SolpPosicion.Id,
                                                                         Indice = pop.SolpPosicion.Indice,
-                                                                        FechaEntregaServicio = pop.SolpPosicion.FechaEntregaServicio != null ? pop.SolpPosicion.FechaEntregaServicio :
-                                                                        (DateTime?)null,
+                                                                        FechaEntregaServicio = pop.SolpPosicion.FechaEntregaServicio != null ? pop.SolpPosicion.FechaEntregaServicio : null,
                                                                         CodigoMaterialSap = new MaterialSolpDto
                                                                         {
                                                                             Descripcion = pop.SolpPosicion.MaterialSolp.Descripcion,
@@ -131,7 +132,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                     EstadoPropuestaTecnica = u.PropuestaTecnicaAprobada == null ? "Sin analizar" : (u.PropuestaTecnicaAprobada == true ? "Aprobada" : "Rechazada"),
                                                     ObservacionNoCumple = u.ObservacionNoCumple,
                                                     EstadoPropuestaTecnicaColor = u.PropuestaTecnicaAprobada == null ? "Orange" : (u.PropuestaTecnicaAprobada == true ? "Green" : "Red"),
-                                                  
+
                                                     //PlazoDeOferta = u.Circulares.Any(circu => circu.Circular.RequiereCambioDeFechas == true && circu.Circular.PlazoDeOferta.HasValue) ?
                                                     //u.Circulares.Where(circu => circu.Circular.RequiereCambioDeFechas == true && circu.Circular.PlazoDeOferta.HasValue)
                                                     //                .OrderByDescending(circu => circu.Circular.PlazoDeOferta).FirstOrDefault().Circular.PlazoDeOferta.Value :
@@ -240,11 +241,10 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                            TextoDeCabecera = a.TextoDeCabecera
                                                         }).ToList(),
                                                     } : null,
-                                                }).ToList(),
+                                                }).ToList()
                                 };
 
                 return resultado.First();
-
             }
             catch (Exception)
             {

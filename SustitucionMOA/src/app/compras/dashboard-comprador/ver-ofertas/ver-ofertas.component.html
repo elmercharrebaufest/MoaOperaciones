@@ -581,17 +581,17 @@
     <p-header class="headerModal" style="color: #067935;">
         <b>¡Atención!</b>
     </p-header>
-    <strong>No se completó ningún racional </strong>
-    <br>
-    <br>
+    <br />
+    <div [innerHTML]="textoRacionalModal"></div>
+    <br />
     ¿Desea continuar con la adjudicación?
+    <br />
+    <br />
     <p-footer>
         <button type="button" class="btn btn-danger botonesComprasColor botonModal" (click)="noContinuarAdjudicacion()">No</button>
         <button type="button" class="btn btn-primary botonesComprasColor botonModal" (click)="continuarAdjudicacion()">Sí</button>
-
     </p-footer>
 </p-dialog>
-
 
 <p-confirmDialog #dialogo header="Confirmación" icon="pi pi-exclamation-triangle" [width]="500" [responsive]="true" appendTo="body">
     <p-footer>

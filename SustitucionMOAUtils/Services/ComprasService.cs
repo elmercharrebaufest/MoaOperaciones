@@ -3835,6 +3835,22 @@ namespace SustitucionMOAUtils.Services
                 }
             }
 
+            //mostrar observación ingresada en el paso 4 si es SOLP con condiciones especiales
+            if (peticion.Solp.Pliego != null && (peticion.Solp.TrabajoYaHecho == true || peticion.Solp.Urgencia == true || peticion.Solp.Adicional == true || peticion.Solp.ProveedorDefinido == true))
+            {
+                legajo.Add(new LegajoDto
+                {
+                    ArchivoId = null,
+                    Observacion = "Justificación de condición especial: " + peticion.Solp.Pliego.ObservacionesCotizacion,
+                    PeticionDeOfertaId = peticionDeOfertaId,
+                    SolpId = peticion.Solp_Id,
+                    Fecha = peticion.Solp.FechaCreacion,
+                    FechaFormateado = peticion.Solp.FechaCreacion.ToString("dd/MM/yyyy"),
+                    Usuario = new UsuarioDto { CUIT = peticion.Solp.UsuarioCreacion.CUITRegistro, Mail = peticion.Solp.UsuarioCreacion.Mail, Id = peticion.Solp.UsuarioCreacion_Id.Value },
+                    Tipo = TipoLegajo.Solp
+                });
+            }
+
             //buscar archivos de la peticion ( menos lo de legajo cuando es un usuario proveedor)
             foreach (var item in peticion.Archivos.Where(a => peticiondeOfertaUsuarioId == null || (peticiondeOfertaUsuarioId != null && a.Archivo.FileKey != FileKeys.PeticionDeOfertaLegajo)))
             {

@@ -46,8 +46,9 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
     displayVisualizarErrores: boolean;
     numeroOrdenDeCompra: any;
     displayPanelHs: boolean = false;
-    textoRacionalInCompleto: boolean;
+    textoRacionalIncompleto: boolean;
     displayTextoIncompleto: boolean;
+    textoRacionalModal: string;
     regionSap: SelectItem[];
     selectedRegion: any;
     displayRegionSap: boolean;
@@ -70,6 +71,7 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
     lista: any[];
     numerosDePedido: any;
     displayPlazo: boolean;
+    solpCondicionEspecial: boolean = false;
 
     constructor(protected service: ComprasService, protected usuarioService: UsuarioService, protected navService: NavService, protected sessionDataService: SessionDataService,
         protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService,
@@ -83,7 +85,7 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
                 this.peticionOferta_Id = parseInt(params["id"]);
                 this.verOfertas(this.peticionOferta_Id);
             })
-            this.textoRacionalInCompleto = true;
+            this.textoRacionalIncompleto = true;
         };
 
         if (this.tablaOfertas == null) {
@@ -148,11 +150,12 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
                         this.floatMsgService.setInfoMsg(result.info);
                     } else {
                         this.tablaOfertas = result.data;
-                        this.nroOC = this.tablaOfertas.NroOrdenDeCompraAdicional; 
+                        this.nroOC = this.tablaOfertas.NroOrdenDeCompraAdicional;
 
-                        if(this.tablaOfertas.Adicional == true){
+                        if (this.tablaOfertas.Adicional == true) {
                             this.obtenerAdjudicacion(this.nroOC);
-                        }
+                        } else
+                            this.setTextoCondicionEspecial();
                     }
                     this.blockUI.stop();
                 },
@@ -170,71 +173,70 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
 
     obtenerAdjudicacion(nroOC) {
         this.blockUI.start('Cargando...');
-        this.service.obtenerAdjudicacion(nroOC)
-            .subscribe(
-                (result) => {
-                    if (result.logout == true) {
-                        this.sessionDataService.logout();
-                    }
-                    else {
-                        this.ordenDeCompra = result.data;
-
-                        this.adjudicacion.CondicionesDeEntrega = this.ordenDeCompra.CondicionesDeEntrega;
-                        this.adjudicacion.CondicionesDePago = this.ordenDeCompra.CondicionesDePago;
-                        this.adjudicacion.Garantias = this.ordenDeCompra.Garantias;
-                        this.adjudicacion.TextoDeCabecera = this.ordenDeCompra.TextoDeCabecera;
-                        
-                        this.blockUI.stop();
-                    }
-                },
-                (error) => {
-                    this.blockUI.stop();
-                    this.mensajeComponent.setErrorMsg(error.message);
+        this.service.obtenerAdjudicacion(nroOC).subscribe(
+            (result) => {
+                if (result.logout == true) {
+                    this.sessionDataService.logout();
                 }
-            )
+                else {
+                    this.ordenDeCompra = result.data;
+
+                    this.adjudicacion.CondicionesDeEntrega = this.ordenDeCompra.CondicionesDeEntrega;
+                    this.adjudicacion.CondicionesDePago = this.ordenDeCompra.CondicionesDePago;
+                    this.adjudicacion.Garantias = this.ordenDeCompra.Garantias;
+                    this.adjudicacion.TextoDeCabecera = this.ordenDeCompra.TextoDeCabecera;
+
+                    this.setTextoCondicionEspecial();
+                    this.blockUI.stop();
+                }
+            },
+            (error) => {
+                this.blockUI.stop();
+                this.mensajeComponent.setErrorMsg(error.message);
+            }
+        )
     }
 
     descargarAdjuntosCotizacion(cotizacionId) {
         this.blockUI.start("Descargando...");
-        this.service.DescargarAdjuntosCotizacion(cotizacionId, false)
-            .subscribe(
-                (result) => {
-                    if (result.logout == true) {
-                        this.sessionDataService.logout();
-                    }
-                    else {
-                        var byteArray = new Uint8Array(result.FileContents);
-                        var blob = new Blob([byteArray], {
-                            type: "application/octet-stream",
-                        });
+        this.service.DescargarAdjuntosCotizacion(cotizacionId, false).subscribe(
+            (result) => {
+                if (result.logout == true) {
+                    this.sessionDataService.logout();
+                }
+                else {
+                    var byteArray = new Uint8Array(result.FileContents);
+                    var blob = new Blob([byteArray], {
+                        type: "application/octet-stream",
+                    });
 
-                        if (window.navigator.msSaveOrOpenBlob) {
-                            // IE11
-                            window.navigator.msSaveOrOpenBlob(
-                                blob,
-                                result.FileDownloadName
-                            );
-                        } else {
-                            var url = window.URL.createObjectURL(blob);
-                            var link = document.createElement("a");
-                            document.body.appendChild(link);
-                            link.href = url;
-                            link.download = result.FileDownloadName;
-                            link.click();
-                            setTimeout(function () {
-                                window.URL.revokeObjectURL(url);
-                            }, 0);
-                            this.blockUI.stop();
-                            return false;
-                        }
+                    if (window.navigator.msSaveOrOpenBlob) {
+                        // IE11
+                        window.navigator.msSaveOrOpenBlob(
+                            blob,
+                            result.FileDownloadName
+                        );
+                    } else {
+                        var url = window.URL.createObjectURL(blob);
+                        var link = document.createElement("a");
+                        document.body.appendChild(link);
+                        link.href = url;
+                        link.download = result.FileDownloadName;
+                        link.click();
+                        setTimeout(function () {
+                            window.URL.revokeObjectURL(url);
+                        }, 0);
                         this.blockUI.stop();
+                        return false;
                     }
-                },
-                (error) => {
-                    this.mensajeComponent.setErrorMsg(error.message);
                     this.blockUI.stop();
                 }
-            )
+            },
+            (error) => {
+                this.mensajeComponent.setErrorMsg(error.message);
+                this.blockUI.stop();
+            }
+        )
     }
 
     validacionCantidad(cantidad: number, cantidadPendiente: number) {
@@ -518,12 +520,18 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
     }
 
     validacionTextosIncompletos() {
-        this.textoRacionalInCompleto = false;
+        this.textoRacionalIncompleto = false;
         if ((this.adjudicacion.CondicionesDeEntrega == "" || this.adjudicacion.CondicionesDeEntrega == undefined)
             && (this.adjudicacion.CondicionesDePago == "" || this.adjudicacion.CondicionesDePago == undefined)
             && (this.adjudicacion.Garantias == "" || this.adjudicacion.Garantias == undefined)
             && (this.adjudicacion.TextoDeCabecera == "" || this.adjudicacion.TextoDeCabecera == undefined)) {
-            this.textoRacionalInCompleto = true;
+            this.textoRacionalIncompleto = true;
+            this.textoRacionalModal = "No se completó ningún racional.";
+        } else if (this.solpCondicionEspecial) {
+            if (this.adjudicacion.TextoDeCabecera == `Justificación de condición especial: ${this.tablaOfertas.SolpDto.ObservacionesCotizacion}`) {
+                this.textoRacionalIncompleto = true;
+                this.textoRacionalModal = "El texto de cabecera en el racional solo contiene la justificación de la condición especial ingresada por el solicitante.";
+            }
         }
     }
 
@@ -581,7 +589,7 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
     abrirModalPrecios() {
         this.displayVisualizarPrecio = true;
     }
-    
+
     obtenerPrimerPlazo(cotizacionPosicion: any): string {
         let plazos = '';
 
@@ -612,11 +620,11 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
 
     aceptarRegion() {
         this.adjudicacion.RegionSap = this.selectedRegion.value;
-        this.validacionTextosIncompletos();       
+        this.validacionTextosIncompletos();
         this.displayRegionSap = false;
-        if (this.textoRacionalInCompleto == true) {
-             this.displayTextoIncompleto = true;
-        }else{
+        if (this.textoRacionalIncompleto == true) {
+            this.displayTextoIncompleto = true;
+        } else {
             this.abrirModalPosicionPlazo();
         }
     }
@@ -679,5 +687,15 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
         this.displayPlazo = false;
         this.proveedor = this.usuario.CodigoProveedor;
         this.mostrarModalGenerarOCMoneda(this.usuario)
+    }
+
+    setTextoCondicionEspecial() {
+        if (this.tablaOfertas.SolpDto.Urgencia == true || this.tablaOfertas.SolpDto.Adicional == true || this.tablaOfertas.SolpDto.TrabajoYaHecho == true || this.tablaOfertas.SolpDto.ProveedorDefinido == true) {
+            
+            this.adjudicacion.TextoDeCabecera != undefined && this.modalTexto.adjudicacion.TextoDeCabecera != this.tablaOfertas.SolpDto.ObservacionesCotizacion ?
+                this.adjudicacion.TextoDeCabecera += `\n\nJustificación de condición especial: ${this.tablaOfertas.SolpDto.ObservacionesCotizacion}`
+                : this.adjudicacion.TextoDeCabecera = `Justificación de condición especial: ${this.tablaOfertas.SolpDto.ObservacionesCotizacion}`;
+            this.solpCondicionEspecial = true;
+        }
     }
 }
