@@ -7615,6 +7615,7 @@ namespace SustitucionMOAUtils.Services
             {
 
                 var respuestaGuardarSOLP = new RespuestaGuardarSOLP { Solp = new SolpDto { NroSolp = solp.NroSolp } };
+                var proveedores = repositorio.Listar<Usuario>();
                 if (nroOrdenDeCompra.Count > 0)
                 {
                     foreach (var nro in nroOrdenDeCompra)
@@ -7625,6 +7626,7 @@ namespace SustitucionMOAUtils.Services
                         {
                             var posicion = solp.Posiciones.Where(x => x.Indice == Int32.Parse(posicionSap.Indice)).FirstOrDefault();
                             posicion.ProveedorAdjudicado_Id = proveedor.Usuario_Id;
+                            posicion.ProveedorAdjudicado = proveedores.Where(x => x.Id == proveedor.Usuario_Id).FirstOrDefault();
                             posicion.RegistroInfoNro = posicionSap.RegistroInfo;
                             posicion.OrganizacionDeComprasCodigo = ordenDeCompra.Cabecera.OrganizacionDeComprasCodigo;
                         }
@@ -7639,9 +7641,9 @@ namespace SustitucionMOAUtils.Services
                 Logger.Log.Error(e);
                 throw;
             }
-        }
+        }    
 
-    }
+}
 
 
     public static class SolpTemplateKeys
