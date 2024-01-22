@@ -5,26 +5,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using SustitucionMOAModel.Entities;
-using SustitucionMOAModel.Enums;
-using SustitucionMOAModel.Models.ViewModel.Liquidacion;
-using SustitucionMOAModel.Models.WSMapMOA.CartaPorte.Formulario;
-using SustitucionMOAModel.Models.WSMapMOA.ContactoMail;
-using SustitucionMOAModel.Models.WSMapMOA.Liquidacion;
-using SustitucionMOAModel.Models.WSMapMOA.Vendedor.Detalle;
 using SustitucionMOARepositorio;
 using System.Data;
-using System.Data.Entity;
-using System.Globalization;
-using System.ServiceModel.Channels;
 using Comunicacion = SustitucionMOAModel.Entities.Comunicacion;
-using SustitucionMOAModel.Models.WebApiMap.ScatoRepositorio;
-using DocumentFormat.OpenXml.Spreadsheet;
 using System.Reflection;
-using SustitucionMOAWS.ObtenerEntradaDeServicioPorNumeroWebServiceMOA;
 using SustitucionMOAModel.Dto.OrdenesCompra;
 using SustitucionMOAModel.Consultas;
-using SustitucionMOAWS.ScatoWebService;
-using SustitucionMOAWS.ScatoComandosWebService;
+using SustitucionMOAAssets;
+using SustitucionMOAModel.CustomExceptions;
 
 namespace SustitucionMOAUtils.Services
 
@@ -45,16 +33,23 @@ namespace SustitucionMOAUtils.Services
 
         public ListaPaginada<DetalleOrdenDeCompraDto> ObtenerOrdenesCompraConDetalle(OrderParamsDto parametros)
         {
-            List<DetalleOrdenDeCompraDto> result = ServicioSAP_OrdenesCompraCabeceras(parametros);
+            try
+            {
+                List<DetalleOrdenDeCompraDto> result = ServicioSAP_OrdenesCompraCabeceras(parametros);
 
-            // Ordena si se proporciona la columna de orden y el tipo de orden
-            if (!string.IsNullOrEmpty(parametros.ColumnaOrden))
-                result = OrdenarOrdenesCompra(result, parametros.ColumnaOrden, parametros.OrdenAscendente);
+                if (!string.IsNullOrEmpty(parametros.ColumnaOrden))
+                    result = OrdenarOrdenesCompra(result, parametros.ColumnaOrden, parametros.OrdenAscendente);
 
-            // Realiza la paginación
-            var response = PaginarResultados(result, parametros.pagina, parametros.elementosPorPagina);
-
-            return response;
+                return PaginarResultados(result, parametros.pagina, parametros.elementosPorPagina);
+            }
+            catch (Exception e) when (e is InfoCustomException || e is ValidationCustomException)
+            {
+                throw;
+            }
+            catch (Exception e)
+            {
+                throw new WSCustomException(ErrorMsg.ErrorWS, e);
+            }
         }
 
         /// <summary>
@@ -143,12 +138,11 @@ namespace SustitucionMOAUtils.Services
                 string nroOC = ordenCompra.Id.ToString();
                 
 
-                // Obtengo detalle de una OC
+                // Obtengo detalle de una OC //
                 DetalleOrdenDeCompraDto detalleOrdendeCompra = new ObtenerOrdenDeCompraConsumerMOA(repositorio).ObtenerDetalleDeOrdenDeCompra(nroOC, centros, almacenes);
 
-                detalleOrdendeCompra.NombreProveedor = ordenCompra.ProveedorNombre;
-                detalleOrdendeCompra.MonedaDescripcion = ordenCompra.MonedaDescripcion;
-
+                detalleOrdendeCompra.NombreProveedor = ordenCompra.ProveedorNombre; 
+                detalleOrdendeCompra.MonedaDescripcion = ordenCompra.MonedaDescripcion; 
 
                 result.Add(detalleOrdendeCompra);
             }

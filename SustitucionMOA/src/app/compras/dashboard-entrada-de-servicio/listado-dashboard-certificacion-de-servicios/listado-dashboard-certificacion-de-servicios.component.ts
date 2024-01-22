@@ -1,6 +1,6 @@
-import { Component, Input, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
-import { Table, RowToggler } from 'primeng/table';
+import { Table } from 'primeng/table';
 import { ListBaseComponent } from '../../../common/base-components/list-base-component';
 import { SpinnerComponent } from '../../../common/view-child/spinner/spinner.component';
 import { Paginator } from 'primeng/paginator';
@@ -15,8 +15,6 @@ import { ComprasService } from '../../compras.service';
 import { Seccion } from '../../../common/models/seccion';
 import { Location } from '@angular/common';
 import { ModalAltaEntradaDeServicioComponent } from '../modal-alta-entrada-de-servicio/modal-alta-entrada-de-servicio.component';
-import { throwError as observableThrowError, Observable } from 'rxjs';
-//import { FiltroFechaComponent } from './../../common/view-child/filtro-fecha/filtro-fecha.component';
 import { FiltroFechaComponent } from './../../../common/view-child/filtro-fecha/filtro-fecha.component';
 import { ConfirmationService } from 'primeng/api';
 import { MensajeComponent } from '../../../common/view-child/mensaje/mensaje.component';
@@ -27,8 +25,9 @@ import { MensajeComponent } from '../../../common/view-child/mensaje/mensaje.com
   templateUrl: './listado-dashboard-certificacion-de-servicios.component.html',
   styleUrls: ['./listado-dashboard-certificacion-de-servicios.component.css']
 })
-export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseComponent {
 
+export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseComponent {
+  
     constructor(protected service: ComprasService, protected navService: NavService,
         protected sessionDataService: SessionDataService, protected securityService: SecurityService,
         protected floatMsgService: FloatMsgService, protected modalService: ModalService,
@@ -51,6 +50,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
 
     @ViewChild(MensajeComponent)
     protected mensajeComponent: MensajeComponent;
+
     @ViewChild("myModal") modal: ModalAltaEntradaDeServicioComponent;
 
     @BlockUI() blockUI: NgBlockUI;
@@ -82,8 +82,8 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
     selectedItemId: number | null = null;
     selectedPosicionId: number | null = null;
     ordenCompraIdsMostradas: Set<number> = new Set<number>();
+    mensajeError: string = "";
     filaExpandida: any;
-
     expandedRow: any; 
 
  
@@ -127,36 +127,9 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
     throw new Error('Method not implemented.');
   }
 
-
-  //toggleRow(rowData: any): void {
-  //  //console.log('RowData:', rowData);
-  //    this.filaExpandida = this.filaExpandida === rowData ? null : rowData;
-  //    //console.log('Row expandida:', this.filaExpandida);
-  //    const index = this.expandedRows.indexOf(rowData);
-
-  toggleTable(posicionId: number) {
-    if (this.selectedPosicionId === posicionId) {
-        this.selectedPosicionId = null;
-        this.selectedItemId = null;
-        this.isTableExpanded = false;
-        this.isTableItemsExpanded = false;
-    } else {
-        this.selectedPosicionId = posicionId;
-        this.isTableExpanded = true;
-        this.isTableItemsExpanded = false;
-        this.selectedItemId = null;
-    }
-  }
-
-  toggleTableItems(itemId: number) {
-    if (this.selectedItemId === itemId) {
-        this.selectedItemId = null;
-        this.isTableItemsExpanded = false;
-    } else {
-        this.selectedItemId = itemId;
-        this.isTableItemsExpanded = true;
-    }
-  }
+  isVisibleError() {
+    return this.mensajeError != "";
+}
 
   toggleEntradaServicio() {
     this.isEntradaDeServicioExpanded = !this.isEntradaDeServicioExpanded;
@@ -197,14 +170,6 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
             }           
         }
     }
-
-    //onBuscar() {
-      
-    //  this.getListarPO(this.proveedor, this.ordenCompraId,  this.filtroFechaComponent.fecha_inicio);
-    //}
-
-   
-
 
     getListarPO(proveedor, ordenCompraId,fecha_inicio) {
       this.getFecha();
@@ -266,7 +231,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
     this.confirmationService.confirm({
       message: 'Esta a punto de eliminar la entrada de servicio. <b>¿Desea confirmar?</b>',
         accept: () => {
-          this.ejectDelete(ItemNumero);
+          this.deleteById(ItemNumero);
         },
         reject: () => {
 
@@ -275,8 +240,8 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
     );
   }
 
-  ejectDelete(ItemNumero) {
-    this.service.deleteES(ItemNumero).subscribe(
+  deleteById(ItemNumero) {
+    this.service.deleteById(ItemNumero).subscribe(
       (result:any) => {
         if (result.logout == true) {
           this.sessionDataService.logout();
@@ -285,7 +250,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
         } else if (result.info != undefined) {
           this.mensajeComponent.setErrorMsg(result.error);
         } else {
-          this.getListarPO(this.proveedor, this.ordenCompraId,this.fechaInicio);
+          this.getListarPO(this.proveedor, this.ordenCompraId, this.filtroFechaComponent.fecha_inicio);
         }
         this.spinnerComponent.hideIt()
       }
@@ -308,6 +273,10 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
       else {
           this.showModal = false;
       }
+    }
+
+    recibirMensajeError(event: string) {
+      this.mensajeError = event;
     }
 
     searchElement() {

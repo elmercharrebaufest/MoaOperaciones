@@ -150,3 +150,7 @@ th{
 .btn-buscar {
     top: 35px;
 }
+
+.msj-error {
+    margin-right: 5px !important;
+}

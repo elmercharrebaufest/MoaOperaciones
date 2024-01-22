@@ -19,7 +19,7 @@ export class ComunicacionesService extends BaseService {
     params = params.append('fechaInicio', start_date);
     params = params.append('fechaFin', end_date);
     return this.http
-        .get('/api/Comunicacion/GetAllByProveedor', { params: params, headers: this.headers })
+        .get('/api/Comunicacion/GetAllByProveedor', { params: params, headers: this.headers })       
         .pipe(timeoutWith(30000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde "))));
   }
 

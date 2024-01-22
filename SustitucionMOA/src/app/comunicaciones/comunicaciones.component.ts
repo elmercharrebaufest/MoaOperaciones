@@ -318,7 +318,9 @@ export class ComunicacionesComponent extends BaseComponent implements OnInit {
         const ids = [];
         let stackedTypes = [1, 2, 6];
         this.filter = "";
-        let proveedorDescripcion = sessionStorage.getItem("nombre");;
+        let proveedorDescripcion = sessionStorage.getItem("nombre");
+        //MMSN-463 - ProveedorId necesario para comparaciones en consultas.
+        let proveedorId = this.idProveedor;
 
         notificaciones.forEach((notificacion) => {
             if (notificacion.Leida == false && notificacion.ComunicacionTipo === tipoComunicacion) {
@@ -358,7 +360,7 @@ export class ComunicacionesComponent extends BaseComponent implements OnInit {
         setTimeout(() => {
             this.getComunicaciones(this.idProveedor, this.startDate, this.endDate);
         }, 500);
-        this.redirect(notificaciones[i].ComunicacionTipo, this.filter, proveedorDescripcion);
+        this.redirect(notificaciones[i].ComunicacionTipo, this.filter, proveedorDescripcion, proveedorId);
     }
 
 
@@ -385,7 +387,7 @@ export class ComunicacionesComponent extends BaseComponent implements OnInit {
         }
     }
 
-    redirect(communicationType: number, filter: string, nombreProveedor: string) {
+    redirect(communicationType: number, filter: string, nombreProveedor: string, idProveedor: string) {
 
         nombreProveedor = decodeURIComponent(nombreProveedor); 
 
@@ -407,7 +409,7 @@ export class ComunicacionesComponent extends BaseComponent implements OnInit {
         break;
       
       case 5:
-            this.router.navigate(['/consulta/mis-consultas'], { queryParams: { filtrosActivados: true, filter: 'DOC', categoria: filter, proveedor: nombreProveedor }});
+            this.router.navigate(['/consulta/mis-consultas'], { queryParams: { filtrosActivados: true, filter: 'DOC', categoria: filter, proveedor: nombreProveedor, idProveedor: idProveedor}});
         break;
 
       case 6:

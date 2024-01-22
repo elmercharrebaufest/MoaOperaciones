@@ -12,10 +12,8 @@ import { AdjudicacionDto } from '../modelos/adjudicacion';
 import { RegistroInfoDto } from '../modelos/registro-info';
 import { PeticionVisualizacionPrecioDto } from '../modelos/peticion-visualizar-precio-dto';
 import { ChatInternoComprasDto } from './chat-interno/chat-interno.interface';
-
 import { timeoutWith } from 'rxjs/operators';
 import { EntradaServicio } from '../common/models/entradaServicio';
-
 
 @Injectable({
     providedIn: 'root'
@@ -184,14 +182,14 @@ export class ComprasService extends BaseService {
             .get<any[]>('/api/EntradaServicio/GetByProveedorAsync', { params: params, headers: this.headers })
     }
 
-    public deleteES(DocumentoNumero) {
+    public deleteById(DocumentoNumero) {
         let params: HttpParams = new HttpParams();
         params = params.set('documentoNumero', DocumentoNumero);
         return this.http
             .delete<any[]>('/api/EntradaServicio/DeleteById', { params: params, headers: this.headers })
     }
 
-    postCreateAsync(entradaServicioCreateParamsDto): Observable<any> {
+    public postCreateAsync(entradaServicioCreateParamsDto): Observable<any> {
         return this.http.post('/api/EntradaServicio/CreateAsync', entradaServicioCreateParamsDto)
           .pipe(
             timeoutWith(30000, throwError(new Error('Se excedió el tiempo de espera, por favor inténtelo más tarde')))

@@ -1,10 +1,6 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { ModalService } from '../../../common/services/ModalService';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { ComprasService } from '../../compras.service';
-
-interface Item {
-  id: string;
-}
+import { ListadoDashboardCertificacionDeServiciosComponent } from '../listado-dashboard-certificacion-de-servicios/listado-dashboard-certificacion-de-servicios.component';
 
 @Component({
   selector: 'app-modal-alta-entrada-de-servicio',
@@ -20,11 +16,14 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
   errorResponseMessage: string = "";
   showError: boolean = false;
   cantidad: number = 0;
+  mensajeError: string = "";
 
   @Input() itemSelected: any;
   @Input() elementSelected: any;
   @Input() itemIdSelected: string = '';
   @Output() closeModal = new EventEmitter<void>();
+
+  @Output() enviarMensajeError = new EventEmitter();
 
   entrySheetData = {
     "EntrySheetHeader": {
@@ -61,7 +60,8 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
     }
   };
 
-  constructor(private modalService: ModalService, protected service: ComprasService) { }
+  constructor(protected service: ComprasService
+    ) { }
 
   ngOnInit() {
   }
@@ -106,7 +106,6 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
         FechaContabilizacion: fechaFormateada,
         GrabarAceptada: true
       },
-
       EntrySheetServices: {
         Items: [
           {
@@ -124,8 +123,8 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
             Quantity: this.cantidad !== undefined ? this.cantidad : primerItem.Cantidad,
             GrossPrice: primerItem.PrecioBruto,
             ShortText: primerItem.Descripcion,
-            PlannedPackage: '0003177389',
-            PlannedLine: '0000000002'
+            PlannedPackage: primerItem.Id,
+            PlannedLine: primerItem.LINE_NO
           }
         ]
       }
@@ -134,18 +133,21 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
   
     this.service.postCreateAsync(this.entrySheetData).subscribe(
       (response) => {
-        console.log('Respuesta del backend:', response);
-        // Manejar la respuesta del backend
+        if(response.data.Type === 'S'){
+          this.mensajeError = (response && response.data.Message);
+          this.enviarMensajeError.emit(response.data.Message);
+        }
+        if(response.data.Type === 'E'){
+          this.mensajeError = (response && response.data.Message) || 'Error en la solicitud. Por favor, inténtelo de nuevo.';
+          this.enviarMensajeError.emit(response.data.Message);
+        }
+        this.closeModal.emit();
       },
       (error) => {
-        console.error('Error en la solicitud:', error);
-        this.errorResponseMessage = (error && error.error && error.error.message) || 'Error en la solicitud. Por favor, inténtelo de nuevo.';
-
-        this.showError = true;
-        // Manejar la respuesta del backend
+        this.mensajeError = (error && error.error && error.error.message) || 'Error en la solicitud. Por favor, inténtelo de nuevo.';
+        this.enviarMensajeError.emit(this.mensajeError);
+        this.closeModal.emit();
       }
     );
-    this.closeModal.emit();
-  }  
-                   
+  } 
 }

@@ -9,11 +9,11 @@ namespace SustitucionMOAModel.Dto.OrdenesCompra
     public class ItemDto
     {
         public string Id { get; set; }
+        public string LINE_NO { get; set; }
+        public int? PosicionId { get; set; }
+        public int NumeroLinea { get; set; }
         public decimal? Cantidad { get; set; }
         public string Descripcion { get; set; }
-
-
-        public int? PosicionId { get; set; }
         public string Campo_I { get; set; }
         public long? ServicioNumero { get; set; }
         public string UnidadMedida { get; set; }
@@ -22,11 +22,8 @@ namespace SustitucionMOAModel.Dto.OrdenesCompra
         public string Toler { get; set; }
         public string ItemNumero { get; set; }
         public string SUBPCKG_NO { get; set; }
-        public int NumeroLinea { get; set; }
-        public string LINE_NO { get; set; }
         public string UM { get; set; }
         public decimal? Importe { get; set; }
-        public List<EntradaServicioDto> EntradasServicio { get; set; }
 
         /// <summary>
         /// POHEADER.CURRENCY 
@@ -52,5 +49,8 @@ namespace SustitucionMOAModel.Dto.OrdenesCompra
         /// MMSN-491 - Cambiar separador
         /// </summary>
         public string ImporteString { get; set; }
+        
+        
+        public List<EntradaServicioDto> EntradasServicio { get; set; }
     }
 }

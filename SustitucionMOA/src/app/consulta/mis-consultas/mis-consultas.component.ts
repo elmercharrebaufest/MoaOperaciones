@@ -124,6 +124,7 @@ export class MisConsultasComponent extends ListBaseComponent {
             const categoria = params['categoria'];
             const estadoConsulta = params['filter'];
             const proveedor = params['proveedor'];
+            const idProveedor = params['idProveedor'];
 
 
             if (filtrosActivados && filtrosActivados === 'true') {
@@ -132,7 +133,7 @@ export class MisConsultasComponent extends ListBaseComponent {
             }
 
             if (filtrosActivados && filtrosActivados === 'true' && categoria) {
-                if (proveedor.startsWith('C')) {
+                if (idProveedor.startsWith('C')) {
                     this.seleccionarOpcionFiltro('RazonSocialCorredor', proveedor);
 
                 }
@@ -157,7 +158,6 @@ export class MisConsultasComponent extends ListBaseComponent {
 
 
     seleccionarOpcionFiltro(columna: string, valor: string) {
-        debugger
 
         valor = decodeURIComponent(valor); 
 

@@ -494,6 +494,7 @@ namespace SustitucionMOAWS.WSConsumers
 
 
                 itemDto.Id = item.PCKG_NO;
+                itemDto.LINE_NO = item.LINE_NO;
                 itemDto.NumeroLinea = int.Parse(item.EXT_LINE);
                 itemDto.Descripcion = item.SHORT_TEXT;
                 itemDto.Cantidad = item.QUANTITY;
@@ -517,7 +518,7 @@ namespace SustitucionMOAWS.WSConsumers
                 itemDto.Porcentaje = "0"; // si no tiene entradas de servicios asociadas el porcentaje es 0
                 itemDto.CantidadReal = 0; // si no tiene entras de servicios asociadas la cantidad real es = 0
 
-                itemDto.EntradasServicio = ObtenerEntradasDeServicioDelItem(pOSERVICES, pOHISTORY, itemDto.Id);
+                itemDto.EntradasServicio = ObtenerEntradasDeServicioDelItem(pOSERVICES, pOHISTORY, itemDto.Id, itemDto.LINE_NO);
                 if (itemDto.EntradasServicio.Count > 0)
                 {
                     itemDto = CalcularCampos(itemDto);
@@ -531,9 +532,9 @@ namespace SustitucionMOAWS.WSConsumers
         }
 
 
-      
 
-        private List<EntradaServicioDto> ObtenerEntradasDeServicioDelItem(BAPIESLLC[] pOSERVICES, BAPIEKBE[] pOHISTORY, string idDelItem)
+
+        private List<EntradaServicioDto> ObtenerEntradasDeServicioDelItem(BAPIESLLC[] pOSERVICES, BAPIEKBE[] pOHISTORY, string idDelItem, string idDeLinea)
         {
             List<EntradaServicioDto> EntradasServicioDelItem = new List<EntradaServicioDto>();
             var entradasDeServicioPotenciales = pOHISTORY.Where(x => x.PROCESS_ID == "9" && x.HIST_TYPE == "D").ToList();
@@ -545,14 +546,26 @@ namespace SustitucionMOAWS.WSConsumers
                 EntradaServicioDto entradaServicioSAP = new ObtenerEntradaDeServicioPorNumeroConsumerMOA().ObtenerEntradaServicio(entradaServicioPotencial.MAT_DOC);
                 var elementosEntradaServicio = entradaServicioSAP.Items;
 
-                foreach (ItemEntradaServicioDto elemento in elementosEntradaServicio)
+                foreach (ItemEntradaServicioDto itemES in elementosEntradaServicio)
                 {
 
-                    if (elemento.ItemNumero == idDelItem)
+                    if (itemES.ItemNumero == idDelItem && itemES.PLN_LINE == idDeLinea)
                     {
-                        entradaServicioDto.Id = int.Parse(elemento.Id);
-                        entradaServicioDto.TextoBreve = elemento.Descripcion;
-                        entradaServicioDto.Cantidad = elemento.Cantidad;
+                        entradaServicioDto.Id = int.Parse(itemES.Id);
+                        entradaServicioDto.itemNumero = itemES.ItemNumero;
+                        entradaServicioDto.TextoBreve = itemES.Descripcion;
+                        entradaServicioDto.Cantidad = itemES.Cantidad;
+                        entradaServicioDto.ESS_PCKG_NO = itemES.PCKG_NO;
+                        entradaServicioDto.ESS_LINE_NO = itemES.LINE_NO;
+                        entradaServicioDto.ESS_EXT_LINE = itemES.EXT_LINE;
+
+                        //MMSN-460 - Informacion de Cabecera p/ FE
+                        entradaServicioDto.Fecha = entradaServicioSAP.Fecha;
+                        entradaServicioDto.FechaDocumentoString = entradaServicioSAP.FechaDocumentoString;
+                        entradaServicioDto.Referencia = entradaServicioSAP.Referencia;
+                        entradaServicioDto.ImporteARPUSD = entradaServicioSAP.ImporteARPUSD;
+                        entradaServicioDto.FechaContabilizacion = entradaServicioSAP.FechaContabilizacion;
+                        //entradaServicioDto.SePuedeBorrar = !entradaServicioFacturada && entradaServicioDentroDePeriodoSAP;
 
                         EntradasServicioDelItem.Add(entradaServicioDto);
                     }
@@ -560,7 +573,6 @@ namespace SustitucionMOAWS.WSConsumers
             }
 
             return EntradasServicioDelItem;
-
         }
 
         /// <summary>

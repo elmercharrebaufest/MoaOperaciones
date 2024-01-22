@@ -69,6 +69,12 @@
     </div>
     <!-- End Search-->
     <spinner></spinner>
+
+    <div class="col-xs-12" *ngIf="isVisibleError()">
+        <div class="alert alert-danger">
+            <i aria-hidden="true" class="fa fa-exclamation-triangle msj-error"></i>{{mensajeError}}
+        </div>
+    </div>
     <!-- <app-filtro-dashboard-certificacion-de-servicios></app-filtro-dashboard-certificacion-de-servicios> -->
     <div class="col-sm-12 col-md-12 col-lg-12" style="padding: 0px; border: 1px solid rgb(200, 200, 200);">
 
@@ -963,6 +969,7 @@
             [elementSelected]="elementSelected"
             [itemIdSelected]="itemIdSelected"
             (closeModal)="onCloseModal()"
+            (enviarMensajeError)="recibirMensajeError($event)"
         ></app-modal-alta-entrada-de-servicio>
     </div>
 
