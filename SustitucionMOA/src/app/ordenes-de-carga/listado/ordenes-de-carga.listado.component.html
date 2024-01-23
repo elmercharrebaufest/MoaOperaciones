@@ -158,7 +158,7 @@
               <td>{{ordenDeCarga.Material}}</td>
               <td style="text-align: center;">{{ordenDeCarga.PatenteChasis}}
                 <span *ngIf="ordenDeCarga.Escalable" class="fa fa-truck" aria-hidden="true"></span>
-                <span pTooltip="Patentes repetidas" tooltipPosition="Bottom" *ngIf="ordenDeCarga.TienePatentesRepetidas"
+                <span pTooltip="Patentes repetidas" tooltipPosition="bottom" *ngIf="ordenDeCarga.TienePatentesRepetidas"
                   class="fa fa-exclamation-triangle text-repetido" aria-hidden="true"></span>
               </td>
               <td *ngIf="esInterno || esComercial || esPuerto || esMesaFas">
