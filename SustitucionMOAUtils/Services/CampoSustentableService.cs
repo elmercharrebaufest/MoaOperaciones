@@ -53,10 +53,13 @@ namespace SustitucionMOAUtils.Services
         public Resultado Agregar(string mailUsuario, CampoProveedor campoProveedor, HttpPostedFileBase archivoKmz, bool UsarArchivoId)
         {
             var ruta = "";
-            var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
+            var usuario = repositorio.ObtenerUsuarioPorMail(mailUsuario);
+
             ValidarUsuario(usuario, campoProveedor.Proveedor_Id);
             ValidarCampo(campoProveedor, archivoKmz);
-            var declaracion = repositorio.Obtener<DeclaracionCampoSustentable>(d => d.Cosecha_Id == campoProveedor.CampoCosecha.Cosecha_Id && d.CUIT == campoProveedor.CUIT);
+
+            var declaracion = repositorio.ObtenerDeclaracionDeProveedor(campoProveedor.CUIT, campoProveedor.CampoCosecha.Cosecha_Id);
+            
             campoProveedor.RazonSocial = declaracion.RazonSocial;
             campoProveedor.FechaCreacion = DateTime.Now;
             campoProveedor.Borrado = false;
@@ -66,7 +69,7 @@ namespace SustitucionMOAUtils.Services
             }
             else
             {
-                var archivoCampo = repositorio.Obtener<Archivo>(a => a.Id == campoProveedor.Archivo_Id);
+                var archivoCampo = repositorio.ObtenerArchivo(campoProveedor.Archivo_Id);
                 ruta = archivoCampo.Ruta;
             }
             campoProveedor.CampoCosecha.ToneladasAprobadas = -1;
@@ -236,7 +239,7 @@ namespace SustitucionMOAUtils.Services
                 OpcionDeclaracionCampoSustentable = OpcionesDeclaracionCampoSustentable.Totalidad
             };
 
-            var declaracion = repositorio.Obtener<DeclaracionCampoSustentable>(d => d.Cosecha_Id == cosechaId && d.CUIT == CUITDeclaracion);
+            var declaracion = repositorio.ObtenerDeclaracionDeProveedor(CUITDeclaracion, cosechaId);
 
             if (declaracion != null)
             {
