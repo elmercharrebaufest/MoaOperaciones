@@ -761,7 +761,7 @@ namespace SustitucionMOAUtils.Services
                         pos.CantidadSubposicionesEnSAP = pos.Subposiciones.Count;
                         pos.EsConcluido = true;
                     }
-                    if (solpEntity.TrabajoYaHecho == true && solpEntity.EstadoSolpSap?.CodigoSap == "05")
+                    if (solpEntity.TrabajoYaHecho == true && (solpEntity.EstadoSolpSap?.CodigoSap == "05" || solpEntity.EstadoSolpSap?.CodigoSap == "02"))
                     {
                         ActualizarOfertasAlEditarSolpLiberada(solpEntity);
                     }
