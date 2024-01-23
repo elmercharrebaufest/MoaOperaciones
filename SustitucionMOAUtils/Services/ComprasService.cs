@@ -745,10 +745,10 @@ namespace SustitucionMOAUtils.Services
                 respuestaGuardarSOLP.Errores = new List<string>();
                 foreach (var error in resultadoEditarSolp.Errores.Where(x => x.Tipo == "E"))
                 {
-                    var mensaje = "No se pudo procesar la SOLP";
+                    var mensaje = error.Mensaje.Trim();
                     respuestaGuardarSOLP.Errores.Add(mensaje);
-                    break;
                 }
+
                 if (respuestaGuardarSOLP.Errores.Count == 0)
                 {
                     respuestaGuardarSOLP.Mensaje = "OK";
