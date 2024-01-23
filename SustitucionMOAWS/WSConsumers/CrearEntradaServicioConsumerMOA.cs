@@ -48,8 +48,8 @@ namespace SustitucionMOAWS.WSConsumers
                     request.Headers.Add("SOAPAction", _SOAPAction);
                     request.Headers.Add("Authorization", _Authorization);
 
-                    var entrySheetHeader = parametros.EntrySheetHeader;
-                    var entrySheetServices = parametros.EntrySheetServices.Items;
+                    EntrySheetHeaderSection entrySheetHeader = parametros.EntrySheetHeader;
+                    List<EntrySheetServiceItemSection> entrySheetServices = parametros.EntrySheetServices.Items;
 
                     var content = new StringContent(
                         $@"<soapenv:Envelope xmlns:soapenv=""http://schemas.xmlsoap.org/soap/envelope/"" xmlns:urn=""urn:sap-com:document:sap:rfc:functions"">
@@ -90,8 +90,10 @@ namespace SustitucionMOAWS.WSConsumers
             }
         }
 
+//ENTRYSHEETHEADER.ACCEPTANCE = parametros.EntrySheetHeader.GrabarAceptada != false ? ""X"" : """";
         string GenerateEntrySheetHeaderXml(EntrySheetHeaderSection header)
         {
+            //var aux = header.GrabarAceptada != false ? "X" : "";
             return $@"
         <ENTRYSHEETHEADER>
             <PCKG_NO>{header.PaqueteNumero}</PCKG_NO>
@@ -170,7 +172,7 @@ namespace SustitucionMOAWS.WSConsumers
                 // Mapeo de ENTRYSHEETHEADER
                 ENTRYSHEETHEADER.PO_NUMBER = parametros.EntrySheetHeader.OrdenCompraNumero;
                 ENTRYSHEETHEADER.PO_ITEM = parametros.EntrySheetHeader.OrdenCompraPosicionNumero;
-                ENTRYSHEETHEADER.ACCEPTANCE = parametros.EntrySheetHeader.GrabarAceptada != false ? "X" : "";
+                //ENTRYSHEETHEADER.ACCEPTANCE = parametros.EntrySheetHeader.GrabarAceptada != false ? "X" : "";
                 ENTRYSHEETHEADER.DOC_DATE = parametros.EntrySheetHeader.FechaDocumento;
                 ENTRYSHEETHEADER.POST_DATE = parametros.EntrySheetHeader.FechaContabilizacion;
                 ENTRYSHEETHEADER.SHORT_TEXT = parametros.EntrySheetHeader.Descripcion;

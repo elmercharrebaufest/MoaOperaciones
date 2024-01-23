@@ -1,4 +1,5 @@
-﻿using SustitucionMOAModel.Dto;
+﻿using SustitucionMOAFotmatter;
+using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Dto.OrdenesCompra;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Models.WSMapMOA.Compras;
@@ -11,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Runtime.Remoting.Messaging;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Documents;
@@ -532,25 +534,40 @@ namespace SustitucionMOAWS.WSConsumers
         }
 
 
-
-
+        /// <summary>
+        /// Obtiene las Entradas de Servicio de un Item
+        /// </summary>
+        /// <param name="pOSERVICES"></param>
+        /// <param name="pOHISTORY"></param>
+        /// <param name="idDelItem"></param>
+        /// <returns></returns>
         private List<EntradaServicioDto> ObtenerEntradasDeServicioDelItem(BAPIESLLC[] pOSERVICES, BAPIEKBE[] pOHISTORY, string idDelItem, string idDeLinea)
         {
             List<EntradaServicioDto> EntradasServicioDelItem = new List<EntradaServicioDto>();
-            var entradasDeServicioPotenciales = pOHISTORY.Where(x => x.PROCESS_ID == "9" && x.HIST_TYPE == "D").ToList();
+            List<BAPIEKBE> entradasDeServicioPotenciales = pOHISTORY.Where(x => x.PROCESS_ID == "9" && x.HIST_TYPE == "D").ToList();
+            List<string> listaDeEntradasDeServicioFacturadas = pOHISTORY
+                .Where(x => (x.HIST_TYPE == "Q" || x.HIST_TYPE == "R") && x.PROCESS_ID == "2")
+                .Select(x => x.REF_DOC)
+                .ToList();
 
 
             foreach (var entradaServicioPotencial in entradasDeServicioPotenciales)
             {
                 EntradaServicioDto entradaServicioDto = new EntradaServicioDto();
-                EntradaServicioDto entradaServicioSAP = new ObtenerEntradaDeServicioPorNumeroConsumerMOA().ObtenerEntradaServicio(entradaServicioPotencial.MAT_DOC);
-                var elementosEntradaServicio = entradaServicioSAP.Items;
+                string _nroES = entradaServicioPotencial.MAT_DOC;
+                EntradaServicioDto entradaServicioSAP = new ObtenerEntradaDeServicioPorNumeroConsumerMOA().ObtenerEntradaServicio(_nroES);
+                List<ItemEntradaServicioDto> _itemsDeEntradaServicio = entradaServicioSAP.Items;
+                bool entradaServicioFacturada = EntradaServicioTieneFactura(listaDeEntradasDeServicioFacturadas, _nroES);
 
-                foreach (ItemEntradaServicioDto itemES in elementosEntradaServicio)
+                foreach (ItemEntradaServicioDto itemES in _itemsDeEntradaServicio)
                 {
 
                     if (itemES.ItemNumero == idDelItem && itemES.PLN_LINE == idDeLinea)
                     {
+                        DateTime _fechaContabilizacion = SAPFormatter.GetDateTime(entradaServicioSAP.FechaContabilizacion);
+                        bool entradaServicioDentroDePeriodoSAP = DentroPeriodoSAP(_fechaContabilizacion, DateTime.Now);
+
+
                         entradaServicioDto.Id = int.Parse(itemES.Id);
                         entradaServicioDto.itemNumero = itemES.ItemNumero;
                         entradaServicioDto.TextoBreve = itemES.Descripcion;
@@ -562,10 +579,10 @@ namespace SustitucionMOAWS.WSConsumers
                         //MMSN-460 - Informacion de Cabecera p/ FE
                         entradaServicioDto.Fecha = entradaServicioSAP.Fecha;
                         entradaServicioDto.FechaDocumentoString = entradaServicioSAP.FechaDocumentoString;
+                        entradaServicioDto.FechaContabilizacion = entradaServicioSAP.FechaContabilizacion;
                         entradaServicioDto.Referencia = entradaServicioSAP.Referencia;
                         entradaServicioDto.ImporteARPUSD = entradaServicioSAP.ImporteARPUSD;
-                        entradaServicioDto.FechaContabilizacion = entradaServicioSAP.FechaContabilizacion;
-                        //entradaServicioDto.SePuedeBorrar = !entradaServicioFacturada && entradaServicioDentroDePeriodoSAP;
+                        entradaServicioDto.SePuedeBorrar = !entradaServicioFacturada && entradaServicioDentroDePeriodoSAP;
 
                         EntradasServicioDelItem.Add(entradaServicioDto);
                     }

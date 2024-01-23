@@ -19,7 +19,7 @@ namespace SustitucionMOAModel.Dto.OrdenesCompra
         public string DocumentoReferenciaNumero { get; set; }
         public string FechaDocumento { get; set; }
         public string FechaContabilizacion { get; set; }
-        public bool GrabarAceptada { get; set; }
+        public string GrabarAceptada { get; set; }
     }
 
 

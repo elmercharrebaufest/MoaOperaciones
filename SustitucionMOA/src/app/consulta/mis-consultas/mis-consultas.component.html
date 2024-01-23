@@ -115,7 +115,7 @@
                                     <th style="width: 3rem"></th>
                                     <th *ngFor="let col of columns" [ngSwitch]="col.filterType" >
                                         <p-spinner *ngSwitchCase="'number'" (onChange)="dt.filter(col.numberValue, col.field, 'equals')" [(ngModel)]="col.numberValue" [inputStyle]="{'width.%': 90}"></p-spinner>
-                                        <input *ngSwitchCase="'text'" pInputText type="text" (input)="dt.filter($event.target.value, col.field, 'contains')" class="filters-text-table" >
+                                        <input *ngSwitchCase="'text'" pInputText type="text" (input)="dt.filter($event.target.value, col.field, 'contains')" class="filters-text-table" [(ngModel)]="col.filteredValue">
                                         <div *ngSwitchCase="'custom'">
                                             <p-multiSelect appendTo="body" *ngIf="col.field == 'EstadoConsulta'" [options]="estados" defaultLabel="Todos" optionLabel="Descripcion" dataKey="Id"  [maxSelectedLabels]="1"
                                                 (onChange)="dt.filter(getIds($event.value), 'EstadoConsultaId', 'in')"  [(ngModel)]="estadoConsultaSeleccionado">

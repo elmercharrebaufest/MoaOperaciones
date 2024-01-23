@@ -169,9 +169,15 @@ export class MisConsultasComponent extends ListBaseComponent {
 
 
                 this.table.filter(valor, 'RazonSocialCorredor', 'contains');
+                let colC = this.cols.find(cols => cols.header === 'Corredor');
+
+                colC.filteredValue = valor;
         break;
              case 'RazonSocialProveedor':
-        this.table.filter(valor, 'RazonSocialProveedor', 'contains');
+                this.table.filter(valor, 'RazonSocialProveedor', 'contains');
+                let colP = this.cols.find(cols => cols.header === 'Proveedor');
+
+                colP.filteredValue = valor;
         break;
             case 'EstadoConsulta':
                 // Encuentra la opción correspondiente en la lista de estados y selecciónala
@@ -229,17 +235,17 @@ export class MisConsultasComponent extends ListBaseComponent {
 
     setColumnas() {
         this.cols = [
-            { field: 'Id', header: 'Id', filterType: 'text', visibleExternal: true, width: 6, size: 4 },
-            { field: 'RazonSocialCorredor', header: 'Corredor', filterType: 'text', visibleExternal: false, width: 10, size: 4 },
-            { field: 'RazonSocialProveedor', header: 'Proveedor', filterType: 'text', visibleExternal: false, width: 10, size: 3 },
+            { field: 'Id', header: 'Id', filterType: 'text', visibleExternal: true, width: 6, size: 4, filteredValue:'' },
+            { field: 'RazonSocialCorredor', header: 'Corredor', filterType: 'text', visibleExternal: false, width: 10, size: 4, filteredValue: '' },
+            { field: 'RazonSocialProveedor', header: 'Proveedor', filterType: 'text', visibleExternal: false, width: 10, size: 3, filteredValue: ''},
             { field: 'Categoria', header: 'Categoria', filterType: 'custom', visibleExternal: true, width: 10, size: 1, sortdropdown: 'Categoria.Nombre' },
             { field: 'SubCategoria', header: 'Subcategoria', filterType: 'custom', visibleExternal: false, width: 12, size: 2, sortdropdown: 'SubCategoria.Nombre' },
-            { field: 'Asunto', header: 'Asunto', filterType: 'text', visibleExternal: true, width: 16, size: 0 },
+            { field: 'Asunto', header: 'Asunto', filterType: 'text', visibleExternal: true, width: 16, size: 0, filteredValue: ''},
             { field: 'EstadoConsulta', header: 'Estado', filterType: 'custom', visibleExternal: true, width: 10, size: 1, sortdropdown: 'EstadoConsulta.Descripcion' },
             { field: 'Material', header: 'Material', filterType: 'custom', visibleExternal: true, width: 10, size: 3, sortdropdown: 'Material' },
             { field: 'FechaCreacion', header: 'Fecha Inicio', filterType: 'date', visibleExternal: false, width: 12, size: 3, selectionMode: 'single' },
             { field: 'FechaUltimaModificacion', header: 'Ult. Modif.', filterType: 'date', visibleExternal: true, width: 12, size: 3, selectionMode: 'single' },
-            { field: 'DiasReclamo', header: 'Días', filterType: 'text', visibleExternal: false, width: 6, size: 4 },
+            { field: 'DiasReclamo', header: 'Días', filterType: 'text', visibleExternal: false, width: 6, size: 4, filteredValue: '' },
         ];
 
         let isExternal = this.isExternal;

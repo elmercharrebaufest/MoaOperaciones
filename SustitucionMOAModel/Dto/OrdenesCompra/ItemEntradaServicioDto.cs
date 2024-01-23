@@ -34,11 +34,11 @@ namespace SustitucionMOAModel.Dto.OrdenesCompra
         public string Fecha { get; set; } //HEADER.CREATED_ON
 
         public string FechaDocumento { get; set; } //HEADER.DOC_DATE
+        public string FechaContabilizacion { get; set; } //HEADER.POST_DATE
 
         public string Referencia { get; set; }//HEADER.REF_DOC_NO
 
         public string ImporteARPUSD { get; set; } //HEADER.CURRENCY
 
-        public string FechaContabilizacion { get; set; } //HEADER.POST_DATE
     }
 }
