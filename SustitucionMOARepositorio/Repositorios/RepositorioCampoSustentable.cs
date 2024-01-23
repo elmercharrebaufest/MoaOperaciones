@@ -36,5 +36,24 @@ namespace SustitucionMOARepositorio.Repositorios
 
             return dto;
         }
+
+        public Usuario ObtenerUsuarioPorMail(string mail)
+        {
+            return Obtener<Usuario>(u => u.Mail == mail);
+        }
+
+        public DeclaracionCampoSustentable ObtenerDeclaracionDeProveedor(string cuitProveedor, int idCosecha)
+        {
+            var declaracion = Obtener<DeclaracionCampoSustentable>(d =>
+                d.Cosecha_Id == idCosecha &&
+                d.CUIT == cuitProveedor);
+
+            return declaracion;
+        }
+
+        public Archivo ObtenerArchivo(int idArchivo)
+        {
+            return Obtener<Archivo>(a => a.Id == idArchivo);
+        }
     }
 }
