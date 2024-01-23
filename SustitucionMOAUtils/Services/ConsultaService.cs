@@ -546,7 +546,8 @@ namespace SustitucionMOAUtils.Services
                     {
                         Id = x.Detalle.CausaConsulta.Id,
                         Nombre = x.Detalle.CausaConsulta.Nombre
-                    } : null
+                    } : null,
+                    RelacionadaPorCodigo = x.Usuario_Id != usuarioId
                 }).ToList();
 
             return ret;
@@ -1234,7 +1235,7 @@ namespace SustitucionMOAUtils.Services
         {
             var consulta = GetConsulta(consultaId);
 
-            if (usuarioActual.Id != consulta.Usuario_Id)
+            if (usuarioActual.Id != consulta.Usuario_Id && usuarioActual.CUIT != consulta.Usuario.CUITRegistro)
                 throw new ValidationCustomException("No se puede reabrir la consulta ya que ud no inició esta consulta.");
 
             var estadoIniciado = GetEstadoConsulta("INI");

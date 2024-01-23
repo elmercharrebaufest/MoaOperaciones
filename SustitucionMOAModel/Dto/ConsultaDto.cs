@@ -39,6 +39,7 @@ namespace SustitucionMOAModel.Dto
         public int? OrdenId { get; set; }
         public string PatenteChasis { get; set; }
         public string Rubro { get; set; }
+        public bool RelacionadaPorCodigo { get; set; }
 
         public CategoriaDto Categoria { get; set; }
         public SubCategoriaDto SubCategoria { get; set; }
