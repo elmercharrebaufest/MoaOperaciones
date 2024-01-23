@@ -5123,7 +5123,12 @@ namespace SustitucionMOAUtils.Services
                     int ii = 0;
                     if (peticion.Usuarios.All(a => a.Usuario.CUITRegistro != proveedor.First().CUITRegistro))
                     {
-                        var usuario = new PeticionDeOfertaUsuario { Usuario_Id = proveedor.First().Id, PeticionDeOferta_Id = peticion.Id };
+                        var usuario = new PeticionDeOfertaUsuario
+                        {
+                            Usuario_Id = proveedor.First().Id,
+                            Usuario = usuarios.Where(x => x.Id == proveedor.First().Id).FirstOrDefault(),
+                            PeticionDeOferta_Id = peticion.Id
+                        };
                         poUsuarios.Add(usuario);
                         peticion.Usuarios.Add(usuario);
                         ii = 1;
