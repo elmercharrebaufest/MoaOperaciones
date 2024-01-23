@@ -68,6 +68,7 @@ export class MisConsultasComponent extends ListBaseComponent {
     datesRange: SelectItem[] = [{ label: 'Fecha', value: null }, { label: 'Desde', value: 'desde' }, { label: 'Hasta', value: 'hasta' }, { label: 'Rango', value: 'rango' }];
     isExternal: boolean;
     showFilters: boolean;
+    showAllRelated: boolean = true;
     windowSize: string;
     esInterno = this.isAuthorized('CONSULTA ABM');
     widthModal: string;
@@ -433,5 +434,13 @@ export class MisConsultasComponent extends ListBaseComponent {
                 document.body.removeChild(link);
             }
         }
+    }
+    cambiarVerRelacionados(dt: Table) {
+        const field = 'RelacionadaPorCodigo';
+        if (this.showAllRelated) {
+            dt.filter(null, field, undefined)
+            return;
+        }
+        dt.filter(false, field, 'equals')
     }
 }

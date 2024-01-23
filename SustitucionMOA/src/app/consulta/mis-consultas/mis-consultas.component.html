@@ -1,16 +1,25 @@
 <style>
     .modal2 {
-        display: none; /* Hidden by default */
-        position: fixed; /* Stay in place */
-        z-index: 898989898; /* Sit on top */
-        padding-top: 100px; /* Location of the box */
+        display: none;
+        /* Hidden by default */
+        position: fixed;
+        /* Stay in place */
+        z-index: 898989898;
+        /* Sit on top */
+        padding-top: 100px;
+        /* Location of the box */
         left: 0;
         top: 0;
-        width: 100%; /* Full width */
-        height: 100%; /* Full height */
-        overflow: auto; /* Enable scroll if needed */
-        background-color: rgb(0,0,0); /* Fallback color */
-        background-color: rgba(0,0,0,0.9); /* Black w/ opacity */
+        width: 100%;
+        /* Full width */
+        height: 100%;
+        /* Full height */
+        overflow: auto;
+        /* Enable scroll if needed */
+        background-color: rgb(0, 0, 0);
+        /* Fallback color */
+        background-color: rgba(0, 0, 0, 0.9);
+        /* Black w/ opacity */
     }
 
     /* Modal Content (image) */
@@ -52,12 +61,12 @@
         transition: 0.3s;
     }
 
-        .close:hover,
-        .close:focus {
-            color: #bbb;
-            text-decoration: none;
-            cursor: pointer;
-        }
+    .close:hover,
+    .close:focus {
+        color: #bbb;
+        text-decoration: none;
+        cursor: pointer;
+    }
 
     /* 100% Image Width on Smaller Screens */
     @media only screen and (max-width: 700px) {
@@ -77,281 +86,325 @@
         <div class="row myRow">
             <div class="clearfix">
                 <div class="display nowrap no-footer rounded shadow animate consulta-table" #containerList>
-                        <p-table #dt [columns]="colsFiltered" [value]="consultas" dataKey="Id" 
-                        [paginator]="true" [rows]="15" [responsive]="true" [scrollable]="false" 
-                        ([style])="{'width.px': this.containerList.offsetWidth}"
-                        sortField="FechaUltimaModificacion" sortOrder="-1">
-                            <ng-template pTemplate="caption">
-                                <div class="ui-helper-clearfix" style="text-align: right">
-                                    <div style="float:left">
-                                        <button *ngIf="!isExternal" type="button" pButton icon="fa fa-file-excel-o " iconPos="left" label="Exportar" (click)="exportConsultas()" style="background-color:#075088;"></button> &nbsp;
-                                        <button type="button" pButton icon="fa fa-refresh" (click)="listarConsultas()" style="background-color: #067935;"></button> &nbsp;
-                                        <p-toggleButton [(ngModel)]="showFilters" onIcon="pi pi-filter" onLabel="" offLabel="" offIcon="pi pi-filter" ></p-toggleButton>
-                                    </div>
+                    <p-table #dt [columns]="colsFiltered" [value]="consultas" dataKey="Id" [paginator]="true"
+                        [rows]="15" [responsive]="true" [scrollable]="false"
+                        ([style])="{'width.px': this.containerList.offsetWidth}" sortField="FechaUltimaModificacion"
+                        sortOrder="-1">
+                        <ng-template pTemplate="caption">
+                            <div class="ui-helper-clearfix" style="text-align: right">
+                                <div style="float:left">
+                                    <button *ngIf="!isExternal" type="button" pButton icon="fa fa-file-excel-o "
+                                        iconPos="left" label="Exportar" (click)="exportConsultas()"
+                                        style="background-color:#075088;"></button> &nbsp;
 
-                                    <h4 *ngIf="!isExternal"><span *ngFor="let estado of estadosSummary" class="label label-default" [ngStyle]="{'background-color': estado.Color, 'margin-right':'1rem'}" >{{estado.Descripcion}} <span class="badge">{{estado.Cantidad}}</span></span></h4>
-                                    <!-- <i class="fa fa-search" style="margin:4px 4px 0 0"></i>
-                                    <input type="text" pInputText placeholder="Buscar" (input)="dt.filterGlobal($event.target.value, 'contains')" style="width:40% !important"> -->
+                                    <p-toggleButton [(ngModel)]="showAllRelated" onIcon="pi pi-circle-on"
+                                        (onChange)="cambiarVerRelacionados(dt)" onLabel="Todas" offLabel="Solo mias"
+                                        offIcon="pi pi-circle-off" [style]="{'margin-right': '1rem'}"></p-toggleButton>
+                                    <button type="button" pButton icon="fa fa-refresh" (click)="listarConsultas()"
+                                        style="background-color: #067935;"></button> &nbsp;
+                                    <p-toggleButton [(ngModel)]="showFilters" onIcon="pi pi-filter" onLabel=""
+                                        offLabel="" offIcon="pi pi-filter"></p-toggleButton>
                                 </div>
-                            </ng-template>
-                            <ng-template pTemplate="colgroup" let-columns>
-                                <colgroup>
-                                    <col style="width: 3rem">
-                                    <col *ngFor="let col of columns"  [style.width.%]="col.width">
-                                    <col style="width: 4rem">
-                                </colgroup>
-                            </ng-template>
-                            <ng-template pTemplate="header" let-columns>
-                                <tr>
-                                    <th style="width: 3rem"></th>
 
-                                    <th *ngFor="let col of columns" [pSortableColumn]="col.filterType != 'custom'? col.field : col.sortdropdown" class="col"  >
-                                        <span class="consulta-table-header">{{col.header}} 
-                                            <p-sortIcon [field]="col.filterType != 'custom'? col.field : col.sortdropdown"></p-sortIcon></span> 
-                                    </th>
-                                    <th style="width: 4rem"></th>
-                                </tr>
-                                <tr *ngIf="this.showFilters">
-                                    <th style="width: 3rem"></th>
-                                    <th *ngFor="let col of columns" [ngSwitch]="col.filterType" >
-                                        <p-spinner *ngSwitchCase="'number'" (onChange)="dt.filter(col.numberValue, col.field, 'equals')" [(ngModel)]="col.numberValue" [inputStyle]="{'width.%': 90}"></p-spinner>
-                                        <input *ngSwitchCase="'text'" pInputText type="text" (input)="dt.filter($event.target.value, col.field, 'contains')" class="filters-text-table" >
-                                        <div *ngSwitchCase="'custom'">
-                                            <p-multiSelect appendTo="body" *ngIf="col.field == 'EstadoConsulta'" [options]="estados" defaultLabel="Todos" optionLabel="Descripcion" dataKey="Id"  [maxSelectedLabels]="1"
-                                                (onChange)="dt.filter(getIds($event.value), 'EstadoConsultaId', 'in')" >
-                                                <ng-template let-estado pTemplate="item">
-                                                    <span class="label label-default" [ngStyle]="{'background-color': estado.value.Color}" >{{estado.label}} <span class="badge" *ngIf="!isExternal">{{estado.value.Cantidad}}</span></span>
-                                                </ng-template>
-                                            </p-multiSelect>
+                                <h4 *ngIf="!isExternal"><span *ngFor="let estado of estadosSummary"
+                                        class="label label-default"
+                                        [ngStyle]="{'background-color': estado.Color, 'margin-right':'1rem'}">{{estado.Descripcion}}
+                                        <span class="badge">{{estado.Cantidad}}</span></span></h4>
+                                <!-- <i class="fa fa-search" style="margin:4px 4px 0 0"></i>
+                                    <input type="text" pInputText placeholder="Buscar" (input)="dt.filterGlobal($event.target.value, 'contains')" style="width:40% !important"> -->
+                            </div>
+                        </ng-template>
+                        <ng-template pTemplate="colgroup" let-columns>
+                            <colgroup>
+                                <col *ngFor="let col of columns" [style.width.%]="col.width">
+                                <col style="width: 4rem">
+                            </colgroup>
+                        </ng-template>
+                        <ng-template pTemplate="header" let-columns>
+                            <tr>
+                                <th style="width: 3rem"></th>
 
-                                            <p-multiSelect appendTo="body" *ngIf="col.field == 'Categoria'" [options]="categorias" defaultLabel="Todos" optionLabel="Nombre" dataKey="Id" [maxSelectedLabels]="1"
-                                                (onChange)="dt.filter(getIds($event.value), 'CategoriaId', 'in'); setSubcategorias($event.value)" [style]="{'width.%': 100}">
-                                                <ng-template let-categoria pTemplate="item">
-                                                    <label>{{categoria.label}} <span class="badge right" *ngIf="!isExternal">{{categoria.value.Cantidad}}</span></label>
-                                                </ng-template>
-                                            </p-multiSelect>
-                                            
-                                            <p-multiSelect appendTo="body" *ngIf="col.field == 'SubCategoria'" [options]="subcategoriasList" defaultLabel="Todos"  [maxSelectedLabels]="1"
-                                                (onChange)="dt.filter($event.value, 'SubCategoriaId', 'in')" [style]="{'width.%': 100}"></p-multiSelect>
+                                <th *ngFor="let col of columns"
+                                    [pSortableColumn]="col.filterType != 'custom'? col.field : col.sortdropdown"
+                                    class="col">
+                                    <span class="consulta-table-header">{{col.header}}
+                                        <p-sortIcon
+                                            [field]="col.filterType != 'custom'? col.field : col.sortdropdown"></p-sortIcon></span>
+                                </th>
+                                <th style="width: 4rem"></th>
+                            </tr>
+                            <tr *ngIf="this.showFilters">
+                                <th style="width: 3rem"></th>
+                                <th *ngFor="let col of columns" [ngSwitch]="col.filterType">
+                                    <p-spinner *ngSwitchCase="'number'"
+                                        (onChange)="dt.filter(col.numberValue, col.field, 'equals')"
+                                        [(ngModel)]="col.numberValue" [inputStyle]="{'width.%': 90}"></p-spinner>
+                                    <input *ngSwitchCase="'text'" pInputText type="text"
+                                        (input)="dt.filter($event.target.value, col.field, 'contains')"
+                                        class="filters-text-table">
+                                    <div *ngSwitchCase="'custom'">
+                                        <p-multiSelect appendTo="body" *ngIf="col.field == 'EstadoConsulta'"
+                                            [options]="estados" defaultLabel="Todos" optionLabel="Descripcion"
+                                            dataKey="Id" [maxSelectedLabels]="1"
+                                            (onChange)="dt.filter(getIds($event.value), 'EstadoConsultaId', 'in')">
+                                            <ng-template let-estado pTemplate="item">
+                                                <span class="label label-default"
+                                                    [ngStyle]="{'background-color': estado.value.Color}">{{estado.label}}
+                                                    <span class="badge"
+                                                        *ngIf="!isExternal">{{estado.value.Cantidad}}</span></span>
+                                            </ng-template>
+                                        </p-multiSelect>
 
-                                            <p-multiSelect appendTo="body" *ngIf="col.field == 'Material'" [options]="materialesList" defaultLabel="Todos"  [maxSelectedLabels]="1"
-                                            (onChange)="dt.filter($event.value, 'Material_Id', 'in')" [style]="{'width.%': 100}">
-                                            </p-multiSelect>
-                                        </div>
-                                        <div *ngSwitchCase="'date'">
-                                            <!--Filtro fechas-->
-                                            <p-dropdown [options]="datesRange" [(ngModel)]="col.selectedRange" (onChange)="cambiarCalendar(dt, col)" [style]="{'width.%': 90}"></p-dropdown>
-                                            <!-- <p-selectButton [options]="datesRange" [(ngModel)]="col.selectedRange" multiple="multiple" (onChange)="cambiarCalendar(dt, col)" [style]="{'width.%': 90}"></p-selectButton> -->
-                                            <p-calendar appendTo="body" [(ngModel)]="col.fecha" [locale]="es" [showIcon]="true" dateFormat="dd/mm/yy" [readonlyInput]="true" inputStyleClass="filters-calendar-table"
-                                            [(selectionMode)]="col.selectionMode" (onClose)="onFechaRangeChange(dt, col)" (onSelect)="onFechaChange(dt, col)"  [monthNavigator]="true" [selectOtherMonths]="true">
-                                                <p-footer class="center" *ngIf="col.selectionMode == 'range'">
-                                                    <button pButton (click)="onFechaRangeChange(dt, col)" type="button" label="Filtrar" class="ui-button-raised ui-button-secondary"></button>
-                                                </p-footer>
-                                            </p-calendar>
-                                        </div>
-                                    </th>
-                                    <th style="width: 4rem"></th>
-                                </tr>
-                            </ng-template>
-                            <ng-template pTemplate="body" let-rowData let-expanded="expanded" let-columns="columns">
-                                <tr style="word-wrap: break-word;">
-                                    <td style="width: 3rem; padding: 0">
-                                        <a style="cursor: pointer;" [pRowToggler]="rowData">
-                                            <i [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
-                                        </a>
-                                    </td>
-                                    <td *ngFor="let col of columns" [ngSwitch]="col.filterType" >
-                                        <span *ngSwitchDefault> {{rowData[col.field]}} </span>
-                                        <div *ngSwitchCase="'custom'">
-                                            <span *ngIf="col.field == 'EstadoConsulta'; else defaultField" [ngStyle]="{'color': rowData.EstadoConsulta.Color}">
+                                        <p-multiSelect appendTo="body" *ngIf="col.field == 'Categoria'"
+                                            [options]="categorias" defaultLabel="Todos" optionLabel="Nombre"
+                                            dataKey="Id" [maxSelectedLabels]="1"
+                                            (onChange)="dt.filter(getIds($event.value), 'CategoriaId', 'in'); setSubcategorias($event.value)"
+                                            [style]="{'width.%': 100}">
+                                            <ng-template let-categoria pTemplate="item">
+                                                <label>{{categoria.label}} <span class="badge right"
+                                                        *ngIf="!isExternal">{{categoria.value.Cantidad}}</span></label>
+                                            </ng-template>
+                                        </p-multiSelect>
+
+                                        <p-multiSelect appendTo="body" *ngIf="col.field == 'SubCategoria'"
+                                            [options]="subcategoriasList" defaultLabel="Todos" [maxSelectedLabels]="1"
+                                            (onChange)="dt.filter($event.value, 'SubCategoriaId', 'in')"
+                                            [style]="{'width.%': 100}"></p-multiSelect>
+
+                                        <p-multiSelect appendTo="body" *ngIf="col.field == 'Material'"
+                                            [options]="materialesList" defaultLabel="Todos" [maxSelectedLabels]="1"
+                                            (onChange)="dt.filter($event.value, 'Material_Id', 'in')"
+                                            [style]="{'width.%': 100}">
+                                        </p-multiSelect>
+                                    </div>
+                                    <div *ngSwitchCase="'date'">
+                                        <!--Filtro fechas-->
+                                        <p-dropdown [options]="datesRange" [(ngModel)]="col.selectedRange"
+                                            (onChange)="cambiarCalendar(dt, col)"
+                                            [style]="{'width.%': 90}"></p-dropdown>
+                                        <!-- <p-selectButton [options]="datesRange" [(ngModel)]="col.selectedRange" multiple="multiple" (onChange)="cambiarCalendar(dt, col)" [style]="{'width.%': 90}"></p-selectButton> -->
+                                        <p-calendar appendTo="body" [(ngModel)]="col.fecha" [locale]="es"
+                                            [showIcon]="true" dateFormat="dd/mm/yy" [readonlyInput]="true"
+                                            inputStyleClass="filters-calendar-table"
+                                            [(selectionMode)]="col.selectionMode"
+                                            (onClose)="onFechaRangeChange(dt, col)" (onSelect)="onFechaChange(dt, col)"
+                                            [monthNavigator]="true" [selectOtherMonths]="true">
+                                            <p-footer class="center" *ngIf="col.selectionMode == 'range'">
+                                                <button pButton (click)="onFechaRangeChange(dt, col)" type="button"
+                                                    label="Filtrar"
+                                                    class="ui-button-raised ui-button-secondary"></button>
+                                            </p-footer>
+                                        </p-calendar>
+                                    </div>
+                                </th>
+                                <th style="width: 4rem"></th>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-rowData let-expanded="expanded" let-columns="columns">
+                            <tr style="word-wrap: break-word;">
+                                <td style="width: 3rem; padding: 0">
+                                    <a style="cursor: pointer;" [pRowToggler]="rowData">
+                                        <i [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
+                                    </a>
+                                </td>
+                                <td *ngFor="let col of columns" [ngSwitch]="col.filterType">
+                                    <span *ngSwitchDefault> {{rowData[col.field]}} </span>
+                                    <div *ngSwitchCase="'custom'">
+                                        <span *ngIf="col.field == 'EstadoConsulta'; else defaultField"
+                                            [ngStyle]="{'color': rowData.EstadoConsulta.Color}">
                                             {{rowData.EstadoConsulta.Descripcion}}</span>
 
-                                            <ng-template #defaultField>
-                                                <ng-container *ngIf="col.field == 'Material' else default">
-                                                    <span>{{rowData[col.field]}}</span>
-                                                </ng-container>
-                                            </ng-template>
-                                            <ng-template #default>
-                                                <span>{{rowData[col.field].Nombre}}</span>
-                                            </ng-template>
-                                        </div>
-                                        <span *ngSwitchCase="'date'" >{{rowData[col.field] | date:'dd/MM/yyyy'}}</span>
-                                    </td>
-                                    <td style="text-align: center; width: 5rem; padding: 0">
-                                        <button pButton type="button" (click)="openModal(rowData.Id, rowData.Asunto)" class="p-button-secondary" style="background-color: #067935;" icon="fa fa-comments-o"></button>
-                                    </td>
-                                </tr>
-                            </ng-template>
-                            <ng-template pTemplate="rowexpansion" let-rowData let-columns="columns">
-                                <tr>
-                                    <td [attr.colspan]="columns.length + 2">
-                                        <div class="ui-g ui-fluid" style="font-size:16px;padding:20px">
-                                        
-                                            <div class="ui-g-12 ui-md-12">
-                                                <!-- Expanded para Reclamo Impositivo - Retenciones -->
-                                                <div class="ui-g" *ngIf="rowData.Categoria.Code == 'REI' && 
+                                        <ng-template #defaultField>
+                                            <ng-container *ngIf="col.field == 'Material' else default">
+                                                <span>{{rowData[col.field]}}</span>
+                                            </ng-container>
+                                        </ng-template>
+                                        <ng-template #default>
+                                            <span>{{rowData[col.field].Nombre}}</span>
+                                        </ng-template>
+                                    </div>
+                                    <span *ngSwitchCase="'date'">{{rowData[col.field] | date:'dd/MM/yyyy'}}</span>
+                                </td>
+                                <td style="text-align: center; width: 5rem; padding: 0">
+                                    <button pButton type="button" (click)="openModal(rowData.Id, rowData.Asunto)"
+                                        class="p-button-secondary" style="background-color: #067935;"
+                                        icon="fa fa-comments-o"></button>
+                                </td>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="rowexpansion" let-rowData let-columns="columns">
+                            <tr>
+                                <td [attr.colspan]="columns.length + 2">
+                                    <div class="ui-g ui-fluid" style="font-size:16px;padding:20px">
+
+                                        <div class="ui-g-12 ui-md-12">
+                                            <!-- Expanded para Reclamo Impositivo - Retenciones -->
+                                            <div class="ui-g" *ngIf="rowData.Categoria.Code == 'REI' && 
                                                                          rowData.SubCategoria.Code == 'RET'">
-                                                    <div class="ui-g-6">
-                                                        <b>Fecha de pago:</b> {{rowData.Fecha | date:'dd/MM/yyyy'}}
-                                                    </div>
-                                                    <div class="ui-g-6">
-                                                        <b>Salida de pago n°:</b> {{rowData.ComprobanteNo}}
-                                                    </div>
-                                                    <div class="ui-g-6">
-                                                        <b>Contrato/N° de factura:</b> {{rowData.ContratoNo}}
-                                                    </div>
-                                                    <div class="ui-g-6">
-                                                        <b>Impuesto retenido:</b> {{rowData.Impuesto}}
-                                                    </div>
-                                                    <div class="ui-g-6">
-                                                        <b>Importe retención:</b> {{rowData.Importe}}
-                                                    </div>
-                                                    <div class="ui-g-6">
-                                                        <b>Causa:</b> {{rowData.CausaConsulta?.Nombre}}
-                                                    </div>
+                                                <div class="ui-g-6">
+                                                    <b>Fecha de pago:</b> {{rowData.Fecha | date:'dd/MM/yyyy'}}
                                                 </div>
-                                                <!-- Expanded para Reclamo Impositivo - Percepciones -->
-                                                <div class="ui-g" *ngIf="rowData.Categoria.Code == 'REI' && 
+                                                <div class="ui-g-6">
+                                                    <b>Salida de pago n°:</b> {{rowData.ComprobanteNo}}
+                                                </div>
+                                                <div class="ui-g-6">
+                                                    <b>Contrato/N° de factura:</b> {{rowData.ContratoNo}}
+                                                </div>
+                                                <div class="ui-g-6">
+                                                    <b>Impuesto retenido:</b> {{rowData.Impuesto}}
+                                                </div>
+                                                <div class="ui-g-6">
+                                                    <b>Importe retención:</b> {{rowData.Importe}}
+                                                </div>
+                                                <div class="ui-g-6">
+                                                    <b>Causa:</b> {{rowData.CausaConsulta?.Nombre}}
+                                                </div>
+                                            </div>
+                                            <!-- Expanded para Reclamo Impositivo - Percepciones -->
+                                            <div class="ui-g" *ngIf="rowData.Categoria.Code == 'REI' && 
                                                                          rowData.SubCategoria.Code == 'PER'">
-                                                    <div class="ui-g-6">
-                                                        <b>Fecha factura:</b> {{rowData.Fecha | date:'dd/MM/yyyy'}}
-                                                    </div>
-                                                    <div class="ui-g-6">
-                                                        <b>N° factura:</b> {{rowData.ComprobanteNo}}
-                                                    </div>
-                                                    <div class="ui-g-6">
-                                                        <b>Impuesto percibido:</b> {{rowData.Impuesto}}
-                                                    </div>
-                                                    <div class="ui-g-6">
-                                                        <b>Causa:</b> {{rowData.CausaConsulta.Nombre}}
-                                                    </div>
+                                                <div class="ui-g-6">
+                                                    <b>Fecha factura:</b> {{rowData.Fecha | date:'dd/MM/yyyy'}}
                                                 </div>
-                                                <!-- Expanded para Reclamo Boletos - Contratos -->
-                                                <div class="ui-g" *ngIf="rowData.Categoria.Code == 'BOL' && 
+                                                <div class="ui-g-6">
+                                                    <b>N° factura:</b> {{rowData.ComprobanteNo}}
+                                                </div>
+                                                <div class="ui-g-6">
+                                                    <b>Impuesto percibido:</b> {{rowData.Impuesto}}
+                                                </div>
+                                                <div class="ui-g-6">
+                                                    <b>Causa:</b> {{rowData.CausaConsulta.Nombre}}
+                                                </div>
+                                            </div>
+                                            <!-- Expanded para Reclamo Boletos - Contratos -->
+                                            <div class="ui-g" *ngIf="rowData.Categoria.Code == 'BOL' && 
                                                                          rowData.SubCategoria.Code == 'REG'">
-                                                    <div class="ui-g-6">
-                                                        <b>N° contrato:</b> {{rowData.ContratoNo}}
-                                                    </div>
+                                                <div class="ui-g-6">
+                                                    <b>N° contrato:</b> {{rowData.ContratoNo}}
                                                 </div>
-                                                <!-- Expanded para Reclamo Boletos - Oblea Plan Canje -->
-                                                <div class="ui-g" *ngIf="rowData.Categoria.Code == 'BOL' && 
+                                            </div>
+                                            <!-- Expanded para Reclamo Boletos - Oblea Plan Canje -->
+                                            <div class="ui-g" *ngIf="rowData.Categoria.Code == 'BOL' && 
                                                                          rowData.SubCategoria.Code == 'OPC'">
-                                                    <div class="ui-g-6">
-                                                        <b>N° contrato:</b> {{rowData.ContratoNo}}
-                                                    </div>
-                                                    <div class="ui-g-6">
-                                                        <b>Fecha emision de la oblea:</b> {{rowData.Fecha | date:'dd/MM/yyyy'}}
-                                                    </div>
-                                                    <div class="ui-g-6">
-                                                        <b>Bolsa emisora de oblea:</b> {{rowData.BolsaEmisoraOblea}}
-                                                    </div>
+                                                <div class="ui-g-6">
+                                                    <b>N° contrato:</b> {{rowData.ContratoNo}}
                                                 </div>
-                                                <!-- Expanded para Reclamo Actualizacion - Impositiva -->
-                                                <div class="ui-g" *ngIf="rowData.Categoria.Code == 'ACT' && 
+                                                <div class="ui-g-6">
+                                                    <b>Fecha emision de la oblea:</b> {{rowData.Fecha |
+                                                    date:'dd/MM/yyyy'}}
+                                                </div>
+                                                <div class="ui-g-6">
+                                                    <b>Bolsa emisora de oblea:</b> {{rowData.BolsaEmisoraOblea}}
+                                                </div>
+                                            </div>
+                                            <!-- Expanded para Reclamo Actualizacion - Impositiva -->
+                                            <div class="ui-g" *ngIf="rowData.Categoria.Code == 'ACT' && 
                                                                          rowData.SubCategoria.Code == 'IMP'">
-                                                    <div class="ui-g-6">
-                                                        <b>Impuesto:</b> {{rowData.Impuesto}}
-                                                    </div>
+                                                <div class="ui-g-6">
+                                                    <b>Impuesto:</b> {{rowData.Impuesto}}
                                                 </div>
-                                                <!-- Expanded para Reclamo Actualizacion - Informe Comercial -->
-                                                <div class="ui-g" *ngIf="rowData.Categoria.Code == 'ACT' && 
+                                            </div>
+                                            <!-- Expanded para Reclamo Actualizacion - Informe Comercial -->
+                                            <div class="ui-g" *ngIf="rowData.Categoria.Code == 'ACT' && 
                                                                          rowData.SubCategoria.Code == 'INF'">
-                                                    <div class="ui-g-6">
-                                                        <b>Informe comercial:</b> {{rowData.Impuesto}} <!-- poner link al pdf -->
-                                                    </div>
+                                                <div class="ui-g-6">
+                                                    <b>Informe comercial:</b> {{rowData.Impuesto}}
+                                                    <!-- poner link al pdf -->
                                                 </div>
-                                                <!-- Expanded para Reclamo Actualizacion - Carta Presentación -->
-                                                <div class="ui-g" *ngIf="rowData.Categoria.Code == 'ACT' && 
+                                            </div>
+                                            <!-- Expanded para Reclamo Actualizacion - Carta Presentación -->
+                                            <div class="ui-g" *ngIf="rowData.Categoria.Code == 'ACT' && 
                                                                          rowData.SubCategoria.Code == 'CAR'">
-                                                    <div class="ui-g-6">
-                                                        <b>Carta presentación:</b> {{rowData.Impuesto}} <!-- poner link al pdf -->
-                                                    </div>
+                                                <div class="ui-g-6">
+                                                    <b>Carta presentación:</b> {{rowData.Impuesto}}
+                                                    <!-- poner link al pdf -->
                                                 </div>
-                                                <div class="ui-g" *ngIf="rowData.Categoria.Code == 'PARDIR' || 
+                                            </div>
+                                            <div class="ui-g" *ngIf="rowData.Categoria.Code == 'PARDIR' || 
                                                 rowData.Categoria.Code == 'PARCOR' || rowData.Categoria.Code == 'FINDIR' ||
                                                 rowData.Categoria.Code == 'FINCOR'">
-                                                    <div class="ui-g-6">
-                                                        <b>N° contrato / Fijaci&oacute;n:</b> {{rowData.ContratoNo}}
-                                                    </div>
-                                                    <div class="ui-g-6">
-                                                        <b>N° COE:</b> {{rowData.ComprobanteNo}} <!-- poner link al pdf -->
-                                                    </div>
+                                                <div class="ui-g-6">
+                                                    <b>N° contrato / Fijaci&oacute;n:</b> {{rowData.ContratoNo}}
                                                 </div>
-                                                <div class="ui-g" *ngIf="rowData.Categoria.Code == 'CAL'">
-                                                    <div class="ui-g-6">
-                                                        <b>N° contrato:</b> {{rowData.ContratoNo}}
-                                                    </div>
-                                                    <div class="ui-g-6">
-                                                        <b>CCPP :</b> {{rowData.ComprobanteNo}} <!-- poner link al pdf -->
-                                                    </div>
+                                                <div class="ui-g-6">
+                                                    <b>N° COE:</b> {{rowData.ComprobanteNo}} <!-- poner link al pdf -->
                                                 </div>
-                                                <div class="ui-g" *ngIf="rowData.Categoria.Code == 'COM'">
-                                                    <div class="ui-g-6">
-                                                        <b>N° de factura</b> {{rowData.ComprobanteNo}}
-                                                    </div>
+                                            </div>
+                                            <div class="ui-g" *ngIf="rowData.Categoria.Code == 'CAL'">
+                                                <div class="ui-g-6">
+                                                    <b>N° contrato:</b> {{rowData.ContratoNo}}
                                                 </div>
-                                                <div class="ui-g" *ngIf="rowData.Categoria.Code == 'APP'">
-                                                    <div class="ui-g-6">
-                                                        <b>Material:</b> {{rowData.OtroComprobanteNo}}
-                                                    </div>
-                                                    <div class="ui-g-6">
-                                                        <b>CCPP :</b> {{rowData.ComprobanteNo}}
-                                                    </div>
-                                                    <div class="ui-g-6">
-                                                        <b>N° contrato:</b> {{rowData.ContratoNo}}
-                                                    </div>
+                                                <div class="ui-g-6">
+                                                    <b>CCPP :</b> {{rowData.ComprobanteNo}} <!-- poner link al pdf -->
                                                 </div>
-                                                <div class="ui-g" *ngIf="rowData.Categoria.Code == 'PES'">
-                                                    <div class="ui-g-6">
-                                                        <b>N° contrato:</b> {{rowData.ContratoNo}}
-                                                    </div>
+                                            </div>
+                                            <div class="ui-g" *ngIf="rowData.Categoria.Code == 'COM'">
+                                                <div class="ui-g-6">
+                                                    <b>N° de factura</b> {{rowData.ComprobanteNo}}
                                                 </div>
-                                                <div class="ui-g" *ngIf="rowData.Categoria.Code == 'PAG'">
-                                                    <div class="ui-g-6">
-                                                        <b>Fecha:</b> {{rowData.Fecha}}
-                                                    </div>
-                                                    <div class="ui-g-6">
-                                                        <b>N° contrato:</b> {{rowData.ContratoNo}}
-                                                    </div>
-                                                    <div class="ui-g-6">
-                                                        <b>Liquidaci&oacute;n :</b> {{rowData.ComprobanteNo}}
-                                                    </div>
-                                                    <div>
-                                                        <b>Id :</b> {{rowData.comprobanteExtra}}
-                                                    </div>
+                                            </div>
+                                            <div class="ui-g" *ngIf="rowData.Categoria.Code == 'APP'">
+                                                <div class="ui-g-6">
+                                                    <b>Material:</b> {{rowData.OtroComprobanteNo}}
                                                 </div>
-                                                <div class="ui-g" *ngIf="rowData.Categoria.Code == 'MATBA' && 
+                                                <div class="ui-g-6">
+                                                    <b>CCPP :</b> {{rowData.ComprobanteNo}}
+                                                </div>
+                                                <div class="ui-g-6">
+                                                    <b>N° contrato:</b> {{rowData.ContratoNo}}
+                                                </div>
+                                            </div>
+                                            <div class="ui-g" *ngIf="rowData.Categoria.Code == 'PES'">
+                                                <div class="ui-g-6">
+                                                    <b>N° contrato:</b> {{rowData.ContratoNo}}
+                                                </div>
+                                            </div>
+                                            <div class="ui-g" *ngIf="rowData.Categoria.Code == 'PAG'">
+                                                <div class="ui-g-6">
+                                                    <b>Fecha:</b> {{rowData.Fecha}}
+                                                </div>
+                                                <div class="ui-g-6">
+                                                    <b>N° contrato:</b> {{rowData.ContratoNo}}
+                                                </div>
+                                                <div class="ui-g-6">
+                                                    <b>Liquidaci&oacute;n :</b> {{rowData.ComprobanteNo}}
+                                                </div>
+                                                <div>
+                                                    <b>Id :</b> {{rowData.comprobanteExtra}}
+                                                </div>
+                                            </div>
+                                            <div class="ui-g" *ngIf="rowData.Categoria.Code == 'MATBA' && 
                                                                         rowData.SubCategoria.Code == 'CAL'">
-                                                    <div class="ui-g-6">
-                                                        <b>Car&aacute;tula:</b> {{rowData.OtroComprobanteNo}}
-                                                    </div>
-                                                    <div class="ui-g-6">
-                                                        <b>CCPP :</b> {{rowData.ComprobanteNo}}
-                                                    </div>
+                                                <div class="ui-g-6">
+                                                    <b>Car&aacute;tula:</b> {{rowData.OtroComprobanteNo}}
                                                 </div>
-                                                <div class="ui-g" *ngIf="(rowData.Categoria.Code == 'PROVG' && 
+                                                <div class="ui-g-6">
+                                                    <b>CCPP :</b> {{rowData.ComprobanteNo}}
+                                                </div>
+                                            </div>
+                                            <div class="ui-g" *ngIf="(rowData.Categoria.Code == 'PROVG' && 
                                                                         rowData.SubCategoria.Code == 'POTR') || 
                                                                         (rowData.Categoria.Code == 'PROVG' && 
                                                                         rowData.SubCategoria.Code == 'VENC')">
-                                                    <div class="ui-g-6">
-                                                        <b>N° de factura:</b> {{rowData.ComprobanteNo}}
-                                                    </div>
+                                                <div class="ui-g-6">
+                                                    <b>N° de factura:</b> {{rowData.ComprobanteNo}}
                                                 </div>
+                                            </div>
 
-                                                <div class="ui-g" *ngIf="rowData.Categoria.Code == 'FLET'">
-                                                    <div class="ui-g-6">
-                                                        <b>N° de Proforma:</b> {{rowData.OtroComprobanteNo}}
-                                                    </div>
-                                                    <div class="ui-g-6" *ngIf="rowData.SubCategoria.Code == 'CCP'">
-                                                        <b>CCPP :</b> {{rowData.ComprobanteNo}}
-                                                    </div>
+                                            <div class="ui-g" *ngIf="rowData.Categoria.Code == 'FLET'">
+                                                <div class="ui-g-6">
+                                                    <b>N° de Proforma:</b> {{rowData.OtroComprobanteNo}}
+                                                </div>
+                                                <div class="ui-g-6" *ngIf="rowData.SubCategoria.Code == 'CCP'">
+                                                    <b>CCPP :</b> {{rowData.ComprobanteNo}}
                                                 </div>
                                             </div>
                                         </div>
-                                    </td>
-                                </tr>
-                            </ng-template>
-                        </p-table>
+                                    </div>
+                                </td>
+                            </tr>
+                        </ng-template>
+                    </p-table>
                 </div>
             </div>
         </div>
@@ -360,15 +413,16 @@
     <!--End CONTENT-->
 </div>
 
-<button type="button" id="openModalHiddenButton" style="display: none;"
-                                        data-toggle="modal" data-target="#myModal">MODAL</button>
+<button type="button" id="openModalHiddenButton" style="display: none;" data-toggle="modal"
+    data-target="#myModal">MODAL</button>
 
 <!--Modal-->
 
-<div class="modal fade col-md-12 col-xs-12 col-sm-12 misConsultas" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="false"
+<div class="modal fade col-md-12 col-xs-12 col-sm-12 misConsultas" id="myModal" tabindex="-1" role="dialog"
+    aria-labelledby="myModalLabel" data-backdrop="false"
     style="overflow-y: scroll;background-color: rgba(0, 0, 0, 0.5);">
     <div class="modal-dialog WidhtModalConsultasInterno" role="document">
-        <div class="modal-content" >
+        <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close btn-close" data-dismiss="modal" aria-label="Close" id="hidemyModal"
                     (click)=resetVariables()>

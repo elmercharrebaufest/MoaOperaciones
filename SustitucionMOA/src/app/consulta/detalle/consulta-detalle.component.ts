@@ -124,7 +124,7 @@ export class DetalleConsultaComponent extends BaseComponent {
     file: any;
     fecha: any;
     hora: any;
-    username = sessionStorage.getItem("userName");
+    username = sessionStorage.getItem("username");
     detalle: string = "";
     esInterno = this.isAuthorized("CONSULTA ABM");
     esCorredor: boolean = sessionStorage.getItem("tipoUsuario") === "CORR";

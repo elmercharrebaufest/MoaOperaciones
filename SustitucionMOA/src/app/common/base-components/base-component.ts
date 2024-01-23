@@ -16,6 +16,7 @@ export class BaseComponent implements OnDestroy {
     subscription: any;
     subscriptionDropDowns: any;
     tipoUsuario: string = sessionStorage.getItem("tipoUsuario");
+    username: string = sessionStorage.getItem("username");
 
     public ngOnDestroy() {
         this.modalService.close();
@@ -80,7 +81,7 @@ export class BaseComponent implements OnDestroy {
         var mySQLTime = [hours, minutes, seconds].join(":");
         return [mySQLDate, mySQLTime].join(" ");
     }
-    public extraOnDestroy():void{}
+    public extraOnDestroy(): void { }
 
     setTabs() { }
 
