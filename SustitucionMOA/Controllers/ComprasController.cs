@@ -438,12 +438,12 @@ namespace SustitucionMOA.Controllers
             if (puedeDescargar != SolpDescargaZipPorLink.PuedeDescargar)
             {
                 string errorMsg = puedeDescargar == SolpDescargaZipPorLink.SolpIdNoExiste
-                                                        ? "Solp no disponible para descarga."
-                                                        : "Token no coincide, no tiene permiso para realizar la descarga";
+                                                        ? "SOLP no disponible para descarga."
+                                                        : "El token no coincide; no tiene permiso para realizar la descarga.";
 
                 if (puedeDescargar == SolpDescargaZipPorLink.SinArchivos)
                 {
-                    errorMsg = "Solp no disponible para descarga.";
+                    errorMsg = "SOLP no disponible para descarga.";
                 }
 
                 return Json(new { error = errorMsg }, JsonRequestBehavior.AllowGet);
