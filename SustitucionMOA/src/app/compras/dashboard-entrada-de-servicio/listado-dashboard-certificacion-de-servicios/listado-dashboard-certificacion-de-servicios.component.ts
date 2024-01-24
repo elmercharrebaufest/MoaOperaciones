@@ -138,7 +138,6 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
   onCheckboxChange(item: any) {
     const itemId = item.PosicionId;
     const numeroLinea = item.NumeroLinea;
-  
     if (this.itemIdSelected.has(itemId && numeroLinea)) {
       this.itemIdSelected.delete(itemId);
   
@@ -275,14 +274,14 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
       }
     }
 
-    recibirMensajeError(event: string) {
-      this.mensajeError = event;
+    actualizarGrilla(event: string) {
+      this.getListarPO(this.proveedor, this.ordenCompraId, this.filtroFechaComponent.fecha_inicio);
     }
 
     searchElement() {
       for (const ordenCompra of this.tablaPO) {
         for (const posicion of ordenCompra.Posiciones) {
-          const itemEncontrado = posicion.Items.find(item => item.Id === this.itemSelected[0].Id);
+          const itemEncontrado = posicion.Items.find(item => item.PosicionId === this.itemSelected[0].PosicionId);
   
           if (itemEncontrado) {
             this.elementSelected = ordenCompra;
@@ -298,5 +297,6 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
 
     onCloseModal() {
         this.showModal = false;
+
     }
 }

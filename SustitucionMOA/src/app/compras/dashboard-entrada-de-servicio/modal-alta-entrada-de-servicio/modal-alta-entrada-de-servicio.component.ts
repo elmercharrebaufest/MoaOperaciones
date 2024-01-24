@@ -1,6 +1,6 @@
-import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ComprasService } from '../../compras.service';
-import { ListadoDashboardCertificacionDeServiciosComponent } from '../listado-dashboard-certificacion-de-servicios/listado-dashboard-certificacion-de-servicios.component';
+import { ConfirmationService } from 'primeng/api';
 
 @Component({
   selector: 'app-modal-alta-entrada-de-servicio',
@@ -23,7 +23,7 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
   @Input() itemIdSelected: string = '';
   @Output() closeModal = new EventEmitter<void>();
 
-  @Output() enviarMensajeError = new EventEmitter();
+  @Output() enviarMensajeGrilla = new EventEmitter();
 
   entrySheetData = {
     "EntrySheetHeader": {
@@ -34,7 +34,7 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
       "DocumentoReferenciaNumero": "",
       "FechaDocumento": "",
       "FechaContabilizacion": "",
-      "GrabarAceptada": false
+      "GrabarAceptada": ""
     },
     "EntrySheetServices": {
       "Items": [
@@ -60,7 +60,8 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
     }
   };
 
-  constructor(protected service: ComprasService
+  constructor(protected service: ComprasService,
+    private confirmationService: ConfirmationService
     ) { }
 
   ngOnInit() {
@@ -104,7 +105,7 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
         DocumentoReferenciaNumero: '',
         FechaDocumento: fechaFormateada,
         FechaContabilizacion: fechaFormateada,
-        GrabarAceptada: true
+        GrabarAceptada: 'X'
       },
       EntrySheetServices: {
         Items: [
@@ -133,20 +134,50 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
   
     this.service.postCreateAsync(this.entrySheetData).subscribe(
       (response) => {
-        if(response.data.Type === 'S'){
-          this.mensajeError = (response && response.data.Message);
-          this.enviarMensajeError.emit(response.data.Message);
+        if (!response.data) {
+          this.mensajeError = 'Error del servidor, vuelva a intentarlo más tarde.'
         }
-        if(response.data.Type === 'E'){
-          this.mensajeError = (response && response.data.Message) || 'Error en la solicitud. Por favor, inténtelo de nuevo.';
-          this.enviarMensajeError.emit(response.data.Message);
+
+        if(response.data.Type === 'S') {
+          this.mensajeError = response.data.Message;
+          this.confirmationService.confirm({
+            message: this.mensajeError,
+              accept: () => {
+                this.enviarMensajeGrilla.emit();
+                this.closeModal.emit();
+              },
+              reject: () => {
+                this.closeModal.emit();
+              }
+            }
+          );
         }
-        this.closeModal.emit();
+
+        if(response.data.Type === 'E') {
+          this.mensajeError = response.data.Message;
+          this.confirmationService.confirm({
+            message: this.mensajeError,
+              accept: () => {
+                this.closeModal.emit();
+              },
+              reject: () => {
+                this.closeModal.emit();
+              }
+            }
+          );
+        }
       },
       (error) => {
-        this.mensajeError = (error && error.error && error.error.message) || 'Error en la solicitud. Por favor, inténtelo de nuevo.';
-        this.enviarMensajeError.emit(this.mensajeError);
-        this.closeModal.emit();
+        this.confirmationService.confirm({
+          message: error.error.Message,
+            accept: () => {
+              this.closeModal.emit();
+            },
+            reject: () => {
+              this.closeModal.emit();
+            }
+          }
+        );
       }
     );
   } 

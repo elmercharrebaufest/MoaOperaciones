@@ -969,9 +969,14 @@
             [elementSelected]="elementSelected"
             [itemIdSelected]="itemIdSelected"
             (closeModal)="onCloseModal()"
-            (enviarMensajeError)="recibirMensajeError($event)"
+            (enviarMensajeGrilla)="actualizarGrilla($event)"
         ></app-modal-alta-entrada-de-servicio>
     </div>
 
    
 </div>
+
+<p-confirmDialog 
+    header="Atención" icon="pi pi-exclamation-circle" width="425" 
+    appendTo="body" acceptLabel="Aceptar" rejectLabel="Cancelar">
+</p-confirmDialog>
