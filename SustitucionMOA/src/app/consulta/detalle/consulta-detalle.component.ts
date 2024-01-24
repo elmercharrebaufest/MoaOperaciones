@@ -397,6 +397,11 @@ export class DetalleConsultaComponent extends BaseComponent {
                 Value: this.consulta.PatenteChasis,
                 NewLine: false
             },
+            {
+                Nombre: "Rubro",
+                Value: this.consulta.Rubro,
+                NewLine: true
+            }
         ];
     }
 

@@ -305,6 +305,7 @@ namespace SustitucionMOAUtils.Services
                     Id = c.Detalle.CausaConsulta.Id,
                     Nombre = c.Detalle.CausaConsulta.Nombre
                 } : null,
+                Rubro = c.Detalle.Rubro
             };
 
             ret.Comentarios = c.Comentarios.Select(x => new ComentarioDto()
