@@ -1222,7 +1222,7 @@ namespace SustitucionMOAUtils.Services
                 Urgencia = solp.Urgencia,
                 NroOrdenDeCompraAdicional = solp.NroOrdenDeCompraAdicional,
                 DeshabilitarAdicional = solp.Adjudicaciones.Any(),
-                EditarCondicionesEspeciales = (solp.EstadoSolpSap_Id == null || solp.EstadoSolpSap_Id != 17) && po == null,
+                EditarCondicionesEspeciales = (solp.EstadoSolpSap_Id == null || solp.EstadoSolpSap.CodigoSap != "05") && po == null,
 
                 Adjuntos = solp.Pliego.Archivos.Where(a => a.FileKey == FileKeys.AdjuntoSolp || a.FileKey == FileKeys.AdjuntoCotizacionesSolp).Select(s => new ArchivoDto
                 {
@@ -7751,9 +7751,9 @@ namespace SustitucionMOAUtils.Services
                 Logger.Log.Error(e);
                 throw;
             }
-        }    
+        }
 
-}
+    }
 
 
     public static class SolpTemplateKeys
