@@ -12,9 +12,9 @@ namespace SustitucionMOAUtils.Interfaces
         AplicacionCartaPorteFiltrosDto ObtenerFiltros(List<AplicacionCartaPorteDto> aplicaciones);
         AplicacionCartaPorteDto Obtener(int aplicacionCCPPId,string mailUsuario);
         void EliminarAplicacion(int aplicacionId);
-        ComboAplicacionesContratosCcppResponse ObtenerCombosDeContratoCCPP(string mailUsuario, string codigoProveedor);
+        ComboAplicacionesContratosCcppResponse ObtenerCombosDeContratoCCPP(string mailUsuario, string codigoProveedor, bool esCodigoCorredor);
         void GuardarAplicacion(CrearAplicacionCartaPorte aplicacionACrear, string mailUsuario);
 
-        CargaMasivaResponse ProcesarCargaMasiva(HttpPostedFileBase archivo, string usuarioMail, string proveedorCodigo);
+        CargaMasivaResponse ProcesarCargaMasiva(HttpPostedFileBase archivo, string usuarioMail, string proveedorCodigo, bool esCodigoCorredor);
     }
 }

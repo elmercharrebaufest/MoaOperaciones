@@ -221,7 +221,7 @@ namespace SustitucionMOA.Controllers
 
                 var usuario = repositorio.Obtener<Usuario>(u => u.Mail == userMail);
 
-                if (!usuario.EsAdmin() && !usuario.TienePermiso("ELEGIR TODOS VENDEDORES"))
+                if (!usuario.EsAdmin() && !usuario.TienePermiso(PermisoEnum.ElegirTodosVendedores))
                 {
                     if (!usuario.TieneProveedor(vendedor))
                     {
@@ -253,6 +253,12 @@ namespace SustitucionMOA.Controllers
                 }
 
                 identity.AddClaim(new Claim(Globals.ClaimsProveedorId, proveedor.Id.ToString()));
+
+                if (identity.FindFirst(Globals.ClaimsEsCodigoCorredorType) != null)
+                {
+                    identity.RemoveClaim(identity.FindFirst(Globals.ClaimsEsCodigoCorredorType));
+                }
+                identity.AddClaim(new Claim(Globals.ClaimsEsCodigoCorredorType, proveedor.TipoProveedor.EsCorredor?"true":"false"));
 
                 // tell the authentication manager to use this new identity
                 authenticationManager.AuthenticationResponseGrant =
@@ -287,7 +293,7 @@ namespace SustitucionMOA.Controllers
 
 
 
-                return JsonCustom(new { vendedor = vendedor, descripcion = descripcion, noticias = noticias });
+                return JsonCustom(new { vendedor, descripcion, noticias, esCodigoCorredor = proveedor.TipoProveedor.EsCorredor });
 
             }
             catch (ValidationCustomException e)

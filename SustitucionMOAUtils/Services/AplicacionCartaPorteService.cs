@@ -74,12 +74,12 @@ namespace SustitucionMOAUtils.Services
             aplicacion.Estado = EstadoAplicacionCartaPorte.Eliminado;
             repositorio.GuardarCambios();
         }
-        public ComboAplicacionesContratosCcppResponse ObtenerCombosDeContratoCCPP(string mailUsuario, string codigoProveedor)
+        public ComboAplicacionesContratosCcppResponse ObtenerCombosDeContratoCCPP(string mailUsuario, string codigoProveedor, bool esCodigoCorredor)
         {
             Log.Info($"Busqueda combo app ccpp: mail={mailUsuario} el codigo proveedor= {codigoProveedor}");
             var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
 
-            var aplicacionesPendientes = ObtenerAplicacionesDisponiblesSap(usuario, codigoProveedor);
+            var aplicacionesPendientes = ObtenerAplicacionesDisponiblesSap(usuario, codigoProveedor, esCodigoCorredor);
 
             var contratos = ObtenerContratosDisponibles(aplicacionesPendientes);
 
@@ -120,7 +120,7 @@ namespace SustitucionMOAUtils.Services
             repositorio.GuardarCambios();
         }
 
-        public CargaMasivaResponse ProcesarCargaMasiva(HttpPostedFileBase archivo, string usuarioMail, string proveedorCodigo)
+        public CargaMasivaResponse ProcesarCargaMasiva(HttpPostedFileBase archivo, string usuarioMail, string proveedorCodigo, bool esCodigoCorredor)
         {
             if (archivo == null || archivo.ContentLength == 0 || Path.GetExtension(archivo.FileName).ToLower() != ".csv")
             {
@@ -131,7 +131,7 @@ namespace SustitucionMOAUtils.Services
 
             var registrosArchivo = ObtenerRegistrosCargaMasiva(archivo);
 
-            var aplicacionesDisponiblesSap = ObtenerAplicacionesDisponiblesSap(usuario, proveedorCodigo);
+            var aplicacionesDisponiblesSap = ObtenerAplicacionesDisponiblesSap(usuario, proveedorCodigo, esCodigoCorredor);
 
             var contratosDisponibles = ObtenerContratosDisponibles(aplicacionesDisponiblesSap);
             if (!contratosDisponibles.Any())
@@ -241,10 +241,14 @@ namespace SustitucionMOAUtils.Services
                     )).ToList();
         }
 
-        private string ObtenerCodigoProveedorSeleccionado(Usuario usuario, Proveedor proveedorAsignado, string codigoSeleccionado)
+        private string ObtenerCodigoProveedorSeleccionado(Usuario usuario, Proveedor proveedorAsignado, string codigoSeleccionado,bool esCodigoCorredor)
         {
             var puedeSeleccionarProveedor = usuario.TienePermiso(PermisoEnum.SeleccionarVendedor);
             if (usuario.EsCorredor() && (!puedeSeleccionarProveedor || proveedorAsignado.CodigoProveedor == codigoSeleccionado))
+            {
+                return null;
+            }
+            if (proveedorAsignado.CodigoProveedor != codigoSeleccionado && esCodigoCorredor)
             {
                 return null;
             }
@@ -254,16 +258,24 @@ namespace SustitucionMOAUtils.Services
             }
             return proveedorAsignado.CodigoProveedor;
         }
+        private string ObtenerCodigoCorredorSeleccionado(Usuario usuario, Proveedor proveedorAsignado, string codigoSeleccionado, bool esCodigoCorredor)
+        {
+            if (esCodigoCorredor && !string.IsNullOrEmpty(codigoSeleccionado))
+            {
+                return codigoSeleccionado;
+            }
+            return usuario.EsCorredor() ? proveedorAsignado.CodigoProveedor : null;
+        }
         private List<AplicacionCartaPorte> ObtenerAplicacionesPendientes(string codigoProveedorSeleccionado)
         {
             return repositorio.Listar<AplicacionCartaPorte>(app => app.Estado == EstadoAplicacionCartaPorte.Pendiente && app.Proveedor.CodigoProveedor == codigoProveedorSeleccionado);
         }
 
-        private ZMPES7070[] ObtenerAplicacionesDisponiblesSap(Usuario usuario, string proveedorCodigo)
+        private ZMPES7070[] ObtenerAplicacionesDisponiblesSap(Usuario usuario, string proveedorCodigo, bool esCodigoCorredor)
         {
             var proveedorAsignado = usuario.ObtenerProveedor();
-            var codigoProveedorSeleccionado = ObtenerCodigoProveedorSeleccionado(usuario, proveedorAsignado, proveedorCodigo);
-            var codigoCorredor = usuario.EsCorredor() ? proveedorAsignado.CodigoProveedor : null;
+            var codigoProveedorSeleccionado = ObtenerCodigoProveedorSeleccionado(usuario, proveedorAsignado, proveedorCodigo, esCodigoCorredor);
+            var codigoCorredor = ObtenerCodigoCorredorSeleccionado(usuario, proveedorAsignado, proveedorCodigo, esCodigoCorredor);
 
             var ccppPendienteReq = new AppCCPPRequests.AppCartasPortePendienteRequest
             {

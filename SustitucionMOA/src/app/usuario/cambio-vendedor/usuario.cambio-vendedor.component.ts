@@ -52,7 +52,7 @@ export class UsuarioCambioVendedorComponent extends BaseComponent implements OnI
         try {
             this.unsubscribe();
             this.subscription = this.service.getVendedores().subscribe(
-                (result:any) => {
+                (result: any) => {
                     this.spinnerComponent.hideIt();
                     if (result.logout == true) {
                         this.sessionDataService.logout();
@@ -99,7 +99,7 @@ export class UsuarioCambioVendedorComponent extends BaseComponent implements OnI
         try {
             this.unsubscribe();
             this.subscription = this.service.seleccionarVendedor(vendedor, descripcion).subscribe(
-                (result:any) => {
+                (result: any) => {
                     this.spinnerComponent.hideIt();
                     if (result.logout == true) {
                         this.sessionDataService.logout();
@@ -114,6 +114,9 @@ export class UsuarioCambioVendedorComponent extends BaseComponent implements OnI
                         this.sessionDataService.setNombre(result.descripcion);
                         sessionStorage.setItem("noticias", JSON.stringify(result.noticias));
                         this.sessionDataService.setNoticias(result.noticias);
+                        sessionStorage.setItem("esCodigoCorredor", result.esCodigoCorredor);
+                        this.sessionDataService.setEsCodigoCorredor(result.esCodigoCorredor);
+
                     }
                 },
                 error => {
