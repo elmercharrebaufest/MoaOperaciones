@@ -878,7 +878,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
                     } else {
                         this.combos = result;
                         this.combos.flagSolpFinalizada = this.flagSolpFinalizada;
-                        this.obtenerUsuarioCompras();
+                       // this.obtenerUsuarioCompras();
                         this.setupCentroPorDefecto();
                         this.setupDireccionCentroPorDefecto();
                         this.setupMonedaPorDefecto();
@@ -1038,6 +1038,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
 
     // Abre el modal del boton finalizar
     showFinalizarDialog() {
+        this.obtenerUsuarioCompras();
         this.displayFinalizar = true;
     }
 
