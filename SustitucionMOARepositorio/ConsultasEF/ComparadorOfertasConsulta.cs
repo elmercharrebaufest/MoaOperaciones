@@ -44,7 +44,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                     Adicional = po.Solp.Adicional,
                                     Urgencia = po.Solp.Urgencia,
                                     NroOrdenDeCompraAdicional = po.Solp.NroOrdenDeCompraAdicional,
-                                    EstaLiberado = po.Solp.EstadoSolpSap.CodigoSap == "05",
+                                    EstaLiberado = po.Solp.EstadoSolpSap.CodigoSap == "05" || po.Solp.EstadoSolpSap.CodigoSap == "02",
                                     RevisionFinalizada = po.RevisionTecnica == null ? false : po.RevisionTecnica.Finalizada,
                                     PlazoDeOfertaCierre = po.Cierres.Any() ? po.Cierres.OrderByDescending(p => p.Fecha).FirstOrDefault().Fecha : (DateTime?)null,
                                     PeticionDeOfertaPosicion = (from pop in contexto.Set<PeticionDeOfertaSolpPosicion>()
