@@ -147,10 +147,27 @@ th{
     font-size: 13px;
 }
 
+.limitedColumn2 {
+    max-width: 3em;
+    word-break: break-all;
+    word-wrap: break-word;
+    font-size: 13px;
+}
+
 .btn-buscar {
     top: 35px;
 }
 
 .msj-error {
     margin-right: 5px !important;
+}
+
+::ng-deep #viewDates #btnAplicar {
+    display: none !important;
+    visibility: hidden !important;
+}
+
+
+::ng-deep .ui-table tr {
+  font-size: 1.3rem !important;
 }

@@ -136,6 +136,7 @@ export class ComprasService extends BaseService {
 
     public getByProveedor(
         fechaInicio: any = this.filtros.fechaDesde,
+        fechaHasta: any = this.filtros.fechaHasta,
         proveedorId: string,
         ordenCompraId: string,
         columnaOrden: string = this.filtros.columnaNombre,
@@ -147,6 +148,7 @@ export class ComprasService extends BaseService {
         let params: HttpParams = new HttpParams();
 
         params = params.set('fechaInicio', (fechaInicio != null ? fechaInicio : ""));
+        params = params.set('fechaHasta', (fechaHasta != null ? fechaHasta : ""));
         params = params.set('vendedor', proveedorId);
         params = params.set('ordenCompraId', ordenCompraId);
         params = params.set('columnaOrden', columnaOrden);

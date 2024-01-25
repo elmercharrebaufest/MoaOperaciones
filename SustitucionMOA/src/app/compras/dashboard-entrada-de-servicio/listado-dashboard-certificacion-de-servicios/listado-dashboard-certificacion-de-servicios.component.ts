@@ -61,7 +61,8 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
     nroSolp: string = "";
     ordenAscendente: boolean;
     columnaOrden: string;
-    fechaInicio =  "";
+    fechaInicio = "";
+    fechaFin = "";
     length = 0;
     pageSize: number = 10;
     pageIndex: number = 1;                                        
@@ -119,7 +120,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
     );
 
         this.navService.navegarSeccion("compras/dashboardCertificacionDeServicios");
-        this.getListarPO(this.proveedor, this.ordenCompraId, this.filtroFechaComponent.fecha_inicio);
+        this.getListarPO(this.proveedor, this.ordenCompraId, this.filtroFechaComponent.fecha_inicio, this.filtroFechaComponent.fecha_fin);
 
     }
 
@@ -154,12 +155,22 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
        this.expandedRow = rowData;
     }
 
-    getOrders(periodo: string, fecha_inicio: string, fecha_fin: string) {
-        //MMSN-519 - Al activar un filtro, colapsar filas expandidas.
-        this.collapseExpanded()
+    //MMSN-574 - Agregar filtros
+    onBuscar() {
+        this.collapseExpanded();
 
-      this.getListarPO(this.proveedor, this.ordenCompraId, this.filtroFechaComponent.fecha_inicio);
+        let startDate = this.filtroFechaComponent.fecha_inicio;
+        let endDate = this.filtroFechaComponent.fecha_fin;
+
+        this.getListarPO(this.proveedor, this.ordenCompraId, startDate, endDate);
     }
+
+    //getOrders(periodo: string, fecha_inicio: string, fecha_fin: string) {
+    //    //MMSN-519 - Al activar un filtro, colapsar filas expandidas.
+    //    this.collapseExpanded()
+
+    //  this.getListarPO(this.proveedor, this.ordenCompraId, this.filtroFechaComponent.fecha_inicio);
+    //}
 
     //MMSN-519 - Al activar un filtro, colapsar filas expandida
     collapseExpanded() {
@@ -170,13 +181,13 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
         }
     }
 
-    getListarPO(proveedor, ordenCompraId,fecha_inicio) {
+    getListarPO(proveedor, ordenCompraId,fecha_inicio, fecha_fin) {
       this.getFecha();
       try {
           this.spinnerComponent.showIt();
           this.unsubscribe();
           // this.subscripcionPO = this.service.getByProveedor("2023-01-28", proveedor, "4123001336", this.columnaOrden , this.ordenAscendente, this.pageIndex, this.pageSize).subscribe(
-          this.subscripcionPO = this.service.getByProveedor(fecha_inicio, proveedor, ordenCompraId, this.columnaOrden , this.ordenAscendente, this.pageIndex, this.pageSize).subscribe(
+          this.subscripcionPO = this.service.getByProveedor(fecha_inicio, fecha_fin, proveedor, ordenCompraId, this.columnaOrden , this.ordenAscendente, this.pageIndex, this.pageSize).subscribe(
                 (result:any) => {
                  
                   if (result.logout == true) {
@@ -223,7 +234,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
           this.ordenAscendente = this.ordenAscendente == false ? true : false;
       }
       this.columnaOrden = columna;
-      this.getListarPO(this.proveedor, this.ordenCompraId, this.fechaInicio);
+      this.getListarPO(this.proveedor, this.ordenCompraId, this.fechaInicio, this.fechaFin);
   }
 
   deleteES(ItemNumero: any) {
@@ -249,7 +260,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
         } else if (result.info != undefined) {
           this.mensajeComponent.setErrorMsg(result.error);
         } else {
-          this.getListarPO(this.proveedor, this.ordenCompraId, this.filtroFechaComponent.fecha_inicio);
+            this.getListarPO(this.proveedor, this.ordenCompraId, this.filtroFechaComponent.fecha_inicio, this.filtroFechaComponent.fecha_fin);
         }
         this.spinnerComponent.hideIt()
       }
@@ -260,7 +271,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
   handlePageEvent(e: any) {
       this.pageSize = e.rows;
       this.pageIndex = e.page + 1;
-      this.getListarPO(this.proveedor, this.ordenCompraId, this.fechaInicio);
+      this.getListarPO(this.proveedor, this.ordenCompraId, this.fechaInicio, this.fechaFin);
   }
 
     openModal() {
@@ -275,7 +286,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
     }
 
     actualizarGrilla(event: string) {
-      this.getListarPO(this.proveedor, this.ordenCompraId, this.filtroFechaComponent.fecha_inicio);
+        this.getListarPO(this.proveedor, this.ordenCompraId, this.filtroFechaComponent.fecha_inicio, this.filtroFechaComponent.fecha_fin);
     }
 
     searchElement() {

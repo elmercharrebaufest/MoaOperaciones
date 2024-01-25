@@ -24,6 +24,8 @@ namespace SustitucionMOAUtils.Services
         //private readonly ILiquidacionService _liquidacionService;
         //private OrderParamsDto parametros;
 
+        private string dateTimeFormat = "dd/MM/yyyy";
+
         public OrderService(IConsultaService consultaService, IRepositorio repositorio)
         {
             this.repositorio = repositorio;
@@ -107,24 +109,9 @@ namespace SustitucionMOAUtils.Services
         public List<DetalleOrdenDeCompraDto> ServicioSAP_OrdenesCompraCabeceras(OrderParamsDto parametros)
         {
             List<OrdenCompraDto> ordenesCompra = new List<OrdenCompraDto>();
-            // Si la consulta no tiene un número de orden de compra, se obtienen todas las ordenes de compra en el rango de fechas
-            if (parametros.OrdenCompraId == null)
-            {
-                ordenesCompra = new ObtenerOrdenesDeCompraConsumerMOA().Request(parametros);
-            }
-            else
-            {
-                if (long.TryParse(parametros.OrdenCompraId, out long ordenCompraId))
-                {
-                    OrdenCompraDto nuevaOrden = new OrdenCompraDto
-                    {
-                        Id = ordenCompraId,
-                    };
 
-                    ordenesCompra.Add(nuevaOrden);
-                }
-            }
-
+             ordenesCompra = new ObtenerOrdenesDeCompraConsumerMOA().Request(parametros);
+          
             //List<TablaSap> centros = repositorio.Listar<TablaSap>(a => a.Tabla == "Centro");
             //List<TablaSap> almacenes = repositorio.Listar<TablaSap>(a => a.Tabla == "Almacen");
             List<TablaSap> centros = new List<TablaSap>();
@@ -133,18 +120,42 @@ namespace SustitucionMOAUtils.Services
 
             //Recorro las ordenes de compra y obtengo el detalle de cada una
             List< DetalleOrdenDeCompraDto> result = new List<DetalleOrdenDeCompraDto>();
-            foreach (var ordenCompra in ordenesCompra)
+
+            string today = DateTime.Now.ToString(dateTimeFormat);
+            DateTime fechaHasta = DateTime.ParseExact(today, dateTimeFormat, System.Globalization.CultureInfo.InvariantCulture);
+
+            //MMSN-574 - Fecha Hasta
+            if (!String.IsNullOrEmpty(parametros.fechaHasta))
             {
+                //Desde FE viene como yyyy-MM-dd -> formatear a como devuelve el servicio(dd-MM-yyyy).
+                parametros.fechaHasta = Convert.ToDateTime(parametros.fechaHasta).ToString(dateTimeFormat);
+                fechaHasta = DateTime.ParseExact(parametros.fechaHasta, dateTimeFormat, System.Globalization.CultureInfo.InvariantCulture);
+            }
+
+            //MMSN-574
+            List<OrdenCompraDto> ocFiltradas = new List<OrdenCompraDto>();
+            foreach(var oc in ordenesCompra)
+            {
+                DateTime fechaOC = DateTime.ParseExact(oc.Fecha, dateTimeFormat, System.Globalization.CultureInfo.InvariantCulture);
+                if(DateTime.Compare(fechaOC, fechaHasta) != 1)
+                {
+                    ocFiltradas.Add(oc);
+                }
+            }
+
+            foreach (var ordenCompra in ocFiltradas)
+            {               
                 string nroOC = ordenCompra.Id.ToString();
-                
+
 
                 // Obtengo detalle de una OC //
-                DetalleOrdenDeCompraDto detalleOrdendeCompra = new ObtenerOrdenDeCompraConsumerMOA(repositorio).ObtenerDetalleDeOrdenDeCompra(nroOC, centros, almacenes);
+                DetalleOrdenDeCompraDto detalleOrdendeCompra = new ObtenerOrdenDeCompraConsumerMOA(repositorio).ObtenerDetalleDeOrdenDeCompra(nroOC, centros, almacenes);            
 
-                detalleOrdendeCompra.NombreProveedor = ordenCompra.ProveedorNombre; 
-                detalleOrdendeCompra.MonedaDescripcion = ordenCompra.MonedaDescripcion; 
+                detalleOrdendeCompra.NombreProveedor = ordenCompra.ProveedorNombre;
+                detalleOrdendeCompra.MonedaDescripcion = ordenCompra.MonedaDescripcion;
 
                 result.Add(detalleOrdendeCompra);
+                           
             }
 
             return result;

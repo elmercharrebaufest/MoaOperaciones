@@ -34,12 +34,18 @@ namespace SustitucionMOAWS.WSConsumers
         {
             string fechaInicio = parametros.fechaInicio;
             string vendedor = parametros.vendedor;
+            string OC = parametros.OrdenCompraId;
+            //MMSN - 574: Si ingresa OC o proveedor, son independientes de la fecha. De no coincidir OC y vendedor, retornar el error. 
+            if(!String.IsNullOrEmpty(OC) || !String.IsNullOrEmpty(vendedor))
+            {
+                fechaInicio = "";
+            }
             string categoria = "9"; // 9 = Servicios
             BAPIEKKOL[] cabeceras = new BAPIEKKOL[] { };
             BAPIEKPOC[] detalle = new BAPIEKPOC[] { };
             BAPIRETURN[] bapiReturn = new BAPIRETURN[] { };
             service.BAPI_PO_GETITEMS("", "", "", fechaInicio, "", "", categoria, "", new BAPIMGVMATNR(), "",
-                                     "", "", "", "", "", "", "", new BAPIMGVMATNR(), "", "",
+                                     "", "", "", OC, "", "", "", new BAPIMGVMATNR(), "", "",
                                      "", "", vendedor, "X",
                                      ref cabeceras,
                                      ref detalle,
@@ -48,6 +54,7 @@ namespace SustitucionMOAWS.WSConsumers
             return Map(cabeceras);
 
         }
+
 
         /// <summary>
         /// Parsea los datos de las cabeceras de las ordenes de compra
@@ -68,14 +75,15 @@ namespace SustitucionMOAWS.WSConsumers
 
                 // Parsear la fecha y formatearla
                 DateTime fecha = DateTime.ParseExact(item.DOC_DATE, "yyyy-MM-dd", CultureInfo.InvariantCulture);
-                string fechaFormateada = fecha.ToString("dd-MM-yyyy");
+                string fechaFormateada = fecha.ToString("dd/MM/yyyy");
 
                 result.Add(new OrdenCompraDto
                 {
                     Id = long.Parse(item.PO_NUMBER),
+                    Fecha = fechaFormateada,
                     ProveedorNombre = item.VEND_NAME,
                     MonedaDescripcion = item.CURRENCY_ISO
-                    
+
                 });
             }
             

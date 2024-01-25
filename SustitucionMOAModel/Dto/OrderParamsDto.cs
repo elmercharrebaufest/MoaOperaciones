@@ -9,6 +9,7 @@ namespace SustitucionMOAModel.Dto
     public class OrderParamsDto
     {
         public string fechaInicio { get; set; }
+        public string fechaHasta { get; set;}
         public string vendedor { get; set; }
         public string OrdenCompraId { get; set; }
         public string ColumnaOrden { get; set; }

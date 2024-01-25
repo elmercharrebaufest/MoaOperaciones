@@ -27,7 +27,8 @@ export class FiltroDashboardCertificacionDeServiciosComponent extends ListBaseCo
    proveedor: string;
    ordenCompraId: string;
    length = 0;
-   fechaInicio =  "2023-10-01";
+   fechaInicio = "2023-10-01";
+   fechaFin = "";
    protected spinnerComponent: SpinnerComponent;
    usuario: string;
   //  subscripcionPO: Subscription;
@@ -72,6 +73,6 @@ export class FiltroDashboardCertificacionDeServiciosComponent extends ListBaseCo
     this.proveedor = this.filtroForm.get('proveedor').value;
       this.ordenCompraId = this.filtroForm.get('ordenCompraId').value
       this.fechaInicio = this.filtroForm.get('fechaInicio').value;
-      this.listadoComponent.getListarPO(this.proveedor, this.ordenCompraId, this.fechaInicio);
+      this.listadoComponent.getListarPO(this.proveedor, this.ordenCompraId, this.fechaInicio, this.fechaFin);
   }
 }

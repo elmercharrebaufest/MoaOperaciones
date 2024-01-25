@@ -18,10 +18,42 @@
             <div class="col-xs-12 col-md-12 search-header">
                 <title-caps>Refinar resultados</title-caps>
             </div>
-            <div id="searchVer" class="col-xs-12 col-sm-6 col-md-15">
-                <p>Ver:</p>
-                <filtro-fecha (ClickEvent)="getOrders()"></filtro-fecha>
+            <div id="searchOrder" class="col-xs-12 col-sm-6 col-md-15">
+                <p> Número de OC:</p>
+                <div class="styled-select">
+                    <div class="p-d-flex">
+                        <span class="p-input-icon-left p-ml-auto">
+                            <input pInputText type="text" [(ngModel)]="ordenCompraId" placeholder="Órden de compra" />
+                        </span>
+                    </div>
+                </div>
             </div>
+            <div id="searchProveedor" class="col-xs-12 col-sm-6 col-md-15">
+                <p> Proveedor:</p>
+                <div class="styled-select">
+                    <div class="p-d-flex">
+                        <span class="p-input-icon-left p-ml-auto">
+                            <input pInputText type="text" [(ngModel)]="proveedor" placeholder="Cod. Proveedor" />
+                        </span>
+
+                    </div>
+                </div>
+            </div>
+            <div id="viewDates" class="col-xs-12 col-sm-6 col-md-15">
+                <p>Ver:</p>
+                <filtro-fecha></filtro-fecha>
+            </div>
+            <div id="btonSearch" class="col-xs-12 col-sm-6 col-md-15  btn-buscar">
+
+                <span class="p-input-icon-left p-ml-auto">
+                <button class="btn buscar" (click)="onBuscar()">Buscar</button>
+                </span>
+                <div class="p-input-icon-left p-ml-auto buttonBuscar">
+
+                </div> 
+            </div>
+
+
             <!-- <div id="searchMostrar" class="col-xs-12 col-sm-6 col-md-15">
         <p>Mostrar</p>
         <div class="styled-select">
@@ -29,41 +61,33 @@
         </div>
     </div> -->
             <!--<div id="searchOrder" class="col-xs-12 col-sm-6 col-md-15">
-                <p> Número de OC:</p>
-                <div class="styled-select">-->
-
+    <p> Número de OC:</p>
+    <div class="styled-select">-->
             <!-- <div class="p-d-flex"> -->
             <!--<span class="p-input-icon-left p-ml-auto">-->
-            <!-- <i class="pi pi-search"></i> -->
             <!--<input pInputText type="text" [(ngModel)]="ordenCompraId" placeholder="Órden de compra" />
-                    </span>-->
+    </span>-->
             <!-- </div> -->
-
             <!--</div>
-            </div>-->
+    </div>-->
             <!--<div id="searchProveedor" class="col-xs-12 col-sm-6 col-md-15">
-                <p> Proveedor:</p>
-                <div class="styled-select">-->
-
+    <p> Proveedor:</p>
+    <div class="styled-select">-->
             <!-- <div class="p-d-flex"> -->
             <!--<span class="p-input-icon-left p-ml-auto">-->
-            <!-- <i class="pi pi-search"></i> -->
             <!--<input pInputText type="text" [(ngModel)]="proveedor" placeholder="Proveedor" />
-                    </span>
+            </span>
 
-                </div>
-            </div>-->
-
+        </div>
+    </div>-->
             <!--<div id="btonSearch" class="col-xs-12 col-sm-6 col-md-15  btn-buscar">
 
-                <span class="p-input-icon-left p-ml-auto">-->
-            <!-- <i class="pi pi-search"></i> -->
+    <span class="p-input-icon-left p-ml-auto">-->
             <!--<button class="btn buscar" (click)="onBuscar()">Buscar</button>
-                </span>-->
-
+    </span>-->
             <!-- <div class="p-input-icon-left p-ml-auto buttonBuscar">
 
-                </div> -->
+    </div> -->
             <!--</div>-->
         </div>
     </div>
@@ -85,7 +109,7 @@
                  [rows]="10"
                  [globalFilterFields]="['NumeroOrdenDeCompra','Proveedor', 'NombreProveedor']"  [resizableColumns]="true" [autoLayout]="true" rowExpandMode="single">
 
-            <ng-template pTemplate="caption" style="border: none !important;">
+            <!--<ng-template pTemplate="caption" style="border: none !important;">
                 <div class="p-d-flex">
                     <span class="p-input-icon-left p-ml-auto">
                         <i class="pi pi-search" style="padding-right: 0.5em;"></i>
@@ -93,7 +117,7 @@
                         <input pInputText type="text" (input)="tabla.filterGlobal($event.target.value, 'contains')" placeholder="BUSCADOR PROVEEDOR" style="width: 40%; margin-left:1em" (click)="collapseExpanded()" />
                     </span>
                 </div>
-            </ng-template>
+            </ng-template>-->
 
             <ng-template pTemplate="header" let-columns class="lista-header">
                 <tr>
@@ -458,7 +482,7 @@
                                                     >
                                                         <tr class="bg-c">
 
-                                                            <th title="Seleccion" class="headerth columna bg-c limitedColumn" style="
+                                                            <th title="Seleccion" class="headerth2 bg-c limitedColumn2" style="
                                                     text-align: center; border-left: 1px solid #075088 !important;">
                                                                 Selección
                                                             </th>
@@ -506,10 +530,10 @@
                                                             </th>
 
                                                             <th
-                                                                title="Importe"
+                                                                title="MontoEnES"
                                                                 class="headerth2 bg-c"
                                                             >
-                                                                Importe
+                                                                Monto en ES
                                                             </th>
 
                                                             <!-- <th title="Moneda" class="headerth columna bg-c">
