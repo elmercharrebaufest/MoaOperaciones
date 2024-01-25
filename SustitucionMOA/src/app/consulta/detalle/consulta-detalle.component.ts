@@ -207,11 +207,11 @@ export class DetalleConsultaComponent extends BaseComponent {
     }
 
     comentarioPropio(comentario) {
-        const comentaUsuario = this.consulta.UsuarioId == comentario.UsuarioId/* && 
-        this.consulta.UsuarioId == this.consulta.UsuarioActualId*/;
+        const comentaUsuario = this.consulta.UsuarioId == comentario.UsuarioId && 
+        this.consulta.UsuarioId == this.consulta.UsuarioActualId;
 
         const comentaCuit =  
-        comentario.Usuario.CUIT == this.cuitUsuarioSesion; //&& !this.esInterno;
+        comentario.Usuario.CUIT == this.cuitUsuarioSesion && !this.esInterno;
 
         const comentaInterno = this.consulta.UsuarioId != comentario.UsuarioId && this.esInterno;
 
