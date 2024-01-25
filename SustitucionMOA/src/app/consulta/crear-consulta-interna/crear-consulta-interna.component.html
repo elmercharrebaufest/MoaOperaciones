@@ -10,9 +10,9 @@
     <!--End Title-->
     <!-- Form-->
     <div class="row myRow firstSection mySearch cargaDeDatos">
-      <div class="rounded shadow col-xs-12 col-sm-6 col-md-8">
+      <div class="rounded shadow col-xs-12 col-sm-12 col-md-12">
         <div class="row myRow cargaDeDatosFields cargaDeDatosForm" style="padding: 20px;">
-          <div class="col-xs-12 col-sm-6 col-md-6">
+          <div class="col-xs-12 col-sm-4 col-md-4">
             <p class="crearConsultaTitulos">Categor&iacute;a<span class="requerido">*</span></p>
             <p-dropdown [options]="categorias" optionLabel="Nombre" dataKey="Id" [(ngModel)]="categoria"
               [maxSelectedLabels]="1" autoWidth="false" placeholder="Elegir Categoria"
@@ -20,27 +20,26 @@
             </p-dropdown>
           </div>
 
-          <div class="col-xs-12 col-sm-6 col-md-6">
+          <div class="col-xs-12 col-sm-4 col-md-4">
             <p class="crearConsultaTitulos">Subcategor&iacute;a<span class="requerido">*</span></p>
             <p-dropdown [options]="subcategoriasList" optionLabel="Nombre" dataKey="Id" [(ngModel)]="subcategoria"
               [maxSelectedLabels]="1" autoWidth="false" placeholder="Elegir Subcategoria" [filter]="true"
-              filterBy="value?.Nombre" (onChange)="setearComentario()">
+              filterBy="value?.Nombre" (onChange)="setSubcategoriaCode(); setearComentario()">
             </p-dropdown>
           </div>
 
-          <div *ngIf="categoriaCode == 'ORD'" class="col-xs-12 col-sm-4 col-md-4">
+          <div *ngIf="categoriaCode == 'ORD'" class="col-xs-12 col-sm-2 col-md-2">
             <p class="crearConsultaTitulos">Orden Nro:<span class="requerido">*</span></p>
             <div class="styled-select">
               <input type="search" [(ngModel)]="ordenId" class="fourRounded" aria-controls="tableModal" required
                 disabled>
-
             </div>
           </div>
           <div *ngIf="categoriaCode == 'ORD'" class="col-xs-12 col-sm-2 col-md-2">
             <p class="crearConsultaTitulos"></p>
             <button pButton type="button" icon="fa fa-search" iconPos="left" (click)="showDialog()"></button>
           </div>
-          <div *ngIf="categoriaCode == 'ORD'" class="col-xs-12 col-sm-6 col-md-6">
+          <div *ngIf="categoriaCode == 'ORD'" class="col-xs-12 col-sm-4 col-md-4">
             <p class="crearConsultaTitulos">Destinatario<span class="requerido">*</span></p>
             <p-multiSelect [options]="destinatariosOrden" appendTo="body" optionLabel="Mail" [(ngModel)]="destinatariosFas"
               defaultLabel="Elija al menos un destinatario" [filter]="true"
@@ -48,17 +47,44 @@
             </p-multiSelect>
             <spinner-loading [show]="searchingCampos"></spinner-loading>
           </div>
-          <div *ngIf="categoriaCode !== 'ORD'" class="col-xs-12 col-sm-6 col-md-6">
+
+          <div *ngIf="categoriaCode !== 'ORD'" class="col-xs-12 col-sm-4 col-md-4">
+            <p class="crearConsultaTitulos">Vendedor<span class="requerido">*</span></p>
+            <p-dropdown [options]="vendedores" optionLabel="RazonSocial" dataKey="Campo" [(ngModel)]="vendedor"
+            autoWidth="false" placeholder="Seleccione vendedor" [filter]="true" filterBy="value.RazonSocial,value.CUIT,value.CodigoProveedor"
+            (onChange)="getDestinatario();">
+              <ng-template let-item pTemplate="selectedItem">
+                <span>{{item.value.RazonSocial}}</span>
+            </ng-template>
+            <ng-template let-item pTemplate="item">
+                <div>
+                    <div><b>{{item.value.RazonSocial}}</b> - {{item.value.CodigoProveedor}}</div>
+                </div>
+            </ng-template>
+            </p-dropdown>
+            <spinner-loading [show]="searchingCampos"></spinner-loading>
+          </div>
+
+          <div *ngIf="categoriaCode !== 'ORD'" class="col-xs-12 col-sm-4 col-md-4">
             <p class="crearConsultaTitulos">Destinatario<span class="requerido">*</span></p>
             <p-dropdown [options]="destinatarios" optionLabel="Mail" dataKey="Campo" [(ngModel)]="destinatario"
-              autoWidth="false" placeholder="Elija un destinatario" [filter]="true"
+              [maxSelectedLabels]="1" autoWidth="false" placeholder="Elija un destinatario" [filter]="true"
               filterBy="value.Mail">
             </p-dropdown>
             <spinner-loading [show]="searchingCampos"></spinner-loading>
           </div>
+
+          <div *ngIf="vendedor?.RazonSocialCorredor != null" class="col-xs-12 col-sm-4 col-md-4">
+            <p class="crearConsultaTitulos">Razon Social Corredor<span class="requerido">*</span></p>
+            <div class="styled-select ">
+                <input type="search" [(ngModel)]="vendedor.RazonSocialCorredor" class="fourRounded"
+                    aria-controls="tableModal" disabled>
+            </div>
+        </div>
+          
           <div class="col-xs-12 col-sm-12 col-md-12">
             <p class="crearConsultaTitulos">Asunto<span class="requerido">*</span></p>
-            <div class="styled-select ">
+            <div class="styled-select">
               <input type="search" [(ngModel)]="asunto" class="fourRounded" aria-controls="tableModal">
             </div>
           </div>
@@ -69,6 +95,402 @@
                 [config]="config" style="color:black; font-weight:normal"></angular-editor>
             </div>
           </div>
+
+                <!-- Expanded para Reclamo Impositivo - Retenciones -->
+                <div class="col-xs-12 col-sm-12 col-md-12"
+                *ngIf="this.categoriaCode == 'REI' && this.subcategoriaCode == 'RET'">
+
+               <div class="col-xs-12 col-sm-12 col-md-6">
+                   <p class="crearConsultaTitulos">
+                       N° Salida de pago<span class="requerido">*</span>
+                   </p>
+                   <div class="styled-select">
+                       <input type="search" tooltipPosition="top" pTooltip="Recuerde: puede ingresar múltiples separados por ; o ," [(ngModel)]="comprobante" name="comprobante" class="fourRounded"
+                              aria-controls="tableModal" required>
+                   </div>
+               </div>
+
+               <div class="col-xs-12 col-sm-12 col-md-6">
+                   <p class="crearConsultaTitulos">
+                       Contrato MOA/N° de factura<span class="requerido">*</span>
+                   </p>
+                   <div class="styled-select">
+                       <input tooltipPosition="top" pTooltip="Recuerde: puede ingresar múltiples separados por ; o ," [(ngModel)]="contrato" name="contrato" class="fourRounded"
+                              aria-controls="tableModal" required>
+                   </div>
+               </div>
+
+               <div class="col-xs-12 col-sm-12 col-md-6">
+                   <p class="crearConsultaTitulos">Impuesto retenido<span class="requerido">*</span></p>
+                   <div class="styled-select">
+                       <input type="search" [(ngModel)]="impuesto" name="impuesto" class="fourRounded"
+                              aria-controls="tableModal" required>
+                   </div>
+               </div>
+
+               <div class="col-xs-12 col-sm-12 col-md-6">
+                   <p class="crearConsultaTitulos">Importe retención<span class="requerido">*</span></p>
+                   <div class="styled-select">
+                       <input type="number" [(ngModel)]="importe" name="importe" class="fourRounded"
+                              aria-controls="tableModal" required>
+                   </div>
+               </div>
+
+               <div class="col-xs-12 col-sm-12 col-md-6">
+                   <p class="crearConsultaTitulos">Fecha Pago<span class="requerido">*</span></p>
+                   <div class="styled-select">
+                       <div class="input-group date form_datetime" data-provide="datepicker" data-date=""
+                            data-date-format="yyyy-MM-dd" data-link-field="dtp_fecha_pago">
+                           <input type="text" id="noCursor" fechaInicioInput readonly />
+                           <span class="input-group-addon"><span class="fa fa-calendar "></span></span>
+                       </div>
+                       <input #dtp_fecha_pago id="dtp_fecha_pago" class="dtp_fecha_pago" value={{fechaPago}}
+                              style="visibility: hidden;" required />
+                   </div>
+               </div>
+           </div>
+
+
+
+           <!-- Expanded para Pagos -->
+           <div class="col-xs-12 col-sm-12 col-md-12"
+                *ngIf="this.categoriaCode == 'PAG'">
+
+               <div class="col-xs-12 col-sm-12 col-md-6">
+                   <p class="crearConsultaTitulos">
+                       Liquidación^
+                   </p>
+                   <div class="styled-select">
+                       <input type="search" tooltipPosition="top" pTooltip="Recuerde: puede ingresar múltiples separados por ; o ," [(ngModel)]="comprobante" name="comprobante" class="fourRounded"
+                              aria-controls="tableModal" required>
+                   </div>
+               </div>
+
+               <div class="col-xs-12 col-sm-12 col-md-6">
+                   <p class="crearConsultaTitulos">
+                       Contrato^
+                   </p>
+                   <div class="styled-select">
+                       <input type="search" tooltipPosition="top" pTooltip="Recuerde: puede ingresar múltiples separados por ; o ," [(ngModel)]="contrato" name="contrato" class="fourRounded"
+                              aria-controls="tableModal" required>
+                   </div>
+               </div>
+
+               <div class="col-xs-12 col-sm-12 col-md-6">
+                   <p class="crearConsultaTitulos">ID^</p>
+                   <div class="styled-select">
+                       <input type="search" tooltipPosition="top" pTooltip="Recuerde: puede ingresar múltiples separados por ; o ," [(ngModel)]="comprobanteExtra" name="comprobanteExtra" class="fourRounded"
+                              aria-controls="tableModal" required>
+                   </div>
+               </div>
+
+               <div class="col-xs-12 col-sm-12 col-md-6">
+                   <p class="crearConsultaTitulos">Fecha^</p>
+                   <div class="styled-select">
+                       <div class="input-group date form_datetime" data-provide="datepicker" data-date=""
+                            data-date-format="yyyy-MM-dd" data-link-field="dtp_fecha_pago">
+                           <input type="text" id="noCursor" fechaInicioInput readonly />
+                           <span class="input-group-addon"><span class="fa fa-calendar "></span></span>
+                       </div>
+                       <input #dtp_fecha_pago id="dtp_fecha_pago" class="dtp_fecha_pago" value={{fechaPago}}
+                              style="visibility: hidden;" required />
+                   </div>
+               </div>
+           </div>
+
+           <div class="col-xs-12 col-sm-12 col-md-12"
+                *ngIf="this.categoriaCode == 'REI' && this.subcategoriaCode == 'PER'">
+
+               <div class="col-xs-12 col-sm-12 col-md-6">
+                   <p class="crearConsultaTitulos">
+                       Cliente<span class="requerido">*</span>
+                   </p>
+                   <div class="styled-select">
+                       <input type="search" tooltipPosition="top" pTooltip="Recuerde: puede ingresar múltiples separados por ; o ," [(ngModel)]="comprobanteExtra" name="comprobanteExtra"
+                              class="fourRounded" aria-controls="tableModal" required>
+                   </div>
+               </div>
+
+               <div class="col-xs-12 col-sm-12 col-md-6">
+                   <p class="crearConsultaTitulos">
+                       N° de factura<span class="requerido">*</span>
+                   </p>
+                   <div class="styled-select">
+                       <input type="search" tooltipPosition="top" pTooltip="Recuerde: puede ingresar múltiples separados por ; o ," [(ngModel)]="comprobante" name="comprobante" class="fourRounded"
+                              aria-controls="tableModal" required>
+                   </div>
+               </div>
+
+               <div class="col-xs-12 col-sm-12 col-md-6">
+                   <p class="crearConsultaTitulos">Impuesto Percibido<span class="requerido">*</span></p>
+                   <div class="styled-select">
+                       <input type="search" [(ngModel)]="impuesto" name="impuesto" class="fourRounded"
+                              aria-controls="tableModal" required>
+                   </div>
+               </div>
+
+               <div class="col-xs-12 col-sm-12 col-md-6">
+                   <p class="crearConsultaTitulos">Fecha factura<span class="requerido">*</span></p>
+                   <div class="styled-select">
+                       <div class="input-group date form_datetime" data-provide="datepicker" data-date=""
+                            data-date-format="dd/MM/yyyy" data-link-field="dtp_fecha_pago">
+                           <input type="text" id="noCursor" value="{{fechaPago}}" fechaInicioInput readonly />
+                           <span class="input-group-addon"><span class="fa fa-calendar "></span></span>
+                       </div>
+                       <input #dtp_fecha_pago id="dtp_fecha_pago" class="dtp_fecha_pago" value={{fechaPago}}
+                              style="visibility: hidden;" required />
+                   </div>
+               </div>
+           </div>
+
+           <div class="col-xs-12 col-sm-12 col-md-12"
+                *ngIf="((this.categoriaCode == 'BOL' && this.subcategoriaCode == 'CON') || (this.categoriaCode == 'BOL' && this.subcategoriaCode == 'REG') || (this.categoriaCode == 'BOL' && this.subcategoriaCode == 'GMB'))">
+               <div class="col-xs-12 col-sm-12 col-md-6">
+                   <p class="crearConsultaTitulos">
+                       N° de contrato MOA<span class="requerido">*</span>
+                   </p>
+                   <div class="styled-select">
+                       <input tooltipPosition="top" pTooltip="Recuerde: puede ingresar múltiples separados por ; o ," [(ngModel)]="contrato" name="contrato" class="fourRounded"
+                              aria-controls="tableModal" required>
+                   </div>
+               </div>
+           </div>
+
+           <div class="col-xs-12 col-sm-12 col-md-12"
+                *ngIf="this.categoriaCode == 'BOL' && this.subcategoriaCode == 'OPC' ">
+               <div class="col-xs-12 col-sm-12 col-md-6">
+                   <p class="crearConsultaTitulos">
+                       N° de contrato MOA<span class="requerido">*</span>
+                   </p>
+                   <div class="styled-select">
+                       <input tooltipPosition="top" pTooltip="Recuerde: puede ingresar múltiples separados por ; o ," [(ngModel)]="contrato" name="contrato" class="fourRounded"
+                              aria-controls="tableModal" required>
+                   </div>
+               </div>
+
+               <div class="col-xs-12 col-sm-12 col-md-6">
+                   <p class="crearConsultaTitulos">Bolsa Emisora de Oblea<span class="requerido">*</span></p>
+                   <div class="styled-select">
+                       <input type="search" [(ngModel)]="bolsaEmisoraOblea" name="bolsaEmisoraOblea"
+                              class="fourRounded" aria-controls="tableModal" required>
+                   </div>
+               </div>
+
+               <div class="col-xs-12 col-sm-12 col-md-6">
+                   <p class="crearConsultaTitulos">Fecha emision de la oblea<span class="requerido">*</span></p>
+                   <div class="styled-select">
+                       <div class="input-group date form_datetime" data-provide="datepicker" data-date=""
+                            data-date-format="dd/MM/yyyy" data-link-field="fechaOblea">
+                           <input type="text" id="noCursor" value="{{fechaPago}}" fechaInicioInput readonly />
+                           <span class="input-group-addon"><span class="fa fa-calendar "></span></span>
+                       </div>
+                       <input #fechaOblea id="fechaOblea" class="fechaOblea" value={{fechaPago}}
+                              style="visibility: hidden;" required />
+                   </div>
+               </div>
+           </div>
+
+           <div class="col-xs-12 col-sm-12 col-md-12"
+                *ngIf="this.categoriaCode == 'ACT' && this.subcategoriaCode == 'IMP'">
+               <div class="col-xs-12 col-sm-12 col-md-6">
+                   <p class="crearConsultaTitulos">Impuesto<span class="requerido">*</span></p>
+                   <div class="styled-select">
+                       <input type="search" [(ngModel)]="impuesto" name="impuesto" class="fourRounded"
+                              aria-controls="tableModal" required>
+                   </div>
+               </div>
+           </div>
+
+           <div class="col-xs-12 col-sm-12 col-md-12" [hidden]="this.subcategoriaCode != 'INF'">
+               <app-informe-comercial [proveedorId]="vendedor?.Id" [mailUsuario]="destinatario?.Mail" [displayType]="'button'">
+               </app-informe-comercial>
+           </div>
+
+           <div class="col-xs-12 col-sm-12 col-md-12" [hidden]="this.subcategoriaCode != 'CAP'">
+               <app-carta-presentacion [proveedorId]="vendedor?.Id" [displayType]="'button'" [proveedorMail] ="destinatario?.Mail">
+               </app-carta-presentacion>
+           </div>
+
+           <div class="col-xs-12 col-sm-12 col-md-12"
+               *ngIf="(this.categoriaCode == 'PAR' && this.subcategoriaCode == 'NROR') || (this.categoriaCode == 'PAR' && this.subcategoriaCode == 'PFLET') || (this.categoriaCode == 'FIN' && this.subcategoriaCode) ">
+               <div class="col-xs-12 col-sm-12 col-md-6">
+                   <p class="crearConsultaTitulos">
+                       N° de contrato<span class="requerido">*</span>
+                   </p>
+                   <div class="styled-select">
+                       <input tooltipPosition="top" pTooltip="Recuerde: puede ingresar múltiples separados por ; o ," [(ngModel)]="contrato" name="contrato" class="fourRounded"
+                              aria-controls="tableModal" required>
+                   </div>
+               </div>
+
+               <div class="col-xs-12 col-sm-12 col-md-6">
+                   <p class="crearConsultaTitulos">
+                       N° COE
+                   </p>
+                   <div class="styled-select">
+                       <input type="search" tooltipPosition="top" pTooltip="Recuerde: puede ingresar múltiples separados por ; o ," [(ngModel)]="comprobante" name="comprobante" class="fourRounded"
+                              aria-controls="tableModal" required>
+                   </div>
+               </div>
+           </div>
+
+           <div class="col-xs-12 col-sm-12 col-md-12" *ngIf="this.categoriaCode == 'CAL' ">
+               <div class="col-xs-12 col-sm-12 col-md-6">
+                   <p class="crearConsultaTitulos">
+                       N° de contrato MOA<span class="requerido">^</span>
+                   </p>
+                   <div class="styled-select">
+                       <input tooltipPosition="top" pTooltip="Recuerde: puede ingresar múltiples separados por ; o ," [(ngModel)]="contrato" name="contrato" class="fourRounded"
+                              aria-controls="tableModal" required>
+                   </div>
+               </div>
+
+               <div class="col-xs-12 col-sm-12 col-md-6">
+                   <p class="crearConsultaTitulos">
+                       CCPP<span class="requerido">^</span>
+                   </p>
+                   <div class="styled-select">
+                       <input type="search" tooltipPosition="top" pTooltip="Recuerde: puede ingresar múltiples separados por ; o ," [(ngModel)]="comprobante" name="comprobante" class="fourRounded"
+                              aria-controls="tableModal" required>
+                   </div>
+               </div>
+           </div>
+
+            <!-- Expanded para cesion y rectificacion de cpe -->
+            <div class="col-xs-12 col-sm-12 col-md-12" *ngIf="this.categoriaCode == 'CRCPE'">
+               <div class="col-xs-12 col-sm-12 col-md-6">
+                   <p class="crearConsultaTitulos">
+                       Nro de CTG<span class="requerido">*</span>
+                   </p>
+                   <div class="styled-select">
+                       <input type="search" tooltipPosition="top" pTooltip="Recuerde: puede ingresar múltiples separados por ; o ," [(ngModel)]="comprobante" name="comprobante" class="fourRounded"
+                           aria-controls="tableModal" required>
+                   </div>
+               </div>
+           </div>
+
+           <div class="col-xs-12 col-sm-12 col-md-12" *ngIf="this.categoriaCode == 'COM' ">
+               <div class="col-xs-12 col-sm-12 col-md-6">
+                   <p class="crearConsultaTitulos">
+                       N° de Factura<span class="requerido">*</span>
+                   </p>
+                   <div class="styled-select">
+                       <input type="search" tooltipPosition="top" pTooltip="Recuerde: puede ingresar múltiples separados por ; o ," [(ngModel)]="comprobante" name="comprobante" class="fourRounded"
+                              aria-controls="tableModal" required>
+                   </div>
+               </div>
+           </div>
+
+           <div class="col-xs-12 col-sm-12 col-md-12" *ngIf="this.categoriaCode == 'APP' ">
+               <div class="col-xs-12 col-sm-12 col-md-6">
+                   <p class="crearConsultaTitulos">
+                       Material<span class="requerido">*</span>
+                   </p>
+                   <p-dropdown [options]="listaMateriales" optionLabel="Descripcion" dataKey="MaterialId" [(ngModel)]="material"
+                               [maxSelectedLabels]="1" autoWidth="false" placeholder="Elegir material"
+                               (onChange)="this.comprobanteExtra = $event.value.Descripcion">
+                   </p-dropdown>
+               </div>
+
+               <div class="col-xs-12 col-sm-12 col-md-6">
+                   <p class="crearConsultaTitulos">
+                       N° de contrato^
+                   </p>
+                   <div class="styled-select">
+                       <input tooltipPosition="top" pTooltip="Recuerde: puede ingresar múltiples separados por ; o ," [(ngModel)]="contrato" name="contrato" class="fourRounded"
+                              aria-controls="tableModal" required>
+                   </div>
+               </div>
+
+               <div class="col-xs-12 col-sm-12 col-md-6">
+                   <p class="crearConsultaTitulos">
+                       CCPP^
+                   </p>
+                   <div class="styled-select">
+                       <input type="search" tooltipPosition="top" pTooltip="Recuerde: puede ingresar múltiples separados por ; o ," [(ngModel)]="comprobante" name="comprobante" class="fourRounded"
+                              aria-controls="tableModal" required>
+                   </div>
+               </div>
+           </div>
+
+           <div class="col-xs-12 col-sm-12 col-md-12" *ngIf="this.categoriaCode == 'PES' ">
+               <div class="col-xs-12 col-sm-12 col-md-6">
+                   <p class="crearConsultaTitulos">
+                       N° de contrato MOA<span class="requerido">*</span>
+                   </p>
+                   <div class="styled-select">
+                       <input tooltipPosition="top" pTooltip="Recuerde: puede ingresar múltiples separados por ; o ," [(ngModel)]="contrato" name="contrato" class="fourRounded"
+                              aria-controls="tableModal" required>
+                   </div>
+               </div>
+           </div>
+
+           <div class="col-xs-12 col-sm-12 col-md-12"
+                *ngIf="this.categoriaCode == 'MATBA' && this.subcategoriaCode == 'CAL'">
+               <div class="col-xs-12 col-sm-12 col-md-6">
+                   <p class="crearConsultaTitulos">
+                       CCPP^
+                   </p>
+                   <div class="styled-select">
+                       <input type="search" tooltipPosition="top" pTooltip="Recuerde: puede ingresar múltiples separados por ; o ," [(ngModel)]="comprobante" name="comprobante" class="fourRounded"
+                              aria-controls="tableModal" required>
+                   </div>
+               </div>
+
+               <div class="col-xs-12 col-sm-12 col-md-6">
+                   <p class="crearConsultaTitulos">
+                       Car&aacute;tula^
+                   </p>
+                   <div class="styled-select">
+                       <input type="search" tooltipPosition="top" pTooltip="Recuerde: puede ingresar múltiples separados por ; o ," [(ngModel)]="comprobanteExtra" name="comprobanteExtra"
+                              class="fourRounded" aria-controls="tableModal" required>
+                   </div>
+               </div>
+           </div>
+
+
+           <div class="col-xs-12 col-sm-12 col-md-12"
+                *ngIf="this.categoriaCode == 'FLET' && this.subcategoriaCode == 'PDF'">
+               <div class="col-xs-12 col-sm-12 col-md-6">
+                   <p class="crearConsultaTitulos">
+                       N° Proforma
+                   </p>
+                   <div class="styled-select">
+                       <input type="search" tooltipPosition="top" pTooltip="Recuerde: puede ingresar múltiples separados por ; o ," [(ngModel)]="comprobanteExtra" name="comprobanteExtra"
+                              class="fourRounded" aria-controls="tableModal" required>
+                   </div>
+               </div>
+           </div>
+
+           <div class="col-xs-12 col-sm-12 col-md-12"
+                *ngIf="this.categoriaCode == 'FLET' && this.subcategoriaCode == 'CCP'">
+               <div class="col-xs-12 col-sm-12 col-md-6">
+                   <p class="crearConsultaTitulos">
+                       CCPP<span class="requerido">*</span>
+                   </p>
+                   <div class="styled-select">
+                       <input type="search" tooltipPosition="top" pTooltip="Recuerde: puede ingresar múltiples separados por ; o ," [(ngModel)]="comprobante" name="comprobante" class="fourRounded"
+                              aria-controls="tableModal" required>
+                   </div>
+               </div>
+
+               <div class="col-xs-12 col-sm-12 col-md-6">
+                   <p class="crearConsultaTitulos">
+                       N° Proforma
+                   </p>
+                   <div class="styled-select">
+                       <input type="search" tooltipPosition="top" pTooltip="Recuerde: puede ingresar múltiples separados por ; o ," [(ngModel)]="comprobanteExtra" name="comprobanteExtra"
+                              class="fourRounded" aria-controls="tableModal" required>
+                   </div>
+               </div>
+           </div>
+
+           <div class="forRow row col-md-12" *ngIf="this.categoriaCode == 'REI' && this.vendedor">
+               <button class="mx-auto d-block enviarComentario" href="#" style="text-decoration:none!important" id="openModalHiddenButton" data-toggle="modal" data-target="#generarDocImpositivo" (click)="generarVariable()">
+                   <div class="btn-custom btn-mediano btn-add animate align-center btn-recordar">Generar reclamo</div>
+               </button>
+              </div>
+
 
           <div class="col-xs-12 col-sm-12 col-md-12 row">
             <input class="adjuntarArchivo" #fileInput type="image" src="Content/images/buttons/Adjuntar.svg"
@@ -109,7 +531,145 @@
     </div>
     <!-- END form-->
   </section>
+
+  
+
 </div>
+
+<!-- Modal -->
+<div class="modal fade" id="generarDocImpositivo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+data-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
+<div class="modal-dialog" role="document" style="width: 700px;">
+   <div class="modal-content">
+       <div class="modal-header">
+           <button type="button" class="close" data-dismiss="modal" aria-label="Close"
+                   onClick="abrirModal()">
+               <span aria-hidden="true">&times;</span>
+           </button>
+           <h4 class="modal-title" id="myModalLabel">Reclamo Impositivo</h4>
+       </div>
+       <div class="modal-body">
+           <div class="content-wraper" style="margin-top:0;padding-top:0">
+               <div class="row myRow firstSection roundedInfo" id="container">
+                   <mensaje></mensaje>
+                   <div class="row myRow">
+                       <div class="col-xs-12 col-sm-12 col-md-6">
+                           <p class="crearConsultaTitulos">
+                               Raz&oacute;n social proveedor<span class="requerido">*</span>
+                           </p>
+                           <div class="styled-select">
+                               <input type="search" [(ngModel)]="reclamoImpositivo.RazonSocialProveedor" name="reclamoImpositivo.RazonSocialProveedor" class="fourRounded"
+                                      aria-controls="tableModal" required>
+                           </div>
+                       </div>
+
+                       <div class="col-xs-12 col-sm-12 col-md-6">
+                           <p class="crearConsultaTitulos">
+                               Dni<span class="requerido">*</span>
+                           </p>
+                           <div class="styled-select">
+                               <input type="search" [(ngModel)]="reclamoImpositivo.Dni" name="reclamoImpositivo.Dni" class="fourRounded"
+                                      aria-controls="tableModal" required>
+                           </div>
+                       </div>
+                   </div>
+
+                   <div class="row myRow">
+                       <div class="col-xs-12 col-sm-12 col-md-6">
+                           <p class="crearConsultaTitulos">
+                               Vinculo empresa<span class="requerido">*</span>
+                           </p>
+                           <div class="styled-select">
+                               <input type="search" [(ngModel)]="reclamoImpositivo.Vinculo" name="reclamoImpositivo.Vinculo" class="fourRounded"
+                                      aria-controls="tableModal" required>
+                           </div>
+                       </div>
+
+                       <div class="col-xs-12 col-sm-12 col-md-6">
+                           <p class="crearConsultaTitulos">
+                               Cuit empresa<span class="requerido">*</span>
+                           </p>
+                           <div class="styled-select">
+                               <input type="text" class="form-control" placeholder="" mask="00-00000000-0" [(ngModel)]="reclamoImpositivo.Cuit" name="reclamoImpositivo.Cuit"
+                                      aria-controls="tableModal" required>
+                           </div>
+                       </div>
+                   </div>
+
+                   <div class="row myRow">
+                       <div class="col-xs-12 col-sm-12 col-md-6">
+                           <p class="crearConsultaTitulos">
+                               Lugar<span class="requerido">*</span>
+                           </p>
+                           <div class="styled-select">
+                               <input type="search" [(ngModel)]="reclamoImpositivo.Lugar" name="reclamoImpositivo.Lugar" class="fourRounded"
+                                      aria-controls="tableModal" required>
+                           </div>
+                       </div>
+                   </div>
+
+                   <div class="row myRow" *ngIf="reclamoImpositivo.Reclamos">
+                       <div class="row myRow" *ngFor="let reclamo of reclamoImpositivo.Reclamos, let i = index">
+                           <div class="col-xs-12 col-sm-12 col-md-4">
+                               <p class="crearConsultaTitulos">
+                                   N° certificado<span class="requerido">*</span>
+                               </p>
+                               <div class="styled-select">
+                                   <input type="search" [(ngModel)]="reclamo.Certificado" name="comprobante" class="fourRounded"
+                                          aria-controls="tableModal" required>
+                               </div>
+                           </div>
+
+                           <div class="col-xs-12 col-sm-12 col-md-4">
+                               <p class="crearConsultaTitulos">
+                                   Importe retenci&oacute;n<span class="requerido">*</span>
+                               </p>
+                               <div class="styled-select">
+                                   <input type="search" [(ngModel)]="reclamo.Importe" name="comprobante" class="fourRounded"
+                                          aria-controls="tableModal" required>
+                               </div>
+                           </div>
+
+                           <div class="col-xs-12 col-sm-12 col-md-3">
+                               <div>
+                                   <p class="crearConsultaTitulos">Fecha pago<span class="requerido">*</span></p>
+                               </div>
+                               <p-calendar class="styled-select" [(ngModel)]="reclamo.Fecha" name="reclamo.Fecha" dateFormat="dd-mm-yy"></p-calendar>
+                           </div>
+
+                           <div *ngIf="reclamoImpositivo.Reclamos.length > 1" class="col-xs-12 col-sm-12 col-md-1" style="bottom: -7px; color: black;">
+                               <p class="crearConsultaTitulos">
+                               </p>
+                               <i class="fa fa-times" (click)="eliminarReclamo(i)" aria-hidden="true" style="cursor: pointer;"></i>
+                           </div>
+                       </div>
+                   </div>
+                   <div class="col-md-12">
+                       <i class="fa fa-plus center" (click)="agregarReclamo()" aria-hidden="true" style="cursor: pointer; color: black;"></i>
+                   </div>
+                   <br>
+                   <br>
+                   <div class="myRow row">
+                       <div class="col text-center">
+                           <button class="mx-auto d-block enviarComentario" (click)="generarReclamoImpositivo()" href="#"
+                                   style="text-decoration:none!important">
+                               <div class="btn-custom btn-mediano btn-add animate align-center btn-enviar">Generar</div>
+                           </button>
+                       </div>
+                   </div>
+               </div>
+           </div>
+       </div>
+   </div>
+</div>
+</div>
+<!--End CONTENT-->
+<p-confirmDialog header="Atención" appendTo="body" icon="pi pi-exclamation-triangle" width="425" #cd>
+<p-footer>
+   <button type="button" pButton icon="pi pi-check" class="dialog-accept-button" (click)="cd.accept()"></button>
+   <button type="button" pButton icon="pi pi-times" class="dialog-reject-button" (click)="cd.reject()"></button>
+</p-footer>
+</p-confirmDialog>
 
 <p-dialog header="Seleccione orden" [(visible)]="displayModal" [width]="500" modal="modal" appendTo="body"
   [draggable]="false">

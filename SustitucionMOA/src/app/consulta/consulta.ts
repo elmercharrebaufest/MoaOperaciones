@@ -100,4 +100,5 @@ export class Destinatario {
     Campo: string;
     Mail: string;
     UsuarioId: number;
+    NombreTipoUsuario;
 }

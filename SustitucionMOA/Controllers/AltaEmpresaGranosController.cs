@@ -38,18 +38,14 @@ namespace SustitucionMOA.Controllers
             this.repositorio = repositorio;
         }
 
-        public ActionResult GenerarInformeComercial(string informeComercialJson, int proveedorId)
+        public ActionResult GenerarInformeComercial(string informeComercialJson, string mailUsuario, int proveedorId)
         {
             try
             {
                 informeComercialJson = informeComercialJson.Replace("nia", "ña");
                 var informeComercial = JsonConvert.DeserializeObject<ParamInformeComercial>(informeComercialJson);
 
-
-                string userMail = ClaimsPrincipalExtension.GetClaimValue("emails");
-
-
-                var usuario = repositorio.Obtener<UsuarioGranos>(u => u.Mail == userMail);
+                var usuario = repositorio.Obtener<UsuarioGranos>(u => u.Mail == mailUsuario);
                 if (proveedorId == 0)
                 {
                     proveedorId = usuario.ObtenerProveedor().Id;
@@ -58,7 +54,7 @@ namespace SustitucionMOA.Controllers
 
                 proveedor = repositorio.Obtener<Proveedor>(proveedorId);
 
-                var infoProveedor = altaEmpresaService.ObtenerInfoProveedor(userMail, proveedorId);
+                var infoProveedor = altaEmpresaService.ObtenerInfoProveedor(mailUsuario, proveedorId);
 
                 if (infoProveedor.ProveedorClasificacion == "Productor")
                 {
@@ -107,7 +103,7 @@ namespace SustitucionMOA.Controllers
                     }
                 }
 
-                var FileArray = altaEmpresaService.GenerarInformeComercial(informeComercial, userMail, proveedorId);
+                var FileArray = altaEmpresaService.GenerarInformeComercial(informeComercial, mailUsuario, proveedorId);
 
                 //return File(FileArray, "application/pdf", "Informe Comercial.pdf");
                 PDFResponse result = new PDFResponse
@@ -167,17 +163,17 @@ namespace SustitucionMOA.Controllers
         }
 
 
-        public ActionResult GenerarCartaPresentacion(string cartaPresentacionJson, int proveedorId)
+        public ActionResult GenerarCartaPresentacion(string cartaPresentacionJson, string mailUsuario, int proveedorId)
         {
             try
             {
-                string userMail = ClaimsPrincipalExtension.GetClaimValue("emails");
+                var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
 
-                var usuario = repositorio.Obtener<Usuario>(u => u.Mail == userMail);
                 if (proveedorId == 0)
                 {
                     proveedorId = usuario.ObtenerProveedor().Id;
                 }
+
                 var corredor = usuario.ObtenerCorredor();
 
                 var proveedor = usuario.ObtenerProveedorPorId(proveedorId);
@@ -204,7 +200,7 @@ namespace SustitucionMOA.Controllers
                     }
                 }
 
-                var FileArray = altaEmpresaService.GenerarCartaDePresentacion(cartaPresentacion, userMail, proveedorId);
+                var FileArray = altaEmpresaService.GenerarCartaDePresentacion(cartaPresentacion, mailUsuario, proveedorId);
 
                 //return File(FileArray, "application/pdf", "Informe Comercial.pdf");
                 PDFResponse result = new PDFResponse
