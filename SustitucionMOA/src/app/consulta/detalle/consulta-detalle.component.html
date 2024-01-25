@@ -21,6 +21,11 @@
                                 class="col-xs-12 col-sm-6 col-md-7" style="overflow-x: scroll;"
                                 [innerHTML]="comentario.Detalle">
                             </div>
+                            <p [ngClass]="comentarioPropio(comentario) ? 'horaComentarioRespuesta' : ''"
+                                class="col-xs-12 col-sm-12 col-md-12">
+                                {{comentario.Fecha | date:'HH:mm'}} | {{comentario.Usuario.Mail}}
+                            </p>
+                            
                         </div>
                         <div [ngClass]="comentarioPropio(comentario) ? 'widthAutoConsultaPropio' : 'widthAutoConsultaRespuesta' "
                             class="col-xs-12 col-sm-6 col-md-7" *ngIf="comentario.Archivos.length != 0">
@@ -36,10 +41,10 @@
                         </div>
 
                         <div *ngIf="(comentarioPropio(comentario) && esCorredor) || esInterno; else elseBlock">
-                            <p [ngClass]="comentarioPropio(comentario) ? 'horaComentarioRespuesta' : ''"
+                            <!--<p [ngClass]="comentarioPropio(comentario) ? 'horaComentarioRespuesta' : ''"
                                 class="col-xs-12 col-sm-12 col-md-12">
                                 {{comentario.Fecha | date:'HH:mm'}} | {{comentario.Usuario.Mail}}
-                            </p>
+                            </p>-->
                             <div *ngIf="esInterno && comentario.Detalle != '' && comentario.Recordado">
                                 <p *ngFor="let recordado of comentario.ComentarioRecordados"
                                     [ngClass]="comentarioPropio(comentario) ? 'horaComentarioRespuesta' : ''"

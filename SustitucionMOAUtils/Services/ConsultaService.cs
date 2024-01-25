@@ -483,17 +483,17 @@ namespace SustitucionMOAUtils.Services
             var ret = new List<ConsultaDto>();
 
             var includes = new List<Expression<Func<Consulta, object>>>();
-            includes.Add(x => x.Detalle);
-            includes.Add(x => x.Detalle.CausaConsulta);
-            includes.Add(x => x.Categoria);
-            includes.Add(x => x.SubCategoria);
-            includes.Add(x => x.EstadoConsulta);
+            //includes.Add(x => x.Detalle);
+            //includes.Add(x => x.Detalle.CausaConsulta);
+            //includes.Add(x => x.Categoria);
+            //includes.Add(x => x.SubCategoria);
+            //includes.Add(x => x.EstadoConsulta);
 
             var usuario = repositorio.Obtener<Usuario>(usuarioId);
             var esInterno = usuario.TienePermiso(PermisoEnum.ConsultaAbm);
             var categorias = usuario.Roles.Where(x => x.Categorias.Any()).SelectMany(x => x.Categorias).Select(x => x.Id).ToList();
 
-            ret = repositorio.Listar<Consulta>(x => (obtenerTodos && categorias.Contains(x.Categoria.Id)) || x.Usuario_Id == usuarioId, includes: includes)
+            ret = repositorio.Listar<Consulta>(x => (obtenerTodos && categorias.Contains(x.Categoria.Id)) || x.Usuario_Id == usuarioId || x.Usuario.CUITRegistro == usuario.CUITRegistro, includes: includes)
                 .Select(x => new ConsultaDto
                 {
                     Id = x.Id,
