@@ -19,10 +19,14 @@
     <AssemblyName>SustitucionMOA</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <UseIISExpress>true</UseIISExpress>
-    <IISExpressSSLPort>58280</IISExpressSSLPort>
-    <IISExpressAnonymousAuthentication>enabled</IISExpressAnonymousAuthentication>
-    <IISExpressWindowsAuthentication>disabled</IISExpressWindowsAuthentication>
-    <IISExpressUseClassicPipelineMode>false</IISExpressUseClassicPipelineMode>
+    <IISExpressSSLPort>
+    </IISExpressSSLPort>
+    <IISExpressAnonymousAuthentication>
+    </IISExpressAnonymousAuthentication>
+    <IISExpressWindowsAuthentication>
+    </IISExpressWindowsAuthentication>
+    <IISExpressUseClassicPipelineMode>
+    </IISExpressUseClassicPipelineMode>
     <UseGlobalApplicationHostFile />
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
@@ -1017,6 +1021,7 @@
     <Content Include="libman.json" />
     <Content Include="Documentacion\TemplateAplicCCPP.csv" />
     <Content Include="Documentacion\TutorialAplicCCPP.docx" />
+    <Content Include="Keys\inspired-bazaar-410214-81185894c80f.json" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\PublishFiles.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
@@ -1144,6 +1149,7 @@
     <Compile Include="Jobs\ActualizarEstadoSolpSapJob.cs" />
     <Compile Include="Jobs\ActualizarSISAJob.cs" />
     <Compile Include="Jobs\ActualizarLocalidadesJob.cs" />
+    <Compile Include="Jobs\CcSsObtenerArchivosUcropJob.cs" />
     <Compile Include="Jobs\VerificarOrdenesFacturasCompensadasJob.cs" />
     <Compile Include="Jobs\VerificarTransporteOrdenesDeCargaFasonJob.cs" />
     <Compile Include="Jobs\AltaClienteSAPJob.cs" />
@@ -1554,6 +1560,7 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="dist\assets\css\" />
+    <Folder Include="Keys\" />
     <Folder Include="src\app\echeq\gestion\" />
     <Folder Include="Views\Default\" />
     <Folder Include="Views\Documentos\" />

@@ -4,12 +4,16 @@ using SustitucionMOAAssets;
 using SustitucionMOAModel.Consultas;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
+using SustitucionMOAModel.Dto.CampoSustentable;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using SustitucionMOARepositorio;
+using SustitucionMOARepositorio.Repositorios.Interfaces;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Interfaces.Wrappers;
 using SustitucionMOAUtils.Services;
+using SustitucionMOAWS.GoogleDrive.Interfaces;
+using SustitucionMOAWS.GoogleDrive.Models;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -24,18 +28,20 @@ namespace SustitucionMOATest.Services
     public class CampoSustentableServiceTest
     {
         private CampoSustentableService target;
-        private Mock<IRepositorio> repositorioMock;
+        private Mock<IRepositorioCampoSustentable> repositorioMock;
         private Mock<IExcelExportWrapper> excelExportWrapperMock;
         private Mock<IDataAgroService> dataAgroServiceMock;
+        private Mock<ICampoSustentableGoogleDrive> googleDriveMock;
 
         [SetUp]
         public void SetUp()
         {
-            repositorioMock = new Mock<IRepositorio>();
+            repositorioMock = new Mock<IRepositorioCampoSustentable>();
             excelExportWrapperMock = new Mock<IExcelExportWrapper>();
             dataAgroServiceMock = new Mock<IDataAgroService>();
+            googleDriveMock = new Mock<ICampoSustentableGoogleDrive>(MockBehavior.Strict);
 
-            target = new CampoSustentableService(repositorioMock.Object, excelExportWrapperMock.Object, dataAgroServiceMock.Object);
+            target = new CampoSustentableService(repositorioMock.Object, excelExportWrapperMock.Object, dataAgroServiceMock.Object, googleDriveMock.Object);
         }
 
         [Test()]
@@ -44,15 +50,18 @@ namespace SustitucionMOATest.Services
             var proveedorId = 1;
             var usuarioId = 2;
             var mailUsuario = "mail@mail.com";
-            bool UsarArchivoId = false;
-
+            var cuitProveedor = "233333333333";
+            var campoSustentableId = 654;
+            var cosechaId = 367;
+            var campoCosechaId = 287;
+            var UsarArchivoId = false;
+            var nombreArchivo = $"{cuitProveedor}_{campoSustentableId}";
 
             var proveedor = new Proveedor
             {
                 Id = proveedorId,
-                CUIT = "233333333333",
-                RazonSocial = "Test",
-
+                CUIT = cuitProveedor,
+                RazonSocial = "Test"
             };
 
             var usuario = new Usuario
@@ -71,23 +80,22 @@ namespace SustitucionMOATest.Services
 
             var cosecha = new Cosecha
             {
-                Id = 1,
+                Id = cosechaId,
                 Nombre = "20-21",
                 Inicio = DateTime.Now
             };
 
             repositorioMock
-               .Setup(x => x.Obtener(It.Is<Expression<Func<Usuario, bool>>>(l => l.Compile().Invoke(usuario))))
+               .Setup(x => x.ObtenerUsuarioPorMail(It.Is<string>(m => m == mailUsuario)))
                .Returns(usuario);
 
             repositorioMock
                .Setup(x => x.Obtener<Cosecha>(It.IsAny<int>()))
                .Returns(cosecha);
 
-
             var declaracion = new DeclaracionCampoSustentable
             {
-                CUIT = "233333333333",
+                CUIT = cuitProveedor,
                 RazonSocial = "Test",
                 Cosecha_Id = 1,
                 Cosecha = cosecha,
@@ -100,8 +108,37 @@ namespace SustitucionMOATest.Services
             };
 
             repositorioMock
-               .Setup(x => x.Obtener(It.IsAny<Expression<Func<DeclaracionCampoSustentable, bool>>>()))
+               .Setup(x => x.ObtenerDeclaracionDeProveedor(
+                   It.Is<string>(cp => cp == cuitProveedor),
+                   It.Is<int>(c => c == cosechaId)))
                .Returns(declaracion);
+
+            var reporteCertificadorDto = new ReporteCertificadorDto
+            {
+                CUIT = cuitProveedor,
+                Id = 654,
+                NombreCosecha = "CosechaX",
+                RazonSocial = "proveedor ASD"
+            };
+
+            repositorioMock
+                .Setup(x => x.ObtenerReporteCertificador(
+                    It.Is<int>(y => y == campoCosechaId),
+                    It.Is<int>(y => y == proveedorId)))
+                .Returns(reporteCertificadorDto);
+
+            googleDriveMock
+                .Setup(x => x.UploadFile(
+                    It.Is<GoogleDriveFileUploadRequest>(r =>
+                        r.FileUploadName == $"{nombreArchivo}.kmz")))
+                .Returns(string.Empty);
+
+            googleDriveMock
+                .Setup(x => x.UploadFile(
+                    It.Is<GoogleDriveFileUploadRequest>(r =>
+                        r.FileUploadName == $"{nombreArchivo}.json" &&
+                        r.MimeType == "applications/json")))
+                .Returns(string.Empty);
 
             var campoCreado = new CampoProveedor
             {
@@ -110,44 +147,70 @@ namespace SustitucionMOATest.Services
                 HectareasTotales = 100,
                 Borrado = false,
                 Proveedor = proveedor,
-                CUIT = "23333333333",
+                CUIT = cuitProveedor,
                 RazonSocial = "Test",
+                CampoCosecha_Id = campoCosechaId,
                 CampoCosecha = new CampoCosecha
                 {
-                    Campo = new CampoSustentable { Nombre = "Test" },
-                    Cosecha = new Cosecha { Nombre = "20-21" }
+                    Id = campoCosechaId,
+                    CampoSustentable_Id = campoSustentableId,
+                    Campo = new CampoSustentable { Nombre = "Test", Id = campoSustentableId },
+                    Cosecha_Id = cosechaId,
+                    Cosecha = new Cosecha { Id = cosechaId, Nombre = "20-21" }
                 }
             };
-            
-            FileStream fileStream = new FileStream(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, ".\\TestFiles\\Example.KMZ"), FileMode.Open, FileAccess.Read);
-            Mock<HttpPostedFileBase> uploadedFile = new Mock<HttpPostedFileBase>();
 
-            uploadedFile
+            var fileStream = new FileStream(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, ".\\TestFiles\\Example.KMZ"), FileMode.Open, FileAccess.Read);
+            var uploadedFileMock = new Mock<HttpPostedFileBase>();
+
+            uploadedFileMock
                 .Setup(f => f.ContentLength)
                 .Returns(100);
 
-            uploadedFile
+            uploadedFileMock
                 .Setup(f => f.FileName)
                 .Returns("Example.kmz");
 
-            uploadedFile
+            uploadedFileMock
                 .Setup(f => f.InputStream)
                 .Returns(fileStream);
 
             ConfigurationManager.AppSettings["RutaArchivosCampoSustentable"] = "C:/ArchivosCampoSustentableTest";
 
-            var result = target.Agregar(mailUsuario, campoCreado, uploadedFile.Object, UsarArchivoId);
+            var result = target.Agregar(mailUsuario, campoCreado, uploadedFileMock.Object, UsarArchivoId);
 
             repositorioMock
-                 .Verify(x => x.Obtener(It.Is<Expression<Func<Usuario, bool>>>(l => l.Compile().Invoke(usuario))), Times.Once);
+                .Verify(
+                    x => x.ObtenerUsuarioPorMail(It.Is<string>(m => m == mailUsuario)),
+                    Times.Once());
 
             repositorioMock
-               .Verify(x => x.GuardarCambios(), Times.Exactly(2));
+                .Verify(
+                    x => x.ObtenerDeclaracionDeProveedor(
+                        It.Is<string>(cp => cp == cuitProveedor),
+                        It.Is<int>(c => c == cosecha.Id)),
+                    Times.Exactly(2));
+
+            repositorioMock
+               .Verify(x => x.GuardarCambios(), Times.Exactly(3));
 
             repositorioMock
                  .Verify(x => x.Agregar(It.IsAny<CampoProveedor>()), Times.Once);
 
-            var expected = new Resultado { IdEntidad = 0, Mensaje = SuccessMsg.CampoSustentableAgregado };
+            repositorioMock
+                 .Verify(x => x.Agregar(It.IsAny<ArchivoCampoSustentable>()), Times.Once);
+
+            repositorioMock
+                .Verify(
+                    x => x.ObtenerReporteCertificador(
+                        It.Is<int>(y => y == campoCosechaId),
+                        It.Is<int>(y => y == proveedorId)),
+                    Times.Once);
+
+            googleDriveMock.Verify(x => x.UploadFile(It.IsAny<GoogleDriveFileUploadRequest>()), Times.Exactly(2));
+            googleDriveMock.VerifyAll();
+
+            var expected = new Resultado { IdEntidad = campoCosechaId, Mensaje = SuccessMsg.CampoSustentableAgregado };
 
             Assert.AreEqual(expected, result);
         }
@@ -423,7 +486,8 @@ namespace SustitucionMOATest.Services
 
             var result = target.VerificarDeclaracion(proveedorId, cosechaId, CUIT);
 
-            var expected = new EstadoDeclaracionSustentableDto {
+            var expected = new EstadoDeclaracionSustentableDto
+            {
                 DeclaracionFirmada = true,
                 CosechaActual = "19-20",
                 CUIT = CUIT,
@@ -826,8 +890,8 @@ namespace SustitucionMOATest.Services
 
             this.repositorioMock
                 .Setup(repo => repo.Listar(
-                    It.IsAny<Expression<Func<CampoProveedor, CampoProveedorListadoDto>>>(), 
-                    It.IsAny<Expression<Func<CampoProveedor, bool>>>(), 
+                    It.IsAny<Expression<Func<CampoProveedor, CampoProveedorListadoDto>>>(),
+                    It.IsAny<Expression<Func<CampoProveedor, bool>>>(),
                     0, "FechaCreacion", DirOrden.Desc))
                 .Returns<Expression<Func<CampoProveedor, CampoProveedorListadoDto>>, Expression<Func<CampoProveedor, bool>>, int, string, DirOrden>
                     ((proy, filtro, maxResultados, orden, dirOrden) => campoProveedorList.Where(filtro.Compile()).Select(proy.Compile()).OrderByDescending(x => x.FechaCreacion).ToList());
@@ -884,7 +948,7 @@ namespace SustitucionMOATest.Services
             DateTime hoy = new DateTime(2021, 8, 24);
             DateTime ayer = new DateTime(2021, 8, 23);
 
-            Proveedor proveedor1 = new Proveedor { Id = 1, CodigoProveedor = "prov1", RazonSocial = "Proveedor 1", CUIT="cuit1" };
+            Proveedor proveedor1 = new Proveedor { Id = 1, CodigoProveedor = "prov1", RazonSocial = "Proveedor 1", CUIT = "cuit1" };
             Proveedor proveedor2 = new Proveedor { Id = 2, CodigoProveedor = "prov2", RazonSocial = "Proveedor 2", CUIT = "cuit2" };
             Proveedor proveedor3 = new Proveedor { Id = 3, CodigoProveedor = "prov3", RazonSocial = "Proveedor 3", CUIT = "cuit3" };
 
@@ -1037,11 +1101,11 @@ namespace SustitucionMOATest.Services
                 .Verify(excelExport => excelExport.ToExcel(It.IsAny<object>(), It.IsAny<string[]>(), It.IsAny<string>()), Times.Once);
             this.excelExportWrapperMock
                 .Verify(excelExport => excelExport.ToExcel(
-                    It.Is<List<CampoSustentableExportDTO>>(x => x.Count == 2 && 
-                        x[0].IdScato == 2 && 
-                        x[1].IdScato == 1), 
-                    It.IsAny<string[]>(), 
-                    It.IsAny<string>()), 
+                    It.Is<List<CampoSustentableExportDTO>>(x => x.Count == 2 &&
+                        x[0].IdScato == 2 &&
+                        x[1].IdScato == 1),
+                    It.IsAny<string[]>(),
+                    It.IsAny<string>()),
                 Times.Once);
 
             this.repositorioMock.Verify(repo => repo.Listar(It.IsAny<Expression<Func<CampoProveedor, CampoSustentableExportDTO>>>(), It.IsAny<Expression<Func<CampoProveedor, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<DirOrden>()), Times.Once);
@@ -1144,6 +1208,28 @@ namespace SustitucionMOATest.Services
             Assert.AreEqual("ruta6", result);
 
             this.repositorioMock.Verify(r => r.Obtener(It.IsAny<Expression<Func<CampoProveedor, bool>>>()), Times.Once);
+        }
+        [Test]
+        public void DescargarArchivosGoogle_ArchivoYaProcesado_ReturnAntes()
+        {
+            target.DescargarArchivosDeGoogleDrive(new ArchivoCampoSustentable { ProcesadoUcropit = true });
+            googleDriveMock.Verify(drive => drive.DownloadFile(It.IsAny<GoogleDriveFileDownloadRequest>()), Times.Never);
+        }
+        [Test]
+        public void DescargarArchivosGoogle_ArchivoSinProcesar_DescargaArchivo()
+        {
+            var archivoSinDescargar = new ArchivoCampoSustentable { 
+                ProcesadoUcropit = false,
+                Proveedor = new Proveedor { CUIT="cuit"},
+                CampoCosecha = new CampoCosecha { Campo = new CampoSustentable { Id = 3 }, CampoSustentable_Id=3 }
+            };
+            var rutaGuardadoDeseada = "/cuit/cuit_3.csv";
+
+            target.DescargarArchivosDeGoogleDrive(archivoSinDescargar);
+
+            googleDriveMock.Verify(drive => drive.DownloadFile(It.IsAny<GoogleDriveFileDownloadRequest>()), Times.Once);
+            repositorioMock.Verify(repositorio => repositorio.GuardarCambios(), Times.Once);
+            Assert.That(archivoSinDescargar.Archivo.Ruta, Is.EqualTo(rutaGuardadoDeseada));
         }
     }
 }

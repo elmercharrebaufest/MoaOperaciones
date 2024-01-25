@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-using SustitucionMOA.Utils;
 using SustitucionMOAAssets;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Entities;
@@ -328,6 +327,5 @@ namespace SustitucionMOA.Controllers
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
         }
-
     }
 }

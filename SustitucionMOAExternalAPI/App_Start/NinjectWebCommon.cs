@@ -31,6 +31,8 @@ namespace SustitucionMOAExternalAPI.App_Start
     using SustitucionMOAWS.ScatoWebService;
     using SustitucionMOAWS.WebApi;
     using SustitucionMOAWS.WSConsumers;
+    using SustitucionMOAWS.GoogleDrive;
+    using SustitucionMOAWS.GoogleDrive.Interfaces;
 
     public static class NinjectWebCommon
     {
@@ -225,6 +227,10 @@ namespace SustitucionMOAExternalAPI.App_Start
             kernel.Bind<IAzureADConsumer>().To(typeof(AzureADConsumer)).InSingletonScope();
             kernel.Bind<IUsersGraphAPIClient>().To(typeof(UsersGraphAPIClient)).InSingletonScope();
             kernel.Bind<IRepositorioUsuario>().To<RepositorioUsuario>().InScope(ctx => HttpContext.Current);
+
+            // GoogleDrive
+            kernel.Bind<IGoogleDriveHelper>().To<GoogleDriveHelper>().InScope(ctx => HttpContext.Current);
+            kernel.Bind<ICampoSustentableGoogleDrive>().To(typeof(CampoSustentableGoogleDrive)).InSingletonScope();
 
             //kernel.Bind<IExternalApiService>().To(typeof(ExternalApiService)).InScope(ctx => OperationContext.Current);
             kernel.Bind<DbContext>().To<MOAOperacionesDbContext>().InTransientScope();

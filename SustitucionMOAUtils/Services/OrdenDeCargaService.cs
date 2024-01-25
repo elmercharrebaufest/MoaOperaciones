@@ -655,6 +655,7 @@ namespace SustitucionMOAUtils.Services
         {
             var estadosPuedeAnular = new List<EstadoOrdenDeCarga>
             {
+                EstadoOrdenDeCarga.Pendiente,
                 EstadoOrdenDeCarga.AnulacionSolicitada,
                 EstadoOrdenDeCarga.Confirmado,
                 EstadoOrdenDeCarga.ContratoVencido,
@@ -1637,13 +1638,13 @@ namespace SustitucionMOAUtils.Services
             var mailCreador = this.repositorio.Obtener<Usuario>(u => u.Id == orden.UsuarioCreacion_Id);
             if (mailCreador != null)
             {
-                destinatarios.Add(new DestinatarioDto { Campo = "Usuario creador", Mail = mailCreador.Mail, UsuarioId = mailCreador.Id });
+                destinatarios.Add(new DestinatarioDto { Campo = "Usuario creador", Mail = mailCreador.Mail, UsuarioId = mailCreador.Id, NombreTipoUsuario = mailCreador.TipoUsuario.NombreCorto });
             }
 
             var mailCliente = this.repositorio.Obtener<Usuario>(u => u.Mail == orden.Cliente.Mail && u.TipoUsuario.Id == orden.Cliente.TipoProveedor.Id);
             if (mailCliente != null)
             {
-                destinatarios.Add(new DestinatarioDto { Campo = "Cliente", Mail = mailCliente.Mail, UsuarioId = mailCliente.Id });
+                destinatarios.Add(new DestinatarioDto { Campo = "Cliente", Mail = mailCliente.Mail, UsuarioId = mailCliente.Id, NombreTipoUsuario = mailCliente.TipoUsuario.NombreCorto });
             }
 
             return destinatarios.ToList();

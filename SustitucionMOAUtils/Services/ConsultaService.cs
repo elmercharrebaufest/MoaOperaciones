@@ -305,6 +305,7 @@ namespace SustitucionMOAUtils.Services
                     Id = c.Detalle.CausaConsulta.Id,
                     Nombre = c.Detalle.CausaConsulta.Nombre
                 } : null,
+                Rubro = c.Detalle.Rubro
             };
 
             ret.Comentarios = c.Comentarios.Select(x => new ComentarioDto()
@@ -762,7 +763,7 @@ namespace SustitucionMOAUtils.Services
 
                 var categorias = repositorio.Listar<Categoria>(c => rolesUsuario.Contains(c.Code));
 
-                return categorias.Select(x => new CategoriaDto(x)).ToList();
+                return categorias.Select(x => new CategoriaDto(x)).OrderBy(c => c.Nombre).ToList();
             }
             catch (ValidationCustomException e)
             {
@@ -1229,7 +1230,6 @@ namespace SustitucionMOAUtils.Services
                 Mensaje = mensajeResultado,
             };
         }
-
         public void ReabrirConsulta(int consultaId, UsuarioDto usuarioActual)
         {
             var consulta = GetConsulta(consultaId);

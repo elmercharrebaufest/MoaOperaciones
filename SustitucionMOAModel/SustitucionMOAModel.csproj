@@ -62,6 +62,7 @@
     <Compile Include="Dto\AplicacionCartaPorte\CargaMasivaResponse.cs" />
     <Compile Include="Dto\AplicacionCartaPorte\ComboAplicacionesContratosCcppResponse.cs" />
     <Compile Include="Dto\AsignarNuevaCuitDto.cs" />
+    <Compile Include="Dto\CampoSustentable\ReporteCertificadorDto.cs" />
     <Compile Include="Dto\DestinatarioDto.cs" />
     <Compile Include="Dto\AplicacionCartaPorte\AplicacionCartaPorteApiDto.cs" />
     <Compile Include="Dto\AplicacionCartaPorte\CartaPorteParaAplicacionCartaPorte.cs" />
@@ -182,6 +183,7 @@
     <Compile Include="Dto\Compras\UsuarioComprasDto.cs" />
     <Compile Include="Dto\Compras\UsuarioComprasRelacionConUsuariosDto.cs" />
     <Compile Include="Dto\UsuarioModificacionDto.cs" />
+    <Compile Include="Entities\ArchivoCampoSustentable.cs" />
     <Compile Include="Entities\ChatInternoCompras.cs" />
     <Compile Include="Entities\AplicacionCartaPorte.cs" />
     <Compile Include="Entities\Adjudicacion.cs" />
@@ -296,6 +298,7 @@
     <Compile Include="Models\DataAgro\ContratoFijacion.cs" />
     <Compile Include="Models\DataAgro\ContratoAPrecio.cs" />
     <Compile Include="Models\DataAgro\RptCartaDePresentacionInfo.cs" />
+    <Compile Include="Models\Raw\ProveedorRaw.cs" />
     <Compile Include="Models\ViewModel\ReclamoImpositivo.cs" />
     <Compile Include="Models\WebApiMap\CNRT\Dominio.cs" />
     <Compile Include="Models\WebApiMap\CNRT\Equipo.cs" />

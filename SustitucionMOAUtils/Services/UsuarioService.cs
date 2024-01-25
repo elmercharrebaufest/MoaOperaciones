@@ -3,6 +3,7 @@ using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
+using SustitucionMOAModel.Models.Raw;
 using SustitucionMOARepositorio;
 using SustitucionMOARepositorio.Repositorios.Interfaces;
 using SustitucionMOAUtils.Interfaces;
@@ -165,7 +166,7 @@ namespace SustitucionMOAUtils.Services
                 "BOL", "DATMAE", "REI", "ACT", "PAR", "FIN", "CAL", "COM",
                 "COMP", "APP", "PES", "PAG", "FWEB", "MATBA",
                 "PROVGC", "FLECONSULTA", "OTRO", "PARDIR", "PARCOR",
-                "FINDIR", "FINCOR", "FLE", "CRDECPE", "ORD"
+                "FINDIR", "FINCOR", "FLE", "CRDECPE", "ORD", "DISCAL"
             };
 
             var roles = repositorio.Listar<Rol>().Where(r => r.EsEditable)
@@ -538,17 +539,11 @@ namespace SustitucionMOAUtils.Services
             }).GroupBy(x => x.Id);
         }
 
-        public List<DestinatarioDto> ObtenerDestinatariosConsulta()
+        public List<DestinatarioDto> ObtenerDestinatariosConsulta(int proveedorId)
         {
             List<DestinatarioDto> destinatarios = new List<DestinatarioDto>();
-
-            var usuarios = this.GetUsuarios().Where(u => u.Habilitado == true);
-            destinatarios = usuarios.Select(u => new DestinatarioDto
-            {
-                Campo = "Usuario Web",
-                Mail = u.Mail,
-                UsuarioId = u.Id,
-            }).ToList();
+            var proveedor = this.repositorio.Obtener<Proveedor>(p => p.Id == proveedorId);
+            destinatarios = proveedor.UsuariosAsociados.Select(u => new DestinatarioDto(u)).ToList();
             return destinatarios;
         }
 
@@ -897,5 +892,7 @@ namespace SustitucionMOAUtils.Services
             repositorio.GuardarCambios();
         }
         #endregion
+  
+
     }
 }

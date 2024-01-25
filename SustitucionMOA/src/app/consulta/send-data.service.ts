@@ -6,6 +6,11 @@ export interface DatosLiquidacionObservada {
     NroComprobante: number | string;
     NroContrato: number | string;
 }
+export interface DatosDisconformidadCalidades {
+    Material?: string;
+    NroContrato: number | string;
+    NroCCPP: number | string;
+}
 
 @Injectable({
     providedIn: 'root'
@@ -13,7 +18,8 @@ export interface DatosLiquidacionObservada {
 export class SendDataService extends BaseService {
     private data: any;
 
-    private datosLiquidacionObservada?: DatosLiquidacionObservada
+    private datosLiquidacionObservada?: DatosLiquidacionObservada;
+    private datosDisconformidadCalidades?: DatosDisconformidadCalidades;
 
     setData(data: any) {
         this.data = data;
@@ -35,5 +41,15 @@ export class SendDataService extends BaseService {
     }
     limpiarDatosLiquidacionObservados() {
         this.datosLiquidacionObservada = null;
+    }
+
+    setDatosDisconformidadCalidades(datosLiquidacion: DatosDisconformidadCalidades) {
+        this.datosDisconformidadCalidades = datosLiquidacion;
+    }
+    getDatosDisconformidadCalidades(): DatosDisconformidadCalidades | null {
+        return this.datosDisconformidadCalidades;
+    }
+    limpiarDatosDisconformidadCalidades() {
+        this.datosDisconformidadCalidades = null;
     }
 }

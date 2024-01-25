@@ -507,6 +507,12 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
+        public List<Calidad> GetDetalleCalidades(string ccpp, string codigoProveedor)
+        {
+            var datos = GetDetalle(codigoProveedor, ccpp);
+            return datos.datosCalidad;
+        }
+
         private void ValidarRespuesta(CartaPorteWSMOAResponse data)
         {
             if (data == null)

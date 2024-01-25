@@ -1,6 +1,7 @@
 ﻿using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
+using SustitucionMOAModel.Models.Raw;
 using SustitucionMOAModel.Models.WSMapMOA.Login;
 using SustitucionMOAModel.Models.WSMapMOA.Usuario;
 using SustitucionMOAModel.Models.WSMapMOA.Usuario.Perfil;
@@ -40,7 +41,7 @@ namespace SustitucionMOAUtils.Interfaces
         string EliminarCuitNoHabilitado(int proveedorId, string mailUsuarioSesion);
         ProveedorDto GetProveedorAprobadoPorCuit(string cuit, string mailUsuarioSesion);
         void AsignarNuevaCUIT(AsignarNuevaCuitDto datosAsignar, string mailUsuarioSesion);
-        List<DestinatarioDto> ObtenerDestinatariosConsulta();
+        List<DestinatarioDto> ObtenerDestinatariosConsulta(int proveedorId);
 
     }
 }

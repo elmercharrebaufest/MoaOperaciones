@@ -53,6 +53,7 @@ export class InformeComercialComponent extends BaseComponent implements OnInit {
 
   @Input() proveedorId: number;
   @Input() displayType: string;
+  @Input() mailUsuario: string;
 
   ngOnInit(): void {
     this.addFieldValue();
@@ -337,7 +338,7 @@ export class InformeComercialComponent extends BaseComponent implements OnInit {
 
     this.mensajeError = "";
     this.subscription = this.service
-      .generarInformeComercial(this.informe, this.proveedorId)
+      .generarInformeComercial(this.informe, this.mailUsuario, this.proveedorId)
       .subscribe(
         (result) => {
           this.spinnerModal.hideIt();
