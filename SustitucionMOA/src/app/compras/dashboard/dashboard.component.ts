@@ -14,9 +14,10 @@ import { SpinnerComponent } from '../../common/view-child/spinner/spinner.compon
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { EnumTipoSolpSap } from '../enum-tipo-solp-sap';
 import { Paginator } from 'primeng/paginator';
-import { PeticionDeOfertaDto } from '../../modelos/peticion-de-oferta-model';
+import { PeticionDeOfertaDto, PeticionDeOfertaRevisionTecnicaDto } from '../../modelos/peticion-de-oferta-model';
 import { forEach } from '@angular/router/src/utils/collection';
 import { AdjudicacionDto, AdjudicacionPosicionDto } from '../../modelos/adjudicacion';
+import { ChatComprasDto } from '../chat-interno/chat-interno.interface';
 
 declare var $: any;
 
@@ -49,6 +50,7 @@ export class DashboardComponent extends ListBaseComponent {
     sap: boolean = false;
     mantenimiento: boolean = false;
     web: boolean = false;
+    repoAutomatica: boolean = false;
     orden: string;
     columnaOrden: string;
     length = 0;
@@ -66,6 +68,9 @@ export class DashboardComponent extends ListBaseComponent {
     ordenesDeCompra: AdjudicacionDto[] = [];
     ordenDeCompra: any;
     displayOrdenDeCompra: boolean;
+    displayChatInterno: boolean = false;
+    chatLeido: boolean = false;
+
 
     constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService, protected route: ActivatedRoute, protected router: Router, private confirmationService: ConfirmationService) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
@@ -116,6 +121,8 @@ export class DashboardComponent extends ListBaseComponent {
     checkedFilterWeb = false;
 
     verTodas: boolean = this.isAuthorized('VER TODAS SOLPS');
+    public chat: ChatComprasDto;
+
 
     showDialog() {
         this.display = true;
@@ -193,6 +200,13 @@ export class DashboardComponent extends ListBaseComponent {
                 this.calendar.overlayVisible = false;
             }
         }
+    }
+
+    listarExpand() { 
+        setTimeout(() => {
+            $('[id^="ui-tabpanel-"]').css('padding', '0');
+            $('[id^="ui-tabpanel-"]').css('transition', 'none').css('animation', 'none');
+        }, 0.01);        
     }
 
     filtrarPorSap() {
@@ -274,7 +288,7 @@ export class DashboardComponent extends ListBaseComponent {
             this.spinnerComponent.showIt();
             let multiSelectValues = this.selectEstadoSolp.join(",")
             this.subscription = this.service.getListarSolp(this.pageIndex, this.pageSize, this.orden, this.columnaOrden, this.nroSolp,
-                this.fechaInicio, this.fechaFin, this.sap, this.mantenimiento, this.web, multiSelectValues, this.selectUsuario
+            this.fechaInicio, this.fechaFin, this.sap, this.mantenimiento, this.web, this.repoAutomatica, multiSelectValues, this.selectUsuario
             ).subscribe(
                 (result: any) => {
 
@@ -571,7 +585,7 @@ export class DashboardComponent extends ListBaseComponent {
 
     descargarAdjuntosCotizacion({ cotizacionId }) {
         this.blockUI.start("Descargando...");
-        this.service.DescargarAdjuntosCotizacion(cotizacionId)
+        this.service.DescargarAdjuntosCotizacion(cotizacionId, true)
             .subscribe(
                 (result) => {
                     if (result.logout == true) {
@@ -612,18 +626,16 @@ export class DashboardComponent extends ListBaseComponent {
             )
     }
 
-    grabarRevisionTecnica(revision: any) {
+    grabarRevisionTecnica(event) {
         this.blockUI.start('Grabando...');
-        this.service.grabarRevisionTecnica(this.peticion.Usuarios, revision.finalizar)
+        this.service.grabarRevisionTecnica(this.peticion.Usuarios, event.finalizar, event.revisionTecnica)
             .subscribe(
                 (result) => {
                     if (result.logout == true) {
                         this.sessionDataService.logout();
                     }
                     else {
-                        if (result) {
-
-                        }
+                        if (result) {}
                         this.displayRevisionTecnica = false;
                         this.blockUI.stop();
                     }
@@ -732,9 +744,53 @@ export class DashboardComponent extends ListBaseComponent {
                 Proveedor: item.Proveedor || '',
                 MonedaDescripcion: item.MonedaDescripcion || '',
                 PrecioFinal: item.PrecioFinal || 0,
+                PrecioBruto: item.PrecioBruto || 0,
+                EstadoLiberacionDetalle: item.EstadoLiberacionDetalle || '',
             };
             this.ordenesDeCompra.push(adjudicacion);
         });
+    }
+
+    obtenerPeticionDeOfertaParaChat(Id) {
+        try {
+            this.displayChatInterno = false;
+            this.subscription = this.service.obtenerChat(Id)
+              .subscribe(
+                (result: any) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.floatMsgService.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.floatMsgService.setInfoMsg(result.info);
+                    } else {
+                        result.Mensajes = result.Mensajes.map((x) => {
+                            x.FechaEnvioDate = new Date(
+                                this.getDateFromAspNetFormat(x.FechaEnvioDate)                                
+                            );   
+                            return x;
+                        });
+                        result.FechaCreacionDate = new Date(
+                            this.getDateFromAspNetFormat(result.FechaCreacionDate)                                
+                        );   
+                        this.chat = result;
+                        this.displayChatInterno = true;
+                        this.chatLeido = true;
+                    };
+                },
+                (error) => {
+                  this.floatMsgService.setErrorMsg(error.message);
+              }
+          );
+      } catch (e) {
+          this.floatMsgService.setErrorMsg(e);
+          return false; //<-- Prevent Refresh
+      }
+      return false; //<-- Prevent Refresh
+    }
+
+    cerrarModalChat() {
+        this.displayChatInterno = false;
     }
 
 }

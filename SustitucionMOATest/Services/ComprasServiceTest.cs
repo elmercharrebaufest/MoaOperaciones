@@ -53,6 +53,7 @@ namespace SustitucionMOATest.Services
         private Mock<IAgregarRegistroInfoConsumerMOA> agregarRegistroInfoConsumerMOAMock;
         private Mock<IEmailService> emailServiceMock;
         private Mock<IReporteOrdenDeCompraConsumerMOA> reporteOrdenDeCompraConsumerMOAMock;
+        private Mock<IObtenerUnidadesDeMedidaAlternativasConsumerMOA> obtenerUnidadesDeMedidaAlternativasConsumerMOAMock;
 
         private string filePath = "";
 
@@ -427,6 +428,18 @@ namespace SustitucionMOATest.Services
                     }
             }
         };
+        private readonly PeticionDeOfertaRevisionTecnicaDto peticionDeOfertaRevisionTecnica = new PeticionDeOfertaRevisionTecnicaDto
+        {
+            Id = 1,
+            Usuario_Id = 1,
+            Fecha = DateTime.Now,
+            RecotizacionEconomica = false,
+            ModificacionSolp = false,
+            ObservacionRecotizacion = "Observacion",
+            Finalizada = true
+        };
+
+
 
 
         [SetUp]
@@ -457,6 +470,7 @@ namespace SustitucionMOATest.Services
             vendedoresConsumerMOAMock = new Mock<IVendedoresConsumerMOA>();
             emailServiceMock = new Mock<IEmailService>();
             reporteOrdenDeCompraConsumerMOAMock = new Mock<IReporteOrdenDeCompraConsumerMOA>();
+            obtenerUnidadesDeMedidaAlternativasConsumerMOAMock = new Mock<IObtenerUnidadesDeMedidaAlternativasConsumerMOA>();
 
             httpContextServiceMock.Setup(x => x.ObtenerPathLogoMail()).Returns(TestContext.CurrentContext.TestDirectory + "\\Util\\LogoBaufest.png");
             filePath = Path.GetFullPath(TestContext.CurrentContext.TestDirectory + "\\Util\\LogoBaufest.png");
@@ -486,7 +500,8 @@ namespace SustitucionMOATest.Services
                 vendedoresConsumerMOAMock.Object,
                 agregarRegistroInfoConsumerMOAMock.Object,
                 emailServiceMock.Object,
-                reporteOrdenDeCompraConsumerMOAMock.Object
+                reporteOrdenDeCompraConsumerMOAMock.Object,
+                obtenerUnidadesDeMedidaAlternativasConsumerMOAMock.Object
                 );
         }
 
@@ -673,26 +688,35 @@ namespace SustitucionMOATest.Services
         [Test()]
         public void AutocompleteServiciosSapTest()
         {
-            List<TablaSap> ListaSap = new List<TablaSap>
+            List<TablaSapDto> ListaSap = new List<TablaSapDto>
             {
-                new TablaSap {Id=1, Descripcion = "Prueba 1", CodigoSap="MOA", Tabla = TablasSap.CodigoServicioSap},
-                new TablaSap {Id=2, Descripcion = "Prueba 2", CodigoSap="Otro", Tabla = TablasSap.CodigoServicioSap},
-                new TablaSap {Id=3, Descripcion = "Prueba 3", CodigoSap="MOA", Tabla = TablasSap.CodigoServicioSap},
-                new TablaSap {Id=4, Descripcion = "Prueba 1", CodigoSap="MOA Operaciones", Tabla = TablasSap.CodigoServicioSap},
-                new TablaSap {Id=5, Descripcion = "Prueba 1", CodigoSap="MOA", Tabla = TablasSap.CecoSolpSap},
+                new TablaSapDto {Id=1, Descripcion = "Prueba 1", CodigoSap="MOA", Tabla = TablasSap.CodigoServicioSap},
+                new TablaSapDto {Id=2, Descripcion = "Prueba 2", CodigoSap="Otro", Tabla = TablasSap.CodigoServicioSap},
+                new TablaSapDto {Id=3, Descripcion = "Prueba 3", CodigoSap="MOA", Tabla = TablasSap.CodigoServicioSap},
+                new TablaSapDto {Id=4, Descripcion = "Prueba 1", CodigoSap="MOA Operaciones", Tabla = TablasSap.CodigoServicioSap},
+                new TablaSapDto {Id=5, Descripcion = "Prueba 1", CodigoSap="MOA", Tabla = TablasSap.CecoSolpSap},
             };
 
-            repositorioMock
-                .Setup(x => x.Listar(It.IsAny<Expression<Func<TablaSap, bool>>>(),
-                                It.IsAny<int>(),
-                                It.IsAny<string>(),
-                                It.IsAny<DirOrden>(),
-                                It.IsAny<IEnumerable<Expression<Func<TablaSap, object>>>>()))
+            repositorioMock.Setup(x => x.Listar(
+                It.IsAny<Expression<Func<TablaSap, TablaSapDto>>>(),
+                It.IsAny<Expression<Func<TablaSap, bool>>>(),
+                It.IsAny<int>(),
+                It.IsAny<string>(),
+                It.IsAny<DirOrden>()))
                 .Returns(ListaSap);
+
+            //repositorioMock
+            //    .Setup(x => x.Listar(It.IsAny<Expression<Func<TablaSap, TablaSap>>>(),
+            //                    It.IsAny<int>(),
+            //                    It.IsAny<string>(),
+            //                    It.IsAny<DirOrden>(),
+            //                    It.IsAny<IEnumerable<Expression<Func<TablaSap, object>>>>()))
+            //    .Returns(ListaSap);
+
 
             var expected = new List<TablaSapDto>
             {
-                new TablaSapDto { Id = 2,  Descripcion = "Prueba 2", CodigoSap="Otro", Tabla = TablasSap.CodigoServicioSap }
+                new TablaSapDto { Id = 1,  Descripcion = "Prueba 2", CodigoSap="Otro", Tabla = TablasSap.CodigoServicioSap }
             };
 
             var result = target.AutocompleteTablaSap(TablasSap.CodigoServicioSap, "ot");
@@ -968,6 +992,8 @@ namespace SustitucionMOATest.Services
             var nroSolp = "0212303121";
             repositorioMock.Setup(y => y.Obtener(It.IsAny<Expression<Func<Solp, bool>>>(), It.IsAny<Expression<Func<Solp, string>>>()))
             .Returns(nroSolp);
+            repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<TablaSap, bool>>>(),
+                It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null)).Returns(new List<TablaSap>() { new TablaSap { CodigoSap = "1", Id = 1 } });
             obtenerOrdenesDeCompraParaSOLPConsumerMOAMock.Setup(y => y.Request(It.IsAny<string>(), It.IsAny<string>())).Returns(new List<OrdenDeCompraSAPDto> {
                 new OrdenDeCompraSAPDto { Cabecera = new OrdenDeCompraSAPCabecera { Tipo = "", OrdenDeCompra = "", FechaCreacion = new DateTime(), RazonSocialProveedor = "Proveedor", Moneda = "ARP", MontoTotal = 1500 } }
             });
@@ -1186,13 +1212,13 @@ namespace SustitucionMOATest.Services
             repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<TablaSap, bool>>>(),
                 It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null)).Returns(new List<TablaSap>() { new TablaSap { CodigoSap = "ARP", Id = 1 } });
 
-            target.CrearCotizacionConTrabajoYaHecho(solp, false);
+            target.CrearCotizacionConTrabajoYaHecho(solp);
 
-            repositorioMock.Verify(y => y.Obtener<Usuario>(It.IsAny<int>()), Times.Once);
+            repositorioMock.Verify(y => y.Obtener<Usuario>(It.IsAny<int>()), Times.Exactly(2));
             repositorioMock.Verify(y => y.Obtener<PeticionDeOfertaUsuario>(It.IsAny<int>()), Times.Once);
             repositorioMock.Verify(y => y.Listar(It.IsAny<Expression<Func<TablaSap, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null), Times.Once);
 
-            repositorioMock.Verify(x => x.GuardarCambios(), Times.Exactly(4));
+            repositorioMock.Verify(x => x.GuardarCambios(), Times.Exactly(5));
         }
 
         [Test]
@@ -1378,9 +1404,18 @@ namespace SustitucionMOATest.Services
 
             var finalizar = false;
 
+            var revision = new PeticionDeOfertaRevisionTecnicaDto
+            {
+                Id = 1
+            };
+
             repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<PeticionDeOfertaUsuario, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null))
                 .Returns(new List<PeticionDeOfertaUsuario>() { new PeticionDeOfertaUsuario { Id = 1, RealizoVisita = true, PeticionDeOferta = peticionDeOferta } });
-            target.GrabarRevisionTecnica(peticiones, 1, finalizar);
+
+            repositorioMock.Setup(y => y.Agregar(It.IsAny<PeticionDeOfertaRevisionTecnica>())).Returns(new PeticionDeOfertaRevisionTecnica { Id = 1 });
+
+
+            target.GrabarRevisionTecnica(peticiones, 1, finalizar, revision);
             repositorioMock.Verify(y => y.Listar(It.IsAny<Expression<Func<PeticionDeOfertaUsuario, bool>>>(),
                 It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null), Times.Once);
             repositorioMock.Verify(x => x.GuardarCambios(), Times.Exactly(1));
@@ -1393,15 +1428,22 @@ namespace SustitucionMOATest.Services
             {
                 new PeticionDeOfertaUsarioDto
                  {
-                   Id = 1
+                   Id = 1,
+                   PlazoDeOferta = DateTime.Now.AddDays(-5)
                  }
             };
 
             var finalizar = true;
 
             repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<PeticionDeOfertaUsuario, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null))
-                .Returns(new List<PeticionDeOfertaUsuario>() { new PeticionDeOfertaUsuario { Id = 1, RealizoVisita = true, PeticionDeOferta = peticionDeOferta } });
-            target.GrabarRevisionTecnica(peticiones, 1, finalizar);
+                .Returns(new List<PeticionDeOfertaUsuario>() { new PeticionDeOfertaUsuario { Id = 1, RealizoVisita = true, PeticionDeOferta = peticionDeOferta, } });
+            repositorioMock.Setup(y => y.Agregar(It.IsAny<PeticionDeOfertaRevisionTecnicaDto>())).Returns(peticionDeOfertaRevisionTecnica);
+
+
+            repositorioMock.Setup(y => y.Obtener(It.IsAny<Expression<Func<PeticionDeOferta, bool>>>(), It.IsAny<Expression<Func<PeticionDeOferta, PeticionDeOfertaDto>>>()))
+                .Returns(new PeticionDeOfertaDto { Id = 1, Solp_Id = 1, RegistroInfo = false, UsuarioCreador_Id = 1, PlazoDeOferta = DateTime.Now.AddDays(-5) });
+
+            target.GrabarRevisionTecnica(peticiones, 1, finalizar, peticionDeOfertaRevisionTecnica);
             repositorioMock.Verify(y => y.Listar(It.IsAny<Expression<Func<PeticionDeOfertaUsuario, bool>>>(),
                 It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null), Times.Once);
             repositorioMock.Verify(x => x.GuardarCambios(), Times.Exactly(1));
@@ -1410,8 +1452,20 @@ namespace SustitucionMOATest.Services
         [Test]
         public void TraerCotizacionOk()
         {
-            repositorioMock.Setup(y => y.ObtenerConsultaEscalar(It.IsAny<TraerCotizacionConsulta>())).Returns(new PeticionDeOfertaDto { CotizacionId = 1, Cotizacion = new CotizacionDto { ArchivosCotizacion = null } });
+            repositorioMock.Setup(y => y.ObtenerConsultaEscalar(It.IsAny<TraerCotizacionConsulta>())).Returns(new PeticionDeOfertaDto
+            {
+                CotizacionId = 1,
+                Cotizacion = new CotizacionDto { ArchivosCotizacion = null },
+                TipoPosicionCodigo = "MATERIALES",
+                PeticionDeOfertaPosicion = new List<PeticionDeOfertaSolpPosicionDto> { new PeticionDeOfertaSolpPosicionDto { Posiciones = new SolpPosicionDto { Codigo = "000000000050224373" } } }
+            });
             repositorioMock.Setup(y => y.Obtener<Cotizacion>(It.IsAny<int>())).Returns(cotizacion);
+            var tablaSapDto = new List<TablaSapDto> { new TablaSapDto { Codigo = "FINALIZADA", Tabla = "EstadoSolpSap", CodigoSap = "05", Descripcion = "Liberación concluida" },
+            new TablaSapDto { Id = -1, Descripcion = "Borrado en SAP" }};
+            var tablaSap = new List<TablaSap> { new TablaSap { Codigo = "FINALIZADA", Tabla = "EstadoSolpSap", CodigoSap = "05", Descripcion = "Liberación concluida" } };
+            repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<TablaSap, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null)).Returns(tablaSap);
+            obtenerUnidadesDeMedidaAlternativasConsumerMOAMock.Setup(y => y.Request(It.IsAny<List<string>>())).Returns(new List<UnidadesDeMedida>
+            { new UnidadesDeMedida { CodigoMaterial = "000000000050224373", UnidadDeMedida = "UNI", Denominador = 1, Numerador = 1 }});
             target.TraerCotizacion(It.IsAny<int>());
             repositorioMock.Verify(y => y.ObtenerConsultaEscalar(It.IsAny<TraerCotizacionConsulta>()), Times.Once);
         }
@@ -1426,7 +1480,8 @@ namespace SustitucionMOATest.Services
                     RazonSocialProveedor = "PARISI",
                     CUITProveedor = "2737237394",
                     CodigoProveedor = "003723739",
-                    Usuario_Id = 1
+                    Usuario_Id = 1,
+                    UsuarioComprasSAP = "A"
                 },
             });
 
@@ -1436,12 +1491,19 @@ namespace SustitucionMOATest.Services
 
             repositorioMock.Setup(y => y.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>())).Returns(new Usuario
             {
+                Mail = "test",
                 CUITRegistro = "232323",
                 TipoUsuario = new TipoUsuario { Id = 3 },
-                Id = 1
+                Id = 1,
+                Proveedores = new List<Proveedor> { new Proveedor { Id = 1, CUIT = "232323", TipoProveedor = new TipoUsuario { Id = 3 } } }
             });
-            target.ObtenerOrdenDeCompra(It.IsAny<string>());
-            repositorioMock.Verify(y => y.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>()), Times.Once);
+            repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<Adjudicacion, bool>>>(),
+             It.IsAny<int>(), It.IsAny<string>(), It.IsAny<DirOrden>(), null)).Returns(new List<Adjudicacion> { new Adjudicacion { Usuario = new Usuario { Mail = "test2" } } });
+            repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<UsuarioCompras, bool>>>(),
+             It.IsAny<int>(), It.IsAny<string>(), It.IsAny<DirOrden>(), null)).Returns(new List<UsuarioCompras> { new UsuarioCompras { Id = 1, Mail = "test2" } });
+
+            target.ObtenerOrdenDeCompra("454565645");
+            repositorioMock.Verify(y => y.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>()), Times.Exactly(2));
 
         }
 
@@ -1462,6 +1524,8 @@ namespace SustitucionMOATest.Services
             obtenerProveedorConsumerMOA.Setup(x => x.ObtenerProveedor(It.IsAny<string>())).Returns(new ObtenerProveedorWSMOAResponse { MAIL = "bmelgarejo@test.com", NAME = "PARISI" });
             vendedoresConsumerMOAMock.Setup(x => x.Request(It.IsAny<string>(), (It.IsAny<List<SustitucionMOAModel.Models.FechaWS>>()))).Returns(new SustitucionMOAModel.Models.WSMapMOA.Vendedor.VendedoresWSMOAResponse
             { vendedores = new List<SustitucionMOAModel.Models.WSMapMOA.Vendedor.Vendedor> { new SustitucionMOAModel.Models.WSMapMOA.Vendedor.Vendedor { cuit = "232323" } } });
+            repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<Adjudicacion, bool>>>(),
+             It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null)).Returns(new List<Adjudicacion> { new Adjudicacion { Usuario = new Usuario { Mail = "" } } });
 
             target.ObtenerOrdenDeCompra(It.IsAny<string>());
             repositorioMock.Verify(y => y.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>()), Times.Once);
@@ -1478,7 +1542,7 @@ namespace SustitucionMOATest.Services
             SetUpOCPeticionCotizacion();
             target.ActualizarFechaLiberacion(solpLocal.NroSolp, DateTime.Now);
 
-            repositorioMock.Verify(x => x.GuardarCambios(), Times.Exactly(5));
+            repositorioMock.Verify(x => x.GuardarCambios(), Times.Exactly(6));
         }
 
         [Test]
@@ -1617,7 +1681,7 @@ namespace SustitucionMOATest.Services
                 }
             };
             repositorioMock.Setup(y => y.Obtener<Cotizacion>(It.IsAny<int>())).Returns(cotizacion);
-            var result = target.DescargarAdjuntosCotizacion(It.IsAny<int>(), It.IsAny<string>());
+            var result = target.DescargarAdjuntosCotizacion(It.IsAny<int>(), TestContext.CurrentContext.TestDirectory, true);
             repositorioMock.Verify(y => y.Obtener<Cotizacion>(It.IsAny<int>()), Times.Once);
         }
 
@@ -1750,7 +1814,7 @@ namespace SustitucionMOATest.Services
             repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<Solp, SolpDto>>>(), It.IsAny<Paginacion>(), It.IsAny<Expression<Func<Solp, bool>>>()))
               .Returns(listaPaginada);
 
-            var result = target.ListarSolp(new UsuarioDto { Id = 1, Permisos = new List<string> { "VER TODAS SOLPS" } }, new Paginacion(), "", new DateTime(), new DateTime(), true, false, true, 1);
+            var result = target.ListarSolp(new UsuarioDto { Id = 1, Permisos = new List<string> { "VER TODAS SOLPS" } }, new Paginacion(), "", new DateTime(), new DateTime(), true, false, true, false, 1);
 
             Assert.That(result, Is.Not.Null);
             Assert.AreEqual(result, listaPaginada);
@@ -1979,15 +2043,19 @@ namespace SustitucionMOATest.Services
             // Arrange
             string valor = "Servicio 1 Descripción";
 
-            var serviciosSimulados = new List<ServicioSolp>
+            var serviciosSimulados = new List<ServicioSolpDto>
             {
-                new ServicioSolp { Descripcion = "Servicio 1 Descripción" },
-                new ServicioSolp { Descripcion = "Servicio 2" },
-                new ServicioSolp { Descripcion = "Descripción de otro servicio" },
-                new ServicioSolp { Descripcion = "Servicio 3 Descripción" }
+                new ServicioSolpDto { Descripcion = "Servicio 1 Descripción" },
             };
 
-            repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<ServicioSolp, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null)).Returns(serviciosSimulados);
+            repositorioMock.Setup(x => x.Listar(
+                It.IsAny<Expression<Func<ServicioSolp, ServicioSolpDto>>>(),
+                It.IsAny<Expression<Func<ServicioSolp, bool>>>(),
+                It.IsAny<int>(),
+                It.IsAny<string>(),
+                It.IsAny<DirOrden>()))
+                .Returns(serviciosSimulados);
+
 
             List<ServicioSolpDto> result = target.AutocompleteServicioSolp(valor);
 
@@ -2006,17 +2074,20 @@ namespace SustitucionMOATest.Services
             string valor = "123"; // Establece un valor de búsqueda
 
             // Crea una lista de ServicioSolp simulada que contiene elementos coincidentes y no coincidentes con el valor de búsqueda
-            var serviciosSimulados = new List<ServicioSolp>
+            var serviciosSimulados = new List<ServicioSolpDto>
             {
-                new ServicioSolp { CodigoSap = 123 },
-                new ServicioSolp { CodigoSap = 456 },
-                new ServicioSolp { CodigoSap = 12345 },
-                new ServicioSolp { CodigoSap = 7890 }
+                new ServicioSolpDto { Codigo = 123 },
+                new ServicioSolpDto { Codigo = 12345 },
             };
 
             // Configura el mock del repositorio para devolver la lista simulada
-            repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<ServicioSolp, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null)).Returns(serviciosSimulados);
-
+            repositorioMock.Setup(x => x.Listar(
+                            It.IsAny<Expression<Func<ServicioSolp, ServicioSolpDto>>>(),
+                            It.IsAny<Expression<Func<ServicioSolp, bool>>>(),
+                            It.IsAny<int>(),
+                            It.IsAny<string>(),
+                            It.IsAny<DirOrden>()))
+                            .Returns(serviciosSimulados);
             // Act
             List<ServicioSolpDto> result = target.AutocompleteCodigoServicioSolp(valor);
 
@@ -2026,10 +2097,175 @@ namespace SustitucionMOATest.Services
             // Verificar que la lista resultante contenga elementos códigos que contengan el valor de búsqueda
             foreach (var servicioDto in result)
             {
-                Assert.That(serviciosSimulados.Any(s => s.CodigoSap.ToString().Contains(servicioDto.Codigo.ToString())), Is.True);
+                Assert.That(serviciosSimulados.Any(s => s.Codigo.ToString().Contains(servicioDto.Codigo.ToString())), Is.True);
             }
         }
 
+        [Test]
+        public void ObtenerChatTest()
+        {
+            int peticionDeOfertaId = 1;
+            int usuarioActualId = 2;
 
+            var peticionDeOferta = new PeticionDeOferta
+            {
+                Id = 1,
+                FechaCreacion = DateTime.Now,
+                Usuarios = new List<PeticionDeOfertaUsuario>
+            {
+                new PeticionDeOfertaUsuario
+                {
+                    Usuario = new Usuario
+                    {
+                        CUITRegistro = "123456789",
+                        Mail = "test@mail.com",
+                    }
+                }
+            },
+                ChatInternoCompras = new List<ChatInternoCompras>
+            {
+                    new ChatInternoCompras
+                    {
+                        Id = 1,
+                        FechaEnvio = DateTime.Now,
+                        Usuario = new Usuario
+                        {
+                            Mail = "test@mail.com",
+                            Roles = new List<Rol> { new Rol { Codigo = "COMPRADOR" } }
+                        },
+                    }
+                }
+            };
+
+            repositorioMock.Setup(x => x.Obtener<PeticionDeOferta>(It.IsAny<int>())).Returns(peticionDeOferta);
+
+            var result = target.ObtenerChat(peticionDeOfertaId, usuarioActualId);
+
+            Assert.IsNotNull(result);
+            Assert.AreEqual(peticionDeOferta.Id, result.PeticionDeOferta_Id);
+            Assert.AreEqual(peticionDeOferta.FechaCreacion.ToString("dd-MM-yyyy HH-mm-ss"), result.FechaCreacion);
+            Assert.AreEqual(peticionDeOferta.FechaCreacion, result.FechaCreacionDate);
+            Assert.AreEqual(usuarioActualId, result.UsuarioActualId);
+
+            repositorioMock.Verify(x => x.Obtener<PeticionDeOferta>(peticionDeOfertaId), Times.Once);
+            repositorioMock.Verify(x => x.GuardarCambios(), Times.Once);
+        }
+
+        [Test]
+        public void GrabarMensajeChatInternoTest()
+        {
+            var mensajeDto = new ChatInternoComprasDto
+            {
+                Mensaje = "Test Message",
+                PeticionDeOferta_Id = 1,
+                Usuario_Id = 2
+            };
+
+            var chatInternoCompras = new ChatInternoCompras
+            {
+                Id = 0,
+                FechaEnvio = DateTime.Now,
+                Leido = false,
+                Mensaje = mensajeDto.Mensaje,
+                PeticionDeOferta_Id = mensajeDto.PeticionDeOferta_Id,
+                Usuario_Id = mensajeDto.Usuario_Id
+            };
+
+            repositorioMock.Setup(x => x.Agregar(It.IsAny<ChatInternoCompras>())).Callback((ChatInternoCompras entity) =>
+            {
+                Assert.AreEqual(chatInternoCompras.Mensaje, entity.Mensaje);
+                Assert.AreEqual(chatInternoCompras.PeticionDeOferta_Id, entity.PeticionDeOferta_Id);
+                Assert.AreEqual(chatInternoCompras.Usuario_Id, entity.Usuario_Id);
+            });
+
+            var result = target.GrabarMensajeChatInterno(mensajeDto);
+
+            repositorioMock.Verify(x => x.Agregar(It.IsAny<ChatInternoCompras>()), Times.Once, "Agregar method should be called once.");
+            repositorioMock.Verify(x => x.GuardarCambios(), Times.Once, "GuardarCambios method should be called once.");
+
+            Assert.IsNotNull(result);
+            Assert.AreEqual(chatInternoCompras.Id, result.IdEntidad);
+        }
+
+        [Test]
+        public void ExportarChatInternoAtextoTest()
+        {
+            var peticionId = 1;
+
+            var rutaArchivo = Path.Combine(Path.GetTempPath(), "ArchivosComprasTest", Guid.NewGuid().ToString());
+            Directory.CreateDirectory(rutaArchivo);
+
+            var peticion = new PeticionDeOferta
+            {
+                Id = peticionId,
+                FechaCreacion = DateTime.Now,
+                Usuario = new Usuario { Mail = "comprador@mail.com" },
+                Usuarios = new List<PeticionDeOfertaUsuario>
+                {
+                    new PeticionDeOfertaUsuario
+                    {
+                        Usuario = new Usuario
+                        {
+                            CUITRegistro = "123456789",
+                            Mail = "proveedor1@mail.com",
+                        }
+                    },
+                },
+                ChatInternoCompras = new List<ChatInternoCompras>
+                {
+                    new ChatInternoCompras
+                    {
+                        Id = 1,
+                        FechaEnvio = DateTime.Now,
+                        Usuario = new Usuario { Mail = "proveedor1@mail.com" },
+                        Mensaje = "Mensaje 1",
+                    },
+                }
+            };
+
+            repositorioMock.Setup(x => x.Obtener<PeticionDeOferta>(peticionId)).Returns(peticion);
+
+            var result = target.ExportarChatInternoAtexto(peticionId, rutaArchivo);
+
+            repositorioMock.Verify(x => x.Obtener<PeticionDeOferta>(peticionId), Times.Once);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result);
+            Assert.IsTrue(File.Exists(result));
+
+        }
+
+        [Test]
+        public void ListarOfertasCompradorOk()
+        {
+            var usuario = new UsuarioDto { Permisos = new List<string> { "ADJUDICAR DENTRO DEL PLAZO DE OFERTAS" } };
+            repositorioMock.Setup(y => y.ObtenerConsultaEscalar(It.IsAny<ComparadorOfertasConsulta>())).Returns(new PeticionDeOfertaDto
+            {
+                CotizacionId = 1,
+                Cotizacion = new CotizacionDto { ArchivosCotizacion = null },
+                TipoPosicionCodigo = "MATERIALES",
+                Usuarios = new List<PeticionDeOfertaUsarioDto> { new PeticionDeOfertaUsarioDto { Cotizacion = new CotizacionDto { CotizacionPosiciones = new List<CotizacionPosicionDto> { new CotizacionPosicionDto {
+                Id = 1, PeticionDeOfertaSolpPosicion_Id = 1, Cantidad = 2, Precio = 500, UnidadMedida = new TablaSapDto { Descripcion = "UNI" }, TotalPesos = 1000 } } } } },
+                PeticionDeOfertaPosicion = new List<PeticionDeOfertaSolpPosicionDto> {
+                    new PeticionDeOfertaSolpPosicionDto { Id = 1, Posicion = new SolpPosicionDto { Unidad = new TablaSapDto { Descripcion = "PAR" }, CodigoMaterialSap = new MaterialSolpDto { Codigo = "000000000050224373" } }, Posiciones = new SolpPosicionDto { Codigo = "000000000050224373" } }
+                }
+            });
+            repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<PeticionDeOfertaVisualizacionPrecio, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null))
+                .Returns(new List<PeticionDeOfertaVisualizacionPrecio> { new PeticionDeOfertaVisualizacionPrecio { Id = 1 } });
+            repositorioMock.Setup(y => y.Obtener<TablaSap>(It.IsAny<int>())).Returns(new TablaSap { Id = 1 });
+            repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<Adjudicacion, bool>>>(),
+             It.IsAny<int>(), It.IsAny<string>(), It.IsAny<DirOrden>(), null)).Returns(new List<Adjudicacion> { new Adjudicacion { Solp_Id = 1, Usuario = new Usuario { Mail = "test@gmail.com" } } });
+            obtenerSolpConsumerMOAMock.Setup(y => y.RequestSolpWithNroAndDates(It.IsAny<ObtenerSolpRequest>())).Returns(new ObtenerSolpSAPResponse
+            {
+                Posiciones = new List<PosicionSolpSAP> { new PosicionSolpSAP { EstadoSolpSap = "05", NumeroPosicion = "1" } }
+            });
+            obtenerUnidadesDeMedidaAlternativasConsumerMOAMock.Setup(y => y.Request(It.IsAny<List<string>>())).Returns(new List<UnidadesDeMedida>
+            { new UnidadesDeMedida { CodigoMaterial = "000000000050224373", UnidadDeMedida = "UNI", Denominador = 1, Numerador = 1 },
+            new UnidadesDeMedida { CodigoMaterial = "000000000050224373", UnidadDeMedida = "PAR", Denominador = 2, Numerador = 1 }});
+
+            target.ListarOfertasComprador(It.IsAny<int>(), usuario);
+            repositorioMock.Verify(y => y.ObtenerConsultaEscalar(It.IsAny<ComparadorOfertasConsulta>()), Times.Once);
+        }
     }
+
 }

@@ -18,11 +18,15 @@ namespace SustitucionMOAUtils.Services
 {
     public class ContratoService : IContratoService
     {
+        private readonly string PEND_CAMARA_EXCEL = "PEND. CÁMARA";
+        private readonly string CAMARA_EXCEL = "CÁMARA";
+        private readonly string CALADO_EXCEL = "CALADO";
         public ContratoService()
         {
 
         }
-        public ContratoViewModel ObtenerVigentes(string proveedor, string fechaInicio, string fechaFin) {
+        public ContratoViewModel ObtenerVigentes(string proveedor, string fechaInicio, string fechaFin)
+        {
             try
             {
                 List<FechaWS> fechas = CommonUtil.toDateList(fechaInicio, fechaFin);
@@ -37,7 +41,8 @@ namespace SustitucionMOAUtils.Services
                     dataView.filtroProducto = new DropdownContent(dataView.data.contratosInfo.GroupBy(i => i.material).Select(x => new DropdownOption { value = x.Key, label = x.Key + " (" + x.Count() + ")" }).ToList());
                     dataView.filtroVendedor = new DropdownContent(dataView.data.contratosInfo.GroupBy(i => i.vendedor).Select(x => new DropdownOption { value = x.Key, label = x.Key + " (" + x.Count() + ")" }).ToList());
                     dataView.filtroTipoContrato = new DropdownContent(dataView.data.contratosInfo.GroupBy(i => i.tipoContrato).Select(x => new DropdownOption { value = x.Key, label = x.Key + " (" + x.Count() + ")" }).ToList());
-                } catch { }
+                }
+                catch { }
                 return dataView;
             }
             catch (ValidationCustomException e)
@@ -79,7 +84,8 @@ namespace SustitucionMOAUtils.Services
             {
                 throw e;
             }
-            catch (ValidationCustomException e) {
+            catch (ValidationCustomException e)
+            {
                 throw e;
             }
             catch (Exception e)
@@ -92,11 +98,12 @@ namespace SustitucionMOAUtils.Services
         {
             try
             {
-                if (numeroContrato == null || numeroContrato == "") {
+                if (numeroContrato == null || numeroContrato == "")
+                {
                     throw new ValidationCustomException(String.Format(ErrorMsg.ErrorValorNuloVacio, "Numero de Contrato"));
                 }
 
-                ContratoDetalleWSMOAResponse response = (ContratoDetalleWSMOAResponse) new ContratoDetalleConsumerMOA().request(proveedor, numeroContrato);
+                ContratoDetalleWSMOAResponse response = (ContratoDetalleWSMOAResponse)new ContratoDetalleConsumerMOA().request(proveedor, numeroContrato);
                 if (response == null || response.error == "06")
                 {
                     throw new InfoCustomException(String.Format(InfoMsg.ElementoNoExiste, "Contrato", numeroContrato));
@@ -217,19 +224,58 @@ namespace SustitucionMOAUtils.Services
         {
             try
             {
-                ContratoDetalleExcelWSMOAResponse data = (ContratoDetalleExcelWSMOAResponse) new ContratoDetalleExcelConsumerMOA().request(proveedor, numeroContrato);
+                ContratoDetalleExcelWSMOAResponse data = (ContratoDetalleExcelWSMOAResponse)new ContratoDetalleExcelConsumerMOA().request(proveedor, numeroContrato);
 
-                return ExcelExport.ToExcelContratoDetalle(data.ampliacionesAnulaciones, data.aplicaciones, data.calidadExcelDetalle, data.caracteristicas, data.condicionesPago, data.fijaciones, data.hijos, data.liquidaciones, data.pagos, data.resumen,
+
+                var calidadesExcel = data.calidad.SelectMany(c =>
+                    c.registros.Select(r =>
+                    {
+                        var detalle = new CalidadContratoDetalleExcel
+                        {
+                            ccpp = c.ccpp,
+                            caract = r.caract,
+                            dto = r.dto,
+                            kgApli = r.kgApli,
+                            kgDto = r.kgDto,
+                            kgNetos = r.kgNetos,
+                            nroCert = r.certificado,
+                            recCert = r.recCert,
+                            recResul = r.recResul,
+                            unidad = r.unidad
+                        };
+
+                        if (r.caract.ToUpper().Contains("HUMEDAD"))
+                        {
+                            detalle.resultado = $"{r.calaResul}";
+                        }
+                        else if ((r.kgDtoValor > 0 && c.camaraPendiente) || !c.camaraPendiente)
+                        {
+                            var value = c.camaraPendiente ? r.calaResul : r.camaResul;
+                            var identificadorResultadoCalidad = c.camaraPendiente ? PEND_CAMARA_EXCEL :
+                                            c.tieneCertificado ? CAMARA_EXCEL : CALADO_EXCEL;
+                            detalle.resultado = identificadorResultadoCalidad == PEND_CAMARA_EXCEL? PEND_CAMARA_EXCEL : $"{value}";
+                        }
+
+                        if (string.IsNullOrEmpty(detalle.resultado) && c.camaraPendiente)
+                        {
+                            detalle.resultado = PEND_CAMARA_EXCEL;
+                        }
+
+                        return detalle;
+                    }).OrderBy(r => r.ccpp).ThenBy(r => r.caract)).ToList();
+
+
+                return ExcelExport.ToExcelContratoDetalle(data.ampliacionesAnulaciones, data.aplicaciones, calidadesExcel, data.caracteristicas, data.condicionesPago, data.fijaciones, data.hijos, data.liquidaciones, data.pagos, data.resumen,
                                                            new string[] { "Tipo", "Fecha", "Cantidad", "Unidad", "Importe", "Moneda" },
                                                            new string[] { "Fecha", "CCPP", "Descarga", "Brutos", "Unidad Brutos", "Netos", "Unidad Netos", "Cantidad", "Unidad Cantidad" },
-                                                           new string[] { "CCPP", "Caracteristica", "Resul. Calada", "Resul. Camara", "Nro Certificado", "Resul. Rec.", "Cert. Rec.", "Kg. Dto", "Kg. Apli", "Netos Descontado", "Unidad", "Dto" },
-                                                           new string[] { "Tipo", "Descarga", "Fecha Concreta", "Cantidad", "Unidad", "Standard Calidad", "Calificacion", "Procedencia", "Cosecha", "Toleria Min", "Toleria Max", "Entrega Min", "Entrega Max", "Estado Bol", "Pago Parcial", "Pizarra Ref", "Condicion Pago Fija", "Fecha Tope Fija", "Fija Diaria Min", "Fija Diaria Max", "Corredor", "Nombre Corredor", "Vendedor", "Nombre Vendedor", "Importe A Precio", "Moneda A Precio", "Porcentaje A Precio" ,"Importe S Precio", "Moneda S Precio", "Porcentaje S Precio", "Descuento A Carreo", "cdCdg", "Canje" ,"Retener IVA", "Warrant", "Pago Directo Vendedor", "Cesion", "Confirma" },
+                                                           new string[] { "CCPP", "Caracteristica", "Resultado", "Nro Certificado", "Resul. Rec.", "Cert. Rec.", "Kg. Dto", "Kg. Apli", "Netos Descontado", "Unidad", "Dto" },
+                                                           new string[] { "Tipo", "Descarga", "Fecha Concreta", "Cantidad", "Unidad", "Standard Calidad", "Calificacion", "Procedencia", "Cosecha", "Toleria Min", "Toleria Max", "Entrega Min", "Entrega Max", "Estado Bol", "Pago Parcial", "Pizarra Ref", "Condicion Pago Fija", "Fecha Tope Fija", "Fija Diaria Min", "Fija Diaria Max", "Corredor", "Nombre Corredor", "Vendedor", "Nombre Vendedor", "Importe A Precio", "Moneda A Precio", "Porcentaje A Precio", "Importe S Precio", "Moneda S Precio", "Porcentaje S Precio", "Descuento A Carreo", "cdCdg", "Canje", "Retener IVA", "Warrant", "Pago Directo Vendedor", "Cesion", "Confirma" },
                                                            new string[] { "Condiciones de Pago" },
                                                            new string[] { "Fecha", "Nro Fija", "Kilos Fija", "Unidad", "Precio", "Moneda" },
-                                                           new string[] { "Fecha", "Contrato Madre", "Contrato Molinos", "Contrato Proveedor", "Cantidad", "Unidad", "Precio", "Moneda" },                                                       
+                                                           new string[] { "Fecha", "Contrato Madre", "Contrato Molinos", "Contrato Proveedor", "Cantidad", "Unidad", "Precio", "Moneda" },
                                                            new string[] { "Fecha", "Tipo", "Comprobante", "Cantidad", "Unidad", "Precio", "Moneda Precio", "Total", "Moneda Total", "Pedido" },
                                                            new string[] { "Fecha", "Id Pago", "Comprobante", "Bruto", "IVA", "Retenciones", "Neto", "Moneda" },
-                                                           new string[] { "Contrato", "Estado", "Contrato Madre", "Producto", "Cantidad Entre", "Unidad Cant. Entre",  "Cantidad Liquidado", "Unidad Cant. Liquidado", "Cantidad Fija", "Unidad Cant. Fija", "Cantidad Pendiente Entre", "Unidad Cant. Pendiente Entre",  "Precio", "Moneda" },
+                                                           new string[] { "Contrato", "Estado", "Contrato Madre", "Producto", "Cantidad Entre", "Unidad Cant. Entre", "Cantidad Liquidado", "Unidad Cant. Liquidado", "Cantidad Fija", "Unidad Cant. Fija", "Cantidad Pendiente Entre", "Unidad Cant. Pendiente Entre", "Precio", "Moneda" },
                                                            "Reporte Contrato Detalle (Nro. " + numeroContrato + ")");
             }
             catch (InfoCustomException e)
@@ -246,7 +292,7 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        
+
         public Pdf DescargarPDFCalidad(string proveedor, string numeroContrato)
         {
             try
@@ -289,11 +335,13 @@ namespace SustitucionMOAUtils.Services
             {
                 PDFResponse data = new ContratoPDFConsumerMOA().request(proveedor, contrato);
 
-                if (data.error != null && data.error.codigo != "00") {
+                if (data.error != null && data.error.codigo != "00")
+                {
                     throw new InfoCustomException(InfoMsg.SinBoletoFisico);
                 }
 
-                if (data.pdf == null || data.pdf.data == null || data.pdf.data.Count() == 0) {
+                if (data.pdf == null || data.pdf.data == null || data.pdf.data.Count() == 0)
+                {
                     throw new InfoCustomException(InfoMsg.SinBoletoFisico);
                 }
                 return data.pdf;
@@ -344,7 +392,8 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        private void ValidarRespuesta(ContratosWSMOAResponse data) {
+        private void ValidarRespuesta(ContratosWSMOAResponse data)
+        {
             if (data == null)
                 throw new ValidationCustomException(ErrorMsg.Error);
             if (data.error != null && data.error.codigo != null && data.error.codigo != "" && data.error.codigo != "11" && data.error.codigo != "16")

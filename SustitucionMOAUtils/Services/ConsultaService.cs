@@ -40,6 +40,7 @@ namespace SustitucionMOAUtils.Services
         private readonly IGestionImpuestosService gestionImpuestosService;
 
         private readonly string rutaArchivosConsulta = ConfigurationManager.AppSettings["RutaArchivosConsulta"];
+        private readonly string rutaMisConsultas = ConfigurationManager.AppSettings["UrlMisConsultas"];
         private static readonly string EMAIL_TEMPLATE = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "RespuestaConsulta.html");
         private readonly string rutaArchivosCM05 = ConfigurationManager.AppSettings["RutaArchivosCM05"];
 
@@ -281,6 +282,7 @@ namespace SustitucionMOAUtils.Services
                 FechaUltimaModificacion = c.FechaUltimaModificacion,
                 UsuarioId = c.Usuario_Id,
                 UsuarioInternoId = c.UsuarioInterno_Id,
+                FechaVtoReapertura = c.FechaVtoReapertura,
                 Usuario = new UsuarioDto()
                 {
                     Id = c.Usuario.Id,
@@ -303,6 +305,7 @@ namespace SustitucionMOAUtils.Services
                     Id = c.Detalle.CausaConsulta.Id,
                     Nombre = c.Detalle.CausaConsulta.Nombre
                 } : null,
+                Rubro = c.Detalle.Rubro
             };
 
             ret.Comentarios = c.Comentarios.Select(x => new ComentarioDto()
@@ -410,7 +413,7 @@ namespace SustitucionMOAUtils.Services
                 var consulta = repositorio.Obtener<Consulta>(c => c.Id == consultaId);
                 var copia = new List<string>();
                 var cuerpoTemplate = File.ReadAllText(EMAIL_TEMPLATE);
-                var cuerpo = string.Format(cuerpoTemplate, consulta.Asunto, !string.IsNullOrWhiteSpace(consulta.Comentarios.Last().Detalle) ? consulta.Comentarios.Last().Detalle : "-");
+                var cuerpo = string.Format(cuerpoTemplate, consulta.Asunto, !string.IsNullOrWhiteSpace(consulta.Comentarios.Last().Detalle) ? consulta.Comentarios.Last().Detalle : "-", rutaMisConsultas);
                 string asunto = "Molinos Agro - Recordatorio: Respuesta a su consulta N°: " + consulta.Id + " con asunto: " + consulta.Asunto;
 
                 EmailSender.EnviarMail(new List<string> { consulta.Usuario.Mail }, asunto, cuerpo, copia, null, null, null);
@@ -436,7 +439,7 @@ namespace SustitucionMOAUtils.Services
             try
             {
                 var cuerpoTemplate = File.ReadAllText(EMAIL_TEMPLATE);
-                var cuerpo = string.Format(cuerpoTemplate, consulta.Asunto, !string.IsNullOrWhiteSpace(comentario) ? comentario : "-");
+                var cuerpo = string.Format(cuerpoTemplate, consulta.Asunto, !string.IsNullOrWhiteSpace(comentario) ? comentario : "-", rutaMisConsultas);
                 string asunto = "Molinos Agro - Respuesta a su consulta N°: " + consulta.Id + " con asunto: " + consulta.Asunto;
 
                 EmailSender.EnviarMail(new List<string> { consulta.Usuario.Mail }, asunto, cuerpo, copia, null, null, null);
@@ -454,7 +457,7 @@ namespace SustitucionMOAUtils.Services
                 var cuerpoTemplate = File.ReadAllText(EMAIL_TEMPLATE);
                 Consulta consulta = GetConsulta(consultaId);
 
-                var cuerpo = string.Format(cuerpoTemplate, consulta.Asunto, !string.IsNullOrWhiteSpace(consulta.Comentarios.Last().Detalle) ? consulta.Comentarios.Last().Detalle : "-");
+                var cuerpo = string.Format(cuerpoTemplate, consulta.Asunto, !string.IsNullOrWhiteSpace(consulta.Comentarios.Last().Detalle) ? consulta.Comentarios.Last().Detalle : "-", rutaMisConsultas);
                 string asunto = "Molinos Agro - Respuesta a su consulta N°: " + consulta.Id + " con asunto: " + consulta.Asunto;
 
                 EmailSender.EnviarMail(new List<string> { consulta.Usuario.Mail }, asunto, cuerpo, null, null, null, null);
@@ -528,6 +531,7 @@ namespace SustitucionMOAUtils.Services
                     FechaUltimaModificacion = x.FechaUltimaModificacion,
                     UsuarioId = x.Usuario_Id,
                     UsuarioInternoId = x.UsuarioInterno_Id,
+                    FechaVtoReapertura = x.FechaVtoReapertura,
                     Fecha = x.Detalle != null ? x.Detalle.Fecha : null,
                     ComprobanteNo = x.Detalle != null ? x.Detalle.ComprobanteNo : "",
                     OtroComprobanteNo = x.Detalle != null ? x.Detalle.OtroComprobanteNo : "",
@@ -573,6 +577,7 @@ namespace SustitucionMOAUtils.Services
             var categoria = repositorio.Obtener<Categoria>(c => c.Id == categoriaId);
             SubCategoria subCategoria = new SubCategoria() { };
             var estado = repositorio.Obtener<EstadoConsulta>(c => c.Id == estadoConsultaId);
+            var estadoCerrado = repositorio.Obtener<EstadoConsulta>(c => c.Code == "CER");
 
             if (subcategoriaId.HasValue && subcategoriaId != 0)
             {
@@ -586,7 +591,14 @@ namespace SustitucionMOAUtils.Services
             var consulta = GetConsulta(consultaId);
             var usuario = repositorio.Obtener<Usuario>(u => u.Id == consulta.Usuario_Id);
             consulta.Categoria_Id = categoriaId;
+
+            if(consulta.EstadoConsulta_Id != estadoCerrado.Id 
+                && estado.Id == estadoCerrado.Id)
+            {
+                consulta.FechaVtoReapertura = DateTime.Now.AddDays(7);
+            }
             consulta.EstadoConsulta_Id = estadoConsultaId;
+
             if (subcategoriaId != 0)
             {
                 consulta.SubCategoria_Id = subcategoriaId;

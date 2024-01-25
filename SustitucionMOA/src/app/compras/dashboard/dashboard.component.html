@@ -46,44 +46,45 @@
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="margin-left: -46px;">
                         <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
                             <input class="col-xs-12 col-sm-12 col-md-12 col-lg-12 inputAltura" pInputText type="text"
-                                [(ngModel)]="nroSolp" placeholder="Buscar por número de SOLP">
+                                   [(ngModel)]="nroSolp" placeholder="Buscar por número de SOLP">
                         </div>
                         <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
                             <p-multiSelect [options]="estadoSolpItem" [(ngModel)]="selectEstadoSolp"
-                                defaultLabel="Estado SOLP"></p-multiSelect>
+                                           defaultLabel="Estado SOLP"></p-multiSelect>
                         </div>
-                       
-                        <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3" style="margin-top: 10px;">
-                            <span
-                                style="border-left: 1px solid black;margin-top: 1px;padding-left: 9px;padding-right: 1px;margin-left: 8px;">
+
+                        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6" style="margin-top: 10px;">
+                            <span style="border-left: 1px solid black;margin-top: 1px;padding-left: 9px;padding-right: 1px;margin-left: 8px;">
                                 <p-checkbox class="checkboxFechas" binary="true" label="SAP" [(ngModel)]="sap">
                                 </p-checkbox>
                             </span>
                             <span class="padding1" style="margin-right: 5px; margin-left: 5px;">
                                 <p-checkbox class="checkboxFechas" binary="true" label="OT" pTooltip="Mantenimiento"
-                                    [(ngModel)]="mantenimiento"></p-checkbox>
+                                            [(ngModel)]="mantenimiento"></p-checkbox>
                             </span>
                             <span class="padding1" style="margin-right: 5px;">
                                 <p-checkbox class="checkboxFechas" binary="true" label="Web" [(ngModel)]="web"></p-checkbox>
                             </span>
-                        </div>
-                        <div class="col-xs-3 col-md-2 col-lg-2  buttonBuscar">
-                            <button class="btn buscar" (click)="onBuscar()">Buscar</button>
+                            <span class="padding1" style="margin-right: 5px;">
+                                <p-checkbox class="checkboxFechas" binary="true" label="Reposición Automática" [(ngModel)]="repoAutomatica"></p-checkbox>
+                            </span>
                         </div>
                     </div>
 
                     <div class="row myRow" style="margin-left: -31px;">
-                        <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3 inputAltura" style="width: 24%;">                      
-                            <p-dropdown [options]="usuarioFiltro" [(ngModel)]="selectUsuario" name="selectUsuario" placeholder="Buscar usuario" filter="true" showClear="true"></p-dropdown>                  
-                        </div> 
+                        <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3 inputAltura" style="width: 24%;">
+                            <p-dropdown [options]="usuarioFiltro" [(ngModel)]="selectUsuario" name="selectUsuario" placeholder="Buscar usuario" filter="true" showClear="true"></p-dropdown>
+                        </div>
                         <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
-                            <p-calendar showButtonBar="true" [showIcon]="true"  placeholder="Filtro fechas"
-                                dateFormat="dd/mm/yy" (onSelect)="onSelect($event)" appendTo="body"
-                                [(ngModel)]="rangeDates" selectionMode="range" [readonlyInput]="true" [locale]="locale"
-                                (onClearClick)="returnToTodaysDate()" >
+                            <p-calendar showButtonBar="true" [showIcon]="true" placeholder="Filtro fechas"
+                                        dateFormat="dd/mm/yy" (onSelect)="onSelect($event)" appendTo="body"
+                                        [(ngModel)]="rangeDates" selectionMode="range" [readonlyInput]="true" [locale]="locale"
+                                        (onClearClick)="returnToTodaysDate()">
                             </p-calendar>
                         </div>
-
+                        <div class="col-xs-3 col-md-3 col-lg-3  buttonBuscar">
+                            <button class="btn buscar" (click)="onBuscar()">Buscar</button>
+                        </div>
                     </div>
                 </div>
 
@@ -93,7 +94,7 @@
 
 
 
-    <div class="col-sm-12 col-md-12 col-lg-12" style="margin-left: -15px;">      
+    <div class="col-sm-12 col-md-12 col-lg-12" style="margin-left: -15px;">
         <p-table #tabla [value]="tablaSolp" responsiveLayout="scroll | stack" dataKey="Id">
             <ng-template pTemplate="header" let-columns>
                 <tr>
@@ -105,56 +106,50 @@
                     <th data-toggle="tooltip" title="Acciones SOLP"></th>
                     <th style="cursor:pointer" title="Numero SOLP" (click)="onOrder('NroSolp')">
                         Numero SOLP
-                        <span><i
-                                [ngClass]="{'fa': true, 'fa-solid fa-sort-up': true, 'arrow': true, 'unselected': columnaOrden === 'NroSolp' && orden == 'DESC'  }"></i>
-                            <i
-                                [ngClass]="{'fa': true, 'fa-solid fa-sort-down': true, 'arrow': true, 'unselected': columnaOrden === 'NroSolp' && orden == 'ASC' }"></i>
+                        <span>
+                            <i [ngClass]="{'fa': true, 'fa-solid fa-sort-up': true, 'arrow': true, 'unselected': columnaOrden === 'NroSolp' && orden == 'DESC'  }"></i>
+                            <i [ngClass]="{'fa': true, 'fa-solid fa-sort-down': true, 'arrow': true, 'unselected': columnaOrden === 'NroSolp' && orden == 'ASC' }"></i>
                         </span>
                     </th>
 
                     <th title="Nombre de pedido" style="cursor:pointer" (click)="onOrder('NombreDeObra')">
                         Nombre de pedido
-                        <span><i
-                                [ngClass]="{'fa': true, 'fa-solid fa-sort-up': true, 'arrow': true, 'unselected': columnaOrden === 'NombreDeObra' && orden == 'DESC'  }"></i>
-                            <i
-                                [ngClass]="{'fa': true, 'fa-solid fa-sort-down': true, 'arrow': true, 'unselected': columnaOrden === 'NombreDeObra' && orden == 'ASC' }"></i>
+                        <span>
+                            <i [ngClass]="{'fa': true, 'fa-solid fa-sort-up': true, 'arrow': true, 'unselected': columnaOrden === 'NombreDeObra' && orden == 'DESC'  }"></i>
+                            <i [ngClass]="{'fa': true, 'fa-solid fa-sort-down': true, 'arrow': true, 'unselected': columnaOrden === 'NombreDeObra' && orden == 'ASC' }"></i>
                         </span>
                     </th>
 
                     <th title="Fecha de creacion de SOLP" style="cursor:pointer" (click)="onOrder('FechaCreacion')">
                         Fecha creacion
-                        <span><i
-                                [ngClass]="{'fa': true, 'fa-solid fa-sort-up': true, 'arrow': true, 'unselected': columnaOrden === 'FechaCreacion' && orden == 'DESC'  }"></i>
-                            <i
-                                [ngClass]="{'fa': true, 'fa-solid fa-sort-down': true, 'arrow': true, 'unselected': columnaOrden === 'FechaCreacion' && orden == 'ASC' }"></i>
+                        <span>
+                            <i [ngClass]="{'fa': true, 'fa-solid fa-sort-up': true, 'arrow': true, 'unselected': columnaOrden === 'FechaCreacion' && orden == 'DESC'  }"></i>
+                            <i [ngClass]="{'fa': true, 'fa-solid fa-sort-down': true, 'arrow': true, 'unselected': columnaOrden === 'FechaCreacion' && orden == 'ASC' }"></i>
                         </span>
                     </th>
 
                     <th title="Estado de documento" style="cursor:pointer"
                         (click)="onOrder('EstadoDocumento.Descripcion')">
                         Estado Doc
-                        <span><i
-                                [ngClass]="{'fa': true, 'fa-solid fa-sort-up': true, 'arrow': true, 'unselected': columnaOrden === 'EstadoDocumento.Descripcion' && orden == 'DESC'  }"></i>
-                            <i
-                                [ngClass]="{'fa': true, 'fa-solid fa-sort-down': true, 'arrow': true, 'unselected': columnaOrden === 'EstadoDocumento.Descripcion' && orden == 'ASC' }"></i>
+                        <span>
+                            <i [ngClass]="{'fa': true, 'fa-solid fa-sort-up': true, 'arrow': true, 'unselected': columnaOrden === 'EstadoDocumento.Descripcion' && orden == 'DESC'  }"></i>
+                            <i [ngClass]="{'fa': true, 'fa-solid fa-sort-down': true, 'arrow': true, 'unselected': columnaOrden === 'EstadoDocumento.Descripcion' && orden == 'ASC' }"></i>
                         </span>
                     </th>
 
                     <th title="Estado SOLP" style="cursor:pointer" (click)="onOrder('EstadoSolpDescripcion')">
                         Estado Solp
-                        <span><i
-                                [ngClass]="{'fa': true, 'fa-solid fa-sort-up': true, 'arrow': true, 'unselected': columnaOrden === 'EstadoSolpDescripcion' && orden == 'DESC'  }"></i>
-                            <i
-                                [ngClass]="{'fa': true, 'fa-solid fa-sort-down': true, 'arrow': true, 'unselected': columnaOrden === 'EstadoSolpDescripcion' && orden == 'ASC' }"></i>
+                        <span>
+                            <i [ngClass]="{'fa': true, 'fa-solid fa-sort-up': true, 'arrow': true, 'unselected': columnaOrden === 'EstadoSolpDescripcion' && orden == 'DESC'  }"></i>
+                            <i [ngClass]="{'fa': true, 'fa-solid fa-sort-down': true, 'arrow': true, 'unselected': columnaOrden === 'EstadoSolpDescripcion' && orden == 'ASC' }"></i>
                         </span>
                     </th>
 
                     <th title="Tipo de  SOLP" style="cursor:pointer" (click)="onOrder('TipoSolp.Descripcion')">
                         Tipo
-                        <span><i
-                                [ngClass]="{'fa': true, 'fa-solid fa-sort-up': true, 'arrow': true, 'unselected': columnaOrden === 'TipoSolp.Descripcion' && orden == 'DESC'  }"></i>
-                            <i
-                                [ngClass]="{'fa': true, 'fa-solid fa-sort-down': true, 'arrow': true, 'unselected': columnaOrden === 'TipoSolp.Descripcion' && orden == 'ASC' }"></i>
+                        <span>
+                            <i [ngClass]="{'fa': true, 'fa-solid fa-sort-up': true, 'arrow': true, 'unselected': columnaOrden === 'TipoSolp.Descripcion' && orden == 'DESC'  }"></i>
+                            <i [ngClass]="{'fa': true, 'fa-solid fa-sort-down': true, 'arrow': true, 'unselected': columnaOrden === 'TipoSolp.Descripcion' && orden == 'ASC' }"></i>
                         </span>
                     </th>
                     <th data-toggle="tooltip" title="Vincular a pliego">
@@ -165,12 +160,12 @@
 
             <ng-template pTemplate="body" let-rowData let-columns="columns" let-expanded="expanded">
                 <tr [pSelectableRow]="rowData">
-                    <td (dblclick)="onRowDblClick($event, rowData)"> 
+                    <td (dblclick)="onRowDblClick($event, rowData)">
                         <div *ngIf="rowData.TienePeticionDeOferta">
-                        <a href="#" [pRowToggler]="rowData">
-                            <i [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
-                        </a>
-                    </div>
+                            <a href="#" [pRowToggler]="rowData" (click)="listarExpand()">
+                                <i [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
+                            </a>
+                        </div>
                     </td>
                     <td style="display:none;">
                         {{rowData.TipoSolpSap}}
@@ -178,30 +173,43 @@
                     <td class="col-lg-12 col-md-12 col-sm-12" style="padding-left: 0px; padding-right: 0px;">
 
                         <div *ngIf="rowData.TipoSolpSap == 2" class="col-md-2">
-                            <span><img class="pointer" src="./Content/images/icons/worker.svg" alt="Mantenimiento"
-                                    style="height:25px; cursor:default" /></span>
+                            <span>
+                                <img class="pointer" src="./Content/images/icons/worker.svg" alt="Mantenimiento"
+                                     style="height:25px; cursor:default" />
+                            </span>
                         </div>
                         <div *ngIf="rowData.TipoSolpSap == 3" class="col-md-2">
                             <span>
                                 <img class="pointer" src="./Content/images/icons/SAP.svg" alt="SAP"
-                                    style="width: 30px; height: 30px; cursor:default" />
+                                     style="width: 30px; height: 30px; cursor:default" />
+                            </span>
+                        </div>
+                        <div *ngIf="rowData.TipoSolpSap == 4" class="col-md-2">
+                            <span>
+                                <img class="pointer" src="./Content/images/icons/gears.svg" alt="Reposición Automática"
+                                     style="height: 30px; cursor:default" />
                             </span>
                         </div>
                         <div class="col-md-2"
-                            *ngIf="(rowData.NroSolp == '' || rowData.NroSolp == null) && rowData.UsuarioActual.Mail == usuario">
-                            <span><img class="pointer" src="./Content/images/icons/trash.svg" alt="trash"
-                                    (click)="eliminarPosicionDashboard(rowData.Id)" /></span>
+                             *ngIf="(rowData.NroSolp == '' || rowData.NroSolp == null) && rowData.UsuarioActual.Mail == usuario">
+                            <span>
+                                <img class="pointer" src="./Content/images/icons/trash.svg" alt="trash"
+                                     (click)="eliminarPosicionDashboard(rowData.Id)" />
+                            </span>
                         </div>
                         <div class="col-md-2"
-                            *ngIf="rowData.EstadoSolpSap.Descripcion != 'Liberada' && (rowData.UsuarioActual.Mail == usuario || verTodas)">
+                             *ngIf="rowData.EstadoSolpSap.Descripcion != 'Liberada' && (rowData.UsuarioActual.Mail == usuario || verTodas)">
                             <span>
-                                <img class="pointer" src="./Content/images/icons/editar.svg" alt="editar"
-                                    (click)="goToSeccionEdit('/compras/solp', rowData.Id, rowData.NroSolp)" /></span>
+                                <img class="pointer" src="./Content/images/icons/editar.svg" alt="editar" style="height:28px;"
+                                     (click)="goToSeccionEdit('/compras/solp', rowData.Id, rowData.NroSolp)" />
+                            </span>
                         </div>
-                        <div class="col-md-2" 
-                        *ngIf="rowData.TipoSolp.Codigo == 'CON_PLIEGO' || rowData.SolpConAdjuntos">
-                            <span><img class="pointer" src="./Content/images/icons/descargar.svg" alt="descargar"
-                                    (click)="generarZipPliego(rowData.Id)" /></span>
+                        <div class="col-md-2"
+                             *ngIf="rowData.TipoSolp.Codigo == 'CON_PLIEGO' || rowData.SolpConAdjuntos">
+                            <span>
+                                <img class="pointer" src="./Content/images/icons/descargar.svg" alt="descargar"
+                                     (click)="generarZipPliego(rowData.Id)" />
+                            </span>
                         </div>
                     </td>
                     <td>
@@ -226,9 +234,9 @@
                     </td>
                     <td class="col-sm-12 col-md-12 col-lg-12">
                         <button style="white-space: normal; text-align: center; vertical-align: middle;"
-                            class="btn btn-success botonesComprasColor" *ngIf="rowData.VincularPliego"
-                            (click)="vincularAPliego(rowData.Id)" [disabled]="rowData.PliegoVinculado"
-                            [ngStyle]="{'background-color':(rowData.PliegoVinculado && rowData.VincularPliego) ? 'grey':'green', 'border-color':(rowData.PliegoVinculado && rowData.VincularPliego) ? 'grey':'green' } ">
+                                class="btn btn-success botonesComprasColor" *ngIf="rowData.VincularPliego"
+                                (click)="vincularAPliego(rowData.Id)" [disabled]="rowData.PliegoVinculado"
+                                [ngStyle]="{'background-color':(rowData.PliegoVinculado && rowData.VincularPliego) ? 'grey':'green', 'border-color':(rowData.PliegoVinculado && rowData.VincularPliego) ? 'grey':'green' } ">
                             {{(rowData.PliegoVinculado) ? "Pliego vinculado" : "Vincular a Pliego" }}
                         </button>
                     </td>
@@ -239,10 +247,16 @@
                     <td [attr.colspan]="9">
                         <div class="col-sm-12 col-md-12 col-lg-12" style="font-size:16px;padding:20px">
                             <p-tabView>
-                                <p-tabPanel header="Licitaciones" [selected]="true">
+                                <p-tabPanel [selected]="true">
+                                    <ng-template pTemplate="header">
+                                        <div class="padding">
+                                            Licitaciones
+                                        </div>
+                                    </ng-template>
                                     <p-table [value]="rowData.PeticionesDeOferta">
                                         <ng-template pTemplate="header">
-                                            <tr style="font-size: 15px;">                                               
+                                            <tr style="font-size: 15px;">
+                                                <th class="columna" style="text-transform: none !important;"></th>
                                                 <th class="columna" style="text-transform: none !important;">Pedido de Cotización</th>
                                                 <th class="columna" style="text-transform: none !important;">Plazo de Oferta</th>
                                                 <th class="columna" style="text-transform: none !important;">Estado Lic.</th>
@@ -251,30 +265,38 @@
                                         </ng-template>
                                         <ng-template pTemplate="emptymessage">
                                             <tr>
-                                                <td style="text-align: center;" colspan="4">Sin datos</td>
+                                                <td style="text-align: center;" colspan="5">Sin datos</td>
                                             </tr>
                                         </ng-template>
                                         <ng-template pTemplate="body" let-licitacion>
-                                            <tr>                                    
+                                            <tr>
+                                                <td class="columna">
+                                                    <span>
+                                                        <img class="pointer" src="./Content/images/icons/chat.svg" alt="chat"
+                                                             (click)="obtenerPeticionDeOfertaParaChat(licitacion.Id)" />
+                                                        <div class="punto-rojo" *ngIf="licitacion.ChatSinLeer == true && chatLeido == false"></div>
+
+                                                    </span>
+                                                </td>
                                                 <td class="columna">{{licitacion.Id}}</td>
-                                                <td class="columna">                                                    
+                                                <td class="columna">
                                                     {{licitacion.PlazoDeOferta | customDateFormat | date :'d/M/yyyy HH:mm'}}
                                                 </td>
                                                 <td class="columna" [style.color]="licitacion.EstadoColor">{{licitacion.Estado}}</td>
-                                                <td class="columna">                                                   
+                                                <td class="columna">
                                                     <button class="publicar btn" *ngIf="licitacion.RevisionFinalizada != true" style="margin-right: 10px;" (click)="obtenerPeticionDeOferta(licitacion.Id)">
                                                         Revisión Técnica
                                                     </button>
-                                                    <button class="publicar btn " *ngIf="rowData.VerCircular == true && licitacion.RevisionFinalizada != true" style="margin-right: 10px;"  (click)="obtenerPeticionDeOfertaCircular(licitacion.Id)">
+                                                    <button class="publicar btn " *ngIf="rowData.VerCircular == true && licitacion.RevisionFinalizada != true" style="margin-right: 10px;" (click)="obtenerPeticionDeOfertaCircular(licitacion.Id)">
                                                         Circular
                                                     </button>
-                                                </td> 
+                                                </td>
                                             </tr>
                                         </ng-template>
                                     </p-table>
-                                </p-tabPanel> 
+                                </p-tabPanel>
                                 <p-tabPanel>
-                                    <ng-template pTemplate="header" >
+                                    <ng-template pTemplate="header">
                                         <div class="padding" (click)="listarAdjudicaciones(rowData.Id)">
                                             Orden de compra
                                         </div>
@@ -286,73 +308,81 @@
                                                 <th class="columna">Fecha de creación</th>
                                                 <th class="columna">Proveedor</th>
                                                 <th class="columna">Monto total</th>
+                                                <th class="columna">Monto bruto</th>
                                                 <th class="columna">Moneda</th>
+                                                <th class="columna">Estado</th>
                                                 <th class="columna"></th>
                                             </tr>
                                         </ng-template>
                                         <ng-template pTemplate="emptymessage">
                                             <tr>
-                                                <td style="text-align: center;" colspan="6">Sin datos</td>
+                                                <td style="text-align: center;" colspan="8">Sin datos</td>
                                             </tr>
                                         </ng-template>
                                         <ng-template pTemplate="body" let-orden>
                                             <tr>
-                                               <td class="columna">{{orden.NumeroOrdenDeCompra}}</td>                                     
+                                                <td class="columna">{{orden.NumeroOrdenDeCompra}}</td>
                                                 <td class="columna">{{orden.FechaCreacion | customDateFormat | date :'d/M/yyyy HH:mm' }}</td>
                                                 <td class="columna">{{orden.Proveedor}}</td>
                                                 <td class="columna">{{orden.PrecioFinal | number:'1.2-2'}}</td>
+                                                <td class="columna">{{orden.PrecioBruto | number:'1.2-2'}}</td>
                                                 <td class="columna">{{orden.MonedaDescripcion}}</td>
+                                                <td class="columna">{{orden.EstadoLiberacionDetalle}}</td>
                                                 <td class="columna">
-                                                    <button class="publicar btn btn-success" (click)="verDetalleOrdenDeCompra(orden.NumeroOrdenDeCompra)">
+                                                    <button class="publicar btn btn-success"
+                                                            (click)="verDetalleOrdenDeCompra(orden.NumeroOrdenDeCompra)">
                                                         Ver detalle
                                                     </button>
                                                 </td>
                                             </tr>
                                         </ng-template>
                                     </p-table>
-                                </p-tabPanel>                             
+                                </p-tabPanel>
                             </p-tabView>
                         </div>
                     </td>
                 </tr>
             </ng-template>
-        </p-table>      
-    <p-paginator #paginator [rows]="10" [totalRecords]="length" (onPageChange)="handlePageEvent($event)"></p-paginator>
-</div>
+        </p-table>
+        <p-paginator #paginator [rows]="10" [totalRecords]="length" (onPageChange)="handlePageEvent($event)"></p-paginator>
+    </div>
 </div>
 
-<app-revision-tecnica           
-                [(displayRevisionTecnica)]="displayRevisionTecnica"
-                (cerrardisplayRevisionTecnicaEmitter)="cerrarModalRevisionTecnica()"
-                (descargarArchivoEmitter)="descargarArchivo($event)"
-                (descargarAdjuntosCotizacionEmitter)="descargarAdjuntosCotizacion($event)"
-                (grabarRevisionTecnicaEmitter)="grabarRevisionTecnica($event)"
-                [(peticion)]="peticion">
-</app-revision-tecnica> 
+<app-revision-tecnica [(displayRevisionTecnica)]="displayRevisionTecnica"
+                      (cerrardisplayRevisionTecnicaEmitter)="cerrarModalRevisionTecnica()"
+                      (descargarArchivoEmitter)="descargarArchivo($event)"
+                      (descargarAdjuntosCotizacionEmitter)="descargarAdjuntosCotizacion($event)"
+                      (grabarRevisionTecnicaEmitter)="grabarRevisionTecnica($event)"
+                      [(peticion)]="peticion">
+</app-revision-tecnica>
 
-<app-circular
-    [(locale)]="es"
-    [(displayCircular)]="displayCircular"
-    (cerrarCircularEmitter)="cerrarCircular()"
-    [(peticion)]="peticion"
-    [(solicitante)]="solicitante">
-</app-circular>   
+<app-circular [(locale)]="es"
+              [(displayCircular)]="displayCircular"
+              (cerrarCircularEmitter)="cerrarCircular()"
+              [(peticion)]="peticion"
+              [(solicitante)]="solicitante">
+</app-circular>
 
 
 <!-- Modal eliminacion de SOLP-->
 <p-confirmDialog #dialogo header="Eliminar SOLP" icon="pi pi-exclamation-triangle" [width]="400" [responsive]="true"
-    appendTo="body">
+                 appendTo="body">
     <p-footer>
         <button type="button" pButton label="Cancelar" class="ui-button-info botonModal"
-            (click)="dialogo.reject()"></button>
+                (click)="dialogo.reject()"></button>
         <button type="button" pButton label="Aceptar" class="ui-button-success botonModal"
-            (click)="dialogo.accept()"></button>
+                (click)="dialogo.accept()"></button>
     </p-footer>
 </p-confirmDialog>
 <!--fin modal eliminacion de SOLP-->
 
-<app-orden-de-compra-detalle
-[(displayOrdenDeCompra)]="displayOrdenDeCompra"
-(cerrarOrdenDeCompraEmitter)="cerrarOrdenDeCompra()"
-[(ordenDeCompra)]="ordenDeCompra">
-</app-orden-de-compra-detalle> 
+<app-orden-de-compra-detalle [(displayOrdenDeCompra)]="displayOrdenDeCompra"
+                             (cerrarOrdenDeCompraEmitter)="cerrarOrdenDeCompra()"
+                             [(ordenDeCompra)]="ordenDeCompra">
+</app-orden-de-compra-detalle>
+
+<app-chat-interno 
+        [(displayChatInterno)]="displayChatInterno"
+        [(chat)]="chat">
+        (cerrardisplayChatEmitter)="cerrarModalChat()"
+</app-chat-interno>

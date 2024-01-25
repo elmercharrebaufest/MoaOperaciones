@@ -13,6 +13,12 @@
                            /@value" />
 	</parameter>
 
+	<parameter name="UrlMisConsultas Config">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/appSettings/add[@key='UrlMisConsultas']
+                           /@value" />
+	</parameter>
+
 	<parameter name="DataAgroURL Config">
 		<parameterEntry kind="XmlFile" scope="Web.config"
 						match="/configuration/appSettings/add[@key='DataAgroURL']
@@ -236,7 +242,12 @@
 							match="/configuration/appSettings/add[@key='EmailKgsMenos15TNFasTo']
                            /@value" />
 	</parameter>
-
+	
+	<parameter name="EmailConsultaInternaCC Config">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+							match="/configuration/appSettings/add[@key='EmailConsultaInternaCC']
+                           /@value" />
+	</parameter>
 
 	<parameter name="PasswordSapEnc Config">
 		<parameterEntry kind="XmlFile" scope="Web.config"
@@ -284,7 +295,37 @@
 						match="/configuration/appSettings/add[@key='Url']
                            /@value" />
   </parameter>
-
+	<parameter name="DriveCampoSustentablesApplicationName Config">
+    	<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/appSettings/add[@key='DriveCampoSustentablesApplicationName']
+                           /@value" />
+	</parameter>
+	<parameter name="DriveCampoSustentablesServiceAccountEmail Config">
+    	<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/appSettings/add[@key='DriveCampoSustentablesServiceAccountEmail']
+                           /@value" />
+	</parameter>
+	<parameter name="DriveCampoSustentablesServiceAccountKey Config">
+    	<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/appSettings/add[@key='DriveCampoSustentablesServiceAccountKey']
+                           /@value" />
+	</parameter>
+	<parameter name="DriveCampoSustentablesUsuario Config">
+    	<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/appSettings/add[@key='DriveCampoSustentablesUsuario']
+                           /@value" />
+	</parameter>
+	<parameter name="DriveCampoSustentablesInputFolderId Config">
+    	<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/appSettings/add[@key='DriveCampoSustentablesInputFolderId']
+                           /@value" />
+	</parameter>
+	<parameter name="DriveCampoSustentablesOutputFolderId Config">
+    	<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/appSettings/add[@key='DriveCampoSustentablesOutputFolderId']
+                           /@value" />
+	</parameter>
+	<!--Service Enpoint-->
 	<parameter name="BasicHttpBinding_IServicioRepositorio Service Endpoint Address">
 		<parameterEntry kind="XmlFile" scope="Web.config"
 						match="/configuration/system.serviceModel/client

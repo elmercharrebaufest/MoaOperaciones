@@ -15,6 +15,7 @@ export interface Consulta {
     UsuarioId;
     UsuarioActualId;
     UsuarioInternoId;
+    FechaVtoReapertura;
 
 
     Fecha;
@@ -32,9 +33,12 @@ export interface Consulta {
     EstadoConsulta;
     CausaConsulta;
     Comentarios;
-    
+
     DiasReclamo;
     Usuario?;
+    PuedeReabrir;
+
+    Rubro: string;
 }
 
 export interface EstadoConsulta {
@@ -70,14 +74,14 @@ export interface Materiales {
     Descripcion;
 }
 
-export class Comentario{
-    consulta_Id: any; 
-    Detalle: any; 
+export class Comentario {
+    consulta_Id: any;
+    Detalle: any;
     Fecha: any;
     Recordado: any;
     FechaRecordado: any;
 }
-export class ReclamoImpositivo{
+export class ReclamoImpositivo {
     Dni;
     RazonSocialEmpresa;
     RazonSocialProveedor;
@@ -86,13 +90,13 @@ export class ReclamoImpositivo{
     Reclamos: Array<Reclamo>;
     Lugar;
 }
-export interface Reclamo{
+export interface Reclamo {
     Fecha;
     Certificado;
     Importe;
 }
 
-export class Destinatario{
+export class Destinatario {
     Campo: string;
     Mail: string;
     UsuarioId: number;

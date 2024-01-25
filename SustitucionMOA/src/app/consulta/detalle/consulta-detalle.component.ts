@@ -115,7 +115,6 @@ export class DetalleConsultaComponent extends BaseComponent {
     estadoId: number;
     categoriaId: number;
     MostrarDatosAdicionales: boolean = false;
-    puedeReabrir: boolean = false;
     listaArchivos: Array<File> = new Array<File>();
 
     tieneSubcategorias: boolean = false;
@@ -148,7 +147,6 @@ export class DetalleConsultaComponent extends BaseComponent {
         this.checkPermisos();
         this.jqueryOnInit();
         this.getCombos();
-        this.getDetalleConsulta();
     }
 
     ngAfterViewInit(): void {
@@ -399,6 +397,11 @@ export class DetalleConsultaComponent extends BaseComponent {
                 Value: this.consulta.PatenteChasis,
                 NewLine: false
             },
+            {
+                Nombre: "Rubro",
+                Value: this.consulta.Rubro,
+                NewLine: true
+            }
         ];
     }
 
@@ -625,6 +628,7 @@ export class DetalleConsultaComponent extends BaseComponent {
                             this.tieneSubcategorias = true;
                         }*/
                         this.causasConsulta = result.causas;
+                        this.getDetalleConsulta();
                     }
                 },
                 (error) => {
@@ -688,11 +692,6 @@ export class DetalleConsultaComponent extends BaseComponent {
                         this.consulta.Fecha = new Date(
                             this.getDateFromAspNetFormat(this.consulta.Fecha)
                         );
-
-                        if(this.consulta.EstadoConsulta.Code == "CER" && !this.esInterno && 
-                        this.consulta.UsuarioInternoId == undefined){
-                            this.puedeReabrir = true;
-                        }
 
                         this.estadoId = result.EstadoConsultaId;
                         this.categoriaId = result.CategoriaId;
@@ -838,7 +837,6 @@ export class DetalleConsultaComponent extends BaseComponent {
                         this.mensajeComponent.setSuccessMsg(
                             "La consulta se reabrió correctamente."
                         );
-                        this.puedeReabrir = false;
                         this.getDetalleConsulta();
                     }
                 },

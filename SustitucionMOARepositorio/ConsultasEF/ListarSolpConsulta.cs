@@ -21,7 +21,8 @@ namespace SustitucionMOARepositorio.ConsultasEF
         private readonly List<int> Estados;
         private readonly List<int> Centros;
         private readonly List<int> GrupoDeCompras;
-        public ListarSolpConsulta(Paginacion paginacion, string nroSolp, List<int> usuarios, List<int> estados, List<int> centros, List<int> grupoDeCompras)
+        private readonly int Usuario_Id;
+        public ListarSolpConsulta(Paginacion paginacion, string nroSolp, List<int> usuarios, List<int> estados, List<int> centros, List<int> grupoDeCompras, int usuario_Id)
         {
             Paginacion = paginacion;
             NroSolp = nroSolp;
@@ -29,14 +30,22 @@ namespace SustitucionMOARepositorio.ConsultasEF
             Estados = estados;
             Centros = centros;
             GrupoDeCompras = grupoDeCompras;
+            Usuario_Id = usuario_Id;
         }
         public ListaPaginada<SolpDto> Ejecutar(DbContext contexto)
         {
             var hoy = DateTime.Now;
             var ayer = hoy.AddDays(-1);
+            
+
+                      
             try
             {
                 ((IObjectContextAdapter)contexto).ObjectContext.CommandTimeout = 180;
+                Usuario usuario = (from u in contexto.Set<Usuario>()
+                                   where u.Id == Usuario_Id
+                                   select u).First();
+                var rol = usuario.Roles.Any(r => r.Codigo == "COMPRADOR") ? "SOLP" : "COMPRADOR";
                 var nroDeSolp = NroSolp.Trim();
                 var resultado = from x in contexto.Set<Solp>()
                                 where (string.IsNullOrEmpty(nroDeSolp) || x.NroSolp.ToUpper().StartsWith(nroDeSolp.ToUpper())) &&
@@ -74,7 +83,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                     ItemPorPagina = Paginacion.ItemsPorPagina,
                                     Pagina = Paginacion.Pagina,
                                     EstadoSolpSap = x.EstadoSolpSap_Id != null ? new TablaSapDto { Id = x.EstadoSolpSap_Id ?? 0, CodigoSap = x.EstadoSolpSap.CodigoSap, Descripcion = x.EstadoSolpSap.Descripcion } : new TablaSapDto { Id = 0, CodigoSap = "", Descripcion = "" },
-                                    VerPublicar = x.TrabajoYaHecho == null || x.TrabajoYaHecho == false,
+                                    VerPublicar = x.EstadoSolpSap.CodigoSap == "05" && x.TrabajoYaHecho != true && x.Adicional != true || !string.IsNullOrEmpty(x.NroSolp) && x.Posiciones.Any(p => p.TipoPosicion.Codigo == "SERVICIO") && x.Urgencia == true && x.Adicional != true,
                                     VerCircular = x.TrabajoYaHecho == null || x.TrabajoYaHecho == false,
                                     FechaLiberacionSapFormateada = x.FechaLiberacionSap == null ? "" : SqlFunctions.DateName("day", x.FechaLiberacionSap) + "/" + SqlFunctions.DatePart("month", x.FechaLiberacionSap) + "/" + SqlFunctions.DateName("year", x.FechaLiberacionSap),
                                     FechaLiberacionSap = x.FechaLiberacionSap,
@@ -94,9 +103,10 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                                 .Where(p => p.Circular.RequiereCambioDeFechas == true && p.Circular.PlazoDeOferta.HasValue)
                                                                 .OrderByDescending(p => p.Circular.Id).FirstOrDefault().Circular.FechaCreacion,
                                                               PlazoDeOfertaCierre = po.Cierres.Any() ? po.Cierres.OrderByDescending(p => p.Fecha).FirstOrDefault().Fecha : (DateTime?)null,
-                                                              RevisionFinalizada = po.RevisionTecnica_Id != null,
-
+                                                              RevisionFinalizada = po.RevisionTecnica == null ? false : po.RevisionTecnica.Finalizada,
+                                                              ChatSinLeer = po.ChatInternoCompras.Any(a => a.Leido == false && a.Usuario.Roles.Any(r => r.Codigo == rol)),
                                                               Observaciones = po.Observaciones,
+                                                              RecotizacionEconomica = po.RevisionTecnica == null ? false : po.RevisionTecnica.RecotizacionEconomica
                                                           })
                                 };
 

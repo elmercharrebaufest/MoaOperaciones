@@ -106,7 +106,8 @@ namespace SustitucionMOA.Controllers
             {
                 var mailUsuario = SessionPersister.getUsername();
                 var codigoProveedor = SessionPersister.Proveedor;
-                response.Data = aplicacionCCPPService.ObtenerCombosDeContratoCCPP(mailUsuario, codigoProveedor);
+                var esCodigoCorredor = SessionPersister.EsCodigoDeCorredor;
+                response.Data = aplicacionCCPPService.ObtenerCombosDeContratoCCPP(mailUsuario, codigoProveedor, esCodigoCorredor);
             }
             catch (InfoCustomException ice)
             {
@@ -159,7 +160,8 @@ namespace SustitucionMOA.Controllers
             {
                 var mailUsuario = SessionPersister.getUsername();
                 var codigoProveedor = SessionPersister.Proveedor;
-                response.Data = aplicacionCCPPService.ProcesarCargaMasiva(archivo, mailUsuario, codigoProveedor);
+                var esCodigoCorredor = SessionPersister.EsCodigoDeCorredor;
+                response.Data = aplicacionCCPPService.ProcesarCargaMasiva(archivo, mailUsuario, codigoProveedor, esCodigoCorredor);
             }
             catch (InfoCustomException ice)
             {

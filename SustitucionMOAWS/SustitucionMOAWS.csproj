@@ -33,6 +33,24 @@
     <Reference Include="AutoMapper, Version=7.0.1.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
       <HintPath>..\packages\AutoMapper.7.0.1\lib\net45\AutoMapper.dll</HintPath>
     </Reference>
+    <Reference Include="Google.Apis, Version=1.42.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.1.42.0\lib\net45\Google.Apis.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.Apis.Auth, Version=1.42.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Auth.1.42.0\lib\net45\Google.Apis.Auth.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.Apis.Auth.PlatformServices, Version=1.42.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Auth.1.42.0\lib\net45\Google.Apis.Auth.PlatformServices.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.Apis.Core, Version=1.42.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Core.1.42.0\lib\net45\Google.Apis.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.Apis.Drive.v3, Version=1.42.0.1778, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Drive.v3.1.42.0.1778\lib\net45\Google.Apis.Drive.v3.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.Apis.PlatformServices, Version=1.42.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.1.42.0\lib\net45\Google.Apis.PlatformServices.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Identity.Client, Version=4.17.1.0, Culture=neutral, PublicKeyToken=0a613f4dd989e8ae, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Identity.Client.4.17.1\lib\net45\Microsoft.Identity.Client.dll</HintPath>
     </Reference>
@@ -73,6 +91,11 @@
     <Compile Include="AzureAD\UsersGraphAPIClient.cs" />
     <Compile Include="CredentialService\DataAgroWSCredential.cs" />
     <Compile Include="CredentialService\SAPCredential.cs" />
+    <Compile Include="GoogleDrive\GoogleDriveHelper.cs" />
+    <Compile Include="GoogleDrive\Interfaces\ICampoSustentableGoogleDrive.cs" />
+    <Compile Include="GoogleDrive\Interfaces\IGoogleDriveHelper.cs" />
+    <Compile Include="GoogleDrive\Models\GoogleDriveFileRequest.cs" />
+    <Compile Include="GoogleDrive\Models\GoogleDriveHelperGenerator.cs" />
     <Compile Include="Interfaces\IAplicacionCartaPorteConsumer.cs" />
     <Compile Include="Interfaces\IAzureADConsumer.cs" />
     <Compile Include="Interfaces\ICNRTClient.cs" />
@@ -485,6 +508,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
+    <Compile Include="Service References\ObtenerUnidadesDeMedidaAlternativasWebServiceMOA\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
     <Compile Include="Service References\UsuarioDesbloquearWebServiceMOA\Reference.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -541,6 +569,7 @@
     <Compile Include="WSConsumers\AplicacionCartaPorteConsumer.cs" />
     <Compile Include="WSConsumers\AplicacionesConsumerMOA.cs" />
     <Compile Include="WSConsumers\CambioPassConsumerMOA.cs" />
+    <Compile Include="GoogleDrive\CampoSustentableGoogleDrive.cs" />
     <Compile Include="WSConsumers\CartaPorteDetalleConsumerMOA.cs" />
     <Compile Include="WSConsumers\CartaPorteFormularioCTGConsumerMOA.cs" />
     <Compile Include="WSConsumers\CartaPorteFormularioDesplegablesConsumerMOA.cs" />
@@ -558,6 +587,7 @@
     <Compile Include="WSConsumers\EcheqVisualizarDisponibleChequeConsumerMOA.cs" />
     <Compile Include="WSConsumers\EcheqVisualizarPendientePagoConsumerMOA.cs" />
     <Compile Include="WSConsumers\ModificarOrdenDeCompraConsumerMOA.cs" />
+    <Compile Include="WSConsumers\ObtenerUnidadesDeMedidaAlternativasConsumerMOA.cs" />
     <Compile Include="WSConsumers\ObtenerProveedorConsumerMOA.cs" />
     <Compile Include="WSConsumers\ObtenerRegistroInfoConsumerMOA.cs" />
     <Compile Include="WSConsumers\ObtenerOrdenDeCompraConsumerMOA.cs" />
@@ -2247,6 +2277,7 @@
     <None Include="Service References\ServicioSuscriptorAccesos\ServicioSuscriptor3.xsd">
       <SubType>Designer</SubType>
     </None>
+    <None Include="Service References\ObtenerUnidadesDeMedidaAlternativasWebServiceMOA\SI_MMRFC_UM_ALTERNATIVAS.wsdl" />
     <None Include="Service References\UsuarioDesbloquearWebServiceMOA\SI_MPMF_MOAOP_LOGIN_DESBUSR.wsdl" />
     <None Include="Service References\UsuarioDesbloquearWebServiceMOA\SustitucionMOAWS.UsuarioDesbloquearWebServiceMOA.SI_MPMF_MOAOP_LOGIN_DESBUSRResponse.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
@@ -2428,6 +2459,7 @@
     <WCFMetadataStorage Include="Service References\ScatoComandosWebService\" />
     <WCFMetadataStorage Include="Service References\ScatoWebService\" />
     <WCFMetadataStorage Include="Service References\ServicioSuscriptorAccesos\" />
+    <WCFMetadataStorage Include="Service References\ObtenerUnidadesDeMedidaAlternativasWebServiceMOA\" />
     <WCFMetadataStorage Include="Service References\UsuarioDesbloquearWebServiceMOA\" />
     <WCFMetadataStorage Include="Service References\UsuarioHabilitarWebServiceMOA\" />
     <WCFMetadataStorage Include="Service References\UsuarioInhabilitarWebServiceMOA\" />
@@ -3536,6 +3568,19 @@
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\ObtenerUnidadesDeMedidaAlternativasWebServiceMOA\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\ObtenerUnidadesDeMedidaAlternativasWebServiceMOA\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\ObtenerUnidadesDeMedidaAlternativasWebServiceMOA\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

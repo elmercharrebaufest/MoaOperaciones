@@ -19,10 +19,14 @@
     <AssemblyName>SustitucionMOA</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <UseIISExpress>true</UseIISExpress>
-    <IISExpressSSLPort>58280</IISExpressSSLPort>
-    <IISExpressAnonymousAuthentication>enabled</IISExpressAnonymousAuthentication>
-    <IISExpressWindowsAuthentication>disabled</IISExpressWindowsAuthentication>
-    <IISExpressUseClassicPipelineMode>false</IISExpressUseClassicPipelineMode>
+    <IISExpressSSLPort>
+    </IISExpressSSLPort>
+    <IISExpressAnonymousAuthentication>
+    </IISExpressAnonymousAuthentication>
+    <IISExpressWindowsAuthentication>
+    </IISExpressWindowsAuthentication>
+    <IISExpressUseClassicPipelineMode>
+    </IISExpressUseClassicPipelineMode>
     <UseGlobalApplicationHostFile />
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
@@ -256,15 +260,23 @@
     <Content Include="Content\images\header\logo_.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Content\images\icons\agregar-proveedor.svg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Content\images\icons\carpeta.svg" />
+    <Content Include="Content\images\icons\chat.svg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Content\images\icons\contract.svg" />
     <Content Include="Content\images\icons\descargar.svg" />
     <Content Include="Content\images\icons\doc-file.svg" />
     <Content Include="Content\images\icons\editar.svg" />
+    <Content Include="Content\images\icons\gears.svg" />
     <Content Include="Content\images\icons\liquidaciones.svg" />
     <Content Include="Content\images\icons\paper.svg" />
     <Content Include="Content\images\icons\pay.svg" />
     <Content Include="Content\images\icons\SAP.svg" />
+    <Content Include="Content\images\icons\scalable-truck.svg" />
     <Content Include="Content\images\icons\trash.svg" />
     <Content Include="Content\images\icons\trashRed.svg" />
     <Content Include="Content\images\icons\trashWhite.svg" />
@@ -345,6 +357,8 @@
     <Content Include="src\app\common\shared-components\buscador\buscador.component.html" />
     <Content Include="src\app\common\shared-components\seleccionar-proveedor\seleccionar-proveedor.component.css" />
     <Content Include="src\app\common\shared-components\seleccionar-proveedor\seleccionar-proveedor.component.html" />
+    <Content Include="src\app\compras\chat-interno\chat-interno.component.css" />
+    <Content Include="src\app\compras\chat-interno\chat-interno.component.html" />
     <Content Include="src\app\compras\dashboard-comprador\alta-proveedor\alta-proveedor.component.css" />
     <Content Include="src\app\compras\dashboard-comprador\alta-proveedor\alta-proveedor.component.html" />
     <Content Include="src\app\compras\dashboard-comprador\cerrar-cotizacion\cerrar-cotizacion.component.css" />
@@ -395,6 +409,10 @@
     <Content Include="src\app\compras\solp\steps\generacion2\generacion2.component.html" />
     <Content Include="src\app\compras\solp\steps\posicion\cabecera.component.css" />
     <Content Include="src\app\compras\solp\steps\posicion\cabecera.component.html" />
+    <Content Include="src\app\compras\solp\steps\posicion\contrato-marco\contrato-marco.component.css" />
+    <Content Include="src\app\compras\solp\steps\posicion\contrato-marco\contrato-marco.component.html" />
+    <Content Include="src\app\compras\solp\steps\posicion\obtener-contrato-marco\obtener-contrato-marco.component.css" />
+    <Content Include="src\app\compras\solp\steps\posicion\obtener-contrato-marco\obtener-contrato-marco.component.html" />
     <Content Include="src\app\compras\solp\steps\posicion\tab-datos-posicion\tab-datos-posicion.component.html" />
     <Content Include="src\app\compras\solp\steps\posicion\tab-direccion-entrega\tab-direccion-entrega.component.html" />
     <Content Include="src\app\compras\solp\steps\posicion\tab-fechas\tab-fechas.component.html" />
@@ -1003,6 +1021,7 @@
     <Content Include="libman.json" />
     <Content Include="Documentacion\TemplateAplicCCPP.csv" />
     <Content Include="Documentacion\TutorialAplicCCPP.docx" />
+    <Content Include="Keys\inspired-bazaar-410214-81185894c80f.json" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\PublishFiles.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
@@ -1130,6 +1149,7 @@
     <Compile Include="Jobs\ActualizarEstadoSolpSapJob.cs" />
     <Compile Include="Jobs\ActualizarSISAJob.cs" />
     <Compile Include="Jobs\ActualizarLocalidadesJob.cs" />
+    <Compile Include="Jobs\CcSsObtenerArchivosUcropJob.cs" />
     <Compile Include="Jobs\VerificarOrdenesFacturasCompensadasJob.cs" />
     <Compile Include="Jobs\VerificarTransporteOrdenesDeCargaFasonJob.cs" />
     <Compile Include="Jobs\AltaClienteSAPJob.cs" />
@@ -1183,6 +1203,9 @@
     <TypeScriptCompile Include="src\app\common\shared-components\seleccionar-proveedor\seleccionar-proveedor.component.ts" />
     <TypeScriptCompile Include="src\app\common\shared-components\seleccionar-proveedor\seleccionar-proveedor.service.ts" />
     <TypeScriptCompile Include="src\app\compras\campo-obligatorio-viewModel.ts" />
+    <TypeScriptCompile Include="src\app\compras\chat-interno\chat-interno.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\compras\chat-interno\chat-interno.component.ts" />
+    <TypeScriptCompile Include="src\app\compras\chat-interno\chat-interno.interface.ts" />
     <TypeScriptCompile Include="src\app\compras\compras-routing.module.ts" />
     <TypeScriptCompile Include="src\app\compras\compras.module.ts" />
     <TypeScriptCompile Include="src\app\compras\compras.service.ts" />
@@ -1221,6 +1244,7 @@
     <TypeScriptCompile Include="src\app\compras\preview\pliego.preview.component.ts" />
     <TypeScriptCompile Include="src\app\compras\reporte-oc\reporte-oc.component.spec.ts" />
     <TypeScriptCompile Include="src\app\compras\reporte-oc\reporte-oc.component.ts" />
+    <TypeScriptCompile Include="src\app\compras\solp-compra.ts" />
     <TypeScriptCompile Include="src\app\compras\solp\finalizar\finalizar-solp.component.spec.ts" />
     <TypeScriptCompile Include="src\app\compras\solp\finalizar\finalizar-solp.component.ts" />
     <TypeScriptCompile Include="src\app\compras\solp\solp-posicion.ts" />
@@ -1235,6 +1259,13 @@
     <TypeScriptCompile Include="src\app\compras\solp\steps\generacion1\generacion1.component.ts" />
     <TypeScriptCompile Include="src\app\compras\solp\steps\generacion2\generacion2.component.ts" />
     <TypeScriptCompile Include="src\app\compras\solp\steps\posicion\cabecera.component.ts" />
+    <TypeScriptCompile Include="src\app\compras\solp\steps\posicion\contrato-marco\contrato-marco.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\compras\solp\steps\posicion\contrato-marco\contrato-marco.component.ts" />
+    <TypeScriptCompile Include="src\app\compras\solp\steps\posicion\contrato-marco\contrato-marco.ts" />
+    <TypeScriptCompile Include="src\app\compras\solp\steps\posicion\obtener-contrato-marco\contrato-marco.model.ts" />
+    <TypeScriptCompile Include="src\app\compras\solp\steps\posicion\obtener-contrato-marco\obtener-contrato-marco.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\compras\solp\steps\posicion\obtener-contrato-marco\obtener-contrato-marco.component.ts" />
+    <TypeScriptCompile Include="src\app\compras\solp\steps\posicion\obtener-contrato-marco\obtener-contrato-marco.service.ts" />
     <TypeScriptCompile Include="src\app\compras\solp\steps\posicion\tab-datos-posicion\tab-datos-posicion.component.ts" />
     <TypeScriptCompile Include="src\app\compras\solp\steps\posicion\tab-direccion-entrega\tab-direccion-entrega.component.ts" />
     <TypeScriptCompile Include="src\app\compras\solp\steps\posicion\tab-fechas\tab-fechas.component.ts" />
@@ -1278,6 +1309,16 @@
     <TypeScriptCompile Include="src\app\liquidacion\no-granos\liquidacion-no-granos.module.ts" />
     <TypeScriptCompile Include="src\app\liquidacion\no-granos\pendiente-registro\liquidacion.no-granos.pendiente-registro.component.ts" />
     <TypeScriptCompile Include="src\app\liquidacion\no-granos\registrada\liquidacion.no-granos.registrado.component.ts" />
+    <TypeScriptCompile Include="src\app\modelos\adjudicacion.ts" />
+    <TypeScriptCompile Include="src\app\modelos\circular-model.ts" />
+    <TypeScriptCompile Include="src\app\modelos\cotizacionDto.ts" />
+    <TypeScriptCompile Include="src\app\modelos\legajoDto.ts" />
+    <TypeScriptCompile Include="src\app\modelos\legajoExternoDto.ts" />
+    <TypeScriptCompile Include="src\app\modelos\ordenDeCompraSap.ts" />
+    <TypeScriptCompile Include="src\app\modelos\peticion-de-oferta-model.ts" />
+    <TypeScriptCompile Include="src\app\modelos\peticion-visualizar-precio-dto.ts" />
+    <TypeScriptCompile Include="src\app\modelos\registro-info.ts" />
+    <TypeScriptCompile Include="src\app\modelos\resultadoDto.ts" />
     <TypeScriptCompile Include="src\app\notificaciones\alta-notificaciones\alta-notificaciones.component.spec.ts" />
     <TypeScriptCompile Include="src\app\notificaciones\alta-notificaciones\alta-notificaciones.component.ts" />
     <TypeScriptCompile Include="src\app\notificaciones\carousel-notificaciones\carousel-notificaciones.component.spec.ts" />
@@ -1519,6 +1560,7 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="dist\assets\css\" />
+    <Folder Include="Keys\" />
     <Folder Include="src\app\echeq\gestion\" />
     <Folder Include="Views\Default\" />
     <Folder Include="Views\Documentos\" />

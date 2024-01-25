@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SustitucionMOAModel.Enums
+﻿namespace SustitucionMOAModel.Enums
 {
     public enum EstadoDocumentoSolp
     {
@@ -17,7 +11,8 @@ namespace SustitucionMOAModel.Enums
     {
         Web = 1,
         Mantenimiento = 2,
-        Sap = 3
+        Sap = 3,
+        ReposicionAutomatica = 4
     }
 
     public enum SolpDescargaZipPorLink
@@ -41,16 +36,17 @@ namespace SustitucionMOAModel.Enums
                     return string.Empty;
             }
         }
-        public static string CodeTipoSolpSap(this TipoSolpSap me)
-        {
-            switch (me)
-            {
-                case TipoSolpSap.Web: return "R";
-                case TipoSolpSap.Mantenimiento: return "F";
-                case TipoSolpSap.Sap: return "R";
-                default:
-                    return string.Empty;
-            }
-        }
+        //public static string CodeTipoSolpSap(this TipoSolpSap me)
+        //{
+        //    switch (me)
+        //    {
+        //        case TipoSolpSap.Web: return "R";
+        //        case TipoSolpSap.Mantenimiento: return "F";
+        //        case TipoSolpSap.Sap: return "R";
+        //        case TipoSolpSap.ReposicionAutomatica: return "B"; // puede ser B o U
+        //        default:
+        //            return string.Empty;
+        //    }
+        //}
     }
 }

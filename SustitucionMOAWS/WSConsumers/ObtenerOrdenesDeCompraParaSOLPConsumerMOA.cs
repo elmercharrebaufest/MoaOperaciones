@@ -57,7 +57,9 @@ namespace SustitucionMOAWS.WSConsumers
                         ClaseDocumento = item.First().BSART,
                         FechaCreacion = SAPFormatter.GetDateTime(item.First().AEDAT),
                         Tipo = item.First().PSTYP == "0" ? "Materiales" : "Servicios",
-                        TipoDocCompras = item.First().BSTYP
+                        TipoDocCompras = item.First().BSTYP,
+                        MontoBruto = item.Sum(a => a.BRTWR),
+                        EstadoLiberacionCodigo = item.First().FRGKE,
                     }
                 });
             }

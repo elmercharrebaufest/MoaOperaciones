@@ -34,5 +34,14 @@ namespace SustitucionMOAModel.Models.WSMapMOA.CartaPorte
         public DateTime fechaDescargaDate { get; set; }
         public string netoDescontadoString { get; set; }
         public string cg { get; set; }
+
+        private readonly int DIAS_PARA_DISCREPAR_CALIDAD = -7;
+
+        public bool PuedeDiscreparCalidad { get {
+                var hoy = DateTime.Now;
+                var fechaLimite = hoy.AddDays(DIAS_PARA_DISCREPAR_CALIDAD);
+                return fechaDescargaDate != null && fechaLimite <= fechaDescargaDate && fechaDescargaDate <= hoy;
+            } }
+
     }
 }

@@ -78,6 +78,7 @@ import { CerrarCotizacionComponent } from './dashboard-comprador/cerrar-cotizaci
 import { PlazoDeOfertaComponent } from './dashboard-proveedor/cotizacion-formulario/cotizacion-material/plazo-de-oferta/plazo-de-oferta.component';
 import { VisalizarPrecioComponent } from './dashboard-comprador/ver-ofertas/visualizar-precio/visualizar-precio.component';
 import { ReporteOcComponent } from './reporte-oc/reporte-oc.component';
+import { ChatInternoComponent } from './chat-interno/chat-interno.component';
 
 @NgModule({
     imports: [
@@ -156,7 +157,8 @@ import { ReporteOcComponent } from './reporte-oc/reporte-oc.component';
         CerrarCotizacionComponent,
         PlazoDeOfertaComponent,
         ReporteOcComponent,
-        VisalizarPrecioComponent
+        VisalizarPrecioComponent,
+        ChatInternoComponent
     ],
     providers: [
         ComprasService,

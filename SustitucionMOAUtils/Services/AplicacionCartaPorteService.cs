@@ -8,6 +8,7 @@ using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using SustitucionMOAModel.Enums.SustitucionMOAModel.Enums;
 using SustitucionMOARepositorio;
+using SustitucionMOAUtils.Extensions;
 using SustitucionMOAUtils.Helpers;
 using SustitucionMOAUtils.Helpers.CSV;
 using SustitucionMOAUtils.Interfaces;
@@ -30,11 +31,13 @@ namespace SustitucionMOAUtils.Services
     {
         protected readonly IRepositorio repositorio;
         protected readonly IAplicacionCartaPorteConsumer consumer;
+
         public AplicacionCartaPorteService(IRepositorio repositorio, IAplicacionCartaPorteConsumer consumer)
         {
             this.repositorio = repositorio;
             this.consumer = consumer;
         }
+
         public List<AplicacionCartaPorteDto> Listar(string mailUsuario, string fechaInicio, string fechaFin)
         {
             var fechaInicioDateTime = DataFormatter.StringToDateTime(fechaInicio, "fechaInicio");
@@ -71,12 +74,12 @@ namespace SustitucionMOAUtils.Services
             aplicacion.Estado = EstadoAplicacionCartaPorte.Eliminado;
             repositorio.GuardarCambios();
         }
-        public ComboAplicacionesContratosCcppResponse ObtenerCombosDeContratoCCPP(string mailUsuario, string codigoProveedor)
+        public ComboAplicacionesContratosCcppResponse ObtenerCombosDeContratoCCPP(string mailUsuario, string codigoProveedor, bool esCodigoCorredor)
         {
             Log.Info($"Busqueda combo app ccpp: mail={mailUsuario} el codigo proveedor= {codigoProveedor}");
             var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
 
-            var aplicacionesPendientes = ObtenerAplicacionesDisponiblesSap(usuario, codigoProveedor);
+            var aplicacionesPendientes = ObtenerAplicacionesDisponiblesSap(usuario, codigoProveedor, esCodigoCorredor);
 
             var contratos = ObtenerContratosDisponibles(aplicacionesPendientes);
 
@@ -117,7 +120,7 @@ namespace SustitucionMOAUtils.Services
             repositorio.GuardarCambios();
         }
 
-        public CargaMasivaResponse ProcesarCargaMasiva(HttpPostedFileBase archivo, string usuarioMail, string proveedorCodigo)
+        public CargaMasivaResponse ProcesarCargaMasiva(HttpPostedFileBase archivo, string usuarioMail, string proveedorCodigo, bool esCodigoCorredor)
         {
             if (archivo == null || archivo.ContentLength == 0 || Path.GetExtension(archivo.FileName).ToLower() != ".csv")
             {
@@ -128,7 +131,7 @@ namespace SustitucionMOAUtils.Services
 
             var registrosArchivo = ObtenerRegistrosCargaMasiva(archivo);
 
-            var aplicacionesDisponiblesSap = ObtenerAplicacionesDisponiblesSap(usuario, proveedorCodigo);
+            var aplicacionesDisponiblesSap = ObtenerAplicacionesDisponiblesSap(usuario, proveedorCodigo, esCodigoCorredor);
 
             var contratosDisponibles = ObtenerContratosDisponibles(aplicacionesDisponiblesSap);
             if (!contratosDisponibles.Any())
@@ -169,7 +172,7 @@ namespace SustitucionMOAUtils.Services
                 repositorio.Agregar(logCargaMasivaFila);
 
                 if (RegistroCargaMasivaEsValido(regItem, out string msjError, contratosDisponibles,
-                        cartasPorteDisponibles, aplicacionesPendientesDeProcesar, registrosOK))
+                        cartasPorteDisponibles, registrosOK))
                 {
                     registrosOK.Add(new AplicacionGuardadaCargaMasivaCCPP
                     {
@@ -237,10 +240,15 @@ namespace SustitucionMOAUtils.Services
                     codigoProveedor: app.PROVEEDOR
                     )).ToList();
         }
-        private string ObtenerCodigoProveedorSeleccionado(Usuario usuario, Proveedor proveedorAsignado, string codigoSeleccionado)
+
+        private string ObtenerCodigoProveedorSeleccionado(Usuario usuario, Proveedor proveedorAsignado, string codigoSeleccionado,bool esCodigoCorredor)
         {
             var puedeSeleccionarProveedor = usuario.TienePermiso(PermisoEnum.SeleccionarVendedor);
-            if (usuario.EsCorredor() && !puedeSeleccionarProveedor)
+            if (usuario.EsCorredor() && (!puedeSeleccionarProveedor || proveedorAsignado.CodigoProveedor == codigoSeleccionado))
+            {
+                return null;
+            }
+            if (proveedorAsignado.CodigoProveedor != codigoSeleccionado && esCodigoCorredor)
             {
                 return null;
             }
@@ -250,16 +258,24 @@ namespace SustitucionMOAUtils.Services
             }
             return proveedorAsignado.CodigoProveedor;
         }
+        private string ObtenerCodigoCorredorSeleccionado(Usuario usuario, Proveedor proveedorAsignado, string codigoSeleccionado, bool esCodigoCorredor)
+        {
+            if (esCodigoCorredor && !string.IsNullOrEmpty(codigoSeleccionado))
+            {
+                return codigoSeleccionado;
+            }
+            return usuario.EsCorredor() ? proveedorAsignado.CodigoProveedor : null;
+        }
         private List<AplicacionCartaPorte> ObtenerAplicacionesPendientes(string codigoProveedorSeleccionado)
         {
             return repositorio.Listar<AplicacionCartaPorte>(app => app.Estado == EstadoAplicacionCartaPorte.Pendiente && app.Proveedor.CodigoProveedor == codigoProveedorSeleccionado);
         }
 
-        private ZMPES7070[] ObtenerAplicacionesDisponiblesSap(Usuario usuario, string proveedorCodigo)
+        private ZMPES7070[] ObtenerAplicacionesDisponiblesSap(Usuario usuario, string proveedorCodigo, bool esCodigoCorredor)
         {
             var proveedorAsignado = usuario.ObtenerProveedor();
-            var codigoProveedorSeleccionado = ObtenerCodigoProveedorSeleccionado(usuario, proveedorAsignado, proveedorCodigo);
-            var codigoCorredor = usuario.EsCorredor() ? proveedorAsignado.CodigoProveedor : null;
+            var codigoProveedorSeleccionado = ObtenerCodigoProveedorSeleccionado(usuario, proveedorAsignado, proveedorCodigo, esCodigoCorredor);
+            var codigoCorredor = ObtenerCodigoCorredorSeleccionado(usuario, proveedorAsignado, proveedorCodigo, esCodigoCorredor);
 
             var ccppPendienteReq = new AppCCPPRequests.AppCartasPortePendienteRequest
             {
@@ -300,9 +316,12 @@ namespace SustitucionMOAUtils.Services
         private bool RegistroCargaMasivaEsValido(AplicacionCCPPRecord registroMasiva, out string error,
             List<ContratoParaAplicacionCartaPorte> contratosDisponibles,
             List<CartaPorteParaAplicacionCartaPorte> cartasPorteDisponibles,
-            List<AplicacionCartaPorte> aplicacionesPendientesBD,
+            //List<AplicacionCartaPorte> aplicacionesPendientesBD,
             List<AplicacionGuardadaCargaMasivaCCPP> aplicacionesAnterioresDelArchivo)
         {
+            registroMasiva.ContratoNumero = registroMasiva.ContratoNumero.ToContratoSAP();
+            registroMasiva.CartaDePorte = registroMasiva.CartaDePorte.ToCartaPorteSAP();
+
             var contrato = contratosDisponibles.FirstOrDefault(c => c.NumeroContrato == registroMasiva.ContratoNumero);
             var cartaPorte = cartasPorteDisponibles.FirstOrDefault(cp => cp.NumeroCartaPorte == registroMasiva.CartaDePorte);
 
@@ -326,15 +345,16 @@ namespace SustitucionMOAUtils.Services
                 return false;
             }
 
-            var kilosPendientesAplicar = aplicacionesPendientesBD
-                .Where(x => x.CartaPorte == registroMasiva.CartaDePorte)
-                .Sum(x => x.Kilogramos);
+            //var kilosPendientesAplicar = aplicacionesPendientesBD
+            //    .Where(x => x.CartaPorte == registroMasiva.CartaDePorte)
+            //    .Sum(x => x.Kilogramos);
 
             var kilosArchivoEnProceso = aplicacionesAnterioresDelArchivo
                 .Where(x => x.CartaDePorte == registroMasiva.CartaDePorte)
                 .Sum(x => int.Parse(x.Kilos));
 
-            var kilosDisponibles = cartaPorte.KgPendientes - kilosPendientesAplicar - kilosArchivoEnProceso;
+            //var kilosDisponibles = cartaPorte.KgPendientes - kilosPendientesAplicar - kilosArchivoEnProceso;
+            var kilosDisponibles = cartaPorte.KgPendientes - kilosArchivoEnProceso;
 
             if (kilosDisponibles < kilosSolicitados)
             {

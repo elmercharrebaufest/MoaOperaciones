@@ -205,6 +205,11 @@
     <Build Include="DBO\Tables\PeticionDeOfertaRevisionTecnica.sql" />
     <Build Include="DBO\Tables\AplicacionCartaPorteCargaMasiva.sql" />
     <Build Include="DBO\Tables\AplicacionCartaPorteCargaMasivaFila.sql" />
+    <Build Include="DBO\Tables\RegionSap.sql" />
+    <None Include="scripts\PostDeployment\RegionSap.sql" />
+    <Build Include="DBO\Tables\ChatInternoCompras.sql" />
+    <Build Include="DBO\Tables\PeticionDeOfertaUsuarioAdicional.sql" />
+    <Build Include="DBO\Tables\ArchivoCampoSustentable.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DatabasePublishQA.xml" />

@@ -26,6 +26,7 @@ namespace SustitucionMOAUtils.Helpers
         private readonly string rutaArchivosConsulta = ConfigurationManager.AppSettings["RutaArchivosConsulta"];
         private static readonly string EMAIL_TEMPLATE = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "RespuestaConsulta.html");
         protected static readonly string consultaInternaCC = ConfigurationManager.AppSettings["EmailConsultaInternaCC"];
+        private readonly string rutaMisConsultas = ConfigurationManager.AppSettings["UrlMisConsultas"];
 
         public ConsultaCommon(IRepositorio repositorio, IEmailService emailService)
         {
@@ -84,7 +85,7 @@ namespace SustitucionMOAUtils.Helpers
             try
             {
                 var cuerpoTemplate = File.ReadAllText(EMAIL_TEMPLATE);
-                var cuerpo = string.Format(cuerpoTemplate, consulta.Asunto, !string.IsNullOrWhiteSpace(comentario.Detalle) ? comentario.Detalle : "-");
+                var cuerpo = string.Format(cuerpoTemplate, consulta.Asunto, !string.IsNullOrWhiteSpace(comentario.Detalle) ? comentario.Detalle : "-", rutaMisConsultas);
                 string asunto = "Molinos Agro - Consulta N° " + consulta.Id + ": " + consulta.Asunto;
                 Dictionary<string, byte[]> archivos = ConvertFiles(files);
                 EmailSender.EnviarMail(new List<string> { mailDestinatario }, asunto, cuerpo,

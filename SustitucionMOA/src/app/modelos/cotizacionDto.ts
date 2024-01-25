@@ -14,12 +14,18 @@ export interface CotizacionDto {
     ObservacionEconomica: string,
     Revision: number,
     CotizacionEstadoDescripcion: string, 
-    Archivos: LegajoDto[],
+    Archivos: ArchivoDto[],
     ArchivosCotizacion: Archivo[]
     TieneObservacionTecnica: boolean, 
     CotizacionPosiciones: CotizacionPosicionDto[],
     TieneAdjuntos: boolean    
     CotizacionesHoras: CotizacionHoraDto[]
+}
+export interface ArchivoDto {
+    Id: number,
+    FileKey: string,
+    Nombre: string,
+    Ruta: string   
 }
 
 export interface CotizacionPosicionDto {

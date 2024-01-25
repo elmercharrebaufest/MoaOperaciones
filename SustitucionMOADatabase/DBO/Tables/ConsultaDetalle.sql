@@ -14,6 +14,7 @@
     [Material_Id] INT NULL, 
     [Orden_Id] INT NULL, 
     [PatenteChasis] VARCHAR(15) NULL, 
+    [Rubro] VARCHAR(50) NULL, 
     CONSTRAINT [PK_dbo.ConsultaDetalle] PRIMARY KEY CLUSTERED 
 (
 	[Id] ASC

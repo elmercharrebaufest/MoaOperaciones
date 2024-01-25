@@ -177,7 +177,27 @@ namespace SustitucionMOAUtils.Services
                 LinkAdjunto = x.LinkAdjunto
             }).OrderByDescending(s => s.Id).ToList();
 
+            if (usuario.Roles.Any(r => r.Codigo == "COMPRADOR" || r.Codigo == "SOLP"))
+            {
+                var rol = usuario.Roles.Any(r => r.Codigo == "COMPRADOR") ? "SOLP" : "COMPRADOR";
 
+                var chatSinLeer = repositorio.Listar<ChatInternoCompras, NotificacionDto>(
+                    x => new NotificacionDto
+                    {
+                        Id = x.PeticionDeOferta_Id,
+                        Mensaje = "Tiene un mensaje sin leer de la SOLP #" + x.PeticionDeOferta.Solp.NroSolp
+                    },
+                    x =>
+                    (x.PeticionDeOferta.UsuarioCreador_Id == usuario.Id || x.PeticionDeOferta.Solp.UsuarioCreacion_Id == usuario.Id || x.PeticionDeOferta.Solp.UsuarioModificacion_Id == usuario.Id)
+                    //&& x.Usuario_Id != usuario.Id
+                    && x.Usuario.Roles.Any(r => r.Codigo == rol)
+                    && x.Leido == false
+                ).Distinct().ToList();
+
+                listado.AddRange(chatSinLeer);
+            }
+           
+           
             return listado;
         }
 
