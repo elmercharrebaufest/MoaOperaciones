@@ -452,7 +452,6 @@ export class CotizacionComponent extends ListBaseComponent {
     }
 
     resetearFecha(): void {
-        console.log("toy en resetearFecha")
         if(this.model.trabajoHecho != true || this.model.urgencia != true){
             if (this.model.fechaEntrega < this.hoy) {          
               this.model.fechaEntrega = this.hoy;
