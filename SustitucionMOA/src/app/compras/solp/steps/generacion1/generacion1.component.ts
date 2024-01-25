@@ -37,7 +37,6 @@ export class Generacion1Component extends ListBaseComponent  {
     solpPaso1Result: any;
     fechaEntrega: any;
     horaEntrega: any;
-    hoy: Date = new Date();
 
     camposObligatorios: any[] = [
         { campo: 'nombreDePedido', esObligatorio: true},
@@ -107,4 +106,7 @@ export class Generacion1Component extends ListBaseComponent  {
     {
         this.validadorPasoSolpService.onBlurDirty(control);
     }
+
+   
+      
 }

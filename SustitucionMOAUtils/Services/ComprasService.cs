@@ -6609,6 +6609,7 @@ namespace SustitucionMOAUtils.Services
 
                     var usuario = repositorio.Obtener<Usuario>(a => a.UsuarioSap == result.Cabecera.UsuarioComprasSAP)?.Mail;
                     var usuarioCompras = usuariosCompras.FirstOrDefault(a => a.Mail.ToLower() == usuario.ToLower())?.Id;
+
                     result.Cabecera.UsuarioCompras_Id = usuarioCompras;
 
                     if (result.Cabecera.UsuarioCompras_Id == null)

@@ -47,6 +47,8 @@ export class CotizacionComponent extends ListBaseComponent {
     selectJefes: number[] = [];
     selectGerentes: number[] = [];
     selectDirectores: number[] = [];
+    hoy: Date = new Date();
+
 
     constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService,
         protected securityService: SecurityService, protected floatMsgService: FloatMsgService,
@@ -410,12 +412,10 @@ export class CotizacionComponent extends ListBaseComponent {
                             const todosSelect = [...this.selectJefes, ...this.selectGerentes, ...this.selectDirectores];
                             const nuevos = todosSelect.filter(Id => !this.model.liberadoresSap.some(lib => lib.LiberadorSap_Id === Id)).map(Id => ({ LiberadorSap_Id: Id }));
                             this.model.liberadoresSap = this.model.liberadoresSap.concat(nuevos);
-                            console.log(this.model.liberadoresSap);
                             //cargo los select con todos los liberadores segun su cargo:
                             this.liberadoresJefes = listaResult.filter(j => j.Cargo === 'Jefe').map(j => ({ label: j.NombreCompleto, value: j.Id, disabled: j.Obligatorio }));
                             this.liberadoresGerentes = listaResult.filter(g => g.Cargo === 'Gerente').map(g => ({ label: g.NombreCompleto, value: g.Id, disabled: g.Obligatorio }));
                             this.liberadoresDirectores = listaResult.filter(d => d.Cargo === 'Director').map(d => ({ label: d.NombreCompleto, value: d.Id, disabled: d.Obligatorio }));
-                            console.log(this.selectGerentes);
                             //tildo en los select los que ya trae la solp en su atributo liberadoresSap
                             var liberadoresIds = this.liberadoresJefes.map(x => x.value);
                             this.selectJefes = this.selectJefes.concat(this.model.liberadoresSap.map(lib => lib.LiberadorSap_Id)
@@ -449,5 +449,14 @@ export class CotizacionComponent extends ListBaseComponent {
             this.model.liberadoresSap.push({ LiberadorSap_Id: event.itemValue });
         }
         this.validarChecks();
+    }
+
+    resetearFecha(): void {
+        console.log("toy en resetearFecha")
+        if(this.model.trabajoHecho != true || this.model.urgencia != true){
+            if (this.model.fechaEntrega < this.hoy) {          
+              this.model.fechaEntrega = this.hoy;
+            }
+        }
     }
 };
