@@ -3,6 +3,7 @@ using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
+using SustitucionMOAModel.Models.Raw;
 using SustitucionMOARepositorio;
 using SustitucionMOARepositorio.Repositorios.Interfaces;
 using SustitucionMOAUtils.Interfaces;
@@ -538,17 +539,11 @@ namespace SustitucionMOAUtils.Services
             }).GroupBy(x => x.Id);
         }
 
-        public List<DestinatarioDto> ObtenerDestinatariosConsulta()
+        public List<DestinatarioDto> ObtenerDestinatariosConsulta(int proveedorId)
         {
             List<DestinatarioDto> destinatarios = new List<DestinatarioDto>();
-
-            var usuarios = this.GetUsuarios().Where(u => u.Habilitado == true);
-            destinatarios = usuarios.Select(u => new DestinatarioDto
-            {
-                Campo = "Usuario Web",
-                Mail = u.Mail,
-                UsuarioId = u.Id,
-            }).ToList();
+            var proveedor = this.repositorio.Obtener<Proveedor>(p => p.Id == proveedorId);
+            destinatarios = proveedor.UsuariosAsociados.Select(u => new DestinatarioDto(u)).ToList();
             return destinatarios;
         }
 
@@ -897,5 +892,7 @@ namespace SustitucionMOAUtils.Services
             repositorio.GuardarCambios();
         }
         #endregion
+  
+
     }
 }

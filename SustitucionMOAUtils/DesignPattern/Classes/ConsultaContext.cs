@@ -20,7 +20,7 @@ namespace SustitucionMOAUtils.DesignPattern.Classes
         public IConsultaStrategy GetStrategy(string strategyName)
         {
             var instance = _strategies.FirstOrDefault(x =>
-                x.Name.Equals(strategyName, StringComparison.InvariantCultureIgnoreCase));
+                x.Names.Contains(strategyName));
 
                 return instance;
         }

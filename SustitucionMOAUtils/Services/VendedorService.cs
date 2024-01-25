@@ -3,6 +3,7 @@ using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
+using SustitucionMOAModel.Models.Raw;
 using SustitucionMOAModel.Models.WSMapMOA.Vendedor;
 using SustitucionMOAModel.Models.WSMapMOA.Vendedor.Detalle;
 using SustitucionMOAModel.Models.WSMapMOA.Vendedor.Habilitado;
@@ -535,6 +536,24 @@ namespace SustitucionMOAUtils.Services
         }
 
         private TipoUsuario ObtenerTipoPorNombreCorto(string nombreCorto) => repositorio.Obtener<TipoUsuario>(t => t.NombreCorto == nombreCorto);
+
+        public List<ProveedorRaw> GetVendedoresRaw()
+        {
+            var vendedores = new List<ProveedorRaw>();
+            vendedores = this.repositorio
+                        .Listar<Proveedor>(p => p.EstadoAprobacion == EstadoAprobacion.Aprobado)
+                        .Select(proveedor => new ProveedorRaw(proveedor)).ToList();
+
+            foreach (var item in vendedores.Where(a => a.CUIT == null || a.CUIT == ""))
+            {
+                item.CUIT = "-";
+            }
+            foreach (var item in vendedores.Where(a => a.RazonSocial == null || a.RazonSocial == ""))
+            {
+                item.RazonSocial = "-";
+            }
+            return vendedores.Distinct().ToList();
+        }
 
     }
 }

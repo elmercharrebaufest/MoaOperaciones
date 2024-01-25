@@ -62,11 +62,16 @@ export class ConsultaService extends BaseService {
             .get('/api/consulta/GetDestinatariosConsultaFas', { params: params, headers: this.headers });
     }
 
-    public getDestinatarios(ordenId: number): Observable<any> {
+    public getDestinatarios(proveedorId: number): Observable<any> {
         let params: HttpParams = new HttpParams();
-        params = params.set('ordenId', ordenId.toString());
+        params = params.set('proveedorId', proveedorId.toString());
         return this.http
-            .get('/api/consulta/GetDestinatariosConsulta', { params: params, headers: this.headers });
+            .get('/api/consulta/GetDestinatario', { params: params, headers: this.headers });
+    }
+
+    public getVendedoresUsuario(): Observable<any> {
+        return this.http
+            .get('/api/consulta/GetVendedoresUsuario', { headers: this.headers });
     }
 
     public listarConsultas(): Observable<any> {

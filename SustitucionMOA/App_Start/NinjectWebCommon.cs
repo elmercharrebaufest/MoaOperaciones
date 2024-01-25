@@ -230,6 +230,11 @@ namespace SustitucionMOA.App_Start
             //Consulta Strategies
             kernel.Bind<IConsultaContext>().To<ConsultaContext>().InTransientScope();
             kernel.Bind<IConsultaStrategy>().To<ConsultaOrdenesStrategy>().InTransientScope();
+            kernel.Bind<IConsultaStrategy>().To<ConsultaFinalStrategy>().InTransientScope();
+            kernel.Bind<IConsultaStrategy>().To<ConsultaParcialStrategy>().InTransientScope();
+            kernel.Bind<IConsultaStrategy>().To<ConsultaGeneralStrategy>().InTransientScope();
+            kernel.Bind<IConsultaStrategy>().To<ConsultaActualizacionStrategy>().InTransientScope();
+
 
             // GoogleDrive
             kernel.Bind<IGoogleDriveHelper>().To<GoogleDriveHelper>().InScope(ctx => HttpContext.Current);
