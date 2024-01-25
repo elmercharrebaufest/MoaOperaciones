@@ -2,9 +2,6 @@
     width: 33%;
 }
 
-.fa{
-    margin-right:-10px;
-}
 .buscar {
     background-color: #1C7CD5;
     border-color: #1C7CD5;
@@ -13,102 +10,29 @@
     font-size: 18px;
 }
 
-.buttonBuscar{
+.buttonBuscar {
     margin-left: -121px;
     margin-top: 4px;
 }
-body.ui-paginator.ui-dropdown{
+
+body.ui-paginator.ui-dropdown {
     width: 10% !important;
 }
+
 .ng-tns-c7-9.ui-dropdown.ui-widget.ui-state-default.ui-corner-all.ui-helper-clearfix{
     width: 10% !important;
 }
 
-th{
-    border: 0px !important;
-}
-
-.detalle-th {    
-    text-align: center;
-}
-
-.columna{
-    /* word-break: break-all; word-wrap:break-word; font-size: 12px; */
-     word-break: break-all; word-wrap:break-word; font-size: 13px;
-}
-
-.almacen-centro{
-    font-size: 12px;
-}
-
-.emptyData{
-    text-align: center;
-}
-
-.headerth {
-    font-size: 13px !important;
-    width: max-content;
-    color: #ffffff !important;
-    background-color: #666666 !important;
-    padding: 1em 0.857em !important;
-}
-
-.headerth2 {
-    font-size: 13px !important;
-    color: #ffffff !important;
-    background-color: #666666 !important;
-    padding: 1em 0.857em !important;
-    width: max-content;
-}
-
 .padding{
-    padding: 8px;
-  }
+  padding: 8px;
+}
   
-.td {
-    padding: 0px;
-}
-
-.fz {
-    font-size: 0px;
-}
-
-.bg-e {
-    background-color: #959595 !important;
-}
-.bg-c {
-    background-color: #075088 !important;
-}
-
-.bg-d {
-    background-color: #1C7CD5 !important;
-}
-
-.bg-f {
-    background-color: #4760ac !important;
-}
-
 .title-fix {
     border-top-width: 1px;
     border-top-style: solid;
     border-left-width: 0px;
     border-left-style: solid;
     padding-left: 20px;
-}
-
-
-.percentage-green {
-    background-color: #2acc53 !important;
-    text-align: center;
-    color: black;
-    border: 2px solid #756f6f !important;
-}
-
-.percentage-yellow {
-    background-color: yellow !important;
-    text-align: center;
-    color: black;
-    border: 2px solid #756f6f !important;
 }
 
 .container-button {
@@ -131,29 +55,6 @@ th{
     font-size: 16px;
 }
 
-
-.expandSmallColumn {
-    width:4em;
-}
-
-.expandSmallColumn2 {
-    width: 6em;
-}
-
-.limitedColumn {
-    max-width: 2em;
-    word-break: break-all;
-    word-wrap: break-word;
-    font-size: 13px;
-}
-
-.limitedColumn2 {
-    max-width: 3em;
-    word-break: break-all;
-    word-wrap: break-word;
-    font-size: 13px;
-}
-
 .btn-buscar {
     top: 35px;
 }
@@ -167,7 +68,117 @@ th{
     visibility: hidden !important;
 }
 
+.hidden {
+  visibility: hidden !important;
+}
+
+
+/* TABLES */
+.emptyData {
+  text-align: center;
+}
+
+.table-container {
+  border: 1px solid rgb(200, 200, 200);
+  padding: 0;
+}
+
+::ng-deep .ui-table table {
+  border-collapse: collapse;
+  width: 100%;
+  table-layout: auto;
+}
+
+::ng-deep table th {
+  word-wrap: normal;
+  white-space: nowrap;
+  width: max-content;
+  color: white !important;
+  text-align: center;
+}
+
+::ng-deep .level1 th, .ui-sortable-column.ui-state-highlight {
+  background-color: #666 !important;
+}
+
+::ng-deep .level2 th {
+  background-color: #075088 !important;
+}
+
+::ng-deep .level3 th {
+  background-color: #1C7CD5 !important;
+}
+
+::ng-deep .level4 th {
+  background-color: #4760ac !important;
+}
+
+::ng-deep .level4 th:first-child {
+  min-width: 9rem;
+}
 
 ::ng-deep .ui-table tr {
   font-size: 1.3rem !important;
+  width: max-content;
+}
+
+::ng-deep .ui-table tr th:first-child:not(.level4 tr th:first-child) {
+  font-size: 0 !important;
+  min-width: 4rem;
+}
+
+::ng-deep table td {
+  text-align: left;
+  white-space: nowrap;
+}
+
+::ng-deep table td:first-child {
+  max-width: 0;
+}
+
+::ng-deep .ui-table-wrapper {
+  overflow: auto;
+}
+
+::ng-deep th:first-child {
+  max-width: 6rem;
+}
+
+::ng-deep i.ui-sortable-column-icon {
+  color: white;
+  font-size: 1.3rem;
+  padding-left: .8rem;
+}
+
+::ng-deep .level3 i.pi-chevron-down,
+::ng-deep .level3 i.pi-chevron-right {
+  padding-left: .6rem;
+  vertical-align: sub;
+}
+
+.percentage-green {
+  background-color: #2acc53 !important;
+  text-align: center;
+  color: black;
+  border: 1px solid #c8c8c8 !important;
+}
+
+.percentage-yellow {
+  background-color: yellow !important;
+  text-align: center;
+  color: black;
+  border: 1px solid #c8c8c8 !important;
+}
+
+.delete-icon {
+  height: 20px;
+  display: block;
+  margin: auto;
+}
+
+/* Rules here apply to devices from 1400px and up */
+@media (min-width: 1399px) {
+  .delete-icon {
+    height: 23px;
+  }
 }
