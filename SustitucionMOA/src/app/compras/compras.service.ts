@@ -13,6 +13,7 @@ import { OrdenDeCompraSap } from '../modelos/ordenDeCompraSap';
 import { RegistroInfoDto } from '../modelos/registro-info';
 import { PeticionVisualizacionPrecioDto } from '../modelos/peticion-visualizar-precio-dto';
 import { ChatInternoComprasDto } from './chat-interno/chat-interno.interface';
+import { VisitaObraDto } from '../modelos/infoVisitasDeObraDto';
 
 @Injectable({
     providedIn: 'root'
@@ -1003,6 +1004,12 @@ export class ComprasService extends BaseService {
     public listarUsuarioCreadorSolp(): Observable<any> {
         return this.http.get("/api/compras/ListarUsuarioCreadorSolp", {
             headers: this.headers,
+        });
+    }
+
+    public listarVisitasDeObra(listaVisitas: VisitaObraDto[]): Observable<any> {
+        return this.http.post("/api/compras/ListarVisitasDeObra", listaVisitas, {
+            headers: this.headers
         });
     }
 }

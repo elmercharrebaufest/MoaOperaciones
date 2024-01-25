@@ -28,7 +28,7 @@
                                     <div class="styled-select">
                                         <p-calendar [ngModelOptions]="{standalone:true}" [style]="{'width': '75%'}" [(ngModel)]="visita.visitaDeObraFecha"
                                                     [locale]="locale" [showIcon]="true" dateFormat="dd-M-yy" appendTo="body"
-                                                    [disabled]="!model.visitaDeObraMasiva" [readonlyInput]="true" [minDate]="hoy">
+                                                    [disabled]="!model.visitaDeObraMasiva" [readonlyInput]="true" [minDate]="hoy" (onSelect)="traerDetalleVisitas()">
                                         </p-calendar>
                                     </div>
                                 </div>
@@ -42,7 +42,7 @@
                                     </div>
                                 </div>
                                 <div class="col-xs-12 col-sm-12 col-md-1" style="right: 20px;">
-                                    <span (click)="model.visitaDeObraMasiva ? eliminarVisita(visita.id) : null">
+                                    <span (click)="model.visitaDeObraMasiva ? eliminarVisita(visita.id) : null; traerDetalleVisitas()">
                                         <img [class.pointer]="model.visitaDeObraMasiva"
                                              src="./Content/images/icons/trash.svg" alt="trash"
                                              style="padding: 8px;" />
@@ -58,6 +58,14 @@
                                         <i class="fa fa-plus-square"></i>&nbsp; Agregar nueva visita de obra
                                     </span>
                                 </div>
+                                <div *ngIf="info != null" style="margin-top: 15px;">
+                                    <span (click)="verDetalle()"  class="enlaceDetalle pointer">
+                                        Para esta fecha 
+                                        <ng-container *ngIf="info.CantidadVisitas === 1; else plural">existe {{info.CantidadVisitas}} visita</ng-container>
+                                        <ng-template #plural>existen {{info.CantidadVisitas}} visitas</ng-template> de obra.
+                                    </span>
+                                </div>
+                                
                             </div>
                         </div>
 
@@ -216,3 +224,38 @@
         <!--End CONTENT-->
     </div>
 </form>
+
+<p-dialog [(visible)]="verDetalleVisitas" [width]="800" modal="modal" appendTo="body" [draggable]="false" [contentStyle]="{'overflow':'visible', 'max-height':'600px', 'min-height':'100px'}" [closable]="false">
+    <p-header class="headerModal">
+        Detalle de visitas
+    </p-header>
+    <div style="max-height: 400px; overflow-y: auto;">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Fecha y hora</th>
+                    <th>Nro de Solp</th>
+                    <th style="text-align: center;">Proveedores</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let visita of detalleVisitas">
+                    <td>{{ visita.FechaHora | customDateFormat | date :'d/M/yyyy HH:mm' }}</td>
+                    <td>{{ visita.NroSolp }}</td>
+                    <td>
+                        <ul style="list-style-type: none;">
+                            <li *ngIf="visita.Proveedores.length === 0">Sin determinar</li>
+                            <li *ngFor="let proveedor of visita.Proveedores">
+                                {{ proveedor.RazonSocial + ' - ' + proveedor.Mail }}
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <p-footer>
+        <button type="button" class="btn btn-primary botonesComprasColor botonModal" (click)="cerrarDetalle()">Aceptar</button>
+    </p-footer>
+</p-dialog>

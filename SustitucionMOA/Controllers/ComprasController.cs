@@ -3,6 +3,7 @@ using SustitucionMOAAssets;
 using SustitucionMOAModel.Consultas;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
+using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using SustitucionMOASecurity;
 using SustitucionMOAUtils.Interfaces;
@@ -13,6 +14,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using System.Linq;
+using System.Web.Helpers;
 using System.Web.Mvc;
 
 namespace SustitucionMOA.Controllers
@@ -1620,6 +1622,26 @@ namespace SustitucionMOA.Controllers
             try
             {
                 return JsonCustom(new { data = service.ListarUnidadesDeMedida(material) });
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpPost]
+        public ActionResult ListarVisitasDeObra(List<VisitaObraDto> visitas)
+        {
+            try
+            {
+                var result = service.ListarVisitasDeObra(visitas);
+                return JsonCustom(new { data = result });
+            }
+            catch (WSCustomException e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception e)
             {

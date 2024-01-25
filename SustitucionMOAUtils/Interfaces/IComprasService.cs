@@ -86,5 +86,6 @@ namespace SustitucionMOAUtils.Interfaces
         List<LiberadorSapDto> ListarLiberadorSap();
         List<TablaSapDto> ListarUnidadesDeMedida(string material);
         ResultadoGenerico EditarOrdenDeCompra(AdjudicacionEditarDto adjudicacion);
+        InfoVisitasDeObraDto ListarVisitasDeObra(List<VisitaObraDto> visitas);
     }
 }

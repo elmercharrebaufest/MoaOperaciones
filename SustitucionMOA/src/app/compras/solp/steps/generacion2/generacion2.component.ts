@@ -18,6 +18,7 @@ import { ComprasService } from '../../../compras.service'
 import { Solp } from '../../solp';
 import { ValidadorPasoSolpService } from '../../../validadorPasoSolpService';
 import { EnumPasoSolp } from '../../../enum-paso-solp';
+import { DetalleVisitaDeObraDto, InfoVisitasDeObraDto, VisitaObraDto } from '../../../../modelos/infoVisitasDeObraDto';
 
 declare var $: any;
 
@@ -45,6 +46,8 @@ export class Generacion2Component extends ListBaseComponent {
     ];
 
     @Output() onEstCompleto = new EventEmitter<any>();
+    detalleVisitas: DetalleVisitaDeObraDto[];
+   
 
     constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService,
         protected securityService: SecurityService, protected floatMsgService: FloatMsgService,
@@ -69,7 +72,9 @@ export class Generacion2Component extends ListBaseComponent {
     hoy: Date = new Date();
     resultadoSupervisorSector: string[];
     resultadoSupervisorTrabajo: string[];
-
+    info: InfoVisitasDeObraDto;
+    visitaDeObra: VisitaObraDto[] = [];
+    verDetalleVisitas: boolean;
 
 
     //variables auxiliares de text rich
@@ -92,17 +97,25 @@ export class Generacion2Component extends ListBaseComponent {
                 visitaDeObraHora: new Date(1, 1, 1, 10, 0, 0, 0)
             }
         )
+        this.model.listaVisitas.forEach(visita => {
+            this.visitaDeObra.push({
+                Codigo: visita.id, 
+                FechaHora: visita.visitaDeObraFecha
+            });
+        });
+        
     };
 
     eliminarVisita(id) {
         this.model.listaVisitas = this.model.listaVisitas.filter(x => x.id != id);
+        console.log("eliminar this.model.listaVisitas", this.model.listaVisitas);
+        this.visitaDeObra = this.visitaDeObra.filter(visita => visita.Codigo !== id);
+        console.log("eliminar this.visitaDeObra", this.visitaDeObra);
 
         if (this.model.listaVisitas.length == 0) {
             this.agregarNuevaVisita();
         }
-
     }
-
 
     setTabs() {
         this.setMenuSeccionTab("Generacion2", "Generacion2");
@@ -254,5 +267,53 @@ export class Generacion2Component extends ListBaseComponent {
 
     onDescripcionTecnicaChange() {
         if (this.model.descripcionTecnica != true) this.model.entregaDocumentacion = false;
+    }
+
+    listarVisitasDeObra() {
+        try {
+            var fechas: VisitaObraDto[] = this.model.listaVisitas.map( visita => {
+                return {
+                    FechaHora: visita.visitaDeObraFecha
+                }
+            });
+
+            if (this.model.visitaDeObraMasiva == true) {
+                this.subscription = this.service.listarVisitasDeObra(fechas).subscribe(
+                    (result: any) => {
+                        if (result.logout == true) {
+                            this.sessionDataService.logout();
+                        } else if (result.error != undefined && result.error != "") {
+                            this.floatMsgService.setErrorMsg(result.error);
+                        } else if (result.info != undefined) {
+                            this.floatMsgService.setInfoMsg(result.info);
+                        } else {
+                            this.info = result.data;
+                            this.detalleVisitas = this.info.DetalleVisitas;
+                            console.log("this.info", this.info);
+                            console.log("this.model.listaVisitas", this.model.listaVisitas);
+                        }
+                    },
+                    error => {
+                        this.floatMsgService.setErrorMsg(error.message);
+                    });
+            }
+            
+        } catch (e) {
+            this.floatMsgService.setErrorMsg(e);
+            return false; //<-- Prevent Refresh
+        }
+        return false; //<-- Prevent Refresh
+    }
+
+    traerDetalleVisitas(){
+        this.listarVisitasDeObra();
+    }
+
+    verDetalle(){
+        this.verDetalleVisitas = true;
+    }
+
+    cerrarDetalle(){
+        this.verDetalleVisitas = false;
     }
 }

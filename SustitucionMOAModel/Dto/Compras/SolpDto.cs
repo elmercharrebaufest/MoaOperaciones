@@ -99,6 +99,7 @@ namespace SustitucionMOAModel.Dto
         public bool TodasLasPosicionesBorradas { get; set; }
         public bool? ProveedorDefinido { get; set; }
         public bool EditarCondicionesEspeciales { get; set; }
+        public int? Pliego_Id { get; set; }
 
         public SolpDto() { }
         public SolpDto(Solp entity)

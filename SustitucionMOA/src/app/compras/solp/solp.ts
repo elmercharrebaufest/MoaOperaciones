@@ -78,9 +78,6 @@ export class Solp extends CommonResponse {
     public proveedorDefinido: boolean;
     public editarCondicionesEspeciales: boolean;
 
-
-
-
     //inicio Cabecera == paso 5
     public selectClaseDocumento: any;
     public selectTipoPosicion: any;

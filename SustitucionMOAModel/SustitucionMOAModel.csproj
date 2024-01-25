@@ -61,6 +61,7 @@
     <Compile Include="Consulta\ListaPaginada.cs" />
     <Compile Include="Dto\AplicacionCartaPorte\CargaMasivaResponse.cs" />
     <Compile Include="Dto\AplicacionCartaPorte\ComboAplicacionesContratosCcppResponse.cs" />
+    <Compile Include="Dto\Compras\InfoVisitasDeObraDto.cs" />
     <Compile Include="Dto\MonedaConversionDto.cs" />
     <Compile Include="Dto\Compras\AdjudicacionEditarDto.cs" />
     <Compile Include="Dto\Compras\AdjudicacionPosicionEditarDto.cs" />
