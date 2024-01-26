@@ -77,7 +77,8 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
     isEntradaDeServicioExpanded = false;
     selectedItemIndex: number | null = null;
     checkSelected = false;
-    itemIdSelected: Set<string> = new Set();
+    itemIdSelected: any[]= [];
+    numeroLineaSelected: Set<string> = new Set();
     itemSelected: any[] = [];
     elementSelected: any[] = [];
     selectedItemId: number | null = null;
@@ -139,20 +140,27 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
   onCheckboxChange(item: any) {
     const itemId = item.PosicionId;
     const numeroLinea = item.NumeroLinea;
-    if (this.itemIdSelected.has(itemId && numeroLinea)) {
-      this.itemIdSelected.delete(itemId);
-  
+    if (this.itemIdSelected.includes(itemId) && this.numeroLineaSelected.has(numeroLinea)) {
+      this.itemIdSelected.splice(this.itemIdSelected.indexOf(itemId), 1);
+      this.numeroLineaSelected.delete(numeroLinea);
+
       this.itemSelected = this.itemSelected.filter((selectedItem: any) => 
       selectedItem.PosicionId !== item.PosicionId || selectedItem.NumeroLinea !== item.NumeroLinea);
+
     } else {
-      this.itemIdSelected.add(itemId);
+      this.itemIdSelected.push(itemId);
+      this.numeroLineaSelected.add(numeroLinea);
       this.itemSelected.push(item);
     }
   }
     //MMSN-519
     toggleRow(rowData: any) {
+      this.numeroLineaSelected.clear();
+      this.itemIdSelected.splice(0, this.itemIdSelected.length);
+      this.itemSelected.splice(0, this.itemSelected.length);
+
        //MMSN-519 - Al activar un filtro, colapsar filas expandidas.
-       this.expandedRow = rowData;
+      this.expandedRow = rowData;
     }
 
     //MMSN-574 - Agregar filtros
@@ -174,11 +182,11 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
 
     //MMSN-519 - Al activar un filtro, colapsar filas expandida
     collapseExpanded() {
-        if (this.expandedRow != undefined) {
-            if (this.tabla.isRowExpanded(this.expandedRow)) {
-                this.tabla.toggleRow(this.expandedRow);
-            }           
-        }
+      if (this.expandedRow != undefined) {
+        if (this.tabla.isRowExpanded(this.expandedRow)) {
+          this.tabla.toggleRow(this.expandedRow);
+        }           
+      }
     }
 
     getListarPO(proveedor, ordenCompraId,fecha_inicio, fecha_fin) {
@@ -277,7 +285,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
     openModal() {
       this.searchElement();
 
-      if (this.itemIdSelected.size > 0) {
+      if (this.itemIdSelected.length > 0) {
           this.showModal = true;
       }
       else {
@@ -298,10 +306,6 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
             this.elementSelected = ordenCompra;
             break;
           }
-        }
-  
-        if (this.elementSelected) {
-          break;
         }
       }
     }

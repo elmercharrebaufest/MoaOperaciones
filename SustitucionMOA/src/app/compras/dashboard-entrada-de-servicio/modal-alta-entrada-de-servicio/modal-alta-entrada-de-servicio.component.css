@@ -1,13 +1,13 @@
-
-  .header-table {
-    background-color: #075088 !important;
-    color: white;
-    border: none !important;
-    width: 50%;
+.alta-certificacion .header-table {
+  background-color: #075088 !important;
+  color: white;
+  border: none !important;
+  width: 50%;
 }
 
-.fila-par {
-  background-color: #fff; /* Fondo blanco para filas pares */
+.alta-certificacion tbody th {
+  width: 21% !important;
+  color: #333 !important;
 }
 
 .bg-color {
@@ -145,6 +145,10 @@ th, td {
   padding: 8px;
   border: 1px solid #ddd;
   text-align: left;
+}
+
+th {
+  color: #312b2b !important;
 }
 
 @media screen and (max-width: 600px) {
