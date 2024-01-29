@@ -100,6 +100,11 @@
     margin-bottom: 1em;
   }
   
+  .margenCheckbox {
+    margin-bottom: 1em;
+    margin-left: 6em;  
+  }
+
   .margenNeg {
     margin-bottom: -10px;
   

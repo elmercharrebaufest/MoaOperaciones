@@ -100,6 +100,10 @@ namespace SustitucionMOAModel.Dto
         public bool? ProveedorDefinido { get; set; }
         public bool EditarCondicionesEspeciales { get; set; }
         public int? Pliego_Id { get; set; }
+        public bool? THProveedorDirecto { get; set; }
+        public bool? THAjustePolinomica { get; set; }
+        public bool? THServicioPermanente { get; set; }
+
 
         public SolpDto() { }
         public SolpDto(Solp entity)

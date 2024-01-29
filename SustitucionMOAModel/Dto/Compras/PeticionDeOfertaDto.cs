@@ -147,6 +147,7 @@ namespace SustitucionMOAModel.Dto
         public DateTime? PlazoDeOfertaCierre { get; set; }
         public DateTime? FechaCircular { get; set; }
         public string CodigoProveedor { get; set; }
+        public string THCategoria { get; set; }
     }
 
     public class PeticionDeOfertaCierreDto

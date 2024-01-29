@@ -222,6 +222,9 @@ namespace SustitucionMOAUtils.Services
                 pliegoEntity = solpEntity.Pliego;
 
                 solpEntity.NroSolp = solp.NroSolp;
+                solpEntity.THAjustePolinomica = solp.THAjustePolinomica;
+                solpEntity.THProveedorDirecto = solp.THProveedorDirecto;
+                solpEntity.THServicioPermanente = solp.THServicioPermanente;
 
                 repositorio.Agregar(solpEntity);
             }
@@ -245,6 +248,9 @@ namespace SustitucionMOAUtils.Services
                 solpEntity.Urgencia = solp.Urgencia;
                 solpEntity.NroOrdenDeCompraAdicional = solp.NroOrdenDeCompraAdicional;
                 solpEntity.ProveedorAsignado_Id = solp.ProveedorAsignadoId;
+                solpEntity.THAjustePolinomica = solp.THAjustePolinomica;
+                solpEntity.THProveedorDirecto = solp.THProveedorDirecto;
+                solpEntity.THServicioPermanente = solp.THServicioPermanente;
                 pliegoEntity.FiscalContrato = solp.FiscalContrato;
                 pliegoEntity.Telefono = solp.Telefono;
                 pliegoEntity.Email = solp.Email;
@@ -1223,7 +1229,7 @@ namespace SustitucionMOAUtils.Services
                 Urgencia = solp.Urgencia,
                 NroOrdenDeCompraAdicional = solp.NroOrdenDeCompraAdicional,
                 DeshabilitarAdicional = solp.Adjudicaciones.Any(),
-                EditarCondicionesEspeciales = (solp.EstadoSolpSap_Id == null || solp.EstadoSolpSap.CodigoSap != "05") && po == null,
+                EditarCondicionesEspeciales = (solp.EstadoSolpSap_Id == null || solp.EstadoSolpSap.CodigoSap != "05" || solp.EstadoSolpSap.CodigoSap != "02") && po == null,
 
                 Adjuntos = solp.Pliego.Archivos.Where(a => a.FileKey == FileKeys.AdjuntoSolp || a.FileKey == FileKeys.AdjuntoCotizacionesSolp).Select(s => new ArchivoDto
                 {
@@ -1246,8 +1252,11 @@ namespace SustitucionMOAUtils.Services
                 PasoCompletado = solp.PasoCompletado,
                 EstadoPasos = solp.EstadoPasos,
                 EmailLinkToken = solp.EmailLinkToken,
-                LiberadoresSapSolp = solp.LiberadoresSapSolp.Select(l => new LiberadorSapSolpDto(l)).ToList()
-            };
+                LiberadoresSapSolp = solp.LiberadoresSapSolp.Select(l => new LiberadorSapSolpDto(l)).ToList(),
+                THAjustePolinomica = solp.THAjustePolinomica,
+                THProveedorDirecto = solp.THProveedorDirecto,
+                THServicioPermanente = solp.THServicioPermanente
+        };
             if (solpDevuelta.TipoSolpSap == (int)TipoSolpSap.Mantenimiento || solpDevuelta.TipoSolpSap == (int)TipoSolpSap.ReposicionAutomatica || solpDevuelta.TipoSolpSap == (int)TipoSolpSap.Sap)
             {
                 if (solpDevuelta.JornadaLaboral == null || solpDevuelta.JornadaLaboral.Count() == 0)

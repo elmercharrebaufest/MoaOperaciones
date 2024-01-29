@@ -48,8 +48,7 @@ export class CotizacionComponent extends ListBaseComponent {
     selectGerentes: number[] = [];
     selectDirectores: number[] = [];
     hoy: Date = new Date();
-
-
+    
     constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService,
         protected securityService: SecurityService, protected floatMsgService: FloatMsgService,
         protected modalService: ModalService, protected route: ActivatedRoute, protected router: Router
@@ -114,7 +113,10 @@ export class CotizacionComponent extends ListBaseComponent {
             jefes: new FormControl('', Validators.required),
             gerentes: new FormControl('', Validators.required),
             directores: new FormControl('', Validators.required),
-            proveedorDefinido: new FormControl('', Validators.required)
+            proveedorDefinido: new FormControl('', Validators.required),
+            servicioPermanente: [{ value: this.model.thServicioPermanente }, []],
+            ajustePolinomica: [{ value: this.model.thAjustePolinomica }, []],
+            proveedorDirecto: [{ value: this.model.thProveedorDirecto }, []],
         });
 
         this.validadorPasoSolpService.formulario = this.formularioCotizacion;
@@ -144,6 +146,11 @@ export class CotizacionComponent extends ListBaseComponent {
         }
 
         this.listarLiberadorSap();
+
+        if(this.model.thAjustePolinomica != true && this.model.thProveedorDirecto != true && this.model.thServicioPermanente != true){
+            this.onRadioButtonChange("Servicio permanente");
+        }
+
     }
 
     ngOnDestroy() {
@@ -318,8 +325,15 @@ export class CotizacionComponent extends ListBaseComponent {
                 this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: `${this.model.mensajeCotizacion}` });
                 this.model.validacionCheck = false;
             }
-        }
 
+            if(this.model.trabajoHecho == true){
+                if(this.model.thAjustePolinomica != true && this.model.thProveedorDirecto != true && this.model.thServicioPermanente != true){
+                    this.model.mensajeCotizacion = "Debe elegir una categoria de trabajo ya hacho en el paso #4";
+                    this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: `${this.model.mensajeCotizacion}` });
+                    this.model.validacionCheck = false;
+                }
+            }
+        }
         return this.model.validacionCheck;
     }
 
@@ -329,6 +343,9 @@ export class CotizacionComponent extends ListBaseComponent {
                 this.model.proveedorAsignado = "";
                 this.model.proveedorAsignado_Id = null;
                 this.proveedorSeleccionado = null;
+                this.model.thAjustePolinomica = false;
+                this.model.thProveedorDirecto = false;
+                this.model.thServicioPermanente = false;
             }
         }
     }
@@ -458,4 +475,22 @@ export class CotizacionComponent extends ListBaseComponent {
             }
         }
     }
+
+    onRadioButtonChange(value) {
+        this.model.thServicioPermanente = false;
+        this.model.thAjustePolinomica = false;
+        this.model.thProveedorDirecto = false;
+
+        if(value == "Servicio permanente"){
+            this.model.thServicioPermanente = true;
+        }
+
+        if(value == "Ajuste polinomica"){
+            this.model.thAjustePolinomica = true;
+        }
+
+        if(value == "Proveedor directo"){
+            this.model.thProveedorDirecto = true;
+        }
+      }
 };

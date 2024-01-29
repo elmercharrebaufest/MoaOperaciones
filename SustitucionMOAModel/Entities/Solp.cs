@@ -35,6 +35,11 @@ namespace SustitucionMOAModel.Entities
         public bool? SeEnvioMailLiberacion { get; set; }
         public bool? SeEnvioMailAnulacion { get; set; }
         public bool? ProveedorDefinido { get; set; }
+        public bool? THProveedorDirecto { get; set; }
+        public bool? THAjustePolinomica { get; set; }
+        public bool? THServicioPermanente { get; set; }
+
+
 
 
 

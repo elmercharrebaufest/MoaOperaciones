@@ -172,6 +172,9 @@ export class ComprasService extends BaseService {
             ClaseDocumento: this.getObjetoCodigo(solp.selectClaseDocumento && solp.selectClaseDocumento.Codigo),
             Finalizar: solp.Finalizar,
             LiberadoresSapSolp: solp.liberadoresSap,
+            THServicioPermanente: solp.thServicioPermanente,
+            THAjustePolinomica: solp.thAjustePolinomica,
+            THProveedorDirecto: solp.thProveedorDirecto,
             Posiciones: solp.posiciones.map(x => {
 
                 return {

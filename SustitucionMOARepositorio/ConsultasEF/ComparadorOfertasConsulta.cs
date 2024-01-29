@@ -127,6 +127,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                         u.Usuario.Proveedores.Where(p => p.CUIT == u.Usuario.CUITRegistro && u.Usuario.TipoUsuario.Id == p.TipoProveedor.Id).FirstOrDefault().Mail : u.Usuario.CUITRegistro,
                                                     PropuestaTecnicaAprobada = u.PropuestaTecnicaAprobada,
                                                     RealizoVisita = u.RealizoVisita,
+                                                    THCategoria = po.Solp.THProveedorDirecto == true ? "Proveedor directo" : (po.Solp.THAjustePolinomica == true ? "Ajuste polinómica" : "Servicio permanente"),
                                                     EstadoVisita = u.RealizoVisita == true ? "Realizada" : po.Solp.TrabajoYaHecho == true ? "Trabajo ya hecho" : "Sin realizar",
                                                     EstadoVisitaColor = u.RealizoVisita == true ? "Green" : "Red",
                                                     EstadoPropuestaTecnica = u.PropuestaTecnicaAprobada == null ? "Sin analizar" : (u.PropuestaTecnicaAprobada == true ? "Aprobada" : "Rechazada"),

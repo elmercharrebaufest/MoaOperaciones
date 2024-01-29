@@ -76,7 +76,10 @@ export class Solp extends CommonResponse {
     public archivosCotizaciones: Array<ArchivoModel>;
     public liberadoresSap: any[] = [];
     public proveedorDefinido: boolean;
-    public editarCondicionesEspeciales: boolean;
+    public editarCondicionesEspeciales: boolean = true;
+    public thServicioPermanente: boolean;
+    public thAjustePolinomica: boolean;
+    public thProveedorDirecto: boolean;
 
     //inicio Cabecera == paso 5
     public selectClaseDocumento: any;
@@ -255,6 +258,9 @@ export class Solp extends CommonResponse {
             this.monedaOC = solp.MonedaOC;
             this.liberadoresSap = solp.LiberadoresSapSolp;
             this.editarCondicionesEspeciales = solp.EditarCondicionesEspeciales;
+            this.thAjustePolinomica = solp.THAjustePolinomica;
+            this.thProveedorDirecto = solp.THProveedorDirecto;
+            this.thServicioPermanente = solp.THServicioPermanente;  
 
             //pop up finalizar
             this.revisadoPor = solp.RevisadoPor || '';
