@@ -856,7 +856,7 @@ export class CrearConsultaInternaComponent extends ListBaseComponent implements 
   mostrarAviso() {
     this.mensajeComponent.setMsgsEmpty();
     if (this.destinatariosFas.length > 1) {
-      this.mensajeComponent.setInfoMsg("Se va a proceder a crear una consulta para cada uno de los destinatarios seleccionados.");
+      this.mensajeComponent.setInfoMsg("Se enviará copia del mail al cliente.");
       return true;
     }
   }
