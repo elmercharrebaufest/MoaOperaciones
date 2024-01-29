@@ -1,84 +1,89 @@
-::ng-deep .estiloCalendarDashboard {
-    width: 33%;
+section {
+  padding-top: 20px;
 }
 
-.bg-c {
-    background-color: #21643e !important;
+#solicitudes {
+  margin: 0;
+  padding: 0 1.5rem;
 }
 
-.percentage {
-    background-color: #2acc53 !important;
-    text-align: center;
-    color: black;
-    border: 2px solid #756f6f !important;
+#solicitudes .filter {
+  width: 50%;
+  margin: 0 auto;
+  font-size: 1.3rem;
 }
 
-.dialog-accept-button {
-    background-color: #0b880b;
-    width: 33px !important;
+#solicitudes .ui-table-wrapper {
+  overflow: auto;
 }
 
-.dialog-reject-button {
-    background-color: #e33030;
-    width: 33px !important;
+::ng-deep #solicitudes .ui-table .ui-table-thead > tr > th {
+  padding: 0.3em 1em !important;
+  font-size: 1.3rem;
 }
 
-.text-brev{
-    white-space: nowrap; 
-    overflow: hidden; 
-    text-overflow: ellipsis;
-    width: 80px;
+#solicitudes .ui-table tr {
+  width: max-content;
 }
 
-.fa{
-    margin-right:-8.7px;
+#solicitudes .level1 th,
+#solicitudes .ui-sortable-column.ui-state-highlight {
+  background-color: #666 !important;
 }
 
-body.ui-paginator.ui-dropdown{
-    width: 10% !important;
-}
-.ng-tns-c7-9.ui-dropdown.ui-widget.ui-state-default.ui-corner-all.ui-helper-clearfix{
-    width: 10% !important;
+#solicitudes .level2 th {
+  background-color: #075088 !important;
+  font-size: 1.3rem !important;
 }
 
-th{
-    border: 0px !important;
+#solicitudes .level1 tr th:first-child {
+  min-width: 4rem;
 }
 
-.columna{
-    word-break: break-all; word-wrap:break-word; font-size: 12px;;
+#solicitudes table td {
+  text-align: left;
+  white-space: nowrap;
 }
 
-.headerth { 
-    font-size: 10px !important;
-    /* width: max-content; */
-    color: #ffffff !important;
-    background-color: #666666 !important;
-    padding: 1.571em 0.857em !important;
+#solicitudes table td:first-child {
+  max-width: 0;
 }
 
-.padding{
-    padding: 8px;
+#solicitudes .level2 tr td:first-child {
+  width: 8%;
+}
+
+.level1 th:first-child {
+  max-width: 6rem;
+}
+
+i.ui-sortable-column-icon {
+  color: white;
+  font-size: 1.3rem;
+  padding-left: .8rem;
+}
+
+.btn {
+  width: 30px !important;
+  border: none;
+  margin: 0.3rem;
+  transition: background 0.2s linear 0.1s, color 0.2s linear 0s;
+}
+
+.btn.accept-btn {
+  background-color: #0b880b !important;
+  color: #fff;
+}
+
+.btn.reject-btn {
+  background-color: #e33030 !important;
+  color: #fff;
+}
+
+/* Rules here apply to devices from 1280px and up */
+@media (min-width: 1279px) {
+  .ui-table tr th:first-child {
+    font-size: 1.3rem !important;
+    min-width: 4rem;
   }
-  
-.td {
-    padding: 0px;
-}
-
-.fz {
-    font-size: 0px;
-}
-
-.w-expanded {
-    width: 150px;
-}
-
-.bg-c {
-    background-color: #075088 !important;
-    width: 150px;
-}
-
-.bg-d {
-    background-color: #075088 !important;
-    width: 90px;
 }

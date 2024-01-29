@@ -1,221 +1,133 @@
 <section class="container-fluid clearfix">
   <div class="row titleSection">
-      <div class="col-xs-12 col-sm-10 "> <strong>Dashboard - Solicitudes de certificaciones</strong></div>
+      <div class="col-xs-12 col-sm-10"> <strong>Dashboard - Solicitudes de certificaciones</strong></div>
   </div>
   <br>
 </section>
-<div class="content-wraper" style="padding-top: 0px !important;">
-    <spinner></spinner>
-    <!-- <app-filtro-dashboard-certificacion-de-servicios></app-filtro-dashboard-certificacion-de-servicios> -->
-    <div class="col-sm-12 col-md-12 col-lg-12" style="padding: 0px; border: 1px solid rgb(200, 200, 200);">
 
-        <p-table  #tabla [value]="tablaPO" responsiveLayout="scroll | stack" dataKey="NumeroOrdenDeCompra"
-            [paginator]="true" 
-            [rows]="10" 
-            [columns]="columns"
-            [globalFilterFields]="['NumeroOrdenDeCompra','Proveedor']" >
-           
-            <ng-template pTemplate="caption" style="border: none !important;">
-                <div class="p-d-flex">
-                    <span class="p-input-icon-left p-ml-auto">
-                        <i class="pi pi-search" style="padding-right: 0.5em;"></i>
-                        <input pInputText type="text" (input)="tabla.filterGlobal($event.target.value, 'contains')" placeholder="BUSCADOR OC / PROVEEDOR" style="width: 40%;" />
-                    </span>
-                </div>
-            </ng-template >
 
-            <ng-template pTemplate="header" let-columns class="lista-header">
-                <tr>
-                    <th class="headerth" title="Detalle" style=" text-align: center; width: 35px;">
-                        
-                    </th>
+<div id="solicitudes" class="content-wraper">
   
-                    <th class="headerth" title="ID_ES" style="text-align: center; width: 70px;">
-                        ID_ES
-                    </th>
-                    <th class="headerth" title="Fecha" (click)="onOrder('Fecha')" >
-                        Fecha
-                        <span>
-                            <i
-                                [ngClass]="{'fa': true, 'fa-solid fa-sort-up': true, 'arrow': true, 'unselected': columna === 'Fecha' && orden == false  }"></i>
-                            <i
-                                [ngClass]="{'fa': true, 'fa-solid fa-sort-down': true, 'arrow': true, 'unselected': columnaOrden === 'Fecha' && orden == true }"></i>
-                        </span>
-                    </th>
+  <spinner></spinner>
   
-                    <th title="Número de OC" class="headerth" (click)="onOrder('OrdenCompraId')">
-                        Orden de compra
-                        <span>
-                            <i
-                                [ngClass]="{'fa': true, 'fa-solid fa-sort-up': true, 'arrow': true, 'unselected': columnaOrden === 'OrdenCompraId' && orden == false  }"></i>
-                            <i
-                                [ngClass]="{'fa': true, 'fa-solid fa-sort-down': true, 'arrow': true, 'unselected': columnaOrden === 'OrdenCompraId' && orden == true }"></i>
-                        </span>
-                    </th>
-  
-                    <th title="Proveedor" class="headerth" (click)="onOrder('ProveedorNombre')">
-                        Proveedor
-                        <span>
-                            <i
-                                [ngClass]="{'fa': true, 'fa-solid fa-sort-up': true, 'arrow': true, 'unselected': columnaOrden === 'ProveedorNombre' && orden == false  }"></i>
-                            <i
-                                [ngClass]="{'fa': true, 'fa-solid fa-sort-down': true, 'arrow': true, 'unselected': columnaOrden === 'ProveedorNombre' && orden == true }"></i>
-                        </span>
-                    </th>
-                    <th title="Descripción" class="headerth">
-                        Descripción
-                    </th>
-  
-                    <th title="Monto total" class="headerth columna">
-                        Monto total
-                    </th>
-  
-                    <th title="Usuario" class="headerth columna">
-                        Usuario o Área
-                    </th>
-  
-                    <th  class="headerth columna" style="width: 90px;">
-                      
-                    </th>
-  
-                    <th title="Estado" class="headerth columna">
-                        Estado
-                    </th>
-  
-                    <th title="Facturado" class="headerth columna">
-                        Facturado
-                    </th>
-  
-                    <th title="Acciones" class="headerth columna" style="width: auto;">
-                        Acciones
-                    </th>
-  
-                    <th title="Reasignar" class="headerth columna" style="width: auto;">
-                        Reasignar
-                    </th>
-  
-                </tr>
+  <!-- <app-filtro-dashboard-certificacion-de-servicios></app-filtro-dashboard-certificacion-de-servicios> -->
+
+  <!-- TABLE 1 -->
+  <p-table #tabla *ngIf="displayContent()"
+           class="level1"
+           [value]="tablaPO"
+           dataKey="EntradaServicio"
+           [paginator]="true"
+           [rows]="innerWidth && innerWidth < 1399 ? 6 : 10"
+           [columns]="columns"
+           [globalFilterFields]="['OrdenCompra','ProveedorNombre']"
+           responsiveLayout="scroll | stack"
+           rowExpandMode="single">
+
+    <!-- FILTERS -->
+    <ng-template pTemplate="caption">
+      <div class="p-d-flex filter">
+        <span class="p-input-icon-left p-ml-auto">
+          <i class="pi pi-search" style="padding-right: 0.5em;"></i>
+          <input class="filter" pInputText type="text" (input)="tabla.filterGlobal($event.target.value, 'contains')" placeholder="BUSCADOR OC / PROVEEDOR" />
+        </span>
+      </div>
+    </ng-template>
+
+    <!-- FILTERS END -->
+    <!-- TABLE 1 HEADERS -->
+    <ng-template pTemplate="header" let-columns class="lista-header">
+      <tr>
+        <th title="Detalle"></th>
+        <th title="ID_ES">ID_ES</th>
+        <th title="Fecha" pSortableColumn="FechaCreacion">Fecha<p-sortIcon field="FechaCreacion"></p-sortIcon></th>
+        <th title="Número de OC" pSortableColumn="OrdenCompra">Número OC<p-sortIcon field="OrdenCompra"></p-sortIcon></th>
+        <th title="Proveedor" pSortableColumn="ProveedorNombre">Proveedor<p-sortIcon field="ProveedorNombre"></p-sortIcon></th>
+        <th title="Descripción">Descripción</th>
+        <th title="Monto total">Monto total</th>
+        <th title="Usuario">Usuario o Área</th>
+        <th title="Estado">Estado</th>
+        <th title="Facturado">Facturado</th>
+        <th title="Acciones">Acciones</th>
+        <th title="Reasignar">Reasignar</th>
+        <!--
+      <th title="Vendedor">Vendedor</th>
+      -->
+      </tr>
+    </ng-template>
+    <!-- TABLE 1 HEADERS END -->
+    <!-- TABLE 1 BODY -->
+    <ng-template pTemplate="body" let-rowData let-columns="columns" let-expanded="expanded">
+      <tr [pSelectableRow]="rowData">
+        <td>
+          <a *ngIf="rowData.entradaServicioDetalle?.length > 0" href="#" [pRowToggler]="rowData" (click)="toggleRow(rowData)">
+            <i [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
+          </a>
+        </td>
+        <td>{{rowData.EntradaServicio}}</td>
+        <td>{{rowData.FechaCreacion | date: 'd/M/yyyy' }}</td>
+        <td>{{rowData.OrdenCompra || ""}}</td>
+        <td>{{rowData.Proveedor | defaultData }}</td>
+        <td>{{rowData.Descripcion | defaultData }}</td>
+        <td>{{rowData.MontoTotal | currency }}</td>
+        <td>{{rowData.Area | defaultData}}</td>
+        <td>{{rowData.Estado | defaultData}}</td>
+        <td>{{rowData.Facturado | defaultData}}</td>
+        <td>{{rowData.Acciones | defaultData}}</td>
+        <td>
+          <button type="button" pButton icon="pi pi-check" class="btn accept-btn"></button>
+          <button type="button" pButton icon="pi pi-times" class="btn reject-btn"></button>
+        </td>
+        <!--<td>
+        <div class="styled-select" style="max-width: fit-content;">
+          <dropdown [tipoDropdown]="'filtroSC'" [options]="filtroVendedor"></dropdown>
+        </div>
+      </td>-->
+      </tr>
+    </ng-template>
+    <!-- TABLE 1 BODY END -->
+
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td class="emptyData" colspan="12">No hay ordenes de compra para mostrar</td>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="rowexpansion" let-rowData let-columns="columns">
+      <tr>
+        <td colspan="12">
+          <!-- TABLE 2 -->
+          <p-table class="level2" [value]="rowData.entradaServicioDetalle" responsiveLayout="scroll | stack" dataKey="NumeroLinea">
+            <!-- TABLE 2 HEADERS -->
+            <ng-template pTemplate="header">
+              <tr>
+                <th title="Posicion">N° de Ítem</th>
+                <th title="Material">N° de Servicio</th>
+                <th title="TxtBrev">Descripción</th>
+                <th title="CtdPedido">Cantidad</th>
+                <th title="U">UM</th>
+                <th title="T">Monto</th>
+              </tr>
             </ng-template>
-
-            <ng-template pTemplate="body" let-rowData let-columns="columns" let-expanded="expanded">
-                <tr [pSelectableRow]="rowData">
-
-                    <td class="columna" style="text-align: center;">
-                        <a href="#" [pRowToggler]="rowData" (click)="toggleRow(rowData)">
-                            <div *ngIf="rowData.entradaServicioDetalle.length > 0">
-                                <i [ngClass]="rowData ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
-                            </div>
-                        </a>
-                      </td>
-
-                    <td class="columna">
-                      {{rowData.EntradaServicio}}
-                    </td>
-                    <td class="columna">
-                        {{rowData.FechaCreacion | customDateFormat | date :'d/M/yyyy' }}
-                    </td>
-                    <td class="columna">
-                        {{rowData.OrdenCompra || ""}}
-                    </td>
-                    <td class="columna">
-                        {{rowData.Proveedor}}
-                    </td>
-                    <td class="columna">
-                        {{rowData.Descripcion}}
-                    </td>
-                    <td class="columna">
-                        {{rowData.MontoTotal}}
-                    </td>
-                    <td class="columna">
-                      -
-                    </td>
-                    <td class="columna">
-                      PA
-                    </td>
-                    <td class="columna">
-                      -
-                    </td>
-                    <td class="columna">
-                      -
-                    </td>
-                    <td class="columna">
-                      <button type="button" pButton icon="pi pi-check" class="dialog-accept-button" ></button>
-                      <button type="button" pButton icon="pi pi-times" class="dialog-reject-button" ></button>
-                    </td>
-                    <td class="columna">
-                      <div class="styled-select" style="max-width: fit-content;">
-                        <dropdown [tipoDropdown]="'filtroSC'" [options]="filtroVendedor"></dropdown>
-                      </div>
-                    </td>
-                </tr>
-
+            <!-- TABLE 2 HEADERS END -->
+            <!-- TABLE 2 BODY -->
+            <ng-template pTemplate="body" let-rowData let-expanded="expanded">
+              <tr>
+                <td>{{rowData.NumeroLinea }}</td>
+                <td>{{rowData.CodigoServicio}}</td>
+                <td>{{rowData.Descripcion}}</td>
+                <td>{{rowData.Cantidad}}</td>
+                <td>{{rowData.UM}}</td>
+                <td>{{rowData.Monto}}</td>
+              </tr>
             </ng-template>
+            <!-- TABLE 2 BODY END -->
+          </p-table>
+          <!-- TABLE 2 END -->
+        </td>
+      </tr>
+    </ng-template>
 
-            <!-- <ng-template pTemplate="rowexpansion" let-rowData let-columns="columns">
-                <div style="margin: 1em;" >
-                    <td [attr.colspan]="6" class="fz"  style="margin: 1em; border: 1px solid rgb(200, 200, 200);  ">
-                        <div> -->
-
-            <ng-template pTemplate="rowexpansion" let-rowData let-columns="columns">
-                <div style="margin: 1em;" *ngIf="selectedRow === rowData">
-                    <td [attr.colspan]="6" class="fz"  style="margin: 1em; border: 1px solid rgb(200, 200, 200);  ">
-                        <div>
-
-                            <p-table [value]="rowData.entradaServicioDetalle" responsiveLayout="scroll | stack" dataKey="Id">
-            
-                                <ng-template pTemplate="header" class="fz">
-                                    <tr>
-                    
-                                        <th title="Posicion" class="headerth columna bg-c">
-                                            N° de Ítem
-                                        </th>
-    
-                                        <th title="Material" class="headerth columna bg-c">
-                                            N° de Servicio
-                                        </th>
-    
-                                        <th title="TxtBrev" class="headerth columna bg-c" >
-                                            Descripción
-                                        </th>
-    
-                                        <th title="CtdPedido" class="headerth columna bg-c" >
-                                            Cantidad
-                                        </th>
-    
-                                        <th title="U" class="headerth columna bg-d">
-                                            UM
-                                        </th> 
-    
-                                        <th title="T" class="headerth columna bg-c">
-                                            Monto
-                                        </th> 
-    
-                                    </tr>
-                                </ng-template>
-            
-                                <ng-template pTemplate="body" let-rowData  let-expanded="expanded">
-                                    <tr>
-                                        <td class="columna">
-                                            {{rowData.NumeroLinea}}
-                                        </td>
-                                        <td class="columna">
-                                            {{rowData.EntradaServicio}}
-                                        </td>
-                                        <td class="columna">
-                                            {{rowData.Descripcion}}
-                                        </td>
-                                        <td class="columna">
-                                            {{rowData.Cantidad}}
-                                        </td>
-                                        <td class="columna">
-                                            {{rowData.UM}}
-                                        </td>
-                                        <td class="columna">
-                                            {{rowData.Monto}}
-                                        </td>
-                                    </tr>
-                                </ng-template>
-
-        </p-table>
-    </div>
+  </p-table>
+  <!-- TABLE 1 END -->
 </div>

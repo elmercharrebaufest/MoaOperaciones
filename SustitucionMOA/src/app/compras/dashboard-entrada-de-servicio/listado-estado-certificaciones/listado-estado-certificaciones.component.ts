@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, OnInit, ViewChild, HostListener } from '@angular/core';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { Table } from 'primeng/table';
 import { ListBaseComponent } from '../../../common/base-components/list-base-component';
@@ -55,8 +55,12 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent {
   selectedPosicionId: number | null = null;
   ordenCompraIdsMostradas: Set<number> = new Set<number>();
   selectedRow: any;
+  innerWidth: number;
 
-  opcionesDropdown = ['Opción 1', 'Opción 2', 'Opción 3'];
+  @HostListener('window:resize', ['$event'])
+  onResize(event) {
+    this.innerWidth = window.innerWidth;
+  }
 
   constructor(protected service: ComprasService, protected navService: NavService,
       protected sessionDataService: SessionDataService, protected securityService: SecurityService,
@@ -76,14 +80,16 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent {
   proveedor: string = "";
   
       
-    ngOnInit() {
+  ngOnInit() {
+    this.innerWidth = window.innerWidth;
+
       this.getListarPO(this.proveedor, this.documentoNumero);
 
       this.navService.setSeccionActive("Estado certificaciones");
 
       this.navService.navegarSeccion("compras/listadoEstadoCertificaciones");
     }
-  
+
     toggleTable(data: any) {
   
       const index = this.posicionRow.indexOf(data);
@@ -110,7 +116,7 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent {
     ngOnDestroy(): void {
         // this.subscripcionPO.unsubscribe();
     }
-  
+
     getListarPO(proveedor, documentoNumero) {
       this.getFecha();
       try {
@@ -137,12 +143,16 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent {
               }
               );
       } catch (e) {
-          this.floatMsgService.setErrorMsg(e);
-          this.spinnerComponent.hideIt()
-          return false; //<-- Prevent Refresh
+        this.floatMsgService.setErrorMsg(e);
+        this.spinnerComponent.hideIt();
+        return false; //<-- Prevent Refresh
       }
 
       return false; //<-- Prevent Refresh
+  }
+
+  displayContent() {
+    return !this.spinnerComponent.visible;
   }
   
   getFecha() {
