@@ -244,11 +244,9 @@ namespace SustitucionMOAUtils.Services
         private string ObtenerCodigoProveedorSeleccionado(Usuario usuario, Proveedor proveedorAsignado, string codigoSeleccionado,bool esCodigoCorredor)
         {
             var puedeSeleccionarProveedor = usuario.TienePermiso(PermisoEnum.SeleccionarVendedor);
-            if (usuario.EsCorredor() && (!puedeSeleccionarProveedor || proveedorAsignado.CodigoProveedor == codigoSeleccionado))
-            {
-                return null;
-            }
-            if (proveedorAsignado.CodigoProveedor != codigoSeleccionado && esCodigoCorredor)
+            if (
+                usuario.EsCorredor() && (!puedeSeleccionarProveedor || proveedorAsignado.CodigoProveedor == codigoSeleccionado) || 
+                (proveedorAsignado.CodigoProveedor != codigoSeleccionado && esCodigoCorredor))
             {
                 return null;
             }
@@ -260,6 +258,10 @@ namespace SustitucionMOAUtils.Services
         }
         private string ObtenerCodigoCorredorSeleccionado(Usuario usuario, Proveedor proveedorAsignado, string codigoSeleccionado, bool esCodigoCorredor)
         {
+            if (usuario.EsCorredor() && proveedorAsignado.CodigoProveedor != codigoSeleccionado && !esCodigoCorredor)
+            {
+                return null;
+            }
             if (esCodigoCorredor && !string.IsNullOrEmpty(codigoSeleccionado))
             {
                 return codigoSeleccionado;
