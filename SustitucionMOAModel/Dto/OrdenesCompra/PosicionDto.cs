@@ -51,5 +51,10 @@ namespace SustitucionMOAModel.Dto.OrdenesCompra
         /// </summary>
         //public List<string> IdsEntradasDeServicio { get; set; }
         public List<ItemDto> Items { get; set; }
+
+        /// <summary>
+        /// referencia a la orden de compra a la que pertenece la posicion
+        /// </summary>
+        public string NroOrdenCompra { get; set; }
     }
 }

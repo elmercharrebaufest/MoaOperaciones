@@ -448,6 +448,14 @@ export class ComprasService extends BaseService {
             .get<any[]>("/api/compras/AutocompleteCodigoServicioSolp", { params: params })
     }
 
+    autocompleteProveedor(valor: string) {
+        let params: HttpParams = new HttpParams()
+            .append('valor', valor)
+
+        return this.http
+            .get<any[]>("/api/compras/AutocompleteProveedor", { params: params })
+    }
+
     autocompleteMaterialSolp(valor: string, centroId: number) {
         let params: HttpParams = new HttpParams()
             .append('valor', valor)

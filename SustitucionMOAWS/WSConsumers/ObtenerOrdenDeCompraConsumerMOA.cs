@@ -464,7 +464,9 @@ namespace SustitucionMOAWS.WSConsumers
                 //pos.MonedaId = posicion.CURRENCY;
                 pos.MonedaDescripcion = POHEADER.CURRENCY_ISO;
 
-                pos.Items = ObtenerItemsdelaPosicion(POSERVICES, POHISTORY, POHEADER, pos.Id);
+                pos.NroOrdenCompra = POHEADER.PO_NUMBER;
+
+                pos.Items = ObtenerItemsdelaPosicion(POSERVICES, POHISTORY, POHEADER, pos);
 
                 detalleOrdenDeCompra.Posiciones.Add(pos);
             }
@@ -480,10 +482,10 @@ namespace SustitucionMOAWS.WSConsumers
         /// <param name="POCOND">MMSN-460 - Added as mentioned in v.1.8 - HU02-Compras-MVP1 - Detalle de OCs - Posiciones - Solicitante</param>
         /// <param name="idPosicion"></param>
         /// <returns></returns>
-        private List<ItemDto> ObtenerItemsdelaPosicion(BAPIESLLC[] pOSERVICES, BAPIEKBE[] pOHISTORY, BAPIMEPOHEADER POHEADER, int idPosicion)
+        private List<ItemDto> ObtenerItemsdelaPosicion(BAPIESLLC[] pOSERVICES, BAPIEKBE[] pOHISTORY, BAPIMEPOHEADER POHEADER, PosicionDto Posicion)
         {
             List<ItemDto> itemsDeLaPosicion = new List<ItemDto>();
-            string idPosicionString = idPosicion.ToString("D10");
+            string idPosicionString = Posicion.Id.ToString("D10");
             var itemsValidos = pOSERVICES.Where(x => x.PCKG_NO == idPosicionString).FirstOrDefault();
 
             if (itemsValidos == null)
@@ -525,6 +527,9 @@ namespace SustitucionMOAWS.WSConsumers
                 {
                     itemDto = CalcularCampos(itemDto);
                 }
+
+                itemDto.NroOrdenCompra = POHEADER.PO_NUMBER;
+                itemDto.NroPosicion = Posicion.NumeroPosicion.ToString();
 
 
                 itemsDeLaPosicion.Add(itemDto);

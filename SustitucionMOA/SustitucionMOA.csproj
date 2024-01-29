@@ -1369,6 +1369,7 @@
     <TypeScriptCompile Include="src\app\modelos\ordenDeCompraSap.ts" />
     <TypeScriptCompile Include="src\app\modelos\peticion-de-oferta-model.ts" />
     <TypeScriptCompile Include="src\app\modelos\peticion-visualizar-precio-dto.ts" />
+    <TypeScriptCompile Include="src\app\modelos\proveedor-model.ts" />
     <TypeScriptCompile Include="src\app\modelos\registro-info.ts" />
     <TypeScriptCompile Include="src\app\modelos\resultadoDto.ts" />
     <TypeScriptCompile Include="src\app\listado-novedades\listado-novedades.component.spec.ts" />

@@ -18,12 +18,19 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
   cantidad: number = 0;
   mensajeError: string = "";
 
+ 
+
+
+  @Input() showModal: boolean;
   @Input() itemSelected: any;
   @Input() elementSelected: any;
   @Input() itemIdSelected: string = '';
   @Output() closeModal = new EventEmitter<void>();
 
   @Output() enviarMensajeGrilla = new EventEmitter();
+
+
+  
 
   entrySheetData = {
     "EntrySheetHeader": {
@@ -70,6 +77,10 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
   openModal() {
     this.step = 1;
   }
+
+//   showDialog() {
+//     this.visible = true;
+// }
 
   siguientePaso(cantidad) {
     this.cantidad = cantidad;
@@ -138,6 +149,21 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
           this.mensajeError = 'Error del servidor, vuelva a intentarlo más tarde.'
         }
 
+        if(response.data.Type === 'I') {
+          this.mensajeError = response.data.Message;
+          this.confirmationService.confirm({
+            message: this.mensajeError,
+              accept: () => {
+                this.enviarMensajeGrilla.emit();
+                this.closeModal.emit();
+              },
+              reject: () => {
+                this.closeModal.emit();
+              }
+            }
+          );
+        }
+
         if(response.data.Type === 'S') {
           this.mensajeError = response.data.Message;
           this.confirmationService.confirm({
@@ -152,6 +178,7 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
             }
           );
         }
+
 
         if(response.data.Type === 'E') {
           this.mensajeError = response.data.Message;

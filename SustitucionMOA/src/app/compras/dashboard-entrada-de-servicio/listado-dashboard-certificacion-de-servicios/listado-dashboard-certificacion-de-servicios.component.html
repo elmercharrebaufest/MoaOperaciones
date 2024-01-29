@@ -13,7 +13,7 @@
 
 <div class="content-wraper" style="padding-top: 0px !important">
     <!--Search-->
-    <div class="row myRow firstSection mySearch">
+    <div class="row myRow firstSection mySearch autoCompleteStyle">
         <div class="col-xs-12 col-md-12 rounded shadow animate">
             <div class="col-xs-12 col-md-12 search-header">
                 <title-caps>Refinar resultados</title-caps>
@@ -30,12 +30,9 @@
             </div>
             <div id="searchProveedor" class="col-xs-12 col-sm-6 col-md-15">
                 <p> Proveedor:</p>
-                <div class="styled-select">
-                    <div class="p-d-flex">
-                        <span class="p-input-icon-left p-ml-auto">
-                            <input pInputText type="text" [(ngModel)]="proveedor" placeholder="Cod. Proveedor" />
-                        </span>
-
+                <div>
+                    <div class="p-d-flex styled-input">
+                        <p-autoComplete [(ngModel)]="proveedorSeleccionado" [suggestions]="proveedorList" (completeMethod)="autocompleteProveedor($event)" field="RazonSocial" placeholder="Proveedor" [minLength]="3" autoZIndex="true"></p-autoComplete>
                     </div>
                 </div>
             </div>
@@ -358,6 +355,7 @@
       </div>
 
       <app-modal-alta-entrada-de-servicio *ngIf="showModal"
+        [showModal]="showModal"
         [itemSelected]="itemSelected"
         [elementSelected]="elementSelected"
         [itemIdSelected]="itemIdSelected"

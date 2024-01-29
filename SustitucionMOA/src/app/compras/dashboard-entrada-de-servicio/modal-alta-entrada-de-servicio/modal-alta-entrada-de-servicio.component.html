@@ -1,193 +1,267 @@
-<div class="modal-overlay alta-certificacion">
-  <div class="modal-container">
-    <div *ngIf="step <= itemSelected.length && !showAllTables">
-      <ng-container *ngFor="let fila of itemSelected; let i = index">
-        <div class="d-flex-1" *ngIf="step === i + 1">
-          <table class="table">
-            <thead>
-              <tr>
-                <th class="header-table" colspan="2">
-                  <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <span>Alta ES - Certificación de servicio</span>
-                    <span>Certificar posición {{ i+1 }}/{{ itemSelected.length }}</span>
-                  </div>
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <th>Número de OC</th>
-                <td>{{ fila.Id }}</td>
-              </tr>
 
-              <tr class="bg-color">
-                <th>Posición</th>
-                <td>{{ fila.PosicionId }}</td>
-              </tr>
+        <p-dialog
+            header="Alta ES - Certificación de servicio"
+            [(visible)]="showModal"
+            [style]="{ width: '50vw' }"
+            (onHide)="this.closeModal.emit();"
+        >
+            <div class="container-table alta-certificacion" *ngIf="step <= itemSelected.length && !showAllTables">
+                <ng-container *ngFor="let fila of itemSelected; let i = index">
+                    <div class="d-flex-1" *ngIf="step === i + 1">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th class="header-table" colspan="2">
+                                        <div
+                                            style="
+                                                display: flex;
+                                                justify-content: space-between;
+                                                align-items: center;
+                                            "
+                                        >
+                                            <span
+                                                >Alta ES - Certificación de
+                                                servicio</span
+                                            >
+                                            <span
+                                                >Certificar posición
+                                                {{ i + 1 }}/{{
+                                                    itemSelected.length
+                                                }}</span
+                                            >
+                                        </div>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th>Número de OC</th>
+                                    <td>{{ fila.NroOrdenCompra }}</td>
+                                </tr>
 
-              <tr>
-                <th>Nro de Ítem</th>
-                <td>{{ fila.NumeroLinea }}</td>
-              </tr>
+                                <tr class="bg-color">
+                                    <th>Posición</th>
+                                    <td>{{ fila.NroPosicion }}</td>
+                                </tr>
 
-              <tr class="bg-color">
-                <th>Nro de servicio</th>
-                <td>{{ fila.ServicioNumero }}</td>
-              </tr>
+                                <tr>
+                                    <th>Nro de Ítem</th>
+                                    <td>{{ fila.NumeroLinea }}</td>
+                                </tr>
 
-              <tr>
-                <th>Descripción</th>
-                <td class="tooltip-container">
-                  <span class="tooltip-text">{{ fila.Descripcion }}</span>
-                  {{ fila.Descripcion }}
-                </td>
-              </tr>
+                                <tr class="bg-color">
+                                    <th>Nro de servicio</th>
+                                    <td>{{ fila.ServicioNumero }}</td>
+                                </tr>
 
-              <tr class="bg-color">
-                <th>Cantidad / %</th>
-                <div class="input-group">
-                  <input type="text" [(ngModel)]="fila.Cantidad" placeholder="Ingresar cantidad">
-                  <button type="button" pButton icon="fa fa-refresh" (click)="refresh()"></button>
-                  <input type="text" [(ngModel)]="fila.Cantidad" placeholder="Ingresar %">
-                </div>
-              </tr>
+                                <tr>
+                                    <th>Descripción</th>
+                                    <td class="tooltip-container">
+                                        <span class="tooltip-text">{{
+                                            fila.Descripcion
+                                        }}</span>
+                                        {{ fila.Descripcion }}
+                                    </td>
+                                </tr>
 
-              <tr >
-                <th>UM</th>
-                <td>{{ fila.UM }}</td>
-              </tr>
+                                <tr class="bg-color">
+                                    <th>Cantidad / %</th>
+                                    <div class="input-group">
+                                        <input
+                                            type="text"
+                                            [(ngModel)]="fila.Cantidad"
+                                            placeholder="Ingresar cantidad"
+                                        />
+                                        <button
+                                            type="button"
+                                            pButton
+                                            icon="fa fa-refresh"
+                                            (click)="refresh()"
+                                        ></button>
+                                        <input
+                                            type="text"
+                                            [(ngModel)]="fila.Cantidad"
+                                            placeholder="Ingresar %"
+                                        />
+                                    </div>
+                                </tr>
 
-              <tr class="bg-color">
-                <th>Monto</th>
-                <td>{{ fila.Monto }}</td>
-              </tr>
+                                <tr>
+                                    <th>UM</th>
+                                    <td>{{ fila.UM }}</td>
+                                </tr>
 
-              <tr>
-                <th>Fecha doc. -> Fecha de prestación de servicios</th>
-                <td>-</td>
-              </tr>
+                                <tr class="bg-color">
+                                    <th>Monto</th>
+                                    <td>{{ fila.ImporteString }}</td>
+                                </tr>
 
-              <tr class="bg-color">
-                <th>Referencia -> Nro remito</th>
-                <td>-</td>
-              </tr>
+                                <tr>
+                                    <th>
+                                        Fecha doc. -> Fecha de prestación de
+                                        servicios
+                                    </th>
+                                    <td>-</td>
+                                </tr>
 
-              <tr>
-                <th>Texto breve -> Descripción</th>
-                <td>-</td>
-              </tr>
+                                <tr class="bg-color">
+                                    <th>Referencia -> Nro remito</th>
+                                    <td>-</td>
+                                </tr>
 
-            </tbody>
-          </table>
-        </div>
-      </ng-container>
+                                <tr>
+                                    <th>Texto breve -> Descripción</th>
+                                    <td>-</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </ng-container>
 
-      <div class="container-button"> 
-        <button (click)="siguientePaso()" class="button-continuar">
-          {{ showAllTables ? 'Certificar posición' : 'Continuar' }}
-        </button>
-      </div>
-
-    </div>
-
-    <div *ngIf="showAllTables">
-      <ng-container *ngFor="let fila of itemSelected; let i = index">
-        <div *ngIf="step === i + 1 || showAllTables" [ngClass]="{'d-flex-1': itemSelected.length == 1, 'd-flex-2': itemSelected.length == 2, 'd-flex-3': itemSelected.length >= 3}">
-          <table class="table">
-            <thead>
-              <tr>
-                <th colspan="2" class="header-table">Alta ES - Certificación de servicio</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <th>Número de OC</th>
-                <td>{{ fila.Id }}</td>
-              </tr>
-
-              <tr class="bg-color">
-                <th>Posición</th>
-                <td>{{ fila.PosicionId }}</td>
-              </tr>
-
-              <tr>
-                <th>Nro de Ítem</th>
-                <td>{{ fila.NumeroLinea }}</td>
-              </tr>
-
-              <tr class="bg-color">
-                <th>Nro de servicio</th>
-                <td>{{ fila.ServicioNumero }}</td>
-              </tr>
-
-              <tr>
-                <th>Descripción</th>
-                <td class="tooltip-container">
-                  <span class="tooltip-text">{{ fila.Descripcion }}</span>
-                  {{ fila.Descripcion }}
-                </td>
-              </tr>
-
-              <tr class="bg-color">
-                <th>Cantidad / %</th>
-                <div class="input-group">
-                  <input type="text" [(ngModel)]="fila.Cantidad" placeholder="Ingresar cantidad">
-                  <button type="button" pButton icon="fa fa-refresh" (click)="refresh()"></button>
-                  <input type="text" [(ngModel)]="fila.Cantidad" placeholder="Ingresar %">
-                </div>
-              </tr>
-
-              <tr >
-                <th>UM</th>
-                <td>{{ fila.UM }}</td>
-              </tr>
-
-              <tr class="bg-color">
-                <th>Monto</th>
-                <td>{{ fila.Monto }}</td>
-              </tr>
-
-              <tr>
-                <th>Fecha doc. -> Fecha de prestación de servicios</th>
-                <td>-</td>
-              </tr>
-
-              <tr class="bg-color">
-                <th>Referencia -> Nro remito</th>
-                <td>-</td>
-              </tr>
-
-              <tr>
-                <th>Texto breve -> Descripción</th>
-                <td>-</td>
-              </tr>
-              
-              <td>
                 <div class="container-button">
-                  <button (click)="siguientePaso(fila.cantidad)" class="button-continuar bg-c">
-                    Modificar
-                  </button>
+                    <button (click)="siguientePaso()" class="button-continuar">
+                        {{
+                            showAllTables ? "Certificar posición" : "Continuar"
+                        }}
+                    </button>
                 </div>
-              </td>
-        
-              <td>
-                <div class="container-button">
-                  <button (click)="siguientePaso()" class="button-continuar bg-c">
-                    Eliminar
-                  </button>
-                </div>
-              </td>
+            </div>
 
-            </tbody>
-          </table>
-        </div>
-      </ng-container>
-      
-      <div class="container-button">
-          <button (click)="certificarPosicion()" class="button-continuar">
-            Certificar posición
-          </button>
-      </div>
-    </div>
-  </div>
-</div>
+            <div class="container-table alta-certificacion" *ngIf="showAllTables">
+                <ng-container *ngFor="let fila of itemSelected; let i = index">
+                    <div
+                        *ngIf="step === i + 1 || showAllTables"
+                        [ngClass]="{
+                            'd-flex-1': itemSelected.length == 1,
+                            'd-flex-2': itemSelected.length == 2,
+                            'd-flex-3': itemSelected.length >= 3
+                        }"
+                    >
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th colspan="2" class="header-table">
+                                        Alta ES - Certificación de servicio
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th>Número de OC</th>
+                                    <td>{{ fila.NroOrdenCompra }}</td>
+                                </tr>
+
+                                <tr class="bg-color">
+                                    <th>Posición</th>
+                                    <td>{{ fila.NroPosicion }}</td>
+                                </tr>
+
+                                <tr>
+                                    <th>Nro de Ítem</th>
+                                    <td>{{ fila.NumeroLinea }}</td>
+                                </tr>
+
+                                <tr class="bg-color">
+                                    <th>Nro de servicio</th>
+                                    <td>{{ fila.ServicioNumero }}</td>
+                                </tr>
+
+                                <tr>
+                                    <th>Descripción</th>
+                                    <td class="tooltip-container">
+                                        <span class="tooltip-text">{{
+                                            fila.Descripcion
+                                        }}</span>
+                                        {{ fila.Descripcion }}
+                                    </td>
+                                </tr>
+
+                                <tr class="bg-color">
+                                    <th>Cantidad / %</th>
+                                    <div class="input-group">
+                                        <input
+                                            type="text"
+                                            [(ngModel)]="fila.Cantidad"
+                                            placeholder="Ingresar cantidad"
+                                        />
+                                        <button
+                                            type="button"
+                                            pButton
+                                            icon="fa fa-refresh"
+                                            (click)="refresh()"
+                                        ></button>
+                                        <input
+                                            type="text"
+                                            [(ngModel)]="fila.Cantidad"
+                                            placeholder="Ingresar %"
+                                        />
+                                    </div>
+                                </tr>
+
+                                <tr>
+                                    <th>UM</th>
+                                    <td>{{ fila.UM }}</td>
+                                </tr>
+
+                                <tr class="bg-color">
+                                    <th>Monto</th>
+                                    <td>{{ fila.ImporteString }}</td>
+                                </tr>
+
+                                <tr>
+                                    <th>
+                                        Fecha doc. -> Fecha de prestación de
+                                        servicios
+                                    </th>
+                                    <td>-</td>
+                                </tr>
+
+                                <tr class="bg-color">
+                                    <th>Referencia -> Nro remito</th>
+                                    <td>-</td>
+                                </tr>
+
+                                <tr>
+                                    <th>Texto breve -> Descripción</th>
+                                    <td>-</td>
+                                </tr>
+
+                                <td>
+                                    <div class="container-button">
+                                        <button
+                                            (click)="
+                                                siguientePaso(fila.cantidad)
+                                            "
+                                            class="button-continuar bg-c"
+                                        >
+                                            Modificar
+                                        </button>
+                                    </div>
+                                </td>
+
+                                <td>
+                                    <div class="container-button">
+                                        <button
+                                            (click)="siguientePaso()"
+                                            class="button-continuar bg-c"
+                                        >
+                                            Eliminar
+                                        </button>
+                                    </div>
+                                </td>
+                            </tbody>
+                        </table>
+                    </div>
+                </ng-container>
+
+                <div class="container-button">
+                    <button
+                        (click)="certificarPosicion()"
+                        class="button-continuar"
+                    >
+                        Certificar posición
+                    </button>
+                </div>
+            </div>
+        </p-dialog>
+

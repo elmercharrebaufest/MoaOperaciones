@@ -1707,6 +1707,26 @@ namespace SustitucionMOAUtils.Services
             return lista;
         }
 
+        /// <summary>
+        /// Método utilizado para retornar los proveedores disponibles en BD - Utilizado en AutoComplete.
+        /// </summary>
+        /// <returns></returns>
+        public List<ProveedorDto> AutocompleteProveedor(string valor)
+        {
+            List<ProveedorDto> lista = new List<ProveedorDto>();
+            //Atributos minimos que seran utilizados en FE, pueden traerse mas de ser necesario (Ver Proveedor/ProveedorDto).
+            lista = repositorio.Listar<Proveedor,ProveedorDto>(x =>
+            new ProveedorDto
+            {
+                Id = x.Id,
+                CUIT = x.CUIT,
+                RazonSocial = x.RazonSocial,
+                CodigoProveedor = x.CodigoProveedor
+            }, e => e.RazonSocial.ToString().Contains(valor));
+
+            return lista;
+        }
+
         public ObtenerSolpSAPResponse ObtenerSolpsSAP(DateTime fechaDesde, DateTime fechaHasta, string numeroSolp,
                                     string centroLogistico, string filtroTipoPosicion, string indicadorDeLiberacion, string origenCreacion, List<string> creadoPorUsuarios,
                                     string tipoDeImputacion, bool ObtenerDireccionDeEntrega, bool ObtenerImputacion, bool ObtenerServicios, bool MostrarItemsBorrados

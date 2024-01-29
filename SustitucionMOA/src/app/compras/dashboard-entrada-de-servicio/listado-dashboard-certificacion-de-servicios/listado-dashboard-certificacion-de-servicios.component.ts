@@ -18,6 +18,8 @@ import { ModalAltaEntradaDeServicioComponent } from '../modal-alta-entrada-de-se
 import { FiltroFechaComponent } from './../../../common/view-child/filtro-fecha/filtro-fecha.component';
 import { ConfirmationService } from 'primeng/api';
 import { MensajeComponent } from '../../../common/view-child/mensaje/mensaje.component';
+import { ProveedorModel } from '../../../modelos/proveedor-model';
+
 
 
 @Component({
@@ -86,7 +88,10 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
     ordenCompraIdsMostradas: Set<number> = new Set<number>();
     mensajeError: string = "";
     filaExpandida: any;
-    expandedRow: any; 
+    expandedRow: any;
+    proveedorSeleccionado: any;
+    proveedorModel: ProveedorModel;
+    proveedorList: any[] = new Array();
 
  
     
@@ -166,6 +171,13 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
     //MMSN-574 - Agregar filtros
     onBuscar() {
         this.collapseExpanded();
+
+        if (this.proveedorSeleccionado !== undefined && this.proveedorSeleccionado !== '') {
+            this.proveedor = this.proveedorSeleccionado.CodigoProveedor;
+        }
+        else {
+            this.proveedor = '';
+        }
 
         let startDate = this.filtroFechaComponent.fecha_inicio;
         let endDate = this.filtroFechaComponent.fecha_fin;
@@ -314,4 +326,31 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
         this.showModal = false;
 
     }
+
+    autocompleteProveedor(event) {
+        try {
+            this.subscription = this.service.autocompleteProveedor(event.query).subscribe(
+                (result: any) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.floatMsgService.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.floatMsgService.setInfoMsg(result.info);
+                    } else {
+                        this.proveedorList = result;
+                    }
+                },
+                error => {
+                    this.floatMsgService.setErrorMsg(error.message);
+                    this.spinnerComponent.hideIt();
+                });
+        } catch (e) {
+            this.floatMsgService.setErrorMsg(e);
+            return false; //<-- Prevent Refresh
+        }
+
+        return false; //<-- Prevent Refresh
+    }
+
 }
