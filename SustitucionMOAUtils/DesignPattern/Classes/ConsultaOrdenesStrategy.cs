@@ -35,39 +35,18 @@ namespace SustitucionMOAUtils.DesignPattern.Classes
         {
             try
             {
-                List<Consulta> consultas = new List<Consulta>();
-
-                var destinatarioCliente = destinatarios.FirstOrDefault(c => c.Campo == "Cliente");
-                var destinatarioUsuario = destinatarios.FirstOrDefault(u => u.Campo == "Usuario creador");
-
-                if (destinatarioUsuario != null)
-                {
-                    var consultaAUsuario = AgregarConsultaCreadorOrdenFAS(consulta, comentario);
-                    this.CompletarCamposYClonar(consultaAUsuario, comentario);
-                    this.repositorio.Agregar(consultaAUsuario);
-                    consultas.Add(consultaAUsuario);
-                }
-
-                if (destinatarioCliente != null)
-                {
-                    var consultaACliente = AgregarConsultaClienteFAS(consulta, comentario);
-                    this.CompletarCamposYClonar(consultaACliente, comentario);
-                    this.repositorio.Agregar(consultaACliente);
-                    consultas.Add(consultaACliente);
-                }
-
+                var consultaAUsuario = AgregarConsultaCreadorOrdenFAS(consulta, comentario);
+                this.CompletarCamposYClonar(consultaAUsuario, comentario);
+                this.repositorio.Agregar(consultaAUsuario);
                 this.repositorio.GuardarCambios();
 
-                foreach (Consulta c in consultas)
+                if (files.Count > 0)
                 {
-                    if (files.Count > 0)
-                    {
-                        GuardarAdjuntoComentario(c.Id, files);
-                    }
-                    this.EnviarMail(c, comentario, files, destinatarios);
+                    GuardarAdjuntoComentario(consultaAUsuario.Id, files);
                 }
+                this.EnviarMail(consultaAUsuario, comentario, files, destinatarios);
 
-                return consultas.First();
+                return consultaAUsuario;
             }
             catch (Exception e)
             {
@@ -80,33 +59,12 @@ namespace SustitucionMOAUtils.DesignPattern.Classes
         {
             var destinatariosCC = this.emailService.ObtenerListaDestinatarios(new string[] { consultaInternaCC });
             var destinatario = destinatarios.FirstOrDefault(u => u.UsuarioId == consulta.Usuario_Id);
+            var ccCliente = destinatarios.FirstOrDefault(u => u.Campo == "Cliente");
+            if(ccCliente!= null)
+            {
+                destinatariosCC.Add(ccCliente.Mail);
+            }
             this.EnviarMailInterno(consulta, comentario, files, destinatariosCC, destinatario.Mail);       
-        }
-
-        private Consulta AgregarConsultaClienteFAS(Consulta consulta, Comentario comentario)
-        {
-            Consulta consultaCliente = (Consulta)consulta.Clone();
-            OrdenDeCarga orden = this.repositorio.Obtener<OrdenDeCarga>(o => o.Id == consulta.Detalle.Orden_Id);
-            Proveedor proveedor = this.repositorio.Obtener<Proveedor>(p => p.Id == orden.Cliente_Id);
-            Usuario usuarioCliente = proveedor.UsuariosAsociados.FirstOrDefault(u => u.CUITRegistro == proveedor.CUIT &&
-            u.Mail == proveedor.Mail && u.TipoUsuario.Id == proveedor.TipoProveedor.Id);
-
-            if (proveedor == null)
-            {
-                throw new ValidationCustomException("Hubo un problema al intentar obtener datos del proveedor.");
-            }
-
-            if (usuarioCliente == null)
-            {
-                throw new ValidationCustomException("El cliente asociado a la orden no existe en el sistema");
-            }
-
-            consultaCliente.Usuario_Id = usuarioCliente.Id;
-            consultaCliente.EstadoConsulta_Id = 4;
-            consultaCliente.CodigoProveedor = proveedor.CodigoProveedor ?? "-";
-            consultaCliente.RazonSocialProveedor = proveedor.RazonSocial;
-            comentario.Usuario_Id = (int)consultaCliente.UsuarioInterno_Id;
-            return consultaCliente;
         }
 
         private Consulta AgregarConsultaCreadorOrdenFAS(Consulta consulta, Comentario comentario)
