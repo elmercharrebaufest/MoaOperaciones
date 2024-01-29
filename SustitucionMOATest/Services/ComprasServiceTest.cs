@@ -1914,6 +1914,22 @@ namespace SustitucionMOATest.Services
             var tablaSap = new List<TablaSap> { new TablaSap { Codigo = "FINALIZADA", Tabla = "EstadoSolpSap", CodigoSap = "05", Descripcion = "Liberación concluida" } };
             repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<TablaSap, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null)).Returns(tablaSap);
             var result = target.ObtenerTablaSap("EstadoSolpSap");
+            
+            Assert.That(result, Is.Not.Null);
+            Assert.AreEqual(result.GetType(), tablaSapDto.GetType());
+        }
+
+        [Test]
+        public void ListarTablaSapOk()
+        {
+            var tablaSapDto = new List<TablaSapDto> { new TablaSapDto { Codigo = "0011", Tabla = "OrdenSolpSap", CodigoSap = "11", Descripcion = "Limpiar rotor" },
+            new TablaSapDto { Id = -1, Descripcion = "Borrado en SAP" }};
+            var tablaSap = new List<TablaSap> { new TablaSap { Id = 11, Codigo = "0011", Tabla = "OrdenSolpSap", CodigoSap = "11", Descripcion = "Limpiar rotor" } };
+            repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<SolpPosicion, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null))
+                .Returns(new List<SolpPosicion> { new SolpPosicion { Id = 1, ValorTipoImputacion_Id = 11 } });
+            repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<TablaSap, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null)).Returns(tablaSap);
+            var result = target.ListarTablaSap(new List<string> { "OrdenSolpSap" });
+            
             Assert.That(result, Is.Not.Null);
             Assert.AreEqual(result.GetType(), tablaSapDto.GetType());
         }
@@ -1996,7 +2012,7 @@ namespace SustitucionMOATest.Services
         [Test]
         public void ListarProvinciaOk()
         {
-            var listaPciaDto = new List<ProvinciaDTO> { new ProvinciaDTO { ProvinciaId = 1, Nombre = "Jujuy", Orden = 1 } };
+            var listaPciaDto = new List<ProvinciaDto> { new ProvinciaDto { ProvinciaId = 1, Nombre = "Jujuy", Orden = 1 } };
             var listaPcia = new List<Provincia> { new Provincia { ProvinciaId = 1, Nombre = "Jujuy", Orden = 1 } };
             repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<Provincia, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null))
             .Returns(listaPcia);

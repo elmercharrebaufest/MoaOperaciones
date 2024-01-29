@@ -16,9 +16,10 @@ namespace SustitucionMOAUtils.Interfaces
         RespuestaGuardarSOLP GuardarSolp(SolpDto solp, HttpFileCollectionBase adjuntos);
         string ObtenerRutaArchivo(int archivoId);
         List<TablaSapDto> ObtenerTablaSap(string tabla);
+        List<TablaSapDto> ListarTablaSap(List<string> tabla);
         List<TablaGeneralDto> ObtenerTablaGeneral(string tabla);
         List<CentroDireccionDto> ObtenerCentrosDireccion();
-        ListaPaginada<SolpDto> ListarSolp(UsuarioDto usuarioActual, Paginacion paginacion, string nroSolp, DateTime? desde, DateTime? hasta, bool? sap, bool? mantenimiento, bool? web, bool? repoAutomatica, List<int> usuarios = null, List<int> estados = null);
+        ListaPaginada<SolpDto> ListarSolp(UsuarioDto usuarioActual, Paginacion paginacion, string nroSolp, DateTime? desde, DateTime? hasta, bool? sap, bool? mantenimiento, bool? web, bool? repoAutomatica, List<int> usuarios = null, List<int> estados = null, List<int> centros = null, List<int> grupoDeCompras = null, List<int> claseDocumento = null, List<string> tipoImputacion = null, List<int> valorTipoImputacion = null);
         string BorrarSolp(int idSolp);
         SolpDto TraerSolpId(int idSolp);
         List<TablaEstadoDto> ObtenerTablaEstado(string tabla);
@@ -42,7 +43,7 @@ namespace SustitucionMOAUtils.Interfaces
         void ObtenerSolpesDesdeSAPJob(ObtenerSolpRequest obtenerSolpRequest);
         List<MaterialSolpDto> AutocompleteMaterialSolp(string valor, int centroId);
         List<MaterialSolpDto> AutocompleteCodigoMaterialSolp(string valor, int centroId);
-        List<ProvinciaDTO> ListarProvincia();
+        List<ProvinciaDto> ListarProvincia();
         void EnviarEmailSolp(EmailComposeDto emailCompose);
         SolpDescargaZipPorLink PuedeDescargarPliegoDesdeLink(int solpId, Guid? token);
         List<FuenteAprovisionamientoDto> ListarFuenteAprovisionamiento(string fechaEntregaPosicion, string numeroMaterial, string centro);

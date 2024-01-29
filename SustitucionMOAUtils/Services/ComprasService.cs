@@ -218,7 +218,7 @@ namespace SustitucionMOAUtils.Services
                 solpEntity.Adicional = solp.Adicional;
                 solpEntity.Urgencia = solp.Urgencia;
                 solpEntity.NroOrdenDeCompraAdicional = solp.NroOrdenDeCompraAdicional;
-                solpEntity.ProveedorAsignado_Id = solp.ProveedorAsignadoId;
+                solpEntity.ProveedorAsignado_Id = solp.ProveedorAsignado_Id;
                 pliegoEntity = solpEntity.Pliego;
 
                 solpEntity.NroSolp = solp.NroSolp;
@@ -247,7 +247,7 @@ namespace SustitucionMOAUtils.Services
                 solpEntity.Adicional = solp.Adicional;
                 solpEntity.Urgencia = solp.Urgencia;
                 solpEntity.NroOrdenDeCompraAdicional = solp.NroOrdenDeCompraAdicional;
-                solpEntity.ProveedorAsignado_Id = solp.ProveedorAsignadoId;
+                solpEntity.ProveedorAsignado_Id = solp.ProveedorAsignado_Id;
                 solpEntity.THAjustePolinomica = solp.THAjustePolinomica;
                 solpEntity.THProveedorDirecto = solp.THProveedorDirecto;
                 solpEntity.THServicioPermanente = solp.THServicioPermanente;
@@ -1021,6 +1021,20 @@ namespace SustitucionMOAUtils.Services
             return tablaSap;
         }
 
+        public List<TablaSapDto> ListarTablaSap(List<string> tablas)
+        {
+            List<TablaSapDto> tablaSap = new List<TablaSapDto>();
+            if (tablas.Contains("OrdenSolpSap") || tablas.Contains("CecoSolpSap") || tablas.Contains("CentroBeneficio"))
+            {
+                var tipoImputacionEnSolp = repositorio.Listar<SolpPosicion>().Select(x => x.ValorTipoImputacion_Id).Where(id => id != null).Distinct().ToList();
+                tablaSap = repositorio.Listar<TablaSap>(x => tablas.Contains(x.Tabla) && tipoImputacionEnSolp.Contains(x.Id)).Select(x => new TablaSapDto(x)).ToList();
+            }
+            else
+                tablaSap = repositorio.Listar<TablaSap>(x => tablas.Contains(x.Tabla)).Select(x => new TablaSapDto(x)).ToList();
+
+            return tablaSap;
+        }
+
         public List<TablaGeneralDto> ObtenerTablaGeneral(string tabla)
         {
             return repositorio.Listar<TablaGeneral>(x => x.Tabla == tabla).Select(x => new TablaGeneralDto(x)).ToList();
@@ -1031,7 +1045,7 @@ namespace SustitucionMOAUtils.Services
             return repositorio.Listar<CentroDireccion>().Select(x => new CentroDireccionDto(x)).ToList();
         }
 
-        public ListaPaginada<SolpDto> ListarSolp(UsuarioDto usuarioActual, Paginacion paginacion, string nroSolp, DateTime? desde, DateTime? hasta, bool? sap, bool? mantenimiento, bool? web, bool? repoAutomatica, List<int> usuarios = null, List<int> estados = null)
+        public ListaPaginada<SolpDto> ListarSolp(UsuarioDto usuarioActual, Paginacion paginacion, string nroSolp, DateTime? desde, DateTime? hasta, bool? sap, bool? mantenimiento, bool? web, bool? repoAutomatica, List<int> usuarios = null, List<int> estados = null, List<int> centros = null, List<int> grupoDeCompras = null, List<int> claseDocumento = null, List<string> tipoImputacion = null, List<int> valorTipoImputacion = null)
         {
             try
             {
@@ -1104,7 +1118,7 @@ namespace SustitucionMOAUtils.Services
                     NombreDeObra = x.Pliego == null ? "" : x.Pliego.NombreObra,
                     FechaCreacion = x.FechaCreacion,
                     EstadoDocumento = new TablaEstadoDto { Descripcion = x.EstadoDocumento == null ? "" : x.EstadoDocumento.Descripcion, Color = x.EstadoDocumento == null ? "" : x.EstadoDocumento.Color, Codigo = x.EstadoDocumento == null ? "" : x.EstadoDocumento.Codigo },
-                    EstadoSolpSapId = x.NroSolp != null && x.Posiciones.All(p => p.Estado == false) ? -1 : (x.EstadoSolpSap != null ? x.EstadoSolpSap_Id : 0),
+                    EstadoSolpSap_Id = x.NroSolp != null && x.Posiciones.All(p => p.Estado == false) ? -1 : (x.EstadoSolpSap != null ? x.EstadoSolpSap_Id : 0),
                     EstadoSolpSap = new TablaSapDto { Descripcion = x.EstadoSolpSap != null ? x.EstadoSolpSap.Descripcion : "", Id = x.EstadoSolpSap != null ? x.EstadoSolpSap.Id : 0 },
                     EstadoSolpDescripcion = x.NroSolp != null && x.Posiciones.All(p => p.Estado == false) ? "Borrado en SAP" : (x.EstadoSolpSap != null ? x.EstadoSolpSap.Descripcion : ""),
                     TipoSolp = new TablaGeneralDto { Descripcion = x.TipoSolp != null ? x.TipoSolp.Descripcion : "", Codigo = x.TipoSolp != null ? x.TipoSolp.Codigo : "" },
@@ -1125,9 +1139,11 @@ namespace SustitucionMOAUtils.Services
                 (!estados.Any() || (x.EstadoSolpSap_Id != null && estados.Contains((int)x.EstadoSolpSap_Id)) || (estados.Any(y => y == -1) && x.NroSolp != null && x.Posiciones.All(p => p.Estado == false))) &&
                 (!usuarios.Any() || (x.UsuarioCreacion_Id != null && usuarios.Contains((int)x.UsuarioCreacion_Id))) &&
                 (sap == true && x.TipoSolpSap == 3 || mantenimiento == true && x.TipoSolpSap == 2 || repoAutomatica == true && x.TipoSolpSap == 4 ||
-                (web == true && (x.TipoSolpSap == null || x.TipoSolpSap == 1))
-                || (sap == false && mantenimiento == false && web == false && repoAutomatica == false)) &&
-                (desde == null || x.FechaCreacion >= desde.Value) && (fechaHasta == null || x.FechaCreacion <= fechaHasta.Value));
+                (web == true && (x.TipoSolpSap == null || x.TipoSolpSap == 1)) || (sap == false && mantenimiento == false && web == false && repoAutomatica == false)) &&
+                (desde == null || x.FechaCreacion >= desde.Value) && (fechaHasta == null || x.FechaCreacion <= fechaHasta.Value) &&
+                (!centros.Any() || x.Posiciones.Any(c => centros.Contains(c.Centro_Id))) && (!grupoDeCompras.Any() || x.Posiciones.Any(gc => grupoDeCompras.Contains((int)gc.GrupoCompras_Id))) &&
+                (!claseDocumento.Any() || x.EstadoSolpSap_Id != null && claseDocumento.Contains((int)x.ClaseDocumento_Id)) && (!tipoImputacion.Any() || x.Posiciones.Any(c => tipoImputacion.Contains(c.TipoImputacion.Codigo))) &&
+                (!valorTipoImputacion.Any() || x.Posiciones.Any(c => valorTipoImputacion.Contains((int)c.ValorTipoImputacion_Id))));
 
                 if (todasLasSolp.Items != null && todasLasSolp.Items.Count() > 0)
                 {
@@ -1222,7 +1238,7 @@ namespace SustitucionMOAUtils.Services
                 JornadaLaboralDesde = solp.Pliego.JornadaLaboralHorasDesde,
                 JornadaLaboralHasta = solp.Pliego.JornadaLaboralHorasHasta,
                 ClaseDocumento = solp.ClaseDocumento != null ? new TablaSapDto(solp.ClaseDocumento) : new TablaSapDto(),
-                ProveedorAsignadoId = solp.ProveedorAsignado_Id,
+                ProveedorAsignado_Id = solp.ProveedorAsignado_Id,
                 TrabajoYaHecho = solp.TrabajoYaHecho,
                 ProveedorDefinido = solp.ProveedorDefinido,
                 Adicional = solp.Adicional,
@@ -1241,8 +1257,8 @@ namespace SustitucionMOAUtils.Services
                 EspecificacionesTecnicas = solp.Pliego.Archivos.FirstOrDefault(a => a.FileKey == FileKeys.EspecificacionesTecnicasPliego)?.Ruta,
                 TieneCondicionesGenerales = solp.Pliego.TieneCondicionesGenerales ?? true,
                 RevisadoPor = solp.Pliego.RevisadoPor,
-                EstadoSolpSapId = solp.EstadoSolpSap_Id,
-                EstadoDocumentoId = solp.EstadoDocumento_Id,
+                EstadoSolpSap_Id = solp.EstadoSolpSap_Id,
+                EstadoDocumento_Id = solp.EstadoDocumento_Id,
 
                 //Posiciones = (x.TipoSolpSap == (int)TipoSolpSap.Sap || x.TipoSolpSap == (int)TipoSolpSap.Mantenimiento || x.TipoSolpSap == (int)TipoSolpSap.ReposicionAutomatica) ? 
                 //                x.Posiciones.Select(p => new SolpPosicionDto(p)).ToList() : 
@@ -1282,9 +1298,9 @@ namespace SustitucionMOAUtils.Services
                 }
             }
 
-            if (solpDevuelta.ProveedorAsignadoId != null)
+            if (solpDevuelta.ProveedorAsignado_Id != null)
             {
-                var usuario = repositorio.Obtener<Usuario>(solpDevuelta.ProveedorAsignadoId);
+                var usuario = repositorio.Obtener<Usuario>(solpDevuelta.ProveedorAsignado_Id);
                 solpDevuelta.ProveedorAsignado = usuario.ObtenerRazonSocial();
             }
 
@@ -2659,7 +2675,7 @@ namespace SustitucionMOAUtils.Services
 
         public List<UsuarioComprasRelacionConUsuariosDto> ListarUsuarioCompras(UsuarioDto usuarioActual)
         {
-            var usuariosCompras = repositorio.Listar<UsuarioComprasRelacionConUsuarios>(x => x.Usuario_Id == usuarioActual.Id)
+            var usuariosCompras = repositorio.Listar<UsuarioComprasRelacionConUsuarios>(x => x.Usuario_Id == usuarioActual.Id && x.UsuarioCompras.Habilitado)
                 .Select(x => new UsuarioComprasRelacionConUsuariosDto
                 {
                     Usuario = new UsuarioDto(x.Usuario),
@@ -2756,10 +2772,10 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        public List<ProvinciaDTO> ListarProvincia()
+        public List<ProvinciaDto> ListarProvincia()
         {
-            List<ProvinciaDTO> lista = repositorio.Listar<Provincia>()
-                  .Select(s => new ProvinciaDTO(s)).ToList();
+            List<ProvinciaDto> lista = repositorio.Listar<Provincia>()
+                  .Select(s => new ProvinciaDto(s)).ToList();
             return lista;
         }
 
@@ -7762,7 +7778,7 @@ namespace SustitucionMOAUtils.Services
                 Logger.Log.Error(e);
                 throw;
             }
-        }    
+        }
 
         public InfoVisitasDeObraDto ListarVisitasDeObra(List<VisitaObraDto> visitas)
         {
@@ -7779,7 +7795,8 @@ namespace SustitucionMOAUtils.Services
 
             var listaIdPliego = detalleVisitas.Select(x => x.PliegoId).ToList();
 
-            var solpDB = repositorio.Listar<Solp, SolpDto>(x => new SolpDto {
+            var solpDB = repositorio.Listar<Solp, SolpDto>(x => new SolpDto
+            {
                 NroSolp = x.NroSolp,
                 Pliego_Id = x.Pliego_Id,
                 Id = x.Id
@@ -7801,8 +7818,8 @@ namespace SustitucionMOAUtils.Services
                     }).Distinct().ToList() : null;
             }
 
-            var info = new InfoVisitasDeObraDto() 
-            { 
+            var info = new InfoVisitasDeObraDto()
+            {
                 CantidadVisitas = detalleVisitas.Count(),
                 DetalleVisitas = detalleVisitas
             };

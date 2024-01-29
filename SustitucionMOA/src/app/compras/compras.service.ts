@@ -5,7 +5,7 @@ import { BaseService } from '../common/services/BaseService';
 import { Solp } from './solp/solp';
 import { EmailComposeModel } from '../common/email-compose/email-compose.model';
 import { SolpPosicion } from './solp/solp-posicion';
-import { AltaNuevoProveedor, EnvioSolpCompra, SolpCompraDto } from './solp-compra';
+import { EnvioSolpCompra, SolpCompraDto } from './solp-compra';
 import { CircularDto } from '../modelos/circular-model';
 import { PeticionDeOfertaCierreDto, PeticionDeOfertaDto, PeticionDeOfertaRevisionTecnicaDto, PeticionDeOfertaUsarioDto } from '../modelos/peticion-de-oferta-model';
 import { AdjudicacionDto } from '../modelos/adjudicacion';
@@ -40,7 +40,10 @@ export class ComprasService extends BaseService {
         centros: "",
         grupoDeCompras: "",
         estadoLicitacion: null,
-        estadoCotizacion: null
+        estadoCotizacion: null,
+        claseDocumento: "",
+        tipoImputacion: "",
+        valorTipoImputacion: ""
     }
     listaSolp: any;
     observableListaSolp = new Subject<any[]>();
@@ -67,7 +70,12 @@ export class ComprasService extends BaseService {
         web: boolean = this.filtros.web,
         repoAutomatica: boolean = this.filtros.repoAutomatica,
         estados: any = this.filtros.estados,
-        usuarios: any = this.filtros.usuarioId): Observable<any> {
+        usuarios: any = this.filtros.usuarioId,
+        centros: any = this.filtros.centros,
+        grupoDeCompras: any = this.filtros.grupoDeCompras,
+        claseDocumento: any = this.filtros.claseDocumento,
+        tipoImputacion: any = this.filtros.tipoImputacion,
+        valorTipoImputacion: any = this.filtros.valorTipoImputacion): Observable<any> {
         let params: HttpParams = new HttpParams();
         pagina = pagina != null ? pagina : this.filtros.pagina;
         itemsPorPagina = itemsPorPagina != null ? itemsPorPagina : this.filtros.itemsPorPagina;
@@ -85,6 +93,11 @@ export class ComprasService extends BaseService {
         params = params.set('repoAutomatica', repoAutomatica.toString());
         params = params.set('estados', estados);
         params = params.set('usuarios', usuarios);
+        params = params.set('centros', centros);
+        params = params.set('grupoDeCompras', grupoDeCompras);
+        params = params.set('claseDocumento', claseDocumento);
+        params = params.set('tipoImputacion', tipoImputacion);
+        params = params.set('valorTipoImputacion', valorTipoImputacion);
         return this.http.get('/api/compras/ListarSolp', { params: params, headers: this.headers });
     }
 
@@ -1013,6 +1026,15 @@ export class ComprasService extends BaseService {
     public listarVisitasDeObra(listaVisitas: VisitaObraDto[]): Observable<any> {
         return this.http.post("/api/compras/ListarVisitasDeObra", listaVisitas, {
             headers: this.headers
+        });
+    }
+
+    public listarTablaSap(codigos: string[]): Observable<any> {
+        let params: HttpParams = new HttpParams();
+        params = params.set("codigos", codigos.toString());
+        return this.http.get("/api/compras/ListarTablaSap", {
+            params: params,
+            headers: this.headers,
         });
     }
 }

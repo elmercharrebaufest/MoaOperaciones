@@ -41,7 +41,7 @@
             </div>
 
             <div style="margin-top: 1em; margin-bottom: 10px;">
-                <div class="row myRow">
+                <div class="row">
                     <div class="col-md-3 col-lg-3">
                         <input class="col-xs-12 col-sm-12 col-md-12 col-lg-12 inputAltura" pInputText type="text"
                                [(ngModel)]="nroSolp" placeholder="Buscar por número de SOLP">
@@ -50,46 +50,66 @@
                         <p-multiSelect [options]="estadoSolpItem" [(ngModel)]="selectEstadoSolp"
                                        defaultLabel="Estado SOLP"></p-multiSelect>
                     </div>
-
-                    <div class="col-md-6 col-lg-6" style="margin-top: 10px;">
-                        <span style="border-left: 1px solid black;margin-top: 1px;padding-left: 9px;padding-right: 1px;margin-left: 8px;">
-                            <p-checkbox class="checkboxFechas" binary="true" label="SAP" [(ngModel)]="sap">
-                            </p-checkbox>
-                        </span>
-                        <span class="padding1" style="margin-right: 5px; margin-left: 5px;">
-                            <p-checkbox class="checkboxFechas" binary="true" label="OT" pTooltip="Mantenimiento"
-                                        [(ngModel)]="mantenimiento"></p-checkbox>
-                        </span>
-                        <span class="padding1" style="margin-right: 5px;">
-                            <p-checkbox class="checkboxFechas" binary="true" label="Web" [(ngModel)]="web"></p-checkbox>
-                        </span>
-                        <span class="padding1" style="margin-right: 5px;">
-                            <p-checkbox class="checkboxFechas" binary="true" label="Reposición Automática" [(ngModel)]="repoAutomatica"></p-checkbox>
-                        </span>
-                    </div>
-                </div>
-
-                <div class="row myRow">
-                    <div class="col-md-3 col-lg-3 inputAltura">
-                        <p-multiSelect [options]="usuarioFiltro" [(ngModel)]="selectUsuario" defaultLabel="Buscar por usuario"
-                                       [maxSelectedLabels]="1" selectedItemsLabel="{0} usuarios elegidos"></p-multiSelect>
-                    </div>
                     <div class="col-md-3 col-lg-3">
-                        <p-calendar showButtonBar="true" [showIcon]="true" placeholder="Buscar por fechas"
-                                    dateFormat="dd/mm/yy" (onSelect)="onSelect($event)" appendTo="body"
-                                    [(ngModel)]="rangeDates" selectionMode="range" [readonlyInput]="true" [locale]="locale"
-                                    (onClearClick)="returnToTodaysDate()">
-                        </p-calendar>
+                        <p-multiSelect [options]="grupoComprasFiltro" [(ngModel)]="selectGrupoCompras" defaultLabel="Grupo de Compras"
+                                       [maxSelectedLabels]="1" selectedItemsLabel="{0} grupos de compras"></p-multiSelect>
                     </div>
-                    <div class="col-md-3 col-lg-3  buttonBuscar">
-                        <button class="btn buscar" (click)="onBuscar()">Buscar</button>
+                    <div class="col-md-3 col-lg-3" style="padding-right: 30px;">
+                        <p-multiSelect [options]="centroFiltro" [(ngModel)]="selectCentro" defaultLabel="Centro"
+                                       [maxSelectedLabels]="2" selectedItemsLabel="{0} centros elegidos"></p-multiSelect>
+                    </div>
+                    <div class="row myRow">
+                        <div class="col-md-3 col-lg-3">
+                            <p-multiSelect [options]="usuarioFiltro" [(ngModel)]="selectUsuario" defaultLabel="Buscar por usuario"
+                                           [maxSelectedLabels]="1" selectedItemsLabel="{0} usuarios elegidos"></p-multiSelect>
+                        </div>
+                        <div class="col-md-3 col-lg-3">
+                            <p-multiSelect [options]="claseDocumentoFiltro" [(ngModel)]="selectClaseDocumento" defaultLabel="Clase de Documento"
+                                           [maxSelectedLabels]="1" selectedItemsLabel="{0} clases elegidas"></p-multiSelect>
+                        </div>
+                        <div class="col-md-3 col-lg-3">
+                            <p-multiSelect [options]="tipoImputacionFiltro" [(ngModel)]="selectTipoImputacion" defaultLabel="Tipo de Imputación"
+                                           [maxSelectedLabels]="1" selectedItemsLabel="{0} tipos elegidos" (ngModelChange)="valorTipoImputacionCombo()"></p-multiSelect>
+                        </div>
+                        <div class="col-md-3 col-lg-3" style="padding-right: 30px;">
+                            <p-multiSelect [options]="valorTipoImputacionFiltro" [(ngModel)]="selectValorTipoImputacion" defaultLabel="Subtipo de Imputación"
+                                           [maxSelectedLabels]="1" selectedItemsLabel="{0} tipos elegidos"></p-multiSelect>
+                        </div>
+                    </div>
+                    <div class="row myRow">
+                        <div class="col-md-3 col-lg-3">
+                            <p-calendar showButtonBar="true" [showIcon]="true" placeholder="Buscar por fechas"
+                                        dateFormat="dd/mm/yy" (onSelect)="onSelect($event)" appendTo="body"
+                                        [(ngModel)]="rangeDates" selectionMode="range" [readonlyInput]="true" [locale]="locale"
+                                        (onClearClick)="returnToTodaysDate()">
+                            </p-calendar>
+                        </div>
+                        <div class="col-md-6 col-lg-6" style="margin-top: 10px;">
+                            <span style="border-left: 1px solid black;margin-top: 1px;padding-left: 9px;padding-right: 1px;margin-left: 8px;">
+                                <p-checkbox class="checkboxFechas" binary="true" label="SAP" [(ngModel)]="sap">
+                                </p-checkbox>
+                            </span>
+                            <span class="padding1" style="margin-right: 5px; margin-left: 5px;">
+                                <p-checkbox class="checkboxFechas" binary="true" label="OT" pTooltip="Mantenimiento"
+                                            [(ngModel)]="mantenimiento"></p-checkbox>
+                            </span>
+                            <span class="padding1" style="margin-right: 5px;">
+                                <p-checkbox class="checkboxFechas" binary="true" label="Web" [(ngModel)]="web"></p-checkbox>
+                            </span>
+                            <span class="padding1" style="margin-right: 5px;">
+                                <p-checkbox class="checkboxFechas" binary="true" label="Reposición Automática" [(ngModel)]="repoAutomatica"></p-checkbox>
+                            </span>
+                        </div>
+                        <div class="col-md-3 col-lg-3  buttonBuscar" style="padding-right: 30px;">
+                            <button class="btn buscar" (click)="onBuscar()">Buscar</button>
+                        </div>
                     </div>
                 </div>
+
             </div>
 
         </div>
     </section>
-
 
 
     <div class="col-sm-12 col-md-12 col-lg-12" style="margin-left: -15px;">
