@@ -151,7 +151,6 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
                     } else {
                         this.tablaOfertas = result.data;
                         this.nroOC = this.tablaOfertas.NroOrdenDeCompraAdicional;
-
                         if (this.tablaOfertas.Adicional == true) {
                             this.obtenerAdjudicacion(this.nroOC);
                         } else

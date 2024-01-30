@@ -1040,6 +1040,22 @@ namespace SustitucionMOAUtils.Services
             return repositorio.Listar<TablaGeneral>(x => x.Tabla == tabla).Select(x => new TablaGeneralDto(x)).ToList();
         }
 
+        public List<TablaGeneralDto> ObtenerImputaciones(string tabla)
+        {
+            var imputaciones = repositorio.Listar<TablaGeneral, TablaGeneralDto>( x => new TablaGeneralDto{ 
+                Codigo = x.Codigo,
+                Descripcion = x.Descripcion,
+                Tabla = x.Tabla,
+                Id = x.Id,
+                CodigoVisualizacion = x.Codigo == "ordenDeOt" ? "nroDeOt" : x.Codigo
+            }, x => x.Tabla == tabla).ToList();
+
+            return imputaciones;
+           
+        }
+
+        
+
         public List<CentroDireccionDto> ObtenerCentrosDireccion()
         {
             return repositorio.Listar<CentroDireccion>().Select(x => new CentroDireccionDto(x)).ToList();
