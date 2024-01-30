@@ -98,6 +98,10 @@ namespace SustitucionMOA
                 "VerificarOrdenesFacturaCompensadaJob",
                 j => j.Execute(),
                 "0 * * * *", tz);
+            RecurringJob.AddOrUpdate<Jobs.IEnviarCamposUcropitJob>(
+                "EnviarCamposUcropitJob",
+                j => j.Execute(),
+                "0 0 31 2 0", tz);
         }
     }
 
