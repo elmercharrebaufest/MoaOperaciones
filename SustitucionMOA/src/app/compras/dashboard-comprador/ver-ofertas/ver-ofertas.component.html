@@ -477,7 +477,7 @@
                     <ng-container *ngFor="let proveedor of tablaOfertas.Usuarios">
                         <ng-container *ngIf="proveedor.Cotizacion != null">
                             <td colspan="9" style="width: 540px !important;" class="columna border2-left" [style.color]="proveedor.EstadoVisitaColor">
-                                {{proveedor.EstadoVisita}}
+                                {{proveedor.EstadoVisita}} - {{proveedor.THCategoria}}
                             </td>
                         </ng-container>
                         <ng-container *ngIf="proveedor.Cotizacion == null">
@@ -489,9 +489,7 @@
                     <ng-container *ngFor="let proveedor of tablaOfertas.Usuarios">
                         <ng-container *ngIf="proveedor.Cotizacion != null">
                             <td colspan="9" style="width: 540px !important;" class="columna border2-left" [style.color]="proveedor.EstadoPropuestaTecnicaColor">
-                                {{proveedor.EstadoPropuestaTecnica}} 
-                                <span *ngIf="tablaOfertas.TrabajoHecho">- {{proveedor.THCategoria}}</span>
-
+                                {{proveedor.EstadoPropuestaTecnica}}
                                 <span *ngIf="proveedor.PropuestaTecnicaAprobada == false"
                                       class="glyphicon glyphicon-info-sign"
                                       style="font-size:20px;top:5px;"
