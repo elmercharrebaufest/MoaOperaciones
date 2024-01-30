@@ -45,6 +45,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                     NroSolp = po.Solp.NroSolp,
                                     Adicional = po.Solp.Adicional,
                                     Urgencia = po.Solp.Urgencia,
+                                    TrabajoHecho = po.Solp.TrabajoYaHecho,
                                     NroOrdenDeCompraAdicional = po.Solp.NroOrdenDeCompraAdicional,
                                     EstaLiberado = po.Solp.EstadoSolpSap.CodigoSap == "05" || po.Solp.EstadoSolpSap.CodigoSap == "02", //El 02 indica que no es necesario que sea liberada,
                                     RevisionFinalizada = po.RevisionTecnica == null ? false : po.RevisionTecnica.Finalizada,
@@ -128,11 +129,11 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                     PropuestaTecnicaAprobada = u.PropuestaTecnicaAprobada,
                                                     RealizoVisita = u.RealizoVisita,
                                                     THCategoria = po.Solp.THProveedorDirecto == true ? "Proveedor directo" : (po.Solp.THAjustePolinomica == true ? "Ajuste polinómica" : "Servicio permanente"),
-                                                    EstadoVisita = u.RealizoVisita == true ? "Realizada" : po.Solp.TrabajoYaHecho == true ? "Trabajo ya hecho" : "Sin realizar",
-                                                    EstadoVisitaColor = u.RealizoVisita == true ? "Green" : "Red",
-                                                    EstadoPropuestaTecnica = u.PropuestaTecnicaAprobada == null ? "Sin analizar" : (u.PropuestaTecnicaAprobada == true ? "Aprobada" : "Rechazada"),
+                                                    EstadoVisita = u.RealizoVisita == true ? "Realizada" : po.Solp.TrabajoYaHecho == true || (po.Solp.Pliego.TieneVisitaObraMasiva != true && po.Solp.Pliego.TieneVisitaObra != true) ? "No requerida" : "Sin realizar",
+                                                    EstadoVisitaColor = u.RealizoVisita == true ? "Green" : po.Solp.TrabajoYaHecho == true || (po.Solp.Pliego.TieneVisitaObraMasiva != true && po.Solp.Pliego.TieneVisitaObra != true) ? "Green" : "Red",
+                                                    EstadoPropuestaTecnica = u.PropuestaTecnicaAprobada == null && po.Solp.TrabajoYaHecho != true ? "Sin analizar" : po.Solp.TrabajoYaHecho == true ? "Trabajo ya hecho" : (u.PropuestaTecnicaAprobada == true && po.Solp.TrabajoYaHecho != true ? "Aprobada" : "Rechazada"),
                                                     ObservacionNoCumple = u.ObservacionNoCumple,
-                                                    EstadoPropuestaTecnicaColor = u.PropuestaTecnicaAprobada == null ? "Orange" : (u.PropuestaTecnicaAprobada == true ? "Green" : "Red"),
+                                                    EstadoPropuestaTecnicaColor = u.PropuestaTecnicaAprobada == null && po.Solp.TrabajoYaHecho != true ? "Orange" : po.Solp.TrabajoYaHecho == true ? "Green" : (u.PropuestaTecnicaAprobada == true ? "Green" : "Red"),
 
                                                     //PlazoDeOferta = u.Circulares.Any(circu => circu.Circular.RequiereCambioDeFechas == true && circu.Circular.PlazoDeOferta.HasValue) ?
                                                     //u.Circulares.Where(circu => circu.Circular.RequiereCambioDeFechas == true && circu.Circular.PlazoDeOferta.HasValue)
