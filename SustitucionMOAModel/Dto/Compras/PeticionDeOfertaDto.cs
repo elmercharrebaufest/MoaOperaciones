@@ -104,6 +104,7 @@ namespace SustitucionMOAModel.Dto
         public bool PideDescripcionTecnica { get; set; }
         public bool PideDocumentacionTecnica { get; set; }
         public int? RevisionTecnicaId { get; set; }
+        public bool? TrabajoHecho { get; set; }
     }
 
     public class PeticionDeOfertaSolpPosicionDto

@@ -105,7 +105,8 @@ namespace SustitucionMOA.Controllers
                     EstadoDocumento = service.ObtenerTablaEstado(TablasEstado.EstadoDocumento),
                     TipoPosicionSolp = service.ObtenerTablaGeneral(TablasGenerales.TipoPosicionSolp),
                     TipoPosicion = service.ObtenerTablaGeneral(TablasGenerales.TipoPosicionSolp),
-                    TipoImputacion = service.ObtenerTablaGeneral(TablasGenerales.TipoImputacionSolp),
+                    TipoImputacion = service.ObtenerImputaciones(TablasGenerales.TipoImputacionSolp),
+
                     Usuarios = usuarioService.ListarUsuarioCreadorSolp(),
                     Regiones = service.ListarRegionesSap(),
                     CamposObligatoriosCabeceraSolp = service.ObtenerTablaGeneral(TablasGenerales.CamposObligatoriosCabeceraSolp).Where(x => x.IdPadre.HasValue).Select(x => new
