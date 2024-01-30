@@ -565,5 +565,16 @@ namespace SustitucionMOATest.Controllers
             Assert.IsNotNull(result);
             Assert.IsNotNull(result.Data);
         }
+
+        [Test]
+        public void ListarTablaSapOK()
+        {
+            comprasServiceMock.Setup(x => x.ListarTablaSap(It.IsAny<List<string>>())).Returns(new List<TablaSapDto> { new TablaSapDto() });
+
+            var result = target.ListarTablaSap(It.IsAny<string>()) as JsonResult;
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.Data);
+        }
     }
 }

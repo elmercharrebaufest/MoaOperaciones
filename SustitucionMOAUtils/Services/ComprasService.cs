@@ -1272,7 +1272,7 @@ namespace SustitucionMOAUtils.Services
                 THAjustePolinomica = solp.THAjustePolinomica,
                 THProveedorDirecto = solp.THProveedorDirecto,
                 THServicioPermanente = solp.THServicioPermanente
-        };
+            };
             if (solpDevuelta.TipoSolpSap == (int)TipoSolpSap.Mantenimiento || solpDevuelta.TipoSolpSap == (int)TipoSolpSap.ReposicionAutomatica || solpDevuelta.TipoSolpSap == (int)TipoSolpSap.Sap)
             {
                 if (solpDevuelta.JornadaLaboral == null || solpDevuelta.JornadaLaboral.Count() == 0)
@@ -2808,16 +2808,15 @@ namespace SustitucionMOAUtils.Services
             return result.ContratosSolp;
         }
 
-        public ListaPaginada<SolpDto> ListarSolpComprador(int usuario_Id, Paginacion paginacion, string nroSolp, DateTime? desde, DateTime? hasta, bool? sap, bool? mantenimiento, bool? web, bool? repoAutomatica, List<int> usuarios = null, List<int> estados = null, List<int> centros = null, List<int> grupoDeCompras = null)
+        public ListaPaginada<SolpDto> ListarSolpComprador(int usuario_Id, Paginacion paginacion, string nroSolp, DateTime? desde, DateTime? hasta, bool? sap, bool? mantenimiento, bool? web, bool? repoAutomatica, List<int> usuarios = null, List<int> estados = null, List<int> centros = null, List<int> grupoDeCompras = null, List<int> claseDocumento = null, List<string> tipoImputacion = null, List<int> valorTipoImputacion = null)
         {
-            var todasLasSolp = repositorio.ListarConsultaPaginada(new ListarSolpConsulta(paginacion, nroSolp, desde, hasta, sap, mantenimiento, web, repoAutomatica, usuarios, estados, centros, grupoDeCompras, usuario_Id));
+            var todasLasSolp = repositorio.ListarConsultaPaginada(new ListarSolpConsulta(paginacion, nroSolp, desde, hasta, sap, mantenimiento, web, repoAutomatica, usuarios, estados, centros, grupoDeCompras, usuario_Id, claseDocumento, tipoImputacion, valorTipoImputacion));
 
             if (todasLasSolp != null && todasLasSolp.Count() > 0)
             {
                 var listId = todasLasSolp.Select(y => y.Id.Value).ToList();
                 var solpsDB = repositorio.Listar<Solp>(x => listId.Contains(x.Id));
                 todasLasSolp.FirstOrDefault().ItemsTotales = todasLasSolp.ItemsTotales;
-
 
                 foreach (var item in todasLasSolp.Items)
                 {
@@ -2848,7 +2847,6 @@ namespace SustitucionMOAUtils.Services
                             item.VerPublicar = false;
                         }
                     }
-
                 }
             }
             return todasLasSolp;

@@ -475,7 +475,10 @@ export class ComprasService extends BaseService {
         sap: boolean = this.filtros.sap,
         mantenimiento: boolean = this.filtros.mantenimiento,
         web: boolean = this.filtros.web,
-        repoAutomatica: boolean = this.filtros.repoAutomatica) {
+        repoAutomatica: boolean = this.filtros.repoAutomatica,
+        claseDocumento: any = this.filtros.claseDocumento,
+        tipoImputacion: any = this.filtros.tipoImputacion,
+        valorTipoImputacion: any = this.filtros.valorTipoImputacion) {
         let params: HttpParams = new HttpParams()
         pagina = pagina != null ? pagina : this.filtros.pagina;
         itemsPorPagina = itemsPorPagina != null ? itemsPorPagina : this.filtros.itemsPorPagina;
@@ -495,6 +498,9 @@ export class ComprasService extends BaseService {
         params = params.set('mantenimiento', mantenimiento.toString());
         params = params.set('web', web.toString());
         params = params.set('repoAutomatica', repoAutomatica.toString());
+        params = params.set('claseDocumento', claseDocumento);
+        params = params.set('tipoImputacion', tipoImputacion);
+        params = params.set('valorTipoImputacion', valorTipoImputacion);
         return this.http
             .get<any[]>('/api/compras/ListarSolpComprador', { params: params, headers: this.headers }).subscribe(
                 (data: any[]) => {

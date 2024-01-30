@@ -18,6 +18,7 @@ import { PeticionDeOfertaDto } from '../../../modelos/peticion-de-oferta-model';
 import { CircularDto } from '../../../modelos/circular-model';
 import { AdjudicacionDto, AdjudicacionPosicionDto } from '../../../modelos/adjudicacion';
 import { ChatComprasDto } from '../../chat-interno/chat-interno.interface';
+import { EnumTipoImputacion } from '../../enum-tipo-imputacion';
 
 declare var $: any;
 
@@ -72,6 +73,12 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
     selectGrupoCompras: string[] = [];
     centroFiltro: SelectItem[];
     selectCentro: string[] = [];
+    claseDocumentoFiltro: SelectItem[];
+    selectClaseDocumento: string[] = [];
+    tipoImputacionFiltro: SelectItem[];
+    selectTipoImputacion: string[] = [];
+    valorTipoImputacionFiltro: SelectItem[] = [];
+    selectValorTipoImputacion: string[] = [];
     usuariosResult: any;
     displayChatInterno: boolean = false;
     public chat: ChatComprasDto;
@@ -89,6 +96,9 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
         estadoSolp: string[];
         gruposCompras: string[];
         centros: string[];
+        claseDocumento: string[];
+        tipoImputacion: string[];
+        valorTipoImputacion: string[];
         fechaDesde: string;
         fechaHasta: string;
         pageIndex: number;
@@ -102,6 +112,9 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
             estadoSolp: [],
             gruposCompras: [],
             centros: [],
+            claseDocumento: [],
+            tipoImputacion: [],
+            valorTipoImputacion: [],
             fechaDesde: null,
             fechaHasta: null,
             pageIndex: 1
@@ -187,13 +200,13 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
             return false; //<-- Prevent Refresh
         }
 
-        return false; //<-- Prevent Refresh
+        return false;
     }
 
     listarSolp() {
         this.spinnerComponent.showIt();
-        this.service.getListarSolpCompras(this.pageIndex, this.pageSize, this.orden, this.columnaOrden, this.nroSolp, this.selectEstadoSolp.join(","), this.selectUsuario.join(","),
-            this.selectCentro.join(","), this.selectGrupoCompras.join(","), this.fechaDesde, this.fechaHasta, this.sap, this.mantenimiento, this.web, this.repoAutomatica);
+        this.service.getListarSolpCompras(this.pageIndex, this.pageSize, this.orden, this.columnaOrden, this.nroSolp, this.selectEstadoSolp.join(","), this.selectUsuario.join(","), this.selectCentro.join(","), this.selectGrupoCompras.join(","),
+            this.fechaDesde, this.fechaHasta, this.sap, this.mantenimiento, this.web, this.repoAutomatica, this.selectClaseDocumento.join(","), this.selectTipoImputacion.join(","), this.selectValorTipoImputacion.join(","));
     }
 
     onOrder(columna: string) {
@@ -659,6 +672,8 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
                         this.usuarioFiltro = [];
                         this.centroFiltro = [];
                         this.grupoComprasFiltro = [];
+                        this.claseDocumentoFiltro = [];
+                        this.tipoImputacionFiltro = [];
                         result.EstadosSolpSap.forEach(e => this.estadoSolpItem.push({
                             label: e.Descripcion, value: e.Id
                         }));
@@ -670,6 +685,12 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
                         }));
                         result.GrupoCompras.forEach(gc => gc.FiltroComprador === true && this.grupoComprasFiltro.push({
                             label: gc.Codigo + " - " + gc.Descripcion, value: gc.Id
+                        }));
+                        result.ClaseDocumento.forEach(cd => this.claseDocumentoFiltro.push({
+                            label: cd.Codigo + " - " + cd.Descripcion, value: cd.Id
+                        }));
+                        result.TipoImputacion.forEach(ti => this.tipoImputacionFiltro.push({
+                            label: ti.Descripcion + " - " + ti.Codigo, value: ti.Codigo
                         }));
                     }
                 },
@@ -684,6 +705,50 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
         return false; //<-- Prevent Refresh
     }
 
+    valorTipoImputacionCombo() {
+        var tablas: string[] = [];
+        this.selectTipoImputacion.forEach(tipo => {
+            switch (tipo) {
+                case EnumTipoImputacion.CentroDeCosto:
+                    tablas.push('CecoSolpSap');
+                    break;
+                case EnumTipoImputacion.OrdenDeOt || EnumTipoImputacion.OrdenInversion:
+                    tablas.push('OrdenSolpSap');
+                    break;
+                case EnumTipoImputacion.Siniestro:
+                    tablas.push('CentroBeneficio');
+                    break;
+            }
+        });
+
+        try {
+            this.subscription = this.service.listarTablaSap(tablas).subscribe(
+                (result: any) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.floatMsgService.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.floatMsgService.setInfoMsg(result.info);
+                    } else {
+                        this.valorTipoImputacionFiltro = [];
+                        this.valorTipoImputacionFiltro = result.data.map(vti => ({
+                            label: `${vti.CodigoDescripcion}`, value: vti.Id
+                        }));
+                    }
+                },
+                error => {
+                    this.floatMsgService.setErrorMsg(error.message);
+                });
+        }
+        catch (e) {
+            this.floatMsgService.setErrorMsg(e);
+            return false; //<-- Prevent Refresh
+        }
+
+        return false;
+    }
+
     onBuscar() {
         this.pageIndex = 1;
         this.spinnerComponent.showIt();
@@ -696,10 +761,13 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
         this.filtrosComprador.estadoSolp = this.selectEstadoSolp;
         this.filtrosComprador.gruposCompras = this.selectGrupoCompras;
         this.filtrosComprador.centros = this.selectCentro;
+        this.filtrosComprador.claseDocumento = this.selectClaseDocumento;
+        this.filtrosComprador.tipoImputacion = this.selectTipoImputacion;
+        this.filtrosComprador.valorTipoImputacion = this.selectValorTipoImputacion;
         this.filtrosComprador.fechaDesde = this.fechaDesde;
         this.filtrosComprador.fechaHasta = this.fechaHasta;
-        this.service.getListarSolpCompras(1, 10, "", "", this.nroSolp, this.selectEstadoSolp.join(","),
-            this.selectUsuario.join(","), this.selectCentro.join(","), this.selectGrupoCompras.join(","), this.fechaDesde, this.fechaHasta, this.sap, this.mantenimiento, this.web, this.repoAutomatica);
+        this.paginator.changePage(0);
+        this.listarSolp();
         sessionStorage.setItem('filtrosComprador', JSON.stringify(this.filtrosComprador));
     }
 
@@ -734,11 +802,14 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
             this.selectEstadoSolp = filtrosGuardados.estadoSolp;
             this.selectGrupoCompras = filtrosGuardados.gruposCompras;
             this.selectCentro = filtrosGuardados.centros;
+            this.selectClaseDocumento = filtrosGuardados.claseDocumento;
+            this.selectTipoImputacion = filtrosGuardados.tipoImputacion;
+            this.selectValorTipoImputacion = filtrosGuardados.valorTipoImputacion;
             this.fechaDesde = filtrosGuardados.fechaDesde;
             this.fechaHasta = filtrosGuardados.fechaHasta;
             this.pageIndex = filtrosGuardados.pageIndex;
             if (this.fechaDesde != undefined && this.fechaDesde.length > 0) {
-                const [year, month, day] = this.fechaDesde.split('-').map(Number); //se maneja el cambio de d�a incorrecto por la zona horaria local
+                const [year, month, day] = this.fechaDesde.split('-').map(Number); //se maneja el cambio de día incorrecto por la zona horaria local
                 if (this.fechaHasta != undefined && this.fechaHasta.length > 0) {
                     const [year2, month2, day2] = this.fechaHasta.split('-').map(Number);
                     this.rangeDates = [new Date(year, month - 1, day), new Date(year2, month2 - 1, day2)];

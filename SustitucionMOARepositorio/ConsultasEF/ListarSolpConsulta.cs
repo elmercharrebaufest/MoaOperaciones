@@ -28,7 +28,11 @@ namespace SustitucionMOARepositorio.ConsultasEF
         private readonly List<int> Centros;
         private readonly List<int> GrupoDeCompras;
         private readonly int Usuario_Id;
-        public ListarSolpConsulta(Paginacion paginacion, string nroSolp, DateTime? desde, DateTime? hasta, bool? sap, bool? mantenimiento, bool? web, bool? repoAutomatica, List<int> usuarios, List<int> estados, List<int> centros, List<int> grupoDeCompras, int usuario_Id)
+        private readonly List<int> ClaseDocumento;
+        private readonly List<string> TipoImputacion;
+        private readonly List<int> ValorTipoImputacion;
+
+        public ListarSolpConsulta(Paginacion paginacion, string nroSolp, DateTime? desde, DateTime? hasta, bool? sap, bool? mantenimiento, bool? web, bool? repoAutomatica, List<int> usuarios, List<int> estados, List<int> centros, List<int> grupoDeCompras, int usuario_Id, List<int> claseDocumento = null, List<string> tipoImputacion = null, List<int> valorTipoImputacion = null)
         {
             Paginacion = paginacion;
             NroSolp = nroSolp;
@@ -43,6 +47,9 @@ namespace SustitucionMOARepositorio.ConsultasEF
             Centros = centros;
             GrupoDeCompras = grupoDeCompras;
             Usuario_Id = usuario_Id;
+            ClaseDocumento = claseDocumento;
+            TipoImputacion = tipoImputacion;
+            ValorTipoImputacion = valorTipoImputacion;
         }
         public ListaPaginada<SolpDto> Ejecutar(DbContext contexto)
         {
@@ -67,7 +74,10 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                 //(!Web || (Web && (x.TipoSolpSap == null || x.TipoSolpSap == 1)) &&
                                 (Sap && x.TipoSolpSap == 3 || Mantenimiento && x.TipoSolpSap == 2 || ReposicionAutomatica && x.TipoSolpSap == 4 ||
                                 (Web && (x.TipoSolpSap == null || x.TipoSolpSap == 1)) || (!Sap && !Mantenimiento && !Web && !ReposicionAutomatica)) &&
-                                (FechaDesde == null || x.FechaCreacion >= FechaDesde.Value) && (FechaHasta == null || x.FechaCreacion <= FechaHasta.Value)
+                                (FechaDesde == null || x.FechaCreacion >= FechaDesde.Value) && (FechaHasta == null || x.FechaCreacion <= FechaHasta.Value) &&
+                                (!ClaseDocumento.Any() || x.EstadoSolpSap_Id != null && ClaseDocumento.Contains((int)x.ClaseDocumento_Id)) &&
+                                (!TipoImputacion.Any() || x.Posiciones.Any(c => TipoImputacion.Contains(c.TipoImputacion.Codigo))) &&
+                                (!ValorTipoImputacion.Any() || x.Posiciones.Any(c => ValorTipoImputacion.Contains((int)c.ValorTipoImputacion_Id)))
                                 select new SolpDto
                                 {
                                     UsuarioActual = new UsuarioDto { Mail = x.UsuarioCreacion != null ? x.UsuarioCreacion.Mail : "" },
