@@ -109,6 +109,8 @@ namespace SustitucionMOA.Controllers
 
                     Usuarios = usuarioService.ListarUsuarioCreadorSolp(),
                     Regiones = service.ListarRegionesSap(),
+                    CondicionesDeImportacion = service.ObtenerTablaSap(TablasSap.CondicionesDeImportacion),
+                    CondicionesDePago = service.ObtenerTablaSap(TablasSap.CondicionesDePago),
                     CamposObligatoriosCabeceraSolp = service.ObtenerTablaGeneral(TablasGenerales.CamposObligatoriosCabeceraSolp).Where(x => x.IdPadre.HasValue).Select(x => new
                     {
                         ClaseDocumentoCodigo = x.Padre.Codigo,
@@ -1659,6 +1661,35 @@ namespace SustitucionMOA.Controllers
             try
             {
                 return JsonCustom(new { data = service.ListarTablaSap(tablas) });
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+        
+        [HttpPost]
+        public ActionResult ModificarOrdenDeCompra(string json)
+        {
+            try
+            {
+                var adjudicacion = JsonConvert.DeserializeObject<AdjudicacionDto>(json);
+                var result = service.EditarOrdenDeCompra(adjudicacion);
+                return JsonCustom(result);
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e }, JsonRequestBehavior.AllowGet);
+            }
+            catch (WSCustomException e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception e)
             {

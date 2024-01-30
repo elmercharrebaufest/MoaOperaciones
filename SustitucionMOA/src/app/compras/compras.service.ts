@@ -8,7 +8,7 @@ import { SolpPosicion } from './solp/solp-posicion';
 import { EnvioSolpCompra, SolpCompraDto } from './solp-compra';
 import { CircularDto } from '../modelos/circular-model';
 import { PeticionDeOfertaCierreDto, PeticionDeOfertaDto, PeticionDeOfertaRevisionTecnicaDto, PeticionDeOfertaUsarioDto } from '../modelos/peticion-de-oferta-model';
-import { AdjudicacionDto } from '../modelos/adjudicacion';
+import { AdjudicacionDto, AdjudicacionEdicionDto } from '../modelos/adjudicacion';
 import { OrdenDeCompraSap } from '../modelos/ordenDeCompraSap';
 import { RegistroInfoDto } from '../modelos/registro-info';
 import { PeticionVisualizacionPrecioDto } from '../modelos/peticion-visualizar-precio-dto';
@@ -1029,10 +1029,22 @@ export class ComprasService extends BaseService {
         });
     }
 
-    public listarVisitasDeObra(listaVisitas: VisitaObraDto[]): Observable<any> {
+    public ModificarAdjudicacion(adjudicacion: AdjudicacionEdicionDto) {
+        console.log("hola",adjudicacion);
+        let json = JSON.stringify(adjudicacion);
+
+        var payload = new FormData();
+        payload.append('json', json);
+
+        return this.http
+            .post<any>('/api/compras/ModificarOrdenDeCompra', payload, { headers: this.headers });
+    }
+    
+     public listarVisitasDeObra(listaVisitas: VisitaObraDto[]): Observable<any> {
         return this.http.post("/api/compras/ListarVisitasDeObra", listaVisitas, {
             headers: this.headers
         });
+
     }
 
     public listarTablaSap(codigos: string[]): Observable<any> {

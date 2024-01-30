@@ -26,6 +26,9 @@ export class FinalizarSolpComponent implements OnInit {
     constructor() { }
 
     ngOnInit() {
+        if(this.solpActual != undefined){
+            console.log("SOLP ACTUAL", this.solpActual)
+        }
     }
 
     onCancelarFinalizar() {
@@ -37,6 +40,7 @@ export class FinalizarSolpComponent implements OnInit {
             selectUsuarioCompras: this.solpActual.selectUsuarioCompras,
             solpActual: this.solpActual
         };
+        console.log("USUARIO", this.solpActual.selectUsuarioCompras);
         this.finalizarEmitter.next(updatedInfo);
     }
 

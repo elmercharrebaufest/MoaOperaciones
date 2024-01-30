@@ -80,6 +80,7 @@ import { VisalizarPrecioComponent } from './dashboard-comprador/ver-ofertas/visu
 import { ReporteOcComponent } from './reporte-oc/reporte-oc.component';
 import { ChatInternoComponent } from './chat-interno/chat-interno.component';
 import { PosicionPlazoComponent } from './dashboard-comprador/ver-ofertas/posicion-plazo/posicion-plazo.component';
+import { EditarOrdenDeCompraComponent } from './dashboard-comprador/listado-dashboard-comprador/editar-orden-de-compra/editar-orden-de-compra.component';
 
 @NgModule({
     imports: [
@@ -160,7 +161,8 @@ import { PosicionPlazoComponent } from './dashboard-comprador/ver-ofertas/posici
         ReporteOcComponent,
         VisalizarPrecioComponent,
         ChatInternoComponent,
-        PosicionPlazoComponent
+        PosicionPlazoComponent,
+        EditarOrdenDeCompraComponent
     ],
     providers: [
         ComprasService,

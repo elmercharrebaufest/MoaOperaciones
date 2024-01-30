@@ -313,7 +313,7 @@
                                             appendTo="body"
                                             (onFocus)=" $event.target.select();"
                                             (completeMethod)="buscarCombo($event, 'MONEDA COMPRAS')"
-                                            [disabled]="posicion.concluido"
+                                            [disabled]="posicion.concluido && !esTipoServicio"
                                             [minLength]="1"
                                             [dropdown]="true"
                                             (onChange)="onSelectMoneda()"

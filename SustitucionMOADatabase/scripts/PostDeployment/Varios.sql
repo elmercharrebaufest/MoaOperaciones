@@ -168,3 +168,32 @@ IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.MonedaConversion WHERE MonedaCodigo = 'XP
 
 IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.MonedaConversion WHERE MonedaCodigo = 'ZRN') 
     INSERT INTO MonedaConversion(MonedaCodigo, CantidadDecimal) VALUES ('ZRN', 0)
+
+
+--Incoterms
+
+IF NOT EXISTS(SELECT 1 FROM tablasap WHERE Tabla = 'INCOTERMS' AND Codigo = 'CPT') BEGIN insert into tablasap (Tabla,Codigo,CodigoSap,Descripcion)values ('INCOTERMS','CPT','CPT','Costo y Flete pagado hasta terminal')END
+IF NOT EXISTS(SELECT 1 FROM tablasap WHERE Tabla = 'INCOTERMS' AND Codigo = 'CIF') BEGIN insert into tablasap (Tabla,Codigo,CodigoSap,Descripcion)values ('INCOTERMS','CIF','CIF','Costo, seguro y flete')END
+IF NOT EXISTS(SELECT 1 FROM tablasap WHERE Tabla = 'INCOTERMS' AND Codigo = 'CFR') BEGIN insert into tablasap (Tabla,Codigo,CodigoSap,Descripcion)values ('INCOTERMS','CFR','CFR','Costo y Flete')END
+IF NOT EXISTS(SELECT 1 FROM tablasap WHERE Tabla = 'INCOTERMS' AND Codigo = 'CIP') BEGIN insert into tablasap (Tabla,Codigo,CodigoSap,Descripcion)values ('INCOTERMS','CIP','CIP','Porte y seguro pagado hasta')END
+IF NOT EXISTS(SELECT 1 FROM tablasap WHERE Tabla = 'INCOTERMS' AND Codigo = 'FAS') BEGIN insert into tablasap (Tabla,Codigo,CodigoSap,Descripcion)values ('INCOTERMS','FAS','FAS','Libre al costado del buque')END
+IF NOT EXISTS(SELECT 1 FROM tablasap WHERE Tabla = 'INCOTERMS' AND Codigo = 'FAC') BEGIN insert into tablasap (Tabla,Codigo,CodigoSap,Descripcion)values ('INCOTERMS','FCA','FCA','Libre transportista')END
+IF NOT EXISTS(SELECT 1 FROM tablasap WHERE Tabla = 'INCOTERMS' AND Codigo = 'FOB') BEGIN insert into tablasap (Tabla,Codigo,CodigoSap,Descripcion)values ('INCOTERMS','FOB','FOB','Libre a bordo')END
+IF NOT EXISTS(SELECT 1 FROM tablasap WHERE Tabla = 'INCOTERMS' AND Codigo = 'EXW') BEGIN insert into tablasap (Tabla,Codigo,CodigoSap,Descripcion)values ('INCOTERMS','EXW','EXW','Entrega en fabrica  vendedor')END
+IF NOT EXISTS(SELECT 1 FROM tablasap WHERE Tabla = 'INCOTERMS' AND Codigo = 'DAF') BEGIN insert into tablasap (Tabla,Codigo,CodigoSap,Descripcion)values ('INCOTERMS','DAF','DAF','Entrega en frontera')END
+IF NOT EXISTS(SELECT 1 FROM tablasap WHERE Tabla = 'INCOTERMS' AND Codigo = 'DAP') BEGIN insert into tablasap (Tabla,Codigo,CodigoSap,Descripcion)values ('INCOTERMS','DAP','DAP','Entrega en plaza')END
+IF NOT EXISTS(SELECT 1 FROM tablasap WHERE Tabla = 'INCOTERMS' AND Codigo = 'DAT') BEGIN insert into tablasap (Tabla,Codigo,CodigoSap,Descripcion)values ('INCOTERMS','DAT','DAT','Entrega en terminal')END
+IF NOT EXISTS(SELECT 1 FROM tablasap WHERE Tabla = 'INCOTERMS' AND Codigo = 'DDP') BEGIN insert into tablasap (Tabla,Codigo,CodigoSap,Descripcion)values ('INCOTERMS','DDP','DDP','Ent. destino, derecho  pagados')END
+
+-- Condiciones de pago
+
+IF NOT EXISTS(SELECT 1 FROM tablasap WHERE Tabla = 'CondicionesDePago' AND Codigo = '00PP') BEGIN insert into tablasap (Tabla,Codigo,CodigoSap,Descripcion)values ('CondicionesDePago','00PP','00PP','Previo Pago') END
+IF NOT EXISTS(SELECT 1 FROM tablasap WHERE Tabla = 'CondicionesDePago' AND Codigo = '0011') BEGIN insert into tablasap (Tabla,Codigo,CodigoSap,Descripcion)values ('CondicionesDePago','0011','0011','Pagadero inmediatamente sin DPP') END
+IF NOT EXISTS(SELECT 1 FROM tablasap WHERE Tabla = 'CondicionesDePago' AND Codigo = '0007') BEGIN insert into tablasap (Tabla,Codigo,CodigoSap,Descripcion)values ('CondicionesDePago','0007','0007','Pagadero dentro de los 7 días sin DPP') END
+IF NOT EXISTS(SELECT 1 FROM tablasap WHERE Tabla = 'CondicionesDePago' AND Codigo = '0015') BEGIN insert into tablasap (Tabla,Codigo,CodigoSap,Descripcion)values ('CondicionesDePago','0015','0015','Pagadero dentro de los 15 días sin DPP') END
+IF NOT EXISTS(SELECT 1 FROM tablasap WHERE Tabla = 'CondicionesDePago' AND Codigo = '0021') BEGIN insert into tablasap (Tabla,Codigo,CodigoSap,Descripcion)values ('CondicionesDePago','0021','0021','Pagadero dentro de los 21 días sin DPP') END
+IF NOT EXISTS(SELECT 1 FROM tablasap WHERE Tabla = 'CondicionesDePago' AND Codigo = '0030') BEGIN insert into tablasap (Tabla,Codigo,CodigoSap,Descripcion)values ('CondicionesDePago','0030','0030','Pagadero dentro de los 30 días sin DPP') END
+IF NOT EXISTS(SELECT 1 FROM tablasap WHERE Tabla = 'CondicionesDePago' AND Codigo = '0045') BEGIN insert into tablasap (Tabla,Codigo,CodigoSap,Descripcion)values ('CondicionesDePago','0045','0045','Pagadero dentro de los 45 días sin DPP') END
+IF NOT EXISTS(SELECT 1 FROM tablasap WHERE Tabla = 'CondicionesDePago' AND Codigo = '0060') BEGIN insert into tablasap (Tabla,Codigo,CodigoSap,Descripcion)values ('CondicionesDePago','0060','0060','Pagadero dentro de los 60 días sin DPP') END
+IF NOT EXISTS(SELECT 1 FROM tablasap WHERE Tabla = 'CondicionesDePago' AND Codigo = '0075') BEGIN insert into tablasap (Tabla,Codigo,CodigoSap,Descripcion)values ('CondicionesDePago','0075','0075','Pagadero dentro de los 75 días sin DPP') END
+IF NOT EXISTS(SELECT 1 FROM tablasap WHERE Tabla = 'CondicionesDePago' AND Codigo = '0090') BEGIN insert into tablasap (Tabla,Codigo,CodigoSap,Descripcion)values ('CondicionesDePago','0090','0090','Pagadero dentro de los 90 días sin DPP') END

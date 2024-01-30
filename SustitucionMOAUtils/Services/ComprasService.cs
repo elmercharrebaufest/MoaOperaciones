@@ -2389,7 +2389,10 @@ namespace SustitucionMOAUtils.Services
                                         NroSolp = posicion.NumeroSolicitud,
                                         ClaseDocumento_Id = clasesDeDocumento.SingleOrDefault(cd => cd.Codigo == posicion.TipoDocumento)?.Id,
                                         EstadoPasos = "0,0,0,0,1",
-                                        TipoSolpSap = tipoImputacion != null && !string.IsNullOrEmpty(tipoImputacion.IdOrden) && posicion.OrigenCreacion == "F" ? (int?)TipoSolpSap.Mantenimiento : posicion.OrigenCreacion == "B" || posicion.OrigenCreacion == "U" ? (int?)TipoSolpSap.ReposicionAutomatica : (int?)TipoSolpSap.Sap,
+                                        TipoSolpSap = tipoImputacion != null && !string.IsNullOrEmpty(tipoImputacion.IdOrden) && posicion.OrigenCreacion == "F" 
+                                        ? (int?)TipoSolpSap.Mantenimiento : 
+                                        posicion.OrigenCreacion == "B" || posicion.OrigenCreacion == "U" ? 
+                                        (int?)TipoSolpSap.ReposicionAutomatica : (int?)TipoSolpSap.Sap,
                                         Pliego = new Pliego
                                         {
                                             SupervisorSector = string.Empty,
@@ -3215,7 +3218,7 @@ namespace SustitucionMOAUtils.Services
 
                 //IM_PRITEM.DES_VENDOR = null; //DES_VENDOR WLIEF   Proveedor deseado
                 //Contrato marco          
-                IM_PRITEM.FIXED_VEND = posicion.ProveedorAdjudicado != null ? posicion.ProveedorAdjudicado.ObtenerCodigoProveedor() : ""; //FIXED_VEND FLIEF   Proveedor fijo
+                IM_PRITEM.FIXED_VEND = posicion.ProveedorAdjudicado_Id != null ? posicion.ProveedorAdjudicado.ObtenerCodigoProveedor() : ""; //FIXED_VEND FLIEF   Proveedor fijo
                 IM_PRITEM.PURCH_ORG = posicion.OrganizacionDeComprasCodigo; //PURCH_ORG EKORG   Organización de compras
                 IM_PRITEM.AGREEMENT = posicion.NumeroContratoSuperior; //AGREEMENT   KONNR Número del contrato superior
                 IM_PRITEM.AGMT_ITEM = posicion.NumeroPosicionContratoSuperior; //AGMT_ITEM   KTPNR Número de posición del contrato superior
@@ -5153,7 +5156,7 @@ namespace SustitucionMOAUtils.Services
                 var usuarios = repositorio.Listar<Usuario>();
 
                 var peticion = repositorio.Obtener<PeticionDeOferta>(peticionId);
-
+               
                 List<PeticionDeOfertaUsuario> poUsuarios = new List<PeticionDeOfertaUsuario>();
                 List<PeticionDeOfertaUsuarioAdicional> poUsuariosAdicionales = new List<PeticionDeOfertaUsuarioAdicional>();
 
@@ -5180,7 +5183,7 @@ namespace SustitucionMOAUtils.Services
                         peticion.UsuariosAdicionales.Add(poAdicional);
                     }
                 }
-
+               
                 repositorio.GuardarCambios();
                 respuestaGuardarSOLP.IdEntidad = peticion.Id;
                 try
@@ -6188,7 +6191,7 @@ namespace SustitucionMOAUtils.Services
                 ActualizarDatosSolp(numerosDePedido, cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Solp);
                 return respuestaGuardarSOLP;
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 if (adjudicacion != null && adjudicacion.Id > 0)
                 {
@@ -6413,16 +6416,41 @@ namespace SustitucionMOAUtils.Services
 
         public AdjudicacionDto ObtenerAdjudicacion(string nroOC)
         {
-            var adjudicar = obtenerOrdenDeCompraConsumerMOA.ObtenerOrdenDeCompraAdjudicacion(nroOC);
+            var ordenDeCompraSAP = obtenerOrdenDeCompraConsumerMOA.ObtenerOrdenDeCompraAdjudicacion(nroOC);
 
             var monedaPesos = repositorio.Obtener<TablaSap>(a => a.Tabla == "Moneda" && a.CodigoSap == "ARP");
-            if (adjudicar.Moneda_Id != monedaPesos.Id)
+            if (ordenDeCompraSAP.Moneda_Id != monedaPesos.Id)
             {
-                var monedaAdjudicacion = repositorio.Obtener<TablaSap>(a => a.Tabla == "Moneda" && a.Id == adjudicar.Moneda_Id);
-                var tipoCambio = ObtenerTipoCambio(monedaAdjudicacion.Id, monedaPesos.Id, adjudicar.FechaCreacion);
-                adjudicar.PrecioFinal = adjudicar.PrecioFinal * tipoCambio.TipoCambio;
+                var monedaAdjudicacion = repositorio.Obtener<TablaSap>(a => a.Tabla == "Moneda" && a.Id == ordenDeCompraSAP.Moneda_Id);
+                var tipoCambio = ObtenerTipoCambio(monedaAdjudicacion.Id, monedaPesos.Id, ordenDeCompraSAP.FechaCreacion);
+                ordenDeCompraSAP.PrecioFinal = ordenDeCompraSAP.PrecioFinal * tipoCambio.TipoCambio;
             }
-            return adjudicar;
+
+
+            if (ordenDeCompraSAP.TipoPosicionCodigo == "MATERIALES")
+            {
+                var todasLasUM = ObtenerTablaSap(TablasSap.Unidad);
+                var unidadesDeMedidaSAP = obtenerUnidadesDeMedidaConsumerMOA.Request(ordenDeCompraSAP.AdjudicacionPosiciones.Where(x => x.MaterialComprasCodigo != null).Select(x => x.MaterialComprasCodigo).ToList());
+                foreach (var posicion in ordenDeCompraSAP.AdjudicacionPosiciones)
+                {
+                    posicion.UnidadMedida = new TablaSapDto
+                    {
+                        Codigo = posicion.UnidadCodigo,
+                        Id = posicion.UnidadId
+                    };
+                    if (!string.IsNullOrEmpty(posicion.MaterialComprasCodigo))
+                    {
+                        var unidadesPorMaterialSAP = unidadesDeMedidaSAP.Where(x => x.CodigoMaterial == posicion.MaterialComprasCodigo).Select(x => x.UnidadDeMedida).ToList();
+                        posicion.UnidadesDeMedida = todasLasUM.Where(x => unidadesPorMaterialSAP.Contains(x.Codigo)).ToList();
+                    }
+                    else
+                    {
+                        posicion.UnidadesDeMedida = todasLasUM.Where(x => x.Id == posicion.UnidadId).ToList();
+                    }
+                }
+            }
+
+            return ordenDeCompraSAP;
         }
 
         public void CrearCotizacionConTrabajoYaHecho(Solp solp)
@@ -7333,9 +7361,61 @@ namespace SustitucionMOAUtils.Services
             return resultado;
         }
 
-        public ResultadoGenerico EditarOrdenDeCompra(AdjudicacionEditarDto adjudicacion)
+        private AdjudicacionEditarDto ConvertirAjudicacionDtoEnAdjudicacionSAP(AdjudicacionDto adjudicacionDto)
         {
-            adjudicacion = TestCompletarAdjudicacion(adjudicacion);
+            return new AdjudicacionEditarDto
+            {
+                NumeroOrdenDeCompra = adjudicacionDto.NumeroOrdenDeCompra,
+                TextoDeCabecera = adjudicacionDto.TextoDeCabecera,
+                CondicionesDeEntrega = adjudicacionDto.CondicionesDeEntrega,
+                CondicionesDePago = adjudicacionDto.CondicionesDePago,
+                Garantias = adjudicacionDto.Garantias,
+                CondicionDePagoCodigo = adjudicacionDto.CondicionDePago.Codigo,
+                PagoEn1 = adjudicacionDto.PagoEn1,
+                PagoEn2 = adjudicacionDto.PagoEn2,
+                PagoEn3 = adjudicacionDto.PagoEn3,
+                PagoEn1Porcentaje = adjudicacionDto.PagoEn1Porcentaje,
+                PagoEn2Porcentaje = adjudicacionDto.PagoEn2Porcentaje,
+                CondicionDeImportacionCodigo = adjudicacionDto.CondicionDeImportacion.Codigo,
+                CondicionDeImportacionComplemento = adjudicacionDto.CondicionDeImportacionDescripcion,
+                MonedaCodigo = !string.IsNullOrEmpty(adjudicacionDto.MonedaCodigo) ? adjudicacionDto.MonedaCodigo : adjudicacionDto.AdjudicacionPosiciones.FirstOrDefault().MonedaCodigo,
+                Posiciones = adjudicacionDto.AdjudicacionPosiciones.Select(posicionDto => new AdjudicacionPosicionEditarDto
+                {
+                    SubPosiciones = posicionDto.SubposicionesCompras?.Select(subPosicionDto => new AdjudicacionSubPosicionEditarDto
+                    {
+                        Indice = subPosicionDto.Numero,
+                        Cantidad = subPosicionDto.Cantidad ?? 0,
+                        Eliminado = subPosicionDto.Eliminado,
+                        PrecioUnitario = subPosicionDto.PrecioBruto ?? 0
+                    }).ToList(),
+                    Indice = posicionDto.Indice ?? 0,
+                    PrecioUnidadCodigo = posicionDto.PrecioUnidad ?? 0,
+                    Eliminado = posicionDto.Eliminado,
+                    RegionCodigo = posicionDto.RegionCodigo,
+                    PaisCodigo = posicionDto.PaisSap,
+                    FechaEntrega = posicionDto.FechaEntregaServicio.Value,
+                    EntregaFinal = posicionDto.EntregaFinal,
+                    Cantidad = posicionDto.Cantidad
+                }).ToList()
+            };
+        }
+
+        private bool HayModificacionCondicionesDePago(SustitucionMOAWS.ObtenerOrdenDeCompraWebServiceMOA.BAPIMEPOHEADER original, AdjudicacionEditarDto adjudicacion)
+        {
+            return
+                original.PMNTTRMS != adjudicacion.CondicionDePagoCodigo ||
+                original.DSCNT1_TO != adjudicacion.PagoEn1 ||
+                original.DSCNT2_TO != adjudicacion.PagoEn2 ||
+                original.DSCNT3_TO != adjudicacion.PagoEn3 ||
+                original.DSCT_PCT1 != adjudicacion.PagoEn1Porcentaje ||
+                original.DSCT_PCT2 != adjudicacion.PagoEn2Porcentaje;
+        }
+
+        public ResultadoGenerico EditarOrdenDeCompra(AdjudicacionDto adjudicacionDto)
+        {
+            var adjudicacion = ConvertirAjudicacionDtoEnAdjudicacionSAP(adjudicacionDto);
+            ResultadoGenerico resultadoEditarOC = new ResultadoGenerico();
+            //adjudicacion = TestCompletarAdjudicacion(adjudicacion);
             //Consulta de OC en SAP
             var ocSap = obtenerOrdenDeCompraConsumerMOA.ObtenerOrdenDeCompraRFC(adjudicacion.NumeroOrdenDeCompra);
             //Convertir OC de SAP a ModificarPedidoSAP
@@ -7478,14 +7558,20 @@ namespace SustitucionMOAUtils.Services
             }
             else
             {
-                if (false)// TODO: validar si edito alguna condicion de pago.
-                    throw new NotImplementedException("Condición de Pago no se puede editar para las clase de documento  ZPE1 y ZDIR.");
+                if (HayModificacionCondicionesDePago(ocSap.POHEADER, adjudicacion))// TODO: validar si edito alguna condicion de pago.
+                {
+                    resultadoEditarOC.Errores.Add(new ErrorMessage("Condición de Pago no se puede editar para las clase de documento  ZPE1 y ZDIR."));
+                    return resultadoEditarOC;
+                }
             }
 
 
             //Condición de Importacion
             if (!string.IsNullOrEmpty(adjudicacion.CondicionDeImportacionComplemento) && adjudicacion.CondicionDeImportacionComplemento.Length > 28)
-                throw new NotImplementedException("Condicion de importacion muy largo, 28 caracteres maximo.");
+            {
+                resultadoEditarOC.Errores.Add(new ErrorMessage("Condicion de importacion muy largo, 28 caracteres maximo."));
+                return resultadoEditarOC;
+            }
             modificarPedidoSAP.POHEADER.INCOTERMS1 = adjudicacion.CondicionDeImportacionCodigo;
             modificarPedidoSAP.POHEADER.INCOTERMS2 = adjudicacion.CondicionDeImportacionComplemento;
             modificarPedidoSAP.POHEADERX.INCOTERMS1 = "X";
@@ -7521,8 +7607,13 @@ namespace SustitucionMOAUtils.Services
                 var posicionSap = modificarPedidoSAP.POITEM.Single(a => a.PO_ITEM == PO_ITEM);
                 var posicionSapX = modificarPedidoSAP.POITEMX.Single(a => a.PO_ITEM == PO_ITEM);
                 //Impitación
-                var imputacionSap = modificarPedidoSAP.POACCOUNT.Single(a => a.PO_ITEM == PO_ITEM);
-                var imputacionSapX = modificarPedidoSAP.POACCOUNTX.Single(a => a.PO_ITEM == PO_ITEM);
+                var imputacionSap = new BAPIMEPOACCOUNT();
+                var imputacionSapX = new BAPIMEPOACCOUNTX();
+                if (modificarPedidoSAP.POACCOUNT.Count > 0)
+                {
+                    imputacionSap = modificarPedidoSAP.POACCOUNT.Single(a => a.PO_ITEM == PO_ITEM);
+                    imputacionSapX = modificarPedidoSAP.POACCOUNTX.Single(a => a.PO_ITEM == PO_ITEM);
+                }
                 //Condición
                 var condicionSap = modificarPedidoSAP.POCOND.Single(a => a.ITM_NUMBER == "0" + PO_ITEM);
 
@@ -7542,8 +7633,11 @@ namespace SustitucionMOAUtils.Services
                     posicionSap.QUANTITY = posAdj.Cantidad;
                     posicionSap.QUANTITYSpecified = true;
                     posicionSapX.QUANTITY = "X";
-                    imputacionSap.QUANTITY = posAdj.Cantidad;
-                    imputacionSapX.QUANTITY = "X";
+                    if (modificarPedidoSAP.POACCOUNT.Count > 0)
+                    {
+                        imputacionSap.QUANTITY = posAdj.Cantidad;
+                        imputacionSapX.QUANTITY = "X";
+                    }
 
                     //Modificar importe
                     if (modificoImporte)
@@ -7612,8 +7706,8 @@ namespace SustitucionMOAUtils.Services
             var resultadoSAP = modificarOrdenDeCompraConsumerMOA.EditarPedidoRequest(modificarPedidoSAP);
             resultadoSAP.Where(a => a.MESSAGE == "No se han modificado datos").ToList().ForEach(a => a.TYPE = "E");
 
-            ResultadoGenerico resultadoEditarOC = new ResultadoGenerico();
-            foreach (var item in resultadoSAP)
+            
+            foreach (var item in resultadoSAP.Where(x => x.TYPE == "E"))
             {
                 resultadoEditarOC.Error(item.TYPE, item.MESSAGE);
             }

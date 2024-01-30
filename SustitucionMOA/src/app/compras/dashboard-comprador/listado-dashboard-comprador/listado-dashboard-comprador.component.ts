@@ -16,7 +16,7 @@ import { ModalService } from '../../../common/services/ModalService';
 import { Subscription } from 'rxjs';
 import { PeticionDeOfertaDto } from '../../../modelos/peticion-de-oferta-model';
 import { CircularDto } from '../../../modelos/circular-model';
-import { AdjudicacionDto, AdjudicacionPosicionDto } from '../../../modelos/adjudicacion';
+import { AdjudicacionDto, AdjudicacionEdicionDto, AdjudicacionPosicionDto } from '../../../modelos/adjudicacion';
 import { ChatComprasDto } from '../../chat-interno/chat-interno.interface';
 import { EnumTipoImputacion } from '../../enum-tipo-imputacion';
 
@@ -59,7 +59,7 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
     displayOkCircular: boolean;
     displayProveedor: boolean;
     usuarioProveedor: boolean = false;
-    ordenDeCompra: any;
+    ordenDeCompra: AdjudicacionEdicionDto;
     displayOrdenDeCompra: boolean;
     ordenDeCompraId: any;
     ordenesDeCompra: AdjudicacionDto[] = [];
@@ -130,6 +130,11 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
     checkedFilterWeb = false;
     verTodas: boolean = this.isAuthorized('VER TODAS SOLPS');
     displayCerrarCotizacion: boolean;
+    displayEditarOc: boolean;
+    displayVisualizarErrores: boolean;
+    errores: any = [];
+    mensaje: string;
+    displayAdjudicacionCreada: boolean;
 
     constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService,
         protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService,
@@ -491,6 +496,7 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
                     }
                     else {
                         this.ordenDeCompra = result.data;
+                        this.parsearFecha();
                         this.blockUI.stop();
                     }
                 },
@@ -818,5 +824,155 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
                 }
             }
         }
+    }
+
+    abrirModalEditarOc() {
+        this.displayEditarOc = true;
+    }
+
+    cerrarEditarOc() {
+        this.displayEditarOc = false;
+        this.mensaje = "";
+    }
+
+    guardarEditarOc(event: any) {
+        this.validarOcCompleta(event);
+        if (this.mensaje == "") {
+            this.guardarAdjudicacion(event);
+        }
+
+
+    }
+
+    guardarAdjudicacion(ordenDeCompra) {
+        this.blockUI.start("Grabando...");
+
+        try {
+
+            this.subscription = this.service.ModificarAdjudicacion(ordenDeCompra).subscribe(
+                (result: any) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.floatMsgService.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.floatMsgService.setInfoMsg(result.info);
+                    }
+                    else if (result.Errores != undefined && result.Errores != null && result.Errores.length > 0) {                      
+                        this.errores = result.Errores;
+                        this.displayVisualizarErrores = true;
+                    }
+                    else {
+
+                        this.cerrarEditarOc();
+                        this.displayAdjudicacionCreada = true;
+
+                    }
+                    this.blockUI.stop();
+                },
+                error => {
+                    this.floatMsgService.setErrorMsg(error.message);
+                    this.blockUI.stop();
+
+                });
+        } catch (e) {
+            this.floatMsgService.setErrorMsg(e);
+            this.blockUI.stop();
+            return false; //<-- Prevent Refresh
+        }
+        return false; //<-- Prevent Refresh
+    }
+
+    salirVisualizarErrores() {
+        this.displayVisualizarErrores = false;
+    }
+
+    salirConfirmacionDeActualizacionOc() {
+        this.listarAdjudicaciones(this.ordenDeCompra.Solp_Id);
+        this.displayAdjudicacionCreada = false;
+    }
+
+
+    validarOcCompleta(ordenDeCompra: AdjudicacionEdicionDto) {
+        this.mensaje = "";
+        var breakFor = false;
+       
+        if (ordenDeCompra.AdjudicacionPosiciones[0].MonedaId == 0) {
+            this.mensaje = "La Moneda es obligatoria";
+            breakFor = true;
+            return this.mensaje;
+        }
+        const self = this;
+        ordenDeCompra.AdjudicacionPosiciones.forEach(function (adjudicacion, i) {
+            if (!breakFor) {
+                if (adjudicacion.Cantidad <= 0 || adjudicacion.Cantidad == undefined) {
+                    self.mensaje = "Pos. " + adjudicacion.Indice + " - La cantidad es obligatoria";
+                    breakFor = true;
+                    return self.mensaje;
+                }
+
+                if (adjudicacion.PrecioUnidad <= 0) {
+                    self.mensaje = "Pos. " + adjudicacion.Indice + " - El Precio es obligatorio";
+                    breakFor = true;
+                    return self.mensaje;
+                }
+                const decimalPart = (adjudicacion.PrecioUnidad % 1).toFixed(2);
+                if (decimalPart != '0.00' && adjudicacion.MonedaId == "CLP") {
+                    self.mensaje = "Pos. " + adjudicacion.Indice + ": Para la moneda seleccionada no es posible ingresar decimales en el precio";
+                    breakFor = true;
+                    return self.mensaje;
+                }
+                if (adjudicacion.FechaEntregaServicio == null) {
+                    self.mensaje = "Pos. " + adjudicacion.Indice + " - La fecha de entrega es obligatoria";
+                    breakFor = true;
+                    return self.mensaje;
+                }
+            }
+            if (adjudicacion.SubposicionesCompras != null) {
+                adjudicacion.SubposicionesCompras.forEach(function (subposicion, i) {
+                    if (!breakFor) {
+                        if (subposicion.Cantidad <= 0 || subposicion.Cantidad == undefined) {
+                            self.mensaje = "Pos. " + subposicion.Numero + ": La cantidad es obligatoria";
+                            breakFor = true;
+                            return self.mensaje;
+                        }
+
+                        if (subposicion.PrecioBruto <= 0) {
+                            self.mensaje = "Pos. " + subposicion.Numero + ": El precio es obligatorio";
+                            breakFor = true;
+                            return self.mensaje;
+                        }
+                        const decimalPart = (subposicion.PrecioBruto % 1).toFixed(2);
+                        if (decimalPart != '0.00' && adjudicacion.MonedaId == "CLP") {
+                            self.mensaje = "Pos. " + subposicion.Numero + ": Para la moneda seleccionada no es posible ingresar decimales en el precio";
+                            breakFor = true;
+                            return self.mensaje;
+                        }
+                    }
+                });
+            }
+        });
+
+        return this.mensaje;
+    }
+
+    editarOrdenDeCompra(nroOC: any) {
+        this.obtenerAdjudicacion(nroOC);        
+        this.abrirModalEditarOc();
+    }
+
+    public parsearFecha() {
+        if (this.ordenDeCompra != undefined) {
+            for (let index = 0; index < this.ordenDeCompra.AdjudicacionPosiciones.length; index++) {
+
+                if (this.ordenDeCompra.AdjudicacionPosiciones[index].FechaEntregaServicio != null) {
+                    var milliseconds = parseInt(this.ordenDeCompra.AdjudicacionPosiciones[index].FechaEntregaServicio.substring(6));
+                    var date = new Date(milliseconds);
+                    this.ordenDeCompra.AdjudicacionPosiciones[index].FechaEntregaServicio = date;
+                }
+
+            }
+        }
+
     }
 }

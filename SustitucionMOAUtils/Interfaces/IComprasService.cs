@@ -86,7 +86,8 @@ namespace SustitucionMOAUtils.Interfaces
         bool ValidarSolpTratada(string nroSolp);
         List<LiberadorSapDto> ListarLiberadorSap();
         List<TablaSapDto> ListarUnidadesDeMedida(string material);
-        ResultadoGenerico EditarOrdenDeCompra(AdjudicacionEditarDto adjudicacion);
+        ResultadoGenerico EditarOrdenDeCompra(AdjudicacionDto adjudicacion);      
+       
         InfoVisitasDeObraDto ListarVisitasDeObra(List<VisitaObraDto> visitas);
         List<TablaGeneralDto> ObtenerImputaciones(string tabla);
     }

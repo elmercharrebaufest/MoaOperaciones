@@ -326,11 +326,12 @@
                                                 <th class="columna">Moneda</th>
                                                 <th class="columna">Estado</th>
                                                 <th class="columna"></th>
+                                                <th class="columna"></th>
                                             </tr>
                                         </ng-template>
                                         <ng-template pTemplate="emptymessage">
                                             <tr>
-                                                <td style="text-align: center;" colspan="8">Sin datos</td>
+                                                <td style="text-align: center;" colspan="9">Sin datos</td>
                                             </tr>
                                         </ng-template>
                                         <ng-template pTemplate="body" let-orden>
@@ -346,6 +347,12 @@
                                                     <button class="publicar btn btn-success"
                                                             (click)="verDetalleOrdenDeCompra(orden.NumeroOrdenDeCompra)">
                                                         Ver detalle
+                                                    </button>
+                                                </td>
+                                                <td class="columna">
+                                                    <button class="publicar btn btn-success"
+                                                            (click)="editarOrdenDeCompra(orden.NumeroOrdenDeCompra)">
+                                                        Editar
                                                     </button>
                                                 </td>
                                             </tr>
@@ -389,5 +396,36 @@
     <app-chat-interno [(displayChatInterno)]="displayChatInterno"
                       [(chat)]="chat">
         (cerrardisplayChatEmitter)="cerrarModalChat()"
-    </app-chat-interno>
+    </app-chat-interno>    
+
+    <app-editar-orden-de-compra [(displayEditarOc)]="displayEditarOc"
+                    (cerrarEditarOcEmitter)="cerrarEditarOc()"
+                    (guardarEditarOcEmitter)="guardarEditarOc($event)"                    
+                    [(ordenDeCompra)]="ordenDeCompra"
+                    [(mensaje)]="mensaje">
+    </app-editar-orden-de-compra>
+
+    <p-dialog [(visible)]="displayVisualizarErrores" [width]="500" modal="modal" appendTo="body" [draggable]="false" [contentStyle]="{'overflow':'scroll', 'max-height':'600px', 'min-height':'100px'}" [closable]="false">
+        <p-header class="headerModal">
+            Errores
+        </p-header>
+        <strong>A continuación se listan los errores generados: </strong>
+        <br>
+        <br>
+        <div *ngFor="let error of errores" [innerHTML]="error.Message" style="white-space: pre-line"></div>
+        <p-footer>
+            <button type="button" class="btn btn-primary botonesComprasColor botonModal" (click)="salirVisualizarErrores()">Aceptar</button>
+        </p-footer>
+    </p-dialog>
+
+    <p-dialog [(visible)]="displayAdjudicacionCreada" [width]="500" modal="modal" appendTo="body" [draggable]="false" [contentStyle]="{'overflow':'visible', 'max-height':'500px', 'min-height':'100px'}" [closable]="false">
+        <p-header class="headerModal">
+            ¡Actualizacion exitosa!
+        </p-header>
+        <br> La orden de compra se actualizó correctamente.       
+        <br>
+        <p-footer>
+            <button type="button" class="btn btn-primary botonesComprasColor botonModal" (click)="salirConfirmacionDeActualizacionOc()">Aceptar</button>
+        </p-footer>
+    </p-dialog>
 </div>
