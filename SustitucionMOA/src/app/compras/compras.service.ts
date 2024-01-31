@@ -1029,13 +1029,10 @@ export class ComprasService extends BaseService {
         });
     }
 
-    public ModificarAdjudicacion(adjudicacion: AdjudicacionEdicionDto) {
-        console.log("hola",adjudicacion);
+    public ModificarAdjudicacion(adjudicacion: AdjudicacionEdicionDto) {        
         let json = JSON.stringify(adjudicacion);
-
         var payload = new FormData();
         payload.append('json', json);
-
         return this.http
             .post<any>('/api/compras/ModificarOrdenDeCompra', payload, { headers: this.headers });
     }
