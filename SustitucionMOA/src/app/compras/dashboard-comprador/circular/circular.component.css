@@ -1,0 +1,18 @@
+.headerModal {
+    top: 106px;
+    left: 381px;
+    width: 119px;
+    height: 26px;
+    text-align: left;
+    font: normal normal bold 20px/26px Roboto Regular;
+    letter-spacing: 0px;
+    color: #5CB85C;
+    opacity: 1;
+  }
+
+  ::ng-deep .modalCircular{
+    height: 200px !important;
+    max-height: 100px !important;
+  }
+
+  .my-dialog .ui-dialog-content { max-height: 100px; }

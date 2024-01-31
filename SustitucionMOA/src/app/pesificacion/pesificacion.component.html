@@ -15,12 +15,18 @@
                 <!-- Nav tabs -->
                 <div class="col-xs-12">
                     <ul class="nav nav-pills" role="tablist">
-                        <li role="presentation" class="active"><a href="#individual" aria-controls="individual"
-                                *ngIf="permitirCarga" role="tab" data-toggle="tab">Carga Individual</a></li>
-                        <li role="presentation"><a href="#masiva" aria-controls="profile" role="tab"
-                                *ngIf="permitirCarga" data-toggle="tab">Carga Masiva</a></li>
-                        <li role="presentation"><a href="#pendiente" aria-controls="profile" role="tab"
-                                id="linkPendiente" data-toggle="tab">Pendiente</a></li>
+                        <li role="presentation" class="active">
+                            <a href="#individual" aria-controls="individual"
+                               *ngIf="permitirCarga" role="tab" data-toggle="tab">Carga Individual</a>
+                        </li>
+                        <li role="presentation">
+                            <a href="#masiva" aria-controls="profile" role="tab"
+                               *ngIf="permitirCarga" data-toggle="tab">Carga Masiva</a>
+                        </li>
+                        <li role="presentation">
+                            <a href="#pendiente" aria-controls="profile" role="tab"
+                               id="linkPendiente" data-toggle="tab">Pendiente</a>
+                        </li>
                     </ul>
                 </div>
                 <!-- Tab panes -->
@@ -57,8 +63,20 @@
                                 {{fecha.HoraDeCorte}}hs)
                             </div>
                             <div class="col-xs-12" *ngIf="this.visibleSoja200" style="color:red;">
-                                Si el contrato es de Soja el TC de pesificación será de {{soja200.Cotizacion}} ARS desde el {{soja200.DesdeString}} al {{soja200.HastaString}}
+                                Si el contrato es de Soja el TC de pesificación será de {{soja200.Cotizacion}} ARS desde
+                                el {{soja200.DesdeString}} al {{soja200.HastaString}}
                             </div>
+                            <div class="col-xs-12" *ngIf="dolarGirasol" style="color:red;">
+                                Si el contrato es de Girasol el TC de pesificación será de {{dolarGirasol.Cotizacion}}
+                                ARS desde
+                                el {{dolarGirasol.DesdeString}} al {{dolarGirasol.HastaString}}
+                            </div>
+                            <div class="col-xs-12" *ngIf="dolarMaiz" style="color:red;">
+                                Si el contrato es de Maiz el TC de pesificación será de {{dolarMaiz.Cotizacion}}
+                                ARS desde
+                                el {{dolarMaiz.DesdeString}} al {{dolarMaiz.HastaString}}
+                            </div>
+
                             <hr>
                             <div class="row myRow cargaDeDatosBtn">
                                 <div class="col-xs-12 col-sm-6 col-sm-offset-6">
@@ -76,7 +94,7 @@
                         <div class="row myRow cargaDeDatosFields cargaDeDatosForm">
                             <div class="col-xs-12">
                                 <a href="../../../Documentacion/Pesificados carga masiva.docx" target="_blank"
-                                    style="text-decoration:none!important">
+                                   style="text-decoration:none!important">
                                     <div class="documento">
                                         <p><i class="fa fa-file-word-o" aria-hidden="true"></i>Carga masiva</p>
                                         Se detallan como generar el archivo a subir para una carga masiva de
@@ -88,7 +106,7 @@
                                 Archivo: *
                                 <div class="styled-select">
                                     <input type="file" accept=".csv" (change)="cargarArchivo($event)"
-                                        placeholder="Cargar Archivo">
+                                           placeholder="Cargar Archivo">
                                 </div>
                             </div>
                             <hr>
@@ -96,7 +114,7 @@
                                 <div class="col-xs-12 col-sm-6 col-sm-offset-6">
                                     <spinner-small></spinner-small>
                                     <a (click)="cargaMasiva()" href="#" style="text-decoration:none!important"
-                                        *ngIf="this.visibleEnviar">
+                                       *ngIf="this.visibleEnviar">
                                         <div class="btnSection animate">Enviar <span class="fa fa-play "></span></div>
                                     </a>
                                 </div>
@@ -107,9 +125,9 @@
                         <div class="row myRow cargaDeDatosFields cargaDeDatosForm">
                             <div class="col-xs-12">
                                 <table id="tableModal"
-                                    class="display nowrap dataTable no-footer dtr-inline rounded shadow ccpp-table"
-                                    cellspacing="0" role="grid" aria-describedby="tableModal_info"
-                                    style="width: 100%; padding:10px 0;">
+                                       class="display nowrap dataTable no-footer dtr-inline rounded shadow ccpp-table"
+                                       cellspacing="0" role="grid" aria-describedby="tableModal_info"
+                                       style="width: 100%; padding:10px 0;">
                                     <thead>
                                         <tr role="row">
                                             <th tabindex="0" rowspan="1" colspan="1"
@@ -130,19 +148,22 @@
                                     </tbody>
                                 </table>
                                 <pagination-template #pT="paginationApi" (pageChange)="p = $event"
-                                    *ngIf="isVisiblePaginacion()">
+                                                     *ngIf="isVisiblePaginacion()">
                                     <div class="dataTables_paginate paging_simple_numbers">
                                         <a id="tableModal_previous" class="paginate_button previous"
-                                            (click)="pT.previous()" [class.disabled]="pT.isFirstPage()"> Anterior </a>
+                                           (click)="pT.previous()" [class.disabled]="pT.isFirstPage()"> Anterior </a>
                                         <span *ngFor="let page of pT.pages"
-                                            [class.current]="pT.getCurrent() === page.value">
+                                              [class.current]="pT.getCurrent() === page.value">
                                             <a class="paginate_button" (click)="pT.setCurrent(page.value)"
-                                                *ngIf="pT.getCurrent() !== page.value">{{ page.label }}</a>
-                                            <a class="paginate_button current" *ngIf="pT.getCurrent() === page.value">{{
-                                                page.label }}</a>
+                                               *ngIf="pT.getCurrent() !== page.value">{{ page.label }}</a>
+                                            <a class="paginate_button current" *ngIf="pT.getCurrent() === page.value">
+                                                {{
+                                                page.label
+                                                }}
+                                            </a>
                                         </span>
                                         <a id="tableModal_next" class="paginate_button next" (click)="pT.next()"
-                                            [class.disabled]="pT.isLastPage()"> Siguiente </a>
+                                           [class.disabled]="pT.isLastPage()"> Siguiente </a>
                                     </div>
                                 </pagination-template>
                             </div>
@@ -160,7 +181,7 @@
 <!--  modal -->
 <!-- Modal -->
 <div class="modal fade" id="myModalConfirmacion" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-    data-backdrop="false" style="overflow-y: scroll;background-color: rgba(0, 0, 0, 0.5);">
+     data-backdrop="false" style="overflow-y: scroll;background-color: rgba(0, 0, 0, 0.5);">
     <div class="modal-dialog" role="document" style="width: 1020px;">
         <div class="modal-content">
             <div class="modal-header">
@@ -180,8 +201,10 @@
                         <mdb-stepper #stepper>
                             <div class="col-md-12">
                                 <mdb-step name="Step 1" label="Informe comercial">
-                                    <h3>Está seguro que desea Pesificar el Contrato: {{contrato}}, Fijación:
-                                        {{fijacion}} por {{cantidad}} kilos?</h3>
+                                    <h3>
+                                        Está seguro de que desea Pesificar el Contrato: {{contrato}}, Fijación:
+                                        {{fijacion}} por {{cantidad}} kilos?
+                                    </h3>
 
                                 </mdb-step>
 
@@ -194,12 +217,12 @@
             <div class="modal-footer">
 
                 <button type="button" class="btn btn-info btn-lg" *ngIf="this.visibleEnviar"
-                    (click)="guardarPesificaciones()"
-                    style="margin: 0 10px; height: 30px; align-items: center; display: inline-flex; background: #172f8f; border: none;">
+                        (click)="guardarPesificaciones()"
+                        style="margin: 0 10px; height: 30px; align-items: center; display: inline-flex; background: #172f8f; border: none;">
                     Aceptar
                 </button>
                 <button type="button" class="btn btn-info btn-lg" *ngIf="this.visibleEnviar" data-dismiss="modal"
-                    style="margin: 0 10px; height: 30px; align-items: center; display: inline-flex; background: #172f8f; border: none;">
+                        style="margin: 0 10px; height: 30px; align-items: center; display: inline-flex; background: #172f8f; border: none;">
                     Cancelar
                 </button>
             </div>

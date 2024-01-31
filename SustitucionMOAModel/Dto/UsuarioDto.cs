@@ -1,9 +1,5 @@
 ﻿using SustitucionMOAModel.Entities;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SustitucionMOAModel.Dto
 {
@@ -24,8 +20,13 @@ namespace SustitucionMOAModel.Dto
         public bool NuevoUsuario{ get; set; }
         public string ApiKey { get; set; }
         public string UsuarioSap { get; set; }
-
-        public UsuarioDto() { }
+        public string RazonSocial { get; set; }
+        public TipoUsuarioDto TipoUsuario { get; set; }
+        public string OrganizacionDeCompra { get; set; }
+        public UsuarioDto()
+        {
+            Permisos = new List<string>();
+        }
 
         public UsuarioDto(Usuario usuario)
         {
@@ -33,8 +34,8 @@ namespace SustitucionMOAModel.Dto
             Mail = usuario.Mail;
             Habilitado = usuario.Habilitado;
             CUIT = usuario.CUITRegistro;
-            UsuarioSap = string.IsNullOrEmpty(usuario.UsuarioSap) ? "" : usuario.UsuarioSap; 
-
+            UsuarioSap = string.IsNullOrEmpty(usuario.UsuarioSap) ? "" : usuario.UsuarioSap;
+            TipoUsuario = new TipoUsuarioDto(usuario.TipoUsuario);
             switch (usuario.TipoUsuario.NombreCorto)
             {
                 case "G":
@@ -53,24 +54,32 @@ namespace SustitucionMOAModel.Dto
                     break;
             }
 
-            CodigoProveedor = FormatearCodigo();
+            CodigoProveedor = ObtenerCodigoProveedor();
             Permisos = new List<string>();
+            RazonSocial = usuario.ObtenerRazonSocial();
+            OrganizacionDeCompra = usuario.OrganizacionDeCompra;
         }
 
-        private string FormatearCodigo()
+        private string ObtenerCodigoProveedor()
         {
+            try {
+                //
+                if (string.IsNullOrEmpty(CUIT))
+                    return "";
 
-            if (string.IsNullOrEmpty(CUIT))
-                return "";
-
-            if (Tipo == "Corredor")
-            {
-                return string.Concat("C", CUIT.Substring(2, 8));
+                if (Tipo == "Corredor")
+                {
+                    return string.Concat("C", CUIT.Substring(2, 8));
+                }
+                else
+                {
+                    return string.Concat("00", CUIT.Substring(2, 8));
+                }
             }
-            else
-            {
-                return string.Concat("00", CUIT.Substring(2, 8));
+            catch {
+                return "CUIT INVALIDO";
             }
+            
         }
     }
 }

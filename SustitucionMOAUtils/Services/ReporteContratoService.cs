@@ -3,6 +3,7 @@ using SustitucionMOAFotmatter;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Models;
+using SustitucionMOAModel.Enums;
 using SustitucionMOAModel.Models.ViewModel.ReporteContrato;
 using SustitucionMOAModel.Models.WSMapMOA.ReporteContrato;
 using SustitucionMOARepositorio;
@@ -11,8 +12,6 @@ using SustitucionMOAWS.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SustitucionMOAUtils.Services
 {
@@ -29,21 +28,41 @@ namespace SustitucionMOAUtils.Services
         }
 
         public ReporteContratoViewModel GetContratosReporte(
+            string mailUsuario,
             string proveedor,
             string fechaInicio,
             string fechaFin,
             bool mostrarPendientes,
-            string mailUsuario,
             ReporteContratoWSMOAResponse dataFiltro)
         {
-            List<FechaWS> fechas = new List<FechaWS>();
-            var proveedorDB = repositorio.Obtener<Proveedor>(x => x.CodigoProveedor == proveedor);
-            var request = new ReporteContratoWSMOARequest();
+            if (string.IsNullOrEmpty(proveedor))
+            {
+                throw new ValidationCustomException("El Cliente/Corredor no puede estar vacío");
+            }
+            if ((Convert.ToDateTime(fechaFin) - Convert.ToDateTime(fechaInicio)).TotalDays > 240)
+            {
+                throw new ValidationCustomException("El rango de fecha no puede ser mayor a 240 días.");
+            }
 
-            request = new ReporteContratoWSMOARequest()
+            var usuario = repositorio.Obtener<SustitucionMOAModel.Entities.Usuario>(us => us.Mail == mailUsuario);
+
+            if (usuario == null)
+            {
+                throw new ValidationCustomException("El usuario no existe. Reinicie su sesión.");
+            }
+
+            var proveedorDB = repositorio.Obtener<Proveedor>(x => x.CodigoProveedor == proveedor);
+
+            if (!usuario.TienePermiso(PermisoEnum.SeleccionarVendedor))
+            {
+                proveedorDB = usuario.ObtenerProveedorAsignado();
+            }
+
+
+            var request = new ReporteContratoWSMOARequest()
             {
                 Cliente = proveedorDB.TipoProveedor.NombreCorto == "CORR" ? "" : proveedor,
-                Pendiente = mostrarPendientes == true ? "X" : "",
+                Pendiente = mostrarPendientes ? "X" : "",
                 Corredor = proveedorDB.TipoProveedor.NombreCorto == "CORR" ? proveedor : "",
                 Material = "",
                 TipoContrato = "",
@@ -61,21 +80,52 @@ namespace SustitucionMOAUtils.Services
             else
             {
                 view.data = dataFiltro;
-
             }
-
             validarRespuesta(dataFiltro == null ? view.data : dataFiltro);
             var obtenerAgrupado = obtenerAgrupadoProducto(view);
-            view.data.Resultados = obtenerAgrupado.data.Resultados.OrderByDescending(x => x.FechaDesde).OrderByDescending(y => y.DescripcionMaterial).ToList();
+            view.data.Resultados = obtenerAgrupado.data.Resultados.OrderBy(o => o.DescripcionMaterial).ThenBy(o => o.FechaDesde).ToList();
             return view;
         }
 
         public ReporteContratoViewModel obtenerAgrupadoProducto(ReporteContratoViewModel view)
         {
-            view.filtroCliente = new DropdownContent(view.data.Resultados.GroupBy(i => i.NombreCliente).Select(x => new DropdownOption { value = x.Key, label = x.Key + " (" + x.Count() + ")" }).ToList());
-            view.filtroProducto = new DropdownContent(view.data.Resultados.GroupBy(i => i.DescripcionMaterial).Select(x => new DropdownOption { value = x.Key, label = x.Key + "(" + x.Count() + ")" }).ToList());
-            view.filtroTipoContrato = new DropdownContent(view.data.Resultados.GroupBy(i => i.TipoContrato).Select(x => new DropdownOption { value = x.Key, label = x.Key + "(" + x.Count() + ")" }).ToList());
-            view.filtroNroContrato = new DropdownContent(view.data.Resultados.GroupBy(i => i.Contrato).Select(x => new DropdownOption { value = x.Key, label = x.Key + "(" + x.Count() + ")" }).ToList());
+            view.filtroCliente = new DropdownContent(
+                    view.data.Resultados
+                        .GroupBy(i => i.NombreClienteCUIT)
+                        .Select(x => new DropdownOption
+                        {
+                            value = x.Key,
+                            label = x.Key + " (" + x.Count() + ")"
+                        })
+                        .OrderBy(opt => opt.label)
+                        .ToList());
+
+            view.filtroProducto = new DropdownContent(
+                    view.data.Resultados
+                        .GroupBy(i => i.DescripcionMaterial)
+                        .Select(x => new DropdownOption
+                        {
+                            value = x.Key,
+                            label = x.Key + "(" + x.Count() + ")"
+                        }).ToList());
+
+            view.filtroTipoContrato = new DropdownContent(
+                    view.data.Resultados
+                        .GroupBy(i => i.TipoContrato)
+                        .Select(x => new DropdownOption
+                        {
+                            value = x.Key,
+                            label = x.Key + "(" + x.Count() + ")"
+                        }).ToList());
+
+            view.filtroNroContrato = new DropdownContent(
+                    view.data.Resultados
+                        .GroupBy(i => i.Contrato)
+                        .Select(x => new DropdownOption
+                        {
+                            value = x.Key,
+                            label = x.Key + "(" + x.Count() + ")"
+                        }).ToList());
 
             var listaPorProducto = view.data.Resultados.OrderByDescending(x => x.DescripcionMaterial).ToList();
             var agrupadoProducto = view.data.Resultados.GroupBy(x => x.DescripcionMaterial).Select(x => new
@@ -93,6 +143,7 @@ namespace SustitucionMOAUtils.Services
                 resultado.TipoContrato = "";
                 resultado.Contrato = "";
                 resultado.NombreCliente = "";
+                resultado.NombreClienteCUIT = "";
                 resultado.FechaDesde = "";
                 resultado.Corredor = "TOTAL";
                 resultado.KilosTotalesStr = "";
@@ -120,17 +171,21 @@ namespace SustitucionMOAUtils.Services
                 throw new InfoCustomException(String.Format(InfoMsg.SinRegistros, "Contratos"));
         }
 
-        public ReporteContratoViewModel GetContratosDetalle(string contrato, string proveedor)
+        public ReporteContratoViewModel GetContratosDetalle(string contrato, string proveedor, string fechaInicio, string fechaFin)
         {
             var proveedorDB = repositorio.Obtener<Proveedor>(x => x.CodigoProveedor == proveedor);
             var request = new ReporteContratoWSMOARequest();
+
+            var dateInicio = DataFormatter.StringToDateTime(fechaInicio, "");
+            var dateFin = DataFormatter.StringToDateTime(fechaFin, "");
 
             request = new ReporteContratoWSMOARequest()
             {
                 //Se envia corredor o Cliente para efectos de mas rapidez en la consulta a la rfc
                 Cliente = proveedorDB.TipoProveedor.NombreCorto == "CORR" ? "" : proveedor,
                 Corredor = proveedorDB.TipoProveedor.NombreCorto == "CORR" ? proveedor : "",
-                Contrato = contrato
+                Contrato = contrato,
+                Fechas = new List<FechaWS> { new FechaWS { fechaInicio = dateInicio, fechaFin = dateFin } }
             };
 
             ReporteContratoViewModel view = new ReporteContratoViewModel();

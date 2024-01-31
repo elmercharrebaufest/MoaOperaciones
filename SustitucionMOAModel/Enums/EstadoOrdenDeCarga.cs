@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SustitucionMOAModel.Enums
+﻿namespace SustitucionMOAModel.Enums
 {
     public enum EstadoOrdenDeCarga
     {
@@ -20,9 +14,12 @@ namespace SustitucionMOAModel.Enums
         ErrorDeCarga,
         EdicionSolicitada,
         AnulacionSolicitada,
-        ContratoVencido, 
+        ContratoVencido,
         EdicionRechazada,
-        //TransporteNoExiste
+        SinEnviarASAP,
+        SinEstado,
+        EntregaAnuladaPedidoPendienteAnulacion,
+        PendienteCompensacion
     }
 
     public static class EstadoOrdenDeCargaExtensions
@@ -37,19 +34,24 @@ namespace SustitucionMOAModel.Enums
                 case EstadoOrdenDeCarga.EdicionRechazada:
                     return "red";
                 case EstadoOrdenDeCarga.Pendiente:
-                case EstadoOrdenDeCarga.Vencida:
+                case EstadoOrdenDeCarga.ContratoVencido:
                 case EstadoOrdenDeCarga.PendienteAprobacionCredito:
+                case EstadoOrdenDeCarga.PendienteCompensacion:
                     return "orange";
                 case EstadoOrdenDeCarga.Confirmado:
+                case EstadoOrdenDeCarga.Vencida:
                 case EstadoOrdenDeCarga.EntregaPendiente:
-                case EstadoOrdenDeCarga.ContratoVencido:
-                //case EstadoOrdenDeCarga.TransporteNoExiste:
                 case EstadoOrdenDeCarga.EdicionSolicitada:
                 case EstadoOrdenDeCarga.AnulacionSolicitada:
+                case EstadoOrdenDeCarga.EntregaAnuladaPedidoPendienteAnulacion:
                     return "yellow";
                 case EstadoOrdenDeCarga.EntregaGenerada:
-                case EstadoOrdenDeCarga.Entregada:
+
                     return "green";
+                case EstadoOrdenDeCarga.Entregada:
+                    return "green_entregada";
+                case EstadoOrdenDeCarga.SinEnviarASAP:
+                    return "bluesap";
                 default:
                     return "white";
             }
@@ -70,7 +72,7 @@ namespace SustitucionMOAModel.Enums
                 case EstadoOrdenDeCarga.PendienteAprobacionCredito:
                     return "Pendiente aprobación crédito";
                 case EstadoOrdenDeCarga.EntregaPendiente:
-                    return "Entrega pendiente"; 
+                    return "Entrega pendiente";
                 case EstadoOrdenDeCarga.EntregaGenerada:
                     return "Entrega generada";
                 case EstadoOrdenDeCarga.Entregada:
@@ -81,51 +83,103 @@ namespace SustitucionMOAModel.Enums
                     return "Anulada por vencimiento";
                 case EstadoOrdenDeCarga.AnulacionSolicitada:
                     return "Anulación solicitada";
-				case EstadoOrdenDeCarga.EdicionSolicitada:
+                case EstadoOrdenDeCarga.EdicionSolicitada:
                     return "Edición solicitada";
                 case EstadoOrdenDeCarga.ContratoVencido:
                     return "Contrato vencido";
                 case EstadoOrdenDeCarga.EdicionRechazada:
                     return "Edición rechazada";
-                //case EstadoOrdenDeCarga.TransporteNoExiste:
-                //    return "Transporte no existe";
+                case EstadoOrdenDeCarga.SinEnviarASAP:
+                    return "Sin Enviar a SAP";
+                case EstadoOrdenDeCarga.EntregaAnuladaPedidoPendienteAnulacion:
+                    return "Entrega anulada, pedido pendiente de anulación";
+                case EstadoOrdenDeCarga.PendienteCompensacion:
+                    return "Pendiente de compensación";
                 default:
                     return "Sin estado";
             }
         }
 
+
+
         public static string ToUserFriendlyString(this EstadoOrdenDeCarga me)
         {
             switch (me)
             {
-                //case EstadoOrdenDeCarga.Vencida:
-                //    return "Vencida";
                 case EstadoOrdenDeCarga.ErrorDeCarga:
                 case EstadoOrdenDeCarga.Pendiente:
                 case EstadoOrdenDeCarga.Confirmado:
                 case EstadoOrdenDeCarga.PendienteAprobacionCredito:
                 case EstadoOrdenDeCarga.EntregaPendiente:
                 case EstadoOrdenDeCarga.ContratoVencido:
-                //case EstadoOrdenDeCarga.TransporteNoExiste:
+                case EstadoOrdenDeCarga.SinEnviarASAP:
+                case EstadoOrdenDeCarga.PendienteCompensacion:
                     return "En proceso";
                 case EstadoOrdenDeCarga.Vencida:
+                    return "Vencida";
                 case EstadoOrdenDeCarga.EntregaGenerada:
                     return "OK";
                 case EstadoOrdenDeCarga.AnulacionSolicitada:
                     return "Anulación Solicitada";
                 case EstadoOrdenDeCarga.EdicionSolicitada:
                     return "Edición Solicitada";
-                //case EstadoOrdenDeCarga.Entregada:
-                //    return "Completada";
                 case EstadoOrdenDeCarga.Anulada:
                     return "Anulada";
                 case EstadoOrdenDeCarga.AnuladaPorVencimiento:
-                    return  "Anulada por vencimiento";
+                    return "Anulada por vencimiento";
                 case EstadoOrdenDeCarga.EdicionRechazada:
                     return "Edición rechazada";
+                case EstadoOrdenDeCarga.EntregaAnuladaPedidoPendienteAnulacion:
+                    return "Anulación en proceso";
                 default:
                     return "Sin estado";
             }
         }
+
+        public static EstadoOrdenDeCarga ObtenerDescripcionEstado(string estado)
+        {
+
+            switch (estado)
+            {
+                case "Error de datos":
+                    return EstadoOrdenDeCarga.ErrorDeCarga;
+                case "Pendiente":
+                    return EstadoOrdenDeCarga.Pendiente;
+                case "Vencida":
+                    return EstadoOrdenDeCarga.Vencida;
+                case "Confirmada":
+                    return EstadoOrdenDeCarga.Confirmado;
+                case "Pendiente aprobación crédito":
+                    return EstadoOrdenDeCarga.PendienteAprobacionCredito;
+                case "Entrega pendiente":
+                    return EstadoOrdenDeCarga.EntregaPendiente;
+                case "Entrega generada":
+                    return EstadoOrdenDeCarga.EntregaGenerada;
+                case "Entregada":
+                    return EstadoOrdenDeCarga.Entregada;
+                case "Anulada":
+                    return EstadoOrdenDeCarga.Anulada;
+                case "Anulada por vencimiento":
+                    return EstadoOrdenDeCarga.AnuladaPorVencimiento;
+                case "Anulación solicitada":
+                    return EstadoOrdenDeCarga.AnulacionSolicitada;
+                case "Edición solicitada":
+                    return EstadoOrdenDeCarga.EdicionSolicitada;
+                case "Contrato vencido":
+                    return EstadoOrdenDeCarga.ContratoVencido;
+                case "Edición rechazada":
+                    return EstadoOrdenDeCarga.EdicionRechazada;
+                case "Sin Enviar a SAP":
+                    return EstadoOrdenDeCarga.SinEnviarASAP;
+                case "Anulación en proceso":
+                case "Entrega anulada, pedido pendiente de anulación":
+                    return EstadoOrdenDeCarga.EntregaAnuladaPedidoPendienteAnulacion;
+                case "Pendiente de compensación":
+                    return EstadoOrdenDeCarga.PendienteCompensacion;
+                default:
+                    return EstadoOrdenDeCarga.SinEstado;
+            }
+        }
+
     }
 }

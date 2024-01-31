@@ -1,24 +1,25 @@
 ﻿CREATE TABLE [dbo].[MaterialSolp](
 	[Id] [int] IDENTITY(1,1) NOT NULL,
 	[Centro_Id] [int] NULL,
-	[Codigo] [nvarchar](max) NULL,
-	[CodigoSap] [nvarchar](max) NULL,
-	[Descripcion] [nvarchar](max) NULL,
+	[Codigo] [nvarchar](50) NULL,
+	[CodigoSap] [nvarchar](50) NULL,
+	[Descripcion] [nvarchar](200) NULL,
 	[GrupoArticulo_Id] [int] NULL,
 	[TipoMaterial] NVARCHAR(100) NULL,
 	[UnidadMedidaBase_Id] [int] NULL,
 	[UnidadMedidaCompras_Id] [int] NULL,
 	[UnidadMedidaSalida_Id] [int] NULL,
-	[TipoValoracion] [varchar](max) NULL,
+	[TipoValoracion] [varchar](50) NULL,
 	[PrecioMaterial] [decimal](18, 0) NULL,
 	[GrupoCompras_Id] [int] NULL,
 	[CuentaMayor_Id] [int] NULL,
 	[Estado] [bit] NULL,
-PRIMARY KEY CLUSTERED 
+[TextoAmpliado] NVARCHAR(MAX) NULL, 
+    PRIMARY KEY CLUSTERED 
 (
 	[Id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
-) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY];
+) ON [PRIMARY];
 
 GO
 

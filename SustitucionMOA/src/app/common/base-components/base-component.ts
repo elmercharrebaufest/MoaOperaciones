@@ -8,7 +8,7 @@ import { ModalService } from './../services/ModalService';
     selector: 'app-base',
     template: ``
 })
-export class BaseComponent implements OnDestroy{
+export class BaseComponent implements OnDestroy {
 
     constructor(protected navService: NavService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService) {
     }
@@ -21,6 +21,7 @@ export class BaseComponent implements OnDestroy{
         this.modalService.close();
         this.floatMsgService.setMsgsEmpty();
         this.unsubscribe();
+        this.extraOnDestroy();
     }
 
     public goToSeccion(path: string) {
@@ -33,12 +34,16 @@ export class BaseComponent implements OnDestroy{
         return false;
     }
 
-    public goToSeccionParamDos(path: string, param: string, param2:string) {
+    public goToSeccionParamDos(path: string, param: string, param2: string) {
         this.navService.navegarSeccionParamDos(path, param, param2);
         return false;
     }
     public goToSeccionParamTres(path: string, param: string, param2: string, param3: string) {
         this.navService.navegarSeccionParamTres(path, param, param2, param3);
+        return false;
+    }
+    public goToSimpleNavigation(path: string, rawParams?: Array<string> | string, queryParams?: { [key: string]: string }) {
+        this.navService.navegarBasic(path, rawParams, queryParams);
         return false;
     }
 
@@ -55,7 +60,7 @@ export class BaseComponent implements OnDestroy{
     }
 
     public getDateFromAspNetFormat(date: string): number {
-        if (date){
+        if (date) {
             const re = /-?\d+/;
             const m = re.exec(date);
             return parseInt(m[0], 10);
@@ -65,8 +70,8 @@ export class BaseComponent implements OnDestroy{
 
     public convertDate(date: any) {
         var newDate = new Date(date),
-          mnth = ("0" + (date.getMonth() + 1)).slice(-2),
-          day = ("0" + date.getDate()).slice(-2);
+            mnth = ("0" + (date.getMonth() + 1)).slice(-2),
+            day = ("0" + date.getDate()).slice(-2);
         var hours = ("0" + date.getHours()).slice(-2);
         var minutes = ("0" + date.getMinutes()).slice(-2);
         var seconds = ("0" + date.getSeconds()).slice(-2);
@@ -74,7 +79,8 @@ export class BaseComponent implements OnDestroy{
         var mySQLDate = [day, mnth, date.getFullYear()].join("/");
         var mySQLTime = [hours, minutes, seconds].join(":");
         return [mySQLDate, mySQLTime].join(" ");
-      }
+    }
+    public extraOnDestroy():void{}
 
     setTabs() { }
 
@@ -84,6 +90,10 @@ export class BaseComponent implements OnDestroy{
 
     isCorredor() {
         return this.tipoUsuario.toUpperCase() == "CORR" || this.tipoUsuario.toUpperCase() == "NUECORR";
+    }
+
+    esCliente() {
+        return this.tipoUsuario.toUpperCase() === "CLI";
     }
 
 }

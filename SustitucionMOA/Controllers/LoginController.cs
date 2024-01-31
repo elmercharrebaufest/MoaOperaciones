@@ -20,9 +20,9 @@ namespace SustitucionMOA.Controllers
     public class LoginController : Controller
     {
 
-        LoginService _loginService = new LoginService();
+        //LoginService _loginService = new LoginService();
 
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        //private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         protected readonly IRepositorio repositorio;
 
         public LoginController(IRepositorio repositorio)

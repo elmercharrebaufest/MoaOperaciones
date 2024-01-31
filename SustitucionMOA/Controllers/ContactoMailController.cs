@@ -24,7 +24,7 @@ namespace SustitucionMOA.Controllers
             {
                 var contactoContenido = JsonConvert.DeserializeObject<ContactoContenido>(contacto);
 
-                return JsonCustom(new { data = _contactoMailService.sendContactoMail(contactoContenido, file) });
+                return JsonCustom(new { data = _contactoMailService.SendContactoMail(contactoContenido, file) });
             }
             catch (InfoCustomException e)
             {
@@ -52,7 +52,7 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                return JsonCustom(new { data = _contactoMailService.getCategorias() });
+                return JsonCustom(new { data = _contactoMailService.ObtenerCategorias() });
             }
             catch (InfoCustomException e)
             {

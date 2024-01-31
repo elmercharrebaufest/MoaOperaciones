@@ -7,6 +7,7 @@ import { ConsultaService } from './consulta.service';
 import { CrearConsultaComponent } from './crear-consulta/crear-consulta.component';
 import { MisConsultasComponent } from './mis-consultas/mis-consultas.component';
 import { DetalleConsultaComponent } from './detalle/consulta-detalle.component';
+import { CrearConsultaInternaComponent } from './crear-consulta-interna/crear-consulta-interna.component';
 import { TableModule } from 'primeng/table';
 import { DropdownModule } from 'primeng/dropdown';
 import { MultiSelectModule } from 'primeng/multiselect';
@@ -16,14 +17,15 @@ import { CalendarModule } from 'primeng/calendar';
 import { ToggleButtonModule } from 'primeng/togglebutton';
 import { SpinnerModule } from 'primeng/spinner';
 import { SelectButtonModule } from 'primeng/selectbutton';
-import { InformeComercialComponent } from '../alta-proveedores/informe-comercial/informe-comercial.component';
 import { TooltipModule } from 'primeng/tooltip';
-import { OverlayPanelModule} from 'primeng/overlaypanel';
+import { OverlayPanelModule } from 'primeng/overlaypanel';
 import { DialogModule } from 'primeng/dialog';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ConfirmationService } from 'primeng/api';
 import { FileDropModule } from 'ngx-file-drop';
 import { AngularEditorModule } from '@kolkov/angular-editor';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import {DataViewModule} from 'primeng/dataview';
 
 @NgModule({
   imports: [
@@ -45,17 +47,21 @@ import { AngularEditorModule } from '@kolkov/angular-editor';
     TooltipModule,
     ConfirmDialogModule,
     FileDropModule,
-    AngularEditorModule ,
+    AngularEditorModule,
+    ProgressSpinnerModule,
+    DataViewModule
+    
   ],
-    declarations: [
-        MisConsultasComponent,
-        CrearConsultaComponent,
-        DetalleConsultaComponent,
-    ],
-    providers: [
-        ConsultaService,
-        ConfirmationService
-    ],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA],
+  declarations: [
+    MisConsultasComponent,
+    CrearConsultaComponent,
+    CrearConsultaInternaComponent,
+    DetalleConsultaComponent,
+  ],
+  providers: [
+    ConsultaService,
+    ConfirmationService
+  ],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class ConsultaModule { }

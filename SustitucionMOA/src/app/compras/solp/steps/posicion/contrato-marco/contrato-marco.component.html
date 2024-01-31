@@ -1,29 +1,30 @@
-<p-dialog [(visible)]="displayAsociar"
-    modal="modal" 
-    [width]="950"
-    [draggable]="false" 
-    [closable]="true"
-    (onHide)="onHideAsociarDialog()"
-    appendTo="body" 
-    positionTop="30" 
-    [contentStyle]="{ 'max-height':'1500px', 'min-height':'400px'}">
+<p-dialog [(visible)]="displayAsociar" modal="modal" [width]="950" [draggable]="false" [closable]="true"
+	(onHide)="onHideAsociarDialog(dd)" appendTo="body" positionTop="30"
+	[contentStyle]="{ 'max-height':'1500px', 'min-height':'400px'}">
 	<p-header class="headerModal">
 		Asociar Contrato Marco SOLP <div *ngIf="nroSolp" style="display: inline-block;">#{{nroSolp}}</div>
 	</p-header>
 	<div class="row myRow">
-		<div class="col-md-5">
+
+		<div class="col-md-12">
+			<strong>Posici&oacute;n</strong>
+			<div>
+				<p-dropdown #dd [options]="posicionesCombo" [(ngModel)]="posicionSelect"
+					(onChange)="getContratoMarco();" placeholder="Elegir tipo posición" optionLabel="label"
+					optionValue="value">
+				</p-dropdown>
+			</div>
+		</div>
+
+		<!-- <div class="col-md-5">
 			<strong>Posici&oacute;n</strong>
 			<div class="as-input" *ngIf="posicionSeleccionada">{{posicionSeleccionada.numeroPosicion}} - {{posicionSeleccionada.tareaSubcontratar}}</div>
-		</div>
+		</div> -->
 	</div>
 	<div class="row myRow">
 		<div class="col-md-12">
 			<strong>Contrato Marco</strong>
-			<p-table #dt 
-				class="tabla-contrato-marco" 
-				[value]="listaContratos" 
-				[rows]="20" 
-				[scrollable]="true" 
+			<p-table #dt class="tabla-contrato-marco" [value]="contratos" [rows]="20" [scrollable]="true"
 				scrollHeight="400px">
 				<!-- (onEditInit)="nuevaPosicion($event)"> -->
 				<ng-template pTemplate="header">
@@ -52,7 +53,8 @@
 				<ng-template pTemplate="body" let-contrato let-rowIndex="rowIndex">
 					<tr>
 						<td>
-							<input type="radio" id="posicionesCM" [(ngModel)]="contratoSeleccionado" name="posicionesCM" [value]="contrato" style="display: block; margin: 0 auto"/>
+							<input type="radio" id="posicionesCM" [(ngModel)]="contratoSeleccionado" name="posicionesCM"
+								[value]="contrato" style="display: block; margin: 0 auto" />
 						</td>
 						<td>
 							{{contrato.ProveedorFijo}}
@@ -71,7 +73,7 @@
 							{{contrato.cantidad}}
 						</td>
 						<td>
-							{{contrato.PrecioBruto}} 
+							{{contrato.PrecioBruto}}
 						</td>
 						<td>
 							{{contrato.ClaveMoneda}}
@@ -94,7 +96,18 @@
 	<!-- Numeroregistroinfo o numerocontrato -->
 
 	<p-footer>
-		<button type="button" class="btn btn-danger botonesComprasColor" (click)="onCancelarAsociar()">CANCELAR</button>
-		<button type="button" class="btn btn-primary botonesComprasColor" (click)="onAsociar()" *ngIf="contratoSeleccionado">ASOCIAR</button>
+		<div class="row">
+			<div class="col-md-9" style="text-align: initial;">
+				<label>Si cambia de posición sin oprimir el botón ASOCIAR el contrato seleccionado no se guardará</label>
+			</div>
+			<div class="col-md-3">
+				<button type="button" class="btn btn-danger botonesComprasColor"
+					(click)="onCancelarAsociar(dd)">CANCELAR</button>
+
+				<button type="button" class="btn btn-primary botonesComprasColor" (click)="onAsociar(dd)"
+					*ngIf="contratoSeleccionado">ASOCIAR</button>
+			</div>
+		</div>
 	</p-footer>
+
 </p-dialog>

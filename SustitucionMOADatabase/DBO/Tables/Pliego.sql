@@ -24,6 +24,8 @@
 	[JornadaLaboralHorasDesde] DATETIMEOFFSET NULL,
 	[JornadaLaboralHorasHasta] DATETIMEOFFSET NULL,
 	[TieneAndamio] BIT NULL, 
+	[TieneGrillaPersonal] BIT NULL, 
+	[TieneFabricacionTallerExterno] BIT NULL, 
     [RevisadoPor] NVARCHAR(MAX) NULL, 
     [TieneCondicionesGenerales] BIT NULL,
     CONSTRAINT [PK_dbo.Pliego] PRIMARY KEY CLUSTERED 

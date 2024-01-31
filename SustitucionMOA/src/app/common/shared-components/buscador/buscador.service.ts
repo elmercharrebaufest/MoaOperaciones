@@ -5,8 +5,12 @@ import { timeoutWith, map } from 'rxjs/operators';
 import { HttpParams } from '@angular/common/http';
 import { Resultado } from './Buscador';
 
-@Injectable()
+@Injectable({
+    providedIn: 'root'
+})
 export class BuscadorService extends BaseService {
+
+    public palabraABuscar: string = "";
 
     public getResultados(palabraABuscar: string) {
         let params: HttpParams = new HttpParams();
@@ -41,4 +45,9 @@ export class BuscadorService extends BaseService {
         return this.http
             .get('/api/cartaporte/DescargarFotos', { params: params, headers: this.headers });
     }
+
+    public limpiarBuscador() {
+        this.palabraABuscar = "";
+    }
+
 }

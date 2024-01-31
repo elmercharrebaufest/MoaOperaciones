@@ -1,4 +1,6 @@
-﻿using SustitucionMOAModel.Enums;
+﻿using SustitucionMOAModel.Dto;
+using SustitucionMOAModel.Enums;
+using SustitucionMOAModel.Enums.MoaWS.OrdenCargaWS;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -76,8 +78,9 @@ namespace SustitucionMOAModel.Entities
         public string PedidoSAP { get; set; }
         public string CodigoVerificacionSap { get; set; }
         public string DescripcionCodigoVerificacionSap { get; set; }
+        public bool Reventa { get; set; }
 
-        public int? UsuarioCreacion_Id { get; set; }
+        public int UsuarioCreacion_Id { get; set; }
         [ForeignKey("UsuarioCreacion_Id")]
         public virtual Usuario UsuarioCreacion { get; set; }
 
@@ -89,17 +92,96 @@ namespace SustitucionMOAModel.Entities
         public DateTime? FechaVencimiento { get; set; }
         public bool FechaVencimientoAmpliada { get; set; }
 
-        public void ActualizarEstado()
+        public bool EdicionRechazada { get; set; }
+        public string CUITDestino { get; set; }
+        public string CUITDestinatario { get; set; }
+        public string RazonSocialDestino { get; set; }
+        public string RazonSocialDestinatario { get; set; }
+        public string CUITIntermediarioFlete { get; set; }
+        public string RazonSocialIntermediarioFlete { get; set; }
+        public string PlantaCodigo { get; set; }
+        public string DomicilioTipo { get; set; }
+        public short? DomicilioOrden { get; set; }
+        public string DomicilioDescr { get; set; }
+        public string NumeroFactura { get; set; }
+        public string NumeroFacturaSeleccionada { get; set; }
+        public TipoContratoFAS TipoContrato { get; set; }
+        public bool Escalable { get; set; }
+        public bool? DestinatarioExisteScato { get; set; }
+        public bool? DestinoExisteScato { get; set; }
+        public string DestinoMercaderia { get; set; }
+
+        public bool TieneCodigoSap(ControlCargaResEnum controlCargaRes)
         {
-            if (Estado != EstadoOrdenDeCarga.Entregada)
+            return CodigoVerificacionSap == ResponseConverter.GetCodigoControlCarga(controlCargaRes);
+        }
+        public bool EsFacturaAnticipada
+        {
+            get
             {
-                if (CodigoVerificacionSap == "CC-01")
+                return TipoContrato == TipoContratoFAS.Anticipado;
+            }
+        }
+        public bool SinSeleccionarFactura
+        {
+            get
+            {
+                return EsFacturaAnticipada && (string.IsNullOrEmpty(NumeroFactura) || string.IsNullOrEmpty(NumeroFacturaSeleccionada));
+            }
+        }
+
+        public bool CuitTerceroExisteScato
+        {
+            get
+            {
+                var existeDestino = DestinoExisteScato ?? false;
+                var existeDestinatario = DestinatarioExisteScato ?? false;
+
+                return existeDestinatario && existeDestino;
+            }
+        }
+
+        public string MsgCuitsTerceros
+        {
+            get
+            {
+                var msgDestinatario = DestinatarioExisteScato ?? false ? "" : "Destinatario";
+                var msgDestino = DestinoExisteScato ?? false ? "" : "Destino";
+                var slash = (!(DestinoExisteScato ?? false) && !(DestinatarioExisteScato ?? false)) ? "/" : "";
+                return $"No se pudo generar la entrega. No existe {msgDestinatario}{slash}{msgDestino}.";
+            }
+        }
+        public string ObtenerKeyHashPatentes()
+        {
+            return $"{PatenteAcoplado}.{ChasisAcoplado}";
+        }
+
+        /// <summary>
+        /// Actualiza la Orden según su estado interno
+        /// </summary>
+        /// <returns>Log del cambio de estado</returns>
+        public string ActualizarEstado()
+        {
+            var logCambioEstado = $"Actualizar estado Orden de carga {Id}. Estado inicial:{Estado.ToFriendlyString()}. " +
+                $"CodigoVerificacionSap:{CodigoVerificacionSap}, ContratoSAP:{ContratoSAP}, ContratoSinCantidadPendiente:{ContratoSinCantidadPendiente}, " +
+                $"NumeroPedido:{NumeroPedido}, InformadaSAP:{InformadaSAP}, TransporteExiste:{TransporteExiste}, AprobadoCredito:{AprobadoCredito}, FechaEntregaGenerada:{FechaEntregaGenerada}." +
+                $"EsFacturaAnticipada:{EsFacturaAnticipada}, SinSeleccionarFactura:{SinSeleccionarFactura}";
+
+            if (Estado != EstadoOrdenDeCarga.Entregada && Estado != EstadoOrdenDeCarga.ContratoVencido)
+            {
+                if (this.TieneCodigoSap(ControlCargaResEnum.MasDeUnContratoVigente) ||
+                    this.TieneCodigoSap(ControlCargaResEnum.CC06IdemCC01))
                 {
                     Estado = EstadoOrdenDeCarga.ErrorDeCarga;
                 }
                 else
                 {
-                    if (string.IsNullOrEmpty(ContratoSAP) || ContratoSinCantidadPendiente || string.IsNullOrEmpty(NumeroPedido))
+                    if (
+                        ((string.IsNullOrEmpty(ContratoSAP) ||
+                        ContratoSinCantidadPendiente ||
+                        string.IsNullOrEmpty(NumeroPedido)) && Estado != EstadoOrdenDeCarga.SinEnviarASAP) ||
+                        CodigoVerificacionSap == "CC-07"
+                        )
                     {
                         Estado = EstadoOrdenDeCarga.Pendiente;
                     }
@@ -110,7 +192,7 @@ namespace SustitucionMOAModel.Entities
                             Estado = EstadoOrdenDeCarga.Confirmado;
                         }
 
-                        if (!TransporteExiste)
+                        if (!TransporteExiste || (EsFacturaAnticipada && SinSeleccionarFactura))
                         {
                             Estado = EstadoOrdenDeCarga.Pendiente;
                         }
@@ -121,7 +203,12 @@ namespace SustitucionMOAModel.Entities
                         }
                         else
                         {
-                            if (FechaEntregaGenerada != null)
+                            if(Estado == EstadoOrdenDeCarga.EdicionSolicitada)
+                            {
+                                Estado = EstadoOrdenDeCarga.EdicionSolicitada;
+                                
+                            }
+                            else if (FechaEntregaGenerada != null)
                             {
                                 Estado = EstadoOrdenDeCarga.EntregaGenerada;
                             }
@@ -133,6 +220,8 @@ namespace SustitucionMOAModel.Entities
                     }
                 }
             }
+            logCambioEstado += $" Estado final:{Estado.ToFriendlyString()}";
+            return logCambioEstado;
         }
 
         public override bool Equals(object obj)
@@ -174,7 +263,17 @@ namespace SustitucionMOAModel.Entities
                    DescripcionCodigoVerificacionSap == carga.DescripcionCodigoVerificacionSap &&
                    EqualityComparer<ICollection<OrdenDeCargaCambiosHistorial>>.Default.Equals(HistorialCambios, carga.HistorialCambios) &&
                    ContratoSinCantidadPendiente == carga.ContratoSinCantidadPendiente &&
-                   DescripcionErrorInterno == carga.DescripcionErrorInterno;
+                   DescripcionErrorInterno == carga.DescripcionErrorInterno &&
+                   DestinatarioExisteScato == carga.DestinatarioExisteScato &&
+                   DestinoExisteScato == carga.DestinoExisteScato &&
+                   CUITDestinatario == carga.CUITDestinatario &&
+                   CUITDestino == carga.CUITDestino &&
+                   RazonSocialDestinatario == carga.RazonSocialDestinatario &&
+                   RazonSocialDestino == carga.RazonSocialDestino &&
+                   DomicilioTipo == carga.DomicilioTipo &&
+                   DomicilioDescr == carga.DomicilioDescr &&
+                   DomicilioOrden == carga.DomicilioOrden &&
+                   PlantaCodigo == carga.PlantaCodigo;
         }
 
         public override int GetHashCode()
@@ -218,6 +317,11 @@ namespace SustitucionMOAModel.Entities
             hashCode = hashCode * -1521134295 + ContratoSinCantidadPendiente.GetHashCode();
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(DescripcionErrorInterno);
             return hashCode;
+        }
+
+        public OrdenDeCargaEditarDto ToDto()
+        {
+            return new OrdenDeCargaEditarDto(this);
         }
     }
 }

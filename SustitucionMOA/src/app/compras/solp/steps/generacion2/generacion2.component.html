@@ -10,14 +10,17 @@
                         <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
 
                             <div class="col-xs-12 col-sm-12 col-md-12 margenInput">
-                                <p-checkbox [ngModelOptions]="{standalone:true}" [(ngModel)]="model.visitaDeObra" label="Visita de obra" binary="true" formControlName="visitaDeObra">
-                                </p-checkbox>
+                                <p-radioButton [ngModelOptions]="{standalone:true}" name="visitaType" [value]="true" (click)="onRadioButtonChange('visitaDeObra')"
+                                               [ngModel]="model.visitaDeObra" label="Visita de obra" binary="true" formControlName="visitaDeObra">
+                                </p-radioButton>
                             </div>
 
-
                             <div class="col-xs-12 col-sm-6 col-md-6 margenInput">
-                                <p-checkbox [ngModelOptions]="{standalone:true}" [(ngModel)]="model.visitaDeObraMasiva" label="Visita de obra masiva" formControlName="visitaDeObraMasiva"
-                                            binary="true"></p-checkbox>
+
+                                <p-radioButton [ngModelOptions]="{standalone:true}" name="visitaType" [value]="true" (click)="onRadioButtonChange('visitaDeObraMasiva')"
+                                               [ngModel]="model.visitaDeObraMasiva" label="Visita de obra masiva" binary="true" formControlName="visitaDeObraMasiva">
+                                </p-radioButton>
+
                             </div>
 
                             <div *ngFor="let visita of model.listaVisitas">
@@ -25,8 +28,8 @@
                                     <div class="styled-select">
                                         <p-calendar [ngModelOptions]="{standalone:true}" [style]="{'width': '75%'}" [(ngModel)]="visita.visitaDeObraFecha"
                                                     [locale]="locale" [showIcon]="true" dateFormat="dd-M-yy" appendTo="body"
-                                                    [disabled]="!model.visitaDeObraMasiva" [readonlyInput]="true"
-                                                    [minDate]="hoy"></p-calendar>
+                                                    [disabled]="!model.visitaDeObraMasiva" [readonlyInput]="true" [minDate]="hoy">
+                                        </p-calendar>
                                     </div>
                                 </div>
 
@@ -34,7 +37,8 @@
                                     <div>
                                         <p-calendar [ngModelOptions]="{standalone:true}" class="styled-select" [(ngModel)]="visita.visitaDeObraHora"
                                                     [locale]="locale" [showIcon]="true" icon="fa fa-clock-o"
-                                                    [disabled]="!model.visitaDeObraMasiva" [timeOnly]="true"></p-calendar>
+                                                    [disabled]="!model.visitaDeObraMasiva" [timeOnly]="true">
+                                        </p-calendar>
                                     </div>
                                 </div>
                                 <div class="col-xs-12 col-sm-12 col-md-1" style="right: 20px;">
@@ -59,16 +63,16 @@
 
                         <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                             <div class="col-xs-12 col-sm-12 col-md-12 margenInput">
-                                Responsable sector *
+                                Responsable del sector *
                                 <div class="col-md-12 ui-fluid" style="padding-left: 0em;">
                                     <p-chips [(ngModel)]="model.supervisorSector" formControlName="supervisorSector" name="supervisorSector" placeholder="Ingrese responsable" id="supervisorSector" [suggestions]="resultadoSupervisorSector" (completeMethod)="search($event)" addOnTab="true" [addOnBlur]="true" (blur)="onBlur('supervisorSector')"></p-chips>
                                 </div>
-                                <div  *ngIf="mostrarValidacion('supervisorSector', model.supervisorSector)">
+                                <div *ngIf="mostrarValidacion('supervisorSector', model.supervisorSector)">
                                     <p class="text-danger">campo obligatorio</p>
                                 </div>
                             </div>
                             <div class="col-xs-12 col-sm-12 col-md-12 margenInput">
-                                Responsable de trabajo *
+                                Responsable del trabajo *
                                 <div class="col-md-12 ui-fluid" style="padding-left: 0em;">
                                     <p-chips [(ngModel)]="model.supervisorTrabajo" formControlName="supervisorTrabajo" name="supervisorTrabajo" placeholder="Ingrese responsable" id="supervisorTrabajo" [suggestions]="resultadoSupervisorTrabajo" (completeMethod)="search($event)" addOnTab="true" [addOnBlur]="true" (blur)="onBlur('supervisorTrabajo')"></p-chips>
                                 </div>
@@ -77,14 +81,11 @@
                                 </div>
                             </div>
                         </div>
-
                     </div>
-
 
                     <div class="row myRow margenInput alinearTitulo" style="padding-top: 2px;">
 
                         <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-
 
                             <div class="col-xs-12 col-sm-12 col-md-12 margenInput">
                                 <p-checkbox [ngModelOptions]="{standalone:true}" [(ngModel)]="model.obradores" label="Obradores" binary="true" formControlName="obradores"></p-checkbox>
@@ -100,9 +101,19 @@
                             </div>
 
                             <div class="col-xs-12 col-sm-12 col-md-12 margenInput">
+                                <p-checkbox [ngModelOptions]="{standalone:true}" [(ngModel)]="model.grillaPersonal" label="Grilla personal/horas" formControlName="grillaPersonal"
+                                            binary="true"></p-checkbox>
+                            </div>
+
+                            <div class="col-xs-12 col-sm-12 col-md-12 margenInput">
                                 <p-checkbox [ngModelOptions]="{standalone:true}" [(ngModel)]="model.tecnicoSeguridad" label="Técnico de seguridad" formControlName="tecnicoSeguridad"
                                             binary="true"></p-checkbox>
                             </div>
+
+                            <!-- <div class="col-xs-12 col-sm-12 col-md-12 margenInput">
+                                <p-checkbox [ngModelOptions]="{standalone:true}" [(ngModel)]="model.fabricacionTallerExterno" label="Fabricacion en taller externo" formControlName="fabricacionTallerExterno"
+                                            binary="true"></p-checkbox>
+                            </div> -->
 
                         </div>
 
@@ -111,12 +122,12 @@
 
                             <div class="col-xs-12 col-sm-12 col-md-12 margenInput">
                                 <p-checkbox [ngModelOptions]="{standalone:true}" [(ngModel)]="model.descripcionTecnica" formControlName="descripcionTecnica"
-                                            label="Descripción técnica del trabajo" binary="true"></p-checkbox>
+                                            label="Descripción técnica del trabajo" binary="true" (click)="onDescripcionTecnicaChange()"></p-checkbox>
                             </div>
 
                             <div class="col-xs-12 col-sm-12 col-md-12 margenInput">
                                 <p-checkbox [ngModelOptions]="{standalone:true}" [(ngModel)]="model.entregaDocumentacion" formControlName="entregaDocumentacion"
-                                            label="Entrega de documentación técnica" binary="true"></p-checkbox>
+                                            label="Entrega de documentación técnica" binary="true" [disabled]="!model.descripcionTecnica"></p-checkbox>
                             </div>
 
                             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 inputRight margenInput">
@@ -127,13 +138,13 @@
                                 <div class="col-xs-12 col-sm-12 col-md-8">
                                     <div class="styled-select">
                                         <p-calendar [ngModelOptions]="{standalone:true}" [style]="{'width': '75%'}" [(ngModel)]="model.fechaLimiteFecha"
-                                                    [locale]="locale" [showIcon]="true" dateFormat="dd-M-yy" appendTo="body" 
+                                                    [locale]="locale" [showIcon]="true" dateFormat="dd-M-yy" appendTo="body"
                                                     [readonlyInput]="true" [minDate]="hoy"></p-calendar>
                                     </div>
                                 </div>
 
                                 <div class="col-xs-12 col-sm-12 col-md-4 prime-hora">
-                                    <p-calendar [ngModelOptions]="{standalone:true}" class="styled-select" [(ngModel)]="model.fechaLimiteHora" 
+                                    <p-calendar [ngModelOptions]="{standalone:true}" class="styled-select" [(ngModel)]="model.fechaLimiteHora"
                                                 [locale]="locale" [showIcon]="true" icon="fa fa-clock-o" [timeOnly]="true">
                                     </p-calendar>
                                 </div>

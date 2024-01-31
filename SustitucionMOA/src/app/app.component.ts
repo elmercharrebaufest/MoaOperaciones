@@ -12,8 +12,6 @@ import { UsuarioLogueado } from './common/models/usuario-logueado';
 import { Subscription } from 'rxjs';
 import { ConfirmationService } from 'primeng/components/common/api';
 
-
-
 @Component({
     selector: 'my-app',
     templateUrl: `app.component.html`
@@ -44,6 +42,7 @@ export class AppComponent implements OnDestroy {
     disabledAgreement: boolean = true;
 
     aboutScreen: boolean;
+    path: string;
 
     salir() {
         this.navService.navegarSeccion('/compras');
@@ -51,29 +50,29 @@ export class AppComponent implements OnDestroy {
 
     @HostListener('window:keydown', ['$event'])
     keyEvent(event: KeyboardEvent) {
-        if(event.altKey == true && event.ctrlKey == true && event.key == "b" ){          
+        if (event.altKey == true && event.ctrlKey == true && event.key == "b") {
             document.getElementById("aboutScreenBTN").click();
-        };                  
+        };
     }
 
     closeAboutScreen() {
         document.getElementById("aboutScreenBTN").click();
     }
-    
 
     ngOnInit() {
 
         this.navService.setSeccionList([]);
         this.navService.setSeccionActive('');
-
-        if (this.location.path() === '/ticket-pesada') {
+        this.path = this.location.path();
+        if (this.path === '/ticket-pesada') {
             this.navService.navegarSeccion("ticket-pesada");
+        } else if (this.path.match(/^\/verLegajoOrdenDeCompra\/\d+\/[a-f0-9-]+$/)) {
+            this.navService.navegarSeccion(this.path);
         }
         else {
             this.validarLoginAzure();
         }
     }
-
 
     validarLoginAzure() {
         let headers = new HttpHeaders();
@@ -85,26 +84,26 @@ export class AppComponent implements OnDestroy {
 
         this.validarLoginSub = this.http
             .get<UsuarioLogueado>('/api/Home/ValidarLoginAzure', { headers: headers }).subscribe(
-            (result:any) => {
-                if (result.tipoUsuario == "DATAAGROLOGIN") {
-                    if (result.error != undefined && result.error != "") {
-                        this.mensajeComponent.setErrorMsg(result.error);
-                    } else if (result.url == undefined || result.url == "") {
-                        this.mensajeComponent.setErrorMsg("No se pudo obtener la URL destino");
+                (result: any) => {
+                    if (result.tipoUsuario == "DATAAGROLOGIN") {
+                        if (result.error != undefined && result.error != "") {
+                            this.mensajeComponent.setErrorMsg(result.error);
+                        } else if (result.url == undefined || result.url == "") {
+                            this.mensajeComponent.setErrorMsg("No se pudo obtener la URL destino");
+                        } else {
+                            window.location.href = result.url;
+                        }
                     } else {
-                        window.location.href = result.url;
-                    }
-                } else {
-                    if (result.error != undefined && result.error != "") {
-                        alert(result.error);
-                        window.location.href = window.location.origin + '/SignOut';
-                    }
-                    else {
-                        this.loginUser(result);
+                        if (result.error != undefined && result.error != "") {
+                            alert(result.error);
+                            window.location.href = window.location.origin + '/SignOut';
+                        }
+                        else {
+                            this.loginUser(result);
+                        }
                     }
                 }
-            }
-        );
+            );
     }
 
     loginUser(result: any) {
@@ -117,6 +116,10 @@ export class AppComponent implements OnDestroy {
         sessionStorage.setItem("permisos", JSON.stringify(result.permisos));
         sessionStorage.setItem("seccionesVisitadas", result.seccionesVisitadas);
         sessionStorage.setItem("apikey", result.apikey);
+        sessionStorage.setItem("cuit", result.cuit)
+        sessionStorage.setItem("proveedorId", result.proveedorId)
+        sessionStorage.setItem("usuarioId", result.usuarioId)
+
         this.sessionDataService.setNombre(result.nombre);
         this.sessionDataService.setUsername(result.username);
         this.sessionDataService.setProveedor(result.proveedor);
@@ -126,36 +129,52 @@ export class AppComponent implements OnDestroy {
         this.sessionDataService.setGranosFlag(result.granosFlag);
         this.sessionDataService.setSeccionesVisitadas(result.seccionesVisitadas);
         this.sessionDataService.setApikey(result.apikey);
+        this.sessionDataService.setCuit(result.cuit);
+        this.sessionDataService.setProveedorId(result.proveedorId);
+        this.sessionDataService.setUsuarioId(result.usuarioId);
 
         sessionStorage.setItem("granosSelected", result.granosFlag == 'A' ? 'G' : result.granosFlag);
 
-        this.navService.navegarSeccion(result.redirectURL);
-
+        this.redirigir(result);
+        
         if (result.aceptoTyC != true) {
             document.getElementById("openModalaceptoTyCModal").click();
         }
     }
     aceptarTyC() {
         this.aceptarTyCSub = this.http
-            .get<{error:string, data:boolean}>('/api/Home/AceptarTyC', {})
-        .subscribe((result:any) => {
-            if (result.error != undefined && result.error != "") {
-                this.mensajeComponent.setErrorMsg(result.error);
-            } else {
-                document.getElementById("openModalaceptoTyCModal").click();
-            }
-        });
+            .get<{ error: string, data: boolean }>('/api/Home/AceptarTyC', {})
+            .subscribe((result: any) => {
+                if (result.error != undefined && result.error != "") {
+                    this.mensajeComponent.setErrorMsg(result.error);
+                } else {
+                    document.getElementById("openModalaceptoTyCModal").click();
+                }
+            });
     }
 
     checkTyCChecked(event) {
         this.disabledAgreement = !event.target.checked;
     }
 
-    ngOnDestroy(){
-        if(this.validarLoginSub)
+    ngOnDestroy() {
+        if (this.validarLoginSub)
             this.validarLoginSub.unsubscribe();
-            
-        if(this.aceptarTyCSub)
-        this.aceptarTyCSub.unsubscribe();   
+
+        if (this.aceptarTyCSub)
+            this.aceptarTyCSub.unsubscribe();
     }
+
+    redirigir(result: any){
+        if(this.path === '/consulta/mis-consultas'){
+            setTimeout
+            (
+            () =>
+            {  this.navService.navegarSeccion('/consulta/mis-consultas'); }, 3);
+           
+        }else{
+            this.navService.navegarSeccion(result.redirectURL);
+        }
+    }
+
 }

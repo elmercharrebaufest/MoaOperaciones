@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
 using SustitucionMOAModel.Enums;
+using SustitucionMOAModel.Models.WebApiMap.ScatoRepositorio;
 
 namespace SustitucionMOAModel.Entities
 {
@@ -84,5 +83,17 @@ namespace SustitucionMOAModel.Entities
         [ForeignKey("IdSolicitanteInternoAltaGranos")]
         public virtual Usuario SolicitanteInternoAltaGranos { get; set; }
         public string EstadoSISA { get; set; }
+
+        public bool EsRevendedor { get; set; }
+
+        public bool EsNoGranos()
+        {
+            return TipoProveedor.Id == (int)TipoUsuarioEnum.NoGranos;
+        }
+        public bool CorrespondeAltaSolicitada()
+        {
+            var primerHistorial = HistorialAprobaciones.FirstOrDefault();
+            return (AltaInterna ?? false) && EsNoGranos() && HistorialAprobaciones.Count ==1 && primerHistorial.EstadoAprobacion == EstadoAprobacion.DocumentacionPendiente;
+        }
     }
 }

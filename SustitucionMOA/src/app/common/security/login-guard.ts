@@ -3,18 +3,30 @@ import { Injectable } from "@angular/core";
 import { Router } from "@angular/router";
 import { SessionDataService } from "../services/SessionDataService";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { catchError } from 'rxjs/operators';
+import { throwError } from 'rxjs';
 
 @Injectable()
 export class LoginGuard implements CanActivate, CanActivateChild {
 
 
-    constructor(private router: Router, private http: HttpClient, private sessionDataService: SessionDataService) {}
+    constructor(private router: Router, private http: HttpClient, private sessionDataService: SessionDataService) { }
+    checkActivated: boolean = false;
 
     canActivate() {
+        this.checkSession();
         return this.checkIfLoggedIn();
     }
 
     canActivateChild() {
+        setTimeout(() => {
+            var url = this.router.url;
+            if ((url.indexOf("/") != -1 || url.indexOf("/home") != -1 || url.indexOf("/home-ngs") != -1) && this.checkActivated == false) {
+                this.checkActivated = true;
+                this.checkSession();
+            }
+        }, 2000);
+
         return this.checkIfNeedLogIn();
     }
 
@@ -27,15 +39,22 @@ export class LoginGuard implements CanActivate, CanActivateChild {
         headers.append('Expires', '0');
         headers.append('Pragma', 'no-cache');
 
-        await this.http.get<{tieneSesion:boolean}>('/api/Home/VerificarEstadoSesion', { headers: headers }).subscribe(
-            (result:any) => {
+        this.http.get<{ tieneSesion: boolean }>('/api/Home/VerificarEstadoSesion', { headers: headers })
+            .pipe(
+                catchError((error) => {
+                    console.error('Error en la solicitud:', error);
+                    this.sessionDataService.logout();
+                    window.location.href = window.location.origin + '/SignOut';
+                    return throwError(error);
+                })
+            )
+            .subscribe((result: any) => {
                 if (!result.tieneSesion) {
                     this.sessionDataService.logout();
                     window.location.href = window.location.origin + '/SignOut';
                     return false;
                 }
-            }
-        )
+            });
     }
     private checkIfNeedLogIn(): boolean {
 
@@ -67,4 +86,13 @@ export class LoginGuard implements CanActivate, CanActivateChild {
 
         return true;
     }
+
+    private checkSession() {
+        setTimeout(() => {
+            this.checkIfNeedLogIn();
+            this.checkSession();
+        }, 15000);
+    }
+
+
 }

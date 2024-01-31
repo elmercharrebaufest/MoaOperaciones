@@ -1,17 +1,11 @@
-import { Component, OnInit, EventEmitter, Output, Input, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Output, Input, ViewChild } from '@angular/core';
 import { SeleccionarProveedorService } from './seleccionar-proveedor.service';
-import { FormControl } from '@angular/forms';
 import { BaseComponent } from '../../base-components/base-component';
-import { InformeComercial } from '../../models/informeComercial';
-import { Material } from '../../models/material';
-import { NuevoAcopio } from '../../models/nuevoAcopio';
-import { NuevoProduccion } from '../../models/nuevoProduccion';
 import { FloatMsgService } from '../../services/FloatMsgService';
 import { ModalService } from '../../services/ModalService';
 import { NavService } from '../../services/NavService';
 import { SecurityService } from '../../services/SecurityService';
 import { SessionDataService } from '../../services/SessionDataService';
-import { SpinnerSmallComponent } from '../../view-child/spinner-small/spinner-small.component';
 import { MensajeComponent } from '../../view-child/mensaje/mensaje.component';
 import { SpinnerComponent } from '../../view-child/spinner/spinner.component';
 
@@ -23,7 +17,7 @@ import { SpinnerComponent } from '../../view-child/spinner/spinner.component';
 })
 
 export class SeleccionarProveedorComponent extends BaseComponent {
-
+    @Output() dataListed = new EventEmitter<Array<any>>();
     @ViewChild("mensajeModal")
     protected mensajeModalComponent: MensajeComponent;
 
@@ -139,6 +133,7 @@ export class SeleccionarProveedorComponent extends BaseComponent {
                     } else {
                         // console.debug(' vendedores: ', result.data.vendedores);
                         this.data = result.data.vendedores;
+                        this.dataListed.emit(this.data)
                         if (this.valorInicial != "") {
                             let seleccionado = result.data.vendedores.filter(a => a.idVendedor == this.valorInicial);
                             if (seleccionado != null && seleccionado.length > 0) {
@@ -161,4 +156,12 @@ export class SeleccionarProveedorComponent extends BaseComponent {
         return false; //<-- Prevent Refresh
     }
 
+    reset() {
+        this.selected = undefined;
+    }
+
+    setSelected(item){
+        this.selected = item;
+        this.selectEvent(item)
+    }
 }

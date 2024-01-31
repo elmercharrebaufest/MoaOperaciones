@@ -13,6 +13,12 @@
                            /@value" />
 	</parameter>
 
+	<parameter name="UrlMisConsultas Config">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/appSettings/add[@key='UrlMisConsultas']
+                           /@value" />
+	</parameter>
+
 	<parameter name="DataAgroURL Config">
 		<parameterEntry kind="XmlFile" scope="Web.config"
 						match="/configuration/appSettings/add[@key='DataAgroURL']
@@ -126,7 +132,25 @@
 							match="/configuration/appSettings/add[@key='EmailToMesaENTSL']
                            /@value" />
 	</parameter>
+	
+	<parameter name="EmailToGestionAltaCuit Config">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+							match="/configuration/appSettings/add[@key='EmailToGestionAltaCuit']
+                           /@value" />
+	</parameter>
 
+	<parameter name="CopiaEmailToGestionAltaCuit Config">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+							match="/configuration/appSettings/add[@key='CopiaEmailToGestionAltaCuit']
+                           /@value" />
+	</parameter>
+
+	<parameter name="EmailAsuntoPrefijo Config">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+							match="/configuration/appSettings/add[@key='EmailAsuntoPrefijo']
+                           /@value" />
+	</parameter>
+	
 	<parameter name="EmailToMesaVentaFas Config">
 		<parameterEntry kind="XmlFile" scope="Web.config"
 							match="/configuration/appSettings/add[@key='EmailToMesaVentaFas']
@@ -151,19 +175,126 @@
                            /@value" />
 	</parameter>
 
+	<parameter name="EmailToComercialesAlimAnimal Config">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+							match="/configuration/appSettings/add[@key='EmailToComercialesAlimAnimal']
+                           /@value" />
+	</parameter>
+
 	<parameter name="EmailToAuditoriaOrdenesVencidas Config">
 		<parameterEntry kind="XmlFile" scope="Web.config"
 							match="/configuration/appSettings/add[@key='EmailToAuditoriaOrdenesVencidas']
                            /@value" />
 	</parameter>
 
+	<parameter name="EmailToReporteLogins Config">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+							match="/configuration/appSettings/add[@key='EmailToReporteLogins']
+                           /@value" />
+	</parameter>
 
+	<parameter name="EmailAltaTempranaCuitFasonTo Config">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+							match="/configuration/appSettings/add[@key='EmailAltaTempranaCuitFasonTo']
+                           /@value" />
+	</parameter>
+
+	<parameter name="EmailAltaTempranaCuitFasonCC Config">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+							match="/configuration/appSettings/add[@key='EmailAltaTempranaCuitFasonCC']
+                           /@value" />
+	</parameter>
+
+	<parameter name="EmailAltaTempranaCuitFasTo Config">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+							match="/configuration/appSettings/add[@key='EmailAltaTempranaCuitFasTo']
+                           /@value" />
+	</parameter>
+	<parameter name="EmailAltaTransporteFasonTo Config">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+							match="/configuration/appSettings/add[@key='EmailAltaTransporteFasTo']
+                           /@value" />
+	</parameter>
+	<parameter name="EmailAltaTransporteFasonCC Config">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+							match="/configuration/appSettings/add[@key='EmailAltaTransporteFasonCC']
+                           /@value" />
+	</parameter>
+	<parameter name="EmailAltaTempranaCuitFasCC Config">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+							match="/configuration/appSettings/add[@key='EmailAltaTempranaCuitFasCC']
+                           /@value" />
+	</parameter>
+
+	<parameter name="EmailAltaIntermediarioFleteTo Config">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+							match="/configuration/appSettings/add[@key='EmailAltaIntermediarioFleteTo']
+                           /@value" />
+	</parameter>
+
+	<parameter name="EmailAltaIntermediarioFleteCC Config">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+							match="/configuration/appSettings/add[@key='EmailAltaIntermediarioFleteCC']
+                           /@value" />
+	</parameter>
+	<parameter name="EmailKgsMenos15TNFasTo Config">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+							match="/configuration/appSettings/add[@key='EmailKgsMenos15TNFasTo']
+                           /@value" />
+	</parameter>
+	
+	<parameter name="EmailConsultaInternaCC Config">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+							match="/configuration/appSettings/add[@key='EmailConsultaInternaCC']
+                           /@value" />
+	</parameter>
 
 	<parameter name="PasswordSapEnc Config">
 		<parameterEntry kind="XmlFile" scope="Web.config"
 							match="/configuration/appSettings/add[@key='PasswordSapEnc']
                            /@value" />
 	</parameter>
+
+	<parameter name="ScatoRepositorioBaseAddress Config">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/appSettings/add[@key='ScatoRepositorioBaseAddress']
+                           /@value" />
+	</parameter>
+
+	<parameter name="ScatoRepositorioUsername Config">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/appSettings/add[@key='ScatoRepositorioUsername']
+                           /@value" />
+	</parameter>
+
+	<parameter name="ScatoRepositorioPassword Config">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/appSettings/add[@key='ScatoRepositorioPassword']
+                           /@value" />
+	</parameter>
+
+	<parameter name="AzureADTenantId Config">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/appSettings/add[@key='AzureADTenantId']
+                           /@value" />
+	</parameter>
+
+	<parameter name="AzureADAppId Config">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/appSettings/add[@key='AzureADAppId']
+                           /@value" />
+	</parameter>
+
+	<parameter name="AzureADAppSecret Config">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/appSettings/add[@key='AzureADAppSecret']
+                           /@value" />
+	</parameter>
+  <parameter name="Url Config">
+    <parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/appSettings/add[@key='Url']
+                           /@value" />
+  </parameter>
 
 	<parameter name="BasicHttpBinding_IServicioRepositorio Service Endpoint Address">
 		<parameterEntry kind="XmlFile" scope="Web.config"
@@ -494,55 +625,6 @@
                            /@address" />
 	</parameter>
 
-	<parameter name="SI_MMRFC_OBTENER_CUENTAS Service Endpoint Address">
-		<parameterEntry kind="XmlFile" scope="Web.config"
-						match="/configuration/system.serviceModel/client
-                           /endpoint[@name='SI_MMRFC_OBTENER_CUENTAS']
-                           /@address" />
-	</parameter>
-
-	<parameter name="SI_MMRFC_OBTENER_SERVICIOS Service Endpoint Address">
-		<parameterEntry kind="XmlFile" scope="Web.config"
-						match="/configuration/system.serviceModel/client
-                           /endpoint[@name='SI_MMRFC_OBTENER_SERVICIOS']
-                           /@address" />
-	</parameter>
-
-	<parameter name="SI_MMRFC_OBTENER_CECO Service Endpoint Address">
-		<parameterEntry kind="XmlFile" scope="Web.config"
-						match="/configuration/system.serviceModel/client
-                           /endpoint[@name='SI_MMRFC_OBTENER_CECO']
-                           /@address" />
-	</parameter>
-
-	<parameter name="SI_MMRFC_OBTENER_ORDEN Service Endpoint Address">
-		<parameterEntry kind="XmlFile" scope="Web.config"
-						match="/configuration/system.serviceModel/client
-                           /endpoint[@name='SI_MMRFC_OBTENER_ORDEN']
-                           /@address" />
-	</parameter>
-
-	<parameter name="SI_MMRFC_OBTENER_SOLPED Service Endpoint Address">
-		<parameterEntry kind="XmlFile" scope="Web.config"
-						match="/configuration/system.serviceModel/client
-                           /endpoint[@name='SI_MMRFC_OBTENER_SOLPED']
-                           /@address" />
-	</parameter>
-
-	<parameter name="SI_MMRFC_CREAR_SOLPED Service Endpoint Address">
-		<parameterEntry kind="XmlFile" scope="Web.config"
-						match="/configuration/system.serviceModel/client
-                           /endpoint[@name='SI_MMRFC_CREAR_SOLPED']
-                           /@address" />
-	</parameter>
-
-	<parameter name="SI_MMRFC_MODIFICAR_SOLPED Service Endpoint Address">
-		<parameterEntry kind="XmlFile" scope="Web.config"
-						match="/configuration/system.serviceModel/client
-                           /endpoint[@name='SI_MMRFC_MODIFICAR_SOLPED']
-                           /@address" />
-	</parameter>
-
 	<parameter name="BasicHttpBinding_IAuthService Service Endpoint Address">
 		<parameterEntry kind="XmlFile" scope="Web.config"
 						match="/configuration/system.serviceModel/client
@@ -642,6 +724,87 @@
 								match="/configuration/system.serviceModel/client
                         /endpoint[@name='SI_MMRFC_OBTENER_CONTRATO']
                         /@address" />
+  </parameter>
+  
+	<parameter name="SI_MPRFC_ANULAR_APERTURA_CHEQUE Service Endpoint Address">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+								match="/configuration/system.serviceModel/client
+                        /endpoint[@name='SI_MPRFC_ANULAR_APERTURA_CHEQUE']
+                        /@address" />
 	</parameter>
+
+	<parameter name="SI_MPRFC_CARGA_APERTURA_CHEQUE Service Endpoint Address">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+								match="/configuration/system.serviceModel/client
+                        /endpoint[@name='SI_MPRFC_CARGA_APERTURA_CHEQUE']
+                        /@address" />
+	</parameter>
+
+	<parameter name="SI_MPRFC_MODI_DOC_CHEQUE Service Endpoint Address">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+								match="/configuration/system.serviceModel/client
+                        /endpoint[@name='SI_MPRFC_MODI_DOC_CHEQUE']
+                        /@address" />
+	</parameter>
+
+	<parameter name="SI_MPRFC_MOAOP_MOD_CONTRATO Service Endpoint Address">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+								match="/configuration/system.serviceModel/client
+                        /endpoint[@name='SI_MPRFC_MOAOP_MOD_CONTRATO']
+                        /@address" />
+	</parameter>
+
+	<parameter name="SI_MPRFC_MOAOP_MOD_FIJACION Service Endpoint Address">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+								match="/configuration/system.serviceModel/client
+                        /endpoint[@name='SI_MPRFC_MOAOP_MOD_FIJACION']
+                        /@address" />
+	</parameter>
+
+	<parameter name="SI_MPRFC_VISU_DISPONIBLE_CHEQUE Service Endpoint Address">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+								match="/configuration/system.serviceModel/client
+                        /endpoint[@name='SI_MPRFC_VISU_DISPONIBLE_CHEQUE']
+                        /@address" />
+	</parameter>
+
+	<parameter name="SI_MPRFC_VISU_PENDIENTE_PAGO Service Endpoint Address">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+								match="/configuration/system.serviceModel/client
+                        /endpoint[@name='SI_MPRFC_VISU_PENDIENTE_PAGO']
+                        /@address" />
+	</parameter>
+
+	<parameter name="SI_MPMF_MOAOP_MOD_ENTREGA Service Endpoint Address">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+								match="/configuration/system.serviceModel/client
+                        /endpoint[@name='SI_MPMF_MOAOP_MOD_ENTREGA']
+                        /@address" />
+	</parameter>
+	<parameter name="SI_MPMF_MOAOP_MOD_ORDEN_CARGA Service Endpoint Address">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+								match="/configuration/system.serviceModel/client
+                        /endpoint[@name='SI_MPMF_MOAOP_MOD_ORDEN_CARGA']
+                        /@address" />
+	</parameter>
+	<parameter name="SI_MPMF_MOAOP_PENDIENTE_APLICAR Service Endpoint Address">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+								match="/configuration/system.serviceModel/client
+                        /endpoint[@name='SI_MPMF_MOAOP_PENDIENTE_APLICAR']
+                        /@address" />
+	</parameter>
+	<parameter name="SI_MMRFC_OBTENER_TIPO_CAMBIO Service Endpoint Address">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+							match="/configuration/system.serviceModel/client
+                    /endpoint[@name='SI_MMRFC_OBTENER_TIPO_CAMBIO']
+                    /@address" />
+	</parameter>
+  <parameter name="BAPI_PO_CHANGEPortType Service Endpoint Address">
+    <parameterEntry kind="XmlFile" scope="Web.config"
+							match="/configuration/system.serviceModel/client
+                    /endpoint[@name='BAPI_PO_CHANGEPortType']
+                    /@address" />
+  </parameter>
+ 
 </parameters>
 

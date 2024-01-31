@@ -1,3 +1,48 @@
-::ng-deep .estiloCalendarDashboard {
-    width: 33%;
+:host ::ng-deep .ui-calendar {
+    width: 100%;
+}
+
+:host ::ng-deep .ui-calendar .ui-inputtext {
+    width: calc(100% - 2.357em);
+}
+
+.fa {
+    margin-right: -10.8px;
+}
+
+.buscar {
+    background-color: #1C7CD5;
+    border-color: #1C7CD5;
+    color: white;
+    width: 100%;
+}
+
+.buttonBuscar {
+    margin-top: 4px;
+}
+
+body.ui-paginator.ui-dropdown {
+    width: 10% !important;
+}
+
+.ng-tns-c7-9.ui-dropdown.ui-widget.ui-state-default.ui-corner-all.ui-helper-clearfix {
+    width: 10% !important;
+}
+
+.col-lg-1 {
+    width: 10%;
+}
+
+.punto-rojo {
+    position: relative;
+    top: -29px;
+    left: -6px;
+    width: 10px;
+    height: 10px;
+    background-color: red;
+    border-radius: 50%;
+}
+
+.padding {
+    padding: 8px;
 }

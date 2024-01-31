@@ -83,8 +83,9 @@ namespace SustitucionMOAModel.Models.WSMapMOA.ReporteContrato
         public string TipoContrato { get; set; }
         public string ColorProducto { get; set; }
         public string CodigoProducto { get; set; }
-   
+
         public List<Detail> Detalles { get; set; }
+        public string NombreClienteCUIT { get; set; }
 
         public Result()
         {
@@ -94,6 +95,8 @@ namespace SustitucionMOAModel.Models.WSMapMOA.ReporteContrato
 
     public class Detail
     {
+        public string OrdenCargaId { get; set; }
+
         public string Pedido { get; set; }
 
         public string Entrega { get; set; }
@@ -104,15 +107,15 @@ namespace SustitucionMOAModel.Models.WSMapMOA.ReporteContrato
 
         public decimal CantidadEntregada { get; set; }
 
-        //public bool cANTIDAD_ENTREGADAFieldSpecified
-
         public string Remito { get; set; }
 
         public string Factura { get; set; }
 
         public decimal CantidadFactura { get; set; }
 
-       public string CantidadEntregadaStr { get; set; }
+        public string CantidadEntregadaStr { get; set; }
+
+        public string CantidadFacturaStr { get; set; }
 
         //public bool cANTIDAD_FACTURAFieldSpecified
 
@@ -127,12 +130,14 @@ namespace SustitucionMOAModel.Models.WSMapMOA.ReporteContrato
         public string Destinatario { get; set; }
 
         public string NombreDestinatario { get; set; }
+
+        public string CPE { get; set; }
     }
 
     public class Totales
     {
         public string MaterialDescripcion { get; set; }
-        public decimal KilosEntregados { get; set; }      
+        public decimal KilosEntregados { get; set; }
 
     }
 }

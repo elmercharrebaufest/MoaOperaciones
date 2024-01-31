@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Net.Mail;
 using System.Text;
+using System.Threading.Tasks;
+using DocumentFormat.OpenXml.Spreadsheet;
 using SustitucionMOAModel.Models.WSMapMOA.ContactoMail;
 using SustitucionMOAModel.Models.WSMapMOA.Reporte;
 
@@ -11,6 +14,11 @@ namespace SustitucionMOAUtils.Email
 {
     public class EmailSender
     {
+        protected static string GenerarAsunto(string asunto)
+        {
+            var prefijoAsunto = ConfigurationManager.AppSettings["EmailAsuntoPrefijo"];
+            return prefijoAsunto + asunto;
+        }
         public static void send(ContactoContenido contactoContenido, byte[] file, string fileName)
         {
 
@@ -41,6 +49,7 @@ namespace SustitucionMOAUtils.Email
                 catch { }
             }
 
+            mail.Subject = GenerarAsunto(mail.Subject);
             client.Send(mail);
         }
 
@@ -68,6 +77,7 @@ namespace SustitucionMOAUtils.Email
                 catch { }
             }
 
+            mail.Subject = GenerarAsunto(mail.Subject);
             client.Send(mail);
 
         }
@@ -109,6 +119,7 @@ namespace SustitucionMOAUtils.Email
             {
                 mail.To.Add(reporte.Destinatario);
             }
+            mail.Subject = GenerarAsunto(mail.Subject);
             client.Send(mail);
 
         }
@@ -174,7 +185,8 @@ namespace SustitucionMOAUtils.Email
             byte[] archivo = null, 
             string nombreArchivo = null,
             string enviarDesde = null,
-            List<string> copiaOculta = null)
+            List<string> copiaOculta = null,
+            Dictionary<string, byte[]> archivos = null)
         {
             try
             {
@@ -220,13 +232,30 @@ namespace SustitucionMOAUtils.Email
                 oMensaje.Headers.Add("Content-class", "urn:content-classes:calendarmessage");
                 if (archivo != null)
                 {
-                    using (var stream = new MemoryStream(archivo))
+                    Attachment data = new Attachment(new MemoryStream(archivo), nombreArchivo);
+                    oMensaje.Attachments.Add(data);
+                }
+
+                if (archivos != null)
+                {
+                    foreach (var archi in archivos)
                     {
-                        Attachment data = new Attachment(stream, nombreArchivo);
+                        Attachment data = new Attachment(new MemoryStream(archi.Value), archi.Key);
                         oMensaje.Attachments.Add(data);
                     }
+                   
                 }
+
+                //if (archivo != null)
+                //{
+                //    using (var stream = new MemoryStream(archivo))
+                //    {
+                //        Attachment data = new Attachment(stream, nombreArchivo);
+                //        oMensaje.Attachments.Add(data);
+                //    }
+                //}
                 SmtpClient oCliente = GetSmtpClient();
+                oMensaje.Subject = GenerarAsunto(oMensaje.Subject);
                 oCliente.Send(oMensaje);
             }
             catch (Exception ex)
@@ -280,7 +309,157 @@ namespace SustitucionMOAUtils.Email
                     }
                 }
                 SmtpClient oCliente = GetSmtpClient();
+                oMensaje.Subject = GenerarAsunto(oMensaje.Subject);
                 oCliente.Send(oMensaje);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+
+        public static async Task EnviarMailAsync(List<string> enviarA,
+            string asunto,
+            string cuerpo,
+            List<string> copia = null,
+            AlternateView vistaAlternativa = null,
+            byte[] archivo = null,
+            string nombreArchivo = null,
+            string enviarDesde = null,
+            List<string> copiaOculta = null,
+            Dictionary<string, byte[]> archivos = null)
+        {
+            try
+            {
+                MailMessage oMensaje = new MailMessage
+                {
+                    From = new MailAddress(string.IsNullOrEmpty(enviarDesde) ? EmailConfig.getEmailAddFrom() : enviarDesde),
+                    Body = cuerpo,
+                    Subject = asunto,
+                    IsBodyHtml = true,
+                };
+                foreach (string mail in enviarA)
+                {
+                    if (!string.IsNullOrEmpty(mail))
+                    {
+                        oMensaje.To.Add(mail);
+                    }
+                }
+                if (enviarA == null || enviarA.Count() == 0)
+                {
+                    oMensaje.To.Add(EmailConfig.getEmailAddFrom());
+                }
+
+                if (copia != null)
+                {
+                    foreach (string mail in copia)
+                    {
+                        oMensaje.CC.Add(mail);
+                    }
+                }
+                if (copiaOculta != null)
+                {
+                    foreach (string mail in copiaOculta)
+                    {
+                        oMensaje.Bcc.Add(mail);
+                    }
+                }
+                if (vistaAlternativa != null)
+                {
+                    oMensaje.AlternateViews.Add(vistaAlternativa);
+                }
+
+                oMensaje.BodyEncoding = Encoding.UTF8;
+                oMensaje.Headers.Add("Content-class", "urn:content-classes:calendarmessage");
+                if (archivo != null)
+                {
+                    Attachment data = new Attachment(new MemoryStream(archivo), nombreArchivo);
+                    oMensaje.Attachments.Add(data);
+                }
+
+                if (archivos != null)
+                {
+                    foreach (var archi in archivos)
+                    {
+                        Attachment data = new Attachment(new MemoryStream(archi.Value), archi.Key);
+                        oMensaje.Attachments.Add(data);
+                    }
+
+                }
+
+                //if (archivo != null)
+                //{
+                //    using (var stream = new MemoryStream(archivo))
+                //    {
+                //        Attachment data = new Attachment(stream, nombreArchivo);
+                //        oMensaje.Attachments.Add(data);
+                //    }
+                //}
+                SmtpClient oCliente = GetSmtpClient();
+                oMensaje.Subject = GenerarAsunto(oMensaje.Subject);
+                await oCliente.SendMailAsync(oMensaje);
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+        public static async Task EnviarMailAsync(EmailSenderData emailSenderData)
+        {
+            try
+            {
+                MailMessage oMensaje = new MailMessage
+                {
+                    From = new MailAddress(EmailConfig.getEmailAddFrom()),
+                    Body = emailSenderData.Cuerpo,
+                    Subject = emailSenderData.Asunto,
+                    IsBodyHtml = true,
+                };
+
+                foreach (string mail in emailSenderData.Mails)
+                {
+                    if (!string.IsNullOrEmpty(mail))
+                    {
+                        oMensaje.To.Add(mail);
+                    }
+                }
+
+                if (emailSenderData.Mails == null || emailSenderData.Mails.Count() == 0)
+                {
+                    oMensaje.To.Add(EmailConfig.getEmailAddFrom());
+                }
+
+                if (emailSenderData.Copias != null)
+                {
+                    foreach (string copia in emailSenderData.Copias)
+                    {
+                        oMensaje.CC.Add(copia);
+                    }
+                }
+
+                if (emailSenderData.VistaAlternativa != null)
+                {
+                    oMensaje.AlternateViews.Add(emailSenderData.VistaAlternativa);
+                }
+
+                oMensaje.BodyEncoding = Encoding.UTF8;
+                oMensaje.Headers.Add("Content-class", "urn:content-classes:calendarmessage");
+
+                if (emailSenderData.Archivo != null)
+                {
+                    using (var stream = new MemoryStream(emailSenderData.Archivo))
+                    {
+                        Attachment attachment = new Attachment(stream, emailSenderData.NombreArchivo);
+                        oMensaje.Attachments.Add(attachment);
+                    }
+                }
+
+                SmtpClient oCliente = GetSmtpClient();
+                oMensaje.Subject = GenerarAsunto(oMensaje.Subject);
+
+                // Enviar el correo de forma asíncrona
+                await oCliente.SendMailAsync(oMensaje);
             }
             catch (Exception ex)
             {
@@ -290,7 +469,7 @@ namespace SustitucionMOAUtils.Email
     }
 
     public class EmailSenderData
-	{
+    {
         public List<string> Mails { get; set; } = new List<string>();
         public string Asunto { get; set; }
         public string Cuerpo { get; set; }

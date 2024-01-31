@@ -6,7 +6,7 @@
     [FechaModificacion]      DATETIME2 (7)  NULL,
     [Pliego_Id]              INT            NULL,
     [ClaseDocumento_Id]      INT            NULL,
-    [NroSolp]                NVARCHAR (MAX) NULL,
+    [NroSolp]                NVARCHAR (20) NULL,
     [EstadoSolpSap_Id]       INT            NULL,
     [EstadoDocumento_Id]     INT            NULL,
     [FechaBorrado]           DATETIME2 (7)  NULL,
@@ -18,13 +18,23 @@
     [UsuarioCompras_Id]      INT            NULL,
     [TipoSolpSap] INT NULL, 
     [EmailLinkToken] UNIQUEIDENTIFIER NULL, 
+    [TrabajoYaHecho] BIT NULL, 
+    [ProveedorAsignado_Id] INT NULL, 
+    [Adicional] BIT NULL, 
+    [NroOrdenDeCompraAdicional] VARCHAR(10) NULL, 
+    [SeEnvioMailLiberacion] BIT NULL, 
+    [Urgencia] BIT NULL, 
+    [SeEnvioMailAnulacion] BIT NULL, 
     CONSTRAINT [PK_dbo.Solp] PRIMARY KEY CLUSTERED ([Id] ASC),
     CONSTRAINT [FK_dbo.Solp_dbo.UsuarioCompras_Id] FOREIGN KEY ([UsuarioCompras_Id]) REFERENCES [dbo].[UsuarioCompras] ([Id]) ON DELETE CASCADE,
     CONSTRAINT [FK_Solp_Pliego] FOREIGN KEY ([Pliego_Id]) REFERENCES [dbo].[Pliego] ([Id]),
     CONSTRAINT [FK_Solp_TablaEstado_EstadoDocumento] FOREIGN KEY ([EstadoDocumento_Id]) REFERENCES [dbo].[TablaEstado] ([Id]),
     CONSTRAINT [FK_Solp_TablaGeneral_TipoSolp] FOREIGN KEY ([TipoSolp_Id]) REFERENCES [dbo].[TablaGeneral] ([Id]),
     CONSTRAINT [FK_Solp_TablaSap_ClaseDocumento] FOREIGN KEY ([ClaseDocumento_Id]) REFERENCES [dbo].[TablaSap] ([Id]),
-    CONSTRAINT [FK_Solp_TablaSap_EstadoSolpSap] FOREIGN KEY ([EstadoSolpSap_Id]) REFERENCES [dbo].[TablaSap] ([Id])
+    CONSTRAINT [FK_Solp_TablaSap_EstadoSolpSap] FOREIGN KEY ([EstadoSolpSap_Id]) REFERENCES [dbo].[TablaSap] ([Id]),
+    CONSTRAINT [FK_Solp_Usuario_ProveedorAsignado] FOREIGN KEY ([ProveedorAsignado_Id]) REFERENCES [dbo].[Usuario] ([Id])
+
+
 );
 
 

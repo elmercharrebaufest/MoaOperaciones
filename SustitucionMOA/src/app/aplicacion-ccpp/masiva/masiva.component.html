@@ -1,0 +1,144 @@
+<div class="content-wraper">
+    <!-- CONTENT-->
+    <section class="container-fluid clearfix">
+        <!--Title-->
+        <div class="row titleSection">
+            <div class="col-xs-12 col-sm-10"><strong>Aplicación de CCPP</strong> </div>
+        </div>
+        <!--End Title-->
+
+        <!-- <mensaje></mensaje> -->
+        <ng-container *ngIf="!archivoFueProcesado">
+            <div class="row myRow firstSection mySearch mt-0">
+                <div class="col-xs-12 col-md-12 rounded shadow animate">
+                    <!-- <spinner></spinner> -->
+                    <div class="col-xs-12 col-md-12 search-header">
+                        <!-- <spinner-small></spinner-small> -->
+                        <title-caps>Carga masiva</title-caps>
+                    </div>
+                    <div class="col-xs-12" style="display: flex; justify-content: flex-start;">
+                        <a href="../../../Documentacion/TemplateAplicCCPP.csv" target="_blank"
+                            style="text-decoration:none!important;margin-right:10px">
+                            <div class="btnSection animate align-right" style="width: fit-content;">
+                                Carga masiva <i class="fa fa-file-word-o" aria-hidden="true"></i>
+                            </div>
+                        </a>
+                        <a href="../../../Documentacion/TutorialAplicCCPP.docx" target="_blank"
+                            style="text-decoration:none!important;margin-left:10px;">
+                            <div class="btnSection animate align-right">
+                                Tutorial <i class="fa fa-file-word-o" aria-hidden="true"></i>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-xs-12" style="margin-top: 10px;">
+                        Archivo:
+                        <div class="styled-select">
+                            <input type="file" accept=".csv" (change)="cargarArchivo($event)" placeholder="Cargar archivo">
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="col-12 p-2 d-flex justify-start gap-2" style="margin-top: 15px;">
+                        <button (click)="cargarMasiva()" class="btn-custom btn-guardar btn-mediano">Enviar</button>
+                        <spinner-small></spinner-small>
+                    </div>
+                </div>
+            </div>
+        </ng-container>
+
+        <ng-container *ngIf="archivoFueProcesado">
+            <div class="row myRow firstSection mt-0" style="padding: 0;">
+                <div class="col-xs-12 col-md-12 rounded shadow animate" style="padding: 0px;">
+                    <div class="col-xs-12 col-md-12 search-header">
+                        <title-caps>Carga masiva</title-caps>
+                </div>
+                    <ng-container *ngIf="hayErroresValidacion">
+                        <div class="col-xs-12">
+                            <p>
+                                Se encontraron errores en el archivo:
+                            </p>
+            </div>
+                        <table id="tablaErrores" class="display nowrap dataTable no-footer dtr-inline rounded shadow animate"
+                            role="grid" aria-describedby="tablaErrores" style="width: 100%;padding: 30px 0">
+                            <thead>
+                                <tr role="row">
+                                    <th class="fw-bold fs-medium" id="filaRow" tabindex="0" rowspan="1" colspan="1">
+                                        Fila
+                                    </th>
+                                    <th class="fw-bold fs-medium" id="contratoRow" tabindex="0" rowspan="1" colspan="1">
+                                        Contrato
+                                    </th>
+                                    <th class="fw-bold fs-medium" id="ccppRow" tabindex="0" rowspan="1" colspan="1">
+                                        Carta de porte
+                                    </th>
+                                    <th class="fw-bold fs-medium" id="kilosRow" tabindex="0" rowspan="1" colspan="1">
+                                        Kilos
+                                    </th>
+                                    <th class="fw-bold fs-medium" id="errorRow" tabindex="0" rowspan="1" colspan="1">
+                                        Error
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let errValid of erroresValidacionArchivo
+                                    | paginate: { itemsPerPage:itemsPerPage, currentPage: p }
+                                    ;let odd=odd" role="row" [class.odd]="!odd">
+                                    <td>{{errValid.Fila}}</td>
+                                    <td>{{errValid.ContratoNumero}}</td>
+                                    <td>{{errValid.CartaDePorte}}</td>
+                                    <td>{{errValid.Kilos}}</td>
+                                    <td style="color: red;">{{errValid.Error}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </ng-container>
+
+                    <ng-container *ngIf="!hayErroresValidacion">
+                        <div class="col-xs-12">
+                            <p>
+                                Se ingresaron en el proceso de aplicación las siguientes CCPP:
+                            </p>
+                        </div>
+                        <table id="tablaGuardadas" class="display nowrap dataTable no-footer dtr-inline rounded shadow animate"
+                            role="grid" aria-describedby="tablaGuardadas" style="width: 100%;padding: 30px 0">
+                            <thead>
+                                <tr role="row">
+                                    <th class="fw-bold fs-medium" id="contratoRow" tabindex="0" rowspan="1" colspan="1">
+                                        Contrato
+                                    </th>
+                                    <th class="fw-bold fs-medium" id="ccppRow" tabindex="0" rowspan="1" colspan="1">
+                                        Carta de porte
+                                    </th>
+                                    <th class="fw-bold fs-medium" id="kilosRow" tabindex="0" rowspan="1" colspan="1">
+                                        Kilos
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let aplic of aplicacionesGuardadas
+                                    | paginate: { itemsPerPage:itemsPerPage, currentPage: p }
+                                    ;let odd=odd" role="row" [class.odd]="!odd">
+                                    <td>{{aplic.ContratoNumero}}</td>
+                                    <td>{{aplic.CartaDePorte}}</td>
+                                    <td>{{aplic.Kilos}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </ng-container>
+
+                    <div class="col-12 p-2 d-flex justify-start gap-2" style="margin: 10px;">
+                        <button (click)="resetearCarga()" class="btn-custom btn-add btn-grande">
+                            Cargar otro archivo
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+        </ng-container>
+        
+        <div class="myRow" #mensajesDiv>
+            <!-- <div class="col-xs-12 col-md-12" style="padding-right:0px!important" #messages> -->
+                <mensaje></mensaje>
+            <!-- </div> -->
+        </div>
+    </section>
+</div>

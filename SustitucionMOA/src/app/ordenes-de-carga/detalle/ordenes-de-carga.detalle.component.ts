@@ -1,10 +1,10 @@
 import { DatePipe } from '@angular/common';
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute, Params } from '@angular/router';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 import { BaseComponent } from '../../common/base-components/base-component';
 import { CorredorContrato } from '../../common/models/ordenes-de-carga/corredorContrato';
 import { EstadoOrdenDeCarga } from '../../common/models/ordenes-de-carga/estadoOrdenDeCarga';
-import { OrdenDeCarga } from '../../common/models/ordenes-de-carga/ordenDeCarga';
+import { OrdenDeCarga, VOLVER_A_DETALLE_REPORTE } from '../../common/models/ordenes-de-carga/ordenDeCarga';
 import { FloatMsgService } from '../../common/services/FloatMsgService';
 import { ModalService } from '../../common/services/ModalService';
 import { NavService } from '../../common/services/NavService';
@@ -15,7 +15,11 @@ import { SpinnerComponent } from '../../common/view-child/spinner/spinner.compon
 import { UsuarioService } from '../../usuario/usuario.service';
 import { OrdenesDeCargaService } from '../ordenes-de-carga.service';
 import { NgBlockUI, BlockUI } from 'ng-block-ui';
-import { SelectItem, ConfirmationService } from 'primeng/api';
+import { ConfirmationService } from 'primeng/api';
+import { TipoContrato } from '../../common/models/ordenes-de-carga/obtenerContratosDisponiblesResponse';
+import { Factura } from '../../common/models/ordenes-de-carga/Factura';
+import { finalize } from 'rxjs/operators';
+import { SendDataService } from '../../consulta/send-data.service';
 
 @Component({
     selector: 'app-ordenes-de-carga.detalle',
@@ -24,7 +28,7 @@ import { SelectItem, ConfirmationService } from 'primeng/api';
 })
 export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnInit {
     @BlockUI() blockUI: NgBlockUI;
-
+    @ViewChild('mainStart') mainDiv?: ElementRef<HTMLDivElement>;
     ordenDeCargaId: number = 0;
     @ViewChild(MensajeComponent)
     protected mensajeComponent: MensajeComponent;
@@ -34,23 +38,30 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
 
     ordenDeCarga: OrdenDeCarga = new OrdenDeCarga();
     mensajeError: string = "";
-
+    mensajeSeleccionarContrato?: string;
+    mensajeSeleccionarFactura?: string;
+    mensajeValidacionScato: string = "";
     ordenDeCargaHistorial: any = {};
-
+    estadosVerHistorial: EstadoOrdenDeCarga[] = [
+        EstadoOrdenDeCarga.Anulada,
+        EstadoOrdenDeCarga.Entregada,
+        EstadoOrdenDeCarga.AnuladaPorVencimiento,
+        EstadoOrdenDeCarga.EdicionRechazada
+    ];
     corredores: Map<number, string>;
     corredorSeleccionado: number;
 
     contratos: string[] = [];
+    facturas: Factura[] = [];
     contratoSeleccionado: string;
-
-    pedidos: string[] = [];
-    pedidoSeleccionado: string;
+    facturaSeleccionada?: Factura = null;
 
     corredorContratoList: CorredorContrato[] = [];
     corredorContratoSeleccionado: CorredorContrato;
 
+    validaCPEDG = false;
+
     mostrarBotonContratos: boolean = false;
-    mostrarBotonPedidos: boolean = false;
     mostrarBotonCorredores: boolean = false;
     mostrarBotonNotificarTransporte: boolean = false;
     mostrarBotonVerificarTransporte: boolean = false;
@@ -61,6 +72,9 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
     mostrarBotonActivarOC: boolean = false;
     mostrarBotonForzarCreacionPedido: boolean = false;
     mostrarBotonEditar: boolean = false;
+    mostrarBotonSeleccionarFactura: boolean = false;
+    mostrarBotonVolverADetalle: boolean = false;
+    mostrarBotonVerificarCuitsTercero: boolean = false;
 
     mostrarListadoInterno: boolean = false;
     mostrarListadoTercero: boolean = false;
@@ -71,6 +85,9 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
     mostrarBotonSolicitarAnulacion: boolean = false;
     mostrarBotonAprobarRechazarAnulacion: boolean = false;
     mostrarBotonEdicionFinalizada: boolean = false;
+    mostrarBotonVerificarCompensacion: boolean = false;
+
+    ordenActivaScato: boolean = false;
 
     // esInterno: boolean = false;
     esInterno: boolean = this.isAuthorized('VER TODAS ORDENES DE CARGA');
@@ -80,27 +97,31 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
     esPuerto: boolean = this.isAuthorized('VER ORDENES DE CARGA PARA PUERTO');
     esCorredor: boolean = sessionStorage.getItem("tipoUsuario") === "CORR";
     esAnulador: boolean = this.isAuthorized('ANULAR ORDEN DE CARGA');
-    
+
+    navegandoADetalle = false;
 
     constructor(protected service: OrdenesDeCargaService,
         protected usuarioService: UsuarioService, protected navService: NavService,
         private route: ActivatedRoute,
+        private router: Router,
         protected sessionDataService: SessionDataService, protected securytiService: SecurityService,
         protected floatMsgService: FloatMsgService, protected modalService: ModalService,
         public datepipe: DatePipe,
+        private sendDataService: SendDataService,
         private confirmationService: ConfirmationService) {
         super(navService, securytiService, floatMsgService, modalService);
-
-        // this.esInterno = this.isAuthorized('VER TODAS ORDENES DE CARGA');
+        this.mostrarBotonVolverADetalle = !!sessionStorage.getItem(VOLVER_A_DETALLE_REPORTE);
     }
 
     ngOnInit() {
+        this.navService.setSeccionList([]);
         this.route.params.forEach((params: Params) => {
             if (params["id"] > 0) this.ordenDeCargaId = params["id"];
+            this.cargarDetalle()
         });
+    }
 
-        this.navService.setSeccionList([]);
-
+    cargarDetalle() {
         if (this.ordenDeCargaId > 0) {
             this.obtenerOrdenDeCarga();
         }
@@ -117,6 +138,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
             }
         });
     }
+
     confirmarRSA(Id) {
         this.confirmationService.confirm({
             key: 'confirmarRSA',
@@ -229,8 +251,8 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
             return;
         }
     }
-    verificarBotones() {
 
+    verificarBotones() {
         this.mostrarBotonContratos = false;
         this.mostrarBotonVerHistorial = false;
         this.mostrarBotonAprobarRechazarAnulacion = false;
@@ -240,58 +262,38 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
         this.mostrarBotonForzarCreacionPedido = false;
         this.mostrarBotonVerificarSituacionCrediticia = false;
         this.mostrarBotonNotificarTransporte = false;
-        this.mostrarBotonPedidos = false;
         this.mostrarBotonEditar = false;
         this.mostrarBotonEdicionFinalizada = false;
+        this.mostrarBotonSeleccionarFactura = false;
+        this.mostrarBotonVerificarCompensacion = false;
+        this.mostrarBotonVerificarCuitsTercero = false;
 
-        if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.Anulada) {
-            return;
-        }
-
-        if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.Entregada) {
-            return;
-        }
-        if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.AnuladaPorVencimiento) {
-            return;
-        }
-
-        //if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.EdicionRechazada) {
-        //    return;
-        //}
-
-        if (!(this.ordenDeCarga.Estado == EstadoOrdenDeCarga.AnulacionSolicitada || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.EdicionSolicitada)) {
-            if (this.esTercero)
-                this.mostrarBotonSolicitarAnulacion = true;
-            if (this.ordenDeCarga.Estado != EstadoOrdenDeCarga.EdicionRechazada) {
-                this.mostrarBotonEditar = true;
-            }
-            
-        }
-
-
-        if (this.esInterno || this.esMesaFas) {
+        if (this.estadosVerHistorial.indexOf(this.ordenDeCarga.Estado) >= 0) {
             this.mostrarBotonVerHistorial = true;
+            return;
+        }
+
+        if (this.esInterno || this.esComercial || this.esMesaFas) {
+            this.mostrarBotonVerHistorial = true;
+            this.mostrarBotonEditar = true;
 
             if (this.esAnulador) {
-                if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.AnulacionSolicitada || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.Confirmado || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.ContratoVencido || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.EdicionRechazada || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.EntregaGenerada || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.EntregaPendiente || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.ErrorDeCarga || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.Pendiente || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.PendienteAprobacionCredito || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.Vencida) {
+                if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.AnulacionSolicitada || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.Confirmado || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.ContratoVencido || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.EntregaGenerada || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.EntregaPendiente || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.ErrorDeCarga || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.Pendiente || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.PendienteAprobacionCredito || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.Vencida || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.EdicionSolicitada || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.EntregaAnuladaPedidoPendienteAnulacion) {
                     this.mostrarBotonAnular = true;
-                } 
-            }
-
-            if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.EdicionRechazada) {
-                this.mostrarBotonEditar = true;
+                }
             }
 
             if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.EdicionSolicitada) {
                 this.mostrarBotonEdicionFinalizada = true;
             }
-            if (this.ordenDeCarga.NumeroPedido === "-" && this.ordenDeCarga.PedidosRespuesta != "-") {
-                this.mostrarBotonPedidos = true
-            }
 
-            if (this.ordenDeCarga.ContratoSAP === "-" && this.ordenDeCarga.ContratosRespuesta != "-") {
-                this.mostrarBotonContratos = true;
-                this.mostrarBotonPedidos = false;
+            if (this.ordenDeCarga.ContratoSeleccionado) {
+                if (!this.ordenDeCarga.ContratoSAP) {
+                    this.mostrarBotonContratos = true;
+                }
+            }
+            else {
+                console.error("Falta cargar contrato seleccionado");
             }
 
             if (!this.ordenDeCarga.TransporteExiste) {
@@ -301,7 +303,6 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
 
             if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.PendienteAprobacionCredito) {
                 this.mostrarBotonVerificarSituacionCrediticia = true;
-                // this.mostrarBotonAnular = true;
             }
 
 
@@ -314,39 +315,58 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                 if (this.ordenDeCarga.FechaVencimientoAmpliada == false) {
                     this.mostrarBotonActivarOC = true;
                 }
-                // if (this.esAnulador) {
-                //     this.mostrarBotonAnular = true;
-                // }
             }
             if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.AnulacionSolicitada) {
                 this.mostrarBotonAprobarRechazarAnulacion = true;
-                // if (this.esAnulador) {
-                //     this.mostrarBotonAnular = true;
-                // }
             }
-            // if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.Pendiente) {
-            //     if (this.esAnulador) {
-            //         this.mostrarBotonAnular = true;
-            //     }
-            // }
+            if (this.ordenDeCarga.TipoContrato === TipoContrato.FacturaAnticipada && !this.ordenDeCarga.NumeroFacturaSeleccionada) {
+                this.mostrarBotonSeleccionarFactura = true;
+            }
+            if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.PendienteCompensacion) {
+                this.mostrarBotonVerificarCompensacion = true;
+            }
+            if ((this.ordenDeCarga.Estado == EstadoOrdenDeCarga.Pendiente || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.EntregaPendiente) && this.ordenDeCarga.NecesitaVerificarCuitsTerceros) {
+                this.mostrarBotonVerificarCuitsTercero = true;
+            }
         }
+        else {
+            if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.Vencida &&
+                this.ordenDeCarga.FechaVencimientoAmpliada == false) {
+                    this.mostrarBotonActivarOC = true;
+                }
+        }
+        if (this.esAnulador) {
+            this.mostrarBotonAnular = true;
+        }
+        if (!(this.ordenDeCarga.Estado == EstadoOrdenDeCarga.AnulacionSolicitada || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.EdicionSolicitada)) {
+            if ((this.esTercero || ((this.esCliente() || this.esCorredor) && !this.mostrarBotonAnular)) && !(this.ordenDeCarga.Estado == EstadoOrdenDeCarga.Vencida))
+                this.mostrarBotonSolicitarAnulacion = true;
 
+            if (this.ordenDeCarga.EdicionRechazada != true)
+                this.mostrarBotonEditar = true;
+        }
     }
 
     obtenerOrdenDeCarga() {
         try {
             this.unsubscribe();
+            this.blockUI.start('Procesando...');
             this.subscriptionDropDowns = this.service.getOrdenDeCarga(this.ordenDeCargaId).subscribe(
                 result => {
+                    this.blockUI.stop();
                     if (result.logout == true) {
                         this.sessionDataService.logout();
                     } else if (result.error != undefined && result.error != "") {
                     } else if (result.info != undefined) {
                     } else {
                         this.ordenDeCarga = result.data;
+                        this.validaCPEDG = this.ordenDeCarga.ValidaSisaRuca;
                         this.separarCadenas();
                         this.verificarBotones()
+                        if (this.mensajeError || this.ordenDeCarga.DescripcionErrorInterno)
+                            this.mensajeComponent.setMsgsEmpty();
                         if (this.ordenDeCarga.MensajeValidacionSAP != "" && this.ordenDeCarga.MensajeValidacionSAP != "OK" && this.esInterno) {
+                            this.mensajeComponent.setMsgsEmpty();
                             this.mensajeComponent.setInfoMsg(this.ordenDeCarga.MensajeValidacionSAP)
                         }
                     }
@@ -419,6 +439,8 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                     } else if (result.info != undefined) {
                         this.mensajeComponent.setInfoMsg(result.info);
                     } else {
+                        this.mensajeComponent.setMsgsEmpty();
+                        this.ordenDeCarga.DescripcionErrorInterno = null;
                         if (result.data != "Orden de carga actualizada correctamente") {
                             this.mensajeComponent.setInfoMsg(result.data);
                         } else {
@@ -427,7 +449,6 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                         this.mostrarBotonNotificarTransporte = false;
                         this.mostrarBotonVerificarTransporte = false;
                         this.obtenerOrdenDeCarga();
-
                     }
                 },
                 error => {
@@ -461,9 +482,9 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                     } else if (result.data.info != undefined) {
                         this.mensajeComponent.setInfoMsg(result.data.info);
                     } else {
-                        this.obtenerOrdenDeCarga();
+                        this.ordenDeCarga.DescripcionErrorInterno = null;
                         this.mensajeComponent.setSuccessMsg(result.data.Mensaje);
-
+                        this.obtenerOrdenDeCarga();
                     }
                 },
                 error => {
@@ -508,7 +529,12 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
 
     seleccionarContrato() {
         this.mensajeComponent.setMsgsEmpty();
+        this.mensajeSeleccionarContrato = null;
         this.spinnerComponent.showIt();
+        if (!this.contratoSeleccionado) {
+            this.mensajeSeleccionarContrato = "Por favor seleccione un contrato para confirmar.";
+            return;
+        }
         this.unsubscribe();
         this.blockUI.start('Grabando...');
         try {
@@ -516,24 +542,68 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                 result => {
                     this.spinnerComponent.hideIt();
                     this.blockUI.stop();
+                    document.getElementById("closemodalSeleccionarContrato").click();
                     if (result.logout == true) {
                         this.sessionDataService.logout();
                     } else if (result.data.error != undefined && result.data.error != "") {
-                        document.getElementById("closemodalSeleccionarContrato").click();
+                        this.obtenerOrdenDeCarga();
                         this.mensajeComponent.setErrorMsg(result.data.error);
                     } else if (result.data.info != undefined) {
+                        this.obtenerOrdenDeCarga();
                         this.mensajeComponent.setInfoMsg(result.data.info);
                     } else {
                         this.ordenDeCarga.ContratoSAP = this.contratoSeleccionado;
                         this.mostrarBotonContratos = false;
-                        document.getElementById("closemodalSeleccionarContrato").click();
-                        this.obtenerOrdenDeCarga();
+                        this.ordenDeCarga.DescripcionErrorInterno = null;
                         this.mensajeComponent.setMsgsEmpty();
                         this.mensajeComponent.setSuccessMsg(result.data.Mensaje);
+                        this.obtenerOrdenDeCarga();
                     }
                 },
                 error => {
                     this.blockUI.stop();
+                    document.getElementById("closemodalSeleccionarContrato").click();
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+            );
+        } catch (e) {
+            this.mensajeComponent.setErrorMsg(e);
+        }
+    }
+    seleccionarFactura() {
+        this.mensajeComponent.setMsgsEmpty();
+        this.spinnerComponent.showIt();
+        this.mensajeSeleccionarFactura = null;
+        if (!this.facturaSeleccionada) {
+            this.mensajeSeleccionarFactura = "Por favor seleccione un número de factura.";
+            return;
+        }
+        this.unsubscribe();
+        this.blockUI.start('Grabando...');
+        try {
+            this.subscriptionDropDowns = this.service.seleccionarFactura(this.ordenDeCargaId, this.facturaSeleccionada).subscribe(
+                result => {
+                    this.spinnerComponent.hideIt();
+                    this.blockUI.stop();
+                    document.getElementById("closemodalSeleccionarFactura").click();
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.data.error != undefined && result.data.error != "") {
+                        this.obtenerOrdenDeCarga();
+                        this.mensajeComponent.setErrorMsg(result.data.error);
+                    } else if (result.data.info != undefined) {
+                        this.obtenerOrdenDeCarga();
+                        this.mensajeComponent.setInfoMsg(result.data.info);
+                    } else {
+                        this.ordenDeCarga.DescripcionErrorInterno = null;
+                        this.mensajeComponent.setMsgsEmpty();
+                        this.mensajeComponent.setSuccessMsg(result.data.Mensaje);
+                        this.obtenerOrdenDeCarga();
+                    }
+                },
+                error => {
+                    this.blockUI.stop();
+                    document.getElementById("closemodalSeleccionarFactura").click();
                     this.mensajeComponent.setErrorMsg(error.message);
                 }
             );
@@ -543,14 +613,14 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
     }
 
     abrirModalContratos() {
+        this.mainDiv.nativeElement.scrollIntoView({ behavior: "smooth", block: "center" });
         this.mensajeComponent.setMsgsEmpty();
-        this.spinnerComponent.showIt();
+        this.blockUI.start('');
         this.unsubscribe();
-
         try {
             this.subscriptionDropDowns = this.service.obtenerContratos(this.ordenDeCargaId).subscribe(
                 result => {
-                    this.spinnerComponent.hideIt();
+                    this.blockUI.stop();
                     if (result.logout == true) {
                         this.sessionDataService.logout();
                     } else if (result.error != undefined && result.error != "") {
@@ -564,15 +634,50 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                     }
                 },
                 error => {
+                    this.blockUI.stop();
                     this.mensajeComponent.setErrorMsg(error.message);
                 }
             );
         } catch (e) {
+            this.blockUI.stop();
+            this.mensajeComponent.setErrorMsg(e);
+        }
+    }
+    abrirModalSeleccionarFactura() {
+        this.mainDiv.nativeElement.scrollIntoView({ behavior: "smooth", block: "center" });
+        this.mensajeComponent.setMsgsEmpty();
+        this.blockUI.start('');
+        this.unsubscribe();
+        const contrato = this.ordenDeCarga.ContratoSAP || this.ordenDeCarga.ContratoIngresado;
+        try {
+            this.subscriptionDropDowns = this.service.obtenerFacturasDeContrato(contrato).subscribe(
+                result => {
+                    this.blockUI.stop();
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.mensajeComponent.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.mensajeComponent.setInfoMsg(result.info);
+                    } else {
+                        this.facturas = result.data;
+                        document.getElementById("openSeleccionarFactura").click();
+
+                    }
+                },
+                error => {
+                    this.blockUI.stop();
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+            );
+        } catch (e) {
+            this.blockUI.stop();
             this.mensajeComponent.setErrorMsg(e);
         }
     }
 
     abrirModalAnular() {
+        this.verificarOrdenActivaScato(this.ordenDeCarga.Id.toString());
         document.getElementById("openAnularOrden").click();
     }
     abrirModalAnularVencimiento() {
@@ -582,74 +687,8 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
         document.getElementById("openModalActivarOC").click();
     }
     abrirModalEdicionFinalizada() {
+        this.verificarOrdenActivaScato(this.ordenDeCargaId.toString());
         document.getElementById("openEdicionFinalizada").click();
-    }
-
-    abrirModalPedidos() {
-
-        this.mensajeComponent.setMsgsEmpty();
-        this.spinnerComponent.showIt();
-        this.unsubscribe();
-
-        try {
-            this.subscriptionDropDowns = this.service.obtenerPedidos(this.ordenDeCargaId).subscribe(
-                result => {
-                    this.spinnerComponent.hideIt();
-                    if (result.logout == true) {
-                        this.sessionDataService.logout();
-                    } else if (result.error != undefined && result.error != "") {
-                        this.mensajeComponent.setErrorMsg(result.error);
-                    } else if (result.info != undefined) {
-                        this.mensajeComponent.setInfoMsg(result.info);
-                    } else {
-                        this.pedidos = result.data;
-                        document.getElementById("openSeleccionarPedido").click();
-
-                    }
-                },
-                error => {
-                    this.mensajeComponent.setErrorMsg(error.message);
-                }
-            );
-        } catch (e) {
-            this.mensajeComponent.setErrorMsg(e);
-        }
-    }
-
-    seleccionarPedido() {
-
-        this.mensajeComponent.setMsgsEmpty();
-        this.spinnerComponent.showIt();
-        this.unsubscribe();
-        this.blockUI.start('Grabando...');
-        try {
-            this.subscriptionDropDowns = this.service.seleccionarPedido(this.ordenDeCargaId, this.pedidoSeleccionado).subscribe(
-                result => {
-                    this.spinnerComponent.hideIt();
-                    this.blockUI.stop();
-                    if (result.logout == true) {
-                        this.sessionDataService.logout();
-                    } else if (result.data.error != undefined && result.data.error != "") {
-                        this.mensajeComponent.setErrorMsg(result.data.error);
-                    } else if (result.data.info != undefined) {
-                        this.mensajeComponent.setInfoMsg(result.data.info);
-                    } else {
-                        this.ordenDeCarga.NumeroPedido = this.pedidoSeleccionado;
-                        this.ordenDeCarga.NumeroPedidoIngresado = this.pedidoSeleccionado;
-                        this.mostrarBotonPedidos = false;
-                        document.getElementById("closemodalSeleccionarPedido").click();
-                        this.obtenerOrdenDeCarga();
-                        this.mensajeComponent.setSuccessMsg(result.data.Mensaje);
-                    }
-                },
-                error => {
-                    this.blockUI.stop();
-                    this.mensajeComponent.setErrorMsg(error.message);
-                }
-            );
-        } catch (e) {
-            this.mensajeComponent.setErrorMsg(e);
-        }
     }
 
     anularOrden() {
@@ -657,6 +696,8 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
         this.spinnerComponent.showIt();
         this.unsubscribe();
         try {
+            document.getElementById("closemodalAnularOrden").click();
+            this.mainDiv.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'center' })
             this.subscriptionDropDowns = this.service.anular(this.ordenDeCargaId).subscribe(
                 result => {
                     this.spinnerComponent.hideIt();
@@ -664,11 +705,12 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                         this.sessionDataService.logout();
                     } else if (result.error != undefined && result.error != "") {
                         this.mensajeComponent.setErrorMsg(result.error);
+                        this.obtenerOrdenDeCarga();
                     } else if (result.info != undefined) {
                         this.mensajeComponent.setInfoMsg(result.info);
+                        this.obtenerOrdenDeCarga();
                     } else {
-                        document.getElementById("closemodalAnularOrden").click();
-                        this.mensajeComponent.setSuccessMsg(result.data);
+                        this.floatMsgService.setSuccessMsg(result.data);
 
                         this.navService.navegarSeccion(
                             "/ordenes-de-carga"
@@ -676,10 +718,12 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                     }
                 },
                 error => {
+                    this.spinnerComponent.hideIt();
                     this.mensajeComponent.setErrorMsg(error.message);
                 }
             );
         } catch (e) {
+            this.spinnerComponent.showIt();
             this.mensajeComponent.setErrorMsg(e);
         }
     }
@@ -689,6 +733,8 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
         this.spinnerComponent.showIt();
         this.unsubscribe();
         try {
+            document.getElementById("closemodalAnularOrdenVencimiento").click();
+            this.mainDiv.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'center' })
             this.subscriptionDropDowns = this.service.anularPorVencimiento(this.ordenDeCargaId).subscribe(
                 result => {
                     this.spinnerComponent.hideIt();
@@ -696,10 +742,11 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                         this.sessionDataService.logout();
                     } else if (result.error != undefined && result.error != "") {
                         this.mensajeComponent.setErrorMsg(result.error);
+                        this.obtenerOrdenDeCarga();
                     } else if (result.info != undefined) {
                         this.mensajeComponent.setInfoMsg(result.info);
+                        this.obtenerOrdenDeCarga();
                     } else {
-                        document.getElementById("closemodalAnularOrdenVencimiento").click();
                         this.mensajeComponent.setSuccessMsg(result.data);
 
                         this.navService.navegarSeccion(
@@ -712,7 +759,9 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                 }
             );
         } catch (e) {
+            document.getElementById("closemodalAnularOrdenVencimiento").click();
             this.mensajeComponent.setErrorMsg(e);
+            document.getElementById("closemodalAnularOrdenVencimiento").click();
         }
     }
     edicionFinalizada(Tipo) {
@@ -726,6 +775,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                 this.subscriptionDropDowns = this.service.edicionFinalizada(this.ordenDeCargaId).subscribe(
                     result => {
                         this.spinnerComponent.hideIt();
+                        document.getElementById("closemodalEdicionFinalizada").click();
                         if (result.logout == true) {
                             this.sessionDataService.logout();
                         } else if (result.error != undefined && result.error != "") {
@@ -733,7 +783,6 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                         } else if (result.info != undefined) {
                             this.mensajeComponent.setInfoMsg(result.info);
                         } else {
-                            document.getElementById("closemodalEdicionFinalizada").click();
                             this.mensajeComponent.setSuccessMsg(result.data);
 
                             this.navService.navegarSeccion(
@@ -742,6 +791,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                         }
                     },
                     error => {
+                        document.getElementById("closemodalEdicionFinalizada").click();
                         this.mensajeComponent.setErrorMsg(error.message);
                     }
                 );
@@ -750,6 +800,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                 this.subscriptionDropDowns = this.service.rechazarSolicitudEdicion(this.ordenDeCargaId).subscribe(
                     result => {
                         this.spinnerComponent.hideIt();
+                        document.getElementById("closemodalEdicionFinalizada").click();
                         if (result.logout == true) {
                             this.sessionDataService.logout();
                         } else if (result.error != undefined && result.error != "") {
@@ -757,7 +808,6 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                         } else if (result.info != undefined) {
                             this.mensajeComponent.setInfoMsg(result.info);
                         } else {
-                            document.getElementById("closemodalEdicionFinalizada").click();
                             this.mensajeComponent.setSuccessMsg(result.data);
 
                             this.navService.navegarSeccion(
@@ -766,6 +816,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                         }
                     },
                     error => {
+                        document.getElementById("closemodalEdicionFinalizada").click();
                         this.mensajeComponent.setErrorMsg(error.message);
                     }
                 );
@@ -789,9 +840,6 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
         document.getElementById("openModalDetalleHistorial").click();
     }
 
-
-
-
     forzarCreacionPedido() {
         this.mensajeComponent.setMsgsEmpty();
         this.spinnerComponent.showIt();
@@ -802,6 +850,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                 result => {
                     this.spinnerComponent.hideIt();
                     this.blockUI.stop();
+                    document.getElementById("closemodalForzarCreacion").click();
                     if (result.logout == true) {
                         this.sessionDataService.logout();
                     } else if (result.error != undefined && result.error != "") {
@@ -809,13 +858,14 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                     } else if (result.info != undefined) {
                         this.mensajeComponent.setInfoMsg(result.info);
                     } else {
-                        document.getElementById("closemodalForzarCreacion").click();
-                        this.obtenerOrdenDeCarga();
+                        this.mensajeComponent.setMsgsEmpty();
                         this.mensajeComponent.setSuccessMsg(result.data);
+                        this.obtenerOrdenDeCarga();
                     }
                 },
                 error => {
                     this.blockUI.stop();
+                    document.getElementById("closemodalForzarCreacion").click();
                     this.mensajeComponent.setErrorMsg(error.message);
                 }
             );
@@ -832,6 +882,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
             this.subscriptionDropDowns = this.service.activarOC(this.ordenDeCargaId).subscribe(
                 result => {
                     this.spinnerComponent.hideIt();
+                    document.getElementById("closemodalActivarOC").click();
                     if (result.logout == true) {
                         this.sessionDataService.logout();
                     } else if (result.error != undefined && result.error != "") {
@@ -839,7 +890,6 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                     } else if (result.info != undefined) {
                         this.mensajeComponent.setInfoMsg(result.info);
                     } else {
-                        document.getElementById("closemodalActivarOC").click();
                         this.mensajeComponent.setSuccessMsg(result.data);
 
                         this.navService.navegarSeccion(
@@ -848,11 +898,126 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                     }
                 },
                 error => {
+                    document.getElementById("closemodalActivarOC").click();
                     this.mensajeComponent.setErrorMsg(error.message);
                 }
             );
         } catch (e) {
             this.mensajeComponent.setErrorMsg(e);
         }
+    }
+    verificarCompensacion() {
+        this.mensajeComponent.setMsgsEmpty();
+        this.mainDiv.nativeElement.scrollIntoView({ behavior: "smooth", block: "center" });
+        this.blockUI.start('Procesando ...');
+        this.spinnerComponent.showIt();
+        this.unsubscribe();
+        try {
+            this.service.verificarCompensacion(this.ordenDeCargaId).pipe(
+                finalize(() => { this.blockUI.stop(); this.spinnerComponent.hideIt() })
+            ).subscribe(
+                result => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                        return;
+                    } else if (result.error != undefined && result.error != "") {
+                        this.mensajeComponent.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.mensajeComponent.setInfoMsg(result.info);
+                    }
+                    this.obtenerOrdenDeCarga()
+                },
+                error => {
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+            );
+        } catch (e) {
+            this.spinnerComponent.hideIt();
+            this.blockUI.stop();
+            this.mensajeComponent.setErrorMsg(e);
+        }
+    }
+    navegarADetalle() {
+        this.navegandoADetalle = true;
+        this.goToSeccion('/reporte-contrato/');
+    }
+
+    public extraOnDestroy(): void {
+        if (!this.navegandoADetalle)
+            sessionStorage.removeItem(VOLVER_A_DETALLE_REPORTE)
+    }
+
+    verificarOrdenActivaScato(ordenId: string) {
+        this.mensajeValidacionScato = undefined;
+        this.spinnerComponent.showIt();
+        this.unsubscribe();
+        try {
+            this.service.validarOrdenActivaScato(ordenId).pipe(
+                finalize(() => { this.blockUI.stop(); this.spinnerComponent.hideIt() })
+            ).subscribe(
+                result => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                        return;
+                    } else if ((result.error != undefined && result.error != "") || result.info != undefined) {
+                        this.mensajeValidacionScato = "No se pudo validar si la orden esta activa en Scato."
+                    } else {
+                        this.ordenActivaScato = result.data;
+                        if (this.ordenActivaScato) {
+                            this.mensajeValidacionScato = "Actualmente la orden se encuentra activa en Scato."
+                        }
+                    }
+                },
+                error => {
+                    this.mensajeComponent.setErrorMsg(error.message);
+                    this.mensajeValidacionScato = "No se pudo validar si la orden esta activa en Scato."
+                }
+            );
+        } catch (e) {
+            this.spinnerComponent.hideIt();
+            this.blockUI.stop();
+            this.mensajeValidacionScato = "No se pudo validar si la orden esta activa en Scato."
+        }
+    }
+
+    verificarCuitsTerceros() {
+        this.mensajeComponent.setMsgsEmpty();
+        this.spinnerComponent.showIt();
+        this.unsubscribe();
+        this.blockUI.start('Procesando...');
+        try {
+            this.subscriptionDropDowns = this.service.verificarCuitsTerceros(this.ordenDeCargaId).subscribe(
+                result => {
+                    this.blockUI.stop();
+                    this.spinnerComponent.hideIt();
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.mensajeComponent.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.mensajeComponent.setInfoMsg(result.info);
+                    } else {
+                        this.mensajeComponent.setMsgsEmpty();
+                        this.ordenDeCarga.DescripcionErrorInterno = null;
+                        this.obtenerOrdenDeCarga();
+                    }
+                },
+                error => {
+                    this.blockUI.stop();
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+            );
+        } catch (e) {
+            this.mensajeComponent.setErrorMsg(e);
+        }
+    }
+
+    nuevaConsultaInterna() {
+        this.sendDataService.setData({
+            orden: this.ordenDeCarga,
+            codSubcategoria: "FAS",
+        });
+        this.router.navigate(['/consulta/crear-consulta-interna'], {
+        });
     }
 }

@@ -40,8 +40,8 @@ export class Generacion2Component extends ListBaseComponent {
     formulario2: FormGroup;
 
     camposObligatorios: any[] = [
-        { campo: 'supervisorSector', esObligatorio: true},
-        { campo: 'supervisorTrabajo', esObligatorio: true}
+        { campo: 'supervisorSector', esObligatorio: true },
+        { campo: 'supervisorTrabajo', esObligatorio: true }
     ];
 
     @Output() onEstCompleto = new EventEmitter<any>();
@@ -113,7 +113,7 @@ export class Generacion2Component extends ListBaseComponent {
 
         //declaro las validaciones para los campos
         if (this.model.tipoSolp == "SIN_PLIEGO") {
-            this.formulario2 = this.formBuilder.group({                
+            this.formulario2 = this.formBuilder.group({
                 supervisorTrabajo: new FormControl('', Validators.required),
                 supervisorSector: new FormControl('', Validators.required),
                 visitaDeObra: [{ value: true, disabled: true }, [Validators.required]],
@@ -122,6 +122,8 @@ export class Generacion2Component extends ListBaseComponent {
                 modoElevacion: [{ value: true, disabled: true }, [Validators.required]],
                 andamio: [{ value: true, disabled: true }, [Validators.required]],
                 tecnicoSeguridad: [{ value: true, disabled: true }, [Validators.required]],
+                grillaPersonal: [{ value: true, disabled: true }, [Validators.required]],
+                fabricacionTallerExterno: [{ value: true, disabled: true }, [Validators.required]],
                 descripcionTecnica: [{ value: true, disabled: true }, [Validators.required]],
                 entregaDocumentacion: [{ value: true, disabled: true }, [Validators.required]],
                 fechaLimiteFecha: [{ value: true, disabled: true }, [Validators.required]],
@@ -137,10 +139,10 @@ export class Generacion2Component extends ListBaseComponent {
                 modoElevacion: [{ value: true, disabled: false }, []],
                 andamio: [{ value: true, disabled: false }, []],
                 tecnicoSeguridad: [{ value: true, disabled: false }, []],
+                grillaPersonal: [{ value: true, disabled: false }, []],
+                fabricacionTallerExterno: [{ value: true, disabled: false }, []],
                 descripcionTecnica: [{ value: true, disabled: false }, []],
                 entregaDocumentacion: [{ value: true, disabled: false }, []],
-                //fechaLimiteFecha: [{ value: true, disabled: false }, []],
-                //fechaLimiteHora: [{ value: true, disabled: false }, []]
             });
         }
 
@@ -152,20 +154,15 @@ export class Generacion2Component extends ListBaseComponent {
 
         this.model.cargoPasoDos = true;
 
-
-        // if(!this.model.supervisorTrabajo){
-        //     this.model.supervisorTrabajo = this.model.fiscalContrato;
-        // }
         if (this.model.supervisorSector[0] == '') {
             this.model.supervisorSector = [];
         }
-        if(this.model.supervisorTrabajo[0] == '') {
+        if (this.model.supervisorTrabajo[0] == '') {
             this.model.supervisorTrabajo = [];
         }
     }
 
     selectionChange(event) {
-
         if (event.range && this.model.observacionesGeneracion) {
             this.posicionDeInicioInsert = this.ObtenerPosicionInsert(event.range.index, this.model.observacionesGeneracion);
         }
@@ -179,7 +176,6 @@ export class Generacion2Component extends ListBaseComponent {
             this.posicionDeInicioInsert = undefined;
         }
         else {
-
             this.model.observacionesGeneracion = '<img src=' + file + '>';
         }
     }
@@ -212,24 +208,51 @@ export class Generacion2Component extends ListBaseComponent {
             return (this.formulario2.controls[nombreCampo].invalid || (this.formulario2.controls[nombreCampo].errors && this.formulario2.controls[nombreCampo].errors.required))
                 && (this.formulario2.controls[nombreCampo].dirty || this.formulario2.controls[nombreCampo].touched)
         }
-
         return false;
     }
 
-    mostrarValidacion(campoAValidar, vacio){
+    mostrarValidacion(campoAValidar, vacio) {
         let camposVacios = this.camposObligatorios.find(x => x.campo == campoAValidar && x.esObligatorio);
         return (camposVacios != null && vacio == 0);
     }
-    
-    ngOnDestroy()
-    {
+
+    ngOnDestroy() {
         super.ngOnDestroy();
         this.onEstCompleto.emit({ codigo: EnumPasoSolp.PliegoGeneracion2, esPasoInvalido: this.validadorPasoSolpService.esPasoInvalido() });
     }
-
 
     onBlur(control: string) {
         this.validadorPasoSolpService.onBlurDirty(control);
     }
 
+    onRadioButtonChange(visita: string) {
+        if (visita == "visitaDeObra") {
+            if (this.model.visitaDeObra != true) {
+                this.model.visitaDeObra = true;
+                this.model.visitaDeObraMasiva = false;
+                this.model.listaVisitas = [];
+                this.agregarNuevaVisita();
+            }
+            else {
+                this.model.visitaDeObra = false;
+                this.model.listaVisitas = [];
+            }
+        } else if (visita == "visitaDeObraMasiva") {
+            if (this.model.visitaDeObraMasiva != true) {
+                this.model.visitaDeObraMasiva = true;
+                this.model.visitaDeObra = false;
+                if (this.model.listaVisitas.length == 0) {
+                    this.agregarNuevaVisita();
+                }
+            }
+            else {
+                this.model.visitaDeObraMasiva = false;
+                this.model.listaVisitas = [];
+            }
+        }
+    }
+
+    onDescripcionTecnicaChange() {
+        if (this.model.descripcionTecnica != true) this.model.entregaDocumentacion = false;
+    }
 }

@@ -1,0 +1,21 @@
+﻿CREATE TABLE [dbo].[EcheqLiquidacion] (
+    [Id]                     INT            IDENTITY (1, 1) NOT NULL,
+    [UsuarioCreacionId]     INT            NOT NULL,
+    [UsuarioModificacionId] INT            NULL,
+    [FechaCreacion]          DATETIME2 (7)  NOT NULL,
+    [FechaModificacion]      DATETIME2 (7)  NULL,
+    [EcheqNegocioId]              INT            NOT NULL,
+    [ImporteEnPesos]       DECIMAL(18, 2)            NOT NULL,
+    [Documento]     NVARCHAR(50)            NOT NULL,
+    [Ejercicio]           NVARCHAR(50)  NOT NULL,
+    [Fecha]     NVARCHAR(50)  NOT NULL,
+    [Moneda]            NVARCHAR(50)            NOT NULL,
+    [Solapa]            NVARCHAR(50)   NOT NULL,
+    [ImporteMonedaDocumento]      DECIMAL(18, 2)            NOT NULL,
+    [NumeroCOE] NVARCHAR(50) NOT NULL, 
+    [MarcaCheque] BIT NOT NULL, 
+    CONSTRAINT [PK.EcheqLiquidacion] PRIMARY KEY CLUSTERED ([Id] ASC),
+     CONSTRAINT [FK.EcheqLiquidacion_Usuario_UsuarioCreacionId] FOREIGN KEY ([UsuarioCreacionId]) REFERENCES [Usuario]([Id]),
+    CONSTRAINT [FK.EcheqLiquidacion_Usuario_UsuarioModificacionId] FOREIGN KEY ([UsuarioModificacionId]) REFERENCES [Usuario]([Id]),
+    CONSTRAINT [FK.EcheqLiquidacion_EcheqNegocio_EcheqNegocioId] FOREIGN KEY ([EcheqNegocioId]) REFERENCES [EcheqNegocio]([Id])
+    );

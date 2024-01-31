@@ -17,6 +17,8 @@ namespace SustitucionMOAModel.Models.WSMapMOA.CartaPorte.Detalle
         public string descargaCentro { get; set; }
         public string procedencia { get; set; }
         public decimal netoDescontado { get; set; }
+        public decimal neto { get; set; }
+        public string netoString { get; set; }
         public string unidadNetoDescontado { get; set; }
         public string tipoVehiculo { get; set; }
         public string patente { get; set; }
@@ -28,7 +30,7 @@ namespace SustitucionMOAModel.Models.WSMapMOA.CartaPorte.Detalle
     public class EntregaDescargaView : EntregaDescarga
     {
         public string netoDescontadoString { get; set; }
-        
+
         public string totalAplicadosString { get; set; }
         public string cg { get; set; }
     }

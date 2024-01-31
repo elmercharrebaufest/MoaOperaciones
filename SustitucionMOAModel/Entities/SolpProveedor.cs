@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SustitucionMOAModel.Entities
 {
@@ -23,5 +18,6 @@ namespace SustitucionMOAModel.Entities
         public virtual Proveedor Proveedor { get; set; }
         [ForeignKey("TipoFiltroProveedorSolp_Id")]
         public virtual TablaGeneral TipoFiltroProveedorSolp { get; set; }
+       
     }
 }

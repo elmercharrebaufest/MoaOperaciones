@@ -25,7 +25,7 @@ namespace SustitucionMOAWS.VendedoresWebServiceMOA {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.3752.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -71,7 +71,7 @@ namespace SustitucionMOAWS.VendedoresWebServiceMOA {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.3752.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -131,7 +131,7 @@ namespace SustitucionMOAWS.VendedoresWebServiceMOA {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.3752.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -145,6 +145,8 @@ namespace SustitucionMOAWS.VendedoresWebServiceMOA {
         private string dESC_VENDField;
         
         private string eSTADOField;
+        
+        private string cUIT_VENDField;
         
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=0)]
@@ -191,6 +193,18 @@ namespace SustitucionMOAWS.VendedoresWebServiceMOA {
             set {
                 this.eSTADOField = value;
                 this.RaisePropertyChanged("ESTADO");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=4)]
+        public string CUIT_VEND {
+            get {
+                return this.cUIT_VENDField;
+            }
+            set {
+                this.cUIT_VENDField = value;
+                this.RaisePropertyChanged("CUIT_VEND");
             }
         }
         

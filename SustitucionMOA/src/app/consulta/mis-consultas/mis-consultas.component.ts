@@ -6,18 +6,19 @@ import { MensajeComponent } from './../../common/view-child/mensaje/mensaje.comp
 import { SpinnerComponent } from './../../common/view-child/spinner/spinner.component';
 import { SessionDataService } from './../../common/services/SessionDataService';
 import { SecurityService } from './../../common/services/SecurityService';
-import { DropdownComponent, DropdownOption } from './../../common/view-child/dropdown/dropdown.component';
+import { DropdownComponent } from './../../common/view-child/dropdown/dropdown.component';
 import { SpinnerSmallComponent } from './../../common/view-child/spinner-small/spinner-small.component';
 import { NavService } from './../../common/services/NavService';
 import { FloatMsgService } from './../../common/services/FloatMsgService';
 import { ModalService } from './../../common/services/ModalService';
-import { element } from '@angular/core/src/render3/instructions';
 import { Seccion } from '../../common/models/seccion';
 import { ConsultaService } from '../consulta.service';
 import { Table } from 'primeng/table';
 import { Categoria, Consulta, EstadoConsulta, Subcategoria, Materiales } from '../consulta';
 import { SelectItem } from 'primeng/components/common/selectitem';
 import { formatDate } from '@angular/common';
+import { HttpErrorResponse } from '@angular/common/http';
+import { HttpStatusCodes } from '../../common/models/httpStatusCodes';
 
 declare var $: any;
 
@@ -105,8 +106,9 @@ export class MisConsultasComponent extends ListBaseComponent {
             if (filter[0] != null && filter[1] != null)
                 return value >= filter[0] &&
                     value <= filter[1];
-            else if (filter[0] != null && filter[1] == null){
-                return value >= filter[0];}
+            else if (filter[0] != null && filter[1] == null) {
+                return value >= filter[0];
+            }
             else if (filter[0] == null && filter[1] != null)
                 return value <= filter[1]
             else
@@ -117,12 +119,24 @@ export class MisConsultasComponent extends ListBaseComponent {
     ngOnInit() {
         this.setTabs();
         this.checkPermisos();
+        this.setSeccionList();
+    }
 
-        if (this.securityService.tienePermiso("CARGAR CONSULTA")) {
-            this.navService.setSeccionList([new Seccion('/consulta/crear-consulta', 'crear-consulta', 'Nueva Consulta'), new Seccion('/consulta/mis-consultas', 'consulta', 'Mis Consultas')]);
+    setSeccionList() {
+        if (this.securityService.tienePermiso("CARGAR CONSULTA") && this.securityService.tienePermiso("CARGAR CONSULTA INTERNA")) {
+            this.navService.setSeccionList([new Seccion('/consulta/crear-consulta', 'crear-consulta', 'Nueva Consulta'), new Seccion('/consulta/mis-consultas', 'consulta', 'Mis Consultas'),
+            new Seccion('/consulta/crear-consulta-interna', 'crear-consulta-interna', 'Nueva Consulta Interna')
+            ]);
         }
-        else {
-            this.navService.setSeccionList([new Seccion('/consulta/mis-consultas', 'consulta', 'Mis Consultas')]);
+        else if (this.securityService.tienePermiso("CARGAR CONSULTA")) {
+            this.navService.setSeccionList([new Seccion('/consulta/crear-consulta', 'crear-consulta', 'Nueva Consulta'), new Seccion('/consulta/mis-consultas', 'consulta', 'Mis Consultas')
+            ]);
+        } else if (this.securityService.tienePermiso("CARGAR CONSULTA INTERNA")) {
+            this.navService.setSeccionList([new Seccion('/consulta/crear-consulta-interna', 'crear-consulta-interna', 'Nueva Consulta Interna'), new Seccion('/consulta/mis-consultas', 'consulta', 'Mis Consultas')
+            ]);
+        } else {
+            this.navService.setSeccionList([new Seccion('/consulta/mis-consultas', 'consulta', 'Mis Consultas')
+            ]);
         }
     }
 
@@ -134,17 +148,17 @@ export class MisConsultasComponent extends ListBaseComponent {
 
     setColumnas() {
         this.cols = [
-            { field: 'Id',                      header: 'Id',           filterType: 'text',     visibleExternal: true,  width: 6,  size: 4 },
-            { field: 'RazonSocialCorredor',     header: 'Corredor',     filterType: 'text',     visibleExternal: false, width: 10, size: 4 },
-            { field: 'RazonSocialProveedor',    header: 'Proveedor',    filterType: 'text',     visibleExternal: false, width: 10, size: 3 },
-            { field: 'Categoria',               header: 'Categoria',    filterType: 'custom',   visibleExternal: true,  width: 10, size: 1, sortdropdown: 'Categoria.Nombre'},
-            { field: 'SubCategoria',            header: 'Subcategoria', filterType: 'custom',   visibleExternal: false, width: 12, size: 2, sortdropdown: 'SubCategoria.Nombre'},
-            { field: 'Asunto',                  header: 'Asunto',       filterType: 'text',     visibleExternal: true,  width: 16, size: 0 },
-            { field: 'EstadoConsulta',          header: 'Estado',       filterType: 'custom',   visibleExternal: true,  width: 10, size: 1, sortdropdown: 'EstadoConsulta.Descripcion' },
-            { field: 'Material',                header: 'Material',     filterType: 'custom',   visibleExternal: true,  width: 10, size: 3, sortdropdown: 'Material' },
-            { field: 'FechaCreacion',           header: 'Fecha Inicio', filterType: 'date',     visibleExternal: false, width: 12, size: 3, selectionMode : 'single' },
-            { field: 'FechaUltimaModificacion', header: 'Ult. Modif.',  filterType: 'date',     visibleExternal: true,  width: 12, size: 3, selectionMode : 'single' },
-            { field: 'DiasReclamo',             header: 'Días',         filterType: 'text',     visibleExternal: false, width: 6,  size: 4 },
+            { field: 'Id', header: 'Id', filterType: 'text', visibleExternal: true, width: 6, size: 4 },
+            { field: 'RazonSocialCorredor', header: 'Corredor', filterType: 'text', visibleExternal: false, width: 10, size: 4 },
+            { field: 'RazonSocialProveedor', header: 'Proveedor', filterType: 'text', visibleExternal: false, width: 10, size: 3 },
+            { field: 'Categoria', header: 'Categoria', filterType: 'custom', visibleExternal: true, width: 10, size: 1, sortdropdown: 'Categoria.Nombre' },
+            { field: 'SubCategoria', header: 'Subcategoria', filterType: 'custom', visibleExternal: false, width: 12, size: 2, sortdropdown: 'SubCategoria.Nombre' },
+            { field: 'Asunto', header: 'Asunto', filterType: 'text', visibleExternal: true, width: 16, size: 0 },
+            { field: 'EstadoConsulta', header: 'Estado', filterType: 'custom', visibleExternal: true, width: 10, size: 1, sortdropdown: 'EstadoConsulta.Descripcion' },
+            { field: 'Material', header: 'Material', filterType: 'custom', visibleExternal: true, width: 10, size: 3, sortdropdown: 'Material' },
+            { field: 'FechaCreacion', header: 'Fecha Inicio', filterType: 'date', visibleExternal: false, width: 12, size: 3, selectionMode: 'single' },
+            { field: 'FechaUltimaModificacion', header: 'Ult. Modif.', filterType: 'date', visibleExternal: true, width: 12, size: 3, selectionMode: 'single' },
+            { field: 'DiasReclamo', header: 'Días', filterType: 'text', visibleExternal: false, width: 6, size: 4 },
         ];
 
         let isExternal = this.isExternal;
@@ -228,8 +242,8 @@ export class MisConsultasComponent extends ListBaseComponent {
 
     getCombos() {
         try {
-            this.subscription = this.service.getCombos(false).subscribe(
-                (result:any) => {
+            this.subscription = this.service.getCombos(false, true).subscribe(
+                (result: any) => {
                     if (result.logout == true) {
                         this.sessionDataService.logout();
                     } else if (result.error != undefined && result.error != "") {
@@ -237,8 +251,6 @@ export class MisConsultasComponent extends ListBaseComponent {
                     } else if (result.info != undefined) {
                         this.floatMsgService.setInfoMsg(result.info);
                     } else {
-                        // this.categorias = result.categorias;
-                        // this.estados = result.estados;
                         this.subcategorias = result.subcategorias;
                         this.subcategoriasList = [];
                         this.subcategorias.forEach(x => this.subcategoriasList.push({ label: x.Nombre, value: x.Id }));
@@ -249,8 +261,9 @@ export class MisConsultasComponent extends ListBaseComponent {
                         this.setColumnas();
                     }
                 },
-                error => {
-                    this.floatMsgService.setErrorMsg(error.message);
+                (error: HttpErrorResponse) => {
+                    this.floatMsgService.setErrorMsg(HttpStatusCodes.friendlyStatusCode(error.status));
+                    console.log(error.message);
                 }
 
             );
@@ -262,8 +275,8 @@ export class MisConsultasComponent extends ListBaseComponent {
         return false; //<-- Prevent Refresh
     }
 
-    openModal(idConsulta, asunto){
-        if(this.mostrarDetalle){
+    openModal(idConsulta, asunto) {
+        if (this.mostrarDetalle) {
             this.resetVariables();
         }
 
@@ -279,7 +292,7 @@ export class MisConsultasComponent extends ListBaseComponent {
         this.unsubscribe();
         try {
             this.subscription = this.service.listarConsultas().subscribe(
-                (result:any) => {
+                (result: any) => {
                     if (result.logout == true) {
                         this.sessionDataService.logout();
                     } else if (result.error != undefined && result.error != "") {
@@ -307,15 +320,13 @@ export class MisConsultasComponent extends ListBaseComponent {
                         });
 
                         let estadosCode = ['INI', 'GES', 'GESRTA', 'DOC'];
-                        this.estadosSummary = result.data.estados.filter(e=> estadosCode.indexOf(e.Code) >= 0);
-
-
+                        this.estadosSummary = result.data.estados.filter(e => estadosCode.indexOf(e.Code) >= 0);
                     }
                 },
-                error => {
-                    this.floatMsgService.setErrorMsg(error.message);
+                (error: HttpErrorResponse) => {
+                    this.floatMsgService.setErrorMsg(HttpStatusCodes.friendlyStatusCode(error.status));
+                    console.log(error.message);
                 }
-
             );
         } catch (e) {
             this.floatMsgService.setErrorMsg(e);
@@ -331,7 +342,7 @@ export class MisConsultasComponent extends ListBaseComponent {
 
     getLabel(option) {
         this.materialesList.forEach(element => {
-            if(element.value == option){
+            if (element.value == option) {
                 console.log(element);
                 return element.label;
             }
@@ -364,7 +375,7 @@ export class MisConsultasComponent extends ListBaseComponent {
         this.DownloadJsonData(data, 'Consultas', true);
     }
 
-    resetVariables(){
+    resetVariables() {
         this.consultaId = 1;
         this.mostrarDetalle = false;
     }

@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ConfirmationService } from 'primeng/api';
 import { ListBaseComponent } from '../../common/base-components/list-base-component';
@@ -7,10 +7,14 @@ import { ModalService } from '../../common/services/ModalService';
 import { NavService } from '../../common/services/NavService';
 import { SecurityService } from '../../common/services/SecurityService';
 import { SessionDataService } from '../../common/services/SessionDataService';
-import { ReporteContratoListado } from '../listado/reporte-contrato.listado.component';
 import { ReporteContratoService } from '../reporte-contrato.service';
 import * as XLSX from 'xlsx';
-
+import { DetalleReporteContrato } from '../ReporteContrato.model';
+import { OrdenesDeCargaService } from '../../ordenes-de-carga/ordenes-de-carga.service';
+import { Subscription } from 'rxjs';
+import { VOLVER_A_DETALLE_REPORTE } from '../../common/models/ordenes-de-carga/ordenDeCarga';
+import { registerLocaleData } from '@angular/common';
+import es from '@angular/common/locales/es'
 
 @Component({
     selector: 'app-detalle',
@@ -18,71 +22,85 @@ import * as XLSX from 'xlsx';
     styleUrls: ['./reporte-contrato.detalle.component.css']
 })
 export class DetalleComponent extends ListBaseComponent implements OnInit {
+    @Output() navegarDetalle: EventEmitter<void> = new EventEmitter();
+    contratoId: string;
+    ordenDeCargaId: string = null;
+    detalles: DetalleReporteContrato[] = null;
+    KilosFacturados = 0;
+    KilosEntregados = 0;
+    subscriptions = new Subscription();
 
-    constructor(private route: ActivatedRoute, protected service: ReporteContratoService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService, private confirmationService: ConfirmationService) {
+    constructor(private route: ActivatedRoute,
+        protected service: ReporteContratoService,
+        protected ordenesDeCargaService: OrdenesDeCargaService,
+        protected navService: NavService,
+        protected sessionDataService: SessionDataService,
+        protected securityService: SecurityService,
+        protected floatMsgService: FloatMsgService,
+        protected modalService: ModalService,
+        private confirmationService: ConfirmationService) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
-      
+        this.subscriptions.add(
+            this.service.getContratoSeleccionado().subscribe(data => {
+                if (data != null && data > '0') {
+                    this.getDetalleContrato(data);
+                    this.contratoId = data;
+                }
+            })
+        )
+
     }
-  
-    contratoId: string = "";
-    detalle: any[] = null;
-
-
     ngOnInit() {
-
-        this.getDetalleContrato();
-
+        registerLocaleData(es)
     }
 
-    getDetalleContrato() {
+    getDetalleContrato(contratoId: string) {
         this.data = null;
+        this.detalles = null;
         this.mensajeComponent.setMsgsEmpty();
         this.spinnerComponent.showIt();
-        this.route.params.subscribe(params => {
-            this.contratoId = params['id'];
-            this.unsubscribe();
-            this.subscription = this.service.getDetalleContrato2(this.contratoId).subscribe(
-                (result: any) => {
-                    this.spinnerComponent.hideIt();
-                    if (result.logout == true) {
-                        this.sessionDataService.logout();
-                    } else if (result.error != undefined && result.error != "") {
-                        this.mensajeComponent.setErrorMsg(result.error);
-                    } else if (result.info != undefined) {
-                        this.mensajeComponent.setInfoMsg(result.info);
-                    } else {
-                        this.detalle = result.data;
-                        console.log(this.detalle);
-
-                    }
-                },
-                error => {
-                    this.spinnerComponent.hideIt();
-                    this.mensajeComponent.setErrorMsg(error.message);
+        this.unsubscribe();
+        this.subscription = this.service.getDetalleContrato2(contratoId).subscribe(
+            (result: any) => {
+                this.spinnerComponent.hideIt();
+                if (result.logout == true) {
+                    this.sessionDataService.logout();
+                } else if (result.error != undefined && result.error != "") {
+                    this.mensajeComponent.setErrorMsg(result.error);
+                } else if (result.info != undefined) {
+                    this.mensajeComponent.setInfoMsg(result.info);
+                } else {
+                    this.detalles = result.data;
+                    this.obtenerKilos();
+                    if (!!sessionStorage.getItem(VOLVER_A_DETALLE_REPORTE))
+                        sessionStorage.removeItem(VOLVER_A_DETALLE_REPORTE)
                 }
-            );
+            },
+            error => {
+                this.spinnerComponent.hideIt();
+                this.mensajeComponent.setErrorMsg(error.message);
+            }
+        );
 
-        });
+
     }
-
 
     exportExcelReporteContratoDetalle() {
         this.mensajeComponent.setMsgsEmpty();
         let informacionExportar: any;
 
-        informacionExportar = this.detalle.map(info => {
+        informacionExportar = this.detalles.map(info => {
             return {
-                "Fecha Pedido": info.FechaPedido || "-",
-                "Fecha Carga": info.FechaCarga || "-",
-                "Cantidad Entregada": info.CantidadEntregadaStr || "-",
-                "Remito": info.Remito,
-                "Factura": info.Factura || "-",
+                "ID": info.OrdenCargaId || "",
+                "Fecha de Carga": info.FechaCarga || "-",
+                "Cant. Entregada": info.CantidadEntregadaStr || "-",
+                "CTG/Remito": info.Remito || "-",
+                "CPE": info.CPE || "-",
+                "Cant. Facturada": info.CantidadFacturaStr || "-",
+                "Factura": info.FacturaLegal || "-",
                 "Chasis": info.Chasis || "-",
                 "Acoplado": info.Acoplado || "-",
-                "Chofer": info.Chofer
-              
-
-
+                "Chofer": info.Chofer || "-"
             }
         });
 
@@ -90,6 +108,22 @@ export class DetalleComponent extends ListBaseComponent implements OnInit {
             this.mensajeComponent.setInfoMsg("No existen datos para exportar.");
             return
         }
+
+        //Se agrega fila de totales.
+        let totales = {
+            "ID": "TOTAL",
+            "Fecha de Carga": "",
+            "Cant. Entregada": this.KilosEntregados.toLocaleString('es-ES') + " KG",
+            "CTG/Remito": "",
+            "CPE": "",
+            "Cant. Facturada": this.KilosFacturados.toLocaleString('es-ES') + " KG",
+            "Factura": "",
+            "Chasis": "",
+            "Acoplado": "",
+            "Chofer": ""
+        }
+
+        informacionExportar.push(totales);
 
         this.DownloadJsonData(informacionExportar, "ReporteContratoDetalle");
     }
@@ -104,4 +138,28 @@ export class DetalleComponent extends ListBaseComponent implements OnInit {
         const excelBuffer: any = XLSX.writeFile(workbook, FileTitle + '.xlsx');
     }
 
+    obtenerKilos() {
+        this.KilosEntregados = this.detalles.reduce((prev, curr) => prev + curr.CantidadEntregada, 0)
+        this.KilosFacturados = this.detalles.reduce((prev, curr) => prev + curr.CantidadFactura, 0)
+    }
+    navegarDetalleOrdenCarga(det: DetalleReporteContrato) {
+        this.service.getOrdenDeCarga(det).subscribe({
+            next: (res) => {
+                if (res.error) {
+                    this.floatMsgService.setErrorMsg(res.error)
+                }
+                else if (res.info) {
+                    this.floatMsgService.setInfoMsg(res.info)
+                } else {
+                    this.navegarDetalle.emit();
+                    sessionStorage.setItem(VOLVER_A_DETALLE_REPORTE, 'true')
+                    this.goToSeccionParam('/ordenes-de-carga/detalle', '2433');
+                }
+            }
+            ,
+        })
+    }
+    public extraOnDestroy(): void {
+        this.subscriptions.unsubscribe()
+    }
 }

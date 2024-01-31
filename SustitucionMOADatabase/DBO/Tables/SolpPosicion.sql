@@ -9,7 +9,7 @@
 	[FechaEntregaServicio] [datetime] NULL,
 	[FechaLiberacion] [datetime] NULL,
 	[PlazoEntrega] [int] NULL,
-	[Centro_Id] [int] NULL,
+	[Centro_Id] [int] NOT NULL,
 	[Almacen_Id] [int] NULL,
 	[NombreEntrega] [nvarchar](max) NULL,
 	[CalleEntrega] [nvarchar](max) NULL,
@@ -29,7 +29,7 @@
     [Modelo] NVARCHAR(MAX) NULL, 
     [ServicioSolp_Id] INT NULL, 
     [Tarea] NVARCHAR(MAX) NULL, 
-    [Cantidad] DECIMAL NULL, 
+    [Cantidad] DECIMAL(18, 2) NULL, 
     [Unidad_Id] INT NULL, 
     [PrecioBruto] DECIMAL(18, 6) NULL, 
     [CuentaMayor_Id] INT NULL, 
@@ -43,6 +43,9 @@
     [NombreProveedor] NVARCHAR(MAX) NULL, 
     [ProveedorFijo] NVARCHAR(50) NULL, 
 	[OrganizacionCompras] NVARCHAR(50) NULL, 
+    [ProveedorAdjudicado_Id] INT NULL, 
+    [RegistroInfoNro] NVARCHAR(50) NULL, 
+    [OrganizacionDeComprasCodigo] NVARCHAR(50) NULL, 
     CONSTRAINT [PK_dbo.SolpPosicion] PRIMARY KEY CLUSTERED 
 (
 	[Id] ASC
@@ -55,5 +58,8 @@
 	CONSTRAINT [FK_SolpPosicion_TablaSap_GrupoCompras] FOREIGN KEY (GrupoCompras_Id) REFERENCES [TablaSap]([Id]),
 	CONSTRAINT [FK_SolpPosicion_TablaSap_GrupoArticulo] FOREIGN KEY (GrupoArticulo_Id) REFERENCES [TablaSap]([Id]),
 	CONSTRAINT [FK_SolpPosicion_TablaSap_Moneda] FOREIGN KEY (Moneda_Id) REFERENCES [TablaSap]([Id]),
-	CONSTRAINT [FK_SolpPosicion_ServicioSolp] FOREIGN KEY (ServicioSolp_Id) REFERENCES [ServicioSolp]([Id])
+	CONSTRAINT [FK_SolpPosicion_ServicioSolp] FOREIGN KEY (ServicioSolp_Id) REFERENCES [ServicioSolp]([Id]),
+	CONSTRAINT [FK_SolpPosicion_MaterialSolp] FOREIGN KEY (MaterialSolp_Id) REFERENCES [MaterialSolp]([Id]),
+	CONSTRAINT [FK_SolpPosicion_Usuario_ProveedorAdjudicado] FOREIGN KEY ([ProveedorAdjudicado_Id]) REFERENCES [dbo].[Usuario] ([Id])
+
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]

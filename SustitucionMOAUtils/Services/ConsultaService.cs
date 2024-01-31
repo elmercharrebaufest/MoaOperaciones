@@ -12,6 +12,7 @@ using SustitucionMOAUtils.Email;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Interfaces.Helpers;
 using SustitucionMOAUtils.Logger;
+using SustitucionMOAUtils.DesignPattern.Classes;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -24,6 +25,9 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
+using SustitucionMOAUtils.DesignPattern.Interfaces;
+using System.ServiceModel.Channels;
+using SustitucionMOAUtils.Helpers;
 
 namespace SustitucionMOAUtils.Services
 {
@@ -32,16 +36,21 @@ namespace SustitucionMOAUtils.Services
         private readonly IRepositorio repositorio;
         private readonly IAzureService azureService;
         private readonly ITimeProvider timeProvider;
+        private readonly IConsultaContext consultaContext;
+        private readonly IGestionImpuestosService gestionImpuestosService;
 
         private readonly string rutaArchivosConsulta = ConfigurationManager.AppSettings["RutaArchivosConsulta"];
+        private readonly string rutaMisConsultas = ConfigurationManager.AppSettings["UrlMisConsultas"];
         private static readonly string EMAIL_TEMPLATE = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "RespuestaConsulta.html");
         private readonly string rutaArchivosCM05 = ConfigurationManager.AppSettings["RutaArchivosCM05"];
 
-        public ConsultaService(IRepositorio repositorio, IAzureService azureService, ITimeProvider timeProvider)
+        public ConsultaService(IRepositorio repositorio, IAzureService azureService, ITimeProvider timeProvider, IConsultaContext consultaContext, IGestionImpuestosService gestionImpuestosService)
         {
             this.repositorio = repositorio;
             this.azureService = azureService;
             this.timeProvider = timeProvider;
+            this.consultaContext = consultaContext;
+            this.gestionImpuestosService = gestionImpuestosService;
         }
 
         public virtual void ActualizarEstadoConsulta(int consultaId, int estadoConsultaId)
@@ -234,6 +243,7 @@ namespace SustitucionMOAUtils.Services
             includes.Add(x => x.SubCategoria);
             includes.Add(x => x.EstadoConsulta);
             includes.Add(x => x.Detalle.CausaConsulta);
+            includes.Add(x => x.Usuario);
 
             var c = repositorio.Obtener<Consulta>(includes, y => y.Id == consultaId);
 
@@ -271,6 +281,8 @@ namespace SustitucionMOAUtils.Services
                 FechaCreacion = c.FechaCreacion,
                 FechaUltimaModificacion = c.FechaUltimaModificacion,
                 UsuarioId = c.Usuario_Id,
+                UsuarioInternoId = c.UsuarioInterno_Id,
+                FechaVtoReapertura = c.FechaVtoReapertura,
                 Usuario = new UsuarioDto()
                 {
                     Id = c.Usuario.Id,
@@ -285,12 +297,14 @@ namespace SustitucionMOAUtils.Services
                 Importe = c.Detalle != null ? c.Detalle.Importe : null,
                 Impuesto = c.Detalle != null ? c.Detalle.Impuesto : null,
                 BolsaEmisoraOblea = c.Detalle != null ? c.Detalle.BolsaEmisoraOblea : "",
+                OrdenId = c.Detalle != null ? c.Detalle.Orden_Id : null,
+                PatenteChasis = c.Detalle != null ? c.Detalle.PatenteChasis : null,
                 CausaConsultaId = c.Detalle.CausaConsulta != null ? c.Detalle.CausaConsulta_Id : null,
                 CausaConsulta = c.Detalle.CausaConsulta != null ? new CausaConsultaDto
                 {
                     Id = c.Detalle.CausaConsulta.Id,
                     Nombre = c.Detalle.CausaConsulta.Nombre
-                } : null
+                } : null,
             };
 
             ret.Comentarios = c.Comentarios.Select(x => new ComentarioDto()
@@ -398,7 +412,7 @@ namespace SustitucionMOAUtils.Services
                 var consulta = repositorio.Obtener<Consulta>(c => c.Id == consultaId);
                 var copia = new List<string>();
                 var cuerpoTemplate = File.ReadAllText(EMAIL_TEMPLATE);
-                var cuerpo = string.Format(cuerpoTemplate, consulta.Asunto, !string.IsNullOrWhiteSpace(consulta.Comentarios.Last().Detalle) ? consulta.Comentarios.Last().Detalle : "-");
+                var cuerpo = string.Format(cuerpoTemplate, consulta.Asunto, !string.IsNullOrWhiteSpace(consulta.Comentarios.Last().Detalle) ? consulta.Comentarios.Last().Detalle : "-", rutaMisConsultas);
                 string asunto = "Molinos Agro - Recordatorio: Respuesta a su consulta N°: " + consulta.Id + " con asunto: " + consulta.Asunto;
 
                 EmailSender.EnviarMail(new List<string> { consulta.Usuario.Mail }, asunto, cuerpo, copia, null, null, null);
@@ -424,7 +438,7 @@ namespace SustitucionMOAUtils.Services
             try
             {
                 var cuerpoTemplate = File.ReadAllText(EMAIL_TEMPLATE);
-                var cuerpo = string.Format(cuerpoTemplate, consulta.Asunto, !string.IsNullOrWhiteSpace(comentario) ? comentario : "-");
+                var cuerpo = string.Format(cuerpoTemplate, consulta.Asunto, !string.IsNullOrWhiteSpace(comentario) ? comentario : "-", rutaMisConsultas);
                 string asunto = "Molinos Agro - Respuesta a su consulta N°: " + consulta.Id + " con asunto: " + consulta.Asunto;
 
                 EmailSender.EnviarMail(new List<string> { consulta.Usuario.Mail }, asunto, cuerpo, copia, null, null, null);
@@ -442,7 +456,7 @@ namespace SustitucionMOAUtils.Services
                 var cuerpoTemplate = File.ReadAllText(EMAIL_TEMPLATE);
                 Consulta consulta = GetConsulta(consultaId);
 
-                var cuerpo = string.Format(cuerpoTemplate, consulta.Asunto, !string.IsNullOrWhiteSpace(consulta.Comentarios.Last().Detalle) ? consulta.Comentarios.Last().Detalle : "-");
+                var cuerpo = string.Format(cuerpoTemplate, consulta.Asunto, !string.IsNullOrWhiteSpace(consulta.Comentarios.Last().Detalle) ? consulta.Comentarios.Last().Detalle : "-", rutaMisConsultas);
                 string asunto = "Molinos Agro - Respuesta a su consulta N°: " + consulta.Id + " con asunto: " + consulta.Asunto;
 
                 EmailSender.EnviarMail(new List<string> { consulta.Usuario.Mail }, asunto, cuerpo, null, null, null, null);
@@ -475,7 +489,7 @@ namespace SustitucionMOAUtils.Services
             includes.Add(x => x.EstadoConsulta);
 
             var usuario = repositorio.Obtener<Usuario>(usuarioId);
-            var esInterno = usuario.TienePermiso("CONSULTA ABM");
+            var esInterno = usuario.TienePermiso(PermisoEnum.ConsultaAbm);
             var categorias = usuario.Roles.Where(x => x.Categorias.Any()).SelectMany(x => x.Categorias).Select(x => x.Id).ToList();
 
             ret = repositorio.Listar<Consulta>(x => (obtenerTodos && categorias.Contains(x.Categoria.Id)) || x.Usuario_Id == usuarioId, includes: includes)
@@ -515,12 +529,16 @@ namespace SustitucionMOAUtils.Services
                     FechaCreacion = x.FechaCreacion,
                     FechaUltimaModificacion = x.FechaUltimaModificacion,
                     UsuarioId = x.Usuario_Id,
+                    UsuarioInternoId = x.UsuarioInterno_Id,
+                    FechaVtoReapertura = x.FechaVtoReapertura,
                     Fecha = x.Detalle != null ? x.Detalle.Fecha : null,
                     ComprobanteNo = x.Detalle != null ? x.Detalle.ComprobanteNo : "",
                     OtroComprobanteNo = x.Detalle != null ? x.Detalle.OtroComprobanteNo : "",
                     ContratoNo = x.Detalle != null ? x.Detalle.ContratoNo : "",
                     Importe = x.Detalle != null ? x.Detalle.Importe : null,
                     Impuesto = x.Detalle != null ? x.Detalle.Impuesto : null,
+                    OrdenId = x.Detalle != null ? x.Detalle.Orden_Id : null,
+                    PatenteChasis = x.Detalle != null ? x.Detalle.PatenteChasis : null,
                     BolsaEmisoraOblea = x.Detalle != null ? x.Detalle.BolsaEmisoraOblea : "",
                     CausaConsultaId = x.Detalle.CausaConsulta != null ? x.Detalle.CausaConsulta_Id : null,
                     CausaConsulta = x.Detalle.CausaConsulta != null ? new CausaConsultaDto
@@ -558,6 +576,7 @@ namespace SustitucionMOAUtils.Services
             var categoria = repositorio.Obtener<Categoria>(c => c.Id == categoriaId);
             SubCategoria subCategoria = new SubCategoria() { };
             var estado = repositorio.Obtener<EstadoConsulta>(c => c.Id == estadoConsultaId);
+            var estadoCerrado = repositorio.Obtener<EstadoConsulta>(c => c.Code == "CER");
 
             if (subcategoriaId.HasValue && subcategoriaId != 0)
             {
@@ -571,7 +590,14 @@ namespace SustitucionMOAUtils.Services
             var consulta = GetConsulta(consultaId);
             var usuario = repositorio.Obtener<Usuario>(u => u.Id == consulta.Usuario_Id);
             consulta.Categoria_Id = categoriaId;
+
+            if(consulta.EstadoConsulta_Id != estadoCerrado.Id 
+                && estado.Id == estadoCerrado.Id)
+            {
+                consulta.FechaVtoReapertura = DateTime.Now.AddDays(7);
+            }
             consulta.EstadoConsulta_Id = estadoConsultaId;
+
             if (subcategoriaId != 0)
             {
                 consulta.SubCategoria_Id = subcategoriaId;
@@ -616,6 +642,14 @@ namespace SustitucionMOAUtils.Services
                 }
             }
 
+            if(categoria.Code == "ACT")
+            {
+                if(subCategoria.Code == "CM05" && estado.Code == "CER")
+                {
+                    gestionImpuestosService.ActualizarCM05(consultaId, usuario);
+                }
+            }
+
             consulta.FechaUltimaModificacion = DateTime.Now;
 
             repositorio.GuardarCambios();
@@ -636,7 +670,7 @@ namespace SustitucionMOAUtils.Services
             {
                 var file = files[i];
                 var fileName = string.Format("{0}_{1}", comentario.Id, Path.GetFileName(file.FileName));
-
+                
                 var ruta = ArmarRutaCarpeta(comentario); // $"{ConfigurationManager.AppSettings["RutaArchivosProveedores"]}/{proveedor.CUIT}/{proveedor.Id}/{FileKeys.Consultas}/{consultaId}";
                 var rutaArchivo = string.Concat(ruta, "/", fileName);
 
@@ -666,7 +700,7 @@ namespace SustitucionMOAUtils.Services
             return errores.Any() ? string.Join(".", errores) : SuccessMsg.ArchivoSubidoOK;
         }
 
-        public List<CategoriaDto> ObtenerCategorias(Boolean? excluir, UsuarioDto usuario)
+        public List<CategoriaDto> ObtenerCategorias(Boolean? excluir, UsuarioDto usuario, Boolean? mostrarCategoriaInterno)
         {
             try
             {
@@ -682,6 +716,9 @@ namespace SustitucionMOAUtils.Services
                     exclude = new List<string>() { };
                 }
 
+                if (mostrarCategoriaInterno == false)
+                    exclude.Add("ORD");
+
                 if (usuario.NuevoUsuario)
                 {
                     var categoriasNuevosUsuarios = new List<string>() { "OTRO", "FWEB" };
@@ -691,6 +728,39 @@ namespace SustitucionMOAUtils.Services
                 {
                     categorias = repositorio.Listar<Categoria>(c => !exclude.Contains(c.Code)).OrderBy(c => c.Nombre).ToList();
                 }
+                return categorias.Select(x => new CategoriaDto(x)).ToList();
+            }
+            catch (ValidationCustomException e)
+            {
+                throw e;
+            }
+            catch (InfoCustomException e)
+            {
+                throw e;
+            }
+            catch (Exception e)
+            {
+                throw new WSCustomException(ErrorMsg.ErrorWS, e);
+            }
+        }
+
+        public List<CategoriaDto> ObtenerCategoriasInterno(Boolean? excluir, UsuarioDto usuario)
+        {
+            try
+            {
+                List<string> categoriasContacto = new List<string>
+                {
+                    "BOL", "DATMAE", "REI", "ACT", "PAR", "FIN", "CAL", "COM",
+                    "COMP", "APP", "PES", "PAG", "FWEB", "MATBA",
+                    "PROVGC", "FLECONSULTA", "OTRO", "PARDIR", "PARCOR",
+                    "FINDIR", "FINCOR", "FLE", "CRDECPE", "ORD"
+                };
+  
+                var user = repositorio.Obtener<Usuario>(u => u.Id == usuario.Id);
+                var rolesUsuario = user.Roles.Where(r => categoriasContacto.Contains(r.Codigo))
+                    .Select(r => r.Codigo).ToList();
+
+                var categorias = repositorio.Listar<Categoria>(c => rolesUsuario.Contains(c.Code));
 
                 return categorias.Select(x => new CategoriaDto(x)).ToList();
             }
@@ -729,7 +799,7 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        public List<SubCategoriaDto> ObtenerSubCategorias()
+        public List<SubCategoriaDto> ObtenerSubCategorias(UsuarioDto usuario)
         {
             try
             {
@@ -759,7 +829,8 @@ namespace SustitucionMOAUtils.Services
                 {
                     MaterialId = x.Id,
                     Descripcion = x.Nombre,
-                    CodigoSap = x.CodigoSap
+                    CodigoSap = x.CodigoSap,
+                    ValidaSisaRuca = x.ValidaSisaRuca
 
                 }).ToList();
             }
@@ -1141,5 +1212,53 @@ namespace SustitucionMOAUtils.Services
             var usuario = repositorio.Obtener<Usuario>(x => x.Mail == username);
             return string.Format("{0}/{1}", rutaArchivosCM05, usuario.Id);
         }
-    }
+
+        public AgregarConsultaResponseDto AgregarConsultaInterna(Consulta consulta, Comentario comentario, HttpFileCollectionBase files, List<DestinatarioDto> destinatarios)
+        {
+            string mensajeResultado = string.Empty;
+
+            Categoria categoria = repositorio.Obtener<Categoria>(c => c.Id == consulta.Categoria_Id);
+          
+            var estrategia = this.consultaContext.GetStrategy(categoria.Nombre);
+            
+            consulta = estrategia.AgregarConsulta(consulta, comentario, destinatarios, files);
+
+            return new AgregarConsultaResponseDto
+            {
+                ConsultaDto = ObtenerConsulta(consulta.Id),
+                Mensaje = mensajeResultado,
+            };
+        }
+
+        public void ReabrirConsulta(int consultaId, UsuarioDto usuarioActual)
+        {
+            var consulta = GetConsulta(consultaId);
+
+            if (usuarioActual.Id != consulta.Usuario_Id)
+                throw new ValidationCustomException("No se puede reabrir la consulta ya que ud no inició esta consulta.");
+
+            var estadoIniciado = GetEstadoConsulta("INI");
+            var estadoCerrado = GetEstadoConsulta("CER");
+            
+            if (consulta.EstadoConsulta_Id != estadoCerrado.Id)
+                throw new ValidationCustomException("La consulta ya se encuentra en gestión.");
+            
+            if (consulta.UsuarioInterno_Id != null)
+                throw new ValidationCustomException("Ud no tiene permiso para reabrir esta consulta.");
+
+            consulta.EstadoConsulta_Id = estadoIniciado.Id;
+            this.repositorio.GuardarCambios();
+        }
+
+        private EstadoConsulta GetEstadoConsulta(string codigo)
+        {
+            var estadoConsulta = repositorio.Obtener<EstadoConsulta>(c => c.Code == codigo);
+
+            if (estadoConsulta == null) 
+                throw new InfoCustomException("No existe el estado de la consulta.");
+
+            return estadoConsulta;
+        }
+
+    }   
 }

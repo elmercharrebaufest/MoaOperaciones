@@ -22,39 +22,46 @@
         <section class="container-fluid">
             <div class="row" style="margin-bottom: 0.4em;">
               <div class="col-xs-2 col-md-2">
-                <label class="e-label">De:</label>
+                <label class="e-label"><b>De:</b></label>
               </div>
               <div class="col-xs-10 col-md-10 ui-fluid">
                 <input type="text" pInputText 
-                  class="e-disabled"
                   formControlName="from" 
                   [(ngModel)]="model.from"
-                  readonly>
+                  (onBlur)="validateFromEmailAddress($event)">
                 <div *ngIf="showInputError('from')">
-                    <p class="text-danger">campo obligatorio</p>
+                    <p class="text-danger">Campo obligatorio</p>
                 </div>
-                <div *ngIf="!isValidFromEmailDomain">
+                <div *ngIf="!showInputError('from') && !isValidFromEmailDomain">
                   <p class="text-danger">dominio de email no permitido</p>
                 </div>
               </div>
             </div>
             <div class="row" style="margin-bottom: 0.4em;">
               <div class="col-xs-2 col-md-2">
-                <label class="e-label">Para:</label>
+                <label class="e-label"><b>Para:</b></label>
               </div>
               <div class="col-xs-10 col-md-10 ui-fluid">
-                <input type="text" pInputText class="e-disabled"
+                <!-- <input type="text" pInputText 
                   formControlName="to" 
                   [(ngModel)]="model.to"
-                  readonly>
+                  (onBlur)="validateCcEmailAddress($event)"> -->
+
+                  <p-chips formControlName="to" 
+                  [(ngModel)]="model.to"
+                  [allowDuplicate]="false"
+                  [addOnTab]="true"
+                  (onAdd)="validateCcEmailAddress($event)"
+                  (onBlur)="validateCcEmailAddress($event)">
+                </p-chips>
                 <div *ngIf="showInputError('to')">
-                    <p class="text-danger">campo obligatorio</p>
+                    <p class="text-danger">Campo obligatorio</p>
                 </div>
               </div>
             </div>
             <div class="row">
               <div class="col-xs-2 col-md-2">
-                <label class="e-label">CC:</label>
+                <label class="e-label"><b>CC:</b></label>
               </div>
               <div class="col-xs-10 col-md-10 ui-fluid">
                 <p-chips formControlName="cc" 
@@ -68,7 +75,7 @@
             </div>
             <div class="row">
               <div class="col-xs-2 col-md-2">
-                <label class="e-label">CCO:</label>
+                <label class="e-label"><b>CCO:</b></label>
               </div>
               <div class="col-xs-10 col-md-10 ui-fluid">
                 <p-chips formControlName="bcc" 
@@ -82,15 +89,14 @@
             </div>
             <div class="row">
               <div class="col-xs-2 col-md-2">
-                <label class="e-label">Asunto:</label>
+                <label class="e-label"><b>Asunto:</b></label>
               </div>
               <div class="col-xs-10 col-md-10 ui-fluid">
-                <input type="text" pInputText  class="e-disabled"
+                <input type="text" pInputText
                   formControlName="subject" 
-                  [(ngModel)]="model.subject"
-                  readonly>
+                  [(ngModel)]="model.subject">
                 <div *ngIf="showInputError('subject')">
-                    <p class="text-danger">campo obligatorio</p>
+                    <p class="text-danger">Campo obligatorio</p>
                 </div>
               </div>
             </div>           
@@ -104,7 +110,7 @@
                 [(ngModel)]="model.body">
               </textarea>
               <div *ngIf="showInputError('body')">
-                <p class="text-danger">campo obligatorio</p>
+                <p class="text-danger">Campo obligatorio</p>
               </div>              
             </div>
           </div>
@@ -112,7 +118,7 @@
         <hr class="prototipo">
         <section class="container-fluid">
           <div class="row">
-            <div class="col-md-12 ui-fluid">
+            <div class="col-md-12 ui-fluid" *ngIf="solpActual.tipoSolp == 'CON_PLIEGO' || (this.solpActual.especificacionesViewModel.archivosEspecificaciones.length > 0 || this.solpActual.archivosCotizaciones.length > 0)">
               <a href="{{ model.downloadLinkUrl }}" target="_blank" rel="nofollow	noopener noreferrer" class="e-link">
                 <i class="fa fa-download fa-lg"></i>&nbsp;
                 <b>Descargar Legajo</b>

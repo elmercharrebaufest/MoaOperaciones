@@ -83,28 +83,6 @@ export class TabDatosPosicionComponent extends ListBaseComponent{
     this.posicion.validateDatosPosicion();
   }
 
-  // validarTabCompleto(){
-  //   this.posicion.tabsPosicionValidos.tabDatosPosicion = true;
-    
-  //   if(typeof this.posicion.selectGrupoCompras === "undefined" || typeof this.posicion.selectArticuloCompras === "undefined")
-  //   {
-  //     this.posicion.tabsPosicionValidos.tabDatosPosicion = false;
-  //     return
-  //   }
-
-  //   if(!this.posicion.selectSolicitanteCompras || this.posicion.selectSolicitanteCompras == "" || typeof this.posicion.selectSolicitanteCompras === "undefined")
-  //   {
-  //     this.posicion.tabsPosicionValidos.tabDatosPosicion = false;
-  //     return
-  //   }
-
-  //   if(!this.posicion.necesidadCompras || this.posicion.necesidadCompras == "" || typeof this.posicion.necesidadCompras === "undefined")
-  //   {
-  //     this.posicion.tabsPosicionValidos.tabDatosPosicion = false;
-  //     return
-  //   }
-  // }
-
   buscarCombo(event, type) {
     switch (type) {
         case 'GRUPO COMPRAS':

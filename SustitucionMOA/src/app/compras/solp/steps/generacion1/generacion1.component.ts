@@ -65,7 +65,7 @@ export class Generacion1Component extends ListBaseComponent  {
         this.formulario = this.formBuilder.group({
             nombreDePedido: new FormControl({value : ""}, Validators.compose([Validators.required])),
             fiscalContrato: new FormControl('', Validators.required),
-            mail: new FormControl('', [Validators.required, Validators.email])
+            mail: ['', [Validators.pattern('[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}')]]
         });
         
         this.validadorPasoSolpService.formulario = this.formulario;
@@ -76,23 +76,11 @@ export class Generacion1Component extends ListBaseComponent  {
         this.model.cargoPasoUno = true;
     }
 
-  
-    
-
     ngOnDestroy()
     {
         super.ngOnDestroy();
         this.onEstCompleto.emit({codigo :EnumPasoSolp.PliegoGeneracion1, esPasoInvalido : this.validadorPasoSolpService.esPasoInvalido()});
     }
-
-    parsearFecha() {
-        this.fechaEntrega = (<HTMLInputElement>document.querySelectorAll('[fechaInicioInput]')[0]).value;
-        if (this.fechaEntrega != '' && this.fechaEntrega != null && this.horaEntrega != '' && this.horaEntrega != null) {
-            var dateParts = this.fechaEntrega.split("-");
-            this.model.fechaDeEntregaDeOfertasFecha = new Date(+dateParts[0], +dateParts[1] - 1, +dateParts[2], this.horaEntrega);
-        }
-    }
-
 
     setTabs() {
         this.setMenuSeccionTab("Generacion1", "Generacion1");
@@ -112,14 +100,11 @@ export class Generacion1Component extends ListBaseComponent  {
         if(vacio !== undefined) {
             return (camposVacios != null && vacio == 0);
         }
-
         return true;
-
     }
 
     onBlur(control: string)
     {
         this.validadorPasoSolpService.onBlurDirty(control);
     }
-
 }

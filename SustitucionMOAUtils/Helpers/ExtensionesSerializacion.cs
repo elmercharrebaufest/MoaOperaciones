@@ -1,4 +1,7 @@
-﻿using SustitucionMOAModel.Entities;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
+using SustitucionMOAModel.Entities;
+using SustitucionMOAUtils.Logger;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -23,9 +26,23 @@ namespace SustitucionMOAUtils.Helpers
                     return Encoding.UTF8.GetString(ms.ToArray());
                 }
             }
-            catch (System.Exception)
+            catch (Exception)
             {
-                return "error al serializar el objeto.";
+                try
+                {
+                    string jsonObjecto = JsonConvert.SerializeObject(data, new JsonSerializerSettings()
+                    {
+                        ContractResolver = new CamelCasePropertyNamesContractResolver(),
+                        ReferenceLoopHandling = ReferenceLoopHandling.Serialize,
+                        PreserveReferencesHandling = PreserveReferencesHandling.Objects
+                    });
+                    return jsonObjecto;
+                }
+                catch (Exception ex)
+                {
+                    Log.Error(ex);
+                    return "error al serializar el objeto.";
+                }
             }
 
         }
@@ -66,7 +83,7 @@ namespace SustitucionMOAUtils.Helpers
             return source;
         }
 
-        public static IList<T> CloneList<T>(this IList<T> source) where T: ICloneable
+        public static IList<T> CloneList<T>(this IList<T> source) where T : ICloneable
         {
             return source.Select(item => (T)item.Clone()).ToList();
         }

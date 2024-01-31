@@ -1,0 +1,161 @@
+<!-- Tables-->
+<div class="row myRow">
+    <div class="clearfix myTables">
+
+        <mensaje></mensaje>
+        <spinner></spinner>
+
+        <table id="tableModal"
+            class="display nowrap dataTable no-footer dtr-inline rounded shadow animate contrato-vigente-table"
+            role="grid" aria-describedby="tableModal_info">
+            <thead>
+                <tr role="row">
+                    <th tabindex="0" rowspan="1" colspan="1">
+
+                    </th>
+                    <th tabindex="0" rowspan="1" colspan="1">
+                        Echeq
+                    </th>
+                    <th tabindex="0" rowspan="1" colspan="1">
+                        N° Contrato
+                    </th>
+                    <th tabindex="0" rowspan="1" colspan="1">
+                        Tipo
+                    </th>
+                    <th tabindex="0" rowspan="1" colspan="1">
+                        Clasificación
+                    </th>
+                    <th tabindex="0" rowspan="1" colspan="1">
+                        Material
+                    </th>
+                    <th tabindex="0" rowspan="1" colspan="1">
+                        Kgs Totales
+                    </th>
+                    <th tabindex="0" rowspan="1" colspan="1">
+                        Kgs Liquidados
+                    </th>
+                    <th tabindex="0" rowspan="1" colspan="1">
+                        Fecha Operacion
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <ng-container
+                    *ngFor="let pagoPendiente of echeqContratos | paginate: { itemsPerPage:itemsPerPage, currentPage: p } ; let odd = odd"
+                    role="row" [class.odd]="!odd">
+                    <tr>
+                        <td style="width: 30px;">
+                            <i style="color: #1C7CD5;"
+                                [ngClass]="pagoPendiente.expanded ? 'fa fa-chevron-up' : 'fa fa-chevron-right'"
+                                (click)="expandirRow(pagoPendiente)" *ngIf="pagoPendiente.documentos.length"></i>
+                        </td>
+                        <td style="width: 30px;">
+                            <p-checkbox
+                                *ngIf="pagoPendiente.clasificacion == clasificacionEcheq.Productor || pagoPendiente.documentos.length"
+                                name="selectedContrato" binary="false" [(ngModel)]="pagoPendiente.selected"
+                                (onChange)="onClickSelectContrato(pagoPendiente)"></p-checkbox>
+                        </td>
+                        <td (click)="expandirRow(pagoPendiente)">{{pagoPendiente.pedido == "" ?
+                            mask(pagoPendiente.contrato) : mask(pagoPendiente.pedido | customPipeEcheq)}}</td>
+                        <td (click)="expandirRow(pagoPendiente)">{{pagoPendiente.tipoContrato}}</td>
+                        <td (click)="expandirRow(pagoPendiente)">{{pagoPendiente.clasificacion}}</td>
+                        <td (click)="expandirRow(pagoPendiente)">{{pagoPendiente.descripcionMaterial}}</td>
+                        <td (click)="expandirRow(pagoPendiente)">{{pagoPendiente.kilos | number:'1.0':'es'}}</td>
+                        <td (click)="expandirRow(pagoPendiente)">{{pagoPendiente.kilosPagados | number:'1.0':'es'}}</td>
+                        <td (click)="expandirRow(pagoPendiente)">{{pagoPendiente.fecha}}</td>
+                    </tr>
+                    <ng-container *ngIf="pagoPendiente.expanded && pagoPendiente.documentos.length">
+                        <tr>
+                            <td colspan="9" style="padding-left: 120px !important; border: 0">
+                                <table style="width: 100%;" aria-describedby="mydesc">
+                                    <thead>
+                                        <tr>
+                                            <th>Echeq</th>
+                                            <th>N° Liquidación</th>
+                                            <th>Fecha Liquidación</th>
+                                            <th>Importe Mercadería</th>
+                                            <th>Aperturar Liquidación</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let documento of pagoPendiente.documentos">
+                                            <td><p-checkbox name="selectedDocumento" binary="false"
+                                                    [(ngModel)]="documento.selected"
+                                                    (click)="onClickSelectDocumento(documento)"
+                                                    [disabled]="isProductor(pagoPendiente)"></p-checkbox></td>
+                                            <td>{{documento.numeroCOE}}</td>
+                                            <td>{{documento.fecha}}</td>
+                                            <td>{{documento.importeEnPesos | number:'1.2-2':'es'}}</td>
+                                            <td>
+                                                <button type="button" class="btn"
+                                                    style="background-color: #009688; color: white;"
+                                                    *ngIf="documento.selected && (documento.listaChequesApertura == null || documento.listaChequesApertura.length == 0)"
+                                                    (click)="showAperturarEcheqDialog(documento, true)">GENERAR
+                                                    ECHEQS</button>
+                                                <button type="button" class="btn"
+                                                    style="background-color: #009688; color: white;"
+                                                    *ngIf="documento.selected && documento.listaChequesApertura != null  && documento.listaChequesApertura.length != 0"
+                                                    (click)="showAperturarEcheqDialog(documento, false)">EDITAR
+                                                    ECHEQS</button>
+                                                <span
+                                                    *ngIf="documento.selected && documento.listaChequesApertura != null  && documento.listaChequesApertura.length != 0"
+                                                    class="glyphicon glyphicon-info-sign"
+                                                    style="font-size:20px;padding-left:10px;top:5px;"
+                                                    pTooltip="{{documento.aperturas()}}" tooltipPosition="top"
+                                                    [escape]="false">
+
+                                                </span>
+                                            </td>
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </td>
+                        </tr>
+                    </ng-container>
+
+                </ng-container>
+            </tbody>
+        </table>
+
+        <p-confirmDialog #confimationContrato header="confimationContrato" icon="pi pi-exclamation-triangle"
+            key="confimationContrato" appendTo="body">
+            <p-footer>
+                <button type="button" pButton icon="pi pi-times" label="No"
+                    (click)="confimationContrato.reject()"></button>
+                <button type="button" pButton icon="pi pi-check" label="Si"
+                    (click)="confimationContrato.accept()"></button>
+            </p-footer>
+        </p-confirmDialog>
+
+        <p-confirmDialog #ConfirmationDocumento header="ConfirmationDocumento" icon="pi pi-exclamation-triangle"
+            key="confimationDocumento" appendTo="body">
+            <p-footer>
+                <button type="button" pButton icon="pi pi-times" label="No"
+                    (click)="ConfirmationDocumento.reject()"></button>
+                <button type="button" pButton icon="pi pi-check" label="Si"
+                    (click)="ConfirmationDocumento.accept()"></button>
+            </p-footer>
+        </p-confirmDialog>
+        <app-echeq-popup [visible]="popupVisible" (cancelarAperturarEcheqEmitter)="cancelarEcheqApertura()"
+            (AperturarEcheqEmitter)="aperturarEcheq($event)" [(echeqDocumento)]="documentoSelect"
+            [(aforoConf)]="aforoConf" [(cantidadEcheq)]="cantidadEcheq">
+        </app-echeq-popup>
+
+
+        <pagination-template #pT="paginationApi" (pageChange)="p = $event">
+            <div class="dataTables_paginate paging_simple_numbers">
+                <a id="tableModal_previous" class="paginate_button previous" (click)="pT.previous()"
+                    [class.disabled]="pT.isFirstPage()"> Anterior </a>
+                <span *ngFor="let page of pT.pages" [class.current]="pT.getCurrent() === page.value">
+                    <a class="paginate_button" (click)="pT.setCurrent(page.value)"
+                        *ngIf="pT.getCurrent() !== page.value">{{ page.label }}</a>
+                    <a class="paginate_button current" *ngIf="pT.getCurrent() === page.value">{{ page.label }}</a>
+                </span>
+                <a id="tableModal_next" class="paginate_button next" (click)="pT.next()"
+                    [class.disabled]="pT.isLastPage()"> Siguiente </a>
+            </div>
+        </pagination-template>
+    </div>
+</div>
+<!-- END tables-->

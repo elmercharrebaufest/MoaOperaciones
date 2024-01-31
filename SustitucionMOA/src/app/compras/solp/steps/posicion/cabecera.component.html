@@ -16,7 +16,7 @@
             <div class="row myRow" style="padding-top: 2px;">
                 <!-- Row Clase documento -->
                 <div class="row">
-                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 margenInput" style="margin: 0px 0px 0px 0px;">
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 margenInput" style="margin: 0px 0px 0px 0px;padding: 0;">
 
                         <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3 margenInput">
                             Clase documento *
@@ -31,349 +31,346 @@
                         <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3 margenInput">
                             Tipo *
                             <div>
-                                <p-dropdown [options]="tipoPosicion" [(ngModel)]="model.selectTipoPosicion" placeholder="Elegir tipo posición" optionLabel="Codigo" appendTo="body" (onChange)="cambiarTipoSolp(); calcularValorNeto(posicion);" (onFocus)="cambiarTipoSolp();" [(disabled)]="editarDocumento || model.vincularAPliego">
+                                <p-dropdown [options]="tipoPosicion" [(ngModel)]="model.selectTipoPosicion" placeholder="Elegir tipo posición" optionLabel="Codigo" appendTo="body" (onChange)="cambiarTipoSolp(); calcularValorNeto(posicion);" [(disabled)]="editarDocumento || model.vincularAPliego">
                                 </p-dropdown>
                             </div>
                         </div>
-                        
-                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 margenInput" style="margin: 0px 0px 0px 0px; display: flex;">
-                            <!-- <div class="col-xs-2 col-md-1" style="margin-top: 28px; padding: 0; text-align: center;" *ngIf="tienePosicionSeleccionada">
-                                <button class="btn btn-success botonesComprasColor ng-tns-c3-26 ng-star-inserted" (click)="agregarPosicion()">
-                                    Nueva Posición
-                                </button>&nbsp;
-                            </div> -->
 
-                            <div class="col-xs-6 col-md-4" style="margin-top:8px; padding: 1px;" *ngIf="tienePosicionSeleccionada">
+                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 margenInput" style="margin: 0px 0px 0px 0px; display: flex;">
+
+                            <div class="col-lg-6 col-md-4 col-xs-6" style="margin-top:8px; padding: 1px;" *ngIf="tienePosicionSeleccionada">
                                 <div style="position: absolute; bottom: 3px;">
+                                    <button class="btn btn-success botonesComprasColor ng-tns-c3-26 ng-star-inserted" style="margin-right: 4px;" (click)="agregarPosicion()">
+                                        NUEVA POSICIÓN
+                                    </button>
+
                                     <button class="btn btn-success botonesComprasColor" style="margin-right: 4px;" (click)="duplicarPosicion(headerPosiciones)">
                                         DUPLICAR
                                     </button>
-    
-                                    <button class="btn btn-danger botonesComprasColor" style="margin-right: 4px;" (click)="eliminarPosicion(posicionCheck ? false: true)"  title="Eliminar posición">
+
+                                    <button class="btn btn-danger botonesComprasColor" style="margin-right: 4px;" (click)="eliminarPosicion(posicionCheck ? false: true)" title="Eliminar posición">
                                         <i class="fa fa-trash" aria-hidden="true"></i>
                                     </button>
-    
+
                                     <button class="btn btn-danger botonesComprasColor pl-2" style="margin-right: 4px;" (click)="recuperarPosicion()" title="Recuperar posición">
                                         <i class="fa fa-undo" aria-hidden="true"></i>
                                     </button>
                                 </div>
                             </div>
-                           
-                            <div class="col-xs-6 col-md-8 col-xs-offset-2 col-md-offset-2" style="margin-top: 14px; padding: 1px; display: flex; justify-content: flex-end;" *ngIf="tienePosicionSeleccionada">
+
+                            <div class="col-lg-6 col-md-8 col-xs-6 col-lg-offset-1 col-md-offset-2 col-xs-offset-2" style="margin-top: 14px; padding: 1px; display: flex; justify-content: flex-end;" *ngIf="tienePosicionSeleccionada">
                                 <div class="row col-lg-offset-3" style="display:flex; align-items: end;">
                                     <div [ngClass]="displayBotonAsociar ? 'col-xs-7' : 'col-xs-12'" style="margin-bottom: 2px;">
                                         <div style="margin-top: 5px; margin-right: 8px;">
                                             Contrato marco
                                         </div>
-                                        <button class="btn btn-secondary botonesComprasColor align-right">
+                                        <button class="btn btn-secondary botonesComprasColor" (click)="showObtenerContratoMarcoDialog()">
                                             CREAR POSICIÓN DESDE CONTRATO
                                         </button>
                                     </div>
                                     <div class="col-xs-5" style="margin-bottom: 2px;" *ngIf="displayBotonAsociar">
-                                        <div style="margin-top: 5px; margin-right: 8px; display: flex;">
+                                        <div style="margin-top: 5px; margin-right: 8px; display: flex;" *ngIf="alertaParaAsociar">
                                             <i class="fa fa-exclamation-triangle" aria-hidden="true" style="color: #c9302c;font-size: x-large; display: flex; align-items: center; margin-right: 10px;"></i>
                                             Tiene un contrato marco para asociar
                                         </div>
-                                        <button class="btn btn-secondary botonesComprasColor align-right" style="width:100%; text-align:center;" (click)="showAsociarDialog()">
-                                            {{textoAsociarBtn}}
-                                        </button>
+                                        <div *ngIf="displayBotonAsociar">
+                                            <button class="btn btn-secondary botonesComprasColor align-right" style="width:100%; text-align:center;" (click)="showAsociarDialog()">
+                                                {{textoAsociarBtn}}
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
-                           </div>                       
-                        </div>                      
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <!-- End Row Clase documento -->
 
-                <p-table class="tabla-posiciones" [class.tabla-servicio]="esTipoServicio" [class.tabla-material]="esTipoMaterial" #dt [value]="model.posiciones" [rows]="20"  dataKey="id" [scrollable]="true" scrollHeight="500%" *ngIf="tienePosicionSeleccionada">              
+                <p-table class="tabla-posiciones" [class.tabla-servicio]="esTipoServicio" [class.tabla-material]="esTipoMaterial" #dt [value]="model.posiciones" [rows]="20" dataKey="id" [scrollable]="true" scrollHeight="500%" *ngIf="tienePosicionSeleccionada">
                     <ng-template pTemplate="header" let-columns>
                         <tr>
                             <th class="textCenter"></th>
                             <th class="textCenter">
                                 <p-checkbox name="posiciones" [binary]="true" [(ngModel)]="todasPosicionesSeleccionadas" (click)="seleccionarTodo()"></p-checkbox>
                             </th>
-                            <th class="textCenter" data-toggle="tooltip" title="Posición SOLP">Pos. SOLP</th>
-                            <th class="textCenter" data-toggle="tooltip" title="Tipo" hidden >Tipo</th>
-                            <th class="textCenter" data-toggle="tooltip" title="Tipo de imputacion">Tipo imp.</th>
-                            <th class="textCenter" data-toggle="tooltip" title="Centro">Centro</th>
-                            <th class="textCenter" data-toggle="tooltip" title="Almacén">Almacén</th>
-                            <th class="textCenter" *ngIf="esTipoMaterial" data-toggle="tooltip" title="Código">Código</th>               
-                            <th class="textCenter" data-toggle="tooltip" title="Descripción">Descripción</th>
-                            <th class="textCenter" *ngIf="esTipoMaterial" data-toggle="tooltip" title="Cantidad">Ctd.</th>
-                            <th class="textCenter" *ngIf="esTipoMaterial" data-toggle="tooltip" title="Unidad de medida">UM</th>
-                            <th class="textCenter" data-toggle="tooltip" title="Moneda">Moneda</th>
-                            <th class="textCenter" *ngIf="esTipoMaterial" data-toggle="tooltip" title="Precio bruto">Precio bruto</th>
+                            <th class="textCenter" data-toggle="tooltip" title="Posición SOLP">Pos. SOLP<span *ngIf="" style="display: inline-block;">*</span></th>
+                            <th class="textCenter" data-toggle="tooltip" title="Tipo" hidden>Tipo <span *ngIf="" style="display: inline-block;">*</span></th>
+                            <th class="textCenter" data-toggle="tooltip" title="Tipo de imputacion">Tipo imp. <span *ngIf="esTipoServicio" style="display: inline-block;"> *</span></th>
+                            <th class="textCenter" data-toggle="tooltip" title="Centro">Centro *</th>
+                            <th class="textCenter" data-toggle="tooltip" title="Almacén">Almacén *</th>
+                            <th class="textCenter" *ngIf="esTipoMaterial" data-toggle="tooltip" title="Código">Código</th>
+                            <th class="textCenter" data-toggle="tooltip" title="Descripción">Descripción *</th>
+                            <th class="textCenter" *ngIf="esTipoMaterial" data-toggle="tooltip" title="Cantidad">Ctd. <span *ngIf="esTipoMaterial" style="display: inline-block;">*</span></th>
+                            <th class="textCenter" *ngIf="esTipoMaterial" data-toggle="tooltip" title="Unidad de medida">UM <span *ngIf="esTipoMaterial" style="display: inline-block;">*</span></th>
+                            <th class="textCenter" data-toggle="tooltip" title="Moneda">Moneda *</th>
+                            <th class="textCenter" *ngIf="esTipoMaterial" data-toggle="tooltip" title="Precio bruto">Precio bruto <span *ngIf="esTipoMaterial" style="display: inline-block;">*</span></th>
                             <th class="textCenter" data-toggle="tooltip" title="Valor total">Valor Total</th>
-                            <th class="textCenter" *ngIf="esTipoMaterial" data-toggle="tooltip" title="Contrato" style="padding: 0;">Contrato marco</th>
-                            <!-- <th class="textCenter" *ngIf="esTipoContratoMarco" data-toggle="tooltip" title="Posición contrato">Posición contrato</th> -->
-                            <th class="textCenter" *ngIf="esTipoMaterial" data-toggle="tooltip" title="Nombre prov." style="padding: 0;">Provedoor</th>
-                            <th class="textCenter" *ngIf="esTipoMaterial" data-toggle="tooltip" title="Org. compra" style="padding: 0;">Org. compra</th>
+                            <th class="textCenter" data-toggle="tooltip" title="Contrato">Contrato marco</th>
+                            <th class="textCenter" data-toggle="tooltip" title="Nombre prov.">Proveedor</th>
+                            <th class="textCenter" data-toggle="tooltip" title="Org. compra">Org. compra</th>
                         </tr>
                     </ng-template>
                     <ng-template pTemplate="body" let-posicion let-expanded="expanded" let-columns="columns" let-rowIndex="rowIndex">
-                            <tr [class.tabla-grid-servicio]="esTipoServicio" [class.tabla-grid-material]="esTipoMaterial" [ngClass]="posicion.isPosicionEliminada ? 'posicion-eliminada' : '' ">
-                                <td>
-                                    <a style="cursor: pointer;" [pRowToggler]="posicion" (click)="posicion.setTabPosicion();">
-                                        <i [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
-                                    </a>
-                                </td>
-                                <td style="text-align: center;">
-                                    <p-checkbox name="posiciones" binary="false" [(ngModel)]="posicion.posicionCheck"></p-checkbox>
-                                </td>
-                                <td>{{posicion.numeroPosicion}}</td>
-                                <td hidden>
-                                    <p-dropdown [options]="tipoPosicion" 
-                                        [(ngModel)]="posicion.tipoPosicion" 
-                                        [style]="{'width':'150px'}"
-                                        optionLabel="Codigo" 
-                                        appendTo="body" 
-                                        ariaLabel="Codigo" 
-                                        field="Codigo" 
-                                        (onFocus)="cambiarTipoSolp(posicion)" 
-                                        (onChange)="cambiarTipoSolp(posicion); calcularValorNeto(posicion);" 
-                                        [disabled]="posicion.concluido">
-                                        <ng-template let-item pTemplate="selectedItem">
-                                            <span style="vertical-align:middle">{{item.value.Descripcion}}</span>
-                                        </ng-template>
-                                        <ng-template let-item pTemplate="item">
-                                            <div class="ui-helper-clearfix" style="position: relative;height:25px;">
-                                                <div style="font-size:14px;float:right;margin-top:4px"><b>{{item.value.Descripcion}}</b> - {{item.value.Codigo}}</div>
-                                            </div>
-                                        </ng-template>
-                                    </p-dropdown>
-                                </td>
-                                <td>
-                                    <p-dropdown 
-                                        dataKey="Id"
-                                        [options]="tipoImputacion" 
-                                        placeholder="Tipo de imputacion" 
-                                        [(ngModel)]="posicion.tipoImputacion" 
-                                        [style]="{'width':'150px'}" 
-                                        optionLabel="Codigo" 
-                                        appendTo="body" 
-                                        ariaLabel="Codigo" 
-                                        field="Codigo" 
-                                        (onFocus)="posicion.setTabPosicion();" 
-                                        (onChange)="posicion.setTabPosicion()" 
-                                        [disabled] = "posicion.concluido">
+                        <tr [class.tabla-grid-servicio]="esTipoServicio" [class.tabla-grid-material]="esTipoMaterial" [ngClass]="posicion.isPosicionEliminada ? 'posicion-eliminada' : '' ">
+                            <td>
+                                <a style="cursor: pointer;" [pRowToggler]="posicion" (click)="posicion.setTabPosicion();">
+                                    <i [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
+                                </a>
+                            </td>
+                            <td style="text-align: center;">
+                                <p-checkbox name="posiciones" binary="false" [(ngModel)]="posicion.posicionCheck"></p-checkbox>
+                            </td>
+                            <td>{{posicion.numeroPosicion}}</td>
+                            <td hidden>
+                                <p-dropdown [options]="tipoPosicion"
+                                            [(ngModel)]="posicion.tipoPosicion"
+                                            [style]="{'width':'150px'}"
+                                            optionLabel="Codigo"
+                                            appendTo="body"
+                                            ariaLabel="Codigo"
+                                            field="Codigo"
+                                            (onFocus)="cambiarTipoSolp(posicion)"
+                                            (onChange)="cambiarTipoSolp(posicion); calcularValorNeto(posicion);"
+                                            [disabled]="posicion.concluido">
+                                    <ng-template let-item pTemplate="selectedItem">
+                                        <span style="vertical-align:middle">{{item.value.Descripcion}}</span>
+                                    </ng-template>
+                                    <ng-template let-item pTemplate="item">
+                                        <div class="ui-helper-clearfix" style="position: relative;height:25px;">
+                                            <div style="font-size:14px;float:right;margin-top:4px"><b>{{item.value.Descripcion}}</b> - {{item.value.Codigo}}</div>
+                                        </div>
+                                    </ng-template>
+                                </p-dropdown>
+                            </td>
+                            <td>
+                                <p-dropdown dataKey="Id"
+                                            [options]="tipoImputacion"
+                                            placeholder="Tipo de imputacion"
+                                            [(ngModel)]="posicion.tipoImputacion"
+                                            [style]="{'width':'150px'}"
+                                            optionLabel="Codigo"
+                                            appendTo="body"
+                                            ariaLabel="Codigo"
+                                            field="Codigo"
+                                            (onFocus)="posicion.setTabPosicion();"
+                                            (onChange)="posicion.setTabPosicion()"
+                                            [disabled]="posicion.concluido">
 
-                                        <ng-template let-item pTemplate="selectedItem">
-                                            <span>{{item.value.Descripcion}}</span>
-                                        </ng-template>
-                                        <ng-template let-item pTemplate="item">
-                                            <div>
-                                                <div><b>{{item.value.Descripcion}}</b> - {{item.value.Codigo}}</div>
-                                            </div>
-                                        </ng-template>
-                                    </p-dropdown>
-                                </td>
-                                <td>
-                                <p-dropdown 
-                                        dataKey="Id"
-                                        filter="true"
-                                        [options]="centroEntrega" 
-                                        placeholder="Centro" 
-                                        [(ngModel)]="posicion.selectCentroEntrega" 
-                                        [style]="{'width':'150px'}" 
-                                        optionLabel="CodigoDescripcion" 
-                                        appendTo="body"                      
-                                        (onFocus)=" $event.target.select();" 
-                                        (onClear)="posicion.selectAlmacenEntrega = undefined"
-                                        (completeMethod)="buscarCombo($event, 'CENTRO')"
-                                        (onChange)="centroSeleccionado()" 
-                                        [disabled] = "posicion.concluido"
-                                        emptyMessage="Ningún centro encontrado" 
-                                        [minLength]="1" 
-                                        [dropdown]="true" >
+                                    <ng-template let-item pTemplate="selectedItem">
+                                        <span>{{item.value.Descripcion}}</span>
+                                    </ng-template>
+                                    <ng-template let-item pTemplate="item">
+                                        <div>
+                                            <div><b>{{item.value.Descripcion}}</b> - {{item.value.Codigo}}</div>
+                                        </div>
+                                    </ng-template>
+                                </p-dropdown>
+                            </td>
+                            <td>
+                                <p-dropdown dataKey="Id"
+                                            filter="true"
+                                            [options]="centroEntrega"
+                                            placeholder="Centro"
+                                            [(ngModel)]="posicion.selectCentroEntrega"
+                                            [style]="{'width':'150px'}"
+                                            optionLabel="CodigoDescripcion"
+                                            appendTo="body"
+                                            (onFocus)=" $event.target.select();"
+                                            (onClear)="posicion.selectAlmacenEntrega = undefined"
+                                            (completeMethod)="buscarCombo($event, 'CENTRO')"
+                                            (onChange)="centroSeleccionado(posicion); listarContratosAsociados(); eliminarContratoAsociar(posicion)"
+                                            [disabled]="posicion.concluido"
+                                            emptyMessage="Ningún centro encontrado"
+                                            [minLength]="1"
+                                            [dropdown]="true">
 
-                                        <ng-template let-item pTemplate="selectedItem">
-                                            <span>{{item.value.Codigo}}</span>
-                                        </ng-template>
-                                        <ng-template let-item pTemplate="item">
-                                            <div>
-                                                <div><b>{{item.value.Codigo}}</b> - {{item.value.Descripcion}}</div>
-                                            </div>
-                                        </ng-template>
-                                    </p-dropdown>
-                                </td>
-                                <td>                      
-                                    <p-dropdown 
-                                        filter="true"
-                                        [(ngModel)]="posicion.selectAlmacenEntrega"                                
-                                        [options]="almacenEntrega"
-                                        optionLabel="CodigoDescripcion" 
-                                        dataKey="Id"
-                                        appendTo="body"                                     
-                                        (completeMethod)="buscarCombo($event, 'ALMACEN')"
-                                        (onFocus)=" $event.target.select()" 
-                                        [disabled] = "posicion.concluido"
-                                        placeholder="Almacen"
-                                        >
+                                    <ng-template let-item pTemplate="selectedItem">
+                                        <span>{{item.value.Codigo}}</span>
+                                    </ng-template>
+                                    <ng-template let-item pTemplate="item">
+                                        <div>
+                                            <div><b>{{item.value.Codigo}}</b> - {{item.value.Descripcion}}</div>
+                                        </div>
+                                    </ng-template>
+                                </p-dropdown>
+                            </td>
+                            <td>
+                                <p-dropdown filter="true"
+                                            [(ngModel)]="posicion.selectAlmacenEntrega"
+                                            [options]="posicion.selectComboAlmacenes"
+                                            optionLabel="CodigoDescripcion"
+                                            dataKey="Id"
+                                            appendTo="body"
+                                            (completeMethod)="buscarCombo($event, 'ALMACEN')"
+                                            (onFocus)=" $event.target.select()"
+                                            [disabled]="posicion.concluido"
+                                            placeholder="Almacen">
+                                    <ng-template let-item pTemplate="selectedItem">
+                                        <span>{{item.value.Codigo}}</span>
+                                    </ng-template>
+                                    <ng-template let-item pTemplate="item">
+                                        <div>
+                                            <div><b>{{item.value.Codigo}}</b> - {{item.value.Descripcion}}</div>
+                                        </div>
+                                    </ng-template>
+                                </p-dropdown>
+                            </td>
+                            <td [pEditableColumn]="posicion" style="word-break: break-all; word-wrap:break-word" *ngIf="esTipoMaterial">
+                                <p-cellEditor>
+                                    <ng-template pTemplate="input">
+                                        <p-autoComplete [(ngModel)]="posicion.codigoServicio"
+                                                        [suggestions]="autocompleteServiciosSolp"
+                                                        dataKey="Id"
+                                                        ariaLabel="Codigo"
+                                                        field="Codigo"
+                                                        appendTo="body"
+                                                        [autoHighlight]="true"
+                                                        emptyMessage=""
+                                                        [width]="400"
+                                                        [minLength]="4"
+                                                        [forceSelection]="false"
+                                                        (completeMethod)="autocompleteCodigoMaterialSolp($event)"
+                                                        (onFocus)="$event.target.select(); posicion.setTabPosicion();"
+                                                        (paste)="onPaste($event,enumColumnaSubPosicion.CodigoServicio, rowIndex, dt)"
+                                                        (onSelect)="onSelectServicio(posicion, dt); posicion.setTabPosicion();"
+                                                        (onBlur)="checkCode()"
+                                                        (ngModelChange)="clearCode2(); eliminarContratoAsociar(posicion); listarContratosAsociados(); ">
+                                        </p-autoComplete>
+                                    </ng-template>
+                                    <ng-template pTemplate="output">
+                                        {{posicion.codigoServicio?.Codigo}}
+                                    </ng-template>
+                                </p-cellEditor>
+                            </td>
+                            <td [pEditableColumn]="posicion" style="word-break: break-all; word-wrap:break-word">
+                                <p-cellEditor data-toggle="tooltip" title="40 caracteres como máximo">
+                                    <ng-template pTemplate="input" *ngIf="esTipoMaterial">
+                                        <p-autoComplete [(ngModel)]="posicion.tareaSubcontratarObj"
+                                                        [suggestions]="autocompleteServiciosSolp"
+                                                        dataKey="Id"
+                                                        ariaLabel="Descripcion"
+                                                        field="Descripcion"
+                                                        appendTo="body"
+                                                        [autoHighlight]="true"
+                                                        emptyMessage=""
+                                                        [minLength]="4"
+                                                        [maxlength]="40"
+                                                        [forceSelection]="false"
+                                                        (completeMethod)="autocompleteMaterialSolp($event)"
+                                                        (paste)="onPaste($event,enumColumnaSubPosicion.TareaSubcontratar,rowIndex,dt)"
+                                                        (onSelect)="onSelectTarea(posicion,dt)"
+                                                        (onBlur)="onBlurTarea($event, posicion)"
+                                                        (ngModelChange)="clearCode(posicion); eliminarContratoAsociar(posicion); listarContratosAsociados();">
+                                        </p-autoComplete>
+                                    </ng-template>
 
-                                        <ng-template let-item pTemplate="selectedItem">
-                                            <span>{{item.value.Codigo}}</span>
-                                        </ng-template>
-                                        <ng-template let-item pTemplate="item">
-                                            <div>
-                                                <div><b>{{item.value.Codigo}}</b> - {{item.value.Descripcion}}</div>
-                                            </div>
-                                        </ng-template>
-                                    </p-dropdown>
-                                </td>
-                                <td [pEditableColumn]="posicion" style="word-break: break-all; word-wrap:break-word" *ngIf="esTipoMaterial">
-                                    <p-cellEditor>
-                                        <ng-template pTemplate="input">
-                                            <p-autoComplete [(ngModel)]="posicion.codigoServicio" 
-                                                [suggestions]="autocompleteServiciosSolp" 
-                                                dataKey="Id" 
-                                                ariaLabel="Codigo" 
-                                                field="Codigo" 
-                                                appendTo="body" 
-                                                [autoHighlight]="true" 
-                                                emptyMessage="" 
-                                                [width]="400" 
-                                                [minLength]="4" 
-                                                [forceSelection]="false"
-                                                (completeMethod)="autocompleteMaterialSolp($event)"
-                                                (onFocus)="$event.target.select(); posicion.setTabPosicion();"
-                                                (paste)="onPaste($event,enumColumnaSubPosicion.CodigoServicio, rowIndex, dt)"
-                                                (onSelect)="onSelectServicio(posicion, dt); posicion.setTabPosicion();validarFuenteAprovisionamiento(posicion);"
-                                                >
-                                            </p-autoComplete>
-                                        </ng-template>
-                                        <ng-template pTemplate="output">
-                                            {{posicion.codigoServicio?.Codigo}}
-                                        </ng-template>
-                                    </p-cellEditor>
-                                </td>                      
-                                <td [pEditableColumn]="posicion" style="word-break: break-all; word-wrap:break-word">
-                                    <p-cellEditor>
-                                        <ng-template pTemplate="input" *ngIf="esTipoMaterial">
-                                            <p-autoComplete [(ngModel)]="posicion.tareaSubcontratarObj"
-                                                [suggestions]="autocompleteServiciosSolp" 
-                                                dataKey="Id" 
-                                                ariaLabel="Descripcion" 
-                                                field="Descripcion" 
-                                                appendTo="body" 
-                                                [autoHighlight]="true" 
-                                                emptyMessage="" 
-                                                [minLength]="4" 
-                                                [forceSelection]="false" 
-                                                (completeMethod)="autocompleteMaterialSolp($event)"
-                                                (paste)="onPaste($event,enumColumnaSubPosicion.TareaSubcontratar,rowIndex,dt)" 
-                                                (onSelect)="onSelectTarea(posicion)" 
-                                                (onBlur)="onBlurTarea($event, posicion)">
-                                            </p-autoComplete>
-                                        </ng-template>
+                                    <ng-template pTemplate="input" *ngIf="esTipoServicio">
+                                        <input type="text" class="inputGrilla"
+                                               [(ngModel)]="posicion.tareaSubcontratar"
+                                               (paste)="onPaste($event,enumColumnaSubPosicion.TareaSubcontratar,rowIndex,dt)"
+                                               (blur)="onBlurTarea($event, posicion)"
+                                               [maxlength]="40"
+                                               data-toggle="tooltip" title="40 caracteres como máximo">
+                                    </ng-template>
 
-                                        <ng-template pTemplate="input" *ngIf="esTipoServicio">
-                                            <input type="text" class="inputGrilla"
-                                                [(ngModel)]="posicion.tareaSubcontratar" 
-                                                (paste)="onPaste($event,enumColumnaSubPosicion.TareaSubcontratar,rowIndex,dt)"
-                                                (blur)="onBlurTarea($event, posicion)">
-                                        </ng-template>
+                                    <ng-template pTemplate="output" style="text-align: left;">
+                                        {{posicion.tareaSubcontratar}}
+                                    </ng-template>
+                                </p-cellEditor>
+                            </td>
+                            <td [pEditableColumn]="posicion" style="word-break: break-all; word-wrap:break-word" *ngIf="esTipoMaterial">
+                                <p-cellEditor>
+                                    <ng-template pTemplate="input">
+                                        <input class="inputGrilla" type="text" pKeyFilter="num"
+                                               [(ngModel)]="posicion.cuentaTd"
+                                               (paste)="onPaste($event,enumColumnaSubPosicion.CuentaTd,rowIndex,dt)"
+                                               (ngModelChange)="calcularValorNeto(posicion)">
+                                    </ng-template>
+                                    <ng-template pTemplate="output">
+                                        {{posicion.cuentaTd  | number:'1.2-2'}}
+                                    </ng-template>
+                                </p-cellEditor>
+                            </td>
+                            <td [pEditableColumn]="posicion" *ngIf="esTipoMaterial">
+                                <p-dropdown filter="true"
+                                            [(ngModel)]="posicion.unidadSeleccionada"
+                                            [options]="unidades"
+                                            optionLabel="Descripcion"
+                                            dataKey="Id"
+                                            appendTo="body"
+                                            (completeMethod)="buscarCombo($event, 'UNIDAD MEDIDA')"
+                                            (onFocus)=" $event.target.select()"
+                                            placeholder="Unidad">
+                                </p-dropdown>
+                            </td>
+                            <td>
+                                <p-dropdown dataKey="Id"
+                                            [options]="monedaCompras"
+                                            placeholder="Moneda"
+                                            [(ngModel)]="posicion.monedaSeleccionada"
+                                            [style]="{'width':'150px'}"
+                                            optionLabel="CodigoDescripcion"
+                                            appendTo="body"
+                                            (onFocus)=" $event.target.select();"
+                                            (completeMethod)="buscarCombo($event, 'MONEDA COMPRAS')"
+                                            [disabled]="posicion.concluido"
+                                            [minLength]="1"
+                                            [dropdown]="true"
+                                            (onChange)="onSelectMoneda()"
+                                            emptyMessage="Ningúna moneda encontrada"
+                                            [autoHighlight]="true"
+                                            [forceSelection]="true">
 
-                                        <ng-template pTemplate="output" style="text-align: left;">
-                                            {{posicion.tareaSubcontratar}}
-                                        </ng-template>
-                                    </p-cellEditor>
-                                </td>
-                                <td [pEditableColumn]="posicion" style="word-break: break-all; word-wrap:break-word" *ngIf="esTipoMaterial">
-                                    <p-cellEditor>
-                                        <ng-template pTemplate="input">
-                                            <input class="inputGrilla" type="text" pKeyFilter="num" 
-                                                [(ngModel)]="posicion.cuentaTd" 
-                                                (paste)="onPaste($event,enumColumnaSubPosicion.CuentaTd,rowIndex,dt)"
-                                                (ngModelChange)="calcularValorNeto(posicion)">
-                                        </ng-template>
-                                        <ng-template pTemplate="output">
-                                            {{posicion.cuentaTd}}
-                                        </ng-template>
-                                    </p-cellEditor>
-                                </td>
-                                <td [pEditableColumn]="posicion" *ngIf="esTipoMaterial">                                                                   
-                                    <p-dropdown 
-                                        filter="true"
-                                        [(ngModel)]="posicion.unidadSeleccionada"                                
-                                        [options]="unidades"
-                                        optionLabel="Descripcion" 
-                                        dataKey="Id"
-                                        appendTo="body"                                     
-                                        (completeMethod)="buscarCombo($event, 'UNIDAD MEDIDA')"
-                                        (onFocus)=" $event.target.select()" 
-                                        placeholder="Unidad">
-                                    </p-dropdown>                                                    
-                                </td>
-                                <td>
-                                    <p-dropdown 
-                                        dataKey="Id"
-                                        [options]="monedaCompras" 
-                                        placeholder="Moneda" 
-                                        [(ngModel)]="posicion.monedaSeleccionada" 
-                                        [style]="{'width':'150px'}" 
-                                        optionLabel="CodigoDescripcion" 
-                                        appendTo="body"                      
-                                        (onFocus)=" $event.target.select();"                   
-                                        (completeMethod)="buscarCombo($event, 'MONEDA COMPRAS')"
-                                        [disabled] = "posicion.concluido"                          
-                                        [minLength]="1" 
-                                        [dropdown]="true"                                 
-                                        (onChange)="onSelectMoneda()"
-                                        emptyMessage="Ningúna moneda encontrada"
-                                        [autoHighlight]="true" 
-                                        [forceSelection]="true">
-
-                                        <ng-template let-item pTemplate="selectedItem">
-                                            <span>{{item.value.Codigo}}</span>
-                                        </ng-template>
-                                        <ng-template let-item pTemplate="item">
-                                            <div>
-                                                <div><b>{{item.value.Codigo}}</b> - {{item.value.Descripcion}}</div>
-                                            </div>
-                                        </ng-template>
-                                    </p-dropdown>
-                                </td>
-                                <td [pEditableColumn]="posicion" style="word-break: break-all;" *ngIf="esTipoMaterial">
-                                    <p-cellEditor>
-                                        <ng-template pTemplate="input">
-                                            <input class="inputGrilla" type="text" pKeyFilter="num" 
-                                                [(ngModel)]="posicion.precioBruto" 
-                                                (paste)="onPaste($event,enumColumnaSubPosicion.PrecioBruto,rowIndex,dt)" 
-                                                (ngModelChange)="calcularValorNeto(posicion)">
-                                        </ng-template>
-                                        <ng-template pTemplate="output">
-                                            {{posicion.precioBruto | number:'1.2-2'}}
-                                        </ng-template>
-                                    </p-cellEditor>
-                                </td>
-                                <td style="word-break: break-all;">
-                                    <p-cell class="inputGrilla">
-                                        {{posicion.valorTotal | number:'1.2-2'}}
-                                    </p-cell>
-                                </td>
-                                <td style="word-break: break-all; word-wrap:break-word" *ngIf="esTipoMaterial" [ngStyle]="{'background-color': posicion.noContrato ? '#fff' : '#f4f4f4'}">{{posicion.noContrato}}</td>
-                                <!-- <td *ngIf="esTipoContratoMarco" >{{posicion.noPosicionContrato}}</td> -->
-                                <td style="word-break: break-all; word-wrap:break-word" *ngIf="esTipoMaterial" [ngStyle]="{'background-color': posicion.nombreProveedor ? '#fff' : '#f4f4f4'}">{{posicion.nombreProveedor}}</td>
-                                <td style="word-break: break-all; word-wrap:break-word" *ngIf="esTipoMaterial" [ngStyle]="{'background-color': posicion.orgCompras ? '#fff' : '#f4f4f4'}">{{posicion.orgCompras}}</td>
-                            </tr>
+                                    <ng-template let-item pTemplate="selectedItem">
+                                        <span>{{item.value.Codigo}}</span>
+                                    </ng-template>
+                                    <ng-template let-item pTemplate="item">
+                                        <div>
+                                            <div><b>{{item.value.Codigo}}</b> - {{item.value.Descripcion}}</div>
+                                        </div>
+                                    </ng-template>
+                                </p-dropdown>
+                            </td>
+                            <td [pEditableColumn]="posicion" style="word-break: break-all;" *ngIf="esTipoMaterial">
+                                <p-cellEditor>
+                                    <ng-template pTemplate="input">
+                                        <input class="inputGrilla" type="text" pKeyFilter="num"
+                                               [(ngModel)]="posicion.precioBruto"
+                                               (paste)="onPaste($event,enumColumnaSubPosicion.PrecioBruto,rowIndex,dt)"
+                                               (ngModelChange)="calcularValorNeto(posicion)">
+                                    </ng-template>
+                                    <ng-template pTemplate="output">
+                                        {{posicion.precioBruto | number:'1.2-2'}}
+                                    </ng-template>
+                                </p-cellEditor>
+                            </td>
+                            <td style="word-break: break-all;">
+                                <p-cell class="inputGrilla">
+                                    {{posicion.valorTotal | number:'1.2-2'}}
+                                </p-cell>
+                            </td>
+                            <td style="word-break: break-all; word-wrap:break-word" [ngStyle]="{'background-color': posicion.numeroContratoSuperior ? '#fff' : '#f4f4f4'}">{{posicion.numeroContratoSuperior}}</td>
+                            <!-- <td *ngIf="esTipoContratoMarco" >{{posicion.noPosicionContrato}}</td> -->
+                            <td style="word-break: break-all; word-wrap:break-word" [ngStyle]="{'background-color': posicion.nombreProveedor ? '#fff' : '#f4f4f4'}">{{posicion.nombreProveedor}}</td>
+                            <td style="word-break: break-all; word-wrap:break-word" [ngStyle]="{'background-color': posicion.orgCompras ? '#fff' : '#f4f4f4'}">{{posicion.orgCompras}}</td>
+                        </tr>
                     </ng-template>
-                    
+
                     <ng-template pTemplate="rowexpansion" let-posicion let-columns="col" let-rowIndex="rowIndex">
-                        <div style="width: 890px;">
+                        <div class="sub-tabla">
                             <div style="margin-top: 10px;">
                                 <p-tabMenu #menuItems [model]="posicion.tabItems" [activeItem]="posicion.activeItem" (click)="activateMenu(menuItems, posicion)"></p-tabMenu>
                             </div>
                             <div style="margin-top: 10px;">
                                 <div *ngIf="posicion.activeMenuTab == 'Subposiciones'">
-                                    <app-tab-subposicion 
-                                        [(model)]="model" 
-                                        [(combos)]="combos" 
-                                        [(locale)]="locale" 
-                                        [(posicion)]="posicion" 
-                                        [(listadoSubposiciones)]="posicion.listadoSubPosiciones" 
-                                        [(imputacion)]="posicion.tipoImputacion" 
-                                        [(moneda)]="posicion.moneda" 
-                                        (eliminarPosicion)="eliminarPosicionUnicaSubPosicion($event)">
+                                    <app-tab-subposicion [(model)]="model"
+                                                         [(combos)]="combos"
+                                                         [(locale)]="locale"
+                                                         [(posicion)]="posicion"
+                                                         [(listadoSubposiciones)]="posicion.listadoSubPosiciones"
+                                                         [(imputacion)]="posicion.tipoImputacion"
+                                                         [(moneda)]="posicion.moneda"
+                                                         (eliminarPosicion)="eliminarPosicionUnicaSubPosicion($event)">
                                     </app-tab-subposicion>
                                 </div>
                                 <div *ngIf="posicion.activeMenuTab == 'Fechas'">
@@ -396,11 +393,11 @@
                     </ng-template>
 
                     <ng-template pTemplate="summary">
-                            <div>
-                                <div *ngFor="let item of model.valorTotalPorMoneda;" class="inline-flex-end">  
-                                    <p class="valorTotal p-1 textCenter">Valor Total: $ {{item.valorTotal | number:'1.2-2'}} {{item.moneda}}</p>  
-                                </div>  
+                        <div>
+                            <div *ngFor="let item of model.valorTotalPorMoneda;" class="inline-flex-end">
+                                <p class="valorTotal p-1 textCenter">Valor Total: $ {{item.valorTotal | number:'1.2-2'}} {{item.moneda}}</p>
                             </div>
+                        </div>
                     </ng-template>
                 </p-table>
                 <!-- </form> -->
@@ -420,17 +417,22 @@
     </p-footer>
 </p-confirmDialog>
 <!--fin modal eliminacion de posicion-->
-
 <!-- Modal asociar contrato marco -->
-<asociar-contrato-marco
-    [(locale)]="es"
-    [(displayAsociar)]="displayAsociar"
-    [(selectUsuarioCompras)]="model.selectUsuarioCompras"
-    [(usuarioComprasList)]="model.usuarioComprasList"
-    (cancelarAsociarEmitter)="cancelarAsociar()"
-    (asociarEmitter)="asociarCM($event)"
-    [(nroSolp)]="model.nroSolp"
-    [(listaContratos)]="listaContratos"
-    [(posiciones)]="model.posiciones">
+<asociar-contrato-marco [(locale)]="es"
+                        [(displayAsociar)]="displayAsociar"
+                        [(selectUsuarioCompras)]="model.selectUsuarioCompras"
+                        [(usuarioComprasList)]="model.usuarioComprasList"
+                        (cancelarAsociarEmitter)="cancelarAsociar()"
+                        (asociarEmitter)="asociarCM($event)"
+                        [(nroSolp)]="model.nroSolp"
+                        [(listaContratos)]="listaContratos"
+                        [(listaDePosicionesAsociar)]="listaDePosicionesAsociar"
+                        [(posiciones)]="model.posiciones">
 </asociar-contrato-marco>
 <!-- Fin modal asociar contrato marco -->
+
+<app-obtener-contrato-marco [(centroEntrega)]="centroEntrega"
+                            [(contratoMarco)]="contratoMarco"
+                            (obtenerContratoMarcoEmitter)="obtenerContratoMarco($event)"
+                            (agregarPosicionesContratoMarcoEmitter)="agregarPosicionesContratoMarco($event)">
+</app-obtener-contrato-marco>

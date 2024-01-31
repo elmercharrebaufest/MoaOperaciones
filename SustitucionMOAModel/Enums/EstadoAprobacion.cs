@@ -58,6 +58,8 @@
                     return "Rechazado por compras";
                 case EstadoAprobacion.AltaIncompleta:
                     return "CUIT no habilitado";
+                case EstadoAprobacion.AnularAprobacion:
+                    return "Anular Aprobacion";
                 default:
                     return "Estado desconocido";
             }

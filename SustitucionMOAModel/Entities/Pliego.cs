@@ -2,9 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SustitucionMOAModel.Entities
 {
@@ -26,6 +23,8 @@ namespace SustitucionMOAModel.Entities
         public bool? TieneMedioElevacion { get; set; }
         public bool? TieneAndamio { get; set; }
         public bool? TieneTecnicoSeguridad { get; set; }
+        public bool? TieneGrillaPersonal { get; set; }
+        public bool? TieneFabricacionTallerExterno { get; set; }
         public bool? TieneDescripcionTecnica { get; set; }
         public bool? TieneDocumentacionTecnica { get; set; }
         public DateTime? FechaHoraLimiteConsulta { get; set; }

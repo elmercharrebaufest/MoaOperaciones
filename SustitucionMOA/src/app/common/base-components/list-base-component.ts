@@ -77,36 +77,44 @@ export class ListBaseComponent extends BaseComponent implements OnInit {
     getData() {
         this.data = null;
         this.vaciarFiltros();
-        this.mensajeComponent.setMsgsEmpty();
-        this.spinnerComponent.showIt();
+        if(this.mensajeComponent != undefined) {
+            this.mensajeComponent.setMsgsEmpty();
+        }
+
+        if(this.spinnerComponent != undefined) {
+            this.spinnerComponent.showIt();        
+        }
+        
         this.unsubscribe();
-        this.subscription = this.service.getData(this.filtroFechaComponent.periodo, this.filtroFechaComponent.fecha_inicio, this.filtroFechaComponent.fecha_fin).subscribe(
-            (result:any) => {
-                this.data = null;
-                this.mensajeComponent.setMsgsEmpty();
-                
-                this.spinnerComponent.hideIt();
-                if (result.logout == true) {
-                    this.sessionDataService.logout();
-                }else if (result.error != undefined && result.error != "") {
-                    this.mensajeComponent.setErrorMsg(result.error);
-                } else if (result.info != undefined) {
-                    this.mensajeComponent.setInfoMsg(result.info);
-                } else {
-                    this.data = result.data;
-                    if(result.data==null && result.comprobantes && result.comprobantes.comprobantes){
-                        this.data = result.comprobantes;
-
+        if(this.filtroFechaComponent != undefined){
+            this.subscription = this.service.getData(this.filtroFechaComponent.periodo, this.filtroFechaComponent.fecha_inicio, this.filtroFechaComponent.fecha_fin).subscribe(
+                (result:any) => {
+                    this.data = null;
+                    this.mensajeComponent.setMsgsEmpty();
+                    
+                    this.spinnerComponent.hideIt();
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    }else if (result.error != undefined && result.error != "") {
+                        this.mensajeComponent.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.mensajeComponent.setInfoMsg(result.info);
+                    } else {
+                        this.data = result.data;
+                        if(result.data==null && result.comprobantes && result.comprobantes.comprobantes){
+                            this.data = result.comprobantes;
+    
+                        }
+                        this.cargarFiltrosVariables(result);
                     }
-                    this.cargarFiltrosVariables(result);
+                },
+                error => {
+                    this.spinnerComponent.hideIt();
+                    this.mensajeComponent.setErrorMsg(error.message);
                 }
-            },
-            error => {
-                this.spinnerComponent.hideIt();
-                this.mensajeComponent.setErrorMsg(error.message);
-            }
-
-        );
+            );
+        }
+      
         return false;
     }
 

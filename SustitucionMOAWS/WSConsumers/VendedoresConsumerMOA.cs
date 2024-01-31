@@ -11,11 +11,18 @@ using SustitucionMOAWS.VendedoresWebServiceMOA;
 
 namespace SustitucionMOAWS.WSConsumers
 {
-    public class VendedoresConsumerMOA
+    public class VendedoresConsumerMOA: IVendedoresConsumerMOA
     {
-        SI_MPMF_MOAOP_VENDEDORESClient service = new SI_MPMF_MOAOP_VENDEDORESClient();
+        private readonly SI_MPMF_MOAOP_VENDEDORESClient service = new SI_MPMF_MOAOP_VENDEDORESClient();
+        public VendedoresConsumerMOA()
+        {
+            service = new SI_MPMF_MOAOP_VENDEDORESClient();
+            service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
+            service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
+        }
 
-        public VendedoresWSMOAResponse request(string proveedor, List<FechaWS> fechas)
+
+        public VendedoresWSMOAResponse Request(string proveedor, List<FechaWS> fechas)
         {
             try
             {
@@ -30,8 +37,6 @@ namespace SustitucionMOAWS.WSConsumers
                     });
                 }
                 ZMPES4100[] fechasSAPArray = fechasSAP.ToArray();
-                service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
-                service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
                 ZMPES4910 error = service.SI_MPMF_MOAOP_VENDEDORES(proveedor, ref fechasSAPArray, ref salidas);
                 VendedoresWSMOAResponse result = map(error, salidas);
                 return result;
@@ -60,11 +65,18 @@ namespace SustitucionMOAWS.WSConsumers
                     estado = vendedor.ESTADO,
                     estadoMoa = "Habilitado",
                     fecha = vendedor.FECHA,
-                    idVendedor = vendedor.ID_VENDEDOR
+                    idVendedor = vendedor.ID_VENDEDOR,
+                    cuit = vendedor.CUIT_VEND
                 });
             }
             return result;
 
         }
+    }
+
+    public interface IVendedoresConsumerMOA
+    {
+        VendedoresWSMOAResponse Request(string proveedor, List<FechaWS> fechas);
+
     }
 }

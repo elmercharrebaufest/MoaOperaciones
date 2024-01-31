@@ -13,16 +13,17 @@ import { Table } from 'primeng/table';
 import { SpinnerComponent } from '../../common/view-child/spinner/spinner.component';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { EnumTipoSolpSap } from '../enum-tipo-solp-sap';
+import { Paginator } from 'primeng/paginator';
+import { PeticionDeOfertaDto, PeticionDeOfertaRevisionTecnicaDto } from '../../modelos/peticion-de-oferta-model';
+import { AdjudicacionDto, AdjudicacionPosicionDto } from '../../modelos/adjudicacion';
+import { ChatComprasDto } from '../chat-interno/chat-interno.interface';
 
 declare var $: any;
 
 @Component({
     selector: 'dashboard',
     templateUrl: `dashboard.component.html`,
-    styleUrls: ['../compras.component.css',
-     './dashboard.component.css'],
-    providers: [ComprasService]
-
+    styleUrls: ['../compras.component.css', './dashboard.component.css']
 })
 export class DashboardComponent extends ListBaseComponent {
 
@@ -39,9 +40,96 @@ export class DashboardComponent extends ListBaseComponent {
     @ViewChild(SpinnerComponent)
     protected spinnerComponent: SpinnerComponent;
 
-    @ViewChild('myCalendar', undefined) 
-    private calendar: any;
-   
+    @ViewChild('myCalendar', undefined)
+    nroSolp: string = "";
+    sap: boolean = false;
+    mantenimiento: boolean = false;
+    web: boolean = false;
+    repoAutomatica: boolean = false;
+    orden: string;
+    columnaOrden: string;
+    length = 0;
+    pageSize: number = 10;
+    pageIndex: number = 1;
+    @ViewChild('paginator') paginator: Paginator
+    public peticion: PeticionDeOfertaDto;
+    public ordenCompra: any;
+    public solicitante: boolean = true;
+    displayRevisionTecnica: boolean;
+    displayCircular: boolean = false;
+    combos: any;
+    usuariosResult: any;
+    ordenesDeCompra: AdjudicacionDto[] = [];
+    ordenDeCompra: any;
+    displayOrdenDeCompra: boolean;
+    displayChatInterno: boolean = false;
+
+    filtrosSolicitante: {
+        nroSolp: string;
+        sap: boolean;
+        mantenimiento: boolean;
+        web: boolean;
+        repoAutomatica: boolean;
+        usuarios: string[];
+        estadoSolp: string[];
+        fechaDesde: string;
+        fechaHasta: string;
+        pageIndex: number;
+    } = {
+            nroSolp: "",
+            sap: false,
+            mantenimiento: false,
+            web: false,
+            repoAutomatica: false,
+            usuarios: [],
+            estadoSolp: [],
+            fechaDesde: null,
+            fechaHasta: null,
+            pageIndex: 1
+        };
+
+    filteredfechas: any;
+    solpFecha: any = new Array();
+    fechaInicio: string = null;
+    fechaFin: string = null;
+    rangeDates: Date[];
+    tipoFiltroFecha = 1;
+    desdeDashboard: Date;
+    hastaDashboard: Date;
+    estadoSolpItem: SelectItem[];
+    selectEstadoSolp: string[] = [];
+    buscarDashboard: string;
+    fechaSolp: any;
+    hoy: Date = new Date();
+    es: any;
+    display: boolean = false;
+    tablaSolp: any[];
+    tablaSolpCopy: any[];
+    usuarioFiltro: SelectItem[];
+    selectUsuario: string[] = [];
+    cols: any[];
+    serviciosDashboard: any = "Servicios"
+    solp: Solp = new Solp();
+    usuario: string;// = "Prueba";
+    checkedFilterSap = false;
+    checkedFilterMantenimiento = false;
+    checkedFilterWeb = false;
+    verTodas: boolean = this.isAuthorized('VER TODAS SOLPS');
+    public chat: ChatComprasDto;
+
+    cards = [
+        { nombre: "Con documento de pliego", path: "/compras/solp/0", tipoSolp: "CON_PLIEGO" },
+        { nombre: "Sin pliego", path: "/compras/solp/0", tipoSolp: "SIN_PLIEGO" },
+        // { nombre: "Con documentos requerimientos", path: ""},
+        // { nombre: "Sin documento", path: ""},
+        // { nombre: "Emergencia", path: ""},
+        // { nombre: "Adicional", path: ""}
+    ]
+
+    subtitulos = [
+        { nombre: "Servicio y/o Material catalogado y sin catalogar" },
+        { nombre: "Servicio y/o Material catalogado" },
+    ]
 
     constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService, protected route: ActivatedRoute, protected router: Router, private confirmationService: ConfirmationService) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
@@ -57,56 +145,11 @@ export class DashboardComponent extends ListBaseComponent {
             today: 'Hoy',
             clear: 'Borrar'
         };
-
     }
-
-    filteredfechas: any;
-    solpFecha: any = new Array();
-    fechaInicio: any;
-    fechaFin: any;
-    rangeDates: Date[];
-    tipoFiltroFecha = 1;
-
-
-    desdeDashboard: Date;
-    hastaDashboard: Date;
-    estadoSolpItem: SelectItem[];
-    selectEstadoSolp: string[] = [];
-    buscarDashboard: string;
-    fechaSolp: any;
-    hoy: Date = new Date();
-    es: any;
-    display: boolean = false;
-    tablaSolp: any[];
-    tablaSolpCopy: any[];
-    cols: any[];
-    serviciosDashboard: any = "Servicios"
-    solp: Solp = new Solp();
-    usuario: string;// = "Prueba";
-
-    checkedFilterSap = false;
-    checkedFilterMantenimiento = false;
-    checkedFilterWeb = false;
-
-    verTodas: boolean = this.isAuthorized('VER TODAS SOLPS');
 
     showDialog() {
         this.display = true;
     }
-
-    cards = [
-        { nombre: "Con documento de pliego", path: "/compras/solp/0", tipoSolp: "CON_PLIEGO" },
-        { nombre: "Sin pliego", path: "/compras/solp/0", tipoSolp: "SIN_PLIEGO" },
-        // { nombre: "Con documentos requerimientos", path: ""},
-        // { nombre: "Sin documento", path: ""},
-        // { nombre: "Emergencia", path: ""},
-        // { nombre: "Adicional", path: ""}
-    ]
-
-    subtitulos = [
-        { nombre: "Servicio y/o Material catalogado y sin catalogar" },
-        { nombre: "Servicio y/o Material catalogado" },
-    ]
 
     goToSeccion(path: string) {
         $("#mySidenav").css({ 'right': '-270px' });
@@ -132,7 +175,7 @@ export class DashboardComponent extends ListBaseComponent {
         $("#myMenuOpen").css({ 'display': 'block' });
         $("#coverAll").fadeOut();
         let nrosol = ""
-        if(NroSolp != null) nrosol = NroSolp.toString();
+        if (NroSolp != null) nrosol = NroSolp.toString();
         let obj = Id.toString() + "," + nrosol;
 
         this.navService.navegarSeccionParam(path, obj);
@@ -140,34 +183,42 @@ export class DashboardComponent extends ListBaseComponent {
     }
 
     ngOnInit() {
+        this.recuperarFiltros();
+        this.listarUsuarioCreadorSolp();
         this.navService.setSeccionList([]);
-        this.getListarSolp();
+
         this.desdeDashboard = new Date();
-        this.hastaDashboard = new Date();        
+        this.hastaDashboard = new Date();
     }
 
+    ngAfterViewInit(): void {
+        this.getCombos();
+    }
 
     returnToTodaysDate() {
-        this.tablaSolp = this.tablaSolpCopy;
-        this.tabla.first = 0;
+        this.fechaInicio = "";
+        this.fechaFin = "";
         if (this.tablaSolp.length > 0) {
             this.mensajeComponent.setMsgsEmpty();
         }
     }
 
-
-    onSelect(event: any) {     
+    onSelect(event: any) {
         if (this.rangeDates[0] && this.rangeDates[1] == null) {
             let d = new Date(Date.parse(event));
             this.fechaInicio = `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
+            this.fechaFin = '';
         } else {
             let d = new Date(Date.parse(event));
             this.fechaFin = `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
-            if (this.rangeDates[1]) { // If second date is selected
-                this.calendar.overlayVisible = false;
-            }
-            this.filtrarTablaPorTipoSolp();
         }
+    }
+
+    listarExpand() {
+        setTimeout(() => {
+            $('[id^="ui-tabpanel-"]').css('padding', '0');
+            $('[id^="ui-tabpanel-"]').css('transition', 'none').css('animation', 'none');
+        }, 0.01);
     }
 
     filtrarPorSap() {
@@ -186,7 +237,7 @@ export class DashboardComponent extends ListBaseComponent {
     }
 
     filtrarTablaPorTipoSolp() {
-      
+
         var fechaDesde = this.fechaInicio;
         var fechaHasta = this.fechaFin + " 23:59:59";
 
@@ -212,17 +263,17 @@ export class DashboardComponent extends ListBaseComponent {
         } else if (this.checkedFilterWeb) {
             tablaPrincipal = tablaPrincipal.filter(x => x.TipoSolpSap === EnumTipoSolpSap.Web);
             this.tabla.first = 0;
-        }  this.tabla.first = 0;
+        } this.tabla.first = 0;
 
-        
-        if(fechaDesde != null && fechaHasta != null) {
+
+        if (fechaDesde != null && fechaHasta != null) {
             tablaPrincipal = tablaPrincipal.filter(x =>
                 new Date(Date.parse(x.FechaCreacion)) >= new Date(fechaDesde) &&
                 new Date(Date.parse(x.FechaCreacion)) <= new Date(fechaHasta)
             )
             this.tabla.first = 0;
-        }       
-        this.tablaSolp = tablaPrincipal;  
+        }
+        this.tablaSolp = tablaPrincipal;
 
         if (this.tablaSolp.length == 0) {
             this.mensajeComponent.setInfoMsg("No se encontraron Solps")
@@ -230,26 +281,6 @@ export class DashboardComponent extends ListBaseComponent {
         else {
             this.mensajeComponent.setMsgsEmpty();
         }
-    }
-
-
-    ngAfterViewInit(): void {
-
-        this.getCombos();
-
-        // this.tabla.filterConstraints['dateRangeFilter'] = (value, filter): boolean => {
-
-        //     if (filter[0] != null && filter[1] != null)
-        //         return value >= filter[0] &&
-        //             value <= filter[1];
-        //     else if (filter[0] != null && filter[1] == null)
-        //         return value >= filter[0]
-        //     else if (filter[0] == null && filter[1] != null)
-        //         return value <= filter[1].
-        //             else
-        //     return true;
-        // }
-
     }
 
     getStatusDocumentoSolp(data: any): String {
@@ -260,12 +291,15 @@ export class DashboardComponent extends ListBaseComponent {
         return data.PosicionesEstado && data.NroSolp != null ? '#DD441E' : '#333333';
     }
 
-    getListarSolp(){
+    getListarSolp() {
         try {
             this.spinnerComponent.showIt();
-
-            this.subscription = this.service.getListarSolp().subscribe(
+            let multiSelectValues = this.selectEstadoSolp.join(",")
+            this.subscription = this.service.getListarSolp(this.pageIndex, this.pageSize, this.orden, this.columnaOrden, this.nroSolp,
+                this.fechaInicio, this.fechaFin, this.sap, this.mantenimiento, this.web, this.repoAutomatica, multiSelectValues, this.selectUsuario.join(",")
+            ).subscribe(
                 (result: any) => {
+
                     if (result.logout == true) {
                         this.sessionDataService.logout();
                     } else if (result.error != undefined && result.error != "") {
@@ -279,11 +313,14 @@ export class DashboardComponent extends ListBaseComponent {
                             x.VincularPliego = x.TipoSolpSap == EnumTipoSolpSap.Mantenimiento || x.TipoSolpSap == EnumTipoSolpSap.SAP;
                             x.PliegoVinculado = (x.TipoSolpSap == EnumTipoSolpSap.Mantenimiento || x.TipoSolpSap == EnumTipoSolpSap.SAP) &&
                                 x.EstadoDocumento.Codigo == "CREADO";
-
                         });
                         this.tablaSolpCopy = this.tablaSolp;
                         this.tabla.first = 0;
                         this.spinnerComponent.hideIt();
+                        this.length = result.data.length > 0 ? result.data[0].ItemsTotales : 0;
+                        this.pageSize = result.data.length > 0 ? result.data[0].ItemPorPagina : 10;
+                        this.pageIndex = result.data.length > 0 ? result.data[0].Pagina : 1;
+                        this.paginator.first = this.pageIndex * this.pageSize - this.pageSize;
                     }
                 },
                 error => {
@@ -339,11 +376,15 @@ export class DashboardComponent extends ListBaseComponent {
                     } else if (result.info != undefined) {
                         this.floatMsgService.setInfoMsg(result.info);
                     } else {
+                        this.usuariosResult = result.Usuarios;
                         this.estadoSolpItem = [];
+                        this.usuarioFiltro = [];
                         result.EstadosSolpSap.forEach(cd => this.estadoSolpItem.push({
                             label: cd.Descripcion, value: cd.Id
                         }));
-
+                        result.Usuarios.forEach(x => x.forEach(d => this.usuarioFiltro.push({
+                            label: d.Id === 0 ? "" : d.Mail, value: d.Id
+                        })))
                     }
                 },
                 error => {
@@ -356,13 +397,39 @@ export class DashboardComponent extends ListBaseComponent {
             return false; //<-- Prevent Refresh
         }
 
-        return false; //<-- Prevent Refresh
+        return false;
+    }
 
+    listarUsuarioCreadorSolp() {
+        try {
+            this.subscription = this.service.listarUsuarioCreadorSolp().subscribe(
+                (result: any) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.floatMsgService.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.floatMsgService.setInfoMsg(result.info);
+                    } else {
+                        result.data.forEach(x => x.forEach(x => {
+                            if (x.Id == sessionStorage.getItem("usuarioId") && this.selectUsuario.length === 0 && !this.selectUsuario.includes(x.Id))
+                                this.selectUsuario.push(x.Id);
+                        }));
+                        this.getListarSolp();
+                    }
+                },
+                error => { this.floatMsgService.setErrorMsg(error.message); }
+            );
+        } catch (e) {
+            this.floatMsgService.setErrorMsg(e);
+            return false;
+        }
+        return false;
     }
 
     eliminarPosicionDashboard(idSolp) {
         this.confirmationService.confirm({
-            message: '¿Está seguro que desea eliminar la SOLP?',
+            message: '¿Está seguro de que desea eliminar la SOLP?',
             accept: () => {
                 this.borrarSolp(idSolp)
             },
@@ -464,4 +531,348 @@ export class DashboardComponent extends ListBaseComponent {
         }
     }
 
+    onOrder(columna: string) {
+        if (this.columnaOrden != columna) {
+            this.orden = "DESC"
+        } else {
+            this.orden = this.orden == "DESC" ? "ASC" : "DESC";
+        }
+        this.columnaOrden = columna;
+        this.getListarSolp();
+    }
+
+    handlePageEvent(e: any) {
+        this.pageSize = e.rows;
+        this.pageIndex = e.page + 1;
+        this.filtrosSolicitante = {
+            ...this.filtrosSolicitante,
+            pageIndex: this.pageIndex
+        };
+        sessionStorage.setItem('filtrosSolicitante', JSON.stringify(this.filtrosSolicitante));
+        this.getListarSolp()
+    }
+
+    obtenerPeticionDeOferta(Id) {
+        this.blockUI.start('Cargando...')
+        this.service.obtenerPeticionDeOferta(Id)
+            .subscribe(
+                (result) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    }
+                    else {
+                        this.peticion = result.data;
+                        this.displayRevisionTecnica = true;
+                        this.blockUI.stop();
+                    }
+                },
+                (error) => {
+                    this.blockUI.stop();
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+            )
+    }
+
+    obtenerPeticionDeOfertaCircular(Id) {
+        this.blockUI.start('Cargando...')
+        this.service.obtenerPeticionDeOferta(Id)
+            .subscribe(
+                (result) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    }
+                    else {
+                        this.peticion = result.data;
+                        this.displayCircular = true;
+                        this.blockUI.stop();
+                    }
+                },
+                (error) => {
+                    this.blockUI.stop();
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+            )
+    }
+
+    cerrarModalRevisionTecnica() {
+        this.displayRevisionTecnica = false;
+        this.onBuscar();
+    }
+
+    descargarArchivo({ archivoId }) {
+        this.blockUI.start("Descargando...");
+        this.service.DescargarArchivo(archivoId)
+            .subscribe(
+                (result) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    }
+                    else {
+                        var byteArray = new Uint8Array(result.FileContents);
+                        var blob = new Blob([byteArray], {
+                            type: "application/octet-stream",
+                        });
+                        this.downloadArchivoLocal(blob, result.FileDownloadName);
+                        this.blockUI.stop();
+                    }
+                },
+                (error) => {
+                    this.mensajeComponent.setErrorMsg(error.message);
+                    this.blockUI.stop();
+                }
+            )
+    }
+
+    descargarAdjuntosCotizacion({ cotizacionId }) {
+        this.blockUI.start("Descargando...");
+        this.service.DescargarAdjuntosCotizacion(cotizacionId, true)
+            .subscribe(
+                (result) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    }
+                    else {
+                        var byteArray = new Uint8Array(result.FileContents);
+                        var blob = new Blob([byteArray], {
+                            type: "application/octet-stream",
+                        });
+
+                        if (window.navigator.msSaveOrOpenBlob) {
+                            // IE11
+                            window.navigator.msSaveOrOpenBlob(
+                                blob,
+                                result.FileDownloadName
+                            );
+                        } else {
+                            var url = window.URL.createObjectURL(blob);
+                            var link = document.createElement("a");
+                            document.body.appendChild(link);
+                            link.href = url;
+                            link.download = result.FileDownloadName;
+                            link.click();
+                            setTimeout(function () {
+                                window.URL.revokeObjectURL(url);
+                            }, 0);
+                            this.blockUI.stop();
+                            return false;
+                        }
+                        this.blockUI.stop();
+                    }
+                },
+                (error) => {
+                    this.mensajeComponent.setErrorMsg(error.message);
+                    this.blockUI.stop();
+                }
+            )
+    }
+
+    grabarRevisionTecnica(event) {
+        this.blockUI.start('Grabando...');
+        this.service.grabarRevisionTecnica(this.peticion.Usuarios, event.finalizar, event.revisionTecnica)
+            .subscribe(
+                (result) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    }
+                    else {
+                        if (result) { }
+                        this.displayRevisionTecnica = false;
+                        this.blockUI.stop();
+                    }
+                },
+                (error) => {
+                    this.blockUI.stop();
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+            )
+    }
+
+    cerrarCircular() {
+        this.displayCircular = false;
+        this.onBuscar();
+    }
+
+    onBuscar() {
+        this.pageIndex = 1;
+        this.filtrosSolicitante.nroSolp = this.nroSolp;
+        this.filtrosSolicitante.sap = this.sap;
+        this.filtrosSolicitante.mantenimiento = this.mantenimiento;
+        this.filtrosSolicitante.web = this.web;
+        this.filtrosSolicitante.repoAutomatica = this.repoAutomatica;
+        this.filtrosSolicitante.usuarios = this.selectUsuario;
+        this.filtrosSolicitante.estadoSolp = this.selectEstadoSolp;
+        this.filtrosSolicitante.fechaDesde = this.fechaInicio;
+        this.filtrosSolicitante.fechaHasta = this.fechaFin;
+        this.paginator.changePage(0);
+        this.getListarSolp();
+        sessionStorage.setItem('filtrosSolicitante', JSON.stringify(this.filtrosSolicitante));
+    }
+
+    cerrarOrdenDeCompra() {
+        this.displayOrdenDeCompra = false;
+        this.onBuscar();
+
+    }
+
+    verDetalleOrdenDeCompra(nroOC: any) {
+        this.obtenerAdjudicacion(nroOC);
+        this.displayOrdenDeCompra = true;
+    }
+
+    obtenerAdjudicacion(nroOC) {
+        this.blockUI.start('Cargando...')
+        this.service.obtenerAdjudicacion(nroOC)
+            .subscribe(
+                (result) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    }
+                    else {
+                        this.ordenDeCompra = result.data;
+                        this.blockUI.stop();
+                    }
+                },
+                (error) => {
+                    this.blockUI.stop();
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+            )
+    }
+
+    listarAdjudicaciones(solpId) {
+        this.blockUI.start('Cargando...')
+        this.service.listarAdjudicaciones(solpId)
+            .subscribe(
+                (result) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    }
+                    else {
+                        if (this.ordenesDeCompra.length > 0) {
+                            for (let i = this.ordenesDeCompra.length - 1; i >= 0; i--) {
+                                if (this.ordenesDeCompra[i].Solp_Id === solpId) {
+                                    this.ordenesDeCompra.splice(i, 1);
+                                }
+                            }
+                        }
+                        this.mapData(result.data);
+                        this.blockUI.stop();
+                    }
+                },
+                (error) => {
+                    this.blockUI.stop();
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+            )
+    }
+
+    filtrarOrdenesDeCompra(solpId): AdjudicacionDto[] {
+        return this.ordenesDeCompra.filter(orden => orden.Solp_Id == solpId);
+    }
+
+    mapData(data: any[]): void {
+        data.forEach((item: any) => {
+            const adjudicacion: AdjudicacionDto = {
+                Id: item.Id,
+                Cotizacion_Id: item.Cotizacion_Id,
+                AdjudicacionPosiciones: item.AdjudicacionPosiciones.map((posicion: any) => {
+                    const adjudicacionPosicion: AdjudicacionPosicionDto = {
+                        Id: posicion.Id,
+                        Adjudicacion_Id: posicion.Adjudicacion_Id,
+                        CotizacionPosicion_Id: posicion.CotizacionPosicion_Id,
+                        Cantidad: posicion.Cantidad,
+                        SolpPosicion_Id: posicion.SolpPosicion_Id,
+                    };
+                    return adjudicacionPosicion;
+                }),
+                Solp_Id: item.Solp_Id,
+                Moneda_Id: item.Moneda_Id,
+                TextoDeCabecera: item.TextoDeCabecera,
+                CondicionesDeEntrega: item.CondicionesDeEntrega,
+                CondicionesDePago: item.CondicionesDePago,
+                Garantias: item.Garantias,
+                TipoPosicionCodigo: item.TipoPosicionCodigo || '',
+                NumeroOrdenDeCompra: item.NumeroOrdenDeCompra || '',
+                FechaCreacion: item.FechaCreacion || '',
+                Proveedor: item.Proveedor || '',
+                MonedaDescripcion: item.MonedaDescripcion || '',
+                PrecioFinal: item.PrecioFinal || 0,
+                PrecioBruto: item.PrecioBruto || 0,
+                EstadoLiberacionDetalle: item.EstadoLiberacionDetalle || '',
+            };
+            this.ordenesDeCompra.push(adjudicacion);
+        });
+    }
+
+    obtenerChatExterno(rowData) {
+        try {
+            this.blockUI.start('Cargando ');
+            this.displayChatInterno = false;
+            rowData.ChatSinLeer = false;
+            this.subscription = this.service.obtenerChat(rowData.Id)
+                .subscribe(
+                    (result: any) => {
+                        this.blockUI.stop();
+                        if (result.logout == true) {
+                            this.sessionDataService.logout();
+                        } else if (result.error != undefined && result.error != "") {
+                            this.floatMsgService.setErrorMsg(result.error);
+                        } else if (result.info != undefined) {
+                            this.floatMsgService.setInfoMsg(result.info);
+                        } else {
+                            result.Mensajes = result.Mensajes.map((x) => {
+                                x.FechaEnvioDate = new Date(
+                                    this.getDateFromAspNetFormat(x.FechaEnvioDate)
+                                );
+                                return x;
+                            });
+                            result.FechaCreacionDate = new Date(
+                                this.getDateFromAspNetFormat(result.FechaCreacionDate)
+                            );
+                            this.chat = result;
+                            this.displayChatInterno = true;
+                        };
+                    },
+                    (error) => {
+                        this.blockUI.stop();
+                        this.floatMsgService.setErrorMsg(error.message);
+                    }
+                );
+        } catch (e) {
+            this.blockUI.stop();
+            this.floatMsgService.setErrorMsg(e);
+            return false; //<-- Prevent Refresh
+        }
+        return false; //<-- Prevent Refresh
+    }
+
+    cerrarModalChat() {
+        this.displayChatInterno = false;
+        this.onBuscar();
+    }
+
+    recuperarFiltros() {
+        const filtrosGuardados = JSON.parse(sessionStorage.getItem('filtrosSolicitante'));
+        if (filtrosGuardados) {
+            this.nroSolp = filtrosGuardados.nroSolp;
+            this.sap = filtrosGuardados.sap;
+            this.mantenimiento = filtrosGuardados.mantenimiento;
+            this.web = filtrosGuardados.web;
+            this.repoAutomatica = filtrosGuardados.repoAutomatica;
+            this.selectUsuario = filtrosGuardados.usuarios;
+            this.selectEstadoSolp = filtrosGuardados.estadoSolp;
+            this.fechaInicio = filtrosGuardados.fechaDesde;
+            this.fechaFin = filtrosGuardados.fechaHasta;
+            this.pageIndex = filtrosGuardados.pageIndex;
+            if (this.fechaInicio != undefined && this.fechaInicio.length > 0) {
+                const [year, month, day] = this.fechaInicio.split('-').map(Number); //se maneja el cambio de día incorrecto por la zona horaria local
+                if (this.fechaFin != undefined && this.fechaFin.length > 0) {
+                    const [year2, month2, day2] = this.fechaFin.split('-').map(Number);
+                    this.rangeDates = [new Date(year, month - 1, day), new Date(year2, month2 - 1, day2)];
+                } else {
+                    this.rangeDates = [new Date(year, month - 1, day)];
+                }
+            }
+        }
+    }
 }

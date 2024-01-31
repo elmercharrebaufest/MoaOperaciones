@@ -12,5 +12,7 @@ namespace SustitucionMOAModel.Entities
         public string Nombre { get; set; }
         public DateTime Inicio { get; set; }
         public DateTime Fin { get; set; }
+        public bool EnviarATSA { get; set; }
+        public bool PermitirAltas { get; set; }
     }
 }

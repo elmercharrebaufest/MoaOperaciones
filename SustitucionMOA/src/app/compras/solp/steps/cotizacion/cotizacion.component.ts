@@ -1,8 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, FormControl, Validators, AbstractControl } from '@angular/forms';
-import { ConfirmationService } from 'primeng/api';
-
+import { ConfirmationService, MessageService, SelectItem } from 'primeng/api';
 import { ListBaseComponent } from '../../../../common/base-components/list-base-component'
 import { SessionDataService } from '../../../../common/services/SessionDataService';
 import { SecurityService } from '../../../../common/services/SecurityService';
@@ -13,6 +12,7 @@ import { ComprasService } from '../../../compras.service'
 import { Solp } from '../../solp';
 import { ValidadorPasoSolpService } from '../../../validadorPasoSolpService';
 import { EnumPasoSolp } from '../../../enum-paso-solp';
+import { OrdenDeCompraSap } from '../../../../modelos/ordenDeCompraSap';
 
 declare var $: any;
 
@@ -20,33 +20,43 @@ declare var $: any;
     selector: 'cotizacion',
     templateUrl: `cotizacion.component.html`,
     styleUrls: ['../../../compras.component.css'],
+    providers: [ComprasService, MessageService]
 })
 export class CotizacionComponent extends ListBaseComponent {
 
     @Input('model')
     protected model: Solp;
-
     @Input('locale')
     protected locale: any;
 
-    //validaciones
+    @Output() ordenDeCompraSap: OrdenDeCompraSap;
+    @Output() onEstCompleto = new EventEmitter<any>();
     formularioCotizacion: FormGroup;
 
     camposObligatorios: any[] = [
-        { campo: 'dias', esObligatorio: true}
+        { campo: 'dias', esObligatorio: true }
     ];
 
-    @Output() onEstCompleto = new EventEmitter<any>();
+    proveedorSeleccionado: any;
+    proveedores: any[] = new Array();
+    estaFinalizada: boolean;
+    mostrar: boolean;
+    liberadoresJefes: SelectItem[] = [];
+    liberadoresGerentes: SelectItem[] = [];
+    liberadoresDirectores: SelectItem[] = [];
+    selectJefes: number[] = [];
+    selectGerentes: number[] = [];
+    selectDirectores: number[] = [];
 
     constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService,
         protected securityService: SecurityService, protected floatMsgService: FloatMsgService,
         protected modalService: ModalService, protected route: ActivatedRoute, protected router: Router
         , private formBuilder: FormBuilder, private confirmationService: ConfirmationService,
-        private validadorPasoSolpService : ValidadorPasoSolpService) {
+        private validadorPasoSolpService: ValidadorPasoSolpService, private messageService: MessageService) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
     }
 
-    mostrarValidacion(campoAValidar){
+    mostrarValidacion(campoAValidar) {
         let camposVacios = this.camposObligatorios.find(x => x.campo == campoAValidar && x.esObligatorio);
         return (camposVacios != null && this.mostrarError(campoAValidar) !== null);
     }
@@ -63,7 +73,7 @@ export class CotizacionComponent extends ListBaseComponent {
     validatorDias(control: AbstractControl): { [key: string]: boolean } | null {
         let diasNoSeleccionados = 0;
         for (let index = 0; index < control.value.length; index++) {
-            const dia =  control.value[index];
+            const dia = control.value[index];
             if (!dia.selected) {
                 diasNoSeleccionados = diasNoSeleccionados + 1;
             }
@@ -93,7 +103,15 @@ export class CotizacionComponent extends ListBaseComponent {
             //ejecucion: new FormControl('', [Validators.required]),
             comienzoJornadaLaboral: new FormControl('', Validators.required),
             terminoJornadaLaboral: new FormControl('', Validators.required),
-            dias: new FormControl(this.model.jornadaLaboralDias, [Validators.required, this.validatorDias])
+            dias: new FormControl(this.model.jornadaLaboralDias, [Validators.required, this.validatorDias]),
+            trabajoHecho: new FormControl('', Validators.required),
+            proveedorSeleccionado: new FormControl('', Validators.required),
+            adicional: new FormControl('', Validators.required),
+            ordenDeCompra: new FormControl({ value: '', disabled: this.model.deshabilitarAdicional }, Validators.required),
+            urgencia: new FormControl('', Validators.required),
+            jefes: new FormControl('', Validators.required),
+            gerentes: new FormControl('', Validators.required),
+            directores: new FormControl('', Validators.required),
         });
 
         this.validadorPasoSolpService.formulario = this.formularioCotizacion;
@@ -103,17 +121,43 @@ export class CotizacionComponent extends ListBaseComponent {
 
         this.model.cargoPasoCuatro = true;
 
+        if (this.model.proveedorAsignado_Id) {
+            this.proveedorSeleccionado = {
+                Id: this.model.proveedorAsignado_Id,
+                RazonSocial: this.model.proveedorAsignado
+            }
+        }
+
+        if (this.model.ordenDeCompra) {
+            this.obtenerOrdenDeCompra();
+        } else {
+            this.model.ordenDeCompra = "";
+        }
+
+        if (this.model.nroSolp) {
+            this.estaFinalizada = true
+        } else {
+            this.estaFinalizada = false
+        }
+
+        this.listarLiberadorSap();
     }
 
-    
-    ngOnDestroy()
-    {
+    ngOnDestroy() {
         super.ngOnDestroy();
-        this.onEstCompleto.emit({codigo :EnumPasoSolp.PliegoCotizacion, esPasoInvalido : this.validadorPasoSolpService.esPasoInvalido()});
+        this.onEstCompleto.emit({ codigo: EnumPasoSolp.PliegoCotizacion, esPasoInvalido: this.validadorPasoSolpService.esPasoInvalido() });
     }
 
     uploadHandler(filesUpload: any): void {
         this.model.archivosCotizacionesNuevos = filesUpload["files"];
+        var archivoWeb = this.model.archivosCotizacionesNuevos.reduce((sum, file) => sum + file.size, 0);
+        if (archivoWeb > 10000000) {
+            if (this.model.archivosCotizacionesNuevos.length > 0) {
+                this.eliminarAdjuntoNuevo(this.model.archivosCotizacionesNuevos[this.model.archivosCotizacionesNuevos.length - 1])
+            }
+            this.floatMsgService.setErrorMsg("El archivo adjunto no debe superar los 10Mb");
+        }
+        this.validarChecks();
     }
 
     private downloadArchivoLocal(blob: Blob, nombreArchivo: string): void {
@@ -170,16 +214,18 @@ export class CotizacionComponent extends ListBaseComponent {
     eliminarAdjuntoNuevo(archivo): void {
         var indice = this.model.archivosCotizacionesNuevos.indexOf(archivo)
         this.model.archivosCotizacionesNuevos.splice(indice, 1)
+        this.validarChecks();
     }
 
     eliminarAdjuntoGuardado(archivo): void {
         var indice = this.model.archivosCotizaciones.indexOf(archivo)
         this.model.archivosCotizaciones.splice(indice, 1)
+        this.validarChecks();
     }
 
     eliminarArchivo(esAdjuntoNuevo: boolean, archivo: any) {
         this.confirmationService.confirm({
-            message: '�Est� seguro que desea eliminar el archivo?',
+            message: '¿Está seguro de que desea eliminar el archivo?',
             accept: () => {
                 esAdjuntoNuevo ? this.eliminarAdjuntoNuevo(archivo) : this.eliminarAdjuntoGuardado(archivo)
             },
@@ -187,6 +233,228 @@ export class CotizacionComponent extends ListBaseComponent {
 
             }
         });
-
+        this.validarChecks();
     }
-}
+
+    searchProveedor(event) {
+        try {
+            this.subscription = this.service.listarProveedores(event.query).subscribe(
+                (result: any) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.floatMsgService.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.floatMsgService.setInfoMsg(result.info);
+                    } else {
+                        this.proveedores = result.data;
+                    }
+                },
+                error => {
+                    this.floatMsgService.setErrorMsg(error.message);
+                });
+        } catch (e) {
+            this.floatMsgService.setErrorMsg(e);
+            return false; //<-- Prevent Refresh
+        }
+        return false; //<-- Prevent Refresh
+    }
+
+    selectProveedor(event) {
+        try {
+            this.model.proveedorAsignado_Id = event.Id;
+            this.model.proveedorAsignado = event.RazonSocial;
+        } catch (e) {
+            this.floatMsgService.setErrorMsg(e);
+        }
+    }
+
+    validarChecks() {
+        this.model.validacionCheck = true;
+
+        if (this.model.trabajoHecho == true || this.model.adicional == true || this.model.urgencia == true) {
+
+            if ((this.model.archivosCotizaciones == null || this.model.archivosCotizaciones.length == 0) && (this.model.archivosCotizacionesNuevos == null || this.model.archivosCotizacionesNuevos.length == 0)) {
+                this.model.mensajeCotizacion = "Debe adjuntar un archivo en el paso #4";
+                this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: `${this.model.mensajeCotizacion}` });
+                this.model.validacionCheck = false;
+            }
+
+            if (this.model.observacionesCotizacion == "" || this.model.observacionesCotizacion == undefined || this.model.observacionesCotizacion == null) {
+                this.model.mensajeCotizacion = "Debe agregar una observación en el paso #4";
+                this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: `${this.model.mensajeCotizacion}` });
+                this.model.validacionCheck = false;
+            }
+
+            if (this.model.trabajoHecho == true && this.model.adicional != true) {
+                if (!this.proveedorSeleccionado || this.proveedorSeleccionado == "" || typeof this.proveedorSeleccionado === "undefined") {
+                    this.model.mensajeCotizacion = "Debe agregar un proveedor en el paso #4";
+                    this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: `${this.model.mensajeCotizacion}` });
+                    this.model.validacionCheck = false;
+                }
+            }
+
+            if (this.model.adicional == true) {
+                if (!this.model.ordenDeCompra || this.model.ordenDeCompra == "" || typeof this.model.ordenDeCompra === "undefined") {
+                    this.model.mensajeCotizacion = "Debe agregar un número de OC en el paso #4";
+                    this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: `${this.model.mensajeCotizacion}` });
+                    this.model.validacionCheck = false;
+                }
+            }
+
+            if (this.model.adicional == true) {
+                if (this.model.ordenDeCompra == null || this.model.ordenDeCompra.length < 10) {
+                    this.model.mensajeCotizacion = "Debe ingresar los 10 números de OC en el paso #4";
+                    this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: `${this.model.mensajeCotizacion}` });
+                    this.model.validacionCheck = false;
+                }
+            }
+
+            if (this.model.urgencia == true && this.selectJefes.length == 0) {
+                this.model.mensajeCotizacion = "Debe elegir al menos un jefe en el paso #4 para enviarle la notificación de urgencia";
+                this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: `${this.model.mensajeCotizacion}` });
+                this.model.validacionCheck = false;
+            }
+        }
+
+        return this.model.validacionCheck;
+    }
+
+    limpiarCheck() {
+        if (this.model.trabajoHecho == undefined || this.model.trabajoHecho == false) {
+            if (!this.estaFinalizada) {
+                this.model.proveedorAsignado = "";
+                this.model.proveedorAsignado_Id = null;
+                this.proveedorSeleccionado = null;
+            }
+        }
+    }
+
+    limpiarCheckAdicional() {
+        if (!this.estaFinalizada && this.model.ordenDeCompra != "") {
+            this.model.ordenDeCompra = "";
+            this.ordenDeCompraSap.Cabecera.RazonSocialProveedor = "";
+            this.ordenDeCompraSap.Cabecera.CodigoProveedor = "";
+            this.ordenDeCompraSap.Cabecera.OrdenDeCompra = "";
+            this.model.proveedorAsignado = "";
+        }
+    }
+
+    obtenerOrdenDeCompra() {
+        try {
+            if (this.model.ordenDeCompra.length >= 10) {
+                this.subscription = this.service.obtenerOrdenDeCompra(this.model.ordenDeCompra).subscribe(
+                    (result: any) => {
+                        if (result.logout == true) {
+                            this.sessionDataService.logout();
+                        } else if (result.error != undefined && result.error != "") {
+                            this.floatMsgService.setErrorMsg(result.error);
+                        } else if (result.info != undefined) {
+                            this.floatMsgService.setInfoMsg(result.info);
+                        } else {
+                            if (this.estaFinalizada == true && this.model.proveedorIdAdicional && this.model.proveedorIdAdicional != result.data.Cabecera.Usuario_Id) {
+                                this.floatMsgService.setErrorMsg("La OC ingresada debe ser para el proveedor " + this.model.proveedorRazonSocialAdicional);
+                                this.model.ordenDeCompra = "";
+                            } else {
+                                this.ordenDeCompraSap = result.data;
+
+                                if (this.ordenDeCompraSap.Error != null) {
+                                    this.floatMsgService.setErrorMsg(this.ordenDeCompraSap.Error.Mensaje);
+                                    this.limpiarCheckAdicional();
+                                } else {
+                                    this.model.proveedorAsignado_Id = this.ordenDeCompraSap.Cabecera.Usuario_Id;
+                                    this.model.ordenDeCompra = this.ordenDeCompraSap.Cabecera.OrdenDeCompra;
+                                    this.model.proveedorAsignado = this.ordenDeCompraSap.Cabecera.RazonSocialProveedor;
+                                    this.model.monedaOC = this.ordenDeCompraSap.Cabecera.Moneda;
+                                    this.model.usuarioComprasId = this.ordenDeCompraSap.Cabecera.UsuarioCompras_Id;
+
+                                    this.model.selectUsuarioCompras = this.model.usuarioComprasId > 0
+                                        ? this.model.usuarioComprasList.find(x => x.Id === this.model.usuarioComprasId)
+                                        : this.model.usuarioComprasList[0];
+
+                                }
+                            }
+                        }
+                    },
+                    error => {
+                        this.floatMsgService.setErrorMsg(error.message);
+                    });
+            }
+            this.limpiarCheck();
+        } catch (e) {
+            this.floatMsgService.setErrorMsg(e);
+            return false; //<-- Prevent Refresh
+        }
+        return false; //<-- Prevent Refresh
+    }
+
+    validarFinalizada() {
+        if (this.estaFinalizada) {
+            return true;
+        }
+        return false;
+    }
+
+    listarLiberadorSap() {
+        if (this.model.urgencia == true) {
+            try {
+                this.subscription = this.service.listarLiberadorSap().subscribe(
+                    (result: any) => {
+                        if (result.logout == true) {
+                            this.sessionDataService.logout();
+                        } else if (result.error != undefined && result.error != "") {
+                            this.floatMsgService.setErrorMsg(result.error);
+                        } else if (result.info != undefined) {
+                            this.floatMsgService.setInfoMsg(result.info);
+                        } else {
+                            const listaResult = result.data;
+                            //tildo en los select los que son obligatorios:
+                            this.selectJefes = listaResult.filter(g => g.Cargo === 'Jefe' && g.Obligatorio).map(j => j.Id);
+                            this.selectGerentes = listaResult.filter(g => g.Cargo === 'Gerente' && g.Obligatorio).map(g => g.Id);
+                            this.selectDirectores = listaResult.filter(g => g.Cargo === 'Director' && g.Obligatorio).map(d => d.Id);
+                            //los agrego a la solp:
+                            const todosSelect = [...this.selectJefes, ...this.selectGerentes, ...this.selectDirectores];
+                            const nuevos = todosSelect.filter(Id => !this.model.liberadoresSap.some(lib => lib.LiberadorSap_Id === Id)).map(Id => ({ LiberadorSap_Id: Id }));
+                            this.model.liberadoresSap = this.model.liberadoresSap.concat(nuevos);
+                            console.log(this.model.liberadoresSap);
+                            //cargo los select con todos los liberadores segun su cargo:
+                            this.liberadoresJefes = listaResult.filter(j => j.Cargo === 'Jefe').map(j => ({ label: j.NombreCompleto, value: j.Id, disabled: j.Obligatorio }));
+                            this.liberadoresGerentes = listaResult.filter(g => g.Cargo === 'Gerente').map(g => ({ label: g.NombreCompleto, value: g.Id, disabled: g.Obligatorio }));
+                            this.liberadoresDirectores = listaResult.filter(d => d.Cargo === 'Director').map(d => ({ label: d.NombreCompleto, value: d.Id, disabled: d.Obligatorio }));
+                            console.log(this.selectGerentes);
+                            //tildo en los select los que ya trae la solp en su atributo liberadoresSap
+                            var liberadoresIds = this.liberadoresJefes.map(x => x.value);
+                            this.selectJefes = this.selectJefes.concat(this.model.liberadoresSap.map(lib => lib.LiberadorSap_Id)
+                                .filter(id => !this.selectJefes.includes(id) && liberadoresIds.includes(id)));
+                            liberadoresIds = this.liberadoresGerentes.map(x => x.value);
+                            this.selectGerentes = this.selectGerentes.concat(this.model.liberadoresSap.map(lib => lib.LiberadorSap_Id)
+                                .filter(id => !this.selectGerentes.includes(id) && liberadoresIds.includes(id)));
+                            liberadoresIds = this.liberadoresDirectores.map(x => x.value);
+                            this.selectDirectores = this.selectDirectores.concat(this.model.liberadoresSap.map(lib => lib.LiberadorSap_Id)
+                                .filter(id => !this.selectDirectores.includes(id) && liberadoresIds.includes(id)));
+
+                            this.validarChecks();
+                        }
+                    },
+                    error => {
+                        this.floatMsgService.setErrorMsg(error.message);
+                    });
+            } catch (e) {
+                this.floatMsgService.setErrorMsg(e);
+                return false;
+            }
+            return false;
+        }
+    }
+
+    onLiberadoresChange(event) {
+        const existingIndex = this.model.liberadoresSap.findIndex(lib => lib.LiberadorSap_Id === event.itemValue);
+        if (existingIndex !== -1) {
+            this.model.liberadoresSap.splice(existingIndex, 1);
+        } else {
+            this.model.liberadoresSap.push({ LiberadorSap_Id: event.itemValue });
+        }
+        this.validarChecks();
+    }
+
+};

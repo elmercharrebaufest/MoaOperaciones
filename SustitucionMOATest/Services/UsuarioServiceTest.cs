@@ -1,12 +1,15 @@
 ﻿using Moq;
 using NUnit.Framework;
+using SustitucionMOA.Jobs;
 using SustitucionMOAAssets;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using SustitucionMOARepositorio;
+using SustitucionMOARepositorio.Repositorios.Interfaces;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Services;
+using SustitucionMOAWS.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,16 +21,18 @@ namespace SustitucionMOATest.Services
     {
 
         private UsuarioService target;
-        private Mock<IRepositorio> repositorioMock;
+        private Mock<IRepositorioUsuario> repositorioUsuarioMock;
         private Mock<IVendedorService> vendedorServiceMock;
+        private Mock<IAzureADConsumer> azureADConsumerMock; 
 
 
         [SetUp]
         public void SetUp()
         {
-            repositorioMock = new Mock<IRepositorio>();
+            repositorioUsuarioMock = new Mock<IRepositorioUsuario>();
             vendedorServiceMock = new Mock<IVendedorService>();
-            target = new UsuarioService(repositorioMock.Object, vendedorServiceMock.Object);
+            azureADConsumerMock = new Mock<IAzureADConsumer>();
+            target = new UsuarioService(repositorioUsuarioMock.Object, vendedorServiceMock.Object, azureADConsumerMock.Object);
         }
 
         [Test]
@@ -53,7 +58,7 @@ namespace SustitucionMOATest.Services
                 Roles = new List<Rol> { new Rol { Nombre = "GRANOS", Codigo = "GRAN" } }
             };
 
-            repositorioMock
+            repositorioUsuarioMock
                 .Setup(y => y.Obtener<TipoUsuario>(It.IsAny<int>()))
                 .Returns(new TipoUsuario
                 {
@@ -62,7 +67,7 @@ namespace SustitucionMOATest.Services
                     NombreCorto = "GRAN"
                 });
 
-            repositorioMock
+            repositorioUsuarioMock
                     .Setup(y => y.Obtener<Proveedor>(It.IsAny<int>()))
                     .Returns(new Proveedor
                     {
@@ -73,7 +78,7 @@ namespace SustitucionMOATest.Services
                     });
 
 
-            repositorioMock
+            repositorioUsuarioMock
               .Setup(y => y.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>()))
               .Returns(new Usuario
               {
@@ -86,7 +91,7 @@ namespace SustitucionMOATest.Services
               });
 
 
-            repositorioMock
+            repositorioUsuarioMock
                     .Setup(y => y.Obtener(It.IsAny<Expression<Func<Rol, bool>>>()))
                     .Returns(new Rol { Id = 1, Nombre = "Granos", Codigo = "GRAN" });
 
@@ -94,12 +99,12 @@ namespace SustitucionMOATest.Services
 
             var result = target.HabilitarUsuario(mailUsuario);
 
-            repositorioMock.Verify(x => x.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>()), Times.Once);
+            repositorioUsuarioMock.Verify(x => x.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>()), Times.Once);
 
-            var resultUser = repositorioMock.Object.Obtener<Usuario>(u => u.Mail == mailUsuario);
+            var resultUser = repositorioUsuarioMock.Object.Obtener<Usuario>(u => u.Mail == mailUsuario);
 
-            repositorioMock.Verify(x => x.Agregar(It.IsAny<Rol>()), Times.Never);
-            repositorioMock.Verify(x => x.GuardarCambios(), Times.Once);
+            repositorioUsuarioMock.Verify(x => x.Agregar(It.IsAny<Rol>()), Times.Never);
+            repositorioUsuarioMock.Verify(x => x.GuardarCambios(), Times.Once);
 
             Assert.AreEqual(expected, result);
             Assert.AreEqual(EstadoAprobacion.Aprobado, resultUser.ObtenerProveedor().EstadoAprobacion);
@@ -130,7 +135,7 @@ namespace SustitucionMOATest.Services
                 Roles = new List<Rol> { new Rol { Nombre = "GRANOS", Codigo = "GRAN" } }
             };
 
-            repositorioMock
+            repositorioUsuarioMock
                 .Setup(y => y.Obtener<TipoUsuario>(It.IsAny<int>()))
                 .Returns(new TipoUsuario
                 {
@@ -139,7 +144,7 @@ namespace SustitucionMOATest.Services
                     NombreCorto = "GRAN"
                 });
 
-            repositorioMock
+            repositorioUsuarioMock
               .Setup(y => y.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>()))
               .Returns(new Usuario
               {
@@ -151,7 +156,7 @@ namespace SustitucionMOATest.Services
                   Proveedores = new List<Proveedor> { proveedor }
               });
 
-            repositorioMock
+            repositorioUsuarioMock
                     .Setup(y => y.Obtener(It.IsAny<Expression<Func<Rol, bool>>>()))
                     .Returns(new Rol { Id = 1, Nombre = "Granos", Codigo = "GRAN" });
 
@@ -159,14 +164,14 @@ namespace SustitucionMOATest.Services
 
             var result = target.DeshabilitarUsuario(mailUsuario);
 
-            repositorioMock.Verify(x => x.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>()), Times.Once);
+            repositorioUsuarioMock.Verify(x => x.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>()), Times.Once);
 
-            repositorioMock.Verify(x => x.Obtener(It.IsAny<Expression<Func<Rol, bool>>>()), Times.Once);
+            repositorioUsuarioMock.Verify(x => x.Obtener(It.IsAny<Expression<Func<Rol, bool>>>()), Times.Once);
 
-            var resultUser = repositorioMock.Object.Obtener<Usuario>(u => u.Mail == mailUsuario);
+            var resultUser = repositorioUsuarioMock.Object.Obtener<Usuario>(u => u.Mail == mailUsuario);
 
-            repositorioMock.Verify(x => x.Agregar(It.IsAny<Rol>()), Times.Never);
-            repositorioMock.Verify(x => x.GuardarCambios(), Times.Once);
+            repositorioUsuarioMock.Verify(x => x.Agregar(It.IsAny<Rol>()), Times.Never);
+            repositorioUsuarioMock.Verify(x => x.GuardarCambios(), Times.Once);
 
             Assert.AreEqual(expected, result);
             Assert.AreEqual(EstadoAprobacion.Deshabilitado, resultUser.ObtenerProveedor().EstadoAprobacion);
@@ -180,7 +185,7 @@ namespace SustitucionMOATest.Services
             var mailUsuario = "existente@mail.com";
             string usuarioSap = "FOSSIM";
 
-            repositorioMock
+            repositorioUsuarioMock
               .Setup(y => y.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>()))
               .Returns(new Usuario
               {
@@ -199,7 +204,7 @@ namespace SustitucionMOATest.Services
                 new Rol { Id = 2, Codigo = "Dos" }
             };
 
-            repositorioMock
+            repositorioUsuarioMock
                 .Setup(x => x.Obtener(It.IsAny<Expression<Func<Rol, bool>>>()))
                 .Returns<Expression<Func<Rol, bool>>>(expr => rolesList.Where(expr.Compile()).FirstOrDefault());
 
@@ -211,11 +216,11 @@ namespace SustitucionMOATest.Services
 
             var result = target.GuardarRoles(idRoles, IdUsuario, usuarioSap);
 
-            repositorioMock.Verify(x => x.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>()), Times.Once);
+            repositorioUsuarioMock.Verify(x => x.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>()), Times.Once);
 
-            repositorioMock.Verify(x => x.GuardarCambios(), Times.Once);
+            repositorioUsuarioMock.Verify(x => x.GuardarCambios(), Times.Once);
 
-            var resultUser = repositorioMock.Object.Obtener<Usuario>(u => u.Mail == mailUsuario);
+            var resultUser = repositorioUsuarioMock.Object.Obtener<Usuario>(u => u.Mail == mailUsuario);
 
             Assert.AreEqual(expected, result);
             Assert.AreEqual(2, resultUser.Roles.Count);
@@ -255,7 +260,7 @@ namespace SustitucionMOATest.Services
                       }
             };
 
-            repositorioMock
+            repositorioUsuarioMock
                 .Setup(y => y.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>()))
                 .Returns(usuario);
 
@@ -265,7 +270,7 @@ namespace SustitucionMOATest.Services
                 new Rol { Id = 2, Codigo = "Otro" }
             };
 
-            repositorioMock
+            repositorioUsuarioMock
                 .Setup(x => x.Obtener(It.IsAny<Expression<Func<Rol, bool>>>()))
                 .Returns<Expression<Func<Rol, bool>>>(expr => rolesList.Where(expr.Compile()).FirstOrDefault());
 
@@ -277,11 +282,11 @@ namespace SustitucionMOATest.Services
 
             var result = target.GuardarRoles(idRoles, IdUsuario, usuarioSap);
 
-            repositorioMock.Verify(x => x.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>()), Times.Once);
+            repositorioUsuarioMock.Verify(x => x.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>()), Times.Once);
 
-            repositorioMock.Verify(x => x.GuardarCambios(), Times.Once);
+            repositorioUsuarioMock.Verify(x => x.GuardarCambios(), Times.Once);
 
-            var resultUser = repositorioMock.Object.Obtener<Usuario>(u => u.Mail == mailUsuario);
+            var resultUser = repositorioUsuarioMock.Object.Obtener<Usuario>(u => u.Mail == mailUsuario);
 
             Assert.IsEmpty(usuario.Proveedores.First().HistorialAprobaciones);
             Assert.AreEqual(expected, result);
@@ -308,7 +313,7 @@ namespace SustitucionMOATest.Services
         {
             var mailUsuario = "existente@mail.com";
 
-            repositorioMock
+            repositorioUsuarioMock
               .Setup(y => y.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>()))
               .Returns(new Usuario
               {
@@ -323,10 +328,10 @@ namespace SustitucionMOATest.Services
 
             target.SeccionVisitada(mailUsuario, "noEstaba");
 
-            repositorioMock.Verify(x => x.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>()), Times.Once);
-            repositorioMock.Verify(x => x.GuardarCambios(), Times.Once);
+            repositorioUsuarioMock.Verify(x => x.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>()), Times.Once);
+            repositorioUsuarioMock.Verify(x => x.GuardarCambios(), Times.Once);
 
-            var resultUser = repositorioMock.Object.Obtener<Usuario>(u => u.Mail == mailUsuario);
+            var resultUser = repositorioUsuarioMock.Object.Obtener<Usuario>(u => u.Mail == mailUsuario);
 
             Assert.AreEqual(expected, resultUser.SeccionesVisitadas);
         }

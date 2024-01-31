@@ -198,7 +198,7 @@ export class EdicionComponent extends BaseComponent implements OnInit {
     this.spinnerComponent.showIt();
     try {
       this.unsubscribe();
-      this.subscription = this.service.getCosechas().subscribe(
+      this.subscription = this.service.getCosechasCampo().subscribe(
         (result:any) => {
           this.spinnerComponent.hideIt();
           if (result.logout == true) {

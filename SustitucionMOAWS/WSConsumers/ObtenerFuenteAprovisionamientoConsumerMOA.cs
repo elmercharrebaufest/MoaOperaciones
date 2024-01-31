@@ -50,9 +50,9 @@ namespace SustitucionMOAWS.WSConsumers
         {
             FuenteAprovisionamientoWSMOAResponse result = new FuenteAprovisionamientoWSMOAResponse();
             result.ContratosAprovisionamiento = new List<FuenteAprovisionamiento> { };
-    
-            
-                foreach (var contrato in EX_FUENTE)
+
+
+            foreach (var contrato in EX_FUENTE.Where(a => !string.IsNullOrEmpty(a.AGREEMENT)).ToList())
                 {
                     result.ContratosAprovisionamiento.Add(new FuenteAprovisionamiento()
                     {

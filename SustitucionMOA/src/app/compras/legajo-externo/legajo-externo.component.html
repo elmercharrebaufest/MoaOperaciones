@@ -1,0 +1,96 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Legajo de Orden de Compra</title>
+</head>
+<body>
+    <div *ngIf="cargarPantalla && !legajo.ListaLegajos" class="card-horizontal">
+        <div class="card-horizontal-body">
+            <h4><b>No existe un legajo correspondiente a la URL ingresada</b></h4>
+        </div>
+    </div>
+    <div *ngIf="cargarPantalla && legajo.ListaLegajos && legajo.ListaLegajos.length == 0" class="card-horizontal">
+        <div class="card-horizontal-body">
+            <h4><b>Este legajo no contiene documentos.</b></h4>
+        </div>
+    </div>
+    <div *ngIf="cargarPantalla && legajo.ListaLegajos && legajo.ListaLegajos.length > 0">
+        <div class="centrar marginTop">
+            <h4><b>Legajo de la Orden de Compra N° {{ legajo.NroOrdenDeCompra }}</b></h4>
+        </div>
+        <div class="centrar">
+            <h5>Proveedor: <b>{{ legajo.Proveedor.RazonSocial }}</b> (CUIT {{ legajo.Proveedor.CUIT }}) - Número de SOLP: <b>{{ legajo.NroSolp }}</b></h5>
+        </div>
+        <hr />
+        <div class="marginTop">
+            <div class="tabla-scroll">
+                <table class="display nowrap dataTable dtr-inline rounded shadow animate pagos-emitidos-ng-table" role="grid" style="width: 95%">
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Tipo</th>
+                            <th>Observación</th>
+                            <th>Usuario</th>
+                            <th>Descargar</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let item of legajo.ListaLegajos">
+                            <td>{{ item.FechaFormateado }}</td>
+                            <td>{{ item.Tipo }}</td>
+                            <td>{{ item.Observacion }}</td>
+                            <td>{{ item.Usuario.Mail }}</td>
+                            <td>
+                                <span *ngIf="item.ArchivoId != null">
+                                    <img style="cursor:pointer;" src="./Content/images/icons/descargar.svg" alt="descargar"
+                                         (click)="descargarArchivo(item.ArchivoId, item.Tipo)" />
+                                </span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+            </div>
+            <div class="row myRow centrar marginTop">
+                <button type="button" class="btn btn-primary botonesComprasColor" (click)="descargarLegajo()">Descargar Todo</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+<style>
+    .centrar {
+        display: flex;
+        justify-content: center;
+        width: 95%;
+    }
+
+    .marginTop {
+        margin-top: 20px;
+    }
+
+    .tabla-scroll {
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+
+    .card-horizontal {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        background-color: #ffd0d0;
+        border-radius: 15px;
+        box-shadow: 0 4px 4px rgba(0, 0, 0, 0.1);
+        margin: 80px;
+        padding: 30px;
+    }
+
+    .card-horizontal-body {
+        justify-content: center;
+        display: flex;
+        flex: 1;
+        margin-left: 10px;
+    }
+</style>

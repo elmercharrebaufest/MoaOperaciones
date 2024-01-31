@@ -2,9 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SustitucionMOAModel.Entities
 {
@@ -20,7 +17,7 @@ namespace SustitucionMOAModel.Entities
         public DateTime? FechaEntregaServicio { get; set; }
         public DateTime? FechaLiberacion { get; set; }
         public int? PlazoEntrega { get; set; }
-        public int? Centro_Id { get; set; }
+        public int Centro_Id { get; set; }
         public int? Almacen_Id { get; set; }
         public string NombreEntrega { get; set; }
         public string CalleEntrega { get; set; }
@@ -56,8 +53,9 @@ namespace SustitucionMOAModel.Entities
         public string ProveedorFijo { get; set; }
         public string OrganizacionCompras { get; set; }
         public string NumeroPedido { get; set; }
-
-
+        public int? ProveedorAdjudicado_Id { get; set; }
+        public string RegistroInfoNro { get; set; }
+        public string OrganizacionDeComprasCodigo { get; set; }
 
 
         public int? CantidadSubposicionesEnSAP { get; set; }
@@ -93,9 +91,13 @@ namespace SustitucionMOAModel.Entities
         public virtual TablaSap TipoImputacionSap { get; set; }
         [ForeignKey("ProvinciaId")]
         public virtual Provincia Provincia { get; set; }
-
+        [ForeignKey("ProveedorAdjudicado_Id")]
+        public virtual Usuario ProveedorAdjudicado { get; set; }
         public virtual ICollection<SolpSubposicion> Subposiciones { get; set; }
         public virtual ICollection<SolpProveedor> Proveedores { get; set; }
+
+        [InverseProperty("SolpPosicion")]
+        public virtual ICollection<PeticionDeOfertaSolpPosicion> Peticiones { get; set; }
 
     }
 }

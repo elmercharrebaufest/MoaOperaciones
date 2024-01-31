@@ -1,4 +1,4 @@
-import { Component,OnInit, ViewChild } from '@angular/core';
+import { Component, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { ActivatedRoute, Params } from '@angular/router';
 import { animate, style, transition, trigger } from '@angular/animations';
 
@@ -32,6 +32,8 @@ import { Solp } from './solp';
 import { SolpPosicion } from './solp-posicion';
 import { EmailComposeModel } from '../../common/email-compose/email-compose.model';
 import { EmailComposeService } from '../../common/email-compose/email-compose.service';
+import { CotizacionComponent } from './steps/cotizacion/cotizacion.component';
+import { OrdenDeCompraSap } from '../../modelos/ordenDeCompraSap';
 
 @Component({
     selector: 'app-solp',
@@ -76,6 +78,8 @@ export class SolpComponent extends BaseComponent implements OnInit {
     @ViewChild(DashboardComponent)
     protected dashboard: DashboardComponent;
 
+    @Input() ordenDeCompraSap: OrdenDeCompraSap;
+
     cambiosGuardados: boolean = false;
     mostrarPreview: boolean = false;
     pdfPreview: any;
@@ -93,12 +97,13 @@ export class SolpComponent extends BaseComponent implements OnInit {
     displayErrorSAP: boolean;
     displaySAPVincularPliego: boolean;
     disabledSave = false;
-
     disabled: boolean = false;
-
     listadoErrores: string[] = new Array<string>();
     displaySAPEditar: boolean;
     flagSolpFinalizada: boolean = false;
+    tieneContratoMarco: boolean = false;
+    datosUltimaSolp: any;
+    tieneAdjuntos: boolean = false;
 
     set pasoActual(value: Paso) {
         this.actualizarPasoCompleto(this._pasoActual);
@@ -111,25 +116,23 @@ export class SolpComponent extends BaseComponent implements OnInit {
 
     pasos: Paso[];
 
-    selectUsuarioCompras: any;
-    usuarioComprasList: any[] = [];
 
     titulo: string = "";
     tituloNroSolp: string = "";
     camposObligatorios: any[] = [
-        { campo: 'revisadoPor', esObligatorio: true}
+        { campo: 'revisadoPor', esObligatorio: true }
     ];
 
     public solpMode: ComponentMode;
 
-    constructor(protected service: ComprasService, 
-        protected navService: NavService, 
-        protected sessionDataService: SessionDataService, 
-        protected securytiService: SecurityService, 
-        protected floatMsgService: FloatMsgService, 
+    constructor(protected service: ComprasService,
+        protected navService: NavService,
+        protected sessionDataService: SessionDataService,
+        protected securytiService: SecurityService,
+        protected floatMsgService: FloatMsgService,
         protected modalService: ModalService,
-        private messageService: MessageService, 
-        private route: ActivatedRoute, 
+        private messageService: MessageService,
+        private route: ActivatedRoute,
         private confirmationService: ConfirmationService,
         private emailComposeService: EmailComposeService) {
         super(navService, securytiService, floatMsgService, modalService);
@@ -140,13 +143,11 @@ export class SolpComponent extends BaseComponent implements OnInit {
     ngOnInit() {
         if (this.pasos && this.pasos.length > 0) {
             this.getCombos();
-            this.es = setupDaysAndMonths();            
+            this.es = setupDaysAndMonths();
 
             this.pasos[0].Activo = true;
             this.pasos[0].Iniciado = true;
             this.pasoActual = this.pasos[0];
-
-            this.setupSolpActual();
 
             if (this.route.params) {
                 this.route.params.forEach((params: Params) => {
@@ -159,17 +160,16 @@ export class SolpComponent extends BaseComponent implements OnInit {
                     } else {
                         numeroSolp = params["id"].split(',')[1];
                     }
-
                     if (numeroSolp != "") this.flagSolpFinalizada = true;
                     this.tituloSolp();
                 });
-
                 if (this.solpId > 0) {
                     this.setComponentMode(ComponentMode.Edition);
                     this.traerSolpId(this.solpId);
                 } else {
                     this.setComponentMode(ComponentMode.Creation);
                     this.setearPasos();
+                    this.obtenerUltimaSolp();
                 }
             }
         }
@@ -180,41 +180,19 @@ export class SolpComponent extends BaseComponent implements OnInit {
     }
 
     public getComponentMode(): ComponentMode {
-      return this.solpMode;
+        return this.solpMode;
     }
 
     public get esCreacionSolp(): boolean {
-      return this.getComponentMode() === ComponentMode.Creation;
+        return this.getComponentMode() === ComponentMode.Creation;
+    }
+
+    public get getDatosUltimaSolp() {
+        return this.datosUltimaSolp;
     }
 
     public get esEdicionSolp(): boolean {
-      return this.getComponentMode() === ComponentMode.Edition;
-    }
-
-    private setupSolpActual(): void {
-        let fechaLimiteFecha = new Date();
-        this.solpActual.tipoSolpSap = EnumTipoSolpSap.Web;       
-        this.solpActual.estadoPasos = "0,0,0,0,0";
-        this.solpActual.jornadaLaboralDias = setupJornadaLaboralDias();
-        this.solpActual.horaEntrega = new Date(1, 1, 1, 10, 0, 0, 0);
-        this.solpActual.fechaLimiteFecha = this.sumarDias(fechaLimiteFecha, 6);
-        this.solpActual.fechaLimiteHora = new Date(1, 1, 1, 10, 0, 0, 0);
-        this.solpActual.visitaDeObraFecha = new Date();
-        this.solpActual.visitaDeObraHora = new Date(1, 1, 1, 10, 0, 0, 0);
-        this.solpActual.listaVisitas = [
-            {
-                id: uuid.v4(),
-                visitaDeObraFecha: new Date(),
-                visitaDeObraHora: new Date(1, 1, 1, 10, 0, 0, 0)
-            }];
-
-        this.solpActual.comienzoJornadaLaboral = new Date(1, 1, 1, 7, 0, 0, 0);
-        this.solpActual.terminoJornadaLaboral = new Date(1, 1, 1, 16, 0, 0, 0);
-        this.solpActual.ejecucion = "30";
-        this.solpActual.observacionesCotizacion = "Indicar la cantidad de días con que se cuenta a partir de tener el equipo disponible, en una parada programada o que el trabajo depende de otros";
-
-        this.solpActual.archivosCotizacionesNuevos = new Array<File>();
-        this.solpActual.archivosCotizaciones = new Array<ArchivoModel>();
+        return this.getComponentMode() === ComponentMode.Edition;
     }
 
     private setupCentroPorDefecto(): void {
@@ -227,12 +205,12 @@ export class SolpComponent extends BaseComponent implements OnInit {
     private setupDireccionCentroPorDefecto(): void {
         if (this.solpActual.centroPorDefecto) {
             let direccionCentro = this.combos.CentrosDireccion.find(x => x.CodigoSap == this.solpActual.centroPorDefecto.CodigoSap);
-            if (direccionCentro != null){
+            if (direccionCentro != null) {
                 this.solpActual.direccionCentroPorDefecto = direccionCentro;
             }
         }
     }
-    
+
     private setupMonedaPorDefecto(): void {
         let monedaPorDefecto = this.combos.Moneda.find(x => x.Codigo == "ARP");
         if (monedaPorDefecto) {
@@ -252,6 +230,15 @@ export class SolpComponent extends BaseComponent implements OnInit {
         }
     }
 
+    tituloSolpEditar(nroSolp) {
+        if (nroSolp != null && nroSolp !== 0 && nroSolp != "" && nroSolp !== "0" && nroSolp != undefined) {
+            this.titulo = `Edición de SOLP - # ${nroSolp}`;
+        } else {
+            this.titulo = 'Edición de SOLP';
+        }
+
+    }
+
     setearPasos() {
         switch (this.solpActual.tipoSolp) {
             case "CON_PLIEGO":
@@ -259,7 +246,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
             case "SIN_PLIEGO":
                 this.pasos[0].Deshabilitado = true;
                 this.pasos[2].Deshabilitado = true;
-                this.pasos[3].Deshabilitado = true;
+                this.pasos[3].Deshabilitado = false;
                 this.pasos[0].Iniciado = true;
                 this.pasos[2].Iniciado = true;
                 this.pasos[3].Iniciado = true;
@@ -291,8 +278,24 @@ export class SolpComponent extends BaseComponent implements OnInit {
                     } else if (result.info != undefined) {
                         this.floatMsgService.setInfoMsg(result.info);
                     } else {
-                        this.cargarSolpActual(result.data);
+                        this.solpActual = new Solp(result.data)
+                        let estadosPasos = this.solpActual.estadoPasos.split(',');
+
+                        let count = 0;
+                        estadosPasos.forEach(item => {
+                            if (this.pasos[count]) {
+                                this.pasos[count].Iniciado = item == '1' || item == '2';
+                                this.pasos[count].Completo = item == '2';
+                                count += 1;
+                            }
+                        });
+
+                        this._pasoActual = this.pasos.find(x => x.Numero == 1) as Paso;
+                        this.cambioPaso(this.pasos[0]);
+                        this.setearPasos();
                         this.blockUI.stop();
+                        this.spinnerComponent.hideIt();
+                        this.tituloSolpEditar(this.solpActual.nroSolp);
                     }
                 },
                 error => {
@@ -302,13 +305,13 @@ export class SolpComponent extends BaseComponent implements OnInit {
                 });
         } catch (e) {
             this.floatMsgService.setErrorMsg(e);
+            this.spinnerComponent.hideIt();
             return false; //<-- Prevent Refresh
         }
         return false; //<-- Prevent Refresh
     }
 
     private getSelectedTipoPosicion(posiciones: any) {
-        debugger;
         let tipoPosicion = undefined;
         if (posiciones != undefined && posiciones.length > 0) {
             let posicion = posiciones.filter(p => p.TipoPosicion.Codigo != undefined);
@@ -317,204 +320,6 @@ export class SolpComponent extends BaseComponent implements OnInit {
             }
         }
         return tipoPosicion;
-    }
-
-
-    cargarSolpActual(solp) {
-        // Paso 1
-        this.solpActual.id = solp.Id;
-        this.solpActual.tipoSolp = solp.TipoSolp && solp.TipoSolp.Codigo || '';
-        this.solpActual.tipoSolpSap = solp.TipoSolpSap || '';
-        this.solpActual.vincularAPliego = (this.solpActual.tipoSolpSap == EnumTipoSolpSap.Mantenimiento || this.solpActual.tipoSolpSap == EnumTipoSolpSap.SAP);
-        this.titulo = this.solpActual.vincularAPliego ? "Vincular pliego" : solp.TipoSolp.Codigo;
-        this.tituloNroSolp = solp.NroSolp ? "| SOLP #" + solp.NroSolp  : "";
-        this.solpActual.nroSolp = solp.NroSolp || 0;
-        this.solpActual.nombreDePedido = solp.NombreDeObra || '';
-        this.solpActual.fiscalContrato = solp.FiscalContrato || '';
-        this.solpActual.telefono = solp.Telefono || '';
-        this.solpActual.mail = solp.Email || ''; //sessionStorage.getItem("username");
-        this.solpActual.fechaEntrega = new Date(this.getDateFromAspNetFormat(solp.FechaHoraEntrega));
-        this.solpActual.emailLinkToken = solp.EmailLinkToken;
-        this.solpActual.selectTipoPosicion = this.getSelectedTipoPosicion(solp.Posiciones);
-
-        // Paso 2
-        this.solpActual.supervisorSector = solp.SupervisorSector || '';
-        this.solpActual.supervisorTrabajo = solp.SupervisorTrabajo || '';
-        this.solpActual.listaVisitas = solp.VisitasObraMasiva.map(x => {
-            return {
-                id: x.Codigo,
-                visitaDeObraFecha: new Date(this.getDateFromAspNetFormat(x.FechaHora)),
-                visitaDeObraHora: new Date(this.getDateFromAspNetFormat(x.FechaHora))
-            } || '';
-        });
-        this.solpActual.visitaDeObraMasiva = solp.TieneVisitaObraMasiva;
-        this.solpActual.visitaDeObra = solp.TieneVisitaObra;
-        this.solpActual.obradores = solp.TieneObradores;
-        this.solpActual.modoElevacion = solp.TieneMedioElevacion;
-        this.solpActual.andamio = solp.TieneAndamio;
-        this.solpActual.tecnicoSeguridad = solp.TieneTecnicoSeguridad;
-        this.solpActual.usuarioComprasId = solp.UsuarioCompras.Id || 0;
-        this.solpActual.descripcionTecnica = solp.TieneDescripcionTecnica;
-        this.solpActual.entregaDocumentacion = solp.TieneDocumentacionTecnica;
-        if (solp.FechaHoraLimiteConsulta != null) {
-            this.solpActual.fechaLimiteFecha = new Date(this.getDateFromAspNetFormat(solp.FechaHoraLimiteConsulta));
-            this.solpActual.fechaLimiteHora = new Date(this.getDateFromAspNetFormat(solp.FechaHoraLimiteConsulta));
-        }
-        this.solpActual.observacionesGeneracion = solp.ObservacionesGeneracion;
-
-        // Paso 3
-        this.solpActual.especificacionesViewModel = new EspecificacionesViewModel();
-        this.solpActual.especificacionesViewModel.archivosEspecificaciones = solp.Adjuntos
-            .filter(x => x.FileKey == "adjuntoSolp")
-            .map(x => {
-                return {
-                    id: x.Id,
-                    nombreArchivo: x.Nombre
-                }
-            }),
-            this.solpActual.especificacionesViewModel.observaciones = solp.EspecificacionesTecnicas || this.solpActual.especificacionesViewModel.valorPorDefecto;
-
-        this.solpActual.tieneCondicionesGenerales = solp.TieneCondicionesGenerales;
-
-        // Paso 4
-        this.solpActual.archivosCotizaciones = solp.Adjuntos
-            .filter(x => x.FileKey == "adjuntoCotizacionesSolp")
-            .map(x => {
-                return {
-                    id: x.Id,
-                    nombreArchivo: x.Nombre,
-                }
-            });
-        this.solpActual.jornadaLaboralDias.forEach(k => {
-            k.selected = solp.JornadaLaboral.includes(k.weekDay);
-        });
-        this.solpActual.comienzoJornadaLaboral = new Date(this.getDateFromAspNetFormat(solp.JornadaLaboralDesde));
-        this.solpActual.terminoJornadaLaboral = new Date(this.getDateFromAspNetFormat(solp.JornadaLaboralHasta));
-        this.solpActual.ejecucion = solp.DiasEjecucion || '';
-        this.solpActual.observacionesCotizacion = solp.ObservacionesCotizacion;
-
-        //pop up finalizar
-        this.solpActual.revisadoPor = solp.RevisadoPor || '';
-
-        // Paso 5
-        this.solpActual.selectClaseDocumento = solp.ClaseDocumento;
-        this.solpActual.pasoCompletado = solp.PasoCompletado;
-        this.solpActual.estadoPasos = solp.EstadoPasos;
-
-        this.selectUsuarioCompras = this.solpActual.usuarioComprasId > 0 ? this.usuarioComprasList.find(x => x.Id === this.solpActual.usuarioComprasId) : this.usuarioComprasList[0];
-
-        if (solp.Posiciones && solp.Posiciones.length > 0) {
-            let ultimaPos = solp.Posiciones[solp.Posiciones.length - 1];
-            
-            this.solpActual.posiciones = [];
-            
-            this.solpActual.agregarNuevaPosicion(null as SolpPosicion);
-
-            let posActual = this.solpActual.posicionActual;
-            let solpActual = this.solpActual;
-            // solpActual.posiciones = this.solpActual.posiciones.filter(p => p.numeroPosicion === 1);
-
-            this.solpActual.selectTipoPosicion = solp.Posiciones[0].TipoPosicion;
-
-            solp.Posiciones.forEach(x => {
-                posActual.id = x.Codigo;
-                posActual.plazoDeEntrega = x.PlazoEntrega;
-                posActual.fechaEntregaServicio = new Date(this.getDateFromAspNetFormat(x.FechaEntregaServicio));
-                posActual.fechaDeLiberacion = new Date(this.getDateFromAspNetFormat(x.FechaLiberacion));
-                posActual.selectCentroEntrega = x.Centro;
-                posActual.selectAlmacenEntrega = x.Almacen.Codigo === null ? '' : x.Almacen;
-                posActual.nombreEntrega = x.NombreEntrega;
-                posActual.calleEntrega = x.CalleEntrega;
-                posActual.numeroEntrega = x.NumeroEntrega;
-                posActual.codigoPostalEntrega = x.CpEntrega;
-                posActual.paisEntrega = x.PaisEntrega;
-                posActual.selectSolicitanteCompras = x.Solicitante;
-                posActual.necesidadCompras = x.NroNecesidad;
-                posActual.selectGrupoCompras = x.GrupoCompras;
-                posActual.selectArticuloCompras = x.GrupoArticulo;
-                posActual.textoSuministro = x.TextoSuministro;
-                posActual.motivo = x.Motivo;
-                posActual.modelo = x.Modelo;
-                posActual.monedaSeleccionada = x.Moneda;
-                posActual.tipoPosicion = x.TipoPosicion;
-                posActual.tipoImputacion = x.TipoImputacion;
-                posActual.estado = x.Estado;
-                posActual.indice = x.numeroPosicion;
-                posActual.concluido = x.EsConcluido;
-                this.solpActual.selectTipoPosicion = x.TipoPosicion;
-                posActual.codigoServicio = this.solpActual.tipoSolp == "SERVICIO" ? x.CodigoServicioSap : x.CodigoMaterialSap;
-                posActual.tareaSubcontratarObj = { Descripcion: x.Tarea };
-                posActual.tareaSubcontratar = x.Tarea;
-                posActual.cuentaTd = x.Cantidad;
-                posActual.unidadSeleccionada = x.Unidad;
-                posActual.precioBruto = x.PrecioBruto;
-                posActual.selectProvincia = x.Provincia;
-
-                posActual.valorImputacion = x.TipoImputacionValor;
-                posActual.cuentaMayor = x.CuentaMayor;
-
-                posActual.provedorFijo          = x.ProveedorFijo,
-                posActual.nombreProveedor       = x.NombreProveedor,
-                posActual.noContrato            = x.NumeroContratoSuperior,
-                posActual.noPosicionContrato    = x.NumeroPosicionContratoSuperior,
-                posActual.orgCompras            = x.OrganizacionCompras,
-
-                posActual.proveedoresValidos = x.Proveedores.filter(p => p.TipoFiltroProveedorSolp.Codigo == 'VALIDO').map(p => p.RazonSocial);
-                posActual.proveedoresNoSugeridos = x.Proveedores.filter(p => p.TipoFiltroProveedorSolp.Codigo == 'NOSUGERIDO').map(p => p.RazonSocial);
-                posActual.proveedoresInvalidos = x.Proveedores.filter(p => p.TipoFiltroProveedorSolp.Codigo == 'INVALIDO').map(p => p.RazonSocial);
-
-                if (x.Subposiciones) {
-                    posActual.listadoSubPosiciones = [];
-                    let i = 1;
-
-                    x.Subposiciones.forEach(sp => {
-                        let subpos = new SubPosicionViewModel(i);
-
-                        subpos.id = sp.Codigo;
-                        subpos.codigoServicio = sp.CodigoServicioSap;
-                        subpos.tareaSubcontratarObj = { Descripcion: sp.Tarea };
-                        subpos.tareaSubcontratar = sp.Tarea;
-                        subpos.cuentaMayor = sp.CuentaMayor;
-                        subpos.cuentaTd = sp.Cantidad;
-                        subpos.unidadSeleccionada = sp.Unidad;
-                        subpos.tipoImputacion = sp.TipoImputacionValor;
-                        subpos.precioBruto = sp.PrecioBruto;
-                        subpos.subPosicion = sp.Numero;
-                        subpos.monedaSeleccionada = x.Moneda;
-                        subpos.calcularValorNeto();
-
-                        posActual.listadoSubPosiciones.push(subpos);
-                        i++;
-                    });
-                }
-                posActual.isNewRow = false;
-                posActual.calcularValorTotal();
-
-                if (ultimaPos.Codigo != x.Codigo) {
-                    solpActual.agregarNuevaPosicion(null as SolpPosicion);
-                    posActual = solpActual.posicionActual;
-                }
-            });
-            this.solpActual.calcularValorTotalPorMoneda();
-
-            this.solpActual.setearPosicionPorDefecto();
-            this.tituloSolp();
-        }
-
-        let estadosPasos = this.solpActual.estadoPasos.split(',');
-
-        let count = 0;
-        estadosPasos.forEach(item => {
-            if (this.pasos[count]) {
-                this.pasos[count].Iniciado = item == '1' || item == '2';
-                this.pasos[count].Completo = item == '2';
-                count += 1;
-            }
-        });
-
-        this._pasoActual = this.pasos.find(x => x.Numero == 1) as Paso;
-        this.cambioPaso(this.pasos[0]);
-        this.setearPasos();
     }
 
     validatePasos(): any {
@@ -565,7 +370,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
 
         this.solpActual.estadoPasos = this.solpActual.estadoPasos.substring(0, this.solpActual.estadoPasos.length - 1);
 
-        this.pasoActual = paso; //aca esta el error
+        this.pasoActual = paso;
 
         this.solpActual.pasoCompletado = this.solpActual.pasoCompletado > this.pasoActual.Numero
             ? this.solpActual.pasoCompletado
@@ -586,15 +391,18 @@ export class SolpComponent extends BaseComponent implements OnInit {
         }
     }
 
-    mostrarValidacion(campoAValidar, vacio){
+    mostrarValidacion(campoAValidar, vacio) {
         let camposVacios = this.camposObligatorios.find(x => x.campo == campoAValidar && x.esObligatorio);
         return (camposVacios != null && vacio == 0);
     }
 
-    guardarCambios({mostrarPreview = false, enviarSap = false, guardarPorPaso = false}) {
+    guardarCambios({ mostrarPreview = false, enviarSap = false, guardarPorPaso = false }) {
         this.messageService.clear();
-
         try {
+            if (!this.solpActual.posiciones) {
+                this.solpActual.posiciones = [];
+            }
+
             this.actualizarPasoCompleto(this.pasoActual);
 
             this.disabledSave = true;
@@ -606,7 +414,9 @@ export class SolpComponent extends BaseComponent implements OnInit {
 
             if (enviarSap) {
                 if (!validatePasos.completo) {
-                    this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: `Falta completar campos en el paso #${validatePasos.primerPasoIncompleto}` });
+                    if (validatePasos.primerPasoIncompleto != 4 && validatePasos.primerPasoIncompleto != 5) {
+                        this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: `Falta completar campos en el paso #${validatePasos.primerPasoIncompleto}` });
+                    }
 
                     if (guardarPorPaso == false) {
                         this.blockUI.stop();
@@ -625,7 +435,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
                     return;
                 }
 
-                if (this.selectUsuarioCompras.Id == null) {
+                if (this.solpActual.posicionActual.esTipoPosicionServicio && this.solpActual.selectUsuarioCompras.Id == null) {
                     this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: `Falta completar campo Usuario compras` });
 
                     if (guardarPorPaso == false) {
@@ -634,9 +444,39 @@ export class SolpComponent extends BaseComponent implements OnInit {
                     this.disabledSave = false;
                     return;
                 }
+
+                if (this.validarFechaVisitaDeObra()) {
+                    this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: "La fecha de visita de obra no puede ser mayor a la fecha tentativa de ofertas ni a la fecha de límite de consulta" });
+                    if (guardarPorPaso == false) {
+                        this.blockUI.stop();
+                    }
+                    this.disabledSave = false;
+                    return;
+                }
+
+                if (this.validarFechaLimiteConsulta()) {
+                    this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: "La fecha de límite de consulta no puede ser mayor a la fecha tentativa de ofertas" });
+                    if (guardarPorPaso == false) {
+                        this.blockUI.stop();
+                    }
+                    this.disabledSave = false;
+                    return;
+                }
+
+                if (this.validarFechaLimiteYObra()) {
+                    this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: "La fecha de límite de consulta no puede ser mayor a la fecha de visita de obra" });
+                    if (guardarPorPaso == false) {
+                        this.blockUI.stop();
+                    }
+                    this.disabledSave = false;
+                    return;
+                }
             }
             this.solpActual.Finalizar = enviarSap;
-            this.solpActual.usuarioComprasId = this.selectUsuarioCompras != null ? this.selectUsuarioCompras.Id : null;
+            this.solpActual.usuarioComprasId = this.solpActual.selectUsuarioCompras != null ? this.solpActual.selectUsuarioCompras.Id : null;
+
+            if (this.solpActual.especificacionesViewModel.observaciones == null)
+                this.solpActual.especificacionesViewModel.observaciones = "";
 
             this.subscription = this.service.GuardarSolp(this.solpActual).subscribe(
                 (result: any) => {
@@ -646,12 +486,12 @@ export class SolpComponent extends BaseComponent implements OnInit {
                             this.blockUI.stop();
                         }
                     } else if (result.error != undefined && result.error != "") {
-                        this.messageService.add({ severity: 'error', summary: 'No se pudo guardar la solp', detail: result.error });
+                        this.messageService.add({ severity: 'error', summary: 'No se pudo guardar la SOLP', detail: result.error });
                         if (guardarPorPaso == false) {
                             this.blockUI.stop();
                         }
                     } else if (result.info != undefined) {
-                        this.messageService.add({ severity: 'info', summary: 'No se pudo guardar la solp', detail: result.info });
+                        this.messageService.add({ severity: 'info', summary: 'No se pudo guardar la SOLP', detail: result.info });
                         if (guardarPorPaso == false) {
                             this.blockUI.stop();
                         }
@@ -665,7 +505,6 @@ export class SolpComponent extends BaseComponent implements OnInit {
                             this.messageService.add({ severity: 'success', detail: 'Los datos se guardaron correctamente' });
                         }
                         // this.floatMsgService.setSuccessMsg("Los datos se guardaron correctamente");
-                        debugger
                         this.solpActual.id = result.Solp.Id;
                         this.solpActual.NroSolp = result.Solp.NroSolp;
                         this.solpActual.especificacionesViewModel.archivosEspecificacionesNuevos.splice(0, this.solpActual.especificacionesViewModel.archivosEspecificacionesNuevos.length);
@@ -692,12 +531,12 @@ export class SolpComponent extends BaseComponent implements OnInit {
                                 this.pdfPreview = "data:application/pdf;base64," + result.Solp.Pdf;
                                 this.mostrarPreview = true;
                             } else {
-                                this.messageService.add({ severity: 'error', detail: 'Hubo un error al generar el preview. Por favor contacte con el administrador de sistemas.' });
+                                this.messageService.add({ severity: 'error', detail: 'Hubo un error al generar el preview. Por favor, contacte al administrador de sistemas.' });
                             }
                         }
 
                         if (enviarSap) {
-
+                            this.solpActual.emailLinkToken = result.Solp.EmailLinkToken;
                             if (result.Mensaje == "OK") {
                                 this.finalizarOk = true;
 
@@ -709,10 +548,15 @@ export class SolpComponent extends BaseComponent implements OnInit {
                                 } else {
                                     this.displaySAP = true;
                                 }
+
+                                //TODO aca iria el metodo para el mail
+                                // this.showEmailPopup(esPrimeraFinalizacion, esPosteriorFinalizacion);
+                                // this.sendEmail(emailModel);
+
                             }
                             else {
                                 if (result.Solp.NroSolp != "" && result.Solp.NroSolp != null) {
-                                    this.cargarSolpActual(result.Solp);
+                                    this.solpActual = new Solp(result.Solp)
                                     let esto = this;
                                     setTimeout(function () {
                                         esto.cambioPaso(esto.pasos[5]);
@@ -720,26 +564,22 @@ export class SolpComponent extends BaseComponent implements OnInit {
                                 }
                                 this.listadoErrores = result.Errores;
                                 this.displayErrorSAP = true;
-
                             }
-                            // if (this.solpActual.nroSolp) {
-                            //     this.displaySAPEditar = true;
-                            // }
                         }
                     }
                     this.disabledSave = false;
                 },
                 error => {
-                    this.messageService.add({ severity: 'error', summary: 'Error al intentar guardar la solp.', detail: error.message });
+                    this.messageService.add({ severity: 'error', summary: 'Error al intentar guardar la SOLP.', detail: error.message });
                     if (guardarPorPaso == false) {
                         this.blockUI.stop();
                     }
                     this.disabledSave = false;
                 }
             );
-        } catch (e) {  
+        } catch (e) {
             this.disabledSave = false;
-            this.messageService.add({ severity: 'error', summary: 'Error al intentar guardar la solp', detail: e });
+            this.messageService.add({ severity: 'error', summary: 'Error al intentar guardar la SOLP.', detail: e });
             if (guardarPorPaso == false) {
                 this.blockUI.stop();
             }
@@ -756,7 +596,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
                         if (!this.listaStringCompleta([
                             this.solpActual.nombreDePedido,
                             this.solpActual.fiscalContrato,
-                            this.solpActual.mail,
+                            this.isEmailInvalid(this.solpActual.mail),
                             this.solpActual.fechaEntrega,
                             this.solpActual.horaEntrega
                         ])) {
@@ -782,8 +622,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
                     if (!paso.Deshabilitado) {
                         if (!this.listaStringCompleta([
                             this.solpActual.especificacionesViewModel.observaciones
-                        ])) 
-                        {
+                        ])) {
                             return paso.Completo = false;
                         }
                     }
@@ -794,14 +633,21 @@ export class SolpComponent extends BaseComponent implements OnInit {
                         //this.solpActual.ejecucion,
                         this.solpActual.jornadaLaboralDias,
                         this.solpActual.comienzoJornadaLaboral,
-                        this.solpActual.terminoJornadaLaboral
+                        this.solpActual.terminoJornadaLaboral,
+                        this.solpActual.validacionCheck
                     ])) {
                         return paso.Completo = false;
+                    } else {
+                        return this.solpActual.mensajeCotizacion = "";
                     }
+
                     break;
                 case EnumPasoSolp.SolpCabecera:
                     paso.Completo = true;
                     if (!paso.Deshabilitado) {
+                        if (!this.solpActual.posiciones) {
+                            this.solpActual.posiciones = [];
+                        }
                         this.solpActual.posiciones.forEach(pos => {
                             pos.doValidatePosicion(this.solpActual.tipoSolpSap);
                             if (!pos.tabsPosicionValidos.tabDireccionEntrega ||
@@ -810,13 +656,170 @@ export class SolpComponent extends BaseComponent implements OnInit {
                                 !pos.tabsPosicionValidos.tabDatosPosicion ||
                                 !pos.tabsPosicionValidos.tabFechas ||
                                 (pos.esTipoPosicionServicio && !pos.tabsPosicionValidos.tabSubposiciones) ||
-                                !pos.tabsPosicionValidos.tabPosiciones) {
+                                !pos.tabsPosicionValidos.tabPosiciones ||
+                                this.validarContratoMarco() ||
+                                this.validarAdicional() ||
+                                this.validarMonedaOCesDistinta())
+                                /*this.validarCondicionesEspeciales()*/ {
                                 return paso.Completo = false;
+                            } else {
+                                return pos.mensaje = "";
                             }
                         });
                     }
                     break;
             }
+        }
+    }
+
+    isEmailInvalid(value: any) {
+        const EMAIL_REGEXP = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+
+        if(value == ''){
+            return true;
+        }
+
+        if (value != null && value !== '') {
+            return EMAIL_REGEXP.test(value)
+        }
+    }
+
+    validarFechaVisitaDeObra() {
+        if (this.solpActual.listaVisitas.length === 0) { //se evita listaVisitas.reduce() cuando listaVisitas está vacía
+            return false;
+        }
+        var esTipoPosicionServicio = this.solpActual.posicionActual.tipoPosicion != "undefined" && this.solpActual.posicionActual.tipoPosicion && this.solpActual.posicionActual.tipoPosicion.Codigo == "SERVICIO";
+        var sinPliego = this.solpActual.tipoSolp === "SIN_PLIEGO";
+        var validarFechaVisitaDeObra = false;
+
+
+
+        if (esTipoPosicionServicio && !sinPliego) {
+            // Encuentra la visita con la fecha más larga
+            const visitaMasLarga = this.solpActual.listaVisitas.reduce((visitaAnterior, visitaActual) => {
+                if (visitaActual.visitaDeObraFecha > visitaAnterior.visitaDeObraFecha) {
+                    return visitaActual;
+                } else {
+                    return visitaAnterior;
+                }
+            });
+
+            var fechaHoraLimite = this.service.getFechaHora(this.solpActual.fechaLimiteFecha, this.solpActual.fechaLimiteHora);
+            var visitaDeObraHoraFecha = this.service.getFechaHora(visitaMasLarga.visitaDeObraFecha, visitaMasLarga.visitaDeObraHora)
+
+            if (visitaMasLarga.visitaDeObraFecha > this.solpActual.fechaEntrega) {
+                return validarFechaVisitaDeObra = true;
+            }
+
+            if (visitaDeObraHoraFecha > fechaHoraLimite) {
+                return validarFechaVisitaDeObra = true;
+            }
+        }
+        return validarFechaVisitaDeObra;
+    }
+
+    validarFechaLimiteConsulta() {
+        var validarFechaLimiteConsulta = false;
+        var fechaHoraLimite = this.service.getFechaHora(this.solpActual.fechaLimiteFecha, this.solpActual.fechaLimiteHora);
+        var fechaHoraEntrega = this.service.getFechaHora(this.solpActual.fechaEntrega, this.solpActual.horaEntrega);
+
+        if (fechaHoraLimite > fechaHoraEntrega) {
+            return validarFechaLimiteConsulta = true;
+        }
+        return validarFechaLimiteConsulta;
+    }
+
+    validarFechaLimiteYObra() {
+        if (this.solpActual.listaVisitas.length === 0) { //se evita listaVisitas.reduce() cuando listaVisitas está vacía
+            return false;
+        }
+        var esTipoPosicionServicio = this.solpActual.posicionActual.tipoPosicion != "undefined" && this.solpActual.posicionActual.tipoPosicion && this.solpActual.posicionActual.tipoPosicion.Codigo == "SERVICIO";
+        var sinPliego = this.solpActual.tipoSolp === "SIN_PLIEGO";
+
+        var validarFechaLimiteYObra = false;
+
+        if (esTipoPosicionServicio && !sinPliego) {
+            // Encuentra la visita con la fecha más larga
+            const visitaMasLarga = this.solpActual.listaVisitas.reduce((visitaAnterior, visitaActual) => {
+                if (visitaActual.visitaDeObraFecha > visitaAnterior.visitaDeObraFecha) {
+                    return visitaActual;
+                } else {
+                    return visitaAnterior;
+                }
+            });
+            var fechaHoraLimite = this.service.getFechaHora(this.solpActual.fechaLimiteFecha, this.solpActual.fechaLimiteHora);
+            var fechaHoraVisita = this.service.getFechaHora(visitaMasLarga.visitaDeObraFecha, visitaMasLarga.visitaDeObraHora);
+
+
+            if (fechaHoraVisita > fechaHoraLimite) {
+                return validarFechaLimiteYObra = true;
+            }
+
+        }
+        return validarFechaLimiteYObra;
+    }
+
+    validarContratoMarco() {
+        var validacionContratoTrabajo = false;
+
+        if (this.solpActual.trabajoHecho == true && this.solpActual.posiciones.some(x => x.numeroContratoSuperior)) {
+            return validacionContratoTrabajo = true;
+        }
+        return validacionContratoTrabajo;
+    }
+
+    validarAdicional() {
+        var validacionAdicional = false;
+
+        if (this.solpActual.adicional == true && this.solpActual.posiciones.some(x => x.numeroContratoSuperior)) {
+            return validacionAdicional = true;
+        }
+
+        return validacionAdicional;
+    }
+
+    validarCondicionesEspeciales() {
+        var validacionCheck = false;
+
+        if (this.solpActual.trabajoHecho == true && this.solpActual.adicional == true) {
+            return validacionCheck = true;
+        }
+        return validacionCheck;
+    }
+
+    validarMonedaOCesDistinta() {
+        if (this.solpActual.adicional == true && !this.solpActual.posiciones.every(x => x.monedaSeleccionada.Codigo == this.solpActual.monedaOC)) {
+            return true;
+        } else return false;
+    }
+
+    mostrarMensajeCampos() {
+        this.solpActual.posiciones.forEach(pos => {
+            if (pos.mensaje != "") {
+                this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: `${pos.mensaje}` });
+            }
+        })
+
+        if (this.validarContratoMarco()) {
+            this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: "Las SOLP con contrato marco cargado no pueden tener el tilde en el check de trabajo hecho en el paso #4" });
+        }
+
+        if (this.validarAdicional()) {
+            this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: "Las SOLP con contrato marco cargado no pueden tener el tilde en el check de adicional en el paso #4" });
+        }
+
+        if (this.validarMonedaOCesDistinta()) {
+            this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: "La moneda elegida debe ser la misma que la de la OC agregada en el paso #4" });
+        }
+
+        //if (this.validarCondicionesEspeciales()) {
+        //    this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: "Las SOLP no pueden tener el tilde en el check de adicional y el check de trabajo hecho en el paso #4" });
+        //}
+    }
+
+    mostrarMensajeCotizacion() {
+        if (this.solpActual.mensajeCotizacion != "" && this.solpActual.mensajeCotizacion != undefined) {
+            this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: `${this.solpActual.mensajeCotizacion}` });
         }
     }
 
@@ -879,6 +882,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
                         this.setupCentroPorDefecto();
                         this.setupDireccionCentroPorDefecto();
                         this.setupMonedaPorDefecto();
+
                     }
                 },
                 error => {
@@ -894,6 +898,46 @@ export class SolpComponent extends BaseComponent implements OnInit {
         return false; //<-- Prevent Refresh
     }
 
+    obtenerUltimaSolp() {
+        this.blockUI.start('Cargando...');
+        try {
+            this.subscription = this.service.obtenerUltimaSolp().subscribe(
+                (result: any) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.floatMsgService.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.floatMsgService.setInfoMsg(result.info);
+                    } else {
+                        //this.solpActual.agregarNuevaPosicion(null as SolpPosicion);
+                        this.datosUltimaSolp = result.data;
+                        if (this.datosUltimaSolp != null) {
+                            this.completarDatosUltimaSolp();
+                        }
+                        this.blockUI.stop();
+                    }
+                },
+                error => {
+                    this.floatMsgService.setErrorMsg(error.message);
+                    this.blockUI.stop();
+                }
+
+            );
+        } catch (e) {
+            this.floatMsgService.setErrorMsg(e);
+            this.blockUI.stop();
+            return false; //<-- Prevent Refresh
+        }
+        return false; //<-- Prevent Refresh
+    }
+
+    private completarDatosUltimaSolp() {
+        this.solpActual.fiscalContrato = this.datosUltimaSolp.FiscalContrato;
+        this.solpActual.telefono = this.datosUltimaSolp.Telefono;
+    }
+
+
     obtenerUsuarioCompras() {
         try {
             this.subscription = this.service.obtenerUsuarioCompras().subscribe(
@@ -905,17 +949,17 @@ export class SolpComponent extends BaseComponent implements OnInit {
                     } else if (result.info != undefined) {
                         this.floatMsgService.setInfoMsg(result.info);
                     } else {
-                        this.usuarioComprasList = [];
+                        this.solpActual.usuarioComprasList = [];
                         result.data.forEach(element => {
-                            this.usuarioComprasList.push({
+                            this.solpActual.usuarioComprasList.push({
                                 Id: element.UsuarioCompras.Id,
                                 CodigoDescripcion: element.UsuarioCompras.Mail
                             });
                         });
-                        this.usuarioComprasList = [{ Id: null, CodigoDescripcion: "Seleccione un usuario" }, ...this.usuarioComprasList];
-                        this.selectUsuarioCompras = this.solpActual.usuarioComprasId > 0
-                            ? this.usuarioComprasList.find(x => x.Id === this.solpActual.usuarioComprasId)
-                            : this.usuarioComprasList[0];
+                        this.solpActual.usuarioComprasList = [{ Id: null, CodigoDescripcion: "Seleccione un usuario" }, ...this.solpActual.usuarioComprasList];
+                        this.solpActual.selectUsuarioCompras = this.solpActual.usuarioComprasId > 0
+                            ? this.solpActual.usuarioComprasList.find(x => x.Id === this.solpActual.usuarioComprasId)
+                            : this.solpActual.usuarioComprasList[0];
                         this.spinnerComponent.hideIt();
                     }
                 },
@@ -930,7 +974,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
     }
 
     preview() {
-        this.guardarCambios({mostrarPreview: true});
+        this.guardarCambios({ mostrarPreview: true });
     }
 
     salir() {
@@ -976,18 +1020,20 @@ export class SolpComponent extends BaseComponent implements OnInit {
                 (error) => {
                     // this.spinnerSmallComponent.hideIt();
                     this.mensajeComponent.setErrorMsg(error.message);
-                }
-            )
+                })
     }
 
     // Todos los Modal
-    finalizar({selectUsuarioCompras, solpActual}) {
-        this.selectUsuarioCompras = selectUsuarioCompras;
+    finalizar({ selectUsuarioCompras, solpActual }) {
         this.solpActual = solpActual;
+        this.solpActual.selectUsuarioCompras = selectUsuarioCompras;
 
         this.cabecera.validarTabCompleto();
-        this.guardarCambios({mostrarPreview: false, enviarSap: true, guardarPorPaso: false});
+        this.guardarCambios({ mostrarPreview: false, enviarSap: true, guardarPorPaso: false });
         this.displayFinalizar = false;
+        this.mostrarMensajeCampos();
+        this.mostrarMensajeCotizacion();
+        this.validarAdjuntosDescargarSolp();
     }
 
     // Abre el modal del boton finalizar
@@ -1004,7 +1050,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
     cancelarSolp() {
         this.confirmationService.confirm({
             key: 'cancelarSolp',
-            message: '¿Está seguro que desea volver a la pantalla principal? No se conservaran los cambios no guardados.',
+            message: '¿Está seguro de que desea volver a la pantalla principal? Se perderán los cambios no guardados.',
             accept: () => {
                 this.salir();
             },
@@ -1047,11 +1093,13 @@ export class SolpComponent extends BaseComponent implements OnInit {
         this.displaySAP = false;
         this.displaySAPEditar = false;
         const emailModel = new EmailComposeModel();
-        emailModel.from = this.solpActual.mail;
-        emailModel.to = this.emailTo;
+        emailModel.from = this.fromEmail;
+        emailModel.to = this.getToEmails();
+        emailModel.cc = this.getCCEmails();
         emailModel.subject = this.getEmailSubject(esPrimeraFinalizacion, esPosteriorFinalizacion);
         emailModel.body = this.emailBody;
         emailModel.downloadLinkUrl = this.downloadLinkUrl;
+        emailModel.tieneAdjuntos = (this.solpActual.especificacionesViewModel.archivosEspecificaciones.length > 0 || this.solpActual.archivosCotizaciones.length > 0) ? true : false;
         this.emailComposeService.show(emailModel);
     }
 
@@ -1065,25 +1113,90 @@ export class SolpComponent extends BaseComponent implements OnInit {
             } else if (result.error != undefined && result.error != "") {
                 this.floatMsgService.setErrorMsg(result.error);
             } else {
-                this.floatMsgService.setSuccessMsg("Email se envio correctamente.");
+                this.floatMsgService.setSuccessMsg("El email se envió correctamente.");
             }
         },
-        error => {
-            this.emailComposeService.close();
-            this.floatMsgService.setErrorMsg(error.message);
-            this.blockUI.stop();
-        });
+            error => {
+                this.emailComposeService.close();
+                this.floatMsgService.setErrorMsg(error.message);
+                this.blockUI.stop();
+            });
+    }
+
+    validarAdjuntosDescargarSolp() {
+        if (this.solpActual.especificacionesViewModel.archivosEspecificaciones.length > 0 || this.solpActual.archivosCotizaciones.length > 0) {
+            this.tieneAdjuntos = true;
+        }
+    }
+
+    private getCCEmails(): string[] {
+        const ccEmails: string[] = [];
+
+        if (this.solpActual.mail != undefined && this.solpActual.mail != null) {
+            ccEmails.push(this.solpActual.mail);
+        } else {
+            const username = sessionStorage.getItem("username");
+            if (username) {
+                ccEmails.push(username);
+            }
+        }
+        return ccEmails;
+    }
+
+    private getToEmails(): string[] {
+        const toEmails: string[] = [];
+
+        if (this.solpActual.urgencia == true) {
+            // Asegurémonos de que usuarioComprasList esté inicializada
+            if (!this.solpActual.usuarioComprasList) {
+                this.solpActual.usuarioComprasList = [];
+            }
+            // Copiar todos los correos electrónicos de usuarioComprasList a toEmails
+            this.solpActual.usuarioComprasList.forEach((usuario, index) => {
+                if (index !== 0) {
+                    toEmails.push(usuario.CodigoDescripcion);
+                }
+            });
+        } else {
+            if (this.solpActual.mail != undefined && this.solpActual.mail != null) {
+                toEmails.push(this.solpActual.mail);
+            } else {
+                const username = sessionStorage.getItem("username");
+                if (username) {
+                    toEmails.push(username);
+                }
+            }
+        }
+        return toEmails;
+    }
+
+    private get fromEmail(): string {
+        return this.solpActual.mail != undefined && this.solpActual.mail != null ? this.solpActual.mail : sessionStorage.getItem("username");
+    }
+
+    private get nombreDePedido(): string {
+        return this.solpActual.nombreDePedido != undefined && this.solpActual.nombreDePedido != null ? this.solpActual.nombreDePedido : "";
     }
 
     private getEmailSubject(esPrimeraFinalizacion: boolean, esPosteriorFinalizacion: boolean): string {
         let subject = "";
+
         if (esPrimeraFinalizacion) {
             //SOLP N°” + *nnnnn* + “PLIEGO:” + *detalle del pliego*
-            subject = `SOLP N° ${this.solpActual.NroSolp || ""} PLIEGO: ${this.solpActual.nombreDePedido}`;
+            // subject = `SOLP N° ${this.solpActual.NroSolp || ""} PLIEGO: ${this.nombreDePedido}`;
+            if (this.solpActual.urgencia == true) {
+                subject = `Nueva SOLP de urgencia Finalizada - N° ${this.solpActual.NroSolp || ""} ${this.solpActual.tipoSolp === "SIN_PLIEGO" ? "" : " PLIEGO: " + this.nombreDePedido}`;
+            } else {
+                subject = `SOLP N° ${this.solpActual.NroSolp || ""} ${this.solpActual.tipoSolp === "SIN_PLIEGO" ? "" : " PLIEGO: " + this.nombreDePedido}`;
+            }
         }
         if (esPosteriorFinalizacion) {
             //ACTUALIZACIÓN SOLP N°” + *nnnnn* + “PLIEGO:” + *detalle del pliego*
-            subject = `ACTUALIZACIÓN SOLP N° ${this.solpActual.NroSolp || ""} PLIEGO: ${this.solpActual.nombreDePedido}`;
+            if (this.solpActual.urgencia == true) {
+                subject = `ACTUALIZACIÓN de SOLP de urgencia - N° ${this.solpActual.NroSolp || ""} ${this.solpActual.tipoSolp === "SIN_PLIEGO" ? "" : " PLIEGO: " + this.nombreDePedido}`;
+            } else {
+                subject = `ACTUALIZACIÓN SOLP N° ${this.solpActual.NroSolp || ""} ${this.solpActual.tipoSolp === "SIN_PLIEGO" ? "" : " PLIEGO: " + this.nombreDePedido}`;
+            }
         }
         return subject;
     }
@@ -1091,7 +1204,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
     private get emailTo(): string {
         let emailTo = "";
         if (this.solpActual.usuarioComprasId != null) {
-            let usuarioCompras = this.usuarioComprasList.find(x => x.Id === this.solpActual.usuarioComprasId);
+            let usuarioCompras = this.solpActual.usuarioComprasList.find(x => x.Id === this.solpActual.usuarioComprasId);
             if (usuarioCompras != null) {
                 emailTo = usuarioCompras.CodigoDescripcion;
             }
@@ -1100,7 +1213,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
     }
 
     private get emailBody(): string {
-        return `SOLP N° ${this.solpActual.NroSolp || ""} PLIEGO: ${this.solpActual.nombreDePedido}`;
+        return `SOLP N° ${this.solpActual.NroSolp || ""} ${this.solpActual.tipoSolp === "SIN_PLIEGO" ? "" : " PLIEGO: " + this.nombreDePedido}`;
     }
 
     private get downloadLinkUrl(): string {
@@ -1108,5 +1221,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
         const token = this.solpActual.emailLinkToken;
         return `${window.location.origin}/api/compras/DescargarPliegoDesdeLink?solpId=${solpId}&token=${token}`;
     }
+
+
 
 }

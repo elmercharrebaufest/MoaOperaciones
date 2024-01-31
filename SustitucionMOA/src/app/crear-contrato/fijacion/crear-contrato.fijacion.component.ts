@@ -23,7 +23,10 @@ import localeEsAr from '@angular/common/locales/es-AR';
 export class CrearContratoFijacionComponent extends CrearContratoBaseComponent {
 
     contrato: ContratoFijacion = new ContratoFijacion();
-
+    cantMaxima: number;
+    cantMinima: number;
+    condicionFijacion: string;
+    cantMaximaNumber: number;
 
     ngOnInit() {
         registerLocaleData(localeEsAr, 'es-AR');
@@ -312,6 +315,21 @@ export class CrearContratoFijacionComponent extends CrearContratoBaseComponent {
             this.mensajeComponent.setErrorMsg("La cantidad de días de diferimiento ingresados supera el maximo permitido.");
             return false;
         }
+        if (this.contrato.Pizarra == true) {
+            if (this.condicionFijacion == "07") {
+                this.mensajeComponent.setErrorMsg("No se puede crear una fijacion pizarra, con condicion del contrato solo ''MERCADO MOA''.");
+                return false;
+            }
+            if (this.condicionFijacion == "05" && new Date().getHours() >= 13) {
+                this.mensajeComponent.setErrorMsg("Fuera de horario para fijacion por pizarra, condicion del contrato solo ''mercado moa''.");
+                return false;
+            }
+        }
+        console.log(this.contrato.Cantidad , this.cantMaxima);
+        if (this.contrato.Cantidad > this.cantMaximaNumber) {
+            this.mensajeComponent.setErrorMsg(`La cantidad supera la maxima de fijacion (${this.cantMaxima}).`);
+            return false;
+        }
         return true;
     }
 
@@ -392,8 +410,30 @@ export class CrearContratoFijacionComponent extends CrearContratoBaseComponent {
             this.contrato.CampanaId = item.CampanaId;
             this.contrato.DestinoId = item.Centro;
             this.contrato.TrigoEspecial = item.Calidad;
+            this.condicionFijacion = item.CondicionFijacionCod;
+            let KilosContrato = parseInt(item.KilosContrato.replace(/\./g, ''), 0);
+
+            this.cantMaxima = 30 * KilosContrato / 100;
+            if (KilosContrato < 30000) {
+                this.cantMaxima = KilosContrato;
+            } else if (this.cantMaxima < 30000) {
+                this.cantMaxima = 30000;
+            }
+
+            this.cantMinima = 30000;
+            if (KilosContrato < 30000) {
+                this.cantMinima = KilosContrato;
+            }
+            this.cantMaximaNumber = this.cantMaxima;
+            this.cantMaxima = this.numberSeparator(this.cantMaxima, '.');
+            this.cantMinima = this.numberSeparator(this.cantMinima, '.');
+
         }
 
+    }
+
+    numberSeparator(x, y) {
+        return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, y);
     }
 
     onChangeSearchContratoId(term: string) {

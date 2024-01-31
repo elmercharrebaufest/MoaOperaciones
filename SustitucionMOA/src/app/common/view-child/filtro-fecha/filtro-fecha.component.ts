@@ -1,4 +1,4 @@
-﻿import { Component, Output, EventEmitter, ViewChild, OnInit } from '@angular/core';
+﻿import { Component, Output, EventEmitter, ViewChild, OnInit, Input } from '@angular/core';
 import { Formatter } from './../../formatter/Formatter';
 import { DropdownComponent, DropdownOption } from './../dropdown/dropdown.component';
 declare var $: any;
@@ -11,6 +11,7 @@ declare var $: any;
 export class FiltroFechaComponent implements OnInit {
 
     @Output() ClickEvent = new EventEmitter();
+    @Input()leyenda?:string;
 
     @ViewChild(DropdownComponent)
     private dropdownComponent: DropdownComponent;
@@ -135,7 +136,20 @@ export class FiltroFechaComponent implements OnInit {
                 this.setFechaFin(Formatter.DateToSting(new Date()));
                 this.guardarFechasYSetarPeriodo(periodo);
                 break;
+            
+            case "6":
+                    this.setFechaIncio(Formatter.DateToSting(new Date(new Date().setFullYear(new Date().getFullYear() - 1))));
+                    this.setFechaFin(Formatter.DateToSting(new Date()));
+                    this.guardarFechasYSetarPeriodo(periodo);
+                    this.ClickEvent.emit();
+                    break;
 
+            case "7":
+                    this.setFechaIncio(Formatter.DateToSting(new Date(2020, 0, 1)));
+                    this.setFechaFin(Formatter.DateToSting(new Date()));
+                    this.guardarFechasYSetarPeriodo(periodo);
+                    this.ClickEvent.emit();
+                    break;
             case "1":
             default:
                 this.setFechaIncio(Formatter.DateToSting(new Date(new Date().setDate(new Date().getDate() - 1))));

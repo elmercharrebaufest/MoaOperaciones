@@ -5,6 +5,8 @@ namespace SustitucionMOAExternalAPI.App_Start
 {
     using System;
     using System.Data.Entity;
+    using System.Linq;
+    using System.Reflection;
     using System.ServiceModel;
     using System.Web;
     using System.Web.Http;
@@ -14,22 +16,30 @@ namespace SustitucionMOAExternalAPI.App_Start
     using Ninject.Web.Common;
     using Ninject.Web.Common.WebHost;
     using Ninject.Web.WebApi;
-    using SustitucionMOAExternalAPI.Handlers;
     using SustitucionMOAExternalAPI.Managers;
     using SustitucionMOARepositorio;
-    using SustitucionMOAUtils.Interfaces;
-    using SustitucionMOAUtils.Services;
+    using SustitucionMOARepositorio.Repositorios.Interfaces;
+    using SustitucionMOARepositorio.Repositorios;
+    using SustitucionMOAUtils.Helpers;
+    using SustitucionMOAUtils.Interfaces.Helpers;
+    using SustitucionMOAUtils.Interfaces.Validadores;
+    using SustitucionMOAUtils.Interfaces.Wrappers;
+    using SustitucionMOAUtils.Validadores;
+    using SustitucionMOAUtils.Wrappers;
+    using SustitucionMOAWS.AzureAD;
     using SustitucionMOAWS.Interfaces;
+    using SustitucionMOAWS.ScatoWebService;
+    using SustitucionMOAWS.WebApi;
     using SustitucionMOAWS.WSConsumers;
 
-    public static class NinjectWebCommon 
+    public static class NinjectWebCommon
     {
         private static readonly Bootstrapper bootstrapper = new Bootstrapper();
 
         /// <summary>
         /// Starts the application.
         /// </summary>
-        public static void Start() 
+        public static void Start()
         {
             DynamicModuleUtility.RegisterModule(typeof(OnePerRequestHttpModule));
             DynamicModuleUtility.RegisterModule(typeof(NinjectHttpModule));
@@ -69,11 +79,108 @@ namespace SustitucionMOAExternalAPI.App_Start
         /// <summary>
         /// Load your modules or register your services here!
         /// </summary>
-        /// <param name="kernel">The kernel.</param>
+        /// <param name="kernel">The kernel.</param>       
+        //private static void RegisterServices(IKernel kernel)
+        //{
+        //    var currentAssembly = Assembly.GetExecutingAssembly();
+
+        //    // Obt�n todas las clases en el ensamblado que terminen con "Service".
+        //    var implementationTypes = currentAssembly.GetTypes()
+        //        .Where(type => type.IsClass && !type.IsAbstract)
+        //        .Where(type => type.GetInterfaces().Any())
+        //        .Where(type => type.Name.EndsWith("Service"))
+        //        .ToList();
+
+        //    foreach (var implementationType in implementationTypes)
+        //    {
+        //        var interfaces = implementationType.GetInterfaces();
+        //        foreach (var @interface in interfaces)
+        //        {
+        //            kernel.Bind(@interface).To(implementationType).InScope(ctx => OperationContext.Current);
+        //        }
+        //    }
+        //}
+
+
         private static void RegisterServices(IKernel kernel)
         {
-            kernel.Bind<IExternalApiService>().To(typeof(ExternalApiService)).InScope(ctx => OperationContext.Current);
-            kernel.Bind<IComprasService>().To(typeof(ComprasService)).InScope(ctx => OperationContext.Current);
+
+            //kernel.Bind<ICartaPorteService>().To(typeof(CartaPorteService)).InScope(ctx => OperationContext.Current);
+            //kernel.Bind<ILocalidadService>().To(typeof(LocalidadService)).InScope(ctx => OperationContext.Current);
+            //kernel.Bind<ICuentaCorrienteService>().To(typeof(CuentaCorrienteService)).InScope(ctx => OperationContext.Current);
+            //kernel.Bind<IAltaEmpresaGranosService>().To(typeof(AltaEmpresaGranosService)).InScope(ctx => OperationContext.Current);
+            //kernel.Bind<ICrearContratoService>().To(typeof(CrearContratoService)).InScope(ctx => OperationContext.Current);
+            //kernel.Bind<IAltaEmpresaService>().To(typeof(AltaEmpresaService)).InScope(ctx => OperationContext.Current);
+            //kernel.Bind<IAzureB2CService>().To(typeof(AzureB2CService)).InScope(ctx => OperationContext.Current);
+            //kernel.Bind<IDataAgroService>().To(typeof(DataAgroService)).InScope(ctx => OperationContext.Current);
+            //kernel.Bind<IUsuarioService>().To(typeof(UsuarioService)).InScope(ctx => OperationContext.Current);
+            //kernel.Bind<IContactoMailService>().To(typeof(ContactoMailService)).InScope(ctx => OperationContext.Current);
+            //kernel.Bind<IConsultaService>().To(typeof(ConsultaService)).InScope(ctx => OperationContext.Current);
+            //kernel.Bind<IComprasService>().To(typeof(ComprasService)).InScope(ctx => OperationContext.Current);
+            //kernel.Bind<IVendedorService>().To(typeof(VendedorService)).InScope(ctx => OperationContext.Current);
+            //kernel.Bind<IAltaEmpresaNoGranosService>().To(typeof(AltaEmpresaNoGranosService)).InScope(ctx => OperationContext.Current);
+            //kernel.Bind<ILiquidacionService>().To(typeof(LiquidacionService)).InScope(ctx => OperationContext.Current);
+            //kernel.Bind<INotificacionService>().To(typeof(NotificacionService)).InScope(ctx => OperationContext.Current);
+            //kernel.Bind<IOrdenDeCargaService>().To(typeof(OrdenDeCargaService)).InScope(ctx => OperationContext.Current);
+            //kernel.Bind<IKgDisponiblesFasService>().To(typeof(KgDisponiblesFasService)).InScope(ctx => OperationContext.Current);
+            //kernel.Bind<IFacturaAnticipadaService>().To(typeof(FacturaAnticipadaService)).InScope(ctx => OperationContext.Current);
+            //kernel.Bind<IOrdenDeCargaEstadoService>().To(typeof(OrdenDeCargaEstadoService)).InScope(ctx => OperationContext.Current);
+            //kernel.Bind<IAplicacionCartaPorteService>().To(typeof(AplicacionCartaPorteService)).InScope(ctx => OperationContext.Current);
+            //kernel.Bind<IFeriadoService>().To(typeof(FeriadoService)).InScope(ctx => OperationContext.Current);
+            //kernel.Bind<IAzureService>().To(typeof(AzureService)).InScope(ctx => OperationContext.Current);
+            //kernel.Bind<IReportesService>().To(typeof(ReportesService)).InScope(ctx => OperationContext.Current);
+            //kernel.Bind<IReporteContratoService>().To(typeof(ReporteContratoService)).InScope(ctx => OperationContext.Current);
+
+            //kernel.Bind<ITicketPesadaService>().To(typeof(TicketPesadaService)).InScope(ctx => OperationContext.Current);
+            //kernel.Bind<ICampoSustentableService>().To(typeof(CampoSustentableService)).InScope(ctx => OperationContext.Current);
+            //kernel.Bind<IHomeService>().To(typeof(HomeService)).InScope(ctx => OperationContext.Current);
+            //kernel.Bind<ILogPesificacionService>().To(typeof(LogPesificacionService)).InScope(ctx => OperationContext.Current);
+            kernel.Bind<IValidadorPesificacion>().To(typeof(ValidadorPesificacion)).InScope(ctx => OperationContext.Current);
+            kernel.Bind<ITimeProvider>().To(typeof(CurrentTimeProvider)).InScope(ctx => OperationContext.Current);
+            //kernel.Bind<IGestionImpuestosService>().To(typeof(GestionImpuestosService)).InScope(ctx => OperationContext.Current);
+            //kernel.Bind<IPesificacionService>().To(typeof(PesificacionService)).InScope(ctx => OperationContext.Current);
+            kernel.Bind<IExcelExportWrapper>().To(typeof(ExcelExportWrapper)).InScope(ctx => OperationContext.Current);
+            kernel.Bind<IFileWrapper>().To(typeof(FileWrapper)).InScope(ctx => OperationContext.Current);
+            //kernel.Bind<IOrdenDeCargaFasonService>().To(typeof(OrdenDeCargaFasonService)).InScope(ctx => OperationContext.Current);
+            //kernel.Bind<IEcheqService>().To(typeof(EcheqService)).InScope(ctx => OperationContext.Current);
+            //kernel.Bind<IEmailFasService>().To(typeof(EmailFasService)).InScope(ctx => OperationContext.Current);
+            //kernel.Bind<IEmailFasonService>().To(typeof(EmailFasonService)).InScope(ctx => OperationContext.Current);
+            //kernel.Bind<IHttpContextService>().To(typeof(HttpContextService)).InScope(ctx => OperationContext.Current);         
+            //kernel.Bind<IEmailService>().To(typeof(EmailService)).InScope(ctx => OperationContext.Current);
+
+            #region Registro
+
+            var assembly = Assembly.Load("SustitucionMOAUtils");
+
+            var types = assembly.GetTypes()
+                .Where(type => type.IsClass)
+                .ToList();
+
+            foreach (var type in types)
+            {
+                if (type.Name.EndsWith("Service"))
+                {
+                    var interfaces = type.GetInterfaces();
+                    if (interfaces.Length > 0)
+                    {
+                        foreach (var interfaceType in interfaces)
+                        {
+                            kernel.Bind(interfaceType).To(type).InScope(ctx => OperationContext.Current);
+                        }
+                    }
+                    else
+                    {
+                        throw new InvalidOperationException($"La clase {type.Name} no implementa ninguna interfaz.");
+                    }
+                }
+            }
+            #endregion
+
+
+            #region InterfacesSAP
+            kernel.Bind<IVendedorHabilitadoConsumerMOA>().To(typeof(VendedorHabilitadoConsumerMOA)).InScope(ctx => OperationContext.Current);
+            kernel.Bind<IOrdenCargaConsumerMOA>().To(typeof(OrdenCargaConsumerMOA)).InScope(ctx => OperationContext.Current);
+            kernel.Bind<IListarPesificacionesConsumer>().To(typeof(ListarPesificacionesConsumer)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IObtenerCecoSolpConsumerMOA>().To(typeof(ObtenerCecoSolpConsumerMOA)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IObtenerCuentasSolpConsumerMOA>().To(typeof(ObtenerCuentasSolpConsumerMOA)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IObtenerOrdenSolpConsumerMOA>().To(typeof(ObtenerOrdenSolpConsumerMOA)).InScope(ctx => OperationContext.Current);
@@ -82,18 +189,51 @@ namespace SustitucionMOAExternalAPI.App_Start
             kernel.Bind<IObtenerSolpConsumerMOA>().To(typeof(ObtenerSolpConsumerMOA)).InScope(ctx => OperationContext.Current);
             kernel.Bind<ICrearSolpConsumerMOA>().To(typeof(CrearSolpConsumerMOA)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IModificarSolpConsumerMOA>().To(typeof(ModificarSolpConsumerMOA)).InScope(ctx => OperationContext.Current);
-            kernel.Bind<IScatoConsumer>().To(typeof(ScatoConsumer)).InScope(ctx => OperationContext.Current); 
-            kernel.Bind<ICartaPorteService>().To(typeof(CartaPorteService)).InScope(ctx => OperationContext.Current); 
-            kernel.Bind<IScatoComandosConsumer>().To(typeof(ScatoComandosConsumer)).InScope(ctx => OperationContext.Current);
-            kernel.Bind<IServicioSuscriptorAccesosConsumer>().To(typeof(ServicioSuscriptorAccesosConsumer)).InScope(ctx => OperationContext.Current);
+            kernel.Bind<IReporteContratoConsumerMOA>().To(typeof(ReporteContratoConsumerMOA)).InScope(ctx => OperationContext.Current);
+            kernel.Bind<ICrearPedidoConsumerMOA>().To(typeof(CrearPedidoConsumerMOA)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IObtenerFuenteAprovisionamientoConsumerMOA>().To(typeof(ObtenerFuenteAprovisionamientoConsumerMOA)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IObtenerContratoSolpConsumerMOA>().To(typeof(ObtenerContratoSolpConsumerMOA)).InScope(ctx => OperationContext.Current);
+            kernel.Bind<IEcheqVisualizarPendientePagoConsumerMOA>().To(typeof(EcheqVisualizarPendientePagoConsumerMOA)).InScope(ctx => OperationContext.Current);
+            kernel.Bind<IEcheqModificarContratoConsumerMOA>().To(typeof(EcheqModificarContratoConsumerMOA)).InScope(ctx => OperationContext.Current);
+            kernel.Bind<IEcheqModificarFijacionConsumerMOA>().To(typeof(EcheqModificarFijacionConsumerMOA)).InScope(ctx => OperationContext.Current);
+            kernel.Bind<IEcheqModificacionDocumentoChequeConsumerMOA>().To(typeof(EcheqModificacionDocumentoChequeConsumerMOA)).InScope(ctx => OperationContext.Current);
+            kernel.Bind<IEcheqAnularAperturaChequeConsumerMOA>().To(typeof(EcheqAnularAperturaChequeConsumerMOA)).InScope(ctx => OperationContext.Current);
+            kernel.Bind<IEcheqCargaAperturaChequeConsumerMOA>().To(typeof(EcheqCargaAperturaChequeConsumerMOA)).InScope(ctx => OperationContext.Current);
+            kernel.Bind<IObtenerTipoCambioConsumerMOA>().To(typeof(ObtenerTipoCambioConsumerMOA)).InScope(ctx => OperationContext.Current);
+            kernel.Bind<IObtenerOrdenesDeCompraParaSOLPConsumerMOA>().To(typeof(ObtenerOrdenesDeCompraParaSOLPConsumerMOA)).InScope(ctx => OperationContext.Current);
+            kernel.Bind<IObtenerProveedorConsumerMOA>().To(typeof(ObtenerProveedorConsumerMOA)).InScope(ctx => OperationContext.Current);
+            kernel.Bind<IModificarOrdenDeCompraConsumerMOA>().To(typeof(ModificarOrdenDeCompraConsumerMOA)).InScope(ctx => OperationContext.Current);
+            kernel.Bind<IVendedoresConsumerMOA>().To(typeof(VendedoresConsumerMOA)).InScope(ctx => OperationContext.Current);
+            kernel.Bind<IAgregarRegistroInfoConsumerMOA>().To(typeof(AgregarRegistroInfoConsumerMOA)).InScope(ctx => OperationContext.Current);
+            kernel.Bind<IObtenerRegistroInfoConsumerMOA>().To(typeof(ObtenerRegistroInfoConsumerMOA)).InScope(ctx => OperationContext.Current);
+            kernel.Bind<IObtenerOrdenDeCompraConsumerMOA>().To(typeof(ObtenerOrdenDeCompraConsumerMOA)).InScope(ctx => OperationContext.Current);
+            kernel.Bind<IReporteOrdenDeCompraConsumerMOA>().To(typeof(ReporteOrdenDeCompraConsumerMOA)).InScope(ctx => OperationContext.Current);
+            kernel.Bind<IObtenerUnidadesDeMedidaAlternativasConsumerMOA>().To(typeof(ObtenerUnidadesDeMedidaAlternativasConsumerMOA)).InScope(ctx => OperationContext.Current);
 
+            #endregion
 
-            kernel.Bind<IAuthenticationManager>().To(typeof(AuthenticationManager)).InSingletonScope();
+            // Scato WebApi
+            kernel.Bind<IScatoRepositorioClient>().To(typeof(ScatoRepositorioClient)).InSingletonScope();
+            kernel.Bind<IServicioRepositorio>().To(typeof(ServicioRepositorioClient)).InScope(ctx => OperationContext.Current);
+            kernel.Bind<IScatoConsumer>().To(typeof(ScatoConsumer)).InScope(ctx => OperationContext.Current);
+            kernel.Bind<IScatoComandosConsumer>().To(typeof(ScatoComandosConsumer)).InScope(ctx => OperationContext.Current);
+
+            // CNRT WebApi
+            kernel.Bind<ICNRTClient>().To(typeof(CNRTClient)).InSingletonScope();
+
+            // Azure AD Consumer
+            kernel.Bind<IAzureADConsumer>().To(typeof(AzureADConsumer)).InSingletonScope();
+            kernel.Bind<IUsersGraphAPIClient>().To(typeof(UsersGraphAPIClient)).InSingletonScope();
+            kernel.Bind<IRepositorioUsuario>().To<RepositorioUsuario>().InScope(ctx => HttpContext.Current);
+
+            //kernel.Bind<IExternalApiService>().To(typeof(ExternalApiService)).InScope(ctx => OperationContext.Current);
             kernel.Bind<DbContext>().To<MOAOperacionesDbContext>().InTransientScope();
             kernel.Bind<IRepositorio>().To<RepositorioEF>().InTransientScope();
             kernel.Bind<ICache, Cache>().To<Cache>().InSingletonScope();
+            kernel.Bind<IServicioSuscriptorAccesosConsumer>().To(typeof(ServicioSuscriptorAccesosConsumer)).InScope(ctx => OperationContext.Current);
+            //kernel.Bind<IOrdenDeCargaApiService>().To(typeof(OrdenDeCargaApiService)).InScope(ctx => OperationContext.Current);
+            kernel.Bind<IAuthenticationManager>().To(typeof(AuthenticationManager)).InSingletonScope();
         }
+
     }
 }

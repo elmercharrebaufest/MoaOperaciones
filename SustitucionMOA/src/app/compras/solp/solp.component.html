@@ -38,7 +38,7 @@
                         <cotizacion [(model)]="solpActual" [(locale)]="es"></cotizacion>
                     </div>
                     <div *ngSwitchCase="enumSolp.SolpCabecera" [@fadeInOut]>
-                        <cabecera #cabecera [(model)]="solpActual" [(locale)]="es" [(combos)]="combos" [(esCreacionSolp)]="esCreacionSolp"></cabecera>
+                        <cabecera #cabecera [(model)]="solpActual" [(locale)]="es" [(combos)]="combos" [(esCreacionSolp)]="esCreacionSolp" [(getDatosUltimaSolp)]="getDatosUltimaSolp"></cabecera>
                     </div>
                     <div *ngSwitchDefault [@fadeInOut]>
                         Paso en construccion
@@ -88,13 +88,12 @@
     [(locale)]="es"
     [(displayFinalizar)]="displayFinalizar"
     [(solpActual)]="solpActual"
-    [(selectUsuarioCompras)]="selectUsuarioCompras"
-    [(usuarioComprasList)]="usuarioComprasList"
+    
     (cancelarFinalizarEmitter)="cancelarFinalizar()"
     (finalizarEmitter)="finalizar($event)">
 </finalizar-solp>
 
-<p-dialog [(visible)]="displaySAP" [width]="460" modal="modal" appendTo="body" [draggable]="false" [contentStyle]="{'overflow':'visible', 'max-height':'100px', 'min-height':'100px'}">
+<p-dialog [(visible)]="displaySAP" [width]="460" modal="modal" appendTo="body" [draggable]="false" [contentStyle]="{'overflow':'visible', 'max-height':'100px', 'min-height':'100px'}" [closable]="false">
     <p-header class="headerModal">
         ¡Felicitaciones!
     </p-header>
@@ -103,12 +102,12 @@
     <br>
     <p-footer>
         <button class="btn btn-success botonesComprasColor" (click)="showEmailPopup(displaySAP, false)">Enviar Email</button>
-        <button class="btn btn-secondary botonesCompras" (click)="generarZipPliego(solpActual.id)">Descargar SOLP</button>
+        <button *ngIf="solpActual.tipoSolp == 'CON_PLIEGO' || tieneAdjuntos" class="btn btn-secondary botonesCompras" (click)="generarZipPliego(solpActual.id)">Descargar SOLP</button>
         <button class="btn btn-primary botonesComprasColor botonModal" (click)="solpFinalizadaVolverHome()">Volver a la home</button>
     </p-footer>
 </p-dialog>
 
-<p-dialog [(visible)]="displaySAPEditar" [width]="460" modal="modal" appendTo="body" [draggable]="false" [contentStyle]="{'overflow':'visible', 'max-height':'100px', 'min-height':'100px'}">
+<p-dialog [(visible)]="displaySAPEditar" [width]="460" modal="modal" appendTo="body" [draggable]="false" [contentStyle]="{'overflow':'visible', 'max-height':'100px', 'min-height':'100px'}" [closable]="false">
     <p-header class="headerModal">
         ¡Felicitaciones!
     </p-header>
@@ -117,20 +116,20 @@
     <br>
     <p-footer>
         <button class="btn btn-success botonesComprasColor" (click)="showEmailPopup(false, displaySAPEditar)">Enviar Email</button>
-        <button class="btn btn-secondary botonesCompras" (click)="generarZipPliego(solpActual.id)">Descargar SOLP</button>
+        <button *ngIf="solpActual.tipoSolp == 'CON_PLIEGO' || tieneAdjuntos" class="btn btn-secondary botonesCompras" (click)="generarZipPliego(solpActual.id)">Descargar SOLP</button>
         <button class="btn btn-primary botonesComprasColor botonModal" (click)="salir()">Volver a la home</button>
     </p-footer>
 </p-dialog>
 
-<p-dialog [(visible)]="displaySAPVincularPliego" [width]="400" modal="modal" appendTo="body" [draggable]="false" [contentStyle]="{'overflow':'visible', 'max-height':'100px', 'min-height':'100px'}">
+<p-dialog [(visible)]="displaySAPVincularPliego" [width]="400" modal="modal" appendTo="body" [draggable]="false" [contentStyle]="{'overflow':'visible', 'max-height':'100px', 'min-height':'100px'}" [closable]="false">
     <p-header class="headerModal">
         ¡Felicitaciones!
     </p-header>
     <br> La vinculación del Pliego se realizó correctamente.
-    <br> Puede descargar la SOLP y enviarla por mail.
+    <br> <p *ngIf="solpActual.tipoSolp == 'CON_PLIEGO' || tieneAdjuntos">Puede descargar la SOLP y enviarla por mail.</p>
     <br>
     <p-footer>
-        <button type="button" class="btn btn-secondary botonesCompras" (click)="generarZipPliego(solpActual.id)">Descargar SOLP</button>
+        <button *ngIf="solpActual.tipoSolp == 'CON_PLIEGO' || tieneAdjuntos" type="button" class="btn btn-secondary botonesCompras" (click)="generarZipPliego(solpActual.id)">Descargar SOLP</button>
         <button type="button" class="btn btn-primary botonesComprasColor botonModal" (click)="salir()">Volver a la home</button>
     </p-footer>
 </p-dialog>
@@ -157,5 +156,7 @@
 </p-dialog>
 
 <email-compose
-    (sendEmailWrapperEmitter)="sendEmail($event)">
+    (sendEmailWrapperEmitter)="sendEmail($event)"
+    [(solpActual)]="solpActual"
+    [(tieneAdjuntos)]="tieneAdjuntos">
 </email-compose>

@@ -34,7 +34,6 @@ import { Generacion1Component } from './solp/steps/generacion1/generacion1.compo
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { SolpComponent } from './solp/solp.component';
 import { PliegoPreviewComponent } from './preview/pliego.preview.component';
-import { CotizacionComponent } from './solp/steps/cotizacion/cotizacion.component';
 import { DragAndDropDirective } from '../directivas/drag-and-drop.directive';
 import { EspecificacionesComponent } from './solp/steps/especificaciones/especificaciones.component'
 import { CabeceraComponent } from './solp/steps/posicion/cabecera.component';
@@ -48,6 +47,39 @@ import { TabSubposicionComponent } from './solp/steps/posicion/tab-subposicion/t
 import { StepperActionsComponent } from './solp/stepper-actions/stepper-actions.component';
 import { FinalizarSolpComponent } from './solp/finalizar/finalizar-solp.component';
 import { ContratoMarcoComponent } from './solp/steps/posicion/contrato-marco/contrato-marco.component';
+import { ObtenerContratoMarcoComponent } from './solp/steps/posicion/obtener-contrato-marco/obtener-contrato-marco.component';
+import { PaginatorModule } from 'primeng/paginator';
+import { TabViewModule } from 'primeng/tabview';
+import {TooltipModule} from 'primeng/tooltip';
+import { ListadoDashboardCompradorComponent } from './dashboard-comprador/listado-dashboard-comprador/listado-dashboard-comprador.component';
+import { CircularComponent } from './dashboard-comprador/circular/circular.component';
+import { LegajoComponent } from './dashboard-comprador/legajo/legajo.component';
+import { NgxMaskModule } from "ngx-mask";
+import { NgbAlertModule } from '@ng-bootstrap/ng-bootstrap';
+
+import { ProveedorPeticionComponent } from './dashboard-comprador/proveedor-peticion/proveedor-peticion.component';
+import { AltaProveedorComponent } from './dashboard-comprador/alta-proveedor/alta-proveedor.component';
+import { ListadoDashboardProveedorComponent } from './dashboard-proveedor/listado-dashboard-proveedor/listado-dashboard-proveedor.component';
+import { VerOfertasComponent } from './dashboard-comprador/ver-ofertas/ver-ofertas.component';
+import { RevisionTecnicaComponent } from './dashboard/revision-tecnica/revision-tecnica.component';
+
+import { PeticionDeOfertaFormularioComponent } from './peticion-de-oferta-formulario/peticion-de-oferta-formulario.component';
+import { CotizacionFormularioComponent } from './dashboard-proveedor/cotizacion-formulario/cotizacion-formulario.component';
+import { CotizacionComponent } from './solp/steps/cotizacion/cotizacion.component';
+import { CotizacionMaterialComponent } from './dashboard-proveedor/cotizacion-formulario/cotizacion-material/cotizacion-material.component';
+import { CotizacionServicioComponent } from './dashboard-proveedor/cotizacion-formulario/cotizacion-servicio/cotizacion-servicio.component';
+import { PanelHorasComponent } from './panel-horas/panel-horas.component';
+import { OrdenDeCompraDetalleComponent } from './dashboard-comprador/orden-de-compra-detalle/ordenDeCompraDetalle.component';
+import { TextosAdjudicarComponent } from './dashboard-comprador/ver-ofertas/textos-adjudicar/textos-adjudicar.component';
+
+import {AccordionModule} from 'primeng/accordion';
+import { RegistroInfoComponent } from './peticion-de-oferta-formulario/registro-info/registro-info/registro-info.component';
+import { CerrarCotizacionComponent } from './dashboard-comprador/cerrar-cotizacion/cerrar-cotizacion.component';
+import { PlazoDeOfertaComponent } from './dashboard-proveedor/cotizacion-formulario/cotizacion-material/plazo-de-oferta/plazo-de-oferta.component';
+import { VisalizarPrecioComponent } from './dashboard-comprador/ver-ofertas/visualizar-precio/visualizar-precio.component';
+import { ReporteOcComponent } from './reporte-oc/reporte-oc.component';
+import { ChatInternoComponent } from './chat-interno/chat-interno.component';
+import { PosicionPlazoComponent } from './dashboard-comprador/ver-ofertas/posicion-plazo/posicion-plazo.component';
 
 @NgModule({
     imports: [
@@ -78,16 +110,22 @@ import { ContratoMarcoComponent } from './solp/steps/posicion/contrato-marco/con
         ConfirmDialogModule,
         PanelModule,
         InputSwitchModule,
-        TabMenuModule
+        TabMenuModule,
+        PaginatorModule,
+        TooltipModule,
+        TabViewModule,
+        NgbAlertModule,
+        NgxMaskModule,
+        AccordionModule
     ],
     declarations: [
         SolpComponent,
+        CotizacionComponent,
         DashboardComponent,
         Generacion1Component,
         Generacion2Component,
         PliegoPreviewComponent,
         EspecificacionesComponent,
-        CotizacionComponent,
         DragAndDropDirective,
         CabeceraComponent,
         TabFechasComponent,
@@ -98,7 +136,31 @@ import { ContratoMarcoComponent } from './solp/steps/posicion/contrato-marco/con
         TabImputacionesComponent,
         StepperActionsComponent,
         FinalizarSolpComponent,
-        ContratoMarcoComponent
+        ContratoMarcoComponent,
+        ObtenerContratoMarcoComponent,
+        ListadoDashboardCompradorComponent,
+        PeticionDeOfertaFormularioComponent,
+        LegajoComponent,
+        CircularComponent,
+        AltaProveedorComponent,
+        ProveedorPeticionComponent,
+        ListadoDashboardProveedorComponent,
+        VerOfertasComponent,
+        RevisionTecnicaComponent,
+        PeticionDeOfertaFormularioComponent,
+        CotizacionFormularioComponent,
+        CotizacionMaterialComponent,
+        CotizacionServicioComponent,
+        PanelHorasComponent,
+        OrdenDeCompraDetalleComponent,
+        TextosAdjudicarComponent,
+        RegistroInfoComponent,
+        CerrarCotizacionComponent,
+        PlazoDeOfertaComponent,
+        ReporteOcComponent,
+        VisalizarPrecioComponent,
+        ChatInternoComponent,
+        PosicionPlazoComponent
     ],
     providers: [
         ComprasService,

@@ -1,0 +1,33 @@
+<!--Search-->
+<div class="row myRow firstSection mySearch">
+    <div class="col-xs-12 col-md-12 rounded shadow animate">
+        <div class="col-xs-12 col-md-12 search-header">
+            <title-caps>Refinar resultados</title-caps>
+        </div>
+
+        <div id="searchContrato" class="col-xs-12 col-sm-6 col-md-15" style="padding-left: 20px;">
+            <p>N° Contrato</p>
+            <div class="styled-select">
+                <input type="search" [(ngModel)]="echeqFilterModel.contrato" [value]="echeqFilterModel.contrato"  aria-controls="tableModal" (keyup)="onChangeContrato()">
+            </div>
+        </div>
+
+        <div id="searchTipoContrato" class="col-xs-12 col-sm-6 col-md-15" style="padding-left: 20px;">
+            <p>Por Tipo de Contrato</p>
+            <div class="styled-select" (change)="onChangeTipoContrato()">   
+                <select [(ngModel)]="echeqFilterModel.tipoContrato" [value]="echeqFilterModel.tipoContrato"
+                    class="dropdown-granos ng-pristine ng-valid" (select)="onChangeTipoContrato()" (change)="onChangeTipoContrato()">
+                    <option value="Todos" selected="selected">Todos</option>
+                    <option value="A Precio">A Precio</option>
+                    <option value="Fijación">Fijación</option>
+                </select>
+            </div>
+        </div>
+
+        <div id="searchFecha" class="col-xs-12 col-sm-6 col-md-15" style="padding-left: 20px;">
+            <p>Fecha de Operacion</p>
+            <filtro-fecha (ClickEvent)="onChangeFecha()" ></filtro-fecha>
+        </div>       
+    </div>
+</div>
+<!-- End Search-->

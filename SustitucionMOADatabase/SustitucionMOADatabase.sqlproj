@@ -160,9 +160,6 @@
     <Build Include="DBO\Tables\TipoSolpPosicionSAP.sql" />
     <None Include="scripts\PostDeployment\CategoriaRolConsulta.sql" />
     <None Include="scripts\PostDeployment\CategoriaYSubcategoriasConsulta.sql" />
-    <None Include="scripts\PostDeployment\PermisoPorRolConsulta.sql" />
-    <None Include="scripts\PostDeployment\RolesConsulta.sql" />
-    <None Include="scripts\PostDeployment\RolPermisoPorRolConsulta.sql" />
     <Build Include="DBO\Tables\LogActualizarToneladasAprobadasCampo.sql" />
     <Build Include="DBO\Tables\MaterialSolp.sql" />
     <Build Include="DBO\Tables\PaisesSAP.sql" />
@@ -173,6 +170,49 @@
     <Build Include="DBO\Tables\Configuracion.sql" />
     <None Include="scripts\PostDeployment\PaisesSAP.sql" />
     <None Include="scripts\PostDeployment\SolpFixDataToNewColumnEmailLinkToken.sql" />
+    <None Include="scripts\HABILITAR MENU COMPRAS.sql" />
+    <None Include="scripts\PostDeployment\RolPermisoPorRol.sql" />
+    <None Include="scripts\PostDeployment\Rol.sql" />
+    <None Include="scripts\PostDeployment\PermisoPorRol.sql" />
+    <Build Include="DBO\Tables\EcheqNegocio.sql" />
+    <Build Include="DBO\Tables\EcheqLiquidacion.sql" />
+    <Build Include="DBO\Tables\EcheqApertura.sql" />
+    <Build Include="DBO\Tables\MaterialFason.sql" />
+    <Build Include="DBO\Tables\OrdenDeCargaFason.sql" />
+    <None Include="scripts\PostDeployment\Material.sql" />
+    <Build Include="DBO\Tables\AplicacionCartaPorte.sql" />
+    <Build Include="DBO\Tables\PeticionDeOferta.sql" />
+    <Build Include="DBO\Tables\PeticionDeOfertaArchivo.sql" />
+    <Build Include="DBO\Tables\PeticionDeOfertaUsuario.sql" />
+    <Build Include="DBO\Tables\PeticionDeOfertaSolpPosicion.sql" />
+    <Build Include="DBO\Tables\Circular.sql" />
+    <Build Include="DBO\Tables\CircularPeticionDeOfertaUsuario.sql" />
+    <Build Include="DBO\Tables\CircularArchivo.sql" />
+    <Build Include="DBO\Tables\CotizacionEstado.sql" />
+    <Build Include="DBO\Tables\Cotizacion.sql" />
+    <Build Include="DBO\Tables\CotizacionArchivo.sql" />
+    <Build Include="DBO\Tables\CotizacionHora.sql" />
+    <Build Include="DBO\Tables\CotizacionPosicion.sql" />
+    <Build Include="DBO\Tables\CotizacionSubPosicion.sql" />
+    <None Include="scripts\PostDeployment\Estados.sql" />
+    <Build Include="DBO\Tables\Adjudicacion.sql" />
+    <Build Include="DBO\Tables\AdjudicacionPosicion.sql" />
+    <Build Include="DBO\Tables\ProveedorAuditoria.sql" />
+    <Build Include="DBO\Tables\UnidadMedidaSap.sql" />
+    <None Include="scripts\PostDeployment\UnidadMedidaSap.sql" />
+    <Build Include="DBO\Tables\PeticionDeOfertaCierre.sql" />
+    <Build Include="DBO\Tables\PeticionDeOfertaVisualizacionPrecio.sql" />
+    <Build Include="DBO\Tables\PeticionDeOfertaRevisionTecnica.sql" />
+    <Build Include="DBO\Tables\AplicacionCartaPorteCargaMasiva.sql" />
+    <Build Include="DBO\Tables\AplicacionCartaPorteCargaMasivaFila.sql" />
+    <Build Include="DBO\Tables\RegionSap.sql" />
+    <None Include="scripts\PostDeployment\RegionSap.sql" />
+    <Build Include="DBO\Tables\ChatInternoCompras.sql" />
+    <Build Include="DBO\Tables\PeticionDeOfertaUsuarioAdicional.sql" />
+    <Build Include="DBO\Tables\LiberadorSapTipo.sql" />
+    <Build Include="DBO\Tables\LiberadorSap.sql" />
+    <Build Include="DBO\Tables\LiberadorSapSolp.sql" />
+    <None Include="scripts\PostDeployment\LiberadorSap.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DatabasePublishQA.xml" />
@@ -193,6 +233,11 @@
     <None Include="DatabasePublishUPDATE.xml" />
     <None Include="DatabasePublishPREHotFix.xml" />
     <None Include="DatabasePublishQAHotFix.xml" />
+    <None Include="DatabaseNewPublishPRE.xml" />
+    <None Include="DatabaseNewPublishProd.xml" />
+    <None Include="DatabaseNewPublishQaBaufest.xml" />
+    <None Include="DatabaseNewPublishQaHuenei.xml" />
+    <None Include="DatabaseNewPublishQaCompras.xml" />
   </ItemGroup>
   <ItemGroup>
     <None Include="scripts\UpdateRolesEditables.sql" />
@@ -207,5 +252,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="scripts\PostDeployment\OrigenMovimientoIngresosBrutosCoeficienteUnificado.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="scripts\PostDeployment\UsuariosConRolFleteMOA.sql" />
   </ItemGroup>
 </Project>

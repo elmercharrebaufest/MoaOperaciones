@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using SustitucionMOAModel.Entities;
+using SustitucionMOAModel.Enums;
 using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
@@ -30,7 +31,7 @@ namespace SustitucionMOA.Jobs
                 if (repositorio.Obtener<HabilitacionJob>(a => a.Nombre == "ActualizarSISAJob").Habilitado == false)
                     return;
 
-                var proveedores = repositorio.Listar<Proveedor>(x => x.TipoProveedor.Id == 2 || x.TipoProveedor.Id == 4);
+                var proveedores = repositorio.Listar<Proveedor>(x => x.TipoProveedor.Id == (int) TipoUsuarioEnum.Granos || x.TipoProveedor.Id == (int) TipoUsuarioEnum.Corredor);
 
                 foreach (var proveedor in proveedores)
                 {                    

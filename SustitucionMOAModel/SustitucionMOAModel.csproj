@@ -30,6 +30,13 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AutoMapper, Version=7.0.1.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
+      <HintPath>..\packages\AutoMapper.7.0.1\lib\net45\AutoMapper.dll</HintPath>
+    </Reference>
+    <Reference Include="itextsharp, Version=5.5.13.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\iTextSharp.5.5.13\lib\itextsharp.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -38,6 +45,9 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ValueTuple.4.5.0\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -49,16 +59,78 @@
     <Compile Include="Consulta\DirOrden.cs" />
     <Compile Include="Consulta\Expresiones.cs" />
     <Compile Include="Consulta\ListaPaginada.cs" />
-    <Compile Include="Dto\FuenteAprovisionamientoDto.cs" />
+    <Compile Include="Dto\AplicacionCartaPorte\CargaMasivaResponse.cs" />
+    <Compile Include="Dto\AplicacionCartaPorte\ComboAplicacionesContratosCcppResponse.cs" />
+    <Compile Include="Dto\Compras\AdjudicacionEditarDto.cs" />
+    <Compile Include="Dto\Compras\AdjudicacionPosicionEditarDto.cs" />
+    <Compile Include="Dto\Compras\AdjudicacionSubPosicionEditarDto.cs" />
+    <Compile Include="Dto\LiberadorSapDto.cs" />
+    <Compile Include="Dto\AsignarNuevaCuitDto.cs" />
+    <Compile Include="Dto\DestinatarioDto.cs" />
+    <Compile Include="Dto\AplicacionCartaPorte\AplicacionCartaPorteApiDto.cs" />
+    <Compile Include="Dto\AplicacionCartaPorte\CartaPorteParaAplicacionCartaPorte.cs" />
+    <Compile Include="Dto\AplicacionCartaPorte\ContratoParaAplicacionCartaPorte.cs" />
+    <Compile Include="Dto\AplicacionCartaPorte\CrearAplicacionCartaPorte.cs" />
+    <Compile Include="Dto\OrdenDeCargaFason\DetallesActualizarOrdenDeCargaFason.cs" />
+    <Compile Include="Dto\Compras\ChatComprasDto.cs" />
+    <Compile Include="Dto\PeticionDeOfertaVisualizacionPrecioDto.cs" />
+    <Compile Include="Dto\EstadoSolicitudOrdenDeCargaBaseDto.cs" />
+    <Compile Include="Dto\Compras\DatosUltimaSolpDto.cs" />
+    <Compile Include="Dto\Compras\RegistroInfoDto.cs" />
+    <Compile Include="Dto\Compras\AdjudicacionDto.cs" />
+    <Compile Include="Dto\Compras\AdjudicacionPosicionDto.cs" />
+    <Compile Include="Dto\AsociarContratoDto.cs" />
+    <Compile Include="Dto\Compras\CircularDto.cs" />
+    <Compile Include="Dto\Compras\ProveedorComprasDto.cs" />
+    <Compile Include="Dto\DolarMaterialDto.cs" />
+    <Compile Include="Dto\LegajoExternoDto.cs" />
+    <Compile Include="Dto\OrdenDeCargaFason\EstadoSolicitudAnulacionFason.cs" />
+    <Compile Include="Dto\OrdenDeCargaFason\EstadoSolicitudEdicionFason.cs" />
+    <Compile Include="Dto\OrdenDeCarga\ClienteSAPResponse.cs" />
+    <Compile Include="Dto\OrdenDeCarga\FacturaOrdenCarga.cs" />
+    <Compile Include="Dto\Compras\CotizacionDto.cs" />
+    <Compile Include="Dto\OrdenDeCarga\ValidarCamionResponse.cs" />
+    <Compile Include="Dto\OrdenDeCarga\ValidarIntermediarioFleteResponse.cs" />
+    <Compile Include="Dto\OrdenDeCarga\ValidaSisaCuit.cs" />
+    <Compile Include="Dto\OrdenDeCarga\ValidarCuitExisteScatoResponse.cs" />
+    <Compile Include="Dto\OrdenDeCarga\DomicilioDto.cs" />
+    <Compile Include="Dto\OrdenDeCarga\PlantaDto.cs" />
+    <Compile Include="Dto\OrdenDeCarga\ValidarSisaCorredorClienteResponse.cs" />
+    <Compile Include="Dto\PdfFooter.cs" />
+    <Compile Include="Dto\Echeq\EcheqReporteDto.cs" />
+    <Compile Include="Dto\AplicacionCartaPorteDto.cs" />
+    <Compile Include="Dto\LegajoDto.cs" />
+    <Compile Include="Dto\OrdenDeCargaFason\IngresosEgresosFasones.cs" />
+    <Compile Include="Dto\OrdenDeCargaFason\IngresosEgresosFas.cs" />
+    <Compile Include="Dto\OrdenDeCarga\ObtenerContratosDisponiblesRequest.cs" />
+    <Compile Include="Dto\OrdenDeCarga\ObtenerContratosDisponiblesResponse.cs" />
+    <Compile Include="Dto\OrdenDeCargaFason\CrearOrdenDeCargaFasonRequest.cs" />
+    <Compile Include="Dto\OrdenDeCargaFason\EditarOrdenDeCargaFasonRequest.cs" />
+    <Compile Include="Dto\OrdenDeCargaFason\OrdenDeCargaFasonRequest.cs" />
+    <Compile Include="Dto\OrdenesDeCargaApiDto.cs" />
+    <Compile Include="Dto\ConfiguracionDto.cs" />
+    <Compile Include="Dto\Echeq\EcheqLiquidacionDto.cs" />
+    <Compile Include="Dto\Echeq\EcheqAperturaDto.cs" />
+    <Compile Include="Dto\Echeq\EcheqNegocioDto.cs" />
+    <Compile Include="Dto\Compras\FuenteAprovisionamientoDto.cs" />
+    <Compile Include="Dto\OrdenDeCargaFason\DetalleOrdenDeCargaFasonRequest.cs" />
+    <Compile Include="Dto\OrdenDeCargaFason\DetalleOrdenDeCargaFasonResponse.cs" />
+    <Compile Include="Dto\OrdenDeCargaFason\ListarOrdenDeCargaFasonRequest.cs" />
+    <Compile Include="Dto\OrdenDeCargaFason\ListarOrdenDeCargaFasonResponse.cs" />
+    <Compile Include="Dto\OrdenDeCargaFason\OrdenDeCargaFasonDto.cs" />
+    <Compile Include="Dto\OrdenDeCarga\CrearOrdenEnSAPRequest.cs" />
+    <Compile Include="Dto\OrdenDeCarga\CrearOrdenEnSAPResponse.cs" />
+    <Compile Include="Dto\Compras\PeticionDeOfertaDto.cs" />
+    <Compile Include="Dto\ProveedorAuditoriaDto.cs" />
     <Compile Include="Dto\ProvinciaDTO.cs" />
     <Compile Include="Dto\AutoCompleteDropdownElement.cs" />
-    <Compile Include="Dto\EmailComposeDto.cs" />
-    <Compile Include="Dto\MaterialSolpDto.cs" />
+    <Compile Include="Dto\Compras\EmailComposeDto.cs" />
+    <Compile Include="Dto\Compras\MaterialSolpDto.cs" />
     <Compile Include="Dto\ComprobanteNGDto.cs" />
     <Compile Include="Dto\AgregarConsultaResponseDto.cs" />
     <Compile Include="Dto\ArchivoDescargaDto.cs" />
     <Compile Include="Dto\ArchivoDto.cs" />
-    <Compile Include="Dto\Soja200Dto.cs" />
+    <Compile Include="Dto\ResultadoGenerico.cs" />
     <Compile Include="Dto\CorredorContratoDto.cs" />
     <Compile Include="Dto\CampoProveedorDto.cs" />
     <Compile Include="Dto\CampoProveedorListadoDto.cs" />
@@ -90,7 +162,10 @@
     <Compile Include="Dto\PesificacionSapDto.cs" />
     <Compile Include="Dto\SecuenciaIngresosBrutosCoeficienteUnificadoDto.cs" />
     <Compile Include="Dto\ServicioSolpDto.cs" />
-    <Compile Include="Dto\SolpDto.cs" />
+    <Compile Include="Dto\Compras\SolpCompraDto.cs" />
+    <Compile Include="Dto\Compras\GuardarPeticionDeOfertaDto.cs" />
+    <Compile Include="Dto\Compras\OrdenDeCompraSapDto.cs" />
+    <Compile Include="Dto\Compras\SolpDto.cs" />
     <Compile Include="Dto\SubCategoriaDto.cs" />
     <Compile Include="Dto\CategoriaDto.cs" />
     <Compile Include="Dto\ComentarioDto.cs" />
@@ -103,11 +178,54 @@
     <Compile Include="Dto\OrdenDeCargaDto.cs" />
     <Compile Include="Dto\DeclaracionCampoSustentableDto.cs" />
     <Compile Include="Dto\Resultado.cs" />
+    <Compile Include="Dto\SustitucionMOAApiResponse.cs" />
     <Compile Include="Dto\TablaEstadoDto.cs" />
-    <Compile Include="Dto\TablaGeneralDto.cs" />
-    <Compile Include="Dto\TablaSapDto.cs" />
-    <Compile Include="Dto\UsuarioComprasDto.cs" />
-    <Compile Include="Dto\UsuarioComprasRelacionConUsuariosDto.cs" />
+    <Compile Include="Dto\Compras\TablaGeneralDto.cs" />
+    <Compile Include="Dto\Compras\TablaSapDto.cs" />
+    <Compile Include="Dto\TipoUsuarioDto.cs" />
+    <Compile Include="Dto\Compras\UsuarioComprasDto.cs" />
+    <Compile Include="Dto\Compras\UsuarioComprasRelacionConUsuariosDto.cs" />
+    <Compile Include="Dto\UsuarioModificacionDto.cs" />
+    <Compile Include="Entities\PaisesSap.cs" />
+    <Compile Include="Entities\RegionSap.cs" />
+    <Compile Include="Entities\ChatInternoCompras.cs" />
+    <Compile Include="Entities\AplicacionCartaPorte.cs" />
+    <Compile Include="Entities\Adjudicacion.cs" />
+    <Compile Include="Entities\AdjudicacionPosicion.cs" />
+    <Compile Include="Entities\AplicacionCartaPorteCargaMasiva.cs" />
+    <Compile Include="Entities\AplicacionCartaPorteCargaMasivaFila.cs" />
+    <Compile Include="Entities\Circular.cs" />
+    <Compile Include="Entities\CircularPeticionDeOfertaUsuario.cs" />
+    <Compile Include="Entities\Cotizacion.cs" />
+    <Compile Include="Entities\CotizacionEstado.cs" />
+    <Compile Include="Entities\CotizacionHora.cs" />
+    <Compile Include="Entities\CotizacionPosicion.cs" />
+    <Compile Include="Entities\CotizacionSubPosicion.cs" />
+    <Compile Include="Entities\PeticionDeOfertaUsuarioAdicional.cs" />
+    <Compile Include="Entities\PeticionDeOfertaRevisionTecnica.cs" />
+    <Compile Include="Entities\PeticionDeOfertaVisualizacionPrecio.cs" />
+    <Compile Include="Entities\PeticionDeOfertaCierre.cs" />
+    <Compile Include="Entities\PeticionDeOfertaSolpPosicion.cs" />
+    <Compile Include="Entities\PeticionDeOfertaUsuario.cs" />
+    <Compile Include="Entities\PeticionDeOfertaArchivo.cs" />
+    <Compile Include="Entities\PeticionDeOferta.cs" />
+    <Compile Include="Entities\OrdenDeCargaFason.cs" />
+    <Compile Include="Entities\ProveedorAuditoria.cs" />
+    <Compile Include="Entities\LiberadorSap.cs" />
+    <Compile Include="Entities\UnidadMedidaSap.cs" />
+    <Compile Include="Enums\TipoLegajo.cs" />
+    <Compile Include="Enums\RolEnum.cs" />
+    <Compile Include="Enums\TipoContratoFAS.cs" />
+    <Compile Include="Enums\EstadoAplicacionCartaPorte.cs" />
+    <Compile Include="Enums\EstadoOrdenDeCargaFason.cs" />
+    <Compile Include="Enums\CotizacionEstadoEnum.cs" />
+    <Compile Include="Enums\MoaWS\OrdenCargaWS\ControlCargaResEnum.cs" />
+    <Compile Include="Enums\MoaWS\OrdenCargaWS\ControlEstadoResEnum.cs" />
+    <Compile Include="Enums\MoaWS\OrdenCargaWS\CrearEntregaResEnum.cs" />
+    <Compile Include="Enums\MoaWS\OrdenCargaWS\CrearOrdenResEnum.cs" />
+    <Compile Include="Enums\MoaWS\OrdenCargaWS\ResponseConverter.cs" />
+    <Compile Include="Enums\PermisoEnum.cs" />
+    <Compile Include="Models\EcheqRequestModel.cs" />
     <Compile Include="Entities\Configuracion.cs" />
     <Compile Include="Entities\HabilitacionJob.cs" />
     <Compile Include="Entities\Categoria.cs" />
@@ -125,6 +243,7 @@
     <Compile Include="Entities\CampoSustentable.cs" />
     <Compile Include="Entities\DeclaracionCampoSustentable.cs" />
     <Compile Include="Entities\EstadoIngresosBrutosCoeficienteUnificado.cs" />
+    <Compile Include="Entities\MaterialFason.cs" />
     <Compile Include="Entities\MaterialSolp.cs" />
     <Compile Include="Entities\TipoSolpPosicionSAP.cs" />
     <Compile Include="Entities\TipoMovimientoIngresosBrutosCoeficienteUnificado.cs" />
@@ -172,6 +291,7 @@
     <Compile Include="Enums\Tablas.cs" />
     <Compile Include="Enums\TablaSeccionMaterial.cs" />
     <Compile Include="Enums\TipoContrato.cs" />
+    <Compile Include="Enums\TipoUsuarioEnum.cs" />
     <Compile Include="Models\BuscadorOption.cs" />
     <Compile Include="Models\DataAgro\BasicoContrato.cs" />
     <Compile Include="Models\DataAgro\CookiesDataAgro.cs" />
@@ -184,6 +304,20 @@
     <Compile Include="Models\DataAgro\ContratoAPrecio.cs" />
     <Compile Include="Models\DataAgro\RptCartaDePresentacionInfo.cs" />
     <Compile Include="Models\ViewModel\ReclamoImpositivo.cs" />
+    <Compile Include="Models\WebApiMap\CNRT\Dominio.cs" />
+    <Compile Include="Models\WebApiMap\CNRT\Equipo.cs" />
+    <Compile Include="Models\WebApiMap\CNRT\EquiposResponse.cs" />
+    <Compile Include="Models\WebApiMap\CNRT\Rto.cs" />
+    <Compile Include="Models\WebApiMap\CNRT\Ruta.cs" />
+    <Compile Include="Models\WebApiMap\ScatoRepositorio\Chofer.cs" />
+    <Compile Include="Models\WebApiMap\ScatoRepositorio\CodigoMensajeObtenerChoferPorCuil.cs" />
+    <Compile Include="Models\WebApiMap\ScatoRepositorio\Domicilio.cs" />
+    <Compile Include="Models\WebApiMap\ScatoRepositorio\ObtenerProveedorPorCuilResponse.cs" />
+    <Compile Include="Models\WebApiMap\ScatoRepositorio\Planta.cs" />
+    <Compile Include="Models\WebApiMap\ScatoRepositorio\Proveedor.cs" />
+    <Compile Include="Models\WebApiMap\ScatoRepositorio\Respuesta.cs" />
+    <Compile Include="Models\WebApiMap\ScatoRepositorio\RespuestaListado.cs" />
+    <Compile Include="Models\WebApiMap\ScatoRepositorio\RespuestaScatoBase.cs" />
     <Compile Include="Models\WSMapMOA\Compras\ContratoSolp.cs" />
     <Compile Include="Models\ViewModel\ReporteContrato\ReporteContratoViewModel.cs" />
     <Compile Include="Models\WSMapMOA\Compras\Ceco.cs" />
@@ -193,15 +327,22 @@
     <Compile Include="Models\WSMapMOA\Compras\ContratoSolpWSMOAResponse .cs" />
     <Compile Include="Models\WSMapMOA\Compras\FuenteAprovisionamiento.cs" />
     <Compile Include="Models\WSMapMOA\Compras\FuenteAprovisionamientoWSMOAResponse.cs" />
+    <Compile Include="Models\WSMapMOA\Compras\ObtenerProveedorWSMOAResponse.cs" />
+    <Compile Include="Models\WSMapMOA\Compras\UnidadesDeMedida.cs" />
     <Compile Include="Models\WSMapMOA\Compras\Orden.cs" />
     <Compile Include="Models\WSMapMOA\Compras\OrdenWSMOAResponse.cs" />
     <Compile Include="Models\WSMapMOA\Compras\Material.cs" />
     <Compile Include="Models\WSMapMOA\Compras\Servicio.cs" />
     <Compile Include="Models\WSMapMOA\Compras\MaterialWSMOAResponse.cs" />
     <Compile Include="Models\WSMapMOA\Compras\ServicioWSMOAResponse.cs" />
+    <Compile Include="Models\WSMapMOA\Compras\TipoDeCambio.cs" />
     <Compile Include="Models\WSMapMOA\ContactoMail\ConsultaVM.cs" />
     <Compile Include="Models\WSMapMOA\ContactoMail\EstadoConsultaVM.cs" />
     <Compile Include="Models\ConsultaTicketPesada.cs" />
+    <Compile Include="Models\WSMapMOA\Echeq\EcheqContratoWSMOAResponse.cs" />
+    <Compile Include="Entities\EcheqLiquidacion.cs" />
+    <Compile Include="Entities\EcheqNegocio.cs" />
+    <Compile Include="Entities\EcheqApertura.cs" />
     <Compile Include="Models\WSMapMOA\FechaFeriado.cs" />
     <Compile Include="Dto\LocalidadCombo.cs" />
     <Compile Include="Dto\EstadoAprobacionDto.cs" />
@@ -364,6 +505,7 @@
     <Compile Include="Models\WSMapMOA\Proforma\Salida.cs" />
     <Compile Include="Models\WSMapMOA\ReporteContrato\ReporteContratoWSMOARequest.cs" />
     <Compile Include="Models\WSMapMOA\ReporteContrato\ReporteContratoWSMOAResponse.cs" />
+    <Compile Include="Models\WSMapMOA\Reporte\ReporteLogin.cs" />
     <Compile Include="Models\WSMapMOA\Reporte\ClaveReporte.cs" />
     <Compile Include="Models\WSMapMOA\Reporte\ReporteBase.cs" />
     <Compile Include="Models\WSMapMOA\Reporte\ReporteCamposSustentables.cs" />
@@ -393,6 +535,8 @@
     <Compile Include="Models\WSMapMOA\Vincula\Detalle\VinculaDetalleWSMOAResponse.cs" />
     <Compile Include="Consulta\Paginacion.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Util\Constante.cs" />
+    <Compile Include="Util\Permisos.cs" />
     <Compile Include="Util\Variance.cs" />
     <Compile Include="Util\Retry.cs" />
   </ItemGroup>

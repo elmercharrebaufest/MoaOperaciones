@@ -34,5 +34,12 @@ namespace SustitucionMOAModel.Enums
         public const string EspecificacionesTecnicasPliego = "especificacionesTecnicasPliego";
         public const string ArchivoPliego = "archivoPliego";
         public const string DDJJ = "DDJJ";
+        public const string PeticionDeOferta = "PeticionDeOferta";
+        public const string PeticionDeOfertaLegajo = "PeticionDeOfertaLegajo";
+        public const string Circular = "Circular";
+        public const string AdjuntoCotizacionRevisionTecnica = "CotizacionRevisionTecnica";
+        public const string AdjuntoCotizacionRevisionEconomica = "CotizacionRevisionEconomica";
+        public const string DeclaracionVinculosAltaInterna = "declaracionVinculosAltaInterna";
+        public const string PeticionDeOfertaVisualizacionPrecio = "PeticionDeOfertaVisualizacionPrecio";
     }
 }

@@ -6,23 +6,23 @@ using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
+using ScatoRepo = SustitucionMOAModel.Models.WebApiMap.ScatoRepositorio;
 using SustitucionMOARepositorio;
-using SustitucionMOAUtils.Email;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Services;
 using SustitucionMOAWS.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
-using System.IO;
 using System.Diagnostics;
-using System.IO;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Net;
-using System.Net.Mail;
-using System.Text;
-using System.Threading.Tasks;
+using SustitucionMOAWS.WSRequests.OrdenCarga;
+using SustitucionMOAWS.ResponseHandler.OrdenCarga;
+using SustitucionMOAModel.Util;
+using SustitucionMOAModel.Models.WSMapMOA.OrdenCarga;
+using SustitucionMOAModel.Enums.MoaWS.OrdenCargaWS;
+using SustitucionMOAModel.Models.WebApiMap.CNRT;
+using SustitucionMOAWS.OrdenCargaControlSAP;
 
 namespace SustitucionMOATest.Services
 {
@@ -35,15 +35,43 @@ namespace SustitucionMOATest.Services
         private OrdenDeCarga ordenDeCarga;
         private List<OrdenDeCargaCambiosHistorial> ordenDeCargaCambiosHistorial;
         private Mock<IFeriadoService> feriadoService;
+        private Mock<IUsuarioService> usuarioService;
+        private Mock<IEmailFasService> mIEmailFasService;
+        private Mock<IFacturaAnticipadaService> mIFacturaAnticipadaService;
+        private Mock<IScatoRepositorioClient> mIScatoRepositorioClient;
+        private Mock<IScatoConsumer> mIScatoConsumer;
+        private Mock<IKgDisponiblesFasService> mIKgDisponiblesFasService;
+        private Mock<ICNRTClient> mICNRTClient;
+
+        private ScatoRepo.Respuesta<ScatoRepo.Chofer> _respuestaChofer;
+        private ScatoRepo.Respuesta<ScatoRepo.Chofer> _respuestaTransporte;
+
+        private Proveedor _proveedorUsuario;
+        private Usuario _usuario;
+        private string _mailSesionUsuario;
+        private List<Rol> _rolesUsuario;
+
+        private Rol _rolAdministracion;
+        private PermisoPorRol _permisoVerOrdenesComerciales;
 
         [SetUp]
         public void SetUp()
         {
             repositorioMock = new Mock<IRepositorio>();
             consumerOrdenCargaMOA = new Mock<IOrdenCargaConsumerMOA>();
+            mIFacturaAnticipadaService = new Mock<IFacturaAnticipadaService>();
             feriadoService = new Mock<IFeriadoService>();
+            mIScatoRepositorioClient = new Mock<IScatoRepositorioClient>();
+            mIScatoConsumer = new Mock<IScatoConsumer>();
+            feriadoService.Setup(fs => fs.ObtenerFeriados()).Returns(new List<DateTime>());
+            mIEmailFasService = new Mock<IEmailFasService>();
+            mIKgDisponiblesFasService = new Mock<IKgDisponiblesFasService>();
+            mICNRTClient = new Mock<ICNRTClient>();
+            
             AddProvider(301301301, EstadoAprobacion.Aprobado, "Test", "RS", "dylopez@baufest.com", "233333333333", new TipoUsuario { Id = 5, Nombre = "Cliente", NombreCorto = "CLI" });
-            target = new OrdenDeCargaService(repositorioMock.Object, consumerOrdenCargaMOA.Object, feriadoService.Object);
+            target = new OrdenDeCargaService(repositorioMock.Object, consumerOrdenCargaMOA.Object, feriadoService.Object,
+                mIScatoRepositorioClient.Object, mIScatoConsumer.Object, mIEmailFasService.Object, mIFacturaAnticipadaService.Object,
+                mIKgDisponiblesFasService.Object, mICNRTClient.Object);
             ordenDeCarga = new OrdenDeCarga
             {
                 Id = 1,
@@ -65,11 +93,70 @@ namespace SustitucionMOATest.Services
                     CodigoSap = ""
                 },
                 NumeroPedido = "",
-                Cliente = new Proveedor 
+                Cliente = new Proveedor
                 {
-                    RazonSocial ="ClientePrueba"                
+                    RazonSocial = "ClientePrueba",
+                    CodigoProveedor = "498097000"
+                },
+                NumeroEntrega = ""
+
+            };
+            _respuestaChofer = new ScatoRepo.Respuesta<ScatoRepo.Chofer>
+            {
+                Data = new ScatoRepo.Chofer { },
+                Messages = new ScatoRepo.MessageItem[] { },
+                IsValid = true
+            };
+
+            _mailSesionUsuario = "usuario@test.com";
+
+            _proveedorUsuario = new Proveedor
+            {
+                Id = 1,
+                EstadoAprobacion = EstadoAprobacion.Aprobado,
+                Observaciones = "Test",
+                RazonSocial = "RS",
+                Mail = _mailSesionUsuario,
+                CUIT = "233333333333",
+                TipoProveedor = new TipoUsuario { Id = 5, Nombre = "Cliente", NombreCorto = "CLI" },
+            };
+
+            _permisoVerOrdenesComerciales = new PermisoPorRol()
+            {
+                Id = 95,
+                Permiso = "VER ORDENES DE CARGA PARA COMERCIALES"
+
+            };
+
+            _rolAdministracion = new Rol
+            {
+                Id = 1,
+                Nombre = "Administracion",
+                PermisosAsociados = new List<PermisoPorRol>()
+                {
+                   _permisoVerOrdenesComerciales
                 }
 
+            };
+            _rolesUsuario = new List<Rol> { _rolAdministracion };
+
+            _usuario = new Usuario
+            {
+                Id = 1,
+                Mail = _mailSesionUsuario,
+                CUITRegistro = "233333333333",
+                Proveedores = new List<Proveedor>()
+                {
+                    _proveedorUsuario
+                },
+
+                Roles = _rolesUsuario
+            };
+            _respuestaTransporte = new ScatoRepo.Respuesta<ScatoRepo.Chofer>
+            {
+                Data = new ScatoRepo.Chofer { },
+                Messages = new ScatoRepo.MessageItem[] { },
+                IsValid = false
             };
         }
 
@@ -77,108 +164,18 @@ namespace SustitucionMOATest.Services
         [Test()]
         public void AgregarTest()
         {
-            string mailUsuario = "usuario@test.com";
 
-            var proveedor = new Proveedor
-            {
-                Id = 1,
-                EstadoAprobacion = EstadoAprobacion.Aprobado,
-                Observaciones = "Test",
-                RazonSocial = "RS",
-                Mail = mailUsuario,
-                CUIT = "233333333333",
-                TipoProveedor = new TipoUsuario { Id = 5, Nombre = "Cliente", NombreCorto = "CLI" },
-            };
+            SetupAgregarTests();
 
-            var permisos = new PermisoPorRol()
-            {
-                Id = 95,
-                Permiso = "VER ORDENES DE CARGA PARA COMERCIALES"
+            SetupAgregarSuccess();
 
-            };
-
-            var roles = new Rol
-            {
-                Id = 1,
-                Nombre = "Administracion",
-                PermisosAsociados = new List<PermisoPorRol>()
-                {
-                   permisos
-                }
-
-            };
-            var usuario = new Usuario
-            {
-                Id = 1,
-                Mail = mailUsuario,
-                CUITRegistro = "233333333333",
-                Proveedores = new List<Proveedor>()
-                {
-                    proveedor
-                },
-
-                Roles = new List<Rol>()
-                {
-                    roles
-                }
-
-
-            };
-
-            repositorioMock
-                .Setup(y => y.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>()))
-                .Returns(usuario);
-
-            repositorioMock
-                 .Setup(x => x.Obtener<Proveedor>(It.IsAny<int>()))
-                 .Returns(proveedor);
-
-            repositorioMock
-                .Setup(x => x.Obtener<Rol>(It.IsAny<int>()))
-                .Returns(roles);
-
-            repositorioMock
-               .Setup(x => x.Obtener<PermisoPorRol>(It.IsAny<int>()))
-               .Returns(permisos);
-
-            repositorioMock
-               .Setup(x => x.Obtener<Material>(It.IsAny<int>()))
-               .Returns(ordenDeCarga.Producto);
-
-            repositorioMock
-               .Setup(y => y.Obtener(It.IsAny<Expression<Func<Proveedor, bool>>>()))
-               .Returns(proveedor);
-
-            consumerOrdenCargaMOA
-                .Setup(x => x.ControlCargaRequest(It.IsAny<string>(),
-                It.IsAny<string>(),
-                It.IsAny<string>(),
-                It.IsAny<string>(),
-                It.IsAny<string>(),
-                It.IsAny<string>()))
-                .Returns("CC-00");
-
-            repositorioMock
-                .Setup(x => x.Obtener<OrdenDeCarga>(It.IsAny<int>()))
-                .Returns(ordenDeCarga);
-
-            consumerOrdenCargaMOA
-               .Setup(x => x.OrdenCargaControlEstadoRequest(It.IsAny<string>(),
-               It.IsAny<string>(),
-               It.IsAny<string>()))
-               .Returns("CE-07");
-
-
-
-            ConfigurationManager.AppSettings["CantidadOrdenDeCarga"] = "30000";
-
-            var result = target.Agregar(ordenDeCarga, mailUsuario);
+            var result = target.Agregar(ordenDeCarga, _mailSesionUsuario);
 
             var expected = new Resultado { IdEntidad = 1, Mensaje = SuccessMsg.OrdenDeCargaAgregada };
 
-            repositorioMock.Verify(x => x.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>()), Times.Once);
+            repositorioMock.Verify(x => x.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>()), Times.Exactly(2));
             repositorioMock.Verify(x => x.Agregar(It.IsAny<OrdenDeCarga>()), Times.Once);
-            repositorioMock.Verify(x => x.GuardarCambios(), Times.Exactly(3));
+            repositorioMock.Verify(x => x.GuardarCambios(), Times.Exactly(4));
 
             Assert.AreEqual(expected, result);
         }
@@ -186,6 +183,8 @@ namespace SustitucionMOATest.Services
         [Test()]
         public void ListarUsuarioComercialTest()
         {
+            var fechaInicio = new DateTime(2023, 3, 10);
+            var fechaFin = new DateTime(2023, 3, 17);
             string mailUsuario = "usuario@test.com";
 
             var proveedor = new Proveedor
@@ -208,13 +207,33 @@ namespace SustitucionMOATest.Services
                 {
                     proveedor
                 },
-                Roles = new List<Rol> { new Rol { Codigo = "COMERCIAL " } }
+                Roles = new List<Rol>
+                {
+                    new Rol
+                    {
+                        Codigo = "COMERCIAL ",
+                        PermisosAsociados = new List<PermisoPorRol>()
+                        {
+                            new PermisoPorRol { Permiso = "VER ORDENES DE CARGA PARA COMERCIALES" }
+                        }
+                    }
+                }
             };
 
             var ordenesDeCarga = new List<OrdenDeCarga>()
             {
-                new OrdenDeCarga {Id = 1, Cliente_Id = 1, CUITCliente = "233333333333"},
-                new OrdenDeCarga {Id = 2, Cliente_Id = 2, CUITCliente = "255555555555"},
+                new OrdenDeCarga
+                {
+                    Id = 1, Cliente_Id = 1, CUITCliente = "233333333333",
+                    Cliente = new Proveedor { CodigoProveedor = "DS2345", RazonSocial = "Kefwen" },
+                    Producto = new Material { Nombre = "mat1" }
+                },
+                new OrdenDeCarga
+                {
+                    Id = 2, Cliente_Id = 2, CUITCliente = "255555555555",
+                    Cliente = new Proveedor { CodigoProveedor = "JRE6532", RazonSocial = "Mjerehd" },
+                    Producto = new Material { Nombre = "mat2" }
+                },
             };
 
             repositorioMock
@@ -231,7 +250,8 @@ namespace SustitucionMOATest.Services
                                 It.IsAny<IEnumerable<Expression<Func<OrdenDeCarga, object>>>>()))
                .Returns(ordenesDeCarga);
 
-            var result = target.Listar(mailUsuario, "", "");
+            //var result = target.Listar(mailUsuario, "", "");
+            var result = target.Listar(mailUsuario, fechaInicio.ToString(), fechaFin.ToString());
 
             repositorioMock.Verify(x => x.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>()), Times.Once);
             repositorioMock.Verify(x => x.Listar(It.IsAny<Expression<Func<OrdenDeCarga, bool>>>(),
@@ -246,6 +266,8 @@ namespace SustitucionMOATest.Services
         [Test()]
         public void ListarUsuarioComunTest()
         {
+            var fechaInicio = new DateTime(2023, 3, 10);
+            var fechaFin = new DateTime(2023, 3, 17);
             string mailUsuario = "usuario@test.com";
 
             var proveedor = new Proveedor
@@ -273,7 +295,12 @@ namespace SustitucionMOATest.Services
 
             var ordenesDeCarga = new List<OrdenDeCarga>()
             {
-                new OrdenDeCarga {Id = 1, Cliente_Id = 1, CUITCliente = "233333333333"},
+                new OrdenDeCarga
+                {
+                    Id = 1, Cliente_Id = 1, CUITCliente = "233333333333",
+                    Cliente = new Proveedor { CodigoProveedor = "DS2345", RazonSocial = "Kefwen" },
+                    Producto = new Material { Nombre = "mat1" }
+                },
             };
 
             repositorioMock
@@ -290,7 +317,7 @@ namespace SustitucionMOATest.Services
                                 It.IsAny<IEnumerable<Expression<Func<OrdenDeCarga, object>>>>()))
                .Returns(ordenesDeCarga);
 
-            var result = target.Listar(mailUsuario, "", "");
+            var result = target.Listar(mailUsuario, fechaInicio.ToString(), fechaFin.ToString());
 
             repositorioMock.Verify(x => x.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>()), Times.Once);
             repositorioMock.Verify(x => x.Listar(It.IsAny<Expression<Func<OrdenDeCarga, bool>>>(),
@@ -305,52 +332,69 @@ namespace SustitucionMOATest.Services
         public void AnularOrdenTest()
         {
             int orderId = 1;
+            var mailUsuario = "usuario@test.com";
+            var usuario = new Usuario
+            {
+                Mail = mailUsuario,
+                Roles = new[] { new Rol { PermisosAsociados = new[] { new PermisoPorRol { Permiso = "ENVIAR A SAP" } } } }
+            };
             var orden = new OrdenDeCarga
             {
                 Id = orderId,
-                Estado = EstadoOrdenDeCarga.Pendiente,
+                Estado = EstadoOrdenDeCarga.EntregaPendiente,
                 InformadaSAP = false
             };
 
-            repositorioMock.Setup(x => x.Obtener<OrdenDeCarga>(It.IsAny<int>())).Returns(orden);
+            repositorioMock.Setup(x =>
+                x.Obtener<OrdenDeCarga>(It.IsAny<int>()))
+                .Returns(orden);
 
-            var result = target.AnularOrden(orderId);
+            repositorioMock.Setup(x =>
+                x.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>()))
+                .Returns(usuario);
+
+            var result = target.AnularOrden(orderId, mailUsuario);
 
             var expected = SuccessMsg.OrdenDeCargaAnulada;
 
             Assert.AreEqual(expected, result);
-            Assert.AreEqual(EstadoOrdenDeCarga.Pendiente, orden.Estado);
+            Assert.AreEqual(EstadoOrdenDeCarga.Anulada, orden.Estado);
             repositorioMock.Verify(x => x.Obtener<OrdenDeCarga>(It.IsAny<int>()), Times.Once);
-            repositorioMock.Verify(x => x.GuardarCambios(), Times.Never);
+            repositorioMock.Verify(x => x.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>()), Times.Once);
+            repositorioMock.Verify(x => x.GuardarCambios(), Times.Once);
         }
 
         [Test()]
-        public void AnularOrdenInformadaTest()
+        public void AnularOrdenNoAnulableTest()
         {
             int orderId = 1;
+            var mailUsuario = "usuario@test.com";
             var orden = new OrdenDeCarga
             {
                 Id = orderId,
-                Estado = EstadoOrdenDeCarga.Confirmado,
+                Estado = EstadoOrdenDeCarga.Entregada,
                 InformadaSAP = true
             };
+            var mUsuario = new Mock<Usuario>();
+            mUsuario.Setup(x => x.TienePermiso(It.Is<PermisoEnum>(p => p == PermisoEnum.EnviarASap))).Returns(true);
 
             repositorioMock.Setup(x => x.Obtener<OrdenDeCarga>(It.IsAny<int>())).Returns(orden);
+            repositorioMock.Setup(x => x.Obtener<Usuario>(It.IsAny<Expression<Func<Usuario, bool>>>())).Returns(mUsuario.Object);
 
-            var expected = "La orden no puede anularse debido a que ya fue informada.";
+            var expected = "La orden no puede anularse debido a su estado actual.";
 
-            var ex = Assert.Throws<ValidationCustomException>(() => target.AnularOrden(orderId));
+            var ex = Assert.Throws<ValidationCustomException>(() => target.AnularOrden(orderId, mailUsuario));
 
             var result = ex.Message;
 
             Assert.AreEqual(expected, result);
-            Assert.AreEqual(EstadoOrdenDeCarga.Confirmado, orden.Estado);
+            Assert.AreEqual(EstadoOrdenDeCarga.Entregada, orden.Estado);
             repositorioMock.Verify(x => x.Obtener<OrdenDeCarga>(It.IsAny<int>()), Times.Once);
             repositorioMock.Verify(x => x.GuardarCambios(), Times.Never);
         }
 
         [Test()]
-        public void EditarOrdenDeCargaInformadaTest()
+        public void EditarOrdenDeCargaInformadaInterno()
         {
             int orderId = 1;
             string mailUsuario = "usuario@test.com";
@@ -393,12 +437,15 @@ namespace SustitucionMOATest.Services
                 InformadaSAP = true,
                 ContratoIngresado = "1111111",
                 NombreChofer = "Enzo V.",
+                CUITChofer = "20637698235",
+                CUITTransporte = "20637698295",
                 HistorialCambios = new List<OrdenDeCargaCambiosHistorial> { },
                 Cliente = proveedor,
                 Cliente_Id = proveedor.Id,
                 NumeroPedido = "11",
                 Producto = producto,
-                Producto_Id = producto.Id
+                Producto_Id = producto.Id,
+                NumeroEntrega = "9834755"
             };
 
             var orden2 = new OrdenDeCarga
@@ -408,26 +455,46 @@ namespace SustitucionMOATest.Services
                 InformadaSAP = true,
                 ContratoIngresado = "212121",
                 NombreChofer = "Enzo",
+                CUITChofer = "20111698235",
+                CUITTransporte = "20111698295",
                 HistorialCambios = new List<OrdenDeCargaCambiosHistorial> { },
                 Cliente = proveedor,
                 Cliente_Id = proveedor.Id,
                 NumeroPedido = "11",
                 Producto = producto,
-                Producto_Id = producto.Id
+                Producto_Id = producto.Id,
+                NumeroEntrega = "9834755"
             };
+            var respuestaScato = new ScatoRepo.Respuesta<ScatoRepo.Chofer> { IsValid = true, Data = new ScatoRepo.Chofer() };
+            var mensajesSap = new ZMPES7060[] { new ZMPES7060 { MENSAJE = "CC-00" } };
+            var controlCargaResponseHandler = new ControlCargaResponseHandler(mensajesSap);
 
             repositorioMock.Setup(x => x.Obtener<OrdenDeCarga>(It.IsAny<int>())).Returns(orden);
             repositorioMock.Setup(x => x.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>())).Returns(usuario);
+            repositorioMock.Setup(x => x.Obtener<Material>(It.IsAny<int>())).Returns(producto);
 
-            var expected = new Resultado { IdEntidad = orden.Id, Mensaje = SuccessMsg.OrdenDeCargaActualizada }; ;
+            consumerOrdenCargaMOA
+                .Setup(x => x.ControlarCarga(It.IsAny<ControlCargaRequest>()))
+                .Returns(controlCargaResponseHandler);
+            consumerOrdenCargaMOA
+                .Setup(x => x.OrdenCargaControlEstadoRequest(
+                    It.Is<string>(entr => string.IsNullOrEmpty(entr)),
+                    It.Is<string>(ped => string.IsNullOrEmpty(ped)),
+                    It.Is<string>(tr => !string.IsNullOrEmpty(tr))))
+                .Returns("CE-07");
+
+            mIScatoRepositorioClient
+                .Setup(x => x.ObtenerChoferPorCuil(It.IsAny<string>()))
+                .Returns(respuestaScato);
 
             var result = target.Editar(orden2, mailUsuario);
 
-            Assert.AreEqual(expected, result);
-            Assert.AreEqual(EstadoOrdenDeCarga.Confirmado, orden.Estado);
-            repositorioMock.Verify(x => x.Obtener<OrdenDeCarga>(It.IsAny<int>()), Times.Once);
-            repositorioMock.Verify(x => x.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>()), Times.Once);
-            repositorioMock.Verify(x => x.GuardarCambios(), Times.Once);
+            Assert.AreEqual(orderId, result.IdEntidad);
+            Assert.AreEqual(SuccessMsg.OrdenDeCargaActualizada, result.Mensaje);
+            Assert.AreEqual(EstadoOrdenDeCarga.EdicionSolicitada, orden.Estado);
+            repositorioMock.Verify(x => x.Obtener<OrdenDeCarga>(It.IsAny<int>()), Times.Exactly(3));
+            repositorioMock.Verify(x => x.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>()), Times.Exactly(2));
+            repositorioMock.Verify(x => x.GuardarCambios(), Times.Exactly(2));
         }
 
         [Test()]
@@ -455,11 +522,26 @@ namespace SustitucionMOATest.Services
                 {
                     proveedor
                 },
-                Roles = new List<Rol> { new Rol { Codigo = "COMERCIAL" } }
+                Roles = new List<Rol>
+                {
+                    new Rol
+                    {
+                        Codigo = "COMERCIAL",
+                        PermisosAsociados = new List<PermisoPorRol>
+                        {
+                            new PermisoPorRol { Permiso = "VER ORDENES DE CARGA PARA COMERCIALES" }
+                        }
+                    }
+                }
             };
 
             var ordenId = 1;
-            var ordenDeCarga = new OrdenDeCarga { Id = ordenId, Cliente_Id = 1, CUITCliente = "233333333333" };
+            var ordenDeCarga = new OrdenDeCarga
+            {
+                Id = ordenId, Cliente_Id = 1, CUITCliente = "233333333333",
+                Cliente = new Proveedor { CodigoProveedor = "KJ387" },
+                Producto = new Material { Nombre = "mat1" }
+            };
 
             var expected = new OrdenDeCargaDetalleDto { Id = ordenId, CUITCliente = "233333333333" };
 
@@ -474,6 +556,15 @@ namespace SustitucionMOATest.Services
             repositorioMock
                 .Setup(x => x.Obtener<OrdenDeCarga>(It.IsAny<int>()))
                 .Returns(ordenDeCarga);
+
+            repositorioMock
+                .Setup(x => x.Listar(
+                    It.IsAny<Expression<Func<OrdenDeCargaCambiosHistorial, bool>>>(),
+                    It.IsAny<int>(),
+                    It.IsAny<string>(),
+                    It.IsAny<DirOrden>(),
+                    It.IsAny<IEnumerable<Expression<Func<OrdenDeCargaCambiosHistorial, object>>>>()))
+                .Returns(new List<OrdenDeCargaCambiosHistorial>());
 
             var result = target.Obtener(mailUsuario, ordenId);
 
@@ -491,7 +582,11 @@ namespace SustitucionMOATest.Services
             var ordenId = 1;
             var ordenDeCargaLista = new List<OrdenDeCarga>
             {
-                new OrdenDeCarga { Id = ordenId, Cliente_Id = 1, CUITCliente = "233333333333", Estado = EstadoOrdenDeCarga.EntregaGenerada, FechaEntregaGenerada =  DateTime.Now.AddHours(-90)},
+                new OrdenDeCarga
+                {
+                    Id = ordenId, Cliente_Id = 1, CUITCliente = "233333333333",
+                    Estado = EstadoOrdenDeCarga.EntregaGenerada, FechaEntregaGenerada =  DateTime.Now.AddHours(-90)
+                }
             };
 
             repositorioMock
@@ -501,6 +596,14 @@ namespace SustitucionMOATest.Services
                                 It.IsAny<DirOrden>(),
                                 It.IsAny<IEnumerable<Expression<Func<OrdenDeCarga, object>>>>()))
                 .Returns(ordenDeCargaLista);
+            
+            repositorioMock
+                .Setup(x => x.Obtener(It.IsAny<Expression<Func<HabilitacionJob, bool>>>()))
+                .Returns(new HabilitacionJob { Habilitado = true });
+
+            repositorioMock
+                .Setup(x => x.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>()))
+                .Returns(new Usuario { Id = 3 });
 
             var result = target.VerificarVencimientoOrdenDeCarga();
 
@@ -511,7 +614,7 @@ namespace SustitucionMOATest.Services
                                 It.IsAny<IEnumerable<Expression<Func<OrdenDeCarga, object>>>>()), Times.Once);
             repositorioMock.Verify(x => x.GuardarCambios(), Times.Once);
 
-            Assert.AreEqual(result[0].Estado, EstadoOrdenDeCarga.AnuladaPorVencimiento);
+            Assert.AreEqual(result[0].Estado, EstadoOrdenDeCarga.Vencida);
         }
 
         [Test()]
@@ -543,7 +646,15 @@ namespace SustitucionMOATest.Services
             };
 
             var ordenId = 1;
-            var ordenesDeCarga = new List<OrdenDeCarga> { new OrdenDeCarga { Id = ordenId, Cliente_Id = 1, CUITCliente = "233333333333" } };
+            var ordenesDeCarga = new List<OrdenDeCarga>
+            {
+                new OrdenDeCarga
+                {
+                    Id = ordenId, Cliente_Id = 1, CUITCliente = "233333333333",
+                    Cliente = new Proveedor { CodigoProveedor = "EN432" },
+                    Producto = new Material { Nombre = "mat2" }
+                }
+            };
 
             var expected = new OrdenDeCargaDetalleDto { Id = ordenId, CUITCliente = "233333333333" };
 
@@ -555,7 +666,6 @@ namespace SustitucionMOATest.Services
                 .Setup(x => x.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>()))
                 .Returns(usuario);
 
-
             repositorioMock
                .Setup(x => x.Listar(It.IsAny<Expression<Func<OrdenDeCarga, bool>>>(),
                                 It.IsAny<int>(),
@@ -563,6 +673,15 @@ namespace SustitucionMOATest.Services
                                 It.IsAny<DirOrden>(),
                                 It.IsAny<IEnumerable<Expression<Func<OrdenDeCarga, object>>>>()))
                .Returns(ordenesDeCarga);
+
+            repositorioMock
+                .Setup(x => x.Listar(
+                    It.IsAny<Expression<Func<OrdenDeCargaCambiosHistorial, bool>>>(),
+                    It.IsAny<int>(),
+                    It.IsAny<string>(),
+                    It.IsAny<DirOrden>(),
+                    It.IsAny<IEnumerable<Expression<Func<OrdenDeCargaCambiosHistorial, object>>>>()))
+                .Returns(new List<OrdenDeCargaCambiosHistorial>());
 
             var result = target.Obtener(mailUsuario, ordenId);
 
@@ -571,7 +690,7 @@ namespace SustitucionMOATest.Services
                                 It.IsAny<int>(),
                                 It.IsAny<string>(),
                                 It.IsAny<DirOrden>(),
-                                It.IsAny<IEnumerable<Expression<Func<OrdenDeCarga, object>>>>()), Times.Once);
+                                It.IsAny<IEnumerable<Expression<Func<OrdenDeCarga, object>>>>()), Times.Exactly(2));
             repositorioMock.Verify(x => x.Obtener<Proveedor>(It.IsAny<int>()), Times.Once);
 
             Assert.AreEqual(expected.Id, result.Id);
@@ -579,189 +698,9 @@ namespace SustitucionMOATest.Services
         }
 
         [Test()]
-        public void ObtenerPedidosValidosTest()
+        public void ObtenerPatentesTest()
         {
             string mailUsuario = "usuario@test.com";
-
-            var proveedor = new Proveedor
-            {
-                Id = 1,
-                EstadoAprobacion = EstadoAprobacion.Aprobado,
-                Observaciones = "Test",
-                RazonSocial = "RS",
-                Mail = mailUsuario,
-                CUIT = "233333333333",
-                TipoProveedor = new TipoUsuario { Id = 5, Nombre = "Cliente", NombreCorto = "CLI" },
-            };
-
-            var usuario = new Usuario
-            {
-                Id = 1,
-                Mail = mailUsuario,
-                CUITRegistro = "233333333333",
-                Proveedores = new List<Proveedor>()
-                {
-                    proveedor
-                },
-                Roles = new List<Rol> { }
-            };
-
-            var ordenId = 1;
-            var ordenDeCarga = new OrdenDeCarga { Id = ordenId, Cliente_Id = 1, CUITCliente = "233333333333", PedidosRespuesta = "1234,123,12,1" };
-            var expected = new List<string> { "1234", "123", "12", "1" };
-
-            repositorioMock.Setup(x => x.Obtener<OrdenDeCarga>(It.IsAny<int>()))
-                .Returns(ordenDeCarga);
-
-            var result = target.ObtenerPedidos(ordenId);
-
-            Assert.AreEqual(result, expected);
-        }
-
-        [Test()]
-        public void SeleccionarPedidoValidoTest()
-        {
-            string mailUsuario = "usuario@test.com";
-            string pedido = "1";
-
-            var proveedor = new Proveedor
-            {
-                Id = 1,
-                EstadoAprobacion = EstadoAprobacion.Aprobado,
-                Observaciones = "Test",
-                RazonSocial = "RS",
-                Mail = mailUsuario,
-                CUIT = "233333333333",
-                TipoProveedor = new TipoUsuario { Id = 5, Nombre = "Cliente", NombreCorto = "CLI" },
-            };
-
-            var usuario = new Usuario
-            {
-                Id = 1,
-                Mail = mailUsuario,
-                CUITRegistro = "233333333333",
-                Proveedores = new List<Proveedor>()
-                {
-                    proveedor
-                },
-                Roles = new List<Rol> { }
-            };
-
-            var ordenId = 1;
-            var ordenDeCarga = new OrdenDeCarga { Id = ordenId, Cliente_Id = 1, CUITCliente = "233333333333", PedidosRespuesta = "" };
-            var expected = SuccessMsg.OrdenDeCargaActualizada;
-
-            repositorioMock.Setup(x => x.Obtener<OrdenDeCarga>(It.IsAny<int>()))
-                .Returns(ordenDeCarga);
-
-            var result = target.SeleccionarPedido(ordenId, pedido);
-
-            Assert.AreEqual(result, expected);
-            repositorioMock.Verify(x => x.GuardarCambios(), Times.Once);
-        }
-
-
-        [Test()]
-        public void ObtenerPatentesComercialTest()
-        {
-            string mailUsuario = "usuario@test.com";
-            OrdenDeCargaDto ordenCargaDto = new OrdenDeCargaDto();
-            var proveedor = new Proveedor
-            {
-                Id = 1,
-                EstadoAprobacion = EstadoAprobacion.Aprobado,
-                Observaciones = "Test",
-                RazonSocial = "RS",
-                Mail = mailUsuario,
-                CUIT = "233333333333",
-                TipoProveedor = new TipoUsuario { Id = 5, Nombre = "Cliente", NombreCorto = "CLI" },
-            };
-
-            var permisos = new PermisoPorRol()
-            {
-                Id = 95,
-                Permiso = "VER ORDENES DE CARGA PARA COMERCIALES"
-
-            };
-
-            var roles = new Rol
-            {
-                Id = 1,
-                Nombre = "Administracion",
-                PermisosAsociados = new List<PermisoPorRol>()
-                {
-                   permisos
-                }
-
-            };
-            var usuario = new Usuario
-            {
-                Id = 1,
-                Mail = mailUsuario,
-                CUITRegistro = "233333333333",
-                Proveedores = new List<Proveedor>()
-                {
-                    proveedor
-                },
-
-                Roles = new List<Rol>()
-                {
-                    roles
-                },
-                TipoUsuario = new TipoUsuario()
-                {
-                    Id = 5,
-                    Nombre = "Cliente",
-                    NombreCorto = "CLI"
-                }
-
-            };
-
-            var ordenesDeCarga = new List<OrdenDeCarga> { new OrdenDeCarga
-
-                    {
-                      Id = ordenDeCarga.Id,
-                      Cliente_Id = 1,
-                      CUITCliente = "233333333333",
-                      ChasisAcoplado = ordenDeCarga.ChasisAcoplado,
-                      PatenteAcoplado = ordenDeCarga.PatenteAcoplado
-                    }
-            };
-
-            repositorioMock
-            .Setup(y => y.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>()))
-            .Returns(usuario);
-
-            repositorioMock
-                .Setup(x => x.Obtener<Proveedor>(It.IsAny<int>()))
-                .Returns(proveedor);
-
-            repositorioMock
-                .Setup(x => x.Obtener<Rol>(It.IsAny<int>()))
-                .Returns(roles);
-
-            repositorioMock
-               .Setup(x => x.Obtener<PermisoPorRol>(It.IsAny<int>()))
-               .Returns(permisos);
-
-            repositorioMock
-               .Setup(x => x.Listar(It.IsAny<Expression<Func<OrdenDeCarga, bool>>>(),
-                                It.IsAny<int>(),
-                                It.IsAny<string>(),
-                                It.IsAny<DirOrden>(),
-                                It.IsAny<IEnumerable<Expression<Func<OrdenDeCarga, object>>>>()))
-               .Returns(ordenesDeCarga);
-
-            var result = target.ObtenerPatentes(ordenDeCarga, mailUsuario);
-            Assert.IsTrue(result.ordenes.Count == 1);
-
-        }
-
-        [Test()]
-        public void ObtenerPatentesClienteTest()
-        {
-            string mailUsuario = "usuario@test.com";
-            OrdenDeCargaDto ordenCargaDto = new OrdenDeCargaDto();
             var proveedor = new Proveedor
             {
                 Id = 1,
@@ -777,7 +716,6 @@ namespace SustitucionMOATest.Services
             {
                 Id = 95,
                 Permiso = ""
-
             };
 
             var roles = new Rol
@@ -788,7 +726,6 @@ namespace SustitucionMOATest.Services
                 {
                    permisos
                 }
-
             };
             var usuario = new Usuario
             {
@@ -799,7 +736,6 @@ namespace SustitucionMOATest.Services
                 {
                     proveedor
                 },
-
                 Roles = new List<Rol>()
                 {
                     roles
@@ -810,538 +746,364 @@ namespace SustitucionMOATest.Services
                     Nombre = "Cliente",
                     NombreCorto = "CLI"
                 }
-
             };
 
-            var ordenesDeCarga = new List<OrdenDeCarga> { new OrdenDeCarga
-
-                    {
-                      Id = ordenDeCarga.Id,
-                      Cliente_Id = 1,
-                      CUITCliente = "233333333333",
-                      ChasisAcoplado = ordenDeCarga.ChasisAcoplado,
-                      PatenteAcoplado = ordenDeCarga.PatenteAcoplado
-                    }
+            var patentesDropDown = new List<AutoCompleteDropdownElement>
+            {
+                new AutoCompleteDropdownElement { label = ordenDeCarga.ChasisAcoplado, value = ordenDeCarga.PatenteAcoplado }
             };
 
             repositorioMock
-            .Setup(y => y.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>()))
-            .Returns(usuario);
-
-            repositorioMock
-                .Setup(x => x.Obtener<Proveedor>(It.IsAny<int>()))
+                .Setup(x => x.Obtener(It.IsAny<Expression<Func<Proveedor, bool>>>()))
                 .Returns(proveedor);
 
             repositorioMock
-                .Setup(x => x.Obtener<Rol>(It.IsAny<int>()))
-                .Returns(roles);
+                .Setup(x => x.Listar(
+                    It.IsAny<Expression<Func<OrdenDeCarga, AutoCompleteDropdownElement>>>(),
+                    It.IsAny<Expression<Func<OrdenDeCarga, bool>>>(),
+                    It.IsAny<int>(),
+                    It.IsAny<string>(),
+                    It.IsAny<DirOrden>()))
+                .Returns(patentesDropDown);
 
-            repositorioMock
-               .Setup(x => x.Obtener<PermisoPorRol>(It.IsAny<int>()))
-               .Returns(permisos);
-
-            repositorioMock
-               .Setup(x => x.Listar(It.IsAny<Expression<Func<OrdenDeCarga, bool>>>(),
-                                It.IsAny<int>(),
-                                It.IsAny<string>(),
-                                It.IsAny<DirOrden>(),
-                                It.IsAny<IEnumerable<Expression<Func<OrdenDeCarga, object>>>>()))
-               .Returns(ordenesDeCarga);
-
-            var result = target.ObtenerPatentes(ordenDeCarga, mailUsuario);
-            Assert.IsTrue(result.ordenes.Count == 1);
-
+            var result = target.ObtenerPatentes(ordenDeCarga);
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.ordenes);
+            Assert.AreEqual(1, result.ordenes.Count);
         }
 
-        [Test()]
-        public void ObtenerPatentesCorredorTest()
+        [Test]
+        public void ValidarCuilChoferDigito_CuilNoExiste_ReturnsTrue()
         {
-            string mailUsuario = "usuario@test.com";
-            OrdenDeCargaDto ordenCargaDto = new OrdenDeCargaDto();
-            var proveedor = new Proveedor
+            _respuestaChofer.IsValid = false;
+            _respuestaChofer.Messages = new ScatoRepo.MessageItem[]
             {
-                Id = 1,
-                EstadoAprobacion = EstadoAprobacion.Aprobado,
-                Observaciones = "Test",
-                RazonSocial = "RS",
-                Mail = mailUsuario,
-                CUIT = "233333333333",
-                TipoProveedor = new TipoUsuario { Id = 5, Nombre = "Cliente", NombreCorto = "CLI" },
-            };
-
-            var permisos = new PermisoPorRol()
-            {
-                Id = 95,
-                Permiso = ""
-
-            };
-
-            var roles = new Rol
-            {
-                Id = 1,
-                Nombre = "Administracion",
-                PermisosAsociados = new List<PermisoPorRol>()
+                new ScatoRepo.MessageItem
                 {
-                   permisos
+                    MessageCode = ScatoRepo.CodigoMensajeObtenerChoferPorCuil.ChoferNoEncontrado
                 }
+            };
+            mIScatoRepositorioClient.Setup(src => src.ObtenerChoferPorCuil(It.IsAny<string>())).Returns(
+                _respuestaChofer
+                );
 
+            var result = target.ValidarCuilChoferDigito("11111111111");
+
+            Assert.That(result, Is.True);
+
+        }
+        [Test]
+        public void ValidarCuilChoferDigito_CuilDigitoVerificadorNoValido_ReturnsFalse()
+        {
+            _respuestaChofer.IsValid = false;
+            _respuestaChofer.Messages = new ScatoRepo.MessageItem[]
+            {
+                new ScatoRepo.MessageItem
+                {
+                    MessageCode = ScatoRepo.CodigoMensajeObtenerChoferPorCuil.DigitoVerificadorNoValido
+                }
+            };
+            mIScatoRepositorioClient.Setup(src => src.ObtenerChoferPorCuil(It.IsAny<string>())).Returns(
+                _respuestaChofer
+                );
+
+            var result = target.ValidarCuilChoferDigito("11111111111");
+
+            Assert.That(result, Is.False);
+
+        }
+        [Test]
+        public void ValidarCuitTransporteDigito_CuitDigitoVerificadorNoValido_ReturnsFalse()
+        {
+            _respuestaTransporte.Messages = new ScatoRepo.MessageItem[]
+            {
+                new ScatoRepo.MessageItem
+                {
+                    MessageCode = ScatoRepo.CodigoMensajeObtenerChoferPorCuil.DigitoVerificadorNoValido
+                }
+            };
+            mIScatoRepositorioClient.Setup(src => src.ObtenerTransportePorCuit(It.IsAny<string>())).Returns(
+                _respuestaTransporte
+                );
+            var result = target.ValidarCuitTransporteDigito("11111111111");
+
+            Assert.That(result, Is.False);
+        }
+
+        [Test]
+        public void AnularPedidoEnSap_PedidoTomadoEnSap()
+        {
+            var usuario = new Usuario
+            {
+                Roles = new List<Rol>
+                {
+                    new Rol {
+                        PermisosAsociados= new List<PermisoPorRol>
+                        {
+                           new PermisoPorRol{ Permiso="ENVIAR A SAP" }
+                        }
+                    }
+                }
+            };
+            repositorioMock
+            .Setup(y => y.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>()))
+            .Returns(usuario);
+            repositorioMock
+            .Setup(y => y.Obtener<OrdenDeCarga>(It.IsAny<int>()))
+            .Returns(new OrdenDeCarga
+            {
+                NumeroPedido = "001243898",
+                Estado = EstadoOrdenDeCarga.EntregaPendiente
+            });
+            var handler = new ModOrdenCargaResponseHandler("Pedido tomado en SAP");
+
+            consumerOrdenCargaMOA.Setup(c => c.AnularOrdenCarga(It.IsAny<OrdenDeCarga>())).Returns(handler);
+
+            Assert.That(() => target.AnularOrden(3, ""), Throws.TypeOf<InfoCustomException>());
+        }
+
+        [Test]
+        public void AnularPedidoEnSap_PedidoEntregaYaAnulados_OrdenEstadoAnulada()
+        {
+            var orden = new OrdenDeCarga
+            {
+                NumeroPedido = "001243898",
+                NumeroEntrega = "001243898",
+                Estado = EstadoOrdenDeCarga.EntregaGenerada
             };
             var usuario = new Usuario
             {
-                Id = 1,
-                Mail = mailUsuario,
-                CUITRegistro = "233333333333",
-                Proveedores = new List<Proveedor>()
+                Roles = new List<Rol>
                 {
-                    proveedor
-                },
-
-                Roles = new List<Rol>()
-                {
-                    roles
-                },
-                TipoUsuario = new TipoUsuario()
-                {
-                    Id = 5,
-                    Nombre = "Cliente",
-                    NombreCorto = "CORR"
-                }
-
-            };
-
-            var ordenesDeCarga = new List<OrdenDeCarga> { new OrdenDeCarga
-
-                    {
-                      Id = ordenDeCarga.Id,
-                      Cliente_Id = 1,
-                      CUITCliente = "233333333333",
-                      ChasisAcoplado = ordenDeCarga.ChasisAcoplado,
-                      PatenteAcoplado = ordenDeCarga.PatenteAcoplado
+                    new Rol {
+                        PermisosAsociados= new List<PermisoPorRol>
+                        {
+                           new PermisoPorRol{ Permiso="ENVIAR A SAP" }
+                        }
                     }
+                }
             };
-
             repositorioMock
             .Setup(y => y.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>()))
             .Returns(usuario);
-
             repositorioMock
-                .Setup(x => x.Obtener<Proveedor>(It.IsAny<int>()))
-                .Returns(proveedor);
+            .Setup(y => y.Obtener<OrdenDeCarga>(It.IsAny<int>()))
+            .Returns(orden);
+            var handlerPedido = new ModOrdenCargaResponseHandler("Pedido ya anulado");
+            var handlerEntrega = new ModEntregaResponseHandler("Entrega anulada en SAP");
 
-            repositorioMock
-                .Setup(x => x.Obtener<Rol>(It.IsAny<int>()))
-                .Returns(roles);
+            consumerOrdenCargaMOA.Setup(c => c.AnularOrdenCarga(It.IsAny<OrdenDeCarga>())).Returns(handlerPedido);
+            consumerOrdenCargaMOA.Setup(c => c.AnularEntregaOrdenCarga(It.IsAny<string>())).Returns(handlerEntrega);
 
-            repositorioMock
-               .Setup(x => x.Obtener<PermisoPorRol>(It.IsAny<int>()))
-               .Returns(permisos);
+            target.AnularOrden(1, "");
 
-            repositorioMock
-               .Setup(x => x.Listar(It.IsAny<Expression<Func<OrdenDeCarga, bool>>>(),
-                                It.IsAny<int>(),
-                                It.IsAny<string>(),
-                                It.IsAny<DirOrden>(),
-                                It.IsAny<IEnumerable<Expression<Func<OrdenDeCarga, object>>>>()))
-               .Returns(ordenesDeCarga);
-
-            var result = target.ObtenerPatentes(ordenDeCarga, mailUsuario);
-            Assert.IsTrue(result.ordenes.Count == 1);
-
+            Assert.That(orden.Estado, Is.EqualTo(EstadoOrdenDeCarga.Anulada));
         }
 
-        [Test()]
-        public void ConstruirCuerpoEmailOrdenDeCargaTestContratoSAPPedidoSAP()
+
+        [Test]
+        public void Agregar_UsuarioNoPuedeModificarReventa_ThrowValidationCustomException()
         {
-            ConfigurationManager.AppSettings["EmailToMesaVentaFas"] = "dylopez@baufest.com";
-            ConfigurationManager.AppSettings["EmailToCobranzas"] = "dylopez@baufest.com";
-            ConfigurationManager.AppSettings["EmailToComerciales"] = "dylopez@baufest.com";
-            AddProvider(301301301, EstadoAprobacion.Aprobado, "Test", "RS", "dylopez@baufest.com", "233333333333", new TipoUsuario { Id = 5, Nombre = "Cliente", NombreCorto = "CLI" });
-            ordenDeCarga.Cliente_Id = 301301301;
-            ordenDeCarga.ContratoSAP = "10000000";
-            ordenDeCarga.ContratoIngresado = string.Empty;
-            ordenDeCarga.PedidoSAP = "25250000";
-            ordenDeCarga.NumeroPedido = string.Empty;
-            ordenDeCarga.NumeroPedidoIngresado = string.Empty;
-            var response = target.ConstruirCuerpoEmail(ordenDeCarga);
-            var result = new EmailSenderData()
+            ordenDeCarga.Reventa = true;
+            SetupAgregarTests();
+
+            var expected = $"Cliente {_proveedorUsuario.RazonSocial}({_proveedorUsuario.CUIT}) no es revendedor. No puede modificar campo reventa";
+
+            var ex = Assert.Throws<ValidationCustomException>(() => target.Agregar(ordenDeCarga, _mailSesionUsuario));
+
+            Assert.AreEqual(expected, ex.Message);
+        }
+
+        [Test]
+        public void Agregar_UsuarioPuedeModificarReventa_CreaNormalmente()
+        {
+            ordenDeCarga.Reventa = true;
+
+            _proveedorUsuario.EsRevendedor = true;
+
+            SetupAgregarTests();
+            SetupAgregarSuccess();
+
+            var result = target.Agregar(ordenDeCarga, _mailSesionUsuario);
+
+            Assert.That(result.Mensaje, Is.EqualTo(SuccessMsg.OrdenDeCargaAgregada));
+
+        }
+        [Test]
+        public void ValidarCuitTransporteDigito_CuitTransporteNoExiste_ReturnsTrue()
+        {
+            _respuestaTransporte.Messages = new ScatoRepo.MessageItem[]
             {
-                Asunto = "Orden de carga #1",
-                Cuerpo = "Orden de carga 1 de cliente RS no pasó validaciones crediticias. <br> Número de Contrato: 10000000 <br> Número de Pedido: 25250000"
-            };
-            Assert.AreEqual(result.Asunto, response.Asunto);
-            Assert.AreEqual(result.Cuerpo, response.Cuerpo);
-        }
-
-        [Test()]
-        public void ConstruirCuerpoEmailOrdenDeCargaTestContratoIngresadoPedidoSAP()
-        {
-            ConfigurationManager.AppSettings["EmailToMesaVentaFas"] = "dylopez@baufest.com";
-            ConfigurationManager.AppSettings["EmailToCobranzas"] = "dylopez@baufest.com";
-            ConfigurationManager.AppSettings["EmailToComerciales"] = "dylopez@baufest.com";
-            AddProvider(301301301, EstadoAprobacion.Aprobado, "Test", "RS", "dylopez@baufest.com", "233333333333", new TipoUsuario { Id = 5, Nombre = "Cliente", NombreCorto = "CLI" });
-            ordenDeCarga.Cliente_Id = 301301301;
-            ordenDeCarga.ContratoSAP = string.Empty;
-            ordenDeCarga.ContratoIngresado = "10000000";
-            ordenDeCarga.PedidoSAP = "25250000";
-            ordenDeCarga.NumeroPedido = string.Empty;
-            ordenDeCarga.NumeroPedidoIngresado = string.Empty;
-            var response = target.ConstruirCuerpoEmail(ordenDeCarga);
-            var result = new EmailSenderData()
-            {
-                Asunto = "Orden de carga #1",
-                Cuerpo = "Orden de carga 1 de cliente RS no pasó validaciones crediticias. <br> Número de Contrato: 10000000 <br> Número de Pedido: 25250000"
-            };
-            Assert.AreEqual(result.Asunto, response.Asunto);
-            Assert.AreEqual(result.Cuerpo, response.Cuerpo);
-        }
-
-        [Test()]
-        public void ConstruirCuerpoEmailOrdenDeCargaTestContratoSAPNumeroPedido()
-        {
-            ConfigurationManager.AppSettings["EmailToMesaVentaFas"] = "dylopez@baufest.com";
-            ConfigurationManager.AppSettings["EmailToCobranzas"] = "dylopez@baufest.com";
-            ConfigurationManager.AppSettings["EmailToComerciales"] = "dylopez@baufest.com";
-            AddProvider(301301301, EstadoAprobacion.Aprobado, "Test", "RS", "dylopez@baufest.com", "233333333333", new TipoUsuario { Id = 5, Nombre = "Cliente", NombreCorto = "CLI" });
-            ordenDeCarga.Cliente_Id = 301301301;
-            ordenDeCarga.ContratoSAP = "10000000";
-            ordenDeCarga.ContratoIngresado = string.Empty;
-            ordenDeCarga.PedidoSAP = string.Empty;
-            ordenDeCarga.NumeroPedido = "25250000";
-            ordenDeCarga.NumeroPedidoIngresado = string.Empty;
-            var response = target.ConstruirCuerpoEmail(ordenDeCarga);
-            var result = new EmailSenderData()
-            {
-                Asunto = "Orden de carga #1",
-                Cuerpo = "Orden de carga 1 de cliente RS no pasó validaciones crediticias. <br> Número de Contrato: 10000000 <br> Número de Pedido: 25250000"
-            };
-            Assert.AreEqual(result.Asunto, response.Asunto);
-            Assert.AreEqual(result.Cuerpo, response.Cuerpo);
-        }
-
-        [Test()]
-        public void ConstruirCuerpoEmailOrdenDeCargaTestContratoIngresadoNumeroPedido()
-        {
-            ConfigurationManager.AppSettings["EmailToMesaVentaFas"] = "dylopez@baufest.com";
-            ConfigurationManager.AppSettings["EmailToCobranzas"] = "dylopez@baufest.com";
-            ConfigurationManager.AppSettings["EmailToComerciales"] = "dylopez@baufest.com";
-            AddProvider(301301301, EstadoAprobacion.Aprobado, "Test", "RS", "dylopez@baufest.com", "233333333333", new TipoUsuario { Id = 5, Nombre = "Cliente", NombreCorto = "CLI" });
-            ordenDeCarga.Cliente_Id = 301301301;
-            ordenDeCarga.ContratoSAP = string.Empty;
-            ordenDeCarga.ContratoIngresado = "10000000";
-            ordenDeCarga.PedidoSAP = string.Empty;
-            ordenDeCarga.NumeroPedido = "25250000";
-            ordenDeCarga.NumeroPedidoIngresado = string.Empty;
-            var response = target.ConstruirCuerpoEmail(ordenDeCarga);
-            var result = new EmailSenderData()
-            {
-                Asunto = "Orden de carga #1",
-                Cuerpo = "Orden de carga 1 de cliente RS no pasó validaciones crediticias. <br> Número de Contrato: 10000000 <br> Número de Pedido: 25250000"
-            };
-            Assert.AreEqual(result.Asunto, response.Asunto);
-            Assert.AreEqual(result.Cuerpo, response.Cuerpo);
-        }
-
-        [Test()]
-        public void ConstruirCuerpoEmailOrdenDeCargaTestContratoSAPNumeroPedidoIngresado()
-        {
-            ConfigurationManager.AppSettings["EmailToMesaVentaFas"] = "dylopez@baufest.com";
-            ConfigurationManager.AppSettings["EmailToCobranzas"] = "dylopez@baufest.com";
-            ConfigurationManager.AppSettings["EmailToComerciales"] = "dylopez@baufest.com";
-            AddProvider(301301301, EstadoAprobacion.Aprobado, "Test", "RS", "dylopez@baufest.com", "233333333333", new TipoUsuario { Id = 5, Nombre = "Cliente", NombreCorto = "CLI" });
-            ordenDeCarga.Cliente_Id = 301301301;
-            ordenDeCarga.ContratoSAP = "10000000";
-            ordenDeCarga.ContratoIngresado = string.Empty;
-            ordenDeCarga.PedidoSAP = string.Empty;
-            ordenDeCarga.NumeroPedido = string.Empty;
-            ordenDeCarga.NumeroPedidoIngresado = "25250000";
-            var response = target.ConstruirCuerpoEmail(ordenDeCarga);
-            var result = new EmailSenderData()
-            {
-                Asunto = "Orden de carga #1",
-                Cuerpo = "Orden de carga 1 de cliente RS no pasó validaciones crediticias. <br> Número de Contrato: 10000000 <br> Número de Pedido: 25250000"
-            };
-            Assert.AreEqual(result.Asunto, response.Asunto);
-            Assert.AreEqual(result.Cuerpo, response.Cuerpo);
-        }
-
-        [Test()]
-        public void ConstruirCuerpoEmailOrdenDeCargaTestContratoIngresadoNumeroPedidoIngresado()
-        {
-            ConfigurationManager.AppSettings["EmailToMesaVentaFas"] = "dylopez@baufest.com";
-            ConfigurationManager.AppSettings["EmailToCobranzas"] = "dylopez@baufest.com";
-            ConfigurationManager.AppSettings["EmailToComerciales"] = "dylopez@baufest.com";
-            AddProvider(301301301, EstadoAprobacion.Aprobado, "Test", "RS", "dylopez@baufest.com", "233333333333", new TipoUsuario { Id = 5, Nombre = "Cliente", NombreCorto = "CLI" });
-            ordenDeCarga.Cliente_Id = 301301301;
-            ordenDeCarga.ContratoSAP = string.Empty;
-            ordenDeCarga.ContratoIngresado = "10000000";
-            ordenDeCarga.PedidoSAP = string.Empty;
-            ordenDeCarga.NumeroPedido = string.Empty;
-            ordenDeCarga.NumeroPedidoIngresado = "25250000";
-            var response = target.ConstruirCuerpoEmail(ordenDeCarga);
-            var result = new EmailSenderData()
-            {
-                Asunto = "Orden de carga #1",
-                Cuerpo = CrearAsuntoNotificacionValidacionCrediticia()
-            };
-            Assert.AreEqual(result.Asunto, response.Asunto);
-            Assert.AreEqual(result.Cuerpo, response.Cuerpo);
-        }
-        [Test()]
-        public void ConstruirCuerpoMailSolicitudAnulacionTest()
-        {
-            ConfigurationManager.AppSettings["EmailToMesaVentaFas"] = "ariera@baufest.com";
-            ordenDeCarga.Cliente_Id = 301301301;
-            ordenDeCarga.ContratoSAP = string.Empty;
-            ordenDeCarga.ContratoIngresado = "10000000";
-            ordenDeCarga.PedidoSAP = string.Empty;
-            ordenDeCarga.NumeroPedido = string.Empty;
-            ordenDeCarga.NumeroPedidoIngresado = "25250000";
-            repositorioMock.Setup(x => x.Obtener<OrdenDeCarga>(It.IsAny<int>())).Returns(ordenDeCarga);
-            var response = target.ConstruirCuerpoMailSolicitudAnulacion(ordenDeCarga.Id);
-            var result = new EmailSenderData()
-            {
-                Asunto = "Solicitud de anulación, Orden de carga N° 1",
-                Cuerpo = CrearAsuntoNotificacionSolicitudAnulacion()
-            };
-            Assert.AreEqual(result.Asunto, response.Asunto);
-            Assert.AreEqual(result.Cuerpo, response.Cuerpo);
-        }
-
-        [Test()]
-        public void ConstruirCuerpoMailNotificacionVariosContratosTest()
-        {
-            ConfigurationManager.AppSettings["EmailToMesaVentaFas"] = "ariera@baufest.com";
-            ConfigurationManager.AppSettings["EmailToMesaENTSL"] = "ariera@baufest.com";
-            ConfigurationManager.AppSettings["EmailToComerciales"]= "ariera@baufest.com";
-            ordenDeCarga.Cliente_Id = 301301301;
-            ordenDeCarga.ContratoSAP = string.Empty;
-            ordenDeCarga.ContratoIngresado = "10000000";
-            ordenDeCarga.PedidoSAP = string.Empty;
-            ordenDeCarga.NumeroPedido = string.Empty;
-            ordenDeCarga.NumeroPedidoIngresado = "25250000";
-            repositorioMock.Setup(x => x.Obtener<OrdenDeCarga>(It.IsAny<int>())).Returns(ordenDeCarga);
-            var response = target.ConstruirCuerpoMailNotificacionVariosContratos(ordenDeCarga.Id);
-            var result = new EmailSenderData()
-            {
-                Asunto = "Varios ctto pendientes",
-                Cuerpo = CrearAsuntoNotificacionVariosContratos()
-            };
-            Assert.AreEqual(result.Asunto, response.Asunto);
-            Assert.AreEqual(result.Cuerpo, response.Cuerpo);
-        }
-
-        [Test()]
-        public void NotificarVariosContratosTest()
-        {
-            EjecutarServidoMail();
-            var expected = "Notificación enviada";
-            ConfigurationManager.AppSettings["EmailToMesaVentaFas"] = "ariera@baufest.com";
-            ConfigurationManager.AppSettings["EmailToMesaENTSL"] = "ariera@baufest.com";
-            ConfigurationManager.AppSettings["EmailToComerciales"] = "ariera@baufest.com";
-            ConfigurationManager.AppSettings["HostEmail"] = "127.0.0.1"; 
-            ConfigurationManager.AppSettings["PortEmail"] = "1025";
-            ConfigurationManager.AppSettings["EmailFrom"] = "moaoperaciones@molinosagro.com.ar";
-            ordenDeCarga.Cliente_Id = 301301301;
-            ordenDeCarga.ContratoSAP = string.Empty;
-            ordenDeCarga.ContratoIngresado = "10000000";
-            ordenDeCarga.PedidoSAP = string.Empty;
-            ordenDeCarga.NumeroPedido = string.Empty;
-            ordenDeCarga.NumeroPedidoIngresado = "25250000";
-            repositorioMock.Setup(x => x.Obtener<OrdenDeCarga>(It.IsAny<int>())).Returns(ordenDeCarga);
-            var emailSender = target.ConstruirCuerpoMailNotificacionVariosContratos(ordenDeCarga.Id);
-            var response = target.NotificarVariosContratos(emailSender);
-            Assert.AreEqual(expected,response);
-        }
-
-        [Test()]
-        public void ConstruirCuerpoMailNotificacionVariosPedidosTest()
-        {
-            ConfigurationManager.AppSettings["EmailToMesaVentaFas"] = "ariera@baufest.com";
-            ConfigurationManager.AppSettings["EmailToMesaENTSL"] = "ariera@baufest.com";
-            ConfigurationManager.AppSettings["EmailToComerciales"] = "ariera@baufest.com";
-            ordenDeCarga.Cliente_Id = 301301301;
-            ordenDeCarga.ContratoSAP = string.Empty;
-            ordenDeCarga.ContratoIngresado = "10000000";
-            ordenDeCarga.PedidoSAP = string.Empty;
-            ordenDeCarga.NumeroPedido = string.Empty;
-            ordenDeCarga.NumeroPedidoIngresado = "25250000";
-            repositorioMock.Setup(x => x.Obtener<OrdenDeCarga>(It.IsAny<int>())).Returns(ordenDeCarga);
-            var response = target.ConstruirCuerpoMailNotificacionVariosPedidos(ordenDeCarga.Id);
-            var result = new EmailSenderData()
-            {
-                Asunto = "Varios pedidos pendientes",
-                Cuerpo = CrearAsuntoNotificacionVariosPedidos()
-            };
-            Assert.AreEqual(result.Asunto, response.Asunto);
-            Assert.AreEqual(result.Cuerpo, response.Cuerpo);
-        }
-
-        [Test()]
-        public void NotificarVariosPedidosTest()
-        {
-            EjecutarServidoMail();
-            var expected = "Notificación enviada";
-            ConfigurationManager.AppSettings["EmailToMesaVentaFas"] = "ariera@baufest.com";
-            ConfigurationManager.AppSettings["EmailToMesaENTSL"] = "ariera@baufest.com";
-            ConfigurationManager.AppSettings["EmailToComerciales"] = "ariera@baufest.com";
-            ConfigurationManager.AppSettings["HostEmail"] = "127.0.0.1";
-            ConfigurationManager.AppSettings["PortEmail"] = "1025";
-            ConfigurationManager.AppSettings["EmailFrom"] = "moaoperaciones@molinosagro.com.ar";
-            ordenDeCarga.Cliente_Id = 301301301;
-            ordenDeCarga.ContratoSAP = string.Empty;
-            ordenDeCarga.ContratoIngresado = "10000000";
-            ordenDeCarga.PedidoSAP = string.Empty;
-            ordenDeCarga.NumeroPedido = string.Empty;
-            ordenDeCarga.NumeroPedidoIngresado = "25250000";
-            repositorioMock.Setup(x => x.Obtener<OrdenDeCarga>(It.IsAny<int>())).Returns(ordenDeCarga);
-            var response = target.NotificarVariosPedidos(ordenDeCarga.Id);
-            Assert.AreEqual(expected, response);
-        }
-        [Test()]
-        public void ConstruirCuerpoMailNotificacionContratoVencidoTest()
-        {
-            ConfigurationManager.AppSettings["EmailToMesaVentaFas"] = "ariera@baufest.com";
-            ConfigurationManager.AppSettings["EmailToComerciales"] = "ariera@baufest.com";
-            ordenDeCarga.Cliente_Id = 301301301;
-            ordenDeCarga.ContratoSAP = string.Empty;
-            ordenDeCarga.ContratoIngresado = "10000000";
-            ordenDeCarga.PedidoSAP = string.Empty;
-            ordenDeCarga.NumeroPedido = string.Empty;
-            ordenDeCarga.NumeroPedidoIngresado = "25250000";
-            repositorioMock.Setup(x => x.Obtener<OrdenDeCarga>(It.IsAny<int>())).Returns(ordenDeCarga);
-            var response = target.ConstruirCuerpoMailNotificacionContratoVencido(ordenDeCarga, ordenDeCarga.Cliente);
-            var result = new EmailSenderData()
-            {
-                Asunto = "Contrato Vencido",
-                Cuerpo = CrearAsuntoNotificacionContratoVencido()
-            };
-            Assert.AreEqual(result.Asunto, response.Asunto);
-            Assert.AreEqual(result.Cuerpo, response.Cuerpo);
-        }
-        [Test()]
-        public void NotificarContratoVencidoTest()
-        {
-            EjecutarServidoMail();
-            var expected = "Notificación enviada";
-            ConfigurationManager.AppSettings["EmailToMesaVentaFas"] = "ariera@baufest.com";
-            ConfigurationManager.AppSettings["EmailToComerciales"] = "ariera@baufest.com";
-            ConfigurationManager.AppSettings["HostEmail"] = "127.0.0.1";
-            ConfigurationManager.AppSettings["PortEmail"] = "1025";
-            ConfigurationManager.AppSettings["EmailFrom"] = "moaoperaciones@molinosagro.com.ar";
-            ordenDeCarga.Cliente_Id = 301301301;
-            ordenDeCarga.ContratoSAP = string.Empty;
-            ordenDeCarga.ContratoIngresado = "10000000";
-            ordenDeCarga.PedidoSAP = string.Empty;
-            ordenDeCarga.NumeroPedido = string.Empty;
-            ordenDeCarga.NumeroPedidoIngresado = "25250000";
-            repositorioMock.Setup(x => x.Obtener<OrdenDeCarga>(It.IsAny<int>())).Returns(ordenDeCarga);
-            var emailSenderData = target.ConstruirCuerpoMailNotificacionContratoVencido(ordenDeCarga,ordenDeCarga.Cliente);
-            var response = target.NotificacionContratoVencido(emailSenderData);
-            Assert.AreEqual(expected, response);
-        }
-        [Test()]
-        public void ConstruirCuerpoEmailOrdenDeCargaTestAppSettingsNull()
-        {
-            var response = target.ConstruirCuerpoEmail(ordenDeCarga);
-            Assert.IsNull(response);
-        }
-
-        [Test()]
-        public void ConstruirCuerpoEmailOrdenDeCargaTestClientNotFound()
-        {
-            ConfigurationManager.AppSettings["EmailToMesaVentaFas"] = "dylopez@baufest.com";
-            ConfigurationManager.AppSettings["EmailToCobranzas"] = "dylopez@baufest.com";
-            ConfigurationManager.AppSettings["EmailToComerciales"] = "dylopez@baufest.com";
-            ordenDeCarga.Cliente_Id = 1;
-            ordenDeCarga.ContratoSAP = string.Empty;
-            ordenDeCarga.ContratoIngresado = string.Empty;
-            ordenDeCarga.PedidoSAP = string.Empty;
-            ordenDeCarga.NumeroPedido = string.Empty;
-            ordenDeCarga.NumeroPedidoIngresado = string.Empty;
-            var response = target.ConstruirCuerpoEmail(ordenDeCarga);
-            Assert.IsNull(response);
-        }
-
-        [Test()]
-        public void ConstruirCuerpoEmailOrdenDeCargaTestContratoNull()
-        {
-            ConfigurationManager.AppSettings["EmailToMesaVentaFas"] = "dylopez@baufest.com";
-            ConfigurationManager.AppSettings["EmailToCobranzas"] = "dylopez@baufest.com";
-            ConfigurationManager.AppSettings["EmailToComerciales"] = "dylopez@baufest.com";
-            AddProvider(301301301, EstadoAprobacion.Aprobado, "Test", "RS", "dylopez@baufest.com", "233333333333", new TipoUsuario { Id = 5, Nombre = "Cliente", NombreCorto = "CLI" });
-            ordenDeCarga.Cliente_Id = 301301301;
-            ordenDeCarga.ContratoSAP = string.Empty;
-            ordenDeCarga.ContratoIngresado = string.Empty;
-            var response = target.ConstruirCuerpoEmail(ordenDeCarga);
-            Assert.IsNull(response);
-        }
-
-        [Test()]
-        public void ConstruirCuerpoEmailOrdenDeCargaTestPedidoNull()
-        {
-            ConfigurationManager.AppSettings["EmailToMesaVentaFas"] = "dylopez@baufest.com";
-            ConfigurationManager.AppSettings["EmailToCobranzas"] = "dylopez@baufest.com";
-            ConfigurationManager.AppSettings["EmailToComerciales"] = "dylopez@baufest.com";
-            AddProvider(301301301, EstadoAprobacion.Aprobado, "Test", "RS", "dylopez@baufest.com", "233333333333", new TipoUsuario { Id = 5, Nombre = "Cliente", NombreCorto = "CLI" });
-            ordenDeCarga.Cliente_Id = 301301301;
-            ordenDeCarga.ContratoSAP = "10000000";
-            ordenDeCarga.ContratoIngresado = string.Empty;
-            ordenDeCarga.PedidoSAP = string.Empty;
-            ordenDeCarga.NumeroPedido = string.Empty;
-            ordenDeCarga.NumeroPedidoIngresado = string.Empty;
-            var response = target.ConstruirCuerpoEmail(ordenDeCarga);
-            Assert.IsNull(response);
-        }
-
-        [Test()]
-        public void ConstruirCuerpoEmailOrdenDeCargaHistorialCrediticiaTest()
-        {
-            ConfigurationManager.AppSettings["EmailToMesaVentaFas"] = "dylopez@baufest.com";
-            ConfigurationManager.AppSettings["EmailToCobranzas"] = "dylopez@baufest.com";
-            ConfigurationManager.AppSettings["EmailToComerciales"] = "dylopez@baufest.com";
-            repositorioMock.Setup(x => x.Obtener<OrdenDeCarga>(It.IsAny<int>())).Returns(ordenDeCarga);
-            
-            
-            ordenDeCargaCambiosHistorial = new List<OrdenDeCargaCambiosHistorial>
-            {
-                new OrdenDeCargaCambiosHistorial
+                new ScatoRepo.MessageItem
                 {
-                    Id = 1,
-                    OrdenDeCarga_Id = 636,
-                    NombreColumnaCambio = "PatenteAcoplado",
-                    Antes = "ABC123",
-                    Despues = "123ABC"
+                    MessageCode = ScatoRepo.CodigoMensajeObtenerChoferPorCuil.ChoferNoEncontrado
                 }
             };
-            var numeroEntrega = "E1020";
-            var response = target.ConstruirCuerpoEmail(ordenDeCargaCambiosHistorial, numeroEntrega);
-            var result = new EmailSenderData()
-            {
-                Asunto = "Molinos Agro - Edición en su orden de carga n°: 636",
-                Cuerpo = CrearAsuntoEdicionOrdenDeCarga()
-            };
-            result.Cuerpo = result.Cuerpo + "";
-            Assert.AreEqual(result.Asunto, response.Asunto);
-            Assert.AreEqual(result.Cuerpo.Trim(), response.Cuerpo.Trim());
-        
+            mIScatoRepositorioClient.Setup(src => src.ObtenerTransportePorCuit(It.IsAny<string>())).Returns(
+                _respuestaTransporte
+                );
 
-    }
+            var result = target.ValidarCuitTransporteDigito("11111111111");
 
-        [Test()]
-        public void ConstruirCuerpoEmailOrdenDeCargaHistorialCrediticiaTestAppSettingsNull()
+            Assert.That(result, Is.True);
+
+        }
+        [Test]
+        public void ValidarCuitTransporteDigito_CuitTransporteExiste_ReturnsTrue()
         {
-            var response = target.ConstruirCuerpoEmail(new List<OrdenDeCargaCambiosHistorial>(), "E1020");
-            Assert.IsNull(response);
+            _respuestaTransporte.IsValid = true;
+
+            mIScatoRepositorioClient.Setup(src => src.ObtenerTransportePorCuit(It.IsAny<string>())).Returns(
+                _respuestaTransporte
+                );
+
+            var result = target.ValidarCuitTransporteDigito("11111111111");
+
+            Assert.That(result, Is.True);
+
         }
 
-        [Test()]
-        public void ConstruirCuerpoEmailOrdenDeCargaHistorialCrediticiaTestListEmpty()
+        [Test]
+        public void ValidarCamion_ExisteCamionEscalable()
         {
-            ConfigurationManager.AppSettings["EmailToMesaVentaFas"] = "dylopez@baufest.com";
-            ConfigurationManager.AppSettings["EmailToCobranzas"] = "dylopez@baufest.com";
-            ConfigurationManager.AppSettings["EmailToComerciales"] = "dylopez@baufest.com";
-            var response = target.ConstruirCuerpoEmail(new List<OrdenDeCargaCambiosHistorial>(), "E1020");
-            Assert.IsNull(response);
+            var chasisParam = "CHA135";
+            var acopladoParam = "ACO246";
+
+            var cnrtRes = new EquiposResponse
+            {
+                Data = new Equipo
+                {
+                    CategoriaEscalado = "D",
+                    Dominios = new List<Dominio>
+                    {
+                        new Dominio { Rto = new Rto { CantEjes = 2 } },
+                        new Dominio { Rto = new Rto { CantEjes = 3 } }
+                    }
+                }
+            };
+
+            mICNRTClient
+                .Setup(x => x.ObtenerEquipos(chasisParam, acopladoParam))
+                .Returns(cnrtRes);
+
+            var result = target.ValidarCamion(chasisParam, acopladoParam);
+
+            Assert.That(result.ExisteCamion, Is.True);
+            Assert.That(result.EsCamionEscalable, Is.True);
+            mICNRTClient.Verify(x => x.ObtenerEquipos(chasisParam, acopladoParam), Times.Once);
+        }
+
+        [Test]
+        public void ValidarCamion_ExisteCamionNoEscalable()
+        {
+            var chasisParam = "CHA135";
+            var acopladoParam = "ACO246";
+
+            var cnrtRes = new EquiposResponse
+            {
+                Data = new Equipo
+                {
+                    CategoriaEscalado = "A",
+                    Dominios = new List<Dominio>
+                    {
+                        new Dominio { Rto = new Rto { CantEjes = 2 } },
+                        new Dominio { Rto = new Rto { CantEjes = 3 } }
+                    }
+                }
+            };
+
+            mICNRTClient
+                .Setup(x => x.ObtenerEquipos(chasisParam, acopladoParam))
+                .Returns(cnrtRes);
+
+            var result = target.ValidarCamion(chasisParam, acopladoParam);
+
+            Assert.That(result.ExisteCamion, Is.True);
+            Assert.That(result.EsCamionEscalable, Is.False);
+            mICNRTClient.Verify(x => x.ObtenerEquipos(chasisParam, acopladoParam), Times.Once);
+        }
+
+        [Test]
+        public void ValidarCamion_NoExisteCamionEsBitren()
+        {
+            var chasisParam = "CHA135";
+            var acopladoParam = "ACO246";
+
+            var cnrtRes = new EquiposResponse
+            {
+                Data = new Equipo
+                {
+                    CategoriaEscalado = "A",
+                    Dominios = new List<Dominio>
+                    {
+                        new Dominio { Rto = new Rto { CantEjes = 2 } },
+                        new Dominio { Rto = new Rto { CantEjes = 0 } }
+                    }
+                }
+            };
+
+            mICNRTClient
+                .Setup(x => x.ObtenerEquipos(chasisParam, acopladoParam))
+                .Returns(cnrtRes);
+
+            var result = target.ValidarCamion(chasisParam, acopladoParam);
+
+            Assert.That(result.ExisteCamion, Is.False);
+            mICNRTClient.Verify(x => x.ObtenerEquipos(chasisParam, acopladoParam), Times.Once);
+        }
+
+        [Test]
+        public void ValidarCamion_NoExisteCamionSinTipoVehiculo()
+        {
+            var chasisParam = "CHA135";
+            var acopladoParam = "ACO246";
+
+            var cnrtRes = new EquiposResponse
+            {
+                Data = new Equipo
+                {
+                    CategoriaEscalado = "F",
+                    Dominios = new List<Dominio>
+                    {
+                        new Dominio { Rto = new Rto { CantEjes = 2 } },
+                        new Dominio { Rto = new Rto { CantEjes = 0 } }
+                    }
+                }
+            };
+
+            mICNRTClient
+                .Setup(x => x.ObtenerEquipos(chasisParam, acopladoParam))
+                .Returns(cnrtRes);
+
+            var result = target.ValidarCamion(chasisParam, acopladoParam);
+
+            Assert.That(result.ExisteCamion, Is.False);
+            mICNRTClient.Verify(x => x.ObtenerEquipos(chasisParam, acopladoParam), Times.Once);
+        }
+
+        [Test]
+        public void ValidarCamion_NoExisteCamionSinDominios()
+        {
+            var chasisParam = "CHA135";
+            var acopladoParam = "ACO246";
+
+            var cnrtRes = new EquiposResponse
+            {
+                Data = new Equipo
+                {
+                    CategoriaEscalado = "A",
+                    Dominios = new List<Dominio>()
+                }
+            };
+
+            mICNRTClient
+                .Setup(x => x.ObtenerEquipos(chasisParam, acopladoParam))
+                .Returns(cnrtRes);
+
+            var result = target.ValidarCamion(chasisParam, acopladoParam);
+
+            Assert.That(result.ExisteCamion, Is.False);
+            mICNRTClient.Verify(x => x.ObtenerEquipos(chasisParam, acopladoParam), Times.Once);
         }
 
         private void AddProvider(int id, EstadoAprobacion estadoAprobacion, string observaciones, string razonSocial, string mail, string cUIT, TipoUsuario tipoProveedor)
@@ -1362,7 +1124,7 @@ namespace SustitucionMOATest.Services
         }
 
         private string CrearAsuntoEdicionOrdenDeCarga()
-		{
+        {
             var fecha = DateTime.Now.Date;
             string asunto = string.Empty;
             asunto += $"<!DOCTYPE html>\r\n";
@@ -1400,7 +1162,7 @@ namespace SustitucionMOATest.Services
             asunto += $"</body>\r\n";
             asunto += $"</html>";
             return asunto;
-		}
+        }
 
         private string CrearAsuntoNotificacionValidacionCrediticia()
         {
@@ -1460,7 +1222,7 @@ namespace SustitucionMOATest.Services
 
         private string CrearAsuntoNotificacionSolicitudAnulacion()
         {
-            var fecha = DateTime.Now.Date;
+            var fecha = DateTime.Now;
             string asunto = string.Empty;
             asunto += $"<!DOCTYPE html>\r\n";
             asunto += $"<html>\r\n";
@@ -1481,8 +1243,8 @@ namespace SustitucionMOATest.Services
             asunto += $"<td scope=\"col\">Cliente</td>\r\n                ";
             asunto += $"<td scope=\"col\">Corredor</td>\r\n                ";
             asunto += $"<td scope=\"col\">Chofer</td>\r\n                ";
-            asunto += $"<td scope=\"col\">Patente acoplado</td>\r\n                ";
             asunto += $"<td scope=\"col\">Patente Chasis</td>\r\n                ";
+            asunto += $"<td scope=\"col\">Patente acoplado</td>\r\n                ";
             asunto += $"<td scope=\"col\">Numero de pedido</td>\r\n                ";
             asunto += $"<td scope=\"col\">Numero de entrega</td>\r\n                ";
             asunto += $"<td scope=\"col\">Fecha carga</td>\r\n                ";
@@ -1496,8 +1258,8 @@ namespace SustitucionMOATest.Services
             asunto += $"<td>ClientePrueba</td>";
             asunto += $"<td></td>";
             asunto += $"<td>Martin</td>";
-            asunto += $"<td>ABC123</td>";
             asunto += $"<td>ABBSM1231412</td>";
+            asunto += $"<td>ABC123</td>";
             asunto += $"<td></td>";
             asunto += $"<td></td>";
             asunto += $"<td>1/1/0001 00:00:00</td>";
@@ -1691,5 +1453,128 @@ namespace SustitucionMOATest.Services
             Process[] proc = Process.GetProcessesByName("MailHog_windows_amd64");
             proc[0].Kill();
         }
+        private void SetupAgregarTests()
+        {
+
+            repositorioMock
+                .Setup(y => y.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>()))
+                .Returns(_usuario);
+
+            repositorioMock
+                 .Setup(x => x.Obtener<Proveedor>(It.IsAny<int>()))
+                 .Returns(_proveedorUsuario);
+
+            repositorioMock
+                .Setup(x => x.Obtener<Rol>(It.IsAny<int>()))
+                .Returns(_rolAdministracion);
+
+            repositorioMock
+               .Setup(x => x.Obtener<PermisoPorRol>(It.IsAny<int>()))
+               .Returns(_permisoVerOrdenesComerciales);
+
+            repositorioMock
+               .Setup(x => x.Obtener<Material>(It.IsAny<int>()))
+               .Returns(ordenDeCarga.Producto);
+
+            repositorioMock
+               .Setup(y => y.Obtener(It.IsAny<Expression<Func<Proveedor, bool>>>()))
+               .Returns(_proveedorUsuario);
+            mIScatoRepositorioClient.Setup(src => src.ObtenerChoferPorCuil(It.IsAny<string>())).Returns(
+               _respuestaChofer
+               );
+        }
+        private void SetupAgregarSuccess()
+        {
+
+            consumerOrdenCargaMOA
+                .Setup(x => x.ControlarCarga(It.IsAny<ControlCargaRequest>()))
+                .Returns(new SustitucionMOAWS.ResponseHandler.OrdenCarga.ControlCargaResponseHandler(
+                    new SustitucionMOAWS.OrdenCargaControlSAP.ZMPES7060[]
+                    {
+                        new SustitucionMOAWS.OrdenCargaControlSAP.ZMPES7060 { MENSAJE = "CC-00" }
+                    }));
+
+            repositorioMock
+                .Setup(x => x.Obtener<OrdenDeCarga>(It.IsAny<int>()))
+                .Returns(ordenDeCarga);
+
+            consumerOrdenCargaMOA
+               .Setup(x => x.OrdenCargaVisualizarClienteExecute(It.IsAny<OrdenCargaVisualizarClienteWSMOARequest>()))
+               .Returns(new OrdenCargaVisualizarClienteWSMOAResponse
+               {
+                   Resultados = new List<Result> {
+               new Result { FechaHasta = DateTime.Now.AddDays(1).ToString()}
+               }
+               });
+
+            consumerOrdenCargaMOA
+               .Setup(x => x.OrdenCargaControlEstadoRequest(It.IsAny<string>(),
+               It.IsAny<string>(),
+               It.IsAny<string>()))
+               .Returns("CE-07");
+
+            ConfigurationManager.AppSettings["CantidadOrdenDeCarga"] = "30000";
+            ConfigurationManager.AppSettings["UsuarioAutomaticoSAP"] = "moaoperaciones@baufest.com";
+        }
+        [Test()]
+        public void GenerarEntregaSAPOkTest()
+        {
+            var nroEntrega = "001235";
+            var ordenCargaEntreResponseHandler = new OrdenCargaEntreResponseHandler("OE-00", nroEntrega);
+            ordenDeCarga.Estado = EstadoOrdenDeCarga.PendienteAprobacionCredito;
+
+            repositorioMock
+                .Setup(x => x.Obtener<OrdenDeCarga>(It.IsAny<int>()))
+                .Returns(ordenDeCarga);
+
+            consumerOrdenCargaMOA
+                .Setup(x => x.CrearEntrega(It.IsAny<CrearEntregaRequest>(), It.IsAny<bool>()))
+                .Returns(ordenCargaEntreResponseHandler);
+
+            consumerOrdenCargaMOA
+                .Setup(x => x.OrdenCargaControlEstadoRequest(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+                .Returns("CE-00");
+
+            var response = target.VerificarSituacionCrediticia(ordenDeCarga.Id);
+
+            var result = new Resultado()
+            {
+                Mensaje = string.Concat("Se ha generado la entrega ", nroEntrega, ".")
+            };
+
+            Assert.AreEqual(result.Mensaje, response.Mensaje);
+        }
+
+        [Test()]
+        public void GenerarEntregaSAPTransporteNoExisteTest()
+        {
+            var respuestaSap = "OE-01";
+            var nroEntrega = "";
+            var ordenCargaEntreResponseHandler = new OrdenCargaEntreResponseHandler(respuestaSap, nroEntrega);
+            ordenDeCarga.Estado = EstadoOrdenDeCarga.PendienteAprobacionCredito;
+            
+            repositorioMock
+                .Setup(x => x.Obtener<OrdenDeCarga>(It.IsAny<int>()))
+                .Returns(ordenDeCarga);
+            
+            consumerOrdenCargaMOA
+                .Setup(x => x.CrearEntrega(It.IsAny<CrearEntregaRequest>(), It.IsAny<bool>()))
+                .Returns(ordenCargaEntreResponseHandler);
+
+            consumerOrdenCargaMOA
+                .Setup(x => x.OrdenCargaControlEstadoRequest(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+                .Returns("CE-00");
+
+            var response = target.VerificarSituacionCrediticia(ordenDeCarga.Id);
+
+            var result = new Resultado()
+            {
+                Mensaje = "No se pudo generar la entrega. No existe el transportista."
+            };
+
+            Assert.AreEqual(result.Mensaje, response.Mensaje);
+        }
+
+
     }
 }

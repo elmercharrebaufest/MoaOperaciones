@@ -13,6 +13,28 @@
                            /endpoint[@name='BasicHttpBinding_IServicioRepositorio']
                            /@address" />
 	</parameter>
+  <parameter name="AzureADTenantId Config">
+    <parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/appSettings/add[@key='AzureADTenantId']
+                           /@value" />
+  </parameter>
+
+  <parameter name="AzureADAppId Config">
+    <parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/appSettings/add[@key='AzureADAppId']
+                           /@value" />
+  </parameter>
+
+  <parameter name="AzureADAppSecret Config">
+    <parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/appSettings/add[@key='AzureADAppSecret']
+                           /@value" />
+  </parameter>
+  <parameter name="Url Config">
+    <parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/appSettings/add[@key='Url']
+                           /@value" />
+  </parameter>
 
 	<parameter name="BasicHttpBinding_IServicioComandos Service Endpoint Address">
 		<parameterEntry kind="XmlFile" scope="Web.config"
@@ -28,59 +50,19 @@
                            /@address" />
   </parameter>
 
-  <parameter name="SI_MMRFC_OBTENER_CECO Service Endpoint Address">
-    <parameterEntry kind="XmlFile" scope="Web.config"
-						match="/configuration/system.serviceModel/client
-                           /endpoint[@name='SI_MMRFC_OBTENER_CECO']
-                           /@address" />
-  </parameter>
-  
-  <parameter name="SI_MMRFC_OBTENER_SOLPED Service Endpoint Address">
-    <parameterEntry kind="XmlFile" scope="Web.config"
-						match="/configuration/system.serviceModel/client
-                           /endpoint[@name='SI_MMRFC_OBTENER_SOLPED']
-                           /@address" />
-  </parameter>
-
-  <parameter name="SI_MMRFC_CREAR_SOLPED Service Endpoint Address">
-    <parameterEntry kind="XmlFile" scope="Web.config"
-						match="/configuration/system.serviceModel/client
-                           /endpoint[@name='SI_MMRFC_CREAR_SOLPED']
-                           /@address" />
-  </parameter>
-
-  <parameter name="SI_MMRFC_MODIFICAR_SOLPED Service Endpoint Address">
-    <parameterEntry kind="XmlFile" scope="Web.config"
-						match="/configuration/system.serviceModel/client
-                           /endpoint[@name='SI_MMRFC_MODIFICAR_SOLPED']
-                           /@address" />
-  </parameter>
-  <parameter name="SI_MMRFC_OBTENER_CUENTAS Service Endpoint Address">
-    <parameterEntry kind="XmlFile" scope="Web.config"
-						match="/configuration/system.serviceModel/client
-                           /endpoint[@name='SI_MMRFC_OBTENER_CUENTAS']
-                           /@address" />
-  </parameter>
-  
-  <parameter name="SI_MMRFC_OBTENER_SERVICIOS Service Endpoint Address">
-    <parameterEntry kind="XmlFile" scope="Web.config"
-						match="/configuration/system.serviceModel/client
-                           /endpoint[@name='SI_MMRFC_OBTENER_SERVICIOS']
-                           /@address" />
-  </parameter>
-  
-  <parameter name="SI_MMRFC_OBTENER_ORDEN Service Endpoint Address">
-    <parameterEntry kind="XmlFile" scope="Web.config"
-						match="/configuration/system.serviceModel/client
-                           /endpoint[@name='SI_MMRFC_OBTENER_ORDEN']
-                           /@address" />
-  </parameter>
-
   <parameter name="SI_MMRFC_OBTENER_FUENTE_APROV Service Endpoint Address">
 	<parameterEntry kind="XmlFile" scope="Web.config"
 						match="/configuration/system.serviceModel/client
                         /endpoint[@name='SI_MMRFC_OBTENER_FUENTE_APROV']
                         /@address" />
-  </parameter>	
+  </parameter>
+
+  <parameter name="SI_MMRFC_OBTENER_TIPO_CAMBIO Service Endpoint Address">
+	<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/system.serviceModel/client
+                    /endpoint[@name='SI_MMRFC_OBTENER_TIPO_CAMBIO']
+                    /@address" />
+  </parameter>
+  
 </parameters>
 

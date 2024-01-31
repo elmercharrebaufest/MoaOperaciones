@@ -28,6 +28,7 @@ namespace SustitucionMOAWS.WSConsumers
                 ZMPES4090[] materiales_in = new ZMPES4090[] { };
                 ZMPES4990[] recepciones_out = new ZMPES4990[] { };
                 ZMPES4080[] vendedores_in = new ZMPES4080[] { };
+                ZMPES7000[] calidades_out = new ZMPES7000[] { };
                 List<ZMPES4100> fechasSAP = new List<ZMPES4100>() { };
                 foreach (FechaWS fecha in fechas)
                 {
@@ -44,7 +45,15 @@ namespace SustitucionMOAWS.WSConsumers
                 //ZmprfcGolRecepciones requestInfo = new ZmprfcGolRecepciones { PeProveedor = proveedor, TFechaDescargaIn = fechasSAP.ToArray() };
                 service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
                 service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
-                ZMPES4910 error = service.SI_MPMF_MOAOP_RECEPCIONES(proveedor, ref carta_porte_in, ref centros_in, ref fechasSAPArray, ref materiales_in, ref recepciones_out, ref vendedores_in);
+                ZMPES4910 error = service.SI_MPMF_MOAOP_RECEPCIONES(
+                   proveedor,
+                   ref carta_porte_in,
+                   ref centros_in,
+                   ref fechasSAPArray,
+                   ref materiales_in,
+                   ref recepciones_out,
+                   ref vendedores_in,
+                   out calidades_out); 
                 return map(error, recepciones_out);
             }
             catch (InfoCustomException e)
@@ -85,10 +94,17 @@ namespace SustitucionMOAWS.WSConsumers
                     vendedor = recepcionInfo.VENDEDOR,
                     vendedorId = recepcionInfo.ID_VENDEDOR,
                     contrnum = recepcionInfo.CONTRNUM,
-                    cg = recepcionInfo.CG
+                    cg = recepcionInfo.CG,
+                    pesoBrutoOrigen = recepcionInfo.BRUTO_ORIGEN,
+                    taraOrigen = recepcionInfo.TARA_ORIGEN,
+                    netoOrigen = recepcionInfo.NETO_ORIGEN,
+                    brutoDestino = recepcionInfo.BRUTO,
+                    taraDestino = recepcionInfo.TARA,
+                    netoDestino = recepcionInfo.NETO,
+                    mermas = recepcionInfo.MERMAS,
                 });
             }
-            
+
             return result;
         }
     }
@@ -115,6 +131,12 @@ namespace SustitucionMOAWS.WSConsumers
                     producto = aplicacionInfo.PRODUCTO,
                     unidadNetoDescontado = aplicacionInfo.UNIME_NETO,
                     netoDescontado = aplicacionInfo.NETO_DESCONTADO,
+                    netoDestino = aplicacionInfo.NETO,
+                    taraDestino = aplicacionInfo.TARA,
+                    brutoDestino = aplicacionInfo.BRUTO,
+                    netoOrigen = aplicacionInfo.NETO_ORIGEN,
+                    taraOrigen = aplicacionInfo.TARA_ORIGEN,
+                    pesoBrutoOrigen = aplicacionInfo.BRUTO_ORIGEN,
                     sust = aplicacionInfo.SUST,
                     titular = aplicacionInfo.TITULAR,
                     descripcionTitular = aplicacionInfo.DESC_TITULAR,
@@ -122,6 +144,7 @@ namespace SustitucionMOAWS.WSConsumers
                     vendedorId = aplicacionInfo.ID_VENDEDOR,
                     contrnum = aplicacionInfo.CONTRNUM,
                     cg = aplicacionInfo.CG,
+                    mermas = aplicacionInfo.MERMAS,
                 });
             }
             return result;

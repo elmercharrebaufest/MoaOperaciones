@@ -222,6 +222,16 @@ export class LayoutComponent implements OnDestroy {
                         this.textoTooltip = 'En esta categoría podrás pesificar tus negocios en dólares, individual o masivamente, y consultar aquellos negocios pendientes de pesificar.';
                         this.textoTooltip2 = '';
                         break;
+                    case 'Gestion':
+                        this.auxiliarSeccionesVisitadas = 'Gestion';
+                        this.textoTooltip = 'Instructivo Productor: <a href="https://b2cmoagro.blob.core.windows.net/moaopublic/echeqProductor.mp4" target="_blank">Click aqui</a>.';
+                        this.textoTooltip2 = 'Instructivo Acopiador: <a href="https://b2cmoagro.blob.core.windows.net/moaopublic/echeqAcopiador.mp4" target="_blank">Click aqui</a>.';
+                        break;
+                        case 'Mis Echeq':
+                        this.auxiliarSeccionesVisitadas = 'Mis Echeq';
+                        this.textoTooltip = 'En esta categoría podrás cargar tus echeqs';
+                        this.textoTooltip2 = '';
+                        break;
                     case 'Carga de Negocios':
                         this.auxiliarSeccionesVisitadas = 'Carga de Negocios';
                         this.textoTooltip = 'En esta pantalla podrás seleccionar el tipo de negocio que deseas operar.';
@@ -336,7 +346,6 @@ export class LayoutComponent implements OnDestroy {
 
         modalService.modalShowFleteProcedencia.subscribe(
             modalShowFleteProcedencia => {
-                this.setEmptyMsjModal();
                 this.showFleteProcedencia = modalShowFleteProcedencia
             });
 
@@ -414,6 +423,10 @@ export class LayoutComponent implements OnDestroy {
 
     isAmbos() {
         return this.granosFlag == "A" && this.isAuthorized('CONSULTAR HOME') && this.isAuthorized('CONSULTAR HOME NG');
+    }
+
+    isCliente(){
+        return sessionStorage.getItem('tipoUsuario') == 'CLI'
     }
 
     setGranos() {

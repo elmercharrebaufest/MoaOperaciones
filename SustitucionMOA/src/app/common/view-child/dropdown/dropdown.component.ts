@@ -9,6 +9,7 @@ export class DropdownOption {
         this.label = label;
     }
 }
+export type TipoDropdown = "numberItems" | "selectInput"|"periodos"|"filtroVariable"|"pageInput"
 
 @Component({
     selector: 'dropdown',
@@ -17,7 +18,7 @@ export class DropdownOption {
 
 export class DropdownComponent implements OnInit {
 
-    @Input() tipoDropdown: string;
+    @Input() tipoDropdown: TipoDropdown;
 
     @Input()
     options: Array<DropdownOption>;

@@ -14,8 +14,9 @@ namespace SustitucionMOAWS.WSConsumers
         private const string COMP_CODE = "MOA";
 
         public ObtenerSolpConsumerMOA()
-        {
-            service = new SI_MMRFC_OBTENER_SOLPEDClient();
+        {      
+            var url = "http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MMRFC_OBTENER_SOLPED&amp;interfaceNamespace=urn%3AOPERACIONES";
+            service = new SI_MMRFC_OBTENER_SOLPEDClient(SAPCredential.CrearSapLongBinding(), SAPCredential.DevolverEndpoint(url));
             service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
             service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
         }
@@ -52,6 +53,8 @@ namespace SustitucionMOAWS.WSConsumers
                         IM_DELIVERY_ADDRESS,
                         "",
                         "",
+                        "",
+                        "",
                         IM_PREQ_DATE_F,
                         IM_PREQ_DATE_I,
                         IM_PREQ_NO,
@@ -61,7 +64,9 @@ namespace SustitucionMOAWS.WSConsumers
                         out ZMPES5740[] EX_PRACCOUNT,
                         out ZMPES5750[] EX_PRADDRDELIVERY,
                         out BAPIMEREQCOMPONENT[] EX_PRCOMPONENTS,
+                        out BAPIMEREQHEADTEXT[] EX_PRHEADERTEXT,
                         out ZMPES5670[] EX_PRITEM,
+                        out BAPIMEREQITEMTEXT[] EX_PRIMETEXT,
                         out BAPIRETURN[] EX_RETURN,
                         out ZMPES5770[] EX_SERVICEACCOUNT,
                         out ZMPES5730[] EX_SERVICELINES);
@@ -139,6 +144,9 @@ namespace SustitucionMOAWS.WSConsumers
             //Para ello, se ingresa el nombre de 1 o mas usuarios que han creado solicitudes de pedido.
             ZMPES5640[] IM_USUARIOS = new ZMPES5640[req.CreadoPorUsuarios.Count];
 
+            string IM_HEADER_TEXT = "";
+            string IM_ITEM_TEXT = "";
+
             foreach (var item in req.CreadoPorUsuarios.Select((value, i) => new { i, value }))
             {
                 IM_USUARIOS[item.i] = new ZMPES5640 { ERNAM = item.value };
@@ -151,18 +159,22 @@ namespace SustitucionMOAWS.WSConsumers
                         IM_CREATE_IND,
                         IM_DELETE_IND,
                         IM_DELIVERY_ADDRESS,
+                        IM_HEADER_TEXT,
                         IM_ITEM_CAT,
+                        IM_ITEM_TEXT,
                         IM_PLANT,
                         IM_PREQ_DATE_F,
                         IM_PREQ_DATE_I,
                         IM_PREQ_NO,
                         IM_REL_IND,
                         IM_SERVICES,
-                        IM_USUARIOS,
+                        IM_USUARIOS,                     
                         out ZMPES5740[] EX_PRACCOUNT,
                         out ZMPES5750[] EX_PRADDRDELIVERY,
                         out BAPIMEREQCOMPONENT[] EX_PRCOMPONENTS,
-                        out ZMPES5670[] EX_PRITEM,
+                        out BAPIMEREQHEADTEXT[] EX_PRHEADERTEXT,
+                        out ZMPES5670[] EX_PRITEM, 
+                        out BAPIMEREQITEMTEXT[] EX_PRIMETEXT,
                         out BAPIRETURN[] EX_RETURN,
                         out ZMPES5770[] EX_SERVICEACCOUNT,
                         out ZMPES5730[] EX_SERVICELINES);
@@ -178,7 +190,7 @@ namespace SustitucionMOAWS.WSConsumers
             */
 
             return Map(EX_PRACCOUNT, EX_PRADDRDELIVERY, EX_PRCOMPONENTS, EX_PRITEM, EX_RETURN, EX_SERVICEACCOUNT, EX_SERVICELINES);
-           
+
         }
 
         private ObtenerSolpSAPResponse Map(ZMPES5740[] tipoImputaciones, //EX_PRACCOUNT
@@ -224,7 +236,7 @@ namespace SustitucionMOAWS.WSConsumers
                 Todos estos objetos van a venir completos segun el tipo de imputación. Por ejemplo, si la imputación es del tipo (EX_PREITEM-ACCTASSCAT) = "K", la tabla va a pasar como parámetro el campo COSTCENTER. 
                 Resto de campos solo a nivel informativo.
              */
-            if(result.TipoImputaciones == null)
+            if (result.TipoImputaciones == null)
             {
                 result.TipoImputaciones = new List<TipoImputacionSAP>();
             }
@@ -279,7 +291,7 @@ namespace SustitucionMOAWS.WSConsumers
                     CodigoPostal = direccionPosicion.POSTL_COD1,
                     Ciudad = direccionPosicion.CITY,
                     Calle = direccionPosicion.STREET,
-                    Numero = direccionPosicion.TEL1_NUMBR,
+                    Numero = direccionPosicion.HOUSE_NO,
                     Telefono = direccionPosicion.TEL1_NUMBR,
                 });
             }
@@ -344,7 +356,7 @@ namespace SustitucionMOAWS.WSConsumers
                     UsuarioCreado = posicion.CREATED_BY,
                     NombreSolicitante = posicion.PREQ_NAME,
                     TextoPosicion = posicion.SHORT_TEXT,
-                    Material = posicion.SHORT_TEXT,
+                    Material = posicion.MATERIAL,
                     CentroLogistico = posicion.PLANT,
                     Almacen = posicion.STORE_LOC,
                     NumeroRequerimientoInterno = posicion.TRACKINGNO,
@@ -377,7 +389,9 @@ namespace SustitucionMOAWS.WSConsumers
                     CantidadDiasEntrega = posicion.PLND_DELRY,
                     EstaBloqueada = posicion.REQ_BLOCKED,
                     EstadoSolpSap = posicion.PROCSTAT,
-                    EstadoPosicion = posicion.DELETE_IND
+                    EstadoPosicion = posicion.DELETE_IND,
+                    FechaEstimadaLiberacionDate = SAPFormatter.GetDateTime(posicion.REL_DATE),
+                    Ordered = posicion.ORDERED,
                 });
             }
 
@@ -444,7 +458,7 @@ namespace SustitucionMOAWS.WSConsumers
              
              */
 
-            if(result.ServiciosSuposiciones == null)
+            if (result.ServiciosSuposiciones == null)
             {
                 result.ServiciosSuposiciones = new List<SuposicionServicioSAP>();
             }
@@ -559,6 +573,8 @@ namespace SustitucionMOAWS.WSConsumers
         public string MonedaPrecioString { get; internal set; }
         public string EstadoSolpSap { get; set; }
         public string EstadoPosicion { get; set; }
+        public DateTime FechaEstimadaLiberacionDate { get; set; }
+        public decimal Ordered { get; internal set; }
     }
 
     public class DireccionSolpSAP
@@ -620,7 +636,7 @@ namespace SustitucionMOAWS.WSConsumers
         public string IndicadorDeLiberacion { get; set; }
         public bool ObtenerServicios { get; set; }
         public List<string> CreadoPorUsuarios { get; set; }
-      
+
     }
 
     public class ErrorObtenerSOLP

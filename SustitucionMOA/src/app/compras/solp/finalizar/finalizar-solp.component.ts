@@ -2,49 +2,46 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Solp } from '../solp';
 
 @Component({
-  selector: 'finalizar-solp',
-  templateUrl: './finalizar-solp.component.html',
-  styleUrls: ['../../compras.component.css']
+    selector: 'finalizar-solp',
+    templateUrl: './finalizar-solp.component.html',
+    styleUrls: ['../../compras.component.css']
 })
 export class FinalizarSolpComponent implements OnInit {
 
-  @Input('locale') es: any;
+    @Input('locale') es: any;
 
-  @Input()
-  displayFinalizar: boolean;
+    @Input()
+    displayFinalizar: boolean;
 
-  @Input()
-  solpActual: Solp;
+    @Input()
+    esTipoServicio: boolean;
 
-  @Input()
-  selectUsuarioCompras: any;
+    @Input()
+    solpActual: Solp;
 
-  @Input()  
-  usuarioComprasList: any[] = [];
+    @Output() cancelarFinalizarEmitter = new EventEmitter();
 
-  @Output() cancelarFinalizarEmitter = new EventEmitter();
+    @Output() finalizarEmitter = new EventEmitter<{ selectUsuarioCompras: any, solpActual: Solp }>();
 
-  @Output() finalizarEmitter = new EventEmitter<{selectUsuarioCompras: any, solpActual: Solp}>();
+    constructor() { }
 
-  constructor() { }
+    ngOnInit() {
+    }
 
-  ngOnInit() {
-  }
+    onCancelarFinalizar() {
+        this.cancelarFinalizarEmitter.next();
+    }
 
-  onCancelarFinalizar() {
-    this.cancelarFinalizarEmitter.next();
-  }
+    onFinalizar() {
+        const updatedInfo = {
+            selectUsuarioCompras: this.solpActual.selectUsuarioCompras,
+            solpActual: this.solpActual
+        };
+        this.finalizarEmitter.next(updatedInfo);
+    }
 
-  onFinalizar() {
-    const updatedInfo = {
-      selectUsuarioCompras: this.selectUsuarioCompras, 
-      solpActual: this.solpActual
-    };
-    this.finalizarEmitter.next(updatedInfo);
-  }
-
-  onHideFinalizarDialog() {
-    this.cancelarFinalizarEmitter.next();
-  }
+    onHideFinalizarDialog() {
+        this.cancelarFinalizarEmitter.next();
+    }
 
 }

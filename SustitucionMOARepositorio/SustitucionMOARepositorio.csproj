@@ -64,18 +64,30 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.configuration" />
     <Reference Include="System.Data" />
     <Reference Include="System.Runtime.Caching" />
+    <Reference Include="System.Transactions" />
+    <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ValueTuple.4.5.0\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Cache.cs" />
+    <Compile Include="ConsultasEF\TraerCotizacionConsulta.cs" />
+    <Compile Include="ConsultasEF\ComparadorOfertasConsulta.cs" />
+    <Compile Include="ConsultasEF\ListarSolpPOConsulta.cs" />
+    <Compile Include="ConsultasEF\ObtenerSolpComprasConsulta.cs" />
+    <Compile Include="ConsultasEF\ListarSolpConsulta.cs" />
     <Compile Include="EntidadReferenciadaException.cs" />
     <Compile Include="Extensiones\DataTableExtension.cs" />
     <Compile Include="Extensiones\Extensiones.cs" />
     <Compile Include="Extensiones\SqlBulkExtension.cs" />
     <Compile Include="ICache.cs" />
+    <Compile Include="IConsulta.cs" />
     <Compile Include="IConsultaEscalar.cs" />
+    <Compile Include="IConsultaPaginada.cs" />
     <Compile Include="IRepositorio.cs" />
     <Compile Include="Migrations\202008272151267_Initial.cs" />
     <Compile Include="Migrations\202008272151267_Initial.designer.cs">
@@ -84,6 +96,8 @@
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="MOAOperacionesDbContext.cs" />
     <Compile Include="RepositorioEF.cs" />
+    <Compile Include="Repositorios\Interfaces\IRepositorioUsuario.cs" />
+    <Compile Include="Repositorios\RepositorioUsuario.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Migrations\202008272151267_Initial.resx">
@@ -92,7 +106,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SustitucionMOAModel\SustitucionMOAModel.csproj">
-      <Project>{DA0A7852-EA57-4359-BA7C-B8BABDEDBD42}</Project>
+      <Project>{da0a7852-ea57-4359-ba7c-b8babdedbd42}</Project>
       <Name>SustitucionMOAModel</Name>
     </ProjectReference>
   </ItemGroup>

@@ -1,0 +1,105 @@
+<p-dialog [(visible)]="displayProveedor" modal="modal" [width]="800" [draggable]="false" [closable]="true"
+    (onHide)="onCerrarModalProveedor()" appendTo="body" positionTop="30" [height]="500" [max] [contentStyle]="{ 
+        'max-height':'100px', 
+        'min-height':'400px'}">
+    <p-header class="headerModal" style="color: #067935;" id="headerModal">
+        <b>Agregar proveedores - </b> <span *ngIf="peticion != null">Petici&oacute;n de oferta #{{peticion.Id}}</span>
+    </p-header>
+    <div class="container-fluid" style="height: 273.75px;">
+        <section class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+            <div class="inputCompras">
+                <div class="row myRow" style="padding-top: 2px;">
+
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="margin-left: 20px;">
+                        <p>
+                            <ngb-alert type="danger" [dismissible]="false" *ngIf="visualizarAlert"
+                                       style="font-size: 15px;;">
+                                <strong>Error! </strong>{{ error }}
+                            </ngb-alert>
+                        </p>
+                        <div class="col-xs-12 col-sm-10" style="font-size: 17px;">
+                            <strong>Selección de proveedores</strong>
+                        </div>
+                        <div class="col-xs-12 col-sm-10 col-md-8" style="font-size: 15px; margin-bottom: 20px;">
+                            <p-autoComplete [(ngModel)]="proveedorSeleccionado" [suggestions]="proveedores"
+                                            (completeMethod)="searchProveedor($event)" (onSelect)="selectProveedor($event)"
+                                            placeholder="Seleccione un proveedor" field="Mail" [minLength]="3"
+                                            id="buscadorProveedor">
+                                <ng-template let-proveedor pTemplate="item">
+                                    <div class="ui-helper-clearfix">
+                                        <div style="font-size:12px;margin:10px 10px 0 0">{{proveedor.Mail}}</div>
+                                        <div style="font-size:10px;color:darkgrey;margin:10px 10px 0 0">
+                                            {{proveedor.CUIT}} - {{proveedor.RazonSocial}}
+                                        </div>
+                                    </div>
+                                </ng-template>
+                            </p-autoComplete>
+                        </div>
+                        <div class="col-xs-12 col-sm-10 col-md-12" style="font-size: 15px; margin-bottom: 20px;">
+                            <p-panel *ngIf="peticion != null" header="Proveedores asociados a la PO" [toggleable]="true"
+                                     [collapsed]="true">
+                                <div id="lista1">
+                                    <ul>
+                                        <div *ngFor="let p of peticion.Usuarios">
+                                        <li>{{p.RazonSocial }} ({{p.CUIT}}) - {{p.Mail}}</li>
+                                </div>
+                                <div *ngFor="let p of peticion.UsuariosAdicionales">
+                                    <li>{{p.RazonSocial }} ({{p.CUIT}}) - {{p.Mail}}</li>
+                            </div>
+                        </ul>
+                    </div>
+                            </p-panel>
+                        </div>
+                        <div class="col-xs-12" style="font-size: 20px; margin-bottom: 20px;">
+                            <p-table [value]="proveedoresSeleccionados">
+                                <ng-template pTemplate="header">
+                                    <tr >
+                                        <th style="text-transform: none !important; width: 260px">Mail</th>
+                                        <th style="width: 140px !important; text-transform: none !important">CUIT</th>
+                                        <th style="text-transform: none !important;">Razon Social</th>
+                                        <th style="width: 60px !important; text-transform: none !important"></th>
+                                    </tr>
+                                </ng-template>
+                                <ng-template pTemplate="emptymessage">
+                                    <tr>
+                                        <td class="sinDatos" colspan="4">Sin datos</td>
+                                    </tr>
+                                </ng-template>
+                                <ng-template pTemplate="body" let-proveedor >
+                                    <tr style="font-size: 15px !important;">
+                                        <td class="columna" style="font-size: 15px !important;">{{proveedor.Mail}}</td>
+                                        <td>{{proveedor.CUIT}}</td>
+                                        <td>{{proveedor.RazonSocial}}</td>
+                                        <td>
+                                            <a style="cursor:pointer;" id="proveedor.Id"
+                                                (click)="eliminarProveedor($event,proveedor)">
+                                                <img src="../../../../../Content/images/icons/trashRed.svg" />
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </ng-template>
+                            </p-table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    <p-footer>
+        <button type="button" class="btn btn-danger botonesComprasColor"
+            (click)="onCerrarModalProveedor()">CANCELAR</button>
+        <button type="button" class="btn btn-primary botonesComprasColor" (click)="grabarProveedor()">ENVIAR</button>
+    </p-footer>
+</p-dialog>
+
+<p-dialog [(visible)]="displayOkProveedor" [width]="400" modal="modal" appendTo="body" [draggable]="false"
+    [contentStyle]="{'overflow':'visible', 'max-height':'100px', 'min-height':'100px'}" [closable]="false">
+    <p-header class="headerModal">
+        ¡Proveedor agregado!
+    </p-header>
+    <br> El proveedor se agregó a la petición #{{nroPeticion}} correctamente.
+    <br>
+    <p-footer>
+        <button type="button" class="btn btn-primary botonesComprasColor botonModal" (click)="salir()">Aceptar</button>
+    </p-footer>
+</p-dialog>

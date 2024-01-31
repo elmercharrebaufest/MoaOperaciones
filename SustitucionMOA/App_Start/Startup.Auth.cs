@@ -24,7 +24,7 @@ using Entidades = SustitucionMOAModel.Entities;
 
 namespace SustitucionMOA
 {
-    public partial class Startup
+	public partial class Startup
 	{
 		private static IAzureB2CService AzureB2CService
 		{
@@ -32,8 +32,8 @@ namespace SustitucionMOA
 		}
 
 		/*
-        * Configure the OWIN middleware
-        */
+		* Configure the OWIN middleware
+		*/
 
 		public void ConfigureAuth(IAppBuilder app)
 		{
@@ -42,12 +42,12 @@ namespace SustitucionMOA
 
 			app.SetDefaultSignInAsAuthenticationType(CookieAuthenticationDefaults.AuthenticationType);
 
-            app.UseCookieAuthentication(new CookieAuthenticationOptions
-            {
-                // ASP.NET web host compatible cookie manager
-                CookieManager = new SystemWebChunkingCookieManager(),
-                ExpireTimeSpan = TimeSpan.FromDays(1)
-            });
+			app.UseCookieAuthentication(new CookieAuthenticationOptions
+			{
+				// ASP.NET web host compatible cookie manager
+				CookieManager = new SystemWebChunkingCookieManager(),
+				//ExpireTimeSpan = TimeSpan.FromDays(1)
+			});
 
 
 			app.UseOpenIdConnectAuthentication(
@@ -85,7 +85,7 @@ namespace SustitucionMOA
 					// Specify the scope by appending all of the scopes requested into one string (separated by a blank space)
 					Scope = $"openid profile offline_access",
 
-                    UseTokenLifetime = false,
+					//UseTokenLifetime = false,
 				}
 			);
 		}
@@ -102,9 +102,9 @@ namespace SustitucionMOA
 		}
 
 		/*
-         *  On each call to Azure AD B2C, check if a policy (e.g. the profile edit or password reset policy) has been specified in the OWIN context.
-         *  If so, use that policy when making the call. Also, don't request a code (since it won't be needed).
-         */
+		 *  On each call to Azure AD B2C, check if a policy (e.g. the profile edit or password reset policy) has been specified in the OWIN context.
+		 *  If so, use that policy when making the call. Also, don't request a code (since it won't be needed).
+		 */
 		private Task OnRedirectToIdentityProvider(RedirectToIdentityProviderNotification<OpenIdConnectMessage, OpenIdConnectAuthenticationOptions> notification)
 		{
 			var policy = notification.OwinContext.Get<string>("Policy");
@@ -121,8 +121,8 @@ namespace SustitucionMOA
 		}
 
 		/*
-         * Catch any failures received by the authentication middleware and handle appropriately
-         */
+		 * Catch any failures received by the authentication middleware and handle appropriately
+		 */
 		private Task OnAuthenticationFailed(AuthenticationFailedNotification<OpenIdConnectMessage, OpenIdConnectAuthenticationOptions> notification)
 		{
 			notification.HandleResponse();
@@ -148,8 +148,8 @@ namespace SustitucionMOA
 		}
 
 		/*
-         * Callback function when an authorization code is received
-         */
+		 * Callback function when an authorization code is received
+		 */
 		private async Task OnAuthorizationCodeReceived(AuthorizationCodeReceivedNotification notification)
 		{
 			try
@@ -193,6 +193,8 @@ namespace SustitucionMOA
 				notification.AddClaim(new Claim(Globals.ClaimsProveedorType, usuario.ObtenerCodigoProveedor()));
 				notification.AddClaim(new Claim(Globals.ClaimsProveedorId, usuario.ObtenerProveedor().Id.ToString()));
 				notification.AddClaim(new Claim(Globals.ClaimsSeccionesVisitadas, usuario.SeccionesVisitadas ?? ""));
+				notification.AddClaim(new Claim(Globals.ClaimsCuit, usuario.ObtenerProveedor().CUIT.ToString()));
+
 
 				string tipoGranos = usuario.TipoUsuario.NombreCorto == "CORR" ? "G" : usuario.TipoUsuario.NombreCorto;
 
@@ -211,9 +213,9 @@ namespace SustitucionMOA
 
 				if (usuario.EsAdmin() || 
 				   (permisosUsuario.Contains(SustitucionMOASecurity.Permiso.CONSULTAR_HOME) && permisosUsuario.Contains(SustitucionMOASecurity.Permiso.CONSULTAR_HOME_NG)))
-                {
+				{
 					tipoGranos = "A";
-                }
+				}
 
 				string tipoUsuario = usuario.TipoUsuario.NombreCorto == "CORR" || usuario.TipoUsuario.NombreCorto == "CLI" ? usuario.TipoUsuario.NombreCorto : "PROV";
 
@@ -222,15 +224,15 @@ namespace SustitucionMOA
 				notification.AddClaim(new Claim(Globals.ClaimsEsNuevoUsuarioType, usuario.EsNuevoUsuario().ToString()));
 				notification.AddClaim(new Claim(Globals.ClaimsTipoUsuarioType, tipoUsuario));
 
-                if (usuario.EstaHabilitado())
+				if (usuario.EstaHabilitado())
 				{
 					foreach (var permiso in permisosUsuario)
 					{
 						notification.AddClaim(new Claim(Globals.ClaimsPermisosType, permiso));
 					}
 				}
-                else
-                {
+				else
+				{
 					notification.AddClaim(new Claim(Globals.ClaimsPermisosType, "ESTADO SOLICITUD"));
 					notification.AddClaim(new Claim(Globals.ClaimsPermisosType, "CONTACTO MAIL"));
 				}

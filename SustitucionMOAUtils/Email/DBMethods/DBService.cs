@@ -13,10 +13,11 @@ using SustitucionMOAModel.Models.DBMap.Pesada.Detalle;
 using SustitucionMOAModel.Models.DBMap.RYD;
 using SustitucionMOAModel.Models.DBMap.RYD.CargaPesada;
 using SustitucionMOAUtils.Credentials;
+using SustitucionMOAUtils.Interfaces;
 
 namespace SustitucionMOAUtils.DBMethods
 {
-    public class DBService
+    public class DBService : IDBService
     {
         private string DatabaseConnectionString = DBCredential.getConnectionString();
 

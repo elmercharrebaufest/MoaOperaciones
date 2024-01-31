@@ -12,6 +12,8 @@
 	
 [OtroComprobanteNo] NVARCHAR(MAX) NULL, 
     [Material_Id] INT NULL, 
+    [Orden_Id] INT NULL, 
+    [PatenteChasis] VARCHAR(15) NULL, 
     CONSTRAINT [PK_dbo.ConsultaDetalle] PRIMARY KEY CLUSTERED 
 (
 	[Id] ASC

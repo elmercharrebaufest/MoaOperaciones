@@ -25,7 +25,7 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                return JsonCustom(_fleteService.getViajesPendientes(SessionPersister.Proveedor, fechaInicio, fechaFin));
+                return JsonCustom(_fleteService.ObtenerViajesPendientes(SessionPersister.Proveedor, fechaInicio, fechaFin));
             }
             catch (InfoCustomException e)
             {
@@ -52,7 +52,7 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                return JsonCustom(_fleteService.downloadViajesPendientes(SessionPersister.Proveedor, fechaInicio, fechaFin));
+                return JsonCustom(_fleteService.DescargarViajesPendientes(SessionPersister.Proveedor, fechaInicio, fechaFin));
             }
             catch (InfoCustomException e)
             {
@@ -79,7 +79,7 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                return JsonCustom(_fleteService.getViajesAFacturar(SessionPersister.Proveedor, fechaInicio, fechaFin));
+                return JsonCustom(_fleteService.ObtenerViajesAFacturar(SessionPersister.Proveedor, fechaInicio, fechaFin));
             }
             catch (InfoCustomException e)
             {
@@ -106,7 +106,7 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                return JsonCustom(_fleteService.downloadViajesAFacturar(SessionPersister.Proveedor, fechaInicio, fechaFin));
+                return JsonCustom(_fleteService.DescargarViajesAFacturar(SessionPersister.Proveedor, fechaInicio, fechaFin));
             }
             catch (InfoCustomException e)
             {
@@ -133,7 +133,7 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                return JsonCustom(_fleteService.getViajesFacturados(SessionPersister.Proveedor, fechaInicio, fechaFin));
+                return JsonCustom(_fleteService.ObtenerViajesFacturados(SessionPersister.Proveedor, fechaInicio, fechaFin));
             }
             catch (InfoCustomException e)
             {
@@ -160,7 +160,7 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                return JsonCustom(_fleteService.downloadViajesFacturados(SessionPersister.Proveedor, fechaInicio, fechaFin));
+                return JsonCustom(_fleteService.DescargarViajesFacturados(SessionPersister.Proveedor, fechaInicio, fechaFin));
             }
             catch (InfoCustomException e)
             {
@@ -187,7 +187,7 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                return JsonCustom(_fleteService.exportarPDFAFacturar(SessionPersister.Proveedor, fechaInicio, fechaFin, proforma));
+                return JsonCustom(_fleteService.ExportarPDFAFacturar(SessionPersister.Proveedor, fechaInicio, fechaFin, proforma));
             }
             catch (InfoCustomException e)
             {
@@ -214,7 +214,7 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                return JsonCustom(_fleteService.exportarPDFFacturado(SessionPersister.Proveedor, fechaInicio, fechaFin, proforma));
+                return JsonCustom(_fleteService.ExportarPDFFacturado(SessionPersister.Proveedor, fechaInicio, fechaFin, proforma));
             }
             catch (InfoCustomException e)
             {
@@ -241,7 +241,7 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                return JsonCustom(_fleteService.validarImporte(importe, proforma, SessionPersister.Proveedor));
+                return JsonCustom(_fleteService.ValidarImporte(importe, proforma, SessionPersister.Proveedor));
             }
             catch (InfoCustomException e)
             {
@@ -289,7 +289,7 @@ namespace SustitucionMOA.Controllers
                 catch { throw new ValidationCustomException(InfoMsg.NoPDF); }
                 var viajeAgrupado = JsonConvert.DeserializeObject<ViajeAgrupado>(proforma);
 
-                return Json(_fleteService.getRelacion(viajeAgrupado.factura, viajeAgrupado.fechaEmision, viajeAgrupado.totalImporte, pdfBytes, file.FileName, viajeAgrupado.proforma, SessionPersister.Proveedor), JsonRequestBehavior.AllowGet);
+                return Json(_fleteService.ObtenerRelacion(viajeAgrupado.factura, viajeAgrupado.fechaEmision, viajeAgrupado.totalImporte, pdfBytes, file.FileName, viajeAgrupado.proforma, SessionPersister.Proveedor), JsonRequestBehavior.AllowGet);
             }
             catch (InfoCustomException e)
             {

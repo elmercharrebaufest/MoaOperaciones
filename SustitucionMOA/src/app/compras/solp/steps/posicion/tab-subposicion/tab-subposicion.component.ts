@@ -66,8 +66,8 @@ export class TabSubposicionComponent extends ListBaseComponent {
     //variable para verificar si la posicion no fue dada de alta con los datos minimos
     posicionInvalida: boolean = false;
 
-    mensajesEncabezado: Message[] = [];    
-  
+    mensajesEncabezado: Message[] = [];
+
     // array de columnas en la grilla
     // se utiliza esta array para luego cargar las posiciones dinamicamente segun la informacion del clipboard
     columnasGrilla: any = [
@@ -105,6 +105,7 @@ export class TabSubposicionComponent extends ListBaseComponent {
     }
 
     validarErrorCustom(subposicion: any, valor: any, campoAValidar: string) {
+        if (valor == null || valor == undefined) { valor = ""; }
         return ((this.camposObligatorios.find(x => x.campo == campoAValidar).esObligatorio) && valor.toString().length == 0);
     }
 
@@ -258,7 +259,7 @@ export class TabSubposicionComponent extends ListBaseComponent {
 
     eliminarSubPosicionIndividual(indice: number): void {
         this.confirmationService.confirm({
-            message: '¿Está seguro que desea eliminar la subposición?',
+            message: '¿Está seguro de que desea eliminar la subposición?',
             accept: () => {
                 this.eliminarSubposiciones(indice);
             },
@@ -270,7 +271,7 @@ export class TabSubposicionComponent extends ListBaseComponent {
 
     eliminarSubPosicion() {
         this.confirmationService.confirm({
-            message: '¿Está seguro que desea eliminar todas las subposiciones?',
+            message: '¿Está seguro de que desea eliminar todas las subposiciones?',
             accept: () => {
                 this.eliminarSubposiciones();
             },
@@ -475,7 +476,13 @@ export class TabSubposicionComponent extends ListBaseComponent {
 
     autocompleteSap(event, tablaAFiltrar, soloDescripcion = false) {
         try {
-            this.subscription = this.service.autocompleteSap(tablaAFiltrar || this.tablaAFiltrar, event.query.toLowerCase()).subscribe(
+            let filter = tablaAFiltrar || this.tablaAFiltrar;
+            if (filter == 'OrdenSolpSap' && event.query.toLowerCase().length < 4) {
+                this.autocomplete = [];
+                return;
+            }
+
+            this.subscription = this.service.autocompleteSap(filter, event.query.toLowerCase()).subscribe(
                 (result: any) => {
                     if (result.logout == true) {
                         this.sessionDataService.logout();
@@ -503,6 +510,32 @@ export class TabSubposicionComponent extends ListBaseComponent {
     autocompleteServicioSolp(event) {
         try {
             this.subscription = this.service.autocompleteServicioSolp(event.query.toLowerCase()).subscribe(
+                (result: any) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.floatMsgService.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.floatMsgService.setInfoMsg(result.info);
+                    } else {
+                        this.autocompleteServiciosSolp = result;
+                    }
+                },
+                error => {
+                    this.floatMsgService.setErrorMsg(error.message);
+                    this.spinnerComponent.hideIt();
+                });
+        } catch (e) {
+            this.floatMsgService.setErrorMsg(e);
+            return false; //<-- Prevent Refresh
+        }
+
+        return false; //<-- Prevent Refresh
+    }
+
+    autocompleteCodigoServicioSolp(event) {
+        try {
+            this.subscription = this.service.autocompleteCodigoServicioSolp(event.query.toLowerCase()).subscribe(
                 (result: any) => {
                     if (result.logout == true) {
                         this.sessionDataService.logout();
@@ -584,12 +617,33 @@ export class TabSubposicionComponent extends ListBaseComponent {
     public get monedaPosicion(): string {
 
         let codigoMoneda = '';
-        
+
         if (this.posicion.monedaSeleccionada) {
             codigoMoneda = this.posicion.monedaSeleccionada.Codigo;
         }
-        return  codigoMoneda;
+        return codigoMoneda;
 
+    }
+
+    clearCode(posicion: SubPosicionViewModel) {
+        if (posicion.tareaSubcontratar != null) {
+            posicion.codigoServicio = null;
+        }
+    }
+
+    clearCode2(posicion: SubPosicionViewModel) {
+        if (posicion.codigoServicio != null) {
+            posicion.tareaSubcontratarObj = null;
+            posicion.tareaSubcontratar = null;
+
+        }
+    }
+
+    checkCode(posicion: SubPosicionViewModel) {
+        if (posicion.codigoServicio == '' || posicion.codigoServicio == null) {
+            posicion.tareaSubcontratarObj = null;
+
+        }
     }
 
 }

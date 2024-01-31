@@ -1,43 +1,114 @@
 import { Injectable } from '@angular/core';
 import { HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { BaseService } from '../common/services/BaseService';
 import { Solp } from './solp/solp';
 import { EmailComposeModel } from '../common/email-compose/email-compose.model';
+import { SolpPosicion } from './solp/solp-posicion';
+import { AltaNuevoProveedor, EnvioSolpCompra, SolpCompraDto } from './solp-compra';
+import { CircularDto } from '../modelos/circular-model';
+import { PeticionDeOfertaCierreDto, PeticionDeOfertaDto, PeticionDeOfertaRevisionTecnicaDto, PeticionDeOfertaUsarioDto } from '../modelos/peticion-de-oferta-model';
+import { AdjudicacionDto } from '../modelos/adjudicacion';
+import { OrdenDeCompraSap } from '../modelos/ordenDeCompraSap';
+import { RegistroInfoDto } from '../modelos/registro-info';
+import { PeticionVisualizacionPrecioDto } from '../modelos/peticion-visualizar-precio-dto';
+import { ChatInternoComprasDto } from './chat-interno/chat-interno.interface';
 
-@Injectable()
+@Injectable({
+    providedIn: 'root'
+})
 export class ComprasService extends BaseService {
 
-    Date: Date
+    Date: Date;
+    filtros = {
+        pagina: 1,
+        itemsPorPagina: 10,
+        orden: "",
+        columna: "Id",
+        nroSolp: "",
+        nroPo: "",
+        nombrePedido: "",
+        fechaDesde: null,
+        fechaHasta: null,
+        estados: "",
+        sap: true,
+        mantenimiento: true,
+        web: true,
+        repoAutomatica: true,
+        usuarioId: null,
+        centros: "",
+        grupoDeCompras: "",
+        estadoLicitacion: null,
+        estadoCotizacion: null
+    }
+    listaSolp: any;
+    observableListaSolp = new Subject<any[]>();
+    observableListaPO = new Subject<any[]>();
+
 
     public getCombos(): Observable<any> {
-        return this.http
-            .get('/api/compras/Combos', { headers: this.headers });
+        return this.http.get('/api/compras/Combos', { headers: this.headers });
     }
 
-    public getListarSolp(): Observable<any> {
-        return this.http
-            .get('/api/compras/ListarSolp', { headers: this.headers });
+    public obtenerUltimaSolp(): Observable<any> {
+        return this.http.get('/api/compras/ObtenerUltimaSolp', { headers: this.headers });
+    }
+
+    public getListarSolp(pagina: number,
+        itemsPorPagina: number,
+        orden: string = this.filtros.orden,
+        columna: string = this.filtros.columna,
+        nroSolp: string = this.filtros.nroSolp,
+        fechaDesde: any = this.filtros.fechaDesde,
+        fechaHasta: any = this.filtros.fechaHasta,
+        sap: boolean = this.filtros.sap,
+        mantenimiento: boolean = this.filtros.mantenimiento,
+        web: boolean = this.filtros.web,
+        repoAutomatica: boolean = this.filtros.repoAutomatica,
+        estados: any = this.filtros.estados,
+        usuarios: any = this.filtros.usuarioId): Observable<any> {
+        let params: HttpParams = new HttpParams();
+        pagina = pagina != null ? pagina : this.filtros.pagina;
+        itemsPorPagina = itemsPorPagina != null ? itemsPorPagina : this.filtros.itemsPorPagina;
+        columna = columna != "" ? columna : this.filtros.columna;
+        params = params.set('pagina', pagina.toString());
+        params = params.set('itemsPorPagina', itemsPorPagina.toString());
+        params = params.set('orden', orden);
+        params = params.set('columna', columna);
+        params = params.set('nroSolp', nroSolp);
+        params = params.set('fechaDesde', (fechaDesde != null ? fechaDesde : ""));
+        params = params.set('fechaHasta', (fechaHasta != null ? fechaHasta : ""));
+        params = params.set('sap', sap.toString());
+        params = params.set('mantenimiento', mantenimiento.toString());
+        params = params.set('web', web.toString());
+        params = params.set('repoAutomatica', repoAutomatica.toString());
+        params = params.set('estados', estados);
+        params = params.set('usuarios', usuarios);
+        return this.http.get('/api/compras/ListarSolp', { params: params, headers: this.headers });
     }
 
     public borrarSolp(idSolp: number): Observable<any> {
         let params: HttpParams = new HttpParams();
         params = params.set('idSolp', idSolp.toString());
 
-        return this.http
-            .get('/api/compras/BorrarSolp', { params: params, headers: this.headers });
+        return this.http.get('/api/compras/BorrarSolp', { params: params, headers: this.headers });
     }
 
     public traerSolpId(idSolp: number): Observable<any> {
         let params: HttpParams = new HttpParams();
         params = params.set('idSolp', idSolp.toString());
-        return this.http
-            .get('/api/compras/TraerSolpId', { params: params, headers: this.headers });
+        return this.http.get('/api/compras/TraerSolpId', { params: params, headers: this.headers });
     }
 
     getPdf(idSolp): Observable<any> {
         return this.http
             .get("/api/compras/GenerarSolpPdf?idSolp=" + idSolp.toString(), {
+                headers: this.headers,
+            });
+    }
+    getPdfPeticionDeOfertaUsuario(idPeticionDeOfertaUsuario): Observable<any> {
+        return this.http
+            .get("/api/compras/GenerarPeticionDeOfertaUsuarioPdf?idPeticionDeOfertaUsuario=" + idPeticionDeOfertaUsuario.toString(), {
                 headers: this.headers,
             });
     }
@@ -69,6 +140,8 @@ export class ComprasService extends BaseService {
             TieneMedioElevacion: solp.modoElevacion,
             TieneAndamio: solp.andamio, // Agregada
             TieneTecnicoSeguridad: solp.tecnicoSeguridad,
+            TieneGrillaPersonal: solp.grillaPersonal,
+            TieneFabricacionTallerExterno: solp.fabricacionTallerExterno,
             TieneDescripcionTecnica: solp.descripcionTecnica,
             TieneDocumentacionTecnica: solp.entregaDocumentacion,
             FechaHoraLimiteConsulta: this.getFechaHora(solp.fechaLimiteFecha, solp.fechaLimiteHora),
@@ -80,7 +153,7 @@ export class ComprasService extends BaseService {
             UsuarioCompras: {
                 Id: solp.usuarioComprasId
             },
-            Adjuntos:   solp.especificacionesViewModel.archivosEspecificaciones.map(x => { return { Id: x.id } })
+            Adjuntos: solp.especificacionesViewModel.archivosEspecificaciones.map(x => { return { Id: x.id } })
                 .concat(solp.archivosCotizaciones.map(x => { return { Id: x.id } })),
 
             DiasEjecucion: solp.ejecucion,
@@ -88,11 +161,17 @@ export class ComprasService extends BaseService {
             JornadaLaboralDesde: solp.comienzoJornadaLaboral,
             JornadaLaboralHasta: solp.terminoJornadaLaboral,
             ObservacionesCotizacion: solp.observacionesCotizacion,
+            ProveedorAsignadoId: solp.proveedorAsignado_Id,
+            TrabajoYaHecho: solp.trabajoHecho,
+            Adicional: solp.adicional,
+            Urgencia: solp.urgencia,
+            NroOrdenDeCompraAdicional: solp.ordenDeCompra,
             RevisadoPor: solp.revisadoPor,
             ClaseDocumento: this.getObjetoCodigo(solp.selectClaseDocumento && solp.selectClaseDocumento.Codigo),
             Finalizar: solp.Finalizar,
+            LiberadoresSapSolp: solp.liberadoresSap,
             Posiciones: solp.posiciones.map(x => {
-                
+
                 return {
                     Codigo: x.id,
                     PlazoEntrega: x.plazoDeEntrega,
@@ -117,8 +196,8 @@ export class ComprasService extends BaseService {
                     Indice: x.numeroPosicion,
                     ProveedorFijo: x.provedorFijo,
                     NombreProveedor: x.nombreProveedor,
-                    NumeroContratoSuperior: x.noContrato,
-                    NumeroPosicionContratoSuperior: x.noPosicionContrato,
+                    NumeroContratoSuperior: x.numeroContratoSuperior,
+                    NumeroPosicionContratoSuperior: x.numeroPosicionContratoSuperior,
                     OrganizacionCompras: x.orgCompras,
                     TextoSuministro: x.textoSuministro,
                     Motivo: x.motivo,
@@ -173,7 +252,7 @@ export class ComprasService extends BaseService {
             for (let i = 0; i < archivos.length; i++) {
                 let fileToUpload = archivos[i];
                 payload.append("fileEspecificaciones", fileToUpload, fileToUpload.name);
-              
+
             }
         }
 
@@ -190,7 +269,7 @@ export class ComprasService extends BaseService {
             .post<Solp>('/api/compras/GuardarSolp', payload, { headers: this.headers });
     }
 
-    public ListarFuenteAprovisionamiento(fecha: string, noMaterial: string, centro: string) : Observable<any> {
+    public ListarFuenteAprovisionamiento(fecha: string, noMaterial: string, centro: string): Observable<any> {
         let params: HttpParams = new HttpParams();
         params = params.set('fechaEntregaPosicion', fecha);
         params = params.set('numeroMaterial', noMaterial);
@@ -199,7 +278,7 @@ export class ComprasService extends BaseService {
             .get('/api/compras/ListarFuenteAprovisionamiento', { params: params, headers: this.headers });
     }
 
-    public ObtenerContratoMarco(noContrato: string, centro: string) : Observable<any> {
+    public ObtenerContratoMarco(noContrato: string, centro: string): Observable<any> {
 
         let params: HttpParams = new HttpParams();
         params = params.set('numeroContrato', noContrato)
@@ -211,11 +290,12 @@ export class ComprasService extends BaseService {
 
     getFechaHora(fecha: Date, hora: Date) {
         let fechaHora = new Date(fecha);
-        fechaHora.setHours(hora.getHours());
-        fecha.setMinutes(hora.getMinutes());
-        fecha.setSeconds(hora.getSeconds());
 
+        fechaHora.setHours(hora.getHours());
+        fechaHora.setMinutes(hora.getMinutes());
+        fechaHora.setSeconds(hora.getSeconds());
         return fechaHora;
+
     }
 
     // getCodigosProveedores(electrico, consultoria, civil, ingenieria, mecanico) {
@@ -237,7 +317,7 @@ export class ComprasService extends BaseService {
         return [];
     }
 
-    getObjetoCodigo(codigo, tabla = null) {
+    getObjetoCodigo(codigo, tabla = null, Id = null) {
         if (codigo) {
             if (tabla) {
                 return { Codigo: codigo, Tabla: tabla }
@@ -284,6 +364,14 @@ export class ComprasService extends BaseService {
             .get<any[]>("/api/compras/AutocompleteServicioSolp", { params: params })
     }
 
+    autocompleteCodigoServicioSolp(valor: string) {
+        let params: HttpParams = new HttpParams()
+            .append('valor', valor)
+
+        return this.http
+            .get<any[]>("/api/compras/AutocompleteCodigoServicioSolp", { params: params })
+    }
+
     autocompleteMaterialSolp(valor: string, centroId: number) {
         let params: HttpParams = new HttpParams()
             .append('valor', valor)
@@ -291,6 +379,25 @@ export class ComprasService extends BaseService {
 
         return this.http
             .get<any[]>("/api/compras/AutocompleteMaterialSolp", { params: params })
+    }
+
+    autocompleteCodigoMaterialSolp(valor: string, centroId: number) {
+        let params: HttpParams = new HttpParams()
+            .append('valor', valor)
+            .append('centroId', centroId.toString());
+
+        return this.http
+            .get<any[]>("/api/compras/AutocompleteCodigoMaterialSolp", { params: params })
+    }
+
+    autocompleteMaterialRFC(posicion: SolpPosicion) {
+        let params: HttpParams = new HttpParams()
+            .append('material', posicion.tareaSubcontratarObj.Codigo)
+            .append('centro', posicion.selectCentroEntrega.Codigo)
+            .append('grupoDeCompras', posicion.tareaSubcontratarObj.GrupoCompras.Codigo);
+
+        return this.http
+            .get<any[]>("/api/compras/AutocompleteMaterialRFC", { params: params })
     }
 
     obtenerDatosPorCodigosSap(codigos: any[]) {
@@ -322,5 +429,576 @@ export class ComprasService extends BaseService {
         payload.append('emailCompose', JSON.stringify(emailCompose));
         return this.http
             .post<any>('/api/compras/EnviarEmail', payload, { headers: this.headersPost });
+    }
+
+    obtenerContratoMarco(centro: string, numeroContrato: string): Observable<any> {
+        let params: HttpParams = new HttpParams()
+            .append('numeroContrato', numeroContrato)
+            .append('centro', centro);
+
+        return this.http
+            .get("/api/compras/ObtenerContratoMarco", { params: params })
+    }
+
+    public getListarSolpCompras(pagina: number,
+        itemsPorPagina: number,
+        orden: string = this.filtros.orden,
+        columna: string = this.filtros.columna,
+        nroSolp: string = this.filtros.nroSolp,
+        estados: any = this.filtros.estados,
+        usuarios: any = this.filtros.usuarioId,
+        centros: any = this.filtros.centros,
+        grupoDeCompras: any = this.filtros.grupoDeCompras,
+        fechaDesde: any = this.filtros.fechaDesde,
+        fechaHasta: any = this.filtros.fechaHasta,
+        sap: boolean = this.filtros.sap,
+        mantenimiento: boolean = this.filtros.mantenimiento,
+        web: boolean = this.filtros.web,
+        repoAutomatica: boolean = this.filtros.repoAutomatica) {
+        let params: HttpParams = new HttpParams()
+        pagina = pagina != null ? pagina : this.filtros.pagina;
+        itemsPorPagina = itemsPorPagina != null ? itemsPorPagina : this.filtros.itemsPorPagina;
+        columna = columna != "" ? columna : this.filtros.columna;
+        params = params.set('pagina', pagina.toString());
+        params = params.set('itemsPorPagina', itemsPorPagina.toString());
+        params = params.set('orden', orden);
+        params = params.set('columna', columna);
+        params = params.set('nroSolp', nroSolp);
+        params = params.set('estados', estados);
+        params = params.set('usuarios', usuarios);
+        params = params.set('centros', centros);
+        params = params.set('grupoDeCompras', grupoDeCompras);
+        params = params.set('fechaDesde', (fechaDesde != null ? fechaDesde : ""));
+        params = params.set('fechaHasta', (fechaHasta != null ? fechaHasta : ""));
+        params = params.set('sap', sap.toString());
+        params = params.set('mantenimiento', mantenimiento.toString());
+        params = params.set('web', web.toString());
+        params = params.set('repoAutomatica', repoAutomatica.toString());
+        return this.http
+            .get<any[]>('/api/compras/ListarSolpComprador', { params: params, headers: this.headers }).subscribe(
+                (data: any[]) => {
+                    this.observableListaSolp.next(data)
+                }
+            );
+    }
+
+    public getListarPOProveedor(pagina: number,
+        itemsPorPagina: number,
+        orden: string = this.filtros.orden,
+        columna: string = this.filtros.columna,
+        nroSolp: string = this.filtros.nroSolp,
+        nroPo: string = this.filtros.nroPo,
+        nombrePedido: string = this.filtros.nombrePedido,
+        estadoLicitacion: number | null = this.filtros.estadoLicitacion,
+        estadoCotizacion: number | null = this.filtros.estadoCotizacion,
+        fechaDesde: string = this.filtros.fechaDesde,
+        fechaHasta: string | null = this.filtros.fechaHasta
+    ) {
+        let params: HttpParams = new HttpParams()
+        pagina = pagina != null ? pagina : this.filtros.pagina;
+        itemsPorPagina = itemsPorPagina != null ? itemsPorPagina : this.filtros.itemsPorPagina;
+        columna = columna != "" ? columna : this.filtros.columna;
+        params = params.set('pagina', pagina.toString());
+        params = params.set('itemsPorPagina', itemsPorPagina.toString());
+        params = params.set('orden', orden);
+        params = params.set('columna', columna);
+        params = params.set('nroSolp', nroSolp);
+        params = params.set('nroPo', nroPo);
+        params = params.set('nombrePedido', nombrePedido);
+        params = params.set('estadoLicitacion', estadoLicitacion != null ? estadoLicitacion.toString() : null);
+        params = params.set('estadoCotizacion', estadoCotizacion != null ? estadoCotizacion.toString() : null);
+        params = params.set('fechaDesde', (fechaDesde != null ? fechaDesde : ""));
+        params = params.set('fechaHasta', (fechaHasta != null ? fechaHasta : ""));
+        return this.http
+            .get<any[]>('/api/compras/ListarPOProveedor', { params: params, headers: this.headers }).subscribe(
+                (data: any[]) => {
+                    this.observableListaPO.next(data)
+                }
+            );
+    }
+
+    public getListarOfertasComprador(peticionOferta_Id): Observable<any> {
+        let params: HttpParams = new HttpParams()
+        params = params.set('peticionOferta_Id', peticionOferta_Id);
+        return this.http
+            .get<any[]>('/api/compras/ListarOfertasComprador', { params: params, headers: this.headers });
+    }
+
+    listarContratosAsociar(posiciones: SolpPosicion[]): Observable<any> {
+        var json = posiciones.filter(x => x.codigoServicio != null).map(x => {
+            return {
+                FechaEntregaServicio: x.fechaEntregaServicio,
+                Centro: { Id: x.selectCentroEntrega.Id, Codigo: x.selectCentroEntrega.Codigo },
+                Indice: x.numeroPosicion,
+                ProveedorFijo: x.provedorFijo,
+                NumeroContratoSuperior: x.numeroContratoSuperior,
+                CodigoMaterialSap: this.getObjetoCodigo(x.codigoServicio && x.codigoServicio.Codigo),
+                Tarea: x.tareaSubcontratar,
+
+            }
+        });
+
+        var solpJson = JSON.stringify(json);
+        var payload = new FormData();
+        payload.append('solpJson', solpJson);
+        return this.http
+            .post("/api/compras/ListarAsociarContrato", payload, { headers: this.headers });
+    }
+
+    public obtenerSolpCompras(id: number) {
+        let params: HttpParams = new HttpParams()
+        params = params.set('id', id.toString());
+        return this.http
+            .get<SolpCompraDto>('/api/compras/ObtenerSolpCompras', { params: params, headers: this.headers })
+
+    }
+
+    public GrabarPeticion(solp: EnvioSolpCompra) {
+        let json = JSON.stringify({
+            SolpId: solp.SolpId,
+            PosIds: solp.PosIds,
+            UsuarioIds: solp.UsuarioIds,
+            Observacion: solp.Observacion,
+            Adjuntos: solp.Adjuntos,
+            AdjuntoPliego: solp.AdjuntoPliego
+        });
+
+        var payload = new FormData();
+        var archivos = solp.Adjuntos;
+        if (archivos != null) {
+            for (let i = 0; i < archivos.length; i++) {
+                let fileToUpload = archivos[i];
+                try {
+                    payload.append("filePeticionDeOferta", fileToUpload as File, fileToUpload.name);
+                } catch (e) {
+
+                    console.log(e);
+                }
+            }
+        }
+
+        payload.append('json', json);
+
+        return this.http
+            .post<any>('/api/compras/GrabarPeticionDeOferta', payload, { headers: this.headers });
+    }
+
+    public listarProveedores(filtro: string) {
+        let params: HttpParams = new HttpParams()
+        params = params.set('filtro', filtro);
+        return this.http
+            .get<SolpCompraDto>('/api/compras/ListarProveedores', { params: params, headers: this.headers })
+    }
+
+    verLegajo(idPeticionDeOferta: number, idPeticionDeOfertaUsuario: number): Observable<any> {
+        let params: HttpParams = new HttpParams();
+        params = params.set("peticionDeOfertaId", idPeticionDeOferta.toString());
+        if (idPeticionDeOfertaUsuario != null) {
+            params = params.set("idPeticionDeOfertaUsuario", idPeticionDeOfertaUsuario.toString());
+        }
+        return this.http
+            .get("/api/compras/ObtenerLegajo", {
+                params: params,
+                headers: this.headers,
+            });
+    }
+
+    verLegajoParaExternos(adjudicacionId: string, token: string): Observable<any> {
+        let params: HttpParams = new HttpParams();
+        params = params.set("adjudicacionId", adjudicacionId);
+        params = params.set("token", token);
+        return this.http
+            .get("/api/compras/ObtenerLegajoParaExternos", {
+                params: params,
+                headers: this.headers,
+            });
+    }
+
+    descargarArchivo(idArchivo: number): Observable<any> {
+        let params: HttpParams = new HttpParams();
+        params = params.set("idArchivo", idArchivo.toString());
+
+        return this.http
+            .get("/api/compras/DescargarArchivo", {
+                params: params,
+                headers: this.headers,
+            });
+    }
+
+    adjuntarArchivoLegajo(idPeticion: number, files: any): Observable<any> {
+        var payload = new FormData();
+
+        for (let i = 0; i < files.length; i++) {
+            let fileToUpload = files[i];
+            payload.append("files", fileToUpload, fileToUpload.name);
+        }
+
+
+        payload.append('idPeticion', idPeticion.toString());
+
+        return this.http
+            .post<Solp>('/api/compras/GuardarAdjuntosPeticionDeOferta', payload, { headers: this.headers });
+
+    }
+
+    descargarLegajo(idPeticion: number, idPeticionDeOfertaUsuario: number): Observable<any> {
+        let params: HttpParams = new HttpParams();
+        params = params.set("idPeticion", idPeticion.toString());
+        if (idPeticionDeOfertaUsuario != null) {
+            params = params.set("idPeticionDeOfertaUsuario", idPeticionDeOfertaUsuario.toString());
+        }
+        return this.http
+            .get("/api/compras/DescargarLegajo", {
+                params: params,
+                headers: this.headers,
+            });
+    }
+
+    public GrabarCircular(circular: CircularDto) {
+        let json = JSON.stringify({
+            UsuarioIds: circular.UsuarioIds,
+            Observacion: circular.Observacion,
+            Adjuntos: circular.Adjuntos,
+            PlazoDeOferta: circular.PlazoDeOfertaHora == null ? circular.PlazoDeOfertaFecha : this.getFechaHora(circular.PlazoDeOfertaFecha, circular.PlazoDeOfertaHora),
+            FechaEntrega: circular.FechaEntrega,
+            RequiereCambioDeFecha: circular.RequiereCambioDeFecha,
+            PeticionDeOferta_Id: circular.PeticionDeOferta_Id,
+        });
+
+        var payload = new FormData();
+        var archivos = circular.Adjuntos;
+        if (archivos != null) {
+            for (let i = 0; i < archivos.length; i++) {
+                let fileToUpload = archivos[i];
+                try {
+                    payload.append("fileCircular", fileToUpload as File, fileToUpload.name);
+                } catch (e) {
+
+                    console.log(e);
+                }
+            }
+        }
+
+        payload.append('json', json);
+
+        return this.http
+            .post<any>('/api/compras/GrabarCircular', payload, { headers: this.headers });
+    }
+
+    obtenerPeticionDeOferta(idPeticionDeOferta: number): Observable<any> {
+        let params: HttpParams = new HttpParams();
+        params = params.set("peticionDeOfertaId", idPeticionDeOferta.toString());
+        return this.http
+            .get("/api/compras/ObtenerPeticionDeOferta", {
+                params: params,
+                headers: this.headers,
+            });
+    }
+
+    public GrabarProveedorEnPeticion(usuariosId, peticion) {
+        let json = JSON.stringify({
+            UsuarioIds: usuariosId,
+            Id: peticion
+
+        });
+        var payload = new FormData();
+        payload.append('json', json);
+
+        return this.http
+            .post<any>('/api/compras/GrabarProveedorEnPeticion', payload, { headers: this.headers });
+    }
+
+    DescargarAdjuntosCotizacion(cotizacionId: number, desdeRevisionTecnica: boolean): Observable<any> {
+        let params: HttpParams = new HttpParams();
+        params = params.set("cotizacionId", cotizacionId.toString());
+        params = params.set("desdeRevisionTecnica", desdeRevisionTecnica.toString());
+
+        return this.http
+            .get("/api/compras/DescargarAdjuntosCotizacion", {
+                params: params,
+                headers: this.headers,
+            });
+    }
+
+    public grabarRevisionTecnica(peticiones: PeticionDeOfertaUsarioDto[], finalizar: boolean, revisionTecnica: PeticionDeOfertaRevisionTecnicaDto) {
+        let json = JSON.stringify(peticiones);
+        let jsonRevision = JSON.stringify(revisionTecnica);
+
+        var payload = new FormData();
+        payload.append('json', json);
+        payload.append('finalizar', finalizar.toString());
+        payload.append('jsonRevision', jsonRevision);
+
+        return this.http
+            .post<any>('/api/compras/GrabarRevisionTecnica', payload, { headers: this.headers });
+    }
+
+    public obtenerCotizacion(id: number) {
+        let params: HttpParams = new HttpParams()
+        params = params.set('peticionDeOfertaId', id.toString());
+        return this.http
+            .get<PeticionDeOfertaDto>('/api/compras/ObtenerCotizacion', { params: params, headers: this.headers })
+
+    }
+
+    public GrabarCotizacion(cotizacion: any, esFinalizado: boolean) {
+        let json = JSON.stringify({
+            CotizacionId: cotizacion.CotizacionId,
+            PeticionOfertaUsuarioId: cotizacion.PeticionOfertaUsuarioId,
+            CotizacionPosiciones: cotizacion.CotizacionPosiciones,
+            ObservacionEconomica: cotizacion.ObservacionEconomica,
+            ObservacionTecnica: cotizacion.ObservacionTecnica,
+            ArchivosNuevos: cotizacion.ArchivosNuevos,
+            ArchivosGuardados: cotizacion.ArchivosGuardados,
+            EsFinalizado: esFinalizado,
+            RespetaServicios: cotizacion.RespetaServicios,
+            RespetaMateriales: cotizacion.RespetaMateriales,
+            CotizacionesHoras: cotizacion.CotizacionesHoras,
+            CotizacionSubposiciones: cotizacion.CotizacionSubposiciones,
+            PorcentajeDeHoras: cotizacion.PorcentajeDeHoras
+        });
+
+        var payload = new FormData();
+        var archivos = cotizacion.ArchivosNuevos;
+        if (archivos != null) {
+            for (let i = 0; i < archivos.length; i++) {
+                let fileToUpload = archivos[i];
+                try {
+                    payload.append("fileCotizacionRevisionEconomica", fileToUpload as File, fileToUpload.name);
+                } catch (e) {
+
+                    console.log(e);
+                }
+            }
+        }
+
+        var archiTecnico = cotizacion.ArchivosTecnico;
+
+        if (archiTecnico != null) {
+            for (let i = 0; i < archiTecnico.length; i++) {
+                let fileToUpload = archiTecnico[i];
+                try {
+                    payload.append("fileCotizacionRevisionTecnica", fileToUpload as File, fileToUpload.name);
+                } catch (e) {
+
+                    console.log(e);
+                }
+            }
+        }
+
+
+        payload.append('json', json);
+
+        return this.http
+            .post<any>('/api/compras/GrabarCotizacion', payload, { headers: this.headers });
+    }
+
+    public obtenerPrecioTotalPosicionProveedor(cotizacion: any) {
+        let json = JSON.stringify({
+            CotizacionId: cotizacion.CotizacionId,
+            PeticionOfertaUsuarioId: cotizacion.PeticionOfertaUsuarioId,
+            CotizacionPosiciones: cotizacion.CotizacionPosiciones,
+            CotizacionesHoras: cotizacion.CotizacionesHoras,
+            CotizacionSubposiciones: cotizacion.CotizacionSubposiciones
+        });
+
+        var payload = new FormData();
+        payload.append('json', json);
+
+        return this.http
+            .post<any>('/api/compras/ObtenerPrecioTotalPosicionProveedor', payload, { headers: this.headers });
+    }
+
+    public GrabarAdjudicacion(adjudicacion: AdjudicacionDto) {
+        let json = JSON.stringify({
+            Cotizacion_Id: adjudicacion.Cotizacion_Id,
+            AdjudicacionPosiciones: adjudicacion.AdjudicacionPosiciones,
+            Solp_Id: adjudicacion.Solp_Id,
+            TextoDeCabecera: adjudicacion.TextoDeCabecera,
+            CondicionesDeEntrega: adjudicacion.CondicionesDeEntrega,
+            CondicionesDePago: adjudicacion.CondicionesDePago,
+            Garantias: adjudicacion.Garantias,
+            EsMonedaProveedor: adjudicacion.EsMonedaProveedor,
+            Proveedor: adjudicacion.Proveedor,
+            RegionSap: adjudicacion.RegionSap
+        });
+
+        var payload = new FormData();
+        payload.append('json', json);
+
+        return this.http
+            .post<any>('/api/compras/CrearOrdenDeCompra', payload, { headers: this.headers });
+    }
+
+    public listarAdjudicaciones(id: number): Observable<any> {
+        let params: HttpParams = new HttpParams();
+        params = params.set("solpId", id.toString());
+        return this.http
+            .get("/api/compras/ListarAdjudicaciones", {
+                params: params,
+                headers: this.headers,
+            });
+    }
+
+    public obtenerAdjudicacion(nroOC: number): Observable<any> {
+        let params: HttpParams = new HttpParams();
+        params = params.set("nroOC", nroOC.toString());
+        return this.http
+            .get("/api/compras/ObtenerAdjudicacion", {
+                params: params,
+                headers: this.headers,
+            });
+    }
+
+    public obtenerOrdenDeCompra(nroOC: string): Observable<any> {
+        let params: HttpParams = new HttpParams();
+        params = params.set("nroOC", nroOC.toString());
+        return this.http
+            .get("/api/compras/ObtenerOrdenDeCompra", {
+                params: params,
+                headers: this.headers,
+            });
+    }
+
+    // public obtenerOrdenDeCompra(filtro: string) {
+    //     let params: HttpParams = new HttpParams()
+    //     params = params.set('filtro', filtro);
+    //     return this.http
+    //         .get<OrdenDeCompraSap>('/api/compras/ObtenerOrdenDeCompra', { params: params, headers: this.headers })
+    // }
+
+    public guardarAdjudicacionAutomatica(registrosInfo: RegistroInfoDto[]) {
+        let json = JSON.stringify(registrosInfo);
+        var payload = new FormData();
+        payload.append('json', json);
+
+        return this.http
+            .post<any>('/api/compras/GuardarAdjudicacionAutomatica', payload, { headers: this.headers });
+    }
+
+    public cerrarCotizacion(peticionId: number, observaciones: string) {
+        var payload = new FormData();
+        payload.append('peticionId', peticionId.toString());
+        payload.append('observaciones', observaciones);
+
+        return this.http
+            .post<any>('/api/compras/CerrarCotizacion', payload, { headers: this.headers });
+    }
+
+    public GrabarPeticionDeOfertaVisualizacionPrecio(peticion: PeticionVisualizacionPrecioDto) {
+
+        const jsonPayload = JSON.stringify({
+            Observacion: peticion.Observacion,
+            PeticionDeOferta_Id: peticion.PeticionOfertaId
+        });
+        const payload = new FormData();
+        payload.append('json', jsonPayload);
+
+        peticion.Adjuntos.forEach((fileToUpload: File) => {
+            payload.append("filePeticionDeOfertaVisualizacionPrecio", fileToUpload, fileToUpload.name);
+        });
+
+        return this.http.post<any>('/api/compras/GrabarPeticionDeOfertaVisualizacionPrecio', payload, { headers: this.headers });
+    }
+
+    public obtenerReporteOrdenDeCompra(nroOC: string, fechaDesde: string, fechaHasta: string, codigoProveedor: string): Observable<any> {
+        let params: HttpParams = new HttpParams();
+        params = params.set("nroOC", nroOC);
+        params = params.set("fechaDesde", fechaDesde);
+        params = params.set("fechaHasta", fechaHasta);
+        params = params.set("codigoProveedor", codigoProveedor);
+
+        return this.http
+            .get("/api/compras/ObtenerReporteOrdenDeCompra", {
+                params: params,
+                headers: this.headers
+            });
+    }
+
+    public obtenerChat(solpId: string): Observable<PeticionDeOfertaDto> {
+        let params: HttpParams = new HttpParams();
+        params = params.set("solpId", solpId);
+
+        return this.http
+            .get("/api/compras/ObtenerChat", {
+                params: params,
+                headers: this.headers
+            });
+    }
+
+    public grabarMensajeChatInterno(mensaje: ChatInternoComprasDto) {
+        let json = JSON.stringify(mensaje);
+
+
+        var payload = new FormData();
+        payload.append('json', json);
+
+        return this.http
+            .post<ChatInternoComprasDto>('/api/compras/GrabarMensajeChatInterno', payload, { headers: this.headers });
+    }
+
+    public obtenerYExportarChat(solpId: string): Observable<any> {
+        let params: HttpParams = new HttpParams();
+        params = params.set("solpId", solpId);
+
+        return this.http
+            .get("/api/compras/ObtenerYExportarChat", {
+                params: params,
+                headers: this.headers
+            });
+    }
+
+    public validarSolpTratada(nroSolp: string): Observable<any> {
+        let params: HttpParams = new HttpParams();
+        params = params.set("nroSolp", nroSolp);
+
+        return this.http
+            .get("/api/compras/ValidarSolpTratada", {
+                params: params,
+                headers: this.headers
+            });
+    }
+
+    devolverMonedaProveedor(codigoProveedor: string): Observable<any> {
+        let params: HttpParams = new HttpParams();
+        params = params.set("codigoProveedor", codigoProveedor.toString());
+
+        return this.http
+            .get("/api/compras/DevolverMonedaProveedor", {
+                params: params,
+                headers: this.headers,
+            });
+    }
+
+    validarSubposicionConDiferenteMoneda(adjudicacion: AdjudicacionDto) {
+        let json = JSON.stringify({
+            Cotizacion_Id: adjudicacion.Cotizacion_Id,
+            AdjudicacionPosiciones: adjudicacion.AdjudicacionPosiciones,
+            Solp_Id: adjudicacion.Solp_Id,
+            TextoDeCabecera: adjudicacion.TextoDeCabecera,
+            CondicionesDeEntrega: adjudicacion.CondicionesDeEntrega,
+            CondicionesDePago: adjudicacion.CondicionesDePago,
+            Garantias: adjudicacion.Garantias,
+            EsMonedaProveedor: adjudicacion.EsMonedaProveedor,
+            Proveedor: adjudicacion.Proveedor
+        });
+
+        var payload = new FormData();
+        payload.append('json', json);
+
+        return this.http
+            .post<any>('/api/compras/ValidarSubposicionConMonedaDiferente', payload, { headers: this.headers });
+    }
+
+    public listarLiberadorSap(): Observable<any> {
+        return this.http.get("/api/compras/ListarLiberadorSap", {
+            headers: this.headers,
+        });
+    }
+
+    public listarUsuarioCreadorSolp(): Observable<any> {
+        return this.http.get("/api/compras/ListarUsuarioCreadorSolp", {
+            headers: this.headers,
+        });
     }
 }

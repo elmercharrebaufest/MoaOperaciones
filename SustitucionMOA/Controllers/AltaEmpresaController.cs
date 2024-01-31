@@ -29,7 +29,7 @@ namespace SustitucionMOA.Controllers
         }
 
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.ABM_EMPRESAS)]
-        public ActionResult GetEmpresas(int IdTipoProveedor)
+        public ActionResult GetEmpresas(int IdTipoProveedor, string fechaInicio, string fechaFin)
         {
             try
             {
@@ -60,7 +60,7 @@ namespace SustitucionMOA.Controllers
                     }
                 }
 
-                var empresas = altaEmpresaService.GetEmpresas(idTiposProveedor);
+                var empresas = altaEmpresaService.GetEmpresas(idTiposProveedor, fechaInicio, fechaFin);
                 //MP: Comento esta parte, ya que esto ahora lo formateamos en el service. Ademas, esto generaba que se rompan algunos filtros
                 //foreach (var item in empresas)
                 //{
@@ -254,6 +254,29 @@ namespace SustitucionMOA.Controllers
             try
             {
                 return JsonCustom(new { data = altaEmpresaService.AgregarObservacion(empresaId, observacion, ClaimsPrincipalExtension.GetClaimValue("emails")) });
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [CustomPermisoAuthorizeAttribute(Roles = Permiso.ABM_EMPRESAS)]
+        [HttpGet]
+        public JsonResult VerificarExistenciaEmpresa(string cuit)
+        {
+            try
+            {
+                return JsonCustom(new { data = altaEmpresaService.VerificarExistenciaEmpresa(cuit) }) ;
             }
             catch (InfoCustomException e)
             {

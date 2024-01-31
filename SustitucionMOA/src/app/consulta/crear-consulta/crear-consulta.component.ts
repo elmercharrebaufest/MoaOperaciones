@@ -11,11 +11,12 @@ import { SessionDataService } from './../../common/services/SessionDataService';
 import { DropdownComponent } from './../../common/view-child/dropdown/dropdown.component';
 import { SpinnerSmallComponent } from './../../common/view-child/spinner-small/spinner-small.component';
 import { ReCaptchaComponent } from 'angular2-recaptcha';
-import { SelectItem } from 'primeng/components/common/selectitem';
-import { Causa, Comentario, Categoria, Subcategoria, Consulta, ReclamoImpositivo, Reclamo, Materiales } from '../consulta';
-import { InformeComercialComponent } from '../../alta-proveedores/informe-comercial/informe-comercial.component';
+import { Causa, Comentario, Categoria, Subcategoria, ReclamoImpositivo, Materiales } from '../consulta';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { ConfirmationService } from 'primeng/api';
+import { HttpStatusCodes } from '../../common/models/httpStatusCodes';
+import { DatosLiquidacionObservada, SendDataService } from '../send-data.service';
+import { SeleccionarProveedorComponent } from '../../common/shared-components/seleccionar-proveedor/seleccionar-proveedor.component';
 
 declare var $: any;
 
@@ -44,6 +45,11 @@ export class CrearConsultaComponent extends ListBaseComponent {
     @ViewChild('recaptchaComponent')
     protected captcha: ReCaptchaComponent;
 
+    @ViewChild('selectProveedor')
+    protected selectProveedor: SeleccionarProveedorComponent;
+
+    datosLiquidacionObservada?: DatosLiquidacionObservada;
+
     constructor(
         protected service: ConsultaService,
         protected navService: NavService,
@@ -53,10 +59,12 @@ export class CrearConsultaComponent extends ListBaseComponent {
         protected modalService: ModalService,
         protected route: ActivatedRoute,
         protected router: Router,
-        private confirmationService: ConfirmationService) {
+        private confirmationService: ConfirmationService,
+        private sendDataService: SendDataService) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
         this.categoriaDropdownComponent = new DropdownComponent();
         this.spinnerSmallComponent = new SpinnerSmallComponent();
+        this.datosLiquidacionObservada = sendDataService.getDatosLiquidacionObservada();
     }
 
     checkPermisos() { this.securityService.tienePermisoRedirect("CONTACTO MAIL"); }
@@ -79,7 +87,7 @@ export class CrearConsultaComponent extends ListBaseComponent {
     subcategorias: Subcategoria[];
     causas: Causa[];
 
-    codigoCorredor: any;
+    codigoCorredor: string;
     codigoProveedor: any;
     razonSocialProveedor: string = "";
     razonSocialCorredor: string;
@@ -133,12 +141,9 @@ export class CrearConsultaComponent extends ListBaseComponent {
     }
 
     ngOnInit() {
-        this.setTabs();
         this.checkPermisos();
-        this.navService.setSeccionList([new Seccion('/consulta/crear-consulta', 'crear-consulta', 'Nueva Consulta'), new Seccion('/consulta/mis-consultas', 'consulta', 'Mis Consultas')]);
-        //this.getData();
+        this.setSeccionList();
         this.getCombos();
-
         if (this.esCorredor) {
             this.codigoCorredor = sessionStorage.getItem("proveedor");
         }
@@ -150,6 +155,25 @@ export class CrearConsultaComponent extends ListBaseComponent {
         });
 
         this.validarNombre();
+        this.setTabs();
+    }
+
+    setSeccionList() {
+        if (this.securityService.tienePermiso("CARGAR CONSULTA") && this.securityService.tienePermiso("CARGAR CONSULTA INTERNA")) {
+            this.navService.setSeccionList([new Seccion('/consulta/crear-consulta', 'crear-consulta', 'Nueva Consulta'), new Seccion('/consulta/mis-consultas', 'consulta', 'Mis Consultas'),
+            new Seccion('/consulta/crear-consulta-interna', 'crear-consulta-interna', 'Nueva Consulta Interna')
+            ]);
+        }
+        else if (this.securityService.tienePermiso("CARGAR CONSULTA")) {
+            this.navService.setSeccionList([new Seccion('/consulta/crear-consulta', 'crear-consulta', 'Nueva Consulta'), new Seccion('/consulta/mis-consultas', 'consulta', 'Mis Consultas')
+            ]);
+        } else if (this.securityService.tienePermiso("CARGAR CONSULTA INTERNA")) {
+            this.navService.setSeccionList([new Seccion('/consulta/crear-consulta-interna', 'crear-consulta-interna', 'Nueva Consulta Interna'), new Seccion('/consulta/mis-consultas', 'consulta', 'Mis Consultas')
+            ]);
+        } else {
+            this.navService.setSeccionList([new Seccion('/consulta/mis-consultas', 'consulta', 'Mis Consultas')
+            ]);
+        }
     }
 
     ngAfterViewInit(): void {
@@ -200,7 +224,7 @@ export class CrearConsultaComponent extends ListBaseComponent {
     getCombos() {
         this.unsubscribe();
         try {
-            this.subscription = this.service.getCombos(true).subscribe(
+            this.subscription = this.service.getCombos(true, false).subscribe(
                 (result: any) => {
                     if (result.logout == true) {
                         this.sessionDataService.logout();
@@ -216,11 +240,14 @@ export class CrearConsultaComponent extends ListBaseComponent {
                             this.proveedorId = result.proveedorId
                         }
                         this.listaMateriales = result.materiales;
+                        if (this.datosLiquidacionObservada) {
+                            this.setValoresInicialesParaLiquidacionObservada()
+                        }
                         //result.materiales.forEach(x => this.listaMateriales.push({ label: x.Descripcion, value: x.MaterialId }));
                     }
                 },
                 error => {
-                    this.floatMsgService.setErrorMsg(error.message);
+                    this.floatMsgService.setErrorMsg(HttpStatusCodes.friendlyStatusCode(error.status));
                 }
 
             );
@@ -437,7 +464,7 @@ export class CrearConsultaComponent extends ListBaseComponent {
         }
     }
 
-    
+
 
     postConsulta() {
         this.blockUI.start('Generando Consulta');
@@ -725,5 +752,33 @@ export class CrearConsultaComponent extends ListBaseComponent {
             this.floatMsgService.setErrorMsg(e);
             return false; //<-- Prevent Refresh
         }
+    }
+
+    public extraOnDestroy(): void {
+        this.sendDataService.limpiarDatosLiquidacionObservados();
+    }
+
+    setValoresInicialesParaLiquidacionObservada() {
+        const code = this.datosLiquidacionObservada.Tipo == "Final" ? "FIN" : "PAR";
+        const categoria = this.categorias.find(categoria => categoria.Code === code)
+        if (categoria)
+            this.setSubcategorias(categoria)
+        const subCategoria = this.subcategoriasList.find(subcategoria => subcategoria.Nombre === "No registradas, Observadas y Rechazadas")
+        if (subCategoria) {
+            this.subcategoria = subCategoria;
+            this.setCodeSubcategoria(categoria)
+        }
+        this.asunto = `Liquidación observada - nro comprobante ${this.datosLiquidacionObservada.NroComprobante}`
+        this.comprobante = this.datosLiquidacionObservada.NroComprobante
+        this.contrato = this.datosLiquidacionObservada.NroContrato
+
+        if (this.esCorredor)
+            this.setValorProveedorParaLiquidacionObservada()
+    }
+    setValorProveedorParaLiquidacionObservada() {
+        this.selectProveedor.setSelected({
+            idVendedor: this.codigoCorredor,
+            descVendedor: sessionStorage.getItem('nombre')
+        })
     }
 }

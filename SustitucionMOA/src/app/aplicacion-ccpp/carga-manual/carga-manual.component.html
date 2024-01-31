@@ -1,0 +1,83 @@
+<p-toast [style]="{marginTop: '80px', color:'#FFF!important'}"></p-toast>
+<div class="content-wraper">
+    <!-- CONTENT-->
+    <section class="container-fluid clearfix">
+        <!--Title-->
+        <div class="row titleSection">
+            <div class="col-xs-12 col-sm-10"><strong>Aplicación de CCPP</strong> </div>
+        </div>
+        <!--End Title-->
+        <!--Search-->
+        <div class="row myRow firstSection mySearch mt-0">
+            <div class="col-xs-12 col-md-12 rounded shadow animate">
+                <div class="row">
+
+                </div>
+                <div class="col-xs-12 col-md-12 search-header">
+                    <spinner-small></spinner-small>
+                    <title-caps>Carga manual</title-caps>
+                </div>
+                <form class="col-12 p-2" [formGroup]="aplicacionCCPPForm">
+                    <div class="row">
+                        <div class="col-xs-12 col-md-4">
+                            <div class="formulario-label">
+                                Contrato:
+                            </div>
+                            <div class="styled-select ">
+                                <input [formControlName]="'Contrato'" class="input-resized" />
+                            </div>
+                            <!-- <div class="styled-select" style="overflow: initial;">
+                                <p-dropdown name="contrato" [formControlName]="'ContratoSeleccionado'"
+                                    [options]="contratos" optionLabel="NumeroContrato" placeholder="Seleccione contrato"
+                                    [filter]="true" filterBy="value.NumeroContrato">
+
+                                </p-dropdown>
+                            </div> -->
+                        </div>
+                        <div class="col-xs-12 col-md-4">
+                            <div class="formulario-label">
+                                CCPP (CTG - 12 dígitos):
+                            </div>
+                            <div class="styled-select ">
+                                <input [formControlName]="'CartaPorte'" class="input-resized" />
+                            </div>
+                            <!-- <div class="styled-select" style="overflow: initial;">
+                                <p-dropdown name="ccpp" [formControlName]="'CartaPorteSeleccionada'"
+                                    [options]="cartasPorteOpcion" optionLabel="NumeroCartaPorte"
+                                    placeholder="Seleccione CCPP" [filter]="true" filterBy="value.NumeroCartaPorte">
+
+                                </p-dropdown>
+                            </div> -->
+                        </div>
+                        <div class="col-xs-12 col-md-4">
+                            <div class="formulario-label">
+                                Kg:
+                            </div>
+                            <div class="styled-select">
+                                <input class="input-resized" [formControlName]="'Kilogramos'" mask="0*" />
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <div class="col-12 p-2" *ngIf="cartaPorteSeleccionadaControl?.value">
+                    <p>
+                        *Máximo {{cartaPorteSeleccionadaControl?.value.KgPendientes | number: '':'es'}} KG
+                        para aplicar.
+                    </p>
+                </div>
+                <div class="col-12 p-2 d-flex justify-start gap-2">
+                    <button (click)="reset()" class="btn-custom btn-add btn-mediano">
+                        LIMPIAR
+                    </button>
+                    <button [disabled]="!aplicacionCCPPForm.valid" (click)="guardarAplicacion()"
+                        class="btn-custom btn-guardar btn-mediano"
+                        [pTooltip]="!aplicacionCCPPForm.valid?'Revise los campos':null">
+                        GUARDAR
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- End Search-->
+    </section>
+    <!--End CONTENT-->
+</div>

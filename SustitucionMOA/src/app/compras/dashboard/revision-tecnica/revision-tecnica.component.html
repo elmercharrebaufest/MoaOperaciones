@@ -1,0 +1,214 @@
+<p-dialog [(visible)]="displayRevisionTecnica" modal="modal"
+          [width]="950" [draggable]="false" [closable]="true"
+          (onHide)="onCerrarPeticion()" appendTo="body" positionTop="30"
+          [height]="450"
+          [max] [contentStyle]="{
+        'max-height':'450px',
+        'min-height':'400px'}">
+    <p-header class="headerModal" style="color: #067935;">
+        <b>Revisión Técnica - </b> <span *ngIf="peticion != null">Petici&oacute;n de oferta #{{peticion.Id}}</span>
+    </p-header>
+    <div class="container-fluid" style="height: 273.75px;">
+        <section class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+            <div class="inputCompras">
+                <p>
+                    <ngb-alert type="danger" [dismissible]="false" *ngIf="visualizarAlert">
+                        <strong>Error! </strong>{{ error }}
+                    </ngb-alert>
+                </p>
+                <div class="row myRow" style="padding-top: 2px;" *ngIf="peticion != null">
+                    <div *ngFor="let p of peticion.Usuarios">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h3 style="font-size:x-large;font-weight:bold;">{{p.RazonSocial}}</h3>
+                                <h4>{{p.Mail}}</h4>
+                            </div>
+                        </div>
+                        <div class="row" *ngIf="peticion.TipoPosicionCodigo != 'MATERIALES'">
+                            <div class="col-md-3">
+                                <strong style="color: #666666;">Visita técnica</strong>
+                            </div>
+                            <div class="col-md-9" *ngIf="peticion.TieneVisitaObraMasiva == true || peticion.TieneVisitaObraBool == true">
+                                <label style="padding-right:20px;">
+                                    <input type="radio"
+                                           [name]="'visitaTecnica-' + p.Id"
+                                           [value]="true"
+                                           [(ngModel)]="p.RealizoVisita" />
+                                    Realizó la visita
+                                </label>
+                                <label>
+                                    <input type="radio"
+                                           [name]="'visitaTecnica-' + p.Id"
+                                           [value]="false"
+                                           [(ngModel)]="p.RealizoVisita" />
+                                    No realizó la visita
+                                </label>
+
+                            </div>
+                            <div class="col-md-9" *ngIf="peticion.TieneVisitaObraMasiva != true && peticion.TieneVisitaObraBool != true">
+                                <label>
+                                    Visita no requerida
+                                </label>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <strong style="color: #666666;">Propuesta técnica</strong>
+                            </div>
+                            <div *ngIf="p.Cotizacion && p.Cotizacion.CotizacionEstado_Id == 1 else sinCotizacion">
+                                <div *ngIf="peticion.TipoPosicionCodigo != 'MATERIALES'">
+                                    <div *ngIf="p.Cotizacion.TieneObservacionTecnica" class="col-md-7">
+                                        {{p.Cotizacion.ObservacionTecnica}}
+
+                                    </div>
+                                    <div *ngIf="!p.Cotizacion.TieneObservacionTecnica" class="col-md-5">
+                                        No tiene observación técnica
+                                    </div>
+                                </div>
+                                <div *ngIf="peticion.TipoPosicionCodigo == 'MATERIALES'">
+                                    <div *ngIf="p.Cotizacion.TieneObservacionEconomica" class="col-md-7">
+                                        {{p.Cotizacion.ObservacionEconomica}}
+
+                                    </div>
+                                    <div *ngIf="!p.Cotizacion.TieneObservacionEconomica" class="col-md-5">
+                                        No tiene observación técnica
+                                    </div>
+                                </div>
+                                <div class="col-md-7" *ngIf="(p.Cotizacion.RespetaMateriales == false && peticion.TipoPosicionCodigo == 'MATERIALES') || peticion.TipoPosicionCodigo != 'MATERIALES'">
+                                    <div class="col-md-7"></div>
+                                    <div class="col-md-5">
+                                        <label style="padding-right:10px;">
+                                            <input type="radio"
+                                                   [name]="'PropuestaTecnicaAprobada-' + p.Id"
+                                                   [value]="true"
+                                                   [(ngModel)]="p.PropuestaTecnicaAprobada" />
+                                            Cumple
+                                        </label>
+                                        <label>
+                                            <input type="radio"
+                                                   [name]="'PropuestaTecnicaAprobada-' + p.Id"
+                                                   [value]="false"
+                                                   [(ngModel)]="p.PropuestaTecnicaAprobada" />
+                                            No cumple
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-xs-12 col-sm-7 col-md-7 col-lg-7">
+                                    <label class="labelCompras"><strong style="color: #666666;">Observaciones *</strong></label>
+                                    <textarea name="Observacion" ngDefaultControl [(ngModel)]="p.ObservacionNoCumple" placeholder="Agregue los comentarios que crea necesarios..." cols="30" rows="1"></textarea>
+                                </div>
+                                <div class="col-md-1" *ngIf="peticion.TipoPosicionCodigo != 'MATERIALES'">
+                                    <span style="cursor:pointer;" (click)="mostrarPanelHs(p)">
+                                        <i class="pi pi-clock" style="font-size: 3rem; color: grey;"></i>
+                                    </span>
+                                </div>
+                                <div class="col-md-1" *ngIf="p.Cotizacion.Archivos.length == 1 && p.Cotizacion.Archivos[0].FileKey == 'CotizacionRevisionTecnica' || p.Cotizacion.RespetaMateriales == false">
+                                    <span>
+                                        <img style="cursor:pointer;" src="./Content/images/icons/descargar.svg" alt="descargar"
+                                             (click)="descargarArchivo(p.Cotizacion.Archivos[0].Id)" />
+                                    </span>
+                                </div>
+                                <div class="col-md-1" *ngIf="p.Cotizacion.Archivos.length > 1">
+                                    <span>
+                                        <img style="cursor:pointer;" src="./Content/images/icons/descargar.svg" alt="descargar"
+                                             (click)="descargarAdjuntosCotizacion(p.Cotizacion.Id)" />
+                                    </span>
+                                </div>
+                            </div>
+                            <ng-template #sinCotizacion>
+                                Sin Cotización
+                            </ng-template>
+                        </div>
+                        <hr>
+                        <div *ngIf="p.MostrarPanel == true">
+                            <app-panel-horas [peticionHs]="p.Cotizacion.CotizacionesHoras" [cotizacion]="p.Cotizacion"></app-panel-horas>
+                        </div>
+                    </div>
+                    <div class="col-md-12" style="margin-left: -18px;">
+                        <h3 style="font-size:x-large;font-weight:bold;">Solicitud de recotizacion</h3>
+                    </div>
+                    <br>
+                    <div *ngIf="peticion != null">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <strong style="color: #666666;">Requiere re cotización economica</strong>
+                            </div>
+                            <div class="col-md-9">
+                                <label style="padding-right:20px;">
+                                    <input type="radio"
+                                           [name]="'recotizacionEconomica-' + peticion.RevisionTecnica?.Id"
+                                           [value]="true"
+                                           [(ngModel)]="peticion.RevisionTecnica.RecotizacionEconomica" />
+                                    Si
+                                </label>
+                                <label>
+                                    <input type="radio"
+                                           [name]="'recotizacionEconomica-' + peticion.RevisionTecnica?.Id"
+                                           [value]="false"
+                                           [(ngModel)]="peticion.RevisionTecnica.RecotizacionEconomica" />
+                                    No
+                                </label>
+                            </div>
+                        </div>
+
+                        <br>
+
+                        <div class="row" *ngIf="peticion.RevisionTecnica?.RecotizacionEconomica == true">
+                            <div class="col-md-3">
+                                <strong style="color: #666666;">Modificación en la SOLP (paso 5) *</strong>
+                            </div>
+                            <div class="col-md-9">
+                                <label style="padding-right:20px;">
+                                    <input type="radio"
+                                           [name]="'modificarSolp-' + peticion.RevisionTecnica?.Id"
+                                           [value]="true"
+                                           [(ngModel)]="peticion.RevisionTecnica.ModificacionSolp" />
+                                    Si
+                                </label>
+                                <label>
+                                    <input type="radio"
+                                           [name]="'modificarSolp-' + peticion.RevisionTecnica?.Id"
+                                           [value]="false"
+                                           [(ngModel)]="peticion.RevisionTecnica.ModificacionSolp" />
+                                    No
+                                </label>
+                            </div>
+                            <br>
+
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="margin-top: 15px;">
+                                <label class="labelCompras"><strong style="color: #666666;">Observaciones *</strong></label>
+                                <textarea name="ObservacionRecotizacion" ngDefaultControl [(ngModel)]="peticion.RevisionTecnica.ObservacionRecotizacion" placeholder="Agregue los comentarios que crea necesarios..." cols="30" rows="1"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <p-footer>
+        <button type="button" class="btn btn-danger botonesComprasColor" (click)="onCerrarPeticion()">CANCELAR</button>
+        <button type="button" class="btn btn-primary botonesComprasColor" (click)="guardarRT()">GUARDAR</button>
+        <button type="button" class="btn btn-success botonesComprasColor" (click)="confirmarFinalizacion()">FINALIZAR</button>
+    </p-footer>
+</p-dialog>
+
+<p-confirmDialog #dialogo key="finalizarRevision" header="Confirmación" icon="pi pi-exclamation-triangle" [width]="400" [responsive]="true" appendTo="body">
+    <p-footer>
+        <button type="button" pButton label="Cancelar" class="ui-button-info botonModal" (click)="dialogo.reject()"></button>
+        <button type="button" pButton label="Aceptar" class="ui-button-success botonModal" (click)="dialogo.accept()"></button>
+    </p-footer>
+</p-confirmDialog>
+
+<p-dialog [(visible)]="displayOkPeticion" [width]="400" modal="modal" appendTo="body" [draggable]="false" [contentStyle]="{'overflow':'visible', 'max-height':'100px', 'min-height':'100px'}" [closable]="false">
+    <p-header class="headerModal">
+        ¡Revisión Técnica creada!
+    </p-header>
+    <br> La revisión técnica para la petición #{{nroPeticion}} se creó correctamente.
+    <br>
+    <p-footer>
+        <button type="button" class="btn btn-primary botonesComprasColor botonModal" (click)="salir()">Aceptar</button>
+    </p-footer>
+</p-dialog>
+

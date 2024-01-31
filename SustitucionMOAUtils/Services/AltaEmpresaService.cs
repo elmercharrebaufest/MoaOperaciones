@@ -2,6 +2,7 @@
 using SustitucionMOAAssets;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
+using SustitucionMOAModel.Dto.OrdenDeCargaFason;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using SustitucionMOAModel.Models.ViewModel.AltaEmpresa;
@@ -31,8 +32,43 @@ namespace SustitucionMOAUtils.Services
             this.dataAgroService = dataAgroService;
         }
 
-        public List<ProveedorAltaDto> GetEmpresas(List<int> IdTiposProveedor)
+        public List<ProveedorAltaDto> GetEmpresas(List<int> IdTiposProveedor, string fechaInicio, string fechaFin)
         {
+            DateTime fechaIncioDateTime, fechaFinDateTime, currentTime = DateTime.Now;
+            try
+            {
+                fechaIncioDateTime = DateTime.Parse(fechaInicio);
+            }
+            catch
+            {
+                try
+                {
+                    fechaInicio = new string(fechaInicio.Where(c => c != '\u200E').ToArray());
+                    fechaIncioDateTime = DateTime.Parse(fechaInicio);
+                }
+                catch (Exception e)
+                {
+                    throw new ValidationCustomException(String.Format(ErrorMsg.ErrorFechaInvalida, "inicio"), e);
+                }
+            }
+
+            try
+            {
+                fechaFinDateTime = DateTime.Parse(fechaFin + " " + currentTime.TimeOfDay.ToString());
+            }
+            catch
+            {
+                try
+                {
+                    fechaFin = new string(fechaFin.Where(c => c != '\u200E').ToArray());
+                    fechaFinDateTime = DateTime.Parse(fechaFin + " " + currentTime.TimeOfDay.ToString());
+                }
+                catch (Exception e)
+                {
+                    throw new ValidationCustomException(String.Format(ErrorMsg.ErrorFechaInvalida, "fin"), e);
+                }
+            }
+            
             try
             {
                 var includes = new List<Expression<Func<Proveedor, object>>>();
@@ -55,7 +91,10 @@ namespace SustitucionMOAUtils.Services
                                     || x.EstadoAprobacion == EstadoAprobacion.SinAlta
                                     || x.EstadoAprobacion == EstadoAprobacion.DocumentacionPendiente)
                                 && x.HistorialAprobaciones.Count > 0
-                                && IdTiposProveedor.Contains(x.TipoProveedor.Id), includes: includes)
+                                 && IdTiposProveedor.Contains(x.TipoProveedor.Id)
+                                && x.HistorialAprobaciones.OrderByDescending(h => h.Fecha).FirstOrDefault().Fecha >= fechaIncioDateTime 
+                                && x.HistorialAprobaciones.OrderByDescending(h => h.Fecha).FirstOrDefault().Fecha <= fechaFinDateTime, includes: includes)
+
                         .Select(proveedor => new ProveedorAltaDto
                         {
                             CodigoProveedor = proveedor.CodigoProveedor ?? "",
@@ -699,6 +738,23 @@ namespace SustitucionMOAUtils.Services
             repositorio.GuardarCambios();
 
             return SuccessMsg.ObservacionAgregadaOK;
+        }
+
+        public Resultado VerificarExistenciaEmpresa(string cuit)
+        {
+            var resultado = new Resultado();
+            var proveedor = this.repositorio.Obtener<Proveedor>(p => p.CUIT == cuit);
+
+            if (proveedor == null)
+            {
+                resultado.error = $"No se encontró el cuit : {cuit} en el sistema.";
+            }
+            else
+            {
+                resultado.Mensaje = $"El cuit {cuit} se encuentra registrado en el sistema con Razon Social: {proveedor.RazonSocial}, Codigo de Proveedor: {proveedor.CodigoProveedor}";
+            }
+
+            return resultado;
         }
     }
 }

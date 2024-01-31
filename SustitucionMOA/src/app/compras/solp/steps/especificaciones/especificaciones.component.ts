@@ -14,11 +14,8 @@ import { ModalService } from '../../../../common/services/ModalService';
 import { ComprasService } from '../../../compras.service'
 import { Solp } from '../../solp';
 import { EspecificacionesViewModel } from './especificacionesViewModel';
-
-
 import { ValidadorPasoSolpService } from '../../../validadorPasoSolpService';
 import { EnumPasoSolp } from '../../../enum-paso-solp';
-
 
 Quill.register('modules/imageResize', ImageResize);
 
@@ -98,7 +95,6 @@ export class EspecificacionesComponent extends ListBaseComponent {
         };
     }
 
-
     //elimno el archivo, llamar al servicio de eliminacion
     eliminarAdjuntoNuevo(archivo): void {
         var indice = this.viewModel.archivosEspecificacionesNuevos.indexOf(archivo)
@@ -110,10 +106,8 @@ export class EspecificacionesComponent extends ListBaseComponent {
         this.viewModel.archivosEspecificaciones.splice(indice, 1)
     }
 
-
     descargarArchivo(archivo): void {
         if (archivo.id != undefined) {
-
             this.service.DescargarArchivo(archivo.id)
                 .subscribe(
                     (result) => {
@@ -137,12 +131,18 @@ export class EspecificacionesComponent extends ListBaseComponent {
         }
         else {
             this.downloadArchivoLocal(archivo, archivo.name);
-
         }
     }
 
     uploadHandler(filesUpload: any): void {
         this.viewModel.archivosEspecificacionesNuevos = filesUpload["files"];
+        var archivoWeb = this.viewModel.archivosEspecificacionesNuevos.reduce((sum, file) => sum + file.size, 0);
+        if (archivoWeb > 10000000) {
+            if (this.viewModel.archivosEspecificaciones.length > 0) {
+                this.eliminarAdjuntoNuevo(this.viewModel.archivosEspecificaciones[this.viewModel.archivosEspecificaciones.length - 1])
+            }
+            this.floatMsgService.setErrorMsg("El archivo adjuntado no debe superar los 10Mb");
+        }
     }
 
     selectionChange(event): void {
@@ -211,21 +211,16 @@ export class EspecificacionesComponent extends ListBaseComponent {
         }
     }
 
-    
-    eliminarArchivo(esAdjuntoNuevo : boolean, archivo : any)
-    {
+    eliminarArchivo(esAdjuntoNuevo: boolean, archivo: any) {
         this.confirmationService.confirm({
-            message: '¿Está seguro que desea eliminar el archivo?',
+            message: '¿Está seguro de que desea eliminar el archivo?',
             accept: () => {
                 esAdjuntoNuevo ? this.eliminarAdjuntoNuevo(archivo) : this.eliminarAdjuntoGuardado(archivo)
             },
             reject: () => {
-                
+
             }
         });
-
     }
-
-    
 
 }

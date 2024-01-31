@@ -1,5 +1,4 @@
-﻿
-<div class="container-fluid" style="margin-top: 20px; margin-bottom: 20px;">
+﻿<div class="container-fluid" style="margin-top: 20px; margin-bottom: 20px;">
     <!-- CONTENT-->
     <div class="col-xs-12 col-sm-12 col-md-12">
         <mensaje></mensaje>
@@ -9,24 +8,27 @@
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="col-xs-8 col-sm-8 col-md-8">
             <div class="rounded shadow col-xs-12 col-sm-12 col-md-12 col-lg-12 detalleConsulta" #detalleConsulta>
-                <div *ngFor="let comentario of consulta.Comentarios, let i = index">
-                    <div>
-                        <div class="fechaComentario col-xs-12 col-sm-6 col-md-12" *ngIf="i == 0 || ((comentario.Fecha | date:'dd/MM/yyyy') != (consulta.Comentarios[i-1].Fecha | date:'dd/MM/yyyy'))">
+                <ng-container *ngIf="consulta?.Comentarios; else loader">
+                    <div *ngFor="let comentario of consulta.Comentarios, let i = index">
+                        <div class="fechaComentario col-xs-12 col-sm-6 col-md-12"
+                            *ngIf="i == 0 || ((comentario.Fecha | date:'dd/MM/yyyy') != (consulta.Comentarios[i-1].Fecha | date:'dd/MM/yyyy'))">
                             <p class="fechaComentarioTexto">
                                 {{comentario.Fecha | date:'dd/MM/yyyy'}}
                             </p>
                         </div>
                         <div class="row myRow" *ngIf="comentario.Detalle != '' ">
                             <div [ngClass]="comentarioPropio(comentario) ? 'comentarioPropio' : 'comentarioRespuesta' "
-                                 class="col-xs-12 col-sm-6 col-md-7" style="overflow-x: scroll;" [innerHTML]="comentario.Detalle">
+                                class="col-xs-12 col-sm-6 col-md-7" style="overflow-x: scroll;"
+                                [innerHTML]="comentario.Detalle">
                             </div>
                         </div>
                         <div [ngClass]="comentarioPropio(comentario) ? 'widthAutoConsultaPropio' : 'widthAutoConsultaRespuesta' "
-                             class="col-xs-12 col-sm-6 col-md-7" *ngIf="comentario.Archivos.length != 0">
+                            class="col-xs-12 col-sm-6 col-md-7" *ngIf="comentario.Archivos.length != 0">
                             <ng-container *ngFor="let Archivo of comentario.Archivos">
                                 <a class="archivosDescarga" (click)="descargarArchivo(Archivo.Id)"
-                                   style="text-decoration:none!important">
-                                    <div [ngClass]="comentarioPropio(comentario) ? 'archivosDetallePropio' : 'archivosDetalle' ">
+                                    style="text-decoration:none!important">
+                                    <div
+                                        [ngClass]="comentarioPropio(comentario) ? 'archivosDetallePropio' : 'archivosDetalle' ">
                                         <p><i class="fa fa-file" aria-hidden="true"></i>{{Archivo.Nombre}}</p>
                                     </div>
                                 </a>
@@ -35,60 +37,72 @@
 
                         <div *ngIf="(comentarioPropio(comentario) && esCorredor) || esInterno; else elseBlock">
                             <p [ngClass]="comentarioPropio(comentario) ? 'horaComentarioRespuesta' : ''"
-                               class="col-xs-12 col-sm-12 col-md-12">
+                                class="col-xs-12 col-sm-12 col-md-12">
                                 {{comentario.Fecha | date:'HH:mm'}} | {{comentario.Usuario.Mail}}
                             </p>
                             <div *ngIf="esInterno && comentario.Detalle != '' && comentario.Recordado">
-                                <p *ngFor="let recordado of comentario.ComentarioRecordados" [ngClass]="comentarioPropio(comentario) ? 'horaComentarioRespuesta' : ''"
-                                   class="col-xs-12 col-sm-12 col-md-12">
+                                <p *ngFor="let recordado of comentario.ComentarioRecordados"
+                                    [ngClass]="comentarioPropio(comentario) ? 'horaComentarioRespuesta' : ''"
+                                    class="col-xs-12 col-sm-12 col-md-12">
                                     Mensaje recordado el {{recordado.FechaRecordado | date:'dd/MM/yyyy HH:mm'}}<br>
                                 </p>
                             </div>
                         </div>
                         <ng-template #elseBlock>
                             <p [ngClass]="comentarioPropio(comentario) ? 'horaComentarioRespuesta' : ''"
-                               class="col-xs-12 col-sm-12 col-md-12">
+                                class="col-xs-12 col-sm-12 col-md-12">
                                 {{comentario.Fecha | date:'HH:mm'}}
                             </p>
                         </ng-template>
                     </div>
-                </div>
+                </ng-container>
+                <ng-template #loader>
+                    <div style="width: 100%; display: flex;justify-content: center;">
+                        <p-progressSpinner></p-progressSpinner>
+                    </div>
+                </ng-template>
             </div>
 
             <!--AÑANDIR COMENTARIO-->
             <div class="col-xs-12 col-sm-12 col-md-12 shadow contenedorNuevoComentario" id="contenedorNuevoComentario">
                 <hr>
-                <angular-editor class="col-xs-12 col-sm-12 col-md-9" [placeholder]="'Añadir Comentario'" [(ngModel)]="detalle" [config]="config"></angular-editor>
+                <div class="col-sm-12 col-md-9">
+                    <angular-editor #angularEditor [placeholder]="'Añadir Comentario'" [(ngModel)]="detalle"
+                        [config]="config"></angular-editor>
+                </div>
                 <div class="col-xs-12 col-sm-12 col-md-2">
-                    <input [disabled]="disable()"
-                           class="adjuntarArchivo" #fileInput type="image" src="Content/images/buttons/Adjuntar.svg">
-                    <input [disabled]="disable()"
-                           class="adjuntarArchivo1" #fileInput type="file" style="display:none" (change)="cargarArchivo($event)" multiple>
+                    <input [disabled]="disable()" class="adjuntarArchivo" #fileInput type="image"
+                        src="Content/images/buttons/Adjuntar.svg">
+                    <input [disabled]="disable()" class="adjuntarArchivo1" #fileInput type="file" style="display:none"
+                        (change)="cargarArchivo($event)" multiple>
                 </div>
 
                 <div class="col-xs-12 col-sm-12 col-md-2">
-                    <button [disabled]="disable()"
-                            (click)="postComentario()" class="mx-auto d-block enviarComentario" href="#" style="text-decoration:none!important">
-                        <div class="btn-custom btn-mediano btn-add animate align-center btn-enviar-comentario">Enviar</div>
+                    <button [disabled]="disable()" (click)="postComentario()" class="mx-auto d-block enviarComentario"
+                        href="#" style="text-decoration:none!important">
+                        <div class="btn-custom btn-mediano btn-add animate align-center btn-enviar-comentario">Enviar
+                        </div>
                     </button>
                 </div>
                 <br>
                 <div class="col-xs-12 col-sm-12 col-md-2">
-                    <button *ngIf="esInterno"
-                            (click)="recordarComentario()" class="mx-auto d-block enviarComentario" href="#" style="text-decoration:none!important">
-                        <div class="btn-custom btn-mediano btn-add animate align-center btn-recordar">Recordar mensaje</div>
+                    <button *ngIf="esInterno" (click)="recordarComentario()" class="mx-auto d-block enviarComentario"
+                        href="#" style="text-decoration:none!important">
+                        <div class="btn-custom btn-mediano btn-add animate align-center btn-recordar">Recordar mensaje
+                        </div>
                     </button>
                 </div>
                 <div *ngIf="false" class="col-xs-12 col-sm-6 col-md-9">
                     <file-drop dropZoneLabel="Suelte sus archivos aquí" (onFileDrop)="dropped($event)"
-                               (onFileOver)="fileOver($event)" (onFileLeave)="fileLeave($event)">
+                        (onFileOver)="fileOver($event)" (onFileLeave)="fileLeave($event)">
                     </file-drop>
                 </div>
                 <div class="col-xs-12 col-sm-6 col-md-6">
                     <p *ngIf="this.file != null">{{this.file.name}}</p>
                 </div>
 
-                <div *ngIf="listaArchivos.length > 0" class="col-xs-12 col-sm-12 col-md-10 archivosBox" style="width: 71%;">
+                <div *ngIf="listaArchivos.length > 0" class="col-xs-12 col-sm-12 col-md-10 archivosBox"
+                    style="width: 71%;">
                     <ng-container *ngFor="let Archivo of listaArchivos, let i = index">
                         <p class="col-md-11">{{Archivo.name}}</p>
                         <span class="fa fa-times col-md-1" (click)="borrarArchivo(i)"></span>
@@ -100,16 +114,17 @@
 
         <!--MENU LATERAL-->
         <div class="col-xs-4 col-sm-4 col-md-4">
-            <div class="rounded shadow col-xs-12 col-sm-12 col-md-12" [ngClass]="this.MostrarDatosAdicionales ? 'menuLateralConsulta' : 'menuLateralConsultaOverflow'">
+            <div class="rounded shadow col-xs-12 col-sm-12 col-md-12"
+                [ngClass]="this.MostrarDatosAdicionales ? 'menuLateralConsulta' : 'menuLateralConsultaOverflow'">
                 <div class="col-xs-12 col-md-12 center pillVerdeMenu">
                     <ul class="nav nav-pills center" role="tablist">
                         <li *ngIf="esInterno" role="presentation">
-                            <a href="#Administracion" aria-controls="Administracion"
-                               role="tab" data-toggle="tab" (click)="this.MostrarDatosAdicionales = true">Administraci&oacute;n</a>
+                            <a href="#Administracion" aria-controls="Administracion" role="tab" data-toggle="tab"
+                                (click)="this.MostrarDatosAdicionales = true">Administraci&oacute;n</a>
                         </li>
                         <li role="presentation" class="active">
-                            <a href="#Datos" aria-controls="Datos" role="tab"
-                               data-toggle="tab" (click)="this.MostrarDatosAdicionales = false">Datos</a>
+                            <a href="#Datos" aria-controls="Datos" role="tab" data-toggle="tab"
+                                (click)="this.MostrarDatosAdicionales = false">Datos</a>
                         </li>
                     </ul>
                 </div>
@@ -123,7 +138,8 @@
                     <div *ngFor="let dato of datosExtra" class="col-md-12">
                         <ng-container *ngIf="dato.Value != null && dato.Value != '' ">
                             <div *ngIf="dato.NewLine">
-                                <strong>{{dato.Nombre}}:</strong> <p [innerHTML]='dato.Value'></p>
+                                <strong>{{dato.Nombre}}:</strong>
+                                <p [innerHTML]='dato.Value'></p>
                             </div>
                             <div *ngIf="!dato.NewLine">
                                 <strong>{{dato.Nombre}}:</strong> {{dato.Value}}
@@ -133,53 +149,66 @@
                     </div>
 
                     <div class="col-md-12">
-                        <ng-container *ngIf="this.consulta.Fecha != null">
-                            <div *ngIf="this.consulta.Categoria.Code == 'REI' && this.consulta.SubCategoria.Code == 'RET'">
+                        <ng-container *ngIf="this.consulta.Fecha">
+                            <div
+                                *ngIf="this.consulta.Categoria.Code == 'REI' && this.consulta.SubCategoria.Code == 'RET'">
                                 <strong>Fecha Pago:</strong> {{this.consulta.Fecha | date:'dd/MM/yyyy'}}<br>
                             </div>
-                            <div *ngIf="this.consulta.Categoria.Code == 'REI' &&  this.consulta.SubCategoria.Code == 'PER'">
+                            <div
+                                *ngIf="this.consulta.Categoria.Code == 'REI' &&  this.consulta.SubCategoria.Code == 'PER'">
                                 <strong>Fecha Factura:</strong> {{this.consulta.Fecha | date:'dd/MM/yyyy'}}<br>
                             </div>
-                            <div *ngIf="this.consulta.Categoria.Code == 'BOL' &&  this.consulta.SubCategoria.Code == 'OPC'">
-                                <strong>Fecha emision de la oblea:</strong> {{this.consulta.Fecha | date:'dd/MM/yyyy'}}<br>
+                            <div
+                                *ngIf="this.consulta.Categoria.Code == 'BOL' &&  this.consulta.SubCategoria.Code == 'OPC'">
+                                <strong>Fecha emision de la oblea:</strong> {{this.consulta.Fecha |
+                                date:'dd/MM/yyyy'}}<br>
                             </div>
+                            <strong>Fecha Creacion:</strong> {{this.consulta.FechaCreacion | date:'dd/MM/yyyy'}}
                         </ng-container>
-                        <strong>Fecha Creacion:</strong> {{this.consulta.FechaCreacion | date:'dd/MM/yyyy'}}
+                    </div>
+                    <div *ngIf="this.consulta.PuedeReabrir && !esInterno" class="botonActualizarCombos" style="margin-top: 10px;">
+                        <spinner-small></spinner-small>
+                        <button (click)="reabrirConsulta()" class="mx-auto d-block enviarComentario"
+                            style="text-decoration:none!important; padding-bottom: 15px;">
+                            <div class="btn-custom btn-mediano btn-add animate align-center btn-reabrir-consulta">
+                                Reabrir Consulta</div>
+                        </button>
                     </div>
                 </div>
 
                 <div *ngIf="this.MostrarDatosAdicionales" style="padding: 10px;">
                     <div>
                         <p class="bold" style="margin: 7px;">Estado</p>
-                        <p-dropdown [options]="estadosList" [(ngModel)]="this.estadoId"
-                                    name="estadoId" [maxSelectedLabels]="1" autoWidth="false">
+                        <p-dropdown [options]="estadosList" [(ngModel)]="this.estadoId" name="estadoId"
+                            [maxSelectedLabels]="1" autoWidth="false">
                         </p-dropdown>
                     </div>
                     <div>
                         <p class="bold" style="margin: 7px;">Categoria</p>
-                        <p-dropdown [options]="categoriasList" [(ngModel)]="categoriaId"
-                                    name="categoriaId" [maxSelectedLabels]="1" autoWidth="false"
-                                    (onChange)="setSubcategorias($event.value)">
+                        <p-dropdown [options]="categoriasList" [(ngModel)]="categoriaId" name="categoriaId"
+                            [maxSelectedLabels]="1" autoWidth="false" (onChange)="setSubcategorias($event.value)">
                         </p-dropdown>
                     </div>
                     <div *ngIf="tieneSubcategorias">
                         <p class="bold" style="margin: 7px;">Subcategorias</p>
-                        <p-dropdown [options]="subcategoriasList" [(ngModel)]="subcategoriaId"
-                                    name="subcategoriaId" [maxSelectedLabels]="1" autoWidth="false">
+                        <p-dropdown [options]="subcategoriasList" [(ngModel)]="subcategoriaId" name="subcategoriaId"
+                            [maxSelectedLabels]="1" autoWidth="false">
                         </p-dropdown>
                     </div>
-                    <div *ngIf="this.consulta.Categoria.Code == 'REI'">
+                    <div *ngIf="this.consulta.Categoria && this.consulta.Categoria.Code == 'REI'">
                         <p class="bold" style="margin: 7px;">Causa Consulta</p>
-                        <p-dropdown [options]="causasConsulta" optionLabel="Nombre" dataKey="Id" [(ngModel)]="this.causaConsulta"
-                                    name="this.causaConsulta" [maxSelectedLabels]="1" autoWidth="false" [maxSelectedLabels]="1"
-                                    placeholder="Elegir Causa">
+                        <p-dropdown [options]="causasConsulta" optionLabel="Nombre" dataKey="Id"
+                            [(ngModel)]="this.causaConsulta" name="this.causaConsulta" [maxSelectedLabels]="1"
+                            autoWidth="false" [maxSelectedLabels]="1" placeholder="Elegir Causa">
                         </p-dropdown>
                     </div>
 
                     <div class="botonActualizarCombos" style="margin-top: 10px;">
                         <spinner-small></spinner-small>
-                        <button (click)="actualizarCombos()" class="mx-auto d-block enviarComentario" style="text-decoration:none!important">
-                            <div class="btn-custom btn-mediano btn-add animate align-center btn-enviar-comentario">Cambiar</div>
+                        <button (click)="actualizarCombos()" class="mx-auto d-block enviarComentario"
+                            style="text-decoration:none!important">
+                            <div class="btn-custom btn-mediano btn-add animate align-center btn-enviar-comentario">
+                                Cambiar</div>
                         </button>
                     </div>
 

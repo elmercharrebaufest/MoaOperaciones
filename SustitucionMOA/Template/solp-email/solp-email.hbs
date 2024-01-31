@@ -920,15 +920,20 @@
 																								</table>
 																							</div>
 
+																							{{#if (isTrue TieneAdjuntos) }}
 																							<p class="text-center"
 																							   style="line-height: 24px; font-size: 16px; margin: 0;"
 																							   align="center">
 																								Para descargar el legajo haga clic en el siguiente enlace:
-																								<a href="{{ DownloadLinkUrl }}" download rel="noopener noreferrer">
+																								<a href="{{ DownloadLinkUrl }}" download=download rel="noopener noreferrer">
 																									Descargar Legajo
 																								</a>
 																							</p>
-																							<br>
+																							{{else}}
+																							<p></p>
+																							{{/if}}
+
+																							<br />
 																							<table class="s-2 w-100"
 																								   border="0"
 																								   cellpadding="0"

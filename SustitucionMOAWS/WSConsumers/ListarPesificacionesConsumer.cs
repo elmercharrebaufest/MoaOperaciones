@@ -40,16 +40,16 @@ namespace SustitucionMOAWS.WSConsumers
 
             foreach (ZMPES6500 pesificacion in pesificaciones)
             {
-                var FechaPesificacionDate = DateTime.ParseExact(pesificacion.FECHA_PESIFICACION, "yyyy-MM-dd", null);
+                var FechaPesificacionDate = DateTime.ParseExact(pesificacion.FECHA_PESIFICACION, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
                 var Soja200FechaCotizacion = repositorio.Obtener<Configuracion>(a => a.Code == "Soja200FechaCotizacion").Value;
-                if (FechaPesificacionDate.Date == DateTime.ParseExact(Soja200FechaCotizacion, "yyyy-MM-dd", null))
+                if (FechaPesificacionDate.Date == DateTime.ParseExact(Soja200FechaCotizacion, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture))
                 {
-                    FechaPesificacionDate = DateTime.ParseExact(pesificacion.FECHA_CARGA, "yyyy-MM-dd", null);
+                    FechaPesificacionDate = DateTime.ParseExact(pesificacion.FECHA_CARGA, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
                 }
                 result.Pesificaciones.Add(new PesificacionSapDto
                 {
                     FechaCarga = SAPFormatter.FormatearFecha(pesificacion.FECHA_CARGA),
-                    FechaCargaDate = (DateTime.ParseExact(pesificacion.FECHA_CARGA, "yyyy-MM-dd", null)).ToString("yyyy-MM-ddTHH:mm:ss"),
+                    FechaCargaDate = (DateTime.ParseExact(pesificacion.FECHA_CARGA, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture)).ToString("yyyy-MM-ddTHH:mm:ss"),
                     Contrato = pesificacion.CONTRATO,
                     Fijacion = pesificacion.FIJACION,
                     Kilos = pesificacion.KILOS,

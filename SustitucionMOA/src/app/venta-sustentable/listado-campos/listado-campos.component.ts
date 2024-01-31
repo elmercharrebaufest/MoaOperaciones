@@ -11,6 +11,7 @@ import { ModalService } from './../../common/services/ModalService';
 import { SpinnerComponent } from './../../common/view-child/spinner/spinner.component';
 import { DropdownOption } from '../../common/view-child/dropdown/dropdown.component';
 import { SpinnerSmallComponent } from '../../common/view-child/spinner-small/spinner-small.component';
+import { Permiso } from '../../common/enums/Permisos';
 
 @Component({
     selector: 'app-listado-campos',
@@ -38,9 +39,10 @@ export class ListadoCamposComponent extends BaseComponent implements OnInit {
 
     data: any;
     esInterno: boolean = this.isAuthorized('VER TODOS CAMPOS SUSTENTABLE');
-    editarCampos: boolean = this.isAuthorized('EDICION CAMPOS CREADOS')
+    editarCampos: boolean = this.isAuthorized('EDICION CAMPOS CREADOS') || this.isAuthorized('COMERCIAL CAMPOS SUSTENTABLES')
     borrarCampos: boolean = this.isAuthorized('BORRAR CAMPOS CREADOS')
     esCorredor: boolean = sessionStorage.getItem("tipoUsuario") === "CORR";
+    esComercial: boolean = this.isAuthorized(Permiso.ComercialCamposSustentables);
     opcionesProveedores: any;
     cosechas: any;
 
@@ -95,13 +97,13 @@ export class ListadoCamposComponent extends BaseComponent implements OnInit {
         return false;
     }
 
-    proveedorSeleccionado(event) {      
+    proveedorSeleccionado(event) {
         this.filtroProveedor = event.value;
     }
 
 
     filterProveedor(event) {
-        
+
         let filtered: any[] = [];
         let query = event.query;
 
@@ -263,7 +265,7 @@ export class ListadoCamposComponent extends BaseComponent implements OnInit {
         this.mensajeComponent.setMsgsEmpty();
         this.spinnerComponent.showIt();
         try {
-            this.subscription = this.service.getCosechas().subscribe(
+            this.subscription = this.service.getCosechasFiltro().subscribe(
                 (result: any) => {
                     this.spinnerComponent.hideIt();
                     if (result.logout == true) {

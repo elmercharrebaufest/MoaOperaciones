@@ -13,7 +13,7 @@ export class EspecificacionesViewModel {
     public observaciones: string;
     public archivosEspecificacionesNuevos:  Array<File>; //para archivos nuevos que se van agregando
     public archivosEspecificaciones: Array<ArchivoModel> //los que ya contiene la solp
-    readonly valorPorDefecto: string ="<span class=\"ql-size-small\">Especificación técnica de la obra, generalidades, detalles, puntos de control, planos, diagramas , etc.</span>";
+    readonly valorPorDefecto: string ="<span class=\"ql-size-small\"> </span>";
 
     public ObservacionesEsValorPorDefecto() : boolean
     {

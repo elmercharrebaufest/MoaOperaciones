@@ -264,6 +264,8 @@ Thumbs.db
 
 /SustitucionMOA/app/**/*.js
 /SustitucionMOA/app/**/*.map
+/SustitucionMOA/app/common/models/ordenes-de-carga/*.js
+/SustitucionMOA/app/common/models/ordenes-de-carga/*.map
 SustitucionMOA/main.js
 
 SustitucionMOA/main.js.map
@@ -279,3 +281,8 @@ SustitucionMOADatabase/SustitucionMOADatabase.jfm
 /SustitucionMOA/package-lock.json
 /.vscode/launch.json
 /SustitucionMOA/src/app/cars
+/.sonarqube
+/.sonarlint
+/.scannerwork
+/SustitucionMOA/src/.vscode/settings.json
+/SustitucionMOATest/.sonarqube/conf

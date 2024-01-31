@@ -1,7 +1,8 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { EmailComposeModel } from './email-compose.model';
 import { EmailComposeService } from './email-compose.service';
+import { Solp } from '../../compras/solp/solp';
 
 @Component({
   selector: 'email-compose',
@@ -13,10 +14,13 @@ export class EmailComposeComponent implements OnInit {
   @Output()
   sendEmailWrapperEmitter = new EventEmitter<EmailComposeModel>(); 
 
+  @Input() solpActual: Solp;
+
   public visible: boolean = false;
   public model: EmailComposeModel = new EmailComposeModel();
 
   formGroupEmail: FormGroup
+  tieneAdjuntos: boolean;
 
   constructor(private emailComposeService: EmailComposeService,
     private formBuilder: FormBuilder) {
@@ -40,8 +44,7 @@ export class EmailComposeComponent implements OnInit {
 
   showInputError(fieldName: string): boolean {
     if (this.formGroupEmail && this.formGroupEmail.controls) {
-        return (this.formGroupEmail.controls[fieldName].invalid || (this.formGroupEmail.controls[fieldName].errors && this.formGroupEmail.controls[fieldName].errors.required))
-            && (this.formGroupEmail.controls[fieldName].dirty || this.formGroupEmail.controls[fieldName].touched)
+        return (this.formGroupEmail.controls[fieldName].invalid || (this.formGroupEmail.controls[fieldName].errors && this.formGroupEmail.controls[fieldName].errors.required));
     }
 
     return false;
@@ -61,6 +64,16 @@ export class EmailComposeComponent implements OnInit {
     }
     if (!this.isEmailInvalid(value)) {
       this.model.cc.pop(); 
+    }
+  }
+
+  validateToEmailAddress(event: any): void {
+    let value = event.value;
+    if (!value) {
+      return;
+    }
+    if (!this.isEmailInvalid(value)) {
+      this.model.to.pop(); 
     }
   }
 
@@ -91,7 +104,7 @@ export class EmailComposeComponent implements OnInit {
 
   public get isValidFromEmailDomain(): boolean {
     if (!this.model.from) {
-      return false;
+      return true;
     }
     const molinosAgroDomain = "molinosagro.com.ar";
     const fromEmaildomain = this.model.from.substring(this.model.from.lastIndexOf("@") +1);

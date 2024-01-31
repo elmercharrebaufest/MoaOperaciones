@@ -23,7 +23,7 @@ namespace SustitucionMOAWS.WSConsumers
                 ZMPES6190[] entregasDescargas = new ZMPES6190[] { };
                 service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
                 service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
-                ZMPES4910 error = service.SI_MPMF_MOAOP_DETALLE_CCPP(cartaPorte, proveedor, ref aplicaciones, ref calidades, ref entregasDescargas );
+                ZMPES4910 error = service.SI_MPMF_MOAOP_DETALLE_CCPP(cartaPorte, proveedor, ref aplicaciones, ref calidades, ref entregasDescargas);
                 return map(error, aplicaciones, calidades, entregasDescargas, cartaPorte);
             }
             catch (Exception e)
@@ -42,7 +42,7 @@ namespace SustitucionMOAWS.WSConsumers
                 result.error.codigo = error.CODIGO;
                 result.error.descripcion = error.DESCRIPCION;
                 result.error.tipo = error.TIPO;
-            }   
+            }
 
             result.ccpp = cartaPorte;
             result.aplicacionesTotalAplicados = 0;
@@ -74,24 +74,26 @@ namespace SustitucionMOAWS.WSConsumers
                     kgAplicadosString = SAPFormatter.FormatearCantidad(calidad.KG_APLIC, "KG"),
                     kgDescuentoString = SAPFormatter.FormatearCantidad(calidad.KG_DESC, "KG"),
                     kgNetosString = SAPFormatter.FormatearCantidad(calidad.KG_NETOS, "KG"),
-                    kgAplicados = calidad.KG_APLIC, 
-                    kgDescuento = calidad.KG_DESC, 
-                    kgNetos = calidad.KG_NETOS, 
+                    kgAplicados = calidad.KG_APLIC,
+                    kgDescuento = calidad.KG_DESC,
+                    kgNetos = calidad.KG_NETOS,
                     porcentajeDescuento = calidad.PORC_DESC,
                     resultadoCalado = calidad.RESULTADO_CAL,
-                    resultadoCamara = calidad.RESULTADO_CAM,
+                    resultadoCamara = calidad.CARACT.ToUpper().Contains("HUMEDAD") ? calidad.RESULTADO_CAL : calidad.RESULTADO_CAM,
                     resultadoReconsideracion = calidad.RESULTADO_REC
                 });
 
                 result.camaraAPresent = calidad.CAMARA_A_PRESENT;
                 result.calidadTotalAplicados += calidad.KG_APLIC;
-                result.calidadTotalNetos += calidad.KG_NETOS;
+                result.calidadTotalNetos += calidad.KG_NETOS + calidad.KG_DESC;
+                result.calidadTotalNetosDescontados += calidad.KG_NETOS;
                 result.calidadTotalAplicadosUnidad = "KG";
                 result.calidadTotalNetosUnidad = "KG";
             }
 
             result.calidadTotalAplicadosString = SAPFormatter.FormatearCantidad(result.calidadTotalAplicados, "KG");
-            result.calidadTotalNetosString = SAPFormatter.FormatearCantidad(result.calidadTotalNetos, "KG");
+            result.calidadTotalNetosString = SAPFormatter.FormatearCantidad(Math.Round(result.calidadTotalNetos), "KG");
+            result.calidadTotalNetosDescontadosString = SAPFormatter.FormatearCantidad(result.calidadTotalNetosDescontados, "KG");
 
             foreach (ZMPES6190 entregaDescarga in entregasDescargas)
             {
@@ -111,6 +113,9 @@ namespace SustitucionMOAWS.WSConsumers
                     tipoVehiculo = SAPFormatter.FormatearTipoVehiculo(entregaDescarga.TIP_VEHI),
                     totalAplicados = entregaDescarga.TOTAL_APLICADOS,
                     totalAplicadosString = SAPFormatter.FormatearCantidad(entregaDescarga.TOTAL_APLICADOS, "KG"),
+
+                    neto = entregaDescarga.NETO,
+                    netoString = SAPFormatter.FormatearCantidad(entregaDescarga.NETO, "KG"),
                     vendedor = entregaDescarga.VENDEDOR,
                     cg = entregaDescarga.CG
                 });
@@ -150,7 +155,7 @@ namespace SustitucionMOAWS.WSConsumers
                 {
                     fecha = SAPFormatter.FormatearFecha(aplicacion.FECHA_APLIC),
                     contrato = aplicacion.CONTRATO,
-                    unidadKgAplicados = aplicacion.UNIME, 
+                    unidadKgAplicados = aplicacion.UNIME,
                     kgAplicados = aplicacion.KG_APLICADOS
                 });
 
@@ -249,5 +254,5 @@ namespace SustitucionMOAWS.WSConsumers
 
             return result;
         }
-    } 
+    }
 }

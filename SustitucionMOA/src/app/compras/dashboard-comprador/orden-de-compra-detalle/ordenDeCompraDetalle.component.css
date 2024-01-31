@@ -1,0 +1,48 @@
+.headerModal {
+  top: 106px;
+  left: 381px;
+  width: 1080px !important;
+  height: 26px;
+  text-align: left;
+  font: normal normal bold 20px/26px Roboto Regular;
+  letter-spacing: 0px;
+  color: #5CB85C;
+  opacity: 1;
+}
+
+::ng-deep .modalCircular {
+  height: 200px !important;
+  max-height: 100px !important;
+}
+
+::ng-deep .my-dialog .ui-dialog-content .ui-dialog .ui-widget .ui-widget-content {
+  width: 1080px !important;
+  height: auto;
+  min-width: 150px;
+  min-height: 150px;
+  z-index: 1009;
+  left: 237px !important;
+  top: 30px;
+  transform: none;
+  opacity: 1;
+}
+
+.columna {
+  word-break: break-all;
+  word-wrap: break-word;
+  font-size: 11px !important;
+
+}
+
+::ng-deep .ui-accordion-content-wrapper-overflown{
+  height: 0 !important;
+  overflow: hidden !important;
+}
+
+::ng-deep .ui-accordion .ui-accordion-header:hover a{
+text-decoration: none ;
+}
+
+::ng-deep .ui-accordion .ui-accordion-header:focus a{
+text-decoration: none ;
+}

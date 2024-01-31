@@ -2,9 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SustitucionMOAModel.Entities
 {
@@ -39,6 +36,9 @@ namespace SustitucionMOAModel.Entities
         public virtual TablaSap CuentaMayorSap { get; set; }
         [ForeignKey("CodigoServicioSap_Id")]
         public virtual TablaSap CodigoServicioSap { get; set; }
+
+        [InverseProperty("SolpSubPosicion")]
+        public virtual List<CotizacionSubPosicion> Cotizaciones { get; set; }
 
         public object Clone()
         {

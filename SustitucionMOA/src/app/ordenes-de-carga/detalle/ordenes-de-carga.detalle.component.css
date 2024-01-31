@@ -4,10 +4,19 @@
     font-weight: 500;
 }
 
-.containerBotones > div {
+.containerBotones>div {
     padding-bottom: 10px;
 }
 
 .semaforo {
     margin-bottom: -5px;
+}
+
+.alertScato {
+    color: red;
+}
+
+.green_entregada {
+    background-color: lightseagreen;
+    border: 1px solid darkturquoise;
 }

@@ -1,19 +1,20 @@
-﻿using System.Collections.Generic;
+﻿using SustitucionMOAModel.Enums;
+using System.Collections.Generic;
 
 namespace SustitucionMOAModel.Models.WSMapMOA.OrdenCarga
 {
     public class OrdenCargaVisualizarClienteWSMOAResponse
-	{
+    {
         public List<Result> Resultados { get; set; }
 
         public OrdenCargaVisualizarClienteWSMOAResponse()
-		{
+        {
             Resultados = new List<Result>();
-		}
+        }
     }
 
     public class Result
-	{
+    {
         public string Contrato { get; set; }
 
         public string PedidoCliente { get; set; }
@@ -23,6 +24,8 @@ namespace SustitucionMOAModel.Models.WSMapMOA.OrdenCarga
         public string Cliente { get; set; }
 
         public string NombreCliente { get; set; }
+
+        public string CuitCliente { get; set; }
 
         public string Corredor { get; set; }
 
@@ -73,18 +76,18 @@ namespace SustitucionMOAModel.Models.WSMapMOA.OrdenCarga
 
         public string PuntoExpedicion { get; set; }
 
-        public string TipoContrato { get; set; }
+        public TipoContratoFAS TipoContrato { get; set; }
 
         public List<Detail> Detalles { get; set; }
 
         public Result()
-		{
+        {
             Detalles = new List<Detail>();
-		}
+        }
     }
 
     public class Detail
-	{
+    {
         public string Pedido { get; set; }
 
         public string Entrega { get; set; }
@@ -116,5 +119,7 @@ namespace SustitucionMOAModel.Models.WSMapMOA.OrdenCarga
         public string Destinatario { get; set; }
 
         public string NombreDestinatario { get; set; }
+
+        public decimal KilosEntrega { get; set; }
     }
 }
