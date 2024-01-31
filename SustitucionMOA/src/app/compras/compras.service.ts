@@ -184,9 +184,9 @@ export class ComprasService extends BaseService {
             .get<any[]>('/api/EntradaServicio/GetByProveedorAsync', { params: params, headers: this.headers })
     }
 
-    public deleteById(DocumentoNumero) {
+    public deleteById(Id) {
         let params: HttpParams = new HttpParams();
-        params = params.set('documentoNumero', DocumentoNumero);
+        params = params.set('DocumentoNumero', Id);
         return this.http
             .delete<any[]>('/api/EntradaServicio/DeleteById', { params: params, headers: this.headers })
     }

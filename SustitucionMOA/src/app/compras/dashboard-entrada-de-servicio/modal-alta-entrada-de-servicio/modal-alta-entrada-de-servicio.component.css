@@ -77,8 +77,8 @@
 
 .d-flex-2 {
   display: inline-block;
-  padding-right: 15px;
-  min-width: 50%;
+  padding-left: 15px;
+  min-width: 48%;
   width: auto;
   max-width: min-content;
 }
@@ -153,6 +153,16 @@
 table {
   width: 100%;
   border-collapse: collapse;
+}
+
+.header-color {
+  color: white  !important;
+}
+
+.btn-close {
+  color:#312b2b;
+  font-size: 30px;
+  padding: 6px;
 }
 
 th, td {

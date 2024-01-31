@@ -1715,15 +1715,40 @@ namespace SustitucionMOAUtils.Services
         {
             List<ProveedorDto> lista = new List<ProveedorDto>();
             //Atributos minimos que seran utilizados en FE, pueden traerse mas de ser necesario (Ver Proveedor/ProveedorDto).
-            lista = repositorio.Listar<Proveedor,ProveedorDto>(x =>
-            new ProveedorDto
+            //Ver si la busqueda es por Codigo de proveedor o por Razon Social.(tener en cuenta que hay codigos de proveedor que
+            //empiezan con 'C').
+            string entrada = valor;
+            if (entrada.StartsWith("C"))
             {
-                Id = x.Id,
-                CUIT = x.CUIT,
-                RazonSocial = x.RazonSocial,
-                CodigoProveedor = x.CodigoProveedor
-            }, e => e.RazonSocial.ToString().Contains(valor));
+               entrada = entrada.Substring(1);
+            }
+            double i;
 
+            if(double.TryParse(entrada,out i))
+            {
+                //Buscar por código proveedor
+                lista = repositorio.Listar<Proveedor, ProveedorDto>(x =>
+                   new ProveedorDto
+                   {
+                       Id = x.Id,
+                       CUIT = x.CUIT,
+                       RazonSocial = x.RazonSocial,
+                       CodigoProveedor = x.CodigoProveedor
+                   }, e => e.CodigoProveedor.ToString().Contains(valor));
+            }
+            else
+            {
+                //Buscar por Razon Social
+                lista = repositorio.Listar<Proveedor, ProveedorDto>(x =>
+                   new ProveedorDto
+                   {
+                       Id = x.Id,
+                       CUIT = x.CUIT,
+                       RazonSocial = x.RazonSocial,
+                       CodigoProveedor = x.CodigoProveedor
+                   }, e => e.RazonSocial.ToString().Contains(valor));
+            }
+           
             return lista;
         }
 

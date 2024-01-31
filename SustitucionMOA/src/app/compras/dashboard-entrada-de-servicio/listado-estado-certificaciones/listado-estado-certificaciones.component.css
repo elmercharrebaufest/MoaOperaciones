@@ -1,20 +1,36 @@
-section {
-  padding-top: 20px;
-}
-
 #solicitudes {
   margin: 0;
-  padding: 0 1.5rem;
+  padding-top: 2rem;
+  padding-right: 1.2rem;
 }
 
-#solicitudes .filter {
-  width: 50%;
-  margin: 0 auto;
-  font-size: 1.3rem;
+  #solicitudes .filter {
+    width: 50%;
+    margin: 0 auto;
+    font-size: 1.3rem;
+  }
+
+/* TABLE */
+.emptyData {
+  text-align: center !important;
 }
 
-#solicitudes .ui-table-wrapper {
+::ng-deep #solicitudes .ui-table-wrapper {
   overflow: auto;
+}
+
+::ng-deep #solicitudes .ui-table table {
+  border-collapse: collapse;
+  width: 100%;
+  table-layout: auto;
+}
+
+::ng-deep #solicitudes table th {
+  word-wrap: normal;
+  white-space: nowrap;
+  width: max-content;
+  color: #fff !important;
+  text-align: center;
 }
 
 ::ng-deep #solicitudes .ui-table .ui-table-thead > tr > th {
@@ -22,42 +38,43 @@ section {
   font-size: 1.3rem;
 }
 
-#solicitudes .ui-table tr {
+::ng-deep #solicitudes .ui-table tr {
   width: max-content;
 }
 
-#solicitudes .level1 th,
-#solicitudes .ui-sortable-column.ui-state-highlight {
+::ng-deep #solicitudes .level1 th,
+::ng-deep #solicitudes .ui-sortable-column.ui-state-highlight {
   background-color: #666 !important;
 }
 
-#solicitudes .level2 th {
+::ng-deep #solicitudes .level2 th {
   background-color: #075088 !important;
   font-size: 1.3rem !important;
 }
 
-#solicitudes .level1 tr th:first-child {
+::ng-deep #solicitudes .level1 tr th:first-child {
   min-width: 4rem;
 }
 
-#solicitudes table td {
+::ng-deep #solicitudes table td {
   text-align: left;
   white-space: nowrap;
+  font-size: 1.3rem;
 }
 
-#solicitudes table td:first-child {
-  max-width: 0;
-}
+  ::ng-deep #solicitudes table td:first-child {
+    max-width: 0;
+  }
 
-#solicitudes .level2 tr td:first-child {
+::ng-deep #solicitudes .level2 tr td:first-child {
   width: 8%;
 }
 
-.level1 th:first-child {
+::ng-deep #solicitudes .level1 th:first-child {
   max-width: 6rem;
 }
 
-i.ui-sortable-column-icon {
+::ng-deep #solicitudes i.ui-sortable-column-icon {
   color: white;
   font-size: 1.3rem;
   padding-left: .8rem;
@@ -70,19 +87,19 @@ i.ui-sortable-column-icon {
   transition: background 0.2s linear 0.1s, color 0.2s linear 0s;
 }
 
-.btn.accept-btn {
-  background-color: #0b880b !important;
-  color: #fff;
-}
+  .btn.accept-btn {
+    background-color: #0b880b !important;
+    color: #fff;
+  }
 
-.btn.reject-btn {
-  background-color: #e33030 !important;
-  color: #fff;
-}
+  .btn.reject-btn {
+    background-color: #e33030 !important;
+    color: #fff;
+  }
 
 /* Rules here apply to devices from 1280px and up */
 @media (min-width: 1279px) {
-  .ui-table tr th:first-child {
+  ::ng-deep #solicitudes .ui-table tr th:first-child {
     font-size: 1.3rem !important;
     min-width: 4rem;
   }

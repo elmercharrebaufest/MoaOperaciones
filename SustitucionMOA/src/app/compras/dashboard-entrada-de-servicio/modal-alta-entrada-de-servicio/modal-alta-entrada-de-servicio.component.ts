@@ -208,4 +208,8 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
       }
     );
   } 
+
+  cerrarModal() {
+    this.closeModal.emit();
+  }
 }

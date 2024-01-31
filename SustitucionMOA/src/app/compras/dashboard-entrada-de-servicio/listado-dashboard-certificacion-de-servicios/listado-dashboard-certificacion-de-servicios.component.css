@@ -1,18 +1,5 @@
-::ng-deep .estiloCalendarDashboard {
-    width: 33%;
-}
-
-.buscar {
-    background-color: #1C7CD5;
-    border-color: #1C7CD5;
-    color: white;
-    width: 100%;   
-    font-size: 18px;
-}
-
-.buttonBuscar {
-    margin-left: -121px;
-    margin-top: 4px;
+.content-wraper {
+  margin-top: 0;
 }
 
 body.ui-paginator.ui-dropdown {
@@ -23,16 +10,14 @@ body.ui-paginator.ui-dropdown {
     width: 10% !important;
 }
 
-.padding{
-  padding: 8px;
+#certificaciones .myRow {
+  margin: 0 0 2rem 0;
+  padding: 0;
 }
-  
+
 .title-fix {
-    border-top-width: 1px;
-    border-top-style: solid;
     border-left-width: 0px;
     border-left-style: solid;
-    padding-left: 20px;
 }
 
 .container-button {
@@ -55,6 +40,8 @@ body.ui-paginator.ui-dropdown {
     font-size: 16px;
 }
 
+
+/* SEARCH PANEL */
 .btn-buscar {
     top: 35px;
 }
@@ -72,86 +59,120 @@ body.ui-paginator.ui-dropdown {
   visibility: hidden !important;
 }
 
+.buscar {
+  background-color: #1C7CD5;
+  border-color: #1C7CD5;
+  color: white;
+  width: 100%;
+  font-size: 18px;
+}
 
-/* TABLES */
+.buttonBuscar {
+  margin-left: -121px;
+  margin-top: 4px;
+}
+
+::ng-deep .estiloCalendarDashboard {
+  width: 33%;
+}
+
+::ng-deep .autoCompleteStyle {
+  z-index: 2;
+  position: relative;
+}
+
+.styled-input {
+  font-family: "Roboto Condensed", Arial, sans-serif;
+  border: 1px solid #DDDDDD;
+  border-radius: 4px;
+  border-radius: 4px 4px 4px 4px;
+  -moz-border-radius: 4px 4px 4px 4px;
+  -webkit-border-radius: 4px 4px 4px 4px;
+  width: 100%;
+  height: 40px;
+  font-size: 16px;
+}
+
+::ng-deep .mySearch .ui-autocomplete-loader.pi.pi-spinner.pi-spin {
+  margin: 0 auto !important;
+}
+/* SEARCH PANEL END */
+
+
+/* TABLE */
 .emptyData {
   text-align: center;
 }
 
-.table-container {
-  border: 1px solid rgb(200, 200, 200);
-  padding: 0;
+::ng-deep #certificaciones .ui-table-wrapper:not(.level4 .ui-table-wrapper) {
+  overflow: auto;
 }
 
-::ng-deep .ui-table table {
+::ng-deep #certificaciones .ui-table table {
   border-collapse: collapse;
   width: 100%;
   table-layout: auto;
 }
 
-::ng-deep table th {
+::ng-deep #certificaciones table th {
   word-wrap: normal;
   white-space: nowrap;
   width: max-content;
-  color: white !important;
+  color: #fff !important;
   text-align: center;
 }
 
-::ng-deep .level1 th, .ui-sortable-column.ui-state-highlight {
+::ng-deep #certificaciones .level1 th, .ui-sortable-column.ui-state-highlight {
   background-color: #666 !important;
 }
 
-::ng-deep .level2 th {
+::ng-deep #certificaciones .level2 th {
   background-color: #075088 !important;
 }
 
-::ng-deep .level3 th {
+::ng-deep #certificaciones .level3 th {
   background-color: #1C7CD5 !important;
 }
 
-::ng-deep .level4 th {
+::ng-deep #certificaciones .level4 th {
   background-color: #4760ac !important;
 }
 
-::ng-deep .level4 th:first-child {
-  min-width: 9rem;
-}
+  ::ng-deep #certificaciones .level4 th:first-child {
+    min-width: 9rem;
+  }
 
-::ng-deep .ui-table tr {
+::ng-deep #certificaciones .ui-table tr {
   font-size: 1.3rem !important;
   width: max-content;
 }
 
-::ng-deep .ui-table tr th:first-child:not(.level4 tr th:first-child) {
-  font-size: 0 !important;
-  min-width: 4rem;
-}
+  ::ng-deep #certificaciones .ui-table tr th:first-child:not(.level4 tr th:first-child) {
+    font-size: 0 !important;
+    min-width: 4rem;
+  }
 
-::ng-deep table td {
+::ng-deep #certificaciones table td {
   text-align: left;
   white-space: nowrap;
 }
 
-::ng-deep table td:first-child {
-  max-width: 0;
-}
+  ::ng-deep #certificaciones table td:first-child {
+    max-width: 0;
+  }
 
-::ng-deep .ui-table-wrapper {
-  overflow: auto;
-}
-
-::ng-deep th:first-child {
+::ng-deep #certificaciones th:first-child {
   max-width: 6rem;
 }
 
-::ng-deep i.ui-sortable-column-icon {
+::ng-deep #certificaciones i.ui-sortable-column-icon {
   color: white;
   font-size: 1.3rem;
   padding-left: .8rem;
 }
 
-::ng-deep .level3 i.pi-chevron-down,
-::ng-deep .level3 i.pi-chevron-right {
+::ng-deep #certificaciones .level3 i.pi-chevron-down,
+::ng-deep #certificaciones .level3 i.pi-chevron-right {
   padding-left: .6rem;
   vertical-align: sub;
 }
@@ -175,23 +196,8 @@ body.ui-paginator.ui-dropdown {
   display: block;
   margin: auto;
 }
+/* TABLE END */
 
-::ng-deep .autoCompleteStyle {
-    z-index: 2;
-    position: relative;
-}
-
-.styled-input {
-    font-family: "Roboto Condensed", Arial, sans-serif;
-    border: 1px solid #DDDDDD;
-    border-radius: 4px;
-    border-radius: 4px 4px 4px 4px;
-    -moz-border-radius: 4px 4px 4px 4px;
-    -webkit-border-radius: 4px 4px 4px 4px;
-    width: 100%;
-    height: 40px;
-    font-size: 16px;
-}
 /* Rules here apply to devices from 1400px and up */
 @media (min-width: 1399px) {
     .delete-icon {

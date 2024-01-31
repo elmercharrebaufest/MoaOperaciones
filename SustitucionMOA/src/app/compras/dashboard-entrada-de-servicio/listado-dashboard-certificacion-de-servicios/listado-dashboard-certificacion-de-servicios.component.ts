@@ -19,6 +19,7 @@ import { FiltroFechaComponent } from './../../../common/view-child/filtro-fecha/
 import { ConfirmationService } from 'primeng/api';
 import { MensajeComponent } from '../../../common/view-child/mensaje/mensaje.component';
 import { ProveedorModel } from '../../../modelos/proveedor-model';
+import { forEach } from '@angular/router/src/utils/collection';
 
 
 
@@ -257,11 +258,11 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
       this.getListarPO(this.proveedor, this.ordenCompraId, this.fechaInicio, this.fechaFin);
   }
 
-  deleteES(ItemNumero: any) {
+  deleteES(Id: any) {
     this.confirmationService.confirm({
       message: 'Esta a punto de eliminar la entrada de servicio. <b>¿Desea confirmar?</b>',
         accept: () => {
-          this.deleteById(ItemNumero);
+          this.deleteById(Id);
         },
         reject: () => {
 
@@ -270,8 +271,8 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
     );
   }
 
-  deleteById(ItemNumero) {
-    this.service.deleteById(ItemNumero).subscribe(
+  deleteById(Id) {
+    this.service.deleteById(Id).subscribe(
       (result:any) => {
         if (result.logout == true) {
           this.sessionDataService.logout();
@@ -338,7 +339,19 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
                     } else if (result.info != undefined) {
                         this.floatMsgService.setInfoMsg(result.info);
                     } else {
-                        this.proveedorList = result;
+                        class autoCompleteObject{
+                            valor: string;
+                            CodigoProveedor: string;
+                        };
+                        let provisional: any[] = new Array();
+
+                        result.forEach((element) => {
+                            let obj = new autoCompleteObject();
+                            obj.valor = element.CodigoProveedor + ' - ' + element.RazonSocial;
+                            obj.CodigoProveedor = element.CodigoProveedor;
+                            provisional.push(obj)
+                        });
+                        this.proveedorList = provisional;
                     }
                 },
                 error => {

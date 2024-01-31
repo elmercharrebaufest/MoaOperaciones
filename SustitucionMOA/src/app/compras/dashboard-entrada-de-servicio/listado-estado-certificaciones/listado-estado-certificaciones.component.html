@@ -1,17 +1,17 @@
-<section class="container-fluid clearfix">
-  <div class="row titleSection">
-      <div class="col-xs-12 col-sm-10"> <strong>Dashboard - Solicitudes de certificaciones</strong></div>
-  </div>
-  <br>
-</section>
-
-
 <div id="solicitudes" class="content-wraper">
   
-  <spinner></spinner>
-  
-  <!-- <app-filtro-dashboard-certificacion-de-servicios></app-filtro-dashboard-certificacion-de-servicios> -->
+  <!-- HEADER -->
+  <section class="container-fluid clearfix">
+    <div class="row titleSection">
+      <div class="col-xs-12 col-sm-10"> <strong>Dashboard - Solicitudes de certificaciones</strong></div>
+    </div>
+    <br>
+  </section>
+  <!-- HEADER END -->
 
+  <spinner></spinner>
+
+  <!-- <app-filtro-dashboard-certificacion-de-servicios></app-filtro-dashboard-certificacion-de-servicios> -->
   <!-- TABLE 1 -->
   <p-table #tabla *ngIf="displayContent()"
            class="level1"
@@ -51,8 +51,8 @@
         <th title="Acciones">Acciones</th>
         <th title="Reasignar">Reasignar</th>
         <!--
-      <th title="Vendedor">Vendedor</th>
-      -->
+        <th title="Vendedor">Vendedor</th>
+        -->
       </tr>
     </ng-template>
     <!-- TABLE 1 HEADERS END -->
@@ -79,10 +79,10 @@
           <button type="button" pButton icon="pi pi-times" class="btn reject-btn"></button>
         </td>
         <!--<td>
-        <div class="styled-select" style="max-width: fit-content;">
-          <dropdown [tipoDropdown]="'filtroSC'" [options]="filtroVendedor"></dropdown>
-        </div>
-      </td>-->
+          <div class="styled-select" style="max-width: fit-content;">
+            <dropdown [tipoDropdown]="'filtroSC'" [options]="filtroVendedor"></dropdown>
+          </div>
+        </td>-->
       </tr>
     </ng-template>
     <!-- TABLE 1 BODY END -->
