@@ -375,6 +375,9 @@ namespace SustitucionMOATest.Services
             TipoSolpSap = 1,
             NombreDeObra = "obra",
             TrabajoYaHecho = false,
+            THProveedorDirecto = false,
+            THAjustePolinomica = false,
+            THServicioPermanente = false,
             FiscalContrato = "fiscal",
             Telefono = "3332323",
             Email = "bmelgarejo@test.com",
@@ -394,6 +397,7 @@ namespace SustitucionMOATest.Services
             DiasEjecucion = 1,
             ObservacionesCotizacion = "",
             TieneCondicionesGenerales = false,
+            EditarCondicionesEspeciales = false,
             Posiciones = new List<SolpPosicionDto>
                 {
                     new SolpPosicionDto
@@ -2035,8 +2039,9 @@ namespace SustitucionMOATest.Services
         public void TraerSolpIdOk()
         {
             var solpLocal = solp;
-            solpLocal.UsuarioCompras = null;
-            solpLocal.UsuarioCreacion = null;
+            solpLocal.EstadoSolpSap = new TablaSap { CodigoSap = "05" };
+            solpLocal.UsuarioCompras = new UsuarioCompras();
+            solpLocal.UsuarioCreacion = new Usuario { Id = 1, Mail = "bmelgarejo@prueba.com", TipoUsuario = new TipoUsuario { Id = 1, Nombre = "", NombreCorto = "" } };
             repositorioMock.Setup(y => y.Obtener(It.IsAny<IEnumerable<Expression<Func<Solp, object>>>>(), It.IsAny<Expression<Func<Solp, bool>>>())).Returns(solpLocal);
             repositorioMock.Setup(y => y.Obtener<Usuario>(It.IsAny<int>())).Returns(new Usuario { Proveedores = new List<Proveedor>() });
             var result = target.TraerSolpId(1);
