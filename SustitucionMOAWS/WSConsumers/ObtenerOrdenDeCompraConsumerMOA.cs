@@ -10,6 +10,7 @@ using SustitucionMOAWS.Interfaces;
 using SustitucionMOAWS.ObtenerOrdenDeCompraWebServiceMOA;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Runtime.Remoting.Messaging;
@@ -632,12 +633,12 @@ namespace SustitucionMOAWS.WSConsumers
                     if (calcularPorcentaje == true && (itemDto.CantidadReal != null && itemDto.CantidadReal != 0))
                     {
                         double res = Convert.ToDouble((itemDto.CantidadReal * 100) / itemDto.Cantidad);
-                        itemDto.Porcentaje = res.ToString("0.##");
+                        itemDto.Porcentaje = res.ToString("0.##", CultureInfo.InvariantCulture);
 
                         if (itemDto.Porcentaje.EndsWith(".00"))
                         {
                             var redondeo = Math.Round(res);
-                            itemDto.Porcentaje = res.ToString();
+                            itemDto.Porcentaje = res.ToString(CultureInfo.InvariantCulture);
                         }
                     }
                 }
