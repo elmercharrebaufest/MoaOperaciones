@@ -1,14 +1,15 @@
-.alta-certificacion .header-table {
+#alta-certificacion .header-table {
   background-color: #075088 !important;
   color: white !important;
   border: none !important;
   width: 50%;
 }
 
-.alta-certificacion tbody th {
+#alta-certificacion tbody th {
   width: 21% !important;
   color: #333 !important;
   white-space: normal;
+  text-align: left;
 }
 
 .container-table{

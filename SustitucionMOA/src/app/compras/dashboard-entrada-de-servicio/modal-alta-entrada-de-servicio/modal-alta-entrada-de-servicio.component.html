@@ -1,11 +1,11 @@
 
-        <p-dialog
+        <p-dialog id="alta-certificacion"
             header="Alta ES - Certificación de servicio"
             [(visible)]="showModal"
             [style]="{ width: '50vw' }"
             (onHide)="this.closeModal.emit();"
         >
-            <div class="container-table alta-certificacion" *ngIf="step <= itemSelected.length && !showAllTables">
+            <div class="container-table" *ngIf="step <= itemSelected.length && !showAllTables">
                 <ng-container *ngFor="let fila of itemSelected; let i = index">
                     <div class="d-flex-1" *ngIf="step === i + 1">
                         <table class="table">
