@@ -371,7 +371,8 @@
             <div class="modal-body" style="padding-top:0;">
 
                 <!-- DETALLE -->
-
+                <mensaje #mensajeModalVer></mensaje>
+                <spinner #spinnerModalVer></spinner>
                 <div class="content-wraper" style="margin-top:0;padding-top:0">
                     <!--ALTA PROVEEDOR GRANOS-->
                     <div class="row myRow firstSection roundedInfo" id="container"
@@ -1142,6 +1143,18 @@
                                 (click)="abrirEditar(empresaSeleccionada.Id)">
                                 Editar Alta
                             </button>
+
+                            <div style="display:flex;gap:1rem;width:fit-content" *ngIf="puedeModificarEstado">
+                                <p-dropdown [options]="descripcionEstadoAlta" [(ngModel)]="nuevoEstadoProveedor"
+                                    [filter]="true">
+                                </p-dropdown>
+                                <button pButton class="ui-button-raised ui-button-success save-btn"
+                                    pTooltip="Modificar Estado"
+                                    *ngIf="empresaSeleccionada.EstadoAprobacionDescripcion != nuevoEstadoProveedor"
+                                    (click)="modificarEstadoProveedor(empresaSeleccionada)"><i
+                                        class="pi pi-save"></i></button>
+
+                            </div>
                         </div>
                     </div>
                     <div class="row" *ngIf="empresaSeleccionada.IdTipoUsuario != 5 && !pantallaEditarAlta">

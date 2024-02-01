@@ -72,6 +72,9 @@ import { UsuarioAuditoriaListComponent } from './usuario/usuario-auditoria-list/
 import { LegajoExternoComponent } from './compras/legajo-externo/legajo-externo.component';
 import { GlobalErrorHandler } from "./common/services/GlobalErrorHandler";
 
+import { DropdownModule } from 'primeng/dropdown';
+import { ButtonModule } from "primeng/button";
+import { TooltipModule } from "primeng/tooltip";
 
 @NgModule({
     imports: [
@@ -99,7 +102,10 @@ import { GlobalErrorHandler } from "./common/services/GlobalErrorHandler";
         ComprasModule,
         ConfirmDialogModule,
         MultiSelectModule,
-        ToastModule
+        ToastModule,
+        DropdownModule,
+        ButtonModule,
+        TooltipModule
     ],
     declarations: [
         AppComponent,

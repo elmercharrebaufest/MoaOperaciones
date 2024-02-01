@@ -33,5 +33,7 @@ namespace SustitucionMOAUtils.Interfaces
         string AgregarObservacion(int proveedorId, string observacion, string usuarioMail);
 
         Resultado VerificarExistenciaEmpresa(string cuit);
+
+        int ModificarEstadoProveedor(int proveedorId, string nuevoEstado, string emailUsuario);
     }
 }

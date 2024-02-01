@@ -768,5 +768,35 @@ namespace SustitucionMOAUtils.Services
 
             return resultado;
         }
+        public int ModificarEstadoProveedor(int proveedorId, string nuevoEstado, string emailUsuario)
+        {
+            var proveedor = this.repositorio.Obtener<Proveedor>(proveedorId);
+
+            if (proveedor == null)
+            {
+                throw new ValidationCustomException("No se encontró el proveedor en el sistema.");
+            }
+
+            var usuario = repositorio.Obtener<Usuario>(u=>u.Mail == emailUsuario);
+            if (!usuario.TienePermiso(PermisoEnum.ModificarEstadoProveedor))
+            {
+                throw new ValidationCustomException("Usuario sin permisos.");
+            }
+            var nuevoEstadoEnum = EstadoAprobacionHelper.FromStr(nuevoEstado);
+            proveedor.EstadoAprobacion = nuevoEstadoEnum;
+
+            var historialAprobacion = new ProveedorHistorialAprobacion { 
+                EstadoAprobacion = nuevoEstadoEnum,
+                Observacion = "Se modifico manualmente el estado",
+                Usuario = usuario,
+                Proveedor = proveedor,
+                Fecha = DateTime.Now
+            };
+
+            repositorio.Agregar<ProveedorHistorialAprobacion>(historialAprobacion);
+            proveedor.HistorialAprobaciones.Add(historialAprobacion);
+            repositorio.GuardarCambios();
+            return (int)nuevoEstadoEnum;
+        }
     }
 }

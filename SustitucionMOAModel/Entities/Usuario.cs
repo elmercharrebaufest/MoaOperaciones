@@ -350,6 +350,7 @@ namespace SustitucionMOAModel.Entities
                 case "HANGFIREDASHBOARD": return PermisoEnum.HangfireDashboard;
                 case "VER ORDENES DE CARGA RESIDUOS": return PermisoEnum.VerOrdenesDeCargaResiduos;
                 case "VER ORDENES DE CARGA RESIDUOS ADMIN": return PermisoEnum.VerOrdenesDeCargaResiduosAdmin;
+                case "MODIFICAR ESTADO PROVEEDOR": return PermisoEnum.ModificarEstadoProveedor;
 
                 //default: throw new Exception("Permiso no mapeado: " + permisoStr);
                 default: return null;
