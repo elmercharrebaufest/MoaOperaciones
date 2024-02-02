@@ -1,15 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using System.Web;
 using System.Web.Mvc;
 using SustitucionMOAAssets;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOASecurity;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
-using SustitucionMOAUtils.Services;
 
 namespace SustitucionMOA.Controllers
 {
@@ -626,7 +622,7 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                return JsonCustom(_liquidacionService.descargaComprobantesNG(CodigoProveedorSAP, FechaDocumento, NumeroLegalDocumento).pdf);
+                return JsonCustom(_liquidacionService.descargaComprobantesNG(CodigoProveedorSAP, FechaDocumento, NumeroLegalDocumento).Pdf);
             }
             catch (InfoCustomException e)
             {
@@ -736,7 +732,7 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                return Json(new { data = _liquidacionService.GetLiquidacionInformadas(SessionPersister.Proveedor)}, JsonRequestBehavior.AllowGet);
+                return Json(new { data = _liquidacionService.GetLiquidacionInformadas(SessionPersister.Proveedor) }, JsonRequestBehavior.AllowGet);
             }
             catch (InfoCustomException e)
             {

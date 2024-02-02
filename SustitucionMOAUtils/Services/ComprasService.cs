@@ -1,6 +1,4 @@
-﻿using DocumentFormat.OpenXml.Office2010.Excel;
-using DocumentFormat.OpenXml.Spreadsheet;
-using HandlebarsDotNet;
+﻿using HandlebarsDotNet;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
 using iTextSharp.tool.xml;
@@ -9,17 +7,14 @@ using iTextSharp.tool.xml.parser;
 using iTextSharp.tool.xml.pipeline.css;
 using iTextSharp.tool.xml.pipeline.end;
 using iTextSharp.tool.xml.pipeline.html;
-using SustitucionMOAAssets;
 using SustitucionMOAFotmatter;
 using SustitucionMOAModel.Consultas;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
-using SustitucionMOAModel.Models.DBMap.Pesada;
 using SustitucionMOAModel.Models.WSMapMOA;
 using SustitucionMOAModel.Models.WSMapMOA.Compras;
-using SustitucionMOAModel.Models.WSMapMOA.Pago.NoGranos;
 using SustitucionMOAModel.Models.WSMapMOA.Vendedor.Detalle;
 using SustitucionMOARepositorio;
 using SustitucionMOARepositorio.ConsultasEF;
@@ -78,6 +73,7 @@ namespace SustitucionMOAUtils.Services
         private readonly IAgregarRegistroInfoConsumerMOA agregarRegistroInfoConsumerMOA;
         private readonly IReporteOrdenDeCompraConsumerMOA reporteOrdenDeCompraConsumerMOA;
         private readonly IObtenerUnidadesDeMedidaAlternativasConsumerMOA obtenerUnidadesDeMedidaConsumerMOA;
+        private readonly IObtenerPDFOrdenCompraConsumerMOA obtenerPDFOrdenCompraConsumerMOA;
 
         private readonly string rutaArchivosCompras = ConfigurationManager.AppSettings["RutaArchivosCompras"];
         private readonly IEmailService emailService;
@@ -105,7 +101,8 @@ namespace SustitucionMOAUtils.Services
             IVendedoresConsumerMOA vendedoresConsumerMOA,
             IAgregarRegistroInfoConsumerMOA agregarRegistroInfoConsumerMOA,
             IEmailService emailService, IReporteOrdenDeCompraConsumerMOA reporteOrdenDeCompraConsumerMOA,
-            IObtenerUnidadesDeMedidaAlternativasConsumerMOA obtenerUnidadesDeMedidaConsumerMOA)
+            IObtenerUnidadesDeMedidaAlternativasConsumerMOA obtenerUnidadesDeMedidaConsumerMOA,
+            IObtenerPDFOrdenCompraConsumerMOA obtenerPDFOrdenCompraConsumerMOA)
         {
             this.repositorio = repositorio;
             this.CecoSolpConsumerMOA = CecoSolpConsumerMOA;
@@ -133,6 +130,7 @@ namespace SustitucionMOAUtils.Services
             this.emailService = emailService;
             this.reporteOrdenDeCompraConsumerMOA = reporteOrdenDeCompraConsumerMOA;
             this.obtenerUnidadesDeMedidaConsumerMOA = obtenerUnidadesDeMedidaConsumerMOA;
+            this.obtenerPDFOrdenCompraConsumerMOA = obtenerPDFOrdenCompraConsumerMOA;
         }
 
         public RespuestaGuardarSOLP GuardarSolp(SolpDto solp, HttpFileCollectionBase adjuntos)
@@ -1547,7 +1545,7 @@ namespace SustitucionMOAUtils.Services
 
                     PdfPCell obra = new PdfPCell();
 
-                    obra.AddElement(new Paragraph($"Nombre obra: {solp.NombreDeObra}"));
+                    obra.AddElement(new Paragraph($"Nombre de obra: {solp.NombreDeObra}"));
                     tablaHeader.AddCell(obra);
 
                     var imagen = Image.GetInstance(@"https://b2cmoagro.blob.core.windows.net/moaoperaciones/logo.png");
@@ -2114,8 +2112,8 @@ namespace SustitucionMOAUtils.Services
                     }
                     catch (Exception e)
                     {
-                        Logger.Log.Error(new Exception($"Error al enviar mail ActualizarFechaLiberacionOC en adjudicacion: " + adjudicaciones.Last().Id));
-                        Logger.Log.Error(e);
+                        Log.Error(new Exception($"Error al enviar mail ActualizarFechaLiberacionOC. Adjudicacion_Id: " + adjudicaciones.Last().Id));
+                        Log.Error(e);
                     }
                 }
             }
@@ -4489,7 +4487,7 @@ namespace SustitucionMOAUtils.Services
         {
             var po = repositorio.Obtener<PeticionDeOfertaUsuario>(idPeticionDeOfertaUsuario);
             var pdf = GenerarPDFPeticionDeOferta(po.PeticionDeOferta, po.Usuario.ObtenerProveedor().CodigoProveedor);
-            return new Pdf { data = pdf, name = "PO" + po.Usuario.ObtenerProveedor().CUIT + ".pdf" };
+            return new Pdf { Data = pdf, Name = "PO" + po.Usuario.ObtenerProveedor().CUIT + ".pdf" };
         }
 
         private byte[] GenerarPDFOrdenCompra(Adjudicacion adjudicacion, string codigoProveedor)
@@ -4747,43 +4745,39 @@ namespace SustitucionMOAUtils.Services
         {
             try
             {
-                Logger.Log.Info($"EnviarMailOrdenCompra numero{adjudicacion.Id}");
-                Logger.Log.Info($"copia mail comprador {adjudicacion.Usuario.Mail}");
-                Logger.Log.Info($"mail al proveedor adjudicado {adjudicacion.Cotizacion.PeticionDeOfertaUsuario.Usuario.Mail}");
-                Logger.Log.Info($"Nueva OC creada - {adjudicacion.NumeroOrdenDeCompra}");
-                Logger.Log.Info($"fecha {DateTime.Now}");
+                Log.Info($"EnviarMailOrdenCompra Adjudicacion_Id: {adjudicacion.Id}");
+                Log.Info($"Nueva OC creada con número {adjudicacion.NumeroOrdenDeCompra} y fecha {DateTime.Now}");
+                Log.Info($"Copia mail comprador: {adjudicacion.Usuario.Mail}");
+                Log.Info($"Mail al proveedor adjudicado: {adjudicacion.Cotizacion.PeticionDeOfertaUsuario.Usuario.Mail}");
 
                 var copia = new List<string> { adjudicacion.Usuario.Mail };
 
-
                 if (!string.IsNullOrEmpty(adjudicacion.Solp.Pliego.Email))
                 {
-                    //Mail del solicitante
                     copia.Add(adjudicacion.Solp.Pliego.Email);
-                    Log.Info($"copia mail solicitante paso 1 {adjudicacion.Solp.Pliego.Email}");
+                    Log.Info($"Copia mail solicitante paso 1: {adjudicacion.Solp.Pliego.Email}");
                 }
 
                 if (!string.IsNullOrEmpty(adjudicacion.Solp?.UsuarioCreacion?.Mail))
                 {
                     copia.Add(adjudicacion.Solp.UsuarioCreacion.Mail);
-                    Log.Info($"copia mail solicitante {adjudicacion.Solp.UsuarioCreacion.Mail}");
+                    Log.Info($"Copia mail solicitante: {adjudicacion.Solp.UsuarioCreacion.Mail}");
                 }
-                var asunto = "";
 
+                var asunto = $"Nueva OC creada - {adjudicacion.NumeroOrdenDeCompra} - {adjudicacion.Usuario.ObtenerRazonSocial()}";
 
                 var enviarA = new List<string> { adjudicacion.Cotizacion.PeticionDeOfertaUsuario.Usuario.Mail };
                 var adicionales = adjudicacion.Cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.UsuariosAdicionales;
                 enviarA.AddRange(adicionales.Where(a => a.Usuario.CUITRegistro == adjudicacion.Cotizacion.PeticionDeOfertaUsuario.Usuario.CUITRegistro).Select(a => a.Usuario.Mail).ToList());
 
-                asunto += $"Nueva OC creada - {adjudicacion.NumeroOrdenDeCompra} - {adjudicacion.Usuario.ObtenerRazonSocial()}";
-                var pdf = GenerarPDFOrdenCompra(adjudicacion, adjudicacion.Usuario.ObtenerCodigoProveedor());
+                var pdf = obtenerPDFOrdenCompraConsumerMOA.Request(adjudicacion.NumeroOrdenDeCompra);
 
-                emailService.EnviarMail(enviarA, asunto, "", copia, CuerpoMailOrdenCompra(adjudicacion, mensaje), pdf, "Orden de Compra.pdf");
+                emailService.EnviarMail(enviarA, asunto, "", copia, CuerpoMailOrdenCompra(adjudicacion, mensaje), pdf, $"Orden de Compra {adjudicacion.NumeroOrdenDeCompra}.pdf");
             }
             catch (Exception e)
             {
-                Logger.Log.Info($"Error al enviar mail {adjudicacion.Id}  NumeroOrdenDeCompra {adjudicacion.NumeroOrdenDeCompra}");
-                Logger.Log.Error(e);
+                Log.Info($"Error en EnviarMailOrdenCompra. Adjudicacion_Id {adjudicacion.Id} - NumeroOrdenDeCompra: {adjudicacion.NumeroOrdenDeCompra}");
+                Log.Error(e);
             }
         }
 

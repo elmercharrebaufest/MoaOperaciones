@@ -182,7 +182,7 @@ namespace SustitucionMOA.Controllers
         }
 
         [HttpGet]
-        public ActionResult ListarSolpComprador(int? pagina = null, int? itemsPorPagina = null, string orden = null, string columna = null, string nroSolp = null, string estados = null, string usuarios = null, string centros = null, string grupoDeCompras = null, 
+        public ActionResult ListarSolpComprador(int? pagina = null, int? itemsPorPagina = null, string orden = null, string columna = null, string nroSolp = null, string estados = null, string usuarios = null, string centros = null, string grupoDeCompras = null,
             DateTime? fechaDesde = null, DateTime? fechaHasta = null, bool? sap = null, bool? mantenimiento = null, bool? web = null, bool? repoAutomatica = null, string claseDocumento = null, string tipoImputacion = null, string valorTipoImputacion = null)
         {
             try
@@ -942,7 +942,7 @@ namespace SustitucionMOA.Controllers
             try
             {
                 var pdf = service.GenerarPeticionDeOfertaUsuarioPdf(Math.Abs(idPeticionDeOfertaUsuario));
-                return JsonCustom(File(pdf.data, System.Net.Mime.MediaTypeNames.Application.Octet, pdf.name));
+                return JsonCustom(File(pdf.Data, System.Net.Mime.MediaTypeNames.Application.Octet, pdf.Name));
             }
             catch (InfoCustomException e)
             {
@@ -1668,7 +1668,7 @@ namespace SustitucionMOA.Controllers
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
         }
-        
+
         [HttpPost]
         public ActionResult ModificarOrdenDeCompra(string json)
         {

@@ -37,16 +37,16 @@ namespace SustitucionMOAWS.WSConsumers
 
             if (error != null)
             {
-                result.error.codigo = error.CODIGO;
-                result.error.descripcion = error.DESCRIPCION;
-                result.error.tipo = error.TIPO;
+                result.Error.codigo = error.CODIGO;
+                result.Error.descripcion = error.DESCRIPCION;
+                result.Error.tipo = error.TIPO;
             }
 
             if (pdf != null && pdf.Length > 0)
             {
-                result.pdf = new Pdf()
+                result.Pdf = new Pdf()
                 {
-                    data = pdf
+                    Data = pdf
                 };
 
             }

@@ -1,18 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SustitucionMOAModel.Models.WSMapMOA.PDF
+﻿namespace SustitucionMOAModel.Models.WSMapMOA.PDF
 {
     public class PDFResponse
     {
-        public Pdf pdf { get; set; }
-        public ErrorWS error { get; set; }
+        public Pdf Pdf { get; set; }
 
-        public PDFResponse() {
-            this.error = new ErrorWS();
+        public ErrorWS Error { get; set; }
+
+        public PDFResponse()
+        {
+            Error = new ErrorWS();
         }
     }
 }

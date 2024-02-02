@@ -54,6 +54,7 @@ namespace SustitucionMOATest.Services
         private Mock<IEmailService> emailServiceMock;
         private Mock<IReporteOrdenDeCompraConsumerMOA> reporteOrdenDeCompraConsumerMOAMock;
         private Mock<IObtenerUnidadesDeMedidaAlternativasConsumerMOA> obtenerUnidadesDeMedidaAlternativasConsumerMOAMock;
+        private Mock<IObtenerPDFOrdenCompraConsumerMOA> obtenerPDFOrdenCompraConsumerMOAMock;
 
         private string filePath = "";
 
@@ -535,6 +536,7 @@ namespace SustitucionMOATest.Services
             emailServiceMock = new Mock<IEmailService>();
             reporteOrdenDeCompraConsumerMOAMock = new Mock<IReporteOrdenDeCompraConsumerMOA>();
             obtenerUnidadesDeMedidaAlternativasConsumerMOAMock = new Mock<IObtenerUnidadesDeMedidaAlternativasConsumerMOA>();
+            obtenerPDFOrdenCompraConsumerMOAMock = new Mock<IObtenerPDFOrdenCompraConsumerMOA>();
 
             httpContextServiceMock.Setup(x => x.ObtenerPathLogoMail()).Returns(TestContext.CurrentContext.TestDirectory + "\\Util\\LogoBaufest.png");
             filePath = Path.GetFullPath(TestContext.CurrentContext.TestDirectory + "\\Util\\LogoBaufest.png");
@@ -565,7 +567,8 @@ namespace SustitucionMOATest.Services
                 agregarRegistroInfoConsumerMOAMock.Object,
                 emailServiceMock.Object,
                 reporteOrdenDeCompraConsumerMOAMock.Object,
-                obtenerUnidadesDeMedidaAlternativasConsumerMOAMock.Object
+                obtenerUnidadesDeMedidaAlternativasConsumerMOAMock.Object,
+                obtenerPDFOrdenCompraConsumerMOAMock.Object
                 );
         }
 
@@ -1788,19 +1791,15 @@ namespace SustitucionMOATest.Services
                     {
                         PeticionDeOfertaUsuario = new PeticionDeOfertaUsuario
                         {
-                            Usuario = new Usuario
-                            {
-                                Mail = "bmelgarejo@prueba.com"
-                            },
+                            Usuario = new Usuario { Mail = "bmelgarejo@prueba.com" },
+                            PeticionDeOferta = new PeticionDeOferta { UsuariosAdicionales = new List<PeticionDeOfertaUsuarioAdicional>() }
                         }
                     },
                     Solp = solp
                 }
-
             };
 
-            repositorioMock
-                .Setup(y => y.Listar(It.IsAny<Expression<Func<Adjudicacion, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null))
+            repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<Adjudicacion, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null))
                 .Returns(adjudicaciones);
 
             emailServiceMock.Setup(y => y.EnviarMail(It.IsAny<List<string>>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<List<string>>(), It.IsAny<AlternateView>(),
@@ -1918,7 +1917,7 @@ namespace SustitucionMOATest.Services
             var tablaSap = new List<TablaSap> { new TablaSap { Codigo = "FINALIZADA", Tabla = "EstadoSolpSap", CodigoSap = "05", Descripcion = "Liberación concluida" } };
             repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<TablaSap, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null)).Returns(tablaSap);
             var result = target.ObtenerTablaSap("EstadoSolpSap");
-            
+
             Assert.That(result, Is.Not.Null);
             Assert.AreEqual(result.GetType(), tablaSapDto.GetType());
         }
@@ -1933,7 +1932,7 @@ namespace SustitucionMOATest.Services
                 .Returns(new List<SolpPosicion> { new SolpPosicion { Id = 1, ValorTipoImputacion_Id = 11 } });
             repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<TablaSap, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null)).Returns(tablaSap);
             var result = target.ListarTablaSap(new List<string> { "OrdenSolpSap" });
-            
+
             Assert.That(result, Is.Not.Null);
             Assert.AreEqual(result.GetType(), tablaSapDto.GetType());
         }

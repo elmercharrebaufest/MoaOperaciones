@@ -1160,13 +1160,13 @@ namespace SustitucionMOA.Controllers
                 var excel = crearContratoService.ExcelModeloAltaMasiva();
                 PDFResponse result = new PDFResponse
                 {
-                    pdf = new Pdf()
+                    Pdf = new Pdf()
                     {
-                        data = excel
+                        Data = excel
                     }
                 };
 
-                return JsonCustom(result.pdf);
+                return JsonCustom(result.Pdf);
             }
             catch (InfoCustomException e)
             {
