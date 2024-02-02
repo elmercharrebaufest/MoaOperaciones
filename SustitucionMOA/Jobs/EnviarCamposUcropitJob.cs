@@ -15,6 +15,8 @@ using System.IO;
 using System.Linq;
 using System.Net.Mail;
 using System.Configuration;
+using Newtonsoft.Json;
+using System.Text;
 
 namespace SustitucionMOA.Jobs
 {
@@ -22,7 +24,6 @@ namespace SustitucionMOA.Jobs
     public class EnviarCamposUcropitJob : IEnviarCamposUcropitJob
     {
         private readonly IRepositorio repositorio;
-        private readonly int LIMITE_CAMPOS_POR_MAIL = 200;
         public EnviarCamposUcropitJob(IRepositorio repositorio)
         {
             this.repositorio = repositorio;
@@ -37,14 +38,17 @@ namespace SustitucionMOA.Jobs
                 {
                     return;
                 }
+
+                var cosechaAReportar = repositorio.Obtener<Configuracion>(c => c.Code== "CosechaParaEnvioUcropit").Value;
+                var limiteCamposPorMail = int.Parse(repositorio.Obtener<Configuracion>(c => c.Code == "CosechaParaEnvioUcropitTope").Value);
+
                 var camposAReportar = repositorio.Listar<CampoProveedor>(
                     cp =>
                         cp.CampoCosecha.ToneladasAprobadas == -1 &&
-                        cp.CampoCosecha.Cosecha.Nombre == "22-23"
+                        cp.CampoCosecha.Cosecha.Nombre == cosechaAReportar
 
                     ).Select(cp => new CampoReporteDTO
                     {
-                        IdScato = cp.CampoCosecha.Campo.IdScato,
                         Id = cp.CampoCosecha.Campo.Id,
                         RazonSocial = cp.RazonSocial,
                         CUIT = cp.CUIT,
@@ -56,14 +60,13 @@ namespace SustitucionMOA.Jobs
                         Longitud = cp.Longitud,
                         HectareasSoja = cp.HectareasSoja,
                         NombreCosecha = cp.CampoCosecha.Cosecha.Nombre,
-                        RutaKmz = cp.Archivo.Ruta
                     }).ToList();
 
                 if (!camposAReportar.Any())
                 {
                     throw new InfoCustomException("No se encontraron campos sustentables a reportar");
                 }
-                var excelFile = ExcelExport.ToExcel(camposAReportar, new string[] { "ID", "Codigo Operaciones", "Titular CCPP", "CUIT", "Nombre del Establecimiento", "Provincia", "Departamento", "Localidad", "Latitud", "Longitud", "Has de soja declaradas" }, string.Empty);
+                var excelFile = ExcelExport.ToExcel(camposAReportar, new string[] { "ID Scato", "ID Operaciones", "Titular CCPP", "CUIT", "Nombre del Establecimiento", "Provincia", "Departamento", "Localidad", "Latitud", "Longitud", "Has de soja declaradas" }, string.Empty);
 
                 var nombreArchivoXls = $"Listado campos {DateTime.Today:yyyy-MM-dd} - Cosecha {camposAReportar[0].NombreCosecha}.xls";
                 var nombreArchivoZip = $"Campos sustentables{DateTime.Today:yyyy-MM-dd} - Cosecha {camposAReportar[0].NombreCosecha}.zip";
@@ -77,35 +80,24 @@ namespace SustitucionMOA.Jobs
 
                 foreach (var campo in camposAReportar)
                 {
-
-                    string rutaArchivoKmz = string.Concat(ConfigurationManager.AppSettings["RutaArchivosCampoSustentable"], "/", campo.CUIT, "/", campo.Id, ".kmz");
-
-                    var kmzFileName = MakeValidFileName(string.Concat(string.Concat(campo.Id, "-", campo.Nombre, ".kmz")));
-
-                    ZipEntry entry = new ZipEntry(kmzFileName)
-                    {
-                        DateTime = DateTime.Now,
-                    };
-
-                    Stream stream = null;
+                    var fileName = ObtenerNombreArchivoDrive(campo);
                     try
                     {
-                        stream = new MemoryStream(File.ReadAllBytes(rutaArchivoKmz));
+                        CargarKmzEnZip(zipStream, fileName, campo);
                     }
-                    catch (Exception)
+                    catch (Exception e)
                     {
-                        stream = new MemoryStream(File.ReadAllBytes(campo.RutaKmz));
-
+                        Log.Error(e);
+                        continue;
                     }
+                    CargarJSONReporteCampoEnZip(zipStream, fileName,campo);
 
-                    zipStream.PutNextEntry(entry);
-                    StreamUtils.Copy(stream, zipStream, new byte[4096]);
-                    zipStream.CloseEntry();
+
                     counter += 1;
-                    if(counter == LIMITE_CAMPOS_POR_MAIL)
+                    if(counter == limiteCamposPorMail)
                     {
                         counter = 0;
-                        EnviarMail(excelFile,zipStream,nombreArchivoZip,nombreArchivoXls,outputMemStream);
+                        EnviarMail(excelFile,zipStream,nombreArchivoZip,nombreArchivoXls,outputMemStream, cosechaAReportar);
                         outputMemStream = new MemoryStream();
                         zipStream = new ZipOutputStream(outputMemStream);
                         zipStream.SetLevel(3);
@@ -114,7 +106,7 @@ namespace SustitucionMOA.Jobs
 
                 if(counter != 0)
                 {
-                    EnviarMail(excelFile, zipStream, nombreArchivoZip, nombreArchivoXls, outputMemStream);
+                    EnviarMail(excelFile, zipStream, nombreArchivoZip, nombreArchivoXls, outputMemStream, cosechaAReportar);
                 }
             }
             catch (Exception e)
@@ -122,15 +114,8 @@ namespace SustitucionMOA.Jobs
                 Log.Error(e);
             }
         }
-        private string MakeValidFileName(string name)
-        {
-            string invalidChars = System.Text.RegularExpressions.Regex.Escape(new string(System.IO.Path.GetInvalidFileNameChars()));
-            string invalidRegStr = string.Format(@"([{0}]*\.+$)|([{0}]+)", invalidChars);
 
-            return System.Text.RegularExpressions.Regex.Replace(name, invalidRegStr, "_");
-        }
-
-        private void EnviarMail(string excelFile, ZipOutputStream zipStream, string nombreArchivoZip, string nombreArchivoXls, MemoryStream outputMemStream)
+        private void EnviarMail(string excelFile, ZipOutputStream zipStream, string nombreArchivoZip, string nombreArchivoXls, MemoryStream outputMemStream, string cosechaAReportar)
         {
             zipStream.IsStreamOwner = false;
             zipStream.Close();
@@ -151,8 +136,8 @@ namespace SustitucionMOA.Jobs
             EmailSender.SendReporte(
                 new EnvioCamposSustentablesUcropit()
                 {
-                    Asunto = $"Campos Sustentables en Gestion - Cosecha 22-23",
-                    Cosecha="22-23",
+                    Asunto = $"Campos Sustentables en Gestion - Cosecha {cosechaAReportar}",
+                    Cosecha= cosechaAReportar,
                     Destinatario = ConfigurationManager.AppSettings["EmailToReporteCamposSustentables"],
                     Template = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "EnvioCamposSustentablesUcropit.html"),
                     Adjuntos = new List<Attachment>
@@ -164,6 +149,55 @@ namespace SustitucionMOA.Jobs
 
             sw.Dispose();
             outputMemStream.Dispose();
+        }
+
+        private string ObtenerNombreArchivoDrive(CampoReporteDTO campoReporte)
+        {
+            return $"{campoReporte.CUIT}_{campoReporte.Id}";
+        }
+        private void CargarJSONReporteCampoEnZip(ZipOutputStream zipStream,string fileName ,CampoReporteDTO campo) {
+
+            var reporteCertificadorJson = JsonConvert.SerializeObject(campo);
+            var jsonBytes = Encoding.UTF8.GetBytes(reporteCertificadorJson);
+
+            ZipEntry entry = new ZipEntry($"{fileName}.json")
+            {
+                DateTime = DateTime.Now,
+            };
+
+            CargarYCerrarZipEntry(zipStream,entry, new MemoryStream(jsonBytes));
+        }
+        private void CargarKmzEnZip(ZipOutputStream zipStream, string fileName, CampoReporteDTO campo)
+        {
+            string rutaArchivoKmz = string.Concat(ConfigurationManager.AppSettings["RutaArchivosCampoSustentable"], "/", campo.CUIT, "/", campo.Id, ".kmz");
+
+            if(!System.IO.File.Exists(rutaArchivoKmz)){
+                throw new Exception($"El archivo {rutaArchivoKmz} no se ha encontrado, se omite este campo");
+            }
+
+            ZipEntry entry = new ZipEntry($"{fileName}.kmz")
+            {
+                DateTime = DateTime.Now,
+            };
+
+            Stream stream = null;
+            try
+            {
+                stream = new MemoryStream(File.ReadAllBytes(rutaArchivoKmz));
+            }
+            catch (Exception)
+            {
+                stream = new MemoryStream(File.ReadAllBytes(campo.RutaKmz));
+
+            }
+
+            CargarYCerrarZipEntry(zipStream, entry, stream);
+        }
+        private void CargarYCerrarZipEntry(ZipOutputStream zipStream, ZipEntry entry, Stream stream)
+        {
+            zipStream.PutNextEntry(entry);
+            StreamUtils.Copy(stream, zipStream, new byte[4096]);
+            zipStream.CloseEntry();
         }
     }
 }

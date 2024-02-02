@@ -115,3 +115,12 @@ WHERE
 	OR
 	(Tabla = 'GrupoCompras' AND CodigoSap IN ('300', '600', '103', '215', '225', '228', '230', '231', '241', '401', '430', '455', '462', '601', '602', '603', '604', '605', '606', '607', '608', '609', '611', '612', '613', '614', '615', '616', '617', '618', '619', '620', '621', '622', '623', '624', '626', '627', '628', '629', '630', '631', '810'));
 
+IF NOT EXISTS (SELECT TOP 1 1 FROM Configuracion WHERE Code = 'CosechaParaEnvioUcropit') 
+BEGIN
+	insert into Configuracion values ('CosechaParaEnvioUcropit','22-23')
+END
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM Configuracion WHERE Code = 'CosechaParaEnvioUcropitTope') 
+BEGIN
+	insert into Configuracion values ('CosechaParaEnvioUcropitTope','200')
+END
