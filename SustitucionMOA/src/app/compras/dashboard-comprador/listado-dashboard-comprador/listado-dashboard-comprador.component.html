@@ -5,7 +5,9 @@
     <br>
 </section>
 <div style="padding-top: 0px !important;">
+   
     <div class="row">
+       
         <div class="col-md-3 col-lg-3">
             <p-multiSelect [options]="usuarioFiltro" [(ngModel)]="selectUsuario" defaultLabel="Usuario Solicitante"
                            [maxSelectedLabels]="1" selectedItemsLabel="{0} usuarios elegidos"></p-multiSelect>
@@ -27,7 +29,7 @@
             <div class="col-md-3">
                 <input class="col-xs-12 col-sm-12 col-md-12 col-lg-12 inputAltura" pInputText type="text" [(ngModel)]="nroSolp"
                        placeholder="Buscar por número de SOLP">
-            </div>
+            </div>  
             <div class="col-md-3 col-lg-3">
                 <p-multiSelect [options]="claseDocumentoFiltro" [(ngModel)]="selectClaseDocumento" defaultLabel="Clase de Documento"
                                [maxSelectedLabels]="1" selectedItemsLabel="{0} clases elegidas"></p-multiSelect>
@@ -42,14 +44,14 @@
             </div>
         </div>
         <div class="row myRow">
-            <div class="col-md-3 col-lg-3">
-                <p-calendar showButtonBar="true" [showIcon]="true" placeholder="Buscar por fechas"
-                            dateFormat="dd/mm/yy" (onSelect)="onSelect($event)" appendTo="body"
-                            [(ngModel)]="rangeDates" selectionMode="range" [readonlyInput]="true" [locale]="locale"
-                            (onClearClick)="returnToTodaysDate()">
-                </p-calendar>
+           
+            <div class="col-md-3" style="margin-top: 6px;">
+                <span class="padding1" style="margin-right: 5px;">
+                    <p-checkbox binary="true" label="SOLPs pendientes de tratar"
+                    class="checkboxFechas" [(ngModel)]="listarPendiente"></p-checkbox>
+                </span>
             </div>
-            <div class="col-md-4 col-lg-6" style="margin-top: 6px;">
+            <div class="col-md-3" style="margin-top: 6px;">
                 <span style="padding-right: 1px;">
                     <p-checkbox class="checkboxFechas" binary="true" label="SAP" [(ngModel)]="sap"></p-checkbox>
                 </span>
@@ -61,9 +63,16 @@
                     <p-checkbox class="checkboxFechas" binary="true" label="Web" [(ngModel)]="web"></p-checkbox>
                 </span>
                 <span class="padding1" style="margin-right: 5px;">
-                    <p-checkbox class="checkboxFechas" binary="true" label="Reposición Automática" pTooltip="Reposición Automática"
+                    <p-checkbox class="checkboxFechas" binary="true" label="RA" pTooltip="Reposición Automática"
                                 [(ngModel)]="repoAutomatica"></p-checkbox>
-                </span>
+                </span>               
+            </div>
+            <div class="col-md-2 col-lg-3">
+                <p-calendar showButtonBar="true" [showIcon]="true" placeholder="Buscar por fechas"
+                            dateFormat="dd/mm/yy" (onSelect)="onSelect($event)" appendTo="body"
+                            [(ngModel)]="rangeDates" selectionMode="range" [readonlyInput]="true" [locale]="locale"
+                            (onClearClick)="returnToTodaysDate()">
+                </p-calendar>
             </div>
             <div class="col-md-3" style="text-align: center; padding-right: 30px;">
                 <button class="btn buscar" (click)="onBuscar()">Buscar</button>
@@ -365,7 +374,8 @@
                 </tr>
             </ng-template>
         </p-table>
-        <p-paginator #paginator [rows]="10" [totalRecords]="length" (onPageChange)="handlePageEvent($event)"></p-paginator>
+        <p-paginator #paginator [rows]="pageSize" 
+        [totalRecords]="length" (onPageChange)="handlePageEvent($event)"></p-paginator>
     </div>
 
     <app-legajo [(displayLegajo)]="displayLegajo" [(usuarioProveedor)]="usuarioProveedor"

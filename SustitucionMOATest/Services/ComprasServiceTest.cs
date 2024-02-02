@@ -55,6 +55,7 @@ namespace SustitucionMOATest.Services
         private Mock<IReporteOrdenDeCompraConsumerMOA> reporteOrdenDeCompraConsumerMOAMock;
         private Mock<IObtenerUnidadesDeMedidaAlternativasConsumerMOA> obtenerUnidadesDeMedidaAlternativasConsumerMOAMock;
         private Mock<IObtenerPDFOrdenCompraConsumerMOA> obtenerPDFOrdenCompraConsumerMOAMock;
+        private Mock<IListarSolpPendientesConsumerMOA> listarSolpPendientesConsumerMOAMock;
 
         private string filePath = "";
 
@@ -536,6 +537,7 @@ namespace SustitucionMOATest.Services
             emailServiceMock = new Mock<IEmailService>();
             reporteOrdenDeCompraConsumerMOAMock = new Mock<IReporteOrdenDeCompraConsumerMOA>();
             obtenerUnidadesDeMedidaAlternativasConsumerMOAMock = new Mock<IObtenerUnidadesDeMedidaAlternativasConsumerMOA>();
+            listarSolpPendientesConsumerMOAMock = new Mock<IListarSolpPendientesConsumerMOA>();
             obtenerPDFOrdenCompraConsumerMOAMock = new Mock<IObtenerPDFOrdenCompraConsumerMOA>();
 
             httpContextServiceMock.Setup(x => x.ObtenerPathLogoMail()).Returns(TestContext.CurrentContext.TestDirectory + "\\Util\\LogoBaufest.png");
@@ -568,6 +570,7 @@ namespace SustitucionMOATest.Services
                 emailServiceMock.Object,
                 reporteOrdenDeCompraConsumerMOAMock.Object,
                 obtenerUnidadesDeMedidaAlternativasConsumerMOAMock.Object,
+                listarSolpPendientesConsumerMOAMock.Object,
                 obtenerPDFOrdenCompraConsumerMOAMock.Object
                 );
         }
@@ -2457,7 +2460,7 @@ namespace SustitucionMOATest.Services
             var listaSolp = new ListaPaginada<SolpDto>(new List<SolpDto> { new SolpDto { Id = 1, ItemsTotales = 7 } }, 1, 10, 5);
             repositorioMock.Setup(y => y.ListarConsultaPaginada(It.IsAny<ListarSolpConsulta>())).Returns(listaSolp);
 
-            var result = target.ListarSolpComprador(1, new Paginacion(), "nroSolp", null, null, false, false, true, false);
+            var result = target.ListarSolpComprador(1, new Paginacion(), "nroSolp", null, null, false, false, false, true, false);
             Assert.That(result, Is.Not.Null);
             Assert.AreEqual(listaSolp.GetType(), result.GetType());
         }

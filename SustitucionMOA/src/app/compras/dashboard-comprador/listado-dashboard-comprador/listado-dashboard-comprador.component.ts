@@ -44,6 +44,7 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
     mantenimiento: boolean = false;
     web: boolean = false;
     repoAutomatica: boolean = false;
+    listarPendiente: boolean = false;
     orden: string;
     columnaOrden: string;
     length = 0;
@@ -92,6 +93,7 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
         mantenimiento: boolean;
         web: boolean;
         repoAutomatica: boolean;
+        listarPendiente: boolean;
         usuarios: string[];
         estadoSolp: string[];
         gruposCompras: string[];
@@ -108,6 +110,7 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
             mantenimiento: false,
             web: false,
             repoAutomatica: false,
+            listarPendiente: false,
             usuarios: [],
             estadoSolp: [],
             gruposCompras: [],
@@ -211,7 +214,7 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
     listarSolp() {
         this.spinnerComponent.showIt();
         this.service.getListarSolpCompras(this.pageIndex, this.pageSize, this.orden, this.columnaOrden, this.nroSolp, this.selectEstadoSolp.join(","), this.selectUsuario.join(","), this.selectCentro.join(","), this.selectGrupoCompras.join(","),
-            this.fechaDesde, this.fechaHasta, this.sap, this.mantenimiento, this.web, this.repoAutomatica, this.selectClaseDocumento.join(","), this.selectTipoImputacion.join(","), this.selectValorTipoImputacion.join(","));
+            this.fechaDesde, this.fechaHasta, this.sap, this.mantenimiento, this.web, this.repoAutomatica, this.listarPendiente, this.selectClaseDocumento.join(","), this.selectTipoImputacion.join(","), this.selectValorTipoImputacion.join(","));
     }
 
     onOrder(columna: string) {
@@ -763,6 +766,7 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
         this.filtrosComprador.mantenimiento = this.mantenimiento;
         this.filtrosComprador.web = this.web;
         this.filtrosComprador.repoAutomatica = this.repoAutomatica;
+        this.filtrosComprador.listarPendiente = this.listarPendiente;
         this.filtrosComprador.usuarios = this.selectUsuario;
         this.filtrosComprador.estadoSolp = this.selectEstadoSolp;
         this.filtrosComprador.gruposCompras = this.selectGrupoCompras;
@@ -804,6 +808,7 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
             this.mantenimiento = filtrosGuardados.mantenimiento;
             this.web = filtrosGuardados.web;
             this.repoAutomatica = filtrosGuardados.repoAutomatica;
+            this.listarPendiente = filtrosGuardados.listarPendiente;
             this.selectUsuario = filtrosGuardados.usuarios;
             this.selectEstadoSolp = filtrosGuardados.estadoSolp;
             this.selectGrupoCompras = filtrosGuardados.gruposCompras;

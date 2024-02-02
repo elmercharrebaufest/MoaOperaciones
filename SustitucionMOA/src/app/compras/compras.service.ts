@@ -36,6 +36,7 @@ export class ComprasService extends BaseService {
         mantenimiento: true,
         web: true,
         repoAutomatica: true,
+        listarPendiente: true,
         usuarioId: null,
         centros: "",
         grupoDeCompras: "",
@@ -68,7 +69,7 @@ export class ComprasService extends BaseService {
         sap: boolean = this.filtros.sap,
         mantenimiento: boolean = this.filtros.mantenimiento,
         web: boolean = this.filtros.web,
-        repoAutomatica: boolean = this.filtros.repoAutomatica,
+        repoAutomatica: boolean = this.filtros.repoAutomatica,       
         estados: any = this.filtros.estados,
         usuarios: any = this.filtros.usuarioId,
         centros: any = this.filtros.centros,
@@ -476,6 +477,7 @@ export class ComprasService extends BaseService {
         mantenimiento: boolean = this.filtros.mantenimiento,
         web: boolean = this.filtros.web,
         repoAutomatica: boolean = this.filtros.repoAutomatica,
+        listarPendiente: boolean = this.filtros.listarPendiente,
         claseDocumento: any = this.filtros.claseDocumento,
         tipoImputacion: any = this.filtros.tipoImputacion,
         valorTipoImputacion: any = this.filtros.valorTipoImputacion) {
@@ -498,6 +500,7 @@ export class ComprasService extends BaseService {
         params = params.set('mantenimiento', mantenimiento.toString());
         params = params.set('web', web.toString());
         params = params.set('repoAutomatica', repoAutomatica.toString());
+        params = params.set('listarPendiente', listarPendiente.toString());
         params = params.set('claseDocumento', claseDocumento);
         params = params.set('tipoImputacion', tipoImputacion);
         params = params.set('valorTipoImputacion', valorTipoImputacion);

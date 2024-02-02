@@ -275,6 +275,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
+    <Compile Include="Service References\ListarSolpPendienteWebServiceMOA\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
     <Compile Include="Service References\LoginWebServiceMOA\Reference.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -568,6 +573,7 @@
     <Compile Include="WSConsumers\EcheqModificarFijacionConsumerMOA.cs" />
     <Compile Include="WSConsumers\EcheqVisualizarDisponibleChequeConsumerMOA.cs" />
     <Compile Include="WSConsumers\EcheqVisualizarPendientePagoConsumerMOA.cs" />
+    <Compile Include="WSConsumers\ListarSolpPendientesConsumerMOA.cs" />
     <Compile Include="WSConsumers\ModificarOrdenDeCompraConsumerMOA.cs" />
     <Compile Include="WSConsumers\ObtenerUnidadesDeMedidaAlternativasConsumerMOA.cs" />
     <Compile Include="WSConsumers\ObtenerProveedorConsumerMOA.cs" />
@@ -969,6 +975,7 @@
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
     <None Include="Service References\ListarPesificaciones\SI_MPMF_MOAOP_LISTAR_PESIF.wsdl" />
+    <None Include="Service References\ListarSolpPendienteWebServiceMOA\SI_MMRFC_BAPI_REQUISITION_GETITEMS.wsdl" />
     <None Include="Service References\LoginWebServiceMOA\SI_MPMF_MOAOP_LOGIN_IN.wsdl" />
     <None Include="Service References\LoginWebServiceMOA\SustitucionMOAWS.LoginWebServiceMOA.SI_MPMF_MOAOP_LOGIN_INResponse.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
@@ -2400,6 +2407,7 @@
     <WCFMetadataStorage Include="Service References\LiquidacionesNGWebServiceMOA\" />
     <WCFMetadataStorage Include="Service References\LiquidacionesWebServiceMOA\" />
     <WCFMetadataStorage Include="Service References\ListarPesificaciones\" />
+    <WCFMetadataStorage Include="Service References\ListarSolpPendienteWebServiceMOA\" />
     <WCFMetadataStorage Include="Service References\LoginWebServiceMOA\" />
     <WCFMetadataStorage Include="Service References\ModificarEntregaOrdenFasWebServiceMOA\" />
     <WCFMetadataStorage Include="Service References\ModificarOCWebServiceMOA\" />
@@ -3560,6 +3568,18 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Service References\ObtenerUnidadesDeMedidaAlternativasWebServiceMOA\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\ListarSolpPendienteWebServiceMOA\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\ListarSolpPendienteWebServiceMOA\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\ListarSolpPendienteWebServiceMOA\Reference.svcmap">
       <Generator>WCF Proxy Generator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>

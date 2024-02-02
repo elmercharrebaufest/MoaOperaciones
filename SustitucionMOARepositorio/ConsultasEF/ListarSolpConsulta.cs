@@ -3,6 +3,8 @@ using SustitucionMOAModel.Consultas;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
+using SustitucionMOAModel.Models.WSMapMOA.Compras;
+using SustitucionMOAModel.Models.WSMapMOA.Pago.NoGranos;
 using SustitucionMOARepositorio.Extensiones;
 using System;
 using System.Collections.Generic;
@@ -16,7 +18,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
     public class ListarSolpConsulta : IConsultaPaginada<SolpDto>
     {
         private readonly Paginacion Paginacion;
-        private readonly string NroSolp;
+        private readonly List<string> Solps;
         private readonly DateTime? FechaDesde;
         private readonly DateTime? FechaHasta;
         private readonly bool Sap;
@@ -31,11 +33,12 @@ namespace SustitucionMOARepositorio.ConsultasEF
         private readonly List<int> ClaseDocumento;
         private readonly List<string> TipoImputacion;
         private readonly List<int> ValorTipoImputacion;
+        private readonly bool? ListarPendiente;
 
-        public ListarSolpConsulta(Paginacion paginacion, string nroSolp, DateTime? desde, DateTime? hasta, bool? sap, bool? mantenimiento, bool? web, bool? repoAutomatica, List<int> usuarios, List<int> estados, List<int> centros, List<int> grupoDeCompras, int usuario_Id, List<int> claseDocumento = null, List<string> tipoImputacion = null, List<int> valorTipoImputacion = null)
+        public ListarSolpConsulta(Paginacion paginacion, List<string> solps, DateTime? desde, DateTime? hasta, bool? sap, bool? mantenimiento, bool? web, bool? repoAutomatica, bool? listarPendiente, List<int> usuarios, List<int> estados, List<int> centros, List<int> grupoDeCompras, int usuario_Id, List<int> claseDocumento = null, List<string> tipoImputacion = null, List<int> valorTipoImputacion = null)
         {
             Paginacion = paginacion;
-            NroSolp = nroSolp;
+            Solps = solps;
             FechaDesde = desde;
             FechaHasta = hasta.HasValue ? hasta.Value.AddDays(1) : hasta;
             Sap = sap == true;
@@ -50,6 +53,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
             ClaseDocumento = claseDocumento;
             TipoImputacion = tipoImputacion;
             ValorTipoImputacion = valorTipoImputacion;
+            ListarPendiente = listarPendiente;
         }
         public ListaPaginada<SolpDto> Ejecutar(DbContext contexto)
         {
@@ -63,9 +67,9 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                    where u.Id == Usuario_Id
                                    select u).First();
                 var rol = usuario.Roles.Any(r => r.Codigo == "COMPRADOR") ? "SOLP" : "COMPRADOR";
-                var nroDeSolp = NroSolp.Trim();
+                var sinSolps = !Solps.Any();
                 var resultado = from x in contexto.Set<Solp>()
-                                where (string.IsNullOrEmpty(nroDeSolp) || x.NroSolp.ToUpper().StartsWith(nroDeSolp.ToUpper())) &&
+                                where (sinSolps || Solps.Contains(x.NroSolp)) &&
                                 (!Usuarios.Any() || (x.UsuarioCreacion_Id != null && Usuarios.Contains((int)x.UsuarioCreacion_Id))) &&
                                 (!Estados.Any() || (x.EstadoSolpSap_Id != null && Estados.Contains((int)x.EstadoSolpSap_Id))) &&
                                 (!Centros.Any() || x.Posiciones.Any(c => Centros.Contains(c.Centro_Id))) &&
@@ -137,10 +141,15 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                               RecotizacionEconomica = po.RevisionTecnica != null && po.RevisionTecnica.RecotizacionEconomica
                                                           })
                                 };
-
-                return resultado.OrdenarPaginarLista(Paginacion);
+                var pagina = Paginacion;
+                if (ListarPendiente == true)
+                {
+                    pagina = new Paginacion("Id", DirOrden.Asc, 1, resultado.Count());
+                }
+                var result = resultado.OrdenarPaginarLista(pagina);
+                return result;
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 throw;
             }
