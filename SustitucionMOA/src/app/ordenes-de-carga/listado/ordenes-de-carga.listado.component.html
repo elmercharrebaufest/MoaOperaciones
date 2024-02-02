@@ -139,8 +139,8 @@
               <td *ngIf="puedeEnviarASAP"><input type="checkbox" [checked]="estaListadoParaSAP(ordenDeCarga)"
                   [disabled]="!ordenDeCarga.NoEstaEnSAP" (click)="seleccionarItem(ordenDeCarga)" /></td>
               <td style="text-align: center;">{{ordenDeCarga.Id}}
-                <span *ngIf="ordenDeCarga.TieneConsultasRealizadas" class="fa fa-comments" aria-hidden="true"
-                  pTooltip="Tiene Consultas Pendientes" tooltipPosition="bottom"></span>
+                <span (click)="navegarAConsultas()" *ngIf="ordenDeCarga.TieneConsultasRealizadas" class="fa fa-comments pointer" aria-hidden="true"
+                  pTooltip="Tiene Consultas Pendientes" tooltipPosition="bottom" ></span>
               </td>
               <td *ngIf="esMesaFas || esInterno">{{ordenDeCarga.Entrega}}</td>
               <td *ngIf="esInterno || esComercial || esPuerto || esMesaFas || esCorredor">
