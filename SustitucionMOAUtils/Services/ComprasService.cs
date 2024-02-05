@@ -2404,7 +2404,7 @@ namespace SustitucionMOAUtils.Services
                                         EmailLinkToken = Guid.NewGuid()
                                     };
 
-                            if (solp.ClaseDocumento_Id == null) solp.ClaseDocumento_Id = clasesDeDocumento.SingleOrDefault(cd => cd.Codigo == posicion.TipoDocumento)?.Id;
+                            solp.ClaseDocumento_Id = clasesDeDocumento.SingleOrDefault(cd => cd.Codigo == posicion.TipoDocumento)?.Id;
                             solpsFinales.Add(solp);
                         }
                         if (solp.TipoSolpSap == (int)TipoSolpSap.Mantenimiento || solp.TipoSolpSap == (int)TipoSolpSap.ReposicionAutomatica || solp.TipoSolpSap == (int)TipoSolpSap.Sap)
