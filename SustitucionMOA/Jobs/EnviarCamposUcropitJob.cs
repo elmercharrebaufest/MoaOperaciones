@@ -49,6 +49,7 @@ namespace SustitucionMOA.Jobs
 
                     ).Select(cp => new CampoReporteDTO
                     {
+                        IdScato = cp.CampoCosecha.Campo.IdScato,
                         Id = cp.CampoCosecha.Campo.Id,
                         RazonSocial = cp.RazonSocial,
                         CUIT = cp.CUIT,
