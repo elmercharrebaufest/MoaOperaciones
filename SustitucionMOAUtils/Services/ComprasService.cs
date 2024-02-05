@@ -1955,7 +1955,7 @@ namespace SustitucionMOAUtils.Services
 
         private AlternateView CuerpoMailSolpFinalizada(Solp solp)
         {
-            var filePath = System.Web.HttpContext.Current.Server.MapPath("~/Content/Images/header/logo_.png");
+            var filePath = httpContextService.ObtenerPathLogoMail();
             LinkedResource res = new LinkedResource(filePath);
             res.ContentId = Guid.NewGuid().ToString();
             string htmlBody = "";
@@ -2009,7 +2009,7 @@ namespace SustitucionMOAUtils.Services
 
         private AlternateView CuerpoMailSolpLiberada(Solp solp, string mensaje)
         {
-            var filePath = System.Web.HttpContext.Current.Server.MapPath("~/Content/Images/header/logo_.png");
+            var filePath = httpContextService.ObtenerPathLogoMail();
             LinkedResource res = new LinkedResource(filePath);
             res.ContentId = Guid.NewGuid().ToString();
             string htmlBody = "";
@@ -4811,7 +4811,7 @@ namespace SustitucionMOAUtils.Services
 
         private AlternateView CuerpoMailOrdenCompra(Adjudicacion adjudicacion, string mensaje)
         {
-            var filePath = System.Web.HttpContext.Current.Server.MapPath("~/Content/Images/header/logo_.png");
+            var filePath = httpContextService.ObtenerPathLogoMail();
             LinkedResource res = new LinkedResource(filePath);
             res.ContentId = Guid.NewGuid().ToString();
             string htmlBody = "";
@@ -5132,7 +5132,7 @@ namespace SustitucionMOAUtils.Services
 
         private AlternateView CuerpoMailCircular(CircularPeticionDeOfertaUsuario circular)
         {
-            var filePath = System.Web.HttpContext.Current.Server.MapPath("~/Content/Images/header/logo_.png");
+            var filePath = httpContextService.ObtenerPathLogoMail();
             LinkedResource res = new LinkedResource(filePath);
             res.ContentId = Guid.NewGuid().ToString();
             string htmlBody = "";
@@ -7005,7 +7005,7 @@ namespace SustitucionMOAUtils.Services
 
         private AlternateView CuerpoMailResultadoAdjudicacion(PeticionDeOferta peticion)
         {
-            var filePath = System.Web.HttpContext.Current.Server.MapPath("~/Content/Images/header/logo_.png");
+            var filePath = httpContextService.ObtenerPathLogoMail();
             LinkedResource res = new LinkedResource(filePath);
             res.ContentId = Guid.NewGuid().ToString();
             string htmlBody = "";
@@ -7091,9 +7091,7 @@ namespace SustitucionMOAUtils.Services
 
         private AlternateView CuerpoMailSolpAnulada(PeticionDeOferta peticion)
         {
-
-            var filePath = Path.Combine(HttpRuntime.AppDomainAppPath, "Content/Images/header/logo_.png");
-            // var filePath = HttpRuntime.AppDomainAppPath.Server.MapPath("~/Content/Images/header/logo_.png");
+            var filePath = httpContextService.ObtenerPathLogoMail();
             LinkedResource res = new LinkedResource(filePath);
             res.ContentId = Guid.NewGuid().ToString();
             string htmlBody = "";
