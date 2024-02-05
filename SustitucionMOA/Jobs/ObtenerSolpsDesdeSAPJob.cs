@@ -31,34 +31,35 @@ namespace SustitucionMOA.Jobs
             {
                 try
                 {
-                    if (repositorio.Obtener<HabilitacionJob>(a => a.Nombre == "ObtenerSolpsDesdeSAPJob").Habilitado == false)
-                        return; 
+                    //Eliminar
+                    //if (repositorio.Obtener<HabilitacionJob>(a => a.Nombre == "ObtenerSolpsDesdeSAPJob").Habilitado == false)
+                    //    return; 
 
-                    if (ConfigurationManager.AppSettings["ObtenerSolpsDesdeSAPJob_Habilitado"] == "1")
-                    {
-                        var desde = new DateTime(2018, 01, 01);
-                        var hasta = new DateTime(2022, 12, 01);
-                        while (desde < hasta)
-                        {
-                            try
-                            {
-                                Log.Info($"ObtenerSolpesDesdeSAPJob desde {desde} hasta {desde.AddMonths(3)}");
-                                ObtenerSolpRequest obtenerSolpRequest = new ObtenerSolpRequest
-                                {
-                                    FechaDesde = desde,
-                                    FechaHasta = desde.AddMonths(3),
-                                    CreadoPorUsuarios = new List<string>()
-                                };
-                                _comprasService.ObtenerSolpesDesdeSAPJob(obtenerSolpRequest);
-                                desde = desde.AddMonths(3);
-                            }
-                            catch (Exception e )
-                            {
-                                Log.Info($"ObtenerSolpesDesdeSAPJob error");
-                                Log.Error(e);
-                            }
-                        }
-                    }
+                    //if (ConfigurationManager.AppSettings["ObtenerSolpsDesdeSAPJob_Habilitado"] == "1")
+                    //{
+                    //    var desde = new DateTime(2018, 01, 01);
+                    //    var hasta = new DateTime(2022, 12, 01);
+                    //    while (desde < hasta)
+                    //    {
+                    //        try
+                    //        {
+                    //            Log.Info($"ObtenerSolpesDesdeSAPJob desde {desde} hasta {desde.AddMonths(3)}");
+                    //            ObtenerSolpRequest obtenerSolpRequest = new ObtenerSolpRequest
+                    //            {
+                    //                FechaDesde = desde,
+                    //                FechaHasta = desde.AddMonths(3),
+                    //                CreadoPorUsuarios = new List<string>()
+                    //            };
+                    //            _comprasService.ObtenerSolpesDesdeSAPJob(obtenerSolpRequest);
+                    //            desde = desde.AddMonths(3);
+                    //        }
+                    //        catch (Exception e )
+                    //        {
+                    //            Log.Info($"ObtenerSolpesDesdeSAPJob error");
+                    //            Log.Error(e);
+                    //        }
+                    //    }
+                    //}
 
                 }
                 catch (Exception e)

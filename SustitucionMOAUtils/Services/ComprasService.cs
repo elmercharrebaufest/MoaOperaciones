@@ -131,7 +131,7 @@ namespace SustitucionMOAUtils.Services
             this.agregarRegistroInfoConsumerMOA = agregarRegistroInfoConsumerMOA;
             this.emailService = emailService;
             this.reporteOrdenDeCompraConsumerMOA = reporteOrdenDeCompraConsumerMOA;
-            this.obtenerUnidadesDeMedidaConsumerMOA = obtenerUnidadesDeMedidaConsumerMOA;         
+            this.obtenerUnidadesDeMedidaConsumerMOA = obtenerUnidadesDeMedidaConsumerMOA;
             this.listarSolpPendienteConsumeMOA = listarSolpPendienteConsumeMOA;
             this.obtenerPDFOrdenCompraConsumerMOA = obtenerPDFOrdenCompraConsumerMOA;
         }
@@ -2291,6 +2291,7 @@ namespace SustitucionMOAUtils.Services
                 //Logger.Log.Info($"ObtenerSolpesDesdeSAPJob inicio");
                 //Logger.Log.Info($"ObtenerSolpesDesdeSAPJob desde {obtenerSolpRequest.FechaDesde.ToString()} hasta {obtenerSolpRequest.FechaHasta.ToString()}");
                 Logger.Log.Info($"ObtenerSolpesDesdeSAPJob INICIO - NumeroSolp: {obtenerSolpRequest.NumeroSolp}");
+                if (string.IsNullOrEmpty(obtenerSolpRequest.NumeroSolp)) throw new Exception("NumeroSolp no puede ser vacio");
                 ObtenerSolpSAPResponse result = obtenerSolpConsumerMOA.RequestSolpWithNroAndDates(obtenerSolpRequest);
                 //Logger.Log.Info($"ObtenerSolpesDesdeSAPJob fin obtener solps");
                 //Logger.Log.Info($"ObtenerSolpesDesdeSAPJob Posiciones {result.Posiciones.Count()}");
@@ -2368,7 +2369,7 @@ namespace SustitucionMOAUtils.Services
 
                 List<string> numeroSolicitudes = result.Posiciones.Select(a => a.NumeroSolicitud).Distinct().ToList();
                 var solpdsDB = repositorio.Listar<Solp>(s => numeroSolicitudes.Contains(s.NroSolp));
-
+                Solp solp = null;
                 foreach (var posicion in result.Posiciones)
                 {
                     try
@@ -2376,7 +2377,7 @@ namespace SustitucionMOAUtils.Services
                         SustitucionMOAWS.WSConsumers.TipoImputacionSAP tipoImputacion = result.TipoImputaciones
                         .FirstOrDefault(dir => dir.NumeroSolicitud == posicion.NumeroSolicitud && dir.NumeroPosicion == posicion.NumeroPosicion);
 
-                        Solp solp = solpsFinales.SingleOrDefault(x => x.NroSolp == posicion.NumeroSolicitud);
+                        solp = solpsFinales.SingleOrDefault(x => x.NroSolp == posicion.NumeroSolicitud);
 
                         bool nuevaSolp = solp == null;
                         if (nuevaSolp)
@@ -2448,7 +2449,6 @@ namespace SustitucionMOAUtils.Services
                                 Codigo = Guid.NewGuid().ToString(),
                                 Estado = posicion.EstadoPosicion != "X"
                             };
-                            solp.Posiciones.Add(posicionEntity);
                         }
 
                         posicionEntity.TipoPosicion_Id = tipoSolpPosicion_Id;
@@ -2592,7 +2592,6 @@ namespace SustitucionMOAUtils.Services
 
                         solp.Posiciones.Add(posicionEntity);
 
-                        SetNombreDePedido(solp);
 
                         if (solp.Id == 0)
                             repositorio.Agregar(solp);
@@ -2604,6 +2603,7 @@ namespace SustitucionMOAUtils.Services
                         continue;
                     }
                 }
+                SetNombreDePedido(solp);
 
                 //Logger.Log.Info($"ObtenerSolpesDesdeSAPJob subPosicionesBorradas " + subPosicionesBorradas.Count());
 
@@ -2833,12 +2833,13 @@ namespace SustitucionMOAUtils.Services
             var solpsSAP = new List<string>();
             var solps = new List<string>();
             if (listarPendiente == true)
-            {                
+            {
                 solps.AddRange(listarSolpPendienteConsumeMOA.ListarSolpPendientes());
             }
             else
             {
-                if (!string.IsNullOrEmpty(nroSolp)) {
+                if (!string.IsNullOrEmpty(nroSolp))
+                {
                     nroSolp = nroSolp.Trim();
                     solps.Add(nroSolp);
                 }
@@ -2859,7 +2860,7 @@ namespace SustitucionMOAUtils.Services
                 {
                     todasLasSolp.FirstOrDefault().ItemPorPagina = 10;
                 }
-               
+
 
                 foreach (var item in todasLasSolp.Items)
                 {
@@ -7957,7 +7958,7 @@ namespace SustitucionMOAUtils.Services
 
         private void SetNombreDePedido(Solp solp)
         {
-            if (string.IsNullOrEmpty(solp.Pliego.NombreObra))
+            if (string.IsNullOrEmpty(solp.Pliego.NombreObra) || solp.TipoSolpSap != (int)TipoSolpSap.Web || solp.TipoSolp == null || solp.TipoSolp.Codigo == "SIN_PLIEGO")
             {
                 string nombre = solp.Posiciones.Count > 2 ? string.Join(" + ", solp.Posiciones.Take(2).Select(x => x.Tarea)) + " + Otros" :
                                 string.Join(" + ", solp.Posiciones.Select(x => x.Tarea));

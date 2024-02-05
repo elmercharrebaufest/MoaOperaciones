@@ -217,78 +217,7 @@ namespace SustitucionMOA.Controllers
                 Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
-        }
-
-        //[HttpGet]
-        //public ActionResult FiltrarMateriales() {
-        //    try
-        //    {
-        //        return JsonCustom(new { data = service.FiltrarMateriales() });
-        //    }
-        //    catch (Exception)
-        //    {
-
-        //        throw;
-        //    }
-        //}
-
-        [HttpGet]
-        public ActionResult ObtenerSolpDeSap()
-        {
-            try
-            {
-                //ObtenerSolpRequest obtenerSolpRequest = new ObtenerSolpRequest
-                //{
-                //    FechaDesde = Convert.ToDateTime(ConfigurationManager.AppSettings["FechaInicioObtenerSolpsDesdeSAPJob"].ToString()),
-                //    FechaHasta = Convert.ToDateTime(ConfigurationManager.AppSettings["FechaFinObtenerSolpsDesdeSAPJob"].ToString()),
-                //    CreadoPorUsuarios = new List<string>(),
-                //    NumeroSolp = "0212201893"
-                //};
-                //service.ObtenerSolpesDesdeSAPJob(obtenerSolpRequest);
-                var desde = new DateTime(2021, 01, 01);
-                var hasta = new DateTime(2022, 12, 01);
-                while (desde < hasta)
-                {
-                    try
-                    {
-                        Log.Info($"ObtenerSolpesDesdeSAPJob desde {desde} hasta {desde.AddMonths(3)}");
-                        ObtenerSolpRequest obtenerSolpRequest = new ObtenerSolpRequest
-                        {
-                            FechaDesde = desde,
-                            FechaHasta = desde.AddMonths(3),
-                            CreadoPorUsuarios = new List<string>()
-                        };
-                        service.ObtenerSolpesDesdeSAPJob(obtenerSolpRequest);
-                        desde = desde.AddMonths(3);
-                    }
-                    catch (Exception e)
-                    {
-                        Log.Info($"ObtenerSolpesDesdeSAPJob error");
-                        Log.Error(e);
-                    }
-                }
-                Log.Info($"ObtenerSolpesDesdeSAPJob fin hasta {hasta}");
-                return JsonCustom(new { success = true });
-            }
-            catch (InfoCustomException e)
-            {
-                return Json(new { info = e }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e }, JsonRequestBehavior.AllowGet);
-            }
-            catch (WSCustomException e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
-        }
+        }   
 
         [HttpGet]
         public ActionResult ListarUsuarioCompras()
