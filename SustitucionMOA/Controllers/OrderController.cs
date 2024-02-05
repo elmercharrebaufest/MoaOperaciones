@@ -51,9 +51,6 @@ namespace SustitucionMOA.Controllers
                     result.Items.FirstOrDefault().ItemPorPagina = result.ItemsPorPagina;
 
                 }
-                    
-                
-               
 
                 return ContentCustom(new { data = result });
             }

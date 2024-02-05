@@ -131,7 +131,7 @@
           <th title="Proveedor" pSortableColumn="Proveedor">Proveedor<p-sortIcon field="Proveedor"></p-sortIcon></th>
           <th title="RazonSocial">Razón Social</th>
           <th title="OrdenCompraMoneda">Moneda</th>
-          <th title="Monto total">Monto total</th>
+          <th title="Monto total">Importe</th>
         </tr>
 
         <tr class="hidden">
@@ -201,7 +201,7 @@
               <ng-template pTemplate="body" let-rowData let-expanded="expanded">
                 <tr>
                   <td>
-                    <a href="#" [pRowToggler]="rowData">
+                    <a href="#" [pRowToggler]="rowData" (click)="clearCheckboxes()">
                       <i [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
                     </a>
                   </td>
@@ -284,38 +284,40 @@
                       </ng-template>
 
 
-                      <ng-template pTemplate="rowexpansion" let-rowData let-columns="columns">
-                        <tr>
-                          <!-- TABLE 4 -->
-                          <td colspan="9">
-                            <p-table class="level4" [value]="rowData.EntradasServicio" dataKey="Id">
-                              <!-- TABLE 4 HEADERS -->
-                              <ng-template pTemplate="header">
-                                <tr>
-                                  <th title="NroEs">NRO_ES</th>
-                                  <th title="FechaEs">Fecha_ES</th>
-                                  <th title="FechaDocumento"> F. Documento<br>(F. de prestación de servicios)</th>
-                                  <th title="FechaContabilizacion">F. Contabilización</th>
-                                  <th title="Referencia">Referencia<br>(N° remito)</th>
-                                  <th title="Cantidad">Cantidad</th>
-                                  <th title="TextoBreveDesc">Desc. ES </th>
-                                  <th title="ImporteARPUSD">Importe ARP/USD</th>
-                                  <th title="EliminarEs">Eliminar ES</th>
-                                </tr>
-                              </ng-template>
-                              <!-- TABLE 4 HEADERS END -->
-                              <!-- TABLE 4 BODY -->
-                              <ng-template pTemplate="body" let-rowData let-item>
-                                <tr>
-                                  <td>{{ rowData.Id }}</td>
-                                  <td>{{ rowData.Fecha }}</td>
-                                  <td>{{ rowData.FechaDocumentoString }}</td>
-                                  <td>{{ rowData.FechaContabilizacion }}</td>
-                                  <td>{{ rowData.Referencia | defaultData }}</td>
-                                  <td>{{ rowData.Cantidad | defaultData }}</td>
-                                  <td>{{ rowData.TextoBreve }}</td>
-                                  <td>{{ rowData.ImporteARPUSD }}</td>
-                                  <td>
+                        <ng-template pTemplate="rowexpansion" let-rowData let-columns="columns">
+                          <tr>
+                            <!-- TABLE 4 -->
+                            <td colspan="9">
+                              <p-table class="level4" [value]="rowData.EntradasServicio" dataKey="Id">
+                                <!-- TABLE 4 HEADERS -->
+                                <ng-template pTemplate="header">
+                                  <tr>
+                                    <th title="NroEs">NRO_ES</th>
+                                    <th title="FechaEs">Fecha_ES</th>
+                                    <th title="FechaDocumento"> F. Documento<br>(F. de prestación de servicios)</th>
+                                    <th title="FechaContabilizacion">F. Contabilización</th>
+                                    <th title="Referencia">Referencia<br>(N° remito)</th>
+                                    <th title="Cantidad">Cantidad</th>
+                                    <th title="TextoBreveDesc">Desc. ES </th>
+                                    <th title="ImporteARPUSD">Importe ARP/USD</th>
+                                    <th title="EliminarEs">Eliminar ES</th>
+                                  </tr>
+                                </ng-template>
+                                <!-- TABLE 4 HEADERS END -->
+                                <!-- TABLE 4 BODY -->
+                                <ng-template pTemplate="body" let-rowData let-item>
+                                  <tr>
+                                    <td>{{ rowData.Id }}</td>
+                                    <td>{{ rowData.Fecha }}</td>
+                                    <td>{{ rowData.FechaDocumentoString }}</td>
+                                    <td>
+                                        {{rowData.FechaContabilizacion | date: 'dd/MM/yyyy'}}
+                                    </td>
+                                    <td>{{ rowData.Referencia | defaultData }}</td>
+                                    <td>{{ rowData.Cantidad | defaultData }}</td>
+                                    <td>{{ rowData.TextoBreve }}</td>
+                                    <td>{{ rowData.ImporteARPUSD }}</td>
+                                    <td>
 
                                     <div *ngIf="rowData.SePuedeBorrar == false else SePuedeBorrar">
                                       <i>

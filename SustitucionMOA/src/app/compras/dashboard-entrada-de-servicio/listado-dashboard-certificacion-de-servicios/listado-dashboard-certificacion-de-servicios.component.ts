@@ -149,22 +149,26 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
     if (this.itemIdSelected.includes(itemId) && this.numeroLineaSelected.has(numeroLinea)) {
       this.itemIdSelected.splice(this.itemIdSelected.indexOf(itemId), 1);
       this.numeroLineaSelected.delete(numeroLinea);
-
+      
       this.itemSelected = this.itemSelected.filter((selectedItem: any) => 
       selectedItem.PosicionId !== item.PosicionId || selectedItem.NumeroLinea !== item.NumeroLinea);
-
     } else {
       this.itemIdSelected.push(itemId);
       this.numeroLineaSelected.add(numeroLinea);
       this.itemSelected.push(item);
     }
   }
+
+  clearCheckboxes(): void {
+    this.numeroLineaSelected.clear();
+    this.itemSelected.forEach(( item: any ) => { item.isSelected = false });
+    this.itemIdSelected.splice(0, this.itemIdSelected.length);
+    this.itemSelected.splice(0, this.itemSelected.length);
+  }
+  
     //MMSN-519
     toggleRow(rowData: any) {
-      this.numeroLineaSelected.clear();
-      this.itemIdSelected.splice(0, this.itemIdSelected.length);
-      this.itemSelected.splice(0, this.itemSelected.length);
-
+      this.clearCheckboxes();
        //MMSN-519 - Al activar un filtro, colapsar filas expandidas.
       this.expandedRow = rowData;
     }

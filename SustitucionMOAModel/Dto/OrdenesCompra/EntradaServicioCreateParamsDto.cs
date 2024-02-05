@@ -12,14 +12,14 @@ namespace SustitucionMOAModel.Dto.OrdenesCompra
 
     public class EntrySheetHeaderSection
     {
-        public string PaqueteNumero { get; set; }
-        public string Descripcion { get; set; }
+        public string PaqueteNumero { get; set; } // se puede omitir del front
+        public string Descripcion { get; set; } // se puede omitir del front
         public string OrdenCompraNumero { get; set; }
         public string OrdenCompraPosicionNumero { get; set; }
         public string DocumentoReferenciaNumero { get; set; }
         public string FechaDocumento { get; set; }
         public string FechaContabilizacion { get; set; }
-        public string GrabarAceptada { get; set; }
+        public string GrabarAceptada { get; set; } // se puede omitir del front
     }
 
 
@@ -31,10 +31,10 @@ namespace SustitucionMOAModel.Dto.OrdenesCompra
 
     public class EntrySheetServiceItemSection
     {
-        public string PackageNumber { get; set; }
-        public string LineNumber { get; set; }
-        public string OutlineIndicator { get; set; }
-        public string SubPackageNumber { get; set; }
+        public string PackageNumber { get; set; } // se puede omitir del front
+        public string LineNumber { get; set; } // se puede omitir del front
+        public string OutlineIndicator { get; set; } // se puede omitir del front
+        public string SubPackageNumber { get; set; } // se puede omitir del front
         public string ExternalLineNumber { get; set; }
         public string Service { get; set; }
         public string Quantity { get; set; }

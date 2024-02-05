@@ -57,9 +57,11 @@
                                 <tr>
                                     <th>Descripción</th>
                                     <td class="tooltip-container">
-                                        <span class="tooltip-text">{{
+                                        <span class="tooltip-text">
+                                            {{
                                             fila.Descripcion
-                                        }}</span>
+                                            }}
+                                        </span>
                                         {{ fila.Descripcion }}
                                     </td>
                                 </tr>
@@ -67,22 +69,16 @@
                                 <tr class="bg-color">
                                     <th>Cantidad / %</th>
                                     <div class="input-group">
-                                        <input
-                                            type="text"
-                                            [(ngModel)]="fila.Cantidad"
-                                            placeholder="Ingresar cantidad"
-                                        />
-                                        <button
-                                            type="button"
-                                            pButton
-                                            icon="fa fa-refresh"
-                                            (click)="refresh()"
-                                        ></button>
-                                        <input
-                                            type="text"
-                                            [(ngModel)]="fila.Cantidad"
-                                            placeholder="Ingresar %"
-                                        />
+                                        <input type="text"
+                                               [(ngModel)]="fila.Cantidad"
+                                               placeholder="Ingresar cantidad" />
+                                        <button type="button"
+                                                pButton
+                                                icon="fa fa-refresh"
+                                                (click)="refresh()"></button>
+                                        <input type="text"
+                                               [(ngModel)]="fila.Cantidad"
+                                               placeholder="Ingresar %" />
                                     </div>
                                 </tr>
 
@@ -98,20 +94,45 @@
 
                                 <tr>
                                     <th>
-                                        Fecha doc. -> Fecha de prestación de
-                                        servicios
+                                        Fecha documento (Fecha de prestación del
+                                        servicios)
                                     </th>
-                                    <td>-</td>
-                                </tr>
-
-                                <tr class="bg-color">
-                                    <th>Referencia -> Nro remito</th>
-                                    <td>-</td>
+                                    <td>
+                                        <div class="input-group">
+                                            <p-calendar class="CalendarFormat" [(ngModel)]="fechaDocumento" dateFormat="yy-mm-dd" [locale]="es" [readonlyInput]="true" [monthNavigator]="true" [yearNavigator]="true" yearRange="2010:2100" showButtonBar="true"></p-calendar>
+                                            <span><span class="fa fa-calendar "></span></span>
+                                        </div>
+                                    </td>
                                 </tr>
 
                                 <tr>
-                                    <th>Texto breve -> Descripción</th>
-                                    <td>-</td>
+                                    <th>
+                                        Fecha de contabilización
+                                    </th>
+                                    <td>
+                                        <div class="input-group">
+                                            <p-calendar class="CalendarFormat" [(ngModel)]="fechaContabilizacion" dateFormat="yy-mm-dd" [locale]="es"  [readonlyInput]="true" [monthNavigator]="true" [yearNavigator]="true" yearRange="2010:2100" showButtonBar="true"></p-calendar>
+                                            <span><span class="fa fa-calendar "></span></span>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <tr class="bg-color">
+                                    <th>Referencia</th>
+                                    <td>
+                                        <div class="input-text">
+                                            <input type="text" pInputText [(ngModel)]="referencia"/>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <th>Texto breve</th>
+                                    <td>
+                                        <div class="input-text">
+                                            <input type="text" pInputText [(ngModel)]="textoBreve"/>
+                                        </div>
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>
@@ -169,9 +190,11 @@
                                 <tr>
                                     <th>Descripción</th>
                                     <td class="tooltip-container">
-                                        <span class="tooltip-text">{{
+                                        <span class="tooltip-text">
+                                            {{
                                             fila.Descripcion
-                                        }}</span>
+                                            }}
+                                        </span>
                                         {{ fila.Descripcion }}
                                     </td>
                                 </tr>
@@ -179,22 +202,16 @@
                                 <tr class="bg-color">
                                     <th>Cantidad / %</th>
                                     <div class="input-group">
-                                        <input
-                                            type="text"
-                                            [(ngModel)]="fila.Cantidad"
-                                            placeholder="Ingresar cantidad"
-                                        />
-                                        <button
-                                            type="button"
-                                            pButton
-                                            icon="fa fa-refresh"
-                                            (click)="refresh()"
-                                        ></button>
-                                        <input
-                                            type="text"
-                                            [(ngModel)]="fila.Cantidad"
-                                            placeholder="Ingresar %"
-                                        />
+                                        <input type="text"
+                                               [(ngModel)]="fila.Cantidad"
+                                               placeholder="Ingresar cantidad" />
+                                        <button type="button"
+                                                pButton
+                                                icon="fa fa-refresh"
+                                                (click)="refresh()"></button>
+                                        <input type="text"
+                                               [(ngModel)]="fila.Cantidad"
+                                               placeholder="Ingresar %" />
                                     </div>
                                 </tr>
 
@@ -210,20 +227,45 @@
 
                                 <tr>
                                     <th>
-                                        Fecha doc. -> Fecha de prestación de
-                                        servicios
+                                        Fecha documento (Fecha de prestación del
+                                        servicios)
                                     </th>
-                                    <td>-</td>
-                                </tr>
-
-                                <tr class="bg-color">
-                                    <th>Referencia -> Nro remito</th>
-                                    <td>-</td>
+                                    <td>
+                                        <div class="input-group">
+                                            <p-calendar class="CalendarFormat" [(ngModel)]="fechaDocumento" dateFormat="yy-mm-dd" [locale]="es"  [readonlyInput]="true" [monthNavigator]="true" [yearNavigator]="true" yearRange="2010:2100" showButtonBar="true"></p-calendar>
+                                            <span><span class="fa fa-calendar "></span></span>
+                                        </div>
+                                    </td>
                                 </tr>
 
                                 <tr>
-                                    <th>Texto breve -> Descripción</th>
-                                    <td>-</td>
+                                    <th>
+                                        Fecha de contabilización
+                                    </th>
+                                    <td>
+                                        <div class="input-group">
+                                            <p-calendar class="CalendarFormat" [(ngModel)]="fechaContabilizacion" dateFormat="yy-mm-dd" [locale]="es"  [readonlyInput]="true" [monthNavigator]="true" [yearNavigator]="true" yearRange="2010:2100" showButtonBar="true"></p-calendar>
+                                            <span><span class="fa fa-calendar "></span></span>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <tr class="bg-color">
+                                    <th>Referencia</th>
+                                    <td>
+                                        <div class="input-text">
+                                            <input type="text" pInputText [(ngModel)]="referencia" />
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <th>Texto breve</th>
+                                    <td>
+                                        <div class="input-text">
+                                            <input type="text" pInputText [(ngModel)]="textoBreve" />
+                                        </div>
+                                    </td>
                                 </tr>
 
                                 <td>

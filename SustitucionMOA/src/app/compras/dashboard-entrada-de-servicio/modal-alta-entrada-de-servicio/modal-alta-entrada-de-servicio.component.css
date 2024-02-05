@@ -175,9 +175,58 @@ th, td {
 th {
   color: #312b2b !important;
 }
+.fa.fa-calendar {
+    margin-left: 5px;
+}
+
+body .ui-datepicker table td {
+    padding: 0.1em;
+}
+
+/*::ng-deep #myCalendar .ui-datepicker-calendar-container table thead tr th span .ng-tns-c13-9 {
+    color: #003399;
+    font-family: "Roboto Condensed",Arial,sans-serif;
+}*/
+
+::ng-deep .ui-datepicker table th span {
+    color: #003399;
+    font-family: "Roboto Condensed",Arial,sans-serif;
+}
+
+.input-text{
+    width: 45%;
+    margin-left: 0px;
+}
+
+/*Calendar*/
+
+::ng-deep p-calendar.CalendarFormat table td {
+    padding: 0.7em !important;
+}
+
+::ng-deep p-calendar.CalendarFormat table td > span {
+    padding: 0.7em !important;
+}
+
+::ng-deep p-calendar.CalendarFormat table {
+    font-size: 9px;
+    margin: 0.857em 0 0 0;
+}
+
+::ng-deep p-calendar.CalendarFormat .ui-datepicker-title > span {
+    font-size: 1.1rem;
+}
+
+.ui-datepicker-buttonbar.ui-widget-header .ui-button-secondary.ui-button.ui-widget.ui-state-default.ui-corner-all.ui-button-text-only {
+    font-size: 10px;
+}
+
+.ui-datepicker-buttonbar.ui-widget-header{
+    font-size: 10px;
+}
 
 @media screen and (max-width: 600px) {
-  .modal-container {
+    .modal-container {
     width: 90vw;
   }
 }

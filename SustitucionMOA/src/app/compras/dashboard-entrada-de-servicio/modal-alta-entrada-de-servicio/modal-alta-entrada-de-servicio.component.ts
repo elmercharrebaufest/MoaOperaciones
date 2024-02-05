@@ -1,6 +1,8 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ComprasService } from '../../compras.service';
 import { ConfirmationService } from 'primeng/api';
+import { CalendarModule } from 'primeng/calendar';
+declare var $: any;
 
 @Component({
   selector: 'app-modal-alta-entrada-de-servicio',
@@ -17,8 +19,11 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
   showError: boolean = false;
   cantidad: number = 0;
   mensajeError: string = "";
-
- 
+  fechaDocumento: Date;
+  fechaContabilizacion: Date;
+  es: any;
+  referencia: string;
+  textoBreve: string;
 
 
   @Input() showModal: boolean;
@@ -28,7 +33,6 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
   @Output() closeModal = new EventEmitter<void>();
 
   @Output() enviarMensajeGrilla = new EventEmitter();
-
 
   
 
@@ -71,19 +75,49 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
     private confirmationService: ConfirmationService
     ) { }
 
-  ngOnInit() {
+    ngOnInit() {
+        this.es = {
+            firstDayOfWeek: 0,
+            dayNames: ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"],
+            dayNamesShort: ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"],
+            dayNamesMin: ["Do", "Lu", "Ma", "Mi", "Ju", "Vi", "Sá"],
+            monthNames: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"],
+            monthNamesShort: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"],
+            today: 'Hoy',
+            clear: 'Limpiar',
+            dateFormat: 'yyyy-mm-dd',
+            weekHeader: 'Sem'
+        };
+
   }
+
+  ngAfterViewInit(): void{
+
+  }
+
+    ngAfterContentInit() {
+        this.textoBreve = this.itemSelected[0].Descripcion !== undefined ? this.itemSelected[0].Descripcion : '' ;
+    }
 
   openModal() {
     this.step = 1;
   }
 
-//   showDialog() {
-//     this.visible = true;
-// }
+
+    dateFormatter(date_Object: Date): string {
+        if (date_Object !== undefined) {
+            const year = date_Object.getFullYear();
+            const month = (date_Object.getMonth() + 1 < 10 ? '0' : '') + (date_Object.getMonth() + 1);
+            const day = (date_Object.getDate() < 10 ? '0' : '') + date_Object.getDate();
+
+            const date_String: string = `${year}-${month}-${day}`;
+            return date_String;
+        }
+    }
+
 
   siguientePaso(cantidad) {
-    this.cantidad = cantidad;
+      this.cantidad = cantidad;
 
     if (this.step < this.itemSelected.length) {
       this.step++;
@@ -101,21 +135,28 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
   }
 
   certificarPosicion() {
-    const fechaActual = new Date();
-    const fechaFormateada = fechaActual.toISOString().split('T')[0];
+    let fechaDocFormateada = "";
+    let fechaConFormateada = "";
 
-    const primeraPosicion = this.elementSelected.Posiciones[0];
-    const primerItem = primeraPosicion.Items[0];
+      if (this.fechaDocumento !== undefined) {
+          fechaDocFormateada = this.dateFormatter(this.fechaDocumento);
+      }
+      if (this.fechaContabilizacion !== undefined) {
+          fechaConFormateada = this.dateFormatter(this.fechaContabilizacion);
+      }
+      let ref = this.referencia !== undefined ? this.referencia : '';
+      let txtBreve = this.textoBreve !== undefined ? this.textoBreve : '';
+
 
     this.entrySheetData = {
       EntrySheetHeader: {
         PaqueteNumero: '0000000001',
-        Descripcion: primerItem.Descripcion,
+        Descripcion: this.itemSelected[0].Descripcion,
         OrdenCompraNumero: this.elementSelected.NumeroOrdenDeCompra,
-        OrdenCompraPosicionNumero: primeraPosicion.NumeroPosicion.toString(),
-        DocumentoReferenciaNumero: '',
-        FechaDocumento: fechaFormateada,
-        FechaContabilizacion: fechaFormateada,
+        OrdenCompraPosicionNumero: this.itemSelected[0].NroPosicion.toString(),
+        DocumentoReferenciaNumero: ref,
+        FechaDocumento: fechaDocFormateada,
+        FechaContabilizacion: fechaConFormateada,
         GrabarAceptada: 'X'
       },
       EntrySheetServices: {
@@ -125,23 +166,22 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
             LineNumber: '0000000001',
             OutlineIndicator: 'X',
             SubPackageNumber: '0000000002',
-            Quantity: this.cantidad !== undefined ? this.cantidad : primerItem.Cantidad,
+            Quantity: this.cantidad !== undefined ? this.cantidad : this.itemSelected[0].Cantidad,
           },
           {
             PackageNumber: '0000000002',
             LineNumber: '0000000002',
             ExternalLine: '0000000010',
-            Service: primerItem.ServicioNumero.toString(),
-            Quantity: this.cantidad !== undefined ? this.cantidad : primerItem.Cantidad,
-            GrossPrice: primerItem.PrecioBruto,
-            ShortText: primerItem.Descripcion,
-            PlannedPackage: primerItem.Id,
-            PlannedLine: primerItem.LINE_NO
+            Service: this.itemSelected[0].ServicioNumero.toString(),
+            Quantity: this.cantidad !== undefined ? this.cantidad : this.itemSelected[0].Cantidad,
+            GrossPrice: this.itemSelected[0].PrecioBruto !== undefined ? this.itemSelected[0].PrecioBruto.toString() : '',
+            ShortText: txtBreve,
+            PlannedPackage: this.itemSelected[0].Id,
+            PlannedLine: this.itemSelected[0].LINE_NO
           }
         ]
       }
     };
-
   
     this.service.postCreateAsync(this.entrySheetData).subscribe(
       (response) => {
