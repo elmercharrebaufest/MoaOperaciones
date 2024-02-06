@@ -294,6 +294,18 @@ namespace SustitucionMOAUtils.Services
                         }
                         repositorio.Agregar(usuario);
                     }
+                    if (usuario.Roles == null)
+                    {
+                        usuario.Roles = new List<Rol>();
+                    }
+                    if (usuario.Proveedores == null)
+                    {
+                        usuario.Proveedores = new List<Proveedor>();
+                    }
+                    if (!usuario.TieneProveedor(proveedor.CodigoProveedor))
+                    {
+                        usuario.Proveedores.Add(proveedor);
+                    }
                     var rolUsuarioGranos = ObtenerRolPorCodigo("GRAN");
 
                     switch (proveedor.TipoProveedor.Nombre)
