@@ -103,15 +103,15 @@ namespace SustitucionMOAModel.Entities
         public bool TieneProveedor(string codigoProveedor)
         {
             //Los administradores pueden elegir impersonarse como cualquier proveedor
-            if (Roles.Where(r => r.Codigo == "ADM").Any())
+            if (Roles.Any(r => r.Codigo == "ADM"))
             {
                 return true;
             }
 
-            return Proveedores.Where(p => p.CodigoProveedor == codigoProveedor).Any();
+            return Proveedores.Any(p => p.CodigoProveedor == codigoProveedor);
         }
 
-        public string ObtenerRazonSocial()
+            public string ObtenerRazonSocial()
         {
             if (Proveedores != null && Proveedores.Count >= 1)
             {
