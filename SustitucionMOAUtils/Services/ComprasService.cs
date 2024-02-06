@@ -143,6 +143,7 @@ namespace SustitucionMOAUtils.Services
             SolpPosicion postEntitySubPosicionesEliminadas = null;
             bool enviarMailUrgencia = solp.Urgencia == true && solp.Finalizar && solp.TrabajoYaHecho != true;
 
+
             if (solp.Id.HasValue)
             {
                 //es la forma de decirle a entity framework que tambien me traiga todas estas cosas
@@ -193,7 +194,9 @@ namespace SustitucionMOAUtils.Services
                             for (int i = 0; i < solpEntity.Posiciones.Count; i++)
                             {
                                 if (solp.Posiciones[i].Cantidad > solpEntity.Posiciones.ElementAt(i).Cantidad || solp.Posiciones[i].PrecioBruto > solpEntity.Posiciones.ElementAt(i).PrecioBruto)
+                                {
                                     enviarMailUrgencia = true;
+                                }
                             }
                         }
 
@@ -208,6 +211,7 @@ namespace SustitucionMOAUtils.Services
                     FechaCreacion = DateTime.Now,
                     EmailLinkToken = Guid.NewGuid()
                 };
+
                 solp.TipoSolpSap = (int)TipoSolpSap.Web;
                 var estadoIncompletoCodigo = EstadoDocumentoSolp.Incompleto.Code();
                 var estadoIncompleto = repositorio.Obtener<TablaEstado>(x => x.Tabla == TablasEstado.EstadoDocumento && x.Codigo == estadoIncompletoCodigo);
@@ -342,6 +346,7 @@ namespace SustitucionMOAUtils.Services
                 }
             }
 
+
             if (solpEntity.LiberadoresSapSolp.Any())
                 repositorio.RemoverTodos(solpEntity.LiberadoresSapSolp.ToList());
             if (solp.TrabajoYaHecho != true && solp.LiberadoresSapSolp.Any())
@@ -350,6 +355,41 @@ namespace SustitucionMOAUtils.Services
                 {
                     LiberadorSap_Id = dto.LiberadorSap_Id
                 }).ToList();
+            }
+
+            string prefijo = ConfigurarPrefijos(solpEntity);
+
+            if (solpEntity.Posiciones.Any() && solpEntity.Posiciones.FirstOrDefault().TipoPosicion.Codigo == "SERVICIO")
+            {
+                foreach (var posicion in solpEntity.Posiciones)
+                {
+                    if (!posicion.Tarea.StartsWith(prefijo))
+                    {
+                        posicion.Tarea = (prefijo + posicion.Tarea);
+                        if (posicion.Tarea.Length > 40)
+                        {
+                            posicion.Tarea.Substring(0, 40);
+                        }
+                    }
+                }
+            }
+            else
+            {
+                if (solpEntity.Urgencia == true)
+                {
+                    foreach (var posicion in solpEntity.Posiciones)
+                    {
+                        if (!posicion.TextoSuministro.StartsWith("Urgencia: "))
+                        {
+                            posicion.TextoSuministro = ("Urgencia: " + posicion.TextoSuministro);
+                            if (posicion.TextoSuministro.Length > 40)
+                            {
+                                posicion.TextoSuministro.Substring(0, 40);
+                            }
+                        }
+                    }
+                }
+
             }
 
             repositorio.GuardarCambios();
@@ -7964,6 +8004,54 @@ namespace SustitucionMOAUtils.Services
                                 string.Join(" + ", solp.Posiciones.Select(x => x.Tarea));
                 solp.Pliego.NombreObra = nombre;
             }
+        }
+
+        private string ConfigurarPrefijos(Solp solp) 
+        {
+            var prefijo = "";
+
+            if (solp.Adicional == true)
+            {
+                prefijo = "AD: ";
+            }
+
+            if (solp.TrabajoYaHecho == true && solp.Adicional == true)
+            {
+               prefijo = "AD-OR: ";
+            }
+
+            if (solp.TrabajoYaHecho == true && solp.Urgencia == true || solp.Urgencia == true)
+            {
+                prefijo = "URG: ";
+            }
+
+            if (solp.TrabajoYaHecho == true)
+            {
+                prefijo = "TR: ";
+            }
+
+            if (solp.TrabajoYaHecho == true && solp.THServicioPermanente == true)
+            {
+                prefijo = "SP: ";
+            }
+
+            if (solp.TrabajoYaHecho == true && solp.THAjustePolinomica == true)
+            {
+                prefijo = "AJ: ";
+            }
+
+            if (solp.TrabajoYaHecho == true && solp.THProveedorDirecto == true)
+            {
+                prefijo = "PD: ";
+            }
+
+            if (solp.ProveedorDefinido == true)
+            {
+                prefijo = "XX: ";
+            }
+
+            return prefijo;
+            
         }
     }
 
