@@ -317,16 +317,10 @@
     <Content Include="dist\*.js" />
     <Content Include="dist\styles.*.css" />
     <Content Include="Libs\Kendo.DynamicLinq.dll" />
-    <Content Include="NEW.PRE.DeployParameters.Debug.xml" />
-    <Content Include="NEW.PRE.DeployParameters.Release.xml" />
     <Content Include="NEW.PRE.DeployParameters.xml" />
     <Content Include="NEW.PROD.DeployParameters.xml" />
     <Content Include="NEW.QACompras.DeployParameters.xml" />
-    <Content Include="NEW.QABaufest.DeployParameters.Debug.xml" />
-    <Content Include="NEW.QABaufest.DeployParameters.Release.xml" />
     <Content Include="NEW.QABaufest.DeployParameters.xml" />
-    <Content Include="NEW.QAHuenei.DeployParameters.Debug.xml" />
-    <Content Include="NEW.QAHuenei.DeployParameters.Release.xml" />
     <Content Include="NEW.QAHuenei.DeployParameters.xml" />
     <Content Include="src\app\aplicacion-ccpp\carga-manual\carga-manual.component.css" />
     <Content Include="src\app\aplicacion-ccpp\carga-manual\carga-manual.component.html" />
