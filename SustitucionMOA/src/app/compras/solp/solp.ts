@@ -244,7 +244,7 @@ export class Solp extends CommonResponse {
             this.terminoJornadaLaboral = new Date(this.getDateFromAspNetFormat(solp.JornadaLaboralHasta));
             this.ejecucion = solp.DiasEjecucion || '';
             this.observacionesCotizacion = solp.ObservacionesCotizacion;
-            this.proveedorAsignado_Id = solp.ProveedorAsignadoId;
+            this.proveedorAsignado_Id = solp.ProveedorAsignado_Id;
             this.proveedorAsignado = solp.ProveedorAsignado;
             this.trabajoHecho = solp.TrabajoYaHecho;
             this.adicional = solp.Adicional;

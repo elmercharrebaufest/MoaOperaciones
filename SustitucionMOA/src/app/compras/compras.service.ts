@@ -176,7 +176,7 @@ export class ComprasService extends BaseService {
             JornadaLaboralDesde: solp.comienzoJornadaLaboral,
             JornadaLaboralHasta: solp.terminoJornadaLaboral,
             ObservacionesCotizacion: solp.observacionesCotizacion,
-            ProveedorAsignadoId: solp.proveedorAsignado_Id,
+            ProveedorAsignado_Id: solp.proveedorAsignado_Id,
             TrabajoYaHecho: solp.trabajoHecho,
             Adicional: solp.adicional,
             Urgencia: solp.urgencia,
