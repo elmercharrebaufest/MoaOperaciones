@@ -37,6 +37,9 @@ export class Generacion1Component extends ListBaseComponent  {
     solpPaso1Result: any;
     fechaEntrega: any;
     horaEntrega: any;
+    fechaEditable: boolean;
+    hoy: Date = new Date();
+
 
     camposObligatorios: any[] = [
         { campo: 'nombreDePedido', esObligatorio: true},
@@ -107,6 +110,22 @@ export class Generacion1Component extends ListBaseComponent  {
         this.validadorPasoSolpService.onBlurDirty(control);
     }
 
-   
+    public get configurarFechaCalendar(): boolean {
+
+        if(this.model.trabajoHecho){
+            return true;
+        }
+
+        if(this.model.trabajoHecho && this.model.urgencia){
+            return true;
+        }
+
+        if(this.model.trabajoHecho && this.model.adicional){
+            return true;
+        }
+        
+        return false;
+    }
+
       
 }
