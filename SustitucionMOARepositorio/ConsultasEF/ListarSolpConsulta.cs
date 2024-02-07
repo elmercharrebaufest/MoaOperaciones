@@ -81,7 +81,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                 (FechaDesde == null || x.FechaCreacion >= FechaDesde.Value) && (FechaHasta == null || x.FechaCreacion <= FechaHasta.Value) &&
                                 (!ClaseDocumento.Any() || x.EstadoSolpSap_Id != null && ClaseDocumento.Contains((int)x.ClaseDocumento_Id)) &&
                                 (!TipoImputacion.Any() || x.Posiciones.Any(c => TipoImputacion.Contains(c.TipoImputacion.Codigo))) &&
-                                (!ValorTipoImputacion.Any() || x.Posiciones.Any(c => ValorTipoImputacion.Contains((int)c.ValorTipoImputacion_Id)))
+                                (!ValorTipoImputacion.Any() || x.Posiciones.Any(c => ValorTipoImputacion.Contains((int)c.ValorTipoImputacion_Id)) || x.Posiciones.Any(p => p.Subposiciones.Any(c => ValorTipoImputacion.Contains((int)c.TipoImputacion_Id))))
                                 select new SolpDto
                                 {
                                     UsuarioActual = new UsuarioDto { Mail = x.UsuarioCreacion != null ? x.UsuarioCreacion.Mail : "" },

@@ -1028,8 +1028,9 @@ namespace SustitucionMOAUtils.Services
             List<TablaSapDto> tablaSap = new List<TablaSapDto>();
             if (tablas.Contains("OrdenSolpSap") || tablas.Contains("CecoSolpSap") || tablas.Contains("CentroBeneficio"))
             {
-                var tipoImputacionEnSolp = repositorio.Listar<SolpPosicion>().Select(x => x.ValorTipoImputacion_Id).Where(id => id != null).Distinct().ToList();
-                tablaSap = repositorio.Listar<TablaSap>(x => tablas.Contains(x.Tabla) && tipoImputacionEnSolp.Contains(x.Id)).Select(x => new TablaSapDto(x)).ToList();
+                var tipoImputacionEnPosYSubpos = repositorio.Listar<SolpPosicion>().Select(x => x.ValorTipoImputacion_Id).Where(id => id != null).Distinct().ToList();
+                tipoImputacionEnPosYSubpos.AddRange(repositorio.Listar<SolpSubposicion>().Select(x => x.TipoImputacion_Id).Where(id => id != null).Distinct().ToList());
+                tablaSap = repositorio.Listar<TablaSap>(x => tablas.Contains(x.Tabla) && tipoImputacionEnPosYSubpos.Contains(x.Id)).Select(x => new TablaSapDto(x)).ToList();
             }
             else
                 tablaSap = repositorio.Listar<TablaSap>(x => tablas.Contains(x.Tabla)).Select(x => new TablaSapDto(x)).ToList();
@@ -1160,7 +1161,7 @@ namespace SustitucionMOAUtils.Services
                 (desde == null || x.FechaCreacion >= desde.Value) && (fechaHasta == null || x.FechaCreacion <= fechaHasta.Value) &&
                 (!centros.Any() || x.Posiciones.Any(c => centros.Contains(c.Centro_Id))) && (!grupoDeCompras.Any() || x.Posiciones.Any(gc => grupoDeCompras.Contains((int)gc.GrupoCompras_Id))) &&
                 (!claseDocumento.Any() || x.EstadoSolpSap_Id != null && claseDocumento.Contains((int)x.ClaseDocumento_Id)) && (!tipoImputacion.Any() || x.Posiciones.Any(c => tipoImputacion.Contains(c.TipoImputacion.Codigo))) &&
-                (!valorTipoImputacion.Any() || x.Posiciones.Any(c => valorTipoImputacion.Contains((int)c.ValorTipoImputacion_Id))));
+                (!valorTipoImputacion.Any() || x.Posiciones.Any(p => valorTipoImputacion.Contains((int)p.ValorTipoImputacion_Id)) || x.Posiciones.Any(p => p.Subposiciones.Any(sp => valorTipoImputacion.Contains((int)sp.TipoImputacion_Id)))));
 
                 if (todasLasSolp.Items != null && todasLasSolp.Items.Count() > 0)
                 {

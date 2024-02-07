@@ -79,6 +79,7 @@ export class DashboardComponent extends ListBaseComponent {
         claseDocumento: string[];
         tipoImputacion: string[];
         valorTipoImputacion: string[];
+        subtipoImputacionCombo: SelectItem[];
         fechaDesde: string;
         fechaHasta: string;
         pageIndex: number;
@@ -95,6 +96,7 @@ export class DashboardComponent extends ListBaseComponent {
             claseDocumento: [],
             tipoImputacion: [],
             valorTipoImputacion: [],
+            subtipoImputacionCombo: [],
             fechaDesde: null,
             fechaHasta: null,
             pageIndex: 1
@@ -437,7 +439,7 @@ export class DashboardComponent extends ListBaseComponent {
         return false;
     }
 
-    valorTipoImputacionCombo() {
+    subtipoImputacionCombo() {
         var tablas: string[] = [];
         this.selectTipoImputacion.forEach(tipo => {
             switch (tipo) {
@@ -782,6 +784,7 @@ export class DashboardComponent extends ListBaseComponent {
         this.filtrosSolicitante.claseDocumento = this.selectClaseDocumento;
         this.filtrosSolicitante.tipoImputacion = this.selectTipoImputacion;
         this.filtrosSolicitante.valorTipoImputacion = this.selectValorTipoImputacion;
+        this.filtrosSolicitante.subtipoImputacionCombo = this.valorTipoImputacionFiltro;
         this.filtrosSolicitante.fechaDesde = this.fechaInicio;
         this.filtrosSolicitante.fechaHasta = this.fechaFin;
         this.paginator.changePage(0);
@@ -942,6 +945,7 @@ export class DashboardComponent extends ListBaseComponent {
             this.selectClaseDocumento = filtrosGuardados.claseDocumento;
             this.selectTipoImputacion = filtrosGuardados.tipoImputacion;
             this.selectValorTipoImputacion = filtrosGuardados.valorTipoImputacion;
+            this.valorTipoImputacionFiltro = filtrosGuardados.subtipoImputacionCombo;
             this.fechaInicio = filtrosGuardados.fechaDesde;
             this.fechaFin = filtrosGuardados.fechaHasta;
             this.pageIndex = filtrosGuardados.pageIndex;

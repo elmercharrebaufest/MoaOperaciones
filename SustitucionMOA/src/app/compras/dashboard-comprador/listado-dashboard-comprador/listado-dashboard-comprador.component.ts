@@ -101,6 +101,7 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
         claseDocumento: string[];
         tipoImputacion: string[];
         valorTipoImputacion: string[];
+        subtipoImputacionCombo: SelectItem[];
         fechaDesde: string;
         fechaHasta: string;
         pageIndex: number;
@@ -118,6 +119,7 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
             claseDocumento: [],
             tipoImputacion: [],
             valorTipoImputacion: [],
+            subtipoImputacionCombo: [],
             fechaDesde: null,
             fechaHasta: null,
             pageIndex: 1
@@ -714,7 +716,7 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
         return false; //<-- Prevent Refresh
     }
 
-    valorTipoImputacionCombo() {
+    subtipoImputacionCombo() {
         var tablas: string[] = [];
         this.selectTipoImputacion.forEach(tipo => {
             switch (tipo) {
@@ -774,6 +776,7 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
         this.filtrosComprador.claseDocumento = this.selectClaseDocumento;
         this.filtrosComprador.tipoImputacion = this.selectTipoImputacion;
         this.filtrosComprador.valorTipoImputacion = this.selectValorTipoImputacion;
+        this.filtrosComprador.subtipoImputacionCombo = this.valorTipoImputacionFiltro;
         this.filtrosComprador.fechaDesde = this.fechaDesde;
         this.filtrosComprador.fechaHasta = this.fechaHasta;
         this.paginator.changePage(0);
@@ -816,6 +819,7 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
             this.selectClaseDocumento = filtrosGuardados.claseDocumento;
             this.selectTipoImputacion = filtrosGuardados.tipoImputacion;
             this.selectValorTipoImputacion = filtrosGuardados.valorTipoImputacion;
+            this.valorTipoImputacionFiltro = filtrosGuardados.subtipoImputacionCombo;
             this.fechaDesde = filtrosGuardados.fechaDesde;
             this.fechaHasta = filtrosGuardados.fechaHasta;
             this.pageIndex = filtrosGuardados.pageIndex;
