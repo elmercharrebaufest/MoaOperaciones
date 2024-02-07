@@ -8087,7 +8087,7 @@ namespace SustitucionMOAUtils.Services
                 startDate = startDate.AddMonths(1);
             }
             var outputMemStream = new MemoryStream();
-            MemoryStream streamExcel = ExcelExport.CreateExcelFileMs(resultadoFinal, new string[] { "TipoSolp", "UsuarioCreadorMail", "Cantidad", "Periodo" });
+            MemoryStream streamExcel = ExcelExport.CreateExcelFileMs(resultadoFinal, new string[] { "Origen", "Usuario", "Cantidad", "Periodo" });
 
             var nombreArchivoXls = $"Reporte SOLPs {DateTime.Today:dd-MM-yyyy}.xlsx";
             Attachment archivoExcel;
