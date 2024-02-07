@@ -20,3 +20,4 @@ IF NOT EXISTS (SELECT TOP 1 1 FROM HabilitacionJob WHERE Nombre = 'VerificarSitu
 IF NOT EXISTS (SELECT TOP 1 1 FROM HabilitacionJob WHERE Nombre = 'VerificarTransporteOrdenesDeCargaFasonJob') BEGIN    INSERT into HabilitacionJob VALUES ('VerificarTransporteOrdenesDeCargaFasonJob',1)END
 IF NOT EXISTS (SELECT TOP 1 1 FROM HabilitacionJob WHERE Nombre = 'AltaClienteSAPJob') BEGIN    INSERT into HabilitacionJob VALUES ('AltaClienteSAPJob',1)END
 IF NOT EXISTS (SELECT TOP 1 1 FROM HabilitacionJob WHERE Nombre = 'VerificarOrdenesFacturaCompensadaJob') BEGIN    INSERT into HabilitacionJob VALUES ('VerificarOrdenesFacturaCompensadaJob',1)END
+IF NOT EXISTS (SELECT TOP 1 1 FROM HabilitacionJob WHERE Nombre = 'EnviarMailReporteSOLPJob') BEGIN    INSERT into HabilitacionJob VALUES ('EnviarMailReporteSOLPJob',1)END

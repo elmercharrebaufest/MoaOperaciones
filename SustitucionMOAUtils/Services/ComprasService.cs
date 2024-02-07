@@ -1,4 +1,6 @@
 ﻿using HandlebarsDotNet;
+using ICSharpCode.SharpZipLib.Core;
+using ICSharpCode.SharpZipLib.Zip;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
 using iTextSharp.tool.xml;
@@ -15,10 +17,13 @@ using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using SustitucionMOAModel.Models.WSMapMOA;
 using SustitucionMOAModel.Models.WSMapMOA.Compras;
+using SustitucionMOAModel.Models.WSMapMOA.Reporte;
 using SustitucionMOAModel.Models.WSMapMOA.Vendedor.Detalle;
 using SustitucionMOARepositorio;
 using SustitucionMOARepositorio.ConsultasEF;
 using SustitucionMOARepositorio.Extensiones;
+using SustitucionMOAUtils.Email;
+using SustitucionMOAUtils.Export;
 using SustitucionMOAUtils.Helpers;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
@@ -1176,7 +1181,7 @@ namespace SustitucionMOAUtils.Services
 
                 return todasLasSolp;
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 throw;
             }
@@ -7966,29 +7971,128 @@ namespace SustitucionMOAUtils.Services
                 solp.Pliego.NombreObra = nombre;
             }
         }
-    }
+
+        public void EnviarMailSolpCreadasReporte()
+        {
+
+            DateTime startDate = new DateTime(2023, 9, 1);
+            DateTime endDate = DateTime.Now.Date;
+
+            var resultadoFinal = new List<SolpMailDto>();
+
+            while (startDate < endDate)
+            {
+                DateTime startOfMonth = new DateTime(startDate.Year, startDate.Month, 1);
+                DateTime endOfMonth = startOfMonth.AddMonths(1);
+
+                var periodo = startOfMonth.ToString("yyyy-MM");
+                var resultadoTemporal = repositorio.Listar<Solp, SolpDto>(
+                    x => new SolpDto
+                    {
+                        TipoDeSolp = ((TipoSolpSap)x.TipoSolpSap).ToString(),
+                        UsuarioCreadorMail = x.UsuarioCreacion != null ? x.UsuarioCreacion.Mail : "Sin usuario creador",
+                        Periodo = periodo,
+                        NroSolp = x.NroSolp,
+                        FechaCreacion = x.FechaCreacion
+                    },
+                    s => s.TipoSolpSap.HasValue && s.FechaCreacion >= startOfMonth && s.FechaCreacion < endOfMonth && !string.IsNullOrEmpty(s.NroSolp),
+                    maxResultados: 0,
+                    orden: null,
+                    direccionOrden: DirOrden.Asc
+                );
+
+                resultadoFinal.AddRange(resultadoTemporal
+                    .GroupBy(x => new { x.TipoDeSolp, x.UsuarioCreadorMail, x.Periodo })
+                    .Select(g => new SolpMailDto
+                    {
+                        TipoSolp = g.Key.TipoDeSolp,
+                        UsuarioCreadorMail = g.Key.UsuarioCreadorMail,
+                        Cantidad = g.Count().ToString(),
+                        Periodo = g.Key.Periodo
+                    })
+                    .ToList());
+
+                startDate = startDate.AddMonths(1);
+            }
+            var outputMemStream = new MemoryStream();
+            MemoryStream streamExcel = ExcelExport.CreateExcelFileMs(resultadoFinal, new string[] { "TipoSolp", "UsuarioCreadorMail", "Cantidad", "Periodo" });
+
+            var nombreArchivoXls = $"Reporte SOLPs {DateTime.Today:dd-MM-yyyy}.xlsx";
+            Attachment archivoExcel;
+            archivoExcel = new Attachment(streamExcel, nombreArchivoXls);
+
+            EnviarMailReporteSolp(streamExcel.ToArray(), nombreArchivoXls);
+
+        }
 
 
-    public static class SolpTemplateKeys
-    {
-        public const string FECHA_LIBERACION = "FECHA_LIBERACION";
-        public const string FECHA_CREACION = "FECHA_CREACION";
-        public const string NOMBRE_OBRA = "NOMBRE_OBRA";
-        public const string NRO_SOLP = "NRO_SOLP";
-        public const string NRO_PEDIDO = "NRO_PEDIDO";
-        public const string FISCAL_CONTRATO = "FISCAL_CONTRATO";
-        public const string TELEFONO = "TELEFONO";
-        public const string FECHA_PRESENTACION = "FECHA_PRESENTACION";
-        public const string USUARIO_COMPRAS = "USUARIO_COMPRAS";
-        public const string ESPECIFICACION_TECNICA = "ESPECIFICACION_TECNICA";
-        public const string PLAZO_EJECUCION = "PLAZO_EJECUCION";
-        public const string DIAS_JORNADA_LABORAL = "DIAS_JORNADA_LABORAL";
-        public const string INICIO_FINAL_HS_JORNADA_LABORAL = "INICIO_FINAL_HS_JORNADA_LABORAL";
-        public const string TABLA_POSICIONES_SUBPOSICIONES = "TABLA_POSICIONES_SUBPOSICIONES";
-        public const string LISTADO_ADJUNTOS = "LISTADO_ADJUNTOS";
-        public const string TEXTO_GENERICO = "TEXTO_GENERICO";
-        public const string REVISADO_POR = "REVISADO_POR";
-        public const string PLAZO_ENTREGA = "PLAZO_ENTREGA";
-        public const string PAGINAS = "PAGINAS";
+        private void EnviarMailReporteSolp(byte[] archivoExcel, string archivo)
+        {
+            try
+            {
+                var asunto = $"Reporte SOLPs";
+
+                var enviarA = new List<string> ();
+
+                var mail = ConfigurationManager.AppSettings["EmailRerporteSolpTo"];
+
+                if (mail.Contains(","))
+                {
+                    foreach (var destinatario in mail.Split(','))
+                    {
+                        enviarA.Add(destinatario);
+                    }
+                }
+                else
+                {
+                    enviarA.Add(mail);
+                }
+
+                emailService.EnviarMail(enviarA, asunto, "", null, CuerpoMailReporteSolp(), archivoExcel, archivo);
+            }
+            catch (Exception e)
+            {
+                Log.Info($"Error al enviar mail reporte sap");
+                Log.Error(e);
+            }
+        }
+
+        private AlternateView CuerpoMailReporteSolp()
+        {
+            var filePath = System.Web.HttpContext.Current.Server.MapPath("~/Content/Images/header/logo_.png");
+            LinkedResource res = new LinkedResource(filePath);
+            res.ContentId = Guid.NewGuid().ToString();
+            string htmlBody = "";
+            htmlBody += $"En el presente mail se informa las solps generadas en SAP y en la WEB. <br />";
+            htmlBody += "<br/>" +
+                "Equipo Compras";
+            AlternateView alternateView = AlternateView.CreateAlternateViewFromString(htmlBody, null, "text/html");
+            alternateView.LinkedResources.Add(res);
+            return alternateView;
+        }
+
+
+        public static class SolpTemplateKeys
+        {
+            public const string FECHA_LIBERACION = "FECHA_LIBERACION";
+            public const string FECHA_CREACION = "FECHA_CREACION";
+            public const string NOMBRE_OBRA = "NOMBRE_OBRA";
+            public const string NRO_SOLP = "NRO_SOLP";
+            public const string NRO_PEDIDO = "NRO_PEDIDO";
+            public const string FISCAL_CONTRATO = "FISCAL_CONTRATO";
+            public const string TELEFONO = "TELEFONO";
+            public const string FECHA_PRESENTACION = "FECHA_PRESENTACION";
+            public const string USUARIO_COMPRAS = "USUARIO_COMPRAS";
+            public const string ESPECIFICACION_TECNICA = "ESPECIFICACION_TECNICA";
+            public const string PLAZO_EJECUCION = "PLAZO_EJECUCION";
+            public const string DIAS_JORNADA_LABORAL = "DIAS_JORNADA_LABORAL";
+            public const string INICIO_FINAL_HS_JORNADA_LABORAL = "INICIO_FINAL_HS_JORNADA_LABORAL";
+            public const string TABLA_POSICIONES_SUBPOSICIONES = "TABLA_POSICIONES_SUBPOSICIONES";
+            public const string LISTADO_ADJUNTOS = "LISTADO_ADJUNTOS";
+            public const string TEXTO_GENERICO = "TEXTO_GENERICO";
+            public const string REVISADO_POR = "REVISADO_POR";
+            public const string PLAZO_ENTREGA = "PLAZO_ENTREGA";
+            public const string PAGINAS = "PAGINAS";
+        }
     }
 }

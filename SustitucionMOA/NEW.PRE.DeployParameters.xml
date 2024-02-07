@@ -58,8 +58,9 @@
 	<setParameter name="EmailAsuntoPrefijo Config" value="[PRE] " />
 	<setParameter name="EmailKgsMenos15TNFasTo Config" value="sebastian.serighetti@molinosagro.com.ar; noelia.caceres@molinosagro.com.ar; luciano.calaon@molinosagro.com.ar; moaoperaciones@molinosagro.com.ar"/>
 	<setParameter name="EmailConsultaInternaCC Config" value="sebastian.serighetti@molinosagro.com.ar; noelia.caceres@molinosagro.com.ar; moaoperaciones@baufest.com"/>
+  <setParameter name="EmailRerporteSolpTo Config" value="plataformacompras@baufest.com" />
 
-	<setParameter name="ComputerVisionApiKey Config" value="4ebc562f2be5457a96329ae69d84f192" />
+  <setParameter name="ComputerVisionApiKey Config" value="4ebc562f2be5457a96329ae69d84f192" />
 	<setParameter name="ComputerVisionEndpoint Config" value="https://moaopsocr.cognitiveservices.azure.com/" />
 	<setParameter name="BlobStorageEndpoint Config" value="DefaultEndpointsProtocol=https;AccountName=webopdevstorage;AccountKey=degh9HC+9hXxFOEU/2HqhP1ZusanUvm9X31YqPQIT68DNsU+GuVnphhYa7Okoexu4R1X5s7xiH5/X3ouTXURew==;EndpointSuffix=core.windows.net" />
 

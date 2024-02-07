@@ -2525,5 +2525,18 @@ namespace SustitucionMOATest.Services
             Assert.That(result, Is.Not.Null);
             Assert.AreEqual(result.GetType(), tablaSapDto.GetType());
         }
+
+        [Test]
+        public void EnviarMailSolpCreadasReporteOk()
+        {
+            repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<Solp, SolpDto>>>(), It.IsAny<Expression<Func<Solp, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc))
+              .Returns(new List<SolpDto>() { solpDto  } );
+            DateTime startDate = new DateTime(2023, 9, 1);
+            DateTime endDate = DateTime.Now.Date;
+            int monthsApart = (endDate.Year - startDate.Year) * 12 + (endDate.Month - startDate.Month + 1);
+            target.EnviarMailSolpCreadasReporte();
+            repositorioMock.Verify(y => y.Listar(It.IsAny<Expression<Func<Solp, SolpDto>>>(), 
+                It.IsAny<Expression<Func<Solp, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc), Times.Exactly(monthsApart));
+        }
     }
 }

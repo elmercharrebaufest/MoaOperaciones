@@ -103,7 +103,10 @@ namespace SustitucionMOAModel.Dto
         public bool? THProveedorDirecto { get; set; }
         public bool? THAjustePolinomica { get; set; }
         public bool? THServicioPermanente { get; set; }
-
+        public string TipoDeSolp { get; set; }
+        public string UsuarioCreadorMail { get; set; }
+        public string Periodo { get; set; }
+        public int Cantidad { get; set; }
 
         public SolpDto() { }
         public SolpDto(Solp entity)
@@ -426,5 +429,15 @@ namespace SustitucionMOAModel.Dto
         public string Proveedor { get; set; }
         public List<string> NumerosDePedido { get; set; }
         public bool MostrarModalMoneda { get; set; }
+    }
+
+    public class SolpMailDto
+    {
+
+        public string TipoSolp { get; set; }
+        public string UsuarioCreadorMail { get; set; }
+        public string Cantidad { get; set; }
+        public string Periodo { get; set; }
+    
     }
 }
