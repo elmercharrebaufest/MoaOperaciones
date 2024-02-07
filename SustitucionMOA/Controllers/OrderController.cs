@@ -34,13 +34,11 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                // Este debe combinarse con permisos de usuario.
-                //if (parametros.vendedor == "" || parametros.vendedor == null)
-                //{
-                //    parametros.vendedor = SessionPersister.Proveedor;
-                //}
-
-                //parametros.OrdenCompraId = "4123001971"; //"4123001549";
+                // Filtro necesario por el tipo de dato que envía el front desde que se amplió la búsqueda de proveedores.
+                if (parametros.vendedor == "undefined")
+                {
+                    parametros.vendedor = string.Empty;
+                }
 
                 ListaPaginada<DetalleOrdenDeCompraDto> result = orderService.ObtenerOrdenesCompraConDetalle(parametros);
 
@@ -56,7 +54,6 @@ namespace SustitucionMOA.Controllers
             }
             catch (Exception ex)
             {
-                // Manejo de errores
                 return JsonCustom(new { error = ex.Message });
             }
         }

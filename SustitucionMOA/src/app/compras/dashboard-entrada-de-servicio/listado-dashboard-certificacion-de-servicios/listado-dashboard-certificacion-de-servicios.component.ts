@@ -131,6 +131,10 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
 
     }
 
+    ngAfterViewInit() {
+        this.mensajeComponent = new MensajeComponent();
+    }
+
   validarLoginAzure() {
     throw new Error('Method not implemented.');
   }
@@ -262,7 +266,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
       this.getListarPO(this.proveedor, this.ordenCompraId, this.fechaInicio, this.fechaFin);
   }
 
-  deleteES(Id: any) {
+    deleteES(Id: any) {
     this.confirmationService.confirm({
       message: 'Esta a punto de eliminar la entrada de servicio. <b>¿Desea confirmar?</b>',
         accept: () => {
@@ -275,22 +279,22 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
     );
   }
 
-  deleteById(Id) {
+ deleteById(Id) {
+     this.mensajeComponent.setMsgsEmpty();
     this.service.deleteById(Id).subscribe(
-      (result:any) => {
-        if (result.logout == true) {
-          this.sessionDataService.logout();
-        } else if (result.error != undefined && result.error != "") {
-          this.mensajeComponent.setErrorMsg(result.error);
-        } else if (result.info != undefined) {
-          this.mensajeComponent.setErrorMsg(result.error);
-        } else {
-            this.getListarPO(this.proveedor, this.ordenCompraId, this.filtroFechaComponent.fecha_inicio, this.filtroFechaComponent.fecha_fin);
-        }
-        this.spinnerComponent.hideIt()
+        (result: any) => {          
+            if (result.logout == true) {
+                this.sessionDataService.logout();
+            } else if (result.error != undefined && result.error != "") {
+                this.mensajeComponent.setErrorMsg(result.error);
+            } else if (result.info != undefined) {
+                this.mensajeComponent.setErrorMsg(result.error);
+            } else if (result.data != undefined) {
+                this.floatMsgService.setSuccessMsg("Se ha eliminado la entrada de servicio " + Id);
+                this.getListarPO(this.proveedor, this.ordenCompraId, this.filtroFechaComponent.fecha_inicio, this.filtroFechaComponent.fecha_fin);          
+            }
       }
-    );
-
+     );
   }
 
   handlePageEvent(e: any) {
@@ -352,8 +356,13 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
                         result.forEach((element) => {
                             let obj = new autoCompleteObject();
                             obj.valor = element.CodigoProveedor + ' - ' + element.RazonSocial;
-                            obj.CodigoProveedor = element.CodigoProveedor;
-                            provisional.push(obj)
+                            obj.CodigoProveedor = element.CodigoProveedor;                           
+                            if (provisional.some(x => x.valor === obj.valor)) {
+
+                            }
+                            else {
+                                provisional.push(obj)
+                            }                            
                         });
                         this.proveedorList = provisional;
                     }

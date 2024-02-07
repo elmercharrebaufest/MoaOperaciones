@@ -52,13 +52,6 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
         {
           "PackageNumber": "",
           "LineNumber": "",
-          "OutlineIndicator": "",
-          "SubPackageNumber": "",
-          "Quantity": ""
-        },
-        {
-          "PackageNumber": "",
-          "LineNumber": "",
           "ExternalLine": "",
           "Service": "",
           "Quantity": "",
@@ -161,13 +154,6 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
       },
       EntrySheetServices: {
         Items: [
-          {
-            PackageNumber: '0000000001',
-            LineNumber: '0000000001',
-            OutlineIndicator: 'X',
-            SubPackageNumber: '0000000002',
-            Quantity: this.cantidad !== undefined ? this.cantidad : this.itemSelected[0].Cantidad,
-          },
           {
             PackageNumber: '0000000002',
             LineNumber: '0000000002',

@@ -185,10 +185,12 @@ export class ComprasService extends BaseService {
     }
 
     public deleteById(Id) {
-        let params: HttpParams = new HttpParams();
-        params = params.set('DocumentoNumero', Id);
+        //http.delete falla en ambiente QA - cambiado a Post
+        var payload = new FormData();
+        payload.append('DocumentoNumero', JSON.stringify(Id));
+
         return this.http
-            .delete<any[]>('/api/EntradaServicio/DeleteById', { params: params, headers: this.headers })
+            .post('/api/EntradaServicio/DeleteById', payload, { headers: this.headersPost })
     }
 
     public postCreateAsync(entradaServicioCreateParamsDto): Observable<any> {
