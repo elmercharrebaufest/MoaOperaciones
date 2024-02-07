@@ -494,8 +494,9 @@ export class DashboardComponent extends ListBaseComponent {
                     } else if (result.info != undefined) {
                         this.floatMsgService.setInfoMsg(result.info);
                     } else {
+                        const filtrosGuardados = JSON.parse(sessionStorage.getItem('filtrosSolicitante'));
                         result.data.forEach(x => x.forEach(x => {
-                            if (x.Id == sessionStorage.getItem("usuarioId") && this.selectUsuario.length === 0 && !this.selectUsuario.includes(x.Id))
+                            if (x.Id == sessionStorage.getItem("usuarioId") && !filtrosGuardados && !this.selectUsuario.includes(x.Id))
                                 this.selectUsuario.push(x.Id);
                         }));
                         this.getListarSolp();
