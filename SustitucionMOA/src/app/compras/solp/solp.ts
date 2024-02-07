@@ -75,7 +75,7 @@ export class Solp extends CommonResponse {
     public archivosCotizacionesNuevos: Array<File>;
     public archivosCotizaciones: Array<ArchivoModel>;
     public liberadoresSap: any[] = [];
-    public proveedorDefinido: boolean;
+    public condEspProveedorAsignado: boolean;
     public editarCondicionesEspeciales: boolean = true;
     public thServicioPermanente: boolean;
     public thAjustePolinomica: boolean;
@@ -249,7 +249,7 @@ export class Solp extends CommonResponse {
             this.trabajoHecho = solp.TrabajoYaHecho;
             this.adicional = solp.Adicional;
             this.urgencia = solp.Urgencia;
-            this.proveedorDefinido = solp.ProveedorDefinido;
+            this.condEspProveedorAsignado = solp.CondEspProveedorAsignado;
             this.ordenDeCompra = solp.NroOrdenDeCompraAdicional;
             this.ordenDeCompraOriginal = solp.NroOrdenDeCompraAdicional;
             this.proveedorIdAdicional = solp.ProveedorIdAdicional;

@@ -224,7 +224,7 @@ namespace SustitucionMOAUtils.Services
                 solpEntity.Pliego = new Pliego();
                 solpEntity.Posiciones = new List<SolpPosicion>();
                 solpEntity.TrabajoYaHecho = solp.TrabajoYaHecho;
-                solpEntity.ProveedorDefinido = solp.ProveedorDefinido;
+                solpEntity.CondEspProveedorAsignado = solp.CondEspProveedorAsignado;
                 solpEntity.Adicional = solp.Adicional;
                 solpEntity.Urgencia = solp.Urgencia;
                 solpEntity.NroOrdenDeCompraAdicional = solp.NroOrdenDeCompraAdicional;
@@ -253,7 +253,7 @@ namespace SustitucionMOAUtils.Services
                 solpEntity.TipoSolpSap = solp.TipoSolpSap;
                 pliegoEntity.NombreObra = solp.NombreDeObra;
                 solpEntity.TrabajoYaHecho = solp.TrabajoYaHecho;
-                solpEntity.ProveedorDefinido = solp.ProveedorDefinido;
+                solpEntity.CondEspProveedorAsignado = solp.CondEspProveedorAsignado;
                 solpEntity.Adicional = solp.Adicional;
                 solpEntity.Urgencia = solp.Urgencia;
                 solpEntity.NroOrdenDeCompraAdicional = solp.NroOrdenDeCompraAdicional;
@@ -1287,7 +1287,7 @@ namespace SustitucionMOAUtils.Services
                 ClaseDocumento = solp.ClaseDocumento != null ? new TablaSapDto(solp.ClaseDocumento) : new TablaSapDto(),
                 ProveedorAsignado_Id = solp.ProveedorAsignado_Id,
                 TrabajoYaHecho = solp.TrabajoYaHecho,
-                ProveedorDefinido = solp.ProveedorDefinido,
+                CondEspProveedorAsignado = solp.CondEspProveedorAsignado,
                 Adicional = solp.Adicional,
                 Urgencia = solp.Urgencia,
                 NroOrdenDeCompraAdicional = solp.NroOrdenDeCompraAdicional,
@@ -1925,7 +1925,7 @@ namespace SustitucionMOAUtils.Services
                         CrearCotizacionConTrabajoYaHecho(solp);
                     }
 
-                    if ((solp.TrabajoYaHecho != true && solp.Adicional == true) || solp.ProveedorDefinido == true)
+                    if ((solp.TrabajoYaHecho != true && solp.Adicional == true) || solp.CondEspProveedorAsignado == true)
                     {
                         CrearPeticionAutomatica(solp, new List<int> { solp.ProveedorAsignado_Id.Value }, null, false);
                     }
@@ -2916,7 +2916,7 @@ namespace SustitucionMOAUtils.Services
                             }
                         }
 
-                        if (solpDB.ProveedorDefinido == true)
+                        if (solpDB.CondEspProveedorAsignado == true)
                         {
                             item.VerPublicar = false;
                         }
@@ -3933,7 +3933,7 @@ namespace SustitucionMOAUtils.Services
             }
 
             //mostrar observación ingresada en el paso 4 si es SOLP con condiciones especiales
-            if (peticion.Solp.Pliego != null && (peticion.Solp.TrabajoYaHecho == true || peticion.Solp.Urgencia == true || peticion.Solp.Adicional == true || peticion.Solp.ProveedorDefinido == true))
+            if (peticion.Solp.Pliego != null && (peticion.Solp.TrabajoYaHecho == true || peticion.Solp.Urgencia == true || peticion.Solp.Adicional == true || peticion.Solp.CondEspProveedorAsignado == true))
             {
                 legajo.Add(new LegajoDto
                 {

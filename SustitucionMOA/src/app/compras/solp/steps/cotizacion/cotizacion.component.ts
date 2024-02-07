@@ -113,7 +113,7 @@ export class CotizacionComponent extends ListBaseComponent {
             jefes: new FormControl('', Validators.required),
             gerentes: new FormControl('', Validators.required),
             directores: new FormControl('', Validators.required),
-            proveedorDefinido: new FormControl('', Validators.required),
+            condEspProveedorAsignado: new FormControl('', Validators.required),
             servicioPermanente: [{ value: this.model.thServicioPermanente }, []],
             ajustePolinomica: [{ value: this.model.thAjustePolinomica }, []],
             proveedorDirecto: [{ value: this.model.thProveedorDirecto }, []],
@@ -282,7 +282,7 @@ export class CotizacionComponent extends ListBaseComponent {
     validarChecks() {
         this.model.validacionCheck = true;
 
-        if (this.model.trabajoHecho == true || this.model.adicional == true || this.model.urgencia == true || this.model.proveedorDefinido == true) {
+        if (this.model.trabajoHecho == true || this.model.adicional == true || this.model.urgencia == true || this.model.condEspProveedorAsignado == true) {
 
             if ((this.model.archivosCotizaciones == null || this.model.archivosCotizaciones.length == 0) && (this.model.archivosCotizacionesNuevos == null || this.model.archivosCotizacionesNuevos.length == 0)) {
                 this.model.mensajeCotizacion = "Debe adjuntar un archivo en el paso #4";
@@ -296,7 +296,7 @@ export class CotizacionComponent extends ListBaseComponent {
                 this.model.validacionCheck = false;
             }
 
-            if (this.model.trabajoHecho == true && this.model.adicional != true || this.model.proveedorDefinido == true) {
+            if (this.model.trabajoHecho == true && this.model.adicional != true || this.model.condEspProveedorAsignado == true) {
                 if (!this.proveedorSeleccionado || this.proveedorSeleccionado == "" || typeof this.proveedorSeleccionado === "undefined") {
                     this.model.mensajeCotizacion = "Debe agregar un proveedor en el paso #4";
                     this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: `${this.model.mensajeCotizacion}` });

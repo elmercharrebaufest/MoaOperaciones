@@ -97,7 +97,7 @@ namespace SustitucionMOAModel.Dto
         public List<LiberadorSapSolpDto> LiberadoresSapSolp { get; set; } = new List<LiberadorSapSolpDto>();
         public bool ChatSinLeer { get; set; }
         public bool TodasLasPosicionesBorradas { get; set; }
-        public bool? ProveedorDefinido { get; set; }
+        public bool? CondEspProveedorAsignado { get; set; }
         public bool EditarCondicionesEspeciales { get; set; }
         public int? Pliego_Id { get; set; }
         public bool? THProveedorDirecto { get; set; }
