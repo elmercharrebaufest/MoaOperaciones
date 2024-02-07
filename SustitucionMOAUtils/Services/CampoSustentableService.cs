@@ -59,7 +59,7 @@ namespace SustitucionMOAUtils.Services
             ValidarCampo(campoProveedor, archivoKmz);
 
             var declaracion = repositorio.ObtenerDeclaracionDeProveedor(campoProveedor.CUIT, campoProveedor.CampoCosecha.Cosecha_Id);
-            
+
             campoProveedor.RazonSocial = declaracion.RazonSocial;
             campoProveedor.FechaCreacion = DateTime.Now;
             campoProveedor.Borrado = false;
@@ -624,10 +624,11 @@ namespace SustitucionMOAUtils.Services
 
         private string GuardarArchivoKMZ(CampoProveedor campoProveedor, HttpPostedFileBase archivoKmz)
         {
-            var fileName = string.Concat(campoProveedor.CampoCosecha.CampoSustentable_Id, ".kmz");
+            var extension = Path.GetExtension(archivoKmz.FileName);
+            var fileName = string.Concat(campoProveedor.CampoCosecha.CampoSustentable_Id,".", extension);
             var rutaCarpeta = string.Concat(ConfigurationManager.AppSettings["RutaArchivosCampoSustentable"], "/", campoProveedor.CUIT);
             var rutaArchivo = string.Concat(rutaCarpeta, "/", fileName);
-            
+
             Directory.CreateDirectory(rutaCarpeta);
 
             if (File.Exists(rutaArchivo))
@@ -715,14 +716,15 @@ namespace SustitucionMOAUtils.Services
         }
         private string ObtenerNombreArchivoDrive(CampoProveedor campoProveedor)
         {
-            return ObtenerNombreArchivoDrive(campoProveedor.CUIT,campoProveedor.CampoCosecha);
+            return ObtenerNombreArchivoDrive(campoProveedor.CUIT, campoProveedor.CampoCosecha);
         }
         private string ObtenerNombreArchivoDrive(string cuit, CampoCosecha campoCosecha)
         {
             return $"{cuit}_{campoCosecha.CampoSustentable_Id}";
         }
-        private void SubirArchivosAGoogleDrive(string rutaArchivo,CampoProveedor campoProveedor)
+        private void SubirArchivosAGoogleDrive(string rutaArchivo, CampoProveedor campoProveedor)
         {
+            var extension = Path.GetExtension(rutaArchivo);
             var reporteACertificadorDto = repositorio.ObtenerReporteCertificador(
                 campoProveedor.CampoCosecha_Id, campoProveedor.Proveedor_Id);
 
@@ -732,7 +734,7 @@ namespace SustitucionMOAUtils.Services
             var nombreArchivo = ObtenerNombreArchivoDrive(campoProveedor);
 
             var uploadFileKMZ = new GoogleDriveFileUploadRequest()
-                .WithFileUploadName($"{nombreArchivo}.kmz")
+                .WithFileUploadName($"{nombreArchivo}.{extension}")
                 .WithFilePath(rutaArchivo);
 
             campoSustentableGoogleDrive.UploadFile(uploadFileKMZ);
