@@ -31,7 +31,7 @@ namespace SustitucionMOA.Jobs
                 if (repositorio.Obtener<HabilitacionJob>(a => a.Nombre == "EnviarMailReporteSOLPJob").Habilitado == false)
                     return;
 
-                _comprasService.EnviarMailSolpCreadasReporte();
+                _comprasService.ObtenerDatosReporteSolp();
             }
             catch (Exception e)
             {

@@ -90,6 +90,6 @@ namespace SustitucionMOAUtils.Interfaces
        
         InfoVisitasDeObraDto ListarVisitasDeObra(List<VisitaObraDto> visitas);
         List<TablaGeneralDto> ObtenerImputaciones(string tabla);
-        void EnviarMailSolpCreadasReporte();
+        void ObtenerDatosReporteSolp();
     }
 }

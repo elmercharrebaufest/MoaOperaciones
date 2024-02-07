@@ -1072,6 +1072,7 @@ namespace SustitucionMOAUtils.Services
         {
             try
             {
+                ObtenerDatosReporteSolp();
                 var fechaHasta = hasta != null ? hasta.Value.AddDays(1) : (DateTime?)null;
                 var hoy = DateTime.Now.Date;
                 var usuariosCompras = repositorio.Listar<UsuarioCompras>();
@@ -7972,7 +7973,7 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        public void EnviarMailSolpCreadasReporte()
+        public void ObtenerDatosReporteSolp()
         {
 
             DateTime startDate = new DateTime(2023, 9, 1);
@@ -8058,16 +8059,13 @@ namespace SustitucionMOAUtils.Services
         }
 
         private AlternateView CuerpoMailReporteSolp()
-        {
-            var filePath = System.Web.HttpContext.Current.Server.MapPath("~/Content/Images/header/logo_.png");
-            LinkedResource res = new LinkedResource(filePath);
-            res.ContentId = Guid.NewGuid().ToString();
+        {          
+            
             string htmlBody = "";
             htmlBody += $"En el presente mail se informa las solps generadas en SAP y en la WEB. <br />";
             htmlBody += "<br/>" +
                 "Equipo Compras";
-            AlternateView alternateView = AlternateView.CreateAlternateViewFromString(htmlBody, null, "text/html");
-            alternateView.LinkedResources.Add(res);
+            AlternateView alternateView = AlternateView.CreateAlternateViewFromString(htmlBody, null, "text/html");       
             return alternateView;
         }
 
