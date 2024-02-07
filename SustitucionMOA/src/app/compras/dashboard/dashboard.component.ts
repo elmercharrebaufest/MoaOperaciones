@@ -446,7 +446,8 @@ export class DashboardComponent extends ListBaseComponent {
                 case EnumTipoImputacion.CentroDeCosto:
                     tablas.push('CecoSolpSap');
                     break;
-                case EnumTipoImputacion.OrdenDeOt || EnumTipoImputacion.OrdenInversion:
+                case EnumTipoImputacion.OrdenDeOt:
+                case EnumTipoImputacion.OrdenInversion:
                     tablas.push('OrdenSolpSap');
                     break;
                 case EnumTipoImputacion.Siniestro:
