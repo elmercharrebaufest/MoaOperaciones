@@ -1719,10 +1719,10 @@ namespace SustitucionMOATest.Services
         }
 
         [Test]
-        public void ActualizarFechaLiberacionConProveedorDefinidoOk()
+        public void ActualizarFechaLiberacionConProveedorAsignadoOk()
         {
             var solpLocal = solp;
-            solpLocal.ProveedorDefinido = true;
+            solpLocal.CondEspProveedorAsignado = true;
             repositorioMock.Setup(y => y.Obtener(It.IsAny<Expression<Func<Solp, bool>>>())).Returns(solp);
             repositorioMock.Setup(y => y.Obtener(It.IsAny<Expression<Func<TablaSap, bool>>>())).Returns(new TablaSap { Id = 1 });
             SetUpOCPeticionCotizacion();

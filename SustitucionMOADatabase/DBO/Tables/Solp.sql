@@ -25,7 +25,7 @@
     [SeEnvioMailLiberacion] BIT NULL, 
     [Urgencia] BIT NULL, 
     [SeEnvioMailAnulacion] BIT NULL, 
-    [ProveedorDefinido] BIT NULL, 
+    [CondEspProveedorAsignado] BIT NULL, 
     [THServicioPermanente] BIT NULL, 
     [THAjustePolinomica] BIT NULL, 
     [THProveedorDirecto] BIT NULL, 

@@ -180,7 +180,7 @@ export class ComprasService extends BaseService {
             TrabajoYaHecho: solp.trabajoHecho,
             Adicional: solp.adicional,
             Urgencia: solp.urgencia,
-            ProveedorDefinido: solp.proveedorDefinido,
+            CondEspProveedorAsignado: solp.condEspProveedorAsignado,
             NroOrdenDeCompraAdicional: solp.ordenDeCompra,
             RevisadoPor: solp.revisadoPor,
             ClaseDocumento: this.getObjetoCodigo(solp.selectClaseDocumento && solp.selectClaseDocumento.Codigo),

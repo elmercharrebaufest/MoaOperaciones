@@ -91,7 +91,7 @@
                             <label class="labelCompras" for="checkbox"> Condiciones especiales</label>
                             <div>
                                 <p-checkbox [ngModelOptions]="{standalone:true}" name="trabajoHecho" [(ngModel)]="model.trabajoHecho" label="Trabajo ya hecho / Material entregado" formControlName="trabajoHecho"
-                                            binary="true" (click)="validarChecks(); limpiarCheck();" [disabled]="model.proveedorDefinido || !model.editarCondicionesEspeciales" (ngModelChange)="resetearFecha()" ></p-checkbox>
+                                            binary="true" (click)="validarChecks(); limpiarCheck();" [disabled]="model.condEspProveedorAsignado || !model.editarCondicionesEspeciales" (ngModelChange)="resetearFecha()" ></p-checkbox>
                             </div>
                         </div>
                         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" *ngIf="model.trabajoHecho && !model.adicional">
@@ -151,7 +151,7 @@
 
                         <div class="col-xs-12 col-sm-12 col-md-12 margenInput" style="margin-top: 1em;">
                             <p-checkbox [ngModelOptions]="{standalone:true}" name="adicional" [(ngModel)]="model.adicional" label="Adicional / Mano de obra administrada / Ajuste" formControlName="adicional"
-                                        binary="true" (click)="validarChecks(); limpiarCheckAdicional()" [disabled]="model.proveedorDefinido || !model.editarCondicionesEspeciales"></p-checkbox>
+                                        binary="true" (click)="validarChecks(); limpiarCheckAdicional()" [disabled]="model.condEspProveedorAsignado || !model.editarCondicionesEspeciales"></p-checkbox>
                         </div>
                         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" *ngIf="model.adicional">
                             <div class="col-xs-12 col-sm-10" style="font-size: 14px;">
@@ -178,7 +178,7 @@
                         </div>
                         <div class="col-xs-12 col-sm-12 col-md-12 margenInput" style="margin-top: 1em;">
                             <p-checkbox [ngModelOptions]="{standalone:true}" name="urgencia" [(ngModel)]="model.urgencia" label="Urgencia" formControlName="urgencia"
-                                        binary="true" (click)="validarChecks(); listarLiberadorSap();" [disabled]="model.proveedorDefinido || !model.editarCondicionesEspeciales && model.tipoSolpSap == 1"></p-checkbox>
+                                        binary="true" (click)="validarChecks(); listarLiberadorSap();" [disabled]="model.condEspProveedorAsignado || !model.editarCondicionesEspeciales && model.tipoSolpSap == 1"></p-checkbox>
                         </div>
                         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" *ngIf="model.urgencia && model.trabajoHecho != true">
                             <div class="col-xs-12 col-sm-10" style="font-size: 14px;">
@@ -204,10 +204,10 @@
                         </div>
 
                         <div class="col-xs-12 col-sm-12 col-md-12 margenInput" style="margin-top: 1em;">
-                            <p-checkbox [ngModelOptions]="{standalone:true}" name="proveedorDefinido" [(ngModel)]="model.proveedorDefinido" label="Proveedor definido" formControlName="proveedorDefinido"
+                            <p-checkbox [ngModelOptions]="{standalone:true}" name="condEspProveedorAsignado" [(ngModel)]="model.condEspProveedorAsignado" label="Proveedor Asignado" formControlName="condEspProveedorAsignado"
                                         binary="true" (click)="validarChecks(); limpiarCheck()" [disabled]="!model.editarCondicionesEspeciales || model.tipoSolpSap != 1 || model.urgencia || model.adicional || model.trabajoHecho "></p-checkbox>
                         </div>
-                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" *ngIf="model.proveedorDefinido && !model.urgencia && !model.adicional && !model.trabajoHecho">
+                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" *ngIf="model.condEspProveedorAsignado && !model.urgencia && !model.adicional && !model.trabajoHecho">
                             <div class="col-xs-12 col-sm-10" style="font-size: 14px;">
                                 <strong>Selección de proveedores *</strong>
                             </div>
