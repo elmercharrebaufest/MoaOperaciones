@@ -378,7 +378,7 @@ namespace SustitucionMOAUtils.Services
                     }
                 }
             }
-           
+
 
             repositorio.GuardarCambios();
             solp.Id = solpEntity.Id;
@@ -2495,11 +2495,20 @@ namespace SustitucionMOAUtils.Services
                         posicionEntity.GrupoArticulo_Id = grupoArticulo?.Id;
                         posicionEntity.Moneda_Id = moneda?.Id;
                         posicionEntity.Estado = posicion.EstadoPosicion != "X";
-                        Logger.Log.Info($"ObtenerSolpesDesdeSAPJob NumeroSolp: {obtenerSolpRequest.NumeroSolp}, pos: {posicion.NumeroPosicion}, estado: {posicion.EstadoPosicion}.");
-
+                        Log.Info($"ObtenerSolpesDesdeSAPJob NumeroSolp: {obtenerSolpRequest.NumeroSolp}, pos: {posicion.NumeroPosicion}, estado: {posicion.EstadoPosicion}.");
                         posicionEntity.Tarea = posicion.TextoPosicion;
                         posicionEntity.NroNecesidad = posicion.NumeroRequerimientoInterno;
                         posicionEntity.EsConcluido = true;
+
+                        if (!string.IsNullOrEmpty(posicion.NumeroContratoMarco)) //Contrato Marco
+                        {
+                            var datosContratoMarco = ObtenerContratoMarco(posicion.NumeroContratoMarco, posicion.CentroLogistico);
+                            posicionEntity.NumeroContratoSuperior = posicion.NumeroContratoMarco;
+                            posicionEntity.NumeroPosicionContratoSuperior = posicion.PosicionContratoMarco;
+                            posicionEntity.ProveedorFijo = posicion.ProveedorFijo;
+                            posicionEntity.NombreProveedor = datosContratoMarco.Any() ? datosContratoMarco.First().NombreProveedor : "";
+                            posicionEntity.OrganizacionCompras = posicion.OrganizacionCompras;
+                        }
 
                         if (posicion.Tipo == "0")
                         {
@@ -8000,7 +8009,7 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        private string ConfigurarPrefijos(Solp solp) 
+        private string ConfigurarPrefijos(Solp solp)
         {
             var prefijo = "";
 
@@ -8011,7 +8020,7 @@ namespace SustitucionMOAUtils.Services
 
             if (solp.TrabajoYaHecho == true && solp.Adicional == true)
             {
-               prefijo = "AD-OR: ";
+                prefijo = "AD-OR: ";
             }
 
             if (solp.TrabajoYaHecho == true && solp.Urgencia == true || solp.Urgencia == true)
@@ -8045,7 +8054,7 @@ namespace SustitucionMOAUtils.Services
             }
 
             return prefijo;
-            
+
         }
 
         public void ObtenerDatosReporteSolp()
@@ -8108,7 +8117,7 @@ namespace SustitucionMOAUtils.Services
             {
                 var asunto = $"Reporte SOLPs";
 
-                var enviarA = new List<string> ();
+                var enviarA = new List<string>();
 
                 var mail = ConfigurationManager.AppSettings["EmailRerporteSolpTo"];
 
@@ -8134,13 +8143,13 @@ namespace SustitucionMOAUtils.Services
         }
 
         private AlternateView CuerpoMailReporteSolp()
-        {          
-            
+        {
+
             string htmlBody = "";
             htmlBody += $"En el presente mail se informa las solps generadas en SAP y en la WEB. <br />";
             htmlBody += "<br/>" +
                 "Equipo Compras";
-            AlternateView alternateView = AlternateView.CreateAlternateViewFromString(htmlBody, null, "text/html");       
+            AlternateView alternateView = AlternateView.CreateAlternateViewFromString(htmlBody, null, "text/html");
             return alternateView;
         }
 
