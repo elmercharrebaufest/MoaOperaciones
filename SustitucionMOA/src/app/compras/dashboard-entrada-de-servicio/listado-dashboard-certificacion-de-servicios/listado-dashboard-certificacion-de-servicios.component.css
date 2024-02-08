@@ -15,6 +15,19 @@ body.ui-paginator.ui-dropdown {
   padding: 0;
 }
 
+.filters {
+  padding: 8px;
+  border-top: 0.5px solid #959595;
+  border-left: 0.5px solid #959595;
+  border-right: 0.5px solid #959595;
+  width: max-content;
+  background: white;
+  .checkbox-content{
+    display: flex;
+    gap: 20px;
+  }
+}
+
 .title-fix {
     border-left-width: 0px;
     border-left-style: solid;
@@ -82,15 +95,11 @@ body.ui-paginator.ui-dropdown {
 }
 
 .styled-input {
-  font-family: "Roboto Condensed", Arial, sans-serif;
-  border: 1px solid #DDDDDD;
-  border-radius: 4px;
-  border-radius: 4px 4px 4px 4px;
-  -moz-border-radius: 4px 4px 4px 4px;
-  -webkit-border-radius: 4px 4px 4px 4px;
-  width: 100%;
-  height: 40px;
-  font-size: 16px;
+    font-family: "Roboto Condensed", Arial, sans-serif;
+    width: 100%;
+    height: 40px;
+    font-size: 16px;
+    line-height: 1.4em;
 }
 
 ::ng-deep .mySearch .ui-autocomplete-loader.pi.pi-spinner.pi-spin {
@@ -196,8 +205,12 @@ body.ui-paginator.ui-dropdown {
   display: block;
   margin: auto;
 }
-/* TABLE END */
 
+#searchOrder .styled-select {
+    top: -0.1em;
+    position: relative;
+}
+/* TABLE END */
 /* Rules here apply to devices from 1400px and up */
 @media (min-width: 1399px) {
     .delete-icon {

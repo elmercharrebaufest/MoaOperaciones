@@ -31,105 +31,102 @@ import { forEach } from '@angular/router/src/utils/collection';
 
 export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseComponent {
   
-    constructor(protected service: ComprasService, protected navService: NavService,
-        protected sessionDataService: SessionDataService, protected securityService: SecurityService,
-        protected floatMsgService: FloatMsgService, protected modalService: ModalService,
-        protected route: ActivatedRoute, protected router: Router,
-        private confirmationService: ConfirmationService,
-        private location: Location) {
-        super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
-        this.usuario = sessionStorage.getItem("username");
-        this.vendedor = sessionStorage.getItem("proveedor");
-    }
+  constructor(protected service: ComprasService, protected navService: NavService,
+      protected sessionDataService: SessionDataService, protected securityService: SecurityService,
+      protected floatMsgService: FloatMsgService, protected modalService: ModalService,
+      protected route: ActivatedRoute, protected router: Router,
+      private confirmationService: ConfirmationService,
+      private location: Location) {
+      super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
+      this.usuario = sessionStorage.getItem("username");
+      this.vendedor = sessionStorage.getItem("proveedor");
+  }
 
+  @ViewChild(FiltroFechaComponent)
+  protected filtroFechaComponent: FiltroFechaComponent;
 
-    @ViewChild(FiltroFechaComponent)
-    protected filtroFechaComponent: FiltroFechaComponent;
+  protected locale: any;
 
-    protected locale: any;
+  @ViewChild("tabla")
+  protected tabla: Table;
 
-    @ViewChild("tabla")
-    protected tabla: Table;
+  @ViewChild(MensajeComponent)
+  protected mensajeComponent: MensajeComponent;
 
-    @ViewChild(MensajeComponent)
-    protected mensajeComponent: MensajeComponent;
+  @ViewChild("myModal") modal: ModalAltaEntradaDeServicioComponent;
 
-    @ViewChild("myModal") modal: ModalAltaEntradaDeServicioComponent;
+  @BlockUI() blockUI: NgBlockUI;
 
-    @BlockUI() blockUI: NgBlockUI;
+  @ViewChild(SpinnerComponent)
+  protected spinnerComponent: SpinnerComponent;
 
-    @ViewChild(SpinnerComponent)
-    protected spinnerComponent: SpinnerComponent;
+  nroSolp: string = "";
+  ordenAscendente: boolean;
+  columnaOrden: string;
+  fechaInicio = "";
+  fechaFin = "";
+  length = 0;
+  pageSize: number = 10;
+  pageIndex: number = 1;                                        
+  @ViewChild('paginator') paginator: Paginator
+  subscripcionPO: Subscription
+  ordenCompraId: string = "";
+  //MMSN-519
+  expandedRows: boolean[] = [];
+  posicionRow: any[] = [];
+  isTableExpanded = false;
+  isTableItemsExpanded = false;
+  isEntradaDeServicioExpanded = false;
+  selectedItemIndex: number | null = null;
+  checkSelected = false;
+  itemIdSelected: any[]= [];
+  numeroLineaSelected: Set<string> = new Set();
+  itemSelected: any[] = [];
+  elementSelected: any[] = [];
+  selectedItemId: number | null = null;
+  selectedPosicionId: number | null = null;
+  ordenCompraIdsMostradas: Set<number> = new Set<number>();
+  mensajeError: string = "";
+  filaExpandida: any;
+  expandedRow: any;
+  proveedorSeleccionado: any;
+  proveedorModel: ProveedorModel;
+  proveedorList: any[] = new Array();
 
-    nroSolp: string = "";
-    ordenAscendente: boolean;
-    columnaOrden: string;
-    fechaInicio = "";
-    fechaFin = "";
-    length = 0;
-    pageSize: number = 10;
-    pageIndex: number = 1;                                        
-    @ViewChild('paginator') paginator: Paginator
-    subscripcionPO: Subscription
-    ordenCompraId: string = "";
-    //MMSN-519
-    expandedRows: boolean[] = [];
-    posicionRow: any[] = [];
-    isTableExpanded = false;
-    isTableItemsExpanded = false;
-    isEntradaDeServicioExpanded = false;
-    selectedItemIndex: number | null = null;
-    checkSelected = false;
-    itemIdSelected: any[]= [];
-    numeroLineaSelected: Set<string> = new Set();
-    itemSelected: any[] = [];
-    elementSelected: any[] = [];
-    selectedItemId: number | null = null;
-    selectedPosicionId: number | null = null;
-    ordenCompraIdsMostradas: Set<number> = new Set<number>();
-    mensajeError: string = "";
-    filaExpandida: any;
-    expandedRow: any;
-    proveedorSeleccionado: any;
-    proveedorModel: ProveedorModel;
-    proveedorList: any[] = new Array();
+  //#region Variables 
+  tablaPO: any[];
+  cols: any[];
+  usuario: string;
+  vendedor: string;
+  allItems : any[];
+  proveedor: string = "";
+  showModal: boolean = false;
 
- 
+  //Filtros
+  ocFilterValues: string[] = [];
+  tablaPOCopy: any[] = []; //copia de la tabla original.
     
-    //#region Variables 
-    tablaPO: any[];
-    cols: any[];
-    usuario: string;
-    vendedor: string;
-    allItems : any[];
-    proveedor: string = "";
-    showModal: boolean = false;
-
-    
-    ngOnInit() {       
-    
-      this.navService.setSeccionList([]);
-        this.navService.setSeccionActive('');
-
+  ngOnInit() {       
+    this.navService.setSeccionList([]);
+    this.navService.setSeccionActive('');
 
     if (this.location.path() === '/compras/dashboardCertificacionDeServicios') {
       this.navService.navegarSeccion("/compras/dashboardCertificacionDeServicios");
     }
     else {
-        this.validarLoginAzure();
+      this.validarLoginAzure();
     }
 
     this.navService.setSeccionList(
       [
-          new Seccion('compras/dashboardCertificacionDeServicios', 'Compras', 'Ingresar certificación'),
-          new Seccion('compras/listadoEstadoCertificaciones', 'Compras', 'Estado certificaciones')
+        new Seccion('compras/dashboardCertificacionDeServicios', 'Compras', 'Ingresar certificación'),
+        new Seccion('compras/listadoEstadoCertificaciones', 'Compras', 'Estado certificaciones')
       ]
     );
 
-        this.navService.navegarSeccion("compras/dashboardCertificacionDeServicios");
-        this.getListarPO(this.proveedor, this.ordenCompraId, this.filtroFechaComponent.fecha_inicio, this.filtroFechaComponent.fecha_fin);
-
-    }
+    this.navService.navegarSeccion("compras/dashboardCertificacionDeServicios");
+    this.getListarPO(this.proveedor, this.ordenCompraId, this.filtroFechaComponent.fecha_inicio, this.filtroFechaComponent.fecha_fin);
+  }
 
     ngAfterViewInit() {
         this.mensajeComponent = new MensajeComponent();
@@ -170,12 +167,12 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
     this.itemSelected.splice(0, this.itemSelected.length);
   }
   
-    //MMSN-519
-    toggleRow(rowData: any) {
-      this.clearCheckboxes();
-       //MMSN-519 - Al activar un filtro, colapsar filas expandidas.
-      this.expandedRow = rowData;
-    }
+  //MMSN-519
+  toggleRow(rowData: any) {
+    this.clearCheckboxes();
+      //MMSN-519 - Al activar un filtro, colapsar filas expandidas.
+    this.expandedRow = rowData;
+  }
 
     //MMSN-574 - Agregar filtros
     onBuscar() {
@@ -226,10 +223,11 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
                   } else if (result.info != undefined) {
                     this.floatMsgService.setInfoMsg(result.info);
                   } else {
-                      this.tablaPO = result.data; 
-                      this.length = result.data.length > 0 ? result.data[0].ItemsTotales : result.data.length;
-                      this.pageSize = result.data.length > 0 ? result.data[0].ItemPorPagina : 10;
-                      this.pageIndex = result.data.length > 0 ? result.data[0].Pagina : 1;
+                    this.tablaPO = result.data;
+                    this.tablaPOCopy = structuredClone(result.data); // Clon del objeto inicial para revertir los valores al limpiar el filtro.
+                    this.length = result.data.length > 0 ? result.data[0].ItemsTotales : result.data.length;
+                    this.pageSize = result.data.length > 0 ? result.data[0].ItemPorPagina : 10;
+                    this.pageIndex = result.data.length > 0 ? result.data[0].Pagina : 1;
                   }
                   this.spinnerComponent.hideIt()
                 },
@@ -378,5 +376,58 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
 
         return false; //<-- Prevent Refresh
     }
+
+  // Filtrar orden de compra.
+  ocFilters(obj: any): void { 
+    if(this.ocFilterValues.length !== 0){
+      this.ocFilterValues.forEach((value: string) => {
+        switch (value) {
+          case "SP":
+            this.tablaPO = this.spFilter(obj);
+            break;
+          default:
+            this.tablaPO = this.tablaPOCopy;
+            break;
+        }
+      });
+    } else {
+      this.tablaPO = this.tablaPOCopy;
+    }
+  }
+
+  // Filtra ordenes de compra con saldo pendiente.
+  spFilter(tablaPO: any): any[] { 
+    const nuevoArray = tablaPO.map((orden: any) => {
+      const nuevasPosiciones = orden.Posiciones.map((posicion: any) => {
+        // Filtrar los items con porcentaje menor a 100 y se pueden modificar si es necesario
+        const nuevosItems = posicion.Items.filter((item: any) => parseInt(item.Porcentaje) < 100);
+        return { ...posicion, Items: nuevosItems };
+      }).filter((posicion: any) => {
+        // Verificar si hay alguna posición con items que tengan porcentajes menores a 100
+        const tieneItemsMenorA100 = posicion.Items.length > 0;
+        return tieneItemsMenorA100;
+      });
+    
+      // Verificar si hay alguna posición con items con porcentaje menor a 100
+      const algunaPosicionConItemsMenorA100 = nuevasPosiciones.length > 0;
+    
+      // Retornar la orden solo si hay alguna posición con items con porcentaje menor a 100
+      return algunaPosicionConItemsMenorA100 ? { ...orden, Posiciones: nuevasPosiciones } : null;
+    }).filter(Boolean);
+    
+    // Eliminar las órdenes de compra que tienen todas sus posiciones con items al 100%
+    const nuevoArrayFinal = nuevoArray.filter((orden: any) => {
+      // Verificar si alguna posición tiene al menos un item con porcentaje menor a 100
+      const algunaPosicionConItemsMenorA100 = orden.Posiciones.some((posicion: any) => {
+        // Verificar si algún item tiene porcentaje menor a 100
+        return posicion.Items.some((item: any) => parseInt(item.Porcentaje) < 100);
+      });
+    
+      // Retornar la orden solo si alguna posición tiene items con porcentaje menor a 100
+      return algunaPosicionConItemsMenorA100;
+    });
+
+    return nuevoArrayFinal;
+  }
 
 }

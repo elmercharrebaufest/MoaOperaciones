@@ -83,25 +83,14 @@ namespace SustitucionMOAUtils.Services
         {
             // Establecer valores predeterminados si son nulos o inválidos
             int itemsTotales = resultados.Count();
-            List<DetalleOrdenDeCompraDto> resultado;
 
             int paginaValida =  pagina > 0 ? pagina : 1;
             int elementosPorPaginaValidos = (elementosPorPagina.HasValue && elementosPorPagina.Value > 0) ? elementosPorPagina.Value : 5;
 
             int indiceInicial = (paginaValida - 1) * elementosPorPaginaValidos;
-            //if (indiceInicial >= 0 && indiceInicial < resultados.ToList().Count)
-            //{
-                //resultado = resultado.Skip((paginacion.Pagina - 1) * paginacion.ItemsPorPagina).Take(paginacion.ItemsPorPagina);
-                //resultado = resultados.Skip(indiceInicial).Take(elementosPorPaginaValidos).ToList();
 
-                return new ListaPaginada<DetalleOrdenDeCompraDto>(resultados.ToList(), paginaValida, elementosPorPaginaValidos, itemsTotales);
+            return new ListaPaginada<DetalleOrdenDeCompraDto>(resultados.ToList(), paginaValida, elementosPorPaginaValidos, itemsTotales);
 
-                //return resultados.Skip(indiceInicial).Take(elementosPorPaginaValidos).ToList();
-            //}
-            //else
-            //{
-            //    return new ListaPaginada<DetalleOrdenDeCompraDto>(); // Si la página solicitada está fuera de rango, devuelve una lista vacía
-            //}
         }
 
 

@@ -385,9 +385,19 @@ namespace SustitucionMOAWS.WSConsumers
          BAPIMEPOTEXT[] POTEXTITEM, BAPIESLLC[] POSERVICES, BAPIMEPOSCHEDULE[] POSCHEDULE, BAPIMEPOADDRDELIVERY[] POADDRDELIVERY, BAPIEKBE[] POHISTORY, List<TablaSap> centros, List<TablaSap> almacenes)
         {
             DetalleOrdenDeCompraDto detalleOrdenDeCompra = new DetalleOrdenDeCompraDto();
-            var servicios = new List<ServicioSolp>();
 
-           // Obtiene datos de la cabecera de una OC
+            //Buscar CUIT en tabla de Proveedores con el Codigo de Proveedor.
+            //List<Proveedor> _proveedores = repositorio.Listar<Proveedor>(a => a.CodigoProveedor == POHEADER.VENDOR);
+            //Proveedor _proveedor = _proveedores.FirstOrDefault(p => p.CodigoProveedor == POHEADER.VENDOR);
+            //Como hay codigos de proveedor repetidos.
+            //Proveedor _proveedor = repositorio.Listar<Proveedor>(a => a.CodigoProveedor == POHEADER.VENDOR).FirstOrDefault();
+
+            Proveedor _proveedor = repositorio.Listar<Proveedor>(p =>
+                p.CodigoProveedor == POHEADER.VENDOR &&
+                p.CodigoProveedor.Substring(p.CodigoProveedor.Length - 8) == p.CUIT.Substring(2, 8)
+            ).FirstOrDefault();
+
+            // Obtiene datos de la cabecera de una OC
             detalleOrdenDeCompra.NumeroOrdenDeCompra = POHEADER.PO_NUMBER;
             detalleOrdenDeCompra.Proveedor = POHEADER.VENDOR;
             //detalleOrdenDeCompra.NombreProveedor = POHEADER.
@@ -400,6 +410,7 @@ namespace SustitucionMOAWS.WSConsumers
             detalleOrdenDeCompra.FechaCreacion = toFormat.ToString(dateTimeFormat);
 
             detalleOrdenDeCompra.UsuarioCreador = POHEADER.CREATED_BY;
+            detalleOrdenDeCompra.Cuit = _proveedor != null ? DataFormatter.CuitConGuion(_proveedor.CUIT) : "-";
             detalleOrdenDeCompra.Posiciones = new List<PosicionDto>();
 
 

@@ -36,6 +36,7 @@ namespace SustitucionMOAModel.Dto.OrdenesCompra
         public int ItemsTotales { get; set; }
 
         public string NombreProveedor { get; set; }
+        public string Cuit { get; set; }
 
         /// <summary>
         /// Monto Total with added separators as requested - MMSN-491
