@@ -108,24 +108,5 @@ export class Generacion1Component extends ListBaseComponent  {
     onBlur(control: string)
     {
         this.validadorPasoSolpService.onBlurDirty(control);
-    }
-
-    public get configurarFechaCalendar(): boolean {
-
-        if(this.model.trabajoHecho){
-            return true;
-        }
-
-        if(this.model.trabajoHecho && this.model.urgencia){
-            return true;
-        }
-
-        if(this.model.trabajoHecho && this.model.adicional){
-            return true;
-        }
-        
-        return false;
-    }
-
-      
+    }      
 }
