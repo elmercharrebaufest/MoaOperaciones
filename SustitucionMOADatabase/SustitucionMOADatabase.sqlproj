@@ -210,6 +210,7 @@
     <Build Include="DBO\Tables\ChatInternoCompras.sql" />
     <Build Include="DBO\Tables\PeticionDeOfertaUsuarioAdicional.sql" />
     <Build Include="DBO\Tables\ArchivoCampoSustentable.sql" />
+    <Build Include="DBO\Stored Procedures\VerificarActividadUsuarioID.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DatabasePublishQA.xml" />
