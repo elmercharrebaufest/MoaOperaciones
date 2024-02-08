@@ -2919,6 +2919,11 @@ namespace SustitucionMOAUtils.Services
                         {
                             item.VerPublicar = false;
                         }
+
+                        if (solpDB.TrabajoYaHecho == true && solpDB.Urgencia == true)
+                        {
+                            item.VerPublicar = false;
+                        }
                     }
                 }
             }
