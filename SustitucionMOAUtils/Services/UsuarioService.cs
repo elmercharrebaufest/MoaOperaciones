@@ -3,8 +3,6 @@ using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
-using SustitucionMOAModel.Models.Raw;
-using SustitucionMOARepositorio;
 using SustitucionMOARepositorio.Repositorios.Interfaces;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
@@ -797,15 +795,9 @@ namespace SustitucionMOAUtils.Services
         }
         public bool PuedeEliminarseUsuario(Entidades.Usuario usuario)
         {
-            var consultas = repositorio.Listar<Entidades.Consulta>(c => c.Usuario_Id == usuario.Id).FirstOrDefault();
-            var comentarios = repositorio.Listar<Entidades.Comentario>(c => c.Usuario_Id == usuario.Id).FirstOrDefault();
-            var solp = repositorio.Listar<Entidades.Solp>(s => s.UsuarioCreacion_Id == usuario.Id).FirstOrDefault();
-            var usuarioCompras = repositorio.Listar<Entidades.UsuarioComprasRelacionConUsuarios>(u => u.Usuario_Id == usuario.Id).FirstOrDefault();
-            var cotizaciones = repositorio.Listar<Entidades.Cotizacion>(c => c.UsuarioCreador_Id == usuario.Id).FirstOrDefault();
-            var adjudicacion = repositorio.Listar<Entidades.Adjudicacion>(a => a.UsuarioCreador_Id == usuario.Id).FirstOrDefault();
-            var circular = repositorio.Listar<Entidades.Circular>(c => c.UsuarioCreador_Id == usuario.Id).FirstOrDefault();
-            return consultas == null && comentarios == null && solp == null && usuarioCompras == null &&
-                cotizaciones == null && circular == null && adjudicacion == null && usuario.Proveedores.Count() <= 1;
+            var tieneActividad = repositorio.VerificarActividadUsuario(usuario);
+
+            return  !tieneActividad && usuario.Proveedores.Count() <= 1;
         }
 
         public Entidades.Usuario obtenerUsuarioDelVendedor(Entidades.Proveedor prov)

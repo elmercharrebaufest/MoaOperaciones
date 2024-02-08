@@ -208,6 +208,7 @@
     <Compile Include="Entities\OrdenDeCargaFason.cs" />
     <Compile Include="Entities\ProveedorAuditoria.cs" />
     <Compile Include="Entities\UnidadMedidaSap.cs" />
+    <Compile Include="Entities\VerificarActividadUsuario.cs" />
     <Compile Include="Enums\TipoLegajo.cs" />
     <Compile Include="Enums\RolEnum.cs" />
     <Compile Include="Enums\TipoContratoFAS.cs" />
