@@ -339,14 +339,20 @@ export class CotizacionComponent extends ListBaseComponent {
 
     limpiarCheck() {
         if (this.model.trabajoHecho == undefined || this.model.trabajoHecho == false) {
-            if (!this.estaFinalizada) {
-                this.model.proveedorAsignado = "";
-                this.model.proveedorAsignado_Id = null;
-                this.proveedorSeleccionado = null;
-                this.model.thAjustePolinomica = false;
-                this.model.thProveedorDirecto = false;
-                this.model.thServicioPermanente = false;
-            }
+            this.model.proveedorAsignado = "";
+            this.model.proveedorAsignado_Id = null;
+            this.proveedorSeleccionado = null;
+            this.model.thAjustePolinomica = false;
+            this.model.thProveedorDirecto = false;
+            this.model.thServicioPermanente = true;
+        }
+    }
+
+    limpiarCheckProveedorAsignado() {
+        if (this.model.condEspProveedorAsignado == undefined || this.model.condEspProveedorAsignado == false) {
+            this.model.proveedorAsignado = "";
+            this.model.proveedorAsignado_Id = null;
+            this.proveedorSeleccionado = null;
         }
     }
 
