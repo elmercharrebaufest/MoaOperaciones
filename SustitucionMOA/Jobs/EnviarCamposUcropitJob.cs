@@ -61,6 +61,7 @@ namespace SustitucionMOA.Jobs
                         Longitud = cp.Longitud,
                         HectareasSoja = cp.HectareasSoja,
                         NombreCosecha = cp.CampoCosecha.Cosecha.Nombre,
+                        RutaKmz = cp.Archivo.Ruta,
                     }).ToList();
 
                 if (!camposAReportar.Any())
@@ -154,7 +155,8 @@ namespace SustitucionMOA.Jobs
 
         private string ObtenerNombreArchivoDrive(CampoReporteDTO campoReporte)
         {
-            return $"{campoReporte.CUIT}_{campoReporte.Id}";
+            var id = campoReporte.IdScato != 0 ? campoReporte.IdScato.ToString() : "PENDIENTE";
+            return $"{campoReporte.CUIT}_{id}_{campoReporte.NombreCosecha}";
         }
         private void CargarJSONReporteCampoEnZip(ZipOutputStream zipStream,string fileName ,CampoReporteDTO campo) {
 
@@ -170,13 +172,14 @@ namespace SustitucionMOA.Jobs
         }
         private void CargarKmzEnZip(ZipOutputStream zipStream, string fileName, CampoReporteDTO campo)
         {
-            string rutaArchivoKmz = string.Concat(ConfigurationManager.AppSettings["RutaArchivosCampoSustentable"], "/", campo.CUIT, "/", campo.Id, ".kmz");
-
+            string rutaArchivoKmz = campo.RutaKmz;
+            string extension = Path.GetExtension(rutaArchivoKmz);
+            campo.RutaKmz = null;
             if(!System.IO.File.Exists(rutaArchivoKmz)){
                 throw new Exception($"El archivo {rutaArchivoKmz} no se ha encontrado, se omite este campo");
             }
 
-            ZipEntry entry = new ZipEntry($"{fileName}.kmz")
+            ZipEntry entry = new ZipEntry($"{fileName}.{extension}")
             {
                 DateTime = DateTime.Now,
             };
