@@ -407,6 +407,7 @@ namespace SustitucionMOATest.Services
                         Id = 1,
                         Cantidad = 1000,
                         Codigo = "123",
+                        Unidad = new TablaSapDto { Codigo = "UNI", CodigoSap = "UNI" }
                     }
                 },
             LiberadoresSapSolp = new List<LiberadorSapSolpDto> { new LiberadorSapSolpDto { Id = 1, Solp_Id = 1, LiberadorSap_Id = 1 } }
@@ -1396,19 +1397,17 @@ namespace SustitucionMOATest.Services
 
             repositorioMock.Setup(y => y.Obtener<Solp>(It.IsAny<int>())).Returns(solp);
 
-            repositorioMock.Setup(y => y.Obtener<TablaSap>(It.IsAny<Expression<Func<TablaSap, bool>>>()))
-               .Returns(new TablaSap { Codigo = "23234" });
-            repositorioMock.Setup(y => y.Obtener<TablaGeneral>(It.IsAny<Expression<Func<TablaGeneral, bool>>>()))
-              .Returns(new TablaGeneral { Codigo = "23234" });
-            repositorioMock.Setup(y => y.Obtener<TablaEstado>(It.IsAny<Expression<Func<TablaEstado, bool>>>()))
-             .Returns(new TablaEstado { Id = 1, Codigo = "23234" });
+            repositorioMock.Setup(y => y.Obtener<TablaSap>(It.IsAny<Expression<Func<TablaSap, bool>>>())).Returns(new TablaSap { Codigo = "23234" });
+            repositorioMock.Setup(y => y.Obtener<TablaGeneral>(It.IsAny<Expression<Func<TablaGeneral, bool>>>())).Returns(new TablaGeneral { Codigo = "23234" });
+            repositorioMock.Setup(y => y.Obtener<TablaEstado>(It.IsAny<Expression<Func<TablaEstado, bool>>>())).Returns(new TablaEstado { Id = 1, Codigo = "23234" });
+            repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<UnidadMedidaSap, Tuple<string, string>>>>(), It.IsAny<Expression<Func<UnidadMedidaSap, bool>>>(),
+                It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc)).Returns(new List<Tuple<string, string>> { Tuple.Create("Comercial", "UM") });
             crearSolpConsumerMOAMock.Setup(x => x.Request(It.IsAny<SolpSAPDto>())).Returns(new CrearSolpConsumerMOAResponse { NumeroSolp = "383737373", Resultado = "OK", Errores = new List<CrearSolpConsumerMOAError>() });
 
             target.GuardarSolp(solpDtoLocal, adjuntosMock.Object);
 
             repositorioMock.Verify(x => x.Agregar(It.IsAny<Solp>()), Times.Once);
-            repositorioMock.Verify(x => x.GuardarCambios(), Times.Exactly(6));
-
+            repositorioMock.Verify(x => x.GuardarCambios(), Times.Exactly(3));
         }
 
         [Test]
@@ -2530,12 +2529,12 @@ namespace SustitucionMOATest.Services
         public void EnviarMailSolpCreadasReporteOk()
         {
             repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<Solp, SolpDto>>>(), It.IsAny<Expression<Func<Solp, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc))
-              .Returns(new List<SolpDto>() { solpDto  } );
+              .Returns(new List<SolpDto>() { solpDto });
             DateTime startDate = new DateTime(2023, 9, 1);
             DateTime endDate = DateTime.Now.Date;
             int monthsApart = (endDate.Year - startDate.Year) * 12 + (endDate.Month - startDate.Month + 1);
             target.ObtenerDatosReporteSolp();
-            repositorioMock.Verify(y => y.Listar(It.IsAny<Expression<Func<Solp, SolpDto>>>(), 
+            repositorioMock.Verify(y => y.Listar(It.IsAny<Expression<Func<Solp, SolpDto>>>(),
                 It.IsAny<Expression<Func<Solp, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc), Times.Exactly(monthsApart));
         }
     }
