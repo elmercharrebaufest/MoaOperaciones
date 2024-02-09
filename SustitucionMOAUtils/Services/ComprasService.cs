@@ -2972,12 +2972,16 @@ namespace SustitucionMOAUtils.Services
             string textId = "B03";
             string formatText = "*";
 
-
             /* Algunas cuestiones con los números que se mandan:
              * DOC_ITEM, PREQ_ITEM, OUTLINE, SERIAL_NO, PCKG_NO, corresponden al número de la posicion pero formateados de distintas formas
              */
 
             solpSAP.IM_PR_TYPE = solpActual.ClaseDocumento.CodigoSap;
+
+            var unidadesCodigoSap = solpActual.Posiciones.SelectMany(p => new[] { p.Unidad?.CodigoSap }.Concat(p.Subposiciones.Select(sp => sp.Unidad.CodigoSap))).Distinct();
+
+            var unidadesMedidaSap = repositorio.Listar<UnidadMedidaSap, dynamic>(x => new { x.Comercial, x.UM },
+                x => unidadesCodigoSap.Contains(x.Comercial)).Select(x => Tuple.Create(x.Comercial, x.UM)).ToList();
 
             foreach (var posicion in solpActual.Posiciones.OrderBy(x => x.Id))
             {
@@ -2988,7 +2992,8 @@ namespace SustitucionMOAUtils.Services
                     eliminarPosicion = posicion.Subposiciones.Where(item => !Convert.ToBoolean(item.Estado)).Count() == posicion.Subposiciones.Count;
                     eliminarSubPosicion = posicion.Subposiciones.Where(item => !Convert.ToBoolean(item.Estado)).Count() == posicion.Subposiciones.Count;
                 }
-                eliminarPosicion = eliminarPosicion ? true : !posicion.Estado;
+
+                eliminarPosicion = eliminarPosicion || !posicion.Estado;
                 numeroPosicion++;
 
                 preqItem = $"{numeroPosicion:00000}";
@@ -2998,7 +3003,7 @@ namespace SustitucionMOAUtils.Services
 
                 var IM_PRITEM = new ZMPES5700();
 
-                //Nombre: ZBAPIMEREQITEMIMP Denominación:	Posición de SOLPED
+                //Nombre: ZBAPIMEREQITEMIMP Denominación: Posición de SOLPED
                 IM_PRITEM.PREQ_ITEM = preqItem; //PREQ_ITEM BNFPO Número de posición de la solicitud de pedido
                 IM_PRITEM.PUR_GROUP = posicion.GrupoCompras.CodigoSap.ToString(); //PUR_GROUP EKGRP Grupo de compras
                 IM_PRITEM.CREATED_BY = solpActual.UsuarioCreacion != null ? solpActual.UsuarioCreacion.UsuarioSap : repositorio.Obtener<Usuario>(solpActual.UsuarioCreacion_Id).UsuarioSap; //CREATED_BY ERNAM Nombre del responsable que ha añadido el objeto
@@ -3012,23 +3017,93 @@ namespace SustitucionMOAUtils.Services
                 IM_PRITEM.DELIV_DATE = SAPFormatter.PrepararFecha(posicion.FechaEntregaServicio ?? DateTime.Now); //DELIV_DATE EINDT   Fecha de entrega de posición
                 IM_PRITEM.REL_DATE = null;
 
-                //Estos datos se envian en el caso de que la posicion sea de materiales
+                //Estos datos se envian si la posición es de materiales
                 if (posicion.TipoPosicion.Codigo.ToLower() == "materiales")
                 {
                     IM_PRITEM.MATERIAL = posicion.MaterialSolp != null && posicion.TipoPosicion.Codigo == "MATERIALES" ? posicion.MaterialSolp.CodigoSap.ToString() : ""; //MATERIAL MATNR18 Número de material(18 caracteres)
                     IM_PRITEM.QUANTITY = (Decimal)posicion.Cantidad; //QUANTITY BAMNG   Cantidad solicitud de pedido
                     IM_PRITEM.QUANTITYSpecified = true;
-                    IM_PRITEM.UNIT = posicion.Unidad.CodigoSap.ToString(); //UNIT BAMEI   Unidad de medida de solicitud pedido
-                                                                           //IM_PRITEM.PREQ_UNIT_ISO = null; //PREQ_UNIT_ISO BAMEI_ISO   Código ISO p.la unidad de medida en la solicitud de pedido
+                    IM_PRITEM.UNIT = unidadesMedidaSap.Find(u => u.Item1 == posicion.Unidad.CodigoSap).Item2; //UNIT BAMEI - Cambia el código de la unidad solicitada por su equivalente 'UM' de la tabla UnidadMedidaSap
+                    //IM_PRITEM.PREQ_UNIT_ISO = null; //PREQ_UNIT_ISO BAMEI_ISO   Código ISO p.la unidad de medida en la solicitud de pedido
                     IM_PRITEM.PREQ_PRICE = (Decimal)posicion.PrecioBruto; //PREQ_PRICE  BAPICUREXT Importe de moneda para BAPIs(con 9 decimales)
                     IM_PRITEM.PREQ_PRICESpecified = true;
-                    //IM_PRITEM.PRICE_UNIT = null; //PRICE_UNIT EPEIN   Cantidad base  
+                    //IM_PRITEM.PRICE_UNIT = null; //PRICE_UNIT EPEIN Cantidad base  
                     //IM_PRITEM.PRICE_UNITSpecified = true;
+
+                    //Estos datos de imputacion se envian solo para materiales por que en servicio van a nivel de subposicion
+                    if (!solpSAP.IM_PRACCOUNTList.Any(x =>
+                            x.PREQ_ITEM == preqItem && //PREQ_ITEM	BNFPO	Número de posición de la solicitud de pedido
+                            x.SERIAL_NO == "01" && //SERIAL_NO	DZEKKN	Número actual de la imputación
+                            x.GL_ACCOUNT == getCodigoTablaSap(posicion.CuentaMayorSap) &&//GL_ACCOUNT	SAKNR	Número de la cuenta de mayor
+                            x.COSTCENTER == getCodigoTablaSap(posicion.TipoImputacionSap) && //COSTCENTER	KOSTL	Centro de coste
+                            x.ORDERID == getCodigoTablaSap(posicion.TipoImputacionSap) && //ORDERID	AUFNR	Número de orden
+                            x.PROFIT_CTR == getCodigoTablaSap(posicion.TipoImputacionSap) //PROFIT_CTR	PRCTR	Centro de beneficio
+
+                    ))
+                    {
+                        solpSAP.IM_PRACCOUNTList.Add(new ZMPES5690
+                        {
+                            PREQ_ITEM = preqItem, //PREQ_ITEM	BNFPO	Número de posición de la solicitud de pedido
+                            SERIAL_NO = "01", //SERIAL_NO	DZEKKN	Número actual de la imputación
+                            GL_ACCOUNT = getCodigoTablaSap(posicion.CuentaMayorSap), //GL_ACCOUNT	SAKNR	Número de la cuenta de mayor
+                            COSTCENTER = getCodigoTablaSap(posicion.TipoImputacionSap), //COSTCENTER	KOSTL	Centro de coste
+                            ORDERID = getCodigoTablaSap(posicion.TipoImputacionSap), //ORDERID	AUFNR	Número de orden
+                            PROFIT_CTR = getCodigoTablaSap(posicion.TipoImputacionSap), //PROFIT_CTR	PRCTR	Centro de beneficio
+                            BUS_AREA = "GENE",
+                            CO_AREA = "MOA"
+                        });
+
+                        solpSAP.IM_PRACCOUNTXList.Add(new ZMPES5680
+                        {
+                            PREQ_ITEM = preqItem,
+                            SERIAL_NO = "01",
+                            PREQ_ITEMX = "X",
+                            SERIAL_NOX = "X",
+                            GL_ACCOUNT = "X",
+                            COSTCENTER = (getCodigoTablaGeneral(posicion.TipoImputacion).ToLower() == "centrodecosto") ? "X" : "",
+                            ORDERID = (getCodigoTablaGeneral(posicion.TipoImputacion).ToLower() == "ordendeot" || getCodigoTablaGeneral(posicion.TipoImputacion).ToLower() == "ordendeinversion") ? "X" : "",
+                            PROFIT_CTR = (getCodigoTablaGeneral(posicion.TipoImputacion).ToLower() == "siniestrobeneficio") ? "X" : "",
+                            BUS_AREA = "X",
+                            CO_AREA = "X"
+                        });
+                    }
+                    //Este metodo lo usamos para enviar el texto de suministro. Solo se pueden enviar 132 caracteres por linea
+                    var linesTextoSuministro = getLinesFromTextoSuministro(posicion.TextoSuministro);
+
+                    linesTextoSuministro.ForEach(texto =>
+                    {
+                        solpSAP.IM_PRITEMTEXTList.Add(new BAPIMEREQITEMTEXT
+                        {
+                            PREQ_ITEM = preqItem,
+                            TEXT_ID = textId,
+                            TEXT_FORM = formatText,
+                            TEXT_LINE = texto
+                        });
+                    });
+
+                    solpSAP.IM_SERVICEACCOUNTList.Add(new ZMPES5790
+                    {
+                        DOC_ITEM = docItem,
+                        OUTLINE = outlineNumber,
+                        SERIAL_NO = "01",
+                        SERIAL_NO_ITEM = serialNumber,
+                        //Siempre mandar esto en 100. Lo autocalcula SAP
+                        PERCENT = 100
+                    });
+
+                    solpSAP.IM_SERVICEACCOUNTXList.Add(new BAPI_SRV_ACC_DATAX
+                    {
+                        DOC_ITEM = docItem,
+                        OUTLINE = outlineNumber,
+                        SERIAL_NO = "01",
+                        SERIAL_NO_ITEM = "X",
+                        //Siempre mandar esto en 100. Lo autocalcula SAP
+                        PERCENT = "X"
+                    });
                 }
 
                 //IM_PRITEM.UNIT = null; //UNIT BAMEI   Unidad de medida de solicitud pedido
                 //IM_PRITEM.PREQ_UNIT_ISO = null; //PREQ_UNIT_ISO BAMEI_ISO   Código ISO p.la unidad de medida en la solicitud de pedido
-
 
                 //Indica el tipo de posicion de la solp
                 switch (posicion.TipoPosicion.Codigo.ToLower())
@@ -3132,81 +3207,8 @@ namespace SustitucionMOAUtils.Services
                     DELETE_IND = posicion.TipoPosicion.Codigo != "MATERIALES" ? SAPFormatter.FormatearBooleano(eliminarPosicion) : "",
                 });
 
-                //Estos datos de imputacion se envian solo para materiales por que en servicio va a nivel de subposicion
-                if (posicion.TipoPosicion.Codigo == "MATERIALES")
-                {
-                    if (!solpSAP.IM_PRACCOUNTList.Any(x =>
-                            x.PREQ_ITEM == preqItem && //PREQ_ITEM	BNFPO	Número de posición de la solicitud de pedido
-                            x.SERIAL_NO == "01" && //SERIAL_NO	DZEKKN	Número actual de la imputación
-                            x.GL_ACCOUNT == getCodigoTablaSap(posicion.CuentaMayorSap) &&//GL_ACCOUNT	SAKNR	Número de la cuenta de mayor
-                            x.COSTCENTER == getCodigoTablaSap(posicion.TipoImputacionSap) && //COSTCENTER	KOSTL	Centro de coste
-                            x.ORDERID == getCodigoTablaSap(posicion.TipoImputacionSap) && //ORDERID	AUFNR	Número de orden
-                            x.PROFIT_CTR == getCodigoTablaSap(posicion.TipoImputacionSap) //PROFIT_CTR	PRCTR	Centro de beneficio
 
-                    ))
-                    {
-                        solpSAP.IM_PRACCOUNTList.Add(new ZMPES5690
-                        {
-                            PREQ_ITEM = preqItem, //PREQ_ITEM	BNFPO	Número de posición de la solicitud de pedido
-                            SERIAL_NO = "01", //SERIAL_NO	DZEKKN	Número actual de la imputación
-                            GL_ACCOUNT = getCodigoTablaSap(posicion.CuentaMayorSap), //GL_ACCOUNT	SAKNR	Número de la cuenta de mayor
-                            COSTCENTER = getCodigoTablaSap(posicion.TipoImputacionSap), //COSTCENTER	KOSTL	Centro de coste
-                            ORDERID = getCodigoTablaSap(posicion.TipoImputacionSap), //ORDERID	AUFNR	Número de orden
-                            PROFIT_CTR = getCodigoTablaSap(posicion.TipoImputacionSap), //PROFIT_CTR	PRCTR	Centro de beneficio
-                            BUS_AREA = "GENE",
-                            CO_AREA = "MOA"
-                        });
-
-                        solpSAP.IM_PRACCOUNTXList.Add(new ZMPES5680
-                        {
-                            PREQ_ITEM = preqItem,
-                            SERIAL_NO = "01",
-                            PREQ_ITEMX = "X",
-                            SERIAL_NOX = "X",
-                            GL_ACCOUNT = "X",
-                            COSTCENTER = (getCodigoTablaGeneral(posicion.TipoImputacion).ToLower() == "centrodecosto") ? "X" : "",
-                            ORDERID = (getCodigoTablaGeneral(posicion.TipoImputacion).ToLower() == "ordendeot" || getCodigoTablaGeneral(posicion.TipoImputacion).ToLower() == "ordendeinversion") ? "X" : "",
-                            PROFIT_CTR = (getCodigoTablaGeneral(posicion.TipoImputacion).ToLower() == "siniestrobeneficio") ? "X" : "",
-                            BUS_AREA = "X",
-                            CO_AREA = "X"
-                        });
-                    }
-                    //Este metodo lo usamos para enviar el texto de suministro. Solo se pueden enviar 132 caracteres por linea
-                    var linesTextoSuministro = getLinesFromTextoSuministro(posicion.TextoSuministro);
-
-                    linesTextoSuministro.ForEach(texto =>
-                    {
-                        solpSAP.IM_PRITEMTEXTList.Add(new BAPIMEREQITEMTEXT
-                        {
-                            PREQ_ITEM = preqItem,
-                            TEXT_ID = textId,
-                            TEXT_FORM = formatText,
-                            TEXT_LINE = texto
-                        });
-                    });
-
-                    solpSAP.IM_SERVICEACCOUNTList.Add(new ZMPES5790
-                    {
-                        DOC_ITEM = docItem,
-                        OUTLINE = outlineNumber,
-                        SERIAL_NO = "01",
-                        SERIAL_NO_ITEM = serialNumber,
-                        //Siempre mandar esto en 100. Lo autocalcula SAP
-                        PERCENT = 100
-                    });
-
-                    solpSAP.IM_SERVICEACCOUNTXList.Add(new BAPI_SRV_ACC_DATAX
-                    {
-                        DOC_ITEM = docItem,
-                        OUTLINE = outlineNumber,
-                        SERIAL_NO = "01",
-                        SERIAL_NO_ITEM = "X",
-                        //Siempre mandar esto en 100. Lo autocalcula SAP
-                        PERCENT = "X"
-                    });
-                }
-
-                //Desde aca empiezan las subposiciones
+                //---Desde aca empiezan las subposiciones---
                 var numeroSubPosicion = 0;
                 var numeroSerialNumberItem = 0;
                 string serviceLineNumber = "";
@@ -3216,7 +3218,6 @@ namespace SustitucionMOAUtils.Services
                 {
                     numeroSubPosicion++;
                     serviceLineNumber = $"{subPosicion.Numero:000000000}0";
-
 
                     //serialNumberItem = serialNumber;
 
@@ -3231,12 +3232,12 @@ namespace SustitucionMOAUtils.Services
                     if (subPosicion.ServicioSolp != null)
                         IM_SERVICELINE.SERVICE = subPosicion.ServicioSolp.Codigo.ToString(); //SERVICE ASNUM Número de servicio
                     else
-                        IM_SERVICELINE.SHORT_TEXT = subPosicion.Tarea; //SHORT_TEXT SH_TEXT1    Texto breve
+                        IM_SERVICELINE.SHORT_TEXT = subPosicion.Tarea; //SHORT_TEXT SH_TEXT1 Texto breve
 
                     IM_SERVICELINE.QUANTITY = (decimal)subPosicion.Cantidad.Value; //QUANTITY MENGEV  Cantidad con signo +/ -
                     IM_SERVICELINE.QUANTITYSpecified = true;
-                    IM_SERVICELINE.UOM = subPosicion.Unidad.CodigoSap; //UOM MEINS Unidad de medida base
-                                                                       //IM_SERVICELINE.UOM_ISO = null; //UOM_ISO MEINS_ISO   Unidad medida base en código ISO
+                    IM_SERVICELINE.UOM = unidadesMedidaSap.Find(u => u.Item1 == subPosicion.Unidad.CodigoSap).Item2; //UOM MEINS - Cambia el código de la unidad solicitada por su equivalente 'UM' de la tabla UnidadMedidaSap
+                    //IM_SERVICELINE.UOM_ISO = null; //UOM_ISO MEINS_ISO   Unidad medida base en código ISO
                     IM_SERVICELINE.GROSS_PRICE = (decimal)subPosicion.PrecioBruto.Value; //GROSS_PRICE SBRTWR Precio bruto Unitario
                     IM_SERVICELINE.GROSS_PRICESpecified = true;
                     IM_SERVICELINE.CURRENCY = posicion.Moneda.CodigoSap; //CURRENCY WAERS   Clave de moneda
@@ -3267,7 +3268,6 @@ namespace SustitucionMOAUtils.Services
                             x.PROFIT_CTR == getCodigoTablaSap(subPosicion.TipoImputacionSap) //PROFIT_CTR	PRCTR	Centro de beneficio
                         ))
                     {
-
                         numeroSerialNumberItem++;
 
                         serialNumberItem = $"{numeroSerialNumberItem:00}";
@@ -3330,14 +3330,12 @@ namespace SustitucionMOAUtils.Services
                         //Siempre mandar esto en 100. Lo autocalcula SAP
                         PERCENT = "X"
                     });
-
                 }
 
-                //Estos son los metodos con los que se nos fijamos si se edito algun campo de la direccion de entrega. Si no edito ninguno no 
-                //hace falta enviar a SAP pero si se edito por lo menos uno tenemos que enviar todos los campos 
+                //Estos son los metodos con los que nos fijamos si se editó algun campo de la direccion de entrega. Si no editó ninguno no 
+                //hace falta enviar a SAP, pero si se editó por lo menos uno tenemos que enviar todos los campos 
                 CentroDireccion centroPorDefecto = repositorio.Obtener<CentroDireccion>(x => x.CodigoSap == posicion.Centro.CodigoSap);
                 TablaSap centroPorDefecto2 = repositorio.Obtener<TablaSap>(x => x.Id == posicion.Centro_Id);
-
 
                 if (centroPorDefecto2.Descripcion != posicion.NombreEntrega ||
                     centroPorDefecto.Cp != posicion.CpEntrega ||
