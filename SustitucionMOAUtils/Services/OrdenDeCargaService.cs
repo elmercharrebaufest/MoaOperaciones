@@ -189,6 +189,7 @@ namespace SustitucionMOAUtils.Services
                 var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
                 var esAdmin = usuario.TienePermiso(PermisoEnum.VerTodasOrdenesDeCarga);
                 var puedeEnviarASAP = usuario.TienePermiso(PermisoEnum.EnviarASap);
+                var estadoPrevio = ordenDeCarga.Estado;
                 var esInterno = EsUsuarioInterno(usuario);
 
                 Log.Debug(this.GetType().Name, "Editar", $" usuarioPuedeEnviarASAP: {puedeEnviarASAP}. Chofer en Scato: {choferEnScato.ToJson()}");
@@ -254,7 +255,11 @@ namespace SustitucionMOAUtils.Services
                 }
                 else if (ordenEditar.Estado == EstadoOrdenDeCarga.SinEnviarASAP)
                 {
-                    if (!ordenEditar.EsFacturaAnticipada && !contratoKgDisponibles)
+                    if (estadoPrevio == EstadoOrdenDeCarga.PendienteCompensacion)
+                    {
+                        ordenEditar.Estado = EstadoOrdenDeCarga.PendienteCompensacion;
+                    }
+                    else if (!ordenEditar.EsFacturaAnticipada && !contratoKgDisponibles)
                     {
                         ordenEditar.Estado = EstadoOrdenDeCarga.Pendiente;
                         ordenEditar.DescripcionErrorInterno = "Orden con contrato entre 0 a 15Tn.";
