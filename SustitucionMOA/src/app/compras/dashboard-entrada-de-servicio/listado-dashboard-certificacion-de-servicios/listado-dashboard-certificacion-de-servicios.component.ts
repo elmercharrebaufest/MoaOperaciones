@@ -224,7 +224,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
                     this.floatMsgService.setInfoMsg(result.info);
                   } else {
                     this.tablaPO = result.data;
-                    this.tablaPOCopy = structuredClone(result.data); // Clon del objeto inicial para revertir los valores al limpiar el filtro.
+                    this.tablaPOCopy = result.data.slice(); // Clon del objeto inicial para revertir los valores al limpiar el filtro.
                     this.length = result.data.length > 0 ? result.data[0].ItemsTotales : result.data.length;
                     this.pageSize = result.data.length > 0 ? result.data[0].ItemPorPagina : 10;
                     this.pageIndex = result.data.length > 0 ? result.data[0].Pagina : 1;
