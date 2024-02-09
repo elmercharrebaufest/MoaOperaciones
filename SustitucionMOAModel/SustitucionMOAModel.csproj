@@ -62,7 +62,6 @@
     <Compile Include="Dto\AplicacionCartaPorte\CargaMasivaResponse.cs" />
     <Compile Include="Dto\AplicacionCartaPorte\ComboAplicacionesContratosCcppResponse.cs" />
     <Compile Include="Dto\AsignarNuevaCuitDto.cs" />
-    <Compile Include="Dto\CampoSustentable\ReporteCertificadorDto.cs" />
     <Compile Include="Dto\DestinatarioDto.cs" />
     <Compile Include="Dto\AplicacionCartaPorte\AplicacionCartaPorteApiDto.cs" />
     <Compile Include="Dto\AplicacionCartaPorte\CartaPorteParaAplicacionCartaPorte.cs" />
