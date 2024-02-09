@@ -4,7 +4,6 @@ using SustitucionMOAAssets;
 using SustitucionMOAModel.Consultas;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
-using SustitucionMOAModel.Dto.CampoSustentable;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using SustitucionMOARepositorio;
@@ -113,7 +112,7 @@ namespace SustitucionMOATest.Services
                    It.Is<int>(c => c == cosechaId)))
                .Returns(declaracion);
 
-            var reporteCertificadorDto = new ReporteCertificadorDto
+            var reporteCertificadorDto = new CampoReporteDTO
             {
                 CUIT = cuitProveedor,
                 Id = 654,

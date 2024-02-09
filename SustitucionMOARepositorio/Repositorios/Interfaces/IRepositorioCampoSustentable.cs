@@ -1,16 +1,11 @@
-﻿using SustitucionMOAModel.Dto.CampoSustentable;
+﻿using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SustitucionMOARepositorio.Repositorios.Interfaces
 {
     public interface IRepositorioCampoSustentable : IRepositorio
     {
-        ReporteCertificadorDto ObtenerReporteCertificador(int idCampoCosecha, int idProveedor);
+        CampoReporteDTO ObtenerReporteCertificador(int idCampoCosecha, int idProveedor);
 
         Usuario ObtenerUsuarioPorMail(string mail);
 
