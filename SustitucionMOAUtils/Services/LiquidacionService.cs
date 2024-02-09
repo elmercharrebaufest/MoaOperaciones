@@ -489,9 +489,16 @@ namespace SustitucionMOAUtils.Services
         {
             try
             {
-                DetalleCteWSMOAResponse data = (DetalleCteWSMOAResponse) new DetalleCteConsumerMOA().request(fijacion, proveedor);
+                var data = new DetalleCteConsumerMOA().Request(fijacion, proveedor);
                 validarRespuestaProforma(data);
                 data.error = null;
+                data.CumpleEscenario1 = false;
+
+                if (data.CumpleEscenario1)
+                {
+                    // Aca va la consulta de pesificaciones
+                }
+
                 return data;
             }
             catch (InfoCustomException e)
@@ -512,7 +519,7 @@ namespace SustitucionMOAUtils.Services
         {
             try
             {
-                DetalleCteExcelWSMOAResponse data = (DetalleCteExcelWSMOAResponse)new DetalleCteExcelConsumerMOA().request(fijacion, proveedor);
+                var data = new DetalleCteExcelConsumerMOA().Request(fijacion, proveedor);
                 validarRespuestaDescargaProforma(data);
                 data.salidas.Add(data.subTotal);
                 data.salidas.Add(data.pagoACuenta);

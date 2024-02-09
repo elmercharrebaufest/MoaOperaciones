@@ -6,7 +6,7 @@
         <!--Title-->
         <div class="row titleSection titleSectionTable">
             <div class="col-xs-12 col-sm-10 fixtwobuttons titleSectionTablePart animate" style="vertical-align:bottom;">
-                <div style="line-height:0.8; display: inline-block;"> <strong>Proforma de Liquidaci&oacute;n Final: <span>Nº {{data.fijacion}}</span></strong> </div>
+                <div style="line-height:0.8; display: inline-block;"> <strong>Proforma de Liquidaci&oacute;n{{ data.LiquidacionParcialEmitida ? ' Final' : ''}}: <span>Nº {{data.fijacion}}</span></strong> </div>
             </div>
             <div class="col-xs-12 col-sm-2 titleIconsPart">
                 <spinner-small #smallSpinner></spinner-small>
@@ -51,6 +51,9 @@
                 </div>
             </div>
         </div>
+        <div class="alert alert-warning" role="alert" *ngIf="!data.LiquidacionParcialEmitida">
+            Tarifa por flete a descontar: Generar consulta vía web si considera liquidar menos kilos de la cantidad entregada
+        </div>
         <!--factura-->
         <div *ngIf="!faltanDatosCalidad" id="Pago" class="Pago">
             <div class="PagoColumn">
@@ -69,7 +72,11 @@
                     </tr>
                 </table>
             </div>
-            <div class="PagoFactura">
+            <div class="PagoColumn" *ngIf="data.CumpleEscenario1">
+                <p class="grey"><strong>Pago parcial</strong></p>
+                <p class="grey">{{data.cabecera.PorcentajePagoParcial}}%</p>
+            </div>
+            <div class="PagoFactura" *ngIf="!data.CumpleEscenario1">
                 <table class="PagoTable rounded shadow animate" border="0" cellspacing="0" cellpadding="0" style="width: 100%;">
                     <tr class="CalidadCCPPDataCategoria">
                         <th width="40%">&nbsp;</th>
