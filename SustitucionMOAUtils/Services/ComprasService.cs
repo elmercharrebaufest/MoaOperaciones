@@ -7919,7 +7919,6 @@ namespace SustitucionMOAUtils.Services
         {
             try
             {
-
                 var respuestaGuardarSOLP = new RespuestaGuardarSOLP { Solp = new SolpDto { NroSolp = solp.NroSolp } };
                 var proveedores = repositorio.Listar<Usuario>();
                 if (nroOrdenDeCompra.Count > 0)
@@ -7928,13 +7927,13 @@ namespace SustitucionMOAUtils.Services
                     {
                         var ordenDeCompra = ObtenerOrdenDeCompra(nro);
                         var proveedor = ObtenerProveedorCompras(ordenDeCompra.Cabecera.CodigoProveedor);
-                        foreach (var posicionSap in ordenDeCompra.Posiciones.Where(x => x.NroSolp == solp.NroSolp))
+                        foreach (var posicionOCSap in ordenDeCompra.Posiciones.Where(x => x.NroSolp == solp.NroSolp))
                         {
-                            var posicion = solp.Posiciones.Where(x => x.Indice == Int32.Parse(posicionSap.Indice)).FirstOrDefault();
-                            posicion.ProveedorAdjudicado_Id = proveedor.Usuario_Id;
-                            posicion.ProveedorAdjudicado = proveedores.Where(x => x.Id == proveedor.Usuario_Id).FirstOrDefault();
-                            posicion.RegistroInfoNro = posicionSap.RegistroInfo;
-                            posicion.OrganizacionDeComprasCodigo = ordenDeCompra.Cabecera.OrganizacionDeComprasCodigo;
+                            var posicionSolp = solp.Posiciones.Where(x => x.Indice == Int32.Parse(posicionOCSap.IndiceSolp)).FirstOrDefault();
+                            posicionSolp.ProveedorAdjudicado_Id = proveedor.Usuario_Id;
+                            posicionSolp.ProveedorAdjudicado = proveedores.Where(x => x.Id == proveedor.Usuario_Id).FirstOrDefault();
+                            posicionSolp.RegistroInfoNro = posicionOCSap.RegistroInfo;
+                            posicionSolp.OrganizacionDeComprasCodigo = ordenDeCompra.Cabecera.OrganizacionDeComprasCodigo;
                         }
                     }
 
@@ -7943,8 +7942,8 @@ namespace SustitucionMOAUtils.Services
             }
             catch (Exception e)
             {
-                Logger.Log.Info($"ActualizarDatosSolp" + solp.NroSolp);
-                Logger.Log.Error(e);
+                Log.Info($"ActualizarDatosSolp " + solp.NroSolp);
+                Log.Error(e);
                 throw;
             }
         }
