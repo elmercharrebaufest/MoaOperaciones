@@ -6718,6 +6718,7 @@ namespace SustitucionMOAUtils.Services
                 }
                 catch (Exception e)
                 {
+                    Log.Error(e);
                     result.Error = new ErrorOC
                     {
                         Mensaje = e.Message,
@@ -6734,25 +6735,29 @@ namespace SustitucionMOAUtils.Services
             {
                 try
                 {
+                    int? UsuarioCompras_Id = null;
                     var usuariosCompras = repositorio.Listar<UsuarioCompras>();
 
-                    var usuario = repositorio.Obtener<Usuario>(a => a.UsuarioSap == result.Cabecera.UsuarioComprasSAP)?.Mail;
-                    var usuarioCompras = usuariosCompras.FirstOrDefault(a => a.Mail.ToLower() == usuario.ToLower())?.Id;
-
-                    result.Cabecera.UsuarioCompras_Id = usuarioCompras;
+                    var UsuarioCompras_Mail = repositorio.Obtener<Usuario>(a => a.UsuarioSap == result.Cabecera.UsuarioComprasSAP)?.Mail;
+                    if (UsuarioCompras_Mail != null)
+                    {
+                        UsuarioCompras_Id = usuariosCompras.FirstOrDefault(a => a.Mail.ToLower() == UsuarioCompras_Mail.ToLower())?.Id;
+                        result.Cabecera.UsuarioCompras_Id = UsuarioCompras_Id;
+                    }
 
                     if (result.Cabecera.UsuarioCompras_Id == null)
                     {
                         var adjudicacion = repositorio.Listar<Adjudicacion>(a => a.NumeroOrdenDeCompra == nroOC, 1, "Id", DirOrden.Desc).FirstOrDefault();
                         if (adjudicacion != null)
                         {
-                            usuarioCompras = usuariosCompras.FirstOrDefault(a => a.Mail.ToLower() == adjudicacion.Usuario.Mail.ToLower())?.Id;
-                            result.Cabecera.UsuarioCompras_Id = usuarioCompras;
+                            UsuarioCompras_Id = usuariosCompras.FirstOrDefault(a => a.Mail.ToLower() == adjudicacion.Usuario.Mail.ToLower())?.Id;
+                            result.Cabecera.UsuarioCompras_Id = UsuarioCompras_Id;
                         }
                     }
                 }
                 catch (Exception e)
                 {
+                    Log.Error(e);
                     result.Error = new ErrorOC
                     {
                         Mensaje = e.Message,
@@ -6764,6 +6769,19 @@ namespace SustitucionMOAUtils.Services
                         CodigoProveedor = ""
                     };
                 }
+            }
+            if ((result.Error == null || string.IsNullOrEmpty(result.Error.Mensaje)) && result.Cabecera.UsuarioCompras_Id == null)
+            {
+                result.Error = new ErrorOC
+                {
+                    Mensaje = "No se encontro el usuario Comprador.",
+                    Tipo = "E"
+                };
+                result.Cabecera = new OrdenDeCompraSAPCabecera
+                {
+                    OrdenDeCompra = "",
+                    CodigoProveedor = ""
+                };
             }
             return result;
         }
@@ -7504,7 +7522,7 @@ namespace SustitucionMOAUtils.Services
                 }).ToList(),
                 POCOND = ocSap.POCOND.Where(a => a.COND_TYPE != "SKTO").Select(x => new BAPIMEPOCOND
                 {
-                    ITM_NUMBER = x.ITM_NUMBER,  //el número de ítem al que corresponda la condición
+                    ITM_NUMBER = x.ITM_NUMBER,  //el número de ítem al que corresponda la condición
                     COND_ST_NO = x.COND_ST_NO,
                     COND_TYPE = x.COND_TYPE,
                     COND_VALUE = x.COND_VALUE, //el importe de la condición
