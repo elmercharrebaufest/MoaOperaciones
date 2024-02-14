@@ -49,13 +49,12 @@ namespace SustitucionMOAModel.Dto
 
     public class OrdenDeCompraSAPPosicion
     {
-        //POITEM
         //POACCOUNT
         //POADDRDELIVERY
         public OrdenDeCompraSAPPosicionDireccionDeEntrega DireccionDeEntrega { get; set; }
-        public string Indice { get; set; }
+        public string Indice { get; set; } //PO_ITEM
+        public string IndiceSolp { get; set; } //PREQ_ITEM
         public int NumeroItemOC { get { return int.Parse(Indice); } }
-
         public string RegistroInfo { get; set; }
         public string NroSolp { get; set; }
     }

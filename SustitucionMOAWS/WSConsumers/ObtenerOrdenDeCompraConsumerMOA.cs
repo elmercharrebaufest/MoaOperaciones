@@ -1,5 +1,6 @@
 ﻿using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
+using SustitucionMOAModel.Enums;
 using SustitucionMOARepositorio;
 using SustitucionMOAWS.CredentialService;
 using SustitucionMOAWS.Interfaces;
@@ -222,6 +223,7 @@ namespace SustitucionMOAWS.WSConsumers
                     resultado.Posiciones.Add(new OrdenDeCompraSAPPosicion
                     {
                         Indice = pos.PO_ITEM,
+                        IndiceSolp = pos.PREQ_ITEM,
                         RegistroInfo = pos.INFO_REC,
                         NroSolp = pos.PREQ_NO,
                         DireccionDeEntrega = new OrdenDeCompraSAPPosicionDireccionDeEntrega
@@ -231,7 +233,6 @@ namespace SustitucionMOAWS.WSConsumers
                     });
                 }
             }
-
 
             return resultado;
         }
