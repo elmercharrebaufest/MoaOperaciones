@@ -124,3 +124,9 @@ IF NOT EXISTS (SELECT TOP 1 1 FROM Configuracion WHERE Code = 'CosechaParaEnvioU
 BEGIN
 	insert into Configuracion values ('CosechaParaEnvioUcropitTope','200')
 END
+
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM Configuracion WHERE Code = 'HoraCortePesificaciones') 
+BEGIN
+	insert into Configuracion values ('HoraCortePesificaciones','13:00')
+END
