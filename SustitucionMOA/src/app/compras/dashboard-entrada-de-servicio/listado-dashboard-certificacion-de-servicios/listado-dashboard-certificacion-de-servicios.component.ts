@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, ViewChild, ElementRef } from '@angular/core';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { Table } from 'primeng/table';
 import { ListBaseComponent } from '../../../common/base-components/list-base-component';
@@ -19,7 +19,7 @@ import { FiltroFechaComponent } from './../../../common/view-child/filtro-fecha/
 import { ConfirmationService } from 'primeng/api';
 import { MensajeComponent } from '../../../common/view-child/mensaje/mensaje.component';
 import { ProveedorModel } from '../../../modelos/proveedor-model';
-import { forEach } from '@angular/router/src/utils/collection';
+import { Formatter } from '../../../common/formatter/Formatter';
 
 
 
@@ -176,7 +176,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
 
     //MMSN-574 - Agregar filtros
     onBuscar() {
-        this.collapseExpanded();
+        this.collapseExpanded();       
 
         if (this.proveedorSeleccionado !== undefined && this.proveedorSeleccionado !== '') {
             this.proveedor = this.proveedorSeleccionado.CodigoProveedor;
@@ -185,8 +185,19 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
             this.proveedor = '';
         }
 
-        let startDate = this.filtroFechaComponent.fecha_inicio;
-        let endDate = this.filtroFechaComponent.fecha_fin;
+        let startDate = '';
+        let endDate = '';
+
+        if (this.filtroFechaComponent.periodo == '4') {
+            startDate = Formatter.DateToSting(new Date(this.filtroFechaComponent.dtpInput1.nativeElement.value));
+            
+            endDate = Formatter.DateToSting(new Date(this.filtroFechaComponent.dtpInput2.nativeElement.value));
+        }
+        else {
+            startDate = this.filtroFechaComponent.fecha_inicio;
+            endDate = this.filtroFechaComponent.fecha_fin;
+        }
+
 
         this.getListarPO(this.proveedor, this.ordenCompraId, startDate, endDate);
     }
@@ -208,7 +219,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
     }
 
     getListarPO(proveedor, ordenCompraId,fecha_inicio, fecha_fin) {
-      this.getFecha();
+        this.getFecha();
       try {
           this.spinnerComponent.showIt();
           this.unsubscribe();

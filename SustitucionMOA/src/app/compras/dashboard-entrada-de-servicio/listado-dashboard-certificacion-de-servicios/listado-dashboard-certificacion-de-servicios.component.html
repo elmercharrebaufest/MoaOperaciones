@@ -143,6 +143,7 @@
           </th>
           <th title="Proveedor" pSortableColumn="Proveedor">Proveedor<p-sortIcon field="Proveedor"></p-sortIcon></th>
           <th title="RazonSocial">Razón Social</th>
+          <th title="CUIT">CUIT</th>
           <th title="OrdenCompraMoneda">Moneda</th>
           <th title="Monto total">Importe</th>
         </tr>
@@ -174,6 +175,7 @@
           <td>{{ rowData.NumeroOrdenDeCompra || "" }}</td>
           <td>{{ rowData.Proveedor }}</td>
           <td>{{ rowData.NombreProveedor }}</td>
+          <td>{{ rowData.Cuit }}</td>
           <td>{{ rowData.MonedaDescripcion }}</td>
           <td>{{ rowData.MontoTotalString }}</td>
         </tr>
@@ -255,7 +257,7 @@
                           <th title="TextBrev">Txt.breve del servicio</th>
                           <th title="Cantidad">Cantidad</th>
                           <th title="UM">UM</th>
-                          <th title="Monto">Monto</th>
+                          <th title="Monto">Importe</th>
                           <th title="CantidadReal">Cantidad Real</th>
                           <th title="Porcentaje">porc. %</th>
                         </tr>
@@ -281,7 +283,7 @@
                           <td>{{ rowData.Cantidad | defaultData }}</td>
                           <td>{{ rowData.UM | defaultData }}</td>
                           <td>{{ rowData.ImporteString | defaultData }}</td>
-                          <td>{{ rowData.CantidadReal | defaultData }}</td>
+                          <td>{{ rowData.CantidadReal }}</td>
                           <td [ngClass]="{ 'percentage-green': rowData.Porcentaje >= 100, 'percentage-yellow': rowData.Porcentaje <= 99 }">
                             {{ rowData.Porcentaje | defaultData }}%
                           </td>

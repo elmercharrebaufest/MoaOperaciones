@@ -1,4 +1,4 @@
-﻿import { Component, Output, EventEmitter, ViewChild, OnInit, Input } from '@angular/core';
+﻿import { Component, Output, EventEmitter, ViewChild, OnInit, Input, ElementRef } from '@angular/core';
 import { Formatter } from './../../formatter/Formatter';
 import { DropdownComponent, DropdownOption } from './../dropdown/dropdown.component';
 declare var $: any;
@@ -15,6 +15,9 @@ export class FiltroFechaComponent implements OnInit {
 
     @ViewChild(DropdownComponent)
     private dropdownComponent: DropdownComponent;
+
+    @ViewChild('dtp_input1') dtpInput1?: ElementRef;
+    @ViewChild('dtp_input2') dtpInput2?: ElementRef;
 
     periodo: string;
     fecha_inicio: string;

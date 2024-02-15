@@ -1,3 +1,7 @@
+::ng-deep .ui-confirmdialog.ui-dialog .ui-dialog-content {
+  text-align: center !important;
+}
+
 .content-wraper {
   margin-top: 0;
 }
