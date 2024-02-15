@@ -409,8 +409,6 @@ namespace SustitucionMOAWS.WSConsumers
                 });
 
                 //Nombre: ZBAPIMEPOACCOUNT IM_POACCOUNT Denominación:	Imputación
-
-
                 var imputacion = new BAPIMEPOACCOUNT();
                 imputacion.PO_ITEM = poItem;
                 imputacion.SERIAL_NO = numeroDeImputacion;
@@ -512,6 +510,19 @@ namespace SustitucionMOAWS.WSConsumers
                 }
 
 
+                modificarPedidoSAP.POSCHEDULE.Add(new BAPIMEPOSCHEDULE
+                {
+                    DELIVERY_DATE = adjudicacionPosicion.PlazoDeEntrega.ToString("dd.MM.yyyy"),
+                    PO_ITEM = poItem,
+                    SCHED_LINE = "1"
+                });
+
+                modificarPedidoSAP.POSCHEDULEX.Add(new BAPIMEPOSCHEDULX
+                {
+                    DELIVERY_DATE = "X",
+                    PO_ITEM = poItem,
+                    SCHED_LINE = "1"
+                });
 
             }
 

@@ -416,7 +416,7 @@ namespace SustitucionMOAWS.WSConsumers
 
                 solpPedidoSAP.IM_POSCHEDULEList.Add(new BAPIMEPOSCHEDULE
                 {
-                    DELIVERY_DATE = SAPFormatter.PrepararFecha(adjudicacionPosicion.PlazoDeEntrega),
+                    DELIVERY_DATE = adjudicacionPosicion.PlazoDeEntrega.ToString("dd.MM.yyyy"),
                     PO_ITEM = preqItem,
                     SCHED_LINE = "1"
                 });
