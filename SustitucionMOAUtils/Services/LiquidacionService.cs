@@ -23,6 +23,7 @@ using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Export;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAValidator;
+using SustitucionMOAWS.Interfaces;
 using SustitucionMOAWS.WSConsumers;
 
 namespace SustitucionMOAUtils.Services
@@ -31,14 +32,19 @@ namespace SustitucionMOAUtils.Services
     {
         protected readonly IRepositorio repositorio;
         protected readonly IAzureService azureService;
+        private readonly IListarPesificacionesConsumer pesificacionesConsumer;
         private readonly string[] formatosDeArchivoValidos = new string[] { ".pdf", ".png", ".jpg" };
         private const string FECHA_REGEX = @"([0-2]?[0-9]|(3)[0-1])(\/)(((0)[0-9])|((1)[0-2]))(\/)\d{4}";
         private const string COE_REGEX = @"C.*O.*E.*:";
 
-        public LiquidacionService(IRepositorio repositorio, IAzureService azureService)
+        public LiquidacionService(
+            IRepositorio repositorio,
+            IAzureService azureService,
+            IListarPesificacionesConsumer pesificacionesConsumer)
         {
             this.repositorio = repositorio;
             this.azureService = azureService;
+            this.pesificacionesConsumer = pesificacionesConsumer;
         }
 
         public LiquidacionViewModel getAprobadas(string proveedor, string fechaInicio, string fechaFin)
@@ -492,11 +498,11 @@ namespace SustitucionMOAUtils.Services
                 var data = new DetalleCteConsumerMOA().Request(fijacion, proveedor);
                 validarRespuestaProforma(data);
                 data.error = null;
-                data.CumpleEscenario1 = false;
 
-                if (data.CumpleEscenario1)
+                if (!data.LiquidacionParcialEmitida || data.FaltanDatosDeCalidad)
                 {
-                    // Aca va la consulta de pesificaciones
+                    var pesificacionesResponse = pesificacionesConsumer.Request(proveedor);
+                    data.Pesificaciones = pesificacionesResponse.Pesificaciones;
                 }
 
                 return data;

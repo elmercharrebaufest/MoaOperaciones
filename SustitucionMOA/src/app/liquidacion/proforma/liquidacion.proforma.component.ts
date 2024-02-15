@@ -39,7 +39,6 @@ export class LiquidacionProformaComponent extends BaseComponent implements OnIni
     tituloArchivoExcel = "ReporteProformaDeLiquidacion.xls";
     tituloArchivoPDF = "ProformaFinal-";
     fijacion = "";
-    faltanDatosCalidad: boolean = false;
 
     setTabs() {
         this.setMenuSeccionTab("liquidacion", "Proforma");
@@ -72,7 +71,7 @@ export class LiquidacionProformaComponent extends BaseComponent implements OnIni
                         this.mensajeComponent.setInfoMsg(result.info);
                     } else {
                         this.data = result.data;
-                        this.validarDatosCalidad();
+                        this.filtrarPesificaciones();
                     }
                 },
                 error => {
@@ -214,12 +213,11 @@ export class LiquidacionProformaComponent extends BaseComponent implements OnIni
         );
         return false;
     }
-
-    validarDatosCalidad(){
-        this.data.salidas.forEach(s => {
-            if(s.caracteristica.toUpperCase() == "FALTAN DATOS CALIDAD"){
-                this.faltanDatosCalidad = true;
-            }
-        })
+    
+    filtrarPesificaciones() {
+        if (this.data.Pesificaciones && this.data.Pesificaciones.length > 0) {
+            this.data.Pesificaciones = this.data.Pesificaciones.sort((a, b) =>
+                Date.parse(b.FechaPesificacionDate) - Date.parse(a.FechaPesificacionDate));
+        }
     }
 }
