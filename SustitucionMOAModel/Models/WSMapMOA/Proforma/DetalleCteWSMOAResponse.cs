@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SustitucionMOAModel.Dto;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,7 +18,8 @@ namespace SustitucionMOAModel.Models.WSMapMOA.Proforma
         public CabeceraView cabecera { get; set; }
         public string error { get; set; }
         public bool LiquidacionParcialEmitida { get; set; }
-        public bool CumpleEscenario1 { get; set; }
+        public bool FaltanDatosDeCalidad { get; set; }
+        public List<PesificacionSapDto> Pesificaciones { get; set; }
 
         public DetalleCteWSMOAResponse()
         {

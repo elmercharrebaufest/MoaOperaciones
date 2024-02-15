@@ -15,6 +15,7 @@ namespace SustitucionMOAWS.WSConsumers
     {
         protected const string conceptoPagoACuenta = "Pago a Cuenta";
         protected const string conceptoFaltaLiquidacionParcial = "Falta registrar la Liquidación parcial";
+        protected const string conceptoFaltanDatosDeCalidad = "FALTAN DATOS CALIDAD";
         private readonly SI_MPMF_MOAOP_DETALLE_CTEClient service = new SI_MPMF_MOAOP_DETALLE_CTEClient();
 
         public T Request(string contrato, string proveedor)
@@ -51,7 +52,8 @@ namespace SustitucionMOAWS.WSConsumers
                 fijacion = contrato,
                 vendedores = vendedores,
                 error = returnString,
-                LiquidacionParcialEmitida = true
+                LiquidacionParcialEmitida = true,
+                FaltanDatosDeCalidad = false
             };
 
             var moneda = "";
@@ -99,6 +101,10 @@ namespace SustitucionMOAWS.WSConsumers
                         // 1) Proforma parcial -> Se liquida (por lo que pasa a ser Proforma final)
                         // 2) Proforma final -> Se liquida
                         result.LiquidacionParcialEmitida = false;
+                        break;
+
+                    case conceptoFaltanDatosDeCalidad:
+                        result.FaltanDatosDeCalidad = true;
                         break;
 
                     default:

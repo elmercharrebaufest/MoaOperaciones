@@ -55,7 +55,7 @@
             Tarifa por flete a descontar: Generar consulta vía web si considera liquidar menos kilos de la cantidad entregada
         </div>
         <!--factura-->
-        <div *ngIf="!faltanDatosCalidad" id="Pago" class="Pago">
+        <div id="Pago" class="Pago">
             <div class="PagoColumn">
                 <table class="CalidadCCPP" width="100%" border="0" cellspacing="0" cellpadding="0">
                     <tr>
@@ -72,11 +72,11 @@
                     </tr>
                 </table>
             </div>
-            <div class="PagoColumn" *ngIf="data.CumpleEscenario1">
+            <div class="PagoColumn" *ngIf="!data.LiquidacionParcialEmitida || data.FaltanDatosDeCalidad">
                 <p class="grey"><strong>Pago parcial</strong></p>
                 <p class="grey">{{data.cabecera.PorcentajePagoParcial}}%</p>
             </div>
-            <div class="PagoFactura" *ngIf="!data.CumpleEscenario1">
+            <div class="PagoFactura" *ngIf="data.LiquidacionParcialEmitida && !data.FaltanDatosDeCalidad">
                 <table class="PagoTable rounded shadow animate" border="0" cellspacing="0" cellpadding="0" style="width: 100%;">
                     <tr class="CalidadCCPPDataCategoria">
                         <th width="40%">&nbsp;</th>
@@ -114,7 +114,52 @@
                 </table>
             </div>
         </div>
-        <div *ngIf="faltanDatosCalidad" class="formulario-input;">
+        <div *ngIf="!data.LiquidacionParcialEmitida || data.FaltanDatosDeCalidad">
+            <p class="grey" style="font-size: 22px;"><strong>Pesificaciones</strong></p>
+            <div class="row myRow">
+                <div class="clearfix myTables">
+                    <table id="tablePesif" *ngIf="data.Pesificaciones && data.Pesificaciones.length > 0"
+                        class="display nowrap dataTable no-footer dtr-inline rounded shadow animate contrato-anulaciones-table"
+                        cellspacing="0" role="grid" aria-describedby="tableModal_info" style="width: 100%; padding:10px 0;">
+                        <thead>
+                            <tr role="row">
+                                <th tabindex="0" rowspan="1" colspan="1">
+                                    Kilos
+                                </th>
+                                <th tabindex="0" rowspan="1" colspan="1">
+                                    Precio
+                                </th>
+                                <th tabindex="0" rowspan="1" colspan="1">
+                                    Fecha de pesificación
+                                </th>
+                                <th tabindex="0" rowspan="1" colspan="1">
+                                    Tipo cambiario
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let pesificacion of data.Pesificaciones 
+                                | paginate: { itemsPerPage:10, currentPage: p } ; let odd = odd"
+                                role="row" [class.odd]="!odd">
+                                <td>
+                                    {{pesificacion.KilosString}}
+                                </td>
+                                <td>
+                                    {{pesificacion.PrecioString}}
+                                </td>
+                                <td>
+                                    {{pesificacion.FechaPesificacion}}
+                                </td>
+                                <td>
+                                    {{pesificacion.TipoCambio}}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div *ngIf="data.FaltanDatosDeCalidad" class="formulario-input;">
             <div class="alert alert-warning">
                 <i aria-hidden="true" class="fa fa-exclamation-triangle"></i>
                 Proforma no disponible. Faltan resultados de calidad.
