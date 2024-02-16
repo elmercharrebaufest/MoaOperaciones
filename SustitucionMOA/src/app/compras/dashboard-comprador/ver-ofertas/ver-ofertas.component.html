@@ -88,7 +88,7 @@
                 </tr>
                 <tr *ngIf="esUltimaPosicion(peticionPosicion)">
                     <td class="columna border2-right" colspan="8" style="width: 620px !important; height: 60px;">
-                        <button class="publicar btn " style="margin-right: 10px; font-size: 12px;" (click)="abrilModalTextos()">
+                        <button class="publicar btn " style="margin-right: 10px; font-size: 12px;" (click)="abrirModalTextos()">
                             Agregar racional de compra
                         </button>
                     </td>
@@ -326,7 +326,7 @@
                     <td class="columna border2-right" colspan="6" style="width: 550px !important; height: 60px;">
                         <div class="row">
                             <div class="col-md-4">
-                                <button class="publicar btn" style="font-size: 12px;" (click)="abrilModalTextos()">
+                                <button class="publicar btn" style="font-size: 12px;" (click)="abrirModalTextos()">
                                     Agregar racional de compra
                                 </button>
                             </div>
@@ -621,10 +621,8 @@
 </p-dialog>
 
 <app-textos-adjudicar #textoAdjudicar
-                      [(displayTextos)]="displayTextos"
-                      (cerrarModalTextosEmitter)="cerrarModalTextos()"
-                      (aceptarModalTextosEmitter)="aceptarModalTextos()"
-                      [(adjudicacion)]="adjudicacion">
+                      [(displayTextos)]="displayTextos" [(adjudicacion)]="adjudicacion"
+                      (cerrarModalTextosEmitter)="cerrarModalTextos()">
 </app-textos-adjudicar>
 
 
