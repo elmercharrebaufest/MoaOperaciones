@@ -539,10 +539,11 @@ namespace SustitucionMOAUtils.Services
 
         public List<ProveedorRaw> GetVendedoresRaw()
         {
-            var vendedores = new List<ProveedorRaw>();
-            vendedores = this.repositorio
+            var vendedores = repositorio
                         .Listar<Proveedor>(p => p.EstadoAprobacion == EstadoAprobacion.Aprobado)
-                        .Select(proveedor => new ProveedorRaw(proveedor)).ToList();
+                        .GroupBy(proveedor=>proveedor.CodigoProveedor)
+                        .Select(grupo => new ProveedorRaw(grupo.First())).ToList();
+                        
 
             foreach (var item in vendedores.Where(a => a.CUIT == null || a.CUIT == ""))
             {
