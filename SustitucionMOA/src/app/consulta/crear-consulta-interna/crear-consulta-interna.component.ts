@@ -19,6 +19,7 @@ import { GET_ANGULAR_EDITOR_CONFIG, eliminarBotonesExtraEditor } from '../../com
 import { ReCaptchaComponent } from 'angular2-recaptcha';
 import { ProveedorRaw } from '../../common/models/proveedorraw';
 import { UsuarioService } from '../../usuario/usuario.service';
+import { TipoPerfil } from '../../common/enums/TipoPerfil';
 
 declare var $: any;
 
@@ -71,7 +72,6 @@ export class CrearConsultaInternaComponent extends ListBaseComponent implements 
   vendedores: ProveedorRaw[];
   vendedor: ProveedorRaw;
   destinatariosOrden: Destinatario[];
-  destinatariosFas: Destinatario[];
   comentario: string = "";
   ordenes: any[] = [];
   ordenSeleccionada: any = {};
@@ -84,7 +84,7 @@ export class CrearConsultaInternaComponent extends ListBaseComponent implements 
   categoriaCode: string;
   subcategoria: Subcategoria = null;
   subcategoriaCode: string;
-  destinatario: Destinatario;
+  destinatariosSeleccionados: Destinatario[];
   asunto: string;
   nuevoComentario: any;
   listaArchivos: Array<File> = new Array<File>();
@@ -216,7 +216,7 @@ export class CrearConsultaInternaComponent extends ListBaseComponent implements 
             this.floatMsgService.setInfoMsg(result.info);
           } else {
             this.destinatarios = result.destinatarios;
-            this.destinatario = null;
+            this.destinatariosSeleccionados = [];
           }
         },
         error => {
@@ -366,17 +366,15 @@ export class CrearConsultaInternaComponent extends ListBaseComponent implements 
       CodigoCorredor: this.getCodigoCorredor(), RazonSocialCorredor: this.getRazonSocialCorredor(),
       CodigoProveedor: this.getCodigoProveedor(), RazonSocialProveedor: this.getRazonSocialProveedor(),
       Categoria_Id: this.categoria.Id, Detalle: this.detalle,
-      SubCategoria_Id: this.subcategoria ? this.subcategoria.Id : null, Asunto: this.asunto, Usuario_Id: this.getUsuarioId()
+      SubCategoria_Id: this.subcategoria ? this.subcategoria.Id : null, Asunto: this.asunto,
+      Usuario_Id: 0
     }
 
     let comentario: Comentario = { consulta_Id: 0, Detalle: this.comentario, Fecha: new Date(), Recordado: false, FechaRecordado: new Date() };
 
-    if (this.categoriaCode !== 'ORD') {
-      this.destinatariosFas = undefined;
-    }
 
     try {
-      this.subscription = this.service.AgregarConsultaInterna(this.consulta, comentario, this.listaArchivos, this.destinatariosFas).subscribe(
+      this.subscription = this.service.AgregarConsultaInterna(this.consulta, comentario, this.destinatariosSeleccionados, this.listaArchivos).subscribe(
         (result: any) => {
           if (result.logout == true) {
             this.sessionDataService.logout();
@@ -461,7 +459,7 @@ export class CrearConsultaInternaComponent extends ListBaseComponent implements 
     this.ordenSeleccionada = orden;
     this.ordenId = this.ordenSeleccionada.Id;
     this.setearComentario();
-    this.destinatariosFas = undefined;
+    this.destinatariosSeleccionados = undefined;
     this.subscriptionDestinatarios.unsubscribe();
     this.getDestinatariosOrden();
   }
@@ -500,18 +498,13 @@ export class CrearConsultaInternaComponent extends ListBaseComponent implements 
     }
 
 
-    if (this.destinatario == undefined && this.categoriaCode !== "ORD") {
-      this.mensajeComponent.setErrorMsg("El campo Destinatario esta vacio.");
+    if ((!this.destinatariosSeleccionados || !this.destinatariosSeleccionados.length) && this.categoriaCode !== "ORD") {
+      this.mensajeComponent.setErrorMsg("Por favor seleccione un destinatario");
       return true;
     }
 
     if ((this.vendedor == undefined || this.vendedor == null) && this.categoriaCode !== "ORD") {
       this.mensajeComponent.setErrorMsg("El campo Vendedor esta vacio.");
-      return true;
-    }
-
-    if ((this.destinatariosFas == undefined || this.destinatariosFas.length == 0) && this.categoriaCode === "ORD") {
-      this.mensajeComponent.setErrorMsg("Debe elegir al menos un destinatario.");
       return true;
     }
 
@@ -683,12 +676,12 @@ export class CrearConsultaInternaComponent extends ListBaseComponent implements 
       }
     }
 
-    if ((this.categoriaCode == 'PARCOR' || this.categoriaCode == 'FINCOR') && this.destinatario.NombreTipoUsuario != 'CORR') {
-      this.mensajeComponent.setErrorMsg("Para utilizar esta categoría debe seleccionar un corredor.");
+    if ((this.categoriaCode == 'PARCOR' || this.categoriaCode == 'FINCOR') && !this.destinatariosSeleccionadosTodosMismoPerfil(TipoPerfil.Corredor)) {
+      this.mensajeComponent.setErrorMsg("Para utilizar esta categoría debe seleccionar corredores.");
       return true;
     }
-    if ((this.categoriaCode == 'PARDIR' || this.categoriaCode == 'FINDIR') && this.destinatario.NombreTipoUsuario == 'CORR') {
-      this.mensajeComponent.setErrorMsg("Para utilizar esta categoría debe seleccionar un usuario de uno de estos tipos: Granos, No Granos, o Cliente.");
+    if ((this.categoriaCode == 'PARDIR' || this.categoriaCode == 'FINDIR') && this.destinatariosSeleccionadosAlgunPerfil(TipoPerfil.Corredor)) {
+      this.mensajeComponent.setErrorMsg("Para utilizar esta categoría debe seleccionar usuarios de estos tipos: Granos, No Granos, o Cliente.");
       return true;
     }
   }
@@ -855,7 +848,7 @@ export class CrearConsultaInternaComponent extends ListBaseComponent implements 
 
   mostrarAviso() {
     this.mensajeComponent.setMsgsEmpty();
-    if (this.destinatariosFas.length > 1) {
+    if (this.destinatariosSeleccionados.length > 1) {
       this.mensajeComponent.setInfoMsg("Se enviará copia del mail al cliente.");
       return true;
     }
@@ -885,10 +878,13 @@ export class CrearConsultaInternaComponent extends ListBaseComponent implements 
     return this.vendedor.RazonSocial ? this.vendedor.RazonSocial : null;
   }
 
-  getUsuarioId() {
-    if (!this.destinatario)
-      return 0;
-    return this.destinatario.UsuarioId ? this.destinatario.UsuarioId : 0;
+  destinatariosSeleccionadosTodosMismoPerfil(perfil: TipoPerfil): boolean {
+    return this.destinatariosSeleccionados
+      .every(destinatario => destinatario.NombreTipoUsuario == perfil)
   }
 
+  destinatariosSeleccionadosAlgunPerfil(perfil: TipoPerfil): boolean {
+    return this.destinatariosSeleccionados
+      .every(destinatario => destinatario.NombreTipoUsuario == perfil)
+  }
 }

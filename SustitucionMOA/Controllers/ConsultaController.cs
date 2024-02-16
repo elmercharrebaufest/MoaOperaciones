@@ -566,13 +566,13 @@ namespace SustitucionMOA.Controllers
 
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.CONTACTO_MAIL)]
         [HttpPost, ValidateInput(false)]
-        public JsonResult AgregarConsultaInterna(string consultaJson, string comentarioJson, string destinatariosFasJson)
+        public JsonResult AgregarConsultaInterna(string consultaJson, string comentarioJson, string destinatariosJson)
         {
             try
             {
                 var consulta = JsonConvert.DeserializeObject<Consulta>(consultaJson);
                 var comentario = JsonConvert.DeserializeObject<Comentario>(comentarioJson);
-                var destinatarios = JsonConvert.DeserializeObject<List<DestinatarioDto>>(destinatariosFasJson);
+                var destinatarios = JsonConvert.DeserializeObject<List<DestinatarioDto>>(destinatariosJson);
 
                 comentario.Fecha = DateTime.Now;
                 consulta.UsuarioInterno_Id = ObtenerUsuarioActual().Id;

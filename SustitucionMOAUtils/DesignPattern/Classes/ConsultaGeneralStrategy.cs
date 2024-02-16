@@ -33,7 +33,7 @@ namespace SustitucionMOAUtils.DesignPattern.Classes
         {
             try
             {
-                this.RellenarCampos(consulta, comentario);
+                this.RellenarCampos(consulta, comentario, destinatarios);
                 this.repositorio.Agregar(consulta);
                 this.repositorio.GuardarCambios();
 
@@ -42,7 +42,7 @@ namespace SustitucionMOAUtils.DesignPattern.Classes
                     GuardarAdjuntoComentario(consulta.Id, files);
                 }
 
-                EnviarMail(consulta, comentario, files);
+                EnviarMail(consulta, comentario, destinatarios, files);
 
                 return consulta;
             }

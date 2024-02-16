@@ -28,7 +28,7 @@ namespace SustitucionMOAUtils.DesignPattern.Classes
         {
             try
             {
-                this.RellenarCampos(consulta, comentario);
+                this.RellenarCampos(consulta, comentario, destinatarios);
                 Usuario usuario = this.repositorio.Obtener<Usuario>(u => u.Id == consulta.Usuario_Id);
                 var subcategoria = this.repositorio.Obtener<SubCategoria>(s => s.Id == consulta.SubCategoria_Id);
 
@@ -53,7 +53,7 @@ namespace SustitucionMOAUtils.DesignPattern.Classes
                     GuardarAdjuntoComentario(consulta.Id, files);
                 }
 
-                EnviarMail(consulta, comentario, files);
+                EnviarMail(consulta, comentario,destinatarios, files);
 
                 return consulta;
             }

@@ -1,23 +1,14 @@
-﻿using Quartz.Util;
-using SustitucionMOAModel.Entities;
-using SustitucionMOAModel.Models.WSMapMOA.Compras;
+﻿using SustitucionMOAModel.Entities;
 using SustitucionMOARepositorio;
 using SustitucionMOAUtils.DesignPattern.Interfaces;
-using SustitucionMOAUtils.Email;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using SustitucionMOAUtils.Logger;
-using System.IO;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Helpers;
-using DocumentFormat.OpenXml.Math;
-using SustitucionMOAUtils.Services;
 using System.Web;
-using System.Configuration;
 using SustitucionMOAModel.CustomExceptions;
 
 namespace SustitucionMOAUtils.DesignPattern.Classes
@@ -58,13 +49,13 @@ namespace SustitucionMOAUtils.DesignPattern.Classes
         public void EnviarMail(Consulta consulta, Comentario comentario, HttpFileCollectionBase files, List<DestinatarioDto> destinatarios)
         {
             var destinatariosCC = this.emailService.ObtenerListaDestinatarios(new string[] { consultaInternaCC });
-            var destinatario = destinatarios.FirstOrDefault(u => u.UsuarioId == consulta.Usuario_Id);
+            var destinatariosMail = destinatarios.Select(d => d.Mail).ToList();
             var ccCliente = destinatarios.FirstOrDefault(u => u.Campo == "Cliente");
             if(ccCliente!= null)
             {
                 destinatariosCC.Add(ccCliente.Mail);
             }
-            this.EnviarMailInterno(consulta, comentario, files, destinatariosCC, destinatario.Mail);       
+            this.EnviarMailInterno(consulta, comentario, files, destinatariosCC, destinatariosMail);       
         }
 
         private Consulta AgregarConsultaCreadorOrdenFAS(Consulta consulta, Comentario comentario)

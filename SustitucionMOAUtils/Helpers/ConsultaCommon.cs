@@ -1,5 +1,6 @@
 ﻿using SustitucionMOAAssets;
 using SustitucionMOAModel.CustomExceptions;
+using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using SustitucionMOARepositorio;
@@ -80,7 +81,7 @@ namespace SustitucionMOAUtils.Helpers
         {
             return string.Format("{0}/{1}/{2}", rutaArchivosConsulta, comentario.Consulta.Usuario_Id, comentario.Consulta_Id);
         }
-        protected void EnviarMailInterno(Consulta consulta, Comentario comentario, HttpFileCollectionBase files, List<string> destinatariosCC, string mailDestinatario)
+        protected void EnviarMailInterno(Consulta consulta, Comentario comentario, HttpFileCollectionBase files, List<string> destinatariosCC, List<string> mailDestinatario)
         {
             try
             {
@@ -88,7 +89,7 @@ namespace SustitucionMOAUtils.Helpers
                 var cuerpo = string.Format(cuerpoTemplate, consulta.Asunto, !string.IsNullOrWhiteSpace(comentario.Detalle) ? comentario.Detalle : "-", rutaMisConsultas);
                 string asunto = "Molinos Agro - Consulta N° " + consulta.Id + ": " + consulta.Asunto;
                 Dictionary<string, byte[]> archivos = ConvertFiles(files);
-                EmailSender.EnviarMail(new List<string> { mailDestinatario }, asunto, cuerpo,
+                EmailSender.EnviarMail(mailDestinatario, asunto, cuerpo,
                     null, null, null, null, null, destinatariosCC, archivos);
             }
             catch (Exception ex)
@@ -121,18 +122,22 @@ namespace SustitucionMOAUtils.Helpers
             return fileDataDictionary;
         }
 
-        protected void RellenarCampos(Consulta consulta, Comentario comentario)
+        protected void RellenarCampos(Consulta consulta, Comentario comentario, List<DestinatarioDto> destinatarios)
         {
+            var usuarioDestinoId = destinatarios.First().UsuarioId;
+
             consulta.FechaCreacion = DateTime.Now;
             consulta.FechaUltimaModificacion = DateTime.Now;
-
-            Categoria categoria = repositorio.Obtener<Categoria>(c => c.Id == consulta.Categoria_Id);
 
             comentario.ComentarioRecordado = new List<ComentarioRecordado>();
 
             if (consulta.Comentarios == null)
             {
                 consulta.Comentarios = new List<Comentario>();
+            }
+            if(consulta.Usuario_Id == 0)
+            {
+                consulta.Usuario_Id = usuarioDestinoId;
             }
 
             consulta.Comentarios.Add(comentario);
@@ -148,11 +153,12 @@ namespace SustitucionMOAUtils.Helpers
             var res = this.AgregarAdjuntoComentario(consultaId, primerComentario.Id, files);
             return res;
         }
-        protected void EnviarMail(Consulta consulta, Comentario comentario, HttpFileCollectionBase files)
+        protected void EnviarMail(Consulta consulta, Comentario comentario, List<DestinatarioDto> destinatarios, HttpFileCollectionBase files)
         {
             var destinatariosCC = this.emailService.ObtenerListaDestinatarios(new string[] { consultaInternaCC });
-            var usuario = this.repositorio.Obtener<Usuario>(u => u.Id == consulta.Usuario_Id);
-            this.EnviarMailInterno(consulta, comentario, files, destinatariosCC, usuario.Mail);
+            var destinatariosMail = destinatarios.Select(d => d.Mail).ToList();
+
+            this.EnviarMailInterno(consulta, comentario, files, destinatariosCC, destinatariosMail);
         }
 
        
