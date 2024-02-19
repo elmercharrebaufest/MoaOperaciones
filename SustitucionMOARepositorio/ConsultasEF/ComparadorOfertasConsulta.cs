@@ -48,16 +48,19 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                     RevisionFinalizada = po.RevisionTecnica == null ? false : po.RevisionTecnica.Finalizada,
                                     PlazoDeOfertaCierre = po.Cierres.Any() ? po.Cierres.OrderByDescending(p => p.Fecha).FirstOrDefault().Fecha : (DateTime?)null,
                                     PeticionDeOfertaPosicion = (from pop in contexto.Set<PeticionDeOfertaSolpPosicion>()
-                                                                where po.Id == pop.PeticionDeOferta_Id && pop.SolpPosicion.EsConcluido == true && pop.SolpPosicion.Estado == true
+                                                                where po.Id == pop.PeticionDeOferta_Id && pop.SolpPosicion.EsConcluido == true
                                                                 select new PeticionDeOfertaSolpPosicionDto()
                                                                 {
                                                                     Id = pop.Id,
                                                                     PeticionDeOferta_Id = pop.PeticionDeOferta_Id,
                                                                     SolpPosicion_Id = pop.SolpPosicion_Id,
+                                                                    EstaEliminado = pop.SolpPosicion.Estado != true,
                                                                     Posicion = new SolpPosicionDto
                                                                     {
                                                                         Id = pop.SolpPosicion.Id,
                                                                         Indice = pop.SolpPosicion.Indice,
+                                                                        FechaEntregaServicio = pop.SolpPosicion.FechaEntregaServicio != null ? pop.SolpPosicion.FechaEntregaServicio :
+                                                                        (DateTime?)null,
                                                                         CodigoMaterialSap = new MaterialSolpDto
                                                                         {
                                                                             Descripcion = pop.SolpPosicion.MaterialSolp.Descripcion,
@@ -75,8 +78,17 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                                         MonedaId = pop.SolpPosicion.Moneda_Id,
                                                                         Unidad = new TablaSapDto
                                                                         {
-                                                                            Descripcion = pop.SolpPosicion.Unidad.Descripcion
+                                                                            Descripcion = pop.SolpPosicion.Unidad.Descripcion,
+                                                                            CodigoSap = pop.SolpPosicion.Unidad.CodigoSap
+
                                                                         },
+                                                                        Centro = new TablaSapDto
+                                                                        {
+                                                                            Descripcion = pop.SolpPosicion.Centro.Descripcion,
+                                                                            CodigoSap = pop.SolpPosicion.Centro.CodigoSap
+
+                                                                        },
+                                                                        CentroId = pop.SolpPosicion.Centro_Id,
 
                                                                         Subposiciones = pop.SolpPosicion.Subposiciones.Select(s => new SolpSubposicionDto
                                                                         {
@@ -87,7 +99,8 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                                             Cantidad = s.Cantidad,
                                                                             Unidad = new TablaSapDto
                                                                             {
-                                                                                Descripcion = s.Unidad.Descripcion
+                                                                                Descripcion = s.Unidad.Descripcion,
+                                                                                CodigoSap = s.Unidad.Descripcion
                                                                             },
                                                                             Numero = s.Numero
 
@@ -102,6 +115,8 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                 {
                                                     Id = u.Id,
                                                     EstaHabilitado = u.Usuario.Habilitado,
+                                                    CodigoProveedor = u.Usuario.Proveedores.Where(p => p.CUIT == u.Usuario.CUITRegistro && u.Usuario.TipoUsuario.Id == p.TipoProveedor.Id).FirstOrDefault() != null ?
+                                                        u.Usuario.Proveedores.Where(p => p.CUIT == u.Usuario.CUITRegistro && u.Usuario.TipoUsuario.Id == p.TipoProveedor.Id).FirstOrDefault().CodigoProveedor : "",
                                                     UsuarioId = u.Usuario_Id,
                                                     RazonSocial = u.Usuario.Proveedores.Where(p => p.CUIT == u.Usuario.CUITRegistro && u.Usuario.TipoUsuario.Id == p.TipoProveedor.Id).FirstOrDefault() != null ?
                                                         u.Usuario.Proveedores.Where(p => p.CUIT == u.Usuario.CUITRegistro && u.Usuario.TipoUsuario.Id == p.TipoProveedor.Id).FirstOrDefault().RazonSocial : u.Usuario.CUITRegistro,
@@ -116,7 +131,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                     EstadoPropuestaTecnica = u.PropuestaTecnicaAprobada == null ? "Sin analizar" : (u.PropuestaTecnicaAprobada == true ? "Aprobada" : "Rechazada"),
                                                     ObservacionNoCumple = u.ObservacionNoCumple,
                                                     EstadoPropuestaTecnicaColor = u.PropuestaTecnicaAprobada == null ? "Orange" : (u.PropuestaTecnicaAprobada == true ? "Green" : "Red"),
-
+                                                  
                                                     //PlazoDeOferta = u.Circulares.Any(circu => circu.Circular.RequiereCambioDeFechas == true && circu.Circular.PlazoDeOferta.HasValue) ?
                                                     //u.Circulares.Where(circu => circu.Circular.RequiereCambioDeFechas == true && circu.Circular.PlazoDeOferta.HasValue)
                                                     //                .OrderByDescending(circu => circu.Circular.PlazoDeOferta).FirstOrDefault().Circular.PlazoDeOferta.Value :
@@ -163,16 +178,18 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                             Id = ch.Id
                                                         }).ToList(),
 
-                                                        CotizacionPosiciones = cotizacion.CotizacionPosiciones.Where(posic => posic.PeticionDeOfertaSolpPosicion.SolpPosicion.EsConcluido == true && posic.PeticionDeOfertaSolpPosicion.SolpPosicion.Estado == true)
+                                                        CotizacionPosiciones = cotizacion.CotizacionPosiciones.Where(posic => posic.PeticionDeOfertaSolpPosicion.SolpPosicion.EsConcluido == true)
                                                         .Select(p => new CotizacionPosicionDto
                                                         {
                                                             Id = p.Id,
+                                                            EstaEliminado = p.PeticionDeOfertaSolpPosicion.SolpPosicion.Estado != true,
                                                             Cotizacion_Id = p.Cotizacion_Id,
                                                             PeticionDeOfertaSolpPosicion_Id = p.PeticionDeOfertaSolpPosicion_Id,
                                                             Cantidad = p.Cantidad ?? 1,
                                                             UnidadMedida = new TablaSapDto
                                                             {
-                                                                Descripcion = p.UnidadDeMedida.Descripcion
+                                                                Descripcion = p.UnidadDeMedida.Descripcion,
+                                                                CodigoSap = p.UnidadDeMedida.CodigoSap
                                                             },
                                                             Moneda_Id = p.PeticionDeOfertaSolpPosicion.SolpPosicion.TipoPosicion_Id == 9 ? p.PeticionDeOfertaSolpPosicion.SolpPosicion.Moneda_Id ?? 0 : p.Moneda_Id ?? 0,
                                                             MonedaDescripcion = cotizacion != null && p.Moneda != null ? p.Moneda.Codigo : "",
@@ -201,7 +218,8 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                                                            UnidadDeMedida_Id = subpos.UnidadDeMedida_Id ?? 0,
                                                                                            UnidadMedida = new TablaSapDto
                                                                                            {
-                                                                                               Descripcion = subpos.UnidadDeMedida.Descripcion
+                                                                                               Descripcion = subpos.UnidadDeMedida.Descripcion,
+                                                                                               CodigoSap = subpos.UnidadDeMedida.CodigoSap
                                                                                            },
                                                                                            MonedaDescripcion = subpos.Moneda != null ? subpos.Moneda.Codigo : "",
                                                                                            PrecioUnidad = subpos.Precio ?? 0,

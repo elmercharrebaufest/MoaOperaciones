@@ -3,9 +3,9 @@ import { Proveedor } from "../../common/models/proveedor";
 
 export interface ChatComprasDto {
     Mensajes?: ChatInternoComprasDto[], 
-    PeticionDeOferta_Id?: number,
+    Solp_Id?: number,
     FechaCreacion?: string,
-    Proveedores?: Proveedor[],
+    //Proveedores?: Proveedor[],
     UsuarioActualId?: number,
     FechaCreacionDate?: Date,
 
@@ -15,7 +15,7 @@ export interface ChatInternoComprasDto {
     Id?: number, 
     Usuario_Id?: number,
     RolUsuario?: string,
-    PeticionDeOferta_Id?: number,
+    Solp_Id?: number,
     FechaEnvio?: string,
     Leido?: boolean,
     Mensaje?: string,

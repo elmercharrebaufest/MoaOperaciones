@@ -211,6 +211,10 @@
     <Build Include="DBO\Tables\PeticionDeOfertaUsuarioAdicional.sql" />
     <Build Include="DBO\Tables\ArchivoCampoSustentable.sql" />
     <Build Include="DBO\Stored Procedures\VerificarActividadUsuarioID.sql" />
+    <Build Include="DBO\Tables\LiberadorSapTipo.sql" />
+    <Build Include="DBO\Tables\LiberadorSap.sql" />
+    <Build Include="DBO\Tables\LiberadorSapSolp.sql" />
+    <None Include="scripts\PostDeployment\LiberadorSap.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DatabasePublishQA.xml" />

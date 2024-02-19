@@ -980,6 +980,11 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         if (grupoArticuloAux) {
             posicion.selectArticuloCompras = grupoArticuloAux;
         }
+
+        var grupoComprasAux = this.combos.GrupoCompras.find(x => x.Descripcion == posicion.codigoServicio.GrupoCompras.Descripcion);
+        if (grupoComprasAux) {
+            posicion.selectGrupoCompras = grupoComprasAux;
+        }
         //var cuentaMayorAux = this.combos.CuentaMayor.find(x => x.Descripcion == posicion.codigoServicio.CuentaMayor.Descripcion);
         if (posicion.codigoServicio.CuentaMayor && posicion.codigoServicio.CuentaMayor.Id > 0) {
             posicion.cuentaMayor = posicion.codigoServicio.CuentaMayor;

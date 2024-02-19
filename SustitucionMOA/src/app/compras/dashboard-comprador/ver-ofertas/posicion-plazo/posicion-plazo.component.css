@@ -1,0 +1,31 @@
+.headerModal {
+    top: 106px;
+    left: 381px;
+    width: 119px;
+    height: 26px;
+    text-align: left;
+    font: normal normal bold 20px/25px Roboto Regular;
+    letter-spacing: 0px;
+    color: #5CB85C;
+    opacity: 1;
+  }
+
+  ::ng-deep .modalCircular{
+    height: 200px !important;
+    max-height: 100px !important;
+  }
+
+  ::ng-deep .ui-accordion-content-wrapper-overflown{
+    height: 0 !important;
+    overflow: hidden !important;
+  }
+
+::ng-deep .ui-accordion .ui-accordion-header:hover a{
+  text-decoration: none ;
+}
+
+::ng-deep .ui-accordion .ui-accordion-header:focus a{
+  text-decoration: none ;
+}
+
+  .my-dialog .ui-dialog-content { max-height: 100px; }

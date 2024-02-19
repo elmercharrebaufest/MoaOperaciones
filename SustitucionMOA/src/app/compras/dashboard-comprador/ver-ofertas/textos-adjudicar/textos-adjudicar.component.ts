@@ -19,6 +19,8 @@ export class TextosAdjudicarComponent implements OnInit {
 
     @Input()
     displayTextos: boolean;
+
+    
     @Input('locale') es: any;
 
     @Input()
@@ -50,7 +52,6 @@ export class TextosAdjudicarComponent implements OnInit {
         }  
         this.closeAccordion();
         this.cerrarModalTextosEmitter.next();
-      
     }
 
    reestablecerDatos(){

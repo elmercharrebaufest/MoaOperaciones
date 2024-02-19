@@ -118,8 +118,12 @@ export class SolpPosicion {
     CantidadAdjudicacion: any;
     CantidadAdjudicada: any;
     NoDisponible: any;
+    Centro: any;
     
     public mensaje: string = "";
+    CodigoMaterialSap: any;
+    Tarea: any;
+    FechaEntregaServicio: any;
 
     public get getMensaje(): string  {
 

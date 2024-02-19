@@ -94,55 +94,58 @@ namespace SustitucionMOAModel.Dto
         public decimal MontoTotalOC { get; set; }
         public string FechaCreacionOC { get; set; }
         public bool SolpConAdjuntos { get; set; }
+        public List<LiberadorSapSolpDto> LiberadoresSapSolp { get; set; } = new List<LiberadorSapSolpDto>();
+        public bool ChatSinLeer { get; set; }
 
         public SolpDto() { }
         public SolpDto(Solp entity)
         {
-            this.UsuarioActual = new UsuarioDto(entity.UsuarioCreacion);
-            this.Id = entity.Id;
-            this.NombreDeObra = entity.Pliego.NombreObra; //nombre de pedido
-            this.FiscalContrato = entity.Pliego.FiscalContrato;
-            this.Telefono = entity.Pliego.Telefono;
-            this.Email = entity.Pliego.Email;
-            this.FechaHoraEntrega = entity.Pliego.FechaHoraEntrega;
-            this.SupervisorSector = entity.Pliego.SupervisorSector.Split(',').ToList();
-            this.SupervisorTrabajo = entity.Pliego.SupervisorTrabajo.Split(',').ToList();
-            this.VisitasObraMasiva = new List<VisitaObraDto>();
-            this.TieneVisitaObra = entity.Pliego.TieneVisitaObra.HasValue && entity.Pliego.TieneVisitaObra.Value;
-            this.TieneVisitaObraMasiva = entity.Pliego.TieneVisitaObraMasiva.HasValue && entity.Pliego.TieneVisitaObraMasiva.Value;
-            this.TieneObradores = entity.Pliego.TieneObradores.HasValue && entity.Pliego.TieneObradores.Value;
-            this.TieneMedioElevacion = entity.Pliego.TieneMedioElevacion.HasValue && entity.Pliego.TieneMedioElevacion.Value;
-            this.TieneAndamio = entity.Pliego.TieneAndamio.HasValue && entity.Pliego.TieneAndamio.Value;
-            this.TieneTecnicoSeguridad = entity.Pliego.TieneTecnicoSeguridad.HasValue && entity.Pliego.TieneTecnicoSeguridad.Value;
-            this.TieneGrillaPersonal = entity.Pliego.TieneGrillaPersonal.HasValue && entity.Pliego.TieneGrillaPersonal.Value;
-            this.TieneFabricacionTallerExterno = entity.Pliego.TieneFabricacionTallerExterno.HasValue && entity.Pliego.TieneFabricacionTallerExterno.Value;
-            this.TieneDescripcionTecnica = entity.Pliego.TieneDescripcionTecnica.HasValue && entity.Pliego.TieneDescripcionTecnica.Value;
-            this.TieneDocumentacionTecnica = entity.Pliego.TieneDocumentacionTecnica.HasValue && entity.Pliego.TieneDocumentacionTecnica.Value;
-            this.FechaHoraLimiteConsulta = entity.Pliego.FechaHoraLimiteConsulta;
-            this.ObservacionesGeneracion = entity.Pliego.ObservacionesGeneracion;
-            this.JornadaLaboral = new List<DayOfWeek>();
-            //this.JornadaLaboralDesde = entity.Pliego.JornadaLaboralDesde;
-            //this.JornadaLaboralHasta = entity.Pliego.JornadaLaboralHasta;
-            this.ClaseDocumento = new TablaSapDto(entity.ClaseDocumento);
-            this.ClaseDocumentoId = entity.ClaseDocumento.Id;
-            this.Adjuntos = new List<ArchivoDto>();
-            this.NroSolp = entity.NroSolp;
-            this.EstadoSolpSapId = entity.EstadoSolpSap_Id;
-            this.EstadoDocumentoId = entity.EstadoDocumento_Id;
-            this.FechaCreacion = entity.FechaCreacion;
-            this.EstadoDocumento = new TablaEstadoDto(entity.EstadoDocumento);
-            //this.VincularPliego = entity.VincularPliego.HasValue && entity.VincularPliego.Value;
-            this.EstadoSolpSap = new TablaSapDto(entity.EstadoSolpSap);
-            this.TipoSolp = new TablaGeneralDto(entity.TipoSolp);
-            this.Posiciones = new List<SolpPosicionDto>();
-            this.TieneCondicionesGenerales = entity.Pliego.TieneCondicionesGenerales.HasValue ? entity.Pliego.TieneCondicionesGenerales : true;
-            this.PasoCompletado = entity.PasoCompletado;
-            this.EstadoPasos = entity.EstadoPasos;
-            this.RevisadoPor = entity.Pliego.RevisadoPor;
-            this.UsuarioCompras = new UsuarioComprasDto(entity.UsuarioCompras);
-            this.TipoSolpSap = entity.TipoSolpSap;
-            this.ProveedorAsignadoId = entity.ProveedorAsignado_Id;
-            this.TrabajoYaHecho = entity.TrabajoYaHecho;
+            UsuarioActual = new UsuarioDto(entity.UsuarioCreacion);
+            Id = entity.Id;
+            NombreDeObra = entity.Pliego.NombreObra; //nombre de pedido
+            FiscalContrato = entity.Pliego.FiscalContrato;
+            Telefono = entity.Pliego.Telefono;
+            Email = entity.Pliego.Email;
+            FechaHoraEntrega = entity.Pliego.FechaHoraEntrega;
+            SupervisorSector = entity.Pliego.SupervisorSector.Split(',').ToList();
+            SupervisorTrabajo = entity.Pliego.SupervisorTrabajo.Split(',').ToList();
+            VisitasObraMasiva = new List<VisitaObraDto>();
+            TieneVisitaObra = entity.Pliego.TieneVisitaObra.HasValue && entity.Pliego.TieneVisitaObra.Value;
+            TieneVisitaObraMasiva = entity.Pliego.TieneVisitaObraMasiva.HasValue && entity.Pliego.TieneVisitaObraMasiva.Value;
+            TieneObradores = entity.Pliego.TieneObradores.HasValue && entity.Pliego.TieneObradores.Value;
+            TieneMedioElevacion = entity.Pliego.TieneMedioElevacion.HasValue && entity.Pliego.TieneMedioElevacion.Value;
+            TieneAndamio = entity.Pliego.TieneAndamio.HasValue && entity.Pliego.TieneAndamio.Value;
+            TieneTecnicoSeguridad = entity.Pliego.TieneTecnicoSeguridad.HasValue && entity.Pliego.TieneTecnicoSeguridad.Value;
+            TieneGrillaPersonal = entity.Pliego.TieneGrillaPersonal.HasValue && entity.Pliego.TieneGrillaPersonal.Value;
+            TieneFabricacionTallerExterno = entity.Pliego.TieneFabricacionTallerExterno.HasValue && entity.Pliego.TieneFabricacionTallerExterno.Value;
+            TieneDescripcionTecnica = entity.Pliego.TieneDescripcionTecnica.HasValue && entity.Pliego.TieneDescripcionTecnica.Value;
+            TieneDocumentacionTecnica = entity.Pliego.TieneDocumentacionTecnica.HasValue && entity.Pliego.TieneDocumentacionTecnica.Value;
+            FechaHoraLimiteConsulta = entity.Pliego.FechaHoraLimiteConsulta;
+            ObservacionesGeneracion = entity.Pliego.ObservacionesGeneracion;
+            JornadaLaboral = new List<DayOfWeek>();
+            //JornadaLaboralDesde = entity.Pliego.JornadaLaboralDesde;
+            //JornadaLaboralHasta = entity.Pliego.JornadaLaboralHasta;
+            ClaseDocumento = new TablaSapDto(entity.ClaseDocumento);
+            ClaseDocumentoId = entity.ClaseDocumento.Id;
+            Adjuntos = new List<ArchivoDto>();
+            NroSolp = entity.NroSolp;
+            EstadoSolpSapId = entity.EstadoSolpSap_Id;
+            EstadoDocumentoId = entity.EstadoDocumento_Id;
+            FechaCreacion = entity.FechaCreacion;
+            EstadoDocumento = new TablaEstadoDto(entity.EstadoDocumento);
+            //VincularPliego = entity.VincularPliego.HasValue && entity.VincularPliego.Value;
+            EstadoSolpSap = new TablaSapDto(entity.EstadoSolpSap);
+            TipoSolp = new TablaGeneralDto(entity.TipoSolp);
+            Posiciones = new List<SolpPosicionDto>();
+            TieneCondicionesGenerales = entity.Pliego.TieneCondicionesGenerales.HasValue ? entity.Pliego.TieneCondicionesGenerales : true;
+            PasoCompletado = entity.PasoCompletado;
+            EstadoPasos = entity.EstadoPasos;
+            RevisadoPor = entity.Pliego.RevisadoPor;
+            UsuarioCompras = new UsuarioComprasDto(entity.UsuarioCompras);
+            TipoSolpSap = entity.TipoSolpSap;
+            ProveedorAsignadoId = entity.ProveedorAsignado_Id;
+            TrabajoYaHecho = entity.TrabajoYaHecho;
+            LiberadoresSapSolp = new List<LiberadorSapSolpDto>();
         }
     }
 
@@ -214,7 +217,6 @@ namespace SustitucionMOAModel.Dto
         public string OrganizacionCompras { get; set; }
         public string NumeroPedido { get; set; }
 
-
         public TablaSapDto Unidad { get; set; }
         public TablaGeneralDto TipoPosicion { get; set; }
         public TablaGeneralDto TipoImputacion { get; set; }
@@ -260,68 +262,68 @@ namespace SustitucionMOAModel.Dto
         {
             if (entity != null)
             {
-                this.Codigo = entity.Codigo;
-                this.TipoPosicionId = entity.TipoPosicion_Id;
-                this.TipoImputacionId = entity.TipoImputacion_Id;
-                this.FechaEntregaServicio = entity.FechaEntregaServicio;
-                this.FechaLiberacion = entity.FechaLiberacion;
-                this.PlazoEntrega = entity.PlazoEntrega;
-                this.CentroId = entity.Centro_Id;
-                this.AlmacenId = entity.Almacen_Id;
-                this.NombreEntrega = entity.NombreEntrega;
-                this.CalleEntrega = entity.CalleEntrega;
-                this.NumeroEntrega = entity.NumeroEntrega;
-                this.CpEntrega = entity.CpEntrega;
-                this.PaisEntrega = entity.PaisEntrega;
-                this.GrupoComprasId = entity.GrupoCompras_Id;
-                this.Solicitante = entity.Solicitante;
-                this.NroNecesidad = entity.NroNecesidad;
-                this.TextoSuministro = entity.TextoSuministro;
-                this.Motivo = entity.Motivo;
-                this.Modelo = entity.Modelo;
-                this.GrupoArticuloId = entity.GrupoArticulo_Id;
-                this.MonedaId = entity.Moneda_Id;
-                this.TipoPosicion = new TablaGeneralDto(entity.TipoPosicion);
-                this.TipoImputacion = new TablaGeneralDto(entity.TipoImputacion);
-                this.Centro = new TablaSapDto(entity.Centro);
-                this.Almacen = new TablaSapDto(entity.Almacen);
-                this.GrupoCompras = new TablaSapDto(entity.GrupoCompras);
-                this.GrupoArticulo = new TablaSapDto(entity.GrupoArticulo);
-                this.Moneda = new TablaSapDto(entity.Moneda);
-                this.Subposiciones = new List<SolpSubposicionDto>();
-                this.Proveedores = new List<SolpProveedorDto>();
-                this.Estado = entity.Estado;
-                this.Indice = entity.Indice;
-                this.EsConcluido = entity.EsConcluido;
+                Codigo = entity.Codigo;
+                TipoPosicionId = entity.TipoPosicion_Id;
+                TipoImputacionId = entity.TipoImputacion_Id;
+                FechaEntregaServicio = entity.FechaEntregaServicio;
+                FechaLiberacion = entity.FechaLiberacion;
+                PlazoEntrega = entity.PlazoEntrega;
+                CentroId = entity.Centro_Id;
+                AlmacenId = entity.Almacen_Id;
+                NombreEntrega = entity.NombreEntrega;
+                CalleEntrega = entity.CalleEntrega;
+                NumeroEntrega = entity.NumeroEntrega;
+                CpEntrega = entity.CpEntrega;
+                PaisEntrega = entity.PaisEntrega;
+                GrupoComprasId = entity.GrupoCompras_Id;
+                Solicitante = entity.Solicitante;
+                NroNecesidad = entity.NroNecesidad;
+                TextoSuministro = entity.TextoSuministro;
+                Motivo = entity.Motivo;
+                Modelo = entity.Modelo;
+                GrupoArticuloId = entity.GrupoArticulo_Id;
+                MonedaId = entity.Moneda_Id;
+                TipoPosicion = new TablaGeneralDto(entity.TipoPosicion);
+                TipoImputacion = new TablaGeneralDto(entity.TipoImputacion);
+                Centro = new TablaSapDto(entity.Centro);
+                Almacen = new TablaSapDto(entity.Almacen);
+                GrupoCompras = new TablaSapDto(entity.GrupoCompras);
+                GrupoArticulo = new TablaSapDto(entity.GrupoArticulo);
+                Moneda = new TablaSapDto(entity.Moneda);
+                Subposiciones = new List<SolpSubposicionDto>();
+                Proveedores = new List<SolpProveedorDto>();
+                Estado = entity.Estado;
+                Indice = entity.Indice;
+                EsConcluido = entity.EsConcluido;
 
-                this.CodigoServicioSap = entity.ServicioSolp != null ? new ServicioSolpDto(entity.ServicioSolp) : null;
+                CodigoServicioSap = entity.ServicioSolp != null ? new ServicioSolpDto(entity.ServicioSolp) : null;
 
-                this.CodigoMaterialSap = entity.MaterialSolp != null ? new MaterialSolpDto(entity.MaterialSolp) : null;
+                CodigoMaterialSap = entity.MaterialSolp != null ? new MaterialSolpDto(entity.MaterialSolp) : null;
 
-                this.Tarea = entity.Tarea;
-                this.Cantidad = entity.Cantidad;
-                this.UnidadId = entity.Unidad_Id;
-                this.Unidad = entity.Unidad != null ? new TablaSapDto(entity.Unidad) : null;
-                this.PrecioBruto = entity.PrecioBruto;
+                Tarea = entity.Tarea;
+                Cantidad = entity.Cantidad;
+                UnidadId = entity.Unidad_Id;
+                Unidad = entity.Unidad != null ? new TablaSapDto(entity.Unidad) : null;
+                PrecioBruto = entity.PrecioBruto;
 
-                this.CuentaMayor = entity.CuentaMayorSap != null ? new TablaSapDto(entity.CuentaMayorSap) : null;
-                this.TipoImputacionValor = entity.TipoImputacionSap != null ? new TablaSapDto(entity.TipoImputacionSap) : null;
+                CuentaMayor = entity.CuentaMayorSap != null ? new TablaSapDto(entity.CuentaMayorSap) : null;
+                TipoImputacionValor = entity.TipoImputacionSap != null ? new TablaSapDto(entity.TipoImputacionSap) : null;
 
-                this.Provincia = entity.ProvinciaId != null ? new ProvinciaDTO(entity.Provincia) : null;
+                Provincia = entity.ProvinciaId != null ? new ProvinciaDTO(entity.Provincia) : null;
 
                 //Contrato Marco
-                this.NumeroContratoSuperior = entity.NumeroContratoSuperior;
-                this.NombreProveedor = entity.NombreProveedor;
-                this.OrganizacionCompras = entity.OrganizacionCompras;
-                this.ProveedorFijo = entity.ProveedorFijo;
-                this.NumeroPosicionContratoSuperior = entity.NumeroPosicionContratoSuperior;
-                this.NumeroPedido = entity.NumeroPedido;
+                NumeroContratoSuperior = entity.NumeroContratoSuperior;
+                NombreProveedor = entity.NombreProveedor;
+                OrganizacionCompras = entity.OrganizacionCompras;
+                ProveedorFijo = entity.ProveedorFijo;
+                NumeroPosicionContratoSuperior = entity.NumeroPosicionContratoSuperior;
+                NumeroPedido = entity.NumeroPedido;
 
                 if (entity.Subposiciones != null)
                 {
                     foreach (var subpos in entity.Subposiciones)
                     {
-                        this.Subposiciones.Add(new SolpSubposicionDto(subpos));
+                        Subposiciones.Add(new SolpSubposicionDto(subpos));
                     }
                 }
 
@@ -329,7 +331,7 @@ namespace SustitucionMOAModel.Dto
                 {
                     foreach (var proveedor in entity.Proveedores)
                     {
-                        this.Proveedores.Add(new SolpProveedorDto(proveedor));
+                        Proveedores.Add(new SolpProveedorDto(proveedor));
                     }
                 }
             }
@@ -369,6 +371,7 @@ namespace SustitucionMOAModel.Dto
         public TablaSapDto MonedaCotizacion { get; set; }
         public TablaSapDto UnidadMedidaCotizacion { get; set; }
         public int? CodigoSolp { get; set; }
+        public bool Eliminado { get; set; }
 
         public SolpSubposicionDto() { }
 
@@ -376,16 +379,16 @@ namespace SustitucionMOAModel.Dto
         {
             if (entity != null)
             {
-                this.Codigo = entity.Codigo;
-                this.Numero = entity.Numero;
-                this.CodigoServicioSap = entity.ServicioSolp != null ? new ServicioSolpDto(entity.ServicioSolp) : null;
-                this.Tarea = entity.Tarea;
-                this.CuentaMayor = entity.CuentaMayorSap != null ? new TablaSapDto(entity.CuentaMayorSap) : null;
-                this.Cantidad = entity.Cantidad;
-                this.UnidadId = entity.Unidad_Id;
-                this.PrecioBruto = entity.PrecioBruto;
-                this.TipoImputacionValor = entity.TipoImputacionSap != null ? new TablaSapDto(entity.TipoImputacionSap) : null; //se corregira luego el campo en base
-                this.Unidad = entity.Unidad != null ? new TablaSapDto(entity.Unidad) : null;
+                Codigo = entity.Codigo;
+                Numero = entity.Numero;
+                CodigoServicioSap = entity.ServicioSolp != null ? new ServicioSolpDto(entity.ServicioSolp) : null;
+                Tarea = entity.Tarea;
+                CuentaMayor = entity.CuentaMayorSap != null ? new TablaSapDto(entity.CuentaMayorSap) : null;
+                Cantidad = entity.Cantidad;
+                UnidadId = entity.Unidad_Id;
+                PrecioBruto = entity.PrecioBruto;
+                TipoImputacionValor = entity.TipoImputacionSap != null ? new TablaSapDto(entity.TipoImputacionSap) : null; //se corregira luego el campo en base
+                Unidad = entity.Unidad != null ? new TablaSapDto(entity.Unidad) : null;
             }
         }
     }
@@ -408,11 +411,11 @@ namespace SustitucionMOAModel.Dto
         {
             if (entity != null)
             {
-                this.Codigo = entity.Id.ToString();
-                this.ProveedorId = entity.Proveedor_Id;
-                this.RazonSocial = entity.RazonSocial;
-                this.TipoFiltroProveedorSolpId = entity.TipoFiltroProveedorSolp_Id;
-                this.TipoFiltroProveedorSolp = new TablaGeneralDto(entity.TipoFiltroProveedorSolp);
+                Codigo = entity.Id.ToString();
+                ProveedorId = entity.Proveedor_Id;
+                RazonSocial = entity.RazonSocial;
+                TipoFiltroProveedorSolpId = entity.TipoFiltroProveedorSolp_Id;
+                TipoFiltroProveedorSolp = new TablaGeneralDto(entity.TipoFiltroProveedorSolp);
             }
         }
     }
@@ -425,5 +428,7 @@ namespace SustitucionMOAModel.Dto
         public string NumeroPedido { get; set; }
         public string NumeroSolp { get; set; }
         public string Proveedor { get; set; }
+        public List<string> NumerosDePedido { get; set; }
+        public bool MostrarModalMoneda { get; set; }
     }
 }

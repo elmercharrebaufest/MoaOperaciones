@@ -553,4 +553,32 @@
     <Property Name="ParentElementType" Value="SqlTable" />
     <Property Name="NewName" Value="RevisionTecnica_Id" />
   </Operation>
+  <Operation Name="Rename Refactor" Key="bbdd8884-aa68-4374-828a-90e955688dbc" ChangeDateTime="12/19/2023 13:01:57">
+    <Property Name="ElementName" Value="[dbo].[CentroDireccion].[RegionSAP]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[CentroDireccion]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="RegionSAP_Id" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="1a3a3a67-ee36-46ca-99b6-25f5dece5b24" ChangeDateTime="01/02/2024 18:03:52">
+    <Property Name="ElementName" Value="[dbo].[ChatInternoCompras].[PeticionDeOferta_Id]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[ChatInternoCompras]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="Solp_Id" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="99119a73-2de2-4d7a-8c55-1bbad07edd90" ChangeDateTime="12/28/2023 15:42:53">
+    <Property Name="ElementName" Value="[dbo].[AdjudicacionPosicion].[PlazoEntrega]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[AdjudicacionPosicion]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="PlazoDeEntrega" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="27f5d613-b9b2-4501-8e9e-e11e09bc25c4" ChangeDateTime="01/12/2024 11:50:21">
+    <Property Name="ElementName" Value="[dbo].[SolpPosicion].[GrupoDeComprasCodigo]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[SolpPosicion]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="OrganizacionDeComprasCodigo" />
+  </Operation>
 </Operations>

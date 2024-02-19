@@ -73,6 +73,7 @@ namespace SustitucionMOAModel.Dto
         public decimal? SegundaCantidad { get; set; }
         public int? TercerPlazoDeOferta { get; set; }
         public decimal? TerceraCantidad { get; set; }
+        public bool EstaEliminado { get; set; }
     }
 
     public class CotizacionSubPosicionDto
