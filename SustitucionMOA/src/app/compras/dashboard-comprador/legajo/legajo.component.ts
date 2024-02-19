@@ -118,9 +118,9 @@ export class LegajoComponent extends ListBaseComponent implements OnInit {
                     }
                 )
         } else if (tipoLegajo == "Chat Interno") {
-            let peticionDeOfertaId = this.legajo[0].PeticionDeOfertaId;
+            let SolpId = this.legajo[0].SolpId;
             this.blockUI.start("Generando...");
-            this.service.obtenerYExportarChat(peticionDeOfertaId)
+            this.service.obtenerYExportarChat(SolpId)
                 .subscribe(
                     (result) => {
                         if (result.logout == true) {

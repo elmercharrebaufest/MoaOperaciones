@@ -48,12 +48,13 @@ namespace SustitucionMOAWS.Interfaces
 
     public interface IObtenerRegistroInfoConsumerMOA
     {
-        List<RegistroInfoDto> ObtenerRegistroInfoConsumer(string material, string centro, string grupoDeCompras);
+        List<RegistroInfoDto> ObtenerRegistroInfoConsumer(string material, string centro, string grupoDeCompras, string proveedor);
     }
     public interface IObtenerOrdenDeCompraConsumerMOA
     {
         OrdenDeCompraSAPDto ObtenerOrdenDeCompra(string nroOC);
         AdjudicacionDto ObtenerOrdenDeCompraAdjudicacion(string nroOC);
+        ResultBAPI_PO_GETDETAIL1 ObtenerOrdenDeCompraRFC(string nroOC);
     }
     public interface IObtenerProveedorConsumerMOA
     {

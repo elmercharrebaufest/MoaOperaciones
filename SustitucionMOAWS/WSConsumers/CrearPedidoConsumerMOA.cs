@@ -19,19 +19,21 @@ namespace SustitucionMOAWS.WSConsumers
         private readonly SI_MMRFC_CREAR_PEDIDOClient service;
         private readonly string rutaArchivosXmls = ConfigurationManager.AppSettings["RutaArchivosCompras"];
         private readonly IObtenerUnidadesDeMedidaAlternativasConsumerMOA obtenerUnidadesDeMedidaConsumerMOA;
+        private readonly IObtenerTipoCambioConsumerMOA obtenerTipoCambioConsumerMOA;
 
-        public CrearPedidoConsumerMOA(IObtenerUnidadesDeMedidaAlternativasConsumerMOA _obtenerUnidadesDeMedidaConsumerMOA)
+        public CrearPedidoConsumerMOA(IObtenerUnidadesDeMedidaAlternativasConsumerMOA _obtenerUnidadesDeMedidaConsumerMOA, IObtenerTipoCambioConsumerMOA _obtenerTipoCambioConsumerMOA)
         {
             var url = "http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MMRFC_CREAR_PEDIDO&amp;interfaceNamespace=urn%3AOPERACIONES";
             service = new SI_MMRFC_CREAR_PEDIDOClient(SAPCredential.CrearSapBasicBinding(), SAPCredential.DevolverEndpoint(url));
             service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
             service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
             obtenerUnidadesDeMedidaConsumerMOA = _obtenerUnidadesDeMedidaConsumerMOA;
+            obtenerTipoCambioConsumerMOA = _obtenerTipoCambioConsumerMOA;
         }
 
-        public CrearPedidoConsumerMOAResponse Request(Adjudicacion adjudicacion)
+        public CrearPedidoConsumerMOAResponse Request(Adjudicacion adjudicacion, bool creadoAutomatico = false)
         {
-            var solpPedidoSAP = ConvertirSOLP(adjudicacion);
+            var solpPedidoSAP = ConvertirSOLP(adjudicacion, creadoAutomatico);
 
             var serxml = new System.Xml.Serialization.XmlSerializer(solpPedidoSAP.GetType());
             var ms = new MemoryStream();
@@ -101,7 +103,7 @@ namespace SustitucionMOAWS.WSConsumers
             return respuesta;
         }
 
-        private SolpPedidoSAPDto ConvertirSOLP(Adjudicacion adjudicacion)
+        private SolpPedidoSAPDto ConvertirSOLP(Adjudicacion adjudicacion, bool creadoAutomatico = false)
         {
             //TODO: Crear OC ConvertirSOLP - fields hardcodeados o para revisar
             ///DOC_TYPE  ok por ahora. Clase de documento de compras / Estrategia de liberacion hardcore ZPE1 
@@ -121,17 +123,20 @@ namespace SustitucionMOAWS.WSConsumers
             var numeroDePaquete = 1;
             bool esPosicionDeMateriales = solp.Posiciones.First().TipoPosicion.Codigo == "MATERIALES";
             var unidadesDeMedidaSAP = new List<UnidadesDeMedida>();
+
+            var fecha = DateTime.Now;
+
             if (esPosicionDeMateriales)
             {
                 unidadesDeMedidaSAP = obtenerUnidadesDeMedidaConsumerMOA.Request(solp.Posiciones.Select(x => x.MaterialSolp?.Codigo).ToList());
             }
-
+           
             //aca el metodo solo usa las posiciones seleccionadas por el comprador
             var posIds = adjudicacion.Posiciones.Select(x => x.CotizacionPosicion.PeticionDeOfertaSolpPosicion.SolpPosicion_Id).ToList();
             foreach (var solpPosicion in solp.Posiciones.Where(a => posIds.Contains(a.Id)).OrderBy(x => x.Id))
             {
                 var adjudicacionPosicion = adjudicacion.Posiciones.Where(a => a.CotizacionPosicion.PeticionDeOfertaSolpPosicion.SolpPosicion_Id == solpPosicion.Id).Single();
-                decimal precioConvertido = adjudicacionPosicion.CotizacionPosicion.Precio ?? 0;
+                decimal precioConvertido = adjudicacionPosicion.Monto??0;
                 string unidadDeMedida = esPosicionDeMateriales ? adjudicacionPosicion.CotizacionPosicion.UnidadDeMedida.Descripcion : "001";
                 if (esPosicionDeMateriales && solpPosicion.Unidad_Id != adjudicacionPosicion.CotizacionPosicion.UnidadDeMedida_Id)
                 {
@@ -139,7 +144,8 @@ namespace SustitucionMOAWS.WSConsumers
                     var unidadSolicitada = unidadesDelMaterial.First(x => x.UnidadDeMedida == solpPosicion.Unidad.Descripcion);
                     var unidadCotizada = unidadesDelMaterial.First(x => x.UnidadDeMedida == adjudicacionPosicion.CotizacionPosicion.UnidadDeMedida.Descripcion);
                     unidadDeMedida = unidadSolicitada.UnidadDeMedida;
-                    precioConvertido = Math.Round(adjudicacionPosicion.CotizacionPosicion.Precio.Value / (unidadCotizada.Numerador / unidadCotizada.Denominador) * (unidadSolicitada.Numerador / unidadSolicitada.Denominador), 2);
+                    precioConvertido = Math.Round(adjudicacionPosicion.Monto??0 / (unidadCotizada.Numerador / unidadCotizada.Denominador) *
+                        (unidadSolicitada.Numerador / unidadSolicitada.Denominador), 2);
                 };
                 numeroPosicion = solpPosicion.Indice ?? 0;
                 numeroDePaquete = solpPosicion.Indice ?? 0;
@@ -153,7 +159,7 @@ namespace SustitucionMOAWS.WSConsumers
                 cabeceraDelPedido.VENDOR = proveedorCodigoDeLaAdjudicacion;//VENDOR ELIFN   Número de cuenta del proveedor
                 cabeceraDelPedido.PURCH_ORG = usuarioOrganizacionDeCompra;//PURCH_ORG EKORG   Organización de compras
                 cabeceraDelPedido.PUR_GROUP = solpPosicion.GrupoCompras.CodigoSap.ToString(); //PUR_GROUP   BKGRP Grupo de compras
-                cabeceraDelPedido.CURRENCY = adjudicacionPosicion.CotizacionPosicion.Moneda.Codigo; //CURRENCY WAERS   Clave de moneda
+                cabeceraDelPedido.CURRENCY = adjudicacion.Moneda.Codigo; /*adjudicacionPosicion.CotizacionPosicion.Moneda.Codigo;*/ //CURRENCY WAERS   Clave de moneda
                 cabeceraDelPedido.CREATED_BY = usuarioCreadorAdjudicacion;//CREATED_BY ERNAM   Nombre del responsable que ha añadido el objeto
                 cabeceraDelPedido.DOC_DATE = SAPFormatter.PrepararFecha(DateTime.Now); //DOC_DATE    EBDAT Fecha del documento de compras
                 cabeceraDelPedido.PO_NUMBER = ""; //PO_NUMBER   EBELN Número del documento de compras
@@ -163,7 +169,7 @@ namespace SustitucionMOAWS.WSConsumers
                 cabeceraDelPedido.PMNTTRMS = ""; //"BASE"; //PMNTTRMS    DZTERM Clave de condiciones de pago
                 //cabeceraDelPedido.EXCH_RATE = 0; //EXCH_RATE   WKURS Tipo de cambio de moneda
                 cabeceraDelPedido.EX_RATE_FX = ""; //EX_RATE_FX KUFIX   Indicador tipo de cambio fijo
-
+                
                 solpPedidoSAP.IM_POHEADERList = cabeceraDelPedido;
                 solpPedidoSAP.IM_POHEADERXList = new ZMPES6790
                 {
@@ -200,7 +206,7 @@ namespace SustitucionMOAWS.WSConsumers
                 IM_POITEM.QUANTITY = esPosicionDeMateriales ? adjudicacionPosicion.Cantidad : 0;
                 IM_POITEM.QUANTITYSpecified = esPosicionDeMateriales;
                 IM_POITEM.PO_UNIT = unidadDeMedida;
-                IM_POITEM.NET_PRICE = esPosicionDeMateriales ? precioConvertido : CalcularPrecioBrutoServicio(solpPosicion, adjudicacionPosicion);
+                IM_POITEM.NET_PRICE = esPosicionDeMateriales ? precioConvertido : CalcularPrecioBrutoServicio(solpPosicion, adjudicacionPosicion, adjudicacion);
                 IM_POITEM.NET_PRICESpecified = true;
                 IM_POITEM.PRICE_UNIT = 1;
                 IM_POITEM.PRICE_UNITSpecified = true;
@@ -244,7 +250,7 @@ namespace SustitucionMOAWS.WSConsumers
                 IM_POITEM.PREQ_NO = solp.NroSolp;
                 IM_POITEM.PREQ_ITEM = preqItem;
                 IM_POITEM.PCKG_NO = esPosicionDeMateriales ? "" : $"{numeroDePaquete:0000000000}";
-
+           
                 solpPedidoSAP.IM_POITEMList.Add(IM_POITEM);
 
                 solpPedidoSAP.IM_POITEMXList.Add(new ZMPES6810
@@ -290,10 +296,12 @@ namespace SustitucionMOAWS.WSConsumers
                 solpPedidoSAP.IM_POCONDList.Add(new ZMPES6870
                 {
                     ITM_NUMBER = preqItem,  //el número de ítem al que corresponda la condición
-                    COND_TYPE = "ZP01",// siempre va el mismo dato
-                    COND_VALUE = IM_POITEM.NET_PRICE, //el importe de la condición
+                    COND_TYPE = creadoAutomatico ? "ZP01" : "ZP00",
+                    //ZP01 toma los datos del registro info
+                    //ZP00 toma los datos de la adjudicacion
+                    COND_VALUE = IM_POITEM.NET_PRICE, //el importe de la condición
                     COND_VALUESpecified = true,
-                    CURRENCY = adjudicacionPosicion.CotizacionPosicion.Moneda.Codigo,//moneda de la adjudicacion
+                    CURRENCY = adjudicacion.Moneda.Codigo /*adjudicacionPosicion.CotizacionPosicion.Moneda.Codigo*/,//moneda de la adjudicacion
                     CHANGE_ID = "U",// siempra va el mismo valor
 
                 });
@@ -352,6 +360,7 @@ namespace SustitucionMOAWS.WSConsumers
                     TEL1_NUMBR = "",
                     STREET = solpPosicion.CalleEntrega,
                     STREET_NO = "",//no tenemos el campo separado en calle y altura
+                    REGION = adjudicacion.RegionSap.CodigoSap
                 });
 
                 //subposiciones
@@ -386,7 +395,7 @@ namespace SustitucionMOAWS.WSConsumers
                         subposicionSap.UOM_ISO = cotizacionSubPosicion.UnidadDeMedida.Codigo;
                         subposicionSap.PRICE_UNIT = 1;
                         subposicionSap.PRICE_UNITSpecified = true;
-                        subposicionSap.GR_PRICE = cotizacionSubPosicion.Precio.Value;
+                        subposicionSap.GR_PRICE = cotizacionSubPosicion.Precio.Value * obtenerTipoCambioConsumerMOA.Request(fecha.ToString("yyyy-MM-dd"), adjudicacion.Moneda.Codigo, cotizacionSubPosicion.Moneda.Codigo).TipoCambio;                         
                         subposicionSap.GR_PRICESpecified = true;
 
                         solpPedidoSAP.IM_SERVICESList.Add(subposicionSap);
@@ -404,6 +413,20 @@ namespace SustitucionMOAWS.WSConsumers
                     }
                     PCKG_NO++;
                 }
+
+                solpPedidoSAP.IM_POSCHEDULEList.Add(new BAPIMEPOSCHEDULE
+                {
+                    DELIVERY_DATE = SAPFormatter.PrepararFecha(adjudicacionPosicion.PlazoDeEntrega),
+                    PO_ITEM = preqItem,
+                    SCHED_LINE = "1"
+                });
+
+                solpPedidoSAP.IM_POSCHEDULEXList.Add(new BAPIMEPOSCHEDULX
+                {
+                    DELIVERY_DATE = "X",
+                    PO_ITEM = preqItem,
+                    SCHED_LINE = "1"
+                });
             }
 
             var listaVaciaTexto = new string[] { "" };
@@ -435,10 +458,10 @@ namespace SustitucionMOAWS.WSConsumers
 
             }
             solpPedidoSAP.IM_URL = ConfigurationManager.AppSettings["SpaUrl"] + "/verLegajoOrdenDeCompra/" + adjudicacion.Id + "/" + adjudicacion.Token;
-
+           
             return solpPedidoSAP;
         }
-
+   
         private static string ObtenerImputacion(bool esPosicionDeMateriales, SolpPosicion posicion, List<string> tipos)
         {
 
@@ -876,7 +899,26 @@ namespace SustitucionMOAWS.WSConsumers
 
         //    return solpPedidoSAP;
         //}
-        private decimal CalcularPrecioBrutoServicio(SolpPosicion posicion, AdjudicacionPosicion adjudicacionPosicion)
+        private decimal CalcularPrecioBrutoServicio(SolpPosicion posicion, AdjudicacionPosicion adjudicacionPosicion, Adjudicacion adjudicacion)
+        {
+            decimal total = 0;
+            var fecha = DateTime.Now;
+            decimal tipoDeCambio = 1;
+            var moneda = adjudicacionPosicion.CotizacionPosicion.CotizacionSubPosiciones.FirstOrDefault().Moneda.Codigo;
+
+            if (moneda != adjudicacion.Moneda.Codigo)
+            {
+                tipoDeCambio = obtenerTipoCambioConsumerMOA.Request(fecha.ToString("yyyy-MM-dd"), moneda, adjudicacion.Moneda.Codigo).TipoCambio;
+            }
+           
+            foreach (var item in adjudicacionPosicion.CotizacionPosicion.CotizacionSubPosiciones)
+            {               
+                total += item.Cantidad.Value * item.Precio.Value * tipoDeCambio;
+            }
+
+            return total;
+        }
+        private decimal CalcularPrecioBrutoServicioTipoDeCambio(SolpPosicion posicion, AdjudicacionPosicion adjudicacionPosicion)
         {
             decimal total = 0;
 
@@ -887,6 +929,8 @@ namespace SustitucionMOAWS.WSConsumers
 
             return total;
         }
+
+
     }
 
     public class CrearPedidoConsumerMOAResponse
@@ -950,8 +994,10 @@ namespace SustitucionMOAWS.WSConsumers
 
     public interface ICrearPedidoConsumerMOA
     {
-        CrearPedidoConsumerMOAResponse Request(Adjudicacion adjudicacion);
+        CrearPedidoConsumerMOAResponse Request(Adjudicacion adjudicacion, bool creadoAutomatico = false);
 
     }
+
+  
 
 }

@@ -103,7 +103,7 @@ export class CircularComponent implements OnInit, OnChanges {
             clear: 'Borrar'
         }
 
-        this.plazoDeOfertaHora = new Date(1, 1, 1, 10, 0, 0, 0);
+        this.plazoDeOfertaHora = new Date(1, 1, 1, 12, 0, 0, 0);
     }
 
     autocompletarFechaDeEntrega() {

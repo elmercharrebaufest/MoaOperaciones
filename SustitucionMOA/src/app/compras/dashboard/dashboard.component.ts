@@ -15,19 +15,15 @@ import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { EnumTipoSolpSap } from '../enum-tipo-solp-sap';
 import { Paginator } from 'primeng/paginator';
 import { PeticionDeOfertaDto, PeticionDeOfertaRevisionTecnicaDto } from '../../modelos/peticion-de-oferta-model';
-import { forEach } from '@angular/router/src/utils/collection';
 import { AdjudicacionDto, AdjudicacionPosicionDto } from '../../modelos/adjudicacion';
 import { ChatComprasDto } from '../chat-interno/chat-interno.interface';
 
 declare var $: any;
 
-
 @Component({
     selector: 'dashboard',
     templateUrl: `dashboard.component.html`,
-    styleUrls: ['../compras.component.css',
-        './dashboard.component.css']
-
+    styleUrls: ['../compras.component.css', './dashboard.component.css']
 })
 export class DashboardComponent extends ListBaseComponent {
 
@@ -45,7 +41,6 @@ export class DashboardComponent extends ListBaseComponent {
     protected spinnerComponent: SpinnerComponent;
 
     @ViewChild('myCalendar', undefined)
-    private calendar: any;
     nroSolp: string = "";
     sap: boolean = false;
     mantenimiento: boolean = false;
@@ -61,7 +56,6 @@ export class DashboardComponent extends ListBaseComponent {
     public ordenCompra: any;
     public solicitante: boolean = true;
     displayRevisionTecnica: boolean;
-
     displayCircular: boolean = false;
     combos: any;
     usuariosResult: any;
@@ -69,8 +63,73 @@ export class DashboardComponent extends ListBaseComponent {
     ordenDeCompra: any;
     displayOrdenDeCompra: boolean;
     displayChatInterno: boolean = false;
-    chatLeido: boolean = false;
 
+    filtrosSolicitante: {
+        nroSolp: string;
+        sap: boolean;
+        mantenimiento: boolean;
+        web: boolean;
+        repoAutomatica: boolean;
+        usuarios: string[];
+        estadoSolp: string[];
+        fechaDesde: string;
+        fechaHasta: string;
+        pageIndex: number;
+    } = {
+            nroSolp: "",
+            sap: false,
+            mantenimiento: false,
+            web: false,
+            repoAutomatica: false,
+            usuarios: [],
+            estadoSolp: [],
+            fechaDesde: null,
+            fechaHasta: null,
+            pageIndex: 1
+        };
+
+    filteredfechas: any;
+    solpFecha: any = new Array();
+    fechaInicio: string = null;
+    fechaFin: string = null;
+    rangeDates: Date[];
+    tipoFiltroFecha = 1;
+    desdeDashboard: Date;
+    hastaDashboard: Date;
+    estadoSolpItem: SelectItem[];
+    selectEstadoSolp: string[] = [];
+    buscarDashboard: string;
+    fechaSolp: any;
+    hoy: Date = new Date();
+    es: any;
+    display: boolean = false;
+    tablaSolp: any[];
+    tablaSolpCopy: any[];
+    usuarioFiltro: SelectItem[];
+    selectUsuario: string[] = [];
+    cols: any[];
+    serviciosDashboard: any = "Servicios"
+    solp: Solp = new Solp();
+    usuario: string;// = "Prueba";
+    checkedFilterSap = false;
+    checkedFilterMantenimiento = false;
+    checkedFilterWeb = false;
+    verTodas: boolean = this.isAuthorized('VER TODAS SOLPS');
+    public chat: ChatComprasDto;
+
+    cards = [
+        { nombre: "Con documento de pliego", path: "/compras/solp/0", tipoSolp: "CON_PLIEGO" },
+        { nombre: "Sin pliego", path: "/compras/solp/0", tipoSolp: "SIN_PLIEGO" },
+        // { nombre: "Con documentos requerimientos", path: ""},
+        // { nombre: "Sin documento", path: ""},
+        // { nombre: "Emergencia", path: ""},
+        // { nombre: "Adicional", path: ""}
+    ]
+
+    subtitulos = [
+        { nombre: "Servicio y/o Material catalogado y sin catalogar" },
+        { nombre: "Servicio y/o Material catalogado" },
+    ]
 
     constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService, protected route: ActivatedRoute, protected router: Router, private confirmationService: ConfirmationService) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
@@ -86,61 +145,11 @@ export class DashboardComponent extends ListBaseComponent {
             today: 'Hoy',
             clear: 'Borrar'
         };
-
     }
-
-    filteredfechas: any;
-    solpFecha: any = new Array();
-    fechaInicio: any = null;
-    fechaFin: any = null;
-    rangeDates: Date[];
-    tipoFiltroFecha = 1;
-
-    desdeDashboard: Date;
-    hastaDashboard: Date;
-    estadoSolpItem: SelectItem[];
-    selectEstadoSolp: string[] = [];
-    buscarDashboard: string;
-    fechaSolp: any;
-    hoy: Date = new Date();
-    es: any;
-    display: boolean = false;
-    tablaSolp: any[];
-    tablaSolpCopy: any[];
-
-    usuarioFiltro: SelectItem[];
-    selectUsuario: number | null;
-
-    cols: any[];
-    serviciosDashboard: any = "Servicios"
-    solp: Solp = new Solp();
-    usuario: string;// = "Prueba";
-
-    checkedFilterSap = false;
-    checkedFilterMantenimiento = false;
-    checkedFilterWeb = false;
-
-    verTodas: boolean = this.isAuthorized('VER TODAS SOLPS');
-    public chat: ChatComprasDto;
-
 
     showDialog() {
         this.display = true;
     }
-
-    cards = [
-        { nombre: "Con documento de pliego", path: "/compras/solp/0", tipoSolp: "CON_PLIEGO" },
-        { nombre: "Sin pliego", path: "/compras/solp/0", tipoSolp: "SIN_PLIEGO" },
-        // { nombre: "Con documentos requerimientos", path: ""},
-        // { nombre: "Sin documento", path: ""},
-        // { nombre: "Emergencia", path: ""},
-        // { nombre: "Adicional", path: ""}
-    ]
-
-    subtitulos = [
-        { nombre: "Servicio y/o Material catalogado y sin catalogar" },
-        { nombre: "Servicio y/o Material catalogado" },
-    ]
 
     goToSeccion(path: string) {
         $("#mySidenav").css({ 'right': '-270px' });
@@ -174,11 +183,16 @@ export class DashboardComponent extends ListBaseComponent {
     }
 
     ngOnInit() {
+        this.recuperarFiltros();
+        this.listarUsuarioCreadorSolp();
         this.navService.setSeccionList([]);
-        this.getListarSolp();
 
         this.desdeDashboard = new Date();
         this.hastaDashboard = new Date();
+    }
+
+    ngAfterViewInit(): void {
+        this.getCombos();
     }
 
     returnToTodaysDate() {
@@ -193,20 +207,18 @@ export class DashboardComponent extends ListBaseComponent {
         if (this.rangeDates[0] && this.rangeDates[1] == null) {
             let d = new Date(Date.parse(event));
             this.fechaInicio = `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
+            this.fechaFin = '';
         } else {
             let d = new Date(Date.parse(event));
             this.fechaFin = `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
-            if (this.rangeDates[1]) { // If second date is selected
-                this.calendar.overlayVisible = false;
-            }
         }
     }
 
-    listarExpand() { 
+    listarExpand() {
         setTimeout(() => {
             $('[id^="ui-tabpanel-"]').css('padding', '0');
             $('[id^="ui-tabpanel-"]').css('transition', 'none').css('animation', 'none');
-        }, 0.01);        
+        }, 0.01);
     }
 
     filtrarPorSap() {
@@ -271,10 +283,6 @@ export class DashboardComponent extends ListBaseComponent {
         }
     }
 
-    ngAfterViewInit(): void {
-        this.getCombos();
-    }
-
     getStatusDocumentoSolp(data: any): String {
         return data.PosicionesEstado && data.NroSolp != null ? 'Borrado en sap' : data.EstadoSolpSap.Descripcion;
     }
@@ -288,7 +296,7 @@ export class DashboardComponent extends ListBaseComponent {
             this.spinnerComponent.showIt();
             let multiSelectValues = this.selectEstadoSolp.join(",")
             this.subscription = this.service.getListarSolp(this.pageIndex, this.pageSize, this.orden, this.columnaOrden, this.nroSolp,
-            this.fechaInicio, this.fechaFin, this.sap, this.mantenimiento, this.web, this.repoAutomatica, multiSelectValues, this.selectUsuario
+                this.fechaInicio, this.fechaFin, this.sap, this.mantenimiento, this.web, this.repoAutomatica, multiSelectValues, this.selectUsuario.join(",")
             ).subscribe(
                 (result: any) => {
 
@@ -312,6 +320,7 @@ export class DashboardComponent extends ListBaseComponent {
                         this.length = result.data.length > 0 ? result.data[0].ItemsTotales : 0;
                         this.pageSize = result.data.length > 0 ? result.data[0].ItemPorPagina : 10;
                         this.pageIndex = result.data.length > 0 ? result.data[0].Pagina : 1;
+                        this.paginator.first = this.pageIndex * this.pageSize - this.pageSize;
                     }
                 },
                 error => {
@@ -374,7 +383,7 @@ export class DashboardComponent extends ListBaseComponent {
                             label: cd.Descripcion, value: cd.Id
                         }));
                         result.Usuarios.forEach(x => x.forEach(d => this.usuarioFiltro.push({
-                            label: d.Mail, value: d.Id
+                            label: d.Id === 0 ? "" : d.Mail, value: d.Id
                         })))
                     }
                 },
@@ -388,8 +397,34 @@ export class DashboardComponent extends ListBaseComponent {
             return false; //<-- Prevent Refresh
         }
 
-        return false; //<-- Prevent Refresh
+        return false;
+    }
 
+    listarUsuarioCreadorSolp() {
+        try {
+            this.subscription = this.service.listarUsuarioCreadorSolp().subscribe(
+                (result: any) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.floatMsgService.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.floatMsgService.setInfoMsg(result.info);
+                    } else {
+                        result.data.forEach(x => x.forEach(x => {
+                            if (x.Id == sessionStorage.getItem("usuarioId") && this.selectUsuario.length === 0 && !this.selectUsuario.includes(x.Id))
+                                this.selectUsuario.push(x.Id);
+                        }));
+                        this.getListarSolp();
+                    }
+                },
+                error => { this.floatMsgService.setErrorMsg(error.message); }
+            );
+        } catch (e) {
+            this.floatMsgService.setErrorMsg(e);
+            return false;
+        }
+        return false;
     }
 
     eliminarPosicionDashboard(idSolp) {
@@ -509,8 +544,12 @@ export class DashboardComponent extends ListBaseComponent {
     handlePageEvent(e: any) {
         this.pageSize = e.rows;
         this.pageIndex = e.page + 1;
+        this.filtrosSolicitante = {
+            ...this.filtrosSolicitante,
+            pageIndex: this.pageIndex
+        };
+        sessionStorage.setItem('filtrosSolicitante', JSON.stringify(this.filtrosSolicitante));
         this.getListarSolp()
-
     }
 
     obtenerPeticionDeOferta(Id) {
@@ -557,6 +596,7 @@ export class DashboardComponent extends ListBaseComponent {
 
     cerrarModalRevisionTecnica() {
         this.displayRevisionTecnica = false;
+        this.onBuscar();
     }
 
     descargarArchivo({ archivoId }) {
@@ -635,7 +675,7 @@ export class DashboardComponent extends ListBaseComponent {
                         this.sessionDataService.logout();
                     }
                     else {
-                        if (result) {}
+                        if (result) { }
                         this.displayRevisionTecnica = false;
                         this.blockUI.stop();
                     }
@@ -649,16 +689,29 @@ export class DashboardComponent extends ListBaseComponent {
 
     cerrarCircular() {
         this.displayCircular = false;
+        this.onBuscar();
     }
 
     onBuscar() {
-        this.paginator.changePage(0);
         this.pageIndex = 1;
+        this.filtrosSolicitante.nroSolp = this.nroSolp;
+        this.filtrosSolicitante.sap = this.sap;
+        this.filtrosSolicitante.mantenimiento = this.mantenimiento;
+        this.filtrosSolicitante.web = this.web;
+        this.filtrosSolicitante.repoAutomatica = this.repoAutomatica;
+        this.filtrosSolicitante.usuarios = this.selectUsuario;
+        this.filtrosSolicitante.estadoSolp = this.selectEstadoSolp;
+        this.filtrosSolicitante.fechaDesde = this.fechaInicio;
+        this.filtrosSolicitante.fechaHasta = this.fechaFin;
+        this.paginator.changePage(0);
         this.getListarSolp();
+        sessionStorage.setItem('filtrosSolicitante', JSON.stringify(this.filtrosSolicitante));
     }
 
     cerrarOrdenDeCompra() {
         this.displayOrdenDeCompra = false;
+        this.onBuscar();
+
     }
 
     verDetalleOrdenDeCompra(nroOC: any) {
@@ -751,46 +804,75 @@ export class DashboardComponent extends ListBaseComponent {
         });
     }
 
-    obtenerPeticionDeOfertaParaChat(Id) {
+    obtenerChatExterno(rowData) {
         try {
+            this.blockUI.start('Cargando ');
             this.displayChatInterno = false;
-            this.subscription = this.service.obtenerChat(Id)
-              .subscribe(
-                (result: any) => {
-                    if (result.logout == true) {
-                        this.sessionDataService.logout();
-                    } else if (result.error != undefined && result.error != "") {
-                        this.floatMsgService.setErrorMsg(result.error);
-                    } else if (result.info != undefined) {
-                        this.floatMsgService.setInfoMsg(result.info);
-                    } else {
-                        result.Mensajes = result.Mensajes.map((x) => {
-                            x.FechaEnvioDate = new Date(
-                                this.getDateFromAspNetFormat(x.FechaEnvioDate)                                
-                            );   
-                            return x;
-                        });
-                        result.FechaCreacionDate = new Date(
-                            this.getDateFromAspNetFormat(result.FechaCreacionDate)                                
-                        );   
-                        this.chat = result;
-                        this.displayChatInterno = true;
-                        this.chatLeido = true;
-                    };
-                },
-                (error) => {
-                  this.floatMsgService.setErrorMsg(error.message);
-              }
-          );
-      } catch (e) {
-          this.floatMsgService.setErrorMsg(e);
-          return false; //<-- Prevent Refresh
-      }
-      return false; //<-- Prevent Refresh
+            rowData.ChatSinLeer = false;
+            this.subscription = this.service.obtenerChat(rowData.Id)
+                .subscribe(
+                    (result: any) => {
+                        this.blockUI.stop();
+                        if (result.logout == true) {
+                            this.sessionDataService.logout();
+                        } else if (result.error != undefined && result.error != "") {
+                            this.floatMsgService.setErrorMsg(result.error);
+                        } else if (result.info != undefined) {
+                            this.floatMsgService.setInfoMsg(result.info);
+                        } else {
+                            result.Mensajes = result.Mensajes.map((x) => {
+                                x.FechaEnvioDate = new Date(
+                                    this.getDateFromAspNetFormat(x.FechaEnvioDate)
+                                );
+                                return x;
+                            });
+                            result.FechaCreacionDate = new Date(
+                                this.getDateFromAspNetFormat(result.FechaCreacionDate)
+                            );
+                            this.chat = result;
+                            this.displayChatInterno = true;
+                        };
+                    },
+                    (error) => {
+                        this.blockUI.stop();
+                        this.floatMsgService.setErrorMsg(error.message);
+                    }
+                );
+        } catch (e) {
+            this.blockUI.stop();
+            this.floatMsgService.setErrorMsg(e);
+            return false; //<-- Prevent Refresh
+        }
+        return false; //<-- Prevent Refresh
     }
 
     cerrarModalChat() {
         this.displayChatInterno = false;
+        this.onBuscar();
     }
 
+    recuperarFiltros() {
+        const filtrosGuardados = JSON.parse(sessionStorage.getItem('filtrosSolicitante'));
+        if (filtrosGuardados) {
+            this.nroSolp = filtrosGuardados.nroSolp;
+            this.sap = filtrosGuardados.sap;
+            this.mantenimiento = filtrosGuardados.mantenimiento;
+            this.web = filtrosGuardados.web;
+            this.repoAutomatica = filtrosGuardados.repoAutomatica;
+            this.selectUsuario = filtrosGuardados.usuarios;
+            this.selectEstadoSolp = filtrosGuardados.estadoSolp;
+            this.fechaInicio = filtrosGuardados.fechaDesde;
+            this.fechaFin = filtrosGuardados.fechaHasta;
+            this.pageIndex = filtrosGuardados.pageIndex;
+            if (this.fechaInicio != undefined && this.fechaInicio.length > 0) {
+                const [year, month, day] = this.fechaInicio.split('-').map(Number); //se maneja el cambio de día incorrecto por la zona horaria local
+                if (this.fechaFin != undefined && this.fechaFin.length > 0) {
+                    const [year2, month2, day2] = this.fechaFin.split('-').map(Number);
+                    this.rangeDates = [new Date(year, month - 1, day), new Date(year2, month2 - 1, day2)];
+                } else {
+                    this.rangeDates = [new Date(year, month - 1, day)];
+                }
+            }
+        }
+    }
 }

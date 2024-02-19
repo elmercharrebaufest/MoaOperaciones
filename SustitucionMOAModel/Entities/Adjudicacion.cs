@@ -21,6 +21,7 @@ namespace SustitucionMOAModel.Entities
         public string CondicionesDePago { get; set; }
         public string Garantias { get; set; }
         public string Token { get; set; }
+        public int RegionSap_Id { get; set; }
 
         [ForeignKey("UsuarioCreador_Id")]
         public virtual Usuario Usuario { get; set; }
@@ -37,5 +38,8 @@ namespace SustitucionMOAModel.Entities
         [ForeignKey("Moneda_Id")]
         public virtual TablaSap Moneda { get; set; }
         public DateTime? FechaLiberacionSap { get; set; }
+        
+        [ForeignKey("RegionSap_Id")]
+        public virtual RegionSap RegionSap { get; set; }
     }
 }

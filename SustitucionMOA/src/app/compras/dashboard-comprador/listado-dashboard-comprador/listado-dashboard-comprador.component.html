@@ -5,43 +5,65 @@
     <br>
 </section>
 <div style="padding-top: 0px !important;">
-    <spinner></spinner>
     <div class="row">
-        <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
+        <div class="col-md-3 col-lg-3">
             <p-multiSelect [options]="usuarioFiltro" [(ngModel)]="selectUsuario" defaultLabel="Usuario Solicitante"
                            [maxSelectedLabels]="1" selectedItemsLabel="{0} usuarios elegidos"></p-multiSelect>
         </div>
-        <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
+        <div class="col-md-3 col-lg-3">
             <p-multiSelect [options]="estadoSolpItem" [(ngModel)]="selectEstadoSolp" defaultLabel="Estado SOLP"
                            selectedItemsLabel="{0} estados elegidos"></p-multiSelect>
         </div>
-        <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
+        <div class="col-md-3 col-lg-3">
             <p-multiSelect [options]="grupoComprasFiltro" [(ngModel)]="selectGrupoCompras"
                            defaultLabel="Grupo de Compras" [maxSelectedLabels]="1"
                            selectedItemsLabel="{0} grupos de compras"></p-multiSelect>
         </div>
-        <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3" style="padding-right: 30px;">
+        <div class="col-md-3 col-lg-3" style="padding-right: 30px;">
             <p-multiSelect [options]="centroFiltro" [(ngModel)]="selectCentro" defaultLabel="Centro"
                            [maxSelectedLabels]="2" selectedItemsLabel="{0} centros elegidos"></p-multiSelect>
         </div>
         <div class="row myRow">
-            <div class="form-group col-md-3">
+            <div class="col-md-3">
                 <input class="col-xs-12 col-sm-12 col-md-12 col-lg-12" pInputText type="text" [(ngModel)]="nroSolp"
                        placeholder="Buscar por número de SOLP">
             </div>
-            <div class="form-group col-md-3" style="text-align: center;">
+            <div class="col-md-3 col-lg-3">
+                <p-calendar showButtonBar="true" [showIcon]="true" placeholder="Buscar por fechas"
+                            dateFormat="dd/mm/yy" (onSelect)="onSelect($event)" appendTo="body"
+                            [(ngModel)]="rangeDates" selectionMode="range" [readonlyInput]="true" [locale]="locale"
+                            (onClearClick)="returnToTodaysDate()">
+                </p-calendar>
+            </div>
+            <div class="col-md-4 col-lg-3" style="margin-top: 10px;">
+                <span style="margin-top: 1px;padding-right: 1px;">
+                    <p-checkbox class="checkboxFechas" binary="true" label="SAP" [(ngModel)]="sap"></p-checkbox>
+                </span>
+                <span class="padding1" style="margin-right: 5px; margin-left: 5px;">
+                    <p-checkbox class="checkboxFechas" binary="true" label="OT" pTooltip="Mantenimiento"
+                                [(ngModel)]="mantenimiento"></p-checkbox>
+                </span>
+                <span class="padding1" style="margin-right: 5px;">
+                    <p-checkbox class="checkboxFechas" binary="true" label="Web" [(ngModel)]="web"></p-checkbox>
+                </span>
+                <span class="padding1" style="margin-right: 5px;">
+                    <p-checkbox class="checkboxFechas" binary="true" label="Repo. Autom." pTooltip="Reposición Automática"
+                                [(ngModel)]="repoAutomatica"></p-checkbox>
+                </span>
+            </div>
+            <div class="col-md-3" style="text-align: center; padding-right: 30px;">
                 <button class="btn buscar" (click)="onBuscar()">Buscar</button>
             </div>
         </div>
     </div>
-
-    <div class="col-sm-12 col-md-12 col-lg-12" style="margin-left: -15px; width: 100% !important;">
+    <spinner></spinner>
+    <div class="col-sm-12 col-md-12 col-lg-12" style="margin-left: -15px; width: 100% !important; padding-top: 10px;">
         <p-table #tabla [value]="tablaSolp" responsiveLayout="scroll | stack" dataKey="Id">
             <ng-template pTemplate="header" let-columns>
                 <tr>
                     <th style="width: 40px"></th>
-                    <th data-toggle="tooltip" title="Acciones SOLP" style="width: 50px"></th>
-                    <th class="headerth" title="Numero SOLP" (click)="onOrder('NroSolp')" style="width: 85px">
+                    <th data-toggle="tooltip" title="Acciones SOLP" style="width: 65px"></th>
+                    <th class="headerth" title="Numero SOLP" (click)="onOrder('NroSolp')" style="width: 80px">
                         Nro SOLP
                         <span>
                             <i [ngClass]="{'fa': true, 'fa-solid fa-sort-up': true, 'arrow': true, 'unselected': columnaOrden === 'NroSolp' && orden == 'DESC'  }"></i>
@@ -115,7 +137,7 @@
                             <i [ngClass]="{'fa': true, 'fa-solid fa-sort-down': true, 'arrow': true, 'unselected': columnaOrden === 'EstadoSolpSap.Descripcion' && orden == 'ASC' }"></i>
                         </span>
                     </th>
-                    <th data-toggle="tooltip" colspan="2" style="width: 90px;">
+                    <th data-toggle="tooltip" colspan="2" style="width: 80px;">
 
                     </th>
                 </tr>
@@ -130,7 +152,7 @@
                     </td>
                     <td class="col-lg-12 col-md-12 col-sm-12" style="padding-left: 0px; padding-right: 0px;">
                         <div *ngIf="rowData.Urgencia" class="col-md-2">
-                            <span data-toggle="tooltip" title="Solp Urgencia">
+                            <span data-toggle="tooltip" title="Urgencia">
                                 <i class="pi pi-exclamation-triangle" style="color: red; font-size: 3rem"></i>
                             </span>
                         </div>
@@ -152,11 +174,17 @@
                                      style="height: 30px; cursor:default" />
                             </span>
                         </div>
-                        <div class="col-md-2"
-                             *ngIf="rowData.TipoSolp.Codigo == 'CON_PLIEGO' || (rowData.TipoSolp.Codigo == 'SIN_PLIEGO' && rowData.SolpConAdjuntos)">
+                        <div class="col-md-2" *ngIf="rowData.TipoSolp.Codigo == 'CON_PLIEGO' || rowData.SolpConAdjuntos">
                             <span>
                                 <img class="pointer" src="./Content/images/icons/descargar.svg" alt="descargar"
                                      (click)="generarZipPliego(rowData.Id)" />
+                            </span>
+                        </div>
+                        <div class="col-md-2">
+                            <span>
+                                <img class="pointer" src="./Content/images/icons/chat.svg" alt="chat"
+                                     (click)="obtenerChatExterno(rowData)" style="height: 30px;" />
+                                <div class="punto-rojo" *ngIf="rowData.ChatSinLeer == true"></div>
                             </span>
                         </div>
                     </td>
@@ -193,7 +221,7 @@
                     <td colspan="2" class="columna" style="text-align: center;">
                         <button *ngIf="rowData.VerPublicar"
                                 class="publicar btn btn-success" style="font-size: 12px;"
-                                (click)="publicarCotizacion(rowData.Id)">
+                                (click)="publicarCotizacion(rowData.Id, rowData.NroSolp)">
                             Publicar
                         </button>
                     </td>
@@ -231,13 +259,8 @@
                                                 <td id="agregarProveedor">
                                                     <div>
                                                         <span *ngIf="(rowData.Adicional == null || rowData.TrabajoYaHecho == null) && (rowData.Adicional == null && rowData.TrabajoYaHecho == null)">
-                                                            <img class="pointer" src="./Content/images/icons/agregar-proveedor.svg" alt="Editar"
-                                                                 (click)="obtenerPeticionDeOfertaParaProveedor(licitacion.Id)" />
-                                                        </span>
-                                                        <span style="margin-left: 10px;">
-                                                            <img class="pointer" src="./Content/images/icons/chat.svg" alt="chat"
-                                                                 (click)="obtenerPeticionDeOfertaParaChat(licitacion.Id)" />
-                                                            <div class="punto-rojo" *ngIf="licitacion.ChatSinLeer == true && chatLeido == false"></div>
+                                                            <img class="pointer" src="./Content/images/icons/add-user.svg" title="Agregar proveedor"
+                                                                 (click)="obtenerPeticionDeOfertaParaProveedor(licitacion.Id)" style="height: 30px;" />
                                                         </span>
                                                     </div>
                                                 </td>
@@ -247,7 +270,7 @@
                                                 </td>
                                                 <td class="columna">
                                                     {{licitacion.RecotizacionEconomica == true ? 'Si' : 'No'}}
-                                                </td>                                                
+                                                </td>
                                                 <td class="columna" [style.color]="licitacion.EstadoColor">{{licitacion.Estado}}</td>
                                                 <td class="columna">
                                                     <button class="publicar btn " style="margin-right: 10px;" (click)="verLegajo(licitacion.Id)">
@@ -299,7 +322,7 @@
                                         <ng-template pTemplate="body" let-orden>
                                             <tr>
                                                 <td class="columna">{{orden.NumeroOrdenDeCompra}}</td>
-                                                <td class="columna">{{orden.FechaCreacion | customDateFormat | date :'d/M/yyyy HH:mm' }}</td>
+                                                <td class="columna">{{orden.FechaCreacion | customDateFormat | date :'d/M/yyyy' }}</td>
                                                 <td class="columna">{{orden.Proveedor}}</td>
                                                 <td class="columna">{{orden.PrecioFinal | number:'1.2-2'}}</td>
                                                 <td class="columna">{{orden.PrecioBruto | number:'1.2-2'}}</td>
@@ -330,7 +353,9 @@
                 [(legajo)]="legajo">
     </app-legajo>
 
-    <app-circular [(locale)]="es" [(displayCircular)]="displayCircular" (cerrarCircularEmitter)="cerrarCircular()"
+    <app-circular [(locale)]="es" 
+                  [(displayCircular)]="displayCircular" 
+                  (cerrarCircularEmitter)="cerrarCircular()"
                   [(peticion)]="peticion">
     </app-circular>
 

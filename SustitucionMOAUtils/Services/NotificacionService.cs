@@ -46,7 +46,7 @@ namespace SustitucionMOAUtils.Services
 
         private string ValidarNotificacion(Notificacion notificacion)
         {
-       
+
             if (repositorio.Existe<Notificacion>(n => n.Nombre == notificacion.Nombre && n.Id != notificacion.Id))
             {
                 return "Ya existe una notificación con el mismo nombre";
@@ -163,7 +163,7 @@ namespace SustitucionMOAUtils.Services
                 && DateTime.Now <= n.FechaFin)
             .AsEnumerable()
             .Where(n => n.FiltroRoles.Any(x => usuario.Roles.Any(y => y.Id == x.Id))
-                
+
             ).Select(x => new NotificacionDto
             {
                 Id = x.Id,
@@ -184,11 +184,11 @@ namespace SustitucionMOAUtils.Services
                 var chatSinLeer = repositorio.Listar<ChatInternoCompras, NotificacionDto>(
                     x => new NotificacionDto
                     {
-                        Id = x.PeticionDeOferta_Id,
-                        Mensaje = "Tiene un mensaje sin leer de la SOLP #" + x.PeticionDeOferta.Solp.NroSolp
+                        Id = x.Solp_Id,
+                        Mensaje = "Tiene un mensaje sin leer de la SOLP #" + x.Solp.NroSolp
                     },
                     x =>
-                    (x.PeticionDeOferta.UsuarioCreador_Id == usuario.Id || x.PeticionDeOferta.Solp.UsuarioCreacion_Id == usuario.Id || x.PeticionDeOferta.Solp.UsuarioModificacion_Id == usuario.Id)
+                    (x.Solp.PeticionesDeOferta.Any(p => p.UsuarioCreador_Id == usuario.Id) || x.Solp.UsuarioCreacion_Id == usuario.Id || x.Solp.UsuarioModificacion_Id == usuario.Id)
                     //&& x.Usuario_Id != usuario.Id
                     && x.Usuario.Roles.Any(r => r.Codigo == rol)
                     && x.Leido == false
@@ -196,8 +196,8 @@ namespace SustitucionMOAUtils.Services
 
                 listado.AddRange(chatSinLeer);
             }
-           
-           
+
+
             return listado;
         }
 

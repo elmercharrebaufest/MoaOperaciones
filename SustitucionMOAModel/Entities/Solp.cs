@@ -62,10 +62,16 @@ namespace SustitucionMOAModel.Entities
 
         [InverseProperty("Solp")]
 
-        public virtual ICollection<Adjudicacion> Adjudicacions { get; set; } = new List<Adjudicacion>();
+        public virtual ICollection<Adjudicacion> Adjudicaciones { get; set; } = new List<Adjudicacion>();
 
         [InverseProperty("Solp")]
         public virtual ICollection<PeticionDeOferta> PeticionesDeOferta { get; set; } = new List<PeticionDeOferta>();
+
+        [InverseProperty("Solp")]
+        public virtual ICollection<LiberadorSapSolp> LiberadoresSapSolp { get; set; } = new List<LiberadorSapSolp>();
+
+        [InverseProperty("Solp")]
+        public virtual ICollection<ChatInternoCompras> ChatInternoCompras { get; set; } = new List<ChatInternoCompras>();
 
     }
 }

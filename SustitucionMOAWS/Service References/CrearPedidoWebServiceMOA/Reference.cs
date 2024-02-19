@@ -5082,6 +5082,8 @@ namespace SustitucionMOAWS.CrearPedidoWebServiceMOA {
         
         private string tEL1_NUMBRField;
         
+        private string rEGIONField;
+        
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=0)]
         public string PO_ITEM {
@@ -5175,6 +5177,18 @@ namespace SustitucionMOAWS.CrearPedidoWebServiceMOA {
             set {
                 this.tEL1_NUMBRField = value;
                 this.RaisePropertyChanged("TEL1_NUMBR");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=8)]
+        public string REGION {
+            get {
+                return this.rEGIONField;
+            }
+            set {
+                this.rEGIONField = value;
+                this.RaisePropertyChanged("REGION");
             }
         }
         

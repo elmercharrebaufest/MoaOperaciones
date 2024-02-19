@@ -98,7 +98,6 @@ namespace SustitucionMOAModel.Dto
         public bool? TieneVisitaObraBool { get; set; }
         public bool RevisionFinalizada { get; set; }
         public bool VerBotonVerPrecio { get; set; }
-        public bool ChatSinLeer { get; set; }
         public bool RecotizacionEconomica { get; set; }
         public PeticionDeOfertaRevisionTecnicaDto RevisionTecnica { get; set; }
         public List<PeticionDeOfertaUsuarioAdicionalDto> UsuariosAdicionales { get; set; }
@@ -117,6 +116,7 @@ namespace SustitucionMOAModel.Dto
         public SolpPosicionDto Posiciones { get; set; }
         public int SolpId { get; set; }
         public SolpPosicionDto PosicionPeticion { get; set; }
+        public bool EstaEliminado { get; set; }
     }
 
     public class PeticionDeOfertaUsarioDto
@@ -147,6 +147,7 @@ namespace SustitucionMOAModel.Dto
         public DateTime? PlazoDeOfertaCircular { get; set; }
         public DateTime? PlazoDeOfertaCierre { get; set; }
         public DateTime? FechaCircular { get; set; }
+        public string CodigoProveedor { get; set; }
     }
 
     public class PeticionDeOfertaCierreDto

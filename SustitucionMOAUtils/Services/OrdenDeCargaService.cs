@@ -666,6 +666,7 @@ namespace SustitucionMOAUtils.Services
                 EstadoOrdenDeCarga.ContratoVencido,
                 EstadoOrdenDeCarga.EntregaGenerada,
                 EstadoOrdenDeCarga.EntregaPendiente,
+                EstadoOrdenDeCarga.PendienteCompensacion,
                 EstadoOrdenDeCarga.PendienteAprobacionCredito,
                 EstadoOrdenDeCarga.Vencida,
                 EstadoOrdenDeCarga.EdicionSolicitada,

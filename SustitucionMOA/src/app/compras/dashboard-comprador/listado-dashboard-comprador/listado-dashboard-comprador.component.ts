@@ -42,6 +42,7 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
     sap: boolean = false;
     mantenimiento: boolean = false;
     web: boolean = false;
+    repoAutomatica: boolean = false;
     orden: string;
     columnaOrden: string;
     length = 0;
@@ -73,17 +74,38 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
     selectCentro: string[] = [];
     usuariosResult: any;
     displayChatInterno: boolean = false;
-    chatLeido: boolean = false;
     public chat: ChatComprasDto;
-
-
-    constructor(protected service: ComprasService, protected navService: NavService,
-        protected sessionDataService: SessionDataService, protected securityService: SecurityService,
-        protected floatMsgService: FloatMsgService, protected modalService: ModalService,
-        protected route: ActivatedRoute, protected router: Router) {
-        super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
-        this.usuario = sessionStorage.getItem("username"); this.onBuscar();
-    }
+    tratada: any;
+    fechaDesde: string = null;
+    fechaHasta: string = null;
+    rangeDates: Date[];
+    filtrosComprador: {
+        nroSolp: string;
+        sap: boolean;
+        mantenimiento: boolean;
+        web: boolean;
+        repoAutomatica: boolean;
+        usuarios: string[];
+        estadoSolp: string[];
+        gruposCompras: string[];
+        centros: string[];
+        fechaDesde: string;
+        fechaHasta: string;
+        pageIndex: number;
+    } = {
+            nroSolp: "",
+            sap: false,
+            mantenimiento: false,
+            web: false,
+            repoAutomatica: false,
+            usuarios: [],
+            estadoSolp: [],
+            gruposCompras: [],
+            centros: [],
+            fechaDesde: null,
+            fechaHasta: null,
+            pageIndex: 1
+        };
 
     tablaSolp: any[];
     tablaSolpCopy: any[];
@@ -96,7 +118,25 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
     verTodas: boolean = this.isAuthorized('VER TODAS SOLPS');
     displayCerrarCotizacion: boolean;
 
+    constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService,
+        protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService,
+        protected route: ActivatedRoute, protected router: Router) {
+        super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
+        this.usuario = sessionStorage.getItem("username"); this.recuperarFiltros(); this.listarSolp();
+        this.locale = {
+            firstDayOfWeek: 0,
+            dayNames: ["Domingo", "Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado"],
+            dayNamesShort: ["Dom", "Lun", "Mar", "Mie", "Jue", "Vie", "Sab"],
+            dayNamesMin: ["Do", "Lu", "Ma", "Mi", "Ju", "Vi", "Sa"],
+            monthNames: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"],
+            monthNamesShort: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"],
+            today: 'Hoy',
+            clear: 'Borrar'
+        };
+    }
+
     ngOnInit() {
+        this.recuperarFiltros();
         this.getListarSolp();
     }
 
@@ -108,11 +148,11 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
         this.subscripcionSolp.unsubscribe();
     }
 
-    listarExpand() { 
+    listarExpand() {
         setTimeout(() => {
             $('[id^="ui-tabpanel-"]').css('padding', '0');
             $('[id^="ui-tabpanel-"]').css('transition', 'none').css('animation', 'none');
-        }, 0.01);        
+        }, 0.01);
     }
 
     getListarSolp() {
@@ -132,6 +172,7 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
                         this.length = result.data.length > 0 ? result.data[0].ItemsTotales : result.data.length;
                         this.pageSize = result.data.length > 0 ? result.data[0].ItemPorPagina : 10;
                         this.pageIndex = result.data.length > 0 ? result.data[0].Pagina : 1;
+                        this.paginator.first = this.pageIndex * this.pageSize - this.pageSize;
                     }
                     this.spinnerComponent.hideIt()
                 },
@@ -151,9 +192,8 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
 
     listarSolp() {
         this.spinnerComponent.showIt();
-        this.service.getListarSolpCompras(this.pageIndex, this.pageSize, this.orden, this.columnaOrden, this.nroSolp, this.selectEstadoSolp.join(","),
-            this.selectUsuario.join(","), this.selectCentro.join(","), this.selectGrupoCompras.join(","));
-
+        this.service.getListarSolpCompras(this.pageIndex, this.pageSize, this.orden, this.columnaOrden, this.nroSolp, this.selectEstadoSolp.join(","), this.selectUsuario.join(","),
+            this.selectCentro.join(","), this.selectGrupoCompras.join(","), this.fechaDesde, this.fechaHasta, this.sap, this.mantenimiento, this.web, this.repoAutomatica);
     }
 
     onOrder(columna: string) {
@@ -169,8 +209,12 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
     handlePageEvent(e: any) {
         this.pageSize = e.rows;
         this.pageIndex = e.page + 1;
+        this.filtrosComprador = {
+            ...this.filtrosComprador,
+            pageIndex: this.pageIndex
+        };
+        sessionStorage.setItem('filtrosComprador', JSON.stringify(this.filtrosComprador));
         this.listarSolp();
-
     }
 
     generarZipPliego(idSolp) {
@@ -240,8 +284,6 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
     cerrarLegajo() {
         this.displayLegajo = false;
     }
-
-   
 
     private downloadArchivoLocal(blob: Blob, nombreArchivo: string): void {
         if (window.navigator.msSaveOrOpenBlob) {
@@ -331,8 +373,30 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
             )
     }
 
-    publicarCotizacion(Id: string) {
-        this.goToSeccionParam('/compras/peticion-de-oferta-formulario', Id);
+    publicarCotizacion(Id: string, nroSolp: string) {
+        this.blockUI.start('Cargando...');
+        this.service.validarSolpTratada(nroSolp)
+            .subscribe(
+                (result) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    }
+                    else {
+                        if (result) {
+                            this.floatMsgService.setErrorMsg("No se puede crear una nueva PO porque la SOLP fue tratada desde SAP");
+                        } else {
+                            this.goToSeccionParam('/compras/peticion-de-oferta-formulario', Id);
+                        }
+                        this.blockUI.stop();
+                    }
+                },
+                (error) => {
+                    this.blockUI.stop();
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+            )
+
+
     }
 
     onRowDblClick(a, b) {
@@ -387,10 +451,12 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
 
     cerrarCircular() {
         this.displayCircular = false;
+        this.onBuscar();
     }
 
     cerrarModalProveedor() {
         this.displayProveedor = false;
+        this.onBuscar();
     }
 
     cerrarOrdenDeCompra() {
@@ -525,51 +591,56 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
             )
     }
 
-
-    obtenerPeticionDeOfertaParaChat(Id) {
+    obtenerChatExterno(rowData) {
         try {
+            this.blockUI.start('Cargando ');
             this.displayChatInterno = false;
-            this.subscription = this.service.obtenerChat(Id)
-              .subscribe(
-                (result: any) => {
-                    if (result.logout == true) {
-                        this.sessionDataService.logout();
-                    } else if (result.error != undefined && result.error != "") {
-                        this.floatMsgService.setErrorMsg(result.error);
-                    } else if (result.info != undefined) {
-                        this.floatMsgService.setInfoMsg(result.info);
-                    } else {
-                        result.Mensajes = result.Mensajes.map((x) => {
-                            x.FechaEnvioDate = new Date(
-                                this.getDateFromAspNetFormat(x.FechaEnvioDate)                                
-                            );   
-                            return x;
-                        });
-                        result.FechaCreacionDate = new Date(
-                            this.getDateFromAspNetFormat(result.FechaCreacionDate)                                
-                        );   
-                        this.chat = result;
-                        this.displayChatInterno = true;
-                        this.chatLeido = true;
-                    };
-                },
-                (error) => {
-                  this.floatMsgService.setErrorMsg(error.message);
-              }
-          );
-      } catch (e) {
-          this.floatMsgService.setErrorMsg(e);
-          return false; //<-- Prevent Refresh
-      }
-      return false; //<-- Prevent Refresh
+            rowData.ChatSinLeer = false;
+            this.subscription = this.service.obtenerChat(rowData.Id)
+                .subscribe(
+                    (result: any) => {
+                        this.blockUI.stop();
+                        if (result.logout == true) {
+                            this.sessionDataService.logout();
+                        } else if (result.error != undefined && result.error != "") {
+                            this.floatMsgService.setErrorMsg(result.error);
+                        } else if (result.info != undefined) {
+                            this.floatMsgService.setInfoMsg(result.info);
+                        } else {
+                            result.Mensajes = result.Mensajes.map((x) => {
+                                x.FechaEnvioDate = new Date(
+                                    this.getDateFromAspNetFormat(x.FechaEnvioDate)
+                                );
+                                return x;
+                            });
+                            result.FechaCreacionDate = new Date(
+                                this.getDateFromAspNetFormat(result.FechaCreacionDate)
+                            );
+                            this.chat = result;
+                            this.displayChatInterno = true;
+                        };
+                    },
+                    (error) => {
+                        this.blockUI.stop();
+                        this.floatMsgService.setErrorMsg(error.message);
+                    }
+                );
+        } catch (e) {
+            this.blockUI.stop();
+            this.floatMsgService.setErrorMsg(e);
+            return false; //<-- Prevent Refresh
+        }
+        return false; //<-- Prevent Refresh
     }
 
     cerrarModalCotizacion() {
         this.displayCerrarCotizacion = false;
+        this.onBuscar();
     }
 
     cerrarModalChat() {
         this.displayChatInterno = false;
+        this.onBuscar();
     }
 
     getCombos() {
@@ -594,10 +665,10 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
                         result.Usuarios.forEach(x => x.forEach(d => this.usuarioFiltro.push({
                             label: d.Id === 0 ? "" : d.Mail, value: d.Id
                         })));
-                        result.Centro.forEach(c => this.centroFiltro.push({
+                        result.Centro.forEach(c => c.FiltroComprador === true && this.centroFiltro.push({
                             label: c.Codigo + " - " + c.Descripcion, value: c.Id
                         }));
-                        result.GrupoCompras.forEach(gc => this.grupoComprasFiltro.push({
+                        result.GrupoCompras.forEach(gc => gc.FiltroComprador === true && this.grupoComprasFiltro.push({
                             label: gc.Codigo + " - " + gc.Descripcion, value: gc.Id
                         }));
                     }
@@ -614,7 +685,67 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
     }
 
     onBuscar() {
+        this.pageIndex = 1;
+        this.spinnerComponent.showIt();
+        this.filtrosComprador.nroSolp = this.nroSolp;
+        this.filtrosComprador.sap = this.sap;
+        this.filtrosComprador.mantenimiento = this.mantenimiento;
+        this.filtrosComprador.web = this.web;
+        this.filtrosComprador.repoAutomatica = this.repoAutomatica;
+        this.filtrosComprador.usuarios = this.selectUsuario;
+        this.filtrosComprador.estadoSolp = this.selectEstadoSolp;
+        this.filtrosComprador.gruposCompras = this.selectGrupoCompras;
+        this.filtrosComprador.centros = this.selectCentro;
+        this.filtrosComprador.fechaDesde = this.fechaDesde;
+        this.filtrosComprador.fechaHasta = this.fechaHasta;
         this.service.getListarSolpCompras(1, 10, "", "", this.nroSolp, this.selectEstadoSolp.join(","),
-            this.selectUsuario.join(","), this.selectCentro.join(","), this.selectGrupoCompras.join(","));
+            this.selectUsuario.join(","), this.selectCentro.join(","), this.selectGrupoCompras.join(","), this.fechaDesde, this.fechaHasta, this.sap, this.mantenimiento, this.web, this.repoAutomatica);
+        sessionStorage.setItem('filtrosComprador', JSON.stringify(this.filtrosComprador));
+    }
+
+    returnToTodaysDate() {
+        this.fechaDesde = "";
+        this.fechaHasta = "";
+        if (this.tablaSolp.length > 0) {
+            this.mensajeComponent.setMsgsEmpty();
+        }
+    }
+
+    onSelect(event: any) {
+        if (this.rangeDates[0] && this.rangeDates[1] == null) {
+            let d = new Date(Date.parse(event));
+            this.fechaDesde = `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
+            this.fechaHasta = '';
+        } else {
+            let d = new Date(Date.parse(event));
+            this.fechaHasta = `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
+        }
+    }
+
+    recuperarFiltros() {
+        const filtrosGuardados = JSON.parse(sessionStorage.getItem('filtrosComprador'));
+        if (filtrosGuardados) {
+            this.nroSolp = filtrosGuardados.nroSolp;
+            this.sap = filtrosGuardados.sap;
+            this.mantenimiento = filtrosGuardados.mantenimiento;
+            this.web = filtrosGuardados.web;
+            this.repoAutomatica = filtrosGuardados.repoAutomatica;
+            this.selectUsuario = filtrosGuardados.usuarios;
+            this.selectEstadoSolp = filtrosGuardados.estadoSolp;
+            this.selectGrupoCompras = filtrosGuardados.gruposCompras;
+            this.selectCentro = filtrosGuardados.centros;
+            this.fechaDesde = filtrosGuardados.fechaDesde;
+            this.fechaHasta = filtrosGuardados.fechaHasta;
+            this.pageIndex = filtrosGuardados.pageIndex;
+            if (this.fechaDesde != undefined && this.fechaDesde.length > 0) {
+                const [year, month, day] = this.fechaDesde.split('-').map(Number); //se maneja el cambio de d�a incorrecto por la zona horaria local
+                if (this.fechaHasta != undefined && this.fechaHasta.length > 0) {
+                    const [year2, month2, day2] = this.fechaHasta.split('-').map(Number);
+                    this.rangeDates = [new Date(year, month - 1, day), new Date(year2, month2 - 1, day2)];
+                } else {
+                    this.rangeDates = [new Date(year, month - 1, day)];
+                }
+            }
+        }
     }
 }

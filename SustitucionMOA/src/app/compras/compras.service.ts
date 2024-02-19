@@ -47,13 +47,11 @@ export class ComprasService extends BaseService {
 
 
     public getCombos(): Observable<any> {
-        return this.http
-            .get('/api/compras/Combos', { headers: this.headers });
+        return this.http.get('/api/compras/Combos', { headers: this.headers });
     }
 
     public obtenerUltimaSolp(): Observable<any> {
-        return this.http
-            .get('/api/compras/ObtenerUltimaSolp', { headers: this.headers });
+        return this.http.get('/api/compras/ObtenerUltimaSolp', { headers: this.headers });
     }
 
     public getListarSolp(pagina: number,
@@ -62,13 +60,13 @@ export class ComprasService extends BaseService {
         columna: string = this.filtros.columna,
         nroSolp: string = this.filtros.nroSolp,
         fechaDesde: any = this.filtros.fechaDesde,
-        fechaHasta: any | null = this.filtros.fechaHasta,
+        fechaHasta: any = this.filtros.fechaHasta,
         sap: boolean = this.filtros.sap,
         mantenimiento: boolean = this.filtros.mantenimiento,
         web: boolean = this.filtros.web,
         repoAutomatica: boolean = this.filtros.repoAutomatica,
         estados: any = this.filtros.estados,
-        usuarioId: any = this.filtros.usuarioId): Observable<any> {
+        usuarios: any = this.filtros.usuarioId): Observable<any> {
         let params: HttpParams = new HttpParams();
         pagina = pagina != null ? pagina : this.filtros.pagina;
         itemsPorPagina = itemsPorPagina != null ? itemsPorPagina : this.filtros.itemsPorPagina;
@@ -85,24 +83,21 @@ export class ComprasService extends BaseService {
         params = params.set('web', web.toString());
         params = params.set('repoAutomatica', repoAutomatica.toString());
         params = params.set('estados', estados);
-        params = params.set('usuarioId', (usuarioId != null ? usuarioId.toString() : ""));
-        return this.http
-            .get('/api/compras/ListarSolp', { params: params, headers: this.headers });
+        params = params.set('usuarios', usuarios);
+        return this.http.get('/api/compras/ListarSolp', { params: params, headers: this.headers });
     }
 
     public borrarSolp(idSolp: number): Observable<any> {
         let params: HttpParams = new HttpParams();
         params = params.set('idSolp', idSolp.toString());
 
-        return this.http
-            .get('/api/compras/BorrarSolp', { params: params, headers: this.headers });
+        return this.http.get('/api/compras/BorrarSolp', { params: params, headers: this.headers });
     }
 
     public traerSolpId(idSolp: number): Observable<any> {
         let params: HttpParams = new HttpParams();
         params = params.set('idSolp', idSolp.toString());
-        return this.http
-            .get('/api/compras/TraerSolpId', { params: params, headers: this.headers });
+        return this.http.get('/api/compras/TraerSolpId', { params: params, headers: this.headers });
     }
 
     getPdf(idSolp): Observable<any> {
@@ -174,6 +169,7 @@ export class ComprasService extends BaseService {
             RevisadoPor: solp.revisadoPor,
             ClaseDocumento: this.getObjetoCodigo(solp.selectClaseDocumento && solp.selectClaseDocumento.Codigo),
             Finalizar: solp.Finalizar,
+            LiberadoresSapSolp: solp.liberadoresSap,
             Posiciones: solp.posiciones.map(x => {
 
                 return {
@@ -452,7 +448,13 @@ export class ComprasService extends BaseService {
         estados: any = this.filtros.estados,
         usuarios: any = this.filtros.usuarioId,
         centros: any = this.filtros.centros,
-        grupoDeCompras: any = this.filtros.grupoDeCompras) {
+        grupoDeCompras: any = this.filtros.grupoDeCompras,
+        fechaDesde: any = this.filtros.fechaDesde,
+        fechaHasta: any = this.filtros.fechaHasta,
+        sap: boolean = this.filtros.sap,
+        mantenimiento: boolean = this.filtros.mantenimiento,
+        web: boolean = this.filtros.web,
+        repoAutomatica: boolean = this.filtros.repoAutomatica) {
         let params: HttpParams = new HttpParams()
         pagina = pagina != null ? pagina : this.filtros.pagina;
         itemsPorPagina = itemsPorPagina != null ? itemsPorPagina : this.filtros.itemsPorPagina;
@@ -466,6 +468,12 @@ export class ComprasService extends BaseService {
         params = params.set('usuarios', usuarios);
         params = params.set('centros', centros);
         params = params.set('grupoDeCompras', grupoDeCompras);
+        params = params.set('fechaDesde', (fechaDesde != null ? fechaDesde : ""));
+        params = params.set('fechaHasta', (fechaHasta != null ? fechaHasta : ""));
+        params = params.set('sap', sap.toString());
+        params = params.set('mantenimiento', mantenimiento.toString());
+        params = params.set('web', web.toString());
+        params = params.set('repoAutomatica', repoAutomatica.toString());
         return this.http
             .get<any[]>('/api/compras/ListarSolpComprador', { params: params, headers: this.headers }).subscribe(
                 (data: any[]) => {
@@ -809,7 +817,10 @@ export class ComprasService extends BaseService {
             TextoDeCabecera: adjudicacion.TextoDeCabecera,
             CondicionesDeEntrega: adjudicacion.CondicionesDeEntrega,
             CondicionesDePago: adjudicacion.CondicionesDePago,
-            Garantias: adjudicacion.Garantias
+            Garantias: adjudicacion.Garantias,
+            EsMonedaProveedor: adjudicacion.EsMonedaProveedor,
+            Proveedor: adjudicacion.Proveedor,
+            RegionSap: adjudicacion.RegionSap
         });
 
         var payload = new FormData();
@@ -904,10 +915,10 @@ export class ComprasService extends BaseService {
             });
     }
 
-    public obtenerChat(peticionDeOfertaId: string): Observable<PeticionDeOfertaDto> {
+    public obtenerChat(solpId: string): Observable<PeticionDeOfertaDto> {
         let params: HttpParams = new HttpParams();
-        params = params.set("peticionDeOfertaId", peticionDeOfertaId);
-       
+        params = params.set("solpId", solpId);
+
         return this.http
             .get("/api/compras/ObtenerChat", {
                 params: params,
@@ -917,7 +928,7 @@ export class ComprasService extends BaseService {
 
     public grabarMensajeChatInterno(mensaje: ChatInternoComprasDto) {
         let json = JSON.stringify(mensaje);
-        
+
 
         var payload = new FormData();
         payload.append('json', json);
@@ -926,14 +937,68 @@ export class ComprasService extends BaseService {
             .post<ChatInternoComprasDto>('/api/compras/GrabarMensajeChatInterno', payload, { headers: this.headers });
     }
 
-    public obtenerYExportarChat(peticionDeOfertaId: string): Observable<any> {
+    public obtenerYExportarChat(solpId: string): Observable<any> {
         let params: HttpParams = new HttpParams();
-        params = params.set("peticionDeOfertaId", peticionDeOfertaId);
-       
+        params = params.set("solpId", solpId);
+
         return this.http
             .get("/api/compras/ObtenerYExportarChat", {
                 params: params,
                 headers: this.headers
             });
+    }
+
+    public validarSolpTratada(nroSolp: string): Observable<any> {
+        let params: HttpParams = new HttpParams();
+        params = params.set("nroSolp", nroSolp);
+
+        return this.http
+            .get("/api/compras/ValidarSolpTratada", {
+                params: params,
+                headers: this.headers
+            });
+    }
+
+    devolverMonedaProveedor(codigoProveedor: string): Observable<any> {
+        let params: HttpParams = new HttpParams();
+        params = params.set("codigoProveedor", codigoProveedor.toString());
+
+        return this.http
+            .get("/api/compras/DevolverMonedaProveedor", {
+                params: params,
+                headers: this.headers,
+            });
+    }
+
+    validarSubposicionConDiferenteMoneda(adjudicacion: AdjudicacionDto) {
+        let json = JSON.stringify({
+            Cotizacion_Id: adjudicacion.Cotizacion_Id,
+            AdjudicacionPosiciones: adjudicacion.AdjudicacionPosiciones,
+            Solp_Id: adjudicacion.Solp_Id,
+            TextoDeCabecera: adjudicacion.TextoDeCabecera,
+            CondicionesDeEntrega: adjudicacion.CondicionesDeEntrega,
+            CondicionesDePago: adjudicacion.CondicionesDePago,
+            Garantias: adjudicacion.Garantias,
+            EsMonedaProveedor: adjudicacion.EsMonedaProveedor,
+            Proveedor: adjudicacion.Proveedor
+        });
+
+        var payload = new FormData();
+        payload.append('json', json);
+
+        return this.http
+            .post<any>('/api/compras/ValidarSubposicionConMonedaDiferente', payload, { headers: this.headers });
+    }
+
+    public listarLiberadorSap(): Observable<any> {
+        return this.http.get("/api/compras/ListarLiberadorSap", {
+            headers: this.headers,
+        });
+    }
+
+    public listarUsuarioCreadorSolp(): Observable<any> {
+        return this.http.get("/api/compras/ListarUsuarioCreadorSolp", {
+            headers: this.headers,
+        });
     }
 }
