@@ -92,6 +92,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
   proveedorSeleccionado: any;
   proveedorModel: ProveedorModel;
   proveedorList: any[] = new Array();
+  btnCertificarHabilitado: boolean = true;
 
   //#region Variables 
   tablaPO: any[];
@@ -147,13 +148,15 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
   onCheckboxChange(item: any) {
     const itemId = item.PosicionId;
     const numeroLinea = item.NumeroLinea;
+
     if (this.itemIdSelected.includes(itemId) && this.numeroLineaSelected.has(numeroLinea)) {
       this.itemIdSelected.splice(this.itemIdSelected.indexOf(itemId), 1);
       this.numeroLineaSelected.delete(numeroLinea);
       
       this.itemSelected = this.itemSelected.filter((selectedItem: any) => 
       selectedItem.PosicionId !== item.PosicionId || selectedItem.NumeroLinea !== item.NumeroLinea);
-    } else {
+    }
+    else {
       this.itemIdSelected.push(itemId);
       this.numeroLineaSelected.add(numeroLinea);
       this.itemSelected.push(item);
@@ -166,6 +169,8 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
     this.itemIdSelected.splice(0, this.itemIdSelected.length);
     this.itemSelected.splice(0, this.itemSelected.length);
   }
+
+  
   
   //MMSN-519
   toggleRow(rowData: any) {
@@ -226,7 +231,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
           // this.subscripcionPO = this.service.getByProveedor("2023-01-28", proveedor, "4123001336", this.columnaOrden , this.ordenAscendente, this.pageIndex, this.pageSize).subscribe(
           this.subscripcionPO = this.service.getByProveedor(fecha_inicio, fecha_fin, proveedor, ordenCompraId, this.columnaOrden , this.ordenAscendente, this.pageIndex, this.pageSize).subscribe(
                 (result:any) => {
-                 
+
                   if (result.logout == true) {
                     this.sessionDataService.logout();
                   } else if (result.error != undefined && result.error != "") {
@@ -256,6 +261,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
       return false; //<-- Prevent Refresh
   }
 
+  
   getFecha() {
       var fechaActual = new Date();
       //fechaActual.setDate(fechaActual.getDate() - 2);
@@ -288,23 +294,23 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
     );
   }
 
- deleteById(Id) {
-     this.mensajeComponent.setMsgsEmpty();
-    this.service.deleteById(Id).subscribe(
-        (result: any) => {          
-            if (result.logout == true) {
-                this.sessionDataService.logout();
-            } else if (result.error != undefined && result.error != "") {
-                this.mensajeComponent.setErrorMsg(result.error);
-            } else if (result.info != undefined) {
-                this.mensajeComponent.setErrorMsg(result.error);
-            } else if (result.data != undefined) {
-                this.floatMsgService.setSuccessMsg("Se ha eliminado la entrada de servicio " + Id);
-                this.getListarPO(this.proveedor, this.ordenCompraId, this.filtroFechaComponent.fecha_inicio, this.filtroFechaComponent.fecha_fin);          
-            }
-      }
-     );
-  }
+   deleteById(Id) {
+       this.mensajeComponent.setMsgsEmpty();
+      this.service.deleteById(Id).subscribe(
+          (result: any) => {          
+              if (result.logout == true) {
+                  this.sessionDataService.logout();
+              } else if (result.error != undefined && result.error != "") {
+                  this.mensajeComponent.setErrorMsg(result.error);
+              } else if (result.info != undefined) {
+                  this.mensajeComponent.setErrorMsg(result.error);
+              } else if (result.data != undefined) {
+                  this.floatMsgService.setSuccessMsg("Se ha eliminado la entrada de servicio " + Id);
+                  this.getListarPO(this.proveedor, this.ordenCompraId, this.filtroFechaComponent.fecha_inicio, this.filtroFechaComponent.fecha_fin);          
+              }
+        }
+       );
+    }
 
   handlePageEvent(e: any) {
       this.pageSize = e.rows;
@@ -345,48 +351,48 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
 
     }
 
-    autocompleteProveedor(event) {
-        try {
-            this.subscription = this.service.autocompleteProveedor(event.query).subscribe(
-                (result: any) => {
-                    if (result.logout == true) {
-                        this.sessionDataService.logout();
-                    } else if (result.error != undefined && result.error != "") {
-                        this.floatMsgService.setErrorMsg(result.error);
-                    } else if (result.info != undefined) {
-                        this.floatMsgService.setInfoMsg(result.info);
-                    } else {
-                        class autoCompleteObject{
-                            valor: string;
-                            CodigoProveedor: string;
-                        };
-                        let provisional: any[] = new Array();
+  autocompleteProveedor(event) {
+    try {
+      this.subscription = this.service.autocompleteProveedor(event.query).subscribe(
+          (result: any) => {
+              if (result.logout == true) {
+                  this.sessionDataService.logout();
+              } else if (result.error != undefined && result.error != "") {
+                  this.floatMsgService.setErrorMsg(result.error);
+              } else if (result.info != undefined) {
+                  this.floatMsgService.setInfoMsg(result.info);
+              } else {
+                  class autoCompleteObject{
+                      valor: string;
+                      CodigoProveedor: string;
+                  };
+                  let provisional: any[] = new Array();
 
-                        result.forEach((element) => {
-                            let obj = new autoCompleteObject();
-                            obj.valor = element.CodigoProveedor + ' - ' + element.RazonSocial;
-                            obj.CodigoProveedor = element.CodigoProveedor;                           
-                            if (provisional.some(x => x.valor === obj.valor)) {
+                  result.forEach((element) => {
+                      let obj = new autoCompleteObject();
+                      obj.valor = element.CodigoProveedor + ' - ' + element.RazonSocial;
+                      obj.CodigoProveedor = element.CodigoProveedor;                           
+                      if (provisional.some(x => x.valor === obj.valor)) {
 
-                            }
-                            else {
-                                provisional.push(obj)
-                            }                            
-                        });
-                        this.proveedorList = provisional;
-                    }
-                },
-                error => {
-                    this.floatMsgService.setErrorMsg(error.message);
-                    this.spinnerComponent.hideIt();
-                });
-        } catch (e) {
-            this.floatMsgService.setErrorMsg(e);
-            return false; //<-- Prevent Refresh
-        }
-
+                      }
+                      else {
+                          provisional.push(obj)
+                      }                            
+                  });
+                  this.proveedorList = provisional;
+              }
+          },
+          error => {
+              this.floatMsgService.setErrorMsg(error.message);
+              this.spinnerComponent.hideIt();
+          });
+    } catch (e) {
+        this.floatMsgService.setErrorMsg(e);
         return false; //<-- Prevent Refresh
     }
+
+    return false; //<-- Prevent Refresh
+  }
 
   // Filtrar orden de compra.
   ocFilters(obj: any): void { 
@@ -439,6 +445,94 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
     });
 
     return nuevoArrayFinal;
+  }
+
+  /**
+   * Hace el cambio para habilitar 'Cantidad a certificar'
+   * o 'Porcentaje a certificar.' Por requerimiento en
+   * MMSN-634 sólo uno de los campos puede ser editable a 
+   * la vez.
+   * @param index Indice de item sobre el que se aplica la acción.
+   */
+  habilitarCampoDeValorACertificar(index: number) {
+    let cantidad = document.getElementsByName('cantidad')[index];
+    let porcentaje = document.getElementsByName('porcentaje')[index];
+
+    if (cantidad.hasAttribute('disabled')) {
+      cantidad.removeAttribute('disabled');
+      porcentaje.setAttribute('disabled', 'true');
+    }
+    else {
+      cantidad.setAttribute('disabled', 'true');
+      porcentaje.removeAttribute('disabled');
+    }
+  }
+
+  /**
+   * Se llama desde cada posición cuando se expande para calcular los
+   * valores a certificar de cada item.
+   * @param posicion
+   */
+  calcularValoresACertificar(posicion: any) {
+    posicion.Items.forEach(item => {
+      const monto = item.Importe;
+      const cantidad = item.Cantidad;
+      item.CantidadACertificar = cantidad - item.CantidadReal;
+      item.PorcentajeACertificar = (item.CantidadACertificar * 100) / cantidad;
+      item.MontoACertificar = (item.CantidadACertificar * monto) / cantidad;
+    });
+  }
+
+  calcularMontoACertificar(item: any) {
+    const montoActualizado = (item.CantidadACertificar * item.Importe) / item.Cantidad;
+    item.MontoACertificar = montoActualizado;
+  }
+
+  actualizarValoresACertificarPorCantidad(item: any) { 
+    const cantidadACertificar = item.CantidadACertificar;
+
+    const cantidadDisponible = item.Cantidad - item.CantidadReal;
+
+    if (cantidadACertificar === null || cantidadACertificar === '') {
+      this.clearCheckbox(item);
+    }
+
+    if (cantidadACertificar > cantidadDisponible || cantidadACertificar < 0) {
+      item.CantidadACertificar = cantidadDisponible;
+    }
+
+    item.PorcentajeACertificar = (item.CantidadACertificar * 100) / item.Cantidad;
+
+    this.calcularMontoACertificar(item);
+
+  }
+
+
+  actualizarValoresACertificarPorPorcentaje(item: any) {
+    const porcentajeDisponible = (100 - item.Porcentaje);
+    const porcentajeACertificar = item.PorcentajeACertificar;
+
+    if (porcentajeACertificar > porcentajeDisponible || porcentajeACertificar < 0) {
+      item.PorcentajeACertificar = porcentajeDisponible;
+    }
+
+    item.CantidadACertificar = (item.PorcentajeACertificar * item.Cantidad) / 100;
+
+    this.calcularMontoACertificar(item);
+
+  }
+
+  numbersOnly(event): boolean {
+    const charCode = (event.which) ? event.which : event.keyCode;
+    return !(charCode > 31 && (charCode < 48 || charCode > 57)) || charCode === 46;
+  }
+
+  clearCheckbox(item: any): void {
+    this.numeroLineaSelected.clear();
+    item.isSelected = false;
+    this.itemIdSelected = this.itemIdSelected.filter(obj => { return obj !== item.Id });
+
+    this.itemSelected = this.itemSelected.filter(obj => { return obj !== item });
   }
 
 }

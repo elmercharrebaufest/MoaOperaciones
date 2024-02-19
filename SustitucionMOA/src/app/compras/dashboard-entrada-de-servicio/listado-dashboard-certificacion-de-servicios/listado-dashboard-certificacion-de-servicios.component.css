@@ -1,22 +1,83 @@
-::ng-deep .ui-confirmdialog.ui-dialog .ui-dialog-content {
-  text-align: center !important;
-}
-
 .content-wraper {
   margin-top: 0;
 }
 
-body.ui-paginator.ui-dropdown {
-    width: 10% !important;
-}
-
-.ng-tns-c7-9.ui-dropdown.ui-widget.ui-state-default.ui-corner-all.ui-helper-clearfix{
-    width: 10% !important;
-}
-
-#certificaciones .myRow {
-  margin: 0 0 2rem 0;
+/* SEARCH */
+section#search {
+  margin: 2em 1em;
   padding: 0;
+  box-shadow: -1px 2px 11px 1px rgba(0, 0, 0, 0.11);
+  transition: 0.5s;
+}
+
+.search-header {
+  margin-bottom: 0;
+}
+
+.search-filters {
+  background-color: white !important;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+  padding: 2em 1em;
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+}
+
+.search-filters p {
+  color: #075088;
+  font-weight: bold !important;
+}
+.search-filters input,
+:host ::ng-deep .search-filters p-autocomplete#proveedores input {
+  height: 2.67em;
+  border-radius: 3px;
+  border: 1px solid #ddd;
+  width: 100%;
+}
+
+.search-filters input:active,
+.search-filters input:hover,
+.search-filters input:focus {
+  border: 1px solid #ddd;
+}
+
+.search-filters .btn-buscar {
+  background-color: #1C7CD5;
+  border-color: #1C7CD5;
+  color: white;
+  font-size: 1.3em;
+  padding: .31em 4em;
+  margin-top: 1.6em;
+}
+
+::ng-deep #viewDates #btnAplicar {
+  display: none !important;
+  visibility: hidden !important;
+}
+
+::ng-deep p-autocomplete#proveedores .ui-autocomplete-loader.pi.pi-spinner.pi-spin {
+  margin: auto !important;
+}
+/* SEARCH END */
+
+
+/* TABLE */
+p-checkbox .ui-chkbox {
+  height: 16px;
+}
+
+.hidden {
+  visibility: hidden !important;
+}
+
+:host ::ng-deep .ui-table-wrapper:not(table.level4 .ui-table-wrapper) {
+  overflow: auto;
+}
+
+
+::ng-deep .ui-confirmdialog.ui-dialog .ui-dialog-content {
+  text-align: center !important;
 }
 
 .filters {
@@ -26,15 +87,13 @@ body.ui-paginator.ui-dropdown {
   border-right: 0.5px solid #959595;
   width: max-content;
   background: white;
-  .checkbox-content{
-    display: flex;
-    gap: 20px;
-  }
 }
 
-.title-fix {
-    border-left-width: 0px;
-    border-left-style: solid;
+.filters .pi.pi-filter {
+  font-size: 1.6em;
+  margin: auto;
+  vertical-align: bottom;
+  margin-right: .4rem;
 }
 
 .container-button {
@@ -58,76 +117,24 @@ body.ui-paginator.ui-dropdown {
 }
 
 
-/* SEARCH PANEL */
-.btn-buscar {
-    top: 35px;
-}
-
 .msj-error {
     margin-right: 5px !important;
 }
 
-::ng-deep #viewDates #btnAplicar {
-    display: none !important;
-    visibility: hidden !important;
-}
 
-.hidden {
-  visibility: hidden !important;
-}
-
-.buscar {
-  background-color: #1C7CD5;
-  border-color: #1C7CD5;
-  color: white;
-  width: 100%;
-  font-size: 18px;
-}
-
-.buttonBuscar {
-  margin-left: -121px;
-  margin-top: 4px;
-}
-
-::ng-deep .estiloCalendarDashboard {
-  width: 33%;
-}
-
-::ng-deep .autoCompleteStyle {
-  z-index: 2;
-  position: relative;
-}
-
-.styled-input {
-    font-family: "Roboto Condensed", Arial, sans-serif;
-    width: 100%;
-    height: 40px;
-    font-size: 16px;
-    line-height: 1.4em;
-}
-
-::ng-deep .mySearch .ui-autocomplete-loader.pi.pi-spinner.pi-spin {
-  margin: 0 auto !important;
-}
-/* SEARCH PANEL END */
-
-
-/* TABLE */
 .emptyData {
-  text-align: center;
+  text-align: center !important;
 }
 
-::ng-deep #certificaciones .ui-table-wrapper:not(.level4 .ui-table-wrapper) {
-  overflow: auto;
-}
 
-::ng-deep #certificaciones .ui-table table {
+
+:host ::ng-deep #certificaciones .ui-table table {
   border-collapse: collapse;
   width: 100%;
-  table-layout: auto;
+  table-layout: auto !important;
 }
 
-::ng-deep #certificaciones table th {
+#certificaciones p-table th {
   word-wrap: normal;
   white-space: nowrap;
   width: max-content;
@@ -135,57 +142,64 @@ body.ui-paginator.ui-dropdown {
   text-align: center;
 }
 
-::ng-deep #certificaciones .level1 th, .ui-sortable-column.ui-state-highlight {
+#certificaciones .level1 th, 
+.ui-sortable-column.ui-state-highlight {
   background-color: #666 !important;
 }
 
-::ng-deep #certificaciones .level2 th {
+:host ::ng-deep #certificaciones .ui-sortable-column a {
+  color: white !important;
+  font-size: 1rem;
+  padding-left: .5rem;
+}
+
+#certificaciones .level2 th {
   background-color: #075088 !important;
 }
 
-::ng-deep #certificaciones .level3 th {
+#certificaciones .level3 th {
   background-color: #1C7CD5 !important;
 }
 
-::ng-deep #certificaciones .level4 th {
+#certificaciones .level4 th {
   background-color: #4760ac !important;
 }
 
-  ::ng-deep #certificaciones .level4 th:first-child {
-    min-width: 9rem;
-  }
+#certificaciones .level4 th:first-child {
+  min-width: 9rem;
+}
 
-::ng-deep #certificaciones .ui-table tr {
+#certificaciones p-table tr {
   font-size: 1.3rem !important;
   width: max-content;
 }
 
-  ::ng-deep #certificaciones .ui-table tr th:first-child:not(.level4 tr th:first-child) {
-    font-size: 0 !important;
-    min-width: 4rem;
-  }
+#certificaciones p-table tr th:first-child:not(.level4 tr th:first-child) {
+  font-size: 0 !important;
+  min-width: 5rem;
+}
 
-::ng-deep #certificaciones table td {
+#certificaciones p-table td {
   text-align: left;
   white-space: nowrap;
 }
 
-  ::ng-deep #certificaciones table td:first-child {
-    max-width: 0;
-  }
+#certificaciones p-table td:first-child {
+  max-width: 0;
+}
 
-::ng-deep #certificaciones th:first-child {
+#certificaciones p-table th:first-child {
   max-width: 6rem;
 }
 
-::ng-deep #certificaciones i.ui-sortable-column-icon {
+#certificaciones i.ui-sortable-column-icon {
   color: white;
   font-size: 1.3rem;
   padding-left: .8rem;
 }
 
-::ng-deep #certificaciones .level3 i.pi-chevron-down,
-::ng-deep #certificaciones .level3 i.pi-chevron-right {
+#certificaciones .level3 i.pi-chevron-down,
+#certificaciones .level3 i.pi-chevron-right {
   padding-left: .6rem;
   vertical-align: sub;
 }
@@ -210,11 +224,42 @@ body.ui-paginator.ui-dropdown {
   margin: auto;
 }
 
-#searchOrder .styled-select {
-    top: -0.1em;
-    position: relative;
-}
+
 /* TABLE END */
+
+/* Level3 : Items */
+p-table.level3 input[type="text"] {
+  text-align: center;
+  border: 1px solid #ccc;
+}
+
+p-table.level3 input[type=text]:disabled {
+  border: none;
+  background-color: transparent;
+}
+
+p-table.level3 input[type="text"]:invalid {
+  border: 1px solid red;
+}
+
+p-table.level3 button.btn-refresh {
+  height: 1.7em;
+  margin: auto .6em;
+  vertical-align: middle;
+}
+
+p-table.level3 button.btn-refresh:disabled {
+  background-color: gray;
+  border: none;
+}
+
+/* END Level3 : Items */
+
+.btn:disabled {
+  background-color: #959595;
+}
+
+
 /* Rules here apply to devices from 1400px and up */
 @media (min-width: 1399px) {
     .delete-icon {

@@ -1,309 +1,124 @@
+<div style="z-index: 10;" class="ui-widget-overlay ui-dialog-mask"></div>
 
-        <p-dialog id="alta-certificacion"
-            header="Alta ES - Certificación de servicio"
-            [(visible)]="showModal"
-            [style]="{ width: '50vw' }"
-            (onHide)="this.closeModal.emit();"
-        >
-            <div class="container-table" *ngIf="step <= itemSelected.length && !showAllTables">
-                <ng-container *ngFor="let fila of itemSelected; let i = index">
-                    <div class="d-flex-1" *ngIf="step === i + 1">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th class="header-table" colspan="2">
-                                        <div
-                                            style="
-                                                display: flex;
-                                                justify-content: space-between;
-                                                align-items: center;
-                                            "
-                                        >
-                                            <span
-                                                >Alta ES - Certificación de
-                                                servicio</span
-                                            >
-                                            <span
-                                                >Certificar posición
-                                                {{ i + 1 }}/{{
-                                                    itemSelected.length
-                                                }}</span
-                                            >
-                                        </div>
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <th>Número de OC</th>
-                                    <td>{{ fila.NroOrdenCompra }}</td>
-                                </tr>
+<p-dialog id="alta-certificaciones"
+          header="Alta ES - Certificación de servicio"
+          [(visible)]="showModal"
+          [responsive]="true"
+          [style]="{ width: '50vw', left: '-3em' }"
+          (onHide)="this.closeModal.emit();">
 
-                                <tr class="bg-color">
-                                    <th>Posición</th>
-                                    <td>{{ fila.NroPosicion }}</td>
-                                </tr>
+  <p-table class="level3"
+           [value]="itemSelected"
+           dataKey="NumeroLinea"
+           [paginator]="itemSelected.length > 4"
+           [rows]="5">
+    <!-- TABLE HEADERS-->
+    <ng-template pTemplate="header">
+      <tr>
+        <th title="NroItem">NRO LINEA</th>
+        <th title="NumeroServicio">N° Servicio</th>
+        <th title="TextBrev">Txt.breve del servicio</th>
+        <th title="Cantidad">Cantidad</th>
+        <th title="UM">UM</th>
+        <th title="Monto">Monto</th>
+        <th title="CantidadReal">Cantidad Real</th>
+        <th title="Porcentaje">porc. %</th>
+        <th>Cantidad a certificar</th>
+        <th>% a certificar</th>
+        <th>Monto a certificar</th>
+      </tr>
+    </ng-template>
+    <!-- TABLE HEADERS END-->
+    <!-- TABLE BODY -->
+    <ng-template pTemplate="body" let-rowData let-expanded="expanded" let-i="rowIndex">
+      <tr>
+        <td>{{ rowData.NumeroLinea | defaultData }}</td>
+        <td>{{ rowData.ServicioNumero | defaultData }}</td>
+        <td>{{ rowData.Descripcion | defaultData }}</td>
+        <td>{{ rowData.Cantidad | defaultData }}</td>
+        <td>{{ rowData.UM | defaultData }}</td>
+        <td>{{ rowData.ImporteString | defaultData }}</td>
+        <td>{{ rowData.CantidadReal | defaultData }}</td>
+        <td [ngClass]="{ 'percentage-green': rowData.Porcentaje >= 100, 'percentage-yellow': rowData.Porcentaje <= 99 }">
+          {{ rowData.Porcentaje | defaultData }}%
+        </td>
+        <td>{{ rowData.CantidadACertificar | number:'1.0-2'}}</td>
+        <td>{{ rowData.PorcentajeACertificar }}</td>
+        <td>{{ rowData.MontoACertificar | number:'1.0-2' }}</td>
+      </tr>
+    </ng-template>
+    <!-- TABLE BODY END -->
 
-                                <tr>
-                                    <th>Nro de Ítem</th>
-                                    <td>{{ fila.NumeroLinea }}</td>
-                                </tr>
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td class="emptyData" colspan="12">No hay items para mostrar</td>
+      </tr>
+    </ng-template>
+  </p-table>
 
-                                <tr class="bg-color">
-                                    <th>Nro de servicio</th>
-                                    <td>{{ fila.ServicioNumero }}</td>
-                                </tr>
+  <section class="alta-form">
+    <div class="row">
+      <div class="col-md-3">
+        <p>Fecha Documento</p>
+        <p-calendar [(ngModel)]="fechaDocumento"
+                    class="smallCal"
+                    dateFormat="yy-mm-dd"
+                    [locale]="es"
+                    [readonlyInput]="true"
+                    [monthNavigator]="true"
+                    [yearNavigator]="true"
+                    [minDate]="fechaDocMin"
+                    [maxDate]="fechaDocMax"
+                    yearRange="{{fechaDocMin.getFullYear()}}:{{fechaDocMax.getFullYear()}}"
+                    autoZIndex="true"
+                    [showIcon]="true">
+        </p-calendar>
+      </div>
 
-                                <tr>
-                                    <th>Descripción</th>
-                                    <td class="tooltip-container">
-                                        <span class="tooltip-text">
-                                            {{
-                                            fila.Descripcion
-                                            }}
-                                        </span>
-                                        {{ fila.Descripcion }}
-                                    </td>
-                                </tr>
+      <div class="col-md-3">
+        <p>Referencia Remito</p>
+        <input type="text"
+               id="ref"
+               (keyup)="validarReferenciaRemito($event)"
+               pattern="[0-9]{4}R[0-9]{8}"
+               maxlength="13"
+               [(ngModel)]="referencia">
+        <div class="hint">Formato 4 dígitos + R + 8 dígitos.</div>
+      </div>
 
-                                <tr class="bg-color">
-                                    <th>Cantidad / %</th>
-                                    <div class="input-group">
-                                        <input type="text"
-                                               [(ngModel)]="fila.Cantidad"
-                                               placeholder="Ingresar cantidad" />
-                                        <button type="button"
-                                                pButton
-                                                icon="fa fa-refresh"
-                                                (click)="refresh()"></button>
-                                        <input type="text"
-                                               [(ngModel)]="fila.Cantidad"
-                                               placeholder="Ingresar %" />
-                                    </div>
-                                </tr>
+      <div class="col-md-3">
+        <p for="texto-breve" class="form-label">Aprobador</p>
+        <p-dropdown [options]="['Aprobador 1','Aprobador 2']" [(ngModel)]="aprobador" optionLabel="name" [showClear]="true" placeholder="Seleccionar aprobador..."></p-dropdown>
+      </div>
+    </div>
 
-                                <tr>
-                                    <th>UM</th>
-                                    <td>{{ fila.UM }}</td>
-                                </tr>
+    <div class="row">
+      <div class="col-md-3">
+        <p>Fecha Contabilización</p>
+        <p-calendar [(ngModel)]="fechaContabilizacion"
+                    class="smallCal"
+                    dateFormat="yy-mm-dd"
+                    [locale]="es"
+                    [readonlyInput]="true"
+                    [monthNavigator]="true"
+                    [yearNavigator]="true"
+                    yearRange="2010:2050"
+                    [showIcon]="true"
+                    disabled="true">
+        </p-calendar>
+      </div>
 
-                                <tr class="bg-color">
-                                    <th>Monto</th>
-                                    <td>{{ fila.ImporteString }}</td>
-                                </tr>
 
-                                <tr>
-                                    <th>
-                                        Fecha documento (Fecha de prestación del
-                                        servicios)
-                                    </th>
-                                    <td>
-                                        <div class="input-group">
-                                            <p-calendar class="CalendarFormat" [(ngModel)]="fechaDocumento" dateFormat="yy-mm-dd" [locale]="es" [readonlyInput]="true" [monthNavigator]="true" [yearNavigator]="true" yearRange="2010:2100" showButtonBar="true"></p-calendar>
-                                            <span><span class="fa fa-calendar "></span></span>
-                                        </div>
-                                    </td>
-                                </tr>
+      <div class="col-md-3">
+        <p>Descripción</p>
+        <textarea rows="2" cols="30" pInputTextarea [(ngModel)]="textoBreve" maxlength="40"></textarea>
+        <div class="hint">Máximo 40 caracteres.</div>
+      </div>
+    </div>
 
-                                <tr>
-                                    <th>
-                                        Fecha de contabilización
-                                    </th>
-                                    <td>
-                                        <div class="input-group">
-                                            <p-calendar class="CalendarFormat" [(ngModel)]="fechaContabilizacion" dateFormat="yy-mm-dd" [locale]="es"  [readonlyInput]="true" [monthNavigator]="true" [yearNavigator]="true" yearRange="2010:2100" showButtonBar="true"></p-calendar>
-                                            <span><span class="fa fa-calendar "></span></span>
-                                        </div>
-                                    </td>
-                                </tr>
+    <div class="form-actions">
+      <button type="submit" class="btn btn-azul btn-certificar" (click)="certificarPosicion()">Certificar</button>
+    </div>
+  </section>
 
-                                <tr class="bg-color">
-                                    <th>Referencia</th>
-                                    <td>
-                                        <div class="input-text">
-                                            <input type="text" pInputText [(ngModel)]="referencia"/>
-                                        </div>
-                                    </td>
-                                </tr>
-
-                                <tr>
-                                    <th>Texto breve</th>
-                                    <td>
-                                        <div class="input-text">
-                                            <input type="text" pInputText [(ngModel)]="textoBreve"/>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </ng-container>
-
-                <div class="container-button">
-                    <button (click)="siguientePaso()" class="button-continuar">
-                        {{
-                            showAllTables ? "Certificar posición" : "Continuar"
-                        }}
-                    </button>
-                </div>
-            </div>
-
-            <div class="container-table alta-certificacion" *ngIf="showAllTables">
-                <ng-container *ngFor="let fila of itemSelected; let i = index">
-                    <div
-                        *ngIf="step === i + 1 || showAllTables"
-                        [ngClass]="{
-                            'd-flex-1': itemSelected.length == 1,
-                            'd-flex-2': itemSelected.length == 2,
-                            'd-flex-3': itemSelected.length >= 3
-                        }"
-                    >
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th colspan="2" class="header-table">
-                                        Alta ES - Certificación de servicio
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <th>Número de OC</th>
-                                    <td>{{ fila.NroOrdenCompra }}</td>
-                                </tr>
-
-                                <tr class="bg-color">
-                                    <th>Posición</th>
-                                    <td>{{ fila.NroPosicion }}</td>
-                                </tr>
-
-                                <tr>
-                                    <th>Nro de Ítem</th>
-                                    <td>{{ fila.NumeroLinea }}</td>
-                                </tr>
-
-                                <tr class="bg-color">
-                                    <th>Nro de servicio</th>
-                                    <td>{{ fila.ServicioNumero }}</td>
-                                </tr>
-
-                                <tr>
-                                    <th>Descripción</th>
-                                    <td class="tooltip-container">
-                                        <span class="tooltip-text">
-                                            {{
-                                            fila.Descripcion
-                                            }}
-                                        </span>
-                                        {{ fila.Descripcion }}
-                                    </td>
-                                </tr>
-
-                                <tr class="bg-color">
-                                    <th>Cantidad / %</th>
-                                    <div class="input-group">
-                                        <input type="text"
-                                               [(ngModel)]="fila.Cantidad"
-                                               placeholder="Ingresar cantidad" />
-                                        <button type="button"
-                                                pButton
-                                                icon="fa fa-refresh"
-                                                (click)="refresh()"></button>
-                                        <input type="text"
-                                               [(ngModel)]="fila.Cantidad"
-                                               placeholder="Ingresar %" />
-                                    </div>
-                                </tr>
-
-                                <tr>
-                                    <th>UM</th>
-                                    <td>{{ fila.UM }}</td>
-                                </tr>
-
-                                <tr class="bg-color">
-                                    <th>Monto</th>
-                                    <td>{{ fila.ImporteString }}</td>
-                                </tr>
-
-                                <tr>
-                                    <th>
-                                        Fecha documento (Fecha de prestación del
-                                        servicios)
-                                    </th>
-                                    <td>
-                                        <div class="input-group">
-                                            <p-calendar class="CalendarFormat" [(ngModel)]="fechaDocumento" dateFormat="yy-mm-dd" [locale]="es"  [readonlyInput]="true" [monthNavigator]="true" [yearNavigator]="true" yearRange="2010:2100" showButtonBar="true"></p-calendar>
-                                            <span><span class="fa fa-calendar "></span></span>
-                                        </div>
-                                    </td>
-                                </tr>
-
-                                <tr>
-                                    <th>
-                                        Fecha de contabilización
-                                    </th>
-                                    <td>
-                                        <div class="input-group">
-                                            <p-calendar class="CalendarFormat" [(ngModel)]="fechaContabilizacion" dateFormat="yy-mm-dd" [locale]="es"  [readonlyInput]="true" [monthNavigator]="true" [yearNavigator]="true" yearRange="2010:2100" showButtonBar="true"></p-calendar>
-                                            <span><span class="fa fa-calendar "></span></span>
-                                        </div>
-                                    </td>
-                                </tr>
-
-                                <tr class="bg-color">
-                                    <th>Referencia</th>
-                                    <td>
-                                        <div class="input-text">
-                                            <input type="text" pInputText [(ngModel)]="referencia" />
-                                        </div>
-                                    </td>
-                                </tr>
-
-                                <tr>
-                                    <th>Texto breve</th>
-                                    <td>
-                                        <div class="input-text">
-                                            <input type="text" pInputText [(ngModel)]="textoBreve" />
-                                        </div>
-                                    </td>
-                                </tr>
-
-                                <td>
-                                    <div class="container-button">
-                                        <button
-                                            (click)="
-                                                siguientePaso(fila.cantidad)
-                                            "
-                                            class="button-continuar bg-c"
-                                        >
-                                            Modificar
-                                        </button>
-                                    </div>
-                                </td>
-
-                                <td>
-                                    <div class="container-button">
-                                        <button
-                                            (click)="siguientePaso()"
-                                            class="button-continuar bg-c"
-                                        >
-                                            Eliminar
-                                        </button>
-                                    </div>
-                                </td>
-                            </tbody>
-                        </table>
-                    </div>
-                </ng-container>
-
-                <div class="container-button">
-                    <button
-                        (click)="certificarPosicion()"
-                        class="button-continuar"
-                    >
-                        Certificar posición
-                    </button>
-                </div>
-            </div>
-        </p-dialog>
-
+</p-dialog>

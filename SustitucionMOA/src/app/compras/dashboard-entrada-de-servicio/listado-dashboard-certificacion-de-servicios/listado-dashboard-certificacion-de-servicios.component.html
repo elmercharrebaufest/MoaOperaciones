@@ -1,95 +1,81 @@
-<div id="certificaciones" class="content-wraper">
+<div class="content-wraper">
   <!-- HEADER -->
   <section class="container-fluid clearfix">
-    <br />
-    <div class="row titleSection title-fix">
+    <div class="row titleSection">
       <div class="col-xs-12 col-sm-10">
         <strong>
           Dashboard - Solicitante - Lista de todas las OCs - Certificación de Servicios
         </strong>
       </div>
     </div>
-    <br />
   </section>
   <!-- HEADER END -->
 
   <!-- SEARCH -->
-  <div class="row myRow mySearch autoCompleteStyle">
-    <div class="col-xs-12 col-md-12 rounded shadow animate">
-      <div class="col-xs-12 col-md-12 search-header">
-        <title-caps>Refinar resultados</title-caps>
-      </div>
-      <div id="searchOrder" class="col-xs-12 col-sm-6 col-md-15">
+  <section id="search">
+    <div class="row search-header">
+      <title-caps>Refinar resultados</title-caps>
+    </div>
+    <div class="row search-filters">
+      <div id="searchOrder" class="col-md-3">
         <p> Número de OC:</p>
-        <div class="styled-select">
-          <div class="p-d-flex">
-            <span class="p-input-icon-left p-ml-auto">
-              <input pInputText type="text" [(ngModel)]="ordenCompraId" placeholder="Órden de compra" />
-            </span>
-          </div>
-        </div>
+        <input pInputText type="text" [(ngModel)]="ordenCompraId" placeholder="Órden de compra" />
       </div>
-      <div id="searchProveedor" class="col-xs-12 col-sm-6 col-md-15">
+
+      <div id="searchProveedor" class="col-md-3">
         <p> Proveedor:</p>
-        <div>
-          <div class="p-d-flex styled-input">
-            <p-autoComplete [(ngModel)]="proveedorSeleccionado" [suggestions]="proveedorList" (completeMethod)="autocompleteProveedor($event)" field="valor" placeholder="Proveedor" [minLength]="4" autoZIndex="true" emptyMessage="No hay resultados para mostrar"></p-autoComplete>
-          </div>
-        </div>
+        <p-autoComplete id="proveedores" [(ngModel)]="proveedorSeleccionado" [suggestions]="proveedorList" (completeMethod)="autocompleteProveedor($event)" field="valor" placeholder="Proveedor" [minLength]="4" autoZIndex="true" emptyMessage="No hay resultados para mostrar"></p-autoComplete>
       </div>
-      <div id="viewDates" class="col-xs-12 col-sm-6 col-md-15">
+
+      <div id="viewDates" class="col-md-3">
         <p>Ver:</p>
         <filtro-fecha></filtro-fecha>
       </div>
-      <div id="btonSearch" class="col-xs-12 col-sm-6 col-md-15  btn-buscar">
 
-        <span class="p-input-icon-left p-ml-auto">
-          <button class="btn buscar" (click)="onBuscar()">Buscar</button>
-        </span>
-        <div class="p-input-icon-left p-ml-auto buttonBuscar">
-
-        </div>
+      <div id="btonSearch" class="col-md-3 p-d-flex vertical-align-middle">
+        <button class="btn btn-buscar" (click)="onBuscar()">Buscar</button>
       </div>
-
-
-      <!-- <div id="searchMostrar" class="col-xs-12 col-sm-6 col-md-15">
-          <p>Mostrar</p>
-          <div class="styled-select">
-              <dropdown [tipoDropdown]="'numberItems'" (select)="setItemsPerPage($event)"></dropdown>
-          </div>
-      </div> -->
-      <!--<div id="searchOrder" class="col-xs-12 col-sm-6 col-md-15">
-      <p> Número de OC:</p>
-      <div class="styled-select">-->
-      <!-- <div class="p-d-flex"> -->
-      <!--<span class="p-input-icon-left p-ml-auto">-->
-      <!--<input pInputText type="text" [(ngModel)]="ordenCompraId" placeholder="Órden de compra" />
-      </span>-->
-      <!-- </div> -->
-      <!--</div>
-      </div>-->
-      <!--<div id="searchProveedor" class="col-xs-12 col-sm-6 col-md-15">
-      <p> Proveedor:</p>
-      <div class="styled-select">-->
-      <!-- <div class="p-d-flex"> -->
-      <!--<span class="p-input-icon-left p-ml-auto">-->
-      <!--<input pInputText type="text" [(ngModel)]="proveedor" placeholder="Proveedor" />
-              </span>
-
-          </div>
-      </div>-->
-      <!--<div id="btonSearch" class="col-xs-12 col-sm-6 col-md-15  btn-buscar">
-
-      <span class="p-input-icon-left p-ml-auto">-->
-      <!--<button class="btn buscar" (click)="onBuscar()">Buscar</button>
-      </span>-->
-      <!-- <div class="p-input-icon-left p-ml-auto buttonBuscar">
-
-      </div> -->
-      <!--</div>-->
     </div>
-  </div>
-  <!-- End Search-->
+
+    <!-- <div id="searchMostrar" class="col-xs-12 col-sm-6 col-md-15">
+      <p>Mostrar</p>
+      <div class="styled-select">
+          <dropdown [tipoDropdown]="'numberItems'" (select)="setItemsPerPage($event)"></dropdown>
+      </div>
+  </div> -->
+    <!--<div id="searchOrder" class="col-xs-12 col-sm-6 col-md-15">
+  <p> Número de OC:</p>
+  <div class="styled-select">-->
+    <!-- <div class="p-d-flex"> -->
+    <!--<span class="p-input-icon-left p-ml-auto">-->
+    <!--<input pInputText type="text" [(ngModel)]="ordenCompraId" placeholder="Órden de compra" />
+  </span>-->
+    <!-- </div> -->
+    <!--</div>
+  </div>-->
+    <!--<div id="searchProveedor" class="col-xs-12 col-sm-6 col-md-15">
+  <p> Proveedor:</p>
+  <div class="styled-select">-->
+    <!-- <div class="p-d-flex"> -->
+    <!--<span class="p-input-icon-left p-ml-auto">-->
+    <!--<input pInputText type="text" [(ngModel)]="proveedor" placeholder="Proveedor" />
+          </span>
+
+      </div>
+  </div>-->
+    <!--<div id="btonSearch" class="col-xs-12 col-sm-6 col-md-15  btn-buscar">
+
+  <span class="p-input-icon-left p-ml-auto">-->
+    <!--<button class="btn buscar" (click)="onBuscar()">Buscar</button>
+  </span>-->
+    <!-- <div class="p-input-icon-left p-ml-auto buttonBuscar">
+
+  </div> -->
+    <!--</div>-->
+
+  </section>
+  <!-- SEARCH END -->
+
   <spinner></spinner>
 
   <div class="filters">
@@ -108,8 +94,7 @@
     </div>
   </div>
   <!-- <app-filtro-dashboard-certificacion-de-servicios></app-filtro-dashboard-certificacion-de-servicios> -->
-  <div class="col">
-
+  <div id="certificaciones" class="col">
     <p-table #tabla class="level1"
              [value]="tablaPO"
              [responsive]="true"
@@ -132,6 +117,7 @@
           </span>
       </div>
       </ng-template>-->
+
       <!-- TABLE 1 HEADERS -->
       <ng-template pTemplate="header" let-columns>
         <tr>
@@ -184,13 +170,13 @@
 
       <ng-template pTemplate="emptymessage">
         <tr>
-          <td class="emptyData" colspan="7">No hay ordenes de compra para mostrar</td>
+          <td class="emptyData" colspan="8">No hay ordenes de compra para mostrar</td>
         </tr>
       </ng-template>
 
       <ng-template pTemplate="rowexpansion" let-rowData let-columns="columns" let-orderIndex="rowIndex">
         <tr>
-          <td colspan="7">
+          <td colspan="8">
             <p-table class="level2" [value]="rowData.Posiciones" dataKey="Id" rowExpandMode="single">
               <!-- TABLE 2 HEADERS -->
               <ng-template pTemplate="header" *ngIf="rowData.Posiciones && rowData.Posiciones.length > 0">
@@ -215,7 +201,7 @@
               <ng-template pTemplate="body" let-rowData let-expanded="expanded">
                 <tr>
                   <td>
-                    <a href="#" [pRowToggler]="rowData" (click)="clearCheckboxes()">
+                    <a href="#" [pRowToggler]="rowData" (click)="clearCheckboxes(); calcularValoresACertificar(rowData);">
                       <i [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
                     </a>
                   </td>
@@ -238,11 +224,11 @@
 
               <ng-template pTemplate="emptymessage">
                 <tr>
-                  <td class="emptyData" colspan="7">No hay posiciones de para mostrar</td>
+                  <td class="emptyData" colspan="8">No hay posiciones de para mostrar</td>
                 </tr>
               </ng-template>
 
-              <ng-template pTemplate="rowexpansion" let-rowData let-columns="columns" let-posIndex="rowIndex">
+              <ng-template pTemplate="rowexpansion" let-rowData let-columns="columns">
                 <tr [pSelectableRow]="rowData">
                   <!-- TABLE 3 -->
                   <td colspan="12">
@@ -260,22 +246,24 @@
                           <th title="Monto">Importe</th>
                           <th title="CantidadReal">Cantidad Real</th>
                           <th title="Porcentaje">porc. %</th>
+                          <th>Cantidad a certificar</th>
+                          <th>% a certificar</th>
+                          <th>Monto a certificar</th>
+                          <th>Acciones</th>
                         </tr>
                       </ng-template>
                       <!-- TABLE 3 HEADERS END-->
                       <!-- TABLE 3 BODY -->
-                      <ng-template pTemplate="body" let-rowData let-expanded="expanded">
+                      <ng-template pTemplate="body" let-rowData let-expanded="expanded" let-i="rowIndex">
                         <tr>
                           <td>
-                            <div *ngIf="rowData.EntradasServicio.length === 0">
-                              <input type="checkbox" [(ngModel)]="rowData.isSelected" (change)="onCheckboxChange(rowData)" />
-                            </div>
-                            <div *ngIf="rowData.EntradasServicio.length > 0">
-                              <input type="checkbox" [(ngModel)]="rowData.isSelected" (change)="onCheckboxChange(rowData)" />
-                              <a href="#" [pRowToggler]="rowData">
+                              <input type="checkbox" 
+                                     [(ngModel)]="rowData.isSelected" 
+                                     (change)="onCheckboxChange(rowData)" 
+                                     [attr.disabled]="rowData.Porcentaje==='100' || rowData.MontoACertificar === 0 ? true : null" />
+                              <a href="#" [pRowToggler]="rowData" *ngIf="rowData.EntradasServicio.length > 0">
                                 <i [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
                               </a>
-                            </div>
                           </td>
                           <td>{{ rowData.NumeroLinea | defaultData }}</td>
                           <td>{{ rowData.ServicioNumero | defaultData }}</td>
@@ -283,9 +271,38 @@
                           <td>{{ rowData.Cantidad | defaultData }}</td>
                           <td>{{ rowData.UM | defaultData }}</td>
                           <td>{{ rowData.ImporteString | defaultData }}</td>
-                          <td>{{ rowData.CantidadReal }}</td>
+                          <td>{{ rowData.CantidadReal | defaultData }}</td>
                           <td [ngClass]="{ 'percentage-green': rowData.Porcentaje >= 100, 'percentage-yellow': rowData.Porcentaje <= 99 }">
                             {{ rowData.Porcentaje | defaultData }}%
+                          </td>
+                          <td>
+                            <input type="text"
+                                   name="cantidad"          
+                                   (keypress)="numbersOnly($event)"
+                                   (keyup)="actualizarValoresACertificarPorCantidad(rowData);"
+                                   (ngModelChange)="rowData.CantidadACertificar=$event"
+                                   [ngModel]="rowData.CantidadACertificar | number:'1.0-2'"
+                                   required
+                                   pattern="^[0-9\.]*$"
+                                   [disabled]="rowData.Porcentaje==100" />
+                          </td>
+                          <td>
+                            <input type="text"
+                                   name="porcentaje"
+                                   (keypress)="numbersOnly($event)"
+                                   (keyup)="actualizarValoresACertificarPorPorcentaje(rowData);"
+                                   (ngModelChange)="rowData.PorcentajeACertificar=$event"
+                                   [ngModel]="rowData.PorcentajeACertificar | number:'1.0-2'"
+                                   disabled />
+                          </td>
+                          <td>{{ rowData.MontoACertificar | number:'1.0-2' }}</td>
+                          <td>
+                            <button class="btn-refresh"
+                                    type="button"
+                                    pButton icon="fa fa-refresh"
+                                    (click)="habilitarCampoDeValorACertificar(i)"
+                                    [disabled]="rowData.CantidadACertificar === 0 || rowData.PorcentajeACertificar === 0">
+                            </button>
                           </td>
                         </tr>
                       </ng-template>
@@ -297,41 +314,40 @@
                         </tr>
                       </ng-template>
 
-
-                        <ng-template pTemplate="rowexpansion" let-rowData let-columns="columns">
-                          <tr>
-                            <!-- TABLE 4 -->
-                            <td colspan="9">
-                              <p-table class="level4" [value]="rowData.EntradasServicio" dataKey="Id">
-                                <!-- TABLE 4 HEADERS -->
-                                <ng-template pTemplate="header">
-                                  <tr>
-                                    <th title="NroEs">NRO_ES</th>
-                                    <th title="FechaEs">Fecha_ES</th>
-                                    <th title="FechaDocumento"> F. Documento<br>(F. de prestación de servicios)</th>
-                                    <th title="FechaContabilizacion">F. Contabilización</th>
-                                    <th title="Referencia">Referencia<br>(N° remito)</th>
-                                    <th title="Cantidad">Cantidad</th>
-                                    <th title="TextoBreveDesc">Desc. ES </th>
-                                    <th title="ImporteARPUSD">Importe ARP/USD</th>
-                                    <th title="EliminarEs">Eliminar ES</th>
-                                  </tr>
-                                </ng-template>
-                                <!-- TABLE 4 HEADERS END -->
-                                <!-- TABLE 4 BODY -->
-                                <ng-template pTemplate="body" let-rowData let-item>
-                                  <tr>
-                                    <td>{{ rowData.Id }}</td>
-                                    <td>{{ rowData.Fecha }}</td>
-                                    <td>{{ rowData.FechaDocumentoString }}</td>
-                                    <td>
-                                        {{rowData.FechaContabilizacion | date: 'dd/MM/yyyy'}}
-                                    </td>
-                                    <td>{{ rowData.Referencia | defaultData }}</td>
-                                    <td>{{ rowData.Cantidad | defaultData }}</td>
-                                    <td>{{ rowData.TextoBreve }}</td>
-                                    <td>{{ rowData.ImporteARPUSD }}</td>
-                                    <td>
+                      <ng-template pTemplate="rowexpansion" let-rowData let-columns="columns">
+                        <tr>
+                          <!-- TABLE 4 -->
+                          <td colspan="13">
+                            <p-table class="level4" [value]="rowData.EntradasServicio" dataKey="Id">
+                              <!-- TABLE 4 HEADERS -->
+                              <ng-template pTemplate="header">
+                                <tr>
+                                  <th title="NroEs">NRO_ES</th>
+                                  <th title="FechaEs">Fecha_ES</th>
+                                  <th title="FechaDocumento"> F. Documento<br>(F. de prestación de servicios)</th>
+                                  <th title="FechaContabilizacion">F. Contabilización</th>
+                                  <th title="Referencia">Referencia<br>(N° remito)</th>
+                                  <th title="Cantidad">Cantidad</th>
+                                  <th title="TextoBreveDesc">Desc. ES </th>
+                                  <th title="ImporteARPUSD">Importe ARP/USD</th>
+                                  <th title="EliminarEs">Eliminar ES</th>
+                                </tr>
+                              </ng-template>
+                              <!-- TABLE 4 HEADERS END -->
+                              <!-- TABLE 4 BODY -->
+                              <ng-template pTemplate="body" let-rowData let-item>
+                                <tr>
+                                  <td>{{ rowData.Id }}</td>
+                                  <td>{{ rowData.Fecha }}</td>
+                                  <td>{{ rowData.FechaDocumentoString }}</td>
+                                  <td>
+                                    {{rowData.FechaContabilizacion | date: 'dd/MM/yyyy'}}
+                                  </td>
+                                  <td>{{ rowData.Referencia | defaultData }}</td>
+                                  <td>{{ rowData.Cantidad | defaultData }}</td>
+                                  <td>{{ rowData.TextoBreve }}</td>
+                                  <td>{{ rowData.ImporteARPUSD }}</td>
+                                  <td>
 
                                     <div *ngIf="rowData.SePuedeBorrar == false else SePuedeBorrar">
                                       <i>
@@ -352,7 +368,7 @@
 
                               <ng-template pTemplate="emptymessage">
                                 <tr>
-                                  <td class="emptyData" colspan="9">No hay servicios para mostrar</td>
+                                  <td class="emptyData" colspan="13">No hay servicios para mostrar</td>
                                 </tr>
                               </ng-template>
 
@@ -373,10 +389,8 @@
       </ng-template>
     </p-table>
 
-
-    <!--<p-paginator #paginator [rows]="10" [totalRecords]="length" (onPageChange)="handlePageEvent($event)"></p-paginator>-->
     <div class="container-button">
-      <button (click)="openModal()" class="button-certificar">
+      <button (click)="openModal()" class="btn button-certificar" [attr.disabled]="itemSelected.length === 0? true : null">
         Certificar ES - Ítem
       </button>
     </div>

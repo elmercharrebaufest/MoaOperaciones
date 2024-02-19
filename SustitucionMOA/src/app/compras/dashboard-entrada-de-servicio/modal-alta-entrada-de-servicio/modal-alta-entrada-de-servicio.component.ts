@@ -2,6 +2,8 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ComprasService } from '../../compras.service';
 import { ConfirmationService } from 'primeng/api';
 import { CalendarModule } from 'primeng/calendar';
+import { forEach } from '@angular/router/src/utils/collection';
+import { FormsModule } from '@angular/forms';
 declare var $: any;
 
 @Component({
@@ -21,10 +23,13 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
   mensajeError: string = "";
   fechaDocumento: Date;
   fechaContabilizacion: Date;
+  //MMSN-648
+    arrCantidad: any[] = new Array();
   es: any;
-  referencia: string;
-  textoBreve: string;
-
+  referencia: string = '';
+  textoBreve: string = '';
+  //Provisional - hasta definición de funcionalidad de aprobador.
+  aprobador: string = '';
 
   @Input() showModal: boolean;
   @Input() itemSelected: any;
@@ -34,7 +39,8 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
 
   @Output() enviarMensajeGrilla = new EventEmitter();
 
-  
+  fechaDocMin: Date;
+  fechaDocMax: Date;
 
   entrySheetData = {
     "EntrySheetHeader": {
@@ -52,7 +58,7 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
         {
           "PackageNumber": "",
           "LineNumber": "",
-          "ExternalLine": "",
+          "ExternalLineNumber": "",
           "Service": "",
           "Quantity": "",
           "GrossPrice": "",
@@ -80,8 +86,10 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
             clear: 'Limpiar',
             dateFormat: 'yyyy-mm-dd',
             weekHeader: 'Sem'
-        };
+      };
 
+      this.fechaContabilizacion = new Date();
+      this.setRangoFechaDocumento();
   }
 
   ngAfterViewInit(): void{
@@ -96,21 +104,23 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
     this.step = 1;
   }
 
+  setRangoFechaDocumento() {
+    this.fechaDocMax = new Date();
+    this.fechaDocMin = new Date(new Date().setFullYear(new Date().getFullYear() - 5))
+  }
 
-    dateFormatter(date_Object: Date): string {
-        if (date_Object !== undefined) {
-            const year = date_Object.getFullYear();
-            const month = (date_Object.getMonth() + 1 < 10 ? '0' : '') + (date_Object.getMonth() + 1);
-            const day = (date_Object.getDate() < 10 ? '0' : '') + date_Object.getDate();
+  dateFormatter(date_Object: Date): string {
+      if (date_Object !== undefined) {
+          const year = date_Object.getFullYear();
+          const month = (date_Object.getMonth() + 1 < 10 ? '0' : '') + (date_Object.getMonth() + 1);
+          const day = (date_Object.getDate() < 10 ? '0' : '') + date_Object.getDate();
 
-            const date_String: string = `${year}-${month}-${day}`;
-            return date_String;
-        }
-    }
-
+          const date_String: string = `${year}-${month}-${day}`;
+          return date_String;
+      }
+  }
 
   siguientePaso(cantidad) {
-      this.cantidad = cantidad;
 
     if (this.step < this.itemSelected.length) {
       this.step++;
@@ -127,115 +137,157 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
     //Agregar lógica para refrescar Cantidades
   }
 
-  certificarPosicion() {
-    let fechaDocFormateada = "";
-    let fechaConFormateada = "";
+//Completa con '0' el valor de this.itemSelected.NumeroLinea - necesario para el servicio
+ zeroPad(num, places) {
+    var zero = places - num.toString().length + 1;
+    return Array(+(zero > 0 && zero)).join("0") + num;
+}
 
-      if (this.fechaDocumento !== undefined) {
-          fechaDocFormateada = this.dateFormatter(this.fechaDocumento);
-      }
-      if (this.fechaContabilizacion !== undefined) {
-          fechaConFormateada = this.dateFormatter(this.fechaContabilizacion);
-      }
-      let ref = this.referencia !== undefined ? this.referencia : '';
-      let txtBreve = this.textoBreve !== undefined ? this.textoBreve : '';
+    certificarPosicion() {
 
+        let fechaDocFormateada = "";
+        let fechaConFormateada = "";
+        let PONumber = this.elementSelected !== undefined ? this.elementSelected.NumeroOrdenDeCompra : '';
+        //Array Cantidad
+        this.itemSelected.forEach((el) => {
+            this.arrCantidad.push(el.CantidadACertificar)
+        })
 
-    this.entrySheetData = {
-      EntrySheetHeader: {
-        PaqueteNumero: '0000000001',
-        Descripcion: this.itemSelected[0].Descripcion,
-        OrdenCompraNumero: this.elementSelected.NumeroOrdenDeCompra,
-        OrdenCompraPosicionNumero: this.itemSelected[0].NroPosicion.toString(),
-        DocumentoReferenciaNumero: ref,
-        FechaDocumento: fechaDocFormateada,
-        FechaContabilizacion: fechaConFormateada,
-        GrabarAceptada: 'X'
-      },
-      EntrySheetServices: {
-        Items: [
-          {
-            PackageNumber: '0000000002',
-            LineNumber: '0000000002',
-            ExternalLine: '0000000010',
-            Service: this.itemSelected[0].ServicioNumero.toString(),
-            Quantity: this.cantidad !== undefined ? this.cantidad : this.itemSelected[0].Cantidad,
-            GrossPrice: this.itemSelected[0].PrecioBruto !== undefined ? this.itemSelected[0].PrecioBruto.toString() : '',
-            ShortText: txtBreve,
-            PlannedPackage: this.itemSelected[0].Id,
-            PlannedLine: this.itemSelected[0].LINE_NO
-          }
-        ]
-      }
-    };
-  
-    this.service.postCreateAsync(this.entrySheetData).subscribe(
-      (response) => {
-        if (!response.data) {
-          this.mensajeError = 'Error del servidor, vuelva a intentarlo más tarde.'
+        if (this.fechaDocumento !== undefined) {
+            fechaDocFormateada = this.dateFormatter(this.fechaDocumento);
         }
-
-        if(response.data.Type === 'I') {
-          this.mensajeError = response.data.Message;
-          this.confirmationService.confirm({
-            message: this.mensajeError,
-              accept: () => {
-                this.enviarMensajeGrilla.emit();
-                this.closeModal.emit();
-              },
-              reject: () => {
-                this.closeModal.emit();
-              }
-            }
-          );
+        if (this.fechaContabilizacion !== undefined) {
+            fechaConFormateada = this.dateFormatter(this.fechaContabilizacion);
         }
-
-        if(response.data.Type === 'S') {
-          this.mensajeError = response.data.Message;
-          this.confirmationService.confirm({
-            message: this.mensajeError,
-              accept: () => {
-                this.enviarMensajeGrilla.emit();
-                this.closeModal.emit();
-              },
-              reject: () => {
-                this.closeModal.emit();
-              }
-            }
-          );
-        }
+        let ref = this.referencia !== undefined ? this.referencia : '';
+        let txtBreve = this.textoBreve !== undefined ? this.textoBreve : '';
 
 
-        if(response.data.Type === 'E') {
-          this.mensajeError = response.data.Message;
-          this.confirmationService.confirm({
-            message: this.mensajeError,
-              accept: () => {
-                this.closeModal.emit();
-              },
-              reject: () => {
-                this.closeModal.emit();
-              }
-            }
-          );
-        }
-      },
-      (error) => {
-        this.confirmationService.confirm({
-          message: error.error.Message,
-            accept: () => {
-              this.closeModal.emit();
+        this.entrySheetData = {
+            EntrySheetHeader: {
+                PaqueteNumero: '0000000001',
+                Descripcion: this.itemSelected[0].Descripcion,
+                OrdenCompraNumero: PONumber,
+                OrdenCompraPosicionNumero: this.itemSelected[0].NroPosicion.toString(),
+                DocumentoReferenciaNumero: ref,
+                FechaDocumento: fechaDocFormateada,
+                FechaContabilizacion: fechaConFormateada,
+                GrabarAceptada: 'X'
             },
-            reject: () => {
-              this.closeModal.emit();
+            EntrySheetServices: {
+                Items: [
+                    {
+                        PackageNumber: '0000000002',
+                        LineNumber: '0000000002',
+                        ExternalLineNumber: this.zeroPad(this.itemSelected[0].NumeroLinea, 10),
+                        Service: this.itemSelected[0].ServicioNumero.toString(),
+                        Quantity: this.arrCantidad[0],
+                        GrossPrice: this.itemSelected[0].PrecioBruto !== undefined ? this.itemSelected[0].PrecioBruto.toString() : '',
+                        ShortText: txtBreve,
+                        PlannedPackage: this.itemSelected[0].Id,
+                        PlannedLine: this.itemSelected[0].LINE_NO
+                    }
+                ]
             }
-          }
-        );
-      }
-    );
+        };
+
+        if (this.itemSelected.length > 1) {
+            for (let x = 1; x < this.itemSelected.length; x++) {
+                //PackageNumber y LineNumber son manejados por el BE
+                let toPush = {
+                    PackageNumber: '0000000002',
+                    LineNumber: '0000000002',
+                    ExternalLineNumber: this.zeroPad(this.itemSelected[x].NumeroLinea, 10),
+                    Service: this.itemSelected[x].ServicioNumero.toString(),
+                    Quantity: this.arrCantidad[x],
+                    GrossPrice: this.itemSelected[x].PrecioBruto !== undefined ? this.itemSelected[x].PrecioBruto.toString() : '',
+                    ShortText: txtBreve,
+                    PlannedPackage: this.itemSelected[x].Id,
+                    PlannedLine: this.itemSelected[x].LINE_NO
+                }
+
+                this.entrySheetData.EntrySheetServices.Items.push(toPush);
+            }
+        }
+
+        this.service.postCreateAsync(this.entrySheetData).subscribe(
+            (response) => {
+                if (!response.data) {
+                    this.mensajeError = 'Error del servidor, vuelva a intentarlo más tarde.'
+                }
+
+                if (response.data.Type === 'I') {
+                    this.mensajeError = response.data.Message;
+                    this.confirmationService.confirm({
+                        message: this.mensajeError,
+                        accept: () => {
+                            this.enviarMensajeGrilla.emit();
+                            this.closeModal.emit();
+                        },
+                        reject: () => {
+                            this.closeModal.emit();
+                        }
+                    }
+                    );
+                }
+
+                if (response.data.Type === 'S') {
+                    this.mensajeError = response.data.Message;
+                    this.confirmationService.confirm({
+                        message: this.mensajeError,
+                        accept: () => {
+                            this.enviarMensajeGrilla.emit();
+                            this.closeModal.emit();
+                        },
+                        reject: () => {
+                            this.closeModal.emit();
+                        }
+                    }
+                    );
+                }
+
+
+                if (response.data.Type === 'E') {
+                    this.mensajeError = response.data.Message;
+                    this.confirmationService.confirm({
+                        message: this.mensajeError,
+                        accept: () => {
+                            this.closeModal.emit();
+                        },
+                        reject: () => {
+                            this.closeModal.emit();
+                        }
+                    }
+                    );
+                }
+            },
+            (error) => {
+                this.confirmationService.confirm({
+                    message: error.error.Message,
+                    accept: () => {
+                        this.closeModal.emit();
+                    },
+                    reject: () => {
+                        this.closeModal.emit();
+                    }
+                }
+                );
+            }
+        );   
+
   } 
 
   cerrarModal() {
     this.closeModal.emit();
+  }
+
+  validarReferenciaRemito(event) {
+    let element = document.getElementById("ref");
+
+    if (element.classList.contains('ng-dirty') && element.classList.contains('ng-invalid')) {
+      element.classList.add('error');
+    } else {
+      element.classList.remove('error');
+    }
   }
 }
