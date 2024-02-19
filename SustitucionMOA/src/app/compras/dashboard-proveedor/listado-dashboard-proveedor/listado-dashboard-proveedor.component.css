@@ -1,5 +1,9 @@
-::ng-deep .estiloCalendarDashboard {
-    width: 33%;
+:host ::ng-deep .ui-calendar {
+    width: 100%;
+}
+
+:host ::ng-deep .ui-calendar .ui-inputtext {
+    width: calc(100% - 2.357em);
 }
 
 .fa {
@@ -51,12 +55,4 @@
 
 ::ng-deep .ui-paginator {
     width: 100% !important;
-}
-
-::ng-deep .ui-calendar {
-    width: 100%;
-}
-
-::ng-deep .ui-calendar .ui-inputtext {
-    width: calc(100% - 2.357em);
 }

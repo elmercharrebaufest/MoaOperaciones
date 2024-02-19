@@ -249,9 +249,9 @@ namespace SustitucionMOARepositorio.ConsultasEF
                 var result = resultado.First();
                 return result;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-               throw ex;
+               throw;
             }
         }
     }

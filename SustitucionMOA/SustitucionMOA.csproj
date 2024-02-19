@@ -260,7 +260,7 @@
     <Content Include="Content\images\header\logo_.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Content\images\icons\agregar-proveedor.svg">
+    <Content Include="Content\images\icons\add-user.svg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\images\icons\carpeta.svg" />
@@ -373,6 +373,8 @@
     <Content Include="src\app\compras\dashboard-comprador\orden-de-compra-detalle\ordenDeCompraDetalle.component.html" />
     <Content Include="src\app\compras\dashboard-comprador\proveedor-peticion\proveedor-peticion.component.css" />
     <Content Include="src\app\compras\dashboard-comprador\proveedor-peticion\proveedor-peticion.component.html" />
+    <Content Include="src\app\compras\dashboard-comprador\ver-ofertas\posicion-plazo\posicion-plazo.component.css" />
+    <Content Include="src\app\compras\dashboard-comprador\ver-ofertas\posicion-plazo\posicion-plazo.component.html" />
     <Content Include="src\app\compras\dashboard-comprador\ver-ofertas\textos-adjudicar\textos-adjudicar.component.css" />
     <Content Include="src\app\compras\dashboard-comprador\ver-ofertas\textos-adjudicar\textos-adjudicar.component.html" />
     <Content Include="src\app\compras\dashboard-comprador\ver-ofertas\ver-ofertas.component.css" />
@@ -389,6 +391,7 @@
     <Content Include="src\app\compras\dashboard-proveedor\cotizacion-formulario\cotizacion-servicio\cotizacion-servicio.component.html" />
     <Content Include="src\app\compras\dashboard-proveedor\listado-dashboard-proveedor\listado-dashboard-proveedor.component.css" />
     <Content Include="src\app\compras\dashboard-proveedor\listado-dashboard-proveedor\listado-dashboard-proveedor.component.html" />
+    <Content Include="src\app\compras\dashboard\dashboard.component.css" />
     <Content Include="src\app\compras\dashboard\revision-tecnica\revision-tecnica.component.css" />
     <Content Include="src\app\compras\dashboard\revision-tecnica\revision-tecnica.component.html" />
     <Content Include="src\app\compras\legajo-externo\legajo-externo.component.html" />
@@ -434,6 +437,7 @@
     <Content Include="src\app\reporte-contrato\detalle\reporte-contrato.detalle.component.html" />
     <Content Include="src\app\reporte-contrato\listado\reporte-contrato.listado.component.css" />
     <Content Include="src\app\reporte-contrato\listado\reporte-contrato.listado.component.html" />
+    <Content Include="Template\EnvioCamposSustentablesUcropit.html" />
     <Content Include="Template\NotificacionOrdenesDeCarga.html" />
     <Content Include="NOTUSE_UPDATE.DeployParameters.Release.xml">
       <DependentUpon>NOTUSE_UPDATE.DeployParameters.xml</DependentUpon>
@@ -1150,6 +1154,7 @@
     <Compile Include="Jobs\ActualizarSISAJob.cs" />
     <Compile Include="Jobs\ActualizarLocalidadesJob.cs" />
     <Compile Include="Jobs\CcSsObtenerArchivosUcropJob.cs" />
+    <Compile Include="Jobs\EnviarCamposUcropitJob.cs" />
     <Compile Include="Jobs\VerificarOrdenesFacturasCompensadasJob.cs" />
     <Compile Include="Jobs\VerificarTransporteOrdenesDeCargaFasonJob.cs" />
     <Compile Include="Jobs\AltaClienteSAPJob.cs" />
@@ -1219,6 +1224,7 @@
     <TypeScriptCompile Include="src\app\compras\dashboard-comprador\listado-dashboard-comprador\listado-dashboard-comprador.component.ts" />
     <TypeScriptCompile Include="src\app\compras\dashboard-comprador\orden-de-compra-detalle\ordenDeCompraDetalle.component.ts" />
     <TypeScriptCompile Include="src\app\compras\dashboard-comprador\proveedor-peticion\proveedor-peticion.component.ts" />
+    <TypeScriptCompile Include="src\app\compras\dashboard-comprador\ver-ofertas\posicion-plazo\posicion-plazo.component.ts" />
     <TypeScriptCompile Include="src\app\compras\dashboard-comprador\ver-ofertas\textos-adjudicar\textos-adjudicar.component.ts" />
     <TypeScriptCompile Include="src\app\compras\dashboard-comprador\ver-ofertas\ver-ofertas.component.spec.ts" />
     <TypeScriptCompile Include="src\app\compras\dashboard-comprador\ver-ofertas\ver-ofertas.component.ts" />
@@ -1227,7 +1233,6 @@
     <TypeScriptCompile Include="src\app\compras\dashboard-proveedor\cotizacion-formulario\cotizacion-material\cotizacion-material.component.ts" />
     <TypeScriptCompile Include="src\app\compras\dashboard-proveedor\cotizacion-formulario\cotizacion-material\plazo-de-oferta\plazo-de-oferta.component.ts" />
     <TypeScriptCompile Include="src\app\compras\dashboard-proveedor\cotizacion-formulario\cotizacion-servicio\cotizacion-servicio.component.ts" />
-    <TypeScriptCompile Include="src\app\compras\dashboard-proveedor\listado-dashboard-proveedor\listado-dashboard-proveedor.component.spec.ts" />
     <TypeScriptCompile Include="src\app\compras\dashboard-proveedor\listado-dashboard-proveedor\listado-dashboard-proveedor.component.ts" />
     <TypeScriptCompile Include="src\app\compras\dashboard\dashboard.component.ts" />
     <TypeScriptCompile Include="src\app\compras\dashboard\revision-tecnica\revision-tecnica.component.ts" />

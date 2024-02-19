@@ -85,9 +85,9 @@ export class LegajoExternoComponent implements OnInit {
                         this.mensajeComponent.setErrorMsg(error.message);
                     })
         } else if (tipoLegajo == "Chat Interno") {
-            let peticionDeOfertaId = this.legajo.ListaLegajos[0].PeticionDeOfertaId;
+            let SolpId = this.legajo.ListaLegajos[0].SolpId;
             this.blockUI.start("Generando...");
-            this.service.obtenerYExportarChat(peticionDeOfertaId.toString())
+            this.service.obtenerYExportarChat(SolpId.toString())
                 .subscribe(
                     (result) => {
                         var byteArray = new Uint8Array(result.FileContents);

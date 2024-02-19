@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SustitucionMOAModel.Entities
@@ -12,7 +13,8 @@ namespace SustitucionMOAModel.Entities
         public decimal Cantidad { get; set; }
         public int SolpPosicion_Id { get; set; }
         public string Texto { get; set; }
-
+        public decimal? Monto { get; set; }
+        public DateTime PlazoDeEntrega { get; set; }
 
         [ForeignKey("Adjudicacion_Id")]
         public virtual Adjudicacion Adjudicacion { get; set; }

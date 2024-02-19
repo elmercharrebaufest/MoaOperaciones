@@ -33,7 +33,7 @@ namespace SustitucionMOAWS.WSConsumers
             this.repositorio = repositorio;
         }
 
-        public CrearSolpConsumerMOAResponse AgregarRegistroInfo(List<RegistroInfoDto> registrosInfo, bool esModificar)
+        public CrearSolpConsumerMOAResponse AgregarRegistroInfo(List<RegistroInfoDto> registrosInfo)
         {
             var fecha = DateTime.Now.ToString("yyyy-MM-dd");
             var nombreArchivoLlamada = string.Concat(fecha, " - llamada agregarRegistro.xml");
@@ -45,7 +45,7 @@ namespace SustitucionMOAWS.WSConsumers
             MEWISCALEVAL[] MEWISCALEVALE = new MEWISCALEVAL[] { };
             MEWIEINE MEWIEINEE = new MEWIEINE();
 
-            var registrosSap = DevolverDatosSapRegistro(registrosInfo, esModificar);
+            var registrosSap = DevolverDatosSapRegistro(registrosInfo);
 
             //var serxml = new System.Xml.Serialization.XmlSerializer(registrosSap.GetType());
             //var ms = new MemoryStream();
@@ -100,7 +100,7 @@ namespace SustitucionMOAWS.WSConsumers
             return respuesta;
         }
 
-        private List<RegistroInfoSAP> DevolverDatosSapRegistro(List<RegistroInfoDto> registros, bool esModificar)
+        private List<RegistroInfoSAP> DevolverDatosSapRegistro(List<RegistroInfoDto> registros)
         {
             var hoy = DateTime.Now.Date;
             var registrosSap = new List<RegistroInfoSAP>();
@@ -163,9 +163,9 @@ namespace SustitucionMOAWS.WSConsumers
                         PRICE_DATE = "X",       
                         
                     },
-                };
+                };               
 
-                if (esModificar)
+                if (registro.EsModificar)
                 {
                     registroInfoSAP.CONDITION = new List<MEWICONDITION>()
                     {
@@ -217,7 +217,7 @@ namespace SustitucionMOAWS.WSConsumers
 
     public interface IAgregarRegistroInfoConsumerMOA
     {
-        CrearSolpConsumerMOAResponse AgregarRegistroInfo(List<RegistroInfoDto> registrosInfo, bool esModificar);
+        CrearSolpConsumerMOAResponse AgregarRegistroInfo(List<RegistroInfoDto> registrosInfo);
 
     }
 

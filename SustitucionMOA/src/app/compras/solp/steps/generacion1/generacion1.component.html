@@ -31,12 +31,12 @@
                         </div>
 
                         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 margenInput">
-                            Mail *
+                            Mail fiscal
                             <div class="styled-select">
                                 <input id="txtUsuarioMail" type="text" formControlName="mail" (blur)="onBlur('mail')" pInputText [(ngModel)]="model.mail" class="fourRounded" placeholder="Ingrese el mail" aria-controls="tableModal">
                             </div>
-                            <div *ngIf="mostrarValidacion('mail', model.mail)">
-                                <p class="text-danger">campo obligatorio</p>
+                            <div *ngIf="formulario.get('mail').hasError('pattern') && formulario.get('mail').touched" class="text-danger">
+                                El formato del correo electrónico no es válido.
                             </div>
                         </div>
                     </div>

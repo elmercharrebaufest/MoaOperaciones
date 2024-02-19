@@ -79,6 +79,7 @@ import { PlazoDeOfertaComponent } from './dashboard-proveedor/cotizacion-formula
 import { VisalizarPrecioComponent } from './dashboard-comprador/ver-ofertas/visualizar-precio/visualizar-precio.component';
 import { ReporteOcComponent } from './reporte-oc/reporte-oc.component';
 import { ChatInternoComponent } from './chat-interno/chat-interno.component';
+import { PosicionPlazoComponent } from './dashboard-comprador/ver-ofertas/posicion-plazo/posicion-plazo.component';
 
 @NgModule({
     imports: [
@@ -158,7 +159,8 @@ import { ChatInternoComponent } from './chat-interno/chat-interno.component';
         PlazoDeOfertaComponent,
         ReporteOcComponent,
         VisalizarPrecioComponent,
-        ChatInternoComponent
+        ChatInternoComponent,
+        PosicionPlazoComponent
     ],
     providers: [
         ComprasService,
