@@ -2,9 +2,7 @@
           [width]="950" [draggable]="false" [closable]="true"
           (onHide)="onCerrarPeticion()" appendTo="body" positionTop="30"
           [height]="450"
-          [max] [contentStyle]="{
-        'max-height':'450px',
-        'min-height':'400px'}">
+          [max] [contentStyle]="{'max-height':'450px', 'min-height':'400px'}">
     <p-header class="headerModal" style="color: #067935;">
         <b>Revisión Técnica - </b> <span *ngIf="peticion != null">Petici&oacute;n de oferta #{{peticion.Id}}</span>
     </p-header>
@@ -56,7 +54,7 @@
                             <div class="col-md-3">
                                 <strong style="color: #666666;">Propuesta técnica</strong>
                             </div>
-                            <div *ngIf="p.Cotizacion && p.Cotizacion.CotizacionEstado_Id == 1 else sinCotizacion">
+                            <div *ngIf="p.Cotizacion && p.Cotizacion.CotizacionEstado_Id == 1 else noFinalizada">
                                 <div *ngIf="peticion.TipoPosicionCodigo != 'MATERIALES'">
                                     <div *ngIf="p.Cotizacion.TieneObservacionTecnica" class="col-md-7">
                                         {{p.Cotizacion.ObservacionTecnica}}
@@ -116,8 +114,8 @@
                                     </span>
                                 </div>
                             </div>
-                            <ng-template #sinCotizacion>
-                                Sin Cotización
+                            <ng-template #noFinalizada>
+                                Cotización sin finalizar
                             </ng-template>
                         </div>
                         <hr>

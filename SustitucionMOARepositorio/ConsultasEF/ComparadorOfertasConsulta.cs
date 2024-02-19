@@ -80,13 +80,11 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                                         {
                                                                             Descripcion = pop.SolpPosicion.Unidad.Descripcion,
                                                                             CodigoSap = pop.SolpPosicion.Unidad.CodigoSap
-
                                                                         },
                                                                         Centro = new TablaSapDto
                                                                         {
                                                                             Descripcion = pop.SolpPosicion.Centro.Descripcion,
                                                                             CodigoSap = pop.SolpPosicion.Centro.CodigoSap
-
                                                                         },
                                                                         CentroId = pop.SolpPosicion.Centro_Id,
 
@@ -145,8 +143,6 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                                 .Where(p => p.Circular.RequiereCambioDeFechas == true && p.Circular.PlazoDeOferta.HasValue)
                                                                 .OrderByDescending(p => p.Circular.Id).FirstOrDefault().Circular.FechaCreacion,
                                                     PlazoDeOfertaCierre = po.Cierres.Any() ? po.Cierres.OrderByDescending(p => p.Fecha).FirstOrDefault().Fecha : (DateTime?)null,
-
-
                                                     CotizacionEstado = cotizacion.CotizacionEstado.Descripcion,
                                                     Cotizacion = cotizacion != null ? new CotizacionDto()
                                                     {
@@ -156,6 +152,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                         FechaCreacionFormateada = SqlFunctions.DateName("day", u.Cotizaciones.FirstOrDefault().FechaCreacion) + "/" + SqlFunctions.DatePart("month", u.Cotizaciones.FirstOrDefault().FechaCreacion) + "/" + SqlFunctions.DateName("year", u.Cotizaciones.FirstOrDefault().FechaCreacion),
                                                         UsuarioCreador_Id = u.Cotizaciones.FirstOrDefault().UsuarioCreador_Id,
                                                         CotizacionEstadoDescripcion = cotizacion.CotizacionEstado.Descripcion,
+                                                        CotizacionEstado_Id = cotizacion.CotizacionEstado_Id,
                                                         RespetaMaterialesDescripcion = u.Cotizaciones.FirstOrDefault().RespetaMateriales == true ? "Respeta" : "No Respeta",
                                                         RespetaMateriales = u.Cotizaciones.FirstOrDefault().RespetaMateriales,
                                                         RespetaServicios = u.Cotizaciones.FirstOrDefault().RespetaServicios,
