@@ -67,6 +67,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                    where u.Id == Usuario_Id
                                    select u).First();
                 var rol = usuario.Roles.Any(r => r.Codigo == "COMPRADOR") ? "SOLP" : "COMPRADOR";
+                var visualizarEditarOC = usuario.ObtenerPermisos().Contains("EDITAR OC");
                 var sinSolps = !Solps.Any();
                 var resultado = from x in contexto.Set<Solp>()
                                 where (sinSolps || Solps.Contains(x.NroSolp)) &&
@@ -84,6 +85,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                 (!ValorTipoImputacion.Any() || x.Posiciones.Any(c => ValorTipoImputacion.Contains((int)c.ValorTipoImputacion_Id)) || x.Posiciones.Any(p => p.Subposiciones.Any(c => ValorTipoImputacion.Contains((int)c.TipoImputacion_Id))))
                                 select new SolpDto
                                 {
+                                    VerEditarOC = visualizarEditarOC,
                                     UsuarioActual = new UsuarioDto { Mail = x.UsuarioCreacion != null ? x.UsuarioCreacion.Mail : "" },
                                     Id = x.Id,
                                     NroSolp = x.NroSolp,

@@ -335,7 +335,7 @@
                                                 <th class="columna">Moneda</th>
                                                 <th class="columna">Estado</th>
                                                 <th class="columna"></th>
-                                                <th class="columna"></th>
+                                                <th class="columna" *ngIf="rowData.VerEditarOC"></th>
                                             </tr>
                                         </ng-template>
                                         <ng-template pTemplate="emptymessage">
@@ -358,7 +358,7 @@
                                                         Ver detalle
                                                     </button>
                                                 </td>
-                                                <td class="columna">
+                                                <td class="columna" *ngIf="rowData.VerEditarOC">
                                                     <button class="publicar btn btn-success"
                                                             (click)="editarOrdenDeCompra(orden.NumeroOrdenDeCompra)">
                                                         Editar

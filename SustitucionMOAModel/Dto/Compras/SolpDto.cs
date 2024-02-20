@@ -107,6 +107,7 @@ namespace SustitucionMOAModel.Dto
         public string UsuarioCreadorMail { get; set; }
         public string Periodo { get; set; }
         public int Cantidad { get; set; }
+        public bool VerEditarOC { get; set; }
 
         public SolpDto() { }
         public SolpDto(Solp entity)

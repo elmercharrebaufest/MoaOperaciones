@@ -6,15 +6,17 @@
         <b>Editar orden de compra N° {{ordenDeCompra?.NumeroOrdenDeCompra}} </b>
     </p-header>
     <div class="container-fluid" style="height: 273.75px;">
-        <p>
-            <ngb-alert type="danger" [dismissible]="false"
-                *ngIf="mensaje !== undefined && mensaje !== null && mensaje !== ''">
-                <strong>Error! </strong>{{ mensaje }}
-            </ngb-alert>
-        </p>
+        
         <div *ngIf="ordenDeCompra != undefined">
             <p-tabView>
                 <p-tabPanel header="Posiciones" [selected]="true">
+                    <p>
+                        <ngb-alert type="danger" [dismissible]="true" *ngIf="mensaje !== undefined && mensaje !== null && mensaje !== ''" (close)="mensaje = null">
+                            <strong>Error! </strong>{{ mensaje }}
+                        </ngb-alert>
+                    </p>                   
+                    
+                    
                     <div class="row">
                         <div class="col-md-2">
                             <p-dropdown dataKey="Codigo" [options]="monedaCompras" placeholder="Moneda"
@@ -37,7 +39,7 @@
                             [value]="ordenDeCompra?.AdjudicacionPosiciones" dataKey="Id">
                             <ng-template pTemplate="header" let-columns>
                                 <tr>
-                                    <th class="columna" style="width: 43px; background-color: #4760ac !important;
+                                    <th class="columna" style="width: 43px; background-color: #4a1884 !important;
                                     text-transform: none !important;">Entrega final</th>
                                     <th class="columna" style="width: 43px; background-color: #4760ac !important;
                                                     text-transform: none !important;">Pos.</th>
@@ -61,7 +63,7 @@
                                                     text-transform: none !important;">Precio<br /></th>
                                     <th class="columna" style="width: 80px; background-color: #4760ac !important;
                                                     text-transform: none !important;">Precio<br /> Total</th>
-                                    <th class="columna" style="width: 80px; background-color: #4760ac !important;
+                                    <th class="columna" style="width: 80px; background-color: #4a1884 !important;
                                         text-transform: none !important;"></th>
 
                                 </tr>
@@ -171,12 +173,12 @@
                                     <tr>
                                         <th class="columna" style="width: 43px; background-color: #4760ac !important;">
                                         </th>
-                                        <th class="columna" style="width: 60px; background-color: #4760ac !important;
+                                        <th class="columna" style="width: 60px; background-color: #4a1884 !important;
                                     text-transform: none !important;">Entrega final</th>
                                         <th class="columna" style="background-color: #4760ac !important;">Pos.</th>
                                         <th class="columna" style="background-color: #4760ac !important;">Descripción
                                         </th>
-                                        <th class="columna" style="background-color: #4760ac !important;">Región</th>
+                                        <th class="columna" style="background-color: #4a1884 !important;">Región</th>
                                         <th class="columna" style="background-color: #4760ac !important;">Precio Total
                                         </th>
                                         <th class="columna" style="background-color: #4760ac !important;">Fecha de
@@ -185,10 +187,11 @@
                                         <th class="columna" style="background-color: #4760ac !important;">Plazo de
                                             oferta
                                         </th>
+                                        <th class="columna" style="background-color: #4a1884 !important;"> </th>
                                     </tr>
                                 </ng-template>
                                 <ng-template pTemplate="body" let-posicionCompra let-expanded="expanded"
-                                    let-columns="columns" let-editing="editing" let-rowIndexPos="rowIndex">
+                                    let-columns="columns" let-editing="editing" let-indexPos="rowIndex">
                                     <tr *ngIf="!posicionCompra.Eliminado">
                                         <td>
                                             <a href="#" [pRowToggler]="posicionCompra">
@@ -230,17 +233,20 @@
                                         <td class="columna">
                                             {{posicionCompra.PlazoDeOferta }}
                                         </td>
+                                        <td style="text-align:center">
+                                            <img style="cursor:pointer !important" src="./Content/images/icons/trashRed.svg"
+                                                alt="imageAlt" (click)="eliminarRowServicio(indexPos)" style="width: 26px;" />
+    
+                                        </td>
                                     </tr>
                                 </ng-template>
                                 <ng-template pTemplate="rowexpansion" let-posicionCompra let-columns="columns">
-                                    <tr>
-                                        <td [attr.colspan]="8">
-                                            <div class="col-sm-12 col-md-12 col-lg-12"
-                                                style="font-size:16px;padding:20px">
+                                    <tr *ngIf="!posicionCompra.Eliminado">
+                                        <td [attr.colspan]="9">
+                                            <div class="col-sm-12 col-md-12 col-lg-12" style="font-size:16px;padding:20px">
                                                 <p-table [value]="posicionCompra?.SubposicionesCompras">
                                                     <ng-template pTemplate="header">
-                                    <tr>
-
+                                                        <tr>
                                         <th class="columna" style="background-color: #4760ac !important;">Subposición
                                         </th>
                                         <th class="columna" style="background-color: #4760ac !important;">Código</th>

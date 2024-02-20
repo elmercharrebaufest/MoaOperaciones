@@ -18,7 +18,7 @@ import { SelectItem } from 'ng2-select';
     templateUrl: './editar-orden-de-compra.component.html',
     styleUrls: ['./editar-orden-de-compra.component.css']
 })
-export class EditarOrdenDeCompraComponent extends ListBaseComponent  implements OnInit, OnChanges {
+export class EditarOrdenDeCompraComponent extends ListBaseComponent implements OnInit, OnChanges {
 
     @Input()
     displayEditarOc: boolean;
@@ -42,13 +42,13 @@ export class EditarOrdenDeCompraComponent extends ListBaseComponent  implements 
         protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService,
         protected route: ActivatedRoute, protected router: Router, private confirmationService: ConfirmationService, private formBuilder: FormBuilder) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
-    }    
+    }
     ngOnChanges(changes: SimpleChanges): void {
         this.getCombos();
-        
+
     }
 
-    ngOnInit() {       
+    ngOnInit() {
         this.getCombos();
         this.es = {
             firstDayOfWeek: 1,
@@ -60,14 +60,14 @@ export class EditarOrdenDeCompraComponent extends ListBaseComponent  implements 
             today: 'Hoy',
             clear: 'Borrar'
         }
-    }   
+    }
 
-    onCerrarEditarOc() {     
+    onCerrarEditarOc() {
         this.mensaje = "";
         this.cerrarEditarOcEmitter.next();
     }
 
-    onGuardarEditarOc(){
+    onGuardarEditarOc() {
         this.mensaje = "";
         this.guardarEditarOcEmitter.emit(this.ordenDeCompra);
     }
@@ -83,7 +83,7 @@ export class EditarOrdenDeCompraComponent extends ListBaseComponent  implements 
                     } else if (result.info != undefined) {
                         this.floatMsgService.setInfoMsg(result.info);
                     } else {
-                        this.combos = result;                    
+                        this.combos = result;
                         this.setComboMoneda();
                         this.setComboRegion();
                         this.setComboCondicionesDePago();
@@ -109,9 +109,9 @@ export class EditarOrdenDeCompraComponent extends ListBaseComponent  implements 
     }
 
     public setComboRegion(): void {
-        if (this.combos != undefined) {            
+        if (this.combos != undefined) {
             this.regiones = this.combos.Regiones;
-            
+
         }
     }
 
@@ -142,7 +142,7 @@ export class EditarOrdenDeCompraComponent extends ListBaseComponent  implements 
         }
     }
 
-    
+
     eliminarRow(index: number) {
         if (!this.verificarEliminacionPosiciones()) {
             if (this.ordenDeCompra.AdjudicacionPosiciones != null) {
@@ -151,17 +151,26 @@ export class EditarOrdenDeCompraComponent extends ListBaseComponent  implements 
         }
     }
 
-    eliminarRowSub(posicion: any, subposicion: number) {
+    eliminarRowServicio(index: number) {
         if (!this.verificarEliminacionPosiciones()) {
-            if (posicion != null && posicion.SubposicionesCompras != null) {
-                posicion.SubposicionesCompras[subposicion].Eliminado = true;
-                const todasSubposicionesEliminadas = posicion.SubposicionesCompras.every(subposicion => subposicion.Eliminado);
-                if (todasSubposicionesEliminadas) {
-                    posicion.Eliminado = true;
-                }
+            if (this.ordenDeCompra.AdjudicacionPosiciones != null) {
+                this.ordenDeCompra.AdjudicacionPosiciones[index].Eliminado = true;
+                this.ordenDeCompra.AdjudicacionPosiciones[index].SubposicionesCompras.forEach(subpo => {                   
+                    subpo.Eliminado = true;                   
+                });
             }
         }
-    }    
+    }
+
+    eliminarRowSub(posicion: any, subposicion: number) {
+        if (posicion != null && posicion.SubposicionesCompras != null) {
+            posicion.SubposicionesCompras[subposicion].Eliminado = true;
+            const todasSubposicionesEliminadas = posicion.SubposicionesCompras.every(subposicion => subposicion.Eliminado);
+            if (todasSubposicionesEliminadas) {
+                posicion.Eliminado = true;
+            }
+        }
+    }
 
     verificarEliminacionPosiciones(): boolean {
         this.mensaje = "";
@@ -170,21 +179,20 @@ export class EditarOrdenDeCompraComponent extends ListBaseComponent  implements 
             const posicionesNoEliminadas = this.ordenDeCompra.AdjudicacionPosiciones.filter(posicion => !posicion.Eliminado);
 
             if (posicionesNoEliminadas.length === 1) {
-                this.mensaje = 'No es posible realizar la acción';
+                this.mensaje = 'No se pueden eliminar todas las posiciones en una orden de compra';
                 return eliminado = true;
             }
         }
         return eliminado;
     }
 
-     
-      validarPorcentaje(entrada: string, porcentaje: number) {        
+    validarPorcentaje(entrada: string, porcentaje: number) {
         this.ordenDeCompra.CondicionDePago[entrada] = Math.min(100, Math.max(0, porcentaje));
-      }
+    }
 
     public onSelectMoneda(ordenDeCompra: any, event) {
         ordenDeCompra.MonedaCodigo = event.value.Codigo;
-        ordenDeCompra.MonedaId = event.value.Id;        
+        ordenDeCompra.MonedaId = event.value.Id;
     }
 
     public onSelectRegion(posiciones: any, event) {
@@ -195,12 +203,12 @@ export class EditarOrdenDeCompraComponent extends ListBaseComponent  implements 
 
     public onSelectCondicionesPago(ordenDeCompra: any, event) {
         ordenDeCompra.CondicionDePagoCodigo = event.value.Codigo;
-        ordenDeCompra.CondicionDePagoId = event.value.Id;    
+        ordenDeCompra.CondicionDePagoId = event.value.Id;
     }
 
     public onSelectCondicionesImportacion(ordenDeCompra: any, event) {
         ordenDeCompra.CondicionDeImportacionCodigo = event.value.Codigo;
-        ordenDeCompra.CondicionDeImportacionId = event.value.Id;        
+        ordenDeCompra.CondicionDeImportacionId = event.value.Id;
     }
 
     abrilModalTextos() {
@@ -215,17 +223,17 @@ export class EditarOrdenDeCompraComponent extends ListBaseComponent  implements 
         this.displayTextos = false;
     }
 
-    calcularPrecioTotalPosiciones(posicion: any) {      
-        if (posicion) {             
-            if (posicion.SubposicionesCompras != null) {              
+    calcularPrecioTotalPosiciones(posicion: any) {
+        if (posicion) {
+            if (posicion.SubposicionesCompras != null) {
                 const totalSubposiciones = posicion.SubposicionesCompras.reduce(
                     (total, subposicion) => total + (subposicion.Cantidad * subposicion.PrecioBruto),
                     0
                 );
-                posicion.PrecioTotal = totalSubposiciones;   
+                posicion.PrecioTotal = totalSubposiciones;
             }
         }
     }
-    
-  
+
+
 }

@@ -2899,7 +2899,6 @@ namespace SustitucionMOAUtils.Services
                     todasLasSolp.FirstOrDefault().ItemPorPagina = 10;
                 }
 
-
                 foreach (var item in todasLasSolp.Items)
                 {
                     item.CentroFormateado = item.PosicionCompras != null ? string.Join(", ", item.PosicionCompras.OrderBy(x => x.CentroCodigo).GroupBy(x => x.CentroCodigo).Select(x => x.Key)) : "";
