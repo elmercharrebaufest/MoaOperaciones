@@ -480,7 +480,6 @@ namespace SustitucionMOAUtils.Services
 
         public List<ConsultaDto> ListarConsultas(int usuarioId, bool obtenerTodos)
         {
-            var ret = new List<ConsultaDto>();
 
             var includes = new List<Expression<Func<Consulta, object>>>();
             //includes.Add(x => x.Detalle);
@@ -493,7 +492,7 @@ namespace SustitucionMOAUtils.Services
             var esInterno = usuario.TienePermiso(PermisoEnum.ConsultaAbm);
             var categorias = usuario.Roles.Where(x => x.Categorias.Any()).SelectMany(x => x.Categorias).Select(x => x.Id).ToList();
 
-            ret = repositorio.Listar<Consulta>(x => (obtenerTodos && categorias.Contains(x.Categoria.Id)) || x.Usuario_Id == usuarioId || x.Usuario.CUITRegistro == usuario.CUITRegistro, includes: includes)
+            var ret = repositorio.Listar<Consulta>(x => (obtenerTodos && categorias.Contains(x.Categoria.Id)) || x.Usuario_Id == usuarioId || x.Usuario.CUITRegistro == usuario.CUITRegistro, includes: includes)
                 .Select(x => new ConsultaDto
                 {
                     Id = x.Id,
@@ -547,7 +546,10 @@ namespace SustitucionMOAUtils.Services
                         Id = x.Detalle.CausaConsulta.Id,
                         Nombre = x.Detalle.CausaConsulta.Nombre
                     } : null,
-                    RelacionadaPorCodigo = x.Usuario_Id != usuarioId
+                    RelacionadaPorCodigo = x.Usuario_Id != usuarioId,
+                    GeneradaInternamente = x.UsuarioInterno_Id != null && x.UsuarioInterno_Id != usuarioId,
+                    GeneradaPorUsuarioSesion = x.UsuarioInterno_Id == usuarioId,
+                    GeneradaExternamente = x.UsuarioInterno_Id == null
                 }).ToList();
 
             return ret;

@@ -38,6 +38,11 @@ export interface Consulta {
     Usuario?;
     PuedeReabrir;
 
+    RelacionadaPorCodigo?: boolean;
+    GeneradaInternamente?: boolean;
+    GeneradaExternamente?: boolean;
+    GeneradaPorUsuarioSesion?: boolean;
+
     Rubro: string;
 }
 
@@ -101,4 +106,18 @@ export class Destinatario {
     Mail: string;
     UsuarioId: number;
     NombreTipoUsuario;
+}
+
+export enum OpcionFiltroAsociadaCreacion {
+    Externa = "Externa",
+    PorMOA = "Por MOA",
+    PorUsuario = "Por uno",
+}
+
+export function obtenerOpcionesFiltroPorCreacion(): Array<{ key: OpcionFiltroAsociadaCreacion, value: OpcionFiltroAsociadaCreacion }> {
+    return [
+        { key: OpcionFiltroAsociadaCreacion.Externa, value: OpcionFiltroAsociadaCreacion.Externa },
+        { key: OpcionFiltroAsociadaCreacion.PorMOA, value: OpcionFiltroAsociadaCreacion.PorMOA },
+        { key: OpcionFiltroAsociadaCreacion.PorUsuario, value: OpcionFiltroAsociadaCreacion.PorUsuario },
+    ]
 }

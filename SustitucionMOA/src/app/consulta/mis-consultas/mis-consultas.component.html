@@ -86,7 +86,7 @@
         <div class="row myRow">
             <div class="clearfix">
                 <div class="display nowrap no-footer rounded shadow animate consulta-table" #containerList>
-                    <p-table #dt [columns]="colsFiltered" [value]="consultas" dataKey="Id" [paginator]="true"
+                    <p-table #dt [columns]="colsFiltered" [value]="consultasFiltradas" dataKey="Id" [paginator]="true"
                         [rows]="15" [responsive]="true" [scrollable]="false"
                         ([style])="{'width.px': this.containerList.offsetWidth}" sortField="FechaUltimaModificacion"
                         sortOrder="-1">
@@ -96,10 +96,10 @@
                                     <button *ngIf="!isExternal" type="button" pButton icon="fa fa-file-excel-o "
                                         iconPos="left" label="Exportar" (click)="exportConsultas()"
                                         style="background-color:#075088;"></button> &nbsp;
-
-                                    <p-toggleButton [(ngModel)]="showAllRelated" onIcon="pi pi-circle-on"
-                                        (onChange)="cambiarVerRelacionados(dt)" onLabel="Todas" offLabel="Solo mias"
-                                        offIcon="pi pi-circle-off" [style]="{'margin-right': '1rem'}"></p-toggleButton>
+                                    <p-multiSelect *ngIf="esInterno" [(ngModel)]="filtrosPorCreacionSeleccionados"
+                                        [options]="opcionesFiltroPorCreacion" (onChange)="filtrarPorTipoGeneracion()"
+                                        optionLabel="key" defaultLabel="Todos" [filter]="false"
+                                        [style]="{'margin-right': '1rem','position':'relative','top':'1.25rem'}"></p-multiSelect>
                                     <button type="button" pButton icon="fa fa-refresh" (click)="listarConsultas()"
                                         style="background-color: #067935;"></button> &nbsp;
                                     <p-toggleButton [(ngModel)]="showFilters" onIcon="pi pi-filter" onLabel=""

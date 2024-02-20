@@ -14,7 +14,7 @@ import { ModalService } from './../../common/services/ModalService';
 import { Seccion } from '../../common/models/seccion';
 import { ConsultaService } from '../consulta.service';
 import { Table } from 'primeng/table';
-import { Categoria, Consulta, EstadoConsulta, Subcategoria, Materiales } from '../consulta';
+import { Categoria, Consulta, EstadoConsulta, Subcategoria, Materiales, obtenerOpcionesFiltroPorCreacion, OpcionFiltroAsociadaCreacion } from '../consulta';
 import { SelectItem } from 'primeng/components/common/selectitem';
 import { formatDate } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -54,6 +54,7 @@ export class MisConsultasComponent extends ListBaseComponent {
     cols: any[];
     colsFiltered: any[];
     consultas: Consulta[];
+    consultasFiltradas: Consulta[];
     estados: EstadoConsulta[];
     estadosSummary: EstadoConsulta[];
     categorias: Categoria[];
@@ -68,11 +69,13 @@ export class MisConsultasComponent extends ListBaseComponent {
     datesRange: SelectItem[] = [{ label: 'Fecha', value: null }, { label: 'Desde', value: 'desde' }, { label: 'Hasta', value: 'hasta' }, { label: 'Rango', value: 'rango' }];
     isExternal: boolean;
     showFilters: boolean;
-    showAllRelated: boolean = true;
     windowSize: string;
     esInterno = this.isAuthorized('CONSULTA ABM');
     widthModal: string;
     asunto: string;
+
+    opcionesFiltroPorCreacion = obtenerOpcionesFiltroPorCreacion();
+    filtrosPorCreacionSeleccionados: { key: OpcionFiltroAsociadaCreacion, label: OpcionFiltroAsociadaCreacion }[] = [];
 
     @HostListener('window:resize', ['$event']) onResize(event) {
         this.setColumnasByWindowSize();
@@ -307,6 +310,8 @@ export class MisConsultasComponent extends ListBaseComponent {
                             x.FechaCreacion = new Date(this.getDateFromAspNetFormat(x.FechaCreacion));
                             x.FechaUltimaModificacion = new Date(this.getDateFromAspNetFormat(x.FechaUltimaModificacion));
                         });
+                        this.filtrarPorTipoGeneracion();
+
                         this.estados = result.data.estados;
                         this.estados.forEach(e => {
                             let estado = result.data.estados.filter(x => x.Id == e.Id)[0];
@@ -435,12 +440,40 @@ export class MisConsultasComponent extends ListBaseComponent {
             }
         }
     }
-    cambiarVerRelacionados(dt: Table) {
-        const field = 'RelacionadaPorCodigo';
-        if (this.showAllRelated) {
-            dt.filter(null, field, undefined)
+    filtrarPorTipoGeneracion() {
+        if (!this.consultas || !this.consultas.length) {
             return;
         }
-        dt.filter(false, field, 'equals')
+        const filtrarPorGeneradasPorUsuario = this.filtrarPorGeneradasPorUsuario();
+        const filtrarPorGeneradasPorMOA = this.filtrarPorGeneradasPorMOA();
+        const filtrarPorGeneradasPorExterno = this.filtrarPorGeneradasPorExterno();
+        //Opción donde se ven todas las consultas
+        //Retornamos sin filtrar
+        if ((filtrarPorGeneradasPorExterno &&
+            filtrarPorGeneradasPorMOA &&
+            filtrarPorGeneradasPorUsuario) ||
+            (!filtrarPorGeneradasPorExterno &&
+                !filtrarPorGeneradasPorMOA &&
+                !filtrarPorGeneradasPorUsuario) ||
+            this.filtrosPorCreacionSeleccionados.length == 0) {
+            this.consultasFiltradas = [...this.consultas]
+            return;
+        }
+
+        this.consultasFiltradas = this.consultas.filter(consulta => {
+            return (filtrarPorGeneradasPorExterno && consulta.GeneradaExternamente) ||
+                (filtrarPorGeneradasPorMOA && consulta.GeneradaInternamente) ||
+                (filtrarPorGeneradasPorUsuario && consulta.GeneradaPorUsuarioSesion)
+        })
+    }
+
+    filtrarPorGeneradasPorUsuario() {
+        return !!this.filtrosPorCreacionSeleccionados.find(sel => sel.key === OpcionFiltroAsociadaCreacion.PorUsuario)
+    }
+    filtrarPorGeneradasPorMOA() {
+        return !!this.filtrosPorCreacionSeleccionados.find(sel => sel.key === OpcionFiltroAsociadaCreacion.PorMOA)
+    }
+    filtrarPorGeneradasPorExterno() {
+        return !!this.filtrosPorCreacionSeleccionados.find(sel => sel.key === OpcionFiltroAsociadaCreacion.Externa)
     }
 }
