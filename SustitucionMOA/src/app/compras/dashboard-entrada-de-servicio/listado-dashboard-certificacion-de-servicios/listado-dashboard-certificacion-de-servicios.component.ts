@@ -67,8 +67,8 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
   fechaFin = "";
   length = 0;
   pageSize: number = 10;
-  pageIndex: number = 1;                                        
-  @ViewChild('paginator') paginator: Paginator
+    pageIndex: number = 1;
+    @ViewChild('paginator') paginator: Paginator
   subscripcionPO: Subscription
   ordenCompraId: string = "";
   //MMSN-519
@@ -96,6 +96,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
 
   //#region Variables 
   tablaPO: any[];
+  selectedItems: any[][][][] = [];
   cols: any[];
   usuario: string;
   vendedor: string;
@@ -106,6 +107,9 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
   //Filtros
   ocFilterValues: string[] = [];
   tablaPOCopy: any[] = []; //copia de la tabla original.
+  originalItems: any[] = []; // copia de los items de las posiciones.
+  orderIndex: number = 0;
+  posIndex: number = 0;
     
   ngOnInit() {       
     this.navService.setSeccionList([]);
@@ -164,13 +168,19 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
   }
 
   clearCheckboxes(): void {
+    this.tablaPO = this.tablaPOCopy;
     this.numeroLineaSelected.clear();
-    this.itemSelected.forEach(( item: any ) => { item.isSelected = false });
-    this.itemIdSelected.splice(0, this.itemIdSelected.length);
-    this.itemSelected.splice(0, this.itemSelected.length);
+    this.itemSelected = [];
+    this.itemIdSelected = [];
+    this.tablaPO.forEach((order: any) => {
+      order.Posiciones.forEach((pos: any) => {
+        pos.isSelected = false;
+        pos.Items.forEach((item: any) => {
+          item.isSelected = false;
+        })
+      })
+    })
   }
-
-  
   
   //MMSN-519
   toggleRow(rowData: any) {
@@ -205,6 +215,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
 
 
         this.getListarPO(this.proveedor, this.ordenCompraId, startDate, endDate);
+        this.tabla.first = 0;
     }
 
     //getOrders(periodo: string, fecha_inicio: string, fecha_fin: string) {
@@ -528,11 +539,50 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
   }
 
   clearCheckbox(item: any): void {
+    if( this.originalItems.length > 0 ){
+      this.tablaPO[this.orderIndex].Posiciones[this.posIndex].Items = this.originalItems;
+    }
     this.numeroLineaSelected.clear();
     item.isSelected = false;
+    this.tablaPO.forEach(order => {
+      order.Posiciones.forEach((pos: any) => {
+        pos.isSelected= false;
+      })
+    })
     this.itemIdSelected = this.itemIdSelected.filter(obj => { return obj !== item.Id });
 
     this.itemSelected = this.itemSelected.filter(obj => { return obj !== item });
   }
 
+  isGet100(item: any): boolean {
+    return item.Porcentaje === '100';
+  }
+
+  selectAllItems(event: any, items: any, orderIndex: any, posIndex: any): void {
+    if (event.target.checked) {
+      this.originalItems = [];
+      this.originalItems = items.slice(); // Guardar una copia de los items originales
+      this.orderIndex = orderIndex; // Se guarda el indice de la orden.
+      this.posIndex = posIndex; // Se guarda el indice de la posición.
+      const itemsFiltered = items.filter((row: any) => !this.isGet100(row));
+      itemsFiltered.forEach((item: any) => {
+        item.isSelected = true;
+        this.itemIdSelected.push(item.PosicionId);
+      });
+      if(itemsFiltered.length > 0){
+        this.itemSelected = itemsFiltered;
+        this.tablaPO[orderIndex].Posiciones[posIndex].Items = itemsFiltered; // Cambia el estado de los input check
+      }
+    } else {
+      this.restoreItemsStatus(orderIndex, posIndex);
+    }
+  }
+
+  restoreItemsStatus(orderIndex: any = this.orderIndex, posIndex: any = this.posIndex): void {
+    if( this.originalItems.length > 0 ){
+      this.tablaPO[orderIndex].Posiciones[posIndex].Items = this.originalItems;
+    }
+    this.clearCheckboxes();
+  }
+  
 }

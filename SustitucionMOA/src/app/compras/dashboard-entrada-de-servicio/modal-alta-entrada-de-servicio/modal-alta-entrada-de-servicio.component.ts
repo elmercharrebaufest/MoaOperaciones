@@ -150,7 +150,7 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
         let PONumber = this.elementSelected !== undefined ? this.elementSelected.NumeroOrdenDeCompra : '';
         //Array Cantidad
         this.itemSelected.forEach((el) => {
-            this.arrCantidad.push(el.CantidadACertificar)
+            this.arrCantidad.push(el.CantidadACertificar !== undefined ? el.CantidadACertificar.toString() : '');
         })
 
         if (this.fechaDocumento !== undefined) {

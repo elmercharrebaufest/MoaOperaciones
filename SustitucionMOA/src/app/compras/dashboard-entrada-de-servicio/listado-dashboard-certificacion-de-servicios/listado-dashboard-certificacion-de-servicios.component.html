@@ -198,10 +198,10 @@
               </ng-template>
               <!-- TABLE 2 HEADERS END -->
               <!-- TABLE 2 BODY -->
-              <ng-template pTemplate="body" let-rowData let-expanded="expanded">
+              <ng-template pTemplate="body" let-rowData let-expanded="expanded" let-posIndex="rowIndex">
                 <tr>
                   <td>
-                    <a href="#" [pRowToggler]="rowData" (click)="clearCheckboxes(); calcularValoresACertificar(rowData);">
+                    <a href="#" [pRowToggler]="rowData" (click)="restoreItemsStatus(); calcularValoresACertificar(rowData);">
                       <i [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
                     </a>
                   </td>
@@ -228,7 +228,7 @@
                 </tr>
               </ng-template>
 
-              <ng-template pTemplate="rowexpansion" let-rowData let-columns="columns">
+              <ng-template pTemplate="rowexpansion" let-rowData let-columns="columns" let-posIndex="rowIndex">
                 <tr [pSelectableRow]="rowData">
                   <!-- TABLE 3 -->
                   <td colspan="12">
@@ -237,7 +237,9 @@
                       <!-- TABLE 3 HEADERS -->
                       <ng-template pTemplate="header" *ngIf="rowData.Items && rowData.Items.length > 0">
                         <tr>
-                          <th title="Seleccion">Selección</th>
+                          <th style="width: 4rem">
+                            <input type="checkbox" [(ngModel)]="rowData.isSelected" (change)="selectAllItems($event, rowData.Items, orderIndex, posIndex)">
+                          </th>
                           <th title="NroItem">NRO LINEA</th>
                           <th title="NumeroServicio">N° Servicio</th>
                           <th title="TextBrev">Txt.breve del servicio</th>
@@ -257,13 +259,10 @@
                       <ng-template pTemplate="body" let-rowData let-expanded="expanded" let-i="rowIndex">
                         <tr>
                           <td>
-                              <input type="checkbox" 
-                                     [(ngModel)]="rowData.isSelected" 
-                                     (change)="onCheckboxChange(rowData)" 
-                                     [attr.disabled]="rowData.Porcentaje==='100' || rowData.MontoACertificar === 0 ? true : null" />
-                              <a href="#" [pRowToggler]="rowData" *ngIf="rowData.EntradasServicio.length > 0">
-                                <i [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
-                              </a>
+                            <input type="checkbox" [disabled]="isGet100(rowData)" [(ngModel)]="rowData.isSelected" (change)="onCheckboxChange(rowData)" />
+                            <a href="#" [pRowToggler]="rowData" *ngIf="rowData.EntradasServicio.length > 0">
+                              <i [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
+                            </a>
                           </td>
                           <td>{{ rowData.NumeroLinea | defaultData }}</td>
                           <td>{{ rowData.ServicioNumero | defaultData }}</td>
@@ -356,8 +355,8 @@
                                     </div>
 
                                     <ng-template #SePuedeBorrar>
-                                      <i (click)="deleteES(rowData.Id)">
-                                        <img src="../../../../../Content/images/icons/trashRed.svg" alt="trashRed" class="delete-icon" />
+                                      <i>
+                                        <img (click)="deleteES(rowData.Id)" src="../../../../../Content/images/icons/trashRed.svg" alt="trashRed" class="delete-icon" />
                                       </i>
                                     </ng-template>
 

@@ -222,6 +222,7 @@ p-checkbox .ui-chkbox {
   height: 20px;
   display: block;
   margin: auto;
+  cursor: pointer;
 }
 
 
