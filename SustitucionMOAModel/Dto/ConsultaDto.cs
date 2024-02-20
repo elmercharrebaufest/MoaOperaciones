@@ -43,6 +43,7 @@ namespace SustitucionMOAModel.Dto
         public bool GeneradaInternamente { get; set; }
         public bool GeneradaExternamente { get; set; }
         public bool GeneradaPorUsuarioSesion { get; set; }
+        public string MailUsuarioIniciaConsulta { get; set; }
 
         public CategoriaDto Categoria { get; set; }
         public SubCategoriaDto SubCategoria { get; set; }

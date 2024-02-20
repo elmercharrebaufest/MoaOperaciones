@@ -43,6 +43,7 @@ export interface Consulta {
     GeneradaExternamente?: boolean;
     GeneradaPorUsuarioSesion?: boolean;
 
+    MailUsuarioIniciaConsulta?: string;
     Rubro: string;
 }
 

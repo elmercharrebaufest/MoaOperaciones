@@ -37,6 +37,8 @@ namespace SustitucionMOAModel.Entities
 
         [ForeignKey("EstadoConsulta_Id")]
         public virtual EstadoConsulta EstadoConsulta { get; set; }
+        [ForeignKey("UsuarioInterno_Id")]
+        public virtual Usuario UsuarioInterno { get; set; }
 
         [Required]
         public virtual ConsultaDetalle Detalle { get; set; }

@@ -549,7 +549,8 @@ namespace SustitucionMOAUtils.Services
                     RelacionadaPorCodigo = x.Usuario_Id != usuarioId,
                     GeneradaInternamente = x.UsuarioInterno_Id != null && x.UsuarioInterno_Id != usuarioId,
                     GeneradaPorUsuarioSesion = x.UsuarioInterno_Id == usuarioId,
-                    GeneradaExternamente = x.UsuarioInterno_Id == null
+                    GeneradaExternamente = x.UsuarioInterno_Id == null,
+                    MailUsuarioIniciaConsulta = x.UsuarioInterno_Id == null ? x.Usuario.Mail : x.UsuarioInterno.Mail
                 }).ToList();
 
             return ret;
