@@ -2981,7 +2981,7 @@ namespace SustitucionMOAUtils.Services
             var unidadesCodigoSap = solpActual.Posiciones.SelectMany(p => new[] { p.Unidad?.CodigoSap }.Concat(p.Subposiciones.Select(sp => sp.Unidad.CodigoSap))).Distinct();
 
             var unidadesMedidaSap = repositorio.Listar<UnidadMedidaSap, dynamic>(x => new { x.Comercial, x.UM },
-                x => unidadesCodigoSap.Contains(x.Comercial)).Select(x => Tuple.Create(x.Comercial, x.UM)).ToList();
+                x => unidadesCodigoSap.Contains(x.Comercial)).Select(x => System.Tuple.Create(x.Comercial, x.UM)).ToList();
 
             foreach (var posicion in solpActual.Posiciones.OrderBy(x => x.Id))
             {
