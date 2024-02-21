@@ -125,19 +125,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                               .Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id
                                                         && cp.CotizacionSubPosiciones.Any(s => s.SolpSubPosicion_Id == subposicion.Id)
                                                               ).FirstOrDefault().CotizacionSubPosiciones.Where(s => s.SolpSubPosicion_Id == subposicion.Id).FirstOrDefault().Cantidad.Value : 0,
-
-
-                                                UnidadCotizacionId = (cotizacion != null && cotizacion.CotizacionPosiciones.Any(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id)) ||
-                                                                      cotizacion.CotizacionPosiciones.Any(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id
-                                                        && cp.CotizacionSubPosiciones.Any(s => s.SolpSubPosicion_Id == subposicion.Id))
-                                                                      ?
-                                                                        cotizacion.CotizacionPosiciones
-                                                                           .Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id
-                                                        && cp.CotizacionSubPosiciones.Any(s => s.SolpSubPosicion_Id == subposicion.Id)
-                                                                           ).FirstOrDefault().CotizacionSubPosiciones
-                                                                           .Where(s => s.SolpSubPosicion_Id == subposicion.Id).FirstOrDefault().UnidadDeMedida.Id :
-                                                                           (subposicion.Unidad.Id),
-
+                                                                                                
                                                 MonedaCotizacionId = (cotizacion != null && cotizacion.CotizacionPosiciones.Any(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id)) ||
                                                                       cotizacion.CotizacionPosiciones.Any(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id
                                                         && cp.CotizacionSubPosiciones.Any(s => s.SolpSubPosicion_Id == subposicion.Id)) ? cotizacion.CotizacionPosiciones
@@ -186,6 +174,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                     Id = subposicion.Unidad.Id,
                                                 },
                                                 UnidadCotizacionDescripcion = subposicion.Unidad.Descripcion,
+                                                UnidadCotizacionId = subposicion.Unidad.Id,
 
                                                 PrecioSubPosicion = (cotizacion != null && cotizacion.CotizacionPosiciones.Any(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id)) ||
                                                                       cotizacion.CotizacionPosiciones.Any(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id
