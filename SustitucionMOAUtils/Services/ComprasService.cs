@@ -7666,6 +7666,7 @@ namespace SustitucionMOAUtils.Services
             try
             {
                 var respuestaGuardarSOLP = new RespuestaGuardarSOLP { Solp = new SolpDto { NroSolp = solp.NroSolp } };
+                var proveedores = repositorio.Listar<Usuario>();
                 if (nroOrdenDeCompra.Count > 0)
                 {
                     foreach (var nro in nroOrdenDeCompra)
