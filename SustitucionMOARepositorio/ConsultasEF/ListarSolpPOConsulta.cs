@@ -52,7 +52,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                 && (!NombrePedido.Any() || NombrePedido.All(p => x.PeticionDeOferta.Solp.Pliego.NombreObra.ToUpper().Contains(p.ToUpper())))
                                 && x.Usuario.CUITRegistro == CuitUsuario && x.PeticionDeOferta.RegistroInfo != true &&
                                 (EstadoCotizacion == null || EstadoCotizacion == 0 && cotizacion == null || x.Cotizaciones.Any(c => c.CotizacionEstado_Id == EstadoCotizacion))
-                                && x.PeticionDeOferta.Solp.Posiciones.Any(p => p.Estado == true)
+                                && x.PeticionDeOferta.Solp.Posiciones.Any(p => p.Estado == true) && x.PeticionDeOferta.Solp.TrabajoYaHecho != true
                                 select new PeticionDeOfertaDto
                                 {
                                     Id = x.PeticionDeOferta.Id,
