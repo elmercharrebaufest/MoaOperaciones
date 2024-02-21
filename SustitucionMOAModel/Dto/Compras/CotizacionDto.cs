@@ -143,7 +143,7 @@ namespace SustitucionMOAModel.Dto
 
     public class CotizacionSubposicionesDto
     {
-        public int CotizacionSubPosicionId { get; set; }
+        public int? CotizacionSubPosicionId { get; set; }
         public decimal Precio { get; set; }
         public int? MonedaId { get; set; }
         public int CotizacionPosicionId { get; set; }
