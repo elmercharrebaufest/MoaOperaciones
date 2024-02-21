@@ -5810,9 +5810,9 @@ namespace SustitucionMOAUtils.Services
                         }
                     }
 
-                    if (cotizacionDto.CotizacionSubposiciones.Where(x => x.CotizacionSubPosicionId == 0).Count() > 0)
+                    if (cotizacionDto.CotizacionSubposiciones.Where(x => x.CotizacionSubPosicionId == 0 || x.CotizacionSubPosicionId == null).Count() > 0)
                     {
-                        foreach (var sub in cotizacionDto.CotizacionSubposiciones.Where(x => x.CotizacionSubPosicionId == 0 &&
+                        foreach (var sub in cotizacionDto.CotizacionSubposiciones.Where(x => (x.CotizacionSubPosicionId == 0 || x.CotizacionSubPosicionId == null) &&
                         x.CotizacionPosicionId == cotizacionPosicion.PeticionDeOfertaSolpPosicion_Id))
                         {
                             cotizacionPosicion.CotizacionSubPosiciones.Add(new CotizacionSubPosicion
