@@ -2784,10 +2784,11 @@ namespace SustitucionMOAUtils.Services
                         if (item.Cotizacion.RespetaMateriales == false)
                             respetaMateriales = false;
 
-                        foreach (var cotizacionPosicion in item.Cotizacion.CotizacionPosiciones.Where(x => !x.EstaEliminado))
+                        foreach (var cotizacionPosicion in item.Cotizacion.CotizacionPosiciones.Where(x => !x.EstaEliminado && x.NoDisponible != true ))
                         {
                             var solpPosicion = todasLasOfertas.PeticionDeOfertaPosicion.Where(x => x.Id == cotizacionPosicion.PeticionDeOfertaSolpPosicion_Id).First()?.Posicion;
-                            if (solpPosicion != null && cotizacionPosicion.UnidadMedida.Descripcion != solpPosicion.Unidad.Descripcion)
+                            if (solpPosicion != null && cotizacionPosicion.UnidadMedida != null && !string.IsNullOrEmpty(cotizacionPosicion.UnidadMedida.Descripcion) && cotizacionPosicion.UnidadMedida.Descripcion != solpPosicion.Unidad.Descripcion
+                                && !string.IsNullOrEmpty(solpPosicion.CodigoMaterialSap.Codigo))
                             {
                                 var unidadesDelMaterial = unidadesDeMedidaSAP.Where(x => x.CodigoMaterial == solpPosicion.CodigoMaterialSap.Codigo).ToList();
                                 var unidadSolicitada = unidadesDelMaterial.First(x => x.UnidadDeMedida == solpPosicion.Unidad.Descripcion);
