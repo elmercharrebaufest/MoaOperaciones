@@ -114,11 +114,11 @@
                 </table>
             </div>
         </div>
-        <div *ngIf="!data.LiquidacionParcialEmitida || data.FaltanDatosDeCalidad">
+        <div *ngIf="(!data.LiquidacionParcialEmitida || data.FaltanDatosDeCalidad) && data.cabecera.moneda != 'ARP'">
             <p class="grey" style="font-size: 22px;"><strong>Pesificaciones</strong></p>
             <div class="row myRow">
                 <div class="clearfix myTables">
-                    <table id="tablePesif" *ngIf="data.Pesificaciones && data.Pesificaciones.length > 0"
+                    <table id="tablePesif" *ngIf="data.Pesificaciones"
                         class="display nowrap dataTable no-footer dtr-inline rounded shadow animate contrato-anulaciones-table"
                         cellspacing="0" role="grid" aria-describedby="tableModal_info" style="width: 100%; padding:10px 0;">
                         <thead>

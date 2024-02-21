@@ -24,6 +24,7 @@ using SustitucionMOAUtils.Export;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAValidator;
 using SustitucionMOAWS.Interfaces;
+using SustitucionMOAWS.Util;
 using SustitucionMOAWS.WSConsumers;
 
 namespace SustitucionMOAUtils.Services
@@ -499,10 +500,13 @@ namespace SustitucionMOAUtils.Services
                 validarRespuestaProforma(data);
                 data.error = null;
 
-                if (!data.LiquidacionParcialEmitida || data.FaltanDatosDeCalidad)
+                if ((!data.LiquidacionParcialEmitida || data.FaltanDatosDeCalidad) &&
+                    data.cabecera.moneda != ConstanteSAP.MONEDA_PESOS)
                 {
                     var pesificacionesResponse = pesificacionesConsumer.Request(proveedor);
-                    data.Pesificaciones = pesificacionesResponse.Pesificaciones;
+                    data.Pesificaciones = pesificacionesResponse.Pesificaciones
+                        .Where(x => x.Contrato == fijacion || x.Fijacion == fijacion)
+                        .ToList();
                 }
 
                 return data;

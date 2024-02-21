@@ -563,6 +563,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
+    <Compile Include="Util\ConstanteSAP.cs" />
     <Compile Include="Util\ExtensionesSerializacion.cs" />
     <Compile Include="WebApi\CNRTClient.cs" />
     <Compile Include="WebApi\ScatoRepositorioClient.cs" />
