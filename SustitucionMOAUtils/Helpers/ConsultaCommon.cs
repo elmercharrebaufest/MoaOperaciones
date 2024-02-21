@@ -87,7 +87,7 @@ namespace SustitucionMOAUtils.Helpers
             {
                 var cuerpoTemplate = File.ReadAllText(EMAIL_TEMPLATE);
                 var cuerpo = string.Format(cuerpoTemplate, consulta.Asunto, !string.IsNullOrWhiteSpace(comentario.Detalle) ? comentario.Detalle : "-", rutaMisConsultas);
-                string asunto = "Molinos Agro - Consulta N° " + consulta.Id + ": " + consulta.Asunto;
+                var asunto = $"Molinos Agro - Consulta N° {consulta.Id}: {consulta.Asunto}. {consulta.RazonSocialProveedor}.";
                 Dictionary<string, byte[]> archivos = ConvertFiles(files);
                 EmailSender.EnviarMail(mailDestinatario, asunto, cuerpo,
                     null, null, null, null, null, destinatariosCC, archivos);
