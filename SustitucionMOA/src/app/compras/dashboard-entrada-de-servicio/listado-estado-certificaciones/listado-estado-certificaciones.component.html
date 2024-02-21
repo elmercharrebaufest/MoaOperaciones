@@ -29,7 +29,7 @@
       <div class="p-d-flex filter">
         <span class="p-input-icon-left p-ml-auto">
           <i class="pi pi-search" style="padding-right: 0.5em;"></i>
-          <input class="filter" pInputText type="text" (input)="tabla.filterGlobal($event.target.value, 'contains')" placeholder="BUSCADOR OC / PROVEEDOR" />
+          <input class="filter" pInputText type="text" (input)="tabla.filterGlobal($event.target.value, 'contains')" placeholder="Busqueda por OC" />
         </span>
       </div>
     </ng-template>
@@ -42,7 +42,6 @@
         <th title="ID_ES">ID_ES</th>
         <th title="Fecha" pSortableColumn="FechaCreacion">Fecha<p-sortIcon field="FechaCreacion"></p-sortIcon></th>
         <th title="Número de OC" pSortableColumn="OrdenCompra">Número OC<p-sortIcon field="OrdenCompra"></p-sortIcon></th>
-        <th title="Proveedor" pSortableColumn="ProveedorNombre">Proveedor<p-sortIcon field="ProveedorNombre"></p-sortIcon></th>
         <th title="Descripción">Descripción</th>
         <th title="Monto total">Monto total</th>
         <th title="Usuario">Usuario o Área</th>
@@ -67,7 +66,6 @@
         <td>{{rowData.EntradaServicio}}</td>
         <td>{{rowData.FechaCreacion | date: 'd/M/yyyy' }}</td>
         <td>{{rowData.OrdenCompra || ""}}</td>
-        <td>{{rowData.Proveedor | defaultData }}</td>
         <td>{{rowData.Descripcion | defaultData }}</td>
         <td>{{rowData.MontoTotal | currency }}</td>
         <td>{{rowData.Area | defaultData}}</td>

@@ -29,7 +29,7 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
   referencia: string = '';
   textoBreve: string = '';
   //Provisional - hasta definición de funcionalidad de aprobador.
-  aprobador: string = '';
+  //aprobador: string = '';
 
   @Input() showModal: boolean;
   @Input() itemSelected: any;
