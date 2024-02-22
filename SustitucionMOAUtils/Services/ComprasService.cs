@@ -2129,7 +2129,6 @@ namespace SustitucionMOAUtils.Services
             {
                 var adjudicaciones = repositorio.Listar<Adjudicacion>(a => a.NumeroOrdenDeCompra == nroOc);
                 Log.Info("Encontradas " + adjudicaciones.Count + " adjudicaciones para el OC: " + nroOc);
-                Logger.Log.Info("Encontradas " + adjudicaciones.Count + " adjudicaciones para el OC: " + nroOc);
                 foreach (var adjudicacionOC in adjudicaciones)
                 {
                     adjudicacionOC.FechaLiberacionSap = fechaLiberacion;
@@ -4820,12 +4819,6 @@ namespace SustitucionMOAUtils.Services
                 Log.Info($"Nueva OC liberada con número {adjudicacion.NumeroOrdenDeCompra} y fecha {adjudicacion.FechaLiberacionSap}");
                 Log.Info($"Copia mail comprador: {adjudicacion.Usuario.Mail}");
                 Log.Info($"Mail al proveedor adjudicado: {adjudicacion.Cotizacion.PeticionDeOfertaUsuario.Usuario.Mail}");
-
-                Logger.Log.Info($"EnviarMailOrdenCompra Adjudicacion_Id: {adjudicacion.Id}");
-                Logger.Log.Info($"Nueva OC liberada con número {adjudicacion.NumeroOrdenDeCompra} y fecha {adjudicacion.FechaLiberacionSap}");
-                Logger.Log.Info($"Copia mail comprador: {adjudicacion.Usuario.Mail}");
-                Logger.Log.Info($"Mail al proveedor adjudicado: {adjudicacion.Cotizacion.PeticionDeOfertaUsuario.Usuario.Mail}");
-
                 var copia = new List<string> { adjudicacion.Usuario.Mail };
 
                 if (!string.IsNullOrEmpty(adjudicacion.Solp.Pliego.Email))
