@@ -2128,7 +2128,7 @@ namespace SustitucionMOAUtils.Services
             try
             {
                 var adjudicaciones = repositorio.Listar<Adjudicacion>(a => a.NumeroOrdenDeCompra == nroOc);
-
+                Log.Info("Encontradas " + adjudicaciones.Count + " adjudicaciones para el OC: " + nroOc);
                 foreach (var adjudicacionOC in adjudicaciones)
                 {
                     adjudicacionOC.FechaLiberacionSap = fechaLiberacion;
