@@ -1253,7 +1253,7 @@ namespace SustitucionMOAUtils.Services
                 var ordenDeCompraSAPDto = ObtenerOrdenDeCompra(solpDevuelta.NroOrdenDeCompraAdicional);
 
                 if (ordenDeCompraSAPDto.Error == null)
-                { 
+                {
                     solpDevuelta.ProveedorIdAdicional = ordenDeCompraSAPDto.Cabecera.Usuario_Id;
                     solpDevuelta.ProveedorRazonSocialAdicional = ordenDeCompraSAPDto.Cabecera.RazonSocialProveedor;
                     solpDevuelta.MonedaOC = ordenDeCompraSAPDto.Cabecera.Moneda;
@@ -1926,7 +1926,7 @@ namespace SustitucionMOAUtils.Services
                 Log.Info($"Copia mail creador {solp.UsuarioCreacion.Mail}");
                 Log.Info($"Fecha {DateTime.Now}");
 
-                var copia = new List<string> {};
+                var copia = new List<string> { };
                 if (!string.IsNullOrEmpty(solp?.UsuarioCreacion?.Mail))
                 {
                     copia.Add(solp.UsuarioCreacion.Mail);
@@ -2779,7 +2779,7 @@ namespace SustitucionMOAUtils.Services
                         if (item.Cotizacion.RespetaMateriales == false)
                             respetaMateriales = false;
 
-                        foreach (var cotizacionPosicion in item.Cotizacion.CotizacionPosiciones.Where(x => !x.EstaEliminado && x.NoDisponible != true ))
+                        foreach (var cotizacionPosicion in item.Cotizacion.CotizacionPosiciones.Where(x => !x.EstaEliminado && x.NoDisponible != true))
                         {
                             var solpPosicion = todasLasOfertas.PeticionDeOfertaPosicion.Where(x => x.Id == cotizacionPosicion.PeticionDeOfertaSolpPosicion_Id).First()?.Posicion;
                             if (solpPosicion != null && cotizacionPosicion.UnidadMedida != null && !string.IsNullOrEmpty(cotizacionPosicion.UnidadMedida.Descripcion) && cotizacionPosicion.UnidadMedida.Descripcion != solpPosicion.Unidad.Descripcion
@@ -3190,7 +3190,7 @@ namespace SustitucionMOAUtils.Services
                     ACCTASSCAT = "X",
                     //DES_VENDOR = "X",
                     FIXED_VEND = posicion.ProveedorAdjudicado_Id != null ? "X" : "",
-                    PURCH_ORG = !string.IsNullOrEmpty(posicion.OrganizacionDeComprasCodigo) ? "X" : "",                    
+                    PURCH_ORG = !string.IsNullOrEmpty(posicion.OrganizacionDeComprasCodigo) ? "X" : "",
                     //AGREEMENT = "X",
                     //AGMT_ITEM = "X",
                     INFO_REC = !string.IsNullOrEmpty(posicion.RegistroInfoNro) ? "X" : "",
@@ -4790,8 +4790,8 @@ namespace SustitucionMOAUtils.Services
 
                 foreach (var proveedor in peticion.Usuarios.Where(x => circularDto.UsuarioIds.Contains(x.Usuario_Id)))
                 {
-                    if (rolUsuario == "SOLICITANTE") 
-                    { 
+                    if (rolUsuario == "SOLICITANTE")
+                    {
                         proveedor.PropuestaTecnicaAprobada = null;
                         proveedor.PropuestaTecnicaFecha = null;
                         proveedor.PropuestaTecnicaUsuario_Id = null;
@@ -6480,6 +6480,7 @@ namespace SustitucionMOAUtils.Services
                     var usuariosCompras = repositorio.Listar<UsuarioCompras>();
 
                     var UsuarioCompras_Mail = repositorio.Obtener<Usuario>(a => a.UsuarioSap == result.Cabecera.UsuarioComprasSAP)?.Mail;
+                    Log.Info("ObtenerOrdenDeCompra UsuarioCompras_Mail " + UsuarioCompras_Mail);
                     if (UsuarioCompras_Mail != null)
                     {
                         UsuarioCompras_Id = usuariosCompras.FirstOrDefault(a => a.Mail.ToLower() == UsuarioCompras_Mail.ToLower())?.Id;
@@ -6489,6 +6490,7 @@ namespace SustitucionMOAUtils.Services
                     if (result.Cabecera.UsuarioCompras_Id == null)
                     {
                         var adjudicacion = repositorio.Listar<Adjudicacion>(a => a.NumeroOrdenDeCompra == nroOC, 1, "Id", DirOrden.Desc).FirstOrDefault();
+                        Log.Info("ObtenerOrdenDeCompra Adjudicacion " + adjudicacion == null ? "" : (adjudicacion.Usuario.Mail + "," + adjudicacion.NumeroOrdenDeCompra));
                         if (adjudicacion != null)
                         {
                             UsuarioCompras_Id = usuariosCompras.FirstOrDefault(a => a.Mail.ToLower() == adjudicacion.Usuario.Mail.ToLower())?.Id;

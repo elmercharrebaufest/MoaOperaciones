@@ -47,7 +47,7 @@ namespace SustitucionMOAWS.WSConsumers
                 ObtenerOcSap(nroOC, out POITEM, out RETURN, out POHEADER, out result, out POTEXTHEADER, out POTEXTITEM, out POSERVICES, out POSCHEDULE, out POADDRDELIVERY, out POCOND, out POACCOUNT, out POSRVACCESSVALUES);
 
                 var resultado =  mapOrdenDeCompraSAPDto(result, POHEADER, RETURN, POITEM, POTEXTHEADER, POTEXTITEM, POSERVICES, POSCHEDULE, POADDRDELIVERY, POCOND, POSRVACCESSVALUES);
-                Log.Info("BAPI_PO_GETDETAIL1PortTypeClient" + result.ToJson());
+                Log.Info("BAPI_PO_GETDETAIL1PortTypeClient" + resultado.ToJson());
                 return resultado;
             }
             catch (Exception e)
