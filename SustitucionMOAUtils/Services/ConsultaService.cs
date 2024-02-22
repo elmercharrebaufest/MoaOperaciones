@@ -81,7 +81,7 @@ namespace SustitucionMOAUtils.Services
             };
 
             var usuario = repositorio.Obtener<Usuario>(u => u.Id == comentario.Usuario_Id);
-            var esInterno = usuario.TienePermiso("CONSULTA ABM");
+            var esInterno = usuario.TienePermiso(PermisoEnum.ConsultaAbm);
 
             if (esInterno && consulta.EstadoConsulta.Code == "GES")
             {

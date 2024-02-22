@@ -334,7 +334,7 @@ namespace SustitucionMOAUtils.Services
             bool insertarProveedor = false;
 
             //Si tiene permisos para usar todos los proveedores, no filtramos por tipo de usuario
-            if (usuario.TienePermiso("ELEGIR TODOS VENDEDORES"))
+            if (usuario.TienePermiso(PermisoEnum.ElegirTodosVendedores))
             {
                 proveedor = repositorio.Obtener<Proveedor>(x => x.CodigoProveedor == codigoProveedor && x.EstadoAprobacion == EstadoAprobacion.Aprobado);
                 corredor = repositorio.Obtener<Proveedor>(x => x.CodigoProveedor == codigoCorredor && x.EstadoAprobacion == EstadoAprobacion.Aprobado);

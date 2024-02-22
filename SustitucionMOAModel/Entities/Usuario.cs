@@ -111,7 +111,7 @@ namespace SustitucionMOAModel.Entities
             return Proveedores.Any(p => p.CodigoProveedor == codigoProveedor);
         }
 
-            public string ObtenerRazonSocial()
+        public string ObtenerRazonSocial()
         {
             if (Proveedores != null && Proveedores.Count >= 1)
             {
@@ -203,15 +203,6 @@ namespace SustitucionMOAModel.Entities
             return TieneRol(RolEnum.Administracion) || TieneRol(RolEnum.Todos);
         }
 
-
-        [Obsolete("Reemplazar por método TienePermiso(Permiso permiso)", false)]
-        public virtual bool TienePermiso(string permiso)
-        {
-            var permisosUsuario = ObtenerPermisos();
-
-            return permisosUsuario.Contains(permiso);
-        }
-
         public virtual bool TienePermiso(PermisoEnum permiso)
         {
             if (permisosDelUsuario == null)
@@ -219,12 +210,6 @@ namespace SustitucionMOAModel.Entities
                 CargarPermisosUsuario();
             }
             return permisosDelUsuario.Contains(permiso);
-        }
-
-        [Obsolete("Reemplazar por método TieneRol(RolEnum rol)", false)]
-        public virtual bool TieneRol(string codigo)
-        {
-            return Roles.Any(r => r.Codigo == codigo);
         }
 
         public bool TieneRol(RolEnum rol)

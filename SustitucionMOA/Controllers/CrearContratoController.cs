@@ -22,6 +22,7 @@ using Kendo.DynamicLinq;
 using System.Web.Script.Serialization;
 using SustitucionMOAUtils.Export;
 using System.Data;
+using SustitucionMOAModel.Enums;
 
 namespace SustitucionMOA.Controllers
 {
@@ -1198,7 +1199,7 @@ namespace SustitucionMOA.Controllers
             string userMail = ClaimsPrincipalExtension.GetClaimValue("emails");
             var usuario = repositorio.Obtener<Usuario>(u => u.Mail == userMail);
 
-            if (!usuario.EsAdmin() && !usuario.TienePermiso("ELEGIR TODOS VENDEDORES"))
+            if (!usuario.EsAdmin() && !usuario.TienePermiso(PermisoEnum.ElegirTodosVendedores))
             {
                 if (!usuario.TieneProveedor(vendedor))
                 {
