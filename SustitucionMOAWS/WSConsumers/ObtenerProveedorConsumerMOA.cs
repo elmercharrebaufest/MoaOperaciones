@@ -2,6 +2,7 @@
 using SustitucionMOAModel.Models.WSMapMOA.Compras;
 using SustitucionMOAWS.CredentialService;
 using SustitucionMOAWS.Interfaces;
+using SustitucionMOAWS.Logger;
 using SustitucionMOAWS.ObtenerProveedorWebServiceMOA;
 using System;
 using System.Linq;
@@ -26,6 +27,8 @@ namespace SustitucionMOAWS.WSConsumers
         {
             try
             {
+                Log.Info($"ObtenerProveedor SI_MMRFC_OBTENER_PROVC: {codigoProveedor}");
+
                 ZMPES5980[] IM_COMP_CODE = new ZMPES5980[] { new ZMPES5980 { SIGN = "I", OPTION = "EQ", LOW = "MOA" } };
                 ZMPES5880[] IM_NAME = new ZMPES5880[] { };
                 ZMPES6000[] IM_PURCH_ORG = new ZMPES6000[] { };
