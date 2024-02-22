@@ -4816,7 +4816,7 @@ namespace SustitucionMOAUtils.Services
             try
             {
                 Log.Info($"EnviarMailOrdenCompra Adjudicacion_Id: {adjudicacion.Id}");
-                Log.Info($"Nueva OC liberada con número {adjudicacion.NumeroOrdenDeCompra} y fecha {DateTime.Now}");
+                Log.Info($"Nueva OC liberada con número {adjudicacion.NumeroOrdenDeCompra} y fecha {adjudicacion.FechaLiberacionSap}");
                 Log.Info($"Copia mail comprador: {adjudicacion.Usuario.Mail}");
                 Log.Info($"Mail al proveedor adjudicado: {adjudicacion.Cotizacion.PeticionDeOfertaUsuario.Usuario.Mail}");
 
