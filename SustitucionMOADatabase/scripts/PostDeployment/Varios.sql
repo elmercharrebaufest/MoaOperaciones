@@ -197,3 +197,18 @@ IF NOT EXISTS(SELECT 1 FROM tablasap WHERE Tabla = 'CondicionesDePago' AND Codig
 IF NOT EXISTS(SELECT 1 FROM tablasap WHERE Tabla = 'CondicionesDePago' AND Codigo = '0060') BEGIN insert into tablasap (Tabla,Codigo,CodigoSap,Descripcion)values ('CondicionesDePago','0060','0060','Pagadero dentro de los 60 días sin DPP') END
 IF NOT EXISTS(SELECT 1 FROM tablasap WHERE Tabla = 'CondicionesDePago' AND Codigo = '0075') BEGIN insert into tablasap (Tabla,Codigo,CodigoSap,Descripcion)values ('CondicionesDePago','0075','0075','Pagadero dentro de los 75 días sin DPP') END
 IF NOT EXISTS(SELECT 1 FROM tablasap WHERE Tabla = 'CondicionesDePago' AND Codigo = '0090') BEGIN insert into tablasap (Tabla,Codigo,CodigoSap,Descripcion)values ('CondicionesDePago','0090','0090','Pagadero dentro de los 90 días sin DPP') END
+IF NOT EXISTS (SELECT TOP 1 1 FROM Configuracion WHERE Code = 'CosechaParaEnvioUcropit') 
+BEGIN
+	insert into Configuracion values ('CosechaParaEnvioUcropit','22-23')
+END
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM Configuracion WHERE Code = 'CosechaParaEnvioUcropitTope') 
+BEGIN
+	insert into Configuracion values ('CosechaParaEnvioUcropitTope','200')
+END
+
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM Configuracion WHERE Code = 'HoraCortePesificaciones') 
+BEGIN
+	insert into Configuracion values ('HoraCortePesificaciones','13:00')
+END

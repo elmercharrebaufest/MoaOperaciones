@@ -3000,7 +3000,7 @@ namespace SustitucionMOAUtils.Services
                         if (item.Cotizacion.RespetaMateriales == false)
                             respetaMateriales = false;
 
-                        foreach (var cotizacionPosicion in item.Cotizacion.CotizacionPosiciones.Where(x => !x.EstaEliminado && x.NoDisponible != true ))
+                        foreach (var cotizacionPosicion in item.Cotizacion.CotizacionPosiciones.Where(x => !x.EstaEliminado && x.NoDisponible != true))
                         {
                             var solpPosicion = todasLasOfertas.PeticionDeOfertaPosicion.Where(x => x.Id == cotizacionPosicion.PeticionDeOfertaSolpPosicion_Id).First()?.Posicion;
                             if (solpPosicion != null && cotizacionPosicion.UnidadMedida != null && !string.IsNullOrEmpty(cotizacionPosicion.UnidadMedida.Descripcion) && cotizacionPosicion.UnidadMedida.Descripcion != solpPosicion.Unidad.Descripcion
@@ -3196,7 +3196,7 @@ namespace SustitucionMOAUtils.Services
             var unidadesCodigoSap = solpActual.Posiciones.SelectMany(p => new[] { p.Unidad?.CodigoSap }.Concat(p.Subposiciones.Select(sp => sp.Unidad.CodigoSap))).Distinct();
 
             var unidadesMedidaSap = repositorio.Listar<UnidadMedidaSap, dynamic>(x => new { x.Comercial, x.UM },
-                x => unidadesCodigoSap.Contains(x.Comercial)).Select(x => Tuple.Create(x.Comercial, x.UM)).ToList();
+                x => unidadesCodigoSap.Contains(x.Comercial)).Select(x => System.Tuple.Create(x.Comercial, x.UM)).ToList();
 
             foreach (var posicion in solpActual.Posiciones.OrderBy(x => x.Id))
             {
@@ -6705,11 +6705,13 @@ namespace SustitucionMOAUtils.Services
         public OrdenDeCompraSAPDto ObtenerOrdenDeCompra(string nroOC)
         {
             var result = obtenerOrdenDeCompraConsumerMOA.ObtenerOrdenDeCompra(nroOC);
+            Log.Info("ObtenerOrdenDeCompra obtenerOrdenDeCompraConsumerMOA.ObtenerOrdenDeCompra" + result.ToJson());
             if (result.Error == null || string.IsNullOrEmpty(result.Error.Mensaje))
             {
                 try
                 {
                     ProveedorComprasDto proveedor = ObtenerProveedorCompras(result.Cabecera.CodigoProveedor);
+                    Log.Info("ObtenerOrdenDeCompra ObtenerProveedorCompras" + proveedor.ToJson());
 
                     result.Cabecera.RazonSocialProveedor = proveedor.RazonSocial;
                     result.Cabecera.CUITProveedor = proveedor.CUIT;
@@ -6739,15 +6741,19 @@ namespace SustitucionMOAUtils.Services
                     var usuariosCompras = repositorio.Listar<UsuarioCompras>();
 
                     var UsuarioCompras_Mail = repositorio.Obtener<Usuario>(a => a.UsuarioSap == result.Cabecera.UsuarioComprasSAP)?.Mail;
+                    Log.Info("ObtenerOrdenDeCompra UsuarioCompras_Mail " + UsuarioCompras_Mail);
                     if (UsuarioCompras_Mail != null)
                     {
-                        UsuarioCompras_Id = usuariosCompras.FirstOrDefault(a => a.Mail.ToLower() == UsuarioCompras_Mail.ToLower())?.Id;
+                        UsuarioCompras_Id = usuariosCompras.Where(a => a.Mail.ToLower() == UsuarioCompras_Mail.ToLower()).FirstOrDefault()?.Id;
+                        Log.Info("ObtenerOrdenDeCompra UsuarioCompras_Mail UsuarioCompras_Id" + UsuarioCompras_Id);
+
                         result.Cabecera.UsuarioCompras_Id = UsuarioCompras_Id;
                     }
 
                     if (result.Cabecera.UsuarioCompras_Id == null)
                     {
                         var adjudicacion = repositorio.Listar<Adjudicacion>(a => a.NumeroOrdenDeCompra == nroOC, 1, "Id", DirOrden.Desc).FirstOrDefault();
+                        Log.Info("ObtenerOrdenDeCompra Adjudicacion " + (adjudicacion == null ? "" : (adjudicacion.Usuario.Mail + "," + adjudicacion.NumeroOrdenDeCompra)));
                         if (adjudicacion != null)
                         {
                             UsuarioCompras_Id = usuariosCompras.FirstOrDefault(a => a.Mail.ToLower() == adjudicacion.Usuario.Mail.ToLower())?.Id;
@@ -6783,6 +6789,7 @@ namespace SustitucionMOAUtils.Services
                     CodigoProveedor = ""
                 };
             }
+            Log.Info("ObtenerOrdenDeCompra result" + result.ToJson());
             return result;
         }
 
@@ -7944,6 +7951,7 @@ namespace SustitucionMOAUtils.Services
                     foreach (var nro in nroOrdenDeCompra)
                     {
                         var ordenDeCompra = ObtenerOrdenDeCompra(nro);
+                        Log.Info("ActualizarDatosSolp ObtenerOrdenDeCompra" + ordenDeCompra.ToJson());
                         var proveedor = ObtenerProveedorCompras(ordenDeCompra.Cabecera.CodigoProveedor);
                         foreach (var posicionOCSap in ordenDeCompra.Posiciones.Where(x => x.NroSolp == solp.NroSolp))
                         {

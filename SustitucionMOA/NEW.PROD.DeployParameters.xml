@@ -36,7 +36,7 @@
   <setParameter name="ida:EditProfilePolicyId Config" value="B2C_1_EditProfile" />
   <setParameter name="ida:ResetPasswordPolicyId Config" value="B2C_1_ResetPassword" />
 
-  <setParameter name="EmailToReporteCamposSustentables Config" value="moaoperaciones@baufest.com,margarita.ranzatto@molinosagro.com.ar,david.erbojo@molinosagro.com.ar,juan.carlos.cappello@molinosagro.com.ar,contact@tsagroupinternational.com" />
+  <setParameter name="EmailToReporteCamposSustentables Config" value="moaoperaciones@baufest.com,margarita.ranzatto@molinosagro.com.ar,david.erbojo@molinosagro.com.ar,juan.carlos.cappello@molinosagro.com.ar,pablolawson@ucrop.it,pablo.nosinger@ucrop.it,victoria@ucrop.it,nahuel.kerkaert@ucrop.it" />
 
   <setParameter name="EmailToAuditoria Config" value="alejandra.duarte@molinosagro.com.ar,santiago.barbarotta@molinosagro.com.ar,auditoria.interna@molinosagro.com.ar" />
 
@@ -60,7 +60,6 @@
   <setParameter name="ida:EditProfilePolicyId Config" value="B2C_1_EditProfile" />
   <setParameter name="ida:ResetPasswordPolicyId Config" value="B2C_1_ResetPassword" />
 
-	<setParameter name="EmailToReporteCamposSustentables Config" value="moaoperaciones@baufest.com,margarita.ranzatto@molinosagro.com.ar,david.erbojo@molinosagro.com.ar,juan.carlos.cappello@molinosagro.com.ar,contact@tsagroupinternational.com" />
 	<setParameter name="EmailToAuditoria Config" value="alejandra.duarte@molinosagro.com.ar,santiago.barbarotta@molinosagro.com.ar,auditoria.interna@molinosagro.com.ar" />
 	<setParameter name="EmailToReporteLogins Config" value="Santiago.Barbarotta@molinosagro.com.ar, mariasoledad.romero@molinosagro.com.ar, gonzalo.delatorre@molinosagro.com.ar" />
 

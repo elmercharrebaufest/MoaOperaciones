@@ -416,6 +416,7 @@
     <Content Include="src\app\reporte-contrato\detalle\reporte-contrato.detalle.component.html" />
     <Content Include="src\app\reporte-contrato\listado\reporte-contrato.listado.component.css" />
     <Content Include="src\app\reporte-contrato\listado\reporte-contrato.listado.component.html" />
+    <Content Include="Template\EnvioCamposSustentablesUcropit.html" />
     <Content Include="Template\NotificacionOrdenesDeCarga.html" />
     <Content Include="src\app\aduana\camara\consolidacion\camara.consolidacion.component.html" />
     <Content Include="src\app\aduana\camara\muelle\camara.muelle.component.html" />
@@ -1105,6 +1106,7 @@
     <Compile Include="Jobs\ActualizarEstadoSolpSapJob.cs" />
     <Compile Include="Jobs\ActualizarSISAJob.cs" />
     <Compile Include="Jobs\ActualizarLocalidadesJob.cs" />
+    <Compile Include="Jobs\EnviarCamposUcropitJob.cs" />
     <Compile Include="Jobs\VerificarOrdenesFacturasCompensadasJob.cs" />
     <Compile Include="Jobs\VerificarTransporteOrdenesDeCargaFasonJob.cs" />
     <Compile Include="Jobs\AltaClienteSAPJob.cs" />

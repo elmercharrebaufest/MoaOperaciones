@@ -4,7 +4,9 @@ using SustitucionMOAModel.Enums;
 using SustitucionMOARepositorio;
 using SustitucionMOAWS.CredentialService;
 using SustitucionMOAWS.Interfaces;
+using SustitucionMOAWS.Logger;
 using SustitucionMOAWS.ObtenerOrdenDeCompraWebServiceMOA;
+using SustitucionMOAWS.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -44,7 +46,9 @@ namespace SustitucionMOAWS.WSConsumers
                 BAPIESKLC[] POSRVACCESSVALUES;
                 ObtenerOcSap(nroOC, out POITEM, out RETURN, out POHEADER, out result, out POTEXTHEADER, out POTEXTITEM, out POSERVICES, out POSCHEDULE, out POADDRDELIVERY, out POCOND, out POACCOUNT, out POSRVACCESSVALUES);
 
-                return mapOrdenDeCompraSAPDto(result, POHEADER, RETURN, POITEM, POTEXTHEADER, POTEXTITEM, POSERVICES, POSCHEDULE, POADDRDELIVERY, POCOND, POSRVACCESSVALUES);
+                var resultado =  mapOrdenDeCompraSAPDto(result, POHEADER, RETURN, POITEM, POTEXTHEADER, POTEXTITEM, POSERVICES, POSCHEDULE, POADDRDELIVERY, POCOND, POSRVACCESSVALUES);
+                Log.Info("BAPI_PO_GETDETAIL1PortTypeClient" + resultado.ToJson());
+                return resultado;
             }
             catch (Exception e)
             {
