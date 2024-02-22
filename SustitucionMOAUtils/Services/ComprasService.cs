@@ -1,6 +1,4 @@
-﻿using DocumentFormat.OpenXml.Office2010.Excel;
-using DocumentFormat.OpenXml.Spreadsheet;
-using HandlebarsDotNet;
+﻿using HandlebarsDotNet;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
 using iTextSharp.tool.xml;
@@ -9,17 +7,14 @@ using iTextSharp.tool.xml.parser;
 using iTextSharp.tool.xml.pipeline.css;
 using iTextSharp.tool.xml.pipeline.end;
 using iTextSharp.tool.xml.pipeline.html;
-using SustitucionMOAAssets;
 using SustitucionMOAFotmatter;
 using SustitucionMOAModel.Consultas;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
-using SustitucionMOAModel.Models.DBMap.Pesada;
 using SustitucionMOAModel.Models.WSMapMOA;
 using SustitucionMOAModel.Models.WSMapMOA.Compras;
-using SustitucionMOAModel.Models.WSMapMOA.Pago.NoGranos;
 using SustitucionMOAModel.Models.WSMapMOA.Vendedor.Detalle;
 using SustitucionMOARepositorio;
 using SustitucionMOARepositorio.ConsultasEF;
@@ -6449,11 +6444,13 @@ namespace SustitucionMOAUtils.Services
         public OrdenDeCompraSAPDto ObtenerOrdenDeCompra(string nroOC)
         {
             var result = obtenerOrdenDeCompraConsumerMOA.ObtenerOrdenDeCompra(nroOC);
+            Log.Info("ObtenerOrdenDeCompra obtenerOrdenDeCompraConsumerMOA.ObtenerOrdenDeCompra" + result.ToJson());
             if (result.Error == null || string.IsNullOrEmpty(result.Error.Mensaje))
             {
                 try
                 {
                     ProveedorComprasDto proveedor = ObtenerProveedorCompras(result.Cabecera.CodigoProveedor);
+                    Log.Info("ObtenerOrdenDeCompra ObtenerProveedorCompras" + proveedor.ToJson());
 
                     result.Cabecera.RazonSocialProveedor = proveedor.RazonSocial;
                     result.Cabecera.CUITProveedor = proveedor.CUIT;
@@ -6527,6 +6524,7 @@ namespace SustitucionMOAUtils.Services
                     CodigoProveedor = ""
                 };
             }
+            Log.Info("ObtenerOrdenDeCompra result" + result.ToJson());
             return result;
         }
 
@@ -7690,6 +7688,7 @@ namespace SustitucionMOAUtils.Services
                     foreach (var nro in nroOrdenDeCompra)
                     {
                         var ordenDeCompra = ObtenerOrdenDeCompra(nro);
+                        Log.Info("ActualizarDatosSolp ObtenerOrdenDeCompra" + ordenDeCompra.ToJson());
                         var proveedor = ObtenerProveedorCompras(ordenDeCompra.Cabecera.CodigoProveedor);
                         foreach (var posicionOCSap in ordenDeCompra.Posiciones.Where(x => x.NroSolp == solp.NroSolp))
                         {
