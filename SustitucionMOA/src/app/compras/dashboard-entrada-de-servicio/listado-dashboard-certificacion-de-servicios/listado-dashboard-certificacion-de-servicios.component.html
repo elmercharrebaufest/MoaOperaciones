@@ -29,7 +29,7 @@
 
       <div id="viewDates" class="col-md-3">
         <p>Ver:</p>
-        <filtro-fecha></filtro-fecha>
+        <filtro-fecha key="periodo-certificaciones"></filtro-fecha>
       </div>
 
       <div id="btonSearch" class="col-md-3 p-d-flex vertical-align-middle">
@@ -406,6 +406,8 @@
 </div>
 
 <p-confirmDialog 
+    [(visible)]="showDialog"
+    (closeDialog)="onCloseDialog()"
     header="Atención" icon="pi pi-exclamation-circle" width="425" 
     appendTo="body" acceptLabel="Aceptar" rejectLabel="Cancelar">
 </p-confirmDialog>

@@ -36,6 +36,7 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
   @Input() elementSelected: any;
   @Input() itemIdSelected: string = '';
   @Output() closeModal = new EventEmitter<void>();
+  @Output() closeDialog = new EventEmitter<void>();
 
   @Output() enviarMensajeGrilla = new EventEmitter();
 
@@ -222,10 +223,10 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
                         message: this.mensajeError,
                         accept: () => {
                             this.enviarMensajeGrilla.emit();
-                            this.closeModal.emit();
+                            this.closeDialog.emit();
                         },
                         reject: () => {
-                            this.closeModal.emit();
+                            this.closeDialog.emit();
                         }
                     }
                     );
@@ -237,10 +238,10 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
                         message: this.mensajeError,
                         accept: () => {
                             this.enviarMensajeGrilla.emit();
-                            this.closeModal.emit();
+                            this.closeDialog.emit();
                         },
                         reject: () => {
-                            this.closeModal.emit();
+                            this.closeDialog.emit();
                         }
                     }
                     );
@@ -252,10 +253,10 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
                     this.confirmationService.confirm({
                         message: this.mensajeError,
                         accept: () => {
-                            this.closeModal.emit();
+                            this.closeDialog.emit();
                         },
                         reject: () => {
-                            this.closeModal.emit();
+                            this.closeDialog.emit();
                         }
                     }
                     );
@@ -265,10 +266,10 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
                 this.confirmationService.confirm({
                     message: error.error.Message,
                     accept: () => {
-                        this.closeModal.emit();
+                        this.closeDialog.emit();
                     },
                     reject: () => {
-                        this.closeModal.emit();
+                        this.closeDialog.emit();
                     }
                 }
                 );

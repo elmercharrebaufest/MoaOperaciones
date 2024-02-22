@@ -103,6 +103,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
   allItems : any[];
   proveedor: string = "";
   showModal: boolean = false;
+  showDialog: boolean = false;
 
   //Filtros
   ocFilterValues: string[] = [];
@@ -165,10 +166,10 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
       this.numeroLineaSelected.add(numeroLinea);
       this.itemSelected.push(item);
     }
+    this.itemSelected.sort((a, b) => a.NumeroLinea > b.NumeroLinea ? 1 : -1);
   }
 
   clearCheckboxes(): void {
-    this.tablaPO = this.tablaPOCopy;
     this.numeroLineaSelected.clear();
     this.itemSelected = [];
     this.itemIdSelected = [];
@@ -306,7 +307,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
   }
 
    deleteById(Id) {
-       this.mensajeComponent.setMsgsEmpty();
+       this.mensajeComponent.setMsgsEmpty();   
       this.service.deleteById(Id).subscribe(
           (result: any) => {          
               if (result.logout == true) {
@@ -317,7 +318,11 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
                   this.mensajeComponent.setErrorMsg(result.error);
               } else if (result.data != undefined) {
                   this.floatMsgService.setSuccessMsg("Se ha eliminado la entrada de servicio " + Id);
-                  this.getListarPO(this.proveedor, this.ordenCompraId, this.filtroFechaComponent.fecha_inicio, this.filtroFechaComponent.fecha_fin);          
+                  this.getListarPO(this.proveedor, this.ordenCompraId, this.filtroFechaComponent.fecha_inicio, this.filtroFechaComponent.fecha_fin);  
+                  setTimeout(() => {
+                      let closeBtn = document.getElementsByClassName("alert-success")[0].getElementsByClassName("close")[0] as HTMLElement;
+                      closeBtn.click();
+                  }, 3000);
               }
         }
        );
@@ -360,6 +365,9 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
     onCloseModal() {
         this.showModal = false;
 
+    }
+    onCloseDialog(): void {
+      this.showDialog = false;
     }
 
   autocompleteProveedor(event) {

@@ -1,4 +1,4 @@
-﻿<dropdown [tipoDropdown]="'periodos'" (select)="setPeriodo($event)" class="styled-select"></dropdown>
+﻿<dropdown [tipoDropdown]="'periodos'" (select)="setPeriodo($event)" [key]="key" class="styled-select"></dropdown>
 
 <div *ngIf="periodo == '4'">
     <div class="col-xs-12 col-sm-6 col-md-12 entrefechas_1 searchVerSelect ">
