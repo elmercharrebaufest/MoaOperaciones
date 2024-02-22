@@ -6483,14 +6483,16 @@ namespace SustitucionMOAUtils.Services
                     Log.Info("ObtenerOrdenDeCompra UsuarioCompras_Mail " + UsuarioCompras_Mail);
                     if (UsuarioCompras_Mail != null)
                     {
-                        UsuarioCompras_Id = usuariosCompras.FirstOrDefault(a => a.Mail.ToLower() == UsuarioCompras_Mail.ToLower())?.Id;
+                        UsuarioCompras_Id = usuariosCompras.Where(a => a.Mail.ToLower() == UsuarioCompras_Mail.ToLower()).FirstOrDefault()?.Id;
+                        Log.Info("ObtenerOrdenDeCompra UsuarioCompras_Mail UsuarioCompras_Id" + UsuarioCompras_Id);
+
                         result.Cabecera.UsuarioCompras_Id = UsuarioCompras_Id;
                     }
 
                     if (result.Cabecera.UsuarioCompras_Id == null)
                     {
                         var adjudicacion = repositorio.Listar<Adjudicacion>(a => a.NumeroOrdenDeCompra == nroOC, 1, "Id", DirOrden.Desc).FirstOrDefault();
-                        Log.Info("ObtenerOrdenDeCompra Adjudicacion " + adjudicacion == null ? "" : (adjudicacion.Usuario.Mail + "," + adjudicacion.NumeroOrdenDeCompra));
+                        Log.Info("ObtenerOrdenDeCompra Adjudicacion " + (adjudicacion == null ? "" : (adjudicacion.Usuario.Mail + "," + adjudicacion.NumeroOrdenDeCompra)));
                         if (adjudicacion != null)
                         {
                             UsuarioCompras_Id = usuariosCompras.FirstOrDefault(a => a.Mail.ToLower() == adjudicacion.Usuario.Mail.ToLower())?.Id;
