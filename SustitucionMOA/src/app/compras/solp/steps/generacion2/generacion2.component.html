@@ -58,7 +58,7 @@
                                         <i class="fa fa-plus-square"></i>&nbsp; Agregar nueva visita de obra
                                     </span>
                                 </div>
-                                <div *ngIf="info != null" style="margin-top: 15px;">
+                                <div *ngIf="info != null && model.visitaDeObraMasiva" style="margin-top: 15px;">
                                     <span (click)="verDetalle()"  class="enlaceDetalle pointer">
                                         Para esta fecha 
                                         <ng-container *ngIf="info.CantidadVisitas === 1; else plural">existe {{info.CantidadVisitas}} visita</ng-container>

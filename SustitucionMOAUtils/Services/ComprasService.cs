@@ -7980,7 +7980,7 @@ namespace SustitucionMOAUtils.Services
             var detalleVisitas = repositorio.Listar<PliegoVisita, DetalleVisitaDto>(pliegoVisita => new DetalleVisitaDto
             {
                 FechaHora = pliegoVisita.FechaHora,
-                PliegoId = pliegoVisita.Pliego_Id
+                PliegoId = pliegoVisita.Pliego_Id,
             })
               .AsEnumerable()
               .Where(vis => vis.FechaHora.HasValue && fechas.Any(f => vis.FechaHora.Value.Date == f))
@@ -8011,10 +8011,13 @@ namespace SustitucionMOAUtils.Services
                     }).Distinct().ToList() : null;
             }
 
+            var detalleVisitasConSolp = detalleVisitas.Where(detalle => !string.IsNullOrEmpty(detalle.NroSolp)).ToList();
+
+
             var info = new InfoVisitasDeObraDto()
             {
-                CantidadVisitas = detalleVisitas.Count(),
-                DetalleVisitas = detalleVisitas
+                CantidadVisitas = detalleVisitasConSolp.Count(),
+                DetalleVisitas = detalleVisitasConSolp
             };
 
 
