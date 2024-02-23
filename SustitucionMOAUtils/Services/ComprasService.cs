@@ -6378,7 +6378,7 @@ namespace SustitucionMOAUtils.Services
                         var subpos = new CotizacionSubposicionesDto
                         {
                             Precio = (decimal)subposicion.PrecioBruto,
-                            Cantidad = (int)subposicion.Cantidad,
+                            Cantidad = (decimal)subposicion.Cantidad,
                             UnidadDeMedidaId = subposicion.Unidad_Id,
                             SolpSubPosicionId = subposicion.Id,
                             CotizacionPosicionId = peticionEntidad.Posiciones.Where(pos => pos.SolpPosicion_Id == posicion.Id).FirstOrDefault().Id,
