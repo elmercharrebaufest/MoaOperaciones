@@ -380,7 +380,7 @@ namespace SustitucionMOAWS.WSConsumers
                         sub.CodigoSolp = servicios.FirstOrDefault(a => a.Codigo == subpos.SERVICE)?.CodigoSap ?? 0;
                         sub.Cantidad = subpos.QUANTITY;
                         sub.PrecioBruto = subpos.NET_VALUE / subpos.QUANTITY;
-                        var unidadSapsp = unidadesSAP.FirstOrDefault(a => a.UM == subpos.BASE_UOM);
+                        var unidadSapsp = unidadesSAP.FirstOrDefault(a => a.Comercial == subpos.BASE_UOM);
                         var unidadsp = unidades.FirstOrDefault(a => a.Codigo == unidadSapsp?.Comercial);
                         sub.UnidadComprasDescripcion = unidadsp?.Descripcion ?? "";
                         sub.MonedaCotizacionDescripcion = POHEADER.CURRENCY;
