@@ -130,3 +130,8 @@ IF NOT EXISTS (SELECT TOP 1 1 FROM Configuracion WHERE Code = 'HoraCortePesifica
 BEGIN
 	insert into Configuracion values ('HoraCortePesificaciones','13:00')
 END
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM Configuracion WHERE Code = 'DiasParaDiscreparCalidadesDescarga') 
+BEGIN
+	insert into Configuracion values ('DiasParaDiscreparCalidadesDescarga','-7')
+END

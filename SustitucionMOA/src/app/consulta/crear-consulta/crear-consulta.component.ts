@@ -423,7 +423,7 @@ export class CrearConsultaComponent extends ListBaseComponent {
             }
         }
         if (this.categoriaCode == 'DISCAL') {
-            if ((!this.contrato) || (!this.comprobante) || (!this.material) || (!this.rubro)) {
+            if ((!this.material) || (!this.rubro)) {
                 this.mensajeComponent.setErrorMsg("Debe completar todos los campos marcados con *.");
                 return true;
             }

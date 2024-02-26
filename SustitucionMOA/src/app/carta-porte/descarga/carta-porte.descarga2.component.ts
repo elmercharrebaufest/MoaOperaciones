@@ -163,5 +163,12 @@ export class CartaPorteDescargaComponent extends CartaPorteBaseComponent {
         })
         return this.goToSeccionParam("consulta", "crear-consulta")
     }
+    navegarAConsultaCalidad(informacion) {
+        this.sendDataService.setDatosCartaPorteConDisconformidadCalidades({
+            NroCCPP: informacion.cartaPorte,
+            NroContrato: informacion.contrnum,
+        })
+        return this.goToSeccionParam("consulta", "mis-consultas")
+    }
 }
 

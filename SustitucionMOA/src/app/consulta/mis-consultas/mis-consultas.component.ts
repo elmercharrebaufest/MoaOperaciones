@@ -19,6 +19,7 @@ import { SelectItem } from 'primeng/components/common/selectitem';
 import { formatDate } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { HttpStatusCodes } from '../../common/models/httpStatusCodes';
+import { DatosCartaPorteConDisconformidadCalidades, SendDataService } from '../send-data.service';
 
 declare var $: any;
 
@@ -77,12 +78,16 @@ export class MisConsultasComponent extends ListBaseComponent {
     opcionesFiltroPorCreacion = obtenerOpcionesFiltroPorCreacion();
     filtrosPorCreacionSeleccionados: { key: OpcionFiltroAsociadaCreacion, label: OpcionFiltroAsociadaCreacion }[] = [];
 
+    datosCartaPorteConDisconformidadCalidades?: DatosCartaPorteConDisconformidadCalidades;
+
     @HostListener('window:resize', ['$event']) onResize(event) {
         this.setColumnasByWindowSize();
     }
 
-    constructor(protected service: ConsultaService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService, protected route: ActivatedRoute, protected router: Router) {
+    constructor(protected service: ConsultaService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService, protected route: ActivatedRoute, protected router: Router, private sendDataService: SendDataService) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
+
+        this.datosCartaPorteConDisconformidadCalidades = sendDataService.getDatosCartaPorteConDisconformidadCalidades();
     }
 
     checkPermisos() { this.securityService.tienePermisoRedirect("CONTACTO MAIL"); }
@@ -327,6 +332,9 @@ export class MisConsultasComponent extends ListBaseComponent {
 
                         let estadosCode = ['INI', 'GES', 'GESRTA', 'DOC'];
                         this.estadosSummary = result.data.estados.filter(e => estadosCode.indexOf(e.Code) >= 0);
+
+                        if (this.datosCartaPorteConDisconformidadCalidades)
+                            this.abrirDetalleConsultaCartaPorteConDiscrepanciaCalidad();
                     }
                 },
                 (error: HttpErrorResponse) => {
@@ -476,5 +484,22 @@ export class MisConsultasComponent extends ListBaseComponent {
     }
     filtrarPorGeneradasPorExterno() {
         return !!this.filtrosPorCreacionSeleccionados.find(sel => sel.key === OpcionFiltroAsociadaCreacion.Externa)
+    }
+
+    public extraOnDestroy(): void {
+        this.sendDataService.limpiarDatosCartaPorteConDisconformidadCalidades();
+    }
+
+    abrirDetalleConsultaCartaPorteConDiscrepanciaCalidad() {
+        const consulta = this.consultas.find(
+            consulta =>
+                consulta.ComprobanteNo === this.datosCartaPorteConDisconformidadCalidades.NroCCPP &&
+                consulta.Categoria.Code === "DISCAL"
+        );
+        if (!consulta) {
+            return;
+        }
+        this.sendDataService.limpiarDatosCartaPorteConDisconformidadCalidades()
+        this.openModal(consulta.Id, consulta.Asunto)
     }
 }

@@ -8,7 +8,12 @@ export interface DatosLiquidacionObservada {
 }
 export interface DatosDisconformidadCalidades {
     Material?: string;
-    NroContrato: number | string;
+    NroContrato?: number | string;
+    NroCCPP: number | string;
+}
+
+export interface DatosCartaPorteConDisconformidadCalidades {
+    NroContrato?: number | string;
     NroCCPP: number | string;
 }
 
@@ -20,6 +25,7 @@ export class SendDataService extends BaseService {
 
     private datosLiquidacionObservada?: DatosLiquidacionObservada;
     private datosDisconformidadCalidades?: DatosDisconformidadCalidades;
+    private datosCartaPorteConDisconformidadCalidades?: DatosCartaPorteConDisconformidadCalidades;
 
     setData(data: any) {
         this.data = data;
@@ -51,5 +57,15 @@ export class SendDataService extends BaseService {
     }
     limpiarDatosDisconformidadCalidades() {
         this.datosDisconformidadCalidades = null;
+    }
+
+    setDatosCartaPorteConDisconformidadCalidades(datosLiquidacion: DatosCartaPorteConDisconformidadCalidades) {
+        this.datosCartaPorteConDisconformidadCalidades = datosLiquidacion;
+    }
+    getDatosCartaPorteConDisconformidadCalidades(): DatosCartaPorteConDisconformidadCalidades | null {
+        return this.datosCartaPorteConDisconformidadCalidades;
+    }
+    limpiarDatosCartaPorteConDisconformidadCalidades() {
+        this.datosCartaPorteConDisconformidadCalidades = null;
     }
 }
