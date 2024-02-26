@@ -49,6 +49,13 @@
     </ng-template>
     <!-- TABLE BODY END -->
 
+    <ng-template pTemplate="footer">
+      <tr>
+        <td colspan="10" class="text-right">MONTO TOTAL</td>
+        <td>{{totalMontoCertificar | number:'1.0-2'}}</td>
+      </tr>
+    </ng-template>
+
     <ng-template pTemplate="emptymessage">
       <tr>
         <td class="emptyData" colspan="12">No hay items para mostrar</td>

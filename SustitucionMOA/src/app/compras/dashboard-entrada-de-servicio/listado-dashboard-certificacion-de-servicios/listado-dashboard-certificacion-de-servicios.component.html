@@ -258,12 +258,15 @@
                       <!-- TABLE 3 BODY -->
                       <ng-template pTemplate="body" let-rowData let-expanded="expanded" let-i="rowIndex">
                         <tr>
-                          <td>
-                            <input type="checkbox" [disabled]="isGet100(rowData)" [(ngModel)]="rowData.isSelected" (change)="onCheckboxChange(rowData)" />
-                            <a href="#" [pRowToggler]="rowData" *ngIf="rowData.EntradasServicio.length > 0">
-                              <i [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
-                            </a>
-                          </td>
+                            <td>
+                                <input type="checkbox"
+                                       [(ngModel)]="rowData.isSelected"
+                                       (change)="onCheckboxChange(rowData)"
+                                       [attr.disabled]="isGet100(rowData) || rowData.MontoACertificar === 0 ? true : null" />
+                                <a href="#" [pRowToggler]="rowData" *ngIf="rowData.EntradasServicio.length > 0">
+                                    <i [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
+                                </a>
+                            </td>
                           <td>{{ rowData.NumeroLinea | defaultData }}</td>
                           <td>{{ rowData.ServicioNumero | defaultData }}</td>
                           <td>{{ rowData.Descripcion | defaultData }}</td>
@@ -292,6 +295,7 @@
                                    (keyup)="actualizarValoresACertificarPorPorcentaje(rowData);"
                                    (ngModelChange)="rowData.PorcentajeACertificar=$event"
                                    [ngModel]="rowData.PorcentajeACertificar | number:'1.0-2'"
+                                   required
                                    disabled />
                           </td>
                           <td>{{ rowData.MontoACertificar | number:'1.0-2' }}</td>
@@ -322,7 +326,6 @@
                               <ng-template pTemplate="header">
                                 <tr>
                                   <th title="NroEs">NRO_ES</th>
-                                  <th title="FechaEs">Fecha_ES</th>
                                   <th title="FechaDocumento"> F. Documento<br>(F. de prestación de servicios)</th>
                                   <th title="FechaContabilizacion">F. Contabilización</th>
                                   <th title="Referencia">Referencia<br>(N° remito)</th>
@@ -337,7 +340,6 @@
                               <ng-template pTemplate="body" let-rowData let-item>
                                 <tr>
                                   <td>{{ rowData.Id }}</td>
-                                  <td>{{ rowData.Fecha }}</td>
                                   <td>{{ rowData.FechaDocumentoString }}</td>
                                   <td>
                                     {{rowData.FechaContabilizacion | date: 'dd/MM/yyyy'}}

@@ -507,37 +507,41 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
     item.MontoACertificar = montoActualizado;
   }
 
-  actualizarValoresACertificarPorCantidad(item: any) { 
-    const cantidadACertificar = item.CantidadACertificar;
+    actualizarValoresACertificarPorCantidad(item: any) {
+        const cantidadACertificar = item.CantidadACertificar;
 
-    const cantidadDisponible = item.Cantidad - item.CantidadReal;
+        const cantidadDisponible = item.Cantidad - item.CantidadReal;
 
-    if (cantidadACertificar === null || cantidadACertificar === '') {
-      this.clearCheckbox(item);
-    }
+        if (cantidadACertificar === null || cantidadACertificar === '' || cantidadACertificar === 0) {
+            this.clearCheckbox(item);
+        }
 
-    if (cantidadACertificar > cantidadDisponible || cantidadACertificar < 0) {
-      item.CantidadACertificar = cantidadDisponible;
-    }
+        if (cantidadACertificar > cantidadDisponible || (cantidadACertificar <= 0 && cantidadACertificar != '')) {
+            item.CantidadACertificar = cantidadDisponible;
+        }
 
-    item.PorcentajeACertificar = (item.CantidadACertificar * 100) / item.Cantidad;
+        item.PorcentajeACertificar = (item.CantidadACertificar * 100) / item.Cantidad;
 
-    this.calcularMontoACertificar(item);
+        this.calcularMontoACertificar(item);
 
   }
 
 
-  actualizarValoresACertificarPorPorcentaje(item: any) {
-    const porcentajeDisponible = (100 - item.Porcentaje);
-    const porcentajeACertificar = item.PorcentajeACertificar;
+    actualizarValoresACertificarPorPorcentaje(item: any) {
+        const porcentajeDisponible = (100 - item.Porcentaje);
+        const porcentajeACertificar = item.PorcentajeACertificar;
 
-    if (porcentajeACertificar > porcentajeDisponible || porcentajeACertificar < 0) {
-      item.PorcentajeACertificar = porcentajeDisponible;
-    }
+        if (porcentajeACertificar === null || porcentajeACertificar === '' || porcentajeACertificar === 0) {
+            this.clearCheckbox(item);
+        }
 
-    item.CantidadACertificar = (item.PorcentajeACertificar * item.Cantidad) / 100;
+        if (porcentajeACertificar > porcentajeDisponible || (porcentajeACertificar <= 0 && porcentajeACertificar != '')) {
+            item.PorcentajeACertificar = porcentajeDisponible;
+        }
 
-    this.calcularMontoACertificar(item);
+        item.CantidadACertificar = (item.PorcentajeACertificar * item.Cantidad) / 100;
+
+        this.calcularMontoACertificar(item);
 
   }
 

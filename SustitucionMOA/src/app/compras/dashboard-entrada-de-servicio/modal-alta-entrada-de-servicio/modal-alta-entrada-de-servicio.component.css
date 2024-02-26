@@ -89,6 +89,11 @@ p-calendar.smallCal div {
   color: white;
 }
 
+::ng-deep .ui-table .ui-table-tfoot > tr > td {
+  background: #1C7CD5 !important;
+  color: white !important;
+}
+
 :host ::ng-deep p-calendar.smallCal .ui-datepicker-title select > option {
   font-family: "Open Sans", "Helvetica Neue", sans-serif;
 }

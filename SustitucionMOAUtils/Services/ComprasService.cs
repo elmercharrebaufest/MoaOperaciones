@@ -1733,7 +1733,8 @@ namespace SustitucionMOAUtils.Services
                        Id = x.Id,
                        CUIT = x.CUIT,
                        RazonSocial = x.RazonSocial,
-                       CodigoProveedor = x.CodigoProveedor
+                       CodigoProveedor = x.CodigoProveedor,
+                       IdTipoProveedor = x.TipoProveedor.Id
                    }, e => e.CodigoProveedor.ToString().Contains(valor));
             }
             else
@@ -1745,10 +1746,17 @@ namespace SustitucionMOAUtils.Services
                        Id = x.Id,
                        CUIT = x.CUIT,
                        RazonSocial = x.RazonSocial,
-                       CodigoProveedor = x.CodigoProveedor
+                       CodigoProveedor = x.CodigoProveedor,
+                       IdTipoProveedor = x.TipoProveedor.Id
                    }, e => e.RazonSocial.ToString().Contains(valor));
             }
-           
+
+            // Filtra los que no cumplen con la forma.
+            lista = lista.Where(p => p.CodigoProveedor.Substring(p.CodigoProveedor.Length - 8) == p.CUIT.Substring(2, 8)).ToList();
+
+            // Filtra los Proveedores que sean Tipo Corredores o Clientes.
+            lista = lista.Where(p => p.IdTipoProveedor != (int)TipoUsuarioEnum.Cliente && p.IdTipoProveedor != (int)TipoUsuarioEnum.Corredor).ToList();
+
             return lista;
         }
 

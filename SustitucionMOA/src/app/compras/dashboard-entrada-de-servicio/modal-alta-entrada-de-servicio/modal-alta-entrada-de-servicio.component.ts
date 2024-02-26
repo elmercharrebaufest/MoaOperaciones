@@ -71,6 +71,8 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
     }
   };
 
+  totalMontoCertificar!: number;
+
   constructor(protected service: ComprasService,
     private confirmationService: ConfirmationService
     ) { }
@@ -91,6 +93,7 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
 
       this.fechaContabilizacion = new Date();
       this.setRangoFechaDocumento();
+      this.calcularTotalMontoCertificar();
   }
 
   ngAfterViewInit(): void{
@@ -223,10 +226,10 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
                         message: this.mensajeError,
                         accept: () => {
                             this.enviarMensajeGrilla.emit();
-                            this.closeDialog.emit();
+                            this.closeModal.emit();
                         },
                         reject: () => {
-                            this.closeDialog.emit();
+                            this.closeModal.emit();
                         }
                     }
                     );
@@ -291,4 +294,13 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
       element.classList.remove('error');
     }
   }
+
+  calcularTotalMontoCertificar() {
+    let total = 0;
+    for (let item of this.itemSelected) {
+        total += item.MontoACertificar;
+    }
+
+    this.totalMontoCertificar = total;
+}
 }
