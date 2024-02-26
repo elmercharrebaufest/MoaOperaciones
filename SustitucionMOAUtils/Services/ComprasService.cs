@@ -3572,6 +3572,20 @@ namespace SustitucionMOAUtils.Services
                     });
                 }
             }
+
+            //Este metodo lo usamos para enviar el texto de observaciones. Solo se pueden enviar 132 caracteres por linea
+            var linesObservacion = getLinesFromTextoSuministro(solpActual.Pliego.ObservacionesGeneracion);
+
+            linesObservacion.ForEach(texto =>
+            {
+                solpSAP.IM_PRHEADERTEXTList.Add(new BAPIMEREQHEADTEXT
+                {
+                    PREQ_ITEM = "00000",
+                    TEXT_ID = "B01",
+                    TEXT_FORM = "*",
+                    TEXT_LINE = texto,
+                });
+            });
             #endregion
 
             return solpSAP;
