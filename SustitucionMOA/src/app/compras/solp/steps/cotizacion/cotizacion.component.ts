@@ -357,7 +357,7 @@ export class CotizacionComponent extends ListBaseComponent {
     }
 
     limpiarCheckAdicional() {
-        if (!this.estaFinalizada && this.model.ordenDeCompra != "") {
+        if (this.model.ordenDeCompra != "") {
             this.model.ordenDeCompra = "";
             this.ordenDeCompraSap.Cabecera.RazonSocialProveedor = "";
             this.ordenDeCompraSap.Cabecera.CodigoProveedor = "";
