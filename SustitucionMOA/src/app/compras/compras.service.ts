@@ -37,6 +37,7 @@ export class ComprasService extends BaseService {
         web: true,
         repoAutomatica: true,
         listarPendiente: true,
+        contratoMarco: true,
         usuarioId: null,
         centros: "",
         grupoDeCompras: "",
@@ -69,7 +70,8 @@ export class ComprasService extends BaseService {
         sap: boolean = this.filtros.sap,
         mantenimiento: boolean = this.filtros.mantenimiento,
         web: boolean = this.filtros.web,
-        repoAutomatica: boolean = this.filtros.repoAutomatica,       
+        repoAutomatica: boolean = this.filtros.repoAutomatica,
+        contratoMarco: boolean = this.filtros.contratoMarco,
         estados: any = this.filtros.estados,
         usuarios: any = this.filtros.usuarioId,
         centros: any = this.filtros.centros,
@@ -92,6 +94,7 @@ export class ComprasService extends BaseService {
         params = params.set('mantenimiento', mantenimiento.toString());
         params = params.set('web', web.toString());
         params = params.set('repoAutomatica', repoAutomatica.toString());
+        params = params.set('contratoMarco', contratoMarco.toString());
         params = params.set('estados', estados);
         params = params.set('usuarios', usuarios);
         params = params.set('centros', centros);
@@ -478,6 +481,7 @@ export class ComprasService extends BaseService {
         web: boolean = this.filtros.web,
         repoAutomatica: boolean = this.filtros.repoAutomatica,
         listarPendiente: boolean = this.filtros.listarPendiente,
+        contratoMarco: boolean = this.filtros.contratoMarco,
         claseDocumento: any = this.filtros.claseDocumento,
         tipoImputacion: any = this.filtros.tipoImputacion,
         valorTipoImputacion: any = this.filtros.valorTipoImputacion) {
@@ -501,6 +505,7 @@ export class ComprasService extends BaseService {
         params = params.set('web', web.toString());
         params = params.set('repoAutomatica', repoAutomatica.toString());
         params = params.set('listarPendiente', listarPendiente.toString());
+        params = params.set('contratoMarco', contratoMarco.toString());
         params = params.set('claseDocumento', claseDocumento);
         params = params.set('tipoImputacion', tipoImputacion);
         params = params.set('valorTipoImputacion', valorTipoImputacion);
@@ -1032,19 +1037,18 @@ export class ComprasService extends BaseService {
         });
     }
 
-    public ModificarAdjudicacion(adjudicacion: AdjudicacionEdicionDto) {        
+    public ModificarAdjudicacion(adjudicacion: AdjudicacionEdicionDto) {
         let json = JSON.stringify(adjudicacion);
         var payload = new FormData();
         payload.append('json', json);
         return this.http
             .post<any>('/api/compras/ModificarOrdenDeCompra', payload, { headers: this.headers });
     }
-    
-     public listarVisitasDeObra(listaVisitas: VisitaObraDto[]): Observable<any> {
+
+    public listarVisitasDeObra(listaVisitas: VisitaObraDto[]): Observable<any> {
         return this.http.post("/api/compras/ListarVisitasDeObra", listaVisitas, {
             headers: this.headers
         });
-
     }
 
     public listarTablaSap(codigos: string[]): Observable<any> {

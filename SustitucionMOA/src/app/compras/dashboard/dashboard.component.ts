@@ -48,6 +48,7 @@ export class DashboardComponent extends ListBaseComponent {
     mantenimiento: boolean = false;
     web: boolean = false;
     repoAutomatica: boolean = false;
+    contratoMarco: boolean = false;
     orden: string;
     columnaOrden: string;
     length = 0;
@@ -72,6 +73,7 @@ export class DashboardComponent extends ListBaseComponent {
         mantenimiento: boolean;
         web: boolean;
         repoAutomatica: boolean;
+        contratoMarco: boolean;
         usuarios: string[];
         estadoSolp: string[];
         gruposCompras: string[];
@@ -89,6 +91,7 @@ export class DashboardComponent extends ListBaseComponent {
             mantenimiento: false,
             web: false,
             repoAutomatica: false,
+            contratoMarco: false,
             usuarios: [],
             estadoSolp: [],
             gruposCompras: [],
@@ -319,7 +322,7 @@ export class DashboardComponent extends ListBaseComponent {
         try {
             this.spinnerComponent.showIt();
             let multiSelectValues = this.selectEstadoSolp.join(",")
-            this.subscription = this.service.getListarSolp(this.pageIndex, this.pageSize, this.orden, this.columnaOrden, this.nroSolp, this.fechaInicio, this.fechaFin, this.sap, this.mantenimiento, this.web, this.repoAutomatica,
+            this.subscription = this.service.getListarSolp(this.pageIndex, this.pageSize, this.orden, this.columnaOrden, this.nroSolp, this.fechaInicio, this.fechaFin, this.sap, this.mantenimiento, this.web, this.repoAutomatica, this.contratoMarco,
                 multiSelectValues, this.selectUsuario.join(","), this.selectCentro.join(","), this.selectGrupoCompras.join(","), this.selectClaseDocumento.join(","), this.selectTipoImputacion.join(","), this.selectValorTipoImputacion.join(",")
             ).subscribe(
                 (result: any) => {
@@ -481,7 +484,7 @@ export class DashboardComponent extends ListBaseComponent {
             return false; //<-- Prevent Refresh
         }
 
-        return false; 
+        return false;
     }
 
     listarUsuarioCreadorSolp() {
@@ -779,6 +782,7 @@ export class DashboardComponent extends ListBaseComponent {
         this.filtrosSolicitante.mantenimiento = this.mantenimiento;
         this.filtrosSolicitante.web = this.web;
         this.filtrosSolicitante.repoAutomatica = this.repoAutomatica;
+        this.filtrosSolicitante.contratoMarco = this.contratoMarco;
         this.filtrosSolicitante.usuarios = this.selectUsuario;
         this.filtrosSolicitante.estadoSolp = this.selectEstadoSolp;
         this.filtrosSolicitante.gruposCompras = this.selectGrupoCompras;
@@ -940,6 +944,7 @@ export class DashboardComponent extends ListBaseComponent {
             this.mantenimiento = filtrosGuardados.mantenimiento;
             this.web = filtrosGuardados.web;
             this.repoAutomatica = filtrosGuardados.repoAutomatica;
+            this.contratoMarco = filtrosGuardados.contratoMarco;
             this.selectUsuario = filtrosGuardados.usuarios;
             this.selectEstadoSolp = filtrosGuardados.estadoSolp;
             this.selectGrupoCompras = filtrosGuardados.gruposCompras;
