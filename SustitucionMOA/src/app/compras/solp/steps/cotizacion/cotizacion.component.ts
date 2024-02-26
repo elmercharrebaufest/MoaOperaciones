@@ -338,7 +338,7 @@ export class CotizacionComponent extends ListBaseComponent {
     }
 
     limpiarCheck() {
-        if (this.model.trabajoHecho == undefined || this.model.trabajoHecho == false) {
+        if ((this.model.trabajoHecho == undefined || this.model.trabajoHecho == false) && this.model.editarCondicionesEspeciales && this.model.condEspProveedorAsignado == false) {
             this.model.proveedorAsignado = "";
             this.model.proveedorAsignado_Id = null;
             this.proveedorSeleccionado = null;
@@ -349,7 +349,7 @@ export class CotizacionComponent extends ListBaseComponent {
     }
 
     limpiarCheckProveedorAsignado() {
-        if (this.model.condEspProveedorAsignado == undefined || this.model.condEspProveedorAsignado == false) {
+        if ((this.model.condEspProveedorAsignado == undefined || this.model.condEspProveedorAsignado == false) && this.model.editarCondicionesEspeciales && this.model.trabajoHecho == false) {
             this.model.proveedorAsignado = "";
             this.model.proveedorAsignado_Id = null;
             this.proveedorSeleccionado = null;
