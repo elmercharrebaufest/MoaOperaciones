@@ -167,8 +167,7 @@
                                        placeholder="Número de orden de compra"
                                        formControlName="ordenDeCompra"
                                        maxlength="10"
-                                       (ngModelChange)="validarChecks();"
-                                       disabled="!model.editarCondicionesEspeciales">
+                                       (ngModelChange)="validarChecks();">
                             </div>
                             <div class="col-xs-12 col-sm-10 col-md-4" *ngIf="ordenDeCompraSap != null && ordenDeCompraSap.Error == null && model.ordenDeCompra != ''">
                                 <label for="ordenDeCompra">

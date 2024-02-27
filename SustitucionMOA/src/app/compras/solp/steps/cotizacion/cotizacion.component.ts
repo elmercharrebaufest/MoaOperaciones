@@ -135,6 +135,7 @@ export class CotizacionComponent extends ListBaseComponent {
 
         if (this.model.ordenDeCompra) {
             this.obtenerOrdenDeCompra();
+            this.habilitarOC();
         } else {
             this.model.ordenDeCompra = "";
         }
@@ -150,7 +151,6 @@ export class CotizacionComponent extends ListBaseComponent {
         if(this.model.thAjustePolinomica != true && this.model.thProveedorDirecto != true && this.model.thServicioPermanente != true){
             this.onRadioButtonChange("Servicio permanente");
         }
-
     }
 
     ngOnDestroy() {
@@ -357,7 +357,7 @@ export class CotizacionComponent extends ListBaseComponent {
     }
 
     limpiarCheckAdicional() {
-        if (this.model.ordenDeCompra != "") {
+        if (this.model.ordenDeCompra != "" && this.model.editarCondicionesEspeciales) {
             this.model.ordenDeCompra = "";
             this.ordenDeCompraSap.Cabecera.RazonSocialProveedor = "";
             this.ordenDeCompraSap.Cabecera.CodigoProveedor = "";
@@ -498,5 +498,13 @@ export class CotizacionComponent extends ListBaseComponent {
         if(value == "Proveedor directo"){
             this.model.thProveedorDirecto = true;
         }
-      }
+    }
+
+    habilitarOC() {
+        if (this.model.editarCondicionesEspeciales == true) {
+            this.formularioCotizacion.controls['ordenDeCompra'].enable();        
+        } else {
+            this.formularioCotizacion.controls['ordenDeCompra'].disable();        }
+    }
+
 };
