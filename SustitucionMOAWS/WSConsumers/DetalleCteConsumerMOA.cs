@@ -13,8 +13,8 @@ namespace SustitucionMOAWS.WSConsumers
 {
     public abstract class DetalleCteConsumerMOABase<T>
     {
-        protected const string conceptoPagoACuenta = "Pago a Cuenta";
-        protected const string conceptoFaltaLiquidacionParcial = "Falta registrar la Liquidación parcial";
+        protected const string conceptoPagoACuenta = "PAGO A CUENTA";
+        protected const string conceptoFaltaLiquidacionParcial = "FALTA REGISTRAR LA LIQUIDACIÓN PARCIAL";
         protected const string conceptoFaltanDatosDeCalidad = "FALTAN DATOS CALIDAD";
         private readonly SI_MPMF_MOAOP_DETALLE_CTEClient service = new SI_MPMF_MOAOP_DETALLE_CTEClient();
 
@@ -78,7 +78,7 @@ namespace SustitucionMOAWS.WSConsumers
             foreach (ZMPES4480 salida in salidas)
             {
                 moneda = salida.MONEDA;
-                switch (salida.CARACT)
+                switch (salida.CARACT.ToUpper())
                 {
                     case conceptoPagoACuenta:
                         result.pagoACuenta = new SalidaView()
