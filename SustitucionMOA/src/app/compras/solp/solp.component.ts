@@ -218,6 +218,20 @@ export class SolpComponent extends BaseComponent implements OnInit {
         }
     }
 
+    private setupGrupoDeComprasServiciosPorDefecto(): void {
+        let grupoDeComprasPorDefecto = this.combos.GrupoCompras.find(x => x.Codigo == "300");
+        if (grupoDeComprasPorDefecto) {
+            this.solpActual.grupoDeComprasPorDefecto = grupoDeComprasPorDefecto;
+        }
+    }
+
+    private setupGrupoDeArticuloServiciosPorDefecto(): void {
+        let grupoDeArticuloPorDefecto = this.combos.GrupoArticulo.find(x => x.Codigo == "30015");
+        if (grupoDeArticuloPorDefecto) {
+            this.solpActual.grupoDeArticuloPorDefecto = grupoDeArticuloPorDefecto;
+        }
+    }
+
     tituloSolp() {
         switch (this.solpActual.tipoSolp) {
             case "CON_PLIEGO":
@@ -444,7 +458,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
                     this.disabledSave = false;
                     return;
                 }
-                if(this.solpActual.trabajoHecho != true && this.solpActual.urgencia != true){
+                if (this.solpActual.trabajoHecho != true && this.solpActual.urgencia != true) {
                     if (this.validarFechaVisitaDeObra()) {
                         this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: "La fecha de visita de obra no puede ser mayor a la fecha tentativa de ofertas ni a la fecha de límite de consulta" });
                         if (guardarPorPaso == false) {
@@ -677,7 +691,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
     isEmailInvalid(value: any) {
         const EMAIL_REGEXP = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 
-        if(value == ''){
+        if (value == '') {
             return true;
         }
 
@@ -880,17 +894,17 @@ export class SolpComponent extends BaseComponent implements OnInit {
                     } else {
                         this.combos = result;
                         this.combos.flagSolpFinalizada = this.flagSolpFinalizada;
-                       // this.obtenerUsuarioCompras();
+                        // this.obtenerUsuarioCompras();
                         this.setupCentroPorDefecto();
                         this.setupDireccionCentroPorDefecto();
                         this.setupMonedaPorDefecto();
-
+                        this.setupGrupoDeComprasServiciosPorDefecto();
+                        this.setupGrupoDeArticuloServiciosPorDefecto();
                     }
                 },
                 error => {
                     this.floatMsgService.setErrorMsg(error.message);
                 }
-
             );
         } catch (e) {
             this.floatMsgService.setErrorMsg(e);
