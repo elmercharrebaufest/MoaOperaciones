@@ -46,12 +46,10 @@ export class TextosAdjudicarComponent implements OnInit {
             this.condicionesDePago = this.adjudicacion.CondicionesDePago;
             this.garantias = this.adjudicacion.Garantias;
             this.textoDeCabecera = this.adjudicacion.TextoDeCabecera;
-            console.log(this.adjudicacion.TextoDeCabecera);
         }, 2000);
     }
 
     onCerrarTextos(aceptar: boolean) {
-        console.log(this.adjudicacion.CondicionesDeEntrega);
         if (aceptar) {
             this.condicionesDeEntrega = this.adjudicacion.CondicionesDeEntrega;
             this.condicionesDePago = this.adjudicacion.CondicionesDePago;
