@@ -950,6 +950,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
 
     private completarDatosUltimaSolp() {
         this.solpActual.fiscalContrato = this.datosUltimaSolp.FiscalContrato;
+        this.solpActual.mail = this.datosUltimaSolp.EmailFiscalContrato;
         this.solpActual.telefono = this.datosUltimaSolp.Telefono;
     }
 

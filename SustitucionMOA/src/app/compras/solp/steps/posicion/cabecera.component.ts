@@ -1097,6 +1097,8 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
                 let centro = this.combos.Centro.find(x => x.Codigo == pos.centro);
                 let direccionCentro = this.combos.CentrosDireccion.find(x => x.CodigoSap == centro.CodigoSap);
                 let moneda = this.combos.Moneda.find(x => x.Codigo == contratoMarco.claveMoneda);
+                let grupoComprasSeleccionadoObj = this.combos.GrupoCompras.find(x => x.Codigo == contratoMarco.grupoCompras);
+                let grupoArticuloSeleccionadoObj = this.combos.GrupoArticulo.find(x => x.Codigo == pos.grupoArticuloMateriales);
 
                 let servicioMaterialObj = {
                     Codigo: pos.numeroMaterial,
@@ -1104,7 +1106,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
                     UnidadMedidaBase: pos.unidadMedida
                 };
 
-                let newPos = this.model.nuevaPosicion(null, centro, direccionCentro, moneda);
+                let newPos = this.model.nuevaPosicion(null, centro, direccionCentro, moneda, grupoComprasSeleccionadoObj, grupoArticuloSeleccionadoObj);
 
                 newPos.codigoServicio = servicioMaterialObj;
                 newPos.tareaSubcontratar = servicioMaterialObj.Descripcion;
@@ -1133,12 +1135,10 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
                     newPos.selectAlmacenEntrega = almacenSeleccionadoObj;
                 }
 
-                let grupoArticuloSeleccionadoObj = this.combos.GrupoArticulo.find(x => x.Codigo == pos.grupoArticuloMateriales);
                 if (grupoArticuloSeleccionadoObj) {
                     newPos.selectArticuloCompras = grupoArticuloSeleccionadoObj;
                 }
 
-                let grupoComprasSeleccionadoObj = this.combos.GrupoCompras.find(x => x.Codigo == contratoMarco.grupoCompras);
                 if (grupoComprasSeleccionadoObj) {
                     newPos.selectGrupoCompras = grupoComprasSeleccionadoObj;
                 }

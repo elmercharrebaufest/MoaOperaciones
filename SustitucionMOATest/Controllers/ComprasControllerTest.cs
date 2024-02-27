@@ -380,94 +380,15 @@ namespace SustitucionMOATest.Controllers
         [Test]
         public void ObtenerUltimaSolpTest()
         {
-            // Configuración de la prueba
-            var usuarioId = 5776; // Establece el ID del usuario actual que esperas en tu servicio
+            usuarioServiceMock.Setup(s => s.GetUsuario(It.IsAny<string>())).Returns(new UsuarioDto());
+            comprasServiceMock.Setup(s => s.ObtenerUltimaSolp(It.IsAny<int>())).Returns(new DatosUltimaSolpDto());
 
-            usuarioServiceMock.Setup(u => u.GetUsuario(It.IsAny<string>())).Returns(new UsuarioDto { Id = usuarioId });
-
-            var solpEjemplo = new DatosUltimaSolpDto
-            {
-                FiscalContrato = "Fiscal",
-                Telefono = "12121212",
-                ClaseDocumento = new TablaSapDto
-                {
-                    Id = 12,
-                    Tabla = "ClaseDocumento",
-                    Codigo = "21",
-                    CodigoSap = "21",
-                    Descripcion = "ClaseDocumento",
-                    IdPadre = 1
-                },
-                GrupoCompras = new TablaSapDto
-                {
-                    Id = 12,
-                    Tabla = "GrupoCompras",
-                    Codigo = "21",
-                    CodigoSap = "21",
-                    Descripcion = "GrupoCompras1",
-                    IdPadre = 1
-                },
-
-                CuentaMayor = new TablaSapDto
-                {
-                    Id = 12,
-                    Tabla = "CuentaMayor",
-                    Codigo = "21",
-                    CodigoSap = "21",
-                    Descripcion = "CuentaMayor",
-                    IdPadre = 1
-                },
-
-                Almacen = new TablaSapDto
-                {
-                    Id = 12,
-                    Tabla = "Almacen",
-                    Codigo = "21",
-                    CodigoSap = "21",
-                    Descripcion = "Almacen",
-                    IdPadre = 1
-                },
-
-                TipoPosicion = new TablaGeneralDto
-                {
-                    Id = 12,
-                    Tabla = "TipoPosicion",
-                    Codigo = "21",
-                    Descripcion = "TipoPosicion",
-                    IdPadre = 1,
-                    CodigoVisualizacion = null
-                },
-
-                Centro = new TablaSapDto
-                {
-                    Id = 12,
-                    Tabla = "Centro",
-                    Codigo = "21",
-                    CodigoSap = "21",
-                    Descripcion = "Centro",
-                    IdPadre = 1
-                },
-
-                CuentaMayorSP = new TablaSapDto
-                {
-                    Id = 12,
-                    Tabla = "CuentaMayorSP",
-                    Codigo = "21",
-                    CodigoSap = "21",
-                    Descripcion = "CuentaMayorSP",
-                    IdPadre = 1
-                },
-            };
-
-            comprasServiceMock.Setup(s => s.ObtenerUltimaSolp(It.IsAny<int>()))
-                          .Returns(solpEjemplo);
-
-            // Actuar
             var result = target.ObtenerUltimaSolp() as JsonResult;
 
-            // Verificar que el resultado sea un JsonResult
             Assert.IsNotNull(result);
-            var expected = "{\"ContentEncoding\":null,\"ContentType\":null,\"Data\":{\"data\":{\"FiscalContrato\":\"Fiscal\",\"Telefono\":\"12121212\",\"ClaseDocumento\":{\"Id\":12,\"Tabla\":\"ClaseDocumento\",\"Codigo\":\"21\",\"CodigoSap\":\"21\",\"Descripcion\":\"ClaseDocumento\",\"IdPadre\":1,\"FiltroComprador\":null,\"CodigoDescripcion\":\"21 - ClaseDocumento\"},\"TipoPosicion\":{\"Id\":12,\"Tabla\":\"TipoPosicion\",\"Codigo\":\"21\",\"Descripcion\":\"TipoPosicion\",\"IdPadre\":1,\"Padre\":null,\"CodigoVisualizacion\":null},\"Almacen\":{\"Id\":12,\"Tabla\":\"Almacen\",\"Codigo\":\"21\",\"CodigoSap\":\"21\",\"Descripcion\":\"Almacen\",\"IdPadre\":1,\"FiltroComprador\":null,\"CodigoDescripcion\":\"21 - Almacen\"},\"CuentaMayor\":{\"Id\":12,\"Tabla\":\"CuentaMayor\",\"Codigo\":\"21\",\"CodigoSap\":\"21\",\"Descripcion\":\"CuentaMayor\",\"IdPadre\":1,\"FiltroComprador\":null,\"CodigoDescripcion\":\"21 - CuentaMayor\"},\"CuentaMayorSP\":{\"Id\":12,\"Tabla\":\"CuentaMayorSP\",\"Codigo\":\"21\",\"CodigoSap\":\"21\",\"Descripcion\":\"CuentaMayorSP\",\"IdPadre\":1,\"FiltroComprador\":null,\"CodigoDescripcion\":\"21 - CuentaMayorSP\"},\"GrupoCompras\":{\"Id\":12,\"Tabla\":\"GrupoCompras\",\"Codigo\":\"21\",\"CodigoSap\":\"21\",\"Descripcion\":\"GrupoCompras1\",\"IdPadre\":1,\"FiltroComprador\":null,\"CodigoDescripcion\":\"21 - GrupoCompras1\"},\"Centro\":{\"Id\":12,\"Tabla\":\"Centro\",\"Codigo\":\"21\",\"CodigoSap\":\"21\",\"Descripcion\":\"Centro\",\"IdPadre\":1,\"FiltroComprador\":null,\"CodigoDescripcion\":\"21 - Centro\"}}},\"JsonRequestBehavior\":0,\"MaxJsonLength\":2147483647,\"RecursionLimit\":null}";
+            Assert.IsNotNull(result.Data);
+
+            var expected = "{\"ContentEncoding\":null,\"ContentType\":null,\"Data\":{\"data\":{\"FiscalContrato\":\"Fiscal\",\"EmailFiscalContrato\":\"email@email.com\",\"Telefono\":\"12121212\",\"ClaseDocumento\":{\"Id\":12,\"Tabla\":\"ClaseDocumento\",\"Codigo\":\"21\",\"CodigoSap\":\"21\",\"Descripcion\":\"ClaseDocumento\",\"IdPadre\":1,\"FiltroComprador\":null,\"CodigoDescripcion\":\"21 - ClaseDocumento\"},\"TipoPosicion\":{\"Id\":12,\"Tabla\":\"TipoPosicion\",\"Codigo\":\"21\",\"Descripcion\":\"TipoPosicion\",\"IdPadre\":1,\"Padre\":null,\"CodigoVisualizacion\":null},\"Almacen\":{\"Id\":12,\"Tabla\":\"Almacen\",\"Codigo\":\"21\",\"CodigoSap\":\"21\",\"Descripcion\":\"Almacen\",\"IdPadre\":1,\"FiltroComprador\":null,\"CodigoDescripcion\":\"21 - Almacen\"},\"CuentaMayor\":{\"Id\":12,\"Tabla\":\"CuentaMayor\",\"Codigo\":\"21\",\"CodigoSap\":\"21\",\"Descripcion\":\"CuentaMayor\",\"IdPadre\":1,\"FiltroComprador\":null,\"CodigoDescripcion\":\"21 - CuentaMayor\"},\"CuentaMayorSP\":{\"Id\":12,\"Tabla\":\"CuentaMayorSP\",\"Codigo\":\"21\",\"CodigoSap\":\"21\",\"Descripcion\":\"CuentaMayorSP\",\"IdPadre\":1,\"FiltroComprador\":null,\"CodigoDescripcion\":\"21 - CuentaMayorSP\"},\"GrupoCompras\":{\"Id\":12,\"Tabla\":\"GrupoCompras\",\"Codigo\":\"21\",\"CodigoSap\":\"21\",\"Descripcion\":\"GrupoCompras1\",\"IdPadre\":1,\"FiltroComprador\":null,\"CodigoDescripcion\":\"21 - GrupoCompras1\"},\"Centro\":{\"Id\":12,\"Tabla\":\"Centro\",\"Codigo\":\"21\",\"CodigoSap\":\"21\",\"Descripcion\":\"Centro\",\"IdPadre\":1,\"FiltroComprador\":null,\"CodigoDescripcion\":\"21 - Centro\"}}},\"JsonRequestBehavior\":0,\"MaxJsonLength\":2147483647,\"RecursionLimit\":null}";
             var resultText = serializer.Serialize(result);
 
             Assert.AreEqual(expected.Normalize(), resultText.Normalize());
@@ -577,53 +498,42 @@ namespace SustitucionMOATest.Controllers
             Assert.IsNotNull(result);
             Assert.IsNotNull(result.Data);
         }
+
+        [Test]
         public void ModificarOrdenDeCompraOkTest()
         {
-            // Arrange
-            var json = "{\"Id\":0,\"Cotizacion_Id\":0,\"Solp_Id\":31745,\"NumeroOrdenDeCompra\":\"4123002078\",\"FechaCreacion\":\"/Date(1705028400000)/\",\"UsuarioCreador_Id\":0,\"UsuarioCreador\":null,\"Moneda_Id\":225,\"MonedaDescripcion\":\"Franco suizo\",\"MontoTotal\":0,\"AdjudicacionPosiciones\":[{\"Id\":0,\"Adjudicacion_Id\":0,\"CotizacionPosicion_Id\":0,\"Cantidad\":1,\"SolpPosicion_Id\":0,\"SubposicionesCompras\":null,\"MaterialComprasCodigo\":\"000000000050224392\",\"Indice\":1,\"Tarea\":\"BULON CAB.HEXAG.8.8 RW 5/8\"X2\"\",\"CentroComprasDescripcion\":null,\"TextoSuministro\":\"BULON CAB.HEXAG.8.8 RW 5/8\"X2\"\",\"Modelo\":\"\",\"UnidadDescripcion\":\"UNI\",\"MonedaDescripcion\":\"CHF\",\"PrecioUnidad\":0.6,\"MonedaId\":225,\"PrecioTotal\":0.6,\"FechaEntregaServicio\":\"2024-01-29T03:00:00.000Z\",\"PlazoDeOferta\":18,\"MaterialComprasDescripcion\":\"BULON CAB.HEXAG.8.8 RW 5/8\"X2\"\",\"MonedaCodigo\":\"CHF\",\"CentroComprasCodigo\":\"1029\",\"MaterialTextoAmpliado\":\"BULON CABEZA HEXAGONAL RW 5/8\" x 2\" ACERO GRADO 8.8\",\"FechaEntregaServicioFormateado\":\"29.01.2024\",\"PlazoDeEntrega\":null,\"Eliminado\":false,\"UnidadId\":214,\"UnidadesDeMedida\":[{\"Id\":43,\"Tabla\":\"Unidad\",\"Codigo\":\"CEN\",\"CodigoSap\":\"CEN\",\"Descripcion\":\"CEN\",\"IdPadre\":null,\"FiltroComprador\":null,\"CodigoDescripcion\":\"CEN - CEN\"},{\"Id\":51,\"Tabla\":\"Unidad\",\"Codigo\":\"DOC\",\"CodigoSap\":\"DOC\",\"Descripcion\":\"DOC\",\"IdPadre\":null,\"FiltroComprador\":null,\"CodigoDescripcion\":\"DOC - DOC\"},{\"Id\":66,\"Tabla\":\"Unidad\",\"Codigo\":\"GRU\",\"CodigoSap\":\"GRU\",\"Descripcion\":\"GRU\",\"IdPadre\":null,\"FiltroComprador\":null,\"CodigoDescripcion\":\"GRU - GRU\"},{\"Id\":147,\"Tabla\":\"Unidad\",\"Codigo\":\"MIL\",\"CodigoSap\":\"MIL\",\"Descripcion\":\"MIL\",\"IdPadre\":null,\"FiltroComprador\":null,\"CodigoDescripcion\":\"MIL - MIL\"},{\"Id\":185,\"Tabla\":\"Unidad\",\"Codigo\":\"PAR\",\"CodigoSap\":\"PAR\",\"Descripcion\":\"PAR\",\"IdPadre\":null,\"FiltroComprador\":null,\"CodigoDescripcion\":\"PAR - PAR\"},{\"Id\":214,\"Tabla\":\"Unidad\",\"Codigo\":\"UNI\",\"CodigoSap\":\"UNI\",\"Descripcion\":\"UNI\",\"IdPadre\":null,\"FiltroComprador\":null,\"CodigoDescripcion\":\"UNI - UNI\"}],\"UnidadCodigo\":\"UNI\",\"UnidadMedida\":{\"Id\":214,\"Tabla\":null,\"Codigo\":\"UNI\",\"CodigoSap\":null,\"Descripcion\":null,\"IdPadre\":null,\"FiltroComprador\":null,\"CodigoDescripcion\":\"  \"},\"DireccionDeEntrega\":{\"RegionSap\":\"04\",\"Id\":12,\"CodigoSap\":\"04\",\"Descripcion\":\"\",\"PaisSap\":\"\"},\"EntregaFinal\":false,\"Moneda\":{\"Id\":0,\"Tabla\":null,\"Codigo\":\"CHF\",\"CodigoSap\":null,\"Descripcion\":\"Franco suizo\",\"IdPadre\":null,\"FiltroComprador\":null,\"CodigoDescripcion\":\"  Franco suizo\"},\"RegionCodigo\":\"04\",\"RegionId\":12,\"PaisSap\":\"\"}],\"PrecioFinal\":574.115136,\"Proveedor\":\"0057984261\",\"TipoPosicionCodigo\":\"MATERIALES\",\"TextoDeCabecera\":\"\",\"CondicionesDeEntrega\":\"\",\"CondicionesDePago\":\"\",\"Garantias\":\"22\",\"Centro\":\"Planta San Lorenzo\",\"CalleEntrega\":\"Benielli 398\",\"CodigoPostal\":\"2200\",\"PrecioBruto\":0,\"EstadoLiberacionCodigo\":null,\"EstadoLiberacionDetalle\":null,\"EsMonedaProveedor\":false,\"RegionSap\":0,\"CreadoAutomatico\":false,\"MonedaCodigo\":null,\"CondicionDePago\":{\"CondicionDeImportacionCodigo\":null,\"CondicionDeImportacionComplemento\":null,\"Codigo\":\"0030\",\"Descripcion\":\"Pagadero dentro de los 30 días sin DPP\",\"Id\":121554,\"CodigoDescripcion\":\"0030 - Pagadero dentro de los 30 días sin DPP\"},\"CondicionDeImportacion\":{\"Codigo\":\"\",\"Descripcion\":\"\",\"Id\":null,\"CodigoDescripcion\":null},\"CondicionDePagoCodigo\":null,\"CondicionDePagoId\":null,\"CondicionDeImportacionCodigo\":null,\"CondicionDeImportacionId\":null,\"CondicionDeImportacionDescripcion\":\"\",\"PagoEn1\":30,\"PagoEn2\":0,\"PagoEn3\":0,\"PagoEn1Porcentaje\":0,\"PagoEn2Porcentaje\":0}";
-
+            var json = "{\"Id\":0,\"Cotizacion_Id\":0,\"Solp_Id\":31745,\"NumeroOrdenDeCompra\":\"4123002078\",\"FechaCreacion\":\"/Date(1705028400000)/\",\"UsuarioCreador_Id\":0,\"UsuarioCreador\":null,\"Moneda_Id\":225,\"MonedaDescripcion\":\"Franco suizo\",\"MontoTotal\":0,\"AdjudicacionPosiciones\":[{\"Id\":0,\"Adjudicacion_Id\":0,\"CotizacionPosicion_Id\":0,\"Cantidad\":1,\"SolpPosicion_Id\":0,\"SubposicionesCompras\":null,\"MaterialComprasCodigo\":\"000000000050224392\",\"Indice\":1,\"Tarea\":\"BULON CAB.HEXAG.8.8 RW 5/8\",\"CentroComprasDescripcion\":null,\"TextoSuministro\":\"BULON CAB.HEXAG.8.8 RW 5/8\",\"Modelo\":\"\",\"UnidadDescripcion\":\"UNI\",\"MonedaDescripcion\":\"CHF\",\"PrecioUnidad\":0.6,\"MonedaId\":225,\"PrecioTotal\":0.6,\"FechaEntregaServicio\":\"2024-01-29T03:00:00.000Z\",\"PlazoDeOferta\":18,\"MaterialComprasDescripcion\":\"BULON CAB.HEXAG.8.8 RW 5/8\",\"MonedaCodigo\":\"CHF\",\"CentroComprasCodigo\":\"1029\",\"MaterialTextoAmpliado\":\"BULON CABEZA HEXAGONAL RW 5/8\",\"FechaEntregaServicioFormateado\":\"29.01.2024\",\"PlazoDeEntrega\":null,\"Eliminado\":false,\"UnidadId\":214,\"UnidadesDeMedida\":[{\"Id\":43,\"Tabla\":\"Unidad\",\"Codigo\":\"CEN\",\"CodigoSap\":\"CEN\",\"Descripcion\":\"CEN\",\"IdPadre\":null,\"FiltroComprador\":null,\"CodigoDescripcion\":\"CEN - CEN\"},{\"Id\":51,\"Tabla\":\"Unidad\",\"Codigo\":\"DOC\",\"CodigoSap\":\"DOC\",\"Descripcion\":\"DOC\",\"IdPadre\":null,\"FiltroComprador\":null,\"CodigoDescripcion\":\"DOC - DOC\"},{\"Id\":66,\"Tabla\":\"Unidad\",\"Codigo\":\"GRU\",\"CodigoSap\":\"GRU\",\"Descripcion\":\"GRU\",\"IdPadre\":null,\"FiltroComprador\":null,\"CodigoDescripcion\":\"GRU - GRU\"},{\"Id\":147,\"Tabla\":\"Unidad\",\"Codigo\":\"MIL\",\"CodigoSap\":\"MIL\",\"Descripcion\":\"MIL\",\"IdPadre\":null,\"FiltroComprador\":null,\"CodigoDescripcion\":\"MIL - MIL\"},{\"Id\":185,\"Tabla\":\"Unidad\",\"Codigo\":\"PAR\",\"CodigoSap\":\"PAR\",\"Descripcion\":\"PAR\",\"IdPadre\":null,\"FiltroComprador\":null,\"CodigoDescripcion\":\"PAR - PAR\"},{\"Id\":214,\"Tabla\":\"Unidad\",\"Codigo\":\"UNI\",\"CodigoSap\":\"UNI\",\"Descripcion\":\"UNI\",\"IdPadre\":null,\"FiltroComprador\":null,\"CodigoDescripcion\":\"UNI - UNI\"}],\"UnidadCodigo\":\"UNI\",\"UnidadMedida\":{\"Id\":214,\"Tabla\":null,\"Codigo\":\"UNI\",\"CodigoSap\":null,\"Descripcion\":null,\"IdPadre\":null,\"FiltroComprador\":null,\"CodigoDescripcion\":\"  \"},\"DireccionDeEntrega\":{\"RegionSap\":\"04\",\"Id\":12,\"CodigoSap\":\"04\",\"Descripcion\":\"\",\"PaisSap\":\"\"},\"EntregaFinal\":false,\"Moneda\":{\"Id\":0,\"Tabla\":null,\"Codigo\":\"CHF\",\"CodigoSap\":null,\"Descripcion\":\"Franco suizo\",\"IdPadre\":null,\"FiltroComprador\":null,\"CodigoDescripcion\":\"  Franco suizo\"},\"RegionCodigo\":\"04\",\"RegionId\":12,\"PaisSap\":\"\"}],\"PrecioFinal\":574.115136,\"Proveedor\":\"0057984261\",\"TipoPosicionCodigo\":\"MATERIALES\",\"TextoDeCabecera\":\"\",\"CondicionesDeEntrega\":\"\",\"CondicionesDePago\":\"\",\"Garantias\":\"22\",\"Centro\":\"Planta San Lorenzo\",\"CalleEntrega\":\"Benielli 398\",\"CodigoPostal\":\"2200\",\"PrecioBruto\":0,\"EstadoLiberacionCodigo\":null,\"EstadoLiberacionDetalle\":null,\"EsMonedaProveedor\":false,\"RegionSap\":0,\"CreadoAutomatico\":false,\"MonedaCodigo\":null,\"CondicionDePago\":{\"CondicionDeImportacionCodigo\":null,\"CondicionDeImportacionComplemento\":null,\"Codigo\":\"0030\",\"Descripcion\":\"Pagadero dentro de los 30 días sin DPP\",\"Id\":121554,\"CodigoDescripcion\":\"0030 - Pagadero dentro de los 30 días sin DPP\"},\"CondicionDeImportacion\":{\"Codigo\":\"\",\"Descripcion\":\"\",\"Id\":null,\"CodigoDescripcion\":null},\"CondicionDePagoCodigo\":null,\"CondicionDePagoId\":null,\"CondicionDeImportacionCodigo\":null,\"CondicionDeImportacionId\":null,\"CondicionDeImportacionDescripcion\":\"\",\"PagoEn1\":30,\"PagoEn2\":0,\"PagoEn3\":0,\"PagoEn1Porcentaje\":0,\"PagoEn2Porcentaje\":0}";
 
             comprasServiceMock.Setup(s => s.EditarOrdenDeCompra(It.IsAny<AdjudicacionDto>())).Returns(new ResultadoGenerico() { Descripcion = "Ok" });
 
-            // Act
             var result = target.ModificarOrdenDeCompra(json) as JsonResult;
 
-            // Assert
             Assert.IsNotNull(result);
         }
 
         [Test]
         public void ModificarOrdenDeCompraInfoCustomExceptionTest()
         {
-            // Arrange
-            var json = "{\"Id\":0,\"Cotizacion_Id\":0,\"Solp_Id\":31745,\"NumeroOrdenDeCompra\":\"4123002078\",\"FechaCreacion\":\"/Date(1705028400000)/\",\"UsuarioCreador_Id\":0,\"UsuarioCreador\":null,\"Moneda_Id\":225,\"MonedaDescripcion\":\"Franco suizo\",\"MontoTotal\":0,\"AdjudicacionPosiciones\":[{\"Id\":0,\"Adjudicacion_Id\":0,\"CotizacionPosicion_Id\":0,\"Cantidad\":1,\"SolpPosicion_Id\":0,\"SubposicionesCompras\":null,\"MaterialComprasCodigo\":\"000000000050224392\",\"Indice\":1,\"Tarea\":\"BULON CAB.HEXAG.8.8 RW 5/8\"X2\"\",\"CentroComprasDescripcion\":null,\"TextoSuministro\":\"BULON CAB.HEXAG.8.8 RW 5/8\"X2\"\",\"Modelo\":\"\",\"UnidadDescripcion\":\"UNI\",\"MonedaDescripcion\":\"CHF\",\"PrecioUnidad\":0.6,\"MonedaId\":225,\"PrecioTotal\":0.6,\"FechaEntregaServicio\":\"2024-01-29T03:00:00.000Z\",\"PlazoDeOferta\":18,\"MaterialComprasDescripcion\":\"BULON CAB.HEXAG.8.8 RW 5/8\"X2\"\",\"MonedaCodigo\":\"CHF\",\"CentroComprasCodigo\":\"1029\",\"MaterialTextoAmpliado\":\"BULON CABEZA HEXAGONAL RW 5/8\" x 2\" ACERO GRADO 8.8\",\"FechaEntregaServicioFormateado\":\"29.01.2024\",\"PlazoDeEntrega\":null,\"Eliminado\":false,\"UnidadId\":214,\"UnidadesDeMedida\":[{\"Id\":43,\"Tabla\":\"Unidad\",\"Codigo\":\"CEN\",\"CodigoSap\":\"CEN\",\"Descripcion\":\"CEN\",\"IdPadre\":null,\"FiltroComprador\":null,\"CodigoDescripcion\":\"CEN - CEN\"},{\"Id\":51,\"Tabla\":\"Unidad\",\"Codigo\":\"DOC\",\"CodigoSap\":\"DOC\",\"Descripcion\":\"DOC\",\"IdPadre\":null,\"FiltroComprador\":null,\"CodigoDescripcion\":\"DOC - DOC\"},{\"Id\":66,\"Tabla\":\"Unidad\",\"Codigo\":\"GRU\",\"CodigoSap\":\"GRU\",\"Descripcion\":\"GRU\",\"IdPadre\":null,\"FiltroComprador\":null,\"CodigoDescripcion\":\"GRU - GRU\"},{\"Id\":147,\"Tabla\":\"Unidad\",\"Codigo\":\"MIL\",\"CodigoSap\":\"MIL\",\"Descripcion\":\"MIL\",\"IdPadre\":null,\"FiltroComprador\":null,\"CodigoDescripcion\":\"MIL - MIL\"},{\"Id\":185,\"Tabla\":\"Unidad\",\"Codigo\":\"PAR\",\"CodigoSap\":\"PAR\",\"Descripcion\":\"PAR\",\"IdPadre\":null,\"FiltroComprador\":null,\"CodigoDescripcion\":\"PAR - PAR\"},{\"Id\":214,\"Tabla\":\"Unidad\",\"Codigo\":\"UNI\",\"CodigoSap\":\"UNI\",\"Descripcion\":\"UNI\",\"IdPadre\":null,\"FiltroComprador\":null,\"CodigoDescripcion\":\"UNI - UNI\"}],\"UnidadCodigo\":\"UNI\",\"UnidadMedida\":{\"Id\":214,\"Tabla\":null,\"Codigo\":\"UNI\",\"CodigoSap\":null,\"Descripcion\":null,\"IdPadre\":null,\"FiltroComprador\":null,\"CodigoDescripcion\":\"  \"},\"DireccionDeEntrega\":{\"RegionSap\":\"04\",\"Id\":12,\"CodigoSap\":\"04\",\"Descripcion\":\"\",\"PaisSap\":\"\"},\"EntregaFinal\":false,\"Moneda\":{\"Id\":0,\"Tabla\":null,\"Codigo\":\"CHF\",\"CodigoSap\":null,\"Descripcion\":\"Franco suizo\",\"IdPadre\":null,\"FiltroComprador\":null,\"CodigoDescripcion\":\"  Franco suizo\"},\"RegionCodigo\":\"04\",\"RegionId\":12,\"PaisSap\":\"\"}],\"PrecioFinal\":574.115136,\"Proveedor\":\"0057984261\",\"TipoPosicionCodigo\":\"MATERIALES\",\"TextoDeCabecera\":\"\",\"CondicionesDeEntrega\":\"\",\"CondicionesDePago\":\"\",\"Garantias\":\"22\",\"Centro\":\"Planta San Lorenzo\",\"CalleEntrega\":\"Benielli 398\",\"CodigoPostal\":\"2200\",\"PrecioBruto\":0,\"EstadoLiberacionCodigo\":null,\"EstadoLiberacionDetalle\":null,\"EsMonedaProveedor\":false,\"RegionSap\":0,\"CreadoAutomatico\":false,\"MonedaCodigo\":null,\"CondicionDePago\":{\"CondicionDeImportacionCodigo\":null,\"CondicionDeImportacionComplemento\":null,\"Codigo\":\"0030\",\"Descripcion\":\"Pagadero dentro de los 30 días sin DPP\",\"Id\":121554,\"CodigoDescripcion\":\"0030 - Pagadero dentro de los 30 días sin DPP\"},\"CondicionDeImportacion\":{\"Codigo\":\"\",\"Descripcion\":\"\",\"Id\":null,\"CodigoDescripcion\":null},\"CondicionDePagoCodigo\":null,\"CondicionDePagoId\":null,\"CondicionDeImportacionCodigo\":null,\"CondicionDeImportacionId\":null,\"CondicionDeImportacionDescripcion\":\"\",\"PagoEn1\":30,\"PagoEn2\":0,\"PagoEn3\":0,\"PagoEn1Porcentaje\":0,\"PagoEn2Porcentaje\":0}";
-
+            var json = "{\"Id\":0,\"Cotizacion_Id\":0,\"Solp_Id\":31745,\"NumeroOrdenDeCompra\":\"4123002078\",\"FechaCreacion\":\"/Date(1705028400000)/\",\"UsuarioCreador_Id\":0,\"UsuarioCreador\":null,\"Moneda_Id\":225,\"MonedaDescripcion\":\"Franco suizo\",\"MontoTotal\":0,\"AdjudicacionPosiciones\":[{\"Id\":0,\"Adjudicacion_Id\":0,\"CotizacionPosicion_Id\":0,\"Cantidad\":1,\"SolpPosicion_Id\":0,\"SubposicionesCompras\":null,\"MaterialComprasCodigo\":\"000000000050224392\",\"Indice\":1,\"Tarea\":\"BULON CAB.HEXAG.8.8 RW 5/8\",\"CentroComprasDescripcion\":null,\"TextoSuministro\":\"BULON CAB.HEXAG.8.8 RW 5/8\",\"Modelo\":\"\",\"UnidadDescripcion\":\"UNI\",\"MonedaDescripcion\":\"CHF\",\"PrecioUnidad\":0.6,\"MonedaId\":225,\"PrecioTotal\":0.6,\"FechaEntregaServicio\":\"2024-01-29T03:00:00.000Z\",\"PlazoDeOferta\":18,\"MaterialComprasDescripcion\":\"BULON CAB.HEXAG.8.8 RW 5/8\",\"MonedaCodigo\":\"CHF\",\"CentroComprasCodigo\":\"1029\",\"MaterialTextoAmpliado\":\"BULON CABEZA HEXAGONAL RW 5/8\",\"FechaEntregaServicioFormateado\":\"29.01.2024\",\"PlazoDeEntrega\":null,\"Eliminado\":false,\"UnidadId\":214,\"UnidadesDeMedida\":[{\"Id\":43,\"Tabla\":\"Unidad\",\"Codigo\":\"CEN\",\"CodigoSap\":\"CEN\",\"Descripcion\":\"CEN\",\"IdPadre\":null,\"FiltroComprador\":null,\"CodigoDescripcion\":\"CEN - CEN\"},{\"Id\":51,\"Tabla\":\"Unidad\",\"Codigo\":\"DOC\",\"CodigoSap\":\"DOC\",\"Descripcion\":\"DOC\",\"IdPadre\":null,\"FiltroComprador\":null,\"CodigoDescripcion\":\"DOC - DOC\"},{\"Id\":66,\"Tabla\":\"Unidad\",\"Codigo\":\"GRU\",\"CodigoSap\":\"GRU\",\"Descripcion\":\"GRU\",\"IdPadre\":null,\"FiltroComprador\":null,\"CodigoDescripcion\":\"GRU - GRU\"},{\"Id\":147,\"Tabla\":\"Unidad\",\"Codigo\":\"MIL\",\"CodigoSap\":\"MIL\",\"Descripcion\":\"MIL\",\"IdPadre\":null,\"FiltroComprador\":null,\"CodigoDescripcion\":\"MIL - MIL\"},{\"Id\":185,\"Tabla\":\"Unidad\",\"Codigo\":\"PAR\",\"CodigoSap\":\"PAR\",\"Descripcion\":\"PAR\",\"IdPadre\":null,\"FiltroComprador\":null,\"CodigoDescripcion\":\"PAR - PAR\"},{\"Id\":214,\"Tabla\":\"Unidad\",\"Codigo\":\"UNI\",\"CodigoSap\":\"UNI\",\"Descripcion\":\"UNI\",\"IdPadre\":null,\"FiltroComprador\":null,\"CodigoDescripcion\":\"UNI - UNI\"}],\"UnidadCodigo\":\"UNI\",\"UnidadMedida\":{\"Id\":214,\"Tabla\":null,\"Codigo\":\"UNI\",\"CodigoSap\":null,\"Descripcion\":null,\"IdPadre\":null,\"FiltroComprador\":null,\"CodigoDescripcion\":\"  \"},\"DireccionDeEntrega\":{\"RegionSap\":\"04\",\"Id\":12,\"CodigoSap\":\"04\",\"Descripcion\":\"\",\"PaisSap\":\"\"},\"EntregaFinal\":false,\"Moneda\":{\"Id\":0,\"Tabla\":null,\"Codigo\":\"CHF\",\"CodigoSap\":null,\"Descripcion\":\"Franco suizo\",\"IdPadre\":null,\"FiltroComprador\":null,\"CodigoDescripcion\":\"  Franco suizo\"},\"RegionCodigo\":\"04\",\"RegionId\":12,\"PaisSap\":\"\"}],\"PrecioFinal\":574.115136,\"Proveedor\":\"0057984261\",\"TipoPosicionCodigo\":\"MATERIALES\",\"TextoDeCabecera\":\"\",\"CondicionesDeEntrega\":\"\",\"CondicionesDePago\":\"\",\"Garantias\":\"22\",\"Centro\":\"Planta San Lorenzo\",\"CalleEntrega\":\"Benielli 398\",\"CodigoPostal\":\"2200\",\"PrecioBruto\":0,\"EstadoLiberacionCodigo\":null,\"EstadoLiberacionDetalle\":null,\"EsMonedaProveedor\":false,\"RegionSap\":0,\"CreadoAutomatico\":false,\"MonedaCodigo\":null,\"CondicionDePago\":{\"CondicionDeImportacionCodigo\":null,\"CondicionDeImportacionComplemento\":null,\"Codigo\":\"0030\",\"Descripcion\":\"Pagadero dentro de los 30 días sin DPP\",\"Id\":121554,\"CodigoDescripcion\":\"0030 - Pagadero dentro de los 30 días sin DPP\"},\"CondicionDeImportacion\":{\"Codigo\":\"\",\"Descripcion\":\"\",\"Id\":null,\"CodigoDescripcion\":null},\"CondicionDePagoCodigo\":null,\"CondicionDePagoId\":null,\"CondicionDeImportacionCodigo\":null,\"CondicionDeImportacionId\":null,\"CondicionDeImportacionDescripcion\":\"\",\"PagoEn1\":30,\"PagoEn2\":0,\"PagoEn3\":0,\"PagoEn1Porcentaje\":0,\"PagoEn2Porcentaje\":0}";
 
             comprasServiceMock.Setup(s => s.EditarOrdenDeCompra(It.IsAny<AdjudicacionDto>())).Throws(new InfoCustomException("Mensaje de información"));
 
-            // Act
             var result = target.ModificarOrdenDeCompra(json) as JsonResult;
 
-            // Assert
             Assert.IsNotNull(result);
         }
 
         [Test]
         public void ModificarOrdenDeCompraValidationCustomExceptionTest()
         {
-            // Arrange
-            var json = "{\"Id\":0,\"Cotizacion_Id\":0,\"Solp_Id\":31745,\"NumeroOrdenDeCompra\":\"4123002078\",\"FechaCreacion\":\"/Date(1705028400000)/\",\"UsuarioCreador_Id\":0,\"UsuarioCreador\":null,\"Moneda_Id\":225,\"MonedaDescripcion\":\"Franco suizo\",\"MontoTotal\":0,\"AdjudicacionPosiciones\":[{\"Id\":0,\"Adjudicacion_Id\":0,\"CotizacionPosicion_Id\":0,\"Cantidad\":1,\"SolpPosicion_Id\":0,\"SubposicionesCompras\":null,\"MaterialComprasCodigo\":\"000000000050224392\",\"Indice\":1,\"Tarea\":\"BULON CAB.HEXAG.8.8 RW 5/8\"X2\"\",\"CentroComprasDescripcion\":null,\"TextoSuministro\":\"BULON CAB.HEXAG.8.8 RW 5/8\"X2\"\",\"Modelo\":\"\",\"UnidadDescripcion\":\"UNI\",\"MonedaDescripcion\":\"CHF\",\"PrecioUnidad\":0.6,\"MonedaId\":225,\"PrecioTotal\":0.6,\"FechaEntregaServicio\":\"2024-01-29T03:00:00.000Z\",\"PlazoDeOferta\":18,\"MaterialComprasDescripcion\":\"BULON CAB.HEXAG.8.8 RW 5/8\"X2\"\",\"MonedaCodigo\":\"CHF\",\"CentroComprasCodigo\":\"1029\",\"MaterialTextoAmpliado\":\"BULON CABEZA HEXAGONAL RW 5/8\" x 2\" ACERO GRADO 8.8\",\"FechaEntregaServicioFormateado\":\"29.01.2024\",\"PlazoDeEntrega\":null,\"Eliminado\":false,\"UnidadId\":214,\"UnidadesDeMedida\":[{\"Id\":43,\"Tabla\":\"Unidad\",\"Codigo\":\"CEN\",\"CodigoSap\":\"CEN\",\"Descripcion\":\"CEN\",\"IdPadre\":null,\"FiltroComprador\":null,\"CodigoDescripcion\":\"CEN - CEN\"},{\"Id\":51,\"Tabla\":\"Unidad\",\"Codigo\":\"DOC\",\"CodigoSap\":\"DOC\",\"Descripcion\":\"DOC\",\"IdPadre\":null,\"FiltroComprador\":null,\"CodigoDescripcion\":\"DOC - DOC\"},{\"Id\":66,\"Tabla\":\"Unidad\",\"Codigo\":\"GRU\",\"CodigoSap\":\"GRU\",\"Descripcion\":\"GRU\",\"IdPadre\":null,\"FiltroComprador\":null,\"CodigoDescripcion\":\"GRU - GRU\"},{\"Id\":147,\"Tabla\":\"Unidad\",\"Codigo\":\"MIL\",\"CodigoSap\":\"MIL\",\"Descripcion\":\"MIL\",\"IdPadre\":null,\"FiltroComprador\":null,\"CodigoDescripcion\":\"MIL - MIL\"},{\"Id\":185,\"Tabla\":\"Unidad\",\"Codigo\":\"PAR\",\"CodigoSap\":\"PAR\",\"Descripcion\":\"PAR\",\"IdPadre\":null,\"FiltroComprador\":null,\"CodigoDescripcion\":\"PAR - PAR\"},{\"Id\":214,\"Tabla\":\"Unidad\",\"Codigo\":\"UNI\",\"CodigoSap\":\"UNI\",\"Descripcion\":\"UNI\",\"IdPadre\":null,\"FiltroComprador\":null,\"CodigoDescripcion\":\"UNI - UNI\"}],\"UnidadCodigo\":\"UNI\",\"UnidadMedida\":{\"Id\":214,\"Tabla\":null,\"Codigo\":\"UNI\",\"CodigoSap\":null,\"Descripcion\":null,\"IdPadre\":null,\"FiltroComprador\":null,\"CodigoDescripcion\":\"  \"},\"DireccionDeEntrega\":{\"RegionSap\":\"04\",\"Id\":12,\"CodigoSap\":\"04\",\"Descripcion\":\"\",\"PaisSap\":\"\"},\"EntregaFinal\":false,\"Moneda\":{\"Id\":0,\"Tabla\":null,\"Codigo\":\"CHF\",\"CodigoSap\":null,\"Descripcion\":\"Franco suizo\",\"IdPadre\":null,\"FiltroComprador\":null,\"CodigoDescripcion\":\"  Franco suizo\"},\"RegionCodigo\":\"04\",\"RegionId\":12,\"PaisSap\":\"\"}],\"PrecioFinal\":574.115136,\"Proveedor\":\"0057984261\",\"TipoPosicionCodigo\":\"MATERIALES\",\"TextoDeCabecera\":\"\",\"CondicionesDeEntrega\":\"\",\"CondicionesDePago\":\"\",\"Garantias\":\"22\",\"Centro\":\"Planta San Lorenzo\",\"CalleEntrega\":\"Benielli 398\",\"CodigoPostal\":\"2200\",\"PrecioBruto\":0,\"EstadoLiberacionCodigo\":null,\"EstadoLiberacionDetalle\":null,\"EsMonedaProveedor\":false,\"RegionSap\":0,\"CreadoAutomatico\":false,\"MonedaCodigo\":null,\"CondicionDePago\":{\"CondicionDeImportacionCodigo\":null,\"CondicionDeImportacionComplemento\":null,\"Codigo\":\"0030\",\"Descripcion\":\"Pagadero dentro de los 30 días sin DPP\",\"Id\":121554,\"CodigoDescripcion\":\"0030 - Pagadero dentro de los 30 días sin DPP\"},\"CondicionDeImportacion\":{\"Codigo\":\"\",\"Descripcion\":\"\",\"Id\":null,\"CodigoDescripcion\":null},\"CondicionDePagoCodigo\":null,\"CondicionDePagoId\":null,\"CondicionDeImportacionCodigo\":null,\"CondicionDeImportacionId\":null,\"CondicionDeImportacionDescripcion\":\"\",\"PagoEn1\":30,\"PagoEn2\":0,\"PagoEn3\":0,\"PagoEn1Porcentaje\":0,\"PagoEn2Porcentaje\":0}";
-
+            var json = "{\"Id\":0,\"Cotizacion_Id\":0,\"Solp_Id\":31745,\"NumeroOrdenDeCompra\":\"4123002078\",\"FechaCreacion\":\"/Date(1705028400000)/\",\"UsuarioCreador_Id\":0,\"UsuarioCreador\":null,\"Moneda_Id\":225,\"MonedaDescripcion\":\"Franco suizo\",\"MontoTotal\":0,\"AdjudicacionPosiciones\":[{\"Id\":0,\"Adjudicacion_Id\":0,\"CotizacionPosicion_Id\":0,\"Cantidad\":1,\"SolpPosicion_Id\":0,\"SubposicionesCompras\":null,\"MaterialComprasCodigo\":\"000000000050224392\",\"Indice\":1,\"Tarea\":\"BULON CAB.HEXAG.8.8 RW 5/8\",\"CentroComprasDescripcion\":null,\"TextoSuministro\":\"BULON CAB.HEXAG.8.8 RW 5/8\",\"Modelo\":\"\",\"UnidadDescripcion\":\"UNI\",\"MonedaDescripcion\":\"CHF\",\"PrecioUnidad\":0.6,\"MonedaId\":225,\"PrecioTotal\":0.6,\"FechaEntregaServicio\":\"2024-01-29T03:00:00.000Z\",\"PlazoDeOferta\":18,\"MaterialComprasDescripcion\":\"BULON CAB.HEXAG.8.8 RW 5/8\",\"MonedaCodigo\":\"CHF\",\"CentroComprasCodigo\":\"1029\",\"MaterialTextoAmpliado\":\"BULON CABEZA HEXAGONAL RW 5/8\",\"FechaEntregaServicioFormateado\":\"29.01.2024\",\"PlazoDeEntrega\":null,\"Eliminado\":false,\"UnidadId\":214,\"UnidadesDeMedida\":[{\"Id\":43,\"Tabla\":\"Unidad\",\"Codigo\":\"CEN\",\"CodigoSap\":\"CEN\",\"Descripcion\":\"CEN\",\"IdPadre\":null,\"FiltroComprador\":null,\"CodigoDescripcion\":\"CEN - CEN\"},{\"Id\":51,\"Tabla\":\"Unidad\",\"Codigo\":\"DOC\",\"CodigoSap\":\"DOC\",\"Descripcion\":\"DOC\",\"IdPadre\":null,\"FiltroComprador\":null,\"CodigoDescripcion\":\"DOC - DOC\"},{\"Id\":66,\"Tabla\":\"Unidad\",\"Codigo\":\"GRU\",\"CodigoSap\":\"GRU\",\"Descripcion\":\"GRU\",\"IdPadre\":null,\"FiltroComprador\":null,\"CodigoDescripcion\":\"GRU - GRU\"},{\"Id\":147,\"Tabla\":\"Unidad\",\"Codigo\":\"MIL\",\"CodigoSap\":\"MIL\",\"Descripcion\":\"MIL\",\"IdPadre\":null,\"FiltroComprador\":null,\"CodigoDescripcion\":\"MIL - MIL\"},{\"Id\":185,\"Tabla\":\"Unidad\",\"Codigo\":\"PAR\",\"CodigoSap\":\"PAR\",\"Descripcion\":\"PAR\",\"IdPadre\":null,\"FiltroComprador\":null,\"CodigoDescripcion\":\"PAR - PAR\"},{\"Id\":214,\"Tabla\":\"Unidad\",\"Codigo\":\"UNI\",\"CodigoSap\":\"UNI\",\"Descripcion\":\"UNI\",\"IdPadre\":null,\"FiltroComprador\":null,\"CodigoDescripcion\":\"UNI - UNI\"}],\"UnidadCodigo\":\"UNI\",\"UnidadMedida\":{\"Id\":214,\"Tabla\":null,\"Codigo\":\"UNI\",\"CodigoSap\":null,\"Descripcion\":null,\"IdPadre\":null,\"FiltroComprador\":null,\"CodigoDescripcion\":\"  \"},\"DireccionDeEntrega\":{\"RegionSap\":\"04\",\"Id\":12,\"CodigoSap\":\"04\",\"Descripcion\":\"\",\"PaisSap\":\"\"},\"EntregaFinal\":false,\"Moneda\":{\"Id\":0,\"Tabla\":null,\"Codigo\":\"CHF\",\"CodigoSap\":null,\"Descripcion\":\"Franco suizo\",\"IdPadre\":null,\"FiltroComprador\":null,\"CodigoDescripcion\":\"  Franco suizo\"},\"RegionCodigo\":\"04\",\"RegionId\":12,\"PaisSap\":\"\"}],\"PrecioFinal\":574.115136,\"Proveedor\":\"0057984261\",\"TipoPosicionCodigo\":\"MATERIALES\",\"TextoDeCabecera\":\"\",\"CondicionesDeEntrega\":\"\",\"CondicionesDePago\":\"\",\"Garantias\":\"22\",\"Centro\":\"Planta San Lorenzo\",\"CalleEntrega\":\"Benielli 398\",\"CodigoPostal\":\"2200\",\"PrecioBruto\":0,\"EstadoLiberacionCodigo\":null,\"EstadoLiberacionDetalle\":null,\"EsMonedaProveedor\":false,\"RegionSap\":0,\"CreadoAutomatico\":false,\"MonedaCodigo\":null,\"CondicionDePago\":{\"CondicionDeImportacionCodigo\":null,\"CondicionDeImportacionComplemento\":null,\"Codigo\":\"0030\",\"Descripcion\":\"Pagadero dentro de los 30 días sin DPP\",\"Id\":121554,\"CodigoDescripcion\":\"0030 - Pagadero dentro de los 30 días sin DPP\"},\"CondicionDeImportacion\":{\"Codigo\":\"\",\"Descripcion\":\"\",\"Id\":null,\"CodigoDescripcion\":null},\"CondicionDePagoCodigo\":null,\"CondicionDePagoId\":null,\"CondicionDeImportacionCodigo\":null,\"CondicionDeImportacionId\":null,\"CondicionDeImportacionDescripcion\":\"\",\"PagoEn1\":30,\"PagoEn2\":0,\"PagoEn3\":0,\"PagoEn1Porcentaje\":0,\"PagoEn2Porcentaje\":0}";
 
             comprasServiceMock.Setup(s => s.EditarOrdenDeCompra(It.IsAny<AdjudicacionDto>())).Throws(new ValidationCustomException("Mensaje de validación"));
 
-            // Act
             var result = target.ModificarOrdenDeCompra(json) as JsonResult;
 
-            // Assert
             Assert.IsNotNull(result);
-        }       
-
+        }
 
     }
 }
