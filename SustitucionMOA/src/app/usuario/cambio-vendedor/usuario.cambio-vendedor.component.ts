@@ -10,6 +10,8 @@ import { SessionDataService } from './../../common/services/SessionDataService';
 import { ModalService } from './../../common/services/ModalService';
 import { BuscadorService } from '../../common/shared-components/buscador/buscador.service';
 import { ComunicacionesService } from './../../comunicaciones/comunicaciones.service';
+import { DatePipe } from '@angular/common';
+import { UpdateComunicacionService } from './../../common/services/UpdateComunicacionService';
 
 @Component({
     selector: 'app-usuario-cambio-vendedor',
@@ -31,7 +33,9 @@ export class UsuarioCambioVendedorComponent extends BaseComponent implements OnI
         protected floatMsgService: FloatMsgService,
         protected modalService: ModalService,
         protected readonly buscadorService: BuscadorService,
-        protected comunicacionesService: ComunicacionesService) {
+        protected comunicacionesService: ComunicacionesService,
+        private datePipe: DatePipe,
+        private updateComunicacionService: UpdateComunicacionService) {
         super(navService, securityService, floatMsgService, modalService);
         this.mensajeComponent = new MensajeComponent();
         this.spinnerComponent = new SpinnerComponent();
@@ -42,6 +46,8 @@ export class UsuarioCambioVendedorComponent extends BaseComponent implements OnI
     orderDirection: number = 1;
     itemsPerPage = 20;
     filtroUsuarioVendedor: string = "";
+    startDate: string = "";
+    endDate : string = "";
 
     setTabs() {
         this.setMenuSeccionTab('usuario', 'Cambio Vendedor');
@@ -107,9 +113,7 @@ export class UsuarioCambioVendedorComponent extends BaseComponent implements OnI
         try {
             this.unsubscribe();
             this.subscription = this.service.seleccionarVendedor(vendedor, descripcion).subscribe(
-                (result: any) => {
-          
-                    this.spinnerComponent.hideIt();
+                (result: any) => {         
                     if (result.logout == true) {
                         this.sessionDataService.logout();
                     } else if (result.error != undefined && result.error != "") {
@@ -123,8 +127,14 @@ export class UsuarioCambioVendedorComponent extends BaseComponent implements OnI
                         this.sessionDataService.setNombre(result.descripcion);
                         sessionStorage.setItem("noticias", JSON.stringify(result.noticias));
                         this.sessionDataService.setNoticias(result.noticias);
+                        this.dateConvert();
+                        //llamada a busqueda de notificaciones del proveedor seleccionado
+                        this.updateComunicacionService.updateCommunications(result.vendedor, this.startDate, this.endDate);
                     }
-                    //this.comunicacionesService.getComunicaciones(result.vendedor, "", "");
+                    //Demora manual para visualizar la tardanza de la busqueda de notificaciones
+                    setTimeout(() => {
+                        this.spinnerComponent.hideIt();
+                    }, 4000);
                 },
                 error => {
                     this.mensajeComponent.setErrorMsg(error.message);
@@ -138,5 +148,27 @@ export class UsuarioCambioVendedorComponent extends BaseComponent implements OnI
         }
 
         return false; //<-- Prevent Refresh
+    }
+
+    dateConvert() {
+        var today = new Date();
+
+        this.endDate = today.toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit'
+        })
+
+        today.setMonth(today.getMonth() - 2);
+
+        this.startDate = today.toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit'
+        })
+
+        this.startDate = this.datePipe.transform(this.startDate, 'yyyy-MM-dd');
+        this.endDate = this.datePipe.transform(this.endDate, 'yyyy-MM-dd');
+
     }
 }

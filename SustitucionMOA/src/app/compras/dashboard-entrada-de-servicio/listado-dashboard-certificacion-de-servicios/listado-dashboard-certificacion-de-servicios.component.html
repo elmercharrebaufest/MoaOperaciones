@@ -201,7 +201,7 @@
               <ng-template pTemplate="body" let-rowData let-expanded="expanded" let-posIndex="rowIndex">
                 <tr>
                   <td>
-                    <a href="#" [pRowToggler]="rowData" (click)="restoreItemsStatus(); calcularValoresACertificar(rowData);">
+                    <a href="#" [pRowToggler]="rowData" (click)="clearCheckboxes(); calcularValoresACertificar(rowData);">
                       <i [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
                     </a>
                   </td>
@@ -238,7 +238,7 @@
                       <ng-template pTemplate="header" *ngIf="rowData.Items && rowData.Items.length > 0">
                         <tr>
                           <th style="width: 4rem">
-                            <input type="checkbox" [(ngModel)]="rowData.isSelected" (change)="selectAllItems($event, rowData.Items, orderIndex, posIndex)">
+                            <input *ngIf="hideCheckboxToAll(rowData.Items)" type="checkbox" [(ngModel)]="rowData.isSelected" (change)="selectAllItems($event, rowData.Items)">
                           </th>
                           <th title="NroItem">NRO LINEA</th>
                           <th title="NumeroServicio">N° Servicio</th>

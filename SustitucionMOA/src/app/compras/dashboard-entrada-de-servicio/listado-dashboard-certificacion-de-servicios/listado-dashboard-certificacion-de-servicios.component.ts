@@ -108,9 +108,6 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
   //Filtros
   ocFilterValues: string[] = [];
   tablaPOCopy: any[] = []; //copia de la tabla original.
-  originalItems: any[] = []; // copia de los items de las posiciones.
-  orderIndex: number = 0;
-  posIndex: number = 0;
     
   ngOnInit() {       
     this.navService.setSeccionList([]);
@@ -130,8 +127,9 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
       ]
     );
 
-    this.navService.navegarSeccion("compras/dashboardCertificacionDeServicios");
-    this.getListarPO(this.proveedor, this.ordenCompraId, this.filtroFechaComponent.fecha_inicio, this.filtroFechaComponent.fecha_fin);
+      this.navService.navegarSeccion("compras/dashboardCertificacionDeServicios");
+      this.filtroFechaComponent.setPeriodoInitial('2');
+      this.getListarPO(this.proveedor, this.ordenCompraId, this.filtroFechaComponent.fecha_inicio, this.filtroFechaComponent.fecha_fin);
   }
 
     ngAfterViewInit() {
@@ -155,6 +153,11 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
     const numeroLinea = item.NumeroLinea;
 
     if (this.itemIdSelected.includes(itemId) && this.numeroLineaSelected.has(numeroLinea)) {
+      this.tablaPO.forEach(order => {
+        order.Posiciones.forEach((pos: any) => {
+          pos.isSelected= false;
+        })
+      })
       this.itemIdSelected.splice(this.itemIdSelected.indexOf(itemId), 1);
       this.numeroLineaSelected.delete(numeroLinea);
       
@@ -165,6 +168,9 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
       this.itemIdSelected.push(itemId);
       this.numeroLineaSelected.add(numeroLinea);
       this.itemSelected.push(item);
+      if(!this.isGet100(item) || item.MontoACertificar != 0){
+        this.actionCheckPosition(item);
+      }
     }
     this.itemSelected.sort((a, b) => a.NumeroLinea > b.NumeroLinea ? 1 : -1);
   }
@@ -551,16 +557,9 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
   }
 
   clearCheckbox(item: any): void {
-    if( this.originalItems.length > 0 ){
-      this.tablaPO[this.orderIndex].Posiciones[this.posIndex].Items = this.originalItems;
-    }
     this.numeroLineaSelected.clear();
     item.isSelected = false;
-    this.tablaPO.forEach(order => {
-      order.Posiciones.forEach((pos: any) => {
-        pos.isSelected= false;
-      })
-    })
+    this.actionCheckPosition(item);
     this.itemIdSelected = this.itemIdSelected.filter(obj => { return obj !== item.Id });
 
     this.itemSelected = this.itemSelected.filter(obj => { return obj !== item });
@@ -570,31 +569,31 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
     return item.Porcentaje === '100';
   }
 
-  selectAllItems(event: any, items: any, orderIndex: any, posIndex: any): void {
+  selectAllItems(event: any, items: any): void {
     if (event.target.checked) {
-      this.originalItems = [];
-      this.originalItems = items.slice(); // Guardar una copia de los items originales
-      this.orderIndex = orderIndex; // Se guarda el indice de la orden.
-      this.posIndex = posIndex; // Se guarda el indice de la posición.
-      const itemsFiltered = items.filter((row: any) => !this.isGet100(row));
-      itemsFiltered.forEach((item: any) => {
-        item.isSelected = true;
-        this.itemIdSelected.push(item.PosicionId);
-      });
+      const itemsFiltered = items.filter((row: any) => !this.isGet100(row) && row.MontoACertificar != 0);
       if(itemsFiltered.length > 0){
-        this.itemSelected = itemsFiltered;
-        this.tablaPO[orderIndex].Posiciones[posIndex].Items = itemsFiltered; // Cambia el estado de los input check
+        itemsFiltered.forEach((item: any) => {
+          if(!this.itemSelected.includes(item)){
+            item.isSelected = true;
+            this.onCheckboxChange(item);
+          }
+        });
       }
     } else {
-      this.restoreItemsStatus(orderIndex, posIndex);
+      this.clearCheckboxes();
     }
   }
 
-  restoreItemsStatus(orderIndex: any = this.orderIndex, posIndex: any = this.posIndex): void {
-    if( this.originalItems.length > 0 ){
-      this.tablaPO[orderIndex].Posiciones[posIndex].Items = this.originalItems;
-    }
-    this.clearCheckboxes();
+  actionCheckPosition(item: any): void {
+    this.tablaPO.filter(orders => orders.NumeroOrdenDeCompra === item.NroOrdenCompra).forEach(order => {
+      order.Posiciones.filter(positions => positions.NumeroPosicion === parseInt(item.NroPosicion)).forEach(pos => {
+        pos.Items.every( item => pos.isSelected = item.isSelected ? true : false )
+      })
+    })
   }
-  
+
+  hideCheckboxToAll(items: any): boolean{
+    return items.some(item => !this.isGet100(item) || item.MontoACertificar != 0)
+  }
 }

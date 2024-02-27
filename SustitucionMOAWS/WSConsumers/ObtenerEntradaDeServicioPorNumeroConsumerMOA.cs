@@ -22,9 +22,11 @@ using System.Windows.Media.TextFormatting;
 
 namespace SustitucionMOAWS.WSConsumers
 {
+    /// <summary>
+    /// Obtiene detalle de una entrada de servicio con el numero de entrada de servicio
+    /// </summary>
     public class ObtenerEntradaDeServicioPorNumeroConsumerMOA : IObtenerEntradaDeServicioPorNumeroConsumerMOA
     {
-        // Obtiene detalle de una entrada de servicio por numero de entrada de servicio
         SI_MMRFC_BAPI_ENTRYSHEET_GETDETAILClient service;
         //private const string COMP_CODE = "MOA";
         private readonly IRepositorio repositorio;
@@ -43,7 +45,7 @@ namespace SustitucionMOAWS.WSConsumers
 
 
         /// <summary>
-        /// Obtiene detalle de una entrada de servicio por numero de entrada de servicio
+        /// Obtiene detalle de una entrada de servicio con el numero de entrada de servicio
         /// </summary>
         /// <param name="nroES"></param>
         /// <returns></returns>
@@ -80,17 +82,18 @@ namespace SustitucionMOAWS.WSConsumers
                 .Where(a => a.DELETE_IND != "X" && a.OUTL_IND != "X");
 
             List<ItemEntradaServicioDto> items = new List<ItemEntradaServicioDto>();
+
+            /// Recorre el detalle de la entrada de servicio
             foreach (var elementoEntrySheetService in itemsEntrySheetService)
             {
                 var item = new ItemEntradaServicioDto();
-                
+
 
                 item.Id = cabecera.SHEET_NO;
+                item.Descripcion = cabecera.SHORT_TEXT;
+                
                 item.ItemNumero = elementoEntrySheetService.PLN_PCKG;
-
                 item.Cantidad = elementoEntrySheetService.QUANTITY;
-                item.Descripcion = elementoEntrySheetService.SHORT_TEXT;
-
                 item.PLN_PCKG = elementoEntrySheetService.PLN_PCKG;
                 item.PLN_LINE = elementoEntrySheetService.PLN_LINE;
                 item.PCKG_NO = elementoEntrySheetService.PCKG_NO;
@@ -98,6 +101,7 @@ namespace SustitucionMOAWS.WSConsumers
 
                 items.Add(item);
             }
+
             //MMSN-460 + MMSN-491
             if (!String.IsNullOrEmpty(cabecera.CREATED_ON))
             {
@@ -114,6 +118,7 @@ namespace SustitucionMOAWS.WSConsumers
             result.Referencia = cabecera.REF_DOC_NO;
             result.ImporteARPUSD = cabecera.CURRENCY;
             result.FechaContabilizacion = cabecera.POST_DATE;
+            result.TextoBreve = cabecera.SHORT_TEXT;
 
             result.Items = items;
 

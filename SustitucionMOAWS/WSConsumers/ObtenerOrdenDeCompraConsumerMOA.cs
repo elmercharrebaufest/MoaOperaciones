@@ -10,6 +10,7 @@ using SustitucionMOAWS.Interfaces;
 using SustitucionMOAWS.ObtenerOrdenDeCompraWebServiceMOA;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Net;
@@ -21,6 +22,9 @@ using System.Windows.Media.TextFormatting;
 
 namespace SustitucionMOAWS.WSConsumers
 {
+    /// <summary>
+    /// Obtener detalle de una Orden de Compra. Consula por numero de Orden de Compra
+    /// </summary>
     public class ObtenerOrdenDeCompraConsumerMOA : IObtenerOrdenDeCompraConsumerMOA
     {
         BAPI_PO_GETDETAIL1PortTypeClient service;
@@ -338,7 +342,7 @@ namespace SustitucionMOAWS.WSConsumers
 
         /// <summary>
         /// Obtiene Detalle de una Orden de Compra
-        /// Posición, item o línea, Entradas de Servicio si las tuviera, Historial de Entradas de Servicio.
+        /// Con Posición, item o línea, Entradas de Servicio si las tuviera, Historial de Entradas de Servicio.
         /// </summary>
         /// <param name="numeroDeOrdenCompra"></param>
         /// <returns></returns>
@@ -370,17 +374,6 @@ namespace SustitucionMOAWS.WSConsumers
         /// <summary>
         /// Mapea Detalle de una Orden de Compra
         /// </summary>
-        /// <param name="result"></param>
-        /// <param name="POHEADER"></param>
-        /// <param name="RETURN"></param>
-        /// <param name="POITEM"></param>
-        /// <param name="POTEXTHEADER"></param>
-        /// <param name="POTEXTITEM"></param>
-        /// <param name="POSERVICES"></param>
-        /// <param name="POSCHEDULE"></param>
-        /// <param name="POADDRDELIVERY"></param>
-        /// <param name="POHISTORY"></param>
-        /// <returns></returns>
         private DetalleOrdenDeCompraDto map(BAPIEIKP result, BAPIMEPOHEADER POHEADER, BAPIRET2[] RETURN, BAPIMEPOITEM[] POITEM, BAPIMEPOTEXTHEADER[] POTEXTHEADER,
          BAPIMEPOTEXT[] POTEXTITEM, BAPIESLLC[] POSERVICES, BAPIMEPOSCHEDULE[] POSCHEDULE, BAPIMEPOADDRDELIVERY[] POADDRDELIVERY, BAPIEKBE[] POHISTORY, List<TablaSap> centros, List<TablaSap> almacenes)
         {
@@ -397,7 +390,6 @@ namespace SustitucionMOAWS.WSConsumers
                 p.CodigoProveedor.Substring(p.CodigoProveedor.Length - 8) == p.CUIT.Substring(2, 8)
             ).FirstOrDefault();
 
-            // Obtiene datos de la cabecera de una OC
             detalleOrdenDeCompra.NumeroOrdenDeCompra = POHEADER.PO_NUMBER;
             detalleOrdenDeCompra.Proveedor = POHEADER.VENDOR;
             //detalleOrdenDeCompra.NombreProveedor = POHEADER.
@@ -420,7 +412,7 @@ namespace SustitucionMOAWS.WSConsumers
 
 
 
-            /// Por cada Posicion ...
+            /// Recorre cada Posicion en busqueda de itemsOC
             foreach (var posicion in POITEM)
             {
                 PosicionDto pos = new PosicionDto();
@@ -478,6 +470,7 @@ namespace SustitucionMOAWS.WSConsumers
 
                 pos.NroOrdenCompra = POHEADER.PO_NUMBER;
 
+                /// Obtine los Items de la position
                 pos.Items = ObtenerItemsdelaPosicion(POSERVICES, POHISTORY, POHEADER, pos);
 
                 detalleOrdenDeCompra.Posiciones.Add(pos);
@@ -487,7 +480,7 @@ namespace SustitucionMOAWS.WSConsumers
         }
 
         /// <summary>
-        /// Load Items of a position
+        /// Obtine los Items de la position
         /// </summary>
         /// <param name="pOSERVICES"></param>
         /// <param name="pOHISTORY"></param>
@@ -504,6 +497,8 @@ namespace SustitucionMOAWS.WSConsumers
                 return itemsDeLaPosicion;
 
             var items = pOSERVICES.Where(x => x.PCKG_NO == itemsValidos.SUBPCKG_NO);
+
+            /// Recorre cada item de la posicion en busqueda de entradas de servicio
             foreach (var item in items)
             {
                 ItemDto itemDto = new ItemDto();
@@ -534,6 +529,7 @@ namespace SustitucionMOAWS.WSConsumers
                 itemDto.Porcentaje = "0"; // si no tiene entradas de servicios asociadas el porcentaje es 0
                 itemDto.CantidadReal = 0; // si no tiene entras de servicios asociadas la cantidad real es = 0
 
+                /// Obtiene las entradas de servicio de cada item de la posicion
                 itemDto.EntradasServicio = ObtenerEntradasDeServicioDelItem(pOSERVICES, pOHISTORY, itemDto.Id, itemDto.LINE_NO);
                 if (itemDto.EntradasServicio.Count > 0)
                 {
@@ -552,7 +548,8 @@ namespace SustitucionMOAWS.WSConsumers
 
 
         /// <summary>
-        /// Obtiene las Entradas de Servicio de un Item
+        /// Obtiene las Entradas de Servicio de la posicion.
+        /// Elimina del listado las que no son de servicios
         /// </summary>
         /// <param name="pOSERVICES"></param>
         /// <param name="pOHISTORY"></param>
@@ -560,22 +557,25 @@ namespace SustitucionMOAWS.WSConsumers
         /// <returns></returns>
         private List<EntradaServicioDto> ObtenerEntradasDeServicioDelItem(BAPIESLLC[] pOSERVICES, BAPIEKBE[] pOHISTORY, string idDelItem, string idDeLinea)
         {
-            List<EntradaServicioDto> EntradasServicioDelItem = new List<EntradaServicioDto>();
+            List<EntradaServicioDto> EntradasServicioDelItemOC = new List<EntradaServicioDto>();
             List<BAPIEKBE> entradasDeServicioPotenciales = pOHISTORY.Where(x => x.PROCESS_ID == "9" && x.HIST_TYPE == "D").ToList();
             List<string> listaDeEntradasDeServicioFacturadas = pOHISTORY
                 .Where(x => (x.HIST_TYPE == "Q" || x.HIST_TYPE == "R") && x.PROCESS_ID == "2")
                 .Select(x => x.REF_DOC)
                 .ToList();
 
-
+            /// Recorre las entradas de servicios en busqueda de intems que coincidan con la posicion
             foreach (var entradaServicioPotencial in entradasDeServicioPotenciales)
             {
                 EntradaServicioDto entradaServicioDto = new EntradaServicioDto();
                 string _nroES = entradaServicioPotencial.MAT_DOC;
+
+                /// Obtiene detalle de una de kas entradas de servicio
                 EntradaServicioDto entradaServicioSAP = new ObtenerEntradaDeServicioPorNumeroConsumerMOA().ObtenerEntradaServicio(_nroES);
                 List<ItemEntradaServicioDto> _itemsDeEntradaServicio = entradaServicioSAP.Items;
                 bool entradaServicioFacturada = EntradaServicioTieneFactura(listaDeEntradasDeServicioFacturadas, _nroES);
 
+                // Toma los datos de cada item de la entrada de servicio
                 foreach (ItemEntradaServicioDto itemES in _itemsDeEntradaServicio)
                 {
 
@@ -584,10 +584,9 @@ namespace SustitucionMOAWS.WSConsumers
                         DateTime _fechaContabilizacion = SAPFormatter.GetDateTime(entradaServicioSAP.FechaContabilizacion);
                         bool entradaServicioDentroDePeriodoSAP = DentroPeriodoSAP(_fechaContabilizacion, DateTime.Now);
 
-
                         entradaServicioDto.Id = int.Parse(itemES.Id);
                         entradaServicioDto.itemNumero = itemES.ItemNumero;
-                        entradaServicioDto.TextoBreve = itemES.Descripcion;
+                        //entradaServicioDto.TextoBreve = itemES.Descripcion;
                         entradaServicioDto.Cantidad = itemES.Cantidad;
                         entradaServicioDto.ESS_PCKG_NO = itemES.PCKG_NO;
                         entradaServicioDto.ESS_LINE_NO = itemES.LINE_NO;
@@ -600,13 +599,13 @@ namespace SustitucionMOAWS.WSConsumers
                         entradaServicioDto.Referencia = entradaServicioSAP.Referencia;
                         entradaServicioDto.ImporteARPUSD = entradaServicioSAP.ImporteARPUSD;
                         entradaServicioDto.SePuedeBorrar = !entradaServicioFacturada && entradaServicioDentroDePeriodoSAP;
-
-                        EntradasServicioDelItem.Add(entradaServicioDto);
+                        entradaServicioDto.TextoBreve = entradaServicioSAP.TextoBreve; //
+                        EntradasServicioDelItemOC.Add(entradaServicioDto);
                     }
                 }
             }
 
-            return EntradasServicioDelItem;
+            return EntradasServicioDelItemOC;
         }
 
         /// <summary>

@@ -33,7 +33,7 @@ namespace SustitucionMOA.Controllers
         public ActionResult GetByProveedor(OrderParamsDto parametros)
         {
             try
-            {
+                {
                 // Filtro necesario por el tipo de dato que envía el front desde que se amplió la búsqueda de proveedores.
                 if (parametros.vendedor == "undefined")
                 {

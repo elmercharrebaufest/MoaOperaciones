@@ -13,7 +13,7 @@ namespace SustitucionMOAModel.Dto.OrdenesCompra
     public class EntrySheetHeaderSection
     {
         public string PaqueteNumero { get; set; } // se puede omitir del front
-        public string Descripcion { get; set; } // se puede omitir del front
+        public string Descripcion { get; set; }
         public string OrdenCompraNumero { get; set; }
         public string OrdenCompraPosicionNumero { get; set; }
         public string DocumentoReferenciaNumero { get; set; }

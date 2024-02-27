@@ -9,6 +9,7 @@ import { ComunicacionesService } from './comunicaciones.service';
 import { SessionDataService } from '../common/services/SessionDataService';
 import { LayoutComponent } from '../layout/layout.component';
 import { Router } from '@angular/router';
+import { UpdateComunicacionService } from '../common/services/UpdateComunicacionService';
 
 @Component({
   selector: 'app-comunicaciones',
@@ -30,8 +31,8 @@ export class ComunicacionesComponent extends BaseComponent implements OnInit {
   ids: any;
   filter: string;
 
-  startDate: String;
-  endDate: String;
+    startDate: string;
+    endDate: string;
 
     // Define una variable para almacenar los IDs
     comunicacionTipoSeisIds: number[] = [];
@@ -41,8 +42,8 @@ export class ComunicacionesComponent extends BaseComponent implements OnInit {
     ConsultasIds: number[] = [];
     liquidacionesIds: number[] = [];
 
-
-
+    subscriptionComunicaciones: any;
+    rawCommunications: any;
 
   constructor(
     protected navService: NavService, 
@@ -53,7 +54,8 @@ export class ComunicacionesComponent extends BaseComponent implements OnInit {
     private sessionDataService: SessionDataService,
     protected layoutComponent: LayoutComponent,
     private router: Router,
-    private datePipe: DatePipe,
+      private datePipe: DatePipe,
+      private updateComunicacionService: UpdateComunicacionService,
     ) {
     super(navService, securytiService, floatMsgService, modalService);
 
@@ -63,214 +65,213 @@ export class ComunicacionesComponent extends BaseComponent implements OnInit {
       proveedor => {
           this.idProveedor = proveedor;
       });
-
-     
+      //Para recibir actualizacíones al componente
+      this.updateComunicacionService.getAllCommunicationsObserv$.subscribe(res => {
+          this.rawCommunications = res;
+          this.formatComunicaciones();
+      });
 
   }
 
   ngOnInit() {
-    this.dateConvert();
-    this.getComunicaciones(this.idProveedor, this.startDate, this.endDate);
-    this.checkCommunications();
+      this.dateConvert();
+      // This will get the communications list
+      this.updateComunicacionService.updateCommunications(this.idProveedor, this.startDate, this.endDate);
+      this.checkCommunications();
   }
 
     ngOnDestroy() {
+        //this.subscription.unsubscribe();
         this.quantityCommunication = 0;
     }
   
 
-  getComunicaciones(idProveedor, start_date, end_date) {
-    this.communicationRead = [];
-    this.quantityCommunication = 0;
-    this.arrayVencidas = new Set();
-    this.arrayProximasAVencer = new Set();
-    this.contadorConsultas = 0;
-    this.arrayVencidas = new Set();
-    this.arrayProximasAVencer = new Set();
-  
-    try {
-      this.unsubscribe();
-      this.subscription = this.serviceComunicaciones.getComunicaciones(idProveedor, start_date, end_date).subscribe(
-        (result: any) => {
-             
-          if (result.data.length == 0) {
-            this.hasCommunications = false;
-            this.showButtonMoreCommunications = false;
-            this.communication = [];
-          } else {
-            this.hasCommunications = true;
-            if (result.data.length > 15) {
-              this.showButtonMoreCommunications = true;
+    formatComunicaciones() {
+        let result = this.rawCommunications;
+        this.communicationRead = [];
+        this.quantityCommunication = 0;
+        this.arrayVencidas = new Set();
+        this.arrayProximasAVencer = new Set();
+        this.contadorConsultas = 0;
+        this.arrayVencidas = new Set();
+        this.arrayProximasAVencer = new Set();
+
+        try {
+            if (result.data.length == 0) {
+                this.hasCommunications = false;
+                this.showButtonMoreCommunications = false;
+                this.communication = [];
             } else {
-              this.showButtonMoreCommunications = false;
-            }
-          }
-
-        const agrupadoPorFecha = result.data.reduce((result, element) => {
-              const fechaCreacion = element.FechaCreacion;
-
-              if (!result[fechaCreacion]) {
-                  result[fechaCreacion] = [];
-              }
-
-              result[fechaCreacion].push(element);
-
-              return result; 
-          }, {});
-
-              this.communication = agrupadoPorFecha;
-
-              let filteredCommunication = {};
-
-              //MMSN - 134: Ajuste - Notificaciones Apiladas
-              let skippedItems = [];
-              let stackedTypes = [1, 2, 6];
-
-              class stackedComm {
-                  Id: number;
-                  Type: number;
-              }
-
-              let skippedItemsByType = [];
-
-
-
-          for (const fecha in this.communication) {
-            const items = this.communication[fecha];
-            const filteredItems = [];
-            const seenCategories = {};
-            const categoryCounts = {};
-          
-            let tipo1Found = false;
-            let tipo2Found = false;
-            let tipo6Found = false;
-
-          
-              for (const item of items) {
-                  if (item.ComunicacionTipo === 1 && !tipo1Found) {
-                      filteredItems.push(item);
-                      tipo1Found = true;
-                  } else if (item.ComunicacionTipo === 2 && !tipo2Found) {
-                      filteredItems.push(item);
-                      tipo2Found = true;
-                  } else if (item.ComunicacionTipo === 6 && !tipo6Found) {
-                      filteredItems.push(item);
-                      tipo6Found = true;
-                  } else if (item.ComunicacionTipo !== 1 && item.ComunicacionTipo !== 2 && item.ComunicacionTipo !== 5 && item.ComunicacionTipo !== 6) {
-                      filteredItems.push(item);
-                  } else if (stackedTypes.includes(item.ComunicacionTipo)) {
-                      const st = new stackedComm();
-                      st.Id = item.Id;
-                      st.Type = item.ComunicacionTipo;
-                      skippedItemsByType.push(st);
-                  }
-
-                  // Filtrar por DescripcionCategoria
-                  if (item.ComunicacionTipo === 5 && !seenCategories[item.DescripcionCategoria]) {
-                      filteredItems.push(item);
-                      categoryCounts[item.DescripcionCategoria] = 1;
-                      seenCategories[item.DescripcionCategoria] = true;
-                  }
-                  else {
-                      categoryCounts[item.DescripcionCategoria]++;
-                      skippedItems.push(item);
-                  }
-              }
-
-              for (const item of filteredItems) {
-                  item.Cantidad = categoryCounts[item.DescripcionCategoria];
-
-                  if (item.ComunicacionTipo === 5) {
-                      item.OtherIds = [];
-                      for (let skipped of skippedItems) {
-                          if (skipped.DescripcionCategoria === item.DescripcionCategoria) {
-                              item.OtherIds.push(skipped.Id)
-                          }
-                      }
-                  }
-
-                  if (stackedTypes.includes(item.ComunicacionTipo)) {
-                      item.OtherIds = [];
-                      for (let skipped of skippedItemsByType) {
-                          if (skipped.Type === item.ComunicacionTipo && skipped.Id !== item.Id) {
-                              item.OtherIds.push(skipped);
-                          }
-                      }
-                  }
-              }
-          
-            if (filteredItems.length > 0) {
-              filteredCommunication[fecha] = filteredItems;
-            }
-          }
-          
-          this.communication = filteredCommunication;
-
-          result.data.forEach((item: any) => {
-            if (item.ComunicacionTipo === 1 && item.DescripcionWeb !== null) {
-              this.arrayVencidas.add(item.DescripcionWeb);
+                this.hasCommunications = true;
+                if (result.data.length > 15) {
+                    this.showButtonMoreCommunications = true;
+                } else {
+                    this.showButtonMoreCommunications = false;
+                }
             }
 
-            if (item.ComunicacionTipo === 2 && item.DescripcionWeb !== null) {
-              this.arrayProximasAVencer.add(item.DescripcionWeb);
+            const agrupadoPorFecha = result.data.reduce((result, element) => {
+                const fechaCreacion = element.FechaCreacion;
+
+                if (!result[fechaCreacion]) {
+                    result[fechaCreacion] = [];
+                }
+
+                result[fechaCreacion].push(element);
+
+                return result;
+            }, {});
+
+            this.communication = agrupadoPorFecha;
+
+            let filteredCommunication = {};
+
+            //MMSN - 134: Ajuste - Notificaciones Apiladas
+            let skippedItems = [];
+            let stackedTypes = [1, 2, 6];
+
+            class stackedComm {
+                Id: number;
+                Type: number;
             }
 
-            if (item.ComunicacionTipo === 5) {
-              this.contadorConsultas++;
+            let skippedItemsByType = [];
+
+
+
+            for (const fecha in this.communication) {
+                const items = this.communication[fecha];
+                const filteredItems = [];
+                const seenCategories = {};
+                const categoryCounts = {};
+
+                let tipo1Found = false;
+                let tipo2Found = false;
+                let tipo6Found = false;
+
+
+                for (const item of items) {
+                    if (item.ComunicacionTipo === 1 && !tipo1Found) {
+                        filteredItems.push(item);
+                        tipo1Found = true;
+                    } else if (item.ComunicacionTipo === 2 && !tipo2Found) {
+                        filteredItems.push(item);
+                        tipo2Found = true;
+                    } else if (item.ComunicacionTipo === 6 && !tipo6Found) {
+                        filteredItems.push(item);
+                        tipo6Found = true;
+                    } else if (item.ComunicacionTipo !== 1 && item.ComunicacionTipo !== 2 && item.ComunicacionTipo !== 5 && item.ComunicacionTipo !== 6) {
+                        filteredItems.push(item);
+                    } else if (stackedTypes.includes(item.ComunicacionTipo)) {
+                        const st = new stackedComm();
+                        st.Id = item.Id;
+                        st.Type = item.ComunicacionTipo;
+                        skippedItemsByType.push(st);
+                    }
+
+                    // Filtrar por DescripcionCategoria
+                    if (item.ComunicacionTipo === 5 && !seenCategories[item.DescripcionCategoria]) {
+                        filteredItems.push(item);
+                        categoryCounts[item.DescripcionCategoria] = 1;
+                        seenCategories[item.DescripcionCategoria] = true;
+                    }
+                    else {
+                        categoryCounts[item.DescripcionCategoria]++;
+                        skippedItems.push(item);
+                    }
+                }
+
+                for (const item of filteredItems) {
+                    item.Cantidad = categoryCounts[item.DescripcionCategoria];
+
+                    if (item.ComunicacionTipo === 5) {
+                        item.OtherIds = [];
+                        for (let skipped of skippedItems) {
+                            if (skipped.DescripcionCategoria === item.DescripcionCategoria) {
+                                item.OtherIds.push(skipped.Id)
+                            }
+                        }
+                    }
+
+                    if (stackedTypes.includes(item.ComunicacionTipo)) {
+                        item.OtherIds = [];
+                        for (let skipped of skippedItemsByType) {
+                            if (skipped.Type === item.ComunicacionTipo && skipped.Id !== item.Id) {
+                                item.OtherIds.push(skipped);
+                            }
+                        }
+                    }
+                }
+
+                if (filteredItems.length > 0) {
+                    filteredCommunication[fecha] = filteredItems;
+                }
             }
-          });
-          
-          this.arrayVencidas = Array.from(this.arrayVencidas);
 
-          this.arrayProximasAVencer = Array.from(this.arrayProximasAVencer);
+            this.communication = filteredCommunication;
 
-          const auxComunications = Object.keys(this.communication);
+            result.data.forEach((item: any) => {
+                if (item.ComunicacionTipo === 1 && item.DescripcionWeb !== null) {
+                    this.arrayVencidas.add(item.DescripcionWeb);
+                }
 
-          auxComunications.forEach((key) => {
-           
-              let contarExencionesVencidas = true;
-              let contarExencionesAVencer = true;
-              let contarConsultas = true;
-              let contarliquidaciones = true;
-           
-            this.communication[key].forEach((item, i) => {
+                if (item.ComunicacionTipo === 2 && item.DescripcionWeb !== null) {
+                    this.arrayProximasAVencer.add(item.DescripcionWeb);
+                }
 
-                 
-              if (item.Leida === false) {
+                if (item.ComunicacionTipo === 5) {
+                    this.contadorConsultas++;
+                }
+            });
 
-                      
-                      if (item.ComunicacionTipo === 1 && item.FechaCreacion === key && contarExencionesVencidas)
-                      {
+            this.arrayVencidas = Array.from(this.arrayVencidas);
+
+            this.arrayProximasAVencer = Array.from(this.arrayProximasAVencer);
+
+            const auxComunications = Object.keys(this.communication);
+
+            auxComunications.forEach((key) => {
+
+                let contarExencionesVencidas = true;
+                let contarExencionesAVencer = true;
+                let contarConsultas = true;
+                let contarliquidaciones = true;
+
+                this.communication[key].forEach((item, i) => {
+
+
+                    if (item.Leida === false) {
+
+
+                        if (item.ComunicacionTipo === 1 && item.FechaCreacion === key && contarExencionesVencidas) {
                             this.quantityCommunication++;
-                          contarExencionesVencidas = false;
-                }
-                      if (item.ComunicacionTipo === 2 && item.FechaCreacion === key && contarExencionesAVencer)
-                        {
-                                this.quantityCommunication++;
-                          contarExencionesAVencer = false;
-                      }
-                      if (item.ComunicacionTipo === 5 && item.FechaCreacion === key && contarConsultas) {
-                          this.quantityCommunication++;
-                          contarConsultas = false;
-                      }
+                            contarExencionesVencidas = false;
+                        }
+                        if (item.ComunicacionTipo === 2 && item.FechaCreacion === key && contarExencionesAVencer) {
+                            this.quantityCommunication++;
+                            contarExencionesAVencer = false;
+                        }
+                        if (item.ComunicacionTipo === 5 && item.FechaCreacion === key && contarConsultas) {
+                            this.quantityCommunication++;
+                            contarConsultas = false;
+                        }
 
-                      if (item.ComunicacionTipo === 6 && item.FechaCreacion === key && contarliquidaciones) {
-                          this.quantityCommunication++;
-                          contarliquidaciones = false;
-                      }
+                        if (item.ComunicacionTipo === 6 && item.FechaCreacion === key && contarliquidaciones) {
+                            this.quantityCommunication++;
+                            contarliquidaciones = false;
+                        }
 
-                      if (item.ComunicacionTipo !== 1 && item.ComunicacionTipo !== 2 && item.ComunicacionTipo !== 5 && item.ComunicacionTipo !== 6) { this.quantityCommunication++ }
-                }
-            })  
-          });
+                        if (item.ComunicacionTipo !== 1 && item.ComunicacionTipo !== 2 && item.ComunicacionTipo !== 5 && item.ComunicacionTipo !== 6) { this.quantityCommunication++ }
+                    }
+                })
+            });
 
-          this.layoutComponent.updateQuantity(this.quantityCommunication);
+            this.layoutComponent.updateQuantity(this.quantityCommunication);
+
+        } catch (error) {
+            return false;
         }
-      );
-    } catch (error) {
-      return false;
-    }
-    return false;
+        return false;
     }
 
 
@@ -358,7 +359,7 @@ export class ComunicacionesComponent extends BaseComponent implements OnInit {
         if (ids.length)
             this.serviceComunicaciones.postComunicacionLeida(ids).subscribe();
         setTimeout(() => {
-            this.getComunicaciones(this.idProveedor, this.startDate, this.endDate);
+            this.serviceComunicaciones.getComunicaciones(this.idProveedor, this.startDate, this.endDate);
         }, 500);
         this.redirect(notificaciones[i].ComunicacionTipo, this.filter, proveedorDescripcion, proveedorId);
     }
@@ -382,7 +383,7 @@ export class ComunicacionesComponent extends BaseComponent implements OnInit {
             this.serviceComunicaciones.postComunicacionNoLeida(ids).subscribe();
 
             setTimeout(() => {
-                this.getComunicaciones(this.idProveedor, this.startDate, this.endDate);
+                this.serviceComunicaciones.getComunicaciones(this.idProveedor, this.startDate, this.endDate);
             }, 500);
         }
     }
@@ -423,7 +424,8 @@ export class ComunicacionesComponent extends BaseComponent implements OnInit {
 
   private checkCommunications() {
     setTimeout(() => {
-      this.getComunicaciones(this.idProveedor, this.startDate, this.endDate);
+        this.updateComunicacionService.updateCommunications(this.idProveedor, this.startDate, this.endDate);
+        this.formatComunicaciones();
       this.checkCommunications();
     }, 30000);
   }

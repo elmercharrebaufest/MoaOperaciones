@@ -164,13 +164,14 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
             fechaConFormateada = this.dateFormatter(this.fechaContabilizacion);
         }
         let ref = this.referencia !== undefined ? this.referencia : '';
+        //MMSN-678 - Modificar descripción por short_text en cabecera
         let txtBreve = this.textoBreve !== undefined ? this.textoBreve : '';
 
 
         this.entrySheetData = {
             EntrySheetHeader: {
                 PaqueteNumero: '0000000001',
-                Descripcion: this.itemSelected[0].Descripcion,
+                Descripcion: txtBreve,
                 OrdenCompraNumero: PONumber,
                 OrdenCompraPosicionNumero: this.itemSelected[0].NroPosicion.toString(),
                 DocumentoReferenciaNumero: ref,

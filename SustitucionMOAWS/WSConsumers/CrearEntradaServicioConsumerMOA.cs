@@ -99,7 +99,7 @@ namespace SustitucionMOAWS.WSConsumers
             return $@"
         <ENTRYSHEETHEADER>
             <PCKG_NO>0000000001</PCKG_NO>
-            <SHORT_TEXT></SHORT_TEXT>
+            <SHORT_TEXT>{header.Descripcion}</SHORT_TEXT>
             <PO_NUMBER>{header.OrdenCompraNumero}</PO_NUMBER>
             <PO_ITEM>{header.OrdenCompraPosicionNumero}</PO_ITEM>
             //<REF_DOC_NO>{header.DocumentoReferenciaNumero}</REF_DOC_NO>
