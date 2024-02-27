@@ -82,8 +82,8 @@
     <div class="checkbox-content">
       <i class="pi pi-filter"></i>
       <span>
-        <p-checkbox [(ngModel)]="ocFilterValues" label="Saldo pendiente" value="SP" pTooltip="Saldo pendiente en ordenes de compra" (click)="ocFilters(tablaPO)">
-        </p-checkbox>
+        <input type="checkbox" tooltip="Saldo pendiente en ordenes de compra" (click)="filtrarElementosSinSaldoACertificar($event)">
+        <label>Saldo pendiente</label>
       </span>
     </div>
   </div>
@@ -151,9 +151,9 @@
       <!-- TABLE 1 HEADERS END-->
       <!-- TABLE 1 BODY -->
       <ng-template pTemplate="body" let-rowData let-columns="columns" let-expanded="expanded">
-        <tr [pSelectableRow]="rowData">
+        <tr [pSelectableRow]="rowData" *ngIf="!ocFilterApplied || (ocFilterApplied && tienePosicionesConItemsACertificar(rowData.Posiciones))">
           <td>
-            <a href="#" [pRowToggler]="rowData" (click)="toggleRow(rowData)">
+            <a href="#" [pRowToggler]="rowData">
               <i [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
             </a>
           </td>
@@ -175,7 +175,7 @@
       </ng-template>
 
       <ng-template pTemplate="rowexpansion" let-rowData let-columns="columns" let-orderIndex="rowIndex">
-        <tr>
+        <tr *ngIf="!ocFilterApplied || (ocFilterApplied && tienePosicionesConItemsACertificar(rowData.Posiciones))">
           <td colspan="8">
             <p-table class="level2" [value]="rowData.Posiciones" dataKey="Id" rowExpandMode="single">
               <!-- TABLE 2 HEADERS -->
@@ -199,9 +199,9 @@
               <!-- TABLE 2 HEADERS END -->
               <!-- TABLE 2 BODY -->
               <ng-template pTemplate="body" let-rowData let-expanded="expanded" let-posIndex="rowIndex">
-                <tr>
+                <tr class="posicion" *ngIf="!ocFilterApplied || (ocFilterApplied && tieneItemsACertificar(rowData))">
                   <td>
-                    <a href="#" [pRowToggler]="rowData" (click)="clearCheckboxes(); calcularValoresACertificar(rowData);">
+                    <a href="#" [pRowToggler]="rowData" (click)="clearCheckboxes();calcularValoresACertificar(rowData);mostrarOcultarItemsSinSaldoACertificar()">
                       <i [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
                     </a>
                   </td>
@@ -229,7 +229,7 @@
               </ng-template>
 
               <ng-template pTemplate="rowexpansion" let-rowData let-columns="columns" let-posIndex="rowIndex">
-                <tr [pSelectableRow]="rowData">
+                <tr [pSelectableRow]="rowData" *ngIf="!ocFilterApplied || (ocFilterApplied && tieneItemsACertificar(rowData))">
                   <!-- TABLE 3 -->
                   <td colspan="12">
                     <p-table class="level3" [value]="rowData.Items" dataKey="NumeroLinea" [paginator]="rowData.Items.length > 4" [rows]="5" rowExpandMode="single">
@@ -237,7 +237,7 @@
                       <!-- TABLE 3 HEADERS -->
                       <ng-template pTemplate="header" *ngIf="rowData.Items && rowData.Items.length > 0">
                         <tr>
-                          <th style="width: 4rem">
+                          <th>
                             <input *ngIf="hideCheckboxToAll(rowData.Items)" type="checkbox" [(ngModel)]="rowData.isSelected" (change)="selectAllItems($event, rowData.Items)">
                           </th>
                           <th title="NroItem">NRO LINEA</th>

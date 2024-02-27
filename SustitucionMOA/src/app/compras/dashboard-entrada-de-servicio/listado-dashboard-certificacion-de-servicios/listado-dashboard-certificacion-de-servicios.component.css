@@ -81,19 +81,24 @@ p-checkbox .ui-chkbox {
 }
 
 .filters {
-  padding: 8px;
-  border-top: 0.5px solid #959595;
-  border-left: 0.5px solid #959595;
-  border-right: 0.5px solid #959595;
-  width: max-content;
-  background: white;
+    padding: 4px 8px 4px 2px;
+    border-top: 0.5px solid #959595;
+    border-left: 0.5px solid #959595;
+    border-right: 0.5px solid #959595;
+    width: max-content;
+    background: white;
 }
 
 .filters .pi.pi-filter {
-  font-size: 1.6em;
-  margin: auto;
-  vertical-align: bottom;
-  margin-right: .4rem;
+    font-size: 1.4em;
+    margin: auto;
+    vertical-align: middle;
+    margin-right: .2rem;
+    margin-bottom: .18rem;
+}
+
+.filters label {
+    margin-left: .4em;
 }
 
 .container-button {
