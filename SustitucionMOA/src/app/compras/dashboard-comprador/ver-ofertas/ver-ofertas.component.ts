@@ -71,7 +71,6 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
     lista: any[];
     numerosDePedido: any;
     displayPlazo: boolean;
-    solpCondicionEspecial: boolean = false;
 
     constructor(protected service: ComprasService, protected usuarioService: UsuarioService, protected navService: NavService, protected sessionDataService: SessionDataService,
         protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService,
@@ -523,14 +522,9 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
         if ((this.adjudicacion.CondicionesDeEntrega == "" || this.adjudicacion.CondicionesDeEntrega == undefined)
             && (this.adjudicacion.CondicionesDePago == "" || this.adjudicacion.CondicionesDePago == undefined)
             && (this.adjudicacion.Garantias == "" || this.adjudicacion.Garantias == undefined)
-            && (this.adjudicacion.TextoDeCabecera == "" || this.adjudicacion.TextoDeCabecera == undefined)) {
+            && (this.adjudicacion.TextoDeCabecera == "" || this.adjudicacion.TextoDeCabecera == undefined || this.adjudicacion.TextoDeCabecera == `Justificación de condición especial: ${this.tablaOfertas.SolpDto.ObservacionesCotizacion}`)) {
             this.textoRacionalIncompleto = true;
             this.textoRacionalModal = "No se completó ningún racional.";
-        } else if (this.solpCondicionEspecial) {
-            if (this.adjudicacion.TextoDeCabecera == `Justificación de condición especial: ${this.tablaOfertas.SolpDto.ObservacionesCotizacion}`) {
-                this.textoRacionalIncompleto = true;
-                this.textoRacionalModal = "El texto de cabecera en el racional solo contiene la justificación de la condición especial ingresada por el solicitante.";
-            }
         }
     }
 
@@ -686,11 +680,9 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
 
     setTextoCondicionEspecial() {
         if (this.tablaOfertas.SolpDto.Urgencia == true || this.tablaOfertas.SolpDto.Adicional == true || this.tablaOfertas.SolpDto.TrabajoYaHecho == true || this.tablaOfertas.SolpDto.CondEspProveedorAsignado == true) {
-            
             this.adjudicacion.TextoDeCabecera != undefined && this.adjudicacion.TextoDeCabecera != "" && this.modalTexto.adjudicacion.TextoDeCabecera != this.tablaOfertas.SolpDto.ObservacionesCotizacion ?
                 this.adjudicacion.TextoDeCabecera += `\n\nJustificación de condición especial: ${this.tablaOfertas.SolpDto.ObservacionesCotizacion}`
                 : this.adjudicacion.TextoDeCabecera = `Justificación de condición especial: ${this.tablaOfertas.SolpDto.ObservacionesCotizacion}`;
-            this.solpCondicionEspecial = true;
         }
     }
 }
