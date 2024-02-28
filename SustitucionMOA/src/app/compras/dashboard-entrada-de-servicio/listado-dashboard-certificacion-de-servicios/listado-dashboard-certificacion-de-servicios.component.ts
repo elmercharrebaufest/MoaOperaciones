@@ -323,6 +323,8 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
     }
 
     actualizarGrilla(event: string) {
+        // MMSN-677: Desactivar filtro de saldo pendiente al certificar ES. 
+        this.filtrarElementosSinSaldoACertificar(false);
         this.itemIdSelected = [];
         this.itemSelected = [];
         this.numeroLineaSelected.clear();

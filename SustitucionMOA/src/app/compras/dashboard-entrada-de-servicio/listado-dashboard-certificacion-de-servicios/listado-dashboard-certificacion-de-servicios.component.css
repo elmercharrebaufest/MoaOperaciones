@@ -15,11 +15,11 @@ section#search {
 }
 
 .search-filters {
-  background-color: white !important;
-  border-bottom-left-radius: 10px;
-  border-bottom-right-radius: 10px;
+    background-color: white !important;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
   padding: 2em 1em;
-  display: flex;
+    display: flex;
   align-items: start;
   justify-content: space-between;
 }
@@ -32,7 +32,7 @@ section#search {
 :host ::ng-deep .search-filters p-autocomplete#proveedores input {
   height: 2.67em;
   border-radius: 3px;
-  border: 1px solid #ddd;
+    border: 1px solid #ddd;
   width: 100%;
 }
 
@@ -43,12 +43,12 @@ section#search {
 }
 
 .search-filters .btn-buscar {
-  background-color: #1C7CD5;
-  border-color: #1C7CD5;
-  color: white;
-  font-size: 1.3em;
-  padding: .31em 4em;
-  margin-top: 1.6em;
+    background-color: #1C7CD5;
+    border-color: #1C7CD5;
+    color: white;
+    font-size: 1.3em;
+    padding: .31em 4em;
+    margin-top: 1.6em;
 }
 
 ::ng-deep #viewDates #btnAplicar {
@@ -72,7 +72,7 @@ p-checkbox .ui-chkbox {
 }
 
 :host ::ng-deep .ui-table-wrapper:not(table.level4 .ui-table-wrapper) {
-  overflow: auto;
+  overflow-x: auto;
 }
 
 
@@ -134,22 +134,43 @@ p-checkbox .ui-chkbox {
 
 
 :host ::ng-deep #certificaciones .ui-table table {
-  border-collapse: collapse;
-  width: 100%;
-  table-layout: auto !important;
+    border-collapse: collapse;
+    width: 100% !important;
+    table-layout: auto !important;
 }
 
 #certificaciones p-table th {
-  word-wrap: normal;
-  white-space: nowrap;
-  width: max-content;
-  color: #fff !important;
-  text-align: center;
+    word-wrap: normal;
+    white-space: nowrap;
+    max-width: 29rem;
+    color: #fff !important;
+    text-align: center;
 }
 
-#certificaciones .level1 th, 
+:host ::ng-deep #certificaciones p-table thead > tr > th,
+:host ::ng-deep #certificaciones p-table tbody > tr > td {
+    overflow-x: visible;
+    overflow-y: clip;
+}
+
+:host ::ng-deep #certificaciones p-table.level2 > div > div > table:first-child > thead th:not(:first-child) {
+    padding-left: 2.5rem;
+    padding-right: 2.5rem;
+}
+
+:host ::ng-deep #certificaciones p-table.level3 > div > div > table:first-child > thead th:not(:first-child) {
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
+:host ::ng-deep #certificaciones p-table.level3 > div > div > table:first-child > tbody td:not(:first-child) {
+    text-align: center;
+    white-space: normal; 
+}
+
+#certificaciones .level1 th,
 .ui-sortable-column.ui-state-highlight {
-  background-color: #666 !important;
+    background-color: #666 !important;
 }
 
 :host ::ng-deep #certificaciones .ui-sortable-column a {
@@ -231,9 +252,13 @@ p-checkbox .ui-chkbox {
 }
 
 
-/* TABLE END */
-
 /* Level3 : Items */
+p-table.level3 {
+    overflow-x: visible;
+    width: 100% !important;
+    display: inherit;
+}
+
 p-table.level3 input[type="text"] {
   text-align: center;
   border: 1px solid #ccc;
@@ -248,10 +273,18 @@ p-table.level3 input[type="text"]:invalid {
   border: 1px solid red;
 }
 
-p-table.level3 button.btn-refresh {
+p-table.level3 input[name="porcentaje"] {
+  width: 100%;
+}
+
+p-table.level3 button.btn-refresh,
+p-table.level3 button.btn-refresh:focus {
   height: 1.7em;
   margin: auto .6em;
   vertical-align: middle;
+  padding: .6rem;
+  color: white !important;
+  border-radius: 4px;
 }
 
 p-table.level3 button.btn-refresh:disabled {
@@ -260,6 +293,8 @@ p-table.level3 button.btn-refresh:disabled {
 }
 
 /* END Level3 : Items */
+/* TABLE END */
+
 
 .btn:disabled {
   background-color: #959595;
