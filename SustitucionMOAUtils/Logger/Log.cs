@@ -1,4 +1,5 @@
-﻿using SustitucionMOAAssets;
+﻿using NLog.Config;
+using SustitucionMOAAssets;
 using System;
 
 namespace SustitucionMOAUtils.Logger
@@ -9,6 +10,24 @@ namespace SustitucionMOAUtils.Logger
         private static readonly NLog.Logger AzureLogger = NLog.LogManager.GetLogger("azureLogger");
         private static readonly NLog.Logger ExternalAPILogger = NLog.LogManager.GetLogger("externalApiLogger");
 
+        public Log()
+        {
+            // Crea una nueva instancia de LoggingConfiguration
+            var config = new LoggingConfiguration();
+
+            // Carga la configuración del archivo específico            
+                config = new XmlLoggingConfiguration("nlog.config");
+            var sapUrl = System.Configuration.ConfigurationManager.AppSettings["SpaUrl"];
+            if (sapUrl.Contains("compras"))
+                config = new XmlLoggingConfiguration("nlog.compras.config");
+            if (sapUrl.Contains("huenei"))
+                config = new XmlLoggingConfiguration("nlog.huenei.config");
+            if (sapUrl.Contains("pre"))
+                config = new XmlLoggingConfiguration("nlog.pre.config");
+
+            // Configura LogManager con la nueva configuración
+            NLog.LogManager.Configuration = config;        
+        }
         public static void Error(string ip, string usuario, string controller, string method, string error)
         {
             try
