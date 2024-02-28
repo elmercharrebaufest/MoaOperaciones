@@ -39,13 +39,17 @@
                             <p class="grey">Precio Neto</p>
                             <p class="grey">{{data.cabecera.precioNetoString}}</p>
                         </div>
-                        <div class="col-xs-12 col-sm-3">
+                        <div class="col-xs-12 col-sm-2">
                             <p class="grey">Kilos Compra</p>
                             <p class="grey">{{data.cabecera.compradosString}}</p>
                         </div>
-                        <div class="col-xs-12 col-sm-3">
+                        <div class="col-xs-12 col-sm-2">
                             <p class="grey">Kilos Recibidos</p>
                             <p class="grey">{{data.cabecera.recibidosString}}</p>
+                        </div>
+                        <div class="col-xs-12 col-sm-2" *ngIf="!data.LiquidacionParcialEmitida || data.FaltanDatosDeCalidad">
+                            <p class="grey">Pago parcial</p>
+                            <p class="grey">{{data.cabecera.PorcentajePagoParcial}}%</p>
                         </div>
                     </div>
                 </div>
@@ -71,10 +75,6 @@
                         </td>
                     </tr>
                 </table>
-            </div>
-            <div class="PagoColumn" *ngIf="!data.LiquidacionParcialEmitida || data.FaltanDatosDeCalidad">
-                <p class="grey"><strong>Pago parcial</strong></p>
-                <p class="grey">{{data.cabecera.PorcentajePagoParcial}}%</p>
             </div>
             <div class="PagoFactura" *ngIf="data.LiquidacionParcialEmitida && !data.FaltanDatosDeCalidad">
                 <table class="PagoTable rounded shadow animate" border="0" cellspacing="0" cellpadding="0" style="width: 100%;">
