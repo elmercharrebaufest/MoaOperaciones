@@ -2,6 +2,8 @@
 using SustitucionMOAAssets;
 using SustitucionMOAWS.Logger;
 using System;
+using System.IO;
+using System.Web.Hosting;
 
 namespace SustitucionMOAUtils.Logger
 {
@@ -19,16 +21,18 @@ namespace SustitucionMOAUtils.Logger
         {
             // Crea una nueva instancia de LoggingConfiguration
             var config = new LoggingConfiguration();
-
+            string rutaSitioWeb = HostingEnvironment.MapPath("~");
+            rutaSitioWeb= Path.Combine(rutaSitioWeb, "bin");
             // Carga la configuración del archivo específico            
-            config = new XmlLoggingConfiguration("nlog.config");
+            config = new XmlLoggingConfiguration(Path.Combine(rutaSitioWeb, "nlog.config"));
             var sapUrl = System.Configuration.ConfigurationManager.AppSettings["SpaUrl"];
+
             if (sapUrl.Contains("compras"))
-                config = new XmlLoggingConfiguration("nlog.compras.config");
+                config = new XmlLoggingConfiguration(Path.Combine(rutaSitioWeb, "nlog.compras.config"));
             if (sapUrl.Contains("huenei"))
-                config = new XmlLoggingConfiguration("nlog.huenei.config");
+                config = new XmlLoggingConfiguration(Path.Combine(rutaSitioWeb, "nlog.huenei.config"));
             if (sapUrl.Contains("pre"))
-                config = new XmlLoggingConfiguration("nlog.pre.config");
+                config = new XmlLoggingConfiguration(Path.Combine(rutaSitioWeb, "nlog.pre.config"));
 
             // Configura LogManager con la nueva configuración
             NLog.LogManager.Configuration = config;
