@@ -82,7 +82,7 @@
     <div class="checkbox-content">
       <i class="pi pi-filter"></i>
       <span>
-        <input type="checkbox" tooltip="Saldo pendiente en ordenes de compra" (click)="filtrarElementosSinSaldoACertificar($event)">
+        <input type="checkbox"[(ngModel)]="ocFilterApplied" tooltip="Saldo pendiente en ordenes de compra" (click)="filtrarElementosSinSaldoACertificar($event.target.checked)">
         <label>Saldo pendiente</label>
       </span>
     </div>
@@ -177,7 +177,7 @@
       <ng-template pTemplate="rowexpansion" let-rowData let-columns="columns" let-orderIndex="rowIndex">
         <tr *ngIf="!ocFilterApplied || (ocFilterApplied && tienePosicionesConItemsACertificar(rowData.Posiciones))">
           <td colspan="8">
-            <p-table class="level2" [value]="rowData.Posiciones" dataKey="Id" rowExpandMode="single">
+            <p-table #tablaPosiciones class="level2" [value]="rowData.Posiciones" dataKey="Id" rowExpandMode="single">
               <!-- TABLE 2 HEADERS -->
               <ng-template pTemplate="header" *ngIf="rowData.Posiciones && rowData.Posiciones.length > 0">
                 <tr>
@@ -201,7 +201,7 @@
               <ng-template pTemplate="body" let-rowData let-expanded="expanded" let-posIndex="rowIndex">
                 <tr class="posicion" *ngIf="!ocFilterApplied || (ocFilterApplied && tieneItemsACertificar(rowData))">
                   <td>
-                    <a href="#" [pRowToggler]="rowData" (click)="clearCheckboxes();calcularValoresACertificar(rowData);mostrarOcultarItemsSinSaldoACertificar()">
+                    <a href="#" [pRowToggler]="rowData" (click)="clearCheckboxes(); setPositionRow(rowData);">
                       <i [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
                     </a>
                   </td>
