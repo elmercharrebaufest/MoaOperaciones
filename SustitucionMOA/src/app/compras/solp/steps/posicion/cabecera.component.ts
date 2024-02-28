@@ -1102,6 +1102,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
 
                 let servicioMaterialObj = {
                     Codigo: pos.numeroMaterial,
+                    CodigoSap: pos.numeroMaterial,
                     Descripcion: pos.textoMaterialOServicio,
                     UnidadMedidaBase: pos.unidadMedida
                 };
@@ -1173,8 +1174,9 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
                 }
 
                 this.model.agregarNuevaPosicionDesdeContratoMarco(newPos);
-                //this.agregarPosicion();
-
+                
+                newPos.unidadesAlternativas = newPos.codigoServicio ? this.listarUnidadesDeMedida(newPos.codigoServicio.CodigoSap) : this.combos.Unidades;
+                
             });
             this.model.calcularValorTotalPorMoneda();
         }
@@ -1360,7 +1362,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
                         this.floatMsgService.setInfoMsg(result.info);
                     } else {
                         if (result) {
-                            this.model.posiciones.find(x => x.codigoServicio.CodigoSap == materialCodigo).unidadesAlternativas = result.data;
+                            this.model.posiciones.find(x => x.codigoServicio != undefined && x.codigoServicio.CodigoSap == materialCodigo).unidadesAlternativas = result.data;
                         }
                     }
                 },

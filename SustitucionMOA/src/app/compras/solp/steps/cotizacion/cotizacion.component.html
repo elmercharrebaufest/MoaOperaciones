@@ -128,14 +128,15 @@
                                     <p-radioButton [ngModelOptions]="{standalone:true}" name="thType" 
                                                     (click)="onRadioButtonChange('Servicio permanente')"
                                                    [ngModel]="model.thServicioPermanente" label="Servicio permanente" [value]="true"
-                                                   binary="true" formControlName="servicioPermanente"> 
+                                                   binary="true" formControlName="servicioPermanente" [disabled]="!model.editarCondicionesEspeciales"> 
                                     </p-radioButton>
                                 </div>
     
                                 <div class="col-xs-12 col-sm-12 col-md-12 margenCheckbox">
                                     <p-radioButton [ngModelOptions]="{standalone:true}" name="thType" [value]="true"
                                                 (click)="onRadioButtonChange('Ajuste polinomica')"
-                                                [ngModel]="model.thAjustePolinomica" label="Ajuste polinomica" binary="true" formControlName="ajustePolinomica">
+                                                [ngModel]="model.thAjustePolinomica" label="Ajuste polinomica" 
+                                                binary="true" formControlName="ajustePolinomica" [disabled]="!model.editarCondicionesEspeciales">
                                     </p-radioButton>
                                 </div>
 
@@ -143,7 +144,7 @@
                                     <p-radioButton [ngModelOptions]="{standalone:true}" name="thType" 
                                     (click)="onRadioButtonChange('Proveedor directo')"
                                                    [ngModel]="model.thProveedorDirecto" label="Proveedor directo"  [value]="true"
-                                                   binary="true" formControlName="proveedorDirecto">
+                                                   binary="true" formControlName="proveedorDirecto" [disabled]="!model.editarCondicionesEspeciales">
                                     </p-radioButton>
                                 </div>
                             </div>
@@ -187,17 +188,17 @@
                             <div class="col-xs-12">
                                 <div class="col-md-4">
                                     <p-multiSelect [options]="liberadoresJefes" [(ngModel)]="selectJefes" defaultLabel="Jefes" formControlName="jefes"
-                                                   [maxSelectedLabels]="1" selectedItemsLabel="{0} jefes" optionDisabled="disabled" (onChange)="onLiberadoresChange($event)">
+                                                   [maxSelectedLabels]="1" selectedItemsLabel="{0} jefes" optionDisabled="disabled" (onChange)="onLiberadoresChange($event)" [disabled]="!model.editarCondicionesEspeciales">
                                     </p-multiSelect>
                                 </div>
                                 <div class="col-md-4">
                                     <p-multiSelect [options]="liberadoresGerentes" [(ngModel)]="selectGerentes" defaultLabel="Gerentes" formControlName="gerentes"
-                                                   [maxSelectedLabels]="2" selectedItemsLabel="{0} gerentes" optionDisabled="disabled" (onChange)="onLiberadoresChange($event)">
+                                                   [maxSelectedLabels]="2" selectedItemsLabel="{0} gerentes" optionDisabled="disabled" (onChange)="onLiberadoresChange($event)" [disabled]="!model.editarCondicionesEspeciales">
                                     </p-multiSelect>
                                 </div>
                                 <div class="col-md-4">
                                     <p-multiSelect [options]="liberadoresDirectores" [(ngModel)]="selectDirectores" defaultLabel="Directores" formControlName="directores"
-                                                   [maxSelectedLabels]="2" selectedItemsLabel="{0} directores" optionDisabled="disabled" (onChange)="onLiberadoresChange($event)">
+                                                   [maxSelectedLabels]="2" selectedItemsLabel="{0} directores" optionDisabled="disabled" (onChange)="onLiberadoresChange($event)" [disabled]="!model.editarCondicionesEspeciales">
                                     </p-multiSelect>
                                 </div>
                             </div>

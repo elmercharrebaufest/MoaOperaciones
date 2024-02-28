@@ -363,21 +363,35 @@ namespace SustitucionMOAUtils.Services
             }
 
             string prefijo = ConfigurarPrefijos(solpEntity);
+            var condEsp = TieneCondicionEspecial(solpEntity);
 
-            if (solpEntity.Posiciones.Any() && solpEntity.Posiciones.FirstOrDefault().TipoPosicion.Codigo == "SERVICIO")
+            if (condEsp == true)
             {
-                foreach (var posicion in solpEntity.Posiciones)
+                if (solpEntity.Posiciones.Any() && solpEntity.Posiciones.FirstOrDefault().TipoPosicion.Codigo == "SERVICIO")
                 {
-                    if (!posicion.Tarea.StartsWith(prefijo))
+                    foreach (var posicion in solpEntity.Posiciones)
                     {
-                        posicion.Tarea = (prefijo + posicion.Tarea);
+
+                        string textoOriginal = posicion.Tarea;
+                        int indiceSeparador = textoOriginal.IndexOf(':');
+                        string textoModificado = textoOriginal;
+                        if (indiceSeparador != -1)
+                        {
+                            textoModificado = textoOriginal.Substring(indiceSeparador + 1).Trim();
+                        }
+
+                        posicion.Tarea = (prefijo + textoModificado);
+
                         if (posicion.Tarea.Length > 40)
                         {
                             posicion.Tarea.Substring(0, 40);
                         }
+
                     }
                 }
             }
+                
+            
 
 
             repositorio.GuardarCambios();
@@ -1292,7 +1306,7 @@ namespace SustitucionMOAUtils.Services
                 Urgencia = solp.Urgencia,
                 NroOrdenDeCompraAdicional = solp.NroOrdenDeCompraAdicional,
                 DeshabilitarAdicional = solp.Adjudicaciones.Any(),
-                EditarCondicionesEspeciales = (solp.EstadoSolpSap_Id == null || solp.EstadoSolpSap.CodigoSap != "05" || solp.EstadoSolpSap.CodigoSap != "02") && po == null,
+                EditarCondicionesEspeciales = (solp.EstadoSolpSap_Id == null || (solp.EstadoSolpSap.CodigoSap != "05" && solp.EstadoSolpSap.CodigoSap != "02")),
 
                 Adjuntos = solp.Pliego.Archivos.Where(a => a.FileKey == FileKeys.AdjuntoSolp || a.FileKey == FileKeys.AdjuntoCotizacionesSolp).Select(s => new ArchivoDto
                 {
@@ -7981,7 +7995,7 @@ namespace SustitucionMOAUtils.Services
             var detalleVisitas = repositorio.Listar<PliegoVisita, DetalleVisitaDto>(pliegoVisita => new DetalleVisitaDto
             {
                 FechaHora = pliegoVisita.FechaHora,
-                PliegoId = pliegoVisita.Pliego_Id
+                PliegoId = pliegoVisita.Pliego_Id,
             })
               .AsEnumerable()
               .Where(vis => vis.FechaHora.HasValue && fechas.Any(f => vis.FechaHora.Value.Date == f))
@@ -8012,10 +8026,13 @@ namespace SustitucionMOAUtils.Services
                     }).Distinct().ToList() : null;
             }
 
+            var detalleVisitasConSolp = detalleVisitas.Where(detalle => !string.IsNullOrEmpty(detalle.NroSolp)).ToList();
+
+
             var info = new InfoVisitasDeObraDto()
             {
-                CantidadVisitas = detalleVisitas.Count(),
-                DetalleVisitas = detalleVisitas
+                CantidadVisitas = detalleVisitasConSolp.Count(),
+                DetalleVisitas = detalleVisitasConSolp
             };
 
 
@@ -8036,9 +8053,19 @@ namespace SustitucionMOAUtils.Services
         {
             var prefijo = "";
 
+            if (solp.TrabajoYaHecho == true)
+            {
+                prefijo = "TR: ";
+            }
+
             if (solp.Adicional == true)
             {
                 prefijo = "AD: ";
+            }
+
+            if (solp.CondEspProveedorAsignado == true)
+            {
+                prefijo = "PA: ";
             }
 
             if (solp.TrabajoYaHecho == true && solp.Adicional == true)
@@ -8051,34 +8078,36 @@ namespace SustitucionMOAUtils.Services
                 prefijo = "URG: ";
             }
 
-            if (solp.TrabajoYaHecho == true)
-            {
-                prefijo = "TR: ";
-            }
-
-            if (solp.TrabajoYaHecho == true && solp.THServicioPermanente == true)
+            if (solp.TrabajoYaHecho == true && solp.THServicioPermanente == true && solp.Adicional != true && solp.Urgencia != true)
             {
                 prefijo = "SP: ";
             }
 
-            if (solp.TrabajoYaHecho == true && solp.THAjustePolinomica == true)
+            if (solp.TrabajoYaHecho == true && solp.THAjustePolinomica == true && solp.Adicional != true && solp.Urgencia != true) 
             {
                 prefijo = "AJ: ";
             }
 
-            if (solp.TrabajoYaHecho == true && solp.THProveedorDirecto == true)
+            if (solp.TrabajoYaHecho == true && solp.THProveedorDirecto == true && solp.Adicional != true && solp.Urgencia != true)
             {
                 prefijo = "PD: ";
             }
 
-            if (solp.CondEspProveedorAsignado == true)
-            {
-                prefijo = "PA: ";
-            }
+
 
             return prefijo;
 
         }
+
+        private bool TieneCondicionEspecial(Solp solp) 
+        {
+            if (solp.TrabajoYaHecho == true || solp.Adicional == true || solp.Urgencia == true || solp.CondEspProveedorAsignado == true) 
+            {
+                return true;
+            }
+            return false;
+        }
+
 
         public void ObtenerDatosReporteSolp()
         {

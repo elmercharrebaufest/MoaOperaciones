@@ -159,6 +159,8 @@ export class Generacion2Component extends ListBaseComponent {
         if (this.model.supervisorTrabajo[0] == '') {
             this.model.supervisorTrabajo = [];
         }
+
+        this.listarVisitasDeObra();
     }
 
     mostrarError(nombreCampo: string): boolean {
@@ -234,8 +236,6 @@ export class Generacion2Component extends ListBaseComponent {
                         } else {
                             this.info = result.data;
                             this.detalleVisitas = this.info.DetalleVisitas;
-                            console.log("this.info", this.info);
-                            console.log("this.model.listaVisitas", this.model.listaVisitas);
                         }
                     },
                     error => {

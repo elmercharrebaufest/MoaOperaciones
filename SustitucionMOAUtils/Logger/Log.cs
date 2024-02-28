@@ -1,5 +1,9 @@
-﻿using SustitucionMOAAssets;
+﻿using NLog.Config;
+using SustitucionMOAAssets;
+using SustitucionMOAWS.Logger;
 using System;
+using System.IO;
+using System.Web.Hosting;
 
 namespace SustitucionMOAUtils.Logger
 {
@@ -9,10 +13,37 @@ namespace SustitucionMOAUtils.Logger
         private static readonly NLog.Logger AzureLogger = NLog.LogManager.GetLogger("azureLogger");
         private static readonly NLog.Logger ExternalAPILogger = NLog.LogManager.GetLogger("externalApiLogger");
 
+        public Log()
+        {
+        }
+
+        private static void ConfigLog()
+        {
+            // Crea una nueva instancia de LoggingConfiguration
+            var config = new LoggingConfiguration();
+            string rutaSitioWeb = HostingEnvironment.MapPath("~");
+            rutaSitioWeb= Path.Combine(rutaSitioWeb, "bin");
+            // Carga la configuración del archivo específico            
+            config = new XmlLoggingConfiguration(Path.Combine(rutaSitioWeb, "nlog.config"));
+            var sapUrl = System.Configuration.ConfigurationManager.AppSettings["SpaUrl"];
+
+            if (sapUrl.Contains("compras"))
+                config = new XmlLoggingConfiguration(Path.Combine(rutaSitioWeb, "nlog.compras.config"));
+            if (sapUrl.Contains("huenei"))
+                config = new XmlLoggingConfiguration(Path.Combine(rutaSitioWeb, "nlog.huenei.config"));
+            if (sapUrl.Contains("pre"))
+                config = new XmlLoggingConfiguration(Path.Combine(rutaSitioWeb, "nlog.pre.config"));
+
+            // Configura LogManager con la nueva configuración
+            NLog.LogManager.Configuration = config;
+        }
+
         public static void Error(string ip, string usuario, string controller, string method, string error)
         {
             try
             {
+                ConfigLog();
+
                 DefaultLogger.Error(String.Format(ErrorMsg.ErrorLogMensaje, new string[] { controller, method, usuario, ip, error }));
             }
             catch (Exception e)
@@ -25,6 +56,8 @@ namespace SustitucionMOAUtils.Logger
         {
             try
             {
+                ConfigLog();
+
                 DefaultLogger.Error(String.Format(ErrorMsg.ErrorLogMensaje, new string[] { controller, method, usuario, ip, exception.ToString() }));
             }
             catch (Exception e)
@@ -37,6 +70,8 @@ namespace SustitucionMOAUtils.Logger
         {
             try
             {
+                ConfigLog();
+
                 DefaultLogger.Error(exception);
             }
             catch (Exception e)
@@ -50,6 +85,8 @@ namespace SustitucionMOAUtils.Logger
         {
             try
             {
+                ConfigLog();
+
                 DefaultLogger.Error(excepcion, mensaje);
             }
             catch (Exception e)
@@ -63,6 +100,8 @@ namespace SustitucionMOAUtils.Logger
         {
             try
             {
+                ConfigLog();
+
                 DefaultLogger.Debug("Controller: " + controller + " Metodo: " + method + " Valores: " + valores );
             }
             catch (Exception e)
@@ -74,6 +113,8 @@ namespace SustitucionMOAUtils.Logger
         {
             try
             {
+                ConfigLog();
+
                 DefaultLogger.Info(mensaje);
             }
             catch (Exception e)
@@ -85,6 +126,8 @@ namespace SustitucionMOAUtils.Logger
         {
             try
             {
+                ConfigLog();
+
                 AzureLogger.Error(exception);
             }
             catch (Exception e)
@@ -96,6 +139,8 @@ namespace SustitucionMOAUtils.Logger
         {
             try
             {
+                ConfigLog();
+
                 ExternalAPILogger.Error(exception);
             }
             catch (Exception e)
@@ -107,6 +152,8 @@ namespace SustitucionMOAUtils.Logger
         {
             try
             {
+                ConfigLog();
+
                 ExternalAPILogger.Info(message);
             }
             catch (Exception e)
