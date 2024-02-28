@@ -17,24 +17,24 @@
       <title-caps>Refinar resultados</title-caps>
     </div>
     <div class="row search-filters">
-      <div id="searchOrder" class="col-md-3">
-        <p> Número de OC:</p>
-        <input pInputText type="text" [(ngModel)]="ordenCompraId" placeholder="Órden de compra" />
-      </div>
+        <div id="searchOrder" class="col-md-3">
+            <p>Número de OC:</p>
+            <input pInputText type="text" [(ngModel)]="ordenCompraId" placeholder="Orden de compra" />
+        </div>
 
-      <div id="searchProveedor" class="col-md-3">
-        <p> Proveedor:</p>
-        <p-autoComplete id="proveedores" [(ngModel)]="proveedorSeleccionado" [suggestions]="proveedorList" (completeMethod)="autocompleteProveedor($event)" field="valor" placeholder="Proveedor" [minLength]="4" autoZIndex="true" emptyMessage="No hay resultados para mostrar"></p-autoComplete>
-      </div>
+        <div id="searchProveedor" class="col-md-3">
+            <p>Proveedor:</p>
+            <p-autoComplete id="filtroProveedor" [(ngModel)]="proveedorSeleccionado" [suggestions]="proveedorList" (completeMethod)="autocompleteProveedor($event)" field="valor" placeholder="Proveedor" [minLength]="4" autoZIndex="true" emptyMessage="No hay resultados para mostrar"></p-autoComplete>
+        </div>
 
-      <div id="viewDates" class="col-md-3">
-        <p>Ver:</p>
-        <filtro-fecha key="periodo-certificaciones"></filtro-fecha>
-      </div>
+        <div id="viewDates" class="col-md-3">
+            <p>Ver:</p>
+            <filtro-fecha key="periodo-certificaciones"></filtro-fecha>
+        </div>
 
-      <div id="btonSearch" class="col-md-3 p-d-flex vertical-align-middle">
-        <button class="btn btn-buscar" (click)="onBuscar()">Buscar</button>
-      </div>
+        <div id="btonSearch" class="col-md-3 p-d-flex vertical-align-middle">
+            <button class="btn btn-buscar" (click)="onBuscar()">Buscar</button>
+        </div>
     </div>
 
     <!-- <div id="searchMostrar" class="col-xs-12 col-sm-6 col-md-15">
@@ -318,7 +318,7 @@
                       </ng-template>
 
                       <ng-template pTemplate="rowexpansion" let-rowData let-columns="columns">
-                        <tr>
+                        <tr id="entradasServicio">
                           <!-- TABLE 4 -->
                           <td colspan="13">
                             <p-table class="level4" [value]="rowData.EntradasServicio" dataKey="Id">

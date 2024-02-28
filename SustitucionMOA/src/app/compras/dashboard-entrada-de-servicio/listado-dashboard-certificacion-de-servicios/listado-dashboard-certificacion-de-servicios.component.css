@@ -15,31 +15,55 @@ section#search {
 }
 
 .search-filters {
-    background-color: white !important;
-    border-bottom-left-radius: 10px;
-    border-bottom-right-radius: 10px;
-  padding: 2em 1em;
-    display: flex;
-  align-items: start;
-  justify-content: space-between;
+  background-color: white !important;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+  padding: 1em;
+  height: 7.5em;
+  display: flex;
+}
+
+.search-filters #searchOrder,
+.search-filters #searchProveedor {
+  height: 100%;
 }
 
 .search-filters p {
   color: #075088;
   font-weight: bold !important;
 }
+
+:host ::ng-deep .search-filters p-autocomplete#filtroProveedor > span.ui-autocomplete {
+  top: -10px !important;
+}
+
+:host ::ng-deep .search-filters p-autocomplete#filtroProveedor > span > input {
+  height: 2.68em;
+}
+
+.search-filters #searchOrder > input {
+  height: 2.68em;
+  padding: 0.429em;
+  font-family: Roboto Regular;
+  font-size: 15px;
+  line-height: 21.4333px;
+}
+
 .search-filters input,
-:host ::ng-deep .search-filters p-autocomplete#proveedores input {
-  height: 2.67em;
-  border-radius: 3px;
-    border: 1px solid #ddd;
-  width: 100%;
+:host ::ng-deep .search-filters p-autocomplete#filtroProveedor > span > input {
+  border-radius: 6px;
+  border: 1px solid #ddd;
+  width: 100% !important;
+}
+
+::ng-deep p-autocomplete#filtroProveedor .ui-autocomplete-loader.pi.pi-spinner.pi-spin {
+    margin: auto !important;
 }
 
 .search-filters input:active,
 .search-filters input:hover,
 .search-filters input:focus {
-  border: 1px solid #ddd;
+    border: 1px solid #ddd;
 }
 
 .search-filters .btn-buscar {
@@ -54,10 +78,6 @@ section#search {
 ::ng-deep #viewDates #btnAplicar {
   display: none !important;
   visibility: hidden !important;
-}
-
-::ng-deep p-autocomplete#proveedores .ui-autocomplete-loader.pi.pi-spinner.pi-spin {
-  margin: auto !important;
 }
 /* SEARCH END */
 

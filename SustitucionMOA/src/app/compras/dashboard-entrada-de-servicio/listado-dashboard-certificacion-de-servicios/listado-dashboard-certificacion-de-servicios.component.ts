@@ -534,14 +534,22 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
      * Oculta/muestra items sin saldo a certificar.
      */
     mostrarOcultarItemsSinSaldoACertificar() {
+        let items = document.querySelectorAll('.percentage-green');
+        let entradasServicio = document.querySelectorAll('#entradasServicio')[0];
+
         if (this.ocFilterApplied) {
             setTimeout(function () {
-                let elements = document.querySelectorAll('.percentage-green');
-                elements.forEach(element => element.closest('tr').classList.add("hidden"));
+                items.forEach(el => el.closest('tr').classList.add('hidden'));
+                if (entradasServicio != undefined) {
+                    entradasServicio.classList.add('hidden');
+                }
             }, 20);
         }
         else {
-            document.querySelectorAll('.percentage-green').forEach(el => el.closest('tr').classList.remove("hidden"));
+            items.forEach(el => el.closest('tr').classList.remove('hidden'));
+            if (entradasServicio != undefined) {
+                entradasServicio.classList.remove('hidden');
+            }
         }
     }
 
