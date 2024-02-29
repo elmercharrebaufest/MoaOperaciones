@@ -19,7 +19,6 @@ section#search {
   border-bottom-left-radius: 10px;
   border-bottom-right-radius: 10px;
   padding: 1em;
-  height: 7.5em;
   display: flex;
 }
 
@@ -33,11 +32,11 @@ section#search {
   font-weight: bold !important;
 }
 
-:host ::ng-deep .search-filters p-autocomplete#filtroProveedor > span.ui-autocomplete {
+:host ::ng-deep p-autocomplete#filtroProveedor > span.ui-autocomplete {
   top: -10px !important;
 }
 
-:host ::ng-deep .search-filters p-autocomplete#filtroProveedor > span > input {
+:host ::ng-deep p-autocomplete#filtroProveedor > span > input {
   height: 2.68em;
 }
 
@@ -50,7 +49,7 @@ section#search {
 }
 
 .search-filters input,
-:host ::ng-deep .search-filters p-autocomplete#filtroProveedor > span > input {
+:host ::ng-deep p-autocomplete#filtroProveedor > span > input {
   border-radius: 6px;
   border: 1px solid #ddd;
   width: 100% !important;
