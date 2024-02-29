@@ -60,22 +60,6 @@
         </div>
         <!--factura-->
         <div id="Pago" class="Pago">
-            <div class="PagoColumn">
-                <table class="CalidadCCPP" width="100%" border="0" cellspacing="0" cellpadding="0">
-                    <tr>
-                        <td width="100%">
-                            <div>
-                                <p class="grey"><strong>Contrato Molinos</strong></p>
-                                <p> <a class="animate grey" (click)="goToSeccionParam('/contrato/detalle', data.salidas[0].contrato)" href="#">{{data.salidas[0].contrato}}</a></p>
-                            </div>
-                            <div>
-                                <p class="grey">Tipo pago</p>
-                                <p class="grey"><strong>Liq.</strong></p>
-                            </div>
-                        </td>
-                    </tr>
-                </table>
-            </div>
             <div class="PagoFactura" *ngIf="data.LiquidacionParcialEmitida && !data.FaltanDatosDeCalidad">
                 <table class="PagoTable rounded shadow animate" border="0" cellspacing="0" cellpadding="0" style="width: 100%;">
                     <tr class="CalidadCCPPDataCategoria">
