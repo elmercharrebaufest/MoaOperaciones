@@ -19,3 +19,7 @@ export interface CalidadCCPP {
     porcentajeDescuento: number
     camaraAPresent: boolean
 }
+
+export interface CalidadCCPPDiscrepa extends CalidadCCPP {
+    discrepanciaCalidad?: string;
+}

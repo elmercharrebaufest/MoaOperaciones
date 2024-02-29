@@ -10,11 +10,11 @@
 	[CausaConsulta_Id] INT NULL,
 	[BolsaEmisoraOblea] NVARCHAR(max) NULL,
 	
-[OtroComprobanteNo] NVARCHAR(MAX) NULL, 
+	[OtroComprobanteNo] NVARCHAR(MAX) NULL, 
     [Material_Id] INT NULL, 
     [Orden_Id] INT NULL, 
     [PatenteChasis] VARCHAR(15) NULL, 
-    [Rubro] VARCHAR(50) NULL, 
+    [Rubro] NVARCHAR(max) NULL, 
     CONSTRAINT [PK_dbo.ConsultaDetalle] PRIMARY KEY CLUSTERED 
 (
 	[Id] ASC

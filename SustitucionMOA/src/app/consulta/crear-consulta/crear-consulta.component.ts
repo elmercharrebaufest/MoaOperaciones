@@ -19,6 +19,7 @@ import { DatosDisconformidadCalidades, DatosLiquidacionObservada, SendDataServic
 import { SeleccionarProveedorComponent } from '../../common/shared-components/seleccionar-proveedor/seleccionar-proveedor.component';
 import { CartaPorteService } from '../../carta-porte/carta-porte2.service';
 import { finalize } from 'rxjs/operators';
+import { CalidadCCPP, CalidadCCPPDiscrepa } from '../../common/models/cartaPorte';
 
 declare var $: any;
 
@@ -121,6 +122,8 @@ export class CrearConsultaComponent extends ListBaseComponent {
     nombreVendedor: string;
     comprobante: any;
     rubro: any;
+    rubrosOptions: CalidadCCPP[] = [];
+    rubrosSelected: CalidadCCPPDiscrepa[] = [];
     fechaPago: string;
     fecha: Date;
     importe: any;
@@ -423,10 +426,19 @@ export class CrearConsultaComponent extends ListBaseComponent {
             }
         }
         if (this.categoriaCode == 'DISCAL') {
-            if ((!this.material) || (!this.rubro)) {
-                this.mensajeComponent.setErrorMsg("Debe completar todos los campos marcados con *.");
+            if (!this.rubrosSelected || !this.rubrosSelected.length) {
+                this.mensajeComponent.setErrorMsg("Debe seleccionar al menos un rubro.");
                 return true;
             }
+            if (!this.validarRubrosSeleccionados()) {
+                this.mensajeComponent.setErrorMsg("Debe cargar un valor de discrepancia para cada rubro seleccionado.");
+                return true;
+            }
+            if ((!this.material)) {
+                this.mensajeComponent.setErrorMsg("Debe seleccionar un material.");
+                return true;
+            }
+            this.rubro = this.rubrosSelected.map(rubro => `${rubro.caracteristica} - ${rubro.resultadoCalado} Calado - Discrepa ${rubro.discrepanciaCalidad} %`).join("\n");
         }
         if (this.categoriaCode == 'COM') {
             if (this.comprobante == "" || !this.comprobante) {
@@ -806,6 +818,7 @@ export class CrearConsultaComponent extends ListBaseComponent {
                     this.mensajeComponent.setErrorMsg(error || info)
                     return;
                 }
+                this.rubrosOptions = data
                 this.nuevoComentario =
                     [
                         'Característica - Calado - Cámara',
@@ -829,5 +842,9 @@ export class CrearConsultaComponent extends ListBaseComponent {
             idVendedor: this.codigoCorredor,
             descVendedor: sessionStorage.getItem('nombre')
         })
+    }
+
+    validarRubrosSeleccionados() {
+        return this.rubrosSelected.every(rubro => !!rubro.discrepanciaCalidad)
     }
 }

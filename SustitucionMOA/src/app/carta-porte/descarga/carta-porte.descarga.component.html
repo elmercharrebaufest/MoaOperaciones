@@ -133,9 +133,6 @@
                                     </span>
                                 </div>
                             </th>
-                            <th tabindex="0" rowspan="1" colspan="1" style="text-align: center;">
-                                Discrepancia Calidad
-                            </th>
                             <th tabindex="0" rowspan="1" colspan="1" style="text-align: left;"
                                 (click)="orderColumnBy('producto')">
                                 Producto
@@ -227,8 +224,6 @@
                                     style="background: none; border: none; padding: 0 10px; margin: 0 5px;">
                                     <span class="fa fa-file-image-o" style="color: #172f8f;"></span>
                                 </button>
-                            </td>
-                            <td>
                                 <ng-container *ngIf="recepcionInfo.TieneDiscrepanciaEnCalidad; else botonDiscrepancia">
                                     <button type="button" class="btn btn-info btn-lg"
                                         (click)="navegarAConsultaCalidad(recepcionInfo)"
@@ -247,7 +242,6 @@
                                         <span class="fa fa-exclamation-circle" style="color: #172f8f;"></span>
                                     </button>
                                 </ng-template>
-
                             </td>
                             <td style="text-align: left;">{{recepcionInfo.producto}}</td>
                             <td style="text-align: left;">

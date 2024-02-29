@@ -69,7 +69,35 @@
                             </div>
                         </div>
                     </div>
-
+                    <div class="for myRow" *ngIf="this.categoriaCode == 'DISCAL' ">
+                        <div class="col-xs-12 col-sm-12 col-md-12">
+                            <p class="crearConsultaTitulos">
+                                Rubro<span class="requerido">*</span>
+                            </p>
+                            <p-multiSelect [options]="rubrosOptions" [(ngModel)]="rubrosSelected"
+                                [optionLabel]="'caracteristica'">
+                                <ng-template let-selections pTemplate="selectedItems">
+                                    <div *ngFor="let val of selections"
+                                        class="ui-multiselected-item-token ui-corner-all">
+                                        <span>{{val.caracteristica}}</span>
+                                    </div>
+                                    <span *ngIf="!selections || selections.length === 0"
+                                        class="ui-multiselected-empty-token ui-corner-all">Seleccione al menos
+                                        uno</span>
+                                </ng-template>
+                            </p-multiSelect>
+                        </div>
+                        <div class="col-xs-12 col-sm-12 col-md-12" *ngIf="rubrosSelected && rubrosSelected.length">
+                            <div style="padding-top:0.5rem;" *ngFor="let rubroSelected of rubrosSelected">
+                                <span class="ui-inputgroup-addon">
+                                    {{rubroSelected.caracteristica}} - {{rubroSelected.resultadoCalado}} (Calado) -
+                                    Discrepancia
+                                </span>
+                                <p-inputMask mask="9?9" [unmask]="true" placeholder="%" [style]="{width:'50px'}"
+                                    [(ngModel)]="rubroSelected.discrepanciaCalidad"></p-inputMask>
+                            </div>
+                        </div>
+                    </div>
                     <div class="for myRow">
                         <div class="col-xs-12 col-sm-12 col-md-12">
                             <p class="crearConsultaTitulos">Comentario<span class="requerido">*</span></p>
@@ -397,15 +425,6 @@
                                 placeholder="Elegir material"
                                 (onChange)="this.comprobanteExtra = $event.value.Descripcion">
                             </p-dropdown>
-                        </div>
-                        <div class="col-xs-12 col-sm-12 col-md-6">
-                            <p class="crearConsultaTitulos">
-                                Rubro<span class="requerido">*</span>
-                            </p>
-                            <div class="styled-select">
-                                <input type="search" tooltipPosition="top" [(ngModel)]="rubro" name="rubro"
-                                    class="fourRounded" aria-controls="tableModal" required>
-                            </div>
                         </div>
                     </div>
                     <!-- Expanded para cesion y rectificacion de cpe -->
