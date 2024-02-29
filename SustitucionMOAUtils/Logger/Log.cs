@@ -1,4 +1,5 @@
 ﻿using NLog.Config;
+using NLog.Targets;
 using SustitucionMOAAssets;
 using SustitucionMOAWS.Logger;
 using System;
@@ -17,25 +18,61 @@ namespace SustitucionMOAUtils.Logger
         {
         }
 
-        private static void ConfigLog()
+        public static string ConfigLog()
         {
             // Crea una nueva instancia de LoggingConfiguration
             var config = new LoggingConfiguration();
             string rutaSitioWeb = HostingEnvironment.MapPath("~");
-            rutaSitioWeb= Path.Combine(rutaSitioWeb, "bin");
+            rutaSitioWeb = Path.Combine(rutaSitioWeb, "bin");
             // Carga la configuración del archivo específico            
-            config = new XmlLoggingConfiguration(Path.Combine(rutaSitioWeb, "nlog.config"));
-            var sapUrl = System.Configuration.ConfigurationManager.AppSettings["SpaUrl"];
-
+            var logPath = Path.Combine(rutaSitioWeb, "nlog.config");
+            config = new XmlLoggingConfiguration(logPath);
+            var sapUrl = System.Configuration.ConfigurationManager.AppSettings["SpaUrl"] ?? "";
             if (sapUrl.Contains("compras"))
-                config = new XmlLoggingConfiguration(Path.Combine(rutaSitioWeb, "nlog.compras.config"));
+            {
+                logPath = Path.Combine(rutaSitioWeb, "nlog.compras.config");
+                config = new XmlLoggingConfiguration(logPath);
+            }
             if (sapUrl.Contains("huenei"))
-                config = new XmlLoggingConfiguration(Path.Combine(rutaSitioWeb, "nlog.huenei.config"));
+            {
+                logPath = Path.Combine(rutaSitioWeb, "nlog.huenei.config");
+                config = new XmlLoggingConfiguration(logPath);
+            }
             if (sapUrl.Contains("pre"))
-                config = new XmlLoggingConfiguration(Path.Combine(rutaSitioWeb, "nlog.pre.config"));
-
+            {
+                logPath = Path.Combine(rutaSitioWeb, "nlog.pre.config");
+                config = new XmlLoggingConfiguration(logPath);
+            }
             // Configura LogManager con la nueva configuración
             NLog.LogManager.Configuration = config;
+
+            var target = GetTarget(config);
+
+            if (target != null)
+            {
+                Console.WriteLine("target found:");
+                Console.WriteLine("Name: " + target.Name);
+                Console.WriteLine("File Name: " + Path.GetDirectoryName(target.FileName.ToString()));
+                return Path.GetDirectoryName(target.FileName.ToString());
+            }
+            else
+            {
+                Console.WriteLine("Azure target not found.");
+            }
+
+            return "C:\\MOAOperacionesLogs";
+        }
+
+        static FileTarget GetTarget(LoggingConfiguration config)
+        {
+            foreach (var target in config.AllTargets)
+            {
+                if (target is FileTarget fileTarget)
+                {                    
+                        return fileTarget;                    
+                }
+            }
+            return null;
         }
 
         public static void Error(string ip, string usuario, string controller, string method, string error)
@@ -102,7 +139,7 @@ namespace SustitucionMOAUtils.Logger
             {
                 ConfigLog();
 
-                DefaultLogger.Debug("Controller: " + controller + " Metodo: " + method + " Valores: " + valores );
+                DefaultLogger.Debug("Controller: " + controller + " Metodo: " + method + " Valores: " + valores);
             }
             catch (Exception e)
             {
@@ -122,7 +159,7 @@ namespace SustitucionMOAUtils.Logger
                 Console.WriteLine("ERROR en LogService:" + e.Message);
             }
         }
-        public static void AzureError (Exception exception)
+        public static void AzureError(Exception exception)
         {
             try
             {
