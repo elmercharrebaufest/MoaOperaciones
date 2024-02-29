@@ -109,6 +109,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
     showModal: boolean = false;
     showDialog: boolean = false;
     ocFilterApplied: boolean = false;
+    recalculando: boolean = false;
 
  
     ngOnInit() {       
@@ -167,15 +168,13 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
             this.itemIdSelected.push(itemId);
             this.numeroLineaSelected.add(numeroLinea);
             this.itemSelected.push(item);
-
-            if (!this.isGet100(item) || item.MontoACertificar != 0) {
-                this.actionCheckPosition(item);
-            }
+            this.actionCheckPosition(item);
         }
         this.itemSelected.sort((a, b) => a.NumeroLinea > b.NumeroLinea ? 1 : -1);
     }
 
     setPositionRow(posicion: any) {
+        this.clearCheckboxes();
         this.expandedPositionRow = posicion;
         this.calcularValoresACertificar(posicion);
         this.mostrarOcultarItemsSinSaldoACertificar();
@@ -261,6 +260,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
                         this.calcularValoresACertificar(this.expandedPositionRow);
                         this.mostrarOcultarItemsSinSaldoACertificar();
                         setTimeout(() => {
+                            this.recalculando = false;
                             this.tablaPosiciones.toggleRow(this.expandedPositionRow);
                         }, 500)
                     }
@@ -307,6 +307,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
                 } else if (result.info != undefined) {
                     this.mensajeComponent.setErrorMsg(result.error);
                 } else if (result.data != undefined) {
+                    this.recalculando = true;
                     this.floatMsgService.setSuccessMsg("Se ha eliminado la entrada de servicio " + Id);
                     this.getListarPO(this.proveedor, this.ordenCompraId, this.filtroFechaComponent.fecha_inicio, this.filtroFechaComponent.fecha_fin);  
                     setTimeout(() => {
@@ -328,6 +329,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
         this.itemIdSelected = [];
         this.itemSelected = [];
         this.numeroLineaSelected.clear();
+        this.recalculando = true;
         this.getListarPO(this.proveedor, this.ordenCompraId, this.filtroFechaComponent.fecha_inicio, this.filtroFechaComponent.fecha_fin);
     }
 
@@ -344,7 +346,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
         }
     }
 
-    onCloseModal() {
+    onCloseModal(): void {
         this.showModal = false;
     }
 
@@ -423,16 +425,16 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
     */
     calcularValoresACertificar(posicion: any) {
         this.tablaPO.filter(orders => orders.NumeroOrdenDeCompra === posicion.NroOrdenCompra).forEach(order => {
-            order.Posiciones.filter(positions => positions.NumeroPosicion === posicion.NumeroPosicion).forEach(pos => {
-                pos.Items.forEach(item => {
+            order.Posiciones.filter(positions => positions.NumeroPosicion === posicion.NumeroPosicion).forEach(position => {
+                position.Items.forEach(item => {
                     const monto = item.Importe;
                     const cantidad = item.Cantidad;
                     item.CantidadACertificar = cantidad - item.CantidadReal;
                     item.PorcentajeACertificar = (item.CantidadACertificar * 100) / cantidad;
                     item.MontoACertificar = (item.CantidadACertificar * monto) / cantidad;
                 });
-            })
-        })
+            });
+        });
     }
 
     calcularMontoACertificar(item: any) {
@@ -455,7 +457,6 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
         item.PorcentajeACertificar = (item.CantidadACertificar * 100) / item.Cantidad;
         this.calcularMontoACertificar(item);
     }
-
 
     actualizarValoresACertificarPorPorcentaje(item: any) {
         const porcentajeDisponible = (100 - item.Porcentaje);
@@ -507,9 +508,15 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
     }
 
     actionCheckPosition(item: any): void {
+        let itemsFiltered = [];
         this.tablaPO.filter(orders => orders.NumeroOrdenDeCompra === item.NroOrdenCompra).forEach(order => {
             order.Posiciones.filter(positions => positions.NumeroPosicion === parseInt(item.NroPosicion)).forEach(pos => {
-                pos.Items.every(item => pos.isSelected = item.isSelected ? true : false)
+                pos.Items.forEach((i) => {
+                    if(!this.isGet100(i) || i.MontoACertificar != 0){
+                        itemsFiltered.push(i);
+                        pos.isSelected = itemsFiltered.every((everyItem) => everyItem.isSelected ? true : false);
+                    }
+                });
             })
         })
     }
@@ -519,12 +526,12 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
     }
 
     /**
-       * Activa el filtro de posiciones e items sin saldo 
-       * a certificar. Este filtro oculta/muestra items certificados
-       * al 100%. Si la posición tiene todos sus items certificados
-       * entonces oculta también la posición.
-       * @param activate Boolean que activa/desactiva filtro
-       */
+    * Activa el filtro de posiciones e items sin saldo 
+    * a certificar. Este filtro oculta/muestra items certificados
+    * al 100%. Si la posición tiene todos sus items certificados
+    * entonces oculta también la posición.
+    * @param activate Boolean que activa/desactiva filtro
+    */
     filtrarElementosSinSaldoACertificar(activate: boolean): void {
         this.ocFilterApplied = activate;
         this.mostrarOcultarItemsSinSaldoACertificar();
@@ -534,23 +541,25 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
      * Oculta/muestra items sin saldo a certificar.
      */
     mostrarOcultarItemsSinSaldoACertificar() {
-        let items = document.querySelectorAll('.percentage-green');
-        let entradasServicio = document.querySelectorAll('#entradasServicio')[0];
+        setTimeout(() => {
+            let entradasServicio = document.querySelectorAll('#entradasServicio')[0];
+            let items = document.querySelectorAll('.percentage-green');
 
-        if (this.ocFilterApplied) {
-            setTimeout(function () {
+            if (this.ocFilterApplied) {
                 items.forEach(el => el.closest('tr').classList.add('hidden'));
+
                 if (entradasServicio != undefined) {
                     entradasServicio.classList.add('hidden');
                 }
-            }, 20);
-        }
-        else {
-            items.forEach(el => el.closest('tr').classList.remove('hidden'));
-            if (entradasServicio != undefined) {
-                entradasServicio.classList.remove('hidden');
             }
-        }
+            else {
+                items.forEach(el => el.closest('tr').classList.remove('hidden'));
+
+                if (entradasServicio != undefined) {
+                    entradasServicio.classList.remove('hidden');
+                }
+            }
+        }, 20); // Esta espera es necesaria para que parezca el elemento en el DOM
     }
 
     /**

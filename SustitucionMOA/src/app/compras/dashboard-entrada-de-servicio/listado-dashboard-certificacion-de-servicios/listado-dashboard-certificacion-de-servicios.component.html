@@ -201,7 +201,7 @@
               <ng-template pTemplate="body" let-rowData let-expanded="expanded" let-posIndex="rowIndex">
                 <tr class="posicion" *ngIf="!ocFilterApplied || (ocFilterApplied && tieneItemsACertificar(rowData))">
                   <td>
-                    <a href="#" [pRowToggler]="rowData" (click)="clearCheckboxes(); setPositionRow(rowData);">
+                    <a href="#" [pRowToggler]="rowData" (click)="setPositionRow(rowData);">
                       <i [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
                     </a>
                   </td>
@@ -229,159 +229,162 @@
               </ng-template>
 
               <ng-template pTemplate="rowexpansion" let-rowData let-columns="columns" let-posIndex="rowIndex">
-                <tr [pSelectableRow]="rowData" *ngIf="!ocFilterApplied || (ocFilterApplied && tieneItemsACertificar(rowData))">
-                  <!-- TABLE 3 -->
-                  <td colspan="12">
-                    <p-table class="level3" [value]="rowData.Items" dataKey="NumeroLinea" [paginator]="rowData.Items.length > 4" [rows]="5" rowExpandMode="single">
+                  <tr [pSelectableRow]="rowData" *ngIf="!ocFilterApplied || (ocFilterApplied && tieneItemsACertificar(rowData))">
+                      <!-- TABLE 3 -->
+                      <td colspan="12">
+                      <div *ngIf="recalculando">
+                          <div class="dot-pulse"></div>
+                      </div>
+                  <p-table *ngIf="!recalculando" class="level3" [value]="rowData.Items" dataKey="NumeroLinea" [paginator]="rowData.Items.length > 4" [rows]="5" rowExpandMode="single">
 
                       <!-- TABLE 3 HEADERS -->
                       <ng-template pTemplate="header" *ngIf="rowData.Items && rowData.Items.length > 0">
-                        <tr>
-                          <th>
-                            <input *ngIf="hideCheckboxToAll(rowData.Items)" type="checkbox" [(ngModel)]="rowData.isSelected" (change)="selectAllItems($event, rowData.Items)">
-                          </th>
-                          <th title="NroItem">NRO LINEA</th>
-                          <th title="NumeroServicio">N° Servicio</th>
-                          <th title="TextBrev">Txt.breve del servicio</th>
-                          <th title="Cantidad">Cantidad</th>
-                          <th title="UM">UM</th>
-                          <th title="Monto">Importe</th>
-                          <th title="CantidadReal">Cantidad Real</th>
-                          <th title="Porcentaje">porc. %</th>
-                          <th>Cantidad a certificar</th>
-                          <th>% a certificar</th>
-                          <th>Monto a certificar</th>
-                          <th>Acciones</th>
-                        </tr>
+                          <tr>
+                              <th>
+                                  <input *ngIf="hideCheckboxToAll(rowData.Items)" type="checkbox" [(ngModel)]="rowData.isSelected" (change)="selectAllItems($event, rowData.Items)">
+                              </th>
+                              <th title="NroItem">NRO LINEA</th>
+                              <th title="NumeroServicio">N° Servicio</th>
+                              <th title="TextBrev">Txt.breve del servicio</th>
+                              <th title="Cantidad">Cantidad</th>
+                              <th title="UM">UM</th>
+                              <th title="Monto">Importe</th>
+                              <th title="CantidadReal">Cantidad Real</th>
+                              <th title="Porcentaje">porc. %</th>
+                              <th>Cantidad a certificar</th>
+                              <th>% a certificar</th>
+                              <th>Monto a certificar</th>
+                              <th>Acciones</th>
+                          </tr>
                       </ng-template>
                       <!-- TABLE 3 HEADERS END-->
                       <!-- TABLE 3 BODY -->
                       <ng-template pTemplate="body" let-rowData let-expanded="expanded" let-i="rowIndex">
-                        <tr>
-                            <td>
-                                <input type="checkbox"
-                                       [(ngModel)]="rowData.isSelected"
-                                       (change)="onCheckboxChange(rowData)"
-                                       [attr.disabled]="isGet100(rowData) || rowData.MontoACertificar === 0 ? true : null" />
-                                <a href="#" [pRowToggler]="rowData" *ngIf="rowData.EntradasServicio.length > 0">
-                                    <i [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
-                                </a>
-                            </td>
-                          <td>{{ rowData.NumeroLinea | defaultData }}</td>
-                          <td>{{ rowData.ServicioNumero | defaultData }}</td>
-                          <td>{{ rowData.Descripcion | defaultData }}</td>
-                          <td>{{ rowData.Cantidad | defaultData }}</td>
-                          <td>{{ rowData.UM | defaultData }}</td>
-                          <td>{{ rowData.ImporteString | defaultData }}</td>
-                          <td>{{ rowData.CantidadReal | defaultData }}</td>
-                          <td [ngClass]="{ 'percentage-green': rowData.Porcentaje >= 100, 'percentage-yellow': rowData.Porcentaje <= 99 }">
-                            {{ rowData.Porcentaje | defaultData }}%
-                          </td>
-                          <td>
-                            <input type="text"
-                                   name="cantidad"          
-                                   (keypress)="numbersOnly($event)"
-                                   (keyup)="actualizarValoresACertificarPorCantidad(rowData);"
-                                   (ngModelChange)="rowData.CantidadACertificar=$event"
-                                   [ngModel]="rowData.CantidadACertificar | number:'1.0-2'"
-                                   required
-                                   pattern="^[0-9\.]*$"
-                                   [disabled]="rowData.Porcentaje==100" />
-                          </td>
-                          <td>
-                            <input type="text"
-                                   name="porcentaje"
-                                   (keypress)="numbersOnly($event)"
-                                   (keyup)="actualizarValoresACertificarPorPorcentaje(rowData);"
-                                   (ngModelChange)="rowData.PorcentajeACertificar=$event"
-                                   [ngModel]="rowData.PorcentajeACertificar | number:'1.0-2'"
-                                   required
-                                   disabled />
-                          </td>
-                          <td>{{ rowData.MontoACertificar | number:'1.0-2' }}</td>
-                          <td>
-                            <button class="btn-refresh"
-                                    type="button"
-                                    pButton icon="fa fa-refresh"
-                                    (click)="habilitarCampoDeValorACertificar(i)"
-                                    [disabled]="rowData.CantidadACertificar === 0 || rowData.PorcentajeACertificar === 0">
-                            </button>
-                          </td>
-                        </tr>
+                          <tr>
+                              <td>
+                                  <input type="checkbox"
+                                         [(ngModel)]="rowData.isSelected"
+                                         (change)="onCheckboxChange(rowData)"
+                                         [attr.disabled]="isGet100(rowData) || rowData.MontoACertificar === 0 ? true : null" />
+                                  <a href="#" [pRowToggler]="rowData" *ngIf="rowData.EntradasServicio.length > 0">
+                                      <i [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
+                                  </a>
+                              </td>
+                              <td>{{ rowData.NumeroLinea | defaultData }}</td>
+                              <td>{{ rowData.ServicioNumero | defaultData }}</td>
+                              <td>{{ rowData.Descripcion | defaultData }}</td>
+                              <td>{{ rowData.Cantidad | defaultData }}</td>
+                              <td>{{ rowData.UM | defaultData }}</td>
+                              <td>{{ rowData.ImporteString | defaultData }}</td>
+                              <td>{{ rowData.CantidadReal | defaultData }}</td>
+                              <td [ngClass]="{ 'percentage-green': rowData.Porcentaje >= 100, 'percentage-yellow': rowData.Porcentaje <= 99 }">
+                                  {{ rowData.Porcentaje | defaultData }}%
+                              </td>
+                              <td>
+                                  <input type="text"
+                                         name="cantidad"
+                                         (keypress)="numbersOnly($event)"
+                                         (keyup)="actualizarValoresACertificarPorCantidad(rowData);"
+                                         (ngModelChange)="rowData.CantidadACertificar=$event"
+                                         [ngModel]="rowData.CantidadACertificar | number:'1.0-2'"
+                                         required
+                                         pattern="^[0-9\.]*$"
+                                         [disabled]="rowData.Porcentaje==100" />
+                              </td>
+                              <td>
+                                  <input type="text"
+                                         name="porcentaje"
+                                         (keypress)="numbersOnly($event)"
+                                         (keyup)="actualizarValoresACertificarPorPorcentaje(rowData);"
+                                         (ngModelChange)="rowData.PorcentajeACertificar=$event"
+                                         [ngModel]="rowData.PorcentajeACertificar | number:'1.0-2'"
+                                         required
+                                         disabled />
+                              </td>
+                              <td>{{ rowData.MontoACertificar | number:'1.0-2' }}</td>
+                              <td>
+                                  <button class="btn-refresh"
+                                          type="button"
+                                          pButton icon="fa fa-refresh"
+                                          (click)="habilitarCampoDeValorACertificar(i)"
+                                          [disabled]="rowData.CantidadACertificar === 0 || rowData.PorcentajeACertificar === 0">
+                                  </button>
+                              </td>
+                          </tr>
                       </ng-template>
                       <!-- TABLE 3 BODY END -->
 
                       <ng-template pTemplate="emptymessage">
-                        <tr>
-                          <td class="emptyData" colspan="12">No hay servicios para mostrar</td>
-                        </tr>
+                          <tr>
+                              <td class="emptyData" colspan="12">No hay servicios para mostrar</td>
+                          </tr>
                       </ng-template>
 
                       <ng-template pTemplate="rowexpansion" let-rowData let-columns="columns">
-                        <tr id="entradasServicio">
-                          <!-- TABLE 4 -->
-                          <td colspan="13">
-                            <p-table class="level4" [value]="rowData.EntradasServicio" dataKey="Id">
-                              <!-- TABLE 4 HEADERS -->
-                              <ng-template pTemplate="header">
-                                <tr>
-                                  <th title="NroEs">NRO_ES</th>
-                                  <th title="FechaDocumento"> F. Documento<br>(F. de prestación de servicios)</th>
-                                  <th title="FechaContabilizacion">F. Contabilización</th>
-                                  <th title="Referencia">Referencia<br>(N° remito)</th>
-                                  <th title="Cantidad">Cantidad</th>
-                                  <th title="TextoBreveDesc">Desc. ES </th>
-                                  <th title="ImporteARPUSD">Importe ARP/USD</th>
-                                  <th title="EliminarEs">Eliminar ES</th>
-                                </tr>
-                              </ng-template>
-                              <!-- TABLE 4 HEADERS END -->
-                              <!-- TABLE 4 BODY -->
-                              <ng-template pTemplate="body" let-rowData let-item>
-                                <tr>
-                                  <td>{{ rowData.Id }}</td>
-                                  <td>{{ rowData.FechaDocumentoString }}</td>
-                                  <td>
-                                    {{rowData.FechaContabilizacion | date: 'dd/MM/yyyy'}}
-                                  </td>
-                                  <td>{{ rowData.Referencia | defaultData }}</td>
-                                  <td>{{ rowData.Cantidad | defaultData }}</td>
-                                  <td>{{ rowData.TextoBreve }}</td>
-                                  <td>{{ rowData.ImporteARPUSD }}</td>
-                                  <td>
+                          <tr id="entradasServicio">
+                              <!-- TABLE 4 -->
+                              <td colspan="13">
+                                  <p-table class="level4" [value]="rowData.EntradasServicio" dataKey="Id">
+                                      <!-- TABLE 4 HEADERS -->
+                                      <ng-template pTemplate="header">
+                                          <tr>
+                                              <th title="NroEs">NRO_ES</th>
+                                              <th title="FechaDocumento"> F. Documento<br>(F. de prestación de servicios)</th>
+                                              <th title="FechaContabilizacion">F. Contabilización</th>
+                                              <th title="Referencia">Referencia<br>(N° remito)</th>
+                                              <th title="Cantidad">Cantidad</th>
+                                              <th title="TextoBreveDesc">Desc. ES </th>
+                                              <th title="ImporteARPUSD">Importe ARP/USD</th>
+                                              <th title="EliminarEs">Eliminar ES</th>
+                                          </tr>
+                                      </ng-template>
+                                      <!-- TABLE 4 HEADERS END -->
+                                      <!-- TABLE 4 BODY -->
+                                      <ng-template pTemplate="body" let-rowData let-item>
+                                          <tr>
+                                              <td>{{ rowData.Id }}</td>
+                                              <td>{{ rowData.FechaDocumentoString }}</td>
+                                              <td>
+                                                  {{rowData.FechaContabilizacion | date: 'dd/MM/yyyy'}}
+                                              </td>
+                                              <td>{{ rowData.Referencia | defaultData }}</td>
+                                              <td>{{ rowData.Cantidad | defaultData }}</td>
+                                              <td>{{ rowData.TextoBreve }}</td>
+                                              <td>{{ rowData.ImporteARPUSD }}</td>
+                                              <td>
 
-                                    <div *ngIf="rowData.SePuedeBorrar == false else SePuedeBorrar">
-                                      <i>
-                                        <img src="../../../../../Content/images/icons/trash.svg" alt="trash" class="delete-icon" />
-                                      </i>
-                                    </div>
+                                                  <div *ngIf="rowData.SePuedeBorrar == false else SePuedeBorrar">
+                                                      <i>
+                                                          <img src="../../../../../Content/images/icons/trash.svg" alt="trash" class="delete-icon" />
+                                                      </i>
+                                                  </div>
 
-                                    <ng-template #SePuedeBorrar>
-                                      <i>
-                                        <img (click)="deleteES(rowData.Id)" src="../../../../../Content/images/icons/trashRed.svg" alt="trashRed" class="delete-icon" />
-                                      </i>
-                                    </ng-template>
+                                                  <ng-template #SePuedeBorrar>
+                                                      <i>
+                                                          <img (click)="deleteES(rowData.Id)" src="../../../../../Content/images/icons/trashRed.svg" alt="trashRed" class="delete-icon" />
+                                                      </i>
+                                                  </ng-template>
 
-                                  </td>
-                                </tr>
-                              </ng-template>
-                              <!-- TABLE 4 BODY END -->
+                                              </td>
+                                          </tr>
+                                      </ng-template>
+                                      <!-- TABLE 4 BODY END -->
 
-                              <ng-template pTemplate="emptymessage">
-                                <tr>
-                                  <td class="emptyData" colspan="13">No hay servicios para mostrar</td>
-                                </tr>
-                              </ng-template>
+                                      <ng-template pTemplate="emptymessage">
+                                          <tr>
+                                              <td class="emptyData" colspan="13">No hay servicios para mostrar</td>
+                                          </tr>
+                                      </ng-template>
 
-                            </p-table>
-                          </td>
-                          <!-- TABLE 4 END -->
-                        </tr>
+                                  </p-table>
+                              </td>
+                              <!-- TABLE 4 END -->
+                          </tr>
                       </ng-template>
-                    </p-table>
-                  </td>
-                  <!-- TABLE 3 END -->
-                </tr>
+                  </p-table>
+</td>
+                      <!-- TABLE 3 END -->
+                  </tr>
               </ng-template>
             </p-table>
           </td>
