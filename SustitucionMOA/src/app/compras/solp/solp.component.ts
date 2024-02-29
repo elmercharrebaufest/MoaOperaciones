@@ -673,8 +673,6 @@ export class SolpComponent extends BaseComponent implements OnInit {
                                 !pos.tabsPosicionValidos.tabFechas ||
                                 (pos.esTipoPosicionServicio && !pos.tabsPosicionValidos.tabSubposiciones) ||
                                 !pos.tabsPosicionValidos.tabPosiciones ||
-                                this.validarContratoMarco() ||
-                                this.validarAdicional() ||
                                 this.validarMonedaOCesDistinta())
                                 /*this.validarCondicionesEspeciales()*/ {
                                 return paso.Completo = false;
@@ -775,25 +773,6 @@ export class SolpComponent extends BaseComponent implements OnInit {
         return validarFechaLimiteYObra;
     }
 
-    validarContratoMarco() {
-        var validacionContratoTrabajo = false;
-
-        if (this.solpActual.trabajoHecho == true && this.solpActual.posiciones.some(x => x.numeroContratoSuperior)) {
-            return validacionContratoTrabajo = true;
-        }
-        return validacionContratoTrabajo;
-    }
-
-    validarAdicional() {
-        var validacionAdicional = false;
-
-        if (this.solpActual.adicional == true && this.solpActual.posiciones.some(x => x.numeroContratoSuperior)) {
-            return validacionAdicional = true;
-        }
-
-        return validacionAdicional;
-    }
-
     validarCondicionesEspeciales() {
         var validacionCheck = false;
 
@@ -816,21 +795,10 @@ export class SolpComponent extends BaseComponent implements OnInit {
             }
         })
 
-        if (this.validarContratoMarco()) {
-            this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: "Las SOLP con contrato marco cargado no pueden tener el tilde en el check de trabajo hecho en el paso #4" });
-        }
-
-        if (this.validarAdicional()) {
-            this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: "Las SOLP con contrato marco cargado no pueden tener el tilde en el check de adicional en el paso #4" });
-        }
-
         if (this.validarMonedaOCesDistinta()) {
             this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: "La moneda elegida debe ser la misma que la de la OC agregada en el paso #4" });
         }
 
-        //if (this.validarCondicionesEspeciales()) {
-        //    this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: "Las SOLP no pueden tener el tilde en el check de adicional y el check de trabajo hecho en el paso #4" });
-        //}
     }
 
     mostrarMensajeCotizacion() {
