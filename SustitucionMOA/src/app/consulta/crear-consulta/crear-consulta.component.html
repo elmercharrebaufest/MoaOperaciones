@@ -392,7 +392,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-xs-12 col-sm-12 col-md-12" *ngIf="this.categoriaCode == 'DISCAL' ">
+                    <ng-container *ngIf="this.categoriaCode == 'DISCAL' ">
                         <div class="col-xs-12 col-sm-12 col-md-6">
                             <p class="crearConsultaTitulos">
                                 N° de contrato MOA
@@ -426,7 +426,7 @@
                                 (onChange)="this.comprobanteExtra = $event.value.Descripcion">
                             </p-dropdown>
                         </div>
-                    </div>
+                    </ng-container>
                     <!-- Expanded para cesion y rectificacion de cpe -->
                     <div class="col-xs-12 col-sm-12 col-md-12" *ngIf="this.categoriaCode == 'CRCPE'">
                         <div class="col-xs-12 col-sm-12 col-md-6">

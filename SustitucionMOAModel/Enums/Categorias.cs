@@ -22,5 +22,6 @@
         public const string Pesificaciones = "PES";
         public const string ProveedoresGenerales = "PROVG";
         public const string ReclamoImpositivo = "REI";
+        public const string DiscrepanciaCalidad = "DISCAL";
     }
 }

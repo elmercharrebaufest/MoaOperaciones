@@ -383,7 +383,8 @@ export class MisConsultasComponent extends ListBaseComponent {
                 "Importe retención": c.Importe || "",
                 "Causa": c.CausaConsulta ? c.CausaConsulta.Nombre : '',
                 "Bolsa emisora de oblea": c.BolsaEmisoraOblea || "",
-                "Usuario que inicia consulta": c.MailUsuarioIniciaConsulta || ''
+                "Usuario que inicia consulta": c.MailUsuarioIniciaConsulta || '',
+                "Rubro/s (Discrepancia)": c.Rubro || ''
             }
         });
 

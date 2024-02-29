@@ -141,6 +141,10 @@ namespace SustitucionMOAUtils.Services
                     throw new InfoCustomException("Tiene que ser proveedor directo para consultar sobre Informe Comercial.");
                 }
             }
+            if(categoria.Code == Categorias.DiscrepanciaCalidad)
+            {
+                consulta.Detalle.Rubro = consulta.Detalle.Rubro.Replace("break", "<br>");
+            }
 
             if (categoria.Code == Categorias.Final)
             {
@@ -550,7 +554,8 @@ namespace SustitucionMOAUtils.Services
                     GeneradaInternamente = x.UsuarioInterno_Id != null && x.UsuarioInterno_Id != usuarioId,
                     GeneradaPorUsuarioSesion = x.UsuarioInterno_Id == usuarioId,
                     GeneradaExternamente = x.UsuarioInterno_Id == null,
-                    MailUsuarioIniciaConsulta = x.UsuarioInterno_Id == null ? x.Usuario.Mail : x.UsuarioInterno.Mail
+                    MailUsuarioIniciaConsulta = x.UsuarioInterno_Id == null ? x.Usuario.Mail : x.UsuarioInterno.Mail,
+                    Rubro = x.Detalle.Rubro
                 }).ToList();
 
             return ret;
