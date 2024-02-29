@@ -61,6 +61,9 @@
     <Compile Include="Consulta\ListaPaginada.cs" />
     <Compile Include="Dto\AplicacionCartaPorte\CargaMasivaResponse.cs" />
     <Compile Include="Dto\AplicacionCartaPorte\ComboAplicacionesContratosCcppResponse.cs" />
+    <Compile Include="Dto\Compras\InfoVisitasDeObraDto.cs" />
+    <Compile Include="Dto\CondicionDePagoDto.cs" />
+    <Compile Include="Dto\MonedaConversionDto.cs" />
     <Compile Include="Dto\Compras\AdjudicacionEditarDto.cs" />
     <Compile Include="Dto\Compras\AdjudicacionPosicionEditarDto.cs" />
     <Compile Include="Dto\Compras\AdjudicacionSubPosicionEditarDto.cs" />
@@ -122,7 +125,7 @@
     <Compile Include="Dto\OrdenDeCarga\CrearOrdenEnSAPResponse.cs" />
     <Compile Include="Dto\Compras\PeticionDeOfertaDto.cs" />
     <Compile Include="Dto\ProveedorAuditoriaDto.cs" />
-    <Compile Include="Dto\ProvinciaDTO.cs" />
+    <Compile Include="Dto\ProvinciaDto.cs" />
     <Compile Include="Dto\AutoCompleteDropdownElement.cs" />
     <Compile Include="Dto\Compras\EmailComposeDto.cs" />
     <Compile Include="Dto\Compras\MaterialSolpDto.cs" />
@@ -186,6 +189,7 @@
     <Compile Include="Dto\Compras\UsuarioComprasDto.cs" />
     <Compile Include="Dto\Compras\UsuarioComprasRelacionConUsuariosDto.cs" />
     <Compile Include="Dto\UsuarioModificacionDto.cs" />
+    <Compile Include="Entities\MonedaConversion.cs" />
     <Compile Include="Entities\PaisesSap.cs" />
     <Compile Include="Entities\RegionSap.cs" />
     <Compile Include="Entities\ChatInternoCompras.cs" />

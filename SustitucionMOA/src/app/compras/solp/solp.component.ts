@@ -444,33 +444,35 @@ export class SolpComponent extends BaseComponent implements OnInit {
                     this.disabledSave = false;
                     return;
                 }
-
-                if (this.validarFechaVisitaDeObra()) {
-                    this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: "La fecha de visita de obra no puede ser mayor a la fecha tentativa de ofertas ni a la fecha de límite de consulta" });
-                    if (guardarPorPaso == false) {
-                        this.blockUI.stop();
+                if(this.solpActual.trabajoHecho != true && this.solpActual.urgencia != true){
+                    if (this.validarFechaVisitaDeObra()) {
+                        this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: "La fecha de visita de obra no puede ser mayor a la fecha tentativa de ofertas ni a la fecha de límite de consulta" });
+                        if (guardarPorPaso == false) {
+                            this.blockUI.stop();
+                        }
+                        this.disabledSave = false;
+                        return;
                     }
-                    this.disabledSave = false;
-                    return;
+
+                    if (this.validarFechaLimiteConsulta()) {
+                        this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: "La fecha de límite de consulta no puede ser mayor a la fecha tentativa de ofertas" });
+                        if (guardarPorPaso == false) {
+                            this.blockUI.stop();
+                        }
+                        this.disabledSave = false;
+                        return;
+                    }
+
+                    if (this.validarFechaLimiteYObra()) {
+                        this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: "La fecha de límite de consulta no puede ser mayor a la fecha de visita de obra" });
+                        if (guardarPorPaso == false) {
+                            this.blockUI.stop();
+                        }
+                        this.disabledSave = false;
+                        return;
+                    }
                 }
 
-                if (this.validarFechaLimiteConsulta()) {
-                    this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: "La fecha de límite de consulta no puede ser mayor a la fecha tentativa de ofertas" });
-                    if (guardarPorPaso == false) {
-                        this.blockUI.stop();
-                    }
-                    this.disabledSave = false;
-                    return;
-                }
-
-                if (this.validarFechaLimiteYObra()) {
-                    this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: "La fecha de límite de consulta no puede ser mayor a la fecha de visita de obra" });
-                    if (guardarPorPaso == false) {
-                        this.blockUI.stop();
-                    }
-                    this.disabledSave = false;
-                    return;
-                }
             }
             this.solpActual.Finalizar = enviarSap;
             this.solpActual.usuarioComprasId = this.solpActual.selectUsuarioCompras != null ? this.solpActual.selectUsuarioCompras.Id : null;

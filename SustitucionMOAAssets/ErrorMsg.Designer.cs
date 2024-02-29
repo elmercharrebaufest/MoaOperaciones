@@ -19,7 +19,7 @@ namespace SustitucionMOAAssets {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class ErrorMsg {
@@ -313,7 +313,7 @@ namespace SustitucionMOAAssets {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No puede editar la solicitud debido que su estado no es &quot;Documentacion pendiente&quot;..
+        ///   Looks up a localized string similar to No puede editar la solicitud debido a que su estado no es &quot;Documentacion pendiente&quot;..
         /// </summary>
         public static string EstadoIncorrectoSolicitud {
             get {
@@ -322,7 +322,7 @@ namespace SustitucionMOAAssets {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to El mail ingresado corresponde a molinos agro. Ingrese el mail del vendedor.
+        ///   Looks up a localized string similar to El mail ingresado corresponde a Molinos Agro. Ingrese el mail del vendedor.
         /// </summary>
         public static string MailMolinosAgro {
             get {

@@ -88,7 +88,7 @@
                 </tr>
                 <tr *ngIf="esUltimaPosicion(peticionPosicion)">
                     <td class="columna border2-right" colspan="8" style="width: 620px !important; height: 60px;">
-                        <button class="publicar btn " style="margin-right: 10px; font-size: 12px;" (click)="abrilModalTextos()">
+                        <button class="publicar btn " style="margin-right: 10px; font-size: 12px;" (click)="abrirModalTextos()">
                             Agregar racional de compra
                         </button>
                     </td>
@@ -326,7 +326,7 @@
                     <td class="columna border2-right" colspan="6" style="width: 550px !important; height: 60px;">
                         <div class="row">
                             <div class="col-md-4">
-                                <button class="publicar btn" style="font-size: 12px;" (click)="abrilModalTextos()">
+                                <button class="publicar btn" style="font-size: 12px;" (click)="abrirModalTextos()">
                                     Agregar racional de compra
                                 </button>
                             </div>
@@ -489,7 +489,9 @@
                     <ng-container *ngFor="let proveedor of tablaOfertas.Usuarios">
                         <ng-container *ngIf="proveedor.Cotizacion != null">
                             <td colspan="9" style="width: 540px !important;" class="columna border2-left" [style.color]="proveedor.EstadoPropuestaTecnicaColor">
-                                {{proveedor.EstadoPropuestaTecnica}}
+                                {{proveedor.EstadoPropuestaTecnica}} 
+                                <span *ngIf="tablaOfertas.TrabajoHecho">- {{proveedor.THCategoria}}</span>
+
                                 <span *ngIf="proveedor.PropuestaTecnicaAprobada == false"
                                       class="glyphicon glyphicon-info-sign"
                                       style="font-size:20px;top:5px;"
@@ -581,17 +583,17 @@
     <p-header class="headerModal" style="color: #067935;">
         <b>¡Atención!</b>
     </p-header>
-    <strong>No se completó ningún racional </strong>
-    <br>
-    <br>
+    <br />
+    <div [innerHTML]="textoRacionalModal"></div>
+    <br />
     ¿Desea continuar con la adjudicación?
+    <br />
+    <br />
     <p-footer>
         <button type="button" class="btn btn-danger botonesComprasColor botonModal" (click)="noContinuarAdjudicacion()">No</button>
         <button type="button" class="btn btn-primary botonesComprasColor botonModal" (click)="continuarAdjudicacion()">Sí</button>
-
     </p-footer>
 </p-dialog>
-
 
 <p-confirmDialog #dialogo header="Confirmación" icon="pi pi-exclamation-triangle" [width]="500" [responsive]="true" appendTo="body">
     <p-footer>
@@ -619,10 +621,8 @@
 </p-dialog>
 
 <app-textos-adjudicar #textoAdjudicar
-                      [(displayTextos)]="displayTextos"
-                      (cerrarModalTextosEmitter)="cerrarModalTextos()"
-                      (aceptarModalTextosEmitter)="aceptarModalTextos()"
-                      [(adjudicacion)]="adjudicacion">
+                      [(displayTextos)]="displayTextos" [(adjudicacion)]="adjudicacion"
+                      (cerrarModalTextosEmitter)="cerrarModalTextos()">
 </app-textos-adjudicar>
 
 

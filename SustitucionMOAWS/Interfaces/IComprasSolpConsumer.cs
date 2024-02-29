@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Models.WSMapMOA.Compras;
+using SustitucionMOAModel.Models.WSMapMOA.PDF;
 using SustitucionMOAWS.WSConsumers;
 
 namespace SustitucionMOAWS.Interfaces
@@ -63,5 +64,9 @@ namespace SustitucionMOAWS.Interfaces
     public interface IObtenerUnidadesDeMedidaAlternativasConsumerMOA
     {
         List<UnidadesDeMedida> Request(List<string> codigosMaterial);
+    }
+    public interface IObtenerPDFOrdenCompraConsumerMOA
+    {
+        byte[] Request(string nroOrdenCompra);
     }
 }

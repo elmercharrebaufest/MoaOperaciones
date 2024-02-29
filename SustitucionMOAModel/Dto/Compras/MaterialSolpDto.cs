@@ -24,21 +24,21 @@ namespace SustitucionMOAModel.Dto
         {
             if (materialSolp != null)
             {
-                this.Id = materialSolp.Id;
-                this.Codigo = materialSolp.Codigo;
-                this.CodigoSap = materialSolp.CodigoSap;
-                this.Descripcion = materialSolp.Descripcion;
-                this.TipoMaterial = materialSolp.TipoMaterial;
-                this.TipoValoracion = materialSolp.TipoValoracion;
-                this.PrecioMaterial = materialSolp.PrecioMaterial;
-                this.Estado = materialSolp.Estado;
-                this.GrupoArticulo = new TablaSapDto(materialSolp.GrupoArticulo);
-                this.CentroLogistico = new TablaSapDto(materialSolp.CentroLogistico);
-                this.UnidadMedidaBase = new TablaSapDto(materialSolp.UnidadMedidaBase);
-                this.UnidadMedidaCompras = new TablaSapDto(materialSolp.UnidadMedidaCompras);
-                this.UnidadMedidaSalida = new TablaSapDto(materialSolp.UnidadMedidaSalida);
-                this.GrupoCompras = new TablaSapDto(materialSolp.GrupoCompras);
-                this.CuentaMayor = new TablaSapDto(materialSolp.CuentaMayor);
+                Id = materialSolp.Id;
+                Codigo = materialSolp.Codigo;
+                CodigoSap = materialSolp.CodigoSap;
+                Descripcion = materialSolp.Descripcion;
+                TipoMaterial = materialSolp.TipoMaterial;
+                TipoValoracion = materialSolp.TipoValoracion;
+                PrecioMaterial = materialSolp.PrecioMaterial;
+                Estado = materialSolp.Estado;
+                GrupoArticulo = new TablaSapDto(materialSolp.GrupoArticulo);
+                CentroLogistico = new TablaSapDto(materialSolp.CentroLogistico);
+                UnidadMedidaBase = new TablaSapDto(materialSolp.UnidadMedidaBase);
+                UnidadMedidaCompras = new TablaSapDto(materialSolp.UnidadMedidaCompras);
+                UnidadMedidaSalida = new TablaSapDto(materialSolp.UnidadMedidaSalida);
+                GrupoCompras = new TablaSapDto(materialSolp.GrupoCompras);
+                CuentaMayor = new TablaSapDto(materialSolp.CuentaMayor);
             }
         }
 

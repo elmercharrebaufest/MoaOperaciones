@@ -24,7 +24,7 @@ namespace SustitucionMOA.Controllers
 
         public ComprasController(IComprasService comprasService, IUsuarioService usuarioService)
         {
-            this.service = comprasService;
+            service = comprasService;
             this.usuarioService = usuarioService;
         }
 
@@ -105,9 +105,12 @@ namespace SustitucionMOA.Controllers
                     EstadoDocumento = service.ObtenerTablaEstado(TablasEstado.EstadoDocumento),
                     TipoPosicionSolp = service.ObtenerTablaGeneral(TablasGenerales.TipoPosicionSolp),
                     TipoPosicion = service.ObtenerTablaGeneral(TablasGenerales.TipoPosicionSolp),
-                    TipoImputacion = service.ObtenerTablaGeneral(TablasGenerales.TipoImputacionSolp),
+                    TipoImputacion = service.ObtenerImputaciones(TablasGenerales.TipoImputacionSolp),
+
                     Usuarios = usuarioService.ListarUsuarioCreadorSolp(),
                     Regiones = service.ListarRegionesSap(),
+                    CondicionesDeImportacion = service.ObtenerTablaSap(TablasSap.CondicionesDeImportacion),
+                    CondicionesDePago = service.ObtenerTablaSap(TablasSap.CondicionesDePago),
                     CamposObligatoriosCabeceraSolp = service.ObtenerTablaGeneral(TablasGenerales.CamposObligatoriosCabeceraSolp).Where(x => x.IdPadre.HasValue).Select(x => new
                     {
                         ClaseDocumentoCodigo = x.Padre.Codigo,
@@ -144,16 +147,19 @@ namespace SustitucionMOA.Controllers
         }
 
         [HttpGet]
-        public ActionResult ListarSolp(int? pagina = null, int? itemsPorPagina = null, string orden = null, string columna = null, string nroSolp = null, DateTime? fechaDesde = null, DateTime? fechaHasta = null, bool? sap = null, bool? mantenimiento = null, bool? web = null, bool? repoAutomatica = null, string estados = null, string usuarios = null)
+        public ActionResult ListarSolp(int? pagina = null, int? itemsPorPagina = null, string orden = null, string columna = null, string nroSolp = null, DateTime? fechaDesde = null, DateTime? fechaHasta = null, bool? sap = null, bool? mantenimiento = null,
+            bool? web = null, bool? repoAutomatica = null, string estados = null, string usuarios = null, string centros = null, string grupoDeCompras = null, string claseDocumento = null, string tipoImputacion = null, string valorTipoImputacion = null)
         {
             try
             {
+                Log.Info("asdasd");
                 var ordenar = orden == "ASC" ? DirOrden.Asc : DirOrden.Desc;
                 var paginacion = new Paginacion((!string.IsNullOrEmpty(columna) ? columna : null), ordenar, (pagina == null) ? 0 : pagina.Value, (itemsPorPagina == 0 || !itemsPorPagina.HasValue) ? 10 : itemsPorPagina.Value);
                 return JsonCustom(new
                 {
-                    data = service.ListarSolp(ObtenerUsuarioActual(), paginacion, nroSolp, fechaDesde, fechaHasta, sap, mantenimiento, web, repoAutomatica,
-                    !string.IsNullOrEmpty(usuarios) ? usuarios.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(), (!string.IsNullOrEmpty(estados) ? estados.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>()))
+                    data = service.ListarSolp(ObtenerUsuarioActual(), paginacion, nroSolp, fechaDesde, fechaHasta, sap, mantenimiento, web, repoAutomatica, !string.IsNullOrEmpty(usuarios) ? usuarios.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(),
+                    !string.IsNullOrEmpty(estados) ? estados.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(), !string.IsNullOrEmpty(centros) ? centros.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(), !string.IsNullOrEmpty(grupoDeCompras) ? grupoDeCompras.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(),
+                    !string.IsNullOrEmpty(claseDocumento) ? claseDocumento.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(), !string.IsNullOrEmpty(tipoImputacion) ? tipoImputacion.Split(',').ToList() : new List<string>(), !string.IsNullOrEmpty(valorTipoImputacion) ? valorTipoImputacion.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>())
                 });
             }
             catch (InfoCustomException e)
@@ -176,56 +182,23 @@ namespace SustitucionMOA.Controllers
             }
         }
 
-        //[HttpGet]
-        //public ActionResult FiltrarMateriales() {
-        //    try
-        //    {
-        //        return JsonCustom(new { data = service.FiltrarMateriales() });
-        //    }
-        //    catch (Exception)
-        //    {
-
-        //        throw;
-        //    }
-        //}
-
         [HttpGet]
-        public ActionResult ObtenerSolpDeSap()
+        public ActionResult ListarSolpComprador(int? pagina = null, int? itemsPorPagina = null, string orden = null, string columna = null, string nroSolp = null, string estados = null, string usuarios = null, string centros = null, string grupoDeCompras = null, 
+            DateTime? fechaDesde = null, DateTime? fechaHasta = null, bool? sap = null, bool? mantenimiento = null, bool? web = null, bool? repoAutomatica = null, bool listarPendiente = false, string claseDocumento = null, string tipoImputacion = null, string valorTipoImputacion = null)
         {
             try
             {
-                //ObtenerSolpRequest obtenerSolpRequest = new ObtenerSolpRequest
-                //{
-                //    FechaDesde = Convert.ToDateTime(ConfigurationManager.AppSettings["FechaInicioObtenerSolpsDesdeSAPJob"].ToString()),
-                //    FechaHasta = Convert.ToDateTime(ConfigurationManager.AppSettings["FechaFinObtenerSolpsDesdeSAPJob"].ToString()),
-                //    CreadoPorUsuarios = new List<string>(),
-                //    NumeroSolp = "0212201893"
-                //};
-                //service.ObtenerSolpesDesdeSAPJob(obtenerSolpRequest);
-                var desde = new DateTime(2021, 01, 01);
-                var hasta = new DateTime(2022, 12, 01);
-                while (desde < hasta)
+                //service.EditarOrdenDeCompra(new AdjudicacionEditarDto());
+                var ordenar = orden == "ASC" ? DirOrden.Asc : DirOrden.Desc;
+                var paginacion = new Paginacion((!string.IsNullOrEmpty(columna) ? columna : "Id"), ordenar, (pagina == null) ? 0 : pagina.Value, (itemsPorPagina == 0 || !itemsPorPagina.HasValue) ? 10 : (listarPendiente == false && itemsPorPagina.Value == 1) ? 20 : itemsPorPagina.Value);
+                var usuario_Id = ObtenerUsuarioActual().Id;
+
+                return JsonCustom(new
                 {
-                    try
-                    {
-                        Log.Info($"ObtenerSolpesDesdeSAPJob desde {desde} hasta {desde.AddMonths(3)}");
-                        ObtenerSolpRequest obtenerSolpRequest = new ObtenerSolpRequest
-                        {
-                            FechaDesde = desde,
-                            FechaHasta = desde.AddMonths(3),
-                            CreadoPorUsuarios = new List<string>()
-                        };
-                        service.ObtenerSolpesDesdeSAPJob(obtenerSolpRequest);
-                        desde = desde.AddMonths(3);
-                    }
-                    catch (Exception e)
-                    {
-                        Log.Info($"ObtenerSolpesDesdeSAPJob error");
-                        Log.Error(e);
-                    }
-                }
-                Log.Info($"ObtenerSolpesDesdeSAPJob fin hasta {hasta}");
-                return JsonCustom(new { success = true });
+                    data = service.ListarSolpComprador(usuario_Id, paginacion, nroSolp, fechaDesde, fechaHasta, sap, mantenimiento, web, repoAutomatica, listarPendiente, !string.IsNullOrEmpty(usuarios) ? usuarios.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(),
+                    !string.IsNullOrEmpty(estados) ? estados.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(), !string.IsNullOrEmpty(centros) ? centros.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(), !string.IsNullOrEmpty(grupoDeCompras) ? grupoDeCompras.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(),
+                    !string.IsNullOrEmpty(claseDocumento) ? claseDocumento.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(), !string.IsNullOrEmpty(tipoImputacion) ? tipoImputacion.Split(',').ToList() : new List<string>(), !string.IsNullOrEmpty(valorTipoImputacion) ? valorTipoImputacion.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>())
+                });
             }
             catch (InfoCustomException e)
             {
@@ -245,7 +218,7 @@ namespace SustitucionMOA.Controllers
                 Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
-        }
+        }   
 
         [HttpGet]
         public ActionResult ListarUsuarioCompras()
@@ -438,12 +411,12 @@ namespace SustitucionMOA.Controllers
             if (puedeDescargar != SolpDescargaZipPorLink.PuedeDescargar)
             {
                 string errorMsg = puedeDescargar == SolpDescargaZipPorLink.SolpIdNoExiste
-                                                        ? "Solp no disponible para descarga."
-                                                        : "Token no coincide, no tiene permiso para realizar la descarga";
+                                                        ? "SOLP no disponible para descarga."
+                                                        : "El token no coincide; no tiene permiso para realizar la descarga.";
 
                 if (puedeDescargar == SolpDescargaZipPorLink.SinArchivos)
                 {
-                    errorMsg = "Solp no disponible para descarga.";
+                    errorMsg = "SOLP no disponible para descarga.";
                 }
 
                 return Json(new { error = errorMsg }, JsonRequestBehavior.AllowGet);
@@ -650,45 +623,9 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                if (string.IsNullOrEmpty(numeroContrato)) return Json(new { info = "Numero Contrato inválido" }, JsonRequestBehavior.AllowGet);
+                if (string.IsNullOrEmpty(numeroContrato)) return Json(new { info = "Número de contrato inválido" }, JsonRequestBehavior.AllowGet);
 
                 return JsonCustom(new { data = service.ObtenerContratoMarco(numeroContrato, centro) });
-            }
-            catch (WSCustomException e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
-        }
-
-
-        [HttpGet]
-        public ActionResult ListarSolpComprador(int? pagina = null, int? itemsPorPagina = null, string orden = null, string columna = null, string nroSolp = null, string estados = null, string usuarios = null, string centros = null, string grupoDeCompras = null, DateTime? fechaDesde = null, DateTime? fechaHasta = null, bool? sap = null, bool? mantenimiento = null, bool? web = null, bool? repoAutomatica = null)
-        {
-            try
-            {
-                var ordenar = orden == "ASC" ? DirOrden.Asc : DirOrden.Desc;
-                var paginacion = new Paginacion((!string.IsNullOrEmpty(columna) ? columna : "Id"), ordenar, (pagina == null) ? 0 : pagina.Value, (itemsPorPagina == 0 || !itemsPorPagina.HasValue) ? 10 : itemsPorPagina.Value);
-                var usuario_Id = ObtenerUsuarioActual().Id;
-
-                return JsonCustom(new
-                {
-                    data = service.ListarSolpComprador(usuario_Id, paginacion, nroSolp, fechaDesde, fechaHasta, sap, mantenimiento, web, repoAutomatica, !string.IsNullOrEmpty(usuarios) ? usuarios.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(),
-                    !string.IsNullOrEmpty(estados) ? estados.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(), !string.IsNullOrEmpty(centros) ? centros.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(), !string.IsNullOrEmpty(grupoDeCompras) ? grupoDeCompras.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>())
-                });
-            }
-            catch (InfoCustomException e)
-            {
-                return Json(new { info = e }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e }, JsonRequestBehavior.AllowGet);
             }
             catch (WSCustomException e)
             {
@@ -935,7 +872,7 @@ namespace SustitucionMOA.Controllers
             try
             {
                 var pdf = service.GenerarPeticionDeOfertaUsuarioPdf(Math.Abs(idPeticionDeOfertaUsuario));
-                return JsonCustom(File(pdf.data, System.Net.Mime.MediaTypeNames.Application.Octet, pdf.name));
+                return JsonCustom(File(pdf.Data, System.Net.Mime.MediaTypeNames.Application.Octet, pdf.Name));
             }
             catch (InfoCustomException e)
             {
@@ -1605,6 +1542,84 @@ namespace SustitucionMOA.Controllers
             try
             {
                 return JsonCustom(new { data = usuarioService.ListarUsuarioCreadorSolp() });
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpGet]
+        public ActionResult ListarUnidadesDeMedida(string material)
+        {
+            try
+            {
+                return JsonCustom(new { data = service.ListarUnidadesDeMedida(material) });
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpPost]
+        public ActionResult ListarVisitasDeObra(List<VisitaObraDto> visitas)
+        {
+            try
+            {
+                var result = service.ListarVisitasDeObra(visitas);
+                return JsonCustom(new { data = result });
+            }
+            catch (WSCustomException e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpGet]
+        public ActionResult ListarTablaSap(string codigos)
+        {
+            List<string> tablas = !string.IsNullOrEmpty(codigos) ? codigos.Split(',').ToList() : new List<string>();
+            try
+            {
+                return JsonCustom(new { data = service.ListarTablaSap(tablas) });
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpPost]
+        public ActionResult ModificarOrdenDeCompra(string json)
+        {
+            try
+            {
+                var adjudicacion = JsonConvert.DeserializeObject<AdjudicacionDto>(json);
+                var result = service.EditarOrdenDeCompra(adjudicacion);
+                return JsonCustom(result);
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e }, JsonRequestBehavior.AllowGet);
+            }
+            catch (WSCustomException e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception e)
             {

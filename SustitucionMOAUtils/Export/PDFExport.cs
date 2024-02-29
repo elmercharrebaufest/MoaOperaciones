@@ -69,8 +69,8 @@ namespace SustitucionMOAUtils.Export
                 byte[] bytes = memoryStream.ToArray();
                 memoryStream.Close();
 
-                Pdf data = new Pdf() { data = bytes };
-                return new PDFResponse() { pdf = data };
+                Pdf data = new Pdf() { Data = bytes };
+                return new PDFResponse() { Pdf = data };
             }
         }
 
@@ -118,8 +118,8 @@ namespace SustitucionMOAUtils.Export
                 byte[] bytes = memoryStream.ToArray();
                 memoryStream.Close();
 
-                Pdf data = new Pdf() { data = bytes };
-                return new PDFResponse() { pdf = data };
+                Pdf data = new Pdf() { Data = bytes };
+                return new PDFResponse() { Pdf = data };
             }
         }
 
@@ -166,8 +166,8 @@ namespace SustitucionMOAUtils.Export
                 byte[] bytes = memoryStream.ToArray();
                 memoryStream.Close();
 
-                Pdf data = new Pdf() { data = bytes };
-                return new PDFResponse() { pdf = data };
+                Pdf data = new Pdf() { Data = bytes };
+                return new PDFResponse() { Pdf = data };
             }
         }
     }

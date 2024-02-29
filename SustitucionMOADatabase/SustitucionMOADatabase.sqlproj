@@ -213,6 +213,7 @@
     <Build Include="DBO\Tables\LiberadorSap.sql" />
     <Build Include="DBO\Tables\LiberadorSapSolp.sql" />
     <None Include="scripts\PostDeployment\LiberadorSap.sql" />
+    <Build Include="DBO\Tables\MonedaConversion.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DatabasePublishQA.xml" />

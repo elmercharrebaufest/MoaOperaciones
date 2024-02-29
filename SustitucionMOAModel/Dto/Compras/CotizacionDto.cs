@@ -30,6 +30,7 @@ namespace SustitucionMOAModel.Dto
         public string RespetaMaterialesDescripcion { get; set; }
         public bool TieneObservacionEconomica { get; set; }
         public decimal? PorcentajeDeHoras { get; set; }
+        public List<AdjudicacionDto> Adjudicaciones { get; set; }
     }
 
     public class CotizacionPosicionDto

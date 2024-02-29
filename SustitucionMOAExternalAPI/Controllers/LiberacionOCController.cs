@@ -1,12 +1,6 @@
-﻿using SustitucionMOAModel.Entities;
-using SustitucionMOARepositorio;
-using SustitucionMOAUtils.Interfaces;
+﻿using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Web.Http;
 
 namespace SustitucionMOAExternalAPI.Controllers
@@ -27,7 +21,7 @@ namespace SustitucionMOAExternalAPI.Controllers
             {
                 Log.ExternalAPIInfo(string.Format("Se informó la liberacion de la OC: {0} en la fecha {1}", nroOc, fechaLiberacion));
                 comprasSvc.ActualizarFechaLiberacionOC(nroOc, fechaLiberacion);
-       
+                Log.ExternalAPIInfo(string.Format("Se envio el mail de la liberacion de la OC: {0} en la fecha {1}", nroOc, fechaLiberacion));
             }
             catch (Exception ex)
             {

@@ -5,7 +5,9 @@
     <br>
 </section>
 <div style="padding-top: 0px !important;">
+   
     <div class="row">
+       
         <div class="col-md-3 col-lg-3">
             <p-multiSelect [options]="usuarioFiltro" [(ngModel)]="selectUsuario" defaultLabel="Usuario Solicitante"
                            [maxSelectedLabels]="1" selectedItemsLabel="{0} usuarios elegidos"></p-multiSelect>
@@ -25,18 +27,32 @@
         </div>
         <div class="row myRow">
             <div class="col-md-3">
-                <input class="col-xs-12 col-sm-12 col-md-12 col-lg-12" pInputText type="text" [(ngModel)]="nroSolp"
+                <input class="col-xs-12 col-sm-12 col-md-12 col-lg-12 inputAltura" pInputText type="text" [(ngModel)]="nroSolp"
                        placeholder="Buscar por número de SOLP">
+            </div>  
+            <div class="col-md-3 col-lg-3">
+                <p-multiSelect [options]="claseDocumentoFiltro" [(ngModel)]="selectClaseDocumento" defaultLabel="Clase de Documento"
+                               [maxSelectedLabels]="1" selectedItemsLabel="{0} clases elegidas"></p-multiSelect>
             </div>
             <div class="col-md-3 col-lg-3">
-                <p-calendar showButtonBar="true" [showIcon]="true" placeholder="Buscar por fechas"
-                            dateFormat="dd/mm/yy" (onSelect)="onSelect($event)" appendTo="body"
-                            [(ngModel)]="rangeDates" selectionMode="range" [readonlyInput]="true" [locale]="locale"
-                            (onClearClick)="returnToTodaysDate()">
-                </p-calendar>
+                <p-multiSelect [options]="tipoImputacionFiltro" [(ngModel)]="selectTipoImputacion" defaultLabel="Tipo de Imputación"
+                               [maxSelectedLabels]="1" selectedItemsLabel="{0} tipos elegidos" (ngModelChange)="subtipoImputacionCombo()"></p-multiSelect>
             </div>
-            <div class="col-md-4 col-lg-3" style="margin-top: 10px;">
-                <span style="margin-top: 1px;padding-right: 1px;">
+            <div class="col-md-3 col-lg-3" style="padding-right: 30px;">
+                <p-multiSelect [options]="valorTipoImputacionFiltro" [(ngModel)]="selectValorTipoImputacion" defaultLabel="Subtipo de Imputación"
+                               [maxSelectedLabels]="1" selectedItemsLabel="{0} tipos elegidos"></p-multiSelect>
+            </div>
+        </div>
+        <div class="row myRow">
+           
+            <div class="col-md-3" style="margin-top: 6px;">
+                <span class="padding1" style="margin-right: 5px;">
+                    <p-checkbox binary="true" label="SOLPs pendientes de tratar"
+                    class="checkboxFechas" [(ngModel)]="listarPendiente"></p-checkbox>
+                </span>
+            </div>
+            <div class="col-md-3" style="margin-top: 6px;">
+                <span style="padding-right: 1px;">
                     <p-checkbox class="checkboxFechas" binary="true" label="SAP" [(ngModel)]="sap"></p-checkbox>
                 </span>
                 <span class="padding1" style="margin-right: 5px; margin-left: 5px;">
@@ -47,9 +63,16 @@
                     <p-checkbox class="checkboxFechas" binary="true" label="Web" [(ngModel)]="web"></p-checkbox>
                 </span>
                 <span class="padding1" style="margin-right: 5px;">
-                    <p-checkbox class="checkboxFechas" binary="true" label="Repo. Autom." pTooltip="Reposición Automática"
+                    <p-checkbox class="checkboxFechas" binary="true" label="RA" pTooltip="Reposición Automática"
                                 [(ngModel)]="repoAutomatica"></p-checkbox>
-                </span>
+                </span>               
+            </div>
+            <div class="col-md-2 col-lg-3">
+                <p-calendar showButtonBar="true" [showIcon]="true" placeholder="Buscar por fechas"
+                            dateFormat="dd/mm/yy" (onSelect)="onSelect($event)" appendTo="body"
+                            [(ngModel)]="rangeDates" selectionMode="range" [readonlyInput]="true" [locale]="locale"
+                            (onClearClick)="returnToTodaysDate()">
+                </p-calendar>
             </div>
             <div class="col-md-3" style="text-align: center; padding-right: 30px;">
                 <button class="btn buscar" (click)="onBuscar()">Buscar</button>
@@ -219,7 +242,7 @@
                         {{ rowData.EstadoSolpSap.Descripcion || "" }}
                     </td>
                     <td colspan="2" class="columna" style="text-align: center;">
-                        <button *ngIf="rowData.VerPublicar"
+                        <button *ngIf="rowData.VerPublicar && !rowData.TodasLasPosicionesBorradas"
                                 class="publicar btn btn-success" style="font-size: 12px;"
                                 (click)="publicarCotizacion(rowData.Id, rowData.NroSolp)">
                             Publicar
@@ -312,11 +335,12 @@
                                                 <th class="columna">Moneda</th>
                                                 <th class="columna">Estado</th>
                                                 <th class="columna"></th>
+                                                <th class="columna" *ngIf="rowData.VerEditarOC"></th>
                                             </tr>
                                         </ng-template>
                                         <ng-template pTemplate="emptymessage">
                                             <tr>
-                                                <td style="text-align: center;" colspan="8">Sin datos</td>
+                                                <td style="text-align: center;" colspan="9">Sin datos</td>
                                             </tr>
                                         </ng-template>
                                         <ng-template pTemplate="body" let-orden>
@@ -334,6 +358,12 @@
                                                         Ver detalle
                                                     </button>
                                                 </td>
+                                                <td class="columna" *ngIf="rowData.VerEditarOC">
+                                                    <button class="publicar btn btn-success"
+                                                            (click)="editarOrdenDeCompra(orden.NumeroOrdenDeCompra)">
+                                                        Editar
+                                                    </button>
+                                                </td>
                                             </tr>
                                         </ng-template>
                                     </p-table>
@@ -344,7 +374,8 @@
                 </tr>
             </ng-template>
         </p-table>
-        <p-paginator #paginator [rows]="10" [totalRecords]="length" (onPageChange)="handlePageEvent($event)"></p-paginator>
+        <p-paginator #paginator [rows]="pageSize" 
+        [totalRecords]="length" (onPageChange)="handlePageEvent($event)"></p-paginator>
     </div>
 
     <app-legajo [(displayLegajo)]="displayLegajo" [(usuarioProveedor)]="usuarioProveedor"
@@ -353,8 +384,8 @@
                 [(legajo)]="legajo">
     </app-legajo>
 
-    <app-circular [(locale)]="es" 
-                  [(displayCircular)]="displayCircular" 
+    <app-circular [(locale)]="es"
+                  [(displayCircular)]="displayCircular"
                   (cerrarCircularEmitter)="cerrarCircular()"
                   [(peticion)]="peticion">
     </app-circular>
@@ -375,5 +406,36 @@
     <app-chat-interno [(displayChatInterno)]="displayChatInterno"
                       [(chat)]="chat">
         (cerrardisplayChatEmitter)="cerrarModalChat()"
-    </app-chat-interno>
+    </app-chat-interno>    
+
+    <app-editar-orden-de-compra [(displayEditarOc)]="displayEditarOc"
+                    (cerrarEditarOcEmitter)="cerrarEditarOc()"
+                    (guardarEditarOcEmitter)="guardarEditarOc($event)"                    
+                    [(ordenDeCompra)]="ordenDeCompra"
+                    [(mensaje)]="mensaje">
+    </app-editar-orden-de-compra>
+
+    <p-dialog [(visible)]="displayVisualizarErrores" [width]="500" modal="modal" appendTo="body" [draggable]="false" [contentStyle]="{'overflow':'scroll', 'max-height':'600px', 'min-height':'100px'}" [closable]="false">
+        <p-header class="headerModal">
+            Errores
+        </p-header>
+        <strong>A continuación se listan los errores generados: </strong>
+        <br>
+        <br>
+        <div *ngFor="let error of errores" [innerHTML]="error.Message" style="white-space: pre-line"></div>
+        <p-footer>
+            <button type="button" class="btn btn-primary botonesComprasColor botonModal" (click)="salirVisualizarErrores()">Aceptar</button>
+        </p-footer>
+    </p-dialog>
+
+    <p-dialog [(visible)]="displayAdjudicacionCreada" [width]="500" modal="modal" appendTo="body" [draggable]="false" [contentStyle]="{'overflow':'visible', 'max-height':'500px', 'min-height':'100px'}" [closable]="false">
+        <p-header class="headerModal">
+            ¡Actualizacion exitosa!
+        </p-header>
+        <br> La orden de compra se actualizó correctamente.       
+        <br>
+        <p-footer>
+            <button type="button" class="btn btn-primary botonesComprasColor botonModal" (click)="salirConfirmacionDeActualizacionOc()">Aceptar</button>
+        </p-footer>
+    </p-dialog>
 </div>

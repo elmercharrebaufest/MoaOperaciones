@@ -100,6 +100,11 @@
     margin-bottom: 1em;
   }
   
+  .margenCheckbox {
+    margin-bottom: 1em;
+    margin-left: 6em;  
+  }
+
   .margenNeg {
     margin-bottom: -10px;
   
@@ -124,6 +129,23 @@
     font-weight: 200;
   }
  
+  .enlaceDetalle {
+    font-size: 16px;
+    text-align: left;
+    letter-spacing: 0px;
+    opacity: 1;
+    font-weight: 200;
+  }
+
+  .enlaceDetalle {
+    color: #000; /* Color de texto normal */
+    transition: color 0.3s ease; /* Agrega transición al cambio de color */
+  }
+
+  .enlaceDetalle:hover {
+      color: #007bff; /* Color de texto al pasar el ratón sobre el elemento */
+  }
+
   ::ng-deep .ui-calendar .ui-button{
     background-color: #FFFFFF !important;
     border-color: #DDDDDD !important;

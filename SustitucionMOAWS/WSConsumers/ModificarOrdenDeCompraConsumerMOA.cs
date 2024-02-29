@@ -555,6 +555,18 @@ namespace SustitucionMOAWS.WSConsumers
 
             }
 
+            if (solp.Urgencia == true)
+            {
+                modificarPedidoSAP.POTEXTITEM.Add(new BAPIMEPOTEXT
+                {
+                    TEXT_ID = "F12",
+                    PO_NUMBER = "",
+                    PO_ITEM = preqItem,
+                    TEXT_FORM = "*",
+                    TEXT_LINE = "Urgencia"
+                });
+            }
+
 
             return modificarPedidoSAP;
         }

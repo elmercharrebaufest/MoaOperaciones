@@ -57,12 +57,17 @@ namespace SustitucionMOAModel.Dto
         public int NumeroItemOC { get { return int.Parse(Indice); } }
         public string RegistroInfo { get; set; }
         public string NroSolp { get; set; }
+        public DateTime? PlazoDeOferta { get; set; }
     }
 
     public class OrdenDeCompraSAPPosicionDireccionDeEntrega
     {
         //POADDRDELIVERY
         public string RegionSap { get; set; }
+        public int? Id { get; set; }
+        public string CodigoSap { get; set; }
+        public string Descripcion { get; set; }
+        public string PaisSap { get; set; }
     }
 
     public class ErrorOC

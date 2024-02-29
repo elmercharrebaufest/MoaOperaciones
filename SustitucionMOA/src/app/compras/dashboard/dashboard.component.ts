@@ -13,10 +13,12 @@ import { Table } from 'primeng/table';
 import { SpinnerComponent } from '../../common/view-child/spinner/spinner.component';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { EnumTipoSolpSap } from '../enum-tipo-solp-sap';
+import { EnumTipoImputacion } from '../enum-tipo-imputacion';
 import { Paginator } from 'primeng/paginator';
 import { PeticionDeOfertaDto, PeticionDeOfertaRevisionTecnicaDto } from '../../modelos/peticion-de-oferta-model';
 import { AdjudicacionDto, AdjudicacionPosicionDto } from '../../modelos/adjudicacion';
 import { ChatComprasDto } from '../chat-interno/chat-interno.interface';
+import { forEach } from '@angular/router/src/utils/collection';
 
 declare var $: any;
 
@@ -72,6 +74,12 @@ export class DashboardComponent extends ListBaseComponent {
         repoAutomatica: boolean;
         usuarios: string[];
         estadoSolp: string[];
+        gruposCompras: string[];
+        centros: string[];
+        claseDocumento: string[];
+        tipoImputacion: string[];
+        valorTipoImputacion: string[];
+        subtipoImputacionCombo: SelectItem[];
         fechaDesde: string;
         fechaHasta: string;
         pageIndex: number;
@@ -83,6 +91,12 @@ export class DashboardComponent extends ListBaseComponent {
             repoAutomatica: false,
             usuarios: [],
             estadoSolp: [],
+            gruposCompras: [],
+            centros: [],
+            claseDocumento: [],
+            tipoImputacion: [],
+            valorTipoImputacion: [],
+            subtipoImputacionCombo: [],
             fechaDesde: null,
             fechaHasta: null,
             pageIndex: 1
@@ -96,8 +110,20 @@ export class DashboardComponent extends ListBaseComponent {
     tipoFiltroFecha = 1;
     desdeDashboard: Date;
     hastaDashboard: Date;
+    usuarioFiltro: SelectItem[];
+    selectUsuario: string[] = [];
     estadoSolpItem: SelectItem[];
     selectEstadoSolp: string[] = [];
+    grupoComprasFiltro: SelectItem[];
+    selectGrupoCompras: string[] = [];
+    centroFiltro: SelectItem[];
+    selectCentro: string[] = [];
+    claseDocumentoFiltro: SelectItem[];
+    selectClaseDocumento: string[] = [];
+    tipoImputacionFiltro: SelectItem[];
+    selectTipoImputacion: string[] = [];
+    valorTipoImputacionFiltro: SelectItem[] = [];
+    selectValorTipoImputacion: string[] = [];
     buscarDashboard: string;
     fechaSolp: any;
     hoy: Date = new Date();
@@ -105,8 +131,6 @@ export class DashboardComponent extends ListBaseComponent {
     display: boolean = false;
     tablaSolp: any[];
     tablaSolpCopy: any[];
-    usuarioFiltro: SelectItem[];
-    selectUsuario: string[] = [];
     cols: any[];
     serviciosDashboard: any = "Servicios"
     solp: Solp = new Solp();
@@ -295,8 +319,8 @@ export class DashboardComponent extends ListBaseComponent {
         try {
             this.spinnerComponent.showIt();
             let multiSelectValues = this.selectEstadoSolp.join(",")
-            this.subscription = this.service.getListarSolp(this.pageIndex, this.pageSize, this.orden, this.columnaOrden, this.nroSolp,
-                this.fechaInicio, this.fechaFin, this.sap, this.mantenimiento, this.web, this.repoAutomatica, multiSelectValues, this.selectUsuario.join(",")
+            this.subscription = this.service.getListarSolp(this.pageIndex, this.pageSize, this.orden, this.columnaOrden, this.nroSolp, this.fechaInicio, this.fechaFin, this.sap, this.mantenimiento, this.web, this.repoAutomatica,
+                multiSelectValues, this.selectUsuario.join(","), this.selectCentro.join(","), this.selectGrupoCompras.join(","), this.selectClaseDocumento.join(","), this.selectTipoImputacion.join(","), this.selectValorTipoImputacion.join(",")
             ).subscribe(
                 (result: any) => {
 
@@ -362,7 +386,6 @@ export class DashboardComponent extends ListBaseComponent {
         }
 
         return false; //<-- Prevent Refresh
-
     }
 
     getCombos() {
@@ -379,12 +402,28 @@ export class DashboardComponent extends ListBaseComponent {
                         this.usuariosResult = result.Usuarios;
                         this.estadoSolpItem = [];
                         this.usuarioFiltro = [];
+                        this.centroFiltro = [];
+                        this.grupoComprasFiltro = [];
+                        this.claseDocumentoFiltro = [];
+                        this.tipoImputacionFiltro = [];
                         result.EstadosSolpSap.forEach(cd => this.estadoSolpItem.push({
                             label: cd.Descripcion, value: cd.Id
                         }));
                         result.Usuarios.forEach(x => x.forEach(d => this.usuarioFiltro.push({
                             label: d.Id === 0 ? "" : d.Mail, value: d.Id
-                        })))
+                        })));
+                        result.Centro.forEach(c => this.centroFiltro.push({
+                            label: c.Codigo + " - " + c.Descripcion, value: c.Id
+                        }));
+                        result.GrupoCompras.forEach(gc => this.grupoComprasFiltro.push({
+                            label: gc.Codigo + " - " + gc.Descripcion, value: gc.Id
+                        }));
+                        result.ClaseDocumento.forEach(cd => this.claseDocumentoFiltro.push({
+                            label: cd.Codigo + " - " + cd.Descripcion, value: cd.Id
+                        }));
+                        result.TipoImputacion.forEach(ti => this.tipoImputacionFiltro.push({
+                            label: ti.Descripcion + " - " + ti.Codigo, value: ti.Codigo
+                        }));
                     }
                 },
                 error => {
@@ -400,6 +439,51 @@ export class DashboardComponent extends ListBaseComponent {
         return false;
     }
 
+    subtipoImputacionCombo() {
+        var tablas: string[] = [];
+        this.selectTipoImputacion.forEach(tipo => {
+            switch (tipo) {
+                case EnumTipoImputacion.CentroDeCosto:
+                    tablas.push('CecoSolpSap');
+                    break;
+                case EnumTipoImputacion.OrdenDeOt:
+                case EnumTipoImputacion.OrdenInversion:
+                    tablas.push('OrdenSolpSap');
+                    break;
+                case EnumTipoImputacion.Siniestro:
+                    tablas.push('CentroBeneficio');
+                    break;
+            }
+        });
+
+        try {
+            this.subscription = this.service.listarTablaSap(tablas).subscribe(
+                (result: any) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.floatMsgService.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.floatMsgService.setInfoMsg(result.info);
+                    } else {
+                        this.valorTipoImputacionFiltro = [];
+                        this.valorTipoImputacionFiltro = result.data.map(vti => ({
+                            label: `${vti.CodigoDescripcion}`, value: vti.Id
+                        }));
+                    }
+                },
+                error => {
+                    this.floatMsgService.setErrorMsg(error.message);
+                });
+        }
+        catch (e) {
+            this.floatMsgService.setErrorMsg(e);
+            return false; //<-- Prevent Refresh
+        }
+
+        return false; 
+    }
+
     listarUsuarioCreadorSolp() {
         try {
             this.subscription = this.service.listarUsuarioCreadorSolp().subscribe(
@@ -411,8 +495,9 @@ export class DashboardComponent extends ListBaseComponent {
                     } else if (result.info != undefined) {
                         this.floatMsgService.setInfoMsg(result.info);
                     } else {
+                        const filtrosGuardados = JSON.parse(sessionStorage.getItem('filtrosSolicitante'));
                         result.data.forEach(x => x.forEach(x => {
-                            if (x.Id == sessionStorage.getItem("usuarioId") && this.selectUsuario.length === 0 && !this.selectUsuario.includes(x.Id))
+                            if (x.Id == sessionStorage.getItem("usuarioId") && !filtrosGuardados && !this.selectUsuario.includes(x.Id))
                                 this.selectUsuario.push(x.Id);
                         }));
                         this.getListarSolp();
@@ -439,7 +524,7 @@ export class DashboardComponent extends ListBaseComponent {
     }
 
     generarZipPliego(idSolp) {
-        this.blockUI.start('Generando ')
+        this.blockUI.start('Generando...')
         this.service.descargarZipPliego(idSolp)
             .subscribe(
                 (result) => {
@@ -477,8 +562,7 @@ export class DashboardComponent extends ListBaseComponent {
                 (error) => {
                     this.spinnerSmallComponent.hideIt();
                     this.mensajeComponent.setErrorMsg(error.message);
-                }
-            )
+                })
     }
 
     descargarPdf(idSolp): void {
@@ -501,8 +585,7 @@ export class DashboardComponent extends ListBaseComponent {
                     (error) => {
                         this.spinnerSmallComponent.hideIt();
                         this.mensajeComponent.setErrorMsg(error.message);
-                    }
-                )
+                    })
         }
     }
 
@@ -569,8 +652,7 @@ export class DashboardComponent extends ListBaseComponent {
                 (error) => {
                     this.blockUI.stop();
                     this.mensajeComponent.setErrorMsg(error.message);
-                }
-            )
+                })
     }
 
     obtenerPeticionDeOfertaCircular(Id) {
@@ -590,8 +672,7 @@ export class DashboardComponent extends ListBaseComponent {
                 (error) => {
                     this.blockUI.stop();
                     this.mensajeComponent.setErrorMsg(error.message);
-                }
-            )
+                })
     }
 
     cerrarModalRevisionTecnica() {
@@ -619,8 +700,7 @@ export class DashboardComponent extends ListBaseComponent {
                 (error) => {
                     this.mensajeComponent.setErrorMsg(error.message);
                     this.blockUI.stop();
-                }
-            )
+                })
     }
 
     descargarAdjuntosCotizacion({ cotizacionId }) {
@@ -701,6 +781,12 @@ export class DashboardComponent extends ListBaseComponent {
         this.filtrosSolicitante.repoAutomatica = this.repoAutomatica;
         this.filtrosSolicitante.usuarios = this.selectUsuario;
         this.filtrosSolicitante.estadoSolp = this.selectEstadoSolp;
+        this.filtrosSolicitante.gruposCompras = this.selectGrupoCompras;
+        this.filtrosSolicitante.centros = this.selectCentro;
+        this.filtrosSolicitante.claseDocumento = this.selectClaseDocumento;
+        this.filtrosSolicitante.tipoImputacion = this.selectTipoImputacion;
+        this.filtrosSolicitante.valorTipoImputacion = this.selectValorTipoImputacion;
+        this.filtrosSolicitante.subtipoImputacionCombo = this.valorTipoImputacionFiltro;
         this.filtrosSolicitante.fechaDesde = this.fechaInicio;
         this.filtrosSolicitante.fechaHasta = this.fechaFin;
         this.paginator.changePage(0);
@@ -711,7 +797,6 @@ export class DashboardComponent extends ListBaseComponent {
     cerrarOrdenDeCompra() {
         this.displayOrdenDeCompra = false;
         this.onBuscar();
-
     }
 
     verDetalleOrdenDeCompra(nroOC: any) {
@@ -721,49 +806,45 @@ export class DashboardComponent extends ListBaseComponent {
 
     obtenerAdjudicacion(nroOC) {
         this.blockUI.start('Cargando...')
-        this.service.obtenerAdjudicacion(nroOC)
-            .subscribe(
-                (result) => {
-                    if (result.logout == true) {
-                        this.sessionDataService.logout();
-                    }
-                    else {
-                        this.ordenDeCompra = result.data;
-                        this.blockUI.stop();
-                    }
-                },
-                (error) => {
-                    this.blockUI.stop();
-                    this.mensajeComponent.setErrorMsg(error.message);
+        this.service.obtenerAdjudicacion(nroOC).subscribe(
+            (result) => {
+                if (result.logout == true) {
+                    this.sessionDataService.logout();
                 }
-            )
+                else {
+                    this.ordenDeCompra = result.data;
+                    this.blockUI.stop();
+                }
+            },
+            (error) => {
+                this.blockUI.stop();
+                this.mensajeComponent.setErrorMsg(error.message);
+            })
     }
 
     listarAdjudicaciones(solpId) {
         this.blockUI.start('Cargando...')
-        this.service.listarAdjudicaciones(solpId)
-            .subscribe(
-                (result) => {
-                    if (result.logout == true) {
-                        this.sessionDataService.logout();
-                    }
-                    else {
-                        if (this.ordenesDeCompra.length > 0) {
-                            for (let i = this.ordenesDeCompra.length - 1; i >= 0; i--) {
-                                if (this.ordenesDeCompra[i].Solp_Id === solpId) {
-                                    this.ordenesDeCompra.splice(i, 1);
-                                }
+        this.service.listarAdjudicaciones(solpId).subscribe(
+            (result) => {
+                if (result.logout == true) {
+                    this.sessionDataService.logout();
+                }
+                else {
+                    if (this.ordenesDeCompra.length > 0) {
+                        for (let i = this.ordenesDeCompra.length - 1; i >= 0; i--) {
+                            if (this.ordenesDeCompra[i].Solp_Id === solpId) {
+                                this.ordenesDeCompra.splice(i, 1);
                             }
                         }
-                        this.mapData(result.data);
-                        this.blockUI.stop();
                     }
-                },
-                (error) => {
+                    this.mapData(result.data);
                     this.blockUI.stop();
-                    this.mensajeComponent.setErrorMsg(error.message);
                 }
-            )
+            },
+            (error) => {
+                this.blockUI.stop();
+                this.mensajeComponent.setErrorMsg(error.message);
+            })
     }
 
     filtrarOrdenesDeCompra(solpId): AdjudicacionDto[] {
@@ -861,6 +942,12 @@ export class DashboardComponent extends ListBaseComponent {
             this.repoAutomatica = filtrosGuardados.repoAutomatica;
             this.selectUsuario = filtrosGuardados.usuarios;
             this.selectEstadoSolp = filtrosGuardados.estadoSolp;
+            this.selectGrupoCompras = filtrosGuardados.gruposCompras;
+            this.selectCentro = filtrosGuardados.centros;
+            this.selectClaseDocumento = filtrosGuardados.claseDocumento;
+            this.selectTipoImputacion = filtrosGuardados.tipoImputacion;
+            this.selectValorTipoImputacion = filtrosGuardados.valorTipoImputacion;
+            this.valorTipoImputacionFiltro = filtrosGuardados.subtipoImputacionCombo;
             this.fechaInicio = filtrosGuardados.fechaDesde;
             this.fechaFin = filtrosGuardados.fechaHasta;
             this.pageIndex = filtrosGuardados.pageIndex;

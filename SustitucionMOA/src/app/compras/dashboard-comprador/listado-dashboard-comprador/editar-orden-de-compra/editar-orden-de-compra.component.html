@@ -1,0 +1,414 @@
+<p-dialog [(visible)]="displayEditarOc" modal="modal" [width]="1300" [draggable]="false" [closable]="true"
+    (onHide)="onCerrarEditarOc()" appendTo="body" positionTop="30" [height]="550" [max] [contentStyle]="{ 
+        'max-height':'550px', 
+        'min-height':'400px'}">
+    <p-header class="headerModal" style="color: #067935;">
+        <b>Editar orden de compra N° {{ordenDeCompra?.NumeroOrdenDeCompra}} </b>
+    </p-header>
+    <div class="container-fluid" style="height: 273.75px;">
+        
+        <div *ngIf="ordenDeCompra != undefined">
+            <p-tabView>
+                <p-tabPanel header="Posiciones" [selected]="true">
+                    <p>
+                        <ngb-alert type="danger" [dismissible]="true" *ngIf="mensaje !== undefined && mensaje !== null && mensaje !== ''" (close)="mensaje = null">
+                            <strong>Error! </strong>{{ mensaje }}
+                        </ngb-alert>
+                    </p>                   
+                    
+                    
+                    <div class="row">
+                        <div class="col-md-2">
+                            <p-dropdown dataKey="Codigo" [options]="monedaCompras" placeholder="Moneda"
+                                [(ngModel)]="ordenDeCompra.AdjudicacionPosiciones[0].Moneda" [style]="{'width':'150px'}"
+                                optionLabel="CodigoDescripcion" (onFocus)=" $event.target.select();"
+                                (onChange)="onSelectMoneda(ordenDeCompra, $event)" [minLength]="1" [dropdown]="true"
+                                emptyMessage="Ningúna moneda encontrada" [autoHighlight]="true">
+                            </p-dropdown>
+                        </div>
+                        <div class="col-md-10" style="text-align: end;">
+                            <button class="publicar btn " style="margin-right: 10px; font-size: 12px;"
+                                (click)="abrilModalTextos()">
+                                Modificar racional de compra
+                            </button>
+                        </div>
+                    </div>
+                    <div *ngIf="ordenDeCompra?.TipoPosicionCodigo == 'MATERIALES'; else noMateriales" class="row myRow"
+                        style="padding-top: 2px;">
+                        <p-table class="table-responsive" styleClass="font-size: 10px" #tabla
+                            [value]="ordenDeCompra?.AdjudicacionPosiciones" dataKey="Id">
+                            <ng-template pTemplate="header" let-columns>
+                                <tr>
+                                    <th class="columna" style="width: 43px; background-color: #4a1884 !important;
+                                    text-transform: none !important;">Entrega final</th>
+                                    <th class="columna" style="width: 43px; background-color: #4760ac !important;
+                                                    text-transform: none !important;">Pos.</th>
+                                    <th class="columna" style="width: 57px; background-color: #4760ac !important;
+                                                    text-transform: none !important;">Código</th>
+                                    <th class="columna" style="width: 82px; background-color: #4760ac !important;
+                                                    text-transform: none !important;">Descripción</th>
+                                    <th class="columna" style="width: 76px; background-color: #4760ac !important;
+                                                    text-transform: none !important;">Texto de <br /> suministro</th>
+                                    <th class="columna" style="width: 62px; background-color: #4760ac !important;
+                                                    text-transform: none !important;">Modelo</th>
+                                    <th class="columna" style="width: 72px; background-color: #4a1884 !important;
+                                                    text-transform: none !important;">Ctd.</th>
+                                    <th class="columna" style="width: 96px; background-color: #4760ac !important;
+                                                    text-transform: none !important;">Um.</th>
+                                    <th class="columna" style="width: 160px; background-color: #4a1884 !important;
+                                        text-transform: none !important;">Región</th>
+                                    <th class="columna" style="width: 96px; background-color: #4a1884 !important;
+                                         text-transform: none !important;">Fecha de entrega</th>
+                                    <th class="columna" style="width: 70px; background-color: #4a1884!important;
+                                                    text-transform: none !important;">Precio<br /></th>
+                                    <th class="columna" style="width: 80px; background-color: #4760ac !important;
+                                                    text-transform: none !important;">Precio<br /> Total</th>
+                                    <th class="columna" style="width: 80px; background-color: #4a1884 !important;
+                                        text-transform: none !important;"></th>
+
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="body" let-posiciones let-expanded="expanded" let-columns="columns"
+                                let-editing="editing" let-index="rowIndex">
+                                <tr  *ngIf="!posiciones.Eliminado">
+                                    <td class="columna"><p-checkbox name="posiciones"
+                                            [(ngModel)]="posiciones.EntregaFinal" binary="false"></p-checkbox></td>
+                                    <td class="columna">{{posiciones.Indice}}</td>
+                                    <td class="columna">{{posiciones.MaterialComprasCodigo}}</td>
+                                    <td class="columna">{{posiciones.Tarea}}</td>
+                                    <td class="columna">{{posiciones.TextoSuministro}}</td>
+                                    <td class="columna">{{posiciones.Modelo}}</td>
+                                    <td pEditableColumn class="columna">
+                                        <p-cellEditor>
+                                            <ng-template pTemplate="input">
+                                                <input pInputText type="number" [(ngModel)]="posiciones.Cantidad"
+                                                    pKeyFilter="num" (focus)="onEditarCelda(posiciones, 'Cantidad', 0)"
+                                                    (blur)="onReestablecerValor(posiciones, 'Cantidad')"
+                                                    numeric-format />
+                                            </ng-template>
+                                            <ng-template pTemplate="output">
+                                                <div [ngClass]="{'invalido': (posiciones.Cantidad != undefined) &&
+                                                 (posiciones.Cantidad <= 0)} ">
+                                                    {{ posiciones.Cantidad | number:'1.2-2'}} </div>
+                                            </ng-template>
+                                        </p-cellEditor>
+                                    </td>
+                                    <td pEditableColumn class="columna">
+                                        <div>
+                                            {{posiciones.UnidadDescripcion}}
+                                        </div>
+                                    </td>
+                                    <td class="columna">
+                                        <div>
+                                            <p-dropdown dataKey="CodigoSap" [options]="regiones" placeholder="Region"
+                                                [(ngModel)]="posiciones.DireccionDeEntrega"
+                                                [style]="{'width':'150px', 'height':'10px'}" optionLabel="CodigoSap"
+                                                (onFocus)=" $event.target.select();"
+                                                (onChange)="onSelectRegion(posiciones, $event)" [minLength]="1"
+                                                [dropdown]="true" emptyMessage="Ningúna región encontrada"
+                                                [autoHighlight]="true" [forceSelection]="true">
+
+                                                <ng-template let-item pTemplate="selectedItem">
+                                                    <span>{{item.value.Descripcion}}</span>
+                                                </ng-template>
+                                                <ng-template let-item pTemplate="item">
+                                                    <div>
+                                                        <div>{{item.value.Descripcion}}</div>
+                                                    </div>
+                                                </ng-template>
+                                            </p-dropdown>
+
+                                        </div>
+                                    </td>
+                                    <td pEditableColumn class="columna" style="cursor:pointer">
+                                        <p-cellEditor>
+                                            <ng-template pTemplate="input" style="width: 100% !important">
+                                                <p-calendar [minDate]="hoy" class="calendar" appendTo="body"
+                                                    [locale]="es" dateFormat="dd-M-yy"
+                                                    [(ngModel)]="posiciones.FechaEntregaServicio">
+                                                </p-calendar>
+                                            </ng-template>
+                                            <ng-template pTemplate="output">
+                                                <div style="height: 20px;"
+                                                    [ngClass]="{'invalido': (posiciones.FechaEntregaServicio == null)}">
+                                                    {{ posiciones.FechaEntregaServicio | date:'dd/MM/yy' }}
+                                                </div>
+                                            </ng-template>
+                                        </p-cellEditor>
+                                    </td>
+                                    <td pEditableColumn class="columna">
+                                        <p-cellEditor>
+                                            <ng-template pTemplate="input">
+                                                <input pInputText type="number" [(ngModel)]="posiciones.PrecioUnidad"
+                                                    pKeyFilter="num"
+                                                    (focus)="onEditarCelda(posiciones, 'PrecioUnidad', 0)"
+                                                    (blur)="onReestablecerValor(posiciones, 'PrecioUnidad')"
+                                                    numeric-format />
+                                            </ng-template>
+                                            <ng-template pTemplate="output">
+                                                <div [ngClass]="{'invalido': (posiciones.PrecioUnidad != undefined) &&
+                                                     (posiciones.PrecioUnidad <= 0)} ">
+                                                    {{ posiciones.PrecioUnidad | number:'1.2-2'}} </div>
+                                            </ng-template>
+                                        </p-cellEditor>
+                                    </td>
+
+                                    <td class="columna">{{posiciones.Cantidad * posiciones.PrecioUnidad |
+                                        number:'1.2-2'}}
+                                    </td>
+                                    <td style="text-align:center">
+                                        <img style="cursor:pointer !important" src="./Content/images/icons/trashRed.svg"
+                                            alt="imageAlt" (click)="eliminarRow(index)" style="width: 26px;" />
+
+                                    </td>
+                                </tr>
+                            </ng-template>
+                        </p-table>
+                    </div>
+                    <ng-template #noMateriales>
+                        <div class="row myRow" style="padding-top: 2px;">
+                            <p-table class="table-responsive" styleClass="font-size: 10px" #tabla
+                                [value]="ordenDeCompra?.AdjudicacionPosiciones" dataKey="Id">
+                                <ng-template pTemplate="header" let-columns>
+                                    <tr>
+                                        <th class="columna" style="width: 43px; background-color: #4760ac !important;">
+                                        </th>
+                                        <th class="columna" style="width: 60px; background-color: #4a1884 !important;
+                                    text-transform: none !important;">Entrega final</th>
+                                        <th class="columna" style="background-color: #4760ac !important;">Pos.</th>
+                                        <th class="columna" style="background-color: #4760ac !important;">Descripción
+                                        </th>
+                                        <th class="columna" style="background-color: #4a1884 !important;">Región</th>
+                                        <th class="columna" style="background-color: #4760ac !important;">Precio Total
+                                        </th>
+                                        <th class="columna" style="background-color: #4760ac !important;">Fecha de
+                                            entrega
+                                        </th>
+                                        <th class="columna" style="background-color: #4760ac !important;">Plazo de
+                                            oferta
+                                        </th>
+                                        <th class="columna" style="background-color: #4a1884 !important;"> </th>
+                                    </tr>
+                                </ng-template>
+                                <ng-template pTemplate="body" let-posicionCompra let-expanded="expanded"
+                                    let-columns="columns" let-editing="editing" let-indexPos="rowIndex">
+                                    <tr *ngIf="!posicionCompra.Eliminado">
+                                        <td>
+                                            <a href="#" [pRowToggler]="posicionCompra">
+                                                <i
+                                                    [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
+                                            </a>
+                                        </td>
+                                        <td class="columna"><p-checkbox name="posicionCompra"
+                                                [(ngModel)]="posicionCompra.EntregaFinal" binary="false"></p-checkbox>
+                                        </td>
+                                        <td class="columna">{{posicionCompra.Indice}}</td>
+                                        <td class="columna">{{posicionCompra.Tarea}}</td>
+                                        <td class="columna">
+                                            <div>
+                                                <p-dropdown dataKey="CodigoSap" [options]="regiones"
+                                                    placeholder="Region" [(ngModel)]="posicionCompra.DireccionDeEntrega"
+                                                    [style]="{'width':'150px', 'height':'10px'}" optionLabel="CodigoSap"
+                                                    (onFocus)=" $event.target.select();"
+                                                    (onChange)="onSelectRegion(posicionCompra, $event)" [minLength]="1"
+                                                    [dropdown]="true" emptyMessage="Ningúna región encontrada"
+                                                    [autoHighlight]="true" [forceSelection]="true">
+
+                                                    <ng-template let-item pTemplate="selectedItem">
+                                                        <span>{{item.value.Descripcion}}</span>
+                                                    </ng-template>
+                                                    <ng-template let-item pTemplate="item">
+                                                        <div>
+                                                            <div>{{item.value.Descripcion}}</div>
+                                                        </div>
+                                                    </ng-template>
+                                                </p-dropdown>
+
+                                            </div>
+                                        </td>
+                                        <td class="columna">{{posicionCompra.PrecioTotal | number:'1.2-2'}}</td>
+                                        <td class="columna">
+                                            {{ posicionCompra.FechaEntregaServicioFormateado }}
+                                        </td>
+                                        <td class="columna">
+                                            {{posicionCompra.PlazoDeOferta }}
+                                        </td>
+                                        <td style="text-align:center">
+                                            <img style="cursor:pointer !important" src="./Content/images/icons/trashRed.svg"
+                                                alt="imageAlt" (click)="eliminarRowServicio(indexPos)" style="width: 26px;" />
+    
+                                        </td>
+                                    </tr>
+                                </ng-template>
+                                <ng-template pTemplate="rowexpansion" let-posicionCompra let-columns="columns">
+                                    <tr *ngIf="!posicionCompra.Eliminado">
+                                        <td [attr.colspan]="9">
+                                            <div class="col-sm-12 col-md-12 col-lg-12" style="font-size:16px;padding:20px">
+                                                <p-table [value]="posicionCompra?.SubposicionesCompras">
+                                                    <ng-template pTemplate="header">
+                                                        <tr>
+                                        <th class="columna" style="background-color: #4760ac !important;">Subposición
+                                        </th>
+                                        <th class="columna" style="background-color: #4760ac !important;">Código</th>
+                                        <th class="columna" style="background-color: #4760ac !important; width: 160px;">
+                                            Tarea a <br>
+                                            subcontratar
+                                        </th>
+                                        <th class="columna" style="background-color: #4a1884 !important;">Ctd</th>
+                                        <th class="columna" style="background-color: #4760ac !important;">UM</th>
+                                        <th class="columna" style="background-color: #4a1884 !important;">Precio Unidad
+                                        </th>
+                                        <th class="columna" style="background-color: #4760ac !important;">Precio Total
+                                        </th>
+                                        <th class="columna" style="background-color: #4a1884 !important;"></th>
+                                    </tr>
+                                </ng-template>
+                                <ng-template pTemplate="body" let-subposicionesCompras let-rowIndex="rowIndex">
+                                    <tr *ngIf="!subposicionesCompras.Eliminado">
+
+                                        <td class="columna">{{subposicionesCompras.Numero}}</td>
+                                        <td class="columna">{{subposicionesCompras.CodigoSolp}}</td>
+                                        <td class="columna">{{subposicionesCompras.Tarea}}</td>
+                                        <td pEditableColumn class="columna">
+                                            <p-cellEditor>
+                                                <ng-template pTemplate="input">
+                                                    <input pInputText type="number"
+                                                        [(ngModel)]="subposicionesCompras.Cantidad" pKeyFilter="num"
+                                                        (focus)="onEditarCelda(subposicionesCompras, 'Cantidad', 0)"
+                                                        (blur)="onReestablecerValor(subposicionesCompras, 'Cantidad')"
+                                                        numeric-format
+                                                        (ngModelChange)="calcularPrecioTotalPosiciones(posicionCompra);" />
+                                                </ng-template>
+                                                <ng-template pTemplate="output">
+                                                    <div [ngClass]="{'invalido': (subposicionesCompras.Cantidad != undefined) &&
+                                                 (subposicionesCompras.Cantidad <= 0)}">
+                                                        {{ subposicionesCompras.Cantidad | number:'1.2-2'}} </div>
+                                                </ng-template>
+                                            </p-cellEditor>
+                                        </td>
+                                        <td class="columna">{{subposicionesCompras.UnidadComprasDescripcion}}</td>
+                                        <td pEditableColumn class="columna">
+                                            <p-cellEditor>
+                                                <ng-template pTemplate="input">
+                                                    <input pInputText type="number"
+                                                        [(ngModel)]="subposicionesCompras.PrecioBruto" pKeyFilter="num"
+                                                        (focus)="onEditarCelda(subposicionesCompras, 'PrecioBruto', 0)"
+                                                        (blur)="onReestablecerValor(subposicionesCompras, 'PrecioBruto')"
+                                                        numeric-format
+                                                        (ngModelChange)="calcularPrecioTotalPosiciones(posicionCompra);" />
+                                                </ng-template>
+                                                <ng-template pTemplate="output">
+                                                    <div [ngClass]="{'invalido': (subposicionesCompras.PrecioBruto != undefined) &&
+                                                     (subposicionesCompras.PrecioBruto <= 0)} ">
+                                                        {{ subposicionesCompras.PrecioBruto | number:'1.2-2'}} </div>
+                                                </ng-template>
+                                            </p-cellEditor>
+                                        </td>
+                                        <td class="columna">{{subposicionesCompras.Cantidad *
+                                            subposicionesCompras.PrecioBruto | number:'1.2-2'}}</td>
+                                        <td style="text-align:center">
+                                            <img style="cursor:pointer !important"
+                                                src="./Content/images/icons/trashRed.svg" alt="imageAlt"
+                                                (click)="eliminarRowSub(posicionCompra, rowIndex)"
+                                                style="width: 26px;" />
+                                        </td>
+                                    </tr>
+                                </ng-template>
+                            </p-table>
+                        </div>
+                        </td>
+                        </tr>
+                    </ng-template>
+                    </p-table>
+        </div>
+                 </ng-template>
+        </p-tabPanel>
+        <p-tabPanel header="Condiciones de pago">
+            <div class="row">
+                <div class="col-md-3" style="margin-top: 12px;">
+                    <strong>Condicion de pago</strong>
+                </div>
+                <div class="col-md-4">
+                    <p-dropdown dataKey="Codigo" [options]="condicionesPago" placeholder="Condiciones"
+                        [(ngModel)]="ordenDeCompra.CondicionDePago" [style]="{'width':'150px'}"
+                        optionLabel="CodigoDescripcion" (onFocus)=" $event.target.select();"
+                        (onChange)="onSelectCondicionesPago(ordenDeCompra, $event)" [minLength]="1" [dropdown]="true"
+                        emptyMessage="Ninguna condición encontrada" [autoHighlight]="true" [forceSelection]="true">
+                    </p-dropdown>
+                </div>
+            </div>
+            <br>
+            <div class="row">
+                <div class="col-md-3" style="margin-top: 12px;">
+                    <strong>Pago en.</strong>
+                </div>
+                <div class="col-md-2">
+                    <input type="text" pKeyFilter="num" [(ngModel)]="ordenDeCompra.PagoEn1"
+                        placeholder="" pInputText class="styled-select inputAltura" numeric-format>
+                </div>
+                <div class="col-md-2">
+                    <input type="text" pKeyFilter="num" [(ngModel)]="ordenDeCompra.PagoEn1Porcentaje"
+                        placeholder="%" pInputText class="styled-select inputAltura" numeric-format
+                        (blur)="validarPorcentaje('PagoEn1Porcentaje', ordenDeCompra.PagoEn1Porcentaje)">
+
+                </div>
+                <div class="col-md-1" style="text-align: left;margin-top: 10px">%</div>
+            </div>
+            <br>
+            <div class="row">
+                <div class="col-md-3" style="margin-top: 12px;">
+                    <strong>Pago en.</strong>
+                </div>
+                <div class="col-md-2">
+                    <input type="text" pKeyFilter="num" [(ngModel)]="ordenDeCompra.PagoEn2"
+                        placeholder="" pInputText class="styled-select inputAltura" numeric-format>
+                </div>
+                <div class="col-md-2">
+                    <input type="text" pKeyFilter="num" [(ngModel)]="ordenDeCompra.PagoEn2Porcentaje"
+                        placeholder="%" pInputText class="styled-select inputAltura" numeric-format
+                        (blur)="validarPorcentaje('PagoEn2Porcentaje', ordenDeCompra.PagoEn2Porcentaje)">
+                </div>
+                <div class="col-md-1" style="text-align: left;margin-top: 10px">%</div>
+            </div>
+            <br>
+            <div class="row">
+                <div class="col-md-3" style="margin-top: 12px;">
+                    <strong>Pago en.</strong>
+                </div>
+                <div class="col-md-2">
+                    <input type="text" pKeyFilter="num" [(ngModel)]="ordenDeCompra.PagoEn3"
+                        placeholder="" pInputText class="styled-select inputAltura" numeric-format>
+                </div>
+            </div>
+            <br>
+            <div class="row">
+                <div class="col-md-3" style="margin-top: 12px;">
+                    <strong>Condiciones de importación</strong>
+                </div>
+                <div class="col-md-4">
+                    <p-dropdown dataKey="Codigo" [options]="condicionesImportacion" placeholder="Condiciones"
+                        [(ngModel)]="ordenDeCompra.CondicionDeImportacion" [style]="{'width':'150px'}"
+                        optionLabel="CodigoDescripcion" (onFocus)=" $event.target.select();"
+                        (onChange)="onSelectCondicionesImportacion(ordenDeCompra, $event)" [minLength]="1"
+                        [dropdown]="true" emptyMessage="Ninguna condición encontrada" [autoHighlight]="true">
+                    </p-dropdown>
+                </div>
+                <div class="col-md-4">
+                    <input type="text" [(ngModel)]="ordenDeCompra.CondicionDeImportacionDescripcion"
+                        placeholder="Descripcion" pInputText class="styled-select inputAltura">
+                </div>
+            </div>
+        </p-tabPanel>
+        </p-tabView>
+    </div>
+    </div>
+    <p-footer>
+        <button type="button" class="btn btn-danger" (click)="onCerrarEditarOc()">CANCELAR</button>
+        <button type="button" class="btn btn-primary" (click)="onGuardarEditarOc()">ACEPTAR</button>
+
+    </p-footer>
+</p-dialog>
+
+<app-textos-adjudicar #textoAdjudicar [(displayTextos)]="displayTextos" (cerrarModalTextosEmitter)="cerrarModalTextos()"
+    (aceptarModalTextosEmitter)="aceptarModalTextos()" [(adjudicacion)]="ordenDeCompra">
+</app-textos-adjudicar>

@@ -148,10 +148,10 @@
                                             placeholder="Tipo de imputacion"
                                             [(ngModel)]="posicion.tipoImputacion"
                                             [style]="{'width':'150px'}"
-                                            optionLabel="Codigo"
+                                            optionLabel="CodigoVisualizacion"
                                             appendTo="body"
-                                            ariaLabel="Codigo"
-                                            field="Codigo"
+                                            ariaLabel="CodigoVisualizacion"
+                                            field="CodigoVisualizacion"
                                             (onFocus)="posicion.setTabPosicion();"
                                             (onChange)="posicion.setTabPosicion()"
                                             [disabled]="posicion.concluido">
@@ -161,7 +161,7 @@
                                     </ng-template>
                                     <ng-template let-item pTemplate="item">
                                         <div>
-                                            <div><b>{{item.value.Descripcion}}</b> - {{item.value.Codigo}}</div>
+                                            <div><b>{{item.value.Descripcion}}</b> - {{item.value.CodigoVisualizacion}}</div>
                                         </div>
                                     </ng-template>
                                 </p-dropdown>
@@ -294,7 +294,7 @@
                             <td [pEditableColumn]="posicion" *ngIf="esTipoMaterial">
                                 <p-dropdown filter="true"
                                             [(ngModel)]="posicion.unidadSeleccionada"
-                                            [options]="unidades"
+                                            [options]="posicion.unidadesAlternativas"
                                             optionLabel="Descripcion"
                                             dataKey="Id"
                                             appendTo="body"

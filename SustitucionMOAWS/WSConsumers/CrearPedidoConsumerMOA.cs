@@ -314,6 +314,8 @@ namespace SustitucionMOAWS.WSConsumers
                     CHANGE_ID = "X",
                 });
 
+            
+
                 //Nombre: ZBAPIMEPOACCOUNT IM_POACCOUNT Denominación:	Imputación
                 var imputacion = new ZMPES6830();
                 imputacion.PO_ITEM = preqItem;
@@ -457,7 +459,20 @@ namespace SustitucionMOAWS.WSConsumers
                 }
 
             }
-            solpPedidoSAP.IM_URL = ConfigurationManager.AppSettings["SpaUrl"] + "/verLegajoOrdenDeCompra/" + adjudicacion.Id + "/" + adjudicacion.Token;
+
+            if (solp.Urgencia == true) {
+                solpPedidoSAP.IM_POTEXTITEMList.Add(new BAPIMEPOTEXT
+                {
+                    TEXT_ID = "F12",
+                    PO_NUMBER = "",
+                    PO_ITEM = preqItem,
+                    TEXT_FORM = "*",
+                    TEXT_LINE = "Urgencia"
+                });
+            }
+
+
+             solpPedidoSAP.IM_URL = ConfigurationManager.AppSettings["SpaUrl"] + "/verLegajoOrdenDeCompra/" + adjudicacion.Id + "/" + adjudicacion.Token;
            
             return solpPedidoSAP;
         }

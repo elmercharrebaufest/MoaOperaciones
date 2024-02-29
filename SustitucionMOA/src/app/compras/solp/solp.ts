@@ -75,6 +75,11 @@ export class Solp extends CommonResponse {
     public archivosCotizacionesNuevos: Array<File>;
     public archivosCotizaciones: Array<ArchivoModel>;
     public liberadoresSap: any[] = [];
+    public condEspProveedorAsignado: boolean;
+    public editarCondicionesEspeciales: boolean = true;
+    public thServicioPermanente: boolean;
+    public thAjustePolinomica: boolean;
+    public thProveedorDirecto: boolean;
 
     //inicio Cabecera == paso 5
     public selectClaseDocumento: any;
@@ -239,11 +244,12 @@ export class Solp extends CommonResponse {
             this.terminoJornadaLaboral = new Date(this.getDateFromAspNetFormat(solp.JornadaLaboralHasta));
             this.ejecucion = solp.DiasEjecucion || '';
             this.observacionesCotizacion = solp.ObservacionesCotizacion;
-            this.proveedorAsignado_Id = solp.ProveedorAsignadoId;
+            this.proveedorAsignado_Id = solp.ProveedorAsignado_Id;
             this.proveedorAsignado = solp.ProveedorAsignado;
             this.trabajoHecho = solp.TrabajoYaHecho;
             this.adicional = solp.Adicional;
             this.urgencia = solp.Urgencia;
+            this.condEspProveedorAsignado = solp.CondEspProveedorAsignado;
             this.ordenDeCompra = solp.NroOrdenDeCompraAdicional;
             this.ordenDeCompraOriginal = solp.NroOrdenDeCompraAdicional;
             this.proveedorIdAdicional = solp.ProveedorIdAdicional;
@@ -251,6 +257,10 @@ export class Solp extends CommonResponse {
             this.deshabilitarAdicional = solp.DeshabilitarAdicional;
             this.monedaOC = solp.MonedaOC;
             this.liberadoresSap = solp.LiberadoresSapSolp;
+            this.editarCondicionesEspeciales = solp.EditarCondicionesEspeciales;
+            this.thAjustePolinomica = solp.THAjustePolinomica;
+            this.thProveedorDirecto = solp.THProveedorDirecto;
+            this.thServicioPermanente = solp.THServicioPermanente;  
 
             //pop up finalizar
             this.revisadoPor = solp.RevisadoPor || '';
