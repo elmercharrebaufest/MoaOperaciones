@@ -504,8 +504,10 @@ namespace SustitucionMOAUtils.Services
                     data.cabecera.moneda != ConstanteSAP.MONEDA_PESOS)
                 {
                     var pesificacionesResponse = pesificacionesConsumer.Request(proveedor);
+
+                    var contrato = data.salidas?.Count > 0 ? data.salidas[0].contrato : "";
                     data.Pesificaciones = pesificacionesResponse.Pesificaciones
-                        .Where(x => x.Contrato == fijacion || x.Fijacion == fijacion)
+                        .Where(x => x.Contrato == contrato || x.Fijacion == fijacion)
                         .ToList();
                 }
 
