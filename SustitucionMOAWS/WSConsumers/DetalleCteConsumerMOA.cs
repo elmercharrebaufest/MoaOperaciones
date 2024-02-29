@@ -69,6 +69,7 @@ namespace SustitucionMOAWS.WSConsumers
                     precioPactadoString = SAPFormatter.FormatearMonto(cabecera.PRECIO_PACTADO, cabecera.MONEDA),
                     moneda = cabecera.MONEDA,
                     precioNetoString = SAPFormatter.FormatearMonto(cabecera.PRECIO_NETO, cabecera.MONEDA),
+                    tarifaFlete = cabecera.TARIFA_FLETE,
                     tarifaFleteString = SAPFormatter.FormatearMonto(cabecera.TARIFA_FLETE, cabecera.MONEDA),
                     PorcentajePagoParcial = cabecera.PORCPARCIAL
                 };
