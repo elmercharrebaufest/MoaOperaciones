@@ -100,7 +100,7 @@
         </div>
         <div *ngIf="(!data.LiquidacionParcialEmitida || data.FaltanDatosDeCalidad) && data.cabecera.moneda != 'ARP'">
             <p class="grey" style="font-size: 22px;"><strong>Pesificaciones</strong></p>
-            <div class="row myRow">
+            <div class="row myRow" *ngIf="data.Pesificaciones && data.Pesificaciones.length > 0">
                 <div class="clearfix myTables">
                     <table id="tablePesif" *ngIf="data.Pesificaciones"
                         class="display nowrap dataTable no-footer dtr-inline rounded shadow animate contrato-anulaciones-table"
@@ -141,6 +141,9 @@
                         </tbody>
                     </table>
                 </div>
+            </div>
+            <div class="alert alert-warning" role="alert" *ngIf="!data.Pesificaciones || data.Pesificaciones.length == 0">
+                No existen pesificaciones
             </div>
         </div>
         <div *ngIf="data.FaltanDatosDeCalidad" class="formulario-input;">
