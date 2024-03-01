@@ -438,7 +438,7 @@ export class CrearConsultaComponent extends ListBaseComponent {
                 this.mensajeComponent.setErrorMsg("Debe seleccionar un material.");
                 return true;
             }
-            this.rubro = this.rubrosSelected.map(rubro => `${rubro.caracteristica} - ${rubro.resultadoCalado} Calado - Discrepa ${rubro.discrepanciaCalidad} %`).join("break");
+            this.rubro = this.rubrosSelected.map(rubro => `${rubro.caracteristica} - ${rubro.resultadoCalado} Calado - Valor sugerido ${rubro.discrepanciaCalidad} %`).join("break");
         }
         if (this.categoriaCode == 'COM') {
             if (this.comprobante == "" || !this.comprobante) {

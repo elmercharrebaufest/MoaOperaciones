@@ -91,7 +91,7 @@
                             <div style="padding-top:0.5rem;" *ngFor="let rubroSelected of rubrosSelected">
                                 <span class="ui-inputgroup-addon">
                                     {{rubroSelected.caracteristica}} - {{rubroSelected.resultadoCalado}} (Calado) -
-                                    Discrepancia
+                                    Valor sugerido
                                 </span>
                                 <p-inputMask mask="9?9" [unmask]="true" placeholder="%" [style]="{width:'50px'}"
                                     [(ngModel)]="rubroSelected.discrepanciaCalidad"></p-inputMask>
