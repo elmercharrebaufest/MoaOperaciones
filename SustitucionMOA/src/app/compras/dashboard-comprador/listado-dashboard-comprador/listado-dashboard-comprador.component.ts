@@ -477,12 +477,10 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
 
     cerrarCircular() {
         this.displayCircular = false;
-        this.onBuscar();
     }
 
     cerrarModalProveedor() {
         this.displayProveedor = false;
-        this.onBuscar();
     }
 
     cerrarOrdenDeCompra() {

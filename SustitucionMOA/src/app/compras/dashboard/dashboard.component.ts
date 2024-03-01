@@ -517,6 +517,8 @@ export class DashboardComponent extends ListBaseComponent {
 
     eliminarPosicionDashboard(idSolp) {
         this.confirmationService.confirm({
+            key: 'eliminarSOLP',
+            header: 'Eliminar SOLP',
             message: '¿Está seguro de que desea eliminar la SOLP?',
             accept: () => {
                 this.borrarSolp(idSolp)
@@ -680,7 +682,6 @@ export class DashboardComponent extends ListBaseComponent {
 
     cerrarModalRevisionTecnica() {
         this.displayRevisionTecnica = false;
-        this.onBuscar();
     }
 
     descargarArchivo({ archivoId }) {
@@ -772,7 +773,6 @@ export class DashboardComponent extends ListBaseComponent {
 
     cerrarCircular() {
         this.displayCircular = false;
-        this.onBuscar();
     }
 
     onBuscar() {

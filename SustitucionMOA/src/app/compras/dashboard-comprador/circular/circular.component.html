@@ -34,7 +34,7 @@
                             <div class="row myRow">
                                 <div class="col-xs-12 col-md-12" *ngFor="let archivo of this.archivos">
                                     <img src="./Content/images/icons/trashRed.svg" alt="imageAlt"
-                                        (click)="eliminarArchivo(archivo)"
+                                        (click)="eliminarArchivoCircular(archivo)"
                                         style="width: 26px; padding-bottom: 3px; cursor: pointer;" />
                                     <a class="link-archivo" (click)="descargarArchivo(archivo)"
                                         style="font-weight: lighter; margin-left: 10px;cursor: pointer;">{{archivo.name }} </a>
@@ -131,7 +131,7 @@
     </p-footer>
 </p-dialog>
 
-<p-confirmDialog #dialogo header="Confirmación" icon="pi pi-exclamation-triangle" [width]="400" [responsive]="true" appendTo="body" >
+<p-confirmDialog #dialogo key="eliminarArchivoCircular" header="Confirmación" icon="pi pi-exclamation-triangle" [width]="400" [responsive]="true" appendTo="body" >
     <p-footer>
         <button type="button" pButton  label="Cancelar" class="ui-button-info botonModal" (click)="dialogo.reject()"></button>
         <button type="button" pButton  label="Aceptar" class="ui-button-success botonModal" (click)="dialogo.accept()"></button>

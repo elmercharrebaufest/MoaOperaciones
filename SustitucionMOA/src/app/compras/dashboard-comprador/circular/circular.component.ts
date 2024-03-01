@@ -188,8 +188,9 @@ export class CircularComponent implements OnInit, OnChanges {
         }
     }
 
-    eliminarArchivo(archivo: any) {
+    eliminarArchivoCircular(archivo: any) {
         this.confirmationService.confirm({
+            key: "eliminarArchivoCircular",
             message: '¿Está seguro de que desea eliminar el archivo?',
             accept: () => {
                 this.eliminarAdjuntoNuevo(archivo);
