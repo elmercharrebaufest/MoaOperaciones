@@ -27,9 +27,8 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                 select new PeticionDeOfertaDto
                                 {
                                     Id = po.Id,
-                                    Solp_Id = po.PeticionDeOferta.Solp_Id,
-                                    PersonalHoras = po.PeticionDeOferta.Solp.Pliego != null ? po.PeticionDeOferta.Solp.Pliego.TieneGrillaPersonal ?? false : false,
-                                    NroSolp = po.PeticionDeOferta.Solp.NroSolp,
+                                    PersonalHoras = po.PeticionDeOferta.Posiciones.FirstOrDefault().SolpPosicion.Solp.Pliego != null ? po.PeticionDeOferta.Posiciones.FirstOrDefault().SolpPosicion.Solp.Pliego.TieneGrillaPersonal ?? false : false,
+                                    NrosSolp = po.PeticionDeOferta.Posiciones.Select(x => x.SolpPosicion.Solp.NroSolp),
                                     FechaCreacion = po.PeticionDeOferta.FechaCreacion,
                                     UsuarioCreador_Id = po.PeticionDeOferta.UsuarioCreador_Id,
                                     PlazoDeOferta = po.PeticionDeOferta.PlazoDeOferta,
@@ -38,11 +37,11 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                     ObservacionEconomica = cotizacion != null ? cotizacion.ObservacionEconomica : "",
                                     RespetaMateriales = cotizacion != null ? cotizacion.RespetaMateriales : null,
                                     RespetaServicios = cotizacion != null ? cotizacion.RespetaServicios : null,
-                                    TipoPosicionCodigo = po.PeticionDeOferta.Solp.Posiciones.Select(x => x.TipoPosicion.Codigo).FirstOrDefault(),
+                                    TipoPosicionCodigo = po.PeticionDeOferta.Posiciones.FirstOrDefault().SolpPosicion.TipoPosicion.Codigo,
                                     CotizacionId = cotizacion != null ? cotizacion.Id : 0,
                                     PorcentajeDeHoras = cotizacion.PorcentajeDeHoras,
-                                    PideDescripcionTecnica = po.PeticionDeOferta.Solp.Pliego.TieneDescripcionTecnica == true,
-                                    PideDocumentacionTecnica = po.PeticionDeOferta.Solp.Pliego.TieneDocumentacionTecnica == true,
+                                    PideDescripcionTecnica = po.PeticionDeOferta.Posiciones.FirstOrDefault().SolpPosicion.Solp.Pliego.TieneDescripcionTecnica == true,
+                                    PideDocumentacionTecnica = po.PeticionDeOferta.Posiciones.FirstOrDefault().SolpPosicion.Solp.Pliego.TieneDocumentacionTecnica == true,
                                     PeticionDeOfertaPosicion = po.PeticionDeOferta.Posiciones.Where(posi => posi.SolpPosicion.EsConcluido == true && posi.SolpPosicion.Estado == true).Select(pop =>
                                     new PeticionDeOfertaSolpPosicionDto()
                                     {

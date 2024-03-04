@@ -183,7 +183,7 @@
                 <tr [pSelectableRow]="rowData">
                     <td (dblclick)="onRowDblClick($event, rowData)">
                         <div *ngIf="rowData.TienePeticionDeOferta">
-                            <a href="#" [pRowToggler]="rowData" (click)="listarExpand()">
+                            <a href="#" [pRowToggler]="rowData" (click)="listarExpand(); listarPeticiones(rowData.Id)">
                                 <i [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
                             </a>
                         </div>
@@ -281,7 +281,7 @@
                                             Licitaciones
                                         </div>
                                     </ng-template>
-                                    <p-table [value]="rowData.PeticionesDeOferta">
+                                    <p-table [value]="peticionesDeOferta">
                                         <ng-template pTemplate="header">
                                             <tr style="font-size: 15px;">
                                                 <th class="columna" style="text-transform: none !important;">Pedido de Cotización</th>

@@ -11,6 +11,7 @@ using System.Text;
 using SustitucionMOARepositorio.Extensiones;
 using SustitucionMOAWS.Interfaces;
 using SustitucionMOAModel.Models.WSMapMOA.Compras;
+using SustitucionMOARepositorio;
 
 namespace SustitucionMOAWS.WSConsumers
 {
@@ -20,8 +21,10 @@ namespace SustitucionMOAWS.WSConsumers
         private readonly string rutaArchivosXmls = ConfigurationManager.AppSettings["RutaArchivosCompras"];
         private readonly IObtenerUnidadesDeMedidaAlternativasConsumerMOA obtenerUnidadesDeMedidaConsumerMOA;
         private readonly IObtenerTipoCambioConsumerMOA obtenerTipoCambioConsumerMOA;
+        private readonly IRepositorio repositorio;
 
-        public CrearPedidoConsumerMOA(IObtenerUnidadesDeMedidaAlternativasConsumerMOA _obtenerUnidadesDeMedidaConsumerMOA, IObtenerTipoCambioConsumerMOA _obtenerTipoCambioConsumerMOA)
+        public CrearPedidoConsumerMOA(IObtenerUnidadesDeMedidaAlternativasConsumerMOA _obtenerUnidadesDeMedidaConsumerMOA, 
+            IObtenerTipoCambioConsumerMOA _obtenerTipoCambioConsumerMOA, IRepositorio repositorio)
         {
             var url = "http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MMRFC_CREAR_PEDIDO&amp;interfaceNamespace=urn%3AOPERACIONES";
             service = new SI_MMRFC_CREAR_PEDIDOClient(SAPCredential.CrearSapBasicBinding(), SAPCredential.DevolverEndpoint(url));
@@ -29,6 +32,7 @@ namespace SustitucionMOAWS.WSConsumers
             service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
             obtenerUnidadesDeMedidaConsumerMOA = _obtenerUnidadesDeMedidaConsumerMOA;
             obtenerTipoCambioConsumerMOA = _obtenerTipoCambioConsumerMOA;
+            repositorio = repositorio;
         }
 
         public CrearPedidoConsumerMOAResponse Request(Adjudicacion adjudicacion, bool creadoAutomatico = false)
@@ -42,7 +46,7 @@ namespace SustitucionMOAWS.WSConsumers
 
             var fecha = DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss");
 
-            var nombreArchivoLlamada = string.Concat(adjudicacion.Solp_Id, " - ", fecha, " - crear pedido.xml");
+            var nombreArchivoLlamada = string.Concat(adjudicacion.Id, " - ", fecha, " - crear pedido.xml");
 
             var rutaArchivoLlamada = Path.Combine(rutaArchivosXmls, "XMLS", nombreArchivoLlamada);
 
@@ -114,26 +118,29 @@ namespace SustitucionMOAWS.WSConsumers
             var proveedorCodigoDeLaAdjudicacion = adjudicacion.Posiciones.First().CotizacionPosicion.Cotizacion.PeticionDeOfertaUsuario.Usuario.ObtenerCodigoProveedor();
             var usuarioCreadorAdjudicacion = adjudicacion.Usuario.UsuarioSap;
             var usuarioOrganizacionDeCompra = adjudicacion.Usuario.OrganizacionDeCompra;
-            var solp = adjudicacion.Solp;
+            //var solp = adjudicacion.Solp;
             SolpPedidoSAPDto solpPedidoSAP = new SolpPedidoSAPDto();
             int numeroPosicion = 0;
             string preqItem = "";
             string numeroDeImputacion = "";
             var PCKG_NO = 1000;
             var numeroDePaquete = 1;
-            bool esPosicionDeMateriales = solp.Posiciones.First().TipoPosicion.Codigo == "MATERIALES";
+            bool esPosicionDeMateriales = adjudicacion.Posiciones.FirstOrDefault().Posicion.TipoPosicion.Codigo == "MATERIALES";
             var unidadesDeMedidaSAP = new List<UnidadesDeMedida>();
 
             var fecha = DateTime.Now;
 
+            var posicionesSolp = repositorio.Listar<SolpPosicion>(posi => adjudicacion.Posiciones.Select(x => x.SolpPosicion_Id).Contains(posi.Id));
+
             if (esPosicionDeMateriales)
             {
-                unidadesDeMedidaSAP = obtenerUnidadesDeMedidaConsumerMOA.Request(solp.Posiciones.Select(x => x.MaterialSolp?.Codigo).ToList());
+                unidadesDeMedidaSAP = obtenerUnidadesDeMedidaConsumerMOA.Request(posicionesSolp.Select(x => x.MaterialSolp?.Codigo).ToList());
             }
            
             //aca el metodo solo usa las posiciones seleccionadas por el comprador
-            var posIds = adjudicacion.Posiciones.Select(x => x.CotizacionPosicion.PeticionDeOfertaSolpPosicion.SolpPosicion_Id).ToList();
-            foreach (var solpPosicion in solp.Posiciones.Where(a => posIds.Contains(a.Id)).OrderBy(x => x.Id))
+            var posIds = adjudicacion.Posiciones.Select(x => x.CotizacionPosicion.PeticionDeOfertaSolpPosicion.SolpPosicion_Id).ToList();           
+
+            foreach (var solpPosicion in posicionesSolp.OrderBy(x => x.Id))
             {
                 var adjudicacionPosicion = adjudicacion.Posiciones.Where(a => a.CotizacionPosicion.PeticionDeOfertaSolpPosicion.SolpPosicion_Id == solpPosicion.Id).Single();
                 decimal precioConvertido = adjudicacionPosicion.Monto??0;
@@ -247,7 +254,7 @@ namespace SustitucionMOAWS.WSConsumers
                 IM_POITEM.AGMT_ITEM = "";
                 IM_POITEM.RFQ_NO = "";
                 IM_POITEM.RFQ_ITEM = "";
-                IM_POITEM.PREQ_NO = solp.NroSolp;
+                IM_POITEM.PREQ_NO = solpPosicion.Solp.NroSolp;
                 IM_POITEM.PREQ_ITEM = preqItem;
                 IM_POITEM.PCKG_NO = esPosicionDeMateriales ? "" : $"{numeroDePaquete:0000000000}";
            
@@ -460,7 +467,7 @@ namespace SustitucionMOAWS.WSConsumers
 
             }
 
-            if (solp.Urgencia == true) {
+            if (adjudicacion.Posiciones.FirstOrDefault().Posicion.Solp.Urgencia == true) {
                 solpPedidoSAP.IM_POTEXTITEMList.Add(new BAPIMEPOTEXT
                 {
                     TEXT_ID = "F12",

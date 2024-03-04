@@ -49,6 +49,7 @@ namespace SustitucionMOAModel.Dto
         public TablaGeneralDto TipoSolp { get; set; }
 
         public List<SolpPosicionDto> Posiciones { get; set; }
+        public string PosicionesSolpId { get; set; }
         public string Pdf { get; set; }
         public bool Finalizar { get; set; }
         public bool? TieneCondicionesGenerales { get; set; }
@@ -108,6 +109,7 @@ namespace SustitucionMOAModel.Dto
         public string Periodo { get; set; }
         public int Cantidad { get; set; }
         public bool VerEditarOC { get; set; }
+        public IEnumerable<int> PosicionesId { get; set; }
 
         public SolpDto() { }
         public SolpDto(Solp entity)

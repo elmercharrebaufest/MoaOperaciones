@@ -30,24 +30,26 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                 where po.Id == PeticionOferta_Id
                                 select new PeticionDeOfertaDto
                                 {
-                                    Id = po.Id,
-                                    Solp_Id = po.Solp_Id,
-                                    SolpDto = new SolpDto{ Urgencia = po.Solp.Urgencia, TrabajoYaHecho = po.Solp.TrabajoYaHecho, Adicional = po.Solp.Adicional,
-                                        CondEspProveedorAsignado = po.Solp.CondEspProveedorAsignado, ObservacionesCotizacion = po.Solp.Pliego.ObservacionesCotizacion },
+                                    Id = po.Id,   
+                                    //REVISAR
+                                    SolpDto = new SolpDto{ Urgencia = po.Posiciones.FirstOrDefault().SolpPosicion.Solp.Urgencia, TrabajoYaHecho = po.Posiciones.FirstOrDefault().SolpPosicion.Solp.TrabajoYaHecho, Adicional = po.Posiciones.FirstOrDefault().SolpPosicion.Solp.Adicional,
+                                        CondEspProveedorAsignado = po.Posiciones.FirstOrDefault().SolpPosicion.Solp.CondEspProveedorAsignado, ObservacionesCotizacion = po.Posiciones.FirstOrDefault().SolpPosicion.Solp.Pliego.ObservacionesCotizacion },
                                     FechaCreacion = po.FechaCreacion,
                                     FechaCreacionFormateada = SqlFunctions.DateName("day", po.FechaCreacion) + "/" + SqlFunctions.DatePart("month", po.FechaCreacion) + "/" + SqlFunctions.DateName("year", po.FechaCreacion),
                                     UsuarioCreador_Id = po.UsuarioCreador_Id,
                                     PlazoDeOferta = po.PlazoDeOferta,
                                     Observaciones = po.Observaciones,
-                                    FechaCreacionSolp = po.Solp.FechaCreacion,
-                                    FechaCreacionFormateadaSolp = SqlFunctions.DateName("day", po.Solp.FechaCreacion) + "/" + SqlFunctions.DatePart("month", po.Solp.FechaCreacion) + "/" + SqlFunctions.DateName("year", po.Solp.FechaCreacion),
-                                    TipoPosicionCodigo = po.Solp.Posiciones.Select(x => x.TipoPosicion.Codigo).FirstOrDefault(),
-                                    NroSolp = po.Solp.NroSolp,
-                                    Adicional = po.Solp.Adicional,
-                                    Urgencia = po.Solp.Urgencia,
-                                    TrabajoHecho = po.Solp.TrabajoYaHecho,
-                                    NroOrdenDeCompraAdicional = po.Solp.NroOrdenDeCompraAdicional,
-                                    EstaLiberado = po.Solp.EstadoSolpSap.CodigoSap == "05" || po.Solp.EstadoSolpSap.CodigoSap == "02", //El 02 indica que no es necesario que sea liberada,
+                                    FechaCreacionSolp = po.Posiciones.Select(x => x.SolpPosicion.Solp).Select(solp => solp.FechaCreacion).OrderBy(fc => fc).FirstOrDefault(),
+                                    FechaCreacionFormateadaSolp = SqlFunctions.DateName("day", po.Posiciones.Select(x => x.SolpPosicion.Solp).Select(solp => solp.FechaCreacion).OrderBy(fc => fc).FirstOrDefault()) + "/" 
+                                    + SqlFunctions.DatePart("month", po.Posiciones.Select(x => x.SolpPosicion.Solp).Select(solp => solp.FechaCreacion).OrderBy(fc => fc).FirstOrDefault()) + "/" 
+                                    + SqlFunctions.DateName("year", po.Posiciones.Select(x => x.SolpPosicion.Solp).Select(solp => solp.FechaCreacion).OrderBy(fc => fc).FirstOrDefault()),
+                                    TipoPosicionCodigo = po.Posiciones.FirstOrDefault().SolpPosicion.TipoPosicion.Codigo,
+                                    NroSolp = po.Posiciones.FirstOrDefault().SolpPosicion.Solp.NroSolp,
+                                    Adicional = po.Posiciones.FirstOrDefault().SolpPosicion.Solp.Adicional,
+                                    Urgencia = po.Posiciones.FirstOrDefault().SolpPosicion.Solp.Urgencia,
+                                    TrabajoHecho = po.Posiciones.FirstOrDefault().SolpPosicion.Solp.TrabajoYaHecho,
+                                    NroOrdenDeCompraAdicional = po.Posiciones.FirstOrDefault().SolpPosicion.Solp.NroOrdenDeCompraAdicional,
+                                    EstaLiberado = po.Posiciones.Select(x => x.SolpPosicion.Solp).All(solp => solp.EstadoSolpSap.CodigoSap == "05"),
                                     RevisionFinalizada = po.RevisionTecnica == null ? false : po.RevisionTecnica.Finalizada,
                                     PlazoDeOfertaCierre = po.Cierres.Any() ? po.Cierres.OrderByDescending(p => p.Fecha).FirstOrDefault().Fecha : (DateTime?)null,
                                     PeticionDeOfertaPosicion = (from pop in contexto.Set<PeticionDeOfertaSolpPosicion>()
@@ -75,7 +77,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                                         Solp_Id = pop.SolpPosicion.Solp_Id,
                                                                         //CantidadPendiente = pop.SolpPosicion.Cantidad - (adjudicacion != null ? adjudicacion.Posiciones.Where(posicion => posicion.SolpPosicion_Id == pop.SolpPosicion_Id).FirstOrDefault().Cantidad : 0),
                                                                         //CantidadAdjudicacion = pop.SolpPosicion.Cantidad - (adjudicacion != null ? adjudicacion.Posiciones.Where(posicion => posicion.SolpPosicion_Id == pop.SolpPosicion_Id).FirstOrDefault().Cantidad : 0),
-                                                                        SolpTipo = po.Solp.Posiciones.Select(x => x.TipoPosicion.Codigo).FirstOrDefault(),
+                                                                        SolpTipo = po.Posiciones.FirstOrDefault().SolpPosicion.TipoPosicion.Codigo,
                                                                         MonedaSolpDescripcion = pop.SolpPosicion.Moneda.Codigo,
                                                                         MonedaId = pop.SolpPosicion.Moneda_Id,
                                                                         Unidad = new TablaSapDto
@@ -126,12 +128,12 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                         u.Usuario.Proveedores.Where(p => p.CUIT == u.Usuario.CUITRegistro && u.Usuario.TipoUsuario.Id == p.TipoProveedor.Id).FirstOrDefault().Mail : u.Usuario.CUITRegistro,
                                                     PropuestaTecnicaAprobada = u.PropuestaTecnicaAprobada,
                                                     RealizoVisita = u.RealizoVisita,
-                                                    THCategoria = po.Solp.THProveedorDirecto == true ? "Proveedor directo" : (po.Solp.THAjustePolinomica == true ? "Ajuste polinómica" : "Servicio permanente"),
-                                                    EstadoVisita = u.RealizoVisita == true ? "Realizada" : po.Solp.TrabajoYaHecho == true || (po.Solp.Pliego.TieneVisitaObraMasiva != true && po.Solp.Pliego.TieneVisitaObra != true) ? "No requerida" : "Sin realizar",
-                                                    EstadoVisitaColor = u.RealizoVisita == true ? "Green" : po.Solp.TrabajoYaHecho == true || (po.Solp.Pliego.TieneVisitaObraMasiva != true && po.Solp.Pliego.TieneVisitaObra != true) ? "Green" : "Red",
-                                                    EstadoPropuestaTecnica = u.PropuestaTecnicaAprobada == null && po.Solp.TrabajoYaHecho != true ? "Sin analizar" : po.Solp.TrabajoYaHecho == true ? "Trabajo ya hecho" : (u.PropuestaTecnicaAprobada == true && po.Solp.TrabajoYaHecho != true ? "Aprobada" : "Rechazada"),
+                                                    THCategoria = po.Posiciones.FirstOrDefault().SolpPosicion.Solp.THProveedorDirecto == true ? "Proveedor directo" : (po.Posiciones.FirstOrDefault().SolpPosicion.Solp.THAjustePolinomica == true ? "Ajuste polinómica" : "Servicio permanente"),
+                                                    EstadoVisita = u.RealizoVisita == true ? "Realizada" : po.Posiciones.FirstOrDefault().SolpPosicion.Solp.TrabajoYaHecho == true || (po.Posiciones.Select(posi => posi.SolpPosicion.Solp.Pliego).All(pliego => pliego.TieneVisitaObraMasiva != true) && po.Posiciones.Select(posi => posi.SolpPosicion.Solp.Pliego).All(pliego => pliego.TieneVisitaObra != true)) ? "No requerida" : "Sin realizar",
+                                                    EstadoVisitaColor = u.RealizoVisita == true ? "Green" : po.Posiciones.FirstOrDefault().SolpPosicion.Solp.TrabajoYaHecho == true || (po.Posiciones.Select(posi => posi.SolpPosicion.Solp.Pliego).All(pliego => pliego.TieneVisitaObraMasiva != true) && po.Posiciones.Select(posi => posi.SolpPosicion.Solp.Pliego).All(pliego => pliego.TieneVisitaObra != true)) ? "Green" : "Red",
+                                                    EstadoPropuestaTecnica = u.PropuestaTecnicaAprobada == null && po.Posiciones.FirstOrDefault().SolpPosicion.Solp.TrabajoYaHecho != true ? "Sin analizar" : po.Posiciones.FirstOrDefault().SolpPosicion.Solp.TrabajoYaHecho == true ? "Trabajo ya hecho" : (u.PropuestaTecnicaAprobada == true && po.Posiciones.FirstOrDefault().SolpPosicion.Solp.TrabajoYaHecho != true ? "Aprobada" : "Rechazada"),
                                                     ObservacionNoCumple = u.ObservacionNoCumple,
-                                                    EstadoPropuestaTecnicaColor = u.PropuestaTecnicaAprobada == null && po.Solp.TrabajoYaHecho != true ? "Orange" : po.Solp.TrabajoYaHecho == true ? "Green" : (u.PropuestaTecnicaAprobada == true ? "Green" : "Red"),
+                                                    EstadoPropuestaTecnicaColor = u.PropuestaTecnicaAprobada == null && po.Posiciones.FirstOrDefault().SolpPosicion.Solp.TrabajoYaHecho != true ? "Orange" : po.Posiciones.FirstOrDefault().SolpPosicion.Solp.TrabajoYaHecho == true ? "Green" : (u.PropuestaTecnicaAprobada == true ? "Green" : "Red"),
 
                                                     //PlazoDeOferta = u.Circulares.Any(circu => circu.Circular.RequiereCambioDeFechas == true && circu.Circular.PlazoDeOferta.HasValue) ?
                                                     //u.Circulares.Where(circu => circu.Circular.RequiereCambioDeFechas == true && circu.Circular.PlazoDeOferta.HasValue)
