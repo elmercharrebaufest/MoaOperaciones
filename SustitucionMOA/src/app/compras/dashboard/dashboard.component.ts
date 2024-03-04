@@ -63,6 +63,7 @@ export class DashboardComponent extends ListBaseComponent {
     combos: any;
     usuariosResult: any;
     ordenesDeCompra: AdjudicacionDto[] = [];
+    peticionesDeOferta: PeticionDeOfertaDto[] = [];
     ordenDeCompra: any;
     displayOrdenDeCompra: boolean;
     displayChatInterno: boolean = false;
@@ -835,6 +836,26 @@ export class DashboardComponent extends ListBaseComponent {
                 this.mensajeComponent.setErrorMsg(error.message);
             })
     }
+
+    listarPeticiones(solpId) {
+        this.blockUI.start('Cargando...')
+        this.service.listarPeticiones(solpId).subscribe(
+            (result) => {
+                if (result.logout == true) {
+                    this.sessionDataService.logout();
+                }
+                else {                    
+                    this.peticionesDeOferta = result.data;
+                    console.log("PETICIONES", result.data);
+                    this.blockUI.stop();
+                }
+            },
+            (error) => {
+                this.blockUI.stop();
+                this.mensajeComponent.setErrorMsg(error.message);
+            })
+    }
+
 
     filtrarOrdenesDeCompra(solpId): AdjudicacionDto[] {
         return this.ordenesDeCompra.filter(orden => orden.Solp_Id == solpId);

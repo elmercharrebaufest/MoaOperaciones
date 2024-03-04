@@ -41,7 +41,7 @@ namespace SustitucionMOAWS.WSConsumers
 
             var respuesta = new CrearPedidoConsumerMOAResponse();
 
-            respuesta.NumeroPedido = adjudicacion.Solp.NroOrdenDeCompraAdicional;
+            respuesta.NumeroPedido = adjudicacion.Posiciones.FirstOrDefault().Posicion.Solp.NroOrdenDeCompraAdicional;
             respuesta.Resultado = "";
 
             respuesta.Errores = new List<CrearPedidoConsumerMOAError>();
@@ -207,9 +207,9 @@ namespace SustitucionMOAWS.WSConsumers
             var proveedorCodigoDeLaAdjudicacion = adjudicacion.Posiciones.First().CotizacionPosicion.Cotizacion.PeticionDeOfertaUsuario.Usuario.ObtenerCodigoProveedor();
             var usuarioCreadorAdjudicacion = adjudicacion.Usuario.UsuarioSap;
             var usuarioOrganizacionDeCompra = adjudicacion.Usuario.OrganizacionDeCompra;
-            var solp = adjudicacion.Solp;
+           
             ModificarPedidoSAP modificarPedidoSAP = new ModificarPedidoSAP();
-            modificarPedidoSAP.PURCHASEORDER = adjudicacion.Cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Solp.NroOrdenDeCompraAdicional;// "4123001763";
+            modificarPedidoSAP.PURCHASEORDER = adjudicacion.Posiciones.FirstOrDefault().Posicion.Solp.NroOrdenDeCompraAdicional;// "4123001763";
 
             int numeroPosicion = 0;
             string preqItem = "";
@@ -221,7 +221,7 @@ namespace SustitucionMOAWS.WSConsumers
             var ocSAP = obtenerOrdenDeCompraconsumerMOA.ObtenerOrdenDeCompra(modificarPedidoSAP.PURCHASEORDER);
             int nroItemPO = ocSAP.Posiciones.Max(a => a.NumeroItemOC);
 
-            bool esPosicionDeMateriales = solp.Posiciones.First().TipoPosicion.Codigo == "MATERIALES";
+            bool esPosicionDeMateriales = adjudicacion.Posiciones.FirstOrDefault().Posicion.TipoPosicion.Codigo == "MATERIALES";
 
             //aca el metodo solo usa las posiciones seleccionadas por el comprador
             var posIds = adjudicacion.Posiciones.Select(x => x.CotizacionPosicion.PeticionDeOfertaSolpPosicion.SolpPosicion_Id).ToList();
@@ -270,9 +270,11 @@ namespace SustitucionMOAWS.WSConsumers
 
             //};
 
-
-            foreach (var posicion in solp.Posiciones.Where(a => posIds.Contains(a.Id)).OrderBy(x => x.Id))
+            var posicionesSolp = repositorio.Listar<SolpPosicion>(posi => adjudicacion.Posiciones.Select(x => x.SolpPosicion_Id).Contains(posi.Id));
+            foreach (var posicion in posicionesSolp)
             {
+            //    foreach (var posicion in solp.Posiciones.Where(a => posIds.Contains(a.Id)).OrderBy(x => x.Id))
+            //{
                 nroItemPO += 1;
                 var adjudicacionPosicion = adjudicacion.Posiciones.Where(a => a.CotizacionPosicion.PeticionDeOfertaSolpPosicion.SolpPosicion_Id == posicion.Id).Single();
 
@@ -343,7 +345,7 @@ namespace SustitucionMOAWS.WSConsumers
                 IM_POITEM.AGMT_ITEM = "";
                 IM_POITEM.RFQ_NO = "";
                 IM_POITEM.RFQ_ITEM = "";
-                IM_POITEM.PREQ_NO = solp.NroSolp;
+                IM_POITEM.PREQ_NO = posicion.Solp.NroSolp;
                 IM_POITEM.PREQ_ITEM = preqItem;
                 IM_POITEM.PCKG_NO = esPosicionDeMateriales ? "" : $"{numeroDePaquete:0000000000}";
 
@@ -555,7 +557,7 @@ namespace SustitucionMOAWS.WSConsumers
 
             }
 
-            if (solp.Urgencia == true)
+            if (adjudicacion.Posiciones.FirstOrDefault().Posicion.Solp.Urgencia == true)
             {
                 modificarPedidoSAP.POTEXTITEM.Add(new BAPIMEPOTEXT
                 {

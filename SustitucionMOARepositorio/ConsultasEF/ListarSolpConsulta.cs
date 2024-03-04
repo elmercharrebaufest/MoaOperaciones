@@ -124,11 +124,10 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                     FechaLiberacionSap = x.FechaLiberacionSap,
                                     ChatSinLeer = x.ChatInternoCompras.Any(a => a.Leido == false && a.Usuario.Roles.Any(r => r.Codigo == rol)),
                                     PeticionesDeOferta = (from po in contexto.Set<PeticionDeOferta>()
-                                                          where po.Solp_Id == x.Id && po.RegistroInfo != true
+                                                          where po.Posiciones.FirstOrDefault().SolpPosicion.Solp_Id == x.Id && po.RegistroInfo != true
                                                           select new PeticionDeOfertaDto()
                                                           {
                                                               Id = po.Id,
-                                                              Solp_Id = po.Solp_Id,
                                                               FechaCreacion = po.FechaCreacion,
                                                               UsuarioCreador_Id = po.UsuarioCreador_Id,
                                                               PlazoDeOfertaOriginal = po.PlazoDeOferta,

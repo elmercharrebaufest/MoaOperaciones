@@ -875,6 +875,16 @@ export class ComprasService extends BaseService {
             });
     }
 
+    public listarPeticiones(id: number): Observable<any> {
+        let params: HttpParams = new HttpParams();
+        params = params.set("solpId", id.toString());
+        return this.http
+            .get("/api/compras/ListarPeticionesDeOferta", {
+                params: params,
+                headers: this.headers,
+            });
+    }
+
     public obtenerAdjudicacion(nroOC: number): Observable<any> {
         let params: HttpParams = new HttpParams();
         params = params.set("nroOC", nroOC.toString());

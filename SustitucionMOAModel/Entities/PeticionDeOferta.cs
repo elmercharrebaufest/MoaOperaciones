@@ -9,7 +9,6 @@ namespace SustitucionMOAModel.Entities
     {
         [Key]
         public int Id { get; set; }
-        public int Solp_Id { get; set; }
         public int UsuarioCreador_Id { get; set; }
         public DateTime FechaCreacion { get; set; }
         public DateTime PlazoDeOferta { get; set; }
@@ -20,9 +19,6 @@ namespace SustitucionMOAModel.Entities
 
         [ForeignKey("UsuarioCreador_Id")]
         public virtual Usuario Usuario { get; set; }
-
-        [ForeignKey("Solp_Id")]
-        public virtual Solp Solp { get; set; }
 
         [InverseProperty("PeticionDeOferta")]
         public virtual ICollection<PeticionDeOfertaSolpPosicion> Posiciones { get; set; } = new List<PeticionDeOfertaSolpPosicion>();
