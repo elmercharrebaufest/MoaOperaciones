@@ -152,7 +152,6 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                Log.Info("asdasd");
                 var ordenar = orden == "ASC" ? DirOrden.Asc : DirOrden.Desc;
                 var paginacion = new Paginacion((!string.IsNullOrEmpty(columna) ? columna : null), ordenar, (pagina == null) ? 0 : pagina.Value, (itemsPorPagina == 0 || !itemsPorPagina.HasValue) ? 10 : itemsPorPagina.Value);
                 return JsonCustom(new
