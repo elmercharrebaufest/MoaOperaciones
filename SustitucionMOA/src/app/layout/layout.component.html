@@ -819,7 +819,7 @@
     <div *ngIf="noticiasNotEmpty()">
         <notifications-container id="notificationSmall" style="display:none; margin-right: 125px; width: 35%; background: #F4F4F4;">
             <noti-small id="notiSmall" class="clearfix">
-                <app-comunicaciones></app-comunicaciones>
+                <app-comunicaciones (cerrarComunicaciones)="cerrarComunicaciones()"></app-comunicaciones>
             </noti-small>
         </notifications-container>
     </div>

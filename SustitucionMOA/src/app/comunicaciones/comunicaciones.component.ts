@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { BaseComponent } from '../common/base-components/base-component';
 import { NavService } from '../common/services/NavService';
 import { SecurityService } from '../common/services/SecurityService';
@@ -18,7 +18,7 @@ import { UpdateComunicacionService } from '../common/services/UpdateComunicacion
   providers: [DatePipe]
 })
 export class ComunicacionesComponent extends BaseComponent implements OnInit {
-  
+  @Output() cerrarComunicaciones: EventEmitter<any> = new EventEmitter();
   communication: any;
   idProveedor: string;
   communicationRead: boolean[] = [];
@@ -362,6 +362,7 @@ export class ComunicacionesComponent extends BaseComponent implements OnInit {
             this.serviceComunicaciones.getComunicaciones(this.idProveedor, this.startDate, this.endDate);
         }, 500);
         this.redirect(notificaciones[i].ComunicacionTipo, this.filter, proveedorDescripcion, proveedorId);
+        this.cerrarComunicaciones.emit();
     }
 
 

@@ -320,6 +320,11 @@ p-table.level3 button.btn-refresh:disabled {
 }
 
 /* LOADER */
+.msj-actualizando {
+    width: fit-content;
+    margin: 2em auto;
+}
+
 .dot-pulse {
     position: relative;
     left: -9999px;
@@ -331,7 +336,8 @@ p-table.level3 button.btn-refresh:disabled {
     box-shadow: 9999px 0 0 -5px;
     animation: dot-pulse 1.5s infinite linear;
     animation-delay: 0.25s;
-    margin: 2em auto;
+    margin-top: 10px;
+    margin-left: 6em;
 }
 
 .dot-pulse::before, .dot-pulse::after {
@@ -375,17 +381,24 @@ p-table.level3 button.btn-refresh:disabled {
     30% { box-shadow: 10014px 0 0 2px; }
     60%, 100% { box-shadow: 10014px 0 0 -5px; }
 }
-   
- 
+
+
+/* Extra large devices (large laptops and desktops, 1200px and up) */
+@media only screen and (min-width: 1200px) {
+    :host ::ng-deep #certificaciones p-table.level2 > div > div > table:first-child > thead th:not(:first-child) {
+        padding-left: 2.8rem;
+        padding-right: 2.8rem;
+    }
+
+    :host ::ng-deep #certificaciones p-table.level3 > div > div > table:first-child > thead th:not(:first-child) {
+        padding-left: 1.4rem;
+        padding-right: 1.4rem;
+    }
+}
 
 /* Rules here apply to devices from 1400px and up */
 @media (min-width: 1399px) {
     .delete-icon {
         height: 23px;
-    }
-
-    :host ::ng-deep #certificaciones p-table.level3 > div > div > table:first-child > thead th:not(:first-child) {
-        padding-left: 1.5rem;
-        padding-right: 1.5rem;
     }
 }

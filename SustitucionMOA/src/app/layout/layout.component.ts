@@ -723,4 +723,11 @@ export class LayoutComponent implements OnDestroy {
     ngOnInit(){
         this.validarSreen();
     }
+
+    cerrarComunicaciones(): void{
+        $("#notificationClose, #notificationSmall").css({ "display": "none" });
+        $("#notificationOpen").css({ "display": "block" });
+        $("#notificationSmall").css({ "right" : "-270px" });
+        $("#coverAll").fadeOut();
+    }
 }

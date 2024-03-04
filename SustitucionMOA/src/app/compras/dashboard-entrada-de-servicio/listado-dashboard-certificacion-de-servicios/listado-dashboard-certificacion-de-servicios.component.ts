@@ -110,6 +110,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
     showDialog: boolean = false;
     ocFilterApplied: boolean = false;
     recalculando: boolean = false;
+    disabledFilter: boolean = false;
 
  
     ngOnInit() {       
@@ -196,6 +197,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
 
     //MMSN-574 - Agregar filtros
     onBuscar() {
+        this.disabledFilter = true;
         // MMSN-519: Colapsar fila expandida al activar un filtro.
         this.collapseExpandedRow();  
         // MMSN-689: Desactivar filtro de saldo pendiente al activar búsqueda. 
@@ -260,10 +262,11 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
                         this.calcularValoresACertificar(this.expandedPositionRow);
                         this.mostrarOcultarItemsSinSaldoACertificar();
                         setTimeout(() => {
-                            this.recalculando = false;
+                            this.recalculando = false;                            
                             this.tablaPosiciones.toggleRow(this.expandedPositionRow);
                         }, 500)
                     }
+                    this.disabledFilter = false;
                     this.spinnerComponent.hideIt();
                 },
                 error => {
@@ -308,6 +311,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
                     this.mensajeComponent.setErrorMsg(result.error);
                 } else if (result.data != undefined) {
                     this.recalculando = true;
+                    this.disabledFilter = true;
                     this.floatMsgService.setSuccessMsg("Se ha eliminado la entrada de servicio " + Id);
                     this.getListarPO(this.proveedor, this.ordenCompraId, this.filtroFechaComponent.fecha_inicio, this.filtroFechaComponent.fecha_fin);  
                     setTimeout(() => {
@@ -330,6 +334,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
         this.itemSelected = [];
         this.numeroLineaSelected.clear();
         this.recalculando = true;
+        this.disabledFilter = true;
         this.getListarPO(this.proveedor, this.ordenCompraId, this.filtroFechaComponent.fecha_inicio, this.filtroFechaComponent.fecha_fin);
     }
 

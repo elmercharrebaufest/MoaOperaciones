@@ -76,13 +76,13 @@
   </section>
   <!-- SEARCH END -->
 
-  <spinner></spinner>
+  <spinner *ngIf="!recalculando"></spinner>
 
   <div class="filters">
     <div class="checkbox-content">
       <i class="pi pi-filter"></i>
       <span>
-        <input type="checkbox"[(ngModel)]="ocFilterApplied" tooltip="Saldo pendiente en ordenes de compra" (click)="filtrarElementosSinSaldoACertificar($event.target.checked)">
+        <input [disabled]="disabledFilter" type="checkbox" [(ngModel)]="ocFilterApplied" tooltip="Saldo pendiente en ordenes de compra" (click)="filtrarElementosSinSaldoACertificar($event.target.checked)">
         <label>Saldo pendiente</label>
       </span>
     </div>
@@ -232,10 +232,11 @@
                   <tr [pSelectableRow]="rowData" *ngIf="!ocFilterApplied || (ocFilterApplied && tieneItemsACertificar(rowData))">
                       <!-- TABLE 3 -->
                       <td colspan="12">
-                      <div *ngIf="recalculando">
-                          <div class="dot-pulse"></div>
-                      </div>
-                  <p-table *ngIf="!recalculando" class="level3" [value]="rowData.Items" dataKey="NumeroLinea" [paginator]="rowData.Items.length > 4" [rows]="5" rowExpandMode="single">
+                          <div class="msj-actualizando" *ngIf="recalculando">
+                              <div>Cargando, por favor espere...</div>
+                              <div class="dot-pulse"></div>
+                          </div>
+                    <p-table *ngIf="!recalculando" class="level3" [value]="rowData.Items" dataKey="NumeroLinea" [paginator]="rowData.Items.length > 4" [rows]="5" rowExpandMode="single">
 
                       <!-- TABLE 3 HEADERS -->
                       <ng-template pTemplate="header" *ngIf="rowData.Items && rowData.Items.length > 0">
