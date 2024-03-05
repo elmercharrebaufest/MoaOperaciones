@@ -1,36 +1,46 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
+using ModelDto =  SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
 using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
-using SustitucionMOAWS.ScatoWebService;
-using SustitucionMOAWS.WSConsumers;
 
 namespace SustitucionMOA.Jobs
 {
 
-    public interface IActualizarLocalidades : IHangfireJob { };
-
+    public interface IActualizarLocalidades : IHangfireJob
+    {
+        bool Habilitado();
+    }
     public class ActualizarLocalidades : IActualizarLocalidades
     {
-        private readonly ILocalidadService localidadService;
         protected readonly IRepositorio repositorio;
-        public ActualizarLocalidades(ILocalidadService localidadService, IRepositorio repositorio)
+        protected readonly IDataAgroApiService dataAgroApiService;
+
+        private bool _Habilitado = false;
+        public bool Habilitado()
         {
-            this.localidadService = localidadService;
+            return _Habilitado;
+        }
+        public ActualizarLocalidades(IRepositorio repositorio, IDataAgroApiService dataAgroApiService)
+        {
             this.repositorio = repositorio;
+            this.dataAgroApiService = dataAgroApiService;
         }
         public void Execute()
         {
             try
             {
-                if (repositorio.Obtener<HabilitacionJob>(a => a.Nombre == "ActualizarLocalidades").Habilitado == false)
+                var habilitacion = repositorio.Obtener<HabilitacionJob>(a => a.Nombre == "ActualizarLocalidades");
+                if (habilitacion == null  || !habilitacion.Habilitado)
                     return;
 
-                this.SincronizarLocalidades(localidadService.SincronizarLocalidadesScato(), localidadService.ObtenerProvinciasScato());
+                _Habilitado = true;
+                var localidades = dataAgroApiService.ListarLocalidades();
+
+                SincronizarLocalidades(localidades);
             }
             catch(Exception e)
             {
@@ -39,23 +49,34 @@ namespace SustitucionMOA.Jobs
         }
 
 
-        private void SincronizarLocalidades(List<LocalidadDto> listaLocalidadesScato, List<ProvinciaDto> listaProvinciaScato)
+        private void SincronizarLocalidades(
+            List<ModelDto.LocalidadDto> localidadesDataAgro)
         {          
-            var listaLocalidades = repositorio.Listar<Localidad>().ToList();
-            foreach (var local in listaLocalidadesScato)
+            var listaLocalidades = repositorio.ListarTodos<Localidad>().ToList();
+            foreach (var localidad in localidadesDataAgro)
             {
-                var codigoAfip = Convert.ToInt32(local.CodigoAfip);
-                var codigo = listaLocalidades.FirstOrDefault(x => x.CodLocalidad == codigoAfip);
-                var provinciaId = listaProvinciaScato.Find(x => x.Id == local.ProvinciaId);
-                if (codigo == null)
+                var localidadGuardada = listaLocalidades.FirstOrDefault(x => x.CodLocalidad == localidad.LocalidadId);
+                try {
+                    if (localidadGuardada == null)
+                    {
+                        Localidad nuevaLocalidad = new Localidad();
+                        nuevaLocalidad.Nombre = localidad.Nombre;
+                        nuevaLocalidad.ProvinciaId = localidad.ProvinciaId;
+                        nuevaLocalidad.CodLocalidad = localidad.LocalidadId;
+                        nuevaLocalidad.PartidoId = Convert.ToInt32(localidad.PartidoId);
+                        repositorio.Agregar(nuevaLocalidad);
+                    }
+                    else
+                    {
+                        localidadGuardada.Nombre = localidad.Nombre;
+                        localidadGuardada.ProvinciaId = localidad.ProvinciaId;
+                        localidadGuardada.PartidoId = Convert.ToInt32(localidad.PartidoId);
+                    }
+                }catch(Exception ex)
                 {
-                    Localidad localidad = new Localidad();
-                    localidad.Nombre = local.Descripcion;
-                    localidad.ProvinciaId = provinciaId.CodigoAfip;
-                    localidad.CodLocalidad = Convert.ToInt32(local.CodigoAfip);
-                    localidad.PartidoId = 1;
-                    repositorio.Agregar(localidad);
+                    Log.Error(ex);
                 }
+                
             }
 
             repositorio.GuardarCambios();

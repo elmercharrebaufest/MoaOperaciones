@@ -203,7 +203,7 @@
     <Compile Include="Interfaces\IConsultaService.cs" />
     <Compile Include="Interfaces\IAzureService.cs" />
     <Compile Include="Interfaces\ICampoSustentableService.cs" />
-    <Compile Include="Interfaces\ICrearContratoService.cs" />
+    <Compile Include="Interfaces\IDataAgroApiService.cs" />
     <Compile Include="Interfaces\ICuentaCorrienteService.cs" />
     <Compile Include="Interfaces\IAplicacionCartaPorteService.cs" />
     <Compile Include="Interfaces\IEmailFasService.cs" />
@@ -254,7 +254,7 @@
     <Compile Include="Services\ConsultaService.cs" />
     <Compile Include="Services\AzureService.cs" />
     <Compile Include="Services\CampoSustentableService.cs" />
-    <Compile Include="Services\CrearContratoService.cs" />
+    <Compile Include="Services\DataAgroApiService.cs" />
     <Compile Include="Services\EcheqService.cs" />
     <Compile Include="Services\EmailService.cs" />
     <Compile Include="Services\Email\EmailFasService.cs" />
