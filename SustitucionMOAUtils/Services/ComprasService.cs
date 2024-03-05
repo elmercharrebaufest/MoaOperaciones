@@ -3210,7 +3210,7 @@ namespace SustitucionMOAUtils.Services
             var unidadesCodigoSap = solpActual.Posiciones.SelectMany(p => new[] { p.Unidad?.CodigoSap }.Concat(p.Subposiciones.Select(sp => sp.Unidad.CodigoSap))).Distinct();
 
             var unidadesMedidaSap = repositorio.Listar<UnidadMedidaSap, dynamic>(x => new { x.Comercial, x.UM },
-                x => unidadesCodigoSap.Contains(x.Comercial)).Select(x => System.Tuple.Create(x.Comercial, x.UM)).ToList();
+                x => unidadesCodigoSap.Contains(x.Comercial))?.Select(x => System.Tuple.Create(x.Comercial, x.UM)).ToList();
 
             foreach (var posicion in solpActual.Posiciones.OrderBy(x => x.Id))
             {
@@ -3252,7 +3252,7 @@ namespace SustitucionMOAUtils.Services
                     IM_PRITEM.MATERIAL = posicion.MaterialSolp != null && posicion.TipoPosicion.Codigo == "MATERIALES" ? posicion.MaterialSolp.CodigoSap.ToString() : ""; //MATERIAL MATNR18 Número de material(18 caracteres)
                     IM_PRITEM.QUANTITY = (Decimal)posicion.Cantidad; //QUANTITY BAMNG   Cantidad solicitud de pedido
                     IM_PRITEM.QUANTITYSpecified = true;
-                    IM_PRITEM.UNIT = unidadesMedidaSap.Find(u => u.Item1 == posicion.Unidad.CodigoSap).Item2; //UNIT BAMEI - Cambia el código de la unidad solicitada por su equivalente 'UM' de la tabla UnidadMedidaSap
+                    IM_PRITEM.UNIT = unidadesMedidaSap != null ? unidadesMedidaSap.Find(u => u.Item1 == posicion.Unidad.CodigoSap).Item2 : ""; //UNIT BAMEI - Cambia el código de la unidad solicitada por su equivalente 'UM' de la tabla UnidadMedidaSap
                     //IM_PRITEM.PREQ_UNIT_ISO = null; //PREQ_UNIT_ISO BAMEI_ISO   Código ISO p.la unidad de medida en la solicitud de pedido
                     IM_PRITEM.PREQ_PRICE = (Decimal)posicion.PrecioBruto; //PREQ_PRICE  BAPICUREXT Importe de moneda para BAPIs(con 9 decimales)
                     IM_PRITEM.PREQ_PRICESpecified = true;
@@ -3465,7 +3465,7 @@ namespace SustitucionMOAUtils.Services
 
                     IM_SERVICELINE.QUANTITY = (decimal)subPosicion.Cantidad.Value; //QUANTITY MENGEV  Cantidad con signo +/ -
                     IM_SERVICELINE.QUANTITYSpecified = true;
-                    IM_SERVICELINE.UOM = unidadesMedidaSap.Find(u => u.Item1 == subPosicion.Unidad.CodigoSap).Item2; //UOM MEINS - Cambia el código de la unidad solicitada por su equivalente 'UM' de la tabla UnidadMedidaSap
+                    IM_SERVICELINE.UOM = unidadesMedidaSap != null ? unidadesMedidaSap.Find(u => u.Item1 == subPosicion.Unidad.CodigoSap).Item2 : ""; //UOM MEINS - Cambia el código de la unidad solicitada por su equivalente 'UM' de la tabla UnidadMedidaSap
                     //IM_SERVICELINE.UOM_ISO = null; //UOM_ISO MEINS_ISO   Unidad medida base en código ISO
                     IM_SERVICELINE.GROSS_PRICE = (decimal)subPosicion.PrecioBruto.Value; //GROSS_PRICE SBRTWR Precio bruto Unitario
                     IM_SERVICELINE.GROSS_PRICESpecified = true;
