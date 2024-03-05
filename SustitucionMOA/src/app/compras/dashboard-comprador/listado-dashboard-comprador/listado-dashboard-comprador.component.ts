@@ -477,6 +477,12 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
 
     cerrarCircular() {
         this.displayCircular = false;
+        this.listarSolp();
+    }
+
+    cancelarModal() {
+        this.displayCircular = false;
+        this.displayCerrarCotizacion = false;
     }
 
     cerrarModalProveedor() {
@@ -660,12 +666,11 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
 
     cerrarModalCotizacion() {
         this.displayCerrarCotizacion = false;
-        this.onBuscar();
+        this.listarSolp();
     }
 
     cerrarModalChat() {
         this.displayChatInterno = false;
-        this.onBuscar();
     }
 
     getCombos() {

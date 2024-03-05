@@ -1,10 +1,9 @@
 <p-dialog [(visible)]="displayRevisionTecnica" modal="modal"
           [width]="950" [draggable]="false" [closable]="true"
-          (onHide)="onCerrarPeticion()" appendTo="body" positionTop="30"
-          [height]="450"
-          [max] [contentStyle]="{'max-height':'450px', 'min-height':'400px'}">
+          (onHide)="onCloseModal()" appendTo="body" positionTop="30"
+          [height]="450" [max] [contentStyle]="{'max-height':'450px', 'min-height':'400px'}">
     <p-header class="headerModal" style="color: #067935;">
-        <b>Revisión Técnica - </b> <span *ngIf="peticion != null">Petici&oacute;n de oferta #{{peticion.Id}}</span>
+        <b>Revisión Técnica </b> <span *ngIf="peticion != null">- Petici&oacute;n de oferta #{{peticion.Id}}</span>
     </p-header>
     <div class="container-fluid" style="height: 273.75px;">
         <section class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
@@ -186,7 +185,7 @@
     </div>
 
     <p-footer>
-        <button type="button" class="btn btn-danger botonesComprasColor" (click)="onCerrarPeticion()">CANCELAR</button>
+        <button type="button" class="btn btn-danger botonesComprasColor" (click)="onCloseModal()">CANCELAR</button>
         <button type="button" class="btn btn-primary botonesComprasColor" (click)="guardarRT()">GUARDAR</button>
         <button type="button" class="btn btn-success botonesComprasColor" (click)="confirmarFinalizacion()">FINALIZAR</button>
     </p-footer>
@@ -199,14 +198,14 @@
     </p-footer>
 </p-confirmDialog>
 
-<p-dialog [(visible)]="displayOkPeticion" [width]="400" modal="modal" appendTo="body" [draggable]="false" [contentStyle]="{'overflow':'visible', 'max-height':'100px', 'min-height':'100px'}" [closable]="false">
+<p-dialog [(visible)]="displayOkRevision" [width]="400" modal="modal" appendTo="body" [draggable]="false" [contentStyle]="{'overflow':'visible', 'max-height':'100px', 'min-height':'100px'}" [closable]="false">
     <p-header class="headerModal">
         ¡Revisión Técnica creada!
     </p-header>
     <br> La revisión técnica para la petición #{{nroPeticion}} se creó correctamente.
     <br>
     <p-footer>
-        <button type="button" class="btn btn-primary botonesComprasColor botonModal" (click)="salir()">Aceptar</button>
+        <button type="button" class="btn btn-primary botonesComprasColor botonModal" (click)="salirRT()">Aceptar</button>
     </p-footer>
 </p-dialog>
 

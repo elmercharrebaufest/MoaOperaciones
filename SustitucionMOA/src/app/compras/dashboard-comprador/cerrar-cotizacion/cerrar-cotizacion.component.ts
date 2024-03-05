@@ -21,8 +21,8 @@ export class CerrarCotizacionComponent implements OnInit {
     @Input() displayCerrarCotizacion: boolean;
     @Input() public peticion: PeticionDeOfertaDto;
     @Output() cerrarModalCotizacionEmitter = new EventEmitter();
+    @Output() onCloseModalEmitter = new EventEmitter();
     @Input() visualizarAlertCotizacion: boolean;
-
 
     observacion: any;
     displayOkCerrarCotizacion: boolean;
@@ -42,17 +42,18 @@ export class CerrarCotizacionComponent implements OnInit {
 
     onCerrarModalCotizar() {
         this.visualizarAlert = false;
-        this.cerrarModalCotizacionEmitter.next();
+        this.onCloseModalEmitter.next();
     }
 
     salir() {
-        this.onCerrarModalCotizar();
+        this.visualizarAlert = false;
+        this.cerrarModalCotizacionEmitter.next();
         this.displayOkCerrarCotizacion = false;
     }
 
     validar() {
         if (this.observacion == "" || this.observacion == undefined) {
-            this.error = "El campo Observación es obligatorio";
+            this.error = "El campo Observaciones es obligatorio";
             return this.visualizarAlert = true;
         }
         return this.visualizarAlert = false;
@@ -98,6 +99,5 @@ export class CerrarCotizacionComponent implements OnInit {
 
         }
     }
-
 
 }

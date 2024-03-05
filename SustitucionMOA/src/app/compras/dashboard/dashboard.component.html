@@ -369,15 +369,16 @@
 
 <app-revision-tecnica [(displayRevisionTecnica)]="displayRevisionTecnica"
                       (cerrardisplayRevisionTecnicaEmitter)="cerrarModalRevisionTecnica()"
+                      (onCloseModalEmitter)="cancelarModal()"
                       (descargarArchivoEmitter)="descargarArchivo($event)"
                       (descargarAdjuntosCotizacionEmitter)="descargarAdjuntosCotizacion($event)"
-                      (grabarRevisionTecnicaEmitter)="grabarRevisionTecnica($event)"
                       [(peticion)]="peticion">
 </app-revision-tecnica>
 
 <app-circular [(locale)]="es"
               [(displayCircular)]="displayCircular"
               (cerrarCircularEmitter)="cerrarCircular()"
+              (onCloseModalEmitter)="cancelarModal()"
               [(peticion)]="peticion"
               [(solicitante)]="solicitante">
 </app-circular>
@@ -401,6 +402,6 @@
 </app-orden-de-compra-detalle>
 
 <app-chat-interno [(displayChatInterno)]="displayChatInterno"
-                  [(chat)]="chat">
-    (cerrardisplayChatEmitter)="cerrarModalChat()"
+                  [(chat)]="chat"
+                  (cerrardisplayChatEmitter)="cerrarModalChat()">
 </app-chat-interno>
