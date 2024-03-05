@@ -144,6 +144,7 @@ export class DashboardComponent extends ListBaseComponent {
     checkedFilterWeb = false;
     verTodas: boolean = this.isAuthorized('VER TODAS SOLPS');
     public chat: ChatComprasDto;
+    clasesDocumento: number[] = [];
 
     cards = [
         { nombre: "Con documento de pliego", path: "/compras/solp/0", tipoSolp: "CON_PLIEGO" },
@@ -211,10 +212,10 @@ export class DashboardComponent extends ListBaseComponent {
     }
 
     ngOnInit() {
+        this.listarClaseDocumento();
         this.recuperarFiltros();
         this.listarUsuarioCreadorSolp();
         this.navService.setSeccionList([]);
-
         this.desdeDashboard = new Date();
         this.hastaDashboard = new Date();
     }
@@ -249,7 +250,7 @@ export class DashboardComponent extends ListBaseComponent {
         }, 0.01);
     }
 
-    filtrarPorSap() {
+    /**filtrarPorSap() {
         this.checkedFilterSap = !this.checkedFilterSap;
         this.filtrarTablaPorTipoSolp();
     }
@@ -292,8 +293,7 @@ export class DashboardComponent extends ListBaseComponent {
             tablaPrincipal = tablaPrincipal.filter(x => x.TipoSolpSap === EnumTipoSolpSap.Web);
             this.tabla.first = 0;
         } this.tabla.first = 0;
-
-
+        
         if (fechaDesde != null && fechaHasta != null) {
             tablaPrincipal = tablaPrincipal.filter(x =>
                 new Date(Date.parse(x.FechaCreacion)) >= new Date(fechaDesde) &&
@@ -309,7 +309,7 @@ export class DashboardComponent extends ListBaseComponent {
         else {
             this.mensajeComponent.setMsgsEmpty();
         }
-    }
+    }**/
 
     getStatusDocumentoSolp(data: any): String {
         return data.PosicionesEstado && data.NroSolp != null ? 'Borrado en sap' : data.EstadoSolpSap.Descripcion;
@@ -756,7 +756,7 @@ export class DashboardComponent extends ListBaseComponent {
                 }
             )
     }
-    
+
     cerrarCircular() {
         this.displayCircular = false;
         this.getListarSolp();
@@ -844,10 +844,10 @@ export class DashboardComponent extends ListBaseComponent {
                 if (result.logout == true) {
                     this.sessionDataService.logout();
                 }
-                else {                    
-                    const nuevasPeticiones = result.data.filter(nuevaPeticion => 
+                else {
+                    const nuevasPeticiones = result.data.filter(nuevaPeticion =>
                         !this.peticionesDeOferta.some(peticion => peticion.Id === nuevaPeticion.Id)
-                    );                    
+                    );
                     this.peticionesDeOferta.push(...nuevasPeticiones);
                     this.blockUI.stop();
                 }
@@ -974,5 +974,32 @@ export class DashboardComponent extends ListBaseComponent {
                 }
             }
         }
+    }
+
+    listarClaseDocumento() {
+        try {
+            this.subscription = this.service.listarClaseDocumento(sessionStorage.getItem("usuarioId")).subscribe(
+                (result: any) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.floatMsgService.setErrorMsg(result.error);
+                    } else {
+                        this.clasesDocumento = result;
+                        if (this.clasesDocumento.length > 0)
+                            sessionStorage.setItem('clasesDocumentoUsuario', JSON.stringify(this.clasesDocumento));
+                    }
+                },
+                error => { this.floatMsgService.setErrorMsg(error.message); }
+            );
+        } catch (e) {
+            this.floatMsgService.setErrorMsg(e);
+            return false;
+        }
+        return false;
+    }
+
+    mismaClaseDocumento(claseDocumento_Id: number): boolean {
+        return this.clasesDocumento.some(x => x === claseDocumento_Id);
     }
 }

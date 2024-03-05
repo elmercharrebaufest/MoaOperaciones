@@ -212,7 +212,7 @@
                             </span>
                         </div>
                         <div class="col-md-2"
-                             *ngIf="rowData.EstadoSolpSap.Descripcion != 'Liberada' && (rowData.UsuarioActual.Mail == usuario || verTodas)">
+                             *ngIf="rowData.EstadoSolpSap.Descripcion != 'Liberada' && (rowData.UsuarioActual.Mail == usuario || verTodas || mismaClaseDocumento(rowData.ClaseDocumento_Id))">
                             <span>
                                 <img class="pointer" src="./Content/images/icons/editar.svg" alt="editar" style="height:28px;"
                                      (click)="goToSeccionEdit('/compras/solp', rowData.Id, rowData.NroSolp)" />

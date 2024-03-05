@@ -1069,4 +1069,13 @@ export class ComprasService extends BaseService {
             headers: this.headers,
         });
     }
+
+    public listarClaseDocumento(usuarioId: string): Observable<any> {
+        let params: HttpParams = new HttpParams();
+        params = params.set("usuarioId", usuarioId.toString());
+        return this.http.get("/api/compras/ListarClaseDocumento", {
+            params: params,
+            headers: this.headers,
+        });
+    }
 }

@@ -535,5 +535,16 @@ namespace SustitucionMOATest.Controllers
             Assert.IsNotNull(result);
         }
 
+        [Test]
+        public void ListarClaseDocumentoOK()
+        {
+            comprasServiceMock.Setup(x => x.ListarClaseDocumento(It.IsAny<int>())).Returns(new List<int> { 1 });
+
+            var result = target.ListarClaseDocumento(It.IsAny<int>());
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.Data);
+        }
+
     }
 }
