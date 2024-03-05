@@ -720,8 +720,7 @@ namespace SustitucionMOAUtils.Services
         }
         private string ObtenerNombreArchivoDrive(string cuit, CampoCosecha campoCosecha)
         {
-            var id = campoCosecha.Campo.IdScato != 0 ? campoCosecha.Campo.IdScato.ToString() : "PENDIENTE";
-            return $"{cuit}_{id}_{campoCosecha.Cosecha.Nombre}";
+            return $"{cuit}_{campoCosecha.Campo.Id}_{campoCosecha.Cosecha.Nombre}";
         }
         private void SubirArchivosAGoogleDrive(string rutaArchivo, CampoProveedor campoProveedor)
         {

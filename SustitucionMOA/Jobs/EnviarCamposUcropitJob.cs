@@ -68,13 +68,13 @@ namespace SustitucionMOA.Jobs
                 {
                     throw new InfoCustomException("No se encontraron campos sustentables a reportar");
                 }
-                var excelFile = ExcelExport.ToExcel(camposAReportar, new string[] { "ID Scato", "ID Operaciones", "Titular CCPP", "CUIT", "Nombre del Establecimiento", "Provincia", "Departamento", "Localidad", "Latitud", "Longitud", "Has de soja declaradas" }, string.Empty);
-
+                
                 var nombreArchivoXls = $"Listado campos {DateTime.Today:yyyy-MM-dd} - Cosecha {camposAReportar[0].NombreCosecha}.xls";
                 var nombreArchivoZip = $"Campos sustentables{DateTime.Today:yyyy-MM-dd} - Cosecha {camposAReportar[0].NombreCosecha}.zip";
 
 
                 var counter = 0;
+                var camposAReportarExcel = new List<CampoReporteDTO>();
 
                 var outputMemStream = new MemoryStream();
                 var zipStream = new ZipOutputStream(outputMemStream);
@@ -93,21 +93,24 @@ namespace SustitucionMOA.Jobs
                         continue;
                     }
                     CargarJSONReporteCampoEnZip(zipStream, fileName,campo);
-
+                    camposAReportarExcel.Add(campo);
 
                     counter += 1;
                     if(counter == limiteCamposPorMail)
                     {
                         counter = 0;
+                        var excelFile = GetExcelFile(camposAReportarExcel);
                         EnviarMail(excelFile,zipStream,nombreArchivoZip,nombreArchivoXls,outputMemStream, cosechaAReportar);
                         outputMemStream = new MemoryStream();
                         zipStream = new ZipOutputStream(outputMemStream);
                         zipStream.SetLevel(3);
+                        camposAReportarExcel = new List<CampoReporteDTO>();
                     }
                 }
 
                 if(counter != 0)
                 {
+                    var excelFile = GetExcelFile(camposAReportarExcel);
                     EnviarMail(excelFile, zipStream, nombreArchivoZip, nombreArchivoXls, outputMemStream, cosechaAReportar);
                 }
             }
@@ -134,7 +137,7 @@ namespace SustitucionMOA.Jobs
             streamExcel.Seek(0, SeekOrigin.Begin);
 
             archivoExcel = new Attachment(streamExcel, nombreArchivoXls);
-
+            
             EmailSender.SendReporte(
                 new EnvioCamposSustentablesUcropit()
                 {
@@ -155,8 +158,7 @@ namespace SustitucionMOA.Jobs
 
         private string ObtenerNombreArchivoDrive(CampoReporteDTO campoReporte)
         {
-            var id = campoReporte.IdScato != 0 ? campoReporte.IdScato.ToString() : "PENDIENTE";
-            return $"{campoReporte.CUIT}_{id}_{campoReporte.NombreCosecha}";
+            return $"{campoReporte.CUIT}_{campoReporte.Id}_{campoReporte.NombreCosecha}";
         }
         private void CargarJSONReporteCampoEnZip(ZipOutputStream zipStream,string fileName ,CampoReporteDTO campo) {
 
@@ -192,7 +194,6 @@ namespace SustitucionMOA.Jobs
             catch (Exception)
             {
                 stream = new MemoryStream(File.ReadAllBytes(campo.RutaKmz));
-
             }
 
             CargarYCerrarZipEntry(zipStream, entry, stream);
@@ -203,5 +204,10 @@ namespace SustitucionMOA.Jobs
             StreamUtils.Copy(stream, zipStream, new byte[4096]);
             zipStream.CloseEntry();
         }
+
+        private string GetExcelFile(List<CampoReporteDTO> camposAReportar)
+        {
+            return ExcelExport.ToExcel(camposAReportar, new string[] { "ID Scato", "ID Operaciones", "Titular CCPP", "CUIT", "Nombre del Establecimiento", "Provincia", "Departamento", "Localidad", "Latitud", "Longitud", "Has de soja declaradas" }, string.Empty);
+        } 
     }
 }
