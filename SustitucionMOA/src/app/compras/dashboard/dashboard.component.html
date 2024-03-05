@@ -183,7 +183,7 @@
                 <tr [pSelectableRow]="rowData">
                     <td (dblclick)="onRowDblClick($event, rowData)">
                         <div *ngIf="rowData.TienePeticionDeOferta">
-                            <a href="#" [pRowToggler]="rowData" (click)="listarExpand(); listarPeticiones(rowData.Id)">
+                            <a href="#" [pRowToggler]="rowData" (click)="listarExpand(); listarPeticiones(rowData)">
                                 <i [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
                             </a>
                         </div>
@@ -281,7 +281,7 @@
                                             Licitaciones
                                         </div>
                                     </ng-template>
-                                    <p-table [value]="peticionesDeOferta">
+                                    <p-table [value]="rowData.PeticionesDeOferta">
                                         <ng-template pTemplate="header">
                                             <tr style="font-size: 15px;">
                                                 <th class="columna" style="text-transform: none !important;">Pedido de Cotización</th>
@@ -296,7 +296,7 @@
                                             </tr>
                                         </ng-template>
                                         <ng-template pTemplate="body" let-licitacion >
-                                            <tr *ngIf="licitacion != null && licitacion.Solp_Id === rowData.Id">
+                                            <tr>
                                                 <td class="columna">{{licitacion.Id}}</td>
                                                 <td class="columna">
                                                     {{licitacion.PlazoDeOferta | customDateFormat | date :'d/M/yyyy HH:mm'}}
@@ -316,11 +316,11 @@
                                 </p-tabPanel>
                                 <p-tabPanel>
                                     <ng-template pTemplate="header">
-                                        <div class="padding" (click)="listarAdjudicaciones(rowData.Id)">
+                                        <div class="padding" (click)="listarAdjudicaciones(rowData)">
                                             Orden de compra
                                         </div>
                                     </ng-template>
-                                    <p-table [value]="filtrarOrdenesDeCompra(rowData.Id)">
+                                    <p-table [value]="rowData.OrdenesDeCompra">
                                         <ng-template pTemplate="header">
                                             <tr>
                                                 <th class="columna">Numero</th>

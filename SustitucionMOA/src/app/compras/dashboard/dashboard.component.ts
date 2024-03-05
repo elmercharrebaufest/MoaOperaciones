@@ -812,22 +812,15 @@ export class DashboardComponent extends ListBaseComponent {
             })
     }
 
-    listarAdjudicaciones(solpId) {
+    listarAdjudicaciones(rowData) {
         this.blockUI.start('Cargando...')
-        this.service.listarAdjudicaciones(solpId).subscribe(
+        this.service.listarAdjudicaciones(rowData.Id).subscribe(
             (result) => {
                 if (result.logout == true) {
                     this.sessionDataService.logout();
                 }
                 else {
-                    if (this.ordenesDeCompra.length > 0) {
-                        for (let i = this.ordenesDeCompra.length - 1; i >= 0; i--) {
-                            if (this.ordenesDeCompra[i].Solp_Id === solpId) {
-                                this.ordenesDeCompra.splice(i, 1);
-                            }
-                        }
-                    }
-                    this.mapData(result.data);
+                    rowData.OrdenesDeCompra = result.data;
                     this.blockUI.stop();
                 }
             },
@@ -837,18 +830,18 @@ export class DashboardComponent extends ListBaseComponent {
             })
     }
 
-    listarPeticiones(solpId) {
+    listarPeticiones(rowData) {
+        if(rowData.PeticionesDeOferta != undefined && rowData.PeticionesDeOferta != null && rowData.PeticionesDeOferta.length > 0){
+            return;
+        }
         this.blockUI.start('Cargando...')
-        this.service.listarPeticiones(solpId).subscribe(
+        this.service.listarPeticiones(rowData.Id).subscribe(
             (result) => {
                 if (result.logout == true) {
                     this.sessionDataService.logout();
                 }
-                else {
-                    const nuevasPeticiones = result.data.filter(nuevaPeticion =>
-                        !this.peticionesDeOferta.some(peticion => peticion.Id === nuevaPeticion.Id)
-                    );
-                    this.peticionesDeOferta.push(...nuevasPeticiones);
+                else {                    
+                    rowData.PeticionesDeOferta = result.data;
                     this.blockUI.stop();
                 }
             },
