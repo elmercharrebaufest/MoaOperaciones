@@ -39,6 +39,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                     UsuarioCreador_Id = po.UsuarioCreador_Id,
                                     PlazoDeOferta = po.PlazoDeOferta,
                                     Observaciones = po.Observaciones,
+                                    TienePosicionesEliminadas = po.Posiciones.Any(x => x.SolpPosicion.Estado != true),
                                     FechaCreacionSolp = po.Posiciones.Select(x => x.SolpPosicion.Solp).Select(solp => solp.FechaCreacion).OrderBy(fc => fc).FirstOrDefault(),
                                     FechaCreacionFormateadaSolp = SqlFunctions.DateName("day", po.Posiciones.Select(x => x.SolpPosicion.Solp).Select(solp => solp.FechaCreacion).OrderBy(fc => fc).FirstOrDefault()) + "/" 
                                     + SqlFunctions.DatePart("month", po.Posiciones.Select(x => x.SolpPosicion.Solp).Select(solp => solp.FechaCreacion).OrderBy(fc => fc).FirstOrDefault()) + "/" 

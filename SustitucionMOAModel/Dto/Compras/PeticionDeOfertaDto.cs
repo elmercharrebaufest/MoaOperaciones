@@ -106,6 +106,7 @@ namespace SustitucionMOAModel.Dto
         public int? RevisionTecnicaId { get; set; }
         public bool? TrabajoHecho { get; set; }
         public IEnumerable<string> NrosSolp { get; set; }
+        public bool TienePosicionesEliminadas { get; set; }
     }
 
     public class PeticionDeOfertaSolpPosicionDto

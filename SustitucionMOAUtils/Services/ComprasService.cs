@@ -3028,50 +3028,25 @@ namespace SustitucionMOAUtils.Services
                         if (item.Cotizacion.RespetaMateriales == false)
                             respetaMateriales = false;
 
-                        foreach (var cotizacionPosicion in item.Cotizacion.CotizacionPosiciones.Where(x => !x.EstaEliminado && x.NoDisponible != true))
+                        foreach (var cotizacionPosicion in item.Cotizacion.CotizacionPosiciones.Where(x => x.NoDisponible != true))
                         {
-                            var solpPosicion = todasLasOfertas.PeticionDeOfertaPosicion.Where(x => x.Id == cotizacionPosicion.PeticionDeOfertaSolpPosicion_Id).First()?.Posicion;
-                            if (solpPosicion != null && cotizacionPosicion.UnidadMedida != null && !string.IsNullOrEmpty(cotizacionPosicion.UnidadMedida.Descripcion) && cotizacionPosicion.UnidadMedida.Descripcion != solpPosicion.Unidad.Descripcion
-                                && !string.IsNullOrEmpty(solpPosicion.CodigoMaterialSap.Codigo))
-                            {
-                                var unidadesDelMaterial = unidadesDeMedidaSAP.Where(x => x.CodigoMaterial == solpPosicion.CodigoMaterialSap.Codigo).ToList();
-                                var unidadSolicitada = unidadesDelMaterial.First(x => x.UnidadDeMedida == solpPosicion.Unidad.Descripcion);
-                                if (!string.IsNullOrEmpty(cotizacionPosicion.UnidadMedida.Descripcion))
-                                {
-                                    var unidadCotizada = unidadesDelMaterial.First(x => x.UnidadDeMedida == cotizacionPosicion.UnidadMedida.Descripcion);
-                                    cotizacionPosicion.UnidadMedida.Descripcion = unidadSolicitada.UnidadDeMedida;
-                                    cotizacionPosicion.Cantidad = Math.Round(cotizacionPosicion.Cantidad * (unidadCotizada.Numerador / unidadCotizada.Denominador) / (unidadSolicitada.Numerador / unidadSolicitada.Denominador), 2);
-                                    cotizacionPosicion.Precio = Math.Round((cotizacionPosicion.Precio / (unidadCotizada.Numerador / unidadCotizada.Denominador)) * (unidadSolicitada.Numerador / unidadSolicitada.Denominador), 2);
-                                }
-                            };
-
-                            if (!tipodecambio.TryGetValue(cotizacionPosicion.Moneda_Id, out decimal cambio) && cotizacionPosicion.Moneda_Id > 0)
-                            {
-                                var tipoCambio = ObtenerTipoCambio(cotizacionPosicion.Moneda_Id, destino.Id, DateTime.Now);
-                                tipodecambio.Add(cotizacionPosicion.Moneda_Id, tipoCambio.TipoCambio);
-                                cambio = tipoCambio.TipoCambio;
+                            CalcularCantidadYPrecioPorUnidadCotizada(todasLasOfertas, unidadesDeMedidaSAP, cotizacionPosicion);
+                            decimal cambio = CalcularTipoDeCambio(tipodecambio, destino, cotizacionPosicion);
+                            if (!cotizacionPosicion.EstaEliminado){
+                               
+                                cotizacionPosicion.TotalPesos = cambio * cotizacionPosicion.PrecioTotal;
+                                cotizacionPosicion.TotalARPCotizacionPosicion = cotizacionPosicion.CotizacionSubPosiciones.Sum(x => x.TotalARPSubPosCotizacion);
                             }
+                           
+                            cotizacionPosicion.TodasTotalPesos = cambio * cotizacionPosicion.PrecioTotal;
+                            cotizacionPosicion.TodasTotalARPCotizacionPosicion = cotizacionPosicion.CotizacionSubPosiciones.Sum(x => x.TotalARPSubPosCotizacion);
+                            
 
-                            if (cotizacionPosicion.CotizacionSubPosiciones != null)
-                            {
-                                foreach (var subpos in cotizacionPosicion.CotizacionSubPosiciones)
-                                {
-                                    if (subpos.Moneda_Id != null && !tipodecambio.TryGetValue(subpos.Moneda_Id.Value, out cambio) && subpos.Moneda_Id > 0)
-                                    {
-                                        var tipoCambio = ObtenerTipoCambio(subpos.Moneda_Id.Value, destino.Id, DateTime.Now);
-                                        tipodecambio.Add(subpos.Moneda_Id.Value, tipoCambio.TipoCambio);
-                                        cambio = tipoCambio.TipoCambio;
-                                    }
-
-                                    subpos.TotalARPSubPosCotizacion = cambio * subpos.PrecioTotalSubPosCotizacion;
-                                }
-                                cotizacionPosicion.TotalPosicionCotizacion = cotizacionPosicion.CotizacionSubPosiciones.Sum(x => x.PrecioTotalSubPosCotizacion);
-                            }
-                            cotizacionPosicion.TotalPesos = cambio * cotizacionPosicion.PrecioTotal;
-                            cotizacionPosicion.TotalARPCotizacionPosicion = cotizacionPosicion.CotizacionSubPosiciones.Sum(x => x.TotalARPSubPosCotizacion);
                         }
                         item.Cotizacion.TotalGlobal = item.Cotizacion.CotizacionPosiciones.Sum(x => x.TotalPesos);
                         item.Cotizacion.TotalGlobalSubPos = item.Cotizacion.CotizacionPosiciones.Sum(x => x.TotalARPCotizacionPosicion);
+                        item.Cotizacion.TodasTotalGlobal = item.Cotizacion.CotizacionPosiciones.Sum(x => x.TodasTotalPesos);
+                        item.Cotizacion.TodasTotalGlobalSubPos = item.Cotizacion.CotizacionPosiciones.Sum(x => x.TodasTotalARPCotizacionPosicion);
                     }
                     //  item.VerAdjudicar = item.Cotizacion == null ? false : item.Cotizacion != null && item.PlazoDeOferta.Date <= hoy && item.Cotizacion.CotizacionEstadoDescripcion == "Cotizado" ? false : item.EstaHabilitado ? false : todasLasOfertas.EstaLiberado ? false: true;
 
@@ -3190,6 +3165,52 @@ namespace SustitucionMOAUtils.Services
                 Log.Error(e);
                 throw;
             }
+        }
+
+        private decimal CalcularTipoDeCambio(Dictionary<int, decimal> tipodecambio, TablaSap destino, CotizacionPosicionDto cotizacionPosicion)
+        {
+            if (!tipodecambio.TryGetValue(cotizacionPosicion.Moneda_Id, out decimal cambio) && cotizacionPosicion.Moneda_Id > 0)
+            {
+                var tipoCambio = ObtenerTipoCambio(cotizacionPosicion.Moneda_Id, destino.Id, DateTime.Now);
+                tipodecambio.Add(cotizacionPosicion.Moneda_Id, tipoCambio.TipoCambio);
+                cambio = tipoCambio.TipoCambio;
+            }
+
+            if (cotizacionPosicion.CotizacionSubPosiciones != null)
+            {
+                foreach (var subpos in cotizacionPosicion.CotizacionSubPosiciones)
+                {
+                    if (subpos.Moneda_Id != null && !tipodecambio.TryGetValue(subpos.Moneda_Id.Value, out cambio) && subpos.Moneda_Id > 0)
+                    {
+                        var tipoCambio = ObtenerTipoCambio(subpos.Moneda_Id.Value, destino.Id, DateTime.Now);
+                        tipodecambio.Add(subpos.Moneda_Id.Value, tipoCambio.TipoCambio);
+                        cambio = tipoCambio.TipoCambio;
+                    }
+
+                    subpos.TotalARPSubPosCotizacion = cambio * subpos.PrecioTotalSubPosCotizacion;
+                }
+                cotizacionPosicion.TotalPosicionCotizacion = cotizacionPosicion.CotizacionSubPosiciones.Sum(x => x.PrecioTotalSubPosCotizacion);
+            }
+
+            return cambio;
+        }
+
+        private void CalcularCantidadYPrecioPorUnidadCotizada(PeticionDeOfertaDto todasLasOfertas, List<UnidadesDeMedida> unidadesDeMedidaSAP, CotizacionPosicionDto cotizacionPosicion)
+        {
+            var solpPosicion = todasLasOfertas.PeticionDeOfertaPosicion.Where(x => x.Id == cotizacionPosicion.PeticionDeOfertaSolpPosicion_Id).First()?.Posicion;
+            if (solpPosicion != null && cotizacionPosicion.UnidadMedida != null && !string.IsNullOrEmpty(cotizacionPosicion.UnidadMedida.Descripcion) && cotizacionPosicion.UnidadMedida.Descripcion != solpPosicion.Unidad.Descripcion
+                && !string.IsNullOrEmpty(solpPosicion.CodigoMaterialSap.Codigo))
+            {
+                var unidadesDelMaterial = unidadesDeMedidaSAP.Where(x => x.CodigoMaterial == solpPosicion.CodigoMaterialSap.Codigo).ToList();
+                var unidadSolicitada = unidadesDelMaterial.First(x => x.UnidadDeMedida == solpPosicion.Unidad.Descripcion);
+                if (!string.IsNullOrEmpty(cotizacionPosicion.UnidadMedida.Descripcion))
+                {
+                    var unidadCotizada = unidadesDelMaterial.First(x => x.UnidadDeMedida == cotizacionPosicion.UnidadMedida.Descripcion);
+                    cotizacionPosicion.UnidadMedida.Descripcion = unidadSolicitada.UnidadDeMedida;
+                    cotizacionPosicion.Cantidad = Math.Round(cotizacionPosicion.Cantidad * (unidadCotizada.Numerador / unidadCotizada.Denominador) / (unidadSolicitada.Numerador / unidadSolicitada.Denominador), 2);
+                    cotizacionPosicion.Precio = Math.Round((cotizacionPosicion.Precio / (unidadCotizada.Numerador / unidadCotizada.Denominador)) * (unidadSolicitada.Numerador / unidadSolicitada.Denominador), 2);
+                }
+            };
         }
 
         private SolpSAPDto ConvertirSOLPSAP(Solp solpActual, SolpPosicion postEntitySubPosicionesEliminadas)

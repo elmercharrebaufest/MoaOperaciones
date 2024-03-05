@@ -75,7 +75,9 @@
                     <td class="columna border2-right" style="width: 60px !important;" [ngStyle]="{'background-color': peticionPosicion.EstaEliminado ? '#ff00002e' : 'transparent'}">{{peticionPosicion.Posicion.Unidad.Descripcion}}</td>
                 </tr>
                 <tr *ngIf="esUltimaPosicion(peticionPosicion)">
-                    <td class="columna border2-right" colspan="8" style="width: 620px !important;">Total global</td>
+                    <td class="columna border2-right" colspan="8" style="width: 620px !important;">Total global
+                    {{ tablaOfertas.TienePosicionesEliminadas ? '/ Total con eliminadas' : '' }}
+                    </td>
                 </tr>
                 <tr *ngIf="esUltimaPosicion(peticionPosicion)">
                     <td class="columna border2-right" colspan="8" style="width: 620px !important;">Adjuntos y observaciones</td>
@@ -170,7 +172,8 @@
                     <ng-container *ngFor="let proveedor of tablaOfertas.Usuarios">
                         <ng-container *ngIf="proveedor.Cotizacion != null">
                             <td colspan="7" class="columna border2-left" style="width: 660px !important;">
-                                {{ proveedor.VerImportes ? 'ARP ' + (proveedor.Cotizacion.TotalGlobal | number:'1.2-2') : '' }}
+                                {{ proveedor.VerImportes ? 'ARP ' + (proveedor.Cotizacion.TotalGlobal | number:'1.2-2') : '' }} 
+                                {{ proveedor.VerImportes && proveedor.Cotizacion.TodasTotalGlobal > 0 ? '/ ' + (proveedor.Cotizacion.TodasTotalGlobal | number:'1.2-2') : '' }} 
                                 <i *ngIf="!proveedor.VerImportes" class="fa fa-eye-slash noVisible" style="justify-content:left"></i>
                             </td>
                         </ng-container>
@@ -311,7 +314,9 @@
                 </tr>
 
                 <tr *ngIf="esUltimaPosicion(peticionPosicion)">
-                    <td class="columna border2-right" colspan="6" style="width: 550px !important;">Total global</td>
+                    <td class="columna border2-right" colspan="6" style="width: 550px !important;">Total global
+                        {{ tablaOfertas.TienePosicionesEliminadas ? ' / Total con eliminadas' : ''}}
+                    </td>
                 </tr>
                 <tr *ngIf="esUltimaPosicion(peticionPosicion)">
                     <td class="columna border2-right" colspan="6" style="width: 550px !important;">Adjuntos y observaciones</td>
@@ -450,6 +455,7 @@
                         <ng-container *ngIf="proveedor.Cotizacion != null">
                             <td colspan="9" class="columna border2-left" style="width: 540px !important;">
                                 {{ proveedor.VerImportes ? 'ARP ' + (proveedor.Cotizacion.TotalGlobalSubPos | number:'1.2-2') : '' }}
+                                {{ proveedor.VerImportes && proveedor.Cotizacion.TodasTotalGlobalSubPos > 0 ? ' / ' + (proveedor.Cotizacion.TodasTotalGlobalSubPos | number:'1.2-2') : '' }}
                                 <i *ngIf="!proveedor.VerImportes" class="fa fa-eye-slash noVisible" style="justify-content:left"></i>
                             </td>
                         </ng-container>
