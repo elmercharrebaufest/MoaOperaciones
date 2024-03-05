@@ -1170,7 +1170,7 @@ namespace SustitucionMOAUtils.Services
                     TipoPosicionCodigo = x.Posiciones.Select(posiciones => posiciones.TipoPosicion.Codigo).FirstOrDefault(),
                     SolpConAdjuntos = x.Pliego.Archivos.Where(r => r.FileKey == FileKeys.AdjuntoCotizacionesSolp).Any(),
                     ChatSinLeer = x.ChatInternoCompras.Any(a => a.Leido == false && a.Usuario.Roles.Any(r => r.Codigo == rol)),  
-                    TienePeticionDeOferta = x.Posiciones.Any(posi => posi.Peticiones.Any())
+                    TienePeticionDeOferta = x.Posiciones.Any(posi => posi.Peticiones.Any())                    
                 },
                 paginacion,
                 x => x.FechaBorrado == null && (string.IsNullOrEmpty(nroSolp) || x.NroSolp.ToUpper().StartsWith(nroSolp.ToUpper())) &&
