@@ -295,8 +295,8 @@
                                                 <td style="text-align: center;" colspan="4">Sin datos</td>
                                             </tr>
                                         </ng-template>
-                                        <ng-template pTemplate="body" let-licitacion>
-                                            <tr>
+                                        <ng-template pTemplate="body" let-licitacion >
+                                            <tr *ngIf="licitacion != null && licitacion.Solp_Id === rowData.Id">
                                                 <td class="columna">{{licitacion.Id}}</td>
                                                 <td class="columna">
                                                     {{licitacion.PlazoDeOferta | customDateFormat | date :'d/M/yyyy HH:mm'}}
@@ -369,16 +369,15 @@
 
 <app-revision-tecnica [(displayRevisionTecnica)]="displayRevisionTecnica"
                       (cerrardisplayRevisionTecnicaEmitter)="cerrarModalRevisionTecnica()"
-                      (onCloseModalEmitter)="cancelarModal()"
                       (descargarArchivoEmitter)="descargarArchivo($event)"
                       (descargarAdjuntosCotizacionEmitter)="descargarAdjuntosCotizacion($event)"
+                      (grabarRevisionTecnicaEmitter)="grabarRevisionTecnica($event)"
                       [(peticion)]="peticion">
 </app-revision-tecnica>
 
 <app-circular [(locale)]="es"
               [(displayCircular)]="displayCircular"
               (cerrarCircularEmitter)="cerrarCircular()"
-              (onCloseModalEmitter)="cancelarModal()"
               [(peticion)]="peticion"
               [(solicitante)]="solicitante">
 </app-circular>
@@ -402,6 +401,6 @@
 </app-orden-de-compra-detalle>
 
 <app-chat-interno [(displayChatInterno)]="displayChatInterno"
-                  [(chat)]="chat"
-                  (cerrardisplayChatEmitter)="cerrarModalChat()">
+                  [(chat)]="chat">
+    (cerrardisplayChatEmitter)="cerrarModalChat()"
 </app-chat-interno>

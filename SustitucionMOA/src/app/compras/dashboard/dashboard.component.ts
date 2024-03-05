@@ -845,8 +845,10 @@ export class DashboardComponent extends ListBaseComponent {
                     this.sessionDataService.logout();
                 }
                 else {                    
-                    this.peticionesDeOferta = result.data;
-                    console.log("PETICIONES", result.data);
+                    const nuevasPeticiones = result.data.filter(nuevaPeticion => 
+                        !this.peticionesDeOferta.some(peticion => peticion.Id === nuevaPeticion.Id)
+                    );                    
+                    this.peticionesDeOferta.push(...nuevasPeticiones);
                     this.blockUI.stop();
                 }
             },
@@ -855,6 +857,7 @@ export class DashboardComponent extends ListBaseComponent {
                 this.mensajeComponent.setErrorMsg(error.message);
             })
     }
+
 
 
     filtrarOrdenesDeCompra(solpId): AdjudicacionDto[] {
