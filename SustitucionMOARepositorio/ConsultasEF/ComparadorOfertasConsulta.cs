@@ -30,8 +30,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                 where po.Id == PeticionOferta_Id
                                 select new PeticionDeOfertaDto
                                 {
-                                    Id = po.Id,   
-                                    //REVISAR
+                                    Id = po.Id,  
                                     SolpDto = new SolpDto{ Urgencia = po.Posiciones.FirstOrDefault().SolpPosicion.Solp.Urgencia, TrabajoYaHecho = po.Posiciones.FirstOrDefault().SolpPosicion.Solp.TrabajoYaHecho, Adicional = po.Posiciones.FirstOrDefault().SolpPosicion.Solp.Adicional,
                                         CondEspProveedorAsignado = po.Posiciones.FirstOrDefault().SolpPosicion.Solp.CondEspProveedorAsignado, ObservacionesCotizacion = po.Posiciones.FirstOrDefault().SolpPosicion.Solp.Pliego.ObservacionesCotizacion },
                                     FechaCreacion = po.FechaCreacion,

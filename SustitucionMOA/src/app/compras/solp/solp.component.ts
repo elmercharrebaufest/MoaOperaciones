@@ -942,9 +942,11 @@ export class SolpComponent extends BaseComponent implements OnInit {
                             });
                         });
                         this.solpActual.usuarioComprasList = [{ Id: null, CodigoDescripcion: "Seleccione un usuario" }, ...this.solpActual.usuarioComprasList];
+                        if(this.solpActual.selectUsuarioCompras == undefined || this.solpActual.selectUsuarioCompras == null){
                         this.solpActual.selectUsuarioCompras = this.solpActual.usuarioComprasId > 0
                             ? this.solpActual.usuarioComprasList.find(x => x.Id === this.solpActual.usuarioComprasId)
                             : this.solpActual.usuarioComprasList[0];
+                        }
                         this.spinnerComponent.hideIt();
                     }
                 },
@@ -1011,8 +1013,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
     // Todos los Modal
     finalizar({ selectUsuarioCompras, solpActual }) {
         this.solpActual = solpActual;
-        this.solpActual.selectUsuarioCompras = selectUsuarioCompras;
-
+        this.solpActual.selectUsuarioCompras = selectUsuarioCompras;   
         this.cabecera.validarTabCompleto();
         this.guardarCambios({ mostrarPreview: false, enviarSap: true, guardarPorPaso: false });
         this.displayFinalizar = false;
@@ -1023,7 +1024,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
 
     // Abre el modal del boton finalizar
     showFinalizarDialog() {
-        this.obtenerUsuarioCompras();
+        this.obtenerUsuarioCompras();      
         this.displayFinalizar = true;
     }
 
