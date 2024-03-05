@@ -1170,7 +1170,8 @@ namespace SustitucionMOAUtils.Services
                     TipoPosicionCodigo = x.Posiciones.Select(posiciones => posiciones.TipoPosicion.Codigo).FirstOrDefault(),
                     SolpConAdjuntos = x.Pliego.Archivos.Where(r => r.FileKey == FileKeys.AdjuntoCotizacionesSolp).Any(),
                     ChatSinLeer = x.ChatInternoCompras.Any(a => a.Leido == false && a.Usuario.Roles.Any(r => r.Codigo == rol)),  
-                    TienePeticionDeOferta = x.Posiciones.Any(posi => posi.Peticiones.Any())                    
+                    TienePeticionDeOferta = x.Posiciones.Any(posi => posi.Peticiones.Any()),
+                    ClaseDocumento_Id = x.ClaseDocumento_Id
                 },
                 paginacion,
                 x => x.FechaBorrado == null && (string.IsNullOrEmpty(nroSolp) || x.NroSolp.ToUpper().StartsWith(nroSolp.ToUpper())) &&
@@ -8234,6 +8235,13 @@ namespace SustitucionMOAUtils.Services
             return alternateView;
         }
 
+        public List<int> ListarClaseDocumento(int usuarioId)
+        {
+            List<int> clasesDoc = new List<int>();
+            clasesDoc = repositorio.Listar<Solp>(x => x.UsuarioCreacion_Id == usuarioId && x.ClaseDocumento_Id.HasValue)
+                .Select(x => x.ClaseDocumento_Id.Value).Distinct().ToList();
+            return clasesDoc;
+        }
 
         public static class SolpTemplateKeys
         {

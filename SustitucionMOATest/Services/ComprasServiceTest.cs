@@ -336,7 +336,8 @@ namespace SustitucionMOATest.Services
             EstadoDocumento_Id = 1,
             EstadoDocumento = new TablaEstado(),
             EstadoPasos = "",
-            LiberadoresSapSolp = new List<LiberadorSapSolp> { new LiberadorSapSolp { Id = 1, Solp_Id = 1, LiberadorSap_Id = 1 } }
+            LiberadoresSapSolp = new List<LiberadorSapSolp> { new LiberadorSapSolp { Id = 1, Solp_Id = 1, LiberadorSap_Id = 1 } },
+            ClaseDocumento_Id = 1
         };
         private readonly SolpDto solpDto = new SolpDto
         {
@@ -2610,6 +2611,17 @@ namespace SustitucionMOATest.Services
             target.ObtenerDatosReporteSolp();
             repositorioMock.Verify(y => y.Listar(It.IsAny<Expression<Func<Solp, SolpDto>>>(),
                 It.IsAny<Expression<Func<Solp, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc), Times.Exactly(monthsApart));
+        }
+
+        [Test]
+        public void ListarClaseDocumentoOk()
+        {
+            List<int> clasesDoc = new List<int>();
+            repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<Solp, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null)).Returns(new List<Solp>() { solp });
+            var result = target.ListarClaseDocumento(1);
+
+            Assert.That(result, Is.Not.Null);
+            Assert.AreEqual(result.GetType(), clasesDoc.GetType());
         }
     }
 }

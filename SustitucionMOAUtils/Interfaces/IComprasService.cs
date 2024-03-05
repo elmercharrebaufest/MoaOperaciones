@@ -92,5 +92,6 @@ namespace SustitucionMOAUtils.Interfaces
         void ObtenerDatosReporteSolp();
 
         List<PeticionDeOfertaDto> ListarPeticionesDeOferta(int solpId);
+        List<int> ListarClaseDocumento(int usuarioId);
     }
 }
