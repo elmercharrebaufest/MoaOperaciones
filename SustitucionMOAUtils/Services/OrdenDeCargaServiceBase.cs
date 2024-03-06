@@ -13,7 +13,7 @@ using System.Collections.Generic;
 using System.Linq;
 using ScatoRepo = SustitucionMOAModel.Models.WebApiMap.ScatoRepositorio;
 using SustitucionMOARepositorio;
-using System.Configuration;
+using CNRTModel = SustitucionMOAModel.Models.WebApiMap.CNRT;
 
 namespace SustitucionMOAUtils.Services
 {
@@ -23,17 +23,21 @@ namespace SustitucionMOAUtils.Services
         protected readonly IScatoConsumer scatoConsumer;
         protected readonly IScatoRepositorioClient scatoRepositorioClient;
         protected readonly IRepositorio repositorio;
-        
+        protected readonly ICNRTClient cNRTClient;
+
         protected OrdenDeCargaServiceBase(
             IOrdenCargaConsumerMOA ordenCargaConsumer,
             IScatoConsumer scatoConsumer,
             IScatoRepositorioClient scatoRepositorioClient,
-            IRepositorio repositorio)
+            IRepositorio repositorio,
+            ICNRTClient cNRTClient
+            )
         {
             this.scatoConsumer = scatoConsumer;
             this.ordenCargaConsumer = ordenCargaConsumer;
             this.scatoRepositorioClient = scatoRepositorioClient;
             this.repositorio = repositorio;
+            this.cNRTClient = cNRTClient;
         }
 
 
@@ -217,6 +221,47 @@ namespace SustitucionMOAUtils.Services
                 throw new Exception("No se encontró el proveedor con ID " + idProveedor);
             }
             return new ProveedorDto(proveedor);
+        }
+
+        public ValidarCamionResponse ValidarCamion(string patenteChasis, string patenteAcoplado)
+        {
+            try
+            {
+                var cnrtResponse = cNRTClient.ObtenerEquipos(patenteChasis, patenteAcoplado);
+                var dominios = cnrtResponse.Data.Dominios;
+
+                if (dominios == null || !dominios.Any())
+                {
+                    return new ValidarCamionResponse { ExisteCamion = false };
+                }
+
+                var tipoVehiculo = cnrtResponse.TipoVehiculoCNRTSegunCategoriaEscalado;
+
+                if (dominios.Any(d => d.Ruta == null || d.Ruta.CantEjes <= 0) && (
+                        tipoVehiculo == null ||
+                        tipoVehiculo == CNRTModel.TipoVehiculoCNRT.CamionBitren))
+                {
+                    return new ValidarCamionResponse { ExisteCamion = false };
+                }
+                else
+                {
+                    return new ValidarCamionResponse
+                    {
+                        ExisteCamion = true,
+                        EsCamionEscalable = (
+                            tipoVehiculo == CNRTModel.TipoVehiculoCNRT.CamionC ||
+                            tipoVehiculo == CNRTModel.TipoVehiculoCNRT.CamionD ||
+                            tipoVehiculo == CNRTModel.TipoVehiculoCNRT.CamionE)
+                    };
+                }
+            }
+            catch (InfoCustomException ice) { throw ice; }
+            catch (ValidationCustomException vce) { throw vce; }
+            catch (Exception ex)
+            {
+                Log.Error($"Error al validar camión con patentes: {patenteChasis} y {patenteAcoplado}.", ex);
+                throw;
+            }
         }
     }
 }
