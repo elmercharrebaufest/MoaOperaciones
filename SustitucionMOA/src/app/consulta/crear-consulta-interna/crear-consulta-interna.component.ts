@@ -468,7 +468,7 @@ export class CrearConsultaInternaComponent extends ListBaseComponent implements 
     if (this.categoriaCode == 'ORD' && this.ordenId > 0 && this.subcategoria != null) {
       if (this.subcategoria.Code == 'CTG') {
         this.asunto = `Orden Nro ${this.ordenId} - CTG Pendiente.`
-        this.comentario = `Estimado usuario, la CTG para la patente: ${this.getPatenteChasisOC()} se encuentra pendiente.`;
+        this.comentario = `Estimado usuario, Ud tiene un ctg activo para la patente ${this.getPatenteChasisOC()}, regularizar para poder dar ingreso`;
       } else if (this.subcategoria.Code == 'ERROROC') {
         this.asunto = `Orden Nro ${this.ordenId} - Error de datos.`
         this.comentario = `Estimado usuario, hubo un error en uno de los datos ingresados para la orden nro ${this.ordenId}.`;

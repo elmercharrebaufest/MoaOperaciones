@@ -19,14 +19,10 @@
     <AssemblyName>SustitucionMOA</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <UseIISExpress>true</UseIISExpress>
-    <IISExpressSSLPort>
-    </IISExpressSSLPort>
-    <IISExpressAnonymousAuthentication>
-    </IISExpressAnonymousAuthentication>
-    <IISExpressWindowsAuthentication>
-    </IISExpressWindowsAuthentication>
-    <IISExpressUseClassicPipelineMode>
-    </IISExpressUseClassicPipelineMode>
+    <IISExpressSSLPort>58280</IISExpressSSLPort>
+    <IISExpressAnonymousAuthentication>enabled</IISExpressAnonymousAuthentication>
+    <IISExpressWindowsAuthentication>disabled</IISExpressWindowsAuthentication>
+    <IISExpressUseClassicPipelineMode>false</IISExpressUseClassicPipelineMode>
     <UseGlobalApplicationHostFile />
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
@@ -423,6 +419,8 @@
     <Content Include="src\app\compras\solp\steps\posicion\tab-proveedores\tab-proveedores.component.css" />
     <Content Include="src\app\compras\solp\steps\posicion\tab-proveedores\tab-proveedores.component.html" />
     <Content Include="src\app\compras\solp\steps\posicion\tab-subposicion\tab-subposicion.component.html" />
+    <Content Include="src\app\consulta\crear-consulta-interna\crear-consulta-interna.component.css" />
+    <Content Include="src\app\consulta\crear-consulta-interna\crear-consulta-interna.component.html" />
     <Content Include="src\app\liquidacion\no-granos\pendiente-registro\liquidacion.no-granos.pendiente-registro.component.html" />
     <Content Include="src\app\liquidacion\no-granos\registrada\liquidacion.no-granos.registrado.component.html" />
     <Content Include="src\app\ordenes-de-carga-fason\alta\ordenes-de-carga-fason.alta.component.css" />
@@ -1286,6 +1284,7 @@
     <TypeScriptCompile Include="src\app\consulta\consulta.module.spec.ts" />
     <TypeScriptCompile Include="src\app\consulta\consulta.module.ts" />
     <TypeScriptCompile Include="src\app\consulta\consulta.service.ts" />
+    <TypeScriptCompile Include="src\app\consulta\crear-consulta-interna\crear-consulta-interna.component.ts" />
     <TypeScriptCompile Include="src\app\consulta\crear-consulta\crear-consulta.component.ts" />
     <TypeScriptCompile Include="src\app\consulta\detalle\consulta-detalle.component.ts" />
     <TypeScriptCompile Include="src\app\consulta\mis-consultas\mis-consultas.component.ts" />
