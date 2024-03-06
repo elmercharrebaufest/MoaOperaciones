@@ -23,7 +23,7 @@ namespace SustitucionMOAWS.WSConsumers
         private readonly IObtenerTipoCambioConsumerMOA obtenerTipoCambioConsumerMOA;
         private readonly IRepositorio repositorio;
 
-        public CrearPedidoConsumerMOA(IObtenerUnidadesDeMedidaAlternativasConsumerMOA _obtenerUnidadesDeMedidaConsumerMOA, 
+        public CrearPedidoConsumerMOA(IObtenerUnidadesDeMedidaAlternativasConsumerMOA _obtenerUnidadesDeMedidaConsumerMOA,
             IObtenerTipoCambioConsumerMOA _obtenerTipoCambioConsumerMOA, IRepositorio repositorio)
         {
             var url = "http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MMRFC_CREAR_PEDIDO&amp;interfaceNamespace=urn%3AOPERACIONES";
@@ -76,7 +76,6 @@ namespace SustitucionMOAWS.WSConsumers
                                                         out BAPIRET2[] EX_RETURN
                                                         );
 
-
             var respuesta = new CrearPedidoConsumerMOAResponse();
 
             respuesta.NumeroPedido = EX_PO_NUMBER;
@@ -127,7 +126,6 @@ namespace SustitucionMOAWS.WSConsumers
             var numeroDePaquete = 1;
             bool esPosicionDeMateriales = adjudicacion.Posiciones.FirstOrDefault().Posicion.TipoPosicion.Codigo == "MATERIALES";
             var unidadesDeMedidaSAP = new List<UnidadesDeMedida>();
-
             var fecha = DateTime.Now;
 
             var posicionesSolp = repositorio.Listar<SolpPosicion>(posi => adjudicacion.Posiciones.Select(x => x.SolpPosicion_Id).Contains(posi.Id));
@@ -136,14 +134,14 @@ namespace SustitucionMOAWS.WSConsumers
             {
                 unidadesDeMedidaSAP = obtenerUnidadesDeMedidaConsumerMOA.Request(posicionesSolp.Select(x => x.MaterialSolp?.Codigo).ToList());
             }
-           
+
             //aca el metodo solo usa las posiciones seleccionadas por el comprador
-            var posIds = adjudicacion.Posiciones.Select(x => x.CotizacionPosicion.PeticionDeOfertaSolpPosicion.SolpPosicion_Id).ToList();           
+            var posIds = adjudicacion.Posiciones.Select(x => x.CotizacionPosicion.PeticionDeOfertaSolpPosicion.SolpPosicion_Id).ToList();
 
             foreach (var solpPosicion in posicionesSolp.OrderBy(x => x.Id))
             {
                 var adjudicacionPosicion = adjudicacion.Posiciones.Where(a => a.CotizacionPosicion.PeticionDeOfertaSolpPosicion.SolpPosicion_Id == solpPosicion.Id).Single();
-                decimal precioConvertido = adjudicacionPosicion.Monto??0;
+                decimal precioConvertido = adjudicacionPosicion.Monto ?? 0;
                 string unidadDeMedida = esPosicionDeMateriales ? adjudicacionPosicion.CotizacionPosicion.UnidadDeMedida.Descripcion : "001";
                 if (esPosicionDeMateriales && solpPosicion.Unidad_Id != adjudicacionPosicion.CotizacionPosicion.UnidadDeMedida_Id)
                 {
@@ -151,10 +149,10 @@ namespace SustitucionMOAWS.WSConsumers
                     var unidadSolicitada = unidadesDelMaterial.First(x => x.UnidadDeMedida == solpPosicion.Unidad.Descripcion);
                     var unidadCotizada = unidadesDelMaterial.First(x => x.UnidadDeMedida == adjudicacionPosicion.CotizacionPosicion.UnidadDeMedida.Descripcion);
                     unidadDeMedida = unidadSolicitada.UnidadDeMedida;
-                    precioConvertido = Math.Round(adjudicacionPosicion.Monto??0 / (unidadCotizada.Numerador / unidadCotizada.Denominador) *
+                    precioConvertido = Math.Round(adjudicacionPosicion.Monto ?? 0 / (unidadCotizada.Numerador / unidadCotizada.Denominador) *
                         (unidadSolicitada.Numerador / unidadSolicitada.Denominador), 2);
                 };
-                numeroPosicion = solpPosicion.Indice ?? 0;
+                numeroPosicion++;
                 numeroDePaquete = solpPosicion.Indice ?? 0;
                 preqItem = $"{numeroPosicion:00000}";
                 numeroDeImputacion = "01";// SERIAL_NO por ahora siempre 01 por que no hay imputaciones multiples
@@ -176,7 +174,7 @@ namespace SustitucionMOAWS.WSConsumers
                 cabeceraDelPedido.PMNTTRMS = ""; //"BASE"; //PMNTTRMS    DZTERM Clave de condiciones de pago
                 //cabeceraDelPedido.EXCH_RATE = 0; //EXCH_RATE   WKURS Tipo de cambio de moneda
                 cabeceraDelPedido.EX_RATE_FX = ""; //EX_RATE_FX KUFIX   Indicador tipo de cambio fijo
-                
+
                 solpPedidoSAP.IM_POHEADERList = cabeceraDelPedido;
                 solpPedidoSAP.IM_POHEADERXList = new ZMPES6790
                 {
@@ -257,7 +255,7 @@ namespace SustitucionMOAWS.WSConsumers
                 IM_POITEM.PREQ_NO = solpPosicion.Solp.NroSolp;
                 IM_POITEM.PREQ_ITEM = preqItem;
                 IM_POITEM.PCKG_NO = esPosicionDeMateriales ? "" : $"{numeroDePaquete:0000000000}";
-           
+
                 solpPedidoSAP.IM_POITEMList.Add(IM_POITEM);
 
                 solpPedidoSAP.IM_POITEMXList.Add(new ZMPES6810
@@ -321,8 +319,6 @@ namespace SustitucionMOAWS.WSConsumers
                     CHANGE_ID = "X",
                 });
 
-            
-
                 //Nombre: ZBAPIMEPOACCOUNT IM_POACCOUNT Denominación:	Imputación
                 var imputacion = new ZMPES6830();
                 imputacion.PO_ITEM = preqItem;
@@ -375,7 +371,6 @@ namespace SustitucionMOAWS.WSConsumers
                 //subposiciones
                 if (!esPosicionDeMateriales)
                 {
-
                     var LINE_NO = 1;
                     //cabecera de subposiciones 
                     var cabeceraSubPos = new BAPIESLLC
@@ -404,7 +399,7 @@ namespace SustitucionMOAWS.WSConsumers
                         subposicionSap.UOM_ISO = cotizacionSubPosicion.UnidadDeMedida.Codigo;
                         subposicionSap.PRICE_UNIT = 1;
                         subposicionSap.PRICE_UNITSpecified = true;
-                        subposicionSap.GR_PRICE = cotizacionSubPosicion.Precio.Value * obtenerTipoCambioConsumerMOA.Request(fecha.ToString("yyyy-MM-dd"), adjudicacion.Moneda.Codigo, cotizacionSubPosicion.Moneda.Codigo).TipoCambio;                         
+                        subposicionSap.GR_PRICE = cotizacionSubPosicion.Precio.Value * obtenerTipoCambioConsumerMOA.Request(fecha.ToString("yyyy-MM-dd"), adjudicacion.Moneda.Codigo, cotizacionSubPosicion.Moneda.Codigo).TipoCambio;
                         subposicionSap.GR_PRICESpecified = true;
 
                         solpPedidoSAP.IM_SERVICESList.Add(subposicionSap);
@@ -464,10 +459,10 @@ namespace SustitucionMOAWS.WSConsumers
                         });
                     }
                 }
-
             }
 
-            if (adjudicacion.Posiciones.FirstOrDefault().Posicion.Solp.Urgencia == true) {
+            if (adjudicacion.Posiciones.FirstOrDefault().Posicion.Solp.Urgencia == true)
+            {
                 solpPedidoSAP.IM_POTEXTITEMList.Add(new BAPIMEPOTEXT
                 {
                     TEXT_ID = "F12",
@@ -478,15 +473,13 @@ namespace SustitucionMOAWS.WSConsumers
                 });
             }
 
+            solpPedidoSAP.IM_URL = ConfigurationManager.AppSettings["SpaUrl"] + "/verLegajoOrdenDeCompra/" + adjudicacion.Id + "/" + adjudicacion.Token;
 
-             solpPedidoSAP.IM_URL = ConfigurationManager.AppSettings["SpaUrl"] + "/verLegajoOrdenDeCompra/" + adjudicacion.Id + "/" + adjudicacion.Token;
-           
             return solpPedidoSAP;
         }
-   
+
         private static string ObtenerImputacion(bool esPosicionDeMateriales, SolpPosicion posicion, List<string> tipos)
         {
-
             if (tipos.Contains(posicion.TipoImputacion?.Codigo.ToLower()))
             {
                 if (esPosicionDeMateriales)
@@ -502,7 +495,6 @@ namespace SustitucionMOAWS.WSConsumers
             {
                 return "";
             }
-
         }
 
         private static string ObtenerCuentaMayor(bool esPosicionDeMateriales, SolpPosicion posicion)
@@ -561,7 +553,6 @@ namespace SustitucionMOAWS.WSConsumers
         //        cabeceraDelPedido.PMNTTRMS = ""; //"BASE"; //PMNTTRMS    DZTERM Clave de condiciones de pago
         //        //cabeceraDelPedido.EXCH_RATE = 0; //EXCH_RATE   WKURS Tipo de cambio de moneda
         //        cabeceraDelPedido.EX_RATE_FX = ""; //EX_RATE_FX KUFIX   Indicador tipo de cambio fijo
-
 
         //        solpPedidoSAP.IM_POHEADERList = cabeceraDelPedido;
         //        solpPedidoSAP.IM_POHEADERXList = new ZMPES6790
@@ -855,7 +846,6 @@ namespace SustitucionMOAWS.WSConsumers
         //                solpPedidoSAP.IM_POSRVACCESSVALUESList.Add(imputacionSubPos);
 
         //            }
-
         //        }
 
 
@@ -932,9 +922,9 @@ namespace SustitucionMOAWS.WSConsumers
             {
                 tipoDeCambio = obtenerTipoCambioConsumerMOA.Request(fecha.ToString("yyyy-MM-dd"), moneda, adjudicacion.Moneda.Codigo).TipoCambio;
             }
-           
+
             foreach (var item in adjudicacionPosicion.CotizacionPosicion.CotizacionSubPosiciones)
-            {               
+            {
                 total += item.Cantidad.Value * item.Precio.Value * tipoDeCambio;
             }
 
@@ -951,7 +941,6 @@ namespace SustitucionMOAWS.WSConsumers
 
             return total;
         }
-
 
     }
 
@@ -1019,7 +1008,5 @@ namespace SustitucionMOAWS.WSConsumers
         CrearPedidoConsumerMOAResponse Request(Adjudicacion adjudicacion, bool creadoAutomatico = false);
 
     }
-
-  
 
 }
