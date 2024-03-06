@@ -119,8 +119,8 @@ namespace SustitucionMOAWS.WSConsumers
             var usuarioOrganizacionDeCompra = adjudicacion.Usuario.OrganizacionDeCompra;
             //var solp = adjudicacion.Solp;
             SolpPedidoSAPDto solpPedidoSAP = new SolpPedidoSAPDto();
-            int numeroPosicion = 0;
-            string preqItem = "";
+
+            var poItem = 0;
             string numeroDeImputacion = "";
             var PCKG_NO = 1000;
             var numeroDePaquete = 1;
@@ -152,9 +152,9 @@ namespace SustitucionMOAWS.WSConsumers
                     precioConvertido = Math.Round(adjudicacionPosicion.Monto ?? 0 / (unidadCotizada.Numerador / unidadCotizada.Denominador) *
                         (unidadSolicitada.Numerador / unidadSolicitada.Denominador), 2);
                 };
-                numeroPosicion++;
+
+                poItem++;
                 numeroDePaquete = solpPosicion.Indice ?? 0;
-                preqItem = $"{numeroPosicion:00000}";
                 numeroDeImputacion = "01";// SERIAL_NO por ahora siempre 01 por que no hay imputaciones multiples
 
                 //Nombre: ZBAPIMEPOHEADER Denominación:	Cabecera del Pedido de Compras
@@ -198,7 +198,7 @@ namespace SustitucionMOAWS.WSConsumers
                 //Nombre: ZBAPIMEPOITEM Denominación:	Posición de PEDIDOS
                 var IM_POITEM = new ZMPES6800();
 
-                IM_POITEM.PO_ITEM = preqItem;
+                IM_POITEM.PO_ITEM = $"{poItem:00000}";
                 IM_POITEM.SHORT_TEXT = solpPosicion.Tarea;
                 IM_POITEM.PLANT = solpPosicion.Centro.CodigoSap.ToString();
                 IM_POITEM.MATL_GROUP = solpPosicion.GrupoArticulo?.CodigoSap?.ToString() ?? "";
@@ -253,14 +253,14 @@ namespace SustitucionMOAWS.WSConsumers
                 IM_POITEM.RFQ_NO = "";
                 IM_POITEM.RFQ_ITEM = "";
                 IM_POITEM.PREQ_NO = solpPosicion.Solp.NroSolp;
-                IM_POITEM.PREQ_ITEM = preqItem;
+                IM_POITEM.PREQ_ITEM = $"{solpPosicion.Indice ?? 0:00000}";
                 IM_POITEM.PCKG_NO = esPosicionDeMateriales ? "" : $"{numeroDePaquete:0000000000}";
 
                 solpPedidoSAP.IM_POITEMList.Add(IM_POITEM);
 
                 solpPedidoSAP.IM_POITEMXList.Add(new ZMPES6810
                 {
-                    PO_ITEM = preqItem,
+                    PO_ITEM = $"{poItem:00000}",
                     DELETE_IND = "",
                     SHORT_TEXT = "X",
                     MATERIAL = "X",
@@ -300,7 +300,7 @@ namespace SustitucionMOAWS.WSConsumers
 
                 solpPedidoSAP.IM_POCONDList.Add(new ZMPES6870
                 {
-                    ITM_NUMBER = preqItem,  //el número de ítem al que corresponda la condición
+                    ITM_NUMBER = $"{poItem:00000}",  //el número de ítem al que corresponda la condición
                     COND_TYPE = creadoAutomatico ? "ZP01" : "ZP00",
                     //ZP01 toma los datos del registro info
                     //ZP00 toma los datos de la adjudicacion
@@ -312,7 +312,7 @@ namespace SustitucionMOAWS.WSConsumers
                 });
                 solpPedidoSAP.IM_POCONDXList.Add(new ZMPES6880
                 {
-                    ITM_NUMBER = preqItem,
+                    ITM_NUMBER = $"{poItem:00000}",
                     COND_TYPE = "X",
                     COND_VALUE = "X",
                     CURRENCY = "X",
@@ -321,7 +321,7 @@ namespace SustitucionMOAWS.WSConsumers
 
                 //Nombre: ZBAPIMEPOACCOUNT IM_POACCOUNT Denominación:	Imputación
                 var imputacion = new ZMPES6830();
-                imputacion.PO_ITEM = preqItem;
+                imputacion.PO_ITEM = $"{poItem:00000}";
                 imputacion.SERIAL_NO = numeroDeImputacion;
                 imputacion.GL_ACCOUNT = ObtenerCuentaMayor(esPosicionDeMateriales, solpPosicion);
                 imputacion.QUANTITY = esPosicionDeMateriales ? adjudicacionPosicion.Cantidad : 0;
@@ -339,7 +339,7 @@ namespace SustitucionMOAWS.WSConsumers
 
                 solpPedidoSAP.IM_POACCOUNTXList.Add(new ZMPES6840
                 {
-                    PO_ITEM = preqItem,
+                    PO_ITEM = $"{poItem:00000}",
                     SERIAL_NO = numeroDeImputacion,
                     DELETE_IND = "",
                     QUANTITY = "X",
@@ -357,7 +357,7 @@ namespace SustitucionMOAWS.WSConsumers
                 //Nombre: ZBAPIMEPOADDREDELIVERY Denominación:	Direcciones de entrega
                 solpPedidoSAP.IM_POADDREDELIVERYList.Add(new ZMPES6820
                 {
-                    PO_ITEM = preqItem,
+                    PO_ITEM = $"{poItem:00000}",
                     POSTL_COD1 = solpPosicion.CpEntrega,
                     CITY = solpPosicion.Centro.Descripcion,
                     ADDR_NO = "",
@@ -409,7 +409,7 @@ namespace SustitucionMOAWS.WSConsumers
                             PCKG_NO = $"{PCKG_NO:0000000000}",
                             LINE_NO = $"{LINE_NO++:0000000000}",
                             PERCENTAGE = 100,
-                            SERNO_LINE = $"{numeroPosicion:00}",
+                            SERNO_LINE = $"{poItem:00}",
                             SERIAL_NO = numeroDeImputacion,
                         };
 
@@ -421,14 +421,14 @@ namespace SustitucionMOAWS.WSConsumers
                 solpPedidoSAP.IM_POSCHEDULEList.Add(new BAPIMEPOSCHEDULE
                 {
                     DELIVERY_DATE = adjudicacionPosicion.PlazoDeEntrega.ToString("dd.MM.yyyy"),
-                    PO_ITEM = preqItem,
+                    PO_ITEM = $"{poItem:00000}",
                     SCHED_LINE = "1"
                 });
 
                 solpPedidoSAP.IM_POSCHEDULEXList.Add(new BAPIMEPOSCHEDULX
                 {
                     DELIVERY_DATE = "X",
-                    PO_ITEM = preqItem,
+                    PO_ITEM = $"{poItem:00000}",
                     SCHED_LINE = "1"
                 });
             }
@@ -467,7 +467,7 @@ namespace SustitucionMOAWS.WSConsumers
                 {
                     TEXT_ID = "F12",
                     PO_NUMBER = "",
-                    PO_ITEM = preqItem,
+                    PO_ITEM = $"{poItem:00000}",
                     TEXT_FORM = "*",
                     TEXT_LINE = "Urgencia"
                 });

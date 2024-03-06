@@ -212,7 +212,6 @@ namespace SustitucionMOAWS.WSConsumers
             modificarPedidoSAP.PURCHASEORDER = adjudicacion.Posiciones.FirstOrDefault().Posicion.Solp.NroOrdenDeCompraAdicional;// "4123001763";
 
             int numeroPosicion = 0;
-            string preqItem = "";
             string poItem = "";
             string numeroDeImputacion = "";
             var PCKG_NO = 1000;
@@ -277,9 +276,7 @@ namespace SustitucionMOAWS.WSConsumers
                 nroItemPO += 1;
                 var adjudicacionPosicion = adjudicacion.Posiciones.Where(a => a.CotizacionPosicion.PeticionDeOfertaSolpPosicion.SolpPosicion_Id == posicion.Id).Single();
 
-                numeroPosicion++;
                 numeroDePaquete = posicion.Indice ?? 0;
-                preqItem = $"{numeroPosicion:00000}";
                 numeroDeImputacion = "01";// SERIAL_NO por ahora siempre 01 por que no hay imputaciones multiples
                 poItem = $"{nroItemPO:00000}";
 
@@ -341,7 +338,7 @@ namespace SustitucionMOAWS.WSConsumers
                 IM_POITEM.RFQ_NO = "";
                 IM_POITEM.RFQ_ITEM = "";
                 IM_POITEM.PREQ_NO = posicion.Solp.NroSolp;
-                IM_POITEM.PREQ_ITEM = preqItem;
+                IM_POITEM.PREQ_ITEM = $"{posicion.Indice ?? 0:00000}";
                 IM_POITEM.PCKG_NO = esPosicionDeMateriales ? "" : $"{numeroDePaquete:0000000000}";
 
                 modificarPedidoSAP.POITEM.Add(IM_POITEM);
@@ -555,7 +552,7 @@ namespace SustitucionMOAWS.WSConsumers
                 {
                     TEXT_ID = "F12",
                     PO_NUMBER = "",
-                    PO_ITEM = preqItem,
+                    PO_ITEM = poItem,
                     TEXT_FORM = "*",
                     TEXT_LINE = "Urgencia"
                 });
