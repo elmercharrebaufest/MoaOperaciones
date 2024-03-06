@@ -72,7 +72,7 @@ namespace SustitucionMOA
 
             RecurringJob.RemoveIfExists("ObtenerSolpsDesdeSAPJob");
 
-            RecurringJob.AddOrUpdate<Jobs.IActualizarLocalidadesPartidos>("ActualizarLocalidades", j => j.Execute(),
+            RecurringJob.AddOrUpdate<Jobs.IActualizarLocalidadesPartidosJob>("ActualizarLocalidades", j => j.Execute(),
                  "0 0 * * *", tz);
 
             RecurringJob.AddOrUpdate<Jobs.IActualizarSISAJob>("ActualizarSISAJob", j => j.Execute(),

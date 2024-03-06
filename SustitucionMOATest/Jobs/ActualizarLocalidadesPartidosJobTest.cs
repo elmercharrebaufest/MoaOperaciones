@@ -14,13 +14,13 @@ using System.Linq;
 namespace SustitucionMOATest.Jobs
 {
     [TestFixture]
-    public class ActualizarLocalidadesPartidosTest
+    public class ActualizarLocalidadesPartidosJobTest
     {
 
         private Mock<IRepositorio> repositorio;
         private Mock<IDataAgroApiService> dataAgroApiService;
 
-        private IActualizarLocalidadesPartidos actualizarLocalidadesPartidos;
+        private IActualizarLocalidadesPartidosJob actualizarLocalidadesPartidos;
 
         private string NombreHabilitacion = "ActualizarLocalidades";
 

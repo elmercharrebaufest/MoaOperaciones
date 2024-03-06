@@ -10,11 +10,11 @@ using SustitucionMOAUtils.Logger;
 namespace SustitucionMOA.Jobs
 {
 
-    public interface IActualizarLocalidadesPartidos : IHangfireJob
+    public interface IActualizarLocalidadesPartidosJob : IHangfireJob
     {
         bool Habilitado();
     }
-    public class ActualizarLocalidadesPartidos : IActualizarLocalidadesPartidos
+    public class ActualizarLocalidadesPartidosJob : IActualizarLocalidadesPartidosJob
     {
         protected readonly IRepositorio repositorio;
         protected readonly IDataAgroApiService dataAgroApiService;
@@ -24,7 +24,7 @@ namespace SustitucionMOA.Jobs
         {
             return _Habilitado;
         }
-        public ActualizarLocalidadesPartidos(IRepositorio repositorio, IDataAgroApiService dataAgroApiService)
+        public ActualizarLocalidadesPartidosJob(IRepositorio repositorio, IDataAgroApiService dataAgroApiService)
         {
             this.repositorio = repositorio;
             this.dataAgroApiService = dataAgroApiService;
