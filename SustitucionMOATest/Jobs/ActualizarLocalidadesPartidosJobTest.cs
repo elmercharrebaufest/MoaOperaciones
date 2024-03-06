@@ -43,7 +43,7 @@ namespace SustitucionMOATest.Jobs
             dataAgroApiService = new Mock<IDataAgroApiService>();
             habilitacionJob = new HabilitacionJob { Nombre = NombreHabilitacion };
 
-            actualizarLocalidadesPartidos = new ActualizarLocalidadesPartidos(
+            actualizarLocalidadesPartidos = new ActualizarLocalidadesPartidosJob(
                 repositorio.Object,
                 dataAgroApiService.Object
                 );
