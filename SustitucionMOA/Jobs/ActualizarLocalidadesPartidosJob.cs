@@ -10,11 +10,11 @@ using SustitucionMOAUtils.Logger;
 namespace SustitucionMOA.Jobs
 {
 
-    public interface IActualizarLocalidades : IHangfireJob
+    public interface IActualizarLocalidadesPartidos : IHangfireJob
     {
         bool Habilitado();
     }
-    public class ActualizarLocalidades : IActualizarLocalidades
+    public class ActualizarLocalidadesPartidos : IActualizarLocalidadesPartidos
     {
         protected readonly IRepositorio repositorio;
         protected readonly IDataAgroApiService dataAgroApiService;
@@ -24,7 +24,7 @@ namespace SustitucionMOA.Jobs
         {
             return _Habilitado;
         }
-        public ActualizarLocalidades(IRepositorio repositorio, IDataAgroApiService dataAgroApiService)
+        public ActualizarLocalidadesPartidos(IRepositorio repositorio, IDataAgroApiService dataAgroApiService)
         {
             this.repositorio = repositorio;
             this.dataAgroApiService = dataAgroApiService;
@@ -41,6 +41,8 @@ namespace SustitucionMOA.Jobs
                 var localidades = dataAgroApiService.ListarLocalidades();
 
                 SincronizarLocalidades(localidades);
+                var partidos = dataAgroApiService.ListarPartidos();
+                SincronizarPartidos(partidos);
             }
             catch(Exception e)
             {
@@ -79,6 +81,32 @@ namespace SustitucionMOA.Jobs
                 
             }
 
+            repositorio.GuardarCambios();
+        }
+        private void SincronizarPartidos(List<ModelDto.PartidoDto> partidosDA)
+        {
+            var partidosGuardados = repositorio.ListarTodos<Partido>();
+            foreach (var partidoDA in partidosDA)
+            {
+                var partidoGuardado = partidosGuardados.FirstOrDefault(p => p.Id == partidoDA.Id);
+
+                if(partidoGuardado == null)
+                {
+                    var partidoNuevo = new Partido
+                    {
+                        Id = partidoDA.Id,
+                        ProvinciaID = partidoDA.ProvinciaId,
+                        Descripcion = partidoDA.Descripcion,
+                    };
+                    repositorio.Agregar(partidoNuevo);
+                }
+                else
+                {
+                    partidoGuardado.ProvinciaID = partidoDA.ProvinciaId;
+                    partidoGuardado.Descripcion = partidoDA.Descripcion;
+                }
+
+            }
             repositorio.GuardarCambios();
         }
     }
