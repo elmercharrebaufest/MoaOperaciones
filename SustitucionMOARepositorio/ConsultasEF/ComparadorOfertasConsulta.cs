@@ -116,6 +116,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                 select new PeticionDeOfertaUsarioDto()
                                                 {
                                                     Id = u.Id,
+                                                    VisibleSolicitante = u.VisibleSolicitante == true ? true : false,
                                                     EstaHabilitado = u.Usuario.Habilitado,
                                                     CodigoProveedor = u.Usuario.Proveedores.Where(p => p.CUIT == u.Usuario.CUITRegistro && u.Usuario.TipoUsuario.Id == p.TipoProveedor.Id).FirstOrDefault() != null ?
                                                         u.Usuario.Proveedores.Where(p => p.CUIT == u.Usuario.CUITRegistro && u.Usuario.TipoUsuario.Id == p.TipoProveedor.Id).FirstOrDefault().CodigoProveedor : "",

@@ -19,9 +19,16 @@
     </div>
     <br>
 </section>
+
+
 <div class="content-wraper" style="padding-top: 0px !important;">
     <spinner></spinner>
 
+    <p>
+        <ngb-alert type="success" *ngIf="mensaje !== undefined && mensaje !== null && mensaje !== ''" (close)="mensaje = null">
+            <strong>Exito! </strong>{{ mensaje }}
+        </ngb-alert>
+    </p>
     <div class="col-sm-12 col-md-12 col-lg-12 wrapper" style="margin-left: -15px;" *ngIf="tablaOfertas.TipoPosicionCodigo == 'MATERIALES'">
         <p-table #tabla [value]="tablaOfertas.PeticionDeOfertaPosicion" dataKey="Id" [scrollable]="true" frozenWidth="620px">
             <ng-template pTemplate="frozenheader">
@@ -111,7 +118,11 @@
                     </ng-container>
                 </tr>
                 <tr>
-                    <th class="headerth border2-left" *ngFor="let proveedor of tablaOfertas.Usuarios" colspan="7" style="background-color: #4760ac !important; width: 660px !important;">{{proveedor.RazonSocial}}</th>
+                    <th class="headerth border2-left" *ngFor="let proveedor of tablaOfertas.Usuarios" colspan="7" style="background-color: #4760ac !important; width: 660px !important;">
+                        <span> <p-checkbox name="visible" [disabled]="!proveedor.VerAdjudicar" [(ngModel)]="proveedor.VisibleSolicitante" (click)="actualizarVisibilidad(proveedor)" binary="false"></p-checkbox></span>
+                        <span style="margin-left: 10px">{{proveedor.RazonSocial}}</span>
+                    </th>
+                  
                 </tr>
                 <tr>
                     <ng-container *ngFor="let proveedor of tablaOfertas.Usuarios">
@@ -362,7 +373,11 @@
                 </tr>
 
                 <tr>
-                    <th class="headerth border2-left" *ngFor="let proveedor of tablaOfertas.Usuarios" colspan="9" style="background-color: #4760ac !important; width: 540px !important;">{{proveedor.RazonSocial}}</th>
+                    <th class="headerth border2-left" *ngFor="let proveedor of tablaOfertas.Usuarios" colspan="9" style="background-color: #4760ac !important; width: 540px !important;">
+                        <span> <p-checkbox name="visible" [disabled]="!proveedor.VerAdjudicar" [(ngModel)]="proveedor.VisibleSolicitante" (click)="actualizarVisibilidad(proveedor)" binary="false"></p-checkbox></span>
+                        <span style="margin-left: 10px">{{proveedor.RazonSocial}}</span>
+                    </th>
+                   
                 </tr>
 
                 <tr>

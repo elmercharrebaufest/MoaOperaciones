@@ -71,6 +71,7 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
     lista: any[];
     numerosDePedido: any;
     displayPlazo: boolean;
+    mensaje: string;
 
     constructor(protected service: ComprasService, protected usuarioService: UsuarioService, protected navService: NavService, protected sessionDataService: SessionDataService,
         protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService,
@@ -684,5 +685,27 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
                 this.adjudicacion.TextoDeCabecera += `\n\nJustificación de condición especial: ${this.tablaOfertas.SolpDto.ObservacionesCotizacion}`
                 : this.adjudicacion.TextoDeCabecera = `Justificación de condición especial: ${this.tablaOfertas.SolpDto.ObservacionesCotizacion}`;
         }
+    }
+
+    public actualizarVisibilidad(proveedor) {
+        this.mensaje = '';
+        try {            
+            console.log(proveedor);
+            this.blockUI.start('Cargando...');
+            this.service.actualizarProveedorVisibleEnSolicitante(proveedor.Id, proveedor.VisibleSolicitante).subscribe(
+                () => {
+                    this.mensaje = "Los datos se actualizaron correctamente."
+                    this.blockUI.stop();
+                },
+                (error) => {
+                    this.blockUI.stop();
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+            );
+        } catch (e) {
+            this.floatMsgService.setErrorMsg(e);
+            return false; //<-- Prevent Refresh
+        }
+        return false; //<-- Prevent Refresh
     }
 }

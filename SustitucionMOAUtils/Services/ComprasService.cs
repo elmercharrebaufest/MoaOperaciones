@@ -8280,6 +8280,26 @@ namespace SustitucionMOAUtils.Services
             return clasesDoc;
         }
 
+        public Resultado ActualizarProveedorVisibleEnSolicitante(int usuarioId, bool esVisible)
+        {
+            try
+            {
+                Resultado resultado = new Resultado();
+                var peticionUsuario = repositorio.Obtener<PeticionDeOfertaUsuario>(usuarioId);
+                peticionUsuario.VisibleSolicitante = esVisible;
+                repositorio.GuardarCambios();
+                resultado.Mensaje = "OK ";
+                resultado.IdEntidad = usuarioId;
+                return resultado;
+            }
+            catch (Exception e)
+            {
+                Log.Info($"Error al ActualizarProveedorVisibleEnSolicitante");
+                Log.Error(e);
+                throw;
+            }
+        }
+
         public static class SolpTemplateKeys
         {
             public const string FECHA_LIBERACION = "FECHA_LIBERACION";

@@ -546,5 +546,16 @@ namespace SustitucionMOATest.Controllers
             Assert.IsNotNull(result.Data);
         }
 
+        [Test]
+        public void ActualizarProveedorVisibleEnSolicitanteOk()
+        {
+
+            comprasServiceMock.Setup(s => s.ActualizarProveedorVisibleEnSolicitante(It.IsAny<int>(), It.IsAny<bool>())).Returns(new Resultado() { Mensaje = "Ok" });
+
+            var result = target.ActualizarProveedorVisibleEnSolicitante(It.IsAny<int>(), It.IsAny<bool>()) as JsonResult;
+
+            Assert.IsNotNull(result);
+        }
+
     }
 }

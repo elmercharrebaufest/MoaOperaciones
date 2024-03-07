@@ -2623,5 +2623,19 @@ namespace SustitucionMOATest.Services
             Assert.That(result, Is.Not.Null);
             Assert.AreEqual(result.GetType(), clasesDoc.GetType());
         }
+
+        [Test]
+        public void ActualizarProveedorVisibleEnSolicitanteOk()
+        {
+            repositorioMock.Setup(x => x.Obtener<PeticionDeOfertaUsuario>(It.IsAny<int>())).Returns(new PeticionDeOfertaUsuario { Id = 1, VisibleSolicitante = true});
+            var result = target.ActualizarProveedorVisibleEnSolicitante(It.IsAny<int>(), It.IsAny<bool>());
+            repositorioMock.Setup(x => x.GuardarCambios());
+            Assert.That(result, Is.Not.Null);
+            repositorioMock.Verify(x => x.Obtener<PeticionDeOfertaUsuario>(It.IsAny<int>()), Times.Once);
+            repositorioMock.Verify(x => x.GuardarCambios(), Times.Once);
+        }
+
+
+        
     }
 }

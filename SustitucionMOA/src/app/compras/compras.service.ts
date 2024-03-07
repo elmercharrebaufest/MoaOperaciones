@@ -1078,4 +1078,14 @@ export class ComprasService extends BaseService {
             headers: this.headers,
         });
     }
+
+    public actualizarProveedorVisibleEnSolicitante(usuarioId: number, esVisible: boolean) {
+        var payload = new FormData();
+        payload.append('usuarioId', usuarioId.toString());
+        payload.append('esVisible', esVisible.toString());
+
+        return this.http
+            .post<any>('/api/compras/ActualizarProveedorVisibleEnSolicitante', payload, { headers: this.headers });
+    }
+
 }
