@@ -20,26 +20,16 @@ import { PanelHorasComponent } from '../../panel-horas/panel-horas.component';
     styleUrls: ['./revision-tecnica.component.css']
 })
 export class RevisionTecnicaComponent implements OnInit, OnChanges {
-    
+
     @Input() displayRevisionTecnica: boolean;
     @Input() public peticion: PeticionDeOfertaDto;
-    revisionTecnica: PeticionDeOfertaRevisionTecnicaDto;
+
     fechaDeEntrega: Date
-    plazoDeOferta: Date
-    public circular: CircularDto;
-    val1: string = "No";
-    val2: string;
-    ObservacionNoCumple: any;
-    ObservacionRecotizacion: any;
-    visualizarFechas: boolean;
-    plazoDias: string;
-    selectedProv: number[] = []
     nroPeticion: any;
     displayOkRevision: boolean;
-    subscription: any;
-    @BlockUI() blockUI: NgBlockUI;
     error: string = "";
     visualizarAlert = false;
+    @BlockUI() blockUI: NgBlockUI;
     @Output() cerrardisplayRevisionTecnicaEmitter = new EventEmitter();
     @Output() onCloseModalEmitter = new EventEmitter();
     @Output() descargarArchivoEmitter = new EventEmitter<{ archivoId: number }>();
@@ -73,18 +63,6 @@ export class RevisionTecnicaComponent implements OnInit, OnChanges {
         this.iniciarDatosPeticion();
     }
 
-    private armarPeticion() {
-        let revision: PeticionDeOfertaRevisionTecnicaDto = {
-            Id: 0,
-            Usuario_Id: 0,
-            RecotizacionEconomica: false,
-            ModificacionSolp: false,
-            ObservacionRecotizacion: "",
-            Finalizada: false
-        };
-        return revision;
-    }
-
     iniciarDatosPeticion() {
         if (this.peticion == null || this.peticion == undefined) {
             this.peticion = {
@@ -96,12 +74,18 @@ export class RevisionTecnicaComponent implements OnInit, OnChanges {
                 Usuarios: new Array(),
                 SolpDto: null,
                 Selected: null,
-            };
-        }
-
-        if (this.peticion != null && (this.peticion.RevisionTecnica == null || this.peticion.RevisionTecnica == undefined)) {
-
-            this.peticion.RevisionTecnica = this.armarPeticion();
+            }
+        } else {
+            if (this.peticion.RevisionTecnica == null || this.peticion.RevisionTecnica == undefined) {
+                this.peticion.RevisionTecnica = {
+                    Id: 0,
+                    Usuario_Id: 0,
+                    RecotizacionEconomica: false,
+                    ModificacionSolp: false,
+                    ObservacionRecotizacion: "",
+                    Finalizada: false
+                };
+            }
         }
     }
 
@@ -129,18 +113,18 @@ export class RevisionTecnicaComponent implements OnInit, OnChanges {
             this.error = "No se puede finalizar la revisión técnica ya que el plazo de oferta no se encuentra vencido";
             this.visualizarAlert = true;
             return true;
-        }  else {
+        } else {
             this.error = ""; // Borra el mensaje de error si al menos uno está seleccionado
             this.visualizarAlert = false;
             return false;
         }
     }
 
-    validarCotizacionFinalizada(){
+    validarCotizacionFinalizada() {
         this.visualizarAlert = false;
-        var todasCotizacionesFinalizadas: boolean = this.peticion.Usuarios.every(u => 
+        var todasCotizacionesFinalizadas: boolean = this.peticion.Usuarios.every(u =>
             u.Cotizacion && u.Cotizacion.CotizacionEstado_Id == 1
-          );
+        );
         if (todasCotizacionesFinalizadas == false) {
             this.error = "No se puede finalizar la revisión técnica ya que hay cotizaciones sin finalizar";
             this.visualizarAlert = true;
@@ -148,7 +132,7 @@ export class RevisionTecnicaComponent implements OnInit, OnChanges {
         }
     }
 
-    checkRecotizacionEconomica(){
+    checkRecotizacionEconomica() {
         const alMenosUnoSeleccionado = this.peticion.RevisionTecnica.RecotizacionEconomica !== null && this.peticion.RevisionTecnica.RecotizacionEconomica !== undefined;
 
         if (!alMenosUnoSeleccionado) {
@@ -156,13 +140,11 @@ export class RevisionTecnicaComponent implements OnInit, OnChanges {
             this.visualizarAlert = true;
             return true;
         } else {
-
-            if(this.peticion.RevisionTecnica.RecotizacionEconomica == false){
+            if (this.peticion.RevisionTecnica.RecotizacionEconomica == false) {
                 this.error = ""; // Borra el mensaje de error si al menos uno está seleccionado
                 this.visualizarAlert = false;
                 return false;
             } else {
-
                 const alMenosUnCheckSeleccionado = this.peticion.RevisionTecnica.ModificacionSolp !== null && this.peticion.RevisionTecnica.ModificacionSolp !== undefined;
                 if (!alMenosUnCheckSeleccionado) {
                     this.error = "Debe indicar si va a realizar modificaciones en la SOLP";
@@ -176,14 +158,12 @@ export class RevisionTecnicaComponent implements OnInit, OnChanges {
                     this.visualizarAlert = true;
                     return true;
                 }
-
-
+                
                 this.error = ""; // Borra el mensaje de error si al menos uno está seleccionado
                 this.visualizarAlert = false;
                 return false;
             }
         }
-
     }
 
     checkVisitaTecnica() {
@@ -248,12 +228,12 @@ export class RevisionTecnicaComponent implements OnInit, OnChanges {
     }
 
     confirmarFinalizacion() {
-        if (!this.checkVisitaTecnica() 
-            && !this.checkPropuestaTecnica() 
-            && !this.validarPeticion() 
-            && (!this.validarPlazoDeOferta() || !this.validarCotizacionFinalizada()) 
+        if (!this.checkVisitaTecnica()
+            && !this.checkPropuestaTecnica()
+            && !this.validarPeticion()
+            && (!this.validarPlazoDeOferta() || !this.validarCotizacionFinalizada())
             && !this.checkRecotizacionEconomica()
-            ) {
+        ) {
             this.confirmationService.confirm({
                 key: 'finalizarRevision',
                 message: 'Una vez finalizada la revisión técnica ya no podrá editarse. ¿Está seguro de que desea finalizarla?',
