@@ -93,6 +93,6 @@ namespace SustitucionMOAUtils.Interfaces
 
         List<PeticionDeOfertaDto> ListarPeticionesDeOferta(int solpId);
         List<int> ListarClaseDocumento(int usuarioId);
-        Resultado ActualizarProveedorVisibleEnSolicitante(int usuarioId, bool esVisible);
+        Resultado ActualizarProveedorVisibleEnSolicitante(int peticionDeOfertaUsuarioId, bool esVisible);
     }
 }

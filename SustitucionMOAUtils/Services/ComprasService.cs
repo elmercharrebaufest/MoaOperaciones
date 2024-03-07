@@ -8280,16 +8280,16 @@ namespace SustitucionMOAUtils.Services
             return clasesDoc;
         }
 
-        public Resultado ActualizarProveedorVisibleEnSolicitante(int usuarioId, bool esVisible)
+        public Resultado ActualizarProveedorVisibleEnSolicitante(int peticionDeOfertaUsuarioId, bool esVisible)
         {
             try
             {
                 Resultado resultado = new Resultado();
-                var peticionUsuario = repositorio.Obtener<PeticionDeOfertaUsuario>(usuarioId);
+                var peticionUsuario = repositorio.Obtener<PeticionDeOfertaUsuario>(peticionDeOfertaUsuarioId);
                 peticionUsuario.VisibleSolicitante = esVisible;
                 repositorio.GuardarCambios();
                 resultado.Mensaje = "OK ";
-                resultado.IdEntidad = usuarioId;
+                resultado.IdEntidad = peticionDeOfertaUsuarioId;
                 return resultado;
             }
             catch (Exception e)

@@ -687,7 +687,8 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
         }
     }
 
-    public actualizarVisibilidad(proveedor) {
+    public actualizarVisibilidad(proveedor, cambiarEstado) {
+        if (!cambiarEstado){
         this.mensaje = '';
         try {            
             console.log(proveedor);
@@ -706,6 +707,7 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
             this.floatMsgService.setErrorMsg(e);
             return false; //<-- Prevent Refresh
         }
+    }
         return false; //<-- Prevent Refresh
     }
 }

@@ -119,7 +119,7 @@
                 </tr>
                 <tr>
                     <th class="headerth border2-left" *ngFor="let proveedor of tablaOfertas.Usuarios" colspan="7" style="background-color: #4760ac !important; width: 660px !important;">
-                        <span> <p-checkbox name="visible" [disabled]="!proveedor.VerAdjudicar" [(ngModel)]="proveedor.VisibleSolicitante" (click)="actualizarVisibilidad(proveedor)" binary="false"></p-checkbox></span>
+                        <span> <p-checkbox name="visible" [readonly]="!proveedor.VerAdjudicar" [(ngModel)]="proveedor.VisibleSolicitante" (click)="actualizarVisibilidad(proveedor, !proveedor.VerAdjudicar)" binary="false"></p-checkbox></span>
                         <span style="margin-left: 10px">{{proveedor.RazonSocial}}</span>
                     </th>
                   
@@ -374,8 +374,8 @@
 
                 <tr>
                     <th class="headerth border2-left" *ngFor="let proveedor of tablaOfertas.Usuarios" colspan="9" style="background-color: #4760ac !important; width: 540px !important;">
-                        <span> <p-checkbox name="visible" [disabled]="!proveedor.VerAdjudicar" [(ngModel)]="proveedor.VisibleSolicitante" (click)="actualizarVisibilidad(proveedor)" binary="false"></p-checkbox></span>
-                        <span style="margin-left: 10px">{{proveedor.RazonSocial}}</span>
+                        <span [ngClass]="{'disabled-checkbox': !proveedor.VerAdjudicar}"> <p-checkbox name="visible" [disabled]="!proveedor.VerAdjudicar" [(ngModel)]="proveedor.VisibleSolicitante" (click)="actualizarVisibilidad(proveedor, !proveedor.VerAdjudicar)" binary="false"></p-checkbox></span>
+                        <span style="margin-left: 10px">{{proveedor.RazonSocial}}</span>hola
                     </th>
                    
                 </tr>

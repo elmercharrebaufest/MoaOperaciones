@@ -1079,9 +1079,9 @@ export class ComprasService extends BaseService {
         });
     }
 
-    public actualizarProveedorVisibleEnSolicitante(usuarioId: number, esVisible: boolean) {
+    public actualizarProveedorVisibleEnSolicitante(peticionDeOfertaUsuarioId: number, esVisible: boolean) {
         var payload = new FormData();
-        payload.append('usuarioId', usuarioId.toString());
+        payload.append('peticionDeOfertaUsuarioId', peticionDeOfertaUsuarioId.toString());
         payload.append('esVisible', esVisible.toString());
 
         return this.http

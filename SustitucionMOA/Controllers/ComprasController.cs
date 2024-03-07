@@ -1665,11 +1665,11 @@ namespace SustitucionMOA.Controllers
         }
 
         [HttpPost]
-        public ActionResult ActualizarProveedorVisibleEnSolicitante(int usuarioId, bool esVisible)
+        public ActionResult ActualizarProveedorVisibleEnSolicitante(int peticionDeOfertaUsuarioId, bool esVisible)
         {
             try
             {
-                var result = service.ActualizarProveedorVisibleEnSolicitante(usuarioId, esVisible);
+                var result = service.ActualizarProveedorVisibleEnSolicitante(peticionDeOfertaUsuarioId, esVisible);
                 return JsonCustom(result);
             }
             catch (InfoCustomException e)
