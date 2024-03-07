@@ -514,6 +514,8 @@ export class DashboardComponent extends ListBaseComponent {
 
     eliminarPosicionDashboard(idSolp) {
         this.confirmationService.confirm({
+            key: 'eliminarSOLP',
+            header: 'Eliminar SOLP',
             message: '¿Está seguro de que desea eliminar la SOLP?',
             accept: () => {
                 this.borrarSolp(idSolp)
@@ -677,7 +679,12 @@ export class DashboardComponent extends ListBaseComponent {
 
     cerrarModalRevisionTecnica() {
         this.displayRevisionTecnica = false;
-        this.onBuscar();
+        this.getListarSolp();
+    }
+
+    cancelarModal() {
+        this.displayRevisionTecnica = false;
+        this.displayCircular = false;
     }
 
     descargarArchivo({ archivoId }) {
@@ -745,31 +752,10 @@ export class DashboardComponent extends ListBaseComponent {
                 }
             )
     }
-
-    grabarRevisionTecnica(event) {
-        this.blockUI.start('Grabando...');
-        this.service.grabarRevisionTecnica(this.peticion.Usuarios, event.finalizar, event.revisionTecnica)
-            .subscribe(
-                (result) => {
-                    if (result.logout == true) {
-                        this.sessionDataService.logout();
-                    }
-                    else {
-                        if (result) { }
-                        this.displayRevisionTecnica = false;
-                        this.blockUI.stop();
-                    }
-                },
-                (error) => {
-                    this.blockUI.stop();
-                    this.mensajeComponent.setErrorMsg(error.message);
-                }
-            )
-    }
-
+    
     cerrarCircular() {
         this.displayCircular = false;
-        this.onBuscar();
+        this.getListarSolp();
     }
 
     onBuscar() {
@@ -796,7 +782,6 @@ export class DashboardComponent extends ListBaseComponent {
 
     cerrarOrdenDeCompra() {
         this.displayOrdenDeCompra = false;
-        this.onBuscar();
     }
 
     verDetalleOrdenDeCompra(nroOC: any) {
@@ -929,7 +914,6 @@ export class DashboardComponent extends ListBaseComponent {
 
     cerrarModalChat() {
         this.displayChatInterno = false;
-        this.onBuscar();
     }
 
     recuperarFiltros() {

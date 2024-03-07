@@ -366,22 +366,23 @@
 
 <app-revision-tecnica [(displayRevisionTecnica)]="displayRevisionTecnica"
                       (cerrardisplayRevisionTecnicaEmitter)="cerrarModalRevisionTecnica()"
+                      (onCloseModalEmitter)="cancelarModal()"
                       (descargarArchivoEmitter)="descargarArchivo($event)"
                       (descargarAdjuntosCotizacionEmitter)="descargarAdjuntosCotizacion($event)"
-                      (grabarRevisionTecnicaEmitter)="grabarRevisionTecnica($event)"
                       [(peticion)]="peticion">
 </app-revision-tecnica>
 
 <app-circular [(locale)]="es"
               [(displayCircular)]="displayCircular"
               (cerrarCircularEmitter)="cerrarCircular()"
+              (onCloseModalEmitter)="cancelarModal()"
               [(peticion)]="peticion"
               [(solicitante)]="solicitante">
 </app-circular>
 
 
 <!-- Modal eliminacion de SOLP-->
-<p-confirmDialog #dialogo header="Eliminar SOLP" icon="pi pi-exclamation-triangle" [width]="400" [responsive]="true"
+<p-confirmDialog #dialogo key="eliminarSOLP" icon="pi pi-exclamation-triangle" [width]="400" [responsive]="true"
                  appendTo="body">
     <p-footer>
         <button type="button" pButton label="Cancelar" class="ui-button-info botonModal"
@@ -398,6 +399,6 @@
 </app-orden-de-compra-detalle>
 
 <app-chat-interno [(displayChatInterno)]="displayChatInterno"
-                  [(chat)]="chat">
-    (cerrardisplayChatEmitter)="cerrarModalChat()"
+                  [(chat)]="chat"
+                  (cerrardisplayChatEmitter)="cerrarModalChat()">
 </app-chat-interno>

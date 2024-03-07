@@ -51,16 +51,13 @@ export class ChatInternoComponent extends BaseComponent implements OnInit {
 
     @ViewChild(MensajeComponent)
     protected mensajeComponent: MensajeComponent;
-
-
+    
     resultado: any;
     mensajeNuevo: string = "";
     notificacion: Notificacion = new Notificacion();
     roles: Array<Rol> = [];
     visualizarAlert = false;
     error: string = "";
-
-
 
     constructor(
         private route: ActivatedRoute,
@@ -197,7 +194,7 @@ export class ChatInternoComponent extends BaseComponent implements OnInit {
         return false; //<-- Prevent Refresh
     }
 
-    onCerrarPeticion() {
+    onCerrarChat() {
         this.error = "";
         this.visualizarAlert = false;
         this.cerrardisplayChatEmitter.next();
