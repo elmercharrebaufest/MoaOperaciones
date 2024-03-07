@@ -434,7 +434,7 @@
 </div>
 <p-dialog [header]="displayModal ? displayModal.replace('CUIT','') : ''" [(visible)]="displayModal" [modal]="true"
     [responsive]="true" [style]="{width: '350px', minWidth: '200px', maxWidth:'350px'}" [minY]="70" [draggable]="false"
-    appendTo="body" (onHide)="focusRazonSocialParaGestion=true; razonSocialParaGestion=''">
+    appendTo="body" (onHide)="cancelarGestionAltaCUIT()">
     <p>No se encontró la CUIT {{ordenDeCarga[displayModal]}}</p><br>
     <p>¿Desea que se notifique?</p>
     <div class="col-xs-12 col-md-12">
