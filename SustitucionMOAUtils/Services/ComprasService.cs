@@ -5802,7 +5802,7 @@ namespace SustitucionMOAUtils.Services
                 return respuestaGuardarSOLP;
 
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 throw;
             }
@@ -6224,7 +6224,9 @@ namespace SustitucionMOAUtils.Services
                 //adjudicacionDto.Moneda_Id = tablasap.Where(moneda => moneda.CodigoSap == "ARP").FirstOrDefault().Id;
                 var todasLasCotizacionPosiciones = cotizacion.CotizacionPosiciones.ToDictionary(x => x.Id);
                 //var todasLasSolpPosiciones = cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Solp.Posiciones.ToDictionary(x => x.Id);
-                var todasLasSolpPosiciones = repositorio.Listar<SolpPosicion>(posi => cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Posiciones.Select(x => x.SolpPosicion_Id).Contains(posi.Id)).ToDictionary(x => x.Id); ;
+                var peticionDeOfertaPosiciones = cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.
+                Posiciones.Select(x => x.SolpPosicion_Id);
+                var todasLasSolpPosiciones = repositorio.Listar<SolpPosicion>(posi => peticionDeOfertaPosiciones.Contains(posi.Id)).ToDictionary(x => x.Id); 
 
                 var posicionesPorMoneda = adjudicacionDto.AdjudicacionPosiciones.GroupBy(posicion => posicion.MonedaId);
                 var regiones = repositorio.Listar<RegionSap>();
@@ -6434,15 +6436,16 @@ namespace SustitucionMOAUtils.Services
             Dictionary<int, decimal> tipodecambio = new Dictionary<int, decimal>();
             decimal cambio = 1;
             decimal montoTotal = 0;
-            var cotizacionPosiciones = cotizacion.CotizacionPosiciones.Where(x => adjudicacionDto.AdjudicacionPosiciones.Select(y => y.CotizacionPosicion_Id).Contains(x.Id));
+            var adjudicacionPosicion = adjudicacionDto.AdjudicacionPosiciones.Select(y => y.CotizacionPosicion_Id);
+            var cotizacionPosiciones = cotizacion.CotizacionPosiciones.Where(x => adjudicacionPosicion.Contains(x.Id));
             if (cotizacionPosiciones != null)
             {
-                bool esServicios = cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Posiciones.FirstOrDefault().SolpPosicion.Codigo != "MATERIALES";
+                bool esServicios = cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Posiciones.FirstOrDefault().SolpPosicion.TipoPosicion.Codigo != "MATERIALES";
                 foreach (var cotizacionPosicion in cotizacionPosiciones)
                 {
                     if (esServicios)
                     {
-                        if (cotizacionPosicion.CotizacionSubPosiciones != null)
+                        if (cotizacionPosicion.CotizacionSubPosiciones != null && cotizacionPosicion.CotizacionSubPosiciones.Count() > 0)
                         {
                             foreach (var subpos in cotizacionPosicion.CotizacionSubPosiciones)
                             {

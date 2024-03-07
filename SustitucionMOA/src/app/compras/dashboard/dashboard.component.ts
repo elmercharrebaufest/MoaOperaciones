@@ -19,6 +19,7 @@ import { PeticionDeOfertaDto, PeticionDeOfertaRevisionTecnicaDto } from '../../m
 import { AdjudicacionDto, AdjudicacionPosicionDto } from '../../modelos/adjudicacion';
 import { ChatComprasDto } from '../chat-interno/chat-interno.interface';
 import { forEach } from '@angular/router/src/utils/collection';
+import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 
 declare var $: any;
 
@@ -641,7 +642,7 @@ export class DashboardComponent extends ListBaseComponent {
         this.getListarSolp()
     }
 
-    obtenerPeticionDeOferta(Id) {
+    obtenerPeticionDeOferta(Id, rowData) {
         this.blockUI.start('Cargando...')
         this.service.obtenerPeticionDeOferta(Id)
             .subscribe(
@@ -651,6 +652,7 @@ export class DashboardComponent extends ListBaseComponent {
                     }
                     else {
                         this.peticion = result.data;
+                        this.peticion.Solp = rowData;
                         this.displayRevisionTecnica = true;
                         this.blockUI.stop();
                     }
@@ -683,7 +685,7 @@ export class DashboardComponent extends ListBaseComponent {
 
     cerrarModalRevisionTecnica() {
         this.displayRevisionTecnica = false;
-        this.getListarSolp();
+        this.listarPeticiones(this.peticion.Solp);
     }
 
     cancelarModal() {
@@ -759,7 +761,7 @@ export class DashboardComponent extends ListBaseComponent {
 
     cerrarCircular() {
         this.displayCircular = false;
-        this.getListarSolp();
+        this.listarPeticiones(this.peticion.Solp);
     }
 
     onBuscar() {
@@ -781,6 +783,7 @@ export class DashboardComponent extends ListBaseComponent {
         this.filtrosSolicitante.fechaDesde = this.fechaInicio;
         this.filtrosSolicitante.fechaHasta = this.fechaFin;
         this.paginator.changePage(0);
+        this.cerrarExpansiones();
         this.getListarSolp();
         sessionStorage.setItem('filtrosSolicitante', JSON.stringify(this.filtrosSolicitante));
     }
@@ -789,12 +792,12 @@ export class DashboardComponent extends ListBaseComponent {
         this.displayOrdenDeCompra = false;
     }
 
-    verDetalleOrdenDeCompra(nroOC: any) {
-        this.obtenerAdjudicacion(nroOC);
+    verDetalleOrdenDeCompra(nroOC: any, solpId) {
+        this.obtenerAdjudicacion(nroOC, solpId);
         this.displayOrdenDeCompra = true;
     }
 
-    obtenerAdjudicacion(nroOC) {
+    obtenerAdjudicacion(nroOC, rowData) {
         this.blockUI.start('Cargando...')
         this.service.obtenerAdjudicacion(nroOC).subscribe(
             (result) => {
@@ -803,6 +806,7 @@ export class DashboardComponent extends ListBaseComponent {
                 }
                 else {
                     this.ordenDeCompra = result.data;
+                    this.ordenDeCompra.Solp = rowData;
                     this.blockUI.stop();
                 }
             },
@@ -995,4 +999,12 @@ export class DashboardComponent extends ListBaseComponent {
     mismaClaseDocumento(claseDocumento_Id: number): boolean {
         return this.clasesDocumento.some(x => x === claseDocumento_Id);
     }
+
+    cerrarExpansiones(): void {
+        this.tabla.value.forEach(row => {
+            if (this.tabla.isRowExpanded(row)) {
+              this.tabla.toggleRow(row);
+            }
+          });
+      }
 }

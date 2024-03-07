@@ -303,10 +303,10 @@
                                                 </td>
                                                 <td class="columna" [style.color]="licitacion.EstadoColor">{{licitacion.Estado}}</td>
                                                 <td class="columna">
-                                                    <button class="publicar btn" *ngIf="licitacion.RevisionFinalizada != true" style="margin-right: 10px;" (click)="obtenerPeticionDeOferta(licitacion.Id)">
+                                                    <button class="publicar btn" *ngIf="licitacion.RevisionFinalizada != true" style="margin-right: 10px;" (click)="obtenerPeticionDeOferta(licitacion.Id, rowData)">
                                                         Revisión Técnica
                                                     </button>
-                                                    <button class="publicar btn " *ngIf="rowData.VerCircular == true && licitacion.RevisionFinalizada != true" style="margin-right: 10px;" (click)="obtenerPeticionDeOfertaCircular(licitacion.Id)">
+                                                    <button class="publicar btn " *ngIf="rowData.VerCircular == true && licitacion.RevisionFinalizada != true" style="margin-right: 10px;" (click)="obtenerPeticionDeOfertaCircular(licitacion.Id, rowData)">
                                                         Circular
                                                     </button>
                                                 </td>
@@ -349,7 +349,7 @@
                                                 <td class="columna">{{orden.EstadoLiberacionDetalle}}</td>
                                                 <td class="columna">
                                                     <button class="publicar btn btn-success"
-                                                            (click)="verDetalleOrdenDeCompra(orden.NumeroOrdenDeCompra)">
+                                                            (click)="verDetalleOrdenDeCompra(orden.NumeroOrdenDeCompra, rowData)">
                                                         Ver detalle
                                                     </button>
                                                 </td>

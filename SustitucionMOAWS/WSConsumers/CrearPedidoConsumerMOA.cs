@@ -24,7 +24,7 @@ namespace SustitucionMOAWS.WSConsumers
         private readonly IRepositorio repositorio;
 
         public CrearPedidoConsumerMOA(IObtenerUnidadesDeMedidaAlternativasConsumerMOA _obtenerUnidadesDeMedidaConsumerMOA,
-            IObtenerTipoCambioConsumerMOA _obtenerTipoCambioConsumerMOA, IRepositorio repositorio)
+            IObtenerTipoCambioConsumerMOA _obtenerTipoCambioConsumerMOA, IRepositorio _repositorio)
         {
             var url = "http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MMRFC_CREAR_PEDIDO&amp;interfaceNamespace=urn%3AOPERACIONES";
             service = new SI_MMRFC_CREAR_PEDIDOClient(SAPCredential.CrearSapBasicBinding(), SAPCredential.DevolverEndpoint(url));
@@ -32,7 +32,7 @@ namespace SustitucionMOAWS.WSConsumers
             service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
             obtenerUnidadesDeMedidaConsumerMOA = _obtenerUnidadesDeMedidaConsumerMOA;
             obtenerTipoCambioConsumerMOA = _obtenerTipoCambioConsumerMOA;
-            repositorio = repositorio;
+            repositorio = _repositorio;
         }
 
         public CrearPedidoConsumerMOAResponse Request(Adjudicacion adjudicacion, bool creadoAutomatico = false)
@@ -127,8 +127,8 @@ namespace SustitucionMOAWS.WSConsumers
             bool esPosicionDeMateriales = adjudicacion.Posiciones.FirstOrDefault().Posicion.TipoPosicion.Codigo == "MATERIALES";
             var unidadesDeMedidaSAP = new List<UnidadesDeMedida>();
             var fecha = DateTime.Now;
-
-            var posicionesSolp = repositorio.Listar<SolpPosicion>(posi => adjudicacion.Posiciones.Select(x => x.SolpPosicion_Id).Contains(posi.Id));
+            var posicionAdjudicacion = adjudicacion.Posiciones.Select(x => x.SolpPosicion_Id);
+            var posicionesSolp = repositorio.Listar<SolpPosicion>(posi => posicionAdjudicacion.Contains(posi.Id));
 
             if (esPosicionDeMateriales)
             {
