@@ -5457,9 +5457,8 @@ namespace SustitucionMOAUtils.Services
                     peticion.PropuestaTecnicaAprobada = data.PropuestaTecnicaAprobada;
                     peticion.PropuestaTecnicaFecha = DateTime.Now;
                     peticion.PropuestaTecnicaUsuario_Id = usuarioId;
-                    peticion.ObservacionNoCumple = data.ObservacionNoCumple;
                 }
-                if (peticion.PropuestaTecnicaAprobada == false)
+                if (data.ObservacionNoCumple != null)
                 {
                     peticion.ObservacionNoCumple = data.ObservacionNoCumple;
                 }
@@ -5511,7 +5510,6 @@ namespace SustitucionMOAUtils.Services
                     };
                     repositorio.Agregar(po);
                 }
-
 
                 peticiones.First().PeticionDeOferta.PlazoDeOferta = fechaActual;
             }

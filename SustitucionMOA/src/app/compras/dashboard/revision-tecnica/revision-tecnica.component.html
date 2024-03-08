@@ -72,6 +72,7 @@
                                         No tiene observación técnica
                                     </div>
                                 </div>
+                                <br /><br />
                                 <div class="col-md-7" *ngIf="(p.Cotizacion.RespetaMateriales == false && peticion.TipoPosicionCodigo == 'MATERIALES') || peticion.TipoPosicionCodigo != 'MATERIALES'">
                                     <div class="col-md-7"></div>
                                     <div class="col-md-5">
@@ -91,8 +92,8 @@
                                         </label>
                                     </div>
                                 </div>
-                                <div class="col-xs-12 col-sm-7 col-md-7 col-lg-7">
-                                    <label class="labelCompras"><strong style="color: #666666;">Observaciones *</strong></label>
+                                <div class="col-xs-12 col-sm-7 col-md-7 col-lg-7" *ngIf="(p.Cotizacion.RespetaMateriales == false && peticion.TipoPosicionCodigo == 'MATERIALES') || peticion.TipoPosicionCodigo != 'MATERIALES'">
+                                    <label class="labelCompras"><strong style="color: #666666;">Observaciones</strong></label>
                                     <textarea name="Observacion" ngDefaultControl [(ngModel)]="p.ObservacionNoCumple" placeholder="Agregue los comentarios que crea necesarios..." cols="30" rows="1"></textarea>
                                 </div>
                                 <div class="col-md-1" *ngIf="peticion.TipoPosicionCodigo != 'MATERIALES'">
@@ -174,7 +175,7 @@
                             <br>
 
                             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="margin-top: 15px;">
-                                <label class="labelCompras"><strong style="color: #666666;">Observaciones *</strong></label>
+                                <label class="labelCompras"><strong style="color: #666666;">Observaciones</strong></label>
                                 <textarea name="ObservacionRecotizacion" ngDefaultControl [(ngModel)]="peticion.RevisionTecnica.ObservacionRecotizacion" placeholder="Agregue los comentarios que crea necesarios..." cols="30" rows="1"></textarea>
                             </div>
                         </div>
