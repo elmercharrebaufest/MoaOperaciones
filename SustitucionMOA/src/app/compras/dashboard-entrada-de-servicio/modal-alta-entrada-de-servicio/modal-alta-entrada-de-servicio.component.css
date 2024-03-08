@@ -13,10 +13,13 @@
   font-weight: bold !important;
 }
 
-.alta-form p-calendar input,
+:host ::ng-deep .alta-form p-calendar.smallCal > span > input,
 .alta-form textarea,
 .alta-form input {
   border: 1px solid #a6a6a6;
+  font-size: .87em !important;
+  color: #333;
+  font-family: "Roboto", Arial, sans-serif;
 }
 
 .alta-form .hint {
@@ -80,8 +83,22 @@ p-calendar.smallCal div {
 
 }
 
+:host ::ng-deep p-calendar#fechaContabilizacion > span > div > div > div > .ui-datepicker-prev,
+:host ::ng-deep p-calendar#fechaContabilizacion > span > div > div > div > .ui-datepicker-next {
+    visibility: hidden;
+}
+
+:host ::ng-deep p-calendar#fechaDocumento > span > div > div > div > table td > a,
+:host ::ng-deep p-calendar#fechaContabilizacion > span > div > div > div > table td > a {
+    padding: .1em;
+}
+
+:host ::ng-deep p-calendar#fechaDocumento .ui-datepicker-title select > option {
+    font-family: "Open Sans", "Helvetica Neue", sans-serif;
+}
+
 .level3 th, .level3 td {
-  font-size: .8em;
+    font-size: .8em;
 }
 
 .level3 th {
@@ -92,10 +109,6 @@ p-calendar.smallCal div {
 ::ng-deep .ui-table .ui-table-tfoot > tr > td {
   background: #1C7CD5 !important;
   color: white !important;
-}
-
-:host ::ng-deep p-calendar.smallCal .ui-datepicker-title select > option {
-  font-family: "Open Sans", "Helvetica Neue", sans-serif;
 }
 
 /*:host ::ng-deep .alta-form .ui-datepicker {

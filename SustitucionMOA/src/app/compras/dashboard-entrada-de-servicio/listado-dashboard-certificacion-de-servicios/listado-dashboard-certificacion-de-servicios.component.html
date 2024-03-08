@@ -153,7 +153,7 @@
       <ng-template pTemplate="body" let-rowData let-columns="columns" let-expanded="expanded">
         <tr [pSelectableRow]="rowData" *ngIf="!ocFilterApplied || (ocFilterApplied && tienePosicionesConItemsACertificar(rowData.Posiciones))">
           <td>
-            <a href="#" [pRowToggler]="rowData">
+            <a href="#" [pRowToggler]="rowData" (click)="loadSolicitantesList(rowData);">
               <i [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
             </a>
           </td>
@@ -179,23 +179,38 @@
           <td colspan="8">
             <p-table #tablaPosiciones class="level2" [value]="rowData.Posiciones" dataKey="Id" rowExpandMode="single">
               <!-- TABLE 2 HEADERS -->
-              <ng-template pTemplate="header" *ngIf="rowData.Posiciones && rowData.Posiciones.length > 0">
-                <tr>
-                  <th title="Arrow">Detalle</th>
-                  <th title="Posicion">Posición</th>
-                  <th title="TxtBrev">Descripción de la posición</th>
-                  <th title="CtdPedido">Cantidad</th>
-                  <th title="UM">UM</th>
-                  <th title="PrecioNeto">Prc.neto</th>
-                  <!--th title="Moneda">Moneda</th-->
-                  <th title="GrupoArt">Grupo art.</th>
-                  <th title="Centro">Centro</th>
-                  <th title="Almacen">Almacén</th>
-                  <th title="NroSolped">NRO_SOLPED</th>
-                  <th title="Contrato">Contrato</th>
-                  <th title="Solicitante">Solicitante</th>
-                </tr>
-              </ng-template>
+                <ng-template pTemplate="header" *ngIf="rowData.Posiciones && rowData.Posiciones.length > 0">
+                    <tr>
+                        <th title="Arrow">Detalle</th>
+                        <th title="Posicion">Posición</th>
+                        <th title="TxtBrev">Descripción de la posición</th>
+                        <th title="CtdPedido">Cantidad</th>
+                        <th title="UM">UM</th>
+                        <th title="PrecioNeto">Prc.neto</th>
+                        <!--th title="Moneda">Moneda</th-->
+                        <th title="GrupoArt">Grupo art.</th>
+                        <th title="Centro">Centro</th>
+                        <th title="Almacen">Almacén</th>
+                        <th title="NroSolped">NRO_SOLPED</th>
+                        <th title="Contrato">Contrato</th>
+                        <th title="Solicitante">
+                            Solicitante
+                            <div class="divFiltroSolicitante">
+                                <button type="button"
+                                        pButton icon="pi pi-filter"
+                                        (click)="toggleSolicitanteFilter()"
+                                        [class.active]="filterSolicitante"
+                                        id="filterSolicitanteBtn">
+                                </button>
+                            </div>
+                            <div class="center-dropdown">
+                                <tr *ngIf="this.filterSolicitante">
+                                    <p-dropdown class="center-dropdown" id="filtroSolicitante" appendTo="body" [(ngModel)]="selectedSolicitante" optionLabel="name" [options]="solicitantes" [style]="{'width':'100%'}" (onChange)="tablaPosiciones.filter($event.value.id,'Solicitante', 'contains')"></p-dropdown>
+                                </tr>
+                             </div>                               
+                        </th>
+                    </tr>
+                </ng-template>
               <!-- TABLE 2 HEADERS END -->
               <!-- TABLE 2 BODY -->
               <ng-template pTemplate="body" let-rowData let-expanded="expanded" let-posIndex="rowIndex">

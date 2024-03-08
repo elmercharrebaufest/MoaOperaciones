@@ -69,6 +69,7 @@
         <p>Fecha Documento</p>
         <p-calendar [(ngModel)]="fechaDocumento"
                     class="smallCal"
+                    id="fechaDocumento"
                     dateFormat="yy-mm-dd"
                     [locale]="es"
                     [readonlyInput]="true"
@@ -104,15 +105,14 @@
       <div class="col-md-3">
         <p>Fecha Contabilización</p>
         <p-calendar [(ngModel)]="fechaContabilizacion"
+                    id="fechaContabilizacion"
                     class="smallCal"
                     dateFormat="yy-mm-dd"
                     [locale]="es"
                     [readonlyInput]="true"
-                    [monthNavigator]="true"
-                    [yearNavigator]="true"
-                    yearRange="2010:2050"
-                    [showIcon]="true"
-                    disabled="true">
+                    [minDate]="fechaContabilizacionMin"
+                    [maxDate]="fechaContabilizacionMax"
+                    [showIcon]="true">
         </p-calendar>
       </div>
 

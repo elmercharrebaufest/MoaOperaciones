@@ -2,23 +2,14 @@
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Dto.OrdenesCompra;
 using SustitucionMOAModel.Entities;
-using SustitucionMOAModel.Models.WSMapMOA.Compras;
-using SustitucionMOAModel.Models.WSMapMOA.Pesificacion;
 using SustitucionMOARepositorio;
 using SustitucionMOAWS.CredentialService;
 using SustitucionMOAWS.Interfaces;
 using SustitucionMOAWS.ObtenerOrdenDeCompraWebServiceMOA;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
-using System.Net;
-using System.Runtime.Remoting.Messaging;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Documents;
-using System.Windows.Media.TextFormatting;
 
 namespace SustitucionMOAWS.WSConsumers
 {
@@ -405,19 +396,19 @@ namespace SustitucionMOAWS.WSConsumers
             detalleOrdenDeCompra.Cuit = _proveedor != null ? DataFormatter.CuitConGuion(_proveedor.CUIT) : "-";
             detalleOrdenDeCompra.Posiciones = new List<PosicionDto>();
 
-
             //var centros = repositorio.Listar<TablaSap>(a => a.Tabla == "Centro");
             //var almacenes = repositorio.Listar<TablaSap>(a => a.Tabla == "Almacen");
 
-
+            //Obtiene las entradas de servicio de la orden de compra, si las tuviera, para luego asignarlas a las posiciones.
+            List<EntradaServicioDto> ListaDeEntradasDeServicio = new List<EntradaServicioDto>();
+            ListaDeEntradasDeServicio = ObtenerTodasEntradasDeServicio_Nuevo(POSERVICES, POHISTORY);
 
 
             /// Recorre cada Posicion en busqueda de itemsOC
             foreach (var posicion in POITEM)
             {
                 PosicionDto pos = new PosicionDto();
-                //var ListaEntradasServicio = new List<string>(); // Para obtener las entradas de servicio de cada posicion
-              
+
                 pos.Id = int.Parse(posicion.PCKG_NO);
                 pos.NumeroPosicion = long.Parse(posicion.PO_ITEM);
                 pos.CodigoMaterial = posicion.MATERIAL?.TrimStart('0');                
@@ -471,7 +462,7 @@ namespace SustitucionMOAWS.WSConsumers
                 pos.NroOrdenCompra = POHEADER.PO_NUMBER;
 
                 /// Obtine los Items de la position
-                pos.Items = ObtenerItemsdelaPosicion(POSERVICES, POHISTORY, POHEADER, pos);
+                pos.Items = ObtenerItemsdelaPosicion(POSERVICES, POHISTORY, POHEADER, pos, ListaDeEntradasDeServicio);
 
                 detalleOrdenDeCompra.Posiciones.Add(pos);
             }
@@ -480,14 +471,11 @@ namespace SustitucionMOAWS.WSConsumers
         }
 
         /// <summary>
-        /// Obtine los Items de la position
+        /// Obtener los Items de la position
         /// </summary>
-        /// <param name="pOSERVICES"></param>
-        /// <param name="pOHISTORY"></param>
-        /// <param name="POCOND">MMSN-460 - Added as mentioned in v.1.8 - HU02-Compras-MVP1 - Detalle de OCs - Posiciones - Solicitante</param>
-        /// <param name="idPosicion"></param>
-        /// <returns></returns>
-        private List<ItemDto> ObtenerItemsdelaPosicion(BAPIESLLC[] pOSERVICES, BAPIEKBE[] pOHISTORY, BAPIMEPOHEADER POHEADER, PosicionDto Posicion)
+        private List<ItemDto> ObtenerItemsdelaPosicion(BAPIESLLC[] pOSERVICES, BAPIEKBE[] pOHISTORY, BAPIMEPOHEADER POHEADER,
+                                                        PosicionDto Posicion,
+                                                        List<EntradaServicioDto> ListaDeEntradasDeServicio)
         {
             List<ItemDto> itemsDeLaPosicion = new List<ItemDto>();
             string idPosicionString = Posicion.Id.ToString("D10");
@@ -498,11 +486,10 @@ namespace SustitucionMOAWS.WSConsumers
 
             var items = pOSERVICES.Where(x => x.PCKG_NO == itemsValidos.SUBPCKG_NO);
 
-            /// Recorre cada item de la posicion en busqueda de entradas de servicio
             foreach (var item in items)
             {
-                ItemDto itemDto = new ItemDto();
 
+                ItemDto itemDto = new ItemDto();
 
                 itemDto.Id = item.PCKG_NO;
                 itemDto.LINE_NO = item.LINE_NO;
@@ -510,12 +497,12 @@ namespace SustitucionMOAWS.WSConsumers
                 itemDto.Descripcion = item.SHORT_TEXT;
                 itemDto.Cantidad = item.QUANTITY;
                 itemDto.PosicionId = Convert.ToInt32(item.PCKG_NO);
-                itemDto.PrecioBruto = Math.Round((item.QUANTITY != 0) ? item.NET_VALUE / item.QUANTITY : 0,4);               
+                itemDto.PrecioBruto = Math.Round((item.QUANTITY != 0) ? item.NET_VALUE / item.QUANTITY : 0, 4);
                 itemDto.ServicioNumero = item.SERVICE != "" ? long.Parse(item.SERVICE) : 0;
                 itemDto.UM = item.BASE_UOM;
                 itemDto.Importe = Math.Round((item.QUANTITY != 0) ? item.NET_VALUE / item.QUANTITY : 0, 4);
-                
-                if(itemDto.Importe != null)
+
+                if (itemDto.Importe != null)
                 {
                     decimal notNullValue = (decimal)itemDto.Importe;
                     itemDto.ImporteString = notNullValue.ToString(currencyFormat, System.Globalization.CultureInfo.InvariantCulture);
@@ -529,8 +516,8 @@ namespace SustitucionMOAWS.WSConsumers
                 itemDto.Porcentaje = "0"; // si no tiene entradas de servicios asociadas el porcentaje es 0
                 itemDto.CantidadReal = 0; // si no tiene entras de servicios asociadas la cantidad real es = 0
 
-                /// Obtiene las entradas de servicio de cada item de la posicion
-                itemDto.EntradasServicio = ObtenerEntradasDeServicioDelItem(pOSERVICES, pOHISTORY, itemDto.Id, itemDto.LINE_NO);
+                itemDto.EntradasServicio = ObtenerEntradasDeServicioDelItem_Nuevo(pOSERVICES, pOHISTORY, itemDto.Id, itemDto.LINE_NO, ListaDeEntradasDeServicio);
+
                 if (itemDto.EntradasServicio.Count > 0)
                 {
                     itemDto = CalcularCampos(itemDto);
@@ -538,7 +525,6 @@ namespace SustitucionMOAWS.WSConsumers
 
                 itemDto.NroOrdenCompra = POHEADER.PO_NUMBER;
                 itemDto.NroPosicion = Posicion.NumeroPosicion.ToString();
-
 
                 itemsDeLaPosicion.Add(itemDto);
             }
@@ -767,6 +753,108 @@ namespace SustitucionMOAWS.WSConsumers
             int diferenciaEnMeses = ((fechaActual.Year - fechaInicial.Year) * 12) + fechaActual.Month - fechaInicial.Month;
 
             return diferenciaEnMeses < 2;
+        }
+
+
+        /// <summary>
+        /// Obtiene detalle de todas las entradas de servicio de una OC
+        /// deja solo las que son útiles para alguno de los items,
+        /// y las guarda en un objeto
+        /// </summary>
+        public List<EntradaServicioDto> ObtenerTodasEntradasDeServicio_Nuevo(BAPIESLLC[] pOSERVICES, BAPIEKBE[] pOHISTORY)
+        {
+            List<EntradaServicioDto> EntradasDeServicioDelItem = new List<EntradaServicioDto>();
+            List<BAPIEKBE> entradasDeServicioPotenciales = pOHISTORY.Where(x => x.PROCESS_ID == "9" && x.HIST_TYPE == "D").ToList();
+
+            List<string> ListaDeEntradasDeServicioFacturadas = pOHISTORY
+                .Where(x => (x.HIST_TYPE == "Q" || x.HIST_TYPE == "R") && x.PROCESS_ID == "2")
+                .Select(x => x.REF_DOC)
+                .ToList();
+
+
+            foreach (var entradaServicioCompleta in entradasDeServicioPotenciales)
+            {
+                EntradaServicioDto entradaServicioDto = new EntradaServicioDto();
+                string _nroES = entradaServicioCompleta.MAT_DOC;
+                EntradaServicioDto entradaServicioSAP = new ObtenerEntradaDeServicioPorNumeroConsumerMOA().ObtenerEntradaServicio(_nroES);
+                List<ItemEntradaServicioDto> _itemsDeEntradaServicio = entradaServicioSAP.Items;
+                bool entradaServicioFacturada = EntradaServicioTieneFactura(ListaDeEntradasDeServicioFacturadas, _nroES);
+
+                foreach (ItemEntradaServicioDto itemES in _itemsDeEntradaServicio)
+                {
+                    DateTime _fechaContabilizacion = SAPFormatter.GetDateTime(entradaServicioSAP.FechaContabilizacion);
+                    bool entradaServicioDentroDePeriodoSAP = DentroPeriodoSAP(_fechaContabilizacion, DateTime.Now);
+
+                    entradaServicioDto.Id = int.Parse(itemES.Id);
+                    entradaServicioDto.itemNumero = itemES.ItemNumero;
+                    entradaServicioDto.TextoBreve = itemES.Descripcion;
+                    entradaServicioDto.Cantidad = itemES.Cantidad;
+                    entradaServicioDto.ESS_PCKG_NO = itemES.PCKG_NO;
+                    entradaServicioDto.ESS_LINE_NO = itemES.PLN_LINE;
+                    entradaServicioDto.ESS_EXT_LINE = itemES.EXT_LINE;
+                    entradaServicioDto.Fecha = entradaServicioSAP.Fecha; //MMSN-460 - Informacion de Cabecera p/ FE
+                    entradaServicioDto.FechaDocumentoString = entradaServicioSAP.FechaDocumentoString;
+                    entradaServicioDto.FechaContabilizacion = entradaServicioSAP.FechaContabilizacion;
+                    entradaServicioDto.Referencia = entradaServicioSAP.Referencia;
+                    entradaServicioDto.ImporteARPUSD = entradaServicioSAP.ImporteARPUSD;
+                    entradaServicioDto.SePuedeBorrar = !entradaServicioFacturada && entradaServicioDentroDePeriodoSAP;
+
+                    EntradasDeServicioDelItem.Add(entradaServicioDto);
+                }
+            }
+
+            return EntradasDeServicioDelItem;
+        }
+
+
+        /// <summary>
+        /// Obtiene las Entradas de Servicio de un Item
+        /// De las entradas de servicios ya parseadas en un objeto
+        /// </summary>
+        private List<EntradaServicioDto> ObtenerEntradasDeServicioDelItem_Nuevo(BAPIESLLC[] pOSERVICES, BAPIEKBE[] pOHISTORY,
+                                                                                    string claveItemOC, string subClaveItemOC,
+                                                                                    List<EntradaServicioDto> ListaDeEntradasDeServicio)
+        {
+            List<EntradaServicioDto> EntradasDeServicioDelItem = new List<EntradaServicioDto>();
+            //List<BAPIEKBE> entradasDeServicioPotenciales = pOHISTORY.Where(x => x.PROCESS_ID == "9" && x.HIST_TYPE == "D").ToList();
+            List<string> ListaDeEntradasDeServicioFacturadas = pOHISTORY
+                .Where(x => (x.HIST_TYPE == "Q" || x.HIST_TYPE == "R") && x.PROCESS_ID == "2")
+                .Select(x => x.REF_DOC)
+                .ToList();
+
+
+            foreach (var entradaServicioCompleta in ListaDeEntradasDeServicio)
+            {
+                string _nroES = entradaServicioCompleta.Id.ToString();
+                EntradaServicioDto entradaServicioDto = new EntradaServicioDto();
+                bool entradaServicioFacturada = EntradaServicioTieneFactura(ListaDeEntradasDeServicioFacturadas, _nroES);
+
+                if (entradaServicioCompleta.itemNumero == claveItemOC && entradaServicioCompleta.ESS_LINE_NO == subClaveItemOC)
+                {
+                    DateTime _fechaContabilizacion = SAPFormatter.GetDateTime(entradaServicioCompleta.FechaContabilizacion);
+                    bool entradaServicioDentroDePeriodoSAP = DentroPeriodoSAP(_fechaContabilizacion, DateTime.Now);
+
+                    entradaServicioDto.Id = entradaServicioCompleta.Id;
+                    entradaServicioDto.itemNumero = entradaServicioCompleta.itemNumero;
+                    entradaServicioDto.TextoBreve = entradaServicioCompleta.TextoBreve;
+                    entradaServicioDto.Cantidad = entradaServicioCompleta.Cantidad;
+                    entradaServicioDto.ESS_PCKG_NO = entradaServicioCompleta.itemNumero;
+                    entradaServicioDto.ESS_LINE_NO = entradaServicioCompleta.ESS_LINE_NO;
+                    entradaServicioDto.ESS_EXT_LINE = entradaServicioCompleta.ESS_EXT_LINE;
+
+                    //MMSN-460 - Informacion de Cabecera p/ FE
+                    entradaServicioDto.Fecha = entradaServicioCompleta.Fecha;
+                    entradaServicioDto.FechaDocumentoString = entradaServicioCompleta.FechaDocumentoString;
+                    entradaServicioDto.FechaContabilizacion = entradaServicioCompleta.FechaContabilizacion;
+                    entradaServicioDto.Referencia = entradaServicioCompleta.Referencia;
+                    entradaServicioDto.ImporteARPUSD = entradaServicioCompleta.ImporteARPUSD;
+                    entradaServicioDto.SePuedeBorrar = !entradaServicioFacturada && entradaServicioDentroDePeriodoSAP;
+
+                    EntradasDeServicioDelItem.Add(entradaServicioDto);
+                }
+            }
+
+            return EntradasDeServicioDelItem;
         }
     }
 }

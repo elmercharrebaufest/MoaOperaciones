@@ -111,9 +111,12 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
     ocFilterApplied: boolean = false;
     recalculando: boolean = false;
     disabledFilter: boolean = false;
+    solicitantes: any[] = [];
+    selectedSolicitante: any;
+    filterSolicitante: boolean = false;
 
  
-    ngOnInit() {       
+    ngOnInit() {  
         this.navService.setSeccionList([]);
         this.navService.setSeccionActive('');
 
@@ -126,11 +129,11 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
 
         this.navService.setSeccionList(
             [
-            new Seccion('compras/dashboardCertificacionDeServicios', 'Compras', 'Ingresar certificación'),
-            new Seccion('compras/listadoEstadoCertificaciones', 'Compras', 'Estado certificaciones')
+                new Seccion('compras/dashboardCertificacionDeServicios', 'Compras', 'Ingresar certificación'),
+                new Seccion('compras/listadoEstadoCertificaciones', 'Compras', 'Estado certificaciones')
             ]
         );
-
+        this.navService.setSeccionActive('Ingresar certificación');
         this.navService.navegarSeccion("compras/dashboardCertificacionDeServicios");
         this.filtroFechaComponent.setPeriodoInitial('2');
         this.getListarPO(this.proveedor, this.ordenCompraId, this.filtroFechaComponent.fecha_inicio, this.filtroFechaComponent.fecha_fin);
@@ -161,9 +164,9 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
 
             this.itemIdSelected.splice(this.itemIdSelected.indexOf(itemId), 1);
             this.numeroLineaSelected.delete(numeroLinea);
-      
-            this.itemSelected = this.itemSelected.filter((selectedItem: any) => 
-            selectedItem.PosicionId !== item.PosicionId || selectedItem.NumeroLinea !== item.NumeroLinea);
+
+            this.itemSelected = this.itemSelected.filter((selectedItem: any) =>
+                selectedItem.PosicionId !== item.PosicionId || selectedItem.NumeroLinea !== item.NumeroLinea);
         }
         else {
             this.itemIdSelected.push(itemId);
@@ -179,6 +182,47 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
         this.expandedPositionRow = posicion;
         this.calcularValoresACertificar(posicion);
         this.mostrarOcultarItemsSinSaldoACertificar();
+    }
+
+    loadSolicitantesList(rowData: any) {
+        if (this.solicitantes !== undefined && this.solicitantes.length > 0) {
+
+            this.solicitantes.length = 0;
+
+            let sol = {
+                id: null,
+                name: 'Todos',
+            }
+            this.solicitantes.push(sol);
+        }
+        else if (this.solicitantes !== undefined) {
+
+            let sol = {
+                id: null,
+                name: 'Todos',
+            }
+            this.solicitantes.push(sol);
+        }
+
+        rowData.Posiciones.forEach((pos: any) => {
+            
+            let sol = {
+                id: pos.Solicitante,
+                name: pos.Solicitante
+            };
+
+            if (this.solicitantes.some(x => x.name.includes(pos.Solicitante))) {
+                //skip duplicates
+            }
+            else {
+                this.solicitantes.push(sol);
+            }
+            
+        });
+    }
+
+    toggleSolicitanteFilter(): void {
+        this.filterSolicitante = !this.filterSolicitante;
     }
 
     clearCheckboxes(): void {

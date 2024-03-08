@@ -42,6 +42,8 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
 
   fechaDocMin: Date;
   fechaDocMax: Date;
+  fechaContabilizacionMin: Date;
+  fechaContabilizacionMax: Date;
 
   entrySheetData = {
     "EntrySheetHeader": {
@@ -93,6 +95,7 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
 
       this.fechaContabilizacion = new Date();
       this.setRangoFechaDocumento();
+      this.setRangoFechaContabilizacion();
       this.calcularTotalMontoCertificar();
   }
 
@@ -104,14 +107,23 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
         this.textoBreve = this.itemSelected[0].Descripcion !== undefined ? this.itemSelected[0].Descripcion : '' ;
     }
 
-  openModal() {
-    this.step = 1;
-  }
+    openModal() {
+        this.step = 1;
+    }
 
-  setRangoFechaDocumento() {
-    this.fechaDocMax = new Date();
-    this.fechaDocMin = new Date(new Date().setFullYear(new Date().getFullYear() - 5))
-  }
+    setRangoFechaDocumento() {
+        // Fecha máxima: Fecha actual
+        this.fechaDocMax = new Date();
+        // Fecha mínima: Fecha Actual 5 años hacia atrás
+        this.fechaDocMin = new Date(new Date().setFullYear(new Date().getFullYear() - 5));
+    }
+
+    setRangoFechaContabilizacion() {
+        // Fecha máxima: Fecha actual
+        this.fechaContabilizacionMax = new Date();
+        // Fecha mínima: Primero del mes corriente
+        this.fechaContabilizacionMin = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
+    }
 
   dateFormatter(date_Object: Date): string {
       if (date_Object !== undefined) {
@@ -253,7 +265,9 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
 
 
                 if (response.data.Type === 'E') {
-                    this.mensajeError = response.data.Message;
+                    this.mensajeError = response.data.Message.startsWith("Sólo es posible contabilizar en ") ||
+                        response.data.Message.startsWith("Contabilice en ") ?
+                        "El período se encuentra cerrado, por favor contabilice en el periodo actual." : response.data.Message;
                     this.confirmationService.confirm({
                         message: this.mensajeError,
                         accept: () => {

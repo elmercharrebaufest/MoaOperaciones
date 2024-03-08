@@ -288,11 +288,21 @@ export class LayoutComponent implements OnDestroy {
                         this.textoTooltip = 'Instructivo Corredor: <a href="https://b2cmoagro.blob.core.windows.net/moaopublic/Carga%20Masiva%20Contratos%20Corredor%20-%20MOAOPERACIONES.mp4" target="_blank">click aqui</a>.';
                         this.textoTooltip2 = '';
                         break;
+                    case 'Ingresar certificación':
+                        this.auxiliarSeccionesVisitadas = 'Ingresar certificación';
+                        this.textoTooltip = '¡Bienvenido! Aquí tienes una guía rápida para utilizar esta página: <br/><br/>' + 
+                                            '1. Utiliza los filtros para afinar tu búsqueda.<br/>' + 
+                                            '2. La grilla muestra los detalles de las órdenes de compra filtradas.<br/>' +
+                                            '3. Las flechas en la primera columna te permiten expandir y ver más información sobre las posiciones de cada orden de compra.<br/>' +
+                                            '4. Al seleccionar uno o varios ítems, se activará el botón para certificar las entradas de servicios correspondientes.<br/>';
+                        this.textoTooltip2 = '';
+                        break;
                     default:
                         this.textoTooltip = '';
                         this.textoTooltip2 = '';
                         break;
                 }
+                this.cd.detectChanges();
             });
         navService.menuActive$.subscribe(
             menuActive => {

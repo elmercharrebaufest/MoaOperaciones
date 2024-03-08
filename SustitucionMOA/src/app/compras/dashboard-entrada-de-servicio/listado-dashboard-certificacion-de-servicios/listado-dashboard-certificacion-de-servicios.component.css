@@ -198,6 +198,26 @@ p-checkbox .ui-chkbox {
   padding-left: .5rem;
 }
 
+:host ::ng-deep #filterSolicitanteBtn {
+    display: block;
+    height: 1.2em;
+    width: 1.2em;
+    background: #c8c8c8;
+}
+
+:host ::ng-deep #filterSolicitanteBtn .ui-button-icon-left.ui-clickable.pi.pi-filter {
+    font-size: 0.8em;
+    color: #212121;
+}
+
+:host ::ng-deep .divFiltroSolicitante button.active {
+    background-color: #007ad9 !important;
+}
+
+:host ::ng-deep #filterSolicitanteBtn.active .ui-button-icon-left.ui-clickable.pi.pi-filter {
+    color: #ffffff !important;
+}
+
 #certificaciones .level2 th {
   background-color: #075088 !important;
 }
@@ -362,6 +382,28 @@ p-table.level3 button.btn-refresh:disabled {
     box-shadow: 10014px 0 0 -5px;
     animation: dot-pulse-after 1.5s infinite linear;
     animation-delay: 0.5s;
+}
+
+#filtroSolicitante {
+    text-transform: capitalize;
+    line-height: 80%;
+}
+
+.divFiltroSolicitante {
+    float: right;
+    margin-right: -1.6em;
+}
+
+.center-dropdown {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.center-dropdown #filtroSolicitante {
+    width: 130%;
+    box-sizing: border-box;
+    padding-right: 2em;
 }
 
 @keyframes dot-pulse-before {
