@@ -1575,6 +1575,33 @@ namespace SustitucionMOATest.Services
             Assert.AreEqual(result.Mensaje, response.Mensaje);
         }
 
+        [Test]
+        [TestCase("30716928345")]
+        [TestCase("23305842249")]
+        [TestCase("20469978622")]
+        [TestCase("20343197072")]
+        [TestCase("20409255397")]
+        [TestCase("20227860066")]
+        public void ValidarDigitoCuit_CasosCorrecto(string cuitAValidar)
+        {
+            Assert.That(target.ValidarDigitoCuit(cuitAValidar));
+        }
 
+        [Test]
+        [TestCase("33716928345")]
+        [TestCase("25305842249")]
+        [TestCase("23469978622")]
+        [TestCase("23343197072")]
+        [TestCase("23409255397")]
+        [TestCase("23227860066")]
+        public void ValidarDigitoCuit_CasosErroneos(string cuitAValidar)
+        {
+            Assert.IsFalse(target.ValidarDigitoCuit(cuitAValidar));
+        }
+        [Test]
+        public void ValidarDigitoCuit_NoCumpleFormato_Exception()
+        {
+            Assert.Throws<ValidationCustomException>(() => target.ValidarDigitoCuit(""));
+        }
     }
 }

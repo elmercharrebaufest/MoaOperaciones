@@ -265,8 +265,12 @@ namespace SustitucionMOAUtils.Services
                 Log.Info(string.Format("Error Scato código {0}, descripción: {1}", err.MessageCode, err.Message));
             }
         }
-        private bool ValidarDigitoCuit(string cuit)
+        public bool ValidarDigitoCuit(string cuit)
         {
+            if(cuit.Length != 11)
+            {
+                throw new ValidationCustomException($"El cuit que se ha intentado validar no es correcto ({cuit})");
+            }
             var auxiliar = BASES_VALIDACION_CUIT.WithIndex().Sum(
                 b => b.item * Char.GetNumericValue(cuit[b.index]
                 ));
