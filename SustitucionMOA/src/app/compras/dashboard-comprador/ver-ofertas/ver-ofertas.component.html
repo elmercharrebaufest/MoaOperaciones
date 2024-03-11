@@ -9,6 +9,9 @@
                 <b *ngIf="tablaOfertas.Adicional">
                     | OC #{{tablaOfertas.NroOrdenDeCompraAdicional}}
                 </b>
+                <b *ngIf="tablaOfertas.TrabajoHecho">
+                    | Trabajo hecho
+                </b>
             </strong>
         </div>
         <div class="col-sm-2 letraTitulo" *ngIf="tablaOfertas.VerBotonVerPrecio">
