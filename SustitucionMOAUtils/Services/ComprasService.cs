@@ -4016,7 +4016,7 @@ namespace SustitucionMOAUtils.Services
                                 Fecha = solp.FechaCreacion,
                                 FechaFormateado = solp.FechaCreacion.ToString("dd/MM/yyyy"),
                                 Usuario = new UsuarioDto { CUIT = solp.UsuarioCreacion.CUITRegistro, Mail = solp.UsuarioCreacion.Mail, Id = solp.UsuarioCreacion_Id.Value },
-                                Tipo = TipoLegajo.Solp
+                                Tipo = TipoLegajo.SolpArchivos
                             });
                         }
                     }
