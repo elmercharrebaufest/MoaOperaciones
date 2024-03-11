@@ -121,7 +121,7 @@
                     <th class="headerth border2-left" *ngFor="let proveedor of tablaOfertas.Usuarios" colspan="7" style="background-color: #4760ac !important; width: 660px !important;">
                         <span> <p-checkbox name="visible" [readonly]="!proveedor.VerAdjudicar" [(ngModel)]="proveedor.VisibleSolicitante" (click)="actualizarVisibilidad(proveedor, !proveedor.VerAdjudicar)" binary="false"></p-checkbox></span>
                         <span style="margin-left: 10px">{{proveedor.RazonSocial}}</span>
-                         <span style="cursor:pointer; vertical-align: middle;" (click)="abrirModalHistorial(proveedor.Cotizacion.Id)">
+                         <span *ngIf="proveedor.Cotizacion != null" style="cursor:pointer; vertical-align: middle;" (click)="abrirModalHistorial(proveedor.Cotizacion.Id)">
                             <i class="pi pi-copy" style="font-size: 19px; color: rgb(238, 238, 238); vertical-align: middle; margin-left: 10px;"></i>
                         </span>
                     </th>
@@ -379,7 +379,7 @@
                     <th class="headerth border2-left" *ngFor="let proveedor of tablaOfertas.Usuarios" colspan="9" style="background-color: #4760ac !important; width: 540px !important;">
                         <span [ngClass]="{'disabled-checkbox': !proveedor.VerAdjudicar}"> <p-checkbox name="visible" [disabled]="!proveedor.VerAdjudicar" [(ngModel)]="proveedor.VisibleSolicitante" (click)="actualizarVisibilidad(proveedor, !proveedor.VerAdjudicar)" binary="false"></p-checkbox></span>
                         <span style="margin-left: 10px">{{proveedor.RazonSocial}}</span>
-                          <span style="cursor:pointer; vertical-align: middle;" (click)="abrirModalHistorial(proveedor.Cotizacion.Id)">
+                          <span *ngIf="proveedor.Cotizacion != null" style="cursor:pointer; vertical-align: middle;" (click)="abrirModalHistorial(proveedor.Cotizacion.Id)">
                               <i class="pi pi-copy" style="font-size: 19px; color: rgb(252, 249, 249); vertical-align: middle; margin-left: 10px;"></i>
                           </span>
                     </th>
