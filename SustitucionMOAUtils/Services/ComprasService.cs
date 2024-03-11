@@ -3962,7 +3962,7 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        public List<LegajoDto> ObtenerLegajo(int peticionDeOfertaId, int? peticiondeOfertaUsuarioId)
+        public List<LegajoDto> ObtenerLegajo(int peticionDeOfertaId, int? peticiondeOfertaUsuarioId, bool esProveedor)
         {
             List<LegajoDto> legajo = new List<LegajoDto>();
             var peticion = repositorio.Obtener<PeticionDeOferta>(peticionDeOfertaId);
@@ -3999,12 +3999,14 @@ namespace SustitucionMOAUtils.Services
                     });
                 }
 
-                // buscar archivos de la solp
-                if (solp.Pliego != null && solp.Pliego.Archivos != null && solp.Pliego.Archivos.Any<Archivo>(x => x.FileKey == FileKeys.AdjuntoSolp || x.FileKey == FileKeys.AdjuntoCotizacionesSolp))
+                // buscar archivos de la solp y considerar condiciones especiales
+                if (solp.Pliego != null && solp.Pliego.Archivos != null && solp.Pliego.Archivos.Any<Archivo>(x => x.FileKey == FileKeys.AdjuntoSolp || 
+                (x.FileKey == FileKeys.AdjuntoCotizacionesSolp && !(solp.TrabajoYaHecho == true || solp.Urgencia == true || solp.Adicional == true || solp.CondEspProveedorAsignado == true))))
                 {
                     foreach (var archivoSubido in solp.Pliego.Archivos)
                     {
-                        if (File.Exists(archivoSubido.Ruta) && (archivoSubido.FileKey == FileKeys.AdjuntoSolp || archivoSubido.FileKey == FileKeys.AdjuntoCotizacionesSolp))
+                        if (File.Exists(archivoSubido.Ruta) && (archivoSubido.FileKey == FileKeys.AdjuntoSolp || (archivoSubido.FileKey == FileKeys.AdjuntoCotizacionesSolp && 
+                            !(solp.TrabajoYaHecho == true || solp.Urgencia == true || solp.Adicional == true || solp.CondEspProveedorAsignado == true))))
                         {
                             string fileName = Path.GetFileName(archivoSubido.Ruta);
                             legajo.Add(new LegajoDto
@@ -4022,8 +4024,9 @@ namespace SustitucionMOAUtils.Services
                     }
                 }
 
+
                 //mostrar observación ingresada en el paso 4 si es SOLP con condiciones especiales
-                if (solp.Pliego != null && (solp.TrabajoYaHecho == true || solp.Urgencia == true || solp.Adicional == true || solp.CondEspProveedorAsignado == true))
+                if (solp.Pliego != null && esProveedor != true && (solp.TrabajoYaHecho == true || solp.Urgencia == true || solp.Adicional == true || solp.CondEspProveedorAsignado == true))
                 {
                     legajo.Add(new LegajoDto
                     {
@@ -7184,7 +7187,7 @@ namespace SustitucionMOAUtils.Services
                 resultado.Proveedor = new UsuarioDto(adjudicacion.Cotizacion.PeticionDeOfertaUsuario.Usuario);
                 resultado.FechaAdjudicacionFormateado = adjudicacion.FechaCreacion.ToString("dd/MM/yyyy");
 
-                resultado.ListaLegajos = ObtenerLegajo(cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta_Id, null);
+                resultado.ListaLegajos = ObtenerLegajo(cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta_Id, null, true);
             }
             return resultado;
         }

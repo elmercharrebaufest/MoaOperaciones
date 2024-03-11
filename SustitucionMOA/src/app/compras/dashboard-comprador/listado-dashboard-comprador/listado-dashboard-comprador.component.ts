@@ -143,6 +143,8 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
     errores: any = [];
     mensaje: string;
     displayAdjudicacionCreada: boolean;
+    esProveedor: boolean = false;
+
 
     constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService,
         protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService,
@@ -288,7 +290,7 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
 
     verLegajo(Id) {
         this.blockUI.start('Cargando...');
-        this.service.verLegajo(Id, null)
+        this.service.verLegajo(Id, null, this.esProveedor)
             .subscribe(
                 (result) => {
                     if (result.logout == true) {
