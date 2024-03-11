@@ -15,7 +15,7 @@ namespace SustitucionMOAModel.Dto
         public string Email { get; set; }
         public DateTime? FechaHoraEntrega { get; set; }
         public List<string> SupervisorSector { get; set; }
-        public List<string> SupervisorTrabajo { get; set; }
+        public string SupervisorTrabajo { get; set; }
         public List<VisitaObraDto> VisitasObraMasiva { get; set; }
         public bool TieneVisitaObra { get; set; }
         public bool TieneVisitaObraMasiva { get; set; }
@@ -122,7 +122,7 @@ namespace SustitucionMOAModel.Dto
             Email = entity.Pliego.Email;
             FechaHoraEntrega = entity.Pliego.FechaHoraEntrega;
             SupervisorSector = entity.Pliego.SupervisorSector.Split(',').ToList();
-            SupervisorTrabajo = entity.Pliego.SupervisorTrabajo.Split(',').ToList();
+            SupervisorTrabajo = entity.Pliego.SupervisorTrabajo;
             VisitasObraMasiva = new List<VisitaObraDto>();
             TieneVisitaObra = entity.Pliego.TieneVisitaObra.HasValue && entity.Pliego.TieneVisitaObra.Value;
             TieneVisitaObraMasiva = entity.Pliego.TieneVisitaObraMasiva.HasValue && entity.Pliego.TieneVisitaObraMasiva.Value;

@@ -63,6 +63,8 @@ export class Generacion1Component extends ListBaseComponent  {
             this.model.mail = sessionStorage.getItem("username");
         };
 
+        console.log(this.model, "SOLP");
+
         //declaro las validaciones para los campos
         this.formulario = this.formBuilder.group({
             nombreDePedido: new FormControl({value : ""}, Validators.compose([Validators.required])),
@@ -76,7 +78,7 @@ export class Generacion1Component extends ListBaseComponent  {
             this.validadorPasoSolpService.aplicarValidaciones()
         }
         this.model.cargoPasoUno = true;
-    }
+    }    
 
     ngOnDestroy()
     {
@@ -109,4 +111,13 @@ export class Generacion1Component extends ListBaseComponent  {
     {
         this.validadorPasoSolpService.onBlurDirty(control);
     }      
+
+    onAutocompletarResponsable() {
+        if (this.model != undefined && this.model.selectUsuarioFiscal != undefined) {
+            this.model.mail = this.model.selectUsuarioFiscal.CodigoDescripcion;
+            this.model.supervisorTrabajo = this.model.selectUsuarioFiscal.CodigoDescripcion;
+            this.model.selectResponsableTrabajo = this.model.usuarioSolicitanteList.
+                find(x => x.CodigoDescripcion === this.model.mail);
+        }
+    }
 }

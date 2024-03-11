@@ -131,7 +131,7 @@ export class Generacion2Component extends ListBaseComponent {
             });
         } else {
             this.formulario2 = this.formBuilder.group({
-                supervisorTrabajo: new FormControl('', Validators.required),
+                supervisorTrabajo: [{ value: true, disabled: true }, [Validators.required]],
                 supervisorSector: new FormControl('', Validators.required),
                 visitaDeObra: [{ value: true, disabled: false }, []],
                 visitaDeObraMasiva: [{ value: true, disabled: false }, []],
@@ -156,8 +156,8 @@ export class Generacion2Component extends ListBaseComponent {
         if (this.model.supervisorSector[0] == '') {
             this.model.supervisorSector = [];
         }
-        if (this.model.supervisorTrabajo[0] == '') {
-            this.model.supervisorTrabajo = [];
+        if (this.model.supervisorTrabajo == '') {
+            this.model.supervisorTrabajo = '';
         }
 
         this.listarVisitasDeObra();
@@ -260,5 +260,11 @@ export class Generacion2Component extends ListBaseComponent {
 
     cerrarDetalle(){
         this.verDetalleVisitas = false;
+    }
+
+    onCompletarResponsable() {
+        if (this.model != undefined && this.model.selectResponsableTrabajo != undefined) {
+            this.model.supervisorTrabajo = this.model.selectResponsableTrabajo.CodigoDescripcion;
+        }
     }
 }

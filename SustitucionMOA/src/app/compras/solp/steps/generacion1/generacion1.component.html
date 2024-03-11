@@ -22,22 +22,26 @@
                         <div class="col-xs-12  col-sm-12 col-md-12 col-lg-12 margenInput">
                             Fiscal contrato *
                             <div class="styled-select">
-                                <!-- Va a ser un select a futuro -->
                                 <input pInputText type="text" formControlName="fiscalContrato" (blur)="onBlur('fiscalContrato')" [(ngModel)]="model.fiscalContrato" class="fourRounded" placeholder="Ingrese nombre de fiscal" aria-controls="tableModal">
                             </div>
                             <div *ngIf="mostrarValidacion('fiscalContrato', model.fiscalContrato)">
                                 <p class="text-danger">campo obligatorio</p>
-                            </div>
+                            </div>                           
                         </div>
 
                         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 margenInput">
-                            Mail fiscal
-                            <div class="styled-select">
+                            Mail fiscal *
+                             <div >
+                                <p-dropdown [options]="model.usuarioSolicitanteList" formControlName="mail" [(ngModel)]="model.selectUsuarioFiscal" dataKey="Id" optionLabel="CodigoDescripcion" (ngModelChange)="onAutocompletarResponsable()">
+                                </p-dropdown>
+                                
+                            </div>                            
+                            <!-- <div class="styled-select">
                                 <input id="txtUsuarioMail" type="text" formControlName="mail" (blur)="onBlur('mail')" pInputText [(ngModel)]="model.mail" class="fourRounded" placeholder="Ingrese el mail" aria-controls="tableModal">
-                            </div>
-                            <div *ngIf="formulario.get('mail').hasError('pattern') && formulario.get('mail').touched" class="text-danger">
+                            </div> -->
+                            <!-- <div *ngIf="formulario.get('mail').hasError('pattern') && formulario.get('mail').touched" class="text-danger">
                                 El formato del correo electrónico no es válido.
-                            </div>
+                            </div> -->
                         </div>
                     </div>
 

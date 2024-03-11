@@ -31,10 +31,10 @@ export class Solp extends CommonResponse {
 
     //paso 2
     public visitaDeObra: boolean;
-    public supervisorSector: string[] = [];
+    public supervisorSector: string [] = [];
     public visitaDeObraFecha: Date;
     public visitaDeObraHora: Date;
-    public supervisorTrabajo: string[] = [];
+    public supervisorTrabajo: string;
     public obradores: boolean;
     public descripcionTecnica: boolean;
     public modoElevacion: boolean;
@@ -93,7 +93,9 @@ export class Solp extends CommonResponse {
     proveedorRazonSocialAdicional: string;
     deshabilitarAdicional: boolean;
     ordenDeCompraOriginal: string;
-
+    usuarioSolicitanteList?: any[];
+    selectUsuarioFiscal?: any;
+    selectResponsableTrabajo?: any;
 
     public get ultimaPosicion(): SolpPosicion {
         //comentar linea de abajo si se quiere que no se ordene por Fecha (Mas actual primero)

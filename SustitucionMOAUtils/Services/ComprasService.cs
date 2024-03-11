@@ -274,7 +274,7 @@ namespace SustitucionMOAUtils.Services
                 pliegoEntity.Email = solp.Email;
                 pliegoEntity.FechaHoraEntrega = solp.FechaHoraEntrega?.ToLocalTime();
                 pliegoEntity.SupervisorSector = solp.SupervisorSector != null ? string.Join(",", solp.SupervisorSector.Select(x => x)) : string.Empty;
-                pliegoEntity.SupervisorTrabajo = solp.SupervisorTrabajo != null ? string.Join(",", solp.SupervisorTrabajo.Select(x => x)) : string.Empty;
+                pliegoEntity.SupervisorTrabajo = solp.SupervisorTrabajo;
                 pliegoEntity.TieneVisitaObra = solp.TieneVisitaObra;
                 pliegoEntity.TieneVisitaObraMasiva = solp.TieneVisitaObraMasiva;
                 pliegoEntity.TieneObradores = solp.TieneObradores;
@@ -1275,7 +1275,7 @@ namespace SustitucionMOAUtils.Services
                 Email = solp.Pliego.Email,
                 FechaHoraEntrega = solp.Pliego.FechaHoraEntrega,
                 SupervisorSector = solp.Pliego.SupervisorSector.Split(',').ToList(),
-                SupervisorTrabajo = solp.Pliego.SupervisorTrabajo.Split(',').ToList(),
+                SupervisorTrabajo = solp.Pliego.SupervisorTrabajo,
                 VisitasObraMasiva = solp.Pliego.VisitasMasivas.Select(a => new VisitaObraDto(a)).ToList(),
                 TieneVisitaObra = solp.Pliego.TieneVisitaObra ?? false,
                 TieneVisitaObraMasiva = solp.Pliego.TieneVisitaObraMasiva ?? false,
@@ -8412,6 +8412,15 @@ namespace SustitucionMOAUtils.Services
             return historial;
         }
 
+
+        public List<UsuarioDto> ListarUsuarioSolicitante()
+        {
+            var usuarios = repositorio.Listar<Usuario, UsuarioDto>(usuario => new UsuarioDto
+            {
+                Mail = usuario.Mail                
+            }, usuario => usuario.Roles.Any(r => r.PermisosAsociados.Select(x => x.Permiso).Contains("ABM SOLP")));
+            return usuarios;
+        }
 
         public static class SolpTemplateKeys
         {

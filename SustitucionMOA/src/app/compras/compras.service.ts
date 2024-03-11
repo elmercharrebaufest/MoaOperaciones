@@ -1099,4 +1099,13 @@ export class ComprasService extends BaseService {
             headers: this.headers,
         });
     }
+    listarUsuarioSolicitante(): Observable<any> {
+
+        return this.http
+            .get("/api/compras/ListarUsuarioSolicitante", {
+                headers: this.headers,
+            });
+    }
+
+
 }
