@@ -121,6 +121,9 @@
                     <th class="headerth border2-left" *ngFor="let proveedor of tablaOfertas.Usuarios" colspan="7" style="background-color: #4760ac !important; width: 660px !important;">
                         <span> <p-checkbox name="visible" [readonly]="!proveedor.VerAdjudicar" [(ngModel)]="proveedor.VisibleSolicitante" (click)="actualizarVisibilidad(proveedor, !proveedor.VerAdjudicar)" binary="false"></p-checkbox></span>
                         <span style="margin-left: 10px">{{proveedor.RazonSocial}}</span>
+                         <span style="cursor:pointer; vertical-align: middle;" (click)="abrirModalHistorial(proveedor.Cotizacion.Id)">
+                            <i class="pi pi-copy" style="font-size: 19px; color: rgb(238, 238, 238); vertical-align: middle; margin-left: 10px;"></i>
+                        </span>
                     </th>
                   
                 </tr>
@@ -375,7 +378,10 @@
                 <tr>
                     <th class="headerth border2-left" *ngFor="let proveedor of tablaOfertas.Usuarios" colspan="9" style="background-color: #4760ac !important; width: 540px !important;">
                         <span [ngClass]="{'disabled-checkbox': !proveedor.VerAdjudicar}"> <p-checkbox name="visible" [disabled]="!proveedor.VerAdjudicar" [(ngModel)]="proveedor.VisibleSolicitante" (click)="actualizarVisibilidad(proveedor, !proveedor.VerAdjudicar)" binary="false"></p-checkbox></span>
-                        <span style="margin-left: 10px">{{proveedor.RazonSocial}}</span>hola
+                        <span style="margin-left: 10px">{{proveedor.RazonSocial}}</span>
+                          <span style="cursor:pointer; vertical-align: middle;" (click)="abrirModalHistorial(proveedor.Cotizacion.Id)">
+                              <i class="pi pi-copy" style="font-size: 19px; color: rgb(252, 249, 249); vertical-align: middle; margin-left: 10px;"></i>
+                          </span>
                     </th>
                    
                 </tr>
@@ -658,6 +664,11 @@
                     [(lista)]="lista">
 </app-posicion-plazo>
 
+<app-cotizacion-historial 
+    [(displayHistorial)]="displayHistorial"
+    (cerrarHistorialEmitter)="cerrarHistorial()"
+    [(historiales)]="historiales">
+</app-cotizacion-historial>
 
 <p-dialog [(visible)]="displayGenerarOCMoneda" modal="modal" [width]="600" [draggable]="false" [closable]="true"
           (onHide)="onCerrarMoneda()" appendTo="body" [height]="200" [max] [contentStyle]="{'max-height':'150px', 'min-height':'150px'}">
@@ -688,3 +699,4 @@
         <button type="button" class="btn btn-danger botonesComprasColor" (click)="onCerrarMoneda()">CANCELAR</button>
     </p-footer>
 </p-dialog>
+

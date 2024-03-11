@@ -214,6 +214,7 @@
     <Build Include="DBO\Tables\LiberadorSapSolp.sql" />
     <None Include="scripts\PostDeployment\LiberadorSap.sql" />
     <Build Include="DBO\Tables\MonedaConversion.sql" />
+    <Build Include="DBO\Tables\CotizacionHistorial.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DatabasePublishQA.xml" />

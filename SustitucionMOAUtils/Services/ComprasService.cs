@@ -1,4 +1,5 @@
 ﻿using DocumentFormat.OpenXml.ExtendedProperties;
+using DocumentFormat.OpenXml.EMMA;
 using HandlebarsDotNet;
 using ICSharpCode.SharpZipLib.Core;
 using ICSharpCode.SharpZipLib.Zip;
@@ -11,6 +12,7 @@ using iTextSharp.tool.xml.parser;
 using iTextSharp.tool.xml.pipeline.css;
 using iTextSharp.tool.xml.pipeline.end;
 using iTextSharp.tool.xml.pipeline.html;
+using Newtonsoft.Json;
 using SustitucionMOAFotmatter;
 using SustitucionMOAModel.Consultas;
 using SustitucionMOAModel.CustomExceptions;
@@ -19,6 +21,7 @@ using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using SustitucionMOAModel.Models.WSMapMOA;
 using SustitucionMOAModel.Models.WSMapMOA.Compras;
+using SustitucionMOAModel.Models.WSMapMOA.Pesificacion;
 using SustitucionMOAModel.Models.WSMapMOA.Reporte;
 using SustitucionMOAModel.Models.WSMapMOA.Vendedor.Detalle;
 using SustitucionMOARepositorio;
@@ -5799,6 +5802,12 @@ namespace SustitucionMOAUtils.Services
 
                 respuestaGuardarSOLP.IdEntidad = cotizacion.Id;
                 repositorio.GuardarCambios();
+
+                if (cotizacion.CotizacionEstado_Id == (int)CotizacionEstadoEnum.Cotizado) 
+                { 
+                    GrabarLogCotizacion(cotizacion);
+                }
+
                 return respuestaGuardarSOLP;
 
             }
@@ -8300,6 +8309,115 @@ namespace SustitucionMOAUtils.Services
                 throw;
             }
         }
+        public CotizacionHistorial GrabarLogCotizacion(Cotizacion cotizacion)
+        {
+            try
+            {
+                var cotizacionHistorial = new CotizacionHistorial()
+                {
+                    Cotizacion_Id = cotizacion.Id,
+                    FechaFinalizacion = DateTime.Now,
+                    Log = new LogCotizacionDto()
+                    {
+                        Id = cotizacion.Id,
+                        UsuarioCreador_Id = cotizacion.UsuarioCreador_Id,
+                        CotizacionEstadoDescripcion = cotizacion.CotizacionEstado.Descripcion,
+                        PeticionDeOfertaUsuario_Id = cotizacion.PeticionDeOfertaUsuario_Id,
+                        RespetaMateriales = cotizacion.RespetaMateriales == true ? "Si" : "No",
+                        RespetaServicios = cotizacion.RespetaServicios == true ? "Si" : "No",
+                        ObservacionTecnica = cotizacion.ObservacionTecnica,
+                        ObservacionEconomica = cotizacion.ObservacionEconomica,
+                        Revision = cotizacion.Revision,
+                        PorcentajeDeHoras = cotizacion.PorcentajeDeHoras,
+                        FechaCreacion = cotizacion.FechaCreacion != null ? cotizacion.FechaCreacion.ToString("dd-MM-yyyy") : "",
+                        Archivos = cotizacion.Archivos.Select(x => new ArchivoDto { Id = x.Id, FileKey = x.FileKey, Ruta = x.ObtenerNombre(x.Ruta) }).ToList(),
+                        CotizacionPosiciones = cotizacion.CotizacionPosiciones.Select(cotPos => new LogCotizacionPosicionDto
+                        {
+                            Id = cotPos.Id,
+                            Cotizacion_Id = cotPos.Cotizacion_Id,
+                            PeticionDeOfertaSolpPosicion_Id = cotPos.PeticionDeOfertaSolpPosicion_Id,
+                            Cantidad = cotPos.Cantidad != null ? cotPos.Cantidad : 0,
+                            Precio = cotPos.Precio != null ? cotPos.Precio : 0,
+                            FechaDeEntrega = cotPos.FechaDeEntrega != null ? cotPos.FechaDeEntrega.Value.ToString("dd-MM-yyyy") : "",
+                            MonedaCodigo = cotPos.Moneda != null ? cotPos.Moneda.Codigo : "",
+                            UnidadMedidaDescripcion = cotPos.UnidadDeMedida != null ? cotPos.UnidadDeMedida.Descripcion : "",
+                            PrecioTotal = cotPos.PeticionDeOfertaSolpPosicion.SolpPosicion.TipoPosicion.Codigo == "MATERIALES" ? (cotPos.Cantidad.HasValue && cotPos.Precio.HasValue ? cotPos.Cantidad.Value * cotPos.Precio.Value : 0) : cotPos.CotizacionSubPosiciones?.Sum(x => x.Precio * x.Cantidad),
+                            NoDisponible = cotPos.NoDisponible.HasValue == true ? "No disponible" : "Disponible",
+                            FechaDeVigencia = cotPos.FechaDeVigencia != null ? cotPos.FechaDeVigencia.Value.ToString("dd-MM-yyyy") : "",
+                            PrimerPlazoDeOferta = cotPos.PrimerPlazoDeOferta != null ? cotPos.PrimerPlazoDeOferta : 0,
+                            PrimeraCantidad = cotPos.PrimeraCantidad != null ? cotPos.PrimeraCantidad : 0,
+                            SegundoPlazoDeOferta = cotPos.SegundoPlazoDeOferta != null ? cotPos.SegundoPlazoDeOferta : 0,
+                            SegundaCantidad = cotPos.SegundaCantidad != null ? cotPos.SegundaCantidad : 0,
+                            TercerPlazoDeOferta = cotPos.TercerPlazoDeOferta != null ? cotPos.TercerPlazoDeOferta : 0,
+                            TerceraCantidad = cotPos.TerceraCantidad != null ? cotPos.TerceraCantidad : 0,
+                            EstaEliminado = cotPos.PeticionDeOfertaSolpPosicion.SolpPosicion.Estado == true ? "" : "Esta eliminado",
+                            Indice = cotPos.PeticionDeOfertaSolpPosicion.SolpPosicion.Indice,
+                            IdPosicion = cotPos.PeticionDeOfertaSolpPosicion.SolpPosicion.Id,
+                            Descripcion = cotPos.PeticionDeOfertaSolpPosicion.SolpPosicion.Tarea != null ? cotPos.PeticionDeOfertaSolpPosicion.SolpPosicion.Tarea : "",
+                            Codigo = cotPos.PeticionDeOfertaSolpPosicion.SolpPosicion.MaterialSolp?.Id,
+                            CotizacionSubPosiciones = cotPos.CotizacionSubPosiciones?.Select(cotSubPos => new LogCotizacionSubPosicionDto
+                            {
+                                CotizacionSubPosicionId = cotSubPos.Id,
+                                SolpSubPosicionId = cotSubPos.SolpSubPosicion_Id,
+                                Cantidad = cotSubPos.Cantidad != null ? cotSubPos.Cantidad : 0,
+                                UnidadDeMedidaDescripcion = cotSubPos.UnidadDeMedida != null ? cotSubPos.UnidadDeMedida.Descripcion : "",
+                                Precio = cotSubPos.Precio != null ? cotSubPos.Precio : 0,
+                                MonedaCodigo = cotSubPos.Moneda != null ? cotSubPos.Moneda.Codigo : "",
+                                PrecioTotal = cotSubPos.Cantidad.HasValue && cotSubPos.Precio.HasValue ? cotSubPos.Cantidad.Value * cotSubPos.Precio.Value : 0,
+                                NroSubPosicion = cotSubPos.SolpSubPosicion.Numero,
+                                IdSubPosicion = cotSubPos.SolpSubPosicion.Id,
+                                Descripcion = cotSubPos.SolpSubPosicion.Tarea,
+                                Codigo = cotSubPos.SolpSubPosicion.ServicioSolp != null ? cotSubPos.SolpSubPosicion.ServicioSolp?.Id : 0
+                            }).ToList(),
+                            
+                        }).ToList(),
+                        CotizacionesHoras = cotizacion.CotizacionesHoras?.Select(cotHs => new LogCotizacionHorasDto
+                        {
+                            Id = cotHs.Id,
+                            Cotizacion_Id = cotHs.Cotizacion_Id,
+                            Categoria = cotHs.Categoria,
+                            CantidadPersonas = cotHs.CantidadPersonas,
+                            HorasNormales = cotHs.HorasNormales,
+                            HorasNocturnas = cotHs.HorasNocturnas,
+                            Gremio = cotHs.Gremio,
+                        }).ToList(),
+                    }.ToJson(),
+                    Usuario_Id = cotizacion.UsuarioCreador_Id,
+                };
+
+                repositorio.Agregar(cotizacionHistorial);
+                repositorio.GuardarCambios();
+                return cotizacionHistorial;
+            }
+            catch (Exception e)
+            {
+                throw e;
+            };
+        }
+
+
+        public List<CotizacionHistorialDto> ObtenerHistorial(int id)
+        {
+            var historialEntities = repositorio.Listar<CotizacionHistorial>(x => x.Cotizacion_Id == id);
+
+            var historial = historialEntities.Select(x => new CotizacionHistorialDto
+            {
+                Id = x.Id,
+                Cotizacion_Id = x.Cotizacion_Id,
+                FechaFinalizacion = x.FechaFinalizacion.ToString("dd-MM-yyyy"),
+                Log = x.Log,
+                Usuario_Id = x.Usuario_Id,
+                UsuarioRazonSocial = x.Usuario.ObtenerRazonSocial()
+            }).ToList();
+
+            foreach (var item in historial)
+            {
+                item.Cotizacion = JsonConvert.DeserializeObject<LogCotizacionDto>(item.Log);
+            }
+
+            return historial;
+        }
+
 
         public static class SolpTemplateKeys
         {

@@ -17,6 +17,7 @@ import { Solp } from '../../solp/solp';
 import { CotizacionHoraDto, CotizacionDto, CotizacionPosicionDto } from '../../../modelos/cotizacionDto';
 import { AdjudicacionDto } from '../../../modelos/adjudicacion';
 import { TextosAdjudicarComponent } from './textos-adjudicar/textos-adjudicar.component';
+import { CotizacionHistorialDto } from '../../../modelos/cotizacion-historial-model';
 
 @Component({
     selector: 'app-ver-ofertas',
@@ -72,6 +73,9 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
     numerosDePedido: any;
     displayPlazo: boolean;
     mensaje: string;
+    displayHistorial: boolean;
+    historiales: CotizacionHistorialDto[] = [];
+
 
     constructor(protected service: ComprasService, protected usuarioService: UsuarioService, protected navService: NavService, protected sessionDataService: SessionDataService,
         protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService,
@@ -691,7 +695,6 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
         if (!cambiarEstado){
         this.mensaje = '';
         try {            
-            console.log(proveedor);
             this.blockUI.start('Cargando...');
             this.service.actualizarProveedorVisibleEnSolicitante(proveedor.Id, proveedor.VisibleSolicitante).subscribe(
                 () => {
@@ -709,5 +712,42 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
         }
     }
         return false; //<-- Prevent Refresh
+    }
+
+    obtenerHistorial(id) {
+        try {
+            this.blockUI.start('Cargando...');
+            this.subscription = this.service.obtenerHistorial(id).subscribe(
+                (result: any) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.floatMsgService.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.floatMsgService.setInfoMsg(result.info);
+                    } else {
+                        this.historiales = result.data;
+                    }
+                    this.blockUI.stop();
+                },
+                error => {
+                    this.floatMsgService.setErrorMsg(error.message);
+                    this.blockUI.stop();
+                });
+        } catch (e) {
+            this.blockUI.stop();
+            this.floatMsgService.setErrorMsg(e);
+            return false; //<-- Prevent Refresh
+        }
+        return false; //<-- Prevent Refresh
+     }
+    
+    abrirModalHistorial(id) {
+        this.displayHistorial = true;
+        this.obtenerHistorial(id);
+    }
+
+    cerrarHistorial() {
+        this.displayHistorial = false;
     }
 }

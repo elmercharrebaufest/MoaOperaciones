@@ -23,6 +23,7 @@ export interface CotizacionDto {
     CotizacionesHoras: CotizacionHoraDto[],
     Adjudicaciones: AdjudicacionDto[]
 }
+
 export interface ArchivoDto {
     Id: number,
     FileKey: string,

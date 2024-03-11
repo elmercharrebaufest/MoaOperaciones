@@ -1088,4 +1088,13 @@ export class ComprasService extends BaseService {
             .post<any>('/api/compras/ActualizarProveedorVisibleEnSolicitante', payload, { headers: this.headers });
     }
 
+
+    public obtenerHistorial(id: number): Observable<any> {
+        let params: HttpParams = new HttpParams();
+        params = params.set("id", id.toString());
+        return this.http.get("/api/compras/ObtenerHistorial", {
+            params: params,
+            headers: this.headers,
+        });
+    }
 }

@@ -1,0 +1,116 @@
+<!-- Dialog para mostrar historial de cotizaciones -->
+<p-dialog [(visible)]="displayHistorial" modal="modal" [draggable]="false" [closable]="true"
+    (onHide)="onCerrarHistorial()" appendTo="body" [height]="600" [width]="1200"
+    [contentStyle]="{'max-height':'600px', 'min-height':'600px'}">
+
+    <!-- Encabezado del dialog -->
+    <p-header class="headerModal" style="color: #195697;">
+        <b>Historial de cotizaciones</b>
+    </p-header>
+
+    <!-- Contenido del dialog -->
+    <section class="col-md-12">
+        <!-- Carousel para mostrar el historial -->
+        <div class="content-section implementation carousel-demo">
+            <div class="card">
+                <p-carousel [value]="historiales" styleClass="custom-carousel" [numVisible]="3" [numScroll]="1"
+                    [circular]="true" [autoplayInterval]="0" [responsiveOptions]="responsiveOptions">
+                    <ng-template let-historial pTemplate="item">
+                        <div class="item card">
+                            <div>
+                                <!-- Detalles de la cotización -->
+                                <h5 class="card-title">{{historial.UsuarioRazonSocial}}</h5>
+                                <h5 class="card-title">Fecha finalización: {{historial.FechaFinalizacion}}</h5>
+
+                                <p class="card-text">Fecha creación {{historial.Cotizacion.FechaCreacion}}</p>
+                                <p class="card-text">Estado: {{historial.Cotizacion.CotizacionEstadoDescripcion}}</p>
+                                <p class="card-text">Respeta materiales: {{historial.Cotizacion.RespetaMateriales}} - Servicios: {{historial.Cotizacion.RespetaServicios}}</p>
+
+                                <p class="card-text" *ngIf="historial.Cotizacion.ObservacionEconomica != ''">Obs economicas: {{historial.Cotizacion.ObservacionEconomica}}</p>
+                                <p class="card-text" *ngIf="historial.Cotizacion.ObservacionTecnica != ''">Obs tecnicas: {{historial.Cotizacion.ObservacionTecnica}}</p>
+                                <p *ngIf="historial.PorcentajeDeHoras != null">PorcentajeDeHoras: {{ historial.PorcentajeDeHoras }}</p>
+
+                                <div class="btnStyle" style="text-align: center; margin-bottom: 10px;">
+                                    <button *ngIf="historial.Cotizacion.CotizacionesHoras.length > 0" type="button" class="btn btn-primary" (click)="mostrarHoras()">
+                                        {{ visualizarHoras ? 'Ocultar horas' : 'Ver horas' }}
+                                    </button>
+                                </div>
+
+                                <div *ngIf="visualizarHoras">
+                                    <table class="p-table">
+                                        <thead>
+                                            <tr style="color: #286090;">
+                                                <th>Cat.</th>
+                                                <th>Gremio</th>
+                                                <th>Ctd Pers</th>
+                                                <th>Hs Nor</th>
+                                                <th>Hs Noc</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let horas of historial.Cotizacion.CotizacionesHoras">
+                                                <td>{{ horas.Categoria }}</td>
+                                                <td>{{ horas.Gremio }}</td>
+                                                <td>{{ horas.CantidadPersonas }}</td>
+                                                <td>{{ horas.HorasNormales }}</td>
+                                                <td>{{ horas.HorasNocturnas }}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+
+                                <!-- Detalles de las posiciones de la cotización -->
+                                <div *ngFor="let posicion of historial.Cotizacion.CotizacionPosiciones">
+                                    <div style="margin-top: 35px;">
+                                        <div class="linea-separadora" style="margin-top: 15px;">
+                                            <div class="texto-centrado"><strong>Nro Posición: {{ posicion.Indice }}</strong></div>
+                                        </div>                                        
+                                        <p>Descripción: {{ posicion.Descripcion }}</p>
+                                        <p *ngIf="posicion.Cantidad != 0">Cantidad: {{ posicion.Cantidad | number:'1.2-2' }} - {{ posicion.UnidadMedidaDescripcion }}</p>
+                                        <p *ngIf="posicion.Precio != 0">Precio: {{ posicion.Precio | number:'1.2-2' }} - {{ posicion.MonedaCodigo }}</p>
+                                        <p>Total: {{ posicion.PrecioTotal | number:'1.2-2'}} - {{ posicion.MonedaCodigo }}</p>
+                                        <p>Fecha de Entrega: {{ posicion.FechaDeEntrega }}</p> 
+                                        <p *ngIf="posicion.FechaDeVigencia != ''">Fecha de Vigencia: {{ posicion.FechaDeVigencia }}</p>
+                                        <p>Plazo de Oferta: {{ posicion.PrimerPlazoDeOferta }} - Ctd: {{ posicion.PrimeraCantidad | number:'1.2-2'}}</p>
+                                        <p *ngIf="posicion.SegundoPlazoDeOferta != 0">Segundo Plazo de Oferta: {{ posicion.SegundoPlazoDeOferta }} - Ctd: {{ posicion.SegundaCantidad | number:'1.2-2'}}</p>
+                                        <p *ngIf="posicion.TercerPlazoDeOferta != 0">Tercer Plazo de Oferta: {{ posicion.TercerPlazoDeOferta }} - Ctd: {{ posicion.TerceraCantidad | number:'1.2-2'}}</p>
+                                        <p *ngIf="posicion.NoDisponible == true">{{ posicion.NoDisponible }}</p>
+                                        <p *ngIf="posicion.EstaEliminado != true">{{ posicion.EstaEliminado }}</p>
+                                        
+                                        <!-- Botón para mostrar u ocultar subposiciones -->
+                                        <div class="btnStyle" style="text-align: center;">
+                                            <button *ngIf="posicion.CotizacionSubPosiciones.length > 0" type="button" class="btn btn-primary" (click)="mostrarSubPosiciones(posicion)">
+                                                {{ posicion.MostrarSubposiciones ? 'Ocultar Subposiciones' : 'Ver Subposiciones' }}
+                                            </button>
+                                        </div>
+
+                                        <!-- Detalles de las subposiciones de la posición -->
+                                        <div *ngIf="posicion.MostrarSubposiciones">
+                                            <div *ngFor="let subposicion of posicion.CotizacionSubPosiciones" style="margin-bottom: 10px;">
+                                                <hr>
+                                                <div>
+                                                    <p><strong>Nro Subposición: {{ subposicion.NroSubPosicion }}</strong></p>
+                                                    <p>Descripción: {{ subposicion.Descripcion }}</p>
+                                                    <p>Cantidad: {{ subposicion.Cantidad | number:'1.2-2' }} - {{ subposicion.UnidadDeMedidaDescripcion }}</p>
+                                                    <p>Precio: {{ subposicion.Precio | number:'1.2-2' }} - {{ subposicion.MonedaCodigo }}</p>
+                                                    <p>Total: {{ subposicion.PrecioTotal | number:'1.2-2' }} - {{ subposicion.MonedaCodigo }}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </ng-template>
+                </p-carousel>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pie del dialog -->
+    <p-footer>
+        <button type="button" class="btn btn-danger botonesComprasColor" (click)="onCerrarHistorial()">CANCELAR</button>
+    </p-footer>
+</p-dialog>
+
