@@ -2154,15 +2154,15 @@ namespace SustitucionMOAUtils.Services
                 {
                     repositorio.GuardarCambios();
 
-                    try
-                    {
-                        EnviarMailOrdenCompra(adjudicaciones.Last(), "");
-                    }
-                    catch (Exception e)
-                    {
-                        Log.Error(new Exception($"Error al enviar mail ActualizarFechaLiberacionOC. Adjudicacion_Id: " + adjudicaciones.Last().Id));
-                        Log.Error(e);
-                    }
+                    //try
+                    //{
+                    //    EnviarMailOrdenCompra(adjudicaciones.Last(), "");
+                    //}
+                    //catch (Exception e)
+                    //{
+                    //    Log.Error(new Exception($"Error al enviar mail ActualizarFechaLiberacionOC. Adjudicacion_Id: " + adjudicaciones.Last().Id));
+                    //    Log.Error(e);
+                    //}
                 }
             }
             catch (Exception)
