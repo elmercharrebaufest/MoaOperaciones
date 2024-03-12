@@ -62,14 +62,11 @@ export class Generacion1Component extends ListBaseComponent  {
         if (this.model.mail === undefined) {     //if (!this.model.mail || this.model.mail === undefined) {         
             this.model.mail = sessionStorage.getItem("username");
         };
-
-        console.log(this.model, "SOLP");
-
         //declaro las validaciones para los campos
         this.formulario = this.formBuilder.group({
             nombreDePedido: new FormControl({value : ""}, Validators.compose([Validators.required])),
             fiscalContrato: new FormControl('', Validators.required),
-            mail: ['', [Validators.pattern('[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}')]]
+            mail: ['', [Validators.required, Validators.pattern('[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}')]]
         });
         
         this.validadorPasoSolpService.formulario = this.formulario;
@@ -101,7 +98,7 @@ export class Generacion1Component extends ListBaseComponent  {
 
     mostrarValidacion(campoAValidar, vacio){
         let camposVacios = this.camposObligatorios.find(x => x.campo == campoAValidar && x.esObligatorio);
-        if(vacio !== undefined) {
+        if(vacio !== undefined && vacio.CodigoDescripcion != "Seleccione un usuario") {
             return (camposVacios != null && vacio == 0);
         }
         return true;

@@ -32,10 +32,12 @@
                         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 margenInput">
                             Mail fiscal *
                              <div >
-                                <p-dropdown [options]="model.usuarioSolicitanteList" formControlName="mail" [(ngModel)]="model.selectUsuarioFiscal" dataKey="Id" optionLabel="CodigoDescripcion" (ngModelChange)="onAutocompletarResponsable()">
-                                </p-dropdown>
-                                
-                            </div>                            
+                                <p-dropdown [options]="model.usuarioSolicitanteList" formControlName="mail" [(ngModel)]="model.selectUsuarioFiscal" dataKey="Id" optionLabel="CodigoDescripcion" (onChange)="onAutocompletarResponsable()">
+                                </p-dropdown>                                
+                            </div>           
+                            <div *ngIf="mostrarValidacion('mail', model.selectUsuarioFiscal)">
+                                <p class="text-danger">campo obligatorio</p>
+                            </div>                   
                             <!-- <div class="styled-select">
                                 <input id="txtUsuarioMail" type="text" formControlName="mail" (blur)="onBlur('mail')" pInputText [(ngModel)]="model.mail" class="fourRounded" placeholder="Ingrese el mail" aria-controls="tableModal">
                             </div> -->

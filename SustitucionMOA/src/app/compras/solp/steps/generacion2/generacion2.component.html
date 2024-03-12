@@ -71,20 +71,20 @@
 
                         <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                             <div class="col-xs-12 col-sm-12 col-md-12 margenInput">
-                                Responsable del sector *
+                                Responsable del sector
                                 <div class="col-md-12 ui-fluid" style="padding-left: 0em;">
                                     <p-chips [(ngModel)]="model.supervisorSector" formControlName="supervisorSector" name="supervisorSector" placeholder="Ingrese responsable" id="supervisorSector" [suggestions]="resultadoSupervisorSector" (completeMethod)="search($event)" addOnTab="true" [addOnBlur]="true" (blur)="onBlur('supervisorSector')"></p-chips>
-                                </div>
-                                <div *ngIf="mostrarValidacion('supervisorSector', model.supervisorSector)">
-                                    <p class="text-danger">campo obligatorio</p>
                                 </div>
                             </div>
                             <div class="col-xs-12 col-sm-12 col-md-12 margenInput">
                                 Responsable del trabajo *
                                 <div >
-                                    <p-dropdown [options]="model.usuarioSolicitanteList" (ngModelChange)="onCompletarResponsable()" formControlName="supervisorTrabajo" [(ngModel)]="model.selectResponsableTrabajo" dataKey="Id" optionLabel="CodigoDescripcion">
+                                    <p-dropdown [options]="model.usuarioSolicitanteList"  [disabled]="model.tipoSolp != 'SIN_PLIEGO'" (onChange)="onCompletarResponsable()"  formControlName="supervisorTrabajo" [(ngModel)]="model.selectResponsableTrabajo" dataKey="Id" optionLabel="CodigoDescripcion">
                                     </p-dropdown>
-                                </div> 
+                                </div>  
+                                <div *ngIf="mostrarValidacion('supervisorTrabajo', model.selectResponsableTrabajo)">
+                                    <p class="text-danger">campo obligatorio</p>
+                                </div>   
                                 <!-- <div class="col-md-12 ui-fluid" style="padding-left: 0em;">
                                     <p-chips [(ngModel)]="model.supervisorTrabajo" formControlName="supervisorTrabajo" name="supervisorTrabajo" placeholder="Ingrese responsable" id="supervisorTrabajo" [suggestions]="resultadoSupervisorTrabajo" (completeMethod)="search($event)" addOnTab="true" [addOnBlur]="true" (blur)="onBlur('supervisorTrabajo')"></p-chips>
                                 </div>

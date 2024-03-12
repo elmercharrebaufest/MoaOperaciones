@@ -95,10 +95,7 @@ export class Generacion2Component extends ListBaseComponent {
 
     eliminarVisita(id) {
         this.model.listaVisitas = this.model.listaVisitas.filter(x => x.id != id);
-        console.log("eliminar this.model.listaVisitas", this.model.listaVisitas);
         this.visitaDeObra = this.visitaDeObra.filter(visita => visita.Codigo !== id);
-        console.log("eliminar this.visitaDeObra", this.visitaDeObra);
-
         if (this.model.listaVisitas.length == 0) {
             this.agregarNuevaVisita();
         }
@@ -114,7 +111,7 @@ export class Generacion2Component extends ListBaseComponent {
         //declaro las validaciones para los campos
         if (this.model.tipoSolp == "SIN_PLIEGO") {
             this.formulario2 = this.formBuilder.group({
-                supervisorTrabajo: new FormControl('', Validators.required),
+                supervisorTrabajo: [{ value: true, disabled: false }, []],
                 supervisorSector: new FormControl('', Validators.required),
                 visitaDeObra: [{ value: true, disabled: true }, [Validators.required]],
                 visitaDeObraMasiva: [{ value: true, disabled: true }, [Validators.required]],
@@ -131,7 +128,7 @@ export class Generacion2Component extends ListBaseComponent {
             });
         } else {
             this.formulario2 = this.formBuilder.group({
-                supervisorTrabajo: [{ value: true, disabled: true }, [Validators.required]],
+                supervisorTrabajo: new FormControl('', Validators.required),
                 supervisorSector: new FormControl('', Validators.required),
                 visitaDeObra: [{ value: true, disabled: false }, []],
                 visitaDeObraMasiva: [{ value: true, disabled: false }, []],
@@ -171,10 +168,14 @@ export class Generacion2Component extends ListBaseComponent {
         return false;
     }
 
-    mostrarValidacion(campoAValidar, vacio) {
+    mostrarValidacion(campoAValidar, vacio){
         let camposVacios = this.camposObligatorios.find(x => x.campo == campoAValidar && x.esObligatorio);
-        return (camposVacios != null && vacio == 0);
+        if(vacio !== undefined && vacio.CodigoDescripcion != "Seleccione un usuario") {
+            return (camposVacios != null && vacio == 0);
+        }
+        return true;
     }
+
 
     ngOnDestroy() {
         super.ngOnDestroy();

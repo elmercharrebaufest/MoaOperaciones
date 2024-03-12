@@ -557,5 +557,17 @@ namespace SustitucionMOATest.Controllers
             Assert.IsNotNull(result);
         }
 
+        [Test]
+        public void ListarUsuarioSolicitanteOk()
+        {
+            comprasServiceMock.Setup(x => x.ListarUsuarioSolicitante()).Returns(new List<UsuarioDto>
+            { new UsuarioDto { Mail = "bmelgarejo@prueba.com", UsuarioSap = "BRISAM" } });
+
+            var result = target.ListarUsuarioSolicitante();
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.Data);
+        }
+
     }
 }

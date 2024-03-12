@@ -414,7 +414,7 @@ export class SolpPosicion {
 
             return this.mensaje;
         }
-
+       
         if (this.esTipoPosicionMaterial) {
             if (!this.textoSuministro || this.textoSuministro == "" || this.textoSuministro == undefined) {
                 this.mensaje = "";
