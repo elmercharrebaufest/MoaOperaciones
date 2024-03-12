@@ -392,43 +392,12 @@ namespace SustitucionMOAUtils.Services
             return response;
         }
 
-        public List<OrdenDeCargaDto> Listar(string mailUsuario, string fechaInicio, string fechaFin)
+        public List<OrdenDeCargaDto> Listar(string mailUsuario, string fechaInicio, string fechaFin, int? idProveedorSeleccionado = null)
         {
             Log.Info($"Listar(mailUsuario: {mailUsuario}, fechaInicio: {fechaInicio}, fechaFin: {fechaFin})");
-            DateTime fechaIncioDateTime, fechaFinDateTime;
-            try
-            {
-                fechaIncioDateTime = DateTime.Parse(fechaInicio);
-            }
-            catch
-            {
-                try
-                {
-                    fechaInicio = new string(fechaInicio.Where(c => c != '\u200E').ToArray());
-                    fechaIncioDateTime = DateTime.Parse(fechaInicio);
-                }
-                catch (Exception e)
-                {
-                    throw new ValidationCustomException(String.Format(ErrorMsg.ErrorFechaInvalida, "inicio"), e);
-                }
-            }
-
-            try
-            {
-                fechaFinDateTime = DateTime.Parse(fechaFin);
-            }
-            catch
-            {
-                try
-                {
-                    fechaFin = new string(fechaFin.Where(c => c != '\u200E').ToArray());
-                    fechaFinDateTime = DateTime.Parse(fechaFin);
-                }
-                catch (Exception e)
-                {
-                    throw new ValidationCustomException(String.Format(ErrorMsg.ErrorFechaInvalida, "fin"), e);
-                }
-            }
+            
+            var fechaInicioDateTime = DataFormatter.StringToDateTime(fechaFin, "inicio");
+            var fechaFinDateTime = DataFormatter.StringToDateTime(fechaFin, "fin");
 
             var codigosEstadoConsultaHabilitados = new string[]
             {
@@ -451,7 +420,7 @@ namespace SustitucionMOAUtils.Services
             if (esInterno)
             {
                 Expression<Func<OrdenDeCarga, bool>> filtro = o => o.FechaCarga <= fechaFinDateTime
-                    && o.FechaCarga >= fechaIncioDateTime
+                    && o.FechaCarga >= fechaInicioDateTime
                     && filtroEstados.Contains(o.Estado);
 
                 var listadoConFiltro = repositorio.ListarConsultable<OrdenDeCarga>(filtro);
@@ -490,10 +459,10 @@ namespace SustitucionMOAUtils.Services
             else
             {
                 var usuariosConMismoCuit = repositorio.Listar<Usuario, int>(x => x.Id, x => x.CUITRegistro == usuario.CUITRegistro);
-                var proveedor = usuario.ObtenerProveedorAsignado() ?? usuario.ObtenerProveedor();
+                var proveedor = ObtenerProveedorSeleccionado(usuario, idProveedorSeleccionado);
                 var listadoConFiltro = repositorio.ListarConsultable<OrdenDeCarga>(n => (usuariosConMismoCuit.Contains(n.UsuarioCreacion_Id) || n.Cliente.CodigoProveedor == proveedor.CodigoProveedor)
                     && n.FechaCarga <= fechaFinDateTime
-                    && n.FechaCarga >= fechaIncioDateTime
+                    && n.FechaCarga >= fechaInicioDateTime
                     && (filtroEstados.Contains(n.Estado))
                     );
                 var consultas = repositorio.Listar<ConsultaDetalle>(cd => listadoConFiltro.Any(orden => orden.Id == cd.Orden_Id)
@@ -3015,6 +2984,20 @@ namespace SustitucionMOAUtils.Services
             var esInterno = (esAdmin || esComercial || esMesaFas || esPuerto);
 
             return esInterno;
+        }
+
+        private Proveedor ObtenerProveedorSeleccionado(Usuario usuario, int? idProveedorSeleccionado = null)
+        {
+            var proveedor = usuario.ObtenerProveedorAsignado() ?? usuario.ObtenerProveedor();
+            if (idProveedorSeleccionado != null && idProveedorSeleccionado != proveedor.Id)
+            {
+                proveedor = repositorio.Obtener<Proveedor>(idProveedorSeleccionado);
+                if (!usuario.EsAdmin() && !usuario.TienePermiso(PermisoEnum.ElegirTodosVendedores) && !usuario.TieneProveedor(proveedor.CodigoProveedor))
+                {
+                    throw new ValidationCustomException("Proveedor incorrecto");
+                }
+            }
+            return proveedor;
         }
     }
 }

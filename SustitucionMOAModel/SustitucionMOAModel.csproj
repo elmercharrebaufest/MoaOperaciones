@@ -163,6 +163,7 @@
     <Compile Include="Dto\OrdenDeCarga\VisualizarProductoResponse.cs" />
     <Compile Include="Dto\PesificacionSapDto.cs" />
     <Compile Include="Dto\SecuenciaIngresosBrutosCoeficienteUnificadoDto.cs" />
+    <Compile Include="Dto\SeleccionarVendedorResponseDto.cs" />
     <Compile Include="Dto\ServicioSolpDto.cs" />
     <Compile Include="Dto\Compras\SolpCompraDto.cs" />
     <Compile Include="Dto\Compras\GuardarPeticionDeOfertaDto.cs" />

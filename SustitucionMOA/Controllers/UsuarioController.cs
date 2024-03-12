@@ -209,30 +209,29 @@ namespace SustitucionMOA.Controllers
         }
 
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.SELECCIONAR_VENDEDOR)]
-        public ActionResult seleccionarVendedor(string vendedor, string descripcion)
+        public ActionResult seleccionarVendedor(int? vendedorId)
         {
             try
             {
-                if (vendedor == null)
+                if (vendedorId == null)
                     return Json(new { error = String.Format(ErrorMsg.ErrorValorNuloVacio, "Vendedor") }, JsonRequestBehavior.AllowGet);
 
                 string userMail = ClaimsPrincipalExtension.GetClaimValue("emails");
-                Proveedor proveedor;
 
                 var usuario = repositorio.Obtener<Usuario>(u => u.Mail == userMail);
 
-                if (!usuario.EsAdmin() && !usuario.TienePermiso(PermisoEnum.ElegirTodosVendedores))
+                var proveedor = repositorio.Obtener<Proveedor>(vendedorId);
+
+                if (proveedor.EstadoAprobacion != 0)
                 {
-                    if (!usuario.TieneProveedor(vendedor))
-                    {
-                        throw new ValidationCustomException("Proveedor incorrecto");
-                    }
-                    proveedor = usuario.ObtenerProveedorPorCodigo(vendedor);
+                    throw new ValidationCustomException("Proveedor deshabilitado");
                 }
-                else
+
+                if (!usuario.EsAdmin() && !usuario.TienePermiso(PermisoEnum.ElegirTodosVendedores) && !usuario.TieneProveedor(proveedor.CodigoProveedor))
                 {
-                    proveedor = repositorio.Obtener<Proveedor>(p => p.CodigoProveedor == vendedor && p.EstadoAprobacion == EstadoAprobacion.Aprobado);
+                    throw new ValidationCustomException("Proveedor incorrecto");
                 }
+                
 
                 // get context of the authentication manager
                 var authenticationManager = HttpContext.GetOwinContext().Authentication;
@@ -242,10 +241,10 @@ namespace SustitucionMOA.Controllers
 
                 // update claim value
                 identity.RemoveClaim(identity.FindFirst(Globals.ClaimsProveedorType));
-                identity.AddClaim(new Claim(Globals.ClaimsProveedorType, vendedor));
+                identity.AddClaim(new Claim(Globals.ClaimsProveedorType, proveedor.CodigoProveedor));
 
                 identity.RemoveClaim(identity.FindFirst(Globals.ClaimsNombreType));
-                identity.AddClaim(new Claim(Globals.ClaimsNombreType, descripcion));
+                identity.AddClaim(new Claim(Globals.ClaimsNombreType, proveedor.RazonSocial));
 
                 if (identity.FindFirst(Globals.ClaimsProveedorId) != null)
                 {
@@ -259,6 +258,13 @@ namespace SustitucionMOA.Controllers
                     identity.RemoveClaim(identity.FindFirst(Globals.ClaimsEsCodigoCorredorType));
                 }
                 identity.AddClaim(new Claim(Globals.ClaimsEsCodigoCorredorType, proveedor.TipoProveedor.EsCorredor?"true":"false"));
+
+                if (identity.FindFirst(Globals.ClaimsTipoUsuarioType) != null)
+                {
+                    identity.RemoveClaim(identity.FindFirst(Globals.ClaimsTipoUsuarioType));
+                }
+                identity.AddClaim(new Claim(Globals.ClaimsTipoUsuarioType, proveedor.TipoProveedor.NombreCorto));
+
 
                 // tell the authentication manager to use this new identity
                 authenticationManager.AuthenticationResponseGrant =
@@ -274,7 +280,7 @@ namespace SustitucionMOA.Controllers
                 {
                     if (!Globals.EsLocal)
                     {
-                        noticias = _loginService.ObtenerNoticias(vendedor);
+                        noticias = _loginService.ObtenerNoticias(proveedor.CodigoProveedor);
                         noticias.cantidad = 0;
                         if (noticias != null && noticias.noticias != null)
                         {
@@ -293,7 +299,7 @@ namespace SustitucionMOA.Controllers
 
 
 
-                return JsonCustom(new { vendedor, descripcion, noticias, esCodigoCorredor = proveedor.TipoProveedor.EsCorredor });
+                return JsonCustom(new SeleccionarVendedorResponseDto(proveedor, noticias));
 
             }
             catch (ValidationCustomException e)

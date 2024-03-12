@@ -75,7 +75,7 @@ namespace SustitucionMOAModel.Entities
         {
             try
             {
-                return Proveedores.Where(p => p.CUIT == CUITRegistro && TipoUsuario.Id == p.TipoProveedor.Id).FirstOrDefault();
+                return Proveedores.FirstOrDefault(p => p.CUIT == CUITRegistro && TipoUsuario.Id == p.TipoProveedor.Id);
             }
             catch
             {

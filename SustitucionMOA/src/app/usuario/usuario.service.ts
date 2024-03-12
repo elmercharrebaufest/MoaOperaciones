@@ -6,9 +6,10 @@ import { Usuario } from './usuario'
 import { BaseService } from './../common/services/BaseService';
 import { HttpParams } from '@angular/common/http';
 import { AltaNuevoProveedor } from '../compras/solp-compra';
-import { ApiResponse } from '../common/models/response';
+import { ApiResponse, BasicResponse } from '../common/models/response';
 import { Proveedor } from '../common/models/proveedor';
 import { AsignarNuevaCuit } from '../common/models/asignarNuevaCuit';
+import { SeleccionarVendedorResponse } from '../common/models/SeleccionarVendedorResponse';
 
 @Injectable()
 export class UsuarioService extends BaseService {
@@ -100,12 +101,12 @@ export class UsuarioService extends BaseService {
             .get('/api/usuario/habilitar', { params: params, headers: this.headers });
     }
 
-    public seleccionarVendedor(vendedor: string, descripcion: string): Observable<any> {
+    public seleccionarVendedor(vendedor: number): Observable<BasicResponse<SeleccionarVendedorResponse>> {
         let params: HttpParams = new HttpParams();
-        params = params.append('vendedor', vendedor);
-        params = params.append('descripcion', descripcion);
+        params = params.append('vendedorId', vendedor.toString());
         return this.http
-            .get('/api/usuario/seleccionarVendedor', { params: params, headers: this.headers });
+            .get<BasicResponse<SeleccionarVendedorResponse>>
+            ('/api/usuario/seleccionarVendedor', { params: params, headers: this.headers });
     }
 
     public getRoles(): Observable<any> {
