@@ -3908,7 +3908,7 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        public List<LegajoDto> ObtenerLegajo(int peticionDeOfertaId, int? peticiondeOfertaUsuarioId)
+        public List<LegajoDto> ObtenerLegajo(int peticionDeOfertaId, int? peticiondeOfertaUsuarioId, bool esProveedor)
         {
             List<LegajoDto> legajo = new List<LegajoDto>();
             var peticion = repositorio.Obtener<PeticionDeOferta>(peticionDeOfertaId);
@@ -3934,12 +3934,14 @@ namespace SustitucionMOAUtils.Services
                 });
             }
 
-            // buscar archivos de la solp
-            if (peticion.Solp.Pliego != null && peticion.Solp.Pliego.Archivos != null && peticion.Solp.Pliego.Archivos.Any<Archivo>(x => x.FileKey == FileKeys.AdjuntoSolp || x.FileKey == FileKeys.AdjuntoCotizacionesSolp))
+            // buscar archivos de la solp y considerar condiciones especiales
+            if (peticion.Solp.Pliego != null && peticion.Solp.Pliego.Archivos != null && peticion.Solp.Pliego.Archivos.Any<Archivo>(x => x.FileKey == FileKeys.AdjuntoSolp ||
+            (x.FileKey == FileKeys.AdjuntoCotizacionesSolp && !(peticion.Solp.TrabajoYaHecho == true || peticion.Solp.Urgencia == true || peticion.Solp.Adicional == true || peticion.Solp.CondEspProveedorAsignado == true))))
             {
                 foreach (var archivoSubido in peticion.Solp.Pliego.Archivos)
                 {
-                    if (File.Exists(archivoSubido.Ruta) && (archivoSubido.FileKey == FileKeys.AdjuntoSolp || archivoSubido.FileKey == FileKeys.AdjuntoCotizacionesSolp))
+                    if (File.Exists(archivoSubido.Ruta) && (archivoSubido.FileKey == FileKeys.AdjuntoSolp || (archivoSubido.FileKey == FileKeys.AdjuntoCotizacionesSolp &&
+                            !(peticion.Solp.TrabajoYaHecho == true || peticion.Solp.Urgencia == true || peticion.Solp.Adicional == true || peticion.Solp.CondEspProveedorAsignado == true))))
                     {
                         string fileName = Path.GetFileName(archivoSubido.Ruta);
                         legajo.Add(new LegajoDto
@@ -3958,7 +3960,7 @@ namespace SustitucionMOAUtils.Services
             }
 
             //mostrar observación ingresada en el paso 4 si es SOLP con condiciones especiales
-            if (peticion.Solp.Pliego != null && (peticion.Solp.TrabajoYaHecho == true || peticion.Solp.Urgencia == true || peticion.Solp.Adicional == true || peticion.Solp.CondEspProveedorAsignado == true))
+            if (peticion.Solp.Pliego != null && esProveedor != true && (peticion.Solp.TrabajoYaHecho == true || peticion.Solp.Urgencia == true || peticion.Solp.Adicional == true || peticion.Solp.CondEspProveedorAsignado == true))
             {
                 legajo.Add(new LegajoDto
                 {
@@ -7116,7 +7118,7 @@ namespace SustitucionMOAUtils.Services
                 resultado.Proveedor = new UsuarioDto(adjudicacion.Cotizacion.PeticionDeOfertaUsuario.Usuario);
                 resultado.FechaAdjudicacionFormateado = adjudicacion.FechaCreacion.ToString("dd/MM/yyyy");
 
-                resultado.ListaLegajos = ObtenerLegajo(cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta_Id, null);
+                resultado.ListaLegajos = ObtenerLegajo(cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta_Id, null, true);
             }
             return resultado;
         }

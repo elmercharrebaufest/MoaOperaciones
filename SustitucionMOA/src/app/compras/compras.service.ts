@@ -620,12 +620,13 @@ export class ComprasService extends BaseService {
             .get<SolpCompraDto>('/api/compras/ListarProveedores', { params: params, headers: this.headers })
     }
 
-    verLegajo(idPeticionDeOferta: number, idPeticionDeOfertaUsuario: number): Observable<any> {
+    verLegajo(idPeticionDeOferta: number, idPeticionDeOfertaUsuario: number, esProveedor): Observable<any> {
         let params: HttpParams = new HttpParams();
         params = params.set("peticionDeOfertaId", idPeticionDeOferta.toString());
         if (idPeticionDeOfertaUsuario != null) {
             params = params.set("idPeticionDeOfertaUsuario", idPeticionDeOfertaUsuario.toString());
         }
+        params = params.set("esProveedor", esProveedor.toString());
         return this.http
             .get("/api/compras/ObtenerLegajo", {
                 params: params,

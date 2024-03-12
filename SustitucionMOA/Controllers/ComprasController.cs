@@ -794,11 +794,11 @@ namespace SustitucionMOA.Controllers
         }
 
         [HttpGet]
-        public ActionResult ObtenerLegajo(int peticionDeOfertaId, int? idPeticionDeOfertaUsuario)
+        public ActionResult ObtenerLegajo(int peticionDeOfertaId, int? idPeticionDeOfertaUsuario, bool esProveedor)
         {
             try
             {
-                var result = service.ObtenerLegajo(peticionDeOfertaId, idPeticionDeOfertaUsuario);
+                var result = service.ObtenerLegajo(peticionDeOfertaId, idPeticionDeOfertaUsuario, esProveedor);
                 return JsonCustom(new { data = result });
             }
             catch (WSCustomException e)
