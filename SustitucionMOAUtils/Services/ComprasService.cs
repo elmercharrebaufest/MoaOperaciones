@@ -1978,6 +1978,13 @@ namespace SustitucionMOAUtils.Services
                     copia.Add(solp.Pliego.Email);
                 }
 
+                if (!string.IsNullOrEmpty(solp?.Pliego.SupervisorTrabajo))
+                {
+                    //Supervisor
+                    copia.Add(solp.Pliego.SupervisorTrabajo);
+                    Log.Info($"Copia mail responsable de trabajo paso 2 {solp.Pliego.SupervisorTrabajo}");
+                }
+
                 var asunto = $"Nueva SOLP de urgencia Finalizada - {solp.NroSolp} - {usuarioCreacion.ObtenerRazonSocial()}";
 
                 var usuariosComprasHabilitados = repositorio.Listar<UsuarioCompras>(x => x.Habilitado == true);
@@ -2036,6 +2043,13 @@ namespace SustitucionMOAUtils.Services
                     //Mail del solicitante
                     copia.Add(solp.Pliego.Email);
                     Log.Info($"Copia mail solicitante paso 1 {solp.Pliego.Email}");
+                }
+
+                if (!string.IsNullOrEmpty(solp?.Pliego.SupervisorTrabajo))
+                {
+                    //Supervisor
+                    copia.Add(solp.Pliego.SupervisorTrabajo);
+                    Log.Info($"Copia mail responsable de trabajo paso 2 {solp.Pliego.SupervisorTrabajo}");
                 }
 
                 var asunto = solp.TrabajoYaHecho == true ? "Nueva SOLP de trabajo ya hecho liberada" : "Nueva SOLP liberada";
@@ -4503,6 +4517,7 @@ namespace SustitucionMOAUtils.Services
             var solps = peticion.Posiciones.Select(x => x.SolpPosicion.Solp);
 
             var mailPliego = solps.Where(x => !string.IsNullOrEmpty(x.Pliego.Email)).Select(x => x.Pliego.Email).ToList();
+            mailPliego.AddRange(solps.Where(x => !string.IsNullOrEmpty(x.Pliego.SupervisorTrabajo)).Select(x => x.Pliego.SupervisorTrabajo).ToList());
             var mailCreador = solps.Where(x => !string.IsNullOrEmpty(x.UsuarioCreacion?.Mail)).Select(x => x.UsuarioCreacion.Mail).ToList();
 
             solicitanteYComprador.AddRange(mailPliego);
@@ -4907,6 +4922,7 @@ namespace SustitucionMOAUtils.Services
                 var solps = adjudicacion.Posiciones.Select(x => x.Posicion.Solp);
 
                 var mailPliego = solps.Where(x => !string.IsNullOrEmpty(x.Pliego.Email)).Select(x => x.Pliego.Email).ToList();
+                mailPliego.AddRange(solps.Where(x => !string.IsNullOrEmpty(x.Pliego.SupervisorTrabajo)).Select(x => x.Pliego.SupervisorTrabajo).ToList());
                 var mailCreador = solps.Where(x => !string.IsNullOrEmpty(x.UsuarioCreacion?.Mail)).Select(x => x.UsuarioCreacion.Mail).ToList();
 
                 copia.AddRange(mailPliego);
@@ -5230,6 +5246,7 @@ namespace SustitucionMOAUtils.Services
             var solps = circular.PeticionDeOfertaUsuarios?.First().PeticionDeOfertaUsuario?.PeticionDeOferta?.Posiciones.Select(x => x.SolpPosicion.Solp);
 
             var mailPliego = solps.Where(x => !string.IsNullOrEmpty(x.Pliego.Email)).Select(x => x.Pliego.Email).ToList();
+            mailPliego.AddRange(solps.Where(x => !string.IsNullOrEmpty(x.Pliego.SupervisorTrabajo)).Select(x => x.Pliego.SupervisorTrabajo).ToList());
             var mailCreador = solps.Where(x => !string.IsNullOrEmpty(x.UsuarioCreacion?.Mail)).Select(x => x.UsuarioCreacion.Mail).ToList();
 
             copia.AddRange(mailPliego);
@@ -6079,6 +6096,7 @@ namespace SustitucionMOAUtils.Services
 
             var solps = peticion.Posiciones.Select(x => x.SolpPosicion.Solp);
             var mailPliego = solps.Where(x => !string.IsNullOrEmpty(x.Pliego.Email)).Select(x => x.Pliego.Email).ToList();
+            mailPliego.AddRange(solps.Where(x => !string.IsNullOrEmpty(x.Pliego.SupervisorTrabajo)).Select(x => x.Pliego.SupervisorTrabajo).ToList());
             var mailCreador = solps.Where(x => !string.IsNullOrEmpty(x.UsuarioCreacion?.Mail)).Select(x => x.UsuarioCreacion.Mail).ToList();
 
             enviarA.AddRange(mailPliego);
