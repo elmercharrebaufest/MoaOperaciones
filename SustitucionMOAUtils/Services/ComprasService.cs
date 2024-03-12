@@ -8243,7 +8243,7 @@ namespace SustitucionMOAUtils.Services
                     {
                         Id = cotizacion.Id,
                         UsuarioCreador_Id = cotizacion.UsuarioCreador_Id,
-                        CotizacionEstadoDescripcion = cotizacion.CotizacionEstado.Descripcion,
+                        CotizacionEstadoDescripcion = cotizacion.CotizacionEstado.Descripcion != null ? cotizacion.CotizacionEstado.Descripcion : "",
                         PeticionDeOfertaUsuario_Id = cotizacion.PeticionDeOfertaUsuario_Id,
                         RespetaMateriales = cotizacion.RespetaMateriales == true ? "Si" : "No",
                         RespetaServicios = cotizacion.RespetaServicios == true ? "Si" : "No",
