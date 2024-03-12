@@ -251,67 +251,6 @@ export class DashboardComponent extends ListBaseComponent {
         }, 0.01);
     }
 
-    /**filtrarPorSap() {
-        this.checkedFilterSap = !this.checkedFilterSap;
-        this.filtrarTablaPorTipoSolp();
-    }
-
-    filtrarPorMantenimiento() {
-        this.checkedFilterMantenimiento = !this.checkedFilterMantenimiento;
-        this.filtrarTablaPorTipoSolp();
-    }
-
-    filtrarPorWeb() {
-        this.checkedFilterWeb = !this.checkedFilterWeb;
-        this.filtrarTablaPorTipoSolp();
-    }
-
-    filtrarTablaPorTipoSolp() {
-
-        var fechaDesde = this.fechaInicio;
-        var fechaHasta = this.fechaFin + " 23:59:59";
-
-        let tablaPrincipal = this.tablaSolpCopy;
-        if (this.checkedFilterMantenimiento && this.checkedFilterWeb && this.checkedFilterSap) {
-            tablaPrincipal = tablaPrincipal;
-            this.tabla.first = 0;
-        } else if (this.checkedFilterSap && this.checkedFilterMantenimiento) {
-            tablaPrincipal = tablaPrincipal.filter(x => x.TipoSolpSap === EnumTipoSolpSap.SAP || x.TipoSolpSap === EnumTipoSolpSap.Mantenimiento);
-            this.tabla.first = 0;
-        } else if (this.checkedFilterSap && this.checkedFilterWeb) {
-            tablaPrincipal = tablaPrincipal.filter(x => x.TipoSolpSap === EnumTipoSolpSap.SAP || x.TipoSolpSap === EnumTipoSolpSap.Web);
-            this.tabla.first = 0;
-        } else if (this.checkedFilterMantenimiento && this.checkedFilterWeb) {
-            tablaPrincipal = tablaPrincipal.filter(x => x.TipoSolpSap === EnumTipoSolpSap.Mantenimiento || x.TipoSolpSap === EnumTipoSolpSap.Web);
-            this.tabla.first = 0;
-        } else if (this.checkedFilterMantenimiento) {
-            tablaPrincipal = tablaPrincipal.filter(x => x.TipoSolpSap === EnumTipoSolpSap.Mantenimiento);
-            this.tabla.first = 0;
-        } else if (this.checkedFilterSap) {
-            tablaPrincipal = tablaPrincipal.filter(x => x.TipoSolpSap === EnumTipoSolpSap.SAP);
-            this.tabla.first = 0;
-        } else if (this.checkedFilterWeb) {
-            tablaPrincipal = tablaPrincipal.filter(x => x.TipoSolpSap === EnumTipoSolpSap.Web);
-            this.tabla.first = 0;
-        } this.tabla.first = 0;
-        
-        if (fechaDesde != null && fechaHasta != null) {
-            tablaPrincipal = tablaPrincipal.filter(x =>
-                new Date(Date.parse(x.FechaCreacion)) >= new Date(fechaDesde) &&
-                new Date(Date.parse(x.FechaCreacion)) <= new Date(fechaHasta)
-            )
-            this.tabla.first = 0;
-        }
-        this.tablaSolp = tablaPrincipal;
-
-        if (this.tablaSolp.length == 0) {
-            this.mensajeComponent.setInfoMsg("No se encontraron Solps")
-        }
-        else {
-            this.mensajeComponent.setMsgsEmpty();
-        }
-    }**/
-
     getStatusDocumentoSolp(data: any): String {
         return data.PosicionesEstado && data.NroSolp != null ? 'Borrado en sap' : data.EstadoSolpSap.Descripcion;
     }
@@ -686,6 +625,8 @@ export class DashboardComponent extends ListBaseComponent {
     cerrarModalRevisionTecnica() {
         this.displayRevisionTecnica = false;
         this.listarPeticiones(this.peticion.Solp);
+        this.onBuscar();
+
     }
 
     cancelarModal() {
