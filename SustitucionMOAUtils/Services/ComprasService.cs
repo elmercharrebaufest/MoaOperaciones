@@ -1929,9 +1929,9 @@ namespace SustitucionMOAUtils.Services
                 solp.EstadoSolpSap_Id = estadoSolpSapLiberada;
                 solp.SeEnvioMailLiberacion = true;
                 repositorio.GuardarCambios();
-
+                var posicionesSolp = solp.Posiciones.Select(x => x.Id);
                 var peticiones = repositorio.Listar<PeticionDeOferta>(peti => peti.Posiciones.Select(x => x.SolpPosicion.Id)
-                .Any(posi => solp.Posiciones.Select(x => x.Id).Contains(posi))).ToList();
+                .Any(posi => posicionesSolp.Contains(posi))).ToList();
 
                 if (!peticiones.Any() && solp.Posiciones.All(x => string.IsNullOrEmpty(x.NumeroContratoSuperior)))
                 {
@@ -8333,7 +8333,7 @@ namespace SustitucionMOAUtils.Services
                     {
                         Id = cotizacion.Id,
                         UsuarioCreador_Id = cotizacion.UsuarioCreador_Id,
-                        CotizacionEstadoDescripcion = cotizacion.CotizacionEstado.Descripcion != null ? cotizacion.CotizacionEstado.Descripcion : "",
+                        CotizacionEstadoDescripcion = cotizacion.CotizacionEstado != null ? cotizacion.CotizacionEstado.Descripcion : "",
                         PeticionDeOfertaUsuario_Id = cotizacion.PeticionDeOfertaUsuario_Id,
                         RespetaMateriales = cotizacion.RespetaMateriales == true ? "Si" : "No",
                         RespetaServicios = cotizacion.RespetaServicios == true ? "Si" : "No",
@@ -8354,7 +8354,7 @@ namespace SustitucionMOAUtils.Services
                             MonedaCodigo = cotPos.Moneda != null ? cotPos.Moneda.Codigo : "",
                             UnidadMedidaDescripcion = cotPos.UnidadDeMedida != null ? cotPos.UnidadDeMedida.Descripcion : "",
                             PrecioTotal = cotPos.PeticionDeOfertaSolpPosicion.SolpPosicion.TipoPosicion.Codigo == "MATERIALES" ? (cotPos.Cantidad.HasValue && cotPos.Precio.HasValue ? cotPos.Cantidad.Value * cotPos.Precio.Value : 0) : cotPos.CotizacionSubPosiciones?.Sum(x => x.Precio * x.Cantidad),
-                            NoDisponible = cotPos.NoDisponible.HasValue == true ? "No disponible" : "Disponible",
+                            NoDisponible = cotPos.NoDisponible == true ? "No disponible" : "Disponible",
                             FechaDeVigencia = cotPos.FechaDeVigencia != null ? cotPos.FechaDeVigencia.Value.ToString("dd-MM-yyyy") : "",
                             PrimerPlazoDeOferta = cotPos.PrimerPlazoDeOferta != null ? cotPos.PrimerPlazoDeOferta : 0,
                             PrimeraCantidad = cotPos.PrimeraCantidad != null ? cotPos.PrimeraCantidad : 0,
