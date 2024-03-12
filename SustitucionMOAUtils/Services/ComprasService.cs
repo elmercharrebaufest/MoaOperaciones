@@ -4000,12 +4000,12 @@ namespace SustitucionMOAUtils.Services
                 }
 
                 // buscar archivos de la solp y considerar condiciones especiales
-                if (solp.Pliego != null && solp.Pliego.Archivos != null && solp.Pliego.Archivos.Any<Archivo>(x => x.FileKey == FileKeys.AdjuntoSolp || 
+                if (solp.Pliego != null && solp.Pliego.Archivos != null && solp.Pliego.Archivos.Any<Archivo>(x => x.FileKey == FileKeys.AdjuntoSolp ||
                 (x.FileKey == FileKeys.AdjuntoCotizacionesSolp && !(solp.TrabajoYaHecho == true || solp.Urgencia == true || solp.Adicional == true || solp.CondEspProveedorAsignado == true))))
                 {
                     foreach (var archivoSubido in solp.Pliego.Archivos)
                     {
-                        if (File.Exists(archivoSubido.Ruta) && (archivoSubido.FileKey == FileKeys.AdjuntoSolp || (archivoSubido.FileKey == FileKeys.AdjuntoCotizacionesSolp && 
+                        if (File.Exists(archivoSubido.Ruta) && (archivoSubido.FileKey == FileKeys.AdjuntoSolp || (archivoSubido.FileKey == FileKeys.AdjuntoCotizacionesSolp &&
                             !(solp.TrabajoYaHecho == true || solp.Urgencia == true || solp.Adicional == true || solp.CondEspProveedorAsignado == true))))
                         {
                             string fileName = Path.GetFileName(archivoSubido.Ruta);
@@ -5806,8 +5806,8 @@ namespace SustitucionMOAUtils.Services
                 respuestaGuardarSOLP.IdEntidad = cotizacion.Id;
                 repositorio.GuardarCambios();
 
-                if (cotizacion.CotizacionEstado_Id == (int)CotizacionEstadoEnum.Cotizado) 
-                { 
+                if (cotizacion.CotizacionEstado_Id == (int)CotizacionEstadoEnum.Cotizado)
+                {
                     GrabarLogCotizacion(cotizacion);
                 }
 
@@ -6238,7 +6238,7 @@ namespace SustitucionMOAUtils.Services
                 //var todasLasSolpPosiciones = cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Solp.Posiciones.ToDictionary(x => x.Id);
                 var peticionDeOfertaPosiciones = cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.
                 Posiciones.Select(x => x.SolpPosicion_Id);
-                var todasLasSolpPosiciones = repositorio.Listar<SolpPosicion>(posi => peticionDeOfertaPosiciones.Contains(posi.Id)).ToDictionary(x => x.Id); 
+                var todasLasSolpPosiciones = repositorio.Listar<SolpPosicion>(posi => peticionDeOfertaPosiciones.Contains(posi.Id)).ToDictionary(x => x.Id);
 
                 var posicionesPorMoneda = adjudicacionDto.AdjudicacionPosiciones.GroupBy(posicion => posicion.MonedaId);
                 var regiones = repositorio.Listar<RegionSap>();
@@ -7877,9 +7877,81 @@ namespace SustitucionMOAUtils.Services
                 modificarPedidoSAP.POACCOUNTX = new List<BAPIMEPOACCOUNTX>();
             }
 
-            // Llama al WebService
+            if (modificoMoneda)
+            {
+                modificarPedidoSAP.POITEM = new List<BAPIMEPOITEM>();
+                modificarPedidoSAP.POITEMX = new List<BAPIMEPOITEMX>();
+
+                modificarPedidoSAP.POACCOUNT = new List<BAPIMEPOACCOUNT>();
+                modificarPedidoSAP.POACCOUNTX = new List<BAPIMEPOACCOUNTX>();
+
+                modificarPedidoSAP.POSERVICES = new List<BAPIESLLC>();
+
+                modificarPedidoSAP.POCOND = new List<BAPIMEPOCOND>();
+                modificarPedidoSAP.POCONDX = new List<BAPIMEPOCONDX>();
+
+            }
+
             var resultadoSAP = modificarOrdenDeCompraConsumerMOA.EditarPedidoRequest(modificarPedidoSAP);
             resultadoSAP.Where(a => a.MESSAGE == "No se han modificado datos").ToList().ForEach(a => a.TYPE = "E");
+
+            if (modificoMoneda && resultadoSAP.All(a => a.TYPE != "E"))
+            {
+                ocSap = obtenerOrdenDeCompraConsumerMOA.ObtenerOrdenDeCompraRFC(adjudicacion.NumeroOrdenDeCompra);
+
+                modificarPedidoSAP.POCOND = ocSap.POCOND.Where(a => a.COND_TYPE != "SKTO").Select(x => new BAPIMEPOCOND
+                {
+                    ITM_NUMBER = x.ITM_NUMBER,  //el número de ítem al que corresponda la condición
+                    COND_ST_NO = x.COND_ST_NO,
+                    COND_TYPE = x.COND_TYPE,
+                    COND_VALUE = x.COND_VALUE, //el importe de la condición
+                    COND_VALUESpecified = true,
+                    CURRENCY = x.CURRENCY,
+                    CHANGE_ID = "U",
+                    //COND_COUNT = x.COND_COUNT,
+
+                }).ToList();
+                modificarPedidoSAP.POCONDX = ocSap.POCOND.Where(a => a.COND_TYPE != "SKTO").Select(x => new BAPIMEPOCONDX
+                {
+                    ITM_NUMBER = x.ITM_NUMBER,
+                    ITM_NUMBERX = "X",
+                    COND_ST_NO = "001",
+                    COND_ST_NOX = "X",
+                    COND_TYPE = "X",
+                    COND_VALUE = "X",
+                    CURRENCY = "X",
+                    CHANGE_ID = "X",
+                    CONDITION_NOX = "X",
+                }).ToList();
+
+                foreach (var condicion in modificarPedidoSAP.POCOND)
+                {
+                    var posicion = ocSap.POITEM.Single(a => int.Parse(a.PO_ITEM) == int.Parse(condicion.ITM_NUMBER));
+                    var servicioCabecera = ocSap.POSERVICES.Single(a => a.PCKG_NO == posicion.PCKG_NO);
+                    var servicios = ocSap.POSERVICES.Where(a => a.PCKG_NO == servicioCabecera.SUBPCKG_NO).ToList();
+                    if (esMateriales)
+                    {
+                        condicion.COND_VALUE = posicion.NET_PRICE;
+                        condicion.CURRENCY = ocSap.POHEADER.CURRENCY;
+                    }
+                    else
+                    {
+                        var total = servicios.Sum(a => a.NET_VALUE);
+                        condicion.COND_VALUE = total;
+                        condicion.CURRENCY = ocSap.POHEADER.CURRENCY;
+                    }
+                }
+
+                resultadoSAP = modificarOrdenDeCompraConsumerMOA.EditarPedidoRequest(modificarPedidoSAP);
+                if (resultadoSAP.Any(a => a.TYPE == "E"))
+                {
+                    BAPIRET2 newBapiRet = new BAPIRET2 { TYPE = "E", MESSAGE = "Se modifico la moneda pero no se pudo modificar la condición. Corregir en SAP." };
+                    BAPIRET2[] newArray = new BAPIRET2[resultadoSAP.Length + 1];
+                    Array.Copy(resultadoSAP, newArray, resultadoSAP.Length);
+                    newArray[newArray.Length - 1] = newBapiRet;
+                    resultadoSAP = newArray;
+                }
+            }
 
 
             foreach (var item in resultadoSAP.Where(x => x.TYPE == "E"))
@@ -8291,7 +8363,7 @@ namespace SustitucionMOAUtils.Services
                                 Descripcion = cotSubPos.SolpSubPosicion.Tarea,
                                 Codigo = cotSubPos.SolpSubPosicion.ServicioSolp != null ? cotSubPos.SolpSubPosicion.ServicioSolp?.Id : 0
                             }).ToList(),
-                            
+
                         }).ToList(),
                         CotizacionesHoras = cotizacion.CotizacionesHoras?.Select(cotHs => new LogCotizacionHorasDto
                         {
