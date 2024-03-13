@@ -1,5 +1,7 @@
 ﻿using SustitucionMOAAssets;
+using SustitucionMOAModel.Dto;
 using System;
+using System.ServiceModel.Channels;
 
 namespace SustitucionMOAUtils.Logger
 {
@@ -8,6 +10,7 @@ namespace SustitucionMOAUtils.Logger
         private static readonly NLog.Logger DefaultLogger = NLog.LogManager.GetLogger("defaultLogger");
         private static readonly NLog.Logger AzureLogger = NLog.LogManager.GetLogger("azureLogger");
         private static readonly NLog.Logger ExternalAPILogger = NLog.LogManager.GetLogger("externalApiLogger");
+        private static readonly NLog.Logger FrontLogger = NLog.LogManager.GetLogger("frontLogger");
 
         public static void Error(string ip, string usuario, string controller, string method, string error)
         {
@@ -112,6 +115,21 @@ namespace SustitucionMOAUtils.Logger
             catch (Exception e)
             {
                 Console.WriteLine("ERROR en API:" + e.Message);
+            }
+        }
+        public static void FrontError(FrontLoggerRequestDto frontData)
+        {
+            FrontError(frontData.ToString());
+        }
+        public static void FrontError(string message)
+        {
+            try
+            {
+                FrontLogger.Info(message);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("ERROR en front:" + e.Message);
             }
         }
     }

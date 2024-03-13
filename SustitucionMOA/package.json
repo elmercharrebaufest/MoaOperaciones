@@ -53,6 +53,7 @@
     "ng2-select": "^2.0.0",
     "ngx-currency": "^3.0.0",
     "ngx-file-drop": "^6.0.1",
+    "ngx-logger": "^3.4.6",
     "ngx-mask": "^6.5.18",
     "ngx-modal": "0.0.29",
     "ngx-pagination": "^3.0.3",
