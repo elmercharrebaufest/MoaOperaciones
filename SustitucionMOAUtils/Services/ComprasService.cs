@@ -3934,9 +3934,11 @@ namespace SustitucionMOAUtils.Services
                 });
             }
 
+            var tieneCondicionEspecial = peticion.Solp.TrabajoYaHecho == true || peticion.Solp.Urgencia == true || peticion.Solp.Adicional == true || peticion.Solp.CondEspProveedorAsignado == true;
+
             // buscar archivos de la solp y considerar condiciones especiales
             if (peticion.Solp.Pliego != null && peticion.Solp.Pliego.Archivos != null && peticion.Solp.Pliego.Archivos.Any<Archivo>(x => x.FileKey == FileKeys.AdjuntoSolp ||
-            (x.FileKey == FileKeys.AdjuntoCotizacionesSolp && !(peticion.Solp.TrabajoYaHecho == true || peticion.Solp.Urgencia == true || peticion.Solp.Adicional == true || peticion.Solp.CondEspProveedorAsignado == true))))
+            (x.FileKey == FileKeys.AdjuntoCotizacionesSolp && (!esProveedor || !tieneCondicionEspecial))))
             {
                 foreach (var archivoSubido in peticion.Solp.Pliego.Archivos)
                 {
@@ -3960,7 +3962,7 @@ namespace SustitucionMOAUtils.Services
             }
 
             //mostrar observación ingresada en el paso 4 si es SOLP con condiciones especiales
-            if (peticion.Solp.Pliego != null && esProveedor != true && (peticion.Solp.TrabajoYaHecho == true || peticion.Solp.Urgencia == true || peticion.Solp.Adicional == true || peticion.Solp.CondEspProveedorAsignado == true))
+            if (peticion.Solp.Pliego != null && esProveedor != true && (tieneCondicionEspecial))
             {
                 legajo.Add(new LegajoDto
                 {
