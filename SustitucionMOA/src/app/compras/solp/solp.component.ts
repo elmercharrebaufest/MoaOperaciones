@@ -163,7 +163,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
                     if (numeroSolp != "") this.flagSolpFinalizada = true;
                     this.tituloSolp();
                 });
-                
+                this.obtenerUsuarioSolicitante();
                 if (this.solpId > 0) {
                     this.setComponentMode(ComponentMode.Edition);
                     this.traerSolpId(this.solpId);
@@ -172,9 +172,6 @@ export class SolpComponent extends BaseComponent implements OnInit {
                     this.setearPasos();
                     this.obtenerUltimaSolp();
                 }
-
-               
-              
             }
         }
     }
@@ -882,7 +879,6 @@ export class SolpComponent extends BaseComponent implements OnInit {
                         this.setupGrupoDeComprasServiciosPorDefecto();
                         this.setupGrupoDeArticuloServiciosPorDefecto();
                         this.obtenerUsuarioSolicitante();
-                       
                     }
                 },
                 error => {
@@ -935,13 +931,14 @@ export class SolpComponent extends BaseComponent implements OnInit {
         this.solpActual.fiscalContrato = this.datosUltimaSolp.FiscalContrato;
         this.solpActual.mail = this.datosUltimaSolp.EmailFiscalContrato;
         this.solpActual.telefono = this.datosUltimaSolp.Telefono;
-        if (this.solpActual != undefined && this.solpActual.usuarioSolicitanteList != null) {
+        if (this.solpActual != undefined && this.solpActual.usuarioSolicitanteList != undefined) {
             this.solpActual.selectUsuarioFiscal = this.solpActual.usuarioSolicitanteList.
-                find(x => x.CodigoDescripcion === this.datosUltimaSolp.EmailFiscalContrato);
-            if (this.solpActual.tipoSolp != "SIN_PLIEGO") {
+                find(x => x.CodigoDescripcion == this.solpActual.mail);
+              if (this.solpActual.tipoSolp == "CON_PLIEGO") {
+                this.solpActual.supervisorTrabajo = this.solpActual.mail;
                 this.solpActual.selectResponsableTrabajo = this.solpActual.usuarioSolicitanteList.
-                    find(x => x.CodigoDescripcion === this.datosUltimaSolp.EmailFiscalContrato);
-            }
+                    find(x => x.CodigoDescripcion == this.solpActual.mail);
+              }
         }
     }
 
