@@ -86,16 +86,23 @@ namespace SustitucionMOAWS.WSConsumers
                 respuesta.Errores.Add(error);
             }
 
-    
-            if (!File.Exists(rutaArchivoLlamada))
+
+            try
             {
-                FileInfo fileCrear = new FileInfo(rutaArchivoLlamada);
-                fileCrear.Directory.Create();
-                File.WriteAllText(fileCrear.FullName, xml);
+                if (!File.Exists(rutaArchivoLlamada))
+                {
+                    FileInfo fileCrear = new FileInfo(rutaArchivoLlamada);
+                    fileCrear.Directory.Create();
+                    File.WriteAllText(fileCrear.FullName, xml);
+                }
+                else
+                {
+                    File.AppendAllText(rutaArchivoLlamada, xml);
+                }
             }
-            else
+            catch (Exception)
             {
-                File.AppendAllText(rutaArchivoLlamada, xml);
+                //TODO - revisar por que da error de que no se puede acceder al archivo.
             }
             return respuesta;
         }
