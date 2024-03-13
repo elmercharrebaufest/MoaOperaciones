@@ -4013,14 +4013,16 @@ namespace SustitucionMOAUtils.Services
                     });
                 }
 
+                var tieneCondicionEspecial = solp.TrabajoYaHecho == true || solp.Urgencia == true || solp.Adicional == true || solp.CondEspProveedorAsignado == true;
+
                 // buscar archivos de la solp y considerar condiciones especiales
                 if (solp.Pliego != null && solp.Pliego.Archivos != null && solp.Pliego.Archivos.Any<Archivo>(x => x.FileKey == FileKeys.AdjuntoSolp ||
-                (x.FileKey == FileKeys.AdjuntoCotizacionesSolp && !(solp.TrabajoYaHecho == true || solp.Urgencia == true || solp.Adicional == true || solp.CondEspProveedorAsignado == true))))
+                   (x.FileKey == FileKeys.AdjuntoCotizacionesSolp && (!esProveedor || !tieneCondicionEspecial))))
                 {
                     foreach (var archivoSubido in solp.Pliego.Archivos)
                     {
-                        if (File.Exists(archivoSubido.Ruta) && (archivoSubido.FileKey == FileKeys.AdjuntoSolp || (archivoSubido.FileKey == FileKeys.AdjuntoCotizacionesSolp &&
-                            !(solp.TrabajoYaHecho == true || solp.Urgencia == true || solp.Adicional == true || solp.CondEspProveedorAsignado == true))))
+                        if (File.Exists(archivoSubido.Ruta) && (archivoSubido.FileKey == FileKeys.AdjuntoSolp || (archivoSubido.FileKey == FileKeys.AdjuntoCotizacionesSolp 
+                            && (!esProveedor || !tieneCondicionEspecial))))
                         {
                             string fileName = Path.GetFileName(archivoSubido.Ruta);
                             legajo.Add(new LegajoDto
@@ -4040,7 +4042,7 @@ namespace SustitucionMOAUtils.Services
 
 
                 //mostrar observación ingresada en el paso 4 si es SOLP con condiciones especiales
-                if (solp.Pliego != null && esProveedor != true && (solp.TrabajoYaHecho == true || solp.Urgencia == true || solp.Adicional == true || solp.CondEspProveedorAsignado == true))
+                if (solp.Pliego != null && esProveedor != true && (tieneCondicionEspecial))
                 {
                     legajo.Add(new LegajoDto
                     {
