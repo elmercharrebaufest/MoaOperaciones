@@ -5669,7 +5669,10 @@ namespace SustitucionMOAUtils.Services
                 var respuestaGuardarSOLP = new RespuestaGuardarSOLP() { Errores = new List<string>() };
                 var usuario = repositorio.Obtener<Usuario>(usuarioActualId);
                 var peticionUsuario = repositorio.Obtener<PeticionDeOfertaUsuario>(cotizacionDto.PeticionOfertaUsuarioId);
-                var peticionDeOfertaSolpPosiciones = repositorio.Listar<PeticionDeOfertaSolpPosicion>();
+                var peticionDeOfertaPosicionIds = cotizacionDto.CotizacionPosiciones.Select(cotipos => cotipos.PeticionDeOfertaSolpPosicionId);
+                var peticionDeOfertaSolpPosiciones = repositorio.Listar<PeticionDeOfertaSolpPosicion>(x => peticionDeOfertaPosicionIds.Contains(x.Id));
+                var solpSubposicionesIds = cotizacionDto.CotizacionSubposiciones.Select(x => x.SolpSubPosicionId);
+                var solpSubposiciones = repositorio.Listar<SolpSubposicion>(x => solpSubposicionesIds.Contains(x.Id));
                 var cotizacion = cotizacionDto.CotizacionId == 0 ? null :
                     repositorio.Obtener<Cotizacion>(cotizacionDto.CotizacionId);
                 var info = repositorio.Listar<TablaSap>(x => x.Tabla == TablasSap.Moneda || x.Tabla == TablasSap.Unidad);
@@ -5712,6 +5715,7 @@ namespace SustitucionMOAUtils.Services
                                     UnidadDeMedida = sub.UnidadDeMedidaId > 0 ? info.Where(unidad => unidad.Id == sub.UnidadDeMedidaId).FirstOrDefault() : null,
                                     CotizacionPosicion_Id = sub.CotizacionPosicionId,
                                     SolpSubPosicion_Id = sub.SolpSubPosicionId,
+                                    SolpSubPosicion = solpSubposiciones.Where(subpo => subpo.Id == sub.SolpSubPosicionId).FirstOrDefault()
                                 }).ToList() : null,
                                 PrimerPlazoDeOferta = x.PrimerPlazoDeOferta,
                                 PrimeraCantidad = x.PrimeraCantidad,
@@ -8377,7 +8381,7 @@ namespace SustitucionMOAUtils.Services
                                 MonedaCodigo = cotSubPos.Moneda != null ? cotSubPos.Moneda.Codigo : "",
                                 PrecioTotal = cotSubPos.Cantidad.HasValue && cotSubPos.Precio.HasValue ? cotSubPos.Cantidad.Value * cotSubPos.Precio.Value : 0,
                                 NroSubPosicion = cotSubPos.SolpSubPosicion.Numero,
-                                IdSubPosicion = cotSubPos.SolpSubPosicion.Id,
+                                IdSubPosicion = cotSubPos.SolpSubPosicion_Id,
                                 Descripcion = cotSubPos.SolpSubPosicion.Tarea,
                                 Codigo = cotSubPos.SolpSubPosicion.ServicioSolp != null ? cotSubPos.SolpSubPosicion.ServicioSolp?.Id : 0
                             }).ToList(),
