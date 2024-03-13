@@ -59,7 +59,6 @@
                                     </table>
                                 </div>
 
-
                                 <!-- Detalles de las posiciones de la cotización -->
                                 <div *ngFor="let posicion of historial.Cotizacion.CotizacionPosiciones">
                                     <div style="margin-top: 35px;">
@@ -67,20 +66,23 @@
                                             <div class="texto-centrado"><strong>Nro Posición: {{ posicion.Indice }}</strong></div>
                                         </div>                                        
                                         <p>Descripción: {{ posicion.Descripcion }}</p>
-                                        <p *ngIf="posicion.Cantidad != 0">Cantidad: {{ posicion.Cantidad | number:'1.2-2' }} - {{ posicion.UnidadMedidaDescripcion }}</p>
-                                        <p *ngIf="posicion.Precio != 0">Precio: {{ posicion.Precio | number:'1.2-2' }} - {{ posicion.MonedaCodigo }}</p>
-                                        <p>Total: {{ posicion.PrecioTotal | number:'1.2-2'}} - {{ posicion.MonedaCodigo }}</p>
-                                        <p>Fecha de Entrega: {{ posicion.FechaDeEntrega }}</p> 
-                                        <p *ngIf="posicion.FechaDeVigencia != ''">Fecha de Vigencia: {{ posicion.FechaDeVigencia }}</p>
-                                        <p>Plazo de Oferta: {{ posicion.PrimerPlazoDeOferta }} - Ctd: {{ posicion.PrimeraCantidad | number:'1.2-2'}}</p>
-                                        <p *ngIf="posicion.SegundoPlazoDeOferta != 0">Segundo Plazo de Oferta: {{ posicion.SegundoPlazoDeOferta }} - Ctd: {{ posicion.SegundaCantidad | number:'1.2-2'}}</p>
-                                        <p *ngIf="posicion.TercerPlazoDeOferta != 0">Tercer Plazo de Oferta: {{ posicion.TercerPlazoDeOferta }} - Ctd: {{ posicion.TerceraCantidad | number:'1.2-2'}}</p>
-                                        <p *ngIf="posicion.NoDisponible == true">{{ posicion.NoDisponible }}</p>
-                                        <p *ngIf="posicion.EstaEliminado != true">{{ posicion.EstaEliminado }}</p>
+                                        <p *ngIf="posicion.NoDisponible == 'No disponible'"><strong>{{ posicion.NoDisponible }}</strong></p>
+                                        <div *ngIf="posicion.NoDisponible == 'Disponible'">
+                                            <p *ngIf="posicion.CotizacionSubPosiciones == null">Cantidad: {{ posicion.Cantidad | number:'1.2-2' }} - {{ posicion.UnidadMedidaDescripcion }}</p>
+                                            <p *ngIf="posicion.Precio != 0">Precio: {{ posicion.Precio | number:'1.2-2' }} - {{ posicion.MonedaCodigo }}</p>
+                                            <p>Total: {{ posicion.PrecioTotal | number:'1.2-2'}} <span *ngIf="posicion.MonedaCodigo != ''">- {{ posicion.MonedaCodigo }}</span> </p>
+                                            <p>Fecha de Entrega: {{ posicion.FechaDeEntrega }}</p> 
+                                            <p *ngIf="posicion.FechaDeVigencia != ''">Fecha de Vigencia: {{ posicion.FechaDeVigencia }}</p>
+                                            <p *ngIf="posicion.PrimerPlazoDeOferta != 0">Plazo de Oferta: {{ posicion.PrimerPlazoDeOferta }} <span *ngIf="posicion.PrimeraCantidad != 0">- Ctd: {{ posicion.PrimeraCantidad | number:'1.2-2'}}</span></p>
+                                            <p *ngIf="posicion.SegundoPlazoDeOferta != 0">Segundo Plazo de Oferta: {{ posicion.SegundoPlazoDeOferta }} - Ctd: {{ posicion.SegundaCantidad | number:'1.2-2'}}</p>
+                                            <p *ngIf="posicion.TercerPlazoDeOferta != 0">Tercer Plazo de Oferta: {{ posicion.TercerPlazoDeOferta }} - Ctd: {{ posicion.TerceraCantidad | number:'1.2-2'}}</p>
+                                            <p *ngIf="posicion.EstaEliminado != ''">{{ posicion.EstaEliminado }}</p>
+                                        </div>
+                                       
                                         
                                         <!-- Botón para mostrar u ocultar subposiciones -->
                                         <div class="btnStyle" style="text-align: center;">
-                                            <button *ngIf="posicion.CotizacionSubPosiciones.length > 0" type="button" class="btn btn-primary" (click)="mostrarSubPosiciones(posicion)">
+                                            <button *ngIf="posicion.CotizacionSubPosiciones != null && posicion.NoDisponible == 'Disponible' && posicion.CotizacionSubPosiciones.length > 0" type="button" class="btn btn-primary" (click)="mostrarSubPosiciones(posicion)">
                                                 {{ posicion.MostrarSubposiciones ? 'Ocultar Subposiciones' : 'Ver Subposiciones' }}
                                             </button>
                                         </div>
