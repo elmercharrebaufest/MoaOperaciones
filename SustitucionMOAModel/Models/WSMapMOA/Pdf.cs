@@ -2,8 +2,8 @@
 {
     public class Pdf
     {
-        public byte[] Data { get; set; }
+        public byte[] data { get; set; }
 
-        public string Name { get; set; }
+        public string name { get; set; }
     }
 }

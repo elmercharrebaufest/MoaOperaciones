@@ -4575,7 +4575,7 @@ namespace SustitucionMOAUtils.Services
         {
             var po = repositorio.Obtener<PeticionDeOfertaUsuario>(idPeticionDeOfertaUsuario);
             var pdf = GenerarPDFPeticionDeOferta(po.PeticionDeOferta, po.Usuario.ObtenerProveedor().CodigoProveedor);
-            return new Pdf { Data = pdf, Name = "PO" + po.Usuario.ObtenerProveedor().CUIT + ".pdf" };
+            return new Pdf { data = pdf, name = "PO" + po.Usuario.ObtenerProveedor().CUIT + ".pdf" };
         }
 
         private byte[] GenerarPDFOrdenCompra(Adjudicacion adjudicacion, string codigoProveedor)

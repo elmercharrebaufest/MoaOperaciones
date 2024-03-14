@@ -46,7 +46,7 @@ namespace SustitucionMOAWS.WSConsumers
             {
                 result.Pdf = new Pdf()
                 {
-                    Data = pdf
+                    data = pdf
                 };
 
             }

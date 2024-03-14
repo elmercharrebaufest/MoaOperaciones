@@ -871,7 +871,7 @@ namespace SustitucionMOA.Controllers
             try
             {
                 var pdf = service.GenerarPeticionDeOfertaUsuarioPdf(Math.Abs(idPeticionDeOfertaUsuario));
-                return JsonCustom(File(pdf.Data, System.Net.Mime.MediaTypeNames.Application.Octet, pdf.Name));
+                return JsonCustom(File(pdf.data, System.Net.Mime.MediaTypeNames.Application.Octet, pdf.name));
             }
             catch (InfoCustomException e)
             {

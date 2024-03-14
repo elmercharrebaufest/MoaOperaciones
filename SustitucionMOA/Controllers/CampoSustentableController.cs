@@ -224,7 +224,7 @@ namespace SustitucionMOA.Controllers
                 {
                     Pdf = new Pdf()
                     {
-                        Data = fileArray
+                        data = fileArray
                     }
                 };
 
@@ -279,7 +279,7 @@ namespace SustitucionMOA.Controllers
                 {
                     Pdf = new Pdf()
                     {
-                        Data = fileArray
+                        data = fileArray
                     }
                 };
 

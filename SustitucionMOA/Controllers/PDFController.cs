@@ -46,7 +46,7 @@ namespace SustitucionMOA.Controllers
                             var pdf = pDFService.DescargarDocumentPDF(doc, ejercicio, SessionPersister.Proveedor, SessionPersister.Sociedad);
                             if (pdf != null)
                             {
-                                MemoryStream fotoMemoryStream = new MemoryStream(pdf.Data);
+                                MemoryStream fotoMemoryStream = new MemoryStream(pdf.data);
 
                                 ZipEntry entry = new ZipEntry(string.Concat(doc, ".pdf"));
                                 entry.DateTime = DateTime.Now;
