@@ -4091,7 +4091,7 @@ namespace SustitucionMOAUtils.Services
                 }
 
                 //buscar archivos de la peticion visualizacion de precio
-                if (peticionVisualizacionPrecio.Count > 0)
+                if (peticionVisualizacionPrecio.Count > 0 && esProveedor != true)
                 {
                     legajo.Add(new LegajoDto
                     {
@@ -4120,46 +4120,61 @@ namespace SustitucionMOAUtils.Services
 
             //Cierres plazo de oferta
             var cierres = repositorio.Listar<PeticionDeOfertaCierre>(a => a.PeticionDeOferta_Id == peticionDeOfertaId);
-            foreach (var cierre in cierres)
+            if (esProveedor != true) 
             {
-                legajo.Add(new LegajoDto
+                foreach (var cierre in cierres)
                 {
-                    ArchivoId = null,
-                    Observacion = cierre.Observacion,
-                    PeticionDeOfertaId = peticionDeOfertaId,
-                    SolpId = peticion.Solp_Id,
-                    Fecha = cierre.Fecha,
-                    FechaFormateado = cierre.Fecha.ToString("dd/MM/yyyy"),
-                    Usuario = new UsuarioDto { CUIT = cierre.Usuario.CUITRegistro, Mail = cierre.Usuario.Mail, Id = cierre.Usuario_Id },
-                    Tipo = TipoLegajo.CierreOferta
-                });
-            }
+                    legajo.Add(new LegajoDto
+                    {
+                        ArchivoId = null,
+                        Observacion = cierre.Observacion,
+                        PeticionDeOfertaId = peticionDeOfertaId,
+                        SolpId = peticion.Solp_Id,
+                        Fecha = cierre.Fecha,
+                        FechaFormateado = cierre.Fecha.ToString("dd/MM/yyyy"),
+                        Usuario = new UsuarioDto { CUIT = cierre.Usuario.CUITRegistro, Mail = cierre.Usuario.Mail, Id = cierre.Usuario_Id },
+                        Tipo = TipoLegajo.CierreOferta
+                    });
+                }
 
-            //Chat interno
-            if (peticion.Solp.ChatInternoCompras != null && peticion.Solp.ChatInternoCompras.Count > 0)
-            {
-                legajo.Add(new LegajoDto
-                {
-                    ArchivoId = 0,
-                    Observacion = "Chat interno",
-                    PeticionDeOfertaId = peticionDeOfertaId,
-                    SolpId = peticion.Solp_Id,
-                    Fecha = peticion.Solp.ChatInternoCompras.First().FechaEnvio,
-                    FechaFormateado = peticion.Solp.ChatInternoCompras.First().FechaEnvio.ToString("dd/MM/yyyy"),
-                    Usuario = new UsuarioDto { CUIT = peticion.Solp.ChatInternoCompras.First().Usuario.CUITRegistro, Mail = peticion.Solp.ChatInternoCompras.First().Usuario.Mail, Id = peticion.Solp.ChatInternoCompras.First().Usuario_Id },
-                    Tipo = TipoLegajo.ChatInterno
-                });
-            }
-
-            // revision tecnica anticipada
-            if (peticion.RevisionTecnica != null)
-            {
-                if (peticion.RevisionTecnica.RecotizacionEconomica)
+                //Chat interno
+                if (peticion.Solp.ChatInternoCompras != null && peticion.Solp.ChatInternoCompras.Count > 0)
                 {
                     legajo.Add(new LegajoDto
                     {
                         ArchivoId = 0,
-                        Observacion = "Solicitud de re cotización - " + peticion.RevisionTecnica.ObservacionRecotizacion,
+                        Observacion = "Chat interno",
+                        PeticionDeOfertaId = peticionDeOfertaId,
+                        SolpId = peticion.Solp_Id,
+                        Fecha = peticion.Solp.ChatInternoCompras.First().FechaEnvio,
+                        FechaFormateado = peticion.Solp.ChatInternoCompras.First().FechaEnvio.ToString("dd/MM/yyyy"),
+                        Usuario = new UsuarioDto { CUIT = peticion.Solp.ChatInternoCompras.First().Usuario.CUITRegistro, Mail = peticion.Solp.ChatInternoCompras.First().Usuario.Mail, Id = peticion.Solp.ChatInternoCompras.First().Usuario_Id },
+                        Tipo = TipoLegajo.ChatInterno
+                    });
+                }
+
+                // revision tecnica anticipada
+                if (peticion.RevisionTecnica != null)
+                {
+                    if (peticion.RevisionTecnica.RecotizacionEconomica)
+                    {
+                        legajo.Add(new LegajoDto
+                        {
+                            ArchivoId = 0,
+                            Observacion = "Solicitud de re cotización - " + peticion.RevisionTecnica.ObservacionRecotizacion,
+                            PeticionDeOfertaId = peticionDeOfertaId,
+                            SolpId = peticion.Solp_Id,
+                            Fecha = peticion.RevisionTecnica.Fecha,
+                            FechaFormateado = peticion.RevisionTecnica.Fecha.ToString("dd/MM/yyyy"),
+                            Usuario = new UsuarioDto { CUIT = peticion.RevisionTecnica.Usuario.CUITRegistro, Mail = peticion.RevisionTecnica.Usuario.Mail, Id = peticion.RevisionTecnica.Usuario.Id },
+                            Tipo = TipoLegajo.RevisionTecnica
+                        });
+                    }
+
+                    legajo.Add(new LegajoDto
+                    {
+                        ArchivoId = null,
+                        Observacion = "Finalización revisión tecnica",
                         PeticionDeOfertaId = peticionDeOfertaId,
                         SolpId = peticion.Solp_Id,
                         Fecha = peticion.RevisionTecnica.Fecha,
@@ -4168,19 +4183,8 @@ namespace SustitucionMOAUtils.Services
                         Tipo = TipoLegajo.RevisionTecnica
                     });
                 }
-
-                legajo.Add(new LegajoDto
-                {
-                    ArchivoId = null,
-                    Observacion = "Finalización revisión tecnica",
-                    PeticionDeOfertaId = peticionDeOfertaId,
-                    SolpId = peticion.Solp_Id,
-                    Fecha = peticion.RevisionTecnica.Fecha,
-                    FechaFormateado = peticion.RevisionTecnica.Fecha.ToString("dd/MM/yyyy"),
-                    Usuario = new UsuarioDto { CUIT = peticion.RevisionTecnica.Usuario.CUITRegistro, Mail = peticion.RevisionTecnica.Usuario.Mail, Id = peticion.RevisionTecnica.Usuario.Id },
-                    Tipo = TipoLegajo.RevisionTecnica
-                });
             }
+           
 
             return legajo.OrderByDescending(x => x.Fecha).ToList();
         }
