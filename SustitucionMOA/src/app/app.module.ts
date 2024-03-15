@@ -1,6 +1,7 @@
 ﻿import { DatePipe } from "@angular/common";
 import {
     CUSTOM_ELEMENTS_SCHEMA,
+    ErrorHandler,
     NgModule,
     NO_ERRORS_SCHEMA
 } from "@angular/core";
@@ -69,6 +70,7 @@ import { ModificarDatosComponent } from './usuario/modificar-datos/modificar-dat
 import { ToastModule } from "primeng/toast";
 import { UsuarioAuditoriaListComponent } from './usuario/usuario-auditoria-list/usuario-auditoria-list.component';
 import { LegajoExternoComponent } from './compras/legajo-externo/legajo-externo.component';
+import { GlobalErrorHandler } from "./common/services/GlobalErrorHandler";
 
 
 @NgModule({
@@ -151,6 +153,7 @@ import { LegajoExternoComponent } from './compras/legajo-externo/legajo-externo.
         ConsultaService,
         ConfirmationService,
         ApikeyService,
+        { provide: ErrorHandler, useClass: GlobalErrorHandler }
     ],
     bootstrap: [AppComponent],
     schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA]
