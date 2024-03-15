@@ -18,6 +18,8 @@ import { AutoCompleteModule } from 'primeng/autocomplete';
 
 import { ImpresionDeclaracionComponent } from './impresion-declaracion/impresion-declaracion.component';
 import { NgxMaskModule } from 'ngx-mask';
+import { SeleccionarProveedorService } from '../common/shared-components/seleccionar-proveedor/seleccionar-proveedor.service';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
 @NgModule({
   imports: [
@@ -30,7 +32,7 @@ import { NgxMaskModule } from 'ngx-mask';
     ReactiveFormsModule,
     AutoCompleteModule, DropdownModule, MultiSelectModule, SpinnerModule,
     NgxMaskModule.forRoot(),
-
+    ProgressSpinnerModule
   ],
   declarations: [
     ListadoCamposComponent,
@@ -41,6 +43,7 @@ import { NgxMaskModule } from 'ngx-mask';
   ],
   providers: [
     VentaSustentableService,
+    SeleccionarProveedorService,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
