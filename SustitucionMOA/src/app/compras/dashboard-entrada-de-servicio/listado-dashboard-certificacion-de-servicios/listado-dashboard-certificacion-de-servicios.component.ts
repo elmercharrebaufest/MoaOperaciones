@@ -115,8 +115,79 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
     selectedSolicitante: any;
     filterSolicitante: boolean = false;
 
+    fullscreen: boolean = false;
+
+    // COLUMNS CONFIG
+    userTablesConfig: any[] = [];
+    defaultTablesConfig = [
+        {
+            name: 'Ordenes',
+            columns: [
+                { id: 'oFecha', header: 'Fecha', field: 'FechaCreacion', type: 'date', sortable: true, required: true, visible: true },
+                { id: 'oNro', header: 'Nro de OC', field: 'NumeroOrdenDeCompra', type: 'string', sortable: true, required: true, visible: true },
+                { id: 'oProveedor', header: 'Proveedor', field: 'Proveedor', type: 'string', sortable: true, required: true, visible: true },
+                { id: 'oRazonSoc', header: 'Razón Social', field: 'NombreProveedor', type: 'string', sortable: false, required: true, visible: true },
+                { id: 'oCuit', header: 'CUIT', field: 'Cuit', type: 'string', sortable: false, required: false, visible: true },
+                { id: 'oMoneda', header: 'Moneda', field: 'MonedaDescripcion', type: 'string', sortable: false, required: false, visible: true },
+                { id: 'oMonto', header: 'Importe', field: 'MontoTotalString', type: 'string', sortable: false, required: false, visible: true }
+            ]
+        },
+        {
+            name: 'Posiciones',
+            columns: [
+                { id: 'pId', header: 'Posición', field: 'NumeroPosicion', type: 'string', sortable: false, required: true, visible: true },
+                { id: 'pDescripcion', header: 'Descripción', field: 'Descripcion', type: 'string', sortable: false, required: true, visible: true },
+                { id: 'pCantidad', header: 'Cant.', field: 'Cantidad', type: 'string', sortable: false, required: true, visible: true },
+                { id: 'pUM', header: 'UM', field: 'UM', type: 'string', sortable: false, required: false, visible: true },
+                { id: 'pPrecio', header: 'Prc. Neto', field: 'PrecioUnidadString', type: 'string', sortable: false, required: false, visible: true },
+                { id: 'pMoneda', header: 'Moneda', field: 'MonedaDescripcion', type: 'string', sortable: false, required: false, visible: true },
+                { id: 'pGrupo', header: 'Grupo Art.', field: 'GrupoArticulos', type: 'string', sortable: false, required: true, visible: true },
+                { id: 'pCentro', header: 'Centro', field: 'Centro', type: 'string', sortable: false, required: true, visible: true },
+                { id: 'pAlmacen', header: 'Almacén', field: 'Almacen', type: 'string', sortable: false, required: true, visible: true },
+                { id: 'pSolped', header: 'NRO_SOLPED', field: 'NumeroSolp', type: 'string', sortable: false, required: true, visible: true },
+                { id: 'pContrato', header: 'Contrato', field: 'Contrato', type: 'string', sortable: false, required: true, visible: true },
+                { id: 'pSolicitante', header: 'Solicitante', field: 'Solicitante', type: 'string', sortable: false, required: true, visible: true }
+            ],
+        },
+        {
+            name: 'Items',
+            columns: [
+                { id: 'iLinea', header: 'NRO LÍNEA', field: 'NumeroLinea', type: 'string', sortable: false, required: true, visible: true },
+                { id: 'iNroServicio', header: 'N° Servicio', field: 'NumeroServicio', type: 'string', sortable: false, required: true, visible: true },
+                { id: 'iDescripcion', header: 'Txt. Breve', field: 'Descripcion', type: 'string', sortable: false, required: false, visible: true },
+                { id: 'iCantidad', header: 'Cant.', field: 'Cantidad', type: 'string', sortable: false, required: true, visible: true },
+                { id: 'iUM', header: 'UM', field: 'UM', type: 'string', sortable: false, required: false, visible: true },
+                { id: 'iImporte', header: 'Importe', field: 'ImporteString', type: 'string', sortable: false, required: true, visible: true },
+                { id: 'iCantidadReal', header: 'Cant. Real', field: 'CantidadReal', type: 'string', sortable: false, required: true, visible: true },
+                { id: 'iPorcentaje', header: 'Porc. %', field: 'Porcentaje', type: 'custom', sortable: false, required: true, visible: true },
+                // These fields values are calculated in the view. NA: Not applicable
+                { id: 'iCantidadACertificar', header: 'Cant. Actual', field: null, type: 'custom', sortable: false, required: true, visible: true },
+                { id: 'iPorcentajeACertificar', header: '% a Certificar', field: null, type: 'custom', sortable: false, required: true, visible: true },
+                { id: 'iMontoACertificar', header: 'Monto a Certificar', field: null, type: 'custom', sortable: false, required: true, visible: true },
+                { id: 'iCantidadTotal', header: 'Cant. Total', field: null, type: 'custom', sortable: false, required: true, visible: true },
+                { id: 'iAcciones', header: 'Acciones', field: null, sortable: false, type: 'custom', required: true, visible: true },
+
+            ]
+        },
+        {
+            name: 'Entradas',
+            columns: [
+                { id: 'esNro', header: 'NRO_ES', field: 'Id', type: 'string', sortable: false, required: true, visible: true },
+                { id: 'esFechaDoc', header: 'F. Documento (F. de prestación de servicios)', field: 'FechaDocumentoString', type: 'string', sortable: false, required: true, visible: true },
+                { id: 'esFechaContabilización', header: 'F. Contabilización', field: 'FechaContabilizacion', type: 'date', sortable: false, required: true, visible: true },
+                { id: 'esReferencia', header: 'Referencia (N° remito)', field: 'Referencia', type: 'string', sortable: false, required: true, visible: true },
+                { id: 'esCantidad', header: 'Cant.', field: 'Cantidad', type: 'string', sortable: false, required: true, visible: true },
+                { id: 'esDescripcion', header: 'Desc. ES', field: 'TextoBreve', type: 'string', sortable: false, required: false, visible: true },
+                { id: 'esImporte', header: 'Importe ARP/USD', field: 'ImporteARPUSD', type: 'string', sortable: false, required: true, visible: true },
+                { id: 'esAcciones', header: 'Eliminar ES', field: null, type: 'custom', sortable: false, required: true, visible: true }
+            ]
+        }
+    ];
+
  
     ngOnInit() {  
+        this.obtenerConfiguracionDeTablasDelUsuario();
+
         this.navService.setSeccionList([]);
         this.navService.setSeccionActive('');
 
@@ -630,6 +701,86 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
         const tieneItemsACertificar = (posicion) => this.tieneItemsACertificar(posicion);
         let tienePosicionesConItemsACertificar = posiciones.some(tieneItemsACertificar);
         return tienePosicionesConItemsACertificar;
+    }
+
+    /**
+     * Obtiene configuración de tablas del usuario
+     * del sessionStorage.
+     */
+    obtenerConfiguracionDeTablasDelUsuario() {
+        let colConfig = sessionStorage.getItem('columnasCertificaciones');
+        this.userTablesConfig = [...this.defaultTablesConfig];
+
+        if (colConfig) {
+            let visibleCols = colConfig.split(',');
+
+            this.userTablesConfig.forEach(t => {
+                t.columns.forEach(c => c.visible = colConfig.includes(c.id));
+            });
+        }
+        else {
+            this.guardarConfiguracionDeTablasDeUsuario();
+            this.obtenerConfiguracionDeTablasDelUsuario();
+        }
+    }
+
+    /**
+     * Guarda en el session storage la configuración
+     * de tablas del usuario.
+     */
+    guardarConfiguracionDeTablasDeUsuario() {
+        let visibleColumns = this.userTablesConfig.reduce((acc, t) => acc.concat(t.columns.filter(c => c.visible).map(a => a.id)), []);
+        sessionStorage.setItem('columnasCertificaciones', JSON.stringify(visibleColumns));
+    }
+
+
+    /**
+     * Muestra/Oculta un panel según nombre de clase
+     * que lo identifica.
+     * Sólo un panel puede estar activo a la vez.
+     * @param className
+     */
+    togglePanel(className: string): void {
+        let panels = document.getElementsByClassName('aux-panel') as HTMLCollectionOf<HTMLElement>;
+        Array.from(panels).forEach(panel => {
+            if (panel.id === className && panel.classList.contains('hidden')) {
+                panel.classList.remove('hidden');
+            }
+            else {
+                panel.classList.add('hidden');
+            }
+        });
+
+    }
+
+    /**
+     * Calcula la cantidad de columnas de una tabla
+     * para actualizar el colspan de una tabla anidada.
+     * @param nombreTabla
+     * @returns número de columnas de una tabla.
+     */
+    cantidadColumnasTabla(nombreTabla: string): number {
+        let count = this.defaultTablesConfig.find(table => table.name.toLowerCase() === nombreTabla.toLowerCase()).columns.length + 1;
+        return count;
+    }
+    //ex update
+    /**
+     * Actualiza la configuración de tablas 
+     * cuando el usuario selecciona/deselecciona
+     * una columna para mostrar/ocultar.
+     * @param tableName
+     * @param columnId
+     */
+    actualizarConfiguarcionDeTablas(tableName: string, columnId: string) {
+        let table = this.userTablesConfig.find(t => t.name == tableName);
+        if (table != undefined) {
+            let column = table.columns.find(c => c.id === columnId);
+
+            if (column != undefined) {
+                column.visible = !column.visible;
+            }
+        }
+        this.guardarConfiguracionDeTablasDeUsuario();
     }
 
 }

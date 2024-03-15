@@ -26,6 +26,7 @@
         <th>Cantidad a certificar</th>
         <th>% a certificar</th>
         <th>Monto a certificar</th>
+        <th>Monto Total</th>
       </tr>
     </ng-template>
     <!-- TABLE HEADERS END-->
@@ -45,13 +46,14 @@
         <td>{{ rowData.CantidadACertificar | number:'1.0-2'}}</td>
         <td>{{ rowData.PorcentajeACertificar }}</td>
         <td>{{ rowData.MontoACertificar | number:'1.0-2' }}</td>
+        <td>{{ rowData.CantidadReal + rowData.CantidadACertificar }}</td>
       </tr>
     </ng-template>
     <!-- TABLE BODY END -->
 
     <ng-template pTemplate="footer">
       <tr>
-        <td colspan="10" class="text-right">MONTO TOTAL</td>
+        <td colspan="11" class="text-right">MONTO TOTAL</td>
         <td>{{totalMontoCertificar | number:'1.0-2'}}</td>
       </tr>
     </ng-template>
