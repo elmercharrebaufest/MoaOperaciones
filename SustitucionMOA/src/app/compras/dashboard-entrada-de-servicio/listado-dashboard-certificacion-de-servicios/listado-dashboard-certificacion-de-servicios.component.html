@@ -1,79 +1,79 @@
 <div id="certificacionesDeServicios" class="content-wraper" [class.fullscreen]="fullscreen">
     <!-- HEADER -->
     <!--section class="container-fluid clearfix"-->
-    <section [ngClass]="fullscreen ? 'content-wrapper-fullscreen' : 'container-fluid clearfix'">
+    <section class="container-fluid clearfix">
         <div class="row headerTitle">
             <div class="col-xs-12 col-sm-10">
                 <strong>
                     Dashboard - Solicitante - Lista de todas las OCs - Certificación de Servicios
                 </strong>
             </div>
-            <i id="btn-fullscreen" [ngClass]="fullscreen ? 'fa fa-compress' : 'fa fa-expand'" [class.i-disabled]="spinnerComponent.visible" title="Pantalla completa" (click)="fullscreen=!fullscreen"></i>
-            <i id="btn-filtros" class="fa fa-filter" title="Filtros" (click)="togglePanel('search')" [class.i-disabled]="spinnerComponent.visible"></i>
-            <i id="btn-table" class="fa fa-table" title="Configuracion Columnas" (click)="togglePanel('columns')" [class.i-disabled]="spinnerComponent.visible"></i>
+            <i id="btn-fullscreen" [ngClass]="fullscreen ? 'fa fa-compress' : 'fa fa-expand'" [class.i-disabled]="!displayContent" title="Pantalla completa" (click)="fullscreen=!fullscreen"></i>
+            <i id="btn-filtros" class="fa fa-filter" title="Filtros" (click)="togglePanel('search')" [class.i-disabled]="!displayContent"></i>
+            <i id="btn-table" class="fa fa-table" title="Configuracion Columnas" (click)="togglePanel('columns')" [class.i-disabled]="!displayContent"></i>
         </div>
+    </section>
 
-        <!-- SEARCH PANEL -->
-        <section class="aux-panel hidden" id="search">
-            <div class="aux-panel-header">
-                Refinar resultados
-                <i class="pi pi-times" (click)="togglePanel('search')"></i>
-            </div>
-            <div class="aux-panel-body">
-                <div class="search-filters">
-                    <div class="filtro-nro-orden col-md-3">
-                        <p>Número de OC:</p>
-                        <input pInputText type="text" [(ngModel)]="ordenCompraId" placeholder="Orden de compra" />
-                    </div>
+    <!-- SEARCH PANEL -->
+    <section class="aux-panel" id="search">
+        <div class="aux-panel-header">
+            Refinar resultados
+            <i class="pi pi-times" (click)="togglePanel('search')"></i>
+        </div>
+        <div class="aux-panel-body">
+            <div class="search-filters">
+                <div class="filtro-nro-orden col-md-3">
+                    <p>Número de OC:</p>
+                    <input pInputText type="text" [(ngModel)]="ordenCompraId" placeholder="Orden de compra" />
+                </div>
 
-                    <div class="filtro-proveedor col-md-3">
-                        <p>Proveedor:</p>
-                        <p-autoComplete class="filtro-proveedor" [(ngModel)]="proveedorSeleccionado" [suggestions]="proveedorList" (completeMethod)="autocompleteProveedor($event)" field="valor" placeholder="Proveedor" [minLength]="4" autoZIndex="true" emptyMessage="No hay resultados para mostrar"></p-autoComplete>
-                    </div>
+                <div class="filtro-proveedor col-md-3">
+                    <p>Proveedor:</p>
+                    <p-autoComplete class="filtro-proveedor" [(ngModel)]="proveedorSeleccionado" [suggestions]="proveedorList" (completeMethod)="autocompleteProveedor($event)" field="valor" placeholder="Proveedor" [minLength]="4" autoZIndex="true" emptyMessage="No hay resultados para mostrar"></p-autoComplete>
+                </div>
 
-                    <div class="filtro-fechas col-md-3">
-                        <p>Ver:</p>
-                        <filtro-fecha key="periodo-certificaciones"></filtro-fecha>
-                    </div>
+                <div class="filtro-fechas col-md-3">
+                    <p>Ver:</p>
+                    <filtro-fecha key="periodo-certificaciones"></filtro-fecha>
+                </div>
 
-                    <div class="SearchBtn col-md-3 p-d-flex vertical-align-middle">
-                        <button class="btn btn-buscar" (click)="onBuscar()">Buscar</button>
-                    </div>
+                <div class="SearchBtn col-md-3 p-d-flex vertical-align-middle">
+                    <button class="btn btn-buscar" (click)="onBuscar()">Buscar</button>
                 </div>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <!-- COLUMNS CONFIG PANEL -->
-        <section class="aux-panel hidden" id="columns">
-            <div class="aux-panel-header">
-                Ver columnas
-                <i class="pi pi-times" (click)="togglePanel('columns')"></i>
+    <!-- COLUMNS CONFIG PANEL -->
+    <section class="aux-panel hidden" id="columns">
+        <div class="aux-panel-header">
+            Ver columnas
+            <i class="pi pi-times" (click)="togglePanel('columns')"></i>
+        </div>
+        <div class="aux-panel-body">
+            <ng-container *ngTemplateOutlet="columnList; context: { $implicit: userTablesConfig[0] }"></ng-container>
+            <ng-container *ngTemplateOutlet="columnList; context: { $implicit: userTablesConfig[1] }"></ng-container>
+            <ng-container *ngTemplateOutlet="columnList; context: { $implicit: userTablesConfig[2] }"></ng-container>
+            <ng-container *ngTemplateOutlet="columnList; context: { $implicit: userTablesConfig[3] }"></ng-container>
+        </div>
+        <ng-template #columnList let-t>
+            <div class="columns-config-container" *ngIf="t">
+                <h4 *ngIf="tieneColumnasOpcionales(t.columns)">{{ t.name }}</h4>
+                <ul>
+                    <li *ngFor="let col of t.columns; index as i">
+                        <label [hidden]="col.required">
+                            <input type="checkbox"
+                                   [id]="col.id+'_'+index"
+                                   [disabled]="col.required"
+                                   [checked]="col.visible"
+                                   [value]="col.id"
+                                   (click)="actualizarConfiguarcionDeTablas(t.name, col.id)" />
+                            {{col.header}}
+                        </label>
+                    </li>
+                </ul>
             </div>
-            <div class="aux-panel-body">
-                <ng-container *ngTemplateOutlet="columnList; context: { $implicit: userTablesConfig[0] }"></ng-container>
-                <ng-container *ngTemplateOutlet="columnList; context: { $implicit: userTablesConfig[1] }"></ng-container>
-                <ng-container *ngTemplateOutlet="columnList; context: { $implicit: userTablesConfig[2] }"></ng-container>
-                <ng-container *ngTemplateOutlet="columnList; context: { $implicit: userTablesConfig[3] }"></ng-container>
-            </div>
-            <ng-template #columnList let-t>
-                <div class="columns-config-container" *ngIf="t">
-                    <h4>{{ t.name }}</h4>
-                    <ul>
-                        <li *ngFor="let col of t.columns; index as i">
-                            <label [hidden]="col.required">
-                                <input type="checkbox"
-                                       [id]="col.id+'_'+index"
-                                       [disabled]="col.required"
-                                       [checked]="col.visible"
-                                       [value]="col.id"
-                                       (click)="actualizarConfiguarcionDeTablas(t.name, col.id)" />
-                                {{col.header}}
-                            </label>
-                        </li>
-                    </ul>
-                </div>
-            </ng-template>
-        </section>
+        </ng-template>
     </section>
 
     <!-- ERROR MESSAGE -->
@@ -85,11 +85,19 @@
 
     <spinner *ngIf="!recalculando"></spinner>
 
-    <div [ngClass]="fullscreen ? 'container-table-fullscreen':'container-table'" *ngIf="!spinnerComponent.visible">
-        <div class="filtro-saldo">
+    <div class="container-table" *ngIf="displayContent">
+        <!-- FILTERS ROW -->
+        <div class="filters-row">
             <i class="pi pi-filter"></i>
-            <input [disabled]="disabledFilter" type="checkbox" [(ngModel)]="ocFilterApplied" tooltip="Saldo pendiente en ordenes de compra" (click)="filtrarElementosSinSaldoACertificar($event.target.checked)">
-            <label>Saldo pendiente</label>
+            <div class="filtro-saldo">
+                <div>
+                    <input [disabled]="disabledFilter" type="checkbox" [(ngModel)]="ocFilterApplied" tooltip="Saldo pendiente en ordenes de compra" (click)="filtrarElementosSinSaldoACertificar($event.target.checked)">
+                    <label>Saldo pendiente</label>
+                </div>
+            </div>
+            <div class="filtro-solicitante">
+                <p-multiSelect id="select-solicitante" appendTo="body" [options]="listadoGeneralSolicitantes" defaultLabel="Solicitantes" [maxSelectedLabels]="1" (onChange)="filtrarPorSolicitantes($event)"></p-multiSelect>
+            </div>
         </div>
         <!-- TABLA 1: ORDENES -->
         <p-table #tabla class="level1"
@@ -178,13 +186,15 @@
                             <!-- TABLE 2 BODY-->
                             <ng-template pTemplate="body" let-rowData let-expanded="expanded" let-posIndex="rowIndex">
                                 <tr class="posicion" *ngIf="!ocFilterApplied || (ocFilterApplied && tieneItemsACertificar(rowData))">
-                                    <td>
-                                        <a href="#" [pRowToggler]="rowData" (click)="setPositionRow(rowData);">
-                                            <i [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
-                                        </a>
-                                    </td>
-                                    <ng-container *ngFor="let col of userTablesConfig[1].columns">
-                                        <td *ngIf="col.visible">{{ rowData[col.field] | defaultData }}</td>
+                                    <ng-container *ngIf="mostrarPosicionSolicitante(rowData)">
+                                        <td>
+                                            <a href="#" [pRowToggler]="rowData" (click)="setPositionRow(rowData);">
+                                                <i [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
+                                            </a>
+                                        </td>
+                                        <ng-container *ngFor="let col of userTablesConfig[1].columns">
+                                            <td *ngIf="col.visible">{{ rowData[col.field] | defaultData }}</td>
+                                        </ng-container>
                                     </ng-container>
                                 </tr>
                             </ng-template>

@@ -1,4 +1,4 @@
-import { Component, ViewChild, ElementRef } from '@angular/core';
+import { Component, ViewChild, ElementRef, AfterViewInit, OnInit } from '@angular/core';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { Table } from 'primeng/table';
 import { ListBaseComponent } from '../../../common/base-components/list-base-component';
@@ -29,7 +29,7 @@ import { Formatter } from '../../../common/formatter/Formatter';
     styleUrls: ['./listado-dashboard-certificacion-de-servicios.component.css']
 })
 
-export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseComponent {
+export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseComponent implements AfterViewInit, OnInit{
 
     constructor(protected service: ComprasService, protected navService: NavService,
         protected sessionDataService: SessionDataService, protected securityService: SecurityService,
@@ -114,8 +114,10 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
     solicitantes: any[] = [];
     selectedSolicitante: any;
     filterSolicitante: boolean = false;
-
+    listadoGeneralSolicitantes: any[] = [];
+    filtroSolicitantes: any[] = [];
     fullscreen: boolean = false;
+    displayContent: boolean = false;
 
     // COLUMNS CONFIG
     userTablesConfig: any[] = [];
@@ -123,9 +125,9 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
         {
             name: 'Ordenes',
             columns: [
-                { id: 'oFecha', header: 'Fecha', field: 'FechaCreacion', type: 'date', sortable: true, required: true, visible: true },
+                { id: 'oFecha', header: 'Fecha', field: 'FechaCreacion', type: 'date', sortable: true, required: false, visible: true },
                 { id: 'oNro', header: 'Nro de OC', field: 'NumeroOrdenDeCompra', type: 'string', sortable: true, required: true, visible: true },
-                { id: 'oProveedor', header: 'Proveedor', field: 'Proveedor', type: 'string', sortable: true, required: true, visible: true },
+                { id: 'oProveedor', header: 'Proveedor', field: 'Proveedor', type: 'string', sortable: true, required: false, visible: true },
                 { id: 'oRazonSoc', header: 'Razón Social', field: 'NombreProveedor', type: 'string', sortable: false, required: true, visible: true },
                 { id: 'oCuit', header: 'CUIT', field: 'Cuit', type: 'string', sortable: false, required: false, visible: true },
                 { id: 'oMoneda', header: 'Moneda', field: 'MonedaDescripcion', type: 'string', sortable: false, required: false, visible: true },
@@ -135,26 +137,26 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
         {
             name: 'Posiciones',
             columns: [
-                { id: 'pId', header: 'Posición', field: 'NumeroPosicion', type: 'string', sortable: false, required: true, visible: true },
+                { id: 'pId', header: 'Posición', field: 'NumeroPosicion', type: 'string', sortable: false, required: false, visible: true },
                 { id: 'pDescripcion', header: 'Descripción', field: 'Descripcion', type: 'string', sortable: false, required: true, visible: true },
-                { id: 'pCantidad', header: 'Cant.', field: 'Cantidad', type: 'string', sortable: false, required: true, visible: true },
-                { id: 'pUM', header: 'UM', field: 'UM', type: 'string', sortable: false, required: false, visible: true },
-                { id: 'pPrecio', header: 'Prc. Neto', field: 'PrecioUnidadString', type: 'string', sortable: false, required: false, visible: true },
-                { id: 'pMoneda', header: 'Moneda', field: 'MonedaDescripcion', type: 'string', sortable: false, required: false, visible: true },
-                { id: 'pGrupo', header: 'Grupo Art.', field: 'GrupoArticulos', type: 'string', sortable: false, required: true, visible: true },
-                { id: 'pCentro', header: 'Centro', field: 'Centro', type: 'string', sortable: false, required: true, visible: true },
-                { id: 'pAlmacen', header: 'Almacén', field: 'Almacen', type: 'string', sortable: false, required: true, visible: true },
-                { id: 'pSolped', header: 'NRO_SOLPED', field: 'NumeroSolp', type: 'string', sortable: false, required: true, visible: true },
-                { id: 'pContrato', header: 'Contrato', field: 'Contrato', type: 'string', sortable: false, required: true, visible: true },
+                { id: 'pCantidad', header: 'Cant.', field: 'Cantidad', type: 'string', sortable: false, required: false, visible: true },
+                { id: 'pUM', header: 'UM', field: 'UM', type: 'string', sortable: false, required: false, visible: false },
+                { id: 'pPrecio', header: 'Prc. Neto', field: 'PrecioUnidadString', type: 'string', sortable: false, required: true, visible: true },
+                { id: 'pMoneda', header: 'Moneda', field: 'MonedaDescripcion', type: 'string', sortable: false, required: true, visible: true },
+                { id: 'pGrupo', header: 'Grupo Art.', field: 'GrupoArticulos', type: 'string', sortable: false, required: false, visible: true },
+                { id: 'pCentro', header: 'Centro', field: 'Centro', type: 'string', sortable: false, required: false, visible: true },
+                { id: 'pAlmacen', header: 'Almacén', field: 'Almacen', type: 'string', sortable: false, required: false, visible: true },
+                { id: 'pSolped', header: 'NRO_SOLPED', field: 'NumeroSolp', type: 'string', sortable: false, required: false, visible: true },
+                { id: 'pContrato', header: 'Contrato', field: 'Contrato', type: 'string', sortable: false, required: false, visible: true },
                 { id: 'pSolicitante', header: 'Solicitante', field: 'Solicitante', type: 'string', sortable: false, required: true, visible: true }
             ],
         },
         {
             name: 'Items',
             columns: [
-                { id: 'iLinea', header: 'NRO LÍNEA', field: 'NumeroLinea', type: 'string', sortable: false, required: true, visible: true },
-                { id: 'iNroServicio', header: 'N° Servicio', field: 'NumeroServicio', type: 'string', sortable: false, required: true, visible: true },
-                { id: 'iDescripcion', header: 'Txt. Breve', field: 'Descripcion', type: 'string', sortable: false, required: false, visible: true },
+                { id: 'iLinea', header: 'NRO LÍNEA', field: 'NumeroLinea', type: 'string', sortable: false, required: false, visible: true },
+                { id: 'iNroServicio', header: 'N° Servicio', field: 'NumeroServicio', type: 'string', sortable: false, required: false, visible: true },
+                { id: 'iDescripcion', header: 'Txt. Breve', field: 'Descripcion', type: 'string', sortable: false, required: true, visible: true },
                 { id: 'iCantidad', header: 'Cant.', field: 'Cantidad', type: 'string', sortable: false, required: true, visible: true },
                 { id: 'iUM', header: 'UM', field: 'UM', type: 'string', sortable: false, required: false, visible: true },
                 { id: 'iImporte', header: 'Importe', field: 'ImporteString', type: 'string', sortable: false, required: true, visible: true },
@@ -164,7 +166,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
                 { id: 'iCantidadACertificar', header: 'Cant. Actual', field: null, type: 'custom', sortable: false, required: true, visible: true },
                 { id: 'iPorcentajeACertificar', header: '% a Certificar', field: null, type: 'custom', sortable: false, required: true, visible: true },
                 { id: 'iMontoACertificar', header: 'Monto a Certificar', field: null, type: 'custom', sortable: false, required: true, visible: true },
-                { id: 'iCantidadTotal', header: 'Cant. Total', field: null, type: 'custom', sortable: false, required: true, visible: true },
+                { id: 'iCantidadTotal', header: 'Cant. Total', field: null, type: 'custom', sortable: false, required: false, visible: true },
                 { id: 'iAcciones', header: 'Acciones', field: null, sortable: false, type: 'custom', required: true, visible: true },
 
             ]
@@ -177,7 +179,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
                 { id: 'esFechaContabilización', header: 'F. Contabilización', field: 'FechaContabilizacion', type: 'date', sortable: false, required: true, visible: true },
                 { id: 'esReferencia', header: 'Referencia (N° remito)', field: 'Referencia', type: 'string', sortable: false, required: true, visible: true },
                 { id: 'esCantidad', header: 'Cant.', field: 'Cantidad', type: 'string', sortable: false, required: true, visible: true },
-                { id: 'esDescripcion', header: 'Desc. ES', field: 'TextoBreve', type: 'string', sortable: false, required: false, visible: true },
+                { id: 'esDescripcion', header: 'Desc. ES', field: 'TextoBreve', type: 'string', sortable: false, required: true, visible: true },
                 { id: 'esImporte', header: 'Importe ARP/USD', field: 'ImporteARPUSD', type: 'string', sortable: false, required: true, visible: true },
                 { id: 'esAcciones', header: 'Eliminar ES', field: null, type: 'custom', sortable: false, required: true, visible: true }
             ]
@@ -369,6 +371,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
                         this.floatMsgService.setInfoMsg(result.info);
                     } else {
                         this.tablaPO = result.data;
+                        this.obtenerSolicitantes(result.data);
                         this.length = result.data.length > 0 ? result.data[0].ItemsTotales : result.data.length;
                         this.pageSize = result.data.length > 0 ? result.data[0].ItemPorPagina : 10;
                         this.pageIndex = result.data.length > 0 ? result.data[0].Pagina : 1;
@@ -383,10 +386,12 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
                     }
                     this.disabledFilter = false;
                     this.spinnerComponent.hideIt();
+                    this.displayContent = true;
                 },
                 error => {
                     this.floatMsgService.setErrorMsg(error.message);
-                    this.spinnerComponent.hideIt()
+                    this.spinnerComponent.hideIt();
+                    this.displayContent = true;
                 }
             );
         } catch (e) {
@@ -783,4 +788,41 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
         this.guardarConfiguracionDeTablasDeUsuario();
     }
 
+    /**
+     * Verifica si el array tiene al menos un elemento
+     * columna no requerido. Es decir al menos una columna
+     * que se pueda ocultar.
+     */
+    tieneColumnasOpcionales(columnList: any[]) :boolean {
+        return columnList.some(col => !col.required);
+    }
+
+    obtenerSolicitantes(ocs: any): void {
+        let solicitantesUnicos = new Set<string>();
+        ocs.forEach((oc: any) => {
+          oc.Posiciones.forEach((pos: any) => {
+            solicitantesUnicos.add(pos.Solicitante.toUpperCase());
+          });
+        });
+        this.listadoGeneralSolicitantes = Array.from(solicitantesUnicos).map(solicitante => ({ label: solicitante, value: solicitante }));
+      }
+      filtrarPorSolicitantes(event: any): void {
+        let NumeroOrdenesDeCompras = [];
+        let posicionesFiltradas = [];
+        this.filtroSolicitantes = event.value;
+        this.tablaPO.forEach((oc: any) => {
+          posicionesFiltradas = oc.Posiciones.filter((pos: any) => event.value.includes(pos.Solicitante.toUpperCase()));
+          if (posicionesFiltradas.length > 0) {     
+            NumeroOrdenesDeCompras.push(oc.NumeroOrdenDeCompra);
+          }
+        });
+        this.tabla.filter(NumeroOrdenesDeCompras, 'NumeroOrdenDeCompra', 'in');
+      }
+      mostrarPosicionSolicitante(posicion: any): any {
+        if(this.filtroSolicitantes.length > 0){
+          return this.filtroSolicitantes.includes(posicion.Solicitante.toUpperCase());
+        } else {
+          return true;
+        }
+      }
 }
