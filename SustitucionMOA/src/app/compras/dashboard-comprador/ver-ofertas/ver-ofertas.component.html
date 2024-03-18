@@ -121,14 +121,15 @@
                     </ng-container>
                 </tr>
                 <tr>
-                    <th class="headerth border2-left" *ngFor="let proveedor of tablaOfertas.Usuarios" colspan="7" style="background-color: #4760ac !important; width: 660px !important;">
+                    <th class="headerth border2-left" *ngFor="let proveedor of tablaOfertas.Usuarios" colspan="7"
+                        style="background-color: #4760ac !important; width: 660px !important;">
                         <!-- <span> <p-checkbox name="visible" [readonly]="!proveedor.VerAdjudicar" [(ngModel)]="proveedor.VisibleSolicitante" (click)="actualizarVisibilidad(proveedor, !proveedor.VerAdjudicar)" binary="false"></p-checkbox></span> -->
-                        <span style="margin-left: 10px">{{proveedor.RazonSocial}}</span>
-                         <span *ngIf="proveedor.Cotizacion != null && proveedor.Cotizacion.lenth > 0 && proveedor.VerImportes" style="cursor:pointer; vertical-align: middle;" (click)="abrirModalHistorial(proveedor.Cotizacion.Id)">
-                            <i class="pi pi-copy" style="font-size: 19px; color: rgb(238, 238, 238); vertical-align: middle; margin-left: 10px;"></i>
-                        </span>
+                        <button class="btn btn-xs btn-primary" *ngIf="proveedor.Cotizacion != null && proveedor.Cotizacion.length != 0 && proveedor.VerImportes" style="cursor:pointer; vertical-align: middle;padding: 0px 5px;"
+                            (click)="abrirModalHistorial(proveedor.Cotizacion.Id)">
+                            <i class="bi bi-hourglass-split" style="color: rgb(252, 249, 249);font-size: 12px;"></i>
+                        </button>
+                        <span style="margin-left: 9px;">{{proveedor.RazonSocial}}</span>
                     </th>
-                  
                 </tr>
                 <tr>
                     <ng-container *ngFor="let proveedor of tablaOfertas.Usuarios">
@@ -377,18 +378,18 @@
                         <th class="headerth2" style="width: 100px !important; height: 0px !important; background-color: transparent !important; border: none !important;"></th>
                     </ng-container>
                 </tr>
-
                 <tr>
-                    <th class="headerth border2-left" *ngFor="let proveedor of tablaOfertas.Usuarios" colspan="9" style="background-color: #4760ac !important; width: 540px !important;">
+                    <th class="headerth border2-left" *ngFor="let proveedor of tablaOfertas.Usuarios" colspan="9"
+                        style="background-color: #4760ac !important; width: 540px !important;">
                         <!-- <span [ngClass]="{'disabled-checkbox': !proveedor.VerAdjudicar}"> <p-checkbox name="visible" [disabled]="!proveedor.VerAdjudicar" [(ngModel)]="proveedor.VisibleSolicitante" (click)="actualizarVisibilidad(proveedor, !proveedor.VerAdjudicar)" binary="false"></p-checkbox></span> -->
-                        <span style="margin-left: 10px">{{proveedor.RazonSocial}}</span>
-                          <span *ngIf="proveedor.Cotizacion != null && proveedor.Cotizacion.lenth > 0 && proveedor.VerImportes" style="cursor:pointer; vertical-align: middle;" (click)="abrirModalHistorial(proveedor.Cotizacion.Id)">
-                              <i class="pi pi-copy" style="font-size: 19px; color: rgb(252, 249, 249); vertical-align: middle; margin-left: 10px;"></i>
-                          </span>
-                    </th>
-                   
+                        <button class="btn btn-xs btn-primary"
+                            *ngIf="proveedor.Cotizacion != null && proveedor.Cotizacion.length != 0 && proveedor.VerImportes"
+                            style="cursor:pointer; vertical-align: middle; padding: 0px 5px;" (click)="abrirModalHistorial(proveedor.Cotizacion.Id)">
+                            <i class="bi bi-hourglass-split" style="color: rgb(252, 249, 249);font-size: 12px;"></i>
+                        </button>
+                        <span style="margin-left: 9px;">{{proveedor.RazonSocial}}</span>
+                    </th>                
                 </tr>
-
                 <tr>
                     <ng-container *ngFor="let proveedor of tablaOfertas.Usuarios">
                         <th class="headerth border2-left" style="background-color: #4760ac !important; width: 120px !important; height: 33.45px;" colspan="3">Precio total</th>
