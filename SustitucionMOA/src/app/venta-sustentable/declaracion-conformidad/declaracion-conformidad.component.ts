@@ -61,7 +61,7 @@ export class DeclaracionConformidadComponent extends BaseComponent implements On
   verificarDeclaracion() {
     this.mensajeComponent.setMsgsEmpty();
     this.subscription = this.service.verificarDeclaracion(this.proveedorId, this.cosechaId, this.CUITDeclaracion).subscribe(
-      (result:any) => {
+      (result: any) => {
         if (result.logout == true) {
           this.sessionDataService.logout();
         } else if (result.error != undefined && result.error != "") {
@@ -75,6 +75,7 @@ export class DeclaracionConformidadComponent extends BaseComponent implements On
             this.razonSocial = result.RazonSocial;
             this.hectareasTotales = result.HectareasDeclaracionCampoSustentable;
             this.totalidadCosecha = result.OpcionDeclaracionCampoSustentable == 0 ? 1 : 2;
+
             this.abrirModalFirmaDeclaracion()
           }
         }
@@ -110,7 +111,7 @@ export class DeclaracionConformidadComponent extends BaseComponent implements On
       this.subscription = this.service
         .generarDeclaracionProveedor(this.proveedorId, this.cosechaId, this.hectareasTotales, this.CUITDeclaracion, this.razonSocialDeclaracion)
         .subscribe(
-          (result:CommonResponse) => {
+          (result: CommonResponse) => {
             if (result.error) {
               this.floatMessage.setErrorMsg(result.error)
             } else {
@@ -176,7 +177,7 @@ export class DeclaracionConformidadComponent extends BaseComponent implements On
 
     this.mensajeComponent.setMsgsEmpty();
     this.subscription = this.service.adjuntarDeclaracionFirmada(this.proveedorId, this.cosechaId, this.CUITDeclaracion, this.file).subscribe(
-      (result:any) => {
+      (result: any) => {
         if (result.logout == true) {
           this.sessionDataService.logout();
         } else if (result.error != undefined && result.error != "") {
@@ -186,10 +187,8 @@ export class DeclaracionConformidadComponent extends BaseComponent implements On
         } else {
           this.mensajeComponent.setSuccessMsg(result);
 
-          setTimeout(() => {
-            this.cerrarModal();
-            this.resultadoDeclaracion.emit(true)
-          }, 3000);
+          this.cerrarModal();
+          this.resultadoDeclaracion.emit(true)
         }
       },
       error => {
@@ -199,7 +198,7 @@ export class DeclaracionConformidadComponent extends BaseComponent implements On
     return false;
   }
 
-  public cargarDatosCopiar(datos: DatosCopiar){
+  public cargarDatosCopiar(datos: DatosCopiar) {
     this.CUITDeclaracion = datos.CUIT;
     this.razonSocialDeclaracion = datos.ProveedorNombre
     this.proveedorId = datos.Proveedor_Id

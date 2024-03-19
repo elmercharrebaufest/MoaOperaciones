@@ -12,7 +12,6 @@ import { SpinnerComponent } from './../../common/view-child/spinner/spinner.comp
 import { CampoProveedor, CampoSustentable, CampoCosecha } from './../sustentable'
 import { DeclaracionConformidadComponent } from '../declaracion-conformidad/declaracion-conformidad.component';
 import { isUndefined } from 'util';
-import { SeleccionarProveedorService } from '../../common/shared-components/seleccionar-proveedor/seleccionar-proveedor.service';
 import { VendedorProveedor } from '../../common/models/vendedorProveedor';
 import { finalize } from 'rxjs/operators';
 export interface DatosCopiar {
@@ -55,7 +54,7 @@ export class AltaComponent extends BaseComponent implements OnInit {
 
     @BlockUI() blockUI: NgBlockUI;
 
-    constructor(protected service: VentaSustentableService, protected navService: NavService, protected securityService: SecurityService, protected sessionDataService: SessionDataService, protected floatMsgService: FloatMsgService, protected modalService: ModalService, private seleccionarVendedoresService: SeleccionarProveedorService) {
+    constructor(protected service: VentaSustentableService, protected navService: NavService, protected securityService: SecurityService, protected sessionDataService: SessionDataService, protected floatMsgService: FloatMsgService, protected modalService: ModalService) {
         super(navService, securityService, floatMsgService, modalService);
         this.mensajeComponent = new MensajeComponent();
         this.spinnerComponent = new SpinnerComponent();
@@ -99,6 +98,9 @@ export class AltaComponent extends BaseComponent implements OnInit {
 
     proveedores: VendedorProveedor[] = [];
     proveedorSeleccionado: VendedorProveedor;
+    sePreseleccionoProveedor = false;
+    proveedorTexto: string = "";
+    corredorDebeCargarCuit = false;
     ngOnInit() {
 
         this.navService.setSeccionList([]);
@@ -112,7 +114,6 @@ export class AltaComponent extends BaseComponent implements OnInit {
 
         if (this.esCorredor) {
             this.ingresarProveedorPorCUIT = false;
-            this.getProveedores();
         }
 
         this.operarComo = 1;
@@ -202,9 +203,12 @@ export class AltaComponent extends BaseComponent implements OnInit {
         }
     }
 
-    onselectProveedor() {
-        if (this.proveedorSeleccionado)
+    onselectProveedor(proveedor?: VendedorProveedor) {
+        console.log("Run select")
+        if (proveedor) {
+            this.proveedorSeleccionado = proveedor;
             this.getProveedorId(this.proveedorSeleccionado.idVendedor);
+        }
     }
 
     getProveedorId(codigo: string) {
@@ -278,7 +282,7 @@ export class AltaComponent extends BaseComponent implements OnInit {
                 this.declaracionComformidad.proveedorId = this.proveedorId;
                 this.declaracionComformidad.cosechaId = this.cosechaId;
                 this.declaracionComformidad.nombreCosecha = this.cosechas.find(c => c.Id == this.cosechaId).Nombre;
-                this.declaracionComformidad.verificarDeclaracion();
+                this.revisarDeclaracionJurada()
             }
             else {
                 if (this.proveedorId > 0) {
@@ -293,7 +297,7 @@ export class AltaComponent extends BaseComponent implements OnInit {
                     this.declaracionComformidad.proveedorId = this.proveedorId;
                     this.declaracionComformidad.cosechaId = this.cosechaId;
                     this.declaracionComformidad.nombreCosecha = this.cosechas.find(c => c.Id == this.cosechaId).Nombre;
-                    this.declaracionComformidad.verificarDeclaracion();
+                    this.revisarDeclaracionJurada()
                 }
             }
         }
@@ -374,9 +378,7 @@ export class AltaComponent extends BaseComponent implements OnInit {
     verificarCUITIngresado() {
         this.declaracionComformidad.CUITDeclaracion = this.CUIT;
 
-        if (this.CUIT == "" || this.CUIT.length == 11 && this.cosechaId > 0) {
-            this.declaracionComformidad.verificarDeclaracion();
-        }
+        this.revisarDeclaracionJurada()
     }
 
     getCosechas() {
@@ -445,7 +447,7 @@ export class AltaComponent extends BaseComponent implements OnInit {
                 return true
             }
         }
-        if (this.esCorredor && this.operarComo == 1 && !this.proveedorSeleccionado) {
+        if (this.esCorredor && this.operarComo == 1 && (!this.CUIT || !this.proveedorTexto)) {
             this.mensajeComponent.setErrorMsg("Falta seleccionar un proveedor.");
             return true
         }
@@ -506,35 +508,39 @@ export class AltaComponent extends BaseComponent implements OnInit {
         this.ingresarProveedorPorCUIT = this.operarComo == 2;
         this.declaracionComformidad.operarComo = this.operarComo;
         this.proveedorSeleccionado = null;
+        this.corredorDebeCargarCuit = false;
+        this.sePreseleccionoProveedor = false;
     }
 
-    getProveedores() {
-        this.seleccionarVendedoresService.
-            getVendedores("", "", 0).subscribe(
-                (result) => {
-                    this.spinnerComponent.hideIt();
-                    if (result.logout == true) {
-                        this.sessionDataService.logout();
-                    } else if (result.error != undefined && result.error != "") {
-                        this.floatMsgService.setErrorMsg(result.error);
-                    } else if (result.info != undefined) {
-                        this.floatMsgService.setInfoMsg(result.info);
-                    } else {
-                        // console.debug(' vendedores: ', result.data.vendedores);
-                        this.proveedores = result.data.vendedores;
+    revisarProveedorSeleccionado() {
+        console.log("Run blur")
+        if (this.proveedorSeleccionado)
+            return;
 
-                        if (this.CodigoProveedorEdit != "") {
-                            this.proveedorSeleccionado = this.proveedores.find(
-                                p => p.idVendedor === this.CodigoProveedorEdit
-                            )
-                            this.onselectProveedor();
-                        }
-                    }
-                },
-                (error) => {
-                    this.spinnerComponent.hideIt();
-                    this.floatMsgService.setErrorMsg(error.message);
-                }
-            );
+        this.corredorDebeCargarCuit = !this.sePreseleccionoProveedor;
+        if (this.corredorDebeCargarCuit) {
+            this.CUIT = "";
+            this.proveedorSeleccionado = null;
+        } else {
+            this.revisarDeclaracionJurada();
+        }
+    }
+
+    revisarDeclaracionJurada() {
+        if ((this.CUIT == "" || this.CUIT.length == 11) && this.cosechaId > 0) {
+            if (this.esCorredor && this.operarComo == 1
+                && (!this.proveedorSeleccionado) && this.proveedorTexto) {
+                this.declaracionComformidad.razonSocialDeclaracion = this.proveedorTexto
+            }
+            this.declaracionComformidad.verificarDeclaracion();
+        }
+    }
+    onSePreseleccionaProveedor() {
+        this.sePreseleccionoProveedor = true;
+        this.corredorDebeCargarCuit = false
+    }
+    onQuery(value: string) {
+        this.proveedorTexto = value;
+        this.proveedorSeleccionado = null
     }
 }

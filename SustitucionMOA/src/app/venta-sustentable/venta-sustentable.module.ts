@@ -4,7 +4,6 @@ import { SharedModule } from '../common/shared.module';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { VentaSustentableService } from './venta-sustentable.service';
 import { VentaSustentableRoutingModule } from './venta-sustentable-routing.Module';
-import { VentaSustentableBaseComponent } from "./venta-sustentable.component";
 import { ListadoCamposComponent } from "./listado-campos/listado-campos.component";
 import { AltaComponent } from "./alta/alta.component";
 import { EdicionComponent } from "./edicion/edicion.component";
@@ -18,8 +17,6 @@ import { AutoCompleteModule } from 'primeng/autocomplete';
 
 import { ImpresionDeclaracionComponent } from './impresion-declaracion/impresion-declaracion.component';
 import { NgxMaskModule } from 'ngx-mask';
-import { SeleccionarProveedorService } from '../common/shared-components/seleccionar-proveedor/seleccionar-proveedor.service';
-import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
 @NgModule({
   imports: [
@@ -32,7 +29,6 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
     ReactiveFormsModule,
     AutoCompleteModule, DropdownModule, MultiSelectModule, SpinnerModule,
     NgxMaskModule.forRoot(),
-    ProgressSpinnerModule
   ],
   declarations: [
     ListadoCamposComponent,
@@ -43,7 +39,6 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
   ],
   providers: [
     VentaSustentableService,
-    SeleccionarProveedorService,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
