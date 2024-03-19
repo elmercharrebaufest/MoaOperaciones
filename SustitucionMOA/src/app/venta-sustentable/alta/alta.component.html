@@ -70,9 +70,9 @@
                             *ngIf="ingresarProveedorPorCUIT || corredorDebeCargarCuit">
                             <p class="crearConsultaTitulos">
                                 CUIT
-                                <ng-template *ngIf="true">
-                                    <p> titular Carta de Porte</p>
-                                </ng-template>
+                                <ng-container *ngIf="!corredorDebeCargarCuit">
+                                    titular Carta de Porte
+                                </ng-container>
 
                                 <span class="requerido">*</span>
                             </p>
