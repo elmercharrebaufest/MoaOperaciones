@@ -754,7 +754,7 @@
                                     Presento documentación física:
                                     <input type="checkbox" style="margin-right: 5px;" id="AltaFisica" placeholder=""
                                         [(ngModel)]="empresaSeleccionada.ContieneDocumentacionFisica"
-                                        (ngModelChange)="onChangeDocumentacionFisica()">
+                                        (ngModelChange)="onChangeDocumentacionFisica()" [disabled]="!esAdmin">
                                 </div>
                             </div>
                         </div>
