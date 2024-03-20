@@ -261,7 +261,7 @@
                                                                    [ngModel]="rowData.PorcentajeACertificar | number:'1.0-2'"
                                                                    required
                                                                    disabled />
-                                                            <span *ngIf="col.id==='iPorcentaje'" [ngClass]="{ 'percentage-green': rowData.Porcentaje >= 100, 'percentage-yellow': rowData.Porcentaje <= 99 }">
+                                                            <span *ngIf="col.id==='iPorcentaje'" [ngClass]="{ 'percentage-green': rowData.Porcentaje >= 100, 'percentage-yellow': rowData.Porcentaje < 100 }">
                                                                 {{ rowData[col.field] | defaultData }}%
                                                             </span>
                                                             <span *ngIf="col.id==='iCantidadTotal'">

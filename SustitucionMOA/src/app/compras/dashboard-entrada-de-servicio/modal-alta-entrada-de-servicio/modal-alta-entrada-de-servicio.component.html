@@ -50,22 +50,23 @@
             <td>{{ rowData.Descripcion | defaultData }}</td>
             <td>{{ rowData.Cantidad | defaultData }}</td>
             <td>{{ rowData.UM | defaultData }}</td>
-            <td class="text-right">{{ rowData.ImporteString | defaultData }}</td>
+            <td class="text-right">{{ rowData.Importe | number:'1.0-2':'es' }}</td>
 
             <!-- Anteriores -->
-            <td>{{ rowData.CantidadReal }}</td>
-            <td>{{ rowData.Porcentaje | defaultData }}%</td>
-            <td class="text-right">{{ rowData.Porcentaje * rowData.Importe / 100  | number:'1.0-2' }}</td>
+            <!-- * 1  is just to turn it into a number -->
+            <td>{{ rowData.CantidadReal * 1 | number:'1.0-2':'es' }}</td>
+            <td>{{ rowData.Porcentaje | number:'1.0-2':'es' }}%</td>
+            <td class="text-right">{{ calcularMontoAnterior(rowData) | number:'1.0-2':'es' }}</td>
 
             <!-- A certificar -->
-            <td>{{ rowData.CantidadACertificar | number:'1.0-2' }}</td>
-            <td>{{ rowData.PorcentajeACertificar }}%</td>
-            <td class="text-right">{{ rowData.MontoACertificar | number:'1.0-2' }}</td>
+            <td>{{ rowData.CantidadACertificar | number:'1.0-2':'es' }}</td>
+            <td>{{ rowData.PorcentajeACertificar | number:'1.0-2':'es' }}%</td>
+            <td class="text-right">{{ rowData.MontoACertificar  | number:'1.0-2':'es' }}</td>
 
             <!-- Acumulado -->
-            <td>{{ rowData.CantidadReal + rowData.CantidadACertificar }}</td>
-            <td>{{ (rowData.Porcentaje * 1) + (rowData.PorcentajeACertificar * 1) }}%</td>
-            <td class="text-right">{{ rowData.Importe + rowData.MontoACertificar | number:'1.0-2' }}</td>
+            <td>{{ rowData.CantidadReal + rowData.CantidadACertificar | number:'1.0-2':'es'}}</td>
+            <td>{{ (rowData.Porcentaje * 1) + (rowData.PorcentajeACertificar * 1) | number:'1.0-2':'es' }}%</td>
+            <td class="text-right">{{ rowData.MontoAnterior + rowData.MontoACertificar | number:'1.0-2':'es' }}</td>
 
         </tr>
     </ng-template>

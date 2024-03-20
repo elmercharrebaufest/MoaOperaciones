@@ -310,12 +310,21 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
     }
   }
 
-  calcularTotalMontoCertificar() {
-    let total = 0;
-    for (let item of this.itemSelected) {
-        total += item.MontoACertificar;
+    calcularTotalMontoCertificar() {
+        let total = 0;
+        for (let item of this.itemSelected) {
+            total += item.MontoACertificar;
+        }
+
+        this.totalMontoCertificar = total;
     }
 
-    this.totalMontoCertificar = total;
-}
+    /**
+     * Calcula el monto certificado anteriormente
+     * a la certificacion actual.
+     */
+    calcularMontoAnterior(item: any): number {
+        item.MontoAnterior = (item.Porcentaje * item.Importe) / 100;
+        return item.MontoAnterior;
+    }
 }
