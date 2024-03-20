@@ -581,4 +581,18 @@
     <Property Name="ParentElementType" Value="SqlTable" />
     <Property Name="NewName" Value="OrganizacionDeComprasCodigo" />
   </Operation>
+  <Operation Name="Rename Refactor" Key="c408a9e1-5634-4cb2-a22a-fd3f2af5e5ce" ChangeDateTime="03/20/2024 14:48:35">
+    <Property Name="ElementName" Value="[dbo].[OrdenDeCargaFason].[PesadoTara]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[OrdenDeCargaFason]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="PesadaTara" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="708def05-8b9b-4466-a58f-93d6eeb86944" ChangeDateTime="03/20/2024 14:48:40">
+    <Property Name="ElementName" Value="[dbo].[OrdenDeCargaFason].[PesadoNeto]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[OrdenDeCargaFason]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="PesadaNeto" />
+  </Operation>
 </Operations>
