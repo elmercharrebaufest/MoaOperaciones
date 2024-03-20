@@ -126,7 +126,10 @@ i#btn-fullscreen {
 .columns-config-container ul li {
     float: left;
     width: 45%;
+    white-space: nowrap;
+    padding-right: .3em;
 }
+
 
 /* Search Panel */
 .search-filters p {

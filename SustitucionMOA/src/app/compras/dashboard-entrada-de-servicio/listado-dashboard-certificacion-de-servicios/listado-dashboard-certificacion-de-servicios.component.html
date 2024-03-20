@@ -162,23 +162,7 @@
                                     <th title="Arrow"></th>
                                     <ng-container *ngFor="let col of userTablesConfig[1].columns">
                                         <th [id]="col.id" *ngIf="col.sortable && col.visible" [pSortableColumn]="col.field">{{ col.header }}<p-sortIcon [field]="col.field"></p-sortIcon></th>
-                                        <th [id]="col.id" *ngIf="!col.sortable && col.visible">
-                                            {{ col.header }}
-                                            <!-- Filtro Solicitante -->
-                                            <ng-container *ngIf="col.id==='pSolicitante'">
-                                                <div class="divFiltroSolicitante">
-                                                    <button type="button"
-                                                            pButton icon="pi pi-filter"
-                                                            (click)="toggleSolicitanteFilter()"
-                                                            [class.active]="filterSolicitante"
-                                                            id="filterSolicitanteBtn">
-                                                    </button>
-                                                </div>
-                                                <div class="center-dropdown" *ngIf="this.filterSolicitante">
-                                                    <p-dropdown class="center-dropdown" id="filtroSolicitante" appendTo="body" [(ngModel)]="selectedSolicitante" optionLabel="name" [options]="solicitantes" [style]="{'width':'100%'}" (onChange)="tablaPosiciones.filter($event.value.id,'Solicitante', 'contains')"></p-dropdown>
-                                                </div>
-                                            </ng-container>
-                                        </th>
+                                        <th [id]="col.id" *ngIf="!col.sortable && col.visible">{{ col.header }}</th>
                                     </ng-container>
                                 </tr>
                             </ng-template>

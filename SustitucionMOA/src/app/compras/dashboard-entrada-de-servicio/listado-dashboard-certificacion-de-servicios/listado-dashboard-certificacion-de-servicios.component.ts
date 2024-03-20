@@ -154,19 +154,19 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
         {
             name: 'Items',
             columns: [
-                { id: 'iLinea', header: 'NRO LÍNEA', field: 'NumeroLinea', type: 'string', sortable: false, required: false, visible: true },
+                { id: 'iLinea', header: 'N° Línea', field: 'NumeroLinea', type: 'string', sortable: false, required: false, visible: true },
                 { id: 'iNroServicio', header: 'N° Servicio', field: 'NumeroServicio', type: 'string', sortable: false, required: false, visible: true },
                 { id: 'iDescripcion', header: 'Txt. Breve', field: 'Descripcion', type: 'string', sortable: false, required: true, visible: true },
                 { id: 'iCantidad', header: 'Cant.', field: 'Cantidad', type: 'string', sortable: false, required: true, visible: true },
-                { id: 'iUM', header: 'UM', field: 'UM', type: 'string', sortable: false, required: false, visible: true },
+                { id: 'iUM', header: 'UM', field: 'UM', type: 'string', sortable: false, required: true, visible: true },
                 { id: 'iImporte', header: 'Importe', field: 'ImporteString', type: 'string', sortable: false, required: true, visible: true },
-                { id: 'iCantidadReal', header: 'Cant. Real', field: 'CantidadReal', type: 'string', sortable: false, required: true, visible: true },
+                { id: 'iCantidadReal', header: 'Cant. Anterior', field: 'CantidadReal', type: 'string', sortable: false, required: true, visible: true },
                 { id: 'iPorcentaje', header: 'Porc. %', field: 'Porcentaje', type: 'custom', sortable: false, required: true, visible: true },
                 // These fields values are calculated in the view. NA: Not applicable
                 { id: 'iCantidadACertificar', header: 'Cant. Actual', field: null, type: 'custom', sortable: false, required: true, visible: true },
                 { id: 'iPorcentajeACertificar', header: '% a Certificar', field: null, type: 'custom', sortable: false, required: true, visible: true },
                 { id: 'iMontoACertificar', header: 'Monto a Certificar', field: null, type: 'custom', sortable: false, required: true, visible: true },
-                { id: 'iCantidadTotal', header: 'Cant. Total', field: null, type: 'custom', sortable: false, required: false, visible: true },
+                { id: 'iCantidadTotal', header: 'Cant. Total', field: null, type: 'custom', sortable: false, required: true, visible: true },
                 { id: 'iAcciones', header: 'Acciones', field: null, sortable: false, type: 'custom', required: true, visible: true },
 
             ]

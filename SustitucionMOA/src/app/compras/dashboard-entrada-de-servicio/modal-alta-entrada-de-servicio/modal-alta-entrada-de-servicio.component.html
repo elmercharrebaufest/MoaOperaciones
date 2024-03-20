@@ -4,10 +4,12 @@
           header="Alta ES - Certificación de servicio"
           [(visible)]="showModal"
           [responsive]="true"
-          [style]="{ width: '50vw', left: '-3em' }"
+          [style]="{ 'width': '450px', 'height': '400px' }" 
+          [maximizable]="true" 
+          draggable="true"
           (onHide)="this.closeModal.emit();">
 
-  <p-table class="level3"
+  <p-table id="items-list"
            [value]="itemSelected"
            dataKey="NumeroLinea"
            [paginator]="itemSelected.length > 4"
@@ -15,46 +17,65 @@
     <!-- TABLE HEADERS-->
     <ng-template pTemplate="header">
       <tr>
-        <th title="NroItem">NRO LINEA</th>
-        <th title="NumeroServicio">N° Servicio</th>
-        <th title="TextBrev">Txt.breve del servicio</th>
-        <th title="Cantidad">Cantidad</th>
-        <th title="UM">UM</th>
-        <th title="Monto">Monto</th>
-        <th title="CantidadReal">Cantidad Real</th>
-        <th title="Porcentaje">porc. %</th>
-        <th>Cantidad a certificar</th>
-        <th>% a certificar</th>
-        <th>Monto a certificar</th>
-        <th>Monto Total</th>
+        <th rowspan="2">N° LINEA</th>
+        <th rowspan="2">N° Servicio</th>
+        <th rowspan="2">Txt. Breve</th>
+        <th rowspan="2">Cant.</th>
+        <th rowspan="2">UM</th>
+        <th rowspan="2">Monto Total</th>
+        <th colspan="3" class="anteriores">Anterior</th>
+        <th colspan="3" class="acertificar">A Certificar</th>
+        <th colspan="3" class="acumulado">Acumulado</th>
+      </tr>
+      <tr>
+        <th class="anteriores">Cant.</th>
+        <th class="anteriores">%</th>
+        <th class="anteriores">Monto</th>
+
+        <th class="acertificar">Cant.</th>
+        <th class="acertificar">%</th>
+        <th class="acertificar">Monto</th>
+        
+        <th class="acumulado">Cant.</th>
+        <th class="acumulado">%</th>
+        <th class="acumulado">Monto</th>
       </tr>
     </ng-template>
     <!-- TABLE HEADERS END-->
     <!-- TABLE BODY -->
     <ng-template pTemplate="body" let-rowData let-expanded="expanded" let-i="rowIndex">
-      <tr>
-        <td>{{ rowData.NumeroLinea | defaultData }}</td>
-        <td>{{ rowData.ServicioNumero | defaultData }}</td>
-        <td>{{ rowData.Descripcion | defaultData }}</td>
-        <td>{{ rowData.Cantidad | defaultData }}</td>
-        <td>{{ rowData.UM | defaultData }}</td>
-        <td>{{ rowData.ImporteString | defaultData }}</td>
-        <td>{{ rowData.CantidadReal | defaultData }}</td>
-        <td [ngClass]="{ 'percentage-green': rowData.Porcentaje >= 100, 'percentage-yellow': rowData.Porcentaje <= 99 }">
-          {{ rowData.Porcentaje | defaultData }}%
-        </td>
-        <td>{{ rowData.CantidadACertificar | number:'1.0-2'}}</td>
-        <td>{{ rowData.PorcentajeACertificar }}</td>
-        <td>{{ rowData.MontoACertificar | number:'1.0-2' }}</td>
-        <td>{{ rowData.CantidadReal + rowData.CantidadACertificar }}</td>
-      </tr>
+        <tr>
+            <td>{{ rowData.NumeroLinea | defaultData }}</td>
+            <td>{{ rowData.ServicioNumero | defaultData }}</td>
+            <td>{{ rowData.Descripcion | defaultData }}</td>
+            <td>{{ rowData.Cantidad | defaultData }}</td>
+            <td>{{ rowData.UM | defaultData }}</td>
+            <td class="text-right">{{ rowData.ImporteString | defaultData }}</td>
+
+            <!-- Anteriores -->
+            <td>{{ rowData.CantidadReal }}</td>
+            <td>{{ rowData.Porcentaje | defaultData }}%</td>
+            <td class="text-right">{{ rowData.Porcentaje * rowData.Importe / 100  | number:'1.0-2' }}</td>
+
+            <!-- A certificar -->
+            <td>{{ rowData.CantidadACertificar | number:'1.0-2' }}</td>
+            <td>{{ rowData.PorcentajeACertificar }}%</td>
+            <td class="text-right">{{ rowData.MontoACertificar | number:'1.0-2' }}</td>
+
+            <!-- Acumulado -->
+            <td>{{ rowData.CantidadReal + rowData.CantidadACertificar }}</td>
+            <td>{{ (rowData.Porcentaje * 1) + (rowData.PorcentajeACertificar * 1) }}%</td>
+            <td class="text-right">{{ rowData.Importe + rowData.MontoACertificar | number:'1.0-2' }}</td>
+
+        </tr>
     </ng-template>
     <!-- TABLE BODY END -->
 
     <ng-template pTemplate="footer">
-      <tr>
-        <td colspan="11" class="text-right">MONTO TOTAL</td>
-        <td>{{totalMontoCertificar | number:'1.0-2'}}</td>
+      <tr class="footer">
+        <td colspan="9"></td>
+        <td colspan="2" class="text-right">MONTO TOTAL</td>
+        <td class="text-right">{{ totalMontoCertificar | number:'1.0-2' }}</td>
       </tr>
     </ng-template>
 

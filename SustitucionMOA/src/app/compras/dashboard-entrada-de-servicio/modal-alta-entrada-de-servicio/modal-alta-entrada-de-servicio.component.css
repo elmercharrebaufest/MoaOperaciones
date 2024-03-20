@@ -1,9 +1,14 @@
+:host ::ng-deep p-dialog#alta-certificaciones .ui-dialog {
+  left: 32px;
+  right: 32px;
+}
+
 :host ::ng-deep p-dialog#alta-certificaciones .ui-dialog-content {
   padding: 1em;
 }
 
 /* FORM CERTIFICACION */
-  .alta-form {
+.alta-form {
   padding: 4em 0;
 }
 
@@ -97,23 +102,57 @@ p-calendar.smallCal div {
     font-family: "Open Sans", "Helvetica Neue", sans-serif;
 }
 
-.level3 th, .level3 td {
-    font-size: .8em;
+/* TABLE */
+p-table#items-list th,
+p-table#items-list td {
+    text-align: center;
 }
 
-.level3 th {
-  background-color: #1C7CD5 !important;
-  color: white;
+p-table#items-list td.text-right {
+    text-align: right !important;
 }
 
-::ng-deep .ui-table .ui-table-tfoot > tr > td {
-  background: #1C7CD5 !important;
-  color: white !important;
+p-table#items-list td {
+    font-size: .78em;
 }
 
-/*:host ::ng-deep .alta-form .ui-datepicker {
-  top: -300px;
-}*/
+p-table#items-list th {
+    font-size: .76em;
+    background-color: #1C7CD5;
+    color: white;
+}
+
+p-table#items-list th.anteriores {
+    border-color: white;
+    background-color: #F9C834;
+    color: #333;
+}
+
+p-table#items-list th.acertificar {
+    border-color: white;
+    background-color: #8BCCE8;
+    color: #fff;
+}
+
+p-table#items-list th.acumulado {
+    border-color: white;
+    background-color: #00B050;
+    color: #fff;
+}
+
+:host ::ng-deep p-table#items-list > .ui-table > .ui-table-wrapper > table {
+    table-layout: auto;
+}
+
+:host ::ng-deep p-table#items-list .ui-table-tfoot > tr {
+    background: white;
+    color: #333;
+}
+
+:host ::ng-deep p-table#items-list .ui-table-tfoot > tr > td:first-child { 
+    border-bottom: none;
+    border-left: none;
+}
 
 /* Calendar end */
 
