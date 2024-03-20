@@ -3121,6 +3121,7 @@ namespace SustitucionMOAUtils.Services
                         {
                             mensaje = "Revisión técnica sin finalizar.";
                             verAdjudicar = false;
+                            item.VerImportes = false;
                         }
                     }
                     else
@@ -3129,6 +3130,7 @@ namespace SustitucionMOAUtils.Services
                         {
                             mensaje = "Revisión técnica sin finalizar.";
                             verAdjudicar = false;
+                            item.VerImportes = false;
                         }
                     }
                     item.MensajeAdjudicar = mensaje;
