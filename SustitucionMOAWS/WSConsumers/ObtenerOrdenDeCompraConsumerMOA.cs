@@ -773,8 +773,7 @@ namespace SustitucionMOAWS.WSConsumers
 
 
             foreach (var entradaServicioCompleta in entradasDeServicioPotenciales)
-            {
-                EntradaServicioDto entradaServicioDto = new EntradaServicioDto();
+            {              
                 string _nroES = entradaServicioCompleta.MAT_DOC;
                 EntradaServicioDto entradaServicioSAP = new ObtenerEntradaDeServicioPorNumeroConsumerMOA().ObtenerEntradaServicio(_nroES);
                 List<ItemEntradaServicioDto> _itemsDeEntradaServicio = entradaServicioSAP.Items;
@@ -782,6 +781,7 @@ namespace SustitucionMOAWS.WSConsumers
 
                 foreach (ItemEntradaServicioDto itemES in _itemsDeEntradaServicio)
                 {
+                    EntradaServicioDto entradaServicioDto = new EntradaServicioDto();
                     DateTime _fechaContabilizacion = SAPFormatter.GetDateTime(entradaServicioSAP.FechaContabilizacion);
                     bool entradaServicioDentroDePeriodoSAP = DentroPeriodoSAP(_fechaContabilizacion, DateTime.Now);
 
