@@ -4986,6 +4986,13 @@ namespace SustitucionMOAUtils.Services
             var peticionDeOfertaUsuarios_Id = peticionEntidad.Usuarios.Select(u => u.Id).ToList();
             var cotizaciones = repositorio.Listar<Cotizacion>(x => peticionDeOfertaUsuarios_Id.Contains(x.PeticionDeOfertaUsuario_Id));
             var legajos = new List<LegajoDto>();
+            var posicion = peticionEntidad.Posiciones.FirstOrDefault().SolpPosicion;
+            var tipoPosicion = posicion.TipoPosicion.Codigo;
+            var tieneVisitaDeObra = posicion.Solp.Pliego.TieneVisitaObra ?? false;
+            var tieneVisitaMasiva = posicion.Solp.Pliego.TieneVisitaObraMasiva ?? false;
+            var tieneDescripcionTecnica = posicion.Solp.Pliego.TieneDescripcionTecnica ?? false;
+            var tieneDocumentacionTecnica = posicion.Solp.Pliego.TieneDocumentacionTecnica ?? false;
+            var esServicio = tipoPosicion == "SERVICIO";            
 
             foreach (var u in peticionEntidad.Usuarios)
             {
@@ -5020,6 +5027,11 @@ namespace SustitucionMOAUtils.Services
                     }).ToList()
                 }).FirstOrDefault();
 
+                var existeRevisionTecnicaFinalizada = u.PeticionDeOferta.RevisionTecnica != null && u.PeticionDeOferta.RevisionTecnica.Finalizada;
+
+                var habilitarProveedorMaterial = (cotizacion != null && cotizacion.RespetaMateriales != true || (tieneDescripcionTecnica || tieneDocumentacionTecnica)) 
+                    && existeRevisionTecnicaFinalizada && u.PropuestaTecnicaAprobada == true;
+
                 var usuario = new PeticionDeOfertaUsarioDto()
                 {
                     RazonSocial = u.Usuario.ObtenerRazonSocial(),
@@ -5033,6 +5045,11 @@ namespace SustitucionMOAUtils.Services
                     EstaHabilitado = u.Usuario.Habilitado,
                     ValidacionCircularSolicitante = ValidacionCircularSolicitante(u, cotizacion),
                     ObservacionNoCumple = u.ObservacionNoCumple,
+                    Deshabilitado =  
+                    ((esServicio && existeRevisionTecnicaFinalizada && u.PropuestaTecnicaAprobada == true) ||
+                    (!esServicio && cotizacion != null && cotizacion.RespetaMateriales == true && (!tieneDescripcionTecnica || !tieneDocumentacionTecnica) 
+                    || habilitarProveedorMaterial)) ? false : true
+
                 };
                 usuarios.Add(usuario);
             }
@@ -5041,12 +5058,12 @@ namespace SustitucionMOAUtils.Services
 
             peticion.Usuarios = usuarios;
             peticion.UsuariosAdicionales = peticionEntidad.UsuariosAdicionales.Select(a => new PeticionDeOfertaUsuarioAdicionalDto(a)).ToList();
-            peticion.TipoPosicionCodigo = peticionEntidad.Posiciones.FirstOrDefault().SolpPosicion.TipoPosicion.Codigo;
+            
             peticion.Id = peticionEntidad.Id;
             peticion.PlazoDeOfertaEstado = peticionEntidad.PlazoDeOferta > DateTime.Now.Date ? "Abierto" : "Cerrado";
-            peticion.TieneVisitaObraBool = peticionEntidad.Posiciones.FirstOrDefault().SolpPosicion.Solp.Pliego.TieneVisitaObra ?? false;
-            peticion.TieneVisitaObraMasiva = peticionEntidad.Posiciones.FirstOrDefault().SolpPosicion.Solp.Pliego.TieneVisitaObraMasiva ?? false;
-
+            peticion.TieneVisitaObraBool = tieneVisitaDeObra;
+            peticion.TieneVisitaObraMasiva = tieneVisitaMasiva;
+            peticion.TipoPosicionCodigo = tipoPosicion;
 
             var fechaEntrega = peticionEntidad.Posiciones.Select(x => x.SolpPosicion).OrderByDescending(x => x.FechaEntregaServicio).FirstOrDefault()?.FechaEntregaServicio;
             peticion.FechaEntregaFormateado = fechaEntrega != null ? fechaEntrega.Value.ToString("yyyy-MM-dd") : "";
