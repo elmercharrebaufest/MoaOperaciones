@@ -539,9 +539,10 @@ namespace SustitucionMOAUtils.Services
 
         public List<DestinatarioDto> ObtenerDestinatariosConsulta(int proveedorId)
         {
-            List<DestinatarioDto> destinatarios = new List<DestinatarioDto>();
             var proveedor = this.repositorio.Obtener<Proveedor>(p => p.Id == proveedorId);
-            destinatarios = proveedor.UsuariosAsociados.Select(u => new DestinatarioDto(u)).ToList();
+            var proveedoresMismoCodigo = repositorio.Listar<Proveedor>(p => p.CodigoProveedor == proveedor.CodigoProveedor);
+
+            var destinatarios = proveedoresMismoCodigo.SelectMany(p=>p.UsuariosAsociados.Select(u => new DestinatarioDto(u))).ToList();
             return destinatarios;
         }
 

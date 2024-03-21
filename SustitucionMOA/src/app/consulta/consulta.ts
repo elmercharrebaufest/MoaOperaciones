@@ -112,7 +112,7 @@ export class Destinatario {
 export enum OpcionFiltroAsociadaCreacion {
     Externa = "Externa",
     PorMOA = "Por MOA",
-    PorUsuario = "Por uno",
+    PorUsuario = "Propias",
 }
 
 export function obtenerOpcionesFiltroPorCreacion(): Array<{ key: OpcionFiltroAsociadaCreacion, value: OpcionFiltroAsociadaCreacion }> {

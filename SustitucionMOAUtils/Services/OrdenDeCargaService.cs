@@ -396,7 +396,7 @@ namespace SustitucionMOAUtils.Services
         {
             Log.Info($"Listar(mailUsuario: {mailUsuario}, fechaInicio: {fechaInicio}, fechaFin: {fechaFin})");
             
-            var fechaInicioDateTime = DataFormatter.StringToDateTime(fechaFin, "inicio");
+            var fechaInicioDateTime = DataFormatter.StringToDateTime(fechaInicio, "inicio");
             var fechaFinDateTime = DataFormatter.StringToDateTime(fechaFin, "fin");
 
             var codigosEstadoConsultaHabilitados = new string[]
