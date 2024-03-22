@@ -10,6 +10,7 @@ using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Helpers;
 using System.Web;
 using SustitucionMOAModel.CustomExceptions;
+using SustitucionMOAModel.Models.WebApiMap.ScatoRepositorio;
 
 namespace SustitucionMOAUtils.DesignPattern.Classes
 {
@@ -62,19 +63,13 @@ namespace SustitucionMOAUtils.DesignPattern.Classes
         {
             Consulta consultaCreador = (Consulta)consulta.Clone();
 
-            OrdenDeCarga orden = this.repositorio.Obtener<OrdenDeCarga>(o => o.Id == consulta.Detalle.Orden_Id);
-            Usuario usuario = this.repositorio.Obtener<Usuario>(u => u.Id == orden.UsuarioCreacion_Id);
-            Proveedor proveedor = usuario.Proveedores.FirstOrDefault(p => p.Mail == usuario.Mail && p.CUIT == usuario.CUITRegistro);
-
-            if(proveedor == null)
-            {
-                throw new ValidationCustomException("Hubo un problema al intentar obtener datos del vendedor.");
-            }
+            var orden = this.repositorio.Obtener<OrdenDeCarga>(o => o.Id == consulta.Detalle.Orden_Id);
+            var usuario = this.repositorio.Obtener<Usuario>(u => u.Id == orden.UsuarioCreacion_Id);
 
             consultaCreador.Usuario_Id = orden.UsuarioCreacion_Id;
             consultaCreador.EstadoConsulta_Id = 4;
-            consultaCreador.CodigoProveedor = proveedor.CodigoProveedor ?? "-";
-            consultaCreador.RazonSocialProveedor = proveedor.RazonSocial;
+            consultaCreador.CodigoProveedor = orden.Cliente.CodigoProveedor ?? "-";
+            consultaCreador.RazonSocialProveedor = orden.Cliente.RazonSocial;
             comentario.Usuario_Id = (int)consultaCreador.UsuarioInterno_Id;
             return consultaCreador;
         }
