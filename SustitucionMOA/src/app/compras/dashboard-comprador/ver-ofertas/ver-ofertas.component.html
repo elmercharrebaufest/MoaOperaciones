@@ -126,7 +126,7 @@
                         <!-- <span> <p-checkbox name="visible" [readonly]="!proveedor.VerAdjudicar" [(ngModel)]="proveedor.VisibleSolicitante" (click)="actualizarVisibilidad(proveedor, !proveedor.VerAdjudicar)" binary="false"></p-checkbox></span> -->
                         <button class="btn btn-xs btn-primary" *ngIf="proveedor.Cotizacion != null && proveedor.Cotizacion.length != 0 && proveedor.VerImportes" style="cursor:pointer; vertical-align: middle;padding: 0px 5px;"
                             (click)="abrirModalHistorial(proveedor.Cotizacion.Id)">
-                            <i class="bi bi-hourglass-split" style="color: rgb(252, 249, 249);font-size: 12px;"></i>
+                            <i class="glyphicon glyphicon-hourglass" style="color: rgb(252, 249, 249);font-size: 12px;"></i>
                         </button>
                         <span style="margin-left: 9px;">{{proveedor.RazonSocial}}</span>
                     </th>
@@ -385,7 +385,7 @@
                         <button class="btn btn-xs btn-primary"
                             *ngIf="proveedor.Cotizacion != null && proveedor.Cotizacion.length != 0 && proveedor.VerImportes"
                             style="cursor:pointer; vertical-align: middle; padding: 0px 5px;" (click)="abrirModalHistorial(proveedor.Cotizacion.Id)">
-                            <i class="bi bi-hourglass-split" style="color: rgb(252, 249, 249);font-size: 12px;"></i>
+                            <i class="glyphicon glyphicon-hourglass" style="color: rgb(252, 249, 249);font-size: 12px;"></i>
                         </button>
                         <span style="margin-left: 9px;">{{proveedor.RazonSocial}}</span>
                     </th>                
