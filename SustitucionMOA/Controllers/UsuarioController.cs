@@ -220,14 +220,14 @@ namespace SustitucionMOA.Controllers
 
                 var usuario = repositorio.Obtener<Usuario>(u => u.Mail == userMail);
 
-                var proveedor = repositorio.Obtener<Proveedor>(vendedorId);
+                var proveedorAAsignar = repositorio.Obtener<Proveedor>(vendedorId);
 
-                if (proveedor.EstadoAprobacion != 0)
+                if (proveedorAAsignar.EstadoAprobacion != 0)
                 {
                     throw new ValidationCustomException("Proveedor deshabilitado");
                 }
 
-                if (!usuario.EsAdmin() && !usuario.TienePermiso(PermisoEnum.ElegirTodosVendedores) && !usuario.TieneProveedor(proveedor.CodigoProveedor))
+                if (!usuario.EsAdmin() && !usuario.TienePermiso(PermisoEnum.ElegirTodosVendedores) && !usuario.TieneProveedor(proveedorAAsignar.CodigoProveedor))
                 {
                     throw new ValidationCustomException("Proveedor incorrecto");
                 }
@@ -241,29 +241,34 @@ namespace SustitucionMOA.Controllers
 
                 // update claim value
                 identity.RemoveClaim(identity.FindFirst(Globals.ClaimsProveedorType));
-                identity.AddClaim(new Claim(Globals.ClaimsProveedorType, proveedor.CodigoProveedor));
+                identity.AddClaim(new Claim(Globals.ClaimsProveedorType, proveedorAAsignar.CodigoProveedor));
 
                 identity.RemoveClaim(identity.FindFirst(Globals.ClaimsNombreType));
-                identity.AddClaim(new Claim(Globals.ClaimsNombreType, proveedor.RazonSocial));
+                identity.AddClaim(new Claim(Globals.ClaimsNombreType, proveedorAAsignar.RazonSocial));
 
                 if (identity.FindFirst(Globals.ClaimsProveedorId) != null)
                 {
                     identity.RemoveClaim(identity.FindFirst(Globals.ClaimsProveedorId));
                 }
 
-                identity.AddClaim(new Claim(Globals.ClaimsProveedorId, proveedor.Id.ToString()));
+                identity.AddClaim(new Claim(Globals.ClaimsProveedorId, proveedorAAsignar.Id.ToString()));
 
                 if (identity.FindFirst(Globals.ClaimsEsCodigoCorredorType) != null)
                 {
                     identity.RemoveClaim(identity.FindFirst(Globals.ClaimsEsCodigoCorredorType));
                 }
-                identity.AddClaim(new Claim(Globals.ClaimsEsCodigoCorredorType, proveedor.TipoProveedor.EsCorredor?"true":"false"));
+                identity.AddClaim(new Claim(Globals.ClaimsEsCodigoCorredorType, proveedorAAsignar.TipoProveedor.EsCorredor?"true":"false"));
 
-                if (identity.FindFirst(Globals.ClaimsTipoUsuarioType) != null)
+
+                if(!usuario.EsCorredor() && !proveedorAAsignar.TipoProveedor.EsCorredor)
                 {
-                    identity.RemoveClaim(identity.FindFirst(Globals.ClaimsTipoUsuarioType));
+                    if (identity.FindFirst(Globals.ClaimsTipoUsuarioType) != null)
+                    {
+                        identity.RemoveClaim(identity.FindFirst(Globals.ClaimsTipoUsuarioType));
+                    }
+                    var nuevoTipoUsuario = proveedorAAsignar.TipoProveedor.EsCliente ? "CLI" : "PROV";
+                    identity.AddClaim(new Claim(Globals.ClaimsTipoUsuarioType, nuevoTipoUsuario));
                 }
-                identity.AddClaim(new Claim(Globals.ClaimsTipoUsuarioType, proveedor.TipoProveedor.NombreCorto));
 
 
                 // tell the authentication manager to use this new identity
@@ -280,7 +285,7 @@ namespace SustitucionMOA.Controllers
                 {
                     if (!Globals.EsLocal)
                     {
-                        noticias = _loginService.ObtenerNoticias(proveedor.CodigoProveedor);
+                        noticias = _loginService.ObtenerNoticias(proveedorAAsignar.CodigoProveedor);
                         noticias.cantidad = 0;
                         if (noticias != null && noticias.noticias != null)
                         {
@@ -299,7 +304,7 @@ namespace SustitucionMOA.Controllers
 
 
 
-                return JsonCustom(new SeleccionarVendedorResponseDto(proveedor, noticias));
+                return JsonCustom(new SeleccionarVendedorResponseDto(proveedorAAsignar, noticias));
 
             }
             catch (ValidationCustomException e)

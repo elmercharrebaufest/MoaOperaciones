@@ -15,6 +15,13 @@ namespace SustitucionMOAModel.Entities
                 return NombreCorto != null && NombreCorto == "CORR";
             }
         }
+        public bool EsCliente
+        {
+            get
+            {
+                return NombreCorto != null && NombreCorto == "CLI";
+            }
+        }
 
     }
 }

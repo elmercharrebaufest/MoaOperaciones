@@ -10,6 +10,7 @@ import { SessionDataService } from './../../common/services/SessionDataService';
 import { ModalService } from './../../common/services/ModalService';
 import { BuscadorService } from '../../common/shared-components/buscador/buscador.service';
 import { Proveedor } from '../../common/models/proveedor';
+import { TipoPerfil } from '../../common/enums/TipoPerfil';
 
 @Component({
     selector: 'app-usuario-cambio-vendedor',
@@ -102,7 +103,7 @@ export class UsuarioCambioVendedorComponent extends BaseComponent implements OnI
             this.subscription = this.service.seleccionarVendedor(vendedor.Id).subscribe(
                 (result) => {
                     this.spinnerComponent.hideIt();
-                    if (result.logout == true) {
+                    if (result.logout) {
                         this.sessionDataService.logout();
                     } else if (result.error != undefined && result.error != "") {
                         this.mensajeComponent.setErrorMsg(result.error);
@@ -117,11 +118,14 @@ export class UsuarioCambioVendedorComponent extends BaseComponent implements OnI
                         this.sessionDataService.setNoticias(result.Noticias);
                         sessionStorage.setItem("esCodigoCorredor", result.EsCodigoCorredor + '');
                         this.sessionDataService.setEsCodigoCorredor(result.EsCodigoCorredor);
-                        sessionStorage.setItem("tipoUsuario", result.TipoUsuario);
-                        this.sessionDataService.setTipoUsuario(result.TipoUsuario);
                         sessionStorage.setItem("proveedorId", result.ProveedorId.toString());
                         this.sessionDataService.setProveedorId(result.ProveedorId.toString());
-
+                        if (!this.isCorredor() && result.TipoUsuario !== TipoPerfil.Corredor) {
+                            const nuevoTipoUsuario = result.TipoUsuario === TipoPerfil.Cliente ?
+                                TipoPerfil.Cliente : TipoPerfil.Proveedor
+                            sessionStorage.setItem("tipoUsuario", nuevoTipoUsuario);
+                            this.sessionDataService.setTipoUsuario(nuevoTipoUsuario);
+                        }
                     }
                 },
                 error => {
