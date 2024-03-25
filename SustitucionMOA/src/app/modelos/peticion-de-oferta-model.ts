@@ -39,7 +39,8 @@ export interface PeticionDeOfertaDto {
     RevisionFinalizada?: boolean,
     RevisionTecnica?: PeticionDeOfertaRevisionTecnicaDto
     PideDescripcionTecnica?: boolean,
-    PideDocumentacionTecnica?: boolean
+    PideDocumentacionTecnica?: boolean,
+    NrosSolp?: any[],
 }
 
 export interface PeticionDeOfertaUsarioDto {

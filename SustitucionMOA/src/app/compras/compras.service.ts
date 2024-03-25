@@ -45,7 +45,8 @@ export class ComprasService extends BaseService {
         estadoCotizacion: null,
         claseDocumento: "",
         tipoImputacion: "",
-        valorTipoImputacion: ""
+        valorTipoImputacion: "",
+        tratada: null
     }
     listaSolp: any;
     observableListaSolp = new Subject<any[]>();
@@ -588,6 +589,14 @@ export class ComprasService extends BaseService {
 
     }
 
+    public obtenerPosicionesMultipleCompras(ids: string) {
+        let params: HttpParams = new HttpParams()
+        params = params.set('ids', ids);
+        return this.http
+            .get<SolpCompraDto>('/api/compras/ObtenerPosicionesMultipleCompras', { params: params, headers: this.headers })
+
+    }
+
     public GrabarPeticion(solp: EnvioSolpCompra) {
         let json = JSON.stringify({
             SolpId: solp.SolpId,
@@ -1090,7 +1099,6 @@ export class ComprasService extends BaseService {
             .post<any>('/api/compras/ActualizarProveedorVisibleEnSolicitante', payload, { headers: this.headers });
     }
 
-
     public obtenerHistorial(id: number): Observable<any> {
         let params: HttpParams = new HttpParams();
         params = params.set("id", id.toString());
@@ -1099,6 +1107,7 @@ export class ComprasService extends BaseService {
             headers: this.headers,
         });
     }
+
     listarUsuarioSolicitante(): Observable<any> {
 
         return this.http
@@ -1107,5 +1116,38 @@ export class ComprasService extends BaseService {
             });
     }
 
+    public listarPosicionesPOMultiple(
+        fechaDesde: any,
+        fechaHasta: any,
+        sap: boolean = false,
+        mantenimiento: boolean,
+        web: boolean,
+        repoAutomatica: boolean,
+        contratoMarco: boolean,
+        centros: any,
+        grupoDeCompras: any,
+        claseDocumento: any,
+        tipoImputacion: any,
+        valorTipoImputacion: any,
+        tratada: boolean | null,
 
+        ): Observable<any> 
+        {
+        let params: HttpParams = new HttpParams();
+        params = params.set('fechaDesde', (fechaDesde != null ? fechaDesde : ""));
+        params = params.set('fechaHasta', (fechaHasta != null ? fechaHasta : ""));
+        params = params.set('sap', sap.toString());
+        params = params.set('mantenimiento', mantenimiento.toString());
+        params = params.set('web', web.toString());
+        params = params.set('repoAutomatica', repoAutomatica.toString());
+        params = params.set('contratoMarco', contratoMarco.toString());
+        params = params.set('centros', centros);
+        params = params.set('grupoDeCompras', grupoDeCompras);
+        params = params.set('claseDocumento', claseDocumento);
+        params = params.set('tipoImputacion', tipoImputacion);
+        params = params.set('valorTipoImputacion', valorTipoImputacion);
+        params = params.set('tratada', tratada != null ? tratada.toString() : null);
+
+        return this.http.get('/api/compras/ListarPosicionesPOMultiple', { params: params, headers: this.headers });
+    }
 }

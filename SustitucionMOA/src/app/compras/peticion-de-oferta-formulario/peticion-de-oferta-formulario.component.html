@@ -1,7 +1,11 @@
 
 <div class="row titleSection">
-    <div class="col-xs-12 col-sm-10 "> <strong>Cotización {{solpCompraDto.TipoPosicionCodigo}} | SOLP #{{solpCompraDto.NroSolp}}</strong></div>
-</div>
+    <div class="col-xs-12 col-sm-10 ">
+        <strong>
+            {{ this.esTipoPOMultiple ? 'Cotización MATERIALES | SOLP Múltiple' : 'Cotización ' + solpCompraDto.TipoPosicionCodigo + ' | SOLP #' + solpCompraDto.NroSolp }}
+        </strong>
+    </div>
+    </div>
 
 <div class="content-wraper alinearAlturaMenuDashboard row1 myRow firstSection">
     <div class="rounded shadow">
@@ -27,6 +31,7 @@
                                     <th *ngIf="esTipoMaterial" class="columna"><p-checkbox name="posiciones" [binary]="true" [(ngModel)]="TodasPosicionesSeleccionadas" (click)="seleccionarTodo(solpCompraDto.PosicionCompras)"></p-checkbox></th>
                                     <th *ngIf="esTipoServicio" style="width: 3em"></th>
                                     <th class="columna">Pos.</th>
+                                    <th *ngIf="esTipoPOMultiple" class="columna">Nro Solp</th>
                                     <th *ngIf="esTipoMaterial" class="columna">Código</th>
                                     <th class="columna">Descripción</th>
                                     <th class="columna">Centro</th>
@@ -54,6 +59,7 @@
                                         </a>
                                     </td>
                                     <td class="columna">{{posicionCompra.Indice}}</td>
+                                    <td *ngIf="esTipoPOMultiple" class="columna">{{posicionCompra.NroSolp}}</td>
                                     <td *ngIf="esTipoMaterial" class="columna">{{posicionCompra.Codigo}}</td>
                                     <td class="columna">{{posicionCompra.Tarea}}</td>
                                     <td class="columna">{{posicionCompra.CentroComprasDescripcion}}</td>

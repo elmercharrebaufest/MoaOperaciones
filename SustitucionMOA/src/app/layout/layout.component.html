@@ -644,6 +644,12 @@
                                     REPORTE ORDEN DE COMPRA
                                 </a>
                             </div>
+
+                            <div *ngIf="isAuthorized('VER SOLPS COMPRADOR')">
+                                <a (click)="goToSeccion('/compras/crear-po-multiple')" href="#">
+                                    PUBLICAR PO MULTIPLE
+                                </a>
+                            </div>
                         </div>
                     </div>
 

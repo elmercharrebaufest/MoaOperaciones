@@ -111,7 +111,8 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                            GrupoComprasCodigo = posicion.GrupoCompras != null ? posicion.GrupoCompras.Codigo : (string)null,
                                                            CentroCodigo = posicion.Centro != null ? posicion.Centro.Codigo : (string)null,
                                                            Cantidad = posicion.Cantidad,
-                                                           TipoPosicion = new TablaGeneralDto { Descripcion = posicion.TipoPosicion.Descripcion, Codigo = posicion.TipoPosicion.Codigo }
+                                                           TipoPosicion = new TablaGeneralDto { Descripcion = posicion.TipoPosicion.Descripcion, Codigo = posicion.TipoPosicion.Codigo },
+                                                           NroSolp = posicion.Solp.NroSolp
                                                        }),
                                     ItemPorPagina = Paginacion.ItemsPorPagina,
                                     Pagina = Paginacion.Pagina,
@@ -124,7 +125,9 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                     FechaLiberacionSap = x.FechaLiberacionSap,
                                     ChatSinLeer = x.ChatInternoCompras.Any(a => a.Leido == false && a.Usuario.Roles.Any(r => r.Codigo == rol)),
                                     PeticionesDeOferta = (from po in contexto.Set<PeticionDeOferta>()
-                                                          where po.Posiciones.FirstOrDefault().SolpPosicion.Solp_Id == x.Id && po.RegistroInfo != true
+                                                              //where po.Posiciones.FirstOrDefault().SolpPosicion.Solp_Id == x.Id && po.RegistroInfo != true
+                                                          where po.Posiciones.Select(so => so.SolpPosicion.Solp_Id).Contains(x.Id) && po.RegistroInfo != true
+
                                                           select new PeticionDeOfertaDto()
                                                           {
                                                               Id = po.Id,
@@ -140,7 +143,9 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                               PlazoDeOfertaCierre = po.Cierres.Any() ? po.Cierres.OrderByDescending(p => p.Fecha).FirstOrDefault().Fecha : (DateTime?)null,
                                                               RevisionFinalizada = po.RevisionTecnica != null && po.RevisionTecnica.Finalizada,
                                                               Observaciones = po.Observaciones,
-                                                              RecotizacionEconomica = po.RevisionTecnica != null && po.RevisionTecnica.RecotizacionEconomica
+                                                              RecotizacionEconomica = po.RevisionTecnica != null && po.RevisionTecnica.RecotizacionEconomica,
+                                                              NrosSolp = po.Posiciones.Select(posi => posi.SolpPosicion.Solp.NroSolp)
+
                                                           })
                                 };
                 var pagina = Paginacion;

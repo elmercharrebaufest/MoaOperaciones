@@ -55,6 +55,7 @@ using System.Web;
 using System.Web.Security;
 using static SustitucionMOAWS.WSConsumers.ModificarOrdenDeCompraConsumerMOA;
 using Image = iTextSharp.text.Image;
+using DocumentFormat.OpenXml.Office2010.Excel;
 
 
 namespace SustitucionMOAUtils.Services
@@ -8469,6 +8470,199 @@ namespace SustitucionMOAUtils.Services
                 UsuarioSap = usuario.UsuarioSap
             }, usuario => usuario.Roles.Any(r => r.PermisosAsociados.Select(x => x.Permiso).Contains("ABM SOLP")));
             return usuarios;
+        }
+
+        public List<POPosicionDto> ListarPosicionesPOMultiple(DateTime? desde, DateTime? hasta, bool sap, bool mantenimiento, bool web, bool repoAutomatica, bool? tratada, bool contratoMarco, 
+            List<int> centros = null, List<int> grupoDeCompras = null, List<int> claseDocumento = null, List<string> tipoImputacion = null, List<int> valorTipoImputacion = null)
+        {
+            try 
+            {
+                var fechaHasta = hasta != null ? hasta.Value.AddDays(1) : (DateTime?)null;
+                var hoy = DateTime.Now.Date;
+
+                var solps = new List<string>();
+
+                solps.AddRange(listarSolpPendienteConsumeMOA.ListarSolpPendientes());
+
+                var sinSolps = !solps.Any();
+
+                if (sinSolps) 
+                { 
+                    return new List<POPosicionDto>();
+                }
+
+                var posicionMaterial = repositorio.Listar<SolpPosicion, POPosicionDto>(pos => new POPosicionDto
+                {
+                    Id = pos.Id,
+                    NroSolp = pos.Solp.NroSolp,
+                    Indice = pos.Indice,
+                    Codigo = pos.MaterialSolp.Codigo,
+                    Tarea = pos.Tarea,
+                    CentroComprasDescripcion = pos.Centro.Descripcion,
+                    AlmacenComprasDescripcion = pos.Almacen.Descripcion,
+                    TextoSuministro = pos.TextoSuministro,
+                    Modelo = pos.Modelo,
+                    GrupoComprasDescripcion = pos.GrupoCompras.Descripcion,
+                    Cantidad = pos.Cantidad,
+                    UnidadComprasDescripcion = pos.Unidad.Descripcion,
+                    MonedaSolpDescripcion = pos.Moneda.Descripcion,
+                    FechaEntregaServicio = pos.FechaEntregaServicio,
+                    PlazoEntrega = pos.PlazoEntrega,
+                    FechaOferta = pos.Solp.Pliego_Id != null ? pos.Solp.Pliego.FechaHoraEntrega : (DateTime?)null,
+                    TieneCotizacion = pos.Peticiones.Any()
+                }, 
+                    pos => pos.TipoPosicion.Codigo == "MATERIALES" && 
+                    solps.Contains(
+                        pos.Solp.NroSolp
+                    ) &&
+                    (
+                        sap == true 
+                        && pos.Solp.TipoSolpSap == (int)TipoSolpSap.Sap || mantenimiento == true 
+                        && pos.Solp.TipoSolpSap == (int)TipoSolpSap.Mantenimiento || repoAutomatica == true 
+                        && pos.Solp.TipoSolpSap == (int)TipoSolpSap.ReposicionAutomatica ||  
+                            (
+                                web == true && 
+                                (   
+                                    pos.Solp.TipoSolpSap == null || pos.Solp.TipoSolpSap == (int)TipoSolpSap.Web
+                                )
+                            ) || 
+                            (
+                                sap == false 
+                                && mantenimiento == false 
+                                && web == false 
+                                && repoAutomatica == false
+                             )
+                    ) &&
+                    (
+                        desde == null || pos.Solp.FechaCreacion >= desde.Value
+                    ) && 
+                    (
+                        fechaHasta == null || pos.Solp.FechaCreacion <= fechaHasta.Value
+                    ) &&
+                    (
+                        !centros.Any() || pos.Solp.Posiciones.Any(c => centros.Contains(c.Centro_Id))
+                    ) && 
+                    (!grupoDeCompras.Any() || pos.Solp.Posiciones.Any(gc => grupoDeCompras.Contains((int)gc.GrupoCompras_Id))) &&
+                    (!claseDocumento.Any() || pos.Solp.EstadoSolpSap_Id != null && claseDocumento.Contains((int)pos.Solp.ClaseDocumento_Id)) &&
+                    (!tipoImputacion.Any() || pos.Solp.Posiciones.Any(c => tipoImputacion.Contains(c.TipoImputacion.Codigo))) &&
+                    (!contratoMarco || pos.Solp.Posiciones.Any(p => !string.IsNullOrEmpty(p.NumeroContratoSuperior))) 
+                    &&
+                    (   
+                        !valorTipoImputacion.Any() 
+                        || pos.Solp.Posiciones.Any(p => valorTipoImputacion.Contains((int)pos.ValorTipoImputacion_Id)) 
+                        || pos.Solp.Posiciones.Any(p => p.Subposiciones.Any(sp => valorTipoImputacion.Contains((int)sp.TipoImputacion_Id)))
+                    )
+                    &&
+                    (tratada == null || pos.Peticiones.Any() == tratada) &&
+                    (pos.Solp.TrabajoYaHecho != true || pos.Solp.Urgencia != true || pos.Solp.Adicional != true || pos.Solp.CondEspProveedorAsignado != true)
+                );
+
+                return posicionMaterial;
+            }
+            catch (Exception e)
+            {
+                Log.Info($"Error al ListarPosicionesPOMultiple");
+                Log.Error(e);
+                throw;
+            }   
+        }
+
+        public SolpCompraDto ObtenerPosicionesMultipleCompras(List<int> listaId)
+        {
+            try
+            {
+                var registrosInfo = new List<RegistroInfoDto>();
+                var solp = repositorio.ObtenerConsultaEscalar(new ObtenerPosicionesMultipleComprasConsulta(listaId));
+               
+                var posiciones = solp.PosicionCompras.ToList();
+                var consultaRegistro = posiciones.Where(a => !string.IsNullOrEmpty(a.MaterialComprasCodigo))
+                    .GroupBy(x => new { Centro = x.Centro.CodigoSap, Material = x.MaterialComprasCodigo, GrupoDeCompras = x.GrupoCompras.CodigoSap });
+
+                foreach (var posicionAgrupada in consultaRegistro)
+                {
+                    var registros = obtenerRegistroInfoConsumerMOA.ObtenerRegistroInfoConsumer(posicionAgrupada.Key.Material, posicionAgrupada.Key.Centro, posicionAgrupada.Key.GrupoDeCompras, "");
+                    if (registros != null)
+                    {
+                        CrearProveedor(registros.Select(x => x.Vendedor).ToList());
+                        foreach (var posicion in posicionAgrupada)
+                        {
+                            foreach (var registroInfo in registros)
+                            {
+                                var i = 0;
+                                var proveedor = repositorio.Obtener<Proveedor>(x => x.CodigoProveedor == registroInfo.Vendedor && x.TipoProveedor.Id == (int)TipoUsuarioEnum.NoGranos);
+                                var usuario = proveedor?.UsuariosAsociados.Where(a => a.Mail == proveedor.Mail && a.CUITRegistro == proveedor.CUIT && a.TipoUsuario.Id == proveedor.TipoProveedor.Id).FirstOrDefault();
+                                if (proveedor != null && usuario != null)
+                                {
+                                    decimal pendienteAdjudicar = 0;
+
+                                    var hoy = DateTime.Now.Date;
+                                    var tablaSap = repositorio.Listar<TablaSap>(x => x.Tabla == TablasSap.Moneda || x.Tabla == TablasSap.Unidad);
+                                    DateTime fechaDesde = Convert.ToDateTime(ConfigurationManager.AppSettings["FechaInicioConsultaSolp"].ToString());
+                                    DateTime fechaHasta = Convert.ToDateTime(ConfigurationManager.AppSettings["FechaFinConsultaSolp"].ToString());
+                                    var filtros = new ObtenerSolpRequest
+                                    {
+                                        FechaDesde = fechaDesde,
+                                        FechaHasta = fechaHasta,
+                                        NumeroSolp = posicion.NroSolp,
+                                    };
+                                    var solpSAPResponse = obtenerSolpConsumerMOA.RequestSolpWithNroAndDates(filtros);
+
+                                    var solpSAPPosicion = solpSAPResponse?.Posiciones.FirstOrDefault(x => Int32.Parse(x.NumeroPosicion) == posicion.Indice);
+                                    if (solpSAPPosicion != null)
+                                    {
+                                        pendienteAdjudicar = solpSAPPosicion.Cantidad - solpSAPPosicion.Ordered;
+                                    }
+                                    try
+                                    {
+                                        registrosInfo.Add(new RegistroInfoDto
+                                        {
+                                            Id = registroInfo.Id,
+                                            Numero = i + 1,
+                                            PosicionId = posicion.Id,
+                                            Indice = posicion.Indice,
+                                            DescripcionPosicion = posicion.Tarea,
+                                            Cantidad = pendienteAdjudicar,
+                                            Centro = posicion.Centro.Descripcion,
+                                            FechaVigencia = registroInfo.FechaVigencia,
+                                            FechaUltimaCompra = registroInfo.FechaUltimaCompra,
+                                            Moneda = registroInfo.Moneda,
+                                            NombreProveedor = proveedor?.RazonSocial,
+                                            Codigo = registroInfo.Vendedor,
+                                            Precio = registroInfo.Moneda == "USDM" ? registroInfo.Precio / 10 : registroInfo.Moneda == "CLP" ? registroInfo.Precio * 100 : registroInfo.Precio,
+                                            Unidad = registroInfo.Unidad,
+                                            ProveedorId = usuario.Id,
+                                            Cuit = proveedor?.CUIT,
+                                            Deshabilitado = registroInfo.FechaFormateada != null ? registroInfo.FechaFormateada < hoy : false,
+                                            CantidadAdjudicacion = 0,
+                                            MonedaId = tablaSap.Where(x => x.CodigoSap == registroInfo.Moneda).FirstOrDefault().Id,
+                                            UnidadId = tablaSap.Where(x => x.CodigoSap == registroInfo.Unidad).FirstOrDefault().Id,
+                                            MaterialCodigo = registroInfo.MaterialCodigo,
+                                            NumeroOrdenDeCompra = registroInfo.NumeroOrdenDeCompra
+                                        });
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        Log.Info("Posible error al obtener el codigo de material" + registroInfo.Unidad);
+                                        Log.Error(e);
+                                    }
+                                }
+                                else
+                                {
+                                    //nose
+                                }
+                            }
+                        }
+                    }
+                }
+                solp.RegistrosInfo = registrosInfo;
+
+                return solp;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         public static class SolpTemplateKeys

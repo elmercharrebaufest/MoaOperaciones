@@ -1,0 +1,150 @@
+
+<div class="row titleSection" style="margin-bottom: 10px;">
+  <div class="col-xs-12 col-sm-10 "> <strong>Publicar PO multiple</strong></div>
+</div>
+
+<div class="row">
+  <div class="col-md-3 col-lg-3">
+      <p-multiSelect [options]="grupoComprasFiltro" [(ngModel)]="selectGrupoCompras"
+                     defaultLabel="Grupo de Compras" [maxSelectedLabels]="1"
+                     selectedItemsLabel="{0} grupos de compras"></p-multiSelect>
+  </div>
+  <div class="col-md-3 col-lg-3" style="padding-right: 30px;">
+      <p-multiSelect [options]="centroFiltro" [(ngModel)]="selectCentro" defaultLabel="Centro"
+                     [maxSelectedLabels]="2" selectedItemsLabel="{0} centros elegidos"></p-multiSelect>
+  </div>
+
+  <div class="col-md-3 col-lg-3">
+    <p-dropdown [options]="tratada" [(ngModel)]="selectTratada" placeholder="Tiene PO" showClear="true"></p-dropdown>
+  </div>
+
+  <div class="row myRow">
+     
+      <div class="col-md-3 col-lg-3">
+          <p-multiSelect [options]="claseDocumentoFiltro" [(ngModel)]="selectClaseDocumento" defaultLabel="Clase de Documento"
+                         [maxSelectedLabels]="1" selectedItemsLabel="{0} clases elegidas"></p-multiSelect>
+      </div>
+      <div class="col-md-3 col-lg-3">
+          <p-multiSelect [options]="tipoImputacionFiltro" [(ngModel)]="selectTipoImputacion" defaultLabel="Tipo de Imputación"
+                         [maxSelectedLabels]="1" selectedItemsLabel="{0} tipos elegidos" (ngModelChange)="subtipoImputacionCombo()"></p-multiSelect>
+      </div>
+      <div class="col-md-3 col-lg-3" style="padding-right: 30px;">
+          <p-multiSelect [options]="valorTipoImputacionFiltro" [(ngModel)]="selectValorTipoImputacion" defaultLabel="Subtipo de Imputación"
+                         [maxSelectedLabels]="1" selectedItemsLabel="{0} tipos elegidos"></p-multiSelect>
+      </div>
+  </div>
+  <div class="row myRow">
+      <div class="col-md-2 col-lg-3">
+          <p-calendar showButtonBar="true" [showIcon]="true" placeholder="Fecha de creacion"
+                      dateFormat="dd/mm/yy" (onSelect)="onSelect($event)" appendTo="body"
+                      [(ngModel)]="rangeDates" selectionMode="range" [readonlyInput]="true" [locale]="locale"
+                      (onClearClick)="returnToTodaysDate()">
+          </p-calendar>
+      </div>
+      <div class="col-md-6" style="margin-top: 6px;">
+          
+          <span style="margin-right: 10px;">
+              <p-checkbox class="checkboxFechas" binary="true" label="SAP" pTooltip="SAP" [(ngModel)]="sap"></p-checkbox>
+          </span>
+          <span style="margin-right: 10px;">
+              <p-checkbox class="checkboxFechas" binary="true" label="OT" pTooltip="Mantenimiento"
+                          [(ngModel)]="mantenimiento"></p-checkbox>
+          </span>
+          <span style="margin-right: 10px;">
+              <p-checkbox class="checkboxFechas" binary="true" label="Web" [(ngModel)]="web"></p-checkbox>
+          </span>
+          <span style="margin-right: 10px;">
+              <p-checkbox class="checkboxFechas" binary="true" label="RA" pTooltip="Reposición Automática"
+                          [(ngModel)]="repoAutomatica"></p-checkbox>
+          </span>
+          <span>
+              <p-checkbox class="checkboxFechas" binary="true" label="CM" pTooltip="Contrato Marco"
+                          [(ngModel)]="contratoMarco"></p-checkbox>
+          </span>
+      </div>
+      <div class="col-md-3" style="text-align: center; padding-right: 30px;">
+          <button class="btn buscar" (click)="onBuscar()">Buscar</button>
+      </div>
+  </div>
+</div>
+
+<div class="content-wraper alinearAlturaMenuDashboard row1 myRow firstSection">
+  <div class="rounded shadow">
+      <section class="container-fluid clearfix">
+          <div>
+              <div>
+                <div class="row1">
+                  <p-table class="table-responsive" styleClass="font-size: 10px" #tabla [value]="posiciones" dataKey="Id">
+                    <ng-template pTemplate="header" let-columns>
+                      <tr>
+                        <th class="columna"><p-checkbox name="posiciones" [binary]="true" [(ngModel)]="TodasPosicionesSeleccionadas" (click)="seleccionarTodo(posiciones.posicionCompra)"></p-checkbox></th>
+                        <th class="columna">Nro Solp</th>
+                        <th class="columna">Pos.</th>
+                        <th class="columna">Código</th>
+                        <th class="columna">Descripción</th>
+                        <th class="columna">Centro</th>
+                        <th style="font-size: 10px;">Almacén</th>
+                        <th style="font-size: 10px;">Texto de <br /> suministro</th>
+                        <th class="columna">Modelo</th>
+                        <th class="columna">Grupo de compras</th>
+                        <th class="columna">Ctd.</th>
+                        <th class="columna">Um</th>
+                        <th class="columna">Mon.</th>
+                        <th class="columna">Fecha de entrega</th>
+                        <th class="columna">Plazo de entrega (días)</th>
+                        <th class="columna">Plazo de oferta</th>
+                        <th class="columna">Tiene PO</th>
+                      </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-posicionCompra let-expanded="expanded" let-columns="columns">
+                      <tr>
+                        <td>
+                            <p-checkbox name="selectedCotizacion" binary="false" [(ngModel)]="posicionCompra.Selected"></p-checkbox>
+                        </td>
+                        <td class="columna">{{posicionCompra.NroSolp}}</td>
+                        <td class="columna">{{posicionCompra.Indice}}</td>
+                        <td class="columna">{{posicionCompra.Codigo}}</td>
+                        <td class="columna">{{posicionCompra.Tarea}}</td>
+                        <td class="columna">{{posicionCompra.CentroComprasDescripcion}}</td>
+                        <td class="columna">{{posicionCompra.AlmacenComprasDescripcion}}</td>
+                        <td class="columna">{{posicionCompra.TextoSuministro}}</td>
+                        <td class="columna">{{posicionCompra.Modelo}}</td>
+                        <td class="columna">{{posicionCompra.GrupoComprasDescripcion}}</td>
+                        <td class="columna">{{posicionCompra.Cantidad | number:'1.2-2'}}</td>
+                        <td class="columna">{{posicionCompra.UnidadComprasDescripcion}}</td>
+                        <td class="columna">{{posicionCompra.MonedaSolpDescripcion}}</td>
+                        <td class="columna">{{posicionCompra.FechaEntregaServicio | customDateFormat | date :'d/M/yyyy' }}</td>
+                        <td class="columna">{{posicionCompra.PlazoEntrega}}</td>
+                        <td class="columna">{{posicionCompra.FechaOferta | customDateFormat | date :'d/M/yyyy'}}</td>
+                        <td class="columna">{{posicionCompra.TieneCotizacion ? "Si":"No"}}</td>
+                      </tr>
+                    </ng-template>
+                  </p-table>
+                </div>
+              </div>
+          </div>
+      </section>
+  </div>
+</div>
+
+<p-sidebar visible="true" position="bottom" [modal]="false" [showCloseIcon]="false" dismissible="false" appendTo="body">
+  <div class="row">
+      <div class="col-xs-1 col-md-1">
+      </div>
+      <div class="col-xs-3 col-md-3" style="text-align: center;">
+          <button class="btn btn-secondary botonesCompras" (click)="goToSeccion('/compras/crear-po-multiple');">
+              <i class="fa fa-arrow-left"></i>&nbsp; VOLVER
+          </button>&nbsp;
+      </div>
+      <div class="col-xs-8 col-md-8">
+
+          <div class="col-xs-2 col-md-2" style="margin: 0; padding: 0;">
+              <button class="btn btn-success botonesComprasColor" (click)="publicarCotizacion(posiciones)">
+                CONTINUAR
+              </button>
+          </div>
+          <div class="col-xs-1 col-md-1">
+          </div>
+      </div>
+  </div>
+</p-sidebar>

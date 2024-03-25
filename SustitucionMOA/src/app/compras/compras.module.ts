@@ -85,6 +85,7 @@ import { ChatInternoComponent } from './chat-interno/chat-interno.component';
 import { PosicionPlazoComponent } from './dashboard-comprador/ver-ofertas/posicion-plazo/posicion-plazo.component';
 import { EditarOrdenDeCompraComponent } from './dashboard-comprador/listado-dashboard-comprador/editar-orden-de-compra/editar-orden-de-compra.component';
 import { CotizacionHistorialComponent } from './dashboard-comprador/ver-ofertas/cotizacion-historial/cotizacion-historial.component';
+import { CrearPoMultipleComponent } from './crear-po-multiple/crear-po-multiple.component';
 
 @NgModule({
     imports: [
@@ -169,7 +170,8 @@ import { CotizacionHistorialComponent } from './dashboard-comprador/ver-ofertas/
         ChatInternoComponent,
         PosicionPlazoComponent,
         EditarOrdenDeCompraComponent,
-        CotizacionHistorialComponent
+        CotizacionHistorialComponent,
+        CrearPoMultipleComponent
     ],
     providers: [
         ComprasService,

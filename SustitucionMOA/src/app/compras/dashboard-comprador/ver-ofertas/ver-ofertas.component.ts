@@ -75,6 +75,7 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
     mensaje: string;
     displayHistorial: boolean;
     historiales: CotizacionHistorialDto[] = [];
+    esTipoPOMultiple: boolean;
 
 
     constructor(protected service: ComprasService, protected usuarioService: UsuarioService, protected navService: NavService, protected sessionDataService: SessionDataService,
@@ -154,6 +155,9 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
                         this.floatMsgService.setInfoMsg(result.info);
                     } else {
                         this.tablaOfertas = result.data;
+                        if(this.tablaOfertas.NrosSolp.length > 1){
+                            this.esTipoPOMultiple = true;
+                        }
                         this.nroOC = this.tablaOfertas.NroOrdenDeCompraAdicional;
                         if (this.tablaOfertas.Adicional == true) {
                             this.obtenerAdjudicacion(this.nroOC);

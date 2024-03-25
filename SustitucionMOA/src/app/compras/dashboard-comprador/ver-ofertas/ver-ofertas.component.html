@@ -2,7 +2,7 @@
     <div class="row titleSection1">
         <div class="col-sm-10 letraTitulo">
             <strong>
-                Ver ofertas {{tablaOfertas.TipoPosicionCodigo}} | SOLP #{{tablaOfertas.NroSolp}}
+                {{ this.esTipoPOMultiple ? 'Ver ofertas MATERIALES | SOLP Múltiple' : 'Ver ofertas ' + tablaOfertas.TipoPosicionCodigo + ' | SOLP #' + tablaOfertas.NroSolp }}
                 <b *ngIf="tablaOfertas.Id">
                     | PO #{{tablaOfertas.Id}}
                 </b>
@@ -14,6 +14,7 @@
                 </b>
             </strong>
         </div>
+        
         <div class="col-sm-2 letraTitulo" *ngIf="tablaOfertas.VerBotonVerPrecio">
             <button class="publicar btn btn-success" style="margin-right: 10px;" (click)="abrirModalPrecios()">
                 Ver Precios
