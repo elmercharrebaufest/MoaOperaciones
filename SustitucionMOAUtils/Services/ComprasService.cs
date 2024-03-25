@@ -829,6 +829,7 @@ namespace SustitucionMOAUtils.Services
                     }
 
                     ActualizarPeticionDeOfertaAlEditarSolp(solpEntity);
+
                     if (enviarMailUrgencia && solpEntity.Posiciones.All(x => string.IsNullOrEmpty(x.NumeroContratoSuperior)))
                     {
                         try
@@ -848,6 +849,29 @@ namespace SustitucionMOAUtils.Services
                     respuestaGuardarSOLP.Solp = TraerSolpId(solpEntity.Id);
                 }
                 repositorio.GuardarCambios();
+            }
+
+            if (respuestaGuardarSOLP.Errores.Count == 0)
+            {
+                DateTime fechaDesde = Convert.ToDateTime(ConfigurationManager.AppSettings["FechaInicioConsultaSolp"].ToString());
+                DateTime fechaHasta = Convert.ToDateTime(ConfigurationManager.AppSettings["FechaFinConsultaSolp"].ToString());
+                var filtros = new ObtenerSolpRequest
+                {
+                    FechaDesde = fechaDesde,
+                    FechaHasta = fechaHasta,
+                    NumeroSolp = solpEntity.NroSolp,
+                };
+                var solp = obtenerSolpConsumerMOA.RequestSolpWithNroAndDates(filtros);
+                if (solp.Posiciones.Any())
+                {
+                    var estado = solp.Posiciones[0].EstadoSolpSap;
+                    var codigoSap = repositorio.Obtener<TablaSap>(x => x.CodigoSap == estado && x.Tabla == "EstadoSolpSap");
+                    if (codigoSap != null)
+                    {
+                        solpEntity.EstadoSolpSap_Id = codigoSap.Id;
+                        repositorio.GuardarCambios();
+                    }
+                }
             }
             respuestaGuardarSOLP.IdEntidad = solpEntity.Id;
             ValidarSolpAnulada(solpEntity.NroSolp);
@@ -2726,7 +2750,7 @@ namespace SustitucionMOAUtils.Services
         {
             var lista = repositorio.Listar<TablaSap>(x => x.Tabla == "EstadoSolpSap")
                     .Select(x => new TablaSapDto(x)).ToList();
-            this.ConsultaEstadoSolp(nroSolp, lista);
+            ConsultaEstadoSolp(nroSolp, lista);
         }
 
         private void ConsultaEstadoSolp(string nroSolp, List<TablaSapDto> listaTablaSap)
