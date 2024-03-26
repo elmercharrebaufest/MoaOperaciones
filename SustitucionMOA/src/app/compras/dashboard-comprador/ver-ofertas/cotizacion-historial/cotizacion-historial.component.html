@@ -68,7 +68,9 @@
                                         <p>Descripción: {{ posicion.Descripcion }}</p>
                                         <p *ngIf="posicion.NoDisponible == 'No disponible'"><strong>{{ posicion.NoDisponible }}</strong></p>
                                         <div *ngIf="posicion.NoDisponible == 'Disponible'">
-                                            <p *ngIf="posicion.CotizacionSubPosiciones == null">Cantidad: {{ posicion.Cantidad | number:'1.2-2' }} - {{ posicion.UnidadMedidaDescripcion }}</p>
+                                            <p *ngIf="!posicion.CotizacionSubPosiciones || posicion.CotizacionSubPosiciones.length === 0">
+                                                Cantidad: {{ posicion.Cantidad | number:'1.2-2' }} - {{ posicion.UnidadMedidaDescripcion }}
+                                              </p>                                            
                                             <p *ngIf="posicion.Precio != 0">Precio: {{ posicion.Precio | number:'1.2-2' }} - {{ posicion.MonedaCodigo }}</p>
                                             <p>Total: {{ posicion.PrecioTotal | number:'1.2-2'}} <span *ngIf="posicion.MonedaCodigo != ''">- {{ posicion.MonedaCodigo }}</span> </p>
                                             <p>Fecha de Entrega: {{ posicion.FechaDeEntrega }}</p> 
