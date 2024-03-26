@@ -129,21 +129,11 @@
 
 <p-sidebar visible="true" position="bottom" [modal]="false" [showCloseIcon]="false" dismissible="false" appendTo="body">
   <div class="row">
-      <div class="col-xs-1 col-md-1">
-      </div>
-      <div class="col-xs-3 col-md-3" style="text-align: center;">
-          <button class="btn btn-secondary botonesCompras" (click)="goToSeccion('/compras/crear-po-multiple');">
-              <i class="fa fa-arrow-left"></i>&nbsp; VOLVER
-          </button>&nbsp;
-      </div>
-      <div class="col-xs-8 col-md-8">
-
-          <div class="col-xs-2 col-md-2" style="margin: 0; padding: 0;">
+      <div class="col-xs-8 col-md-12" style="display: flex; justify-content: flex-end;">
+          <div class="col-xs-2 col-md-2">
               <button class="btn btn-success botonesComprasColor" (click)="publicarCotizacion(posiciones)">
                 CONTINUAR
               </button>
-          </div>
-          <div class="col-xs-1 col-md-1">
           </div>
       </div>
   </div>
