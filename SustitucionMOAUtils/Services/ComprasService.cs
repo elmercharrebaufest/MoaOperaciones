@@ -4048,7 +4048,7 @@ namespace SustitucionMOAUtils.Services
                 {
                     foreach (var archivoSubido in solp.Pliego.Archivos)
                     {
-                        if (File.Exists(archivoSubido.Ruta) && (archivoSubido.FileKey == FileKeys.AdjuntoSolp || (archivoSubido.FileKey == FileKeys.AdjuntoCotizacionesSolp 
+                        if (File.Exists(archivoSubido.Ruta) && (archivoSubido.FileKey == FileKeys.AdjuntoSolp || (archivoSubido.FileKey == FileKeys.AdjuntoCotizacionesSolp
                             && (!esProveedor || !tieneCondicionEspecial))))
                         {
                             string fileName = Path.GetFileName(archivoSubido.Ruta);
@@ -4246,7 +4246,7 @@ namespace SustitucionMOAUtils.Services
 
             //Cierres plazo de oferta
             var cierres = repositorio.Listar<PeticionDeOfertaCierre>(a => a.PeticionDeOferta_Id == peticionDeOfertaId);
-            if (esProveedor != true) 
+            if (esProveedor != true)
             {
                 foreach (var cierre in cierres)
                 {
@@ -5017,7 +5017,7 @@ namespace SustitucionMOAUtils.Services
             var tieneVisitaMasiva = posicion.Solp.Pliego.TieneVisitaObraMasiva ?? false;
             var tieneDescripcionTecnica = posicion.Solp.Pliego.TieneDescripcionTecnica ?? false;
             var tieneDocumentacionTecnica = posicion.Solp.Pliego.TieneDocumentacionTecnica ?? false;
-            var esServicio = tipoPosicion == "SERVICIO";            
+            var esServicio = tipoPosicion == "SERVICIO";
 
             foreach (var u in peticionEntidad.Usuarios)
             {
@@ -5054,7 +5054,7 @@ namespace SustitucionMOAUtils.Services
 
                 var existeRevisionTecnicaFinalizada = u.PeticionDeOferta.RevisionTecnica != null && u.PeticionDeOferta.RevisionTecnica.Finalizada;
 
-                var habilitarProveedorMaterial = (cotizacion != null && cotizacion.RespetaMateriales != true || (tieneDescripcionTecnica || tieneDocumentacionTecnica)) 
+                var habilitarProveedorMaterial = (cotizacion != null && cotizacion.RespetaMateriales != true || (tieneDescripcionTecnica || tieneDocumentacionTecnica))
                     && existeRevisionTecnicaFinalizada && u.PropuestaTecnicaAprobada == true;
 
                 var usuario = new PeticionDeOfertaUsarioDto()
@@ -5070,9 +5070,9 @@ namespace SustitucionMOAUtils.Services
                     EstaHabilitado = u.Usuario.Habilitado,
                     ValidacionCircularSolicitante = ValidacionCircularSolicitante(u, cotizacion),
                     ObservacionNoCumple = u.ObservacionNoCumple,
-                    Deshabilitado =  
+                    Deshabilitado =
                     ((esServicio && existeRevisionTecnicaFinalizada && u.PropuestaTecnicaAprobada == true) ||
-                    (!esServicio && cotizacion != null && cotizacion.RespetaMateriales == true && (!tieneDescripcionTecnica || !tieneDocumentacionTecnica) 
+                    (!esServicio && cotizacion != null && cotizacion.RespetaMateriales == true && (!tieneDescripcionTecnica || !tieneDocumentacionTecnica)
                     || habilitarProveedorMaterial)) ? false : true
 
                 };
@@ -5083,7 +5083,7 @@ namespace SustitucionMOAUtils.Services
 
             peticion.Usuarios = usuarios;
             peticion.UsuariosAdicionales = peticionEntidad.UsuariosAdicionales.Select(a => new PeticionDeOfertaUsuarioAdicionalDto(a)).ToList();
-            
+
             peticion.Id = peticionEntidad.Id;
             peticion.PlazoDeOfertaEstado = peticionEntidad.PlazoDeOferta > DateTime.Now.Date ? "Abierto" : "Cerrado";
             peticion.TieneVisitaObraBool = tieneVisitaDeObra;
@@ -8496,10 +8496,10 @@ namespace SustitucionMOAUtils.Services
             return usuarios;
         }
 
-        public List<POPosicionDto> ListarPosicionesPOMultiple(DateTime? desde, DateTime? hasta, bool sap, bool mantenimiento, bool web, bool repoAutomatica, bool? tratada, bool contratoMarco, 
+        public List<POPosicionDto> ListarPosicionesPOMultiple(DateTime? desde, DateTime? hasta, bool sap, bool mantenimiento, bool web, bool repoAutomatica, bool? tratada, bool contratoMarco,
             List<int> centros = null, List<int> grupoDeCompras = null, List<int> claseDocumento = null, List<string> tipoImputacion = null, List<int> valorTipoImputacion = null)
         {
-            try 
+            try
             {
                 var fechaHasta = hasta != null ? hasta.Value.AddDays(1) : (DateTime?)null;
                 var hoy = DateTime.Now.Date;
@@ -8510,8 +8510,8 @@ namespace SustitucionMOAUtils.Services
 
                 var sinSolps = !solps.Any();
 
-                if (sinSolps) 
-                { 
+                if (sinSolps)
+                {
                     return new List<POPosicionDto>();
                 }
 
@@ -8534,51 +8534,53 @@ namespace SustitucionMOAUtils.Services
                     PlazoEntrega = pos.PlazoEntrega,
                     FechaOferta = pos.Solp.Pliego_Id != null ? pos.Solp.Pliego.FechaHoraEntrega : (DateTime?)null,
                     TieneCotizacion = pos.Peticiones.Any()
-                }, 
-                    pos => pos.TipoPosicion.Codigo == "MATERIALES" && 
+                },
+                    pos => pos.TipoPosicion.Codigo == "MATERIALES" &&
                     solps.Contains(
                         pos.Solp.NroSolp
                     ) &&
                     (
-                        sap == true 
-                        && pos.Solp.TipoSolpSap == (int)TipoSolpSap.Sap || mantenimiento == true 
-                        && pos.Solp.TipoSolpSap == (int)TipoSolpSap.Mantenimiento || repoAutomatica == true 
-                        && pos.Solp.TipoSolpSap == (int)TipoSolpSap.ReposicionAutomatica ||  
+                        sap == true
+                        && pos.Solp.TipoSolpSap == (int)TipoSolpSap.Sap || mantenimiento == true
+                        && pos.Solp.TipoSolpSap == (int)TipoSolpSap.Mantenimiento || repoAutomatica == true
+                        && pos.Solp.TipoSolpSap == (int)TipoSolpSap.ReposicionAutomatica ||
                             (
-                                web == true && 
-                                (   
+                                web == true &&
+                                (
                                     pos.Solp.TipoSolpSap == null || pos.Solp.TipoSolpSap == (int)TipoSolpSap.Web
                                 )
-                            ) || 
+                            ) ||
                             (
-                                sap == false 
-                                && mantenimiento == false 
-                                && web == false 
+                                sap == false
+                                && mantenimiento == false
+                                && web == false
                                 && repoAutomatica == false
                              )
                     ) &&
                     (
                         desde == null || pos.Solp.FechaCreacion >= desde.Value
-                    ) && 
+                    ) &&
                     (
                         fechaHasta == null || pos.Solp.FechaCreacion <= fechaHasta.Value
                     ) &&
                     (
                         !centros.Any() || pos.Solp.Posiciones.Any(c => centros.Contains(c.Centro_Id))
-                    ) && 
+                    ) &&
                     (!grupoDeCompras.Any() || pos.Solp.Posiciones.Any(gc => grupoDeCompras.Contains((int)gc.GrupoCompras_Id))) &&
                     (!claseDocumento.Any() || pos.Solp.EstadoSolpSap_Id != null && claseDocumento.Contains((int)pos.Solp.ClaseDocumento_Id)) &&
                     (!tipoImputacion.Any() || pos.Solp.Posiciones.Any(c => tipoImputacion.Contains(c.TipoImputacion.Codigo))) &&
-                    (!contratoMarco || pos.Solp.Posiciones.Any(p => !string.IsNullOrEmpty(p.NumeroContratoSuperior))) 
+                    (!contratoMarco || pos.Solp.Posiciones.Any(p => !string.IsNullOrEmpty(p.NumeroContratoSuperior)))
                     &&
-                    (   
-                        !valorTipoImputacion.Any() 
-                        || pos.Solp.Posiciones.Any(p => valorTipoImputacion.Contains((int)pos.ValorTipoImputacion_Id)) 
+                    (
+                        !valorTipoImputacion.Any()
+                        || pos.Solp.Posiciones.Any(p => valorTipoImputacion.Contains((int)pos.ValorTipoImputacion_Id))
                         || pos.Solp.Posiciones.Any(p => p.Subposiciones.Any(sp => valorTipoImputacion.Contains((int)sp.TipoImputacion_Id)))
                     )
                     &&
                     (tratada == null || pos.Peticiones.Any() == tratada) &&
-                    (pos.Solp.TrabajoYaHecho != true || pos.Solp.Urgencia != true || pos.Solp.Adicional != true || pos.Solp.CondEspProveedorAsignado != true)
+                      pos.Solp.TrabajoYaHecho != true &&
+                      pos.Solp.Adicional != true &&
+                      pos.Solp.CondEspProveedorAsignado != true
                 );
 
                 return posicionMaterial;
@@ -8588,7 +8590,7 @@ namespace SustitucionMOAUtils.Services
                 Log.Info($"Error al ListarPosicionesPOMultiple");
                 Log.Error(e);
                 throw;
-            }   
+            }
         }
 
         public SolpCompraDto ObtenerPosicionesMultipleCompras(List<int> listaId)
@@ -8597,7 +8599,7 @@ namespace SustitucionMOAUtils.Services
             {
                 var registrosInfo = new List<RegistroInfoDto>();
                 var solp = repositorio.ObtenerConsultaEscalar(new ObtenerPosicionesMultipleComprasConsulta(listaId));
-               
+
                 var posiciones = solp.PosicionCompras.ToList();
                 var consultaRegistro = posiciones.Where(a => !string.IsNullOrEmpty(a.MaterialComprasCodigo))
                     .GroupBy(x => new { Centro = x.Centro.CodigoSap, Material = x.MaterialComprasCodigo, GrupoDeCompras = x.GrupoCompras.CodigoSap });
