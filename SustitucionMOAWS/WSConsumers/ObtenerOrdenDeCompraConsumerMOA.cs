@@ -775,7 +775,9 @@ namespace SustitucionMOAWS.WSConsumers
             foreach (var entradaServicioCompleta in entradasDeServicioPotenciales)
             {              
                 string _nroES = entradaServicioCompleta.MAT_DOC;
+
                 EntradaServicioDto entradaServicioSAP = new ObtenerEntradaDeServicioPorNumeroConsumerMOA().ObtenerEntradaServicio(_nroES);
+
                 List<ItemEntradaServicioDto> _itemsDeEntradaServicio = entradaServicioSAP.Items;
                 bool entradaServicioFacturada = EntradaServicioTieneFactura(ListaDeEntradasDeServicioFacturadas, _nroES);
 
@@ -796,7 +798,7 @@ namespace SustitucionMOAWS.WSConsumers
                     entradaServicioDto.FechaDocumentoString = entradaServicioSAP.FechaDocumentoString;
                     entradaServicioDto.FechaContabilizacion = entradaServicioSAP.FechaContabilizacion;
                     entradaServicioDto.Referencia = entradaServicioSAP.Referencia;
-                    entradaServicioDto.ImporteARPUSD = entradaServicioSAP.ImporteARPUSD;
+                    entradaServicioDto.ImporteARPUSD = itemES.ImporteARPUSD;
                     entradaServicioDto.SePuedeBorrar = !entradaServicioFacturada && entradaServicioDentroDePeriodoSAP;
 
                     EntradasDeServicioDelItem.Add(entradaServicioDto);

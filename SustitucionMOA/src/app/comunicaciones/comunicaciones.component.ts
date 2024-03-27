@@ -89,7 +89,6 @@ export class ComunicacionesComponent extends BaseComponent implements OnInit {
     formatComunicaciones() {
         let result = this.rawCommunications;
         this.communicationRead = [];
-        this.quantityCommunication = 0;
         this.arrayVencidas = new Set();
         this.arrayProximasAVencer = new Set();
         this.contadorConsultas = 0;
@@ -138,7 +137,6 @@ export class ComunicacionesComponent extends BaseComponent implements OnInit {
             let skippedItemsByType = [];
 
 
-
             for (const fecha in this.communication) {
                 const items = this.communication[fecha];
                 const filteredItems = [];
@@ -148,7 +146,6 @@ export class ComunicacionesComponent extends BaseComponent implements OnInit {
                 let tipo1Found = false;
                 let tipo2Found = false;
                 let tipo6Found = false;
-
 
                 for (const item of items) {
                     if (item.ComunicacionTipo === 1 && !tipo1Found) {
@@ -180,7 +177,6 @@ export class ComunicacionesComponent extends BaseComponent implements OnInit {
                         skippedItems.push(item);
                     }
                 }
-
                 for (const item of filteredItems) {
                     item.Cantidad = categoryCounts[item.DescripcionCategoria];
 
@@ -229,20 +225,21 @@ export class ComunicacionesComponent extends BaseComponent implements OnInit {
             this.arrayProximasAVencer = Array.from(this.arrayProximasAVencer);
 
             const auxComunications = Object.keys(this.communication);
+            this.quantityCommunication = 0;
 
-            auxComunications.forEach((key) => {
-
+            let i = 0;
+            while (i < auxComunications.length) {
+                const key = auxComunications[i];
                 let contarExencionesVencidas = true;
                 let contarExencionesAVencer = true;
                 let contarConsultas = true;
                 let contarliquidaciones = true;
 
-                this.communication[key].forEach((item, i) => {
+                let j = 0;
+                while (j < this.communication[key].length) {
+                    const item = this.communication[key][j];
 
-
-                    if (item.Leida === false) {
-
-
+                    if (!item.Leida) {
                         if (item.ComunicacionTipo === 1 && item.FechaCreacion === key && contarExencionesVencidas) {
                             this.quantityCommunication++;
                             contarExencionesVencidas = false;
@@ -255,16 +252,20 @@ export class ComunicacionesComponent extends BaseComponent implements OnInit {
                             this.quantityCommunication++;
                             contarConsultas = false;
                         }
-
                         if (item.ComunicacionTipo === 6 && item.FechaCreacion === key && contarliquidaciones) {
                             this.quantityCommunication++;
                             contarliquidaciones = false;
                         }
-
-                        if (item.ComunicacionTipo !== 1 && item.ComunicacionTipo !== 2 && item.ComunicacionTipo !== 5 && item.ComunicacionTipo !== 6) { this.quantityCommunication++ }
+                        if (![1, 2, 5, 6].includes(item.ComunicacionTipo)) {
+                            this.quantityCommunication++;
+                        }
                     }
-                })
-            });
+
+                    j++;
+                }
+
+                i++;
+            }
 
             this.layoutComponent.updateQuantity(this.quantityCommunication);
 

@@ -86,6 +86,10 @@ namespace SustitucionMOAWS.WSConsumers
             /// Recorre el detalle de la entrada de servicio
             foreach (var elementoEntrySheetService in itemsEntrySheetService)
             {
+
+                string formattedValue = elementoEntrySheetService.NET_VALUE.ToString("F2");
+                string currency = cabecera.CURRENCY;
+
                 var item = new ItemEntradaServicioDto();
 
 
@@ -98,6 +102,9 @@ namespace SustitucionMOAWS.WSConsumers
                 item.PLN_LINE = elementoEntrySheetService.PLN_LINE;
                 item.PCKG_NO = elementoEntrySheetService.PCKG_NO;
                 item.LINE_NO = elementoEntrySheetService.LINE_NO;
+                item.ImporteARPUSD = currency == "ARP"
+                ? $"$ {formattedValue}"
+                : $"{formattedValue} {currency}";
 
                 items.Add(item);
             }
@@ -116,7 +123,6 @@ namespace SustitucionMOAWS.WSConsumers
             }
 
             result.Referencia = cabecera.REF_DOC_NO;
-            result.ImporteARPUSD = cabecera.CURRENCY;
             result.FechaContabilizacion = cabecera.POST_DATE;
             result.TextoBreve = cabecera.SHORT_TEXT;
 

@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
+using System.Globalization;
 using System.Linq;
 using Comunicacion = SustitucionMOAModel.Entities.Comunicacion;
 
@@ -50,35 +51,28 @@ namespace SustitucionMOAUtils.Services
             //ProcesarMensajesDeContacto(vendedor, usuarioId, obtenerTodos);
 
             List<ComunicacionDto> listado = repositorio
-                .Listar<Comunicacion>()
-                .Where(x => x.ProveedorId == vendedor)
-                .Select(x => new ComunicacionDto
-                {
-                    Id = x.Id,
-                    ComunicacionTipo = x.ComunicacionTipo,
-                    ProveedorId = x.ProveedorId,
-                    FechaCreacion = x.FechaCreacion.ToString("dd/MM/yyyy HH:mm"),
-                    Leida = x.Leida,
-                    CM05 = x.CM05,
-                    FechaRecomunicacion = (x.FechaRecomunicacion != null) ? (DateTime)x.FechaRecomunicacion : DateTime.MinValue,
-                    Comprobante = x.Comprobante,
-                    FechaVencimiento = (x.FechaVencimiento != null) ? (DateTime)x.FechaVencimiento : DateTime.MinValue,
-                    DescripcionWeb = x.DescripcionWeb,
-                    ConsultaId = x.ConsultaId,
-                    UsuarioId = x.UsuarioId,
-                    ConsultaCategoriaId = x.ConsultaCategoriaId,
-                    DescripcionCategoria = x.ConsultaCategoriaId == null ? "" : repositorio.Obtener<Categoria>(x.ConsultaCategoriaId).Nombre
-                })
-                .OrderBy(x => x.Leida)
-                .ThenByDescending(
-                (x =>
-                {
-                    DateTime dt;
-                    DateTime.TryParse(x.FechaCreacion, out dt);
-                    return dt;
-                })
-                )
-                .ToList();
+            .Listar<Comunicacion>()
+            .Where(x => x.ProveedorId == vendedor)
+            .Select(x => new ComunicacionDto
+            {
+                Id = x.Id,
+                ComunicacionTipo = x.ComunicacionTipo,
+                ProveedorId = x.ProveedorId,
+                FechaCreacion = x.FechaCreacion.ToString("dd/MM/yyyy HH:mm"),
+                Leida = x.Leida,
+                CM05 = x.CM05,
+                FechaRecomunicacion = x.FechaRecomunicacion ?? DateTime.MinValue,
+                Comprobante = x.Comprobante,
+                FechaVencimiento = x.FechaVencimiento ?? DateTime.MinValue,
+                DescripcionWeb = x.DescripcionWeb,
+                ConsultaId = x.ConsultaId,
+                UsuarioId = x.UsuarioId,
+                ConsultaCategoriaId = x.ConsultaCategoriaId,
+                DescripcionCategoria = x.ConsultaCategoriaId == null ? string.Empty : repositorio.Obtener<Categoria>(x.ConsultaCategoriaId)?.Nombre
+            })
+            .OrderBy(x => x.Leida)
+            .ThenBy(x => DateTime.ParseExact(x.FechaCreacion, "dd/MM/yyyy HH:mm", CultureInfo.InvariantCulture))
+            .ToList();
 
             return listado;
         }
