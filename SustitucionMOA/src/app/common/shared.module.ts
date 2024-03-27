@@ -51,6 +51,7 @@ import { FiltroFechaFasComponent } from './view-child/filtro-fecha-fas/filtro-fe
 import { CustomNumberPipe } from './pipes/customNumericFilter copy';
 import { FormatNumericDirective } from './directive/format.numeric.directive';
 import { CustomTipoProveedorFilter } from './pipes/customTipoProveedorFilter';
+import { CustomFilterEstados } from './pipes/customFilterEstados';
 
 const declaredAndExported = [
     FiltroFechaComponent,
@@ -86,7 +87,8 @@ const declaredAndExported = [
     DropdownInputComponent,
     CustomNumberPipe,
     FormatNumericDirective,
-    CustomTipoProveedorFilter
+    CustomTipoProveedorFilter,
+    CustomFilterEstados
 ];
 @NgModule({
     imports: [CommonModule,

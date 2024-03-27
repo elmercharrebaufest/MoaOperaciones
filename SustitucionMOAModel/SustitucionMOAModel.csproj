@@ -48,6 +48,7 @@
     <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.ValueTuple.4.5.0\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
     </Reference>
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -61,6 +62,10 @@
     <Compile Include="Consulta\ListaPaginada.cs" />
     <Compile Include="Dto\AplicacionCartaPorte\CargaMasivaResponse.cs" />
     <Compile Include="Dto\AplicacionCartaPorte\ComboAplicacionesContratosCcppResponse.cs" />
+    <Compile Include="Dto\ArchivoBoleto\ActualizarArchivoBoletoDto.cs" />
+    <Compile Include="Dto\ArchivoBoleto\ArchivoBoletoDto.cs" />
+    <Compile Include="Dto\ArchivoBoleto\CrearReqArchivoBoletoDto.cs" />
+    <Compile Include="Dto\ArchivoBoleto\ListarReqArchivoBoletoDto.cs" />
     <Compile Include="Dto\Compras\AdjudicacionEditarDto.cs" />
     <Compile Include="Dto\Compras\AdjudicacionPosicionEditarDto.cs" />
     <Compile Include="Dto\Compras\AdjudicacionSubPosicionEditarDto.cs" />
@@ -192,9 +197,11 @@
     <Compile Include="Dto\Compras\UsuarioComprasDto.cs" />
     <Compile Include="Dto\Compras\UsuarioComprasRelacionConUsuariosDto.cs" />
     <Compile Include="Dto\UsuarioModificacionDto.cs" />
+    <Compile Include="Entities\ArchivoBoleto.cs" />
     <Compile Include="Entities\ArchivoCampoSustentable.cs" />
     <Compile Include="Entities\EstadoOrdenResiduos.cs" />
     <Compile Include="Entities\OrdenResiduos.cs" />
+    <Compile Include="Entities\EstadoArchivoBoleto.cs" />
     <Compile Include="Entities\PaisesSap.cs" />
     <Compile Include="Entities\RegionSap.cs" />
     <Compile Include="Entities\ChatInternoCompras.cs" />
@@ -554,6 +561,10 @@
     <Compile Include="Util\Retry.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\SustitucionMOACustomException\SustitucionMOACustomException.csproj">
+      <Project>{F8D4A064-E19C-4B58-B17E-F516118A6EAF}</Project>
+      <Name>SustitucionMOACustomException</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SustitucionMOAFotmatter\SustitucionMOAFotmatter.csproj">
       <Project>{E7212DE2-8C26-4CED-AC5C-4B5BBA3612FC}</Project>
       <Name>SustitucionMOAFotmatter</Name>

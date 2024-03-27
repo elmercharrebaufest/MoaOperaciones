@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -702,7 +703,8 @@ namespace SustitucionMOAUtils.Services
                             repositorio.GuardarCambios();
 
                             //Subo el archivo al blob storage una vez procesado
-                            await azureService.SubirArchivoABlobStorageAsync(liquidacion, coe);
+                            var blobReference = $"{coe}{Path.GetExtension(liquidacion.FileName).ToLower()}";
+                            await azureService.SubirArchivoABlobStorageAsync(liquidacion, blobReference, "liquidaciones");
                         }
                         else
                         {

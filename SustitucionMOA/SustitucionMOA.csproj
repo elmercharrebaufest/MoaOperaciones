@@ -1105,6 +1105,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="App_Start\Startup.Hangfire.cs" />
+    <Compile Include="Controllers\ArchivoBoletoController.cs" />
     <Compile Include="Controllers\AplicacionCartaPorteController.cs" />
     <Compile Include="Controllers\EcheqController.cs" />
     <Compile Include="Controllers\AduanaController.cs" />
@@ -1183,10 +1184,15 @@
     <Compile Include="Utils\SameSiteCookieManager.cs" />
   </ItemGroup>
   <ItemGroup>
+    <TypeScriptCompile Include="src\app\archivo-boleto\listar-archivo-boleto/listar-archivo-boleto.component.ts" />
+    <TypeScriptCompile Include="src\app\archivo-boleto\archivo-boleto.service.ts" />
+    <TypeScriptCompile Include="src\app\archivo-boleto\archivo-boleto-routing.module.ts" />
+    <TypeScriptCompile Include="src\app\archivo-boleto\archivo-boleto.module.ts" />
     <TypeScriptCompile Include="src\app\carta-porte\carta-porte-routing.module.ts" />
     <TypeScriptCompile Include="src\app\carta-porte\carta-porte.module.ts" />
     <TypeScriptCompile Include="src\app\common\directive\numeric.directive.ts" />
     <TypeScriptCompile Include="src\app\common\models\cartaPresentacion.ts" />
+    <TypeScriptCompile Include="src\app\common\models\archivo-boleto\archivoBoletoDto.ts" />
     <TypeScriptCompile Include="src\app\common\models\ordenes-de-carga-fason\listarOrdenDeCargaFasonRequest.ts" />
     <TypeScriptCompile Include="src\app\common\models\ordenes-de-carga-fason\listarOrdenDeCargaFasonResponse.ts" />
     <TypeScriptCompile Include="src\app\common\models\ordenes-de-carga-fason\ordenDeCargaFasonDto.ts" />

@@ -409,10 +409,15 @@
                     <div id="collapseO" class="collapse" aria-labelledby="operar" role="tabpanel">
                         <div class="panel-body">
                             <ng-container *ngIf="isGranosSelected()">
+
                                 <div *ngIf="isAuthorized('ABM APLICACIONES CCPP')">
                                     <a (click)="goToSeccion('/aplicaciones-ccpp')" href="#"> {{"Aplicación de
                                         CCPP"|uppercase}}</a>
                                 </div>
+                                <div *ngIf="isAuthorized('ARCHIVOS BOLETOS')">
+                                    <a (click)="goToSeccion('/archivos-boleto/listar')" href="#">Boletos</a>
+                                </div>
+
                                 <div *ngIf="isAuthorized('ABM CAMPOS SUSTENTABLE')">
                                     <a (click)="goToSeccion('/sustentable/listado-campos')" href="#"> Campo
                                         Sustentable</a>

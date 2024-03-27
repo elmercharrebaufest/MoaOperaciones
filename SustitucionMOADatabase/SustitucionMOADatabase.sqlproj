@@ -217,6 +217,8 @@
     <None Include="scripts\PostDeployment\LiberadorSap.sql" />
     <Build Include="DBO\Tables\OrdenResiduos.sql" />
     <Build Include="DBO\Tables\EstadoOrdenResiduos.sql" />
+    <Build Include="DBO\Tables\ArchivoBoleto.sql" />
+    <Build Include="DBO\Tables\EstadoArchivoBoleto.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DatabasePublishQA.xml" />

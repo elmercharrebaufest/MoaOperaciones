@@ -177,6 +177,10 @@ const appRoutes: Routes = [
             {
                 path: "aplicaciones-ccpp",
                 loadChildren: "./aplicacion-ccpp/aplicacion-ccpp.module#AplicacionCcppModule"
+            },
+            {
+                path: "archivos-boleto",
+                loadChildren: "./archivo-boleto/archivo-boleto.module#ArchivoBoletoModule"
             }
         ],
     },

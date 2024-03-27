@@ -8,6 +8,6 @@ namespace SustitucionMOAUtils.Interfaces
     {
         Task<string> AnalizarImagenAsync(HttpPostedFileBase file);
         Task<IList<string>> ObtenerResultadoOCRAsync(string operacionId);
-        Task SubirArchivoABlobStorageAsync(HttpPostedFileBase archivo, string coe);
+        Task SubirArchivoABlobStorageAsync(HttpPostedFileBase archivo, string blobReference, string nombreContenedor);
     }
 }

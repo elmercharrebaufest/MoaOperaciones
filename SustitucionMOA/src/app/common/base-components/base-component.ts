@@ -3,6 +3,10 @@ import { NavService } from './../services/NavService';
 import { SecurityService } from './../services/SecurityService';
 import { FloatMsgService } from './../services/FloatMsgService';
 import { ModalService } from './../services/ModalService';
+import { Subscription } from 'rxjs';
+import { ApiResponse } from '../models/response';
+import { MensajeComponent } from '../view-child/mensaje/mensaje.component';
+import { SessionDataService } from '../services/SessionDataService';
 
 @Component({
     selector: 'app-base',
@@ -14,6 +18,7 @@ export class BaseComponent implements OnDestroy {
     }
 
     subscription: any;
+    subscriptions = new Subscription();
     subscriptionDropDowns: any;
     tipoUsuario: string = sessionStorage.getItem("tipoUsuario");
     username: string = sessionStorage.getItem("username");
@@ -58,6 +63,8 @@ export class BaseComponent implements OnDestroy {
             this.subscription.unsubscribe();
         if (this.subscriptionDropDowns != undefined)
             this.subscriptionDropDowns.unsubscribe();
+        if (this.subscriptions)
+            this.subscriptions.unsubscribe();
     }
 
     public getDateFromAspNetFormat(date: string): number {
@@ -97,4 +104,26 @@ export class BaseComponent implements OnDestroy {
         return this.tipoUsuario.toUpperCase() === "CLI";
     }
 
+    manejarApiResponse<T>({ logout, error, info, data }: ApiResponse<T>, sessionDataService: SessionDataService, mensajeComponente: MensajeComponent) {
+        if (logout) {
+            sessionDataService.logout();
+            return null;
+        }
+        if (error) {
+            const renderFunc = mensajeComponente.setErrorMsg;
+            renderFunc.bind(mensajeComponente)(error)
+            return null;
+        }
+        if (info) {
+            const renderFunc = mensajeComponente.setInfoMsg;
+            renderFunc.bind(mensajeComponente)(info)
+            return null;
+
+        }
+        return data;
+    }
+
+    setEmptyNavBar() {
+        this.navService.setSeccionList([]);
+    }
 }

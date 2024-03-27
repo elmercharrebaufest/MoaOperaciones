@@ -595,4 +595,32 @@
     <Property Name="ParentElementType" Value="SqlTable" />
     <Property Name="NewName" Value="PesadaNeto" />
   </Operation>
+  <Operation Name="Rename Refactor" Key="2316a291-f446-43d1-9834-fd4de2c2e63b" ChangeDateTime="03/26/2024 14:24:32">
+    <Property Name="ElementName" Value="[dbo].[ArchivoBoleto].[Estado]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[ArchivoBoleto]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="EstadoArchivoBoletoId" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="a1cca401-0647-43a7-8e42-ed548d0ec3a1" ChangeDateTime="03/26/2024 14:40:04">
+    <Property Name="ElementName" Value="[dbo].[FK_ArchivoBoleto_ToTable]" />
+    <Property Name="ElementType" Value="SqlForeignKeyConstraint" />
+    <Property Name="ParentElementName" Value="[dbo].[ArchivoBoleto]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="[FK_Usuario_ArchivoBoleto]" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="4fbbf143-1a1e-4726-bd4c-43b477403c5d" ChangeDateTime="03/26/2024 15:14:37">
+    <Property Name="ElementName" Value="[dbo].[ArchivoBoleto].[EstadoArchivoBoletoId]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[ArchivoBoleto]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="EstadoArchivoBoleto_Id" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="9d740d60-de2d-433a-b974-321a5b4891f2" ChangeDateTime="03/26/2024 15:14:41">
+    <Property Name="ElementName" Value="[dbo].[ArchivoBoleto].[UsuarioCreacionId]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[ArchivoBoleto]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="UsuarioCreacion_Id" />
+  </Operation>
 </Operations>

@@ -186,6 +186,7 @@
     <Compile Include="Helpers\TwoColumnHeaderFooter.cs" />
     <Compile Include="Helpers\CurrentTimeProvider.cs" />
     <Compile Include="Interfaces\IAplicacionCartaPorteApiService.cs" />
+    <Compile Include="Interfaces\IArchivoBoletoService.cs" />
     <Compile Include="Interfaces\IDBService.cs" />
     <Compile Include="Interfaces\IEmailFasonService.cs" />
     <Compile Include="Interfaces\IExternalApiOrdenesResiduosService.cs" />
@@ -247,6 +248,7 @@
     <Compile Include="Services\AplicacionCartaPorteApiService.cs" />
     <Compile Include="Services\AplicacionCartaPorteService.cs" />
     <Compile Include="Interfaces\IEmailService.cs" />
+    <Compile Include="Services\ArchivoBoletoService.cs" />
     <Compile Include="Services\Email\EmailFasonService.cs" />
     <Compile Include="Services\ExternalApiOrdenesResiduosService.cs" />
     <Compile Include="Services\KgDisponiblesFasService.cs" />
