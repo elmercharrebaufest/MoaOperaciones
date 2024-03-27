@@ -8581,8 +8581,8 @@ namespace SustitucionMOAUtils.Services
                       pos.Solp.TrabajoYaHecho != true &&
                       pos.Solp.Adicional != true &&
                       pos.Solp.CondEspProveedorAsignado != true &&
-                      pos.Solp.EstadoSolpSap.CodigoSap != "05" &&
-                      pos.Solp.EstadoSolpSap.CodigoSap != "02"
+                      (pos.Solp.EstadoSolpSap.CodigoSap == "05" ||
+                      pos.Solp.EstadoSolpSap.CodigoSap == "02")
                 );
 
                 return posicionMaterial;
