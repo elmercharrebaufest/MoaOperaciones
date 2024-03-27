@@ -851,28 +851,28 @@ namespace SustitucionMOAUtils.Services
                 repositorio.GuardarCambios();
             }
 
-            if (respuestaGuardarSOLP.Errores.Count == 0)
-            {
-                DateTime fechaDesde = Convert.ToDateTime(ConfigurationManager.AppSettings["FechaInicioConsultaSolp"].ToString());
-                DateTime fechaHasta = Convert.ToDateTime(ConfigurationManager.AppSettings["FechaFinConsultaSolp"].ToString());
-                var filtros = new ObtenerSolpRequest
-                {
-                    FechaDesde = fechaDesde,
-                    FechaHasta = fechaHasta,
-                    NumeroSolp = solpEntity.NroSolp,
-                };
-                var solp = obtenerSolpConsumerMOA.RequestSolpWithNroAndDates(filtros);
-                if (solp.Posiciones.Any())
-                {
-                    var estado = solp.Posiciones[0].EstadoSolpSap;
-                    var codigoSap = repositorio.Obtener<TablaSap>(x => x.CodigoSap == estado && x.Tabla == "EstadoSolpSap");
-                    if (codigoSap != null)
-                    {
-                        solpEntity.EstadoSolpSap_Id = codigoSap.Id;
-                        repositorio.GuardarCambios();
-                    }
-                }
-            }
+            //if (respuestaGuardarSOLP.Errores.Count == 0)
+            //{
+            //    DateTime fechaDesde = Convert.ToDateTime(ConfigurationManager.AppSettings["FechaInicioConsultaSolp"].ToString());
+            //    DateTime fechaHasta = Convert.ToDateTime(ConfigurationManager.AppSettings["FechaFinConsultaSolp"].ToString());
+            //    var filtros = new ObtenerSolpRequest
+            //    {
+            //        FechaDesde = fechaDesde,
+            //        FechaHasta = fechaHasta,
+            //        NumeroSolp = solpEntity.NroSolp,
+            //    };
+            //    var solp = obtenerSolpConsumerMOA.RequestSolpWithNroAndDates(filtros);
+            //    if (solp.Posiciones.Any())
+            //    {
+            //        var estado = solp.Posiciones[0].EstadoSolpSap;
+            //        var codigoSap = repositorio.Obtener<TablaSap>(x => x.CodigoSap == estado && x.Tabla == "EstadoSolpSap");
+            //        if (codigoSap != null)
+            //        {
+            //            solpEntity.EstadoSolpSap_Id = codigoSap.Id;
+            //            repositorio.GuardarCambios();
+            //        }
+            //    }
+            //}
             respuestaGuardarSOLP.IdEntidad = solpEntity.Id;
             ValidarSolpAnulada(solpEntity.NroSolp);
             return respuestaGuardarSOLP;
@@ -1210,7 +1210,7 @@ namespace SustitucionMOAUtils.Services
                 (desde == null || x.FechaCreacion >= desde.Value) && (fechaHasta == null || x.FechaCreacion <= fechaHasta.Value) &&
                 (!contratoMarco || x.Posiciones.Any(p => !string.IsNullOrEmpty(p.NumeroContratoSuperior))) &&
                 (!centros.Any() || x.Posiciones.Any(c => centros.Contains(c.Centro_Id))) && (!grupoDeCompras.Any() || x.Posiciones.Any(gc => grupoDeCompras.Contains((int)gc.GrupoCompras_Id))) &&
-                (!claseDocumento.Any() || x.EstadoSolpSap_Id != null && claseDocumento.Contains((int)x.ClaseDocumento_Id)) && (!tipoImputacion.Any() || x.Posiciones.Any(c => tipoImputacion.Contains(c.TipoImputacion.Codigo))) &&
+                (!claseDocumento.Any() || claseDocumento.Contains((int)x.ClaseDocumento_Id)) && (!tipoImputacion.Any() || x.Posiciones.Any(c => tipoImputacion.Contains(c.TipoImputacion.Codigo))) &&
                 (!valorTipoImputacion.Any() || x.Posiciones.Any(p => valorTipoImputacion.Contains((int)p.ValorTipoImputacion_Id)) || x.Posiciones.Any(p => p.Subposiciones.Any(sp => valorTipoImputacion.Contains((int)sp.TipoImputacion_Id))))); ;
 
 
