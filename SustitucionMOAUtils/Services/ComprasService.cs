@@ -8580,7 +8580,9 @@ namespace SustitucionMOAUtils.Services
                     (tratada == null || pos.Peticiones.Any() == tratada) &&
                       pos.Solp.TrabajoYaHecho != true &&
                       pos.Solp.Adicional != true &&
-                      pos.Solp.CondEspProveedorAsignado != true
+                      pos.Solp.CondEspProveedorAsignado != true &&
+                      pos.Solp.EstadoSolpSap.CodigoSap != "05" &&
+                      pos.Solp.EstadoSolpSap.CodigoSap != "02"
                 );
 
                 return posicionMaterial;
