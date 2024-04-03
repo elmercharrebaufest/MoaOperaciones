@@ -3130,11 +3130,6 @@ namespace SustitucionMOAUtils.Services
                         item.VerImportes = false;
                     }
 
-                    if (esAdmin && !noSolicitoVerPrecios)
-                    {
-                        item.VerImportes = true;
-                    }
-
                     if (!item.EstaHabilitado)
                     {
                         mensaje = "Proveedor desahabilitado";
@@ -3157,6 +3152,11 @@ namespace SustitucionMOAUtils.Services
                             verAdjudicar = false;
                             item.VerImportes = false;
                         }
+                    }
+
+                    if (esAdmin && !noSolicitoVerPrecios)
+                    {
+                        item.VerImportes = true;
                     }
                     item.MensajeAdjudicar = mensaje;
                     item.VerAdjudicar = verAdjudicar;
