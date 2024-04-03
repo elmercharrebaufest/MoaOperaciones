@@ -8569,7 +8569,7 @@ namespace SustitucionMOAUtils.Services
                     (!grupoDeCompras.Any() || pos.Solp.Posiciones.Any(gc => grupoDeCompras.Contains((int)gc.GrupoCompras_Id))) &&
                     (!claseDocumento.Any() || pos.Solp.EstadoSolpSap_Id != null && claseDocumento.Contains((int)pos.Solp.ClaseDocumento_Id)) &&
                     (!tipoImputacion.Any() || pos.Solp.Posiciones.Any(c => tipoImputacion.Contains(c.TipoImputacion.Codigo))) &&
-                    (!contratoMarco || pos.Solp.Posiciones.Any(p => !string.IsNullOrEmpty(p.NumeroContratoSuperior)))
+                    (pos.NumeroContratoSuperior == null || pos.NumeroContratoSuperior == "")
                     &&
                     (
                         !valorTipoImputacion.Any()
