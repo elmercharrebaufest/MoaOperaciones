@@ -382,7 +382,7 @@ namespace SustitucionMOAUtils.Services
                     {
 
                         string textoOriginal = posicion.Tarea;
-                        int indiceSeparador = textoOriginal.IndexOf(':');
+                        int indiceSeparador = textoOriginal.IndexOf('-');
                         string textoModificado = textoOriginal;
                         if (indiceSeparador != -1)
                         {
@@ -8211,45 +8211,48 @@ namespace SustitucionMOAUtils.Services
 
             if (solp.TrabajoYaHecho == true)
             {
-                prefijo = "TR: ";
-            }
-
-            if (solp.Adicional == true)
-            {
-                prefijo = "AD: ";
+                prefijo = "TR-";
             }
 
             if (solp.CondEspProveedorAsignado == true)
             {
-                prefijo = "PA: ";
+                prefijo = "PA-";
+            }
+
+            if (solp.Urgencia == true)
+            {
+                prefijo = "UR-";
+            }
+
+            if (solp.Adicional == true || (solp.Adicional == true && solp.Urgencia == true))
+            {
+                prefijo = "AD-";
             }
 
             if (solp.TrabajoYaHecho == true && solp.Adicional == true)
             {
-                prefijo = "AD-OR: ";
+                prefijo = "AOR-";
             }
 
-            if (solp.TrabajoYaHecho == true && solp.Urgencia == true || solp.Urgencia == true)
+            if ((solp.TrabajoYaHecho == true && solp.Urgencia == true) || (solp.TrabajoYaHecho == true && solp.Urgencia == true && solp.Adicional == true))
             {
-                prefijo = "URG: ";
+                prefijo = "TUR-";
             }
 
             if (solp.TrabajoYaHecho == true && solp.THServicioPermanente == true && solp.Adicional != true && solp.Urgencia != true)
             {
-                prefijo = "SP: ";
+                prefijo = "SP-";
             }
 
             if (solp.TrabajoYaHecho == true && solp.THAjustePolinomica == true && solp.Adicional != true && solp.Urgencia != true)
             {
-                prefijo = "AJ: ";
+                prefijo = "AJ-";
             }
 
             if (solp.TrabajoYaHecho == true && solp.THProveedorDirecto == true && solp.Adicional != true && solp.Urgencia != true)
             {
-                prefijo = "PD: ";
+                prefijo = "PD-";
             }
-
-
 
             return prefijo;
 
