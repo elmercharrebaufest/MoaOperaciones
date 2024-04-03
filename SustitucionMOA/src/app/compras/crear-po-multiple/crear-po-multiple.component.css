@@ -37,7 +37,6 @@
 ::ng-deep .ui-chkbox-label, .labelCompras {
     font-weight: bold !important;
     font-size: 16px !important;
-
 }
 
 .ui-button {
@@ -52,5 +51,5 @@
 }
 
 .buttonBuscar {
-    margin-top: 4px;
+    margin-top: 27px;
 }
