@@ -19,14 +19,10 @@
     <AssemblyName>SustitucionMOA</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <UseIISExpress>true</UseIISExpress>
-    <IISExpressSSLPort>
-    </IISExpressSSLPort>
-    <IISExpressAnonymousAuthentication>
-    </IISExpressAnonymousAuthentication>
-    <IISExpressWindowsAuthentication>
-    </IISExpressWindowsAuthentication>
-    <IISExpressUseClassicPipelineMode>
-    </IISExpressUseClassicPipelineMode>
+    <IISExpressSSLPort>58280</IISExpressSSLPort>
+    <IISExpressAnonymousAuthentication>enabled</IISExpressAnonymousAuthentication>
+    <IISExpressWindowsAuthentication>disabled</IISExpressWindowsAuthentication>
+    <IISExpressUseClassicPipelineMode>false</IISExpressUseClassicPipelineMode>
     <UseGlobalApplicationHostFile />
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
@@ -338,6 +334,8 @@
     <Content Include="src\app\common\shared-components\seleccionar-proveedor\seleccionar-proveedor.component.html" />
     <Content Include="src\app\compras\chat-interno\chat-interno.component.css" />
     <Content Include="src\app\compras\chat-interno\chat-interno.component.html" />
+    <Content Include="src\app\compras\crear-po-multiple\crear-po-multiple.component.css" />
+    <Content Include="src\app\compras\crear-po-multiple\crear-po-multiple.component.html" />
     <Content Include="src\app\compras\dashboard-comprador\alta-proveedor\alta-proveedor.component.css" />
     <Content Include="src\app\compras\dashboard-comprador\alta-proveedor\alta-proveedor.component.html" />
     <Content Include="src\app\compras\dashboard-comprador\cerrar-cotizacion\cerrar-cotizacion.component.css" />
@@ -1166,6 +1164,8 @@
     <TypeScriptCompile Include="src\app\compras\compras-routing.module.ts" />
     <TypeScriptCompile Include="src\app\compras\compras.module.ts" />
     <TypeScriptCompile Include="src\app\compras\compras.service.ts" />
+    <TypeScriptCompile Include="src\app\compras\crear-po-multiple\crear-po-multiple.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\compras\crear-po-multiple\crear-po-multiple.component.ts" />
     <TypeScriptCompile Include="src\app\compras\dashboard-comprador\alta-proveedor\alta-proveedor.component.spec.ts" />
     <TypeScriptCompile Include="src\app\compras\dashboard-comprador\alta-proveedor\alta-proveedor.component.ts" />
     <TypeScriptCompile Include="src\app\compras\dashboard-comprador\cerrar-cotizacion\cerrar-cotizacion.component.spec.ts" />
