@@ -6161,7 +6161,7 @@ namespace SustitucionMOAUtils.Services
             Log.Info($"Copia mail solicitante: {mailCreador.ToJson()}");
 
 
-            asunto += "NUEVA cotización creada - SOLPs " + string.Join(", ", peticion.Posiciones.Select(x => x.SolpPosicion.Solp).Select(x => x.NroSolp));
+            asunto += "NUEVA cotización creada - SOLPs " + string.Join(", ", peticion.Posiciones.Select(x => x.SolpPosicion.Solp).Select(x => x.NroSolp).Distinct());
             emailService.EnviarMail(enviarA.Distinct().ToList(), asunto, "", null, CuerpoMailCotizacion(cotizacion), null, null, null, null);
         }
 
@@ -6183,7 +6183,7 @@ namespace SustitucionMOAUtils.Services
             var proveedor = cotizacion.PeticionDeOfertaUsuario.Usuario.ObtenerProveedor();
             string htmlBody = "";
             htmlBody += $"En el presente mail se informa la cotización realizada para la SOLP " +
-                $"{string.Join(", ", cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Posiciones.Select(x => x.SolpPosicion.Solp).Select(x => x.NroSolp))} y la PO {cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Id}, generada por el proveedor {proveedor.RazonSocial} ({proveedor.CUIT}). <br /> <br/>";
+                $"{string.Join(", ", cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Posiciones.Select(x => x.SolpPosicion.Solp).Select(x => x.NroSolp).Distinct())} y la PO {cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Id}, generada por el proveedor {proveedor.RazonSocial} ({proveedor.CUIT}). <br /> <br/>";
 
             var todasLasPosicionesNoDisponibles = cotizacion.CotizacionPosiciones.All(x => x.NoDisponible != null && x.NoDisponible.Value);
             var algunaPosicionNoDisponible = cotizacion.CotizacionPosiciones.Any(x => x.NoDisponible != null && x.NoDisponible.Value);
