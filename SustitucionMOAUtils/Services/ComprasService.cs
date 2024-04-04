@@ -3047,15 +3047,23 @@ namespace SustitucionMOAUtils.Services
                 var adjudicaciones = repositorio.Listar<Adjudicacion>(x => x.Posiciones.Any(y => posicionesId.Contains(y.SolpPosicion_Id)));
                 DateTime fechaDesde = Convert.ToDateTime(ConfigurationManager.AppSettings["FechaInicioConsultaSolp"].ToString());
                 DateTime fechaHasta = Convert.ToDateTime(ConfigurationManager.AppSettings["FechaFinConsultaSolp"].ToString());
-                var filtros = new ObtenerSolpRequest
+
+                var solps = new List<ObtenerSolpSAPResponse>();   
+
+                foreach (var nroSolp in todasLasOfertas.NrosSolp)
                 {
-                    FechaDesde = fechaDesde,
-                    FechaHasta = fechaHasta,
-                    NumeroSolp = todasLasOfertas.NroSolp,
-                };
+                    var filtros = new ObtenerSolpRequest
+                    {
+                        FechaDesde = fechaDesde,
+                        FechaHasta = fechaHasta,
+                        NumeroSolp = nroSolp
+                    };
+
+                     solps.Add(obtenerSolpConsumerMOA.RequestSolpWithNroAndDates(filtros));
+                }
+
                 var esAdmin = usuario.Permisos.Any(p => p == "ADJUDICAR DENTRO DEL PLAZO DE OFERTAS");
 
-                var solp = obtenerSolpConsumerMOA.RequestSolpWithNroAndDates(filtros);
                 var noSolicitoVerPrecios = ValidarVisualizarPrecio(usuario.Id, PeticionOferta_Id);
                 var unidadesDeMedidaSAP = new List<UnidadesDeMedida>();
                 if (todasLasOfertas.TipoPosicionCodigo == "MATERIALES")
@@ -3167,6 +3175,7 @@ namespace SustitucionMOAUtils.Services
 
                 foreach (var posicion in todasLasOfertas.PeticionDeOfertaPosicion)
                 {
+                    var solp = solps.FirstOrDefault(x => x.Posiciones.Any(y => y.NumeroSolicitud == posicion.Posicion.NroSolp));    
 
                     posicion.Posicion.CantidadAdjudicada = solp != null && solp.Posiciones.Count > 0 &&
                         solp.Posiciones.Any(x => Int32.Parse(x.NumeroPosicion) == posicion.Posicion.Indice) ?

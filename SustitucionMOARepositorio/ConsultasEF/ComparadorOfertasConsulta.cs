@@ -76,6 +76,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                                         TextoSuministro = pop.SolpPosicion.TextoSuministro,
                                                                         Cantidad = pop.SolpPosicion.Cantidad,
                                                                         Solp_Id = pop.SolpPosicion.Solp_Id,
+                                                                        NroSolp = pop.SolpPosicion.Solp.NroSolp,
                                                                         //CantidadPendiente = pop.SolpPosicion.Cantidad - (adjudicacion != null ? adjudicacion.Posiciones.Where(posicion => posicion.SolpPosicion_Id == pop.SolpPosicion_Id).FirstOrDefault().Cantidad : 0),
                                                                         //CantidadAdjudicacion = pop.SolpPosicion.Cantidad - (adjudicacion != null ? adjudicacion.Posiciones.Where(posicion => posicion.SolpPosicion_Id == pop.SolpPosicion_Id).FirstOrDefault().Cantidad : 0),
                                                                         SolpTipo = po.Posiciones.FirstOrDefault().SolpPosicion.TipoPosicion.Codigo,
