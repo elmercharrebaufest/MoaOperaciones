@@ -18,7 +18,7 @@ import { ComprasService } from '../../compras.service';
     styleUrls: ['./circular.component.css']
 })
 export class CircularComponent implements OnInit, OnChanges {
-    
+
     @Input() displayCircular: boolean;
     @Input('locale') es: any;
     @Input() public peticion: PeticionDeOfertaDto;
@@ -63,10 +63,9 @@ export class CircularComponent implements OnInit, OnChanges {
                         this.selectedProv = this.peticion.Usuarios
                             .filter(x => x.PropuestaTecnicaAprobada)
                             .map(x => x.UsuarioId);
-
-                        // Establecer la propiedad Deshabilitado para los usuarios que no cumplen la condición
-                       // this.peticion.Usuarios.forEach(x => x.Deshabilitado = !this.selectedProv.includes(x.UsuarioId));
-                    
+                    }
+                    // Establecer la propiedad Deshabilitado para los usuarios que no cumplen la condición
+                    this.peticion.Usuarios.forEach(x => x.Deshabilitado = !this.selectedProv.includes(x.UsuarioId));
                 } else {
                     this.selectedProv = this.peticion.Usuarios
                         .filter(x => x.Cotizacion.CotizacionEstado_Id == 1
@@ -116,7 +115,7 @@ export class CircularComponent implements OnInit, OnChanges {
             }
         }
     }
-    
+
     onCerrarCircular() {
         this.visualizarAlert = false;
         this.iniciarModalCircular();
