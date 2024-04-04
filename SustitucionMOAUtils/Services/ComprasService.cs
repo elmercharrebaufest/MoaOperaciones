@@ -1433,6 +1433,8 @@ namespace SustitucionMOAUtils.Services
             solpValores.Add(SolpTemplateKeys.NRO_PEDIDO, solp.NroPedido);
             solpValores.Add(SolpTemplateKeys.FISCAL_CONTRATO, solp.FiscalContrato);
             solpValores.Add(SolpTemplateKeys.TELEFONO, solp.Telefono);
+            solpValores.Add(SolpTemplateKeys.FECHA_OBRA, solp.Posiciones.FirstOrDefault().FechaEntregaServicio?.ToString("dd-MM-yyyy"));
+
 
             solpValores.Add(SolpTemplateKeys.FECHA_PRESENTACION, Convert.ToDateTime(solp.FechaHoraEntrega).ToString("dd-MM-yyyy"));
             solpValores.Add(SolpTemplateKeys.FECHA_CREACION, solp.FechaCreacion.ToString("dd-MM-yyyy"));
@@ -8722,6 +8724,9 @@ namespace SustitucionMOAUtils.Services
             public const string REVISADO_POR = "REVISADO_POR";
             public const string PLAZO_ENTREGA = "PLAZO_ENTREGA";
             public const string PAGINAS = "PAGINAS";
+            public const string FECHA_OBRA = "FECHA_OBRA";
+
+
         }
     }
 }
