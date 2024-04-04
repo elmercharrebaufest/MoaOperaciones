@@ -154,7 +154,8 @@
                                             field="CodigoVisualizacion"
                                             (onFocus)="posicion.setTabPosicion();"
                                             (onChange)="posicion.setTabPosicion()"
-                                            [disabled]="posicion.concluido">
+                                            [disabled]="posicion.concluido"
+                                            showClear="true">
 
                                     <ng-template let-item pTemplate="selectedItem">
                                         <span>{{item.value.Descripcion}}</span>
