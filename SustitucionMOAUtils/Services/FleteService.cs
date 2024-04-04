@@ -199,7 +199,7 @@ namespace SustitucionMOAUtils.Services
                     };
 
                     PDFResponse data = PDFExport.ToPDF(detalles, headers, proformaViaje.viajeItem);
-                    if (data.Pdf == null || data.Pdf.Data == null || data.Pdf.Data.Count() == 0)
+                    if (data.Pdf == null || data.Pdf.data == null || data.Pdf.data.Count() == 0)
                     {
                         throw new ValidationCustomException(ErrorMsg.ErrorDescargaPDF);
                     }
@@ -253,7 +253,7 @@ namespace SustitucionMOAUtils.Services
                     };
 
                     PDFResponse data = PDFExport.ToPDF(detalles, headers, proformaViaje.viajeItem);
-                    if (data.Pdf == null || data.Pdf.Data == null || data.Pdf.Data.Count() == 0)
+                    if (data.Pdf == null || data.Pdf.data == null || data.Pdf.data.Count() == 0)
                     {
                         throw new ValidationCustomException(ErrorMsg.ErrorDescargaPDF);
                     }

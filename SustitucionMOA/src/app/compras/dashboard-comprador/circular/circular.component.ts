@@ -59,7 +59,7 @@ export class CircularComponent implements OnInit, OnChanges {
         } else {
             if (this.peticion != null) {
                 if (this.peticion.TipoPosicionCodigo == "SERVICIO") {
-                    
+                    if (this.peticion.RevisionFinalizada) {
                         this.selectedProv = this.peticion.Usuarios
                             .filter(x => x.PropuestaTecnicaAprobada)
                             .map(x => x.UsuarioId);
@@ -69,11 +69,14 @@ export class CircularComponent implements OnInit, OnChanges {
                     
                 } else {
                     this.selectedProv = this.peticion.Usuarios
-                        .filter(x => x.Cotizacion.CotizacionEstado_Id == 1 && !x.Deshabilitado)
+                        .filter(x => x.Cotizacion.CotizacionEstado_Id == 1
+                            && (this.peticion.RespetaMateriales == true
+                                || (this.peticion.RespetaMateriales == false
+                                    && (this.peticion.RevisionFinalizada && x.PropuestaTecnicaAprobada))))
                         .map(x => x.UsuarioId);
 
                     // Establecer la propiedad Deshabilitado para los usuarios que no cumplen la condición
-                    //this.peticion.Usuarios.forEach(x => x.Deshabilitado = !this.selectedProv.includes(x.UsuarioId));
+                    this.peticion.Usuarios.forEach(x => x.Deshabilitado = !this.selectedProv.includes(x.UsuarioId));
                 }
             }
         }

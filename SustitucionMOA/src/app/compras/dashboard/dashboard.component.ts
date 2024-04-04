@@ -699,7 +699,7 @@ export class DashboardComponent extends ListBaseComponent {
                 }
             )
     }
-
+    
     cerrarCircular() {
         this.displayCircular = false;
         this.listarPeticiones(this.peticion.Solp);

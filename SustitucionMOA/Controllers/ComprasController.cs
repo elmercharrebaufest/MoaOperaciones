@@ -152,7 +152,6 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                Log.Info("asdasd");
                 var ordenar = orden == "ASC" ? DirOrden.Asc : DirOrden.Desc;
                 var paginacion = new Paginacion((!string.IsNullOrEmpty(columna) ? columna : null), ordenar, (pagina == null) ? 0 : pagina.Value, (itemsPorPagina == 0 || !itemsPorPagina.HasValue) ? 10 : itemsPorPagina.Value);
                 return JsonCustom(new
@@ -872,7 +871,7 @@ namespace SustitucionMOA.Controllers
             try
             {
                 var pdf = service.GenerarPeticionDeOfertaUsuarioPdf(Math.Abs(idPeticionDeOfertaUsuario));
-                return JsonCustom(File(pdf.Data, System.Net.Mime.MediaTypeNames.Application.Octet, pdf.Name));
+                return JsonCustom(File(pdf.data, System.Net.Mime.MediaTypeNames.Application.Octet, pdf.name));
             }
             catch (InfoCustomException e)
             {

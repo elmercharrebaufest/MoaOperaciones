@@ -4698,7 +4698,7 @@ namespace SustitucionMOAUtils.Services
         {
             var po = repositorio.Obtener<PeticionDeOfertaUsuario>(idPeticionDeOfertaUsuario);
             var pdf = GenerarPDFPeticionDeOferta(po.PeticionDeOferta, po.Usuario.ObtenerProveedor().CodigoProveedor);
-            return new Pdf { Data = pdf, Name = "PO" + po.Usuario.ObtenerProveedor().CUIT + ".pdf" };
+            return new Pdf { data = pdf, name = "PO" + po.Usuario.ObtenerProveedor().CUIT + ".pdf" };
         }
 
         private byte[] GenerarPDFOrdenCompra(Adjudicacion adjudicacion, string codigoProveedor)
@@ -5597,6 +5597,7 @@ namespace SustitucionMOAUtils.Services
                 peticiones.First().PeticionDeOferta.PlazoDeOferta = fechaActual;
             }
             repositorio.GuardarCambios();
+            respuesta.IdEntidad = peticiones.First().PeticionDeOferta_Id;
 
             return respuesta;
         }
@@ -8261,10 +8262,8 @@ namespace SustitucionMOAUtils.Services
             return false;
         }
 
-
         public void ObtenerDatosReporteSolp()
         {
-
             DateTime startDate = new DateTime(2023, 9, 1);
             DateTime endDate = DateTime.Now.Date;
 
@@ -8300,6 +8299,7 @@ namespace SustitucionMOAUtils.Services
                         Cantidad = g.Count().ToString(),
                         Periodo = g.Key.Periodo
                     })
+                    .OrderBy(x => x.TipoSolp)
                     .ToList());
 
                 startDate = startDate.AddMonths(1);
@@ -8314,7 +8314,6 @@ namespace SustitucionMOAUtils.Services
             EnviarMailReporteSolp(streamExcel.ToArray(), nombreArchivoXls);
 
         }
-
 
         private void EnviarMailReporteSolp(byte[] archivoExcel, string archivo)
         {

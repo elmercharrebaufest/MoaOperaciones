@@ -1162,7 +1162,7 @@ namespace SustitucionMOA.Controllers
                 {
                     Pdf = new Pdf()
                     {
-                        Data = excel
+                        data = excel
                     }
                 };
 
