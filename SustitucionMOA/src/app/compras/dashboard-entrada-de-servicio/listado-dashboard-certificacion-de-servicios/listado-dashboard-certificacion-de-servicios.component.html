@@ -96,7 +96,7 @@
                 </div>
             </div>
             <div class="filtro-solicitante">
-                <p-multiSelect id="select-solicitante" appendTo="body" [options]="listadoGeneralSolicitantes" defaultLabel="Solicitantes" [maxSelectedLabels]="1" (onChange)="filtrarPorSolicitantes($event)"></p-multiSelect>
+                <p-multiSelect #filtroSolicitantes [disabled]="disabledFilter" id="select-solicitante" appendTo="body" [options]="listadoGeneralSolicitantes" defaultLabel="Solicitantes" [maxSelectedLabels]="1" (onChange)="filtrarPorSolicitantes($event)"></p-multiSelect>
             </div>
         </div>
         <!-- TABLA 1: ORDENES -->
@@ -153,8 +153,8 @@
                                  class="level2"
                                  [value]="rowData.Posiciones"
                                  dataKey="Id"
-                                 [paginator]="rowData.Posiciones.length > 4"
-                                 [rows]="5"
+                                 [paginator]="obtenerCantidadDePosicionesAMostrar(rowData.Posiciones) > 40"
+                                 [rows]="40"
                                  rowExpandMode="single">
                             <!-- TABLE 2 HEADERS -->
                             <ng-template pTemplate="header" *ngIf="rowData.Posiciones && rowData.Posiciones.length > 0">

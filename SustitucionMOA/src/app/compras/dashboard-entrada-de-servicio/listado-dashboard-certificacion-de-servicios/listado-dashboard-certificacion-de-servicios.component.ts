@@ -20,6 +20,7 @@ import { ConfirmationService } from 'primeng/api';
 import { MensajeComponent } from '../../../common/view-child/mensaje/mensaje.component';
 import { ProveedorModel } from '../../../modelos/proveedor-model';
 import { Formatter } from '../../../common/formatter/Formatter';
+import { MultiSelect } from 'primeng/multiselect';
 
 
 
@@ -47,6 +48,9 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
 
     protected locale: any;
 
+    @ViewChild("filtroSolicitantes")
+    protected multiSelectSolicitantes: MultiSelect;
+    
     @ViewChild("tabla")
     protected tabla: Table;
 
@@ -319,6 +323,9 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
         this.collapseExpandedRow();  
         // MMSN-689: Desactivar filtro de saldo pendiente al activar búsqueda. 
         this.filtrarElementosSinSaldoACertificar(false);
+
+        // MMS-804: Limpiar Filtro Solicitantes
+        this.limpiarFiltroPorSolicitantes();
 
         if (this.proveedorSeleccionado !== undefined && this.proveedorSeleccionado !== '') {
             this.proveedor = this.proveedorSeleccionado.CodigoProveedor;
@@ -800,16 +807,22 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
     obtenerSolicitantes(ocs: any): void {
         let solicitantesUnicos = new Set<string>();
         ocs.forEach((oc: any) => {
-          oc.Posiciones.forEach((pos: any) => {
-            solicitantesUnicos.add(pos.Solicitante.toUpperCase());
+            oc.Posiciones.forEach((pos: any) => {
+                if (pos.Solicitante.length === 0) {
+                    pos.Solicitante = '(Vacío)';
+                }
+                solicitantesUnicos.add(pos.Solicitante.toUpperCase());
+
           });
         });
         this.listadoGeneralSolicitantes = Array.from(solicitantesUnicos).map(solicitante => ({ label: solicitante, value: solicitante }));
-      }
-      filtrarPorSolicitantes(event: any): void {
+    }
+
+    filtrarPorSolicitantes(event: any): void {
         let NumeroOrdenesDeCompras = [];
         let posicionesFiltradas = [];
         this.filtroSolicitantes = event.value;
+
         this.tablaPO.forEach((oc: any) => {
           posicionesFiltradas = oc.Posiciones.filter((pos: any) => event.value.includes(pos.Solicitante.toUpperCase()));
           if (posicionesFiltradas.length > 0) {     
@@ -817,12 +830,37 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
           }
         });
         this.tabla.filter(NumeroOrdenesDeCompras, 'NumeroOrdenDeCompra', 'in');
-      }
-      mostrarPosicionSolicitante(posicion: any): any {
+    }
+
+    mostrarPosicionSolicitante(posicion: any): any {
         if(this.filtroSolicitantes.length > 0){
           return this.filtroSolicitantes.includes(posicion.Solicitante.toUpperCase());
         } else {
           return true;
         }
-      }
+    }
+
+    limpiarFiltroPorSolicitantes() {
+        this.multiSelectSolicitantes.valuesAsString = 'Solicitantes';
+        this.multiSelectSolicitantes.value = [];
+        this.filtrarPorSolicitantes(this.multiSelectSolicitantes);
+    }
+
+    obtenerCantidadDePosicionesAMostrar(posiciones: any[]): number {
+        if (!this.ocFilterApplied && !this.filtroSolicitantes) {
+            return posiciones.length;
+        }
+
+        let posicionesAMostrar = posiciones;
+
+        if (this.filtroSolicitantes.length > 0) {
+            posicionesAMostrar = posicionesAMostrar.filter(posicion => this.filtroSolicitantes.includes(posicion.Solicitante.toUpperCase()));
+        }
+
+        if (this.ocFilterApplied) {
+            posicionesAMostrar = posicionesAMostrar.filter(posicion => this.tieneItemsACertificar(posicion));
+        }
+
+        return posicionesAMostrar.length;
+    }
 }

@@ -236,6 +236,7 @@ i#btn-fullscreen {
 :host ::ng-deep .filtro-solicitante > p-multiselect#select-solicitante > .ui-multiselect > .ui-multiselect-label-container {
     font-size: .9em !important;
     font-family: "Roboto Condensed", Arial, sans-serif !important;
+    height: 2em;
 }
 
 :host ::ng-deep .filtro-solicitante > p-multiselect#select-solicitante > .ui-multiselect > .ui-multiselect-label-container > label {

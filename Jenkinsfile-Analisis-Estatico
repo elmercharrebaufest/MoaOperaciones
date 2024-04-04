@@ -1,0 +1,31 @@
+pipeline {
+    agent any
+    environment {
+        PROJECT_KEY = 'Molinos_MoaOperaciones_BE'
+        // WEBHOOK_URL=''
+        TIPO_DE_TAREA='ANALISIS_ESTATICO'        
+    }
+    stages {    
+        stage('Dependency Check') {
+            steps {
+                dependencyCheck additionalArguments: '--prettyPrint --format HTML --format XML --format CSV' , odcInstallation: 'Dependency-Check-8.4.3'
+                dependencyCheckPublisher pattern: '*report.xml'
+                publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: '.', reportFiles: "dependency-check-report.html", reportName: "dependency-check-report", reportTitles: "dependency-check-report", useWrapperFileDirectly: true])
+            }
+        }  
+        stage('DependencyCheck Report') {
+		    steps {
+			    sh 'python3 /var/jenkins_home/scripts/dependency-check_report.py ${WORKSPACE}/dependency-check-report.csv ${PROJECT_KEY}'        
+            }
+        }            
+    }
+    post {
+        always {
+            script {
+                def BUILD_STATUS = currentBuild.resultIsBetterOrEqualTo('SUCCESS') ? 'SUCCESS' : 'FAILURE'
+                // sh "python3 /var/jenkins_home/scripts/send_notification.py BUILD_NUMBER=${BUILD_NUMBER} JOB_NAME=${JOB_NAME} JOB_URL=${JOB_URL} BUILD_URL=${BUILD_URL} PROJECT_KEY=${PROJECT_KEY} WEBHOOK_URL=${WEBHOOK_URL} BUILD_STATUS=${BUILD_STATUS} TIPO_DE_TAREA=${TIPO_DE_TAREA}"
+                cleanWs()
+            }
+        }
+    }
+}
