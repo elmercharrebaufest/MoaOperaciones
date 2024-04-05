@@ -53,5 +53,20 @@ namespace SustitucionMOAModel.Entities
         public string DomicilioTipo { get; set; }
         public short? DomicilioOrden { get; set; }
         public string DomicilioDescr { get; set; }
+
+        public string DescripcionMercaderia()
+        {
+
+            try
+            {
+                var split = Producto.Nombre.Split('-');
+
+                return split.LastOrDefault()?.Trim();
+            }
+            catch (Exception e)
+            {
+                return "";
+            }
+        }
     }
 }

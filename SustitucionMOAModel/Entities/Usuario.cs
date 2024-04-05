@@ -433,6 +433,7 @@ namespace SustitucionMOAModel.Entities
                 case "ORDEN DE CARGA": return RolEnum.OrdenDeCarga;
                 case "RESIDUOS": return RolEnum.Residuos;
                 case "RESIDUOS ADMIN": return RolEnum.ResiduosAdmin;
+                case "API ORDENES RESIDUOS": return RolEnum.ApiOrdenesResiduos;
                 //default: throw new Exception("Rol no mapeado: " + codigoRol);
                 default: return null;
             }

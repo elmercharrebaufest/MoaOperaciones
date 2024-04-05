@@ -115,6 +115,7 @@
     <Compile Include="Jobs\CcSsObtenerArchivosUcropJobTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\AplicacionCartaPorteTest.cs" />
+    <Compile Include="Services\ExternalApiOrdenesResiduosServiceTest.cs" />
     <Compile Include="Services\OrdenDeCargaFasonServiceTest.cs" />
     <Compile Include="Services\ComprasServiceTest.cs" />
     <Compile Include="Services\ConsultaServiceTest.cs" />

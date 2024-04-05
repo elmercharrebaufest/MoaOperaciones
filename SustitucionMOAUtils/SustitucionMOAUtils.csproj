@@ -188,6 +188,7 @@
     <Compile Include="Interfaces\IAplicacionCartaPorteApiService.cs" />
     <Compile Include="Interfaces\IDBService.cs" />
     <Compile Include="Interfaces\IEmailFasonService.cs" />
+    <Compile Include="Interfaces\IExternalApiOrdenesResiduosService.cs" />
     <Compile Include="Interfaces\IOrdenResiduosService.cs" />
     <Compile Include="Interfaces\IRYDService.cs" />
     <Compile Include="Interfaces\IRYDMantenimientoService.cs" />
@@ -247,6 +248,7 @@
     <Compile Include="Services\AplicacionCartaPorteService.cs" />
     <Compile Include="Interfaces\IEmailService.cs" />
     <Compile Include="Services\Email\EmailFasonService.cs" />
+    <Compile Include="Services\ExternalApiOrdenesResiduosService.cs" />
     <Compile Include="Services\KgDisponiblesFasService.cs" />
     <Compile Include="Services\OrdenDeCargaServiceBase.cs" />
     <Compile Include="Services\OrdenDeCargaEstadoService.cs" />

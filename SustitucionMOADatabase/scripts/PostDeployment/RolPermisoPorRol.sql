@@ -605,3 +605,16 @@ BEGIN
 		(SELECT id FROM rol WHERE rol.Nombre = 'RESIDUOS ADMIN'),
 		(SELECT id FROM PermisoPorRol WHERE PermisoPorRol.Permiso = 'VER ORDENES DE CARGA RESIDUOS ADMIN'))
 END
+
+
+IF NOT EXISTS(
+	SELECT 1 FROM
+		RolPermisoPorRol inner join 
+		PermisoPorRol on PermisoPorRol.Id = RolPermisoPorRol.PermisoPorRol_Id inner join 
+		Rol on Rol.Id = RolPermisoPorRol.Rol_Id
+	WHERE Rol.Nombre = 'API ORDENES RESIDUOS' and PermisoPorRol.Permiso = 'API ORDENES RESIDUOS')
+BEGIN
+	INSERT INTO RolPermisoPorRol VALUES (
+		(SELECT id FROM rol WHERE rol.Nombre = 'API ORDENES RESIDUOS'),
+		(SELECT id FROM PermisoPorRol WHERE PermisoPorRol.Permiso = 'API ORDENES RESIDUOS'))
+END
