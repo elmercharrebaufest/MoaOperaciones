@@ -143,11 +143,9 @@ namespace SustitucionMOAUtils.Services
         }
 
 
-        public async Task<EntradaServicioCreateRespuestaDto> CrearEntradaServicio(EntradaServicioCreateParamsDto parametros)
+        public async Task<List<EntradaServicioCreateRespuestaDto>> CrearEntradaServicio(List<EntradaServicioCreateParamsDto> parametros)
         {
-            EntradaServicioCreateRespuestaDto result = await new CrearEntradaDeServicioConsumerMOA().CrearEntradaServicioAsync(parametros);
-
-            return result;
+            return await new CrearEntradaDeServicioConsumerMOA().CrearEntradaServicioAsync(parametros);
         }
 
     }

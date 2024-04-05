@@ -34,58 +34,66 @@ namespace SustitucionMOAWS.WSConsumers
         }
 
 
-        public async Task<EntradaServicioCreateRespuestaDto> CrearEntradaServicioAsync(EntradaServicioCreateParamsDto parametros)
+        public async Task<List<EntradaServicioCreateRespuestaDto>> CrearEntradaServicioAsync(List<EntradaServicioCreateParamsDto> parametros)
         {
             try
             {
+                List<EntradaServicioCreateRespuestaDto> returnInfo = new List<EntradaServicioCreateRespuestaDto>();
+
                 using (var client = new HttpClient())
                 {
                     string _UrlServicio = System.Configuration.ConfigurationManager.AppSettings["ServicioSAPEntradasServicioCrear"];
                     string _SOAPAction = System.Configuration.ConfigurationManager.AppSettings["SOAPAction"];
                     string _Authorization = System.Configuration.ConfigurationManager.AppSettings["Authorization"];
 
-                    HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, _UrlServicio);
-                    request.Headers.Add("SOAPAction", _SOAPAction);
-                    request.Headers.Add("Authorization", _Authorization);
-
-                    EntrySheetHeaderSection entrySheetHeader = parametros.EntrySheetHeader;
-                    List<EntrySheetServiceItemSection> entrySheetServices = parametros.EntrySheetServices.Items;
-
-                    // Genera el XML para la lista de EntrySheetServiceItemSection, detalle de ES
-                    string entrySheetServicesXml = GenerateEntrySheetServicesXml(entrySheetServices);
-                    
-                    StringContent content = new StringContent(
-                        $@"<soapenv:Envelope xmlns:soapenv=""http://schemas.xmlsoap.org/soap/envelope/"" xmlns:urn=""urn:sap-com:document:sap:rfc:functions"">
-                    <soapenv:Header/>
-                    <soapenv:Body>
-                        <urn:BAPI_ENTRYSHEET_CREATE>
-                            {GenerateEntrySheetHeaderXml(entrySheetHeader)}
-                            <ENTRYSHEETSERVICES>
-                                {entrySheetServicesXml}
-                            </ENTRYSHEETSERVICES>
-                            <ENTRYSHEETSERVICESTEXTS></ENTRYSHEETSERVICESTEXTS>
-                            <ENTRYSHEETSRVACCASSVALUES></ENTRYSHEETSRVACCASSVALUES>
-                            <RETURN></RETURN>
-                        </urn:BAPI_ENTRYSHEET_CREATE>
-                    </soapenv:Body>
-                </soapenv:Envelope>", Encoding.UTF8, "text/xml"
-                    );
-
-                    content.Headers.ContentType = new MediaTypeHeaderValue("text/xml")
+                    foreach (var entrySheetServicesItems in parametros)
                     {
-                        CharSet = "utf-8"
-                    };
+                        HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, _UrlServicio);
+                        request.Headers.Add("SOAPAction", _SOAPAction);
+                        request.Headers.Add("Authorization", _Authorization);
+                        
+                        
+                        EntrySheetHeaderSection entrySheetHeader = entrySheetServicesItems.EntrySheetHeader;
+                        List<EntrySheetServiceItemSection> entrySheetServices = entrySheetServicesItems.EntrySheetServices.Items;                      
+                
+                        
+                        // Genera el XML para la lista de EntrySheetServiceItemSection, detalle de ES
+                        string entrySheetServicesXml = GenerateEntrySheetServicesXml(entrySheetServices);
 
-                    request.Content = content;
+                        StringContent content = new StringContent(
+                            $@"<soapenv:Envelope xmlns:soapenv=""http://schemas.xmlsoap.org/soap/envelope/"" xmlns:urn=""urn:sap-com:document:sap:rfc:functions"">
+                        <soapenv:Header/>
+                        <soapenv:Body>
+                            <urn:BAPI_ENTRYSHEET_CREATE>
+                                {GenerateEntrySheetHeaderXml(entrySheetHeader)}
+                                <ENTRYSHEETSERVICES>
+                                    {entrySheetServicesXml}
+                                </ENTRYSHEETSERVICES>
+                                <ENTRYSHEETSERVICESTEXTS></ENTRYSHEETSERVICESTEXTS>
+                                <ENTRYSHEETSRVACCASSVALUES></ENTRYSHEETSRVACCASSVALUES>
+                                <RETURN></RETURN>
+                            </urn:BAPI_ENTRYSHEET_CREATE>
+                        </soapenv:Body>
+                       </soapenv:Envelope>", Encoding.UTF8, "text/xml"
+                        );
 
-                    HttpResponseMessage response = await client.SendAsync(request).ConfigureAwait(false);
+                        content.Headers.ContentType = new MediaTypeHeaderValue("text/xml")
+                        {
+                            CharSet = "utf-8"
+                        };
 
-                    string createMessage = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                        request.Content = content;
 
-                    EntradaServicioCreateRespuestaDto returnInfo = ParseReturnInfo(createMessage);
+                        await Task.Delay(500);
 
-                    return returnInfo;
+                        HttpResponseMessage response = await client.SendAsync(request).ConfigureAwait(false);
+
+                        string createMessage = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+
+                        returnInfo.Add(ParseReturnInfo(createMessage));
+                    }
                 }
+                return returnInfo;
             }
             catch (Exception e)
             {

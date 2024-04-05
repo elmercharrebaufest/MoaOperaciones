@@ -171,7 +171,11 @@
                             <ng-template pTemplate="body" let-rowData let-expanded="expanded" let-posIndex="rowIndex">
                                 <tr class="posicion" *ngIf="!ocFilterApplied || (ocFilterApplied && tieneItemsACertificar(rowData))">
                                     <ng-container *ngIf="mostrarPosicionSolicitante(rowData)">
+
+                                      <!-- SE AGREGA CHECKBOX PARA SELECCIOANR N POSICIONES -->
                                         <td>
+                                            <input *ngIf="hideCheckboxToAll(rowData.Items)" type="checkbox" [(ngModel)]="rowData.isSelected" (change)="selectAllPositionsLines($event,rowData)"/>
+
                                             <a href="#" [pRowToggler]="rowData" (click)="setPositionRow(rowData);">
                                                 <i [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
                                             </a>

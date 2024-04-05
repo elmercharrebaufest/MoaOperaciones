@@ -91,7 +91,7 @@ namespace SustitucionMOA.Controllers
         //}
 
         
-        public async Task<ActionResult> CreateAsync(EntradaServicioCreateParamsDto parametros)
+        public async Task<ActionResult> CreateAsync(List<EntradaServicioCreateParamsDto> parametros)
         {
             try
             {

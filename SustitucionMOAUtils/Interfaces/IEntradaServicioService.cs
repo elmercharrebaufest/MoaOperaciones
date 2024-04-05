@@ -21,6 +21,6 @@ namespace SustitucionMOAUtils.Interfaces
         Task<List<EntradaServicioCabeceraDto>> ServicioSAP_EntradasServicioCabecera(EntradaServicioParamsDto parametros);
         //List<EntradaServicioCabeceraDto> ObtenerEntradasServicioConDetalle(EntradaServicioParamsDto parametros);
         //Task<EntradaServicioCabeceraDto>CrearEntradaServicioAsync(EntradaServicioCreateParamsDto parametros);
-        Task <EntradaServicioCreateRespuestaDto> CrearEntradaServicio(EntradaServicioCreateParamsDto parametros);
+        Task <List<EntradaServicioCreateRespuestaDto>> CrearEntradaServicio(List<EntradaServicioCreateParamsDto> parametros);
     }
 }

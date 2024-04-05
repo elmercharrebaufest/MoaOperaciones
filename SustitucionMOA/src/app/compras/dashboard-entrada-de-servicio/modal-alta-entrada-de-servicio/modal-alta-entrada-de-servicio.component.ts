@@ -7,76 +7,78 @@ import { FormsModule } from '@angular/forms';
 declare var $: any;
 
 @Component({
-  selector: 'app-modal-alta-entrada-de-servicio',
-  templateUrl: './modal-alta-entrada-de-servicio.component.html',
-  styleUrls: ['./modal-alta-entrada-de-servicio.component.css']
+    selector: 'app-modal-alta-entrada-de-servicio',
+    templateUrl: './modal-alta-entrada-de-servicio.component.html',
+    styleUrls: ['./modal-alta-entrada-de-servicio.component.css']
 })
 
 export class ModalAltaEntradaDeServicioComponent implements OnInit {
 
-  step: number = 1;
-  showAllTables: boolean = false;
-  data: any;
-  errorResponseMessage: string = "";
-  showError: boolean = false;
-  cantidad: number = 0;
-  mensajeError: string = "";
-  fechaDocumento: Date;
-  fechaContabilizacion: Date;
-  //MMSN-648
+    step: number = 1;
+    showAllTables: boolean = false;
+    data: any;
+    errorResponseMessage: string = "";
+    showError: boolean = false;
+    cantidad: number = 0;
+    mensajeError: string = "";
+    fechaDocumento: Date;
+    fechaContabilizacion: Date;
+    //MMSN-648
     arrCantidad: any[] = new Array();
-  es: any;
-  referencia: string = '';
-  textoBreve: string = '';
-  //Provisional - hasta definición de funcionalidad de aprobador.
-  //aprobador: string = '';
+    entrySheetObjects: any = [];
 
-  @Input() showModal: boolean;
-  @Input() itemSelected: any;
-  @Input() elementSelected: any;
-  @Input() itemIdSelected: string = '';
-  @Output() closeModal = new EventEmitter<void>();
-  @Output() closeDialog = new EventEmitter<void>();
+    es: any;
+    referencia: string = '';
+    textoBreve: string = '';
+    //Provisional - hasta definición de funcionalidad de aprobador.
+    //aprobador: string = '';
 
-  @Output() enviarMensajeGrilla = new EventEmitter();
+    @Input() showModal: boolean;
+    @Input() itemSelected: any;
+    @Input() elementSelected: any;
+    @Input() itemIdSelected: string = '';
+    @Output() closeModal = new EventEmitter<void>();
+    @Output() closeDialog = new EventEmitter<void>();
 
-  fechaDocMin: Date;
-  fechaDocMax: Date;
-  fechaContabilizacionMin: Date;
-  fechaContabilizacionMax: Date;
+    @Output() enviarMensajeGrilla = new EventEmitter();
 
-  entrySheetData = {
-    "EntrySheetHeader": {
-      "PaqueteNumero": "",
-      "Descripcion": "",
-      "OrdenCompraNumero": "",
-      "OrdenCompraPosicionNumero": "",
-      "DocumentoReferenciaNumero": "",
-      "FechaDocumento": "",
-      "FechaContabilizacion": "",
-      "GrabarAceptada": ""
-    },
-    "EntrySheetServices": {
-      "Items": [
-        {
-          "PackageNumber": "",
-          "LineNumber": "",
-          "ExternalLineNumber": "",
-          "Service": "",
-          "Quantity": "",
-          "GrossPrice": "",
-          "ShortText": "",
-          "PlannedPackage": "",
-          "PlannedLine": ""
+    fechaDocMin: Date;
+    fechaDocMax: Date;
+    fechaContabilizacionMin: Date;
+    fechaContabilizacionMax: Date;
+
+    entrySheetData = {
+        "EntrySheetHeader": {
+            "PaqueteNumero": "",
+            "Descripcion": "",
+            "OrdenCompraNumero": "",
+            "OrdenCompraPosicionNumero": "",
+            "DocumentoReferenciaNumero": "",
+            "FechaDocumento": "",
+            "FechaContabilizacion": "",
+            "GrabarAceptada": ""
+        },
+        "EntrySheetServices": {
+            "Items": [
+                {
+                    "PackageNumber": "",
+                    "LineNumber": "",
+                    "ExternalLineNumber": "",
+                    "Service": "",
+                    "Quantity": "",
+                    "GrossPrice": "",
+                    "ShortText": "",
+                    "PlannedPackage": "",
+                    "PlannedLine": ""
+                }
+            ]
         }
-      ]
-    }
-  };
+    };
 
-  totalMontoCertificar!: number;
+    totalMontoCertificar!: number;
 
-  constructor(protected service: ComprasService,
-    private confirmationService: ConfirmationService
+    constructor(protected service: ComprasService,
+        private confirmationService: ConfirmationService
     ) { }
 
     ngOnInit() {
@@ -91,20 +93,20 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
             clear: 'Limpiar',
             dateFormat: 'yyyy-mm-dd',
             weekHeader: 'Sem'
-      };
+        };
 
-      this.fechaContabilizacion = new Date();
-      this.setRangoFechaDocumento();
-      this.setRangoFechaContabilizacion();
-      this.calcularTotalMontoCertificar();
-  }
+        this.fechaContabilizacion = new Date();
+        this.setRangoFechaDocumento();
+        this.setRangoFechaContabilizacion();
+        this.calcularTotalMontoCertificar();
+    }
 
-  ngAfterViewInit(): void{
+    ngAfterViewInit(): void {
 
-  }
+    }
 
     ngAfterContentInit() {
-        this.textoBreve = this.itemSelected[0].Descripcion !== undefined ? this.itemSelected[0].Descripcion : '' ;
+        this.textoBreve = this.itemSelected[0].Descripcion !== undefined ? this.itemSelected[0].Descripcion : '';
     }
 
     openModal() {
@@ -125,41 +127,129 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
         this.fechaContabilizacionMin = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
     }
 
-  dateFormatter(date_Object: Date): string {
-      if (date_Object !== undefined) {
-          const year = date_Object.getFullYear();
-          const month = (date_Object.getMonth() + 1 < 10 ? '0' : '') + (date_Object.getMonth() + 1);
-          const day = (date_Object.getDate() < 10 ? '0' : '') + date_Object.getDate();
+    dateFormatter(date_Object: Date): string {
+        if (date_Object !== undefined) {
+            const year = date_Object.getFullYear();
+            const month = (date_Object.getMonth() + 1 < 10 ? '0' : '') + (date_Object.getMonth() + 1);
+            const day = (date_Object.getDate() < 10 ? '0' : '') + date_Object.getDate();
 
-          const date_String: string = `${year}-${month}-${day}`;
-          return date_String;
-      }
-  }
-
-  siguientePaso(cantidad) {
-
-    if (this.step < this.itemSelected.length) {
-      this.step++;
-    } else {
-      this.showAllTables = true;
+            const date_String: string = `${year}-${month}-${day}`;
+            return date_String;
+        }
     }
-  }
 
-  esFilaPar(index: number): boolean {
-    return index % 2 === 0;
-  }
+    siguientePaso(cantidad) {
 
-  refresh() {
-    //Agregar lógica para refrescar Cantidades
-  }
+        if (this.step < this.itemSelected.length) {
+            this.step++;
+        } else {
+            this.showAllTables = true;
+        }
+    }
 
-//Completa con '0' el valor de this.itemSelected.NumeroLinea - necesario para el servicio
- zeroPad(num, places) {
-    var zero = places - num.toString().length + 1;
-    return Array(+(zero > 0 && zero)).join("0") + num;
-}
+    esFilaPar(index: number): boolean {
+        return index % 2 === 0;
+    }
+
+    refresh() {
+        //Agregar lógica para refrescar Cantidades
+    }
+
+    //Completa con '0' el valor de this.itemSelected.NumeroLinea - necesario para el servicio
+    zeroPad(num, places) {
+        var zero = places - num.toString().length + 1;
+        return Array(+(zero > 0 && zero)).join("0") + num;
+    }
+
+    groupByNroPosicion(data) {
+
+        const grouped = {};
+
+        data.forEach(item => {
+            const nroPosicion = item.NroPosicion.toString();
+
+            if (!grouped[nroPosicion]) {
+                grouped[nroPosicion] = [];
+            }
+
+            grouped[nroPosicion].push(item);
+        });
+
+        return grouped;
+    }
 
     certificarPosicion() {
+
+        const groupedData = this.groupByNroPosicion(this.itemSelected);
+
+        this.buildEntrySheet(groupedData);
+
+        this.service.postCreateAsync(this.entrySheetObjects).subscribe(
+            (response) => {
+
+                let resultMsj: string[] = [];
+
+                response.data.forEach(element => {
+                    if (!element) {
+                        this.mensajeError = 'Error del servidor, vuelva a intentarlo más tarde.'
+                    }
+
+                    switch (element.Type) {
+                        case "I": {
+                            resultMsj.push(element.Message);
+                            break;
+                        }
+                        case "S": {
+                            resultMsj.push(element.Message);
+                            break;
+                        }
+                        case "E": {
+                            let msjError = element.Message.startsWith("Sólo es posible contabilizar en ") ||
+                                element.Message.startsWith("Contabilice en ") ?
+                                "El período se encuentra cerrado, por favor contabilice en el periodo actual." : element.Message
+                            resultMsj.push(msjError);
+                            break;
+                        }
+                        default: {
+                            resultMsj;
+                            break;
+                        }
+                    }
+                });
+
+                for (let msj of resultMsj) {
+                    this.mensajeError += "<li>" + msj + "</li>";
+                }
+
+                this.confirmationService.confirm({
+                    message: "<ul>" + this.mensajeError + "</ul>",
+                    accept: () => {
+                        this.enviarMensajeGrilla.emit();
+                        this.closeModal.emit();
+                    },
+                    reject: () => {
+                        this.closeModal.emit();
+                    }
+                }
+                );
+            },
+            (error) => {
+                this.confirmationService.confirm({
+                    message: error.error.Message,
+                    accept: () => {
+                        this.closeDialog.emit();
+                    },
+                    reject: () => {
+                        this.closeDialog.emit();
+                    }
+                }
+                );
+            }
+        );
+
+    }
+
+    buildEntrySheet(groupedData: any) {
 
         let fechaDocFormateada = "";
         let fechaConFormateada = "";
@@ -175,140 +265,63 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
         if (this.fechaContabilizacion !== undefined) {
             fechaConFormateada = this.dateFormatter(this.fechaContabilizacion);
         }
+
         let ref = this.referencia !== undefined ? this.referencia : '';
         //MMSN-678 - Modificar descripción por short_text en cabecera
         let txtBreve = this.textoBreve !== undefined ? this.textoBreve : '';
 
+        for (const key in groupedData) {
+            const group = groupedData[key];
 
-        this.entrySheetData = {
-            EntrySheetHeader: {
-                PaqueteNumero: '0000000001',
+            const itemSelected = group[0];
+
+            const entrySheetHeader = {
+                PaqueteNumero: key,
                 Descripcion: txtBreve,
                 OrdenCompraNumero: PONumber,
-                OrdenCompraPosicionNumero: this.itemSelected[0].NroPosicion.toString(),
+                OrdenCompraPosicionNumero: itemSelected.NroPosicion.toString(),
                 DocumentoReferenciaNumero: ref,
                 FechaDocumento: fechaDocFormateada,
                 FechaContabilizacion: fechaConFormateada,
                 GrabarAceptada: 'X'
-            },
-            EntrySheetServices: {
-                Items: [
-                    {
-                        PackageNumber: '0000000002',
-                        LineNumber: '0000000002',
-                        ExternalLineNumber: this.zeroPad(this.itemSelected[0].NumeroLinea, 10),
-                        Service: this.itemSelected[0].ServicioNumero.toString(),
-                        Quantity: this.arrCantidad[0],
-                        GrossPrice: this.itemSelected[0].PrecioBruto !== undefined ? this.itemSelected[0].PrecioBruto.toString() : '',
-                        ShortText: txtBreve,
-                        PlannedPackage: this.itemSelected[0].Id,
-                        PlannedLine: this.itemSelected[0].LINE_NO
-                    }
-                ]
-            }
-        };
+            };
 
-        if (this.itemSelected.length > 1) {
-            for (let x = 1; x < this.itemSelected.length; x++) {
-                //PackageNumber y LineNumber son manejados por el BE
-                let toPush = {
-                    PackageNumber: '0000000002',
-                    LineNumber: '0000000002',
-                    ExternalLineNumber: this.zeroPad(this.itemSelected[x].NumeroLinea, 10),
-                    Service: this.itemSelected[x].ServicioNumero.toString(),
-                    Quantity: this.arrCantidad[x],
-                    GrossPrice: this.itemSelected[x].PrecioBruto !== undefined ? this.itemSelected[x].PrecioBruto.toString() : '',
-                    ShortText: txtBreve,
-                    PlannedPackage: this.itemSelected[x].Id,
-                    PlannedLine: this.itemSelected[x].LINE_NO
-                }
+            const entrySheetServiceItems = group.map((item, index) => ({
+                PackageNumber: '0000000002',
+                LineNumber: '0000000002',
+                ExternalLineNumber: this.zeroPad(item.NumeroLinea, 10),
+                Service: item.ServicioNumero.toString(),
+                Quantity: item.CantidadACertificar,
+                GrossPrice: item.PrecioBruto !== undefined ? item.PrecioBruto.toString() : '',
+                ShortText: txtBreve,
+                PlannedPackage: item.Id,
+                PlannedLine: item.LINE_NO
+            }));
 
-                this.entrySheetData.EntrySheetServices.Items.push(toPush);
-            }
+            const entrySheetServices = {
+                Items: entrySheetServiceItems
+            };
+
+            this.entrySheetObjects.push({
+                EntrySheetHeader: entrySheetHeader,
+                EntrySheetServices: entrySheetServices
+            });
         }
-
-        this.service.postCreateAsync(this.entrySheetData).subscribe(
-            (response) => {
-                if (!response.data) {
-                    this.mensajeError = 'Error del servidor, vuelva a intentarlo más tarde.'
-                }
-
-                if (response.data.Type === 'I') {
-                    this.mensajeError = response.data.Message;
-                    this.confirmationService.confirm({
-                        message: this.mensajeError,
-                        accept: () => {
-                            this.enviarMensajeGrilla.emit();
-                            this.closeModal.emit();
-                        },
-                        reject: () => {
-                            this.closeModal.emit();
-                        }
-                    }
-                    );
-                }
-
-                if (response.data.Type === 'S') {
-                    this.mensajeError = response.data.Message;
-                    this.confirmationService.confirm({
-                        message: this.mensajeError,
-                        accept: () => {
-                            this.enviarMensajeGrilla.emit();
-                            this.closeDialog.emit();
-                        },
-                        reject: () => {
-                            this.closeDialog.emit();
-                        }
-                    }
-                    );
-                }
-
-
-                if (response.data.Type === 'E') {
-                    this.mensajeError = response.data.Message.startsWith("Sólo es posible contabilizar en ") ||
-                        response.data.Message.startsWith("Contabilice en ") ?
-                        "El período se encuentra cerrado, por favor contabilice en el periodo actual." : response.data.Message;
-                    this.confirmationService.confirm({
-                        message: this.mensajeError,
-                        accept: () => {
-                            this.closeDialog.emit();
-                        },
-                        reject: () => {
-                            this.closeDialog.emit();
-                        }
-                    }
-                    );
-                }
-            },
-            (error) => {
-                this.confirmationService.confirm({
-                    message: error.error.Message,
-                    accept: () => {
-                        this.closeDialog.emit();
-                    },
-                    reject: () => {
-                        this.closeDialog.emit();
-                    }
-                }
-                );
-            }
-        );   
-
-  } 
-
-  cerrarModal() {
-    this.closeModal.emit();
-  }
-
-  validarReferenciaRemito(event) {
-    let element = document.getElementById("ref");
-
-    if (element.classList.contains('ng-dirty') && element.classList.contains('ng-invalid')) {
-      element.classList.add('error');
-    } else {
-      element.classList.remove('error');
     }
-  }
+
+    cerrarModal() {
+        this.closeModal.emit();
+    }
+
+    validarReferenciaRemito(event) {
+        let element = document.getElementById("ref");
+
+        if (element.classList.contains('ng-dirty') && element.classList.contains('ng-invalid')) {
+            element.classList.add('error');
+        } else {
+            element.classList.remove('error');
+        }
+    }
 
     calcularTotalMontoCertificar() {
         let total = 0;
