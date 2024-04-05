@@ -1,6 +1,7 @@
 ﻿using SustitucionMOAFotmatter;
 using SustitucionMOAWS.CredentialService;
 using SustitucionMOAWS.Interfaces;
+using SustitucionMOAWS.Logger;
 using SustitucionMOAWS.ObtenerSolpWebServiceMOA;
 using System;
 using System.Collections.Generic;
@@ -88,8 +89,6 @@ namespace SustitucionMOAWS.WSConsumers
             }
             catch (Exception e)
             {
-                Log.Error($"Error SI_MMRFC_OBTENER_SOLPED");
-                Log.Error(e);
                 throw;
             }
         }
