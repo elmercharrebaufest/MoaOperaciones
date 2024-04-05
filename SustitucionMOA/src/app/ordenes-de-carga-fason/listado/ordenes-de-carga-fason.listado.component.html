@@ -31,26 +31,26 @@
         <div id="searchEstado" class="col-xs-12 col-sm-6 col-md-15">
           <p>Por Estado:</p>
           <div>
-            <!-- <p-multiSelect [options]="descripcionEstadoOrdenCarga" defaultLabel="Estados" [(ngModel)]="estadosSelected"
+            <p-multiSelect [options]="descripcionEstadoOrdenCarga" defaultLabel="Estados" [(ngModel)]="estadosSelected"
               selectedItemsLabel="{0} Items seleccionados" (onChange)="filtrarListado()" appendTo="body">
-            </p-multiSelect> -->
+            </p-multiSelect>
           </div>
         </div>
         <div id="searchProducto" class="col-xs-12 col-sm-6 col-md-15">
           <p>Por Producto:</p>
           <div class="styled-select">
-            <!-- <select name="product" [(ngModel)]="productoSelected">
+            <select name="product" [(ngModel)]="productoSelected">
               <option value="Todos">Todos</option>
               <option *ngFor="let producto of listaProductos" value="{{producto.Descripcion}}">{{producto.Descripcion}}
               </option>
-            </select> -->
+            </select>
           </div>
         </div>
         <div id="searchPatente" class="col-xs-12 col-sm-6 col-md-15">
           <p>Por Patente Chasis:</p>
           <div class="styled-select">
-            <!-- <input type="search" class="" placeholder="Ingrese número de patente chasis" aria-controls="tableModal"
-              [value]="" [(ngModel)]="filtroPatente"> -->
+            <input type="search" class="" placeholder="Ingrese número de patente chasis" aria-controls="tableModal"
+              [value]="" [(ngModel)]="filtroPatente">
           </div>
         </div>
         <div id="searchVer" class="col-xs-12 col-sm-6 col-md-15">
@@ -58,8 +58,8 @@
           <filtro-fecha (ClickEvent)="getListado()"></filtro-fecha>
         </div>
         <div style="float: right; height: 70px;">
-          <!-- <button type="button" pButton icon="fa fa-refresh"
-            style="background-color: #075088; float: right; left: -10px; top: 50%;" (click)="getListado()"></button> -->
+          <button type="button" pButton icon="fa fa-refresh"
+            style="background-color: #075088; float: right; left: -10px; top: 50%;" (click)="getListado()"></button>
           &nbsp;
         </div>
       </div>
