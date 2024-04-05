@@ -49,6 +49,11 @@ export class ReporteOcComponent extends ListBaseComponent {
 
     ordenDeCompra: any;
     displayOrdenDeCompra: boolean;
+
+    usuarioInterno: boolean = false;
+    proveedorSeleccionado: any = null;
+    proveedores: any[] = new Array();
+
     constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService, protected route: ActivatedRoute, protected router: Router, private confirmationService: ConfirmationService) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
 
@@ -67,12 +72,41 @@ export class ReporteOcComponent extends ListBaseComponent {
     }
 
     ngOnInit() {
+
+        const permisos: string[] = JSON.parse(sessionStorage.getItem("permisos"));
+        console.log(permisos);
+        if (permisos) {
+            if (permisos.includes("ABM SOL")
+                || permisos.includes("VER TODAS SOLPS")
+                || permisos.includes("VER SOLPS COMPRADOR")
+            ) {
+                this.usuarioInterno = true;
+            }
+        }
+        console.log(permisos.includes("ABM SOL"));
+        console.log(permisos.includes("VER TODAS SOLPS"));
+        console.log(permisos.includes("VER SOLPS COMPRADOR"));
+        console.log(this.usuarioInterno);
         this.obtenerReporteOrdenDeCompra();
+
     }
 
     obtenerReporteOrdenDeCompra() {
         try {
-            this.subscription = this.service.obtenerReporteOrdenDeCompra(this.nroOc, this.fechaDesde, this.fechaHasta, this.codigoProveedor).subscribe(
+            console.log("this.codigoProveedor", this.codigoProveedor);
+            let codigoProveedor = this.codigoProveedor;
+            console.log("this.usuarioInterno", this.usuarioInterno);
+
+            if (this.usuarioInterno) {
+                if (!this.proveedorSeleccionado) {
+                    this.floatMsgService.setInfoMsg("Debe seleccionar un proveedor.");
+                    return;
+                } else {
+                    codigoProveedor = this.proveedorSeleccionado.CodigoProveedor;
+                }
+            }
+
+            this.subscription = this.service.obtenerReporteOrdenDeCompra(this.nroOc, this.fechaDesde, this.fechaHasta, codigoProveedor).subscribe(
                 (result: any) => {
                     if (result.logout == true) {
                         this.sessionDataService.logout();
@@ -150,5 +184,29 @@ export class ReporteOcComponent extends ListBaseComponent {
 
     cerrarOrdenDeCompra() {
         this.displayOrdenDeCompra = false;
+    }
+
+    searchProveedor(event) {
+        try {
+            this.subscription = this.service.listarProveedores(event.query).subscribe(
+                (result: any) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.floatMsgService.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.floatMsgService.setInfoMsg(result.info);
+                    } else {
+                        this.proveedores = result.data;
+                    }
+                },
+                error => {
+                    this.floatMsgService.setErrorMsg(error.message);
+                });
+        } catch (e) {
+            this.floatMsgService.setErrorMsg(e);
+            return false; //<-- Prevent Refresh
+        }
+        return false; //<-- Prevent Refresh
     }
 }
