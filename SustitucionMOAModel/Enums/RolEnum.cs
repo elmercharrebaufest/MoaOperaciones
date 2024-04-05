@@ -73,7 +73,9 @@
         ComprasAdmin,
         FleteMOA,
         RevendedorFason,
-        OrdenDeCarga
+        OrdenDeCarga,
+        Residuos,
+        ResiduosAdmin
         // Al agregar un elemento acá, se debe agregar el mapeo en: clase Usuario, método ObtenerRolEnum
     }
 }

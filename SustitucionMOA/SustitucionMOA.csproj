@@ -19,14 +19,10 @@
     <AssemblyName>SustitucionMOA</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <UseIISExpress>true</UseIISExpress>
-    <IISExpressSSLPort>
-    </IISExpressSSLPort>
-    <IISExpressAnonymousAuthentication>
-    </IISExpressAnonymousAuthentication>
-    <IISExpressWindowsAuthentication>
-    </IISExpressWindowsAuthentication>
-    <IISExpressUseClassicPipelineMode>
-    </IISExpressUseClassicPipelineMode>
+    <IISExpressSSLPort>58280</IISExpressSSLPort>
+    <IISExpressAnonymousAuthentication>enabled</IISExpressAnonymousAuthentication>
+    <IISExpressWindowsAuthentication>disabled</IISExpressWindowsAuthentication>
+    <IISExpressUseClassicPipelineMode>false</IISExpressUseClassicPipelineMode>
     <UseGlobalApplicationHostFile />
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
@@ -1139,6 +1135,7 @@
     <Compile Include="Controllers\NotificacionController.cs" />
     <Compile Include="Controllers\OrdenDeCargaController.cs" />
     <Compile Include="Controllers\OrdenDeCargaFasonController.cs" />
+    <Compile Include="Controllers\OrdenResiduosController.cs" />
     <Compile Include="Controllers\PagoController.cs" />
     <Compile Include="Controllers\PDFController.cs" />
     <Compile Include="Controllers\PesificacionController.cs" />

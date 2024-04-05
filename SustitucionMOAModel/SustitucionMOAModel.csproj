@@ -75,6 +75,7 @@
     <Compile Include="Dto\LocalidadDto.cs" />
     <Compile Include="Dto\OrdenDeCargaFason\DetallesActualizarOrdenDeCargaFason.cs" />
     <Compile Include="Dto\Compras\ChatComprasDto.cs" />
+    <Compile Include="Dto\OrdenResiduos\ListarOrdenesResiduosResponse.cs" />
     <Compile Include="Dto\PartidoDto.cs" />
     <Compile Include="Dto\PeticionDeOfertaVisualizacionPrecioDto.cs" />
     <Compile Include="Dto\EstadoSolicitudOrdenDeCargaBaseDto.cs" />
@@ -191,6 +192,8 @@
     <Compile Include="Dto\Compras\UsuarioComprasRelacionConUsuariosDto.cs" />
     <Compile Include="Dto\UsuarioModificacionDto.cs" />
     <Compile Include="Entities\ArchivoCampoSustentable.cs" />
+    <Compile Include="Entities\EstadoOrdenResiduos.cs" />
+    <Compile Include="Entities\OrdenResiduos.cs" />
     <Compile Include="Entities\PaisesSap.cs" />
     <Compile Include="Entities\RegionSap.cs" />
     <Compile Include="Entities\ChatInternoCompras.cs" />
@@ -219,6 +222,7 @@
     <Compile Include="Entities\LiberadorSap.cs" />
     <Compile Include="Entities\UnidadMedidaSap.cs" />
     <Compile Include="Entities\VerificarActividadUsuario.cs" />
+    <Compile Include="Enums\EstadoOrdenResiduosEnum.cs" />
     <Compile Include="Enums\TipoLegajo.cs" />
     <Compile Include="Enums\RolEnum.cs" />
     <Compile Include="Enums\TipoContratoFAS.cs" />

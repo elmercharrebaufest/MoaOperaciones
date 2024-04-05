@@ -146,6 +146,10 @@ const appRoutes: Routes = [
                 loadChildren: "./ordenes-de-carga-fason/ordenes-de-carga-fason.module#OrdenesDeCargaFasonModule",
             },
             {
+                path: "ordenes-residuos",
+                loadChildren: "./ordenes-residuos/ordenes-residuos.module#OrdenesResiduosModule"
+            },
+            {
                 path: "reporte-contrato",
                 loadChildren: "./reporte-contrato/reporte-contrato.module#ReporteContratoModule",
             },

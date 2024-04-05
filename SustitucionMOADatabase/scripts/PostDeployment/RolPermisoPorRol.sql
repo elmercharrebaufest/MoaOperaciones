@@ -569,3 +569,39 @@ IF NOT EXISTS(SELECT 1 FROM RolPermisoPorRol inner join PermisoPorRol on Permiso
 IF NOT EXISTS(SELECT 1 FROM RolPermisoPorRol inner join PermisoPorRol on PermisoPorRol.Id = RolPermisoPorRol.PermisoPorRol_Id inner join Rol on Rol.Id = RolPermisoPorRol.Rol_Id WHERE Rol.Nombre = 'RECLAMO IMPOSITIVO' and PermisoPorRol.Permiso = 'CARGAR CONSULTA INTERNA') BEGIN insert into RolPermisoPorRol values ((select id from rol where rol.Nombre = 'RECLAMO IMPOSITIVO'),(select id from PermisoPorRol where PermisoPorRol.Permiso = 'CARGAR CONSULTA INTERNA')) END
 IF NOT EXISTS(SELECT 1 FROM RolPermisoPorRol inner join PermisoPorRol on PermisoPorRol.Id = RolPermisoPorRol.PermisoPorRol_Id inner join Rol on Rol.Id = RolPermisoPorRol.Rol_Id WHERE Rol.Nombre = 'BOLETOS' and PermisoPorRol.Permiso = 'CARGAR CONSULTA INTERNA') BEGIN insert into RolPermisoPorRol values ((select id from rol where rol.Nombre = 'BOLETOS'),(select id from PermisoPorRol where PermisoPorRol.Permiso = 'CARGAR CONSULTA INTERNA')) END
 IF NOT EXISTS(SELECT 1 FROM RolPermisoPorRol inner join PermisoPorRol on PermisoPorRol.Id = RolPermisoPorRol.PermisoPorRol_Id inner join Rol on Rol.Id = RolPermisoPorRol.Rol_Id WHERE Rol.Nombre = 'PARCIAL CORREDOR' and PermisoPorRol.Permiso = 'CARGAR CONSULTA INTERNA') BEGIN insert into RolPermisoPorRol values ((select id from rol where rol.Nombre = 'PARCIAL CORREDOR'),(select id from PermisoPorRol where PermisoPorRol.Permiso = 'CARGAR CONSULTA INTERNA')) END
+
+IF NOT EXISTS(
+	SELECT 1 FROM
+		RolPermisoPorRol inner join 
+		PermisoPorRol on PermisoPorRol.Id = RolPermisoPorRol.PermisoPorRol_Id inner join 
+		Rol on Rol.Id = RolPermisoPorRol.Rol_Id
+	WHERE Rol.Nombre = 'RESIDUOS' and PermisoPorRol.Permiso = 'VER ORDENES DE CARGA RESIDUOS')
+BEGIN
+	INSERT INTO RolPermisoPorRol VALUES (
+		(SELECT id FROM rol WHERE rol.Nombre = 'RESIDUOS'),
+		(SELECT id FROM PermisoPorRol WHERE PermisoPorRol.Permiso = 'VER ORDENES DE CARGA RESIDUOS'))
+END
+
+IF NOT EXISTS(
+	SELECT 1 FROM
+		RolPermisoPorRol inner join 
+		PermisoPorRol on PermisoPorRol.Id = RolPermisoPorRol.PermisoPorRol_Id inner join 
+		Rol on Rol.Id = RolPermisoPorRol.Rol_Id
+	WHERE Rol.Nombre = 'RESIDUOS ADMIN' and PermisoPorRol.Permiso = 'VER ORDENES DE CARGA RESIDUOS')
+BEGIN
+	INSERT INTO RolPermisoPorRol VALUES (
+		(SELECT id FROM rol WHERE rol.Nombre = 'RESIDUOS ADMIN'),
+		(SELECT id FROM PermisoPorRol WHERE PermisoPorRol.Permiso = 'VER ORDENES DE CARGA RESIDUOS'))
+END
+
+IF NOT EXISTS(
+	SELECT 1 FROM
+		RolPermisoPorRol inner join 
+		PermisoPorRol on PermisoPorRol.Id = RolPermisoPorRol.PermisoPorRol_Id inner join 
+		Rol on Rol.Id = RolPermisoPorRol.Rol_Id
+	WHERE Rol.Nombre = 'RESIDUOS ADMIN' and PermisoPorRol.Permiso = 'VER ORDENES DE CARGA RESIDUOS ADMIN')
+BEGIN
+	INSERT INTO RolPermisoPorRol VALUES (
+		(SELECT id FROM rol WHERE rol.Nombre = 'RESIDUOS ADMIN'),
+		(SELECT id FROM PermisoPorRol WHERE PermisoPorRol.Permiso = 'VER ORDENES DE CARGA RESIDUOS ADMIN'))
+END

@@ -1,4 +1,5 @@
-﻿using SustitucionMOAModel.Enums;
+﻿using Newtonsoft.Json.Serialization;
+using SustitucionMOAModel.Enums;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -347,6 +348,8 @@ namespace SustitucionMOAModel.Entities
                 case "ADJUDICAR DENTRO DEL PLAZO DE OFERTAS": return PermisoEnum.AdjudicarDentroDelPlazoDeOfertas;
                 case "FASON - MODIFICAR CAMPO REVENTA": return PermisoEnum.Fason_ModificarCampoReventa;
                 case "HANGFIREDASHBOARD": return PermisoEnum.HangfireDashboard;
+                case "VER ORDENES DE CARGA RESIDUOS": return PermisoEnum.VerOrdenesDeCargaResiduos;
+                case "VER ORDENES DE CARGA RESIDUOS ADMIN": return PermisoEnum.VerOrdenesDeCargaResiduosAdmin;
 
                 //default: throw new Exception("Permiso no mapeado: " + permisoStr);
                 default: return null;
@@ -428,6 +431,8 @@ namespace SustitucionMOAModel.Entities
                 case "FLETE MOA": return RolEnum.FleteMOA;
                 case "REVENDEDOR FASON": return RolEnum.RevendedorFason;
                 case "ORDEN DE CARGA": return RolEnum.OrdenDeCarga;
+                case "RESIDUOS": return RolEnum.Residuos;
+                case "RESIDUOS ADMIN": return RolEnum.ResiduosAdmin;
                 //default: throw new Exception("Rol no mapeado: " + codigoRol);
                 default: return null;
             }

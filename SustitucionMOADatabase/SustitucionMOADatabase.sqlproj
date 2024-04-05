@@ -215,6 +215,8 @@
     <Build Include="DBO\Tables\LiberadorSap.sql" />
     <Build Include="DBO\Tables\LiberadorSapSolp.sql" />
     <None Include="scripts\PostDeployment\LiberadorSap.sql" />
+    <Build Include="DBO\Tables\OrdenResiduos.sql" />
+    <Build Include="DBO\Tables\EstadoOrdenResiduos.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DatabasePublishQA.xml" />
@@ -240,6 +242,7 @@
     <None Include="DatabaseNewPublishQaBaufest.xml" />
     <None Include="DatabaseNewPublishQaHuenei.xml" />
     <None Include="DatabaseNewPublishQaCompras.xml" />
+    <None Include="scripts\PostDeployment\EstadoOrdenResiduos.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="scripts\UpdateRolesEditables.sql" />

@@ -188,6 +188,7 @@
     <Compile Include="Interfaces\IAplicacionCartaPorteApiService.cs" />
     <Compile Include="Interfaces\IDBService.cs" />
     <Compile Include="Interfaces\IEmailFasonService.cs" />
+    <Compile Include="Interfaces\IOrdenResiduosService.cs" />
     <Compile Include="Interfaces\IRYDService.cs" />
     <Compile Include="Interfaces\IRYDMantenimientoService.cs" />
     <Compile Include="Interfaces\IPDFService.cs" />
@@ -282,6 +283,7 @@
     <Compile Include="Services\OrdenDeCargaApiService.cs" />
     <Compile Include="Services\OrdenDeCargaFasonService.cs" />
     <Compile Include="Services\OrdenDeCargaService.cs" />
+    <Compile Include="Services\OrdenResiduosService.cs" />
     <Compile Include="Services\PagoService.cs" />
     <Compile Include="Services\PDFService.cs" />
     <Compile Include="Services\PesificacionService.cs" />
