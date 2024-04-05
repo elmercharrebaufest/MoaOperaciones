@@ -74,7 +74,6 @@ export class ReporteOcComponent extends ListBaseComponent {
     ngOnInit() {
 
         const permisos: string[] = JSON.parse(sessionStorage.getItem("permisos"));
-        console.log(permisos);
         if (permisos) {
             if (permisos.includes("ABM SOL")
                 || permisos.includes("VER TODAS SOLPS")
@@ -83,19 +82,13 @@ export class ReporteOcComponent extends ListBaseComponent {
                 this.usuarioInterno = true;
             }
         }
-        console.log(permisos.includes("ABM SOL"));
-        console.log(permisos.includes("VER TODAS SOLPS"));
-        console.log(permisos.includes("VER SOLPS COMPRADOR"));
-        console.log(this.usuarioInterno);
         this.obtenerReporteOrdenDeCompra();
 
     }
 
     obtenerReporteOrdenDeCompra() {
         try {
-            console.log("this.codigoProveedor", this.codigoProveedor);
             let codigoProveedor = this.codigoProveedor;
-            console.log("this.usuarioInterno", this.usuarioInterno);
 
             if (this.usuarioInterno) {
                 if (!this.proveedorSeleccionado) {
