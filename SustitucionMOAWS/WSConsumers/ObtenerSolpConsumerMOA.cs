@@ -1,7 +1,6 @@
 ﻿using SustitucionMOAFotmatter;
 using SustitucionMOAWS.CredentialService;
 using SustitucionMOAWS.Interfaces;
-using SustitucionMOAWS.Logger;
 using SustitucionMOAWS.ObtenerSolpWebServiceMOA;
 using System;
 using System.Collections.Generic;
@@ -20,10 +19,6 @@ namespace SustitucionMOAWS.WSConsumers
             service = new SI_MMRFC_OBTENER_SOLPEDClient(SAPCredential.CrearSapLongBinding(), SAPCredential.DevolverEndpoint(url));
             service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
             service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
-            Log.Info($"url: {url}");
-            Log.Info($"SAPCredential.getUserName(): {SAPCredential.getUserName()}");
-            Log.Info($"SAPCredential.getPassword(): {SAPCredential.getPassword()}");
-
         }
 
         public ObtenerSolpSAPResponse RequestSolpWithNroAndDates(ObtenerSolpRequest req)
