@@ -268,7 +268,8 @@ namespace SustitucionMOAWS.WSConsumers
 
             //};
 
-            var posicionesSolp = repositorio.Listar<SolpPosicion>(posi => adjudicacion.Posiciones.Select(x => x.SolpPosicion_Id).Contains(posi.Id));
+            List<int> idsPosiciones = adjudicacion.Posiciones.Select(x => x.SolpPosicion_Id).ToList();
+            var posicionesSolp = repositorio.Listar<SolpPosicion>(posi => idsPosiciones.Contains(posi.Id));
             foreach (var posicion in posicionesSolp)
             {
                 //    foreach (var posicion in solp.Posiciones.Where(a => posIds.Contains(a.Id)).OrderBy(x => x.Id))
