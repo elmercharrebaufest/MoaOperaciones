@@ -190,7 +190,6 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
         }
     ];
 
-
     ngOnInit() {
         this.obtenerConfiguracionDeTablasDelUsuario();
 
@@ -228,9 +227,16 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
         return this.mensajeError != "";
     }
 
-    onCheckboxPositionChange(line: any) {
+    onCheckboxPositionChange(item: any) {
 
-        this.onCheckboxChange(line);
+        const itemId = item.PosicionId;
+        const numeroLinea = item.NumeroLinea;
+
+        this.itemIdSelected.push(itemId);
+        this.numeroLineaSelected.add(numeroLinea);
+        this.itemSelected.push(item);
+        this.actionCheckPosition(item);
+        this.itemSelected.sort((a, b) => a.NumeroLinea > b.NumeroLinea ? 1 : -1);
     };
 
     selectAllPositionsLines(event: any, positions: any): void {
@@ -515,6 +521,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
 
     searchElement() {
         for (const ordenCompra of this.tablaPO) {
+            
             for (const posicion of ordenCompra.Posiciones) {
                 const itemEncontrado = posicion.Items.find(item => item.PosicionId === this.itemSelected[0].PosicionId);
 
@@ -630,7 +637,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
             this.clearCheckbox(item);
         }
 
-        if (cantidadACertificar > cantidadDisponible) {
+        if (cantidadACertificar > cantidadDisponible  || (cantidadACertificar < 0 && cantidadACertificar != '')) {
             item.CantidadACertificar = cantidadDisponible;
         }
 
@@ -646,7 +653,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
             this.clearCheckbox(item);
         }
 
-        if (porcentajeACertificar > porcentajeDisponible) {
+        if (porcentajeACertificar > porcentajeDisponible || (porcentajeACertificar < 0 && porcentajeACertificar != '')) {
             item.PorcentajeACertificar = porcentajeDisponible;
         }
 
@@ -793,7 +800,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
         sessionStorage.setItem('columnasCertificaciones', JSON.stringify(visibleColumns));
     }
 
-
+    
     /**
      * Muestra/Oculta un panel según nombre de clase
      * que lo identifica.

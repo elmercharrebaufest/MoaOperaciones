@@ -99,6 +99,8 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
         this.setRangoFechaDocumento();
         this.setRangoFechaContabilizacion();
         this.calcularTotalMontoCertificar();
+
+        this.itemSelected = this.orderBy(this.itemSelected, 'NroPosicion');
     }
 
     ngAfterViewInit(): void {
@@ -112,6 +114,11 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
     openModal() {
         this.step = 1;
     }
+
+    orderBy(array: any[], field: string): any[] {
+        return array.sort((a, b) => a[field] - b[field]);
+      }
+
 
     setRangoFechaDocumento() {
         // Fecha máxima: Fecha actual
