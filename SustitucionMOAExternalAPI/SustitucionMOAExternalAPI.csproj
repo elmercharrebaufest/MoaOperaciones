@@ -172,7 +172,7 @@
     <Compile Include="Controllers\AccesoQrController.cs" />
     <Compile Include="Controllers\ActualizarSolpController.cs" />
     <Compile Include="Controllers\LiberacionSolpController.cs" />
-    <Compile Include="Controllers\OrdenesResiduoController.cs" />
+    <Compile Include="Controllers\OrdenesResiduosController.cs" />
     <Compile Include="Filter\CustomExceptionHandlerAttribute.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>

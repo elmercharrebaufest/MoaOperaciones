@@ -1,4 +1,5 @@
 ﻿using SustitucionMOAModel.CustomExceptions;
+using SustitucionMOAModel.Dto.OrdenResiduos;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
 using System;
@@ -6,10 +7,10 @@ using System.Web.Http;
 
 namespace SustitucionMOAExternalAPI.Controllers
 {
-    public class OrdenesResiduoController: ApiController
+    public class OrdenesResiduosController: ApiController
     {
         private readonly IExternalApiOrdenesResiduosService ordenResiduoService;
-        public OrdenesResiduoController(IExternalApiOrdenesResiduosService ordenesService)
+        public OrdenesResiduosController(IExternalApiOrdenesResiduosService ordenesService)
         {
             ordenResiduoService = ordenesService;
         }
@@ -26,7 +27,27 @@ namespace SustitucionMOAExternalAPI.Controllers
             catch(InfoCustomException ex)
             {
                 Log.ExternalAPIError(ex);
-                return InternalServerError(ex); ;
+                return InternalServerError(ex);
+            }
+            catch (Exception ex)
+            {
+                Log.ExternalAPIError(ex);
+                return InternalServerError(new Exception("Hubo un error al procesar la solicitud"));
+            }
+        }
+        [Authorize(Roles = "API ORDENES RESIDUOS")]
+        [HttpPatch]
+        public IHttpActionResult Actualizar([FromBody] ActualizarOrdenResiduosExternalDto datos)
+        {
+            try
+            {
+                ordenResiduoService.ActualizarOrden(datos);
+                return Json(new { data = true });
+            }
+            catch (InfoCustomException ex)
+            {
+                Log.ExternalAPIError(ex);
+                return InternalServerError(ex);
             }
             catch (Exception ex)
             {

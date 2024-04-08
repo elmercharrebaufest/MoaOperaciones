@@ -6,6 +6,9 @@
         Pendiente = 2,
         OrdenVencida = 3,
         OrdenEntregada = 4,
-        Anulada = 5
+        Anulada = 5,
+        Ingresada = 6,
+        Retirada = 7,
+        Rechazada = 8
     }
 }

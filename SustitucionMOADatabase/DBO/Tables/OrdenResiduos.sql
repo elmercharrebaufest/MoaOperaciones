@@ -25,6 +25,7 @@
     [DomicilioTipo] VARCHAR NULL, 
     [DomicilioOrden] SMALLINT NULL, 
     [DomicilioDescr] VARCHAR(250) NULL, 
+    [MotivoRechazo] VARCHAR(250) NULL, 
     CONSTRAINT [FK_OrdenResiduos_ProveedorCorredor] FOREIGN KEY ([CorredorId]) REFERENCES [Proveedor]([Id]), 
     CONSTRAINT [FK_OrdenResiduos_ProveedorCliente] FOREIGN KEY ([ClienteId]) REFERENCES [Proveedor]([Id]), 
     CONSTRAINT [FK_OrdenResiduos_Material] FOREIGN KEY ([MaterialId]) REFERENCES [Material]([Id]), 

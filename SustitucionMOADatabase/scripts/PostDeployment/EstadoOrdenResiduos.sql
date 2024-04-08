@@ -8,7 +8,17 @@ VALUES
 	(2,	'Pendiente',		'En proceso',		'yellow'),
 	(3, 'Orden vencida',	'Orden vencida',	'red'),
 	(4, 'Orden entregada',	'Orden entregada',	'white'),
-	(5, 'Anulada',			'Anulada',			'red')
+	(5, 'Anulada',			'Anulada',			'red'),
+	(6, 'Ingresada',		'Ingresada',		'green'),
+	(7, 'Retirada',			'Retirada',			'green'),
+	(8, 'Rechazada',		'Rechazada',		'red')
+
+UPDATE EstadoOrdenResiduos
+	SET Nombre=V.Nombre,NombreExterno=V.NombreExterno, Semaforo=V.Semaforo
+FROM 
+	EstadoOrdenResiduos E left join
+	@ValoresEstadoOrdenResiduos V on V.Id = E.Id
+WHERE E.Id is not null
 
 INSERT INTO EstadoOrdenResiduos
 	(Id, Nombre, NombreExterno, Semaforo)

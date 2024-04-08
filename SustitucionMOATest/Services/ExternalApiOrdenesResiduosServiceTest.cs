@@ -1,8 +1,11 @@
 ﻿using Moq;
 using NUnit.Framework;
 using SustitucionMOAModel.Consultas;
+using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
+using SustitucionMOAModel.Dto.OrdenResiduos;
 using SustitucionMOAModel.Entities;
+using SustitucionMOAModel.Enums;
 using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Services;
@@ -10,8 +13,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SustitucionMOATest.Services
 {
@@ -65,7 +66,30 @@ namespace SustitucionMOATest.Services
 
             Assert.That(result2.All(or => filter2.Compile()(or)));
         }
+        [Test]
+        [TestCase(FlujoActualizacionOrdenResiduos.Ingreso,EstadoOrdenResiduosEnum.Ingresada)]
+        [TestCase(FlujoActualizacionOrdenResiduos.Rechazo, EstadoOrdenResiduosEnum.Rechazada)]
+        [TestCase(FlujoActualizacionOrdenResiduos.Salida, EstadoOrdenResiduosEnum.Retirada)]
+        public void ActualizarOrden_DatosCorrectos_ActulizarOrdenAcordeFlujo(FlujoActualizacionOrdenResiduos flujo, EstadoOrdenResiduosEnum estadoFinalEsperado)
+        {
+            var id = 1;
+            var orden = CrearOrden("123456");
+            SetupObtencionOrden(id, orden);
 
+            service.ActualizarOrden(new ActualizarOrdenResiduosExternalDto { TipoActualizacion = flujo, Id=id });
+
+            Assert.That(orden.EstadoId == (int)estadoFinalEsperado);
+        }
+        [Test]
+        public void ActualizarOrden_OrdenSinEncontrar_ThrowException()
+        {
+            var id = 1;
+            SetupObtencionOrden(id, null);
+
+            Assert.That(
+                ()=> service.ActualizarOrden(new ActualizarOrdenResiduosExternalDto { Id = id }), 
+                Throws.InstanceOf<InfoCustomException>());
+        }
         private void SetupRespuestaLista(IEnumerable<OrdenResiduos> lista)
         {
 
@@ -92,6 +116,10 @@ namespace SustitucionMOATest.Services
                 Producto = new Material { Nombre = "producto" },
                 Localidad = new Localidad { Nombre = "localidad" }
             };
+        }
+        private void SetupObtencionOrden(int id,OrdenResiduos ordenRecibida)
+        {
+            repositorio.Setup(r=>r.Obtener<OrdenResiduos>(id)).Returns(ordenRecibida);
         }
     }
 }
