@@ -4,7 +4,13 @@ export interface ListarOrdenesResiduosResponse {
 
 export interface OrdenResiduosFila {
     Id: number;
-    Corredor: string;
-    Cliente: string;
-    Estado: string;
+    RazonSocialCorredor: string;
+    RazonSocialCliente: string;
+    DescripcionEstado: string;
+    FechaCreacion: string;
+    FechaRetiro: string;
+    LocalidadDescripcion: string;
+    Material: string;
+    PatenteChasis: string;
+    ColorSemaforo: string;
 }

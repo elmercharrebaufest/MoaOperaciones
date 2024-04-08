@@ -17,7 +17,8 @@ import { OrdenResiduosFila } from "../../common/models/ordenes-residuos/listarOr
 
 @Component({
     selector: 'app-listado',
-    templateUrl: './ordenes-residuos.listado.component.html'
+    templateUrl: './ordenes-residuos.listado.component.html',
+    styleUrls: ['./ordenes-residuos.listado.component.css']
 })
 export class OrdenesResiduosListadoComponent extends ListBaseComponent implements OnInit {
     @BlockUI() blockUI: NgBlockUI;
@@ -39,6 +40,7 @@ export class OrdenesResiduosListadoComponent extends ListBaseComponent implement
     listaClientes: string[] = [];
     filtroCliente: any = null;
     filtroPatente: any = null;
+    datosSinFiltrar: OrdenResiduosFila[];
     
     esAdmin: boolean = this.isAuthorized(Permiso.ResiduosVerOrdenesDeCargaAdmin);
     esTercero: boolean = this.isAuthorized(Permiso.ResiduosVerOrdenesDeCarga);
@@ -56,11 +58,12 @@ export class OrdenesResiduosListadoComponent extends ListBaseComponent implement
     }
 
     ngOnInit(): void {
+        this.setCombosFiltros();
         this.setTabs();
         this.checkPermisos();
         this.navService.setSeccionList([]);
-        this.setCombosFiltros();
         this.obtenerListadoOrdenes();
+        this.getProductos();
     }
 
     setCombosFiltros(): void {
@@ -91,18 +94,46 @@ export class OrdenesResiduosListadoComponent extends ListBaseComponent implement
                 ]
                 : ["OK"];
     }
+    
+    setFiltroProducto(producto: string): void {
+        this.productoSelected = producto;
+    }
+    
+    getProductos(): void {
+        this.subscription = this.service.getMateriales().subscribe(
+            (resp) => {
+                let respData = this.manejarErroresApiResponse(resp);
+                if (respData) {
+                    this.listaProductos = respData;
+                }
+            },
+            (error) => {
+                this.mensajeComponent.setErrorMsg(error.message);
+            }
+        );
+    }
+
+    filtrarListado(): void {
+        if (this.estadosSelected && this.estadosSelected.length >= 1) {
+            this.data = this.datosSinFiltrar.filter(x =>
+                this.estadosSelected.some(y => y == x.DescripcionEstado));
+        }
+        else {
+            this.data = [];
+        }
+    }
 
     obtenerListadoOrdenes(): void {
-        console.info('llama a obtenerlistadoordenes');
         this.spinnerComponent.showIt();
         this.data = null;
+        this.mensajeComponent.setMsgsEmpty();
         try {
             this.unsubscribe();
-            this.subscription = this.service.obtenerListadoOrdenes('', '')
+            this.subscription = this.service.obtenerListadoOrdenes(this.filtroFechaComponent.fecha_inicio, this.filtroFechaComponent.fecha_fin)
                 .subscribe(resp => {
                     let respData = this.manejarErroresApiResponse(resp);
                     if (respData) {
-                        this.data = respData.ListaOrdenes;
+                        this.datosSinFiltrar = respData.ListaOrdenes;
                         this.filtrarListado();
                     }
                     this.spinnerComponent.hideIt();
@@ -115,13 +146,6 @@ export class OrdenesResiduosListadoComponent extends ListBaseComponent implement
         catch (e) {
             this.spinnerComponent.hideIt();
             this.mensajeComponent.setErrorMsg(e);
-        }
-    }
-    
-    filtrarListado(): void {
-        if (this.estadosSelected && this.estadosSelected.length >= 1) {
-            this.data = (this.data as OrdenResiduosFila[]).filter(x =>
-                this.estadosSelected.some(y => y == x.Estado));
         }
     }
 

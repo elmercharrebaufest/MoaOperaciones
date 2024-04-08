@@ -128,6 +128,7 @@
     <Compile Include="Services\DataAgroServiceTest.cs" />
     <Compile Include="Services\NotificacionServiceTest.cs" />
     <Compile Include="Services\OrdenDeCargaApiServiceTest.cs" />
+    <Compile Include="Services\OrdenResiduosServiceTest.cs" />
     <Compile Include="Services\PesificacionServiceTests.cs" />
     <Compile Include="Services\OrdenDeCargaServiceTest.cs" />
     <Compile Include="Services\TicketPesadaServiceTest.cs" />

@@ -1,4 +1,5 @@
 ﻿using SustitucionMOAModel.Dto.OrdenResiduos;
+using SustitucionMOAModel.Models.DataAgro;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,8 @@ namespace SustitucionMOARepositorio.Repositorios.Interfaces
 {
     public interface IRepositorioOrdenResiduos : IRepositorio
     {
-        List<OrdenResiduosFila> ObtenerListadoOrdenes();
+        MaterialDto[] ObtenerMateriales();
+
+        List<OrdenResiduosFila> ObtenerListadoOrdenes(DateTime fechaInicio, DateTime fechaFin);
     }
 }

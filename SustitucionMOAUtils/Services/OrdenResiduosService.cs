@@ -1,6 +1,8 @@
 ﻿using SustitucionMOAAssets;
+using SustitucionMOAFotmatter;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto.OrdenResiduos;
+using SustitucionMOAModel.Models.DataAgro;
 using SustitucionMOARepositorio.Repositorios.Interfaces;
 using SustitucionMOAUtils.Interfaces;
 using System;
@@ -20,9 +22,17 @@ namespace SustitucionMOAUtils.Services
             this.repositorio = repositorio;
         }
 
-        public ListarOrdenesResiduosResponse ObtenerListadoOrdenes()
+        public MaterialDto[] ObtenerMateriales()
         {
-            var listado = repositorio.ObtenerListadoOrdenes();
+            return repositorio.ObtenerMateriales();
+        }
+
+        public ListarOrdenesResiduosResponse ObtenerListadoOrdenes(string fechaInicioStr, string fechaFinStr)
+        {
+            var fechaInicio = DataFormatter.StringToDateTime(fechaInicioStr, "");
+            var fechaFin = DataFormatter.StringToDateTime(fechaFinStr, "");
+
+            var listado = repositorio.ObtenerListadoOrdenes(fechaInicio, fechaFin);
 
             if (listado == null || listado.Count == 0)
             {

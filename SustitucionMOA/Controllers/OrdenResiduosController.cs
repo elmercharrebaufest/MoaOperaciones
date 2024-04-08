@@ -2,6 +2,7 @@
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Dto.OrdenResiduos;
+using SustitucionMOAModel.Models.DataAgro;
 using SustitucionMOASecurity;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
@@ -23,12 +24,36 @@ namespace SustitucionMOA.Controllers
         }
 
         [HttpGet]
+        public ActionResult ObtenerMateriales()
+        {
+            var response = new SustitucionMOAApiResponse<MaterialDto[]>();
+            try
+            {
+                response.Data = ordenResiduosService.ObtenerMateriales();
+            }
+            catch (InfoCustomException ice)
+            {
+                response.Info = ice.Message;
+            }
+            catch (ValidationCustomException vce)
+            {
+                response.Error = vce.Message;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                response.Error = ErrorMsg.Error;
+            }
+            return ContentCustom(response);
+        }
+
+        [HttpGet]
         public ActionResult ObtenerListadoOrdenes(string fechaInicio, string fechaFin)
         {
             var response = new SustitucionMOAApiResponse<ListarOrdenesResiduosResponse>();
             try
             {
-                response.Data = ordenResiduosService.ObtenerListadoOrdenes();
+                response.Data = ordenResiduosService.ObtenerListadoOrdenes(fechaInicio, fechaFin);
             }
             catch (InfoCustomException ice)
             {

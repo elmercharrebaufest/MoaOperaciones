@@ -28,40 +28,40 @@
                 <div id="searchEstado" class="col-xs-12 col-sm-6 col-md-15">
                     <p>Por estado:</p>
                     <div>
-                        <!-- <p-multiSelect [options]="descripcionEstadoOrdenCarga" defaultLabel="Estados"
+                        <p-multiSelect [options]="descripcionEstadoOrdenCarga" defaultLabel="Estados"
                             [(ngModel)]="estadosSelected" selectedItemsLabel="{0} Items seleccionados"
-                            (onChange)="filtrarListado()" appendTo="body"></p-multiSelect> -->
+                            (onChange)="filtrarListado()" appendTo="body"></p-multiSelect>
                     </div>
                 </div>
 
                 <div id="searchProducto" class="col-xs-12 col-sm-6 col-md-15">
                     <p>Por producto:</p>
                     <div class="styled-select">
-                        <!-- <select name="product" [(ngModel)]="productoSelected">
+                        <select name="product" [(ngModel)]="productoSelected">
                             <option value="Todos">Todos</option>
                             <option *ngFor="let producto of listaProductos"
                                 value="{{producto.Descripcion}}">{{producto.Descripcion}}
                             </option>
-                        </select> -->
+                        </select>
                     </div>
                 </div>
 
                 <div id="searchPatente" class="col-xs-12 col-sm-6 col-md-15">
                     <p>Por patente chasis:</p>
                     <div class="styled-select">
-                        <!-- <input type="search" placeholder="Ingrese número de patente chasis"
-                            aria-controls="tableModal" [value]="" [(ngModel)]="filtroPatente"> -->
+                        <input type="search" placeholder="Ingrese número de patente chasis"
+                            aria-controls="tableModal" [value]="" [(ngModel)]="filtroPatente">
                     </div>
                 </div>
 
                 <div id="searchVer" class="col-xs-12 col-sm-6 col-md-15">
                     <p>Ver:</p>
-                    <!-- <filtro-fecha (ClickEvent)="getListado()"></filtro-fecha> -->
+                    <filtro-fecha (ClickEvent)="obtenerListadoOrdenes()"></filtro-fecha>
                 </div>
 
                 <div style="float: right; height: 70px;">
-                    <!-- <button type="button" pButton icon="fa fa-refresh" (click)="getListado()"
-                        style="background-color: #075088; float: right; left: -10px; top: 50%;"></button> -->
+                    <button type="button" pButton icon="fa fa-refresh" (click)="obtenerListadoOrdenes()"
+                        style="background-color: #075088; float: right; left: -10px; top: 50%;"></button>
                     &nbsp;
                 </div>
             </div>
@@ -97,11 +97,11 @@
                             <td *ngIf="esAdmin">{{ordenCarga.RazonSocialCorredor}}</td>
                             <td *ngIf="esAdmin || isCorredor()">{{ordenCarga.RazonSocialCliente}}</td>
                             <td>{{ordenCarga.DescripcionEstado}}</td>
-                            <td>{{ordenCarga.FechaCreacion || ordenCarga.fechaCreacion}}</td>
-                            <td>{{ordenCarga.FechaRetiro || ordenCarga.fechaRetiro}}</td>
+                            <td>{{ordenCarga.FechaCreacion}}</td>
+                            <td>{{ordenCarga.FechaRetiro}}</td>
                             <td>{{ordenCarga.LocalidadDescripcion}}</td>
                             <td>{{ordenCarga.Material}}</td>
-                            <td>{{ordenCarga.patenteChasis}}</td>
+                            <td>{{ordenCarga.PatenteChasis}}</td>
                             <td *ngIf="esAdmin">
                                 <div class="semaforo {{ordenCarga.ColorSemaforo}}"></div>
                             </td>

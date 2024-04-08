@@ -1,0 +1,31 @@
+.semaforo {
+    height: 25px;
+    width: 25px;
+    border-radius: 50%;
+    border: 1px solid;
+    display: inline-block;
+}
+
+.red {
+    background-color: #ff6666;
+    border: 1px solid red;
+}
+
+.yellow {
+    background-color: papayawhip;
+    border: 1px solid yellow;
+}
+
+.green {
+    background-color: palegreen;
+    border: 1px solid greenyellow;
+}
+
+
+::ng-deep .ui-multiselect {
+    font-size: 1.5rem !important;
+    font-weight: 400 !important;
+    color: #3f4845 !important;
+    overflow: hidden !important;
+    min-width: 100%;
+}
