@@ -237,8 +237,10 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
 
         if (event.target.checked) {
             const itemsFiltered = positions.Items.filter((row: any) => !this.isGet100(row) && row.MontoACertificar != 0);
+            
             this.calcularValoresACertificar(positions);
             if (itemsFiltered.length > 0) {
+                
                 itemsFiltered.forEach((item: any) => {
                     if (!this.itemSelected.includes(item)) {
                         item.isSelected = true;
@@ -247,8 +249,35 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
                 });
             }
         } else {
-            this.clearCheckboxes();
+            this.clearCheckboxesPositions(positions);
         }
+    }
+
+    clearCheckboxesPositions(positions: any): void {
+        const updatedSelectedItems = [...this.itemSelected];
+        const updatedSelectedIds = [...this.itemIdSelected];
+    
+        this.numeroLineaSelected.clear();
+    
+        this.tablaPO.forEach((order: any) => {
+            order.Posiciones.forEach((pos: any) => {
+                if (positions.Id === pos.Id) {
+                    pos.Items.forEach((item: any) => {
+                        if (this.itemSelected.some(selectedItem => selectedItem.Id === item.Id)) {
+                            item.isSelected = false;
+                            const index = updatedSelectedItems.findIndex(selectedItem => selectedItem.Id === item.Id);
+                            if (index !== -1) {
+                                updatedSelectedItems.splice(index, 1);
+                                updatedSelectedIds.splice(index, 1);
+                            }
+                        }
+                    });
+                }
+            });
+        });
+    
+        this.itemSelected = updatedSelectedItems;
+        this.itemIdSelected = updatedSelectedIds;
     }
 
 
@@ -257,11 +286,6 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
         const numeroLinea = item.NumeroLinea;
 
         if (this.itemIdSelected.includes(itemId) && this.numeroLineaSelected.has(numeroLinea)) {
-            this.tablaPO.forEach(order => {
-                order.Posiciones.forEach((pos: any) => {
-                    pos.isSelected = false;
-                });
-            });
 
             this.itemIdSelected.splice(this.itemIdSelected.indexOf(itemId), 1);
             this.numeroLineaSelected.delete(numeroLinea);
@@ -279,7 +303,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
     }
 
     setPositionRow(posicion: any) {
-        this.clearCheckboxes();
+        //this.clearCheckboxes();
         this.expandedPositionRow = posicion;
         this.calcularValoresACertificar(posicion);
         this.mostrarOcultarItemsSinSaldoACertificar();
@@ -606,7 +630,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
             this.clearCheckbox(item);
         }
 
-        if (cantidadACertificar > cantidadDisponible || (cantidadACertificar < 0 && cantidadACertificar != '')) {
+        if (cantidadACertificar > cantidadDisponible) {
             item.CantidadACertificar = cantidadDisponible;
         }
 
@@ -622,7 +646,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
             this.clearCheckbox(item);
         }
 
-        if (porcentajeACertificar > porcentajeDisponible || (porcentajeACertificar < 0 && porcentajeACertificar != '')) {
+        if (porcentajeACertificar > porcentajeDisponible) {
             item.PorcentajeACertificar = porcentajeDisponible;
         }
 
