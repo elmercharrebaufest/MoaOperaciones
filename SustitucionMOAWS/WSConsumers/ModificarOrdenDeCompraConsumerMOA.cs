@@ -225,48 +225,11 @@ namespace SustitucionMOAWS.WSConsumers
             //aca el metodo solo usa las posiciones seleccionadas por el comprador
             var posIds = adjudicacion.Posiciones.Select(x => x.CotizacionPosicion.PeticionDeOfertaSolpPosicion.SolpPosicion_Id).ToList();
 
-            //cabecera del pedido
-            //Nombre: ZBAPIMEPOHEADER Denominación:	Cabecera del Pedido de Compras
-            //var cabeceraDelPedido = new BAPIMEPOHEADER();
-            //var CURRENCY = adjudicacion.Posiciones.Where(a => posIds.Contains( a.CotizacionPosicion.PeticionDeOfertaSolpPosicion.SolpPosicion_Id)).First().CotizacionPosicion.Moneda.Codigo;
-            //var PUR_GROUP = solp.Posiciones.Where(a => posIds.Contains(a.Id)).First().GrupoCompras.CodigoSap.ToString();
-            //cabeceraDelPedido.COMP_CODE = "MOA"; //COMP_CODE BUKRS   Sociedad
-            //cabeceraDelPedido.DOC_TYPE = "ZPE1";//solp.ClaseDocumento.CodigoSap; //DOC_TYPE    ESART Clase de documento de compras
-            //cabeceraDelPedido.VENDOR = proveedorCodigoDeLaAdjudicacion; //VENDOR ELIFN   Número de cuenta del proveedor
-            //cabeceraDelPedido.PURCH_ORG = usuarioOrganizacionDeCompra; //PURCH_ORG EKORG   Organización de compras
-            //cabeceraDelPedido.PUR_GROUP = PUR_GROUP;  //PUR_GROUP   BKGRP Grupo de compras
-            //cabeceraDelPedido.CURRENCY = CURRENCY; //CURRENCY WAERS   Clave de moneda
-            //cabeceraDelPedido.CREATED_BY = usuarioCreadorAdjudicacion;//CREATED_BY ERNAM   Nombre del responsable que ha añadido el objeto
-            //cabeceraDelPedido.DOC_DATE = SAPFormatter.PrepararFecha(DateTime.Now); //DOC_DATE    EBDAT Fecha del documento de compras
+            var unidadesCodigoSap = adjudicacion.Posiciones.SelectMany(p => new[] { p.Posicion.Unidad?.CodigoSap }.Concat(p.Posicion.Subposiciones.Select(sp => sp.Unidad.CodigoSap))).Distinct();
 
-            //cabeceraDelPedido.PO_NUMBER = "4123001763";//solp.ocadicional; //PO_NUMBER   EBELN Número del documento de compras
-            //cabeceraDelPedido.DELETE_IND = "";//DELETE_IND ELOEK   Indicador de borrado en el documento de compras
-            //cabeceraDelPedido.STATUS = ""; //STATUS ESTAK   Status del documento de compras
-            //cabeceraDelPedido.CREAT_DATE = ""; //SAPFormatter.PrepararFecha(solp.FechaCreacion); //CREAT_DATE  ERDAT Fecha de creación del registro
-            //cabeceraDelPedido.PMNTTRMS = ""; //"BASE"; //PMNTTRMS    DZTERM Clave de condiciones de pago
-            //                                 //cabeceraDelPedido.EXCH_RATE = 0; //EXCH_RATE   WKURS Tipo de cambio de moneda
-            //cabeceraDelPedido.EX_RATE_FX = ""; //EX_RATE_FX KUFIX   Indicador tipo de cambio fijo
+            var unidadesMedidaSap = repositorio.Listar<UnidadMedidaSap, dynamic>(x => new { x.Comercial, x.UM },
+                x => unidadesCodigoSap.Contains(x.Comercial))?.Select(x => System.Tuple.Create(x.Comercial, x.UM)).ToList();
 
-            //modificarPedidoSAP.POHEADER = cabeceraDelPedido;
-            //modificarPedidoSAP.POHEADERX = new BAPIMEPOHEADERX
-            //{
-            //    PO_NUMBER = "",
-            //    COMP_CODE = "X",
-            //    DOC_TYPE = "X",
-            //    DELETE_IND = "",
-            //    STATUS = "",
-            //    CREAT_DATE = "",
-            //    CREATED_BY = "X",
-            //    VENDOR = "X",
-            //    PMNTTRMS = "",
-            //    PURCH_ORG = "X",
-            //    PUR_GROUP = "X",
-            //    CURRENCY = "X",
-            //    EXCH_RATE = "",
-            //    EX_RATE_FX = "",
-            //    DOC_DATE = "X"
-
-            //};
 
             List<int> idsPosiciones = adjudicacion.Posiciones.Select(x => x.SolpPosicion_Id).ToList();
             var posicionesSolp = repositorio.Listar<SolpPosicion>(posi => idsPosiciones.Contains(posi.Id));
@@ -296,7 +259,8 @@ namespace SustitucionMOAWS.WSConsumers
                 IM_POITEM.INFO_REC = "";
                 IM_POITEM.QUANTITY = esPosicionDeMateriales ? adjudicacionPosicion.Cantidad : 0;
                 IM_POITEM.QUANTITYSpecified = esPosicionDeMateriales ? true : false;
-                IM_POITEM.PO_UNIT = esPosicionDeMateriales ? adjudicacionPosicion.CotizacionPosicion.UnidadDeMedida.Descripcion : "001";
+                IM_POITEM.PO_UNIT = esPosicionDeMateriales ? unidadesMedidaSap?.Find(u => u.Item1 == adjudicacionPosicion.CotizacionPosicion.UnidadDeMedida.CodigoSap).Item2 : "001";
+
                 IM_POITEM.NET_PRICE = esPosicionDeMateriales ? (decimal)adjudicacionPosicion.CotizacionPosicion.Precio : CalcularPrecioBrutoServicio(posicion, adjudicacionPosicion);
                 IM_POITEM.NET_PRICESpecified = true;
                 IM_POITEM.PRICE_UNIT = 1;
@@ -479,8 +443,9 @@ namespace SustitucionMOAWS.WSConsumers
                         subposicionSap.SHORT_TEXT = subposicion.Tarea;
                         subposicionSap.QUANTITY = cotizacionSubPosicion.Cantidad.Value;
                         subposicionSap.QUANTITYSpecified = true;
-                        subposicionSap.BASE_UOM = cotizacionSubPosicion.UnidadDeMedida.Codigo;
-                        subposicionSap.UOM_ISO = cotizacionSubPosicion.UnidadDeMedida.Codigo;
+                        subposicionSap.BASE_UOM = unidadesMedidaSap.Find(u => u.Item1 == cotizacionSubPosicion.UnidadDeMedida.CodigoSap).Item2;
+                        subposicionSap.UOM_ISO = unidadesMedidaSap.Find(u => u.Item1 == cotizacionSubPosicion.UnidadDeMedida.CodigoSap).Item2;
+
                         subposicionSap.PRICE_UNIT = 1;
                         subposicionSap.PRICE_UNITSpecified = true;
                         subposicionSap.GR_PRICE = cotizacionSubPosicion.Precio.Value;
@@ -663,66 +628,6 @@ namespace SustitucionMOAWS.WSConsumers
         }
 
     }
-
-    //public class CrearPedidoConsumerMOAResponse
-    //{
-    //    public string NumeroPedido { get; set; }
-    //    public List<CrearPedidoConsumerMOAError> Errores { get; set; }
-    //    public string Resultado { get; set; }
-    //}
-
-    //public class CrearPedidoConsumerMOAError
-    //{
-    //    public string Codigo { get; set; }
-    //    public string Mensaje { get; set; }
-    //    public string Tipo { get; set; }
-    //}
-
-    //public class SolpPedidoSAPDto
-    //{
-
-    //    public List<ZMPES6830> IM_POACCOUNTList { get; set; }
-    //    public List<ZMPES6840> IM_POACCOUNTXList { get; set; }
-    //    public List<ZMPES6820> IM_POADDREDELIVERYList { get; set; }
-    //    public List<ZMPES6870> IM_POCONDList { get; set; }
-    //    public List<ZMPES6850> IM_POCONDHEADERList { get; set; }
-    //    public List<ZMPES6860> IM_POCONDHEADERXList { get; set; }
-    //    public List<ZMPES6880> IM_POCONDXList { get; set; }
-    //    public ZMPES6780 IM_POHEADERList { get; set; }
-    //    public ZMPES6790 IM_POHEADERXList { get; set; }
-    //    public List<ZMPES6800> IM_POITEMList { get; set; }
-    //    public List<ZMPES6810> IM_POITEMXList { get; set; }
-    //    public List<BAPIMEPOSCHEDULE> IM_POSCHEDULEList { get; set; }
-    //    public List<BAPIMEPOSCHEDULX> IM_POSCHEDULEXList { get; set; }
-    //    public List<BAPIESKLC> IM_POSRVACCESSVALUESList { get; set; }
-    //    public List<BAPIMEPOTEXTHEADER> IM_POTEXTHEADERList { get; set; }
-    //    public List<BAPIMEPOTEXT> IM_POTEXTITEMList { get; set; }
-    //    public List<BAPIESLLC> IM_SERVICESList { get; set; }
-    //    public string IM_URL { get; set; }
-
-
-    //    public SolpPedidoSAPDto()
-    //    {
-    //        IM_POACCOUNTList = new List<ZMPES6830>();
-    //        IM_POACCOUNTXList = new List<ZMPES6840>();
-    //        IM_POADDREDELIVERYList = new List<ZMPES6820>();
-    //        IM_POCONDList = new List<ZMPES6870>();
-    //        IM_POCONDHEADERList = new List<ZMPES6850>();
-    //        IM_POCONDHEADERXList = new List<ZMPES6860>();
-    //        IM_POCONDXList = new List<ZMPES6880>();
-    //        IM_POHEADERList = new ZMPES6780();
-    //        IM_POHEADERXList = new ZMPES6790();
-    //        IM_POITEMList = new List<ZMPES6800>();
-    //        IM_POITEMXList = new List<ZMPES6810>();
-    //        IM_POSCHEDULEList = new List<BAPIMEPOSCHEDULE>();
-    //        IM_POSCHEDULEXList = new List<BAPIMEPOSCHEDULX>();
-    //        IM_POSRVACCESSVALUESList = new List<BAPIESKLC>();
-    //        IM_POTEXTHEADERList = new List<BAPIMEPOTEXTHEADER>();
-    //        IM_POTEXTITEMList = new List<BAPIMEPOTEXT>();
-    //        IM_SERVICESList = new List<BAPIESLLC>();
-    //        IM_URL = "";
-    //    }
-    //}
 
     public interface IModificarOrdenDeCompraConsumerMOA
     {

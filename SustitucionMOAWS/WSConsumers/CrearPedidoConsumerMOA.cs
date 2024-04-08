@@ -135,6 +135,12 @@ namespace SustitucionMOAWS.WSConsumers
                 unidadesDeMedidaSAP = obtenerUnidadesDeMedidaConsumerMOA.Request(posicionesSolp.Select(x => x.MaterialSolp?.Codigo).ToList());
             }
 
+            var unidadesCodigoSap = adjudicacion.Posiciones.SelectMany(p => new[] { p.CotizacionPosicion.UnidadDeMedida?.CodigoSap }.Concat(p.CotizacionPosicion.CotizacionSubPosiciones.Select(sp => sp.UnidadDeMedida.CodigoSap))).Distinct();
+
+            var unidadesMedidaSap = repositorio.Listar<UnidadMedidaSap, dynamic>(x => new { x.Comercial, x.UM },
+                x => unidadesCodigoSap.Contains(x.Comercial))?.Select(x => System.Tuple.Create(x.Comercial, x.UM)).ToList();
+
+
             //aca el metodo solo usa las posiciones seleccionadas por el comprador
             var posIds = adjudicacion.Posiciones.Select(x => x.CotizacionPosicion.PeticionDeOfertaSolpPosicion.SolpPosicion_Id).ToList();
 
@@ -142,12 +148,13 @@ namespace SustitucionMOAWS.WSConsumers
             {
                 var adjudicacionPosicion = adjudicacion.Posiciones.Where(a => a.CotizacionPosicion.PeticionDeOfertaSolpPosicion.SolpPosicion_Id == solpPosicion.Id).Single();
                 decimal precioConvertido = adjudicacionPosicion.Monto ?? 0;
-                string unidadDeMedida = esPosicionDeMateriales ? adjudicacionPosicion.CotizacionPosicion.UnidadDeMedida.Descripcion : "001";
+                string unidadDeMedida = esPosicionDeMateriales ? unidadesMedidaSap?.Find(u => u.Item1 == adjudicacionPosicion.CotizacionPosicion.UnidadDeMedida.CodigoSap).Item2 : "001";
+
                 if (esPosicionDeMateriales && solpPosicion.Unidad_Id != adjudicacionPosicion.CotizacionPosicion.UnidadDeMedida_Id)
                 {
                     var unidadesDelMaterial = unidadesDeMedidaSAP.Where(x => x.CodigoMaterial == solpPosicion.MaterialSolp.Codigo).ToList();
-                    var unidadSolicitada = unidadesDelMaterial.First(x => x.UnidadDeMedida == solpPosicion.Unidad.Descripcion);
-                    var unidadCotizada = unidadesDelMaterial.First(x => x.UnidadDeMedida == adjudicacionPosicion.CotizacionPosicion.UnidadDeMedida.Descripcion);
+                    var unidadSolicitada = unidadesDelMaterial.First(x => x.UnidadDeMedida == solpPosicion.Unidad.CodigoSap);
+                    var unidadCotizada = unidadesDelMaterial.First(x => x.UnidadDeMedida == adjudicacionPosicion.CotizacionPosicion.UnidadDeMedida.CodigoSap);
                     unidadDeMedida = unidadSolicitada.UnidadDeMedida;
                     precioConvertido = Math.Round(adjudicacionPosicion.Monto ?? 0 / (unidadCotizada.Numerador / unidadCotizada.Denominador) *
                         (unidadSolicitada.Numerador / unidadSolicitada.Denominador), 2);
@@ -395,8 +402,8 @@ namespace SustitucionMOAWS.WSConsumers
                         subposicionSap.SHORT_TEXT = subposicion.Tarea;
                         subposicionSap.QUANTITY = cotizacionSubPosicion.Cantidad.Value;
                         subposicionSap.QUANTITYSpecified = true;
-                        subposicionSap.BASE_UOM = cotizacionSubPosicion.UnidadDeMedida.Codigo;
-                        subposicionSap.UOM_ISO = cotizacionSubPosicion.UnidadDeMedida.Codigo;
+                        subposicionSap.BASE_UOM = unidadesMedidaSap.Find(u => u.Item1 == cotizacionSubPosicion.UnidadDeMedida.CodigoSap).Item2;
+                        subposicionSap.UOM_ISO = unidadesMedidaSap.Find(u => u.Item1 == cotizacionSubPosicion.UnidadDeMedida.CodigoSap).Item2;
                         subposicionSap.PRICE_UNIT = 1;
                         subposicionSap.PRICE_UNITSpecified = true;
                         subposicionSap.GR_PRICE = cotizacionSubPosicion.Precio.Value * obtenerTipoCambioConsumerMOA.Request(fecha.ToString("yyyy-MM-dd"), adjudicacion.Moneda.Codigo, cotizacionSubPosicion.Moneda.Codigo).TipoCambio;
