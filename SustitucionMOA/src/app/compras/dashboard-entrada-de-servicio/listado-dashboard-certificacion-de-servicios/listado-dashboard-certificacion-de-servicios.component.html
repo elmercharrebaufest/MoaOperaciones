@@ -174,7 +174,7 @@
 
                                       <!-- SE AGREGA CHECKBOX PARA SELECCIOANR N POSICIONES -->
                                         <td>
-                                            <input *ngIf="hideCheckboxToAll(rowData.Items)" type="checkbox" [(ngModel)]="rowData.isSelected" (change)="selectAllPositionsLines($event,rowData)"/>
+                                            <input *ngIf="hidePositionCheckboxToAll(rowData.Items)" type="checkbox" [(ngModel)]="rowData.isSelected" (change)="selectAllPositionsLines($event,rowData)"/>
 
                                             <a href="#" [pRowToggler]="rowData" (click)="setPositionRow(rowData);">
                                                 <i [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
@@ -271,8 +271,11 @@
                                                             <span *ngIf="col.id==='iCantidadTotal'">
                                                                 {{ rowData.CantidadReal + rowData.CantidadACertificar }}
                                                             </span>
+                                                            <span *ngIf="col.id==='iMonto'">
+                                                                {{ rowData.Cantidad * rowData.Importe | number:'1.0-2' }}
+                                                            </span>
                                                             <span *ngIf="col.id === 'iMontoACertificar'">
-                                                                {{ rowData.MontoACertificar | number:'1.0-2' }}
+                                                                {{ rowData.CantidadACertificar * rowData.Importe | number:'1.0-2' }}
                                                             </span>
 
                                                             <button *ngIf="col.id === 'iAcciones'"

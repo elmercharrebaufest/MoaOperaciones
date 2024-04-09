@@ -163,7 +163,8 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
                 { id: 'iDescripcion', header: 'Txt. Breve', field: 'Descripcion', type: 'string', sortable: false, required: true, visible: true },
                 { id: 'iCantidad', header: 'Cant.', field: 'Cantidad', type: 'string', sortable: false, required: true, visible: true },
                 { id: 'iUM', header: 'UM', field: 'UM', type: 'string', sortable: false, required: true, visible: true },
-                { id: 'iImporte', header: 'Importe', field: 'ImporteString', type: 'string', sortable: false, required: true, visible: true },
+                { id: 'iImporte', header: 'Precio Unitario', field: 'ImporteString', type: 'string', sortable: false, required: true, visible: true },
+                { id: 'iMonto', header: 'Monto Total', field: null, type: 'custom', sortable: false, required: true, visible: true },
                 { id: 'iCantidadReal', header: 'Cant. Anterior', field: 'CantidadReal', type: 'string', sortable: false, required: true, visible: true },
                 { id: 'iPorcentaje', header: 'Porc. %', field: 'Porcentaje', type: 'custom', sortable: false, required: true, visible: true },
                 // These fields values are calculated in the view. NA: Not applicable
@@ -627,7 +628,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
     }
 
     calcularMontoACertificar(item: any) {
-        const montoActualizado = (item.CantidadACertificar * item.Importe) / item.Cantidad;
+        const montoActualizado = (item.CantidadACertificar * item.Importe);
         item.MontoACertificar = montoActualizado;
     }
 
@@ -712,6 +713,12 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
 
     hideCheckboxToAll(items: any): boolean {
         return items.some(item => !this.isGet100(item) || item.MontoACertificar != 0)
+    }
+
+    hidePositionCheckboxToAll(items: any): boolean {
+        return items.some(element => {
+            return !this.isGet100(element) || (((element.Cantidad - element.CantidadReal) * element.Importe) / element.Cantidad) != 0;
+        }); 
     }
 
     /**

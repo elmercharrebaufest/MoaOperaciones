@@ -77,8 +77,6 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
         }
     };
 
-    totalMontoCertificar!: number;
-
     constructor(protected service: ComprasService,
         private confirmationService: ConfirmationService
     ) { }
@@ -99,7 +97,6 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
         this.fechaContabilizacion = new Date();
         this.setRangoFechaDocumento();
         this.setRangoFechaContabilizacion();
-        this.calcularTotalMontoCertificar();
 
         this.itemSelected = this.orderBy(this.itemSelected, 'NroPosicion');
     }
@@ -117,10 +114,10 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
         this.itemsAgrupadosPorPosicion = items.reduce((prev, { NroPosicion, ...Items }) => {
             const id = prev.findIndex((item) => item.NroPosicion === NroPosicion);
             if (id >= 0) {
-                prev[id].MontoTotalACertificar = prev[id].MontoTotalACertificar + Items.MontoACertificar;
+                prev[id].MontoTotalACertificar = prev[id].MontoTotalACertificar + (Items.CantidadACertificar * Items.Importe);
                 prev[id].Items.push(Items);
             } else {
-                prev.push({ NroPosicion, Descripcion: Items.Descripcion, Items: [Items], MontoTotalACertificar: Items.MontoACertificar })
+                prev.push({ NroPosicion, Descripcion: Items.Descripcion, Items: [Items], MontoTotalACertificar: (Items.CantidadACertificar * Items.Importe) })
             }
             return prev;
         }, []);
@@ -330,15 +327,6 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
         } else {
             element.classList.remove('error');
         }
-    }
-
-    calcularTotalMontoCertificar() {
-        let total = 0;
-        for (let item of this.itemSelected) {
-            total += item.MontoACertificar;
-        }
-
-        this.totalMontoCertificar = total;
     }
 
     /**
