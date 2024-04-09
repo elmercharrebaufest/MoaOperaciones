@@ -754,4 +754,30 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
     cerrarHistorial() {
         this.displayHistorial = false;
     }
+
+    // Dentro del componente de Angular
+getTotalPreciosPorMoneda(cotizacionPosicion: any): string {
+    // Crear un objeto para almacenar la suma de precios por moneda
+    const preciosPorMoneda: { [key: string]: number } = {};
+    
+    // Iterar sobre las subposiciones y sumar los precios por moneda
+    for (const subpos of cotizacionPosicion.CotizacionSubPosiciones) {
+        if (!preciosPorMoneda[subpos.MonedaDescripcion]) {
+            preciosPorMoneda[subpos.MonedaDescripcion] = 0;
+        }
+        preciosPorMoneda[subpos.MonedaDescripcion] += subpos.PrecioUnidad;
+    }
+
+    // Construir la cadena de texto para mostrar la suma de precios por moneda
+    this.resultado = '';
+    for (const moneda in preciosPorMoneda) {
+        if (preciosPorMoneda.hasOwnProperty(moneda)) {
+            this.resultado += `${moneda} ${preciosPorMoneda[moneda]}</br>`; 
+        }
+    }
+
+    return this.resultado;
 }
+
+}
+
