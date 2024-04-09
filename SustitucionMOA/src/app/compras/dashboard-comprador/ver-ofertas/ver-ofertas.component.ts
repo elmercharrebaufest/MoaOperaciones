@@ -155,7 +155,7 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
                         this.floatMsgService.setInfoMsg(result.info);
                     } else {
                         this.tablaOfertas = result.data;
-                        if(this.tablaOfertas.NrosSolp.length > 1){
+                        if (this.tablaOfertas.NrosSolp.length > 1) {
                             this.esTipoPOMultiple = true;
                         }
                         this.nroOC = this.tablaOfertas.NroOrdenDeCompraAdicional;
@@ -696,25 +696,25 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
     }
 
     public actualizarVisibilidad(proveedor, cambiarEstado) {
-        if (!cambiarEstado){
-        this.mensaje = '';
-        try {            
-            this.blockUI.start('Cargando...');
-            this.service.actualizarProveedorVisibleEnSolicitante(proveedor.Id, proveedor.VisibleSolicitante).subscribe(
-                () => {
-                    this.mensaje = "Los datos se actualizaron correctamente."
-                    this.blockUI.stop();
-                },
-                (error) => {
-                    this.blockUI.stop();
-                    this.mensajeComponent.setErrorMsg(error.message);
-                }
-            );
-        } catch (e) {
-            this.floatMsgService.setErrorMsg(e);
-            return false; //<-- Prevent Refresh
+        if (!cambiarEstado) {
+            this.mensaje = '';
+            try {
+                this.blockUI.start('Cargando...');
+                this.service.actualizarProveedorVisibleEnSolicitante(proveedor.Id, proveedor.VisibleSolicitante).subscribe(
+                    () => {
+                        this.mensaje = "Los datos se actualizaron correctamente."
+                        this.blockUI.stop();
+                    },
+                    (error) => {
+                        this.blockUI.stop();
+                        this.mensajeComponent.setErrorMsg(error.message);
+                    }
+                );
+            } catch (e) {
+                this.floatMsgService.setErrorMsg(e);
+                return false; //<-- Prevent Refresh
+            }
         }
-    }
         return false; //<-- Prevent Refresh
     }
 
@@ -744,8 +744,8 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
             return false; //<-- Prevent Refresh
         }
         return false; //<-- Prevent Refresh
-     }
-    
+    }
+
     abrirModalHistorial(id) {
         this.displayHistorial = true;
         this.obtenerHistorial(id);
@@ -756,28 +756,28 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
     }
 
     // Dentro del componente de Angular
-getTotalPreciosPorMoneda(cotizacionPosicion: any): string {
-    // Crear un objeto para almacenar la suma de precios por moneda
-    const preciosPorMoneda: { [key: string]: number } = {};
-    
-    // Iterar sobre las subposiciones y sumar los precios por moneda
-    for (const subpos of cotizacionPosicion.CotizacionSubPosiciones) {
-        if (!preciosPorMoneda[subpos.MonedaDescripcion]) {
-            preciosPorMoneda[subpos.MonedaDescripcion] = 0;
-        }
-        preciosPorMoneda[subpos.MonedaDescripcion] += subpos.PrecioUnidad;
-    }
+    getTotalPreciosPorMoneda(cotizacionPosicion: any): string {
+        // Crear un objeto para almacenar la suma de precios por moneda
+        const preciosPorMoneda: { [key: string]: number } = {};
 
-    // Construir la cadena de texto para mostrar la suma de precios por moneda
-    this.resultado = '';
-    for (const moneda in preciosPorMoneda) {
-        if (preciosPorMoneda.hasOwnProperty(moneda)) {
-            this.resultado += `${moneda} ${preciosPorMoneda[moneda]}</br>`; 
+        // Iterar sobre las subposiciones y sumar los precios por moneda
+        for (const subpos of cotizacionPosicion.CotizacionSubPosiciones) {
+            if (!preciosPorMoneda[subpos.MonedaDescripcion]) {
+                preciosPorMoneda[subpos.MonedaDescripcion] = 0;
+            }
+            preciosPorMoneda[subpos.MonedaDescripcion] += subpos.PrecioUnidad;
         }
-    }
 
-    return this.resultado;
-}
+        this.resultado = '';
+        for (const moneda in preciosPorMoneda) {
+            if (preciosPorMoneda.hasOwnProperty(moneda)) {
+                const precioFormateado = preciosPorMoneda[moneda].toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                this.resultado += ` ${moneda} ${precioFormateado}, <br>`;
+            }
+        }
+
+        return this.resultado;
+    }
 
 }
 
