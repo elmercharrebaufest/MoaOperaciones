@@ -1,5 +1,8 @@
 ﻿using SustitucionMOAModel.Consultas;
+using System.Collections.Generic;
+using System;
 using System.Linq;
+using System.Text;
 
 namespace SustitucionMOARepositorio.Extensiones
 {
@@ -48,55 +51,72 @@ namespace SustitucionMOARepositorio.Extensiones
             return resultadoFinal;
         }
 
-        //public static string[] SplitParagraph(this string paragraph, int maxCharacters)
-        //{
-        //    string[] words = paragraph.Split(' ');
-        //    string[] lines = new string[words.Length];
-        //    int lineCount = 0; int currentLineLength = 0;
-        //    foreach (string word in words)
-        //    {
-        //        if (currentLineLength + word.Length <= maxCharacters)
-        //        {
-        //            lines[lineCount] += word + " ";
-        //            currentLineLength += word.Length + 1;
-        //        }
-        //        else
-        //        {
-        //            lineCount++; lines[lineCount] = word + " ";
-        //            currentLineLength = word.Length + 1;
-        //        }
-        //    }
-        //    return lines;
-        //}
         public static string[] SplitParagraph(this string paragraph, int maxCharacters)
-        {      
-            string[] words = paragraph.Split(new[] { ' ', '\n' });
-            string[] lines = new string[words.Length];
-            int lineCount = 0;
+        {
+            List<string> linesList = new List<string>();
+
+            StringBuilder currentLine = new StringBuilder();
             int currentLineLength = 0;
+
+            string[] words = paragraph.Split(new[] { '\n' }, StringSplitOptions.RemoveEmptyEntries).Select(a => a + '\n').SelectMany(word => word.Split(' ')).ToArray();
+
             foreach (string word in words)
             {
-                if (word == "")
+                // Si la palabra es más larga que el límite máximo, se divide en múltiples líneas
+                if (word.Length > maxCharacters)
                 {
-                    lineCount++;
-                    lines[lineCount] = "";
-                    currentLineLength = 0;
-                }
-                else if (currentLineLength + word.Length <= maxCharacters)
-                {
-                    lines[lineCount] += word + " ";
-                    currentLineLength += word.Length + 1;
+                    int index = 0;
+                    while (index < word.Length)
+                    {
+                        int length = Math.Min(maxCharacters, word.Length - index);
+                        string subWord = word.Substring(index, length);
+
+                        // Si la línea actual ya tiene contenido, agregarla a la lista y crear una nueva línea
+                        if (currentLineLength > 0)
+                        {
+                            linesList.Add(currentLine.ToString().TrimEnd());
+                            currentLine.Clear();
+                            currentLineLength = 0;
+                        }
+
+                        // Agregar subpalabra a la línea actual y agregarla a la lista si es necesario
+                        currentLine.Append(subWord).Append(" ");
+                        linesList.Add(currentLine.ToString().TrimEnd());
+                        currentLine.Clear();
+                        currentLineLength = 0;
+
+                        index += length;
+                    }
                 }
                 else
                 {
-                    lineCount++;
-                    lines[lineCount] = word + " ";
-                    currentLineLength = word.Length + 1;
+                    // Verificar si agregar la palabra excede el límite de caracteres o si es un punto seguido o un salto de línea
+                    if (currentLineLength + word.Length + 1 > maxCharacters || word.EndsWith(".") || word.EndsWith("\n"))
+                    {
+                        // Agregar la palabra a la línea actual
+                        currentLine.Append(word).Append(" ");
+                        linesList.Add(currentLine.ToString().TrimEnd()); // Agregar la línea actual a la lista
+                        currentLine.Clear(); // Crear una nueva línea vacía
+                        currentLineLength = 0;
+                    }
+                    else
+                    {
+                        // Agregar la palabra a la línea actual
+                        currentLine.Append(word).Append(" ");
+                        currentLineLength += word.Length + 1;
+                    }
                 }
             }
 
-            return lines;
+            // Agregar la última línea si no está vacía
+            if (currentLine.Length > 0)
+                linesList.Add(currentLine.ToString().TrimEnd());
+
+            return linesList.ToArray();
         }
+
+
+
 
     }
 }
