@@ -407,7 +407,7 @@
                             <ng-container *ngFor="let cotizacionPosicion of proveedor.Cotizacion.CotizacionPosiciones">
                                 <ng-container *ngIf="peticionPosicion.Id == cotizacionPosicion.PeticionDeOfertaSolpPosicion_Id">
                                     <td class="columna border2-left" [ngStyle]="{'background-color': cotizacionPosicion.EstaEliminado ? '#ff00002e' : 'transparent'}" style="width: 120px !important;" colspan="3">
-                                        {{ proveedor.VerImportes ? (cotizacionPosicion.MonedaDescripcion + ' ' + (cotizacionPosicion.TotalPosicionCotizacion | number:'1.2-2')) : '' }}
+                                        <div [innerHTML]="getTotalPreciosPorMoneda(cotizacionPosicion)"></div>                                      
                                         <i *ngIf="!proveedor.VerImportes" class="fa fa-eye-slash noVisible"></i>
                                     </td>
                                     <td class="columna" [ngStyle]="{'background-color': cotizacionPosicion.EstaEliminado ? '#ff00002e' : 'transparent'}" style="width: 120px !important;" colspan="3">
