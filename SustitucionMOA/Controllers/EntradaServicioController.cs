@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using System.Linq;
+using System.Security.Policy;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 
@@ -101,9 +102,15 @@ namespace SustitucionMOA.Controllers
                 //    parametros.vendedor = SessionPersister.Proveedor;
                 //}
 
-                 var result = await EntradaServicioService.CrearEntradaServicio(parametros);
+                List<EntradaServicioCreateRespuestaDto> ret = new List<EntradaServicioCreateRespuestaDto>();
+                foreach (EntradaServicioCreateParamsDto parametro in parametros)
+                {
+                    var result = new EntradaServicioCreateRespuestaDto();
+                    result = await EntradaServicioService.CrearEntradaServicio(parametro);
+                    ret.Add(result);
+                }
 
-                return JsonCustom(new { data = result });
+                return JsonCustom(new { data = ret });
             }
             catch (Exception ex)
             {

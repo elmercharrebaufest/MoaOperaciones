@@ -42,6 +42,8 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
 
     @Output() enviarMensajeGrilla = new EventEmitter();
 
+    itemsAgrupadosPorPosicion: any[] = [];
+
     fechaDocMin: Date;
     fechaDocMax: Date;
     fechaContabilizacionMin: Date;
@@ -94,7 +96,6 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
             dateFormat: 'yyyy-mm-dd',
             weekHeader: 'Sem'
         };
-
         this.fechaContabilizacion = new Date();
         this.setRangoFechaDocumento();
         this.setRangoFechaContabilizacion();
@@ -108,7 +109,21 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
     }
 
     ngAfterContentInit() {
-        this.textoBreve = this.itemSelected[0].Descripcion !== undefined ? this.itemSelected[0].Descripcion : '';
+        this.entrySheetObjects = [];
+        this.agruparItemPorPosicion(this.itemSelected);
+    }
+
+    agruparItemPorPosicion(items) {
+        this.itemsAgrupadosPorPosicion = items.reduce((prev, { NroPosicion, ...Items }) => {
+            const id = prev.findIndex((item) => item.NroPosicion === NroPosicion);
+            if (id >= 0) {
+                prev[id].MontoTotalACertificar = prev[id].MontoTotalACertificar + Items.MontoACertificar;
+                prev[id].Items.push(Items);
+            } else {
+                prev.push({ NroPosicion, Descripcion: Items.Descripcion, Items: [Items], MontoTotalACertificar: Items.MontoACertificar })
+            }
+            return prev;
+        }, []);
     }
 
     openModal() {
@@ -186,11 +201,8 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
     }
 
     certificarPosicion() {
-
-        const groupedData = this.groupByNroPosicion(this.itemSelected);
-
-        this.buildEntrySheet(groupedData);
-
+        this.buildEntrySheet();
+        
         this.service.postCreateAsync(this.entrySheetObjects).subscribe(
             (response) => {
 
@@ -253,54 +265,44 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
                 );
             }
         );
-
+       
     }
 
-    buildEntrySheet(groupedData: any) {
-
+    buildEntrySheet() {
         let fechaDocFormateada = "";
         let fechaConFormateada = "";
         let PONumber = this.elementSelected !== undefined ? this.elementSelected.NumeroOrdenDeCompra : '';
-        //Array Cantidad
-        this.itemSelected.forEach((el) => {
-            this.arrCantidad.push(el.CantidadACertificar !== undefined ? el.CantidadACertificar.toString() : '');
-        })
 
         if (this.fechaDocumento !== undefined) {
             fechaDocFormateada = this.dateFormatter(this.fechaDocumento);
         }
+
         if (this.fechaContabilizacion !== undefined) {
             fechaConFormateada = this.dateFormatter(this.fechaContabilizacion);
         }
 
         let ref = this.referencia !== undefined ? this.referencia : '';
-        //MMSN-678 - Modificar descripción por short_text en cabecera
-        let txtBreve = this.textoBreve !== undefined ? this.textoBreve : '';
 
-        for (const key in groupedData) {
-            const group = groupedData[key];
-
-            const itemSelected = group[0];
-
+        this.itemsAgrupadosPorPosicion.forEach(position => {
             const entrySheetHeader = {
-                PaqueteNumero: key,
-                Descripcion: txtBreve,
+                PaqueteNumero: position.NroPosicion.toString(),
+                Descripcion: position.Descripcion,
                 OrdenCompraNumero: PONumber,
-                OrdenCompraPosicionNumero: itemSelected.NroPosicion.toString(),
+                OrdenCompraPosicionNumero: position.NroPosicion.toString(),
                 DocumentoReferenciaNumero: ref,
                 FechaDocumento: fechaDocFormateada,
                 FechaContabilizacion: fechaConFormateada,
                 GrabarAceptada: 'X'
             };
 
-            const entrySheetServiceItems = group.map((item, index) => ({
+            const entrySheetServiceItems = position.Items.map((item, index) => ({
                 PackageNumber: '0000000002',
                 LineNumber: '0000000002',
                 ExternalLineNumber: this.zeroPad(item.NumeroLinea, 10),
                 Service: item.ServicioNumero.toString(),
                 Quantity: item.CantidadACertificar,
-                GrossPrice: item.PrecioBruto / item.Cantidad,
-                ShortText: txtBreve,
+                GrossPrice: this.round(parseFloat((item.PrecioBruto / item.Cantidad).toString()), 2),
+                ShortText: position.Descripcion,
                 PlannedPackage: item.Id,
                 PlannedLine: item.LINE_NO
             }));
@@ -313,7 +315,7 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
                 EntrySheetHeader: entrySheetHeader,
                 EntrySheetServices: entrySheetServices
             });
-        }
+        });
     }
 
     cerrarModal() {
@@ -346,5 +348,10 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
     calcularMontoAnterior(item: any): number {
         item.MontoAnterior = (item.Porcentaje * item.Importe) / 100;
         return item.MontoAnterior;
+    }
+
+    //Redondeo de decimales
+    round(num: number, decimals: number) {
+        return Number(num.toFixed(decimals));
     }
 }

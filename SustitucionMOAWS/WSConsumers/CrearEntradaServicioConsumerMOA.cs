@@ -34,72 +34,66 @@ namespace SustitucionMOAWS.WSConsumers
         }
 
 
-        public async Task<List<EntradaServicioCreateRespuestaDto>> CrearEntradaServicioAsync(List<EntradaServicioCreateParamsDto> parametros)
+        public async Task<EntradaServicioCreateRespuestaDto> CrearEntradaServicioAsync(EntradaServicioCreateParamsDto parametros)
         {
             try
             {
-                List<EntradaServicioCreateRespuestaDto> returnInfo = new List<EntradaServicioCreateRespuestaDto>();
-
                 using (var client = new HttpClient())
                 {
                     string _UrlServicio = System.Configuration.ConfigurationManager.AppSettings["ServicioSAPEntradasServicioCrear"];
                     string _SOAPAction = System.Configuration.ConfigurationManager.AppSettings["SOAPAction"];
                     string _Authorization = System.Configuration.ConfigurationManager.AppSettings["Authorization"];
 
-                    foreach (var entrySheetServicesItems in parametros)
-                    {
-                        HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, _UrlServicio);
-                        request.Headers.Add("SOAPAction", _SOAPAction);
-                        request.Headers.Add("Authorization", _Authorization);
-                        
-                        
-                        EntrySheetHeaderSection entrySheetHeader = entrySheetServicesItems.EntrySheetHeader;
-                        List<EntrySheetServiceItemSection> entrySheetServices = entrySheetServicesItems.EntrySheetServices.Items;                      
-                
-                        
-                        // Genera el XML para la lista de EntrySheetServiceItemSection, detalle de ES
-                        string entrySheetServicesXml = GenerateEntrySheetServicesXml(entrySheetServices);
+                    HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, _UrlServicio);
+                    request.Headers.Add("SOAPAction", _SOAPAction);
+                    request.Headers.Add("Authorization", _Authorization);
 
-                        StringContent content = new StringContent(
-                            $@"<soapenv:Envelope xmlns:soapenv=""http://schemas.xmlsoap.org/soap/envelope/"" xmlns:urn=""urn:sap-com:document:sap:rfc:functions"">
+                    EntrySheetHeaderSection entrySheetHeader = parametros.EntrySheetHeader;
+                    List<EntrySheetServiceItemSection> entrySheetServices = parametros.EntrySheetServices.Items;
+
+                    // Genera el XML para la lista de EntrySheetServiceItemSection, detalle de ES
+                    string entrySheetServicesXml = GenerateEntrySheetServicesXml(entrySheetServices);
+
+                    StringContent content = new StringContent(
+                        $@"<soapenv:Envelope xmlns:soapenv=""http://schemas.xmlsoap.org/soap/envelope/"" xmlns:urn=""urn:sap-com:document:sap:rfc:functions"">
                         <soapenv:Header/>
                         <soapenv:Body>
-                            <urn:BAPI_ENTRYSHEET_CREATE>
-                                {GenerateEntrySheetHeaderXml(entrySheetHeader)}
-                                <ENTRYSHEETSERVICES>
-                                    {entrySheetServicesXml}
-                                </ENTRYSHEETSERVICES>
-                                <ENTRYSHEETSERVICESTEXTS></ENTRYSHEETSERVICESTEXTS>
-                                <ENTRYSHEETSRVACCASSVALUES></ENTRYSHEETSRVACCASSVALUES>
-                                <RETURN></RETURN>
-                            </urn:BAPI_ENTRYSHEET_CREATE>
+                        <urn:BAPI_ENTRYSHEET_CREATE>
+                                            {GenerateEntrySheetHeaderXml(entrySheetHeader)}
+                        <ENTRYSHEETSERVICES>
+                                                {entrySheetServicesXml}
+                        </ENTRYSHEETSERVICES>
+                        <ENTRYSHEETSERVICESTEXTS></ENTRYSHEETSERVICESTEXTS>
+                        <ENTRYSHEETSRVACCASSVALUES></ENTRYSHEETSRVACCASSVALUES>
+                        <RETURN></RETURN>
+                        </urn:BAPI_ENTRYSHEET_CREATE>
                         </soapenv:Body>
-                       </soapenv:Envelope>", Encoding.UTF8, "text/xml"
-                        );
+                        </soapenv:Envelope>", Encoding.UTF8, "text/xml"
+                    );
 
-                        content.Headers.ContentType = new MediaTypeHeaderValue("text/xml")
-                        {
-                            CharSet = "utf-8"
-                        };
+                    content.Headers.ContentType = new MediaTypeHeaderValue("text/xml")
+                    {
+                        CharSet = "utf-8"
+                    };
 
-                        request.Content = content;
+                    request.Content = content;
 
-                        await Task.Delay(500);
+                    await Task.Delay(500);
 
-                        HttpResponseMessage response = await client.SendAsync(request).ConfigureAwait(false);
+                    HttpResponseMessage response = await client.SendAsync(request).ConfigureAwait(false);
 
-                        string createMessage = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                    string createMessage = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
-                        returnInfo.Add(ParseReturnInfo(createMessage));
-                    }
+                    EntradaServicioCreateRespuestaDto returnInfo = ParseReturnInfo(createMessage);
+
+                    return returnInfo;
                 }
-                return returnInfo;
             }
             catch (Exception e)
             {
                 throw e;
             }
-        }
+        }   
 
 
         string GenerateEntrySheetHeaderXml(EntrySheetHeaderSection header)
@@ -154,8 +148,14 @@ namespace SustitucionMOAWS.WSConsumers
 
         string GenerateEntrySheetServiceXml(EntrySheetServiceItemSection item)
         {
+            string gp = item.GrossPrice.ToString();
+            if (gp.Contains(","))
+            {
+                gp = gp.Replace(",", ".");
+            }
+
             return $@"
-        <item>
+            <item>
             <PCKG_NO>{item.PackageNumber}</PCKG_NO>
             <LINE_NO>{item.LineNumber}</LINE_NO>
             <OUTL_IND>{item.OutlineIndicator}</OUTL_IND>
@@ -163,11 +163,11 @@ namespace SustitucionMOAWS.WSConsumers
             <EXT_LINE>{item.ExternalLineNumber}</EXT_LINE>
             <SERVICE>{item.Service}</SERVICE>
             <QUANTITY>{item.Quantity}</QUANTITY>
-            <GR_PRICE>{item.GrossPrice}</GR_PRICE>
+            <GR_PRICE>{gp}</GR_PRICE>
             <SHORT_TEXT>{item.ShortText}</SHORT_TEXT>
             <PLN_PCKG>{item.PlannedPackage}</PLN_PCKG>
             <PLN_LINE>{item.PlannedLine}</PLN_LINE>
-        </item>";
+            </item>";
         }
 
         static EntradaServicioCreateRespuestaDto ParseReturnInfo(string soapResponse)

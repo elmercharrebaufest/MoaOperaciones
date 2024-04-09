@@ -372,6 +372,8 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
 
     //MMSN-574 - Agregar filtros
     onBuscar() {
+        this.clearCheckboxes();
+
         this.disabledFilter = true;
         // MMSN-519: Colapsar fila expandida al activar un filtro.
         this.collapseExpandedRow();

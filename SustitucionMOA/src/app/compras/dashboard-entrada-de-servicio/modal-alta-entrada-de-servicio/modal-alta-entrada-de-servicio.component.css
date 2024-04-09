@@ -9,7 +9,12 @@
 
 /* FORM CERTIFICACION */
 .alta-form {
-  padding: 4em 0;
+  padding: 3em 0;
+}
+
+.alta-form .fields {
+  display: flex;
+  justify-content: center;
 }
 
 .alta-form p {
@@ -175,9 +180,27 @@ p-table#items-list th.acumulado {
 }
 
 .btn-certificar {
-  margin-top: 3em;
+  margin-top: 1.3em;
 }
 /* FORM CERTIFICACION END */
+
+/* POSITIONS PANEL */
+p-panel#positions-panel p-header input#description {
+    margin-left: 2em;
+    height: 2em;
+    width: 88%;
+}
+
+p-panel#positions-panel p-header span#title {
+    width: 6em;
+    text-transform: uppercase;
+}
+
+p-panel#positions-panel #ui-panel-0-label {
+    margin-top: .3em;
+}
+
+/* POSITIONS PANEL END */
 
 @media screen and (max-width: 600px) {
   .modal-container {
