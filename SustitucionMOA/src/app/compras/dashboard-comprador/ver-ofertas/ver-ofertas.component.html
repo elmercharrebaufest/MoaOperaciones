@@ -393,7 +393,7 @@
                 </tr>
                 <tr>
                     <ng-container *ngFor="let proveedor of tablaOfertas.Usuarios">
-                        <th class="headerth border2-left" style="background-color: #4760ac !important; width: 120px !important; height: 33.45px;" colspan="3">Precio total</th>
+                        <th class="headerth border2-left" style="background-color: #4760ac !important; width: auto!important; height: 33.45px;" colspan="3">Precio total</th>
                         <th class="headerth" style="background-color: #4760ac !important; width: 120px !important;height: 33.45px;" colspan="3">Total ARP</th>
                         <th class="headerth" style="background-color: #4760ac !important; width: 300px !important;height: 33.45px;" colspan="3">Plazo de entrega</th>
                     </ng-container>
@@ -407,7 +407,7 @@
                             <ng-container *ngFor="let cotizacionPosicion of proveedor.Cotizacion.CotizacionPosiciones">
                                 <ng-container *ngIf="peticionPosicion.Id == cotizacionPosicion.PeticionDeOfertaSolpPosicion_Id">
                                     <td class="columna border2-left" [ngStyle]="{'background-color': cotizacionPosicion.EstaEliminado ? '#ff00002e' : 'transparent'}" style="width: 120px !important;" colspan="3">
-                                        <div [innerHTML]="getTotalPreciosPorMoneda(cotizacionPosicion)"></div>                                      
+                                        <div *ngIf="proveedor.VerImportes" [innerHTML]="getTotalPreciosPorMoneda(cotizacionPosicion)"></div>                                      
                                         <i *ngIf="!proveedor.VerImportes" class="fa fa-eye-slash noVisible"></i>
                                     </td>
                                     <td class="columna" [ngStyle]="{'background-color': cotizacionPosicion.EstaEliminado ? '#ff00002e' : 'transparent'}" style="width: 120px !important;" colspan="3">
