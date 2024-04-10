@@ -57,6 +57,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                             Id = pop.Id, //Pos
                                             Codigo = pop.SolpPosicion.MaterialSolp.CodigoSap, //Codigo
                                             Tarea = pop.SolpPosicion.Tarea,
+                                            Modelo = pop.SolpPosicion.Modelo,
                                             TextoSuministro = pop.SolpPosicion.TextoSuministro,
                                             Cantidad = pop.SolpPosicion.Cantidad,
                                             UnidadComprasDescripcion = pop.SolpPosicion.Unidad.Descripcion,
@@ -65,6 +66,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                             FechaOferta = pop.SolpPosicion.FechaEntregaServicio,
                                             CotizacionPosicion = new CotizacionPosicionDto()
                                             {
+                                                
                                                 Cantidad = cotizacion != null && cotizacion.CotizacionPosiciones.Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id).FirstOrDefault().Cantidad != null ? cotizacion.CotizacionPosiciones.Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id).FirstOrDefault().Cantidad.Value : 0,
                                                 UnidadMedidaDescripcion = cotizacion != null && cotizacion.CotizacionPosiciones.Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id).FirstOrDefault().UnidadDeMedida != null ? cotizacion.CotizacionPosiciones.Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id).FirstOrDefault().UnidadDeMedida.Descripcion : (pop.SolpPosicion.Unidad != null ? pop.SolpPosicion.Unidad.Descripcion : ""),
                                                 UnidadDeMedida_Id = cotizacion != null && cotizacion.CotizacionPosiciones.Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id).FirstOrDefault().UnidadDeMedida != null ? cotizacion.CotizacionPosiciones.Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id).FirstOrDefault().UnidadDeMedida.Id : (pop.SolpPosicion.Unidad_Id != null ? pop.SolpPosicion.Unidad_Id.Value : 0),
