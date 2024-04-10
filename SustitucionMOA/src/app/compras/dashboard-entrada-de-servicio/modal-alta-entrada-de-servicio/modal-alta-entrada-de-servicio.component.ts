@@ -334,7 +334,7 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
      * a la certificacion actual.
      */
     calcularMontoAnterior(item: any): number {
-        item.MontoAnterior = (item.Porcentaje * item.Importe) / 100;
+        item.MontoAnterior = (item.CantidadReal * item.Importe);
         return item.MontoAnterior;
     }
 
