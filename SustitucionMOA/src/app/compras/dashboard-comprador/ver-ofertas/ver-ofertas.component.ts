@@ -772,7 +772,7 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
         for (const moneda in preciosPorMoneda) {
             if (preciosPorMoneda.hasOwnProperty(moneda)) {
                 const precioFormateado = preciosPorMoneda[moneda].toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-                this.resultado += ` ${moneda} ${precioFormateado}, <br>`;
+                this.resultado += ` ${moneda} ${precioFormateado} <br>`;
             }
         }
 
