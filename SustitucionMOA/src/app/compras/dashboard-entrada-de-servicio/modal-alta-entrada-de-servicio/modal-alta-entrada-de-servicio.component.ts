@@ -197,57 +197,56 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
         return grouped;
     }
 
+    cerrarMensajes(msjTypes: string[]) {
+        // Si alguna de los items se certificaron exitosamente actualizar tabla de ordenes
+        if (msjTypes.includes('I') || msjTypes.includes('S')) {
+            this.enviarMensajeGrilla.emit();
+        }
+        // Si no se recibión un error cerrar Modal de Certificaciones
+        if (!msjTypes.includes('E')) {
+            this.closeModal.emit();
+        }
+        // Si alguna certificación falló, cerrar mensaje pero mantener Modal de Certificaciones abierto
+        else {
+            this.closeDialog.emit();
+        }
+    }
+
     certificarPosicion() {
         this.buildEntrySheet();
-        
         this.service.postCreateAsync(this.entrySheetObjects).subscribe(
             (response) => {
-
+                this.mensajeError = '';
                 let resultMsj: string[] = [];
+                let msjTypes: string[] = [];
 
                 response.data.forEach(element => {
                     if (!element) {
                         this.mensajeError = 'Error del servidor, vuelva a intentarlo más tarde.'
                     }
 
-                    switch (element.Type) {
-                        case "I": {
-                            resultMsj.push(element.Message);
-                            break;
-                        }
-                        case "S": {
-                            resultMsj.push(element.Message);
-                            break;
-                        }
-                        case "E": {
-                            let msjError = element.Message.startsWith("Sólo es posible contabilizar en ") ||
-                                element.Message.startsWith("Contabilice en ") ?
-                                "El período se encuentra cerrado, por favor contabilice en el periodo actual." : element.Message
-                            resultMsj.push(msjError);
-                            break;
-                        }
-                        default: {
-                            resultMsj;
-                            break;
-                        }
+                    if (!element.Message) {
+                        element.Message = "Ha ocurrido un error por favor inténtelo nuevamente más tarde."
+                    }
+
+                    let msj = element.Message.startsWith("Sólo es posible contabilizar en ") ||
+                        element.Message.startsWith("Contabilice en ") ?
+                        "El período se encuentra cerrado, por favor contabilice en el periodo actual." : element.Message;
+
+                    resultMsj.push("<li>" + msj + "</li>");
+
+                    if (!msjTypes.includes(element.Type)) {
+                        msjTypes.push(element.Type);
                     }
                 });
 
-                for (let msj of resultMsj) {
-                    this.mensajeError += "<li>" + msj + "</li>";
-                }
-
+                this.mensajeError = resultMsj.join("");
+                
                 this.confirmationService.confirm({
                     message: "<ul>" + this.mensajeError + "</ul>",
-                    accept: () => {
-                        this.enviarMensajeGrilla.emit();
-                        this.closeModal.emit();
-                    },
-                    reject: () => {
-                        this.closeModal.emit();
-                    }
-                }
-                );
+                    accept: () => this.cerrarMensajes(msjTypes),
+                    reject: () => this.cerrarMensajes(msjTypes)
+                });
             },
             (error) => {
                 this.confirmationService.confirm({
@@ -269,6 +268,7 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
         let fechaDocFormateada = "";
         let fechaConFormateada = "";
         let PONumber = this.elementSelected !== undefined ? this.elementSelected.NumeroOrdenDeCompra : '';
+        this.entrySheetObjects = [];
 
         if (this.fechaDocumento !== undefined) {
             fechaDocFormateada = this.dateFormatter(this.fechaDocumento);
@@ -297,7 +297,7 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
                 LineNumber: '0000000002',
                 ExternalLineNumber: this.zeroPad(item.NumeroLinea, 10),
                 Service: item.ServicioNumero.toString(),
-                Quantity: item.CantidadACertificar,
+                Quantity: this.round(parseFloat(item.CantidadACertificar), 2),
                 GrossPrice: this.round(parseFloat((item.PrecioBruto / item.Cantidad).toString()), 2),
                 ShortText: position.Descripcion,
                 PlannedPackage: item.Id,

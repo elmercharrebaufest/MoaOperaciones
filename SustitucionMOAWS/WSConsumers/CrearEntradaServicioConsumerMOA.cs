@@ -154,6 +154,12 @@ namespace SustitucionMOAWS.WSConsumers
                 gp = gp.Replace(",", ".");
             }
 
+            string qty = item.Quantity.ToString();
+            if (qty.Contains(","))
+            {
+                qty = qty.Replace(",", ".");
+            }
+
             return $@"
             <item>
             <PCKG_NO>{item.PackageNumber}</PCKG_NO>
@@ -162,7 +168,7 @@ namespace SustitucionMOAWS.WSConsumers
             <SUBPCKG_NO>{item.SubPackageNumber}</SUBPCKG_NO>
             <EXT_LINE>{item.ExternalLineNumber}</EXT_LINE>
             <SERVICE>{item.Service}</SERVICE>
-            <QUANTITY>{item.Quantity}</QUANTITY>
+            <QUANTITY>{qty}</QUANTITY>
             <GR_PRICE>{gp}</GR_PRICE>
             <SHORT_TEXT>{item.ShortText}</SHORT_TEXT>
             <PLN_PCKG>{item.PlannedPackage}</PLN_PCKG>

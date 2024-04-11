@@ -171,7 +171,6 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
                 { id: 'iCantidadACertificar', header: 'Cant. Actual', field: null, type: 'custom', sortable: false, required: true, visible: true },
                 { id: 'iPorcentajeACertificar', header: '% a Certificar', field: null, type: 'custom', sortable: false, required: true, visible: true },
                 { id: 'iMontoACertificar', header: 'Monto a Certificar', field: null, type: 'custom', sortable: false, required: true, visible: true },
-                { id: 'iCantidadTotal', header: 'Cant. Total', field: null, type: 'custom', sortable: false, required: true, visible: true },
                 { id: 'iAcciones', header: 'Acciones', field: null, sortable: false, type: 'custom', required: true, visible: true },
 
             ]
@@ -449,7 +448,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
                         }, 500)
                     }
                     this.disabledFilter = false;
-                    this.spinnerComponent.hideIt();
+                    if (this.spinnerComponent) this.spinnerComponent.hideIt();
                     this.displayContent = true;
                 },
                 error => {
