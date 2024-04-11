@@ -5953,6 +5953,7 @@ namespace SustitucionMOAUtils.Services
         private void GuardarCotizacionPosicion(GuardarCotizacion cotizacionDto, Cotizacion cotizacion, List<TablaSap> info)
         {
             var cotizaciones = cotizacion.CotizacionPosiciones.Where(x => x.PeticionDeOfertaSolpPosicion.SolpPosicion.Estado == true).ToList();
+           
             if (cotizacion.CotizacionPosiciones != null && cotizaciones.Count > 0)
             {
                 foreach (var cotizacionPosicion in cotizaciones)
