@@ -55,19 +55,25 @@ namespace SustitucionMOAModel.Entities
         public string DomicilioDescr { get; set; }
         public string MotivoRechazo { get; set; }
 
-        public string DescripcionMercaderia()
+        public DateTime FechaVencimiento (List<DateTime> feriados)
         {
+                var dayOfWeek = FechaCreacion.DayOfWeek;
+                var cantidadDiasDeMargen = (dayOfWeek == DayOfWeek.Friday || dayOfWeek == DayOfWeek.Thursday) ? 4 : 2;
 
-            try
-            {
-                var split = Producto.Nombre.Split('-');
+                var fechaFinal = FechaCreacion.AddDays(cantidadDiasDeMargen);
 
-                return split.LastOrDefault()?.Trim();
-            }
-            catch (Exception e)
-            {
-                return "";
-            }
-        }
+                foreach (var fechaFeriado in feriados)
+                {
+                    if (fechaFeriado.DayOfWeek != DayOfWeek.Saturday &&
+                        fechaFeriado.DayOfWeek != DayOfWeek.Sunday &&
+                        fechaFeriado.Date >= FechaCreacion &&
+                        fechaFeriado.Date <= fechaFinal)
+                    {
+                        cantidadDiasDeMargen++;
+                    }
+                }
+
+                return FechaCreacion.AddDays(cantidadDiasDeMargen);
+        } 
     }
 }

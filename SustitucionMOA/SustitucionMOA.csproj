@@ -19,10 +19,14 @@
     <AssemblyName>SustitucionMOA</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <UseIISExpress>true</UseIISExpress>
-    <IISExpressSSLPort>58280</IISExpressSSLPort>
-    <IISExpressAnonymousAuthentication>enabled</IISExpressAnonymousAuthentication>
-    <IISExpressWindowsAuthentication>disabled</IISExpressWindowsAuthentication>
-    <IISExpressUseClassicPipelineMode>false</IISExpressUseClassicPipelineMode>
+    <IISExpressSSLPort>
+    </IISExpressSSLPort>
+    <IISExpressAnonymousAuthentication>
+    </IISExpressAnonymousAuthentication>
+    <IISExpressWindowsAuthentication>
+    </IISExpressWindowsAuthentication>
+    <IISExpressUseClassicPipelineMode>
+    </IISExpressUseClassicPipelineMode>
     <UseGlobalApplicationHostFile />
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
@@ -436,6 +440,7 @@
     <Content Include="src\app\reporte-contrato\listado\reporte-contrato.listado.component.css" />
     <Content Include="src\app\reporte-contrato\listado\reporte-contrato.listado.component.html" />
     <Content Include="Template\EnvioCamposSustentablesUcropit.html" />
+    <Content Include="Template\NotificacionOrdenesResiduosVencidas.html" />
     <Content Include="Template\NotificacionOrdenesDeCarga.html" />
     <Content Include="NOTUSE_UPDATE.DeployParameters.Release.xml">
       <DependentUpon>NOTUSE_UPDATE.DeployParameters.xml</DependentUpon>
@@ -1157,6 +1162,7 @@
     <Compile Include="Jobs\ActualizarLocalidadesPartidosJob.cs" />
     <Compile Include="Jobs\CcSsObtenerArchivosUcropJob.cs" />
     <Compile Include="Jobs\EnviarCamposUcropitJob.cs" />
+    <Compile Include="Jobs\VencimientoOrdenesResiduosJob.cs" />
     <Compile Include="Jobs\VerificarOrdenesFacturasCompensadasJob.cs" />
     <Compile Include="Jobs\VerificarTransporteOrdenesDeCargaFasonJob.cs" />
     <Compile Include="Jobs\AltaClienteSAPJob.cs" />

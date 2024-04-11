@@ -835,6 +835,12 @@
                     /endpoint[@name='BAPI_PO_CHANGEPortType']
                     /@address" />
   </parameter>
- 
+
+ 	<parameter name="EmailOrdenesResiduosVencidas Config">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/appSettings/add[@key='EmailOrdenesResiduosVencidas']
+                           /@value" />
+	</parameter>
+
 </parameters>
 

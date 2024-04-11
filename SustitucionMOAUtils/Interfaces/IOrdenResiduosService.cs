@@ -13,5 +13,6 @@ namespace SustitucionMOAUtils.Interfaces
         MaterialDto[] ObtenerMateriales();
 
         ListarOrdenesResiduosResponse ObtenerListadoOrdenes(string fechaInicio, string fechaFin);
+        void VerificarVencimientoOrdenesResiduos();
     }
 }

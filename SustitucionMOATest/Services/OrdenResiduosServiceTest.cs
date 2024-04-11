@@ -17,13 +17,17 @@ namespace SustitucionMOATest.Services
     public class OrdenResiduosServiceTest
     {
         private Mock<IRepositorioOrdenResiduos> mIRepositorioOrdenResiduos;
+        private Mock<IFeriadoService> mIFeriadoService;
+        private Mock<IEmailResiduosService> mIEmailResiduosService;
         private IOrdenResiduosService target;
 
         [SetUp]
         public void SetUp()
         {
             mIRepositorioOrdenResiduos = new Mock<IRepositorioOrdenResiduos>();
-            target = new OrdenResiduosService(mIRepositorioOrdenResiduos.Object);
+            mIFeriadoService = new Mock<IFeriadoService>();
+            mIEmailResiduosService = new Mock<IEmailResiduosService>();
+            target = new OrdenResiduosService(mIRepositorioOrdenResiduos.Object, mIFeriadoService.Object, mIEmailResiduosService.Object);
         }
 
         [Test]

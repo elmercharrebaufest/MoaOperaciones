@@ -22,3 +22,5 @@ IF NOT EXISTS (SELECT TOP 1 1 FROM HabilitacionJob WHERE Nombre = 'AltaClienteSA
 IF NOT EXISTS (SELECT TOP 1 1 FROM HabilitacionJob WHERE Nombre = 'VerificarOrdenesFacturaCompensadaJob') BEGIN    INSERT into HabilitacionJob VALUES ('VerificarOrdenesFacturaCompensadaJob',1)END
 IF NOT EXISTS (SELECT TOP 1 1 FROM HabilitacionJob WHERE Nombre = 'CcSsObtenerArchivosUcropJob') BEGIN    INSERT into HabilitacionJob VALUES ('CcSsObtenerArchivosUcropJob',1)END
 IF NOT EXISTS (SELECT TOP 1 1 FROM HabilitacionJob WHERE Nombre = 'EnviarCamposUcropitJob') BEGIN    INSERT into HabilitacionJob VALUES ('EnviarCamposUcropitJob',1)END
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM HabilitacionJob WHERE Nombre = 'VencimientoOrdenesResiduosJob') BEGIN    INSERT into HabilitacionJob VALUES ('VencimientoOrdenesResiduosJob',1)END

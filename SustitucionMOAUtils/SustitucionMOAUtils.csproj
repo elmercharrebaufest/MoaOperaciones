@@ -189,6 +189,7 @@
     <Compile Include="Interfaces\IArchivoBoletoService.cs" />
     <Compile Include="Interfaces\IDBService.cs" />
     <Compile Include="Interfaces\IEmailFasonService.cs" />
+    <Compile Include="Interfaces\IEmailResiduosService.cs" />
     <Compile Include="Interfaces\IExternalApiOrdenesResiduosService.cs" />
     <Compile Include="Interfaces\IOrdenResiduosService.cs" />
     <Compile Include="Interfaces\IRYDService.cs" />
@@ -250,6 +251,7 @@
     <Compile Include="Interfaces\IEmailService.cs" />
     <Compile Include="Services\ArchivoBoletoService.cs" />
     <Compile Include="Services\Email\EmailFasonService.cs" />
+    <Compile Include="Services\Email\EmailResiduosService.cs" />
     <Compile Include="Services\ExternalApiOrdenesResiduosService.cs" />
     <Compile Include="Services\KgDisponiblesFasService.cs" />
     <Compile Include="Services\OrdenDeCargaServiceBase.cs" />
