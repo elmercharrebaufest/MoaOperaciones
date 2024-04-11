@@ -52,7 +52,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                     EstaLiberado = po.Posiciones.Select(x => x.SolpPosicion.Solp).All(solp => solp.EstadoSolpSap.CodigoSap == "05" || solp.EstadoSolpSap.CodigoSap == "02"),
                                     RevisionFinalizada = po.RevisionTecnica == null ? false : po.RevisionTecnica.Finalizada,
                                     PlazoDeOfertaCierre = po.Cierres.Any() ? po.Cierres.OrderByDescending(p => p.Fecha).FirstOrDefault().Fecha : (DateTime?)null,
-                                    NrosSolp = po.Posiciones.Select(posi => posi.SolpPosicion.Solp.NroSolp),
+                                    NrosSolp = po.Posiciones.Select(posi => posi.SolpPosicion.Solp.NroSolp).Distinct(),
                                     PeticionDeOfertaPosicion = (from pop in contexto.Set<PeticionDeOfertaSolpPosicion>()
                                                                 where po.Id == pop.PeticionDeOferta_Id && pop.SolpPosicion.EsConcluido == true
                                                                 select new PeticionDeOfertaSolpPosicionDto()
