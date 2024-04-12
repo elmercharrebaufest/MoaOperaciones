@@ -170,7 +170,7 @@ export class Generacion2Component extends ListBaseComponent {
 
     mostrarValidacion(campoAValidar, vacio){
         let camposVacios = this.camposObligatorios.find(x => x.campo == campoAValidar && x.esObligatorio);
-        if(vacio !== undefined && vacio.CodigoDescripcion != "Seleccione un usuario") {
+        if(vacio !== null && vacio !== undefined && vacio.CodigoDescripcion != "Seleccione un usuario") {
             return (camposVacios != null && vacio == 0);
         }
         return true;
