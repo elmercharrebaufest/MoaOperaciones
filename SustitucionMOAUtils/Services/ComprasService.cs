@@ -7976,69 +7976,77 @@ namespace SustitucionMOAUtils.Services
 
                 modificarPedidoSAP.POCOND = new List<BAPIMEPOCOND>();
                 modificarPedidoSAP.POCONDX = new List<BAPIMEPOCONDX>();
+                
+                modificarPedidoSAP.POADDRDELIVERY = new List<BAPIMEPOADDRDELIVERY>();
+                modificarPedidoSAP.POSCHEDULE = new List<BAPIMEPOSCHEDULE>();
+                modificarPedidoSAP.POSCHEDULEX = new List<BAPIMEPOSCHEDULX>();
 
             }
 
             var resultadoSAP = modificarOrdenDeCompraConsumerMOA.EditarPedidoRequest(modificarPedidoSAP);
             resultadoSAP.Where(a => a.MESSAGE == "No se han modificado datos").ToList().ForEach(a => a.TYPE = "E");
 
-            if (modificoMoneda && resultadoSAP.All(a => a.TYPE != "E"))
-            {
-                ocSap = obtenerOrdenDeCompraConsumerMOA.ObtenerOrdenDeCompraRFC(adjudicacion.NumeroOrdenDeCompra);
+            
+            
+            
+            
+            //if (modificoMoneda && resultadoSAP.All(a => a.TYPE != "E"))
+            //{
+            //    ocSap = obtenerOrdenDeCompraConsumerMOA.ObtenerOrdenDeCompraRFC(adjudicacion.NumeroOrdenDeCompra);
 
-                modificarPedidoSAP.POCOND = ocSap.POCOND.Where(a => a.COND_TYPE != "SKTO").Select(x => new BAPIMEPOCOND
-                {
-                    ITM_NUMBER = x.ITM_NUMBER,  //el número de ítem al que corresponda la condición
-                    COND_ST_NO = x.COND_ST_NO,
-                    COND_TYPE = x.COND_TYPE,
-                    COND_VALUE = x.COND_VALUE, //el importe de la condición
-                    COND_VALUESpecified = true,
-                    CURRENCY = x.CURRENCY,
-                    CHANGE_ID = "U",
-                    //COND_COUNT = x.COND_COUNT,
+            //    modificarPedidoSAP.POCOND = ocSap.POCOND.Where(a => a.COND_TYPE != "SKTO").Select(x => new BAPIMEPOCOND
+            //    {
+            //        ITM_NUMBER = x.ITM_NUMBER,  //el número de ítem al que corresponda la condición
+            //        COND_ST_NO = x.COND_ST_NO,
+            //        COND_TYPE = x.COND_TYPE,
+            //        COND_VALUE = x.COND_VALUE, //el importe de la condición
+            //        COND_VALUESpecified = true,
+            //        CURRENCY = x.CURRENCY,
+            //        CHANGE_ID = "U",
+            //        //COND_COUNT = x.COND_COUNT,
 
-                }).ToList();
-                modificarPedidoSAP.POCONDX = ocSap.POCOND.Where(a => a.COND_TYPE != "SKTO").Select(x => new BAPIMEPOCONDX
-                {
-                    ITM_NUMBER = x.ITM_NUMBER,
-                    ITM_NUMBERX = "X",
-                    COND_ST_NO = "001",
-                    COND_ST_NOX = "X",
-                    COND_TYPE = "X",
-                    COND_VALUE = "X",
-                    CURRENCY = "X",
-                    CHANGE_ID = "X",
-                    CONDITION_NOX = "X",
-                }).ToList();
+            //    }).ToList();
+            //    modificarPedidoSAP.POCONDX = ocSap.POCOND.Where(a => a.COND_TYPE != "SKTO").Select(x => new BAPIMEPOCONDX
+            //    {
+            //        ITM_NUMBER = x.ITM_NUMBER,
+            //        ITM_NUMBERX = "X",
+            //        COND_ST_NO = "001",
+            //        COND_ST_NOX = "X",
+            //        COND_TYPE = "X",
+            //        COND_VALUE = "X",
+            //        CURRENCY = "X",
+            //        CHANGE_ID = "X",
+            //        CONDITION_NOX = "X",
+            //    }).ToList();
 
-                foreach (var condicion in modificarPedidoSAP.POCOND)
-                {
-                    var posicion = ocSap.POITEM.Single(a => int.Parse(a.PO_ITEM) == int.Parse(condicion.ITM_NUMBER));
-                    var servicioCabecera = ocSap.POSERVICES.Single(a => a.PCKG_NO == posicion.PCKG_NO);
-                    var servicios = ocSap.POSERVICES.Where(a => a.PCKG_NO == servicioCabecera.SUBPCKG_NO).ToList();
-                    if (esMateriales)
-                    {
-                        condicion.COND_VALUE = posicion.NET_PRICE;
-                        condicion.CURRENCY = ocSap.POHEADER.CURRENCY;
-                    }
-                    else
-                    {
-                        var total = servicios.Sum(a => a.NET_VALUE);
-                        condicion.COND_VALUE = total;
-                        condicion.CURRENCY = ocSap.POHEADER.CURRENCY;
-                    }
-                }
+            //    foreach (var condicion in modificarPedidoSAP.POCOND)
+            //    {
+            //        var posicion = ocSap.POITEM.Single(a => int.Parse(a.PO_ITEM) == int.Parse(condicion.ITM_NUMBER));
+            //        var servicioCabecera = ocSap.POSERVICES.Single(a => a.PCKG_NO == posicion.PCKG_NO);
+            //        var servicios = ocSap.POSERVICES.Where(a => a.PCKG_NO == servicioCabecera.SUBPCKG_NO).ToList();
+            //        if (esMateriales)
+            //        {
+            //            condicion.COND_VALUE = posicion.NET_PRICE;
+            //            condicion.CURRENCY = ocSap.POHEADER.CURRENCY;
+            //        }
+            //        else
+            //        {
+            //            var total = servicios.Sum(a => a.NET_VALUE);
+            //            condicion.COND_VALUE = total;
+            //            condicion.CURRENCY = ocSap.POHEADER.CURRENCY;
+            //        }
+            //    }
 
-                resultadoSAP = modificarOrdenDeCompraConsumerMOA.EditarPedidoRequest(modificarPedidoSAP);
-                if (resultadoSAP.Any(a => a.TYPE == "E"))
-                {
-                    BAPIRET2 newBapiRet = new BAPIRET2 { TYPE = "E", MESSAGE = "Se modifico la moneda pero no se pudo modificar la condición. Corregir en SAP." };
-                    BAPIRET2[] newArray = new BAPIRET2[resultadoSAP.Length + 1];
-                    Array.Copy(resultadoSAP, newArray, resultadoSAP.Length);
-                    newArray[newArray.Length - 1] = newBapiRet;
-                    resultadoSAP = newArray;
-                }
-            }
+            //    resultadoSAP = modificarOrdenDeCompraConsumerMOA.EditarPedidoRequest(modificarPedidoSAP);
+            //    if (resultadoSAP.Any(a => a.TYPE == "E"))
+            //    {
+            //        BAPIRET2 newBapiRet = new BAPIRET2 { TYPE = "E", MESSAGE = "Se modifico la moneda pero no se pudo modificar la condición. Corregir en SAP." };
+            //        BAPIRET2[] newArray = new BAPIRET2[resultadoSAP.Length + 1];
+            //        Array.Copy(resultadoSAP, newArray, resultadoSAP.Length);
+            //        newArray[newArray.Length - 1] = newBapiRet;
+            //        resultadoSAP = newArray;
+            //    }
+            //}
 
 
             foreach (var item in resultadoSAP.Where(x => x.TYPE == "E"))
