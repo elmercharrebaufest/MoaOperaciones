@@ -18,6 +18,8 @@ import { AutoCompleteModule } from 'primeng/autocomplete';
 
 import { ImpresionDeclaracionComponent } from './impresion-declaracion/impresion-declaracion.component';
 import { NgxMaskModule } from 'ngx-mask';
+import { DialogModule } from 'primeng/dialog';
+import { ButtonModule } from 'primeng/button';
 
 @NgModule({
   imports: [
@@ -30,6 +32,8 @@ import { NgxMaskModule } from 'ngx-mask';
     ReactiveFormsModule,
     AutoCompleteModule, DropdownModule, MultiSelectModule, SpinnerModule,
     NgxMaskModule.forRoot(),
+    DialogModule,
+    ButtonModule
 
   ],
   declarations: [

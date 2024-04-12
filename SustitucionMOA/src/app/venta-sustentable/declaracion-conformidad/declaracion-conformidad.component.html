@@ -154,7 +154,8 @@
               <br />
             </div>
             <div class="row btnSections" style="justify-content: center;margin-bottom: 20px;">
-              <button type="button" class="btn-custom btn-mediano btn-guardar" (click)="adjuntarDeclaracionFirmada()">
+              <button type="button" class="btn-custom btn-mediano btn-guardar" (click)="showModalConfirmacion=true;"
+                [disabled]="!file">
                 Adjuntar declaracion
               </button>
             </div>
@@ -175,3 +176,17 @@
     </div>
   </div>
 </div>
+
+<p-dialog [(visible)]="showModalConfirmacion" [appendTo]="'body'" [modal]="true" [header]="'Cargar declaración firmada'"
+  [responsive]="true" [draggable]="false">
+  Asegúrese de subir una versión firmada del pdf descargado.
+  <ng-container *ngIf="file && sizeArrayArchivoImprimido === file.size">
+    Los archivos parecen ser iguales.
+  </ng-container>
+  <p-footer>
+    <button type="button" pButton icon="pi pi-close" (click)="showModalConfirmacion=false" label="Cancelar"
+      class="ui-button-secondary"></button>
+    <button type="button" pButton icon="pi pi-check" (click)="showModalConfirmacion=false;adjuntarDeclaracionFirmada()"
+      label="Continuar"></button>
+  </p-footer>
+</p-dialog>
