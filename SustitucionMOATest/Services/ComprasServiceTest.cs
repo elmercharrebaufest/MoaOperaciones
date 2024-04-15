@@ -1298,6 +1298,9 @@ namespace SustitucionMOATest.Services
                 Id = 1, SolpPosicion = new SolpPosicion { TipoPosicion = new TablaGeneral { Codigo = "SERVICIOS" } }
             } });
 
+            repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<SolpSubposicion, bool>>>(),
+               It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null)).Returns(new List<SolpSubposicion>() { new SolpSubposicion { Id = 1 } });
+
             repositorioMock.Setup(y => y.Agregar(It.IsAny<Cotizacion>())).Returns(new Cotizacion { Id = 1, CotizacionEstado_Id = 1 });
 
             var result = target.GrabarCotizacion(guardarCotizacion, null, false, 1, false);
@@ -1564,6 +1567,10 @@ namespace SustitucionMOATest.Services
                 It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc)).Returns(new List<Tuple<string, string>> { Tuple.Create("Comercial", "UM") });
             crearSolpConsumerMOAMock.Setup(x => x.Request(It.IsAny<SolpSAPDto>())).Returns(new CrearSolpConsumerMOAResponse { NumeroSolp = "383737373", Resultado = "OK", Errores = new List<CrearSolpConsumerMOAError>() });
 
+            repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<SolpSubposicion, bool>>>(),
+              It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null)).Returns(new List<SolpSubposicion>() { new SolpSubposicion { Id = 1 } });
+            
+
             var registroInfo = new List<RegistroInfoDto>() { new RegistroInfoDto {
                 ProveedorId = 1, PosicionId = 1, CantidadAdjudicacion = 5, Moneda = "ARP"
             } };
@@ -1622,7 +1629,7 @@ namespace SustitucionMOATest.Services
 
             repositorioMock.Verify(x => x.Agregar(It.IsAny<PeticionDeOferta>()), Times.Once);
             repositorioMock.Verify(x => x.Agregar(It.IsAny<Cotizacion>()), Times.Once);
-            repositorioMock.Verify(x => x.GuardarCambios(), Times.Exactly(7));
+            repositorioMock.Verify(x => x.GuardarCambios(), Times.Exactly(8));
             Assert.IsNotNull(result);
             Assert.That(result.First().Errores.Count == 0);
             Assert.AreEqual(expected.Count, result.Count);
@@ -2496,7 +2503,8 @@ namespace SustitucionMOATest.Services
                 Id = 1, PeticionDeOfertaSolpPosicion_Id = 1, Cantidad = 2, Precio = 500, UnidadMedida = new TablaSapDto { Descripcion = "UNI" }, TotalPesos = 1000 } } } } },
                 PeticionDeOfertaPosicion = new List<PeticionDeOfertaSolpPosicionDto> {
                     new PeticionDeOfertaSolpPosicionDto { Id = 1, Posicion = new SolpPosicionDto { Unidad = new TablaSapDto { Descripcion = "PAR" }, CodigoMaterialSap = new MaterialSolpDto { Codigo = "000000000050224373" } }, Posiciones = new SolpPosicionDto { Codigo = "000000000050224373" } }
-                }
+                },
+                NrosSolp = new List<string> { "102002020"}
             });
             repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<PeticionDeOfertaVisualizacionPrecio, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null))
                 .Returns(new List<PeticionDeOfertaVisualizacionPrecio> { new PeticionDeOfertaVisualizacionPrecio { Id = 1 } });
