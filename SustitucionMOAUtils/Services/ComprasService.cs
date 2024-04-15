@@ -156,7 +156,6 @@ namespace SustitucionMOAUtils.Services
             Pliego pliegoEntity = null;
             SolpPosicion postEntitySubPosicionesEliminadas = null;
             bool enviarMailUrgencia = solp.Urgencia == true && solp.Finalizar && solp.TrabajoYaHecho != true;
-            var hayPosicionesNuevas = false;
 
             if (solp.Id.HasValue)
             {
@@ -175,7 +174,6 @@ namespace SustitucionMOAUtils.Services
                 if (solpEntity != null)
                 {
                     //TODO: validar si está en un estado modificable
-                    hayPosicionesNuevas = solp.Posiciones.Count != solpEntity.Posiciones.Count;
 
                     solpEntity.UsuarioModificacion_Id = solp.UsuarioActual.Id;
                     if (solpEntity.TipoSolpSap == (int?)TipoSolpSap.Mantenimiento || solpEntity.TipoSolpSap == (int?)TipoSolpSap.ReposicionAutomatica || solpEntity.TipoSolpSap == (int?)TipoSolpSap.Sap)
@@ -419,29 +417,6 @@ namespace SustitucionMOAUtils.Services
                     var finalizoPrimeraVez = string.IsNullOrEmpty(solpEntity.NroSolp);
                     respuestaGuardarSOLP = FinalizarSolp(solpEntity, postEntitySubPosicionesEliminadas, respuestaGuardarSOLP, enviarMailUrgencia);
                     GuardarUsuarioComprasRelacionado(solp);
-
-                    //Enviar circular manualmente                  
-                     
-                    var cotizaciones = repositorio.Listar<Cotizacion>(coti =>
-                      coti.CotizacionPosiciones.Any(posicion =>
-                          posicion.PeticionDeOfertaSolpPosicion.SolpPosicion.Solp.NroSolp == solp.NroSolp
-                      ) && coti.CotizacionEstado_Id == (int)CotizacionEstadoEnum.Cotizado
-                    );
-
-                    if (esServicio && hayPosicionesNuevas && solpEntity.Posiciones.Select(x => x.Peticiones).Any() && cotizaciones.Count > 0)
-                    {
-                        ActualizarPeticionDeOfertaAlEditarSolp(solpEntity, solpEntity.TrabajoYaHecho != true);
-                        if (solpEntity.TrabajoYaHecho != true)
-                        {
-                           
-                            EnviarCircularAutomatico(solpEntity);
-                        }
-                        else
-                        {
-                            AgregarPosicionACotizacionTrabajoYaHecho(cotizaciones, solpEntity);
-                        }
-                    }
-
                    
                 }
                 catch (Exception e)
@@ -1991,6 +1966,29 @@ namespace SustitucionMOAUtils.Services
                     if ((solp.TrabajoYaHecho != true && solp.Adicional == true) || solp.CondEspProveedorAsignado == true)
                     {
                         CrearPeticionAutomatica(solp, new List<int> { solp.ProveedorAsignado_Id.Value }, null, false);
+                    }
+                }
+
+                //Enviar circular manualmente                  
+
+                var cotizaciones = repositorio.Listar<Cotizacion>(coti =>
+                  coti.CotizacionPosiciones.Any(posicion =>
+                      posicion.PeticionDeOfertaSolpPosicion.SolpPosicion.Solp.NroSolp == solp.NroSolp
+                  ) && coti.CotizacionEstado_Id == (int)CotizacionEstadoEnum.Cotizado
+                );
+
+                var esServicio = solp.Posiciones.Any() && solp.Posiciones.FirstOrDefault().TipoPosicion.Codigo == "SERVICIO";
+                if (esServicio && solp.Posiciones.Select(x => x.Peticiones).Any() && cotizaciones.Count > 0)
+                {
+                    ActualizarPeticionDeOfertaAlEditarSolp(solp, solp.TrabajoYaHecho != true);
+                    if (solp.TrabajoYaHecho != true)
+                    {
+
+                        EnviarCircularAutomatico(solp);
+                    }
+                    else
+                    {
+                        AgregarPosicionACotizacionTrabajoYaHecho(cotizaciones, solp);
                     }
                 }
                 if (solp.UsuarioCompras != null && solp.Posiciones.Select(x => x.TipoPosicion.Codigo).FirstOrDefault() == "SERVICIO" && enviarMail && (solp.Urgencia != true || solp.Urgencia == true && solp.TrabajoYaHecho == true))
