@@ -58,7 +58,7 @@ namespace SustitucionMOAModel.Entities
         public DateTime FechaVencimiento (List<DateTime> feriados)
         {
                 var dayOfWeek = FechaCreacion.DayOfWeek;
-                var cantidadDiasDeMargen = (dayOfWeek == DayOfWeek.Friday || dayOfWeek == DayOfWeek.Thursday) ? 4 : 2;
+                var cantidadDiasDeMargen = (dayOfWeek == DayOfWeek.Friday || dayOfWeek == DayOfWeek.Thursday) ? 5 : 3;
 
                 var fechaFinal = FechaCreacion.AddDays(cantidadDiasDeMargen);
 
