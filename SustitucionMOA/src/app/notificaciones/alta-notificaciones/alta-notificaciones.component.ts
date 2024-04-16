@@ -403,10 +403,12 @@ export class AltaNotificacionesComponent extends BaseComponent implements OnInit
                     } else {
                         this.notificacion = result.data;
                         this.notificacion.FiltroRoles.forEach(element => {
-                            this.roles.find(x => x.Id == element.toString()).checked = true
+                            this.roles.find(x => x.Id == element.toString()).checked = true;
                         });
 
                         this.allRoles = this.roles.filter(x => x.checked).length == this.roles.length;
+                        this.getCheckboxInternalRoles().checked = this.roles.filter(x => x.Code=='Interno' && !x.checked).length == 0;
+                        this.getCheckboxExternalRoles().checked = this.roles.filter(x => x.Code=='Externo' && !x.checked).length == 0;
 
                         this.fecha_inicio = this.notificacion.FechaInicio.toString();
                         this.horaInicio = this.notificacion.HoraInicio;
@@ -523,17 +525,49 @@ export class AltaNotificacionesComponent extends BaseComponent implements OnInit
         });
     }
 
+    getCheckboxAllRoles(): HTMLInputElement {
+        return document.getElementById('checkAllRoles') as HTMLInputElement;
+    }
 
+    getCheckboxExternalRoles(): HTMLInputElement {
+        return document.getElementById('checkExternalRoles') as HTMLInputElement;
+    }
 
+    getCheckboxInternalRoles(): HTMLInputElement {
+        return document.getElementById('checkInternalRoles') as HTMLInputElement;
+    }
     
     checkAllRoles() {
         setTimeout(() => {
             this.roles.forEach(element => {
                 element.checked = this.allRoles;
-            })
-        }, 0)
+            });
+
+            this.getCheckboxExternalRoles().checked = this.allRoles;
+            this.getCheckboxInternalRoles().checked = this.allRoles;
+        }, 0);
     }
 
+    checkExternalRoles(checked: boolean): void {
+        setTimeout(() => {
+            this.roles.filter(rol => rol.Code == 'Externo').forEach(rol => {
+                rol.checked = checked;
+            });
+
+            this.getCheckboxAllRoles().checked = checked && this.getCheckboxInternalRoles().checked;
+
+        }, 100);
+    }
+
+    checkInternalRoles(checked: boolean): void {
+        setTimeout(() => {
+            this.roles.filter(rol => rol.Code == 'Interno').forEach(rol => {
+                rol.checked = checked;
+            });
+
+            this.getCheckboxAllRoles().checked = checked && this.getCheckboxExternalRoles().checked;
+        }, 100);
+    }
 
     submit() {
 

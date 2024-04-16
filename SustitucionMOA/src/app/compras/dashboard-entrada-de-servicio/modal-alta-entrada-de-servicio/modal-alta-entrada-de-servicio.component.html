@@ -87,6 +87,8 @@
                 </tr>
             </ng-template>
 
+            
+
             <ng-template pTemplate="emptymessage">
                 <tr>
                     <td class="emptyData" colspan="12">No hay items para mostrar</td>
@@ -94,7 +96,9 @@
             </ng-template>
         </p-table>
     </p-panel>
- 
+    <br>
+    <div class="text-right"><strong>MONTO TOTAL GENERAL: {{ calculateGeneralTotalAmount() | number:'1.0-2':'es' }}</strong></div>
+
     <section class="alta-form">
         <div class="row fields">
             <div class="col-md-3">

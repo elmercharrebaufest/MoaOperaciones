@@ -248,7 +248,13 @@
                                         <div class="col-md-12">
                                             <input type="checkbox" name="checkAllRoles" id="checkAllRoles" (click)="checkAllRoles()"
                                                    [(ngModel)]="allRoles">
-                                            <label for="checkAllRoles"> Roles</label>
+                                            <label for="checkAllRoles">Todos los Roles</label>
+                                            <input type="checkbox" name="checkExternalRoles" id="checkExternalRoles" (click)="checkExternalRoles($event.target.checked)"
+                                                   [(ngModel)]="externalRoles">
+                                            <label for="checkExternalRoles"> Roles Externos</label>
+                                            <input type="checkbox" name="checkInternalRoles" id="checkInternalRoles" (click)="checkInternalRoles($event.target.checked)"
+                                                   [(ngModel)]="internalRoles">
+                                            <label for="checkInternalRoles"> Roles Internos</label>
                                         </div>
 
 
@@ -265,7 +271,7 @@
                                         <ng-container *ngFor="let rol of roles">
                                             <div class="col-md-6" *ngIf="rol.Code == titulo">
                                                 <span>
-                                                    <input type="checkbox" name="rolesSeleccionados" id="rol_{{rol.Id}}" value="{{rol.Id}}"
+                                                    <input type="checkbox" name="selectedRoles" id="rol_{{rol.Id}}" value="{{rol.Id}}"
                                                            [(ngModel)]="rol.checked">
                                                     &nbsp;
                                                     <label for="rol_{{rol.Id}}">{{rol.Nombre}}</label>
@@ -275,19 +281,7 @@
                                     </div>
                                 </div>
                             </div>
-
-
-
-
-
-
-
                         </div>
-
-
-
-
-
 
                         <br />
 

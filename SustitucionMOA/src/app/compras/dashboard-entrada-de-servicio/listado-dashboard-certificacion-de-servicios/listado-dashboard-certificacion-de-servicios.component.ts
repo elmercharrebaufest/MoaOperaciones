@@ -23,7 +23,6 @@ import { Formatter } from '../../../common/formatter/Formatter';
 import { MultiSelect } from 'primeng/multiselect';
 
 
-
 @Component({
     selector: 'app-listado-dashboard-certificacion-de-servicios',
     templateUrl: './listado-dashboard-certificacion-de-servicios.component.html',
@@ -403,6 +402,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
         }
 
         this.expandedPositionRow = false;
+        this.saveConfigurationFilterDates(startDate, endDate);
         this.getListarPO(this.proveedor, this.ordenCompraId, startDate, endDate);
         this.tabla.first = 0;
     }
@@ -496,7 +496,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
                 this.recalculando = true;
                 this.disabledFilter = true;
                 this.floatMsgService.setSuccessMsg("Se ha eliminado la entrada de servicio " + Id);
-                this.getListarPO(this.proveedor, this.ordenCompraId, this.filtroFechaComponent.fecha_inicio, this.filtroFechaComponent.fecha_fin);
+                this.getListarPO(this.proveedor, this.ordenCompraId, this.fechaInicioConfigurado, this.fechaFinConfigurado);
                 setTimeout(() => {
                     let closeBtn = document.getElementsByClassName("alert-success")[0].getElementsByClassName("close")[0] as HTMLElement;
                     closeBtn.click();
@@ -510,6 +510,14 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
         this.showModal = this.itemIdSelected.length > 0;
     }
 
+    private fechaInicioConfigurado: any;
+    private fechaFinConfigurado: any;
+
+    saveConfigurationFilterDates(fecha_inicio, fecha_fin) {
+        this.fechaInicioConfigurado = fecha_inicio;
+        this.fechaFinConfigurado = fecha_fin;
+    }
+
     actualizarGrilla(event: string) {
         // MMSN-677: Desactivar filtro de saldo pendiente al certificar ES. 
         this.filtrarElementosSinSaldoACertificar(false);
@@ -518,7 +526,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
         this.numeroLineaSelected.clear();
         this.recalculando = true;
         this.disabledFilter = true;
-        this.getListarPO(this.proveedor, this.ordenCompraId, this.filtroFechaComponent.fecha_inicio, this.filtroFechaComponent.fecha_fin);
+        this.getListarPO(this.proveedor, this.ordenCompraId, this.fechaInicioConfigurado, this.fechaFinConfigurado);
     }
 
     searchElement() {

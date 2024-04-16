@@ -128,3 +128,13 @@
     width: 95%; /* Establece el ancho al 95% del contenedor padre */
     box-sizing: border-box; /* Incluye el padding y el borde en el ancho total */
 }
+
+/* ROLES SELECTORS */
+#checkAllRoles, #checkExternalRoles, #checkInternalRoles {
+    margin-right: .5em;
+}
+
+#checkInternalRoles, #checkExternalRoles {
+    margin-left: 1em;
+}
+/* ROLES SELECTORS END */

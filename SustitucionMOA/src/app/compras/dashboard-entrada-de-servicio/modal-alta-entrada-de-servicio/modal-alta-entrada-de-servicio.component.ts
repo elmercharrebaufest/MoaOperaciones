@@ -129,8 +129,18 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
 
     orderBy(array: any[], field: string): any[] {
         return array.sort((a, b) => a[field] - b[field]);
-      }
+    }
 
+
+    calculateGeneralTotalAmount(): number {
+        let montoTotalGeneral = 0;
+
+        this.itemsAgrupadosPorPosicion.forEach(position => {
+            montoTotalGeneral += position.MontoTotalACertificar;
+        });
+
+        return montoTotalGeneral;
+    }
 
     setRangoFechaDocumento() {
         // Fecha máxima: Fecha actual
@@ -241,7 +251,7 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
                 });
 
                 this.mensajeError = resultMsj.join("");
-                
+
                 this.confirmationService.confirm({
                     message: "<ul>" + this.mensajeError + "</ul>",
                     accept: () => this.cerrarMensajes(msjTypes),
@@ -261,7 +271,7 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
                 );
             }
         );
-       
+
     }
 
     buildEntrySheet() {
