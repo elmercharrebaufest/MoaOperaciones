@@ -119,8 +119,8 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                     Pagina = Paginacion.Pagina,
                                     EstadoSolpSap = x.EstadoSolpSap_Id != null ? new TablaSapDto { Id = x.EstadoSolpSap_Id ?? 0, CodigoSap = x.EstadoSolpSap.CodigoSap, Descripcion = x.EstadoSolpSap.Descripcion } : new TablaSapDto { Id = 0, CodigoSap = "", Descripcion = "" },
                                     TodasLasPosicionesBorradas = x.Posiciones.All(p => p.Estado == false),
-                                    VerPublicar = x.Posiciones.All(p => string.IsNullOrEmpty(p.NumeroContratoSuperior)) && (((x.EstadoSolpSap.CodigoSap == "05" || x.EstadoSolpSap.CodigoSap == "02") && x.TrabajoYaHecho != true && x.Adicional != true)
-                                                    || (!string.IsNullOrEmpty(x.NroSolp) && x.Posiciones.Any(p => p.TipoPosicion.Codigo == "SERVICIO") && x.Urgencia == true && x.Adicional != true)),
+                                    VerPublicar = ((x.EstadoSolpSap.CodigoSap == "05" || x.EstadoSolpSap.CodigoSap == "02") && x.TrabajoYaHecho != true && x.Adicional != true)
+                                                    || (!string.IsNullOrEmpty(x.NroSolp) && x.Posiciones.Any(p => p.TipoPosicion.Codigo == "SERVICIO") && x.Urgencia == true && x.Adicional != true),
                                     VerCircular = x.TrabajoYaHecho == null || x.TrabajoYaHecho == false,
                                     FechaLiberacionSapFormateada = x.FechaLiberacionSap == null ? "" : SqlFunctions.DateName("day", x.FechaLiberacionSap) + "/" + SqlFunctions.DatePart("month", x.FechaLiberacionSap) + "/" + SqlFunctions.DateName("year", x.FechaLiberacionSap),
                                     FechaLiberacionSap = x.FechaLiberacionSap,
