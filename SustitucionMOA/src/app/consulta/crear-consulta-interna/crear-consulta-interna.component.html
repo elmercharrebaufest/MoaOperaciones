@@ -16,11 +16,12 @@
                         <p class="crearConsultaTitulos">Categor&iacute;a<span class="requerido">*</span></p>
                         <p-dropdown [options]="categorias" optionLabel="Nombre" dataKey="Id" [(ngModel)]="categoria"
                             [maxSelectedLabels]="1" autoWidth="false" placeholder="Elegir Categoria"
-                            (onChange)="setSubcategorias($event.value)" [filter]="true" filterBy="value.Nombre">
+                            (onChange)="setSubcategorias($event.value);filtrarVendedoresXCategoria()" [filter]="true"
+                            filterBy="value.Nombre">
                         </p-dropdown>
                     </div>
 
-                    <div class="col-xs-12 col-sm-4 col-md-4">
+                    <div class="col-xs-12 col-sm-4 col-md-4" *ngIf="subcategoriasList?.length">
                         <p class="crearConsultaTitulos">Subcategor&iacute;a<span class="requerido">*</span></p>
                         <p-dropdown [options]="subcategoriasList" optionLabel="Nombre" dataKey="Id"
                             [(ngModel)]="subcategoria" [maxSelectedLabels]="1" autoWidth="false"
@@ -44,15 +45,15 @@
                     <div *ngIf="categoriaCode == 'ORD'" class="col-xs-12 col-sm-4 col-md-4">
                         <p class="crearConsultaTitulos">Destinatario<span class="requerido">*</span></p>
                         <p-multiSelect [options]="destinatariosOrden" appendTo="body" optionLabel="Mail"
-                            [(ngModel)]="destinatariosSeleccionados" defaultLabel="Elija al menos un destinatario" [filter]="true"
-                            filterBy="value.Mail" (onChange)="mostrarAviso()">
+                            [(ngModel)]="destinatariosSeleccionados" defaultLabel="Elija al menos un destinatario"
+                            [filter]="true" filterBy="value.Mail" (onChange)="mostrarAviso()">
                         </p-multiSelect>
                         <spinner-loading [show]="searchingCampos"></spinner-loading>
                     </div>
 
                     <div *ngIf="categoriaCode !== 'ORD'" class="col-xs-12 col-sm-4 col-md-4">
                         <p class="crearConsultaTitulos">Vendedor<span class="requerido">*</span></p>
-                        <p-dropdown [options]="vendedores" optionLabel="RazonSocial" dataKey="Campo"
+                        <p-dropdown [options]="vendedoresFiltrados" optionLabel="RazonSocial" dataKey="Campo"
                             [(ngModel)]="vendedor" autoWidth="false" placeholder="Seleccione vendedor" [filter]="true"
                             filterBy="value.RazonSocial,value.CUIT,value.CodigoProveedor"
                             (onChange)="getDestinatario();">
@@ -71,7 +72,7 @@
                     <div *ngIf="categoriaCode !== 'ORD'" class="col-xs-12 col-sm-4 col-md-4">
                         <p class="crearConsultaTitulos">Destinatarios<span class="requerido">*</span></p>
 
-                        <p-multiSelect [options]="destinatarios" appendTo="body" optionLabel="Mail"
+                        <p-multiSelect [options]="destinatariosFiltrados" appendTo="body" optionLabel="Mail"
                             [(ngModel)]="destinatariosSeleccionados" defaultLabel="Elija al menos un destinatario"
                             [filter]="true" filterBy="value.Mail">
                         </p-multiSelect>

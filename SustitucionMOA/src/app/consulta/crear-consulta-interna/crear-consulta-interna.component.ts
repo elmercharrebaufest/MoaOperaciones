@@ -23,6 +23,11 @@ import { TipoPerfil } from '../../common/enums/TipoPerfil';
 
 declare var $: any;
 
+const PARCIAL_CORREDOR = "PARCOR"
+const PARCIAL_DIRECTO = "PARDIR"
+const FINAL_DIRECTO = "FINDIR"
+const FINAL_CORREDOR = "FINCOR"
+
 @Component({
   selector: 'app-crear-consulta-interna',
   templateUrl: './crear-consulta-interna.component.html',
@@ -118,6 +123,16 @@ export class CrearConsultaInternaComponent extends ListBaseComponent implements 
   subscriptionDestinatarios: Subscription;
 
   config: AngularEditorConfig = GET_ANGULAR_EDITOR_CONFIG();
+
+  codigosCategoriasFiltranVendedores = [
+    PARCIAL_CORREDOR,
+    PARCIAL_DIRECTO,
+    FINAL_CORREDOR,
+    FINAL_DIRECTO
+  ]
+
+  vendedoresFiltrados: ProveedorRaw[];
+  destinatariosFiltrados: Destinatario[];
 
   checkPermisos() { this.securityService.tienePermisoRedirect("CONTACTO MAIL"); }
 
@@ -217,6 +232,7 @@ export class CrearConsultaInternaComponent extends ListBaseComponent implements 
           } else {
             this.destinatarios = result.destinatarios;
             this.destinatariosSeleccionados = [];
+            this.filtrarDestinatariosXCategoria()
           }
         },
         error => {
@@ -246,6 +262,7 @@ export class CrearConsultaInternaComponent extends ListBaseComponent implements 
             this.mensajeComponent.setInfoMsg(result.info);
           } else {
             this.vendedores = result.vendedores;
+            this.vendedoresFiltrados = this.vendedores;
           }
         },
         error => {
@@ -885,6 +902,35 @@ export class CrearConsultaInternaComponent extends ListBaseComponent implements 
 
   destinatariosSeleccionadosAlgunPerfil(perfil: TipoPerfil): boolean {
     return this.destinatariosSeleccionados
-      .every(destinatario => destinatario.NombreTipoUsuario == perfil)
+      .some(destinatario => destinatario.NombreTipoUsuario == perfil)
+  }
+
+  filtrarVendedoresXCategoria() {
+    const codigoCategoria = this.categoria.Code;
+    if (this.codigosCategoriasFiltranVendedores.find(code => code === codigoCategoria)) {
+
+      this.vendedoresFiltrados = this.vendedores.filter(
+        vendedor =>
+          ((codigoCategoria === PARCIAL_CORREDOR || codigoCategoria === FINAL_CORREDOR) && vendedor.IdTipoUsuario === 4) ||
+          (vendedor.IdTipoUsuario !== 4 && (codigoCategoria === PARCIAL_DIRECTO || codigoCategoria === FINAL_DIRECTO))
+      )
+    }
+    else {
+      this.vendedoresFiltrados = this.vendedores;
+    }
+  }
+  filtrarDestinatariosXCategoria() {
+    const codigoCategoria = this.categoria.Code;
+    if (this.codigosCategoriasFiltranVendedores.find(code => code === codigoCategoria)) {
+
+      this.destinatariosFiltrados = this.destinatarios.filter(
+        destinatario =>
+          ((codigoCategoria === PARCIAL_CORREDOR || codigoCategoria === FINAL_CORREDOR) && destinatario.NombreTipoUsuario === TipoPerfil.Corredor) ||
+          (destinatario.NombreTipoUsuario !== TipoPerfil.Corredor && (codigoCategoria === PARCIAL_DIRECTO || codigoCategoria === FINAL_DIRECTO))
+      )
+    }
+    else {
+      this.destinatariosFiltrados = this.destinatarios;
+    }
   }
 }
