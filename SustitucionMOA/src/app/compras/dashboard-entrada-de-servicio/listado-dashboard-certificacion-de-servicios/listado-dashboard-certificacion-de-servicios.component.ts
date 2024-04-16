@@ -49,7 +49,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
 
     @ViewChild("filtroSolicitantes")
     protected multiSelectSolicitantes: MultiSelect;
-    
+
     @ViewChild("tabla")
     protected tabla: Table;
 
@@ -121,6 +121,8 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
     filtroSolicitantes: any[] = [];
     fullscreen: boolean = false;
     displayContent: boolean = false;
+    isInputActive: boolean = false;
+
 
     // COLUMNS CONFIG
     userTablesConfig: any[] = [];
@@ -242,10 +244,10 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
 
         if (event.target.checked) {
             const itemsFiltered = positions.Items.filter((row: any) => !this.isGet100(row) && row.MontoACertificar != 0);
-            
+
             this.calcularValoresACertificar(positions);
             if (itemsFiltered.length > 0) {
-                
+
                 itemsFiltered.forEach((item: any) => {
                     if (!this.itemSelected.includes(item)) {
                         item.isSelected = true;
@@ -261,9 +263,9 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
     clearCheckboxesPositions(positions: any): void {
         const updatedSelectedItems = [...this.itemSelected];
         const updatedSelectedIds = [...this.itemIdSelected];
-    
+
         this.numeroLineaSelected.clear();
-    
+
         this.tablaPO.forEach((order: any) => {
             order.Posiciones.forEach((pos: any) => {
                 if (positions.Id === pos.Id) {
@@ -280,7 +282,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
                 }
             });
         });
-    
+
         this.itemSelected = updatedSelectedItems;
         this.itemIdSelected = updatedSelectedIds;
     }
@@ -531,7 +533,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
 
     searchElement() {
         for (const ordenCompra of this.tablaPO) {
-            
+
             for (const posicion of ordenCompra.Posiciones) {
                 const itemEncontrado = posicion.Items.find(item => item.PosicionId === this.itemSelected[0].PosicionId);
 
@@ -602,6 +604,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
     * @param index Indice de item sobre el que se aplica la acción.
     */
     habilitarCampoDeValorACertificar(index: number) {
+        this.isInputActive = !this.isInputActive;
         let cantidad = document.getElementsByName('cantidad')[index];
         let porcentaje = document.getElementsByName('porcentaje')[index];
 
@@ -614,6 +617,9 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
             porcentaje.removeAttribute('disabled');
         }
     }
+
+   
+
 
     /**
     * Se llama desde cada posición cuando se expande para calcular los
@@ -647,7 +653,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
             this.clearCheckbox(item);
         }
 
-        if (cantidadACertificar > cantidadDisponible  || (cantidadACertificar < 0 && cantidadACertificar != '')) {
+        if (cantidadACertificar > cantidadDisponible || (cantidadACertificar < 0 && cantidadACertificar != '')) {
             item.CantidadACertificar = cantidadDisponible;
         }
 
@@ -725,7 +731,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
     hidePositionCheckboxToAll(items: any): boolean {
         return items.some(element => {
             return !this.isGet100(element) || (((element.Cantidad - element.CantidadReal) * element.Importe) / element.Cantidad) != 0;
-        }); 
+        });
     }
 
     /**
@@ -816,7 +822,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
         sessionStorage.setItem('columnasCertificaciones', JSON.stringify(visibleColumns));
     }
 
-    
+
     /**
      * Muestra/Oculta un panel según nombre de clase
      * que lo identifica.
@@ -884,7 +890,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
                 }
                 solicitantesUnicos.add(pos.Solicitante.toUpperCase());
 
-          });
+            });
         });
         this.listadoGeneralSolicitantes = Array.from(solicitantesUnicos).map(solicitante => ({ label: solicitante, value: solicitante }));
     }
@@ -903,13 +909,13 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
     }
 
     mostrarPosicionSolicitante(posicion: any): any {
-        if(this.filtroSolicitantes.length > 0){
-          return this.filtroSolicitantes.includes(posicion.Solicitante.toUpperCase());
+        if (this.filtroSolicitantes.length > 0) {
+            return this.filtroSolicitantes.includes(posicion.Solicitante.toUpperCase());
         } else {
             return true;
         }
-      }
-      
+    }
+
     limpiarFiltroPorSolicitantes() {
         this.multiSelectSolicitantes.valuesAsString = 'Solicitantes';
         this.multiSelectSolicitantes.value = [];

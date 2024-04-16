@@ -254,7 +254,8 @@
                                                                    [ngModel]="rowData.CantidadACertificar | number:'1.0-2'"
                                                                    required
                                                                    pattern="^[0-9\.]*$"
-                                                                   [disabled]="rowData.Porcentaje==100" />
+                                                                   [disabled]="rowData.Porcentaje==100" 
+                                                                   [ngClass]="{'input-border-color': !isCantidadDisabled}"/>
 
                                                             <input *ngIf="col.id === 'iPorcentajeACertificar'"
                                                                    type="text"
@@ -264,7 +265,9 @@
                                                                    (ngModelChange)="rowData.PorcentajeACertificar=$event"
                                                                    [ngModel]="rowData.PorcentajeACertificar | number:'1.0-2'"
                                                                    required
-                                                                   disabled />
+                                                                   disabled
+                                                                   [ngClass]="{ 'input-border-color': !isPorcentajeDisabled}"/>
+
                                                             <span *ngIf="col.id==='iPorcentaje'" [ngClass]="{ 'percentage-green': rowData.Porcentaje >= 100, 'percentage-yellow': rowData.Porcentaje < 100 }">
                                                                 {{ rowData[col.field] | defaultData }}%
                                                             </span>

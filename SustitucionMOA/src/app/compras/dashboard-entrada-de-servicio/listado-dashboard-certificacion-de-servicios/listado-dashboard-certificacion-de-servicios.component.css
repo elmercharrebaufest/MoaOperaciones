@@ -15,12 +15,15 @@
     z-index: 10;
     /* hide scrollbar but allow scrolling */
     overflow-y: scroll;
-    -ms-overflow-style: none; /* for Internet Explorer, Edge */
-    scrollbar-width: none; /* for Firefox */
+    -ms-overflow-style: none;
+    /* for Internet Explorer, Edge */
+    scrollbar-width: none;
+    /* for Firefox */
 }
 
 .fullscreen::-webkit-scrollbar {
-    display: none; /* for Chrome, Safari, and Opera */
+    display: none;
+    /* for Chrome, Safari, and Opera */
 }
 
 i#btn-fullscreen,
@@ -56,7 +59,7 @@ i#btn-fullscreen {
 */
 }
 
-.headerTitle > div {
+.headerTitle>div {
     padding-left: 0;
 }
 
@@ -96,7 +99,7 @@ i#btn-fullscreen {
     justify-content: space-between;
 }
 
-.aux-panel-header > .pi-times {
+.aux-panel-header>.pi-times {
     cursor: pointer;
 }
 
@@ -137,12 +140,12 @@ i#btn-fullscreen {
     font-weight: bold !important;
 }
 
-:host ::ng-deep p-autocomplete.filtro-proveedor > span.ui-autocomplete {
+:host ::ng-deep p-autocomplete.filtro-proveedor>span.ui-autocomplete {
     top: -10px !important;
 }
 
-.filtro-nro-orden > input[type=text],
-:host ::ng-deep p-autocomplete.filtro-proveedor > span > input[type=text] {
+.filtro-nro-orden>input[type=text],
+:host ::ng-deep p-autocomplete.filtro-proveedor>span>input[type=text] {
     border-radius: 4px;
     border: 1px solid #ddd;
     height: 2.69em;
@@ -154,12 +157,12 @@ i#btn-fullscreen {
     line-height: 21.4333px;
 }
 
-.filtro-nro-orden > input:active,
-.filtro-nro-orden > input:hover,
-.filtro-nro-orden > input:focus,
-:host ::ng-deep p-autocomplete.filtro-proveedor > span > input[type=text]:active,
-:host ::ng-deep p-autocomplete.filtro-proveedor > span > input[type=text]:hover,
-:host ::ng-deep p-autocomplete.filtro-proveedor > span > input[type=text]:focus {
+.filtro-nro-orden>input:active,
+.filtro-nro-orden>input:hover,
+.filtro-nro-orden>input:focus,
+:host ::ng-deep p-autocomplete.filtro-proveedor>span>input[type=text]:active,
+:host ::ng-deep p-autocomplete.filtro-proveedor>span>input[type=text]:hover,
+:host ::ng-deep p-autocomplete.filtro-proveedor>span>input[type=text]:focus {
     border: 1px solid #ddd;
 }
 
@@ -180,6 +183,7 @@ i#btn-fullscreen {
     display: none !important;
     visibility: hidden !important;
 }
+
 /* PANELS END */
 
 /* FILTERS */
@@ -201,7 +205,7 @@ i#btn-fullscreen {
     padding: 0 .7em .1em 0;
 }
 
-.filters-row > div + div:before {
+.filters-row>div+div:before {
     content: "|";
     padding: .6em;
     color: #959595;
@@ -226,25 +230,25 @@ i#btn-fullscreen {
     height: min-content;
 }
 
-:host ::ng-deep .filtro-solicitante > p-multiselect#select-solicitante > .ui-multiselect {
+:host ::ng-deep .filtro-solicitante>p-multiselect#select-solicitante>.ui-multiselect {
     height: 1.8em;
     width: 9em;
     position: relative;
     top: .2em;
 }
 
-:host ::ng-deep .filtro-solicitante > p-multiselect#select-solicitante > .ui-multiselect > .ui-multiselect-label-container {
+:host ::ng-deep .filtro-solicitante>p-multiselect#select-solicitante>.ui-multiselect>.ui-multiselect-label-container {
     font-size: .9em !important;
     font-family: "Roboto Condensed", Arial, sans-serif !important;
     height: 2em;
 }
 
-:host ::ng-deep .filtro-solicitante > p-multiselect#select-solicitante > .ui-multiselect > .ui-multiselect-label-container > label {
+:host ::ng-deep .filtro-solicitante>p-multiselect#select-solicitante>.ui-multiselect>.ui-multiselect-label-container>label {
     padding: .2em .4em;
     margin-bottom: 0;
 }
 
-:host ::ng-deep .filtro-solicitante > p-multiselect#select-solicitante > .ui-multiselect > .ui-multiselect-trigger > .ui-multiselect-trigger-icon {
+:host ::ng-deep .filtro-solicitante>p-multiselect#select-solicitante>.ui-multiselect>.ui-multiselect-trigger>.ui-multiselect-trigger-icon {
     font-size: .9em;
 }
 
@@ -253,61 +257,62 @@ i#btn-fullscreen {
     margin-top: 1em;
 }
 
-:host ::ng-deep #ordenes > .ui-table > .ui-table-wrapper > table,
-:host ::ng-deep #posiciones > .ui-table > .ui-table-wrapper > table,
-:host ::ng-deep #items > .ui-table > .ui-table-wrapper > table,
-:host ::ng-deep #entradasServicio > .ui-table > .ui-table-wrapper > table {
+:host ::ng-deep #ordenes>.ui-table>.ui-table-wrapper>table,
+:host ::ng-deep #posiciones>.ui-table>.ui-table-wrapper>table,
+:host ::ng-deep #items>.ui-table>.ui-table-wrapper>table,
+:host ::ng-deep #entradasServicio>.ui-table>.ui-table-wrapper>table {
     table-layout: auto;
 }
 
-:host ::ng-deep #ordenes > .ui-table > .ui-table-wrapper > table {
+:host ::ng-deep #ordenes>.ui-table>.ui-table-wrapper>table {
     border-collapse: collapse;
     border: none;
 }
 
-:host ::ng-deep #ordenes > .ui-table > .ui-table-wrapper > table > thead > tr > th,
-:host ::ng-deep #posiciones > .ui-table > .ui-table-wrapper > table > thead > tr > th,
-:host ::ng-deep #items > .ui-table > .ui-table-wrapper > table > thead > tr > th,
-:host ::ng-deep #entradasServicio > .ui-table > .ui-table-wrapper > table > thead > tr > th {
+:host ::ng-deep #ordenes>.ui-table>.ui-table-wrapper>table>thead>tr>th,
+:host ::ng-deep #posiciones>.ui-table>.ui-table-wrapper>table>thead>tr>th,
+:host ::ng-deep #items>.ui-table>.ui-table-wrapper>table>thead>tr>th,
+:host ::ng-deep #entradasServicio>.ui-table>.ui-table-wrapper>table>thead>tr>th {
     color: white;
     text-align: center;
     max-width: 8em;
     font-size: .76em;
 }
 
-:host ::ng-deep #ordenes > .ui-table > .ui-table-wrapper > table > thead > tr > th.ui-sortable-column > p-sorticon > a,
-:host ::ng-deep #posiciones > .ui-table > .ui-table-wrapper > table > thead > tr > th.ui-sortable-column > p-sorticon > a,
-:host ::ng-deep #items > .ui-table > .ui-table-wrapper > table > thead > tr > th.ui-sortable-column > p-sorticon > a,
-:host ::ng-deep #entradasServicio > .ui-table > .ui-table-wrapper > table > thead > tr > th.ui-sortable-column > p-sorticon > a {
+:host ::ng-deep #ordenes>.ui-table>.ui-table-wrapper>table>thead>tr>th.ui-sortable-column>p-sorticon>a,
+:host ::ng-deep #posiciones>.ui-table>.ui-table-wrapper>table>thead>tr>th.ui-sortable-column>p-sorticon>a,
+:host ::ng-deep #items>.ui-table>.ui-table-wrapper>table>thead>tr>th.ui-sortable-column>p-sorticon>a,
+:host ::ng-deep #entradasServicio>.ui-table>.ui-table-wrapper>table>thead>tr>th.ui-sortable-column>p-sorticon>a {
     color: white !important;
     font-size: 1rem;
     padding-left: .5rem;
 }
 
-:host ::ng-deep #ordenes > .ui-table > .ui-table-wrapper > table > thead > tr > th {
+:host ::ng-deep #ordenes>.ui-table>.ui-table-wrapper>table>thead>tr>th {
     background-color: #666 !important;
 }
 
-:host ::ng-deep #posiciones > .ui-table > .ui-table-wrapper > table > thead > tr > th {
+:host ::ng-deep #posiciones>.ui-table>.ui-table-wrapper>table>thead>tr>th {
     background-color: #075088 !important;
 }
 
-:host ::ng-deep #items > .ui-table > .ui-table-wrapper > table > thead > tr > th {
+:host ::ng-deep #items>.ui-table>.ui-table-wrapper>table>thead>tr>th {
     background-color: #4760ac !important;
 }
 
-:host ::ng-deep #entradasServicio > .ui-table > .ui-table-wrapper > table > thead > tr > th {
+:host ::ng-deep #entradasServicio>.ui-table>.ui-table-wrapper>table>thead>tr>th {
     background-color: #1C7CD5 !important;
 }
 
-:host ::ng-deep #ordenes > .ui-table > .ui-table-wrapper > table > tbody > tr > td,
-:host ::ng-deep #posiciones > .ui-table > .ui-table-wrapper > table > tbody > tr > td,
-:host ::ng-deep #items > .ui-table > .ui-table-wrapper > table > tbody > tr > td,
-:host ::ng-deep #entradasServicio > .ui-table > .ui-table-wrapper > table > tbody > tr > td {
+:host ::ng-deep #ordenes>.ui-table>.ui-table-wrapper>table>tbody>tr>td,
+:host ::ng-deep #posiciones>.ui-table>.ui-table-wrapper>table>tbody>tr>td,
+:host ::ng-deep #items>.ui-table>.ui-table-wrapper>table>tbody>tr>td,
+:host ::ng-deep #entradasServicio>.ui-table>.ui-table-wrapper>table>tbody>tr>td {
     max-width: 8em;
     font-size: .8em;
     text-align: center;
 }
+
 /* Positions Table */
 #pSolicitante {
     overflow: hidden;
@@ -359,8 +364,8 @@ i#btn-fullscreen {
 }
 
 /* Items Table */
-:host ::ng-deep #items > .ui-table > .ui-table-wrapper > table > thead > tr > th:first-child,
-:host ::ng-deep #items > .ui-table > .ui-table-wrapper > table > tbody > tr > td:first-child {
+:host ::ng-deep #items>.ui-table>.ui-table-wrapper>table>thead>tr>th:first-child,
+:host ::ng-deep #items>.ui-table>.ui-table-wrapper>table>tbody>tr>td:first-child {
     min-width: 6rem;
     text-align: left;
 }
@@ -373,7 +378,7 @@ p-table.level3 i.pi-chevron-right {
 
 p-table.level3 input[type="text"] {
     text-align: center;
-    border: 1px solid #ccc;
+    /* border: 1px solid #ccc; */
     max-width: 6em;
 }
 
@@ -404,6 +409,10 @@ p-table.level3 button.btn-refresh:disabled {
 td:has(> span.percentage-green) {
     background-color: #2acc53 !important;
     color: black;
+}
+
+input {
+    border: 3px solid #007AD9;
 }
 
 td:has(> span.percentage-yellow) {
@@ -469,7 +478,8 @@ p-checkbox .ui-chkbox {
     margin-left: 6em;
 }
 
-.dot-pulse::before, .dot-pulse::after {
+.dot-pulse::before,
+.dot-pulse::after {
     content: "";
     display: inline-block;
     position: absolute;
@@ -502,7 +512,8 @@ p-checkbox .ui-chkbox {
         box-shadow: 9984px 0 0 2px;
     }
 
-    60%, 100% {
+    60%,
+    100% {
         box-shadow: 9984px 0 0 -5px;
     }
 }
@@ -516,7 +527,8 @@ p-checkbox .ui-chkbox {
         box-shadow: 9999px 0 0 2px;
     }
 
-    60%, 100% {
+    60%,
+    100% {
         box-shadow: 9999px 0 0 -5px;
     }
 }
@@ -530,12 +542,13 @@ p-checkbox .ui-chkbox {
         box-shadow: 10014px 0 0 2px;
     }
 
-    60%, 100% {
+    60%,
+    100% {
         box-shadow: 10014px 0 0 -5px;
     }
 }
 
-@media (min-width: 990px) { 
+@media (min-width: 990px) {
     .delete-icon {
         height: 23px;
     }
