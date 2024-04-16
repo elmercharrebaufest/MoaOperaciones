@@ -542,7 +542,9 @@ namespace SustitucionMOAUtils.Services
             var proveedor = this.repositorio.Obtener<Proveedor>(p => p.Id == proveedorId);
             var proveedoresMismoCodigo = repositorio.Listar<Proveedor>(p => p.CodigoProveedor == proveedor.CodigoProveedor);
 
-            var destinatarios = proveedoresMismoCodigo.SelectMany(p=>p.UsuariosAsociados.Select(u => new DestinatarioDto(u))).ToList();
+            var destinatarios = proveedoresMismoCodigo.SelectMany(p=>p.UsuariosAsociados
+                .Where(u=>!u.Mail.EndsWith("@molinosagro.com.ar"))
+                .Select(u => new DestinatarioDto(u))).ToList();
             return destinatarios;
         }
 

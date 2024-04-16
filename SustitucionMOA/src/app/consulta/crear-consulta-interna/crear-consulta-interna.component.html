@@ -52,7 +52,7 @@
                     </div>
 
                     <div *ngIf="categoriaCode !== 'ORD'" class="col-xs-12 col-sm-4 col-md-4">
-                        <p class="crearConsultaTitulos">Vendedor<span class="requerido">*</span></p>
+                        <p class="crearConsultaTitulos">Proveedor/Corredor<span class="requerido">*</span></p>
                         <p-dropdown [options]="vendedoresFiltrados" optionLabel="RazonSocial" dataKey="Campo"
                             [(ngModel)]="vendedor" autoWidth="false" placeholder="Seleccione vendedor" [filter]="true"
                             filterBy="value.RazonSocial,value.CUIT,value.CodigoProveedor"
