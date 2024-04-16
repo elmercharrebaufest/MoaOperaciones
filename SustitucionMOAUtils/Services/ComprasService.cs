@@ -783,7 +783,7 @@ namespace SustitucionMOAUtils.Services
                         posiciones.EsConcluido = true;
                     }
 
-                    if (enviarMailUrgencia && solpEntity.Posiciones.All(x => string.IsNullOrEmpty(x.NumeroContratoSuperior)))
+                    if (enviarMailUrgencia)
                     {
                         try
                         {
@@ -830,7 +830,7 @@ namespace SustitucionMOAUtils.Services
 
                     ActualizarPeticionDeOfertaAlEditarSolp(solpEntity);
 
-                    if (enviarMailUrgencia && solpEntity.Posiciones.All(x => string.IsNullOrEmpty(x.NumeroContratoSuperior)))
+                    if (enviarMailUrgencia)
                     {
                         try
                         {
@@ -1958,7 +1958,7 @@ namespace SustitucionMOAUtils.Services
                 var peticiones = repositorio.Listar<PeticionDeOferta>(peti => peti.Posiciones.Select(x => x.SolpPosicion.Id)
                 .Any(posi => posicionesSolp.Contains(posi))).ToList();
 
-                if (!peticiones.Any() && solp.Posiciones.All(x => string.IsNullOrEmpty(x.NumeroContratoSuperior)))
+                if (!peticiones.Any())
                 {
                     if (solp.TrabajoYaHecho == true)
                     {
