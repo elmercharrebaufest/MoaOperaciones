@@ -149,10 +149,10 @@
                             {{ rowData.CotizacionEstadoDescripcion}}
                         </td>
                         <td colspan="2" class="columna" style="text-align: center;">
-                            <button *ngIf="rowData.Estado == 'Abierto' && rowData.CotizacionEstadoDescripcion != 'Cotizado'" class="publicar btn btn-success" style="font-size: 12px;" (click)="publicarCotizacion(rowData.Usuarios[0].Id)">
+                            <button *ngIf="rowData.VerCotizar && rowData.Estado == 'Abierto' && rowData.CotizacionEstadoDescripcion != 'Cotizado'" class="publicar btn btn-success" style="font-size: 12px;" (click)="publicarCotizacion(rowData.Usuarios[0].Id)">
                                 Cotizar
                             </button>
-                            <button *ngIf="rowData.Estado == 'Abierto' && rowData.CotizacionEstadoDescripcion == 'Cotizado' && rowData.TieneAdjudicacion != true" class="publicar btn btn-success" style="font-size: 12px;" (click)="publicarCotizacion(rowData.Usuarios[0].Id)">
+                            <button *ngIf="rowData.VerCotizar && rowData.Estado == 'Abierto' && rowData.CotizacionEstadoDescripcion == 'Cotizado' && rowData.TieneAdjudicacion != true" class="publicar btn btn-success" style="font-size: 12px;" (click)="publicarCotizacion(rowData.Usuarios[0].Id)">
                                 Recotizar
                             </button>
                         </td>

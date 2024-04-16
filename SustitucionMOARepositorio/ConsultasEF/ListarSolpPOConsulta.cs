@@ -160,8 +160,9 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                     ItemPorPagina = Paginacion.ItemsPorPagina,
                                     Pagina = Paginacion.Pagina,
                                     TieneAdjudicacion = cotizacion != null && cotizacion.Adjudicaciones.Any(),
-
+                                    VerCotizar = x.PeticionDeOferta.Posiciones.All(posi => posi.SolpPosicion.Solp.EstadoSolpSap.CodigoSap == "05")                                                    
                                 };
+
                 if (FechaDesde.HasValue || FechaHasta.HasValue || EstadoLicitacion.HasValue)
                 {
                     resultado = resultado.Where(po =>

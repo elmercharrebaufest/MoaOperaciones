@@ -59,13 +59,13 @@
                                     </span>
                                 </div>
                                 <div *ngIf="info != null && model.visitaDeObraMasiva" style="margin-top: 15px;">
-                                    <span (click)="verDetalle()"  class="enlaceDetalle pointer">
-                                        Para esta fecha 
+                                    <span (click)="verDetalle()" class="enlaceDetalle pointer">
+                                        Para esta fecha
                                         <ng-container *ngIf="info.CantidadVisitas === 1; else plural">existe {{info.CantidadVisitas}} visita</ng-container>
                                         <ng-template #plural>existen {{info.CantidadVisitas}} visitas</ng-template> de obra.
                                     </span>
                                 </div>
-                                
+
                             </div>
                         </div>
 
@@ -78,13 +78,17 @@
                             </div>
                             <div class="col-xs-12 col-sm-12 col-md-12 margenInput">
                                 Responsable del trabajo *
-                                <div >
-                                    <p-dropdown [options]="model.usuarioSolicitanteList"  [disabled]="model.tipoSolp != 'SIN_PLIEGO'" (onChange)="onCompletarResponsable()"  formControlName="supervisorTrabajo" [(ngModel)]="model.selectResponsableTrabajo" dataKey="Id" optionLabel="CodigoDescripcion">
+                                <div>
+                                    <p-dropdown [options]="model.usuarioSolicitanteList"
+                                                [disabled]="model.tipoSolp != 'SIN_PLIEGO'" (onChange)="onCompletarResponsable()"
+                                                formControlName="supervisorTrabajo" [(ngModel)]="model.selectResponsableTrabajo" 
+                                                dataKey="Id" optionLabel="CodigoDescripcion"
+                                                [filter]="true">
                                     </p-dropdown>
-                                </div>  
+                                </div>
                                 <div *ngIf="mostrarValidacion('supervisorTrabajo', model.selectResponsableTrabajo)">
                                     <p class="text-danger">campo obligatorio</p>
-                                </div>   
+                                </div>
                                 <!-- <div class="col-md-12 ui-fluid" style="padding-left: 0em;">
                                     <p-chips [(ngModel)]="model.supervisorTrabajo" formControlName="supervisorTrabajo" name="supervisorTrabajo" placeholder="Ingrese responsable" id="supervisorTrabajo" [suggestions]="resultadoSupervisorTrabajo" (completeMethod)="search($event)" addOnTab="true" [addOnBlur]="true" (blur)="onBlur('supervisorTrabajo')"></p-chips>
                                 </div>
@@ -165,9 +169,9 @@
                     <div class="row myRow">
                         <div class="col-xs-12 col-sm-12 col-md-12">
                             <label class="labelCompras" for="editorTexto"> Observaciones:</label>
-                                <textarea [ngModelOptions]="{standalone:true}" [(ngModel)]="model.observacionesGeneracion"
-                                    name="observaciones" id="observaciones" cols="30" rows="5" 
-                                    placeholder="Indique sus observaciones">
+                            <textarea [ngModelOptions]="{standalone:true}" [(ngModel)]="model.observacionesGeneracion"
+                                      name="observaciones" id="observaciones" cols="30" rows="5"
+                                      placeholder="Indique sus observaciones">
                                 </textarea>
                         </div>
                     </div>

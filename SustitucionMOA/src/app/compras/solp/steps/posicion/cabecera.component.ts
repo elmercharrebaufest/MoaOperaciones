@@ -21,6 +21,8 @@ import { mergeMap, map, switchMap } from 'rxjs/operators';
 import { from, Observable, of } from 'rxjs';
 import { ObtenerContratoMarcoService } from './obtener-contrato-marco/obtener-contrato-marco.service';
 import { ContratoMarco, ContratoMarcoSubposicion, ObtenerContratoMarco } from './obtener-contrato-marco/contrato-marco.model';
+import * as uuid from 'uuid';
+import _ from 'lodash';
 
 declare var $: any;
 
@@ -294,8 +296,14 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         var posicionChequeadas = this.model.posiciones.filter(x => x.posicionCheck === true);
         if (posicionChequeadas.length > 0) {
             var _this = this;
-            posicionChequeadas.forEach(function (item1: any) {
-                _this.model.agregarNuevaPosicion(item1 as SolpPosicion);
+            posicionChequeadas.forEach(function (item1: SolpPosicion) {
+                let newPos = _.cloneDeep(item1);
+                newPos.posicionCheck = false;
+                newPos.numeroPosicion = _this.model.posiciones.length + 1;
+                newPos.id = uuid.v4();
+                _this.model.posiciones.push(newPos);
+                _this.model.posicionActual = _this.model.posiciones[_this.model.posiciones.length - 1];
+                
                 _this.setupAlmacenEntregaByCentro();
             });
             //  el.scrollIntoView();

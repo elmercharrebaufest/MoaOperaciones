@@ -55,7 +55,7 @@ namespace SustitucionMOAUtils.Interfaces
         List<LegajoDto> ObtenerLegajo(int peticionDeOfertaId, int? idPeticionDeOfertaUsuario, bool esProveedor);
         Resultado GuardarAdjuntosPeticionDeOferta(int idPeticion, HttpFileCollectionBase files, UsuarioDto usuarioDto);
         string DescargarLegajo(int idPeticion, string path, int? idPeticionDeOfertaUsuario);
-        RespuestaGuardarSOLP GrabarCircular(CircularDto circularDto, HttpFileCollectionBase adjuntos);
+        RespuestaGuardarSOLP GrabarCircular(CircularDto circularDto, HttpFileCollectionBase adjuntos, bool esAutomatico = false, List<PeticionDeOfertaUsuario> usuarios = null);
         PeticionDeOfertaDto ObtenerPeticionDeOfertaParaCircular(int peticionId);
         RespuestaGuardarSOLP GrabarProveedoresEnPeticionDeOferta(List<int> usuariosId, int peticionId);
         ListaPaginada<PeticionDeOfertaDto> ListarPOProveedor(Paginacion paginacion, string nroSolp, string nroPo, string nombrePedido, string username, DateTime? desde, DateTime? hasta, int? estadoLicitacion, int? estadoCotizacion);

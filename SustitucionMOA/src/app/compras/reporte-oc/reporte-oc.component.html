@@ -10,11 +10,25 @@
             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                 <div class="row myRow" style="margin-top: 1em; margin-bottom: 15px;">
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="margin-left: -46px;">
+                        <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3" *ngIf="usuarioInterno">
+                            <p-autoComplete [(ngModel)]="proveedorSeleccionado" [suggestions]="proveedores"
+                                            (completeMethod)="searchProveedor($event)" 
+                                            placeholder="Seleccione un proveedor" field="RazonSocial" [minLength]="3"
+                                            id="buscadorProveedor">
+                                <ng-template let-proveedor pTemplate="item">
+                                    <div class="ui-helper-clearfix">
+                                        <div style="font-size:12px;margin:10px 10px 0 0">{{proveedor.RazonSocial}}</div>
+                                        <div style="font-size:10px;color:darkgrey;margin:10px 10px 0 0">
+                                            {{proveedor.CUIT}} - {{proveedor.RazonSocial}}
+                                        </div>
+                                    </div>
+                                </ng-template>
+                            </p-autoComplete>
+                        </div>
                         <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
                             <input class="col-xs-12 col-sm-12 col-md-12 col-lg-12 inputAltura" pInputText type="text"
                                    [(ngModel)]="nroOc" placeholder="Buscar por número de OC">
                         </div>
-
                         <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
                             <p-calendar showButtonBar="true" [showIcon]="true" placeholder="Filtro fechas"
                                         dateFormat="dd/mm/yy" (onSelect)="onSelect($event)" appendTo="body" [monthNavigator]="true" [yearNavigator]="true" yearRange="2010:2030"
