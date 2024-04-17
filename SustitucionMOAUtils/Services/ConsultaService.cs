@@ -496,7 +496,14 @@ namespace SustitucionMOAUtils.Services
             var esInterno = usuario.TienePermiso(PermisoEnum.ConsultaAbm);
             var categorias = usuario.Roles.Where(x => x.Categorias.Any()).SelectMany(x => x.Categorias).Select(x => x.Id).ToList();
 
-            var ret = repositorio.Listar<Consulta>(x => (obtenerTodos && categorias.Contains(x.Categoria.Id)) || x.Usuario_Id == usuarioId || x.Usuario.CUITRegistro == usuario.CUITRegistro, includes: includes)
+            var proveedorAsignado = usuario.ObtenerProveedor();
+            var usuarioAprobado = proveedorAsignado.EstadoAprobacion == EstadoAprobacion.Aprobado;
+
+            var ret = repositorio.Listar<Consulta>(x =>
+                (obtenerTodos && categorias.Contains(x.Categoria.Id)) ||
+                (x.Usuario.CUITRegistro == usuario.CUITRegistro && usuarioAprobado) ||
+                x.Usuario_Id == usuarioId
+                , includes: includes)
                 .Select(x => new ConsultaDto
                 {
                     Id = x.Id,
