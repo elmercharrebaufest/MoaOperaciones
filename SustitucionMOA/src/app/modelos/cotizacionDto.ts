@@ -4,24 +4,25 @@ import { LegajoDto } from "./legajoDto"
 import { PeticionDeOfertaDto } from "./peticion-de-oferta-model"
 
 export interface CotizacionDto {
-    Id: number,
-    UsuarioCreador_Id: number, 
-    CotizacionEstado_Id: number,
-    PeticionDeOfertaUsuario_Id: number,
-    FechaCreacion: Date,
-    RespetaMateriales: boolean, 
-    RespetaServicios: boolean,
-    ObservacionTecnica: string,
-    ObservacionEconomica: string,
-    Revision: number,
-    CotizacionEstadoDescripcion: string, 
-    Archivos: ArchivoDto[],
-    ArchivosCotizacion: Archivo[]
-    TieneObservacionTecnica: boolean, 
-    CotizacionPosiciones: CotizacionPosicionDto[],
-    TieneAdjuntos: boolean    
-    CotizacionesHoras: CotizacionHoraDto[],
-    Adjudicaciones: AdjudicacionDto[]
+    Id?: number,
+    UsuarioCreador_Id?: number, 
+    CotizacionEstado_Id?: number,
+    PeticionDeOfertaUsuario_Id?: number,
+    FechaCreacion?: Date,
+    RespetaMateriales?: boolean, 
+    RespetaServicios?: boolean,
+    ObservacionTecnica?: string,
+    ObservacionEconomica?: string,
+    Revision?: number,
+    CotizacionEstadoDescripcion?: string, 
+    Archivos?: ArchivoDto[],
+    ArchivosCotizacion?: Archivo[]
+    TieneObservacionTecnica?: boolean, 
+    CotizacionPosiciones?: CotizacionPosicionDto[],
+    TieneAdjuntos?: boolean    
+    CotizacionesHoras?: CotizacionHoraDto[],
+    CotizacionesHorasOriginal?: CotizacionHoraDto[],
+    Adjudicaciones?: AdjudicacionDto[]
 }
 
 export interface ArchivoDto {

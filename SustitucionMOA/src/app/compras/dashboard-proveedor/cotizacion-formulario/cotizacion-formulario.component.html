@@ -59,3 +59,44 @@
         <button type="button" pButton label="Aceptar" class="ui-button-success botonModal" (click)="dialogo.accept()"></button>
     </p-footer>
 </p-confirmDialog>
+
+
+<p-dialog [(visible)]="displayHoras" [width]="400" modal="modal" appendTo="body" [draggable]="false" [contentStyle]="{'overflow':'visible', 'max-height':'150px', 'min-height':'100px'}" [closable]="false">
+    <p-header class="headerModal">
+        <b>Confirmación horas</b>
+    </p-header>
+    <br>
+    <p>No se han realizado cambios en la grilla de horas <b>¿Desea continuar?</b></p>
+    <br>
+    <p-footer>       
+       <button type="button" pButton label="Cancelar" class="ui-button-info botonModal" (click)="salirHoras()"></button>        
+       <button type="button" pButton label="Aceptar" class="ui-button-success botonModal" (click)="aceptarHoras()"></button>
+    </p-footer>   
+</p-dialog>
+
+
+<p-dialog [(visible)]="displayPropuestaEconomica" [width]="400" modal="modal" appendTo="body" [draggable]="false" [contentStyle]="{'overflow':'visible', 'max-height':'150px', 'min-height':'100px'}" [closable]="false">
+    <p-header class="headerModal">
+        <b>Confirmación Propuesta Ecónomica</b>
+    </p-header>
+    <br>
+    <p>No se han realizado cambios en la observacion económica o en los archivos adjuntos <b>¿Desea continuar?</b></p>
+    <br>
+    <p-footer>       
+       <button type="button" pButton label="Cancelar" class="ui-button-info botonModal" (click)="salirPropuestaEconomica()"></button>        
+       <button type="button" pButton label="Aceptar" class="ui-button-success botonModal" (click)="aceptarPropuestaEconomica()"></button>
+    </p-footer>   
+</p-dialog>
+
+<p-dialog [(visible)]="displayPropuestaTecnica" [width]="400" modal="modal" appendTo="body" [draggable]="false" [contentStyle]="{'overflow':'visible', 'max-height':'150px', 'min-height':'100px'}" [closable]="false">
+    <p-header class="headerModal">
+        <b>Confirmación Propuesta Técnica</b>
+    </p-header>
+    <br>
+    <p>No se han realizado cambios en la observacion técnica o en los archivos adjuntos <b>¿Desea continuar?</b></p>
+    <br>
+    <p-footer>       
+       <button type="button" pButton label="Cancelar" class="ui-button-info botonModal" (click)="salirPropuestaTecnica()"></button>        
+       <button type="button" pButton label="Aceptar" class="ui-button-success botonModal" (click)="aceptarPropuestaTecnica()"></button>
+    </p-footer>   
+</p-dialog>

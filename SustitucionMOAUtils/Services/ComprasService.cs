@@ -1978,7 +1978,7 @@ namespace SustitucionMOAUtils.Services
                 );
 
                 var esServicio = solp.Posiciones.Any() && solp.Posiciones.FirstOrDefault().TipoPosicion.Codigo == "SERVICIO";
-                if (esServicio && solp.Posiciones.Select(x => x.Peticiones).Any() && cotizaciones.Count > 0)
+                if (esServicio && solp.Posiciones.Select(x => x.Peticiones).Any() && cotizaciones != null && cotizaciones.Count > 0)
                 {
                     ActualizarPeticionDeOfertaAlEditarSolp(solp, solp.TrabajoYaHecho != true);
                     if (solp.TrabajoYaHecho != true)
@@ -5786,6 +5786,7 @@ namespace SustitucionMOAUtils.Services
 
                 }
                 peticionCotizacion.Cotizacion.CotizacionesHoras = listaHoras;
+                peticionCotizacion.Cotizacion.CotizacionesHorasOriginal = listaHoras;
 
 
                 if (peticionCotizacion.TipoPosicionCodigo == "MATERIALES")
@@ -5844,7 +5845,7 @@ namespace SustitucionMOAUtils.Services
                             RespetaServicios = cotizacionDto.RespetaServicios,
                             CotizacionEstado_Id = (int)(esFinalizado ? CotizacionEstadoEnum.Cotizado : CotizacionEstadoEnum.Incompleta),
                             PeticionDeOfertaUsuario = peticionUsuario,
-                            PorcentajeDeHoras = cotizacionDto.PorcentajeDeHoras,
+                            PorcentajeDeHoras = cotizacionDto.PorcentajeDeHoras,                            
                             CotizacionPosiciones = cotizacionDto.CotizacionPosiciones.Count > 0 ? cotizacionDto.CotizacionPosiciones.Select(x => new CotizacionPosicion
                             {
                                 Cantidad = x.Cantidad,
@@ -5901,7 +5902,7 @@ namespace SustitucionMOAUtils.Services
                     cotizacion.RespetaMateriales = cotizacionDto.RespetaMateriales;
                     cotizacion.RespetaServicios = cotizacionDto.RespetaServicios;
                     cotizacion.PorcentajeDeHoras = cotizacionDto.PorcentajeDeHoras;
-
+                    cotizacion.CotizarNuevaPosicion = false;
                     var archivos = cotizacion.Archivos;
                     if (archivos != null && archivos.Count > 0 && cotizacionDto.ArchivosGuardados.Count != archivos.Count)
                     {

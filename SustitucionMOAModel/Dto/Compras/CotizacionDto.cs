@@ -33,6 +33,7 @@ namespace SustitucionMOAModel.Dto
         public List<AdjudicacionDto> Adjudicaciones { get; set; }
         public decimal TodasTotalGlobal { get; set; }
         public decimal TodasTotalGlobalSubPos { get; set; }
+        public List<CotizacionHorasDto> CotizacionesHorasOriginal { get; set; }
     }
 
     public class CotizacionPosicionDto

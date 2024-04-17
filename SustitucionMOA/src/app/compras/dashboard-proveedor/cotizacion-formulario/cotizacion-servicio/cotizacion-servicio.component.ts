@@ -310,13 +310,15 @@ export class CotizacionServicioComponent extends ListBaseComponent implements On
     public getCotizacion() {
         this.crearCotizacionPosicion();
         this.crearCotizacionSubPosicion();
-        this.autoCompletarHoras()
+        this.autoCompletarHoras();
         var coti = {
             CotizacionId: this.peticion.CotizacionId,
             PeticionOfertaUsuarioId: this.peticion.Id,
             CotizacionPosiciones: this.cotizaciones,
             ObservacionEconomica: this.peticion.ObservacionEconomica,
             ObservacionTecnica: this.peticion.ObservacionTecnica,
+            ObservacionEconomicaOriginal: this.peticion.ObservacionEconomicaOriginal,
+            ObservacionTecnicaOriginal: this.peticion.ObservacionTecnicaOriginal,
             ArchivosNuevos: this.archivosEconomico,
             ArchivosTecnico: this.archivosTecnico,
             RespetaServicios: this.peticion.RespetaServicios,
@@ -324,6 +326,8 @@ export class CotizacionServicioComponent extends ListBaseComponent implements On
             ArchivosGuardados: this.peticion.Cotizacion.ArchivosCotizacion != null ? this.peticion.Cotizacion.ArchivosCotizacion.map(x => { return { Id: x.Id } }) : null,
             ArchivosTipo: this.peticion.Cotizacion.ArchivosCotizacion != null ? this.peticion.Cotizacion.ArchivosCotizacion.map(x => { return { FileKey: x.FileKey } }) : null,
             CotizacionesHoras: this.index == 0 ? this.peticion.Cotizacion.CotizacionesHoras.filter(x => x.Gremio == 'UOCRA' || x.ConfigurarHora == true) : this.peticion.Cotizacion.CotizacionesHoras.filter(x => x.Gremio != 'UOCRA'),
+            CotizacionesHorasOriginal: this.index == 0 ? this.peticion.Cotizacion.CotizacionesHorasOriginal.filter(x => x.Gremio == 'UOCRA' || x.ConfigurarHora == true) : this.peticion.Cotizacion.CotizacionesHorasOriginal.filter(x => x.Gremio != 'UOCRA'),
+            EsNuevaCotizacion: this.peticion.EsNuevaCotizacion,
             CotizacionSubposiciones: this.subposiciones,
             PorcentajeDeHoras: this.index == 0 ? this.peticion.PorcentajeDeHoras : 0
         }
