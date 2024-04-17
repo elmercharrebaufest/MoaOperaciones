@@ -370,6 +370,11 @@ i#btn-fullscreen {
     text-align: left;
 }
 
+p-table.level2 .posicion > td > a {
+    vertical-align: middle;
+    padding-left: .3em;
+}
+
 p-table.level3 i.pi-chevron-down,
 p-table.level3 i.pi-chevron-right {
     padding-left: .6rem;

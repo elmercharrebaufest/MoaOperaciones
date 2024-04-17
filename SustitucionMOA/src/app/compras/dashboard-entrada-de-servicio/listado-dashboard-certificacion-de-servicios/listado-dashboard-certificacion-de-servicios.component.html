@@ -127,7 +127,7 @@
             <ng-template pTemplate="body" let-rowData let-columns="columns" let-expanded="expanded">
                 <tr [pSelectableRow]="rowData" *ngIf="!ocFilterApplied || (ocFilterApplied && tienePosicionesConItemsACertificar(rowData.Posiciones))">
                     <td>
-                        <a href="#" [pRowToggler]="rowData" (click)="loadSolicitantesList(rowData);">
+                        <a href="#" [pRowToggler]="rowData" (click)="loadSolicitantesList(rowData); setPositionRow(rowData.Posiciones);">
                             <i [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
                         </a>
                     </td>
@@ -176,7 +176,7 @@
                                         <td>
                                             <input *ngIf="hidePositionCheckboxToAll(rowData.Items)" type="checkbox" [(ngModel)]="rowData.isSelected" (change)="selectAllPositionsLines($event,rowData)"/>
 
-                                            <a href="#" [pRowToggler]="rowData" (click)="setPositionRow(rowData);">
+                                            <a href="#" [pRowToggler]="rowData" (click)="expandedPositionRow=rowData">
                                                 <i [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
                                             </a>
                                         </td>
@@ -210,8 +210,8 @@
                                                  class="level3"
                                                  [value]="rowData.Items"
                                                  dataKey="NumeroLinea"
-                                                 [paginator]="rowData.Items.length > 4"
-                                                 [rows]="5"
+                                                 [paginator]="rowData.Items.length > 10"
+                                                 [rows]="10"
                                                  rowExpandMode="single">
 
                                             <!-- TABLE 3 HEADERS -->
@@ -250,10 +250,11 @@
                                                                    name="cantidad"
                                                                    (keypress)="numbersOnly($event)"
                                                                    (keyup)="actualizarValoresACertificarPorCantidad(rowData);"
+                                                                   (blur)="validarMantenerItemSeleccionado(rowData)"
                                                                    (ngModelChange)="rowData.CantidadACertificar=$event"
-                                                                   [ngModel]="rowData.CantidadACertificar | number:'1.0-2'"
+                                                                   [ngModel]="rowData.CantidadACertificar | number:'1.0-3'"
                                                                    required
-                                                                   pattern="^[0-9\.]*$"
+                                                                   pattern="^(?=.*[1-9])[0-9]*[.]?[0-9]{1,3}$"
                                                                    [disabled]="rowData.Porcentaje==100" 
                                                                    [ngClass]="{'input-border-color': !isCantidadDisabled}"/>
 
@@ -262,8 +263,10 @@
                                                                    name="porcentaje"
                                                                    (keypress)="numbersOnly($event)"
                                                                    (keyup)="actualizarValoresACertificarPorPorcentaje(rowData);"
+                                                                   (blur)="validarMantenerItemSeleccionado(rowData)"
                                                                    (ngModelChange)="rowData.PorcentajeACertificar=$event"
-                                                                   [ngModel]="rowData.PorcentajeACertificar | number:'1.0-2'"
+                                                                   [ngModel]="rowData.PorcentajeACertificar | number:'1.0-3'"
+                                                                   pattern="^(?=.*[1-9])[0-9]*[.]?[0-9]{1,3}$"
                                                                    required
                                                                    disabled
                                                                    [ngClass]="{ 'input-border-color': !isPorcentajeDisabled}"/>

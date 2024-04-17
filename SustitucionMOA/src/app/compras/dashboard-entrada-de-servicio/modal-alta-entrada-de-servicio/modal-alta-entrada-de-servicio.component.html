@@ -62,18 +62,18 @@
 
                     <!-- Anteriores -->
                     <!-- * 1  is just to turn it into a number -->
-                    <td>{{ rowData.CantidadReal * 1 | number:'1.0-2':'es' }}</td>
-                    <td>{{ rowData.Porcentaje | number:'1.0-2':'es' }}%</td>
+                    <td>{{ rowData.CantidadReal * 1 | number:'1.0-3':'es' }}</td>
+                    <td>{{ rowData.Porcentaje | number:'1.0-3':'es' }}%</td>
                     <td class="text-right">{{ calcularMontoAnterior(rowData) | number:'1.0-2':'es' }}</td>
 
                     <!-- A certificar -->
-                    <td>{{ rowData.CantidadACertificar | number:'1.0-2':'es' }}</td>
-                    <td>{{ rowData.PorcentajeACertificar | number:'1.0-2':'es' }}%</td>
+                    <td>{{ rowData.CantidadACertificar | number:'1.0-3':'es' }}</td>
+                    <td>{{ rowData.PorcentajeACertificar | number:'1.0-3':'es' }}%</td>
                     <td class="text-right">{{ rowData.CantidadACertificar * rowData.Importe  | number:'1.0-2':'es' }}</td>
 
                     <!-- Acumulado -->
-                    <td>{{ rowData.CantidadReal + (rowData.CantidadACertificar * 1) | number:'1.0-2':'es'}}</td>
-                    <td>{{ (rowData.Porcentaje * 1) + (rowData.PorcentajeACertificar * 1) | number:'1.0-2':'es' }}%</td>
+                    <td>{{ rowData.CantidadReal + (rowData.CantidadACertificar * 1) | number:'1.0-3':'es'}}</td>
+                    <td>{{ (rowData.Porcentaje * 1) + (rowData.PorcentajeACertificar * 1) | number:'1.0-3':'es' }}%</td>
                     <td class="text-right">{{ calcularMontoAnterior(rowData) + (rowData.CantidadACertificar * rowData.Importe) | number:'1.0-2':'es' }}</td>
                 </tr>
             </ng-template>

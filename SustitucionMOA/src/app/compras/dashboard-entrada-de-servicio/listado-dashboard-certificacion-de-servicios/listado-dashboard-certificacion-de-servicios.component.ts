@@ -241,21 +241,18 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
     };
 
     selectAllPositionsLines(event: any, positions: any): void {
-
         if (event.target.checked) {
             const itemsFiltered = positions.Items.filter((row: any) => !this.isGet100(row) && row.MontoACertificar != 0);
 
-            this.calcularValoresACertificar(positions);
-            if (itemsFiltered.length > 0) {
-
-                itemsFiltered.forEach((item: any) => {
-                    if (!this.itemSelected.includes(item)) {
-                        item.isSelected = true;
-                        this.onCheckboxPositionChange(item);
-                    }
-                });
-            }
-        } else {
+            itemsFiltered.forEach((item: any) => {
+                if (!this.itemSelected.includes(item)) {
+                    item.isSelected = true;
+                    this.onCheckboxPositionChange(item);
+                }
+            });
+            
+        }
+        else {
             this.clearCheckboxesPositions(positions);
         }
     }
@@ -287,7 +284,11 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
         this.itemIdSelected = updatedSelectedIds;
     }
 
-
+    /**
+     * Selecciona/Deselecciona el checkbox correspondiente 
+     * a un ITEM.
+     * @param item
+     */
     onCheckboxChange(item: any) {
         const itemId = item.PosicionId;
         const numeroLinea = item.NumeroLinea;
@@ -304,15 +305,14 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
             this.itemIdSelected.push(itemId);
             this.numeroLineaSelected.add(numeroLinea);
             this.itemSelected.push(item);
-            this.actionCheckPosition(item);
         }
+
+        this.actionCheckPosition(item);
         this.itemSelected.sort((a, b) => a.NumeroLinea > b.NumeroLinea ? 1 : -1);
     }
 
-    setPositionRow(posicion: any) {
-        //this.clearCheckboxes();
-        this.expandedPositionRow = posicion;
-        this.calcularValoresACertificar(posicion);
+    setPositionRow(posiciones: any[]) {
+        posiciones.forEach(posicion => this.calcularValoresACertificar(posicion));
         this.mostrarOcultarItemsSinSaldoACertificar();
     }
 
@@ -645,41 +645,54 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
         item.MontoACertificar = montoActualizado;
     }
 
-    actualizarValoresACertificarPorCantidad(item: any) {
+    actualizarValoresACertificarPorCantidad(item: any): void {
         const cantidadACertificar = item.CantidadACertificar;
         const cantidadDisponible = item.Cantidad - item.CantidadReal;
-
-        if (cantidadACertificar === null || cantidadACertificar === '' || cantidadACertificar === 0) {
-            this.clearCheckbox(item);
-        }
 
         if (cantidadACertificar > cantidadDisponible || (cantidadACertificar < 0 && cantidadACertificar != '')) {
             item.CantidadACertificar = cantidadDisponible;
         }
 
-        item.PorcentajeACertificar = (item.CantidadACertificar * 100) / item.Cantidad;
+        const percentajeACertificar = (item.CantidadACertificar * 100) / item.Cantidad;
+        item.PorcentajeACertificar = Number(percentajeACertificar.toFixed(3));
         this.calcularMontoACertificar(item);
     }
 
-    actualizarValoresACertificarPorPorcentaje(item: any) {
+    actualizarValoresACertificarPorPorcentaje(item: any): void {
         const porcentajeDisponible = (100 - item.Porcentaje);
         const porcentajeACertificar = item.PorcentajeACertificar;
-
-        if (porcentajeACertificar === null || porcentajeACertificar === '' || porcentajeACertificar === 0) {
-            this.clearCheckbox(item);
-        }
 
         if (porcentajeACertificar > porcentajeDisponible || (porcentajeACertificar < 0 && porcentajeACertificar != '')) {
             item.PorcentajeACertificar = porcentajeDisponible;
         }
 
-        item.CantidadACertificar = (item.PorcentajeACertificar * item.Cantidad) / 100;
+        const cantidadACertificar = (item.PorcentajeACertificar * item.Cantidad) / 100;
+        item.CantidadACertificar = Number(cantidadACertificar.toFixed(3));
         this.calcularMontoACertificar(item);
+    }
+
+    validarMantenerItemSeleccionado(item: any) {
+        if (item.CantidadACertificar == 0) {
+            this.clearCheckbox(item);
+        }
     }
 
     numbersOnly(event): boolean {
         const charCode = (event.which) ? event.which : event.keyCode;
-        return !(charCode > 31 && (charCode < 48 || charCode > 57)) || charCode === 46;
+        // Verificar si el valor ingresado ya contiene .
+        if (charCode === 46) {
+            return event.target.value.indexOf('.') === -1;
+        }
+
+        // Verificar que sean un número
+        if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+            return false;
+        }
+
+        // Verificar que no se acepten más de 2 decimales
+        if (event.target.value.includes('.')) {
+            return event.target.value.split('.')[1].length <= 2;
+        }
     }
 
     clearCheckbox(item: any): void {
@@ -710,18 +723,14 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
         }
     }
 
+    /**
+     * Selecciona/Deselecciona toda la posición.
+     * @param item
+     */
     actionCheckPosition(item: any): void {
-        let itemsFiltered = [];
-        this.tablaPO.filter(orders => orders.NumeroOrdenDeCompra === item.NroOrdenCompra).forEach(order => {
-            order.Posiciones.filter(positions => positions.NumeroPosicion === parseInt(item.NroPosicion)).forEach(pos => {
-                pos.Items.forEach((i) => {
-                    if (!this.isGet100(i) || i.MontoACertificar != 0) {
-                        itemsFiltered.push(i);
-                        pos.isSelected = itemsFiltered.every((everyItem) => everyItem.isSelected ? true : false);
-                    }
-                });
-            })
-        })
+        let posicion = this.tablaPosiciones.value.find(posicion => posicion.NumeroPosicion === parseInt(item.NroPosicion));
+        let itemsConSaldoDisponible = posicion.Items.filter(item => item.MontoACertificar > 0);
+        posicion.isSelected = !itemsConSaldoDisponible.some(item => !item.isSelected);
     }
 
     hideCheckboxToAll(items: any): boolean {
