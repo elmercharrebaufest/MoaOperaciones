@@ -98,8 +98,9 @@ namespace SustitucionMOAUtils.Services
         public List<DetalleOrdenDeCompraDto> ServicioSAP_OrdenesCompraCabeceras(OrderParamsDto parametros)
         {
             List<OrdenCompraDto> ordenesCompra = new List<OrdenCompraDto>();
+            var obtenerOrdenConsumer = new ObtenerOrdenDeCompraConsumerMOA(repositorio);
 
-             ordenesCompra = new ObtenerOrdenesDeCompraConsumerMOA().Request(parametros);
+            ordenesCompra = new ObtenerOrdenesDeCompraConsumerMOA().Request(parametros);
           
             //List<TablaSap> centros = repositorio.Listar<TablaSap>(a => a.Tabla == "Centro");
             //List<TablaSap> almacenes = repositorio.Listar<TablaSap>(a => a.Tabla == "Almacen");
@@ -112,13 +113,33 @@ namespace SustitucionMOAUtils.Services
 
             string today = DateTime.Now.ToString(dateTimeFormat);
             DateTime fechaHasta = DateTime.ParseExact(today, dateTimeFormat, System.Globalization.CultureInfo.InvariantCulture);
+            DateTime fechaInicio = DateTime.ParseExact(today, dateTimeFormat, System.Globalization.CultureInfo.InvariantCulture);
 
             //MMSN-574 - Fecha Hasta
-            if (!String.IsNullOrEmpty(parametros.fechaHasta))
+            if (!String.IsNullOrEmpty(parametros.fechaHasta) || !String.IsNullOrEmpty(parametros.fechaInicio))
             {
                 //Desde FE viene como yyyy-MM-dd -> formatear a como devuelve el servicio(dd-MM-yyyy).
                 parametros.fechaHasta = Convert.ToDateTime(parametros.fechaHasta).ToString(dateTimeFormat);
                 fechaHasta = DateTime.ParseExact(parametros.fechaHasta, dateTimeFormat, System.Globalization.CultureInfo.InvariantCulture);
+
+                parametros.fechaInicio = Convert.ToDateTime(parametros.fechaInicio).ToString(dateTimeFormat);
+                fechaInicio = DateTime.ParseExact(parametros.fechaInicio, dateTimeFormat, System.Globalization.CultureInfo.InvariantCulture);
+            }
+
+
+            if (!string.IsNullOrEmpty(parametros.vendedor) || !string.IsNullOrEmpty(parametros.OrdenCompraId))
+            {
+                DateTime dateInit = (fechaHasta.Year - fechaInicio.Year) * 12 + fechaHasta.Month - fechaInicio.Month > 24
+                    && !string.IsNullOrEmpty(parametros.vendedor)
+                    ? fechaHasta.AddYears(-2)
+                    : fechaInicio;
+
+                DateTime dateEnd = fechaHasta;
+                
+
+                ordenesCompra = ordenesCompra
+                    .Where(oc => Convert.ToDateTime(oc.Fecha) >= dateInit && Convert.ToDateTime(oc.Fecha) <= dateEnd)
+                    .ToList();
             }
 
             //MMSN-574
@@ -136,15 +157,14 @@ namespace SustitucionMOAUtils.Services
             {               
                 string nroOC = ordenCompra.Id.ToString();
 
-
                 // Obtengo detalle de una OC //
-                DetalleOrdenDeCompraDto detalleOrdendeCompra = new ObtenerOrdenDeCompraConsumerMOA(repositorio).ObtenerDetalleDeOrdenDeCompra(nroOC, centros, almacenes);            
+                DetalleOrdenDeCompraDto detalleOrdendeCompra = obtenerOrdenConsumer.ObtenerDetalleDeOrdenDeCompra(nroOC, centros, almacenes);
 
                 detalleOrdendeCompra.NombreProveedor = ordenCompra.ProveedorNombre;
                 detalleOrdendeCompra.MonedaDescripcion = ordenCompra.MonedaDescripcion;
 
                 result.Add(detalleOrdendeCompra);
-                           
+
             }
 
             return result;

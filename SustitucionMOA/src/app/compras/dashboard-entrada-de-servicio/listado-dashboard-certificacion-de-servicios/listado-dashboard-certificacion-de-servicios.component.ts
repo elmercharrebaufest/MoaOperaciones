@@ -213,7 +213,8 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
         this.navService.setSeccionActive('Ingresar certificación');
         this.navService.navegarSeccion("compras/dashboardCertificacionDeServicios");
         this.filtroFechaComponent.setPeriodoInitial('2');
-        this.getListarPO(this.proveedor, this.ordenCompraId, this.filtroFechaComponent.fecha_inicio, this.filtroFechaComponent.fecha_fin);
+        this.saveConfigurationFilterDates();
+        this.getListarPO(this.proveedor, this.ordenCompraId, this.fechaInicioConfigurado, this.fechaFinConfigurado);
     }
 
     ngAfterViewInit() {
@@ -391,21 +392,9 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
             this.proveedor = '';
         }
 
-        let startDate = '';
-        let endDate = '';
-
-        if (this.filtroFechaComponent.periodo == '4') {
-            startDate = Formatter.DateToSting(new Date(this.filtroFechaComponent.dtpInput1.nativeElement.value));
-            endDate = Formatter.DateToSting(new Date(this.filtroFechaComponent.dtpInput2.nativeElement.value));
-        }
-        else {
-            startDate = this.filtroFechaComponent.fecha_inicio;
-            endDate = this.filtroFechaComponent.fecha_fin;
-        }
-
         this.expandedPositionRow = false;
-        this.saveConfigurationFilterDates(startDate, endDate);
-        this.getListarPO(this.proveedor, this.ordenCompraId, startDate, endDate);
+        this.saveConfigurationFilterDates();
+        this.getListarPO(this.proveedor, this.ordenCompraId, this.fechaInicioConfigurado, this.fechaFinConfigurado);
         this.tabla.first = 0;
     }
 
@@ -515,9 +504,15 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
     private fechaInicioConfigurado: any;
     private fechaFinConfigurado: any;
 
-    saveConfigurationFilterDates(fecha_inicio, fecha_fin) {
-        this.fechaInicioConfigurado = fecha_inicio;
-        this.fechaFinConfigurado = fecha_fin;
+    saveConfigurationFilterDates() {
+        if (this.filtroFechaComponent.periodo == '4') {
+            this.fechaInicioConfigurado = Formatter.DateToSting(new Date(this.filtroFechaComponent.dtpInput1.nativeElement.value));
+            this.fechaFinConfigurado = Formatter.DateToSting(new Date(this.filtroFechaComponent.dtpInput2.nativeElement.value));
+        }
+        else {
+            this.fechaInicioConfigurado = this.filtroFechaComponent.fecha_inicio;
+            this.fechaFinConfigurado = this.filtroFechaComponent.fecha_fin;
+        }
     }
 
     actualizarGrilla(event: string) {
