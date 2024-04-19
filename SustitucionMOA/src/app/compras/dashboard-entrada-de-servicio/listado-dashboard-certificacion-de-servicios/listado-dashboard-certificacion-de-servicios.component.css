@@ -29,6 +29,24 @@
     
 }
 
+.green-row {
+    background-color: #c2e4ce !important;
+
+}
+
+.reference-position-complete {
+    width: 50px;       /* Ancho del rectángulo */
+    height: 25px;       /* Alto del rectángulo */
+    background-color: #c2e4ce;  /* Color de referencia HTML */
+    border: 1px solid #000;     /* Borde negro opcional */
+}
+
+.reference-section {
+    margin-top: 20px;  /* Espacio superior */
+    display: flex;     /* Usa flexbox */
+    justify-content: flex-end; /* Alinea los elementos al final del contenedor */
+}
+
 /* Ocultar la barra de desplazamiento del modo normal */
 .content-wraper {
     overflow-y: scroll;

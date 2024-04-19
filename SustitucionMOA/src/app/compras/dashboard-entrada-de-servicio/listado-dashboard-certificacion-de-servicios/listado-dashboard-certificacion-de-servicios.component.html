@@ -146,7 +146,7 @@
 
             <!-- TABLE 1 ROW EXPANSION: POSICIONES -->
             <ng-template pTemplate="rowexpansion" let-rowData let-columns="columns" let-orderIndex="rowIndex">
-                <tr *ngIf="!ocFilterApplied || (ocFilterApplied && tienePosicionesConItemsACertificar(rowData.Posiciones))">
+                <tr [pSelectableRow]="rowData" *ngIf="!ocFilterApplied || (ocFilterApplied && tienePosicionesConItemsACertificar(rowData.Posiciones))">
                     <td [attr.colspan]="cantidadColumnasTabla('ordenes')">
                         <p-table #tablaPosiciones
                                  id="posiciones"
@@ -169,7 +169,7 @@
 
                             <!-- TABLE 2 BODY-->
                             <ng-template pTemplate="body" let-rowData let-expanded="expanded" let-posIndex="rowIndex">
-                                <tr class="posicion" *ngIf="!ocFilterApplied || (ocFilterApplied && tieneItemsACertificar(rowData))">
+                                <tr class="posicion" *ngIf="!ocFilterApplied || (ocFilterApplied && tieneItemsACertificar(rowData))" [class.green-row]="es100PorCiento([rowData])">
                                     <ng-container *ngIf="mostrarPosicionSolicitante(rowData)">
 
                                       <!-- SE AGREGA CHECKBOX PARA SELECCIOANR N POSICIONES -->
@@ -372,6 +372,23 @@
             <button (click)="openModal()" class="btn btn-certificar" [attr.disabled]="itemSelected.length === 0? true : null">
                 Certificar ES - Ítem
             </button>
+        </div>
+        <div class="reference-section">
+            <table>
+                <thead>
+                    <tr>
+                        <th colspan="2">Referencias</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <div class="reference-position-complete"></div>
+                        </td>
+                        <td>&emsp;Posición completa</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </div>
     <!-- POC TABLE END -->

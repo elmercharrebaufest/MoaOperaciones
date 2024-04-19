@@ -944,6 +944,23 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
         return posicionesAMostrar.length;
     }
 
+    calcularPorcentaje(posiciones): number {
+        let totalItems = 0;
+        let itemsCompletados = 0;
+
+        posiciones.forEach(posicion => {
+            const items = posicion.Items || [];
+            totalItems += items.length;
+            itemsCompletados += items.filter(item => item.PorcentajeACertificar === 0).length;
+        });
+
+        return totalItems > 0 ? (itemsCompletados / totalItems) * 100 : 0;
+    }
+
+    es100PorCiento(posiciones): boolean {
+        return this.calcularPorcentaje(posiciones) === 100;
+    }
+
     showScrollbar: boolean = false;
 
     toggleFullscreen() {
