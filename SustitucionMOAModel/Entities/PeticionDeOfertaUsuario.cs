@@ -44,5 +44,8 @@ namespace SustitucionMOAModel.Entities
         [InverseProperty("PeticionDeOfertaUsuario")]
         public virtual ICollection<CircularPeticionDeOfertaUsuario> Circulares { get; set; } = new List<CircularPeticionDeOfertaUsuario>();
 
+        [InverseProperty("PeticionDeOfertaUsuario")]
+        public virtual ICollection<ChatExternoCompras> ChatExterno { get; set; } = new List<ChatExternoCompras>();
+
     }
 }

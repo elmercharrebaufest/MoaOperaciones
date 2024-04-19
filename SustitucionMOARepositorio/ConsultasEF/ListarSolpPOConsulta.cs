@@ -39,6 +39,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
         {
             var hoy = DateTime.Now;
             var ayer = hoy.AddDays(-1);
+
             try
             {
                 ((IObjectContextAdapter)contexto).ObjectContext.CommandTimeout = 180;
@@ -160,7 +161,8 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                     ItemPorPagina = Paginacion.ItemsPorPagina,
                                     Pagina = Paginacion.Pagina,
                                     TieneAdjudicacion = cotizacion != null && cotizacion.Adjudicaciones.Any(),
-                                    VerCotizar = x.PeticionDeOferta.Posiciones.All(posi => posi.SolpPosicion.Solp.EstadoSolpSap.CodigoSap == "05")                                                    
+                                    VerCotizar = x.PeticionDeOferta.Posiciones.All(posi => posi.SolpPosicion.Solp.EstadoSolpSap.CodigoSap == "05"),
+                                    ChatSinLeer = x.ChatExterno.Any(a => a.Leido == false && a.Usuario.Roles.Any(r => r.Codigo == "SOLP"))
                                 };
 
                 if (FechaDesde.HasValue || FechaHasta.HasValue || EstadoLicitacion.HasValue)
