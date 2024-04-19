@@ -1,15 +1,15 @@
 .detalleChat {
-    height: 350px;
+    height: 478px;
     overflow-y: auto;
     border-radius: 10px 10px 0px 0px;
     -moz-border-radius: 10px 10px 0px 0px;
     -webkit-border-radius: 10px 10px 0px 0px;
-    background: #fff;
+    background: #eeebea ;
     padding: 10px;
 }
 
 .comentarioRespuesta {
-    background: #FAFAFA 0% 0% no-repeat padding-box;
+    background: #bbb9b9 0% 0% no-repeat padding-box;
     box-shadow: 0px 3px 6px #00000029;
     border-radius: 4px;
     opacity: 1;
@@ -20,12 +20,12 @@
     text-align: left;
     font: normal normal normal 16px/18px Roboto Regular;
     letter-spacing: 0px;
-    color: #707070;
+    color: #F4F4F4;
     opacity: 1;
 }
 
 .comentarioPropio {
-    background: #009688 0% 0% no-repeat padding-box;
+    background: #bbb9b9 0% 0% no-repeat padding-box;
     box-shadow: 0px 3px 6px #00000029;
     border-radius: 4px;
     opacity: 1;
@@ -52,11 +52,11 @@
     text-align: left;
     font: normal normal normal 16px/28px Roboto Regular;
     letter-spacing: 0px;
-    color: #707070;
+    color: #eeebea;
     opacity: 1;
     max-height: 539px;
     /*overflow-y: auto;*/
-    min-height: 318px;
+    min-height: auto;
 }
 
 .añadirComentario {
@@ -73,7 +73,7 @@
     right: 10px;
     width: 85px;
     height: 36px;
-    background: #009688 0% 0% no-repeat padding-box !important;
+    background: #707070 0% 0% no-repeat padding-box !important;
     box-shadow: 0px 2px 2px #0000003D;
     border-radius: 2px;
     opacity: 1;
@@ -82,7 +82,7 @@
 .fechaComentario {
     padding: 4px;
     height: 35px;
-    background: white 0% 0% no-repeat padding-box;
+    background: #eeebea  0% 0% no-repeat padding-box;
     border-radius: 4px;
     opacity: 1;
     margin: auto;
@@ -92,7 +92,7 @@
     width: 150px;
     padding: 4px;
     height: 27px;
-    background: #707070 0% 0% no-repeat padding-box;
+    background: #bbb9b9 0% 0% no-repeat padding-box;
     border-radius: 4px;
     opacity: 1;
     margin: auto;
@@ -128,13 +128,6 @@
     border-radius: 10px;
 }
 
-.detalleConsulta::-webkit-scrollbar-thumb:hover,
-.menuLateralConsulta::-webkit-scrollbar-thumb:hover {
-    background: #707070;
-    border-radius: 10px;
-}
-
-
 .horaComentarioRespuesta {
     text-align: right;
     font-size: 10px;
@@ -143,4 +136,53 @@
 .horaComentario {
     font-size: 10px;
 }
+
+.menuLateralConsulta .p-card {
+    max-width: none; /* Eliminar el ancho máximo para permitir que las cards se ajusten automáticamente */
+}
+
+/* Establecer el tamaño máximo del contenedor de las cards */
+.menuLateralConsulta {
+    /* max-height: 800px; */
+    overflow-y: auto; /* Agrega una barra de desplazamiento vertical cuando sea necesario */
+}
+
+::ng-deep .ui-card-body {
+    background-color: #eeebea;
+    padding: 0px !important;
+}
+
+.comprador-content {
+    background-color: #bbb9b9;
+    padding: 10px;
+    border-radius: 4px;
+    color: white;
+    margin-bottom: 10px;
+    justify-content: center;
+    align-items: center;
+}
+
+.comprador-title {
+    font-weight: bold;
+    margin: 0;
+    text-align: center;
+    flex: 1;
+}
+
+::ng-deep .ui-card-body:hover {
+    cursor: pointer; /* Cambia el cursor al pasar sobre la tarjeta */
+    background: #756c6c; 
+    border: 1px solid #5B5B5B;
+}
+
+.selected-card {
+    cursor: pointer; /* Cambia el cursor al pasar sobre la tarjeta */
+    background: #756c6c; 
+    border: 1px solid #5B5B5B;
+}
+
+
+
+
+
 

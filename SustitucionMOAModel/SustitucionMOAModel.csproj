@@ -62,6 +62,8 @@
     <Compile Include="Dto\AplicacionCartaPorte\CargaMasivaResponse.cs" />
     <Compile Include="Dto\AplicacionCartaPorte\ComboAplicacionesContratosCcppResponse.cs" />
     <Compile Include="Dto\HistorialDeFechaDto.cs" />
+    <Compile Include="Dto\Compras\ChatsDto.cs" />
+    <Compile Include="Dto\Compras\ChatExternoComprasDto.cs" />
     <Compile Include="Dto\Compras\POPosicionDto.cs" />
     <Compile Include="Dto\Compras\LogCotizacionDto.cs" />
     <Compile Include="Dto\Compras\InfoVisitasDeObraDto.cs" />
@@ -192,6 +194,7 @@
     <Compile Include="Dto\Compras\UsuarioComprasDto.cs" />
     <Compile Include="Dto\Compras\UsuarioComprasRelacionConUsuariosDto.cs" />
     <Compile Include="Dto\UsuarioModificacionDto.cs" />
+    <Compile Include="Entities\ChatExternoCompras.cs" />
     <Compile Include="Entities\CotizacionHistorial.cs" />
     <Compile Include="Entities\MonedaConversion.cs" />
     <Compile Include="Entities\PaisesSap.cs" />

@@ -228,7 +228,7 @@
                         <div class="col-md-2">
                             <span>
                                 <img class="pointer" src="./Content/images/icons/chat.svg" alt="chat"
-                                     (click)="obtenerChatExterno(rowData)" style="height: 30px;" />
+                                     (click)="obtenerChatInterno(rowData)" style="height: 30px;" />
                                 <div class="punto-rojo" *ngIf="rowData.ChatSinLeer == true"></div>
                             </span>
                         </div>
@@ -403,5 +403,6 @@
 
 <app-chat-interno [(displayChatInterno)]="displayChatInterno"
                   [(chat)]="chat"
-                  (cerrardisplayChatEmitter)="cerrarModalChat()">
+                  (cerrardisplayChatEmitter)="cerrarModalChat()"
+                  [(dasboardComprador)]="dasboardComprador">
 </app-chat-interno>

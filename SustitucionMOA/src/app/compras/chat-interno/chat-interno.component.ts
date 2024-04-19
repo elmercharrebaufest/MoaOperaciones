@@ -1,7 +1,7 @@
-import { Component, Input, OnInit, ViewChild, Output, EventEmitter, LOCALE_ID } from '@angular/core';
+import { Component, Input, OnInit, ViewChild, Output, EventEmitter, LOCALE_ID, ElementRef } from '@angular/core';
 import { MensajeComponent } from '../../common/view-child/mensaje/mensaje.component';
 import { SpinnerSmallComponent } from '../../common/view-child/spinner-small/spinner-small.component';
-import { ChatComprasDto, ChatInternoComprasDto } from './chat-interno.interface';
+import { ChatComprasDto, ChatExternoComprasDto, ChatInternoComprasDto, ChatProveedorDto, ChatsDto } from './chat-interno.interface';
 import { BaseComponent } from '../../common/base-components/base-component';
 import { DomSanitizer } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
@@ -33,12 +33,19 @@ export class ChatInternoComponent extends BaseComponent implements OnInit {
 
     @BlockUI() blockUI: NgBlockUI;
     @Input() displayChatInterno: boolean;
-    @Input() chat: ChatComprasDto;
+    @Input() chat: ChatsDto;
+    @Input() dasboardComprador: boolean;
+    @Input() dasboardProveedor: boolean;
+
+
     @Output() cerrardisplayChatEmitter = new EventEmitter();
 
     @ViewChild('contenedorMensajes') contenedorMensajes: any;
 
-    public chatMensaje: ChatInternoComprasDto;
+    public chatMensaje: ChatInternoComprasDto[] = [];
+    public chatCompras: ChatComprasDto;
+    public chatProveedores: ChatProveedorDto[] = [];
+
 
     @ViewChild(SpinnerSmallComponent)
     public spinnerSmallComponent: SpinnerSmallComponent;
@@ -58,6 +65,10 @@ export class ChatInternoComponent extends BaseComponent implements OnInit {
     roles: Array<Rol> = [];
     visualizarAlert = false;
     error: string = "";
+    esChatComprador: boolean = true;
+    esChatProveedor: boolean = false;
+    
+    proveedorSeleccionado: ChatProveedorDto;
 
     constructor(
         private route: ActivatedRoute,
@@ -77,16 +88,16 @@ export class ChatInternoComponent extends BaseComponent implements OnInit {
 
     }
 
-
     ngOnInit() {
     }
 
     grabarMensajeChatInterno() {
         let mensajeChat: ChatInternoComprasDto = {
             Mensaje: this.mensajeNuevo,
-            Solp_Id: this.chat.Solp_Id
-
+            Solp_Id: this.chat.ChatCompras.Solp_Id
         };
+        // console.log("mensajeChat in", mensajeChat);
+
         this.blockUI.start('Grabando ');
 
         this.subscription = this.service
@@ -122,7 +133,7 @@ export class ChatInternoComponent extends BaseComponent implements OnInit {
                         mensajeChat.FechaDiaEnvio = this.formatFechaDia(fechaActual);
                         mensajeChat.Mail = sessionStorage.getItem("username");
                         mensajeChat.Usuario_Id = parseInt(sessionStorage.getItem("usuarioId"));
-                        this.chat.Mensajes.push(mensajeChat);
+                        this.chat.ChatCompras.Mensajes.push(mensajeChat);
 
                         //this.actualizarChat();
                         this.mensajeNuevo = "";
@@ -147,7 +158,7 @@ export class ChatInternoComponent extends BaseComponent implements OnInit {
     }
 
     formatFechaDia(fecha: Date): string {
-        const daysOfWeek = ['dom.', 'lun.', 'mar.', 'mié.', 'jue.', 'vie.', 'sáb.'];
+        const daysOfWeek = ['dom.', 'lun.', 'mar.', 'miï¿½.', 'jue.', 'vie.', 'sï¿½b.'];
         const dayOfWeek = daysOfWeek[fecha.getDay()];
         const day = fecha.getDate();
         const month = fecha.toLocaleString('es-ES', { month: 'short' });
@@ -157,55 +168,22 @@ export class ChatInternoComponent extends BaseComponent implements OnInit {
 
     padZero(value: number): string {
         return value < 10 ? `0${value}` : `${value}`;
-    }
-    actualizarChat() {
-        try {
-            this.subscription = this.service.obtenerChat(this.chat.Solp_Id.toString())
-                .subscribe(
-                    (result: any) => {
-                        if (result.logout == true) {
-                            this.sessionDataService.logout();
-                        } else if (result.error != undefined && result.error != "") {
-                            this.floatMsgService.setErrorMsg(result.error);
-                        } else if (result.info != undefined) {
-                            this.floatMsgService.setInfoMsg(result.info);
-                        } else {
-                            result.Mensajes = result.Mensajes.map((x) => {
-                                x.FechaEnvioDate = new Date(
-                                    this.getDateFromAspNetFormat(x.FechaEnvioDate)
-                                );
-                                return x;
-                            });
-                            result.FechaCreacionDate = new Date(
-                                this.getDateFromAspNetFormat(result.FechaCreacionDate)
-                            );
-                            this.chat = result;
-                            this.onMostrarDialog()
-                        };
-                    },
-                    (error) => {
-                        this.floatMsgService.setErrorMsg(error.message);
-                    }
-                );
-        } catch (e) {
-            this.floatMsgService.setErrorMsg(e);
-            return false; //<-- Prevent Refresh
-        }
-        return false; //<-- Prevent Refresh
-    }
+    }    
 
     onCerrarChat() {
         this.error = "";
         this.visualizarAlert = false;
+        this.chat.ChatCompras.RazonSocialComprador = "";
+        this.proveedorSeleccionado.RazonSocialProveedor = "";
         this.cerrardisplayChatEmitter.next();
     }
 
     comentarioPropio(mensajes: ChatInternoComprasDto) {
-        return (this.chat.UsuarioActualId == mensajes.Usuario_Id);
+        return (parseInt(sessionStorage.getItem("usuarioId")) == mensajes.Usuario_Id);
     }
 
-    obtenerYExportarChat(peticionDeOfertaId: string): void {
-        this.service.obtenerYExportarChat(peticionDeOfertaId).subscribe(
+    obtenerYExportarChat(solpId: string, peticionDeOfertaUsuarioId?: string): void {
+        this.service.obtenerYExportarChat(solpId ,peticionDeOfertaUsuarioId).subscribe(
             (result) => {
                 if (result.logout == true) {
                     this.sessionDataService.logout();
@@ -243,7 +221,16 @@ export class ChatInternoComponent extends BaseComponent implements OnInit {
 
     onMostrarDialog() {
         if (this.contenedorMensajes) {
-            this.contenedorMensajes.nativeElement.scrollTop = this.contenedorMensajes.nativeElement.scrollHeight;
+            //this.contenedorMensajes.nativeElement.scrollTop  = this.contenedorMensajes.nativeElement.scrollHeight;
+            this.contenedorMensajes.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' });
+
+        }
+        if(this.esChatComprador && !this.dasboardProveedor){
+            this.mostrarChatComprador();
+        } else { 
+            this.mostrarChatProveedor(this.chat.ChatProveedores[0]);
+            // console.log("mostrarChatProveedor", this.chat.ChatProveedores[0]);
+
         }
     }
 
@@ -255,7 +242,92 @@ export class ChatInternoComponent extends BaseComponent implements OnInit {
             this.visualizarAlert = true;
             return true;
         } else {
-            this.grabarMensajeChatInterno();
+            if(this.esChatComprador && !this.dasboardProveedor){
+                this.grabarMensajeChatInterno();
+            } else {
+                this.grabarMensajeChatExterno();
+            }
         }
     }
+
+    mostrarChatProveedor(proveedor: ChatProveedorDto) {    
+        this.proveedorSeleccionado = proveedor;
+        this.esChatProveedor = true;
+        this.esChatComprador = false;
+        // console.log("proveedorSeleccionado", this.proveedorSeleccionado);
+
+    }
+
+    mostrarChatComprador(){
+        this.proveedorSeleccionado = null;
+        this.esChatComprador = true;
+        this.esChatProveedor = false;
+    }
+
+    grabarMensajeChatExterno() {
+        let mensajeChat: ChatExternoComprasDto = {
+            Mensaje: this.mensajeNuevo,
+            PeticionDeOferta_Id: this.proveedorSeleccionado.PeticionDeOferta_Id,
+            PeticionDeOfertaUsuario_Id: this.proveedorSeleccionado.PeticionDeOfertaUsuario_Id
+        };
+        // console.log("mensajeChat ex", mensajeChat);
+        this.blockUI.start('Grabando ');
+
+        this.subscription = this.service
+            .grabarMensajeChatExterno(mensajeChat)
+            .subscribe(
+                (result: any) => {
+                    this.blockUI.stop();
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                        this.blockUI.stop();
+
+                    } else if (
+                        result.error != undefined &&
+                        result.error != ""
+                    ) {
+                        this.mensajeComponent.setErrorMsg(result.error);
+                        this.blockUI.stop();
+                    } else if (result.info != undefined) {
+                        this.mensajeComponent.setInfoMsg(result.info);
+                        this.blockUI.stop();
+                    } else {
+                        this.resultado = result.info;
+
+                        if (JSON.parse(sessionStorage.getItem("permisos")).indexOf("SOLP") != -1) {
+                            mensajeChat.RolUsuario = "SOLP";
+                            
+                        } else {
+                            mensajeChat.RolUsuario = "PROVEEDOR";
+                        }
+                        // console.log("rol", JSON.parse(sessionStorage.getItem("permisos")).indexOf("SOLP"));
+                        // console.log("mensajeChat.RolUsuario", mensajeChat.RolUsuario)
+                        const fechaActual = new Date();
+                        mensajeChat.FechaEnvioDate = fechaActual;
+                        mensajeChat.FechaEnvio = this.formatFecha(fechaActual);
+                        mensajeChat.FechaDiaEnvio = this.formatFechaDia(fechaActual);
+                        mensajeChat.Mail = sessionStorage.getItem("username");
+                        mensajeChat.Usuario_Id = parseInt(sessionStorage.getItem("usuarioId"));
+                        mensajeChat.PeticionDeOferta_Id = this.proveedorSeleccionado.PeticionDeOferta_Id;
+                        mensajeChat.PeticionDeOfertaUsuario_Id = this.proveedorSeleccionado.PeticionDeOfertaUsuario_Id;
+
+                        this.proveedorSeleccionado.Mensajes.push(mensajeChat);
+                        this.mensajeNuevo = "";
+                    }
+                },
+                (error) => {
+                    this.blockUI.stop();
+                    this.spinnerModal.hideIt();
+                }
+            );
+    }
+
+    formatoCUIT(cuit: string): string {
+        // Eliminar cualquier caracter que no sea un dÃ­gito
+        const cuitNumerico = cuit.replace(/\D/g, '');
+    
+        // Aplicar el formato xx-xxxxxxxx-x
+        return cuitNumerico.replace(/^(\d{2})(\d{8})(\d{1})$/, '$1-$2-$3');
+    }
+
 }
