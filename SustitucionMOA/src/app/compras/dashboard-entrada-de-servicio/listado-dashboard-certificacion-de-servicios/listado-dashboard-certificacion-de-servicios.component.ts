@@ -251,7 +251,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
                     this.onCheckboxPositionChange(item);
                 }
             });
-            
+
         }
         else {
             this.clearCheckboxesPositions(positions);
@@ -613,7 +613,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
         }
     }
 
-   
+
 
 
     /**
@@ -942,5 +942,16 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
         }
 
         return posicionesAMostrar.length;
+    }
+
+    showScrollbar: boolean = false;
+
+    toggleFullscreen() {
+        this.fullscreen = !this.fullscreen;
+        if (this.fullscreen) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = 'auto';
+        }
     }
 }

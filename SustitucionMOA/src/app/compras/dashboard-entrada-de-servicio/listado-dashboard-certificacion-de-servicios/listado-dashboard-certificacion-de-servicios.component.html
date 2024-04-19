@@ -1,4 +1,4 @@
-<div id="certificacionesDeServicios" class="content-wraper" [class.fullscreen]="fullscreen">
+<div id="certificacionesDeServicios" class="content-wraper" [class.fullscreen]="fullscreen" [class.show-scrollbar]="showScrollbar">
     <!-- HEADER -->
     <!--section class="container-fluid clearfix"-->
     <section class="container-fluid clearfix">
@@ -8,7 +8,7 @@
                     Dashboard - Solicitante - Lista de todas las OCs - Certificación de Servicios
                 </strong>
             </div>
-            <i id="btn-fullscreen" [ngClass]="fullscreen ? 'fa fa-compress' : 'fa fa-expand'" [class.i-disabled]="!displayContent" title="Pantalla completa" (click)="fullscreen=!fullscreen"></i>
+            <i id="btn-fullscreen" [ngClass]="fullscreen ? 'fa fa-compress' : 'fa fa-expand'" [class.i-disabled]="!displayContent" title="Pantalla completa" (click)="toggleFullscreen()"></i>
             <i id="btn-filtros" class="fa fa-filter" title="Filtros" (click)="togglePanel('search')" [class.i-disabled]="!displayContent"></i>
             <i id="btn-table" class="fa fa-table" title="Configuracion Columnas" (click)="togglePanel('columns')" [class.i-disabled]="!displayContent"></i>
         </div>

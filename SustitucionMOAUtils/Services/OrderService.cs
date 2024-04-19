@@ -127,7 +127,7 @@ namespace SustitucionMOAUtils.Services
             }
 
 
-            if (!string.IsNullOrEmpty(parametros.vendedor) || !string.IsNullOrEmpty(parametros.OrdenCompraId))
+            if (!string.IsNullOrEmpty(parametros.vendedor))
             {
                 DateTime dateInit = (fechaHasta.Year - fechaInicio.Year) * 12 + fechaHasta.Month - fechaInicio.Month > 24
                     && !string.IsNullOrEmpty(parametros.vendedor)

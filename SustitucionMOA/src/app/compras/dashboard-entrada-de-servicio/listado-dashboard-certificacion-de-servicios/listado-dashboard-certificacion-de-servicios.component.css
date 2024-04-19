@@ -14,17 +14,32 @@
     background-color: #f4f4f4;
     z-index: 10;
     /* hide scrollbar but allow scrolling */
-    overflow-y: scroll;
-    -ms-overflow-style: none;
+    overflow-y: auto;
+    box-sizing: border-box;
     /* for Internet Explorer, Edge */
-    scrollbar-width: none;
     /* for Firefox */
 }
 
-.fullscreen::-webkit-scrollbar {
-    display: none;
-    /* for Chrome, Safari, and Opera */
+.content-wraper {
+    overflow: hidden;
 }
+
+.fullscreen.show-scrollbar {
+    display: block; /* Forzar la barra de desplazamiento visible */
+    
+}
+
+/* Ocultar la barra de desplazamiento del modo normal */
+.content-wraper {
+    overflow-y: scroll;
+}
+
+.show-scrollbar::-webkit-scrollbar {
+    display: block;
+    width: 10px;
+}
+
+
 
 i#btn-fullscreen,
 i#btn-table,
@@ -370,7 +385,7 @@ i#btn-fullscreen {
     text-align: left;
 }
 
-p-table.level2 .posicion > td > a {
+p-table.level2 .posicion>td>a {
     vertical-align: middle;
     padding-left: .3em;
 }
