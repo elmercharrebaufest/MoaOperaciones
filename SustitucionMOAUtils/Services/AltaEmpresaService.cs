@@ -89,7 +89,9 @@ namespace SustitucionMOAUtils.Services
                                     || x.EstadoAprobacion == EstadoAprobacion.RechazadoPorCompras
                                     || x.EstadoAprobacion == EstadoAprobacion.AltaIncompleta
                                     || x.EstadoAprobacion == EstadoAprobacion.SinAlta
-                                    || x.EstadoAprobacion == EstadoAprobacion.DocumentacionPendiente)
+                                    || x.EstadoAprobacion == EstadoAprobacion.DocumentacionPendiente
+                                    || x.EstadoAprobacion == EstadoAprobacion.AnalisisInterno
+                                    )
                                 && x.HistorialAprobaciones.Count > 0
                                  && IdTiposProveedor.Contains(x.TipoProveedor.Id)
                                 && x.HistorialAprobaciones.OrderByDescending(h => h.Fecha).FirstOrDefault().Fecha >= fechaIncioDateTime 
