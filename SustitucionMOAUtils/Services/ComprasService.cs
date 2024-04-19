@@ -370,7 +370,7 @@ namespace SustitucionMOAUtils.Services
                 }).ToList();
             }
 
-            SetNombreDePedido(solpEntity);
+
             string prefijo = ConfigurarPrefijos(solpEntity);
             var condEsp = TieneCondicionEspecial(solpEntity);
             var esServicio = solpEntity.Posiciones.Any() && solpEntity.Posiciones.FirstOrDefault().TipoPosicion.Codigo == "SERVICIO";
@@ -399,7 +399,7 @@ namespace SustitucionMOAUtils.Services
                     }
                 }
             }
-
+            SetNombreDePedido(solpEntity);
             repositorio.GuardarCambios();
             solp.Id = solpEntity.Id;
 
@@ -775,7 +775,6 @@ namespace SustitucionMOAUtils.Services
                     var estadoCreadoCodigo = EstadoDocumentoSolp.Creado.Code();
                     var estadoCreado = repositorio.Obtener<TablaEstado>(x => x.Tabla == TablasEstado.EstadoDocumento && x.Codigo == estadoCreadoCodigo);
                     solpEntity.EstadoDocumento_Id = estadoCreado.Id;
-                    SetNombreDePedido(solpEntity);
                     foreach (var posiciones in solpEntity.Posiciones)
                     {
                         posiciones.EsConcluido = true;
@@ -815,7 +814,6 @@ namespace SustitucionMOAUtils.Services
                         var estadoCreadoCodigo = EstadoDocumentoSolp.Creado.Code();
                         var estadoCreado = repositorio.Obtener<TablaEstado>(x => x.Tabla == TablasEstado.EstadoDocumento && x.Codigo == estadoCreadoCodigo);
                         solpEntity.EstadoDocumento_Id = estadoCreado.Id;
-                        SetNombreDePedido(solpEntity);
 
                     }
                     foreach (var pos in solpEntity.Posiciones)
