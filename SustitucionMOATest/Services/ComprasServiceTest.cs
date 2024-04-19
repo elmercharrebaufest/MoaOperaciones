@@ -386,6 +386,8 @@ namespace SustitucionMOATest.Services
             ObservacionesCotizacion = "",
             TieneCondicionesGenerales = false,
             EditarCondicionesEspeciales = false,
+            FechaCreacion = DateTime.Now,
+            FechaLiberacionSap = DateTime.Now,
             Posiciones = new List<SolpPosicionDto>
                 {
                     new SolpPosicionDto
@@ -2660,6 +2662,62 @@ namespace SustitucionMOATest.Services
             Assert.That(result, Is.Not.Null);
         }
 
+        [Test]
+        public void ListarHistorialDeFechasOk()
+        {
+            // Configura los datos de prueba
+            int peticionDeOfertaId = 1;
+            var cotizacionHistorialList = new List<CotizacionHistorial>
+                {
+                    new CotizacionHistorial
+                    {
+                        Id = 1, 
+                        Cotizacion_Id = 100, 
+                        Log = "Log de prueba", 
+                        FechaFinalizacion = DateTime.Now.AddDays(-2), 
+                        Usuario_Id = 1, 
+                        Cotizacion = cotizacion,
+                        Usuario = new Usuario
+                        {
+                            Id = 1,
+                            Roles = new List<Rol>()
+                            {
+                                new Rol
+                                {
+                                    Nombre = "Solicitante",                                    
+                                }
+                            }
+                        }
+                    },
+                };
+
+            // Simula la respuesta del repositorio
+            repositorioMock.Setup(x => x.Obtener<PeticionDeOferta>(It.IsAny<int>())).Returns(peticionDeOferta);
+
+            // Configura las respuestas de los demás métodos del repositorio según sea necesario
+
+            repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<CotizacionHistorial, bool>>>(), 
+                It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null)).Returns(cotizacionHistorialList);
+
+
+            repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<PeticionDeOfertaCierre, DateTime>>>(),
+               It.IsAny<Expression<Func<PeticionDeOfertaCierre, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc))
+              .Returns(new List<DateTime>() { DateTime.Now });
+
+
+            repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<Solp, SolpDto>>>(),
+                It.IsAny<Expression<Func<Solp, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc))
+               .Returns(new List<SolpDto>() { solpDto });
+          
+
+            // Llama al método bajo prueba
+            var resultado = target.ListarHistorialDeFechas(peticionDeOfertaId);
+
+            // Verifica que el resultado no sea nulo
+            Assert.NotNull(resultado);
+            repositorioMock.Verify(x => x.Obtener<PeticionDeOferta>(It.IsAny<int>()), Times.Once);
+
+        }
 
 
     }

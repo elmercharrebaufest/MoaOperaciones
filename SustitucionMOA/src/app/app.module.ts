@@ -120,7 +120,7 @@ import { LegajoExternoComponent } from './compras/legajo-externo/legajo-externo.
         PesificacionBaseComponent,
         ModificarDatosComponent,
         UsuarioAuditoriaListComponent,
-        LegajoExternoComponent
+        LegajoExternoComponent,
     ],
     providers: [
         DatePipe,

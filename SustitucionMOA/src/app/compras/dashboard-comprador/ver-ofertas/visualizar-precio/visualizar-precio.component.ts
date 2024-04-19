@@ -17,7 +17,7 @@ import { BlockUI, NgBlockUI } from 'ng-block-ui';
     templateUrl: './visualizar-precio.component.html',
     styleUrls: ['./visualizar-precio.component.css']
 })
-export class VisalizarPrecioComponent implements OnInit {
+export class VisualizarPrecioComponent implements OnInit {
 
     @Input()
     displayVisualizarPrecio: boolean;   

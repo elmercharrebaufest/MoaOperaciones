@@ -6,7 +6,8 @@
 	[ModificacionSolp] BIT NULL, 
 	[ObservacionRecotizacion] NVARCHAR(MAX) NULL, 
 	[Finalizada] BIT NOT NULL DEFAULT 1, 
-	CONSTRAINT [PK_PeticionDeOfertaRevisionTecnica] PRIMARY KEY ([Id]),
+	[FechaFinalizacion] DATETIME2 NULL, 
+    CONSTRAINT [PK_PeticionDeOfertaRevisionTecnica] PRIMARY KEY ([Id]),
 ) ON [PRIMARY]
 GO
 

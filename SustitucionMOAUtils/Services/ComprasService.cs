@@ -56,6 +56,7 @@ using System.Web.Security;
 using static SustitucionMOAWS.WSConsumers.ModificarOrdenDeCompraConsumerMOA;
 using Image = iTextSharp.text.Image;
 using DocumentFormat.OpenXml.Office2010.Excel;
+using System.Data.Entity.SqlServer;
 
 
 namespace SustitucionMOAUtils.Services
@@ -3062,6 +3063,7 @@ namespace SustitucionMOAUtils.Services
         {
             try
             {
+
                 var hoy = DateTime.Now;
                 var todasLasOfertas = repositorio.ObtenerConsultaEscalar(new ComparadorOfertasConsulta(PeticionOferta_Id));
                 Dictionary<int, decimal> tipodecambio = new Dictionary<int, decimal>();
@@ -5665,6 +5667,7 @@ namespace SustitucionMOAUtils.Services
             if (finalizar)
             {
                 peticiones.First().PeticionDeOferta.RevisionTecnica.Finalizada = true;
+                peticiones.First().PeticionDeOferta.RevisionTecnica.FechaFinalizacion = DateTime.Now;
 
                 var fechaActual = DateTime.Now;
                 var plazoNoFinalizado = false;
@@ -6868,8 +6871,9 @@ namespace SustitucionMOAUtils.Services
                     Fecha = DateTime.Now,
                     RecotizacionEconomica = false,
                     ObservacionRecotizacion = "Trabajo ya hecho",
-                    Finalizada = true
-                };
+                    Finalizada = true,
+                    FechaFinalizacion = DateTime.Now
+            };
                 peticionEntidad.PlazoDeOferta = DateTime.Now;
                 repositorio.GuardarCambios();
             }
@@ -8888,6 +8892,228 @@ namespace SustitucionMOAUtils.Services
                 throw;
             }
         }
+
+        public HistorialDeFechaDto ListarHistorialDeFechas(int peticionDeOfertaId)
+        {
+            try
+            {
+                var peticionDeOferta = repositorio.Obtener<PeticionDeOferta>(peticionDeOfertaId);
+                var nroSolps = peticionDeOferta.Posiciones.Select(posicion => posicion.SolpPosicion.Solp.Id);
+                var peticionUsuarioIds = peticionDeOferta.Usuarios.Select(pu => pu.Usuario_Id);
+                var cotizacionFechas = repositorio.Listar<CotizacionHistorial>(ch => ch.Cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta_Id == peticionDeOfertaId &&
+                                    peticionUsuarioIds.Contains(ch.Usuario_Id));
+                var cierreDePlazos = repositorio.Listar<PeticionDeOfertaCierre, DateTime>(x => x.Fecha, x => x.PeticionDeOferta_Id == peticionDeOfertaId);
+
+                var solps = repositorio.Listar<Solp, SolpDto>(solp => new SolpDto
+                {
+                    NroSolp = solp.NroSolp,
+                    FechaCreacionFormateada = SqlFunctions.DateName("day", solp.FechaCreacion) + "/" +
+                    SqlFunctions.DatePart("month", solp.FechaCreacion) + "/" + SqlFunctions.DateName("year", solp.FechaCreacion) + " " +
+                    SqlFunctions.DateName("hour", solp.FechaCreacion) + ":" + SqlFunctions.DateName("minute", solp.FechaCreacion) + "hs",
+                    FechaLiberacionSapFormateada = solp.FechaLiberacionSap != null ? SqlFunctions.DateName("day", solp.FechaLiberacionSap.Value) + "/" +
+                    SqlFunctions.DatePart("month", solp.FechaLiberacionSap.Value) + "/"
+                    + SqlFunctions.DateName("year", solp.FechaLiberacionSap.Value) + " " +
+                    SqlFunctions.DateName("hour", solp.FechaLiberacionSap.Value) + ":"
+                    + SqlFunctions.DateName("minute", solp.FechaLiberacionSap.Value) + "hs" : "",
+                }, solp => nroSolps.Contains(solp.Id));
+
+                var proveedores = new List<HistorialPorProveedorDto>();
+                foreach (var item in peticionDeOferta.Usuarios)
+                {
+                    var cotizacion = cotizacionFechas.Where(coti => item.Cotizaciones.Any() && coti.Cotizacion_Id == item.Cotizaciones.FirstOrDefault().Id)
+                        .Select(x => x.Cotizacion).FirstOrDefault();
+
+                    var proveedor = new HistorialPorProveedorDto
+                    {
+                        RazonSocial = item.Usuario.ObtenerRazonSocial(),
+                        FechasCirculares = item.Circulares.Select(circular => circular.Circular.FechaCreacion).ToList(),
+                        UsuariosCirculares = item.Circulares.Select(circular => circular.Circular.Usuario).ToList(),
+                        FechasCotizaciones = cotizacionFechas.Where(cotiH => cotiH.Cotizacion.PeticionDeOfertaUsuario_Id == item.Id)
+                        .Select(coti => coti.FechaFinalizacion).ToList(),
+                        FechaOrdenDeCompraCreacion = cotizacion != null ? cotizacion.Adjudicaciones.Select(x => x.FechaCreacion).ToList() : new List<DateTime>().ToList(),
+                        FechaOrdenDeCompraLiberacion = cotizacion != null ? cotizacion.Adjudicaciones.Select(x => x.FechaLiberacionSap)
+                        .Select(fecha => fecha.Value).ToList() : new List<DateTime>()
+                    };
+                    proveedores.Add(proveedor);
+                }
+
+                var cuerpo = ConstruirTablaaa(proveedores, cierreDePlazos, peticionDeOferta.RevisionTecnica?.FechaFinalizacion);
+                var historial = new HistorialDeFechaDto
+                {
+                    ListaSolp = solps,
+                    FechaCreacionPOFormateada = peticionDeOferta.FechaCreacion.ToString("dd/MM/yyyy"),
+                    Cuerpo = cuerpo
+                };
+
+                return historial;
+
+
+            }
+            catch (Exception e)
+            {
+                Log.Info($"Error al ListarHistorialDeFechas");
+                Log.Error(e);
+                throw;
+            }
+        }
+        private List<List<string>> ConstruirTablaaa(List<HistorialPorProveedorDto> proveedores, List<DateTime> cierres, DateTime? fechaRevisionTecnica)
+        {
+            List<List<string>> tabla = new List<List<string>>();
+
+            // Obtener lista de razones sociales de los proveedores
+            var razonesSociales = proveedores.Select(p => p.RazonSocial).ToList();
+
+            // Encabezado de la tabla
+            List<string> encabezado = new List<string> { };
+            encabezado.AddRange(razonesSociales);
+            tabla.Add(encabezado);
+
+            // Obtener todas las fechas únicas de circulares y cotizaciones
+            var fechasUnicas = proveedores.SelectMany(p => p.FechasCirculares)
+                                          .Union(proveedores.SelectMany(p => p.FechasCotizaciones))
+                                          .Union(proveedores.Where(p => p.FechaOrdenDeCompraCreacion.Count() > 0)
+                                           .SelectMany(p => (IEnumerable<DateTime>)p.FechaOrdenDeCompraCreacion))
+                                          .Union(proveedores.Where(p => p.FechaOrdenDeCompraLiberacion.Count() > 0)
+                                           .SelectMany(p => (IEnumerable<DateTime>)p.FechaOrdenDeCompraLiberacion))
+                                          .Union(cierres)
+                                          .Select(f => f.Date)
+                                          .Distinct()
+                                          .OrderBy(f => f)
+                                          .ToList();
+
+            if (fechaRevisionTecnica.HasValue)
+            {
+                fechasUnicas.Add(fechaRevisionTecnica.Value.Date);
+            }
+
+            // Construir filas de la tabla
+            foreach (var fecha in fechasUnicas.Distinct().OrderByDescending(x => x))
+            {
+                var fila = new List<string>();
+                foreach (var proveedor in proveedores)
+                {
+                    var fechaCircular = proveedor.FechasCirculares.Where(x => x.Date == fecha.Date).ToList();
+                    if (fechaCircular != null && fechaCircular.Count() > 0)
+                    {
+                        var rolUsuario = ObtenerRol(proveedor.UsuariosCirculares.FirstOrDefault());
+                        string fechaHoraCirculares = string.Join(", ", fechaCircular.OrderBy(x => x).Select(x => x.ToString("HH:mm") + "hs"));
+                        fila.Add($"{fecha.ToString("dd/MM/yyyy")} {fechaHoraCirculares} - Circular {rolUsuario}");
+                    }
+                    else
+                    {
+                        fila.Add("");
+                    }
+
+                }
+                if (fila.Any()) tabla.Add(fila);
+                fila = new List<string>();
+                foreach (var proveedor in proveedores)
+                {
+                    var fechaCotizacion = proveedor.FechasCotizaciones.Where(x => x.Date == fecha.Date).ToList();
+                    if (fechaCotizacion != null && fechaCotizacion.Count() > 0)
+                    {
+                        string fechaHoraCotizacion = string.Join(", ", fechaCotizacion.OrderBy(x => x).Select(x => x.ToString("HH:mm") + "hs"));
+                        fila.Add($"{fecha.ToString("dd/MM/yyyy")} {fechaHoraCotizacion} - Cotización");
+                    }
+                    else
+                    {
+                        fila.Add("");
+                    }
+
+                }
+                if (fila.Any()) tabla.Add(fila);
+
+
+                fila = new List<string>();
+                foreach (var proveedor in proveedores)
+                {
+                    if (proveedor.FechaOrdenDeCompraLiberacion.Any())
+                    {
+                        var fechaOrdenDeCompraLiberacion = proveedor.FechaOrdenDeCompraLiberacion.Where(x => x.Date == fecha.Date).ToList();
+                        if (fechaOrdenDeCompraLiberacion != null && fechaOrdenDeCompraLiberacion.Count() > 0)
+                        {
+                            string fechaHoraOrdenLiberada = string.Join(", ", fechaOrdenDeCompraLiberacion.OrderBy(x => x).Select(x => x.ToString("HH:mm") + "hs"));
+                            fila.Add($"{fecha.ToString("dd/MM/yyyy")} {fechaHoraOrdenLiberada} - Orden de compra liberada");
+                        }
+                        else
+                        {
+                            fila.Add("");
+                        }
+                    }
+                    else
+                    {
+                        fila.Add("");
+                    }
+
+                }
+                if (fila.Any()) tabla.Add(fila);
+
+                fila = new List<string>();
+                foreach (var proveedor in proveedores)
+                {
+                    if (proveedor.FechaOrdenDeCompraCreacion.Any())
+                    {
+                        var fechaOrdenDeCompraCreacion = proveedor.FechaOrdenDeCompraCreacion.Where(x => x.Date == fecha.Date).ToList();
+                        if (fechaOrdenDeCompraCreacion != null && fechaOrdenDeCompraCreacion.Count() > 0)
+                        {
+                            string fechaHoraOrdenCreada = string.Join(", ", fechaOrdenDeCompraCreacion.OrderBy(x => x).Select(x => x.ToString("HH:mm") + "hs"));
+                            fila.Add($"{fecha.ToString("dd/MM/yyyy")} {fechaHoraOrdenCreada} - Orden de compra creada");
+                        }
+                        else
+                        {
+                            fila.Add("");
+                        }
+                    }
+                    else
+                    {
+                        fila.Add("");
+                    }
+
+                }
+                if (fila.Any()) tabla.Add(fila);
+
+
+                fila = new List<string>();
+                foreach (var proveedor in proveedores)
+                {
+                    if (cierres.Any())
+                    {
+                        var cierre = cierres.Where(x => x.Date == fecha.Date).ToList();
+                        if (cierre != null && cierre.Count() > 0)
+                        {
+                            string fechaHoraCierre = string.Join(", ", cierre.OrderBy(x => x).Select(x => x.ToString("HH:mm") + "hs"));
+                            fila.Add($"{fecha.ToString("dd-MM-yyyy")} {fechaHoraCierre} - Cierre de cotización");
+                        }
+                        else
+                        {
+                            fila.Add("");
+                        }
+                    }
+
+                }
+                if (fila.Any()) tabla.Add(fila);
+
+
+                fila = new List<string>();
+                if (fechaRevisionTecnica.HasValue && fecha.Date == fechaRevisionTecnica.Value.Date)
+                {
+                    foreach (var proveedor in proveedores)
+                    {
+                        fila.Add(fechaRevisionTecnica.Value.ToString("dd/MM/yyyy HH:mm") + "hs - Revisión Técnica");
+                    }
+
+                }
+                if (fila.Any()) tabla.Add(fila);
+            }
+            tabla = tabla.Where(fila => !fila.All(celda => string.IsNullOrEmpty(celda))).ToList();
+            return tabla;
+        }
+
+        private string ObtenerRol(Usuario usuario)
+        {
+            return usuario.Roles.Any(r => r.Codigo == "COMPRADOR") ? "Comprador" : "Solicitante";
+        }
+
 
         public static class SolpTemplateKeys
         {

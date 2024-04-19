@@ -1,6 +1,6 @@
 <section class="container-fluid clearfix">
     <div class="row titleSection1">
-        <div class="col-sm-10 letraTitulo">
+        <div class="col-sm-8 letraTitulo">
             <strong>
                 {{ this.esTipoPOMultiple ? 'Ver ofertas MATERIALES | SOLP Múltiple' : 'Ver ofertas ' + tablaOfertas.TipoPosicionCodigo + ' | SOLP #' + tablaOfertas.NroSolp }}
                 <b *ngIf="tablaOfertas.Id">
@@ -15,9 +15,16 @@
             </strong>
         </div>
         
-        <div class="col-sm-2 letraTitulo" *ngIf="tablaOfertas.VerBotonVerPrecio">
-            <button class="publicar btn btn-success" style="margin-right: 10px;" (click)="abrirModalPrecios()">
+        <div class="col-sm-2 letraTitulo" *ngIf="tablaOfertas.VerBotonVerPrecio" style="text-align: end;">
+            <button class="publicar btn btn-success" style="width: 140px;" (click)="abrirModalPrecios()">
                 Ver Precios
+            </button>
+        </div>
+        <div class="col-sm-2 letraTitulo" *ngIf="!tablaOfertas.VerBotonVerPrecio">           
+        </div>
+        <div class="col-sm-2 letraTitulo">
+            <button class="publicar btn btn-success" style="margin-right: 10px;" (click)="abrirModalMovimientos()">
+                Ver Movimientos
             </button>
         </div>
     </div>
@@ -674,6 +681,11 @@
     (cerrarHistorialEmitter)="cerrarHistorial()"
     [(historiales)]="historiales">
 </app-cotizacion-historial>
+
+<app-visualizar-movimiento [(displayVisualizarMovimientos)]="displayVisualizarMovimientos"
+                       (cerrarModalMovimientosEmitter)="cerrarModalMovimientos()"
+                       [(peticionOferta_Id)]="peticionOferta_Id">
+</app-visualizar-movimiento>
 
 <p-dialog [(visible)]="displayGenerarOCMoneda" modal="modal" [width]="600" [draggable]="false" [closable]="true"
           (onHide)="onCerrarMoneda()" appendTo="body" [height]="200" [max] [contentStyle]="{'max-height':'150px', 'min-height':'150px'}">

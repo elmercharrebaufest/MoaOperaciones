@@ -1150,4 +1150,13 @@ export class ComprasService extends BaseService {
 
         return this.http.get('/api/compras/ListarPosicionesPOMultiple', { params: params, headers: this.headers });
     }
+
+    public listarHistorialDeFechas(id: number): Observable<any> {
+        let params: HttpParams = new HttpParams();
+        params = params.set("peticionId", id.toString());
+        return this.http.get("/api/compras/ListarHistorialDeFechas", {
+            params: params,
+            headers: this.headers,
+        });
+    }
 }

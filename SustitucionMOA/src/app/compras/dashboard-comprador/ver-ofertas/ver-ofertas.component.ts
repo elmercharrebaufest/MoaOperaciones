@@ -76,6 +76,7 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
     displayHistorial: boolean;
     historiales: CotizacionHistorialDto[] = [];
     esTipoPOMultiple: boolean;
+    displayVisualizarMovimientos: boolean;
 
 
     constructor(protected service: ComprasService, protected usuarioService: UsuarioService, protected navService: NavService, protected sessionDataService: SessionDataService,
@@ -586,6 +587,14 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
 
     abrirModalPrecios() {
         this.displayVisualizarPrecio = true;
+    }
+
+    cerrarModalMovimientos() {
+        this.displayVisualizarMovimientos = false;
+    }
+
+    abrirModalMovimientos() {
+        this.displayVisualizarMovimientos = true;
     }
 
     obtenerPrimerPlazo(cotizacionPosicion: any): string {
