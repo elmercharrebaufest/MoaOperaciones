@@ -2870,7 +2870,7 @@ namespace SustitucionMOAUtils.Services
                 }
             }
 
-            if (solp.TipoSolp.Descripcion == "SIN_PLIEGO" && solp.Pliego.Archivos.Count > 0)
+            if (solp.TipoSolp == null || (solp.TipoSolp.Descripcion == "SIN_PLIEGO" && solp.Pliego.Archivos.Count == 0))
             {
                 return SolpDescargaZipPorLink.SinArchivos;
             }
