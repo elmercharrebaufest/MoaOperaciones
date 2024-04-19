@@ -25,6 +25,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Web;
+using static iTextSharp.text.pdf.qrcode.Version;
 
 namespace SustitucionMOAUtils.Services
 {
@@ -388,12 +389,7 @@ namespace SustitucionMOAUtils.Services
             byte[] archivoResult;
             using (MemoryStream stream = new MemoryStream())
             {
-                PdfReader pdfReader = new PdfReader(pdfBytes);
-                pdfReader.SelectPages("1");
-
-                PdfStamper pdfStamper = new PdfStamper(pdfReader, stream);
-                pdfStamper.Close();
-                pdfReader.Close();
+                ActualizarPdf(pdfBytes, stream, datos);
 
                 archivoResult = stream.ToArray();
             }
@@ -625,7 +621,7 @@ namespace SustitucionMOAUtils.Services
         private string GuardarArchivoKMZ(CampoProveedor campoProveedor, HttpPostedFileBase archivoKmz)
         {
             var extension = Path.GetExtension(archivoKmz.FileName);
-            var fileName = string.Concat(campoProveedor.CampoCosecha.CampoSustentable_Id,".", extension);
+            var fileName = string.Concat(campoProveedor.CampoCosecha.CampoSustentable_Id, ".", extension);
             var rutaCarpeta = string.Concat(ConfigurationManager.AppSettings["RutaArchivosCampoSustentable"], "/", campoProveedor.CUIT);
             var rutaArchivo = string.Concat(rutaCarpeta, "/", fileName);
 
@@ -745,6 +741,179 @@ namespace SustitucionMOAUtils.Services
                 .WithBytes(jsonBytes);
 
             campoSustentableGoogleDrive.UploadFile(uploadFileJSON);
+        }
+        private void ActualizarPdf(byte[] pdfBytes, MemoryStream stream, DeclaracionCampoSustentableDto datos)
+        {
+            // open the reader
+            PdfReader pdfReader = new PdfReader(pdfBytes);
+            Rectangle size = pdfReader.GetPageSizeWithRotation(1);
+            Document document = new Document(size);
+
+            // open the writer
+            PdfWriter writer = PdfWriter.GetInstance(document, stream);
+            document.Open();
+            // the pdf content
+            PdfContentByte cb = writer.DirectContent;
+
+            // write the older pdf information in the pdf content
+            PdfImportedPage page = writer.GetImportedPage(pdfReader, 1);
+            cb.AddTemplate(page, 0, 0);
+            float fontSizeNormal = 9.5f;
+            BaseFont baseFontBold = BaseFont.CreateFont(BaseFont.HELVETICA_BOLD, BaseFont.WINANSI, BaseFont.EMBEDDED);
+            BaseFont baseFont = BaseFont.CreateFont(BaseFont.HELVETICA, BaseFont.WINANSI, BaseFont.EMBEDDED);
+
+            LimpiarFirmaAclaracionPrevios(cb);
+            AddTextosPrimeraPagina(cb,baseFont,baseFontBold,fontSizeNormal);
+            document.NewPage();
+
+            float fontSize = 10f;
+            float xMargenBase = -22.5f;
+            float xMargenTexto = 15f;
+            float xPosition = iTextSharp.text.PageSize.A4.Width / 10;
+            float yPosition = iTextSharp.text.PageSize.A4.Height - ((iTextSharp.text.PageSize.A4.Height - 140f) / 5);
+
+            AddTextosSegundaPagina(writer,baseFontBold, fontSizeNormal, fontSize, xPosition, xMargenBase, xMargenTexto, yPosition);
+
+            var logoPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Content", "images", "header", "logo_.png");
+            Image logo = Image.GetInstance(logoPath);
+            logo.ScaleToFit(200f, 150f);
+            document.Add(logo);
+
+            AddTablaDatos(cb,datos,xPosition,xMargenTexto,yPosition);
+            // close the streams and voilá the file should be changed :)
+            document.Close();
+            writer.Close();
+            pdfReader.Close();
+        }
+        private void LimpiarFirmaAclaracionPrevios(PdfContentByte cb)
+        {
+            cb.SetColorFill(new CMYKColor(0f, 0f, 0f, 0f));
+
+            cb.MoveTo(0, 220);
+            cb.LineTo(600, 220);
+            cb.LineTo(600, 300);
+            cb.LineTo(0, 300);
+
+            cb.Fill();
+        }
+        private void AddTextosPrimeraPagina(PdfContentByte cb, BaseFont baseFont, BaseFont baseFontBold, float fontSizeNormal)
+        {
+            cb.BeginText();
+            cb.SetColorFill(BaseColor.BLACK);
+            cb.SetFontAndSize(baseFontBold, fontSizeNormal);
+            cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "Esquema de Certificación 2BSvs", 300, 740, 0);
+            var baseTexto = 280f;
+            cb.SetFontAndSize(baseFont, fontSizeNormal);
+            cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "Con esta declaración, el agricultor reconoce que los auditores de los organismos de certificación o de 2BS o de un Estado miembro"
+                , 15f, baseTexto, 0);
+            cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "pueden venir a verificar in situ si se han cumplido los requisitos pertinentes estipulados en la Directiva (UE) 2018/2001. Las pruebas de"
+                , 15f, baseTexto - (11 * 1), 0);
+            cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "los requisitos   mencionados estarán disponibles y se facilitarán durante la auditoría y/o previa solicitud."
+                , 15f, baseTexto - (11 * 2), 0);
+            cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "En caso de que se indique que no se cumplen los requisitos (por ejemplo, si los documentos no están disponibles o son incompletos), el "
+                , 15f, baseTexto - (11 * 3), 0);
+            cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "agricultor se expone a que se rebaje la categoría de sus suministros."
+                , 15f, baseTexto - (11 * 4), 0);
+
+            cb.SetFontAndSize(baseFontBold, fontSizeNormal);
+            cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "Firma: "
+                , 15f, baseTexto - (11 * 14), 0);
+            cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "Aclaración y DNI: "
+                , iTextSharp.text.PageSize.A4.Width / 2, baseTexto - (11 * 14), 0);
+
+            cb.EndText();
+
+        }
+        private void AddTextosSegundaPagina(PdfWriter writer, BaseFont baseFontBold, float fontSizeNormal, float fontSize, float xPosition, float xMargenBase, float xMargenTexto, float yPosition)
+        {
+
+            PdfContentByte under = writer.DirectContentUnder;
+            under.BeginText();
+            under.SetColorFill(BaseColor.BLACK);
+            under.SetFontAndSize(baseFontBold, fontSizeNormal);
+            under.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "Sres: Molinos Agro S.A.", xPosition + xMargenBase, yPosition,0);
+            under.SetFontAndSize(baseFontBold, fontSize);
+            under.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "Declaración de Conformidad según criterios de sustentabilidad para la producción de Biomasa, de acuerdo con los"
+                , xPosition + xMargenTexto, yPosition - (15f * 2),0);
+            under.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "requisitos de la Directiva 2018/2001/EC (RED II)"
+                , xPosition + xMargenTexto, yPosition - (15f * 3),0);
+            under.SetFontAndSize(baseFontBold, fontSizeNormal);
+            under.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "De mi mayor consideración:"
+                , xPosition + xMargenBase, yPosition - (15f * 5),0);
+
+            under.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "Me dirijo a Uds. Para presentar la documentación requerida, para dar cumplimiento a la normativa"
+                , xPosition + xMargenTexto, yPosition - (15f * 6),0);
+            under.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "Internacional vigente (Reglamento EU 2023/1115), sus políticas y procesos internos."
+                , xPosition + xMargenTexto, yPosition - (15f * 7),0);
+
+
+            under.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "Para ello, acompañamos a la presente, la siguiente documentación, la cual se declara bajo"
+                , xPosition + xMargenTexto, yPosition - (15f * 8),0);
+            under.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "juramento, que es fiel a la original y se encuentra plenamente vigente:"
+                , xPosition + xMargenTexto, yPosition - (15f * 9),0);
+
+
+            under.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "1-  Declaración de sustentabilidad completa"
+                , xPosition + xMargenTexto, yPosition - (15f * 11),0);
+
+            under.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "2-  Copia del Estatuto (última versión vigente)"
+                , xPosition + xMargenTexto, yPosition - (15f * 12),0);
+
+            under.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "3-  Copia del poder de representación legal a nombre del firmante de la DDJJ"
+                , xPosition + xMargenTexto, yPosition - (15f * 13),0);
+
+            under.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "4-  En caso de persona física solo adjuntar copia del DNI en lugar de los puntos 2 y 3"
+                , xPosition + xMargenTexto, yPosition - (15f * 14), 0);
+
+            under.EndText();
+
+        }
+        private void AddTablaDatos(PdfContentByte cb, DeclaracionCampoSustentableDto datos, float xPosition, float xMargenTexto, float yPosition)
+        {
+
+            PdfPTable informacionADeclararEnTabla = new PdfPTable(3);
+
+            var fechaCell = new PdfPCell(new Phrase("Fecha"));
+            fechaCell.PaddingBottom = 15f;
+            informacionADeclararEnTabla.AddCell(fechaCell);
+            var dateCell = new PdfPCell(new Phrase(DateTime.Now.ToString("d"))) { Colspan = 2 };
+            informacionADeclararEnTabla.AddCell(dateCell);
+
+            var razonSocialCell = new PdfPCell(new Phrase("Razón Social"));
+            razonSocialCell.PaddingBottom = 15f;
+            informacionADeclararEnTabla.AddCell(razonSocialCell);
+            var razonSocialInfoCell = new PdfPCell(new Phrase(datos.RazonSocial)) { Colspan = 2 };
+            informacionADeclararEnTabla.AddCell(razonSocialInfoCell);
+
+            var cuitCell = new PdfPCell(new Phrase("CUIT"));
+            cuitCell.PaddingBottom = 15f;
+            informacionADeclararEnTabla.AddCell(cuitCell);
+            var cuitInfoCell = new PdfPCell(new Phrase(datos.CUIT)) { Colspan = 2 };
+            informacionADeclararEnTabla.AddCell(cuitInfoCell);
+
+            var nombreApellidoCell = new PdfPCell(new Phrase("Nombre y Apellido"));
+            nombreApellidoCell.PaddingBottom = 15f;
+            informacionADeclararEnTabla.AddCell(nombreApellidoCell);
+            var emptyCell = new PdfPCell(new Phrase("")) { Colspan = 2 };
+            informacionADeclararEnTabla.AddCell(emptyCell);
+
+            var dniCell = new PdfPCell(new Phrase("DNI"));
+            dniCell.PaddingBottom = 15f;
+            informacionADeclararEnTabla.AddCell(dniCell);
+            informacionADeclararEnTabla.AddCell(emptyCell);
+
+            var cargoCell = new PdfPCell(new Phrase("Cargo"));
+            cargoCell.PaddingBottom = 15f;
+            informacionADeclararEnTabla.AddCell(cargoCell);
+            informacionADeclararEnTabla.AddCell(emptyCell);
+
+            var firmaCell = new PdfPCell(new Phrase("Firma"));
+            firmaCell.PaddingBottom = 60f;
+            informacionADeclararEnTabla.AddCell(firmaCell);
+            informacionADeclararEnTabla.AddCell(emptyCell);
+            informacionADeclararEnTabla.TotalWidth = 400f;
+            informacionADeclararEnTabla.WriteSelectedRows(0, -1, xPosition + (xMargenTexto * 3), yPosition - (15f * 16), cb);
+
         }
     }
 }
