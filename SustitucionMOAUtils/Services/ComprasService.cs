@@ -916,7 +916,8 @@ namespace SustitucionMOAUtils.Services
 
         private void ActualizarOfertasAlEditarSolpLiberada(Solp solpEntity)
         {
-            var peticionDeOfertaId = repositorio.Obtener<PeticionDeOferta>(x => x.Posiciones.Any(y => y.SolpPosicion_Id == solpEntity.Posiciones.FirstOrDefault().Id))?.Id;
+            var posicionId = solpEntity.Posiciones.FirstOrDefault().Id;
+            var peticionDeOfertaId = repositorio.Obtener<PeticionDeOferta>(x => x.Posiciones.Any(y => y.SolpPosicion_Id == posicionId))?.Id;
             if (peticionDeOfertaId != null)
             {
                 var peticionUsuarioId = repositorio.Obtener<PeticionDeOfertaUsuario>(x => x.PeticionDeOferta_Id == peticionDeOfertaId)?.Id;
