@@ -12,6 +12,7 @@
         public const string SolpArchivos = "SOLP Archivos";
         public const string PeticionDeOfertaVisualizacionPrecio = "Visualizacion de Precio";
         public const string ChatInterno = "Chat Interno";
+        public const string ChatExterno = "Chat Externo";
         public const string RevisionTecnica = "Revisión tecnica";
 
 

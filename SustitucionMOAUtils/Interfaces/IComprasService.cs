@@ -78,9 +78,9 @@ namespace SustitucionMOAUtils.Interfaces
         LegajoExternoDto ObtenerLegajoParaExternos(int adjudicacionId, string token);
         List<OrdenDeCompraSAPDto> ObtenerReporteOrdenDeCompra(string nroOC, string fechaDesde, string fechaHasta, string codigoProveedor);
         Resultado GrabarPeticionDeOfertaVisualizacionPrecio(PeticionDeOfertaVisualizacionPrecioDto peticionDeOfertaVisualizacionPrecioDto, HttpFileCollectionBase adjuntos);
-        ChatComprasDto ObtenerChat(int solpId, int usuarioActualId);
+        ChatsDto ObtenerChat(int solpId, int usuarioActualId);
         Resultado GrabarMensajeChatInterno(ChatInternoComprasDto mensaje);
-        string ExportarChatInternoAtexto(int solpId, string rutaArchivo);
+        string ExportarChatInternoAtexto(int solpId, string rutaArchivo, int? peticionDeOfertaUsuarioId);
         ProveedorComprasDto DevolverMonedaProveedor(string codigoProveedor);
         List<RegionSap> ListarRegionesSap();
         bool ValidarSolpTratada(string nroSolp);
@@ -98,5 +98,7 @@ namespace SustitucionMOAUtils.Interfaces
         List<CotizacionHistorialDto> ObtenerHistorial(int id);
         List<POPosicionDto> ListarPosicionesPOMultiple(DateTime? desde, DateTime? hasta, bool sap, bool mantenimiento, bool web, bool repoAutomatica, bool? tratada, bool contratoMarco, List<int> centros = null, List<int> grupoDeCompras = null, List<int> claseDocumento = null, List<string> tipoImputacion = null, List<int> valorTipoImputacion = null);
         SolpCompraDto ObtenerPosicionesMultipleCompras(List<int> listaId);
+        Resultado GrabarMensajeChatExterno(ChatExternoComprasDto mensaje);
+        ChatsDto ObtenerChatProveedor(int peticionDeOfertaUsuarioId, int usuarioActualId);
     }
 }

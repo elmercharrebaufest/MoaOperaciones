@@ -215,6 +215,7 @@
     <None Include="scripts\PostDeployment\LiberadorSap.sql" />
     <Build Include="DBO\Tables\MonedaConversion.sql" />
     <Build Include="DBO\Tables\CotizacionHistorial.sql" />
+    <Build Include="DBO\Tables\ChatExternoCompras.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DatabasePublishQA.xml" />

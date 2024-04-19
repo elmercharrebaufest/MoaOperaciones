@@ -369,7 +369,7 @@ namespace SustitucionMOAUtils.Services
                     LiberadorSap_Id = dto.LiberadorSap_Id
                 }).ToList();
             }
-
+            SetNombreDePedido(solpEntity);
             string prefijo = ConfigurarPrefijos(solpEntity);
             var condEsp = TieneCondicionEspecial(solpEntity);
             var esServicio = solpEntity.Posiciones.Any() && solpEntity.Posiciones.FirstOrDefault().TipoPosicion.Codigo == "SERVICIO";
@@ -774,7 +774,7 @@ namespace SustitucionMOAUtils.Services
                     var estadoCreadoCodigo = EstadoDocumentoSolp.Creado.Code();
                     var estadoCreado = repositorio.Obtener<TablaEstado>(x => x.Tabla == TablasEstado.EstadoDocumento && x.Codigo == estadoCreadoCodigo);
                     solpEntity.EstadoDocumento_Id = estadoCreado.Id;
-                    SetNombreDePedido(solpEntity);
+                    //SetNombreDePedido(solpEntity);
                     foreach (var posiciones in solpEntity.Posiciones)
                     {
                         posiciones.EsConcluido = true;
@@ -3034,6 +3034,10 @@ namespace SustitucionMOAUtils.Services
                 var todasLasPO = repositorio.ListarConsultaPaginada(new ListarSolpPOConsulta(paginacion, nroSolp, nroPo, palabras, cuitUsuario, estadoCotizacion, estadoLicitacion, desde, hasta));
                 var listId = todasLasPO.ToList().Select(y => y.Id);
 
+                var rol = repositorio.Obtener<Usuario>(a => a.Mail == username).Roles;
+                var usuarioRol = rol.Any(r => r.Codigo == "COMPRADOR") ? "SOLP" : "COMPRADOR";
+
+
                 if (todasLasPO != null && todasLasPO.Count() > 0)
                 {
                     var peticionesDeOferta = repositorio.Listar<PeticionDeOferta>(x => listId.Contains(x.Id));
@@ -4037,6 +4041,8 @@ namespace SustitucionMOAUtils.Services
         {
             List<LegajoDto> legajo = new List<LegajoDto>();
             var peticion = repositorio.Obtener<PeticionDeOferta>(peticionDeOfertaId);
+            var peticionDeOfertaUsuario = repositorio.Obtener<PeticionDeOfertaUsuario>(peticiondeOfertaUsuarioId);
+
             var peticionPrecio = repositorio.Obtener<PeticionDeOfertaVisualizacionPrecio>(x => x.PeticionDeOferta_Id == peticionDeOfertaId);
 
             var solps = peticion.Posiciones.Select(x => x.SolpPosicion.Solp);
@@ -4129,6 +4135,25 @@ namespace SustitucionMOAUtils.Services
                         Tipo = TipoLegajo.ChatInterno
                     });
                 }
+
+                if (peticion.Usuarios != null)
+                {
+                    foreach (var usuario in peticion.Usuarios.Where(x => x.ChatExterno.Count > 0))
+                    {
+                        legajo.Add(new LegajoDto
+                        {
+                            ArchivoId = 0,
+                            Observacion = "Chat externo - Razon social: " +  usuario.Usuario.ObtenerRazonSocial() + " - CUIT: " + usuario.PeticionDeOferta.Usuario.CUITRegistro,
+                            PeticionDeOfertaId = peticionDeOfertaId,
+                            SolpId = solp.Id,
+                            Fecha = usuario.ChatExterno.First().FechaEnvio,
+                            FechaFormateado = usuario.ChatExterno.First().FechaEnvio.ToString("dd/MM/yyyy"),
+                            Usuario = new UsuarioDto { CUIT = solp.ChatInternoCompras.First().Usuario.CUITRegistro, Mail = usuario.ChatExterno.First().Usuario.Mail, Id = usuario.ChatExterno.First().Usuario_Id },
+                            Tipo = TipoLegajo.ChatExterno
+                        });
+                    }
+                }
+
             }
 
             //buscar archivos de la peticion ( menos lo de legajo cuando es un usuario proveedor)
@@ -4431,11 +4456,26 @@ namespace SustitucionMOAUtils.Services
                         {
                             var path = $"{ConfigurationManager.AppSettings["RutaArchivosCompras"]}/{DateTime.Now.Ticks}";
                             Directory.CreateDirectory(path);
-                            string rutaTxt = ExportarChatInternoAtexto(solp.Id, path);
+                            string rutaTxt = ExportarChatInternoAtexto(solp.Id, path, null);
                             byte[] fileBytes = System.IO.File.ReadAllBytes(rutaTxt);
                             string fileName = Path.GetFileName(rutaTxt);
                             archivo.CreateEntryFromFile(rutaTxt, fileName);
                             Directory.Delete(path, true);
+                        }
+
+                        // Agregar archivos de chat externo al zip
+                        if (peticion.Usuarios != null)
+                        {
+                            foreach (var usuario in peticion.Usuarios.Where(x => x.ChatExterno.Count > 0))
+                            {
+                                var path = $"{ConfigurationManager.AppSettings["RutaArchivosCompras"]}/{DateTime.Now.Ticks}";
+                                Directory.CreateDirectory(path);
+                                string rutaTxt = ExportarChatInternoAtexto(solp.Id, path, usuario.Id);
+                                byte[] fileBytes = System.IO.File.ReadAllBytes(rutaTxt);
+                                string fileName = Path.GetFileName(rutaTxt);
+                                archivo.CreateEntryFromFile(rutaTxt, fileName);
+                                Directory.Delete(path, true);
+                            }
                         }
                     }
 
@@ -7585,22 +7625,20 @@ namespace SustitucionMOAUtils.Services
             return !repositorio.Listar<PeticionDeOfertaVisualizacionPrecio>(x => x.UsuarioCreador_Id == usuarioId && x.PeticionDeOferta_Id == peticionDeOfertaId).Any();
         }
 
-        public ChatComprasDto ObtenerChat(int solpId, int usuarioActualId)
+        public ChatsDto ObtenerChat(int solpId, int usuarioActualId)
         {
             ChatComprasDto chat = new ChatComprasDto();
+            ChatsDto chats = new ChatsDto();
+
             var solp = repositorio.Obtener<Solp>(solpId);
 
             chat.Solp_Id = solp.Id;
             chat.FechaCreacion = solp.FechaCreacion.ToString("dd-MM-yyyy HH-mm-ss");
             chat.FechaCreacionDate = solp.FechaCreacion;
             chat.UsuarioActualId = usuarioActualId;
+            chat.RazonSocialComprador = solp.UsuarioCreacion.ObtenerRazonSocial();
 
-            //chat.Proveedores = peticion.Usuarios.Select(u => new ProveedorDto
-            //{
-            //    CUIT = u.Usuario.CUITRegistro,
-            //    Mail = u.Usuario.Mail,
-            //    RazonSocial = u.Usuario.ObtenerRazonSocial()
-            //}).ToList();
+
 
             foreach (var item in solp.ChatInternoCompras.Where(l => l.Usuario_Id != usuarioActualId))
             {
@@ -7622,7 +7660,105 @@ namespace SustitucionMOAUtils.Services
                 Usuario_Id = m.Usuario_Id
             }).ToList();
 
-            return chat;
+            chats.ChatCompras = chat;
+
+            var usuario = repositorio.Obtener<Usuario>(usuarioActualId);
+
+            if (usuario.Roles.Any(r => r.Codigo == "SOLP"))
+            {
+                List<ChatProveedoresDto> chatProveedores = new List<ChatProveedoresDto>();
+
+                foreach (var item in solp.Posiciones.SelectMany(po => po.Peticiones))
+                {
+                    if (!chatProveedores.Any(cp => cp.PeticionDeOferta_Id == item.PeticionDeOferta_Id))
+                    {
+                        foreach (var poUsuario in item.PeticionDeOferta.Usuarios)
+                        {
+                            ChatProveedoresDto chatProveedor = new ChatProveedoresDto();
+                            chatProveedor.PeticionDeOferta_Id = item.PeticionDeOferta_Id;
+                            chatProveedor.FechaCreacion = item.PeticionDeOferta.FechaCreacion.ToString("dd-MM-yyyy HH-mm-ss");
+                            chatProveedor.FechaCreacionDate = item.PeticionDeOferta.FechaCreacion;
+                            chatProveedor.UsuarioActualId = usuarioActualId;
+                            chatProveedor.RazonSocialProveedor = poUsuario.Usuario.ObtenerRazonSocial();
+                            chatProveedor.CuitProveedor = poUsuario.Usuario.CUITRegistro;
+                            chatProveedor.PeticionDeOfertaUsuario_Id = poUsuario.Id;
+
+                            foreach (var chatMensaje in poUsuario.ChatExterno.Where(l => l.Usuario_Id != usuarioActualId))
+                            {
+                                chatMensaje.Leido = true;
+                            }
+
+                            chatProveedor.Mensajes = poUsuario.ChatExterno.Select(m => new ChatExternoComprasDto
+                            {
+                                Id = m.Id,
+                                FechaEnvio = m.FechaEnvio.ToString("dd-MM-yyyy HH-mm-ss"),
+                                FechaEnvioDate = m.FechaEnvio,
+                                FechaDiaEnvio = m.FechaEnvio.ToString("ddd, d MMM"),
+                                Leido = m.Leido,
+                                Mail = m.Usuario.Mail,
+                                Mensaje = m.Mensaje,
+                                PeticionDeOferta_Id = m.PeticionDeOferta_Id,
+                                RolUsuario = m.Usuario.Roles.Any(r => r.Codigo == "SOLP") ? "SOLP" : "PROVEEDOR",
+                                Usuario_Id = m.Usuario_Id,
+                                PeticionDeOfertaUsuario_Id = m.PeticionDeOfertaUsuario_Id
+                            }).ToList();
+
+                            chatProveedores.Add(chatProveedor);
+                        }
+                    }
+                }
+                repositorio.GuardarCambios();
+                chats.ChatCompras = chat;
+                chats.ChatProveedores = chatProveedores;
+            }
+            return chats;
+        }
+
+        public ChatsDto ObtenerChatProveedor(int peticionDeOfertaUsuarioId, int usuarioActualId)
+        {
+            ChatsDto chats = new ChatsDto();
+            ChatComprasDto chat = new ChatComprasDto();
+            List<ChatProveedoresDto> chatProveedores = new List<ChatProveedoresDto>();
+
+            ChatProveedoresDto chatProveedor = new ChatProveedoresDto();
+            var peticiondeOfertaUsuario = repositorio.Obtener<PeticionDeOfertaUsuario>(peticionDeOfertaUsuarioId);
+
+            foreach (var item in peticiondeOfertaUsuario.ChatExterno.Where(l => l.Usuario_Id != usuarioActualId))
+            {
+                item.Leido = true;
+            }
+            repositorio.GuardarCambios();
+
+            chatProveedor.PeticionDeOferta_Id = peticiondeOfertaUsuario.PeticionDeOferta.Id;
+            chatProveedor.FechaCreacion = peticiondeOfertaUsuario.PeticionDeOferta.FechaCreacion.ToString("dd-MM-yyyy HH-mm-ss");
+            chatProveedor.FechaCreacionDate = peticiondeOfertaUsuario.PeticionDeOferta.FechaCreacion;
+            chatProveedor.UsuarioActualId = usuarioActualId;
+            chatProveedor.RazonSocialProveedor = peticiondeOfertaUsuario.Usuario.ObtenerRazonSocial();
+            chatProveedor.CuitProveedor = peticiondeOfertaUsuario.Usuario.CUITRegistro;
+            chatProveedor.PeticionDeOfertaUsuario_Id = peticiondeOfertaUsuario.Id;
+
+            var mensajes = peticiondeOfertaUsuario.ChatExterno.Select(m => new ChatExternoComprasDto
+            {
+                Id = m.Id,
+                FechaEnvio = m.FechaEnvio.ToString("dd-MM-yyyy HH-mm-ss"),
+                FechaEnvioDate = m.FechaEnvio,
+                FechaDiaEnvio = m.FechaEnvio.ToString("ddd, d MMM"),
+                Leido = m.Leido,
+                Mail = m.Usuario.Mail,
+                Mensaje = m.Mensaje,
+                PeticionDeOferta_Id = m.PeticionDeOferta_Id,
+                RolUsuario = m.Usuario.Roles.Any(r => r.Codigo == "COMPRADOR") ? "COMPRADOR" : "PROVEEDOR",
+                Usuario_Id = m.Usuario_Id,
+                PeticionDeOfertaUsuario_Id = m.PeticionDeOfertaUsuario_Id
+            }).ToList();
+
+            chats.ChatCompras = chat;
+            chatProveedor.Mensajes = mensajes;
+            chatProveedores.Add(chatProveedor);
+            chats.ChatProveedores = chatProveedores;
+            repositorio.GuardarCambios();
+
+            return chats;
         }
 
         public Resultado GrabarMensajeChatInterno(ChatInternoComprasDto mensaje)
@@ -7651,40 +7787,82 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        public string ExportarChatInternoAtexto(int solpId, string rutaArchivo)
+        public Resultado GrabarMensajeChatExterno(ChatExternoComprasDto mensaje)
+        {
+            try
+            {
+                var resultado = new Resultado();
+                var chatExternoCompras = new ChatExternoCompras()
+                {
+                    FechaEnvio = DateTime.Now,
+                    Leido = false,
+                    Mensaje = mensaje.Mensaje,
+                    PeticionDeOferta_Id = mensaje.PeticionDeOferta_Id,
+                    Usuario_Id = mensaje.Usuario_Id,
+                    PeticionDeOfertaUsuario_Id = mensaje.PeticionDeOfertaUsuario_Id
+                };
+
+                repositorio.Agregar(chatExternoCompras);
+                repositorio.GuardarCambios();
+
+                resultado.IdEntidad = chatExternoCompras.Id;
+                return resultado;
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+
+        public string ExportarChatInternoAtexto(int solpId, string rutaArchivo, int? peticionDeOfertaUsuarioId)
         {
             try
             {
                 var solp = repositorio.Obtener<Solp>(solpId);
-                //var chatInterno = repositorio.Obtener<ChatComprasDto>(chat.PeticionDeOferta_Id);
 
-                var txtFilename = $"ChatInterno-SOLP-{solp.NroSolp}-{DateTime.Now.ToString("yyyyMMdd")}.txt";
+                var txtFilename = $"Chat-SOLP-{solp.NroSolp}-{DateTime.Now.ToString("yyyyMMdd")}.txt";
                 var txtFilePath = $"{rutaArchivo}/{txtFilename}";
 
-                using (StreamWriter sw = new StreamWriter(txtFilePath))
+                if (!peticionDeOfertaUsuarioId.HasValue)
                 {
-                    // Escribir información general del chat
-                    sw.WriteLine($"SOLP : {solp.Id}");
-                    sw.WriteLine($"Fecha creacion: {solp.FechaCreacion}");
-                    //sw.WriteLine($"Comprador: {solp.Usuario.Mail}");
-
-                    // Escribir información de proveedores
-                    //sw.WriteLine();
-                    //sw.WriteLine("Proveedores:");
-                    //foreach (var usuario in solp.Usuarios)
-                    //{
-                    //    sw.WriteLine($"CUIT: {usuario.Usuario.CUITRegistro}, Mail: {usuario.Usuario.Mail}, RazonSocial: {usuario.Usuario.ObtenerRazonSocial()}");
-                    //}
-
-                    // Escribir mensajes del chat
-                    sw.WriteLine();
-                    sw.WriteLine("Mensajes:");
-                    foreach (var mensaje in solp.ChatInternoCompras)
+                    using (StreamWriter sw = new StreamWriter(txtFilePath))
                     {
-                        sw.WriteLine($"{mensaje.FechaEnvio.ToString("dd-MM-yyyy HH:mm")} - {mensaje.Usuario.Mail} - {mensaje.Mensaje}");
+                        // Escribir información general del chat
+                        sw.WriteLine($"SOLP : {solp.Id}");
+                        sw.WriteLine($"Fecha creacion: {solp.FechaCreacion}");
+
+                        // Escribir mensajes del chat
+                        sw.WriteLine();
+                        sw.WriteLine("Mensajes:");
+                        foreach (var mensaje in solp.ChatInternoCompras)
+                        {
+                            sw.WriteLine($"{mensaje.FechaEnvio.ToString("dd-MM-yyyy HH:mm")} - {mensaje.Usuario.Mail} - {mensaje.Mensaje}");
+                        }
                     }
                 }
-                return txtFilePath;
+                else {
+
+                    var peticion = repositorio.Obtener<PeticionDeOfertaUsuario>(peticionDeOfertaUsuarioId);
+                    txtFilename = $"Chat-SOLP-{solp.NroSolp}-CUIT-{peticion.PeticionDeOferta.Usuario.CUITRegistro}-{DateTime.Now.ToString("yyyyMMdd")}.txt";
+                    txtFilePath = $"{rutaArchivo}/{txtFilename}";
+
+                    using (StreamWriter sw = new StreamWriter(txtFilePath))
+                    {
+                        // Escribir información general del chat
+                        sw.WriteLine($"SOLP : {solp.Id}");
+                        sw.WriteLine($"PO : {peticion.PeticionDeOferta_Id}");
+                        sw.WriteLine($"Fecha creacion: {solp.FechaCreacion}");
+
+                        // Escribir mensajes del chat
+                        sw.WriteLine();
+                        sw.WriteLine("Mensajes:");
+                        foreach (var mensaje in peticion.ChatExterno)
+                        {
+                            sw.WriteLine($"{mensaje.FechaEnvio.ToString("dd-MM-yyyy HH:mm")} - {mensaje.Usuario.Mail} - {mensaje.Mensaje}");
+                        }
+                    }
+                }
+                    return txtFilePath;
             }
             catch (Exception)
             {
