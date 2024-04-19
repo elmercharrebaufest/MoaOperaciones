@@ -88,16 +88,18 @@ export class ReporteOcComponent extends ListBaseComponent {
 
     obtenerReporteOrdenDeCompra() {
         try {
+            this.ordenDeCompraSap = null;
             let codigoProveedor = this.codigoProveedor;
-
             if (this.usuarioInterno) {
                 if (!this.proveedorSeleccionado) {
                     this.floatMsgService.setInfoMsg("Debe seleccionar un proveedor.");
                     return;
                 } else {
+                    this.floatMsgService.setMsgsEmpty();
                     codigoProveedor = this.proveedorSeleccionado.CodigoProveedor;
                 }
             }
+            this.blockUI.start('Cargando...');
 
             this.subscription = this.service.obtenerReporteOrdenDeCompra(this.nroOc, this.fechaDesde, this.fechaHasta, codigoProveedor).subscribe(
                 (result: any) => {
@@ -108,19 +110,22 @@ export class ReporteOcComponent extends ListBaseComponent {
                     } else if (result.info != undefined) {
                         this.floatMsgService.setInfoMsg(result.info);
                     } else {
+                        this.floatMsgService.setMsgsEmpty();
                         this.ordenDeCompraSap = result;
                         this.spinnerComponent.hideIt();
                     }
+                    this.blockUI.stop();
                 },
                 error => {
                     this.floatMsgService.setErrorMsg(error.message);
-
+                    this.blockUI.stop();
                 });
         } catch (e) {
             this.floatMsgService.setErrorMsg(e);
-
+            this.blockUI.stop();
             return false; //<-- Prevent Refresh
         }
+        this.blockUI.stop();
         return false; //<-- Prevent Refresh
     }
 
@@ -191,6 +196,7 @@ export class ReporteOcComponent extends ListBaseComponent {
                         this.floatMsgService.setInfoMsg(result.info);
                     } else {
                         this.proveedores = result.data;
+                        this.ordenDeCompraSap = null;
                     }
                 },
                 error => {
