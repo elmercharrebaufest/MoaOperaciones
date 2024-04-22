@@ -8937,7 +8937,7 @@ namespace SustitucionMOAUtils.Services
                     proveedores.Add(proveedor);
                 }
 
-                var cuerpo = ConstruirTablaaa(proveedores, cierreDePlazos, peticionDeOferta.RevisionTecnica?.FechaFinalizacion);
+                var cuerpo = ConstruirTabla(proveedores, cierreDePlazos, peticionDeOferta.RevisionTecnica?.FechaFinalizacion);
                 var historial = new HistorialDeFechaDto
                 {
                     ListaSolp = solps,
@@ -8956,7 +8956,7 @@ namespace SustitucionMOAUtils.Services
                 throw;
             }
         }
-        private List<List<string>> ConstruirTablaaa(List<HistorialPorProveedorDto> proveedores, List<DateTime> cierres, DateTime? fechaRevisionTecnica)
+        private List<List<string>> ConstruirTabla(List<HistorialPorProveedorDto> proveedores, List<DateTime> cierres, DateTime? fechaRevisionTecnica)
         {
             List<List<string>> tabla = new List<List<string>>();
 
@@ -9113,7 +9113,6 @@ namespace SustitucionMOAUtils.Services
         {
             return usuario.Roles.Any(r => r.Codigo == "COMPRADOR") ? "Comprador" : "Solicitante";
         }
-
 
         public static class SolpTemplateKeys
         {
