@@ -2665,7 +2665,6 @@ namespace SustitucionMOATest.Services
         [Test]
         public void ListarHistorialDeFechasOk()
         {
-            // Configura los datos de prueba
             int peticionDeOfertaId = 1;
             var cotizacionHistorialList = new List<CotizacionHistorial>
                 {
@@ -2691,32 +2690,41 @@ namespace SustitucionMOATest.Services
                     },
                 };
 
-            // Simula la respuesta del repositorio
             repositorioMock.Setup(x => x.Obtener<PeticionDeOferta>(It.IsAny<int>())).Returns(peticionDeOferta);
-
-            // Configura las respuestas de los demás métodos del repositorio según sea necesario
-
             repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<CotizacionHistorial, bool>>>(), 
                 It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null)).Returns(cotizacionHistorialList);
-
-
             repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<PeticionDeOfertaCierre, DateTime>>>(),
                It.IsAny<Expression<Func<PeticionDeOfertaCierre, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc))
               .Returns(new List<DateTime>() { DateTime.Now });
-
-
             repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<Solp, SolpDto>>>(),
                 It.IsAny<Expression<Func<Solp, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc))
-               .Returns(new List<SolpDto>() { solpDto });
-          
+               .Returns(new List<SolpDto>() { solpDto });         
 
-            // Llama al método bajo prueba
             var resultado = target.ListarHistorialDeFechas(peticionDeOfertaId);
-
-            // Verifica que el resultado no sea nulo
             Assert.NotNull(resultado);
             repositorioMock.Verify(x => x.Obtener<PeticionDeOferta>(It.IsAny<int>()), Times.Once);
 
+        }
+
+        [Test]
+        public void ListarPeticionesDeOfertaOk()
+        {
+            repositorioMock.Setup(x => x.Obtener<Solp>(It.IsAny<int>())).Returns(solp);
+            repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<PeticionDeOferta, PeticionDeOfertaDto>>>(),
+                It.IsAny<Expression<Func<PeticionDeOferta, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc))
+                .Returns(new List<PeticionDeOfertaDto> { new PeticionDeOfertaDto {  CotizacionId = 1,
+                Cotizacion = new CotizacionDto { ArchivosCotizacion = null },
+                TipoPosicionCodigo = "MATERIALES",
+                Usuarios = new List<PeticionDeOfertaUsarioDto> { new PeticionDeOfertaUsarioDto { Cotizacion = new CotizacionDto { CotizacionPosiciones = new List<CotizacionPosicionDto> { new CotizacionPosicionDto {
+                Id = 1, PeticionDeOfertaSolpPosicion_Id = 1, Cantidad = 2, Precio = 500, UnidadMedida = new TablaSapDto { Descripcion = "UNI" }, TotalPesos = 1000 } } } } },
+                PeticionDeOfertaPosicion = new List<PeticionDeOfertaSolpPosicionDto> {
+                    new PeticionDeOfertaSolpPosicionDto { Id = 1, Posicion = new SolpPosicionDto { Unidad = new TablaSapDto { Descripcion = "PAR" }, CodigoMaterialSap = new MaterialSolpDto { Codigo = "000000000050224373" } }, Posiciones = new SolpPosicionDto { Codigo = "000000000050224373" } }
+                },
+                NrosSolp = new List<string> { "102002020"}} });
+
+            var resultado = target.ListarPeticionesDeOferta(It.IsAny<int>());
+            Assert.NotNull(resultado);
+            repositorioMock.Verify(x => x.Obtener<Solp>(It.IsAny<int>()), Times.Once);
         }
 
 

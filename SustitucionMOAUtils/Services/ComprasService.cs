@@ -1228,8 +1228,9 @@ namespace SustitucionMOAUtils.Services
 
         public List<PeticionDeOfertaDto> ListarPeticionesDeOferta(int solpId)
         {
-            var posicionesId = repositorio.Obtener<Solp>(x => x.Id == solpId).Posiciones.Select(x => x.Id);
-            return repositorio.Listar<PeticionDeOferta, PeticionDeOfertaDto>(po => new PeticionDeOfertaDto
+            var solps = repositorio.Obtener<Solp>(solpId);
+            var posicionesId = solps.Posiciones.Select(x => x.Id);
+            var peticiones = repositorio.Listar<PeticionDeOferta, PeticionDeOfertaDto>(po => new PeticionDeOfertaDto
             {
                 Id = po.Id,
                 Solp_Id = po.Posiciones.FirstOrDefault().SolpPosicion.Solp.Id,
@@ -1246,7 +1247,9 @@ namespace SustitucionMOAUtils.Services
                               .OrderByDescending(x => x.Circular.Id).FirstOrDefault().Circular.FechaCreacion,
                 PlazoDeOfertaCierre = po.Cierres.Any() ? po.Cierres.OrderByDescending(x => x.Fecha).FirstOrDefault().Fecha : (DateTime?)null,
                 RevisionFinalizada = po.RevisionTecnica != null && po.RevisionTecnica.Finalizada,
+                TrabajoHecho = solps.TrabajoYaHecho == true
             }, peti => peti.RegistroInfo != true && peti.Posiciones.Any(y => posicionesId.Contains(y.SolpPosicion_Id)));
+            return peticiones;
         }
 
         public SolpDto TraerSolpId(int idSolp)
