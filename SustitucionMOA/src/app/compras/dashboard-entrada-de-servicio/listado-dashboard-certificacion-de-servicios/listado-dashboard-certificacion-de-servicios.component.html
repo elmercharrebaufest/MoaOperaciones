@@ -107,6 +107,7 @@
                  dataKey="NumeroOrdenDeCompra"
                  [columns]="columns"
                  [paginator]="true"
+                 [alwaysShowPaginator]="false"
                  [loading]="loading"
                  [rows]="10"
                  [globalFilterFields]="['NumeroOrdenDeCompra','Proveedor', 'NombreProveedor']"
@@ -125,9 +126,9 @@
 
             <!-- TABLE 1 BODY -->
             <ng-template pTemplate="body" let-rowData let-columns="columns" let-expanded="expanded">
-                <tr [pSelectableRow]="rowData" *ngIf="!ocFilterApplied || (ocFilterApplied && tienePosicionesConItemsACertificar(rowData.Posiciones))">
+                <tr [pSelectableRow]="rowData">
                     <td>
-                        <a href="#" [pRowToggler]="rowData" (click)="loadSolicitantesList(rowData); setPositionRow(rowData.Posiciones);">
+                        <a href="#" [pRowToggler]="rowData" (click)="loadSolicitantesList(rowData)">
                             <i [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
                         </a>
                     </td>
@@ -153,8 +154,11 @@
                                  class="level2"
                                  [value]="rowData.Posiciones"
                                  dataKey="Id"
-                                 [paginator]="obtenerCantidadDePosicionesAMostrar(rowData.Posiciones) > 40"
+                                 [paginator]="true"
+                                 [alwaysShowPaginator]="false"
                                  [rows]="40"
+                                 (onRowExpand)="setExpanded(tablaPosiciones)"
+                                 (onRowCollapse)="setExpanded(tablaPosiciones)"
                                  rowExpandMode="single">
                             <!-- TABLE 2 HEADERS -->
                             <ng-template pTemplate="header" *ngIf="rowData.Posiciones && rowData.Posiciones.length > 0">
@@ -169,14 +173,14 @@
 
                             <!-- TABLE 2 BODY-->
                             <ng-template pTemplate="body" let-rowData let-expanded="expanded" let-posIndex="rowIndex">
-                                <tr class="posicion" *ngIf="!ocFilterApplied || (ocFilterApplied && tieneItemsACertificar(rowData))" [class.green-row]="es100PorCiento([rowData])">
+                                <tr class="posicion" *ngIf="!ocFilterApplied || (ocFilterApplied && tieneItemsACertificar(rowData))" [class.green-row]="esPosicionCompleta(rowData)">
                                     <ng-container *ngIf="mostrarPosicionSolicitante(rowData)">
 
                                       <!-- SE AGREGA CHECKBOX PARA SELECCIOANR N POSICIONES -->
                                         <td>
                                             <input *ngIf="hidePositionCheckboxToAll(rowData.Items)" type="checkbox" [(ngModel)]="rowData.isSelected" (change)="selectAllPositionsLines($event,rowData)"/>
 
-                                            <a href="#" [pRowToggler]="rowData" (click)="expandedPositionRow=rowData">
+                                            <a href="#" [pRowToggler]="rowData" (click)="calcularValoresACertificar(rowData)">
                                                 <i [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
                                             </a>
                                         </td>
@@ -206,12 +210,16 @@
                                         </div>
 
                                         <p-table *ngIf="!recalculando"
+                                                 #tablaItems
                                                  id="items"
                                                  class="level3"
                                                  [value]="rowData.Items"
                                                  dataKey="NumeroLinea"
-                                                 [paginator]="rowData.Items.length > 10"
+                                                 [paginator]="true"
+                                                 [alwaysShowPaginator]="false"
                                                  [rows]="10"
+                                                 (onRowExpand)="setExpanded(tablaItems)"
+                                                 (onRowCollapse)="setExpanded(tablaItems)"
                                                  rowExpandMode="single">
 
                                             <!-- TABLE 3 HEADERS -->
@@ -229,7 +237,7 @@
 
                                             <!-- TABLE 3 BODY -->
                                             <ng-template pTemplate="body" let-rowData let-expanded="expanded" let-i="rowIndex">
-                                                <tr>
+                                                <tr *ngIf="!ocFilterApplied || ocFilterApplied && (rowData.Porcentaje*1) < 100">
                                                     <td>
                                                         <input type="checkbox"
                                                                [(ngModel)]="rowData.isSelected"
@@ -305,7 +313,7 @@
 
                                             <!-- TABLE 3 ROW EXPANSION: ENTRADAS DE SERVICIO -->
                                             <ng-template pTemplate="rowexpansion" let-rowData let-columns="columns">
-                                                <tr id="entradasServicio">
+                                                <tr id="entradasServicio" *ngIf="!ocFilterApplied || ocFilterApplied && (rowData.Porcentaje*1) < 100">
                                                     <td [attr.colspan]="cantidadColumnasTabla('items')">
                                                         <p-table id="entradasServicio"
                                                                  class="level4"

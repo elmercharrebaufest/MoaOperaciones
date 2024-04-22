@@ -56,6 +56,9 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
     @ViewChild("tablaPosiciones")
     protected tablaPosiciones: Table;
 
+    @ViewChild("tablaItems")
+    protected tablaItems: Table;
+
     @ViewChild(MensajeComponent)
     protected mensajeComponent: MensajeComponent;
 
@@ -96,6 +99,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
     filaExpandida: any;
     expandedRow: any;
     expandedPositionRow: any;
+    expandedItemRow: any;
     proveedorSeleccionado: any;
     proveedorModel: ProveedorModel;
     proveedorList: any[] = new Array();
@@ -312,11 +316,6 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
         this.itemSelected.sort((a, b) => a.NumeroLinea > b.NumeroLinea ? 1 : -1);
     }
 
-    setPositionRow(posiciones: any[]) {
-        posiciones.forEach(posicion => this.calcularValoresACertificar(posicion));
-        this.mostrarOcultarItemsSinSaldoACertificar();
-    }
-
     loadSolicitantesList(rowData: any) {
         if (this.solicitantes !== undefined && this.solicitantes.length > 0) {
 
@@ -380,7 +379,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
         // MMSN-519: Colapsar fila expandida al activar un filtro.
         this.collapseExpandedRow();
         // MMSN-689: Desactivar filtro de saldo pendiente al activar búsqueda. 
-        this.filtrarElementosSinSaldoACertificar(false);
+        this.filtrarTablas(false, []);
 
         // MMS-804: Limpiar Filtro Solicitantes
         this.limpiarFiltroPorSolicitantes();
@@ -408,6 +407,8 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
         }
     }
 
+    posicionesCompletas: any[] = [];
+
     getListarPO(proveedor, ordenCompraId, fecha_inicio, fecha_fin) {
         this.getFecha();
         try {
@@ -429,10 +430,11 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
                         this.length = result.data.length > 0 ? result.data[0].ItemsTotales : result.data.length;
                         this.pageSize = result.data.length > 0 ? result.data[0].ItemPorPagina : 10;
                         this.pageIndex = result.data.length > 0 ? result.data[0].Pagina : 1;
+                       
                     }
                     if (this.expandedPositionRow) {
                         this.calcularValoresACertificar(this.expandedPositionRow);
-                        this.mostrarOcultarItemsSinSaldoACertificar();
+                        this.filtrarTablas();
                         setTimeout(() => {
                             this.recalculando = false;
                             this.tablaPosiciones.toggleRow(this.expandedPositionRow);
@@ -441,6 +443,9 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
                     this.disabledFilter = false;
                     if (this.spinnerComponent) this.spinnerComponent.hideIt();
                     this.displayContent = true;
+                    
+                    // Se buscan las posiciones que están al 100%
+                    this.posicionesCompletas = [].concat.apply([], this.tablaPO.map(oc => this.calcularPorcentaje(oc)));
                 },
                 error => {
                     this.floatMsgService.setErrorMsg(error.message);
@@ -456,6 +461,12 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
 
         return false; //<-- Prevent Refresh
     }
+
+    esPosicionCompleta(posicion): boolean {
+        let isComplete = this.posicionesCompletas.some(p => p.Id === posicion.Id);
+        return isComplete;
+      }
+
 
     getFecha() {
         var fechaActual = new Date();
@@ -724,7 +735,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
      */
     actionCheckPosition(item: any): void {
         let posicion = this.tablaPosiciones.value.find(posicion => posicion.NumeroPosicion === parseInt(item.NroPosicion));
-        let itemsConSaldoDisponible = posicion.Items.filter(item => item.MontoACertificar > 0);
+        let itemsConSaldoDisponible = posicion.Items.filter(item => Number(item.Porcentaje) < 100);
         posicion.isSelected = !itemsConSaldoDisponible.some(item => !item.isSelected);
     }
 
@@ -739,40 +750,92 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
     }
 
     /**
-    * Activa el filtro de posiciones e items sin saldo 
-    * a certificar. Este filtro oculta/muestra items certificados
-    * al 100%. Si la posición tiene todos sus items certificados
-    * entonces oculta también la posición.
-    * @param activate Boolean que activa/desactiva filtro
-    */
+     * Activa el filtro de posiciones e items sin saldo 
+     * a certificar. Este filtro oculta/muestra items certificados
+     * al 100%. Si la posición tiene todos sus items certificados
+     * entonces oculta también la posición.
+     * @param activate Boolean que activa/desactiva filtro
+     */
     filtrarElementosSinSaldoACertificar(activate: boolean): void {
-        this.ocFilterApplied = activate;
-        this.mostrarOcultarItemsSinSaldoACertificar();
+        this.filtrarTablas(activate, this.filtroSolicitantes);
+    }
+
+    private filtrarTablas(filtroSaldo?: boolean, filtroSolicitante?: string[]): void {
+        if (filtroSaldo != undefined) this.ocFilterApplied = filtroSaldo;
+        if (filtroSolicitante != undefined) this.filtroSolicitantes = filtroSolicitante;
+
+        setTimeout(() => {
+            let ordenesFiltradas = this.tablaPO;
+
+            if (this.ocFilterApplied) {
+                ordenesFiltradas = ordenesFiltradas.reduce((acc, orden) => (orden.Posiciones.some(posicion => this.tieneItemsACertificar(posicion)) ? [...acc, orden] : acc), []);
+            }
+
+            if (this.filtroSolicitantes.length > 0) {
+                ordenesFiltradas = ordenesFiltradas.reduce((acc, orden) => (this.filtrarPosiciones(orden.Posiciones).length > 0 ? [...acc, orden] : acc), []);
+            }
+
+            // Se asigna a tabla.value en lugar de usar tabla.filter porque .filter si no tiene 
+            // resultados no muestra el template "emptyMessage".
+            this.tabla.value = ordenesFiltradas;
+
+            this.tabla.first = 0;
+            setTimeout(() => this.filtrarTablaPosiciones(), 60);
+        }, 20); // Esta espera es necesaria para que parezca el elemento en el DOM
+    }
+
+    private filtrarPosiciones(posiciones: any[]): any[] {
+        let posicionesFiltradas = (posiciones && posiciones.length > 0) ? posiciones : [];
+        if (this.ocFilterApplied) {
+            posicionesFiltradas = posicionesFiltradas.filter(posicion => this.tieneItemsACertificar(posicion));
+        }
+        if (this.filtroSolicitantes.length > 0) {
+            posicionesFiltradas = posicionesFiltradas.filter(posicion => this.filtroSolicitantes.includes(posicion.Solicitante.toUpperCase()));
+        }
+        return posicionesFiltradas;
+    }
+
+    private filtrarTablaPosiciones(): void {
+        if (this.tablaPosiciones) {
+            let expandedRowId = Object.keys(this.tabla.expandedRowKeys)[0];
+
+            let posiciones = this.tablaPO.find(orden => orden.NumeroOrdenDeCompra == expandedRowId).Posiciones;
+            let posicionesFiltradas = this.filtrarPosiciones(posiciones);
+
+            // Se asigna a tabla.value en lugar de usar tabla.filter porque .filter si no tiene 
+            // resultados no muestra el template "emptyMessage".
+            this.tablaPosiciones.value = posicionesFiltradas;
+            this.tablaPosiciones.first = 0;
+
+            if (this.expandedPositionRow) {
+                let expandedRow = posicionesFiltradas.find(posicion => posicion.Id === Number(this.expandedPositionRow));
+                if (expandedRow && !this.tablaPosiciones.isRowExpanded(expandedRow)) {
+                    this.tablaPosiciones.toggleRow(expandedRow);
+                }
+                setTimeout(() => this.expandirItem(), 20);
+            }
+        }
+    }
+
+    private expandirItem(): void {
+        if (this.tablaItems) {
+            let items = this.tablaItems.value;
+            if (this.expandedItemRow) {
+                let expandedRow = items.find(item => item.NumeroLinea === Number(this.expandedItemRow));
+                if (expandedRow && !this.tablaItems.isRowExpanded(expandedRow)) {
+                    this.tablaItems.toggleRow(expandedRow);
+                }
+            }
+        }
     }
 
     /**
-     * Oculta/muestra items sin saldo a certificar.
+     * Used from template
      */
-    mostrarOcultarItemsSinSaldoACertificar() {
-        setTimeout(() => {
-            let entradasServicio = document.querySelectorAll('#entradasServicio')[0];
-            let items = document.querySelectorAll('.percentage-green');
-
-            if (this.ocFilterApplied) {
-                items.forEach(el => el.closest('tr').classList.add('hidden'));
-
-                if (entradasServicio != undefined) {
-                    entradasServicio.classList.add('hidden');
-                }
-            }
-            else {
-                items.forEach(el => el.closest('tr').classList.remove('hidden'));
-
-                if (entradasServicio != undefined) {
-                    entradasServicio.classList.remove('hidden');
-                }
-            }
-        }, 20); // Esta espera es necesaria para que parezca el elemento en el DOM
+    private setExpanded(table: Table): void {
+        let expandedRowId = Object.keys(table.expandedRowKeys)[0] ? Object.keys(table.expandedRowKeys)[0] : undefined;
+        if (table.el.nativeElement.id == 'posiciones') this.expandedPositionRow = expandedRowId;
+        if (table.el.nativeElement.id == 'items') this.expandedItemRow = expandedRowId;
     }
 
     /**
@@ -781,7 +844,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
      * @param posicion
      */
     tieneItemsACertificar(posicion: any) {
-        let elementosPorCertificar = posicion.Items.some(item => item.Porcentaje != '100');
+        let elementosPorCertificar = posicion.Items.some(item => Number(item.Porcentaje) < 100);
         return elementosPorCertificar;
     }
 
@@ -900,16 +963,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
     }
 
     filtrarPorSolicitantes(event: any): void {
-        let NumeroOrdenesDeCompras = [];
-        let posicionesFiltradas = [];
-        this.filtroSolicitantes = event.value;
-        this.tablaPO.forEach((oc: any) => {
-            posicionesFiltradas = oc.Posiciones.filter((pos: any) => event.value.includes(pos.Solicitante.toUpperCase()));
-            if (posicionesFiltradas.length > 0) {
-                NumeroOrdenesDeCompras.push(oc.NumeroOrdenDeCompra);
-            }
-        });
-        this.tabla.filter(NumeroOrdenesDeCompras, 'NumeroOrdenDeCompra', 'in');
+        this.filtrarTablas(this.ocFilterApplied, event.value);
     }
 
     mostrarPosicionSolicitante(posicion: any): any {
@@ -923,42 +977,24 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
     limpiarFiltroPorSolicitantes() {
         this.multiSelectSolicitantes.valuesAsString = 'Solicitantes';
         this.multiSelectSolicitantes.value = [];
-        this.filtrarPorSolicitantes(this.multiSelectSolicitantes);
     }
 
-    obtenerCantidadDePosicionesAMostrar(posiciones: any[]): number {
-        if (!this.ocFilterApplied && !this.filtroSolicitantes) {
-            return posiciones.length;
-        }
+    calcularPorcentaje(oc): any[] {
+         const posicionesCompletas = oc.Posiciones.filter(posicion => {
+            this.calcularValoresACertificar(posicion);
 
-        let posicionesAMostrar = posiciones;
+        const items = posicion.Items || [];
+        const totalItems = items.length;
+        const itemsCompletados = items.filter(item => item.Porcentaje === "100").length;
+        
+        return itemsCompletados === totalItems;
 
-        if (this.filtroSolicitantes.length > 0) {
-            posicionesAMostrar = posicionesAMostrar.filter(posicion => this.filtroSolicitantes.includes(posicion.Solicitante.toUpperCase()));
-        }
-
-        if (this.ocFilterApplied) {
-            posicionesAMostrar = posicionesAMostrar.filter(posicion => this.tieneItemsACertificar(posicion));
-        }
-
-        return posicionesAMostrar.length;
-    }
-
-    calcularPorcentaje(posiciones): number {
-        let totalItems = 0;
-        let itemsCompletados = 0;
-
-        posiciones.forEach(posicion => {
-            const items = posicion.Items || [];
-            totalItems += items.length;
-            itemsCompletados += items.filter(item => item.PorcentajeACertificar === 0).length;
         });
 
-        return totalItems > 0 ? (itemsCompletados / totalItems) * 100 : 0;
-    }
-
-    es100PorCiento(posiciones): boolean {
-        return this.calcularPorcentaje(posiciones) === 100;
+        return posicionesCompletas.map(posicion => ({
+            Id: posicion.Id,
+            Posicion: posicion
+        }));
     }
 
     showScrollbar: boolean = false;
