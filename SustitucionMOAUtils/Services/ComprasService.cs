@@ -9082,7 +9082,7 @@ namespace SustitucionMOAUtils.Services
                         if (cierre != null && cierre.Count() > 0)
                         {
                             string fechaHoraCierre = string.Join(", ", cierre.OrderBy(x => x).Select(x => x.ToString("HH:mm") + "hs"));
-                            fila.Add($"{fecha.ToString("dd-MM-yyyy")} {fechaHoraCierre} - Cierre de cotización");
+                            fila.Add($"{fecha.ToString("dd/MM/yyyy")} {fechaHoraCierre} - Cierre de cotización");
                         }
                         else
                         {

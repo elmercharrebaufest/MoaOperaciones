@@ -11,6 +11,7 @@ import { ModalService } from '../../../../common/services/ModalService';
 import { SessionDataService } from '../../../../common/services/SessionDataService';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { SpinnerComponent } from '../../../../common/view-child/spinner/spinner.component';
+import { HistorialDeFechaDto } from '../../../../modelos/historialDeFechaDto';
 
 @Component({
     selector: 'app-visualizar-movimiento',
@@ -28,18 +29,26 @@ export class VisualizarMovimientoComponent implements OnInit, OnChanges {
     subscription: any;
     @ViewChild(SpinnerComponent)
     protected spinnerComponent: SpinnerComponent;
-    historialDeFechas: any;
+    historialDeFechas: HistorialDeFechaDto;
+    colspan: any;
     constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService,
         protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService,
         protected route: ActivatedRoute, protected router: Router, private confirmationService: ConfirmationService, private formBuilder: FormBuilder) {
     }   
     ngOnChanges(changes: SimpleChanges): void {
         this.listarHistorialDeFechas();
+        if(this.historialDeFechas != undefined){
+            this.colspan = this.historialDeFechas.Cuerpo[0].length;
+        }
+       
     }
     
 
     ngOnInit() {    
         this.listarHistorialDeFechas();
+        if(this.historialDeFechas != undefined){
+            this.colspan = this.historialDeFechas.Cuerpo[0].length;
+        }
     }
     
     onCerrarMovimientos() {            
@@ -62,7 +71,6 @@ export class VisualizarMovimientoComponent implements OnInit, OnChanges {
                         this.floatMsgService.setInfoMsg(result.info);
                     } else {                       
                         debugger;
-                        console.log("HOLA", result);
                         this.historialDeFechas = result.data;
                         if( this.spinnerComponent != undefined){
                         this.spinnerComponent.hideIt();
