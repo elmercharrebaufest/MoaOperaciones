@@ -230,7 +230,6 @@ namespace SustitucionMOAWS.WSConsumers
             var unidadesMedidaSap = repositorio.Listar<UnidadMedidaSap, dynamic>(x => new { x.Comercial, x.UM },
                 x => unidadesCodigoSap.Contains(x.Comercial))?.Select(x => System.Tuple.Create(x.Comercial, x.UM)).ToList();
 
-
             List<int> idsPosiciones = adjudicacion.Posiciones.Select(x => x.SolpPosicion_Id).ToList();
             var posicionesSolp = repositorio.Listar<SolpPosicion>(posi => idsPosiciones.Contains(posi.Id));
             foreach (var posicion in posicionesSolp)
