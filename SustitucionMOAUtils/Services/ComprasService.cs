@@ -174,14 +174,11 @@ namespace SustitucionMOAUtils.Services
 
                 if (solpEntity != null)
                 {
-                    //TODO: validar si está en un estado modificable
 
-                    solpEntity.UsuarioModificacion_Id = solp.UsuarioActual.Id;
-                    if (solpEntity.TipoSolpSap == (int?)TipoSolpSap.Mantenimiento || solpEntity.TipoSolpSap == (int?)TipoSolpSap.ReposicionAutomatica || solpEntity.TipoSolpSap == (int?)TipoSolpSap.Sap)
-                    {
-                        solpEntity.UsuarioCreacion_Id = solp.UsuarioActual.Id;
-                    }
-                    solpEntity.FechaModificacion = DateTime.Now;
+                    //if (solpEntity.TipoSolpSap == (int?)TipoSolpSap.Mantenimiento || solpEntity.TipoSolpSap == (int?)TipoSolpSap.ReposicionAutomatica || solpEntity.TipoSolpSap == (int?)TipoSolpSap.Sap)
+                    //{
+                    //    solpEntity.UsuarioCreacion_Id = solp.UsuarioActual.Id;
+                    //}
                     pliegoEntity = solpEntity.Pliego;
 
                     if (enviarMailUrgencia && !string.IsNullOrEmpty(solpEntity.NroSolp))
@@ -418,6 +415,8 @@ namespace SustitucionMOAUtils.Services
                 {
                     var finalizoPrimeraVez = string.IsNullOrEmpty(solpEntity.NroSolp);
                     respuestaGuardarSOLP = FinalizarSolp(solpEntity, postEntitySubPosicionesEliminadas, respuestaGuardarSOLP, enviarMailUrgencia);
+                    solpEntity.UsuarioModificacion_Id = solp.UsuarioActual.Id;
+                    solpEntity.FechaModificacion = DateTime.Now;
                     GuardarUsuarioComprasRelacionado(solp);
                    
                 }
