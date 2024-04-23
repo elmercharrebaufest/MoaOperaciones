@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { ActivatedRoute, Params } from '@angular/router';
 import { animate, style, transition, trigger } from '@angular/animations';
 
@@ -144,11 +144,11 @@ export class SolpComponent extends BaseComponent implements OnInit {
         if (this.pasos && this.pasos.length > 0) {
             this.getCombos();
             this.es = setupDaysAndMonths();
-
+            
             this.pasos[0].Activo = true;
             this.pasos[0].Iniciado = true;
             this.pasoActual = this.pasos[0];
-
+          
             if (this.route.params) {
                 this.route.params.forEach((params: Params) => {
                     let numeroSolp = "";
@@ -163,6 +163,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
                     if (numeroSolp != "") this.flagSolpFinalizada = true;
                     this.tituloSolp();
                 });
+                this.obtenerUsuarioSolicitante();
                 if (this.solpId > 0) {
                     this.setComponentMode(ComponentMode.Edition);
                     this.traerSolpId(this.solpId);
@@ -215,6 +216,20 @@ export class SolpComponent extends BaseComponent implements OnInit {
         let monedaPorDefecto = this.combos.Moneda.find(x => x.Codigo == "ARP");
         if (monedaPorDefecto) {
             this.solpActual.monedaPorDefecto = monedaPorDefecto;
+        }
+    }
+
+    private setupGrupoDeComprasServiciosPorDefecto(): void {
+        let grupoDeComprasPorDefecto = this.combos.GrupoCompras.find(x => x.Codigo == "300");
+        if (grupoDeComprasPorDefecto) {
+            this.solpActual.grupoDeComprasPorDefecto = grupoDeComprasPorDefecto;
+        }
+    }
+
+    private setupGrupoDeArticuloServiciosPorDefecto(): void {
+        let grupoDeArticuloPorDefecto = this.combos.GrupoArticulo.find(x => x.Codigo == "30015");
+        if (grupoDeArticuloPorDefecto) {
+            this.solpActual.grupoDeArticuloPorDefecto = grupoDeArticuloPorDefecto;
         }
     }
 
@@ -444,7 +459,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
                     this.disabledSave = false;
                     return;
                 }
-                if(this.solpActual.trabajoHecho != true && this.solpActual.urgencia != true){
+                if (this.solpActual.trabajoHecho != true && this.solpActual.urgencia != true) {
                     if (this.validarFechaVisitaDeObra()) {
                         this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: "La fecha de visita de obra no puede ser mayor a la fecha tentativa de ofertas ni a la fecha de límite de consulta" });
                         if (guardarPorPaso == false) {
@@ -465,6 +480,15 @@ export class SolpComponent extends BaseComponent implements OnInit {
 
                     if (this.validarFechaLimiteYObra()) {
                         this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: "La fecha de límite de consulta no puede ser mayor a la fecha de visita de obra" });
+                        if (guardarPorPaso == false) {
+                            this.blockUI.stop();
+                        }
+                        this.disabledSave = false;
+                        return;
+                    }
+
+                    if (!this.validarSolicitante()) {
+                        this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: "No se encontró el usuario solicitante" });
                         if (guardarPorPaso == false) {
                             this.blockUI.stop();
                         }
@@ -598,7 +622,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
                         if (!this.listaStringCompleta([
                             this.solpActual.nombreDePedido,
                             this.solpActual.fiscalContrato,
-                            this.isEmailInvalid(this.solpActual.mail),
+                            this.solpActual.mail,
                             this.solpActual.fechaEntrega,
                             this.solpActual.horaEntrega
                         ])) {
@@ -612,7 +636,6 @@ export class SolpComponent extends BaseComponent implements OnInit {
                     paso.Completo = true;
                     if (!paso.Deshabilitado) {
                         if (!this.listaStringCompleta([
-                            this.solpActual.supervisorSector,
                             this.solpActual.supervisorTrabajo
                         ])) {
                             paso.Completo = false;
@@ -677,7 +700,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
     isEmailInvalid(value: any) {
         const EMAIL_REGEXP = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 
-        if(value == ''){
+        if (value == '') {
             return true;
         }
 
@@ -830,7 +853,8 @@ export class SolpComponent extends BaseComponent implements OnInit {
     }
 
     listaStringCompleta(lista: any[]) {
-        return lista.filter(x => !x || x.length == 0).length == 0;
+        var completo = lista.filter(x => !x || x.length == 0 || x == "Seleccione un usuario").length == 0;
+        return completo;
     }
 
     listaStringVacia(lista: any[]) {
@@ -880,17 +904,18 @@ export class SolpComponent extends BaseComponent implements OnInit {
                     } else {
                         this.combos = result;
                         this.combos.flagSolpFinalizada = this.flagSolpFinalizada;
-                       // this.obtenerUsuarioCompras();
+                        // this.obtenerUsuarioCompras();
                         this.setupCentroPorDefecto();
                         this.setupDireccionCentroPorDefecto();
                         this.setupMonedaPorDefecto();
-
+                        this.setupGrupoDeComprasServiciosPorDefecto();
+                        this.setupGrupoDeArticuloServiciosPorDefecto();
+                        this.obtenerUsuarioSolicitante();
                     }
                 },
                 error => {
                     this.floatMsgService.setErrorMsg(error.message);
                 }
-
             );
         } catch (e) {
             this.floatMsgService.setErrorMsg(e);
@@ -936,7 +961,17 @@ export class SolpComponent extends BaseComponent implements OnInit {
 
     private completarDatosUltimaSolp() {
         this.solpActual.fiscalContrato = this.datosUltimaSolp.FiscalContrato;
+        this.solpActual.mail = this.datosUltimaSolp.EmailFiscalContrato;
         this.solpActual.telefono = this.datosUltimaSolp.Telefono;
+        if (this.solpActual != undefined && this.solpActual.usuarioSolicitanteList != undefined) {
+            this.solpActual.selectUsuarioFiscal = this.solpActual.usuarioSolicitanteList.
+                find(x => x.CodigoDescripcion == this.solpActual.mail);
+              if (this.solpActual.tipoSolp == "CON_PLIEGO") {
+                this.solpActual.supervisorTrabajo = this.solpActual.mail;
+                this.solpActual.selectResponsableTrabajo = this.solpActual.usuarioSolicitanteList.
+                    find(x => x.CodigoDescripcion == this.solpActual.mail);
+              }
+        }
     }
 
 
@@ -959,9 +994,11 @@ export class SolpComponent extends BaseComponent implements OnInit {
                             });
                         });
                         this.solpActual.usuarioComprasList = [{ Id: null, CodigoDescripcion: "Seleccione un usuario" }, ...this.solpActual.usuarioComprasList];
+                        if(this.solpActual.selectUsuarioCompras == undefined || this.solpActual.selectUsuarioCompras == null){
                         this.solpActual.selectUsuarioCompras = this.solpActual.usuarioComprasId > 0
                             ? this.solpActual.usuarioComprasList.find(x => x.Id === this.solpActual.usuarioComprasId)
                             : this.solpActual.usuarioComprasList[0];
+                        }
                         this.spinnerComponent.hideIt();
                     }
                 },
@@ -1028,8 +1065,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
     // Todos los Modal
     finalizar({ selectUsuarioCompras, solpActual }) {
         this.solpActual = solpActual;
-        this.solpActual.selectUsuarioCompras = selectUsuarioCompras;
-
+        this.solpActual.selectUsuarioCompras = selectUsuarioCompras;   
         this.cabecera.validarTabCompleto();
         this.guardarCambios({ mostrarPreview: false, enviarSap: true, guardarPorPaso: false });
         this.displayFinalizar = false;
@@ -1040,7 +1076,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
 
     // Abre el modal del boton finalizar
     showFinalizarDialog() {
-        this.obtenerUsuarioCompras();
+        this.obtenerUsuarioCompras();      
         this.displayFinalizar = true;
     }
 
@@ -1222,6 +1258,73 @@ export class SolpComponent extends BaseComponent implements OnInit {
         const solpId = this.solpActual.id;
         const token = this.solpActual.emailLinkToken;
         return `${window.location.origin}/api/compras/DescargarPliegoDesdeLink?solpId=${solpId}&token=${token}`;
+    }
+
+
+    obtenerUsuarioSolicitante() {
+        try {
+            this.subscription = this.service.listarUsuarioSolicitante().subscribe(
+                (result: any) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.floatMsgService.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.floatMsgService.setInfoMsg(result.info);
+                    } else {                       
+                        this.solpActual.usuarioSolicitanteList = [];
+                        result.forEach(element => {
+                            this.solpActual.usuarioSolicitanteList.push({
+                                Id: element.Mail,
+                                CodigoDescripcion: element.Mail,
+                                UsuarioSap: element.UsuarioSap
+                            });
+                        });
+                        this.completarUsuarioSolicitante();
+                        this.spinnerComponent.hideIt();
+                    }
+                },
+                error => {
+                    this.floatMsgService.setErrorMsg(error.message);
+                }
+
+            );
+        } catch (e) {
+            this.floatMsgService.setErrorMsg(e);
+        }
+    }
+
+    public completarUsuarioSolicitante() {       
+        if (this.solpActual != undefined) {
+             this.solpActual.usuarioSolicitanteList = [{ Id: null, CodigoDescripcion: "Seleccione un usuario" }, ...this.solpActual.usuarioSolicitanteList];
+          
+             if (this.solpActual.selectUsuarioFiscal == undefined || this.solpActual.selectUsuarioFiscal == null) {
+                this.solpActual.selectUsuarioFiscal = this.solpActual.mail != ""
+                    ? this.solpActual.usuarioSolicitanteList.find(x => x.CodigoDescripcion === this.solpActual.mail)
+                    : this.solpActual.usuarioSolicitanteList[0];
+            }
+
+            if (this.solpActual.selectResponsableTrabajo == undefined || this.solpActual.selectResponsableTrabajo == null) {
+                this.solpActual.selectResponsableTrabajo = this.solpActual.supervisorTrabajo != ""
+                    ? this.solpActual.usuarioSolicitanteList.find(x => x.CodigoDescripcion === this.solpActual.supervisorTrabajo)
+                    : this.solpActual.usuarioSolicitanteList[0];
+            }
+        }
+    }
+
+    public validarSolicitante(): boolean{
+        var puedoGuardar = true;
+        this.solpActual.posiciones.forEach(posi => {
+            if((this.solpActual.fiscalContrato == undefined || this.solpActual.fiscalContrato == "") &&
+            (this.solpActual.supervisorTrabajo == undefined || this.solpActual.supervisorTrabajo == "") &&
+            posi.selectSolicitanteCompras != undefined &&  posi.selectSolicitanteCompras != ""){
+                if(!this.solpActual.usuarioSolicitanteList.some(x => x.UsuarioSap === posi.selectSolicitanteCompras)){
+                    puedoGuardar = false;
+                }
+            }
+        });
+
+        return puedoGuardar;
     }
 
 

@@ -120,24 +120,24 @@ export class SolpPosicion {
     CantidadAdjudicada: any;
     NoDisponible: any;
     Centro: any;
-    
+
     public mensaje: string = "";
     CodigoMaterialSap: any;
     Tarea: any;
     FechaEntregaServicio: any;
 
-    public get getMensaje(): string  {
+    public get getMensaje(): string {
 
         return typeof this.mensaje;
     }
 
-    constructor(numeroPosicion?, fiscalContrato?, fechaEntrega?, posicionADuplicar?, 
-        centroPorDefecto?, direccionCentroPorDefecto?, monedaPorDefecto?, selectTipoPosicion?) {
+    constructor(numeroPosicion?, fiscalContrato?, fechaEntrega?, posicionADuplicar?, centroPorDefecto?, direccionCentroPorDefecto?,
+        monedaPorDefecto?, grupoDeComprasPorDefecto?, grupoDeArticuloPorDefecto?, selectTipoPosicion?) {
         this.id = uuid.v4();
         this.numeroPosicion = numeroPosicion;
         this.plazoDeEntrega = 10;
-        if(fechaEntrega != null){
-            this.fechaEntregaServicio =  new Date(fechaEntrega);
+        if (fechaEntrega != null) {
+            this.fechaEntregaServicio = new Date(fechaEntrega);
             this.fechaEntregaServicio.setDate(fechaEntrega.getDate() + parseInt(this.plazoDeEntrega.toString()));
         }
 
@@ -150,7 +150,7 @@ export class SolpPosicion {
         this.estado = true;
         this.posicionCheck = false;
 
-        this.setupValoresPorDefecto(centroPorDefecto, direccionCentroPorDefecto, monedaPorDefecto, selectTipoPosicion);
+        this.setupValoresPorDefecto(centroPorDefecto, direccionCentroPorDefecto, monedaPorDefecto, grupoDeComprasPorDefecto, grupoDeArticuloPorDefecto, selectTipoPosicion);
 
         if (posicionADuplicar) {
             //this.campo = posicionADuplicar.campo
@@ -215,8 +215,9 @@ export class SolpPosicion {
         }
     }
 
-    private setupValoresPorDefecto(centroPorDefecto, direccionCentroPorDefecto, monedaPorDefecto, selectTipoPosicion) {
-        this.selectCentroEntrega = centroPorDefecto;        
+    private setupValoresPorDefecto(centroPorDefecto, direccionCentroPorDefecto, monedaPorDefecto, grupoDeComprasPorDefecto, grupoDeArticuloPorDefecto, selectTipoPosicion) {
+        this.selectCentroEntrega = centroPorDefecto;
+
         if (direccionCentroPorDefecto) {
             this.codigoPostalEntrega = direccionCentroPorDefecto.Cp;
             this.calleEntrega = direccionCentroPorDefecto.Direccion;
@@ -226,13 +227,16 @@ export class SolpPosicion {
                 this.nombreEntrega = centroPorDefecto.Descripcion;
             }
         }
-
         if (monedaPorDefecto) {
             this.monedaPorDefecto = monedaPorDefecto.Codigo;
             this.monedaSeleccionada = monedaPorDefecto;
         }
         if (selectTipoPosicion) {
             this.tipoPosicion = selectTipoPosicion;
+            if (selectTipoPosicion.Codigo == "SERVICIO") {
+                this.selectGrupoCompras = grupoDeComprasPorDefecto;
+                this.selectArticuloCompras = grupoDeArticuloPorDefecto;
+            }
         }
     }
 
@@ -261,15 +265,15 @@ export class SolpPosicion {
 
     public calcularValorTotal() {
         let total = 0;
-        if (this.esTipoPosicionServicio){
+        if (this.esTipoPosicionServicio) {
             if (this.listadoSubPosiciones && this.listadoSubPosiciones.length > 0) {
                 this.listadoSubPosiciones.forEach(x => {
                     total += (x.precioBruto || 0) * (x.cuentaTd || 0);
                 });
             }
         }
-        else{
-            total = (this.precioBruto || 0) * (this.cuentaTd || 0);  
+        else {
+            total = (this.precioBruto || 0) * (this.cuentaTd || 0);
         }
         this.valorTotal = total;
         this.valorTotal = parseFloat(this.valorTotal.toFixed(2));
@@ -279,15 +283,15 @@ export class SolpPosicion {
         this.validatePosicion(tipoSolpSap);
         if (this.esTipoPosicionServicio) {
             this.validateSubposiciones();
-        } 
+        }
         this.validateDireccionEntrega()
         this.validateProveedor();
         this.validateDatosPosicion();
         this.validateFechas();
-       
-        if (this.esTipoPosicionMaterial){
+
+        if (this.esTipoPosicionMaterial) {
             this.validateImputaciones();
-        }        
+        }
     }
 
     public validateSubposiciones() {
@@ -323,31 +327,31 @@ export class SolpPosicion {
             if (hasNotTareaSubcontratarObj) {
                 this.tabsPosicionValidos.tabSubposiciones = false;
                 this.mensaje = "Paso #5 - Pos. " + this.numeroPosicion + " - El campo tarea a sub contratar en la subposición  es obligatorio";
-      
+
                 return this.mensaje;
             }
             if (hasNotCuentaTd) {
                 this.tabsPosicionValidos.tabSubposiciones = false;
                 this.mensaje = "Paso #5 - Pos. " + this.numeroPosicion + " - El campo cantidad en la subposición es obligatorio";
-      
+
                 return this.mensaje;
             }
             if (!pos.precioBruto || pos.precioBruto.toString() == "" || typeof pos.precioBruto === "undefined" || pos.precioBruto.toString() == "0") {
                 this.tabsPosicionValidos.tabSubposiciones = false;
                 this.mensaje = "Paso #5 - Pos. " + this.numeroPosicion + " - El campo precio en la subposición es obligatorio";
-      
+
                 return this.mensaje;
             }
             if (hasNotCuentaMayor || !pos.cuentaMayor.Id) {
                 this.tabsPosicionValidos.tabSubposiciones = false;
                 this.mensaje = "Paso #5 - Pos. " + this.numeroPosicion + " - El campo cuenta mayor en la subposición es obligatorio";
-      
+
                 return this.mensaje;
             }
             if (hasNotTipoImputacion || !pos.tipoImputacion.Id) {
                 this.tabsPosicionValidos.tabSubposiciones = false;
                 this.mensaje = "Paso #5 - Pos. " + this.numeroPosicion + " - El campo imputación en la subposición es obligatorio";
-      
+
                 return this.mensaje;
             }
         });
@@ -355,35 +359,31 @@ export class SolpPosicion {
 
     public validateDireccionEntrega() {
         this.tabsPosicionValidos.tabDireccionEntrega = true;
-        if (!this.calleEntrega || this.calleEntrega == "" || typeof this.calleEntrega === "undefined")
-        {
-          this.mensaje = "";
-          this.tabsPosicionValidos.tabDireccionEntrega = false;
-          this.mensaje = "Paso #5 - Pos. " + this.numeroPosicion + " - El campo calle de entrega es obligatorio";
+        if (!this.calleEntrega || this.calleEntrega == "" || typeof this.calleEntrega === "undefined") {
+            this.mensaje = "";
+            this.tabsPosicionValidos.tabDireccionEntrega = false;
+            this.mensaje = "Paso #5 - Pos. " + this.numeroPosicion + " - El campo calle de entrega es obligatorio";
 
-          return this.mensaje;
-        } 
+            return this.mensaje;
+        }
     }
 
     public validateImputaciones() {
         let hasTipoImputacion = typeof this.tipoImputacion != "undefined" && this.tipoImputacion;
-        if (hasTipoImputacion && hasTipoImputacion.Id > 0)
-        {        
-            if (!this.valorImputacion || typeof this.valorImputacion === "undefined" || typeof this.valorImputacion === undefined)
-            {
+        if (hasTipoImputacion && hasTipoImputacion.Id > 0) {
+            if (!this.valorImputacion || typeof this.valorImputacion === "undefined" || typeof this.valorImputacion === undefined) {
                 this.tabsPosicionValidos.tabImputacion = false;
                 this.mensaje = "Paso #5 - Pos. " + this.numeroPosicion + " - El campo imputacion es obligatorio";
                 return this.mensaje;
             }
 
-            if (!this.cuentaMayor || typeof this.cuentaMayor === "undefined" || typeof this.cuentaMayor === undefined)
-            {
+            if (!this.cuentaMayor || typeof this.cuentaMayor === "undefined" || typeof this.cuentaMayor === undefined) {
                 this.tabsPosicionValidos.tabImputacion = false;
                 this.mensaje = "Paso #5 - Pos. " + this.numeroPosicion + " - El campo cuenta mayor es obligatorio";
                 return this.mensaje;
             }
         }
-        
+
         this.tabsPosicionValidos.tabImputacion = true;
     }
 
@@ -392,91 +392,81 @@ export class SolpPosicion {
     }
 
     public validateDatosPosicion() {
-        this.tabsPosicionValidos.tabDatosPosicion = true;  
-        if (typeof this.selectGrupoCompras === "undefined" || this.selectGrupoCompras.Id == 0)
-        {
-          this.tabsPosicionValidos.tabDatosPosicion = false;
-          this.mensaje = "Paso #5 - Pos. " + this.numeroPosicion + " - El campo grupo de compras es obligatorio";
+        this.tabsPosicionValidos.tabDatosPosicion = true;
+        if (typeof this.selectGrupoCompras === "undefined" || this.selectGrupoCompras.Id == 0) {
+            this.tabsPosicionValidos.tabDatosPosicion = false;
+            this.mensaje = "Paso #5 - Pos. " + this.numeroPosicion + " - El campo grupo de compras es obligatorio";
 
-          return this.mensaje;
+            return this.mensaje;
         }
 
-        if (typeof this.selectArticuloCompras === "undefined" || this.selectArticuloCompras.Id == 0)
-        {
-          this.mensaje = "";  
-          this.tabsPosicionValidos.tabDatosPosicion = false;
-          this.mensaje = "Paso #5 - Pos. " + this.numeroPosicion + " - El campo grupo de artículo es obligatorio";
+        if (typeof this.selectArticuloCompras === "undefined" || this.selectArticuloCompras.Id == 0) {
+            this.mensaje = "";
+            this.tabsPosicionValidos.tabDatosPosicion = false;
+            this.mensaje = "Paso #5 - Pos. " + this.numeroPosicion + " - El campo grupo de artículo es obligatorio";
 
-          return this.mensaje;
+            return this.mensaje;
         }
 
-        if (!this.selectSolicitanteCompras || this.selectSolicitanteCompras == "" || typeof this.selectSolicitanteCompras === "undefined")
-        {
-          this.tabsPosicionValidos.tabDatosPosicion = false;
-          this.mensaje = "Paso #5 - Pos. " + this.numeroPosicion + " - El campo solicitante de compras es obligatorio";
+        if (!this.selectSolicitanteCompras || this.selectSolicitanteCompras == "" || typeof this.selectSolicitanteCompras === "undefined") {
+            this.tabsPosicionValidos.tabDatosPosicion = false;
+            this.mensaje = "Paso #5 - Pos. " + this.numeroPosicion + " - El campo solicitante de compras es obligatorio";
 
-          return this.mensaje;
+            return this.mensaje;
         }
-
+       
         if (this.esTipoPosicionMaterial) {
-            if (!this.textoSuministro || this.textoSuministro == "" || this.textoSuministro == undefined)
-            {
-              this.mensaje = "";
-              this.tabsPosicionValidos.tabDatosPosicion = false;
-              this.mensaje = "Paso #5 - Pos. " + this.numeroPosicion + " - El campo texto de suministro es obligatorio";
+            if (!this.textoSuministro || this.textoSuministro == "" || this.textoSuministro == undefined) {
+                this.mensaje = "";
+                this.tabsPosicionValidos.tabDatosPosicion = false;
+                this.mensaje = "Paso #5 - Pos. " + this.numeroPosicion + " - El campo texto de suministro es obligatorio";
 
-              return this.mensaje;
+                return this.mensaje;
             }
 
             let hasCodigoServicio = typeof this.codigoServicio != "undefined" && this.codigoServicio;
 
-            if(!hasCodigoServicio)
-            {
-                if (!this.modelo || this.modelo == "" || this.modelo == undefined)
-                {
-                  this.tabsPosicionValidos.tabDatosPosicion = false;
-                  this.mensaje = "Paso #5 - Pos. " + this.numeroPosicion + " - El campo modelo es obligatorio";
-    
-                  return this.mensaje;
+            if (!hasCodigoServicio) {
+                if (!this.modelo || this.modelo == "" || this.modelo == undefined) {
+                    this.tabsPosicionValidos.tabDatosPosicion = false;
+                    this.mensaje = "Paso #5 - Pos. " + this.numeroPosicion + " - El campo modelo es obligatorio";
+
+                    return this.mensaje;
                 }
-    
-                if (!this.motivo || this.motivo == "" || this.motivo == undefined)
-                {
-                  this.tabsPosicionValidos.tabDatosPosicion = false;
-                  this.mensaje = "Paso #5 - Pos. " + this.numeroPosicion + " - El campo motivo es obligatorio";
-    
-                  return this.mensaje;
+
+                if (!this.motivo || this.motivo == "" || this.motivo == undefined) {
+                    this.tabsPosicionValidos.tabDatosPosicion = false;
+                    this.mensaje = "Paso #5 - Pos. " + this.numeroPosicion + " - El campo motivo es obligatorio";
+
+                    return this.mensaje;
                 }
             }
         }
-       
+
     }
 
     public validateFechas() {
-        if (typeof this.fechaEntregaServicio === "undefined" || typeof this.plazoDeEntrega === "undefined" || this.plazoDeEntrega.toString() == "")
-        {
-          this.tabsPosicionValidos.tabFechas = false;
-          this.mensaje = "Paso #5 - Pos. " + this.numeroPosicion + " - El campo fecha de entrega y plazo de entrega son obligatorios";
+        if (typeof this.fechaEntregaServicio === "undefined" || typeof this.plazoDeEntrega === "undefined" || this.plazoDeEntrega.toString() == "") {
+            this.tabsPosicionValidos.tabFechas = false;
+            this.mensaje = "Paso #5 - Pos. " + this.numeroPosicion + " - El campo fecha de entrega y plazo de entrega son obligatorios";
 
-          return this.mensaje;
+            return this.mensaje;
         }
-    
+
         this.tabsPosicionValidos.tabFechas = true
     }
 
     public validatePosicion(tipoSolpSap: EnumTipoSolpSap) {
         this.tabsPosicionValidos.tabPosiciones = true;
 
-        if (!this.selectCentroEntrega || typeof this.selectCentroEntrega === "undefined" || this.selectCentroEntrega == undefined)
-        {
+        if (!this.selectCentroEntrega || typeof this.selectCentroEntrega === "undefined" || this.selectCentroEntrega == undefined) {
             this.tabsPosicionValidos.tabPosiciones = false;
             this.mensaje = "Paso #5 - Pos. " + this.numeroPosicion + " - El campo centro de entrega es obligatorio";
 
             return this.mensaje;
         }
 
-        if (!this.tareaSubcontratarObj || typeof this.tareaSubcontratarObj === "undefined" || this.tareaSubcontratarObj == "")
-        {
+        if (!this.tareaSubcontratarObj || typeof this.tareaSubcontratarObj === "undefined" || this.tareaSubcontratarObj == "") {
             this.tabsPosicionValidos.tabPosiciones = false;
             this.mensaje = "Paso #5 - Pos. " + this.numeroPosicion + " - El campo descripción es obligatorio";
             return this.mensaje;
@@ -490,62 +480,57 @@ export class SolpPosicion {
                 return this.mensaje;
             }
         }
-        
+
         if (this.esTipoPosicionServicio) {
-            if (!this.tipoImputacion || typeof this.tipoImputacion === "undefined" || this.tipoImputacion === undefined )
-            {
+            if (!this.tipoImputacion || typeof this.tipoImputacion === "undefined" || this.tipoImputacion === undefined) {
                 this.tabsPosicionValidos.tabPosiciones = false;
                 this.mensaje = "Paso #5 - Pos. " + this.numeroPosicion + " - El campo tipo de imputación es obligatorio";
-      
+
                 return this.mensaje;
             }
         }
 
         if (this.esTipoPosicionMaterial || this.esTipoPosicionServicio) {
-            if (!this.monedaSeleccionada || typeof this.monedaSeleccionada === "undefined" || typeof this.monedaSeleccionada === undefined || !this.monedaSeleccionada.Id)
-            {
+            if (!this.monedaSeleccionada || typeof this.monedaSeleccionada === "undefined" || typeof this.monedaSeleccionada === undefined || !this.monedaSeleccionada.Id) {
                 this.tabsPosicionValidos.tabPosiciones = false;
                 this.mensaje = "Paso #5 - Pos. " + this.numeroPosicion + " - El campo moneda es obligatorio";
-      
+
                 return this.mensaje;
             }
         }
 
         if (this.esTipoPosicionMaterial) {
-            if (!this.unidadSeleccionada || this.unidadSeleccionada == "" || typeof this.unidadSeleccionada === "undefined" || typeof this.unidadSeleccionada === undefined || !this.unidadSeleccionada.Id )
-            {
+            if (!this.unidadSeleccionada || this.unidadSeleccionada == "" || typeof this.unidadSeleccionada === "undefined" || typeof this.unidadSeleccionada === undefined || !this.unidadSeleccionada.Id) {
                 this.tabsPosicionValidos.tabPosiciones = false;
                 this.mensaje = "Paso #5 - Pos. " + this.numeroPosicion + " - El campo unidad es obligatorio";
-      
+
                 return this.mensaje;
             }
-            if (!this.cuentaTd || this.cuentaTd == 0 || typeof this.cuentaTd === "undefined" || typeof this.cuentaTd === undefined)
-            {
+            if (!this.cuentaTd || this.cuentaTd == 0 || typeof this.cuentaTd === "undefined" || typeof this.cuentaTd === undefined) {
                 this.mensaje = "";
                 this.tabsPosicionValidos.tabPosiciones = false;
                 this.mensaje = "Paso #5 - Pos. " + this.numeroPosicion + " - El campo cantidad es obligatorio";
-      
+
                 return this.mensaje;
             }
-            if (!this.precioBruto || this.precioBruto == "" || typeof this.precioBruto === "undefined" || this.precioBruto == "0" || typeof this.precioBruto === undefined)
-            {
+            if (!this.precioBruto || this.precioBruto == "" || typeof this.precioBruto === "undefined" || this.precioBruto == "0" || typeof this.precioBruto === undefined) {
                 this.tabsPosicionValidos.tabPosiciones = false;
                 this.mensaje = "Paso #5 - Pos. " + this.numeroPosicion + " - El campo precio es obligatorio";
-      
+
                 return this.mensaje;
             }
-        } 
+        }
     }
 
     public get isPosicionEliminada(): boolean {
         return this.estado == false;
     }
 
-    public get esTipoPosicionMaterial(): boolean  {
+    public get esTipoPosicionMaterial(): boolean {
         return typeof this.tipoPosicion != "undefined" && this.tipoPosicion && this.tipoPosicion.Codigo == "MATERIALES";
     }
 
-    public get esTipoPosicionServicio(): boolean  {
+    public get esTipoPosicionServicio(): boolean {
         return typeof this.tipoPosicion != "undefined" && this.tipoPosicion && this.tipoPosicion.Codigo == "SERVICIO";
     }
 
@@ -557,6 +542,6 @@ export class TabsImputacionValidas {
     tabDireccionEntrega: boolean = false;
     tabDatosPosicion: boolean = false;
     tabFechas: boolean = false;
-    tabSubposiciones:  boolean = false;
+    tabSubposiciones: boolean = false;
     tabPosiciones: boolean = true;
 }

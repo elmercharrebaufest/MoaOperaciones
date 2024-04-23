@@ -31,10 +31,10 @@ export class Solp extends CommonResponse {
 
     //paso 2
     public visitaDeObra: boolean;
-    public supervisorSector: string[] = [];
+    public supervisorSector: string [] = [];
     public visitaDeObraFecha: Date;
     public visitaDeObraHora: Date;
-    public supervisorTrabajo: string[] = [];
+    public supervisorTrabajo: string;
     public obradores: boolean;
     public descripcionTecnica: boolean;
     public modoElevacion: boolean;
@@ -93,7 +93,9 @@ export class Solp extends CommonResponse {
     proveedorRazonSocialAdicional: string;
     deshabilitarAdicional: boolean;
     ordenDeCompraOriginal: string;
-
+    usuarioSolicitanteList?: any[];
+    selectUsuarioFiscal?: any;
+    selectResponsableTrabajo?: any;
 
     public get ultimaPosicion(): SolpPosicion {
         //comentar linea de abajo si se quiere que no se ordene por Fecha (Mas actual primero)
@@ -116,6 +118,8 @@ export class Solp extends CommonResponse {
     public direccionCentroPorDefecto: any;
     public monedaPorDefecto: any;
     public imputacionPorDefecto: any;
+    public grupoDeComprasPorDefecto: any;
+    public grupoDeArticuloPorDefecto: any;
     public enviarSap: boolean;
     public Finalizar: boolean;
 
@@ -260,7 +264,7 @@ export class Solp extends CommonResponse {
             this.editarCondicionesEspeciales = solp.EditarCondicionesEspeciales;
             this.thAjustePolinomica = solp.THAjustePolinomica;
             this.thProveedorDirecto = solp.THProveedorDirecto;
-            this.thServicioPermanente = solp.THServicioPermanente;  
+            this.thServicioPermanente = solp.THServicioPermanente;
 
             //pop up finalizar
             this.revisadoPor = solp.RevisadoPor || '';
@@ -374,25 +378,21 @@ export class Solp extends CommonResponse {
         }
     }
 
-    nuevaPosicion(posicion: any, centro: any, direccionCentro: any, moneda: any) {
+    nuevaPosicion(posicion: any, centro: any, direccionCentro: any, moneda: any, grupoDeCompras: any, grupoDeArticulo: any) {
         let numeroPosicion = this.posiciones.length + 1;
         return new SolpPosicion(numeroPosicion,
             this.fiscalContrato,
             this.fechaEntrega,
             posicion,
-            centro,
-            direccionCentro,
-            moneda,
+            centro, direccionCentro,
+            moneda, grupoDeCompras, grupoDeArticulo,
             this.selectTipoPosicion
         );
     }
 
     agregarNuevaPosicion(posicion: SolpPosicion) {
         this.posiciones = [...this.posiciones,
-        this.nuevaPosicion(posicion,
-            this.centroPorDefecto,
-            this.direccionCentroPorDefecto,
-            this.monedaPorDefecto)];
+        this.nuevaPosicion(posicion, this.centroPorDefecto, this.direccionCentroPorDefecto, this.monedaPorDefecto, this.grupoDeComprasPorDefecto, this.grupoDeArticuloPorDefecto)];
         this.posicionActual = this.posiciones[this.posiciones.length - 1];
         this._ultimaPosicion = this.posicionActual;
     }

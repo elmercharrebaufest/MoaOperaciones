@@ -92,7 +92,8 @@ export class ListadoDashboardProveedorComponent extends ListBaseComponent {
             pageIndex: 1
         };
 
-        esProveedor: boolean = true;
+    esProveedor: boolean = true;
+
 
     constructor(protected service: ComprasService, protected navService: NavService,
         protected sessionDataService: SessionDataService, protected securityService: SecurityService,
@@ -172,6 +173,7 @@ export class ListadoDashboardProveedorComponent extends ListBaseComponent {
         sessionStorage.setItem('filtrosProveedor', JSON.stringify(this.filtrosProveedor));
         this.listarPO();
     }
+
 
     verLegajo(item) {
         this.blockUI.start('Cargando...')

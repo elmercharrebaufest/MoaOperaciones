@@ -30,18 +30,18 @@ namespace SustitucionMOAWS.WSConsumers
             service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
             service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
             obtenerOrdenDeCompraconsumerMOA = new ObtenerOrdenDeCompraConsumerMOA(repositorio);
-            this.repositorio = repositorio; 
+            this.repositorio = repositorio;
         }
 
         public CrearPedidoConsumerMOAResponse Request(Adjudicacion adjudicacion)
         {
             ModificarPedidoSAP modificarPedidoSAP = ConvertirAdjudicacion(adjudicacion);
-            
+
             BAPIRET2[] result = EditarPedidoRequest(modificarPedidoSAP);
 
             var respuesta = new CrearPedidoConsumerMOAResponse();
 
-            respuesta.NumeroPedido = adjudicacion.Solp.NroOrdenDeCompraAdicional;
+            respuesta.NumeroPedido = adjudicacion.Posiciones.FirstOrDefault().Posicion.Solp.NroOrdenDeCompraAdicional;
             respuesta.Resultado = "";
 
             respuesta.Errores = new List<CrearPedidoConsumerMOAError>();
@@ -207,12 +207,11 @@ namespace SustitucionMOAWS.WSConsumers
             var proveedorCodigoDeLaAdjudicacion = adjudicacion.Posiciones.First().CotizacionPosicion.Cotizacion.PeticionDeOfertaUsuario.Usuario.ObtenerCodigoProveedor();
             var usuarioCreadorAdjudicacion = adjudicacion.Usuario.UsuarioSap;
             var usuarioOrganizacionDeCompra = adjudicacion.Usuario.OrganizacionDeCompra;
-            var solp = adjudicacion.Solp;
+
             ModificarPedidoSAP modificarPedidoSAP = new ModificarPedidoSAP();
-            modificarPedidoSAP.PURCHASEORDER = adjudicacion.Cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Solp.NroOrdenDeCompraAdicional;// "4123001763";
+            modificarPedidoSAP.PURCHASEORDER = adjudicacion.Posiciones.FirstOrDefault().Posicion.Solp.NroOrdenDeCompraAdicional;// "4123001763";
 
             int numeroPosicion = 0;
-            string preqItem = "";
             string poItem = "";
             string numeroDeImputacion = "";
             var PCKG_NO = 1000;
@@ -221,7 +220,7 @@ namespace SustitucionMOAWS.WSConsumers
             var ocSAP = obtenerOrdenDeCompraconsumerMOA.ObtenerOrdenDeCompra(modificarPedidoSAP.PURCHASEORDER);
             int nroItemPO = ocSAP.Posiciones.Max(a => a.NumeroItemOC);
 
-            bool esPosicionDeMateriales = solp.Posiciones.First().TipoPosicion.Codigo == "MATERIALES";
+            bool esPosicionDeMateriales = adjudicacion.Posiciones.FirstOrDefault().Posicion.TipoPosicion.Codigo == "MATERIALES";
 
             //aca el metodo solo usa las posiciones seleccionadas por el comprador
             var posIds = adjudicacion.Posiciones.Select(x => x.CotizacionPosicion.PeticionDeOfertaSolpPosicion.SolpPosicion_Id).ToList();
@@ -231,22 +230,18 @@ namespace SustitucionMOAWS.WSConsumers
             var unidadesMedidaSap = repositorio.Listar<UnidadMedidaSap, dynamic>(x => new { x.Comercial, x.UM },
                 x => unidadesCodigoSap.Contains(x.Comercial))?.Select(x => System.Tuple.Create(x.Comercial, x.UM)).ToList();
 
-
-            //};
-
-
-            foreach (var posicion in solp.Posiciones.Where(a => posIds.Contains(a.Id)).OrderBy(x => x.Id))
+            List<int> idsPosiciones = adjudicacion.Posiciones.Select(x => x.SolpPosicion_Id).ToList();
+            var posicionesSolp = repositorio.Listar<SolpPosicion>(posi => idsPosiciones.Contains(posi.Id));
+            foreach (var posicion in posicionesSolp)
             {
+                //    foreach (var posicion in solp.Posiciones.Where(a => posIds.Contains(a.Id)).OrderBy(x => x.Id))
+                //{
                 nroItemPO += 1;
                 var adjudicacionPosicion = adjudicacion.Posiciones.Where(a => a.CotizacionPosicion.PeticionDeOfertaSolpPosicion.SolpPosicion_Id == posicion.Id).Single();
 
-                numeroPosicion = posicion.Indice ?? 0;
                 numeroDePaquete = posicion.Indice ?? 0;
-                preqItem = $"{numeroPosicion:00000}";
                 numeroDeImputacion = "01";// SERIAL_NO por ahora siempre 01 por que no hay imputaciones multiples
                 poItem = $"{nroItemPO:00000}";
-
-
 
                 //Nombre: ZBAPIMEPOITEM Denominación:	Posición de PEDIDOS
                 var IM_POITEM = new BAPIMEPOITEM();
@@ -277,8 +272,6 @@ namespace SustitucionMOAWS.WSConsumers
                 IM_POITEM.NO_MORE_GR = "";
                 IM_POITEM.FINAL_INV = "";
 
-
-
                 switch (posicion.TipoImputacion?.Codigo.ToLower())
                 {
                     case "centrodecosto":
@@ -308,8 +301,8 @@ namespace SustitucionMOAWS.WSConsumers
                 IM_POITEM.AGMT_ITEM = "";
                 IM_POITEM.RFQ_NO = "";
                 IM_POITEM.RFQ_ITEM = "";
-                IM_POITEM.PREQ_NO = solp.NroSolp;
-                IM_POITEM.PREQ_ITEM = preqItem;
+                IM_POITEM.PREQ_NO = posicion.Solp.NroSolp;
+                IM_POITEM.PREQ_ITEM = $"{posicion.Indice ?? 0:00000}";
                 IM_POITEM.PCKG_NO = esPosicionDeMateriales ? "" : $"{numeroDePaquete:0000000000}";
 
                 modificarPedidoSAP.POITEM.Add(IM_POITEM);
@@ -422,11 +415,9 @@ namespace SustitucionMOAWS.WSConsumers
                     REGION = adjudicacion.RegionSap.CodigoSap
                 });
 
-
                 //subposiciones
                 if (!esPosicionDeMateriales)
                 {
-
                     var LINE_NO = 1;
                     //cabecera de subposiciones 
                     var cabeceraSubPos = new BAPIESLLC
@@ -489,7 +480,6 @@ namespace SustitucionMOAWS.WSConsumers
                     PO_ITEM = poItem,
                     SCHED_LINE = "1"
                 });
-
             }
 
             var listaVaciaTexto = new string[] { "" };
@@ -521,25 +511,23 @@ namespace SustitucionMOAWS.WSConsumers
 
             }
 
-            if (solp.Urgencia == true)
+            if (adjudicacion.Posiciones.FirstOrDefault().Posicion.Solp.Urgencia == true)
             {
                 modificarPedidoSAP.POTEXTITEM.Add(new BAPIMEPOTEXT
                 {
                     TEXT_ID = "F12",
                     PO_NUMBER = "",
-                    PO_ITEM = preqItem,
+                    PO_ITEM = poItem,
                     TEXT_FORM = "*",
                     TEXT_LINE = "Urgencia"
                 });
             }
-
 
             return modificarPedidoSAP;
         }
 
         private static string ObtenerImputacion(bool esPosicionDeMateriales, SolpPosicion posicion, List<string> tipos)
         {
-
             if (tipos.Contains(posicion.TipoImputacion?.Codigo.ToLower()))
             {
                 if (esPosicionDeMateriales)
@@ -573,9 +561,6 @@ namespace SustitucionMOAWS.WSConsumers
 
             return total;
         }
-
-
-
 
 
         public class ModificarPedidoSAP
@@ -641,70 +626,7 @@ namespace SustitucionMOAWS.WSConsumers
             public List<_NFM_BAPIDOCITM> NFMETALLITMS { get; set; } = new List<_NFM_BAPIDOCITM>();
         }
 
-
     }
-
-    //public class CrearPedidoConsumerMOAResponse
-    //{
-    //    public string NumeroPedido { get; set; }
-    //    public List<CrearPedidoConsumerMOAError> Errores { get; set; }
-    //    public string Resultado { get; set; }
-    //}
-
-    //public class CrearPedidoConsumerMOAError
-    //{
-    //    public string Codigo { get; set; }
-    //    public string Mensaje { get; set; }
-    //    public string Tipo { get; set; }
-    //}
-
-    //public class SolpPedidoSAPDto
-    //{
-
-    //    public List<ZMPES6830> IM_POACCOUNTList { get; set; }
-    //    public List<ZMPES6840> IM_POACCOUNTXList { get; set; }
-    //    public List<ZMPES6820> IM_POADDREDELIVERYList { get; set; }
-    //    public List<ZMPES6870> IM_POCONDList { get; set; }
-    //    public List<ZMPES6850> IM_POCONDHEADERList { get; set; }
-    //    public List<ZMPES6860> IM_POCONDHEADERXList { get; set; }
-    //    public List<ZMPES6880> IM_POCONDXList { get; set; }
-    //    public ZMPES6780 IM_POHEADERList { get; set; }
-    //    public ZMPES6790 IM_POHEADERXList { get; set; }
-    //    public List<ZMPES6800> IM_POITEMList { get; set; }
-    //    public List<ZMPES6810> IM_POITEMXList { get; set; }
-    //    public List<BAPIMEPOSCHEDULE> IM_POSCHEDULEList { get; set; }
-    //    public List<BAPIMEPOSCHEDULX> IM_POSCHEDULEXList { get; set; }
-    //    public List<BAPIESKLC> IM_POSRVACCESSVALUESList { get; set; }
-    //    public List<BAPIMEPOTEXTHEADER> IM_POTEXTHEADERList { get; set; }
-    //    public List<BAPIMEPOTEXT> IM_POTEXTITEMList { get; set; }
-    //    public List<BAPIESLLC> IM_SERVICESList { get; set; }
-    //    public string IM_URL { get; set; }
-
-
-
-
-    //    public SolpPedidoSAPDto()
-    //    {
-    //        IM_POACCOUNTList = new List<ZMPES6830>();
-    //        IM_POACCOUNTXList = new List<ZMPES6840>();
-    //        IM_POADDREDELIVERYList = new List<ZMPES6820>();
-    //        IM_POCONDList = new List<ZMPES6870>();
-    //        IM_POCONDHEADERList = new List<ZMPES6850>();
-    //        IM_POCONDHEADERXList = new List<ZMPES6860>();
-    //        IM_POCONDXList = new List<ZMPES6880>();
-    //        IM_POHEADERList = new ZMPES6780();
-    //        IM_POHEADERXList = new ZMPES6790();
-    //        IM_POITEMList = new List<ZMPES6800>();
-    //        IM_POITEMXList = new List<ZMPES6810>();
-    //        IM_POSCHEDULEList = new List<BAPIMEPOSCHEDULE>();
-    //        IM_POSCHEDULEXList = new List<BAPIMEPOSCHEDULX>();
-    //        IM_POSRVACCESSVALUESList = new List<BAPIESKLC>();
-    //        IM_POTEXTHEADERList = new List<BAPIMEPOTEXTHEADER>();
-    //        IM_POTEXTITEMList = new List<BAPIMEPOTEXT>();
-    //        IM_SERVICESList = new List<BAPIESLLC>();
-    //        IM_URL = "";
-    //    }
-    //}
 
     public interface IModificarOrdenDeCompraConsumerMOA
     {
@@ -712,7 +634,5 @@ namespace SustitucionMOAWS.WSConsumers
         BAPIRET2[] EditarPedidoRequest(ModificarPedidoSAP modificarPedidoSAP);
 
     }
-
-
 
 }

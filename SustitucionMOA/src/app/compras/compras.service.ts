@@ -37,6 +37,7 @@ export class ComprasService extends BaseService {
         web: true,
         repoAutomatica: true,
         listarPendiente: true,
+        contratoMarco: true,
         usuarioId: null,
         centros: "",
         grupoDeCompras: "",
@@ -44,7 +45,8 @@ export class ComprasService extends BaseService {
         estadoCotizacion: null,
         claseDocumento: "",
         tipoImputacion: "",
-        valorTipoImputacion: ""
+        valorTipoImputacion: "",
+        tratada: null
     }
     listaSolp: any;
     observableListaSolp = new Subject<any[]>();
@@ -69,7 +71,8 @@ export class ComprasService extends BaseService {
         sap: boolean = this.filtros.sap,
         mantenimiento: boolean = this.filtros.mantenimiento,
         web: boolean = this.filtros.web,
-        repoAutomatica: boolean = this.filtros.repoAutomatica,       
+        repoAutomatica: boolean = this.filtros.repoAutomatica,
+        contratoMarco: boolean = this.filtros.contratoMarco,
         estados: any = this.filtros.estados,
         usuarios: any = this.filtros.usuarioId,
         centros: any = this.filtros.centros,
@@ -92,6 +95,7 @@ export class ComprasService extends BaseService {
         params = params.set('mantenimiento', mantenimiento.toString());
         params = params.set('web', web.toString());
         params = params.set('repoAutomatica', repoAutomatica.toString());
+        params = params.set('contratoMarco', contratoMarco.toString());
         params = params.set('estados', estados);
         params = params.set('usuarios', usuarios);
         params = params.set('centros', centros);
@@ -478,6 +482,7 @@ export class ComprasService extends BaseService {
         web: boolean = this.filtros.web,
         repoAutomatica: boolean = this.filtros.repoAutomatica,
         listarPendiente: boolean = this.filtros.listarPendiente,
+        contratoMarco: boolean = this.filtros.contratoMarco,
         claseDocumento: any = this.filtros.claseDocumento,
         tipoImputacion: any = this.filtros.tipoImputacion,
         valorTipoImputacion: any = this.filtros.valorTipoImputacion) {
@@ -501,6 +506,7 @@ export class ComprasService extends BaseService {
         params = params.set('web', web.toString());
         params = params.set('repoAutomatica', repoAutomatica.toString());
         params = params.set('listarPendiente', listarPendiente.toString());
+        params = params.set('contratoMarco', contratoMarco.toString());
         params = params.set('claseDocumento', claseDocumento);
         params = params.set('tipoImputacion', tipoImputacion);
         params = params.set('valorTipoImputacion', valorTipoImputacion);
@@ -583,6 +589,14 @@ export class ComprasService extends BaseService {
 
     }
 
+    public obtenerPosicionesMultipleCompras(ids: string) {
+        let params: HttpParams = new HttpParams()
+        params = params.set('ids', ids);
+        return this.http
+            .get<SolpCompraDto>('/api/compras/ObtenerPosicionesMultipleCompras', { params: params, headers: this.headers })
+
+    }
+
     public GrabarPeticion(solp: EnvioSolpCompra) {
         let json = JSON.stringify({
             SolpId: solp.SolpId,
@@ -627,6 +641,7 @@ export class ComprasService extends BaseService {
             params = params.set("idPeticionDeOfertaUsuario", idPeticionDeOfertaUsuario.toString());
         }
         params = params.set("esProveedor", esProveedor.toString());
+
         return this.http
             .get("/api/compras/ObtenerLegajo", {
                 params: params,
@@ -871,6 +886,16 @@ export class ComprasService extends BaseService {
             });
     }
 
+    public listarPeticiones(id: number): Observable<any> {
+        let params: HttpParams = new HttpParams();
+        params = params.set("solpId", id.toString());
+        return this.http
+            .get("/api/compras/ListarPeticionesDeOferta", {
+                params: params,
+                headers: this.headers,
+            });
+    }
+
     public obtenerAdjudicacion(nroOC: number): Observable<any> {
         let params: HttpParams = new HttpParams();
         params = params.set("nroOC", nroOC.toString());
@@ -1033,19 +1058,18 @@ export class ComprasService extends BaseService {
         });
     }
 
-    public ModificarAdjudicacion(adjudicacion: AdjudicacionEdicionDto) {        
+    public ModificarAdjudicacion(adjudicacion: AdjudicacionEdicionDto) {
         let json = JSON.stringify(adjudicacion);
         var payload = new FormData();
         payload.append('json', json);
         return this.http
             .post<any>('/api/compras/ModificarOrdenDeCompra', payload, { headers: this.headers });
     }
-    
-     public listarVisitasDeObra(listaVisitas: VisitaObraDto[]): Observable<any> {
+
+    public listarVisitasDeObra(listaVisitas: VisitaObraDto[]): Observable<any> {
         return this.http.post("/api/compras/ListarVisitasDeObra", listaVisitas, {
             headers: this.headers
         });
-
     }
 
     public listarTablaSap(codigos: string[]): Observable<any> {
@@ -1055,5 +1079,75 @@ export class ComprasService extends BaseService {
             params: params,
             headers: this.headers,
         });
+    }
+
+    public listarClaseDocumento(usuarioId: string): Observable<any> {
+        let params: HttpParams = new HttpParams();
+        params = params.set("usuarioId", usuarioId.toString());
+        return this.http.get("/api/compras/ListarClaseDocumento", {
+            params: params,
+            headers: this.headers,
+        });
+    }
+
+    public actualizarProveedorVisibleEnSolicitante(peticionDeOfertaUsuarioId: number, esVisible: boolean) {
+        var payload = new FormData();
+        payload.append('peticionDeOfertaUsuarioId', peticionDeOfertaUsuarioId.toString());
+        payload.append('esVisible', esVisible.toString());
+
+        return this.http
+            .post<any>('/api/compras/ActualizarProveedorVisibleEnSolicitante', payload, { headers: this.headers });
+    }
+
+    public obtenerHistorial(id: number): Observable<any> {
+        let params: HttpParams = new HttpParams();
+        params = params.set("id", id.toString());
+        return this.http.get("/api/compras/ObtenerHistorial", {
+            params: params,
+            headers: this.headers,
+        });
+    }
+
+    listarUsuarioSolicitante(): Observable<any> {
+
+        return this.http
+            .get("/api/compras/ListarUsuarioSolicitante", {
+                headers: this.headers,
+            });
+    }
+
+    public listarPosicionesPOMultiple(
+        fechaDesde: any,
+        fechaHasta: any,
+        sap: boolean = false,
+        mantenimiento: boolean,
+        web: boolean,
+        repoAutomatica: boolean,
+        contratoMarco: boolean,
+        centros: any,
+        grupoDeCompras: any,
+        claseDocumento: any,
+        tipoImputacion: any,
+        valorTipoImputacion: any,
+        tratada: boolean | null,
+
+        ): Observable<any> 
+        {
+        let params: HttpParams = new HttpParams();
+        params = params.set('fechaDesde', (fechaDesde != null ? fechaDesde : ""));
+        params = params.set('fechaHasta', (fechaHasta != null ? fechaHasta : ""));
+        params = params.set('sap', sap.toString());
+        params = params.set('mantenimiento', mantenimiento.toString());
+        params = params.set('web', web.toString());
+        params = params.set('repoAutomatica', repoAutomatica.toString());
+        params = params.set('contratoMarco', contratoMarco.toString());
+        params = params.set('centros', centros);
+        params = params.set('grupoDeCompras', grupoDeCompras);
+        params = params.set('claseDocumento', claseDocumento);
+        params = params.set('tipoImputacion', tipoImputacion);
+        params = params.set('valorTipoImputacion', valorTipoImputacion);
+        params = params.set('tratada', tratada != null ? tratada.toString() : null);
+
+        return this.http.get('/api/compras/ListarPosicionesPOMultiple', { params: params, headers: this.headers });
     }
 }

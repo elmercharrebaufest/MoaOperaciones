@@ -21,7 +21,7 @@ export class VisalizarPrecioComponent implements OnInit {
 
     @Input()
     displayVisualizarPrecio: boolean;   
-    @Output() cerrarModalPreciosEmitter = new EventEmitter();
+    @Output() cerrarHistorialEmitter = new EventEmitter();
 
     peticionVisualizacionPrecio: PeticionVisualizacionPrecioDto
     visualizarAlert: boolean;
@@ -48,7 +48,7 @@ export class VisalizarPrecioComponent implements OnInit {
     }
     
     onCerrarPrecios() {            
-        this.cerrarModalPreciosEmitter.next();      
+        this.cerrarHistorialEmitter.next();      
     }
         
     uploadHandler(filesUpload: any): boolean {

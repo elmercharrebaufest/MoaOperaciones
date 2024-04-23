@@ -15,7 +15,7 @@ namespace SustitucionMOAModel.Dto
         public string Email { get; set; }
         public DateTime? FechaHoraEntrega { get; set; }
         public List<string> SupervisorSector { get; set; }
-        public List<string> SupervisorTrabajo { get; set; }
+        public string SupervisorTrabajo { get; set; }
         public List<VisitaObraDto> VisitasObraMasiva { get; set; }
         public bool TieneVisitaObra { get; set; }
         public bool TieneVisitaObraMasiva { get; set; }
@@ -49,6 +49,7 @@ namespace SustitucionMOAModel.Dto
         public TablaGeneralDto TipoSolp { get; set; }
 
         public List<SolpPosicionDto> Posiciones { get; set; }
+        public string PosicionesSolpId { get; set; }
         public string Pdf { get; set; }
         public bool Finalizar { get; set; }
         public bool? TieneCondicionesGenerales { get; set; }
@@ -108,6 +109,7 @@ namespace SustitucionMOAModel.Dto
         public string Periodo { get; set; }
         public int Cantidad { get; set; }
         public bool VerEditarOC { get; set; }
+        public IEnumerable<int> PosicionesId { get; set; }
 
         public SolpDto() { }
         public SolpDto(Solp entity)
@@ -120,7 +122,7 @@ namespace SustitucionMOAModel.Dto
             Email = entity.Pliego.Email;
             FechaHoraEntrega = entity.Pliego.FechaHoraEntrega;
             SupervisorSector = entity.Pliego.SupervisorSector.Split(',').ToList();
-            SupervisorTrabajo = entity.Pliego.SupervisorTrabajo.Split(',').ToList();
+            SupervisorTrabajo = entity.Pliego.SupervisorTrabajo;
             VisitasObraMasiva = new List<VisitaObraDto>();
             TieneVisitaObra = entity.Pliego.TieneVisitaObra.HasValue && entity.Pliego.TieneVisitaObra.Value;
             TieneVisitaObraMasiva = entity.Pliego.TieneVisitaObraMasiva.HasValue && entity.Pliego.TieneVisitaObraMasiva.Value;
@@ -263,6 +265,8 @@ namespace SustitucionMOAModel.Dto
         public decimal? CantidadAdjudicada { get; set; }
         public string GrupoComprasCodigo { get; set; }
         public List<TablaSapDto> UnidadesDeMedida { get; set; }
+        public string NroSolp { get; set; }
+        public string TipoPosicionCodigo { get; set; }
 
         public SolpPosicionDto() { }
 

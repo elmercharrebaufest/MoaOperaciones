@@ -2,15 +2,19 @@
     <div class="row titleSection1">
         <div class="col-sm-10 letraTitulo">
             <strong>
-                Ver ofertas {{tablaOfertas.TipoPosicionCodigo}} | SOLP #{{tablaOfertas.NroSolp}}
+                {{ this.esTipoPOMultiple ? 'Ver ofertas MATERIALES | SOLP Múltiple' : 'Ver ofertas ' + tablaOfertas.TipoPosicionCodigo + ' | SOLP #' + tablaOfertas.NroSolp }}
                 <b *ngIf="tablaOfertas.Id">
                     | PO #{{tablaOfertas.Id}}
                 </b>
                 <b *ngIf="tablaOfertas.Adicional">
                     | OC #{{tablaOfertas.NroOrdenDeCompraAdicional}}
                 </b>
+                <b *ngIf="tablaOfertas.TrabajoHecho">
+                    | Trabajo hecho
+                </b>
             </strong>
         </div>
+        
         <div class="col-sm-2 letraTitulo" *ngIf="tablaOfertas.VerBotonVerPrecio">
             <button class="publicar btn btn-success" style="margin-right: 10px;" (click)="abrirModalPrecios()">
                 Ver Precios
@@ -19,9 +23,16 @@
     </div>
     <br>
 </section>
+
+
 <div class="content-wraper" style="padding-top: 0px !important;">
     <spinner></spinner>
 
+    <p>
+        <ngb-alert type="success" *ngIf="mensaje !== undefined && mensaje !== null && mensaje !== ''" (close)="mensaje = null">
+            <strong>Exito! </strong>{{ mensaje }}
+        </ngb-alert>
+    </p>
     <div class="col-sm-12 col-md-12 col-lg-12 wrapper" style="margin-left: -15px;" *ngIf="tablaOfertas.TipoPosicionCodigo == 'MATERIALES'">
         <p-table #tabla [value]="tablaOfertas.PeticionDeOfertaPosicion" dataKey="Id" [scrollable]="true" frozenWidth="620px">
             <ng-template pTemplate="frozenheader">
@@ -75,7 +86,9 @@
                     <td class="columna border2-right" style="width: 60px !important;" [ngStyle]="{'background-color': peticionPosicion.EstaEliminado ? '#ff00002e' : 'transparent'}">{{peticionPosicion.Posicion.Unidad.Descripcion}}</td>
                 </tr>
                 <tr *ngIf="esUltimaPosicion(peticionPosicion)">
-                    <td class="columna border2-right" colspan="8" style="width: 620px !important;">Total global</td>
+                    <td class="columna border2-right" colspan="8" style="width: 620px !important;">Total global
+                    {{ tablaOfertas.TienePosicionesEliminadas ? '/ Total con eliminadas' : '' }}
+                    </td>
                 </tr>
                 <tr *ngIf="esUltimaPosicion(peticionPosicion)">
                     <td class="columna border2-right" colspan="8" style="width: 620px !important;">Adjuntos y observaciones</td>
@@ -109,7 +122,15 @@
                     </ng-container>
                 </tr>
                 <tr>
-                    <th class="headerth border2-left" *ngFor="let proveedor of tablaOfertas.Usuarios" colspan="7" style="background-color: #4760ac !important; width: 660px !important;">{{proveedor.RazonSocial}}</th>
+                    <th class="headerth border2-left" *ngFor="let proveedor of tablaOfertas.Usuarios" colspan="7"
+                        style="background-color: #4760ac !important; width: 660px !important;">
+                        <!-- <span> <p-checkbox name="visible" [readonly]="!proveedor.VerAdjudicar" [(ngModel)]="proveedor.VisibleSolicitante" (click)="actualizarVisibilidad(proveedor, !proveedor.VerAdjudicar)" binary="false"></p-checkbox></span> -->
+                        <button class="btn btn-xs btn-primary" *ngIf="proveedor.Cotizacion != null && proveedor.Cotizacion.length != 0 && proveedor.VerImportes" style="cursor:pointer; vertical-align: middle;padding: 0px 5px;"
+                            (click)="abrirModalHistorial(proveedor.Cotizacion.Id)">
+                            <i class="glyphicon glyphicon-hourglass" style="color: rgb(252, 249, 249);font-size: 12px;"></i>
+                        </button>
+                        <span style="margin-left: 9px;">{{proveedor.RazonSocial}}</span>
+                    </th>
                 </tr>
                 <tr>
                     <ng-container *ngFor="let proveedor of tablaOfertas.Usuarios">
@@ -170,7 +191,8 @@
                     <ng-container *ngFor="let proveedor of tablaOfertas.Usuarios">
                         <ng-container *ngIf="proveedor.Cotizacion != null">
                             <td colspan="7" class="columna border2-left" style="width: 660px !important;">
-                                {{ proveedor.VerImportes ? 'ARP ' + (proveedor.Cotizacion.TotalGlobal | number:'1.2-2') : '' }}
+                                {{ proveedor.VerImportes ? 'ARP ' + (proveedor.Cotizacion.TotalGlobal | number:'1.2-2') : '' }} 
+                                {{ proveedor.VerImportes && proveedor.Cotizacion.TodasTotalGlobal > 0 ? '/ ' + (proveedor.Cotizacion.TodasTotalGlobal | number:'1.2-2') : '' }} 
                                 <i *ngIf="!proveedor.VerImportes" class="fa fa-eye-slash noVisible" style="justify-content:left"></i>
                             </td>
                         </ng-container>
@@ -311,7 +333,9 @@
                 </tr>
 
                 <tr *ngIf="esUltimaPosicion(peticionPosicion)">
-                    <td class="columna border2-right" colspan="6" style="width: 550px !important;">Total global</td>
+                    <td class="columna border2-right" colspan="6" style="width: 550px !important;">Total global
+                        {{ tablaOfertas.TienePosicionesEliminadas ? ' / Total con eliminadas' : ''}}
+                    </td>
                 </tr>
                 <tr *ngIf="esUltimaPosicion(peticionPosicion)">
                     <td class="columna border2-right" colspan="6" style="width: 550px !important;">Adjuntos y observaciones</td>
@@ -355,11 +379,18 @@
                         <th class="headerth2" style="width: 100px !important; height: 0px !important; background-color: transparent !important; border: none !important;"></th>
                     </ng-container>
                 </tr>
-
                 <tr>
-                    <th class="headerth border2-left" *ngFor="let proveedor of tablaOfertas.Usuarios" colspan="9" style="background-color: #4760ac !important; width: 540px !important;">{{proveedor.RazonSocial}}</th>
+                    <th class="headerth border2-left" *ngFor="let proveedor of tablaOfertas.Usuarios" colspan="9"
+                        style="background-color: #4760ac !important; width: 540px !important;">
+                        <!-- <span [ngClass]="{'disabled-checkbox': !proveedor.VerAdjudicar}"> <p-checkbox name="visible" [disabled]="!proveedor.VerAdjudicar" [(ngModel)]="proveedor.VisibleSolicitante" (click)="actualizarVisibilidad(proveedor, !proveedor.VerAdjudicar)" binary="false"></p-checkbox></span> -->
+                        <button class="btn btn-xs btn-primary"
+                            *ngIf="proveedor.Cotizacion != null && proveedor.Cotizacion.length != 0 && proveedor.VerImportes"
+                            style="cursor:pointer; vertical-align: middle; padding: 0px 5px;" (click)="abrirModalHistorial(proveedor.Cotizacion.Id)">
+                            <i class="glyphicon glyphicon-hourglass" style="color: rgb(252, 249, 249);font-size: 12px;"></i>
+                        </button>
+                        <span style="margin-left: 9px;">{{proveedor.RazonSocial}}</span>
+                    </th>                
                 </tr>
-
                 <tr>
                     <ng-container *ngFor="let proveedor of tablaOfertas.Usuarios">
                         <th class="headerth border2-left" style="background-color: #4760ac !important; width: 120px !important; height: 33.45px;" colspan="3">Precio total</th>
@@ -376,7 +407,7 @@
                             <ng-container *ngFor="let cotizacionPosicion of proveedor.Cotizacion.CotizacionPosiciones">
                                 <ng-container *ngIf="peticionPosicion.Id == cotizacionPosicion.PeticionDeOfertaSolpPosicion_Id">
                                     <td class="columna border2-left" [ngStyle]="{'background-color': cotizacionPosicion.EstaEliminado ? '#ff00002e' : 'transparent'}" style="width: 120px !important;" colspan="3">
-                                        {{ proveedor.VerImportes ? (cotizacionPosicion.MonedaDescripcion + ' ' + (cotizacionPosicion.TotalPosicionCotizacion | number:'1.2-2')) : '' }}
+                                        <div *ngIf="proveedor.VerImportes" [innerHTML]="getTotalPreciosPorMoneda(cotizacionPosicion)"></div>                                    
                                         <i *ngIf="!proveedor.VerImportes" class="fa fa-eye-slash noVisible"></i>
                                     </td>
                                     <td class="columna" [ngStyle]="{'background-color': cotizacionPosicion.EstaEliminado ? '#ff00002e' : 'transparent'}" style="width: 120px !important;" colspan="3">
@@ -450,6 +481,7 @@
                         <ng-container *ngIf="proveedor.Cotizacion != null">
                             <td colspan="9" class="columna border2-left" style="width: 540px !important;">
                                 {{ proveedor.VerImportes ? 'ARP ' + (proveedor.Cotizacion.TotalGlobalSubPos | number:'1.2-2') : '' }}
+                                {{ proveedor.VerImportes && proveedor.Cotizacion.TodasTotalGlobalSubPos > 0 ? ' / ' + (proveedor.Cotizacion.TodasTotalGlobalSubPos | number:'1.2-2') : '' }}
                                 <i *ngIf="!proveedor.VerImportes" class="fa fa-eye-slash noVisible" style="justify-content:left"></i>
                             </td>
                         </ng-container>
@@ -637,6 +669,11 @@
                     [(lista)]="lista">
 </app-posicion-plazo>
 
+<app-cotizacion-historial 
+    [(displayHistorial)]="displayHistorial"
+    (cerrarHistorialEmitter)="cerrarHistorial()"
+    [(historiales)]="historiales">
+</app-cotizacion-historial>
 
 <p-dialog [(visible)]="displayGenerarOCMoneda" modal="modal" [width]="600" [draggable]="false" [closable]="true"
           (onHide)="onCerrarMoneda()" appendTo="body" [height]="200" [max] [contentStyle]="{'max-height':'150px', 'min-height':'150px'}">
@@ -667,3 +704,4 @@
         <button type="button" class="btn btn-danger botonesComprasColor" (click)="onCerrarMoneda()">CANCELAR</button>
     </p-footer>
 </p-dialog>
+

@@ -104,7 +104,10 @@ namespace SustitucionMOATest.Services
                         MonedaId = 1,
                         Precio = 1000,
                         PrecioTotal = 1000,
-                        UnidadDeMedidaId = 1
+                        UnidadDeMedidaId = 1,
+                        CotizacionSubPosicionId = 1,
+                        CotizacionPosicionId = 1,
+                        SolpSubPosicionId = 1
                     }
                 }
         };
@@ -119,80 +122,7 @@ namespace SustitucionMOATest.Services
                     {
                         Mail = "bmelgarejo@prueba.com"
                     },
-                    Solp = new Solp
-                    {
-                        Id = 1,
-                        ProveedorAsignado_Id = 1,
-                        UsuarioCreacion = new Usuario { Id = 1, Mail = "bmelgarejo@prueba.com" },
-                        UsuarioCompras = new UsuarioCompras { Id = 1, Mail = "bmelgarejo@prueba.com" },
-                        UsuarioCreacion_Id = 1,
-                        UsuarioCompras_Id = 1,
-                        FechaCreacion = new DateTime(),
-                        ClaseDocumento = new TablaSap
-                        {
-                            CodigoSap = "1010102"
-                        },
-                        TipoSolpSap = 1,
-                        Posiciones = new List<SolpPosicion>
-                            {
-                                new SolpPosicion
-                                {
-                                    Id = 1,
-                                    TipoPosicion = new TablaGeneral { Codigo = "MATERIALES" },
-                                    Codigo = "3323",
-                                    GrupoCompras = new TablaSap { CodigoSap = "300" },
-                                    Solicitante = "Solicitante",
-                                    Tarea = "Tarea",
-                                    Centro = new TablaSap { CodigoSap = "1029", Descripcion = "Centro" },
-                                    NroNecesidad = "NroNec",
-                                    GrupoArticulo = new TablaSap { CodigoSap = "100" },
-                                    Cantidad = 1,
-                                    Unidad = new TablaSap { CodigoSap = "200" },
-                                    PrecioBruto = 1500,
-                                    ProveedorFijo = "ProvFijo",
-                                    OrganizacionCompras = "OrgCompras",
-                                    NumeroContratoSuperior = "NroContratoSup",
-                                    NumeroPosicionContratoSuperior = "NroPosicionContratoSup",
-                                    Moneda = new TablaSap { CodigoSap = "ARP" },
-                                    PlazoEntrega = 5,
-                                    CuentaMayorSap = new TablaSap { CodigoSap = "C" },
-                                    TipoImputacion = new TablaGeneral { Codigo = "TI" },
-                                    TipoImputacionSap = new TablaSap { CodigoSap = "TIS" },
-                                    TextoSuministro = "Texto",
-                                    Almacen = new TablaSap { CodigoSap = "Alm" },
-                                    MaterialSolp = new MaterialSolp { CodigoSap = "50000" },
-                                    NombreEntrega = "NombreEntrega",
-                                    CpEntrega = "CP",
-                                    CalleEntrega = "Calle",
-                                    NumeroEntrega = "NroEntrega",
-                                    FechaEntregaServicio = DateTime.Now,
-                                    Subposiciones = new List<SolpSubposicion> { new SolpSubposicion {
-                                        Id = 1, Tarea = "Tarea", Cantidad = 2, PrecioBruto = 500, Unidad = new TablaSap { CodigoSap = "UNI" } } }
-                                }
-                            },
-                        Pliego = new Pliego
-                        {
-                            RevisadoPor = "Tonio",
-                            NombreObra = "NombreObra",
-                            FiscalContrato = "Fiscal",
-                            Email = "email@email.com",
-                            Telefono = "5555",
-                            FechaHoraEntrega = new DateTime(),
-                            SupervisorSector = "SupervisorSelec",
-                            SupervisorTrabajo = "SupervisorTrabajo",
-                            VisitasMasivas = new List<PliegoVisita>(),
-                            FechaHoraLimiteConsulta = new DateTime(),
-                            ObservacionesGeneracion = "",
-                            ObservacionesCotizacion = "",
-                            Archivos = new List<Archivo> { new Archivo { FileKey = "fileKey" } },
-                        },
-                        Adjudicaciones = new List<Adjudicacion>(),
-                        EstadoSolpSap_Id = 1,
-                        EstadoDocumento_Id = 1,
-                        EstadoDocumento = new TablaEstado(),
-                        EstadoPasos = "",
-                        LiberadoresSapSolp = new List<LiberadorSapSolp> { new LiberadorSapSolp { Id = 1, Solp_Id = 1, LiberadorSap_Id = 1 } }
-                    },
+
                     Posiciones = new List<PeticionDeOfertaSolpPosicion>
                 {
                     new PeticionDeOfertaSolpPosicion
@@ -207,9 +137,77 @@ namespace SustitucionMOATest.Services
                             Cantidad = 1000,
                             PrecioBruto = 1000,
                             FechaEntregaServicio = DateTime.Now,
+                            TipoPosicion = new TablaGeneral { Codigo = "MATERIALES" },
+                            TipoPosicion_Id = 1,
                             Subposiciones = new List<SolpSubposicion>
                             {
 
+                            },
+                            Solp = new Solp
+                            {
+                                 Id = 1,
+                            ProveedorAsignado_Id = 1,
+                            UsuarioCreacion = new Usuario { Id = 1, Mail = "bmelgarejo@prueba.com" },
+                            UsuarioCompras = new UsuarioCompras { Id = 1, Mail = "bmelgarejo@prueba.com" },
+                            UsuarioCreacion_Id = 1,
+                            UsuarioCompras_Id = 1,
+                            FechaCreacion = new DateTime(),
+                            TipoSolpSap = 1,
+                            ClaseDocumento = new TablaSap{ CodigoSap = "ZP1"},
+                            Pliego_Id = 1,
+                              Pliego = new Pliego
+                            {
+                                RevisadoPor = "Tonio",
+                                NombreObra = "NombreObra",
+                                FiscalContrato = "Fiscal",
+                                Email = "email@email.com",
+                                Telefono = "5555",
+                                FechaHoraEntrega = new DateTime(),
+                                SupervisorSector = "SupervisorSelec",
+                                SupervisorTrabajo = "SupervisorTrabajo",
+                                VisitasMasivas = new List<PliegoVisita>(),
+                                FechaHoraLimiteConsulta = new DateTime(),
+                                ObservacionesGeneracion = "",
+                                ObservacionesCotizacion = "",
+                                Archivos = new List<Archivo> { new Archivo { FileKey = "fileKey" } },
+                            },
+                            Posiciones = new List<SolpPosicion>
+                 {
+                     new SolpPosicion
+                     {
+                         Id = 1,
+                         TipoPosicion = new TablaGeneral { Codigo = "MATERIALES" },
+                         Codigo = "3323",
+                         GrupoCompras = new TablaSap { CodigoSap = "300" },
+                         Solicitante = "Solicitante",
+                         Tarea = "Tarea",
+                         Centro = new TablaSap { CodigoSap = "1029" },
+                         NroNecesidad = "NroNec",
+                         GrupoArticulo = new TablaSap { CodigoSap = "100" },
+                         Cantidad = 1,
+                         Unidad = new TablaSap { CodigoSap = "200" },
+                         PrecioBruto = 1500,
+                         ProveedorFijo = "ProvFijo",
+                         OrganizacionCompras = "OrgCompras",
+                         NumeroContratoSuperior = "",
+                         NumeroPosicionContratoSuperior = "NroPosicionContratoSup",
+                         Moneda = new TablaSap { CodigoSap = "ARP" },
+                         PlazoEntrega = 5,
+                         CuentaMayorSap = new TablaSap { CodigoSap = "C" },
+                         TipoImputacion = new TablaGeneral { Codigo = "TI" },
+                         TipoImputacionSap = new TablaSap { CodigoSap = "TIS" },
+                         TextoSuministro = "Texto",
+                         Almacen = new TablaSap { CodigoSap = "Alm" },
+                         MaterialSolp = new MaterialSolp { CodigoSap = "50000" },
+                         NombreEntrega = "NombreEntrega",
+                         CpEntrega = "CP",
+                         CalleEntrega = "Calle",
+                         NumeroEntrega = "NroEntrega",
+                         FechaEntregaServicio = DateTime.Now,
+                         Subposiciones = new List<SolpSubposicion> { new SolpSubposicion {
+                             Id = 1, Tarea = "Tarea", Cantidad = 2, PrecioBruto = 500, Unidad = new TablaSap { CodigoSap = "UNI" } } }
+                     }
+                 },
                             }
                         }
                     }
@@ -222,22 +220,7 @@ namespace SustitucionMOATest.Services
 
                         PeticionDeOferta = new PeticionDeOferta
                     {
-                        Solp = new Solp
-                        {
-                            Id = 1,
-                            Posiciones = new List<SolpPosicion>
-                            {
-                                new SolpPosicion
-                                {
-                                    Id = 1,
-                                    TipoPosicion = new TablaGeneral
-                                    {
-                                        Codigo = "MATERIALES"
-                                    },
-                                    FechaEntregaServicio = DateTime.Now
-                                }
-                            }
-                        }
+
                     }
                     }
                 }
@@ -257,6 +240,7 @@ namespace SustitucionMOATest.Services
                         {
                             new CotizacionSubPosicion
                             {
+                                Id = 1,
                                 Cantidad = 1000,
                                 Moneda_Id = 1,
                                 Moneda = new TablaSap{ Codigo = "ARP", Id = 1},
@@ -269,6 +253,7 @@ namespace SustitucionMOATest.Services
                             },
                              new CotizacionSubPosicion
                             {
+                                 Id = 1,
                                 Cantidad = 1000,
                                 Moneda_Id = 1,
                                 Moneda = new TablaSap{ Codigo = "ARP", Id = 1},
@@ -277,7 +262,6 @@ namespace SustitucionMOATest.Services
                                 UnidadDeMedida = new TablaSap{ Codigo = "ARP", Id = 1},
                                 CotizacionPosicion_Id = 1,
                                 SolpSubPosicion_Id = 1,
-
                             }
                         }
                     }
@@ -293,6 +277,7 @@ namespace SustitucionMOATest.Services
             UsuarioCompras_Id = 1,
             FechaCreacion = new DateTime(),
             TipoSolpSap = 1,
+            Pliego_Id = 1,
             Posiciones = new List<SolpPosicion>
                             {
                                 new SolpPosicion
@@ -308,10 +293,11 @@ namespace SustitucionMOATest.Services
                                     GrupoArticulo = new TablaSap { CodigoSap = "100" },
                                     Cantidad = 1,
                                     Unidad = new TablaSap { CodigoSap = "200" },
+                                    Unidad_Id = 1,
                                     PrecioBruto = 1500,
                                     ProveedorFijo = "ProvFijo",
                                     OrganizacionCompras = "OrgCompras",
-                                    NumeroContratoSuperior = "NroContratoSup",
+                                    NumeroContratoSuperior = "",
                                     NumeroPosicionContratoSuperior = "NroPosicionContratoSup",
                                     Moneda = new TablaSap { CodigoSap = "ARP" },
                                     PlazoEntrega = 5,
@@ -327,7 +313,7 @@ namespace SustitucionMOATest.Services
                                     NumeroEntrega = "NroEntrega",
                                     FechaEntregaServicio = DateTime.Now,
                                     Subposiciones = new List<SolpSubposicion> { new SolpSubposicion {
-                                        Id = 1, Tarea = "Tarea", Cantidad = 2, PrecioBruto = 500, Unidad = new TablaSap { CodigoSap = "UNI" } } }
+                                        Id = 1, Tarea = "Tarea", Cantidad = 2, PrecioBruto = 500, Unidad_Id = 1, Unidad = new TablaSap { CodigoSap = "UNI" } } }
                                 }
                             },
             Pliego = new Pliego
@@ -346,12 +332,12 @@ namespace SustitucionMOATest.Services
                 ObservacionesCotizacion = "",
                 Archivos = new List<Archivo> { new Archivo { FileKey = "fileKey" } },
             },
-            Adjudicaciones = new List<Adjudicacion>(),
             EstadoSolpSap_Id = 1,
             EstadoDocumento_Id = 1,
             EstadoDocumento = new TablaEstado(),
             EstadoPasos = "",
-            LiberadoresSapSolp = new List<LiberadorSapSolp> { new LiberadorSapSolp { Id = 1, Solp_Id = 1, LiberadorSap_Id = 1 } }
+            LiberadoresSapSolp = new List<LiberadorSapSolp> { new LiberadorSapSolp { Id = 1, Solp_Id = 1, LiberadorSap_Id = 1 } },
+            ClaseDocumento_Id = 1
         };
         private readonly SolpDto solpDto = new SolpDto
         {
@@ -417,31 +403,6 @@ namespace SustitucionMOATest.Services
             Id = 1,
             Usuario = new Usuario { Id = 1, Mail = "bmelgarejo@prueba.com", UsuarioSap = "UsuarioSAP" },
             PlazoDeOferta = DateTime.Now.AddDays(5),
-            Solp = new Solp
-            {
-                Id = 1,
-                UsuarioCreacion = new Usuario { Id = 1, Mail = "bmelgarejo@prueba.com", CUITRegistro = "005522" },
-                UsuarioCreacion_Id = 1,
-                NroSolp = "3344534",
-                Posiciones = new List<SolpPosicion>
-                            {
-                                new SolpPosicion
-                                {
-                                    Id = 1,
-                                    TipoPosicion_Id = 1,
-                                    TipoPosicion = new TablaGeneral
-                                    {
-                                        Codigo = "MATERIALES"
-                                    }
-                                }
-                            },
-                Pliego = new Pliego { Id = 1, NombreObra = "Obra Pliego", VisitasMasivas = new List<PliegoVisita>() },
-                FechaCreacion = DateTime.Now,
-                TipoSolp = new TablaGeneral
-                {
-                    Codigo = "SIN_PLIEGO"
-                }
-            },
             Posiciones = new List<PeticionDeOfertaSolpPosicion>
                 {
                     new PeticionDeOfertaSolpPosicion
@@ -451,6 +412,7 @@ namespace SustitucionMOATest.Services
                         Id = 1,
                         SolpPosicion = new SolpPosicion
                         {
+                            Id = 1,
                             Unidad_Id = 1,
                             Moneda_Id = 1,
                             Cantidad = 1000,
@@ -466,7 +428,72 @@ namespace SustitucionMOATest.Services
                             FechaEntregaServicio = DateTime.Now,
                             ProvinciaId = 1,
                             Centro = new TablaSap { CodigoSap = "Centro" },
-                            Unidad = new TablaSap { Descripcion = "Unidad" }
+                            Unidad = new TablaSap { Descripcion = "Unidad" },
+                            Solp = new Solp
+                            {
+                                 Id = 1,
+                                ProveedorAsignado_Id = 1,
+                                UsuarioCreacion = new Usuario { Id = 1, Mail = "bmelgarejo@prueba.com" },
+                                UsuarioCompras = new UsuarioCompras { Id = 1, Mail = "bmelgarejo@prueba.com" },
+                                UsuarioCreacion_Id = 1,
+                                UsuarioCompras_Id = 1,
+                                FechaCreacion = new DateTime(),
+                                TipoSolpSap = 1,
+                                Pliego = new Pliego                                
+                                  {
+                                      RevisadoPor = "Tonio",
+                                      NombreObra = "NombreObra",
+                                      FiscalContrato = "Fiscal",
+                                      Email = "email@email.com",
+                                      Telefono = "5555",
+                                      FechaHoraEntrega = new DateTime(),
+                                      SupervisorSector = "SupervisorSelec",
+                                      SupervisorTrabajo = "SupervisorTrabajo",
+                                      VisitasMasivas = new List<PliegoVisita>(),
+                                      FechaHoraLimiteConsulta = new DateTime(),
+                                      ObservacionesGeneracion = "",
+                                      ObservacionesCotizacion = "",
+                                      Archivos = new List<Archivo> { new Archivo { FileKey = "fileKey" } },
+                                  
+                                },
+                                Posiciones = new List<SolpPosicion>
+                            {
+                                new SolpPosicion
+                                {
+                                    Id = 1,
+                                    TipoPosicion = new TablaGeneral { Codigo = "MATERIALES" },
+                                    Codigo = "3323",
+                                    GrupoCompras = new TablaSap { CodigoSap = "300" },
+                                    Solicitante = "Solicitante",
+                                    Tarea = "Tarea",
+                                    Centro = new TablaSap { CodigoSap = "1029" },
+                                    NroNecesidad = "NroNec",
+                                    GrupoArticulo = new TablaSap { CodigoSap = "100" },
+                                    Cantidad = 1,
+                                    Unidad = new TablaSap { CodigoSap = "200" },
+                                    PrecioBruto = 1500,
+                                    ProveedorFijo = "ProvFijo",
+                                    OrganizacionCompras = "OrgCompras",
+                                    NumeroContratoSuperior = "",
+                                    NumeroPosicionContratoSuperior = "NroPosicionContratoSup",
+                                    Moneda = new TablaSap { CodigoSap = "ARP" },
+                                    PlazoEntrega = 5,
+                                    CuentaMayorSap = new TablaSap { CodigoSap = "C" },
+                                    TipoImputacion = new TablaGeneral { Codigo = "TI" },
+                                    TipoImputacionSap = new TablaSap { CodigoSap = "TIS" },
+                                    TextoSuministro = "Texto",
+                                    Almacen = new TablaSap { CodigoSap = "Alm" },
+                                    MaterialSolp = new MaterialSolp { CodigoSap = "50000" },
+                                    NombreEntrega = "NombreEntrega",
+                                    CpEntrega = "CP",
+                                    CalleEntrega = "Calle",
+                                    NumeroEntrega = "NroEntrega",
+                                    FechaEntregaServicio = DateTime.Now,
+                                    Subposiciones = new List<SolpSubposicion> { new SolpSubposicion {
+                                        Id = 1, Tarea = "Tarea", Cantidad = 2, PrecioBruto = 500, Unidad = new TablaSap { CodigoSap = "UNI" } } }
+                                },
+                            },
+                            }
                         }
                     }
                 },
@@ -478,21 +505,7 @@ namespace SustitucionMOATest.Services
                         Usuario = new Usuario { Id = 1, Mail = "drodriguez@prueba", Proveedores = new List<Proveedor> {
                             new Proveedor { Id = 11, CUIT = "20043159381", CodigoProveedor = "0004315938", TipoProveedor = new TipoUsuario { Id = 1 } } } },
                         PeticionDeOferta = new PeticionDeOferta
-                        { Solp = new Solp
-                            {
-                                Id = 1,
-                                Posiciones = new List<SolpPosicion>
-                                {
-                                    new SolpPosicion
-                                    {
-                                        Id = 1,
-                                        TipoPosicion = new TablaGeneral
-                                        {
-                                            Codigo = "MATERIALES"
-                                        },
-                                    }
-                                }
-                            }
+                        {
                         }
                     }
             }
@@ -902,10 +915,19 @@ namespace SustitucionMOATest.Services
                 Moneda_Id = 1,
                 UsuarioCreador_Id = 1,
                 Solp_Id = 1,
+                NroSolp = "929292",
                 CondicionesDeEntrega = "Condiciones"
             };
 
+            var posicion = new SolpPosicion
+            {
+                Id = 1,
+                FechaEntregaServicio = DateTime.Now,
+                Solp = solp
+            };
 
+            repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<SolpPosicion, bool>>>(),
+            It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null)).Returns(new List<SolpPosicion>() { posicion });
             repositorioMock.Setup(y => y.Obtener<Usuario>(It.IsAny<int>()))
                .Returns(new Usuario { Id = 1, CUITRegistro = "32332232", Habilitado = true, Mail = "bmelgarejo@prueba.com.ar", OrganizacionDeCompra = "2029" });
             repositorioMock.Setup(y => y.Obtener<Cotizacion>(It.IsAny<int>()))
@@ -1004,7 +1026,15 @@ namespace SustitucionMOATest.Services
                 Solp_Id = 1,
                 CondicionesDeEntrega = "Condiciones"
             };
+            var posicion = new SolpPosicion
+            {
+                Id = 1,
+                FechaEntregaServicio = DateTime.Now,
+                Solp = solp
+            };
 
+            repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<SolpPosicion, bool>>>(),
+            It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null)).Returns(new List<SolpPosicion>() { posicion });
             repositorioMock.Setup(y => y.Obtener<Usuario>(It.IsAny<int>()))
                .Returns(new Usuario { Id = 1, CUITRegistro = "32332232", Habilitado = true, Mail = "bmelgarejo@prueba.com.ar", OrganizacionDeCompra = "2029" });
             repositorioMock.Setup(y => y.Obtener<Cotizacion>(It.IsAny<int>()))
@@ -1100,7 +1130,15 @@ namespace SustitucionMOATest.Services
                 Solp_Id = 1,
                 CondicionesDeEntrega = "Condiciones"
             };
+            var posicion = new SolpPosicion
+            {
+                Id = 1,
+                FechaEntregaServicio = DateTime.Now,
+                Solp = solp
+            };
 
+            repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<SolpPosicion, bool>>>(),
+            It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null)).Returns(new List<SolpPosicion>() { posicion });
             repositorioMock.Setup(y => y.Obtener<Usuario>(It.IsAny<int>()))
                .Returns(new Usuario { Id = 1, CUITRegistro = "32332232", Habilitado = true, Mail = "drodriguez@prueba.com.ar" });
             repositorioMock.Setup(y => y.Obtener<Cotizacion>(It.IsAny<int>()))
@@ -1283,7 +1321,15 @@ namespace SustitucionMOATest.Services
                    Id = 1,
                    PeticionDeOferta = peticionDeOferta
                });
+            var posicion = new SolpPosicion
+            {
+                Id = 1,
+                FechaEntregaServicio = DateTime.Now,
+                Solp = solp
+            };
 
+            repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<SolpPosicion, bool>>>(),
+            It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null)).Returns(new List<SolpPosicion>() { posicion });
             repositorioMock.Setup(y => y.Obtener<Cotizacion>(It.IsAny<int>())).Returns(cotizacion);
 
             repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<TablaSap, bool>>>(),
@@ -1396,7 +1442,6 @@ namespace SustitucionMOATest.Services
             adjuntosMock.Setup(x => x.GetMultiple(It.IsAny<string>())).Returns(new List<HttpPostedFileBase> { file1.Object });
 
             repositorioMock.Setup(y => y.Obtener<Solp>(It.IsAny<int>())).Returns(solp);
-
             repositorioMock.Setup(y => y.Obtener<TablaSap>(It.IsAny<Expression<Func<TablaSap, bool>>>())).Returns(new TablaSap { Codigo = "23234" });
             repositorioMock.Setup(y => y.Obtener<TablaGeneral>(It.IsAny<Expression<Func<TablaGeneral, bool>>>())).Returns(new TablaGeneral { Codigo = "23234" });
             repositorioMock.Setup(y => y.Obtener<TablaEstado>(It.IsAny<Expression<Func<TablaEstado, bool>>>())).Returns(new TablaEstado { Id = 1, Codigo = "23234" });
@@ -1407,7 +1452,7 @@ namespace SustitucionMOATest.Services
             target.GuardarSolp(solpDtoLocal, adjuntosMock.Object);
 
             repositorioMock.Verify(x => x.Agregar(It.IsAny<Solp>()), Times.Once);
-            repositorioMock.Verify(x => x.GuardarCambios(), Times.Exactly(3));
+            repositorioMock.Verify(x => x.GuardarCambios(), Times.Exactly(6));
         }
 
         [Test]
@@ -1451,7 +1496,7 @@ namespace SustitucionMOATest.Services
 
             // Instancia de CotizacionSubposicionesDto
             var cotizacionSubposicion = new CotizacionSubposicionesDto
-            {
+            {                
                 CotizacionSubPosicionId = 1,
                 Precio = 20.50m,
                 MonedaId = 1,
@@ -1502,6 +1547,23 @@ namespace SustitucionMOATest.Services
         [Test]
         public void CrearOrdenDeCompraConRegistroInfoOk()
         {
+            var solpDtoLocal = solpDto;
+            solpDtoLocal.Finalizar = true;
+            FileStream fileStream = new FileStream(filePath, FileMode.Open);
+            Mock<HttpPostedFileBase> file1 = new Mock<HttpPostedFileBase>();
+            file1.Setup(d => d.FileName).Returns("LogoBaufest.png");
+            file1.Setup(d => d.InputStream).Returns(fileStream);
+            file1.Setup(d => d.ContentLength).Returns(Convert.ToInt32(fileStream.Length));
+
+            repositorioMock.Setup(y => y.Obtener<Solp>(It.IsAny<int>())).Returns(solp);
+
+            repositorioMock.Setup(y => y.Obtener<TablaSap>(It.IsAny<Expression<Func<TablaSap, bool>>>())).Returns(new TablaSap { Codigo = "23234" });
+            repositorioMock.Setup(y => y.Obtener<TablaGeneral>(It.IsAny<Expression<Func<TablaGeneral, bool>>>())).Returns(new TablaGeneral { Codigo = "23234" });
+            repositorioMock.Setup(y => y.Obtener<TablaEstado>(It.IsAny<Expression<Func<TablaEstado, bool>>>())).Returns(new TablaEstado { Id = 1, Codigo = "23234" });
+            repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<UnidadMedidaSap, Tuple<string, string>>>>(), It.IsAny<Expression<Func<UnidadMedidaSap, bool>>>(),
+                It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc)).Returns(new List<Tuple<string, string>> { Tuple.Create("Comercial", "UM") });
+            crearSolpConsumerMOAMock.Setup(x => x.Request(It.IsAny<SolpSAPDto>())).Returns(new CrearSolpConsumerMOAResponse { NumeroSolp = "383737373", Resultado = "OK", Errores = new List<CrearSolpConsumerMOAError>() });
+
             var registroInfo = new List<RegistroInfoDto>() { new RegistroInfoDto {
                 ProveedorId = 1, PosicionId = 1, CantidadAdjudicacion = 5, Moneda = "ARP"
             } };
@@ -1512,7 +1574,8 @@ namespace SustitucionMOATest.Services
                 .Returns(new List<Cotizacion> { cotizacion });
             repositorioMock.Setup(y => y.Obtener(It.IsAny<Expression<Func<CentroDireccion, bool>>>()))
               .Returns(new CentroDireccion { CodigoSap = "29292", RegionSap = new RegionSap { Id = 1 } });
-
+            repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<UnidadMedidaSap, Tuple<string, string>>>>(), It.IsAny<Expression<Func<UnidadMedidaSap, bool>>>(),
+               It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc)).Returns(new List<Tuple<string, string>> { Tuple.Create("Comercial", "UM") });
             repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<RegionSap, bool>>>(),
                It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null)).Returns(new List<RegionSap>() { new RegionSap { CodigoSap = "ARP", Id = 1 } });
             obtenerOrdenDeCompraConsumerMOAMock.Setup(x => x.ObtenerOrdenDeCompra((It.IsAny<string>()))).Returns(new OrdenDeCompraSAPDto
@@ -1539,13 +1602,15 @@ namespace SustitucionMOATest.Services
             repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<UsuarioCompras, bool>>>(),
                It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null)).Returns(new List<UsuarioCompras>() { new UsuarioCompras { Mail = "bmelgarejo@test.com", Id = 1 } });
             repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<Adjudicacion, bool>>>(),
-               It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null)).Returns(new List<Adjudicacion>() { new Adjudicacion { Id = 1 } });
+               It.IsAny<int>(), It.IsAny<string>(), DirOrden.Desc, null)).Returns(new List<Adjudicacion>() { new Adjudicacion { Id = 1, NumeroOrdenDeCompra = "1", Usuario = new Usuario { Mail = "mail@mail.com" } } });
             repositorioMock.Setup(y => y.Obtener<TablaSap>(It.IsAny<Expression<Func<TablaSap, bool>>>()))
                .Returns(new TablaSap { Codigo = "23234" });
             repositorioMock.Setup(y => y.Obtener<TablaGeneral>(It.IsAny<Expression<Func<TablaGeneral, bool>>>()))
               .Returns(new TablaGeneral { Codigo = "23234" });
             repositorioMock.Setup(y => y.Obtener<TablaEstado>(It.IsAny<Expression<Func<TablaEstado, bool>>>()))
              .Returns(new TablaEstado { Id = 1, Codigo = "23234" });
+            repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<UnidadMedidaSap, Tuple<string, string>>>>(), It.IsAny<Expression<Func<UnidadMedidaSap, bool>>>(),
+                It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc)).Returns(new List<Tuple<string, string>> { Tuple.Create("Comercial", "UM") });
             crearSolpConsumerMOAMock.Setup(x => x.Request(It.IsAny<SolpSAPDto>())).Returns(new CrearSolpConsumerMOAResponse { NumeroSolp = "383737373", Resultado = "OK", Errores = new List<CrearSolpConsumerMOAError>() });
 
             repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<RegionSap, bool>>>(),
@@ -1557,7 +1622,7 @@ namespace SustitucionMOATest.Services
 
             repositorioMock.Verify(x => x.Agregar(It.IsAny<PeticionDeOferta>()), Times.Once);
             repositorioMock.Verify(x => x.Agregar(It.IsAny<Cotizacion>()), Times.Once);
-            repositorioMock.Verify(x => x.GuardarCambios(), Times.Exactly(5));
+            repositorioMock.Verify(x => x.GuardarCambios(), Times.Exactly(7));
             Assert.IsNotNull(result);
             Assert.That(result.First().Errores.Count == 0);
             Assert.AreEqual(expected.Count, result.Count);
@@ -1712,6 +1777,8 @@ namespace SustitucionMOATest.Services
             repositorioMock.Setup(y => y.Obtener(It.IsAny<Expression<Func<Solp, bool>>>())).Returns(solp);
             repositorioMock.Setup(y => y.Obtener(It.IsAny<Expression<Func<TablaSap, bool>>>())).Returns(new TablaSap { Id = 1 });
             SetUpOCPeticionCotizacion();
+            repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<PeticionDeOferta, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null))
+              .Returns(new List<PeticionDeOferta>());
             target.ActualizarFechaLiberacion(solpLocal.NroSolp, DateTime.Now);
 
             repositorioMock.Verify(x => x.GuardarCambios(), Times.Exactly(6));
@@ -1725,6 +1792,8 @@ namespace SustitucionMOATest.Services
             repositorioMock.Setup(y => y.Obtener(It.IsAny<Expression<Func<Solp, bool>>>())).Returns(solp);
             repositorioMock.Setup(y => y.Obtener(It.IsAny<Expression<Func<TablaSap, bool>>>())).Returns(new TablaSap { Id = 1 });
             SetUpOCPeticionCotizacion();
+            repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<PeticionDeOferta, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null))
+              .Returns(new List<PeticionDeOferta>());
             target.ActualizarFechaLiberacion(solpLocal.NroSolp, DateTime.Now);
 
             repositorioMock.Verify(x => x.GuardarCambios(), Times.Exactly(3));
@@ -1745,6 +1814,8 @@ namespace SustitucionMOATest.Services
             repositorioMock.Setup(y => y.Obtener(It.IsAny<Expression<Func<Localidad, bool>>>())).Returns(new Localidad { ProvinciaId = 1 });
             repositorioMock.Setup(y => y.Obtener(It.IsAny<Expression<Func<CentroDireccion, bool>>>())).Returns(new CentroDireccion { CodigoSap = "Codigo" });
             SetUpOCPeticionCotizacion();
+            repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<PeticionDeOferta, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null))
+                .Returns(new List<PeticionDeOferta>());
             target.ActualizarFechaLiberacion(solp.NroSolp, DateTime.Now);
 
             repositorioMock.Verify(x => x.Agregar(It.IsAny<PeticionDeOferta>()), Times.Once);
@@ -1797,7 +1868,6 @@ namespace SustitucionMOATest.Services
                             PeticionDeOferta = new PeticionDeOferta { UsuariosAdicionales = new List<PeticionDeOfertaUsuarioAdicional>() }
                         }
                     },
-                    Solp = solp
                 }
             };
 
@@ -1932,6 +2002,8 @@ namespace SustitucionMOATest.Services
             var tablaSap = new List<TablaSap> { new TablaSap { Id = 11, Codigo = "0011", Tabla = "OrdenSolpSap", CodigoSap = "11", Descripcion = "Limpiar rotor" } };
             repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<SolpPosicion, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null))
                 .Returns(new List<SolpPosicion> { new SolpPosicion { Id = 1, ValorTipoImputacion_Id = 11 } });
+            repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<SolpSubposicion, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null))
+                .Returns(new List<SolpSubposicion> { new SolpSubposicion { Id = 1, TipoImputacion_Id = 11 } });
             repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<TablaSap, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null)).Returns(tablaSap);
             var result = target.ListarTablaSap(new List<string> { "OrdenSolpSap" });
 
@@ -2007,7 +2079,7 @@ namespace SustitucionMOATest.Services
               .Returns(listaPaginada);
             repositorioMock.Setup(y => y.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>())).Returns(new Usuario { Roles = new List<Rol> { new Rol { Codigo = "COMPRADOR" } } });
 
-            var result = target.ListarSolp(new UsuarioDto { Id = 1, Permisos = new List<string> { "VER TODAS SOLPS" } }, new Paginacion(), "", new DateTime(), new DateTime(), true, false, true, false);
+            var result = target.ListarSolp(new UsuarioDto { Id = 1, Permisos = new List<string> { "VER TODAS SOLPS" } }, new Paginacion(), "", new DateTime(), new DateTime(), true, false, true, false, false);
 
             Assert.That(result, Is.Not.Null);
             Assert.AreEqual(result, listaPaginada);
@@ -2110,7 +2182,8 @@ namespace SustitucionMOATest.Services
             repositorioMock.Setup(y => y.Obtener(It.IsAny<Expression<Func<TablaGeneral, bool>>>())).Returns(new TablaGeneral { Codigo = "23234" });
             repositorioMock.Setup(y => y.Obtener(It.IsAny<Expression<Func<TablaEstado, bool>>>())).Returns(new TablaEstado { Id = 1, Codigo = "23234" });
             crearSolpConsumerMOAMock.Setup(x => x.Request(It.IsAny<SolpSAPDto>())).Returns(new CrearSolpConsumerMOAResponse { NumeroSolp = "383737373", Resultado = "OK", Errores = new List<CrearSolpConsumerMOAError>() });
-
+            repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<PeticionDeOferta, bool>>>(),
+            It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null)).Returns(new List<PeticionDeOferta>() { peticionDeOferta });
             modificarSolpConsumerMOAMock.Setup(y => y.Request(It.IsAny<SolpSAPDto>())).Returns(new ModificarSolpConsumerMOAResponse
             {
                 Errores = new List<ModificarSolpConsumerMOAError>()
@@ -2147,6 +2220,8 @@ namespace SustitucionMOATest.Services
                                             },
                                         }
                                     };
+            repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<PeticionDeOferta, bool>>>(),
+                It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null)).Returns(new List<PeticionDeOferta>() { peticionDeOferta });
             repositorioMock.Setup(y => y.Obtener(It.IsAny<Expression<Func<Solp, bool>>>())).Returns(solpLocal); // Usar solpLocal en lugar de solp
             repositorioMock.Setup(y => y.Obtener(It.IsAny<Expression<Func<TablaSap, bool>>>())).Returns(new TablaSap { Id = 1 });
             target.ActualizarFechaLiberacion(solpLocal.NroSolp, DateTime.Now);
@@ -2160,7 +2235,7 @@ namespace SustitucionMOATest.Services
             repositorioMock.Setup(y => y.Obtener(It.IsAny<Expression<Func<Adjudicacion, bool>>>())).Returns(new Adjudicacion
             {
                 Cotizacion = new Cotizacion { PeticionDeOfertaUsuario = new PeticionDeOfertaUsuario { Id = 1, Usuario = new Usuario { Id = 1, TipoUsuario = new TipoUsuario { Id = 1, Nombre = "", NombreCorto = "" } } }, PeticionDeOfertaUsuario_Id = 1 },
-                Solp = solp
+
             });
             //para ObtenerLegajo():
             repositorioMock.Setup(x => x.Obtener<PeticionDeOferta>(It.IsAny<int>())).Returns(peticionDeOferta);
@@ -2427,7 +2502,7 @@ namespace SustitucionMOATest.Services
                 .Returns(new List<PeticionDeOfertaVisualizacionPrecio> { new PeticionDeOfertaVisualizacionPrecio { Id = 1 } });
             repositorioMock.Setup(y => y.Obtener<TablaSap>(It.IsAny<int>())).Returns(new TablaSap { Id = 1 });
             repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<Adjudicacion, bool>>>(),
-             It.IsAny<int>(), It.IsAny<string>(), It.IsAny<DirOrden>(), null)).Returns(new List<Adjudicacion> { new Adjudicacion { Solp_Id = 1, Usuario = new Usuario { Mail = "test@gmail.com" } } });
+             It.IsAny<int>(), It.IsAny<string>(), It.IsAny<DirOrden>(), null)).Returns(new List<Adjudicacion> { new Adjudicacion { Usuario = new Usuario { Mail = "test@gmail.com" } } });
             obtenerSolpConsumerMOAMock.Setup(y => y.RequestSolpWithNroAndDates(It.IsAny<ObtenerSolpRequest>())).Returns(new ObtenerSolpSAPResponse
             {
                 Posiciones = new List<PosicionSolpSAP> { new PosicionSolpSAP { EstadoSolpSap = "05", NumeroPosicion = "1" } }
@@ -2459,7 +2534,7 @@ namespace SustitucionMOATest.Services
             var listaSolp = new ListaPaginada<SolpDto>(new List<SolpDto> { new SolpDto { Id = 1, ItemsTotales = 7 } }, 1, 10, 5);
             repositorioMock.Setup(y => y.ListarConsultaPaginada(It.IsAny<ListarSolpConsulta>())).Returns(listaSolp);
 
-            var result = target.ListarSolpComprador(1, new Paginacion(), "nroSolp", null, null, false, false, false, true, false);
+            var result = target.ListarSolpComprador(1, new Paginacion(), "nroSolp", null, null, false, false, false, true, false, false);
             Assert.That(result, Is.Not.Null);
             Assert.AreEqual(listaSolp.GetType(), result.GetType());
         }
@@ -2537,5 +2612,42 @@ namespace SustitucionMOATest.Services
             repositorioMock.Verify(y => y.Listar(It.IsAny<Expression<Func<Solp, SolpDto>>>(),
                 It.IsAny<Expression<Func<Solp, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc), Times.Exactly(monthsApart));
         }
+
+        [Test]
+        public void ListarClaseDocumentoOk()
+        {
+            List<int> clasesDoc = new List<int>();
+            repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<Solp, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null)).Returns(new List<Solp>() { solp });
+            var result = target.ListarClaseDocumento(1);
+
+            Assert.That(result, Is.Not.Null);
+            Assert.AreEqual(result.GetType(), clasesDoc.GetType());
+        }
+
+        [Test]
+        public void ActualizarProveedorVisibleEnSolicitanteOk()
+        {
+            repositorioMock.Setup(x => x.Obtener<PeticionDeOfertaUsuario>(It.IsAny<int>())).Returns(new PeticionDeOfertaUsuario { Id = 1, VisibleSolicitante = true});
+            var result = target.ActualizarProveedorVisibleEnSolicitante(It.IsAny<int>(), It.IsAny<bool>());
+            repositorioMock.Setup(x => x.GuardarCambios());
+            Assert.That(result, Is.Not.Null);
+            repositorioMock.Verify(x => x.Obtener<PeticionDeOfertaUsuario>(It.IsAny<int>()), Times.Once);
+            repositorioMock.Verify(x => x.GuardarCambios(), Times.Once);
+        }
+
+        [Test]
+        public void ListarUsuarioSolicitanteOk()
+        {
+            
+            repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<Usuario, UsuarioDto>>>(),
+                It.IsAny<Expression<Func<Usuario, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc))
+               .Returns(new List<UsuarioDto>() { new UsuarioDto { Mail = "bmelgarejo@prueba.com", UsuarioSap = "BRISAM" } });
+
+            var result = target.ListarUsuarioSolicitante();
+            Assert.That(result, Is.Not.Null);
+        }
+
+
+
     }
 }

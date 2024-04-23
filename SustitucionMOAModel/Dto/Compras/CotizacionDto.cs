@@ -31,6 +31,8 @@ namespace SustitucionMOAModel.Dto
         public bool TieneObservacionEconomica { get; set; }
         public decimal? PorcentajeDeHoras { get; set; }
         public List<AdjudicacionDto> Adjudicaciones { get; set; }
+        public decimal TodasTotalGlobal { get; set; }
+        public decimal TodasTotalGlobalSubPos { get; set; }
     }
 
     public class CotizacionPosicionDto
@@ -75,6 +77,8 @@ namespace SustitucionMOAModel.Dto
         public int? TercerPlazoDeOferta { get; set; }
         public decimal? TerceraCantidad { get; set; }
         public bool EstaEliminado { get; set; }
+        public decimal TodasTotalPesos { get; set; }
+        public decimal TodasTotalARPCotizacionPosicion { get; set; }
     }
 
     public class CotizacionSubPosicionDto

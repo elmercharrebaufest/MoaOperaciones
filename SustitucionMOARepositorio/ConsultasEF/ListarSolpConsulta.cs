@@ -34,17 +34,19 @@ namespace SustitucionMOARepositorio.ConsultasEF
         private readonly List<string> TipoImputacion;
         private readonly List<int> ValorTipoImputacion;
         private readonly bool? ListarPendiente;
+        private readonly bool ContratoMarco;
 
-        public ListarSolpConsulta(Paginacion paginacion, List<string> solps, DateTime? desde, DateTime? hasta, bool? sap, bool? mantenimiento, bool? web, bool? repoAutomatica, bool? listarPendiente, List<int> usuarios, List<int> estados, List<int> centros, List<int> grupoDeCompras, int usuario_Id, List<int> claseDocumento = null, List<string> tipoImputacion = null, List<int> valorTipoImputacion = null)
+        public ListarSolpConsulta(Paginacion paginacion, List<string> solps, DateTime? desde, DateTime? hasta, bool sap, bool mantenimiento, bool web, bool repoAutomatica, bool listarPendiente, bool contratoMarco, List<int> usuarios, List<int> estados, List<int> centros, List<int> grupoDeCompras, int usuario_Id, List<int> claseDocumento = null, List<string> tipoImputacion = null, List<int> valorTipoImputacion = null)
         {
             Paginacion = paginacion;
             Solps = solps;
             FechaDesde = desde;
             FechaHasta = hasta.HasValue ? hasta.Value.AddDays(1) : hasta;
-            Sap = sap == true;
-            Mantenimiento = mantenimiento == true;
-            Web = web == true;
-            ReposicionAutomatica = repoAutomatica == true;
+            Sap = sap;
+            Mantenimiento = mantenimiento;
+            Web = web;
+            ReposicionAutomatica = repoAutomatica;
+            ContratoMarco = contratoMarco;
             Usuarios = usuarios;
             Estados = estados;
             Centros = centros;
@@ -75,11 +77,10 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                 (!Estados.Any() || (x.EstadoSolpSap_Id != null && Estados.Contains((int)x.EstadoSolpSap_Id))) &&
                                 (!Centros.Any() || x.Posiciones.Any(c => Centros.Contains(c.Centro_Id))) &&
                                 (!GrupoDeCompras.Any() || x.Posiciones.Any(gc => GrupoDeCompras.Contains((int)gc.GrupoCompras_Id))) &&
-                                //(!Sap || (Sap && x.TipoSolpSap == 3)) && (!Mantenimiento || (Mantenimiento && x.TipoSolpSap == 2)) && (!ReposicionAutomatica || (ReposicionAutomatica && x.TipoSolpSap == 4)) &&
-                                //(!Web || (Web && (x.TipoSolpSap == null || x.TipoSolpSap == 1)) &&
                                 (Sap && x.TipoSolpSap == 3 || Mantenimiento && x.TipoSolpSap == 2 || ReposicionAutomatica && x.TipoSolpSap == 4 ||
                                 (Web && (x.TipoSolpSap == null || x.TipoSolpSap == 1)) || (!Sap && !Mantenimiento && !Web && !ReposicionAutomatica)) &&
                                 (FechaDesde == null || x.FechaCreacion >= FechaDesde.Value) && (FechaHasta == null || x.FechaCreacion <= FechaHasta.Value) &&
+                                (!ContratoMarco || x.Posiciones.Any(p => !string.IsNullOrEmpty(p.NumeroContratoSuperior))) &&
                                 (!ClaseDocumento.Any() || x.EstadoSolpSap_Id != null && ClaseDocumento.Contains((int)x.ClaseDocumento_Id)) &&
                                 (!TipoImputacion.Any() || x.Posiciones.Any(c => TipoImputacion.Contains(c.TipoImputacion.Codigo))) &&
                                 (!ValorTipoImputacion.Any() || x.Posiciones.Any(c => ValorTipoImputacion.Contains((int)c.ValorTipoImputacion_Id)) || x.Posiciones.Any(p => p.Subposiciones.Any(c => ValorTipoImputacion.Contains((int)c.TipoImputacion_Id))))
@@ -98,6 +99,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                     NroOrdenDeCompraAdicional = x.NroOrdenDeCompraAdicional,
                                     TrabajoYaHecho = x.TrabajoYaHecho,
                                     Urgencia = x.Urgencia,
+                                    CondEspProveedorAsignado = x.CondEspProveedorAsignado,
                                     SolpConAdjuntos = x.Pliego.Archivos.Where(r => r.FileKey == FileKeys.AdjuntoCotizacionesSolp || r.FileKey == FileKeys.AdjuntoSolp).Any(),
                                     PosicionCompras = (from posicion in contexto.Set<SolpPosicion>()
                                                        where posicion.Solp_Id == x.Id
@@ -110,7 +112,8 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                            GrupoComprasCodigo = posicion.GrupoCompras != null ? posicion.GrupoCompras.Codigo : (string)null,
                                                            CentroCodigo = posicion.Centro != null ? posicion.Centro.Codigo : (string)null,
                                                            Cantidad = posicion.Cantidad,
-                                                           TipoPosicion = new TablaGeneralDto { Descripcion = posicion.TipoPosicion.Descripcion, Codigo = posicion.TipoPosicion.Codigo }
+                                                           TipoPosicion = new TablaGeneralDto { Descripcion = posicion.TipoPosicion.Descripcion, Codigo = posicion.TipoPosicion.Codigo },
+                                                           NroSolp = posicion.Solp.NroSolp
                                                        }),
                                     ItemPorPagina = Paginacion.ItemsPorPagina,
                                     Pagina = Paginacion.Pagina,
@@ -123,11 +126,12 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                     FechaLiberacionSap = x.FechaLiberacionSap,
                                     ChatSinLeer = x.ChatInternoCompras.Any(a => a.Leido == false && a.Usuario.Roles.Any(r => r.Codigo == rol)),
                                     PeticionesDeOferta = (from po in contexto.Set<PeticionDeOferta>()
-                                                          where po.Solp_Id == x.Id && po.RegistroInfo != true
+                                                              //where po.Posiciones.FirstOrDefault().SolpPosicion.Solp_Id == x.Id && po.RegistroInfo != true
+                                                          where po.Posiciones.Select(so => so.SolpPosicion.Solp_Id).Contains(x.Id) && po.RegistroInfo != true
+
                                                           select new PeticionDeOfertaDto()
                                                           {
                                                               Id = po.Id,
-                                                              Solp_Id = po.Solp_Id,
                                                               FechaCreacion = po.FechaCreacion,
                                                               UsuarioCreador_Id = po.UsuarioCreador_Id,
                                                               PlazoDeOfertaOriginal = po.PlazoDeOferta,
@@ -140,7 +144,9 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                               PlazoDeOfertaCierre = po.Cierres.Any() ? po.Cierres.OrderByDescending(p => p.Fecha).FirstOrDefault().Fecha : (DateTime?)null,
                                                               RevisionFinalizada = po.RevisionTecnica != null && po.RevisionTecnica.Finalizada,
                                                               Observaciones = po.Observaciones,
-                                                              RecotizacionEconomica = po.RevisionTecnica != null && po.RevisionTecnica.RecotizacionEconomica
+                                                              RecotizacionEconomica = po.RevisionTecnica != null && po.RevisionTecnica.RecotizacionEconomica,
+                                                              NrosSolp = po.Posiciones.Select(posi => posi.SolpPosicion.Solp.NroSolp)
+
                                                           })
                                 };
                 var pagina = Paginacion;

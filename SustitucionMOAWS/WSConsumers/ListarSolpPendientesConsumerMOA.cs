@@ -77,7 +77,6 @@ namespace SustitucionMOAWS.WSConsumers
     public interface IListarSolpPendientesConsumerMOA
     {
         List<string> ListarSolpPendientes();
-
     }
 
 }

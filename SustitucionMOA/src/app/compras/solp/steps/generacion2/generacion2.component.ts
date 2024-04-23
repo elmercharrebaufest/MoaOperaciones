@@ -4,9 +4,6 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 
 import * as uuid from 'uuid';
-import ImageResize from 'quill-image-resize-module';
-import Quill from 'quill';
-Quill.register('modules/imageResize', ImageResize);
 
 import { ListBaseComponent } from '../../../../common/base-components/list-base-component'
 import { SessionDataService } from '../../../../common/services/SessionDataService';
@@ -35,8 +32,6 @@ export class Generacion2Component extends ListBaseComponent {
     @Input('locale')
     protected locale: any;
 
-    modulesEditor = {};
-
     //validaciones
     formulario2: FormGroup;
 
@@ -55,9 +50,6 @@ export class Generacion2Component extends ListBaseComponent {
         protected router: Router, private formBuilder: FormBuilder,
         private validadorPasoSolpService: ValidadorPasoSolpService) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
-        this.modulesEditor = {
-            imageResize: true
-        }
     }
 
 
@@ -75,11 +67,6 @@ export class Generacion2Component extends ListBaseComponent {
     info: InfoVisitasDeObraDto;
     visitaDeObra: VisitaObraDto[] = [];
     verDetalleVisitas: boolean;
-
-
-    //variables auxiliares de text rich
-    posicionDeInicioInsert: number = 0;
-
 
     parsearFecha() {
         this.fechaEntrega = (<HTMLInputElement>document.querySelectorAll('[fechaInicioInput]')[0]).value;
@@ -108,10 +95,7 @@ export class Generacion2Component extends ListBaseComponent {
 
     eliminarVisita(id) {
         this.model.listaVisitas = this.model.listaVisitas.filter(x => x.id != id);
-        console.log("eliminar this.model.listaVisitas", this.model.listaVisitas);
         this.visitaDeObra = this.visitaDeObra.filter(visita => visita.Codigo !== id);
-        console.log("eliminar this.visitaDeObra", this.visitaDeObra);
-
         if (this.model.listaVisitas.length == 0) {
             this.agregarNuevaVisita();
         }
@@ -127,7 +111,7 @@ export class Generacion2Component extends ListBaseComponent {
         //declaro las validaciones para los campos
         if (this.model.tipoSolp == "SIN_PLIEGO") {
             this.formulario2 = this.formBuilder.group({
-                supervisorTrabajo: new FormControl('', Validators.required),
+                supervisorTrabajo: [{ value: true, disabled: false }, []],
                 supervisorSector: new FormControl('', Validators.required),
                 visitaDeObra: [{ value: true, disabled: true }, [Validators.required]],
                 visitaDeObraMasiva: [{ value: true, disabled: true }, [Validators.required]],
@@ -159,7 +143,6 @@ export class Generacion2Component extends ListBaseComponent {
             });
         }
 
-
         this.validadorPasoSolpService.formulario = this.formulario2;
         if (this.model.cargoPasoDos) {
             this.validadorPasoSolpService.aplicarValidaciones();
@@ -170,52 +153,11 @@ export class Generacion2Component extends ListBaseComponent {
         if (this.model.supervisorSector[0] == '') {
             this.model.supervisorSector = [];
         }
-        if (this.model.supervisorTrabajo[0] == '') {
-            this.model.supervisorTrabajo = [];
+        if (this.model.supervisorTrabajo == '') {
+            this.model.supervisorTrabajo = '';
         }
 
         this.listarVisitasDeObra();
-    }
-
-    selectionChange(event) {
-        if (event.range && this.model.observacionesGeneracion) {
-            this.posicionDeInicioInsert = this.ObtenerPosicionInsert(event.range.index, this.model.observacionesGeneracion);
-        }
-    }
-
-    fileChange(file) {
-        if (this.posicionDeInicioInsert != undefined && this.model.observacionesGeneracion.length > this.posicionDeInicioInsert) {
-            var textoInicial = this.model.observacionesGeneracion.substring(0, this.posicionDeInicioInsert + 1);
-            var textoFinal = this.model.observacionesGeneracion.substring(this.posicionDeInicioInsert + 1, this.model.observacionesGeneracion.length);
-            this.model.observacionesGeneracion = textoInicial + '<img src=' + file + '>' + textoFinal;
-            this.posicionDeInicioInsert = undefined;
-        }
-        else {
-            this.model.observacionesGeneracion = '<img src=' + file + '>';
-        }
-    }
-
-    ObtenerPosicionInsert(posicion: number, texto: string) {
-        let contar = false;
-        for (var i = 0; i < texto.length; i++) {
-            var letra = texto[i];
-            if (letra == "<") {
-                contar = false;
-                continue
-            }
-            else if (letra == ">") {
-                contar = true;
-                continue;
-            }
-
-            if (contar) {
-                posicion--;
-
-            }
-
-            if (posicion == 0)
-                return i;
-        }
     }
 
     mostrarError(nombreCampo: string): boolean {
@@ -226,10 +168,14 @@ export class Generacion2Component extends ListBaseComponent {
         return false;
     }
 
-    mostrarValidacion(campoAValidar, vacio) {
+    mostrarValidacion(campoAValidar, vacio){
         let camposVacios = this.camposObligatorios.find(x => x.campo == campoAValidar && x.esObligatorio);
-        return (camposVacios != null && vacio == 0);
+        if(vacio !== undefined && vacio.CodigoDescripcion != "Seleccione un usuario") {
+            return (camposVacios != null && vacio == 0);
+        }
+        return true;
     }
+
 
     ngOnDestroy() {
         super.ngOnDestroy();
@@ -315,5 +261,11 @@ export class Generacion2Component extends ListBaseComponent {
 
     cerrarDetalle(){
         this.verDetalleVisitas = false;
+    }
+
+    onCompletarResponsable() {
+        if (this.model != undefined && this.model.selectResponsableTrabajo != undefined) {
+            this.model.supervisorTrabajo = this.model.selectResponsableTrabajo.CodigoDescripcion;
+        }
     }
 }

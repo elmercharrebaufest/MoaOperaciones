@@ -19,6 +19,7 @@ import { PeticionDeOfertaDto, PeticionDeOfertaRevisionTecnicaDto } from '../../m
 import { AdjudicacionDto, AdjudicacionPosicionDto } from '../../modelos/adjudicacion';
 import { ChatComprasDto } from '../chat-interno/chat-interno.interface';
 import { forEach } from '@angular/router/src/utils/collection';
+import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 
 declare var $: any;
 
@@ -48,6 +49,7 @@ export class DashboardComponent extends ListBaseComponent {
     mantenimiento: boolean = false;
     web: boolean = false;
     repoAutomatica: boolean = false;
+    contratoMarco: boolean = false;
     orden: string;
     columnaOrden: string;
     length = 0;
@@ -62,6 +64,7 @@ export class DashboardComponent extends ListBaseComponent {
     combos: any;
     usuariosResult: any;
     ordenesDeCompra: AdjudicacionDto[] = [];
+    peticionesDeOferta: PeticionDeOfertaDto[] = [];
     ordenDeCompra: any;
     displayOrdenDeCompra: boolean;
     displayChatInterno: boolean = false;
@@ -72,6 +75,7 @@ export class DashboardComponent extends ListBaseComponent {
         mantenimiento: boolean;
         web: boolean;
         repoAutomatica: boolean;
+        contratoMarco: boolean;
         usuarios: string[];
         estadoSolp: string[];
         gruposCompras: string[];
@@ -89,6 +93,7 @@ export class DashboardComponent extends ListBaseComponent {
             mantenimiento: false,
             web: false,
             repoAutomatica: false,
+            contratoMarco: false,
             usuarios: [],
             estadoSolp: [],
             gruposCompras: [],
@@ -140,6 +145,7 @@ export class DashboardComponent extends ListBaseComponent {
     checkedFilterWeb = false;
     verTodas: boolean = this.isAuthorized('VER TODAS SOLPS');
     public chat: ChatComprasDto;
+    clasesDocumento: number[] = [];
 
     cards = [
         { nombre: "Con documento de pliego", path: "/compras/solp/0", tipoSolp: "CON_PLIEGO" },
@@ -207,10 +213,10 @@ export class DashboardComponent extends ListBaseComponent {
     }
 
     ngOnInit() {
+        this.listarClaseDocumento();
         this.recuperarFiltros();
         this.listarUsuarioCreadorSolp();
         this.navService.setSeccionList([]);
-
         this.desdeDashboard = new Date();
         this.hastaDashboard = new Date();
     }
@@ -245,68 +251,6 @@ export class DashboardComponent extends ListBaseComponent {
         }, 0.01);
     }
 
-    filtrarPorSap() {
-        this.checkedFilterSap = !this.checkedFilterSap;
-        this.filtrarTablaPorTipoSolp();
-    }
-
-    filtrarPorMantenimiento() {
-        this.checkedFilterMantenimiento = !this.checkedFilterMantenimiento;
-        this.filtrarTablaPorTipoSolp();
-    }
-
-    filtrarPorWeb() {
-        this.checkedFilterWeb = !this.checkedFilterWeb;
-        this.filtrarTablaPorTipoSolp();
-    }
-
-    filtrarTablaPorTipoSolp() {
-
-        var fechaDesde = this.fechaInicio;
-        var fechaHasta = this.fechaFin + " 23:59:59";
-
-        let tablaPrincipal = this.tablaSolpCopy;
-        if (this.checkedFilterMantenimiento && this.checkedFilterWeb && this.checkedFilterSap) {
-            tablaPrincipal = tablaPrincipal;
-            this.tabla.first = 0;
-        } else if (this.checkedFilterSap && this.checkedFilterMantenimiento) {
-            tablaPrincipal = tablaPrincipal.filter(x => x.TipoSolpSap === EnumTipoSolpSap.SAP || x.TipoSolpSap === EnumTipoSolpSap.Mantenimiento);
-            this.tabla.first = 0;
-        } else if (this.checkedFilterSap && this.checkedFilterWeb) {
-            tablaPrincipal = tablaPrincipal.filter(x => x.TipoSolpSap === EnumTipoSolpSap.SAP || x.TipoSolpSap === EnumTipoSolpSap.Web);
-            this.tabla.first = 0;
-        } else if (this.checkedFilterMantenimiento && this.checkedFilterWeb) {
-            tablaPrincipal = tablaPrincipal.filter(x => x.TipoSolpSap === EnumTipoSolpSap.Mantenimiento || x.TipoSolpSap === EnumTipoSolpSap.Web);
-            this.tabla.first = 0;
-        } else if (this.checkedFilterMantenimiento) {
-            tablaPrincipal = tablaPrincipal.filter(x => x.TipoSolpSap === EnumTipoSolpSap.Mantenimiento);
-            this.tabla.first = 0;
-        } else if (this.checkedFilterSap) {
-            tablaPrincipal = tablaPrincipal.filter(x => x.TipoSolpSap === EnumTipoSolpSap.SAP);
-            this.tabla.first = 0;
-        } else if (this.checkedFilterWeb) {
-            tablaPrincipal = tablaPrincipal.filter(x => x.TipoSolpSap === EnumTipoSolpSap.Web);
-            this.tabla.first = 0;
-        } this.tabla.first = 0;
-
-
-        if (fechaDesde != null && fechaHasta != null) {
-            tablaPrincipal = tablaPrincipal.filter(x =>
-                new Date(Date.parse(x.FechaCreacion)) >= new Date(fechaDesde) &&
-                new Date(Date.parse(x.FechaCreacion)) <= new Date(fechaHasta)
-            )
-            this.tabla.first = 0;
-        }
-        this.tablaSolp = tablaPrincipal;
-
-        if (this.tablaSolp.length == 0) {
-            this.mensajeComponent.setInfoMsg("No se encontraron Solps")
-        }
-        else {
-            this.mensajeComponent.setMsgsEmpty();
-        }
-    }
-
     getStatusDocumentoSolp(data: any): String {
         return data.PosicionesEstado && data.NroSolp != null ? 'Borrado en sap' : data.EstadoSolpSap.Descripcion;
     }
@@ -319,7 +263,7 @@ export class DashboardComponent extends ListBaseComponent {
         try {
             this.spinnerComponent.showIt();
             let multiSelectValues = this.selectEstadoSolp.join(",")
-            this.subscription = this.service.getListarSolp(this.pageIndex, this.pageSize, this.orden, this.columnaOrden, this.nroSolp, this.fechaInicio, this.fechaFin, this.sap, this.mantenimiento, this.web, this.repoAutomatica,
+            this.subscription = this.service.getListarSolp(this.pageIndex, this.pageSize, this.orden, this.columnaOrden, this.nroSolp, this.fechaInicio, this.fechaFin, this.sap, this.mantenimiento, this.web, this.repoAutomatica, this.contratoMarco,
                 multiSelectValues, this.selectUsuario.join(","), this.selectCentro.join(","), this.selectGrupoCompras.join(","), this.selectClaseDocumento.join(","), this.selectTipoImputacion.join(","), this.selectValorTipoImputacion.join(",")
             ).subscribe(
                 (result: any) => {
@@ -481,7 +425,7 @@ export class DashboardComponent extends ListBaseComponent {
             return false; //<-- Prevent Refresh
         }
 
-        return false; 
+        return false;
     }
 
     listarUsuarioCreadorSolp() {
@@ -637,7 +581,7 @@ export class DashboardComponent extends ListBaseComponent {
         this.getListarSolp()
     }
 
-    obtenerPeticionDeOferta(Id) {
+    obtenerPeticionDeOferta(Id, rowData) {
         this.blockUI.start('Cargando...')
         this.service.obtenerPeticionDeOferta(Id)
             .subscribe(
@@ -647,6 +591,7 @@ export class DashboardComponent extends ListBaseComponent {
                     }
                     else {
                         this.peticion = result.data;
+                        this.peticion.Solp = rowData;
                         this.displayRevisionTecnica = true;
                         this.blockUI.stop();
                     }
@@ -679,7 +624,9 @@ export class DashboardComponent extends ListBaseComponent {
 
     cerrarModalRevisionTecnica() {
         this.displayRevisionTecnica = false;
-        this.getListarSolp();
+        this.listarPeticiones(this.peticion.Solp);
+        this.onBuscar();
+
     }
 
     cancelarModal() {
@@ -755,7 +702,7 @@ export class DashboardComponent extends ListBaseComponent {
     
     cerrarCircular() {
         this.displayCircular = false;
-        this.getListarSolp();
+        this.listarPeticiones(this.peticion.Solp);
     }
 
     onBuscar() {
@@ -765,6 +712,7 @@ export class DashboardComponent extends ListBaseComponent {
         this.filtrosSolicitante.mantenimiento = this.mantenimiento;
         this.filtrosSolicitante.web = this.web;
         this.filtrosSolicitante.repoAutomatica = this.repoAutomatica;
+        this.filtrosSolicitante.contratoMarco = this.contratoMarco;
         this.filtrosSolicitante.usuarios = this.selectUsuario;
         this.filtrosSolicitante.estadoSolp = this.selectEstadoSolp;
         this.filtrosSolicitante.gruposCompras = this.selectGrupoCompras;
@@ -776,6 +724,7 @@ export class DashboardComponent extends ListBaseComponent {
         this.filtrosSolicitante.fechaDesde = this.fechaInicio;
         this.filtrosSolicitante.fechaHasta = this.fechaFin;
         this.paginator.changePage(0);
+        this.cerrarExpansiones();
         this.getListarSolp();
         sessionStorage.setItem('filtrosSolicitante', JSON.stringify(this.filtrosSolicitante));
     }
@@ -784,12 +733,12 @@ export class DashboardComponent extends ListBaseComponent {
         this.displayOrdenDeCompra = false;
     }
 
-    verDetalleOrdenDeCompra(nroOC: any) {
-        this.obtenerAdjudicacion(nroOC);
+    verDetalleOrdenDeCompra(nroOC: any, solpId) {
+        this.obtenerAdjudicacion(nroOC, solpId);
         this.displayOrdenDeCompra = true;
     }
 
-    obtenerAdjudicacion(nroOC) {
+    obtenerAdjudicacion(nroOC, rowData) {
         this.blockUI.start('Cargando...')
         this.service.obtenerAdjudicacion(nroOC).subscribe(
             (result) => {
@@ -798,6 +747,7 @@ export class DashboardComponent extends ListBaseComponent {
                 }
                 else {
                     this.ordenDeCompra = result.data;
+                    this.ordenDeCompra.Solp = rowData;
                     this.blockUI.stop();
                 }
             },
@@ -807,22 +757,15 @@ export class DashboardComponent extends ListBaseComponent {
             })
     }
 
-    listarAdjudicaciones(solpId) {
+    listarAdjudicaciones(rowData) {
         this.blockUI.start('Cargando...')
-        this.service.listarAdjudicaciones(solpId).subscribe(
+        this.service.listarAdjudicaciones(rowData.Id).subscribe(
             (result) => {
                 if (result.logout == true) {
                     this.sessionDataService.logout();
                 }
                 else {
-                    if (this.ordenesDeCompra.length > 0) {
-                        for (let i = this.ordenesDeCompra.length - 1; i >= 0; i--) {
-                            if (this.ordenesDeCompra[i].Solp_Id === solpId) {
-                                this.ordenesDeCompra.splice(i, 1);
-                            }
-                        }
-                    }
-                    this.mapData(result.data);
+                    rowData.OrdenesDeCompra = result.data;
                     this.blockUI.stop();
                 }
             },
@@ -831,6 +774,29 @@ export class DashboardComponent extends ListBaseComponent {
                 this.mensajeComponent.setErrorMsg(error.message);
             })
     }
+
+    listarPeticiones(rowData) {
+        if(rowData.PeticionesDeOferta != undefined && rowData.PeticionesDeOferta != null && rowData.PeticionesDeOferta.length > 0){
+            return;
+        }
+        this.blockUI.start('Cargando...')
+        this.service.listarPeticiones(rowData.Id).subscribe(
+            (result) => {
+                if (result.logout == true) {
+                    this.sessionDataService.logout();
+                }
+                else {                    
+                    rowData.PeticionesDeOferta = result.data;
+                    this.blockUI.stop();
+                }
+            },
+            (error) => {
+                this.blockUI.stop();
+                this.mensajeComponent.setErrorMsg(error.message);
+            })
+    }
+
+
 
     filtrarOrdenesDeCompra(solpId): AdjudicacionDto[] {
         return this.ordenesDeCompra.filter(orden => orden.Solp_Id == solpId);
@@ -924,6 +890,7 @@ export class DashboardComponent extends ListBaseComponent {
             this.mantenimiento = filtrosGuardados.mantenimiento;
             this.web = filtrosGuardados.web;
             this.repoAutomatica = filtrosGuardados.repoAutomatica;
+            this.contratoMarco = filtrosGuardados.contratoMarco;
             this.selectUsuario = filtrosGuardados.usuarios;
             this.selectEstadoSolp = filtrosGuardados.estadoSolp;
             this.selectGrupoCompras = filtrosGuardados.gruposCompras;
@@ -946,4 +913,39 @@ export class DashboardComponent extends ListBaseComponent {
             }
         }
     }
+
+    listarClaseDocumento() {
+        try {
+            this.subscription = this.service.listarClaseDocumento(sessionStorage.getItem("usuarioId")).subscribe(
+                (result: any) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.floatMsgService.setErrorMsg(result.error);
+                    } else {
+                        this.clasesDocumento = result;
+                        if (this.clasesDocumento.length > 0)
+                            sessionStorage.setItem('clasesDocumentoUsuario', JSON.stringify(this.clasesDocumento));
+                    }
+                },
+                error => { this.floatMsgService.setErrorMsg(error.message); }
+            );
+        } catch (e) {
+            this.floatMsgService.setErrorMsg(e);
+            return false;
+        }
+        return false;
+    }
+
+    mismaClaseDocumento(claseDocumento_Id: number): boolean {
+        return this.clasesDocumento.some(x => x === claseDocumento_Id);
+    }
+
+    cerrarExpansiones(): void {
+        this.tabla.value.forEach(row => {
+            if (this.tabla.isRowExpanded(row)) {
+              this.tabla.toggleRow(row);
+            }
+          });
+      }
 }

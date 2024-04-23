@@ -3,6 +3,7 @@ import { SolpPosicion } from "../compras/solp/solp-posicion"
 import { CotizacionDto } from "./cotizacionDto"
 
 export interface PeticionDeOfertaDto {
+    Solp?: any
     PorcentajeDeHoras?: any
     PersonalHoras?: boolean,
     RespetaMateriales?: boolean,
@@ -38,7 +39,8 @@ export interface PeticionDeOfertaDto {
     RevisionFinalizada?: boolean,
     RevisionTecnica?: PeticionDeOfertaRevisionTecnicaDto
     PideDescripcionTecnica?: boolean,
-    PideDocumentacionTecnica?: boolean
+    PideDocumentacionTecnica?: boolean,
+    NrosSolp?: any[],
 }
 
 export interface PeticionDeOfertaUsarioDto {

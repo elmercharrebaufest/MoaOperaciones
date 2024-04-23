@@ -47,8 +47,7 @@ namespace SustitucionMOAModel.Dto
         public decimal PagoEn3 { get; set; }
         public decimal PagoEn1Porcentaje { get; set; }
         public decimal PagoEn2Porcentaje { get; set; }
-
-
+        public string NroSolp { get; set; }
     }
 
 }

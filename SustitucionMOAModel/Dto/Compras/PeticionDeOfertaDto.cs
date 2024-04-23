@@ -105,6 +105,8 @@ namespace SustitucionMOAModel.Dto
         public bool PideDocumentacionTecnica { get; set; }
         public int? RevisionTecnicaId { get; set; }
         public bool? TrabajoHecho { get; set; }
+        public IEnumerable<string> NrosSolp { get; set; }
+        public bool TienePosicionesEliminadas { get; set; }
     }
 
     public class PeticionDeOfertaSolpPosicionDto
@@ -149,6 +151,8 @@ namespace SustitucionMOAModel.Dto
         public DateTime? FechaCircular { get; set; }
         public string CodigoProveedor { get; set; }
         public string THCategoria { get; set; }
+        public bool? VisibleSolicitante { get; set; }
+        public bool Deshabilitado { get; set; }
     }
 
     public class PeticionDeOfertaCierreDto

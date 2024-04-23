@@ -85,19 +85,22 @@
                             </p-calendar>
                         </div>
                         <div class="col-md-6 col-lg-6" style="margin-top: 6px;">
-                            <span style="border-left: 1px solid black;margin-top: 1px;padding-left: 9px;padding-right: 1px;margin-left: 8px;">
+                            <span style="margin-top: 1px; margin-right: 7px;">
                                 <p-checkbox class="checkboxFechas" binary="true" label="SAP" [(ngModel)]="sap">
                                 </p-checkbox>
                             </span>
-                            <span class="padding1" style="margin-right: 5px; margin-left: 5px;">
+                            <span style="margin-right: 7px;">
                                 <p-checkbox class="checkboxFechas" binary="true" label="OT" pTooltip="Mantenimiento"
                                             [(ngModel)]="mantenimiento"></p-checkbox>
                             </span>
-                            <span class="padding1" style="margin-right: 5px;">
+                            <span style="margin-right: 7px;">
                                 <p-checkbox class="checkboxFechas" binary="true" label="Web" [(ngModel)]="web"></p-checkbox>
                             </span>
-                            <span class="padding1" style="margin-right: 5px;">
-                                <p-checkbox class="checkboxFechas" binary="true" label="Reposición Automática" [(ngModel)]="repoAutomatica"></p-checkbox>
+                            <span style="margin-right: 7px;">
+                                <p-checkbox class="checkboxFechas" binary="true" label="Repos. Automática" [(ngModel)]="repoAutomatica"></p-checkbox>
+                            </span>
+                            <span>
+                                <p-checkbox class="checkboxFechas" binary="true" label="Contrato Marco" [(ngModel)]="contratoMarco"></p-checkbox>
                             </span>
                         </div>
                         <div class="col-md-3 col-lg-3  buttonBuscar" style="padding-right: 30px;">
@@ -180,7 +183,7 @@
                 <tr [pSelectableRow]="rowData">
                     <td (dblclick)="onRowDblClick($event, rowData)">
                         <div *ngIf="rowData.TienePeticionDeOferta">
-                            <a href="#" [pRowToggler]="rowData" (click)="listarExpand()">
+                            <a href="#" [pRowToggler]="rowData" (click)="listarExpand(); listarPeticiones(rowData)">
                                 <i [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
                             </a>
                         </div>
@@ -209,7 +212,7 @@
                             </span>
                         </div>
                         <div class="col-md-2"
-                             *ngIf="rowData.EstadoSolpSap.Descripcion != 'Liberada' && (rowData.UsuarioActual.Mail == usuario || verTodas)">
+                             *ngIf="rowData.EstadoSolpSap.Descripcion != 'Liberada' && (rowData.UsuarioActual.Mail == usuario || verTodas || mismaClaseDocumento(rowData.ClaseDocumento_Id))">
                             <span>
                                 <img class="pointer" src="./Content/images/icons/editar.svg" alt="editar" style="height:28px;"
                                      (click)="goToSeccionEdit('/compras/solp', rowData.Id, rowData.NroSolp)" />
@@ -300,10 +303,10 @@
                                                 </td>
                                                 <td class="columna" [style.color]="licitacion.EstadoColor">{{licitacion.Estado}}</td>
                                                 <td class="columna">
-                                                    <button class="publicar btn" *ngIf="licitacion.RevisionFinalizada != true" style="margin-right: 10px;" (click)="obtenerPeticionDeOferta(licitacion.Id)">
+                                                    <button class="publicar btn" *ngIf="licitacion.RevisionFinalizada != true" style="margin-right: 10px;" (click)="obtenerPeticionDeOferta(licitacion.Id, rowData)">
                                                         Revisión Técnica
                                                     </button>
-                                                    <button class="publicar btn " *ngIf="rowData.VerCircular == true && licitacion.RevisionFinalizada != true" style="margin-right: 10px;" (click)="obtenerPeticionDeOfertaCircular(licitacion.Id)">
+                                                    <button class="publicar btn " *ngIf="rowData.VerCircular == true && licitacion.RevisionFinalizada != true" style="margin-right: 10px;" (click)="obtenerPeticionDeOfertaCircular(licitacion.Id, rowData)">
                                                         Circular
                                                     </button>
                                                 </td>
@@ -313,11 +316,11 @@
                                 </p-tabPanel>
                                 <p-tabPanel>
                                     <ng-template pTemplate="header">
-                                        <div class="padding" (click)="listarAdjudicaciones(rowData.Id)">
+                                        <div class="padding" (click)="listarAdjudicaciones(rowData)">
                                             Orden de compra
                                         </div>
                                     </ng-template>
-                                    <p-table [value]="filtrarOrdenesDeCompra(rowData.Id)">
+                                    <p-table [value]="rowData.OrdenesDeCompra">
                                         <ng-template pTemplate="header">
                                             <tr>
                                                 <th class="columna">Numero</th>
@@ -346,7 +349,7 @@
                                                 <td class="columna">{{orden.EstadoLiberacionDetalle}}</td>
                                                 <td class="columna">
                                                     <button class="publicar btn btn-success"
-                                                            (click)="verDetalleOrdenDeCompra(orden.NumeroOrdenDeCompra)">
+                                                            (click)="verDetalleOrdenDeCompra(orden.NumeroOrdenDeCompra, rowData)">
                                                         Ver detalle
                                                     </button>
                                                 </td>
