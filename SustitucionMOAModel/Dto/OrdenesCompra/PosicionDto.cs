@@ -56,5 +56,7 @@ namespace SustitucionMOAModel.Dto.OrdenesCompra
         /// referencia a la orden de compra a la que pertenece la posicion
         /// </summary>
         public string NroOrdenCompra { get; set; }
+
+        public string NoMoreGR { get; set; }
     }
 }

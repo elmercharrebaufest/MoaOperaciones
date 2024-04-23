@@ -467,6 +467,13 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
         return isComplete;
       }
 
+    isPendingRelease(oc) : boolean{
+        return oc.SubjToR != "";
+    }
+
+    isNotReceibeMoreMerchandise(posicion) : boolean {
+        return posicion.NoMoreGR === "X";
+    }
 
     getFecha() {
         var fechaActual = new Date();
@@ -740,13 +747,43 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
     }
 
     hideCheckboxToAll(items: any): boolean {
-        return items.some(item => !this.isGet100(item) || item.MontoACertificar != 0)
+        // return items.some(item => !this.isGet100(item) || item.MontoACertificar != 0)
+        return this.tablaPO.some(x => 
+            x.NumeroOrdenDeCompra === items.NroOrdenCompra && 
+            x.SubjToR === "" && (
+                items.Items.some(item => !this.isGet100(item) || item.MontoACertificar != 0)
+            )
+        );
     }
 
     hidePositionCheckboxToAll(items: any): boolean {
-        return items.some(element => {
-            return !this.isGet100(element) || (((element.Cantidad - element.CantidadReal) * element.Importe) / element.Cantidad) != 0;
+        // return items.Items.some(element => {
+        //     return !this.isGet100(element) || (((element.Cantidad - element.CantidadReal) * element.Importe) / element.Cantidad) != 0 || this.tablaPO.some(x => x.NumeroOrdenDeCompra === items.NroOrdenCompra && x.SubjToR != "");;
+        // });
+        let isOk = false;
+
+        this.tablaPO.some(x => {
+            if (x.NumeroOrdenDeCompra === items.NroOrdenCompra) {
+                if (x.SubjToR === "") {
+                    isOk = true; // Devuelve true si SubjToR es "X"
+                    return true; // Sale del some
+                }
+                
+                if (x.SubjToR === "") {
+                    isOk = !items.Items.some(element => 
+                        !this.isGet100(element) || 
+                        (((element.Cantidad - element.CantidadReal) * element.Importe) / element.Cantidad) !== 0
+                    );
+                    return isOk; // Sale del some si isOk es true
+                }
+            }
         });
+
+        return isOk;
+    }
+
+    hideItemsCheckbox(items: any): boolean {
+        return items.SubjToR === "";
     }
 
     /**

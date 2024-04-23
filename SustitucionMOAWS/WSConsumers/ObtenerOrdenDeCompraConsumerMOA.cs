@@ -456,6 +456,8 @@ namespace SustitucionMOAWS.WSConsumers
                 pos.NumeroSolp = posicion.PREQ_NO;
                 pos.Contrato = posicion.AGREEMENT;
                 pos.Solicitante = posicion.PREQ_NAME;
+                pos.NoMoreGR = posicion.NO_MORE_GR;
+
                 //pos.MonedaId = posicion.CURRENCY;
                 pos.MonedaDescripcion = POHEADER.CURRENCY_ISO;
 

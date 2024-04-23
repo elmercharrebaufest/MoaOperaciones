@@ -31,13 +31,34 @@
 
 .green-row {
     background-color: #c2e4ce !important;
+}
 
+.orange-row {
+    background-color: #ec7f1a !important;
+}
+
+.purple-row {
+    background-color: #a831e2 !important;
 }
 
 .reference-position-complete {
     width: 50px;       /* Ancho del rectángulo */
     height: 25px;       /* Alto del rectángulo */
     background-color: #c2e4ce;  /* Color de referencia HTML */
+    border: 1px solid #000;     /* Borde negro opcional */
+}
+
+.reference-pending-release {
+    width: 50px;       /* Ancho del rectángulo */
+    height: 25px;       /* Alto del rectángulo */
+    background-color: #ec7f1a;  /* Color de referencia HTML */
+    border: 1px solid #000;     /* Borde negro opcional */
+}
+
+.reference-merchandise {
+    width: 50px;       /* Ancho del rectángulo */
+    height: 25px;       /* Alto del rectángulo */
+    background-color: #a831e2;  /* Color de referencia HTML */
     border: 1px solid #000;     /* Borde negro opcional */
 }
 

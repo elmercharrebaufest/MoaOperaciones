@@ -162,6 +162,7 @@ namespace SustitucionMOAUtils.Services
 
                 detalleOrdendeCompra.NombreProveedor = ordenCompra.ProveedorNombre;
                 detalleOrdendeCompra.MonedaDescripcion = ordenCompra.MonedaDescripcion;
+                detalleOrdendeCompra.SubjToR = ordenCompra.SUBJ_TO_R;
 
                 result.Add(detalleOrdendeCompra);
 

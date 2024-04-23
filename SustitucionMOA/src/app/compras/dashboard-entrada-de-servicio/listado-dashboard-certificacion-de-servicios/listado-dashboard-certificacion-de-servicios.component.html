@@ -38,7 +38,7 @@
                 </div>
 
                 <div class="SearchBtn col-md-3 p-d-flex vertical-align-middle">
-                    <button class="btn btn-buscar" (click)="onBuscar()">Buscar</button>
+                    <button class="btn btn-buscar" (click)="onBuscar()" [disabled]="recalculando || !displayContent">Buscar</button>
                 </div>
             </div>
         </div>
@@ -126,7 +126,7 @@
 
             <!-- TABLE 1 BODY -->
             <ng-template pTemplate="body" let-rowData let-columns="columns" let-expanded="expanded">
-                <tr [pSelectableRow]="rowData">
+                <tr [class.orange-row]="isPendingRelease(rowData)" [pSelectableRow]="rowData" *ngIf="!ocFilterApplied || (ocFilterApplied && tienePosicionesConItemsACertificar(rowData.Posiciones))">
                     <td>
                         <a href="#" [pRowToggler]="rowData" (click)="loadSolicitantesList(rowData)">
                             <i [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
@@ -173,12 +173,12 @@
 
                             <!-- TABLE 2 BODY-->
                             <ng-template pTemplate="body" let-rowData let-expanded="expanded" let-posIndex="rowIndex">
-                                <tr class="posicion" *ngIf="!ocFilterApplied || (ocFilterApplied && tieneItemsACertificar(rowData))" [class.green-row]="esPosicionCompleta(rowData)">
+                                <tr [class.purple-row]="isNotReceibeMoreMerchandise(rowData)" class="posicion" *ngIf="!ocFilterApplied || (ocFilterApplied && tieneItemsACertificar(rowData))" [class.green-row]="esPosicionCompleta(rowData)">
                                     <ng-container *ngIf="mostrarPosicionSolicitante(rowData)">
 
                                       <!-- SE AGREGA CHECKBOX PARA SELECCIOANR N POSICIONES -->
                                         <td>
-                                            <input *ngIf="hidePositionCheckboxToAll(rowData.Items)" type="checkbox" [(ngModel)]="rowData.isSelected" (change)="selectAllPositionsLines($event,rowData)"/>
+                                            <input *ngIf="hidePositionCheckboxToAll(rowData)" type="checkbox" [(ngModel)]="rowData.isSelected" (change)="selectAllPositionsLines($event,rowData)"/>
 
                                             <a href="#" [pRowToggler]="rowData" (click)="calcularValoresACertificar(rowData)">
                                                 <i [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
@@ -226,7 +226,7 @@
                                             <ng-template pTemplate="header" *ngIf="rowData.Items && rowData.Items.length > 0">
                                                 <tr>
                                                     <th>
-                                                        <input *ngIf="hideCheckboxToAll(rowData.Items)" type="checkbox" [(ngModel)]="rowData.isSelected" (change)="selectAllItems($event, rowData.Items)">
+                                                        <input *ngIf="hideCheckboxToAll(rowData)" type="checkbox" [(ngModel)]="rowData.isSelected" (change)="selectAllItems($event, rowData.Items)">
                                                     </th>
                                                     <ng-container *ngFor="let col of userTablesConfig[2].columns">
                                                         <th [id]="col.id" *ngIf="col.sortable && col.visible" [pSortableColumn]="col.field">{{ col.header }}<p-sortIcon [field]="col.field"></p-sortIcon></th>
@@ -242,7 +242,7 @@
                                                         <input type="checkbox"
                                                                [(ngModel)]="rowData.isSelected"
                                                                (change)="onCheckboxChange(rowData)"
-                                                               [attr.disabled]="isGet100(rowData) || rowData.MontoACertificar === 0 ? true : null" />
+                                                               [attr.disabled]="isGet100(rowData) || rowData.MontoACertificar === 0 || !hidePositionCheckboxToAll(rowData) ? true : null" />
                                                         <a href="#" [pRowToggler]="rowData" *ngIf="rowData.EntradasServicio.length > 0">
                                                             <i [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
                                                         </a>
@@ -378,7 +378,7 @@
         </p-table>
         <div class="container-button">
             <button (click)="openModal()" class="btn btn-certificar" [attr.disabled]="itemSelected.length === 0? true : null">
-                Certificar ES - Ítem
+                Certificar ES - Ýtem
             </button>
         </div>
         <div class="reference-section">
@@ -394,6 +394,18 @@
                             <div class="reference-position-complete"></div>
                         </td>
                         <td>&emsp;Posición completa</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="reference-pending-release"></div>
+                        </td>
+                        <td>&emsp;Orden de compra pendiente de liberacion</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="reference-merchandise"></div>
+                        </td>
+                        <td>&emsp;La posición no recibe mas mercaderia</td>
                     </tr>
                 </tbody>
             </table>
