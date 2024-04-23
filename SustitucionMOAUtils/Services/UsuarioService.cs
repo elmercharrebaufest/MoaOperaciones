@@ -14,7 +14,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using Entidades = SustitucionMOAModel.Entities;
-
+using Proveedor = SustitucionMOAModel.Entities.Proveedor;
 
 namespace SustitucionMOAUtils.Services
 {
@@ -581,6 +581,18 @@ namespace SustitucionMOAUtils.Services
             }
             return listaProvedores;
         }
+
+        public List<ProveedorDto> GetProveedoresUsuario(int usuarioId)
+        {
+            var usuario = repositorio.Obtener<Usuario>(u => u.Id == usuarioId);
+            List<ProveedorDto> listaProvedores = new List<ProveedorDto>();
+            foreach (var proveedor in usuario.Proveedores)
+            {
+                listaProvedores.Add(new ProveedorDto(proveedor));
+            }
+            return listaProvedores;
+        }
+
         public List<TipoUsuarioDto> GetTipoUsuario()
         {
             var tipoUsuarios = repositorio.Listar<TipoUsuario>();
@@ -886,8 +898,47 @@ namespace SustitucionMOAUtils.Services
 
             repositorio.GuardarCambios();
         }
+
+        public void DesasociarVendedor(int usuarioId, int proveedorId, string mailUsuarioSesion)
+        {
+            var usuarioSesion = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuarioSesion);
+
+            if (usuarioSesion == null || !usuarioSesion.TieneRol(RolEnum.Administracion))
+            {
+                throw new InfoCustomException("Usuario no autorizado a realizar esta acción.");
+            }
+
+            var usuario = this.repositorio.Obtener<Usuario>(u => u.Id == usuarioId);
+            var proveedor = this.repositorio.Obtener<Proveedor>(p => p.Id == proveedorId);
+
+            if (usuario.Proveedores.Count() == 1)
+            {
+                throw new InfoCustomException("No se puede realizar la desasociacion. El usuario opera unicamente con este vendedor.");
+            }
+
+            /*if (!usuario.TieneRol(RolEnum.Multifirma))
+            {
+                throw new InfoCustomException("No se puede realizar la desasociacion. El usuario no posee rol multifirma. Contactar a sistemas.");
+            }*/
+
+            usuario.Proveedores.Remove(proveedor);
+
+            var historialProveedor = new ProveedorHistorialAprobacion
+            {
+                EstadoAprobacion = proveedor.EstadoAprobacion,
+                Usuario = usuarioSesion,
+                Observacion = "Se elimina asociación de proveedor para el usuario: " + usuario.Mail,
+                Fecha = DateTime.Now,
+            };
+
+            proveedor.HistorialAprobaciones.Add(historialProveedor);
+
+            this.repositorio.GuardarCambios();
+
+            return;
+        }
         #endregion
-  
+
 
     }
 }

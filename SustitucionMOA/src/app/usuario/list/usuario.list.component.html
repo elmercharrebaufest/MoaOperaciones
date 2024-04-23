@@ -81,6 +81,7 @@
                             <th tabindex="0" rowspan="1" colspan="1">Roles</th>
                             <th tabindex="0" rowspan="1" colspan="1"></th>
                             <th tabindex="0" rowspan="1" colspan="1"></th>
+                            <th tabindex="0" rowspan="1" colspan="1"></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -110,6 +111,11 @@
                             <td>
                                 <span title="Historial de cambios" class="fa fa-list cursor-pointer" data-toggle="modal"
                                     data-target="#modalAuditoriaUsuario" (click)="abrirModalAuditoriaUsuario(usuario.Id)"
+                                    style="font-size: 22px; color: #009688; margin-right: 5px;"></span>
+                            </td>
+                            <td>
+                                <span title="Ver vendedores" class="fa fa-users cursor-pointer" data-toggle="modal"
+                                    data-target="#modalVerVendedores" (click)="abrirModalVerVendedores(usuario)"
                                     style="font-size: 22px; color: #009688; margin-right: 5px;"></span>
                             </td>
                         </tr>
@@ -166,6 +172,24 @@
                     </div>
                     <div class="modal-body">
                         <app-usuario-auditoria-list></app-usuario-auditoria-list>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="modalVerVendedores" tabindex="-1" role="dialog"
+            aria-labelledby="verVendedoresLabel" data-backdrop="false"
+            style="background-color: rgba(0, 0, 0, 0.5);">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button id="cerrarModalUsuario" type="button" class="close btn-close" data-dismiss="modal"
+                            aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h4 class="modal-title" id="verVendedoresLabel">Vendedores asociados a: {{usuarioModificacionSel}}</h4>
+                    </div>
+                    <div class="modal-body">
+                        <app-ver-vendedores></app-ver-vendedores>
                     </div>
                 </div>
             </div>
