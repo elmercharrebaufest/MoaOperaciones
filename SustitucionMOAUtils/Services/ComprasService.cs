@@ -7822,6 +7822,33 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
+        public Resultado GrabarMensajeChatExterno(ChatExternoComprasDto mensaje)
+        {
+            try
+            {
+                var resultado = new Resultado();
+                var chatExternoCompras = new ChatExternoCompras()
+                {
+                    FechaEnvio = DateTime.Now,
+                    Leido = false,
+                    Mensaje = mensaje.Mensaje,
+                    PeticionDeOferta_Id = mensaje.PeticionDeOferta_Id,
+                    Usuario_Id = mensaje.Usuario_Id,
+                    PeticionDeOfertaUsuario_Id = mensaje.PeticionDeOfertaUsuario_Id
+                };
+
+                repositorio.Agregar(chatExternoCompras);
+                repositorio.GuardarCambios();
+
+                resultado.IdEntidad = chatExternoCompras.Id;
+                return resultado;
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+
         public string ExportarChatInternoAtexto(int solpId, string rutaArchivo, int? peticionDeOfertaUsuarioId)
         {
             try
