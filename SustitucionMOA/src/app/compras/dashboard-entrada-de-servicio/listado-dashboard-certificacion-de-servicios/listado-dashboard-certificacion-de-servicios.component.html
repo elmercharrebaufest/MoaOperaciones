@@ -126,7 +126,7 @@
 
             <!-- TABLE 1 BODY -->
             <ng-template pTemplate="body" let-rowData let-columns="columns" let-expanded="expanded">
-                <tr [class.orange-row]="isPendingRelease(rowData)" [pSelectableRow]="rowData" *ngIf="!ocFilterApplied || (ocFilterApplied && tienePosicionesConItemsACertificar(rowData.Posiciones))">
+                <tr [class.orange-row]="isPendingRelease(rowData)" [pSelectableRow]="rowData" *ngIf="!ocFilterApplied || (ocFilterApplied && tienePosicionesConItemsACertificar(rowData.Posiciones))" [class.highlighted]="expanded">
                     <td>
                         <a href="#" [pRowToggler]="rowData" (click)="loadSolicitantesList(rowData)">
                             <i [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
@@ -173,7 +173,7 @@
 
                             <!-- TABLE 2 BODY-->
                             <ng-template pTemplate="body" let-rowData let-expanded="expanded" let-posIndex="rowIndex">
-                                <tr [class.purple-row]="isNotReceibeMoreMerchandise(rowData)" class="posicion" *ngIf="!ocFilterApplied || (ocFilterApplied && tieneItemsACertificar(rowData))" [class.green-row]="esPosicionCompleta(rowData)">
+                                <tr [class.purple-row]="isNotReceibeMoreMerchandise(rowData)" class="posicion" *ngIf="!ocFilterApplied || (ocFilterApplied && tieneItemsACertificar(rowData))" [class.green-row]="esPosicionCompleta(rowData)" [class.highlighted]="expanded">
                                     <ng-container *ngIf="mostrarPosicionSolicitante(rowData)">
 
                                       <!-- SE AGREGA CHECKBOX PARA SELECCIOANR N POSICIONES -->
@@ -237,7 +237,7 @@
 
                                             <!-- TABLE 3 BODY -->
                                             <ng-template pTemplate="body" let-rowData let-expanded="expanded" let-i="rowIndex">
-                                                <tr *ngIf="!ocFilterApplied || ocFilterApplied && (rowData.Porcentaje*1) < 100">
+                                                <tr *ngIf="!ocFilterApplied || ocFilterApplied && (rowData.Porcentaje*1) < 100" [class.highlighted]="expanded">
                                                     <td>
                                                         <input type="checkbox"
                                                                [(ngModel)]="rowData.isSelected"

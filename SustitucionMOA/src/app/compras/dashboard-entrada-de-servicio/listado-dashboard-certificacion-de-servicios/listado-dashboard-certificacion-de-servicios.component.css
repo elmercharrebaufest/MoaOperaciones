@@ -367,6 +367,26 @@ i#btn-fullscreen {
     text-align: center;
 }
 
+/* --- HIGHLIGHTED ROWS --- */
+:host ::ng-deep #ordenes > .ui-table > .ui-table-wrapper > table > tbody > tr.highlighted,
+:host ::ng-deep #posiciones > .ui-table > .ui-table-wrapper > table > tbody > tr.highlighted,
+:host ::ng-deep #items > .ui-table > .ui-table-wrapper > table > tbody > tr.highlighted {
+    font-weight: bold;
+    background-color: #cce5ff;
+    border-top: 2px solid #4795d2;
+    border-left: 2px solid #4795d2;
+    border-right: 2px solid #4795d2;
+}
+
+    :host ::ng-deep #ordenes > .ui-table > .ui-table-wrapper > table > tbody > tr.highlighted + tr,
+    :host ::ng-deep #posiciones > .ui-table > .ui-table-wrapper > table > tbody > tr.highlighted + tr,
+    :host ::ng-deep #items > .ui-table > .ui-table-wrapper > table > tbody > tr.highlighted + tr {
+        border-bottom: 2px solid #4795d2;
+        border-left: 2px solid #4795d2;
+        border-right: 2px solid #4795d2;
+    }
+/* --- END HIGHLIGHTED ROWS --- */
+
 /* Positions Table */
 #pSolicitante {
     overflow: hidden;
