@@ -89,6 +89,13 @@ export class ChatInternoComponent extends BaseComponent implements OnInit {
     }
 
     ngOnInit() {
+        if(this.proveedorSeleccionado == undefined){
+            this.proveedorSeleccionado = { 
+                PeticionDeOferta_Id: 0,
+                PeticionDeOfertaUsuario_Id: 0,
+                Mensajes: []
+            };
+        }
     }
 
     grabarMensajeChatInterno() {
@@ -96,7 +103,6 @@ export class ChatInternoComponent extends BaseComponent implements OnInit {
             Mensaje: this.mensajeNuevo,
             Solp_Id: this.chat.ChatCompras.Solp_Id
         };
-        // console.log("mensajeChat in", mensajeChat);
 
         this.blockUI.start('Grabando ');
 
@@ -174,7 +180,9 @@ export class ChatInternoComponent extends BaseComponent implements OnInit {
         this.error = "";
         this.visualizarAlert = false;
         this.chat.ChatCompras.RazonSocialComprador = "";
-        this.proveedorSeleccionado.RazonSocialProveedor = "";
+        if(this.proveedorSeleccionado != undefined){
+            this.proveedorSeleccionado.RazonSocialProveedor = "";
+        }
         this.cerrardisplayChatEmitter.next();
     }
 
@@ -220,17 +228,10 @@ export class ChatInternoComponent extends BaseComponent implements OnInit {
     }
 
     onMostrarDialog() {
-        if (this.contenedorMensajes) {
-            //this.contenedorMensajes.nativeElement.scrollTop  = this.contenedorMensajes.nativeElement.scrollHeight;
-            this.contenedorMensajes.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' });
-
-        }
         if(this.esChatComprador && !this.dasboardProveedor){
             this.mostrarChatComprador();
         } else { 
             this.mostrarChatProveedor(this.chat.ChatProveedores[0]);
-            // console.log("mostrarChatProveedor", this.chat.ChatProveedores[0]);
-
         }
     }
 
@@ -254,8 +255,6 @@ export class ChatInternoComponent extends BaseComponent implements OnInit {
         this.proveedorSeleccionado = proveedor;
         this.esChatProveedor = true;
         this.esChatComprador = false;
-        // console.log("proveedorSeleccionado", this.proveedorSeleccionado);
-
     }
 
     mostrarChatComprador(){
@@ -270,7 +269,6 @@ export class ChatInternoComponent extends BaseComponent implements OnInit {
             PeticionDeOferta_Id: this.proveedorSeleccionado.PeticionDeOferta_Id,
             PeticionDeOfertaUsuario_Id: this.proveedorSeleccionado.PeticionDeOfertaUsuario_Id
         };
-        // console.log("mensajeChat ex", mensajeChat);
         this.blockUI.start('Grabando ');
 
         this.subscription = this.service
@@ -300,8 +298,6 @@ export class ChatInternoComponent extends BaseComponent implements OnInit {
                         } else {
                             mensajeChat.RolUsuario = "PROVEEDOR";
                         }
-                        // console.log("rol", JSON.parse(sessionStorage.getItem("permisos")).indexOf("SOLP"));
-                        // console.log("mensajeChat.RolUsuario", mensajeChat.RolUsuario)
                         const fechaActual = new Date();
                         mensajeChat.FechaEnvioDate = fechaActual;
                         mensajeChat.FechaEnvio = this.formatFecha(fechaActual);
@@ -330,4 +326,35 @@ export class ChatInternoComponent extends BaseComponent implements OnInit {
         return cuitNumerico.replace(/^(\d{2})(\d{8})(\d{1})$/, '$1-$2-$3');
     }
 
+    marcarChatProveedorComoLeido(proveedor: ChatProveedorDto): void {
+        this.service.marcarChatProveedorComoLeido(proveedor).subscribe(
+            (result) => {
+                if (result.logout == true) {
+                    this.sessionDataService.logout();
+                } else {
+                    var byteArray = new Uint8Array(result.FileContents);
+                    var blob = new Blob([byteArray], {
+                        type: "text/plain",
+                    });
+
+                    if (window.navigator.msSaveOrOpenBlob) {
+                        // IE11
+                        window.navigator.msSaveOrOpenBlob(
+                            blob,
+                            result.FileDownloadName
+                        );
+                    } else { }
+                }
+            },
+            (error) => {
+                console.error('Error al llamar al servicio:', error);
+            }
+        );
+    }
+
+    tieneMensajesSinLeer(proveedor: ChatProveedorDto): boolean {
+        return proveedor.Mensajes.some(mensaje => mensaje.Leido == false);
+    }
+    
+    
 }

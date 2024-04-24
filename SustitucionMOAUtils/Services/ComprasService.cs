@@ -1146,7 +1146,7 @@ namespace SustitucionMOAUtils.Services
                 var usuariosCompras = repositorio.Listar<UsuarioCompras>();
                 var usuariosComprasRelacion = repositorio.Listar<UsuarioComprasRelacionConUsuarios>(x => x.Usuario_Id == usuarioActual.Id);
                 Usuario usuario = repositorio.Obtener<Usuario>(u => u.Id == usuarioActual.Id);
-                var rol = usuario.Roles.Any(r => r.Codigo == "COMPRADOR") ? "SOLP" : "COMPRADOR";
+                var rol = usuario.Roles.Any(r => r.Codigo == "COMPRADOR") ? "COMPRADOR" : "SOLP";
                 nroSolp = nroSolp.Trim();
                 //var peticionCierre = repositorio.Listar<PeticionDeOfertaCierre, PeticionDeOfertaCierreDto>(pc => new PeticionDeOfertaCierreDto());
 
@@ -1196,9 +1196,22 @@ namespace SustitucionMOAUtils.Services
                     Pagina = paginacion.Pagina,
                     TipoPosicionCodigo = x.Posiciones.Select(posiciones => posiciones.TipoPosicion.Codigo).FirstOrDefault(),
                     SolpConAdjuntos = x.Pliego.Archivos.Where(r => r.FileKey == FileKeys.AdjuntoCotizacionesSolp).Any(),
-                    ChatSinLeer = x.ChatInternoCompras.Any(a => a.Leido == false && a.Usuario.Roles.Any(r => r.Codigo == rol)),
+                    ChatSinLeer = x.ChatInternoCompras.Any(a => a.Leido == false && a.Usuario.Roles.Any(r => r.Codigo != rol)) 
+                                 || x.Posiciones.Any(po => po.Peticiones
+                                .SelectMany(se => se.PeticionDeOferta.Usuarios
+                                .SelectMany(re => re.ChatExterno))
+                                .Any(al => al.Leido == false && al.Usuario.Roles.Any(r => r.Codigo != rol)))
+                                ,
+                    TieneMensajesChatInterno = x.ChatInternoCompras.Count > 0,
                     TienePeticionDeOferta = x.Posiciones.Any(posi => posi.Peticiones.Any()),
-                    ClaseDocumento_Id = x.ClaseDocumento_Id
+                    ClaseDocumento_Id = x.ClaseDocumento_Id,
+                    TieneMensajesChatExterno = x.Posiciones.Select(po => po.Peticiones
+                                            .SelectMany(se => se.PeticionDeOferta.Usuarios
+                                            .SelectMany(re => re.ChatExterno)))
+                                            .Where(chatExterno => chatExterno.Any()) // Filtrar solo colecciones no vacías
+                                            .Any(),
+
+
                 },
                 paginacion,
                 x => x.FechaBorrado == null && (string.IsNullOrEmpty(nroSolp) || x.NroSolp.ToUpper().StartsWith(nroSolp.ToUpper())) &&
@@ -6691,7 +6704,6 @@ namespace SustitucionMOAUtils.Services
             return respuestaGuardarSOLP;
         }
 
-
         private List<string> DevolverMailResultadoLicitacion(PeticionDeOferta peticion)
         {
             var mails = new List<string>();
@@ -7646,8 +7658,6 @@ namespace SustitucionMOAUtils.Services
             chat.UsuarioActualId = usuarioActualId;
             chat.RazonSocialComprador = solp.UsuarioCreacion.ObtenerRazonSocial();
 
-
-
             foreach (var item in solp.ChatInternoCompras.Where(l => l.Usuario_Id != usuarioActualId))
             {
                 item.Leido = true;
@@ -7691,11 +7701,6 @@ namespace SustitucionMOAUtils.Services
                             chatProveedor.CuitProveedor = poUsuario.Usuario.CUITRegistro;
                             chatProveedor.PeticionDeOfertaUsuario_Id = poUsuario.Id;
 
-                            foreach (var chatMensaje in poUsuario.ChatExterno.Where(l => l.Usuario_Id != usuarioActualId))
-                            {
-                                chatMensaje.Leido = true;
-                            }
-
                             chatProveedor.Mensajes = poUsuario.ChatExterno.Select(m => new ChatExternoComprasDto
                             {
                                 Id = m.Id,
@@ -7720,6 +7725,17 @@ namespace SustitucionMOAUtils.Services
                 chats.ChatProveedores = chatProveedores;
             }
             return chats;
+        }
+
+        public void MarcarChatProveedorComoLeido(ChatProveedoresDto proveedor) 
+        {
+            var chatProveedor = repositorio.Listar<ChatExternoCompras>(x => x.PeticionDeOfertaUsuario_Id == proveedor.PeticionDeOfertaUsuario_Id && x.PeticionDeOferta_Id == proveedor.PeticionDeOferta_Id);
+
+            if (chatProveedor != null) 
+            {
+                chatProveedor.ForEach(m => m.Leido = true);
+                repositorio.GuardarCambios();
+            }
         }
 
         public ChatsDto ObtenerChatProveedor(int peticionDeOfertaUsuarioId, int usuarioActualId)
@@ -8825,7 +8841,6 @@ namespace SustitucionMOAUtils.Services
             };
         }
 
-
         public List<CotizacionHistorialDto> ObtenerHistorial(int id)
         {
             var historialEntities = repositorio.Listar<CotizacionHistorial>(x => x.Cotizacion_Id == id);
@@ -8847,7 +8862,6 @@ namespace SustitucionMOAUtils.Services
 
             return historial;
         }
-
 
         public List<UsuarioDto> ListarUsuarioSolicitante()
         {

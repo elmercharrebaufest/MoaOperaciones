@@ -878,7 +878,30 @@ export class DashboardComponent extends ListBaseComponent {
                                 chat.FechaCreacionDate = new Date(
                                     this.getDateFromAspNetFormat(chat.FechaCreacionDate)
                                 );
+                                
+
                             });
+
+                            result.ChatProveedores.forEach((chat) => {
+                                chat.Mensajes = chat.Mensajes.map((x) => {
+                                    x.FechaEnvioDate = new Date(
+                                        this.getDateFromAspNetFormat(x.FechaEnvioDate)
+                                    );
+                                    return x;
+                                });
+                            
+                                chat.FechaCreacionDate = new Date(
+                                    this.getDateFromAspNetFormat(chat.FechaCreacionDate)
+                                );
+                            
+                                // Si chat.Mensajes es vacío o tiene longitud 0, establecer chat.ChatSinLeer en false
+                                if (!chat.Mensajes || chat.Mensajes.length === 0) {
+                                    chat.Mensajes = chat.Mensajes.map((c) => {
+                                        c.ChatSinLeer = false;
+                                        return c;
+                                    })
+                                };
+                            });                    
 
                             this.chat = result;
                             this.chatCompras = result.ChatCompras;

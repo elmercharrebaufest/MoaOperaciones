@@ -9,7 +9,7 @@
 }
 
 .comentarioRespuesta {
-    background: #bbb9b9 0% 0% no-repeat padding-box;
+    background: #979090  0% 0% no-repeat padding-box;
     box-shadow: 0px 3px 6px #00000029;
     border-radius: 4px;
     opacity: 1;
@@ -171,17 +171,19 @@
 
 ::ng-deep .ui-card-body:hover {
     cursor: pointer; /* Cambia el cursor al pasar sobre la tarjeta */
-    background: #756c6c; 
-    border: 1px solid #5B5B5B;
+    background: #d2cdcd; 
+    border: 1px solid #d2cdcd;
 }
 
 .selected-card {
     cursor: pointer; /* Cambia el cursor al pasar sobre la tarjeta */
-    background: #756c6c; 
-    border: 1px solid #5B5B5B;
+    background: #d2cdcd; 
+    border: 1px solid #d2cdcd;
 }
 
-
+.unread-provider {
+    font-weight: bold !important;
+}
 
 
 

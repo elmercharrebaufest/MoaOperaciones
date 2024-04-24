@@ -9,7 +9,6 @@ namespace SustitucionMOAModel.Dto
         public int PeticionDeOferta_Id { get; set; }
         public string FechaCreacion { get; set; }
         public DateTime FechaCreacionDate { get; set; }
-        public List<ProveedorDto> Proveedores { get; set; }
         public int UsuarioActualId { get; set; }
         public string RazonSocialProveedor { get; set; }
         public string CuitProveedor { get; set; }

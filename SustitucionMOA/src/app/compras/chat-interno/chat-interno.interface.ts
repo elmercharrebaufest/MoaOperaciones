@@ -39,7 +39,6 @@ export interface ChatProveedorDto {
     PeticionDeOferta_Id: number,
     PeticionDeOfertaUsuario_Id: number,
     FechaEnvio?: string,
-    Leido?: boolean,
     Mensajes?: ChatExternoComprasDto[], 
     Mail?: string,
     FechaDiaEnvio?: string,

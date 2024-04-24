@@ -28,9 +28,9 @@
                         </p-card>
                         <div *ngIf="chat?.ChatProveedores.length > 0; else nohay">
                             <div *ngFor="let proveedor of chat.ChatProveedores; let i = index">
-                                <p-card class="my-card" (click)="mostrarChatProveedor(proveedor)">
+                                <p-card class="my-card" (click)="mostrarChatProveedor(proveedor); marcarChatProveedorComoLeido(proveedor)" [ngClass]="{'unread-provider': tieneMensajesSinLeer(proveedor)}">
                                     <div [ngClass]="{'selected-card': proveedor === proveedorSeleccionado}" style="padding: 10px;">                                       
-                                        <div>{{proveedor.RazonSocialProveedor}}</div>
+                                        <div >{{proveedor.RazonSocialProveedor}}</div>
                                         <div>{{formatoCUIT(proveedor.CuitProveedor)}} - PO# {{proveedor.PeticionDeOferta_Id}}</div>
                                     </div>
                                 </p-card>
@@ -42,7 +42,7 @@
 
                 <!-- DETALLE DE CONSULTA -->
                 <div [ngClass]="(dasboardComprador || dasboardProveedor) ? 'col-xs-12 col-sm-12 col-md-12' : 'col-xs-8 col-sm-8 col-md-8'">
-                    <div #contenedorMensajes class="rounded shadow detalleChat">
+                    <div #contenedorMensajes class="rounded shadow detalleChat" id="divmsg">
                         <!-- Mostrar comentarios -->
                         <div>
                             <div *ngIf="esChatComprador">
@@ -54,30 +54,29 @@
                                                 <img class="pointer" src="./Content/images/icons/descargar.svg" alt="descargar"
                                                     (click)="obtenerYExportarChat(chat?.ChatCompras.Solp_Id, null)" />
                                             </span>
-                                        </div>
-                                        
+                                        </div>                                        
                                     </div>
-                                        <div *ngFor="let mensajes of chat.ChatCompras.Mensajes let i = index">
-                                            <!-- Renderizar comentarios -->
-                                            <div class="fechaComentario col-xs-12 col-sm-6 col-md-12" *ngIf="i == 0 || (mensajes.FechaDiaEnvio != chat.ChatCompras.Mensajes[i-1].FechaDiaEnvio)">
-                                                <p class="fechaComentarioTexto">
-                                                    {{mensajes.FechaEnvioDate | date :'EEEE,d MMM'}}
-                                                </p>
-                                            </div>
-                                        
-                                            <div class="row myRow">
-                                                <div [ngClass]="comentarioPropio(mensajes) ? 'comentarioPropio' : 'comentarioRespuesta' " class="col-xs-12 col-sm-6 col-md-7" style="white-space: pre-wrap;">
-                                                  {{mensajes.Mensaje}}
-                                                </div>
-                                            </div>
-    
-                                            <div>
-                                                <p [ngClass]="comentarioPropio(mensajes) ? 'horaComentarioRespuesta' : 'horaComentario'"
-                                                    class="col-xs-12 col-sm-12 col-md-12">
-                                                    {{mensajes.Mail}} - {{mensajes.FechaEnvioDate | date :'h:mm:ss a'}}
-                                                </p>                       
+                                    <div *ngFor="let mensajes of chat.ChatCompras.Mensajes let i = index">
+                                        <!-- Renderizar comentarios -->
+                                        <div class="fechaComentario col-xs-12 col-sm-6 col-md-12" *ngIf="i == 0 || (mensajes.FechaDiaEnvio != chat.ChatCompras.Mensajes[i-1].FechaDiaEnvio)">
+                                            <p class="fechaComentarioTexto">
+                                                {{mensajes.FechaEnvioDate | date :'EEEE,d MMM'}}
+                                            </p>
+                                        </div>
+                                    
+                                        <div class="row myRow">
+                                            <div [ngClass]="comentarioPropio(mensajes) ? 'comentarioPropio' : 'comentarioRespuesta' " class="col-xs-12 col-sm-6 col-md-7" style="white-space: pre-wrap;">
+                                                {{mensajes.Mensaje}}
                                             </div>
                                         </div>
+
+                                        <div>
+                                            <p [ngClass]="comentarioPropio(mensajes) ? 'horaComentarioRespuesta' : 'horaComentario'"
+                                                class="col-xs-12 col-sm-12 col-md-12">
+                                                {{mensajes.Mail}} - {{mensajes.FechaEnvioDate | date :'h:mm:ss a'}}
+                                            </p>                       
+                                        </div>
+                                    </div>
                                 </ng-container>
                             </div>
                         </div>
@@ -93,40 +92,38 @@
                                     </span>
                                 </div>
                             </div>
-                            <div *ngFor="let proveedor of chat.ChatProveedores let i = index">
-                                <div *ngFor="let mensaje of proveedor.Mensajes">
-                                    <!-- Verificar si hay mensajes -->
-                                    <ng-container *ngIf="proveedor.Mensajes && proveedor.Mensajes.length > 0; else noMensajes">
-                                        <div *ngIf="proveedor == proveedorSeleccionado">                                            
-                                            <!-- Renderizar comentarios -->
-                                            <div class="fechaComentario col-xs-12 col-sm-6 col-md-12" *ngIf="i == 0 || (mensaje.FechaDiaEnvio != proveedor.Mensajes[i-1].FechaDiaEnvio)">
-                                                <p class="fechaComentarioTexto">
-                                                    {{mensaje.FechaEnvioDate | date :'EEEE,d MMM'}}
-                                                </p>
-                                            </div>
-                                            <div class="row myRow">
-                                                <div [ngClass]="comentarioPropio(mensaje) ? 'comentarioPropio' : 'comentarioRespuesta' " class="col-xs-12 col-sm-6 col-md-7" style="white-space: pre-wrap;">
-                                                    {{mensaje.Mensaje}}
+                            <div *ngFor="let proveedor of chat.ChatProveedores">
+                                <div *ngIf="proveedor.Mensajes.length > 0; else noMensajes">
+                                    <div *ngFor="let mensaje of proveedor.Mensajes  let i = index">
+                                        <!-- Verificar si hay mensajes -->
+                                        <ng-container >
+                                            <div *ngIf="proveedor == proveedorSeleccionado">                                            
+                                                <!-- Renderizar comentarios -->
+                                                <div class="fechaComentario col-xs-12 col-sm-6 col-md-12" *ngIf="i == 0 || (mensaje.FechaDiaEnvio != proveedor.Mensajes[i-1].FechaDiaEnvio)">
+                                                    <p class="fechaComentarioTexto">
+                                                        {{mensaje.FechaEnvioDate | date :'EEEE,d MMM'}}
+                                                    </p>
                                                 </div>
+                                                <div class="row myRow">
+                                                    <div [ngClass]="comentarioPropio(mensaje) ? 'comentarioPropio' : 'comentarioRespuesta' " class="col-xs-12 col-sm-6 col-md-7" style="white-space: pre-wrap;">
+                                                        {{mensaje.Mensaje}}
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <p [ngClass]="comentarioPropio(mensaje) ? 'horaComentarioRespuesta' : 'horaComentario'" class="col-xs-12 col-sm-12 col-md-12">
+                                                        {{mensaje.Mail}} - {{mensaje.FechaEnvioDate | date :'h:mm:ss a'}}
+                                                    </p>                       
+                                                </div>                        
                                             </div>
-                                            <div>
-                                                <p [ngClass]="comentarioPropio(mensaje) ? 'horaComentarioRespuesta' : 'horaComentario'" class="col-xs-12 col-sm-12 col-md-12">
-                                                    {{mensaje.Mail}} - {{mensaje.FechaEnvioDate | date :'h:mm:ss a'}}
-                                                </p>                       
-                                            </div>                        
-                                        </div>
-                                    </ng-container>                                  
-                                </div>                                  
-                            </div>                            
+                                        </ng-container>             
+                                    </div>     
+                                </div>            
+                            </div>   
                         </ng-container>
 
-                         <!-- Mostrar mensaje de "No hay mensajes" si no hay mensajes -->
-                         <ng-template #noMensajes>
-                            <div class="noMensajes">No hay mensajes</div>
-                        </ng-template>
                         
-                        <!-- Mostrar loader si no hay comentarios -->
-                       
+                        
+                        <!-- Mostrar loader si no hay comentarios -->                
                         <ng-template #loader>
                             <div style="width: 100%; display: flex; justify-content: center;">
                                 <p>No hay mensajes</p>

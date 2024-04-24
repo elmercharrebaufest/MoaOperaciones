@@ -1847,5 +1847,26 @@ namespace SustitucionMOA.Controllers
             }
         }
 
+        [HttpPost]
+        public ActionResult MarcarChatProveedorComoLeido(string json)
+        {
+            try
+            {
+                var proveedorChat = JsonConvert.DeserializeObject<ChatProveedoresDto>(json);
+                service.MarcarChatProveedorComoLeido(proveedorChat);
+                return JsonCustom(new { success = true });
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress,
+                    SessionPersister.getUsername(),
+                    this.GetType().Name,
+                    System.Reflection.MethodBase.GetCurrentMethod().Name,
+                    e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+
+        }
+
     }
 }
