@@ -2945,68 +2945,11 @@ namespace SustitucionMOATest.Services
                 PeticionDeOfertaUsuario_Id = 1,
             };
 
-
-
-            List<int> clasesDoc = new List<int>();
             repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<ChatExternoCompras, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null)).Returns(new List<ChatExternoCompras>() { chatExterno });
             target.MarcarChatProveedorComoLeido(chatProveedor);
 
             this.repositorioMock.Verify(x => x.GuardarCambios(), Times.Once);
 
         }
-
-        [Test]
-        public void MarcarChatProveedorComoLeidoTest()
-        {
-            var chatProveedor = new ChatProveedoresDto
-            {
-                Mensajes = new List<ChatExternoComprasDto> {
-                         new ChatExternoComprasDto {
-                            Id = 1,
-                            PeticionDeOferta_Id = 1,
-                            Usuario_Id = 5776,
-                            FechaEnvioDate = DateTime.Now,
-                            Leido = true,
-                            Mensaje = "Hola",
-                            PeticionDeOfertaUsuario_Id = 1,
-                            RolUsuario = "SOLP",
-                            FechaEnvio = "12-04-2024",
-                            Mail = "rorlando@baufest.com",
-                            FechaDiaEnvio = "12-04-2024"
-                        }
-                    },
-                PeticionDeOferta_Id = 1,
-                FechaCreacion = "12-04-2024",
-                FechaCreacionDate = DateTime.Now,
-                UsuarioActualId = 5776,
-                RazonSocialProveedor = "Aca",
-                CuitProveedor = "20043159381",
-                PeticionDeOfertaUsuario_Id = 1
-
-            };
-
-            var chatExterno = new ChatExternoCompras
-            {
-                Id = 1,
-                PeticionDeOferta_Id = 1,
-                Usuario_Id = 5776,
-                Leido = true,
-                Mensaje = "Hola",
-                PeticionDeOfertaUsuario_Id = 1,
-            };
-
-
-
-            List<int> clasesDoc = new List<int>();
-            repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<ChatExternoCompras, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null)).Returns(new List<ChatExternoCompras>() { chatExterno });
-            target.MarcarChatProveedorComoLeido(chatProveedor);
-
-            this.repositorioMock.Verify(x => x.GuardarCambios(), Times.Once);
-
-        }
-
-
-
-
     }
 }
