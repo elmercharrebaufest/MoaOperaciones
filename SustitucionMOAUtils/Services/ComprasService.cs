@@ -4179,6 +4179,8 @@ namespace SustitucionMOAUtils.Services
 
             }
 
+            }
+
             //buscar archivos de la peticion ( menos lo de legajo cuando es un usuario proveedor)
             foreach (var item in peticion.Archivos.Where(a => peticiondeOfertaUsuarioId == null || (peticiondeOfertaUsuarioId != null && a.Archivo.FileKey != FileKeys.PeticionDeOfertaLegajo)))
             {
@@ -7672,6 +7674,104 @@ namespace SustitucionMOAUtils.Services
                 Solp_Id = m.Solp_Id,
                 RolUsuario = m.Usuario.Roles.Any(r => r.Codigo == "COMPRADOR") ? "COMPRADOR" : "SOLICITANTE",
                 Usuario_Id = m.Usuario_Id
+            }).ToList();
+
+            chats.ChatCompras = chat;
+
+            var usuario = repositorio.Obtener<Usuario>(usuarioActualId);
+
+            if (usuario.Roles.Any(r => r.Codigo == "SOLP"))
+            {
+                List<ChatProveedoresDto> chatProveedores = new List<ChatProveedoresDto>();
+
+                foreach (var item in solp.Posiciones.SelectMany(po => po.Peticiones))
+                {
+                    if (!chatProveedores.Any(cp => cp.PeticionDeOferta_Id == item.PeticionDeOferta_Id))
+                    {
+                        foreach (var poUsuario in item.PeticionDeOferta.Usuarios)
+                        {
+                            ChatProveedoresDto chatProveedor = new ChatProveedoresDto();
+                            chatProveedor.PeticionDeOferta_Id = item.PeticionDeOferta_Id;
+                            chatProveedor.FechaCreacion = item.PeticionDeOferta.FechaCreacion.ToString("dd-MM-yyyy HH-mm-ss");
+                            chatProveedor.FechaCreacionDate = item.PeticionDeOferta.FechaCreacion;
+                            chatProveedor.UsuarioActualId = usuarioActualId;
+                            chatProveedor.RazonSocialProveedor = poUsuario.Usuario.ObtenerRazonSocial();
+                            chatProveedor.CuitProveedor = poUsuario.Usuario.CUITRegistro;
+                            chatProveedor.PeticionDeOfertaUsuario_Id = poUsuario.Id;
+
+                            chatProveedor.Mensajes = poUsuario.ChatExterno.Select(m => new ChatExternoComprasDto
+                            {
+                                Id = m.Id,
+                                FechaEnvio = m.FechaEnvio.ToString("dd-MM-yyyy HH-mm-ss"),
+                                FechaEnvioDate = m.FechaEnvio,
+                                FechaDiaEnvio = m.FechaEnvio.ToString("ddd, d MMM"),
+                                Leido = m.Leido,
+                                Mail = m.Usuario.Mail,
+                                Mensaje = m.Mensaje,
+                                PeticionDeOferta_Id = m.PeticionDeOferta_Id,
+                                RolUsuario = m.Usuario.Roles.Any(r => r.Codigo == "SOLP") ? "SOLP" : "PROVEEDOR",
+                                Usuario_Id = m.Usuario_Id,
+                                PeticionDeOfertaUsuario_Id = m.PeticionDeOfertaUsuario_Id
+                            }).ToList();
+
+                            chatProveedores.Add(chatProveedor);
+                        }
+                    }
+                }
+                repositorio.GuardarCambios();
+                chats.ChatCompras = chat;
+                chats.ChatProveedores = chatProveedores;
+            }
+            return chats;
+        }
+
+        public void MarcarChatProveedorComoLeido(ChatProveedoresDto proveedor) 
+        {
+            var chatProveedor = repositorio.Listar<ChatExternoCompras>(x => x.PeticionDeOfertaUsuario_Id == proveedor.PeticionDeOfertaUsuario_Id && x.PeticionDeOferta_Id == proveedor.PeticionDeOferta_Id);
+
+            if (chatProveedor != null) 
+            {
+                chatProveedor.ForEach(m => m.Leido = true);
+                repositorio.GuardarCambios();
+            }
+        }
+
+        public ChatsDto ObtenerChatProveedor(int peticionDeOfertaUsuarioId, int usuarioActualId)
+        {
+            ChatsDto chats = new ChatsDto();
+            ChatComprasDto chat = new ChatComprasDto();
+            List<ChatProveedoresDto> chatProveedores = new List<ChatProveedoresDto>();
+
+            ChatProveedoresDto chatProveedor = new ChatProveedoresDto();
+            var peticiondeOfertaUsuario = repositorio.Obtener<PeticionDeOfertaUsuario>(peticionDeOfertaUsuarioId);
+
+            foreach (var item in peticiondeOfertaUsuario.ChatExterno.Where(l => l.Usuario_Id != usuarioActualId))
+            {
+                item.Leido = true;
+            }
+            repositorio.GuardarCambios();
+
+            chatProveedor.PeticionDeOferta_Id = peticiondeOfertaUsuario.PeticionDeOferta.Id;
+            chatProveedor.FechaCreacion = peticiondeOfertaUsuario.PeticionDeOferta.FechaCreacion.ToString("dd-MM-yyyy HH-mm-ss");
+            chatProveedor.FechaCreacionDate = peticiondeOfertaUsuario.PeticionDeOferta.FechaCreacion;
+            chatProveedor.UsuarioActualId = usuarioActualId;
+            chatProveedor.RazonSocialProveedor = peticiondeOfertaUsuario.Usuario.ObtenerRazonSocial();
+            chatProveedor.CuitProveedor = peticiondeOfertaUsuario.Usuario.CUITRegistro;
+            chatProveedor.PeticionDeOfertaUsuario_Id = peticiondeOfertaUsuario.Id;
+
+            var mensajes = peticiondeOfertaUsuario.ChatExterno.Select(m => new ChatExternoComprasDto
+            {
+                Id = m.Id,
+                FechaEnvio = m.FechaEnvio.ToString("dd-MM-yyyy HH-mm-ss"),
+                FechaEnvioDate = m.FechaEnvio,
+                FechaDiaEnvio = m.FechaEnvio.ToString("ddd, d MMM"),
+                Leido = m.Leido,
+                Mail = m.Usuario.Mail,
+                Mensaje = m.Mensaje,
+                PeticionDeOferta_Id = m.PeticionDeOferta_Id,
+                RolUsuario = m.Usuario.Roles.Any(r => r.Codigo == "COMPRADOR") ? "COMPRADOR" : "PROVEEDOR",
+                Usuario_Id = m.Usuario_Id,
+                PeticionDeOfertaUsuario_Id = m.PeticionDeOfertaUsuario_Id
             }).ToList();
 
             chats.ChatCompras = chat;
