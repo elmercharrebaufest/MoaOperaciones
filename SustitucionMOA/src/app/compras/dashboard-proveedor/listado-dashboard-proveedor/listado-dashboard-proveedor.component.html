@@ -42,7 +42,7 @@
             <p-table #tabla [value]="tablaPO" responsiveLayout="scroll | stack" dataKey="Id">
                 <ng-template pTemplate="header" let-columns class="lista-header">
                     <tr>
-                        <th data-toggle="tooltip" title="Acciones a realizar" style="width: 40px"></th>
+                        <th data-toggle="tooltip" title="Acciones a realizar" style="width: 50px"></th>
                         <th class="headerth" title="Numero SOLP" (click)="onOrder('NroSolp')" style="width: 80px">
                             Nro SOLP
                             <span>
@@ -117,10 +117,10 @@
                                 </div>
                             </div>
                             <div class="col-md-2">
-                                <span>
+                                <span class="contenedor-imagen">
                                     <img class="pointer" src="./Content/images/icons/chat.svg" alt="chat"
-                                         (click)="obtenerChatInterno(rowData)" width="25" />
-                                    <div class="punto-rojo" style="margin-left: 2em;" *ngIf="rowData.ChatSinLeer == true"></div>
+                                         (click)="obtenerChatProveedor(rowData)" width="25" />
+                                    <div class="punto-rojo" *ngIf="rowData.ChatSinLeer == true"></div>
                                 </span>
                             </div>
                         </td>

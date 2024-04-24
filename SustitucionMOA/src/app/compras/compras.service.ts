@@ -12,7 +12,7 @@ import { AdjudicacionDto, AdjudicacionEdicionDto } from '../modelos/adjudicacion
 import { OrdenDeCompraSap } from '../modelos/ordenDeCompraSap';
 import { RegistroInfoDto } from '../modelos/registro-info';
 import { PeticionVisualizacionPrecioDto } from '../modelos/peticion-visualizar-precio-dto';
-import { ChatExternoComprasDto, ChatInternoComprasDto, ChatsDto } from './chat-interno/chat-interno.interface';
+import { ChatExternoComprasDto, ChatInternoComprasDto, ChatProveedorDto, ChatsDto } from './chat-interno/chat-interno.interface';
 import { VisitaObraDto } from '../modelos/infoVisitasDeObraDto';
 
 @Injectable({
@@ -1183,4 +1183,14 @@ export class ComprasService extends BaseService {
             headers: this.headers,
         });
     }
+
+    public marcarChatProveedorComoLeido(proveedor: ChatProveedorDto) {
+        let json = JSON.stringify(proveedor);
+        var payload = new FormData();
+        payload.append('json', json);
+
+        return this.http
+            .post<any>('/api/compras/MarcarChatProveedorComoLeido', payload, { headers: this.headers });
+    }
+
 }

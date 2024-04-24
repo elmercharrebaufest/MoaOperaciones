@@ -658,18 +658,21 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
                                 this.getDateFromAspNetFormat(result.FechaCreacionDate)
                             );
 
-                            result.ChatProveedores.forEach((chat) => {
-                                chat.Mensajes = chat.Mensajes.map((x) => {
-                                    x.FechaEnvioDate = new Date(
-                                        this.getDateFromAspNetFormat(x.FechaEnvioDate)
+                            if(result.ChatProveedores != null){
+                                result.ChatProveedores.forEach((chat) => {
+                                    chat.Mensajes = chat.Mensajes.map((x) => {
+                                        x.FechaEnvioDate = new Date(
+                                            this.getDateFromAspNetFormat(x.FechaEnvioDate)
+                                        );
+                                        return x;
+                                    });
+                                    
+                                    chat.FechaCreacionDate = new Date(
+                                        this.getDateFromAspNetFormat(chat.FechaCreacionDate)
                                     );
-                                    return x;
                                 });
-                                
-                                chat.FechaCreacionDate = new Date(
-                                    this.getDateFromAspNetFormat(chat.FechaCreacionDate)
-                                );
-                            });
+                            }
+                            
 
                             this.chat = result;
                             this.chatCompras = result.ChatCompras;

@@ -102,5 +102,7 @@ namespace SustitucionMOAUtils.Interfaces
         HistorialDeFechaDto ListarHistorialDeFechas(int peticionDeOfertaId);
         Resultado GrabarMensajeChatExterno(ChatExternoComprasDto mensaje);
         ChatsDto ObtenerChatProveedor(int peticionDeOfertaUsuarioId, int usuarioActualId);
+        void MarcarChatProveedorComoLeido(ChatProveedoresDto proveedor);
+
     }
 }

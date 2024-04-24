@@ -132,7 +132,6 @@ export class ListadoDashboardProveedorComponent extends ListBaseComponent {
                         this.floatMsgService.setInfoMsg(result.info);
                     } else {
                         this.tablaPO = result.data;
-                        console.log("this.tablaPO", this.tablaPO);
                         this.length = result.data.length > 0 ? result.data[0].ItemsTotales : result.data.length;
                         this.pageSize = result.data.length > 0 ? result.data[0].ItemPorPagina : 10;
                         this.pageIndex = result.data.length > 0 ? result.data[0].Pagina : 1;
@@ -450,11 +449,11 @@ export class ListadoDashboardProveedorComponent extends ListBaseComponent {
         }
     }
 
-    obtenerChatInterno(rowData) {
+    obtenerChatProveedor(rowData) {
         try {
             this.blockUI.start('Cargando ');
             this.displayChatInterno = false;
-            //rowData.ChatSinLeer = false;
+            rowData.ChatSinLeer = false;
             this.subscription = this.service.obtenerChatProveedor(rowData.Usuarios[0].Id)
                 .subscribe(
                     (result: any) => {
@@ -487,7 +486,6 @@ export class ListadoDashboardProveedorComponent extends ListBaseComponent {
                             this.chatCompras = result.ChatCompras;
                             this.chatProveedores = result.ChatProveedores;  
                             this.displayChatInterno = true;
-                            console.log("this.chat", this.chat);
                         };
                     },
                     (error) => {
