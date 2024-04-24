@@ -1019,7 +1019,10 @@ namespace SustitucionMOAUtils.Services
                         {
                             foreach (var poCotizacion in poUsusario.Cotizaciones)
                             {
-                                poCotizacion.CotizarNuevaPosicion = true;
+                                if(poCotizacion.CotizacionEstado_Id == (int)CotizacionEstadoEnum.Cotizado)
+                                {
+                                    poCotizacion.CotizarNuevaPosicion = true;
+                                }                              
                                 poCotizacion.CotizacionEstado_Id = (int)CotizacionEstadoEnum.Incompleta;
                             }
                         }
@@ -1983,17 +1986,18 @@ namespace SustitucionMOAUtils.Services
                 );
 
                 var esServicio = solp.Posiciones.Any() && solp.Posiciones.FirstOrDefault().TipoPosicion.Codigo == "SERVICIO";
-                if (esServicio && solp.Posiciones.Select(x => x.Peticiones).Any() && cotizaciones != null && cotizaciones.Count > 0)
+                if (esServicio && solp.Posiciones.Select(x => x.Peticiones).Any() )
                 {
                     ActualizarPeticionDeOfertaAlEditarSolp(solp, solp.TrabajoYaHecho != true);
-                    if (solp.TrabajoYaHecho != true)
-                    {
-
-                        EnviarCircularAutomatico(solp);
-                    }
-                    else
-                    {
-                        AgregarPosicionACotizacionTrabajoYaHecho(cotizaciones, solp);
+                    if (cotizaciones != null && cotizaciones.Count > 0) {
+                        if (solp.TrabajoYaHecho != true)
+                        {
+                            EnviarCircularAutomatico(solp);
+                        }
+                        else
+                        {
+                            AgregarPosicionACotizacionTrabajoYaHecho(cotizaciones, solp);
+                        }
                     }
                 }
                 if (solp.UsuarioCompras != null && solp.Posiciones.Select(x => x.TipoPosicion.Codigo).FirstOrDefault() == "SERVICIO" && enviarMail && (solp.Urgencia != true || solp.Urgencia == true && solp.TrabajoYaHecho == true))
@@ -5329,19 +5333,9 @@ namespace SustitucionMOAUtils.Services
 
 
                     }
-                    ActualizarCotizacion(proveedor);
                 }
             }
 
-        }
-
-        private static void ActualizarCotizacion(PeticionDeOfertaUsuario proveedor)
-        {
-            if (proveedor.Cotizaciones != null && proveedor.Cotizaciones.Count > 0 && proveedor.Cotizaciones.First().CotizacionEstado_Id == 1)
-            {
-                proveedor.Cotizaciones.First().CotizacionEstado_Id = 2;
-                proveedor.Cotizaciones.First().CotizarNuevaPosicion = true;
-            }
         }
 
         private void ValidarCircular(CircularDto circularDto)
