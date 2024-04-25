@@ -219,6 +219,8 @@
     <Build Include="DBO\Tables\EstadoOrdenResiduos.sql" />
     <Build Include="DBO\Tables\ArchivoBoleto.sql" />
     <Build Include="DBO\Tables\EstadoArchivoBoleto.sql" />
+    <Build Include="DBO\Tables\Almacen.sql" />
+    <Build Include="DBO\Tables\AlmacenMaterial.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DatabasePublishQA.xml" />
@@ -245,6 +247,7 @@
     <None Include="DatabaseNewPublishQaHuenei.xml" />
     <None Include="DatabaseNewPublishQaCompras.xml" />
     <None Include="scripts\PostDeployment\EstadoOrdenResiduos.sql" />
+    <None Include="scripts\PostDeployment\AlmacenMaterial.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="scripts\UpdateRolesEditables.sql" />

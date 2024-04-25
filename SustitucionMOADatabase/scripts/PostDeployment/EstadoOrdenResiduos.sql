@@ -4,14 +4,17 @@ DECLARE @ValoresEstadoOrdenResiduos as TABLE
 
 INSERT INTO @ValoresEstadoOrdenResiduos
 VALUES
-	(1,	'Orden generada',	'OK',				'green'),
-	(2,	'Pendiente',		'En proceso',		'yellow'),
-	(3, 'Orden vencida',	'Orden vencida',	'red'),
-	(4, 'Orden entregada',	'Orden entregada',	'white'),
-	(5, 'Anulada',			'Anulada',			'red'),
-	(6, 'Ingresada',		'Ingresada',		'green'),
-	(7, 'Retirada',			'Retirada',			'green'),
-	(8, 'Rechazada',		'Rechazada',		'red')
+	(1,	'Orden generada',		'OK',					'green'),
+	(2,	'Pendiente',			'En proceso',			'yellow'),
+	(3, 'Orden vencida',		'Orden vencida',		'red'),
+	(4, 'Orden entregada',		'Orden entregada',		'white'),
+	(5, 'Anulada',				'Anulada',				'red'),
+	(6, 'Edición solicitada',	'Edición solicitada',	'yellow'),
+	(7, 'Edición rechazada',	'Edición rechazada',	''),
+	(8, 'Anulación solicitada',	'Anulación solicitada',	'yellow'),
+	(9, 'Ingresada',			'Ingresada',			'green'),
+	(10, 'Retirada',			'Retirada',				'green'),
+	(11, 'Rechazada',			'Rechazada',			'red')
 
 UPDATE EstadoOrdenResiduos
 	SET Nombre=V.Nombre,NombreExterno=V.NombreExterno, Semaforo=V.Semaforo

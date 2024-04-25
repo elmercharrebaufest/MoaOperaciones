@@ -52,7 +52,6 @@ export class OrdenesResiduosListadoComponent extends ListBaseComponent implement
         protected securityService: SecurityService,
         protected floatMsgService: FloatMsgService,
         protected modalService: ModalService) {
-        //private confirmationService: ConfirmationService) {
         
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
     }

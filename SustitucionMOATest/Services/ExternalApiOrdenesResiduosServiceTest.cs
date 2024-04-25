@@ -109,10 +109,8 @@ namespace SustitucionMOATest.Services
             return new OrdenResiduos
             {
                 PatenteChasis = patente,
-                DistanciaKm = 45,
                 Cliente = new Proveedor { RazonSocial = "default" },
                 FechaCreacion = DateTime.Now,
-                FechaRetiro = DateTime.Now,
                 Producto = new Material { Nombre = "producto" },
                 Localidad = new Localidad { Nombre = "localidad" }
             };

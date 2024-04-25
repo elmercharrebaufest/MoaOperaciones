@@ -5,6 +5,7 @@ namespace SustitucionMOAUtils.Interfaces
 {
     public interface IEmailResiduosService
     {
+        void EnviarMailTransporteNoExiste(string razonSocialTransporte, string cuitTransporte);
         void EnviarMailOrdenesVencidas(IEnumerable<OrdenResiduos> ordenes);
     }
 }

@@ -78,11 +78,9 @@
                     <thead>
                         <tr role="row">
                             <th>Id</th>
-                            <th *ngIf="esAdmin">Corredor</th>
                             <th *ngIf="esAdmin || isCorredor()">Cliente</th>
                             <th>Estado</th>
                             <th>Fecha creación</th>
-                            <th>Fecha retiro</th>
                             <th>Destino</th>
                             <th>Producto</th>
                             <th>Patente chasis</th>
@@ -94,11 +92,9 @@
                         <tr *ngFor="let ordenCarga of data | customFilter : 'RazonSocialCliente' : filtroCliente | customFilter : 'Material' : (productoSelected  == 'Todos' ? '' : productoSelected) | customFilter : 'PatenteChasis' : filtroPatente | paginate: { itemsPerPage:itemsPerPage, currentPage: p }; let odd = odd"
                             role="row" [class.odd]="!odd">
                             <td>{{ordenCarga.Id}}</td>
-                            <td *ngIf="esAdmin">{{ordenCarga.RazonSocialCorredor}}</td>
                             <td *ngIf="esAdmin || isCorredor()">{{ordenCarga.RazonSocialCliente}}</td>
                             <td>{{ordenCarga.DescripcionEstado}}</td>
                             <td>{{ordenCarga.FechaCreacion}}</td>
-                            <td>{{ordenCarga.FechaRetiro}}</td>
                             <td>{{ordenCarga.LocalidadDescripcion}}</td>
                             <td>{{ordenCarga.Material}}</td>
                             <td>{{ordenCarga.PatenteChasis}}</td>

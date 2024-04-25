@@ -1,0 +1,317 @@
+<p-toast [style]="{marginTop: '80px', color:'#FFF!important'}"></p-toast>
+<div class="content-wraper">
+    <section class="container-fluid clearfix">
+        <div class="row titleSection">
+            <div class="col-xs-12 col-sm-10">
+                <strong *ngIf="ordenResiduos.Id == 0">Nueva orden de carga</strong>
+                <strong *ngIf="ordenResiduos.Id > 0">Editar orden de carga #{{ordenResiduos.Id}}</strong>
+            </div>
+        </div>
+
+        <div class="mySearch">
+            <div class="col-xs-12 col-md-12 rounded shadow animate no-padding-left-right">
+                <div class="formulario-campo">
+                    <div class="col-xs-12 col-md-12 search-header">
+                        <title-caps>Información de la orden de carga</title-caps>
+                    </div>
+
+                    <div class="formulario">
+                        <div class="col-xs-12 col-md-5 no-padding-left-right" style="margin-left: 3em;">
+
+                            <div class="col-xs-12 col-md-12" [hidden]="!esAdmin">
+                                <div class="formulario-label" style="margin-bottom: 8px;">
+                                    Cliente:
+                                </div>
+                                <div class="styled-select" style="overflow: initial;">
+                                    <p-dropdown name="cmbClientes"
+                                        placeholder="Seleccione un cliente"
+                                        [disabled]="ordenResiduos.Id > 0"
+                                        [options]="listaClientes"
+                                        optionLabel="RazonSocial"
+                                        [(ngModel)]="ordenResiduos.Cliente"
+                                        (ngModelChange)="onClienteSeleccionado()"
+                                        [filter]="true"
+                                        filterBy="value.RazonSocial">
+                                    </p-dropdown>
+                                </div>
+                            </div>
+
+                            <div class="col-xs-12 col-md-12">
+                                <div class="formulario-label">
+                                    Producto:
+                                </div>
+                                <div class="styled-select" style="overflow: initial;">
+                                    <app-dropdown-input
+                                        [options]="listaProductos"
+                                        [filterKey]="'Descripcion'"
+                                        [valueKey]="'MaterialId'"
+                                        (selectedChange)="onProductoSeleccionado($event)"
+                                        [placeholder]="'Seleccione un producto'"
+                                        [(selected)]="ordenResiduos.Producto"
+                                        [disabled]="ordenResiduos.Id > 0">
+                                        <ng-template let-option>
+                                            <p class="option-label">
+                                                {{option.Descripcion}}</p>
+                                        </ng-template>
+                                    </app-dropdown-input>
+                                </div>
+                            </div>
+
+                            <div *ngIf="ordenResiduos.Producto" class="col-xs-12 col-md-11">
+                                <div class="formulario-label">
+                                    Destino mercadería (localidad - provincia):
+                                </div>
+                                <!-- <div class="styled-select">
+                                    <app-dropdown-input
+                                        [options]="listaLocalidades"
+                                        [filterKey]="'Nombre'"
+                                        [valueKey]="'Id'"
+                                        [placeholder]="'Seleccione un destino'"
+                                        [(selected)]="ordenResiduos.Localidad">
+                                        <ng-template let-option>
+                                            <p class="option-label">{{option.Nombre}}</p>
+                                        </ng-template>
+                                    </app-dropdown-input>
+                                </div> -->
+                                <div class="styled-select">
+                                    <!-- <app-autocomplete-localidad (onLocalidadSeleccionada)="localidadId = $event"
+                                                        [localidad_Id]="campoProveedorE.Localidad_Id">
+                            </app-autocomplete-localidad> -->
+                                    <!-- <app-autocomplete-localidad
+                                        (onLocalidadSeleccionada)="ordenResiduos.Localidad.Id = $event"
+                                        [localidad_Id]="ordenResiduos.Localidad.Id">
+                                    </app-autocomplete-localidad> -->
+                                    <app-autocomplete-localidad
+                                        (onLocalidadSeleccionada)="onLocalidadSeleccionada($event)"
+                                        [localidad_Id]="ordenResiduos.Localidad.Id">
+                                    </app-autocomplete-localidad>
+                                </div>
+                            </div>
+
+                            <ng-container *ngIf="validaCPEDG">
+                                <div class="col-xs-12 col-md-12">
+                                    <div class="formulario-label">
+                                        Planta:
+                                    </div>
+                                    <div class="styled-select" style="overflow: initial;">
+                                        <p-dropdown name="cmbPlantas"
+                                            placeholder="Seleccione una planta"
+                                            [filter]="true"
+                                            filterBy="value.Codigo"
+                                            [disabled]="NoPuedeEditarCuitsTerceros"
+                                            [options]="listaPlantas"
+                                            optionLabel="Codigo"
+                                            [(ngModel)]="ordenResiduos.Planta"
+                                            [dataKey]="'Codigo'">
+                                        </p-dropdown>
+                                    </div>
+                                </div>
+                                <div class="col-xs-12 col-md-12">
+                                    <div class="formulario-label">
+                                        Domicilio:
+                                    </div>
+                                    <div class="styled-select" style="overflow: initial;">
+                                        <p-dropdown name="cmbDomicilios"
+                                            placeholder="Seleccione un domicilio"
+                                            [filter]="true"
+                                            filterBy="value.Descripcion"
+                                            [disabled]="NoPuedeEditarCuitsTerceros"
+                                            [options]="listaDomicilios"
+                                            optionLabel="Descripcion"
+                                            [(ngModel)]="ordenResiduos.Domicilio"
+                                            [dataKey]="'Descripcion'">
+                                        </p-dropdown>
+                                    </div>
+                                </div>
+                                <div class="col-xs-12 col-md-12">
+                                    <div class="formulario-label">
+                                        Pagador flete:
+                                    </div>
+                                    <div class="styled-select">
+                                        <input type="text" readonly disabled mask="00-00000000-0"
+                                            [(ngModel)]="ordenResiduos.Cliente.CUIT">
+                                    </div>
+                                </div>
+                            </ng-container>
+                            <div class="clearfix"></div>
+
+                            <div class="col-xs-12 col-md-12">
+                                <div class="formulario-label">
+                                    Almacén:
+                                </div>
+                                <div class="styled-select" style="overflow: initial;">
+                                    <p-dropdown name="cmbAlmacenes"
+                                        placeholder="Seleccione un almacén"
+                                        [filter]="true"
+                                        filterBy="value.Nombre"
+                                        [options]="ordenResiduos.Producto.Almacenes"
+                                        optionLabel="Nombre"
+                                        [(ngModel)]="ordenResiduos.Almacen"
+                                        [dataKey]="'Id'">
+                                    </p-dropdown>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-1 col-md-1 vertical"></div>
+
+                        <div class="col-xs-12 col-md-5 no-padding-left-right">
+                            <div class="col-xs-12 col-md-12">
+                                <div class="formulario-label">
+                                    Patente chasis:
+                                </div>
+                                <div class="styled-select autocomplete">
+                                    <input auto-complete
+                                        [min-chars]="2"
+                                        [no-match-found-text]="'No se encontraron resultados'"
+                                        maxlength="7"
+                                        mask="AAAAAAA"
+                                        [source]="patentesChasis"
+                                        [(ngModel)]="ordenResiduos.PatenteChasis"
+                                        (ngModelChange)="onPatenteChasisSeleccionado($event)" />
+                                </div>
+                            </div>
+
+                            <div class="col-xs-12 col-md-12">
+                                <div class="formulario-label">
+                                    Patente acoplado:
+                                </div>
+                                <div class="styled-select autocomplete">
+                                    <input auto-complete
+                                        [min-chars]="3"
+                                        [no-match-found-text]="'No se encontraron resultados'"
+                                        maxlength="7"
+                                        mask="AAAAAAA"
+                                        [source]="patentesAcoplados"
+                                        [(ngModel)]="ordenResiduos.PatenteAcoplado"
+                                        (ngModelChange)="onPatenteAcopladoSeleccionado($event)"
+                                        (blur)="onPatenteAcopladoBlur()" />
+                                        <!-- (valueChanged)="onPatenteAcopladoValueChanged($event)"
+                                        (ngModelChange)="onPatenteAcopladoSeleccionado()" -->
+                                </div>
+                            </div>
+
+                            <div class="col-xs-12 col-md-12">
+                                <div class="formulario-label">
+                                    Nombre y apellido del chofer:
+                                </div>
+                                <div class="styled-select">
+                                    <!-- <input [(ngModel)]="ordenDeCargaFason.NombreChofer"
+                                            (ngModelChange)="ordenDeCargaFason.NombreChofer = $event.toUpperCase()"
+                                            type="text" maxlength="25"> -->
+                                    <input type="text" maxlength="25"
+                                        [(ngModel)]="ordenResiduos.NombreChofer"
+                                        (ngModelChange)="ordenResiduos.NombreChofer = $event.toUpperCase()">
+                                </div>
+                            </div>
+
+                            <div class="col-xs-12 col-md-12">
+                                <div class="formulario-label">
+                                    CUIL chofer:
+                                </div>
+                                <div class="styled-select autocomplete">
+                                    <input type="text" auto-complete [min-chars]="2"
+                                        [no-match-found-text]="'No se encontraron resultados'"
+                                        mask="00-00000000-0"
+                                        [source]="cuilsChofer"
+                                        [(ngModel)]="ordenResiduos.CUILChofer"
+                                        (change)="validarCuilChofer()">
+                                    <div *ngIf="procesandoCampo.CUILChofer">
+                                        <p-progressSpinner [style]="{width: '10%', height: '10%'}"></p-progressSpinner>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-xs-12 col-md-12">
+                                <div class="formulario-label">
+                                    Raz&oacute;n social transporte:
+                                </div>
+                                <div class="styled-select">
+                                    <input type="text" maxlength="50"
+                                        [(ngModel)]="ordenResiduos.RazonSocialTransporte"
+                                        (ngModelChange)="ordenResiduos.RazonSocialTransporte = $event.toUpperCase()">
+                                </div>
+                            </div>
+
+                            <div class="col-xs-12 col-md-12">
+                                <div class="formulario-label">
+                                    CUIT transporte:
+                                </div>
+                                <div class="styled-select autocomplete">
+                                    <input type="text" auto-complete [min-chars]="2"
+                                        [no-match-found-text]="'No se encontraron resultados'"
+                                        mask="00-00000000-0"
+                                        [source]="cuitsTransporte"
+                                        [(ngModel)]="ordenResiduos.CUITTransporte"
+                                        (change)="validarCuitTransporte()">
+                                    <div *ngIf="procesandoCampo.CUITTransporte">
+                                        <p-progressSpinner [style]="{width: '10%', height: '10%'}"></p-progressSpinner>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12 col-md-11" style="margin-left: 3em; margin-bottom: 2em;">
+                            <div class="formulario-label">
+                                Observaciones:
+                            </div>
+                            <div class="styled-select">
+                                <textarea id="Observacion" [(ngModel)]="ordenResiduos.Observaciones" rows="5"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="containerBotones">
+                            <div class="col-xs-12 col-md-12" #messages>
+                                <mensaje></mensaje>
+                                <spinner></spinner>
+                            </div>
+
+                            <div class="col-xs-5 col-md-2">
+                                <input type="button" (click)="redirigirAListadoOrdenesResiduos()"
+                                    class="btn-custom btn-add btn-mediano" value="Volver">
+                            </div>
+
+                            <div class="col-xs-2 col-md-1"></div>
+
+                            <div class="col-xs-5 col-md-3">
+                                <div class="step-actions enviar">
+                                    <button type="button" id="openModalNotificacion" data-toggle="modal"
+                                        style="display:none" data-target="#modalNotificacion"
+                                        class="btn-custom btn-azul"></button>
+                                    <input type="submit" (click)="guardarOrdenDeCargaResiduos()"
+                                        class="btn-custom btn-guardar btn-mediano" value="Enviar">
+                                </div>
+                            </div>
+
+                            <div class="col-xs-0 col-md-2"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<button type="button" data-toggle="modal" data-target="#modalNotificacion" style="display:none" id="openModalNotificacion"></button>
+
+<div class="modal fade fade-complete" id="modalNotificacion" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+    data-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close btn-close" style="display:none" data-dismiss="modal"
+                    aria-label="Close" id="botonCerrarModal">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel">Orden de carga guardada correctamente</h4>
+            </div>
+            <div class="modal-body modal-notificacion">
+                <label>{{mensajeSuccess}}</label><br />
+            </div>
+            <div class="modal-footer" style="justify-content: center;align-content: center;display: flex;">
+                <button (click)="cerrarNotificacionYVolver()" class="btn-custom btn-guardar btn-grande">Aceptar</button>
+            </div>
+        </div>
+    </div>
+</div>
+    

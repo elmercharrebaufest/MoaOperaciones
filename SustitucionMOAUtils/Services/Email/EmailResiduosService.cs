@@ -1,20 +1,26 @@
 ﻿using SustitucionMOAModel.Entities;
 using SustitucionMOAUtils.Email;
 using SustitucionMOAUtils.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System;
 using System.IO;
 using System.Configuration;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace SustitucionMOAUtils.Services.Email
 {
-    public class EmailResiduosService: IEmailResiduosService
+    public class EmailResiduosService : IEmailResiduosService
     {
+        private static readonly string DireccionToAltaTransporteCuitResiduos = ConfigurationManager.AppSettings["EmailAltaTransporteResiduosTo"];
+        private static readonly string DireccionCCAltaTransporteCuitResiduos = ConfigurationManager.AppSettings["EmailAltaTransporteResiduosCC"];
 
         private readonly string DireccionMailAuditoriaOrdenesResiduosVencidas = ConfigurationManager.AppSettings["EmailOrdenesResiduosVencidas"];
         private readonly string TEMPLATE_NOTIFICACION_ORDENES_VENCIDAS = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "NotificacionOrdenesResiduosVencidas.html");
+        private readonly IEmailService emailService;
 
         protected IEmailService emailService { get; set; }
         public EmailResiduosService(IEmailService emailService)
@@ -37,7 +43,7 @@ namespace SustitucionMOAUtils.Services.Email
                 tablaOrdenes = GenerarTablaOrdenesANotificar(ordenes);
             }
             else
-            {
+        {
                 descripcion = $"Se informa que para el día {hoy} no hay órdenes de residuos vencidas";
             }
             var cuerpo = string.Format(cuerpoTemplate, "", "", tablaOrdenes, descripcion, cabecera);

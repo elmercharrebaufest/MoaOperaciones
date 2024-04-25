@@ -1,13 +1,10 @@
 ﻿CREATE TABLE [dbo].[OrdenResiduos]
 (
 	[Id] BIGINT NOT NULL PRIMARY KEY IDENTITY,
-    [CorredorId] INT NULL,
     [ClienteId] INT NOT NULL,
     [MaterialId] INT NOT NULL,
     [EstadoId] INT NOT NULL, 
     [FechaCreacion] DATETIME NOT NULL, 
-    [FechaRetiro] DATE NOT NULL, 
-    [Cantidad] INT NOT NULL DEFAULT 30000, 
     [PatenteChasis] VARCHAR(15) NOT NULL, 
     [PatenteAcoplado] VARCHAR(15) NOT NULL, 
     [ChoferNombre] VARCHAR(120) NOT NULL, 
@@ -18,17 +15,15 @@
     [LocalidadId] INT NOT NULL, 
     [FechaIngreso] DATETIME NULL, 
     [FechaEgreso] DATETIME NULL, 
-    [DistanciaKm] INT NOT NULL DEFAULT 0, 
-    [IntermediarioFleteCuit] VARCHAR(15) NULL, 
-    [IntermediarioFleteRazonSocial] VARCHAR(100) NULL, 
     [PlantaCodigo] VARCHAR(6) NULL, 
     [DomicilioTipo] VARCHAR NULL, 
     [DomicilioOrden] SMALLINT NULL, 
     [DomicilioDescr] VARCHAR(250) NULL, 
-    [MotivoRechazo] VARCHAR(250) NULL, 
-    CONSTRAINT [FK_OrdenResiduos_ProveedorCorredor] FOREIGN KEY ([CorredorId]) REFERENCES [Proveedor]([Id]), 
+    [AlmacenId] INT NOT NULL, 
+    [MotivoRechazo] VARCHAR(250) NULL,
     CONSTRAINT [FK_OrdenResiduos_ProveedorCliente] FOREIGN KEY ([ClienteId]) REFERENCES [Proveedor]([Id]), 
     CONSTRAINT [FK_OrdenResiduos_Material] FOREIGN KEY ([MaterialId]) REFERENCES [Material]([Id]), 
     CONSTRAINT [FK_OrdenResiduos_Localidad] FOREIGN KEY ([LocalidadId]) REFERENCES [Localidad]([LocalidadId]), 
-    CONSTRAINT [FK_OrdenResiduos_EstadoOrdenResiduos] FOREIGN KEY ([EstadoId]) REFERENCES [EstadoOrdenResiduos]([Id])
+    CONSTRAINT [FK_OrdenResiduos_EstadoOrdenResiduos] FOREIGN KEY ([EstadoId]) REFERENCES [EstadoOrdenResiduos]([Id]), 
+    CONSTRAINT [FK_OrdenResiduos_Almacen] FOREIGN KEY ([AlmacenId]) REFERENCES [Almacen]([Id])
 )

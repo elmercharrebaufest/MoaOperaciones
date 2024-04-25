@@ -60,6 +60,7 @@
     <Compile Include="Consulta\DirOrden.cs" />
     <Compile Include="Consulta\Expresiones.cs" />
     <Compile Include="Consulta\ListaPaginada.cs" />
+    <Compile Include="Dto\AlmacenDto.cs" />
     <Compile Include="Dto\AplicacionCartaPorte\CargaMasivaResponse.cs" />
     <Compile Include="Dto\AplicacionCartaPorte\ComboAplicacionesContratosCcppResponse.cs" />
     <Compile Include="Dto\ArchivoBoleto\ActualizarArchivoBoletoDto.cs" />
@@ -81,7 +82,13 @@
     <Compile Include="Dto\OrdenDeCargaFason\DetallesActualizarOrdenDeCargaFason.cs" />
     <Compile Include="Dto\Compras\ChatComprasDto.cs" />
     <Compile Include="Dto\OrdenResiduos\ActualizarOrdenResiduosExternalDto.cs" />
+    <Compile Include="Dto\OrdenResiduos\EstadoOrdenResiduosDto.cs" />
+    <Compile Include="Dto\OrdenResiduos\GrabarOrdenResponse.cs" />
     <Compile Include="Dto\OrdenResiduos\ListarOrdenesResiduosResponse.cs" />
+    <Compile Include="Dto\OrdenResiduos\LocalidadDto.cs" />
+    <Compile Include="Dto\OrdenResiduos\OrdenResiduosDto.cs" />
+    <Compile Include="Dto\OrdenResiduos\PatentesClienteDto.cs" />
+    <Compile Include="Dto\OrdenResiduos\TransportesIds.cs" />
     <Compile Include="Dto\PartidoDto.cs" />
     <Compile Include="Dto\PeticionDeOfertaVisualizacionPrecioDto.cs" />
     <Compile Include="Dto\EstadoSolicitudOrdenDeCargaBaseDto.cs" />
@@ -198,6 +205,7 @@
     <Compile Include="Dto\Compras\UsuarioComprasRelacionConUsuariosDto.cs" />
     <Compile Include="Dto\UsuarioModificacionDto.cs" />
     <Compile Include="Entities\ArchivoBoleto.cs" />
+    <Compile Include="Entities\Almacen.cs" />
     <Compile Include="Entities\ArchivoCampoSustentable.cs" />
     <Compile Include="Entities\EstadoOrdenResiduos.cs" />
     <Compile Include="Entities\OrdenResiduos.cs" />

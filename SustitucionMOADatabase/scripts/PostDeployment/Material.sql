@@ -87,7 +87,7 @@ END
 IF NOT EXISTS (SELECT top 1 1 FROM dbo.Material WHERE CodigoSap = '64194' and TablaSeccionMaterial = 3)
 BEGIN
 	INSERT INTO Material(Nombre, CodigoSap, TablaSeccionMaterial, ValidaSisaRuca, Abreviacion)
-	VALUES ('64194 - RESIDUOS ORGANICOS', '64194', 3, 0, 'Residuos org.')
+	VALUES ('64194 - RESIDUOS ORGANICOS', '64194', 3, 1, 'Residuos org.')
 END
 
 IF NOT EXISTS (SELECT top 1 1 FROM dbo.Material WHERE CodigoSap = '64196' and TablaSeccionMaterial = 3)

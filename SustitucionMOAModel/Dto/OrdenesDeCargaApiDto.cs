@@ -110,8 +110,8 @@ namespace SustitucionMOAModel.Dto
             {
                 Id = ordenResiduo.Id,
                 FechaCreacion = ordenResiduo.FechaCreacion.ToString(),
-                FechaRetiro = ordenResiduo.FechaRetiro.ToString(),
-                Cantidad = ordenResiduo.Cantidad,
+                //FechaRetiro = ordenResiduo.FechaRetiro.ToString(),
+                //Cantidad = ordenResiduo.Cantidad,
                 PatenteAcoplado = ordenResiduo.PatenteAcoplado,
                 PatenteChasis = ordenResiduo.PatenteChasis,
                 NombreChofer = ordenResiduo.ChoferNombre,
@@ -124,9 +124,9 @@ namespace SustitucionMOAModel.Dto
                 Cliente = ordenResiduo.Cliente.RazonSocial,
                 DescripcionProducto = new OrdenesDeCargaApiDto().ParseNombreProducto(ordenResiduo.Producto.Nombre),
                 CUITCliente = ordenResiduo.Cliente.CUIT,
-                CUITCorredor = ordenResiduo.CorredorId != null ? ordenResiduo.Corredor.CUIT : null,
+                //CUITCorredor = ordenResiduo.CorredorId != null ? ordenResiduo.Corredor.CUIT : null,
                 CodigoProducto = ordenResiduo.Producto.CodigoSap,
-                KmARecorrer = ordenResiduo.DistanciaKm.ToString(),
+                //KmARecorrer = ordenResiduo.DistanciaKm.ToString(),
                 TipoOrden = TipoOrdenes.RESIDUOS,
                 //FleteMOA = ordenResiduo.FleteMOA,
                 //Reventa = ordenResiduo.Reventa,
@@ -139,8 +139,8 @@ namespace SustitucionMOAModel.Dto
                 //RazonSocialDestinatario = ordenResiduo.RazonSocialDestinatario,
                 //CUITDestino = ordenResiduo.CUITDestino,
                 //RazonSocialDestino = ordenResiduo.RazonSocialDestino,
-                CUITIntermediarioFlete = ordenResiduo.IntermediarioFleteCuit,
-                RazonSocialIntermediarioFlete = ordenResiduo.IntermediarioFleteRazonSocial,
+                //CUITIntermediarioFlete = ordenResiduo.IntermediarioFleteCuit,
+                //RazonSocialIntermediarioFlete = ordenResiduo.IntermediarioFleteRazonSocial,
                 //DestinoMercaderia = ordenResiduo.DestinoMercaderia,
             };
         }

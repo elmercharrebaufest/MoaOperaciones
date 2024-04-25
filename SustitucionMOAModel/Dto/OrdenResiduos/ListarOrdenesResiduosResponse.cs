@@ -15,15 +15,11 @@ namespace SustitucionMOAModel.Dto.OrdenResiduos
     {
         public long Id { get; set; }
 
-        public string RazonSocialCorredor { get; set; }
-
         public string RazonSocialCliente { get; set; }
 
         public string DescripcionEstado { get; set; }
 
         public string FechaCreacion { get; set; }
-
-        public string FechaRetiro { get; set; }
 
         public string LocalidadDescripcion { get; set; }
 

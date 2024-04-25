@@ -623,4 +623,32 @@
     <Property Name="ParentElementType" Value="SqlTable" />
     <Property Name="NewName" Value="UsuarioCreacion_Id" />
   </Operation>
+  <Operation Name="Rename Refactor" Key="875b9e55-c90f-416b-8a34-6a5273d8800c" ChangeDateTime="04/19/2024 16:17:43">
+    <Property Name="ElementName" Value="[dbo].[AlmacenMaterial].[Id]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[AlmacenMaterial]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="AlmacenId" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="b2eaff90-a514-451a-a9d9-2148de88eed6" ChangeDateTime="04/21/2024 22:04:19">
+    <Property Name="ElementName" Value="[dbo].[FK_OrdenResiduos_Almace]" />
+    <Property Name="ElementType" Value="SqlForeignKeyConstraint" />
+    <Property Name="ParentElementName" Value="[dbo].[OrdenResiduos]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="[FK_OrdenResiduos_Almacen]" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="c59fd6a8-a8a4-4d4d-b154-b22f98ff7199" ChangeDateTime="04/21/2024 23:42:01">
+    <Property Name="ElementName" Value="[dbo].[AlmacenMaterial].[AlmacenId]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[AlmacenMaterial]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="Almacen_Id" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="f4fa1d7a-4b5e-4330-a92b-d2c25498f4f6" ChangeDateTime="04/21/2024 23:42:05">
+    <Property Name="ElementName" Value="[dbo].[AlmacenMaterial].[MaterialId]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[AlmacenMaterial]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="Material_Id" />
+  </Operation>
 </Operations>
