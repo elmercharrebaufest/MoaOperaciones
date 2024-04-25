@@ -11,10 +11,8 @@ using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
 using SustitucionMOAWS.Interfaces;
 using System;
+using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Remoting;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SustitucionMOAUtils.Services
 {
@@ -23,17 +21,20 @@ namespace SustitucionMOAUtils.Services
         private readonly IRepositorioOrdenResiduos repositorio;
         private readonly IScatoRepositorioClient scatoRepositorioClient;
         private readonly IOrdenCargaConsumerMOA ordenCargaConsumer;
+        private readonly IFeriadoService feriadoService;
         private readonly IEmailResiduosService emailResiduosService;
 
         public OrdenResiduosService(
             IRepositorioOrdenResiduos repositorio,
             IScatoRepositorioClient scatoRepositorioClient,
             IOrdenCargaConsumerMOA ordenCargaConsumer,
+            IFeriadoService feriadoService,
             IEmailResiduosService emailResiduosService)
         {
             this.repositorio = repositorio;
             this.scatoRepositorioClient = scatoRepositorioClient;
             this.ordenCargaConsumer = ordenCargaConsumer;
+            this.feriadoService = feriadoService;
             this.emailResiduosService = emailResiduosService;
         }
 
@@ -317,6 +318,39 @@ namespace SustitucionMOAUtils.Services
             orden.EstadoId = existeTransporte ? (int)EstadoOrdenResiduosEnum.OrdenGenerada : (int)EstadoOrdenResiduosEnum.Pendiente;
             repositorio.GuardarCambios();
             return new OrdenResiduosDto().FromEntity(orden);
+        }
+
+        public void VerificarVencimientoOrdenesResiduos()
+        {
+            var fechaActual = DateTime.Now;
+            var dayOfWeek = fechaActual.DayOfWeek;
+            if ((dayOfWeek == DayOfWeek.Saturday || dayOfWeek == DayOfWeek.Sunday))
+            {
+                return;
+            }
+            var feriados = feriadoService.ObtenerFeriados();
+            if (feriados.Any(feriado => feriado.Date == fechaActual.Date))
+            {
+                return;
+            }
+
+            var habilitacion = repositorio.Obtener<SustitucionMOAModel.Entities.HabilitacionJob>(a => a.Nombre == "VencimientoOrdenesResiduosJob");
+            if (!habilitacion.Habilitado)
+            {
+                return;
+            }
+
+            var ordenes =
+                repositorio.Listar<SustitucionMOAModel.Entities.OrdenResiduos>(o => o.EstadoId == (int)EstadoOrdenResiduosEnum.OrdenGenerada)
+                .Where(orden => orden.FechaVencimiento(feriados) < fechaActual);
+
+            foreach (var orden in ordenes)
+            {
+                orden.EstadoId = (int)EstadoOrdenResiduosEnum.OrdenVencida;
+            }
+            repositorio.GuardarCambios();
+
+            emailResiduosService.EnviarMailOrdenesVencidas(ordenes);
         }
 
         private void ValidarOrden(OrdenResiduosDto ordenDto)

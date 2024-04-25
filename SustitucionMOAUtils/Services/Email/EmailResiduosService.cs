@@ -4,12 +4,9 @@ using SustitucionMOAUtils.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using System;
 using System.IO;
 using System.Configuration;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SustitucionMOAUtils.Services.Email
 {
@@ -20,12 +17,25 @@ namespace SustitucionMOAUtils.Services.Email
 
         private readonly string DireccionMailAuditoriaOrdenesResiduosVencidas = ConfigurationManager.AppSettings["EmailOrdenesResiduosVencidas"];
         private readonly string TEMPLATE_NOTIFICACION_ORDENES_VENCIDAS = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "NotificacionOrdenesResiduosVencidas.html");
+        
         private readonly IEmailService emailService;
 
-        protected IEmailService emailService { get; set; }
         public EmailResiduosService(IEmailService emailService)
         {
             this.emailService = emailService;
+        }
+
+        public void EnviarMailTransporteNoExiste(string razonSocialTransporte, string cuitTransporte)
+        {
+            var cuerpo = $"Razón social: {razonSocialTransporte} <br> CUIT: {cuitTransporte}";
+
+            var emailSenderData = new EmailSenderData
+            {
+                Mails = emailService.ObtenerListaDestinatarios(new string[] { DireccionToAltaTransporteCuitResiduos, DireccionCCAltaTransporteCuitResiduos }),
+                Asunto = "ALTA TTE",
+                Cuerpo = cuerpo
+            };
+            emailService.EnviarMail(emailSenderData);
         }
 
         public void EnviarMailOrdenesVencidas(IEnumerable<OrdenResiduos> ordenes)
