@@ -8226,8 +8226,8 @@ namespace SustitucionMOAUtils.Services
                 var imputacionSapX = new BAPIMEPOACCOUNTX();
                 if (modificarPedidoSAP.POACCOUNT.Count > 0)
                 {
-                    imputacionSap = modificarPedidoSAP.POACCOUNT.Single(a => a.PO_ITEM == PO_ITEM);
-                    imputacionSapX = modificarPedidoSAP.POACCOUNTX.Single(a => a.PO_ITEM == PO_ITEM);
+                    imputacionSap = modificarPedidoSAP.POACCOUNT.FirstOrDefault(a => a.PO_ITEM == PO_ITEM);
+                    imputacionSapX = modificarPedidoSAP.POACCOUNTX.FirstOrDefault(a => a.PO_ITEM == PO_ITEM);
                 }
                 //Condición
                 var condicionSap = modificarPedidoSAP.POCOND.Single(a => a.ITM_NUMBER == "0" + PO_ITEM);
