@@ -30,42 +30,52 @@
 }
 
 .green-row {
-    background-color: #c2e4ce !important;
+    background-color: rgba(14, 146, 59, 0.11) !important;
 }
 
 .orange-row {
-    background-color: #ec7f1a !important;
+    background-color: rgba(236, 127, 26, 0.11) !important;
 }
 
 .purple-row {
-    background-color: #a831e2 !important;
+    background-color: rgba(175, 50, 234, 0.11) !important;
 }
 
 .reference-position-complete {
-    width: 50px;       /* Ancho del rectángulo */
-    height: 25px;       /* Alto del rectángulo */
-    background-color: #c2e4ce;  /* Color de referencia HTML */
-    border: 1px solid #000;     /* Borde negro opcional */
+    width: 50px; /* Ancho del rectángulo */
+    height: 25px; /* Alto del rectángulo */
+    background-color: rgba(14, 146, 59, 0.2); /* Color de referencia HTML */
+    /*border: 1px solid #000;*/ /* Borde negro opcional */
 }
 
 .reference-pending-release {
-    width: 50px;       /* Ancho del rectángulo */
-    height: 25px;       /* Alto del rectángulo */
-    background-color: #ec7f1a;  /* Color de referencia HTML */
-    border: 1px solid #000;     /* Borde negro opcional */
+    width: 50px; /* Ancho del rectángulo */
+    height: 25px; /* Alto del rectángulo */
+    background-color: rgba(236, 127, 26, 0.2); /* Color de referencia HTML */
+    /*border: 1px solid #000;*/ /* Borde negro opcional */
 }
 
 .reference-merchandise {
-    width: 50px;       /* Ancho del rectángulo */
-    height: 25px;       /* Alto del rectángulo */
-    background-color: #a831e2;  /* Color de referencia HTML */
-    border: 1px solid #000;     /* Borde negro opcional */
+    width: 50px; /* Ancho del rectángulo */
+    height: 25px; /* Alto del rectángulo */
+    background-color: rgba(175, 50, 234, 0.2); /* Color de referencia HTML */
+    /*border: 1px solid #000;*/ /* Borde negro opcional */
 }
 
 .reference-section {
-    margin-top: 20px;  /* Espacio superior */
+    margin: 20px 0;  /* Espacio superior */
     display: flex;     /* Usa flexbox */
     justify-content: flex-end; /* Alinea los elementos al final del contenedor */
+}
+
+.reference-section > table tr th {
+    color: #333;
+    text-transform: none;
+}
+
+.reference-section > table tr th,
+.reference-section > table tr td {
+  padding-bottom: 1em;
 }
 
 /* Ocultar la barra de desplazamiento del modo normal */
@@ -372,19 +382,7 @@ i#btn-fullscreen {
 :host ::ng-deep #posiciones > .ui-table > .ui-table-wrapper > table > tbody > tr.highlighted,
 :host ::ng-deep #items > .ui-table > .ui-table-wrapper > table > tbody > tr.highlighted {
     font-weight: bold;
-    background-color: #cce5ff;
-    border-top: 2px solid #4795d2;
-    border-left: 2px solid #4795d2;
-    border-right: 2px solid #4795d2;
 }
-
-    :host ::ng-deep #ordenes > .ui-table > .ui-table-wrapper > table > tbody > tr.highlighted + tr,
-    :host ::ng-deep #posiciones > .ui-table > .ui-table-wrapper > table > tbody > tr.highlighted + tr,
-    :host ::ng-deep #items > .ui-table > .ui-table-wrapper > table > tbody > tr.highlighted + tr {
-        border-bottom: 2px solid #4795d2;
-        border-left: 2px solid #4795d2;
-        border-right: 2px solid #4795d2;
-    }
 /* --- END HIGHLIGHTED ROWS --- */
 
 /* Positions Table */

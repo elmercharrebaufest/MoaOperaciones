@@ -746,44 +746,65 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
         posicion.isSelected = !itemsConSaldoDisponible.some(item => !item.isSelected);
     }
 
-    hideCheckboxToAll(items: any): boolean {
-        // return items.some(item => !this.isGet100(item) || item.MontoACertificar != 0)
-        return this.tablaPO.some(x => 
-            x.NumeroOrdenDeCompra === items.NroOrdenCompra && 
-            x.SubjToR === "" && (
-                items.Items.some(item => !this.isGet100(item) || item.MontoACertificar != 0)
-            )
-        );
+
+    obtenerOrdenDeCompraPorNumero(nroOrdenDeCompra: number): any {
+        return this.tablaPO.find(orden => orden.NumeroOrdenDeCompra === nroOrdenDeCompra, []);
     }
 
-    hidePositionCheckboxToAll(items: any): boolean {
-        // return items.Items.some(element => {
-        //     return !this.isGet100(element) || (((element.Cantidad - element.CantidadReal) * element.Importe) / element.Cantidad) != 0 || this.tablaPO.some(x => x.NumeroOrdenDeCompra === items.NroOrdenCompra && x.SubjToR != "");;
-        // });
-        let isOk = false;
-
-        this.tablaPO.some(x => {
-            if (x.NumeroOrdenDeCompra === items.NroOrdenCompra) {
-                if (x.SubjToR === "") {
-                    isOk = true; // Devuelve true si SubjToR es "X"
-                    return true; // Sale del some
-                }
-                
-                if (x.SubjToR === "") {
-                    isOk = !items.Items.some(element => 
-                        !this.isGet100(element) || 
-                        (((element.Cantidad - element.CantidadReal) * element.Importe) / element.Cantidad) !== 0
-                    );
-                    return isOk; // Sale del some si isOk es true
-                }
-            }
-        });
-
-        return isOk;
+    obtenerPosicionPorNumero(nroOrdenDeCompra: number, nroPosicion: number): any {
+        const oc = this.obtenerOrdenDeCompraPorNumero(nroOrdenDeCompra);
+        return oc.Posiciones.find(posicion => posicion.NumeroPosicion === nroPosicion);
     }
 
-    hideItemsCheckbox(items: any): boolean {
-        return items.SubjToR === "";
+    ordenEsPendienteDeLiberacion(nroOrdenDeCompra: number): boolean {
+        const oc = this.obtenerOrdenDeCompraPorNumero(nroOrdenDeCompra);
+        return oc.SubjToR === 'X';
+    }
+
+    posicionEsConEntregaFinal(nroOrdenDeCompra: number, nroPosicion: number): boolean {
+        const posicion = this.obtenerPosicionPorNumero(nroOrdenDeCompra, nroPosicion);
+        return posicion.NoMoreGR === 'X';
+    }
+
+    /**
+     * Evalúa si mostar o no el checkbox para seleccionar la posición.
+     * @param posicion 
+     * @returns {boolean}
+     */
+    mostrarCheckboxDeSeleccionarPosicion(posicion: any): boolean {
+        let orderPendienteDeLiberacion = this.ordenEsPendienteDeLiberacion(posicion.NroOrdenCompra);
+        let posicionConEntregaFinal = this.posicionEsConEntregaFinal(posicion.NroOrdenCompra, Number(posicion.NumeroPosicion));
+        let posicionTieneSaldoACertificar = this.tieneItemsACertificar(posicion);
+        let mostrarCheckboxDeSeleccionarPosicion = !orderPendienteDeLiberacion && !posicionConEntregaFinal && posicionTieneSaldoACertificar;
+        return mostrarCheckboxDeSeleccionarPosicion;
+    }
+
+    /**
+     * Evalúa si mostrar o no el checkbox para seleccionar todos los items.
+     * @param posicion
+     * @returns {boolean}
+     */
+    mostrarCheckboxDeSeleccionarTodosItems(posicion: any): boolean {
+        let orderPendienteDeLiberacion = this.ordenEsPendienteDeLiberacion(posicion.NroOrdenCompra);
+        let posicionConEntregaFinal = this.posicionEsConEntregaFinal(posicion.NroOrdenCompra, Number(posicion.NumeroPosicion));
+        let posicionTieneItemsACertificar = this.tieneItemsACertificar(posicion);
+        const itemsACertificar = posicion.Items.filter(item => this.tienePorcentajeACertificar(item));
+        const mostrarCheckboxDeSeleccionarTodosItems = !orderPendienteDeLiberacion && !posicionConEntregaFinal && posicionTieneItemsACertificar;
+        return mostrarCheckboxDeSeleccionarTodosItems;
+    }
+
+    /**
+     * Evalúa si el checkbox para seleccionar un item debe o no estar habilitado.
+     * @param item
+     * @returns {boolean}
+     */
+    deshabilitarCheckboxDeItem(item: any): boolean {
+        let ordenPendienteDeLiberacion = this.ordenEsPendienteDeLiberacion(item.NroOrdenCompra);
+        let posicionConEntregaFinal = this.posicionEsConEntregaFinal(item.NroOrdenCompra, Number(item.NroPosicion));
+        let itemTienePorcentajeACertificar = Number(item.Porcentaje) < 100;
+        let itemTieneMontoACertificar = item.MontoACertificar > 0;
+        let deshabilitarCheckboxDeItem = ordenPendienteDeLiberacion || !itemTienePorcentajeACertificar || !itemTieneMontoACertificar || posicionConEntregaFinal;
+        return deshabilitarCheckboxDeItem;
     }
 
     /**
@@ -873,6 +894,11 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
         let expandedRowId = Object.keys(table.expandedRowKeys)[0] ? Object.keys(table.expandedRowKeys)[0] : undefined;
         if (table.el.nativeElement.id == 'posiciones') this.expandedPositionRow = expandedRowId;
         if (table.el.nativeElement.id == 'items') this.expandedItemRow = expandedRowId;
+    }
+
+
+    tienePorcentajeACertificar(item: any): boolean {
+        return Number(item.Porcentaje) < 100;
     }
 
     /**
