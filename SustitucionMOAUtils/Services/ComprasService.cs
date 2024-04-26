@@ -3041,6 +3041,11 @@ namespace SustitucionMOAUtils.Services
                         {
                             item.VerPublicar = false;
                         }
+
+                        if (item.PosicionCompras.Any(p => !string.IsNullOrEmpty(p.NumeroContratoSuperior)))
+                        {
+                            item.VerPublicar = false;
+                        }
                     }
                 }
             }
