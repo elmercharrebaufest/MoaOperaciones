@@ -113,7 +113,8 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                            CentroCodigo = posicion.Centro != null ? posicion.Centro.Codigo : (string)null,
                                                            Cantidad = posicion.Cantidad,
                                                            TipoPosicion = new TablaGeneralDto { Descripcion = posicion.TipoPosicion.Descripcion, Codigo = posicion.TipoPosicion.Codigo },
-                                                           NroSolp = posicion.Solp.NroSolp
+                                                           NroSolp = posicion.Solp.NroSolp,
+                                                           NumeroContratoSuperior = posicion.NumeroContratoSuperior,
                                                        }),
                                     ItemPorPagina = Paginacion.ItemsPorPagina,
                                     Pagina = Paginacion.Pagina,
