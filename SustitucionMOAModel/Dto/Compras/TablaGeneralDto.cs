@@ -11,6 +11,9 @@ namespace SustitucionMOAModel.Dto
         public string Descripcion { get; set; }
         public int? IdPadre { get; set; }
         public bool? FiltroComprador { get; set; }
+        public bool? Deshabilitado { get; set; }
+
+
 
         public TablaSapDto() { }
 
@@ -25,6 +28,7 @@ namespace SustitucionMOAModel.Dto
                 Descripcion = entity.Descripcion;
                 IdPadre = entity.Padre_id;
                 FiltroComprador = entity.FiltroComprador;
+                Deshabilitado = entity.Deshabilitado;
             }
         }
 
