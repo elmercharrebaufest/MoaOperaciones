@@ -371,7 +371,7 @@ namespace SustitucionMOAUtils.Services
 
             string prefijo = ConfigurarPrefijos(solpEntity);
             var condEsp = TieneCondicionEspecial(solpEntity);
-            var esServicio = solpEntity.Posiciones.Any() && solpEntity.Posiciones.FirstOrDefault().TipoPosicion.Codigo == "SERVICIO";
+            var esServicio = solpEntity.Posiciones.Any() && solpEntity.Posiciones.FirstOrDefault().TipoPosicion != null && solpEntity.Posiciones.FirstOrDefault().TipoPosicion.Codigo == "SERVICIO";
             if (condEsp == true)
             {
                 if (esServicio)
@@ -1450,7 +1450,7 @@ namespace SustitucionMOAUtils.Services
             solpValores.Add(SolpTemplateKeys.NRO_PEDIDO, solp.NroPedido);
             solpValores.Add(SolpTemplateKeys.FISCAL_CONTRATO, solp.FiscalContrato);
             solpValores.Add(SolpTemplateKeys.TELEFONO, solp.Telefono);
-            solpValores.Add(SolpTemplateKeys.FECHA_OBRA, solp.Posiciones.FirstOrDefault().FechaEntregaServicio?.ToString("dd-MM-yyyy"));
+            solpValores.Add(SolpTemplateKeys.FECHA_OBRA, solp.Posiciones.FirstOrDefault()?.FechaEntregaServicio?.ToString("dd-MM-yyyy"));
 
 
             solpValores.Add(SolpTemplateKeys.FECHA_PRESENTACION, Convert.ToDateTime(solp.FechaHoraEntrega).ToString("dd-MM-yyyy"));
@@ -2604,7 +2604,8 @@ namespace SustitucionMOAUtils.Services
                             posicionEntity.NumeroContratoSuperior = posicion.NumeroContratoMarco;
                             posicionEntity.NumeroPosicionContratoSuperior = posicion.PosicionContratoMarco;
                             posicionEntity.ProveedorFijo = posicion.ProveedorFijo;
-                            posicionEntity.NombreProveedor = datosContratoMarco.Any() ? datosContratoMarco.First().NombreProveedor : "";
+                            posicionEntity.NombreProveedor = datosContratoMarco.Any() && !string.IsNullOrEmpty(datosContratoMarco.First().NombreProveedor) ? 
+                                                             datosContratoMarco.First().NombreProveedor : posicion.ProveedorFijoRazonSocial;
                             posicionEntity.OrganizacionCompras = posicion.OrganizacionCompras;
                         }
 
@@ -3162,11 +3163,13 @@ namespace SustitucionMOAUtils.Services
                     {
                         mensaje = "Sin Cotizar";
                         verAdjudicar = false;
+                        item.VerImportes = false;
                     }
                     if (item.Cotizacion != null && item.Cotizacion.CotizacionEstado_Id == (int)CotizacionEstadoEnum.Incompleta)
                     {
                         mensaje = "Oferta sin finalizar";
                         verAdjudicar = false;
+                        item.VerImportes = false;
                     }
                     if (item.Cotizacion != null && item.PropuestaTecnicaAprobada == false)
                     {
@@ -3177,6 +3180,7 @@ namespace SustitucionMOAUtils.Services
                     {
                         mensaje = "SOLP Sin liberar";
                         verAdjudicar = false;
+                        item.VerImportes = false;
                     }
                     var fechaFinPlazo = (item.PlazoDeOfertaCierre == null && item.FechaCircular == null) ? item.PlazoDeOfertaOriginal :
                     item.PlazoDeOfertaCierre == null ? item.PlazoDeOfertaCircular.Value :

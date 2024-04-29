@@ -230,7 +230,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         this.setTabs();
         this.setCombos();
         //Hace que clase documento no use la primera opcion como predeterminada
-        var clase = this.claseDocumento != undefined ? this.claseDocumento[0].value : null;
+        var clase = this.claseDocumento != undefined && this.claseDocumento.length > 0 ? this.claseDocumento[0].value : null;
         let claseDocumento = this.model.selectClaseDocumento !== undefined && this.model.selectClaseDocumento.Id > 0 ? this.model.selectClaseDocumento : clase;
         this.model.selectClaseDocumento = this.model.selectClaseDocumento !== undefined && this.model.selectClaseDocumento.Id > 0 ? this.model.selectClaseDocumento : 0;
         this.actualizarCamposObligatorios(this.model.selectClaseDocumento);
