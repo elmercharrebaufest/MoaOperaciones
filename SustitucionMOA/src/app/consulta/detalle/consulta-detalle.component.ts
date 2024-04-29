@@ -208,9 +208,7 @@ export class DetalleConsultaComponent extends BaseComponent {
 
     comentarioPropio(comentario) {
         return (
-            (this.consulta.UsuarioId == comentario.UsuarioId &&
-                this.consulta.UsuarioId == this.consulta.UsuarioActualId) ||
-            (this.consulta.UsuarioId != comentario.UsuarioId && this.esInterno)
+            (this.consulta.UsuarioActualId == comentario.UsuarioId)
         );;
     }
 
