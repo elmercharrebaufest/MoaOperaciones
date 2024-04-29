@@ -62,7 +62,7 @@ import { OrdenDeCompraSap } from '../../modelos/ordenDeCompraSap';
     providers: [ComprasService, MessageService]
 })
 
-export class SolpComponent extends BaseComponent implements OnInit {
+export class SolpComponent extends BaseComponent implements OnInit, OnChanges {
 
     @BlockUI() blockUI: NgBlockUI;
 
@@ -138,6 +138,9 @@ export class SolpComponent extends BaseComponent implements OnInit {
         super(navService, securytiService, floatMsgService, modalService);
         this.pasos = setupSolpPasos();
         this.solpActual = new Solp();
+    }
+    ngOnChanges(changes: SimpleChanges): void {
+        this.obtenerUsuarioSolicitante(); 
     }
 
     ngOnInit() {
