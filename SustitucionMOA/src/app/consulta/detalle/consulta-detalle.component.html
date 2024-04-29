@@ -23,9 +23,11 @@
                             </div>
                             <p [ngClass]="comentarioPropio(comentario) ? 'horaComentarioRespuesta' : ''"
                                 class="col-xs-12 col-sm-12 col-md-12">
-                                {{comentario.Fecha | date:'HH:mm'}} | {{comentario.Usuario.Mail}}
+                                {{comentario.Fecha | date:'HH:mm'}}
+                                <ng-container *ngIf="!(!comentarioPropio(comentario) && !this.esInterno)">
+                                    | {{comentario.Usuario.Mail}}
+                                </ng-container>
                             </p>
-                            
                         </div>
                         <div [ngClass]="comentarioPropio(comentario) ? 'widthAutoConsultaPropio' : 'widthAutoConsultaRespuesta' "
                             class="col-xs-12 col-sm-6 col-md-7" *ngIf="comentario.Archivos.length != 0">
@@ -40,11 +42,7 @@
                             </ng-container>
                         </div>
 
-                        <div *ngIf="(comentarioPropio(comentario) && esCorredor) || esInterno; else elseBlock">
-                            <!--<p [ngClass]="comentarioPropio(comentario) ? 'horaComentarioRespuesta' : ''"
-                                class="col-xs-12 col-sm-12 col-md-12">
-                                {{comentario.Fecha | date:'HH:mm'}} | {{comentario.Usuario.Mail}}
-                            </p>-->
+                        <div *ngIf="(comentarioPropio(comentario) && esCorredor) || esInterno">
                             <div *ngIf="esInterno && comentario.Detalle != '' && comentario.Recordado">
                                 <p *ngFor="let recordado of comentario.ComentarioRecordados"
                                     [ngClass]="comentarioPropio(comentario) ? 'horaComentarioRespuesta' : ''"
@@ -53,12 +51,6 @@
                                 </p>
                             </div>
                         </div>
-                        <ng-template #elseBlock>
-                            <p [ngClass]="comentarioPropio(comentario) ? 'horaComentarioRespuesta' : ''"
-                                class="col-xs-12 col-sm-12 col-md-12">
-                                {{comentario.Fecha | date:'HH:mm'}}
-                            </p>
-                        </ng-template>
                     </div>
                 </ng-container>
                 <ng-template #loader>
@@ -171,7 +163,8 @@
                             <strong>Fecha Creacion:</strong> {{this.consulta.FechaCreacion | date:'dd/MM/yyyy'}}
                         </ng-container>
                     </div>
-                    <div *ngIf="this.consulta.PuedeReabrir && !esInterno" class="botonActualizarCombos" style="margin-top: 10px;">
+                    <div *ngIf="this.consulta.PuedeReabrir && !esInterno" class="botonActualizarCombos"
+                        style="margin-top: 10px;">
                         <spinner-small></spinner-small>
                         <button (click)="reabrirConsulta()" class="mx-auto d-block enviarComentario"
                             style="text-decoration:none!important; padding-bottom: 15px;">

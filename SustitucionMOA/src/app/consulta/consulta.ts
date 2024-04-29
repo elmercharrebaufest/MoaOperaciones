@@ -1,3 +1,6 @@
+import { Archivo } from "../common/models/archivo";
+import { Usuario } from "../usuario/usuario";
+
 export interface Consulta {
     Id;
     CodigoCorredor;
@@ -32,7 +35,7 @@ export interface Consulta {
     SubCategoria?;
     EstadoConsulta;
     CausaConsulta;
-    Comentarios;
+    Comentarios: Comentario[];
 
     DiasReclamo;
     Usuario?;
@@ -81,11 +84,18 @@ export interface Materiales {
 }
 
 export class Comentario {
+    Consulta_Id?: any;
     consulta_Id: any;
-    Detalle: any;
+    Detalle: string;
     Fecha: any;
-    Recordado: any;
     FechaRecordado: any;
+    UsuarioId?: number;
+    Id?: number;
+    Usuario?: Usuario;
+    Recordado?: boolean;
+    CreadorInterno?: boolean;
+    Archivos?: Archivo[];
+    ComentarioRecordados?: any;
 }
 export class ReclamoImpositivo {
     Dni;

@@ -320,6 +320,7 @@ namespace SustitucionMOAUtils.Services
                 UsuarioId = x.Usuario_Id,
                 Recordado = x.Recordado,
                 FechaRecordado = x.FechaRecordado,
+                CreadorInterno = x.Usuario.TienePermiso(PermisoEnum.ConsultaAbm),
                 Usuario = new UsuarioDto()
                 {
                     Id = x.Usuario.Id,

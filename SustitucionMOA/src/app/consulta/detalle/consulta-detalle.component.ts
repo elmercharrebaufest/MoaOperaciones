@@ -206,10 +206,9 @@ export class DetalleConsultaComponent extends BaseComponent {
         $formInput.val(null);
     }
 
-    comentarioPropio(comentario) {
-        return (
-            (this.consulta.UsuarioActualId == comentario.UsuarioId)
-        );;
+    comentarioPropio(comentario: Comentario): boolean {
+        return (this.esInterno && comentario.CreadorInterno) ||
+            !this.esInterno && !comentario.CreadorInterno;
     }
 
     actualizarCombos() {
