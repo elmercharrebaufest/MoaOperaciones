@@ -128,7 +128,7 @@
             <ng-template pTemplate="body" let-rowData let-columns="columns" let-expanded="expanded">
                 <tr [class.orange-row]="isPendingRelease(rowData)" [pSelectableRow]="rowData" *ngIf="!ocFilterApplied || (ocFilterApplied && tienePosicionesConItemsACertificar(rowData.Posiciones))" [class.highlighted]="expanded">
                     <td>
-                        <a href="#" [pRowToggler]="rowData" (click)="loadSolicitantesList(rowData)">
+                        <a href="#" [pRowToggler]="rowData" (click)="loadSolicitantesList(rowData);clearCheckboxes(rowData)">
                             <i [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
                         </a>
                     </td>
@@ -178,8 +178,11 @@
 
                                       <!-- SE AGREGA CHECKBOX PARA SELECCIOANR N POSICIONES -->
                                         <td>
-                                            <input *ngIf="mostrarCheckboxDeSeleccionarPosicion(rowData)" type="checkbox" [(ngModel)]="rowData.isSelected" (change)="selectAllPositionsLines($event,rowData)"/>
-
+                                            <input *ngIf="mostrarCheckboxDeSeleccionarPosicion(rowData)" 
+                                                   #seleccionarPosicionCheckbox
+                                                   type="checkbox" 
+                                                   [(ngModel)]="rowData.isSelected" 
+                                                   (change)="seleccionarPosicion($event, rowData)"/>
                                             <a href="#" [pRowToggler]="rowData" (click)="calcularValoresACertificar(rowData)">
                                                 <i [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
                                             </a>
@@ -226,7 +229,11 @@
                                             <ng-template pTemplate="header" *ngIf="rowData.Items && rowData.Items.length > 0">
                                                 <tr>
                                                     <th>
-                                                        <input *ngIf="mostrarCheckboxDeSeleccionarTodosItems(rowData)" type="checkbox" [(ngModel)]="rowData.isSelected" (change)="selectAllItems($event, rowData.Items)">
+                                                        <input *ngIf="mostrarCheckboxDeSeleccionarTodosItems(rowData)" 
+                                                               #seleccionarTodosItemsCheckbox
+                                                               type="checkbox" 
+                                                               [(ngModel)]="rowData.isSelected" 
+                                                               (change)="selectAllItems($event, rowData)">
                                                     </th>
                                                     <ng-container *ngFor="let col of userTablesConfig[2].columns">
                                                         <th [id]="col.id" *ngIf="col.sortable && col.visible" [pSortableColumn]="col.field">{{ col.header }}<p-sortIcon [field]="col.field"></p-sortIcon></th>

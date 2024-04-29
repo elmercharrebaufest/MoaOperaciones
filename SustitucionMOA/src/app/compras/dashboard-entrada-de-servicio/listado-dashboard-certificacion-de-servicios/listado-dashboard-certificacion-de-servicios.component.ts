@@ -64,6 +64,12 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
 
     @ViewChild("myModal") modal: ModalAltaEntradaDeServicioComponent;
 
+    @ViewChild("seleccionarPosicionCheckbox")
+    protected seleccionarPosicionCheckbox: ElementRef;
+
+    @ViewChild("seleccionarTodosItemsCheckbox")
+    protected seleccionarTodosItemsCheckbox: ElementRef;
+
     @BlockUI() blockUI: NgBlockUI;
 
     @ViewChild(SpinnerComponent)
@@ -241,24 +247,22 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
         this.itemIdSelected.push(itemId);
         this.numeroLineaSelected.add(numeroLinea);
         this.itemSelected.push(item);
-        this.actionCheckPosition(item);
+
         this.itemSelected.sort((a, b) => a.NumeroLinea > b.NumeroLinea ? 1 : -1);
     };
 
-    selectAllPositionsLines(event: any, positions: any): void {
+    seleccionarPosicion(event: any, posicion: any): void {
         if (event.target.checked) {
-            const itemsFiltered = positions.Items.filter((row: any) => !this.isGet100(row) && row.MontoACertificar != 0);
-
+            const itemsFiltered = posicion.Items.filter(item => this.esItemValidoParaCertificar(item));
             itemsFiltered.forEach((item: any) => {
                 if (!this.itemSelected.includes(item)) {
                     item.isSelected = true;
                     this.onCheckboxPositionChange(item);
                 }
             });
-
         }
         else {
-            this.clearCheckboxesPositions(positions);
+            this.clearCheckboxesPositions(posicion);
         }
     }
 
@@ -297,6 +301,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
     onCheckboxChange(item: any) {
         const itemId = item.PosicionId;
         const numeroLinea = item.NumeroLinea;
+        const posicion = this.obtenerPosicionPorNumero(item.NroOrdenCompra, Number(item.NroPosicion));
 
         if (this.itemIdSelected.includes(itemId) && this.numeroLineaSelected.has(numeroLinea)) {
 
@@ -305,14 +310,17 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
 
             this.itemSelected = this.itemSelected.filter((selectedItem: any) =>
                 selectedItem.PosicionId !== item.PosicionId || selectedItem.NumeroLinea !== item.NumeroLinea);
+            posicion.isSelected = false;
         }
         else {
             this.itemIdSelected.push(itemId);
             this.numeroLineaSelected.add(numeroLinea);
             this.itemSelected.push(item);
+            if (this.tieneTodosItemsValidosSeleccionados(posicion)) {
+                posicion.isSelected = true;
+            }
         }
 
-        this.actionCheckPosition(item);
         this.itemSelected.sort((a, b) => a.NumeroLinea > b.NumeroLinea ? 1 : -1);
     }
 
@@ -643,11 +651,13 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
         this.tablaPO.filter(orders => orders.NumeroOrdenDeCompra === posicion.NroOrdenCompra).forEach(order => {
             order.Posiciones.filter(positions => positions.NumeroPosicion === posicion.NumeroPosicion).forEach(position => {
                 position.Items.forEach(item => {
-                    const monto = item.Importe;
-                    const cantidad = item.Cantidad;
-                    item.CantidadACertificar = cantidad - item.CantidadReal;
-                    item.PorcentajeACertificar = (item.CantidadACertificar * 100) / cantidad;
-                    item.MontoACertificar = (item.CantidadACertificar * monto) / cantidad;
+                    if (item.MontoACertificar == undefined) {
+                        const monto = item.Importe;
+                        const cantidad = item.Cantidad;
+                        item.CantidadACertificar = cantidad - item.CantidadReal;
+                        item.PorcentajeACertificar = (item.CantidadACertificar * 100) / cantidad;
+                        item.MontoACertificar = (item.CantidadACertificar * monto) / cantidad;
+                    }
                 });
             });
         });
@@ -685,8 +695,16 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
     }
 
     validarMantenerItemSeleccionado(item: any) {
-        if (item.CantidadACertificar == 0) {
+        if (!this.esItemValidoParaCertificar(item)) {
             this.clearCheckbox(item);
+            const posicion = this.obtenerPosicionPorNumero(item.NroOrdenCompra, Number(item.NroPosicion));
+            posicion.isSelected = false;
+            this.seleccionarPosicionCheckbox.nativeElement.setAttribute('disabled', true);
+            this.seleccionarTodosItemsCheckbox.nativeElement.setAttribute('disabled', true);
+        }
+        else {
+            this.seleccionarPosicionCheckbox.nativeElement.removeAttribute('disabled');
+            this.seleccionarTodosItemsCheckbox.nativeElement.removeAttribute('disabled');
         }
     }
 
@@ -711,7 +729,6 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
     clearCheckbox(item: any): void {
         this.numeroLineaSelected.clear();
         item.isSelected = false;
-        this.actionCheckPosition(item);
         this.itemIdSelected = this.itemIdSelected.filter(obj => { return obj !== item.Id });
         this.itemSelected = this.itemSelected.filter(obj => { return obj !== item });
     }
@@ -720,9 +737,9 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
         return item.Porcentaje === '100';
     }
 
-    selectAllItems(event: any, items: any): void {
+    selectAllItems(event: any, posicion: any): void {
         if (event.target.checked) {
-            const itemsFiltered = items.filter((row: any) => !this.isGet100(row) && row.MontoACertificar != 0);
+            const itemsFiltered = posicion.Items.filter((item: any) => this.esItemValidoParaCertificar(item));
             if (itemsFiltered.length > 0) {
                 itemsFiltered.forEach((item: any) => {
                     if (!this.itemSelected.includes(item)) {
@@ -736,15 +753,15 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
         }
     }
 
-    /**
-     * Selecciona/Deselecciona toda la posición.
-     * @param item
-     */
-    actionCheckPosition(item: any): void {
-        let posicion = this.tablaPosiciones.value.find(posicion => posicion.NumeroPosicion === parseInt(item.NroPosicion));
-        let itemsConSaldoDisponible = posicion.Items.filter(item => Number(item.Porcentaje) < 100);
-        posicion.isSelected = !itemsConSaldoDisponible.some(item => !item.isSelected);
-    }
+    ///**
+    // * Selecciona/Deselecciona toda la posición.
+    // * @param item
+    // */
+    //actionCheckPosition(item: any): void {
+    //    let posicion = this.tablaPosiciones.value.find(posicion => posicion.NumeroPosicion === parseInt(item.NroPosicion));
+    //    let itemsConSaldoDisponible = posicion.Items.filter(item => Number(item.Porcentaje) < 100);
+    //    //posicion.isSelected = !itemsConSaldoDisponible.some(item => !item.isSelected);
+    //}
 
 
     obtenerOrdenDeCompraPorNumero(nroOrdenDeCompra: number): any {
@@ -788,7 +805,6 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
         let orderPendienteDeLiberacion = this.ordenEsPendienteDeLiberacion(posicion.NroOrdenCompra);
         let posicionConEntregaFinal = this.posicionEsConEntregaFinal(posicion.NroOrdenCompra, Number(posicion.NumeroPosicion));
         let posicionTieneItemsACertificar = this.tieneItemsACertificar(posicion);
-        const itemsACertificar = posicion.Items.filter(item => this.tienePorcentajeACertificar(item));
         const mostrarCheckboxDeSeleccionarTodosItems = !orderPendienteDeLiberacion && !posicionConEntregaFinal && posicionTieneItemsACertificar;
         return mostrarCheckboxDeSeleccionarTodosItems;
     }
@@ -801,8 +817,8 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
     deshabilitarCheckboxDeItem(item: any): boolean {
         let ordenPendienteDeLiberacion = this.ordenEsPendienteDeLiberacion(item.NroOrdenCompra);
         let posicionConEntregaFinal = this.posicionEsConEntregaFinal(item.NroOrdenCompra, Number(item.NroPosicion));
-        let itemTienePorcentajeACertificar = Number(item.Porcentaje) < 100;
-        let itemTieneMontoACertificar = item.MontoACertificar > 0;
+        let itemTienePorcentajeACertificar = this.tienePorcentajeACertificar(item);
+        let itemTieneMontoACertificar = this.tieneMontoVálidoACertificar(item);
         let deshabilitarCheckboxDeItem = ordenPendienteDeLiberacion || !itemTienePorcentajeACertificar || !itemTieneMontoACertificar || posicionConEntregaFinal;
         return deshabilitarCheckboxDeItem;
     }
@@ -896,9 +912,24 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
         if (table.el.nativeElement.id == 'items') this.expandedItemRow = expandedRowId;
     }
 
-
     tienePorcentajeACertificar(item: any): boolean {
         return Number(item.Porcentaje) < 100;
+    }
+
+    tieneMontoVálidoACertificar(item: any): boolean {
+        return item.MontoACertificar > 0;
+    }
+
+    esItemValidoParaCertificar(item: any): boolean {
+        return this.tienePorcentajeACertificar(item) && this.tieneMontoVálidoACertificar(item);
+    }
+
+    tieneTodosItemsValidosACertificar(posicion: any): boolean {
+        return posicion.Items.every(item => this.esItemValidoParaCertificar(item));
+    }
+
+    tieneTodosItemsValidosSeleccionados(posicion: any): boolean {
+        return posicion.Items.filter(item => this.esItemValidoParaCertificar(item)).every(item => item.isSelected);
     }
 
     /**
@@ -907,7 +938,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
      * @param posicion
      */
     tieneItemsACertificar(posicion: any) {
-        let elementosPorCertificar = posicion.Items.some(item => Number(item.Porcentaje) < 100);
+        let elementosPorCertificar = posicion.Items.some(item => this.tienePorcentajeACertificar(item));
         return elementosPorCertificar;
     }
 
