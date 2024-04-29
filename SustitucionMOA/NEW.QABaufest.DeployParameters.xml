@@ -66,12 +66,13 @@
 	<setParameter name="ComputerVisionEndpoint Config" value="https://moaopsocr.cognitiveservices.azure.com/" />
 	<setParameter name="BlobStorageEndpoint Config" value="DefaultEndpointsProtocol=https;AccountName=b2cmoagroqa;AccountKey=jlIsWR/WDunDWKXgcJQfqcwPJ8HDt0csfH92lvL9/6hWTsrKSB1hgyLlQV9767K3rdCK0Lk+nGHc+AStvFl9Qw==;EndpointSuffix=core.windows.net" />
 
-	<setParameter name="DriveCampoSustentablesApplicationName Config" value="PRUEBA_DRIVE" />
-	<setParameter name="DriveCampoSustentablesServiceAccountEmail Config" value="prueba-drive@inspired-bazaar-410214.iam.gserviceaccount.com" />
-	<setParameter name="DriveCampoSustentablesServiceAccountKey Config" value="inspired-bazaar-410214-81185894c80f.json" />
-	<setParameter name="DriveCampoSustentablesUsuario Config" value="pruebadrive603@gmail.com" />
-	<setParameter name="DriveCampoSustentablesInputFolderId Config" value="1mSsU5ALH-jsH2BYH2Hg_oinRycokFBr1" />
-	<setParameter name="DriveCampoSustentablesOutputFolderId Config" value="1kKkKjL1bm3SrT2xIgRuPBb0NiVuHpHoY" />
+	<!--Google Drive Campo Sustentable -->
+	<setParameter name="DriveCampoSustentablesApplicationName Config" value="cargaInfoCCSS" />
+	<setParameter name="DriveCampoSustentablesServiceAccountEmail Config" value="cargainfoccss@cargainfoccss.iam.gserviceaccount.com " />
+	<setParameter name="DriveCampoSustentablesServiceAccountKey Config" value="C:\MOAOperacionesKeys\cargainfoccss-69518a4e859f.json" />
+	<setParameter name="DriveCampoSustentablesUsuario Config" value="moaop.circuitosust@gmail.com" />
+	<setParameter name="DriveCampoSustentablesInputFolderId Config" value="1HDLYSL4mJ2qQD8tgur4StmVXtUs6Wa93" />
+	<setParameter name="DriveCampoSustentablesOutputFolderId Config" value="1YZs6Q7mzsdNecis6HXSei3LweYPEfr3_" />
 
 	<setParameter name="BasicHttpBinding_IServicioRepositorio Service Endpoint Address" value="http://scatoqa.molinosagro.com.ar/Scato.serviciosWeb/ServicioRepositorio.svc" />
 
