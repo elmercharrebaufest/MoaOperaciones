@@ -2774,8 +2774,9 @@ namespace SustitucionMOAUtils.Services
                 //    }
                 //}
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                Logger.Log.Error($"ObtenerSolpesDesdeSAPJob ERROR - NumeroSolp: {obtenerSolpRequest.NumeroSolp}", e);                
                 throw;
             }
         }
