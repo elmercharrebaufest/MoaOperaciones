@@ -113,6 +113,7 @@ namespace SustitucionMOAModel.Dto
         public string ObservacionEconomicaOriginal { get; set; }
         public bool ChatSinLeer { get; set; }
         public string RolUsuario { get; set; }
+        public bool CondEspProveedorAsignado { get; set; }
     }
 
     public class PeticionDeOfertaSolpPosicionDto
