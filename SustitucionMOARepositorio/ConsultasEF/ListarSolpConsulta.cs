@@ -146,8 +146,10 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                               RevisionFinalizada = po.RevisionTecnica != null && po.RevisionTecnica.Finalizada,
                                                               Observaciones = po.Observaciones,
                                                               RecotizacionEconomica = po.RevisionTecnica != null && po.RevisionTecnica.RecotizacionEconomica,
-                                                              NrosSolp = po.Posiciones.Select(posi => posi.SolpPosicion.Solp.NroSolp)
-
+                                                              NrosSolp = po.Posiciones.Select(posi => posi.SolpPosicion.Solp.NroSolp),
+                                                              Adicional = po.Posiciones.Any(posi => posi.SolpPosicion.Solp.Adicional == true),
+                                                              TrabajoHecho = po.Posiciones.Any(posi => posi.SolpPosicion.Solp.TrabajoYaHecho == true),
+                                                              CondEspProveedorAsignado = po.Posiciones.Any(posi => posi.SolpPosicion.Solp.CondEspProveedorAsignado == true)
                                                           })
                                 };
                 var pagina = Paginacion;
