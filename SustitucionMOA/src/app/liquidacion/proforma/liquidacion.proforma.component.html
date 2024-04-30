@@ -55,7 +55,7 @@
                 </div>
             </div>
         </div>
-        <div class="alert alert-warning" role="alert" *ngIf="!data.LiquidacionParcialEmitida && data.cabecera.tarifaFlete > 0">
+        <div class="alert alert-warning" role="alert" *ngIf="!data.LiquidacionParcialEmitida && data.cabecera.tarifaFlete != 0">
             Tarifa por flete a descontar: Generar consulta vía web si considera liquidar menos kilos de la cantidad entregada
         </div>
         <!--factura-->
