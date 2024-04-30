@@ -795,6 +795,13 @@ namespace SustitucionMOAUtils.Services
             cb.LineTo(0, 300);
 
             cb.Fill();
+
+            cb.MoveTo(55, 340);
+            cb.LineTo(500, 340);
+            cb.LineTo(500, 355);
+            cb.LineTo(55, 355);
+
+            cb.Fill();
         }
         private void AddTextosPrimeraPagina(PdfContentByte cb, BaseFont baseFont, BaseFont baseFontBold, float fontSizeNormal)
         {
@@ -804,6 +811,8 @@ namespace SustitucionMOAUtils.Services
             cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "Esquema de Certificación 2BSvs", 300, 740, 0);
             var baseTexto = 280f;
             cb.SetFontAndSize(baseFont, fontSizeNormal);
+            cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "RED II, modificada por la reglamentación 2022/996"
+                , 55f, baseTexto + (11 *6) + 0.75f, 0);
             cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "Con esta declaración, el agricultor reconoce que los auditores de los organismos de certificación o de 2BS o de un Estado miembro"
                 , 15f, baseTexto, 0);
             cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "pueden venir a verificar in situ si se han cumplido los requisitos pertinentes estipulados en la Directiva (UE) 2018/2001. Las pruebas de"
