@@ -3287,27 +3287,31 @@ namespace SustitucionMOAUtils.Services
         private void CompletarCotizacionEnVerOfertas(List<PeticionDeOfertaUsarioDto> usuarios, List<int> posicionesId)
         {
             var peticionDeOfertaSolpPosicion = repositorio.Listar<PeticionDeOfertaSolpPosicion>(x => posicionesId.Contains(x.SolpPosicion_Id)).ToList();
+            
             foreach (var usuario in usuarios)
             {
-                foreach (var posicion in peticionDeOfertaSolpPosicion)
-                {
-                    var existePosicion = usuario.Cotizacion.CotizacionPosiciones.Any(posi => posi.PosicionId == posicion.SolpPosicion_Id);
-                    if (!existePosicion)
+                if(usuario.Cotizacion != null) {
+                    foreach (var posicion in peticionDeOfertaSolpPosicion)
                     {
-                        var cotizacionPosicion = new CotizacionPosicionDto
+                        var existePosicion = usuario.Cotizacion.CotizacionPosiciones.Any(posi => posi.PosicionId == posicion.SolpPosicion_Id);
+                        if (!existePosicion)
                         {
-                            Id = posicion.SolpPosicion_Id,
-                            Cantidad = 1,  
-                            Completado = false,
-                            EstaEliminado = posicion.SolpPosicion.Estado != true,
-                            NoDisponible = false,
-                            PeticionDeOfertaSolpPosicion_Id = peticionDeOfertaSolpPosicion.Where(x => x.SolpPosicion_Id == posicion.SolpPosicion_Id).FirstOrDefault().Id,
-                            CotizacionSubPosiciones = posicion.SolpPosicion.Subposiciones.Select(x => new CotizacionSubPosicionDto() { 
-                                SolpSubPosicion_Id =  x.Id,
+                            var cotizacionPosicion = new CotizacionPosicionDto
+                            {
+                                Id = posicion.SolpPosicion_Id,
+                                Cantidad = 1,
                                 Completado = false,
+                                EstaEliminado = posicion.SolpPosicion.Estado != true,
+                                NoDisponible = false,
+                                PeticionDeOfertaSolpPosicion_Id = peticionDeOfertaSolpPosicion.Where(x => x.SolpPosicion_Id == posicion.SolpPosicion_Id).FirstOrDefault().Id,
+                                CotizacionSubPosiciones = posicion.SolpPosicion.Subposiciones.Select(x => new CotizacionSubPosicionDto()
+                                {
+                                    SolpSubPosicion_Id = x.Id,
+                                    Completado = false,
                                 }).ToList()
-                        };
-                        usuario.Cotizacion.CotizacionPosiciones.Add(cotizacionPosicion);
+                            };
+                            usuario.Cotizacion.CotizacionPosiciones.Add(cotizacionPosicion);
+                        }
                     }
                 }
 
