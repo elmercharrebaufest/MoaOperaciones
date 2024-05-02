@@ -356,5 +356,8 @@ export class ChatInternoComponent extends BaseComponent implements OnInit {
         return proveedor.Mensajes.some(mensaje => mensaje.Leido == false);
     }
     
+    tieneMensajes(proveedor: ChatProveedorDto): boolean {
+        return proveedor.Mensajes.length > 0;
+    }
     
 }

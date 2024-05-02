@@ -50,7 +50,7 @@
                                     <div class="comprador-content">
                                         <div class="comprador-header" style="display: flex; justify-content: space-between; align-items: center;">
                                             <span class="comprador-title">Chat interno</span> 
-                                            <span style="margin-left: auto;">
+                                            <span style="margin-left: auto;" >
                                                 <img class="pointer" src="./Content/images/icons/descargar.svg" alt="descargar"
                                                     (click)="obtenerYExportarChat(chat?.ChatCompras.Solp_Id, null)" />
                                             </span>
@@ -86,7 +86,7 @@
                             <div class="comprador-content">
                                 <div class="comprador-header" style="display: flex; justify-content: space-between; align-items: center;">
                                     <span class="comprador-title">{{ dasboardProveedor ? 'Chat interno' : proveedorSeleccionado.RazonSocialProveedor}}</span> 
-                                    <span>
+                                    <span *ngIf="tieneMensajes(proveedorSeleccionado)">
                                         <img class="pointer" src="./Content/images/icons/descargar.svg" alt="descargar"
                                             (click)="obtenerYExportarChat(chat?.ChatCompras.Solp_Id, proveedorSeleccionado.PeticionDeOfertaUsuario_Id)" />
                                     </span>
