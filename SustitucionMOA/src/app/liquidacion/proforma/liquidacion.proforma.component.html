@@ -5,16 +5,21 @@
     <section class="container-fluid clearfix" *ngIf="data != undefined">
         <!--Title-->
         <div class="row titleSection titleSectionTable">
-            <div class="col-xs-12 col-sm-10 fixtwobuttons titleSectionTablePart animate" style="vertical-align:bottom;">
+            <div style="vertical-align:bottom;"
+                [class]="data.LiquidacionParcialEmitida && !data.FaltanDatosDeCalidad ?
+                    'col-xs-12 col-sm-10 fixtwobuttons titleSectionTablePart animate' :
+                    'col-xs-12 col-sm-12 fixtwobuttons titleSectionTablePart animate'">
                 <div style="line-height:0.8; display: inline-block;"> <strong>Proforma de Liquidaci&oacute;n{{ data.LiquidacionParcialEmitida ? ' Final' : ''}}: <span>Nº {{data.fijacion}}</span></strong> </div>
             </div>
             <div class="col-xs-12 col-sm-2 titleIconsPart">
                 <spinner-small #smallSpinner></spinner-small>
-                <a (click)="descargarProforma()" href="#" style="text-decoration:none!important" *ngIf="!this.spinnerSmallComponent.visible">
-                    <div class="btnSection animate">Descargar <span class="fa fa-download" aria-hidden="true"></span></div>
+                <a (click)="descargarProforma()" href="#" style="text-decoration:none!important"
+                    *ngIf="!this.spinnerSmallComponent.visible && data.LiquidacionParcialEmitida && !data.FaltanDatosDeCalidad">
+                        <div class="btnSection animate">Descargar <span class="fa fa-download" aria-hidden="true"></span></div>
                 </a>
-                <a (click)="exportExcel()" href="#" style="text-decoration:none!important" *ngIf="!this.spinnerSmallComponent.visible">
-                    <div class="btnSection animate">Exportar <img src="Content/images/buttons/EXPORT.svg"/></div>
+                <a (click)="exportExcel()" href="#" style="text-decoration:none!important"
+                    *ngIf="!this.spinnerSmallComponent.visible && data.LiquidacionParcialEmitida && !data.FaltanDatosDeCalidad">
+                        <div class="btnSection animate">Exportar <img src="Content/images/buttons/EXPORT.svg"/></div>
                 </a>
                 <!--<a href="#" style="text-decoration:none!important">
                     <div class="btnSection animate print">Imprimir <span class="fa  fa-print"></span></div>
