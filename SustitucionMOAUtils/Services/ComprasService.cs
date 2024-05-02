@@ -2605,7 +2605,7 @@ namespace SustitucionMOAUtils.Services
                             posicionEntity.NumeroPosicionContratoSuperior = posicion.PosicionContratoMarco;
                             posicionEntity.ProveedorFijo = posicion.ProveedorFijo;
                             posicionEntity.NombreProveedor = datosContratoMarco.Any() ? datosContratoMarco.First().NombreProveedor : "";
-                            posicionEntity.OrganizacionCompras = posicion.OrganizacionCompras;
+                            posicionEntity.OrganizacionCompras = posicion.OrganizacionCompras;                            
                         }
 
                         if (posicion.Tipo == "0")
