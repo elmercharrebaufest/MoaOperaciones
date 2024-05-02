@@ -2354,7 +2354,7 @@ namespace SustitucionMOATest.Services
             repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<SolpSubposicion, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null))
              .Returns(new List<SolpSubposicion>() { new SolpSubposicion { Id = 1 } });
             target.ActualizarFechaLiberacion(solpLocal.NroSolp, DateTime.Now);
-            repositorioMock.Verify(x => x.GuardarCambios(), Times.Exactly(1));
+            repositorioMock.Verify(x => x.GuardarCambios(), Times.Exactly(2));
         }
 
         [Test]
@@ -2691,6 +2691,9 @@ namespace SustitucionMOATest.Services
                 },
                 NrosSolp = new List<string> { "102002020" }
             });
+            repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<PeticionDeOfertaSolpPosicion, bool>>>(),
+            It.IsAny<int>(), It.IsAny<string>(), It.IsAny<DirOrden>(), null)).Returns(cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Posiciones.ToList());
+            
             repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<PeticionDeOfertaVisualizacionPrecio, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null))
                 .Returns(new List<PeticionDeOfertaVisualizacionPrecio> { new PeticionDeOfertaVisualizacionPrecio { Id = 1 } });
             repositorioMock.Setup(y => y.Obtener<TablaSap>(It.IsAny<int>())).Returns(new TablaSap { Id = 1 });

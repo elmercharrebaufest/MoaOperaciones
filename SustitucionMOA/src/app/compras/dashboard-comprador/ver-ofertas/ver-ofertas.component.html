@@ -410,27 +410,43 @@
             <ng-template pTemplate="body" let-peticionPosicion>
                 <tr>
                     <ng-container *ngFor="let proveedor of tablaOfertas.Usuarios">
-                        <ng-container *ngIf="proveedor.Cotizacion != null">
+                        <ng-container *ngIf="proveedor.Cotizacion">
                             <ng-container *ngFor="let cotizacionPosicion of proveedor.Cotizacion.CotizacionPosiciones">
-                                <ng-container *ngIf="peticionPosicion.Id == cotizacionPosicion.PeticionDeOfertaSolpPosicion_Id">
-                                    <td class="columna border2-left" [ngStyle]="{'background-color': cotizacionPosicion.EstaEliminado ? '#ff00002e' : 'transparent'}" style="width: 120px !important;" colspan="3">
-                                        <div *ngIf="proveedor.VerImportes" [innerHTML]="getTotalPreciosPorMoneda(cotizacionPosicion)"></div>                                    
-                                        <i *ngIf="!proveedor.VerImportes" class="fa fa-eye-slash noVisible"></i>
-                                    </td>
-                                    <td class="columna" [ngStyle]="{'background-color': cotizacionPosicion.EstaEliminado ? '#ff00002e' : 'transparent'}" style="width: 120px !important;" colspan="3">
-                                        {{ proveedor.VerImportes ? 'ARP ' + (cotizacionPosicion.TotalARPCotizacionPosicion | number:'1.2-2') : '' }}
-                                        <i *ngIf="!proveedor.VerImportes" class="fa fa-eye-slash noVisible"></i>
-                                    </td>
-                                    <!--<td class="columna" style="width: 300px !important;" colspan="3">{{cotizacionPosicion.FechaDeEntregaFormateada}}</td>-->
-                                    <td class="columna" [ngStyle]="{'background-color': cotizacionPosicion.EstaEliminado ? '#ff00002e' : 'transparent'}" style="width: 300px !important;" colspan="3">{{cotizacionPosicion.PrimerPlazoDeOferta != null ? cotizacionPosicion.PrimerPlazoDeOferta + ' días' : 'sin plazo' }}</td>
+                                <ng-container *ngIf="peticionPosicion.Id === cotizacionPosicion.PeticionDeOfertaSolpPosicion_Id">
+                                    <!-- Si la posición está completada, mostramos sus datos -->
+                                    <ng-container *ngIf="cotizacionPosicion.Completado">
+                                        <td class="columna border2-left" [ngStyle]="{'background-color': cotizacionPosicion.EstaEliminado ? '#ff00002e' : 'transparent'}" style="width: 120px !important;" colspan="3">
+                                            <div *ngIf="proveedor.VerImportes" [innerHTML]="getTotalPreciosPorMoneda(cotizacionPosicion)"></div>                                    
+                                            <i *ngIf="!proveedor.VerImportes" class="fa fa-eye-slash noVisible"></i>
+                                        </td>
+                                        <td class="columna" [ngStyle]="{'background-color': cotizacionPosicion.EstaEliminado ? '#ff00002e' : 'transparent'}" style="width: 120px !important;" colspan="3">
+                                            {{ proveedor.VerImportes ? 'ARP ' + (cotizacionPosicion.TotalARPCotizacionPosicion | number:'1.2-2') : '' }}
+                                            <i *ngIf="!proveedor.VerImportes" class="fa fa-eye-slash noVisible"></i>
+                                        </td>
+                                        <td class="columna" [ngStyle]="{'background-color': cotizacionPosicion.EstaEliminado ? '#ff00002e' : 'transparent'}" style="width: 300px !important;" colspan="3">
+                                            {{cotizacionPosicion.PrimerPlazoDeOferta != null ? cotizacionPosicion.PrimerPlazoDeOferta + ' días' : 'sin plazo' }}
+                                        </td>
+                                    </ng-container>
+                
+                                    <!-- Si la posición no está completada, mostramos "Sin cotizar" -->
+                                    <ng-container *ngIf="!cotizacionPosicion.Completado">
+                                        <td class="columna border2-left" [ngStyle]="{'background-color': peticionPosicion.EstaEliminado ? '#ff00002e' : 'transparent'}" colspan="9" style="width: 540px !important;">
+                                            Sin cotizar
+                                        </td>
+                                    </ng-container>
                                 </ng-container>
                             </ng-container>
                         </ng-container>
+                
+                        <!-- Si el proveedor no tiene cotizaciones -->
                         <ng-container *ngIf="proveedor.Cotizacion == null">
-                            <td class="columna border2-left" [ngStyle]="{'background-color': peticionPosicion.EstaEliminado ? '#ff00002e' : 'transparent'}" style="width: 540px !important;" colspan="9">Sin cotizar</td>
+                            <td class="columna border2-left" [ngStyle]="{'background-color': peticionPosicion.EstaEliminado ? '#ff00002e' : 'transparent'}" colspan="9" style="width: 540px !important;">
+                                Sin cotizar
+                            </td>
                         </ng-container>
                     </ng-container>
                 </tr>
+                
 
                 <tr *ngIf="peticionPosicion.expanded == true">
                     <td class="espacio" colspan="9" style="background-color: white; width: 540px !important; ">&nbsp;</td>
@@ -445,39 +461,59 @@
                         <td class=" headerth" style="width: 100px !important;">Total ARP</td>
                     </ng-container>
                 </tr>
-
-                <ng-container *ngIf="peticionPosicion.expanded == true">
+                <ng-container *ngIf="peticionPosicion.expanded === true">
                     <tr *ngFor="let subpos of peticionPosicion.Posicion.Subposiciones">
                         <ng-container *ngFor="let proveedor of tablaOfertas.Usuarios">
-                            <ng-container *ngIf="proveedor.Cotizacion != null">
+                            <ng-container *ngIf="proveedor.Cotizacion">
                                 <ng-container *ngFor="let cotizacionPosicion of proveedor.Cotizacion.CotizacionPosiciones">
                                     <ng-container *ngFor="let cotizacionSubpo of cotizacionPosicion.CotizacionSubPosiciones">
-                                        <ng-container *ngIf="subpos.Id == cotizacionSubpo.SolpSubPosicion_Id">
-                                            <td class="columna border2-left" colspan="2" [ngStyle]="{'background-color': peticionPosicion.EstaEliminado ? '#ff00002e' : 'transparent'}" style="width: 80px !important;">{{cotizacionSubpo.Cantidad | number:'1.2-2'}}</td>
-                                            <td class="columna" colspan="2" [ngStyle]="{'background-color': peticionPosicion.EstaEliminado ? '#ff00002e' : 'transparent'}" style="width: 80px !important;">{{cotizacionSubpo.UnidadMedida.Descripcion}}</td>
-                                            <td class="columna" colspan="2" [ngStyle]="{'background-color': peticionPosicion.EstaEliminado ? '#ff00002e' : 'transparent'}" style="width: 80px !important;">{{cotizacionSubpo.MonedaDescripcion}} </td>
-                                            <td class="columna" [ngStyle]="{'background-color': peticionPosicion.EstaEliminado ? '#ff00002e' : 'transparent'}" style="width: 100px !important;">
-                                                {{ proveedor.VerImportes ? (cotizacionSubpo.PrecioUnidad | number:'1.2-2') : '' }}
-                                                <i *ngIf="!proveedor.VerImportes" class="fa fa-eye-slash noVisible"></i>
-                                            </td>
-                                            <td class="columna" [ngStyle]="{'background-color': peticionPosicion.EstaEliminado ? '#ff00002e' : 'transparent'}" style="width: 100px !important;">
-                                                {{ proveedor.VerImportes ? (cotizacionSubpo.PrecioTotalSubPosCotizacion | number:'1.2-2') : '' }}
-                                                <i *ngIf="!proveedor.VerImportes" class="fa fa-eye-slash noVisible"></i>
-                                            </td>
-                                            <td class="columna" [ngStyle]="{'background-color': peticionPosicion.EstaEliminado ? '#ff00002e' : 'transparent'}" style="width: 100px !important;">
-                                                {{ proveedor.VerImportes ? (cotizacionSubpo.TotalARPSubPosCotizacion | number: '1.2-2') : '' }}
-                                                <i *ngIf="!proveedor.VerImportes" class="fa fa-eye-slash noVisible"></i>
-                                            </td>
+                                        <ng-container *ngIf="subpos.Id === cotizacionSubpo.SolpSubPosicion_Id">
+                                            <!-- Si cotización de subposición está completada, mostramos sus datos -->
+                                            <ng-container *ngIf="cotizacionSubpo.Completado">
+                                                <td class="columna border2-left" colspan="2" [ngStyle]="{'background-color': peticionPosicion.EstaEliminado ? '#ff00002e' : 'transparent'}" style="width: 80px !important;">
+                                                    {{ cotizacionSubpo.Cantidad | number:'1.2-2' }}
+                                                </td>
+                                                <td class="columna" colspan="2" [ngStyle]="{'background-color': peticionPosicion.EstaEliminado ? '#ff00002e' : 'transparent'}" style="width: 80px !important;">
+                                                    {{ cotizacionSubpo.UnidadMedida.Descripcion }}
+                                                </td>
+                                                <td class="columna" colspan="2" [ngStyle]="{'background-color': peticionPosicion.EstaEliminado ? '#ff00002e' : 'transparent'}" style="width: 80px !important;">
+                                                    {{ cotizacionSubpo.MonedaDescripcion }}
+                                                </td>
+                                                <td class="columna" [ngStyle]="{'background-color': peticionPosicion.EstaEliminado ? '#ff00002e' : 'transparent'}" style="width: 100px !important;">
+                                                    {{ proveedor.VerImportes ? (cotizacionSubpo.PrecioUnidad | number:'1.2-2') : '' }}
+                                                    <i *ngIf="!proveedor.VerImportes" class="fa fa-eye-slash noVisible"></i>
+                                                </td>
+                                                <td class="columna" [ngStyle]="{'background-color': peticionPosicion.EstaEliminado ? '#ff00002e' : 'transparent'}" style="width: 100px !important;">
+                                                    {{ proveedor.VerImportes ? (cotizacionSubpo.PrecioTotalSubPosCotizacion | number:'1.2-2') : '' }}
+                                                    <i *ngIf="!proveedor.VerImportes" class="fa fa-eye-slash noVisible"></i>
+                                                </td>
+                                                <td class="columna" [ngStyle]="{'background-color': peticionPosicion.EstaEliminado ? '#ff00002e' : 'transparent'}" style="width: 100px !important;">
+                                                    {{ proveedor.VerImportes ? (cotizacionSubpo.TotalARPSubPosCotizacion | number:'1.2-2') : '' }}
+                                                    <i *ngIf="!proveedor.VerImportes" class="fa fa-eye-slash noVisible"></i>
+                                                </td>
+                                            </ng-container>
+                                            
+                                            <!-- Si la cotización de subposición no está completada, mostramos "Sin cotizar" -->
+                                            <ng-container *ngIf="!cotizacionSubpo.Completado">
+                                                <td class="columna border2-left" [ngStyle]="{'background-color': peticionPosicion.EstaEliminado ? '#ff00002e' : 'transparent'}" colspan="9" style="width: 540px !important;">
+                                                    Sin cotizar
+                                                </td>
+                                            </ng-container>
                                         </ng-container>
                                     </ng-container>
                                 </ng-container>
                             </ng-container>
+                
+                            <!-- Si el proveedor no tiene cotizaciones -->
                             <ng-container *ngIf="proveedor.Cotizacion == null">
-                                <td class="columna border2-left" [ngStyle]="{'background-color': peticionPosicion.EstaEliminado ? '#ff00002e' : 'transparent'}" colspan="9" style="width: 540px !important;">Sin cotizar</td>
+                                <td class="columna border2-left" [ngStyle]="{'background-color': peticionPosicion.EstaEliminado ? '#ff00002e' : 'transparent'}" colspan="9" style="width: 540px !important;">
+                                    Sin cotizar
+                                </td>
                             </ng-container>
                         </ng-container>
                     </tr>
                 </ng-container>
+                
 
                 <tr *ngIf="peticionPosicion.expanded == true">
                     <td class="espacio" colspan="9" style="background-color: white;  width: 540px !important;">&nbsp;</td>

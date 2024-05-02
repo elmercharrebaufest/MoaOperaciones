@@ -80,6 +80,8 @@ namespace SustitucionMOAModel.Dto
         public bool EstaEliminado { get; set; }
         public decimal TodasTotalPesos { get; set; }
         public decimal TodasTotalARPCotizacionPosicion { get; set; }
+        public int PosicionId { get; set; }
+        public bool Completado { get; set; }
     }
 
     public class CotizacionSubPosicionDto
@@ -98,6 +100,7 @@ namespace SustitucionMOAModel.Dto
         public decimal Precio { get; set; }
         public decimal PrecioTotalSubPos { get; set; }
         public decimal TotalPesos { get; set; }
+        public bool Completado { get; set; }
     }
 
     public class GuardarCotizacionPosicionDto

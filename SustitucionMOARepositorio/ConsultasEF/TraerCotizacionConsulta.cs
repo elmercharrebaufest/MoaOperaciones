@@ -65,7 +65,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                             Cantidad = pop.SolpPosicion.Cantidad,
                                             UnidadComprasDescripcion = pop.SolpPosicion.Unidad.Descripcion,
                                             UnidadId = pop.SolpPosicion.Unidad_Id,
-                                            FechaEntregaServicio = cotizacion != null ? cotizacion.CotizacionPosiciones.Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id).FirstOrDefault().FechaDeEntrega : pop.SolpPosicion.FechaEntregaServicio,
+                                            FechaEntregaServicio = pop.SolpPosicion.FechaEntregaServicio,
                                             FechaOferta = pop.SolpPosicion.FechaEntregaServicio,
                                             CotizacionPosicion = new CotizacionPosicionDto()
                                             {
