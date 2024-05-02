@@ -31,7 +31,7 @@ namespace SustitucionMOAWS.GoogleDrive
 
         private void InitGoogleDrive()
         {
-            var serviceAccountKeyPath = ServiceAccountKey; 
+            var serviceAccountKeyPath = File.Exists(ServiceAccountKey)? ServiceAccountKey : Path.Combine(Environment.CurrentDirectory, ServiceAccountKey); ; 
             Helper.SetCredentials(new GoogleDriveHelperGeneratorWithService(
                 applicationName: ApplicationName,
                 serviceAccountEmail: ServiceAccountEmail,
