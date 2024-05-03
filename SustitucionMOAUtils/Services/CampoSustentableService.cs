@@ -813,7 +813,7 @@ namespace SustitucionMOAUtils.Services
             cb.SetFontAndSize(baseFont, fontSizeNormal);
             cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "RED II, modificada por la reglamentación 2022/996"
                 , 55f, baseTexto + (11 *6) + 0.75f, 0);
-            cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "Con esta declaración, el agricultor reconoce que los auditores de los organismos de certificación o de 2BS o de un Estado miembro"
+            cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "Con esta declaración, el agricultor reconoce que los auditores de los organismos de certificación o de 2BSvs o de un Estado miembro"
                 , 15f, baseTexto, 0);
             cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "pueden venir a verificar in situ si se han cumplido los requisitos pertinentes estipulados en la Directiva (UE) 2018/2001. Las pruebas de"
                 , 15f, baseTexto - (11 * 1), 0);
