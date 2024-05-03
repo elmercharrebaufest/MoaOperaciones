@@ -37,7 +37,9 @@ export class Generacion1Component extends ListBaseComponent  {
     solpPaso1Result: any;
     fechaEntrega: any;
     horaEntrega: any;
+    fechaEditable: boolean;
     hoy: Date = new Date();
+
 
     camposObligatorios: any[] = [
         { campo: 'nombreDePedido', esObligatorio: true},
@@ -60,12 +62,11 @@ export class Generacion1Component extends ListBaseComponent  {
         if (this.model.mail === undefined) {     //if (!this.model.mail || this.model.mail === undefined) {         
             this.model.mail = sessionStorage.getItem("username");
         };
-
         //declaro las validaciones para los campos
         this.formulario = this.formBuilder.group({
             nombreDePedido: new FormControl({value : ""}, Validators.compose([Validators.required])),
             fiscalContrato: new FormControl('', Validators.required),
-            mail: ['', [Validators.pattern('[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}')]]
+            mail: ['', [Validators.required, Validators.pattern('[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}')]]
         });
         
         this.validadorPasoSolpService.formulario = this.formulario;
@@ -74,7 +75,7 @@ export class Generacion1Component extends ListBaseComponent  {
             this.validadorPasoSolpService.aplicarValidaciones()
         }
         this.model.cargoPasoUno = true;
-    }
+    }    
 
     ngOnDestroy()
     {
@@ -97,7 +98,7 @@ export class Generacion1Component extends ListBaseComponent  {
 
     mostrarValidacion(campoAValidar, vacio){
         let camposVacios = this.camposObligatorios.find(x => x.campo == campoAValidar && x.esObligatorio);
-        if(vacio !== undefined) {
+        if(vacio !== undefined && vacio.CodigoDescripcion != "Seleccione un usuario") {
             return (camposVacios != null && vacio == 0);
         }
         return true;
@@ -106,5 +107,14 @@ export class Generacion1Component extends ListBaseComponent  {
     onBlur(control: string)
     {
         this.validadorPasoSolpService.onBlurDirty(control);
+    }      
+
+    onAutocompletarResponsable() {
+        if (this.model != undefined && this.model.selectUsuarioFiscal != undefined) {
+            this.model.mail = this.model.selectUsuarioFiscal.CodigoDescripcion;
+            this.model.supervisorTrabajo = this.model.selectUsuarioFiscal.CodigoDescripcion;
+            this.model.selectResponsableTrabajo = this.model.usuarioSolicitanteList.
+                find(x => x.CodigoDescripcion === this.model.mail);
+        }
     }
 }

@@ -128,8 +128,8 @@ export class LiquidacionProformaComponent extends BaseComponent implements OnIni
         this.subscription = this.service.descargarProformaFinal(this.fijacion).subscribe(
             (result:any) => {
                 this.spinnerSmallComponent.hideIt();
-                if(result.pdf){
-                    var byteArray = new Uint8Array(result.pdf.data);
+                if(result.Pdf){
+                    var byteArray = new Uint8Array(result.Pdf.data);
                     var blob = new Blob([byteArray], { type: 'application/pdf' });
                     if (window.navigator.msSaveOrOpenBlob) {
                         // IE11

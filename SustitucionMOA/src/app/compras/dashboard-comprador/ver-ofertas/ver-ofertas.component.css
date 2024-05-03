@@ -71,3 +71,11 @@
     display: flex;
     justify-content: center;
 }
+
+.disabled-checkbox {
+    pointer-events: none;
+  }
+
+  .alert-dismissible .close{
+    position: initial !important;
+  }

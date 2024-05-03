@@ -1,6 +1,5 @@
 ﻿using Microsoft.Ajax.Utilities;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using SustitucionMOA.Utils;
 using SustitucionMOAAssets;
 using SustitucionMOAModel.CustomExceptions;
@@ -84,14 +83,14 @@ namespace SustitucionMOA.Controllers
 
                 if (informeComercial.NuevosCampos != null)
                 {
-                   /* foreach (var nuevosCampos in informeComercial.NuevosCampos)
-                    {
-                        informeComercial.Materiales.Add(new ParamInformeComercialMaterial
-                        {
-                            MaterialId = nuevosCampos.MaterialId,
-                            Toneladas = nuevosCampos.Toneladas
-                        });
-                    }*/
+                    /* foreach (var nuevosCampos in informeComercial.NuevosCampos)
+                     {
+                         informeComercial.Materiales.Add(new ParamInformeComercialMaterial
+                         {
+                             MaterialId = nuevosCampos.MaterialId,
+                             Toneladas = nuevosCampos.Toneladas
+                         });
+                     }*/
 
                     foreach (var nuevosCampos in informeComercial.NuevosCampos.GroupBy(x => x.MaterialId))
                     {
@@ -108,13 +107,13 @@ namespace SustitucionMOA.Controllers
                 //return File(FileArray, "application/pdf", "Informe Comercial.pdf");
                 PDFResponse result = new PDFResponse
                 {
-                    pdf = new Pdf()
+                    Pdf = new Pdf()
                     {
                         data = FileArray
                     }
                 };
 
-                return JsonCustom(result.pdf);
+                return JsonCustom(result.Pdf);
             }
             catch (InfoCustomException e)
             {
@@ -205,13 +204,13 @@ namespace SustitucionMOA.Controllers
                 //return File(FileArray, "application/pdf", "Informe Comercial.pdf");
                 PDFResponse result = new PDFResponse
                 {
-                    pdf = new Pdf()
+                    Pdf = new Pdf()
                     {
                         data = FileArray
                     }
                 };
 
-                return JsonCustom(result.pdf);
+                return JsonCustom(result.Pdf);
             }
             catch (InfoCustomException e)
             {
@@ -519,11 +518,11 @@ namespace SustitucionMOA.Controllers
                     var usuario = repositorio.Obtener<UsuarioGranos>(u => u.Mail == mail);
                     proveedorId = usuario.ObtenerProveedor().Id;
                 }
-                
+
                 var path = $"{ConfigurationManager.AppSettings["RutaArchivosProveedores"]}/{DateTime.Now.Ticks}";
                 Directory.CreateDirectory(path);
 
-                string rutaZip= altaEmpresaService.ObtenerArchivos(mail, proveedorId, path);
+                string rutaZip = altaEmpresaService.ObtenerArchivos(mail, proveedorId, path);
                 byte[] fileBytes = System.IO.File.ReadAllBytes(rutaZip);
                 string fileName = Path.GetFileName(rutaZip);
 

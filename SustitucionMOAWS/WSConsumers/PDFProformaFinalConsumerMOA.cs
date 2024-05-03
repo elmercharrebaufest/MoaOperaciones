@@ -37,7 +37,7 @@ namespace SustitucionMOAWS.WSConsumers
 
             if (pdf != null && pdf.Length > 0)
             {
-                result.pdf = new Pdf()
+                result.Pdf = new Pdf()
                 {
                     data = pdf
                 };

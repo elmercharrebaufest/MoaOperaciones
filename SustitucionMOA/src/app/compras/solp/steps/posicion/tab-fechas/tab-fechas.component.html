@@ -7,7 +7,7 @@
             <strong>Fecha de entrega</strong>
         </div>
         <div class="styled-select">
-            <p-calendar [(ngModel)]="posicion.fechaEntregaServicio" [locale]="locale" [showIcon]="true" dateFormat="dd-M-yy" appendTo="body" [readonlyInput]="true" [minDate]="hoy" (onSelect)="calcularEntregaCalendario()"></p-calendar>
+            <p-calendar [(ngModel)]="posicion.fechaEntregaServicio" [locale]="locale" [showIcon]="true" dateFormat="dd-M-yy" appendTo="body" [readonlyInput]="true" [minDate]="configurarFechaCalendar ? null : hoy" (onSelect)="calcularEntregaCalendario()"></p-calendar>
         </div>
         <div *ngIf="mostrarValidacion('fechaEntregaServicio', posicion.fechaEntregaServicio)">
             <p class="text-danger">campo obligatorio</p>
@@ -20,9 +20,11 @@
         </div>
         <div>
           <input pInputText type="text" pKeyFilter="pnum" [(ngModel)]="posicion.plazoDeEntrega" class="fourRounded widthInputDias" aria-controls="tableModal" placeholder="" (change)="calcularFechaEntrega()" />
-          <div *ngIf="mostrarValidacion('plazoDeEntrega', posicion.plazoDeEntrega)">
-              <p class="text-danger">campo obligatorio</p>
-          </div>
+          <div *ngIf="configurarFechaCalendar != true">
+            <div *ngIf="mostrarValidacion('plazoDeEntrega', posicion.plazoDeEntrega)">
+                <p class="text-danger">campo obligatorio</p>
+            </div>
+          </div> 
         </div>
       </div>
     </div>

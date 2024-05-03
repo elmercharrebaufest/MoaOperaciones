@@ -41,7 +41,7 @@
             </div>
 
             <div style="margin-top: 1em; margin-bottom: 10px;">
-                <div class="row myRow">
+                <div class="row">
                     <div class="col-md-3 col-lg-3">
                         <input class="col-xs-12 col-sm-12 col-md-12 col-lg-12 inputAltura" pInputText type="text"
                                [(ngModel)]="nroSolp" placeholder="Buscar por número de SOLP">
@@ -50,46 +50,69 @@
                         <p-multiSelect [options]="estadoSolpItem" [(ngModel)]="selectEstadoSolp"
                                        defaultLabel="Estado SOLP"></p-multiSelect>
                     </div>
-
-                    <div class="col-md-6 col-lg-6" style="margin-top: 10px;">
-                        <span style="border-left: 1px solid black;margin-top: 1px;padding-left: 9px;padding-right: 1px;margin-left: 8px;">
-                            <p-checkbox class="checkboxFechas" binary="true" label="SAP" [(ngModel)]="sap">
-                            </p-checkbox>
-                        </span>
-                        <span class="padding1" style="margin-right: 5px; margin-left: 5px;">
-                            <p-checkbox class="checkboxFechas" binary="true" label="OT" pTooltip="Mantenimiento"
-                                        [(ngModel)]="mantenimiento"></p-checkbox>
-                        </span>
-                        <span class="padding1" style="margin-right: 5px;">
-                            <p-checkbox class="checkboxFechas" binary="true" label="Web" [(ngModel)]="web"></p-checkbox>
-                        </span>
-                        <span class="padding1" style="margin-right: 5px;">
-                            <p-checkbox class="checkboxFechas" binary="true" label="Reposición Automática" [(ngModel)]="repoAutomatica"></p-checkbox>
-                        </span>
-                    </div>
-                </div>
-
-                <div class="row myRow">
-                    <div class="col-md-3 col-lg-3 inputAltura">
-                        <p-multiSelect [options]="usuarioFiltro" [(ngModel)]="selectUsuario" defaultLabel="Buscar por usuario"
-                                       [maxSelectedLabels]="1" selectedItemsLabel="{0} usuarios elegidos"></p-multiSelect>
-                    </div>
                     <div class="col-md-3 col-lg-3">
-                        <p-calendar showButtonBar="true" [showIcon]="true" placeholder="Buscar por fechas"
-                                    dateFormat="dd/mm/yy" (onSelect)="onSelect($event)" appendTo="body"
-                                    [(ngModel)]="rangeDates" selectionMode="range" [readonlyInput]="true" [locale]="locale"
-                                    (onClearClick)="returnToTodaysDate()">
-                        </p-calendar>
+                        <p-multiSelect [options]="grupoComprasFiltro" [(ngModel)]="selectGrupoCompras" defaultLabel="Grupo de Compras"
+                                       [maxSelectedLabels]="1" selectedItemsLabel="{0} grupos de compras"></p-multiSelect>
                     </div>
-                    <div class="col-md-3 col-lg-3  buttonBuscar">
-                        <button class="btn buscar" (click)="onBuscar()">Buscar</button>
+                    <div class="col-md-3 col-lg-3" style="padding-right: 30px;">
+                        <p-multiSelect [options]="centroFiltro" [(ngModel)]="selectCentro" defaultLabel="Centro"
+                                       [maxSelectedLabels]="2" selectedItemsLabel="{0} centros elegidos"></p-multiSelect>
+                    </div>
+                    <div class="row myRow">
+                        <div class="col-md-3 col-lg-3">
+                            <p-multiSelect [options]="usuarioFiltro" [(ngModel)]="selectUsuario" defaultLabel="Buscar por usuario"
+                                           [maxSelectedLabels]="1" selectedItemsLabel="{0} usuarios elegidos"></p-multiSelect>
+                        </div>
+                        <div class="col-md-3 col-lg-3">
+                            <p-multiSelect [options]="claseDocumentoFiltro" [(ngModel)]="selectClaseDocumento" defaultLabel="Clase de Documento"
+                                           [maxSelectedLabels]="1" selectedItemsLabel="{0} clases elegidas"></p-multiSelect>
+                        </div>
+                        <div class="col-md-3 col-lg-3">
+                            <p-multiSelect [options]="tipoImputacionFiltro" [(ngModel)]="selectTipoImputacion" defaultLabel="Tipo de Imputación"
+                                           [maxSelectedLabels]="1" selectedItemsLabel="{0} tipos elegidos" (ngModelChange)="subtipoImputacionCombo()"></p-multiSelect>
+                        </div>
+                        <div class="col-md-3 col-lg-3" style="padding-right: 30px;">
+                            <p-multiSelect [options]="valorTipoImputacionFiltro" [(ngModel)]="selectValorTipoImputacion" defaultLabel="Subtipo de Imputación"
+                                           [maxSelectedLabels]="1" selectedItemsLabel="{0} tipos elegidos"></p-multiSelect>
+                        </div>
+                    </div>
+                    <div class="row myRow">
+                        <div class="col-md-3 col-lg-3">
+                            <p-calendar showButtonBar="true" [showIcon]="true" placeholder="Buscar por fechas"
+                                        dateFormat="dd/mm/yy" (onSelect)="onSelect($event)" appendTo="body"
+                                        [(ngModel)]="rangeDates" selectionMode="range" [readonlyInput]="true" [locale]="locale"
+                                        (onClearClick)="returnToTodaysDate()">
+                            </p-calendar>
+                        </div>
+                        <div class="col-md-6 col-lg-6" style="margin-top: 6px;">
+                            <span style="margin-top: 1px; margin-right: 7px;">
+                                <p-checkbox class="checkboxFechas" binary="true" label="SAP" [(ngModel)]="sap">
+                                </p-checkbox>
+                            </span>
+                            <span style="margin-right: 7px;">
+                                <p-checkbox class="checkboxFechas" binary="true" label="OT" pTooltip="Mantenimiento"
+                                            [(ngModel)]="mantenimiento"></p-checkbox>
+                            </span>
+                            <span style="margin-right: 7px;">
+                                <p-checkbox class="checkboxFechas" binary="true" label="Web" [(ngModel)]="web"></p-checkbox>
+                            </span>
+                            <span style="margin-right: 7px;">
+                                <p-checkbox class="checkboxFechas" binary="true" label="Repos. Automática" [(ngModel)]="repoAutomatica"></p-checkbox>
+                            </span>
+                            <span>
+                                <p-checkbox class="checkboxFechas" binary="true" label="Contrato Marco" [(ngModel)]="contratoMarco"></p-checkbox>
+                            </span>
+                        </div>
+                        <div class="col-md-3 col-lg-3  buttonBuscar" style="padding-right: 30px;">
+                            <button class="btn buscar" (click)="onBuscar()">Buscar</button>
+                        </div>
                     </div>
                 </div>
+
             </div>
 
         </div>
     </section>
-
 
 
     <div class="col-sm-12 col-md-12 col-lg-12" style="margin-left: -15px;">
@@ -160,7 +183,7 @@
                 <tr [pSelectableRow]="rowData">
                     <td (dblclick)="onRowDblClick($event, rowData)">
                         <div *ngIf="rowData.TienePeticionDeOferta">
-                            <a href="#" [pRowToggler]="rowData" (click)="listarExpand()">
+                            <a href="#" [pRowToggler]="rowData" (click)="listarExpand(); listarPeticiones(rowData)">
                                 <i [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
                             </a>
                         </div>
@@ -189,7 +212,7 @@
                             </span>
                         </div>
                         <div class="col-md-2"
-                             *ngIf="rowData.EstadoSolpSap.Descripcion != 'Liberada' && (rowData.UsuarioActual.Mail == usuario || verTodas)">
+                             *ngIf="rowData.EstadoSolpSap.Descripcion != 'Liberada' && (rowData.UsuarioActual.Mail == usuario || verTodas || mismaClaseDocumento(rowData.ClaseDocumento_Id))">
                             <span>
                                 <img class="pointer" src="./Content/images/icons/editar.svg" alt="editar" style="height:28px;"
                                      (click)="goToSeccionEdit('/compras/solp', rowData.Id, rowData.NroSolp)" />
@@ -280,10 +303,10 @@
                                                 </td>
                                                 <td class="columna" [style.color]="licitacion.EstadoColor">{{licitacion.Estado}}</td>
                                                 <td class="columna">
-                                                    <button class="publicar btn" *ngIf="licitacion.RevisionFinalizada != true" style="margin-right: 10px;" (click)="obtenerPeticionDeOferta(licitacion.Id)">
+                                                    <button class="publicar btn" *ngIf="licitacion.RevisionFinalizada != true" style="margin-right: 10px;" (click)="obtenerPeticionDeOferta(licitacion.Id, rowData)">
                                                         Revisión Técnica
                                                     </button>
-                                                    <button class="publicar btn " *ngIf="rowData.VerCircular == true && licitacion.RevisionFinalizada != true" style="margin-right: 10px;" (click)="obtenerPeticionDeOfertaCircular(licitacion.Id)">
+                                                    <button class="publicar btn " *ngIf="rowData.VerCircular == true && licitacion.RevisionFinalizada != true" style="margin-right: 10px;" (click)="obtenerPeticionDeOfertaCircular(licitacion.Id, rowData)">
                                                         Circular
                                                     </button>
                                                 </td>
@@ -293,11 +316,11 @@
                                 </p-tabPanel>
                                 <p-tabPanel>
                                     <ng-template pTemplate="header">
-                                        <div class="padding" (click)="listarAdjudicaciones(rowData.Id)">
+                                        <div class="padding" (click)="listarAdjudicaciones(rowData)">
                                             Orden de compra
                                         </div>
                                     </ng-template>
-                                    <p-table [value]="filtrarOrdenesDeCompra(rowData.Id)">
+                                    <p-table [value]="rowData.OrdenesDeCompra">
                                         <ng-template pTemplate="header">
                                             <tr>
                                                 <th class="columna">Numero</th>
@@ -326,7 +349,7 @@
                                                 <td class="columna">{{orden.EstadoLiberacionDetalle}}</td>
                                                 <td class="columna">
                                                     <button class="publicar btn btn-success"
-                                                            (click)="verDetalleOrdenDeCompra(orden.NumeroOrdenDeCompra)">
+                                                            (click)="verDetalleOrdenDeCompra(orden.NumeroOrdenDeCompra, rowData)">
                                                         Ver detalle
                                                     </button>
                                                 </td>
@@ -346,22 +369,23 @@
 
 <app-revision-tecnica [(displayRevisionTecnica)]="displayRevisionTecnica"
                       (cerrardisplayRevisionTecnicaEmitter)="cerrarModalRevisionTecnica()"
+                      (onCloseModalEmitter)="cancelarModal()"
                       (descargarArchivoEmitter)="descargarArchivo($event)"
                       (descargarAdjuntosCotizacionEmitter)="descargarAdjuntosCotizacion($event)"
-                      (grabarRevisionTecnicaEmitter)="grabarRevisionTecnica($event)"
                       [(peticion)]="peticion">
 </app-revision-tecnica>
 
 <app-circular [(locale)]="es"
               [(displayCircular)]="displayCircular"
               (cerrarCircularEmitter)="cerrarCircular()"
+              (onCloseModalEmitter)="cancelarModal()"
               [(peticion)]="peticion"
               [(solicitante)]="solicitante">
 </app-circular>
 
 
 <!-- Modal eliminacion de SOLP-->
-<p-confirmDialog #dialogo header="Eliminar SOLP" icon="pi pi-exclamation-triangle" [width]="400" [responsive]="true"
+<p-confirmDialog #dialogo key="eliminarSOLP" icon="pi pi-exclamation-triangle" [width]="400" [responsive]="true"
                  appendTo="body">
     <p-footer>
         <button type="button" pButton label="Cancelar" class="ui-button-info botonModal"
@@ -378,6 +402,6 @@
 </app-orden-de-compra-detalle>
 
 <app-chat-interno [(displayChatInterno)]="displayChatInterno"
-                  [(chat)]="chat">
-    (cerrardisplayChatEmitter)="cerrarModalChat()"
+                  [(chat)]="chat"
+                  (cerrardisplayChatEmitter)="cerrarModalChat()">
 </app-chat-interno>

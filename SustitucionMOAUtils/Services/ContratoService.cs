@@ -302,13 +302,13 @@ namespace SustitucionMOAUtils.Services
                 try
                 {
                     PDFResponse pdfExport = PDFExport.ToPDF("Calidad Contrato(" + numeroContrato + ")", new List<string>() { "CCPP", "Característica", "Calado Result.", "Calado Dto.", "Cámara Result.", "Cámara Dto.", "Kg Netos", "Kg Apli" }, data.calidad);
-                    if (pdfExport.pdf == null || pdfExport.pdf.data == null || pdfExport.pdf.data.Count() == 0)
+                    if (pdfExport.Pdf == null || pdfExport.Pdf.data == null || pdfExport.Pdf.data.Count() == 0)
                     {
                         throw new ValidationCustomException(ErrorMsg.ErrorDescargaPDF);
                     }
 
 
-                    return pdfExport.pdf;
+                    return pdfExport.Pdf;
                 }
                 catch
                 {
@@ -335,16 +335,16 @@ namespace SustitucionMOAUtils.Services
             {
                 PDFResponse data = new ContratoPDFConsumerMOA().request(proveedor, contrato);
 
-                if (data.error != null && data.error.codigo != "00")
+                if (data.Error != null && data.Error.codigo != "00")
                 {
                     throw new InfoCustomException(InfoMsg.SinBoletoFisico);
                 }
 
-                if (data.pdf == null || data.pdf.data == null || data.pdf.data.Count() == 0)
+                if (data.Pdf == null || data.Pdf.data == null || data.Pdf.data.Count() == 0)
                 {
                     throw new InfoCustomException(InfoMsg.SinBoletoFisico);
                 }
-                return data.pdf;
+                return data.Pdf;
             }
             catch (InfoCustomException e)
             {

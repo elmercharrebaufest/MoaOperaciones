@@ -75,6 +75,7 @@ export class DeclaracionConformidadComponent extends BaseComponent implements On
             this.razonSocial = result.RazonSocial;
             this.hectareasTotales = result.HectareasDeclaracionCampoSustentable;
             this.totalidadCosecha = result.OpcionDeclaracionCampoSustentable == 0 ? 1 : 2;
+
             this.abrirModalFirmaDeclaracion()
           }
         }

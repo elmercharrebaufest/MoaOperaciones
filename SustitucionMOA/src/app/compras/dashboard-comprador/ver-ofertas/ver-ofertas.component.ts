@@ -17,6 +17,7 @@ import { Solp } from '../../solp/solp';
 import { CotizacionHoraDto, CotizacionDto, CotizacionPosicionDto } from '../../../modelos/cotizacionDto';
 import { AdjudicacionDto } from '../../../modelos/adjudicacion';
 import { TextosAdjudicarComponent } from './textos-adjudicar/textos-adjudicar.component';
+import { CotizacionHistorialDto } from '../../../modelos/cotizacion-historial-model';
 
 @Component({
     selector: 'app-ver-ofertas',
@@ -46,13 +47,16 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
     displayVisualizarErrores: boolean;
     numeroOrdenDeCompra: any;
     displayPanelHs: boolean = false;
-    textoRacionalInCompleto: boolean;
+    textoRacionalIncompleto: boolean;
     displayTextoIncompleto: boolean;
+    textoRacionalModal: string;
     regionSap: SelectItem[];
     selectedRegion: any;
     displayRegionSap: boolean;
     centroDire: any;
     centroDireLista: any;
+    ordenDeCompra: AdjudicacionDto;
+    nroOC: string;
 
     @Input()
     public peticionHs: CotizacionHoraDto;
@@ -68,6 +72,11 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
     lista: any[];
     numerosDePedido: any;
     displayPlazo: boolean;
+    mensaje: string;
+    displayHistorial: boolean;
+    historiales: CotizacionHistorialDto[] = [];
+    esTipoPOMultiple: boolean;
+
 
     constructor(protected service: ComprasService, protected usuarioService: UsuarioService, protected navService: NavService, protected sessionDataService: SessionDataService,
         protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService,
@@ -81,7 +90,7 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
                 this.peticionOferta_Id = parseInt(params["id"]);
                 this.verOfertas(this.peticionOferta_Id);
             })
-            this.textoRacionalInCompleto = true;
+            this.textoRacionalIncompleto = true;
         };
 
         if (this.tablaOfertas == null) {
@@ -146,6 +155,14 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
                         this.floatMsgService.setInfoMsg(result.info);
                     } else {
                         this.tablaOfertas = result.data;
+                        if (this.tablaOfertas.NrosSolp.length > 1) {
+                            this.esTipoPOMultiple = true;
+                        }
+                        this.nroOC = this.tablaOfertas.NroOrdenDeCompraAdicional;
+                        if (this.tablaOfertas.Adicional == true) {
+                            this.obtenerAdjudicacion(this.nroOC);
+                        } else
+                            this.setTextoCondicionEspecial();
                     }
                     this.blockUI.stop();
                 },
@@ -161,47 +178,72 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
         return false; //<-- Prevent Refresh
     }
 
-    descargarAdjuntosCotizacion(cotizacionId) {
-        this.blockUI.start("Descargando...");
-        this.service.DescargarAdjuntosCotizacion(cotizacionId, false)
-            .subscribe(
-                (result) => {
-                    if (result.logout == true) {
-                        this.sessionDataService.logout();
-                    }
-                    else {
-                        var byteArray = new Uint8Array(result.FileContents);
-                        var blob = new Blob([byteArray], {
-                            type: "application/octet-stream",
-                        });
+    obtenerAdjudicacion(nroOC) {
+        this.blockUI.start('Cargando...');
+        this.service.obtenerAdjudicacion(nroOC).subscribe(
+            (result) => {
+                if (result.logout == true) {
+                    this.sessionDataService.logout();
+                }
+                else {
+                    this.ordenDeCompra = result.data;
 
-                        if (window.navigator.msSaveOrOpenBlob) {
-                            // IE11
-                            window.navigator.msSaveOrOpenBlob(
-                                blob,
-                                result.FileDownloadName
-                            );
-                        } else {
-                            var url = window.URL.createObjectURL(blob);
-                            var link = document.createElement("a");
-                            document.body.appendChild(link);
-                            link.href = url;
-                            link.download = result.FileDownloadName;
-                            link.click();
-                            setTimeout(function () {
-                                window.URL.revokeObjectURL(url);
-                            }, 0);
-                            this.blockUI.stop();
-                            return false;
-                        }
-                        this.blockUI.stop();
-                    }
-                },
-                (error) => {
-                    this.mensajeComponent.setErrorMsg(error.message);
+                    this.adjudicacion.CondicionesDeEntrega = this.ordenDeCompra.CondicionesDeEntrega;
+                    this.adjudicacion.CondicionesDePago = this.ordenDeCompra.CondicionesDePago;
+                    this.adjudicacion.Garantias = this.ordenDeCompra.Garantias;
+                    this.adjudicacion.TextoDeCabecera = this.ordenDeCompra.TextoDeCabecera;
+
+                    this.setTextoCondicionEspecial();
                     this.blockUI.stop();
                 }
-            )
+            },
+            (error) => {
+                this.blockUI.stop();
+                this.mensajeComponent.setErrorMsg(error.message);
+            }
+        )
+    }
+
+    descargarAdjuntosCotizacion(cotizacionId) {
+        this.blockUI.start("Descargando...");
+        this.service.DescargarAdjuntosCotizacion(cotizacionId, false).subscribe(
+            (result) => {
+                if (result.logout == true) {
+                    this.sessionDataService.logout();
+                }
+                else {
+                    var byteArray = new Uint8Array(result.FileContents);
+                    var blob = new Blob([byteArray], {
+                        type: "application/octet-stream",
+                    });
+
+                    if (window.navigator.msSaveOrOpenBlob) {
+                        // IE11
+                        window.navigator.msSaveOrOpenBlob(
+                            blob,
+                            result.FileDownloadName
+                        );
+                    } else {
+                        var url = window.URL.createObjectURL(blob);
+                        var link = document.createElement("a");
+                        document.body.appendChild(link);
+                        link.href = url;
+                        link.download = result.FileDownloadName;
+                        link.click();
+                        setTimeout(function () {
+                            window.URL.revokeObjectURL(url);
+                        }, 0);
+                        this.blockUI.stop();
+                        return false;
+                    }
+                    this.blockUI.stop();
+                }
+            },
+            (error) => {
+                this.mensajeComponent.setErrorMsg(error.message);
+                this.blockUI.stop();
+            }
+        )
     }
 
     validacionCantidad(cantidad: number, cantidadPendiente: number) {
@@ -485,12 +527,13 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
     }
 
     validacionTextosIncompletos() {
-        this.textoRacionalInCompleto = false;
+        this.textoRacionalIncompleto = false;
         if ((this.adjudicacion.CondicionesDeEntrega == "" || this.adjudicacion.CondicionesDeEntrega == undefined)
             && (this.adjudicacion.CondicionesDePago == "" || this.adjudicacion.CondicionesDePago == undefined)
             && (this.adjudicacion.Garantias == "" || this.adjudicacion.Garantias == undefined)
-            && (this.adjudicacion.TextoDeCabecera == "" || this.adjudicacion.TextoDeCabecera == undefined)) {
-            this.textoRacionalInCompleto = true;
+            && (this.adjudicacion.TextoDeCabecera == "" || this.adjudicacion.TextoDeCabecera == undefined || this.adjudicacion.TextoDeCabecera == `Justificación de condición especial: ${this.tablaOfertas.SolpDto.ObservacionesCotizacion}`)) {
+            this.textoRacionalIncompleto = true;
+            this.textoRacionalModal = "No se completó ningún racional.";
         }
     }
 
@@ -503,15 +546,11 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
         this.displayVisualizarErrores = false;
     }
 
-    abrilModalTextos() {
+    abrirModalTextos() {
         this.displayTextos = true;
     }
 
     cerrarModalTextos() {
-        this.displayTextos = false;
-    }
-
-    aceptarModalTextos() {
         this.displayTextos = false;
     }
 
@@ -548,7 +587,7 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
     abrirModalPrecios() {
         this.displayVisualizarPrecio = true;
     }
-    
+
     obtenerPrimerPlazo(cotizacionPosicion: any): string {
         let plazos = '';
 
@@ -579,12 +618,11 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
 
     aceptarRegion() {
         this.adjudicacion.RegionSap = this.selectedRegion.value;
-        console.log("this.selectedRegion", this.selectedRegion.value);
-        this.validacionTextosIncompletos();       
+        this.validacionTextosIncompletos();
         this.displayRegionSap = false;
-        if (this.textoRacionalInCompleto == true) {
-             this.displayTextoIncompleto = true;
-        }else{
+        if (this.textoRacionalIncompleto == true) {
+            this.displayTextoIncompleto = true;
+        } else {
             this.abrirModalPosicionPlazo();
         }
     }
@@ -648,4 +686,98 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
         this.proveedor = this.usuario.CodigoProveedor;
         this.mostrarModalGenerarOCMoneda(this.usuario)
     }
+
+    setTextoCondicionEspecial() {
+        if (this.tablaOfertas.SolpDto.Urgencia == true || this.tablaOfertas.SolpDto.Adicional == true || this.tablaOfertas.SolpDto.TrabajoYaHecho == true || this.tablaOfertas.SolpDto.CondEspProveedorAsignado == true) {
+            this.adjudicacion.TextoDeCabecera != undefined && this.adjudicacion.TextoDeCabecera != "" && this.modalTexto.adjudicacion.TextoDeCabecera != this.tablaOfertas.SolpDto.ObservacionesCotizacion ?
+                this.adjudicacion.TextoDeCabecera += `\n\nJustificación de condición especial: ${this.tablaOfertas.SolpDto.ObservacionesCotizacion}`
+                : this.adjudicacion.TextoDeCabecera = `Justificación de condición especial: ${this.tablaOfertas.SolpDto.ObservacionesCotizacion}`;
+        }
+    }
+
+    public actualizarVisibilidad(proveedor, cambiarEstado) {
+        if (!cambiarEstado) {
+            this.mensaje = '';
+            try {
+                this.blockUI.start('Cargando...');
+                this.service.actualizarProveedorVisibleEnSolicitante(proveedor.Id, proveedor.VisibleSolicitante).subscribe(
+                    () => {
+                        this.mensaje = "Los datos se actualizaron correctamente."
+                        this.blockUI.stop();
+                    },
+                    (error) => {
+                        this.blockUI.stop();
+                        this.mensajeComponent.setErrorMsg(error.message);
+                    }
+                );
+            } catch (e) {
+                this.floatMsgService.setErrorMsg(e);
+                return false; //<-- Prevent Refresh
+            }
+        }
+        return false; //<-- Prevent Refresh
+    }
+
+    obtenerHistorial(id) {
+        try {
+            this.blockUI.start('Cargando...');
+            this.subscription = this.service.obtenerHistorial(id).subscribe(
+                (result: any) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.floatMsgService.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.floatMsgService.setInfoMsg(result.info);
+                    } else {
+                        this.historiales = result.data;
+                    }
+                    this.blockUI.stop();
+                },
+                error => {
+                    this.floatMsgService.setErrorMsg(error.message);
+                    this.blockUI.stop();
+                });
+        } catch (e) {
+            this.blockUI.stop();
+            this.floatMsgService.setErrorMsg(e);
+            return false; //<-- Prevent Refresh
+        }
+        return false; //<-- Prevent Refresh
+    }
+
+    abrirModalHistorial(id) {
+        this.displayHistorial = true;
+        this.obtenerHistorial(id);
+    }
+
+    cerrarHistorial() {
+        this.displayHistorial = false;
+    }
+
+    // Dentro del componente de Angular
+    getTotalPreciosPorMoneda(cotizacionPosicion: any): string {
+        // Crear un objeto para almacenar la suma de precios por moneda
+        const preciosPorMoneda: { [key: string]: number } = {};
+
+        // Iterar sobre las subposiciones y sumar los precios por moneda
+        for (const subpos of cotizacionPosicion.CotizacionSubPosiciones) {
+            if (!preciosPorMoneda[subpos.MonedaDescripcion]) {
+                preciosPorMoneda[subpos.MonedaDescripcion] = 0;
+            }
+            preciosPorMoneda[subpos.MonedaDescripcion] += subpos.PrecioUnidad;
+        }
+
+        this.resultado = '';
+        for (const moneda in preciosPorMoneda) {
+            if (preciosPorMoneda.hasOwnProperty(moneda)) {
+                const precioFormateado = preciosPorMoneda[moneda].toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                this.resultado += ` ${moneda} ${precioFormateado} <br>`;
+            }
+        }
+
+        return this.resultado;
+    }
+
 }
+

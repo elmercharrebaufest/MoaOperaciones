@@ -204,7 +204,7 @@ export class TabSubposicionComponent extends ListBaseComponent {
                     this.tablaAFiltrar = 'CecoSolpSap';
                     break;
                 case this.enumTipoImputacion.OrdenDeOt:
-                    this.tituloColumnaTipoDeImputacion = "Orden de OT";
+                    this.tituloColumnaTipoDeImputacion = "Nro de OT";
                     this.tablaAFiltrar = 'OrdenSolpSap';
                     break;
                 case this.enumTipoImputacion.OrdenInversion:

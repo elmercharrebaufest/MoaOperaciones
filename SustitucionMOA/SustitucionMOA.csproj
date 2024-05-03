@@ -19,14 +19,10 @@
     <AssemblyName>SustitucionMOA</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <UseIISExpress>true</UseIISExpress>
-    <IISExpressSSLPort>
-    </IISExpressSSLPort>
-    <IISExpressAnonymousAuthentication>
-    </IISExpressAnonymousAuthentication>
-    <IISExpressWindowsAuthentication>
-    </IISExpressWindowsAuthentication>
-    <IISExpressUseClassicPipelineMode>
-    </IISExpressUseClassicPipelineMode>
+    <IISExpressSSLPort>58280</IISExpressSSLPort>
+    <IISExpressAnonymousAuthentication>enabled</IISExpressAnonymousAuthentication>
+    <IISExpressWindowsAuthentication>disabled</IISExpressWindowsAuthentication>
+    <IISExpressUseClassicPipelineMode>false</IISExpressUseClassicPipelineMode>
     <UseGlobalApplicationHostFile />
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
@@ -321,32 +317,11 @@
     <Content Include="dist\*.js" />
     <Content Include="dist\styles.*.css" />
     <Content Include="Libs\Kendo.DynamicLinq.dll" />
-    <Content Include="NEW.PRE.DeployParameters.Debug.xml" />
-    <Content Include="NEW.PRE.DeployParameters.Release.xml" />
     <Content Include="NEW.PRE.DeployParameters.xml" />
     <Content Include="NEW.PROD.DeployParameters.xml" />
     <Content Include="NEW.QACompras.DeployParameters.xml" />
-    <Content Include="NEW.QABaufest.DeployParameters.Debug.xml" />
-    <Content Include="NEW.QABaufest.DeployParameters.Release.xml" />
     <Content Include="NEW.QABaufest.DeployParameters.xml" />
-    <Content Include="NEW.QAHuenei.DeployParameters.Debug.xml" />
-    <Content Include="NEW.QAHuenei.DeployParameters.Release.xml" />
     <Content Include="NEW.QAHuenei.DeployParameters.xml" />
-    <Content Include="NOTUSE_UPDATE.DeployParameters.Debug.xml" />
-    <Content Include="PRE.DeployParameters.Debug.xml">
-      <DependentUpon>PRE.DeployParameters.xml</DependentUpon>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="PRE.DeployParameters.Release.xml">
-      <DependentUpon>PRE.DeployParameters.xml</DependentUpon>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="PRE.DeployParameters.xml">
-      <SubType>Designer</SubType>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="PREHotFix.DeployParameters.xml" />
-    <Content Include="QAHotFix.DeployParameters.xml" />
     <Content Include="src\app\aplicacion-ccpp\carga-manual\carga-manual.component.css" />
     <Content Include="src\app\aplicacion-ccpp\carga-manual\carga-manual.component.html" />
     <Content Include="src\app\aplicacion-ccpp\listado\listado.component.css" />
@@ -359,6 +334,8 @@
     <Content Include="src\app\common\shared-components\seleccionar-proveedor\seleccionar-proveedor.component.html" />
     <Content Include="src\app\compras\chat-interno\chat-interno.component.css" />
     <Content Include="src\app\compras\chat-interno\chat-interno.component.html" />
+    <Content Include="src\app\compras\crear-po-multiple\crear-po-multiple.component.css" />
+    <Content Include="src\app\compras\crear-po-multiple\crear-po-multiple.component.html" />
     <Content Include="src\app\compras\dashboard-comprador\alta-proveedor\alta-proveedor.component.css" />
     <Content Include="src\app\compras\dashboard-comprador\alta-proveedor\alta-proveedor.component.html" />
     <Content Include="src\app\compras\dashboard-comprador\cerrar-cotizacion\cerrar-cotizacion.component.css" />
@@ -442,14 +419,6 @@
     <Content Include="Template\EnvioCamposSustentablesUcropit.html" />
     <Content Include="Template\NotificacionOrdenesResiduosVencidas.html" />
     <Content Include="Template\NotificacionOrdenesDeCarga.html" />
-    <Content Include="NOTUSE_UPDATE.DeployParameters.Release.xml">
-      <DependentUpon>NOTUSE_UPDATE.DeployParameters.xml</DependentUpon>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="NOTUSE_UPDATE.DeployParameters.xml">
-      <SubType>Designer</SubType>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="src\app\aduana\camara\consolidacion\camara.consolidacion.component.html" />
     <Content Include="src\app\aduana\camara\muelle\camara.muelle.component.html" />
     <Content Include="src\app\aduana\informacion-meteorologica\informacion-meteorologica.component.html" />
@@ -831,12 +800,6 @@
     <Content Include="officetohtml\pdfViewer.png" />
     <Content Include="packages.config" />
     <Content Include="parameters.xml" />
-    <Content Include="NOTUSE_STAGING.DeployParameters.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="PROD.DeployParameters.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Content\fonts\fontawesome-webfont.eot" />
@@ -1070,18 +1033,6 @@
     <Content Include="fonts\glyphicons-halflings-regular.ttf" />
     <Content Include="fonts\glyphicons-halflings-regular.eot" />
     <Content Include="Scripts\jquery-1.10.2.min.map" />
-    <Content Include="QA.DeployParameters.xml">
-      <SubType>Designer</SubType>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="QA.DeployParameters.Debug.xml">
-      <DependentUpon>QA.DeployParameters.xml</DependentUpon>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="QA.DeployParameters.Release.xml">
-      <DependentUpon>QA.DeployParameters.xml</DependentUpon>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="tsconfig.app.json" />
     <Content Include="tsconfig.spec.json" />
     <Content Include="tslint.json" />
@@ -1156,6 +1107,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Jobs\ActualizarBaseDeDatosSolpSapJob.cs" />
+    <Compile Include="Jobs\EnviarMailReporteSOLPJob.cs" />
     <Compile Include="Jobs\ActualizarEstadoSolpSapJob.cs" />
     <Compile Include="Jobs\ActualizarSISAJob.cs" />
     <Compile Include="Jobs\ActualizarLocalidadesPartidosJob.cs" />
@@ -1226,6 +1178,8 @@
     <TypeScriptCompile Include="src\app\compras\compras-routing.module.ts" />
     <TypeScriptCompile Include="src\app\compras\compras.module.ts" />
     <TypeScriptCompile Include="src\app\compras\compras.service.ts" />
+    <TypeScriptCompile Include="src\app\compras\crear-po-multiple\crear-po-multiple.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\compras\crear-po-multiple\crear-po-multiple.component.ts" />
     <TypeScriptCompile Include="src\app\compras\dashboard-comprador\alta-proveedor\alta-proveedor.component.spec.ts" />
     <TypeScriptCompile Include="src\app\compras\dashboard-comprador\alta-proveedor\alta-proveedor.component.ts" />
     <TypeScriptCompile Include="src\app\compras\dashboard-comprador\cerrar-cotizacion\cerrar-cotizacion.component.spec.ts" />
@@ -1606,7 +1560,7 @@
       <Name>SustitucionMOAFotmatter</Name>
     </ProjectReference>
     <ProjectReference Include="..\SustitucionMOAModel\SustitucionMOAModel.csproj">
-      <Project>{da0a7852-ea57-4359-ba7c-b8babdedbd42}</Project>
+      <Project>{DA0A7852-EA57-4359-BA7C-B8BABDEDBD42}</Project>
       <Name>SustitucionMOAModel</Name>
     </ProjectReference>
     <ProjectReference Include="..\SustitucionMOARepositorio\SustitucionMOARepositorio.csproj">

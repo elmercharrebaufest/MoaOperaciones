@@ -1,7 +1,6 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { NgbAlert } from '@ng-bootstrap/ng-bootstrap';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { ConfirmationService } from 'primeng/api';
 import { isNullOrUndefined } from 'util';
@@ -22,33 +21,19 @@ import { PanelHorasComponent } from '../../panel-horas/panel-horas.component';
 })
 export class RevisionTecnicaComponent implements OnInit, OnChanges {
 
+    @Input() displayRevisionTecnica: boolean;
+    @Input() public peticion: PeticionDeOfertaDto;
 
-    @Input()
-    displayRevisionTecnica: boolean;
-
-    @Input()
-    public peticion: PeticionDeOfertaDto;
-    revisionTecnica: PeticionDeOfertaRevisionTecnicaDto;
     fechaDeEntrega: Date
-    plazoDeOferta: Date
-    public circular: CircularDto;
-    @Output() cerrardisplayRevisionTecnicaEmitter = new EventEmitter();
-    val1: string = "No";
-    val2: string;
-    ObservacionNoCumple: any;
-    ObservacionRecotizacion: any;
-    visualizarFechas: boolean;
-    plazoDias: string;
-    selectedProv: number[] = []
     nroPeticion: any;
-    displayOkPeticion: boolean;
-    subscription: any;
-    @BlockUI() blockUI: NgBlockUI;
+    displayOkRevision: boolean;
     error: string = "";
     visualizarAlert = false;
+    @BlockUI() blockUI: NgBlockUI;
+    @Output() cerrardisplayRevisionTecnicaEmitter = new EventEmitter();
+    @Output() onCloseModalEmitter = new EventEmitter();
     @Output() descargarArchivoEmitter = new EventEmitter<{ archivoId: number }>();
     @Output() descargarAdjuntosCotizacionEmitter = new EventEmitter<{ cotizacionId: number }>();
-    @Output() grabarRevisionTecnicaEmitter = new EventEmitter<{ finalizar: boolean, revisionTecnica: PeticionDeOfertaRevisionTecnicaDto }>();
 
     @ViewChild('panelHoras') panelHoras: PanelHorasComponent;
 
@@ -72,24 +57,10 @@ export class RevisionTecnicaComponent implements OnInit, OnChanges {
         }
     }
 
-    onCerrarPeticion() {
+    onCloseModal() {
+        this.onCloseModalEmitter.next();
         this.visualizarAlert = false;
         this.iniciarDatosPeticion();
-        this.cerrardisplayRevisionTecnicaEmitter.next();
-    }
-
-    estaSeleccionado(seleccion) {}
-
-    private armarPeticion() {
-        let revision: PeticionDeOfertaRevisionTecnicaDto = {
-            Id: 0,
-            Usuario_Id: 0,
-            RecotizacionEconomica: false,
-            ModificacionSolp: false,
-            ObservacionRecotizacion: "",
-            Finalizada: false
-        };
-        return revision;
     }
 
     iniciarDatosPeticion() {
@@ -103,18 +74,26 @@ export class RevisionTecnicaComponent implements OnInit, OnChanges {
                 Usuarios: new Array(),
                 SolpDto: null,
                 Selected: null,
-            };
-        }
-
-        if (this.peticion != null && (this.peticion.RevisionTecnica == null || this.peticion.RevisionTecnica == undefined)) {
-
-            this.peticion.RevisionTecnica = this.armarPeticion();
+            }
+        } else {
+            if (this.peticion.RevisionTecnica == null || this.peticion.RevisionTecnica == undefined) {
+                this.peticion.RevisionTecnica = {
+                    Id: 0,
+                    Usuario_Id: 0,
+                    RecotizacionEconomica: false,
+                    ModificacionSolp: false,
+                    ObservacionRecotizacion: "",
+                    Finalizada: false
+                };
+            }
         }
     }
 
-    salir() {
-        this.onCerrarPeticion();
-        this.displayOkPeticion = false;
+    salirRT() {
+        this.visualizarAlert = false;
+        this.iniciarDatosPeticion();
+        this.cerrardisplayRevisionTecnicaEmitter.next();
+        this.displayOkRevision = false;
     }
 
     validarPeticion() {
@@ -122,7 +101,7 @@ export class RevisionTecnicaComponent implements OnInit, OnChanges {
         if (this.peticion.Usuarios.find(x =>
             (x.ObservacionNoCumple == "" || isNullOrUndefined(x.ObservacionNoCumple))
             && x.PropuestaTecnicaAprobada == false)) {
-            this.error = "El campo Observación es obligatorio";
+            this.error = "El campo Observaciones es obligatorio";
             this.visualizarAlert = true;
             return true;
         }
@@ -131,29 +110,29 @@ export class RevisionTecnicaComponent implements OnInit, OnChanges {
     validarPlazoDeOferta() {
         this.visualizarAlert = false;
         if (this.peticion.Estado != "Cerrado") {
-            this.error = "No se puede finalizar la Revisión tecnica ya que el plazo de oferta no se encuentra vencido";
+            this.error = "No se puede finalizar la revisión técnica ya que el plazo de oferta no se encuentra vencido";
             this.visualizarAlert = true;
             return true;
-        }  else {
+        } else {
             this.error = ""; // Borra el mensaje de error si al menos uno está seleccionado
             this.visualizarAlert = false;
             return false;
         }
     }
 
-    validarCotizacionFinalizada(){
+    validarCotizacionFinalizada() {
         this.visualizarAlert = false;
-        var todasCotizacionesFinalizadas: boolean = this.peticion.Usuarios.every(u => 
+        var todasCotizacionesFinalizadas: boolean = this.peticion.Usuarios.every(u =>
             u.Cotizacion && u.Cotizacion.CotizacionEstado_Id == 1
-          );
+        );
         if (todasCotizacionesFinalizadas == false) {
-            this.error = "No se puede finalizar la Revisión tecnica ya que hay cotizaciones sin finalizar";
+            this.error = "No se puede finalizar la revisión técnica ya que hay cotizaciones sin finalizar";
             this.visualizarAlert = true;
             return true;
         }
     }
 
-    checkRecotizacionEconomica(){
+    checkRecotizacionEconomica() {
         const alMenosUnoSeleccionado = this.peticion.RevisionTecnica.RecotizacionEconomica !== null && this.peticion.RevisionTecnica.RecotizacionEconomica !== undefined;
 
         if (!alMenosUnoSeleccionado) {
@@ -161,13 +140,11 @@ export class RevisionTecnicaComponent implements OnInit, OnChanges {
             this.visualizarAlert = true;
             return true;
         } else {
-
-            if(this.peticion.RevisionTecnica.RecotizacionEconomica == false){
+            if (this.peticion.RevisionTecnica.RecotizacionEconomica == false) {
                 this.error = ""; // Borra el mensaje de error si al menos uno está seleccionado
                 this.visualizarAlert = false;
                 return false;
             } else {
-
                 const alMenosUnCheckSeleccionado = this.peticion.RevisionTecnica.ModificacionSolp !== null && this.peticion.RevisionTecnica.ModificacionSolp !== undefined;
                 if (!alMenosUnCheckSeleccionado) {
                     this.error = "Debe indicar si va a realizar modificaciones en la SOLP";
@@ -181,14 +158,12 @@ export class RevisionTecnicaComponent implements OnInit, OnChanges {
                     this.visualizarAlert = true;
                     return true;
                 }
-
-
+                
                 this.error = ""; // Borra el mensaje de error si al menos uno está seleccionado
                 this.visualizarAlert = false;
                 return false;
             }
         }
-
     }
 
     checkVisitaTecnica() {
@@ -241,7 +216,7 @@ export class RevisionTecnicaComponent implements OnInit, OnChanges {
     }
 
     guardarRT() {
-        this.grabarRevisionTecnicaEmitter.next({ finalizar: false, revisionTecnica: this.peticion.RevisionTecnica });
+        this.grabarRevisionTecnica(false);
     }
 
     mostrarPanelHs(p) {
@@ -253,21 +228,49 @@ export class RevisionTecnicaComponent implements OnInit, OnChanges {
     }
 
     confirmarFinalizacion() {
-        if (!this.checkVisitaTecnica() 
-            && !this.checkPropuestaTecnica() 
-            && !this.validarPeticion() 
-            && (!this.validarPlazoDeOferta() || !this.validarCotizacionFinalizada()) 
+        if (!this.checkVisitaTecnica()
+            && !this.checkPropuestaTecnica()
+            && !this.validarPeticion()
+            && (!this.validarPlazoDeOferta() || !this.validarCotizacionFinalizada())
             && !this.checkRecotizacionEconomica()
-            ) {
+        ) {
             this.confirmationService.confirm({
                 key: 'finalizarRevision',
-                message: 'Una vez finalizada la revisión técnica ya no podrá editarse. ¿Está seguro de que desea cerrar la revisión técnica?',
+                message: 'Una vez finalizada la revisión técnica ya no podrá editarse. ¿Está seguro de que desea finalizarla?',
                 accept: () => {
-                    this.grabarRevisionTecnicaEmitter.next({ finalizar: true, revisionTecnica: this.peticion.RevisionTecnica });
+                    this.grabarRevisionTecnica(true);
                 },
                 reject: () => {
                 }
             });
         }
+    }
+
+    grabarRevisionTecnica(finalizar: boolean) {
+        this.blockUI.start('Grabando...');
+        this.service.grabarRevisionTecnica(this.peticion.Usuarios, finalizar, this.peticion.RevisionTecnica)
+            .subscribe(
+                (result) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.error = result.error;
+                        this.visualizarAlert = true;
+                    } else if (result.info != undefined) {
+                        this.error = result.info;
+                        this.visualizarAlert = true;
+                    } else {
+                        this.nroPeticion = result.data.IdEntidad;
+                        this.displayOkRevision = finalizar;
+                        if (!finalizar) this.onCloseModalEmitter.next();
+                    }
+                    this.blockUI.stop();
+                },
+                (error) => {
+                    this.error = error.message;
+                    this.visualizarAlert = true;
+                    this.blockUI.stop();
+                }
+            )
     }
 }

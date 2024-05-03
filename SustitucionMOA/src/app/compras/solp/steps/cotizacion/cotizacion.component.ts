@@ -47,7 +47,8 @@ export class CotizacionComponent extends ListBaseComponent {
     selectJefes: number[] = [];
     selectGerentes: number[] = [];
     selectDirectores: number[] = [];
-
+    hoy: Date = new Date();
+    
     constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService,
         protected securityService: SecurityService, protected floatMsgService: FloatMsgService,
         protected modalService: ModalService, protected route: ActivatedRoute, protected router: Router
@@ -112,6 +113,10 @@ export class CotizacionComponent extends ListBaseComponent {
             jefes: new FormControl('', Validators.required),
             gerentes: new FormControl('', Validators.required),
             directores: new FormControl('', Validators.required),
+            condEspProveedorAsignado: new FormControl('', Validators.required),
+            servicioPermanente: [{ value: this.model.thServicioPermanente }, []],
+            ajustePolinomica: [{ value: this.model.thAjustePolinomica }, []],
+            proveedorDirecto: [{ value: this.model.thProveedorDirecto }, []],
         });
 
         this.validadorPasoSolpService.formulario = this.formularioCotizacion;
@@ -130,6 +135,7 @@ export class CotizacionComponent extends ListBaseComponent {
 
         if (this.model.ordenDeCompra) {
             this.obtenerOrdenDeCompra();
+            this.habilitarOC();
         } else {
             this.model.ordenDeCompra = "";
         }
@@ -141,6 +147,10 @@ export class CotizacionComponent extends ListBaseComponent {
         }
 
         this.listarLiberadorSap();
+
+        if(this.model.thAjustePolinomica != true && this.model.thProveedorDirecto != true && this.model.thServicioPermanente != true){
+            this.onRadioButtonChange("Servicio permanente");
+        }
     }
 
     ngOnDestroy() {
@@ -272,7 +282,7 @@ export class CotizacionComponent extends ListBaseComponent {
     validarChecks() {
         this.model.validacionCheck = true;
 
-        if (this.model.trabajoHecho == true || this.model.adicional == true || this.model.urgencia == true) {
+        if (this.model.trabajoHecho == true || this.model.adicional == true || this.model.urgencia == true || this.model.condEspProveedorAsignado == true) {
 
             if ((this.model.archivosCotizaciones == null || this.model.archivosCotizaciones.length == 0) && (this.model.archivosCotizacionesNuevos == null || this.model.archivosCotizacionesNuevos.length == 0)) {
                 this.model.mensajeCotizacion = "Debe adjuntar un archivo en el paso #4";
@@ -286,7 +296,7 @@ export class CotizacionComponent extends ListBaseComponent {
                 this.model.validacionCheck = false;
             }
 
-            if (this.model.trabajoHecho == true && this.model.adicional != true) {
+            if (this.model.trabajoHecho == true && this.model.adicional != true || this.model.condEspProveedorAsignado == true) {
                 if (!this.proveedorSeleccionado || this.proveedorSeleccionado == "" || typeof this.proveedorSeleccionado === "undefined") {
                     this.model.mensajeCotizacion = "Debe agregar un proveedor en el paso #4";
                     this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: `${this.model.mensajeCotizacion}` });
@@ -310,28 +320,44 @@ export class CotizacionComponent extends ListBaseComponent {
                 }
             }
 
-            if (this.model.urgencia == true && this.selectJefes.length == 0) {
+            if (this.model.urgencia == true && this.model.trabajoHecho != true && this.selectJefes.length == 0) {
                 this.model.mensajeCotizacion = "Debe elegir al menos un jefe en el paso #4 para enviarle la notificación de urgencia";
                 this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: `${this.model.mensajeCotizacion}` });
                 this.model.validacionCheck = false;
             }
-        }
 
+            if(this.model.trabajoHecho == true){
+                if(this.model.thAjustePolinomica != true && this.model.thProveedorDirecto != true && this.model.thServicioPermanente != true){
+                    this.model.mensajeCotizacion = "Debe elegir una categoria de trabajo ya hacho en el paso #4";
+                    this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: `${this.model.mensajeCotizacion}` });
+                    this.model.validacionCheck = false;
+                }
+            }
+        }
         return this.model.validacionCheck;
     }
 
     limpiarCheck() {
-        if (this.model.trabajoHecho == undefined || this.model.trabajoHecho == false) {
-            if (!this.estaFinalizada) {
-                this.model.proveedorAsignado = "";
-                this.model.proveedorAsignado_Id = null;
-                this.proveedorSeleccionado = null;
-            }
+        if ((this.model.trabajoHecho == undefined || this.model.trabajoHecho == false) && this.model.editarCondicionesEspeciales && this.model.condEspProveedorAsignado == false) {
+            this.model.proveedorAsignado = "";
+            this.model.proveedorAsignado_Id = null;
+            this.proveedorSeleccionado = null;
+            this.model.thAjustePolinomica = false;
+            this.model.thProveedorDirecto = false;
+            this.model.thServicioPermanente = true;
+        }
+    }
+
+    limpiarCheckProveedorAsignado() {
+        if ((this.model.condEspProveedorAsignado == undefined || this.model.condEspProveedorAsignado == false) && this.model.editarCondicionesEspeciales && this.model.trabajoHecho == false) {
+            this.model.proveedorAsignado = "";
+            this.model.proveedorAsignado_Id = null;
+            this.proveedorSeleccionado = null;
         }
     }
 
     limpiarCheckAdicional() {
-        if (!this.estaFinalizada && this.model.ordenDeCompra != "") {
+        if (this.model.ordenDeCompra != "" && this.model.editarCondicionesEspeciales) {
             this.model.ordenDeCompra = "";
             this.ordenDeCompraSap.Cabecera.RazonSocialProveedor = "";
             this.ordenDeCompraSap.Cabecera.CodigoProveedor = "";
@@ -388,13 +414,6 @@ export class CotizacionComponent extends ListBaseComponent {
         return false; //<-- Prevent Refresh
     }
 
-    validarFinalizada() {
-        if (this.estaFinalizada) {
-            return true;
-        }
-        return false;
-    }
-
     listarLiberadorSap() {
         if (this.model.urgencia == true) {
             try {
@@ -416,12 +435,10 @@ export class CotizacionComponent extends ListBaseComponent {
                             const todosSelect = [...this.selectJefes, ...this.selectGerentes, ...this.selectDirectores];
                             const nuevos = todosSelect.filter(Id => !this.model.liberadoresSap.some(lib => lib.LiberadorSap_Id === Id)).map(Id => ({ LiberadorSap_Id: Id }));
                             this.model.liberadoresSap = this.model.liberadoresSap.concat(nuevos);
-                            console.log(this.model.liberadoresSap);
                             //cargo los select con todos los liberadores segun su cargo:
                             this.liberadoresJefes = listaResult.filter(j => j.Cargo === 'Jefe').map(j => ({ label: j.NombreCompleto, value: j.Id, disabled: j.Obligatorio }));
                             this.liberadoresGerentes = listaResult.filter(g => g.Cargo === 'Gerente').map(g => ({ label: g.NombreCompleto, value: g.Id, disabled: g.Obligatorio }));
                             this.liberadoresDirectores = listaResult.filter(d => d.Cargo === 'Director').map(d => ({ label: d.NombreCompleto, value: d.Id, disabled: d.Obligatorio }));
-                            console.log(this.selectGerentes);
                             //tildo en los select los que ya trae la solp en su atributo liberadoresSap
                             var liberadoresIds = this.liberadoresJefes.map(x => x.value);
                             this.selectJefes = this.selectJefes.concat(this.model.liberadoresSap.map(lib => lib.LiberadorSap_Id)
@@ -455,6 +472,39 @@ export class CotizacionComponent extends ListBaseComponent {
             this.model.liberadoresSap.push({ LiberadorSap_Id: event.itemValue });
         }
         this.validarChecks();
+    }
+
+    resetearFecha(): void {
+        if(this.model.trabajoHecho != true || this.model.urgencia != true){
+            if (this.model.fechaEntrega < this.hoy) {          
+              this.model.fechaEntrega = this.hoy;
+            }
+        }
+    }
+
+    onRadioButtonChange(value) {
+        this.model.thServicioPermanente = false;
+        this.model.thAjustePolinomica = false;
+        this.model.thProveedorDirecto = false;
+
+        if(value == "Servicio permanente"){
+            this.model.thServicioPermanente = true;
+        }
+
+        if(value == "Ajuste polinomica"){
+            this.model.thAjustePolinomica = true;
+        }
+
+        if(value == "Proveedor directo"){
+            this.model.thProveedorDirecto = true;
+        }
+    }
+
+    habilitarOC() {
+        if (this.model.editarCondicionesEspeciales == true) {
+            this.formularioCotizacion.controls['ordenDeCompra'].enable();        
+        } else {
+            this.formularioCotizacion.controls['ordenDeCompra'].disable();        }
     }
 
 };

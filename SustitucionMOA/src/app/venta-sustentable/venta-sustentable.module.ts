@@ -4,7 +4,6 @@ import { SharedModule } from '../common/shared.module';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { VentaSustentableService } from './venta-sustentable.service';
 import { VentaSustentableRoutingModule } from './venta-sustentable-routing.Module';
-import { VentaSustentableBaseComponent } from "./venta-sustentable.component";
 import { ListadoCamposComponent } from "./listado-campos/listado-campos.component";
 import { AltaComponent } from "./alta/alta.component";
 import { EdicionComponent } from "./edicion/edicion.component";

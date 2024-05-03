@@ -1,0 +1,48 @@
+.headerModal {
+    top: 106px;
+    left: 381px;
+    width: 119px;
+    height: 26px;
+    text-align: left;
+    font: normal normal bold 20px/25px Roboto Regular;
+    letter-spacing: 0px;
+    color: #5CB85C;
+    opacity: 1;
+  }
+
+  .custom-dropdown .ui-dropdown-panel {
+    max-height: 10px; /* o el valor que desees */
+    overflow-y: auto;
+  }
+
+  ::ng-deep .modalCircular{
+    height: 200px !important;
+    max-height: 100px !important;
+  }
+
+  ::ng-deep .ui-accordion-content-wrapper-overflown{
+    height: 0 !important;
+    overflow: hidden !important;
+  }
+
+::ng-deep .ui-accordion .ui-accordion-header:hover a{
+  text-decoration: none ;
+}
+
+::ng-deep .ui-accordion .ui-accordion-header:focus a{
+  text-decoration: none ;
+}
+
+  .my-dialog .ui-dialog-content { max-height: 100px; }
+
+  .invalido {
+    border: 1px solid #f58686 !important;
+    background: rgba(242, 196, 196, 0.35);
+    box-shadow: 0 0 5px 1px rgba(242, 196, 196, 0.35) inset !important;
+}
+
+.columna {
+  word-break: break-all;
+  word-wrap: break-word;
+  font-size: 10px;
+}

@@ -237,13 +237,13 @@ namespace SustitucionMOAUtils.Services
                 try
                 {
                     PDFResponse pdfExport = PDFExport.ToPDF("Calidad Carta de Porte(" + cartaporteId + ")", new List<string>() { "Característica", "Calado Result.", "Calado Dto.", "Cámara Result.", "Cámara Dto.", "Kg Netos", "Kg Apli" }, data.datosCalidad);
-                    if (pdfExport.pdf == null || pdfExport.pdf.data == null || pdfExport.pdf.data.Count() == 0)
+                    if (pdfExport.Pdf == null || pdfExport.Pdf.data == null || pdfExport.Pdf.data.Count() == 0)
                     {
                         throw new ValidationCustomException(ErrorMsg.ErrorDescargaPDF);
                     }
 
 
-                    return pdfExport.pdf;
+                    return pdfExport.Pdf;
                 }
                 catch
                 {

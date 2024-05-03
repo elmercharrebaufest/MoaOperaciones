@@ -180,7 +180,8 @@ namespace SustitucionMOAUtils.Services
             if (usuario.Roles.Any(r => r.Codigo == "COMPRADOR" || r.Codigo == "SOLP"))
             {
                 var rol = usuario.Roles.Any(r => r.Codigo == "COMPRADOR") ? "SOLP" : "COMPRADOR";
-
+                var peticiones = repositorio.Listar<PeticionDeOferta, IEnumerable<int>>(peti => peti.Posiciones.Select(x => x.SolpPosicion.Solp_Id), x => x.UsuarioCreador_Id == usuario.Id).ToList();
+                List<int> solpIds = peticiones.SelectMany(lista => lista).ToList();
                 var chatSinLeer = repositorio.Listar<ChatInternoCompras, NotificacionDto>(
                     x => new NotificacionDto
                     {
@@ -188,7 +189,7 @@ namespace SustitucionMOAUtils.Services
                         Mensaje = "Tiene un mensaje sin leer de la SOLP #" + x.Solp.NroSolp
                     },
                     x =>
-                    (x.Solp.PeticionesDeOferta.Any(p => p.UsuarioCreador_Id == usuario.Id) || x.Solp.UsuarioCreacion_Id == usuario.Id || x.Solp.UsuarioModificacion_Id == usuario.Id)
+                    (solpIds.Contains(x.Solp_Id) || x.Solp.UsuarioCreacion_Id == usuario.Id || x.Solp.UsuarioModificacion_Id == usuario.Id)
                     //&& x.Usuario_Id != usuario.Id
                     && x.Usuario.Roles.Any(r => r.Codigo == rol)
                     && x.Leido == false

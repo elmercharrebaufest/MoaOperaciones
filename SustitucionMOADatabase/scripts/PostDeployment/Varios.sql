@@ -115,6 +115,88 @@ WHERE
 	OR
 	(Tabla = 'GrupoCompras' AND CodigoSap IN ('300', '600', '103', '215', '225', '228', '230', '231', '241', '401', '430', '455', '462', '601', '602', '603', '604', '605', '606', '607', '608', '609', '611', '612', '613', '614', '615', '616', '617', '618', '619', '620', '621', '622', '623', '624', '626', '627', '628', '629', '630', '631', '810'));
 
+-- MonedaConversion
+
+-- Continuación del script
+IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.MonedaConversion WHERE MonedaCodigo = 'ROL') 
+    INSERT INTO MonedaConversion(MonedaCodigo, CantidadDecimal) VALUES ('ROL', 0)
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.MonedaConversion WHERE MonedaCodigo = 'RWF') 
+    INSERT INTO MonedaConversion(MonedaCodigo, CantidadDecimal) VALUES ('RWF', 0)
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.MonedaConversion WHERE MonedaCodigo = 'TJR') 
+    INSERT INTO MonedaConversion(MonedaCodigo, CantidadDecimal) VALUES ('TJR', 0)
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.MonedaConversion WHERE MonedaCodigo = 'TMM') 
+    INSERT INTO MonedaConversion(MonedaCodigo, CantidadDecimal) VALUES ('TMM', 0)
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.MonedaConversion WHERE MonedaCodigo = 'TND') 
+    INSERT INTO MonedaConversion(MonedaCodigo, CantidadDecimal) VALUES ('TND', 3)
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.MonedaConversion WHERE MonedaCodigo = 'TPE') 
+    INSERT INTO MonedaConversion(MonedaCodigo, CantidadDecimal) VALUES ('TPE', 0)
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.MonedaConversion WHERE MonedaCodigo = 'TRL') 
+    INSERT INTO MonedaConversion(MonedaCodigo, CantidadDecimal) VALUES ('TRL', 0)
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.MonedaConversion WHERE MonedaCodigo = 'UGX') 
+    INSERT INTO MonedaConversion(MonedaCodigo, CantidadDecimal) VALUES ('UGX', 0)
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.MonedaConversion WHERE MonedaCodigo = 'USDM') 
+    INSERT INTO MonedaConversion(MonedaCodigo, CantidadDecimal) VALUES ('USDM', 3)
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.MonedaConversion WHERE MonedaCodigo = 'USDN') 
+    INSERT INTO MonedaConversion(MonedaCodigo, CantidadDecimal) VALUES ('USDN', 5)
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.MonedaConversion WHERE MonedaCodigo = 'USDP') 
+    INSERT INTO MonedaConversion(MonedaCodigo, CantidadDecimal) VALUES ('USDP', 5)
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.MonedaConversion WHERE MonedaCodigo = 'VND') 
+    INSERT INTO MonedaConversion(MonedaCodigo, CantidadDecimal) VALUES ('VND', 0)
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.MonedaConversion WHERE MonedaCodigo = 'VUV') 
+    INSERT INTO MonedaConversion(MonedaCodigo, CantidadDecimal) VALUES ('VUV', 0)
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.MonedaConversion WHERE MonedaCodigo = 'XAF') 
+    INSERT INTO MonedaConversion(MonedaCodigo, CantidadDecimal) VALUES ('XAF', 0)
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.MonedaConversion WHERE MonedaCodigo = 'XOF') 
+    INSERT INTO MonedaConversion(MonedaCodigo, CantidadDecimal) VALUES ('XOF', 0)
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.MonedaConversion WHERE MonedaCodigo = 'XPF') 
+    INSERT INTO MonedaConversion(MonedaCodigo, CantidadDecimal) VALUES ('XPF', 0)
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.MonedaConversion WHERE MonedaCodigo = 'ZRN') 
+    INSERT INTO MonedaConversion(MonedaCodigo, CantidadDecimal) VALUES ('ZRN', 0)
+
+
+--Incoterms
+
+IF NOT EXISTS(SELECT 1 FROM tablasap WHERE Tabla = 'INCOTERMS' AND Codigo = 'CPT') BEGIN insert into tablasap (Tabla,Codigo,CodigoSap,Descripcion)values ('INCOTERMS','CPT','CPT','Costo y Flete pagado hasta terminal')END
+IF NOT EXISTS(SELECT 1 FROM tablasap WHERE Tabla = 'INCOTERMS' AND Codigo = 'CIF') BEGIN insert into tablasap (Tabla,Codigo,CodigoSap,Descripcion)values ('INCOTERMS','CIF','CIF','Costo, seguro y flete')END
+IF NOT EXISTS(SELECT 1 FROM tablasap WHERE Tabla = 'INCOTERMS' AND Codigo = 'CFR') BEGIN insert into tablasap (Tabla,Codigo,CodigoSap,Descripcion)values ('INCOTERMS','CFR','CFR','Costo y Flete')END
+IF NOT EXISTS(SELECT 1 FROM tablasap WHERE Tabla = 'INCOTERMS' AND Codigo = 'CIP') BEGIN insert into tablasap (Tabla,Codigo,CodigoSap,Descripcion)values ('INCOTERMS','CIP','CIP','Porte y seguro pagado hasta')END
+IF NOT EXISTS(SELECT 1 FROM tablasap WHERE Tabla = 'INCOTERMS' AND Codigo = 'FAS') BEGIN insert into tablasap (Tabla,Codigo,CodigoSap,Descripcion)values ('INCOTERMS','FAS','FAS','Libre al costado del buque')END
+IF NOT EXISTS(SELECT 1 FROM tablasap WHERE Tabla = 'INCOTERMS' AND Codigo = 'FAC') BEGIN insert into tablasap (Tabla,Codigo,CodigoSap,Descripcion)values ('INCOTERMS','FCA','FCA','Libre transportista')END
+IF NOT EXISTS(SELECT 1 FROM tablasap WHERE Tabla = 'INCOTERMS' AND Codigo = 'FOB') BEGIN insert into tablasap (Tabla,Codigo,CodigoSap,Descripcion)values ('INCOTERMS','FOB','FOB','Libre a bordo')END
+IF NOT EXISTS(SELECT 1 FROM tablasap WHERE Tabla = 'INCOTERMS' AND Codigo = 'EXW') BEGIN insert into tablasap (Tabla,Codigo,CodigoSap,Descripcion)values ('INCOTERMS','EXW','EXW','Entrega en fabrica  vendedor')END
+IF NOT EXISTS(SELECT 1 FROM tablasap WHERE Tabla = 'INCOTERMS' AND Codigo = 'DAF') BEGIN insert into tablasap (Tabla,Codigo,CodigoSap,Descripcion)values ('INCOTERMS','DAF','DAF','Entrega en frontera')END
+IF NOT EXISTS(SELECT 1 FROM tablasap WHERE Tabla = 'INCOTERMS' AND Codigo = 'DAP') BEGIN insert into tablasap (Tabla,Codigo,CodigoSap,Descripcion)values ('INCOTERMS','DAP','DAP','Entrega en plaza')END
+IF NOT EXISTS(SELECT 1 FROM tablasap WHERE Tabla = 'INCOTERMS' AND Codigo = 'DAT') BEGIN insert into tablasap (Tabla,Codigo,CodigoSap,Descripcion)values ('INCOTERMS','DAT','DAT','Entrega en terminal')END
+IF NOT EXISTS(SELECT 1 FROM tablasap WHERE Tabla = 'INCOTERMS' AND Codigo = 'DDP') BEGIN insert into tablasap (Tabla,Codigo,CodigoSap,Descripcion)values ('INCOTERMS','DDP','DDP','Ent. destino, derecho  pagados')END
+
+-- Condiciones de pago
+
+IF NOT EXISTS(SELECT 1 FROM tablasap WHERE Tabla = 'CondicionesDePago' AND Codigo = '00PP') BEGIN insert into tablasap (Tabla,Codigo,CodigoSap,Descripcion)values ('CondicionesDePago','00PP','00PP','Previo Pago') END
+IF NOT EXISTS(SELECT 1 FROM tablasap WHERE Tabla = 'CondicionesDePago' AND Codigo = '0011') BEGIN insert into tablasap (Tabla,Codigo,CodigoSap,Descripcion)values ('CondicionesDePago','0011','0011','Pagadero inmediatamente sin DPP') END
+IF NOT EXISTS(SELECT 1 FROM tablasap WHERE Tabla = 'CondicionesDePago' AND Codigo = '0007') BEGIN insert into tablasap (Tabla,Codigo,CodigoSap,Descripcion)values ('CondicionesDePago','0007','0007','Pagadero dentro de los 7 días sin DPP') END
+IF NOT EXISTS(SELECT 1 FROM tablasap WHERE Tabla = 'CondicionesDePago' AND Codigo = '0015') BEGIN insert into tablasap (Tabla,Codigo,CodigoSap,Descripcion)values ('CondicionesDePago','0015','0015','Pagadero dentro de los 15 días sin DPP') END
+IF NOT EXISTS(SELECT 1 FROM tablasap WHERE Tabla = 'CondicionesDePago' AND Codigo = '0021') BEGIN insert into tablasap (Tabla,Codigo,CodigoSap,Descripcion)values ('CondicionesDePago','0021','0021','Pagadero dentro de los 21 días sin DPP') END
+IF NOT EXISTS(SELECT 1 FROM tablasap WHERE Tabla = 'CondicionesDePago' AND Codigo = '0030') BEGIN insert into tablasap (Tabla,Codigo,CodigoSap,Descripcion)values ('CondicionesDePago','0030','0030','Pagadero dentro de los 30 días sin DPP') END
+IF NOT EXISTS(SELECT 1 FROM tablasap WHERE Tabla = 'CondicionesDePago' AND Codigo = '0045') BEGIN insert into tablasap (Tabla,Codigo,CodigoSap,Descripcion)values ('CondicionesDePago','0045','0045','Pagadero dentro de los 45 días sin DPP') END
+IF NOT EXISTS(SELECT 1 FROM tablasap WHERE Tabla = 'CondicionesDePago' AND Codigo = '0060') BEGIN insert into tablasap (Tabla,Codigo,CodigoSap,Descripcion)values ('CondicionesDePago','0060','0060','Pagadero dentro de los 60 días sin DPP') END
+IF NOT EXISTS(SELECT 1 FROM tablasap WHERE Tabla = 'CondicionesDePago' AND Codigo = '0075') BEGIN insert into tablasap (Tabla,Codigo,CodigoSap,Descripcion)values ('CondicionesDePago','0075','0075','Pagadero dentro de los 75 días sin DPP') END
+IF NOT EXISTS(SELECT 1 FROM tablasap WHERE Tabla = 'CondicionesDePago' AND Codigo = '0090') BEGIN insert into tablasap (Tabla,Codigo,CodigoSap,Descripcion)values ('CondicionesDePago','0090','0090','Pagadero dentro de los 90 días sin DPP') END
 IF NOT EXISTS (SELECT TOP 1 1 FROM Configuracion WHERE Code = 'CosechaParaEnvioUcropit') 
 BEGIN
 	insert into Configuracion values ('CosechaParaEnvioUcropit','22-23')
@@ -134,4 +216,9 @@ END
 IF NOT EXISTS (SELECT TOP 1 1 FROM Configuracion WHERE Code = 'DiasParaDiscreparCalidadesDescarga') 
 BEGIN
 	insert into Configuracion values ('DiasParaDiscreparCalidadesDescarga','-7')
+END
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM Configuracion WHERE Code = 'FechaLimiteCamposSustentables') 
+BEGIN
+	insert into Configuracion values ('FechaLimiteCamposSustentables','2024-02-22 00:00')
 END
