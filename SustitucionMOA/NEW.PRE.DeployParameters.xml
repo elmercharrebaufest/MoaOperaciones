@@ -66,12 +66,12 @@
 	<setParameter name="BlobStorageEndpoint Config" value="DefaultEndpointsProtocol=https;AccountName=webopdevstorage;AccountKey=degh9HC+9hXxFOEU/2HqhP1ZusanUvm9X31YqPQIT68DNsU+GuVnphhYa7Okoexu4R1X5s7xiH5/X3ouTXURew==;EndpointSuffix=core.windows.net" />
 
 	<!--Google Drive Campo Sustentable -->
-	<setParameter name="DriveCampoSustentablesApplicationName Config" value="pendiente" />
-	<setParameter name="DriveCampoSustentablesServiceAccountEmail Config" value="pendiente" />
-	<setParameter name="DriveCampoSustentablesServiceAccountKey Config" value="pendiente" />
-	<setParameter name="DriveCampoSustentablesUsuario Config" value="pendiente" />
-	<setParameter name="DriveCampoSustentablesInputFolderId Config" value="pendiente" />
-	<setParameter name="DriveCampoSustentablesOutputFolderId Config" value="pendiente" />
+	<setParameter name="DriveCampoSustentablesApplicationName Config" value="cargaInfoCCSS" />
+	<setParameter name="DriveCampoSustentablesServiceAccountEmail Config" value="cargainfoccss@cargainfoccss.iam.gserviceaccount.com " />
+	<setParameter name="DriveCampoSustentablesServiceAccountKey Config" value="C:\MOAOperacionesKeys\cargainfoccss-69518a4e859f.json" />
+	<setParameter name="DriveCampoSustentablesUsuario Config" value="moaop.circuitosust@gmail.com" />
+	<setParameter name="DriveCampoSustentablesInputFolderId Config" value="1HDLYSL4mJ2qQD8tgur4StmVXtUs6Wa93" />
+	<setParameter name="DriveCampoSustentablesOutputFolderId Config" value="1YZs6Q7mzsdNecis6HXSei3LweYPEfr3_" />
 
 	<setParameter name="BasicHttpBinding_IServicioRepositorio Service Endpoint Address" value="http://scatoqa.molinosagro.com.ar/Scato.serviciosWeb/ServicioRepositorio.svc" />
 
