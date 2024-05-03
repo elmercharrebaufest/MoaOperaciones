@@ -46,8 +46,8 @@ namespace SustitucionMOA.Jobs
                 var fechaLimiteConfig = repositorio.Obtener<Configuracion>(c => c.Code == "FechaLimiteCamposSustentables");
                 var fechaLimite = DataFormatter.StringToDateTime(fechaLimiteConfig.Value,"fechaLimiteCamposSustentables");
 
-                var camposAReportar = repositorio.Listar<CampoProveedor, CampoReporteDto>(
-                    cp => new CampoReporteDto
+                var camposAReportar = repositorio.Listar<CampoProveedor, CampoReporteDTO>(
+                    cp => new CampoReporteDTO
                     {
                         IdScato = cp.CampoCosecha.Campo.IdScato,
                         Id = cp.CampoCosecha.Campo.Id,
@@ -159,11 +159,11 @@ namespace SustitucionMOA.Jobs
             outputMemStream.Dispose();
         }
 
-        private string ObtenerNombreArchivoDrive(CampoReporteDto campoReporte)
+        private string ObtenerNombreArchivoDrive(CampoReporteDTO campoReporte)
         {
             return $"{campoReporte.CUIT}_{campoReporte.Id}_{campoReporte.NombreCosecha}";
         }
-        private void CargarJSONReporteCampoEnZip(ZipOutputStream zipStream,string fileName ,CampoReporteDto campo) {
+        private void CargarJSONReporteCampoEnZip(ZipOutputStream zipStream,string fileName ,CampoReporteDTO campo) {
 
             var reporteCertificadorJson = JsonConvert.SerializeObject(campo);
             var jsonBytes = Encoding.UTF8.GetBytes(reporteCertificadorJson);
@@ -175,7 +175,7 @@ namespace SustitucionMOA.Jobs
 
             CargarYCerrarZipEntry(zipStream,entry, new MemoryStream(jsonBytes));
         }
-        private void CargarKmzEnZip(ZipOutputStream zipStream, string fileName, CampoReporteDto campo)
+        private void CargarKmzEnZip(ZipOutputStream zipStream, string fileName, CampoReporteDTO campo)
         {
             string rutaArchivoKmz = campo.RutaKmz;
             string extension = Path.GetExtension(rutaArchivoKmz);

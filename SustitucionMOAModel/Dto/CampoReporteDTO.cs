@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SustitucionMOAModel.Dto
 {
-    public class CampoReporteDto
+    public class CampoReporteDTO
     {
         public int IdScato { get; set; }
         public int Id { get; set; }

@@ -156,7 +156,7 @@
     <Compile Include="Dto\CorredorContratoDto.cs" />
     <Compile Include="Dto\CampoProveedorDto.cs" />
     <Compile Include="Dto\CampoProveedorListadoDto.cs" />
-    <Compile Include="Dto\CampoReporteDto.cs" />
+    <Compile Include="Dto\CampoReporteDTO.cs" />
     <Compile Include="Dto\CamposSustentableReporte.cs" />
     <Compile Include="Dto\CampoSustentableExportBaseDTO.cs" />
     <Compile Include="Dto\CampoSustentableExportDTO.cs" />
