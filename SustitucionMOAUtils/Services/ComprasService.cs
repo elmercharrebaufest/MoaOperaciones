@@ -7849,6 +7849,7 @@ namespace SustitucionMOAUtils.Services
             chatProveedor.CuitProveedor = peticiondeOfertaUsuario.Usuario.CUITRegistro;
             chatProveedor.PeticionDeOfertaUsuario_Id = peticiondeOfertaUsuario.Id;
 
+
             var mensajes = peticiondeOfertaUsuario.ChatExterno.Select(m => new ChatExternoComprasDto
             {
                 Id = m.Id,
@@ -7932,40 +7933,22 @@ namespace SustitucionMOAUtils.Services
         {
             try
             {
-                var solp = repositorio.Obtener<Solp>(solpId);
+                var txtFilename = "";
+                var txtFilePath = "";
 
-                var txtFilename = $"Chat-SOLP-{solp.NroSolp}-{DateTime.Now.ToString("yyyyMMdd")}.txt";
-                var txtFilePath = $"{rutaArchivo}/{txtFilename}";
-
-                if (!peticionDeOfertaUsuarioId.HasValue)
+                if (solpId == 0 && peticionDeOfertaUsuarioId > 0)
                 {
-                    using (StreamWriter sw = new StreamWriter(txtFilePath))
-                    {
-                        // Escribir información general del chat
-                        sw.WriteLine($"SOLP : {solp.Id}");
-                        sw.WriteLine($"Fecha creacion: {solp.FechaCreacion}");
-
-                        // Escribir mensajes del chat
-                        sw.WriteLine();
-                        sw.WriteLine("Mensajes:");
-                        foreach (var mensaje in solp.ChatInternoCompras)
-                        {
-                            sw.WriteLine($"{mensaje.FechaEnvio.ToString("dd-MM-yyyy HH:mm")} - {mensaje.Usuario.Mail} - {mensaje.Mensaje}");
-                        }
-                    }
-                }
-                else {
-
                     var peticion = repositorio.Obtener<PeticionDeOfertaUsuario>(peticionDeOfertaUsuarioId);
-                    txtFilename = $"Chat-SOLP-{solp.NroSolp}-CUIT-{peticion.PeticionDeOferta.Usuario.CUITRegistro}-{DateTime.Now.ToString("yyyyMMdd")}.txt";
+                    txtFilename = $"Chat-PO-{peticion.PeticionDeOferta_Id}-CUIT-{peticion.PeticionDeOferta.Usuario.CUITRegistro}-{DateTime.Now.ToString("yyyyMMdd")}.txt";
                     txtFilePath = $"{rutaArchivo}/{txtFilename}";
 
                     using (StreamWriter sw = new StreamWriter(txtFilePath))
                     {
+                        var solpNros = string.Join(", ", peticion.PeticionDeOferta.Posiciones.Select(x => x.SolpPosicion.Solp.NroSolp).Distinct().ToList());    
                         // Escribir información general del chat
-                        sw.WriteLine($"SOLP : {solp.Id}");
+                        sw.WriteLine($"SOLP : {solpNros}");
                         sw.WriteLine($"PO : {peticion.PeticionDeOferta_Id}");
-                        sw.WriteLine($"Fecha creacion: {solp.FechaCreacion}");
+                        sw.WriteLine($"Fecha creacion: {peticion.PeticionDeOferta.FechaCreacion}");
 
                         // Escribir mensajes del chat
                         sw.WriteLine();
@@ -7976,7 +7959,55 @@ namespace SustitucionMOAUtils.Services
                         }
                     }
                 }
+                else 
+                {
+                    var solp = repositorio.Obtener<Solp>(solpId);
+
+                    txtFilename = $"Chat-SOLP-{solp.NroSolp}-{DateTime.Now.ToString("yyyyMMdd")}.txt";
+                    txtFilePath = $"{rutaArchivo}/{txtFilename}";
+
+                    if (!peticionDeOfertaUsuarioId.HasValue)
+                    {
+                        using (StreamWriter sw = new StreamWriter(txtFilePath))
+                        {
+                            // Escribir información general del chat
+                            sw.WriteLine($"SOLP : {solp.Id}");
+                            sw.WriteLine($"Fecha creacion: {solp.FechaCreacion}");
+
+                            // Escribir mensajes del chat
+                            sw.WriteLine();
+                            sw.WriteLine("Mensajes:");
+                            foreach (var mensaje in solp.ChatInternoCompras)
+                            {
+                                sw.WriteLine($"{mensaje.FechaEnvio.ToString("dd-MM-yyyy HH:mm")} - {mensaje.Usuario.Mail} - {mensaje.Mensaje}");
+                            }
+                        }
+                    }
+                    else
+                    {
+                        var peticion = repositorio.Obtener<PeticionDeOfertaUsuario>(peticionDeOfertaUsuarioId);
+                        txtFilename = $"Chat-SOLP-{solp.NroSolp}-CUIT-{peticion.PeticionDeOferta.Usuario.CUITRegistro}-{DateTime.Now.ToString("yyyyMMdd")}.txt";
+                        txtFilePath = $"{rutaArchivo}/{txtFilename}";
+
+                        using (StreamWriter sw = new StreamWriter(txtFilePath))
+                        {
+                            // Escribir información general del chat
+                            sw.WriteLine($"SOLP : {solp.Id}");
+                            sw.WriteLine($"PO : {peticion.PeticionDeOferta_Id}");
+                            sw.WriteLine($"Fecha creacion: {solp.FechaCreacion}");
+
+                            // Escribir mensajes del chat
+                            sw.WriteLine();
+                            sw.WriteLine("Mensajes:");
+                            foreach (var mensaje in peticion.ChatExterno)
+                            {
+                                sw.WriteLine($"{mensaje.FechaEnvio.ToString("dd-MM-yyyy HH:mm")} - {mensaje.Usuario.Mail} - {mensaje.Mensaje}");
+                            }
+                        }
+                    }
+                }
                     return txtFilePath;
+                
             }
             catch (Exception)
             {
