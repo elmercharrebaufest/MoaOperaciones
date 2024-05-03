@@ -6307,13 +6307,14 @@ namespace SustitucionMOAUtils.Services
             var peticionDeOfertaSolpPosiciones = repositorio.Listar<PeticionDeOfertaSolpPosicion>(x => peticionDeOfertaPosicionIds.Contains(x.Id));
             var solpSubposicionesIds = cotizacionDto.CotizacionSubposiciones.Select(x => x.SolpSubPosicionId);
             var solpSubposiciones = repositorio.Listar<SolpSubposicion>(x => solpSubposicionesIds.Contains(x.Id));
-           var posicionesCotizacion = cotizacionPosicionesNueva.Select(x => new CotizacionPosicion
+            var posicionesCotizacion = cotizacionPosicionesNueva.Select(x => new CotizacionPosicion
             {
                 Cantidad = x.Cantidad,
                 FechaDeEntrega = x.FechaDeEntrega != null ? x.FechaDeEntrega.Value : peticionDeOfertaSolpPosiciones.Where(peticion => peticion.Id == x.PeticionDeOfertaSolpPosicionId).FirstOrDefault().SolpPosicion.FechaEntregaServicio,
                 Moneda_Id = x.MonedaId > 0 ? x.MonedaId : (int?)null,
                 Moneda = x.MonedaId > 0 ? info.Where(moneda => moneda.Id == x.MonedaId).FirstOrDefault() : null,
                 Precio = x.Precio,
+                PrimerPlazoDeOferta = x.PrimerPlazoDeOferta,
                 UnidadDeMedida_Id = x.UnidadDeMedidaId > 0 ? x.UnidadDeMedidaId : (int?)null,
                 UnidadDeMedida = x.UnidadDeMedidaId > 0 ? info.Where(unidad => unidad.Id == x.UnidadDeMedidaId).FirstOrDefault() : null,
                 PeticionDeOfertaSolpPosicion_Id = x.PeticionDeOfertaSolpPosicionId,
