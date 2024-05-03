@@ -31,7 +31,8 @@ namespace SustitucionMOAWS.GoogleDrive
 
         private void InitGoogleDrive()
         {
-            var serviceAccountKeyPath = File.Exists(ServiceAccountKey)? ServiceAccountKey : Path.Combine(Environment.CurrentDirectory, ServiceAccountKey); ; 
+            var currentDir = AppDomain.CurrentDomain.BaseDirectory;
+            var serviceAccountKeyPath = File.Exists(ServiceAccountKey)? ServiceAccountKey : Path.Combine(currentDir, ServiceAccountKey); 
             Helper.SetCredentials(new GoogleDriveHelperGeneratorWithService(
                 applicationName: ApplicationName,
                 serviceAccountEmail: ServiceAccountEmail,
