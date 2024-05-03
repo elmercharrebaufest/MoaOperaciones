@@ -89,3 +89,7 @@ input[type=number] {
     overflow-x: auto; /* Habilita la barra de desplazamiento horizontal si es necesario */
     white-space: nowrap; /* Evita que el contenido se divida en varias líneas */
 }
+
+.pointer {
+    cursor: pointer;
+}

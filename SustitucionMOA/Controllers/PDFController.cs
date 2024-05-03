@@ -5,7 +5,6 @@ using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOASecurity;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
-using SustitucionMOAUtils.Services;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -19,7 +18,7 @@ namespace SustitucionMOA.Controllers
         protected readonly IPDFService pDFService;
 
         public PDFController(IPDFService pDFService)
-        {   
+        {
             this.pDFService = pDFService;
         }
 
@@ -35,7 +34,7 @@ namespace SustitucionMOA.Controllers
                 else
                 {
                     List<SustitucionMOAModel.Models.WSMapMOA.Pdf> pdfs = new List<SustitucionMOAModel.Models.WSMapMOA.Pdf>();
-                    
+
                     var outputMemStream = new MemoryStream();
 
                     using (var zipStream = new ZipOutputStream(outputMemStream))

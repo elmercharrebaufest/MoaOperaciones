@@ -92,6 +92,9 @@ export class ListadoDashboardProveedorComponent extends ListBaseComponent {
             pageIndex: 1
         };
 
+    esProveedor: boolean = true;
+
+
     constructor(protected service: ComprasService, protected navService: NavService,
         protected sessionDataService: SessionDataService, protected securityService: SecurityService,
         protected floatMsgService: FloatMsgService, protected modalService: ModalService,
@@ -171,11 +174,12 @@ export class ListadoDashboardProveedorComponent extends ListBaseComponent {
         this.listarPO();
     }
 
+
     verLegajo(item) {
         this.blockUI.start('Cargando...')
         this.itemSelected = item;
         this.itemSelected.Usuarios[0].CircularSinLeer = false;
-        this.service.verLegajo(item.Id, item.Usuarios[0].Id)
+        this.service.verLegajo(item.Id, item.Usuarios[0].Id, this.esProveedor)
             .subscribe(
                 (result) => {
                     if (result.logout == true) {
@@ -429,7 +433,7 @@ export class ListadoDashboardProveedorComponent extends ListBaseComponent {
             this.fechaHasta = filtrosGuardados.fechaHasta;
             this.pageIndex = filtrosGuardados.pageIndex;
             if (this.fechaDesde != undefined && this.fechaDesde.length > 0) {
-                const [year, month, day] = this.fechaDesde.split('-').map(Number); //se maneja el cambio de día incorrecto por la zona horaria local
+                const [year, month, day] = this.fechaDesde.split('-').map(Number); //se maneja el cambio de dï¿½a incorrecto por la zona horaria local
                 if (this.fechaHasta != undefined && this.fechaHasta.length > 0) {
                     const [year2, month2, day2] = this.fechaHasta.split('-').map(Number);
                     this.rangeDates = [new Date(year, month - 1, day), new Date(year2, month2 - 1, day2)];

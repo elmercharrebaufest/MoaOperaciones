@@ -105,7 +105,7 @@ namespace SustitucionMOA
             RecurringJob.AddOrUpdate<Jobs.IEnviarCamposUcropitJob>(
                 "EnviarCamposUcropitJob",
                 j => j.Execute(),
-                "0 0 31 2 0", tz);
+                "0 0 * * TUE,THU", tz);
             RecurringJob.AddOrUpdate<Jobs.IVencimientoOrdenesResiduosJob>(
                 "VencimientoOrdenesResiduosJob",
                 j => j.Execute(),

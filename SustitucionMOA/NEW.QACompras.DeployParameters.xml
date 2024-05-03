@@ -48,8 +48,10 @@
 	<setParameter name="EmailToGestionAltaCuit Config" value="sebastian.serighetti@molinosagro.com.ar;marian.rabellato@molinosagro.com.ar" />
 	<setParameter name="CopiaEmailToGestionAltaCuit Config" value="moaoperaciones@baufest.com" />
 	<setParameter name="EmailAsuntoPrefijo Config" value="[QA] " />
-	
-	<setParameter name="ComputerVisionApiKey Config" value="4ebc562f2be5457a96329ae69d84f192" />
+  <setParameter name="EmailRerporteSolpTo Config" value="plataformacompras@baufest.com" />
+
+
+  <setParameter name="ComputerVisionApiKey Config" value="4ebc562f2be5457a96329ae69d84f192" />
 	<setParameter name="ComputerVisionEndpoint Config" value="https://moaopsocr.cognitiveservices.azure.com/" />
 	<setParameter name="BlobStorageEndpoint Config" value="DefaultEndpointsProtocol=https;AccountName=b2cmoagroqa;AccountKey=jlIsWR/WDunDWKXgcJQfqcwPJ8HDt0csfH92lvL9/6hWTsrKSB1hgyLlQV9767K3rdCK0Lk+nGHc+AStvFl9Qw==;EndpointSuffix=core.windows.net" />
 

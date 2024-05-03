@@ -61,3 +61,6 @@
 .tabla-subposiciones th:nth-of-type(10), .tabla-grid-subposiciones td:nth-of-type(10), .tabla-grid-subposiciones-pliego td:nth-of-type(9) {
     width: 120px;
 }
+
+ /* poner if para cuando llega a 400 px en la cabecera y en la clase <div class="ui-table-scrollable-header-box" style="margin-right: 17px;margin-left: 0px;">
+    <table class="ui-table-scrollable-header-table" ng-reflect-klass="ui-table-scrollable-header-tab"> */

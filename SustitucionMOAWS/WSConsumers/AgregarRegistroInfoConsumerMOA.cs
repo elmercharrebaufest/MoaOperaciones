@@ -86,16 +86,23 @@ namespace SustitucionMOAWS.WSConsumers
                 respuesta.Errores.Add(error);
             }
 
-    
-            if (!File.Exists(rutaArchivoLlamada))
+
+            try
             {
-                FileInfo fileCrear = new FileInfo(rutaArchivoLlamada);
-                fileCrear.Directory.Create();
-                File.WriteAllText(fileCrear.FullName, xml);
+                if (!File.Exists(rutaArchivoLlamada))
+                {
+                    FileInfo fileCrear = new FileInfo(rutaArchivoLlamada);
+                    fileCrear.Directory.Create();
+                    File.WriteAllText(fileCrear.FullName, xml);
+                }
+                else
+                {
+                    File.AppendAllText(rutaArchivoLlamada, xml);
+                }
             }
-            else
+            catch (Exception)
             {
-                File.AppendAllText(rutaArchivoLlamada, xml);
+                //TODO - revisar por que da error de que no se puede acceder al archivo.
             }
             return respuesta;
         }
@@ -125,7 +132,7 @@ namespace SustitucionMOAWS.WSConsumers
                         PURCH_ORG = registro.OrganizacionDeCompra,
                         INFO_TYPE = "0",
                         PUR_GROUP = registro.GrupoDeCompras,
-                        PLANT = registro.Centro,
+                        PLANT = "",
                         CURRENCY = registro.Moneda,
                         MIN_PO_QTY = 0,
                         NRM_PO_QTY = 1,
@@ -149,7 +156,7 @@ namespace SustitucionMOAWS.WSConsumers
                     {
                         PURCH_ORG = "X",
                         INFO_TYPE = "X",
-                        PLANT = "X",
+                        PLANT = "",
                         PUR_GROUP = "X",
                         CURRENCY = "X",
                         MIN_PO_QTY = "X",
@@ -176,8 +183,8 @@ namespace SustitucionMOAWS.WSConsumers
                         COND_TYPE = "ZP00",
                         COND_VALUE = registro.Precio,
                         CURRENCY = registro.Moneda,
-                        NUMERATOR = 0,
-                        DENOMINATOR = 0,
+                        NUMERATOR = 1,
+                        DENOMINATOR = 1,
                         BASE_UOM = registro.Unidad,
                         LOWERLIMIT = 0,
                         UPPERLIMIT = 0,

@@ -57,16 +57,24 @@
                     <div class="row myRow cargaDeDatosFields">
                         <div class="col-xs-12 col-sm-12 col-md-6" *ngIf="!ingresarProveedorPorCUIT">
                             <p class="crearConsultaTitulos">Proveedor <span class="requerido">*</span></p>
-                            <div class="styled-select" style="overflow: initial;">
-                                <app-seleccionar-proveedor (onLocalidadSeleccionada)="onselect($event)"
-                                    [(valorInicial)]="CodigoProveedorEdit">
-                                </app-seleccionar-proveedor>
-                            </div>
+                            <app-seleccionar-proveedor (onProveedorSeleccionado)="onselectProveedor($event)"
+                                [(valorInicial)]="CodigoProveedorEdit"
+                                (onProveedorPreSeleccionado)="onSePreseleccionaProveedor()"
+                                (onBlur)="revisarProveedorSeleccionado()" (onFocus)="sePreseleccionoProveedor=false"
+                                (onQuery)="onQuery($event)">
+                            </app-seleccionar-proveedor>
+
                         </div>
 
-                        <div class="col-xs-12 col-sm-12 col-md-6" *ngIf="ingresarProveedorPorCUIT">
+                        <div class="col-xs-12 col-sm-12 col-md-6"
+                            *ngIf="ingresarProveedorPorCUIT || corredorDebeCargarCuit">
                             <p class="crearConsultaTitulos">
-                                CUIT titular Carta de Porte <span class="requerido">*</span>
+                                CUIT
+                                <ng-container *ngIf="!corredorDebeCargarCuit">
+                                    titular Carta de Porte
+                                </ng-container>
+
+                                <span class="requerido">*</span>
                             </p>
                             <div class="styled-select" style="overflow: initial;">
                                 <input type="search" [(ngModel)]="CUIT" class="fourRounded" mask="00-00000000-0"

@@ -63,6 +63,11 @@
     <Compile Include="Dto\AlmacenDto.cs" />
     <Compile Include="Dto\AplicacionCartaPorte\CargaMasivaResponse.cs" />
     <Compile Include="Dto\AplicacionCartaPorte\ComboAplicacionesContratosCcppResponse.cs" />
+    <Compile Include="Dto\Compras\POPosicionDto.cs" />
+    <Compile Include="Dto\Compras\LogCotizacionDto.cs" />
+    <Compile Include="Dto\Compras\InfoVisitasDeObraDto.cs" />
+    <Compile Include="Dto\CondicionDePagoDto.cs" />
+    <Compile Include="Dto\MonedaConversionDto.cs" />
     <Compile Include="Dto\ArchivoBoleto\ActualizarArchivoBoletoDto.cs" />
     <Compile Include="Dto\ArchivoBoleto\ArchivoBoletoDto.cs" />
     <Compile Include="Dto\ArchivoBoleto\CrearReqArchivoBoletoDto.cs" />
@@ -139,7 +144,7 @@
     <Compile Include="Dto\OrdenDeCarga\CrearOrdenEnSAPResponse.cs" />
     <Compile Include="Dto\Compras\PeticionDeOfertaDto.cs" />
     <Compile Include="Dto\ProveedorAuditoriaDto.cs" />
-    <Compile Include="Dto\ProvinciaDTO.cs" />
+    <Compile Include="Dto\ProvinciaDto.cs" />
     <Compile Include="Dto\AutoCompleteDropdownElement.cs" />
     <Compile Include="Dto\Compras\EmailComposeDto.cs" />
     <Compile Include="Dto\Compras\MaterialSolpDto.cs" />
@@ -151,7 +156,7 @@
     <Compile Include="Dto\CorredorContratoDto.cs" />
     <Compile Include="Dto\CampoProveedorDto.cs" />
     <Compile Include="Dto\CampoProveedorListadoDto.cs" />
-    <Compile Include="Dto\CampoReporteDTO.cs" />
+    <Compile Include="Dto\CampoReporteDto.cs" />
     <Compile Include="Dto\CamposSustentableReporte.cs" />
     <Compile Include="Dto\CampoSustentableExportBaseDTO.cs" />
     <Compile Include="Dto\CampoSustentableExportDTO.cs" />
@@ -204,6 +209,8 @@
     <Compile Include="Dto\Compras\UsuarioComprasDto.cs" />
     <Compile Include="Dto\Compras\UsuarioComprasRelacionConUsuariosDto.cs" />
     <Compile Include="Dto\UsuarioModificacionDto.cs" />
+    <Compile Include="Entities\CotizacionHistorial.cs" />
+    <Compile Include="Entities\MonedaConversion.cs" />
     <Compile Include="Entities\ArchivoBoleto.cs" />
     <Compile Include="Entities\Almacen.cs" />
     <Compile Include="Entities\ArchivoCampoSustentable.cs" />

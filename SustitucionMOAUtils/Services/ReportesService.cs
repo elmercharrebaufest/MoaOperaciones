@@ -45,9 +45,9 @@ namespace SustitucionMOAUtils.Services
 
             var dateToCompare = DateTime.Today.AddDays(-diasAtras);
 
-            var camposAReportarPorCosecha = repositorio.ListarAgrupado<CampoProveedor, string, CampoReporteDTO>(
+            var camposAReportarPorCosecha = repositorio.ListarAgrupado<CampoProveedor, string, CampoReporteDto>(
                 cp => cp.CampoCosecha.Cosecha.Nombre,
-                cp => new CampoReporteDTO
+                cp => new CampoReporteDto
                 {
                     IdScato = cp.CampoCosecha.Campo.IdScato,
                     Id = cp.CampoCosecha.Campo.Id,

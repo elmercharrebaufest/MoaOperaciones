@@ -221,6 +221,8 @@
     <Build Include="DBO\Tables\EstadoArchivoBoleto.sql" />
     <Build Include="DBO\Tables\Almacen.sql" />
     <Build Include="DBO\Tables\AlmacenMaterial.sql" />
+    <Build Include="DBO\Tables\MonedaConversion.sql" />
+    <Build Include="DBO\Tables\CotizacionHistorial.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DatabasePublishQA.xml" />

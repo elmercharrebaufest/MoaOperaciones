@@ -17,6 +17,7 @@ using System.Net.Mail;
 using System.Configuration;
 using Newtonsoft.Json;
 using System.Text;
+using SustitucionMOAFotmatter;
 
 namespace SustitucionMOA.Jobs
 {
@@ -42,12 +43,11 @@ namespace SustitucionMOA.Jobs
                 var cosechaAReportar = repositorio.Obtener<Configuracion>(c => c.Code== "CosechaParaEnvioUcropit").Value;
                 var limiteCamposPorMail = int.Parse(repositorio.Obtener<Configuracion>(c => c.Code == "CosechaParaEnvioUcropitTope").Value);
 
-                var camposAReportar = repositorio.Listar<CampoProveedor>(
-                    cp =>
-                        cp.CampoCosecha.ToneladasAprobadas == -1 &&
-                        cp.CampoCosecha.Cosecha.Nombre == cosechaAReportar
+                var fechaLimiteConfig = repositorio.Obtener<Configuracion>(c => c.Code == "FechaLimiteCamposSustentables");
+                var fechaLimite = DataFormatter.StringToDateTime(fechaLimiteConfig.Value,"fechaLimiteCamposSustentables");
 
-                    ).Select(cp => new CampoReporteDTO
+                var camposAReportar = repositorio.Listar<CampoProveedor, CampoReporteDto>(
+                    cp => new CampoReporteDto
                     {
                         IdScato = cp.CampoCosecha.Campo.IdScato,
                         Id = cp.CampoCosecha.Campo.Id,
@@ -62,14 +62,20 @@ namespace SustitucionMOA.Jobs
                         HectareasSoja = cp.HectareasSoja,
                         NombreCosecha = cp.CampoCosecha.Cosecha.Nombre,
                         RutaKmz = cp.Archivo.Ruta,
-                    }).ToList();
+                    },
+                    cp =>
+                        cp.CampoCosecha.ToneladasAprobadas == -1 &&
+                        cp.CampoCosecha.Cosecha.Nombre == cosechaAReportar &&
+                        cp.FechaCreacion >= fechaLimite
+                    ).ToList();
 
                 if (!camposAReportar.Any())
                 {
                     throw new InfoCustomException("No se encontraron campos sustentables a reportar");
                 }
-                
-                var nombreArchivoXls = $"Listado campos {DateTime.Today:yyyy-MM-dd} - Cosecha {camposAReportar[0].NombreCosecha}.xls";
+                var fechaDeEnvio = DateTime.Now.ToString();
+                var excelFile = ExcelExport.ToExcel(camposAReportar, new string[] { "ID Scato", "ID Operaciones", "Titular CCPP", "CUIT", "Nombre del Establecimiento", "Provincia", "Departamento", "Localidad", "Latitud", "Longitud", "Has de soja declaradas" }, string.Empty);
+
                 var nombreArchivoZip = $"Campos sustentables{DateTime.Today:yyyy-MM-dd} - Cosecha {camposAReportar[0].NombreCosecha}.zip";
 
 
@@ -99,8 +105,7 @@ namespace SustitucionMOA.Jobs
                     if(counter == limiteCamposPorMail)
                     {
                         counter = 0;
-                        var excelFile = GetExcelFile(camposAReportarExcel);
-                        EnviarMail(excelFile,zipStream,nombreArchivoZip,nombreArchivoXls,outputMemStream, cosechaAReportar);
+                        EnviarMail(excelFile,zipStream,nombreArchivoZip,outputMemStream, cosechaAReportar);
                         outputMemStream = new MemoryStream();
                         zipStream = new ZipOutputStream(outputMemStream);
                         zipStream.SetLevel(3);
@@ -110,9 +115,10 @@ namespace SustitucionMOA.Jobs
 
                 if(counter != 0)
                 {
-                    var excelFile = GetExcelFile(camposAReportarExcel);
-                    EnviarMail(excelFile, zipStream, nombreArchivoZip, nombreArchivoXls, outputMemStream, cosechaAReportar);
+                    EnviarMail(excelFile, zipStream, nombreArchivoZip, outputMemStream, cosechaAReportar);
                 }
+                fechaLimiteConfig.Value = fechaDeEnvio;
+                repositorio.GuardarCambios();
             }
             catch (Exception e)
             {
@@ -120,7 +126,7 @@ namespace SustitucionMOA.Jobs
             }
         }
 
-        private void EnviarMail(string excelFile, ZipOutputStream zipStream, string nombreArchivoZip, string nombreArchivoXls, MemoryStream outputMemStream, string cosechaAReportar)
+        private void EnviarMail(string excelFile, ZipOutputStream zipStream, string nombreArchivoZip, MemoryStream outputMemStream, string cosechaAReportar)
         {
             zipStream.IsStreamOwner = false;
             zipStream.Close();
@@ -128,7 +134,6 @@ namespace SustitucionMOA.Jobs
 
             var archivoZip = new Attachment(outputMemStream, nombreArchivoZip);
 
-            Attachment archivoExcel;
             MemoryStream streamExcel = new MemoryStream();
             var sw = new StreamWriter(streamExcel);
 
@@ -136,8 +141,7 @@ namespace SustitucionMOA.Jobs
             sw.Flush();
             streamExcel.Seek(0, SeekOrigin.Begin);
 
-            archivoExcel = new Attachment(streamExcel, nombreArchivoXls);
-            
+
             EmailSender.SendReporte(
                 new EnvioCamposSustentablesUcropit()
                 {
@@ -147,7 +151,6 @@ namespace SustitucionMOA.Jobs
                     Template = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "EnvioCamposSustentablesUcropit.html"),
                     Adjuntos = new List<Attachment>
                     {
-                        archivoExcel,
                         archivoZip
                     }
                 });
@@ -156,11 +159,11 @@ namespace SustitucionMOA.Jobs
             outputMemStream.Dispose();
         }
 
-        private string ObtenerNombreArchivoDrive(CampoReporteDTO campoReporte)
+        private string ObtenerNombreArchivoDrive(CampoReporteDto campoReporte)
         {
             return $"{campoReporte.CUIT}_{campoReporte.Id}_{campoReporte.NombreCosecha}";
         }
-        private void CargarJSONReporteCampoEnZip(ZipOutputStream zipStream,string fileName ,CampoReporteDTO campo) {
+        private void CargarJSONReporteCampoEnZip(ZipOutputStream zipStream,string fileName ,CampoReporteDto campo) {
 
             var reporteCertificadorJson = JsonConvert.SerializeObject(campo);
             var jsonBytes = Encoding.UTF8.GetBytes(reporteCertificadorJson);
@@ -172,7 +175,7 @@ namespace SustitucionMOA.Jobs
 
             CargarYCerrarZipEntry(zipStream,entry, new MemoryStream(jsonBytes));
         }
-        private void CargarKmzEnZip(ZipOutputStream zipStream, string fileName, CampoReporteDTO campo)
+        private void CargarKmzEnZip(ZipOutputStream zipStream, string fileName, CampoReporteDto campo)
         {
             string rutaArchivoKmz = campo.RutaKmz;
             string extension = Path.GetExtension(rutaArchivoKmz);

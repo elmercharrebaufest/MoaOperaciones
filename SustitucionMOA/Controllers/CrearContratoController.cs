@@ -1161,13 +1161,13 @@ namespace SustitucionMOA.Controllers
                 var excel = dataAgroApiService.ExcelModeloAltaMasiva();
                 PDFResponse result = new PDFResponse
                 {
-                    pdf = new Pdf()
+                    Pdf = new Pdf()
                     {
                         data = excel
                     }
                 };
 
-                return JsonCustom(result.pdf);
+                return JsonCustom(result.Pdf);
             }
             catch (InfoCustomException e)
             {

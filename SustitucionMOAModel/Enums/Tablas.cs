@@ -22,6 +22,9 @@
         public const string CentroBeneficio = "CentroBeneficio";
         public const string EstadoOC = "EstadoOC";
         public const string CodigoMaterialSap = "CodigoMaterialSap";
+        public const string CondicionesDeImportacion = "INCOTERMS";
+        public const string CondicionesDePago = "CondicionesDePago";
+
     }
 
     public static class TablasGenerales

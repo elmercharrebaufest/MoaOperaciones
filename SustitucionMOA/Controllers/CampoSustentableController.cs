@@ -222,13 +222,13 @@ namespace SustitucionMOA.Controllers
                 var fileArray = campoSustentableService.GenerarDeclaracionProveedor(SessionPersister.User.username, proveedorId, cosechaId, hectareasTotales, CUITDeclaracion, razonSocialDeclaracion);
                 PDFResponse result = new PDFResponse
                 {
-                    pdf = new Pdf()
+                    Pdf = new Pdf()
                     {
                         data = fileArray
                     }
                 };
 
-                return JsonCustom(result.pdf);
+                return JsonCustom(result.Pdf);
             }
             catch (InfoCustomException e)
             {
@@ -277,13 +277,13 @@ namespace SustitucionMOA.Controllers
                 var fileArray = campoSustentableService.ImprimirDeclaracion(proveedorId, cosechaId, CUIT);
                 PDFResponse result = new PDFResponse
                 {
-                    pdf = new Pdf()
+                    Pdf = new Pdf()
                     {
                         data = fileArray
                     }
                 };
 
-                return JsonCustom(result.pdf);
+                return JsonCustom(result.Pdf);
             }
             catch (InfoCustomException e)
             {

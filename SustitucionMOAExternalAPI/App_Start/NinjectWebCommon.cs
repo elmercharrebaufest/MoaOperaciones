@@ -11,7 +11,6 @@ namespace SustitucionMOAExternalAPI.App_Start
     using System.Web;
     using System.Web.Http;
     using Microsoft.Web.Infrastructure.DynamicModuleHelper;
-
     using Ninject;
     using Ninject.Web.Common;
     using Ninject.Web.Common.WebHost;
@@ -106,7 +105,6 @@ namespace SustitucionMOAExternalAPI.App_Start
 
         private static void RegisterServices(IKernel kernel)
         {
-
             //kernel.Bind<ICartaPorteService>().To(typeof(CartaPorteService)).InScope(ctx => OperationContext.Current);
             //kernel.Bind<ILocalidadService>().To(typeof(LocalidadService)).InScope(ctx => OperationContext.Current);
             //kernel.Bind<ICuentaCorrienteService>().To(typeof(CuentaCorrienteService)).InScope(ctx => OperationContext.Current);
@@ -211,6 +209,8 @@ namespace SustitucionMOAExternalAPI.App_Start
             kernel.Bind<IObtenerOrdenDeCompraConsumerMOA>().To(typeof(ObtenerOrdenDeCompraConsumerMOA)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IReporteOrdenDeCompraConsumerMOA>().To(typeof(ReporteOrdenDeCompraConsumerMOA)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IObtenerUnidadesDeMedidaAlternativasConsumerMOA>().To(typeof(ObtenerUnidadesDeMedidaAlternativasConsumerMOA)).InScope(ctx => OperationContext.Current);
+            kernel.Bind<IObtenerPDFOrdenCompraConsumerMOA>().To(typeof(ObtenerPDFOrdenCompraConsumerMOA)).InScope(ctx => OperationContext.Current);
+            kernel.Bind<IListarSolpPendientesConsumerMOA>().To(typeof(ListarSolpPendientesConsumerMOA)).InScope(ctx => OperationContext.Current);
 
             #endregion
 
@@ -240,7 +240,7 @@ namespace SustitucionMOAExternalAPI.App_Start
             kernel.Bind<IServicioSuscriptorAccesosConsumer>().To(typeof(ServicioSuscriptorAccesosConsumer)).InScope(ctx => OperationContext.Current);
             //kernel.Bind<IOrdenDeCargaApiService>().To(typeof(OrdenDeCargaApiService)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IAuthenticationManager>().To(typeof(AuthenticationManager)).InSingletonScope();
-        }
 
+        }
     }
 }

@@ -33,13 +33,18 @@ namespace SustitucionMOAModel.Entities
         public bool? Urgencia { get; set; }
         public string NroOrdenDeCompraAdicional { get; set; }
         public bool? SeEnvioMailLiberacion { get; set; }
-
         public bool? SeEnvioMailAnulacion { get; set; }
-        
+        public bool? CondEspProveedorAsignado { get; set; }
+        public bool? THProveedorDirecto { get; set; }
+        public bool? THAjustePolinomica { get; set; }
+        public bool? THServicioPermanente { get; set; }
+
+
+
+
 
         [ForeignKey("ProveedorAsignado_Id")]
         public virtual Usuario ProveedorAsignado { get; set; }
-
         [ForeignKey("UsuarioCreacion_Id")]
         public virtual Usuario UsuarioCreacion { get; set; }
         [ForeignKey("UsuarioModificacion_Id")]
@@ -59,14 +64,7 @@ namespace SustitucionMOAModel.Entities
 
         [ForeignKey("UsuarioCompras_Id")]
         public virtual UsuarioCompras UsuarioCompras { get; set; }
-
-        [InverseProperty("Solp")]
-
-        public virtual ICollection<Adjudicacion> Adjudicaciones { get; set; } = new List<Adjudicacion>();
-
-        [InverseProperty("Solp")]
-        public virtual ICollection<PeticionDeOferta> PeticionesDeOferta { get; set; } = new List<PeticionDeOferta>();
-
+     
         [InverseProperty("Solp")]
         public virtual ICollection<LiberadorSapSolp> LiberadoresSapSolp { get; set; } = new List<LiberadorSapSolp>();
 

@@ -1,0 +1,116 @@
+/* Estilos CSS para el historial de cotizaciones */
+
+/* Estilo para las posiciones */
+.posicion {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+/* Estilo para las subposiciones */
+.subposicion {
+    border: 1px solid #e0e0e0;
+    padding: 8px;
+    margin-top: 5px;
+}
+
+/* Estilo para el título de la cotización */
+.card-title {
+    font-size: 18px;
+    color: #333;
+    text-align: center;
+    font-weight: bold;
+}
+
+/* Estilo para el texto de la cotización */
+.card-text {
+    font-size: 14px;
+    color: #555;
+}
+
+/* Estilo para el botón de cancelar */
+.botonesComprasColor {
+    background-color: #dc3545;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+/* Estilo para el botón de cancelar al hacer hover */
+.botonesComprasColor:hover {
+    background-color: #c82333;
+}
+
+
+/* Ajustes al carousel */
+.custom-carousel .p-carousel-content .card {
+    margin: 0 10px; /* Margen en los costados */
+    width: 350px; /* Tamaño fijo para las cards */
+    height: 400px; /* Altura fija para todas las cards */
+    overflow: auto; /* Agrega scroll si el contenido es más largo que la altura fija */
+    display: flex; /* Usa flexbox para el contenido */
+    flex-direction: column; /* Asegura que el contenido se alinee verticalmente */
+}
+
+/* Estilo mejorado para las cards */
+.card {
+    transition: box-shadow 0.3s ease; /* Transición suave */
+    margin-left: 10px; /* Margen izquierdo para separar las cards */
+    margin-right: 10px; /* Margen derecho para separar las cards */
+
+}
+
+/* Ajustes en el título de la cotización */
+.card-title {
+    font-size: 20px; /* Tamaño de fuente un poco más grande */
+    color: #195697; /* Color más destacado */
+    margin-bottom: 10px; /* Espacio inferior para separar el título del contenido */
+}
+
+/* Ajustes en el texto de la cotización */
+.card-text {
+    font-size: 16px; /* Tamaño de fuente un poco más grande */
+    color: #333; /* Color más oscuro */
+    flex-grow: 1; /* Permite que el texto ocupe todo el espacio disponible */
+}
+
+.linea-separadora {
+    position: relative;
+    width: 100%;
+    height: 2px; /* Grosor de la línea */
+    background-color: #ccc; /* Color de la línea */
+    margin: 20px 0; /* Margen superior e inferior */
+    text-align: center; /* Centrar texto horizontalmente */
+}
+
+.texto-centrado {
+    position: absolute;
+    top: -20px; /* Posición vertical del texto */
+    left: 50%; /* Posición horizontal del texto */
+    transform: translateX(-50%);
+    font-size: 20px; /* Tamaño de fuente del texto */
+    background-color: white; /* Color de fondo del texto */
+    padding: 0 10px; /* Espacio alrededor del texto */
+    color: #195697; /* Color del texto */
+}
+
+.btnStyle {
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+
+.p-table {
+    border-collapse: collapse;
+    width: 100%;
+  }
+  
+  .p-table th,
+  .p-table td {
+    border: 1px solid #ddd;
+    padding: 6px;
+    text-align: left;
+    font-size: 10px;
+  }

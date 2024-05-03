@@ -26,6 +26,7 @@ export class FinalizarSolpComponent implements OnInit {
     constructor() { }
 
     ngOnInit() {
+       
     }
 
     onCancelarFinalizar() {

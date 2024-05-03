@@ -10,8 +10,6 @@ using SustitucionMOAUtils.Interfaces.Helpers;
 using SustitucionMOAUtils.Interfaces.Validadores;
 using SustitucionMOAUtils.Interfaces.Wrappers;
 using SustitucionMOAUtils.DesignPattern.Classes;
-using SustitucionMOAUtils.Services;
-using SustitucionMOAUtils.Services.Email;
 using SustitucionMOAUtils.Validadores;
 using SustitucionMOAUtils.Wrappers;
 using SustitucionMOAWS.AzureAD;
@@ -141,6 +139,7 @@ namespace SustitucionMOA.App_Start
             kernel.Bind<IObtenerRegistroInfoConsumerMOA>().To(typeof(ObtenerRegistroInfoConsumerMOA)).InScope(ctx => OperationContext.Current);
             //kernel.Bind<IEmailService>().To(typeof(EmailService)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IAltaClienteSAPJob>().To(typeof(AltaClienteSAPJob)).InScope(ctx => OperationContext.Current);
+            kernel.Bind<IEnviarMailReporteSOLPJob>().To(typeof(EnviarMailReporteSOLPJob)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IReporteOrdenDeCompraConsumerMOA>().To(typeof(ReporteOrdenDeCompraConsumerMOA)).InScope(ctx => OperationContext.Current);
             kernel.Bind<ICcSsObtenerArchivosUcropJob>().To(typeof(CcSsObtenerArchivosUcropJob)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IEnviarCamposUcropitJob>().To(typeof(EnviarCamposUcropitJob)).InScope(ctx => OperationContext.Current);
@@ -188,7 +187,6 @@ namespace SustitucionMOA.App_Start
             kernel.Bind<ICrearSolpConsumerMOA>().To(typeof(CrearSolpConsumerMOA)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IModificarSolpConsumerMOA>().To(typeof(ModificarSolpConsumerMOA)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IReporteContratoConsumerMOA>().To(typeof(ReporteContratoConsumerMOA)).InScope(ctx => OperationContext.Current);
-
             kernel.Bind<ICrearPedidoConsumerMOA>().To(typeof(CrearPedidoConsumerMOA)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IObtenerFuenteAprovisionamientoConsumerMOA>().To(typeof(ObtenerFuenteAprovisionamientoConsumerMOA)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IObtenerContratoSolpConsumerMOA>().To(typeof(ObtenerContratoSolpConsumerMOA)).InScope(ctx => OperationContext.Current);
@@ -206,6 +204,9 @@ namespace SustitucionMOA.App_Start
             kernel.Bind<IVendedoresConsumerMOA>().To(typeof(VendedoresConsumerMOA)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IAgregarRegistroInfoConsumerMOA>().To(typeof(AgregarRegistroInfoConsumerMOA)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IObtenerUnidadesDeMedidaAlternativasConsumerMOA>().To(typeof(ObtenerUnidadesDeMedidaAlternativasConsumerMOA)).InScope(ctx => OperationContext.Current);
+            kernel.Bind<IObtenerPDFOrdenCompraConsumerMOA>().To(typeof(ObtenerPDFOrdenCompraConsumerMOA)).InScope(ctx => OperationContext.Current);
+            kernel.Bind<IListarSolpPendientesConsumerMOA>().To(typeof(ListarSolpPendientesConsumerMOA)).InScope(ctx => OperationContext.Current);
+
 
             kernel.Bind<IScatoConsumer>().To(typeof(ScatoConsumer)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IScatoComandosConsumer>().To(typeof(ScatoComandosConsumer)).InScope(ctx => OperationContext.Current);
