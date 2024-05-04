@@ -64,12 +64,6 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
 
     @ViewChild("myModal") modal: ModalAltaEntradaDeServicioComponent;
 
-    @ViewChild("seleccionarPosicionCheckbox")
-    protected seleccionarPosicionCheckbox: ElementRef;
-
-    @ViewChild("seleccionarTodosItemsCheckbox")
-    protected seleccionarTodosItemsCheckbox: ElementRef;
-
     @BlockUI() blockUI: NgBlockUI;
 
     @ViewChild(SpinnerComponent)
@@ -303,24 +297,18 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
         const numeroLinea = item.NumeroLinea;
         const posicion = this.obtenerPosicionPorNumero(item.NroOrdenCompra, Number(item.NroPosicion));
 
-        if (this.itemIdSelected.includes(itemId) && this.numeroLineaSelected.has(numeroLinea)) {
-
-            this.itemIdSelected.splice(this.itemIdSelected.indexOf(itemId), 1);
+        if (!item.isSelected) {
+            this.itemIdSelected.splice(this.itemIdSelected.indexOf(itemId), 1); 
             this.numeroLineaSelected.delete(numeroLinea);
-
-            this.itemSelected = this.itemSelected.filter((selectedItem: any) =>
-                selectedItem.PosicionId !== item.PosicionId || selectedItem.NumeroLinea !== item.NumeroLinea);
-            posicion.isSelected = false;
-        }
+            this.itemSelected = this.itemSelected.filter((selectedItem: any) => selectedItem.PosicionId !== item.PosicionId || selectedItem.NumeroLinea !== item.NumeroLinea);
+        } 
         else {
             this.itemIdSelected.push(itemId);
-            this.numeroLineaSelected.add(numeroLinea);
-            this.itemSelected.push(item);
-            if (this.tieneTodosItemsValidosSeleccionados(posicion)) {
-                posicion.isSelected = true;
-            }
+            if (!this.numeroLineaSelected.has(numeroLinea)) this.numeroLineaSelected.add(numeroLinea);
+            if (!this.itemSelected.includes(item)) this.itemSelected.push(item);
         }
 
+        posicion.isSelected = this.tieneItemsACertificarTodosValidos(posicion) && this.tieneTodosItemsValidosSeleccionados(posicion);
         this.itemSelected.sort((a, b) => a.NumeroLinea > b.NumeroLinea ? 1 : -1);
     }
 
@@ -697,15 +685,9 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
     validarMantenerItemSeleccionado(item: any) {
         if (!this.esItemValidoParaCertificar(item)) {
             this.clearCheckbox(item);
-            const posicion = this.obtenerPosicionPorNumero(item.NroOrdenCompra, Number(item.NroPosicion));
-            posicion.isSelected = false;
-            this.seleccionarPosicionCheckbox.nativeElement.setAttribute('disabled', true);
-            this.seleccionarTodosItemsCheckbox.nativeElement.setAttribute('disabled', true);
         }
-        else {
-            this.seleccionarPosicionCheckbox.nativeElement.removeAttribute('disabled');
-            this.seleccionarTodosItemsCheckbox.nativeElement.removeAttribute('disabled');
-        }
+        const posicion = this.obtenerPosicionPorNumero(item.NroOrdenCompra, Number(item.NroPosicion));
+        posicion.isSelected = this.tieneItemsACertificarTodosValidos(posicion) && this.tieneTodosItemsValidosSeleccionados(posicion);
     }
 
     numbersOnly(event): boolean {
@@ -924,8 +906,8 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
         return this.tienePorcentajeACertificar(item) && this.tieneMontoVálidoACertificar(item);
     }
 
-    tieneTodosItemsValidosACertificar(posicion: any): boolean {
-        return posicion.Items.every(item => this.esItemValidoParaCertificar(item));
+    tieneItemsACertificarTodosValidos(posicion: any): boolean {
+        return posicion.Items.filter(item => this.tienePorcentajeACertificar(item)).every(item => this.esItemValidoParaCertificar(item));
     }
 
     tieneTodosItemsValidosSeleccionados(posicion: any): boolean {
