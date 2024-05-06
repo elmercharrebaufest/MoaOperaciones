@@ -141,7 +141,7 @@ namespace SustitucionMOAUtils.Services
                     throw new InfoCustomException("Tiene que ser proveedor directo para consultar sobre Informe Comercial.");
                 }
             }
-            if(categoria.Code == Categorias.DiscrepanciaCalidad)
+            if (categoria.Code == Categorias.DiscrepanciaCalidad)
             {
                 consulta.Detalle.Rubro = consulta.Detalle.Rubro.Replace("break", "<br>");
             }
@@ -500,12 +500,8 @@ namespace SustitucionMOAUtils.Services
             var proveedorAsignado = usuario.ObtenerProveedor();
             var usuarioAprobado = proveedorAsignado.EstadoAprobacion == EstadoAprobacion.Aprobado;
 
-            var ret = repositorio.Listar<Consulta>(x =>
-                (obtenerTodos && categorias.Contains(x.Categoria.Id)) ||
-                (x.Usuario.CUITRegistro == usuario.CUITRegistro && usuarioAprobado) ||
-                x.Usuario_Id == usuarioId
-                , includes: includes)
-                .Select(x => new ConsultaDto
+            var ret = repositorio.Listar<Consulta, ConsultaDto>(
+                x => new ConsultaDto
                 {
                     Id = x.Id,
                     Asunto = x.Asunto,
@@ -527,7 +523,12 @@ namespace SustitucionMOAUtils.Services
                         Code = x.SubCategoria.Code,
                         Nombre = x.SubCategoria.Nombre,
                         CategoriaId = x.SubCategoria.Categoria_Id
-                    } : new SubCategoriaDto { Nombre = "" },
+                    } : new SubCategoriaDto {
+                        Id = 0,
+                        Code = "",
+                        Nombre = "",
+                        CategoriaId = 0
+                    },
                     EstadoConsultaId = x.EstadoConsulta_Id,
                     Material_Id = x.Detalle.Material_Id,
                     Material = x.Categoria.Code == "APP" ? x.Detalle.OtroComprobanteNo : "",
@@ -564,7 +565,13 @@ namespace SustitucionMOAUtils.Services
                     GeneradaExternamente = x.UsuarioInterno_Id == null,
                     MailUsuarioIniciaConsulta = x.UsuarioInterno_Id == null ? x.Usuario.Mail : x.UsuarioInterno.Mail,
                     Rubro = x.Detalle.Rubro
-                }).ToList();
+                }
+                ,
+                x =>
+                (obtenerTodos && categorias.Contains(x.Categoria.Id)) ||
+                (x.Usuario.CUITRegistro == usuario.CUITRegistro && usuarioAprobado) ||
+                x.Usuario_Id == usuarioId
+                ).ToList();
 
             return ret;
         }
@@ -609,7 +616,7 @@ namespace SustitucionMOAUtils.Services
             var usuario = repositorio.Obtener<Usuario>(u => u.Id == consulta.Usuario_Id);
             consulta.Categoria_Id = categoriaId;
 
-            if(consulta.EstadoConsulta_Id != estadoCerrado.Id 
+            if (consulta.EstadoConsulta_Id != estadoCerrado.Id
                 && estado.Id == estadoCerrado.Id)
             {
                 consulta.FechaVtoReapertura = DateTime.Now.AddDays(7);
@@ -660,9 +667,9 @@ namespace SustitucionMOAUtils.Services
                 }
             }
 
-            if(categoria.Code == "ACT")
+            if (categoria.Code == "ACT")
             {
-                if(subCategoria.Code == "CM05" && estado.Code == "CER")
+                if (subCategoria.Code == "CM05" && estado.Code == "CER")
                 {
                     gestionImpuestosService.ActualizarCM05(consultaId, usuario);
                 }
@@ -688,7 +695,7 @@ namespace SustitucionMOAUtils.Services
             {
                 var file = files[i];
                 var fileName = string.Format("{0}_{1}", comentario.Id, Path.GetFileName(file.FileName));
-                
+
                 var ruta = ArmarRutaCarpeta(comentario); // $"{ConfigurationManager.AppSettings["RutaArchivosProveedores"]}/{proveedor.CUIT}/{proveedor.Id}/{FileKeys.Consultas}/{consultaId}";
                 var rutaArchivo = string.Concat(ruta, "/", fileName);
 
@@ -773,7 +780,7 @@ namespace SustitucionMOAUtils.Services
                     "PROVGC", "FLECONSULTA", "OTRO", "PARDIR", "PARCOR",
                     "FINDIR", "FINCOR", "FLE", "CRDECPE", "ORD"
                 };
-  
+
                 var user = repositorio.Obtener<Usuario>(u => u.Id == usuario.Id);
                 var rolesUsuario = user.Roles.Where(r => categoriasContacto.Contains(r.Codigo))
                     .Select(r => r.Codigo).ToList();
@@ -1236,9 +1243,9 @@ namespace SustitucionMOAUtils.Services
             string mensajeResultado = string.Empty;
 
             Categoria categoria = repositorio.Obtener<Categoria>(c => c.Id == consulta.Categoria_Id);
-          
+
             var estrategia = this.consultaContext.GetStrategy(categoria.Nombre);
-            
+
             consulta = estrategia.AgregarConsulta(consulta, comentario, destinatarios, files);
 
             return new AgregarConsultaResponseDto
@@ -1256,10 +1263,10 @@ namespace SustitucionMOAUtils.Services
 
             var estadoIniciado = GetEstadoConsulta("INI");
             var estadoCerrado = GetEstadoConsulta("CER");
-            
+
             if (consulta.EstadoConsulta_Id != estadoCerrado.Id)
                 throw new ValidationCustomException("La consulta ya se encuentra en gestión.");
-            
+
             if (consulta.UsuarioInterno_Id != null)
                 throw new ValidationCustomException("Ud no tiene permiso para reabrir esta consulta.");
 
@@ -1271,11 +1278,11 @@ namespace SustitucionMOAUtils.Services
         {
             var estadoConsulta = repositorio.Obtener<EstadoConsulta>(c => c.Code == codigo);
 
-            if (estadoConsulta == null) 
+            if (estadoConsulta == null)
                 throw new InfoCustomException("No existe el estado de la consulta.");
 
             return estadoConsulta;
         }
 
-    }   
+    }
 }
