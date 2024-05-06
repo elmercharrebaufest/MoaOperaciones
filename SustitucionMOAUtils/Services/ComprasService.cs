@@ -3296,7 +3296,6 @@ namespace SustitucionMOAUtils.Services
                     {
                         var posicionExistente = usuario.Cotizacion.CotizacionPosiciones.FirstOrDefault(posi => posi.PosicionId == posicion.SolpPosicion_Id);
 
-                        // Si la posición no existe, crea y agrega una nueva
                         if (posicionExistente == null)
                         {
                             var cotizacionPosicion = new CotizacionPosicionDto
@@ -3322,12 +3321,10 @@ namespace SustitucionMOAUtils.Services
                         {
                             var subposicionesExistentes = posicionExistente.CotizacionSubPosiciones.Select(sub => sub.SolpSubPosicion_Id).ToList();
 
-                            // Itera sobre las subposiciones de la posición actual y agrega nuevas subposiciones
                             foreach (var subposicion in posicion.SolpPosicion.Subposiciones)
                             {
                                 if (!subposicionesExistentes.Contains(subposicion.Id))
                                 {
-                                    // Agrega nueva subposición a la posición existente
                                     var nuevaCotizacionSubposicion = new CotizacionSubPosicionDto
                                     {
                                         SolpSubPosicion_Id = subposicion.Id,
