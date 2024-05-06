@@ -569,7 +569,7 @@ namespace SustitucionMOAUtils.Services
                 ,
                 x =>
                 (obtenerTodos && categorias.Contains(x.Categoria.Id)) ||
-                (x.Usuario.CUITRegistro == usuario.CUITRegistro && usuarioAprobado) ||
+                (x.Usuario.CUITRegistro == usuario.CUITRegistro && usuarioAprobado && !esInterno) ||
                 x.Usuario_Id == usuarioId
                 ).ToList();
 
