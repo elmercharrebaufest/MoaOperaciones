@@ -467,7 +467,7 @@
                             <ng-container *ngIf="proveedor.Cotizacion">
                                 <ng-container *ngFor="let cotizacionPosicion of proveedor.Cotizacion.CotizacionPosiciones">
                                     <ng-container *ngFor="let cotizacionSubpo of cotizacionPosicion.CotizacionSubPosiciones">
-                                        <ng-container *ngIf="subpos.Id === cotizacionSubpo.SolpSubPosicion_Id">
+                                        <ng-container *ngIf="subpos.Id == cotizacionSubpo.SolpSubPosicion_Id">
                                             <!-- Si cotización de subposición está completada, mostramos sus datos -->
                                             <ng-container *ngIf="cotizacionSubpo.Completado">
                                                 <td class="columna border2-left" colspan="2" [ngStyle]="{'background-color': peticionPosicion.EstaEliminado ? '#ff00002e' : 'transparent'}" style="width: 80px !important;">

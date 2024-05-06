@@ -3287,14 +3287,17 @@ namespace SustitucionMOAUtils.Services
         private void CompletarCotizacionEnVerOfertas(List<PeticionDeOfertaUsarioDto> usuarios, List<int> posicionesId)
         {
             var peticionDeOfertaSolpPosicion = repositorio.Listar<PeticionDeOfertaSolpPosicion>(x => posicionesId.Contains(x.SolpPosicion_Id)).ToList();
-            
+
             foreach (var usuario in usuarios)
             {
-                if(usuario.Cotizacion != null) {
+                if (usuario.Cotizacion != null)
+                {
                     foreach (var posicion in peticionDeOfertaSolpPosicion)
                     {
-                        var existePosicion = usuario.Cotizacion.CotizacionPosiciones.Any(posi => posi.PosicionId == posicion.SolpPosicion_Id);
-                        if (!existePosicion)
+                        var posicionExistente = usuario.Cotizacion.CotizacionPosiciones.FirstOrDefault(posi => posi.PosicionId == posicion.SolpPosicion_Id);
+
+                        // Si la posición no existe, crea y agrega una nueva
+                        if (posicionExistente == null)
                         {
                             var cotizacionPosicion = new CotizacionPosicionDto
                             {
@@ -3303,20 +3306,43 @@ namespace SustitucionMOAUtils.Services
                                 Completado = false,
                                 EstaEliminado = posicion.SolpPosicion.Estado != true,
                                 NoDisponible = false,
-                                PeticionDeOfertaSolpPosicion_Id = peticionDeOfertaSolpPosicion.Where(x => x.SolpPosicion_Id == posicion.SolpPosicion_Id).FirstOrDefault().Id,
-                                CotizacionSubPosiciones = posicion.SolpPosicion.Subposiciones.Select(x => new CotizacionSubPosicionDto()
-                                {
-                                    SolpSubPosicion_Id = x.Id,
-                                    Completado = false,
-                                }).ToList()
+                                PeticionDeOfertaSolpPosicion_Id = posicion.Id,
+                                CotizacionSubPosiciones = posicion.SolpPosicion.Subposiciones
+                                    .Select(sub => new CotizacionSubPosicionDto()
+                                    {
+                                        SolpSubPosicion_Id = sub.Id,
+                                        Completado = false,
+                                    })
+                                    .ToList()
                             };
+
                             usuario.Cotizacion.CotizacionPosiciones.Add(cotizacionPosicion);
+                        }
+                        else
+                        {
+                            var subposicionesExistentes = posicionExistente.CotizacionSubPosiciones.Select(sub => sub.SolpSubPosicion_Id).ToList();
+
+                            // Itera sobre las subposiciones de la posición actual y agrega nuevas subposiciones
+                            foreach (var subposicion in posicion.SolpPosicion.Subposiciones)
+                            {
+                                if (!subposicionesExistentes.Contains(subposicion.Id))
+                                {
+                                    // Agrega nueva subposición a la posición existente
+                                    var nuevaCotizacionSubposicion = new CotizacionSubPosicionDto
+                                    {
+                                        SolpSubPosicion_Id = subposicion.Id,
+                                        Completado = false
+                                    };
+
+                                    posicionExistente.CotizacionSubPosiciones.Add(nuevaCotizacionSubposicion);
+                                }
+                            }
                         }
                     }
                 }
-
             }
         }
+
 
         private decimal CalcularTipoDeCambio(Dictionary<int, decimal> tipodecambio, TablaSap destino, CotizacionPosicionDto cotizacionPosicion)
         {
@@ -6300,46 +6326,91 @@ namespace SustitucionMOAUtils.Services
 
         private void AgregarNuevaCotizacionPosicion(GuardarCotizacion cotizacionDto, Cotizacion cotizacion, List<TablaSap> info)
         {
-            var peticionDeOfertaSolpPosicionExistente = cotizacion.CotizacionPosiciones.Select(x => x.PeticionDeOfertaSolpPosicion_Id).ToList();
-            var cotizacionPosicionesNueva = cotizacionDto.CotizacionPosiciones.Where(x => !peticionDeOfertaSolpPosicionExistente.Contains(x.PeticionDeOfertaSolpPosicionId)).ToList();
-         
-            var peticionDeOfertaPosicionIds = cotizacionPosicionesNueva.Select(cotipos => cotipos.PeticionDeOfertaSolpPosicionId);
-            var peticionDeOfertaSolpPosiciones = repositorio.Listar<PeticionDeOfertaSolpPosicion>(x => peticionDeOfertaPosicionIds.Contains(x.Id));
-            var solpSubposicionesIds = cotizacionDto.CotizacionSubposiciones.Select(x => x.SolpSubPosicionId);
-            var solpSubposiciones = repositorio.Listar<SolpSubposicion>(x => solpSubposicionesIds.Contains(x.Id));
-            var posicionesCotizacion = cotizacionPosicionesNueva.Select(x => new CotizacionPosicion
+            var posicionesExistentesIds = new HashSet<int>(cotizacion.CotizacionPosiciones.Select(x => x.PeticionDeOfertaSolpPosicion_Id));
+
+            var nuevasPosiciones = cotizacionDto.CotizacionPosiciones.Where(x => !posicionesExistentesIds.Contains(x.PeticionDeOfertaSolpPosicionId)).ToList();
+
+            var nuevasSubposiciones = cotizacionDto.CotizacionSubposiciones.Where(x => cotizacion.CotizacionPosiciones.Any(pos => pos.PeticionDeOfertaSolpPosicion_Id == x.CotizacionPosicionId)).ToList();
+
+            if (nuevasPosiciones.Count > 0)
             {
-                Cantidad = x.Cantidad,
-                FechaDeEntrega = x.FechaDeEntrega != null ? x.FechaDeEntrega.Value : peticionDeOfertaSolpPosiciones.Where(peticion => peticion.Id == x.PeticionDeOfertaSolpPosicionId).FirstOrDefault().SolpPosicion.FechaEntregaServicio,
-                Moneda_Id = x.MonedaId > 0 ? x.MonedaId : (int?)null,
-                Moneda = x.MonedaId > 0 ? info.Where(moneda => moneda.Id == x.MonedaId).FirstOrDefault() : null,
-                Precio = x.Precio,
-                PrimerPlazoDeOferta = x.PrimerPlazoDeOferta,
-                UnidadDeMedida_Id = x.UnidadDeMedidaId > 0 ? x.UnidadDeMedidaId : (int?)null,
-                UnidadDeMedida = x.UnidadDeMedidaId > 0 ? info.Where(unidad => unidad.Id == x.UnidadDeMedidaId).FirstOrDefault() : null,
-                PeticionDeOfertaSolpPosicion_Id = x.PeticionDeOfertaSolpPosicionId,
-                PeticionDeOfertaSolpPosicion = peticionDeOfertaSolpPosiciones.Where(peticion => peticion.Id == x.PeticionDeOfertaSolpPosicionId).FirstOrDefault(),
-                NoDisponible = x.NoDisponible,
-                FechaDeVigencia = x.FechaDeVigencia != null ? x.FechaDeVigencia.Value : (DateTime?)null,
-                CotizacionSubPosiciones = cotizacionDto.CotizacionSubposiciones.Count > 0 ? cotizacionDto.CotizacionSubposiciones
-                                           .Where(y => y.CotizacionPosicionId == x.PeticionDeOfertaSolpPosicionId).Select(sub => new CotizacionSubPosicion
-                                           {
-                                               Cantidad = sub.Cantidad,
-                                               Moneda_Id = sub.MonedaId > 0 ? sub.MonedaId : (int?)null,
-                                               Moneda = sub.MonedaId > 0 ? info.Where(moneda => moneda.Id == sub.MonedaId).FirstOrDefault() : null,
-                                               Precio = sub.Precio,
-                                               UnidadDeMedida_Id = sub.UnidadDeMedidaId > 0 ? sub.UnidadDeMedidaId : (int?)null,
-                                               UnidadDeMedida = sub.UnidadDeMedidaId > 0 ? info.Where(unidad => unidad.Id == sub.UnidadDeMedidaId).FirstOrDefault() : null,
-                                               CotizacionPosicion_Id = sub.CotizacionPosicionId,
-                                               SolpSubPosicion_Id = sub.SolpSubPosicionId,
-                                               SolpSubPosicion = solpSubposiciones.Where(subpo => subpo.Id == sub.SolpSubPosicionId).FirstOrDefault()
-                                           }).ToList() : null
-            });
-            foreach (var posicion in posicionesCotizacion.ToList())
-            {
-                cotizacion.CotizacionPosiciones.Add(posicion);
+                var nuevasPosicionesIds = nuevasPosiciones.Select(np => np.PeticionDeOfertaSolpPosicionId);
+                var peticionDeOfertaSolpPosiciones = repositorio.Listar<PeticionDeOfertaSolpPosicion>(x => nuevasPosicionesIds.Contains(x.Id));
+                if (peticionDeOfertaSolpPosiciones != null)
+                {
+                    foreach (var nuevaPosicion in nuevasPosiciones)
+                    {
+                        var peticionDeOfertaSolpPosicion = peticionDeOfertaSolpPosiciones.FirstOrDefault(pos => pos.Id == nuevaPosicion.PeticionDeOfertaSolpPosicionId);
+
+                        var cotizacionPosicion = new CotizacionPosicion
+                        {
+                            // Configura los campos necesarios para la nueva posición
+                            Cantidad = nuevaPosicion.Cantidad,
+                            FechaDeEntrega = nuevaPosicion.FechaDeEntrega ?? peticionDeOfertaSolpPosicion?.SolpPosicion.FechaEntregaServicio,
+                            Moneda_Id = nuevaPosicion.MonedaId,
+                            Moneda = info.FirstOrDefault(moneda => moneda.Id == nuevaPosicion.MonedaId),
+                            Precio = nuevaPosicion.Precio,
+                            PrimerPlazoDeOferta = nuevaPosicion.PrimerPlazoDeOferta,
+                            UnidadDeMedida_Id = nuevaPosicion.UnidadDeMedidaId,
+                            UnidadDeMedida = info.FirstOrDefault(unidad => unidad.Id == nuevaPosicion.UnidadDeMedidaId),
+                            PeticionDeOfertaSolpPosicion_Id = nuevaPosicion.PeticionDeOfertaSolpPosicionId,
+                            PeticionDeOfertaSolpPosicion = peticionDeOfertaSolpPosicion,
+                            NoDisponible = nuevaPosicion.NoDisponible,
+                            FechaDeVigencia = nuevaPosicion.FechaDeVigencia,
+                            CotizacionSubPosiciones = nuevasSubposiciones
+                                .Where(sub => sub.CotizacionPosicionId == nuevaPosicion.PeticionDeOfertaSolpPosicionId)
+                                .Select(sub => new CotizacionSubPosicion
+                                {
+                                    Cantidad = sub.Cantidad,
+                                    Moneda_Id = sub.MonedaId,
+                                    Moneda = info.FirstOrDefault(moneda => moneda.Id == sub.MonedaId),
+                                    Precio = sub.Precio,
+                                    UnidadDeMedida_Id = sub.UnidadDeMedidaId,
+                                    UnidadDeMedida = info.FirstOrDefault(unidad => unidad.Id == sub.UnidadDeMedidaId),
+                                    CotizacionPosicion_Id = sub.CotizacionPosicionId,
+                                    SolpSubPosicion_Id = sub.SolpSubPosicionId,
+                                    SolpSubPosicion = repositorio.Obtener<SolpSubposicion>(sub.SolpSubPosicionId)
+                                }).ToList()
+                        };
+
+                        // Agrega la nueva posición a la cotización
+                        cotizacion.CotizacionPosiciones.Add(cotizacionPosicion);
+                    }
+                }
             }
-           
+
+            if (nuevasSubposiciones.Count > 0)
+            {
+                var nuevasSubposId = nuevasSubposiciones.Select(ns => ns.SolpSubPosicionId);
+                var solpSubposiciones = repositorio.Listar<SolpSubposicion>(x => nuevasSubposId.Contains(x.Id));
+                if (solpSubposiciones != null)
+                {
+                    foreach (var nuevaSubposicion in nuevasSubposiciones)
+                    {
+                        // Encuentra la posición existente correspondiente
+                        var posicionExistente = cotizacion.CotizacionPosiciones.FirstOrDefault(pos => pos.PeticionDeOfertaSolpPosicion_Id == nuevaSubposicion.CotizacionPosicionId);
+                        if (posicionExistente != null)
+                        {
+                            // Crea la nueva subposición y configúrala
+                            var cotizacionSubposicion = new CotizacionSubPosicion
+                            {
+                                Cantidad = nuevaSubposicion.Cantidad,
+                                Moneda_Id = nuevaSubposicion.MonedaId,
+                                Moneda = info.FirstOrDefault(moneda => moneda.Id == nuevaSubposicion.MonedaId),
+                                Precio = nuevaSubposicion.Precio,
+                                UnidadDeMedida_Id = nuevaSubposicion.UnidadDeMedidaId,
+                                UnidadDeMedida = info.FirstOrDefault(unidad => unidad.Id == nuevaSubposicion.UnidadDeMedidaId),
+                                CotizacionPosicion_Id = nuevaSubposicion.CotizacionPosicionId,
+                                SolpSubPosicion_Id = nuevaSubposicion.SolpSubPosicionId,
+                                SolpSubPosicion = solpSubposiciones.FirstOrDefault(sub => sub.Id == nuevaSubposicion.SolpSubPosicionId)
+                            };
+
+                            // Agrega la nueva subposición a la posición existente
+                            posicionExistente.CotizacionSubPosiciones.Add(cotizacionSubposicion);
+                        }
+                    }
+                }
+            }
         }
 
         private void GuardarArchivosCotizacion(Cotizacion cotizacion, HttpFileCollectionBase files)
