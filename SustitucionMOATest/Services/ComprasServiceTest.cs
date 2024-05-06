@@ -1461,7 +1461,7 @@ namespace SustitucionMOATest.Services
             repositorioMock.Verify(y => y.Obtener<PeticionDeOfertaUsuario>(It.IsAny<int>()), Times.Once);
             repositorioMock.Verify(y => y.Listar(It.IsAny<Expression<Func<TablaSap, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null), Times.Once);
 
-            repositorioMock.Verify(x => x.GuardarCambios(), Times.Exactly(2));
+            repositorioMock.Verify(x => x.GuardarCambios(), Times.Exactly(3));
             Assert.That(result.Errores.Count == 0);
         }
 
