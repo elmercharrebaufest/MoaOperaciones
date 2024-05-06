@@ -700,6 +700,7 @@ namespace SustitucionMOA.Controllers
             var response = new ObtenerContratosDisponiblesResponse();
             try
             {
+                var mailUsuario = SessionPersister.getUsername();
                 var req = new ObtenerContratosDisponiblesRequest
                 {
                     ClienteCodigo = clienteCodigo,
@@ -707,7 +708,7 @@ namespace SustitucionMOA.Controllers
                     FechaDesde = fechaDesde,
                     FechaHasta = fechaHasta
                 };
-                response = ordenDeCargaService.ObtenerContratosDisponibles(req);
+                response = ordenDeCargaService.ObtenerContratosDisponibles(req, mailUsuario);
             }
             catch (InfoCustomException ice)
             {

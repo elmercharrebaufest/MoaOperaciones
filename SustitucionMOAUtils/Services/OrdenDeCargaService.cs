@@ -1275,10 +1275,12 @@ namespace SustitucionMOAUtils.Services
             return Obtener(mailUsuario, orden.Id);
         }
 
-        public ObtenerContratosDisponiblesResponse ObtenerContratosDisponibles(ObtenerContratosDisponiblesRequest req)
+        public ObtenerContratosDisponiblesResponse ObtenerContratosDisponibles(ObtenerContratosDisponiblesRequest req, string mailUsuario)
         {
             try
             {
+                var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
+                var esInterno = EsUsuarioInterno(usuario);
                 var rangoFechas = string.IsNullOrEmpty(req.FechaDesde) || string.IsNullOrEmpty(req.FechaHasta) ? null :
                     CommonUtil.toDateList(req.FechaDesde, req.FechaHasta);
 
@@ -1314,19 +1316,22 @@ namespace SustitucionMOAUtils.Services
 
                 var ordenesPendientes = ObtenerOrdenesPendientesDeCliente(req.ClienteCodigo);
 
-                var contratosDisponiblesResp = new ObtenerContratosDisponiblesResponse
-                {
-                    Contratos = consumerRes.Resultados
+                var contratos =
+                    consumerRes.Resultados
                         .Select(contratoSap =>
                             new ContratoOrdenFas(contratoSap, productosBD)
                             {
                                 KgDisponibles = kgDisponiblesFasService.ObtenerKgDisponiblesContrato(contratoSap, ordenesPendientes)
                             })
                         .OrderBy(contrato => contrato.DescripcionProducto)
-                        .ToList()
-                };
+                        .ToList();
 
-                return contratosDisponiblesResp;
+                if (!esInterno)
+                {
+                    contratos = contratos.Where(c => c.CondicionRetiro == CondicionRetiro.RetiroEnPlanta).ToList();
+                }
+
+                return new ObtenerContratosDisponiblesResponse { Contratos = contratos };
             }
             catch (InfoCustomException) { throw; }
             catch (ValidationCustomException) { throw; }

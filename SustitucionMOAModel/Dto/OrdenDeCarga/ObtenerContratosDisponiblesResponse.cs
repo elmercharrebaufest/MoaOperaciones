@@ -10,16 +10,12 @@ namespace SustitucionMOAModel.Dto.OrdenDeCarga
 {
     public class ObtenerContratosDisponiblesResponse
     {
-        //[JsonProperty("contratosDisponibles")]
         public List<ContratoOrdenFas> Contratos { get; set; }
 
-        //[JsonProperty("info")]
         public string Info { get; set; }
 
-        //[JsonProperty("error")]
         public string Error { get; set; }
 
-        //[JsonProperty("logout")]
         public bool Logout { get; set; }
     }
 
@@ -29,6 +25,9 @@ namespace SustitucionMOAModel.Dto.OrdenDeCarga
 
         public MaterialDto Producto { get; set; }
         public decimal? KgDisponibles { get; set; }
+        public TipoContratoFAS TipoContrato { get; set; }
+        public CondicionRetiro CondicionRetiro { get; set; }
+
         public string DescripcionProducto
         {
             get
@@ -37,7 +36,6 @@ namespace SustitucionMOAModel.Dto.OrdenDeCarga
             }
         }
 
-        public TipoContratoFAS TipoContrato { get; set; }
         public ContratoOrdenFas(Result contratoSAP, List<Material> productosBD)
         {
             var producto = productosBD
@@ -53,6 +51,7 @@ namespace SustitucionMOAModel.Dto.OrdenDeCarga
             NumeroContrato = contratoSAP.Contrato;
             Producto = producto;
             TipoContrato = contratoSAP.TipoContrato;
+            CondicionRetiro = contratoSAP.PrecioFlete == 0 ? CondicionRetiro.RetiroEnPlanta : CondicionRetiro.PuestoEnDestino;
         }
 
         public ContratoOrdenFas(Entities.OrdenDeCarga orden)

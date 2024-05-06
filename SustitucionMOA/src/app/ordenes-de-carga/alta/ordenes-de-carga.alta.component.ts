@@ -1061,7 +1061,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
                                     this.reiniciarProducto();
                                 } else {
                                     this.contratosDisponibles = resp.Contratos.map(c => {
-                                        return new ContratoOrdenFas(c.NumeroContrato, c.TipoContrato, c.Producto, c.KgDisponibles);
+                                        return new ContratoOrdenFas(c.NumeroContrato, c.TipoContrato, c.Producto, c.KgDisponibles, c.CondicionRetiro);
                                     });
                                     this.ordenDeCarga.ContratoSeleccionado =
                                         this.ordenDeCarga.ContratoIngresado ?
