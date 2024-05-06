@@ -1,13 +1,10 @@
 ﻿using Molinos.Scato.Repositorio;
 using SustitucionMOAModel.Consultas;
-using SustitucionMOAModel.Dto;
-using SustitucionMOAModel.Entities;
 using SustitucionMOARepositorio.Extensiones;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
-using System.Data.Entity.Core.Objects;
 using System.Data.Entity.Infrastructure;
 using System.Data.SqlClient;
 using System.Linq;
@@ -315,6 +312,10 @@ namespace SustitucionMOARepositorio
         {
             var tabla = typeof(TEntidad).Name;
             context.Database.ExecuteSqlCommand("TRUNCATE TABLE [" + tabla + "]");
+        }
+        public DbRawSqlQuery<TEntidad> ExecuteQuery<TEntidad>(string query, SqlParameter parameters = null)
+        {
+            return context.Database.SqlQuery<TEntidad>(query, parameters);
         }
 
         private static IQueryable<TProyeccion> ListarProyeccionQueryable<TProyeccion>(IQueryable<TProyeccion> resultadoFinal, string orden, DirOrden direccionOrden, int maxResultados)

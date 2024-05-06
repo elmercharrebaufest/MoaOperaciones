@@ -97,24 +97,5 @@
                     throw new System.Exception("Semáforo no mapeado");
             }
         }
-
-
-        //     public static EstadoOrdenDeCargaFason ObtenerDescripcionEstado(string estado)
-        //     {
-
-        //         switch (estado)
-        //         {
-        //             case "Orden generada":
-        //                 return EstadoOrdenDeCargaFason.Generada;
-        //	case "Pendiente":
-        //		return EstadoOrdenDeCargaFason.Pendiente;
-        //	case "Orden vencida":
-        //		return EstadoOrdenDeCargaFason.Vencida;
-        //	case "Orden entregada":
-        //		return EstadoOrdenDeCargaFason.Entregada;
-        //	default:
-        //		return EstadoOrdenDeCargaFason.SinEstado;
-        //}
-        //     }
     }
 }

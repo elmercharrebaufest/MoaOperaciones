@@ -46,7 +46,8 @@ namespace SustitucionMOAUtils.Services
 
             orden.Estado = EstadoOrdenDeCargaFason.Entregada;
 
-            orden.CantidadEntregada = ingresosEgresosFasones.Cantidad;
+            orden.PesadaTara = ingresosEgresosFasones.PesadaTara;
+            orden.PesadaNeto = ingresosEgresosFasones.PesadaNeto;
             orden.FechaEgreso = ingresosEgresosFasones.FechaEgreso;
             orden.FechaIngreso = ingresosEgresosFasones.FechaIngreso;
             orden.NroRemito = ingresosEgresosFasones.NroRemito;

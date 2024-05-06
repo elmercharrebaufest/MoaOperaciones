@@ -1,5 +1,6 @@
 ﻿using SustitucionMOAAssets;
 using SustitucionMOAModel.CustomExceptions;
+using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using SustitucionMOARepositorio;
@@ -13,6 +14,7 @@ using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 
@@ -23,7 +25,8 @@ namespace SustitucionMOAUtils.Helpers
         protected readonly IRepositorio repositorio;
         protected readonly IEmailService emailService;
         private readonly string rutaArchivosConsulta = ConfigurationManager.AppSettings["RutaArchivosConsulta"];
-        private static readonly string EMAIL_TEMPLATE = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "RespuestaConsulta.html");
+        private static readonly string EMAIL_TEMPLATE = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "NuevaConsultaInterna.html");
+        protected static readonly string consultaInternaCC = ConfigurationManager.AppSettings["EmailConsultaInternaCC"];
         private readonly string rutaMisConsultas = ConfigurationManager.AppSettings["UrlMisConsultas"];
 
         public ConsultaCommon(IRepositorio repositorio, IEmailService emailService)
@@ -78,15 +81,15 @@ namespace SustitucionMOAUtils.Helpers
         {
             return string.Format("{0}/{1}/{2}", rutaArchivosConsulta, comentario.Consulta.Usuario_Id, comentario.Consulta_Id);
         }
-        protected void EnviarMailInterno(Consulta consulta, Comentario comentario, HttpFileCollectionBase files, List<string> destinatariosCC, string mailDestinatario)
+        protected void EnviarMailInterno(Consulta consulta, Comentario comentario, HttpFileCollectionBase files, List<string> destinatariosCC, List<string> mailDestinatario)
         {
             try
             {
                 var cuerpoTemplate = File.ReadAllText(EMAIL_TEMPLATE);
                 var cuerpo = string.Format(cuerpoTemplate, consulta.Asunto, !string.IsNullOrWhiteSpace(comentario.Detalle) ? comentario.Detalle : "-", rutaMisConsultas);
-                string asunto = "Molinos Agro - Consulta N° " + consulta.Id + ": " + consulta.Asunto;
+                var asunto = $"Molinos Agro - Nueva Consulta N° {consulta.Id}: {consulta.Asunto}. {consulta.RazonSocialProveedor}.";
                 Dictionary<string, byte[]> archivos = ConvertFiles(files);
-                EmailSender.EnviarMail(new List<string> { mailDestinatario }, asunto, cuerpo,
+                EmailSender.EnviarMail(mailDestinatario, asunto, cuerpo,
                     null, null, null, null, null, destinatariosCC, archivos);
             }
             catch (Exception ex)
@@ -119,24 +122,45 @@ namespace SustitucionMOAUtils.Helpers
             return fileDataDictionary;
         }
 
-        protected void CompletarCampos(Consulta consulta, Comentario comentario)
+        protected void RellenarCampos(Consulta consulta, Comentario comentario, List<DestinatarioDto> destinatarios)
         {
+            var usuarioDestinoId = destinatarios.First().UsuarioId;
+
             consulta.FechaCreacion = DateTime.Now;
             consulta.FechaUltimaModificacion = DateTime.Now;
 
-            Categoria categoria = repositorio.Obtener<Categoria>(c => c.Id == consulta.Categoria_Id);
-            
             comentario.ComentarioRecordado = new List<ComentarioRecordado>();
 
             if (consulta.Comentarios == null)
             {
                 consulta.Comentarios = new List<Comentario>();
             }
+            if(consulta.Usuario_Id == 0)
+            {
+                consulta.Usuario_Id = usuarioDestinoId;
+            }
 
-            consulta.Comentarios.Add(comentario.Clone() as Comentario);
+            consulta.Comentarios.Add(comentario);
 
-            consulta.Detalle = consulta.Detalle.Clone() as ConsultaDetalle;
+            comentario.Usuario_Id = (int)consulta.UsuarioInterno_Id;
 
+            var estadoSolicitudInfo = this.repositorio.Obtener<EstadoConsulta>(e => e.Code == "DOC");
+            consulta.EstadoConsulta_Id = estadoSolicitudInfo.Id;
         }
+        protected string GuardarAdjuntoComentario(int consultaId, HttpFileCollectionBase files)
+        {
+            Comentario primerComentario = repositorio.Obtener<Comentario>(c => c.Consulta_Id == consultaId);
+            var res = this.AgregarAdjuntoComentario(consultaId, primerComentario.Id, files);
+            return res;
+        }
+        protected void EnviarMail(Consulta consulta, Comentario comentario, List<DestinatarioDto> destinatarios, HttpFileCollectionBase files)
+        {
+            var destinatariosCC = this.emailService.ObtenerListaDestinatarios(new string[] { consultaInternaCC });
+            var destinatariosMail = destinatarios.Select(d => d.Mail).ToList();
+
+            this.EnviarMailInterno(consulta, comentario, files, destinatariosCC, destinatariosMail);
+        }
+
+       
     }
 }

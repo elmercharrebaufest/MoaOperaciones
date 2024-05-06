@@ -124,10 +124,12 @@ export class DetalleConsultaComponent extends BaseComponent {
     file: any;
     fecha: any;
     hora: any;
-    username = sessionStorage.getItem("userName");
+    username = sessionStorage.getItem("username");
     detalle: string = "";
     esInterno = this.isAuthorized("CONSULTA ABM");
     esCorredor: boolean = sessionStorage.getItem("tipoUsuario") === "CORR";
+    cuitUsuarioSesion: string = sessionStorage.getItem("cuit");
+
     datosExtra = [];
 
     htmlContent: string;
@@ -204,12 +206,9 @@ export class DetalleConsultaComponent extends BaseComponent {
         $formInput.val(null);
     }
 
-    comentarioPropio(comentario) {
-        return (
-            (this.consulta.UsuarioId == comentario.UsuarioId &&
-                this.consulta.UsuarioId == this.consulta.UsuarioActualId) ||
-            (this.consulta.UsuarioId != comentario.UsuarioId && this.esInterno)
-        );
+    comentarioPropio(comentario: Comentario): boolean {
+        return (this.esInterno && comentario.CreadorInterno) ||
+            !this.esInterno && !comentario.CreadorInterno;
     }
 
     actualizarCombos() {
@@ -397,6 +396,11 @@ export class DetalleConsultaComponent extends BaseComponent {
                 Value: this.consulta.PatenteChasis,
                 NewLine: false
             },
+            {
+                Nombre: "Rubro",
+                Value: this.consulta.Rubro,
+                NewLine: true
+            }
         ];
     }
 
@@ -692,6 +696,7 @@ export class DetalleConsultaComponent extends BaseComponent {
                         this.categoriaId = result.CategoriaId;
                         this.subcategoriaId = result.SubCategoriaId;
                         this.subcategoriasInicial();
+
 
                         try {
                             setTimeout(() => {

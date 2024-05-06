@@ -20,7 +20,7 @@ import { FiltroFechaComponent } from '../../common/view-child/filtro-fecha/filtr
 import { ConfirmationService, SelectItem } from 'primeng/api';
 import { BehaviorSubject } from 'rxjs';
 import { DropdownOption } from '../../common/view-child/dropdown/dropdown.component';
-import { take } from 'rxjs/operators';
+import { finalize, take } from 'rxjs/operators';
 declare var $: any;
 
 
@@ -38,6 +38,9 @@ export class AltasComponent extends BaseComponent implements OnInit {
     @ViewChild("mensajeModalComponent")
     protected mensajeModalComponent: MensajeComponent;
 
+    @ViewChild("mensajeModalVer")
+    protected mensajeModalVerComponent: MensajeComponent;
+
     @ViewChild(SpinnerComponent)
     protected spinnerComponent: SpinnerComponent;
 
@@ -47,10 +50,14 @@ export class AltasComponent extends BaseComponent implements OnInit {
     @ViewChild("spinnerModal")
     protected spinnerModal: SpinnerSmallComponent;
 
+    @ViewChild("spinnerModalVer")
+    protected spinnerModalVer: SpinnerSmallComponent;
+
+
     @ViewChild(FiltroFechaComponent)
     protected filtroFechaComponent: FiltroFechaComponent;
 
-    constructor(protected altaEmpresaService: AltaEmpresaService, protected service: EmpresaGranosService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securytiService: SecurityService, protected floatMsgService: FloatMsgService, 
+    constructor(protected altaEmpresaService: AltaEmpresaService, protected service: EmpresaGranosService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securytiService: SecurityService, protected floatMsgService: FloatMsgService,
         protected modalService: ModalService, protected confirmationService: ConfirmationService) {
         super(navService, securytiService, floatMsgService, modalService);
         this.mensajeComponent = new MensajeComponent();
@@ -95,9 +102,12 @@ export class AltasComponent extends BaseComponent implements OnInit {
     cuitIngresado: string = "";
     puedeAltaInterna: boolean = this.isAuthorized('ALTA INTERNA GRANOS');
     puedeAltaInternaNoGranos: boolean = this.isAuthorized('ALTA INTERNA NO GRANOS');
-    esAdmin : boolean = this.isAuthorized('ELIMINAR USUARIO DE WEB');
-    
-    ngOnInit(): void { 
+    esAdmin: boolean = this.isAuthorized('ELIMINAR USUARIO DE WEB');
+    puedeModificarEstado = this.isAuthorized('MODIFICAR ESTADO PROVEEDOR')
+
+    nuevoEstadoProveedor;
+
+    ngOnInit(): void {
         this.navService.setSeccionList([]);
         $('[data-toggle="tooltip"]').tooltip();
         this.customFiltroFecha();
@@ -110,7 +120,7 @@ export class AltasComponent extends BaseComponent implements OnInit {
         return false;
     }
 
-    customFiltroFecha(){
+    customFiltroFecha() {
         this.filtroFechaComponent.setDropdownOptions([
             new DropdownOption("3", "Último mes"),
             new DropdownOption("6", "Último año"),
@@ -220,7 +230,7 @@ export class AltasComponent extends BaseComponent implements OnInit {
                                 this.descripcionEstadoAlta.push({
                                     label: x.Value, value: x.Key
                                 }));
-                           this.getEmpresa();
+                            this.getEmpresa();
                         }
                     },
                     error => {
@@ -519,6 +529,7 @@ export class AltasComponent extends BaseComponent implements OnInit {
         this.mensajeError = "";
         this.floatMsgService.setMsgsEmpty();
         this.unsubscribe();
+        this.nuevoEstadoProveedor = empresa.EstadoAprobacionDescripcion;
         this.cargarSolicitudUsuario(empresa.Mail, empresa.Id);
         this.obtenerArchivosSubidos(empresa.Mail, empresa.Id);
         document.getElementById("openModalHiddenButton").click();
@@ -998,8 +1009,8 @@ export class AltasComponent extends BaseComponent implements OnInit {
         this.confirmationService.confirm({
             key: 'confirmarBorrado',
             message: "Se va a proceder a realizar la baja del usuario: " +
-            mail + ", una vez realizada la operación, él mismo deberá volver a registrarse" +
-            " para operar en el sistema.",
+                mail + ", una vez realizada la operación, él mismo deberá volver a registrarse" +
+                " para operar en el sistema.",
             accept: () => {
                 this.eliminarAltaUsuario(id);
             },
@@ -1008,68 +1019,68 @@ export class AltasComponent extends BaseComponent implements OnInit {
         });
     }
 
-    eliminarAltaUsuario(proveedorId: number){
+    eliminarAltaUsuario(proveedorId: number) {
         this.spinnerModal.showIt();
         this.altaEmpresaService.eliminarCuitNoHabilitado(proveedorId).pipe(take(1))
-        .subscribe(
-            (result) => {
-                this.spinnerComponent.hideIt();
+            .subscribe(
+                (result) => {
+                    this.spinnerComponent.hideIt();
                     if (result.logout == true) {
                         this.sessionDataService.logout();
                     } else if (result.error != undefined && result.error != "") {
                         this.mensajeComponent.setErrorMsg(result.error);
                     } else if (result.info != undefined) {
                         this.mensajeComponent.setInfoMsg(result.info);
-                    }else{
+                    } else {
                         this.getEmpresa();
                         this.mensajeComponent.setSuccessMsg(result.data);
-                    } 
+                    }
                 }
-            ,
-            (error) => {
-                this.spinnerModal.hideIt();
-                this.mensajeError = error.message;
-            }
-        );
+                ,
+                (error) => {
+                    this.spinnerModal.hideIt();
+                    this.mensajeError = error.message;
+                }
+            );
     }
 
     revisarCUITFormatoValido(cuit: string): boolean {
         return cuit && cuit.length == 11 && !Number.isNaN(cuit as unknown as number)
     }
 
-    verificarExistenciaEmpresa(){
+    verificarExistenciaEmpresa() {
         this.mensajeComponent.setMsgsEmpty();
-        if(!this.revisarCUITFormatoValido(this.cuitIngresado)){
+        if (!this.revisarCUITFormatoValido(this.cuitIngresado)) {
             this.mensajeComponent.setErrorMsg("Debe ingresar un cuit valido.");
             return;
         }
         let msjModal = "";
         this.spinnerModal.showIt();
         this.altaEmpresaService.verificarExistenciaEmpresa(this.cuitIngresado)
-        .subscribe(
-            (result) => {
-                this.spinnerComponent.hideIt();
+            .subscribe(
+                (result) => {
+                    this.spinnerComponent.hideIt();
                     if (result.logout == true) {
                         this.sessionDataService.logout();
                     } else if (result.error != undefined && result.error != "") {
                         this.mensajeComponent.setErrorMsg(result.error);
                     } else if (result.info != undefined) {
                         this.mensajeComponent.setInfoMsg(result.info);
-                    }else{
-                        if(result.data.error != undefined){
+                    } else {
+                        if (result.data.error != undefined) {
                             msjModal = result.data.error;
-                        }else
+                        } else
                             msjModal = result.data.Mensaje;
                         this.abrirModalVerificarExisteCuit(msjModal);
-                    } 
+                    }
                     console.log(result);
                 }
-            ,
-            (error) => {
-                this.spinnerModal.hideIt();
-                this.mensajeError = error.message;
-            }
-        );
+                ,
+                (error) => {
+                    this.spinnerModal.hideIt();
+                    this.mensajeError = error.message;
+                }
+            );
     }
 
     abrirModalVerificarExisteCuit(mensaje: string) {
@@ -1081,4 +1092,22 @@ export class AltasComponent extends BaseComponent implements OnInit {
         });
     }
 
+    modificarEstadoProveedor(empresa: Empresa) {
+        this.spinnerModalVer.showIt();
+        this.service.modificarEstadoProveedor(empresa.Id, this.nuevoEstadoProveedor)
+            .pipe(finalize(() => this.spinnerModalVer.hideIt()))
+            .subscribe(({ data, info, error }) => {
+                if (info || error) {
+                    this.mensajeModalVerComponent.setErrorMsg(info || error)
+                    return;
+                }
+                this.mensajeModalVerComponent.setMsgsEmpty();
+                this.empresaSeleccionada = {
+                    ... this.empresaSeleccionada,
+                    EstadoAprobacion: data.nuevoEstado,
+                    EstadoAprobacionDescripcion: this.nuevoEstadoProveedor
+                }
+            }
+            );
+    }
 }

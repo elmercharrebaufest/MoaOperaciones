@@ -5,3 +5,5 @@ export interface ApiResponse<T, U = {}> {
   filtros?: U;
   logout?: boolean;
 }
+
+export type BasicResponse<T> = T & { info?: string; error?: string; logout?: boolean }

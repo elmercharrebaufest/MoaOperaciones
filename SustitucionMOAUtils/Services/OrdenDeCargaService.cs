@@ -27,7 +27,6 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading;
 using SustitucionMOAWS.ResponseHandler.OrdenCarga;
-using CNRTModel = SustitucionMOAModel.Models.WebApiMap.CNRT;
 using System.Collections;
 using System.Data.Entity;
 
@@ -42,7 +41,6 @@ namespace SustitucionMOAUtils.Services
         protected readonly IEmailFasService emailFasService;
         protected readonly IFacturaAnticipadaService facturaAnticipadaService;
         protected readonly IKgDisponiblesFasService kgDisponiblesFasService;
-        protected readonly ICNRTClient cNRTClient;
 
         public OrdenDeCargaService(
             IRepositorio repositorio,
@@ -54,13 +52,12 @@ namespace SustitucionMOAUtils.Services
             IFacturaAnticipadaService facturaAnticipadaService,
             IKgDisponiblesFasService kgDisponiblesFasService,
             ICNRTClient cNRTClient
-            ) : base(ordenCargaConsumer, scatoConsumer, scatoRepositorioClient, repositorio)
+            ) : base(ordenCargaConsumer, scatoConsumer, scatoRepositorioClient, repositorio, cNRTClient)
         {
             this.feriadoService = feriadoService;
             this.emailFasService = emailFasService;
             this.facturaAnticipadaService = facturaAnticipadaService;
             this.kgDisponiblesFasService = kgDisponiblesFasService;
-            this.cNRTClient = cNRTClient;
         }
 
         public Resultado Agregar(OrdenDeCarga ordenDeCarga, string mailUsuario)
@@ -189,6 +186,7 @@ namespace SustitucionMOAUtils.Services
                 var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
                 var esAdmin = usuario.TienePermiso(PermisoEnum.VerTodasOrdenesDeCarga);
                 var puedeEnviarASAP = usuario.TienePermiso(PermisoEnum.EnviarASap);
+                var estadoPrevio = ordenDeCarga.Estado;
                 var esInterno = EsUsuarioInterno(usuario);
 
                 Log.Debug(this.GetType().Name, "Editar", $" usuarioPuedeEnviarASAP: {puedeEnviarASAP}. Chofer en Scato: {choferEnScato.ToJson()}");
@@ -254,7 +252,11 @@ namespace SustitucionMOAUtils.Services
                 }
                 else if (ordenEditar.Estado == EstadoOrdenDeCarga.SinEnviarASAP)
                 {
-                    if (!ordenEditar.EsFacturaAnticipada && !contratoKgDisponibles)
+                    if (estadoPrevio == EstadoOrdenDeCarga.PendienteCompensacion)
+                    {
+                        ordenEditar.Estado = EstadoOrdenDeCarga.PendienteCompensacion;
+                    }
+                    else if (!ordenEditar.EsFacturaAnticipada && !contratoKgDisponibles)
                     {
                         ordenEditar.Estado = EstadoOrdenDeCarga.Pendiente;
                         ordenEditar.DescripcionErrorInterno = "Orden con contrato entre 0 a 15Tn.";
@@ -390,43 +392,12 @@ namespace SustitucionMOAUtils.Services
             return response;
         }
 
-        public List<OrdenDeCargaDto> Listar(string mailUsuario, string fechaInicio, string fechaFin)
+        public List<OrdenDeCargaDto> Listar(string mailUsuario, string fechaInicio, string fechaFin, int? idProveedorSeleccionado = null)
         {
             Log.Info($"Listar(mailUsuario: {mailUsuario}, fechaInicio: {fechaInicio}, fechaFin: {fechaFin})");
-            DateTime fechaIncioDateTime, fechaFinDateTime;
-            try
-            {
-                fechaIncioDateTime = DateTime.Parse(fechaInicio);
-            }
-            catch
-            {
-                try
-                {
-                    fechaInicio = new string(fechaInicio.Where(c => c != '\u200E').ToArray());
-                    fechaIncioDateTime = DateTime.Parse(fechaInicio);
-                }
-                catch (Exception e)
-                {
-                    throw new ValidationCustomException(String.Format(ErrorMsg.ErrorFechaInvalida, "inicio"), e);
-                }
-            }
-
-            try
-            {
-                fechaFinDateTime = DateTime.Parse(fechaFin);
-            }
-            catch
-            {
-                try
-                {
-                    fechaFin = new string(fechaFin.Where(c => c != '\u200E').ToArray());
-                    fechaFinDateTime = DateTime.Parse(fechaFin);
-                }
-                catch (Exception e)
-                {
-                    throw new ValidationCustomException(String.Format(ErrorMsg.ErrorFechaInvalida, "fin"), e);
-                }
-            }
+            
+            var fechaInicioDateTime = DataFormatter.StringToDateTime(fechaInicio, "inicio");
+            var fechaFinDateTime = DataFormatter.StringToDateTime(fechaFin, "fin");
 
             var codigosEstadoConsultaHabilitados = new string[]
             {
@@ -449,7 +420,7 @@ namespace SustitucionMOAUtils.Services
             if (esInterno)
             {
                 Expression<Func<OrdenDeCarga, bool>> filtro = o => o.FechaCarga <= fechaFinDateTime
-                    && o.FechaCarga >= fechaIncioDateTime
+                    && o.FechaCarga >= fechaInicioDateTime
                     && filtroEstados.Contains(o.Estado);
 
                 var listadoConFiltro = repositorio.ListarConsultable<OrdenDeCarga>(filtro);
@@ -488,10 +459,10 @@ namespace SustitucionMOAUtils.Services
             else
             {
                 var usuariosConMismoCuit = repositorio.Listar<Usuario, int>(x => x.Id, x => x.CUITRegistro == usuario.CUITRegistro);
-                var proveedor = usuario.ObtenerProveedorAsignado() ?? usuario.ObtenerProveedor();
+                var proveedor = ObtenerProveedorSeleccionado(usuario, idProveedorSeleccionado);
                 var listadoConFiltro = repositorio.ListarConsultable<OrdenDeCarga>(n => (usuariosConMismoCuit.Contains(n.UsuarioCreacion_Id) || n.Cliente.CodigoProveedor == proveedor.CodigoProveedor)
                     && n.FechaCarga <= fechaFinDateTime
-                    && n.FechaCarga >= fechaIncioDateTime
+                    && n.FechaCarga >= fechaInicioDateTime
                     && (filtroEstados.Contains(n.Estado))
                     );
                 var consultas = repositorio.Listar<ConsultaDetalle>(cd => listadoConFiltro.Any(orden => orden.Id == cd.Orden_Id)
@@ -1584,47 +1555,6 @@ namespace SustitucionMOAUtils.Services
             return new Resultado { Mensaje = resultado };
         }
 
-        public ValidarCamionResponse ValidarCamion(string patenteChasis, string patenteAcoplado)
-        {
-            try
-            {
-                var cnrtResponse = cNRTClient.ObtenerEquipos(patenteChasis, patenteAcoplado);
-                var dominios = cnrtResponse.Data.Dominios;
-
-                if (dominios == null || !dominios.Any())
-                {
-                    return new ValidarCamionResponse { ExisteCamion = false };
-                }
-
-                var tipoVehiculo = cnrtResponse.TipoVehiculoCNRTSegunCategoriaEscalado;
-
-                if (dominios.Any(d => d.Ruta == null || d.Ruta.CantEjes <= 0) && (
-                        tipoVehiculo == null ||
-                        tipoVehiculo == CNRTModel.TipoVehiculoCNRT.CamionBitren))
-                {
-                    return new ValidarCamionResponse { ExisteCamion = false };
-                }
-                else
-                {
-                    return new ValidarCamionResponse
-                    {
-                        ExisteCamion = true,
-                        EsCamionEscalable = (
-                            tipoVehiculo == CNRTModel.TipoVehiculoCNRT.CamionC ||
-                            tipoVehiculo == CNRTModel.TipoVehiculoCNRT.CamionD ||
-                            tipoVehiculo == CNRTModel.TipoVehiculoCNRT.CamionE)
-                    };
-                }
-            }
-            catch (InfoCustomException ice) { throw ice; }
-            catch (ValidationCustomException vce) { throw vce; }
-            catch (Exception ex)
-            {
-                Log.Error($"Error al validar camión con patentes: {patenteChasis} y {patenteAcoplado}.", ex);
-                throw;
-            }
-        }
-
         public List<DestinatarioDto> ObtenerDestinatariosConsultaFas(int ordenId)
         {
             var destinatarios = new List<DestinatarioDto>();
@@ -1639,13 +1569,13 @@ namespace SustitucionMOAUtils.Services
             var mailCreador = this.repositorio.Obtener<Usuario>(u => u.Id == orden.UsuarioCreacion_Id);
             if (mailCreador != null)
             {
-                destinatarios.Add(new DestinatarioDto { Campo = "Usuario creador", Mail = mailCreador.Mail, UsuarioId = mailCreador.Id });
+                destinatarios.Add(new DestinatarioDto { Campo = "Usuario creador", Mail = mailCreador.Mail, UsuarioId = mailCreador.Id, NombreTipoUsuario = mailCreador.TipoUsuario.NombreCorto });
             }
 
             var mailCliente = this.repositorio.Obtener<Usuario>(u => u.Mail == orden.Cliente.Mail && u.TipoUsuario.Id == orden.Cliente.TipoProveedor.Id);
             if (mailCliente != null)
             {
-                destinatarios.Add(new DestinatarioDto { Campo = "Cliente", Mail = mailCliente.Mail, UsuarioId = mailCliente.Id });
+                destinatarios.Add(new DestinatarioDto { Campo = "Cliente", Mail = mailCliente.Mail, UsuarioId = mailCliente.Id, NombreTipoUsuario = mailCliente.TipoUsuario.NombreCorto });
             }
 
             return destinatarios.ToList();
@@ -3054,6 +2984,20 @@ namespace SustitucionMOAUtils.Services
             var esInterno = (esAdmin || esComercial || esMesaFas || esPuerto);
 
             return esInterno;
+        }
+
+        private Proveedor ObtenerProveedorSeleccionado(Usuario usuario, int? idProveedorSeleccionado = null)
+        {
+            var proveedor = usuario.ObtenerProveedorAsignado() ?? usuario.ObtenerProveedor();
+            if (idProveedorSeleccionado != null && idProveedorSeleccionado != proveedor.Id)
+            {
+                proveedor = repositorio.Obtener<Proveedor>(idProveedorSeleccionado);
+                if (!usuario.EsAdmin() && !usuario.TienePermiso(PermisoEnum.ElegirTodosVendedores) && !usuario.TieneProveedor(proveedor.CodigoProveedor))
+                {
+                    throw new ValidationCustomException("Proveedor incorrecto");
+                }
+            }
+            return proveedor;
         }
     }
 }

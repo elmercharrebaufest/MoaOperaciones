@@ -52,3 +52,6 @@
 .text-repetido {
     color: rgb(198, 198, 92)!important;
 }
+.pointer{
+    cursor: pointer;
+}

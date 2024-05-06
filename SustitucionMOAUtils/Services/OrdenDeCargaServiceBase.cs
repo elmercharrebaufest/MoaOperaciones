@@ -13,7 +13,8 @@ using System.Collections.Generic;
 using System.Linq;
 using ScatoRepo = SustitucionMOAModel.Models.WebApiMap.ScatoRepositorio;
 using SustitucionMOARepositorio;
-using System.Configuration;
+using CNRTModel = SustitucionMOAModel.Models.WebApiMap.CNRT;
+using ModelScatoRepo =  SustitucionMOAModel.Models.WebApiMap.ScatoRepositorio;
 
 namespace SustitucionMOAUtils.Services
 {
@@ -23,20 +24,26 @@ namespace SustitucionMOAUtils.Services
         protected readonly IScatoConsumer scatoConsumer;
         protected readonly IScatoRepositorioClient scatoRepositorioClient;
         protected readonly IRepositorio repositorio;
-        
+        protected readonly ICNRTClient cNRTClient;
+
         protected OrdenDeCargaServiceBase(
             IOrdenCargaConsumerMOA ordenCargaConsumer,
             IScatoConsumer scatoConsumer,
             IScatoRepositorioClient scatoRepositorioClient,
-            IRepositorio repositorio)
+            IRepositorio repositorio,
+            ICNRTClient cNRTClient
+            )
         {
             this.scatoConsumer = scatoConsumer;
             this.ordenCargaConsumer = ordenCargaConsumer;
             this.scatoRepositorioClient = scatoRepositorioClient;
             this.repositorio = repositorio;
+            this.cNRTClient = cNRTClient;
         }
 
-
+        protected readonly int[] BASES_VALIDACION_CUIT = new int[] {
+            5, 4, 3, 2, 7, 6, 5, 4, 3, 2
+        };
         public ValidarCuitExisteScatoResponse ValidarCuitExisteScato(string cuit)
         {
             var clientes = scatoConsumer.ObtenerClientesPorCuit(cuit);
@@ -172,33 +179,25 @@ namespace SustitucionMOAUtils.Services
         {
             var choferRes = scatoRepositorioClient.ObtenerChoferPorCuil(DataFormatter.CuitConGuion(cuilChofer));
             var chofer = choferRes.Data;
+            var cuitValido = ValidarDigitoCuit(cuilChofer);
             if (!choferRes.IsValid)
             {
                 Log.Info("Error al obtener chofer de Scato " + cuilChofer);
-                foreach (var err in choferRes.Messages)
-                {
-                    Log.Info(string.Format("Error Scato código {0}, descripción: {1}", err.MessageCode, err.Message));
-                }
-
-                return (choferRes.Messages.All(msg => msg.MessageCode != ScatoRepo.CodigoMensajeObtenerChoferPorCuil.DigitoVerificadorNoValido), chofer);
+                LogMensajesScato(choferRes.Messages);
             }
-            return (true, chofer);
+            return (cuitValido, chofer);
         }
         public (bool, ScatoRepo.Chofer) ValidarCuitTransporte(string cuitTransporte)
         {
             var transporteRes = scatoRepositorioClient.ObtenerTransportePorCuit(DataFormatter.CuitConGuion(cuitTransporte));
             var transporte = transporteRes.Data;
+            var cuitValido = ValidarDigitoCuit(cuitTransporte);
             if (!transporteRes.IsValid)
             {
                 Log.Info("Error al obtener transporte de Scato " + cuitTransporte);
-                foreach (var err in transporteRes.Messages)
-                {
-                    Log.Info(string.Format("Error Scato código {0}, descripción: {1}", err.MessageCode, err.Message));
-                }
-
-                return (transporteRes.Messages.All(msg => msg.MessageCode != ScatoRepo.CodigoMensajeObtenerChoferPorCuil.DigitoVerificadorNoValido), transporte);
+                LogMensajesScato(transporteRes.Messages);
             }
-            return (true, transporte);
+            return (cuitValido, transporte);
         }
         public bool ValidarCuilChoferDigito(string cuilChofer)
         {
@@ -218,5 +217,80 @@ namespace SustitucionMOAUtils.Services
             }
             return new ProveedorDto(proveedor);
         }
+
+        public ValidarCamionResponse ValidarCamion(string patenteChasis, string patenteAcoplado)
+        {
+            try
+            {
+                var cnrtResponse = cNRTClient.ObtenerEquipos(patenteChasis, patenteAcoplado);
+                var dominios = cnrtResponse.Data.Dominios;
+
+                if (dominios == null || !dominios.Any())
+                {
+                    return new ValidarCamionResponse { ExisteCamion = false };
+                }
+
+                var tipoVehiculo = cnrtResponse.TipoVehiculoCNRTSegunCategoriaEscalado;
+
+                if (dominios.Any(d => d.Ruta == null || d.Ruta.CantEjes <= 0) && (
+                        tipoVehiculo == null ||
+                        tipoVehiculo == CNRTModel.TipoVehiculoCNRT.CamionBitren))
+                {
+                    return new ValidarCamionResponse { ExisteCamion = false };
+                }
+                else
+                {
+                    return new ValidarCamionResponse
+                    {
+                        ExisteCamion = true,
+                        EsCamionEscalable = (
+                            tipoVehiculo == CNRTModel.TipoVehiculoCNRT.CamionC ||
+                            tipoVehiculo == CNRTModel.TipoVehiculoCNRT.CamionD ||
+                            tipoVehiculo == CNRTModel.TipoVehiculoCNRT.CamionE)
+                    };
+                }
+            }
+            catch (InfoCustomException ice) { throw ice; }
+            catch (ValidationCustomException vce) { throw vce; }
+            catch (Exception ex)
+            {
+                Log.Error($"Error al validar camión con patentes: {patenteChasis} y {patenteAcoplado}.", ex);
+                throw;
+            }
+        }
+        private void LogMensajesScato(ModelScatoRepo.MessageItem[] messages)
+        {
+            foreach (var err in messages)
+            {
+                Log.Info(string.Format("Error Scato código {0}, descripción: {1}", err.MessageCode, err.Message));
+            }
+        }
+        public bool ValidarDigitoCuit(string cuit)
+        {
+            if(cuit.Length != 11)
+            {
+                throw new ValidationCustomException($"El cuit que se ha intentado validar no es correcto ({cuit})");
+            }
+            var auxiliar = BASES_VALIDACION_CUIT.WithIndex().Sum(
+                b => b.item * Char.GetNumericValue(cuit[b.index]
+                ));
+
+            auxiliar = 11 - (auxiliar % 11);
+
+            if (auxiliar == 11)
+            {
+                auxiliar = 0;
+            }else if (auxiliar == 10)
+            {
+                auxiliar = 9;
+            }
+            var ultimoDigito = Char.GetNumericValue(cuit.Last());
+            return auxiliar == ultimoDigito;
+        }
+    }
+    public static class IEnumerableExtensions
+    {
+        public static IEnumerable<(T item, int index)> WithIndex<T>(this IEnumerable<T> self)
+           => self.Select((item, index) => (item, index));
     }
 }

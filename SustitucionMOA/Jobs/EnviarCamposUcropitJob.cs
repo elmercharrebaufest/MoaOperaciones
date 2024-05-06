@@ -46,8 +46,8 @@ namespace SustitucionMOA.Jobs
                 var fechaLimiteConfig = repositorio.Obtener<Configuracion>(c => c.Code == "FechaLimiteCamposSustentables");
                 var fechaLimite = DataFormatter.StringToDateTime(fechaLimiteConfig.Value,"fechaLimiteCamposSustentables");
 
-                var camposAReportar = repositorio.Listar<CampoProveedor, CampoReporteDto>(
-                    cp => new CampoReporteDto
+                var camposAReportar = repositorio.Listar<CampoProveedor, CampoReporteDTO>(
+                    cp => new CampoReporteDTO
                     {
                         IdScato = cp.CampoCosecha.Campo.IdScato,
                         Id = cp.CampoCosecha.Campo.Id,
@@ -80,6 +80,7 @@ namespace SustitucionMOA.Jobs
 
 
                 var counter = 0;
+                var camposAReportarExcel = new List<CampoReporteDTO>();
 
                 var outputMemStream = new MemoryStream();
                 var zipStream = new ZipOutputStream(outputMemStream);
@@ -98,7 +99,7 @@ namespace SustitucionMOA.Jobs
                         continue;
                     }
                     CargarJSONReporteCampoEnZip(zipStream, fileName,campo);
-
+                    camposAReportarExcel.Add(campo);
 
                     counter += 1;
                     if(counter == limiteCamposPorMail)
@@ -108,6 +109,7 @@ namespace SustitucionMOA.Jobs
                         outputMemStream = new MemoryStream();
                         zipStream = new ZipOutputStream(outputMemStream);
                         zipStream.SetLevel(3);
+                        camposAReportarExcel = new List<CampoReporteDTO>();
                     }
                 }
 
@@ -157,12 +159,11 @@ namespace SustitucionMOA.Jobs
             outputMemStream.Dispose();
         }
 
-        private string ObtenerNombreArchivoDrive(CampoReporteDto campoReporte)
+        private string ObtenerNombreArchivoDrive(CampoReporteDTO campoReporte)
         {
-            
             return $"{campoReporte.CUIT}_{campoReporte.Id}_{campoReporte.NombreCosecha}";
         }
-        private void CargarJSONReporteCampoEnZip(ZipOutputStream zipStream,string fileName ,CampoReporteDto campo) {
+        private void CargarJSONReporteCampoEnZip(ZipOutputStream zipStream,string fileName ,CampoReporteDTO campo) {
 
             var reporteCertificadorJson = JsonConvert.SerializeObject(campo);
             var jsonBytes = Encoding.UTF8.GetBytes(reporteCertificadorJson);
@@ -174,7 +175,7 @@ namespace SustitucionMOA.Jobs
 
             CargarYCerrarZipEntry(zipStream,entry, new MemoryStream(jsonBytes));
         }
-        private void CargarKmzEnZip(ZipOutputStream zipStream, string fileName, CampoReporteDto campo)
+        private void CargarKmzEnZip(ZipOutputStream zipStream, string fileName, CampoReporteDTO campo)
         {
             string rutaArchivoKmz = campo.RutaKmz;
             string extension = Path.GetExtension(rutaArchivoKmz);
@@ -196,7 +197,6 @@ namespace SustitucionMOA.Jobs
             catch (Exception)
             {
                 stream = new MemoryStream(File.ReadAllBytes(campo.RutaKmz));
-
             }
 
             CargarYCerrarZipEntry(zipStream, entry, stream);
@@ -207,5 +207,10 @@ namespace SustitucionMOA.Jobs
             StreamUtils.Copy(stream, zipStream, new byte[4096]);
             zipStream.CloseEntry();
         }
+
+        private string GetExcelFile(List<CampoReporteDTO> camposAReportar)
+        {
+            return ExcelExport.ToExcel(camposAReportar, new string[] { "ID Scato", "ID Operaciones", "Titular CCPP", "CUIT", "Nombre del Establecimiento", "Provincia", "Departamento", "Localidad", "Latitud", "Longitud", "Has de soja declaradas" }, string.Empty);
+        } 
     }
 }

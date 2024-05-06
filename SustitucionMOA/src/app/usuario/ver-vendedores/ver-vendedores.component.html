@@ -1,0 +1,38 @@
+<div class="tab-pane" id="tab2">
+  <spinner></spinner>
+  <div class="formulario">
+      <section class="container-fluid">
+        <ng-container>
+          <div class="row myRow">
+              <div class="clearfix myTables">
+                <p-toast key="toastAlerta" [style]="{'white-space': 'pre-line'}"></p-toast>    
+                <p-toast key="toastPopupDetalles" [style]="{'white-space': 'pre-line'}"></p-toast>          
+                  <table id="tableModal" class="display nowrap dataTable no-footer dtr-inline rounded shadow animate"
+                      role="grid" aria-describedby="tableModal_info" style="width: 97%; padding:10px;">
+                      <thead>
+                          <tr role="row">
+                              <th tabindex="0" rowspan="1" colspan="1" style=" background:none">CUIT</th>
+                              <th tabindex="0" rowspan="1" colspan="1" style=" background:none">Razon Social</th>
+                              <th tabindex="0" rowspan="1" colspan="1" style=" background:none">Codigo Proveedor</th>
+                              <th tabindex="0" rowspan="1" colspan="1" style=" background:none">Estado</th>
+                              <th tabindex="0" rowspan="1" colspan="1" style=" background:none"></th>
+                          </tr>
+                      </thead>
+                      <tbody>
+                          <tr *ngFor="let vendedor of vendedores">
+                              <td>{{vendedor.CUIT}}</td>
+                              <td>{{vendedor.RazonSocial}}</td>
+                              <td>{{vendedor.CodigoProveedor}}</td>
+                              <td>{{vendedor.EstadoAprobacionDescripcion}}</td>
+                              <td><span title="Eliminar asociación" class="fa fa-user-times cursor-pointer"
+                                (click)="desasociarVendedor(vendedor)" style="font-size: 20px; color: #009688; margin-right: 5px;"></span>
+                              </td>                        
+                          </tr>
+                      </tbody>
+                  </table>
+              </div>
+          </div>
+      </ng-container>
+      </section>
+  </div>
+</div>

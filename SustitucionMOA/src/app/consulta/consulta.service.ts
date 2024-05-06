@@ -62,11 +62,16 @@ export class ConsultaService extends BaseService {
             .get('/api/consulta/GetDestinatariosConsultaFas', { params: params, headers: this.headers });
     }
 
-    public getDestinatarios(ordenId: number): Observable<any> {
+    public getDestinatarios(proveedorId: number): Observable<any> {
         let params: HttpParams = new HttpParams();
-        params = params.set('ordenId', ordenId.toString());
+        params = params.set('proveedorId', proveedorId.toString());
         return this.http
-            .get('/api/consulta/GetDestinatariosConsulta', { params: params, headers: this.headers });
+            .get('/api/consulta/GetDestinatario', { params: params, headers: this.headers });
+    }
+
+    public getVendedoresUsuario(): Observable<any> {
+        return this.http
+            .get('/api/consulta/GetVendedoresUsuario', { headers: this.headers });
     }
 
     public listarConsultas(): Observable<any> {
@@ -210,10 +215,10 @@ export class ConsultaService extends BaseService {
             .post('/api/consulta/AnularConsulta', payload, { headers: this.headersPost })
     }
 
-    public AgregarConsultaInterna(consulta: object, comentario: Comentario, archivo: any = null, destinatariosFas: Destinatario[]) {
+    public AgregarConsultaInterna(consulta: object, comentario: Comentario, destinatarios: Destinatario[], archivo: any = null) {
         let consultaJson = JSON.stringify(consulta);
         let comentarioJson = JSON.stringify(comentario);
-        let destinatariosFasJson = JSON.stringify(destinatariosFas);
+        let destinatariosJson = JSON.stringify(destinatarios);
         var payload = new FormData();
 
         if (archivo != null) {
@@ -225,7 +230,7 @@ export class ConsultaService extends BaseService {
 
         payload.append('consultaJson', consultaJson);
         payload.append('comentarioJson', comentarioJson);
-        payload.append('destinatariosFasJson', destinatariosFasJson);
+        payload.append('destinatariosJson', destinatariosJson);
         payload.append("file", archivo);
 
         return this.http

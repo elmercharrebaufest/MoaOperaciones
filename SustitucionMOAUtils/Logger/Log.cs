@@ -1,10 +1,12 @@
 ﻿using NLog.Config;
 using NLog.Targets;
 using SustitucionMOAAssets;
+using SustitucionMOAModel.Dto;
 using SustitucionMOAWS.Logger;
 using System;
 using System.IO;
 using System.Web.Hosting;
+using System.ServiceModel.Channels;
 
 namespace SustitucionMOAUtils.Logger
 {
@@ -13,6 +15,7 @@ namespace SustitucionMOAUtils.Logger
         private static readonly NLog.Logger DefaultLogger = NLog.LogManager.GetLogger("defaultLogger");
         private static readonly NLog.Logger AzureLogger = NLog.LogManager.GetLogger("azureLogger");
         private static readonly NLog.Logger ExternalAPILogger = NLog.LogManager.GetLogger("externalApiLogger");
+        private static readonly NLog.Logger FrontLogger = NLog.LogManager.GetLogger("frontLogger");
 
         public Log()
         {
@@ -196,6 +199,21 @@ namespace SustitucionMOAUtils.Logger
             catch (Exception e)
             {
                 Console.WriteLine("ERROR en API:" + e.Message);
+            }
+        }
+        public static void FrontError(FrontLoggerRequestDto frontData)
+        {
+            FrontError(frontData.ToString());
+        }
+        public static void FrontError(string message)
+        {
+            try
+            {
+                FrontLogger.Info(message);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("ERROR en front:" + e.Message);
             }
         }
     }

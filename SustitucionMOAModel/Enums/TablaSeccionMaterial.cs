@@ -3,7 +3,8 @@
     public enum TablaSeccionMaterial
     {
         Contacto = 0,
-        OrdenDeCarga,
-        OrdenDeCargaFason
+        OrdenDeCarga = 1,
+        OrdenDeCargaFason = 2,
+        OrdenResiduos = 3
     }
 }

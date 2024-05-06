@@ -27,6 +27,7 @@ namespace SustitucionMOAModel.Enums
         public const string NotaSiniestralidadART = "notaSiniestralidadART";
         public const string ProtocoloSanitarioCovid = "protocoloSanitarioCovid";
         public const string CampoSustentableKMZ = "campoSustentableKMZ";
+        public const string CampoSustentableAnalisisUcrop = "campoSustentableAnalisisUcrop";
         public const string DeclaracionCampoSustentable = "declaracionCampoSustentable";
         public const string ArchivoLogPesificaciones = "archivoLogPesificaciones";
         public const string AdjuntoSolp = "adjuntoSolp";

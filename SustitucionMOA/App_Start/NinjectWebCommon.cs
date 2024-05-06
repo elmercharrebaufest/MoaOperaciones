@@ -26,6 +26,9 @@ using System.Web;
 using SustitucionMOAUtils.DesignPattern.Interfaces;
 using SustitucionMOARepositorio.Repositorios.Interfaces;
 using SustitucionMOARepositorio.Repositorios;
+using SustitucionMOAUtils.Interfaces;
+using SustitucionMOAWS.GoogleDrive.Interfaces;
+using SustitucionMOAWS.GoogleDrive;
 
 [assembly: WebActivatorEx.PreApplicationStartMethod(typeof(SustitucionMOA.App_Start.NinjectWebCommon), "Start")]
 [assembly: WebActivatorEx.ApplicationShutdownMethodAttribute(typeof(SustitucionMOA.App_Start.NinjectWebCommon), "Stop")]
@@ -112,9 +115,10 @@ namespace SustitucionMOA.App_Start
             kernel.Bind<IActualizarBaseDeDatosSolpSapJob>().To(typeof(ActualizarBaseDeDatosSolpSapJob)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IVencimientoOrdenesDeCargaSapJob>().To(typeof(VencimientoOrdenesDeCargaSapJob)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IVencimientoOrdenesDeCargaFasonJob>().To(typeof(VencimientoOrdenesDeCargaFasonJob)).InScope(ctx => OperationContext.Current);
+            kernel.Bind<IVencimientoOrdenesResiduosJob>().To(typeof(VencimientoOrdenesResiduosJob)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IActualizarEstadoSolpSapJob>().To(typeof(ActualizarEstadoSolpSapJob)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IObtenerSolpsDesdeSAPJob>().To(typeof(ObtenerSolpsDesdeSAPJob)).InScope(ctx => OperationContext.Current);
-            kernel.Bind<IActualizarLocalidades>().To(typeof(ActualizarLocalidades)).InScope(ctx => OperationContext.Current);
+            kernel.Bind<IActualizarLocalidadesPartidosJob>().To(typeof(ActualizarLocalidadesPartidosJob)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IActualizarSISAJob>().To(typeof(ActualizarSISAJob)).InScope(ctx => OperationContext.Current);
             //kernel.Bind<ICampoSustentableService>().To(typeof(CampoSustentableService)).InScope(ctx => OperationContext.Current);
             //kernel.Bind<IHomeService>().To(typeof(HomeService)).InScope(ctx => OperationContext.Current);
@@ -137,6 +141,7 @@ namespace SustitucionMOA.App_Start
             kernel.Bind<IAltaClienteSAPJob>().To(typeof(AltaClienteSAPJob)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IEnviarMailReporteSOLPJob>().To(typeof(EnviarMailReporteSOLPJob)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IReporteOrdenDeCompraConsumerMOA>().To(typeof(ReporteOrdenDeCompraConsumerMOA)).InScope(ctx => OperationContext.Current);
+            kernel.Bind<ICcSsObtenerArchivosUcropJob>().To(typeof(CcSsObtenerArchivosUcropJob)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IEnviarCamposUcropitJob>().To(typeof(EnviarCamposUcropitJob)).InScope(ctx => OperationContext.Current);
 
 
@@ -222,13 +227,22 @@ namespace SustitucionMOA.App_Start
             kernel.Bind<DbContext>().To<MOAOperacionesDbContext>().InScope(ctx => HttpContext.Current);
             kernel.Bind<IRepositorio>().To<RepositorioEF>().InScope(ctx => HttpContext.Current);
             kernel.Bind<IRepositorioUsuario>().To<RepositorioUsuario>().InScope(ctx => HttpContext.Current);
+            kernel.Bind<IRepositorioCampoSustentable>().To<RepositorioCampoSustentable>().InScope(ctx => HttpContext.Current);
+            kernel.Bind<IRepositorioOrdenResiduos>().To<RepositorioOrdenResiduos>().InScope(ctx => HttpContext.Current);
             kernel.Bind<ICache, Cache>().To<Cache>().InSingletonScope();
 
             //Consulta Strategies
             kernel.Bind<IConsultaContext>().To<ConsultaContext>().InTransientScope();
             kernel.Bind<IConsultaStrategy>().To<ConsultaOrdenesStrategy>().InTransientScope();
+            kernel.Bind<IConsultaStrategy>().To<ConsultaFinalStrategy>().InTransientScope();
+            kernel.Bind<IConsultaStrategy>().To<ConsultaParcialStrategy>().InTransientScope();
+            kernel.Bind<IConsultaStrategy>().To<ConsultaGeneralStrategy>().InTransientScope();
+            kernel.Bind<IConsultaStrategy>().To<ConsultaActualizacionStrategy>().InTransientScope();
 
 
+            // GoogleDrive
+            kernel.Bind<IGoogleDriveHelper>().To<GoogleDriveHelper>().InScope(ctx => HttpContext.Current);
+            kernel.Bind<ICampoSustentableGoogleDrive>().To(typeof(CampoSustentableGoogleDrive)).InSingletonScope();
             //Activador Ninject Hangfire
             GlobalConfiguration.Configuration.UseNinjectActivator(kernel);
         }

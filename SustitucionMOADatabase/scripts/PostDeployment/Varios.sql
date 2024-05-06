@@ -213,6 +213,11 @@ BEGIN
 	insert into Configuracion values ('HoraCortePesificaciones','13:00')
 END
 
+IF NOT EXISTS (SELECT TOP 1 1 FROM Configuracion WHERE Code = 'DiasParaDiscreparCalidadesDescarga') 
+BEGIN
+	insert into Configuracion values ('DiasParaDiscreparCalidadesDescarga','-7')
+END
+
 IF NOT EXISTS (SELECT TOP 1 1 FROM Configuracion WHERE Code = 'FechaLimiteCamposSustentables') 
 BEGIN
 	insert into Configuracion values ('FechaLimiteCamposSustentables','2024-02-22 00:00')
