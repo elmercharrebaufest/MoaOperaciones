@@ -6346,11 +6346,9 @@ namespace SustitucionMOAUtils.Services
                 {
                     foreach (var nuevaSubposicion in nuevasSubposiciones)
                     {
-                        // Encuentra la posición existente correspondiente
                         var posicionExistente = cotizacion.CotizacionPosiciones.FirstOrDefault(pos => pos.PeticionDeOfertaSolpPosicion_Id == nuevaSubposicion.CotizacionPosicionId);
                         if (posicionExistente != null)
                         {
-                            // Crea la nueva subposición y configúrala
                             var cotizacionSubposicion = new CotizacionSubPosicion
                             {
                                 Cantidad = nuevaSubposicion.Cantidad,
@@ -6364,7 +6362,6 @@ namespace SustitucionMOAUtils.Services
                                 SolpSubPosicion = solpSubposiciones.FirstOrDefault(sub => sub.Id == nuevaSubposicion.SolpSubPosicionId)
                             };
 
-                            // Agrega la nueva subposición a la posición existente
                             posicionExistente.CotizacionSubPosiciones.Add(cotizacionSubposicion);
                         }
                     }
@@ -6414,7 +6411,6 @@ namespace SustitucionMOAUtils.Services
                                 }).ToList()
                         };
 
-                        // Agrega la nueva posición a la cotización
                         cotizacion.CotizacionPosiciones.Add(cotizacionPosicion);
                     }
                 }
@@ -6476,8 +6472,6 @@ namespace SustitucionMOAUtils.Services
         private void GuardarCotizacionHora(GuardarCotizacion cotizacionDto, Cotizacion cotizacion)
         {
             var cotizacionesHorasEntidad = repositorio.Listar<CotizacionHora>(x => x.Cotizacion_Id == cotizacion.Id);
-            //var cotizacionesHoraNuevo = new List<CotizacionHora>();
-
             if (cotizacionesHorasEntidad != null && cotizacionesHorasEntidad.Count > 0)
             {
                 var listaCotizacionBorrar = cotizacionesHorasEntidad.Where(coti => !cotizacionDto.CotizacionesHoras.Any(x => x.Id == coti.Id)).ToList();
@@ -6487,6 +6481,7 @@ namespace SustitucionMOAUtils.Services
                     repositorio.RemoverTodos(listaCotizacionBorrar);
                 }
             }
+
             if (cotizacionDto.CotizacionesHoras != null && cotizacionDto.CotizacionesHoras.Count > 0)
             {
                 foreach (var cotiHora in cotizacionDto.CotizacionesHoras)
@@ -6516,10 +6511,8 @@ namespace SustitucionMOAUtils.Services
                             ConfigurarHora = cotiHora.ConfigurarHora
                         };
                         repositorio.Agregar(cotiH);
-                        //cotizacionesHoraNuevo.Add(cotiH);
                     }
                 }
-                //repositorio.AgregarTodos(cotizacionesHoraNuevo);
             }
         }
 
