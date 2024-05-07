@@ -430,17 +430,17 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
                     }
                     if (this.expandedPositionRow) {
                         this.filtrarTablas();
-                        this.recalculando = false;
                         this.tablaPosiciones.toggleRow(this.expandedPositionRow);
                         this.calcularValoresACertificar(this.expandedPositionRow);
-
                     }
 
                     this.disabledFilter = false;
-                    
-                    if (this.spinnerComponent) 
+
+                    this.recalculando = false;
+
+                    if (this.spinnerComponent != undefined && this.spinnerComponent.visible) 
                         this.spinnerComponent.hideIt();
-                    
+
                     this.displayContent = true;
                     
                     // Se buscan las posiciones que están al 100%
