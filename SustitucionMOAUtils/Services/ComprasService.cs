@@ -6324,9 +6324,8 @@ namespace SustitucionMOAUtils.Services
         }
 
         private void CompletarCotizacionPosicionYSubposicionNueva(GuardarCotizacion cotizacionDto, Cotizacion cotizacion, List<TablaSap> info)
-        {
-            AgregarNuevaCotizacionPosicion(cotizacionDto, cotizacion, info);
-            AgregarNuevaSubposicionCotizacion(cotizacionDto, cotizacion, info);
+        {           
+            AgregarNuevaCotizacionPosicion(cotizacionDto, cotizacion, info);          
         }
 
         private void AgregarNuevaCotizacionPosicion(GuardarCotizacion cotizacionDto, Cotizacion cotizacion, List<TablaSap> info)
@@ -6373,41 +6372,6 @@ namespace SustitucionMOAUtils.Services
 
             repositorio.GuardarCambios();
 
-        }
-
-        private void AgregarNuevaSubposicionCotizacion(GuardarCotizacion cotizacionDto, Cotizacion cotizacion, List<TablaSap> info)
-        {
-            var nuevasSubposiciones = cotizacionDto.CotizacionSubposiciones.Where(x => cotizacion.CotizacionPosiciones.Any(pos => pos.PeticionDeOfertaSolpPosicion_Id == x.CotizacionPosicionId)).ToList();
-
-            if (nuevasSubposiciones != null && nuevasSubposiciones.Count > 0)
-            {
-                var nuevasSubposId = nuevasSubposiciones.Select(ns => ns.SolpSubPosicionId);
-                var solpSubposiciones = repositorio.Listar<SolpSubposicion>(x => nuevasSubposId.Contains(x.Id));
-                if (solpSubposiciones != null)
-                {
-                    foreach (var nuevaSubposicion in nuevasSubposiciones)
-                    {
-                        var posicionExistente = cotizacion.CotizacionPosiciones.FirstOrDefault(pos => pos.PeticionDeOfertaSolpPosicion_Id == nuevaSubposicion.CotizacionPosicionId);
-                        if (posicionExistente != null)
-                        {
-                            var cotizacionSubposicion = new CotizacionSubPosicion
-                            {
-                                Cantidad = nuevaSubposicion.Cantidad,
-                                Moneda_Id = nuevaSubposicion.MonedaId > 0 ? nuevaSubposicion.MonedaId : (int?)null,
-                                Moneda = nuevaSubposicion.MonedaId > 0 ? info.FirstOrDefault(moneda => moneda.Id == nuevaSubposicion.MonedaId) : null,
-                                Precio = nuevaSubposicion.Precio,
-                                UnidadDeMedida_Id = nuevaSubposicion.UnidadDeMedidaId > 0 ? nuevaSubposicion.UnidadDeMedidaId : (int?)null,
-                                UnidadDeMedida = nuevaSubposicion.UnidadDeMedidaId > 0 ? info.FirstOrDefault(unidad => unidad.Id == nuevaSubposicion.UnidadDeMedidaId) : null,
-                                CotizacionPosicion_Id = nuevaSubposicion.CotizacionPosicionId,
-                                SolpSubPosicion_Id = nuevaSubposicion.SolpSubPosicionId,
-                                SolpSubPosicion = solpSubposiciones.FirstOrDefault(sub => sub.Id == nuevaSubposicion.SolpSubPosicionId)
-                            };
-
-                            posicionExistente.CotizacionSubPosiciones.Add(cotizacionSubposicion);
-                        }
-                    }
-                }
-            }
         }
 
         private void GuardarArchivosCotizacion(Cotizacion cotizacion, HttpFileCollectionBase files)
