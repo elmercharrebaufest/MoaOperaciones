@@ -1667,18 +1667,17 @@ namespace SustitucionMOAUtils.Services
         private void LlenarOrdenAltaCorredorCliente(OrdenDeCarga ordenDeCarga, Usuario usuario)
         {
             var esComercial = usuario.TienePermiso(PermisoEnum.VerOrdenesDeCargaParaComerciales);
-            var esMultifirma = usuario.TienePermiso(PermisoEnum.SeleccionarVendedor);
-            Log.Info($"Llenar Orden de carga para alta. esComercial: {esComercial}. esMultifirma {esMultifirma}");
+            Log.Info($"Llenar Orden de carga para alta. esComercial: {esComercial}.");
 
             Proveedor cliente = null;
-            if (esComercial || (esMultifirma && ordenDeCarga.CUITCliente != usuario.CUITRegistro))
+            if (esComercial)
             {
                 cliente = repositorio.Obtener<Proveedor>(x =>
                     x.CUIT == ordenDeCarga.CUITCliente &&
                     x.EstadoAprobacion == EstadoAprobacion.Aprobado &&
                     x.TipoProveedor.Id == (int)TipoUsuarioEnum.Cliente);
 
-                if (!string.IsNullOrEmpty(ordenDeCarga.CUITCorredor) && esComercial)
+                if (!string.IsNullOrEmpty(ordenDeCarga.CUITCorredor))
                 {
                     var corredor = repositorio.Obtener<Proveedor>(x =>
                         x.CUIT == ordenDeCarga.CUITCorredor &&
