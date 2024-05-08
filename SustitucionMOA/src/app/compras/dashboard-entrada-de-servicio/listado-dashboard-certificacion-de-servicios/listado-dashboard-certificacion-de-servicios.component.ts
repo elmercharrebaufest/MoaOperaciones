@@ -430,7 +430,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
                     }
                     if (this.expandedPositionRow) {
                         this.filtrarTablas();
-                        this.tablaPosiciones.toggleRow(this.expandedPositionRow);
+                        //this.tablaPosiciones.toggleRow(this.expandedPositionRow);
                         this.calcularValoresACertificar(this.expandedPositionRow);
                     }
 
@@ -503,6 +503,10 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
             } else if (result.data != undefined) {
                 this.recalculando = true;
                 this.disabledFilter = true;
+                this.numeroLineaSelected.clear();
+                this.itemSelected = [];
+                this.itemIdSelected = [];
+
                 this.floatMsgService.setSuccessMsg("Se ha eliminado la entrada de servicio " + Id);
                 this.getListarPO(this.proveedor, this.ordenCompraId, this.fechaInicioConfigurado, this.fechaFinConfigurado);
                 setTimeout(() => {
