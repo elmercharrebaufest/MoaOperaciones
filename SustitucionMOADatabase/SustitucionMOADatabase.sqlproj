@@ -223,6 +223,8 @@
     <Build Include="DBO\Tables\AlmacenMaterial.sql" />
     <Build Include="DBO\Tables\MonedaConversion.sql" />
     <Build Include="DBO\Tables\CotizacionHistorial.sql" />
+    <Build Include="DBO\Tables\ProgresoCurso.sql" />
+    <Build Include="DBO\Tables\Curso.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DatabasePublishQA.xml" />

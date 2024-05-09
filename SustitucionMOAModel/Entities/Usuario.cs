@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json.Serialization;
-using SustitucionMOAModel.Enums;
+﻿using SustitucionMOAModel.Enums;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -36,6 +35,9 @@ namespace SustitucionMOAModel.Entities
 
         [InverseProperty("Usuario")]
         public virtual ICollection<PeticionDeOferta> Peticiones { get; set; }
+
+        [InverseProperty("Alumno")]
+        public virtual ICollection<ProgresoCurso> ProgresoCursosAsignados { get; set; }
 
         public Rol ObtenerRolPrincipal()
         {
@@ -353,6 +355,8 @@ namespace SustitucionMOAModel.Entities
                 case "MODIFICAR ESTADO PROVEEDOR": return PermisoEnum.ModificarEstadoProveedor;
 
                 case "ARCHIVOS BOLETOS": return PermisoEnum.ArchivosBoletos;
+                case "ADMINISTRAR CURSOS": return PermisoEnum.AdminCursos;
+                case "REALIZAR CURSOS": return PermisoEnum.RealizarCursos;
                 //default: throw new Exception("Permiso no mapeado: " + permisoStr);
                 default: return null;
             }
@@ -436,6 +440,7 @@ namespace SustitucionMOAModel.Entities
                 case "RESIDUOS": return RolEnum.Residuos;
                 case "RESIDUOS ADMIN": return RolEnum.ResiduosAdmin;
                 case "API ORDENES RESIDUOS": return RolEnum.ApiOrdenesResiduos;
+                case "ADMIN CURSOS": return RolEnum.AdminCursos;
                 //default: throw new Exception("Rol no mapeado: " + codigoRol);
                 default: return null;
             }

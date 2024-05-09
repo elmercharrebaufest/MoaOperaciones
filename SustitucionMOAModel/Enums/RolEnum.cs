@@ -76,7 +76,8 @@
         OrdenDeCarga,
         Residuos,
         ResiduosAdmin,
-        ApiOrdenesResiduos
+        ApiOrdenesResiduos,
+        AdminCursos,
         // Al agregar un elemento acá, se debe agregar el mapeo en: clase Usuario, método ObtenerRolEnum
     }
 }

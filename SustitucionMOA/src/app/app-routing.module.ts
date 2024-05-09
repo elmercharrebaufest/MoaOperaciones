@@ -153,7 +153,10 @@ const appRoutes: Routes = [
                 path: "reporte-contrato",
                 loadChildren: "./reporte-contrato/reporte-contrato.module#ReporteContratoModule",
             },
-
+            {
+                path: "cursos",
+                loadChildren: "./cursos/cursos.module#CursosModule",
+            },
             { path: "notificaciones", component: ListadoNotificacionesComponent },
             { path: "notificaciones/alta", component: AltaNotificacionesComponent },
             { path: "notificaciones/alta/:id", component: AltaNotificacionesComponent },

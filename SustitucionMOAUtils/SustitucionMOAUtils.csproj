@@ -187,6 +187,7 @@
     <Compile Include="Helpers\CurrentTimeProvider.cs" />
     <Compile Include="Interfaces\IAplicacionCartaPorteApiService.cs" />
     <Compile Include="Interfaces\IArchivoBoletoService.cs" />
+    <Compile Include="Interfaces\ICursoService.cs" />
     <Compile Include="Interfaces\IDBService.cs" />
     <Compile Include="Interfaces\IEmailFasonService.cs" />
     <Compile Include="Interfaces\IEmailResiduosService.cs" />
@@ -250,6 +251,7 @@
     <Compile Include="Services\AplicacionCartaPorteService.cs" />
     <Compile Include="Interfaces\IEmailService.cs" />
     <Compile Include="Services\ArchivoBoletoService.cs" />
+    <Compile Include="Services\CursoService.cs" />
     <Compile Include="Services\Email\EmailFasonService.cs" />
     <Compile Include="Services\Email\EmailResiduosService.cs" />
     <Compile Include="Services\ExternalApiOrdenesResiduosService.cs" />

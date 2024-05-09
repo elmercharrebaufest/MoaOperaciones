@@ -110,7 +110,9 @@
         VerOrdenesDeCargaResiduos,
         VerOrdenesDeCargaResiduosAdmin,
         ModificarEstadoProveedor,
-        ArchivosBoletos
+        ArchivosBoletos,
+        AdminCursos,
+        RealizarCursos
         // Al agregar un elemento acá, se debe agregar el mapeo en: clase Usuario, método ObtenerPermisoEnum
     }
 }

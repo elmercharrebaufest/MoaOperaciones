@@ -67,6 +67,10 @@
     <Compile Include="Dto\Compras\LogCotizacionDto.cs" />
     <Compile Include="Dto\Compras\InfoVisitasDeObraDto.cs" />
     <Compile Include="Dto\CondicionDePagoDto.cs" />
+    <Compile Include="Dto\Curso\ActualizarProgresoReqDto.cs" />
+    <Compile Include="Dto\Curso\AsignarReqDto.cs" />
+    <Compile Include="Dto\Curso\CursoDto.cs" />
+    <Compile Include="Dto\Curso\CursoUsuarioDto.cs" />
     <Compile Include="Dto\MonedaConversionDto.cs" />
     <Compile Include="Dto\ArchivoBoleto\ActualizarArchivoBoletoDto.cs" />
     <Compile Include="Dto\ArchivoBoleto\ArchivoBoletoDto.cs" />
@@ -210,6 +214,7 @@
     <Compile Include="Dto\Compras\UsuarioComprasRelacionConUsuariosDto.cs" />
     <Compile Include="Dto\UsuarioModificacionDto.cs" />
     <Compile Include="Entities\CotizacionHistorial.cs" />
+    <Compile Include="Entities\Curso.cs" />
     <Compile Include="Entities\MonedaConversion.cs" />
     <Compile Include="Entities\ArchivoBoleto.cs" />
     <Compile Include="Entities\Almacen.cs" />
@@ -218,6 +223,7 @@
     <Compile Include="Entities\OrdenResiduos.cs" />
     <Compile Include="Entities\EstadoArchivoBoleto.cs" />
     <Compile Include="Entities\PaisesSap.cs" />
+    <Compile Include="Entities\ProgresoCurso.cs" />
     <Compile Include="Entities\RegionSap.cs" />
     <Compile Include="Entities\ChatInternoCompras.cs" />
     <Compile Include="Entities\AplicacionCartaPorte.cs" />
@@ -246,6 +252,7 @@
     <Compile Include="Entities\UnidadMedidaSap.cs" />
     <Compile Include="Entities\VerificarActividadUsuario.cs" />
     <Compile Include="Enums\CondicionRetiro.cs" />
+    <Compile Include="Enums\EstadoCursoEnum.cs" />
     <Compile Include="Enums\EstadoOrdenResiduosEnum.cs" />
     <Compile Include="Enums\FlujoActualizacionOrdenResiduos.cs" />
     <Compile Include="Enums\TipoLegajo.cs" />

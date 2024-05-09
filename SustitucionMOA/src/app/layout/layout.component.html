@@ -682,7 +682,28 @@
                     </div>
                 </div>
 
-
+                <div class="panel panel-default" *ngIf="isAuthorized('ACCEDER A CURSOS')">
+                    <div class="panel-heading seccion" role="tab" id="usuarios">
+                        <a class="link-header collapsed" data-toggle="collapse" data-parent="#accordionMenu"
+                            href="#collapseU" aria-expanded="false" aria-controls="collapseU">
+                            Cursos <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+                        </a>
+                    </div>
+                    <div id="collapseU" class="collapse" aria-labelledby="usuarios" role="tabpanel">
+                        <div class="panel-body">
+                            <div *ngIf="isAuthorized('REALIZAR CURSOS')">
+                                <a (click)="goToSeccion('/cursos/mis-cursos')" href="#">
+                                    Mis Cursos
+                                </a>
+                            </div>
+                            <div *ngIf="isAuthorized('ADMINISTRAR CURSOS')">
+                                <a (click)="goToSeccion('/altas')" href="#">
+                                    Administrar Cursos
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <!-- DEPRECADO! -->
                 <!-- <nav>
         <ul class="nav">

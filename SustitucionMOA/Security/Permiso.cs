@@ -142,5 +142,9 @@
 
         /*PROVEEDORES*/
         public const string MODIFICAR_ESTADO_PROVEEDOR = "MODIFICAR ESTADO PROVEEDOR";
+
+        /*CURSOS*/
+        public const string ADMINISTRAR_CURSOS = "ADMINISTRAR CURSOS";
+        public const string REALIZAR_CURSOS = "REALIZAR CURSOS";
     }
 }

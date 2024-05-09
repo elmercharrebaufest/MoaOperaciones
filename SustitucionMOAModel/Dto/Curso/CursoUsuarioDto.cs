@@ -1,0 +1,20 @@
+﻿using SustitucionMOAModel.Enums;
+
+namespace SustitucionMOAModel.Dto.Curso
+{
+    public class CursoUsuarioDto
+    {
+        public CursoUsuarioDto(Entities.ProgresoCurso progreso)
+        {
+            CursoId = progreso.CursoId;
+            NombreCurso = progreso.Curso.Nombre;
+            EstadoCurso = progreso.FechaCompletado != null ? EstadoCursoEnum.Completado :
+                          progreso.FechaUltimoIntento != null ? EstadoCursoEnum.EnProgreso :
+                          progreso.FechaInicio != null ? EstadoCursoEnum.Iniciado : EstadoCursoEnum.SinIniciar;
+        }
+
+        public int CursoId { get; set; }
+        public string NombreCurso { get; set; }
+        public EstadoCursoEnum EstadoCurso { get; set; }
+    }
+}
