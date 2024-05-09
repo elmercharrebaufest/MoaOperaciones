@@ -1,0 +1,20 @@
+import { NgModule } from "@angular/core";
+import { RouterModule, Routes } from "@angular/router";
+import { OrdenesResiduosListadoComponent } from "./listado/ordenes-residuos.listado.component";
+import { OrdenesResiduosAltaComponent } from "./alta/ordenes-residuos.alta.component";
+import { OrdenesResiduosDetalleComponent } from "./detalle/ordenes-residuos.detalle.component";
+
+const rutas: Routes = [
+    { path: '', component: OrdenesResiduosListadoComponent },
+    { path: 'alta', component: OrdenesResiduosAltaComponent },
+    { path: 'alta/:id', component: OrdenesResiduosAltaComponent },
+    { path: 'detalle/:id', component: OrdenesResiduosDetalleComponent }
+];
+
+@NgModule({
+    imports: [RouterModule.forChild(rutas)],
+    exports: [RouterModule]
+})
+
+export class OrdenesResiduosRoutingModule { }
+

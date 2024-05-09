@@ -1,4 +1,6 @@
 ﻿using Kendo.DynamicLinq;
+using SustitucionMOAModel;
+using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Models.DataAgro;
 using System;
 using System.Collections.Generic;
@@ -8,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace SustitucionMOAUtils.Interfaces
 {
-    public interface ICrearContratoService
+    public interface IDataAgroApiService
     {
         string ObteneDatosContrato(int tiponegocio);
         string CrearContratoAPrecio(ContratoAPrecio contratoAPrecio);
@@ -36,5 +38,7 @@ namespace SustitucionMOAUtils.Interfaces
         string ConfiguracionBolsaAutomatica();
         byte[] ExcelModeloAltaMasiva();
         string TraerHabilitarSustentable();
+        List<LocalidadDto> ListarLocalidades();
+        List<PartidoDto> ListarPartidos();
     }
 }

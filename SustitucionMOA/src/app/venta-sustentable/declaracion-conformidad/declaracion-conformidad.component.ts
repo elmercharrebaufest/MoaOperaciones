@@ -43,7 +43,7 @@ export class DeclaracionConformidadComponent extends BaseComponent implements On
   razonSocialDeclaracion: string = ""
   hectareasTotales: number = 0;
   totalidadCosecha: number = 1;
-  file: File
+  file: File;
   esCorredor: boolean = false;
   operarComo: number = 1;
 
@@ -94,6 +94,9 @@ export class DeclaracionConformidadComponent extends BaseComponent implements On
     }
   }
 
+  sizeArrayArchivoImprimido = null;
+  showModalConfirmacion = false;
+
   imprimir() {
     this.mensajeImpresionComponent.setMsgsEmpty();
 
@@ -116,6 +119,7 @@ export class DeclaracionConformidadComponent extends BaseComponent implements On
               this.floatMessage.setErrorMsg(result.error)
             } else {
               var byteArray = new Uint8Array(result.data);
+              this.sizeArrayArchivoImprimido = byteArray.byteLength;
               var blob = new Blob([byteArray], {
                 type: "application/pdf",
               });
@@ -186,9 +190,9 @@ export class DeclaracionConformidadComponent extends BaseComponent implements On
           this.mensajeComponent.setInfoMsg(result.info);
         } else {
           this.mensajeComponent.setSuccessMsg(result);
-
           this.cerrarModal();
           this.resultadoDeclaracion.emit(true)
+
         }
       },
       error => {

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SustitucionMOAModel.Dto;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,10 +17,15 @@ namespace SustitucionMOAModel.Models.WSMapMOA.Proforma
         public string vendedores { get; set; }
         public CabeceraView cabecera { get; set; }
         public string error { get; set; }
+        public bool LiquidacionParcialEmitida { get; set; }
+        public bool FaltanDatosDeCalidad { get; set; }
+        public List<PesificacionSapDto> Pesificaciones { get; set; }
 
-        public DetalleCteWSMOAResponse() {
+        public DetalleCteWSMOAResponse()
+        {
             this.salidas = new List<SalidaView>() { };
-            this.subTotal = new SalidaView() {
+            this.subTotal = new SalidaView()
+            {
                 caracteristica = "Subtotal",
                 importeString = "$0,00",
                 importe = 0,
@@ -28,7 +34,8 @@ namespace SustitucionMOAModel.Models.WSMapMOA.Proforma
                 totalString = "$0,00",
                 total = 0
             };
-            this.saldoAPagar = new SalidaView() {
+            this.saldoAPagar = new SalidaView()
+            {
                 caracteristica = "Saldo a Pagar - Liquidación Final",
                 importeString = "$0,00",
                 importe = 0,
@@ -37,9 +44,7 @@ namespace SustitucionMOAModel.Models.WSMapMOA.Proforma
                 totalString = "$0,00",
                 total = 0
             };
-
         }
-
     }
 
     public class DetalleCteExcelWSMOAResponse
@@ -70,8 +75,6 @@ namespace SustitucionMOAModel.Models.WSMapMOA.Proforma
                 iva = 0,
                 total = 0
             };
-
         }
-
     }
 }

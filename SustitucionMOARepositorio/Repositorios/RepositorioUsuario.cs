@@ -1,12 +1,10 @@
 ﻿using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
 using SustitucionMOARepositorio.Repositorios.Interfaces;
-using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Data.SqlClient;
 
 namespace SustitucionMOARepositorio.Repositorios
 {
@@ -32,7 +30,8 @@ namespace SustitucionMOARepositorio.Repositorios
                         NombreCorto = u.TipoUsuario.NombreCorto
                     },
                     u.OrganizacionDeCompra,
-                    Proveedores = u.Proveedores.Select(x => new { x.CUIT, TipoId = x.TipoProveedor.Id, x.RazonSocial })
+                    Proveedores = u.Proveedores.Select(x => new { x.CUIT, TipoId = x.TipoProveedor.Id, x.RazonSocial }
+                    ),
                 }).ToList();
 
             var usuariosDto = (
@@ -64,10 +63,17 @@ namespace SustitucionMOARepositorio.Repositorios
                             u.Proveedores.FirstOrDefault(x => x.CUIT == u.CUITRegistro) ??
                             u.Proveedores.FirstOrDefault()
                         ).RazonSocial
-                        : ""
+                        : "",
                 }).ToList();
 
             return usuariosDto;
+        }
+
+        public bool VerificarActividadUsuario(Usuario usuario)
+        {
+            return ExecuteQuery<VerificarActividadUsuario>
+                ("exec VerificarActividadUsuarioID @IdUsuario", new SqlParameter("@IdUsuario", usuario.Id))
+                .Any(verificacion=>verificacion.SeEncontraronRegistros);
         }
     }
 }

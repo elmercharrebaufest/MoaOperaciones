@@ -81,7 +81,7 @@ namespace SustitucionMOAUtils.Services
             };
 
             var usuario = repositorio.Obtener<Usuario>(u => u.Id == comentario.Usuario_Id);
-            var esInterno = usuario.TienePermiso("CONSULTA ABM");
+            var esInterno = usuario.TienePermiso(PermisoEnum.ConsultaAbm);
 
             if (esInterno && consulta.EstadoConsulta.Code == "GES")
             {
@@ -140,6 +140,10 @@ namespace SustitucionMOAUtils.Services
                 {
                     throw new InfoCustomException("Tiene que ser proveedor directo para consultar sobre Informe Comercial.");
                 }
+            }
+            if (categoria.Code == Categorias.DiscrepanciaCalidad)
+            {
+                consulta.Detalle.Rubro = consulta.Detalle.Rubro.Replace("break", "<br>");
             }
 
             if (categoria.Code == Categorias.Final)
@@ -305,6 +309,7 @@ namespace SustitucionMOAUtils.Services
                     Id = c.Detalle.CausaConsulta.Id,
                     Nombre = c.Detalle.CausaConsulta.Nombre
                 } : null,
+                Rubro = c.Detalle.Rubro
             };
 
             ret.Comentarios = c.Comentarios.Select(x => new ComentarioDto()
@@ -315,6 +320,7 @@ namespace SustitucionMOAUtils.Services
                 UsuarioId = x.Usuario_Id,
                 Recordado = x.Recordado,
                 FechaRecordado = x.FechaRecordado,
+                CreadorInterno = x.Usuario.TienePermiso(PermisoEnum.ConsultaAbm),
                 Usuario = new UsuarioDto()
                 {
                     Id = x.Usuario.Id,
@@ -479,21 +485,23 @@ namespace SustitucionMOAUtils.Services
 
         public List<ConsultaDto> ListarConsultas(int usuarioId, bool obtenerTodos)
         {
-            var ret = new List<ConsultaDto>();
 
             var includes = new List<Expression<Func<Consulta, object>>>();
-            includes.Add(x => x.Detalle);
-            includes.Add(x => x.Detalle.CausaConsulta);
-            includes.Add(x => x.Categoria);
-            includes.Add(x => x.SubCategoria);
-            includes.Add(x => x.EstadoConsulta);
+            //includes.Add(x => x.Detalle);
+            //includes.Add(x => x.Detalle.CausaConsulta);
+            //includes.Add(x => x.Categoria);
+            //includes.Add(x => x.SubCategoria);
+            //includes.Add(x => x.EstadoConsulta);
 
             var usuario = repositorio.Obtener<Usuario>(usuarioId);
             var esInterno = usuario.TienePermiso(PermisoEnum.ConsultaAbm);
             var categorias = usuario.Roles.Where(x => x.Categorias.Any()).SelectMany(x => x.Categorias).Select(x => x.Id).ToList();
 
-            ret = repositorio.Listar<Consulta>(x => (obtenerTodos && categorias.Contains(x.Categoria.Id)) || x.Usuario_Id == usuarioId, includes: includes)
-                .Select(x => new ConsultaDto
+            var proveedorAsignado = usuario.ObtenerProveedor();
+            var usuarioAprobado = proveedorAsignado.EstadoAprobacion == EstadoAprobacion.Aprobado;
+
+            var ret = repositorio.Listar<Consulta, ConsultaDto>(
+                x => new ConsultaDto
                 {
                     Id = x.Id,
                     Asunto = x.Asunto,
@@ -515,7 +523,12 @@ namespace SustitucionMOAUtils.Services
                         Code = x.SubCategoria.Code,
                         Nombre = x.SubCategoria.Nombre,
                         CategoriaId = x.SubCategoria.Categoria_Id
-                    } : new SubCategoriaDto { Nombre = "" },
+                    } : new SubCategoriaDto {
+                        Id = 0,
+                        Code = "",
+                        Nombre = "",
+                        CategoriaId = 0
+                    },
                     EstadoConsultaId = x.EstadoConsulta_Id,
                     Material_Id = x.Detalle.Material_Id,
                     Material = x.Categoria.Code == "APP" ? x.Detalle.OtroComprobanteNo : "",
@@ -545,8 +558,20 @@ namespace SustitucionMOAUtils.Services
                     {
                         Id = x.Detalle.CausaConsulta.Id,
                         Nombre = x.Detalle.CausaConsulta.Nombre
-                    } : null
-                }).ToList();
+                    } : null,
+                    RelacionadaPorCodigo = x.Usuario_Id != usuarioId,
+                    GeneradaInternamente = x.UsuarioInterno_Id != null && x.UsuarioInterno_Id != usuarioId,
+                    GeneradaPorUsuarioSesion = x.UsuarioInterno_Id == usuarioId,
+                    GeneradaExternamente = x.UsuarioInterno_Id == null,
+                    MailUsuarioIniciaConsulta = x.UsuarioInterno_Id == null ? x.Usuario.Mail : x.UsuarioInterno.Mail,
+                    Rubro = x.Detalle.Rubro
+                }
+                ,
+                x =>
+                (obtenerTodos && categorias.Contains(x.Categoria.Id)) ||
+                (x.Usuario.CUITRegistro == usuario.CUITRegistro && usuarioAprobado && !esInterno) ||
+                x.Usuario_Id == usuarioId
+                ).ToList();
 
             return ret;
         }
@@ -591,7 +616,7 @@ namespace SustitucionMOAUtils.Services
             var usuario = repositorio.Obtener<Usuario>(u => u.Id == consulta.Usuario_Id);
             consulta.Categoria_Id = categoriaId;
 
-            if(consulta.EstadoConsulta_Id != estadoCerrado.Id 
+            if (consulta.EstadoConsulta_Id != estadoCerrado.Id
                 && estado.Id == estadoCerrado.Id)
             {
                 consulta.FechaVtoReapertura = DateTime.Now.AddDays(7);
@@ -642,9 +667,9 @@ namespace SustitucionMOAUtils.Services
                 }
             }
 
-            if(categoria.Code == "ACT")
+            if (categoria.Code == "ACT")
             {
-                if(subCategoria.Code == "CM05" && estado.Code == "CER")
+                if (subCategoria.Code == "CM05" && estado.Code == "CER")
                 {
                     gestionImpuestosService.ActualizarCM05(consultaId, usuario);
                 }
@@ -670,7 +695,7 @@ namespace SustitucionMOAUtils.Services
             {
                 var file = files[i];
                 var fileName = string.Format("{0}_{1}", comentario.Id, Path.GetFileName(file.FileName));
-                
+
                 var ruta = ArmarRutaCarpeta(comentario); // $"{ConfigurationManager.AppSettings["RutaArchivosProveedores"]}/{proveedor.CUIT}/{proveedor.Id}/{FileKeys.Consultas}/{consultaId}";
                 var rutaArchivo = string.Concat(ruta, "/", fileName);
 
@@ -755,14 +780,14 @@ namespace SustitucionMOAUtils.Services
                     "PROVGC", "FLECONSULTA", "OTRO", "PARDIR", "PARCOR",
                     "FINDIR", "FINCOR", "FLE", "CRDECPE", "ORD"
                 };
-  
+
                 var user = repositorio.Obtener<Usuario>(u => u.Id == usuario.Id);
                 var rolesUsuario = user.Roles.Where(r => categoriasContacto.Contains(r.Codigo))
                     .Select(r => r.Codigo).ToList();
 
                 var categorias = repositorio.Listar<Categoria>(c => rolesUsuario.Contains(c.Code));
 
-                return categorias.Select(x => new CategoriaDto(x)).ToList();
+                return categorias.Select(x => new CategoriaDto(x)).OrderBy(c => c.Nombre).ToList();
             }
             catch (ValidationCustomException e)
             {
@@ -1218,9 +1243,9 @@ namespace SustitucionMOAUtils.Services
             string mensajeResultado = string.Empty;
 
             Categoria categoria = repositorio.Obtener<Categoria>(c => c.Id == consulta.Categoria_Id);
-          
+
             var estrategia = this.consultaContext.GetStrategy(categoria.Nombre);
-            
+
             consulta = estrategia.AgregarConsulta(consulta, comentario, destinatarios, files);
 
             return new AgregarConsultaResponseDto
@@ -1229,20 +1254,19 @@ namespace SustitucionMOAUtils.Services
                 Mensaje = mensajeResultado,
             };
         }
-
         public void ReabrirConsulta(int consultaId, UsuarioDto usuarioActual)
         {
             var consulta = GetConsulta(consultaId);
 
-            if (usuarioActual.Id != consulta.Usuario_Id)
+            if (usuarioActual.Id != consulta.Usuario_Id && usuarioActual.CUIT != consulta.Usuario.CUITRegistro)
                 throw new ValidationCustomException("No se puede reabrir la consulta ya que ud no inició esta consulta.");
 
             var estadoIniciado = GetEstadoConsulta("INI");
             var estadoCerrado = GetEstadoConsulta("CER");
-            
+
             if (consulta.EstadoConsulta_Id != estadoCerrado.Id)
                 throw new ValidationCustomException("La consulta ya se encuentra en gestión.");
-            
+
             if (consulta.UsuarioInterno_Id != null)
                 throw new ValidationCustomException("Ud no tiene permiso para reabrir esta consulta.");
 
@@ -1254,11 +1278,11 @@ namespace SustitucionMOAUtils.Services
         {
             var estadoConsulta = repositorio.Obtener<EstadoConsulta>(c => c.Code == codigo);
 
-            if (estadoConsulta == null) 
+            if (estadoConsulta == null)
                 throw new InfoCustomException("No existe el estado de la consulta.");
 
             return estadoConsulta;
         }
 
-    }   
+    }
 }

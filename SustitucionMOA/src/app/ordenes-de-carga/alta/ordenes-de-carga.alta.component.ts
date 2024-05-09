@@ -273,8 +273,21 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
         }
 
         if (this.validaCPEDG) {
-            if (this.ordenDeCarga.CUITDestinatario && !this.revisarCUITFormatoValido(this.ordenDeCarga.CUITDestinatario)) {
+            if (!this.ordenDeCarga.CUITDestinatario ||
+                (this.ordenDeCarga.CUITDestinatario && !this.revisarCUITFormatoValido(this.ordenDeCarga.CUITDestinatario))
+            ) {
                 this.mensajeComponent.setInfoMsg("Ingrese un CUIT de Destinatario válido.");
+                return false;
+            }
+            if (!this.ordenDeCarga.CUITDestino ||
+                (this.ordenDeCarga.CUITDestino && !this.revisarCUITFormatoValido(this.ordenDeCarga.CUITDestino))
+            ) {
+                this.mensajeComponent.setInfoMsg("Ingrese un CUIT de Destino válido.");
+                return false;
+            }
+
+            if (!this.ordenDeCarga.RazonSocialDestinatario || !this.ordenDeCarga.RazonSocialDestino) {
+                this.mensajeComponent.setInfoMsg("Ingrese una razón social para el destino/destinatario.");
                 return false;
             }
 
@@ -1190,14 +1203,15 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
         this.gestiona[campo] = true;
         this.ordenDeCarga[campo.replace("CUIT", "RazonSocial")] = razonSocial;
         this.displayModal = null;
-        this.mensajesGestionCuit[campo] = `Se solicitará la gestión del alta para el cuit: ${this.ordenDeCarga[campo]}`;
+        this.mensajesGestionCuit[campo] = `Se solicitará la gestión del alta para la cuit: ${this.ordenDeCarga[campo]}`;
     }
 
     cancelarGestionAltaCUIT() {
         this.ordenDeCarga[this.displayModal] = undefined
         this.gestiona[this.displayModal] = false;
-        this.displayModal = null;
         this.mensajesGestionCuit[this.displayModal] = '';
+        this.displayModal = null;
+        this.focusRazonSocialParaGestion = true;
     }
 
     validarSisaCorredorCliente() {

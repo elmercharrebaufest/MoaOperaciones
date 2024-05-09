@@ -32,5 +32,7 @@ Post-Deployment Script Template
 :r .\UnidadMedidaSap.sql
 :r .\UsuariosConRolFleteMOA.sql
 :r .\RegionSap.sql
+:r .\EstadoOrdenResiduos.sql
+:r .\AlmacenMaterial.sql
 
 

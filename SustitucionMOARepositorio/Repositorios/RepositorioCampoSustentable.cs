@@ -1,0 +1,60 @@
+﻿using SustitucionMOAModel.Dto;
+using SustitucionMOAModel.Entities;
+using SustitucionMOARepositorio.Repositorios.Interfaces;
+using System;
+using System.Collections.Generic;
+using System.Data.Entity;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SustitucionMOARepositorio.Repositorios
+{
+    public class RepositorioCampoSustentable : RepositorioEF, IRepositorioCampoSustentable
+    {
+        public RepositorioCampoSustentable(DbContext context) : base(context) { }
+
+        public CampoReporteDTO ObtenerReporteCertificador(int idCampoCosecha, int idProveedor)
+        {
+            var dto = (
+                from cp in Set<CampoProveedor>()
+                where cp.CampoCosecha_Id == idCampoCosecha && cp.Proveedor_Id == idProveedor
+                select new CampoReporteDTO
+                {
+                    IdScato = cp.CampoCosecha.Campo.IdScato,
+                    CUIT = cp.CUIT,
+                    Departamento = cp.CampoCosecha.Campo.Localidad.Partido.Descripcion,
+                    HectareasSoja = cp.HectareasSoja,
+                    Id = cp.CampoCosecha.Campo.Id,
+                    Latitud = cp.Latitud,
+                    Localidad = cp.CampoCosecha.Campo.Localidad.Nombre,
+                    Longitud = cp.Longitud,
+                    Nombre = cp.CampoCosecha.Campo.Nombre,
+                    NombreCosecha = cp.CampoCosecha.Cosecha.Nombre,
+                    Provincia = cp.CampoCosecha.Campo.Localidad.Provincia.Nombre,
+                    RazonSocial = cp.RazonSocial
+                }).Single();
+
+            return dto;
+        }
+
+        public Usuario ObtenerUsuarioPorMail(string mail)
+        {
+            return Obtener<Usuario>(u => u.Mail == mail);
+        }
+
+        public DeclaracionCampoSustentable ObtenerDeclaracionDeProveedor(string cuitProveedor, int idCosecha)
+        {
+            var declaracion = Obtener<DeclaracionCampoSustentable>(d =>
+                d.Cosecha_Id == idCosecha &&
+                d.CUIT == cuitProveedor);
+
+            return declaracion;
+        }
+
+        public Archivo ObtenerArchivo(int idArchivo)
+        {
+            return Obtener<Archivo>(a => a.Id == idArchivo);
+        }
+    }
+}

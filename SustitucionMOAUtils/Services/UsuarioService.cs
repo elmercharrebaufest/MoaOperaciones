@@ -3,7 +3,6 @@ using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
-using SustitucionMOARepositorio;
 using SustitucionMOARepositorio.Repositorios.Interfaces;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
@@ -15,7 +14,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using Entidades = SustitucionMOAModel.Entities;
-
+using Proveedor = SustitucionMOAModel.Entities.Proveedor;
 
 namespace SustitucionMOAUtils.Services
 {
@@ -165,7 +164,7 @@ namespace SustitucionMOAUtils.Services
                 "BOL", "DATMAE", "REI", "ACT", "PAR", "FIN", "CAL", "COM",
                 "COMP", "APP", "PES", "PAG", "FWEB", "MATBA",
                 "PROVGC", "FLECONSULTA", "OTRO", "PARDIR", "PARCOR",
-                "FINDIR", "FINCOR", "FLE", "CRDECPE", "ORD"
+                "FINDIR", "FINCOR", "FLE", "CRDECPE", "ORD", "DISCAL"
             };
 
             var roles = repositorio.Listar<Rol>().Where(r => r.EsEditable)
@@ -335,7 +334,7 @@ namespace SustitucionMOAUtils.Services
             bool insertarProveedor = false;
 
             //Si tiene permisos para usar todos los proveedores, no filtramos por tipo de usuario
-            if (usuario.TienePermiso("ELEGIR TODOS VENDEDORES"))
+            if (usuario.TienePermiso(PermisoEnum.ElegirTodosVendedores))
             {
                 proveedor = repositorio.Obtener<Proveedor>(x => x.CodigoProveedor == codigoProveedor && x.EstadoAprobacion == EstadoAprobacion.Aprobado);
                 corredor = repositorio.Obtener<Proveedor>(x => x.CodigoProveedor == codigoCorredor && x.EstadoAprobacion == EstadoAprobacion.Aprobado);
@@ -540,17 +539,14 @@ namespace SustitucionMOAUtils.Services
             }).GroupBy(x => x.Id);
         }
 
-        public List<DestinatarioDto> ObtenerDestinatariosConsulta()
+        public List<DestinatarioDto> ObtenerDestinatariosConsulta(int proveedorId)
         {
-            List<DestinatarioDto> destinatarios = new List<DestinatarioDto>();
+            var proveedor = this.repositorio.Obtener<Proveedor>(p => p.Id == proveedorId);
+            var proveedoresMismoCodigo = repositorio.Listar<Proveedor>(p => p.CodigoProveedor == proveedor.CodigoProveedor);
 
-            var usuarios = this.GetUsuarios().Where(u => u.Habilitado == true);
-            destinatarios = usuarios.Select(u => new DestinatarioDto
-            {
-                Campo = "Usuario Web",
-                Mail = u.Mail,
-                UsuarioId = u.Id,
-            }).ToList();
+            var destinatarios = proveedoresMismoCodigo.SelectMany(p=>p.UsuariosAsociados
+                .Where(u=>!u.Mail.EndsWith("@molinosagro.com.ar"))
+                .Select(u => new DestinatarioDto(u))).ToList();
             return destinatarios;
         }
 
@@ -587,6 +583,18 @@ namespace SustitucionMOAUtils.Services
             }
             return listaProvedores;
         }
+
+        public List<ProveedorDto> GetProveedoresUsuario(int usuarioId)
+        {
+            var usuario = repositorio.Obtener<Usuario>(u => u.Id == usuarioId);
+            List<ProveedorDto> listaProvedores = new List<ProveedorDto>();
+            foreach (var proveedor in usuario.Proveedores)
+            {
+                listaProvedores.Add(new ProveedorDto(proveedor));
+            }
+            return listaProvedores;
+        }
+
         public List<TipoUsuarioDto> GetTipoUsuario()
         {
             var tipoUsuarios = repositorio.Listar<TipoUsuario>();
@@ -804,15 +812,9 @@ namespace SustitucionMOAUtils.Services
         }
         public bool PuedeEliminarseUsuario(Entidades.Usuario usuario)
         {
-            var consultas = repositorio.Listar<Entidades.Consulta>(c => c.Usuario_Id == usuario.Id).FirstOrDefault();
-            var comentarios = repositorio.Listar<Entidades.Comentario>(c => c.Usuario_Id == usuario.Id).FirstOrDefault();
-            var solp = repositorio.Listar<Entidades.Solp>(s => s.UsuarioCreacion_Id == usuario.Id).FirstOrDefault();
-            var usuarioCompras = repositorio.Listar<Entidades.UsuarioComprasRelacionConUsuarios>(u => u.Usuario_Id == usuario.Id).FirstOrDefault();
-            var cotizaciones = repositorio.Listar<Entidades.Cotizacion>(c => c.UsuarioCreador_Id == usuario.Id).FirstOrDefault();
-            var adjudicacion = repositorio.Listar<Entidades.Adjudicacion>(a => a.UsuarioCreador_Id == usuario.Id).FirstOrDefault();
-            var circular = repositorio.Listar<Entidades.Circular>(c => c.UsuarioCreador_Id == usuario.Id).FirstOrDefault();
-            return consultas == null && comentarios == null && solp == null && usuarioCompras == null &&
-                cotizaciones == null && circular == null && adjudicacion == null && usuario.Proveedores.Count() <= 1;
+            var tieneActividad = repositorio.VerificarActividadUsuario(usuario);
+
+            return  !tieneActividad && usuario.Proveedores.Count() <= 1;
         }
 
         public Entidades.Usuario obtenerUsuarioDelVendedor(Entidades.Proveedor prov)
@@ -898,6 +900,47 @@ namespace SustitucionMOAUtils.Services
 
             repositorio.GuardarCambios();
         }
+
+        public void DesasociarVendedor(int usuarioId, int proveedorId, string mailUsuarioSesion)
+        {
+            var usuarioSesion = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuarioSesion);
+
+            if (usuarioSesion == null || !usuarioSesion.TieneRol(RolEnum.Administracion))
+            {
+                throw new InfoCustomException("Usuario no autorizado a realizar esta acción.");
+            }
+
+            var usuario = this.repositorio.Obtener<Usuario>(u => u.Id == usuarioId);
+            var proveedor = this.repositorio.Obtener<Proveedor>(p => p.Id == proveedorId);
+
+            if (usuario.Proveedores.Count() == 1)
+            {
+                throw new InfoCustomException("No se puede realizar la desasociacion. El usuario opera unicamente con este vendedor.");
+            }
+
+            /*if (!usuario.TieneRol(RolEnum.Multifirma))
+            {
+                throw new InfoCustomException("No se puede realizar la desasociacion. El usuario no posee rol multifirma. Contactar a sistemas.");
+            }*/
+
+            usuario.Proveedores.Remove(proveedor);
+
+            var historialProveedor = new ProveedorHistorialAprobacion
+            {
+                EstadoAprobacion = proveedor.EstadoAprobacion,
+                Usuario = usuarioSesion,
+                Observacion = "Se elimina asociación de proveedor para el usuario: " + usuario.Mail,
+                Fecha = DateTime.Now,
+            };
+
+            proveedor.HistorialAprobaciones.Add(historialProveedor);
+
+            this.repositorio.GuardarCambios();
+
+            return;
+        }
         #endregion
+
+
     }
 }

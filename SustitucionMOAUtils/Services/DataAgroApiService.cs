@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Quartz.Util;
 using SustitucionMOAAssets;
+using SustitucionMOAModel;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
@@ -26,13 +27,13 @@ using System.Text;
 
 namespace SustitucionMOAUtils.Services
 {
-    public class CrearContratoService : ICrearContratoService
+    public class DataAgroApiService : IDataAgroApiService
     {
 
         protected readonly IRepositorio repositorio;
         protected readonly ICache cache;
         private readonly string DataAgroURL;
-        public CrearContratoService(IRepositorio repositorio, ICache cache)
+        public DataAgroApiService(IRepositorio repositorio, ICache cache)
         {
             this.repositorio = repositorio;
             this.cache = cache;
@@ -738,6 +739,53 @@ namespace SustitucionMOAUtils.Services
                 var url = string.Concat(DataAgroURL, "/CompraNetTercero/HabilitarSustentable");
                 return ConsultarDataAaro(url, "");
 
+            }
+            catch (InfoCustomException)
+            {
+                throw;
+            }
+            catch (ValidationCustomException)
+            {
+                throw;
+            }
+            catch (Exception e)
+            {
+                throw new WSCustomException(ErrorMsg.ErrorWS, e);
+            }
+        }
+        public List<LocalidadDto> ListarLocalidades()
+        {
+            try
+            {
+                var url = string.Concat(DataAgroURL, "/Localidad/ListarLocalidades");
+                var respuesta =  ConsultarDataAaro(url, "");
+
+
+                return JsonConvert.DeserializeObject<List<LocalidadDto>>(respuesta);
+            }
+            catch (InfoCustomException)
+            {
+                throw;
+            }
+            catch (ValidationCustomException)
+            {
+                throw;
+            }
+            catch (Exception e)
+            {
+                throw new WSCustomException(ErrorMsg.ErrorWS, e);
+            }
+        }
+
+        public List<PartidoDto> ListarPartidos()
+        {
+            try
+            {
+                var url = string.Concat(DataAgroURL, "/Localidad/ListarPartidos");
+                var respuesta = ConsultarDataAaro(url, "");
+
+
+                return JsonConvert.DeserializeObject<List<PartidoDto>>(respuesta);
             }
             catch (InfoCustomException)
             {

@@ -1,6 +1,7 @@
 ﻿import { DatePipe } from "@angular/common";
 import {
     CUSTOM_ELEMENTS_SCHEMA,
+    ErrorHandler,
     NgModule,
     NO_ERRORS_SCHEMA
 } from "@angular/core";
@@ -13,6 +14,7 @@ import { BlockUIModule } from 'ng-block-ui';
 import { SelectModule } from "ng2-select";
 import { NgxMaskModule } from "ngx-mask";
 import { ModalModule } from "ngx-modal";
+import { LoggerModule, NgxLoggerLevel } from "ngx-logger"
 import { MultiSelectModule } from 'primeng/multiselect';
 import { NgxPaginationModule } from "ngx-pagination";
 import { AduanaService } from "./aduana/aduana.service";
@@ -68,7 +70,12 @@ import { ModificarDatosComponent } from './usuario/modificar-datos/modificar-dat
 import { ToastModule } from "primeng/toast";
 import { UsuarioAuditoriaListComponent } from './usuario/usuario-auditoria-list/usuario-auditoria-list.component';
 import { LegajoExternoComponent } from './compras/legajo-externo/legajo-externo.component';
+import { GlobalErrorHandler } from "./common/services/GlobalErrorHandler";
+import { VerVendedoresComponent } from "./usuario/ver-vendedores/ver-vendedores.component";
 
+import { DropdownModule } from 'primeng/dropdown';
+import { ButtonModule } from "primeng/button";
+import { TooltipModule } from "primeng/tooltip";
 
 @NgModule({
     imports: [
@@ -86,10 +93,20 @@ import { LegajoExternoComponent } from './compras/legajo-externo/legajo-externo.
         LogPesificacionModule,
         NgxMaskModule.forRoot(),
         BlockUIModule.forRoot(),
+        LoggerModule.forRoot(
+            {
+                serverLoggingUrl: '/api/Logger/Front',
+                level: NgxLoggerLevel.DEBUG,
+                serverLogLevel: NgxLoggerLevel.ERROR
+            }
+        ),
         ComprasModule,
         ConfirmDialogModule,
         MultiSelectModule,
-        ToastModule
+        ToastModule,
+        DropdownModule,
+        ButtonModule,
+        TooltipModule
     ],
     declarations: [
         AppComponent,
@@ -121,6 +138,7 @@ import { LegajoExternoComponent } from './compras/legajo-externo/legajo-externo.
         ModificarDatosComponent,
         UsuarioAuditoriaListComponent,
         LegajoExternoComponent,
+        VerVendedoresComponent
     ],
     providers: [
         DatePipe,
@@ -143,6 +161,7 @@ import { LegajoExternoComponent } from './compras/legajo-externo/legajo-externo.
         ConsultaService,
         ConfirmationService,
         ApikeyService,
+        { provide: ErrorHandler, useClass: GlobalErrorHandler }
     ],
     bootstrap: [AppComponent],
     schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA]

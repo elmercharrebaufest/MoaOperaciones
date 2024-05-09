@@ -38,6 +38,12 @@ namespace SustitucionMOAModel.Dto
         public string BolsaEmisoraOblea { get; set; }
         public int? OrdenId { get; set; }
         public string PatenteChasis { get; set; }
+        public string Rubro { get; set; }
+        public bool RelacionadaPorCodigo { get; set; }
+        public bool GeneradaInternamente { get; set; }
+        public bool GeneradaExternamente { get; set; }
+        public bool GeneradaPorUsuarioSesion { get; set; }
+        public string MailUsuarioIniciaConsulta { get; set; }
 
         public CategoriaDto Categoria { get; set; }
         public SubCategoriaDto SubCategoria { get; set; }

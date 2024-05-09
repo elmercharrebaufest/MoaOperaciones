@@ -22,7 +22,6 @@ namespace SustitucionMOAUtils.Services
 {
     public class OrdenDeCargaFasonService : OrdenDeCargaServiceBase, IOrdenDeCargaFasonService
     {
-        protected readonly ICNRTClient cNRTClient;
         private readonly IEnumerable<string> codigosRetiroEnPatagonia = new string[] { "98855", "99098" };
         private readonly IEmailFasonService emailFasonService;
 
@@ -32,9 +31,8 @@ namespace SustitucionMOAUtils.Services
             IScatoRepositorioClient scatoRepositorioClient,
             ICNRTClient cNRTClient,
             IEmailFasonService emailFasonService
-            ) : base(ordenCargaConsumer, scatoConsumer, scatoRepositorioClient, repositorio)
+            ) : base(ordenCargaConsumer, scatoConsumer, scatoRepositorioClient, repositorio, cNRTClient)
         {
-            this.cNRTClient = cNRTClient;
             this.emailFasonService = emailFasonService;
         }
 
@@ -447,47 +445,7 @@ namespace SustitucionMOAUtils.Services
             result.ordenes = result.ordenes.Distinct().ToList();
             return result;
         }
-
-        public ValidarCamionResponse ValidarCamion(string patenteChasis, string patenteAcoplado)
-        {
-            try
-            {
-                var cnrtResponse = cNRTClient.ObtenerEquipos(patenteChasis, patenteAcoplado);
-                var dominios = cnrtResponse.Data.Dominios;
-
-                if (dominios == null || !dominios.Any())
-                {
-                    return new ValidarCamionResponse { ExisteCamion = false };
-                }
-
-                var tipoVehiculo = cnrtResponse.TipoVehiculoCNRTSegunCategoriaEscalado;
-
-                if (dominios.Any(d => d.Rto.CantEjes <= 0) && (
-                        tipoVehiculo == null ||
-                        tipoVehiculo == CNRTModel.TipoVehiculoCNRT.CamionBitren))
-                {
-                    return new ValidarCamionResponse { ExisteCamion = false };
-                }
-                else
-                {
-                    return new ValidarCamionResponse
-                    {
-                        ExisteCamion = true,
-                        EsCamionEscalable = (
-                            tipoVehiculo == CNRTModel.TipoVehiculoCNRT.CamionC ||
-                            tipoVehiculo == CNRTModel.TipoVehiculoCNRT.CamionD ||
-                            tipoVehiculo == CNRTModel.TipoVehiculoCNRT.CamionE)
-                    };
-                }
-            }
-            catch (InfoCustomException ice) { throw ice; }
-            catch (ValidationCustomException vce) { throw vce; }
-            catch (Exception ex)
-            {
-                Log.Error($"Error al validar camión con patentes: {patenteChasis} y {patenteAcoplado}.", ex);
-                throw;
-            }
-        }
+        
         public bool EnviarMailAltaCuitTerceros(bool gestionaFlete, bool gestionaDestino, bool gestionaDestinatario, string ordenId)
         {
             var ordenDeCarga = this.repositorio.Obtener<OrdenDeCargaFason>(o => o.Id.ToString() == ordenId);

@@ -12,6 +12,7 @@ import { CartaPorteService } from './carta-porte2.service';
 import { CartaPorteDescargaComponent } from "./descarga/carta-porte.descarga2.component";
 import { CartaPorteDetalleComponent } from "./detalle/carta-porte.detalle2.component";
 import { CartaPorteFormularioComponent } from "./formulario/carta-porte.formulario.component";
+import { TooltipModule } from 'primeng/tooltip';
 
 @NgModule({
   imports: [
@@ -21,7 +22,8 @@ import { CartaPorteFormularioComponent } from "./formulario/carta-porte.formular
     SharedModule,
     NgxPaginationModule,
     Ng2AutoCompleteModule,
-    AutocompleteLibModule
+    AutocompleteLibModule,
+    TooltipModule
   ],
   declarations: [
     CartaPorteAplicacionComponent,
@@ -31,7 +33,7 @@ import { CartaPorteFormularioComponent } from "./formulario/carta-porte.formular
     CartaPorteFormularioComponent
   ],
   providers: [
-    CartaPorteService
+    CartaPorteService,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })

@@ -22,13 +22,15 @@ namespace SustitucionMOA.Controllers
     {
         private readonly IConsultaService consultaService;
         private readonly IUsuarioService usuarioService;
+        private readonly IVendedorService vendedorService;
         private readonly IOrdenDeCargaService ordenDeCargaService;
 
         public ConsultaController(IConsultaService consultaService, IUsuarioService usuarioService,
-            IOrdenDeCargaService ordenDeCargaService)
+            IVendedorService vendedorService, IOrdenDeCargaService ordenDeCargaService)
         {
             this.consultaService = consultaService;
             this.usuarioService = usuarioService;
+            this.vendedorService = vendedorService;
             this.ordenDeCargaService = ordenDeCargaService;
         }
 
@@ -452,6 +454,7 @@ namespace SustitucionMOA.Controllers
                     subcategorias = consultaService.ObtenerSubCategorias(usuarioActual),
                     ordenes = ordenDeCargaService.Listar(usuarioActual.Mail, fechaInicio.ToString("dd/MM/yyyy"), fechaFin.ToString("dd/MM/yyyy")),
                     proveedorId = SessionPersister.ProveedorId,
+                    materiales = consultaService.ObtenerMaterial(TablaSeccionMaterial.Contacto),
                 });
             }
             catch (InfoCustomException e)
@@ -503,13 +506,42 @@ namespace SustitucionMOA.Controllers
             }
         }
 
-        public ActionResult GetDestinatariosConsulta(int ordenId)
+        public ActionResult GetDestinatario(int proveedorId)
         {
             try
             {
                 return JsonCustom(new
                 {
-                    destinatarios = usuarioService.ObtenerDestinatariosConsulta()
+                    destinatarios = usuarioService.ObtenerDestinatariosConsulta(proveedorId)
+                });
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e }, JsonRequestBehavior.AllowGet);
+            }
+            catch (WSCustomException e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        public ActionResult GetVendedoresUsuario()
+        {
+            try
+            {
+                return JsonCustom(new
+                {
+                    vendedores = vendedorService.GetVendedoresRaw()
                 });
             }
             catch (InfoCustomException e)
@@ -534,13 +566,13 @@ namespace SustitucionMOA.Controllers
 
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.CONTACTO_MAIL)]
         [HttpPost, ValidateInput(false)]
-        public JsonResult AgregarConsultaInterna(string consultaJson, string comentarioJson, string destinatariosFasJson)
+        public JsonResult AgregarConsultaInterna(string consultaJson, string comentarioJson, string destinatariosJson)
         {
             try
             {
                 var consulta = JsonConvert.DeserializeObject<Consulta>(consultaJson);
                 var comentario = JsonConvert.DeserializeObject<Comentario>(comentarioJson);
-                var destinatarios = JsonConvert.DeserializeObject<List<DestinatarioDto>>(destinatariosFasJson);
+                var destinatarios = JsonConvert.DeserializeObject<List<DestinatarioDto>>(destinatariosJson);
 
                 comentario.Fecha = DateTime.Now;
                 consulta.UsuarioInterno_Id = ObtenerUsuarioActual().Id;
@@ -577,11 +609,11 @@ namespace SustitucionMOA.Controllers
             }
             catch (InfoCustomException e)
             {
-                return Json(new { info = e }, JsonRequestBehavior.AllowGet);
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
             }
             catch (ValidationCustomException e)
             {
-                return Json(new { error = e }, JsonRequestBehavior.AllowGet);
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception e)
             {

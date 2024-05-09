@@ -6,15 +6,17 @@ import { Usuario } from './usuario'
 import { BaseService } from './../common/services/BaseService';
 import { HttpParams } from '@angular/common/http';
 import { AltaNuevoProveedor } from '../compras/solp-compra';
-import { ApiResponse } from '../common/models/response';
+import { ApiResponse, BasicResponse } from '../common/models/response';
 import { Proveedor } from '../common/models/proveedor';
 import { AsignarNuevaCuit } from '../common/models/asignarNuevaCuit';
+import { SeleccionarVendedorResponse } from '../common/models/SeleccionarVendedorResponse';
 
 @Injectable()
 export class UsuarioService extends BaseService {
     private _usuarioModificarDatos = new BehaviorSubject<number>(0);
     private _usuarioRecargarLista = new BehaviorSubject<boolean>(false);
     private _usuarioCargarAuditoria = new BehaviorSubject<number>(0);
+    private _usuarioVerVendedores = new BehaviorSubject<number>(0);
 
     setUsuarioCargarAuditoria(value: number) {
         this._usuarioCargarAuditoria.next(value);
@@ -35,6 +37,14 @@ export class UsuarioService extends BaseService {
     getUsuarioModificarDatos() {
         return this._usuarioModificarDatos.asObservable()
     }
+
+    setUsuarioVerVendedores(value: number) {
+        this._usuarioVerVendedores.next(value);
+    }
+    getUsuarioVerVendedores() {
+        return this._usuarioVerVendedores.asObservable()
+    }
+
     guardarRolesUsuario(usuarioSeleccionado: any, idRoles: any, usuarioSap: string) {
         let params: HttpParams = new HttpParams();
 
@@ -100,12 +110,12 @@ export class UsuarioService extends BaseService {
             .get('/api/usuario/habilitar', { params: params, headers: this.headers });
     }
 
-    public seleccionarVendedor(vendedor: string, descripcion: string): Observable<any> {
+    public seleccionarVendedor(vendedor: number): Observable<BasicResponse<SeleccionarVendedorResponse>> {
         let params: HttpParams = new HttpParams();
-        params = params.append('vendedor', vendedor);
-        params = params.append('descripcion', descripcion);
+        params = params.append('vendedorId', vendedor.toString());
         return this.http
-            .get('/api/usuario/seleccionarVendedor', { params: params, headers: this.headers });
+            .get<BasicResponse<SeleccionarVendedorResponse>>
+            ('/api/usuario/seleccionarVendedor', { params: params, headers: this.headers });
     }
 
     public getRoles(): Observable<any> {
@@ -225,8 +235,6 @@ export class UsuarioService extends BaseService {
         params = params.append('tipoProveedorId', tipoProveedorId);
         params = params.append('cuitUsuario', cuitUsuario);
 
-
-
         return this.http
             .get('/api/usuario/getProvedoresEmail', { params: params, headers: this.headers });
     }
@@ -242,4 +250,18 @@ export class UsuarioService extends BaseService {
         payload.append('datosAAsignar', jsonDatosAAsignar);
         return this.http.post('/api/usuario/AsignarNuevaCuit', payload, { headers: this.headers })
     }
+
+    public getProvedoresUsuario(usuarioId: string): Observable<any> {
+        let params: HttpParams = new HttpParams();
+        params = params.append('usuarioId', usuarioId);
+
+        return this.http
+            .get('/api/usuario/GetProvedoresUsuario', { params: params, headers: this.headers });
+    }
+
+    desasociarVendedor(usuarioId: number, proveedorId: number) {
+            return this.http
+                .post<any>('/api/usuario/DesasociarVendedor', {usuarioId, proveedorId}, { headers: this.headers });
+    }
+    
 }

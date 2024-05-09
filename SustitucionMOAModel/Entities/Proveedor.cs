@@ -92,8 +92,8 @@ namespace SustitucionMOAModel.Entities
         }
         public bool CorrespondeAltaSolicitada()
         {
-            var primerHistorial = HistorialAprobaciones.FirstOrDefault();
-            return (AltaInterna ?? false) && EsNoGranos() && HistorialAprobaciones.Count ==1 && primerHistorial.EstadoAprobacion == EstadoAprobacion.DocumentacionPendiente;
+            var ultimoHistorial = HistorialAprobaciones.LastOrDefault();
+            return (AltaInterna ?? false) && EsNoGranos() && ultimoHistorial.EstadoAprobacion == EstadoAprobacion.DocumentacionPendiente;
         }
     }
 }

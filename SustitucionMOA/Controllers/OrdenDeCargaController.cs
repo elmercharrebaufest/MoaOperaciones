@@ -84,7 +84,8 @@ namespace SustitucionMOA.Controllers
             try
             {
                 var mailUsuario = SessionPersister.getUsername();
-                var result = ordenDeCargaService.Listar(mailUsuario, fechaInicio, fechaFin);
+                var idProveedorSeleccionado = SessionPersister.ProveedorId;
+                var result = ordenDeCargaService.Listar(mailUsuario, fechaInicio, fechaFin, idProveedorSeleccionado);
                 return JsonCustom(result);
             }
             catch (InfoCustomException e)
