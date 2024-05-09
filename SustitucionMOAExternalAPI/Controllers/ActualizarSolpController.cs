@@ -35,7 +35,7 @@ namespace SustitucionMOAExternalAPI.Controllers
             }
         }
 
-        public void ProcessSolicitud(string nrosolp)
+        private void ProcessSolicitud(string nrosolp)
         {
             try
             {
