@@ -322,7 +322,7 @@
 
                                             <!-- TABLE 3 ROW EXPANSION: ENTRADAS DE SERVICIO -->
                                             <ng-template pTemplate="rowexpansion" let-rowData let-columns="columns">
-                                                <tr id="entradasServicio" *ngIf="!ocFilterApplied || ocFilterApplied && (rowData.Porcentaje*1) < 100">
+                                                <tr id="entradasServicio" *ngIf="(!ocFilterApplied || ocFilterApplied && (rowData.Porcentaje*1) < 100) && (rowData.EntradasServicio && rowData.EntradasServicio.length > 0)">
                                                     <td [attr.colspan]="cantidadColumnasTabla('items')">
                                                         <p-table id="entradasServicio"
                                                                  class="level4"
