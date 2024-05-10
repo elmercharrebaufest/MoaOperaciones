@@ -23,7 +23,12 @@ namespace SustitucionMOAExternalAPI.Controllers
             try
             {
                 Log.ExternalAPIInfo($"Inicio Se informaron cambios para la SOLP: {nrosolp}");
-                BackgroundJob.Enqueue(() => ProcessSolicitud(nrosolp));
+                BackgroundJob.Enqueue(() => comprasService.ObtenerSolpesDesdeSAPJob(new SustitucionMOAWS.WSConsumers.ObtenerSolpRequest
+                {
+                    NumeroSolp = nrosolp.TrimStart('0').PadLeft(10, '0'),
+                    FechaDesde = new DateTime(2010, 01, 01),
+                    FechaHasta = DateTime.Now.Date.AddDays(1)
+                }));
                 Log.ExternalAPIInfo($"Fin Se informaron cambios para la SOLP: {nrosolp}");
 
                 return Ok();
@@ -40,12 +45,7 @@ namespace SustitucionMOAExternalAPI.Controllers
             try
             {
                 // Procesar la solicitud aquí
-                comprasService.ObtenerSolpesDesdeSAPJob(new SustitucionMOAWS.WSConsumers.ObtenerSolpRequest
-                {
-                    NumeroSolp = nrosolp.TrimStart('0').PadLeft(10, '0'),
-                    FechaDesde = new DateTime(2010, 01, 01),
-                    FechaHasta = DateTime.Now.Date.AddDays(1)
-                });
+                
             }
             catch (Exception ex)
             {
