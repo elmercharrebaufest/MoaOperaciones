@@ -9271,7 +9271,7 @@ namespace SustitucionMOAUtils.Services
                         FechasCotizaciones = cotizacionFechas.Where(cotiH => cotiH.Cotizacion.PeticionDeOfertaUsuario_Id == item.Id) != null ?
                         cotizacionFechas.Where(cotiH => cotiH.Cotizacion.PeticionDeOfertaUsuario_Id == item.Id).Select(coti => coti.FechaFinalizacion).ToList() : new List<DateTime>(),
                         FechaOrdenDeCompraCreacion = cotizacion != null ? cotizacion.Adjudicaciones.Select(x => x.FechaCreacion).ToList() : new List<DateTime>().ToList(),
-                        FechaOrdenDeCompraLiberacion = cotizacion != null ? cotizacion.Adjudicaciones.Select(x => x.FechaLiberacionSap)
+                        FechaOrdenDeCompraLiberacion = cotizacion != null ? cotizacion.Adjudicaciones.Select(x => x.FechaLiberacionSap).Where(fecha => fecha.HasValue)
                         .Select(fecha => fecha.Value).ToList() : new List<DateTime>()
                     };
                     proveedores.Add(proveedor);
