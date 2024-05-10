@@ -2418,9 +2418,10 @@ namespace SustitucionMOAUtils.Services
                 //TODO: ver como actualizar Solp.EstadoDocumento_Id segun la RFC
                 //Logger.Log.Info($"ObtenerSolpesDesdeSAPJob inicio");
                 //Logger.Log.Info($"ObtenerSolpesDesdeSAPJob desde {obtenerSolpRequest.FechaDesde.ToString()} hasta {obtenerSolpRequest.FechaHasta.ToString()}");
-                Logger.Log.Info($"ObtenerSolpesDesdeSAPJob INICIO - NumeroSolp: {obtenerSolpRequest.NumeroSolp}");
+                Log.Info($"ObtenerSolpesDesdeSAPJob INICIO - NumeroSolp: {obtenerSolpRequest.NumeroSolp}");
                 if (string.IsNullOrEmpty(obtenerSolpRequest.NumeroSolp)) throw new Exception("NumeroSolp no puede ser vacio");
                 ObtenerSolpSAPResponse result = obtenerSolpConsumerMOA.RequestSolpWithNroAndDates(obtenerSolpRequest);
+                Log.Info(JsonConvert.SerializeObject(result));
                 //Logger.Log.Info($"ObtenerSolpesDesdeSAPJob fin obtener solps");
                 //Logger.Log.Info($"ObtenerSolpesDesdeSAPJob Posiciones {result.Posiciones.Count()}");
                 //Logger.Log.Info($"ObtenerSolpesDesdeSAPJob Direcciones {result.Direcciones.Count()}");
