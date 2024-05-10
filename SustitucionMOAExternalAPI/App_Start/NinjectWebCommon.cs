@@ -32,6 +32,7 @@ namespace SustitucionMOAExternalAPI.App_Start
     using SustitucionMOAWS.WSConsumers;
     using SustitucionMOAWS.GoogleDrive;
     using SustitucionMOAWS.GoogleDrive.Interfaces;
+    using SustitucionMOAExternalAPI.Jobs;
 
     public static class NinjectWebCommon
     {
@@ -241,6 +242,8 @@ namespace SustitucionMOAExternalAPI.App_Start
             //kernel.Bind<IOrdenDeCargaApiService>().To(typeof(OrdenDeCargaApiService)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IAuthenticationManager>().To(typeof(AuthenticationManager)).InSingletonScope();
 
+
+            kernel.Bind<IJobService>().To(typeof(JobService)).InScope(ctx => OperationContext.Current);
         }
     }
 }

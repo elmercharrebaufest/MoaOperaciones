@@ -1,20 +1,17 @@
-﻿using Hangfire;
-using SustitucionMOAUtils.Interfaces;
+﻿using SustitucionMOAExternalAPI.Jobs;
 using SustitucionMOAUtils.Logger;
 using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using System.Web.Http;
 
 namespace SustitucionMOAExternalAPI.Controllers
 {
     public class ActualizarSolpController : ApiController
     {
-        private readonly IComprasService comprasService;
+        private readonly IJobService jobService;
 
-        public ActualizarSolpController(IComprasService comprasService)
+        public ActualizarSolpController(IJobService jobService)
         {
-            this.comprasService = comprasService;
+            this.jobService = jobService;
         }
 
         [Authorize(Roles = "ABM SOLP")]
@@ -23,12 +20,7 @@ namespace SustitucionMOAExternalAPI.Controllers
             try
             {
                 Log.ExternalAPIInfo($"Inicio Se informaron cambios para la SOLP: {nrosolp}");
-                BackgroundJob.Enqueue(() => comprasService.ObtenerSolpesDesdeSAPJob(new SustitucionMOAWS.WSConsumers.ObtenerSolpRequest
-                {
-                    NumeroSolp = nrosolp.TrimStart('0').PadLeft(10, '0'),
-                    FechaDesde = new DateTime(2010, 01, 01),
-                    FechaHasta = DateTime.Now.Date.AddDays(1)
-                }));
+                jobService.ActualizarSolp(nrosolp);
                 Log.ExternalAPIInfo($"Fin Se informaron cambios para la SOLP: {nrosolp}");
 
                 return Ok();
@@ -40,18 +32,7 @@ namespace SustitucionMOAExternalAPI.Controllers
             }
         }
 
-        public void ProcessSolicitud(string nrosolp)
-        {
-            try
-            {
-                // Procesar la solicitud aquí
-                
-            }
-            catch (Exception ex)
-            {
-                Log.ExternalAPIError(ex);
-            }
-        }       
+        
 
     }
 }
