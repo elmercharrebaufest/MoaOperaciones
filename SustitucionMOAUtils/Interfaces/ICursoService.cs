@@ -8,7 +8,7 @@ namespace SustitucionMOAUtils.Interfaces
     {
         void ActualizarEstado(ActualizarProgresoReqDto actualizarCursoReq);
         List<CursoUsuarioDto> AsignadosAUsuario(string emailUsuario);
-        void Asignar(AsignarReqDto asignarReqDto);
+        Dictionary<string, bool> Asignar(AsignarReqDto asignarReqDto);
         List<CursoDto> Disponibles();
         string ObtenerProgreso(int cursoId, string emailUsuario);
     }

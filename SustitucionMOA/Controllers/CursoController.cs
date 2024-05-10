@@ -122,14 +122,13 @@ namespace SustitucionMOA.Controllers
             return ContentCustom(response);
         }
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.ADMINISTRAR_CURSOS)]
-        [HttpPatch]
+        [HttpPost]
         public ContentResult Asignar([WebHttp.FromBody] AsignarReqDto asignarReqDto)
         {
-            var response = new SustitucionMOAApiResponse<bool>();
+            var response = new SustitucionMOAApiResponse<Dictionary<string, bool>> ();
             try
             {
-                cursoService.Asignar(asignarReqDto);
-                response.Data = true;
+                response.Data = cursoService.Asignar(asignarReqDto);
             }
             catch (InfoCustomException ice)
             {

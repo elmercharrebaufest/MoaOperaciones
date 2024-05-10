@@ -7,6 +7,7 @@ namespace SustitucionMOAModel.Dto.Curso
         public CursoUsuarioDto(Entities.ProgresoCurso progreso)
         {
             CursoId = progreso.CursoId;
+            AccesoCurso = progreso.Curso.Acceso;
             NombreCurso = progreso.Curso.Nombre;
             EstadoCurso = progreso.FechaCompletado != null ? EstadoCursoEnum.Completado :
                           progreso.FechaUltimoIntento != null ? EstadoCursoEnum.EnProgreso :
@@ -15,6 +16,7 @@ namespace SustitucionMOAModel.Dto.Curso
 
         public int CursoId { get; set; }
         public string NombreCurso { get; set; }
+        public string AccesoCurso { get; set; }
         public EstadoCursoEnum EstadoCurso { get; set; }
     }
 }

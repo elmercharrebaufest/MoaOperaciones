@@ -11,5 +11,6 @@ export enum Permiso {
     AbmAppCCPP = "ABM APLICACIONES CCPP",
     ComercialCamposSustentables = "COMERCIAL CAMPOS SUSTENTABLES",
     ResiduosVerOrdenesDeCargaAdmin = "VER ORDENES DE CARGA RESIDUOS ADMIN",
-    ResiduosVerOrdenesDeCarga = "VER ORDENES DE CARGA RESIDUOS"
+    ResiduosVerOrdenesDeCarga = "VER ORDENES DE CARGA RESIDUOS",
+    AdministrarCursos = "ADMINISTRAR CURSOS",
 }
