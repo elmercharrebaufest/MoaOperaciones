@@ -9268,8 +9268,8 @@ namespace SustitucionMOAUtils.Services
                         RazonSocial = item.Usuario.ObtenerRazonSocial(),
                         FechasCirculares = item.Circulares.Select(circular => circular.Circular.FechaCreacion).ToList(),
                         UsuariosCirculares = item.Circulares.Select(circular => circular.Circular.Usuario).ToList(),
-                        FechasCotizaciones = cotizacionFechas.Where(cotiH => cotiH.Cotizacion.PeticionDeOfertaUsuario_Id == item.Id)
-                        .Select(coti => coti.FechaFinalizacion).ToList(),
+                        FechasCotizaciones = cotizacionFechas.Where(cotiH => cotiH.Cotizacion.PeticionDeOfertaUsuario_Id == item.Id) != null ?
+                        cotizacionFechas.Where(cotiH => cotiH.Cotizacion.PeticionDeOfertaUsuario_Id == item.Id).Select(coti => coti.FechaFinalizacion).ToList() : new List<DateTime>(),
                         FechaOrdenDeCompraCreacion = cotizacion != null ? cotizacion.Adjudicaciones.Select(x => x.FechaCreacion).ToList() : new List<DateTime>().ToList(),
                         FechaOrdenDeCompraLiberacion = cotizacion != null ? cotizacion.Adjudicaciones.Select(x => x.FechaLiberacionSap)
                         .Select(fecha => fecha.Value).ToList() : new List<DateTime>()
