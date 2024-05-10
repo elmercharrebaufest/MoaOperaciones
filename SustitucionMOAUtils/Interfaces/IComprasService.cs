@@ -103,6 +103,6 @@ namespace SustitucionMOAUtils.Interfaces
         Resultado GrabarMensajeChatExterno(ChatExternoComprasDto mensaje);
         ChatsDto ObtenerChatProveedor(int peticionDeOfertaUsuarioId, int usuarioActualId);
         void MarcarChatProveedorComoLeido(ChatProveedoresDto proveedor);
-
+        void ExecuteObtenerSolpesDesdeSAPJob(ObtenerSolpRequest obtenerSolpRequest);
     }
 }

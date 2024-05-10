@@ -1,17 +1,24 @@
-﻿using SustitucionMOAExternalAPI.Jobs;
+﻿using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
+using SustitucionMOAWS.Interfaces;
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Web.Http;
 
 namespace SustitucionMOAExternalAPI.Controllers
 {
     public class ActualizarSolpController : ApiController
     {
-        private readonly IJobService jobService;
+        private readonly IComprasService comprasService;
 
-        public ActualizarSolpController(IJobService jobService)
+        public ActualizarSolpController(IComprasService comprasService)
         {
-            this.jobService = jobService;
+            this.comprasService = comprasService;
         }
 
         [Authorize(Roles = "ABM SOLP")]
@@ -19,20 +26,25 @@ namespace SustitucionMOAExternalAPI.Controllers
         {
             try
             {
-                Log.ExternalAPIInfo($"Inicio Se informaron cambios para la SOLP: {nrosolp}");
-                jobService.ActualizarSolp(nrosolp);
-                Log.ExternalAPIInfo($"Fin Se informaron cambios para la SOLP: {nrosolp}");
+                Log.ExternalAPIInfo(string.Format("Inicio Se informaron cambios para la SOLP: {0}", nrosolp));
 
-                return Ok();
+                Task.Run(() =>
+                {
+                    comprasService.ExecuteObtenerSolpesDesdeSAPJob(new SustitucionMOAWS.WSConsumers.ObtenerSolpRequest
+                    {
+                        NumeroSolp = nrosolp.TrimStart('0').PadLeft(10, '0'),
+                        FechaDesde = new DateTime(2010, 01, 01),
+                        FechaHasta = DateTime.Now.Date.AddDays(1)
+                    });
+                });
             }
             catch (Exception ex)
             {
                 Log.ExternalAPIError(ex);
-                return InternalServerError(ex); 
             }
-        }
 
-        
+            return Ok();
+        }
 
     }
 }

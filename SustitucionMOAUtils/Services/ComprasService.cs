@@ -2782,6 +2782,24 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
+        static readonly object _lockObtenerSolpesDesdeSAPJob = new object();
+
+        public void ExecuteObtenerSolpesDesdeSAPJob(ObtenerSolpRequest obtenerSolpRequest)
+        {
+            lock (_lockObtenerSolpesDesdeSAPJob)
+            {
+                try
+                {
+                    ObtenerSolpesDesdeSAPJob(obtenerSolpRequest);
+                }
+                catch (Exception e)
+                {
+                    Log.Error(e);
+                }
+            }
+        }
+
+
         public void ActualizarEstadoSolpBulk()
         {
             var lista = repositorio.Listar<TablaSap>(x => x.Tabla == "EstadoSolpSap")
