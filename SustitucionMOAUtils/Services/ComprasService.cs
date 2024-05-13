@@ -6523,7 +6523,7 @@ namespace SustitucionMOAUtils.Services
         private void EnviarMailAvisoDeErrorRegistroInfo(Cotizacion cotizacion)
         {
             var asunto = "";
-            var enviarA = new List<string> { ConfigurationManager.AppSettings["EmailToReporteLogins"] };
+            var enviarA = new List<string> { ConfigurationManager.AppSettings["EmailRegistroInfo"] };
             asunto += "Error al agregar registro info en cotizacion: " + cotizacion.Id;
 
             AlternateView alternateView = AlternateView.CreateAlternateViewFromString("Se informa que al momento de finalizar una cotizacion, el registro info no se pudo generar, revisar los logs", null, "text/html");
