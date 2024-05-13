@@ -41,19 +41,16 @@
                                     Producto:
                                 </div>
                                 <div class="styled-select" style="overflow: initial;">
-                                    <app-dropdown-input
+                                    <p-dropdown name="cmbProductos"
+                                        placeholder="Seleccione un producto"
+                                        [disabled]="ordenResiduos.Id > 0"
                                         [options]="listaProductos"
-                                        [filterKey]="'Descripcion'"
-                                        [valueKey]="'MaterialId'"
-                                        (selectedChange)="onProductoSeleccionado($event)"
-                                        [placeholder]="'Seleccione un producto'"
-                                        [(selected)]="ordenResiduos.Producto"
-                                        [disabled]="ordenResiduos.Id > 0">
-                                        <ng-template let-option>
-                                            <p class="option-label">
-                                                {{option.Descripcion}}</p>
-                                        </ng-template>
-                                    </app-dropdown-input>
+                                        optionLabel="Descripcion"
+                                        [(ngModel)]="ordenResiduos.Producto"
+                                        (ngModelChange)="onProductoSeleccionado()"
+                                        [filter]="true"
+                                        filterBy="value.Descripcion">
+                                    </p-dropdown>
                                 </div>
                             </div>
 

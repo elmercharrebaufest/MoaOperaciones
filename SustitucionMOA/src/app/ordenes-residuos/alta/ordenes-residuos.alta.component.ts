@@ -52,15 +52,15 @@ export class OrdenesResiduosAltaComponent extends BaseComponent implements OnIni
             super(navService, securityService, floatMsgService, modalService)
         }
     
-    ordenResiduos: OrdenCargaResiduosDto = new OrdenCargaResiduosDto();
-    esAdmin: boolean = this.isAuthorized(Permiso.ResiduosVerOrdenesDeCargaAdmin);
-    codigoProveedorUsuario: string = sessionStorage.getItem("proveedor") || "SINCODIGO";
-
     listaClientes: Proveedor[] = [];
     listaProductos: Material[];
     // listaLocalidades: LocalidadDto[] = [];
     listaPlantas: Planta[] = [];
     listaDomicilios: Domicilio[] = [];
+
+    ordenResiduos: OrdenCargaResiduosDto = new OrdenCargaResiduosDto();
+    esAdmin: boolean = this.isAuthorized(Permiso.ResiduosVerOrdenesDeCargaAdmin);
+    codigoProveedorUsuario: string = sessionStorage.getItem("proveedor") || "SINCODIGO";
 
     patentesChasis: string[] = [];
     patentesAcoplados: string[] = [];
@@ -111,12 +111,11 @@ export class OrdenesResiduosAltaComponent extends BaseComponent implements OnIni
         );
     }
     
-    onProductoSeleccionado(nuevoProducto: Material) {
-        if (!nuevoProducto)
+    onProductoSeleccionado() {
+        if (!this.ordenResiduos.Producto)
             return;
 
-        this.ordenResiduos.Producto = nuevoProducto;
-        this.validaCPEDG = nuevoProducto.ValidaSisaRuca;
+        this.validaCPEDG = this.ordenResiduos.Producto.ValidaSisaRuca;
         
         if (!this.validaCPEDG) {
             this.ordenResiduos.Planta = undefined;
@@ -129,29 +128,6 @@ export class OrdenesResiduosAltaComponent extends BaseComponent implements OnIni
             this.obtenerDomicilios();
         }
     }
-    
-    // obtenerCorredores() {
-    //     this.service.getCorredores().subscribe(
-    //         (resp) => {
-    //             let data = this.manejarErroresApiResponse(resp);
-    //             if (data) {
-    //                 this.listaCorredores = this.ordenarYFiltrarProveedores(data);
-    //                 if (this.ordenResiduos.Corredor) {
-    //                     let corrSel = this.listaCorredores.filter(x => x.Id == this.ordenResiduos.Corredor.Id);
-    //                     if (corrSel != null && corrSel.length > 0) {
-    //                         this.ordenResiduos.Corredor = corrSel[0];
-    //                     }
-    //                 }
-    //             }
-    //             else {
-    //                 this.listaClientes = [];
-    //             }
-    //         },
-    //         (err) => {
-    //             this.mensajeComponent.setErrorMsg(err.message);
-    //         }
-    //     )
-    // }
 
     cargarClientes() {
         if (this.esAdmin) {
