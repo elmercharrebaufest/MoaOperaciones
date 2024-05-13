@@ -4,7 +4,6 @@ using NUnit.Framework;
 using SustitucionMOA.Controllers;
 using SustitucionMOA.Utils;
 using SustitucionMOAExternalAPI.Controllers;
-using SustitucionMOAExternalAPI.Jobs;
 using SustitucionMOAModel.Dto;
 using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Interfaces;
@@ -26,14 +25,14 @@ namespace SustitucionMOATest.Controllers
     public class ActualizarSolpControllerTest
     {
         private ActualizarSolpController target;
-        private Mock<IJobService> jobService;
+        private Mock<IComprasService> comprasServiceMock;
         private string mailUsuario = "mail@mail.com";
         private JavaScriptSerializer serializer;
 
         [SetUp]
         public void SetUp()
         {
-            jobService = new Mock<IJobService>();
+            comprasServiceMock = new Mock<IComprasService>();
 
             this.serializer = new JavaScriptSerializer();
 
@@ -48,7 +47,7 @@ namespace SustitucionMOATest.Controllers
 
             Thread.CurrentPrincipal = principal;
 
-            target = new ActualizarSolpController(jobService.Object);
+            target = new ActualizarSolpController(comprasServiceMock.Object);
         }
 
 
@@ -64,7 +63,7 @@ namespace SustitucionMOATest.Controllers
             // Assert
             Assert.IsNotNull(result);
             Assert.IsInstanceOf(typeof(OkResult), result);
-            jobService.Verify(c => c.ActualizarSolp(It.IsAny<string>()), Times.Once);
+            comprasServiceMock.Verify(c => c.ExecuteObtenerSolpesDesdeSAPJob(It.IsAny<SustitucionMOAWS.WSConsumers.ObtenerSolpRequest>()), Times.Once);
         }
 
     }
